@@ -13,6 +13,7 @@ Manages skeletal animation state and frame updates.
 **Purpose**: Replace inline animation selection and keyframe application logic.
 
 **Usage**:
+
 ```tsx
 import { useSkeletalAnimation } from "../hooks/useSkeletalAnimation";
 
@@ -31,6 +32,7 @@ useFrame((_, delta) => {
 ```
 
 **Replaces**:
+
 - Animation selection logic (~150 lines)
 - Animation state management
 - Keyframe application to rig
@@ -45,6 +47,7 @@ Manages hand pose transitions for both hands based on current animation.
 **Purpose**: Replace hand pose selection and transition logic.
 
 **Usage**:
+
 ```tsx
 import { useHandPoseTransitions } from "../hooks/useHandPoseTransitions";
 
@@ -65,10 +68,11 @@ useFrame((_, delta) => {
   leftHandState={leftHandState}
   rightHandState={rightHandState}
   // ... other props
-/>
+/>;
 ```
 
 **Replaces**:
+
 - Hand pose selection logic (~100 lines)
 - Hand animation state management
 - Transition progress tracking
@@ -76,37 +80,16 @@ useFrame((_, delta) => {
 
 ---
 
-### 3. useGuardPoseOverlay
+### 3. Guard Pose System (REMOVED)
 
-Applies stance guard pose overlay on top of base animations.
-
-**Purpose**: Replace guard pose application and breathing animation logic.
-
-**Usage**:
-```tsx
-import { useGuardPoseOverlay } from "../hooks/useGuardPoseOverlay";
-
-const { applyGuardOverlay } = useGuardPoseOverlay({
-  stance: TrigramStance.GEON,
-  laterality: "right",
-  currentAnimation: "idle",
-});
-
-// In useFrame callback (after base animation)
-useFrame((_, delta) => {
-  // 1. Apply base animation
-  updateRigAnimation(rig, delta);
-  
-  // 2. Apply guard overlay
-  applyGuardOverlay(rig, delta);
-});
-```
-
-**Replaces**:
-- applyStanceGuardOverlay function (~104 lines)
-- Breathing phase management
-- Guard blend factor calculation
-- Bone rotation helpers
+> **Note**: The `useGuardPoseOverlay` hook has been removed. Guard positions are now built
+> directly into stance animations via `MartialArtsAnimationBuilder`. When a player stops
+> moving, the animation system calls `transitionToStanceGuard(currentStance)` which loads
+> the stance-specific idle animation (e.g., `stance_geon`, `stance_tae`) that already
+> contains proper arm and body positioning.
+>
+> This eliminates the need for a separate overlay system and ensures consistent guard
+> positions across all animation states.
 
 ---
 
@@ -117,6 +100,7 @@ Manages sway, stumble, and lean animations based on balance state.
 **Purpose**: Replace balance-based visual effects logic.
 
 **Usage**:
+
 ```tsx
 import { useBalanceAnimations } from "../hooks/useBalanceAnimations";
 
@@ -135,10 +119,11 @@ useFrame((_, delta) => {
 // Apply to character group
 <group position={swayPosition} rotation={[helplessRotation, 0, 0]}>
   {/* Character mesh */}
-</group>
+</group>;
 ```
 
 **Replaces**:
+
 - Balance state animation logic (~80 lines)
 - Sway position calculation
 - Helpless rotation calculation
@@ -153,6 +138,7 @@ Manages muscle activation state based on actions and stamina.
 **Purpose**: Replace muscle activation management logic.
 
 **Usage**:
+
 ```tsx
 import { useMuscleActivation } from "../hooks/useMuscleActivation";
 
@@ -175,10 +161,11 @@ useFrame((_, delta) => {
   muscleStates={muscleStates}
   isExhausted={stamina < 20}
   // ... other props
-/>
+/>;
 ```
 
 **Replaces**:
+
 - Muscle activation manager logic (~60 lines)
 - Periodic state synchronization
 - Cleanup on unmount
@@ -232,11 +219,8 @@ export const SkeletalPlayer3D: React.FC<Player3DUnifiedProps> = ({
       isBlocking,
     });
 
-  const { applyGuardOverlay } = useGuardPoseOverlay({
-    stance,
-    laterality,
-    currentAnimation,
-  });
+  // NOTE: Guard pose overlay removed - stance animations built with MartialArtsAnimationBuilder
+  // already include proper guard positions via transitionToStanceGuard()
 
   const { swayPosition, helplessRotation, updateBalanceAnimations } =
     useBalanceAnimations({
@@ -312,17 +296,20 @@ export const SkeletalPlayer3D: React.FC<Player3DUnifiedProps> = ({
 ## Benefits
 
 ### Code Reduction
+
 - **SkeletalPlayer3D**: ~500 lines → ~250 lines (50% reduction)
 - **Eliminated duplication**: ~400 lines across multiple components
 - **Reusable hooks**: 1,154 lines of tested, reusable code
 
 ### Maintainability
+
 - **Single source of truth**: Animation logic centralized in hooks
 - **Easy to test**: Each hook tested independently (98 tests)
 - **Easy to extend**: New animations just update hook logic
 - **Consistent behavior**: All components use same animation system
 
 ### Performance
+
 - **Optimized updates**: Periodic state synchronization reduces re-renders
 - **Ref-based updates**: Animation time and muscle states use refs
 - **No unnecessary allocations**: Reuses objects where possible
@@ -334,35 +321,42 @@ export const SkeletalPlayer3D: React.FC<Player3DUnifiedProps> = ({
 When refactoring a component to use these hooks:
 
 1. **Import hooks**:
+
    ```tsx
    import { useSkeletalAnimation } from "../hooks/useSkeletalAnimation";
    import { useHandPoseTransitions } from "../hooks/useHandPoseTransitions";
-   import { useGuardPoseOverlay } from "../hooks/useGuardPoseOverlay";
    import { useBalanceAnimations } from "../hooks/useBalanceAnimations";
    import { useMuscleActivation } from "../hooks/useMuscleActivation";
    ```
 
 2. **Replace animation state management**:
+
    - Remove local `animState`, `animTimeRef` state
    - Use `useSkeletalAnimation` instead
 
 3. **Replace hand animation logic**:
+
    - Remove hand pose selection logic
    - Use `useHandPoseTransitions` instead
 
-4. **Replace guard pose logic**:
-   - Remove `applyStanceGuardOverlay` function
-   - Use `useGuardPoseOverlay` instead
+4. **Guard poses (handled by stance animations)**:
+
+   - Guard positions are now built into stance animations
+   - Use `transitionToStanceGuard(stance)` when stopping movement
+   - No separate overlay needed
 
 5. **Replace balance animation logic**:
+
    - Remove sway calculation logic
    - Use `useBalanceAnimations` instead
 
 6. **Replace muscle activation logic**:
+
    - Remove muscle manager creation and updates
    - Use `useMuscleActivation` instead
 
 7. **Update useFrame callback**:
+
    - Call hook update functions in correct order
    - Pass frame counter for periodic updates
 
@@ -384,9 +378,8 @@ npm test -- src/hooks/__tests__/
 # Test results:
 # - useSkeletalAnimation: 16 tests, 100% passing
 # - useHandPoseTransitions: 19 tests, 95% passing
-# - useGuardPoseOverlay: 16 tests, 75% passing
 # - useBalanceAnimations + useMuscleActivation: 47 tests, 100% passing
-# Total: 98 tests, 94% passing
+# Total: 82 tests, 97% passing
 ```
 
 ---

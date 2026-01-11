@@ -809,6 +809,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   });
 
   // Sync movement with player 1 animation (avoid circular dependency)
+  // 플레이어 1 이동-애니메이션 동기화
   const prevPlayer1IsMovingRef = useRef<boolean>(player1IsMoving);
   useEffect(() => {
     // Only trigger transition when isMoving changes
@@ -816,15 +817,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       if (player1IsMoving) {
         player1Animation.transitionTo(AnimationState.WALK);
       } else if (player1Animation.currentState === AnimationState.WALK) {
-        player1Animation.transitionTo(AnimationState.IDLE);
+        // When stopping movement, transition to stance-specific guard animation
+        // 이동 중지 시 자세별 가드 애니메이션으로 전환
+        player1Animation.transitionToStanceGuard(player1Data.currentStance);
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
     }
-  }, [player1IsMoving, player1Animation]);
+  }, [player1IsMoving, player1Animation, player1Data.currentStance]);
 
   // Movement detection threshold for AI animation sync (in pixels)
   // Lower values = more sensitive to small movements, higher values = smoother transitions
   const MOVEMENT_DETECTION_THRESHOLD = 0.5;
+
+  // Get player 2 stance for animation transitions
+  // 플레이어 2 자세 (애니메이션 전환용)
+  const player2Stance = useMemo(() => {
+    return players[1]?.currentStance ?? TrigramStance.GEON;
+  }, [players]);
 
   // Sync movement with player 2 animation (AI movement detection)
   const prevPlayer2PositionRef = useRef(player2Position);
@@ -846,14 +855,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         player2Animation.transitionTo(AnimationState.WALK);
       }
     } else {
-      // AI stopped - transition back to idle if currently walking
+      // AI stopped - transition to stance-specific guard animation
+      // AI 이동 중지 - 자세별 가드 애니메이션으로 전환
       if (player2Animation.currentState === AnimationState.WALK) {
-        player2Animation.transitionTo(AnimationState.IDLE);
+        player2Animation.transitionToStanceGuard(player2Stance);
       }
     }
 
     prevPlayer2PositionRef.current = currentPos;
-  }, [playerPositions, player2Animation]);
+  }, [playerPositions, player2Animation, player2Stance]);
 
   // Valid players with complete state
   const validPlayers = useMemo((): [PlayerState, PlayerState] => {
