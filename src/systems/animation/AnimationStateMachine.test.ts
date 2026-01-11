@@ -695,7 +695,7 @@ describe("PlayerAnimationStateMachine", () => {
       
       // After attack completes, it normally goes to idle, but queued animation should execute
       // The next update should trigger the queue processing
-      const finalUpdate = machine.update(frameDuration);
+      machine.update(frameDuration);
       
       // Machine should have transitioned to the queued animation
       expect(machine.getCurrentState()).toBe(AnimationState.WALK);
@@ -833,7 +833,6 @@ describe("PlayerAnimationStateMachine", () => {
       
       // Queue two animations with same priority (both are ATTACK priority = 5)
       machine.transitionToQueued(AnimationState.ATTACK);
-      const firstTimestamp = performance.now();
       
       // Wait a tiny bit to ensure different timestamp
       const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
