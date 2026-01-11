@@ -940,8 +940,8 @@ export const createGeonStance = (): SkeletalAnimation => {
   const hipYOffset = -0.15 * (1.0 - biomech.hipHeight);
   const hipZOffset = 0.1 * biomech.weightDistribution.front;
   
-  return (MartialArtsAnimationBuilder.create("stance_geon", "건 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_geon", "건 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Front leg (right): Deep knee bend for forward stance
       .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
@@ -953,8 +953,9 @@ export const createGeonStance = (): SkeletalAnimation => {
       
       // Hip position for weight distribution and height
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -980,8 +981,8 @@ export const createTaeStance = (): SkeletalAnimation => {
   const hipYOffset = -0.10 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.08 * biomech.weightDistribution.back; // Back-weighted
   
-  return (MartialArtsAnimationBuilder.create("stance_tae", "태 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_tae", "태 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Front leg (right): Nearly straight, light weight
       .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
@@ -993,8 +994,9 @@ export const createTaeStance = (): SkeletalAnimation => {
       
       // Hip position - back-weighted, higher
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1018,8 +1020,8 @@ export const createLiStance = (): SkeletalAnimation => {
   
   const hipYOffset = -0.12 * (1.0 - biomech.hipHeight);
   
-  return (MartialArtsAnimationBuilder.create("stance_li", "리 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_li", "리 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Both legs: Equal moderate bend for balance
       .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
@@ -1029,8 +1031,9 @@ export const createLiStance = (): SkeletalAnimation => {
       
       // Hip position - centered, medium height
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1054,8 +1057,8 @@ export const createJinStance = (): SkeletalAnimation => {
   
   const hipYOffset = -0.25 * (1.0 - biomech.hipHeight);
   
-  return (MartialArtsAnimationBuilder.create("stance_jin", "진 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_jin", "진 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Both legs: Deep bend for explosive power
       .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
@@ -1065,8 +1068,9 @@ export const createJinStance = (): SkeletalAnimation => {
       
       // Hip position - very low for ground stability
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1091,8 +1095,8 @@ export const createSonStance = (): SkeletalAnimation => {
   
   const hipYOffset = -0.08 * (1.0 - biomech.hipHeight);
   
-  return (MartialArtsAnimationBuilder.create("stance_son", "손 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_son", "손 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Standing leg (right): Straight for balance
       .rotate(BoneName.THIGH_R, standingLegRotation, 0, 0)
@@ -1104,8 +1108,9 @@ export const createSonStance = (): SkeletalAnimation => {
       
       // Hip position - high for balance and mobility
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1131,8 +1136,8 @@ export const createGamStance = (): SkeletalAnimation => {
   const hipYOffset = -0.18 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.12 * biomech.weightDistribution.back;
   
-  return (MartialArtsAnimationBuilder.create("stance_gam", "감 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_gam", "감 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Front leg (right): Extended, light weight
       .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
@@ -1144,8 +1149,9 @@ export const createGamStance = (): SkeletalAnimation => {
       
       // Hip position - back-weighted, medium-low
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1170,8 +1176,8 @@ export const createGanStance = (): SkeletalAnimation => {
   const hipYOffset = -0.13 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.06 * (biomech.weightDistribution.back - 0.5);
   
-  return (MartialArtsAnimationBuilder.create("stance_gan", "간 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_gan", "간 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Both legs: Moderate bend for solid defense
       .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
@@ -1181,8 +1187,9 @@ export const createGanStance = (): SkeletalAnimation => {
       
       // Hip position - slightly back, medium-high
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 /**
@@ -1206,8 +1213,8 @@ export const createGonStance = (): SkeletalAnimation => {
   
   const hipYOffset = -0.28 * (1.0 - biomech.hipHeight);
   
-  return (MartialArtsAnimationBuilder.create("stance_gon", "곤 자세")
-        .asIdle(1.0, true)
+  const builder = MartialArtsAnimationBuilder.create("stance_gon", "곤 자세")
+    .asIdle(1.0, true)
     .at(0)
       // Both legs: Very deep bend for takedowns
       .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
@@ -1217,8 +1224,9 @@ export const createGonStance = (): SkeletalAnimation => {
       
       // Hip position - very low for ground control
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
-      .done() as MartialArtsAnimationBuilder)
-    .build();
+      .done() as MartialArtsAnimationBuilder;
+
+  return builder.build();
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
