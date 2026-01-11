@@ -41,6 +41,7 @@ import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeColors } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
+import ClothingSystem from "./ClothingSystem";
 
 /**
  * Get stance-specific color from Korean theming
@@ -440,6 +441,15 @@ export const SkeletalPlayer3D: React.FC<
           }}
           muscleStates={muscleStates}
           isExhausted={stamina < 20}
+        />
+
+        {/* Clothing system - archetype-specific attire */}
+        <ClothingSystem
+          archetype={archetype}
+          physicalAttributes={physicalAttributes}
+          boneMap={rig.bones}
+          scale={scale}
+          visible={!showSkeleton}
         />
 
         {/* Blocking shield effect */}
