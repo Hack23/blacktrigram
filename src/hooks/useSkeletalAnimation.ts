@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getAnimation,
+  getAnimationByName,
   getAttackAnimation,
   getDefensiveAnimation,
   getFootworkAnimation,
@@ -184,10 +185,11 @@ export function useSkeletalAnimation(
       // Footwork pattern animation
       selectedAnim = getFootworkAnimation(currentAnimation);
       playbackSpeed = 1.0;
-    } else if (currentAnimation?.startsWith("stance_guard_")) {
-      // Stance guard animation - use idle as base
-      selectedAnim = getAnimation("idle_stance");
-      playbackSpeed = 0.5; // Slow breathing animation
+    } else if (currentAnimation?.startsWith("stance_")) {
+      // Stance-specific idle animation with proper biomechanics
+      // Use getAnimationByName which searches ALL_ANIMATIONS (includes STANCE_ANIMATIONS)
+      selectedAnim = getAnimationByName(currentAnimation);
+      playbackSpeed = 0.5; // Slow breathing animation for stance idle
     } else {
       // Idle animation (fallback)
       selectedAnim = getAnimation("idle_stance");

@@ -12,7 +12,9 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
+import { KOREAN_STANCE_BIOMECHANICS } from "./MartialArtsConstants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
@@ -883,6 +885,342 @@ export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
+// STANCE IDLE ANIMATIONS (자세 대기 애니메이션)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Stance Idle Animations
+ * 
+ * Idle/stance animations for each of the eight trigram stances (팔괘 자세).
+ * These animations define the resting position for each stance, incorporating
+ * authentic Korean martial arts biomechanics including proper knee bend angles,
+ * weight distribution, and leg alignment.
+ * 
+ * Each stance animation uses the KOREAN_STANCE_BIOMECHANICS constants to ensure
+ * anatomically accurate positioning based on traditional Korean martial arts
+ * (Taekwondo 태권도, Hapkido 합기도, Taekyon 택견, Ssireum 씨름).
+ * 
+ * @module systems/animation/StanceAnimations
+ * @korean 자세대기애니메이션
+ */
+
+/**
+ * Helper function to convert degrees to radians
+ * @param degrees - Angle in degrees
+ * @returns Angle in radians
+ * @korean 각도를라디안으로변환
+ */
+const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
+
+/**
+ * ☰ Geon Heaven Stance - 건 하늘 자세
+ * 
+ * Forward stance (앞서기) from Taekwondo with deep front knee bend
+ * for powerful direct force techniques.
+ * 
+ * Characteristics:
+ * - 70° front knee bend (deep flexion)
+ * - 160° back leg (extended)
+ * - 60/40 weight distribution
+ * - 1.2x shoulder width stance
+ * 
+ * @korean 건천자세
+ */
+export const createGeonStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN;
+  
+  // Calculate knee rotation from flexion angle
+  // 180° = straight, 90° = right angle bend
+  // Rotation = -(180 - angle) converts to forward bend
+  const frontKneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  const backKneeRotation = toRadians(-(180 - biomech.backKneeBend));
+  
+  // Hip height adjustment (lower = more forward lean)
+  const hipYOffset = -0.15 * (1.0 - biomech.hipHeight);
+  const hipZOffset = 0.1 * biomech.weightDistribution.front;
+  
+  return MartialArtsAnimationBuilder.create("stance_geon", "건 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Front leg (right): Deep knee bend for forward stance
+      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, frontKneeRotation - 0.1, 0, 0)
+      
+      // Back leg (left): Extended for power base
+      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, backKneeRotation + 0.1, 0, 0)
+      
+      // Hip position for weight distribution and height
+      .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☱ Tae Lake Stance - 태 호수 자세
+ * 
+ * Cat stance (고양이서기) from Hapkido with 90/10 weight distribution
+ * for fluid joint manipulation techniques.
+ * 
+ * Characteristics:
+ * - 170° front leg (nearly straight, light)
+ * - 120° back knee (bent for spring loading)
+ * - 10/90 weight distribution (back-heavy)
+ * - 0.8x shoulder width (narrow)
+ * 
+ * @korean 태호수자세
+ */
+export const createTaeStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.TAE_LAKE;
+  
+  const frontKneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  const backKneeRotation = toRadians(-(180 - biomech.backKneeBend));
+  
+  const hipYOffset = -0.10 * (1.0 - biomech.hipHeight);
+  const hipZOffset = -0.08 * biomech.weightDistribution.back; // Back-weighted
+  
+  return MartialArtsAnimationBuilder.create("stance_tae", "태 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Front leg (right): Nearly straight, light weight
+      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, frontKneeRotation - 0.05, 0, 0)
+      
+      // Back leg (left): Bent for spring-loaded movement
+      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
+      
+      // Hip position - back-weighted, higher
+      .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☲ Li Fire Stance - 리 화염 자세
+ * 
+ * Fighting stance (전투서기) from Taekwondo with balanced 50/50 weight
+ * for precision nerve strikes.
+ * 
+ * Characteristics:
+ * - 135° both knees (moderate bend)
+ * - 50/50 weight distribution (balanced)
+ * - 1.0x shoulder width (standard)
+ * - Medium hip height
+ * 
+ * @korean 리화염자세
+ */
+export const createLiStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.LI_FIRE;
+  
+  const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  
+  const hipYOffset = -0.12 * (1.0 - biomech.hipHeight);
+  
+  return MartialArtsAnimationBuilder.create("stance_li", "리 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Both legs: Equal moderate bend for balance
+      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, kneeRotation - 0.08, 0, 0)
+      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, kneeRotation - 0.08, 0, 0)
+      
+      // Hip position - centered, medium height
+      .position(BoneName.PELVIS, 0, hipYOffset, 0)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☳ Jin Thunder Stance - 진 천둥 자세
+ * 
+ * Horse stance (기마서기) from Taekwondo with deep knee bend
+ * for explosive power techniques.
+ * 
+ * Characteristics:
+ * - 90° both knees (deep right angle bend)
+ * - 50/50 weight distribution (power base)
+ * - 1.5x shoulder width (very wide)
+ * - Very low hip height
+ * 
+ * @korean 진천둥자세
+ */
+export const createJinStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.JIN_THUNDER;
+  
+  const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  
+  const hipYOffset = -0.25 * (1.0 - biomech.hipHeight);
+  
+  return MartialArtsAnimationBuilder.create("stance_jin", "진 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Both legs: Deep bend for explosive power
+      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, kneeRotation - 0.12, 0, 0)
+      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, kneeRotation - 0.12, 0, 0)
+      
+      // Hip position - very low for ground stability
+      .position(BoneName.PELVIS, 0, hipYOffset, 0)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☴ Son Wind Stance - 손 바람 자세
+ * 
+ * Crane stance (학서기) from Taekyon with single-leg balance
+ * for continuous pressure attacks.
+ * 
+ * Characteristics:
+ * - 170° standing leg (nearly straight)
+ * - 45° raised leg (deeply bent)
+ * - 100/0 weight distribution (one leg)
+ * - 0.0 stance width (single leg)
+ * 
+ * @korean 손바람자세
+ */
+export const createSonStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.SON_WIND;
+  
+  const standingLegRotation = toRadians(-(180 - biomech.frontKneeBend));
+  const raisedLegRotation = toRadians(90); // Knee up
+  
+  const hipYOffset = -0.08 * (1.0 - biomech.hipHeight);
+  
+  return MartialArtsAnimationBuilder.create("stance_son", "손 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Standing leg (right): Straight for balance
+      .rotate(BoneName.THIGH_R, standingLegRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, standingLegRotation - 0.05, 0, 0)
+      
+      // Raised leg (left): Knee up, deeply bent
+      .rotate(BoneName.THIGH_L, raisedLegRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, toRadians(-(180 - biomech.backKneeBend)), 0, 0)
+      
+      // Hip position - high for balance and mobility
+      .position(BoneName.PELVIS, 0, hipYOffset, 0)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☵ Gam Water Stance - 감 물 자세
+ * 
+ * Back stance (뒤서기) from Hapkido with back-weighted position
+ * for flow and adaptation techniques.
+ * 
+ * Characteristics:
+ * - 150° front leg (extended)
+ * - 100° back knee (deep bend)
+ * - 30/70 weight distribution (back-heavy)
+ * - 1.1x shoulder width (medium-wide)
+ * 
+ * @korean 감물자세
+ */
+export const createGamStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.GAM_WATER;
+  
+  const frontKneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  const backKneeRotation = toRadians(-(180 - biomech.backKneeBend));
+  
+  const hipYOffset = -0.18 * (1.0 - biomech.hipHeight);
+  const hipZOffset = -0.12 * biomech.weightDistribution.back;
+  
+  return MartialArtsAnimationBuilder.create("stance_gam", "감 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Front leg (right): Extended, light weight
+      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, frontKneeRotation - 0.06, 0, 0)
+      
+      // Back leg (left): Deep bend for absorption
+      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
+      
+      // Hip position - back-weighted, medium-low
+      .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☶ Gan Mountain Stance - 간 산 자세
+ * 
+ * Defensive stance (방어서기) from Hapkido with immovable position
+ * for defensive mastery.
+ * 
+ * Characteristics:
+ * - 120° both knees (moderate bend)
+ * - 40/60 weight distribution (slightly back)
+ * - 1.0x shoulder width (standard)
+ * - Medium-high hip height
+ * 
+ * @korean 간산자세
+ */
+export const createGanStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.GAN_MOUNTAIN;
+  
+  const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  
+  const hipYOffset = -0.13 * (1.0 - biomech.hipHeight);
+  const hipZOffset = -0.06 * (biomech.weightDistribution.back - 0.5);
+  
+  return MartialArtsAnimationBuilder.create("stance_gan", "간 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Both legs: Moderate bend for solid defense
+      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, kneeRotation - 0.09, 0, 0)
+      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, kneeRotation - 0.09, 0, 0)
+      
+      // Hip position - slightly back, medium-high
+      .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+/**
+ * ☷ Gon Earth Stance - 곤 땅 자세
+ * 
+ * Low stance (낮은서기) from Ssireum/Hapkido with very low position
+ * for grounding and takedown techniques.
+ * 
+ * Characteristics:
+ * - 80° both knees (very deep bend)
+ * - 50/50 weight distribution (grounded)
+ * - 1.3x shoulder width (wide for grappling)
+ * - Very low hip height
+ * 
+ * @korean 곤땅자세
+ */
+export const createGonStance = (): SkeletalAnimation => {
+  const biomech = KOREAN_STANCE_BIOMECHANICS.GON_EARTH;
+  
+  const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
+  
+  const hipYOffset = -0.28 * (1.0 - biomech.hipHeight);
+  
+  return MartialArtsAnimationBuilder.create("stance_gon", "곤 자세")
+    .asIdle(1.0, true)
+    .at(0)
+      // Both legs: Very deep bend for takedowns
+      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_R, kneeRotation - 0.15, 0, 0)
+      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.KNEE_L, kneeRotation - 0.15, 0, 0)
+      
+      // Hip position - very low for ground control
+      .position(BoneName.PELVIS, 0, hipYOffset, 0)
+      .done<MartialArtsAnimationBuilder>()
+    .build();
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // EXPORT STANCE ANIMATION MAP
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -892,6 +1230,16 @@ export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
  */
 export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
   new Map([
+    // Stance Idles (자세 대기)
+    ["stance_geon", createGeonStance()],
+    ["stance_tae", createTaeStance()],
+    ["stance_li", createLiStance()],
+    ["stance_jin", createJinStance()],
+    ["stance_son", createSonStance()],
+    ["stance_gam", createGamStance()],
+    ["stance_gan", createGanStance()],
+    ["stance_gon", createGonStance()],
+
     // Geon (건) - Heaven
     ["geon_heaven_strike", GEON_HEAVEN_STRIKE_ANIMATION],
     ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION],
