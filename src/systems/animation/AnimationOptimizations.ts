@@ -15,12 +15,11 @@
  */
 
 import * as THREE from "three";
-import { ThreeObjectPools, withTempEulers, withTempVectors } from "../../utils/threeObjectPool";
+import { ThreeObjectPools } from "../../utils/threeObjectPool";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
   SkeletalRig,
-  Bone,
 } from "../../types/skeletal";
 
 /**
@@ -74,13 +73,12 @@ class AnimationCacheManager {
    * Get cached keyframe or create new entry
    * 
    * @param animationId - Animation identifier
-   * @param animation - Animation data
    * @param time - Current time
    * @returns Cached keyframe or null if not cached
    */
   get(
     animationId: string,
-    animation: SkeletalAnimation,
+    _animation: SkeletalAnimation,
     time: number
   ): CachedKeyframe | null {
     const entry = this.cache.get(animationId);
@@ -131,13 +129,13 @@ class AnimationCacheManager {
 
     // Clone keyframe data for caching (avoid reference issues)
     const cachedRotations = new Map<string, THREE.Euler>();
-    keyframe.rotations.forEach((rotation, boneName) => {
+    keyframe.boneRotations.forEach((rotation, boneName) => {
       cachedRotations.set(boneName, rotation.clone());
     });
 
     const cachedPositions = new Map<string, THREE.Vector3>();
-    if (keyframe.positions) {
-      keyframe.positions.forEach((position, boneName) => {
+    if (keyframe.bonePositions && keyframe.bonePositions.size > 0) {
+      keyframe.bonePositions.forEach((position, boneName) => {
         cachedPositions.set(boneName, position.clone());
       });
     }
@@ -221,7 +219,7 @@ export function batchUpdateBones(
   keyframe: AnimationKeyframe,
   dirtyBones?: Set<string>
 ): void {
-  const bonesToUpdate = dirtyBones ?? new Set(keyframe.rotations.keys());
+  const bonesToUpdate = dirtyBones ?? new Set(keyframe.boneRotations.keys());
 
   bonesToUpdate.forEach((boneName) => {
     const bone = rig.bones.get(boneName);
@@ -230,13 +228,13 @@ export function batchUpdateBones(
     }
 
     // Update rotation
-    const rotation = keyframe.rotations.get(boneName);
+    const rotation = keyframe.boneRotations.get(boneName);
     if (rotation) {
       bone.rotation.copy(rotation);
     }
 
     // Update position (if animated)
-    const position = keyframe.positions?.get(boneName);
+    const position = keyframe.bonePositions?.get(boneName);
     if (position) {
       bone.position.copy(position);
     }
@@ -327,8 +325,8 @@ export function interpolateKeyframeCached(
   // Interpolate rotations using object pool
   const interpolatedRotations = new Map<string, THREE.Euler>();
 
-  prevKeyframe.rotations.forEach((prevRot, boneName) => {
-    const nextRot = nextKeyframe.rotations.get(boneName);
+  prevKeyframe.boneRotations.forEach((prevRot, boneName) => {
+    const nextRot = nextKeyframe.boneRotations.get(boneName);
     if (nextRot) {
       // Use pooled quaternions for slerp interpolation
       const prevQuat = ThreeObjectPools.quaternion.acquire();
@@ -354,9 +352,10 @@ export function interpolateKeyframeCached(
 
   // Interpolate positions if present
   const interpolatedPositions = new Map<string, THREE.Vector3>();
-  if (prevKeyframe.positions && nextKeyframe.positions) {
-    prevKeyframe.positions.forEach((prevPos, boneName) => {
-      const nextPos = nextKeyframe.positions?.get(boneName);
+  if (prevKeyframe.bonePositions && prevKeyframe.bonePositions.size > 0 && 
+      nextKeyframe.bonePositions && nextKeyframe.bonePositions.size > 0) {
+    prevKeyframe.bonePositions.forEach((prevPos, boneName) => {
+      const nextPos = nextKeyframe.bonePositions?.get(boneName);
       if (nextPos) {
         const resultPos = new THREE.Vector3();
         resultPos.lerpVectors(prevPos, nextPos, t);
@@ -367,8 +366,8 @@ export function interpolateKeyframeCached(
 
   const interpolatedKeyframe: AnimationKeyframe = {
     time,
-    rotations: interpolatedRotations,
-    positions: interpolatedPositions.size > 0 ? interpolatedPositions : undefined,
+    boneRotations: interpolatedRotations,
+    bonePositions: interpolatedPositions,
     easing: prevKeyframe.easing,
   };
 
@@ -429,8 +428,8 @@ export function calculateDirtyBones(
 ): Set<string> {
   const dirtyBones = new Set<string>();
 
-  nextKeyframe.rotations.forEach((nextRot, boneName) => {
-    const prevRot = prevKeyframe.rotations.get(boneName);
+  nextKeyframe.boneRotations.forEach((nextRot, boneName) => {
+    const prevRot = prevKeyframe.boneRotations.get(boneName);
     if (!prevRot) {
       dirtyBones.add(boneName);
       return;
@@ -447,9 +446,9 @@ export function calculateDirtyBones(
   });
 
   // Check positions if animated
-  if (nextKeyframe.positions && prevKeyframe.positions) {
-    nextKeyframe.positions.forEach((nextPos, boneName) => {
-      const prevPos = prevKeyframe.positions?.get(boneName);
+  if (nextKeyframe.bonePositions && nextKeyframe.bonePositions.size > 0) {
+    nextKeyframe.bonePositions.forEach((nextPos, boneName) => {
+      const prevPos = prevKeyframe.bonePositions?.get(boneName);
       if (!prevPos) {
         dirtyBones.add(boneName);
         return;
