@@ -36,7 +36,6 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
   const {
     type: itemType,
     fit: itemFit,
-    scaleMultiplier: _scaleMultiplier, // Reserved for future use
     colorPrimary,
     colorEmissive,
     emissiveIntensity,

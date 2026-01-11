@@ -271,7 +271,7 @@ describe("clothingMaterials", () => {
 
   describe("Material preset consistency", () => {
     it("should have all presets with required properties", () => {
-      Object.entries(CLOTHING_MATERIAL_PRESETS).forEach(([name, preset]) => {
+      Object.entries(CLOTHING_MATERIAL_PRESETS).forEach(([_name, preset]) => {
         expect(preset.metalness).toBeDefined();
         expect(preset.roughness).toBeDefined();
         // emissiveIntensity is optional
