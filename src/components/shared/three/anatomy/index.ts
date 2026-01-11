@@ -15,6 +15,9 @@ export { Face3D } from "./Face3D";
 export { Hand3D } from "./Hand3D";
 export type { Hand3DProps } from "./Hand3D";
 
+export { Foot3D } from "./Foot3D";
+export type { Foot3DProps } from "./Foot3D";
+
 export {
   BONE_MUSCLE_MAP,
   BoneAttachedMuscle,
