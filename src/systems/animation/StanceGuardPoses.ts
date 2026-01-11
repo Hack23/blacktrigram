@@ -55,14 +55,14 @@ import type { StanceLaterality } from "../trigram/types";
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.35, 0.25), // Elbow forward, close to body
-    elbow: new THREE.Euler(0, 0, -1.7), // Tight bend - fist near face
-    wrist: new THREE.Euler(0.25, 0.1, 0), // Fist at chin level
+    shoulder: new THREE.Euler(-1.2, 0.5, 0.6), // Arm lifted high, rotated in, adducted
+    elbow: new THREE.Euler(0, 0, -2.2), // Very tight bend - fist at temple
+    wrist: new THREE.Euler(0.3, 0.2, 0), // Fist protecting cheek/temple
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.7, -0.35, -0.25), // Mirror - close to body
-    elbow: new THREE.Euler(0, 0, 1.7), // Tight bend - fist near face
-    wrist: new THREE.Euler(0.25, -0.1, 0), // Fist at chin level
+    shoulder: new THREE.Euler(-1.2, -0.5, -0.6), // Mirror - both protecting head
+    elbow: new THREE.Euler(0, 0, 2.2), // Very tight bend - fist at temple
+    wrist: new THREE.Euler(0.3, -0.2, 0), // Fist protecting cheek/temple
   },
   torso: new THREE.Euler(0.12, -0.3, 0), // Forward lean + rotated to face opponent
 
@@ -113,14 +113,14 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.35, 0.5, 0.35), // Lead hand forward/mid, elbow in
-    elbow: new THREE.Euler(0, 0, -1.3), // Moderately bent - parrying
-    wrist: new THREE.Euler(0.15, 0.2, 0), // Open hand ready to grip
+    shoulder: new THREE.Euler(-0.8, 0.7, 0.5), // Lead hand forward/mid, elbow angled in
+    elbow: new THREE.Euler(0, 0, -1.6), // Bent - parrying position
+    wrist: new THREE.Euler(0.2, 0.3, 0), // Open hand at chest height
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.65, -0.3, -0.3), // Rear hand close to chin
-    elbow: new THREE.Euler(0, 0, 1.6), // Tight bend - protecting face
-    wrist: new THREE.Euler(0.2, -0.15, 0), // Fist at chin level
+    shoulder: new THREE.Euler(-1.1, -0.4, -0.5), // Rear hand tight to chin
+    elbow: new THREE.Euler(0, 0, 2.1), // Tight bend - protecting face
+    wrist: new THREE.Euler(0.25, -0.2, 0), // Fist at chin level
   },
   torso: new THREE.Euler(0.12, -0.35, 0), // Forward + counter-rotated toward opponent
 
@@ -171,14 +171,14 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  */
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.75, 0.25, 0.35), // Elbow forward, hand near cheek
-    elbow: new THREE.Euler(0, 0, -1.75), // Tight bend - fist at face
-    wrist: new THREE.Euler(0.2, 0.15, 0), // Fist protecting cheekbone
+    shoulder: new THREE.Euler(-1.3, 0.4, 0.65), // Elbow forward, hand at cheek - peekaboo
+    elbow: new THREE.Euler(0, 0, -2.3), // Very tight - fist touches cheek
+    wrist: new THREE.Euler(0.25, 0.2, 0), // Fist protecting cheekbone
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.75, -0.25, -0.35), // Mirror - both protecting face
-    elbow: new THREE.Euler(0, 0, 1.75), // Tight bend - fist at face
-    wrist: new THREE.Euler(0.2, -0.15, 0), // Fist protecting cheekbone
+    shoulder: new THREE.Euler(-1.3, -0.4, -0.65), // Mirror - both protecting face
+    elbow: new THREE.Euler(0, 0, 2.3), // Very tight - fist touches cheek
+    wrist: new THREE.Euler(0.25, -0.2, 0), // Fist protecting cheekbone
   },
   torso: new THREE.Euler(0.1, -0.25, 0), // Chin tucked + rotation for precision
 
@@ -229,14 +229,14 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
  */
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.6, 0.2, 0.45), // Elbow tight to ribs
-    elbow: new THREE.Euler(0, 0, -1.9), // Very tight - fist at chest
-    wrist: new THREE.Euler(0.3, 0.1, 0), // Chambered at solar plexus
+    shoulder: new THREE.Euler(-0.9, 0.3, 0.7), // Elbow tight to ribs, chambered
+    elbow: new THREE.Euler(0, 0, -2.4), // Maximum chamber - fist at hip
+    wrist: new THREE.Euler(0.4, 0.15, 0), // Chambered at hip/ribs
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.6, -0.2, -0.45), // Mirror - ribs protected
-    elbow: new THREE.Euler(0, 0, 1.9), // Very tight - fist at chest
-    wrist: new THREE.Euler(0.3, -0.1, 0), // Chambered at solar plexus
+    shoulder: new THREE.Euler(-0.9, -0.3, -0.7), // Mirror - ribs protected
+    elbow: new THREE.Euler(0, 0, 2.4), // Maximum chamber - fist at hip
+    wrist: new THREE.Euler(0.4, -0.15, 0), // Chambered at hip/ribs
   },
   torso: new THREE.Euler(-0.1, -0.4, 0), // Backward lean + rotated toward opponent
 
@@ -287,14 +287,14 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.55, 0.5, 0.4), // Lead hand forward but elbow in
-    elbow: new THREE.Euler(0, 0, -1.4), // Moderately bent - quick combos
-    wrist: new THREE.Euler(0.15, 0.2, 0), // Hand near eye level
+    shoulder: new THREE.Euler(-0.9, 0.65, 0.55), // Lead hand extended forward
+    elbow: new THREE.Euler(0, 0, -1.5), // Moderately bent - jab ready
+    wrist: new THREE.Euler(0.2, 0.25, 0), // Hand at eye level
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.7, -0.3, -0.35), // Rear hand tight to face
-    elbow: new THREE.Euler(0, 0, 1.7), // Tight bend - chin protected
-    wrist: new THREE.Euler(0.2, -0.1, 0), // Fist at cheek level
+    shoulder: new THREE.Euler(-1.15, -0.4, -0.55), // Rear hand tight to chin
+    elbow: new THREE.Euler(0, 0, 2.15), // Tight bend - chin protected
+    wrist: new THREE.Euler(0.25, -0.15, 0), // Fist at chin level
   },
   torso: new THREE.Euler(0.05, -0.35, 0), // Rotated toward opponent for flow
 
@@ -345,14 +345,14 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
  */
 export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.5, 0.4, 0.4), // Mid-level, elbow in
-    elbow: new THREE.Euler(0, 0, -1.5), // Bent for parrying
-    wrist: new THREE.Euler(0.1, 0.2, 0), // Open hand at chest
+    shoulder: new THREE.Euler(-0.85, 0.55, 0.55), // Mid-level, elbow angled in
+    elbow: new THREE.Euler(0, 0, -1.85), // Bent for parrying
+    wrist: new THREE.Euler(0.15, 0.25, 0), // Open hand at chest
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.5, -0.4, -0.4), // Mid-level, elbow in
-    elbow: new THREE.Euler(0, 0, 1.5), // Bent for parrying
-    wrist: new THREE.Euler(0.1, -0.2, 0), // Open hand at chest
+    shoulder: new THREE.Euler(-0.85, -0.55, -0.55), // Mid-level, elbow angled in
+    elbow: new THREE.Euler(0, 0, 1.85), // Bent for parrying
+    wrist: new THREE.Euler(0.15, -0.25, 0), // Open hand at chest
   },
   torso: new THREE.Euler(0, -0.25, 0), // Slight rotation toward opponent
 
@@ -403,14 +403,14 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
  */
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.85, 0.2, 0.5), // High, forearm covers face
-    elbow: new THREE.Euler(0, 0, -1.8), // Tight bend - forearm vertical
-    wrist: new THREE.Euler(0.35, 0.15, 0), // Fist near temple
+    shoulder: new THREE.Euler(-1.4, 0.35, 0.7), // Very high, forearm covers face
+    elbow: new THREE.Euler(0, 0, -2.35), // Very tight - forearm vertical
+    wrist: new THREE.Euler(0.4, 0.2, 0), // Fist near forehead
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.85, -0.2, -0.5), // High, forearm covers face
-    elbow: new THREE.Euler(0, 0, 1.8), // Tight bend - forearm vertical
-    wrist: new THREE.Euler(0.35, -0.15, 0), // Fist near temple
+    shoulder: new THREE.Euler(-1.4, -0.35, -0.7), // Very high, forearm covers face
+    elbow: new THREE.Euler(0, 0, 2.35), // Very tight - forearm vertical
+    wrist: new THREE.Euler(0.4, -0.2, 0), // Fist near forehead
   },
   torso: new THREE.Euler(0.05, -0.2, 0), // Forward + slight rotation for defense
 
@@ -461,14 +461,14 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
  */
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.15, 0.35, 0.5), // Low underhook - hands at hip level
-    elbow: new THREE.Euler(0, 0, -1.6), // Bent tight - protects liver
-    wrist: new THREE.Euler(0.1, 0.15, 0), // Hands at hip/belt level
+    shoulder: new THREE.Euler(-0.4, 0.5, 0.65), // Low wrestling guard - hands low
+    elbow: new THREE.Euler(0, 0, -1.9), // Bent - protects liver
+    wrist: new THREE.Euler(0.15, 0.2, 0), // Hands at belt level
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.15, -0.35, -0.5), // Low underhook - hands at hip level
-    elbow: new THREE.Euler(0, 0, 1.6), // Bent tight - protects liver
-    wrist: new THREE.Euler(0.1, -0.15, 0), // Hands at hip/belt level
+    shoulder: new THREE.Euler(-0.4, -0.5, -0.65), // Low wrestling guard - hands low
+    elbow: new THREE.Euler(0, 0, 1.9), // Bent - protects liver
+    wrist: new THREE.Euler(0.15, -0.2, 0), // Hands at belt level
   },
   torso: new THREE.Euler(0.15, -0.3, 0), // Forward lean + rotation for wrestling
 

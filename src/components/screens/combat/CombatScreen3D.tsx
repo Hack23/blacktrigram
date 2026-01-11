@@ -564,11 +564,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Calculate dynamic rotations so players always face each other
   // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
   // This is the standard formula for rotating around Y to point at a target
-  const player1Rotation = useMemo(() => {
-    const dx = player2Position3D[0] - player1Position3D[0];
-    const dz = player2Position3D[2] - player1Position3D[2];
-    return Math.atan2(dx, dz);
-  }, [player1Position3D, player2Position3D]);
+  // NOTE: player1Rotation is calculated after usePlayerMovement below
+  const player1LastRotationRef = useRef<number>(0);
 
   const player2Rotation = useMemo(() => {
     const dx = player1Position3D[0] - player2Position3D[0];
@@ -676,29 +673,55 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   >(undefined);
 
   // Player movement with physics-based acceleration and stance modifiers
-  const { isMoving: player1IsMoving } = usePlayerMovement({
-    enabled:
-      !isPaused &&
-      combatState.roundStarted &&
-      !combatState.roundEnded &&
-      matchCountdownComplete &&
-      !showRoundStart,
-    bounds: arenaBounds,
-    onPositionChange: (newPosition: Position) => {
-      setPlayer1Position(newPosition);
-      onPlayerUpdate(0, { position: newPosition });
-    },
-    initialPosition: player1Position,
-    moveSpeed: 300,
-    // Physics parameters for realistic movement (always enabled)
-    currentStance: player1Data.currentStance,
-    legInjuryFactor: player1Data.legInjuryFactor,
-    isRunning: false, // TODO: Add run key detection
-    useTacticalSteps: false,
-    // Speed modifier overrides from SpeedModifierSystem
-    maxSpeedOverride: player1SpeedModifiers.finalSpeed,
-    accelerationOverride: player1SpeedModifiers.finalAcceleration,
-  });
+  const { isMoving: player1IsMoving, velocity: player1Velocity } =
+    usePlayerMovement({
+      enabled:
+        !isPaused &&
+        combatState.roundStarted &&
+        !combatState.roundEnded &&
+        matchCountdownComplete &&
+        !showRoundStart,
+      bounds: arenaBounds,
+      onPositionChange: (newPosition: Position) => {
+        setPlayer1Position(newPosition);
+        onPlayerUpdate(0, { position: newPosition });
+      },
+      initialPosition: player1Position,
+      moveSpeed: 300,
+      // Physics parameters for realistic movement (always enabled)
+      currentStance: player1Data.currentStance,
+      legInjuryFactor: player1Data.legInjuryFactor,
+      isRunning: false, // TODO: Add run key detection
+      useTacticalSteps: false,
+      // Speed modifier overrides from SpeedModifierSystem
+      maxSpeedOverride: player1SpeedModifiers.finalSpeed,
+      accelerationOverride: player1SpeedModifiers.finalAcceleration,
+    });
+
+  // Player 1 rotation: face movement direction when moving, opponent when idle
+  // 이동 중에는 이동 방향을, 정지 시에는 상대를 향함
+  const player1Rotation = useMemo(() => {
+    if (
+      player1IsMoving &&
+      player1Velocity &&
+      (player1Velocity.x !== 0 || player1Velocity.y !== 0)
+    ) {
+      // When moving: face movement direction
+      const movementRotation = Math.atan2(
+        player1Velocity.x,
+        -player1Velocity.y
+      );
+      player1LastRotationRef.current = movementRotation;
+      return movementRotation;
+    } else {
+      // When idle: face opponent
+      const dx = player2Position3D[0] - player1Position3D[0];
+      const dz = player2Position3D[2] - player1Position3D[2];
+      const targetRotation = Math.atan2(dx, dz);
+      player1LastRotationRef.current = targetRotation;
+      return targetRotation;
+    }
+  }, [player1IsMoving, player1Velocity, player1Position3D, player2Position3D]);
 
   // Use ref to store attack handler to avoid circular dependencies
   const handleAttackRef = useRef<(() => void) | null>(null);

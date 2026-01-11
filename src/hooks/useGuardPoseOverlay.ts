@@ -76,7 +76,7 @@ const getGuardBlendFactor = (animation: PlayerAnimation): number => {
     case "step_forward_right":
     case "step_back_left":
     case "step_back_right":
-      return 0.7; // Partial guard - balanced movement with stance character
+      return 0.5; // Partial guard - allow walk arm swing to show through
 
     case "attack":
     case "defend":

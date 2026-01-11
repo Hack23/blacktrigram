@@ -311,7 +311,18 @@ export const SkeletalPlayer3D: React.FC<
   // Animation loop using useFrame (60fps)
   useFrame((_state, delta) => {
     // Update body facing to track opponent (if enabled)
-    if (bodyFacing && opponentPosition && onBodyFacingUpdate) {
+    // ONLY track opponent when NOT moving (walk animations handle their own direction)
+    const isWalkingAnimation =
+      currentAnimation === "walk" ||
+      (typeof currentAnimation === "string" &&
+        currentAnimation.startsWith("step_"));
+
+    if (
+      bodyFacing &&
+      opponentPosition &&
+      onBodyFacingUpdate &&
+      !isWalkingAnimation
+    ) {
       const playerPos = { x: position[0], y: position[2] }; // X and Z for 2D top-down
       const opponentPos = { x: opponentPosition[0], y: opponentPosition[2] };
 
