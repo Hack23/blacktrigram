@@ -87,6 +87,24 @@ vi.mock("three", () => ({
       return this;
     }
   },
+  Matrix4: class MockMatrix4 {
+    elements = new Array(16).fill(0);
+    identity() {
+      return this;
+    }
+    copy() {
+      return this;
+    }
+    multiply() {
+      return this;
+    }
+    decompose() {
+      return this;
+    }
+    makeRotationFromEuler() {
+      return this;
+    }
+  },
   Euler: class MockEuler {
     constructor(
       public x = 0,
