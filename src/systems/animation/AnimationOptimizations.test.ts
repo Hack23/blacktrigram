@@ -32,10 +32,11 @@ describe("Animation Optimizations", () => {
 
   describe("AnimationCacheManager", () => {
     const createTestAnimation = (): SkeletalAnimation => ({
-      id: "test-anim",
-      name: { korean: "테스트", english: "test" },
+      name: "test-anim",
+      koreanName: "테스트",
       duration: 1.0,
       type: "attack",
+      loop: false,
       keyframes: [
         {
           time: 0.0,

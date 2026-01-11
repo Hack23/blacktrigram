@@ -73,14 +73,17 @@ class AnimationCacheManager {
    * Get cached keyframe or create new entry
    * 
    * @param animationId - Animation identifier
+   * @param animation - Animation data (reserved for future cache invalidation logic)
    * @param time - Current time
    * @returns Cached keyframe or null if not cached
    */
   get(
     animationId: string,
-    _animation: SkeletalAnimation,
+    animation: SkeletalAnimation,
     time: number
   ): CachedKeyframe | null {
+    // Mark parameter as used for future extensibility (e.g., cache invalidation)
+    void animation;
     const entry = this.cache.get(animationId);
     if (!entry) {
       return null;
@@ -337,14 +340,16 @@ export function interpolateKeyframeCached(
       nextQuat.setFromEuler(nextRot);
       resultQuat.slerpQuaternions(prevQuat, nextQuat, t);
 
-      const resultEuler = new THREE.Euler();
-      resultEuler.setFromQuaternion(resultQuat);
-      interpolatedRotations.set(boneName, resultEuler);
+      // Use pooled Euler, then clone for storage to avoid pooled object reuse issues
+      const tempEuler = ThreeObjectPools.euler.acquire();
+      tempEuler.setFromQuaternion(resultQuat);
+      interpolatedRotations.set(boneName, tempEuler.clone());
 
       // Release pooled objects
       ThreeObjectPools.quaternion.release(prevQuat);
       ThreeObjectPools.quaternion.release(nextQuat);
       ThreeObjectPools.quaternion.release(resultQuat);
+      ThreeObjectPools.euler.release(tempEuler);
     } else {
       interpolatedRotations.set(boneName, prevRot.clone());
     }
@@ -357,9 +362,11 @@ export function interpolateKeyframeCached(
     prevKeyframe.bonePositions.forEach((prevPos, boneName) => {
       const nextPos = nextKeyframe.bonePositions?.get(boneName);
       if (nextPos) {
-        const resultPos = new THREE.Vector3();
-        resultPos.lerpVectors(prevPos, nextPos, t);
-        interpolatedPositions.set(boneName, resultPos);
+        // Use pooled Vector3, then clone for storage to avoid pooled object reuse issues
+        const tempVec = ThreeObjectPools.vector3.acquire();
+        tempVec.lerpVectors(prevPos, nextPos, t);
+        interpolatedPositions.set(boneName, tempVec.clone());
+        ThreeObjectPools.vector3.release(tempVec);
       }
     });
   }
