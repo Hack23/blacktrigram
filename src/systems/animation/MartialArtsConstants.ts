@@ -454,6 +454,239 @@ export type PunchPhaseType = (typeof PUNCH_PHASES)[keyof typeof PUNCH_PHASES];
 export type PunchPhaseName = keyof typeof PUNCH_PHASES;
 
 // ═══════════════════════════════════════════════════════════════════════════
+// KOREAN STANCE BIOMECHANICS (한국 무술 자세 생체역학)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Korean Martial Arts Stance Biomechanics
+ * 
+ * Authentic biomechanical configurations for all eight trigram stances (팔괘 자세),
+ * based on traditional Korean martial arts (Taekwondo 태권도, Hapkido 합기도, Taekyon 택견).
+ * 
+ * Each stance defines:
+ * - frontKneeBend: Front leg knee flexion angle in degrees (무릎굽힘각도)
+ * - backKneeBend: Back leg knee flexion angle in degrees (뒷다리무릎각도)
+ * - weightDistribution: Front/back weight ratio (체중분배)
+ * - stanceWidth: Distance between feet in shoulder widths (발간격)
+ * - hipHeight: Hip height relative to standing (0-1 scale) (엉덩이높이)
+ * 
+ * Angle conventions:
+ * - 180° = Fully straight leg (완전히 펴진 다리)
+ * - 90° = Right angle bend (직각 굽힘)
+ * - Lower angles = Deeper bend (낮은 각도 = 더 깊은 굽힘)
+ * 
+ * Weight distribution:
+ * - front: 0.6 = 60% weight on front leg (앞발 60% 체중)
+ * - back: 0.4 = 40% weight on back leg (뒷발 40% 체중)
+ * 
+ * Sources:
+ * - Taekwondo (태권도) - KTA/WTF standard stances
+ * - Hapkido (합기도) - Traditional defensive stances
+ * - Taekyon (택견) - Korean traditional martial art stances
+ * 
+ * @korean 한국무술자세생체역학
+ */
+export const KOREAN_STANCE_BIOMECHANICS = {
+  /**
+   * ☰ GEON (건) - HEAVEN STANCE | 하늘 자세
+   * 
+   * Forward stance (앞서기) - Taekwondo Ap Seogi
+   * 
+   * Characteristics:
+   * - Aggressive forward position for direct force techniques
+   * - Deep front knee bend for power generation
+   * - Extended back leg for solid base
+   * - 60/40 weight distribution favoring front
+   * 
+   * Korean martial art source: Taekwondo (태권도)
+   * 
+   * @korean 건천자세
+   */
+  GEON_HEAVEN: {
+    frontKneeBend: 70,      // Deep front knee ~70° flexion (깊은 앞무릎 굽힘)
+    backKneeBend: 160,      // Extended back leg ~160° (뻗은 뒷다리)
+    weightDistribution: { front: 0.6, back: 0.4 },  // 60% front (앞발 60%)
+    stanceWidth: 1.2,       // 1.2x shoulder width (어깨너비의 1.2배)
+    hipHeight: 0.85,        // Lower hips for stability (낮은 엉덩이)
+  },
+
+  /**
+   * ☱ TAE (태) - LAKE STANCE | 호수 자세
+   * 
+   * Cat stance (고양이서기) - Taekwondo Beom Seogi
+   * 
+   * Characteristics:
+   * - Fluid defensive position for joint manipulation
+   * - Most weight on back leg (90/10)
+   * - Front leg light and mobile for kicking
+   * - Back knee bent for spring-loaded movement
+   * - High hip position for quick transitions
+   * 
+   * Korean martial art source: Hapkido (합기도)
+   * 
+   * @korean 태호수자세
+   */
+  TAE_LAKE: {
+    frontKneeBend: 170,     // Nearly straight front leg ~170° (거의 펴진 앞다리)
+    backKneeBend: 120,      // Bent back knee ~120° (굽은 뒷무릎)
+    weightDistribution: { front: 0.1, back: 0.9 },  // 10% front, 90% back (앞발 10%, 뒷발 90%)
+    stanceWidth: 0.8,       // Narrow stance 0.8x shoulder width (좁은 자세)
+    hipHeight: 0.90,        // Higher hips for mobility (높은 엉덩이)
+  },
+
+  /**
+   * ☲ LI (리) - FIRE STANCE | 불 자세
+   * 
+   * Fighting stance (전투서기) - Taekwondo Gyeorugi Junbi Seogi
+   * 
+   * Characteristics:
+   * - Balanced 50/50 stance for precision strikes
+   * - Both knees moderately bent (~135°)
+   * - Mobile and ready to move in any direction
+   * - Medium width for stability and mobility
+   * - Standard combat readiness position
+   * 
+   * Korean martial art source: Taekwondo (태권도)
+   * 
+   * @korean 리화염자세
+   */
+  LI_FIRE: {
+    frontKneeBend: 135,     // Moderate front bend ~135° (중간 앞무릎 굽힘)
+    backKneeBend: 135,      // Equal back bend ~135° (같은 뒷무릎 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 balance (균형 50/50)
+    stanceWidth: 1.0,       // Shoulder width stance (어깨너비 자세)
+    hipHeight: 0.88,        // Medium height for balance (중간 높이)
+  },
+
+  /**
+   * ☳ JIN (진) - THUNDER STANCE | 천둥 자세
+   * 
+   * Horse stance (기마서기) - Taekwondo Juchum Seogi
+   * 
+   * Characteristics:
+   * - Wide, powerful stance for explosive techniques
+   * - Deep knee bend in both legs (~90°)
+   * - Equal weight distribution (50/50)
+   * - Very low hip position for ground stability
+   * - Feet parallel, pointing forward
+   * 
+   * Korean martial art source: Taekwondo (태권도)
+   * 
+   * @korean 진천둥자세
+   */
+  JIN_THUNDER: {
+    frontKneeBend: 90,      // Deep right angle bend ~90° (깊은 직각 굽힘)
+    backKneeBend: 90,       // Equal deep bend ~90° (같은 깊은 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 power base (힘의 기반 50/50)
+    stanceWidth: 1.5,       // Wide stance 1.5x shoulder width (넓은 자세)
+    hipHeight: 0.75,        // Very low for explosive power (매우 낮은 높이)
+  },
+
+  /**
+   * ☴ SON (손) - WIND STANCE | 바람 자세
+   * 
+   * Crane stance (학서기) - Taekwondo Hakdari Seogi
+   * 
+   * Characteristics:
+   * - One-legged balance for continuous movement
+   * - Standing leg nearly straight (~170°)
+   * - All weight on standing leg (100%)
+   * - Raised leg ready for rapid kicks
+   * - High hip position for mobility
+   * 
+   * Korean martial art source: Taekyon (택견)
+   * 
+   * @korean 손바람자세
+   */
+  SON_WIND: {
+    frontKneeBend: 170,     // Standing leg straight ~170° (선 다리 곧게)
+    backKneeBend: 45,       // Raised leg deeply bent ~45° (올린 다리 깊게 굽힘)
+    weightDistribution: { front: 1.0, back: 0.0 },  // 100% on standing leg (선 다리 100%)
+    stanceWidth: 0.0,       // Single leg stance (한 다리 자세)
+    hipHeight: 0.92,        // High for balance and mobility (높은 균형)
+  },
+
+  /**
+   * ☵ GAM (감) - WATER STANCE | 물 자세
+   * 
+   * Back stance (뒤서기) - Taekwondo Dwit Seogi
+   * 
+   * Characteristics:
+   * - Defensive stance with weight on back leg
+   * - Deep back knee bend (~100°) for absorption
+   * - Front leg light for quick defense
+   * - 30/70 weight distribution (back-heavy)
+   * - Medium-low hip for stability
+   * 
+   * Korean martial art source: Hapkido (합기도)
+   * 
+   * @korean 감물자세
+   */
+  GAM_WATER: {
+    frontKneeBend: 150,     // Extended front leg ~150° (뻗은 앞다리)
+    backKneeBend: 100,      // Deep back bend ~100° (깊은 뒷다리 굽힘)
+    weightDistribution: { front: 0.3, back: 0.7 },  // 30% front, 70% back (앞발 30%, 뒷발 70%)
+    stanceWidth: 1.1,       // Medium-wide stance (중간 넓이 자세)
+    hipHeight: 0.82,        // Medium-low for absorption (중간 낮은 높이)
+  },
+
+  /**
+   * ☶ GAN (간) - MOUNTAIN STANCE | 산 자세
+   * 
+   * Defensive stance (방어서기) - Hapkido Bangeoseogi
+   * 
+   * Characteristics:
+   * - Immovable defensive position
+   * - Moderate knee bend in both legs (~120°)
+   * - Slightly back-weighted (40/60)
+   * - Medium width for solid base
+   * - Medium-high hip for counter readiness
+   * 
+   * Korean martial art source: Hapkido (합기도)
+   * 
+   * @korean 간산자세
+   */
+  GAN_MOUNTAIN: {
+    frontKneeBend: 120,     // Moderate front bend ~120° (중간 앞무릎 굽힘)
+    backKneeBend: 120,      // Equal moderate bend ~120° (같은 중간 굽힘)
+    weightDistribution: { front: 0.4, back: 0.6 },  // 40% front, 60% back (앞발 40%, 뒷발 60%)
+    stanceWidth: 1.0,       // Shoulder width stance (어깨너비 자세)
+    hipHeight: 0.87,        // Medium-high for defense (중간 높은 방어)
+  },
+
+  /**
+   * ☷ GON (곤) - EARTH STANCE | 땅 자세
+   * 
+   * Low stance (낮은서기) - Korean Ssireum (씨름) wrestling stance
+   * 
+   * Characteristics:
+   * - Very low, grounded position for takedowns
+   * - Deep knee bend in both legs (~80°)
+   * - Equal weight distribution (50/50)
+   * - Wide stance for base and grappling
+   * - Very low hip position for ground control
+   * 
+   * Korean martial art source: Ssireum (씨름) / Hapkido ground techniques
+   * 
+   * @korean 곤땅자세
+   */
+  GON_EARTH: {
+    frontKneeBend: 80,      // Very deep bend ~80° (매우 깊은 굽힘)
+    backKneeBend: 80,       // Equal deep bend ~80° (같은 깊은 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 grounded (땅에 붙은 50/50)
+    stanceWidth: 1.3,       // Wide for grappling (넓은 그래플링)
+    hipHeight: 0.72,        // Very low for takedowns (매우 낮은 넘어뜨리기)
+  },
+} as const;
+
+/** Type for Korean stance biomechanics */
+export type KoreanStanceBiomechanicsType = 
+  (typeof KOREAN_STANCE_BIOMECHANICS)[keyof typeof KOREAN_STANCE_BIOMECHANICS];
+
+/** Available Korean stance biomechanics names */
+export type KoreanStanceName = keyof typeof KOREAN_STANCE_BIOMECHANICS;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // ANIMATION TYPE ENUM (애니메이션 타입)
 // ═══════════════════════════════════════════════════════════════════════════
 
