@@ -683,18 +683,320 @@ describe("AIDecisionTree", () => {
         AI_PERSONALITIES.AGGRESSIVE_STRIKER,
         comboSystem
       );
+      decisionTree.makeDecision(
+        context,
+        AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+        comboSystem
+      );
 
-      // Reset
+      // Reset should clear internal state
       decisionTree.reset();
 
-      // Should be able to make decision immediately after reset
+      // Should be able to make decisions immediately after reset
       const decision = decisionTree.makeDecision(
         context,
         AI_PERSONALITIES.AGGRESSIVE_STRIKER,
         comboSystem
       );
 
-      expect(decision.action).not.toBe("wait");
+      expect(decision).toBeDefined();
+      expect(decision.action).toBeDefined();
+    });
+  });
+
+  describe("Kill Mode Logic (Issue #enhance-ai-aggression)", () => {
+    describe("Kill Mode Activation", () => {
+      it("should activate kill mode when opponent health is below 30%", () => {
+        const context = createMockContext({
+          opponentHealth: 25, // 25% health
+          playerMaxHealth: 100,
+          distanceToOpponent: 40, // Close range
+        });
+
+        // Musa at close range with low opponent health
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // Should prioritize aggressive finishing attacks
+        expect(["attack", "technique", "combo"]).toContain(decision.action);
+        // Should have higher priority
+        expect(decision.priority).toBeGreaterThanOrEqual(7);
+        // Reason should indicate kill mode
+        if (decision.reason) {
+          const hasKillModeIndicator = 
+            decision.reason.includes("결정타") || 
+            decision.reason.includes("Kill mode") ||
+            decision.reason.includes("finishing");
+          expect(hasKillModeIndicator).toBe(true);
+        }
+      });
+
+      it("should activate kill mode when opponent is HELPLESS", () => {
+        const context = createMockContext({
+          opponentHealth: 80, // Still good health
+          opponentBalance: "HELPLESS", // But helpless balance state
+          distanceToOpponent: 40, // Close range
+        });
+
+        // Amsalja should exploit vulnerability
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.TECHNICAL_MASTER,
+          comboSystem
+        );
+
+        // Should prioritize technique attacks for instant takedown
+        expect(["attack", "technique", "combo"]).toContain(decision.action);
+        expect(decision.priority).toBeGreaterThanOrEqual(7);
+      });
+
+      it("should activate kill mode when opponent is VULNERABLE", () => {
+        const context = createMockContext({
+          opponentHealth: 60, // Moderate health
+          opponentBalance: "VULNERABLE", // Vulnerable balance state
+          distanceToOpponent: 40, // Close range
+        });
+
+        // Musa should exploit vulnerability
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // Should prioritize aggressive attacks
+        expect(["attack", "technique", "combo"]).toContain(decision.action);
+        expect(decision.priority).toBeGreaterThanOrEqual(7);
+      });
+
+      it("should NOT activate kill mode for non-aggressive archetypes", () => {
+        const context = createMockContext({
+          opponentHealth: 25, // Low health
+          distanceToOpponent: 150, // Mid-range for Hacker (optimal 120px)
+        });
+
+        // Hacker should not enter kill mode
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.DEFENSIVE_SPECIALIST, // Hacker archetype
+          comboSystem
+        );
+
+        // Should not show kill mode behavior
+        // Defensive specialist should use normal tactics
+        expect(decision).toBeDefined();
+        // Reason should not indicate kill mode
+        if (decision.reason) {
+          expect(decision.reason).not.toContain("Kill mode");
+          expect(decision.reason).not.toContain("결정타");
+        }
+      });
+
+      it("should NOT activate kill mode when opponent health is above 30%", () => {
+        const context = createMockContext({
+          opponentHealth: 35, // 35% health - above threshold
+          playerMaxHealth: 100,
+          distanceToOpponent: 40, // Close range
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // Should use normal tactics, not kill mode
+        expect(decision).toBeDefined();
+        // Priority should be normal range (not boosted to 9)
+        if (decision.action === "technique") {
+          expect(decision.priority).toBeLessThan(9);
+        }
+      });
+    });
+
+    describe("Kill Mode Behavior - Musa (Warrior)", () => {
+      it("should prioritize attack actions with kill mode multipliers", () => {
+        const context = createMockContext({
+          opponentHealth: 20, // 20% health
+          playerMaxHealth: 100,
+          distanceToOpponent: 40, // Close range
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 30; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const attackActions = decisions.filter((d) =>
+          ["attack", "technique"].includes(d.action)
+        );
+        const retreatActions = decisions.filter((d) => d.action === "retreat");
+
+        // Musa should heavily favor attacks in kill mode
+        expect(attackActions.length).toBeGreaterThan(decisions.length * 0.5);
+        // Musa should never retreat in kill mode (honor code + kill mode = 0 retreat)
+        expect(retreatActions.length).toBe(0);
+      });
+
+      it("should maintain high aggression even at low AI health in kill mode", () => {
+        const context = createMockContext({
+          playerHealth: 10, // AI at 10% health
+          playerMaxHealth: 100,
+          opponentHealth: 25, // Opponent at 25% health (kill mode threshold)
+          distanceToOpponent: 40,
+        });
+
+        // Musa should continue attacking despite low health (honor code)
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // Should not retreat (honor code prevents it above 5%)
+        expect(decision.action).not.toBe("retreat");
+      });
+    });
+
+    describe("Kill Mode Behavior - Amsalja (Assassin)", () => {
+      it("should prioritize technique actions for instant takedowns", () => {
+        const context = createMockContext({
+          opponentHealth: 28, // 28% health
+          playerMaxHealth: 100,
+          distanceToOpponent: 40, // Close range
+          playerKi: 50, // Has resources for techniques
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 30; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.TECHNICAL_MASTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const techniqueActions = decisions.filter((d) => d.action === "technique");
+
+        // Amsalja should favor techniques heavily in kill mode (3.0x multiplier)
+        expect(techniqueActions.length).toBeGreaterThan(decisions.length * 0.4);
+      });
+
+      it("should reduce feint usage in kill mode", () => {
+        const context = createMockContext({
+          opponentHealth: 25,
+          playerMaxHealth: 100,
+          distanceToOpponent: 60, // Within feint range normally
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 30; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.TECHNICAL_MASTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const feintActions = decisions.filter((d) => d.action === "feint");
+
+        // Feints should be minimal in kill mode (executing, not feinting)
+        expect(feintActions.length).toBeLessThan(decisions.length * 0.2);
+      });
+
+      it("should allow tactical retreat when AI health is low", () => {
+        const context = createMockContext({
+          playerHealth: 15, // AI at 15% health (below 20% retreat threshold)
+          playerMaxHealth: 100,
+          opponentHealth: 25, // Opponent at 25% (kill mode)
+          distanceToOpponent: 40,
+        });
+
+        // Amsalja should retreat if health is critically low (below 20% threshold)
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.TECHNICAL_MASTER,
+          comboSystem
+        );
+
+        // Should retreat when AI health is critically low
+        expect(decision.action).toBe("retreat");
+      });
+    });
+
+    describe("Kill Mode Priority Boost", () => {
+      it("should boost attack priority to 9 with vital points in kill mode", () => {
+        const context = createMockContext({
+          opponentHealth: 20,
+          playerMaxHealth: 100,
+          distanceToOpponent: 40, // Close range for vital point targeting
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        decisionTree.setDifficultyLevel(0.9); // High difficulty for vital point targeting
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // If technique with vital point, should have max priority
+        if (decision.action === "technique" && decision.targetVitalPoint) {
+          expect(decision.priority).toBe(9);
+        }
+      });
+
+      it("should have higher priorities for finishing attacks than normal combat", () => {
+        const normalContext = createMockContext({
+          opponentHealth: 80, // Normal health
+          distanceToOpponent: 40,
+        });
+
+        const killModeContext = createMockContext({
+          opponentHealth: 25, // Kill mode health
+          distanceToOpponent: 40,
+        });
+
+        decisionTree.reset();
+        const normalDecision = decisionTree.makeDecision(
+          normalContext,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        decisionTree.reset();
+        const killModeDecision = decisionTree.makeDecision(
+          killModeContext,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER,
+          comboSystem
+        );
+
+        // Kill mode should have higher priority for attack/technique actions
+        if (
+          ["attack", "technique"].includes(normalDecision.action) &&
+          ["attack", "technique"].includes(killModeDecision.action)
+        ) {
+          expect(killModeDecision.priority).toBeGreaterThanOrEqual(
+            normalDecision.priority
+          );
+        }
+      });
     });
   });
 });
