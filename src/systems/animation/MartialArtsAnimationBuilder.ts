@@ -53,6 +53,67 @@ import { applyPunchPhaseToConfig } from "./PunchPhaseApplicator";
 export { AnimationType, HAND_POSES, KICK_PHASES, MARTIAL_POSES, PUNCH_PHASES };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TECHNIQUE TIMING CONSTANTS (기술 타이밍 상수)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Technique Timing Constants
+ *
+ * Defines standard timing phases for martial arts techniques to ensure
+ * all movements are visible and comprehensible. Minimum total duration
+ * is 0.5s to prevent "teleporting" strikes.
+ *
+ * Korean martial arts emphasize visible technique phases:
+ * - 준비 (Preparation) - Wind-up/chamber
+ * - 실행 (Execution) - Strike/extension
+ * - 회수 (Recovery) - Retraction
+ * - 복귀 (Return) - Return to stance
+ *
+ * @korean 기술타이밍상수
+ */
+export const TECHNIQUE_TIMING = {
+  /**
+   * Fast techniques (빠른 기술)
+   * Examples: Jabs, quick strikes, fast kicks
+   * Total: 550ms
+   */
+  FAST: {
+    chamber: 0.10,    // 100ms wind-up (준비)
+    extend: 0.15,     // 150ms strike (실행)
+    peak: 0.05,       // 50ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.15,    // 150ms return to stance (복귀)
+    total: 0.55,      // 550ms total
+  },
+  /**
+   * Medium techniques (중간 기술)
+   * Examples: Crosses, roundhouse kicks, hooks
+   * Total: 730ms
+   */
+  MEDIUM: {
+    chamber: 0.15,    // 150ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.12,    // 120ms pull back (회수)
+    recover: 0.18,    // 180ms return to stance (복귀)
+    total: 0.73,      // 730ms total
+  },
+  /**
+   * Heavy techniques (무거운 기술)
+   * Examples: Spinning kicks, power punches, jumping techniques
+   * Total: 1000ms
+   */
+  HEAVY: {
+    chamber: 0.20,    // 200ms wind-up (준비)
+    extend: 0.30,     // 300ms strike (실행)
+    peak: 0.12,       // 120ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.23,    // 230ms return to stance (복귀)
+    total: 1.00,      // 1000ms total
+  },
+} as const;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MARTIAL ARTS ANIMATION BUILDER (무술 애니메이션 빌더)
 // ═══════════════════════════════════════════════════════════════════════════
 
