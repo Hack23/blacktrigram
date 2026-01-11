@@ -131,10 +131,14 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
  * amplifies the visual scaling to make archetype body differences more
  * apparent while keeping proportions realistic.
  *
+ * Increased from 2.0 to 2.5 for more distinct visual silhouettes:
+ * - Jojik shoulders (54cm) vs Hacker (43cm) = 25% difference → 63% visual difference
+ * - Amsalja legs (102cm) vs Hacker (92cm) = 11% difference → 28% visual difference
+ *
  * @internal
  * @korean 시각적증폭계수
  */
-const VISUAL_AMPLIFICATION_FACTOR = 2.0;
+const VISUAL_AMPLIFICATION_FACTOR = 2.5;
 
 /**
  * Apply visual amplification to a scaling factor.
@@ -304,14 +308,20 @@ export function getScaledBoneLength(
  * Determines the horizontal offset for shoulder bones based on
  * shoulder width. Used to position arms correctly on the skeleton.
  *
+ * Applies amplification to shoulder width for more noticeable silhouette
+ * differences between archetypes:
+ * - Jojik (54cm): Offset = 31.05cm (54/2 * 1.15) - WIDE, imposing
+ * - Hacker (43cm): Offset = 24.73cm (43/2 * 1.15) - NARROW, compact
+ * - Difference: 26% wider shoulder span for visual distinction
+ *
  * @param attributes - Player's physical attributes
- * @returns Shoulder offset in centimeters (half of total shoulder width)
+ * @returns Shoulder offset in centimeters (half of total shoulder width, amplified)
  *
  * @example
  * ```typescript
  * const offset = calculateShoulderOffset(JOJIK_PHYSICAL);
- * // Jojik has wide shoulders: returns ~24cm (48cm width / 2)
- * // Left shoulder at -24cm, right shoulder at +24cm
+ * // Jojik has wide shoulders: returns ~31cm (54cm width / 2 * 1.15)
+ * // Left shoulder at -31cm, right shoulder at +31cm
  * ```
  *
  * @public
@@ -321,7 +331,9 @@ export function calculateShoulderOffset(
   attributes: PhysicalAttributes
 ): number {
   // Shoulder width is the total span, so divide by 2 for offset from center
-  return attributes.shoulderWidth / 2;
+  // Apply amplification factor for more visible width differences
+  const SHOULDER_AMPLIFICATION = 1.15;
+  return (attributes.shoulderWidth / 2) * SHOULDER_AMPLIFICATION;
 }
 
 /**
