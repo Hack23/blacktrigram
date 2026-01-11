@@ -12,6 +12,7 @@ import { AnimationState } from "../../../systems/animation/types";
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -797,54 +798,29 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={[1, 2]}
-        shadows
-        onCreated={({ gl }) => {
+        shadows={false}
+        onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          // Add atmospheric fog (matching CombatScreen3D)
+          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
         }}
         camera={cameraConfig}
       >
         {/* Korean-themed lighting (오방색 - Five Cardinal Colors) */}
-        <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
+        <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
 
-        {/* Main directional light - Center (황색/Yellow) */}
+        {/* Main directional light - Center (황색/Gold) */}
         <directionalLight
-          position={[0, 10, 5]}
+          position={[10, 10, 5]}
           intensity={1}
-          color={KOREAN_COLORS.SECONDARY_YELLOW}
-          castShadow
-          shadow-mapSize={[2048, 2048]}
+          color={KOREAN_COLORS.ACCENT_GOLD}
         />
 
-        {/* East (청색/Blue-Green) */}
+        {/* Secondary accent light - Blue */}
         <pointLight
-          position={[10, 5, 0]}
-          intensity={0.6}
-          color={KOREAN_COLORS.ACCENT_GREEN}
-          distance={20}
-        />
-
-        {/* West (백색/White) */}
-        <pointLight
-          position={[-10, 5, 0]}
-          intensity={0.6}
-          color={KOREAN_COLORS.WHITE_SOLID}
-          distance={20}
-        />
-
-        {/* South (적색/Red) */}
-        <pointLight
-          position={[0, 5, 10]}
-          intensity={0.5}
-          color={KOREAN_COLORS.ACCENT_RED}
-          distance={20}
-        />
-
-        {/* North (흑색/Black) - dim for depth */}
-        <pointLight
-          position={[0, 5, -10]}
-          intensity={0.3}
-          color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
-          distance={20}
+          position={[-10, 5, -5]}
+          intensity={0.4}
+          color={KOREAN_COLORS.ACCENT_BLUE}
         />
 
         {/* Animation updater - updates player animation at 60fps */}
