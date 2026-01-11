@@ -249,7 +249,7 @@ import {
   adjustBrightness, 
   adjustSaturation,
   shiftHue,
-  mixColors,
+  blendColorsThree,
   createColorVariation,
   applyDamageColor
 } from "@/utils/clothingColors";

@@ -75,15 +75,15 @@ export function shiftHue(hexColor: number, shift: number): number {
 }
 
 /**
- * Mix two colors
+ * Blend two colors (Three.js-based color interpolation)
  *
  * @param color1 - First color as hex number
  * @param color2 - Second color as hex number
  * @param blend - Blend factor (0 = all color1, 1 = all color2)
- * @returns Mixed color as hex number
+ * @returns Blended color as hex number
  * @korean 색상혼합
  */
-export function mixColors(color1: number, color2: number, blend: number): number {
+export function blendColorsThree(color1: number, color2: number, blend: number): number {
   const c1 = new THREE.Color(color1);
   const c2 = new THREE.Color(color2);
   
@@ -167,10 +167,10 @@ export function applyDamageColor(baseColor: number, damageLevel: number): number
   let color = adjustBrightness(baseColor, 1 - damage * 0.4);
   color = adjustSaturation(color, 1 - damage * 0.5);
   
-  // Mix with brown/dirt color for heavily damaged
+  // Blend with brown/dirt color for heavily damaged
   if (damage > 0.5) {
     const dirtColor = 0x3d2817; // Brown dirt color
-    color = mixColors(color, dirtColor, (damage - 0.5) * 0.4);
+    color = blendColorsThree(color, dirtColor, (damage - 0.5) * 0.4);
   }
   
   return color;
@@ -232,6 +232,6 @@ export function createArchetypePalette(
     accent: accentColor,
     accentLight: adjustBrightness(accentColor, 1.3),
     accentDark: adjustBrightness(accentColor, 0.7),
-    neutral: mixColors(primaryColor, accentColor, 0.5),
+    neutral: blendColorsThree(primaryColor, accentColor, 0.5),
   };
 }
