@@ -15,6 +15,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
+import { BalanceState } from "@/types/player-visual";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
@@ -67,6 +68,7 @@ export interface CombatContext {
   readonly timeInMatch: number;
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
+  readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
   readonly arenaBounds: {
     readonly x: number;
     readonly y: number;
@@ -146,6 +148,139 @@ export class AIDecisionTree {
   }
 
   /**
+   * Check if kill mode should be activated based on archetype behavior
+   * 
+   * Kill mode activates when:
+   * - Opponent health is low (<30%)
+   * - Opponent is in vulnerable balance state (HELPLESS/VULNERABLE)
+   * 
+   * **Korean Philosophy (결정타 모드)**:
+   * Each archetype activates kill mode differently based on combat philosophy:
+   * - **Musa**: Honor demands finishing the fight decisively
+   * - **Amsalja**: Opportunity for instant takedown with precision
+   * - **Hacker**: Analytical window for calculated strike
+   * - **Jeongbo Yowon**: Strategic opportunity for submission
+   * - **Jojik Pokryeokbae**: Pragmatic moment to finish brutally
+   * 
+   * @korean 결정타 모드 활성화 확인
+   * 
+   * @param context - Current combat context
+   * @param personality - AI personality archetype
+   * @returns True if kill mode should be active
+   */
+  private isKillModeActive(context: CombatContext, personality: AIPersonality): boolean {
+    const opponentHealthPercent = context.opponentHealth / context.playerMaxHealth;
+    const isOpponentVulnerable =
+      context.opponentBalance != null &&
+      (context.opponentBalance === "HELPLESS" ||
+        context.opponentBalance === "VULNERABLE");
+    
+    // Different activation thresholds based on archetype philosophy
+    let healthThreshold = 0.30; // Default 30%
+    
+    switch (personality.archetype) {
+      case PlayerArchetype.MUSA:
+        // Aggressive: Activate kill mode early (honor code)
+        healthThreshold = 0.30;
+        break;
+      case PlayerArchetype.AMSALJA:
+        // Precise: Activate when perfect opportunity presents
+        healthThreshold = 0.30;
+        break;
+      case PlayerArchetype.HACKER:
+        // Analytical: Calculate optimal finishing window
+        healthThreshold = 0.25; // More conservative, waits for clear advantage
+        break;
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Strategic: Balanced approach
+        healthThreshold = 0.28;
+        break;
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Pragmatic: Opportunistic finishing
+        healthThreshold = 0.35; // Earlier activation, dirty fighter mentality
+        break;
+    }
+    
+    // Activate kill mode when opponent is low health OR vulnerable
+    return opponentHealthPercent < healthThreshold || isOpponentVulnerable;
+  }
+
+  /**
+   * Apply kill mode modifiers to action weights for finishing behavior
+   * 
+   * **Kill Mode Behavior (결정타 행동)**:
+   * Each archetype has unique finishing behavior based on combat philosophy:
+   * - **Musa**: All-in overwhelming force (2.5x attack, 0x retreat)
+   * - **Amsalja**: Instant takedown focus (3.0x technique, feints disabled)
+   * - **Hacker**: Analytical precision (2.0x technique, counter focus)
+   * - **Jeongbo Yowon**: Strategic control (1.8x technique, balanced approach)
+   * - **Jojik Pokryeokbae**: Brutal pragmatism (2.2x attack, dirty tactics)
+   * 
+   * @korean 결정타 모드 가중치 적용
+   * 
+   * @param baseWeights - Base action weight multipliers
+   * @param personality - AI personality archetype
+   * @param isKillMode - Whether kill mode is active
+   * @returns Modified action weights for kill mode
+   */
+  private applyKillModeModifiers(
+    baseWeights: { attack: number; technique: number; defend: number; retreat: number },
+    personality: AIPersonality,
+    isKillMode: boolean
+  ): { attack: number; technique: number; defend: number; retreat: number } {
+    if (!isKillMode) {
+      return baseWeights;
+    }
+
+    const modified = { ...baseWeights };
+    
+    // Apply archetype-specific kill mode behavior
+    switch (personality.archetype) {
+      case PlayerArchetype.MUSA:
+        // Warrior: All-in overwhelming force (honor code)
+        modified.attack *= 2.5; // Massive attack priority
+        modified.technique *= 2.0; // Prefer powerful techniques
+        modified.defend *= 0.2; // Minimal defense
+        modified.retreat = 0.0; // No retreat (honor code)
+        break;
+        
+      case PlayerArchetype.AMSALJA:
+        // Assassin: Instant takedown focus (precision)
+        modified.technique *= 3.0; // Prioritize lethal techniques
+        modified.attack *= 1.5; // Quick finishers
+        modified.defend *= 0.3; // Reduce defense during kill window
+        // Note: retreat remains available for tactical repositioning
+        break;
+        
+      case PlayerArchetype.HACKER:
+        // Hacker: Analytical precision (calculated strike)
+        modified.technique *= 2.0; // Calculated finishing techniques
+        modified.attack *= 1.3; // Measured attacks
+        modified.defend *= 0.7; // Maintain defensive awareness
+        // Counter-attack focus through higher base defense
+        break;
+        
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Intelligence Operative: Strategic control (psychological pressure)
+        modified.technique *= 1.8; // Strategic techniques
+        modified.attack *= 1.6; // Balanced offensive
+        modified.defend *= 0.6; // Moderate defense reduction
+        modified.retreat *= 0.5; // Tactical retreat available
+        break;
+        
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Organized Crime: Brutal pragmatism (dirty fighter)
+        modified.attack *= 2.2; // Brutal finishing attacks
+        modified.technique *= 1.7; // Dirty techniques
+        modified.defend *= 0.4; // Reduced defense (pragmatic risk)
+        modified.retreat *= 1.2; // Will retreat if needed (survival instinct)
+        break;
+    }
+    
+    return modified;
+  }
+
+  /**
    * Make strategic decision based on combat context
    * 
    * Applies difficulty-based reaction time delays if difficulty parameters are set
@@ -176,6 +311,9 @@ export class AIDecisionTree {
 
     this.lastDecisionTime = now;
 
+    // Check for kill mode activation (Issue #enhance-ai-aggression)
+    const killModeActive = this.isKillModeActive(context, personality);
+
     // Check for active combo first
     if (comboSystem.isComboActive()) {
       return this.decideComboAction(context, personality);
@@ -193,7 +331,7 @@ export class AIDecisionTree {
 
     // 2. Counter-attack opportunity
     if (context.isOpponentAttacking) {
-      decisions.push(this.evaluateCounter(context, personality));
+      decisions.push(this.evaluateCounter(context, personality, killModeActive));
     }
 
     // 3. Combo initiation (only if at reasonable distance)
@@ -204,27 +342,106 @@ export class AIDecisionTree {
     // 4. Stance transition
     decisions.push(this.evaluateStanceChange(context, personality, now));
 
-    // 5. Feint attack (only at mid-close range)
-    if (distance < optimalRange * 1.8) {
+    // 5. Feint attack (only at mid-close range) - reduced priority in kill mode
+    if (distance < optimalRange * 1.8 && !killModeActive) {
       decisions.push(this.evaluateFeint(context, personality));
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
     if (distance < optimalRange * 1.2) {
       // Close to optimal range - use close-range tactics including vital point targeting
-      decisions.push(this.evaluateCloseRange(context, personality));
+      decisions.push(this.evaluateCloseRange(context, personality, killModeActive));
     } else if (distance > optimalRange * 1.8) {
       // Too far - need to approach
-      decisions.push(this.evaluateApproach(context, personality));
+      decisions.push(this.evaluateApproach(context, personality, killModeActive));
     } else {
       // Mid-range - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
-    // 7. Defensive positioning
-    decisions.push(this.evaluateDefense(context, personality));
+    // 7. Defensive positioning (reduced in kill mode)
+    if (!killModeActive || personality.archetype !== PlayerArchetype.MUSA) {
+      decisions.push(this.evaluateDefense(context, personality));
+    }
 
-    // Select highest priority decision
+    // Apply kill mode modifiers to boost aggression (Issue #enhance-ai-aggression)
+    if (killModeActive) {
+      // Map decisions to new array with modified priorities
+      const modifiedDecisions = decisions.map((decision) => {
+        // CRITICAL: Survival decisions (retreat for self-preservation) should NOT be affected by kill mode
+        // Kill mode is about finishing the opponent, not about ignoring the AI's own safety
+        // Survival retreats are identified by priority 20 OR reason containing survival keywords
+        // Survival retreat detection with English and Korean keywords
+        const SURVIVAL_REASON_KEYWORDS = [
+          // English survival indicators (lowercase)
+          "critical health",
+          "high pain",
+          "survival retreat",
+          "emergency retreat",
+          // Korean survival indicators
+          "위급 상황",
+          "고통 회피",
+        ];
+
+        const reasonLower = decision.reason.toLowerCase();
+        const hasSurvivalKeyword = SURVIVAL_REASON_KEYWORDS.some((keyword) =>
+          reasonLower.includes(keyword)
+        );
+
+        const isSurvivalRetreat =
+          decision.action === AIActionType.RETREAT &&
+          (decision.priority === 20 || hasSurvivalKeyword);
+           
+        if (isSurvivalRetreat) {
+          // This is a survival retreat decision - preserve its priority
+          return decision;
+        }
+        
+        // Calculate base action weights for non-survival decisions
+        const weights = {
+          attack: decision.action === AIActionType.ATTACK ? 1.0 : 0.0,
+          technique: decision.action === AIActionType.TECHNIQUE ? 1.0 : 0.0,
+          defend: decision.action === AIActionType.DEFEND ? 1.0 : 0.0,
+          retreat: decision.action === AIActionType.RETREAT ? 1.0 : 0.0,
+        };
+        
+        // Apply kill mode modifiers
+        const modifiedWeights = this.applyKillModeModifiers(weights, personality, true);
+        
+        // Adjust priority based on modified weights
+        let newPriority = decision.priority;
+        if (decision.action === AIActionType.ATTACK) {
+          newPriority = decision.priority * modifiedWeights.attack;
+        } else if (decision.action === AIActionType.TECHNIQUE) {
+          newPriority = decision.priority * modifiedWeights.technique;
+        } else if (decision.action === AIActionType.DEFEND) {
+          newPriority = decision.priority * modifiedWeights.defend;
+        } else if (decision.action === AIActionType.RETREAT) {
+          newPriority = decision.priority * modifiedWeights.retreat;
+        }
+        
+        return { ...decision, priority: newPriority };
+      });
+      
+      // Select highest priority decision from modified array
+      const bestDecision = modifiedDecisions.reduce((best, current) =>
+        current.priority > best.priority ? current : best
+      );
+
+      // Track consecutive attacks
+      if (
+        bestDecision.action === AIActionType.ATTACK ||
+        bestDecision.action === AIActionType.TECHNIQUE
+      ) {
+        this.consecutiveAttacks++;
+      } else {
+        this.consecutiveAttacks = 0;
+      }
+
+      return bestDecision;
+    }
+
+    // Normal mode: Select highest priority decision without kill mode modifiers
     const bestDecision = decisions.reduce((best, current) =>
       current.priority > best.priority ? current : best
     );
@@ -279,7 +496,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.RETREAT,
         targetPosition: retreatVector,
-        priority: 10, // Highest priority
+        priority: 20, // Highest priority - must always override kill mode aggression
         reason: isCritical 
           ? `Critical health: ${(healthPercent * 100).toFixed(1)}% (위급 상황)`
           : `High pain: ${painLevel.toFixed(0)} (고통 회피)`,
@@ -291,20 +508,93 @@ export class AIDecisionTree {
 
   /**
    * Evaluate counter-attack opportunity
+   * 
+   * **Kill Mode Enhancement (결정타 반격)**:
+   * All archetypes enhance counter behavior during kill mode based on philosophy:
+   * - **Musa**: Increased counter frequency (honor demands swift response)
+   * - **Amsalja**: Enhanced counter timing with precision strikes
+   * - **Hacker**: Calculated counter-attacks (analytical opportunity)
+   * - **Jeongbo Yowon**: Strategic counters (psychological advantage)
+   * - **Jojik Pokryeokbae**: Opportunistic counters (dirty tactics)
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active
    */
   private evaluateCounter(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
+    // Base counter chance affected by defense preference
+    let counterChance = personality.defensePreference * 0.8;
+    let counterPriority = 8;
+    
+    // Kill mode: Archetype-specific counter behavior enhancements
+    if (killModeActive) {
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          // Musa: Honor code demands swift aggressive counter
+          counterChance = Math.min(0.95, counterChance + 0.3); // +30% counter chance
+          counterPriority = 9; // Highest priority counter
+          break;
+          
+        case PlayerArchetype.AMSALJA:
+          // Amsalja: Precision counter-strikes for instant takedown
+          counterChance = Math.min(0.90, counterChance + 0.25); // +25% counter chance
+          counterPriority = 9; // Highest priority counter
+          break;
+          
+        case PlayerArchetype.HACKER:
+          // Hacker: Calculated counter with analytical precision
+          counterChance = Math.min(0.85, counterChance + 0.15); // +15% counter chance
+          counterPriority = 9; // Enhanced priority for analytical strike
+          break;
+          
+        case PlayerArchetype.JEONGBO_YOWON:
+          // Jeongbo Yowon: Strategic counter with psychological pressure
+          counterChance = Math.min(0.80, counterChance + 0.20); // +20% counter chance
+          counterPriority = 8; // Moderate priority increase
+          break;
+          
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          // Jojik: Opportunistic dirty counter
+          counterChance = Math.min(0.85, counterChance + 0.25); // +25% counter chance
+          counterPriority = 8; // Pragmatic priority
+          break;
+      }
+    }
+    
     const shouldCounter =
-      Math.random() < personality.defensePreference * 0.8 &&
+      Math.random() < counterChance &&
       context.distanceToOpponent < 150;
 
     if (shouldCounter) {
+      let killModeReason = "";
+      if (killModeActive) {
+        switch (personality.archetype) {
+          case PlayerArchetype.MUSA:
+            killModeReason = " - 명예 반격 (honor counter)";
+            break;
+          case PlayerArchetype.AMSALJA:
+            killModeReason = " - 정밀 반격 (precision counter)";
+            break;
+          case PlayerArchetype.HACKER:
+            killModeReason = " - 분석 반격 (analytical counter)";
+            break;
+          case PlayerArchetype.JEONGBO_YOWON:
+            killModeReason = " - 전략 반격 (strategic counter)";
+            break;
+          case PlayerArchetype.JOJIK_POKRYEOKBAE:
+            killModeReason = " - 기습 반격 (opportunistic counter)";
+            break;
+        }
+      }
+      
       return {
         action: AIActionType.COUNTER,
-        priority: 8,
-        reason: "Opponent attacking - counter opportunity",
+        priority: counterPriority,
+        reason: `Opponent attacking - counter opportunity${killModeReason}`,
       };
     }
 
@@ -499,10 +789,18 @@ export class AIDecisionTree {
    * **Korean Philosophy (급소 공격)**:
    * At close range, AI targets specific vital points based on difficulty level.
    * Higher difficulty = more precise targeting of critical points.
+   * 
+   * **Kill Mode Enhancement (결정타)**:
+   * When kill mode is active, AI prioritizes finishing techniques with boosted priority.
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active (opponent <30% health or vulnerable)
    */
   private evaluateCloseRange(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
     const hasResources = context.playerKi > 10 && context.playerStamina > 15;
     const aggression = personality.aggressionLevel;
@@ -515,6 +813,34 @@ export class AIDecisionTree {
       ? getVitalPointById(targetVitalPoint)?.names.korean ?? targetVitalPoint
       : undefined;
 
+    // Kill mode: Prioritize finishing attacks with maximum aggression
+    if (killModeActive) {
+      const killModeSuffix = personality.archetype === PlayerArchetype.MUSA 
+        ? " (결정타 - 압도적 공격)" 
+        : " (결정타 - 즉사 기술)";
+      
+      if (hasResources) {
+        return {
+          action: AIActionType.TECHNIQUE,
+          targetVitalPoint,
+          priority: targetVitalPoint ? 9 : 8, // Highest priority with vital point
+          reason: targetVitalPoint
+            ? `Kill mode - finishing technique on vital point (급소 결정타: ${vitalPointName})${killModeSuffix}`
+            : `Kill mode - finishing technique${killModeSuffix}`,
+        };
+      } else {
+        return {
+          action: AIActionType.ATTACK,
+          targetVitalPoint,
+          priority: targetVitalPoint ? 8 : 7, // Very high priority
+          reason: targetVitalPoint
+            ? `Kill mode - finishing attack (결정타 급소: ${vitalPointName})${killModeSuffix}`
+            : `Kill mode - finishing attack${killModeSuffix}`,
+        };
+      }
+    }
+
+    // Normal close range behavior
     if (Math.random() < aggression * 0.8) {
       return {
         action: AIActionType.ATTACK,
@@ -649,10 +975,23 @@ export class AIDecisionTree {
    * - Musa charges directly (70% direct path)
    * - Amsalja uses flanking movements (40% diagonal approach)
    * - Hacker maintains optimal distance (prefers not to close too much)
+   * 
+   * **Kill Mode Enhancement (결정타 접근)**:
+   * All archetypes enhance movement speed in kill mode based on combat philosophy:
+   * - **Musa**: Direct charging with leg shifts for maximum speed (40% faster)
+   * - **Amsalja**: Swift stepping patterns for rapid positioning (30% faster)
+   * - **Hacker**: Calculated approach for optimal strike position (20% faster)
+   * - **Jeongbo Yowon**: Strategic positioning for control (25% faster)
+   * - **Jojik Pokryeokbae**: Unpredictable rush for brutal finish (35% faster)
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active
    */
   private evaluateApproach(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
     const optimalRange = this.getOptimalRange(personality);
     const distance = context.distanceToOpponent;
@@ -667,16 +1006,38 @@ export class AIDecisionTree {
     }
 
     // Apply archetype-specific movement bias
-    const movementBias = this.getArchetypeMovementBias(personality.archetype);
+    let movementBias = this.getArchetypeMovementBias(personality.archetype);
+    
+    // Kill mode: Enhance movement speed for all archetypes based on philosophy
+    if (killModeActive) {
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          movementBias *= 1.4; // 40% faster closing speed with leg shifts
+          break;
+        case PlayerArchetype.AMSALJA:
+          movementBias *= 1.3; // 30% faster with stepping patterns
+          break;
+        case PlayerArchetype.HACKER:
+          movementBias *= 1.2; // 20% faster for calculated approach
+          break;
+        case PlayerArchetype.JEONGBO_YOWON:
+          movementBias *= 1.25; // 25% faster for strategic positioning
+          break;
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          movementBias *= 1.35; // 35% faster for unpredictable rush
+          break;
+      }
+    }
+    
     let approachPos: Position;
 
     // Archetype-specific approach patterns
     if (personality.archetype === PlayerArchetype.MUSA && Math.random() < 0.7) {
-      // Musa: Direct charge 70% of the time
-      approachPos = this.calculateDirectApproach(context);
+      // Musa: Direct charge 70% of the time (enhanced in kill mode)
+      approachPos = this.calculateDirectApproach(context, killModeActive);
     } else if (personality.archetype === PlayerArchetype.AMSALJA && Math.random() < 0.4) {
-      // Amsalja: Flanking approach 40% of the time
-      approachPos = this.calculateFlankingApproach(context);
+      // Amsalja: Flanking approach 40% of the time (enhanced in kill mode)
+      approachPos = this.calculateFlankingApproach(context, killModeActive);
     } else {
       // Default approach with slight randomization
       approachPos = this.calculateApproachPosition(context);
@@ -684,18 +1045,57 @@ export class AIDecisionTree {
 
     // Calculate priority based on distance from optimal range
     // Very far: priority ~6-7, moderate distance: priority ~5
-    const basePriority = 4;
+    let basePriority = 4;
+    
+    // Kill mode: Increase approach priority for closing distance (archetype-dependent)
+    if (killModeActive && distance > optimalRange * 1.5) {
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          basePriority = 6; // Aggressive approach
+          break;
+        case PlayerArchetype.AMSALJA:
+          basePriority = 6; // Swift approach for takedown
+          break;
+        case PlayerArchetype.HACKER:
+        case PlayerArchetype.JEONGBO_YOWON:
+          basePriority = 5; // Calculated/strategic approach
+          break;
+      }
+    }
+    
     const distanceRatio = Math.min(2, (distance - optimalRange) / optimalRange);
     const priorityBoost = distanceRatio * movementBias * 0.8;
     const finalPriority = basePriority + priorityBoost;
 
+    let killModeReason = "";
+    if (killModeActive) {
+      switch (personality.archetype) {
+        case PlayerArchetype.MUSA:
+          killModeReason = " - 돌격 (charging)";
+          break;
+        case PlayerArchetype.AMSALJA:
+          killModeReason = " - 신속 접근 (swift approach)";
+          break;
+        case PlayerArchetype.HACKER:
+          killModeReason = " - 분석 접근 (calculated approach)";
+          break;
+        case PlayerArchetype.JEONGBO_YOWON:
+          killModeReason = " - 전략 접근 (strategic approach)";
+          break;
+        case PlayerArchetype.JOJIK_POKRYEOKBAE:
+          killModeReason = " - 돌진 (rush)";
+          break;
+      }
+    }
+
     return {
       action: AIActionType.APPROACH,
       targetPosition: approachPos,
-      priority: Math.min(8, finalPriority), // Cap at 8 to allow survival/critical actions to override
+      priority: Math.min(9, finalPriority), // Allow higher cap in kill mode
       reason: `Moving closer (distance: ${Math.round(
         distance
-      )}, optimal: ${optimalRange})`,
+      )}, optimal: ${optimalRange})${killModeReason}`,
     };
   }
 
@@ -730,8 +1130,15 @@ export class AIDecisionTree {
   /**
    * Calculate direct approach position (straight line to opponent)
    * Used primarily by Musa archetype for charging attacks
+   * 
+   * **Kill Mode Enhancement (결정타 돌격)**:
+   * - Larger step size for faster closing with leg shifts
+   * - Aggressive stride pattern for maximum forward momentum
+   * 
+   * @param context - Combat context
+   * @param killModeActive - Whether kill mode is active
    */
-  private calculateDirectApproach(context: CombatContext): Position {
+  private calculateDirectApproach(context: CombatContext, killModeActive: boolean = false): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -741,12 +1148,17 @@ export class AIDecisionTree {
       return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
     }
 
-    // Move straight toward opponent with fixed step size for consistent movement speed
-    const step = Math.min(AIDecisionTree.MOVE_STEP_SIZE, distance);
+    // Kill mode: Enhanced step size for faster charging with leg shifts
+    const baseStepSize = AIDecisionTree.MOVE_STEP_SIZE;
+    const stepSize = killModeActive 
+      ? Math.min(baseStepSize * 1.5, distance) // 50% larger steps (leg shift technique)
+      : Math.min(baseStepSize, distance);
+    
+    // Move straight toward opponent with enhanced step size in kill mode
     return this.clampToArenaBounds(
       {
-        x: context.playerPosition.x + (dx / distance) * step,
-        y: context.playerPosition.y + (dy / distance) * step,
+        x: context.playerPosition.x + (dx / distance) * stepSize,
+        y: context.playerPosition.y + (dy / distance) * stepSize,
       },
       context.arenaBounds
     );
@@ -755,8 +1167,15 @@ export class AIDecisionTree {
   /**
    * Calculate flanking approach position (diagonal/side approach)
    * Used primarily by Amsalja archetype for stealth positioning
+   * 
+   * **Kill Mode Enhancement (결정타 측면 공격)**:
+   * - Tighter flanking angle for more aggressive positioning
+   * - Swift stepping pattern for rapid side movement
+   * 
+   * @param context - Combat context
+   * @param killModeActive - Whether kill mode is active
    */
-  private calculateFlankingApproach(context: CombatContext): Position {
+  private calculateFlankingApproach(context: CombatContext, killModeActive: boolean = false): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -766,8 +1185,12 @@ export class AIDecisionTree {
       return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
     }
 
-    // Add perpendicular offset for flanking (40-60 pixels to the side)
-    const flankOffset = 40 + Math.random() * 20;
+    // Kill mode: Tighter flanking for more aggressive positioning
+    const baseFlankOffset = 40 + Math.random() * 20;
+    const flankOffset = killModeActive 
+      ? baseFlankOffset * 0.7 // 30% closer flank (swift stepping)
+      : baseFlankOffset;
+    
     const perpX = -dy / distance; // Perpendicular vector
     const perpY = dx / distance;
     const flankSide = Math.random() < 0.5 ? 1 : -1; // Random side

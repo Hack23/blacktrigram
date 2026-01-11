@@ -8,6 +8,27 @@
  * body proportions that affect combat hitboxes, vital point positioning, and
  * visual representation.
  *
+ * ## Visual Amplification System
+ *
+ * Raw physical attribute differences between archetypes are subtle (2-12%).
+ * To create recognizable visual silhouettes in 3D, this system applies
+ * amplification factors that enhance differences while maintaining realistic
+ * proportions:
+ *
+ * - **Limb Scaling**: 2.5x amplification (subtle 5% difference → 12.5% visual)
+ * - **Shoulder Width**: 1.15x additional amplification for silhouette distinction
+ * - **Overall Height**: 1.5x amplification (kept subtle for realism)
+ *
+ * ### Expected Visual Silhouettes
+ *
+ * Each archetype has a distinct, recognizable body shape:
+ *
+ * - **해커 (Hacker)**: Compact, narrow shoulders (43cm), shortest limbs - SMALLEST
+ * - **암살자 (Amsalja)**: Tall (186cm), lean, long limbs (102cm legs) - TALLEST
+ * - **정보요원 (Jeongbo)**: Balanced, average proportions - BASELINE
+ * - **무사 (Musa)**: Athletic military build (46cm shoulders) - TRADITIONAL
+ * - **조직폭력배 (Jojik)**: Massive, widest shoulders (54cm), imposing - LARGEST
+ *
  * ## Integration with Korean Anatomy
  *
  * The scaling system respects Korean martial arts anatomy principles:
@@ -131,10 +152,18 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
  * amplifies the visual scaling to make archetype body differences more
  * apparent while keeping proportions realistic.
  *
+ * Increased from 2.0 to 2.5 for more distinct visual silhouettes:
+ * - Limb/torso scaling: 5% raw difference → 12.5% visual difference
+ * - Combined with shoulder amplification (1.15x), creates noticeable silhouettes
+ * - Absolute differences amplified while maintaining proportional relationships
+ *
+ * Note: Percentage differences remain constant, but absolute differences
+ * are amplified (e.g., Jojik 54cm vs Hacker 43cm = 11cm gap → 12.6cm visual gap)
+ *
  * @internal
  * @korean 시각적증폭계수
  */
-const VISUAL_AMPLIFICATION_FACTOR = 2.0;
+const VISUAL_AMPLIFICATION_FACTOR = 2.5;
 
 /**
  * Apply visual amplification to a scaling factor.
@@ -304,14 +333,20 @@ export function getScaledBoneLength(
  * Determines the horizontal offset for shoulder bones based on
  * shoulder width. Used to position arms correctly on the skeleton.
  *
+ * Applies amplification to shoulder width for more noticeable silhouette
+ * differences between archetypes:
+ * - Jojik (54cm): Offset = 31.05cm (54/2 * 1.15) - WIDE, imposing
+ * - Hacker (43cm): Offset = 24.73cm (43/2 * 1.15) - NARROW, compact
+ * - Difference: 26% wider shoulder span for visual distinction
+ *
  * @param attributes - Player's physical attributes
- * @returns Shoulder offset in centimeters (half of total shoulder width)
+ * @returns Shoulder offset in centimeters (half of total shoulder width, amplified)
  *
  * @example
  * ```typescript
  * const offset = calculateShoulderOffset(JOJIK_PHYSICAL);
- * // Jojik has wide shoulders: returns ~24cm (48cm width / 2)
- * // Left shoulder at -24cm, right shoulder at +24cm
+ * // Jojik has wide shoulders: returns ~31cm (54cm width / 2 * 1.15)
+ * // Left shoulder at -31cm, right shoulder at +31cm
  * ```
  *
  * @public
@@ -321,7 +356,9 @@ export function calculateShoulderOffset(
   attributes: PhysicalAttributes
 ): number {
   // Shoulder width is the total span, so divide by 2 for offset from center
-  return attributes.shoulderWidth / 2;
+  // Apply amplification factor for more visible width differences
+  const SHOULDER_AMPLIFICATION = 1.15;
+  return (attributes.shoulderWidth / 2) * SHOULDER_AMPLIFICATION;
 }
 
 /**

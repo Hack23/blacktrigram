@@ -298,6 +298,33 @@ export const createHumanoidRig = (): SkeletalRig => {
  * anatomically accurate body proportions that affect combat hitboxes, vital
  * point positioning, and visual representation.
  * 
+ * ## Visual Amplification
+ * 
+ * The scaling system applies amplification factors to create distinct visual
+ * silhouettes while maintaining anatomical realism:
+ * 
+ * - **2.5x limb amplification**: Makes reach differences clearly visible
+ * - **1.15x shoulder amplification**: Creates recognizable body width differences
+ * - **1.5x height amplification**: Subtle overall size differences
+ * 
+ * ### Archetype Silhouettes Created
+ * 
+ * The following table shows the effective shoulder span after amplification
+ * (full span = offset * 2). Values show raw attribute → amplified visual span.
+ * 
+ * | Archetype | Shoulders (Raw → Amplified Span) | Height | Silhouette |
+ * |-----------|----------------------------------|--------|------------|
+ * | Hacker    | 43cm → 49.5cm | 175cm | Compact, narrow |
+ * | Amsalja   | 44cm → 50.6cm | 186cm | Tall, lean |
+ * | Jeongbo   | 45cm → 51.8cm | 179cm | Balanced |
+ * | Musa      | 46cm → 52.9cm | 180cm | Athletic |
+ * | Jojik     | 54cm → 62.1cm | 188cm | Massive, wide |
+ * 
+ * Note: Amplified span = raw width * 1.15 (shoulder amplification factor)
+ * Percentage differences remain constant, but absolute gaps are amplified:
+ * - Raw gap: Jojik (54cm) - Hacker (43cm) = 11cm
+ * - Amplified gap: 62.1cm - 49.5cm = 12.6cm (15% larger absolute difference)
+ * 
  * @param attributes - Physical attributes to scale the skeleton
  * @returns Complete skeletal rig with scaled bone dimensions
  * 
@@ -308,10 +335,12 @@ export const createHumanoidRig = (): SkeletalRig => {
  * // Create skeleton for lean assassin archetype
  * const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
  * // Results in taller skeleton with longer limbs, narrower shoulders
+ * // Height: 186cm, Legs: 102cm, Arms: 82cm, Shoulders: 44cm
  * 
  * // Create skeleton for heavy brawler archetype
  * const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
  * // Results in stockier skeleton with wider shoulders, thicker torso
+ * // Height: 188cm, Legs: 100cm, Arms: 84cm, Shoulders: 54cm (25% wider!)
  * ```
  * 
  * @public
