@@ -217,6 +217,72 @@ export interface ClothingSet {
 }
 
 /**
+ * LOD (Level of Detail) settings for performance optimization
+ *
+ * @public
+ * @category Clothing
+ * @korean LOD설정
+ */
+export interface ClothingLODSettings {
+  /**
+   * Enable LOD system
+   * @korean LOD활성화
+   */
+  readonly enableLOD: boolean;
+  
+  /**
+   * Distance thresholds for LOD levels [near, medium, far]
+   * @korean 거리임계값
+   */
+  readonly distances: readonly [number, number, number];
+  
+  /**
+   * Segments for high detail (close viewing)
+   * @korean 고품질세그먼트
+   */
+  readonly highDetailSegments: number;
+  
+  /**
+   * Segments for medium detail
+   * @korean 중품질세그먼트
+   */
+  readonly mediumDetailSegments: number;
+  
+  /**
+   * Segments for low detail (far viewing)
+   * @korean 저품질세그먼트
+   */
+  readonly lowDetailSegments: number;
+}
+
+/**
+ * Material preset configurations for common clothing types
+ *
+ * @public
+ * @category Clothing
+ * @korean 재료프리셋
+ */
+export interface MaterialPreset {
+  /**
+   * Metalness (0-1)
+   * @korean 금속성
+   */
+  readonly metalness: number;
+  
+  /**
+   * Roughness (0-1)
+   * @korean 거칠기
+   */
+  readonly roughness: number;
+  
+  /**
+   * Emissive intensity (0-1)
+   * @korean 발광강도
+   */
+  readonly emissiveIntensity?: number;
+}
+
+/**
  * Props for ClothingSystem component
  *
  * @public
@@ -253,6 +319,12 @@ export interface ClothingSystemProps {
    * @korean 표시여부
    */
   readonly visible?: boolean;
+  
+  /**
+   * Optional LOD settings for performance optimization
+   * @korean LOD설정
+   */
+  readonly lodSettings?: ClothingLODSettings;
 }
 
 /**

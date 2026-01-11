@@ -210,13 +210,68 @@ npm test -- src/components/shared/three/models/ClothingSystem.test.tsx
 npm test -- src/data/archetypeClothing.test.ts
 ```
 
+## Material & Color Utilities | 재료 및 색상 유틸리티
+
+### Material Presets (src/utils/clothingMaterials.ts)
+
+The clothing system includes comprehensive material presets for realistic rendering:
+
+**Natural Fabrics**: cotton, silk, wool
+**Synthetic Fabrics**: nylon, polyester, spandex  
+**Leather Types**: leather, leatherPolished, leatherDistressed
+**Tactical Materials**: tacticalFabric, kevlar
+**Cyberpunk Materials**: cyberSynthetic, neoprene, holographic
+**Metal Accents**: steel, chrome, brushedMetal
+
+```typescript
+import { getMaterialPreset, blendMaterialPresets, applyWear } from "@/utils/clothingMaterials";
+
+// Get a material preset
+const leather = getMaterialPreset("leather");
+
+// Blend materials for hybrid effects
+const techLeather = blendMaterialPresets(
+  getMaterialPreset("leather"),
+  getMaterialPreset("cyberSynthetic"),
+  0.3 // 30% cyber, 70% leather
+);
+
+// Apply wear for combat damage
+const worn = applyWear(leather, 0.5); // 50% worn
+```
+
+### Color Utilities (src/utils/clothingColors.ts)
+
+Color manipulation utilities for customization and effects:
+
+```typescript
+import { 
+  adjustBrightness, 
+  adjustSaturation,
+  shiftHue,
+  mixColors,
+  createColorVariation,
+  applyDamageColor
+} from "@/utils/clothingColors";
+
+// Create color variations
+const lighterBlue = adjustBrightness(0x0088ff, 1.3);
+const desaturated = adjustSaturation(0xff4444, 0.6);
+const complementary = shiftHue(0x00ff00, 0.5);
+
+// Apply damage effects
+const damagedColor = applyDamageColor(0xffffff, 0.7); // 70% damaged
+```
+
 ## Future Enhancements | 향후 개선사항
 
 1. **Dynamic Cloth Physics**: Wind and movement effects
-2. **Customization System**: Player-selectable colors and variants
-3. **Damage System**: Visual wear and tear during combat
+2. **Customization System**: Player-selectable colors and variants (utilities provided)
+3. **Damage System**: Visual wear and tear during combat (utilities provided)
 4. **Seasonal Variants**: Alternative outfits for events
 5. **Unlockable Skins**: Achievement-based cosmetics
+6. **LOD System**: Distance-based level of detail (interface provided)
+7. **Skeletal Skinning**: Full bone attachment for animations (planned)
 
 ## Korean Cultural References | 한국 문화적 참고사항
 
