@@ -445,8 +445,9 @@ export class AnimationQueue {
       }
     }
 
-    // Insert request into queue while maintaining sort by priority (highest first)
-    // Use binary search to find insertion position - O(n) instead of O(n log n) sort
+    // Insert request into queue while maintaining sort by priority (highest first).
+    // Use binary search (O(log n)) to find insertion position, then splice (O(n)) to insert.
+    // Overall: O(n) per insertion, avoiding an O(n log n) full sort of the entire queue.
     let low = 0;
     let high = this.queue.length;
 
