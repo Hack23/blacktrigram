@@ -132,12 +132,23 @@ vi.mock("three", () => ({
     }
     far = 1000;
   },
-  MeshStandardMaterial: class MockMeshStandardMaterial {},
+  MeshStandardMaterial: class MockMeshStandardMaterial {
+    dispose() {}
+  },
   DoubleSide: 2,
   Color: class MockColor {},
-  BoxGeometry: class MockBoxGeometry {},
-  SphereGeometry: class MockSphereGeometry {},
-  CapsuleGeometry: class MockCapsuleGeometry {},
+  BoxGeometry: class MockBoxGeometry {
+    dispose() {}
+  },
+  SphereGeometry: class MockSphereGeometry {
+    dispose() {}
+  },
+  CapsuleGeometry: class MockCapsuleGeometry {
+    dispose() {}
+  },
+  CylinderGeometry: class MockCylinderGeometry {
+    dispose() {}
+  },
   BufferGeometry: class MockBufferGeometry {
     dispose() {}
   },

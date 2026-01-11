@@ -11,7 +11,7 @@
  * @korean 의류시스템컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { getArchetypeClothing } from "../../../../data/archetypeClothing";
 import type { ClothingSystemProps, ClothingItemProps } from "../../../../types/clothing";
@@ -170,6 +170,14 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
     
     return mat;
   }, [item.colorPrimary, item.colorEmissive, item.emissiveIntensity, item.metalness, item.roughness]);
+
+  // Clean up Three.js resources when component unmounts or dependencies change
+  useEffect(() => {
+    return () => {
+      clothingGeometry.geometry.dispose();
+      material.dispose();
+    };
+  }, [clothingGeometry.geometry, material]);
 
   // For pants, create two meshes (left and right leg)
   if (item.type === "pants") {
