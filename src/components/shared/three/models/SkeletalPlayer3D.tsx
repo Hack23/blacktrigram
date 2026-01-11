@@ -15,7 +15,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import { useBalanceAnimations } from "../../../../hooks/useBalanceAnimations";
-import { useGuardPoseOverlay } from "../../../../hooks/useGuardPoseOverlay";
 import { useHandPoseTransitions } from "../../../../hooks/useHandPoseTransitions";
 import { useMuscleActivation } from "../../../../hooks/useMuscleActivation";
 import { useSkeletalAnimation } from "../../../../hooks/useSkeletalAnimation";
@@ -178,12 +177,10 @@ export const SkeletalPlayer3D: React.FC<
       isBlocking,
     });
 
-  // Guard pose overlay (stance-specific positioning)
-  const { applyGuardOverlay } = useGuardPoseOverlay({
-    stance,
-    laterality,
-    currentAnimation,
-  });
+  // NOTE: Guard pose overlay removed - stance animations built with MartialArtsAnimationBuilder
+  // already include proper guard positions via transitionToStanceGuard()
+  // 가드 포즈 오버레이 제거 - MartialArtsAnimationBuilder로 빌드된 자세 애니메이션에
+  // transitionToStanceGuard()를 통한 적절한 가드 위치가 이미 포함되어 있음
 
   // Balance animations (sway, stumble, lean based on balance state)
   const { swayPosition, helplessRotation, updateBalanceAnimations } =
@@ -375,15 +372,14 @@ export const SkeletalPlayer3D: React.FC<
     frameCounter.current = (frameCounter.current + 1) % 10;
 
     // 1. Base skeletal animation (idle, walk, attack, etc.)
+    // Stance-specific guard positions are built into the MartialArtsAnimationBuilder animations
+    // 자세별 가드 위치가 MartialArtsAnimationBuilder 애니메이션에 포함됨
     updateRigAnimation(rig, delta);
 
     // 2. Hand pose transitions
     updateHandAnimations(delta);
 
-    // 3. Guard pose overlay (stance-specific positioning)
-    applyGuardOverlay(rig, delta);
-
-    // 4. Balance animations (sway, stumble, lean)
+    // 3. Balance animations (sway, stumble, lean)
     updateBalanceAnimations(delta, frameCounter.current);
 
     // 5. Muscle activation states
