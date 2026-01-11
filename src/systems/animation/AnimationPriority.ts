@@ -427,12 +427,12 @@ export class AnimationQueue {
   enqueue(request: AnimationRequest): boolean {
     // Check if queue is full
     if (this.queue.length >= this.maxSize) {
-      // If this request has higher priority than lowest in queue, replace it
-      const lowestPriority = Math.min(...this.queue.map(r => r.priority));
-      if (request.priority > lowestPriority) {
-        // Remove lowest priority item
-        const lowestIndex = this.queue.findIndex(r => r.priority === lowestPriority);
-        this.queue.splice(lowestIndex, 1);
+      // Queue is sorted by priority (highest first), so last element is lowest priority
+      const lowestPriorityItem = this.queue[this.queue.length - 1];
+      
+      if (request.priority > lowestPriorityItem.priority) {
+        // Remove lowest priority item to make space
+        this.queue.pop();
       } else {
         return false; // Queue full, request discarded
       }
@@ -561,6 +561,19 @@ export class AnimationQueue {
    */
   getAll(): readonly AnimationRequest[] {
     return [...this.queue];
+  }
+
+  /**
+   * Get maximum queue size
+   * 
+   * **Korean**: 최대 대기열 크기
+   * 
+   * @returns Maximum queue capacity
+   * 
+   * @korean 최대대기열크기
+   */
+  getMaxSize(): number {
+    return this.maxSize;
   }
 }
 

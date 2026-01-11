@@ -1786,7 +1786,7 @@ export class PlayerAnimationStateMachine {
     return {
       enabled: true,
       size: this.animationQueue.size(),
-      maxSize: 3, // Note: We don't have access to AnimationQueue's maxSize, using default
+      maxSize: this.animationQueue.getMaxSize(),
       pending: this.animationQueue.getAll(),
     };
   }
