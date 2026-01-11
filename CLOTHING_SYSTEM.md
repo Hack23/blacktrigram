@@ -202,12 +202,16 @@ The clothing system has comprehensive test coverage:
 
 - **Component Tests**: 22 tests for rendering and behavior
 - **Data Tests**: 39 tests for clothing configurations
-- **Total Coverage**: 61 tests passing
+- **Material Utility Tests**: 39 tests for material presets and properties
+- **Color Utility Tests**: 38 tests for color manipulation functions
+- **Total Coverage**: 138 tests passing
 
 Run tests with:
 ```bash
 npm test -- src/components/shared/three/models/ClothingSystem.test.tsx
 npm test -- src/data/archetypeClothing.test.ts
+npm test -- src/utils/clothingMaterials.test.ts
+npm test -- src/utils/clothingColors.test.ts
 ```
 
 ## Material & Color Utilities | 재료 및 색상 유틸리티
