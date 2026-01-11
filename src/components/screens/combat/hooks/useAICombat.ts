@@ -80,6 +80,19 @@ const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 se
 const CELL_SIZE = 40; // Size of one grid cell in pixels
 
 /**
+ * Balance state thresholds for opponent vulnerability detection
+ * Based on getBalanceState() thresholds from player3DHelpers.ts
+ * 
+ * @korean 균형 상태 임계값
+ */
+const BALANCE_THRESHOLDS = {
+  READY: 80,      // >= 80: Full stability
+  SHAKEN: 50,     // >= 50: Minor instability
+  VULNERABLE: 20, // >= 20: Significant instability
+  // < 20: HELPLESS state
+} as const;
+
+/**
  * Get viable techniques based on distance, stance, and stamina
  * 
  * Filters techniques that:
@@ -722,12 +735,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
 
     // Convert opponent balance number to balance state for kill mode detection
     // Balance thresholds: >=80 READY, >=50 SHAKEN, >=20 VULNERABLE, <20 HELPLESS
+    // These match the thresholds in getBalanceState() from player3DHelpers.ts
     let opponentBalance: string | undefined;
-    if (opponent.balance >= 80) {
+    if (opponent.balance >= BALANCE_THRESHOLDS.READY) {
       opponentBalance = "READY";
-    } else if (opponent.balance >= 50) {
+    } else if (opponent.balance >= BALANCE_THRESHOLDS.SHAKEN) {
       opponentBalance = "SHAKEN";
-    } else if (opponent.balance >= 20) {
+    } else if (opponent.balance >= BALANCE_THRESHOLDS.VULNERABLE) {
       opponentBalance = "VULNERABLE";
     } else {
       opponentBalance = "HELPLESS";

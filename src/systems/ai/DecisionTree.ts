@@ -312,7 +312,8 @@ export class AIDecisionTree {
 
     // Apply kill mode modifiers to boost aggression (Issue #enhance-ai-aggression)
     if (killModeActive) {
-      decisions.forEach((decision) => {
+      // Map decisions to new array with modified priorities
+      const modifiedDecisions = decisions.map((decision) => {
         // Calculate base action weights
         const weights = {
           attack: decision.action === AIActionType.ATTACK ? 1.0 : 0.0,
@@ -325,19 +326,39 @@ export class AIDecisionTree {
         const modifiedWeights = this.applyKillModeModifiers(weights, personality, true);
         
         // Adjust priority based on modified weights
+        let newPriority = decision.priority;
         if (decision.action === AIActionType.ATTACK) {
-          decision = { ...decision, priority: decision.priority * modifiedWeights.attack };
+          newPriority = decision.priority * modifiedWeights.attack;
         } else if (decision.action === AIActionType.TECHNIQUE) {
-          decision = { ...decision, priority: decision.priority * modifiedWeights.technique };
+          newPriority = decision.priority * modifiedWeights.technique;
         } else if (decision.action === AIActionType.DEFEND) {
-          decision = { ...decision, priority: decision.priority * modifiedWeights.defend };
+          newPriority = decision.priority * modifiedWeights.defend;
         } else if (decision.action === AIActionType.RETREAT) {
-          decision = { ...decision, priority: decision.priority * modifiedWeights.retreat };
+          newPriority = decision.priority * modifiedWeights.retreat;
         }
+        
+        return { ...decision, priority: newPriority };
       });
+      
+      // Select highest priority decision from modified array
+      const bestDecision = modifiedDecisions.reduce((best, current) =>
+        current.priority > best.priority ? current : best
+      );
+
+      // Track consecutive attacks
+      if (
+        bestDecision.action === AIActionType.ATTACK ||
+        bestDecision.action === AIActionType.TECHNIQUE
+      ) {
+        this.consecutiveAttacks++;
+      } else {
+        this.consecutiveAttacks = 0;
+      }
+
+      return bestDecision;
     }
 
-    // Select highest priority decision
+    // Normal mode: Select highest priority decision without kill mode modifiers
     const bestDecision = decisions.reduce((best, current) =>
       current.priority > best.priority ? current : best
     );
