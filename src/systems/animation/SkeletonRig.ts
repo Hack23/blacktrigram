@@ -742,11 +742,16 @@ export const applyJointConstraint = (
   );
 };
 
+// Reusable matrix objects for world transform calculations (avoid allocations in useFrame)
+const tempMatrix = new THREE.Matrix4();
+const tempQuaternion = new THREE.Quaternion();
+const tempScale = new THREE.Vector3();
+
 /**
  * Get world position of bone
  *
  * Calculates absolute world position by traversing parent chain.
- * Accounts for parent rotations and positions.
+ * Uses proper matrix multiplication to account for parent rotations.
  *
  * @param bone - Bone to get world position for
  * @returns World position as Vector3
@@ -754,15 +759,30 @@ export const applyJointConstraint = (
  * @korean 뼈의세계위치구하기
  */
 export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
-  const worldPos = new THREE.Vector3();
+  // Build the bone chain from root to this bone
+  const boneChain: Bone[] = [];
   let currentBone: Bone | null = bone;
-
-  // Traverse up parent chain
   while (currentBone) {
-    worldPos.add(currentBone.position);
+    boneChain.unshift(currentBone);
     currentBone = currentBone.parent;
   }
 
+  // Compose world matrix by multiplying all local transforms
+  const worldMatrix = new THREE.Matrix4();
+  worldMatrix.identity();
+
+  for (const b of boneChain) {
+    tempMatrix.compose(
+      b.position,
+      tempQuaternion.setFromEuler(b.rotation),
+      b.scale
+    );
+    worldMatrix.multiply(tempMatrix);
+  }
+
+  // Extract world position from composed matrix
+  const worldPos = new THREE.Vector3();
+  worldMatrix.decompose(worldPos, tempQuaternion, tempScale);
   return worldPos;
 };
 
@@ -770,7 +790,7 @@ export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
  * Get world rotation of bone
  *
  * Calculates absolute world rotation by traversing parent chain.
- * Combines all parent rotations.
+ * Uses proper quaternion multiplication for correct rotation composition.
  *
  * @param bone - Bone to get world rotation for
  * @returns World rotation as Euler
@@ -778,17 +798,26 @@ export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
  * @korean 뼈의세계회전구하기
  */
 export const getBoneWorldRotation = (bone: Bone): THREE.Euler => {
-  const worldRot = new THREE.Euler();
+  // Build the bone chain from root to this bone
+  const boneChain: Bone[] = [];
   let currentBone: Bone | null = bone;
-
-  // Traverse up parent chain
   while (currentBone) {
-    worldRot.x += currentBone.rotation.x;
-    worldRot.y += currentBone.rotation.y;
-    worldRot.z += currentBone.rotation.z;
+    boneChain.unshift(currentBone);
     currentBone = currentBone.parent;
   }
 
+  // Compose world rotation by multiplying quaternions (proper rotation composition)
+  const worldQuat = new THREE.Quaternion();
+  worldQuat.identity();
+
+  for (const b of boneChain) {
+    tempQuaternion.setFromEuler(b.rotation);
+    worldQuat.multiply(tempQuaternion);
+  }
+
+  // Convert back to Euler
+  const worldRot = new THREE.Euler();
+  worldRot.setFromQuaternion(worldQuat);
   return worldRot;
 };
 

@@ -4,12 +4,12 @@
  * @module hooks/__tests__/useGuardPoseOverlay.test
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect, beforeEach } from "vitest";
-import { useGuardPoseOverlay } from "../useGuardPoseOverlay";
-import { createScaledHumanoidRig } from "../../systems/animation";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it } from "vitest";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
+import { createScaledHumanoidRig } from "../../systems/animation";
 import { PlayerArchetype, TrigramStance } from "../../types/common";
+import { useGuardPoseOverlay } from "../useGuardPoseOverlay";
 
 describe("useGuardPoseOverlay", () => {
   let testRig: ReturnType<typeof createScaledHumanoidRig>;
@@ -156,10 +156,10 @@ describe("useGuardPoseOverlay", () => {
       );
 
       const chest = testRig.bones.get("spine_middle");
-      
+
       // Collect scale values over time
       const scaleValues: number[] = [];
-      
+
       // Apply guard overlay multiple times to see breathing cycle
       act(() => {
         for (let i = 0; i < 20; i++) {
@@ -172,7 +172,7 @@ describe("useGuardPoseOverlay", () => {
       const minScale = Math.min(...scaleValues);
       const maxScale = Math.max(...scaleValues);
       const scaleRange = maxScale - minScale;
-      
+
       // Breathing should cause variation in scale
       expect(scaleRange).toBeGreaterThan(0.001);
     });
@@ -282,13 +282,23 @@ describe("useGuardPoseOverlay", () => {
       const leftLateralityRightHip = rightHip?.rotation.clone();
 
       // Check for differences (mirroring should affect at least one limb)
-      const leftShoulderDiff = !rightLateralityLeftShoulder?.equals(leftLateralityLeftShoulder!);
-      const rightShoulderDiff = !rightLateralityRightShoulder?.equals(leftLateralityRightShoulder!);
-      const leftHipDiff = !rightLateralityLeftHip?.equals(leftLateralityLeftHip!);
-      const rightHipDiff = !rightLateralityRightHip?.equals(leftLateralityRightHip!);
-      
+      const leftShoulderDiff = !rightLateralityLeftShoulder?.equals(
+        leftLateralityLeftShoulder!
+      );
+      const rightShoulderDiff = !rightLateralityRightShoulder?.equals(
+        leftLateralityRightShoulder!
+      );
+      const leftHipDiff = !rightLateralityLeftHip?.equals(
+        leftLateralityLeftHip!
+      );
+      const rightHipDiff = !rightLateralityRightHip?.equals(
+        leftLateralityRightHip!
+      );
+
       // At least one limb should be different due to mirroring
-      expect(leftShoulderDiff || rightShoulderDiff || leftHipDiff || rightHipDiff).toBe(true);
+      expect(
+        leftShoulderDiff || rightShoulderDiff || leftHipDiff || rightHipDiff
+      ).toBe(true);
     });
   });
 
@@ -354,8 +364,16 @@ describe("useGuardPoseOverlay", () => {
       const elbowL = testRig.bones.get("elbow_L")?.rotation;
       const elbowR = testRig.bones.get("elbow_R")?.rotation;
       // At least one component should be non-zero
-      const elbowLModified = elbowL && (Math.abs(elbowL.x) > 0.001 || Math.abs(elbowL.y) > 0.001 || Math.abs(elbowL.z) > 0.001);
-      const elbowRModified = elbowR && (Math.abs(elbowR.x) > 0.001 || Math.abs(elbowR.y) > 0.001 || Math.abs(elbowR.z) > 0.001);
+      const elbowLModified =
+        elbowL &&
+        (Math.abs(elbowL.x) > 0.001 ||
+          Math.abs(elbowL.y) > 0.001 ||
+          Math.abs(elbowL.z) > 0.001);
+      const elbowRModified =
+        elbowR &&
+        (Math.abs(elbowR.x) > 0.001 ||
+          Math.abs(elbowR.y) > 0.001 ||
+          Math.abs(elbowR.z) > 0.001);
       expect(elbowLModified || elbowRModified).toBe(true);
     });
 
@@ -376,6 +394,56 @@ describe("useGuardPoseOverlay", () => {
       expect(testRig.bones.get("hip_R")?.rotation.x).not.toBe(0);
     });
 
+    it("should apply different hip positions based on stance width", () => {
+      // Test narrow stance (GAN - stanceWidth: 0.3)
+      const { result: narrowResult } = renderHook(() =>
+        useGuardPoseOverlay({
+          stance: TrigramStance.GAN,
+          currentAnimation: "idle",
+        })
+      );
+
+      const narrowRig = createScaledHumanoidRig(
+        getArchetypePhysicalAttributes(PlayerArchetype.MUSA)
+      );
+      const narrowHipLInitial = narrowRig.bones.get("hip_L")!.position.x;
+
+      act(() => {
+        narrowResult.current.applyGuardOverlay(narrowRig, 0.016);
+      });
+
+      // Test wide stance (LI - stanceWidth: 1.2)
+      const { result: wideResult } = renderHook(() =>
+        useGuardPoseOverlay({
+          stance: TrigramStance.LI,
+          currentAnimation: "idle",
+        })
+      );
+
+      const wideRig = createScaledHumanoidRig(
+        getArchetypePhysicalAttributes(PlayerArchetype.MUSA)
+      );
+      const wideHipLInitial = wideRig.bones.get("hip_L")!.position.x;
+
+      act(() => {
+        wideResult.current.applyGuardOverlay(wideRig, 0.016);
+      });
+
+      // Wide stance should have hips further apart than narrow stance
+      // Left hip has negative X, so wider = more negative
+      const narrowHipX = Math.abs(narrowRig.bones.get("hip_L")!.position.x);
+      const wideHipX = Math.abs(wideRig.bones.get("hip_L")!.position.x);
+
+      // LI (1.2) should have wider hip offset than GAN (0.3)
+      expect(wideHipX).toBeGreaterThan(narrowHipX);
+
+      // Verify both changed from initial
+      expect(narrowRig.bones.get("hip_L")!.position.x).not.toBe(
+        narrowHipLInitial
+      );
+      expect(wideRig.bones.get("hip_L")!.position.x).not.toBe(wideHipLInitial);
+    });
+
     it("should apply guard pose to torso", () => {
       const { result } = renderHook(() =>
         useGuardPoseOverlay({
@@ -390,11 +458,11 @@ describe("useGuardPoseOverlay", () => {
 
       // Check torso bones have been modified (at least one component should be non-zero)
       const spineUpper = testRig.bones.get("spine_upper")?.rotation;
-      const torsoModified = spineUpper && (
-        Math.abs(spineUpper.x) > 0.001 || 
-        Math.abs(spineUpper.y) > 0.001 || 
-        Math.abs(spineUpper.z) > 0.001
-      );
+      const torsoModified =
+        spineUpper &&
+        (Math.abs(spineUpper.x) > 0.001 ||
+          Math.abs(spineUpper.y) > 0.001 ||
+          Math.abs(spineUpper.z) > 0.001);
       expect(torsoModified).toBe(true);
     });
   });

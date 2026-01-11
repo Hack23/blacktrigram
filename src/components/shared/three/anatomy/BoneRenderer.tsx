@@ -11,6 +11,7 @@
 
 import React, { useMemo } from "react";
 import * as THREE from "three";
+import type { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
   FacialDamageState,
@@ -20,6 +21,7 @@ import { DEFAULT_FACIAL_DAMAGE } from "../../../../types/facial";
 import type { HandAnimationState } from "../../../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../../../types/skeletal";
 import { BoneMuscles } from "./BoneAttachedMuscles";
+import { BoneClothing } from "./BoneClothing";
 import Face3D from "./Face3D";
 import Foot3D from "./Foot3D";
 import Hand3D from "./Hand3D";
@@ -172,7 +174,17 @@ export interface BoneRendererProps {
   readonly physicalAttributes?: {
     readonly muscleMass: number;
     readonly fatMass: number;
+    readonly shoulderWidth?: number;
+    readonly torsoLength?: number;
+    readonly armLength?: number;
+    readonly legLength?: number;
   };
+
+  /**
+   * Player archetype for clothing style
+   * @korean 플레이어원형
+   */
+  readonly archetype?: PlayerArchetype;
 
   /**
    * Muscle tension states for bone-attached muscles
@@ -220,7 +232,12 @@ const SingleBone: React.FC<{
   readonly physicalAttributes?: {
     readonly muscleMass: number;
     readonly fatMass: number;
+    readonly shoulderWidth?: number;
+    readonly torsoLength?: number;
+    readonly armLength?: number;
+    readonly legLength?: number;
   };
+  readonly archetype?: PlayerArchetype;
 }> = ({
   bone,
   color,
@@ -237,6 +254,7 @@ const SingleBone: React.FC<{
   muscleStates,
   isExhausted = false,
   physicalAttributes,
+  archetype,
 }) => {
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
@@ -346,6 +364,22 @@ const SingleBone: React.FC<{
         />
       )}
 
+      {/* Render bone-attached clothing */}
+      {renderMode === "solid" && archetype && physicalAttributes && (
+        <BoneClothing
+          boneName={bone.name}
+          archetype={archetype}
+          physicalAttributes={{
+            muscleMass: physicalAttributes.muscleMass,
+            fatMass: physicalAttributes.fatMass,
+            shoulderWidth: physicalAttributes.shoulderWidth ?? 45,
+            torsoLength: physicalAttributes.torsoLength ?? 59,
+            armLength: physicalAttributes.armLength ?? 62,
+            legLength: physicalAttributes.legLength ?? 96,
+          }}
+        />
+      )}
+
       {/* Render children recursively */}
       {bone.children.map((childBone) => (
         <SingleBone
@@ -365,6 +399,7 @@ const SingleBone: React.FC<{
           muscleStates={muscleStates}
           isExhausted={isExhausted}
           physicalAttributes={physicalAttributes}
+          archetype={archetype}
         />
       ))}
 
@@ -460,6 +495,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   physicalAttributes,
   muscleStates,
   isExhausted = false,
+  archetype,
 }) => {
   // Calculate bone thickness multiplier from physical attributes
   const boneThicknessMultiplier = useMemo(() => {
@@ -492,6 +528,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
         muscleStates={muscleStates}
         isExhausted={isExhausted}
         physicalAttributes={physicalAttributes}
+        archetype={archetype}
       />
     </group>
   );
