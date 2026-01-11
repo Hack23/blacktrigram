@@ -15,7 +15,7 @@
  * @korean 애니메이션상태머신
  */
 
-import { canInterrupt } from "./AnimationPriority";
+import { canInterrupt, AnimationQueue, type ConflictResolutionStrategy, type AnimationRequest } from "./AnimationPriority";
 import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
 import { 
   createMotionPredictionState, 
@@ -709,7 +709,11 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  * Player Animation State Machine
  * 
  * Manages animation state, transitions, and timing with frame-accurate updates.
- * Integrates priority system and event callbacks.
+ * Integrates priority system, automatic animation queueing, and event callbacks.
+ * 
+ * **Animation Queue**: Enabled by default with max size 3 and timestamp-based
+ * conflict resolution. Automatically queues animations that cannot execute
+ * immediately and processes them when the current animation completes.
  * 
  * @example
  * ```typescript
@@ -724,14 +728,18 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  *   }
  * });
  * 
+ * // Animation queue is enabled by default
+ * // Use transitionToQueued() for automatic queueing
+ * machine.transitionToQueued(AnimationState.ATTACK); // Queues if can't execute
+ * 
+ * // Or use regular transitionTo() (no queueing)
+ * machine.transitionTo(AnimationState.ATTACK); // Fails if can't execute
+ * 
  * // In game loop (useFrame)
  * useFrame((state, delta) => {
  *   const result = machine.update(delta);
  *   updatePlayerVisuals(result.state, result.frame);
  * });
- * 
- * // Trigger animations
- * machine.transitionTo("attack");
  * ```
  * 
  * @korean 플레이어애니메이션상태머신
@@ -844,6 +852,34 @@ export class PlayerAnimationStateMachine {
    * @korean 선호이징함수
    */
   private preferredEasing: EasingName = "natural-motion";
+
+  /**
+   * Animation queue for pending animations
+   * 
+   * **Korean**: 애니메이션 대기열
+   * 
+   * Stores animation requests that couldn't be executed immediately
+   * due to non-interruptible animations or priority conflicts.
+   * Processed automatically when current animation completes.
+   * 
+   * Enabled by default with max size 3 and timestamp-based conflict resolution.
+   * Can be disabled with disableQueue() or reconfigured with enableQueue().
+   * 
+   * @korean 애니메이션대기열
+   */
+  private animationQueue: AnimationQueue | null = new AnimationQueue(3, "timestamp");
+
+  /**
+   * Conflict resolution strategy for equal-priority animations
+   * 
+   * **Korean**: 충돌 해결 전략
+   * 
+   * Determines how to resolve conflicts when multiple animations
+   * have equal priority. Default: timestamp (FIFO).
+   * 
+   * @korean 충돌해결전략
+   */
+  private conflictStrategy: ConflictResolutionStrategy = "timestamp";
 
   /**
    * Create a new animation state machine
@@ -995,7 +1031,7 @@ export class PlayerAnimationStateMachine {
               this.clearStanceTransition();
             }
             
-            // Direct transition to idle without interrupt event
+            // Transition to idle first
             this.previousState = this.currentState;
             this.currentState = AnimationState.IDLE;
             this.frameIndex = 0;
@@ -1005,6 +1041,9 @@ export class PlayerAnimationStateMachine {
             if (this.events?.onAnimationStart) {
               this.events.onAnimationStart(AnimationState.IDLE);
             }
+            
+            // Then try to process next queued animation (from idle state)
+            this.processNextQueuedAnimation();
           } else {
             // Stay on last frame (for ko and ground states)
             this.frameIndex = currentAnim.frames - 1;
@@ -1589,5 +1628,231 @@ export class PlayerAnimationStateMachine {
       this.motionPrediction,
       this.predictionTimeAhead
     );
+  }
+
+  // ===== Animation Queue Methods (애니메이션 대기열) =====
+
+  /**
+   * Enable or reconfigure animation queue system
+   * 
+   * **Korean**: 애니메이션 대기열 활성화/재설정
+   * 
+   * The queue is enabled by default. Use this method to reconfigure the
+   * queue size or conflict resolution strategy.
+   * 
+   * @param maxSize - Maximum queue size (default: 3)
+   * @param conflictStrategy - Conflict resolution strategy (default: "timestamp")
+   * 
+   * @example
+   * ```typescript
+   * // Queue is enabled by default, but you can reconfigure it
+   * machine.enableQueue(5, "requested");
+   * ```
+   * 
+   * @korean 대기열활성화
+   */
+  enableQueue(maxSize: number = 3, conflictStrategy: ConflictResolutionStrategy = "timestamp"): void {
+    this.animationQueue = new AnimationQueue(maxSize, conflictStrategy);
+    this.conflictStrategy = conflictStrategy;
+  }
+
+  /**
+   * Disable animation queue system
+   * 
+   * **Korean**: 애니메이션 대기열 비활성화
+   * 
+   * Disables the queue and clears any pending animations.
+   * 
+   * @korean 대기열비활성화
+   */
+  disableQueue(): void {
+    this.animationQueue = null;
+  }
+
+  /**
+   * Check if queue is enabled
+   * 
+   * **Korean**: 대기열 활성화 여부
+   * 
+   * @returns True if queue is enabled
+   * @korean 대기열활성화여부
+   */
+  isQueueEnabled(): boolean {
+    return this.animationQueue !== null;
+  }
+
+  /**
+   * Attempt to transition to a new animation state with queue support
+   * 
+   * **Korean**: 대기열 지원 상태 전환
+   * 
+   * Enhanced version of transitionTo() that automatically queues animations
+   * when they cannot be executed immediately. Since the queue is enabled by
+   * default, this is the recommended method for animation transitions.
+   * 
+   * The queued animation will be automatically processed when the current
+   * animation completes, following priority and conflict resolution rules.
+   * 
+   * @param newState - Target animation state
+   * @returns Whether transition was successful, queued, or failed
+   * 
+   * @example
+   * ```typescript
+   * // Queue is enabled by default
+   * const result = machine.transitionToQueued(AnimationState.ATTACK);
+   * // Returns "success" if transitioned immediately
+   * // Returns "queued" if couldn't interrupt but was queued
+   * // Returns "failed" if queue is full or disabled
+   * ```
+   * 
+   * @korean 대기열상태전환
+   */
+  transitionToQueued(newState: AnimationState): "success" | "queued" | "failed" {
+    // Try normal transition first
+    const timestamp = performance.now();
+    const priority = this.animations.get(newState)?.priority ?? 0;
+
+    const success = this.transitionTo(newState);
+    if (success) {
+      return "success";
+    }
+
+    // If transition failed and queue is enabled, try to enqueue
+    if (this.animationQueue) {
+      const request: AnimationRequest = {
+        state: newState,
+        timestamp,
+        priority,
+      };
+
+      const enqueued = this.animationQueue.enqueue(request);
+      return enqueued ? "queued" : "failed";
+    }
+
+    return "failed";
+  }
+
+  /**
+   * Process next queued animation if available
+   * 
+   * **Korean**: 다음 대기열 애니메이션 처리
+   * 
+   * Should be called automatically when an animation completes.
+   * Dequeues and executes the highest priority pending animation.
+   * 
+   * @returns Whether a queued animation was executed
+   * 
+   * @internal
+   * @korean 다음대기열처리
+   */
+  private processNextQueuedAnimation(): boolean {
+    if (!this.animationQueue || this.animationQueue.isEmpty()) {
+      return false;
+    }
+
+    const nextRequest = this.animationQueue.dequeue();
+    if (!nextRequest) {
+      return false;
+    }
+
+    // Try to execute the queued animation
+    const success = this.transitionTo(nextRequest.state);
+
+    if (!success) {
+      // Log failure so queued animations do not disappear silently
+      // Korean: 대기열 애니메이션 전이가 실패했음을 로그로 남깁니다.
+      // This helps diagnose cases where transition rules, missing states,
+      // or priority conflicts prevent a queued animation from playing.
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[AnimationStateMachine] Failed to transition to queued animation state",
+        {
+          requestedState: nextRequest.state,
+          currentState: this.currentState,
+        },
+      );
+    }
+
+    return success;
+  }
+
+  /**
+   * Get current animation queue state
+   * 
+   * **Korean**: 현재 대기열 상태
+   * 
+   * Returns information about the current queue state for debugging
+   * or UI display.
+   * 
+   * @returns Queue state information
+   * 
+   * @korean 현재대기열상태
+   */
+  getQueueState(): {
+    enabled: boolean;
+    size: number;
+    maxSize: number;
+    pending: readonly AnimationRequest[];
+  } {
+    if (!this.animationQueue) {
+      return {
+        enabled: false,
+        size: 0,
+        maxSize: 0,
+        pending: [],
+      };
+    }
+
+    return {
+      enabled: true,
+      size: this.animationQueue.size(),
+      maxSize: this.animationQueue.getMaxSize(),
+      pending: this.animationQueue.getAll(),
+    };
+  }
+
+  /**
+   * Clear all pending queued animations
+   * 
+   * **Korean**: 모든 대기열 초기화
+   * 
+   * Removes all pending animations from the queue.
+   * 
+   * @korean 모든대기열초기화
+   */
+  clearQueue(): void {
+    this.animationQueue?.clear();
+  }
+
+  /**
+   * Set conflict resolution strategy
+   * 
+   * **Korean**: 충돌 해결 전략 설정
+   * 
+   * Changes the strategy used to resolve equal-priority conflicts.
+   * 
+   * @param strategy - Conflict resolution strategy
+   * 
+   * @korean 충돌해결전략설정
+   */
+  setConflictStrategy(strategy: ConflictResolutionStrategy): void {
+    this.conflictStrategy = strategy;
+
+    // Keep the animation queue's strategy in sync with the state machine
+    if (this.animationQueue) {
+      this.animationQueue.setConflictStrategy(strategy);
+    }
+  }
+
+  /**
+   * Get current conflict resolution strategy
+   * 
+   * **Korean**: 충돌 해결 전략 가져오기
+   * 
+   * @returns Current conflict resolution strategy
+   * @korean 충돌해결전략가져오기
+   */
+  getConflictStrategy(): ConflictResolutionStrategy {
+    return this.conflictStrategy;
   }
 }
