@@ -370,11 +370,11 @@ export const SPINNING_HEEL_KICK_ANIMATION: SkeletalAnimation =
 export const JUMPING_ROUNDHOUSE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jumping_roundhouse", "뛰어돌려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .chamber(0.15) // Jump prep - 150ms
-    .roundhouseChamber(0.2) // Chamber in air - 200ms
-    .roundhouseExtend(0.25) // Strike through - 250ms
-    .roundhouseExtend(0.1) // Peak - 100ms
-    .recover(0.3) // Land - 300ms
+    .chamber(TECHNIQUE_TIMING.HEAVY.chamber * 0.75) // Jump prep - 150ms (0.75 × 200ms)
+    .roundhouseChamber(TECHNIQUE_TIMING.HEAVY.chamber) // Chamber in air - 200ms
+    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY.extend * 0.83) // Strike through - 250ms (0.83 × 300ms)
+    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY.retract * 0.67) // Peak - 100ms (0.67 × 150ms)
+    .recover(TECHNIQUE_TIMING.HEAVY.recover + 0.07) // Land - 300ms (230ms + 70ms landing adjustment)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -420,8 +420,8 @@ export const HOOK_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
     .sideKickChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // Chamber like side kick - 150ms
     .withHighGuard()
-    .sideKickExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5) // Extend past target - 100ms
-    .crescentKickArc(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5 + TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // Hook back - 200ms
+    .sideKickExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5) // Extend past target - 100ms (split extension phase)
+    .crescentKickArc(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5 + TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // Hook back - 200ms (remaining extend + peak)
     .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // Recover - 350ms
     .build();
 

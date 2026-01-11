@@ -63,6 +63,24 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.FAST.total).toBe(0.55);
     });
 
+    it("should define FAST_MEDIUM timing constants", () => {
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.chamber).toBe(0.1);
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.extend).toBe(0.15);
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.peak).toBe(0.05);
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.retract).toBe(0.1);
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.recover).toBe(0.2);
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM.total).toBe(0.6);
+    });
+
+    it("should define MEDIUM_LIGHT timing constants", () => {
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber).toBe(0.12);
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend).toBe(0.18);
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract).toBe(0.1);
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.recover).toBe(0.22);
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT.total).toBe(0.7);
+    });
+
     it("should define MEDIUM timing constants", () => {
       expect(TECHNIQUE_TIMING.MEDIUM.chamber).toBe(0.15);
       expect(TECHNIQUE_TIMING.MEDIUM.extend).toBe(0.2);
@@ -70,6 +88,33 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.MEDIUM.retract).toBe(0.12);
       expect(TECHNIQUE_TIMING.MEDIUM.recover).toBe(0.18);
       expect(TECHNIQUE_TIMING.MEDIUM.total).toBe(0.73);
+    });
+
+    it("should define MEDIUM_HEAVY timing constants", () => {
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber).toBe(0.12);
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend).toBe(0.2);
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.retract).toBe(0.15);
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.recover).toBe(0.2);
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY.total).toBe(0.75);
+    });
+
+    it("should define HEAVY_LIGHT timing constants", () => {
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber).toBe(0.15);
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.extend).toBe(0.2);
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.peak).toBe(0.1);
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.retract).toBe(0.15);
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.recover).toBe(0.2);
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT.total).toBe(0.8);
+    });
+
+    it("should define HEAVY_MEDIUM timing constants", () => {
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.chamber).toBe(0.12);
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.extend).toBe(0.22);
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.retract).toBe(0.15);
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.recover).toBe(0.28);
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM.total).toBe(0.85);
     });
 
     it("should define HEAVY timing constants", () => {
@@ -81,6 +126,42 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.HEAVY.total).toBe(1.0);
     });
 
+    it("should define COMBO_FAST timing constants", () => {
+      expect(TECHNIQUE_TIMING.COMBO_FAST.chamber).toBe(0.08);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.extend).toBe(0.12);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.retract).toBe(0.1);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.recover).toBe(0.32);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.total).toBe(0.9);
+    });
+
+    it("should define JUMPING timing constants", () => {
+      expect(TECHNIQUE_TIMING.JUMPING.chamber).toBe(0.18);
+      expect(TECHNIQUE_TIMING.JUMPING.extend).toBe(0.22);
+      expect(TECHNIQUE_TIMING.JUMPING.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.JUMPING.retract).toBe(0.12);
+      expect(TECHNIQUE_TIMING.JUMPING.recover).toBe(0.3);
+      expect(TECHNIQUE_TIMING.JUMPING.total).toBe(0.9);
+    });
+
+    it("should define COMBO_HEAVY timing constants", () => {
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.chamber).toBe(0.12);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.extend).toBe(0.22);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.peak).toBe(0.08);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.retract).toBe(0.15);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.recover).toBe(0.38);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.total).toBe(1.1);
+    });
+
+    it("should define SPINNING timing constants", () => {
+      expect(TECHNIQUE_TIMING.SPINNING.chamber).toBe(0.3);
+      expect(TECHNIQUE_TIMING.SPINNING.extend).toBe(0.35);
+      expect(TECHNIQUE_TIMING.SPINNING.peak).toBe(0.12);
+      expect(TECHNIQUE_TIMING.SPINNING.retract).toBe(0.15);
+      expect(TECHNIQUE_TIMING.SPINNING.recover).toBe(0.28);
+      expect(TECHNIQUE_TIMING.SPINNING.total).toBe(1.2);
+    });
+
     it("should have increasing durations (FAST < MEDIUM < HEAVY)", () => {
       expect(TECHNIQUE_TIMING.FAST.total).toBeLessThan(
         TECHNIQUE_TIMING.MEDIUM.total
@@ -88,6 +169,21 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.MEDIUM.total).toBeLessThan(
         TECHNIQUE_TIMING.HEAVY.total
       );
+    });
+
+    it("should have all 12 timing categories defined", () => {
+      expect(TECHNIQUE_TIMING.FAST).toBeDefined();
+      expect(TECHNIQUE_TIMING.FAST_MEDIUM).toBeDefined();
+      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT).toBeDefined();
+      expect(TECHNIQUE_TIMING.MEDIUM).toBeDefined();
+      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY).toBeDefined();
+      expect(TECHNIQUE_TIMING.HEAVY_LIGHT).toBeDefined();
+      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM).toBeDefined();
+      expect(TECHNIQUE_TIMING.HEAVY).toBeDefined();
+      expect(TECHNIQUE_TIMING.COMBO_FAST).toBeDefined();
+      expect(TECHNIQUE_TIMING.JUMPING).toBeDefined();
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY).toBeDefined();
+      expect(TECHNIQUE_TIMING.SPINNING).toBeDefined();
     });
   });
 

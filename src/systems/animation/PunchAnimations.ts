@@ -311,11 +311,11 @@ export const HAMMER_FIST_ANIMATION: SkeletalAnimation =
 export const SUPERMAN_PUNCH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("superman_punch", "슈퍼맨펀치")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .chamber(0.15) // Fake kick chamber - 150ms
-    .punchWindup(0.15) // Transfer to punch - 150ms
-    .crossPunch(0.3) // Throw cross in air - 300ms
-    .crossPunch(0.12) // Peak - 120ms
-    .recover(0.28) // Land and recover - 280ms
+    .chamber(TECHNIQUE_TIMING.HEAVY.chamber * 0.75) // Fake kick chamber - 150ms (0.75 × 200ms)
+    .punchWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.75) // Transfer to punch - 150ms
+    .crossPunch(TECHNIQUE_TIMING.HEAVY.extend) // Throw cross in air - 300ms
+    .crossPunch(TECHNIQUE_TIMING.HEAVY.peak) // Peak - 120ms
+    .recover(TECHNIQUE_TIMING.HEAVY.recover + 0.05) // Land and recover - 280ms (230ms + 50ms landing)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -337,8 +337,8 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.COMBO_FAST.total)
     .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.chamber) // Quick jab prep - 80ms
     .punchExtend(TECHNIQUE_TIMING.COMBO_FAST.extend) // Jab lands - 120ms
-    .punchWindup(0.1) // Cross prep - 100ms
-    .crossPunch(0.2) // Cross lands - 200ms
+    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.retract) // Cross prep - 100ms (using retract for transition)
+    .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.extend + TECHNIQUE_TIMING.COMBO_FAST.chamber) // Cross lands - 200ms (120ms + 80ms)
     .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.peak) // Peak - 80ms
     .recover(TECHNIQUE_TIMING.COMBO_FAST.recover) // Recover - 320ms
     .build();
@@ -360,10 +360,10 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
 export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_hook", "더블훅")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .hookWindup(0.12) // First hook prep - 120ms
-    .hookPunch(0.18) // First hook - 180ms
-    .hookWindup(0.12) // Second hook prep - 120ms
-    .hookPunch(0.2) // Second hook - 200ms
+    .hookWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.6) // First hook prep - 120ms (0.6 × 200ms)
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6) // First hook - 180ms (0.6 × 300ms)
+    .hookWindup(TECHNIQUE_TIMING.HEAVY.retract * 0.8) // Second hook prep - 120ms (0.8 × 150ms)
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.67) // Second hook - 200ms (0.67 × 300ms)
     .hookPunch(TECHNIQUE_TIMING.HEAVY.peak) // Peak - 120ms
     .recover(TECHNIQUE_TIMING.HEAVY.recover) // Recover - 230ms
     .build();
