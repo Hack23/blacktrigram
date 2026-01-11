@@ -380,6 +380,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 6: Movement-Animation Synchronization
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Get current stance for animation transitions
+  // 현재 자세 (애니메이션 전환용)
+  const currentStance = useMemo(
+    () => TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
+    [trainingState.currentStanceIndex]
+  );
+
   // Sync movement with animation (matches CombatScreen pattern)
   const prevIsMovingRef = useRef<boolean>(isMoving);
   useEffect(() => {
@@ -387,11 +394,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       if (isMoving) {
         playerAnimation.transitionTo(AnimationState.WALK);
       } else if (playerAnimation.currentState === AnimationState.WALK) {
-        playerAnimation.transitionTo(AnimationState.IDLE);
+        // When stopping movement, transition to stance-specific guard animation
+        // 이동 중지 시 자세별 가드 애니메이션으로 전환
+        playerAnimation.transitionToStanceGuard(currentStance);
       }
       prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation]);
+  }, [isMoving, playerAnimation, currentStance]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7: Training Player State (Visual Display)
