@@ -291,6 +291,38 @@ const DEFAULT_CONFIGS: Partial<Record<AnimationType, AnimationConfig>> = {
     speed: 0.9,
   },
   [AnimationType.IRON_BLOCK]: { type: AnimationType.IRON_BLOCK, speed: 0.85 },
+  [AnimationType.FLOW_DEFENSE]: {
+    type: AnimationType.FLOW_DEFENSE,
+    speed: 1.0,
+  },
+  [AnimationType.IMMOVABLE_BLOCK]: {
+    type: AnimationType.IMMOVABLE_BLOCK,
+    speed: 0.85,
+  },
+  [AnimationType.EXPLOSIVE_BLOCK]: {
+    type: AnimationType.EXPLOSIVE_BLOCK,
+    speed: 1.1,
+  },
+  [AnimationType.CONTINUOUS_DEFLECTION]: {
+    type: AnimationType.CONTINUOUS_DEFLECTION,
+    speed: 1.2,
+  },
+  [AnimationType.PRECISION_PARRY]: {
+    type: AnimationType.PRECISION_PARRY,
+    speed: 1.1,
+  },
+  [AnimationType.JOINT_LOCK_DEFENSE]: {
+    type: AnimationType.JOINT_LOCK_DEFENSE,
+    speed: 0.9,
+  },
+  [AnimationType.SWEEP_DEFENSE]: {
+    type: AnimationType.SWEEP_DEFENSE,
+    speed: 1.0,
+  },
+  [AnimationType.GROUNDING_DEFENSE]: {
+    type: AnimationType.GROUNDING_DEFENSE,
+    speed: 0.9,
+  },
 
   // ═══ DARK OPS SPECIALIZED (암살 특수기) ═══
   [AnimationType.JAW_DISLOCATION]: {
@@ -300,6 +332,294 @@ const DEFAULT_CONFIGS: Partial<Record<AnimationType, AnimationConfig>> = {
   [AnimationType.TEMPLE_STRIKE]: {
     type: AnimationType.TEMPLE_STRIKE,
     speed: 1.1,
+  },
+  [AnimationType.CERVICAL_TWIST]: {
+    type: AnimationType.CERVICAL_TWIST,
+    speed: 0.8,
+  },
+  [AnimationType.ELBOW_HYPEREXTEND]: {
+    type: AnimationType.ELBOW_HYPEREXTEND,
+    speed: 0.85,
+  },
+  [AnimationType.FINGER_BREAK]: {
+    type: AnimationType.FINGER_BREAK,
+    speed: 1.0,
+  },
+  [AnimationType.GUILLOTINE_CHOKE]: {
+    type: AnimationType.GUILLOTINE_CHOKE,
+    speed: 0.8,
+  },
+  [AnimationType.JUGULAR_STRIKE]: {
+    type: AnimationType.JUGULAR_STRIKE,
+    speed: 1.2,
+  },
+  [AnimationType.KNEECAP_STRIKE]: {
+    type: AnimationType.KNEECAP_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.LARYNX_CRUSH]: {
+    type: AnimationType.LARYNX_CRUSH,
+    speed: 1.0,
+  },
+  [AnimationType.OCCIPITAL_STRIKE]: {
+    type: AnimationType.OCCIPITAL_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.SCIATIC_NERVE_STRIKE]: {
+    type: AnimationType.SCIATIC_NERVE_STRIKE,
+    speed: 1.0,
+  },
+  [AnimationType.SILENT_TAKEDOWN]: {
+    type: AnimationType.SILENT_TAKEDOWN,
+    speed: 0.9,
+  },
+  [AnimationType.SLEEPER_HOLD]: {
+    type: AnimationType.SLEEPER_HOLD,
+    speed: 0.75,
+  },
+  [AnimationType.SPLEEN_RUPTURE]: {
+    type: AnimationType.SPLEEN_RUPTURE,
+    speed: 1.0,
+  },
+  [AnimationType.TRIANGLE_CHOKE]: {
+    type: AnimationType.TRIANGLE_CHOKE,
+    speed: 0.8,
+  },
+  [AnimationType.BRACHIAL_PLEXUS]: {
+    type: AnimationType.BRACHIAL_PLEXUS,
+    speed: 1.1,
+  },
+  [AnimationType.FEMORAL_NERVE]: {
+    type: AnimationType.FEMORAL_NERVE,
+    speed: 1.0,
+  },
+
+  // ═══ ADDITIONAL GEON (건) TECHNIQUES ═══
+  [AnimationType.HIGH_BLOCK]: { type: AnimationType.HIGH_BLOCK, speed: 1.0 },
+  [AnimationType.CRUSHING_ELBOW]: {
+    type: AnimationType.CRUSHING_ELBOW,
+    speed: 1.0,
+  },
+  [AnimationType.THUNDEROUS_UPPERCUT]: {
+    type: AnimationType.THUNDEROUS_UPPERCUT,
+    speed: 1.1,
+  },
+  [AnimationType.GEON_COUNTER]: {
+    type: AnimationType.GEON_COUNTER,
+    speed: 1.1,
+  },
+  [AnimationType.GEON_ROUNDHOUSE]: {
+    type: AnimationType.GEON_ROUNDHOUSE,
+    speed: 1.0,
+  },
+
+  // ═══ ADDITIONAL TAE (태) TECHNIQUES ═══
+  [AnimationType.FLOWING_ARM_BAR]: {
+    type: AnimationType.FLOWING_ARM_BAR,
+    speed: 0.85,
+  },
+  [AnimationType.SPIRAL_SHOULDER_THROW]: {
+    type: AnimationType.SPIRAL_SHOULDER_THROW,
+    speed: 0.9,
+  },
+  [AnimationType.WRIST_LOCK_STRIKE]: {
+    type: AnimationType.WRIST_LOCK_STRIKE,
+    speed: 1.0,
+  },
+
+  // ═══ ADDITIONAL LI (리) TECHNIQUES ═══
+  [AnimationType.PHOENIX_EYE_STRIKE]: {
+    type: AnimationType.PHOENIX_EYE_STRIKE,
+    speed: 1.2,
+  },
+  [AnimationType.NERVE_STRIKE_COUNTER]: {
+    type: AnimationType.NERVE_STRIKE_COUNTER,
+    speed: 1.1,
+  },
+  [AnimationType.SOLAR_PLEXUS_SPEAR]: {
+    type: AnimationType.SOLAR_PLEXUS_SPEAR,
+    speed: 1.1,
+  },
+  [AnimationType.LI_SOLAR_PLEXUS]: {
+    type: AnimationType.LI_SOLAR_PLEXUS,
+    speed: 1.0,
+  },
+
+  // ═══ ADDITIONAL JIN (진) TECHNIQUES ═══
+  [AnimationType.EXPLOSIVE_KNEE]: {
+    type: AnimationType.EXPLOSIVE_KNEE,
+    speed: 1.1,
+  },
+  [AnimationType.LIGHTNING_STRAIGHT]: {
+    type: AnimationType.LIGHTNING_STRAIGHT,
+    speed: 1.3,
+  },
+  [AnimationType.SHOCKING_COUNTER]: {
+    type: AnimationType.SHOCKING_COUNTER,
+    speed: 1.2,
+  },
+  [AnimationType.SHOCKING_HAMMER_FIST]: {
+    type: AnimationType.SHOCKING_HAMMER_FIST,
+    speed: 1.0,
+  },
+
+  // ═══ ADDITIONAL SON (손) TECHNIQUES ═══
+  [AnimationType.PENETRATING_PALM_RUSH]: {
+    type: AnimationType.PENETRATING_PALM_RUSH,
+    speed: 1.3,
+  },
+  [AnimationType.PRESSURE_COUNTER]: {
+    type: AnimationType.PRESSURE_COUNTER,
+    speed: 1.2,
+  },
+  [AnimationType.PRESSURE_POINT_CHAIN]: {
+    type: AnimationType.PRESSURE_POINT_CHAIN,
+    speed: 1.4,
+  },
+
+  // ═══ ADDITIONAL GAM (감) TECHNIQUES ═══
+  [AnimationType.FLOWING_RIVER_STRIKE]: {
+    type: AnimationType.FLOWING_RIVER_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.REDIRECTION_COUNTER]: {
+    type: AnimationType.REDIRECTION_COUNTER,
+    speed: 1.0,
+  },
+  [AnimationType.TIDAL_WAVE_PALM]: {
+    type: AnimationType.TIDAL_WAVE_PALM,
+    speed: 1.0,
+  },
+  [AnimationType.WHIRLPOOL_COUNTER]: {
+    type: AnimationType.WHIRLPOOL_COUNTER,
+    speed: 1.1,
+  },
+
+  // ═══ ADDITIONAL GAN (간) TECHNIQUES ═══
+  [AnimationType.AVALANCHE_HAMMER]: {
+    type: AnimationType.AVALANCHE_HAMMER,
+    speed: 0.9,
+  },
+  [AnimationType.COUNTER_FORTRESS]: {
+    type: AnimationType.COUNTER_FORTRESS,
+    speed: 1.0,
+  },
+  [AnimationType.FORTRESS_COUNTER_STRIKE]: {
+    type: AnimationType.FORTRESS_COUNTER_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.STONE_WALL_THRUST]: {
+    type: AnimationType.STONE_WALL_THRUST,
+    speed: 0.95,
+  },
+
+  // ═══ ADDITIONAL GON (곤) TECHNIQUES ═══
+  [AnimationType.EARTHQUAKE_STOMP]: {
+    type: AnimationType.EARTHQUAKE_STOMP,
+    speed: 0.9,
+  },
+  [AnimationType.GROUND_SWEEP_STRIKE]: {
+    type: AnimationType.GROUND_SWEEP_STRIKE,
+    speed: 1.0,
+  },
+  [AnimationType.ROOTING_TAKEDOWN]: {
+    type: AnimationType.ROOTING_TAKEDOWN,
+    speed: 0.85,
+  },
+  [AnimationType.TAKEDOWN_COUNTER]: {
+    type: AnimationType.TAKEDOWN_COUNTER,
+    speed: 1.0,
+  },
+
+  // ═══ ARCHETYPE TECHNIQUES (원형 기술) ═══
+  // Musa (무사) - Traditional Warrior
+  [AnimationType.DRAGON_FIST]: {
+    type: AnimationType.DRAGON_FIST,
+    speed: 1.0,
+  },
+  [AnimationType.IRON_DEFENSE]: {
+    type: AnimationType.IRON_DEFENSE,
+    speed: 0.9,
+  },
+  [AnimationType.MOUNTAIN_BREAKER]: {
+    type: AnimationType.MOUNTAIN_BREAKER,
+    speed: 0.9,
+  },
+  [AnimationType.THUNDER_STRIKE]: {
+    type: AnimationType.THUNDER_STRIKE,
+    speed: 1.1,
+  },
+
+  // Amsalja (암살자) - Shadow Assassin
+  [AnimationType.DEADLY_PRECISION]: {
+    type: AnimationType.DEADLY_PRECISION,
+    speed: 1.2,
+  },
+  [AnimationType.SHADOW_NERVE_STRIKE]: {
+    type: AnimationType.SHADOW_NERVE_STRIKE,
+    speed: 1.1,
+  },
+  [AnimationType.SHADOW_STRIKE]: {
+    type: AnimationType.SHADOW_STRIKE,
+    speed: 1.3,
+  },
+  [AnimationType.SILENT_DEATH]: {
+    type: AnimationType.SILENT_DEATH,
+    speed: 1.0,
+  },
+
+  // Hacker (해커) - Cyber Warrior
+  [AnimationType.CYBER_OVERDRIVE]: {
+    type: AnimationType.CYBER_OVERDRIVE,
+    speed: 1.4,
+  },
+  [AnimationType.DATA_STRIKE]: {
+    type: AnimationType.DATA_STRIKE,
+    speed: 1.2,
+  },
+  [AnimationType.ELECTRIC_SHOCK]: {
+    type: AnimationType.ELECTRIC_SHOCK,
+    speed: 1.3,
+  },
+  [AnimationType.SYSTEM_CRASH]: {
+    type: AnimationType.SYSTEM_CRASH,
+    speed: 1.0,
+  },
+
+  // Jeongbo Yowon (정보요원) - Intelligence Operative
+  [AnimationType.COUNTER_INTELLIGENCE]: {
+    type: AnimationType.COUNTER_INTELLIGENCE,
+    speed: 1.1,
+  },
+  [AnimationType.INTELLIGENCE_STRIKE]: {
+    type: AnimationType.INTELLIGENCE_STRIKE,
+    speed: 1.0,
+  },
+  [AnimationType.PSYCHOLOGICAL_WARFARE]: {
+    type: AnimationType.PSYCHOLOGICAL_WARFARE,
+    speed: 0.9,
+  },
+  [AnimationType.TACTICAL_STRIKE]: {
+    type: AnimationType.TACTICAL_STRIKE,
+    speed: 1.1,
+  },
+
+  // Jojik Pokryeokbae (조직폭력배) - Organized Crime
+  [AnimationType.BRUTAL_TAKEDOWN]: {
+    type: AnimationType.BRUTAL_TAKEDOWN,
+    speed: 0.9,
+  },
+  [AnimationType.IMPROVISED_WEAPON]: {
+    type: AnimationType.IMPROVISED_WEAPON,
+    speed: 1.0,
+  },
+  [AnimationType.RUTHLESS_ASSAULT]: {
+    type: AnimationType.RUTHLESS_ASSAULT,
+    speed: 1.1,
+  },
+  [AnimationType.STREET_BRAWL]: {
+    type: AnimationType.STREET_BRAWL,
+    speed: 1.0,
   },
 
   // Movement (이동)
@@ -368,9 +688,17 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       "geon_roundhouse_kick",
       { type: AnimationType.ROUNDHOUSE_KICK, speed: 1.0 },
     ],
+    ["geon_roundhouse", { type: AnimationType.GEON_ROUNDHOUSE, speed: 1.0 }],
     ["geon_axe_kick", { type: AnimationType.AXE_KICK, speed: 0.9 }],
     ["geon_palm_strike", { type: AnimationType.PALM_STRIKE, speed: 1.0 }],
     ["geon_elbow_smash", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
+    ["geon_high_block", { type: AnimationType.HIGH_BLOCK, speed: 1.0 }],
+    ["geon_crushing_elbow", { type: AnimationType.CRUSHING_ELBOW, speed: 1.0 }],
+    [
+      "geon_thunderous_uppercut",
+      { type: AnimationType.THUNDEROUS_UPPERCUT, speed: 1.1 },
+    ],
+    ["geon_counter_strike", { type: AnimationType.GEON_COUNTER, speed: 1.1 }],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☱ TAE (태) - LAKE: Fluid Joint Manipulation (합기도)
@@ -388,6 +716,23 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       { type: AnimationType.SHOULDER_MANIPULATION, speed: 0.8 },
     ],
     ["tae_arm_bar", { type: AnimationType.ARM_BAR, speed: 0.75 }],
+    [
+      "tae_flowing_arm_bar",
+      { type: AnimationType.FLOWING_ARM_BAR, speed: 0.85 },
+    ],
+    [
+      "tae_joint_lock_defense",
+      { type: AnimationType.JOINT_LOCK_DEFENSE, speed: 0.9 },
+    ],
+    [
+      "tae_spiral_shoulder_throw",
+      { type: AnimationType.SPIRAL_SHOULDER_THROW, speed: 0.9 },
+    ],
+    ["tae_sweep_defense", { type: AnimationType.SWEEP_DEFENSE, speed: 1.0 }],
+    [
+      "tae_wrist_lock_strike",
+      { type: AnimationType.WRIST_LOCK_STRIKE, speed: 1.0 },
+    ],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☲ LI (리) - FIRE: Precision Nerve Strikes (정밀 타격)
@@ -403,6 +748,20 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     [
       "li_solar_plexus_strike",
       { type: AnimationType.SOLAR_PLEXUS_STRIKE, speed: 1.1 },
+    ],
+    [
+      "li_phoenix_eye_strike",
+      { type: AnimationType.PHOENIX_EYE_STRIKE, speed: 1.2 },
+    ],
+    [
+      "li_nerve_strike_counter",
+      { type: AnimationType.NERVE_STRIKE_COUNTER, speed: 1.1 },
+    ],
+    ["li_precision_parry", { type: AnimationType.PRECISION_PARRY, speed: 1.1 }],
+    ["li_solar_plexus", { type: AnimationType.LI_SOLAR_PLEXUS, speed: 1.0 }],
+    [
+      "li_solar_plexus_spear",
+      { type: AnimationType.SOLAR_PLEXUS_SPEAR, speed: 1.1 },
     ],
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -420,6 +779,23 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     ["jin_flying_sidekick", { type: AnimationType.FLYING_KICK, speed: 1.1 }],
     ["jin_back_kick", { type: AnimationType.BACK_KICK, speed: 1.0 }],
     ["jin_knee_strike", { type: AnimationType.KNEE_STRIKE, speed: 1.1 }],
+    [
+      "jin_explosive_block",
+      { type: AnimationType.EXPLOSIVE_BLOCK, speed: 1.1 },
+    ],
+    ["jin_explosive_knee", { type: AnimationType.EXPLOSIVE_KNEE, speed: 1.1 }],
+    [
+      "jin_lightning_straight",
+      { type: AnimationType.LIGHTNING_STRAIGHT, speed: 1.3 },
+    ],
+    [
+      "jin_shocking_counter",
+      { type: AnimationType.SHOCKING_COUNTER, speed: 1.2 },
+    ],
+    [
+      "jin_shocking_hammer_fist",
+      { type: AnimationType.SHOCKING_HAMMER_FIST, speed: 1.0 },
+    ],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☴ SON (손) - WIND: Continuous Pressure (지속 공격)
@@ -439,6 +815,22 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       { type: AnimationType.SPINNING_BACK_ELBOW, speed: 1.2 },
     ],
     ["son_rapid_footwork", { type: AnimationType.SIDE_STEP, speed: 1.3 }],
+    [
+      "son_continuous_deflection",
+      { type: AnimationType.CONTINUOUS_DEFLECTION, speed: 1.2 },
+    ],
+    [
+      "son_penetrating_palm_rush",
+      { type: AnimationType.PENETRATING_PALM_RUSH, speed: 1.3 },
+    ],
+    [
+      "son_pressure_counter",
+      { type: AnimationType.PRESSURE_COUNTER, speed: 1.2 },
+    ],
+    [
+      "son_pressure_point_chain",
+      { type: AnimationType.PRESSURE_POINT_CHAIN, speed: 1.4 },
+    ],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☵ GAM (감) - WATER: Flow & Adaptation (유동 반격)
@@ -451,6 +843,23 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     [
       "gam_wrist_twist_counter",
       { type: AnimationType.WRIST_TWIST_COUNTER, speed: 0.9 },
+    ],
+    ["gam_flow_defense", { type: AnimationType.FLOW_DEFENSE, speed: 1.0 }],
+    [
+      "gam_flowing_river_strike",
+      { type: AnimationType.FLOWING_RIVER_STRIKE, speed: 1.1 },
+    ],
+    [
+      "gam_redirection_counter",
+      { type: AnimationType.REDIRECTION_COUNTER, speed: 1.0 },
+    ],
+    [
+      "gam_tidal_wave_palm",
+      { type: AnimationType.TIDAL_WAVE_PALM, speed: 1.0 },
+    ],
+    [
+      "gam_whirlpool_counter",
+      { type: AnimationType.WHIRLPOOL_COUNTER, speed: 1.1 },
     ],
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -468,6 +877,26 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       "gan_reversal_technique",
       { type: AnimationType.COUNTER_ATTACK, speed: 1.0 },
     ],
+    [
+      "gan_avalanche_hammer",
+      { type: AnimationType.AVALANCHE_HAMMER, speed: 0.9 },
+    ],
+    [
+      "gan_counter_fortress",
+      { type: AnimationType.COUNTER_FORTRESS, speed: 1.0 },
+    ],
+    [
+      "gan_fortress_counter_strike",
+      { type: AnimationType.FORTRESS_COUNTER_STRIKE, speed: 1.1 },
+    ],
+    [
+      "gan_immovable_block",
+      { type: AnimationType.IMMOVABLE_BLOCK, speed: 0.85 },
+    ],
+    [
+      "gan_stone_wall_thrust",
+      { type: AnimationType.STONE_WALL_THRUST, speed: 0.95 },
+    ],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☷ GON (곤) - EARTH: Grounding & Takedowns (넘어뜨리기)
@@ -484,6 +913,26 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     [
       "gon_sacrifice_throw",
       { type: AnimationType.SACRIFICE_THROW, speed: 0.8 },
+    ],
+    [
+      "gon_earthquake_stomp",
+      { type: AnimationType.EARTHQUAKE_STOMP, speed: 0.9 },
+    ],
+    [
+      "gon_grounding_defense",
+      { type: AnimationType.GROUNDING_DEFENSE, speed: 0.9 },
+    ],
+    [
+      "gon_ground_sweep_strike",
+      { type: AnimationType.GROUND_SWEEP_STRIKE, speed: 1.0 },
+    ],
+    [
+      "gon_rooting_takedown",
+      { type: AnimationType.ROOTING_TAKEDOWN, speed: 0.85 },
+    ],
+    [
+      "gon_takedown_counter",
+      { type: AnimationType.TAKEDOWN_COUNTER, speed: 1.0 },
     ],
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -537,6 +986,131 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     ],
     ["darkops_ear_strike", { type: AnimationType.EAR_STRIKE, speed: 1.2 }],
     ["darkops_eye_gouge", { type: AnimationType.EYE_GOUGE, speed: 1.3 }],
+    // Additional Dark Ops techniques
+    [
+      "darkops_brachial_plexus",
+      { type: AnimationType.BRACHIAL_PLEXUS, speed: 1.1 },
+    ],
+    [
+      "darkops_cervical_twist",
+      { type: AnimationType.CERVICAL_TWIST, speed: 0.8 },
+    ],
+    [
+      "darkops_elbow_hyperextend",
+      { type: AnimationType.ELBOW_HYPEREXTEND, speed: 0.85 },
+    ],
+    [
+      "darkops_femoral_nerve",
+      { type: AnimationType.FEMORAL_NERVE, speed: 1.0 },
+    ],
+    ["darkops_finger_break", { type: AnimationType.FINGER_BREAK, speed: 1.0 }],
+    [
+      "darkops_guillotine",
+      { type: AnimationType.GUILLOTINE_CHOKE, speed: 0.8 },
+    ],
+    [
+      "darkops_jugular_strike",
+      { type: AnimationType.JUGULAR_STRIKE, speed: 1.2 },
+    ],
+    [
+      "darkops_kneecap_strike",
+      { type: AnimationType.KNEECAP_STRIKE, speed: 1.1 },
+    ],
+    ["darkops_larynx_crush", { type: AnimationType.LARYNX_CRUSH, speed: 1.0 }],
+    [
+      "darkops_occipital_strike",
+      { type: AnimationType.OCCIPITAL_STRIKE, speed: 1.1 },
+    ],
+    [
+      "darkops_sciatic_nerve",
+      { type: AnimationType.SCIATIC_NERVE_STRIKE, speed: 1.0 },
+    ],
+    [
+      "darkops_silent_takedown",
+      { type: AnimationType.SILENT_TAKEDOWN, speed: 0.9 },
+    ],
+    ["darkops_sleeper_hold", { type: AnimationType.SLEEPER_HOLD, speed: 0.75 }],
+    [
+      "darkops_spleen_rupture",
+      { type: AnimationType.SPLEEN_RUPTURE, speed: 1.0 },
+    ],
+    [
+      "darkops_triangle_choke",
+      { type: AnimationType.TRIANGLE_CHOKE, speed: 0.8 },
+    ],
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ARCHETYPE TECHNIQUES (원형 기술)
+    // ═══════════════════════════════════════════════════════════════════════
+
+    // Musa (무사) - Traditional Warrior
+    ["musa_dragon_fist", { type: AnimationType.DRAGON_FIST, speed: 1.0 }],
+    ["musa_iron_defense", { type: AnimationType.IRON_DEFENSE, speed: 0.9 }],
+    [
+      "musa_mountain_breaker",
+      { type: AnimationType.MOUNTAIN_BREAKER, speed: 0.9 },
+    ],
+    ["musa_thunder_strike", { type: AnimationType.THUNDER_STRIKE, speed: 1.1 }],
+
+    // Amsalja (암살자) - Shadow Assassin
+    [
+      "amsalja_deadly_precision",
+      { type: AnimationType.DEADLY_PRECISION, speed: 1.2 },
+    ],
+    [
+      "amsalja_nerve_strike",
+      { type: AnimationType.SHADOW_NERVE_STRIKE, speed: 1.1 },
+    ],
+    [
+      "amsalja_shadow_strike",
+      { type: AnimationType.SHADOW_STRIKE, speed: 1.3 },
+    ],
+    ["amsalja_silent_death", { type: AnimationType.SILENT_DEATH, speed: 1.0 }],
+
+    // Hacker (해커) - Cyber Warrior
+    [
+      "hacker_cyber_overdrive",
+      { type: AnimationType.CYBER_OVERDRIVE, speed: 1.4 },
+    ],
+    ["hacker_data_strike", { type: AnimationType.DATA_STRIKE, speed: 1.2 }],
+    [
+      "hacker_electric_shock",
+      { type: AnimationType.ELECTRIC_SHOCK, speed: 1.3 },
+    ],
+    ["hacker_system_crash", { type: AnimationType.SYSTEM_CRASH, speed: 1.0 }],
+
+    // Jeongbo Yowon (정보요원) - Intelligence Operative
+    [
+      "jeongbo_counter_intelligence",
+      { type: AnimationType.COUNTER_INTELLIGENCE, speed: 1.1 },
+    ],
+    [
+      "jeongbo_intelligence_strike",
+      { type: AnimationType.INTELLIGENCE_STRIKE, speed: 1.0 },
+    ],
+    [
+      "jeongbo_psychological_warfare",
+      { type: AnimationType.PSYCHOLOGICAL_WARFARE, speed: 0.9 },
+    ],
+    [
+      "jeongbo_tactical_strike",
+      { type: AnimationType.TACTICAL_STRIKE, speed: 1.1 },
+    ],
+
+    // Jojik Pokryeokbae (조직폭력배) - Organized Crime
+    [
+      "jojik_brutal_takedown",
+      { type: AnimationType.BRUTAL_TAKEDOWN, speed: 0.9 },
+    ],
+    [
+      "jojik_improvised_weapon",
+      { type: AnimationType.IMPROVISED_WEAPON, speed: 1.0 },
+    ],
+    [
+      "jojik_ruthless_assault",
+      { type: AnimationType.RUTHLESS_ASSAULT, speed: 1.1 },
+    ],
+    ["jojik_street_brawl", { type: AnimationType.STREET_BRAWL, speed: 1.0 }],
   ]);
 
 /**

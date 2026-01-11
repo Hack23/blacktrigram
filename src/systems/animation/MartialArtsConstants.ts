@@ -587,10 +587,111 @@ export enum AnimationType {
   CIRCULAR_PARRY = "circular_parry", // gam_circular_parry - Rotational deflect
   ROCK_DEFENSE = "rock_defense", // gan_rock_defense - Immovable guard
   IRON_BLOCK = "iron_block", // gan_iron_block - Hard block
+  FLOW_DEFENSE = "flow_defense", // gam_flow_defense - Water-like defense
+  IMMOVABLE_BLOCK = "immovable_block", // gan_immovable_block - Mountain defense
+  EXPLOSIVE_BLOCK = "explosive_block", // jin_explosive_block - Counter with block
+  CONTINUOUS_DEFLECTION = "continuous_deflection", // son_continuous_deflection - Wind deflection
+  PRECISION_PARRY = "precision_parry", // li_precision_parry - Fire precision
+  JOINT_LOCK_DEFENSE = "joint_lock_defense", // tae_joint_lock_defense - Hapkido defense
+  SWEEP_DEFENSE = "sweep_defense", // tae_sweep_defense - Low defense
+  GROUNDING_DEFENSE = "grounding_defense", // gon_grounding_defense - Earth rooting
 
   // ═══ DARK OPS SPECIALIZED (암살 특수기) ═══
   JAW_DISLOCATION = "jaw_dislocation", // darkops_jaw_dislocation - TMJ attack
   TEMPLE_STRIKE = "temple_strike", // darkops_temple_strike - Temporal bone strike
+  CERVICAL_TWIST = "cervical_twist", // darkops_cervical_twist - Neck manipulation
+  ELBOW_HYPEREXTEND = "elbow_hyperextend", // darkops_elbow_hyperextend - Joint destruction
+  FINGER_BREAK = "finger_break", // darkops_finger_break - Digit targeting
+  GUILLOTINE_CHOKE = "guillotine_choke", // darkops_guillotine - Front choke
+  JUGULAR_STRIKE = "jugular_strike", // darkops_jugular_strike - Vein targeting
+  KNEECAP_STRIKE = "kneecap_strike", // darkops_kneecap_strike - Patella attack
+  LARYNX_CRUSH = "larynx_crush", // darkops_larynx_crush - Throat destruction
+  OCCIPITAL_STRIKE = "occipital_strike", // darkops_occipital_strike - Skull base
+  SCIATIC_NERVE_STRIKE = "sciatic_nerve_strike", // darkops_sciatic_nerve - Leg nerve
+  SILENT_TAKEDOWN = "silent_takedown", // darkops_silent_takedown - Stealth attack
+  SLEEPER_HOLD = "sleeper_hold", // darkops_sleeper_hold - Sleep choke
+  SPLEEN_RUPTURE = "spleen_rupture", // darkops_spleen_rupture - Organ destruction
+  TRIANGLE_CHOKE = "triangle_choke", // darkops_triangle_choke - Leg choke
+  BRACHIAL_PLEXUS = "brachial_plexus", // darkops_brachial_plexus - Nerve cluster
+  FEMORAL_NERVE = "femoral_nerve", // darkops_femoral_nerve - Thigh nerve
+
+  // ═══ ADDITIONAL GEON (건) TECHNIQUES ═══
+  HIGH_BLOCK = "high_block", // geon_high_block - Overhead defense
+  CRUSHING_ELBOW = "crushing_elbow", // geon_crushing_elbow - Downward elbow
+  THUNDEROUS_UPPERCUT = "thunderous_uppercut", // geon_thunderous_uppercut - Rising power
+  GEON_COUNTER = "geon_counter", // geon_counter_strike - Heaven counter
+  GEON_ROUNDHOUSE = "geon_roundhouse", // geon_roundhouse - Power kick
+
+  // ═══ ADDITIONAL TAE (태) TECHNIQUES ═══
+  FLOWING_ARM_BAR = "flowing_arm_bar", // tae_flowing_arm_bar - Fluid armlock
+  SPIRAL_SHOULDER_THROW = "spiral_shoulder_throw", // tae_spiral_shoulder_throw - Circular throw
+  WRIST_LOCK_STRIKE = "wrist_lock_strike", // tae_wrist_lock_strike - Lock with strike
+
+  // ═══ ADDITIONAL LI (리) TECHNIQUES ═══
+  PHOENIX_EYE_STRIKE = "phoenix_eye_strike", // li_phoenix_eye_strike - Single knuckle
+  NERVE_STRIKE_COUNTER = "nerve_strike_counter", // li_nerve_strike_counter - Pressure counter
+  SOLAR_PLEXUS_SPEAR = "solar_plexus_spear", // li_solar_plexus_spear - Diaphragm thrust
+  LI_SOLAR_PLEXUS = "li_solar_plexus", // li_solar_plexus - Precision strike
+
+  // ═══ ADDITIONAL JIN (진) TECHNIQUES ═══
+  EXPLOSIVE_KNEE = "explosive_knee", // jin_explosive_knee - Thundering knee
+  LIGHTNING_STRAIGHT = "lightning_straight", // jin_lightning_straight - Fast cross
+  SHOCKING_COUNTER = "shocking_counter", // jin_shocking_counter - Thunder counter
+  SHOCKING_HAMMER_FIST = "shocking_hammer_fist", // jin_shocking_hammer_fist - Power hammer
+
+  // ═══ ADDITIONAL SON (손) TECHNIQUES ═══
+  PENETRATING_PALM_RUSH = "penetrating_palm_rush", // son_penetrating_palm_rush - Wind palm barrage
+  PRESSURE_COUNTER = "pressure_counter", // son_pressure_counter - Continuous counter
+  PRESSURE_POINT_CHAIN = "pressure_point_chain", // son_pressure_point_chain - Multiple points
+
+  // ═══ ADDITIONAL GAM (감) TECHNIQUES ═══
+  FLOWING_RIVER_STRIKE = "flowing_river_strike", // gam_flowing_river_strike - Water flow attack
+  REDIRECTION_COUNTER = "redirection_counter", // gam_redirection_counter - Momentum counter
+  TIDAL_WAVE_PALM = "tidal_wave_palm", // gam_tidal_wave_palm - Wave impact
+  WHIRLPOOL_COUNTER = "whirlpool_counter", // gam_whirlpool_counter - Circular counter
+
+  // ═══ ADDITIONAL GAN (간) TECHNIQUES ═══
+  AVALANCHE_HAMMER = "avalanche_hammer", // gan_avalanche_hammer - Crushing force
+  COUNTER_FORTRESS = "counter_fortress", // gan_counter_fortress - Immovable counter
+  FORTRESS_COUNTER_STRIKE = "fortress_counter_strike", // gan_fortress_counter_strike - Defensive strike
+  STONE_WALL_THRUST = "stone_wall_thrust", // gan_stone_wall_thrust - Heavy push
+
+  // ═══ ADDITIONAL GON (곤) TECHNIQUES ═══
+  EARTHQUAKE_STOMP = "earthquake_stomp", // gon_earthquake_stomp - Ground impact
+  GROUND_SWEEP_STRIKE = "ground_sweep_strike", // gon_ground_sweep_strike - Low attack
+  ROOTING_TAKEDOWN = "rooting_takedown", // gon_rooting_takedown - Grounding takedown
+  TAKEDOWN_COUNTER = "takedown_counter", // gon_takedown_counter - Takedown defense
+
+  // ═══ ARCHETYPE TECHNIQUES (원형 기술) ═══
+  // Musa (무사) - Traditional Warrior
+  DRAGON_FIST = "dragon_fist", // musa_dragon_fist - Traditional power punch
+  IRON_DEFENSE = "iron_defense", // musa_iron_defense - Warrior block
+  MOUNTAIN_BREAKER = "mountain_breaker", // musa_mountain_breaker - Devastating strike
+  THUNDER_STRIKE = "thunder_strike", // musa_thunder_strike - Powerful attack
+
+  // Amsalja (암살자) - Shadow Assassin
+  DEADLY_PRECISION = "deadly_precision", // amsalja_deadly_precision - Lethal accuracy
+  SHADOW_NERVE_STRIKE = "shadow_nerve_strike", // amsalja_nerve_strike - Hidden nerve attack
+  SHADOW_STRIKE = "shadow_strike", // amsalja_shadow_strike - Stealth attack
+  SILENT_DEATH = "silent_death", // amsalja_silent_death - Lethal finisher
+
+  // Hacker (해커) - Cyber Warrior
+  CYBER_OVERDRIVE = "cyber_overdrive", // hacker_cyber_overdrive - Enhanced attack
+  DATA_STRIKE = "data_strike", // hacker_data_strike - Technical strike
+  ELECTRIC_SHOCK = "electric_shock", // hacker_electric_shock - Stunning attack
+  SYSTEM_CRASH = "system_crash", // hacker_system_crash - Disabling strike
+
+  // Jeongbo Yowon (정보요원) - Intelligence Operative
+  COUNTER_INTELLIGENCE = "counter_intelligence", // jeongbo_counter_intelligence - Defensive counter
+  INTELLIGENCE_STRIKE = "intelligence_strike", // jeongbo_intelligence_strike - Calculated attack
+  PSYCHOLOGICAL_WARFARE = "psychological_warfare", // jeongbo_psychological_warfare - Mind attack
+  TACTICAL_STRIKE = "tactical_strike", // jeongbo_tactical_strike - Strategic hit
+
+  // Jojik Pokryeokbae (조직폭력배) - Organized Crime
+  BRUTAL_TAKEDOWN = "brutal_takedown", // jojik_brutal_takedown - Ruthless takedown
+  IMPROVISED_WEAPON = "improvised_weapon", // jojik_improvised_weapon - Street fighting
+  RUTHLESS_ASSAULT = "ruthless_assault", // jojik_ruthless_assault - Savage attack
+  STREET_BRAWL = "street_brawl", // jojik_street_brawl - Dirty fighting
 
   // Movement (이동)
   STEP_FORWARD = "step_forward",
