@@ -113,7 +113,7 @@ export const SkeletalPlayer3D: React.FC<
   playerId,
   archetype,
   stance,
-  laterality = "right",
+  // laterality removed - guard positions now handled by stance animations
   position,
   rotation,
   health,
