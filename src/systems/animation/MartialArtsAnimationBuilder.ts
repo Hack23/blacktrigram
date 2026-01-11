@@ -179,7 +179,7 @@ export const TECHNIQUE_TIMING = {
   /**
    * Combo techniques (연속 기술)
    * Examples: Jab-cross, double hooks, double kicks
-   * Total: 900ms
+   * Total: 700ms
    */
   COMBO_FAST: {
     chamber: 0.08,    // 80ms wind-up (준비)
@@ -187,7 +187,7 @@ export const TECHNIQUE_TIMING = {
     peak: 0.08,       // 80ms hold at extension (정점)
     retract: 0.10,    // 100ms pull back (회수)
     recover: 0.32,    // 320ms return to stance (복귀)
-    total: 0.90,      // 900ms total
+    total: 0.70,      // 700ms total (sum of all phases)
   },
   /**
    * Jumping techniques (뛰어차기 기술)
@@ -205,7 +205,7 @@ export const TECHNIQUE_TIMING = {
   /**
    * Combo heavy techniques (연속 무거운 기술)
    * Examples: Double kicks with different heights
-   * Total: 1100ms
+   * Total: 950ms
    */
   COMBO_HEAVY: {
     chamber: 0.12,    // 120ms wind-up (준비)
@@ -213,7 +213,7 @@ export const TECHNIQUE_TIMING = {
     peak: 0.08,       // 80ms hold at extension (정점)
     retract: 0.15,    // 150ms pull back (회수)
     recover: 0.38,    // 380ms return to stance (복귀)
-    total: 1.10,      // 1100ms total
+    total: 0.95,      // 950ms total (sum of all phases)
   },
   /**
    * Spinning techniques (회전 기술)

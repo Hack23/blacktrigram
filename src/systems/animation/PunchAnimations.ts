@@ -328,7 +328,7 @@ export const SUPERMAN_PUNCH_ANIMATION: SkeletalAnimation =
  * Classic 1-2 boxing combination.
  * Lead jab sets up rear cross.
  *
- * Total duration: 900ms (COMBO_FAST technique)
+ * Total duration: 700ms (COMBO_FAST technique)
  *
  * @korean 잽크로스애니메이션
  */
@@ -353,7 +353,7 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
  * Left hook followed by right hook.
  * Body rotation carries momentum.
  *
- * Total duration: 1000ms (HEAVY technique)
+ * Total duration: 950ms (derived from HEAVY technique phases)
  *
  * @korean 더블훅애니메이션
  */

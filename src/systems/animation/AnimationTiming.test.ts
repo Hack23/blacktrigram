@@ -132,7 +132,14 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.COMBO_FAST.peak).toBe(0.08);
       expect(TECHNIQUE_TIMING.COMBO_FAST.retract).toBe(0.1);
       expect(TECHNIQUE_TIMING.COMBO_FAST.recover).toBe(0.32);
-      expect(TECHNIQUE_TIMING.COMBO_FAST.total).toBe(0.9);
+      expect(TECHNIQUE_TIMING.COMBO_FAST.total).toBe(0.7);
+      // Validate sum of phases equals total
+      const sum = TECHNIQUE_TIMING.COMBO_FAST.chamber + 
+                  TECHNIQUE_TIMING.COMBO_FAST.extend + 
+                  TECHNIQUE_TIMING.COMBO_FAST.peak + 
+                  TECHNIQUE_TIMING.COMBO_FAST.retract + 
+                  TECHNIQUE_TIMING.COMBO_FAST.recover;
+      expect(sum).toBeCloseTo(TECHNIQUE_TIMING.COMBO_FAST.total, 10);
     });
 
     it("should define JUMPING timing constants", () => {
@@ -150,7 +157,14 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.COMBO_HEAVY.peak).toBe(0.08);
       expect(TECHNIQUE_TIMING.COMBO_HEAVY.retract).toBe(0.15);
       expect(TECHNIQUE_TIMING.COMBO_HEAVY.recover).toBe(0.38);
-      expect(TECHNIQUE_TIMING.COMBO_HEAVY.total).toBe(1.1);
+      expect(TECHNIQUE_TIMING.COMBO_HEAVY.total).toBe(0.95);
+      // Validate sum of phases equals total
+      const sum = TECHNIQUE_TIMING.COMBO_HEAVY.chamber + 
+                  TECHNIQUE_TIMING.COMBO_HEAVY.extend + 
+                  TECHNIQUE_TIMING.COMBO_HEAVY.peak + 
+                  TECHNIQUE_TIMING.COMBO_HEAVY.retract + 
+                  TECHNIQUE_TIMING.COMBO_HEAVY.recover;
+      expect(sum).toBeCloseTo(TECHNIQUE_TIMING.COMBO_HEAVY.total, 10);
     });
 
     it("should define SPINNING timing constants", () => {
@@ -293,6 +307,7 @@ describe("Animation Timing Validation", () => {
       { anim: JUMPING_KICK_ANIMATION, name: "Jumping Kick" },
       { anim: JUMPING_ROUNDHOUSE_ANIMATION, name: "Jumping Roundhouse" },
       { anim: QUESTION_MARK_KICK_ANIMATION, name: "Question Mark Kick" },
+      { anim: DOUBLE_KICK_ANIMATION, name: "Double Kick" },
     ];
 
     heavyTechniques.forEach(({ anim, name }) => {
@@ -309,7 +324,6 @@ describe("Animation Timing Validation", () => {
       { anim: TORNADO_KICK_ANIMATION, name: "Tornado Kick" },
       { anim: SPINNING_HEEL_KICK_ANIMATION, name: "Spinning Heel Kick" },
       { anim: SPINNING_BACK_KICK_ANIMATION, name: "Spinning Back Kick" },
-      { anim: DOUBLE_KICK_ANIMATION, name: "Double Kick" },
     ];
 
     spinningTechniques.forEach(({ anim, name }) => {

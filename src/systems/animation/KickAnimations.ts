@@ -57,7 +57,8 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
  * 1. Chamber (준비): Hip rotates out, knee lifts - 150ms
  * 2. Extension (차기): Leg whips through target - 200ms
  * 3. Follow-through: Hip continues rotation - 100ms
- * 4. Recovery (복귀): Return to fighting stance - 350ms
+ * 4. Retraction (회수): Leg withdraws toward chamber - 150ms
+ * 5. Recovery (복귀): Return to fighting stance - 200ms
  *
  * Total duration: 800ms (HEAVY_LIGHT technique)
  *
@@ -341,7 +342,7 @@ export const PUSH_KICK_ANIMATION: SkeletalAnimation =
  * Phases:
  * 1. Spin (회전): Body rotates 360° - 300ms
  * 2. Strike (차기): Heel hooks around - 350ms
- * 3. Recovery (복귀): Complete rotation - 550ms
+ * 3. Recovery (복귀): Complete rotation - 430ms
  *
  * Total duration: 1200ms (SPINNING technique)
  *
@@ -438,7 +439,7 @@ export const HOOK_KICK_ANIMATION: SkeletalAnimation =
  * Two rapid kicks from same leg.
  * First low, second high to confuse defense.
  *
- * Total duration: 1100ms (COMBO_HEAVY technique)
+ * Total duration: 950ms (COMBO_HEAVY technique)
  *
  * @korean 이중차기애니메이션
  */
