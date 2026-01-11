@@ -29,6 +29,7 @@ export interface UseTrainingActionsConfig {
   }) => void;
   readonly playerAnimation: {
     readonly transitionTo: (state: AnimationState) => boolean;
+    readonly transitionToStanceGuard: (stance: TrigramStance) => boolean;
     readonly currentState: string;
   };
   /** External ref to store pending attack data - shared with animation events */
@@ -185,7 +186,9 @@ export function useTrainingActions(
       actions.setStanceIndex(stanceIndex);
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
       if (stance) {
-        playerAnimation.transitionTo(AnimationState.STANCE_CHANGE);
+        // Directly transition to stance guard animation (skips transitional animation)
+        // 자세 가드 애니메이션으로 직접 전환 (전환 애니메이션 생략)
+        playerAnimation.transitionToStanceGuard(stance);
         onPlayerUpdate({ currentStance: stance });
         audio.playSFX("stance_change");
       }
