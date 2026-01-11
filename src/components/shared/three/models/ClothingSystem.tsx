@@ -71,30 +71,30 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
         
         return {
           geometry: new THREE.BoxGeometry(width, height, depth),
-          position: new THREE.Vector3(0, height / 2, 0),
+          position: new THREE.Vector3(0, height / 2 + 0.15, 0), // Raised to align with torso
         };
       }
       
       case "pants": {
         // Pants (per leg) - create separate geometries for left and right legs
-        const legThickness = 0.08 * fitScale;
+        const legThickness = 0.09 * fitScale;
         const legHeight = (physicalAttributes.legLength / 100) * legScale;
         
         return {
           geometry: new THREE.CylinderGeometry(
-            legThickness,
-            legThickness * 0.9,
+            legThickness * 1.15, // Wider at top (thigh)
+            legThickness * 0.85, // Narrower at bottom (ankle)
             legHeight,
-            16
+            32 // More segments for smoother appearance
           ),
           // Create a second geometry for the other leg to avoid shared geometry issues
           geometryRight: new THREE.CylinderGeometry(
-            legThickness,
-            legThickness * 0.9,
+            legThickness * 1.15,
+            legThickness * 0.85,
             legHeight,
-            16
+            32
           ),
-          position: new THREE.Vector3(0, -legHeight / 2, 0),
+          position: new THREE.Vector3(0, -legHeight / 2 + 0.05, 0), // Positioned from hips down
         };
       }
       
@@ -111,14 +111,15 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       }
       
       case "boots": {
-        // Footwear
-        const footLength = 0.15;
-        const footWidth = 0.08;
-        const footHeight = 0.1;
+        // Footwear - positioned at ground level
+        const legHeight = (physicalAttributes.legLength / 100) * legScale;
+        const footLength = 0.16;
+        const footWidth = 0.09;
+        const footHeight = 0.12;
         
         return {
           geometry: new THREE.BoxGeometry(footLength, footHeight, footWidth),
-          position: new THREE.Vector3(0, -footHeight / 2, footLength / 4),
+          position: new THREE.Vector3(0, -legHeight + footHeight / 2, footLength / 4),
         };
       }
       
@@ -166,12 +167,12 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
     }
   }, [itemType, itemFit, physicalAttributes]);
 
-  // Material configuration
+  // Material configuration with enhanced visual properties
   const material = useMemo(() => {
     const mat = new THREE.MeshStandardMaterial({
       color: colorPrimary,
-      metalness: metalness ?? 0.2,
-      roughness: roughness ?? 0.7,
+      metalness: metalness ?? 0.15, // Slightly less metallic for fabric-like appearance
+      roughness: roughness ?? 0.75, // Increased roughness for better texture appearance
     });
     
     if (colorEmissive !== undefined) {
@@ -188,8 +189,8 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
     
     const mat = new THREE.MeshStandardMaterial({
       color: colorPrimary,
-      metalness: metalness ?? 0.2,
-      roughness: roughness ?? 0.7,
+      metalness: metalness ?? 0.15,
+      roughness: roughness ?? 0.75,
     });
     
     if (colorEmissive !== undefined) {
