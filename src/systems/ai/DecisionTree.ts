@@ -367,7 +367,23 @@ export class AIDecisionTree {
     if (killModeActive) {
       // Map decisions to new array with modified priorities
       const modifiedDecisions = decisions.map((decision) => {
-        // Calculate base action weights
+        // CRITICAL: Survival decisions (retreat for self-preservation) should NOT be affected by kill mode
+        // Kill mode is about finishing the opponent, not about ignoring the AI's own safety
+        // Survival retreats are identified by priority 20 OR reason containing survival keywords
+        const isSurvivalRetreat = 
+          decision.action === AIActionType.RETREAT && 
+          (decision.priority === 20 || 
+           decision.reason.includes('Critical health') || 
+           decision.reason.includes('High pain') ||
+           decision.reason.includes('위급 상황') ||
+           decision.reason.includes('고통 회피'));
+           
+        if (isSurvivalRetreat) {
+          // This is a survival retreat decision - preserve its priority
+          return decision;
+        }
+        
+        // Calculate base action weights for non-survival decisions
         const weights = {
           attack: decision.action === AIActionType.ATTACK ? 1.0 : 0.0,
           technique: decision.action === AIActionType.TECHNIQUE ? 1.0 : 0.0,
@@ -466,7 +482,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.RETREAT,
         targetPosition: retreatVector,
-        priority: 10, // Highest priority
+        priority: 20, // Highest priority - must always override kill mode aggression
         reason: isCritical 
           ? `Critical health: ${(healthPercent * 100).toFixed(1)}% (위급 상황)`
           : `High pain: ${painLevel.toFixed(0)} (고통 회피)`,

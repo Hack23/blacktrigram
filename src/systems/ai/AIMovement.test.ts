@@ -120,7 +120,7 @@ describe("AI Movement System", () => {
 
       // Should prioritize retreat
       expect(decision.action).toBe("retreat");
-      expect(decision.priority).toBe(10); // Highest priority
+      expect(decision.priority).toBe(20); // Highest priority - survival overrides all
     });
 
     it("should move away from opponent on retreat", () => {
