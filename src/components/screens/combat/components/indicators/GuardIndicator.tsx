@@ -1,19 +1,19 @@
 /**
  * GuardIndicator - Visual indicator showing current fighting stance guard position
  * Displays Korean traditional stance name, English translation, and guard characteristics
- * 
+ *
  * @module components/combat/components/GuardIndicator
  * @category Combat UI
  * @korean 방어자세표시기
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { TrigramStance } from "../../../../../types/common";
 import { STANCE_GUARD_CONFIGS } from "../../../../../systems/animation/StanceGuardPoses";
 import { TRIGRAM_DATA } from "../../../../../systems/trigram/types";
+import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { TrigramStance } from "../../../../../types/common";
+import { KOREAN_COLORS } from "../../../../../types/constants";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 /**
  * Props for GuardIndicator component
@@ -31,6 +31,14 @@ export interface GuardIndicatorProps {
 
 /**
  * Get guard height label based on arm positions
+ *
+ * Guard heights based on shoulder.x (vertical angle in radians):
+ * - High guard (고위): shoulder raised high (x < -1.0)
+ *   GEON (-1.2), LI (-1.3), GAN (-1.4)
+ * - Mid guard (중위): shoulder at mid level (-1.0 <= x < -0.5)
+ *   TAE (-0.8), JIN (-0.9), SON (-0.9), GAM (-0.85)
+ * - Low guard (저위): shoulder low (x >= -0.5)
+ *   GON (-0.4)
  */
 function getGuardHeight(stance: TrigramStance): {
   korean: string;
@@ -39,9 +47,9 @@ function getGuardHeight(stance: TrigramStance): {
   const config = STANCE_GUARD_CONFIGS[stance];
   const shoulderY = config.guardPose.leftArm.shoulder.x; // x is vertical in Euler
 
-  if (shoulderY < -0.4) {
+  if (shoulderY < -1.0) {
     return { korean: "고위", english: "High" };
-  } else if (shoulderY < -0.2) {
+  } else if (shoulderY < -0.5) {
     return { korean: "중위", english: "Mid" };
   } else {
     return { korean: "저위", english: "Low" };
@@ -55,7 +63,10 @@ function getTraditionalStanceName(stance: TrigramStance): {
   korean: string;
   romanized: string;
 } {
-  const stanceNames: Record<TrigramStance, { korean: string; romanized: string }> = {
+  const stanceNames: Record<
+    TrigramStance,
+    { korean: string; romanized: string }
+  > = {
     [TrigramStance.GEON]: { korean: "앞서기", romanized: "Ap Seogi" },
     [TrigramStance.TAE]: { korean: "앞굽이", romanized: "Ap Koobi" },
     [TrigramStance.LI]: { korean: "주춤", romanized: "Juchum Seogi" },
@@ -84,10 +95,10 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
 
 /**
  * GuardIndicator Component
- * 
+ *
  * Displays current guard position information with Korean martial arts terminology.
  * Shows only when player is in a stance guard animation state.
- * 
+ *
  * Features:
  * - Traditional Korean stance name (앞서기, 앞굽이, etc.)
  * - Romanized pronunciation
@@ -96,7 +107,7 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
  * - Korean cyberpunk styling with glow effects
  * - Responsive mobile layout
  * - Accessible with proper ARIA labels
- * 
+ *
  * @example
  * ```tsx
  * <GuardIndicator
@@ -106,7 +117,7 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
  *   isMobile={false}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 방어자세표시기
  */
@@ -145,34 +156,40 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
   );
 
   // Memoize responsive sizing
-  const layout = useMemo(() => ({
-    fontSize: isMobile ? 10 : 12,
-    titleSize: isMobile ? 13 : 16,
-    iconSize: isMobile ? 14 : 18,
-    padding: isMobile ? "6px 10px" : "8px 12px",
-    gap: isMobile ? "3px" : "4px",
-    bottom: isMobile ? "45px" : "60px",
-    horizontal: isMobile ? "8px" : "12px",
-  }), [isMobile]);
+  const layout = useMemo(
+    () => ({
+      fontSize: isMobile ? 10 : 12,
+      titleSize: isMobile ? 13 : 16,
+      iconSize: isMobile ? 14 : 18,
+      padding: isMobile ? "6px 10px" : "8px 12px",
+      gap: isMobile ? "3px" : "4px",
+      bottom: isMobile ? "45px" : "60px",
+      horizontal: isMobile ? "8px" : "12px",
+    }),
+    [isMobile]
+  );
 
   // Container style with responsive positioning
-  const containerStyle = useMemo(() => ({
-    position: "absolute" as const,
-    bottom: layout.bottom,
-    left: isLeft ? layout.horizontal : "auto",
-    right: isLeft ? "auto" : layout.horizontal,
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: layout.gap,
-    backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85),
-    border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
-    borderRadius: "6px",
-    padding: layout.padding,
-    pointerEvents: "none" as const,
-    zIndex: Z_INDEX.HUD,
-    minWidth: isMobile ? "140px" : "180px",
-    boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
-  }), [layout, isLeft, isMobile]);
+  const containerStyle = useMemo(
+    () => ({
+      position: "absolute" as const,
+      bottom: layout.bottom,
+      left: isLeft ? layout.horizontal : "auto",
+      right: isLeft ? "auto" : layout.horizontal,
+      display: "flex",
+      flexDirection: "column" as const,
+      gap: layout.gap,
+      backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85),
+      border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+      borderRadius: "6px",
+      padding: layout.padding,
+      pointerEvents: "none" as const,
+      zIndex: Z_INDEX.HUD,
+      minWidth: isMobile ? "140px" : "180px",
+      boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+    }),
+    [layout, isLeft, isMobile]
+  );
 
   // Don't render if not in guard state
   if (!isInGuard) return null;
@@ -192,8 +209,14 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
           color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
           fontWeight: "bold",
           textAlign: "center",
-          textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`,
-          borderBottom: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
+          textShadow: `0 0 10px ${hexToRgbaString(
+            KOREAN_COLORS.ACCENT_GOLD,
+            0.6
+          )}`,
+          borderBottom: `1px solid ${hexToRgbaString(
+            KOREAN_COLORS.PRIMARY_CYAN,
+            0.4
+          )}`,
           paddingBottom: layout.gap,
         }}
       >
@@ -231,7 +254,10 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
           justifyContent: "space-around",
           marginTop: layout.gap,
           paddingTop: layout.gap,
-          borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+          borderTop: `1px solid ${hexToRgbaString(
+            KOREAN_COLORS.PRIMARY_CYAN,
+            0.3
+          )}`,
         }}
       >
         {/* Guard height */}

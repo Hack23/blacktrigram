@@ -272,18 +272,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     if (isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
       // When moving: face the direction of movement
       // velocity.y is actually the Z direction in 3D space
-      const movementRotation = Math.atan2(velocity.x, -velocity.y);
-      lastFacingRotationRef.current = movementRotation;
-      return movementRotation;
+      return Math.atan2(velocity.x, -velocity.y);
     } else {
       // When idle: face the dummy (target)
       const dx = dummyPosition[0] - player3DPosition[0];
       const dz = dummyPosition[2] - player3DPosition[2];
-      const targetRotation = Math.atan2(dx, dz);
-      lastFacingRotationRef.current = targetRotation;
-      return targetRotation;
+      return Math.atan2(dx, dz);
     }
   }, [isMoving, velocity, player3DPosition, dummyPosition]);
+
+  // Update ref in effect to avoid updating during render
+  useEffect(() => {
+    lastFacingRotationRef.current = playerRotation;
+  }, [playerRotation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
