@@ -37,7 +37,6 @@ import { toHexColor } from "../../../../utils/colorHelpers";
 import { getArchetypeColors } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
-import ClothingSystem from "./ClothingSystem";
 
 /**
  * Get stance-specific color from Korean theming
@@ -434,19 +433,18 @@ export const SkeletalPlayer3D: React.FC<
           physicalAttributes={{
             muscleMass: physicalAttributes.muscleMass,
             fatMass: physicalAttributes.fatMass,
+            shoulderWidth: physicalAttributes.shoulderWidth,
+            torsoLength: physicalAttributes.torsoLength,
+            armLength: physicalAttributes.armLength,
+            legLength: physicalAttributes.legLength,
           }}
           muscleStates={muscleStates}
           isExhausted={stamina < 20}
+          archetype={archetype}
         />
 
-        {/* Clothing system - archetype-specific attire */}
-        <ClothingSystem
-          archetype={archetype}
-          physicalAttributes={physicalAttributes}
-          boneMap={rig.bones}
-          scale={scale}
-          visible={!showSkeleton}
-        />
+        {/* Clothing is now rendered via BoneClothing inside BoneRenderer */}
+        {/* This ensures clothing inherits bone transforms automatically */}
 
         {/* Blocking shield effect */}
         {isBlocking && (

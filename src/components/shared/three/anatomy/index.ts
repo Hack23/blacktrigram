@@ -10,6 +10,9 @@
 export { BoneRenderer } from "./BoneRenderer";
 export type { BoneRendererProps } from "./BoneRenderer";
 
+export { BoneClothing } from "./BoneClothing";
+export type { BoneClothingProps, ClothingAttachment } from "./BoneClothing";
+
 export { Face3D } from "./Face3D";
 
 export { Hand3D } from "./Hand3D";

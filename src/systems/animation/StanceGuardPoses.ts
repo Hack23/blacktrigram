@@ -64,20 +64,20 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.7), // Tight bend - fist near face
     wrist: new THREE.Euler(0.25, -0.1, 0), // Fist at chin level
   },
-  torso: new THREE.Euler(0.12, 0, 0), // Slight forward lean - chin tucked
+  torso: new THREE.Euler(0.12, -0.3, 0), // Forward lean + rotated to face opponent
 
   // NEW: Ap Seogi (Walking Stance) - Natural, mobile leg position
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.05, 0), // Slight forward, minimal rotation
+    hip: new THREE.Euler(0.1, 0.15, 0), // Forward + rotated outward
     knee: new THREE.Euler(0.2, 0, 0), // 20° bend - ready to move
     ankle: new THREE.Euler(-0.1, 0, 0), // Slight dorsiflexion
   },
   rightLeg: {
-    hip: new THREE.Euler(0.05, -0.05, 0), // Slightly back
+    hip: new THREE.Euler(0.05, -0.15, 0), // Back + rotated inward
     knee: new THREE.Euler(0.15, 0, 0), // 15° bend - stable base
     ankle: new THREE.Euler(-0.08, 0, 0), // Natural position
   },
-  pelvis: new THREE.Euler(0.05, 0, 0), // Slight forward tilt
+  pelvis: new THREE.Euler(0.05, -0.45, 0), // Forward tilt + ~25° side stance (right foot back)
   stanceWidth: 0.5, // Shoulder width - mobile
 
   weight: "forward",
@@ -122,20 +122,20 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.6), // Tight bend - protecting face
     wrist: new THREE.Euler(0.2, -0.15, 0), // Fist at chin level
   },
-  torso: new THREE.Euler(0.12, 0.15, 0), // Forward, slight rotation
+  torso: new THREE.Euler(0.12, -0.35, 0), // Forward + counter-rotated toward opponent
 
   // NEW: Ap Koobi Seogi (Front Stance) - Deep lunge position
   leftLeg: {
-    hip: new THREE.Euler(0.4, 0.1, 0), // Forward, knee over toes
+    hip: new THREE.Euler(0.4, 0.2, 0), // Forward, knee over toes, rotated
     knee: new THREE.Euler(0.9, 0, 0), // ~0.9 rad (~52°) deep bend - POWER
     ankle: new THREE.Euler(-0.2, 0, 0), // Dorsiflexed, stable
   },
   rightLeg: {
-    hip: new THREE.Euler(-0.1, -0.1, 0), // Extended back
+    hip: new THREE.Euler(-0.1, -0.2, 0), // Extended back, rotated
     knee: new THREE.Euler(0.1, 0, 0), // Nearly straight - locked
     ankle: new THREE.Euler(-0.05, 0, 0), // Heel planted
   },
-  pelvis: new THREE.Euler(0.1, 0, 0), // Forward tilt for reach
+  pelvis: new THREE.Euler(0.1, -0.5, 0), // Forward tilt + ~30° side stance
   stanceWidth: 0.9, // Wide for stability
 
   weight: "forward",
@@ -180,20 +180,20 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.75), // Tight bend - fist at face
     wrist: new THREE.Euler(0.2, -0.15, 0), // Fist protecting cheekbone
   },
-  torso: new THREE.Euler(0.1, 0.2, 0), // Slight rotation, chin tucked
+  torso: new THREE.Euler(0.1, -0.25, 0), // Chin tucked + rotation for precision
 
   // NEW: Juchum Seogi (Horse Stance) - Wide, low, stable
   leftLeg: {
-    hip: new THREE.Euler(0, 0.15, 0.2), // Outward rotation, wide
+    hip: new THREE.Euler(0, 0.2, 0.2), // Outward rotation, wide
     knee: new THREE.Euler(0.8, 0, 0), // ~0.8 rad (~46°) deep bend - LOW
     ankle: new THREE.Euler(-0.15, 0, 0), // Flexed for stability
   },
   rightLeg: {
-    hip: new THREE.Euler(0, -0.15, -0.2), // Outward rotation, wide
+    hip: new THREE.Euler(0, -0.2, -0.2), // Outward rotation, wide
     knee: new THREE.Euler(0.8, 0, 0), // ~0.8 rad (~46°) deep bend - LOW
     ankle: new THREE.Euler(-0.15, 0, 0), // Flexed for stability
   },
-  pelvis: new THREE.Euler(0, 0, 0), // Level, stable platform
+  pelvis: new THREE.Euler(0, -0.35, 0), // ~20° side for precision striking
   stanceWidth: 1.2, // WIDE horse stance - VERY DISTINCT
 
   weight: "neutral",
@@ -238,20 +238,20 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.9), // Very tight - fist at chest
     wrist: new THREE.Euler(0.3, -0.1, 0), // Chambered at solar plexus
   },
-  torso: new THREE.Euler(-0.1, 0, 0), // Slight backward lean - coiled
+  torso: new THREE.Euler(-0.1, -0.4, 0), // Backward lean + rotated toward opponent
 
   // NEW: Dwi Koobi Seogi (Back Stance) - Weight back, coiled
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.05, 0), // Front leg light
+    hip: new THREE.Euler(0.1, 0.15, 0), // Front leg light, rotated out
     knee: new THREE.Euler(0.3, 0, 0), // 30° slight bend - ready
     ankle: new THREE.Euler(-0.1, 0, 0), // Light on ball of foot
   },
   rightLeg: {
-    hip: new THREE.Euler(-0.1, -0.05, 0), // Back leg loaded
+    hip: new THREE.Euler(-0.1, -0.15, 0), // Back leg loaded, rotated in
     knee: new THREE.Euler(0.7, 0, 0), // 70° deep bend - COILED
     ankle: new THREE.Euler(-0.2, 0, 0), // Firmly planted
   },
-  pelvis: new THREE.Euler(-0.1, 0, 0), // Tilted back for coiling
+  pelvis: new THREE.Euler(-0.1, -0.6, 0), // Back tilt + ~35° side stance for coiling
   stanceWidth: 0.7, // Moderate - mobile but stable
 
   weight: "back",
@@ -296,20 +296,20 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.7), // Tight bend - chin protected
     wrist: new THREE.Euler(0.2, -0.1, 0), // Fist at cheek level
   },
-  torso: new THREE.Euler(0.05, -0.2, 0), // Slight rotation for flow
+  torso: new THREE.Euler(0.05, -0.35, 0), // Rotated toward opponent for flow
 
   // NEW: Niunja Seogi (L-Stance) - Narrow, mobile
   leftLeg: {
-    hip: new THREE.Euler(0, 0.3, 0), // Turned inward (L-shape)
+    hip: new THREE.Euler(0, 0.35, 0), // Turned inward (L-shape)
     knee: new THREE.Euler(0.4, 0, 0), // 40° moderate bend
     ankle: new THREE.Euler(-0.1, 0, 0), // Flexible for movement
   },
   rightLeg: {
-    hip: new THREE.Euler(0, 0, 0), // Forward facing
+    hip: new THREE.Euler(0, -0.1, 0), // Slight inward for stance
     knee: new THREE.Euler(0.4, 0, 0), // 40° moderate bend
     ankle: new THREE.Euler(-0.1, 0, 0), // Flexible for movement
   },
-  pelvis: new THREE.Euler(0, -0.15, 0), // Rotated for L-shape
+  pelvis: new THREE.Euler(0, -0.55, 0), // ~30° side stance for L-shape
   stanceWidth: 0.4, // NARROW - highly mobile
 
   weight: "neutral",
@@ -354,20 +354,20 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.5), // Bent for parrying
     wrist: new THREE.Euler(0.1, -0.2, 0), // Open hand at chest
   },
-  torso: new THREE.Euler(0, 0, 0), // Centered, no rotation
+  torso: new THREE.Euler(0, -0.25, 0), // Slight rotation toward opponent
 
   // NEW: Narani Seogi (Parallel Stance) - Natural, adaptive
   leftLeg: {
-    hip: new THREE.Euler(0, 0, 0), // Neutral, parallel
+    hip: new THREE.Euler(0, 0.1, 0), // Slight outward
     knee: new THREE.Euler(0.25, 0, 0), // 25° slight ready bend
     ankle: new THREE.Euler(-0.08, 0, 0), // Natural position
   },
   rightLeg: {
-    hip: new THREE.Euler(0, 0, 0), // Neutral, parallel
+    hip: new THREE.Euler(0, -0.1, 0), // Slight inward
     knee: new THREE.Euler(0.25, 0, 0), // 25° slight ready bend
     ankle: new THREE.Euler(-0.08, 0, 0), // Natural position
   },
-  pelvis: new THREE.Euler(0, 0, 0), // Neutral, centered
+  pelvis: new THREE.Euler(0, -0.4, 0), // ~23° side stance - adaptive
   stanceWidth: 0.5, // Shoulder width - natural
 
   weight: "neutral",
@@ -412,20 +412,20 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.8), // Tight bend - forearm vertical
     wrist: new THREE.Euler(0.35, -0.15, 0), // Fist near temple
   },
-  torso: new THREE.Euler(0.05, 0, 0), // Slight forward - compact
+  torso: new THREE.Euler(0.05, -0.2, 0), // Forward + slight rotation for defense
 
   // NEW: Gibo Seogi (Basic Stance) - Narrow, mountain-solid
   leftLeg: {
-    hip: new THREE.Euler(0, 0, 0), // Close, neutral
+    hip: new THREE.Euler(0, 0.08, 0), // Close, slight outward
     knee: new THREE.Euler(0.2, 0, 0), // 20° slight bend - shock absorber
     ankle: new THREE.Euler(-0.05, 0, 0), // Stable platform
   },
   rightLeg: {
-    hip: new THREE.Euler(0, 0, 0), // Close, neutral
+    hip: new THREE.Euler(0, -0.08, 0), // Close, slight inward
     knee: new THREE.Euler(0.2, 0, 0), // 20° slight bend - shock absorber
     ankle: new THREE.Euler(-0.05, 0, 0), // Stable platform
   },
-  pelvis: new THREE.Euler(0, 0, 0), // Centered, immovable
+  pelvis: new THREE.Euler(0, -0.35, 0), // ~20° defensive side stance
   stanceWidth: 0.3, // NARROW - mountain solid
 
   weight: "neutral",
@@ -470,20 +470,20 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
     elbow: new THREE.Euler(0, 0, 1.6), // Bent tight - protects liver
     wrist: new THREE.Euler(0.1, -0.15, 0), // Hands at hip/belt level
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Forward lean - wrestling ready
+  torso: new THREE.Euler(0.15, -0.3, 0), // Forward lean + rotation for wrestling
 
   // NEW: Joong Ha Seogi (Deep Stance) - VERY low, grounded
   leftLeg: {
-    hip: new THREE.Euler(0, 0.1, 0.15), // Wide, outward
+    hip: new THREE.Euler(0, 0.2, 0.15), // Wide, outward, rotated
     knee: new THREE.Euler(1.0, 0, 0), // ~1.0 rad (~57°) VERY DEEP bend - GROUNDED
     ankle: new THREE.Euler(-0.2, 0, 0), // Deep dorsiflexion
   },
   rightLeg: {
-    hip: new THREE.Euler(0, -0.1, -0.15), // Wide, outward
+    hip: new THREE.Euler(0, -0.2, -0.15), // Wide, outward, rotated
     knee: new THREE.Euler(1.0, 0, 0), // ~1.0 rad (~57°) VERY DEEP bend - GROUNDED
     ankle: new THREE.Euler(-0.2, 0, 0), // Deep dorsiflexion
   },
-  pelvis: new THREE.Euler(-0.1, 0, 0), // Tilted forward and low
+  pelvis: new THREE.Euler(-0.1, -0.45, 0), // Low + ~25° side stance for ground control
   stanceWidth: 0.8, // Wide - grounded and stable
 
   weight: "neutral",
