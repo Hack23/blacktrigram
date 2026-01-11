@@ -488,6 +488,27 @@ export enum AnimationType {
   BACKFIST = "backfist",
   HAMMER_FIST = "hammer_fist",
 
+  // ═══ SPECIALIZED JAB VARIANTS (잽 변형) ═══
+  SPEAR_HAND_STRIKE = "spear_hand_strike", // li_flame_spear - Finger thrust
+  NERVE_STRIKE = "nerve_strike", // li_nerve_strike - Pressure point jab
+  PRESSURE_POINT_STRIKE = "pressure_point_strike", // li_pressure_point - Precision strike
+  LIGHTNING_STRIKE = "lightning_strike", // jin_lightning_flash - Fast explosive jab
+  RAPID_BARRAGE = "rapid_barrage", // son_whirlwind_barrage - Multiple fast jabs
+  RHYTHMIC_STRIKES = "rhythmic_strikes", // son_rhythmic_strikes - Patterned jabs
+  NERVE_PARALYSIS = "nerve_paralysis", // darkops_nerve_paralysis - Debilitating strike
+  THROAT_STRIKE = "throat_strike", // darkops_throat_strike - Airway attack
+  EYE_GOUGE = "eye_gouge", // darkops_eye_gouge - Vision attack
+
+  // ═══ SPECIALIZED CROSS VARIANTS (크로스 변형) ═══
+  HEAVEN_STRIKE = "heaven_strike", // geon_heaven_strike - Powerful descending cross
+  FLOWING_CROSS = "flowing_cross", // tae_flowing_strikes - Circular cross motion
+
+  // ═══ SPECIALIZED PALM STRIKES (장권 변형) ═══
+  SOLAR_PLEXUS_STRIKE = "solar_plexus_strike", // li_solar_plexus_strike - Diaphragm shock
+  FLOWING_PUSH = "flowing_push", // son_flowing_push - Redirecting palm
+  LIVER_DISRUPTION = "liver_disruption", // darkops_liver_disruption - Organ strike
+  EAR_STRIKE = "ear_strike", // darkops_ear_strike - Concussive palm
+
   // Elbow/Knee (팔꿈치/무릎)
   ELBOW_STRIKE = "elbow_strike",
   KNEE_STRIKE = "knee_strike",
@@ -495,6 +516,16 @@ export enum AnimationType {
   FLYING_KNEE = "flying_knee",
   CLINCH_KNEE = "clinch_knee",
   SPINNING_ELBOW = "spinning_elbow",
+
+  // ═══ SPECIALIZED ELBOW VARIANTS (팔꿈치 변형) ═══
+  TEMPLE_ELBOW = "temple_elbow", // li_temple_strike - Lateral temple strike
+  SPINNING_BACK_ELBOW = "spinning_back_elbow", // son_spinning_elbow - Rotational power
+  SPINAL_ELBOW = "spinal_elbow", // darkops_spinal_strike - Vertebrae targeting
+  BRACHIAL_ELBOW = "brachial_elbow", // darkops_brachial_plexus_strike - Nerve cluster
+
+  // ═══ SPECIALIZED KNEE VARIANTS (무릎 변형) ═══
+  KIDNEY_KNEE = "kidney_knee", // darkops_kidney_strike - Organ targeting
+  FEMORAL_KNEE = "femoral_knee", // darkops_femoral_nerve_strike - Nerve targeting
 
   // Grappling (잡기)
   THROW = "throw",
@@ -510,16 +541,56 @@ export enum AnimationType {
   HIP_THROW = "hip_throw",
   LEG_REAP = "leg_reap",
 
+  // ═══ SPECIALIZED GRAPPLE VARIANTS (잡기 변형) ═══
+  SMALL_CIRCLE_LOCK = "small_circle_lock", // tae_small_circle - Subtle joint control
+  FINGER_LOCK = "finger_lock", // tae_finger_lock - Digit manipulation
+  ELBOW_LOCK = "elbow_lock", // tae_elbow_lock - Arm hyperextension
+  SHOULDER_MANIPULATION = "shoulder_manipulation", // tae_shoulder_lock - Rotator cuff attack
+  MOUNTAIN_LOCK = "mountain_lock", // gan_mountain_stance_lock - Immobilizing hold
+  EARTH_EMBRACE = "earth_embrace", // gon_earth_embrace - Ground control
+  CAROTID_CHOKE = "carotid_choke", // darkops_silent_carotid - Blood choke
+  REAR_NAKED_CHOKE = "rear_naked_choke", // darkops_rear_choke - Air choke
+
+  // ═══ SPECIALIZED THROW VARIANTS (던지기 변형) ═══
+  REDIRECT_THROW = "redirect_throw", // gam_redirect_throw - Using opponent's momentum
+  HIP_WHEEL_THROW = "hip_wheel_throw", // gam_hip_throw - O-goshi style
+  SSIREUM_THROW = "ssireum_throw", // gon_ssireum_throw - Korean wrestling throw
+  SACRIFICE_THROW = "sacrifice_throw", // gon_sacrifice_throw - Tomoe nage style
+
+  // ═══ SPECIALIZED SWEEP VARIANTS (쓸기 변형) ═══
+  ANKLE_PICK = "ankle_pick", // gon_ankle_pick - Single leg takedown entry
+  ACHILLES_ATTACK = "achilles_attack", // darkops_achilles_sever - Tendon targeting
+
+  // ═══ SPECIALIZED SLAM VARIANTS (슬램 변형) ═══
+  BODY_LOCK_SLAM = "body_lock_slam", // gon_body_lock_takedown - Bear hug slam
+
+  // ═══ SPECIALIZED WRIST LOCK VARIANTS (손목꺾기 변형) ═══
+  WRIST_TWIST_COUNTER = "wrist_twist_counter", // gam_wrist_twist_counter - Counter technique
+
   // Counters (반격)
   COUNTER_STRIKE = "counter_strike",
   PARRY_COUNTER = "parry_counter",
   COUNTER_ATTACK = "counter_attack",
+
+  // ═══ SPECIALIZED COUNTER VARIANTS (반격 변형) ═══
+  WATER_COUNTER = "water_counter", // gam_water_counter - Fluid redirection
+  ROCK_COUNTER = "rock_counter", // gan_counter_strike - Immovable counter
 
   // Defense (방어)
   BLOCK = "block",
   BLOCK_HIGH = "block_high",
   BLOCK_LOW = "block_low",
   PARRY = "parry",
+
+  // ═══ SPECIALIZED BLOCK VARIANTS (방어 변형) ═══
+  FLOWING_BLOCK = "flowing_block", // gam_flowing_block - Soft redirection
+  CIRCULAR_PARRY = "circular_parry", // gam_circular_parry - Rotational deflect
+  ROCK_DEFENSE = "rock_defense", // gan_rock_defense - Immovable guard
+  IRON_BLOCK = "iron_block", // gan_iron_block - Hard block
+
+  // ═══ DARK OPS SPECIALIZED (암살 특수기) ═══
+  JAW_DISLOCATION = "jaw_dislocation", // darkops_jaw_dislocation - TMJ attack
+  TEMPLE_STRIKE = "temple_strike", // darkops_temple_strike - Temporal bone strike
 
   // Movement (이동)
   STEP_FORWARD = "step_forward",
