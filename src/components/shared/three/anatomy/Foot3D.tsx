@@ -84,17 +84,17 @@ export const Foot3D: React.FC<Foot3DProps> = ({
   const footDimensions = useMemo(() => {
     // Average male foot: 26-29cm length, ~10cm width, ~8cm height
     const footLength = 0.26 * scale; // 26cm base length
-    const footWidth = 0.10 * scale; // 10cm width
+    const footWidth = 0.1 * scale; // 10cm width
     const footHeight = 0.08 * scale; // 8cm height at ankle
-    
+
     // Toe area dimensions (front 30% of foot)
     const toeLength = footLength * 0.3;
     const toeWidth = footWidth * 0.9; // Slightly narrower than heel
     const toeHeight = footHeight * 0.6; // Lower profile
-    
+
     // Heel area dimensions (back 70% of foot)
     const heelLength = footLength * 0.7;
-    
+
     return {
       footLength,
       footWidth,
@@ -115,20 +115,20 @@ export const Foot3D: React.FC<Foot3DProps> = ({
   }, [isHighlighted, skinColor]);
 
   return (
-    <group data-testid={`foot-3d-${side}`}>
+    <group name={`foot-3d-${side}`}>
       {/* Main heel/midfoot body */}
-      <mesh 
+      <mesh
         position={[0, -footDimensions.footHeight / 2, 0]}
-        castShadow 
+        castShadow
         receiveShadow
-        data-testid={`foot-heel-${side}`}
+        name={`foot-heel-${side}`}
       >
-        <boxGeometry 
+        <boxGeometry
           args={[
-            footDimensions.footWidth, 
-            footDimensions.footHeight, 
-            footDimensions.heelLength
-          ]} 
+            footDimensions.footWidth,
+            footDimensions.footHeight,
+            footDimensions.heelLength,
+          ]}
         />
         <meshStandardMaterial
           color={footColor}
@@ -138,22 +138,22 @@ export const Foot3D: React.FC<Foot3DProps> = ({
       </mesh>
 
       {/* Toe area (slightly raised and forward) */}
-      <mesh 
+      <mesh
         position={[
-          0, 
-          -footDimensions.footHeight / 2 + footDimensions.toeHeight * 0.2, 
-          (footDimensions.heelLength / 2) + (footDimensions.toeLength / 2)
+          0,
+          -footDimensions.footHeight / 2 + footDimensions.toeHeight * 0.2,
+          footDimensions.heelLength / 2 + footDimensions.toeLength / 2,
         ]}
-        castShadow 
+        castShadow
         receiveShadow
-        data-testid={`foot-toes-${side}`}
+        name={`foot-toes-${side}`}
       >
-        <boxGeometry 
+        <boxGeometry
           args={[
-            footDimensions.toeWidth, 
-            footDimensions.toeHeight, 
-            footDimensions.toeLength
-          ]} 
+            footDimensions.toeWidth,
+            footDimensions.toeHeight,
+            footDimensions.toeLength,
+          ]}
         />
         <meshStandardMaterial
           color={footColor}
@@ -163,14 +163,12 @@ export const Foot3D: React.FC<Foot3DProps> = ({
       </mesh>
 
       {/* Ankle connection point indicator (small sphere for visual continuity) */}
-      <mesh 
+      <mesh
         position={[0, 0, -footDimensions.heelLength * 0.3]}
         castShadow
-        data-testid={`foot-ankle-${side}`}
+        name={`foot-ankle-${side}`}
       >
-        <sphereGeometry 
-          args={[footDimensions.footHeight * 0.4, 8, 8]} 
-        />
+        <sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} />
         <meshStandardMaterial
           color={footColor}
           metalness={0.1}

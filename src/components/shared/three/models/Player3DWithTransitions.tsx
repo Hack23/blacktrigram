@@ -138,7 +138,7 @@ export const Player3DWithTransitions: React.FC<
   }, [stance, onStanceTransitionComplete]);
 
   return (
-    <group data-testid="player3d-with-transitions">
+    <group name="player3d-with-transitions">
       {/* Base player model */}
       <SkeletalPlayer3D
         stance={stance}

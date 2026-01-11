@@ -91,8 +91,7 @@ const HEALTH_BAR_HEIGHT = 0.1;
 const DummyHealthBar: React.FC<{
   health: number;
   position: [number, number, number];
-  "data-testid"?: string;
-}> = ({ health, position, "data-testid": testId }) => {
+}> = ({ health, position }) => {
   // Memoize geometries to avoid recreating on every render
   const bgGeometry = useMemo(
     () => new THREE.BoxGeometry(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, 0.02),
@@ -136,7 +135,7 @@ const DummyHealthBar: React.FC<{
   }, [bgGeometry, healthGeometry, borderGeometry]);
 
   return (
-    <group position={position} data-testid={testId}>
+    <group position={position} name="dummy-health-bar">
       {/* Background bar */}
       <mesh>
         <primitive object={bgGeometry} />
@@ -377,13 +376,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
       ))}
 
       {/* Health bar above dummy */}
-      {isTraining && (
-        <DummyHealthBar
-          health={health}
-          position={[0, 2.2, 0]}
-          data-testid="training-dummy-health-bar"
-        />
-      )}
+      {isTraining && <DummyHealthBar health={health} position={[0, 2.2, 0]} />}
     </group>
   );
 };

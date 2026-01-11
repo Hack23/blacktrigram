@@ -19,7 +19,10 @@ import * as THREE from "three";
 import { TrigramStance } from "../../../../types/common";
 import { FONT_FAMILY } from "../../../../types/constants";
 import { colorUtils } from "../../../../types/constants/colors";
-import { getStanceColor, getStanceNames } from "../../../../utils/stanceHelpers";
+import {
+  getStanceColor,
+  getStanceNames,
+} from "../../../../utils/stanceHelpers";
 
 /**
  * Props for StanceTransitionEffect component
@@ -82,7 +85,7 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const stanceNames = useMemo(() => getStanceNames(toStance), [toStance]);
 
   // Handle transitions - external timer effect justifies useEffect
-   
+
   useEffect(() => {
     // Reset for new transition
     isInitializedRef.current = false;
@@ -139,13 +142,13 @@ export const StanceTransitionEffect: React.FC<StanceTransitionEffectProps> = ({
   const toColorHex = `#${toColor.toString(16).padStart(6, "0")}`;
 
   return (
-    <group data-testid="stance-transition-effect">
+    <group name="stance-transition-effect">
       {/* Expanding energy ring */}
       <mesh
         ref={ringRef}
         position={[0, 0.05, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
-        data-testid="transition-ring"
+        name="transition-ring"
       >
         <ringGeometry args={[0.8, 1.0, 32]} />
         <meshBasicMaterial

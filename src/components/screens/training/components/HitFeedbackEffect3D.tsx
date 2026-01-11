@@ -1,6 +1,6 @@
 /**
  * HitFeedbackEffect3D - Visual hit confirmation with damage numbers
- * 
+ *
  * Provides particle effects, color flashes, and floating damage numbers
  * for training hit feedback
  */
@@ -9,7 +9,7 @@ import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 
 /**
  * Props for HitFeedbackEffect3D component
@@ -40,10 +40,10 @@ const ImpactParticles: React.FC<{
   count: number;
 }> = ({ position, color, count }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  
+
   // Store velocities in a ref that persists across renders
   const velocitiesRef = useRef<Float32Array | null>(null);
-  
+
   // Store initial position for seeded random - use useState to capture at mount
   // Note: This intentionally ignores position prop changes to maintain consistent
   // particle behavior throughout the effect's lifetime. To update particles when
@@ -56,8 +56,9 @@ const ImpactParticles: React.FC<{
     const vel = new Float32Array(count * 3);
 
     // Use initial position as seed for deterministic but varying particles
-    const seed = initialPosition[0] + initialPosition[1] * 10 + initialPosition[2] * 100;
-    
+    const seed =
+      initialPosition[0] + initialPosition[1] * 10 + initialPosition[2] * 100;
+
     // Simple seeded random using position
     // Large multiplier (10000) ensures sufficient entropy for randomness while keeping values deterministic
     function seededRandom(index: number): number {
@@ -84,7 +85,7 @@ const ImpactParticles: React.FC<{
 
     return { positions: pos, velocities: vel };
   }, [count, initialPosition]); // initialPosition is captured at mount and won't change
-  
+
   // Update velocities ref in useEffect to avoid ref access during render
   useEffect(() => {
     velocitiesRef.current = velocities;
@@ -123,10 +124,7 @@ const ImpactParticles: React.FC<{
   return (
     <points ref={pointsRef} position={position}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.05}
@@ -150,7 +148,7 @@ const RingEffect: React.FC<{
 }> = ({ position, color, maxRadius }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const startTime = useRef<number>(0);
-  
+
   // Initialize start time on mount using useEffect
   useEffect(() => {
     if (startTime.current === 0) {
@@ -200,7 +198,7 @@ const DamageNumber: React.FC<{
   const [opacity, setOpacity] = useState(1);
   const startTime = useRef<number>(0);
   const completedRef = useRef(false);
-  
+
   // Initialize start time on mount using useEffect
   useEffect(() => {
     if (startTime.current === 0) {
@@ -225,7 +223,8 @@ const DamageNumber: React.FC<{
     }
   });
 
-  const color = type === "perfect" ? "#ffd700" : type === "normal" ? "#00ffff" : "#ff4444";
+  const color =
+    type === "perfect" ? "#ffd700" : type === "normal" ? "#00ffff" : "#ff4444";
   const text = type === "miss" ? "빗나감 | MISS" : `${damage}`; // Korean: 빗나감 = miss/deflected
 
   return (
@@ -312,7 +311,7 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
   if (!showEffect) return null;
 
   return (
-    <group data-testid={`hit-feedback-${type}`}>
+    <group name={`hit-feedback-${type}`}>
       {/* Particle burst */}
       <ImpactParticles
         position={position}

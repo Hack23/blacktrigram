@@ -477,7 +477,7 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
         scale={currentScale.toArray()}
         castShadow
         receiveShadow
-        data-testid={`muscle-${attachment.name}`}
+        name={`muscle-${attachment.name}`}
       >
         <capsuleGeometry args={[attachment.radius, attachment.length, 8, 16]} />
         <meshStandardMaterial
@@ -496,7 +496,7 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
           scale={fatScale.toArray()}
           castShadow
           receiveShadow
-          data-testid={`fat-layer-${attachment.name}`}
+          name={`fat-layer-${attachment.name}`}
         >
           <capsuleGeometry
             args={[attachment.radius, attachment.length, 8, 16]}

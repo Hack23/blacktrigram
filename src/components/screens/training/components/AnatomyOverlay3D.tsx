@@ -1,6 +1,6 @@
 /**
  * AnatomyOverlay3D - Toggleable anatomy visualization layers
- * 
+ *
  * Provides skeleton, nerves, vascular, and surface anatomy overlays
  * for educational training visualization
  */
@@ -140,7 +140,7 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
  */
 const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
-  
+
   // Cache mesh references for efficient updates
   const meshesRef = useRef<THREE.Mesh[]>([]);
 
@@ -148,12 +148,15 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   React.useEffect(() => {
     if (groupRef.current && meshesRef.current.length === 0) {
       groupRef.current.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+        if (
+          child instanceof THREE.Mesh &&
+          child.material instanceof THREE.MeshStandardMaterial
+        ) {
           meshesRef.current.push(child);
         }
       });
     }
-    
+
     // Cleanup: reset mesh cache on unmount to avoid stale references
     return () => {
       meshesRef.current = [];
@@ -164,7 +167,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
     const targetIntensity = 0.4 + pulse * 0.3;
-    
+
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
       if (mesh.material instanceof THREE.MeshStandardMaterial) {
@@ -190,7 +193,11 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Nerve branches - from spine to limbs */}
       {/* Cervical nerves (neck area) */}
       {[-0.15, 0.15].map((x, i) => (
-        <mesh key={`cervical-${i}`} position={[x, 1.4, -0.08]} rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}>
+        <mesh
+          key={`cervical-${i}`}
+          position={[x, 1.4, -0.08]}
+          rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}
+        >
           <cylinderGeometry args={[0.015, 0.015, 0.2, 6]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
@@ -204,7 +211,11 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Brachial plexus (arm nerves) */}
       {[-0.3, 0.3].map((x, i) => (
-        <mesh key={`brachial-${i}`} position={[x, 1.1, -0.08]} rotation={[0, 0, x > 0 ? -Math.PI / 3 : Math.PI / 3]}>
+        <mesh
+          key={`brachial-${i}`}
+          position={[x, 1.1, -0.08]}
+          rotation={[0, 0, x > 0 ? -Math.PI / 3 : Math.PI / 3]}
+        >
           <cylinderGeometry args={[0.015, 0.01, 0.3, 6]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
@@ -218,7 +229,11 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Lumbar/sacral nerves (leg nerves) */}
       {[-0.15, 0.15].map((x, i) => (
-        <mesh key={`lumbar-${i}`} position={[x, 0.5, -0.08]} rotation={[0, 0, x > 0 ? -Math.PI / 6 : Math.PI / 6]}>
+        <mesh
+          key={`lumbar-${i}`}
+          position={[x, 0.5, -0.08]}
+          rotation={[0, 0, x > 0 ? -Math.PI / 6 : Math.PI / 6]}
+        >
           <cylinderGeometry args={[0.015, 0.01, 0.4, 6]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
@@ -239,7 +254,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
  */
 const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
-  
+
   // Cache mesh references for efficient updates
   const meshesRef = useRef<THREE.Mesh[]>([]);
 
@@ -247,12 +262,15 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   React.useEffect(() => {
     if (groupRef.current && meshesRef.current.length === 0) {
       groupRef.current.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+        if (
+          child instanceof THREE.Mesh &&
+          child.material instanceof THREE.MeshStandardMaterial
+        ) {
           meshesRef.current.push(child);
         }
       });
     }
-    
+
     // Cleanup: reset mesh cache on unmount to avoid stale references
     return () => {
       meshesRef.current = [];
@@ -263,7 +281,7 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.5 + 0.5;
     const targetIntensity = 0.3 + pulse * 0.4;
-    
+
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
       if (mesh.material instanceof THREE.MeshStandardMaterial) {
@@ -302,7 +320,11 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Subclavian/axillary arteries (shoulder to arm) */}
       {[-0.25, 0.25].map((x, i) => (
-        <mesh key={`subclavian-${i}`} position={[x, 1.15, -0.08]} rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}>
+        <mesh
+          key={`subclavian-${i}`}
+          position={[x, 1.15, -0.08]}
+          rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}
+        >
           <cylinderGeometry args={[0.012, 0.012, 0.25, 6]} />
           <meshStandardMaterial
             color={KOREAN_COLORS.ACCENT_RED}
@@ -346,7 +368,11 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
         { y: 0.7, r: 0.28, name: "abdomen" },
         { y: 0.5, r: 0.25, name: "pelvis" },
       ].map((section) => (
-        <mesh key={section.name} position={[0, section.y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <mesh
+          key={section.name}
+          position={[0, section.y, 0]}
+          rotation={[Math.PI / 2, 0, 0]}
+        >
           <ringGeometry args={[section.r, section.r + 0.01, 32]} />
           <meshBasicMaterial
             color={KOREAN_COLORS.PRIMARY_CYAN}
@@ -370,13 +396,25 @@ export const AnatomyOverlay3D: React.FC<AnatomyOverlay3DProps> = ({
   opacity = 0.7,
 }) => {
   // Memoize layer visibility checks
-  const showSkeleton = useMemo(() => visibleLayers.includes("skeleton"), [visibleLayers]);
-  const showNerves = useMemo(() => visibleLayers.includes("nerves"), [visibleLayers]);
-  const showVascular = useMemo(() => visibleLayers.includes("vascular"), [visibleLayers]);
-  const showSurface = useMemo(() => visibleLayers.includes("surface"), [visibleLayers]);
+  const showSkeleton = useMemo(
+    () => visibleLayers.includes("skeleton"),
+    [visibleLayers]
+  );
+  const showNerves = useMemo(
+    () => visibleLayers.includes("nerves"),
+    [visibleLayers]
+  );
+  const showVascular = useMemo(
+    () => visibleLayers.includes("vascular"),
+    [visibleLayers]
+  );
+  const showSurface = useMemo(
+    () => visibleLayers.includes("surface"),
+    [visibleLayers]
+  );
 
   return (
-    <group position={position} data-testid="anatomy-overlay-3d">
+    <group position={position} name="anatomy-overlay-3d">
       {showSkeleton && <SkeletonLayer opacity={opacity} />}
       {showNerves && <NervesLayer opacity={opacity} />}
       {showVascular && <VascularLayer opacity={opacity} />}

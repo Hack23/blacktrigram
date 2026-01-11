@@ -91,7 +91,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     <group
       ref={groupRef}
       position={[position[0], position[1], position[2] + attackOffset]}
-      data-testid="training-ai-character-3d"
+      name="training-ai-character-3d"
     >
       {/* Main body - capsule representing the AI fighter */}
       <mesh castShadow receiveShadow>
