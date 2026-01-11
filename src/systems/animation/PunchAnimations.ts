@@ -361,10 +361,10 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
  * Body rotation carries momentum.
  *
  * Phases (준비, 실행, 회수, 복귀):
- * 1. First hook chamber (첫 훅 준비): 120ms (0.6 × 200ms)
- * 2. First hook extend (첫 훅 실행): 180ms (0.6 × 300ms)
- * 3. Second hook chamber (둘째 훅 준비): 120ms (0.8 × 150ms)
- * 4. Second hook extend + peak (둘째 훅 실행+정점): 350ms (extend + 50ms extra)
+ * 1. First hook chamber (첫 훅 준비): 120ms (0.6 × chamber)
+ * 2. First hook extend (첫 훅 실행): 180ms (0.6 × extend)
+ * 3. Second hook chamber (둘째 훅 준비): 120ms (0.8 × retract)
+ * 4. Second hook extend (둘째 훅 실행): 350ms (extend + 50ms)
  * 5. Recovery (복귀): 230ms
  *
  * Total duration: 1000ms (HEAVY technique)
@@ -375,10 +375,10 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
 export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_hook", "더블훅")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
-    .hookWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.6) // First hook prep - 120ms (0.6 × 200ms)
-    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6) // First hook - 180ms (0.6 × 300ms)
-    .hookWindup(TECHNIQUE_TIMING.HEAVY.retract * 0.8) // Second hook prep - 120ms (0.8 × 150ms)
-    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend + TECHNIQUE_TIMING.HEAVY.peak + 0.05) // Second hook + peak - 350ms (300ms + 120ms + 50ms extra)
+    .hookWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.6) // First hook prep - 120ms (0.6 × chamber)
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6) // First hook - 180ms (0.6 × extend)
+    .hookWindup(TECHNIQUE_TIMING.HEAVY.retract * 0.8) // Second hook prep - 120ms (0.8 × retract)
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend + 0.05) // Second hook - 350ms (extend + 50ms)
     .recover(TECHNIQUE_TIMING.HEAVY.recover) // Recover - 230ms
     .build();
 

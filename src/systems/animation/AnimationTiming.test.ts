@@ -427,6 +427,10 @@ describe("Animation Timing Validation", () => {
       // DOUBLE_HOOK uses HEAVY.total (1000ms)
       // Phases should sum to 1000ms
       expect(DOUBLE_HOOK_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.HEAVY.total, 2);
+      
+      // Verify that keyframes don't extend beyond declared duration
+      const lastKeyframeTime = Math.max(...DOUBLE_HOOK_ANIMATION.keyframes.map(kf => kf.time));
+      expect(lastKeyframeTime).toBeLessThanOrEqual(DOUBLE_HOOK_ANIMATION.duration);
     });
 
     it("DOUBLE_KICK_ANIMATION phases should match declared duration", () => {
