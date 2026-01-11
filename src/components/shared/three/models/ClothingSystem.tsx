@@ -14,7 +14,7 @@
  * @korean 의류시스템컴포넌트
  */
 
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { getArchetypeClothing } from "../../../../data/archetypeClothing";
 import type { ClothingSystemProps, ClothingItemProps } from "../../../../types/clothing";
@@ -30,13 +30,13 @@ import type { ClothingSystemProps, ClothingItemProps } from "../../../../types/c
 const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
   item,
   physicalAttributes,
-  scale = 1,
+  scale: _scale = 1, // Reserved for future use
 }) => {
   // Destructure item properties for stable useMemo dependencies
   const {
     type: itemType,
     fit: itemFit,
-    scaleMultiplier,
+    scaleMultiplier: _scaleMultiplier, // Reserved for future use
     colorPrimary,
     colorEmissive,
     emissiveIntensity,
@@ -47,27 +47,13 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
     id: itemId,
   } = item;
 
-  // Calculate scale factors based on physical attributes
-  const scaleFactors = useMemo(() => {
-    const baseHeight = 180; // Base height in cm
-    const heightScale = physicalAttributes.totalHeight / baseHeight;
-    
-    // Scale factors for different body parts
+  // Get geometry and position based on clothing type
+  // Inline scale calculations to avoid unnecessary object recreation
+  const clothingGeometry = useMemo(() => {
+    // Calculate scale factors inline
     const torsoScale = physicalAttributes.torsoLength / 59; // 59cm base torso
     const legScale = physicalAttributes.legLength / 96; // 96cm base leg
-    const shoulderScale = physicalAttributes.shoulderWidth / 46; // 46cm base shoulder
     
-    return {
-      height: heightScale,
-      torso: torsoScale,
-      leg: legScale,
-      shoulder: shoulderScale,
-      overall: heightScale * scale * (scaleMultiplier ?? 1.0),
-    };
-  }, [physicalAttributes, scale, scaleMultiplier]);
-
-  // Get geometry and position based on clothing type
-  const clothingGeometry = useMemo(() => {
     // Map fit type to scale multiplier
     const fitScaleMap: Record<typeof itemFit, number> = {
       tight: 1.02,
@@ -81,7 +67,7 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       case "torso": {
         // Torso clothing (shirt, jacket, bodysuit)
         const width = (physicalAttributes.shoulderWidth / 100) * fitScale;
-        const height = (physicalAttributes.torsoLength / 100) * scaleFactors.torso;
+        const height = (physicalAttributes.torsoLength / 100) * torsoScale;
         const depth = 0.15 * fitScale; // Thickness
         
         return {
@@ -93,7 +79,7 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       case "pants": {
         // Pants (per leg) - create separate geometries for left and right legs
         const legThickness = 0.08 * fitScale;
-        const legHeight = (physicalAttributes.legLength / 100) * scaleFactors.leg;
+        const legHeight = (physicalAttributes.legLength / 100) * legScale;
         
         return {
           geometry: new THREE.CylinderGeometry(
@@ -149,8 +135,9 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
       
       case "vest": {
         // Protective vest (slightly smaller than torso)
+        const torsoScale = physicalAttributes.torsoLength / 59; // 59cm base torso
         const width = (physicalAttributes.shoulderWidth / 100) * 0.9 * fitScale;
-        const height = (physicalAttributes.torsoLength / 100) * 0.7 * scaleFactors.torso;
+        const height = (physicalAttributes.torsoLength / 100) * 0.7 * torsoScale;
         const depth = 0.1 * fitScale;
         
         return {
@@ -178,7 +165,7 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
         };
       }
     }
-  }, [itemType, itemFit, physicalAttributes, scaleFactors]);
+  }, [itemType, itemFit, physicalAttributes]);
 
   // Material configuration
   const material = useMemo(() => {
@@ -215,7 +202,37 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
   }, [itemType, colorPrimary, colorEmissive, emissiveIntensity, metalness, roughness]);
 
   // Clean up Three.js resources when component unmounts or dependencies change
+  // Store previous resources to dispose when they change
+  const prevGeometryRef = useRef<THREE.BufferGeometry | null>(null);
+  const prevGeometryRightRef = useRef<THREE.BufferGeometry | null>(null);
+  const prevMaterialRef = useRef<THREE.Material | null>(null);
+  const prevMaterialRightRef = useRef<THREE.Material | null>(null);
+
   useEffect(() => {
+    // Dispose previous geometries if they changed
+    if (prevGeometryRef.current && prevGeometryRef.current !== clothingGeometry.geometry) {
+      prevGeometryRef.current.dispose();
+    }
+    if (prevGeometryRightRef.current && 'geometryRight' in clothingGeometry && 
+        prevGeometryRightRef.current !== clothingGeometry.geometryRight) {
+      prevGeometryRightRef.current.dispose();
+    }
+    
+    // Dispose previous materials if they changed
+    if (prevMaterialRef.current && prevMaterialRef.current !== material) {
+      prevMaterialRef.current.dispose();
+    }
+    if (prevMaterialRightRef.current && prevMaterialRightRef.current !== materialRight) {
+      prevMaterialRightRef.current.dispose();
+    }
+    
+    // Update refs to current resources
+    prevGeometryRef.current = clothingGeometry.geometry;
+    prevGeometryRightRef.current = 'geometryRight' in clothingGeometry ? clothingGeometry.geometryRight ?? null : null;
+    prevMaterialRef.current = material;
+    prevMaterialRightRef.current = materialRight;
+    
+    // Cleanup on unmount
     return () => {
       clothingGeometry.geometry.dispose();
       // For pants, also dispose the second geometry
@@ -294,6 +311,7 @@ const ClothingItemRenderer: React.FC<ClothingItemProps> = ({
 export const ClothingSystem: React.FC<ClothingSystemProps> = ({
   archetype,
   physicalAttributes,
+  boneMap: _boneMap, // Reserved for future skeletal skinning implementation
   scale = 1,
   visible = true,
 }) => {
