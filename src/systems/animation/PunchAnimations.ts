@@ -259,17 +259,17 @@ export const BACKFIST_ANIMATION: SkeletalAnimation =
  * Full 360° rotation into backfist.
  * High-risk knockout technique.
  *
- * Total duration: 1200ms (HEAVY+ spinning technique)
+ * Total duration: 1200ms (SPINNING technique)
  *
  * @korean 회전등주먹애니메이션
  */
 export const SPINNING_BACKFIST_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinning_backfist", "회전등주먹")
-    .asAttack(1.2)
-    .backKickSpin(0.3) // Full spin - 300ms
-    .counterStrike(0.25) // Backfist on completion - 250ms
-    .counterStrike(0.1) // Peak - 100ms
-    .spinRecover(0.55) // Complete rotation - 550ms
+    .asAttack(TECHNIQUE_TIMING.SPINNING.total)
+    .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // Full spin - 300ms
+    .counterStrike(TECHNIQUE_TIMING.SPINNING.extend) // Backfist on completion - 350ms
+    .counterStrike(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
+    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // Complete rotation - 430ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -353,19 +353,19 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
  * Left hook followed by right hook.
  * Body rotation carries momentum.
  *
- * Total duration: 1000ms (combo technique)
+ * Total duration: 1000ms (HEAVY technique)
  *
  * @korean 더블훅애니메이션
  */
 export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_hook", "더블훅")
-    .asAttack(1.0)
+    .asAttack(TECHNIQUE_TIMING.HEAVY.total)
     .hookWindup(0.12) // First hook prep - 120ms
     .hookPunch(0.18) // First hook - 180ms
     .hookWindup(0.12) // Second hook prep - 120ms
     .hookPunch(0.2) // Second hook - 200ms
-    .hookPunch(0.08) // Peak - 80ms
-    .recover(0.3) // Recover - 300ms
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.peak) // Peak - 120ms
+    .recover(TECHNIQUE_TIMING.HEAVY.recover) // Recover - 230ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

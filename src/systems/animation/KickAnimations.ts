@@ -175,22 +175,22 @@ export const BACK_KICK_ANIMATION: SkeletalAnimation =
  * Full 360° rotation with both feet off ground.
  *
  * Phases:
- * 1. Jump prep: Crouch and spring - 200ms
- * 2. Spin (회전): 360° rotation in air - 300ms
- * 3. Strike (차기): Instep connects - 250ms
- * 4. Landing (착지): Return to ground - 450ms
+ * 1. Jump prep: Crouch and spring - 300ms (chamber + rotation start)
+ * 2. Spin (회전): 360° rotation in air - 350ms
+ * 3. Strike (차기): Instep connects - 120ms
+ * 4. Landing (착지): Return to ground - 430ms
  *
- * Total duration: 1200ms (HEAVY+ spinning technique)
+ * Total duration: 1200ms (SPINNING technique)
  *
  * @korean 회전차기애니메이션
  */
 export const TORNADO_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tornado_kick", "회전차기")
-    .asAttack(1.2)
-    .chamber(0.2) // Jump prep - 200ms
-    .backKickSpin(0.3) // Begin spin - 300ms
-    .roundhouseExtend(0.25) // Strike through spin - 250ms
-    .spinRecover(0.45) // Land and recover - 450ms
+    .asAttack(TECHNIQUE_TIMING.SPINNING.total)
+    .chamber(TECHNIQUE_TIMING.SPINNING.chamber) // Jump prep & begin spin - 300ms
+    .roundhouseExtend(TECHNIQUE_TIMING.SPINNING.extend) // Strike through spin - 350ms
+    .roundhouseExtend(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
+    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // Land and recover - 430ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -340,16 +340,17 @@ export const PUSH_KICK_ANIMATION: SkeletalAnimation =
  * 2. Strike (차기): Heel hooks around - 350ms
  * 3. Recovery (복귀): Complete rotation - 550ms
  *
- * Total duration: 1200ms (HEAVY+ spinning technique)
+ * Total duration: 1200ms (SPINNING technique)
  *
  * @korean 뒤돌려차기애니메이션
  */
 export const SPINNING_HEEL_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinning_heel_kick", "뒤돌려차기")
-    .asAttack(1.2)
-    .backKickSpin(0.3) // 회전 - 300ms begin spin
-    .spinningHeelKick(0.35) // 차기 - 350ms heel hooks
-    .spinRecover(0.55) // 복귀 - 550ms complete rotation
+    .asAttack(TECHNIQUE_TIMING.SPINNING.total)
+    .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // 회전 - 300ms begin spin
+    .spinningHeelKick(TECHNIQUE_TIMING.SPINNING.extend) // 차기 - 350ms heel hooks
+    .spinningHeelKick(TECHNIQUE_TIMING.SPINNING.peak) // 정점 - 120ms hold
+    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // 복귀 - 430ms complete rotation
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -459,17 +460,17 @@ export const DOUBLE_KICK_ANIMATION: SkeletalAnimation =
  * Full rotation into powerful back kick.
  * 540 degrees of spinning momentum.
  *
- * Total duration: 1200ms (HEAVY+ spinning technique)
+ * Total duration: 1200ms (SPINNING technique)
  *
  * @korean 뒤돌아차기애니메이션
  */
 export const SPINNING_BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinning_back_kick", "뒤돌아차기")
-    .asAttack(1.2)
-    .backKickSpin(0.35) // Full spin - 350ms
-    .backKickThrust(0.3) // Thrust heel - 300ms
-    .backKickThrust(0.12) // Peak - 120ms
-    .spinRecover(0.43) // Complete rotation - 430ms
+    .asAttack(TECHNIQUE_TIMING.SPINNING.total)
+    .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // Full spin - 300ms
+    .backKickThrust(TECHNIQUE_TIMING.SPINNING.extend) // Thrust heel - 350ms
+    .backKickThrust(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
+    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // Complete rotation - 430ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

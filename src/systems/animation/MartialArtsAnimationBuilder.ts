@@ -215,6 +215,19 @@ export const TECHNIQUE_TIMING = {
     recover: 0.38,    // 380ms return to stance (복귀)
     total: 1.10,      // 1100ms total
   },
+  /**
+   * Spinning techniques (회전 기술)
+   * Examples: Spinning backfist, tornado kick, spinning heel kick, spinning back kick
+   * Total: 1200ms
+   */
+  SPINNING: {
+    chamber: 0.30,    // 300ms wind-up with rotation start (준비+회전)
+    extend: 0.35,     // 350ms strike through rotation (실행)
+    peak: 0.12,       // 120ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.28,    // 280ms complete rotation recovery (복귀)
+    total: 1.20,      // 1200ms total
+  },
 } as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
