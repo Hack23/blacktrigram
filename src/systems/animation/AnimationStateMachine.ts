@@ -1031,21 +1031,19 @@ export class PlayerAnimationStateMachine {
               this.clearStanceTransition();
             }
             
-            // Try to process next queued animation
-            const queuedAnimationExecuted = this.processNextQueuedAnimation();
-            
-            // If no queued animation was executed, transition to idle
-            if (!queuedAnimationExecuted) {
-              this.previousState = this.currentState;
-              this.currentState = AnimationState.IDLE;
-              this.frameIndex = 0;
-              this.timeAccumulator = 0;
-              this.justStarted = true;
+            // Transition to idle first
+            this.previousState = this.currentState;
+            this.currentState = AnimationState.IDLE;
+            this.frameIndex = 0;
+            this.timeAccumulator = 0;
+            this.justStarted = true;
 
-              if (this.events?.onAnimationStart) {
-                this.events.onAnimationStart(AnimationState.IDLE);
-              }
+            if (this.events?.onAnimationStart) {
+              this.events.onAnimationStart(AnimationState.IDLE);
             }
+            
+            // Then try to process next queued animation (from idle state)
+            this.processNextQueuedAnimation();
           } else {
             // Stay on last frame (for ko and ground states)
             this.frameIndex = currentAnim.frames - 1;
@@ -1692,20 +1690,24 @@ export class PlayerAnimationStateMachine {
    * when they cannot be executed immediately. Since the queue is enabled by
    * default, this is the recommended method for animation transitions.
    * 
+   * The queued animation will be automatically processed when the current
+   * animation completes, following priority and conflict resolution rules.
+   * 
    * @param newState - Target animation state
-   * @param forced - Whether to force the transition (bypasses normal rules)
-   * @returns Whether transition was successful or queued
+   * @returns Whether transition was successful, queued, or failed
    * 
    * @example
    * ```typescript
    * // Queue is enabled by default
    * const result = machine.transitionToQueued(AnimationState.ATTACK);
-   * // Returns "queued" if couldn't interrupt, "success" if transitioned
+   * // Returns "success" if transitioned immediately
+   * // Returns "queued" if couldn't interrupt but was queued
+   * // Returns "failed" if queue is full or disabled
    * ```
    * 
    * @korean 대기열상태전환
    */
-  transitionToQueued(newState: AnimationState, forced: boolean = false): "success" | "queued" | "failed" {
+  transitionToQueued(newState: AnimationState): "success" | "queued" | "failed" {
     // Try normal transition first
     const timestamp = performance.now();
     const priority = this.animations.get(newState)?.priority ?? 0;
@@ -1721,7 +1723,6 @@ export class PlayerAnimationStateMachine {
         state: newState,
         timestamp,
         priority,
-        forced,
       };
 
       const enqueued = this.animationQueue.enqueue(request);
@@ -1756,6 +1757,21 @@ export class PlayerAnimationStateMachine {
 
     // Try to execute the queued animation
     const success = this.transitionTo(nextRequest.state);
+
+    if (!success) {
+      // Log failure so queued animations do not disappear silently
+      // Korean: 대기열 애니메이션 전이가 실패했음을 로그로 남깁니다.
+      // This helps diagnose cases where transition rules, missing states,
+      // or priority conflicts prevent a queued animation from playing.
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[AnimationStateMachine] Failed to transition to queued animation state",
+        {
+          requestedState: nextRequest.state,
+          currentState: this.currentState,
+        },
+      );
+    }
 
     return success;
   }
@@ -1821,6 +1837,11 @@ export class PlayerAnimationStateMachine {
    */
   setConflictStrategy(strategy: ConflictResolutionStrategy): void {
     this.conflictStrategy = strategy;
+
+    // Keep the animation queue's strategy in sync with the state machine
+    if (this.animationQueue) {
+      this.animationQueue.setConflictStrategy(strategy);
+    }
   }
 
   /**

@@ -295,7 +295,14 @@ export interface AnimationRequest {
   readonly timestamp: number;
   /** Request priority */
   readonly priority: AnimationPriority;
-  /** Whether this is a forced request (bypasses normal rules) */
+  /** 
+   * Whether this is a forced request (wins conflict resolution against non-forced requests)
+   * 
+   * Note: This only affects conflict resolution between equal-priority animations in the queue.
+   * It does not bypass priority checks or interrupt rules for the initial transition.
+   * 
+   * @korean 강제요청
+   */
   readonly forced?: boolean;
 }
 
@@ -438,9 +445,27 @@ export class AnimationQueue {
       }
     }
 
-    // Add request and sort by priority (highest first)
-    this.queue.push(request);
-    this.queue.sort((a, b) => b.priority - a.priority);
+    // Insert request into queue while maintaining sort by priority (highest first)
+    // Use binary search to find insertion position - O(n) instead of O(n log n) sort
+    let low = 0;
+    let high = this.queue.length;
+
+    // Binary search to find insertion index
+    while (low < high) {
+      const mid = (low + high) >> 1;
+      const midPriority = this.queue[mid].priority;
+
+      if (midPriority < request.priority) {
+        // New request has higher priority; search left half
+        high = mid;
+      } else {
+        // New request has equal or lower priority; search right half
+        low = mid + 1;
+      }
+    }
+
+    // Insert at computed index to keep queue sorted (highest priority first)
+    this.queue.splice(low, 0, request);
     
     return true;
   }
@@ -574,6 +599,21 @@ export class AnimationQueue {
    */
   getMaxSize(): number {
     return this.maxSize;
+  }
+
+  /**
+   * Set conflict resolution strategy
+   * 
+   * **Korean**: 충돌 해결 전략 설정
+   * 
+   * Updates the strategy used to resolve equal-priority conflicts.
+   * 
+   * @param strategy - New conflict resolution strategy
+   * 
+   * @korean 충돌해결전략설정
+   */
+  setConflictStrategy(strategy: ConflictResolutionStrategy): void {
+    this.conflictStrategy = strategy;
   }
 }
 
