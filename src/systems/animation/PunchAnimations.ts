@@ -328,18 +328,25 @@ export const SUPERMAN_PUNCH_ANIMATION: SkeletalAnimation =
  * Classic 1-2 boxing combination.
  * Lead jab sets up rear cross.
  *
+ * Phases (준비, 실행, 회수, 복귀):
+ * 1. Jab chamber (잽 준비): 80ms
+ * 2. Jab extend (잽 실행): 120ms  
+ * 3. Cross transition (크로스 전환): 80ms (using peak for transition)
+ * 4. Cross extend (크로스 실행): 100ms (using retract)
+ * 5. Recovery (복귀): 320ms
+ *
  * Total duration: 700ms (COMBO_FAST technique)
+ * Sum: 80 + 120 + 80 + 100 + 320 = 700ms ✓
  *
  * @korean 잽크로스애니메이션
  */
 export const JAB_CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab_cross", "잽크로스")
     .asAttack(TECHNIQUE_TIMING.COMBO_FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.chamber) // Quick jab prep - 80ms
+    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.chamber) // Jab prep - 80ms
     .punchExtend(TECHNIQUE_TIMING.COMBO_FAST.extend) // Jab lands - 120ms
-    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.retract) // Cross prep - 100ms (using retract for transition)
-    .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.extend + TECHNIQUE_TIMING.COMBO_FAST.chamber) // Cross lands - 200ms (120ms + 80ms)
-    .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.peak) // Peak - 80ms
+    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.peak) // Cross transition - 80ms (using peak for quick transition)
+    .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.retract) // Cross lands - 100ms (faster for speed combo)
     .recover(TECHNIQUE_TIMING.COMBO_FAST.recover) // Recover - 320ms
     .build();
 
@@ -353,7 +360,15 @@ export const JAB_CROSS_ANIMATION: SkeletalAnimation =
  * Left hook followed by right hook.
  * Body rotation carries momentum.
  *
- * Total duration: 950ms (derived from HEAVY technique phases)
+ * Phases (준비, 실행, 회수, 복귀):
+ * 1. First hook chamber (첫 훅 준비): 120ms (0.6 × 200ms)
+ * 2. First hook extend (첫 훅 실행): 180ms (0.6 × 300ms)
+ * 3. Second hook chamber (둘째 훅 준비): 120ms (0.8 × 150ms)
+ * 4. Second hook extend + peak (둘째 훅 실행+정점): 350ms (extend + 50ms extra)
+ * 5. Recovery (복귀): 230ms
+ *
+ * Total duration: 1000ms (HEAVY technique)
+ * Sum: 120 + 180 + 120 + 350 + 230 = 1000ms ✓
  *
  * @korean 더블훅애니메이션
  */
@@ -363,7 +378,7 @@ export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
     .hookWindup(TECHNIQUE_TIMING.HEAVY.chamber * 0.6) // First hook prep - 120ms (0.6 × 200ms)
     .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6) // First hook - 180ms (0.6 × 300ms)
     .hookWindup(TECHNIQUE_TIMING.HEAVY.retract * 0.8) // Second hook prep - 120ms (0.8 × 150ms)
-    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend * 0.6 + TECHNIQUE_TIMING.HEAVY.peak) // Second hook - 300ms (180ms + 120ms peak)
+    .hookPunch(TECHNIQUE_TIMING.HEAVY.extend + TECHNIQUE_TIMING.HEAVY.peak + 0.05) // Second hook + peak - 350ms (300ms + 120ms + 50ms extra)
     .recover(TECHNIQUE_TIMING.HEAVY.recover) // Recover - 230ms
     .build();
 

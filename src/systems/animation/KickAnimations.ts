@@ -439,7 +439,16 @@ export const HOOK_KICK_ANIMATION: SkeletalAnimation =
  * Two rapid kicks from same leg.
  * First low, second high to confuse defense.
  *
+ * Phases (준비, 실행, 회수, 복귀):
+ * 1. First kick chamber (첫 차기 준비): 120ms
+ * 2. First kick extend (첫 차기 실행): 145ms (0.66 × 220ms, shortened)
+ * 3. Second kick chamber (둘째 차기 준비): 80ms (using peak for quick transition)
+ * 4. Second kick extend (둘째 차기 실행): 145ms (0.66 × 220ms, shortened)
+ * 5. Second kick peak (둘째 차기 정점): 80ms
+ * 6. Recovery (복귀): 380ms
+ *
  * Total duration: 950ms (COMBO_HEAVY technique)
+ * Sum: 120 + 145 + 80 + 145 + 80 + 380 = 950ms ✓
  *
  * @korean 이중차기애니메이션
  */
@@ -447,9 +456,9 @@ export const DOUBLE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_kick", "이중차기")
     .asAttack(TECHNIQUE_TIMING.COMBO_HEAVY.total)
     .lowKickChamber(TECHNIQUE_TIMING.COMBO_HEAVY.chamber) // First kick chamber - 120ms
-    .lowKickSweep(TECHNIQUE_TIMING.COMBO_HEAVY.extend) // First kick strikes - 220ms (includes execution)
-    .roundhouseChamber(TECHNIQUE_TIMING.COMBO_HEAVY.retract) // Second kick chamber - 150ms (use retract for transition)
-    .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.extend) // Second kick strikes - 220ms
+    .lowKickSweep(TECHNIQUE_TIMING.COMBO_HEAVY.extend * 0.66) // First kick strikes - 145ms (shortened for speed)
+    .roundhouseChamber(TECHNIQUE_TIMING.COMBO_HEAVY.peak) // Second kick chamber - 80ms (using peak for quick transition)
+    .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.extend * 0.66) // Second kick strikes - 145ms (shortened for speed)
     .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.peak) // Peak - 80ms
     .recover(TECHNIQUE_TIMING.COMBO_HEAVY.recover) // Recover - 380ms
     .build();

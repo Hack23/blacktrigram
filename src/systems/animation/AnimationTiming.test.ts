@@ -415,4 +415,24 @@ describe("Animation Timing Validation", () => {
       });
     });
   });
+
+  describe("Animation Phase Validation", () => {
+    it("JAB_CROSS_ANIMATION phases should match declared duration", () => {
+      // JAB_CROSS uses COMBO_FAST.total (700ms)
+      // Phases: chamber(80) + extend(120) + peak(80) + retract(100) + recover(320) = 700ms
+      expect(JAB_CROSS_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.COMBO_FAST.total, 2);
+    });
+
+    it("DOUBLE_HOOK_ANIMATION phases should match declared duration", () => {
+      // DOUBLE_HOOK uses HEAVY.total (1000ms)
+      // Phases should sum to 1000ms
+      expect(DOUBLE_HOOK_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.HEAVY.total, 2);
+    });
+
+    it("DOUBLE_KICK_ANIMATION phases should match declared duration", () => {
+      // DOUBLE_KICK uses COMBO_HEAVY.total (950ms)
+      // Phases should sum to 950ms
+      expect(DOUBLE_KICK_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.COMBO_HEAVY.total, 2);
+    });
+  });
 });
