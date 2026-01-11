@@ -213,10 +213,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [arenaBounds]
   );
 
+  // Expanded bounds to compensate for inputSystem's hardcoded offsets (-60 width, -180 height)
+  // This allows full arena movement like in CombatScreen
+  const expandedBounds = useMemo(
+    () => ({
+      x: arenaBounds.x,
+      y: arenaBounds.y,
+      width: arenaBounds.width + 60, // Compensate for -60 offset in inputSystem
+      height: arenaBounds.height + 180, // Compensate for -180 offset in inputSystem
+    }),
+    [arenaBounds]
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
+  // Speed modifiers matching CombatScreen (2.0 m/s walking, 4.0 m/s² acceleration)
   const { playerPosition, isMoving } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
-    bounds: arenaBounds,
+    bounds: expandedBounds,
     onPositionChange: (newPosition: Position) => {
       onPlayerUpdate({ position: newPosition });
     },
@@ -226,19 +239,29 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
     isRunning: false,
+    // Speed modifier overrides from SpeedModifierSystem (matching CombatScreen)
+    maxSpeedOverride: 2.0, // Base walking speed 2.0 m/s
+    accelerationOverride: 4.0, // Base acceleration 4.0 m/s²
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
+  // Scale 3D coordinates based on arena scale for consistent positioning
   const player3DPosition = useMemo<[number, number, number]>(() => {
     const relX = (playerPosition.x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPosition.y - arenaBounds.y) / arenaBounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    // Map 0-1 to world coordinates, scaled for arena size (matching CombatScreen)
+    const worldWidth = 16 * arenaBounds.scale;
+    const worldDepth = 8 * arenaBounds.scale;
+    const x = relX * worldWidth - worldWidth / 2;
+    const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
   }, [playerPosition, arenaBounds]);
 
-  // Dummy position (fixed in 3D space, right side of arena)
-  const dummyPosition = useMemo<[number, number, number]>(() => [5, 0, 0], []);
+  // Dummy position (fixed in 3D space, right side of arena, scaled)
+  const dummyPosition = useMemo<[number, number, number]>(
+    () => [5 * arenaBounds.scale, 0, 0],
+    [arenaBounds.scale]
+  );
 
   // Calculate rotation to face the dummy (same as CombatScreen3D pattern)
   const playerRotation = useMemo(() => {
