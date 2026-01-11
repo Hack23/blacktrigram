@@ -709,7 +709,11 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  * Player Animation State Machine
  * 
  * Manages animation state, transitions, and timing with frame-accurate updates.
- * Integrates priority system and event callbacks.
+ * Integrates priority system, automatic animation queueing, and event callbacks.
+ * 
+ * **Animation Queue**: Enabled by default with max size 3 and timestamp-based
+ * conflict resolution. Automatically queues animations that cannot execute
+ * immediately and processes them when the current animation completes.
  * 
  * @example
  * ```typescript
@@ -724,14 +728,18 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  *   }
  * });
  * 
+ * // Animation queue is enabled by default
+ * // Use transitionToQueued() for automatic queueing
+ * machine.transitionToQueued(AnimationState.ATTACK); // Queues if can't execute
+ * 
+ * // Or use regular transitionTo() (no queueing)
+ * machine.transitionTo(AnimationState.ATTACK); // Fails if can't execute
+ * 
  * // In game loop (useFrame)
  * useFrame((state, delta) => {
  *   const result = machine.update(delta);
  *   updatePlayerVisuals(result.state, result.frame);
  * });
- * 
- * // Trigger animations
- * machine.transitionTo("attack");
  * ```
  * 
  * @korean 플레이어애니메이션상태머신
@@ -854,9 +862,12 @@ export class PlayerAnimationStateMachine {
    * due to non-interruptible animations or priority conflicts.
    * Processed automatically when current animation completes.
    * 
+   * Enabled by default with max size 3 and timestamp-based conflict resolution.
+   * Can be disabled with disableQueue() or reconfigured with enableQueue().
+   * 
    * @korean 애니메이션대기열
    */
-  private animationQueue: AnimationQueue | null = null;
+  private animationQueue: AnimationQueue | null = new AnimationQueue(3, "timestamp");
 
   /**
    * Conflict resolution strategy for equal-priority animations
@@ -1624,23 +1635,19 @@ export class PlayerAnimationStateMachine {
   // ===== Animation Queue Methods (애니메이션 대기열) =====
 
   /**
-   * Enable animation queue system
+   * Enable or reconfigure animation queue system
    * 
-   * **Korean**: 애니메이션 대기열 활성화
+   * **Korean**: 애니메이션 대기열 활성화/재설정
    * 
-   * Enables the animation queue to buffer animation requests when the
-   * current animation cannot be interrupted. Queued animations are
-   * automatically processed when the current animation completes.
+   * The queue is enabled by default. Use this method to reconfigure the
+   * queue size or conflict resolution strategy.
    * 
    * @param maxSize - Maximum queue size (default: 3)
    * @param conflictStrategy - Conflict resolution strategy (default: "timestamp")
    * 
    * @example
    * ```typescript
-   * // Enable queue with default settings
-   * machine.enableQueue();
-   * 
-   * // Enable with custom settings
+   * // Queue is enabled by default, but you can reconfigure it
    * machine.enableQueue(5, "requested");
    * ```
    * 
@@ -1682,8 +1689,8 @@ export class PlayerAnimationStateMachine {
    * **Korean**: 대기열 지원 상태 전환
    * 
    * Enhanced version of transitionTo() that automatically queues animations
-   * when they cannot be executed immediately. If queue is disabled, behaves
-   * like normal transitionTo().
+   * when they cannot be executed immediately. Since the queue is enabled by
+   * default, this is the recommended method for animation transitions.
    * 
    * @param newState - Target animation state
    * @param forced - Whether to force the transition (bypasses normal rules)
@@ -1691,10 +1698,7 @@ export class PlayerAnimationStateMachine {
    * 
    * @example
    * ```typescript
-   * // Enable queue
-   * machine.enableQueue();
-   * 
-   * // Try to attack during non-interruptible animation
+   * // Queue is enabled by default
    * const result = machine.transitionToQueued(AnimationState.ATTACK);
    * // Returns "queued" if couldn't interrupt, "success" if transitioned
    * ```
