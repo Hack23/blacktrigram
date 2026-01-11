@@ -1,31 +1,31 @@
 /**
  * Optimized Animation System with Caching and Batch Processing
- * 
+ *
  * High-performance animation pipeline optimizations:
  * - Keyframe caching to avoid redundant interpolations
  * - Batch bone transformation updates
  * - Dirty flag optimization
  * - Precomputed interpolation curves
- * 
+ *
  * Target: Reduce animation overhead from ~8ms to <5ms per frame
- * 
+ *
  * @module systems/animation/AnimationOptimizations
  * @category Animation System
  * @korean 애니메이션최적화
  */
 
 import * as THREE from "three";
-import { ThreeObjectPools } from "../../utils/threeObjectPool";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
   SkeletalRig,
 } from "../../types/skeletal";
+import { ThreeObjectPools } from "../../utils/threeObjectPool";
 
 /**
  * Cached keyframe with interpolated values
  * Reduces redundant interpolation calculations
- * 
+ *
  * @korean 캐시된키프레임
  */
 interface CachedKeyframe {
@@ -41,7 +41,7 @@ interface CachedKeyframe {
 
 /**
  * Animation cache entry
- * 
+ *
  * @korean 애니메이션캐시항목
  */
 interface AnimationCache {
@@ -55,10 +55,10 @@ interface AnimationCache {
 
 /**
  * Animation Cache Manager
- * 
+ *
  * Caches interpolated keyframes to avoid redundant calculations.
  * Uses LRU eviction when cache is full.
- * 
+ *
  * @korean 애니메이션캐시관리자
  */
 class AnimationCacheManager {
@@ -71,7 +71,7 @@ class AnimationCacheManager {
 
   /**
    * Get cached keyframe or create new entry
-   * 
+   *
    * @param animationId - Animation identifier
    * @param animation - Animation data (reserved for future cache invalidation logic)
    * @param time - Current time
@@ -99,7 +99,7 @@ class AnimationCacheManager {
 
   /**
    * Cache an interpolated keyframe
-   * 
+   *
    * @param animationId - Animation identifier
    * @param animation - Animation data
    * @param time - Current time
@@ -200,21 +200,21 @@ class AnimationCacheManager {
 
 /**
  * Global animation cache instance
- * 
+ *
  * @korean 전역애니메이션캐시
  */
 export const animationCache = new AnimationCacheManager(50);
 
 /**
  * Batch update multiple bones with dirty flag optimization
- * 
+ *
  * Only updates bones that have changed rotations/positions.
  * Uses object pooling to avoid allocations.
- * 
+ *
  * @param rig - Skeletal rig to update
  * @param keyframe - Keyframe with bone transforms
  * @param dirtyBones - Set of bone names that changed (optional, updates all if not provided)
- * 
+ *
  * @korean 배치뼈업데이트
  */
 export function batchUpdateBones(
@@ -236,24 +236,25 @@ export function batchUpdateBones(
       bone.rotation.copy(rotation);
     }
 
-    // Update position (if animated)
+    // Update position (if animated) - apply as offset from rest position
     const position = keyframe.bonePositions?.get(boneName);
     if (position) {
-      bone.position.copy(position);
+      // Position values in animations are offsets from rest position, not absolute values
+      bone.position.copy(bone.restPosition).add(position);
     }
   });
 }
 
 /**
  * Precompute and cache animation interpolation
- * 
+ *
  * Generates cached keyframes at regular intervals for smooth playback.
  * Call this during asset loading or idle time.
- * 
+ *
  * @param animationId - Animation identifier
  * @param animation - Animation to precompute
  * @param sampleRate - Samples per second (default: 60fps = 60 samples/s)
- * 
+ *
  * @korean 애니메이션사전계산
  */
 export function precomputeAnimation(
@@ -275,15 +276,15 @@ export function precomputeAnimation(
 
 /**
  * Interpolate keyframe with caching
- * 
+ *
  * Checks cache before performing interpolation.
  * Automatically caches result for future use.
- * 
+ *
  * @param animationId - Animation identifier
  * @param animation - Animation data
  * @param time - Current time
  * @returns Interpolated keyframe
- * 
+ *
  * @korean 캐시된키프레임보간
  */
 export function interpolateKeyframeCached(
@@ -357,8 +358,12 @@ export function interpolateKeyframeCached(
 
   // Interpolate positions if present
   const interpolatedPositions = new Map<string, THREE.Vector3>();
-  if (prevKeyframe.bonePositions && prevKeyframe.bonePositions.size > 0 && 
-      nextKeyframe.bonePositions && nextKeyframe.bonePositions.size > 0) {
+  if (
+    prevKeyframe.bonePositions &&
+    prevKeyframe.bonePositions.size > 0 &&
+    nextKeyframe.bonePositions &&
+    nextKeyframe.bonePositions.size > 0
+  ) {
     prevKeyframe.bonePositions.forEach((prevPos, boneName) => {
       const nextPos = nextKeyframe.bonePositions?.get(boneName);
       if (nextPos) {
@@ -386,13 +391,13 @@ export function interpolateKeyframeCached(
 
 /**
  * Batch transform multiple bones in a single operation
- * 
+ *
  * Applies transformations to all bones efficiently using temporary objects.
  * Reduces per-bone overhead by batching operations.
- * 
+ *
  * @param rig - Skeletal rig
  * @param transforms - Map of bone names to transforms
- * 
+ *
  * @korean 배치변환
  */
 export function batchTransformBones(
@@ -417,15 +422,15 @@ export function batchTransformBones(
 
 /**
  * Calculate dirty bones between two keyframes
- * 
+ *
  * Identifies which bones have changed between keyframes for dirty flag optimization.
  * Only changed bones need to be updated.
- * 
+ *
  * @param prevKeyframe - Previous keyframe
  * @param nextKeyframe - Next keyframe
  * @param threshold - Minimum rotation difference in radians (default: 0.01)
  * @returns Set of bone names that changed
- * 
+ *
  * @korean 변경된뼈계산
  */
 export function calculateDirtyBones(
@@ -474,7 +479,7 @@ export function calculateDirtyBones(
 
 /**
  * Animation performance metrics
- * 
+ *
  * @korean 애니메이션성능지표
  */
 export interface AnimationPerformanceMetrics {
@@ -494,7 +499,7 @@ export interface AnimationPerformanceMetrics {
 
 /**
  * Performance monitor for animation system
- * 
+ *
  * @korean 성능모니터
  */
 class AnimationPerformanceMonitor {
@@ -575,7 +580,7 @@ class AnimationPerformanceMonitor {
 
 /**
  * Global performance monitor instance
- * 
+ *
  * @korean 전역성능모니터
  */
 export const performanceMonitor = new AnimationPerformanceMonitor();
