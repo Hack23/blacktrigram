@@ -86,6 +86,32 @@ export const TECHNIQUE_TIMING = {
     total: 0.55,      // 550ms total
   },
   /**
+   * Fast-Medium techniques (빠른-중간 기술)
+   * Examples: Low kicks, lead hooks, quick counters
+   * Total: 600ms
+   */
+  FAST_MEDIUM: {
+    chamber: 0.10,    // 100ms wind-up (준비)
+    extend: 0.15,     // 150ms strike (실행)
+    peak: 0.05,       // 50ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.60,      // 600ms total
+  },
+  /**
+   * Medium-Light techniques (중간-가벼운 기술)
+   * Examples: Lead uppercuts, backfists, push kicks
+   * Total: 700ms
+   */
+  MEDIUM_LIGHT: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.18,     // 180ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.22,    // 220ms return to stance (복귀)
+    total: 0.70,      // 700ms total
+  },
+  /**
    * Medium techniques (중간 기술)
    * Examples: Crosses, roundhouse kicks, hooks
    * Total: 730ms
@@ -99,6 +125,45 @@ export const TECHNIQUE_TIMING = {
     total: 0.73,      // 730ms total
   },
   /**
+   * Medium-Heavy techniques (중간-무거운 기술)
+   * Examples: Body shots, side kicks, crescent kicks
+   * Total: 750ms
+   */
+  MEDIUM_HEAVY: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.75,      // 750ms total
+  },
+  /**
+   * Heavy-Light techniques (무거운-가벼운 기술)
+   * Examples: Hooks, uppercuts, sweep kicks
+   * Total: 800ms
+   */
+  HEAVY_LIGHT: {
+    chamber: 0.15,    // 150ms wind-up (준비)
+    extend: 0.20,     // 200ms strike (실행)
+    peak: 0.10,       // 100ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.20,    // 200ms return to stance (복귀)
+    total: 0.80,      // 800ms total
+  },
+  /**
+   * Heavy-Medium techniques (무거운-중간 기술)
+   * Examples: Question mark kicks, crescent kicks
+   * Total: 850ms
+   */
+  HEAVY_MEDIUM: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.28,    // 280ms return to stance (복귀)
+    total: 0.85,      // 850ms total
+  },
+  /**
    * Heavy techniques (무거운 기술)
    * Examples: Spinning kicks, power punches, jumping techniques
    * Total: 1000ms
@@ -110,6 +175,45 @@ export const TECHNIQUE_TIMING = {
     retract: 0.15,    // 150ms pull back (회수)
     recover: 0.23,    // 230ms return to stance (복귀)
     total: 1.00,      // 1000ms total
+  },
+  /**
+   * Combo techniques (연속 기술)
+   * Examples: Jab-cross, double hooks, double kicks
+   * Total: 900ms
+   */
+  COMBO_FAST: {
+    chamber: 0.08,    // 80ms wind-up (준비)
+    extend: 0.12,     // 120ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.10,    // 100ms pull back (회수)
+    recover: 0.32,    // 320ms return to stance (복귀)
+    total: 0.90,      // 900ms total
+  },
+  /**
+   * Jumping techniques (뛰어차기 기술)
+   * Examples: Jumping kicks, jumping punches
+   * Total: 900ms
+   */
+  JUMPING: {
+    chamber: 0.18,    // 180ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.12,    // 120ms pull back (회수)
+    recover: 0.30,    // 300ms return to stance (복귀)
+    total: 0.90,      // 900ms total
+  },
+  /**
+   * Combo heavy techniques (연속 무거운 기술)
+   * Examples: Double kicks with different heights
+   * Total: 1100ms
+   */
+  COMBO_HEAVY: {
+    chamber: 0.12,    // 120ms wind-up (준비)
+    extend: 0.22,     // 220ms strike (실행)
+    peak: 0.08,       // 80ms hold at extension (정점)
+    retract: 0.15,    // 150ms pull back (회수)
+    recover: 0.38,    // 380ms return to stance (복귀)
+    total: 1.10,      // 1100ms total
   },
 } as const;
 

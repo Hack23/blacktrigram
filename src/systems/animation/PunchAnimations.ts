@@ -107,21 +107,20 @@ export const PALM_STRIKE_ANIMATION: SkeletalAnimation =
  *
  * Phases:
  * 1. Wind-up (준비): Arm pulls back, elbow bent 90° - 150ms
- * 2. Rotation (회전): Hip and torso rotate - 200ms
- * 3. Strike (타격): Fist arcs into target - 80ms
- * 4. Recovery (복귀): Return to guard - 300ms
+ * 2. Rotation & Strike (회전+타격): Hip rotates, fist arcs into target - 300ms
+ * 3. Recovery (복귀): Return to guard - 350ms
  *
- * Total duration: 800ms (MEDIUM+ technique)
+ * Total duration: 800ms (HEAVY_LIGHT technique)
  *
  * @korean 훅애니메이션
  */
 export const HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hook", "훅")
-    .asAttack(0.8)
-    .hookWindup(0.15) // 준비 - 150ms arm pulls back
-    .hookPunch(0.2) // 타격 - 200ms curved strike
-    .hookPunch(0.1) // 정점 - 100ms hold
-    .recover(0.35) // 복귀 - 350ms
+    .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
+    .hookWindup(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms arm pulls back
+    .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 타격 - 200ms curved strike
+    .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
+    .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 350ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -134,17 +133,17 @@ export const HOOK_ANIMATION: SkeletalAnimation =
  * Fast hook with lead hand.
  * Shorter range but quicker than rear hook.
  *
- * Total duration: 700ms (MEDIUM technique)
+ * Total duration: 700ms (MEDIUM_LIGHT technique)
  *
  * @korean 리드훅애니메이션
  */
 export const LEAD_HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("lead_hook", "리드훅")
-    .asAttack(0.7)
-    .hookWindup(0.12) // Quick wind-up - 120ms
-    .hookPunch(0.18) // Fast hook - 180ms
-    .hookPunch(0.08) // Peak - 80ms
-    .recover(0.32) // Recover - 320ms
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
+    .hookWindup(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // Quick wind-up - 120ms
+    .hookPunch(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // Fast hook - 180ms
+    .hookPunch(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract + TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // Recover - 320ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -163,17 +162,17 @@ export const LEAD_HOOK_ANIMATION: SkeletalAnimation =
  * 3. Strike (타격): Fist rises into chin - 100ms
  * 4. Recovery (복귀): Return to guard - 350ms
  *
- * Total duration: 800ms (MEDIUM+ technique)
+ * Total duration: 800ms (HEAVY_LIGHT technique)
  *
  * @korean 어퍼컷애니메이션
  */
 export const UPPERCUT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("uppercut", "어퍼컷")
-    .asAttack(0.8)
-    .uppercutCrouch(0.15) // 낮추기 - 150ms drop level
-    .uppercutPunch(0.2) // 상권 - 200ms rising strike
-    .uppercutPunch(0.1) // 정점 - 100ms hold
-    .recover(0.35) // 복귀 - 350ms
+    .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
+    .uppercutCrouch(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 낮추기 - 150ms drop level
+    .uppercutPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 상권 - 200ms rising strike
+    .uppercutPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
+    .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 350ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -186,17 +185,17 @@ export const UPPERCUT_ANIMATION: SkeletalAnimation =
  * Fast uppercut with lead hand.
  * Good counter when opponent ducks.
  *
- * Total duration: 700ms (MEDIUM technique)
+ * Total duration: 700ms (MEDIUM_LIGHT technique)
  *
  * @korean 리드어퍼컷애니메이션
  */
 export const LEAD_UPPERCUT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("lead_uppercut", "리드어퍼컷")
-    .asAttack(0.7)
-    .uppercutCrouch(0.12) // Quick drop - 120ms
-    .uppercutPunch(0.18) // Fast uppercut - 180ms
-    .uppercutPunch(0.08) // Peak - 80ms
-    .recover(0.32) // Recover - 320ms
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
+    .uppercutCrouch(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // Quick drop - 120ms
+    .uppercutPunch(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // Fast uppercut - 180ms
+    .uppercutPunch(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract + TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // Recover - 320ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -237,17 +236,17 @@ export const OVERHAND_ANIMATION: SkeletalAnimation =
  * Back of fist whips into target.
  * Can be spinning or direct.
  *
- * Total duration: 700ms (MEDIUM technique)
+ * Total duration: 700ms (MEDIUM_LIGHT technique)
  *
  * @korean 등주먹애니메이션
  */
 export const BACKFIST_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("backfist", "등주먹")
-    .asAttack(0.7)
-    .punchWindup(0.15) // Pull back - 150ms
-    .counterStrike(0.2) // Whip motion - 200ms
-    .counterStrike(0.08) // Peak - 80ms
-    .recover(0.27) // Recover - 270ms
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
+    .punchWindup(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // Pull back - 120ms
+    .counterStrike(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // Whip motion - 180ms
+    .counterStrike(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract + TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // Recover - 320ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -283,16 +282,16 @@ export const SPINNING_BACKFIST_ANIMATION: SkeletalAnimation =
  * Bottom of fist strikes downward like a hammer.
  * Effective in ground-and-pound.
  *
- * Total duration: 900ms (HEAVY- technique)
+ * Total duration: 900ms (JUMPING technique timing)
  *
  * @korean 철퇴권애니메이션
  */
 export const HAMMER_FIST_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hammer_fist", "철퇴권")
-    .asAttack(0.9)
-    .overhandPunch(0.25) // Similar arc to overhand - 250ms
-    .overhandPunch(0.1) // Peak - 100ms
-    .recover(0.55) // Recover - 550ms
+    .asAttack(TECHNIQUE_TIMING.JUMPING.total)
+    .overhandPunch(TECHNIQUE_TIMING.JUMPING.chamber + TECHNIQUE_TIMING.JUMPING.extend) // Similar arc to overhand - 400ms
+    .overhandPunch(TECHNIQUE_TIMING.JUMPING.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.JUMPING.retract + TECHNIQUE_TIMING.JUMPING.recover) // Recover - 420ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -329,19 +328,19 @@ export const SUPERMAN_PUNCH_ANIMATION: SkeletalAnimation =
  * Classic 1-2 boxing combination.
  * Lead jab sets up rear cross.
  *
- * Total duration: 900ms (combo technique)
+ * Total duration: 900ms (COMBO_FAST technique)
  *
  * @korean 잽크로스애니메이션
  */
 export const JAB_CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab_cross", "잽크로스")
-    .asAttack(0.9)
-    .punchWindup(0.08) // Quick jab prep - 80ms
-    .punchExtend(0.12) // Jab lands - 120ms
+    .asAttack(TECHNIQUE_TIMING.COMBO_FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.COMBO_FAST.chamber) // Quick jab prep - 80ms
+    .punchExtend(TECHNIQUE_TIMING.COMBO_FAST.extend) // Jab lands - 120ms
     .punchWindup(0.1) // Cross prep - 100ms
     .crossPunch(0.2) // Cross lands - 200ms
-    .crossPunch(0.08) // Peak - 80ms
-    .recover(0.32) // Recover - 320ms
+    .crossPunch(TECHNIQUE_TIMING.COMBO_FAST.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.COMBO_FAST.recover) // Recover - 320ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -379,17 +378,17 @@ export const DOUBLE_HOOK_ANIMATION: SkeletalAnimation =
  * Hook targeting ribs/liver.
  * Lower trajectory than head hook.
  *
- * Total duration: 750ms (MEDIUM+ technique)
+ * Total duration: 750ms (MEDIUM_HEAVY technique)
  *
  * @korean 바디샷애니메이션
  */
 export const BODY_SHOT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("body_shot", "바디샷")
-    .asAttack(0.75)
-    .uppercutCrouch(0.12) // Drop level - 120ms
-    .hookPunch(0.2) // Hook to body - 200ms
-    .hookPunch(0.08) // Peak - 80ms
-    .recover(0.35) // Recover - 350ms
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_HEAVY.total)
+    .uppercutCrouch(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // Drop level - 120ms
+    .hookPunch(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // Hook to body - 200ms
+    .hookPunch(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak) // Peak - 80ms
+    .recover(TECHNIQUE_TIMING.MEDIUM_HEAVY.retract + TECHNIQUE_TIMING.MEDIUM_HEAVY.recover) // Recover - 350ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
