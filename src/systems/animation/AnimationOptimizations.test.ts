@@ -2,21 +2,24 @@
  * Tests for Animation Optimizations
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as THREE from "three";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import type {
+  AnimationKeyframe,
+  SkeletalAnimation,
+} from "../../types/skeletal";
+import { BoneName } from "../../types/skeletal";
+import { ThreeObjectPools } from "../../utils/threeObjectPool";
 import {
   animationCache,
-  batchUpdateBones,
-  precomputeAnimation,
-  interpolateKeyframeCached,
   batchTransformBones,
+  batchUpdateBones,
   calculateDirtyBones,
+  interpolateKeyframeCached,
   performanceMonitor,
+  precomputeAnimation,
 } from "./AnimationOptimizations";
-import { ThreeObjectPools } from "../../utils/threeObjectPool";
 import { createHumanoidRig } from "./SkeletonRig";
-import { BoneName } from "../../types/skeletal";
-import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
 
 describe("Animation Optimizations", () => {
   beforeEach(() => {
@@ -40,7 +43,9 @@ describe("Animation Optimizations", () => {
       keyframes: [
         {
           time: 0.0,
-          boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+          boneRotations: new Map([
+            [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+          ]),
           bonePositions: new Map(),
         },
         {
@@ -52,7 +57,9 @@ describe("Animation Optimizations", () => {
         },
         {
           time: 1.0,
-          boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+          boneRotations: new Map([
+            [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+          ]),
           bonePositions: new Map(),
         },
       ],
@@ -150,7 +157,9 @@ describe("Animation Optimizations", () => {
         keyframes: [
           {
             time: 0.0,
-            boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+            boneRotations: new Map([
+              [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+            ]),
           },
           {
             time: 1.0,
@@ -180,11 +189,15 @@ describe("Animation Optimizations", () => {
         keyframes: [
           {
             time: 0.0,
-            boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+            boneRotations: new Map([
+              [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+            ]),
           },
           {
             time: 0.5,
-            boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(Math.PI / 2, 0, 0)]]),
+            boneRotations: new Map([
+              [BoneName.SHOULDER_R, new THREE.Euler(Math.PI / 2, 0, 0)],
+            ]),
           },
         ],
       };
@@ -259,21 +272,32 @@ describe("Animation Optimizations", () => {
       expect(() => batchUpdateBones(rig, keyframe)).not.toThrow();
     });
 
-    it("should update positions if provided", () => {
+    it("should update positions as offsets from rest position", () => {
       const rig = createHumanoidRig();
+
+      const rightShoulder = rig.bones.get(BoneName.SHOULDER_R);
+      // Store rest position for comparison
+      const restX = rightShoulder?.restPosition.x ?? 0;
+      const restY = rightShoulder?.restPosition.y ?? 0;
+      const restZ = rightShoulder?.restPosition.z ?? 0;
 
       const keyframe: AnimationKeyframe = {
         time: 0.0,
-        boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
-        bonePositions: new Map([[BoneName.SHOULDER_R, new THREE.Vector3(1, 2, 3)]]),
+        boneRotations: new Map([
+          [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+        ]),
+        // Position offset of (1, 2, 3) should be added to rest position
+        bonePositions: new Map([
+          [BoneName.SHOULDER_R, new THREE.Vector3(1, 2, 3)],
+        ]),
       };
 
       batchUpdateBones(rig, keyframe);
 
-      const rightShoulder = rig.bones.get(BoneName.SHOULDER_R);
-      expect(rightShoulder?.position.x).toBe(1);
-      expect(rightShoulder?.position.y).toBe(2);
-      expect(rightShoulder?.position.z).toBe(3);
+      // Position should be rest position + offset
+      expect(rightShoulder?.position.x).toBeCloseTo(restX + 1, 5);
+      expect(rightShoulder?.position.y).toBeCloseTo(restY + 2, 5);
+      expect(rightShoulder?.position.z).toBeCloseTo(restZ + 3, 5);
     });
   });
 
@@ -333,7 +357,9 @@ describe("Animation Optimizations", () => {
     it("should identify new bones as dirty", () => {
       const keyframe1: AnimationKeyframe = {
         time: 0.0,
-        boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+        boneRotations: new Map([
+          [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+        ]),
       };
 
       const keyframe2: AnimationKeyframe = {
@@ -352,7 +378,9 @@ describe("Animation Optimizations", () => {
     it("should use threshold for small changes", () => {
       const keyframe1: AnimationKeyframe = {
         time: 0.0,
-        boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
+        boneRotations: new Map([
+          [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+        ]),
       };
 
       const keyframe2: AnimationKeyframe = {
@@ -370,14 +398,22 @@ describe("Animation Optimizations", () => {
     it("should check positions if animated", () => {
       const keyframe1: AnimationKeyframe = {
         time: 0.0,
-        boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
-        bonePositions: new Map([[BoneName.SHOULDER_R, new THREE.Vector3(0, 0, 0)]]),
+        boneRotations: new Map([
+          [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+        ]),
+        bonePositions: new Map([
+          [BoneName.SHOULDER_R, new THREE.Vector3(0, 0, 0)],
+        ]),
       };
 
       const keyframe2: AnimationKeyframe = {
         time: 0.1,
-        boneRotations: new Map([[BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)]]),
-        bonePositions: new Map([[BoneName.SHOULDER_R, new THREE.Vector3(1, 0, 0)]]), // Changed
+        boneRotations: new Map([
+          [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
+        ]),
+        bonePositions: new Map([
+          [BoneName.SHOULDER_R, new THREE.Vector3(1, 0, 0)],
+        ]), // Changed
       };
 
       const dirtyBones = calculateDirtyBones(keyframe1, keyframe2, 0.01);
@@ -484,7 +520,11 @@ describe("Animation Optimizations", () => {
         const start = performance.now();
 
         // Interpolate keyframe (should hit cache most of the time)
-        const keyframe = interpolateKeyframeCached("full-test", animation, time);
+        const keyframe = interpolateKeyframeCached(
+          "full-test",
+          animation,
+          time
+        );
 
         if (keyframe) {
           // Calculate dirty bones

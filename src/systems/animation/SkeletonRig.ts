@@ -1,13 +1,13 @@
 /**
  * Skeleton rig implementation for articulated body model
- * 
+ *
  * Creates and manages humanoid skeletal rig with 28 bones for realistic
  * martial arts animations. Implements bone hierarchy following Korean martial
  * arts body mechanics.
- * 
+ *
  * Now supports dynamic scaling based on player physical attributes for
  * anatomically accurate body proportions per archetype.
- * 
+ *
  * @module systems/animation/SkeletonRig
  * @category Animation System
  * @korean 골격시스템
@@ -15,27 +15,30 @@
 
 import * as THREE from "three";
 import { PhysicalAttributes } from "../../types/common";
-import { BoneName } from "../../types/skeletal";
 import type {
   Bone,
-  SkeletalRig,
-  JointConstraint,
   BoneChain,
+  JointConstraint,
+  SkeletalRig,
 } from "../../types/skeletal";
-import { calculateBoneScalingFactors, calculateShoulderOffset } from "../../utils/skeletonScaling";
+import { BoneName } from "../../types/skeletal";
+import {
+  calculateBoneScalingFactors,
+  calculateShoulderOffset,
+} from "../../utils/skeletonScaling";
 
 /**
  * Create a bone with default rest pose
- * 
+ *
  * Helper function to create a bone with position, rotation, and scale.
  * Sets up rest pose for animation blending.
- * 
+ *
  * @param name - Unique bone identifier
  * @param parent - Parent bone (null for root)
  * @param position - Local position relative to parent [x, y, z]
  * @param length - Bone length for rendering
  * @returns Newly created bone
- * 
+ *
  * @korean 뼈생성
  */
 export const createBone = (
@@ -70,50 +73,37 @@ export const createBone = (
 
 /**
  * Create complete humanoid skeletal rig
- * 
+ *
  * Creates 28-bone humanoid skeleton following Korean martial arts anatomy:
  * - 1 root (pelvis)
  * - 3 spine bones
  * - 2 head bones (neck, head)
  * - 12 arm bones (6 per arm)
  * - 10 leg bones (5 per leg)
- * 
+ *
  * Total: 28 bones (under 30 bone limit for 60fps performance)
- * 
+ *
  * @returns Complete skeletal rig with bone hierarchy
- * 
+ *
  * @example
  * ```typescript
  * const rig = createHumanoidRig();
  * const rightHand = rig.bones.get(BoneName.HAND_R);
  * console.log(`Hand position: ${rightHand?.position}`);
  * ```
- * 
+ *
  * @korean 인간형골격생성
  */
 export const createHumanoidRig = (): SkeletalRig => {
   // Root (pelvis) - center of mass at hip height
-  const root = createBone(BoneName.PELVIS, null, [0, 0.9, 0], 0.15);
+  // Pelvis height = sum of leg segments (hip + thigh + knee + shin + foot)
+  // = 0.1 + 0.3 + 0.3 + 0.3 + 0.1 = 1.1 to have feet at Y=0
+  const root = createBone(BoneName.PELVIS, null, [0, 1.1, 0], 0.15);
 
   // Spine chain (3 bones)
-  const spine1 = createBone(
-    BoneName.SPINE_LOWER,
-    root,
-    [0, 0.15, 0],
-    0.2
-  );
-  const spine2 = createBone(
-    BoneName.SPINE_MIDDLE,
-    spine1,
-    [0, 0.2, 0],
-    0.2
-  );
-  const spine3 = createBone(
-    BoneName.SPINE_UPPER,
-    spine2,
-    [0, 0.2, 0],
-    0.2
-  );
+  const spine1 = createBone(BoneName.SPINE_LOWER, root, [0, 0.15, 0], 0.2);
+  const spine2 = createBone(BoneName.SPINE_MIDDLE, spine1, [0, 0.2, 0], 0.2);
+  const spine3 = createBone(BoneName.SPINE_UPPER, spine2, [0, 0.2, 0], 0.2);
 
   // Head chain (2 bones)
   const neck = createBone(BoneName.NECK, spine3, [0, 0.15, 0], 0.1);
@@ -150,12 +140,7 @@ export const createHumanoidRig = (): SkeletalRig => {
     [-0.15, 0, 0],
     0.05
   );
-  const leftHand = createBone(
-    BoneName.HAND_L,
-    leftWrist,
-    [-0.08, 0, 0],
-    0.08
-  );
+  const leftHand = createBone(BoneName.HAND_L, leftWrist, [-0.08, 0, 0], 0.08);
 
   // Right arm chain (6 bones - mirror of left)
   const rightShoulder = createBone(
@@ -188,60 +173,20 @@ export const createHumanoidRig = (): SkeletalRig => {
     [0.15, 0, 0],
     0.05
   );
-  const rightHand = createBone(
-    BoneName.HAND_R,
-    rightWrist,
-    [0.08, 0, 0],
-    0.08
-  );
+  const rightHand = createBone(BoneName.HAND_R, rightWrist, [0.08, 0, 0], 0.08);
 
   // Left leg chain (5 bones)
   const leftHip = createBone(BoneName.HIP_L, root, [-0.1, -0.1, 0], 0.1);
-  const leftThigh = createBone(
-    BoneName.THIGH_L,
-    leftHip,
-    [0, -0.3, 0],
-    0.3
-  );
-  const leftKnee = createBone(
-    BoneName.KNEE_L,
-    leftThigh,
-    [0, -0.3, 0],
-    0.05
-  );
-  const leftShin = createBone(
-    BoneName.SHIN_L,
-    leftKnee,
-    [0, -0.3, 0],
-    0.3
-  );
-  const leftFoot = createBone(
-    BoneName.FOOT_L,
-    leftShin,
-    [0, -0.1, 0.1],
-    0.15
-  );
+  const leftThigh = createBone(BoneName.THIGH_L, leftHip, [0, -0.3, 0], 0.3);
+  const leftKnee = createBone(BoneName.KNEE_L, leftThigh, [0, -0.3, 0], 0.05);
+  const leftShin = createBone(BoneName.SHIN_L, leftKnee, [0, -0.3, 0], 0.3);
+  const leftFoot = createBone(BoneName.FOOT_L, leftShin, [0, -0.1, 0.1], 0.15);
 
   // Right leg chain (5 bones - mirror of left)
   const rightHip = createBone(BoneName.HIP_R, root, [0.1, -0.1, 0], 0.1);
-  const rightThigh = createBone(
-    BoneName.THIGH_R,
-    rightHip,
-    [0, -0.3, 0],
-    0.3
-  );
-  const rightKnee = createBone(
-    BoneName.KNEE_R,
-    rightThigh,
-    [0, -0.3, 0],
-    0.05
-  );
-  const rightShin = createBone(
-    BoneName.SHIN_R,
-    rightKnee,
-    [0, -0.3, 0],
-    0.3
-  );
+  const rightThigh = createBone(BoneName.THIGH_R, rightHip, [0, -0.3, 0], 0.3);
+  const rightKnee = createBone(BoneName.KNEE_R, rightThigh, [0, -0.3, 0], 0.05);
+  const rightShin = createBone(BoneName.SHIN_R, rightKnee, [0, -0.3, 0], 0.3);
   const rightFoot = createBone(
     BoneName.FOOT_R,
     rightShin,
@@ -290,28 +235,28 @@ export const createHumanoidRig = (): SkeletalRig => {
 
 /**
  * Create humanoid rig with dynamic scaling based on physical attributes.
- * 
+ *
  * **Korean**: 신체 속성 기반 골격 생성 (Physical Attributes-Based Skeleton Creation)
- * 
+ *
  * Creates a 28-bone humanoid skeleton with bone lengths scaled according to
  * the fighter's physical attributes. This allows each archetype to have
  * anatomically accurate body proportions that affect combat hitboxes, vital
  * point positioning, and visual representation.
- * 
+ *
  * ## Visual Amplification
- * 
+ *
  * The scaling system applies amplification factors to create distinct visual
  * silhouettes while maintaining anatomical realism:
- * 
+ *
  * - **2.5x limb amplification**: Makes reach differences clearly visible
  * - **1.15x shoulder amplification**: Creates recognizable body width differences
  * - **1.5x height amplification**: Subtle overall size differences
- * 
+ *
  * ### Archetype Silhouettes Created
- * 
+ *
  * The following table shows the effective shoulder span after amplification
  * (full span = offset * 2). Values show raw attribute → amplified visual span.
- * 
+ *
  * | Archetype | Shoulders (Raw → Amplified Span) | Height | Silhouette |
  * |-----------|----------------------------------|--------|------------|
  * | Hacker    | 43cm → 49.5cm | 175cm | Compact, narrow |
@@ -319,30 +264,30 @@ export const createHumanoidRig = (): SkeletalRig => {
  * | Jeongbo   | 45cm → 51.8cm | 179cm | Balanced |
  * | Musa      | 46cm → 52.9cm | 180cm | Athletic |
  * | Jojik     | 54cm → 62.1cm | 188cm | Massive, wide |
- * 
+ *
  * Note: Amplified span = raw width * 1.15 (shoulder amplification factor)
  * Percentage differences remain constant, but absolute gaps are amplified:
  * - Raw gap: Jojik (54cm) - Hacker (43cm) = 11cm
  * - Amplified gap: 62.1cm - 49.5cm = 12.6cm (15% larger absolute difference)
- * 
+ *
  * @param attributes - Physical attributes to scale the skeleton
  * @returns Complete skeletal rig with scaled bone dimensions
- * 
+ *
  * @example
  * ```typescript
  * import { AMSALJA_PHYSICAL } from "@/data/archetypePhysicalAttributes";
- * 
+ *
  * // Create skeleton for lean assassin archetype
  * const amsaljaRig = createScaledHumanoidRig(AMSALJA_PHYSICAL);
  * // Results in taller skeleton with longer limbs, narrower shoulders
  * // Height: 186cm, Legs: 102cm, Arms: 82cm, Shoulders: 44cm
- * 
+ *
  * // Create skeleton for heavy brawler archetype
  * const jojikRig = createScaledHumanoidRig(JOJIK_PHYSICAL);
  * // Results in stockier skeleton with wider shoulders, thicker torso
  * // Height: 188cm, Legs: 100cm, Arms: 84cm, Shoulders: 54cm (25% wider!)
  * ```
- * 
+ *
  * @public
  * @korean 크기조정된인간형골격생성
  */
@@ -352,16 +297,24 @@ export const createScaledHumanoidRig = (
   // Calculate scaling factors from physical attributes
   const factors = calculateBoneScalingFactors(attributes);
   const shoulderOffset = calculateShoulderOffset(attributes);
-  
+
   // Convert shoulder offset from cm to meters for Three.js
   const shoulderOffsetMeters = shoulderOffset / 100;
-  
+
   // Root (pelvis) - center of mass at hip height
-  // Scale pelvis height by overall factor
+  // Pelvis height must account for total leg length to keep feet at Y=0
+  // Base leg drop = 0.1 (hip) + 0.3 (thigh) + 0.3 (knee) + 0.3 (shin) + 0.1 (foot) = 1.1
+  // Scale by leg factors: hip/foot by overall, thigh/knee by thigh, shin by shin
+  const baseLegDrop =
+    0.1 * factors.overall + // hip
+    0.3 * factors.thigh + // thigh
+    0.3 * factors.thigh + // knee (same as thigh)
+    0.3 * factors.shin + // shin
+    0.1 * factors.overall; // foot
   const root = createBone(
-    BoneName.PELVIS, 
-    null, 
-    [0, 0.9 * factors.overall, 0], 
+    BoneName.PELVIS,
+    null,
+    [0, baseLegDrop, 0],
     0.15 * factors.overall
   );
 
@@ -387,15 +340,15 @@ export const createScaledHumanoidRig = (
 
   // Head chain (2 bones) - scaled by neck/head dimensions
   const neck = createBone(
-    BoneName.NECK, 
-    spine3, 
-    [0, 0.15 * factors.neck, 0], 
+    BoneName.NECK,
+    spine3,
+    [0, 0.15 * factors.neck, 0],
     0.1 * factors.neck
   );
   const head = createBone(
-    BoneName.HEAD, 
-    neck, 
-    [0, 0.2 * factors.head, 0], 
+    BoneName.HEAD,
+    neck,
+    [0, 0.2 * factors.head, 0],
     0.2 * factors.head
   );
 
@@ -477,9 +430,9 @@ export const createScaledHumanoidRig = (
 
   // Left leg chain (5 bones) - scaled by leg length
   const leftHip = createBone(
-    BoneName.HIP_L, 
-    root, 
-    [-0.1 * factors.overall, -0.1 * factors.overall, 0], 
+    BoneName.HIP_L,
+    root,
+    [-0.1 * factors.overall, -0.1 * factors.overall, 0],
     0.1 * factors.overall
   );
   const leftThigh = createBone(
@@ -509,9 +462,9 @@ export const createScaledHumanoidRig = (
 
   // Right leg chain (5 bones - mirror of left)
   const rightHip = createBone(
-    BoneName.HIP_R, 
-    root, 
-    [0.1 * factors.overall, -0.1 * factors.overall, 0], 
+    BoneName.HIP_R,
+    root,
+    [0.1 * factors.overall, -0.1 * factors.overall, 0],
     0.1 * factors.overall
   );
   const rightThigh = createBone(
@@ -580,10 +533,10 @@ export const createScaledHumanoidRig = (
 
 /**
  * Joint constraints for anatomically correct movement
- * 
+ *
  * Defines rotation limits for each joint to prevent unrealistic poses.
  * Based on human anatomy and Korean martial arts biomechanics.
- * 
+ *
  * @korean 관절제약조건들
  */
 export const JOINT_CONSTRAINTS: JointConstraint[] = [
@@ -674,10 +627,10 @@ export const JOINT_CONSTRAINTS: JointConstraint[] = [
 
 /**
  * Bone chains for IK (Inverse Kinematics)
- * 
+ *
  * Defines logical bone chains for limbs, used for IK solving
  * and animation retargeting.
- * 
+ *
  * @korean 뼈체인들
  */
 export const BONE_CHAINS: BoneChain[] = [
@@ -757,13 +710,13 @@ export const BONE_CHAINS: BoneChain[] = [
 
 /**
  * Apply joint constraints to bone rotation
- * 
+ *
  * Clamps bone rotation to anatomically correct ranges.
  * Prevents unrealistic poses like backward-bending elbows.
- * 
+ *
  * @param bone - Bone to constrain
  * @param constraints - Joint constraint to apply
- * 
+ *
  * @korean 관절제약적용
  */
 export const applyJointConstraint = (
@@ -791,13 +744,13 @@ export const applyJointConstraint = (
 
 /**
  * Get world position of bone
- * 
+ *
  * Calculates absolute world position by traversing parent chain.
  * Accounts for parent rotations and positions.
- * 
+ *
  * @param bone - Bone to get world position for
  * @returns World position as Vector3
- * 
+ *
  * @korean 뼈의세계위치구하기
  */
 export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
@@ -815,13 +768,13 @@ export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
 
 /**
  * Get world rotation of bone
- * 
+ *
  * Calculates absolute world rotation by traversing parent chain.
  * Combines all parent rotations.
- * 
+ *
  * @param bone - Bone to get world rotation for
  * @returns World rotation as Euler
- * 
+ *
  * @korean 뼈의세계회전구하기
  */
 export const getBoneWorldRotation = (bone: Bone): THREE.Euler => {
@@ -841,12 +794,12 @@ export const getBoneWorldRotation = (bone: Bone): THREE.Euler => {
 
 /**
  * Reset bone to rest pose
- * 
+ *
  * Resets bone position and rotation to default rest pose.
  * Useful for animation blending and initialization.
- * 
+ *
  * @param bone - Bone to reset
- * 
+ *
  * @korean 뼈를기본자세로초기화
  */
 export const resetBoneToRestPose = (bone: Bone): void => {
@@ -857,11 +810,11 @@ export const resetBoneToRestPose = (bone: Bone): void => {
 
 /**
  * Reset entire rig to rest pose
- * 
+ *
  * Resets all bones in rig to rest pose.
- * 
+ *
  * @param rig - Skeletal rig to reset
- * 
+ *
  * @korean 골격을기본자세로초기화
  */
 export const resetRigToRestPose = (rig: SkeletalRig): void => {
@@ -872,22 +825,22 @@ export const resetRigToRestPose = (rig: SkeletalRig): void => {
 
 /**
  * Create hand bones with 5 fingers
- * 
+ *
  * Creates detailed hand structure with 5 fingers (thumb, index, middle, ring, pinky),
  * attached to an existing hand/palm bone.
  * Each finger has 3-4 bones for realistic animation.
- * 
+ *
  * Finger bone structure:
  * - Thumb: 3 bones (metacarpal, proximal, distal) - no intermediate
  * - Other fingers: 4 bones (metacarpal, proximal, intermediate, distal)
- * 
+ *
  * Total created by this function: 19 finger bones per hand (3 thumb + 4*4 other fingers),
  * all attached to the provided hand bone.
- * 
+ *
  * @param handBone - Parent hand bone (acts as the palm/root for finger bones)
  * @param side - Hand side ("left" or "right")
  * @returns Map of finger bones added to the rig
- * 
+ *
  * @korean 손뼈생성
  */
 export const createHandBones = (
@@ -895,170 +848,208 @@ export const createHandBones = (
   side: "left" | "right"
 ): Map<string, Bone> => {
   const fingerBones = new Map<string, Bone>();
-  
+
   // Hand orientation: left hand extends to -X, right hand extends to +X
   const sideMultiplier = side === "left" ? -1 : 1;
-  
+
   // Thumb (3 bones) - offset slightly toward palm center and forward
   const thumbMeta = createBone(
-    `${BoneName[`THUMB_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`THUMB_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     handBone,
     [0.015 * sideMultiplier, 0.02, 0.01],
     0.025
   );
   const thumbProx = createBone(
-    `${BoneName[`THUMB_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`THUMB_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     thumbMeta,
     [0.015 * sideMultiplier, 0.015, 0.01],
     0.02
   );
   const thumbDist = createBone(
-    `${BoneName[`THUMB_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`THUMB_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     thumbProx,
     [0.01 * sideMultiplier, 0.01, 0],
     0.015
   );
-  
+
   fingerBones.set(thumbMeta.name, thumbMeta);
   fingerBones.set(thumbProx.name, thumbProx);
   fingerBones.set(thumbDist.name, thumbDist);
-  
+
   // Index finger (4 bones)
   const indexMeta = createBone(
-    `${BoneName[`INDEX_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`INDEX_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     handBone,
     [0.015 * sideMultiplier, 0.06, 0],
     0.03
   );
   const indexProx = createBone(
-    `${BoneName[`INDEX_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`INDEX_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     indexMeta,
     [0, 0.025, 0],
     0.025
   );
   const indexInter = createBone(
-    `${BoneName[`INDEX_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`INDEX_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     indexProx,
     [0, 0.02, 0],
     0.02
   );
   const indexDist = createBone(
-    `${BoneName[`INDEX_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`INDEX_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     indexInter,
     [0, 0.015, 0],
     0.015
   );
-  
+
   fingerBones.set(indexMeta.name, indexMeta);
   fingerBones.set(indexProx.name, indexProx);
   fingerBones.set(indexInter.name, indexInter);
   fingerBones.set(indexDist.name, indexDist);
-  
+
   // Middle finger (4 bones) - longest finger
   const middleMeta = createBone(
-    `${BoneName[`MIDDLE_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`MIDDLE_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     handBone,
     [0.005 * sideMultiplier, 0.065, 0],
     0.035
   );
   const middleProx = createBone(
-    `${BoneName[`MIDDLE_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`MIDDLE_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     middleMeta,
     [0, 0.03, 0],
     0.03
   );
   const middleInter = createBone(
-    `${BoneName[`MIDDLE_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`MIDDLE_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     middleProx,
     [0, 0.025, 0],
     0.025
   );
   const middleDist = createBone(
-    `${BoneName[`MIDDLE_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`MIDDLE_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     middleInter,
     [0, 0.02, 0],
     0.02
   );
-  
+
   fingerBones.set(middleMeta.name, middleMeta);
   fingerBones.set(middleProx.name, middleProx);
   fingerBones.set(middleInter.name, middleInter);
   fingerBones.set(middleDist.name, middleDist);
-  
+
   // Ring finger (4 bones)
   const ringMeta = createBone(
-    `${BoneName[`RING_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`RING_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     handBone,
     [-0.005 * sideMultiplier, 0.06, 0],
     0.03
   );
   const ringProx = createBone(
-    `${BoneName[`RING_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`RING_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     ringMeta,
     [0, 0.025, 0],
     0.025
   );
   const ringInter = createBone(
-    `${BoneName[`RING_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`RING_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     ringProx,
     [0, 0.02, 0],
     0.02
   );
   const ringDist = createBone(
-    `${BoneName[`RING_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`RING_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     ringInter,
     [0, 0.015, 0],
     0.015
   );
-  
+
   fingerBones.set(ringMeta.name, ringMeta);
   fingerBones.set(ringProx.name, ringProx);
   fingerBones.set(ringInter.name, ringInter);
   fingerBones.set(ringDist.name, ringDist);
-  
+
   // Pinky finger (4 bones) - shortest finger
   const pinkyMeta = createBone(
-    `${BoneName[`PINKY_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`PINKY_META_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     handBone,
     [-0.015 * sideMultiplier, 0.05, 0],
     0.025
   );
   const pinkyProx = createBone(
-    `${BoneName[`PINKY_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`PINKY_PROX_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     pinkyMeta,
     [0, 0.02, 0],
     0.02
   );
   const pinkyInter = createBone(
-    `${BoneName[`PINKY_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`PINKY_INTER_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     pinkyProx,
     [0, 0.015, 0],
     0.015
   );
   const pinkyDist = createBone(
-    `${BoneName[`PINKY_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]}`,
+    `${
+      BoneName[`PINKY_DIST_${side.toUpperCase()[0]}` as keyof typeof BoneName]
+    }`,
     pinkyInter,
     [0, 0.01, 0],
     0.01
   );
-  
+
   fingerBones.set(pinkyMeta.name, pinkyMeta);
   fingerBones.set(pinkyProx.name, pinkyProx);
   fingerBones.set(pinkyInter.name, pinkyInter);
   fingerBones.set(pinkyDist.name, pinkyDist);
-  
+
   return fingerBones;
 };
 
 /**
  * Create humanoid rig with optional hand bones
- * 
+ *
  * Creates complete skeletal rig with optional detailed hand bones.
  * Hand bones can be excluded for performance (LOD system).
- * 
+ *
  * @param includeHandBones - Whether to include detailed hand bones (default: false)
  * @returns Complete skeletal rig with or without hand bones
- * 
+ *
  * @korean 손뼈포함골격생성
  */
 export const createHumanoidRigWithHands = (
@@ -1066,25 +1057,25 @@ export const createHumanoidRigWithHands = (
 ): SkeletalRig => {
   // Create base rig
   const baseRig = createHumanoidRig();
-  
+
   // If hand bones not requested, return base rig
   if (!includeHandBones) {
     return baseRig;
   }
-  
+
   // Get hand bones from base rig
   const leftHand = baseRig.bones.get(BoneName.HAND_L);
   const rightHand = baseRig.bones.get(BoneName.HAND_R);
-  
+
   if (!leftHand || !rightHand) {
     console.warn("Hand bones not found in base rig");
     return baseRig;
   }
-  
+
   // Create finger bones
   const leftFingerBones = createHandBones(leftHand, "left");
   const rightFingerBones = createHandBones(rightHand, "right");
-  
+
   // Add finger bones to rig bone map
   leftFingerBones.forEach((bone, name) => {
     baseRig.bones.set(name, bone);
@@ -1092,7 +1083,7 @@ export const createHumanoidRigWithHands = (
   rightFingerBones.forEach((bone, name) => {
     baseRig.bones.set(name, bone);
   });
-  
+
   return {
     ...baseRig,
     boneCount: baseRig.bones.size,
@@ -1101,14 +1092,14 @@ export const createHumanoidRigWithHands = (
 
 /**
  * Torso rotation constraints for anatomically correct upper/lower body movement
- * 
+ *
  * Defines limits and behavior for independent torso rotation relative to hips,
  * enabling realistic strafing and lateral movement while facing opponent.
- * 
+ *
  * Korean terminology:
  * - 허리회전 (Heorhwoejeon) - Torso rotation
  * - 해부학적제약 (Haebuhakjeok Jeyak) - Anatomical constraints
- * 
+ *
  * @public
  * @korean 허리회전제약조건
  */
@@ -1116,7 +1107,7 @@ export const TORSO_CONSTRAINTS = {
   /**
    * Maximum torso rotation relative to hips (radians)
    * ±90° = π/2 radians - anatomically safe rotation limit
-   * 
+   *
    * @korean 최대회전각도
    */
   MAX_ROTATION: Math.PI / 2,
@@ -1124,7 +1115,7 @@ export const TORSO_CONSTRAINTS = {
   /**
    * Minimum torso rotation relative to hips (radians)
    * -90° = -π/2 radians
-   * 
+   *
    * @korean 최소회전각도
    */
   MIN_ROTATION: -Math.PI / 2,
@@ -1132,7 +1123,7 @@ export const TORSO_CONSTRAINTS = {
   /**
    * Target interpolation time in seconds
    * 200ms provides smooth, natural rotation feel
-   * 
+   *
    * @korean 보간시간
    */
   INTERPOLATION_TIME: 0.2,
@@ -1140,36 +1131,36 @@ export const TORSO_CONSTRAINTS = {
   /**
    * Power modifier range for hip rotation
    * [min, max] = [10%, 30%] damage bonus from proper hip engagement
-   * 
+   *
    * @korean 파워배율범위
    */
-  POWER_MODIFIER_RANGE: [0.10, 0.30] as const,
+  POWER_MODIFIER_RANGE: [0.1, 0.3] as const,
 } as const;
 
 /**
  * Calculate torso rotation to face opponent while moving
- * 
+ *
  * Determines optimal torso rotation angle to keep upper body facing opponent
  * while hips/legs are oriented in movement direction. Enforces anatomical
  * constraints (±90° max rotation).
- * 
+ *
  * @param currentPosition - Player's current world position
  * @param opponentPosition - Opponent's current world position
  * @param _movementDirection - Direction of player movement (reserved for future use)
  * @param hipRotation - Current hip/pelvis rotation in radians
  * @returns Torso rotation in radians relative to hips (clamped to ±90°)
- * 
+ *
  * @example
  * ```typescript
  * const playerPos = new THREE.Vector3(0, 0, 0);
  * const opponentPos = new THREE.Vector3(0, 0, 5); // Directly in front along Z+
  * const moveDir = new THREE.Vector3(0, 0, 1); // Moving forward
  * const hipRot = 0; // Hips facing forward (Z+)
- * 
+ *
  * const torsoRot = calculateTorsoRotation(playerPos, opponentPos, moveDir, hipRot);
  * // Returns 0 (opponent is already aligned with hips)
  * ```
- * 
+ *
  * @public
  * @korean 상대를향한허리회전계산
  */
@@ -1180,54 +1171,60 @@ export function calculateTorsoRotation(
   hipRotation: number
 ): number {
   // Calculate angle to opponent
-  const directionToOpponent = opponentPosition.clone().sub(currentPosition).normalize();
+  const directionToOpponent = opponentPosition
+    .clone()
+    .sub(currentPosition)
+    .normalize();
   // Use atan2(x, z) - X is horizontal, Z is forward/back in Three.js
-  const angleToOpponent = Math.atan2(directionToOpponent.x, directionToOpponent.z);
-  
+  const angleToOpponent = Math.atan2(
+    directionToOpponent.x,
+    directionToOpponent.z
+  );
+
   // Calculate torso rotation relative to hips
   let torsoRotation = angleToOpponent - hipRotation;
-  
+
   // Normalize to -π to π range
   while (torsoRotation > Math.PI) torsoRotation -= 2 * Math.PI;
   while (torsoRotation < -Math.PI) torsoRotation += 2 * Math.PI;
-  
+
   // Apply anatomical constraints (±90°)
   torsoRotation = Math.max(
     TORSO_CONSTRAINTS.MIN_ROTATION,
     Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, torsoRotation)
   );
-  
+
   return torsoRotation;
 }
 
 /**
  * Calculate damage modifier from hip rotation
- * 
+ *
  * Determines power bonus applied to techniques based on hip rotation angle.
  * Greater hip rotation generates more power through proper biomechanics,
  * with strikes benefiting most from full rotation.
- * 
+ *
  * @param hipRotationAngle - Hip rotation angle in radians (typically from torso twist)
  * @param techniqueType - Type of technique ('strike', 'throw', or 'joint')
  * @returns Damage multiplier (1.0-1.3 for strikes, 1.0-1.1 for throws/joints)
- * 
+ *
  * @example
  * ```typescript
  * // Full hip rotation on strike technique
  * const modifier = calculateHipRotationPowerModifier(Math.PI / 2, 'strike');
  * // Returns 1.30 (30% damage bonus)
- * 
+ *
  * // Half rotation on throw
  * const throwMod = calculateHipRotationPowerModifier(Math.PI / 4, 'throw');
  * // Returns 1.05 (5% damage bonus)
  * ```
- * 
+ *
  * @public
  * @korean 허리회전으로인한데미지배율계산
  */
 export function calculateHipRotationPowerModifier(
   hipRotationAngle: number,
-  techniqueType: 'strike' | 'throw' | 'joint'
+  techniqueType: "strike" | "throw" | "joint"
 ): number {
   // Normalize rotation to 0-1 range (0 = no rotation, 1 = max rotation)
   // Clamp to max rotation first to handle any values exceeding ±90°
@@ -1236,11 +1233,11 @@ export function calculateHipRotationPowerModifier(
     Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, Math.abs(hipRotationAngle))
   );
   const normalizedRotation = clampedAngle / TORSO_CONSTRAINTS.MAX_ROTATION;
-  
+
   // Strikes benefit most from hip rotation (up to 30% bonus)
   // Throws get moderate benefit (up to 10% bonus)
   // Joint locks get minimal benefit (up to 10% bonus)
-  const baseModifier = techniqueType === 'strike' ? 0.30 : 0.10;
-  
-  return 1.0 + (normalizedRotation * baseModifier);
+  const baseModifier = techniqueType === "strike" ? 0.3 : 0.1;
+
+  return 1.0 + normalizedRotation * baseModifier;
 }
