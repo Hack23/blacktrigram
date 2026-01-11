@@ -8,6 +8,27 @@
  * body proportions that affect combat hitboxes, vital point positioning, and
  * visual representation.
  *
+ * ## Visual Amplification System
+ *
+ * Raw physical attribute differences between archetypes are subtle (2-12%).
+ * To create recognizable visual silhouettes in 3D, this system applies
+ * amplification factors that enhance differences while maintaining realistic
+ * proportions:
+ *
+ * - **Limb Scaling**: 2.5x amplification (subtle 5% difference → 12.5% visual)
+ * - **Shoulder Width**: 1.15x additional amplification for silhouette distinction
+ * - **Overall Height**: 1.5x amplification (kept subtle for realism)
+ *
+ * ### Expected Visual Silhouettes
+ *
+ * Each archetype has a distinct, recognizable body shape:
+ *
+ * - **해커 (Hacker)**: Compact, narrow shoulders (43cm), shortest limbs - SMALLEST
+ * - **암살자 (Amsalja)**: Tall (186cm), lean, long limbs (102cm legs) - TALLEST
+ * - **정보요원 (Jeongbo)**: Balanced, average proportions - BASELINE
+ * - **무사 (Musa)**: Athletic military build (46cm shoulders) - TRADITIONAL
+ * - **조직폭력배 (Jojik)**: Massive, widest shoulders (54cm), imposing - LARGEST
+ *
  * ## Integration with Korean Anatomy
  *
  * The scaling system respects Korean martial arts anatomy principles:
