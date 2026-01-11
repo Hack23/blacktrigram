@@ -278,7 +278,7 @@ export class AIDecisionTree {
 
     // 2. Counter-attack opportunity
     if (context.isOpponentAttacking) {
-      decisions.push(this.evaluateCounter(context, personality));
+      decisions.push(this.evaluateCounter(context, personality, killModeActive));
     }
 
     // 3. Combo initiation (only if at reasonable distance)
@@ -300,7 +300,7 @@ export class AIDecisionTree {
       decisions.push(this.evaluateCloseRange(context, personality, killModeActive));
     } else if (distance > optimalRange * 1.8) {
       // Too far - need to approach
-      decisions.push(this.evaluateApproach(context, personality));
+      decisions.push(this.evaluateApproach(context, personality, killModeActive));
     } else {
       // Mid-range - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
@@ -426,20 +426,53 @@ export class AIDecisionTree {
 
   /**
    * Evaluate counter-attack opportunity
+   * 
+   * **Kill Mode Enhancement (결정타 반격)**:
+   * - Aggressive archetypes become more reactive during kill mode
+   * - Musa: Increased counter frequency (honor demands swift response)
+   * - Amsalja: Enhanced counter timing with precision strikes
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active
    */
   private evaluateCounter(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
+    // Base counter chance affected by defense preference
+    let counterChance = personality.defensePreference * 0.8;
+    let counterPriority = 8;
+    
+    // Kill mode: Aggressive archetypes enhance counter behavior
+    if (killModeActive) {
+      if (personality.archetype === PlayerArchetype.MUSA) {
+        // Musa: Honor code demands swift aggressive counter
+        counterChance = Math.min(0.95, counterChance + 0.3); // +30% counter chance
+        counterPriority = 9; // Highest priority counter
+      } else if (personality.archetype === PlayerArchetype.AMSALJA) {
+        // Amsalja: Precision counter-strikes for instant takedown
+        counterChance = Math.min(0.90, counterChance + 0.25); // +25% counter chance
+        counterPriority = 9; // Highest priority counter
+      }
+    }
+    
     const shouldCounter =
-      Math.random() < personality.defensePreference * 0.8 &&
+      Math.random() < counterChance &&
       context.distanceToOpponent < 150;
 
     if (shouldCounter) {
+      const killModeReason = killModeActive 
+        ? (personality.archetype === PlayerArchetype.MUSA 
+          ? " - 명예 반격 (honor counter)" 
+          : " - 정밀 반격 (precision counter)")
+        : "";
+      
       return {
         action: AIActionType.COUNTER,
-        priority: 8,
-        reason: "Opponent attacking - counter opportunity",
+        priority: counterPriority,
+        reason: `Opponent attacking - counter opportunity${killModeReason}`,
       };
     }
 
@@ -820,10 +853,20 @@ export class AIDecisionTree {
    * - Musa charges directly (70% direct path)
    * - Amsalja uses flanking movements (40% diagonal approach)
    * - Hacker maintains optimal distance (prefers not to close too much)
+   * 
+   * **Kill Mode Enhancement (결정타 접근)**:
+   * - Aggressive archetypes close distance faster with enhanced footwork
+   * - Musa: Direct charging with leg shifts for maximum speed
+   * - Amsalja: Swift stepping patterns for rapid positioning
+   * 
+   * @param context - Combat context
+   * @param personality - AI personality
+   * @param killModeActive - Whether kill mode is active
    */
   private evaluateApproach(
     context: CombatContext,
-    personality: AIPersonality
+    personality: AIPersonality,
+    killModeActive: boolean = false
   ): AIDecision {
     const optimalRange = this.getOptimalRange(personality);
     const distance = context.distanceToOpponent;
@@ -838,16 +881,26 @@ export class AIDecisionTree {
     }
 
     // Apply archetype-specific movement bias
-    const movementBias = this.getArchetypeMovementBias(personality.archetype);
+    let movementBias = this.getArchetypeMovementBias(personality.archetype);
+    
+    // Kill mode: Enhance movement speed for aggressive archetypes
+    if (killModeActive) {
+      if (personality.archetype === PlayerArchetype.MUSA) {
+        movementBias *= 1.4; // 40% faster closing speed with leg shifts
+      } else if (personality.archetype === PlayerArchetype.AMSALJA) {
+        movementBias *= 1.3; // 30% faster with stepping patterns
+      }
+    }
+    
     let approachPos: Position;
 
     // Archetype-specific approach patterns
     if (personality.archetype === PlayerArchetype.MUSA && Math.random() < 0.7) {
-      // Musa: Direct charge 70% of the time
-      approachPos = this.calculateDirectApproach(context);
+      // Musa: Direct charge 70% of the time (enhanced in kill mode)
+      approachPos = this.calculateDirectApproach(context, killModeActive);
     } else if (personality.archetype === PlayerArchetype.AMSALJA && Math.random() < 0.4) {
-      // Amsalja: Flanking approach 40% of the time
-      approachPos = this.calculateFlankingApproach(context);
+      // Amsalja: Flanking approach 40% of the time (enhanced in kill mode)
+      approachPos = this.calculateFlankingApproach(context, killModeActive);
     } else {
       // Default approach with slight randomization
       approachPos = this.calculateApproachPosition(context);
@@ -855,18 +908,30 @@ export class AIDecisionTree {
 
     // Calculate priority based on distance from optimal range
     // Very far: priority ~6-7, moderate distance: priority ~5
-    const basePriority = 4;
+    let basePriority = 4;
+    
+    // Kill mode: Increase approach priority for closing distance
+    if (killModeActive && distance > optimalRange * 1.5) {
+      basePriority = 6; // Higher priority to close the gap quickly
+    }
+    
     const distanceRatio = Math.min(2, (distance - optimalRange) / optimalRange);
     const priorityBoost = distanceRatio * movementBias * 0.8;
     const finalPriority = basePriority + priorityBoost;
 
+    const killModeReason = killModeActive 
+      ? (personality.archetype === PlayerArchetype.MUSA 
+        ? " - 돌격 (charging)" 
+        : " - 신속 접근 (swift approach)")
+      : "";
+
     return {
       action: AIActionType.APPROACH,
       targetPosition: approachPos,
-      priority: Math.min(8, finalPriority), // Cap at 8 to allow survival/critical actions to override
+      priority: Math.min(9, finalPriority), // Allow higher cap in kill mode
       reason: `Moving closer (distance: ${Math.round(
         distance
-      )}, optimal: ${optimalRange})`,
+      )}, optimal: ${optimalRange})${killModeReason}`,
     };
   }
 
@@ -901,8 +966,15 @@ export class AIDecisionTree {
   /**
    * Calculate direct approach position (straight line to opponent)
    * Used primarily by Musa archetype for charging attacks
+   * 
+   * **Kill Mode Enhancement (결정타 돌격)**:
+   * - Larger step size for faster closing with leg shifts
+   * - Aggressive stride pattern for maximum forward momentum
+   * 
+   * @param context - Combat context
+   * @param killModeActive - Whether kill mode is active
    */
-  private calculateDirectApproach(context: CombatContext): Position {
+  private calculateDirectApproach(context: CombatContext, killModeActive: boolean = false): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -912,12 +984,17 @@ export class AIDecisionTree {
       return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
     }
 
-    // Move straight toward opponent with fixed step size for consistent movement speed
-    const step = Math.min(AIDecisionTree.MOVE_STEP_SIZE, distance);
+    // Kill mode: Enhanced step size for faster charging with leg shifts
+    const baseStepSize = AIDecisionTree.MOVE_STEP_SIZE;
+    const stepSize = killModeActive 
+      ? Math.min(baseStepSize * 1.5, distance) // 50% larger steps (leg shift technique)
+      : Math.min(baseStepSize, distance);
+    
+    // Move straight toward opponent with enhanced step size in kill mode
     return this.clampToArenaBounds(
       {
-        x: context.playerPosition.x + (dx / distance) * step,
-        y: context.playerPosition.y + (dy / distance) * step,
+        x: context.playerPosition.x + (dx / distance) * stepSize,
+        y: context.playerPosition.y + (dy / distance) * stepSize,
       },
       context.arenaBounds
     );
@@ -926,8 +1003,15 @@ export class AIDecisionTree {
   /**
    * Calculate flanking approach position (diagonal/side approach)
    * Used primarily by Amsalja archetype for stealth positioning
+   * 
+   * **Kill Mode Enhancement (결정타 측면 공격)**:
+   * - Tighter flanking angle for more aggressive positioning
+   * - Swift stepping pattern for rapid side movement
+   * 
+   * @param context - Combat context
+   * @param killModeActive - Whether kill mode is active
    */
-  private calculateFlankingApproach(context: CombatContext): Position {
+  private calculateFlankingApproach(context: CombatContext, killModeActive: boolean = false): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -937,8 +1021,12 @@ export class AIDecisionTree {
       return this.clampToArenaBounds(context.playerPosition, context.arenaBounds);
     }
 
-    // Add perpendicular offset for flanking (40-60 pixels to the side)
-    const flankOffset = 40 + Math.random() * 20;
+    // Kill mode: Tighter flanking for more aggressive positioning
+    const baseFlankOffset = 40 + Math.random() * 20;
+    const flankOffset = killModeActive 
+      ? baseFlankOffset * 0.7 // 30% closer flank (swift stepping)
+      : baseFlankOffset;
+    
     const perpX = -dy / distance; // Perpendicular vector
     const perpY = dx / distance;
     const flankSide = Math.random() < 0.5 ? 1 : -1; // Random side
