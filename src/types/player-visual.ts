@@ -49,7 +49,16 @@ export type PlayerAnimation =
   | "step_forward_left"
   | "step_forward_right"
   | "step_back_left"
-  | "step_back_right";
+  | "step_back_right"
+  // Stance-specific idle animations (팔괘 자세 애니메이션)
+  | "stance_geon"  // ☰ 건 (Heaven) - Forward stance
+  | "stance_tae"   // ☱ 태 (Lake) - Cat stance
+  | "stance_li"    // ☲ 리 (Fire) - Fighting stance
+  | "stance_jin"   // ☳ 진 (Thunder) - Horse stance
+  | "stance_son"   // ☴ 손 (Wind) - Crane stance
+  | "stance_gam"   // ☵ 감 (Water) - Back stance
+  | "stance_gan"   // ☶ 간 (Mountain) - Defensive stance
+  | "stance_gon";  // ☷ 곤 (Earth) - Low stance
 
 /**
  * Unified props for Player3D visual component.

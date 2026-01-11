@@ -267,7 +267,7 @@ describe("useSkeletalAnimation", () => {
     it("should handle stance guard animations", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
-          currentAnimation: "stance_guard_geon",
+          currentAnimation: "stance_geon",  // Use the mapped PlayerAnimation value
         })
       );
 

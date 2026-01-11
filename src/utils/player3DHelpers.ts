@@ -41,15 +41,15 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   stance_change: "stance_change",
   stance_side_switch: "stance_change", // Map to stance_change animation (mirroring guard)
   ko: "death", // Map ko to death
-  // Stance guard animations map to idle - guard pose handled by stance system
-  stance_guard_geon: "idle",
-  stance_guard_tae: "idle",
-  stance_guard_li: "idle",
-  stance_guard_jin: "idle",
-  stance_guard_son: "idle",
-  stance_guard_gam: "idle",
-  stance_guard_gan: "idle",
-  stance_guard_gon: "idle",
+  // Stance guard animations map to stance-specific idle animations with proper biomechanics
+  stance_guard_geon: "stance_geon",
+  stance_guard_tae: "stance_tae",
+  stance_guard_li: "stance_li",
+  stance_guard_jin: "stance_jin",
+  stance_guard_son: "stance_son",
+  stance_guard_gam: "stance_gam",
+  stance_guard_gan: "stance_gan",
+  stance_guard_gon: "stance_gon",
   // Tactical step animations now map to dedicated step animations
   step_forward: "step_forward",
   step_back: "step_back",
