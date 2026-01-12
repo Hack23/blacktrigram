@@ -736,7 +736,7 @@ describe("getMuscleTensionForStance", () => {
       ALL_TRIGRAM_STANCES.forEach((stance) => {
         const activations = getMuscleTensionForStance(stance);
 
-        activations.forEach((tension, muscle) => {
+        activations.forEach((tension) => {
           expect(tension).toBeGreaterThanOrEqual(0);
           expect(tension).toBeLessThanOrEqual(1.0);
         });
