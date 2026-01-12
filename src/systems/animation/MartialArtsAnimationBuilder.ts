@@ -785,18 +785,41 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Hook punch - Circular punch targeting temple (후크)
+   * Enhanced with Korean martial arts shoulder rotation and hikite (당기기)
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand is hooking ("left" | "right")
+   * @param easing Easing function
    * @korean 후크
    */
-  hookPunch(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+  hookPunch(
+    timeOffset: number = 0.1,
+    hand: "left" | "right" = "right",
+    easing: string = "ease-out"
+  ): this {
+    const isRight = hand === "right";
+    const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
+    const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
+    const wristBone = isRight ? BoneName.WRIST_R : BoneName.WRIST_L;
+    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
+    
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, -0.1, 0.6, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.35);
-      kf.rotate(BoneName.WRIST_R, 0, 0.2, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.5, 0);
-      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0);
-      kf.rotate(BoneName.PELVIS, 0, 0.35, 0);
+      // Hook arm arcs across
+      kf.rotate(shoulderBone, -0.1, isRight ? 0.6 : -0.6, isRight ? 0.4 : -0.4);
+      kf.rotate(elbowBone, 0, 0, isRight ? 1.35 : -1.35);
+      kf.rotate(wristBone, 0, isRight ? 0.2 : -0.2, 0);
+      
+      // Opposite arm pulls back (hikite)
+      kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
+      kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
+      
+      // Full body rotation
+      kf.rotate(BoneName.SPINE_UPPER, 0, isRight ? 0.5 : -0.5, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, isRight ? 0.4 : -0.4, 0);
+      kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
+      
       // Apply fist pose to punching hand
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
@@ -804,16 +827,38 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Hook wind-up - Arm pulls to side (후크준비)
+   * Enhanced with hikite (당기기) preparation
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand is hooking ("left" | "right")
+   * @param easing Easing function
    * @korean 후크준비
    */
-  hookWindup(timeOffset: number = 0.08, easing: string = "linear"): this {
+  hookWindup(
+    timeOffset: number = 0.08,
+    hand: "left" | "right" = "right",
+    easing: string = "linear"
+  ): this {
+    const isRight = hand === "right";
+    const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
+    const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
+    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
+    
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.1, -0.6, -0.5);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.57);
-      kf.rotate(BoneName.SPINE_UPPER, 0, -0.3, 0);
-      kf.rotate(BoneName.PELVIS, 0, -0.2, 0);
+      // Hook arm pulls back to side
+      kf.rotate(shoulderBone, 0.1, isRight ? -0.6 : 0.6, isRight ? -0.5 : 0.5);
+      kf.rotate(elbowBone, 0, 0, isRight ? 1.57 : -1.57);
+      
+      // Opposite arm in guard
+      kf.rotate(oppositeShoulder, -0.1, 0, isRight ? 0.2 : -0.2);
+      kf.rotate(oppositeElbow, 0, 0, isRight ? 1.4 : -1.4);
+      
+      // Body coiled away
+      kf.rotate(BoneName.SPINE_UPPER, 0, isRight ? -0.3 : 0.3, 0);
+      kf.rotate(BoneName.PELVIS, 0, isRight ? -0.2 : 0.2, 0);
+      
       // Form fist during hook windup
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
@@ -821,18 +866,40 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Uppercut punch - Rising punch to chin (어퍼컷)
+   * Enhanced with Korean martial arts leg drive and hikite (당기기)
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand is uppercutting ("left" | "right")
+   * @param easing Easing function
    * @korean 어퍼컷
    */
-  uppercutPunch(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+  uppercutPunch(
+    timeOffset: number = 0.1,
+    hand: "left" | "right" = "right",
+    easing: string = "ease-out"
+  ): this {
+    const isRight = hand === "right";
+    const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
+    const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
+    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
+    
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.8, 0, 1.0);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.2);
+      // Uppercut arm rises
+      kf.rotate(shoulderBone, 0.8, 0, isRight ? 1.0 : -1.0);
+      kf.rotate(elbowBone, 0, 0, isRight ? 1.2 : -1.2);
+      
+      // Opposite arm pulls back (hikite)
+      kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
+      kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
+      
+      // Drive up through legs
       kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
-      kf.rotate(BoneName.PELVIS, -0.2, 0.15, 0);
+      kf.rotate(BoneName.PELVIS, -0.2, isRight ? 0.15 : -0.15, 0);
       kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
+      
       // Apply fist pose to punching hand
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
@@ -840,18 +907,40 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Uppercut crouch - Dip before rising punch (어퍼컷준비)
+   * Enhanced with hikite (당기기) preparation
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand is uppercutting ("left" | "right")
+   * @param easing Easing function
    * @korean 어퍼컷준비
    */
-  uppercutCrouch(timeOffset: number = 0.08, easing: string = "linear"): this {
+  uppercutCrouch(
+    timeOffset: number = 0.08,
+    hand: "left" | "right" = "right",
+    easing: string = "linear"
+  ): this {
+    const isRight = hand === "right";
+    const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
+    const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
+    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
+    
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.3, 0, 0.2);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+      // Uppercut arm coils low
+      kf.rotate(shoulderBone, 0.3, 0, isRight ? 0.2 : -0.2);
+      kf.rotate(elbowBone, 0, 0, isRight ? 1.5 : -1.5);
+      
+      // Opposite arm in guard
+      kf.rotate(oppositeShoulder, -0.1, 0, isRight ? 0.2 : -0.2);
+      kf.rotate(oppositeElbow, 0, 0, isRight ? 1.4 : -1.4);
+      
+      // Drop level to load legs
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.15, -0.1, 0);
+      kf.rotate(BoneName.PELVIS, 0.15, isRight ? -0.1 : 0.1, 0);
       kf.position(BoneName.PELVIS, 0, -0.1, 0);
+      
       // Apply fist pose to punching hand during preparation
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
