@@ -16,7 +16,7 @@
 | **[🎨 UI/UX Architecture](docs/UI_UX_ARCHITECTURE.md)**               | UI Components    | Component hierarchy, design patterns, Korean theming, Three.js UI integration                              |
 | **[🔧 File Structure](#-file-structure-q1-2026)**                     | Organization     | Q1 2026 project structure with systems/, components/, data/, types/ layout                                 |
 | **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | Input → Trigram → Vital Point → Damage → Three.js rendering with skeletal animation                        |
-| **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 14-bone hierarchy, 6 hand poses, muscle tension visualization                                              |
+| **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 6 hand poses, muscle tension visualization                                              |
 | **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
 | **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q1 2026 status: Strengths (70/70 vital points), Weaknesses (33% combat realism), Opportunities, Threats    |
 | **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (71% test coverage, 4/12 combat realism systems, 8/8 trigram stances)                 |
@@ -76,7 +76,7 @@ C4Container
         Container(renderer, "🎨 Three.js Renderer", "@react-three/fiber + drei", "60fps 3D graphics, skeletal animation (14 bones), particle systems")
         Container(audioEngine, "🎵 Audio Engine", "Web Audio API", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
         Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Combat state, player archetypes (5), trigram stances")
-        Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "14-bone system, muscle tension, 70 vital point mapping")
+        Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "28-bone system, muscle tension, 70 vital point mapping")
         Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "60fps tracking, memory usage, optimization")
     }
 
@@ -127,7 +127,7 @@ C4Container
 >
 >   - **Animation System (`src/systems/animation/*`):**
 >
->     - 14-bone skeletal system (PELVIS → SPINE → SHOULDERS → ELBOWS → HANDS, THIGHS → SHINS → FEET).
+>     - 28-bone skeletal system (PELVIS → SPINE (3) → NECK/HEAD (2) → ARMS (6 each) → LEGS (5 each)).
 >     - Hand pose system (fist_vertical, fist_horizontal, open_hand_knife, etc.).
 >     - Muscle tension visualization (0.0-1.0 mapped to bone visual intensity).
 >
@@ -143,7 +143,7 @@ C4Container
 >
 > - **🎬 Animation System**:
 >
->   - 14-bone skeletal hierarchy (`src/types/skeletal.ts`).
+>   - 28-bone skeletal hierarchy (`src/types/skeletal.ts`).
 >   - Hand pose management (`src/types/hand-animation.ts`) for martial arts techniques.
 >   - Muscle activation visualization (`src/types/muscle.ts`) with tension mapping.
 >   - Technique animation (`src/types/technique.ts`) with keyframe interpolation.
@@ -170,7 +170,7 @@ C4Component
         Component(vitalPointEngine, "🎯 VitalPointEngine", "TypeScript", "70 vital points with polygon hit detection (<0.01ms)")
         Component(damageCalculator, "💥 DamageCalculator", "TypeScript", "Base × trigram × vital point multipliers")
         Component(effectsProcessor, "✨ EffectsProcessor", "TypeScript", "Visual and audio effect coordination")
-        Component(animationSystem, "🎬 AnimationSystem", "TypeScript", "14-bone skeletal animation + hand poses")
+        Component(animationSystem, "🎬 AnimationSystem", "TypeScript", "28-bone skeletal animation + hand poses")
         Component(bodyPartHealth, "🩹 BodyPartHealth", "TypeScript", "8-part health tracking system")
     }
 
@@ -180,14 +180,14 @@ C4Component
         Component(trigramData, "📊 TrigramData", "JSON/TypeScript", "8 I Ching trigrams + techniques")
         Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Damage-scaled audio + Korean traditional")
         Component(archetypeData, "👤 ArchetypeData", "JSON/TypeScript", "5 player archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배)")
-        Component(skeletalData, "🦴 SkeletalData", "TypeScript", "14-bone hierarchy + muscle tension")
+        Component(skeletalData, "🦴 SkeletalData", "TypeScript", "28-bone hierarchy + muscle tension")
     }
 
     Container_Boundary(rendering, "🎨 Rendering Layer") {
         Component(threeScene, "⚔️ ThreeScene", "Three.js", "3D combat scene with WebGL rendering")
         Component(particleSystem, "✨ ParticleSystem", "Three.js Instances", "Ki energy, hit effects, impact particles")
         Component(hudOverlay, "📊 HUDOverlay", "Html (drei)", "Health bars, stance indicators, damage numbers")
-        Component(skeletalRenderer, "🎭 SkeletalRenderer", "Three.js Skeleton", "14-bone character animation")
+        Component(skeletalRenderer, "🎭 SkeletalRenderer", "Three.js Skeleton", "28-bone character animation")
     }
 
     Rel(inputHandler, combatController, "Sends input events")
@@ -746,20 +746,29 @@ describe('Three.js Combat Arena', () => {
 
 ### 🎬 Skeletal Animation Architecture
 
-Black Trigram implements a comprehensive 14-bone skeletal system with hand poses and muscle tension visualization for authentic Korean martial arts movement.
+Black Trigram implements a comprehensive 28-bone skeletal system with hand poses and muscle tension visualization for authentic Korean martial arts movement.
 
-#### Bone Hierarchy (14-Bone System)
+#### Bone Hierarchy (28-Bone System)
 
 ```
 PELVIS (root)
 ├── SPINE_LOWER
 │   ├── SPINE_MID
 │   │   └── SPINE_UPPER
-│   │       ├── SHOULDER_L → ELBOW_L → HAND_L
-│   │       └── SHOULDER_R → ELBOW_R → HAND_R
-│   ├── THIGH_L → SHIN_L → FOOT_L
-│   └── THIGH_R → SHIN_R → FOOT_R
+│   │       ├── NECK
+│   │       │   └── HEAD
+│   │       ├── SHOULDER_L → UPPER_ARM_L → ELBOW_L → FOREARM_L → WRIST_L → HAND_L
+│   │       └── SHOULDER_R → UPPER_ARM_R → ELBOW_R → FOREARM_R → WRIST_R → HAND_R
+│   ├── HIP_L → THIGH_L → KNEE_L → SHIN_L → FOOT_L
+│   └── HIP_R → THIGH_R → KNEE_R → SHIN_R → FOOT_R
 ```
+
+**Total: 28 bones**
+- 1 pelvis (root)
+- 3 spine bones (lower, mid, upper)
+- 2 head bones (neck, head)
+- 12 arm bones (6 per arm: shoulder, upper_arm, elbow, forearm, wrist, hand)
+- 10 leg bones (5 per leg: hip, thigh, knee, shin, foot)
 
 **Implementation:** `src/types/skeletal.ts` - Complete bone hierarchy with TypeScript type definitions
 
@@ -815,14 +824,14 @@ PELVIS (root)
 - Object pooling for animation state objects
 
 **Memory Footprint:**
-- 14 bones × 16 bytes (Matrix4) = 224 bytes per character
+- 28 bones × 16 bytes (Matrix4) = 448 bytes per character
 - Hand pose state: ~50 bytes per character
 - Muscle tension map: ~112 bytes (8 muscle groups)
-- **Total per character: ~400 bytes**
+- **Total per character: ~610 bytes**
 
 **Target Performance:**
-- 2 characters (player + opponent): ~800 bytes animation overhead
-- Negligible impact on 60fps target (<0.5ms per frame)
+- 2 characters (player + opponent): ~1220 bytes animation overhead
+- Negligible impact on 60fps target (<1ms per frame)
 
 ### 🎯 Performance Targets
 
@@ -931,7 +940,7 @@ src/
 │   └── AudioProvider.ts     # Web Audio API integration
 ├── types/                   # TypeScript type definitions
 │   ├── constants/           # Korean colors, fonts, animations
-│   ├── skeletal.ts          # 14-bone skeletal system
+│   ├── skeletal.ts          # 28-bone skeletal system
 │   ├── muscle.ts            # Muscle tension system
 │   ├── hand-animation.ts    # Hand pose definitions
 │   ├── technique.ts         # Technique type definitions
@@ -956,7 +965,7 @@ src/
 - `src/systems/TrigramSystem.ts` (12,843 bytes) - 8-stance management
 
 **Skeletal Animation:**
-- `src/types/skeletal.ts` - 14-bone hierarchy definitions
+- `src/types/skeletal.ts` - 28-bone hierarchy definitions
 - `src/types/muscle.ts` - Muscle tension visualization
 - `src/types/hand-animation.ts` - Hand pose system (6 primary poses)
 
@@ -1140,7 +1149,7 @@ graph TD
 
 2. **🎭 Level of Detail (LOD)** (Planned for Phase 4)
 
-   - High-detail character models at close range (14-bone skeletal system)
+   - High-detail character models at close range (28-bone skeletal system)
    - Medium-detail models at medium distance (simplified bone hierarchy)
    - Low-detail models at far distance (capsule geometry)
    - `@react-three/drei` `<Detailed>` component for automatic LOD switching
@@ -1343,7 +1352,7 @@ mindmap
       id6.3[Korean labels, audio, cultural immersion]
     id7(🎵 Rich Audio-Visual Experience)
       id7.1[Three.js 3D rendering with skeletal animation]
-      id7.2[14-bone system with hand poses]
+      id7.2[28-bone system with hand poses]
       id7.3[Damage-based audio scaling - 84% test coverage]
     id8(⚙️ Modular Architecture)
       id8.1[Clear separation: Combat, Trigram, VitalPoint, Animation]
@@ -2096,13 +2105,13 @@ graph TD
 
 ## 🏁 Conclusion (Q1 2026)
 
-Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging Three.js 3D rendering and React 19 while maintaining simplicity through its frontend-only design. The Q1 2026 implementation demonstrates the successful completion of the PixiJS to Three.js migration, with 70/70 vital points implemented, a comprehensive 14-bone skeletal animation system, and 71% test coverage.
+Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging Three.js 3D rendering and React 19 while maintaining simplicity through its frontend-only design. The Q1 2026 implementation demonstrates the successful completion of the PixiJS to Three.js migration, with 70/70 vital points implemented, a comprehensive 28-bone skeletal animation system, and 71% test coverage.
 
 ### Key Architectural Strengths (Q1 2026):
 
 - **Three.js Migration Complete**: Modern 3D rendering with @react-three/fiber and @react-three/drei (60fps desktop, 55-60fps high-end mobile)
 - **Authentic Korean Martial Arts**: 70/70 vital points (100% complete), 8 trigram stances, 5 player archetypes with Korean names (무사, 암살자, 해커, 정보요원, 조직폭력배)
-- **Advanced Animation System**: 14-bone skeletal hierarchy, 6 hand poses with Korean terminology (직권, 평권, 복권, 손날, 장타, 잡기), muscle tension visualization
+- **Advanced Animation System**: 28-bone skeletal hierarchy, 6 hand poses with Korean terminology (직권, 평권, 복권, 손날, 장타, 잡기), muscle tension visualization
 - **Combat Realism Foundation**: 4/12 systems complete (body part health, vital point targeting, enhanced anatomy, visual feedback) with Q2 2026 completion roadmap
 - **High Test Coverage**: 71% overall, 93% on new components (Vitest unit + Cypress E2E)
 - **Zero Backend Complexity**: Pure frontend eliminates server management costs
