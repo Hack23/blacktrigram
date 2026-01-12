@@ -75,6 +75,7 @@ import {
 } from "./PunchAnimations";
 import { STANCE_ANIMATIONS } from "./StanceAnimations";
 import { ALL_ATTACK_ANIMATIONS } from "./StanceAttackAnimations";
+import { STANCE_LOCOMOTION_ANIMATIONS } from "./StanceLocomotionAnimations";
 import {
   getAnimationForTechniqueOrDefault,
   getAnimationForTechnique as getTechniqueAnimationConfig,
@@ -159,6 +160,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...MOVEMENT_ANIMATIONS,
   ...ALL_ATTACK_ANIMATIONS, // Stance-specific attack animations (24 unique)
   ...BASIC_ANIMATIONS, // Idle, Walk, Run, Fall animations
+  ...STANCE_LOCOMOTION_ANIMATIONS, // Stance-specific walk/run animations (16 unique)
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],

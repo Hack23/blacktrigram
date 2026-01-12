@@ -171,12 +171,26 @@ export function useSkeletalAnimation(
       }
       playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
-      // Walking animation
-      selectedAnim = getAnimation("walk");
+      // Walking animation - use trigram-specific walk if stance is provided
+      if (stance) {
+        const stanceWalkAnim = `walk_${stance}` as PlayerAnimation;
+        selectedAnim = getAnimationByName(stanceWalkAnim);
+      }
+      // Fall back to generic walk if no stance or stance animation not found
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("walk");
+      }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "run") {
-      // Running animation - faster gait from BasicAnimations
-      selectedAnim = getAnimation("run");
+      // Running animation - use trigram-specific run if stance is provided
+      if (stance) {
+        const stanceRunAnim = `run_${stance}` as PlayerAnimation;
+        selectedAnim = getAnimationByName(stanceRunAnim);
+      }
+      // Fall back to generic run if no stance or stance animation not found
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("run");
+      }
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("fall_")) {
       // Fall animations - directional falls from BasicAnimations
