@@ -823,14 +823,6 @@ PELVIS (root)
 **Target Performance:**
 - 2 characters (player + opponent): ~800 bytes animation overhead
 - Negligible impact on 60fps target (<0.5ms per frame)
-- [ ] Visual quality on desktop (1920x1080)
-- [ ] Visual quality on mobile (720p)
-- [ ] 60fps sustained on desktop
-- [ ] 55fps minimum on mobile
-- [ ] Korean colors render correctly
-- [ ] Html overlays positioned properly
-- [ ] No WebGL errors in console
-- [ ] Memory usage stays below 500MB (desktop)
 
 ### 🎯 Performance Targets
 
@@ -920,7 +912,7 @@ src/
 │   │   ├── EnhancedAnatomy.ts
 │   │   └── HitDetection.ts
 │   ├── combat/              # Combat mechanics, physics
-│   │   ├── CombatSystem.ts (36,888 lines - core combat logic)
+│   │   ├── CombatSystem.ts (36,888 bytes ~36KB - core combat logic)
 │   │   ├── EffectCalculator.ts
 │   │   └── PlayerEffectManager.ts
 │   ├── animation/           # Skeletal animation, hand poses
@@ -2176,7 +2168,7 @@ The Q1 2026 architecture successfully demonstrates the feasibility of authentic 
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2026-01-12 (Q1 2026 Update - Three.js Migration Complete)  
+**📅 Effective Date:** 2026-01-01 (Q1 2026 Baseline - Three.js Migration Complete)  
 **📝 Previous Version:** 2025-01-15 (PixiJS Architecture)  
 **⏰ Next Review:** 2026-04-12 (Q2 2026 Combat Realism Completion Review)  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
