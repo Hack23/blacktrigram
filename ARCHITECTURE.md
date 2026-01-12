@@ -74,7 +74,7 @@ C4Container
         Container(ui, "🖥️ React UI Layer", "React 19 + TypeScript", "Korean-themed components, responsive design, Html overlays")
         Container(gameEngine, "⚙️ Game Logic Engine", "TypeScript Modules", "Combat calculations, trigram system (8 stances), vital points (70)")
         Container(renderer, "🎨 Three.js Renderer", "@react-three/fiber + drei", "60fps 3D graphics, skeletal animation (14 bones), particle systems")
-        Container(audioEngine, "🎵 Audio Engine", "Howler.js + Web Audio", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
+        Container(audioEngine, "🎵 Audio Engine", "Web Audio API", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
         Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Combat state, player archetypes (5), trigram stances")
         Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "14-bone system, muscle tension, 70 vital point mapping")
         Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "60fps tracking, memory usage, optimization")
@@ -122,7 +122,7 @@ C4Container
 >
 >   - **AudioManager (`src/audio/*`):**
 >
->     - `AudioAssetRegistry.ts`, `AudioManager.ts`, `AudioUtils.ts`: Load & play SFX/music via Howler.js + Web Audio API.
+>     - `AudioAssetRegistry.ts`, `AudioManager.ts`, `AudioUtils.ts`: Load & play SFX/music via Web Audio API.
 >     - Damage-based audio scaling (combat impact sounds scaled by effectiveness).
 >
 >   - **Animation System (`src/systems/animation/*`):**
@@ -1224,14 +1224,6 @@ Status: ⚠️ Below 55fps target - needs optimization
 3. **🟡 High**: Add post-processing effects toggle for low-end devices
 4. **🟠 Medium**: Optimize skeletal animation for mobile (reduce bone updates)
 5. **🟠 Medium**: Implement progressive 3D model loading
-   - Throttle UI updates (animation triggers, combo pop-ups) using `useThrottle`/`useDebounce`.
-
-8. **🧠 Memoization**
-
-   - Use `React.memo` for pure UI components (`TrigramWheel`, `CombatHUD`) so they only re-render on relevant prop changes.
-   - Leverage `useMemo` / `useCallback` for expensive calculations inside React components.
-
-9. **🖥️ WebGL Extensions**
 
    - Enable `EXT_disjoint_timer_query` in PixiJS to gather GPU timing metrics for deeper profiling.
 
@@ -1393,7 +1385,7 @@ mindmap
       id6.2[Pain/consciousness needs expansion]
       id6.3[Trauma visualization needs injury tracking]
     id7(❌ Incomplete Features)
-      id7.1[Only 1 technique per stance - need 3-5]
+      id7.1[Techniques not yet stance-specific - currently 4 per archetype (20 total) vs target 3-5 per stance]
       id7.2[EndScreen not implemented yet]
       id7.3[Training mode limited scope]
     id8(📱 Mobile Performance)
