@@ -42,6 +42,41 @@ export const STANCE_COUNTERS: Record<TrigramStance, TrigramStance> = {
 export const COUNTER_STANCE_DAMAGE_MULTIPLIER = 1.2;
 
 /**
+ * Apply counter stance damage bonus when appropriate.
+ *
+ * This helper should be used by combat damage calculation code after it has
+ * determined whether the current stance matchup is a counter stance
+ * (for example, via an `isCounterStance` check elsewhere in the system).
+ *
+ * When `isCounterStance` is `true`, the base damage is multiplied by
+ * {@link COUNTER_STANCE_DAMAGE_MULTIPLIER}. Non-positive damage values are
+ * returned unchanged to avoid introducing invalid negative or zero scaling.
+ *
+ * @param baseDamage - The pre-modifier damage value.
+ * @param isCounterStance - Whether the attacker is using a counter stance.
+ * @returns The adjusted damage value with counter stance bonus applied when relevant.
+ *
+ * @example
+ * ```ts
+ * const isCounter = trigramSystem.isCounterStance(attackerStance, defenderStance);
+ * const finalDamage = applyCounterStanceDamage(baseDamage, isCounter);
+ * ```
+ *
+ * @korean
+ * 반격 자세(상극 자세)일 때만 피해 배율(1.2배)을 적용합니다.
+ */
+export function applyCounterStanceDamage(
+  baseDamage: number,
+  isCounterStance: boolean
+): number {
+  if (!isCounterStance || baseDamage <= 0) {
+    return baseDamage;
+  }
+
+  return baseDamage * COUNTER_STANCE_DAMAGE_MULTIPLIER;
+}
+
+/**
  * System for managing Eight Trigram (팔괘) stance transitions and combat calculations.
  *
  * **Korean**: 팔괘 시스템 (Eight Trigram System)

@@ -647,7 +647,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         lastSwitchTime: Date.now(),
       };
     }
-  }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived, player.currentStance]);
+  }, [roundStarted, decisionTree, comboSystem]);
 
   // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
   // Detects when AI changes stance and resets fatigue timer
@@ -656,17 +656,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       return;
     }
 
-    // Detect stance change
+    // Detect stance change and reset fatigue
     if (player.currentStance !== stanceFatigueRef.current.currentStance) {
       stanceFatigueRef.current = {
         currentStance: player.currentStance,
         timeInStance: 0,
         lastSwitchTime: Date.now(),
       };
-    } else {
-      // Update time in current stance
-      stanceFatigueRef.current.timeInStance = 
-        Date.now() - stanceFatigueRef.current.lastSwitchTime;
     }
   }, [player.currentStance, roundStarted, roundEnded, isPaused]);
 
