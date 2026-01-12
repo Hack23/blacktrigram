@@ -24,10 +24,11 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
  * Ball of foot strikes forward in a snapping motion.
  *
  * Phases:
- * 1. Chamber (준비): Knee lifts to waist height - 120ms
- * 2. Extension (차기): Leg snaps forward - 180ms
- * 3. Retraction (회수): Leg returns to chamber - 100ms
- * 4. Recovery (복귀): Return to fighting stance - 300ms
+ * 1. Chamber (준비): Knee lifts to torso height - 120ms
+ * 2. Extension (차기): Leg snaps forward with hip thrust - 180ms
+ * 3. Peak (정점): Hold at full extension - 80ms
+ * 4. Retraction (회수): Leg returns through chamber - 100ms
+ * 5. Recovery (복귀): Return to fighting stance - 220ms
  *
  * Total duration: 700ms (MEDIUM_LIGHT technique)
  *
@@ -36,11 +37,11 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
 export const FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("front_kick", "앞차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
-    .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts
-    .withHighGuard() // 상단방어 - Protect face
+    .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts to torso
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // 차기 - 180ms leg snaps forward
-    .retract(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract) // 회수 - 100ms return to chamber
-    .setDown(TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // 착지 - 220ms foot returns
+    .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // 정점 - 80ms hold at extension
+    .retract(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract) // 회수 - 100ms return through chamber
+    .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // 복귀 - 220ms return to stance
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

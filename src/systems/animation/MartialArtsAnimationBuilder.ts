@@ -330,11 +330,33 @@ export class MartialArtsAnimationBuilder {
   /**
    * Chamber - Knee lifts to waist height (준비자세)
    * Starting position for all kicks
+   * 
+   * Authentic Korean martial arts chamber mechanics:
+   * - Hip flexed to 90° (1.57 rad) bringing knee to torso height
+   * - Knee bent tight (120° angle = -2.0 rad) for power generation
+   * - Support leg slightly bent for stability
+   * - Pelvis tilts back slightly for balance
+   * - Toe neutral, ready for extension
+   * 
    * @korean 준비자세
    */
   chamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      applyKickPhaseToConfig(kf, KICK_PHASES.CHAMBER);
+      // Apply core kick chamber phase
+      applyKickPhaseToConfig(kf, KICK_PHASES.CHAMBER, {
+        includeAnkle: true,
+        includePelvis: true,
+      });
+      
+      // Additional stability and balance
+      kf.rotate(BoneName.SPINE_LOWER, -0.05, 0, 0); // Slight back lean
+      kf.rotate(BoneName.SPINE_UPPER, -0.03, 0, 0); // Upper body stable
+      
+      // Arms in guard position
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
     });
     this.currentTime += timeOffset;
     return this;
@@ -342,11 +364,39 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Extend - Leg snaps forward (차기 - 확장)
+   * 
+   * Authentic Korean martial arts extension mechanics:
+   * - Hip maintains elevation (1.7 rad ~97°) for target height
+   * - Knee extends fully (0.1 rad ~6°) for maximum reach
+   * - Ankle dorsiflexes (0.5 rad ~29°) pointing toe/ball of foot
+   * - Pelvis tilts forward (0.15 rad ~9°) for hip thrust
+   * - Support leg bends deeper (-0.35 rad) for power transfer
+   * - Spine remains upright for balance
+   * 
+   * This is the impact frame where the strike connects.
+   * 
    * @korean 차기확장
    */
   extend(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      applyKickPhaseToConfig(kf, KICK_PHASES.EXTENSION, { includeAnkle: true });
+      // Apply core kick extension phase
+      applyKickPhaseToConfig(kf, KICK_PHASES.EXTENSION, {
+        includeAnkle: true,
+        includePelvis: true,
+      });
+      
+      // Hip thrust forward (key to Korean kick power)
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0); // Slight forward lean
+      kf.rotate(BoneName.SPINE_UPPER, 0.03, 0, 0); // Follow through
+      
+      // Position foot forward for impact
+      kf.position(BoneName.FOOT_R, 0.6, 0, 0); // Forward position
+      
+      // Arms maintain guard
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
     });
     this.currentTime += timeOffset;
     return this;
@@ -354,14 +404,44 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Retract - Return to chamber (회수)
+   * 
+   * Authentic Korean martial arts retraction mechanics:
+   * - Leg returns THROUGH chamber position (proper 낙법)
+   * - Knee bends back to tight position (-2.0 rad)
+   * - Hip maintains height initially, then lowers
+   * - Foot resets to neutral from pointed position
+   * - Pelvis returns to neutral
+   * - Support leg maintains stability
+   * 
+   * This is critical for proper technique - the leg must return
+   * through chamber to protect against counters and maintain balance.
+   * 
    * @korean 회수자세
    */
   retract(timeOffset: number = 0.15, easing: string = "ease-in"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Return to chamber position (hip still high)
       applyKickPhaseToConfig(kf, KICK_PHASES.CHAMBER, {
-        includePelvis: false,
-        resetFoot: true,
+        includeAnkle: true,
+        includePelvis: true,
+        resetFoot: false, // Foot returns to neutral, not reset
       });
+      
+      // Spine returns to neutral
+      kf.rotate(BoneName.SPINE_LOWER, -0.05, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, -0.03, 0, 0);
+      
+      // Foot back to neutral
+      kf.rotate(BoneName.FOOT_R, 0, 0, 0);
+      
+      // Position foot back closer to body
+      kf.position(BoneName.FOOT_R, 0, 0, 0);
+      
+      // Arms still in guard
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
     });
     this.currentTime += timeOffset;
     return this;
@@ -384,6 +464,18 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Roundhouse chamber - Hip rotates for 돌려차기
+   * 
+   * Authentic Taekwondo roundhouse chamber (돌려차기 준비):
+   * - Hip flexed and rotated out (~1.2 rad flex, ~0.8 rad external rotation)
+   * - Knee bent tight (-1.5 rad) preparing for snap
+   * - Pelvis begins rotation (-0.5 rad on Y-axis)
+   * - Spine counter-rotates for power (0.3 rad on Y-axis)
+   * - Support leg stable
+   * - Arms in high guard
+   * 
+   * The hip rotation is KEY - it opens the hip for the circular strike path
+   * that defines a roundhouse kick vs. a front kick.
+   * 
    * @korean 돌려차기준비
    */
   roundhouseChamber(
@@ -391,7 +483,21 @@ export class MartialArtsAnimationBuilder {
     easing: string = "ease-out"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Apply rotational phase
       applyRoundhousePhaseToConfig(kf, KICK_PHASES.ROUNDHOUSE_CHAMBER);
+      
+      // Support leg stability
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0, 0);
+      
+      // Spine lower follows pelvis rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -0.3, 0);
+      
+      // High guard for head protection
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
     });
     this.currentTime += timeOffset;
     return this;
@@ -399,6 +505,19 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Roundhouse extension - Full hip rotation for 돌려차기
+   * 
+   * Authentic Taekwondo roundhouse extension (돌려차기 실행):
+   * - Hip fully extended with maximal rotation (1.2 rad flex, 1.6 rad rotation)
+   * - Knee snaps out to nearly straight (-0.1 rad)
+   * - Foot pointed and rotated (0.4 rad dorsiflexion, 0.3 rad rotation)
+   * - Pelvis fully rotated (-1.5 rad) providing hip whip power
+   * - Spine counter-rotates (0.8 rad) for torque generation
+   * - Foot position extends laterally (0.8m forward)
+   * - Support leg pivots on ball of foot
+   * 
+   * The "snap" comes from the sudden knee extension combined with
+   * the hip rotation - this is the signature of Taekwondo roundhouse.
+   * 
    * @korean 돌려차기
    */
   roundhouseExtend(
@@ -406,12 +525,26 @@ export class MartialArtsAnimationBuilder {
     easing: string = "ease-out"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Full extension with rotation
       kf.rotate(BoneName.HIP_R, 1.2, 0, 1.6);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0.3);
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.0, 0);
+      
+      // Support leg pivots
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.3, 0); // Pivot on ball
+      
+      // Foot extends laterally
       kf.position(BoneName.FOOT_R, 0.8, 0, 0);
+      
+      // Arms maintain high guard
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
     });
     this.currentTime += timeOffset;
     return this;
@@ -419,11 +552,39 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Side kick chamber - Turn sideways for 옆차기
+   * 
+   * Authentic Taekwondo side kick chamber (옆차기 준비):
+   * - Body turns 90° sideways (pelvis -1.57 rad on Y-axis)
+   * - Hip flexed and chambered (1.3 rad flex, 0.3 rad rotation)
+   * - Knee bent tight (-1.6 rad) preparing for lateral thrust
+   * - Spine rotates with body (-1.2 rad on Y-axis)
+   * - Lean away from kick for balance (0.2 rad lean)
+   * - Support leg stable and aligned
+   * - Arms protect vital areas
+   * 
+   * The perpendicular chamber is essential - the hips must turn
+   * sideways to allow the heel to drive through the target laterally.
+   * 
    * @korean 옆차기준비
    */
   sideKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Apply side kick rotational phase
       applySideKickPhaseToConfig(kf, KICK_PHASES.SIDE_CHAMBER);
+      
+      // Support leg alignment
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0); // Turn with body
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
+      
+      // Head looks at target
+      kf.rotate(BoneName.HEAD, 0, -0.5, 0);
+      
+      // Arms in defensive position
+      kf.rotate(BoneName.SHOULDER_L, -0.7, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, -0.7, -0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
     });
     this.currentTime += timeOffset;
     return this;
@@ -431,16 +592,47 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Side kick extension - Lateral heel thrust for 옆차기
+   * 
+   * Authentic Taekwondo side kick extension (옆차기 실행):
+   * - Hip extends laterally (1.3 rad flex, 0.7 rad rotation)
+   * - Knee extends fully (-0.1 rad) driving heel through target
+   * - Foot turned heel-first (0.4 rad on Y-axis)
+   * - Pelvis maintains 90° turn (-1.57 rad)
+   * - Spine leans away (0.4 rad) for counterbalance
+   * - Foot extends laterally (0.7m to side)
+   * - Support leg drives power
+   * 
+   * The side kick is one of the most powerful kicks because the
+   * entire body mass drives through the heel in a straight line.
+   * 
    * @korean 옆차기
    */
   sideKickExtend(timeOffset: number = 0.1, easing: string = "linear"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Full extension laterally
       kf.rotate(BoneName.HIP_R, 1.3, 0, 0.7);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0.4, 0);
       kf.rotate(BoneName.PELVIS, 0, -1.57, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.2, 0.2);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.2, 0.4);
+      
+      // Support leg powers the kick
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
+      
+      // Foot extends to side
       kf.position(BoneName.FOOT_R, 0.7, 0, 0);
+      
+      // Head maintains target focus
+      kf.rotate(BoneName.HEAD, 0, -0.5, 0);
+      
+      // Arms balanced
+      kf.rotate(BoneName.SHOULDER_L, -0.7, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, -0.7, -0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
     });
     this.currentTime += timeOffset;
     return this;
@@ -481,16 +673,46 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Back kick spin - 180° turn for 뒤차기
+   * 
+   * Authentic Taekwondo back kick spin (뒤차기 회전):
+   * - Body rotates 180° (pelvis -1.5 rad initially)
+   * - Spine rotates with body (lower: -1.3 rad, upper: -1.0 rad)
+   * - Head looks over shoulder (0.5 rad) to maintain target visual
+   * - Hip chambers (0.3 rad flex)
+   * - Knee bends (-0.8 rad) preparing for backward thrust
+   * - Support leg maintains balance
+   * 
+   * Looking over the shoulder is CRITICAL - you must see the target
+   * to execute an accurate back kick. This is emphasized in all
+   * traditional Korean martial arts.
+   * 
    * @korean 뒤차기회전
    */
   backKickSpin(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Body rotation
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -1.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
+      
+      // CRITICAL: Look over shoulder to see target
       kf.rotate(BoneName.HEAD, 0, 0.5, 0);
+      
+      // Leg chambers during rotation
       kf.rotate(BoneName.HIP_R, 0.3, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.8, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0, 0, 0);
+      
+      // Support leg stability
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
+      
+      // Arms balance during spin
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, 0.2);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.6, -0.2);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
     });
     this.currentTime += timeOffset;
     return this;
@@ -498,18 +720,51 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Back kick thrust - Heel drives backward for 뒤차기
+   * 
+   * Authentic Taekwondo back kick thrust (뒤차기 밀기):
+   * - Body completes 180° rotation (pelvis -3.14 rad = π)
+   * - Hip extends backward (0.5 rad flex maintained)
+   * - Knee extends fully (-0.2 rad) driving heel back
+   * - Foot dorsiflexes (-0.4 rad) presenting heel
+   * - Foot position extends backward (0 forward, 0 up, -0.8 back)
+   * - Head maintains target visual (1.0 rad look-back)
+   * - Spine fully rotated with body
+   * - Support leg powers the thrust
+   * 
+   * The back kick delivers tremendous power because the entire
+   * body mass drives through the strongest leg muscles (glutes,
+   * hamstrings) in a straight line backward.
+   * 
    * @korean 뒤차기
    */
   backKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Complete rotation
       kf.rotate(BoneName.PELVIS, 0, -3.14, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -3.0, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -2.8, 0.2);
+      
+      // Head still looking at target
       kf.rotate(BoneName.HEAD, 0, 1.0, 0);
+      
+      // Full leg extension backward
       kf.rotate(BoneName.HIP_R, 0.5, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, -0.4, 0, 0);
+      
+      // Foot drives backward
       kf.position(BoneName.FOOT_R, 0, 0, -0.8);
+      
+      // Support leg powers thrust
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
+      kf.rotate(BoneName.KNEE_L, -0.5, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
+      
+      // Arms for balance
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.7, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.7, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
     });
     this.currentTime += timeOffset;
     return this;
