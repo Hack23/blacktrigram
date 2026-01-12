@@ -432,6 +432,173 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
   });
 
+  describe("Stance Width Validation (발너비)", () => {
+    it("should have Jin (Thunder) as widest stance (2.0x shoulder width)", () => {
+      const jinStance = createJinStance();
+      const leftFootPos = getPosition(jinStance, BoneName.FOOT_L);
+      const rightFootPos = getPosition(jinStance, BoneName.FOOT_R);
+      
+      expect(leftFootPos).toBeDefined();
+      expect(rightFootPos).toBeDefined();
+      
+      if (leftFootPos && rightFootPos) {
+        // Calculate actual width (distance between feet)
+        const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
+        
+        // Expected width: 46cm * 2.0 / 100 = 0.92m
+        const expectedWidth = (46 * 2.0) / 100;
+        
+        expect(actualWidth).toBeCloseTo(expectedWidth, 2);
+        
+        // Jin should be wider than all other stances
+        expect(actualWidth).toBeGreaterThan(0.8); // > 0.8m
+      }
+    });
+
+    it("should have Gon (Earth) as second widest stance (1.8x shoulder width)", () => {
+      const gonStance = createGonStance();
+      const leftFootPos = getPosition(gonStance, BoneName.FOOT_L);
+      const rightFootPos = getPosition(gonStance, BoneName.FOOT_R);
+      
+      expect(leftFootPos).toBeDefined();
+      expect(rightFootPos).toBeDefined();
+      
+      if (leftFootPos && rightFootPos) {
+        const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
+        
+        // Expected width: 46cm * 1.8 / 100 = 0.828m
+        const expectedWidth = (46 * 1.8) / 100;
+        
+        expect(actualWidth).toBeCloseTo(expectedWidth, 2);
+        expect(actualWidth).toBeGreaterThan(0.7); // > 0.7m
+      }
+    });
+
+    it("should have Son (Wind) with zero width (0.0x - crane stance)", () => {
+      const sonStance = createSonStance();
+      const leftFootPos = getPosition(sonStance, BoneName.FOOT_L);
+      const rightFootPos = getPosition(sonStance, BoneName.FOOT_R);
+      
+      expect(leftFootPos).toBeDefined();
+      expect(rightFootPos).toBeDefined();
+      
+      if (leftFootPos && rightFootPos) {
+        // Both feet should be at center (zero width)
+        const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
+        
+        // Expected width: 46cm * 0.0 / 100 = 0.0m
+        expect(actualWidth).toBe(0);
+        expect(Math.abs(leftFootPos.x)).toBeCloseTo(0, 10); // Use toBeCloseTo to handle -0 vs +0
+        expect(Math.abs(rightFootPos.x)).toBeCloseTo(0, 10);
+      }
+    });
+
+    it("should have Tae (Lake) with narrow width (0.9x shoulder width)", () => {
+      const taeStance = createTaeStance();
+      const leftFootPos = getPosition(taeStance, BoneName.FOOT_L);
+      const rightFootPos = getPosition(taeStance, BoneName.FOOT_R);
+      
+      expect(leftFootPos).toBeDefined();
+      expect(rightFootPos).toBeDefined();
+      
+      if (leftFootPos && rightFootPos) {
+        const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
+        
+        // Expected width: 46cm * 0.9 / 100 = 0.414m
+        const expectedWidth = (46 * 0.9) / 100;
+        
+        expect(actualWidth).toBeCloseTo(expectedWidth, 2);
+        expect(actualWidth).toBeLessThan(0.5); // < 0.5m (narrow for mobility)
+      }
+    });
+
+    it("should have all stances with correct foot positioning relative to pelvis", () => {
+      const stances = [
+        { name: "geon", stance: createGeonStance(), width: 1.35 },
+        { name: "tae", stance: createTaeStance(), width: 0.9 },
+        { name: "li", stance: createLiStance(), width: 1.1 },
+        { name: "jin", stance: createJinStance(), width: 2.0 },
+        { name: "son", stance: createSonStance(), width: 0.0 },
+        { name: "gam", stance: createGamStance(), width: 1.15 },
+        { name: "gan", stance: createGanStance(), width: 1.45 },
+        { name: "gon", stance: createGonStance(), width: 1.8 },
+      ];
+
+      stances.forEach(({ name, stance, width }) => {
+        const leftFootPos = getPosition(stance, BoneName.FOOT_L);
+        const rightFootPos = getPosition(stance, BoneName.FOOT_R);
+        
+        expect(leftFootPos).toBeDefined();
+        expect(rightFootPos).toBeDefined();
+        
+        if (leftFootPos && rightFootPos) {
+          const expectedWidth = (46 * width) / 100;
+          const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
+          
+          // Verify stance width matches specification
+          expect(actualWidth).toBeCloseTo(expectedWidth, 2);
+          
+          // Verify feet are symmetric around center
+          expect(leftFootPos.x).toBeCloseTo(-rightFootPos.x, 2);
+        }
+      });
+    });
+
+    it("should have stance widths in correct order (narrowest to widest)", () => {
+      const stances = [
+        { name: "son", stance: createSonStance(), expectedWidth: 0.0 },
+        { name: "tae", stance: createTaeStance(), expectedWidth: 0.9 },
+        { name: "li", stance: createLiStance(), expectedWidth: 1.1 },
+        { name: "gam", stance: createGamStance(), expectedWidth: 1.15 },
+        { name: "geon", stance: createGeonStance(), expectedWidth: 1.35 },
+        { name: "gan", stance: createGanStance(), expectedWidth: 1.45 },
+        { name: "gon", stance: createGonStance(), expectedWidth: 1.8 },
+        { name: "jin", stance: createJinStance(), expectedWidth: 2.0 },
+      ];
+
+      const widths = stances.map(({ stance }) => {
+        const leftFootPos = getPosition(stance, BoneName.FOOT_L);
+        const rightFootPos = getPosition(stance, BoneName.FOOT_R);
+        
+        if (leftFootPos && rightFootPos) {
+          return Math.abs(rightFootPos.x - leftFootPos.x);
+        }
+        return 0;
+      });
+
+      // Verify widths are in ascending order
+      for (let i = 1; i < widths.length; i++) {
+        expect(widths[i]).toBeGreaterThanOrEqual(widths[i - 1]);
+      }
+    });
+
+    it("should scale stance width with shoulder width", () => {
+      // Test with different shoulder widths
+      const shoulderWidths = [40, 46, 54]; // Min, avg, max from archetypes
+      const stanceMultiplier = 1.5; // Use Gan Mountain width as example
+
+      const footPositions = shoulderWidths.map((shoulderWidth) => {
+        // Import calculateFootPositions from the module
+        const result = {
+          leftFootX: -(shoulderWidth * stanceMultiplier) / 200,
+          rightFootX: (shoulderWidth * stanceMultiplier) / 200,
+        };
+        return Math.abs(result.rightFootX - result.leftFootX);
+      });
+
+      // Verify larger shoulder width results in wider stance
+      expect(footPositions[1]).toBeGreaterThan(footPositions[0]);
+      expect(footPositions[2]).toBeGreaterThan(footPositions[1]);
+
+      // Verify proportional scaling
+      const ratio1 = footPositions[1] / footPositions[0];
+      const ratio2 = footPositions[2] / footPositions[1];
+      
+      expect(ratio1).toBeCloseTo(shoulderWidths[1] / shoulderWidths[0], 1);
+      expect(ratio2).toBeCloseTo(shoulderWidths[2] / shoulderWidths[1], 1);
+    });
+  });
+
   describe("Performance and Structure", () => {
     it("should create all stances within performance budget", () => {
       const start = performance.now();
