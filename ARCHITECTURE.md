@@ -775,13 +775,13 @@ PELVIS (root)
 #### Hand Pose System
 
 **Seven Primary Hand Poses** (from `src/types/hand-animation.ts`):
-- `fist` - Closed fist for punching - 주먹 (Jumeok)
-- `knife_hand` - Knife-hand strike with rigid edge - 수도 (Sudo)
-- `spear_hand` - Spear-hand thrust with pointed fingers - 관수 (Gwansu)
-- `palm_heel` - Palm-heel strike with curled fingers - 장력 (Jangnyeok)
-- `grappling` - Grappling hand for grabs - 잡기 (Japgi)
-- `open` - Open hand neutral position - 펴기 (Pyeogi)
-- `relaxed` - Relaxed natural hand for walking/idle - 휴식 (Hyusik)
+- `fist` - Closed fist for punching - **주먹** (Jumeok)
+- `knife_hand` - Knife-hand strike with rigid edge - **수도** (Sudo)
+- `spear_hand` - Spear-hand thrust with pointed fingers - **관수** (Gwansu)
+- `palm_heel` - Palm-heel strike with curled fingers - **장력** (Jangnyeok)
+- `grappling` - Grappling hand for grabs - **잡기** (Japgi)
+- `open` - Open hand neutral position - **펴기** (Pyeogi)
+- `relaxed` - Relaxed natural hand for walking/idle - **휴식** (Hyusik)
 
 **Implementation:** `src/types/hand-animation.ts` - Hand pose definitions and transitions
 
@@ -968,7 +968,7 @@ src/
 **Skeletal Animation:**
 - `src/types/skeletal.ts` - 28-bone hierarchy definitions
 - `src/types/muscle.ts` - Muscle tension visualization
-- `src/types/hand-animation.ts` - Hand pose system (6 primary poses)
+- `src/types/hand-animation.ts` - Hand pose system (7 primary poses)
 
 **Player Archetypes:**
 - `src/data/archetypePhysicalAttributes.ts` (20,875 bytes) - Physical attributes for 5 archetypes
@@ -1025,25 +1025,6 @@ sequenceDiagram
     CombatEngine->>StateStore: ⚡ Update combat state (pain, consciousness, balance)
     CombatEngine-->>ThreeScene: 👺 Trigger enemy reaction animation (SkeletalAnimation)
 ```
-    InputSystem->>CombatEngine: 🎯 Attack command with screen coords
-    CombatEngine->>TrigramSystem: 💡 Get current technique parameters
-    CombatEngine->>VitalPointSystem: 🔍 Hit detection (range & bounding boxes)
-    VitalPointSystem-->VitalPointSystem: 🎯 Compute precision vs 70 vital points
-    VitalPointSystem-->>CombatEngine: ✅ Hit result (VitalPointData, Multiplier)
-    CombatEngine->>CombatEngine: 🧮 Compute final damage (base × trigram_adv × vp_mult)
-    CombatEngine->>StateStore: 🩸 Reduce enemy health
-    CombatEngine->>AudioManager: 🔊 Play impact SFX (bone crack / muscle thud)
-    CombatEngine->>PixiStage: 💥 Render hit sparks, blood, damage numbers (ParticlesLayer)
-    CombatEngine->>StateStore: ⚡ Update visual state (enemy hit flag, UI flags)
-    CombatEngine-->>PixiStage: 👺 Trigger enemy reaction animation (EnemyVisuals)
-```
-
-> **Note**
->
-> - **InputSystem**: Lives in React (e.g., `CombatControls.tsx`), dispatching events to `CombatEngine`.
-> - **CombatEngine**: Aggregates all combat logic in `CombatSystem.ts`.
-> - **TrigramSystem**: Handles stance logic, technique lookup, state updates (Zustand).
-> - **VitalPointSystem**: Performs in-memory geometry collision detection & returns multipliers.
 > - **AudioManager**: Web Audio API plays sound buffers loaded at runtime from the Audio CDN.
 > - **Three.js Scene**: Via `@react-three/fiber` Canvas component, renders 3D characters, environment, effects, and UI overlays via Html.
 > - **Zustand Store**: All shared state (player health, Ki, stance) resides in memory; React components subscribe.
