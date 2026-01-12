@@ -39,6 +39,7 @@ import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
+  CombatState,
   GameMode,
   PlayerArchetype,
   Position,
@@ -384,8 +385,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatActions.setRoundStarted(false);
     combatActions.setRoundDisplayStatus(null);
 
-    // Reset player health, resources, and visual state
-    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    // Reset player health, resources, combat state, and visual state
+    // Includes consciousness, pain, balance, combatState to clear any blur/vignette effects
+    // and reset from fallen/stunned states
     onPlayerUpdate(0, {
       health: 100,
       stamina: 100,
@@ -393,6 +395,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
     onPlayerUpdate(1, {
       health: 100,
@@ -401,6 +406,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 
     // Reset player positions to starting positions for rematch
@@ -463,8 +471,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       return nextRound;
     });
 
-    // Reset player health, resources, and visual state for next round
-    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    // Reset player health, resources, combat state, and visual state for next round
+    // Includes consciousness, pain, balance, combatState to clear any blur/vignette effects
+    // and reset from fallen/stunned states
     onPlayerUpdate(0, {
       health: 100,
       stamina: 100,
@@ -472,6 +481,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
     onPlayerUpdate(1, {
       health: 100,
@@ -480,6 +492,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 
     // Reset player positions to starting positions for new round
