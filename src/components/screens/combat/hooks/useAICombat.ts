@@ -54,6 +54,7 @@ import {
   CombatContext,
   DifficultyParameters,
   getArchetypeBehavior,
+  getNextComboTechnique,
   interpolateDifficultyParameters,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
@@ -384,73 +385,345 @@ function isSignatureTechnique(
 }
 
 /**
- * Helper to select technique for AI action with archetype signature bias
+ * Update technique usage frequency and rotation queue
  * 
- * Implements 40%+ signature technique usage requirement:
- * - Identifies signature techniques for archetype
- * - Applies 60% selection bias toward signature moves
- * - Falls back to best available technique if no signatures available
+ * Tracks technique usage for diversity enforcement:
+ * 1. Updates usage frequency counter
+ * 2. Adds to recent techniques queue (last 5)
+ * 3. Marks as used in current match
+ * 4. Resets "all used" when all 4 archetype techniques completed
  * 
- * @korean 원형별 대표 기술 선호도를 적용한 기술 선택
+ * @korean 기술 사용 빈도 및 순환 큐 업데이트
+ * 
+ * @param techniqueId - ID of technique just used
+ * @param rotationQueue - Technique rotation tracking object
+ * @param archetypeTechniqueIds - All technique IDs for this archetype (for reset detection)
+ */
+function updateTechniqueRotation(
+  techniqueId: string,
+  rotationQueue: TechniqueRotationQueue,
+  archetypeTechniqueIds: Set<string>
+): void {
+  // Update frequency counter
+  const current = rotationQueue.frequency.get(techniqueId) ?? 0;
+  rotationQueue.frequency.set(techniqueId, current + 1);
+  
+  // Increment total attacks
+  rotationQueue.totalAttacks++;
+  
+  // Add to recent queue (last 5)
+  rotationQueue.used.push(techniqueId);
+  if (rotationQueue.used.length > 5) {
+    rotationQueue.used.shift(); // Keep only last 5
+  }
+  
+  // Mark as used in this match
+  rotationQueue.allUsed.add(techniqueId);
+  
+  // Reset "all used" if all archetype techniques have been used
+  // This ensures AI cycles through full arsenal repeatedly
+  let allTechniquesUsed = true;
+  for (const techId of archetypeTechniqueIds) {
+    if (!rotationQueue.allUsed.has(techId)) {
+      allTechniquesUsed = false;
+      break;
+    }
+  }
+  
+  if (allTechniquesUsed) {
+    rotationQueue.allUsed.clear();
+  }
+}
+
+/**
+ * Check if technique is overused (exceeds 40% threshold)
+ * 
+ * Enforces variety by identifying techniques that have been
+ * used more than 40% of total attacks.
+ * 
+ * @korean 기술 과다 사용 확인 (40% 임계값)
+ * 
+ * @param techniqueId - Technique ID to check
+ * @param rotationQueue - Technique rotation tracking object
+ * @returns True if technique exceeds 40% usage threshold
+ */
+function isOverused(
+  techniqueId: string,
+  rotationQueue: TechniqueRotationQueue
+): boolean {
+  if (rotationQueue.totalAttacks === 0) {
+    return false;
+  }
+  
+  const uses = rotationQueue.frequency.get(techniqueId) ?? 0;
+  const percentage = uses / rotationQueue.totalAttacks;
+  return percentage > 0.40; // >40% threshold
+}
+
+/**
+ * Select technique with rotation bias for diversity
+ * 
+ * Prioritizes techniques in this order:
+ * 1. Never used in this match (highest priority)
+ * 2. Not used in last 5 techniques (avoid repetition)
+ * 3. Any viable technique (fallback)
+ * 
+ * Within each priority tier, selects by effectiveness (damage × accuracy).
+ * 
+ * @korean 다양성을 위한 순환 편향 기술 선택
+ * 
+ * @param viableTechniques - Techniques that are viable (range, stamina, stance)
+ * @param rotationQueue - Technique rotation tracking object
+ * @returns Best technique with rotation bias applied
+ */
+function selectTechniqueWithRotation(
+  viableTechniques: readonly KoreanTechnique[],
+  rotationQueue: TechniqueRotationQueue
+): KoreanTechnique | undefined {
+  if (viableTechniques.length === 0) {
+    return undefined;
+  }
+  
+  // Filter out overused techniques (>40% threshold)
+  const balancedTechniques = viableTechniques.filter(
+    t => !isOverused(t.id, rotationQueue)
+  );
+  
+  // If all techniques overused (rare), reset frequency tracking and use any
+  const candidates = balancedTechniques.length > 0 
+    ? balancedTechniques 
+    : viableTechniques;
+  
+  if (balancedTechniques.length === 0 && rotationQueue.totalAttacks > 0) {
+    // Reset frequency to allow reuse and realign total count
+    rotationQueue.frequency.clear();
+    rotationQueue.totalAttacks = 0;
+  }
+  
+  // Priority 1: Never used in this match
+  const neverUsed = candidates.filter(
+    t => !rotationQueue.allUsed.has(t.id)
+  );
+  
+  if (neverUsed.length > 0) {
+    // Sort by effectiveness within never-used tier
+    return [...neverUsed].sort((a, b) => {
+      const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
+      const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
+      return effB - effA;
+    })[0];
+  }
+  
+  // Priority 2: Not in last 5 techniques
+  const unusedRecently = candidates.filter(
+    t => !rotationQueue.used.includes(t.id)
+  );
+  
+  if (unusedRecently.length > 0) {
+    // Sort by effectiveness within unused-recently tier
+    return [...unusedRecently].sort((a, b) => {
+      const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
+      const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
+      return effB - effA;
+    })[0];
+  }
+  
+  // Priority 3: Any viable technique (all used recently)
+  // Sort by effectiveness
+  return [...candidates].sort((a, b) => {
+    const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
+    const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
+    return effB - effA;
+  })[0];
+}
+
+/**
+ * Filter techniques by cooldown availability
+ * 
+ * Returns only techniques that are off cooldown and ready to use.
+ * If all techniques are on cooldown, returns empty array.
+ * 
+ * @korean 재사용 대기시간별 기술 필터링
+ * 
+ * @param techniques - Techniques to filter
+ * @param cooldownMap - Map of technique ID to last use timestamp
+ * @returns Techniques that are off cooldown
+ */
+function filterByCooldown(
+  techniques: readonly KoreanTechnique[],
+  cooldownMap: TechniqueCooldownMap
+): readonly KoreanTechnique[] {
+  const now = Date.now();
+  
+  return techniques.filter(t => {
+    const lastUsed = cooldownMap.get(t.id) ?? 0;
+    const cooldown = (t.recoveryTime ?? 0) + (t.executionTime ?? 0); // Total cooldown time
+    const timeSinceUse = now - lastUsed;
+    return timeSinceUse >= cooldown;
+  });
+}
+
+/**
+ * Get all techniques for an archetype (for cross-stance usage)
+ * 
+ * Returns all 4 techniques available to the archetype,
+ * regardless of stance requirements.
+ * 
+ * @korean 원형의 모든 기술 가져오기 (교차 자세 사용)
+ * 
+ * @param archetype - Player archetype
+ * @returns All techniques for the archetype
+ */
+function getAllArchetypeTechniques(
+  archetype: PlayerState["archetype"]
+): readonly KoreanTechnique[] {
+  // Use KoreanTechniquesSystem to efficiently get all techniques for archetype
+  // This avoids iterating through all 8 stances
+  return KoreanTechniquesSystem.getTechniquesByArchetype(archetype);
+}
+
+/**
+ * Apply cross-stance damage modifier to technique
+ * 
+ * Creates a modified copy of the technique with 80% damage for cross-stance usage.
+ * This prevents mutation of the original technique object.
+ * 
+ * **Design Rationale for 80% Effectiveness:**
+ * Cross-stance techniques are performed from a non-optimal stance, reducing
+ * power generation and body mechanics efficiency. The 80% modifier reflects:
+ * - Suboptimal weight transfer and leverage
+ * - Reduced muscle engagement from non-ideal positioning
+ * - Decreased stability and balance during execution
+ * 
+ * This is consistent with Korean martial arts philosophy where proper stance
+ * (자세) is fundamental to technique effectiveness. Other properties like
+ * accuracy and execution time remain unchanged as the technique mechanics
+ * themselves are unchanged, only the power generation is affected.
+ * 
+ * @korean 교차 자세 피해 배율 적용 (80% 효과)
+ * 
+ * @param technique - Original technique
+ * @param isCrossStance - Whether technique is from different stance
+ * @returns Modified technique with 80% damage if cross-stance, original otherwise
+ */
+function applyCrossStanceDamageModifier(
+  technique: KoreanTechnique,
+  isCrossStance: boolean
+): KoreanTechnique {
+  if (!isCrossStance || !technique.damage) {
+    return technique;
+  }
+  
+  // Create modified copy with 80% damage
+  return {
+    ...technique,
+    damage: Math.floor(technique.damage * 0.8),
+  };
+}
+
+/**
+ * Helper to select technique for AI action with rotation and cooldown awareness
+ * 
+ * Enhanced technique selection with:
+ * - Technique rotation queue for diversity (prevents >70% repetition → targets <40%)
+ * - Cooldown-aware filtering (prioritizes ready techniques)
+ * - Cross-stance fallback (uses other techniques at 80% effectiveness)
+ * - Archetype signature bias (maintains 40%+ signature technique usage)
+ * 
+ * @korean 순환 및 재사용 대기시간을 고려한 기술 선택
  * 
  * @param isSpecialTechnique - Whether to filter for high-cost special techniques
  * @param context - Current combat context
  * @param player - AI player state
  * @param adaptiveDifficulty - Adaptive difficulty system
- * @param recentTechniques - Recently used technique IDs for variation
- * @returns Selected technique, vital point, and action type
+ * @param rotationQueue - Technique rotation tracking object
+ * @param cooldownMap - Technique cooldown tracking map
+ * @returns Selected technique, vital point, action type, and cross-stance flag
  */
 function selectTechniqueForAction(
   isSpecialTechnique: boolean,
   context: CombatContext,
   player: PlayerState,
   adaptiveDifficulty: AdaptiveDifficulty,
-  recentTechniques: string[]
-): { technique?: KoreanTechnique; vitalPoint?: string; actionType: string } {
+  rotationQueue: TechniqueRotationQueue,
+  cooldownMap: TechniqueCooldownMap
+): { 
+  technique?: KoreanTechnique; 
+  vitalPoint?: string; 
+  actionType: string;
+  isCrossStance?: boolean;
+} {
+  // Get viable techniques for current stance
   const viableTechniques = getViableTechniques(
     context.distanceToOpponent,
     player.currentStance,
     player.stamina,
     player.archetype,
-    recentTechniques
+    rotationQueue.used // Pass recent techniques for penalty
   );
 
-  const candidates = isSpecialTechnique
-    ? viableTechniques.filter((tech) => tech.kiCost >= 10 || tech.staminaCost >= 15)
-    : viableTechniques;
+  // Filter by cooldown availability
+  const readyTechniques = filterByCooldown(viableTechniques, cooldownMap);
+  
+  // Use ready techniques if available, otherwise check cooldowns
+  let candidates = readyTechniques.length > 0 ? readyTechniques : viableTechniques;
+  
+  // Filter for special techniques if requested
+  if (isSpecialTechnique) {
+    const specialCandidates = candidates.filter(
+      (tech) => tech.kiCost >= 10 || tech.staminaCost >= 15
+    );
+    candidates = specialCandidates.length > 0 ? specialCandidates : candidates;
+  }
+
+  // If no viable techniques for current stance, try cross-stance techniques
+  let isCrossStance = false;
+  if (candidates.length === 0) {
+    const allTechniques = getAllArchetypeTechniques(player.archetype);
+    const crossStanceTechniques = allTechniques.filter(
+      t => t.stance !== player.currentStance &&
+           context.distanceToOpponent <= ((t.reachConfig?.baseExtension ?? 1.0) * METERS_TO_PIXELS_SCALE) &&
+           player.stamina >= t.staminaCost &&
+           !isOverused(t.id, rotationQueue) // Apply rotation diversity to cross-stance
+    );
+    
+    // Filter by cooldown for cross-stance techniques too
+    const readyCrossStance = filterByCooldown(crossStanceTechniques, cooldownMap);
+    candidates = readyCrossStance.length > 0 ? readyCrossStance : crossStanceTechniques;
+    isCrossStance = candidates.length > 0;
+  }
 
   if (candidates.length > 0) {
-    // Identify signature techniques for this archetype
+    // Filter signature techniques once for efficiency
     const signatureTechniques = candidates.filter((tech) =>
       isSignatureTechnique(tech, player.archetype)
     );
     
-    // Apply 60% bias toward signature techniques (ensures >40% usage over time)
+    // Apply 60% bias toward signature techniques
+    // Determine category first, then select best technique within category
     const useSignature = signatureTechniques.length > 0 && Math.random() < 0.6;
     
-    const technique = useSignature
-      ? signatureTechniques[0]
-      : candidates[0];
+    const selectedCandidates = useSignature ? signatureTechniques : candidates;
+    const technique = selectTechniqueWithRotation(selectedCandidates, rotationQueue);
     
-    const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
-    return { 
-      technique, 
-      vitalPoint, 
-      actionType: isSpecialTechnique ? "technique" : "attack" 
-    };
-  }
-
-  // Fallback logic for special techniques
-  if (isSpecialTechnique && viableTechniques.length > 0) {
-    const technique = viableTechniques[0];
-    const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-    const vitalPoint = selectOptimalVitalPoint(player.currentStance, difficultyLevel, player.archetype) ?? undefined;
-    return { 
-      technique, 
-      vitalPoint, 
-      actionType: "attack" 
-    };
+    if (technique) {
+      const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
+      const vitalPoint = selectOptimalVitalPoint(
+        player.currentStance, 
+        difficultyLevel, 
+        player.archetype
+      ) ?? undefined;
+      
+      // Apply cross-stance damage modifier if needed
+      const finalTechnique = applyCrossStanceDamageModifier(technique, isCrossStance);
+      
+      return { 
+        technique: finalTechnique, 
+        vitalPoint, 
+        actionType: isSpecialTechnique ? "technique" : "attack",
+        isCrossStance
+      };
+    }
   }
 
   return { actionType: "idle" };
@@ -534,6 +807,34 @@ interface AIState {
   targetVitalPoint?: string;
   recentTechniques: string[]; // Track last 5 techniques for variation
 }
+
+/**
+ * Technique rotation queue for enforcing variety
+ * 
+ * Tracks technique usage to prevent repetitive patterns:
+ * - Last 5 techniques used (for immediate variation)
+ * - All techniques used in current match (for full arsenal tracking)
+ * - Usage frequency per technique (for 40% threshold enforcement)
+ * - Total attacks counter (for percentage calculation)
+ * 
+ * @korean 기술 순환 큐 (다양성 강화)
+ */
+interface TechniqueRotationQueue {
+  used: string[]; // Last 5 technique IDs (FIFO)
+  allUsed: Set<string>; // All techniques used this match
+  frequency: Map<string, number>; // Usage count per technique ID
+  totalAttacks: number; // Total attack count for percentage calculation
+}
+
+/**
+ * Technique cooldown tracking
+ * 
+ * Maps technique ID to timestamp of last use
+ * Used for cooldown-aware technique selection
+ * 
+ * @korean 기술 재사용 대기시간 추적
+ */
+type TechniqueCooldownMap = Map<string, number>;
 
 /**
  * AI combat hook configuration
@@ -651,6 +952,23 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const lastWarningTimeRef = useRef(0);
   const lastLateralitySwitchRef = useRef(0); // Track last laterality switch for cooldown
 
+  // Technique rotation queue and cooldown tracking (Issue #expand-technique-selection-diversity)
+  // Enforce technique variety: all 4 techniques used, no technique >40% usage
+  const techniqueRotationQueueRef = useRef<TechniqueRotationQueue>({
+    used: [],
+    allUsed: new Set(),
+    frequency: new Map(),
+    totalAttacks: 0,
+  });
+  
+  const techniqueCooldownMapRef = useRef<TechniqueCooldownMap>(new Map());
+  
+  // Get all technique IDs for current archetype (for reset detection)
+  const archetypeTechniqueIds = useMemo(() => {
+    const allTechs = getAllArchetypeTechniques(player.archetype);
+    return new Set(allTechs.map(t => t.id));
+  }, [player.archetype]);
+
   // Stance fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
   // Tracks how long AI has been in current stance to encourage dynamic switching
   // Use useState lazy initializer for Date.now() to avoid impure function call during render
@@ -673,6 +991,17 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         currentStance: player.currentStance,
         lastSwitchTime: Date.now(),
       };
+      
+      // Reset technique rotation queue on round start (Issue #expand-technique-selection-diversity)
+      techniqueRotationQueueRef.current = {
+        used: [],
+        allUsed: new Set(),
+        frequency: new Map(),
+        totalAttacks: 0,
+      };
+      
+      // Reset technique cooldown tracking on round start
+      techniqueCooldownMapRef.current.clear();
     }
   }, [roundStarted, decisionTree, comboSystem]);
 
@@ -869,11 +1198,39 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               context,
               player,
               adaptiveDifficulty,
-              aiState.recentTechniques
+              techniqueRotationQueueRef.current,
+              techniqueCooldownMapRef.current
             );
             selectedTechnique = result.technique;
             targetVitalPoint = result.vitalPoint;
             actionType = result.actionType;
+            
+            // Update rotation queue and cooldown tracking if technique selected
+            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
+            if (selectedTechnique) {
+              updateTechniqueRotation(
+                selectedTechnique.id,
+                techniqueRotationQueueRef.current,
+                archetypeTechniqueIds
+              );
+              
+              // Record cooldown start time
+              techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
+              
+              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
+              const nextComboTechnique = getNextComboTechnique(
+                selectedTechnique.id,
+                player.archetype
+              );
+              
+              // If this technique starts a combo, store next technique for consideration
+              if (nextComboTechnique) {
+                // Store combo hint for next decision (combo system can use this)
+                // The decision tree will naturally consider this in the next cycle
+                comboSystem.startCombo(player, opponent, adjustedPersonality);
+              }
+            }
+            
             if (actionType === "attack") {
               newConsecutiveAttacks++;
             }
@@ -887,11 +1244,38 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               context,
               player,
               adaptiveDifficulty,
-              aiState.recentTechniques
+              techniqueRotationQueueRef.current,
+              techniqueCooldownMapRef.current
             );
             selectedTechnique = result.technique;
             targetVitalPoint = result.vitalPoint;
             actionType = result.actionType;
+            
+            // Update rotation queue and cooldown tracking if technique selected
+            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
+            if (selectedTechnique) {
+              updateTechniqueRotation(
+                selectedTechnique.id,
+                techniqueRotationQueueRef.current,
+                archetypeTechniqueIds
+              );
+              
+              // Record cooldown start time
+              techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
+              
+              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
+              const nextComboTechnique = getNextComboTechnique(
+                selectedTechnique.id,
+                player.archetype
+              );
+              
+              // If this technique starts a combo, store next technique for consideration
+              if (nextComboTechnique) {
+                // Store combo hint for next decision (combo system can use this)
+                comboSystem.startCombo(player, opponent, adjustedPersonality);
+              }
+            }
+            
             if (actionType === "attack" || actionType === "technique") {
               newConsecutiveAttacks++;
             }
