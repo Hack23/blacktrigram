@@ -85,6 +85,9 @@ export interface CombatContext {
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
   readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
+  readonly stanceFatigue?: {
+    readonly timeInStance: number; // Milliseconds in current stance
+  };
   readonly arenaBounds: {
     readonly x: number;
     readonly y: number;
@@ -761,16 +764,38 @@ export class AIDecisionTree {
 
     const behavior = getArchetypeBehavior(personality.archetype);
     
+    // Apply stance fatigue modifier (Issue #dynamic-ai-stance-rotation Phase 4)
+    // Increases stance switch probability based on time in current stance:
+    // - After 10 seconds: +20% increase (1.2x multiplier)
+    // - After 20 seconds: +50% increase (1.5x multiplier)
+    const fatigueModifier = this.getStanceFatigueModifier(context.stanceFatigue?.timeInStance ?? 0);
+    const adjustedSwitchFrequency = Math.min(0.95, personality.stanceSwitchFrequency * fatigueModifier);
+    
+    const shouldChangeWithFatigue = Math.random() < adjustedSwitchFrequency;
+    if (!shouldChangeWithFatigue) {
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: fatigueModifier > 1.0 
+          ? `Fatigue encouraging switch (피로도: ${fatigueModifier.toFixed(2)}x)` 
+          : "No stance change needed",
+      };
+    }
+    
     // Check if already in a preferred stance - if so, reduce change chance (but not completely)
     // This check only applies outside combat to avoid stance lock during active fighting
     const inPreferredStance = behavior.preferredStances.includes(context.playerStance);
     if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
       // 60% chance to stay in preferred stance when not under immediate pressure
-      return {
-        action: AIActionType.WAIT,
-        priority: 0,
-        reason: "Already in preferred stance (선호 자세 유지)",
-      };
+      // However, fatigue can override this (higher fatigue = more likely to switch anyway)
+      const fatigueOverride = fatigueModifier > 1.2 && Math.random() < (fatigueModifier - 1.0);
+      if (!fatigueOverride) {
+        return {
+          action: AIActionType.WAIT,
+          priority: 0,
+          reason: "Already in preferred stance (선호 자세 유지)",
+        };
+      }
     }
 
     // Create a minimal PlayerState object with only the properties actually used
@@ -1051,6 +1076,37 @@ export class AIDecisionTree {
       );
       return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }
+  }
+
+  /**
+   * Calculate stance fatigue modifier for increased switching probability
+   * 
+   * Applies time-based modifiers to encourage dynamic stance rotation:
+   * - 0-10 seconds: No modifier (1.0x)
+   * - 10-20 seconds: +20% increase (1.2x multiplier)
+   * - 20+ seconds: +50% increase (1.5x multiplier)
+   * 
+   * This ensures AI doesn't stay locked in one stance for extended periods,
+   * promoting the use of all 8 trigram stances throughout combat.
+   * 
+   * **Korean Philosophy (자세 피로도)**:
+   * Remaining in one stance too long reduces tactical flexibility and
+   * makes the fighter predictable. The Eight Trigram system requires
+   * constant adaptation and flow between stances.
+   * 
+   * @korean 자세 피로도 배율 계산
+   * 
+   * @param timeInStance - Time in current stance in milliseconds
+   * @returns Stance switch frequency multiplier (1.0 = no change, >1.0 = increased probability)
+   */
+  private getStanceFatigueModifier(timeInStance: number): number {
+    if (timeInStance > 20000) {
+      return 1.5; // 50% increase after 20 seconds
+    }
+    if (timeInStance > 10000) {
+      return 1.2; // 20% increase after 10 seconds
+    }
+    return 1.0; // No modifier for first 10 seconds
   }
 
   /**

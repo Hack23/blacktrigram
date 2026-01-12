@@ -622,6 +622,14 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const lastWarningTimeRef = useRef(0);
   const lastLateralitySwitchRef = useRef(0); // Track last laterality switch for cooldown
 
+  // Stance fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
+  // Tracks how long AI has been in current stance to encourage dynamic switching
+  const stanceFatigueRef = useRef({
+    currentStance: player.currentStance,
+    timeInStance: 0,
+    lastSwitchTime: Date.now(),
+  });
+
   // Initialize previousDamageRef when round starts (issue #2529728007)
   useEffect(() => {
     if (roundStarted) {
@@ -629,8 +637,51 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       previousDamageRef.current = player.totalDamageReceived;
       decisionTree.reset();
       comboSystem.resetCombo();
+      
+      // Reset stance fatigue tracking on round start
+      stanceFatigueRef.current = {
+        currentStance: player.currentStance,
+        timeInStance: 0,
+        lastSwitchTime: Date.now(),
+      };
     }
-  }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived]);
+  }, [roundStarted, decisionTree, comboSystem, player.totalDamageReceived, player.currentStance]);
+
+  // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
+  // Detects when AI changes stance and resets fatigue timer
+  useEffect(() => {
+    if (!roundStarted || roundEnded || isPaused) {
+      return;
+    }
+
+    // Detect stance change
+    if (player.currentStance !== stanceFatigueRef.current.currentStance) {
+      stanceFatigueRef.current = {
+        currentStance: player.currentStance,
+        timeInStance: 0,
+        lastSwitchTime: Date.now(),
+      };
+    } else {
+      // Update time in current stance
+      stanceFatigueRef.current.timeInStance = 
+        Date.now() - stanceFatigueRef.current.lastSwitchTime;
+    }
+  }, [player.currentStance, roundStarted, roundEnded, isPaused]);
+
+  // Continuous stance fatigue monitoring (updates every second)
+  // Tracks time-in-stance for fatigue modifier calculation
+  useEffect(() => {
+    if (!roundStarted || roundEnded || isPaused) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      stanceFatigueRef.current.timeInStance = 
+        Date.now() - stanceFatigueRef.current.lastSwitchTime;
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval);
+  }, [roundStarted, roundEnded, isPaused]);
 
   // Smooth interpolation of difficulty parameters using requestAnimationFrame
   useEffect(() => {
@@ -743,6 +794,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,
       opponentBalance, // Added for kill mode detection
+      stanceFatigue: {
+        timeInStance: stanceFatigueRef.current.timeInStance,
+      },
       arenaBounds,
     };
   }, [player, opponent, arenaBounds]);
