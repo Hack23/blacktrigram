@@ -53,6 +53,7 @@ import { checkForFall, getFallTypeName } from "@/systems/combat/FallIntegration"
 import type { AnimationState } from "@/systems/animation/types";
 import type { CombatResult } from "@/systems/combat/types";
 import { KnockbackPhysics } from "@/systems/physics";
+import { AnimationType } from "@/systems/animation";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -229,6 +230,13 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   } = config;
 
+  // Track active attack animations for timing-based hit detection
+  const attackAnimations = useRef<Map<number, {
+    animationType: AnimationType;
+    startTime: number;
+    duration: number;
+  }>>(new Map());
+
   // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const player2KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -286,6 +294,15 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     combatActions.setExecutingTechnique(true);
 
+    // Track animation start for timing-based hit detection
+    const animationType = attackTechnique.animationType || AnimationType.JAB;
+    const animationDuration = (attackTechnique.executionTime || 500) / 1000; // Convert ms to seconds
+    attackAnimations.current.set(0, {
+      animationType,
+      startTime: performance.now() / 1000, // Convert to seconds
+      duration: animationDuration,
+    });
+
     // Play attack sound based on technique damage/intensity
     const damage = attackTechnique.damage ?? 10;
     const intensity: AttackIntensity = 
@@ -294,11 +311,20 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       damage >= 10 ? "medium" : "light";
     combatAudio?.playAttackSound(intensity);
 
-    // Use combat system for proper calculation
+    // Calculate animation timing context for hit detection
+    const currentAnimTime = (performance.now() / 1000) - (attackAnimations.current.get(0)?.startTime || 0);
+    const animationContext = {
+      animationType,
+      currentTime: currentAnimTime,
+    };
+
+    // Use combat system for proper calculation with animation context
     const result = combatSystem.resolveAttack(
       validPlayers[0],
       validPlayers[1],
-      attackTechnique
+      attackTechnique,
+      undefined,
+      animationContext
     );
 
     const effectType = result.hit

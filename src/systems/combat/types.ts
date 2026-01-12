@@ -146,11 +146,27 @@ export interface CombatSystemInterface {
     effectsApplied: readonly StatusEffect[];
     finalDefenderState?: Partial<PlayerState>;
   };
+  /**
+   * Resolve an attack between attacker and defender
+   * 
+   * **Korean**: 공격 해결
+   * 
+   * @param attacker - Attacking player state
+   * @param defender - Defending player state
+   * @param technique - Technique being executed
+   * @param targetedVitalPointId - Optional specific vital point to target
+   * @param animationContext - Optional animation timing for reality-based hit detection
+   * @returns Combat result with hit/miss and damage information
+   */
   resolveAttack: (
     attacker: PlayerState,
     defender: PlayerState,
     technique: KoreanTechnique,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
+    animationContext?: {
+      animationType: import("../animation/MartialArtsConstants").AnimationType;
+      currentTime: number;
+    }
   ) => CombatResult;
   applyCombatResult: (
     result: CombatResult,
