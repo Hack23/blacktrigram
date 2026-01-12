@@ -73,7 +73,7 @@ C4Container
     System_Boundary(browserApp, "🌐 Black Trigram Browser Application") {
         Container(ui, "🖥️ React UI Layer", "React 19 + TypeScript", "Korean-themed components, responsive design, Html overlays")
         Container(gameEngine, "⚙️ Game Logic Engine", "TypeScript Modules", "Combat calculations, trigram system (8 stances), vital points (70)")
-        Container(renderer, "🎨 Three.js Renderer", "@react-three/fiber + drei", "60fps 3D graphics, skeletal animation (14 bones), particle systems")
+        Container(renderer, "🎨 Three.js Renderer", "@react-three/fiber + drei", "60fps 3D graphics, skeletal animation (28 bones), particle systems")
         Container(audioEngine, "🎵 Audio Engine", "Web Audio API", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
         Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Combat state, player archetypes (5), trigram stances")
         Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "28-bone system, muscle tension, 70 vital point mapping")
@@ -774,13 +774,14 @@ PELVIS (root)
 
 #### Hand Pose System
 
-**Six Primary Hand Poses:**
-- `fist_vertical` - Vertical fist (chamber position) - 직권 (Jikgwon)
-- `fist_horizontal` - Horizontal fist (impact) - 평권 (Pyeonggwon)
-- `fist_pronated` - Pronated fist (downward punch) - 복권 (Bokgwon)
-- `open_hand_knife` - Knife-hand strike - 손날 (Sonnal)
-- `open_hand_palm` - Palm strike - 장타 (Jangta)
-- `grabbing` - Grappling position - 잡기 (Japgi)
+**Seven Primary Hand Poses** (from `src/types/hand-animation.ts`):
+- `fist` - Closed fist for punching - 주먹 (Jumeok)
+- `knife_hand` - Knife-hand strike with rigid edge - 수도 (Sudo)
+- `spear_hand` - Spear-hand thrust with pointed fingers - 관수 (Gwansu)
+- `palm_heel` - Palm-heel strike with curled fingers - 장력 (Jangnyeok)
+- `grappling` - Grappling hand for grabs - 잡기 (Japgi)
+- `open` - Open hand neutral position - 펴기 (Pyeogi)
+- `relaxed` - Relaxed natural hand for walking/idle - 휴식 (Hyusik)
 
 **Implementation:** `src/types/hand-animation.ts` - Hand pose definitions and transitions
 
@@ -1203,7 +1204,7 @@ graph TD
 ```
 Hardware: RTX 3080, Intel i7-11700K, 32GB RAM
 Resolution: 1920x1080
-Scene Complexity: 2 characters (14 bones each), 500 particles, 70 vital points
+Scene Complexity: 2 characters (28 bones each), 500 particles, 70 vital points
 Result: 60fps sustained, <400MB memory, 0.8ms GC pauses
 Status: ✅ Exceeds target
 ```
