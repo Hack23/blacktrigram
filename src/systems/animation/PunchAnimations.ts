@@ -27,7 +27,7 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
 /**
  * Jab - 잽 (빠른 직권)
  *
- * Fast straight punch with lead hand using proper Korean martial arts form.
+ * Fast straight punch with lead hand (left in orthodox stance) using proper Korean martial arts form.
  * Probing attack to gauge distance and set up combinations.
  *
  * Korean martial arts biomechanics:

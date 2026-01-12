@@ -445,7 +445,7 @@ export const PUNCH_PHASES = {
   CHAMBER: {
     // Punching arm chamber - elbow bent, fist at hip
     shoulder: [-0.15, 0, -0.2] as const,  // Shoulder slightly back and down
-    elbow: [0, 0, -1.57] as const,         // Elbow bent 90° (π/2)
+    elbow: [0, 0, -1.57] as const,         // Elbow bent 90° inward (-π/2)
     wrist: [0, 0, 0] as const,             // Wrist neutral, fist vertical
     
     // Opposite arm guard position
@@ -483,7 +483,7 @@ export const PUNCH_PHASES = {
   EXTENSION: {
     // Punching arm full extension
     shoulder: [0.25, 0, 0.15] as const,  // Shoulder forward and slightly up
-    elbow: [0, 0, -0.09] as const,        // Elbow nearly straight (~175°)
+    elbow: [0, 0, -0.09] as const,        // Elbow nearly straight (~175° = 180° - 5°)
     wrist: [0, 0, 0.2] as const,          // Fist pronated (palm-down rotation)
     
     // Opposite arm hikite - pulls back for power
