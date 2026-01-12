@@ -639,6 +639,7 @@ src/components/shared/base/layoutUtils.test.ts
 src/components/shared/base/layoutUtils.ts
 src/components/shared/base/useKoreanTheme.test.ts
 src/components/shared/base/useKoreanTheme.ts
+src/components/shared/debug/PerformanceDebugOverlay.tsx
 src/components/shared/mobile/ActionButtons.test.tsx
 src/components/shared/mobile/ActionButtons.tsx
 src/components/shared/mobile/GestureRecognizer.test.tsx
@@ -653,9 +654,12 @@ src/components/shared/three/README.md
 src/components/shared/three/README_STANCE_ANIMATIONS.md
 src/components/shared/three/anatomy/BoneAttachedMuscles.test.tsx
 src/components/shared/three/anatomy/BoneAttachedMuscles.tsx
+src/components/shared/three/anatomy/BoneClothing.tsx
 src/components/shared/three/anatomy/BoneRenderer.test.tsx
 src/components/shared/three/anatomy/BoneRenderer.tsx
 src/components/shared/three/anatomy/Face3D.tsx
+src/components/shared/three/anatomy/Foot3D.test.tsx
+src/components/shared/three/anatomy/Foot3D.tsx
 src/components/shared/three/anatomy/Hand3D.test.tsx
 src/components/shared/three/anatomy/Hand3D.tsx
 src/components/shared/three/anatomy/index.ts
@@ -713,11 +717,12 @@ src/components/shared/ui/shared/index.ts
 src/components/test/HelloThreeJS.test.tsx
 src/components/test/HelloThreeJS.tsx
 src/components/test/index.ts
+src/data/archetypeClothing.test.ts
+src/data/archetypeClothing.ts
 src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
 src/data/techniques.ts
 src/hooks/__tests__/useBalanceAnimations.test.ts
-src/hooks/__tests__/useGuardPoseOverlay.test.ts
 src/hooks/__tests__/useHandPoseTransitions.test.ts
 src/hooks/__tests__/useKeyboardControls.test.ts
 src/hooks/__tests__/useSkeletalAnimation.test.ts
@@ -728,7 +733,6 @@ src/hooks/useCombatTimer.test.ts
 src/hooks/useCombatTimer.ts
 src/hooks/useDebounce.test.ts
 src/hooks/useDebounce.ts
-src/hooks/useGuardPoseOverlay.ts
 src/hooks/useHandPoseTransitions.ts
 src/hooks/useKeyboardControls.test.ts
 src/hooks/useKeyboardControls.ts
@@ -796,6 +800,8 @@ src/systems/animation/AdvancedJointMovements.test.ts
 src/systems/animation/AdvancedJointMovements.ts
 src/systems/animation/AnimationBuilder.test.ts
 src/systems/animation/AnimationBuilder.ts
+src/systems/animation/AnimationOptimizations.test.ts
+src/systems/animation/AnimationOptimizations.ts
 src/systems/animation/AnimationPriority.test.ts
 src/systems/animation/AnimationPriority.ts
 src/systems/animation/AnimationRegistry.ts
@@ -804,6 +810,7 @@ src/systems/animation/AnimationStateMachine.stance-guards.test.ts
 src/systems/animation/AnimationStateMachine.stance-transitions.test.ts
 src/systems/animation/AnimationStateMachine.test.ts
 src/systems/animation/AnimationStateMachine.ts
+src/systems/animation/AnimationTiming.test.ts
 src/systems/animation/AnimationTransitions.stance.test.ts
 src/systems/animation/AnimationTransitions.test.ts
 src/systems/animation/AnimationTransitions.ts
@@ -861,6 +868,7 @@ src/systems/animation/TechniqueAnimationMapper.enhanced.test.ts
 src/systems/animation/TechniqueAnimationMapper.ts
 src/systems/animation/TechniqueAnimationMapping.ts
 src/systems/animation/TorsoRotation.test.ts
+src/systems/animation/__tests__/StanceAnimations.test.ts
 src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
@@ -967,6 +975,7 @@ src/types/HtmlOverlayTypes.ts
 src/types/LayoutTypes.ts
 src/types/ResponsiveTypes.ts
 src/types/__tests__/skeletal.mirrorGuardPose.test.ts
+src/types/clothing.ts
 src/types/common.ts
 src/types/constants/animations.ts
 src/types/constants/colors.ts
@@ -985,6 +994,10 @@ src/utils/accessibility.axe.test.tsx
 src/utils/accessibility.test.ts
 src/utils/accessibility.ts
 src/utils/archetypeAssets.test.ts
+src/utils/clothingColors.test.ts
+src/utils/clothingColors.ts
+src/utils/clothingMaterials.test.ts
+src/utils/clothingMaterials.ts
 src/utils/colorHelpers.test.ts
 src/utils/colorHelpers.ts
 src/utils/colorUtils.ts
@@ -1021,4 +1034,6 @@ src/utils/skeletonScaling.test.ts
 src/utils/skeletonScaling.ts
 src/utils/stanceHelpers.test.ts
 src/utils/stanceHelpers.ts
+src/utils/threeObjectPool.test.ts
+src/utils/threeObjectPool.ts
 src/vite-env.d.ts

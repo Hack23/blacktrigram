@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">70.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/40</span>
+                <span class='fraction'>29/41</span>
             </div>
         
             
@@ -302,7 +302,44 @@
 <a name='L237'></a><a href='#L237'>237</a>
 <a name='L238'></a><a href='#L238'>238</a>
 <a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -393,10 +430,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1588x</span>
+<span class="cline-any cline-yes">818x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1588x</span>
 <span class="cline-any cline-yes">818x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1588x</span>
@@ -418,6 +460,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1588x</span>
 <span class="cline-any cline-yes">818x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1588x</span>
@@ -543,18 +591,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * VitalPointMarker3D - Individual vital point marker with hover labels
- * 
+ *
  * Provides interactive 3D markers for vital points with Korean-English bilingual labels
  */
 &nbsp;
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { VitalPoint } from "../../../../systems/vitalpoint/types";
 import { VitalPointSeverity } from "../../../../types/common";
-import { KOREAN_COLORS, FONT_FAMILY, UI_DIMENSIONS } from "../../../../types/constants";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../../utils/htmlOverlayHelpers";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+  UI_DIMENSIONS,
+} from "../../../../types/constants";
+import {
+  applyHtmlOverlayStyles,
+  calculateDistanceFactor,
+} from "../../../../utils/htmlOverlayHelpers";
 &nbsp;
 /**
  * Props for VitalPointMarker3D component
@@ -631,11 +692,16 @@ export const VitalPointMarker3D: React.FC&lt;VitalPointMarker3DProps&gt; = ({
     }
   });
 &nbsp;
-  const color = useMemo(() =&gt; getSeverityColor(vitalPoint.severity), [vitalPoint.severity]);
+  const color = useMemo(
+    () =&gt; getSeverityColor(vitalPoint.severity),
+    [vitalPoint.severity]
+  );
 &nbsp;
   // Track screen width for responsive distance factor updates on resize
-  const [screenWidth, setScreenWidth] = useState(() =&gt; 
-    typeof window !== "undefined" ? window.innerWidth : <span class="branch-1 cbranch-no" title="branch not covered" >UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH</span>
+  const [screenWidth, setScreenWidth] = useState(() =&gt;
+    typeof window !== "undefined"
+      ? window.innerWidth
+      : <span class="branch-1 cbranch-no" title="branch not covered" >UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH</span>
   );
 &nbsp;
   useEffect(() =&gt; {
@@ -656,7 +722,13 @@ export const VitalPointMarker3D: React.FC&lt;VitalPointMarker3DProps&gt; = ({
 &nbsp;
   // Apply Html overlay styles for tooltip
   const tooltipOverlayStyle = useMemo(() =&gt; {
-    return applyHtmlOverlayStyles("tooltip", false, tooltipDistanceFactor, true, false);
+    return applyHtmlOverlayStyles(
+      "tooltip",
+      false,
+      tooltipDistanceFactor,
+      true,
+      false
+    );
   }, [tooltipDistanceFactor]);
 &nbsp;
   const handleClick = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
@@ -676,7 +748,7 @@ export const VitalPointMarker3D: React.FC&lt;VitalPointMarker3DProps&gt; = ({
         onClick={handleClick}
         onPointerOver={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etHovered(true)}</span>
         onPointerOut={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etHovered(false)}</span>
-        data-testid={`vital-point-marker-${vitalPoint.id}`}
+        name={`vital-point-marker-${vitalPoint.id}`}
       &gt;
         &lt;sphereGeometry args={[markerSize, 16, 16]} /&gt;
         &lt;meshStandardMaterial
@@ -787,7 +859,7 @@ export default VitalPointMarker3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-11T01:04:16.589Z
+                at 2026-01-12T01:17:50.095Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
