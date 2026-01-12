@@ -154,46 +154,56 @@ C4Container
 
 ```mermaid
 C4Component
-    title Combat System Components - Korean Martial Arts Engine
+    title Combat System Components - Korean Martial Arts Engine (Q1 2026)
 
     Container_Boundary(combatSystem, "⚙️ Combat System") {
-        Component(combatController, "🥊 CombatController", "TypeScript", "Orchestrates all combat interactions")
+        Component(combatController, "🥊 CombatController", "TypeScript", "Orchestrates combat interactions (CombatSystem.ts - 36KB)")
         Component(inputHandler, "🎮 InputHandler", "TypeScript", "Processes keyboard/mouse/touch input")
         Component(trigramEngine, "☯️ TrigramEngine", "TypeScript", "Manages 8 trigram stances and transitions")
-        Component(vitalPointEngine, "🎯 VitalPointEngine", "TypeScript", "Handles 70 vital point targeting system")
-        Component(damageCalculator, "💥 DamageCalculator", "TypeScript", "Calculates realistic combat damage")
-        Component(effectsProcessor, "✨ EffectsProcessor", "TypeScript", "Manages visual and audio effects")
+        Component(vitalPointEngine, "🎯 VitalPointEngine", "TypeScript", "70 vital points with polygon hit detection (<0.01ms)")
+        Component(damageCalculator, "💥 DamageCalculator", "TypeScript", "Base × trigram × vital point multipliers")
+        Component(effectsProcessor, "✨ EffectsProcessor", "TypeScript", "Visual and audio effect coordination")
+        Component(animationSystem, "🎬 AnimationSystem", "TypeScript", "14-bone skeletal animation + hand poses")
+        Component(bodyPartHealth, "🩹 BodyPartHealth", "TypeScript", "8-part health tracking system")
     }
 
     Container_Boundary(dataLayer, "📊 Data Layer") {
-        Component(koreanTerminology, "🇰🇷 KoreanTerminology", "JSON/TypeScript", "Authentic Korean martial arts terms")
-        Component(anatomyData, "🫀 AnatomyData", "JSON/TypeScript", "Human anatomy and vital point locations")
-        Component(trigramData, "📊 TrigramData", "JSON/TypeScript", "I Ching trigram relationships and techniques")
-        Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Korean traditional + cyberpunk audio")
+        Component(koreanTerminology, "🇰🇷 KoreanTerminology", "JSON/TypeScript", "Bilingual Korean-English terms")
+        Component(anatomyData, "🫀 AnatomyData", "JSON/TypeScript", "70 vital points (5 severity, 7 categories)")
+        Component(trigramData, "📊 TrigramData", "JSON/TypeScript", "8 I Ching trigrams + techniques")
+        Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Damage-scaled audio + Korean traditional")
+        Component(archetypeData, "👤 ArchetypeData", "JSON/TypeScript", "5 player archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배)")
+        Component(skeletalData, "🦴 SkeletalData", "TypeScript", "14-bone hierarchy + muscle tension")
     }
 
     Container_Boundary(rendering, "🎨 Rendering Layer") {
-        Component(combatRenderer, "⚔️ CombatRenderer", "PixiJS", "Renders combat scenes and animations")
-        Component(particleSystem, "✨ ParticleSystem", "PixiJS", "Ki energy, blood effects, impact sparks")
-        Component(hudRenderer, "📊 HUDRenderer", "PixiJS", "Health bars, stance indicators, damage numbers")
+        Component(threeScene, "⚔️ ThreeScene", "Three.js", "3D combat scene with WebGL rendering")
+        Component(particleSystem, "✨ ParticleSystem", "Three.js Instances", "Ki energy, hit effects, impact particles")
+        Component(hudOverlay, "📊 HUDOverlay", "Html (drei)", "Health bars, stance indicators, damage numbers")
+        Component(skeletalRenderer, "🎭 SkeletalRenderer", "Three.js Skeleton", "14-bone character animation")
     }
 
     Rel(inputHandler, combatController, "Sends input events")
-    Rel(combatController, trigramEngine, "Requests stance changes")
-    Rel(combatController, vitalPointEngine, "Checks hit targets")
+    Rel(combatController, trigramEngine, "Requests stance changes (8 stances)")
+    Rel(combatController, vitalPointEngine, "Checks hit targets (70 points)")
     Rel(combatController, damageCalculator, "Calculates damage")
+    Rel(combatController, bodyPartHealth, "Updates 8 body parts")
     Rel(damageCalculator, effectsProcessor, "Triggers effects")
+    Rel(effectsProcessor, animationSystem, "Execute technique animations")
 
-    Rel(trigramEngine, trigramData, "Loads stance data")
-    Rel(vitalPointEngine, anatomyData, "References vital points")
+    Rel(trigramEngine, trigramData, "Loads 8 stance data")
+    Rel(vitalPointEngine, anatomyData, "References 70 vital points")
     Rel(combatController, koreanTerminology, "Gets Korean terms")
-    Rel(effectsProcessor, audioAssets, "Plays sound effects")
+    Rel(effectsProcessor, audioAssets, "Plays damage-scaled sounds")
+    Rel(animationSystem, skeletalData, "Loads bone hierarchy")
+    Rel(combatController, archetypeData, "Loads 5 archetype data")
 
-    Rel(effectsProcessor, combatRenderer, "Updates visuals")
-    Rel(effectsProcessor, particleSystem, "Spawns particles")
-    Rel(combatController, hudRenderer, "Updates HUD")
+    Rel(effectsProcessor, threeScene, "Updates 3D visuals")
+    Rel(effectsProcessor, particleSystem, "Spawns particle effects")
+    Rel(combatController, hudOverlay, "Updates HUD overlays")
+    Rel(animationSystem, skeletalRenderer, "Updates bone transforms")
 
-    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
 ```
 
 ## Enhanced Icon Categories
@@ -253,7 +263,7 @@ C4Component
 
 ## 🎮 Three.js 3D Rendering Architecture
 
-Black Trigram is transitioning from PixiJS (2D rendering) to Three.js (3D rendering) to enhance visual capabilities while maintaining Korean martial arts theming and 60fps performance.
+Black Trigram has **completed** its migration from PixiJS (2D rendering) to Three.js (3D rendering), achieving enhanced visual capabilities with authentic Korean martial arts theming and maintaining 60fps performance targets as of Q1 2026.
 
 ### 📦 Three.js Dependencies
 
@@ -727,6 +737,94 @@ describe('Three.js Combat Arena', () => {
 - [ ] No WebGL errors in console
 - [ ] Memory usage stays below 500MB (desktop)
 
+### 🎬 Skeletal Animation Architecture
+
+Black Trigram implements a comprehensive 14-bone skeletal system with hand poses and muscle tension visualization for authentic Korean martial arts movement.
+
+#### Bone Hierarchy (14-Bone System)
+
+```
+PELVIS (root)
+├── SPINE_LOWER
+│   ├── SPINE_MID
+│   │   └── SPINE_UPPER
+│   │       ├── SHOULDER_L → ELBOW_L → HAND_L
+│   │       └── SHOULDER_R → ELBOW_R → HAND_R
+│   ├── THIGH_L → SHIN_L → FOOT_L
+│   └── THIGH_R → SHIN_R → FOOT_R
+```
+
+**Implementation:** `src/types/skeletal.ts` - Complete bone hierarchy with TypeScript type definitions
+
+#### Hand Pose System
+
+**Six Primary Hand Poses:**
+- `fist_vertical` - Vertical fist (chamber position) - 직권 (Jikgwon)
+- `fist_horizontal` - Horizontal fist (impact) - 평권 (Pyeonggwon)
+- `fist_pronated` - Pronated fist (downward punch) - 복권 (Bokgwon)
+- `open_hand_knife` - Knife-hand strike - 손날 (Sonnal)
+- `open_hand_palm` - Palm strike - 장타 (Jangta)
+- `grabbing` - Grappling position - 잡기 (Japgi)
+
+**Implementation:** `src/types/hand-animation.ts` - Hand pose definitions and transitions
+
+#### Muscle Tension Visualization
+
+**Tension Mapping (0.0-1.0):**
+- **High Tension (0.8-1.0)**: Bright red muscles - Active striking or blocking
+- **Medium Tension (0.4-0.7)**: Orange muscles - Stance maintenance
+- **Low Tension (0.0-0.3)**: Relaxed state - Recovery phase
+
+**Visual Feedback:**
+- Tension values mapped to bone visual intensity in real-time
+- Color gradient from relaxed (dim) to maximum exertion (bright)
+- Synchronized with technique execution and stance changes
+
+**Implementation:** `src/types/muscle.ts` - Muscle activation system with tension tracking
+
+#### Technique Animation System
+
+**Keyframe Interpolation:**
+- Start pose → Intermediate frames → Impact frame → Recovery
+- 60fps smooth interpolation between keyframes
+- Technique-specific timing (fast strikes, slow defensive movements)
+
+**Integration with Combat:**
+- Technique selection triggers skeletal animation sequence
+- Hand pose changes synchronized with strike timing
+- Muscle tension peaks at impact frame
+- Animation completes before next input accepted
+
+**Implementation:** 
+- `src/types/technique.ts` - Technique type definitions with animation metadata
+- `src/systems/animation/` - Animation system logic and keyframe management
+
+#### Performance Considerations
+
+**Optimization Strategies:**
+- Bone transforms cached and reused when stance is stable
+- Hand pose transitions use linear interpolation (LERP) for smooth 60fps
+- Muscle tension updates only for visible characters
+- Object pooling for animation state objects
+
+**Memory Footprint:**
+- 14 bones × 16 bytes (Matrix4) = 224 bytes per character
+- Hand pose state: ~50 bytes per character
+- Muscle tension map: ~112 bytes (8 muscle groups)
+- **Total per character: ~400 bytes**
+
+**Target Performance:**
+- 2 characters (player + opponent): ~800 bytes animation overhead
+- Negligible impact on 60fps target (<0.5ms per frame)
+- [ ] Visual quality on desktop (1920x1080)
+- [ ] Visual quality on mobile (720p)
+- [ ] 60fps sustained on desktop
+- [ ] 55fps minimum on mobile
+- [ ] Korean colors render correctly
+- [ ] Html overlays positioned properly
+- [ ] No WebGL errors in console
+- [ ] Memory usage stays below 500MB (desktop)
+
 ### 🎯 Performance Targets
 
 | Platform | Resolution | Target FPS | Particles | Memory |
@@ -1150,7 +1248,7 @@ quadrantChart
 
 ```mermaid
 mindmap
-  root((🟢 Strengths))
+  root((🟢 Strengths Q1 2026))
     id1(🛠️ Zero-Install Web App)
       id1.1[Play immediately—no download/sign-up]
       id1.2[Instant patching via static hosting]
@@ -1171,64 +1269,64 @@ mindmap
       id5.1[Runs in any modern browser]
       id5.2[Cross-platform compatibility: desktop & mobile]
       id5.3[Low barrier to entry for users]
-    id6(🔶 Authentic Korean Martial Arts Integration)
-      id6.1[Deep I Ching philosophy]
-      id6.2[70 traditional vital points]
+    id6(🔶 Authentic Korean Martial Arts)
+      id6.1[Deep I Ching philosophy - 8 trigrams complete]
+      id6.2[70/70 vital points implemented - 100% complete]
       id6.3[Korean labels, audio, cultural immersion]
     id7(🎵 Rich Audio-Visual Experience)
-      id7.1[Traditional Korean instruments & cyberpunk fusion]
-      id7.2[Spectacular ki energy & blood particles]
-      id7.3[Responsive, low-latency SFX]
+      id7.1[Three.js 3D rendering with skeletal animation]
+      id7.2[14-bone system with hand poses]
+      id7.3[Damage-based audio scaling - 84% test coverage]
     id8(⚙️ Modular Architecture)
-      id8.1[Clear separation: Combat, Trigram, VitalPoint, Audio]
-      id8.2[Reusable React + PixiJS components]
+      id8.1[Clear separation: Combat, Trigram, VitalPoint, Animation]
+      id8.2[Reusable React + Three.js components]
       id8.3[Zustand slices for isolated state]
     id9(🔑 Comprehensive Testing Framework)
-      id9.1[Unit tests for combat & trigram logic]
-      id9.2[Integration tests for full combat flow]
-      id9.3[Performance tests with Stats.js]
+      id9.1[71% overall test coverage]
+      id9.2[93% coverage on new components]
+      id9.3[Vitest unit + Cypress E2E tests]
 ```
 
 ### Mindmap of Weaknesses
 
 ```mermaid
 mindmap
-  root((🟠 Weaknesses))
+  root((🟠 Weaknesses Q1 2026))
     id1(🌀 No Persistence Session-Only)
       id1.1[All progress lost on refresh]
       id1.2[No saved unlocks or training logs]
       id1.3[Limited long-term engagement]
     id2(🐢 Asset Load Latency)
-      id2.1[Large JSON/trigram data slows startup]
-      id2.2[High-res textures cause delays]
-      id2.3[Initial loading screen can be lengthy]
+      id2.1[Three.js bundle ~240KB gzipped]
+      id2.2[3D models and textures loading time]
+      id2.3[Initial loading screen 3-5 seconds]
     id3(📴 Limited Offline Play)
       id3.1[Without service workers, no offline mode]
       id3.2[Users with spotty connectivity struggle]
       id3.3[No cached game state]
-    id4(🌐 Browser Compatibility Challenges)
-      id4.1[WebGL differences across browsers]
+    id4(🌐 Browser Compatibility)
+      id4.1[WebGL 2 required for Three.js]
       id4.2[Web Audio API support varies]
-      id4.3[Mobile browser quirks]
-    id5(⚠️ Memory/GC Spikes)
-      id5.1[Many particles cause GC pauses]
-      id5.2[Object churn in combat heavy scenes]
-      id5.3[Zustand state updates triggering re-renders]
-    id6(⚙️ Complex State Management)
-      id6.1[Multiple Zustand slices can desync]
-      id6.2[No unified persistence layer]
-      id6.3[Harder to trace bugs across stores]
+      id4.3[Mobile browser performance gaps]
+    id5(⚠️ Memory/GC Concerns)
+      id5.1[Three.js objects need manual disposal]
+      id5.2[Skeletal animation memory overhead]
+      id5.3[Particle systems can spike memory]
+    id6(⚙️ Combat Realism Systems)
+      id6.1[Only 4/12 systems complete - 33%]
+      id6.2[Pain/consciousness needs expansion]
+      id6.3[Trauma visualization needs injury tracking]
     id7(❌ Incomplete Features)
-      id7.1[Some techniques/stances lack polish]
-      id7.2[Missing grappling & blocking for certain stances]
-      id7.3[Training mode limited in scope]
-    id8(🔍 UX Learning Curve)
-      id8.1[Complex trigram interactions require tutorials]
-      id8.2[70 vital points may overwhelm new players]
-      id8.3[Not immediately intuitive for casual users]
+      id7.1[Only 1 technique per stance - need 3-5]
+      id7.2[EndScreen not implemented yet]
+      id7.3[Training mode limited scope]
+    id8(📱 Mobile Performance)
+      id8.1[50-55fps on mid-range devices - below 60fps target]
+      id8.2[Complex 3D rendering challenges]
+      id8.3[Touch controls need refinement]
     id9(🛠️ Limited Analytics)
       id9.1[No built-in user metrics or telemetry]
-      id9.2[Hard to measure player behavior/performance]
+      id9.2[Hard to measure player behavior]
       id9.3[No A/B testing framework]
 ```
 
@@ -1236,70 +1334,87 @@ mindmap
 
 ```mermaid
 mindmap
-  root((🔵 Opportunities))
+  root((🔵 Opportunities Q1 2026))
     id1(💡 PWA & Offline Caching)
-      id1.1[Implement service workers for asset caching]
-      id1.2[Cache JSON & textures for offline play]
-      id1.3[Persistence via IndexedDB/localStorage]
+      id1.1[Implement service workers for Three.js asset caching]
+      id1.2[Cache 3D models & textures for offline play]
+      id1.3[Persistence via IndexedDB for vital point progress]
     id2(📱 Mobile-First UX)
-      id2.1[Optimize controls for touch; swipe/drag]
-      id2.2[Adaptive UI layouts for small screens]
+      id2.1[Optimize touch controls for skeletal targeting]
+      id2.2[Adaptive 3D rendering quality for devices]
       id2.3[Accelerometer-based stance changes]
     id3(🎨 Community Modding)
-      id3.1[Allow custom skins via URL overlays]
-      id3.2[Custom particle packs/community-created assets]
-      id3.3[User-generated stances & techniques]
+      id3.1[Allow custom 3D character models]
+      id3.2[Community-created technique animations]
+      id3.3[User-generated training scenarios]
     id4(🤖 AI-Driven Tutorial Modules)
-      id4.1[WebAssembly/TF.js for adaptive feedback]
-      id4.2[Real-time guidance on vital-point targeting]
-      id4.3[Progressive difficulty based on performance]
-    id5(🌱 Ecosystem Partnerships)
-      id5.1[Collaboration with martial arts schools]
-      id5.2[Cultural institution sponsorships]
-      id5.3[Cross-promotion with Korean cultural events]
-    id6(🔧 Third-Party Integrations)
-      id6.1[Discord & Twitch combat overlays]
-      id6.2[Leaderboard integration via Firebase]
-      id6.3[Social sharing of combo replays]
+      id4.1[AI coach analyzing vital point accuracy]
+      id4.2[Real-time feedback on skeletal animation form]
+      id4.3[Adaptive difficulty based on combat performance]
+    id5(🌱 Martial Arts Education Market)
+      id5.1[STEM gamification of traditional martial arts]
+      id5.2[Korean Wave 한류 global interest timing]
+      id5.3[Partnerships with taekwondo schools]
+    id6(🔧 VR/AR Integration)
+      id6.1[WebXR support for immersive vital point training]
+      id6.2[AR overlay for real-world practice]
+      id6.3[VR dojang environment with Korean aesthetics]
     id7(⚙️ Advanced Analytics)
-      id7.1[Track detailed player telemetry]
-      id7.2[Heatmaps of vital-point targeting accuracy]
-      id7.3[User segmentation & A/B tests for features]
-    id8(📚 E-Learning Mode)
-      id8.1[Structured courses on trigram theory]
-      id8.2[Guided practice sessions on vital points]
-      id8.3[Certification badges for skill milestones]
+      id7.1[Vital point targeting heatmaps]
+      id7.2[Combat effectiveness metrics per archetype]
+      id7.3[Skeletal animation quality scoring]
+    id8(📚 E-Learning Certification)
+      id8.1[Structured trigram theory courses]
+      id8.2[Vital point mastery certification]
+      id8.3[Korean martial arts digital badges]
     id9(🌐 Global Localization)
-      id9.1[Support multiple languages - KR, EN, JP, CN]
-      id9.2[Localized UI/UX for regional audiences]
-      id9.3[Region-specific AI tutor voice-overs]
+      id9.1[Multi-language support - KR, EN, JP, CN]
+      id9.2[Localized Korean terminology by region]
+      id9.3[Cultural context adaptation]
 ```
 
 ### Mindmap of Threats
 
 ```mermaid
 mindmap
-  root((🔴 Threats))
+  root((🔴 Threats Q1 2026))
     id1(🌩️ CDN Outages / Latency)
-      id1.1[Audio CDN or Art CDN downtime]
-      id1.2[High global latency affects playability]
+      id1.1[Audio CDN or 3D model CDN downtime]
+      id1.2[High global latency affects Three.js loading]
       id1.3[Single region CDN cold starts]
-    id2(⚠️ WebGL / API Deprecation)
-      id2.1[Future browser changes break PixiJS]
-      id2.2[Web Audio API behavior shifts]
-      id2.3[Mobile browser limitations]
-    id3(🏆 Competitive Mobile Titles)
-      id3.1[Native mobile games with deeper UX]
-      id3.2[Lower-latency touch controls]
-      id3.3[Larger marketing budgets]
-    id4(📉 Technical Debt Accumulation)
-      id4.1[Complex Zustand stores & no persistence]
-      id4.2[Inconsistent data patterns]
-      id4.3[Inefficient combat loops]
-    id5(🔒 CDN Asset Security Risks)
-      id5.1[MITM if CDN not HTTPS + SRI]
-      id5.2[Compromised asset hosting]
-      id5.3[Unverified third-party scripts]
+    id2(⚠️ Three.js / WebGL Evolution)
+      id2.1[Three.js API breaking changes in future versions]
+      id2.2[WebGL 3 transition requirements]
+      id2.3[Mobile browser WebGL limitations]
+    id3(🏆 Competitive Market)
+      id3.1[Native mobile martial arts games with AAA graphics]
+      id3.2[Lower-latency native rendering]
+      id3.3[Established martial arts franchises]
+    id4(📉 Technical Debt)
+      id4.1[Three.js object disposal complexity]
+      id4.2[Combat realism systems only 33% complete]
+      id4.3[State management complexity growing]
+    id5(🔒 CDN Security Risks)
+      id5.1[MITM attacks on Three.js CDN]
+      id5.2[Compromised 3D model hosting]
+      id5.3[Subresource Integrity validation needed]
+    id6(🌐 Browser Standards Changes)
+      id6.1[Web Audio API deprecations]
+      id6.2[WebGL context loss handling]
+      id6.3[New security policies - CORS, CSP]
+    id7(🎮 Player Retention)
+      id7.1[No persistence reduces engagement]
+      id7.2[Lack of progression system]
+      id7.3[Session-only gameplay limits depth]
+    id8(💰 Monetization Limits)
+      id8.1[No backend for payment processing]
+      id8.2[Difficult to track premium features]
+      id8.3[Limited incentive for continued development]
+    id9(🌍 Cultural Sensitivity)
+      id9.1[Misrepresentation of Korean culture risk]
+      id9.2[Inappropriate use of traditional symbols]
+      id9.3[Need cultural consultant validation]
+```
     id6(📶 Browser Standards Evolution)
       id6.1[Changes to ES modules affect bundling]
       id6.2[New security policies - CORS, CSP]
