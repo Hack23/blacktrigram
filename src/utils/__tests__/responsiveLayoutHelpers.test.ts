@@ -123,17 +123,39 @@ describe('responsiveLayoutHelpers', () => {
       const large = getCombatLayoutConstants(1600);
       const xlarge = getCombatLayoutConstants(3840);
 
-      // HUD height should increase (except tablet is optimized)
+      // HUD height should increase progressively (no tablet optimization)
       expect(mobile.hudHeight).toBeLessThan(tablet.hudHeight);
       expect(tablet.hudHeight).toBeLessThan(desktop.hudHeight);
       expect(desktop.hudHeight).toBeLessThan(large.hudHeight);
       expect(large.hudHeight).toBeLessThan(xlarge.hudHeight);
 
-      // Health bar height should increase progressively
+      // Health bar height should increase progressively (no tablet optimization)
       expect(mobile.healthBarHeight).toBeLessThan(tablet.healthBarHeight);
       expect(tablet.healthBarHeight).toBeLessThan(desktop.healthBarHeight);
       expect(desktop.healthBarHeight).toBeLessThan(large.healthBarHeight);
       expect(large.healthBarHeight).toBeLessThan(xlarge.healthBarHeight);
+    });
+
+    it('should use intentional tablet optimizations for controls and footer', () => {
+      const mobile = getCombatLayoutConstants(375);
+      const tablet = getCombatLayoutConstants(800);
+      const desktop = getCombatLayoutConstants(1200);
+
+      // Tablet controlsHeight is intentionally smaller than mobile for landscape ergonomics
+      // Mobile (portrait): 160px for thumb reach
+      // Tablet (landscape): 140px for better screen utilization
+      expect(tablet.controlsHeight).toBe(140);
+      expect(mobile.controlsHeight).toBe(160);
+      expect(tablet.controlsHeight).toBeLessThan(mobile.controlsHeight);
+      expect(desktop.controlsHeight).toBeGreaterThan(tablet.controlsHeight);
+
+      // Tablet footerHeight is intentionally smaller than mobile for landscape optimization
+      // Mobile (portrait): 34px adequate spacing
+      // Tablet (landscape): 30px more compact
+      expect(tablet.footerHeight).toBe(30);
+      expect(mobile.footerHeight).toBe(34);
+      expect(tablet.footerHeight).toBeLessThan(mobile.footerHeight);
+      expect(desktop.footerHeight).toBeGreaterThan(tablet.footerHeight);
     });
 
     it('should ensure 4K displays get larger values than desktop', () => {

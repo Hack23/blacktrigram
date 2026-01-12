@@ -64,20 +64,20 @@ describe("useCombatLayout", () => {
       const { result } = renderHook(() => useCombatLayout(1200, 800));
 
       expect(result.current.layoutConstants.padding).toBe(10);
-      expect(result.current.layoutConstants.hudHeight).toBe(130); // Updated to desktop value
-      expect(result.current.layoutConstants.controlsHeight).toBe(170); // Updated to desktop value
-      expect(result.current.layoutConstants.footerHeight).toBe(35); // Updated to desktop value
-      expect(result.current.layoutConstants.healthBarHeight).toBe(65); // Updated to desktop value
+      expect(result.current.layoutConstants.hudHeight).toBe(130); // Fixed: was 120 (old broken), now 130 (desktop)
+      expect(result.current.layoutConstants.controlsHeight).toBe(170); // Fixed: was 160 (old broken), now 170 (desktop)
+      expect(result.current.layoutConstants.footerHeight).toBe(35); // Fixed: was 28 (old broken), now 35 (desktop)
+      expect(result.current.layoutConstants.healthBarHeight).toBe(65); // Fixed: was 55 (old broken), now 65 (desktop)
     });
 
     it("should return optimized layout constants for 4K/2K screens", () => {
       const { result } = renderHook(() => useCombatLayout(3840, 2160));
 
       expect(result.current.layoutConstants.padding).toBe(10);
-      expect(result.current.layoutConstants.hudHeight).toBe(140); // Updated to xlarge value (was 90, now 140 for 4K)
-      expect(result.current.layoutConstants.controlsHeight).toBe(180); // Updated to xlarge value (was 120, now 180 for 4K)
-      expect(result.current.layoutConstants.footerHeight).toBe(40); // Updated to xlarge value (was 20, now 40 for 4K)
-      expect(result.current.layoutConstants.healthBarHeight).toBe(70); // Updated to xlarge value (was 45, now 70 for 4K)
+      expect(result.current.layoutConstants.hudHeight).toBe(140); // Fixed: was 90 (inverted!), now 140 (xlarge +56%)
+      expect(result.current.layoutConstants.controlsHeight).toBe(180); // Fixed: was 120 (inverted!), now 180 (xlarge +50%)
+      expect(result.current.layoutConstants.footerHeight).toBe(40); // Fixed: was 20 (inverted!), now 40 (xlarge +100%)
+      expect(result.current.layoutConstants.healthBarHeight).toBe(70); // Fixed: was 45 (inverted!), now 70 (xlarge +56%)
       expect(result.current.isMobile).toBe(false);
     });
   });

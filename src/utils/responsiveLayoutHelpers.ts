@@ -71,6 +71,8 @@ const BASE_LAYOUT_VALUES = {
  * const padding = getResponsivePadding('xlarge'); // 35
  * const padding = getResponsivePadding('mobile'); // 20
  * ```
+ * 
+ * @public
  */
 export function getResponsivePadding(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.padding[screenSize];
@@ -87,6 +89,8 @@ export function getResponsivePadding(screenSize: ScreenSize): number {
  * const headerHeight = getResponsiveHeaderHeight('xlarge'); // 120
  * const headerHeight = getResponsiveHeaderHeight('mobile'); // 90
  * ```
+ * 
+ * @public
  */
 export function getResponsiveHeaderHeight(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.headerHeight[screenSize];
@@ -103,6 +107,8 @@ export function getResponsiveHeaderHeight(screenSize: ScreenSize): number {
  * const footerHeight = getResponsiveFooterHeight('xlarge'); // 100
  * const footerHeight = getResponsiveFooterHeight('mobile'); // 75
  * ```
+ * 
+ * @public
  */
 export function getResponsiveFooterHeight(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.footerHeight[screenSize];
@@ -119,6 +125,8 @@ export function getResponsiveFooterHeight(screenSize: ScreenSize): number {
  * const spacing = getResponsiveSectionSpacing('xlarge'); // 25
  * const spacing = getResponsiveSectionSpacing('mobile'); // 15
  * ```
+ * 
+ * @public
  */
 export function getResponsiveSectionSpacing(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.sectionSpacing[screenSize];
@@ -135,6 +143,8 @@ export function getResponsiveSectionSpacing(screenSize: ScreenSize): number {
  * const buttonArea = getResponsiveButtonArea('xlarge'); // 110
  * const buttonArea = getResponsiveButtonArea('mobile'); // 75
  * ```
+ * 
+ * @public
  */
 export function getResponsiveButtonArea(screenSize: ScreenSize): number {
   return BASE_LAYOUT_VALUES.buttonArea[screenSize];
@@ -149,7 +159,7 @@ export function getResponsiveButtonArea(screenSize: ScreenSize): number {
  * 
  * @example
  * ```typescript
- * const layout = getLayoutConstants(1920);
+ * const layout = getLayoutConstants(3840); // 4K display
  * // {
  * //   padding: 35,
  * //   headerHeight: 120,
@@ -158,6 +168,8 @@ export function getResponsiveButtonArea(screenSize: ScreenSize): number {
  * //   buttonArea: 110
  * // }
  * ```
+ * 
+ * @public
  */
 export function getLayoutConstants(width: number) {
   const screenSize = getScreenSize(width);
@@ -179,7 +191,7 @@ export function getLayoutConstants(width: number) {
  * 
  * @example
  * ```typescript
- * const layout = getCombatLayoutConstants(1920);
+ * const layout = getCombatLayoutConstants(3840); // 4K display
  * // {
  * //   padding: 10,
  * //   hudHeight: 140,
@@ -188,6 +200,8 @@ export function getLayoutConstants(width: number) {
  * //   healthBarHeight: 70
  * // }
  * ```
+ * 
+ * @public
  */
 export function getCombatLayoutConstants(width: number) {
   const screenSize = getScreenSize(width);
@@ -201,17 +215,21 @@ export function getCombatLayoutConstants(width: number) {
     xlarge: 140,
   };
   
+  // Note: Tablet optimizations - controlsHeight and footerHeight are intentionally
+  // smaller on tablets than mobile for better landscape orientation ergonomics.
+  // Mobile (portrait) needs taller controls for thumb reach, while tablets
+  // (often landscape) can use more compact controls with better screen utilization.
   const controlsHeightMap = {
-    mobile: 160,
-    tablet: 140,
+    mobile: 160, // Taller for portrait thumb reach
+    tablet: 140,  // Optimized for landscape - more compact
     desktop: 170,
     large: 175,
     xlarge: 180,
   };
   
   const footerHeightMap = {
-    mobile: 34,
-    tablet: 30,
+    mobile: 34,  // Adequate for portrait orientation
+    tablet: 30,   // Optimized for landscape - more compact
     desktop: 35,
     large: 37,
     xlarge: 40,
