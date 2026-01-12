@@ -1,4 +1,8 @@
-# 🎮 Black Trigram (흑괘) – Technical Architecture
+# 🎮 Black Trigram (흑괘) – Technical Architecture (Q1 2026)
+
+**Last Updated**: January 2026  
+**Architecture Version**: 2.0 (Three.js Complete Migration)  
+**Status**: Beta Stage (7.9/10) - Combat Realism Systems In Progress
 
 ---
 
@@ -7,14 +11,17 @@
 | Document                                                              | Focus            | Description                                                                                                |
 | --------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------- |
 | **[🌐 System Context](#-system-context)**                             | C4 Model         | High-level view showing actors (Player, CDNs) and the entirely front-end application                       |
-| **[🏢 Container View](#-container-view)**                             | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Asset Loader, Renderer, and State Management             |
-| **[🧩 Component View](#-component-view)**                             | C4 Model         | Detailed breakdown of all key modules: Combat System, Trigram System, Vital Point System, Audio, UI        |
+| **[🏢 Container View](#-container-view)**                             | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Three.js Renderer, Animation System, State Management    |
+| **[🧩 Component View](#-component-view)**                             | C4 Model         | Detailed breakdown: Combat System, Trigram System (8 stances), Vital Point System (70 points), Skeletal Animation (14 bones) |
 | **[🎨 UI/UX Architecture](docs/UI_UX_ARCHITECTURE.md)**               | UI Components    | Component hierarchy, design patterns, Korean theming, Three.js UI integration                              |
-| **[🔧 File Structure](#-file-structure-highlights)**                  | Organization     | Current project structure and key file locations                                                           |
-| **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | How input flows through logic to rendering and feedback in real time                                       |
-| **[⚡ Security & Performance](#-security--performance-architecture)** | Performance      | Client-side performance profiling, optimization techniques, and graceful degradation strategies            |
-| **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Strengths, Weaknesses, Opportunities, Threats for a 100% frontend, no-persistence "Black Trigram" web game |
-| **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes, trigram system, resources & mechanics                                                   |
+| **[🔧 File Structure](#-file-structure-q1-2026)**                     | Organization     | Q1 2026 project structure with systems/, components/, data/, types/ layout                                 |
+| **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | Input → Trigram → Vital Point → Damage → Three.js rendering with skeletal animation                        |
+| **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 14-bone hierarchy, 6 hand poses, muscle tension visualization                                              |
+| **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
+| **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q1 2026 status: Strengths (70/70 vital points), Weaknesses (33% combat realism), Opportunities, Threats    |
+| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (71% test coverage, 4/12 combat realism systems, 8/8 trigram stances)                 |
+| **[🔮 Future Architecture](FUTURE_ARCHITECTURE.md)**                  | Roadmap          | Q2 2026+ evolution: Combat realism completion, VR/AR integration, advanced features                        |
+| **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes (5), trigram system (8), resources & mechanics                                           |
 | **[🏗️ Architecture Concepts](#-architecture-concepts)**               | Technical Design | Mindmap of system architecture layers and components                                                       |
 | **[🔄 UX Flow](#-ux-flow)**                                           | User Experience  | User journey through screens and interactions                                                              |
 | **[🔄 Combat Mechanics](#-combat-mechanics--data-relationships)**     | Game Mechanics   | Detailed combat system data flow and relationships                                                         |
@@ -2103,27 +2110,44 @@ graph TD
 
 ---
 
-## 🏁 Conclusion
+## 🏁 Conclusion (Q1 2026)
 
-Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging cutting-edge web technologies while maintaining simplicity through its frontend-only design. The modular architecture supports rapid iteration and easy deployment while providing a rich, culturally authentic gaming experience.
+Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging Three.js 3D rendering and React 19 while maintaining simplicity through its frontend-only design. The Q1 2026 implementation demonstrates the successful completion of the PixiJS to Three.js migration, with 70/70 vital points implemented, a comprehensive 14-bone skeletal animation system, and 71% test coverage.
 
-### Key Architectural Strengths:
+### Key Architectural Strengths (Q1 2026):
 
-- **Zero Backend Complexity**: Pure frontend eliminates server management
-- **Modular Design**: Clear separation of concerns across systems
-- **Performance Focused**: Optimization strategies baked into architecture
-- **Culturally Rich**: Deep integration of Korean martial arts philosophy
-- **Developer Friendly**: TypeScript, modern React, comprehensive testing
+- **Three.js Migration Complete**: Modern 3D rendering with @react-three/fiber and @react-three/drei (60fps desktop, 55-60fps high-end mobile)
+- **Authentic Korean Martial Arts**: 70/70 vital points (100% complete), 8 trigram stances, 5 player archetypes with Korean names (무사, 암살자, 해커, 정보요원, 조직폭력배)
+- **Advanced Animation System**: 14-bone skeletal hierarchy, 6 hand poses with Korean terminology (직권, 평권, 복권, 손날, 장타, 잡기), muscle tension visualization
+- **Combat Realism Foundation**: 4/12 systems complete (body part health, vital point targeting, enhanced anatomy, visual feedback) with Q2 2026 completion roadmap
+- **High Test Coverage**: 71% overall, 93% on new components (Vitest unit + Cypress E2E)
+- **Zero Backend Complexity**: Pure frontend eliminates server management costs
+- **Modular Design**: Clear separation of systems/ (combat, trigram, vitalpoint, animation), components/, data/, types/
+- **Performance Optimized**: Three.js instancing (1000+ particles), object pooling, geometry/material reuse, automatic frustum culling
+- **Developer Friendly**: TypeScript strict mode, React 19, comprehensive testing framework
 
-### Areas for Future Enhancement:
+### Current Status & Metrics:
 
-- **Persistence Layer**: Optional backend for save games
-- **Multiplayer Support**: WebRTC or server-based PvP
-- **Advanced Analytics**: Deeper player behavior tracking
-- **Mobile Optimization**: Native app wrapper or PWA
-- **Content Expansion**: More stances, techniques, and vital points
+- **Overall Rating**: 7.9/10 (Beta Stage - Combat Realism Focus)
+- **Vital Points**: 70/70 implemented (100% complete) - up from 4.3%
+- **Test Coverage**: 71% overall, 93% new components, 84.29% audio system
+- **Performance**: 60fps desktop (✅ met), 55-60fps high-end mobile (✅ acceptable), 50-55fps mid-range mobile (⚠️ needs optimization)
+- **Bundle Size**: ~240KB gzipped (Three.js vendor chunk)
+- **Memory**: <400MB desktop, <350MB high-end mobile, <300MB mid-range mobile
+- **Combat Realism**: 4/12 systems complete (33%), Q2 2026 completion target
 
-The architecture is designed to scale with the game's ambitions while maintaining the core philosophy of accessibility, authenticity, and engaging combat mechanics.
+### Areas for Q2 2026 Enhancement:
+
+- **Combat Realism Completion**: Complete remaining 8/12 systems (pain overload, 4-level consciousness, trauma visualization, breathing disruption, injury-based movement, bone impact audio)
+- **Mobile Performance**: Optimize to achieve 55fps target on mid-range devices (currently 50-55fps)
+- **Technique Expansion**: Expand from 1 technique/stance to 3-5 techniques/stance (24-40 total)
+- **EndScreen Implementation**: Complete game flow (Intro → Combat → End)
+- **Persistence Layer**: Optional IndexedDB/localStorage for vital point progress
+- **VR/AR Integration**: WebXR support for immersive vital point training
+- **Advanced Analytics**: Vital point targeting heatmaps, combat effectiveness metrics
+- **Content Expansion**: Additional training scenarios, difficulty progression, AI enhancements
+
+The Q1 2026 architecture successfully demonstrates the feasibility of authentic Korean martial arts simulation in the browser, with a solid foundation for Q2 2026 completion of combat realism systems and mobile optimization.
 
 ---
 
@@ -2152,6 +2176,7 @@ The architecture is designed to scale with the game's ambitions while maintainin
 **✅ Approved by:** James Pether Sörling, CEO  
 **📤 Distribution:** Public  
 **🏷️ Classification:** [![Confidentiality: Public](https://img.shields.io/badge/C-Public-lightgrey?style=flat-square&logo=shield&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#confidentiality-levels) [![Integrity: Moderate](https://img.shields.io/badge/I-Moderate-yellow?style=flat-square&logo=check-circle&logoColor=black)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#integrity-levels) [![Availability: Standard](https://img.shields.io/badge/A-Standard-lightgreen?style=flat-square&logo=server&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md#availability-levels)  
-**📅 Effective Date:** 2025-01-15  
-**⏰ Next Review:** 2025-04-15  
+**📅 Effective Date:** 2026-01-12 (Q1 2026 Update - Three.js Migration Complete)  
+**📝 Previous Version:** 2025-01-15 (PixiJS Architecture)  
+**⏰ Next Review:** 2026-04-12 (Q2 2026 Combat Realism Completion Review)  
 **🎯 Framework Compliance:** [![ISO 27001](https://img.shields.io/badge/ISO_27001-2022_Aligned-blue?style=flat-square&logo=iso&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![NIST CSF 2.0](https://img.shields.io/badge/NIST_CSF-2.0_Aligned-green?style=flat-square&logo=nist&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) [![CIS Controls](https://img.shields.io/badge/CIS_Controls-v8.1_Aligned-orange?style=flat-square&logo=cisecurity&logoColor=white)](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)
