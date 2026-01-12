@@ -348,6 +348,33 @@ const MUSCLE_AMPLIFICATION_EXPONENT_NEGATIVE = 1.1;
  *
  * Formula: 1.0 + (deviation ^ exponent) * base
  * - Asymmetric: Different amplification for above/below baseline
+ * UPDATED: Now uses exponential curve to amplify differences:
+ * - Skinny fighters (28-30kg) appear MUCH smaller than average
+ * - Large fighters (48kg) appear MUCH larger than average
+ *
+ * Previous: Linear 2.5x amplification (insufficient)
+ * New: Exponential curve with 1.5 exponent and 4.0 base
+ *
+ * Archetype muscle mass ranges from 28kg (Hacker) to 48kg (Jojik).
+ * This significant difference needs amplification to be visually distinct.
+ *
+ * @korean 근육시각적증폭계수
+ */
+const MUSCLE_AMPLIFICATION_BASE = 4.0;
+const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
+
+/**
+ * Calculate muscle scale factor based on muscle mass with non-linear amplification.
+ *
+ * Uses exponential curve to create dramatic visual differences:
+ * - 28kg (Hacker) → 0.64 scale (skinny, visible ribs)
+ * - 30kg (Amsalja) → 0.78 scale (lean athlete)
+ * - 32kg (Jeongbo) → 0.90 scale (fit operative)
+ * - 35kg (Musa) → 1.0 scale (reference baseline)
+ * - 48kg (Jojik) → 1.91 scale (massive, intimidating)
+ *
+ * Formula: 1.0 + sign(deviation) * |deviation|^exponent * amplificationBase
+ * where deviation = (muscleMass / referenceMass) - 1.0
  *
  * @param muscleMass - Muscle mass in kilograms (28-48kg range)
  * @returns Scale factor for muscle geometry
@@ -386,13 +413,32 @@ export const calculateMuscleScaleFactor = (muscleMass: number): number => {
  * - **Jojik (20kg): 0.72 opacity (CLEARLY VISIBLE)** ✨
  *
  * @param fatMass - Fat mass in kilograms (10-22kg range)
+  // Reference: 35kg average muscle mass → 1.0 scale (Musa baseline)
+  const referenceMass = 35;
+  const massRatio = muscleMass / referenceMass;
+  const deviation = massRatio - 1.0;
+
+  // Exponential curve for dramatic differences
+  const exponentialDeviation =
+    Math.sign(deviation) * Math.pow(Math.abs(deviation), MUSCLE_AMPLIFICATION_EXPONENT);
+
+  return Math.max(0.5, 1.0 + exponentialDeviation * MUSCLE_AMPLIFICATION_BASE);
+};
+
+/**
+ * Calculate fat layer opacity with expanded range for better distinction.
+ *
+ * Previous: 0.1-0.7 opacity (insufficient contrast)
+ * New: 0.05-0.85 opacity (dramatic difference)
+ *
+ * @param fatMass - Fat mass in kilograms (archetype range: 10-22kg)
  * @returns Opacity value for fat layer (0.05-0.85)
  *
  * @korean 지방층투명도계산
  */
 export const calculateFatLayerOpacity = (fatMass: number): number => {
-  const minFat = 10;
-  const maxFat = 22;
+  const minFat = 10; // Amsalja minimum
+  const maxFat = 22; // Jojik maximum
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
   // Expanded range with curve favoring high values
@@ -410,6 +456,17 @@ export const calculateFatLayerOpacity = (fatMass: number): number => {
  * - **Jojik (20kg): 0.46 thickness (THICK PADDING)** ✨
  *
  * @param fatMass - Fat mass in kilograms (10-22kg range)
+  // Expanded range: 0.05 (lean) to 0.85 (heavy)
+  return Math.max(0.05, Math.min(0.85, 0.05 + normalizedFat * 0.8));
+};
+
+/**
+ * Calculate fat layer thickness with non-linear scaling.
+ *
+ * Previous: 0.05-0.45 linear
+ * New: 0.02-0.60 exponential (skinny = very thin, heavy = very thick)
+ *
+ * @param fatMass - Fat mass in kilograms (archetype range: 10-22kg)
  * @returns Scale increase for fat layer (0.02-0.60)
  *
  * @korean 지방층두께계산
@@ -420,6 +477,7 @@ export const calculateFatLayerThickness = (fatMass: number): number => {
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
   // Exponential curve: thin at low values, THICK at high values
+  // Exponential curve for fat thickness
   const exponentialFat = Math.pow(normalizedFat, 1.5);
 
   return Math.max(0.02, Math.min(0.6, 0.02 + exponentialFat * 0.58));
