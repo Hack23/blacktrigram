@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://hack23.github.io/cia-compliance-manager/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
+<img src="https://hack23.com/icon-192.png" alt="Hack23 AB Logo" width="192" height="192">
 
 <h1 align="center">🔐 Hack23 AB — ISMS Reference Mapping</h1>
 
