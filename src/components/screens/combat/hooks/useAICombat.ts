@@ -604,6 +604,33 @@ function getAllArchetypeTechniques(
 }
 
 /**
+ * Apply cross-stance damage modifier to technique
+ * 
+ * Creates a modified copy of the technique with 80% damage for cross-stance usage.
+ * This prevents mutation of the original technique object.
+ * 
+ * @korean 교차 자세 피해 배율 적용
+ * 
+ * @param technique - Original technique
+ * @param isCrossStance - Whether technique is from different stance
+ * @returns Modified technique with 80% damage if cross-stance, original otherwise
+ */
+function applyCrossStanceDamageModifier(
+  technique: KoreanTechnique,
+  isCrossStance: boolean
+): KoreanTechnique {
+  if (!isCrossStance || !technique.damage) {
+    return technique;
+  }
+  
+  // Create modified copy with 80% damage
+  return {
+    ...technique,
+    damage: Math.floor(technique.damage * 0.8),
+  };
+}
+
+/**
  * Helper to select technique for AI action with rotation and cooldown awareness
  * 
  * Enhanced technique selection with:
@@ -675,39 +702,19 @@ function selectTechniqueForAction(
   }
 
   if (candidates.length > 0) {
-    // Apply rotation bias for diversity
-    const technique = selectTechniqueWithRotation(candidates, rotationQueue);
+    // Filter signature techniques once for efficiency
+    const signatureTechniques = candidates.filter((tech) =>
+      isSignatureTechnique(tech, player.archetype)
+    );
+    
+    // Apply 60% bias toward signature techniques
+    // Determine category first, then select best technique within category
+    const useSignature = signatureTechniques.length > 0 && Math.random() < 0.6;
+    
+    const selectedCandidates = useSignature ? signatureTechniques : candidates;
+    const technique = selectTechniqueWithRotation(selectedCandidates, rotationQueue);
     
     if (technique) {
-      // Identify signature techniques for archetype bias
-      const isSignature = isSignatureTechnique(technique, player.archetype);
-      
-      // Optionally prefer signature techniques with 60% bias
-      if (!isSignature && Math.random() < 0.6) {
-        const signatureTechniques = candidates.filter((tech) =>
-          isSignatureTechnique(tech, player.archetype)
-        );
-        
-        if (signatureTechniques.length > 0) {
-          const signatureTech = selectTechniqueWithRotation(signatureTechniques, rotationQueue);
-          if (signatureTech) {
-            const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
-            const vitalPoint = selectOptimalVitalPoint(
-              player.currentStance, 
-              difficultyLevel, 
-              player.archetype
-            ) ?? undefined;
-            
-            return { 
-              technique: signatureTech, 
-              vitalPoint, 
-              actionType: isSpecialTechnique ? "technique" : "attack",
-              isCrossStance
-            };
-          }
-        }
-      }
-      
       const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
       const vitalPoint = selectOptimalVitalPoint(
         player.currentStance, 
@@ -715,8 +722,11 @@ function selectTechniqueForAction(
         player.archetype
       ) ?? undefined;
       
+      // Apply cross-stance damage modifier if needed
+      const finalTechnique = applyCrossStanceDamageModifier(technique, isCrossStance);
+      
       return { 
-        technique, 
+        technique: finalTechnique, 
         vitalPoint, 
         actionType: isSpecialTechnique ? "technique" : "attack",
         isCrossStance
@@ -1204,6 +1214,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
             actionType = result.actionType;
             
             // Update rotation queue and cooldown tracking if technique selected
+            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
             if (selectedTechnique) {
               updateTechniqueRotation(
                 selectedTechnique.id,
@@ -1213,14 +1224,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               
               // Record cooldown start time
               techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
-              
-              // Apply 80% damage modifier for cross-stance techniques
-              if (result.isCrossStance && selectedTechnique.damage) {
-                selectedTechnique = {
-                  ...selectedTechnique,
-                  damage: Math.floor(selectedTechnique.damage * 0.8),
-                };
-              }
             }
             
             if (actionType === "attack") {
@@ -1244,6 +1247,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
             actionType = result.actionType;
             
             // Update rotation queue and cooldown tracking if technique selected
+            // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
             if (selectedTechnique) {
               updateTechniqueRotation(
                 selectedTechnique.id,
@@ -1253,14 +1257,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               
               // Record cooldown start time
               techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
-              
-              // Apply 80% damage modifier for cross-stance techniques
-              if (result.isCrossStance && selectedTechnique.damage) {
-                selectedTechnique = {
-                  ...selectedTechnique,
-                  damage: Math.floor(selectedTechnique.damage * 0.8),
-                };
-              }
             }
             
             if (actionType === "attack" || actionType === "technique") {
