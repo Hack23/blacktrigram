@@ -449,7 +449,7 @@ export const PUNCH_PHASES = {
     wrist: [0, 0, 0] as const,             // Wrist neutral, fist vertical
     
     // Opposite arm guard position
-    oppositeShould: [-0.1, 0, 0.2] as const,  // Guard up
+    oppositeShoulder: [-0.1, 0, 0.2] as const,  // Guard up
     oppositeElbow: [0, 0, 1.4] as const,      // Elbow bent for guard
     
     // Body position - neutral or slightly turned away
