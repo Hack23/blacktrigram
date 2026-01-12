@@ -50,6 +50,8 @@ export const PhilosophyScreenThreeJS: React.FC<
 
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
+  const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
   // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
@@ -171,8 +173,8 @@ export const PhilosophyScreenThreeJS: React.FC<
   const archetypes = useMemo(() => Object.entries(PLAYER_ARCHETYPES_DATA), []);
 
   // Grid layout calculations
-  const valuesPerRow = isMobile ? 3 : 6;
-  const trigramsPerRow = isMobile ? 2 : 4;
+  const valuesPerRow = isMobile ? 3 : isTablet ? 4 : isLargeDesktop ? 8 : 6;
+  const trigramsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
 
   return (
     <div
