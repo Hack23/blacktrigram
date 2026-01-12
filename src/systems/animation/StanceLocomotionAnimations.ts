@@ -117,6 +117,7 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_R, -0.3, 0, 0)
     .position(BoneName.PELVIS, 0, 0.08, 0.05)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth, DEFAULT_SHOULDER_WIDTH_CM)
     .at(0.45, "ease-out")
     .rotate(BoneName.PELVIS, 0.2, -0.08, 0)
     .rotate(BoneName.HIP_R, -0.5, 0, 0)
@@ -129,6 +130,7 @@ export const GEON_RUN_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.ELBOW_L, -1.3, 0, 0)
     .position(BoneName.PELVIS, 0, 0.05, 0.05)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(KOREAN_STANCE_BIOMECHANICS.GEON_HEAVEN.stanceWidth, DEFAULT_SHOULDER_WIDTH_CM)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
