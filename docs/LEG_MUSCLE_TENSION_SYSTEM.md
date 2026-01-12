@@ -196,10 +196,10 @@ The tension values are applied to `BoneAttachedMuscles` components which:
 
 ## Performance
 
-- **60fps compatible** - Lightweight calculations
-- **Cached results** - Muscle states synced every 10 frames
-- **No allocations** - Reuses scratch maps to avoid GC pressure
-- **Smooth transitions** - Lerp interpolation at 5.0/sec
+- **60fps compatible** - Optimized for real-time updates with memoization
+- **Memoized calculations** - Stance tension cached until stance changes
+- **Efficient updates** - Muscle states synced every 10 frames (6 times/sec)
+- **Smooth transitions** - Lerp interpolation using config activation speed
 
 ## Testing
 

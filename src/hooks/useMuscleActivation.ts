@@ -10,7 +10,7 @@
  * @korean 근육활성화훅
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { 
   MuscleActivationManager,
   getMuscleTensionForStance,
@@ -18,6 +18,14 @@ import {
 import type { PlayerAnimation } from "../types/player-visual";
 import type { TrigramStance } from "../types/common";
 import { DEFAULT_MUSCLE_CONFIG } from "../types/muscle";
+
+/**
+ * Simple lerp function for muscle tension interpolation
+ * Defined at module level to avoid recreation
+ * @korean 선형보간함수
+ */
+const lerp = (start: number, end: number, t: number): number => 
+  start + (end - start) * t;
 
 /**
  * Options for useMuscleActivation hook
@@ -105,10 +113,10 @@ export function useMuscleActivation(
     };
   }, []);
 
-  // Lerp function extracted for reuse across frames (avoid reallocation)
-  const lerp = useRef((start: number, end: number, t: number) => 
-    start + (end - start) * t
-  ).current;
+  // Memoize stance tension to avoid recalculation at 60fps
+  const stanceTension = useMemo(() => {
+    return currentStance ? getMuscleTensionForStance(currentStance) : null;
+  }, [currentStance]);
 
   // Update muscle activations (called at 60fps in useFrame)
   const updateMuscleActivations = (
@@ -126,15 +134,16 @@ export function useMuscleActivation(
     ) {
       // Engage stance/leg/core muscles during movement and stance changes
       muscleManager.current.update("stance_change", stamina, delta);
-    } else if (currentAnimation === "idle" && currentStance) {
+    } else if (currentAnimation === "idle" && stanceTension) {
       // Apply stance-based leg muscle tension for idle/guard positions
       // This provides realistic isometric contraction visualization
-      const stanceTension = getMuscleTensionForStance(currentStance);
+      
+      // Get all activation states once (not in the loop)
+      const allActivations = muscleManager.current.getAllActivations();
       
       // Update manager with stance muscle activations
       stanceTension.forEach((tension, muscleGroup) => {
         // Get existing activation state
-        const allActivations = muscleManager.current.getAllActivations();
         const state = allActivations.get(muscleGroup);
         
         if (state) {

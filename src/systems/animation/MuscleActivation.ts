@@ -20,6 +20,22 @@ import type { TrigramStance } from "../../types/common";
 import { KOREAN_STANCE_BIOMECHANICS } from "./MartialArtsConstants";
 
 /**
+ * Type-safe mapping of TrigramStance to biomechanics keys
+ * Defined at module level to avoid recreation at 60fps
+ * @korean 자세생체역학매핑
+ */
+const STANCE_TO_BIOMECH_KEY = {
+  geon: "GEON_HEAVEN",
+  tae: "TAE_LAKE",
+  li: "LI_FIRE",
+  jin: "JIN_THUNDER",
+  son: "SON_WIND",
+  gam: "GAM_WATER",
+  gan: "GAN_MOUNTAIN",
+  gon: "GON_EARTH",
+} as const satisfies Record<TrigramStance, keyof typeof KOREAN_STANCE_BIOMECHANICS>;
+
+/**
  * Get leg muscle tension for a specific trigram stance
  * 
  * Calculates realistic leg muscle activation based on stance biomechanics:
@@ -56,19 +72,6 @@ export const getMuscleTensionForStance = (
   stance: TrigramStance
 ): MuscleActivationMap => {
   const activations = new Map<MuscleGroupName, number>();
-
-  // Type-safe mapping of TrigramStance to biomechanics keys
-  // This ensures compile-time validation of the mapping
-  const STANCE_TO_BIOMECH_KEY = {
-    geon: "GEON_HEAVEN",
-    tae: "TAE_LAKE",
-    li: "LI_FIRE",
-    jin: "JIN_THUNDER",
-    son: "SON_WIND",
-    gam: "GAM_WATER",
-    gan: "GAN_MOUNTAIN",
-    gon: "GON_EARTH",
-  } as const satisfies Record<TrigramStance, keyof typeof KOREAN_STANCE_BIOMECHANICS>;
 
   // Get biomechanical data for stance (type-safe lookup)
   const biomechKey = STANCE_TO_BIOMECH_KEY[stance];
