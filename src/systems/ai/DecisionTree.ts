@@ -753,15 +753,6 @@ export class AIDecisionTree {
       };
     }
 
-    const shouldChange = Math.random() < personality.stanceSwitchFrequency;
-    if (!shouldChange) {
-      return {
-        action: AIActionType.WAIT,
-        priority: 0,
-        reason: "No stance change needed",
-      };
-    }
-
     const behavior = getArchetypeBehavior(personality.archetype);
     
     // Apply stance fatigue modifier (Issue #dynamic-ai-stance-rotation Phase 4)
@@ -771,13 +762,14 @@ export class AIDecisionTree {
     const fatigueModifier = this.getStanceFatigueModifier(context.stanceFatigue?.timeInStance ?? 0);
     const adjustedSwitchFrequency = Math.min(0.95, personality.stanceSwitchFrequency * fatigueModifier);
     
-    const shouldChangeWithFatigue = Math.random() < adjustedSwitchFrequency;
-    if (!shouldChangeWithFatigue) {
+    // Single random check using fatigue-adjusted frequency to avoid compounding probability
+    const shouldChange = Math.random() < adjustedSwitchFrequency;
+    if (!shouldChange) {
       return {
         action: AIActionType.WAIT,
         priority: 0,
         reason: fatigueModifier > 1.0 
-          ? `Fatigue encouraging switch (피로도: ${fatigueModifier.toFixed(2)}x)` 
+          ? `Stance change deferred (fatigue: ${fatigueModifier.toFixed(2)}x, probability: ${(adjustedSwitchFrequency * 100).toFixed(1)}%)` 
           : "No stance change needed",
       };
     }
