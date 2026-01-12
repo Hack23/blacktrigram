@@ -16,6 +16,7 @@ import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 import { physicalReachCalculator } from "../../../../systems/physics";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import { calculateDistance3D } from "../../../../utils/math";
+import { METERS_TO_TRAINING_UNITS } from "../../../../types/physicsConstants";
 
 export interface UseTrainingActionsConfig {
   readonly state: TrainingScreenState;
@@ -87,7 +88,6 @@ function calculateHitAccuracy(
     // use a 1:1 conversion here. Combat AI, by contrast, applies a 100x
     // multiplier for its own coordinate system; do not mirror that scaling
     // in training without updating this constant and its documentation.
-    const METERS_TO_TRAINING_UNITS = 1.0 as const;
     const reachInUnits = effectiveReachMeters * METERS_TO_TRAINING_UNITS;
     
     // Accuracy based on how close actual distance is to effective reach

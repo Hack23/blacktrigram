@@ -344,7 +344,12 @@ export class PhysicalReachCalculator {
       return "pressure_point";
     }
     
-    // Default to punch for unknown/grappling techniques
+    // Default to "punch" for any techniques not explicitly mapped above, including
+    // complex grappling or hybrid animations. For *reach calculation* purposes we
+    // approximate these using primary arm/forearm extension, since initial contact
+    // is typically established with the upper limbs before the torso closes distance.
+    // If a dedicated grappling TechniqueType and reach model are introduced later,
+    // update this fallback to return that specific type instead of "punch".
     return "punch";
   }
 }
