@@ -54,6 +54,7 @@ import {
   CombatContext,
   DifficultyParameters,
   getArchetypeBehavior,
+  getNextComboTechnique,
   interpolateDifficultyParameters,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
@@ -494,8 +495,9 @@ function selectTechniqueWithRotation(
     : viableTechniques;
   
   if (balancedTechniques.length === 0 && rotationQueue.totalAttacks > 0) {
-    // Reset frequency to allow reuse
+    // Reset frequency to allow reuse and realign total count
     rotationQueue.frequency.clear();
+    rotationQueue.totalAttacks = 0;
   }
   
   // Priority 1: Never used in this match
@@ -505,7 +507,7 @@ function selectTechniqueWithRotation(
   
   if (neverUsed.length > 0) {
     // Sort by effectiveness within never-used tier
-    return neverUsed.sort((a, b) => {
+    return [...neverUsed].sort((a, b) => {
       const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
       const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
       return effB - effA;
@@ -519,7 +521,7 @@ function selectTechniqueWithRotation(
   
   if (unusedRecently.length > 0) {
     // Sort by effectiveness within unused-recently tier
-    return unusedRecently.sort((a, b) => {
+    return [...unusedRecently].sort((a, b) => {
       const effA = (a.damage ?? 0) * (a.accuracy ?? 0.8);
       const effB = (b.damage ?? 0) * (b.accuracy ?? 0.8);
       return effB - effA;
@@ -575,32 +577,9 @@ function filterByCooldown(
 function getAllArchetypeTechniques(
   archetype: PlayerState["archetype"]
 ): readonly KoreanTechnique[] {
-  // Get techniques from all stances for this archetype
-  const allStances = [
-    TrigramStance.GEON,
-    TrigramStance.TAE,
-    TrigramStance.LI,
-    TrigramStance.JIN,
-    TrigramStance.SON,
-    TrigramStance.GAM,
-    TrigramStance.GAN,
-    TrigramStance.GON,
-  ];
-  
-  const allTechniques: KoreanTechnique[] = [];
-  const seenIds = new Set<string>();
-  
-  for (const stance of allStances) {
-    const techniques = KoreanTechniquesSystem.getAllAvailableTechniques(stance, archetype);
-    for (const tech of techniques) {
-      if (!seenIds.has(tech.id)) {
-        allTechniques.push(tech);
-        seenIds.add(tech.id);
-      }
-    }
-  }
-  
-  return allTechniques;
+  // Use KoreanTechniquesSystem to efficiently get all techniques for archetype
+  // This avoids iterating through all 8 stances
+  return KoreanTechniquesSystem.getTechniquesByArchetype(archetype);
 }
 
 /**
@@ -609,7 +588,19 @@ function getAllArchetypeTechniques(
  * Creates a modified copy of the technique with 80% damage for cross-stance usage.
  * This prevents mutation of the original technique object.
  * 
- * @korean 교차 자세 피해 배율 적용
+ * **Design Rationale for 80% Effectiveness:**
+ * Cross-stance techniques are performed from a non-optimal stance, reducing
+ * power generation and body mechanics efficiency. The 80% modifier reflects:
+ * - Suboptimal weight transfer and leverage
+ * - Reduced muscle engagement from non-ideal positioning
+ * - Decreased stability and balance during execution
+ * 
+ * This is consistent with Korean martial arts philosophy where proper stance
+ * (자세) is fundamental to technique effectiveness. Other properties like
+ * accuracy and execution time remain unchanged as the technique mechanics
+ * themselves are unchanged, only the power generation is affected.
+ * 
+ * @korean 교차 자세 피해 배율 적용 (80% 효과)
  * 
  * @param technique - Original technique
  * @param isCrossStance - Whether technique is from different stance
@@ -692,7 +683,8 @@ function selectTechniqueForAction(
     const crossStanceTechniques = allTechniques.filter(
       t => t.stance !== player.currentStance &&
            context.distanceToOpponent <= ((t.reachConfig?.baseExtension ?? 1.0) * METERS_TO_PIXELS_SCALE) &&
-           player.stamina >= t.staminaCost
+           player.stamina >= t.staminaCost &&
+           !isOverused(t.id, rotationQueue) // Apply rotation diversity to cross-stance
     );
     
     // Filter by cooldown for cross-stance techniques too
@@ -1011,7 +1003,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Reset technique cooldown tracking on round start
       techniqueCooldownMapRef.current.clear();
     }
-  }, [roundStarted, decisionTree, comboSystem, player.currentStance]);
+  }, [roundStarted, decisionTree, comboSystem]);
 
   // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
   // Detects when AI changes stance and resets fatigue timer
@@ -1224,6 +1216,19 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               
               // Record cooldown start time
               techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
+              
+              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
+              const nextComboTechnique = getNextComboTechnique(
+                selectedTechnique.id,
+                player.archetype
+              );
+              
+              // If this technique starts a combo, store next technique for consideration
+              if (nextComboTechnique) {
+                // Store combo hint for next decision (combo system can use this)
+                // The decision tree will naturally consider this in the next cycle
+                comboSystem.startCombo(player, opponent, adjustedPersonality);
+              }
             }
             
             if (actionType === "attack") {
@@ -1257,6 +1262,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
               
               // Record cooldown start time
               techniqueCooldownMapRef.current.set(selectedTechnique.id, Date.now());
+              
+              // Check for signature combo continuation (Issue #expand-technique-selection-diversity)
+              const nextComboTechnique = getNextComboTechnique(
+                selectedTechnique.id,
+                player.archetype
+              );
+              
+              // If this technique starts a combo, store next technique for consideration
+              if (nextComboTechnique) {
+                // Store combo hint for next decision (combo system can use this)
+                comboSystem.startCombo(player, opponent, adjustedPersonality);
+              }
             }
             
             if (actionType === "attack" || actionType === "technique") {
