@@ -206,63 +206,12 @@ describe("BONE_MUSCLE_MAP", () => {
   });
 });
 
-describe("calculateMuscleScaleFactor (Jojik enhancement)", () => {
-  it("should return 1.0 for reference muscle mass (35kg - Musa baseline)", () => {
 describe("calculateMuscleScaleFactor (non-linear)", () => {
   it("should return 1.0 for reference muscle mass (35kg - Musa)", () => {
     const factor = calculateMuscleScaleFactor(35);
     expect(factor).toBeCloseTo(1.0, 2);
   });
 
-  it("should make Jojik dramatically larger than Musa", () => {
-    const musaScale = calculateMuscleScaleFactor(35); // 1.0
-    const jojikScale = calculateMuscleScaleFactor(48); // 1.84
-
-    expect(jojikScale).toBeGreaterThan(1.8); // At least 80% larger
-    expect(jojikScale / musaScale).toBeGreaterThan(1.75); // 75%+ difference
-  });
-
-  it("should make Jojik overwhelmingly larger than Hacker", () => {
-    const hackerScale = calculateMuscleScaleFactor(28); // 0.67
-    const jojikScale = calculateMuscleScaleFactor(48); // 1.84
-
-    expect(jojikScale / hackerScale).toBeGreaterThan(2.5); // 150%+ difference
-  });
-
-  it("should create clear visual hierarchy across all archetypes", () => {
-    const scales = [
-      { name: "Hacker", mass: 28, scale: calculateMuscleScaleFactor(28) },
-      { name: "Amsalja", mass: 30, scale: calculateMuscleScaleFactor(30) },
-      { name: "Jeongbo", mass: 32, scale: calculateMuscleScaleFactor(32) },
-      { name: "Musa", mass: 35, scale: calculateMuscleScaleFactor(35) },
-      { name: "Jojik", mass: 48, scale: calculateMuscleScaleFactor(48) },
-    ];
-
-    // Verify each archetype is noticeably larger than the previous
-    for (let i = 1; i < scales.length; i++) {
-      const diff =
-        (scales[i].scale - scales[i - 1].scale) / scales[i - 1].scale;
-      expect(diff).toBeGreaterThan(0.04); // At least 4% difference (Jeongbo-Musa is smallest gap)
-    }
-
-    // Verify Jojik is the most dramatic jump
-    const jojikJump = (scales[4].scale - scales[3].scale) / scales[3].scale;
-    expect(jojikJump).toBeGreaterThan(0.5); // At least 50% jump
-  });
-
-  it("should make Hacker visibly skinny (< 0.75 scale)", () => {
-    const hackerScale = calculateMuscleScaleFactor(28);
-    expect(hackerScale).toBeLessThan(0.75);
-    expect(hackerScale).toBeGreaterThan(0.65); // Realistic skinny range
-  });
-
-  it("should make Amsalja lean (< 0.85 scale)", () => {
-    const amsaljaScale = calculateMuscleScaleFactor(30);
-    expect(amsaljaScale).toBeLessThan(0.85);
-    expect(amsaljaScale).toBeGreaterThan(0.75);
-  });
-
-  it("should return < 1.0 for below-average muscle mass", () => {
   it("should make Hacker noticeably skinnier than Musa", () => {
     const hackerScale = calculateMuscleScaleFactor(28); // Hacker
     const musaScale = calculateMuscleScaleFactor(35); // Musa
@@ -320,27 +269,6 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     expect(factor).toBeGreaterThan(0.8); // Should be 0.89
   });
 
-  it("should use exponential amplification for extreme values", () => {
-    // Test that deviation from baseline is exponential, not linear
-    const deviation28 = calculateMuscleScaleFactor(28) - 1.0; // -7kg from baseline
-    const deviation48 = calculateMuscleScaleFactor(48) - 1.0; // +13kg from baseline
-
-    // Positive deviation should be amplified more than negative
-    expect(Math.abs(deviation48)).toBeGreaterThan(Math.abs(deviation28) * 2);
-  });
-});
-
-describe("calculateFatLayerOpacity (Jojik enhancement)", () => {
-  it("should return minimum opacity for low fat mass (Amsalja - 10kg)", () => {
-    const opacity = calculateFatLayerOpacity(10);
-    expect(opacity).toBeCloseTo(0.05, 2);
-    expect(opacity).toBeLessThan(0.1); // Nearly invisible
-  });
-
-  it("should make Jojik fat layer highly visible", () => {
-    const jojikFatOpacity = calculateFatLayerOpacity(20);
-    expect(jojikFatOpacity).toBeGreaterThan(0.7); // Clearly visible
-    expect(jojikFatOpacity).toBeLessThan(0.85); // Not fully opaque
   it("should show dramatic difference between extremes (Hacker vs Jojik)", () => {
     const hackerFactor = calculateMuscleScaleFactor(28); // Hacker
     const jojikFactor = calculateMuscleScaleFactor(48); // Jojik
@@ -369,38 +297,10 @@ describe("calculateFatLayerOpacity (enhanced range)", () => {
     expect(opacity).toBeCloseTo(0.85, 2);
   });
 
-  it("should make Jojik fat layer much more visible than Musa", () => {
-    const musaFatOpacity = calculateFatLayerOpacity(13); // 0.25
-    const jojikFatOpacity = calculateFatLayerOpacity(20); // 0.72
-
-    expect(jojikFatOpacity).toBeGreaterThan(musaFatOpacity * 2.5);
-  });
-
-  it("should return moderate opacity for average fat mass (Musa - 13kg)", () => {
-    const opacity = calculateFatLayerOpacity(13);
+  it("should return moderate opacity for average fat mass", () => {
+    const opacity = calculateFatLayerOpacity(14);
     expect(opacity).toBeGreaterThan(0.2);
-    expect(opacity).toBeLessThan(0.35);
-  });
-
-  it("should cap at maximum opacity (0.85)", () => {
-    const opacity = calculateFatLayerOpacity(22); // Max fat
-    expect(opacity).toBeLessThanOrEqual(0.85);
-    expect(opacity).toBeGreaterThan(0.75);
-  });
-
-  it("should show clear progression across fat mass ranges", () => {
-    const opacities = [
-      { mass: 10, opacity: calculateFatLayerOpacity(10) },
-      { mass: 13, opacity: calculateFatLayerOpacity(13) },
-      { mass: 16, opacity: calculateFatLayerOpacity(16) },
-      { mass: 20, opacity: calculateFatLayerOpacity(20) },
-      { mass: 22, opacity: calculateFatLayerOpacity(22) },
-    ];
-
-    // Each should be progressively more opaque
-    for (let i = 1; i < opacities.length; i++) {
-      expect(opacities[i].opacity).toBeGreaterThan(opacities[i - 1].opacity);
-    }
+    expect(opacity).toBeLessThan(0.5);
   });
 
   it("should create clear fat visibility progression", () => {
@@ -414,58 +314,6 @@ describe("calculateFatLayerOpacity (enhanced range)", () => {
   });
 });
 
-describe("calculateFatLayerThickness (Jojik enhancement)", () => {
-  it("should return minimum thickness for low fat mass (Amsalja - 10kg)", () => {
-    const thickness = calculateFatLayerThickness(10);
-    expect(thickness).toBeCloseTo(0.02, 2);
-    expect(thickness).toBeLessThan(0.05);
-  });
-
-  it("should make Jojik fat layer add significant bulk", () => {
-    const jojikFatThickness = calculateFatLayerThickness(20);
-    expect(jojikFatThickness).toBeGreaterThan(0.45); // Thick padding
-    expect(jojikFatThickness).toBeLessThan(0.6);
-  });
-
-  it("should return moderate thickness for average fat mass (Musa - 13kg)", () => {
-    const thickness = calculateFatLayerThickness(13);
-    expect(thickness).toBeGreaterThan(0.05);
-    expect(thickness).toBeLessThan(0.15);
-  });
-
-  it("should return maximum thickness for max fat mass", () => {
-    const thickness = calculateFatLayerThickness(22);
-    expect(thickness).toBeCloseTo(0.6, 1);
-    expect(thickness).toBeLessThanOrEqual(0.6);
-  });
-
-  it("should use exponential curve for thickness growth", () => {
-    const thickness10 = calculateFatLayerThickness(10); // Min
-    const thickness16 = calculateFatLayerThickness(16); // Mid
-    const thickness22 = calculateFatLayerThickness(22); // Max
-
-    // Growth should be exponential - larger difference at high values
-    const lowRangeGrowth = thickness16 - thickness10;
-    const highRangeGrowth = thickness22 - thickness16;
-
-    expect(highRangeGrowth).toBeGreaterThan(lowRangeGrowth * 1.5);
-  });
-
-  it("should show clear progression across fat mass ranges", () => {
-    const thicknesses = [
-      { mass: 10, thickness: calculateFatLayerThickness(10) },
-      { mass: 13, thickness: calculateFatLayerThickness(13) },
-      { mass: 16, thickness: calculateFatLayerThickness(16) },
-      { mass: 20, thickness: calculateFatLayerThickness(20) },
-      { mass: 22, thickness: calculateFatLayerThickness(22) },
-    ];
-
-    // Each should be progressively thicker
-    for (let i = 1; i < thicknesses.length; i++) {
-      expect(thicknesses[i].thickness).toBeGreaterThan(
-        thicknesses[i - 1].thickness
-      );
-    }
 describe("calculateFatLayerThickness (exponential)", () => {
   it("should return minimum thickness for low fat mass (Amsalja)", () => {
     const thickness = calculateFatLayerThickness(10);
@@ -571,9 +419,6 @@ describe("BoneAttachedMuscle", () => {
   });
 
   describe("Archetype scaling", () => {
-    it("should render with Jojik muscle scale factor (48kg)", () => {
-      const attachment = BONE_MUSCLE_MAP.hip_L[0]; // Glute
-      const jojikFactor = calculateMuscleScaleFactor(48); // Changed from 42kg to 48kg
     it("should render with Jojik muscle scale factor (48kg muscle)", () => {
       const attachment = BONE_MUSCLE_MAP.hip_L[0]; // Glute
       const jojikFactor = calculateMuscleScaleFactor(48); // Jojik: 48kg muscle
@@ -584,8 +429,6 @@ describe("BoneAttachedMuscle", () => {
           tension={0.5}
           isShaking={false}
           muscleScaleFactor={jojikFactor}
-          fatLayerOpacity={calculateFatLayerOpacity(20)}
-          fatLayerThickness={calculateFatLayerThickness(20)}
           fatLayerOpacity={0.72}
           fatLayerThickness={0.45}
         />
@@ -612,9 +455,6 @@ describe("BoneAttachedMuscle", () => {
       expect(container).toBeTruthy();
     });
 
-    it("should render with Amsalja muscle scale factor (30kg)", () => {
-      const attachment = BONE_MUSCLE_MAP.upper_arm_R[0];
-      const amsaljaFactor = calculateMuscleScaleFactor(30); // Changed from 32kg
     it("should render with Amsalja muscle scale factor (30kg muscle - lean)", () => {
       const attachment = BONE_MUSCLE_MAP.upper_arm_R[0];
       const amsaljaFactor = calculateMuscleScaleFactor(30); // Amsalja: 30kg muscle
@@ -627,24 +467,6 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={amsaljaFactor}
           fatLayerOpacity={0.05}
           fatLayerThickness={0.02}
-        />
-      );
-
-      expect(container).toBeTruthy();
-    });
-
-    it("should render with Hacker muscle scale factor (28kg - very skinny)", () => {
-      const attachment = BONE_MUSCLE_MAP.upper_arm_R[0];
-      const hackerFactor = calculateMuscleScaleFactor(28);
-
-      const { container } = render3D(
-        <BoneAttachedMuscle
-          attachment={attachment}
-          tension={0.5}
-          isShaking={false}
-          muscleScaleFactor={hackerFactor}
-          fatLayerOpacity={0.35}
-          fatLayerThickness={0.15}
         />
       );
 
@@ -769,7 +591,6 @@ describe("BoneMuscles", () => {
         ["GLUTE_R", 0.5],
       ]);
 
-      // Jojik: 48kg muscle, 20kg fat - should be bulky and thick
       // Jojik: 48kg muscle, 20kg fat - should be massive and thick
       const { container } = render3D(
         <>
@@ -816,7 +637,6 @@ describe("BoneMuscles", () => {
         ["TRICEP_R", 0.5],
       ]);
 
-      // Amsalja: 30kg muscle, 10kg fat - should be lean
       // Amsalja: 30kg muscle, 10kg fat - should be very lean
       const { container } = render3D(
         <BoneMuscles
@@ -844,25 +664,6 @@ describe("BoneMuscles", () => {
           muscleStates={muscleStates}
           isExhausted={false}
           physicalAttributes={{ muscleMass: 35, fatMass: 13 }}
-        />
-      );
-
-      expect(container).toBeTruthy();
-    });
-
-    it("should render Hacker archetype (skinny - 28kg muscle, 12kg fat)", () => {
-      const muscleStates = new Map<string, number>([
-        ["BICEP_R", 0.5],
-        ["TRICEP_R", 0.5],
-      ]);
-
-      // Hacker: 28kg muscle, 12kg fat - should be very skinny
-      const { container } = render3D(
-        <BoneMuscles
-          boneName="upper_arm_R"
-          muscleStates={muscleStates}
-          isExhausted={false}
-          physicalAttributes={{ muscleMass: 28, fatMass: 12 }}
         />
       );
 
@@ -985,7 +786,7 @@ describe("Integration scenarios", () => {
     expect(container).toBeTruthy();
   });
 
-  it("should render exhausted Jojik fighter state (48kg muscle, 20kg fat)", () => {
+  it("should render exhausted Jojik fighter state", () => {
     const muscleStates = new Map<string, number>([
       ["BICEP_R", 0.7],
       ["QUAD_R", 0.6],

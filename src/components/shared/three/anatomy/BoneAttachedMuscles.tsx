@@ -316,38 +316,8 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
 };
 
 /**
- * Visual amplification with asymmetric exponential curve.
+ * Visual amplification factor for muscle mass differences.
  *
- * ENHANCED: Asymmetric exponential scaling creates dramatic size differences:
- * - Skinny fighters (28-30kg): Reduced to 0.69-0.79 scale (lean)
- * - Average fighters (35kg): Baseline 1.0 scale (reference)
- * - Large fighters (48kg): Increased to 1.84+ scale (MASSIVE)
- *
- * Uses different amplification for positive/negative deviations:
- * - Above baseline (large): Exponent 1.35, Base 3.2 → Strong amplification
- * - Below baseline (skinny): Exponent 1.1, Base 1.8 → Moderate reduction
- *
- * @korean 근육시각적증폭계수
- */
-const MUSCLE_AMPLIFICATION_BASE_POSITIVE = 3.2; // For large fighters
-const MUSCLE_AMPLIFICATION_EXPONENT_POSITIVE = 1.35;
-const MUSCLE_AMPLIFICATION_BASE_NEGATIVE = 1.8; // For skinny fighters
-const MUSCLE_AMPLIFICATION_EXPONENT_NEGATIVE = 1.1;
-
-/**
- * Calculate muscle scale factor with asymmetric exponential amplification.
- *
- * Results by archetype:
- * - Hacker (28kg): 0.69 scale → Very skinny
- * - Amsalja (30kg): 0.79 scale → Lean athlete
- * - Jeongbo (32kg): 0.88 scale → Fit operative
- * - Musa (35kg): 1.0 scale → Baseline
- * - **Jojik (48kg): 1.84 scale → MASSIVE** ✨
- *
- * Jojik is 84% larger than Musa, 165% larger than Hacker!
- *
- * Formula: 1.0 + (deviation ^ exponent) * base
- * - Asymmetric: Different amplification for above/below baseline
  * UPDATED: Now uses exponential curve to amplify differences:
  * - Skinny fighters (28-30kg) appear MUCH smaller than average
  * - Large fighters (48kg) appear MUCH larger than average
@@ -376,43 +346,12 @@ const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
  * Formula: 1.0 + sign(deviation) * |deviation|^exponent * amplificationBase
  * where deviation = (muscleMass / referenceMass) - 1.0
  *
- * @param muscleMass - Muscle mass in kilograms (28-48kg range)
+ * @param muscleMass - Muscle mass in kilograms (archetype range: 28-48kg)
  * @returns Scale factor for muscle geometry
  *
  * @korean 근육크기계산
  */
 export const calculateMuscleScaleFactor = (muscleMass: number): number => {
-  const referenceMass = 35; // Musa baseline
-  const massRatio = muscleMass / referenceMass;
-  const deviation = massRatio - 1.0;
-
-  let exponentialDeviation: number;
-  if (deviation >= 0) {
-    // Above baseline: Strong amplification for large fighters
-    exponentialDeviation =
-      Math.pow(deviation, MUSCLE_AMPLIFICATION_EXPONENT_POSITIVE) *
-      MUSCLE_AMPLIFICATION_BASE_POSITIVE;
-  } else {
-    // Below baseline: Moderate reduction for skinny fighters
-    exponentialDeviation =
-      -Math.pow(
-        Math.abs(deviation),
-        MUSCLE_AMPLIFICATION_EXPONENT_NEGATIVE
-      ) * MUSCLE_AMPLIFICATION_BASE_NEGATIVE;
-  }
-
-  return Math.max(0.5, 1.0 + exponentialDeviation);
-};
-
-/**
- * Calculate fat layer opacity with expanded range for visual impact.
- *
- * ENHANCED for Jojik: Fat layer now highly visible at high fat mass.
- * - Amsalja (10kg): 0.05 opacity (nearly invisible)
- * - Musa (13kg): 0.25 opacity (slight padding)
- * - **Jojik (20kg): 0.72 opacity (CLEARLY VISIBLE)** ✨
- *
- * @param fatMass - Fat mass in kilograms (10-22kg range)
   // Reference: 35kg average muscle mass → 1.0 scale (Musa baseline)
   const referenceMass = 35;
   const massRatio = muscleMass / referenceMass;
@@ -441,21 +380,6 @@ export const calculateFatLayerOpacity = (fatMass: number): number => {
   const maxFat = 22; // Jojik maximum
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
-  // Expanded range with curve favoring high values
-  const curvedFat = Math.pow(normalizedFat, 0.9); // Slight curve
-
-  return Math.max(0.05, Math.min(0.85, 0.05 + curvedFat * 0.8));
-};
-
-/**
- * Calculate fat layer thickness for visible bulk.
- *
- * ENHANCED: Fat layer adds significant bulk to large archetypes.
- * - Amsalja (10kg): 0.02 thickness (minimal)
- * - Musa (13kg): 0.08 thickness (slight padding)
- * - **Jojik (20kg): 0.46 thickness (THICK PADDING)** ✨
- *
- * @param fatMass - Fat mass in kilograms (10-22kg range)
   // Expanded range: 0.05 (lean) to 0.85 (heavy)
   return Math.max(0.05, Math.min(0.85, 0.05 + normalizedFat * 0.8));
 };
@@ -476,7 +400,6 @@ export const calculateFatLayerThickness = (fatMass: number): number => {
   const maxFat = 22;
   const normalizedFat = (fatMass - minFat) / (maxFat - minFat);
 
-  // Exponential curve: thin at low values, THICK at high values
   // Exponential curve for fat thickness
   const exponentialFat = Math.pow(normalizedFat, 1.5);
 
