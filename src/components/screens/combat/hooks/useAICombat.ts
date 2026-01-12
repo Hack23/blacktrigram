@@ -1132,6 +1132,10 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,
       opponentBalance, // Added for kill mode detection
+      opponentStamina: opponent.stamina, // Added for vulnerability exploitation (Issue #enhance-intelligence-operative-ai)
+      opponentMaxStamina: opponent.maxStamina, // Added for vulnerability exploitation
+      opponentKi: opponent.ki, // Added for vulnerability exploitation (Issue #enhance-intelligence-operative-ai)
+      opponentMaxKi: opponent.maxKi, // Added for vulnerability exploitation
       stanceFatigue: {
         // Compute time in stance on-demand instead of polling with setInterval
         timeInStance: Date.now() - stanceFatigueRef.current.lastSwitchTime,
