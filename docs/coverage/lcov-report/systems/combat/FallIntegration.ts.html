@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
@@ -208,8 +208,11 @@
 <a name='L143'></a><a href='#L143'>143</a>
 <a name='L144'></a><a href='#L144'>144</a>
 <a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L146'></a><a href='#L146'>146</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,18 +283,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -307,12 +298,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -331,6 +321,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -357,19 +355,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Fall Integration Utilities
- * 
+ *
  * Helper functions to check for fall conditions and determine fall animations
  * based on balance and consciousness systems.
- * 
+ *
  * @module systems/combat/FallIntegration
  * @category Combat System
  * @korean 낙법통합
  */
 &nbsp;
-import type { PlayerState } from "../player";
 import type { AnimationState, FallType } from "../animation/types";
-import { FALL_TYPE_TO_ANIMATION } from "../animation/types";
+import {
+  FALL_TYPE_TO_ANIMATION,
+  isFallState,
+  isGroundState,
+} from "../animation/types";
 import type { CombatSystem } from "../CombatSystem";
+import type { PlayerState } from "../player";
 &nbsp;
 /**
  * Result of fall check with animation state
@@ -388,20 +390,20 @@ export interface FallCheckResult {
 &nbsp;
 /**
  * Checks if player should fall and determines fall animation.
- * 
+ *
  * Integrates BalanceSystem and ConsciousnessSystem to check fall conditions.
  * Returns animation state to transition to if fall is triggered.
- * 
+ *
  * Korean terminology:
  * - 균형상실 (Gyunhyeong Sangsil): Balance loss
  * - 의식상실 (Uisik Sangsil): Consciousness loss
- * 
+ *
  * @param player - Player state to check
  * @param combatSystem - Combat system with balance and consciousness systems
  * @param lastImpactAngle - Optional angle of last impact (for consciousness falls)
  * @param attackAngle - Optional angle of current attack (for balance falls)
  * @returns Fall check result with animation state
- * 
+ *
  * @example
  * ```typescript
  * const fallCheck = checkForFall(player, combatSystem, undefined, attackAngle);
@@ -410,7 +412,7 @@ export interface FallCheckResult {
  *   console.log(`Player falling: ${fallCheck.reason}`);
  * }
  * ```
- * 
+ *
  * @public
  * @korean 낙법확인
  */
@@ -422,10 +424,13 @@ export function <span class="fstat-no" title="function not covered" >checkForFal
 ): FallCheckResult {
   const balanceSystem = <span class="cstat-no" title="statement not covered" >combatSystem.getBalanceSystem();</span>
   const consciousnessSystem = <span class="cstat-no" title="statement not covered" >combatSystem.getConsciousnessSystem();</span>
-  
+&nbsp;
   // Check consciousness first (higher priority - complete loss of control)
 <span class="cstat-no" title="statement not covered" >  if (consciousnessSystem.shouldTriggerFall(player)) {</span>
-    const fallType = <span class="cstat-no" title="statement not covered" >consciousnessSystem.determineFallType(player, lastImpactAngle);</span>
+    const fallType = <span class="cstat-no" title="statement not covered" >consciousnessSystem.determineFallType(</span>
+      player,
+      lastImpactAngle
+    );
 <span class="cstat-no" title="statement not covered" >    return {</span>
       shouldFall: true,
       fallType,
@@ -433,14 +438,15 @@ export function <span class="fstat-no" title="function not covered" >checkForFal
       reason: "consciousness",
     };
   }
-  
+&nbsp;
   // Check balance (lower priority - still some control)
 <span class="cstat-no" title="statement not covered" >  if (balanceSystem.shouldTriggerFall(player)) {</span>
     // Use attack angle if available, otherwise use stance-based fall
-    const fallType = <span class="cstat-no" title="statement not covered" >attackAngle !== undefined</span>
-      ? balanceSystem.determineFallType(player, attackAngle, "mid")
-      : balanceSystem.determineFallTypeFromStance(player.currentStance);
-    
+    const fallType =
+<span class="cstat-no" title="statement not covered" >      attackAngle !== undefined</span>
+        ? balanceSystem.determineFallType(player, attackAngle, "mid")
+        : balanceSystem.determineFallTypeFromStance(player.currentStance);
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return {</span>
       shouldFall: true,
       fallType,
@@ -448,7 +454,7 @@ export function <span class="fstat-no" title="function not covered" >checkForFal
       reason: "balance",
     };
   }
-  
+&nbsp;
   // No fall condition met
 <span class="cstat-no" title="statement not covered" >  return {</span>
     shouldFall: false,
@@ -457,34 +463,25 @@ export function <span class="fstat-no" title="function not covered" >checkForFal
 &nbsp;
 /**
  * Checks if player is currently in a fall or ground animation state.
- * 
+ *
  * Used to prevent other actions during falls and ground states.
- * 
+ *
  * @param animationState - Current animation state
  * @returns True if player is falling or on ground
- * 
+ *
  * @public
  * @korean 낙법중확인
  */
 export function <span class="fstat-no" title="function not covered" >isInFallOrGroundState(a</span>nimationState: AnimationState): boolean {
-<span class="cstat-no" title="statement not covered" >  return (</span>
-    animationState === "fall_forward" ||
-    animationState === "fall_backward" ||
-    animationState === "fall_side_left" ||
-    animationState === "fall_side_right" ||
-    animationState === "ground_prone" ||
-    animationState === "ground_supine" ||
-    animationState === "ground_side_left" ||
-    animationState === "ground_side_right"
-  );
+<span class="cstat-no" title="statement not covered" >  return isFallState(animationState) || isGroundState(animationState);</span>
 }
 &nbsp;
 /**
  * Gets Korean description for fall type.
- * 
+ *
  * @param fallType - Type of fall
  * @returns Korean and English names
- * 
+ *
  * @public
  * @korean 낙법이름
  */
@@ -498,7 +495,7 @@ export function <span class="fstat-no" title="function not covered" >getFallType
     side_left: { korean: "좌측낙법", english: "Left Side Fall" },
     side_right: { korean: "우측낙법", english: "Right Side Fall" },
   };
-  
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  return names[fallType];</span>
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -508,7 +505,7 @@ export function <span class="fstat-no" title="function not covered" >getFallType
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T01:17:50.399Z
+                at 2026-01-12T02:45:37.655Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

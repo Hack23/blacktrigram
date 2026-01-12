@@ -2734,7 +2734,23 @@
 <a name='L2669'></a><a href='#L2669'>2669</a>
 <a name='L2670'></a><a href='#L2670'>2670</a>
 <a name='L2671'></a><a href='#L2671'>2671</a>
-<a name='L2672'></a><a href='#L2672'>2672</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2672'></a><a href='#L2672'>2672</a>
+<a name='L2673'></a><a href='#L2673'>2673</a>
+<a name='L2674'></a><a href='#L2674'>2674</a>
+<a name='L2675'></a><a href='#L2675'>2675</a>
+<a name='L2676'></a><a href='#L2676'>2676</a>
+<a name='L2677'></a><a href='#L2677'>2677</a>
+<a name='L2678'></a><a href='#L2678'>2678</a>
+<a name='L2679'></a><a href='#L2679'>2679</a>
+<a name='L2680'></a><a href='#L2680'>2680</a>
+<a name='L2681'></a><a href='#L2681'>2681</a>
+<a name='L2682'></a><a href='#L2682'>2682</a>
+<a name='L2683'></a><a href='#L2683'>2683</a>
+<a name='L2684'></a><a href='#L2684'>2684</a>
+<a name='L2685'></a><a href='#L2685'>2685</a>
+<a name='L2686'></a><a href='#L2686'>2686</a>
+<a name='L2687'></a><a href='#L2687'>2687</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3122,15 +3138,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3201,15 +3224,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5446,6 +5476,7 @@ import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
+  CombatState,
   GameMode,
   PlayerArchetype,
   Position,
@@ -5791,8 +5822,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >    combatActions.setRoundStarted(false);</span>
 <span class="cstat-no" title="statement not covered" >    combatActions.setRoundDisplayStatus(null);</span>
 &nbsp;
-    // Reset player health, resources, and visual state
-    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    // Reset player health, resources, combat state, and visual state
+    // Includes consciousness, pain, balance, combatState to clear any blur/vignette effects
+    // and reset from fallen/stunned states
 <span class="cstat-no" title="statement not covered" >    onPlayerUpdate(0, {</span>
       health: 100,
       stamina: 100,
@@ -5800,6 +5832,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 <span class="cstat-no" title="statement not covered" >    onPlayerUpdate(1, {</span>
       health: 100,
@@ -5808,6 +5843,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 &nbsp;
     // Reset player positions to starting positions for rematch
@@ -5870,8 +5908,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >      return nextRound;</span>
     });
 &nbsp;
-    // Reset player health, resources, and visual state for next round
-    // Includes consciousness, pain, balance to clear any blur/vignette effects
+    // Reset player health, resources, combat state, and visual state for next round
+    // Includes consciousness, pain, balance, combatState to clear any blur/vignette effects
+    // and reset from fallen/stunned states
 <span class="cstat-no" title="statement not covered" >    onPlayerUpdate(0, {</span>
       health: 100,
       stamina: 100,
@@ -5879,6 +5918,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 <span class="cstat-no" title="statement not covered" >    onPlayerUpdate(1, {</span>
       health: 100,
@@ -5887,6 +5929,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
       consciousness: 100,
       pain: 0,
       balance: 100,
+      combatState: CombatState.IDLE,
+      isStunned: false,
+      isBlocking: false,
     });
 &nbsp;
     // Reset player positions to starting positions for new round
@@ -8083,7 +8128,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T01:17:50.399Z
+                at 2026-01-12T02:45:37.655Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

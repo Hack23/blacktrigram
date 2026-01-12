@@ -816,6 +816,7 @@ src/systems/animation/AnimationTransitions.test.ts
 src/systems/animation/AnimationTransitions.ts
 src/systems/animation/AttackAnimations.test.ts
 src/systems/animation/AttackAnimations.ts
+src/systems/animation/BasicAnimations.ts
 src/systems/animation/BodyFacingSystem.test.ts
 src/systems/animation/BodyFacingSystem.ts
 src/systems/animation/ComboAnimations.ts
@@ -861,6 +862,7 @@ src/systems/animation/StanceAttackAnimations.test.ts
 src/systems/animation/StanceAttackAnimations.ts
 src/systems/animation/StanceGuardPoses.test.ts
 src/systems/animation/StanceGuardPoses.ts
+src/systems/animation/StanceLocomotionAnimations.ts
 src/systems/animation/StepAnimations.test.ts
 src/systems/animation/StepAnimations.ts
 src/systems/animation/StepSkeletalAnimations.ts
@@ -869,6 +871,7 @@ src/systems/animation/TechniqueAnimationMapper.ts
 src/systems/animation/TechniqueAnimationMapping.ts
 src/systems/animation/TorsoRotation.test.ts
 src/systems/animation/__tests__/StanceAnimations.test.ts
+src/systems/animation/__tests__/StanceLocomotionAnimations.test.ts
 src/systems/animation/index.ts
 src/systems/animation/types.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
