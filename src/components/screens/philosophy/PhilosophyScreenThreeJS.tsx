@@ -11,6 +11,7 @@ import { TrigramStance } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
@@ -49,17 +50,11 @@ export const PhilosophyScreenThreeJS: React.FC<
 
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
-  const isTablet = screenWidth >= 768 && screenWidth < 1024;
-  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
+  // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
-    () => ({
-      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 35 : 30,
-      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 120 : 110,
-      footerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 120 : 110,
-      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 25 : 20,
-    }),
-    [isMobile, isTablet, isLargeDesktop]
+    () => getLayoutConstants(screenWidth),
+    [screenWidth]
   );
 
   // Memoize scrollbar style to prevent re-creating style tag on every render

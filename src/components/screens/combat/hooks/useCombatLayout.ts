@@ -33,6 +33,7 @@
 import { useMemo } from "react";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
+import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -71,24 +72,14 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Device detection has its own internal caching based on screen dimensions
   // No need for additional React memoization here
   const isMobile = shouldUseMobileControls();
-  
-  // Use screen size category instead of pixel threshold for better organization
-  const isLargeDesktop = useMemo(() => screenSize === 'xlarge', [screenSize]);
-  const isTablet = useMemo(() => screenSize === 'tablet', [screenSize]);
 
   // Centralized layout constants for easier tweaking
   // Enhanced with tablet-specific values for better responsive support
   // Updated mobile controls height for new sizing: D-Pad (140px), buttons (80px+70px)
-  // Optimized: Depends on breakpoint booleans, not exact width
+  // Uses centralized responsive helper for consistent scaling
   const layoutConstants = useMemo<LayoutConstants>(
-    () => ({
-      padding: 10,
-      hudHeight: isMobile ? 95 : isTablet ? 100 : isLargeDesktop ? 140 : 130,
-      controlsHeight: isMobile ? 160 : isTablet ? 140 : isLargeDesktop ? 180 : 170,
-      footerHeight: isMobile ? 34 : isTablet ? 30 : isLargeDesktop ? 40 : 35,
-      healthBarHeight: isMobile ? 48 : isTablet ? 50 : isLargeDesktop ? 70 : 65,
-    }),
-    [isMobile, isTablet, isLargeDesktop]
+    () => getCombatLayoutConstants(width),
+    [width]
   );
 
   // Fixed player positions for 2-player combat with proper bounds
