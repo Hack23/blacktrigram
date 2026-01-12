@@ -49,9 +49,9 @@ C4Context
 > **Legend**
 >
 > - 🧑‍🤝‍🧑 **Player**: End-user interacting with Black Trigram through desktop or mobile browser.
-> - 🌐 **Black Trigram Web App**: Entirely front-end, built with React + PixiJS (TypeScript). All game logic, state, & rendering occur in-browser—no backend.
-> - 🎵 **Audio CDN**: Serves SFX (bone cracks, impacts, ambient kyūdō sounds) and traditional Korean background music.
-> - 🖼️ **Art CDN**: Serves character sprites, particle bitmaps (ki energy, blood splatter), UI icons, fonts (including Korean text), and other graphical assets.
+> - 🌐 **Black Trigram Web App**: Entirely front-end, built with React 19 + Three.js (TypeScript). All game logic, state, & 3D rendering occur in-browser—no backend.
+> - 🎵 **Audio CDN**: Serves SFX (bone cracks, impacts, ambient sounds) and traditional Korean background music + cyberpunk audio.
+> - 🖼️ **Art CDN**: Serves 3D models, textures, particle effects, UI assets, fonts (including Korean Noto Sans KR), and visual assets.
 
 ---
 
@@ -59,27 +59,27 @@ C4Context
 
 ```mermaid
 C4Container
-    title Container View - Black Trigram Performance Architecture
+    title Container View - Black Trigram Performance Architecture (Q1 2026)
 
     Person(user, "🧑‍🤝‍🧑 User", "Practices Korean martial arts")
 
     System_Boundary(browserApp, "🌐 Black Trigram Browser Application") {
-        Container(ui, "🖥️ React UI Layer", "React 19 + TypeScript", "Korean-themed components, responsive design")
-        Container(gameEngine, "⚙️ Game Logic Engine", "TypeScript Modules", "Combat calculations, trigram system, vital points")
-        Container(renderer, "🎨 PixiJS Renderer", "PixiJS 8 + WebGL", "60fps 2D graphics, particle systems, animations")
-        Container(audioEngine, "🎵 Audio Engine", "Howler.js + Web Audio", "Korean traditional + cyberpunk audio")
-        Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Game state, UI state, performance metrics")
-        Container(assetLoader, "📦 Asset Loader", "PixiJS Assets + Custom", "Lazy loading, caching, compression")
-        Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "FPS tracking, memory usage, optimization")
+        Container(ui, "🖥️ React UI Layer", "React 19 + TypeScript", "Korean-themed components, responsive design, Html overlays")
+        Container(gameEngine, "⚙️ Game Logic Engine", "TypeScript Modules", "Combat calculations, trigram system (8 stances), vital points (70)")
+        Container(renderer, "🎨 Three.js Renderer", "@react-three/fiber + drei", "60fps 3D graphics, skeletal animation (14 bones), particle systems")
+        Container(audioEngine, "🎵 Audio Engine", "Howler.js + Web Audio", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
+        Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Combat state, player archetypes (5), trigram stances")
+        Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "14-bone system, muscle tension, 70 vital point mapping")
+        Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "60fps tracking, memory usage, optimization")
     }
 
     Rel(user, ui, "Interacts via input", "Touch/Mouse/Keyboard")
     Rel(ui, gameEngine, "Dispatches actions", "Function calls")
-    Rel(gameEngine, renderer, "Updates visuals", "PixiJS API")
+    Rel(gameEngine, renderer, "Updates visuals", "Three.js API")
     Rel(gameEngine, audioEngine, "Triggers sounds", "Howler.js API")
     Rel(gameEngine, stateManager, "Updates state", "Zustand actions")
-    Rel(assetLoader, renderer, "Provides textures", "PixiJS Textures")
-    Rel(assetLoader, audioEngine, "Provides audio", "Audio Buffers")
+    Rel(gameEngine, animationSystem, "Execute techniques", "Animation API")
+    Rel(animationSystem, renderer, "Bone transforms", "Three.js Skeleton")
     Rel(perfMonitor, stateManager, "Reports metrics", "Performance data")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
@@ -89,52 +89,63 @@ C4Container
 >
 > - **🖥️ UI Layer**:
 >
->   - React + TypeScript functional components.
->   - Screens: `CombatScreen`, `TrainingScreen`, `IntroScreen`.
->   - Common UI: `CombatHUD`, `TrigramWheel`, `ProgressTracker`, etc.
->   - Base modules in base: `BaseButton`, `KoreanText`, `BackgroundGrid`, etc.
->   - CSS: App.css, `src/CombatScreen.css`, etc.
-
+>   - React 19 + TypeScript functional components.
+>   - Screens: `CombatScreen3D`, `TrainingScreen3D`, `IntroScreenThreeJS`, `ControlsScreenThreeJS`, `PhilosophyScreenThreeJS`.
+>   - Common UI: Html overlays from `@react-three/drei` for HUD elements, health bars, stance indicators.
+>   - Base modules: Korean-themed UI components with bilingual support (Korean | English).
+>   - CSS: App.css, component-specific styling for overlays.
+>
 > - **⚙️ Game Logic Layer**:
 >
->   - Under `src/systems/*`, `src/types/*`.
->   - **CombatSystem (src/systems/CombatSystem.ts)**: Orchestrates input → trigram → vital-point → damage → audio/visual.
->   - **TrigramSystem (src/systems/trigram/**)\*\*:
+>   - Under `src/systems/*`, `src/types/*`, `src/data/*`.
+>   - **CombatSystem (`src/systems/CombatSystem.ts`)**: Orchestrates input → trigram → vital-point → damage → audio/visual.
+>   - **TrigramSystem (`src/systems/trigram/*`):**
 >
 >     - `StanceManager.ts`: Tracks current stance, validates Ki/Stamina, handles transition cost.
 >     - `TransitionCalculator.ts`: Computes validity of stance switches.
 >     - `TrigramCalculator.ts`: Provides technique data & advantage multipliers.
 >     - `KoreanCulture.ts`: Supplies I Ching lore, Korean labels/descriptions.
 >
->   - **VitalPointSystem (src/systems/vitalpoint/**)\*\*:
+>   - **VitalPointSystem (`src/systems/vitalpoint/*`):**
 >
->     - `KoreanAnatomy.ts` & `KoreanVitalPoints.ts`: Defines all 70 vital points (critical, secondary, standard) and multipliers.
->     - `HitDetection.ts`: Checks collisions between attack hitboxes & character bounding boxes.
->     - `DamageCalculator.ts`: Applies base damage × trigram advantage × vital-point multiplier.
+>     - 70 vital points database with Korean names (백회혈, 인영, 명문, etc.)
+>     - Enhanced anatomical zones with polygon-based hit detection.
+>     - 5 severity levels (Lethal, Critical, Major, Moderate, Minor).
+>     - 7 anatomical categories (Neurological, Skeletal, Joint, Organ, Muscular, Vascular, Respiratory).
 >
->   - **AudioManager (src/audio/**)\*\*:
+>   - **AudioManager (`src/audio/*`):**
 >
->     - `AudioAssetRegistry.ts`, `AudioManager.ts`, `AudioUtils.ts`, `DefaultSoundGenerator.ts`, `VariantSelector.ts`: Load & play SFX/music via Web Audio API.
+>     - `AudioAssetRegistry.ts`, `AudioManager.ts`, `AudioUtils.ts`: Load & play SFX/music via Howler.js + Web Audio API.
+>     - Damage-based audio scaling (combat impact sounds scaled by effectiveness).
 >
->   - **Physics & AI** (planned under `src/systems/AISystem.ts`): Minimal NPC behaviors.
-
-> - **📦 Asset Loader**:
+>   - **Animation System (`src/systems/animation/*`):**
 >
->   - Asset loading via custom hooks and helpers for textures & JSON data.
->   - Helpers in playerUtils.ts, `colorUtils.ts` map asset keys to URLs.
->   - Dynamically import large JSON (e.g., `src/types/constants/trigram.ts`) at runtime.
-
+>     - 14-bone skeletal system (PELVIS → SPINE → SHOULDERS → ELBOWS → HANDS, THIGHS → SHINS → FEET).
+>     - Hand pose system (fist_vertical, fist_horizontal, open_hand_knife, etc.).
+>     - Muscle tension visualization (0.0-1.0 mapped to bone visual intensity).
+>
+>   - **AI System (`src/systems/ai/*`):** Tactical combat behaviors, archetype-specific AI.
+>
 > - **🎨 Rendering Engine**:
 >
->   - Three.js (wrapped by `@react-three/fiber`) via GameEngine.tsx.
->   - Manages 3D scene with WebGL rendering via Canvas component.
->   - Renders: Character 3D models, environment, particles, and visual effects.
->   - UI overlays via Html component from `@react-three/drei` for HUD, health, Ki, stance indicators.
-
+>   - Three.js via `@react-three/fiber` (React renderer for Three.js).
+>   - Manages 3D scene with WebGL rendering via `Canvas` component.
+>   - Renders: Character 3D models with skeletal animation, environment, particles, and visual effects.
+>   - UI overlays via `Html` component from `@react-three/drei` for HUD, health bars, Ki meters, stance indicators.
+>   - Korean cyberpunk aesthetic with traditional 오방색 (Five Directional Colors).
+>
+> - **🎬 Animation System**:
+>
+>   - 14-bone skeletal hierarchy (`src/types/skeletal.ts`).
+>   - Hand pose management (`src/types/hand-animation.ts`) for martial arts techniques.
+>   - Muscle activation visualization (`src/types/muscle.ts`) with tension mapping.
+>   - Technique animation (`src/types/technique.ts`) with keyframe interpolation.
+>
 > - **🗄️ State Management**:
 >
 >   - In-browser only (no backend). Uses **Zustand** (or React Context fallback) under hooks.
->   - `useGameState.ts`, `useUIState.ts`, `useEnemyState.ts` store: health, stamina, Ki, current stance, enemy state, UI flags.
+>   - Combat state: Health, stamina, Ki, current stance (8 trigrams), body part health (8 parts), consciousness levels.
+>   - Player archetypes: 5 distinct fighter types (무사, 암살자, 해커, 정보요원, 조직폭력배).
 >   - **No Persistence**: Refresh resets all state / progress.
 
 ---
@@ -774,40 +785,98 @@ describe('Three.js Combat Arena', () => {
 
 ---
 
-## 🔧 File Structure Highlights
+## 🔧 File Structure (Q1 2026)
 
-- **src/components/ui/base**
+### Current Implementation Structure
 
-  - `BaseButton.tsx`, `BackgroundGrid.tsx`, `KoreanText.tsx`, `KoreanHeader.tsx`, `PixiComponents.tsx`: Reusable UI primitives and Korean font utilities.
+```
+src/
+├── components/               # React + Three.js components
+│   ├── screens/             # Main game screens
+│   │   ├── combat/          # CombatScreen3D (production-ready)
+│   │   ├── intro/           # IntroScreen with Korean aesthetics
+│   │   ├── training/        # TrainingScreen for practice
+│   │   └── controls/        # ControlsScreen documentation
+│   ├── game/                # Game-specific components
+│   ├── shared/              # Shared components across screens
+│   │   ├── three/           # Three.js 3D components
+│   │   │   ├── anatomy/     # BoneAttachedMuscles, SkeletalRig
+│   │   │   └── effects/     # ParticleEffects, StanceAura
+│   │   └── ui/              # UI components with Korean theming
+│   └── dev/                 # Development and testing components
+├── systems/                 # Core game logic systems
+│   ├── trigram/             # 8-trigram stance system
+│   │   ├── StanceManager.ts
+│   │   ├── TransitionCalculator.ts
+│   │   ├── TrigramCalculator.ts
+│   │   └── KoreanCulture.ts
+│   ├── vitalpoint/          # 70 anatomical vital points
+│   │   ├── VitalPointSystem.ts
+│   │   ├── EnhancedAnatomy.ts
+│   │   └── HitDetection.ts
+│   ├── combat/              # Combat mechanics, physics
+│   │   ├── CombatSystem.ts (36,888 lines - core combat logic)
+│   │   ├── EffectCalculator.ts
+│   │   └── PlayerEffectManager.ts
+│   ├── animation/           # Skeletal animation, hand poses
+│   │   ├── SkeletalAnimation.ts
+│   │   ├── HandPoses.ts
+│   │   └── MuscleActivation.ts
+│   ├── bodypart/            # Body part health tracking (8 parts)
+│   ├── physics/             # Physics simulation
+│   ├── breathing/           # Breathing disruption system
+│   └── ai/                  # AI combat logic
+├── data/                    # Game data and constants
+│   ├── techniques.ts        # 20 techniques (4 per archetype)
+│   ├── archetypePhysicalAttributes.ts  # 5 player archetypes
+│   └── archetypeClothing.ts # Clothing system per archetype
+├── audio/                   # Audio system
+│   └── AudioProvider.ts     # Howler.js integration
+├── types/                   # TypeScript type definitions
+│   ├── constants/           # Korean colors, fonts, animations
+│   ├── skeletal.ts          # 14-bone skeletal system
+│   ├── muscle.ts            # Muscle tension system
+│   ├── hand-animation.ts    # Hand pose definitions
+│   ├── technique.ts         # Technique type definitions
+│   ├── player-visual.ts     # Player visual properties
+│   ├── physics.ts           # Physics types
+│   └── clothing.ts          # Clothing system types
+├── utils/                   # Utility functions
+│   ├── player3DHelpers.ts   # PlayerState conversion utilities
+│   ├── combatHelpers.ts     # Combat utility functions
+│   ├── threeObjectPool.ts   # Object pooling for performance
+│   ├── clothingColors.ts    # Archetype clothing colors
+│   └── performance/         # Performance monitoring utilities
+└── hooks/                   # Custom React hooks
+    └── useCombat.ts         # Combat-related hooks
+```
 
-- **src/components/combat**
+### Key Implementation Files
 
-  - `CombatScreen.tsx`, `CombatArena.tsx`, `CombatControls.tsx`, `CombatHUD.tsx`: All UI & logic for real-time combat.
+**Combat Systems:**
+- `src/systems/CombatSystem.ts` (36,888 bytes) - Core combat logic
+- `src/systems/VitalPointSystem.ts` (19,583 bytes) - 70-point vital targeting
+- `src/systems/TrigramSystem.ts` (12,843 bytes) - 8-stance management
 
-- **src/components/training**
+**Skeletal Animation:**
+- `src/types/skeletal.ts` - 14-bone hierarchy definitions
+- `src/types/muscle.ts` - Muscle tension visualization
+- `src/types/hand-animation.ts` - Hand pose system (6 primary poses)
 
-  - `TrainingScreen.tsx`, `TrainingControlsPanel.tsx`, `VitalPointTrainingPanel.tsx`: Components for practicing vital-point targeting.
+**Player Archetypes:**
+- `src/data/archetypePhysicalAttributes.ts` (20,875 bytes) - Physical attributes for 5 archetypes
+- `src/data/archetypeClothing.ts` (15,792 bytes) - Clothing system per archetype
+- `src/data/techniques.ts` (19,730 bytes) - 20 martial arts techniques
 
-- **src/hooks**
+**Three.js Components:**
+- `src/components/shared/three/` - 3D rendering components
+- `src/components/screens/combat/` - CombatScreen3D implementation
+- `src/utils/player3DHelpers.ts` - PlayerState to Three.js conversion
 
-  - `useTexture.ts`: Custom hook wrapping PixiJS loader for image caching.
-  - `useGameState.ts`, `useUIState.ts`, `useEnemyState.ts`: Zustand stores for global state.
-
-- **src/systems/trigram**
-
-  - `KoreanCulture.ts`, `StanceManager.ts`, `TransitionCalculator.ts`, `TrigramCalculator.ts`: Trigram mechanics and data access.
-
-- **src/systems/vitalpoint**
-
-  - `AnatomicalRegions.ts`, `HitDetection.ts`, `DamageCalculator.ts`, `KoreanVitalPoints.ts`: Vital-point definitions, detection, and damage logic.
-
-- **src/audio**
-
-  - `AudioAssetRegistry.ts`, `AudioManager.ts`, `AudioUtils.ts`, `DefaultSoundGenerator.ts`, `VariantSelector.ts`: All sound loading and playback.
-
-- **src/utils**
-
-  - `playerUtils.ts`, `colorUtils.ts`: Helper functions for mapping archetype data and color schemes.
+**Audio System:**
+- `src/audio/AudioAssetRegistry.ts` - Sound library (1,054 lines)
+- `src/audio/AudioManager.ts` - Audio playback (586 lines)
+- 84.29% test coverage
 
 ---
 
@@ -815,7 +884,7 @@ describe('Three.js Combat Arena', () => {
 
 ```mermaid
 sequenceDiagram
-    title 🔄 Combat Flow – Fully Frontend (Black Trigram)
+    title 🔄 Combat Flow – Fully Frontend (Black Trigram Q1 2026)
 
     participant Player as "🧑‍🤝‍🧑 Player"
     participant InputSystem as "🎮 InputSystem"
@@ -824,9 +893,9 @@ sequenceDiagram
     participant VitalPointSystem as "🎯 VitalPoint System"
     participant AudioManager as "🎵 Audio Manager"
     participant StateStore as "🗄️ Zustand Store"
-    participant PixiStage as "🎨 PixiJS Renderer"
+    participant ThreeScene as "🎨 Three.js Scene"
 
-    Note over Player,PixiStage: 🥋 Korean Martial Arts Real-Time Combat
+    Note over Player,ThreeScene: 🥋 Korean Martial Arts Real-Time Combat
 
     Player->>InputSystem: 🥋 Press stance key (e.g., '1' for 건/Geon)
     InputSystem->>CombatEngine: 🔃 Stance change request
@@ -834,9 +903,21 @@ sequenceDiagram
     TrigramSystem->>StateStore: ➖ Deduct Ki/Stamina
     TrigramSystem-->>CombatEngine: ✅ Transition result (Success/Fail)
     CombatEngine->>AudioManager: 🔊 Play stance change SFX
-    CombatEngine->>PixiStage: ✨ Update player aura visuals (PlayerVisuals)
+    CombatEngine->>ThreeScene: ✨ Update player aura visuals (StanceAura3D)
 
     Player->>InputSystem: ⚔️ Click to attack (Mouse click)
+    InputSystem->>CombatEngine: 🎯 Attack command with screen coords
+    CombatEngine->>TrigramSystem: 💡 Get current technique parameters
+    CombatEngine->>VitalPointSystem: 🔍 Hit detection (polygon-based, <0.01ms)
+    VitalPointSystem-->VitalPointSystem: 🎯 Compute precision vs 70 vital points
+    VitalPointSystem-->>CombatEngine: ✅ Hit result (VitalPointData, Multiplier)
+    CombatEngine->>CombatEngine: 🧮 Compute final damage (base × trigram_adv × vp_mult)
+    CombatEngine->>StateStore: 🩸 Reduce enemy body part health (8 parts)
+    CombatEngine->>AudioManager: 🔊 Play impact SFX (damage-scaled audio)
+    CombatEngine->>ThreeScene: 💥 Render hit effects, damage numbers (HitEffects3D)
+    CombatEngine->>StateStore: ⚡ Update combat state (pain, consciousness, balance)
+    CombatEngine-->>ThreeScene: 👺 Trigger enemy reaction animation (SkeletalAnimation)
+```
     InputSystem->>CombatEngine: 🎯 Attack command with screen coords
     CombatEngine->>TrigramSystem: 💡 Get current technique parameters
     CombatEngine->>VitalPointSystem: 🔍 Hit detection (range & bounding boxes)
