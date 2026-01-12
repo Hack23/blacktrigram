@@ -415,3 +415,16 @@ export {
   type TechniquePhase,
   type WristSnapState,
 } from "./AdvancedJointMovements";
+
+
+// Animation Hit Timing System
+export {
+  ANIMATION_HIT_TIMING,
+  getAnimationHitTiming,
+  isWithinHitWindow,
+  getCurrentReachMultiplier,
+} from './AnimationHitTiming';
+export type {
+  AnimationHitWindow,
+  TechniqueHitTiming,
+} from './AnimationHitTiming';
