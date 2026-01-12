@@ -65,12 +65,12 @@ const buttonHeight = isMobile ? 120 : 140;
 
 // After: Optimized for large desktop
 const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
-const buttonHeight = isMobile ? 120 : isTablet ? 130 : isLargeDesktop ? 100 : 140;
+const buttonHeight = isMobile ? 120 : isTablet ? 130 : isLargeDesktop ? 120 : 140;
 ```
 
 **Result**: 
 - 5 buttons per row on 1920x1080+ displays (better space utilization)
-- Compact 100px button height on large displays (more content visible)
+- Smooth button height progression (120→130→140→120) for consistent user experience
 
 #### PhilosophyScreen
 ```typescript

@@ -89,7 +89,7 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
       controlsHeight: isMobile ? 120 : isTablet ? 110 : isLargeDesktop ? 150 : 130,
       footerHeight: isMobile ? 60 : isTablet ? 70 : isLargeDesktop ? 90 : 80,
     };
-  }, [isMobile, screenSize, height]);
+  }, [isMobile, screenSize]);
 
   // Training area bounds should account for header at top and controls at bottom
   // Mobile training area sizing adapts to device resolution
