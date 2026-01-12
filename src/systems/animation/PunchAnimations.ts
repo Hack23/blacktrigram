@@ -18,7 +18,6 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
-import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -52,45 +51,10 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
 export const JAB_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab", "잽")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
-    // 준비 - Chamber position with fist at hip
-    .at(0, "ease-out")
-      .rotate(BoneName.SHOULDER_L, -0.15, 0, -0.2)  // Shoulder back and down
-      .rotate(BoneName.ELBOW_L, 0, 0, -1.57)         // Elbow bent 90°
-      .rotate(BoneName.WRIST_L, 0, 0, 0)             // Fist vertical
-      // Opposite arm guard
-      .rotate(BoneName.SHOULDER_R, -0.1, 0, 0.2)
-      .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
-      // Body neutral
-      .rotate(BoneName.PELVIS, 0, -0.1, 0)
-      .rotate(BoneName.SPINE_UPPER, 0, -0.1, 0)
-      .done()
-    // 지르기 - Extension with fist rotation and minimal hip drive
-    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend, "ease-out")
-      .rotate(BoneName.SHOULDER_L, 0.25, 0, 0.15)   // Shoulder forward
-      .rotate(BoneName.ELBOW_L, 0, 0, -0.09)        // Nearly straight
-      .rotate(BoneName.WRIST_L, 0, 0, 0.2)          // Fist pronated
-      // Opposite arm pulls back (hikite)
-      .rotate(BoneName.SHOULDER_R, -0.2, 0, -0.3)
-      .rotate(BoneName.ELBOW_R, 0, 0, -1.1)
-      // Minimal hip rotation for speed
-      .rotate(BoneName.PELVIS, 0, 0.1, 0)
-      .rotate(BoneName.SPINE_UPPER, 0, 0.15, 0)
-      .rotate(BoneName.SPINE_MIDDLE, 0, 0.1, 0)
-      .done()
-    // 정점 - Peak extension
-    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak, "linear")
-      .rotate(BoneName.SHOULDER_L, 0.25, 0, 0.15)
-      .rotate(BoneName.ELBOW_L, 0, 0, -0.09)
-      .rotate(BoneName.WRIST_L, 0, 0, 0.2)
-      // Hold hikite
-      .rotate(BoneName.SHOULDER_R, -0.2, 0, -0.3)
-      .rotate(BoneName.ELBOW_R, 0, 0, -1.1)
-      // Hold rotation
-      .rotate(BoneName.PELVIS, 0, 0.1, 0)
-      .rotate(BoneName.SPINE_UPPER, 0, 0.15, 0)
-      .done()
-    // 복귀 - Return to guard
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .punchChamber(TECHNIQUE_TIMING.FAST.chamber, "left") // 준비 - Chamber at hip
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend, "left") // 지르기 - Extension with rotation
+    .punchPeak(TECHNIQUE_TIMING.FAST.peak, "left") // 정점 - Peak extension
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -125,47 +89,10 @@ export const JAB_ANIMATION: SkeletalAnimation =
 export const CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("cross", "크로스")
     .asAttack(TECHNIQUE_TIMING.MEDIUM.total)
-    // 준비 - Chamber with body coiled
-    .at(0, "ease-out")
-      .rotate(BoneName.SHOULDER_R, -0.15, 0, -0.2)   // Rear shoulder back
-      .rotate(BoneName.ELBOW_R, 0, 0, -1.57)          // Elbow bent 90°
-      .rotate(BoneName.WRIST_R, 0, 0, 0)              // Fist vertical
-      // Lead arm guard
-      .rotate(BoneName.SHOULDER_L, -0.1, 0, 0.2)
-      .rotate(BoneName.ELBOW_L, 0, 0, 1.4)
-      // Body coiled away from target
-      .rotate(BoneName.PELVIS, 0, -0.15, 0)
-      .rotate(BoneName.SPINE_UPPER, 0, -0.2, 0)
-      .rotate(BoneName.SPINE_MIDDLE, 0, -0.15, 0)
-      .done()
-    // 지르기 - Full hip rotation and punch extension
-    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend, "ease-out")
-      .rotate(BoneName.SHOULDER_R, 0.25, 0, 0.15)    // Punch forward
-      .rotate(BoneName.ELBOW_R, 0, 0, -0.09)         // Nearly straight
-      .rotate(BoneName.WRIST_R, 0, 0, 0.2)           // Fist pronated
-      // Lead arm hikite - strong pull back
-      .rotate(BoneName.SHOULDER_L, -0.2, 0, -0.3)
-      .rotate(BoneName.ELBOW_L, 0, 0, -1.1)
-      // Full hip rotation for power (20-25°)
-      .rotate(BoneName.PELVIS, 0, 0.4, 0)            // ~23° hip rotation
-      .rotate(BoneName.SPINE_UPPER, 0, 0.5, 0)       // ~29° shoulder rotation
-      .rotate(BoneName.SPINE_MIDDLE, 0, 0.45, 0)     // ~26° mid-spine rotation
-      .done()
-    // 정점 - Peak impact with maximum rotation
-    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend + TECHNIQUE_TIMING.MEDIUM.peak, "linear")
-      .rotate(BoneName.SHOULDER_R, 0.25, 0, 0.15)
-      .rotate(BoneName.ELBOW_R, 0, 0, -0.09)
-      .rotate(BoneName.WRIST_R, 0, 0, 0.2)
-      // Maximum hikite
-      .rotate(BoneName.SHOULDER_L, -0.2, 0, -0.3)
-      .rotate(BoneName.ELBOW_L, 0, 0, -1.1)
-      // Maximum body rotation
-      .rotate(BoneName.PELVIS, 0, 0.45, 0)           // ~26° maximum hip rotation
-      .rotate(BoneName.SPINE_UPPER, 0, 0.55, 0)      // ~32° maximum shoulder rotation
-      .rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0)      // ~29° mid-spine
-      .done()
-    // 복귀 - Return to guard
-    .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover)
+    .punchChamber(TECHNIQUE_TIMING.MEDIUM.chamber, "right") // 준비 - Chamber at hip
+    .punchExtend(TECHNIQUE_TIMING.MEDIUM.extend, "right") // 지르기 - Extension with full hip rotation
+    .punchPeak(TECHNIQUE_TIMING.MEDIUM.peak, "right") // 정점 - Peak impact
+    .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover) // 복귀 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

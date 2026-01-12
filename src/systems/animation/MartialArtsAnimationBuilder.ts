@@ -645,14 +645,49 @@ export class MartialArtsAnimationBuilder {
   // ═══════════════════════════════════════════════════════════════════════
 
   /**
+   * Punch chamber - Fist at hip with vertical palm (주먹준비자세)
+   * Korean martial arts chamber position with fist vertical (세로주먹)
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand to chamber ("left" | "right")
+   * @param easing Easing function
+   * @korean 주먹준비자세
+   */
+  punchChamber(
+    timeOffset: number = 0.1,
+    hand: "left" | "right" = "right",
+    easing: string = "ease-out"
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.CHAMBER, hand, {
+        includeWrist: true,
+        includeOppositeArm: true,
+        includeSpineMiddle: false,
+      });
+      // Form fist during chamber
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
    * Punch wind-up - Arm coils back (주먹준비)
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand to wind up ("left" | "right")
+   * @param easing Easing function
    * @korean 주먹준비
    */
-  punchWindup(timeOffset: number = 0.08, easing: string = "linear"): this {
+  punchWindup(
+    timeOffset: number = 0.08,
+    hand: "left" | "right" = "right",
+    easing: string = "linear"
+  ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      applyPunchPhaseToConfig(kf, PUNCH_PHASES.WINDUP, "right");
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.WINDUP, hand, {
+        includeOppositeArm: true,
+      });
       // Form fist during windup
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
@@ -660,16 +695,51 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Punch extension - Arm extends with torso rotation (지르기)
+   * Includes fist rotation from vertical to pronated and hikite
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand to extend ("left" | "right")
+   * @param easing Easing function
    * @korean 지르기
    */
-  punchExtend(timeOffset: number = 0.07, easing: string = "ease-out"): this {
+  punchExtend(
+    timeOffset: number = 0.07,
+    hand: "left" | "right" = "right",
+    easing: string = "ease-out"
+  ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, "right", {
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, hand, {
         includeWrist: true,
         includeSpineMiddle: true,
+        includeOppositeArm: true,
       });
       // Apply fist pose to punching hand
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Punch peak - Maximum extension with full rotation (정점)
+   * Hold at full extension for impact frame
+   * @param timeOffset Time offset in seconds
+   * @param hand Which hand is extended ("left" | "right")
+   * @param easing Easing function
+   * @korean 정점
+   */
+  punchPeak(
+    timeOffset: number = 0.05,
+    hand: "left" | "right" = "right",
+    easing: string = "linear"
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      applyPunchPhaseToConfig(kf, PUNCH_PHASES.PEAK, hand, {
+        includeWrist: true,
+        includeSpineMiddle: true,
+        includeOppositeArm: true,
+      });
+      // Hold fist pose
+      this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
     this.currentTime += timeOffset;
     return this;
