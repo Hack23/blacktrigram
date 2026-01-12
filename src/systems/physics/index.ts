@@ -21,3 +21,6 @@ export type { SpeedModifierState } from './SpeedModifierSystem';
 
 export { CoordinateMapper, defaultCoordinateMapper } from './CoordinateMapper';
 export type { CharacterModelConfig } from './CoordinateMapper';
+
+export { PhysicalReachCalculator, physicalReachCalculator } from './PhysicalReachCalculator';
+export type { PhysicalReachResult } from './PhysicalReachCalculator';

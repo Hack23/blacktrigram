@@ -196,7 +196,12 @@ describe("useCombatActions", () => {
           critChance: 0.3,
           executionTime: 800,
           romanized: "teseuteu gisul",
-        })
+        }),
+        undefined, // vitalPointId
+        {
+          animationType: "jab",
+          currentTime: 0,
+        }
       );
     });
 

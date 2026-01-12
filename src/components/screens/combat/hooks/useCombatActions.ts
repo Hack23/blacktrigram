@@ -53,6 +53,7 @@ import { checkForFall, getFallTypeName } from "@/systems/combat/FallIntegration"
 import type { AnimationState } from "@/systems/animation/types";
 import type { CombatResult } from "@/systems/combat/types";
 import { KnockbackPhysics } from "@/systems/physics";
+import { AnimationType } from "@/systems/animation";
 
 /**
  * Hit position variation range for randomizing strike heights
@@ -203,7 +204,11 @@ function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): 
     kiCost: technique.kiCost,
     staminaCost: technique.staminaCost,
     accuracy: 0.85, // Default accuracy
-    range: 1.0,
+    reachConfig: {
+      bodyPart: "arm" as const,
+      techniqueType: "punch" as const,
+      baseExtension: 0.90,
+    },
     executionTime: technique.animationDuration ?? 400,
     recoveryTime: 300,
     critChance: technique.criticalChance ?? 0.1,
@@ -294,11 +299,26 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       damage >= 10 ? "medium" : "light";
     combatAudio?.playAttackSound(intensity);
 
-    // Use combat system for proper calculation
+    // Calculate animation timing context for hit detection.
+    // NOTE: Animation context is initialized at attack start (t=0). In a real-time
+    // combat loop with frame-by-frame collision detection, the actual hit detection
+    // would occur later during the animation when visual contact is made. For this
+    // synchronous implementation, we resolve the attack immediately with t=0.
+    // Future enhancement: Integrate with animation event system to detect hits at
+    // precise collision frames (e.g., frame 6 of a punch animation).
+    const animationType = attackTechnique.animationType || AnimationType.JAB;
+    const animationContext = {
+      animationType,
+      currentTime: 0, // Initialized at attack start; precise timing during collision in future
+    };
+
+    // Use combat system for proper calculation with animation context
     const result = combatSystem.resolveAttack(
       validPlayers[0],
       validPlayers[1],
-      attackTechnique
+      attackTechnique,
+      undefined,
+      animationContext
     );
 
     const effectType = result.hit
@@ -644,7 +664,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           kiCost: 5,
           staminaCost: 8,
           accuracy: 0.8,
-          range: 1.2,
+          reachConfig: {
+            bodyPart: "arm" as const,
+            techniqueType: "punch" as const,
+            baseExtension: 0.95,
+          },
           executionTime: 400,
           recoveryTime: 300,
           critChance: 0.1,
@@ -670,7 +694,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           kiCost: 10,
           staminaCost: 15,
           accuracy: 0.85,
-          range: 1.5,
+          reachConfig: {
+            bodyPart: "leg" as const,
+            techniqueType: "kick" as const,
+            baseExtension: 1.10,
+          },
           executionTime: 600,
           recoveryTime: 800,
           critChance: 0.15,

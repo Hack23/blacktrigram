@@ -45,6 +45,129 @@ export type AnatomicalRegionPhysics =
 export type BoundingBoxType = "sphere" | "box" | "capsule";
 
 /**
+ * Body part source for reach calculation.
+ * 
+ * **Korean**: 신체 부위
+ * 
+ * Defines which body part's length is used for reach calculation.
+ * 
+ * @public
+ * @category Combat Types
+ * @korean 신체부위
+ */
+export type ReachBodyPart = "arm" | "leg" | "torso";
+
+/**
+ * Physical reach configuration for techniques.
+ * 
+ * **Korean**: 물리적 도달 설정
+ * 
+ * Defines how a technique's reach is calculated using physical attributes
+ * rather than a fixed distance value. The actual reach depends on:
+ * - Body part length from archetype physical attributes
+ * - Animation extension multiplier from hit timing
+ * - Stance modifiers from Eight Trigrams
+ * 
+ * Formula: `effectiveReach = (limbLength/100) × extensionMultiplier × stanceModifier`
+ * 
+ * @example
+ * ```typescript
+ * // Punch technique using arm length
+ * const punchReach: PhysicalReachConfig = {
+ *   bodyPart: "arm",
+ *   techniqueType: "punch",
+ *   baseExtension: 0.95, // 95% arm extension at peak
+ * };
+ * 
+ * // Elbow strike - close range
+ * const elbowReach: PhysicalReachConfig = {
+ *   bodyPart: "arm",
+ *   techniqueType: "elbow",
+ *   baseExtension: 0.5, // 50% arm extension (close range)
+ * };
+ * 
+ * // Kick using leg length
+ * const kickReach: PhysicalReachConfig = {
+ *   bodyPart: "leg",
+ *   techniqueType: "kick",
+ *   baseExtension: 1.1, // 110% leg extension (high reach)
+ * };
+ * ```
+ * 
+ * @public
+ * @category Combat Types
+ * @korean 물리적도달설정
+ */
+export interface PhysicalReachConfig {
+  /**
+   * Body part used for reach calculation.
+   * Determines which physical attribute length is used.
+   * @korean 신체부위
+   */
+  readonly bodyPart: ReachBodyPart;
+  
+  /**
+   * Technique type for classification.
+   * @korean 기술유형
+   */
+  readonly techniqueType: TechniqueType;
+  
+  /**
+   * Base extension multiplier (0.0 - 1.5).
+   * - 0.4-0.5: Close range (elbows, knees)
+   * - 0.9-1.0: Standard reach (punches)
+   * - 1.1-1.5: Extended reach (kicks, spinning techniques)
+   * @korean 기본확장배수
+   */
+  readonly baseExtension: number;
+}
+
+/**
+ * Runtime validation helper for base extension multiplier.
+ *
+ * Ensures that the provided baseExtension value respects the documented range
+ * of 0.0 to 1.5. This should be used when loading or constructing technique
+ * configurations from dynamic sources (e.g. JSON, network, editors).
+ *
+ * **Korean**: 기본 확장 배수 검증
+ *
+ * @param baseExtension - The base extension multiplier to validate.
+ * @returns `true` if the value is within the inclusive range [0.0, 1.5], otherwise `false`.
+ * @public
+ * @category Combat Types
+ * @korean 기본확장배수검증
+ */
+export function isValidBaseExtension(baseExtension: number): boolean {
+  return baseExtension >= 0.0 && baseExtension <= 1.5;
+}
+
+/**
+ * Asserts that a PhysicalReachConfig has a valid baseExtension value.
+ *
+ * Throws a RangeError if the configuration's baseExtension is outside the
+ * allowed range of 0.0 to 1.5. This provides a canonical runtime check that
+ * can be used by reach calculators or technique loaders.
+ *
+ * **Korean**: 물리적 도달 설정 검증
+ *
+ * @param config - The PhysicalReachConfig instance to validate.
+ * @throws RangeError If baseExtension is outside [0.0, 1.5].
+ * @public
+ * @category Combat Types
+ * @korean 물리적도달설정검증
+ */
+export function assertValidPhysicalReachConfig(
+  config: PhysicalReachConfig
+): void {
+  if (!isValidBaseExtension(config.baseExtension)) {
+    throw new RangeError(
+      `Invalid baseExtension ${config.baseExtension}. ` +
+      "Expected a value between 0.0 and 1.5 inclusive."
+    );
+  }
+}
+
+/**
  * Technique types for attack reach calculation.
  * 
  * **Korean**: 기술 유형

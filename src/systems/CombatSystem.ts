@@ -28,6 +28,7 @@ import {
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
+import { calculateDistance3D } from "../utils/math";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 import {
@@ -36,8 +37,10 @@ import {
   calculateSpeedModifierForDamage,
   getAdjustedAnimationDuration,
 } from "./animation/TechniqueAnimationMapper";
+import { AnimationType, isWithinHitWindow } from "./animation";
 import type { DefensiveAnimationType } from "./animation/types";
-import { KnockbackPhysics, type KnockbackConfig, CollisionDetection } from "./physics";
+import { KnockbackPhysics, type KnockbackConfig, CollisionDetection, physicalReachCalculator } from "./physics";
+import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
 import * as THREE from 'three';
 
 /**
@@ -215,13 +218,32 @@ export class CombatSystem implements CombatSystemInterface {
   }
 
   /**
-   * Fix: Update resolveAttack to match interface signature
+   * Fix: Update resolveAttack to match interface signature and add animation-aware hit detection
+   * 
+   * **Korean**: 공격 해결 (애니메이션 인식)
+   * 
+   * Integrates animation timing and physical reach calculation for reality-based hit detection.
+   * Hits only register when:
+   * 1. Animation is in hit window (extension phase)
+   * 2. Attacker is within effective reach based on limb length and animation
+   * 3. Existing accuracy and stance checks pass
+   * 
+   * @param attacker - Attacking player state
+   * @param defender - Defending player state
+   * @param technique - Technique being executed
+   * @param targetedVitalPointId - Optional specific vital point target
+   * @param animationContext - Optional animation timing context for reality-based hit detection
+   * @returns Combat result with hit/miss and damage information
    */
   resolveAttack(
     attacker: PlayerState,
     defender: PlayerState,
     technique: KoreanTechnique,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
+    animationContext?: {
+      animationType: AnimationType;
+      currentTime: number;
+    }
   ): CombatResult {
     const timestamp = Date.now();
 
@@ -241,6 +263,64 @@ export class CombatSystem implements CombatSystemInterface {
         isCritical: false,
         isBlocked: false,
       };
+    }
+
+    // === ANIMATION-AWARE HIT DETECTION ===
+    // If animation context provided, validate timing and reach
+    if (animationContext) {
+      const { animationType, currentTime } = animationContext;
+      
+      // Check if within hit window (extension phase)
+      if (!isWithinHitWindow(animationType, currentTime)) {
+        return {
+          hit: false,
+          damage: 0,
+          criticalHit: false,
+          vitalPointHit: false,
+          effects: [],
+          timestamp,
+          technique,
+          attacker,
+          defender,
+          success: false,
+          isCritical: false,
+          isBlocked: false,
+        };
+      }
+      
+      // Calculate effective reach based on physical attributes and animation
+      const attackerPhysical = getArchetypePhysicalAttributes(attacker.archetype);
+      const reachResult = physicalReachCalculator.calculateReach(
+        attackerPhysical,
+        animationType,
+        currentTime,
+        attacker.currentStance
+      );
+      
+      // Check distance to defender using 3D Euclidean distance
+      // Position type is 2D, so default z to 0 for both attacker and defender
+      const distance = calculateDistance3D(
+        [attacker.position.x, attacker.position.y, 0],
+        [defender.position.x, defender.position.y, 0]
+      );
+      
+      // If out of reach, miss
+      if (distance > reachResult.effectiveReach) {
+        return {
+          hit: false,
+          damage: 0,
+          criticalHit: false,
+          vitalPointHit: false,
+          effects: [],
+          timestamp,
+          technique,
+          attacker,
+          defender,
+          success: false,
+          isCritical: false,
+          isBlocked: false,
+        };
+      }
     }
 
     // Fix: Use correct method signature

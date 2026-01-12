@@ -1123,7 +1123,8 @@ describe("AIDecisionTree", () => {
       let highFatigueChanges = 0;
 
       // Use fresh instances to avoid cooldown
-      for (let i = 0; i < 100; i++) {
+      // Increased sample size from 100 to 500 for more statistical reliability
+      for (let i = 0; i < 500; i++) {
         const lowTree = new AIDecisionTree();
         const highTree = new AIDecisionTree();
 
@@ -1161,15 +1162,18 @@ describe("AIDecisionTree", () => {
       }
 
       // High fatigue should produce more stance changes (1.2x multiplier)
-      // With 0.7 base: low ~70 changes, high ~84 changes (0.7 * 1.2 = 0.84)
-      expect(highFatigueChanges).toBeGreaterThan(lowFatigueChanges);
+      // With 0.7 base and 500 iterations: low ~350 changes, high ~420 changes (0.7 * 1.2 = 0.84)
+      // With larger sample size, use a minimum threshold of at least 5% more changes
+      const minExpectedIncrease = lowFatigueChanges * 0.05;
+      expect(highFatigueChanges).toBeGreaterThanOrEqual(lowFatigueChanges + minExpectedIncrease);
     });
 
     it("should further increase frequency with 1.5x modifier after 20 seconds", () => {
       let midFatigueChanges = 0;
       let highFatigueChanges = 0;
 
-      for (let i = 0; i < 100; i++) {
+      // Increased sample size from 100 to 500 for more statistical reliability
+      for (let i = 0; i < 500; i++) {
         const midTree = new AIDecisionTree();
         const highTree = new AIDecisionTree();
 
@@ -1207,7 +1211,9 @@ describe("AIDecisionTree", () => {
       }
 
       // 1.5x modifier should produce more changes than 1.2x modifier
-      expect(highFatigueChanges).toBeGreaterThan(midFatigueChanges);
+      // With larger sample size, require at least 5% more changes for statistical significance
+      const minExpectedIncrease = midFatigueChanges * 0.05;
+      expect(highFatigueChanges).toBeGreaterThanOrEqual(midFatigueChanges + minExpectedIncrease);
     });
 
     it("should cap adjusted frequency at 0.95 even with extreme fatigue", () => {

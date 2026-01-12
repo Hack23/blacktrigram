@@ -17,6 +17,10 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Technique } from "../../../../../types";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
 import { triggerHaptic } from "../../../../../utils/haptics";
+import { PlayerArchetype, TrigramStance } from "../../../../../types/common";
+import { getArchetypePhysicalAttributes } from "../../../../../data/archetypePhysicalAttributes";
+import { physicalReachCalculator } from "../../../../../systems/physics";
+import { AnimationType } from "../../../../../systems/animation";
 
 /**
  * Props for TechniqueCard component.
@@ -52,6 +56,12 @@ export interface TechniqueCardProps {
   /** Whether rendering for mobile device */
   readonly isMobile: boolean;
 
+  /** Player archetype for reach calculation (optional) */
+  readonly playerArchetype?: PlayerArchetype;
+
+  /** Player stance for reach calculation (optional) */
+  readonly playerStance?: TrigramStance;
+
   /** @deprecated Card position no longer needed - parent handles layout */
   readonly position?: { x: number; y: number };
 }
@@ -76,9 +86,54 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
   onClick,
   onHover,
   isMobile,
+  playerArchetype,
+  playerStance,
   // position prop is deprecated but kept for backwards compatibility
 }) => {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  // Calculate effective reach if player info is available
+  const reachInfo = useMemo(() => {
+    if (!playerArchetype || !playerStance || !technique.animation?.type) {
+      return null;
+    }
+
+    // Map TechniqueAnimationConfig.type to AnimationType
+    // For now, use a simple default mapping
+    // TODO: Create proper mapping from AttackAnimationType to AnimationType
+    const animationType = AnimationType.JAB; // Default fallback
+
+    const physicalAttributes = getArchetypePhysicalAttributes(playerArchetype);
+    const maxReach = physicalReachCalculator.calculateMaxReach(
+      physicalAttributes,
+      animationType,
+      playerStance
+    );
+
+    // Determine body part from technique type using PhysicalReachCalculator
+    const techniqueType = physicalReachCalculator.getTechniqueTypeFromAnimation(animationType);
+    let bodyPart: string;
+    
+    switch (techniqueType) {
+      case "punch":
+      case "elbow":
+        bodyPart = "Arm (팔)";
+        break;
+      case "kick":
+      case "knee":
+        bodyPart = "Leg (다리)";
+        break;
+      case "pressure_point":
+      default:
+        bodyPart = "Body (몸통)";
+        break;
+    }
+
+    return {
+      maxReach: (maxReach * 100).toFixed(1), // Convert to cm
+      bodyPart,
+    };
+  }, [playerArchetype, playerStance, technique.animation]);
 
   // Calculate card size based on device
   const cardSize = useMemo(
@@ -351,6 +406,16 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
             <div>Cooldown: {technique.cooldown / 1000}s</div>
             {technique.requiredStance && (
               <div>Stance: {technique.requiredStance}</div>
+            )}
+            {reachInfo && (
+              <>
+                <div style={{ marginTop: "4px", color: primaryCyanHex, fontWeight: "bold" }}>
+                  Reach: {reachInfo.maxReach}cm
+                </div>
+                <div style={{ fontSize: "9px", color: "#999" }}>
+                  {reachInfo.bodyPart}
+                </div>
+              </>
             )}
           </div>
         </div>
