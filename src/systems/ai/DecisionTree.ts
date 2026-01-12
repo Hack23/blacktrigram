@@ -21,6 +21,13 @@ import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
+ * Game grid cell size in pixels for distance calculations
+ * 
+ * @korean 게임 그리드 셀 크기 (픽셀)
+ */
+const CELL_SIZE = 40;
+
+/**
  * Distance-based stance preferences for tactical positioning
  * 
  * Stances are categorized by optimal combat range:
@@ -28,12 +35,18 @@ import { AIComboSystem } from "./ComboSystem";
  * - **MID (3-4 cells)**: Adaptive stances for mid-range (GAM, TAE, GAN)
  * - **FAR (5+ cells)**: Defensive stances for distance (GAN, GON)
  * 
+ * **Note**: GAN (Mountain) intentionally appears in both MID and FAR ranges.
+ * It represents a highly stable defensive posture that can be held while
+ * maintaining mid-range pressure or retreating to long distance. This
+ * overlap slightly increases GAN's selection frequency by design, reflecting
+ * the Mountain's versatility in Korean martial arts philosophy.
+ * 
  * @korean 거리별 자세 선호도
  */
 const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
   CLOSE: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.LI, TrigramStance.SON], // 1-2 cells
   MID: [TrigramStance.GAM, TrigramStance.TAE, TrigramStance.GAN], // 3-4 cells
-  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells
+  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells (GAN shared with MID as versatile defensive stance)
 };
 
 /**
@@ -697,8 +710,7 @@ export class AIDecisionTree {
     preferredStances: readonly TrigramStance[],
     currentStance: TrigramStance
   ): TrigramStance | undefined {
-    // Determine distance category (1 cell = ~40px based on game design)
-    const CELL_SIZE = 40;
+    // Determine distance category using module-level CELL_SIZE constant
     let distanceCategory: string;
     if (distance <= 2 * CELL_SIZE) {
       distanceCategory = "CLOSE";
@@ -780,7 +792,16 @@ export class AIDecisionTree {
     if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
       // 60% chance to stay in preferred stance when not under immediate pressure
       // However, fatigue can override this (higher fatigue = more likely to switch anyway)
-      const fatigueOverride = fatigueModifier > 1.2 && Math.random() < (fatigueModifier - 1.0);
+      // Use non-linear scaling for gradual, predictable override behavior:
+      // - At 1.2x fatigue (10s): ~10% override chance
+      // - At 1.5x fatigue (20s): ~25% override chance
+      // - Caps at 80% to preserve some tactical consideration
+      const fatigueOverrideProbability =
+        fatigueModifier > 1.0
+          ? Math.min(0.8, (fatigueModifier - 1.0) * 0.5)
+          : 0;
+      const fatigueOverride =
+        fatigueModifier > 1.2 && Math.random() < fatigueOverrideProbability;
       if (!fatigueOverride) {
         return {
           action: AIActionType.WAIT,
