@@ -407,7 +407,7 @@ export const calculateFatLayerOpacity = (fatMass: number): number => {
  * ENHANCED: Fat layer adds significant bulk to large archetypes.
  * - Amsalja (10kg): 0.02 thickness (minimal)
  * - Musa (13kg): 0.08 thickness (slight padding)
- * - **Jojik (20kg): 0.50 thickness (THICK PADDING)** ✨
+ * - **Jojik (20kg): 0.46 thickness (THICK PADDING)** ✨
  *
  * @param fatMass - Fat mass in kilograms (10-22kg range)
  * @returns Scale increase for fat layer (0.02-0.60)

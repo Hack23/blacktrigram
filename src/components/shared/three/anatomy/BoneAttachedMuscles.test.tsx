@@ -456,8 +456,8 @@ describe("BoneAttachedMuscle", () => {
           tension={0.5}
           isShaking={false}
           muscleScaleFactor={jojikFactor}
-          fatLayerOpacity={0.72}
-          fatLayerThickness={0.5}
+          fatLayerOpacity={calculateFatLayerOpacity(20)}
+          fatLayerThickness={calculateFatLayerThickness(20)}
         />
       );
 
