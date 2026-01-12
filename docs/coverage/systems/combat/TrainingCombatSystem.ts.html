@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.85% </span>
+                <span class="strong">67.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/82</span>
+                <span class='fraction'>55/82</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.05% </span>
+                <span class="strong">72.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>54/76</span>
+                <span class='fraction'>55/76</span>
             </div>
         
             
@@ -400,7 +400,28 @@
 <a name='L335'></a><a href='#L335'>335</a>
 <a name='L336'></a><a href='#L336'>336</a>
 <a name='L337'></a><a href='#L337'>337</a>
-<a name='L338'></a><a href='#L338'>338</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L338'></a><a href='#L338'>338</a>
+<a name='L339'></a><a href='#L339'>339</a>
+<a name='L340'></a><a href='#L340'>340</a>
+<a name='L341'></a><a href='#L341'>341</a>
+<a name='L342'></a><a href='#L342'>342</a>
+<a name='L343'></a><a href='#L343'>343</a>
+<a name='L344'></a><a href='#L344'>344</a>
+<a name='L345'></a><a href='#L345'>345</a>
+<a name='L346'></a><a href='#L346'>346</a>
+<a name='L347'></a><a href='#L347'>347</a>
+<a name='L348'></a><a href='#L348'>348</a>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -474,10 +495,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -495,7 +519,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -742,6 +766,15 @@ import { CombatSystem } from "../CombatSystem";
 import { PlayerState } from "../player";
 import { KoreanTechnique } from "../vitalpoint";
 import { TrainingCombatResult } from "./types";
+import { AnimationType } from "../animation";
+&nbsp;
+/**
+ * Animation context for timing-based hit detection
+ */
+interface AnimationContext {
+  readonly animationType: AnimationType;
+  readonly currentTime: number;
+}
 &nbsp;
 /**
  * Training-specific combat system for Korean martial arts practice
@@ -805,20 +838,23 @@ export class TrainingCombatSystem extends CombatSystem {
 &nbsp;
   /**
    * Execute a training technique with detailed analysis
+   * Supports optional animation context for physics-based hit detection
    */
   executeTrainingTechnique(
     player: PlayerState,
     technique: KoreanTechnique,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
+    animationContext?: AnimationContext
   ): TrainingCombatResult {
     this.techniqueAttempts++;
 &nbsp;
-    // Base combat resolution
+    // Base combat resolution with animation context
     const baseResult = this.resolveAttack(
       player,
       this.trainingDummy,
       technique,
-      targetedVitalPointId
+      targetedVitalPointId,
+      animationContext
     );
 &nbsp;
     // Calculate training-specific scores
@@ -831,8 +867,8 @@ export class TrainingCombatSystem extends CombatSystem {
 <span class="cstat-no" title="statement not covered" >      this.accuracyHistory.shift(); // Keep last 10 attempts</span>
     }
 &nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (baseResult.hit) {
-<span class="cstat-no" title="statement not covered" >      this.successfulTechniques++;</span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (baseResult.hit) {
+      this.successfulTechniques++;
     }
 &nbsp;
     // Generate improvement feedback
@@ -1081,7 +1117,7 @@ export default TrainingCombatSystem;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T02:45:37.355Z
+                at 2026-01-12T15:46:36.613Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

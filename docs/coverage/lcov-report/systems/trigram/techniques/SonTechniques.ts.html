@@ -315,7 +315,31 @@
 <a name='L250'></a><a href='#L250'>250</a>
 <a name='L251'></a><a href='#L251'>251</a>
 <a name='L252'></a><a href='#L252'>252</a>
-<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -352,6 +376,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -626,7 +674,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 8,
     staminaCost: 30,
     accuracy: 0.7,
-    range: 0.8,
+    reachConfig: {
+      bodyPart: "arm",
+      techniqueType: "punch",
+      baseExtension: 0.95,
+    },
     executionTime: 400,
     recoveryTime: 600,
     critChance: 0.06,
@@ -659,7 +711,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 10,
     staminaCost: 22,
     accuracy: 0.82,
-    range: 1.2,
+    reachConfig: {
+      bodyPart: "leg",
+      techniqueType: "kick",
+      baseExtension: 0.95,
+    },
     executionTime: 550,
     recoveryTime: 850,
     critChance: 0.12,
@@ -690,7 +746,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 16,
     staminaCost: 32,
     accuracy: 0.74,
-    range: 1.4,
+    reachConfig: {
+      bodyPart: "leg",
+      techniqueType: "kick",
+      baseExtension: 1.05,
+    },
     executionTime: 600,
     recoveryTime: 900,
     critChance: 0.16,
@@ -723,7 +783,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 12,
     staminaCost: 28,
     accuracy: 0.78,
-    range: 1.0,
+    reachConfig: {
+      bodyPart: "arm",
+      techniqueType: "punch",
+      baseExtension: 0.95,
+    },
     executionTime: 450,
     recoveryTime: 700,
     critChance: 0.08,
@@ -754,7 +818,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 8,
     staminaCost: 20,
     accuracy: 0.85,
-    range: 0.9,
+    reachConfig: {
+      bodyPart: "arm",
+      techniqueType: "punch",
+      baseExtension: 0.9,
+    },
     executionTime: 500,
     recoveryTime: 750,
     critChance: 0.1,
@@ -787,7 +855,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     kiCost: 14,
     staminaCost: 26,
     accuracy: 0.76,
-    range: 0.8,
+    reachConfig: {
+      bodyPart: "arm",
+      techniqueType: "elbow",
+      baseExtension: 0.5,
+    },
     executionTime: 550,
     recoveryTime: 850,
     critChance: 0.14,
@@ -826,7 +898,7 @@ export function <span class="fstat-no" title="function not covered" >getSonTechn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T02:45:37.655Z
+                at 2026-01-12T15:46:36.918Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
