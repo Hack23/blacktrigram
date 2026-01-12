@@ -35,7 +35,7 @@ describe("AI Technique Selection Diversity", () => {
     });
 
     it("should have 2-3 techniques per combo sequence", () => {
-      for (const [archetype, combos] of Object.entries(ARCHETYPE_SIGNATURE_COMBOS)) {
+      for (const combos of Object.values(ARCHETYPE_SIGNATURE_COMBOS)) {
         for (const combo of combos) {
           expect(combo.techniqueIds.length).toBeGreaterThanOrEqual(2);
           expect(combo.techniqueIds.length).toBeLessThanOrEqual(3);
@@ -44,7 +44,7 @@ describe("AI Technique Selection Diversity", () => {
     });
 
     it("should have Korean and English names for all combos", () => {
-      for (const [archetype, combos] of Object.entries(ARCHETYPE_SIGNATURE_COMBOS)) {
+      for (const combos of Object.values(ARCHETYPE_SIGNATURE_COMBOS)) {
         for (const combo of combos) {
           expect(combo.name.korean).toBeTruthy();
           expect(combo.name.english).toBeTruthy();
