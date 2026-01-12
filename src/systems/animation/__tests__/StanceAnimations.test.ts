@@ -524,7 +524,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
         { name: "gon", stance: createGonStance(), width: 1.8 },
       ];
 
-      stances.forEach(({ name, stance, width }) => {
+      stances.forEach(({ stance, width }) => {
         const leftFootPos = getPosition(stance, BoneName.FOOT_L);
         const rightFootPos = getPosition(stance, BoneName.FOOT_R);
         
