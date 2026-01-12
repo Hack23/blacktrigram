@@ -3,6 +3,7 @@
  *
  * Manages muscle activation state based on current actions and stamina.
  * Reduces code duplication in skeletal animation components.
+ * Includes stance-based leg muscle tension for isometric holds.
  *
  * @module hooks/useMuscleActivation
  * @category Hooks
@@ -10,8 +11,12 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { MuscleActivationManager } from "../systems/animation/MuscleActivation";
+import { 
+  MuscleActivationManager,
+  getMuscleTensionForStance,
+} from "../systems/animation/MuscleActivation";
 import type { PlayerAnimation } from "../types/player-visual";
+import type { TrigramStance } from "../types/common";
 
 /**
  * Options for useMuscleActivation hook
@@ -26,6 +31,8 @@ export interface UseMuscleActivationOptions {
   readonly isBlocking?: boolean;
   /** Current stamina level (0-100) */
   readonly stamina: number;
+  /** Current trigram stance (for leg muscle tension) */
+  readonly currentStance?: TrigramStance;
 }
 
 /**
@@ -77,7 +84,7 @@ export interface UseMuscleActivationReturn {
 export function useMuscleActivation(
   options: UseMuscleActivationOptions
 ): UseMuscleActivationReturn {
-  const { currentAnimation, attackAnimation, isBlocking = false, stamina } = options;
+  const { currentAnimation, attackAnimation, isBlocking = false, stamina, currentStance } = options;
 
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());
@@ -112,6 +119,31 @@ export function useMuscleActivation(
     ) {
       // Engage stance/leg/core muscles during movement and stance changes
       muscleManager.current.update("stance_change", stamina, delta);
+    } else if (currentAnimation === "idle" && currentStance) {
+      // Apply stance-based leg muscle tension for idle/guard positions
+      // This provides realistic isometric contraction visualization
+      const stanceTension = getMuscleTensionForStance(currentStance);
+      
+      // Update manager with stance muscle activations
+      stanceTension.forEach((tension, muscleGroup) => {
+        // Get existing activation state
+        const allActivations = muscleManager.current.getAllActivations();
+        const state = allActivations.get(muscleGroup);
+        
+        if (state) {
+          // Set target tension for smooth interpolation
+          state.targetTension = tension;
+          
+          // Smoothly interpolate to target (similar to update() behavior)
+          const lerp = (start: number, end: number, t: number) => 
+            start + (end - start) * t;
+          state.tension = lerp(
+            state.tension,
+            state.targetTension,
+            5.0 * delta // Same activation speed as techniques
+          );
+        }
+      });
     } else {
       muscleManager.current.relaxAllMuscles(delta);
     }
