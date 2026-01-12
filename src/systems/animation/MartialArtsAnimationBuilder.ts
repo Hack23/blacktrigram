@@ -16,6 +16,7 @@ import type {
   SkeletalAnimation,
 } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
+import * as THREE from "three";
 
 // Import constants from dedicated constants module
 import {
@@ -1645,6 +1646,72 @@ export class MartialArtsAnimationBuilder {
     hand: "left" | "right" | "both" = "both"
   ): void {
     this.applyHandPose(kf, HAND_POSES[pose], hand);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // FOOT POSITIONING (발 위치)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Apply foot positions based on stance width (발너비)
+   * Sets left and right foot X positions symmetrically around center
+   * 
+   * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
+   * @param shoulderWidth - Fighter's shoulder width in centimeters
+   * @korean 발너비적용
+   * 
+   * @example
+   * ```typescript
+   * // Jin Thunder stance (2.0x shoulder width)
+   * .withFootWidth(2.0, 46)  // 0.92m total width
+   * 
+   * // Son Wind stance (0.0x - crane stance)
+   * .withFootWidth(0.0, 46)  // 0m - single leg
+   * ```
+   */
+  withFootWidth(
+    stanceWidthMultiplier: number,
+    shoulderWidth: number
+  ): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf && lastKf.bonePositions) {
+      // Calculate symmetric foot positions
+      const totalWidth = (shoulderWidth * stanceWidthMultiplier) / 100;
+      const halfWidth = totalWidth / 2;
+      
+      // Create new map with existing positions plus foot positions
+      const newPositions = new Map<BoneName, THREE.Vector3>();
+      lastKf.bonePositions.forEach((pos, bone) => {
+        newPositions.set(bone as BoneName, pos);
+      });
+      newPositions.set(BoneName.FOOT_L, new THREE.Vector3(-halfWidth, 0, 0));
+      newPositions.set(BoneName.FOOT_R, new THREE.Vector3(halfWidth, 0, 0));
+      
+      // Replace with new map (cast to writable for assignment)
+      (lastKf as {bonePositions: ReadonlyMap<BoneName, THREE.Vector3>}).bonePositions = newPositions as ReadonlyMap<BoneName, THREE.Vector3>;
+    }
+    return this;
+  }
+
+  /**
+   * Apply foot positions to current keyframe during addKeyframe
+   * Inline version for use within keyframe callback
+   * 
+   * @param kf - KeyframeConfig to modify
+   * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
+   * @param shoulderWidth - Fighter's shoulder width in centimeters
+   * @korean 발너비설정
+   */
+  applyFootPositionsDuring(
+    kf: KeyframeConfig,
+    stanceWidthMultiplier: number,
+    shoulderWidth: number
+  ): void {
+    const totalWidth = (shoulderWidth * stanceWidthMultiplier) / 100;
+    const halfWidth = totalWidth / 2;
+    
+    kf.position(BoneName.FOOT_L, -halfWidth, 0, 0);
+    kf.position(BoneName.FOOT_R, halfWidth, 0, 0);
   }
 
   // ═══════════════════════════════════════════════════════════════════════
