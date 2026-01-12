@@ -84,8 +84,8 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  // Content is always mounted/visible (no loading gate)
-  const isMounted = true;
+  // Track Canvas initialization to prevent Html overlay from rendering before Canvas is ready
+  const [canvasReady, setCanvasReady] = useState(false);
 
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -107,9 +107,10 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
   const { width, height } = useWindowSize();
 
-  // Use prop dimensions if provided, otherwise use window size
-  const screenWidth = propWidth ?? width;
-  const screenHeight = propHeight ?? height;
+  // Use prop dimensions if provided, otherwise use window size with defensive fallbacks
+  // Ensure minimum valid dimensions to prevent rendering issues
+  const screenWidth = propWidth ?? (width || 1200);
+  const screenHeight = propHeight ?? (height || 800);
 
   // Memoize colors for performance
   const colors = useMemo(
@@ -323,28 +324,30 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
+          // Signal that Canvas is ready for Html overlay to mount
+          setCanvasReady(true);
         }}
       >
         {/* 3D Background Scene */}
         <BackgroundScene3D theme="intro" />
 
-        {/* HTML Overlay for UI - only render when content is ready */}
-        <Html fullscreen>
-          <div
-            style={{
-              width: "100vw",
-              height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              padding: 0,
-              gap: isMobile ? "8px" : "16px",
-              pointerEvents: "none",
-              opacity: isMounted ? 1 : 0,
-              transition: "opacity 0.2s ease-out",
-            }}
-          >
+        {/* HTML Overlay for UI - only render after Canvas is initialized */}
+        {canvasReady && (
+          <Html fullscreen>
+            <div
+              style={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                padding: 0,
+                gap: isMobile ? "8px" : "16px",
+                pointerEvents: "none",
+                zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
+              }}
+            >
             {/* Main Title */}
             <div
               style={{
@@ -668,6 +671,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             </div>
           </div>
         </Html>
+        )}
       </Canvas>
     </div>
   );

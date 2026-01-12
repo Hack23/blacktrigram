@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import React, { useEffect } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { PlayerArchetype } from "../../../types/common";
@@ -20,9 +21,24 @@ vi.mock("../../../audio/AudioProvider", () => ({
 
 // Mock Three.js Canvas
 vi.mock("@react-three/fiber", () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="three-canvas">{children}</div>
-  ),
+  Canvas: ({
+    children,
+    onCreated,
+  }: {
+    children: React.ReactNode;
+    onCreated?: (state: { gl: { setClearColor: () => void } }) => void;
+  }) => {
+    // Simulate Canvas initialization by calling onCreated in useEffect
+    // Note: useEffect is imported at module level
+    // Empty dependency array ensures onCreated is only called once (matches real Canvas behavior)
+    useEffect(() => {
+      if (onCreated) {
+        onCreated({ gl: { setClearColor: () => {} } });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    return <div data-testid="three-canvas">{children}</div>;
+  },
   useFrame: vi.fn(),
 }));
 
