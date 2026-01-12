@@ -68,8 +68,8 @@ import {
 } from "./PunchAnimations";
 import { STANCE_ANIMATIONS } from "./StanceAnimations";
 import {
-  getAnimationForTechnique,
   getAnimationForTechniqueOrDefault,
+  getAnimationForTechnique as getTechniqueAnimationConfig,
   hasAnimationMapping,
   type AnimationConfig,
 } from "./TechniqueAnimationMapping";
@@ -186,7 +186,7 @@ export function getAnimationByTypeOrDefault(
 }
 
 /**
- * Get animation for a technique by technique ID
+ * Get animation for a technique by technique ID (using AnimationType mapping)
  *
  * Uses the TechniqueAnimationMapping to find the correct animation
  * for any technique in the game.
@@ -199,7 +199,7 @@ export function getAnimationByTypeOrDefault(
 export function getAnimationForTechniqueId(
   techniqueId: string
 ): SkeletalAnimation | undefined {
-  const config = getAnimationForTechnique(techniqueId);
+  const config = getTechniqueAnimationConfig(techniqueId);
   if (!config) return undefined;
   return ANIMATION_REGISTRY.get(config.type);
 }
@@ -236,6 +236,97 @@ export function getAnimationByName(
   name: string
 ): SkeletalAnimation | undefined {
   return ALL_ANIMATIONS.get(name);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TECHNIQUE TO ANIMATION LOOKUP
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Regex fallback patterns for technique-to-animation mapping
+ * Used when technique ID is not found in ALL_ANIMATIONS
+ *
+ * NOTE: Order matters - more specific patterns must come first
+ *
+ * @korean 기술애니메이션폴백매핑
+ */
+const TECHNIQUE_ANIMATION_FALLBACK: ReadonlyArray<readonly [RegExp, string]> = [
+  // Kicks (차기) - more specific patterns first
+  [/axe.?kick|내려차기|naeryeo/i, "axe_kick"],
+  [/back.?kick|뒤차기|dwi.?chagi/i, "back_kick"],
+  [/tornado|회오리|hoe.?ori/i, "tornado_kick"],
+  [/jump|뛰어|ttwi|flying/i, "jumping_kick"],
+  [/sweep|쓸기|걸기|품밟기|dari.?geolgi/i, "sweep"],
+  [/side.?kick|옆차기|yeop.?chagi/i, "side_kick"],
+  [/low.?kick|하단차기|낮은차기|thigh.?kick|leg.?kick/i, "low_kick"],
+  [/front.?kick|앞차기|snap.?kick|ap.?chagi/i, "front_kick"],
+  [/roundhouse|돌려차기|dolryeo/i, "roundhouse_kick"],
+  // Knee strikes (무릎)
+  [/knee|무릎|mureup/i, "knee_strike"],
+  // Elbow strikes (팔꿈치)
+  [/elbow|팔꿈치|팔굽|palkkumchi/i, "elbow_strike"],
+  // Throws & Slams (던지기/내던지기)
+  [/slam|내던지기|smash/i, "slam"],
+  [/throw|던지기|deonjigi|ground.?pound/i, "throw"],
+  // Grapple/Lock (꺾기/잡기) - specific locks first
+  [/arm.?bar|팔꺾기|팔관절기|juji.?gatame/i, "arm_bar"],
+  [/wrist.?lock|손목꺾기|손목관절기|kote.?gaeshi/i, "wrist_lock"],
+  [/lock|grapple|꺾기|잡기|embrace|kkeokgi|japgi|submission/i, "grapple"],
+  // Counter attacks (반격)
+  [/counter.?strike|반격타격|카운터스트라이크/i, "counter_strike"],
+  [/counter|반격|bangyeok|parry|redirect/i, "counter_attack"],
+  // Blocks (막기)
+  [/block|막기|makgi|defense|방어/i, "block"],
+  // Punches (주먹) - check after specific patterns
+  [/hook|후크|횡타|갈고리/i, "hook"],
+  [/palm|장권|jang.?gwon/i, "palm_strike"],
+  [/cross|십자|교차/i, "cross"],
+  [/uppercut|upper|올려|치올/i, "uppercut"],
+  [/jab|잽|직권|찌르기|punch|주먹|권/i, "jab"],
+  // Generic strikes last
+  [/strike|타격|격|chigi/i, "jab"],
+] as const;
+
+/**
+ * Get animation name for a technique
+ *
+ * PRIORITY ORDER:
+ * 1. Direct lookup in ALL_ANIMATIONS by technique ID (stance-specific)
+ * 2. Regex pattern matching for generic techniques
+ * 3. Fallback to "jab"
+ *
+ * This ensures stance-specific animations like "geon_heaven_strike"
+ * are used when available, while still supporting generic technique names.
+ *
+ * @param techniqueNameOrId - Technique name, ID, or Korean name
+ * @returns Animation name from ALL_ANIMATIONS
+ *
+ * @example
+ * ```typescript
+ * getAnimationForTechnique("geon_heaven_strike") // "geon_heaven_strike" (exact match)
+ * getAnimationForTechnique("tae_wrist_lock") // "tae_wrist_lock" (exact match)
+ * getAnimationForTechnique("roundhouse_kick") // "roundhouse_kick" (regex match)
+ * getAnimationForTechnique("앞차기") // "front_kick" (regex match)
+ * ```
+ *
+ * @korean 기술에맞는애니메이션가져오기
+ */
+export function getAnimationForTechnique(techniqueNameOrId: string): string {
+  // 1. First check if technique ID exists directly in ALL_ANIMATIONS
+  //    This handles stance-specific animations like "geon_heaven_strike"
+  if (ALL_ANIMATIONS.has(techniqueNameOrId)) {
+    return techniqueNameOrId;
+  }
+
+  // 2. Try regex pattern matching for generic technique names
+  for (const [pattern, animationName] of TECHNIQUE_ANIMATION_FALLBACK) {
+    if (pattern.test(techniqueNameOrId)) {
+      return animationName;
+    }
+  }
+
+  // 3. Ultimate fallback to jab
+  return "jab";
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -288,5 +379,5 @@ export {
 
 // Re-export animation types and mapping
 export { AnimationType } from "./MartialArtsAnimationBuilder";
-export { getAnimationForTechnique, hasAnimationMapping };
+export { hasAnimationMapping };
 export type { AnimationConfig };

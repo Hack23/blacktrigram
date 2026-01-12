@@ -7,6 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 import { BoneName } from "../../types/skeletal";
+import { getAnimationForTechnique } from "./AnimationRegistry";
 import {
   ATTACK_ANIMATIONS,
   BACKWARD_RETREAT_ANIMATION,
@@ -15,7 +16,6 @@ import {
   FORWARD_DASH_ANIMATION,
   FRONT_KICK_ANIMATION,
   getAnimation,
-  getAnimationForTechnique,
   IDLE_STANCE_ANIMATION,
   JAB_ANIMATION,
   ROUNDHOUSE_KICK_ANIMATION,
@@ -382,6 +382,72 @@ describe("AttackAnimations", () => {
       // Palm strike
       expect(getAnimationForTechnique("palm_strike")).toBe("palm_strike");
       expect(getAnimationForTechnique("장권")).toBe("palm_strike");
+    });
+
+    it("should return stance-specific animations by exact ID", () => {
+      // Geon (Heaven) stance animations
+      expect(getAnimationForTechnique("geon_heaven_strike")).toBe(
+        "geon_heaven_strike"
+      );
+      expect(getAnimationForTechnique("geon_heavenly_fist")).toBe(
+        "geon_heavenly_fist"
+      );
+      expect(getAnimationForTechnique("geon_frontal_kick")).toBe(
+        "geon_frontal_kick"
+      );
+
+      // Tae (Lake) stance animations
+      expect(getAnimationForTechnique("tae_wrist_lock")).toBe("tae_wrist_lock");
+      expect(getAnimationForTechnique("tae_flowing_strikes")).toBe(
+        "tae_flowing_strikes"
+      );
+
+      // Li (Fire) stance animations
+      expect(getAnimationForTechnique("li_flame_spear")).toBe("li_flame_spear");
+      expect(getAnimationForTechnique("li_nerve_strike")).toBe(
+        "li_nerve_strike"
+      );
+
+      // Jin (Thunder) stance animations
+      expect(getAnimationForTechnique("jin_lightning_flash")).toBe(
+        "jin_lightning_flash"
+      );
+      expect(getAnimationForTechnique("jin_tornado_kick")).toBe(
+        "jin_tornado_kick"
+      );
+
+      // Son (Wind) stance animations
+      expect(getAnimationForTechnique("son_whirlwind_barrage")).toBe(
+        "son_whirlwind_barrage"
+      );
+
+      // Gam (Water) stance animations
+      expect(getAnimationForTechnique("gam_water_counter")).toBe(
+        "gam_water_counter"
+      );
+
+      // Gan (Mountain) stance animations
+      expect(getAnimationForTechnique("gan_rock_defense")).toBe(
+        "gan_rock_defense"
+      );
+
+      // Gon (Earth) stance animations
+      expect(getAnimationForTechnique("gon_earth_embrace")).toBe(
+        "gon_earth_embrace"
+      );
+      expect(getAnimationForTechnique("gon_leg_sweep")).toBe("gon_leg_sweep");
+    });
+
+    it("should return stance idle animations by exact ID", () => {
+      // All 8 stance idle animations
+      expect(getAnimationForTechnique("stance_geon")).toBe("stance_geon");
+      expect(getAnimationForTechnique("stance_tae")).toBe("stance_tae");
+      expect(getAnimationForTechnique("stance_li")).toBe("stance_li");
+      expect(getAnimationForTechnique("stance_jin")).toBe("stance_jin");
+      expect(getAnimationForTechnique("stance_son")).toBe("stance_son");
+      expect(getAnimationForTechnique("stance_gam")).toBe("stance_gam");
+      expect(getAnimationForTechnique("stance_gan")).toBe("stance_gan");
+      expect(getAnimationForTechnique("stance_gon")).toBe("stance_gon");
     });
   });
 
