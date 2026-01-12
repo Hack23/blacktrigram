@@ -82,9 +82,9 @@ export interface AIDecision {
  * Vulnerability assessment context for exploitation tactics
  * 
  * Comprehensive analysis of opponent's defenseless states:
- * - **isHelpless**: Balance = 0 (90% takedown priority)
- * - **isVulnerable**: Balance < 30 (70% aggressive attack priority)
- * - **isShaken**: Balance < 50 (50% pressure tactics priority)
+ * - **isHelpless**: Balance === HELPLESS (90% takedown priority)
+ * - **isVulnerable**: Balance === VULNERABLE or HELPLESS (70% aggressive attack priority)
+ * - **isShaken**: Balance === SHAKEN, VULNERABLE, or HELPLESS (50% pressure tactics priority)
  * - **hasLowStamina**: Stamina < 20% (60% exploitation priority)
  * - **hasNoKi**: Ki < 10% (50% technique spam priority)
  * - **overallVulnerability**: Composite vulnerability score (0.0-1.0)
@@ -92,9 +92,9 @@ export interface AIDecision {
  * @korean 취약성 평가 컨텍스트
  */
 export interface VulnerabilityContext {
-  readonly isHelpless: boolean; // balance = 0
-  readonly isVulnerable: boolean; // balance < 30
-  readonly isShaken: boolean; // balance < 50
+  readonly isHelpless: boolean; // balance === HELPLESS
+  readonly isVulnerable: boolean; // balance === VULNERABLE or HELPLESS
+  readonly isShaken: boolean; // balance === SHAKEN, VULNERABLE, or HELPLESS
   readonly hasLowStamina: boolean; // stamina < 20%
   readonly hasNoKi: boolean; // ki < 10%
   readonly overallVulnerability: number; // 0.0-1.0 composite score
@@ -425,9 +425,9 @@ export class AIDecisionTree {
    * Apply Intelligence Operative (Jeongbo Yowon) vulnerability exploitation
    * 
    * Enhances decision weights to exploit opponent's defenseless states with precision:
-   * - **HELPLESS (balance = 0)**: 90% takedown priority - Execute precision takedown
-   * - **VULNERABLE (balance < 30)**: 70% aggressive attack - Sustained pressure tactics
-   * - **SHAKEN (balance < 50)**: 50% pressure increase - Psychological warfare
+   * - **HELPLESS (balance === HELPLESS)**: 90% takedown priority - Execute precision takedown
+   * - **VULNERABLE (balance === VULNERABLE)**: 70% aggressive attack - Sustained pressure tactics
+   * - **SHAKEN (balance === SHAKEN)**: 50% pressure increase - Psychological warfare
    * - **Low Stamina (< 20%)**: 60% exploitation - Force defensive positions
    * - **No Ki (< 10%)**: 50% technique spam - Prevent powerful techniques
    * 
@@ -466,7 +466,6 @@ export class AIDecisionTree {
       // Psychological pressure ≥ 50 + Opponent VULNERABLE = Decisive Strike
       modified.technique *= 3.0; // Execute decisive psychological technique
       modified.attack *= 0.3; // Reduce basic attacks
-      console.log(`[AI] Jeongbo: Psychological pressure at ${this.psychologicalPressure.toFixed(0)} - decisive strike (심리적 압박 결정타)`);
       return modified; // Override other modifiers for pressure strike
     }
     
@@ -476,7 +475,6 @@ export class AIDecisionTree {
       modified.attack *= 0.2; // Reduce basic attacks
       modified.defend *= 0.1; // Minimal defense needed
       modified.feint *= 0.1; // No feinting during execution
-      console.log("[AI] Jeongbo: Opponent HELPLESS - executing Precision Takedown (정밀제압)");
     }
     // VULNERABLE: Aggressive pressure (70% priority)
     else if (vulnerability.isVulnerable) {
@@ -484,28 +482,24 @@ export class AIDecisionTree {
       modified.technique *= 1.8; // Tactical Strike priority
       modified.feint *= 0.5; // Less feinting, more action
       modified.defend *= 0.5; // Reduced defense (maintain offensive)
-      console.log("[AI] Jeongbo: Opponent VULNERABLE - aggressive pressure tactics (공격 압박)");
     }
     // SHAKEN: Psychological warfare (50% priority)
     else if (vulnerability.isShaken) {
       modified.feint *= 2.0; // Increase psychological pressure
       modified.circle *= 1.5; // Intimidation tactics (circling)
       modified.technique *= 1.3; // "Psychological Warfare" technique
-      console.log(`[AI] Jeongbo: Opponent SHAKEN - psychological warfare (심리전) [pressure: ${this.psychologicalPressure.toFixed(0)}]`);
     }
     
     // Low stamina: Relentless pressure (60% priority)
     if (vulnerability.hasLowStamina) {
       modified.attack *= 1.5; // Force stamina drain
       modified.approach *= 1.3; // Close distance to pressure
-      console.log("[AI] Jeongbo: Opponent low stamina - relentless pressure (지속 압박)");
     }
     
     // No ki: Technique spam (50% priority)
     if (vulnerability.hasNoKi) {
       modified.technique *= 1.4; // Opponent can't use powerful techniques
       modified.attack *= 1.3; // Maintain offensive
-      console.log("[AI] Jeongbo: Opponent no ki - technique spam (기술 남발)");
     }
     
     return modified;
