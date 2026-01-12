@@ -140,7 +140,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
   // Grid layout calculations
   const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
-  const buttonHeight = isMobile ? 120 : isTablet ? 130 : isLargeDesktop ? 100 : 140;
+  const buttonHeight = isMobile ? 120 : isTablet ? 130 : isLargeDesktop ? 120 : 140;
 
   return (
     <div

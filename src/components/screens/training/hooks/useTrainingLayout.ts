@@ -33,13 +33,13 @@
 import { useMemo } from "react";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
+import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
 export interface TrainingLayoutConstants {
   readonly padding: number;
   readonly headerHeight: number;
-  readonly contentAreaHeight: number;
   readonly buttonHeight: number;
   readonly sectionSpacing: number;
   readonly controlsHeight: number;
@@ -84,7 +84,6 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
     return {
       padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 35 : 30,
       headerHeight: isMobile ? 80 : isTablet ? 90 : isLargeDesktop ? 110 : 100,
-      contentAreaHeight: height - (isMobile ? 200 : isTablet ? 220 : isLargeDesktop ? 260 : 240),
       buttonHeight: isMobile ? 45 : isTablet ? 50 : isLargeDesktop ? 60 : 55,
       sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 25 : 20,
       controlsHeight: isMobile ? 120 : isTablet ? 110 : isLargeDesktop ? 150 : 130,
@@ -99,57 +98,14 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
-      // Reserve space for header and controls
-      const minTopClearance = 80;
-      const minBottomClearance = 120;
-      const availableHeight = height - minTopClearance - minBottomClearance;
-      const availableWidth = width - 40; // 20px margins on each side
-
-      // Calculate optimal training area size maintaining 4:3 aspect ratio (width:height)
-      // Target sizing based on device resolution
-      let maxMobileWidth: number;
-      if (width >= 1440) {
-        // 4K/QHD+ Android devices
-        maxMobileWidth = Math.min(availableWidth, 800);
-      } else if (width >= 1200) {
-        // 2K Android devices
-        maxMobileWidth = Math.min(availableWidth, 600);
-      } else if (width >= 768) {
-        // Large phones
-        maxMobileWidth = Math.min(availableWidth, 500);
-      } else {
-        // Standard phones
-        maxMobileWidth = Math.min(availableWidth, 400);
-      }
-      
-      const maxMobileHeight = Math.min(availableHeight, 800);
-
-      // Maintain 4:3 aspect ratio (width:height = 4:3)
-      const aspectRatio = 4 / 3;
-      let areaWidth = maxMobileWidth;
-      let areaHeight = areaWidth / aspectRatio;
-
-      // If height exceeds available, recalculate based on height constraint
-      if (areaHeight > maxMobileHeight) {
-        areaHeight = maxMobileHeight;
-        areaWidth = areaHeight * aspectRatio;
-      }
-
-      // Ensure minimum size for usability
-      areaWidth = Math.min(Math.max(areaWidth, 300), availableWidth);
-      areaHeight = Math.min(Math.max(areaHeight, 225), maxMobileHeight);
-
-      // Calculate 3D scale factor (mobile area is smaller than desktop)
-      const desktopWidth = 960; // 80% of 1200px
-      const scale = areaWidth / desktopWidth;
-
-      return {
-        x: (width - areaWidth) / 2, // Centered horizontally
-        y: areaY,
-        width: areaWidth,
-        height: areaHeight,
-        scale,
-      };
+      // Use shared mobile area calculation for consistency with combat screen
+      return calculateMobileAreaBounds(
+        width,
+        height,
+        80,  // minTopClearance (header space)
+        120, // minBottomClearance (controls space)
+        areaY
+      );
     }
 
     // Desktop training area sizing - use full available space

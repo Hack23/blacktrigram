@@ -34,6 +34,7 @@ import { useMemo } from "react";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
+import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -95,62 +96,14 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
-      // Reserve space for HUD (80px min) and controls (120px min)
-      const minTopClearance = 80;
-      const minBottomClearance = 120;
-      const availableHeight = height - minTopClearance - minBottomClearance;
-      const availableWidth = width - 40; // 20px margins on each side
-
-      // Calculate optimal arena size maintaining 4:3 aspect ratio (width:height)
-      // Target sizing based on device resolution:
-      // - Standard mobile (375-430px): 350x262px to 400x300px
-      // - High-res mobile (1200px+): Up to 600x450px (2K Android)
-      // - Ultra high-res (1440px+): Up to 800x600px (4K Android)
-      
-      // Determine max width based on screen width for high-end devices
-      let maxMobileWidth: number;
-      if (width >= 1440) {
-        // 4K/QHD+ Android devices (e.g., Galaxy S23 Ultra, Pixel 9 Pro)
-        maxMobileWidth = Math.min(availableWidth, 800);
-      } else if (width >= 1200) {
-        // 2K Android devices
-        maxMobileWidth = Math.min(availableWidth, 600);
-      } else if (width >= 768) {
-        // Large phones (e.g., iPhone 14 Pro Max)
-        maxMobileWidth = Math.min(availableWidth, 500);
-      } else {
-        // Standard phones (e.g., iPhone SE, standard Android)
-        maxMobileWidth = Math.min(availableWidth, 400);
-      }
-      
-      const maxMobileHeight = Math.min(availableHeight, 800);
-
-      // Maintain 4:3 aspect ratio (width:height = 4:3)
-      const aspectRatio = 4 / 3;
-      let arenaWidth = maxMobileWidth;
-      let arenaHeight = arenaWidth / aspectRatio; // height = width / (4/3) = width * (3/4)
-
-      // If height exceeds available, recalculate based on height constraint
-      if (arenaHeight > maxMobileHeight) {
-        arenaHeight = maxMobileHeight;
-        arenaWidth = arenaHeight * aspectRatio; // width = height * (4/3)
-      }
-
-      // Ensure minimum size for playability without exceeding available space
-      arenaWidth = Math.min(Math.max(arenaWidth, 300), availableWidth);
-      arenaHeight = Math.min(Math.max(arenaHeight, 225), maxMobileHeight); // 300 * 3/4 = 225
-
-      // Calculate 3D scale factor (mobile arena is smaller than desktop)
-      const desktopWidth = 960; // 80% of 1200px
-      const scale = arenaWidth / desktopWidth;
-
-      return {
-        x: (width - arenaWidth) / 2, // Centered horizontally
-        y: arenaY,
-        width: arenaWidth,
-        height: arenaHeight,
-        scale,
-      };
+      // Use shared mobile area calculation for consistency with training screen
+      return calculateMobileAreaBounds(
+        width,
+        height,
+        80,  // minTopClearance (HUD space)
+        120, // minBottomClearance (controls space)
+        arenaY
+      );
     }
 
     // Desktop arena sizing - use full available space
