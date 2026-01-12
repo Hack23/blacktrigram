@@ -204,7 +204,11 @@ function convertTechniqueToKorean(technique: Technique, stance: TrigramStance): 
     kiCost: technique.kiCost,
     staminaCost: technique.staminaCost,
     accuracy: 0.85, // Default accuracy
-    range: 1.0,
+    reachConfig: {
+      bodyPart: "arm" as const,
+      techniqueType: "punch" as const,
+      baseExtension: 0.90,
+    },
     executionTime: technique.animationDuration ?? 400,
     recoveryTime: 300,
     critChance: technique.criticalChance ?? 0.1,
@@ -670,7 +674,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           kiCost: 5,
           staminaCost: 8,
           accuracy: 0.8,
-          range: 1.2,
+          reachConfig: {
+            bodyPart: "arm" as const,
+            techniqueType: "punch" as const,
+            baseExtension: 0.95,
+          },
           executionTime: 400,
           recoveryTime: 300,
           critChance: 0.1,
@@ -696,7 +704,11 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
           kiCost: 10,
           staminaCost: 15,
           accuracy: 0.85,
-          range: 1.5,
+          reachConfig: {
+            bodyPart: "leg" as const,
+            techniqueType: "kick" as const,
+            baseExtension: 1.10,
+          },
           executionTime: 600,
           recoveryTime: 800,
           critChance: 0.15,

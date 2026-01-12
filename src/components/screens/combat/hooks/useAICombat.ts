@@ -65,6 +65,8 @@ import {
   KOREAN_VITAL_POINTS,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { getBalanceState } from "@/utils/player3DHelpers";
+import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttributes";
+import { physicalReachCalculator } from "@/systems/physics";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -78,7 +80,6 @@ const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 se
  * 
  * @korean 기술 범위 상수
  */
-const CELL_SIZE = 40; // Size of one grid cell in pixels
 
 /**
  * Get viable techniques based on distance, stance, and stamina
@@ -116,13 +117,38 @@ function getViableTechniques(
 
   // Filter techniques that are viable for current situation
   const viableTechniques = stanceTechniques.filter((tech) => {
-    // Calculate technique effective range
-    // tech.range is in cell units (e.g., 1.0 = 1 cell = 40px, 2.0 = 2 cells = 80px)
-    const minRange = 0; // All techniques can be used at close range
-    const maxRange = tech.range * CELL_SIZE; // Convert cell units to pixels
+    // Calculate technique effective range using PhysicalReachCalculator
+    // Get AI player's physical attributes
+    const physicalAttributes = getArchetypePhysicalAttributes(archetype);
+    
+    // Calculate maximum reach for this technique
+    // Use default animationType if not specified
+    const animType = tech.animationType;
+    if (!animType) {
+      // Fallback: use reachConfig to estimate
+      // Convert baseExtension to approximate meters
+      const limbLength = tech.reachConfig.bodyPart === 'leg' 
+        ? physicalAttributes.legLength 
+        : physicalAttributes.armLength;
+      const maxReachMeters = (limbLength / 100) * tech.reachConfig.baseExtension * 1.1; // Add 10% for stance
+      const maxRange = maxReachMeters * 100; // Convert meters to cm, roughly to pixels
+      const inRange = distance <= maxRange;
+      const hasStamina = stamina >= tech.staminaCost;
+      return inRange && hasStamina;
+    }
+    
+    // Use PhysicalReachCalculator for precise calculation
+    const maxReach = physicalReachCalculator.calculateMaxReach(
+      physicalAttributes,
+      animType,
+      stance
+    );
+    
+    // Convert meters to pixels (approximate: 1m ≈ 100px in combat screen)
+    const maxRange = maxReach * 100;
 
     // Check if opponent is within technique range
-    const inRange = distance >= minRange && distance <= maxRange;
+    const inRange = distance <= maxRange;
 
     // Check if player has sufficient stamina
     const hasStamina = stamina >= tech.staminaCost;

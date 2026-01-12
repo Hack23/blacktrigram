@@ -18,6 +18,7 @@ import { AnimationType } from "../animation/MartialArtsAnimationBuilder";
 import { EffectIntensity } from "../effects";
 import { PlayerState } from "../player";
 import { StatusEffect } from "../types";
+import type { PhysicalReachConfig } from "../../types/physics";
 
 /**
  * Korean Technique - Core martial arts technique definition
@@ -62,7 +63,19 @@ export interface KoreanTechnique {
   kiCost: number;
   staminaCost: number;
   accuracy: number;
-  range: number;
+  
+  /**
+   * Physical reach configuration using body parts and attributes.
+   * Replaces simple range value with complex calculation based on:
+   * - Body part length (arm/leg from archetype physical attributes)
+   * - Animation extension multiplier (from hit timing)
+   * - Stance modifiers (Eight Trigrams bonuses)
+   * 
+   * **Korean**: 물리적 도달 설정
+   * @korean 물리적도달설정
+   */
+  reachConfig: PhysicalReachConfig;
+  
   executionTime: number;
   recoveryTime: number;
   critChance: number;
