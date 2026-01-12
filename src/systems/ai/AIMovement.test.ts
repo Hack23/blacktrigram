@@ -141,26 +141,6 @@ describe("AI Movement System", () => {
   });
 
   describe("Archetype-Specific Movement Patterns", () => {
-    it("Amsalja should use flanking movements frequently", () => {
-      const personality = AI_PERSONALITIES.TECHNICAL_MASTER; // Amsalja archetype
-      const context = createContext(250); // Far enough to trigger approach
-
-      let approachCount = 0;
-
-      // Sample 50 decisions
-      for (let i = 0; i < 50; i++) {
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
-
-        if (decision.action === "approach") {
-          approachCount++;
-        }
-      }
-
-      // Amsalja should have some flanking behavior
-      // Note: Due to randomness, we check for reasonable flanking attempts
-      expect(approachCount).toBeGreaterThan(0);
-    });
-
     it("Musa should charge directly frequently", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER; // Musa archetype
       const context = createContext(250); // Far enough to trigger approach

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { PlayerArchetype, TrigramStance } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
-import { TrigramSystem } from "./TrigramSystem";
+import { TrigramSystem, applyCounterStanceDamage, COUNTER_STANCE_DAMAGE_MULTIPLIER } from "./TrigramSystem";
 import { PlayerState } from "./player";
 
 describe("TrigramSystem", () => {
@@ -194,6 +194,116 @@ describe("TrigramSystem", () => {
 
     it("should return false for TAE (Lake)", () => {
       expect(system.isOffensiveStance(TrigramStance.TAE)).toBe(false);
+    });
+  });
+
+  describe("Counter Stance System", () => {
+    describe("getCounterStance", () => {
+      it("should return GAM (Water) as counter to GEON (Heaven)", () => {
+        expect(system.getCounterStance(TrigramStance.GEON)).toBe(TrigramStance.GAM);
+      });
+
+      it("should return GAN (Mountain) as counter to JIN (Thunder)", () => {
+        expect(system.getCounterStance(TrigramStance.JIN)).toBe(TrigramStance.GAN);
+      });
+
+      it("should return SON (Wind) as counter to LI (Fire)", () => {
+        expect(system.getCounterStance(TrigramStance.LI)).toBe(TrigramStance.SON);
+      });
+
+      it("should return counter stances for all 8 trigram stances", () => {
+        const stances = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
+
+        stances.forEach(stance => {
+          const counter = system.getCounterStance(stance);
+          expect(counter).toBeDefined();
+          expect(stances).toContain(counter);
+        });
+      });
+    });
+
+    describe("isCounterStance", () => {
+      it("should return true when stance counters opponent's stance", () => {
+        // GAM (Water) counters GEON (Heaven)
+        expect(system.isCounterStance(TrigramStance.GAM, TrigramStance.GEON)).toBe(true);
+      });
+
+      it("should return false when stance does not counter opponent's stance", () => {
+        // GEON (Heaven) does not counter itself
+        expect(system.isCounterStance(TrigramStance.GEON, TrigramStance.GEON)).toBe(false);
+      });
+
+      it("should return false when using non-counter stance", () => {
+        // TAE (Lake) does not counter GEON (Heaven)
+        expect(system.isCounterStance(TrigramStance.TAE, TrigramStance.GEON)).toBe(false);
+      });
+
+      it("should correctly identify all counter relationships", () => {
+        const counterPairs: Array<[TrigramStance, TrigramStance]> = [
+          [TrigramStance.GAM, TrigramStance.GEON], // Water counters Heaven
+          [TrigramStance.GON, TrigramStance.TAE],  // Earth counters Lake
+          [TrigramStance.SON, TrigramStance.LI],   // Wind counters Fire
+          [TrigramStance.GAN, TrigramStance.JIN],  // Mountain counters Thunder
+          [TrigramStance.GEON, TrigramStance.SON], // Heaven counters Wind
+          [TrigramStance.TAE, TrigramStance.GAM],  // Lake counters Water
+          [TrigramStance.LI, TrigramStance.GAN],   // Fire counters Mountain
+          [TrigramStance.JIN, TrigramStance.GON],  // Thunder counters Earth
+        ];
+
+        counterPairs.forEach(([counterStance, targetStance]) => {
+          expect(system.isCounterStance(counterStance, targetStance)).toBe(true);
+        });
+      });
+    });
+  });
+
+  describe("applyCounterStanceDamage", () => {
+    it("should apply 1.2x multiplier when isCounterStance is true", () => {
+      const baseDamage = 100;
+      const result = applyCounterStanceDamage(baseDamage, true);
+      expect(result).toBe(baseDamage * COUNTER_STANCE_DAMAGE_MULTIPLIER);
+      expect(result).toBe(120);
+    });
+
+    it("should return base damage when isCounterStance is false", () => {
+      const baseDamage = 100;
+      const result = applyCounterStanceDamage(baseDamage, false);
+      expect(result).toBe(baseDamage);
+    });
+
+    it("should return base damage unchanged for zero damage", () => {
+      const result = applyCounterStanceDamage(0, true);
+      expect(result).toBe(0);
+    });
+
+    it("should return base damage unchanged for negative damage", () => {
+      const result = applyCounterStanceDamage(-50, true);
+      expect(result).toBe(-50);
+    });
+
+    it("should work with fractional damage values", () => {
+      const baseDamage = 75.5;
+      const result = applyCounterStanceDamage(baseDamage, true);
+      expect(result).toBeCloseTo(baseDamage * COUNTER_STANCE_DAMAGE_MULTIPLIER);
+      expect(result).toBeCloseTo(90.6);
+    });
+
+    it("should integrate with isCounterStance check", () => {
+      const baseDamage = 100;
+      const isCounter = system.isCounterStance(TrigramStance.GAM, TrigramStance.GEON);
+      const finalDamage = applyCounterStanceDamage(baseDamage, isCounter);
+      
+      expect(isCounter).toBe(true);
+      expect(finalDamage).toBe(120);
     });
   });
 });

@@ -21,6 +21,35 @@ import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
+ * Game grid cell size in pixels for distance calculations
+ * 
+ * @korean 게임 그리드 셀 크기 (픽셀)
+ */
+const CELL_SIZE = 40;
+
+/**
+ * Distance-based stance preferences for tactical positioning
+ * 
+ * Stances are categorized by optimal combat range:
+ * - **CLOSE (1-2 cells)**: Aggressive stances for close quarters (GEON, JIN, LI, SON)
+ * - **MID (3-4 cells)**: Adaptive stances for mid-range (GAM, TAE, GAN)
+ * - **FAR (5+ cells)**: Defensive stances for distance (GAN, GON)
+ * 
+ * **Note**: GAN (Mountain) intentionally appears in both MID and FAR ranges.
+ * It represents a highly stable defensive posture that can be held while
+ * maintaining mid-range pressure or retreating to long distance. This
+ * overlap slightly increases GAN's selection frequency by design, reflecting
+ * the Mountain's versatility in Korean martial arts philosophy.
+ * 
+ * @korean 거리별 자세 선호도
+ */
+const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
+  CLOSE: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.LI, TrigramStance.SON], // 1-2 cells
+  MID: [TrigramStance.GAM, TrigramStance.TAE, TrigramStance.GAN], // 3-4 cells
+  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells (GAN shared with MID as versatile defensive stance)
+};
+
+/**
  * AI action types
  */
 export enum AIActionType {
@@ -69,6 +98,9 @@ export interface CombatContext {
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
   readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
+  readonly stanceFatigue?: {
+    readonly timeInStance: number; // Milliseconds in current stance
+  };
   readonly arenaBounds: {
     readonly x: number;
     readonly y: number;
@@ -105,6 +137,15 @@ export class AIDecisionTree {
   // Movement constants
   private static readonly MOVE_STEP_SIZE = 50; // Fixed movement step size in pixels
   private static readonly MIN_DISTANCE_THRESHOLD = 5; // Minimum distance to avoid division by zero
+  
+  /**
+   * Scaling factor for fatigue override probability calculation.
+   * Used to convert fatigue modifier to override chance in non-linear manner.
+   * Value of 0.5 provides gradual scaling: 1.2x fatigue → ~10% override, 1.5x → ~25%.
+   * 
+   * @korean 피로도 우선순위 무시 배율
+   */
+  private static readonly FATIGUE_OVERRIDE_SCALING_FACTOR = 0.5;
   
   /**
    * Arena boundary margins - exported for test validation
@@ -654,12 +695,70 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate stance change using TrigramSystem
+   * Select stance based on distance to opponent
+   * 
+   * Chooses optimal stance for current combat range, prioritizing:
+   * 1. Overlap between distance-optimal stances and archetype preferred stances
+   * 2. Any distance-optimal stance if no overlap exists (expands tactical repertoire)
+   * 3. Avoids switching to current stance
+   * 
+   * **Distance Categories**:
+   * - CLOSE (≤2 cells / 80px): GEON, JIN, LI, SON - Aggressive close-quarters stances
+   * - MID (3-4 cells / 120-160px): GAM, TAE, GAN - Adaptive mid-range stances
+   * - FAR (≥5 cells / 200px+): GAN, GON - Defensive distance stances
+   * 
+   * @korean 거리별 자세 선택
+   * 
+   * @param distance - Distance to opponent in pixels
+   * @param preferredStances - Archetype's preferred stances
+   * @param currentStance - Current stance (to avoid redundant switches)
+   * @returns Optimal stance for distance, or undefined if no valid options
+   */
+  private selectStanceForDistance(
+    distance: number,
+    preferredStances: readonly TrigramStance[],
+    currentStance: TrigramStance
+  ): TrigramStance | undefined {
+    // Determine distance category using module-level CELL_SIZE constant
+    let distanceCategory: string;
+    if (distance <= 2 * CELL_SIZE) {
+      distanceCategory = "CLOSE";
+    } else if (distance <= 4 * CELL_SIZE) {
+      distanceCategory = "MID";
+    } else {
+      distanceCategory = "FAR";
+    }
+    
+    const optimalStances = DISTANCE_BASED_STANCES[distanceCategory];
+    
+    // Find overlap between optimal stances and preferred stances
+    const candidates = optimalStances.filter(s => preferredStances.includes(s));
+    
+    // If no overlap, use any optimal stance (expand tactical repertoire)
+    const finalCandidates = candidates.length > 0 ? candidates : optimalStances;
+    
+    // Don't switch to current stance
+    const filtered = finalCandidates.filter(s => s !== currentStance);
+    
+    if (filtered.length === 0) {
+      return undefined;
+    }
+    
+    return filtered[Math.floor(Math.random() * filtered.length)];
+  }
+
+  /**
+   * Evaluate stance change using TrigramSystem and distance-based selection
    *
    * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
-   * Considers resource costs, counter-stance effectiveness, and archetype preferences.
-   * Each archetype has favored stances that they switch to more frequently.
+   * Considers resource costs, counter-stance effectiveness, archetype preferences,
+   * and distance-based tactical positioning.
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Integrates distance-based stance selection for tactical variety
+   * - Prioritizes counter-stances for opponent matchup advantage
+   * - Expands tactical repertoire beyond archetype preferences when needed
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -675,31 +774,54 @@ export class AIDecisionTree {
       };
     }
 
-    const shouldChange = Math.random() < personality.stanceSwitchFrequency;
+    const behavior = getArchetypeBehavior(personality.archetype);
+    
+    // Apply stance fatigue modifier (Issue #dynamic-ai-stance-rotation Phase 4)
+    // Increases stance switch probability based on time in current stance:
+    // - After 10 seconds: +20% increase (1.2x multiplier)
+    // - After 20 seconds: +50% increase (1.5x multiplier)
+    const timeInStance = Math.max(0, context.stanceFatigue?.timeInStance ?? 0);
+    const fatigueModifier = this.getStanceFatigueModifier(timeInStance);
+    const adjustedSwitchFrequency = Math.min(0.95, personality.stanceSwitchFrequency * fatigueModifier);
+    
+    // Single random check using fatigue-adjusted frequency to avoid compounding probability
+    const shouldChange = Math.random() < adjustedSwitchFrequency;
     if (!shouldChange) {
       return {
         action: AIActionType.WAIT,
         priority: 0,
-        reason: "No stance change needed",
+        reason: fatigueModifier > 1.0 
+          ? `Stance change deferred (fatigue: ${fatigueModifier.toFixed(2)}x, probability: ${(adjustedSwitchFrequency * 100).toFixed(1)}%)` 
+          : "No stance change needed",
       };
     }
-
-    const behavior = getArchetypeBehavior(personality.archetype);
     
     // Check if already in a preferred stance - if so, reduce change chance (but not completely)
     // This check only applies outside combat to avoid stance lock during active fighting
     const inPreferredStance = behavior.preferredStances.includes(context.playerStance);
     if (inPreferredStance && !context.isOpponentAttacking && Math.random() < 0.6) {
       // 60% chance to stay in preferred stance when not under immediate pressure
-      return {
-        action: AIActionType.WAIT,
-        priority: 0,
-        reason: "Already in preferred stance (선호 자세 유지)",
-      };
+      // However, fatigue can override this (higher fatigue = more likely to switch anyway)
+      // Use non-linear scaling for gradual, predictable override behavior:
+      // - At 1.2x fatigue (10s): ~10% override chance
+      // - At 1.5x fatigue (20s): ~25% override chance
+      // - Caps at 80% to preserve some tactical consideration
+      const fatigueOverrideProbability =
+        fatigueModifier > 1.0
+          ? Math.min(0.8, (fatigueModifier - 1.0) * AIDecisionTree.FATIGUE_OVERRIDE_SCALING_FACTOR)
+          : 0;
+      const fatigueOverride =
+        fatigueModifier > 1.2 && Math.random() < fatigueOverrideProbability;
+      if (!fatigueOverride) {
+        return {
+          action: AIActionType.WAIT,
+          priority: 0,
+          reason: "Already in preferred stance (선호 자세 유지)",
+        };
+      }
     }
 
-    // Use TrigramSystem to recommend optimal stance
-    // Create a minimal PlayerState object with only the properties actually used by recommendStance
+    // Create a minimal PlayerState object with only the properties actually used
     const playerState = {
       currentStance: context.playerStance,
       ki: context.playerKi,
@@ -707,53 +829,82 @@ export class AIDecisionTree {
       archetype: personality.archetype,
     } as unknown as PlayerState;
 
-    const recommendedStance = this.trigramSystem.recommendStance(playerState);
-
-    // Check if we can afford the transition
-    const canTransition = this.trigramSystem.canTransitionTo(
-      context.playerStance,
-      recommendedStance,
-      playerState
+    // Priority 1: Try distance-based stance selection for tactical variety
+    const distanceStance = this.selectStanceForDistance(
+      context.distanceToOpponent,
+      behavior.preferredStances,
+      context.playerStance
     );
+    
+    if (distanceStance && this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      distanceStance,
+      playerState
+    )) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: distanceStance,
+        priority: 7,
+        reason: `Distance-optimal stance (거리 최적 자세: ${distanceStance})`,
+      };
+    }
 
-    if (!canTransition) {
-      // Try archetype-preferred stance or counter-stance
-      const preferredAvailable = behavior.preferredStances.find(
-        (stance) => this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
-      );
-      
-      if (preferredAvailable) {
-        this.lastStanceChange = now;
-        return {
-          action: AIActionType.STANCE_CHANGE,
-          targetStance: preferredAvailable,
-          priority: 6,
-          reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
-        };
-      }
-      
-      // Fallback to counter-stance
-      const counterStance = this.selectCounterStance(
-        context.opponentStance,
-        personality
-      );
-
+    // Priority 2: Try counter-stance for opponent matchup
+    const counterStance = this.trigramSystem.getCounterStance(context.opponentStance);
+    if (counterStance !== context.playerStance && this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      counterStance,
+      playerState
+    )) {
       this.lastStanceChange = now;
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: counterStance,
-        priority: 5,
-        reason: `Counter stance to ${context.opponentStance} (급소 대응)`,
+        priority: 6,
+        reason: `Counter stance to ${context.opponentStance} (상극 대응)`,
       };
     }
 
-    this.lastStanceChange = now;
+    // Priority 3: Use TrigramSystem to recommend optimal stance
+    const recommendedStance = this.trigramSystem.recommendStance(playerState);
+    
+    if (this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      recommendedStance,
+      playerState
+    )) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: recommendedStance,
+        priority: 6,
+        reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
+      };
+    }
 
+    // Priority 4: Try archetype-preferred stance
+    const preferredAvailable = behavior.preferredStances.find(
+      (stance) => 
+        stance !== context.playerStance &&
+        this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
+    );
+    
+    if (preferredAvailable) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: preferredAvailable,
+        priority: 5,
+        reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
+      };
+    }
+
+    // No viable stance change available
     return {
-      action: AIActionType.STANCE_CHANGE,
-      targetStance: recommendedStance,
-      priority: 6,
-      reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
+      action: AIActionType.WAIT,
+      priority: 0,
+      reason: "No viable stance transition",
     };
   }
 
@@ -948,6 +1099,37 @@ export class AIDecisionTree {
       );
       return sortedByDamage[0]?.id ?? effectivePoints[0].id;
     }
+  }
+
+  /**
+   * Calculate stance fatigue modifier for increased switching probability
+   * 
+   * Applies time-based modifiers to encourage dynamic stance rotation:
+   * - 0-10 seconds: No modifier (1.0x)
+   * - 10-20 seconds: +20% increase (1.2x multiplier)
+   * - 20+ seconds: +50% increase (1.5x multiplier)
+   * 
+   * This ensures AI doesn't stay locked in one stance for extended periods,
+   * promoting the use of all 8 trigram stances throughout combat.
+   * 
+   * **Korean Philosophy (자세 피로도)**:
+   * Remaining in one stance too long reduces tactical flexibility and
+   * makes the fighter predictable. The Eight Trigram system requires
+   * constant adaptation and flow between stances.
+   * 
+   * @korean 자세 피로도 배율 계산
+   * 
+   * @param timeInStance - Time in current stance in milliseconds
+   * @returns Stance switch frequency multiplier (1.0 = no change, >1.0 = increased probability)
+   */
+  private getStanceFatigueModifier(timeInStance: number): number {
+    if (timeInStance > 20000) {
+      return 1.5; // 50% increase after 20 seconds
+    }
+    if (timeInStance > 10000) {
+      return 1.2; // 20% increase after 10 seconds
+    }
+    return 1.0; // No modifier for first 10 seconds
   }
 
   /**
@@ -1438,60 +1620,6 @@ export class AIDecisionTree {
       },
       context.arenaBounds
     );
-  }
-
-  /**
-   * Select counter-stance to opponent's stance (fix for issue #2529466994)
-   * Implements actual counter logic based on Korean martial arts philosophy
-   */
-  private selectCounterStance(
-    opponentStance: TrigramStance,
-    personality: AIPersonality
-  ): TrigramStance {
-    // Define counter relationships based on trigram philosophy
-    const stanceCounters: Record<TrigramStance, TrigramStance[]> = {
-      [TrigramStance.GEON]: [TrigramStance.GAM, TrigramStance.GON], // Heaven countered by Water, Earth
-      [TrigramStance.TAE]: [TrigramStance.LI, TrigramStance.GEON], // Lake countered by Fire, Heaven
-      [TrigramStance.LI]: [TrigramStance.GAM, TrigramStance.SON], // Fire countered by Water, Wind
-      [TrigramStance.JIN]: [TrigramStance.GAN, TrigramStance.GON], // Thunder countered by Mountain, Earth
-      [TrigramStance.SON]: [TrigramStance.GAN, TrigramStance.GEON], // Wind countered by Mountain, Heaven
-      [TrigramStance.GAM]: [TrigramStance.GON, TrigramStance.GAN], // Water countered by Earth, Mountain
-      [TrigramStance.GAN]: [TrigramStance.JIN, TrigramStance.TAE], // Mountain countered by Thunder, Lake
-      [TrigramStance.GON]: [TrigramStance.SON, TrigramStance.LI], // Earth countered by Wind, Fire
-    };
-
-    const counters = stanceCounters[opponentStance] ?? [];
-
-    // Try to find a counter that's also in favored stances
-    const favoredCounters = counters.filter((s) =>
-      personality.favoredStances.includes(s)
-    );
-
-    if (favoredCounters.length > 0) {
-      return favoredCounters[
-        Math.floor(Math.random() * favoredCounters.length)
-      ];
-    }
-
-    // Fallback to any counter stance
-    if (counters.length > 0) {
-      return counters[Math.floor(Math.random() * counters.length)];
-    }
-
-    // Last resort: use favored stance
-    if (personality.favoredStances.length > 0) {
-      return personality.favoredStances[
-        Math.floor(Math.random() * personality.favoredStances.length)
-      ];
-    }
-
-    // Ultimate fallback: different stance (issue #2529728009)
-    const allStances = Object.values(TrigramStance);
-    const filtered = allStances.filter((s) => s !== opponentStance);
-    if (filtered.length === 0) {
-      return opponentStance; // Edge case: same stance
-    }
-    return filtered[Math.floor(Math.random() * filtered.length)];
   }
 
   /**
