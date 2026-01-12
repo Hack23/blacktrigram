@@ -25,6 +25,7 @@ import { getMuscleTensionForStance } from "../systems/animation/MuscleActivation
 import { TrigramStance } from "../types/common";
 
 // Get leg muscle tension for Thunder stance (진 천둥)
+// Use enum values (e.g., TrigramStance.JIN) which resolve to lowercase strings ("jin")
 const muscleTension = getMuscleTensionForStance(TrigramStance.JIN);
 
 console.log(muscleTension.get("QUAD_L"));      // 0.69 (69% tension)
@@ -159,6 +160,10 @@ import { useMuscleActivation } from "../hooks/useMuscleActivation";
 import { TrigramStance } from "../types/common";
 
 const MyComponent = () => {
+  // Character rig would come from your character system
+  // e.g., const rig = useCharacterRig() or passed as props
+  const rig = useCharacterRig(); // Your character rig hook/prop
+
   const { muscleStates, updateMuscleActivations } = useMuscleActivation({
     currentAnimation: "idle",
     stamina: 85,

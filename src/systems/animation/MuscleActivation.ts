@@ -79,10 +79,15 @@ export const getMuscleTensionForStance = (
 
   if (!biomech) {
     // This branch should never execute with proper typing, but kept for safety
+    // Provide conservative defaults for all muscle groups to keep map consistent
     activations.set("QUAD_L", 0.2);
     activations.set("QUAD_R", 0.2);
     activations.set("CALF_L", 0.1);
     activations.set("CALF_R", 0.1);
+    activations.set("HAMSTRING_L", 0.1);
+    activations.set("HAMSTRING_R", 0.1);
+    activations.set("GLUTE_L", 0.1);
+    activations.set("GLUTE_R", 0.1);
     return activations;
   }
 

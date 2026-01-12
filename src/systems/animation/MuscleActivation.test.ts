@@ -16,7 +16,7 @@ import {
   getMuscleTensionForStance,
 } from "./MuscleActivation";
 import type { MuscleGroupName } from "../../types/muscle";
-import type { TrigramStance } from "../../types/common";
+import { TrigramStance } from "../../types/common";
 
 describe("getMuscleActivationForTechnique", () => {
   describe("Punching techniques (주먹 기술)", () => {
@@ -545,19 +545,19 @@ describe("MuscleActivationManager", () => {
 describe("getMuscleTensionForStance", () => {
   // All trigram stances for testing
   const ALL_TRIGRAM_STANCES: TrigramStance[] = [
-    "geon" as TrigramStance,
-    "tae" as TrigramStance,
-    "li" as TrigramStance,
-    "jin" as TrigramStance,
-    "son" as TrigramStance,
-    "gam" as TrigramStance,
-    "gan" as TrigramStance,
-    "gon" as TrigramStance,
+    TrigramStance.GEON,
+    TrigramStance.TAE,
+    TrigramStance.LI,
+    TrigramStance.JIN,
+    TrigramStance.SON,
+    TrigramStance.GAM,
+    TrigramStance.GAN,
+    TrigramStance.GON,
   ];
 
   describe("Deep stances with high muscle engagement (깊은 자세)", () => {
     it("should show maximum quad tension for Jin (Thunder) stance", () => {
-      const activations = getMuscleTensionForStance("jin" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
 
       // Jin has 90° knee bend in both legs with 50/50 weight
       // Expected: Very high quad tension (>0.65)
@@ -571,7 +571,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should show high calf tension for Jin stance (deep isometric hold)", () => {
-      const activations = getMuscleTensionForStance("jin" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
 
       // Deep stance (90° knee) requires calf engagement for balance
       const calfLeft = activations.get("CALF_L");
@@ -582,7 +582,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should show very high quad tension for Gon (Earth) stance", () => {
-      const activations = getMuscleTensionForStance("gon" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
 
       // Gon has 80° knee bend in both legs (deepest stance)
       // Expected: Maximum quad tension (>0.7)
@@ -594,7 +594,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should show high calf tension for Gon stance", () => {
-      const activations = getMuscleTensionForStance("gon" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
 
       // Very deep stance (80° knee) requires maximum calf support
       const calfLeft = activations.get("CALF_L");
@@ -607,7 +607,7 @@ describe("getMuscleTensionForStance", () => {
 
   describe("Weight distribution affecting leg tension (체중분배)", () => {
     it("should emphasize front leg for Geon (Heaven) 60/40 stance", () => {
-      const activations = getMuscleTensionForStance("geon" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GEON);
 
       // Geon: 70° front knee, 160° back knee, 60/40 weight
       const frontQuad = activations.get("QUAD_R");
@@ -619,7 +619,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should emphasize back leg for Tae (Lake) 10/90 stance", () => {
-      const activations = getMuscleTensionForStance("tae" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.TAE);
 
       // Tae: 170° front knee (straight), 120° back knee, 10/90 weight
       const frontQuad = activations.get("QUAD_R");
@@ -631,7 +631,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should balance tension for Li (Fire) 50/50 stance", () => {
-      const activations = getMuscleTensionForStance("li" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.LI);
 
       // Li: 135° both knees, 50/50 weight
       const frontQuad = activations.get("QUAD_R");
@@ -643,7 +643,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should emphasize back leg for Gam (Water) 30/70 stance", () => {
-      const activations = getMuscleTensionForStance("gam" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GAM);
 
       // Gam: 150° front knee, 100° back knee, 30/70 weight
       const frontQuad = activations.get("QUAD_R");
@@ -656,7 +656,7 @@ describe("getMuscleTensionForStance", () => {
 
   describe("Hamstring and glute activation", () => {
     it("should activate hamstrings in deep stances", () => {
-      const activations = getMuscleTensionForStance("jin" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
 
       const hamstringLeft = activations.get("HAMSTRING_L");
       const hamstringRight = activations.get("HAMSTRING_R");
@@ -667,7 +667,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should activate glutes in low hip stances", () => {
-      const activations = getMuscleTensionForStance("gon" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
 
       // Gon has very low hip height (0.72)
       const gluteLeft = activations.get("GLUTE_L");
@@ -680,7 +680,7 @@ describe("getMuscleTensionForStance", () => {
 
   describe("Single-leg crane stance (Son Wind)", () => {
     it("should show tension in both standing and raised legs", () => {
-      const activations = getMuscleTensionForStance("son" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.SON);
 
       // Son: 170° standing leg, 45° raised leg (deeply bent), 100/0 weight
       const standingQuad = activations.get("QUAD_R");
@@ -701,7 +701,7 @@ describe("getMuscleTensionForStance", () => {
 
   describe("Moderate stances", () => {
     it("should show moderate quad tension for Gan (Mountain) stance", () => {
-      const activations = getMuscleTensionForStance("gan" as TrigramStance);
+      const activations = getMuscleTensionForStance(TrigramStance.GAN);
 
       // Gan: 120° both knees, 40/60 weight
       const quadLeft = activations.get("QUAD_L");
