@@ -1,23 +1,23 @@
 /**
  * Player visual component types for unified 3D player representation
- * 
+ *
  * This module defines TypeScript interfaces for the unified Player3D component
  * used across combat and training screens, ensuring visual consistency and
  * proper integration with the combat system.
- * 
+ *
  * @module types/player-visual
  * @category Type Definitions
  * @korean 플레이어시각타입
  */
 
-import type { PlayerArchetype, TrigramStance } from "./common";
-import type { FacialExpression, FacialDamageState } from "./facial";
 import type { BodyFacing } from "../systems/animation/types";
+import type { PlayerArchetype, TrigramStance } from "./common";
+import type { FacialDamageState, FacialExpression } from "./facial";
 
 /**
  * Balance state representing player stability in combat.
  * Drives visual indicators and affects combat effectiveness.
- * 
+ *
  * @public
  * @category Combat States
  * @korean 균형상태
@@ -26,7 +26,7 @@ export type BalanceState = "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS";
 
 /**
  * Player animation states for 3D model pose and movement.
- * 
+ *
  * @public
  * @category Animation
  * @korean 애니메이션상태
@@ -39,9 +39,15 @@ export type PlayerAnimation =
   | "stance_change"
   | "technique_execute"
   | "walk"
+  | "run" // Running animation (달리기)
   | "block"
   | "counter"
   | "death"
+  // Fall animations (낙법)
+  | "fall_forward"
+  | "fall_backward"
+  | "fall_side_left"
+  | "fall_side_right"
   | "step_forward"
   | "step_back"
   | "step_left"
@@ -51,21 +57,21 @@ export type PlayerAnimation =
   | "step_back_left"
   | "step_back_right"
   // Stance-specific idle animations (팔괘 자세 애니메이션)
-  | "stance_geon"  // ☰ 건 (Heaven) - Forward stance
-  | "stance_tae"   // ☱ 태 (Lake) - Cat stance
-  | "stance_li"    // ☲ 리 (Fire) - Fighting stance
-  | "stance_jin"   // ☳ 진 (Thunder) - Horse stance
-  | "stance_son"   // ☴ 손 (Wind) - Crane stance
-  | "stance_gam"   // ☵ 감 (Water) - Back stance
-  | "stance_gan"   // ☶ 간 (Mountain) - Defensive stance
-  | "stance_gon";  // ☷ 곤 (Earth) - Low stance
+  | "stance_geon" // ☰ 건 (Heaven) - Forward stance
+  | "stance_tae" // ☱ 태 (Lake) - Cat stance
+  | "stance_li" // ☲ 리 (Fire) - Fighting stance
+  | "stance_jin" // ☳ 진 (Thunder) - Horse stance
+  | "stance_son" // ☴ 손 (Wind) - Crane stance
+  | "stance_gam" // ☵ 감 (Water) - Back stance
+  | "stance_gan" // ☶ 간 (Mountain) - Defensive stance
+  | "stance_gon"; // ☷ 곤 (Earth) - Low stance
 
 /**
  * Unified props for Player3D visual component.
- * 
+ *
  * This interface provides all properties needed to render a player
  * in both combat and training contexts with full state visualization.
- * 
+ *
  * @public
  * @category Component Props
  * @korean 플레이어3D속성
@@ -276,7 +282,7 @@ export interface Player3DUnifiedProps {
 
 /**
  * Props for PlayerStateIndicators component (Html overlay)
- * 
+ *
  * @public
  * @category Component Props
  * @korean 상태표시기속성
@@ -339,7 +345,7 @@ export interface PlayerStateIndicatorsProps {
 
 /**
  * Props for StanceAura component (3D effect)
- * 
+ *
  * @public
  * @category Component Props
  * @korean 자세오라속성
@@ -363,5 +369,3 @@ export interface StanceAuraProps {
    */
   readonly animated?: boolean;
 }
-
-

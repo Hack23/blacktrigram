@@ -19,17 +19,17 @@ import type {
 
 /**
  * Static mapping from AnimationState to PlayerAnimation
- * 
+ *
  * Stance guard animations map to "idle" since SkeletalPlayer3D
  * will handle the stance-specific guard rendering.
  * Tactical steps now use dedicated step animations with guard maintenance.
- * 
+ *
  * @korean 애니메이션상태맵
  */
 const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   idle: "idle",
   walk: "walk",
-  run: "walk", // Map run to walk for now (SkeletalPlayer3D doesn't have run animation yet)
+  run: "run", // Now uses dedicated RUN_ANIMATION from BasicAnimations
   attack: "attack",
   defend: "defend",
   // Defensive animations (방어 애니메이션) - map to defend with variations handled by skeletal system
@@ -59,12 +59,11 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   step_forward_right: "step_forward_right",
   step_back_left: "step_back_left",
   step_back_right: "step_back_right",
-  // Fall animations: Using "death" animation as closest approximation for falling
-  // Note: Custom fall 3D animations will be added in future 3D model update
-  fall_forward: "death",
-  fall_backward: "death",
-  fall_side_left: "death",
-  fall_side_right: "death",
+  // Fall animations: Now using dedicated FALL_*_ANIMATION from BasicAnimations
+  fall_forward: "fall_forward",
+  fall_backward: "fall_backward",
+  fall_side_left: "fall_side_left",
+  fall_side_right: "fall_side_right",
   // Ground states map to idle with minimal movement
   ground_prone: "idle",
   ground_supine: "idle",

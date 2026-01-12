@@ -11,6 +11,12 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import {
+  BACKWARD_RETREAT_ANIMATION,
+  FORWARD_DASH_ANIMATION,
+  IDLE_STANCE_ANIMATION,
+  SIDE_STEP_ANIMATION,
+} from "./AttackAnimations";
 import { BASIC_ANIMATIONS } from "./BasicAnimations";
 import { COMBO_ANIMATIONS } from "./ComboAnimations";
 import { DARKOPS_ANIMATIONS } from "./DarkOpsAnimations";
@@ -153,6 +159,11 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...MOVEMENT_ANIMATIONS,
   ...ALL_ATTACK_ANIMATIONS, // Stance-specific attack animations (24 unique)
   ...BASIC_ANIMATIONS, // Idle, Walk, Run, Fall animations
+  // Additional animations from AttackAnimations not in other maps
+  ["idle_stance", IDLE_STANCE_ANIMATION],
+  ["forward_dash", FORWARD_DASH_ANIMATION],
+  ["backward_retreat", BACKWARD_RETREAT_ANIMATION],
+  ["side_step", SIDE_STEP_ANIMATION],
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -239,6 +250,24 @@ export function getAnimationForTechniqueIdWithConfig(
 export function getAnimationByName(
   name: string
 ): SkeletalAnimation | undefined {
+  return ALL_ANIMATIONS.get(name);
+}
+
+/**
+ * Get animation by name - unified lookup across all animation registries
+ *
+ * Searches ALL_ANIMATIONS which includes:
+ * - BASIC_ANIMATIONS (idle, walk, run, fall)
+ * - KICK_ANIMATIONS, PUNCH_ANIMATIONS, etc.
+ * - STANCE_ANIMATIONS, MOVEMENT_ANIMATIONS
+ * - ALL_ATTACK_ANIMATIONS (stance-specific attacks)
+ *
+ * @param name - Animation name (e.g., "idle", "front_kick", "walk")
+ * @returns Skeletal animation or undefined
+ *
+ * @korean 애니메이션가져오기
+ */
+export function getAnimation(name: string): SkeletalAnimation | undefined {
   return ALL_ANIMATIONS.get(name);
 }
 

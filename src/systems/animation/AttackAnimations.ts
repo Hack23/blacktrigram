@@ -2235,6 +2235,7 @@ export const ATTACK_ANIMATIONS = new Map<string, SkeletalAnimation>([
  * @returns Skeletal animation or undefined
  *
  * @korean 애니메이션가져오기
+ * @deprecated Use getAnimation from AnimationRegistry instead for full animation support
  */
 export const getAnimation = (name: string): SkeletalAnimation | undefined => {
   return ATTACK_ANIMATIONS.get(name);

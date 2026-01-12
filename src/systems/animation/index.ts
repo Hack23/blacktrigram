@@ -46,6 +46,7 @@ export {
   GRAPPLING_ANIMATIONS,
   KICK_ANIMATIONS,
   PUNCH_ANIMATIONS,
+  getAnimation, // Unified lookup across ALL_ANIMATIONS
   getAnimationByName,
   getAnimationByType,
   getAnimationByTypeOrDefault,
@@ -122,7 +123,6 @@ export {
   ROUNDHOUSE_KICK_ANIMATION,
   SIDE_STEP_ANIMATION,
   WALK_ANIMATION,
-  getAnimation,
 } from "./AttackAnimations";
 
 // Animation lookup with stance-specific support

@@ -22,8 +22,8 @@ import {
   getStepAnimation,
 } from "../systems/animation";
 import {
-  interpolateKeyframeCached,
   batchUpdateBones,
+  interpolateKeyframeCached,
   performanceMonitor,
 } from "../systems/animation/AnimationOptimizations";
 import type { PlayerAnimation } from "../types/player-visual";
@@ -154,9 +154,21 @@ export function useSkeletalAnimation(
         selectedAnim = getAnimation("block");
       }
       playbackSpeed = 1.0;
+    } else if (currentAnimation === "idle") {
+      // Idle animation - uses breathing cycle from BasicAnimations
+      selectedAnim = getAnimation("idle");
+      playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
       // Walking animation
       selectedAnim = getAnimation("walk");
+      playbackSpeed = 1.0;
+    } else if (currentAnimation === "run") {
+      // Running animation - faster gait from BasicAnimations
+      selectedAnim = getAnimation("run");
+      playbackSpeed = 1.0;
+    } else if (currentAnimation?.startsWith("fall_")) {
+      // Fall animations - directional falls from BasicAnimations
+      selectedAnim = getAnimation(currentAnimation);
       playbackSpeed = 1.0;
     } else if (currentAnimation === "stance_change") {
       // Stance change animation
