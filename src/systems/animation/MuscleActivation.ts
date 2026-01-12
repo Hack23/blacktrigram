@@ -57,8 +57,9 @@ export const getMuscleTensionForStance = (
 ): MuscleActivationMap => {
   const activations = new Map<MuscleGroupName, number>();
 
-  // Mapping of TrigramStance to biomechanics key suffixes
-  const STANCE_TO_BIOMECH_KEY: Record<TrigramStance, string> = {
+  // Type-safe mapping of TrigramStance to biomechanics keys
+  // This ensures compile-time validation of the mapping
+  const STANCE_TO_BIOMECH_KEY = {
     geon: "GEON_HEAVEN",
     tae: "TAE_LAKE",
     li: "LI_FIRE",
@@ -67,14 +68,14 @@ export const getMuscleTensionForStance = (
     gam: "GAM_WATER",
     gan: "GAN_MOUNTAIN",
     gon: "GON_EARTH",
-  };
+  } as const satisfies Record<TrigramStance, keyof typeof KOREAN_STANCE_BIOMECHANICS>;
 
-  // Get biomechanical data for stance
-  const biomechKey = STANCE_TO_BIOMECH_KEY[stance] as keyof typeof KOREAN_STANCE_BIOMECHANICS;
+  // Get biomechanical data for stance (type-safe lookup)
+  const biomechKey = STANCE_TO_BIOMECH_KEY[stance];
   const biomech = KOREAN_STANCE_BIOMECHANICS[biomechKey];
 
   if (!biomech) {
-    // Default minimal tension if stance not found
+    // This branch should never execute with proper typing, but kept for safety
     activations.set("QUAD_L", 0.2);
     activations.set("QUAD_R", 0.2);
     activations.set("CALF_L", 0.1);
@@ -83,9 +84,9 @@ export const getMuscleTensionForStance = (
   }
 
   // Calculate quadriceps tension based on knee flexion
-  // Formula: tension = (180° - kneeAngle) / 110° 
-  // Range: 90° (max tension ~0.82) to 180° (min tension ~0.0)
-  // For deep stances, we amplify the base tension
+  // Formula (base tension): baseTension = (180° - kneeAngle) / 110° 
+  // Range: 90° knee → 0.82 base tension, 180° knee → 0.0 base tension
+  // This base value is then combined with weight distribution for final tension
   const frontQuadTensionFromBend = Math.max(0, Math.min(1.0, 
     (180 - biomech.frontKneeBend) / 110
   ));
@@ -96,6 +97,8 @@ export const getMuscleTensionForStance = (
   // Apply weight distribution to muscle tension
   // Front leg quadriceps (체중부하 + 등척성수축)
   // Base tension from bend + weight factor
+  // Note: Even with 0% weight, deep knee flexion produces tension
+  // (e.g., raised leg in crane stance requires quad engagement to hold position)
   const frontQuadTension = Math.min(1.0,
     frontQuadTensionFromBend * 0.6 + 
     biomech.weightDistribution.front * 0.4

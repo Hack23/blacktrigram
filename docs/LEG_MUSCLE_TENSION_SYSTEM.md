@@ -20,8 +20,9 @@ Located in: `src/systems/animation/MuscleActivation.ts`
 Calculates muscle tension for all 8 trigram stances (팔괘 자세):
 
 ```typescript
-import { getMuscleTensionForStance } from "./systems/animation/MuscleActivation";
-import { TrigramStance } from "./types/common";
+// Example usage from a component file under src/
+import { getMuscleTensionForStance } from "../systems/animation/MuscleActivation";
+import { TrigramStance } from "../types/common";
 
 // Get leg muscle tension for Thunder stance (진 천둥)
 const muscleTension = getMuscleTensionForStance(TrigramStance.JIN);
@@ -151,8 +152,9 @@ gluteTension = gluteBaseTension + baseTension * 0.2 * weightDistribution
 The hook automatically applies stance tension during idle animations:
 
 ```typescript
-import { useMuscleActivation } from "./hooks/useMuscleActivation";
-import { TrigramStance } from "./types/common";
+// Example usage from a component file under src/
+import { useMuscleActivation } from "../hooks/useMuscleActivation";
+import { TrigramStance } from "../types/common";
 
 const MyComponent = () => {
   const { muscleStates, updateMuscleActivations } = useMuscleActivation({
@@ -161,10 +163,12 @@ const MyComponent = () => {
     currentStance: TrigramStance.JIN, // Apply Jin stance tension
   });
 
+  // Use a ref to track frame counter across renders
+  const frameCounterRef = useRef(0);
+
   useFrame((_, delta) => {
-    let frameCounter = 0;
-    frameCounter = (frameCounter + 1) % 10;
-    updateMuscleActivations(delta, frameCounter);
+    frameCounterRef.current = (frameCounterRef.current + 1) % 10;
+    updateMuscleActivations(delta, frameCounterRef.current);
   });
 
   return (

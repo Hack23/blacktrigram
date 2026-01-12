@@ -17,6 +17,7 @@ import {
 } from "../systems/animation/MuscleActivation";
 import type { PlayerAnimation } from "../types/player-visual";
 import type { TrigramStance } from "../types/common";
+import { DEFAULT_MUSCLE_CONFIG } from "../types/muscle";
 
 /**
  * Options for useMuscleActivation hook
@@ -103,6 +104,11 @@ export function useMuscleActivation(
     };
   }, []);
 
+  // Lerp function extracted for reuse across frames (avoid reallocation)
+  const lerp = useRef((start: number, end: number, t: number) => 
+    start + (end - start) * t
+  ).current;
+
   // Update muscle activations (called at 60fps in useFrame)
   const updateMuscleActivations = (
     delta: number,
@@ -134,14 +140,11 @@ export function useMuscleActivation(
           // Set target tension for smooth interpolation
           state.targetTension = tension;
           
-          // Smoothly interpolate to target (similar to update() behavior)
-          // Note: Inline lerp for performance in 60fps hot path
-          const lerp = (start: number, end: number, t: number) => 
-            start + (end - start) * t;
+          // Smoothly interpolate to target (using config activation speed)
           state.tension = lerp(
             state.tension,
             state.targetTension,
-            5.0 * delta // Same activation speed as techniques
+            DEFAULT_MUSCLE_CONFIG.activationSpeed * delta
           );
         }
       });
