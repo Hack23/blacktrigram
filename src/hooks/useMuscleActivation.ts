@@ -135,6 +135,7 @@ export function useMuscleActivation(
           state.targetTension = tension;
           
           // Smoothly interpolate to target (similar to update() behavior)
+          // Note: Inline lerp for performance in 60fps hot path
           const lerp = (start: number, end: number, t: number) => 
             start + (end - start) * t;
           state.tension = lerp(

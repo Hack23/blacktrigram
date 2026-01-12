@@ -543,6 +543,18 @@ describe("MuscleActivationManager", () => {
 });
 
 describe("getMuscleTensionForStance", () => {
+  // All trigram stances for testing
+  const ALL_TRIGRAM_STANCES: TrigramStance[] = [
+    "geon" as TrigramStance,
+    "tae" as TrigramStance,
+    "li" as TrigramStance,
+    "jin" as TrigramStance,
+    "son" as TrigramStance,
+    "gam" as TrigramStance,
+    "gan" as TrigramStance,
+    "gon" as TrigramStance,
+  ];
+
   describe("Deep stances with high muscle engagement (깊은 자세)", () => {
     it("should show maximum quad tension for Jin (Thunder) stance", () => {
       const activations = getMuscleTensionForStance("jin" as TrigramStance);
@@ -705,18 +717,7 @@ describe("getMuscleTensionForStance", () => {
 
   describe("All leg muscles activated", () => {
     it("should activate all leg muscle groups for every stance", () => {
-      const stances: TrigramStance[] = [
-        "geon" as TrigramStance,
-        "tae" as TrigramStance,
-        "li" as TrigramStance,
-        "jin" as TrigramStance,
-        "son" as TrigramStance,
-        "gam" as TrigramStance,
-        "gan" as TrigramStance,
-        "gon" as TrigramStance,
-      ];
-
-      stances.forEach((stance) => {
+      ALL_TRIGRAM_STANCES.forEach((stance) => {
         const activations = getMuscleTensionForStance(stance);
 
         // All leg muscles should have some activation
@@ -732,18 +733,7 @@ describe("getMuscleTensionForStance", () => {
     });
 
     it("should keep all values within 0-1 range", () => {
-      const stances: TrigramStance[] = [
-        "geon" as TrigramStance,
-        "tae" as TrigramStance,
-        "li" as TrigramStance,
-        "jin" as TrigramStance,
-        "son" as TrigramStance,
-        "gam" as TrigramStance,
-        "gan" as TrigramStance,
-        "gon" as TrigramStance,
-      ];
-
-      stances.forEach((stance) => {
+      ALL_TRIGRAM_STANCES.forEach((stance) => {
         const activations = getMuscleTensionForStance(stance);
 
         activations.forEach((tension, muscle) => {

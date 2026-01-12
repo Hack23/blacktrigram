@@ -57,17 +57,21 @@ export const getMuscleTensionForStance = (
 ): MuscleActivationMap => {
   const activations = new Map<MuscleGroupName, number>();
 
+  // Mapping of TrigramStance to biomechanics key suffixes
+  const STANCE_TO_BIOMECH_KEY: Record<TrigramStance, string> = {
+    geon: "GEON_HEAVEN",
+    tae: "TAE_LAKE",
+    li: "LI_FIRE",
+    jin: "JIN_THUNDER",
+    son: "SON_WIND",
+    gam: "GAM_WATER",
+    gan: "GAN_MOUNTAIN",
+    gon: "GON_EARTH",
+  };
+
   // Get biomechanical data for stance
-  const stanceName = stance.toUpperCase() as keyof typeof KOREAN_STANCE_BIOMECHANICS;
-  const biomech = KOREAN_STANCE_BIOMECHANICS[`${stanceName}_${
-    stance === "geon" ? "HEAVEN" :
-    stance === "tae" ? "LAKE" :
-    stance === "li" ? "FIRE" :
-    stance === "jin" ? "THUNDER" :
-    stance === "son" ? "WIND" :
-    stance === "gam" ? "WATER" :
-    stance === "gan" ? "MOUNTAIN" : "EARTH"
-  }` as keyof typeof KOREAN_STANCE_BIOMECHANICS];
+  const biomechKey = STANCE_TO_BIOMECH_KEY[stance] as keyof typeof KOREAN_STANCE_BIOMECHANICS;
+  const biomech = KOREAN_STANCE_BIOMECHANICS[biomechKey];
 
   if (!biomech) {
     // Default minimal tension if stance not found
