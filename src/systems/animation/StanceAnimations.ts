@@ -14,7 +14,10 @@
 import type { SkeletalAnimation } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
-import { KOREAN_STANCE_BIOMECHANICS } from "./MartialArtsConstants";
+import { 
+  KOREAN_STANCE_BIOMECHANICS,
+  calculateFootPositions,
+} from "./MartialArtsConstants";
 import {
   GAM_WATER_GUARD_POSE,
   GAN_MOUNTAIN_GUARD_POSE,
@@ -25,6 +28,29 @@ import {
   SON_WIND_GUARD_POSE,
   TAE_FLUID_GUARD_POSE,
 } from "./StanceGuardPoses";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEFAULT SHOULDER WIDTH CONSTANT
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Default shoulder width for stance calculations
+ * 
+ * Uses average shoulder width across all archetypes:
+ * - Musa: 46cm
+ * - Amsalja: 44cm
+ * - Hacker: 43cm
+ * - Jeongbo: 45cm
+ * - Jojik: 54cm
+ * 
+ * Average: (46 + 44 + 43 + 45 + 54) / 5 = 46.4cm ≈ 46cm
+ * 
+ * This provides neutral baseline for animations. Actual runtime will scale
+ * based on fighter's specific shoulder width from physical attributes.
+ * 
+ * @korean 기본어깨너비
+ */
+const DEFAULT_SHOULDER_WIDTH_CM = 46;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
@@ -950,6 +976,12 @@ export const createGeonStance = (): SkeletalAnimation => {
   const hipYOffset = -0.15 * (1.0 - biomech.hipHeight);
   const hipZOffset = 0.1 * biomech.weightDistribution.front;
 
+  // Calculate foot positions based on stance width (발너비)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
+
   return (
     MartialArtsAnimationBuilder.create("stance_geon", "건 자세")
       .asIdle(1.0, true)
@@ -1005,6 +1037,10 @@ export const createGeonStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.1, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 1.35x shoulder width) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position for weight distribution and height
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
       .done<MartialArtsAnimationBuilder>()
@@ -1035,6 +1071,12 @@ export const createTaeStance = (): SkeletalAnimation => {
 
   const hipYOffset = -0.1 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.08 * biomech.weightDistribution.back; // Back-weighted
+
+  // Calculate foot positions based on stance width (발너비)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_tae", "태 자세")
@@ -1088,6 +1130,10 @@ export const createTaeStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 0.9x shoulder width) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - back-weighted, higher
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
       .done<MartialArtsAnimationBuilder>()
@@ -1116,6 +1162,12 @@ export const createLiStance = (): SkeletalAnimation => {
   const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
 
   const hipYOffset = -0.12 * (1.0 - biomech.hipHeight);
+
+  // Calculate foot positions based on stance width (발너비)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_li", "리 자세")
@@ -1167,6 +1219,10 @@ export const createLiStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.08, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 1.1x shoulder width) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - centered, medium height
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
       .done<MartialArtsAnimationBuilder>()
@@ -1195,6 +1251,13 @@ export const createJinStance = (): SkeletalAnimation => {
   const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
 
   const hipYOffset = -0.25 * (1.0 - biomech.hipHeight);
+
+  // Calculate foot positions based on stance width (발너비)
+  // Jin Thunder has widest stance: 2.0x shoulder width
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_jin", "진 자세")
@@ -1246,6 +1309,10 @@ export const createJinStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.12, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 2.0x shoulder width - WIDEST) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - very low for ground stability
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
       .done<MartialArtsAnimationBuilder>()
@@ -1275,6 +1342,13 @@ export const createSonStance = (): SkeletalAnimation => {
   const raisedLegRotation = toRadians(90); // Knee up
 
   const hipYOffset = -0.08 * (1.0 - biomech.hipHeight);
+
+  // Calculate foot positions based on stance width (발너비)
+  // Son Wind has zero width: 0.0x shoulder width (single leg crane stance)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_son", "손 자세")
@@ -1328,6 +1402,11 @@ export const createSonStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, raisedLegRotation, 0, 0)
       .rotate(BoneName.KNEE_L, toRadians(-(180 - biomech.backKneeBend)), 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 0.0x - ZERO WIDTH CRANE STANCE) ===
+      // Both feet at center for single-leg balance
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - high for balance and mobility
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
       .done<MartialArtsAnimationBuilder>()
@@ -1358,6 +1437,12 @@ export const createGamStance = (): SkeletalAnimation => {
 
   const hipYOffset = -0.18 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.12 * biomech.weightDistribution.back;
+
+  // Calculate foot positions based on stance width (발너비)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_gam", "감 자세")
@@ -1411,6 +1496,10 @@ export const createGamStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 1.15x shoulder width) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - back-weighted, medium-low
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
       .done<MartialArtsAnimationBuilder>()
@@ -1440,6 +1529,12 @@ export const createGanStance = (): SkeletalAnimation => {
 
   const hipYOffset = -0.13 * (1.0 - biomech.hipHeight);
   const hipZOffset = -0.06 * (biomech.weightDistribution.back - 0.5);
+
+  // Calculate foot positions based on stance width (발너비)
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_gan", "간 자세")
@@ -1491,6 +1586,10 @@ export const createGanStance = (): SkeletalAnimation => {
       .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.09, 0, 0)
 
+      // === FOOT POSITIONING (Stance Width: 1.45x shoulder width) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
+
       // Hip position - slightly back, medium-high
       .position(BoneName.PELVIS, 0, hipYOffset, hipZOffset)
       .done<MartialArtsAnimationBuilder>()
@@ -1519,6 +1618,13 @@ export const createGonStance = (): SkeletalAnimation => {
   const kneeRotation = toRadians(-(180 - biomech.frontKneeBend));
 
   const hipYOffset = -0.28 * (1.0 - biomech.hipHeight);
+
+  // Calculate foot positions based on stance width (발너비)
+  // Gon Earth has second-widest stance: 1.8x shoulder width
+  const footPositions = calculateFootPositions(
+    biomech.stanceWidth,
+    DEFAULT_SHOULDER_WIDTH_CM
+  );
 
   return (
     MartialArtsAnimationBuilder.create("stance_gon", "곤 자세")
@@ -1569,6 +1675,10 @@ export const createGonStance = (): SkeletalAnimation => {
       .rotate(BoneName.KNEE_R, kneeRotation - 0.15, 0, 0)
       .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.15, 0, 0)
+
+      // === FOOT POSITIONING (Stance Width: 1.8x shoulder width - SECOND WIDEST) ===
+      .position(BoneName.FOOT_L, footPositions.leftFootX, 0, 0)
+      .position(BoneName.FOOT_R, footPositions.rightFootX, 0, 0)
 
       // Hip position - very low for ground control
       .position(BoneName.PELVIS, 0, hipYOffset, 0)
