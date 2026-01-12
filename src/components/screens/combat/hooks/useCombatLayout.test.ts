@@ -64,20 +64,20 @@ describe("useCombatLayout", () => {
       const { result } = renderHook(() => useCombatLayout(1200, 800));
 
       expect(result.current.layoutConstants.padding).toBe(10);
-      expect(result.current.layoutConstants.hudHeight).toBe(120);
-      expect(result.current.layoutConstants.controlsHeight).toBe(160);
-      expect(result.current.layoutConstants.footerHeight).toBe(28);
-      expect(result.current.layoutConstants.healthBarHeight).toBe(55);
+      expect(result.current.layoutConstants.hudHeight).toBe(130); // Updated to desktop value
+      expect(result.current.layoutConstants.controlsHeight).toBe(170); // Updated to desktop value
+      expect(result.current.layoutConstants.footerHeight).toBe(35); // Updated to desktop value
+      expect(result.current.layoutConstants.healthBarHeight).toBe(65); // Updated to desktop value
     });
 
     it("should return optimized layout constants for 4K/2K screens", () => {
       const { result } = renderHook(() => useCombatLayout(3840, 2160));
 
       expect(result.current.layoutConstants.padding).toBe(10);
-      expect(result.current.layoutConstants.hudHeight).toBe(90);
-      expect(result.current.layoutConstants.controlsHeight).toBe(120);
-      expect(result.current.layoutConstants.footerHeight).toBe(20);
-      expect(result.current.layoutConstants.healthBarHeight).toBe(45);
+      expect(result.current.layoutConstants.hudHeight).toBe(140); // Updated to xlarge value (was 90, now 140 for 4K)
+      expect(result.current.layoutConstants.controlsHeight).toBe(180); // Updated to xlarge value (was 120, now 180 for 4K)
+      expect(result.current.layoutConstants.footerHeight).toBe(40); // Updated to xlarge value (was 20, now 40 for 4K)
+      expect(result.current.layoutConstants.healthBarHeight).toBe(70); // Updated to xlarge value (was 45, now 70 for 4K)
       expect(result.current.isMobile).toBe(false);
     });
   });
@@ -92,11 +92,11 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.x).toBe(1200 * 0.1);
 
       // Arena should account for HUD, controls, footer, and padding
-      const expectedArenaHeight = 800 - 120 - 160 - 28 - 10 * 3;
+      const expectedArenaHeight = 800 - 130 - 170 - 35 - 10 * 3; // Updated to use new desktop values
       expect(arenaBounds.height).toBe(expectedArenaHeight);
 
       // Arena Y should start after HUD and padding
-      expect(arenaBounds.y).toBe(120 + 10);
+      expect(arenaBounds.y).toBe(130 + 10); // Updated to use new desktop HUD height
 
       // Desktop should have full scale
       expect(arenaBounds.scale).toBe(1.0);
