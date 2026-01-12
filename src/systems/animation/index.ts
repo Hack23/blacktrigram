@@ -128,6 +128,18 @@ export {
 // Animation lookup with stance-specific support
 export { getAnimationForTechnique } from "./AnimationRegistry";
 
+// Basic animations (Idle, Walk, Run, Fall)
+export {
+  BASIC_ANIMATIONS,
+  FALL_BACKWARD_ANIMATION,
+  FALL_FORWARD_ANIMATION,
+  FALL_SIDE_LEFT_ANIMATION,
+  FALL_SIDE_RIGHT_ANIMATION,
+  IDLE_ANIMATION,
+  RUN_ANIMATION,
+  WALK_ANIMATION as WALK_ANIMATION_NEW,
+} from "./BasicAnimations";
+
 // Step movement animations
 export {
   STEP_ANIMATIONS,

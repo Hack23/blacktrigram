@@ -11,6 +11,7 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import { BASIC_ANIMATIONS } from "./BasicAnimations";
 import { COMBO_ANIMATIONS } from "./ComboAnimations";
 import { DARKOPS_ANIMATIONS } from "./DarkOpsAnimations";
 import {
@@ -151,6 +152,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...COMBO_ANIMATIONS,
   ...MOVEMENT_ANIMATIONS,
   ...ALL_ATTACK_ANIMATIONS, // Stance-specific attack animations (24 unique)
+  ...BASIC_ANIMATIONS, // Idle, Walk, Run, Fall animations
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════
