@@ -50,6 +50,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
   const isTablet = screenWidth >= 768 && screenWidth < 1024;
+  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
   
   // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(() => ({
@@ -138,8 +139,8 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   );
 
   // Grid layout calculations
-  const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : 4;
-  const buttonHeight = isMobile ? 120 : 140;
+  const buttonsPerRow = isMobile ? 2 : isTablet ? 3 : isLargeDesktop ? 5 : 4;
+  const buttonHeight = isMobile ? 120 : isTablet ? 130 : isLargeDesktop ? 100 : 140;
 
   return (
     <div

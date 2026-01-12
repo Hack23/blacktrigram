@@ -12,3 +12,10 @@ export type {
   UseTrainingActionsConfig,
   UseTrainingActionsReturn,
 } from "./useTrainingActions";
+
+export { useTrainingLayout } from "./useTrainingLayout";
+export type {
+  TrainingLayout,
+  TrainingLayoutConstants,
+  TrainingAreaBounds,
+} from "./useTrainingLayout";

@@ -56,7 +56,7 @@ import {
 } from "../combat/components";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
-import { useCombatLayout } from "../combat/hooks/useCombatLayout";
+import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -136,8 +136,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Audio context
   const audio = useAudio();
 
-  // Responsive detection and layout (matching CombatScreen pattern)
-  const { arenaBounds, isMobile } = useCombatLayout(width, height);
+  // Responsive detection and layout (using dedicated training layout hook)
+  const { trainingAreaBounds, isMobile } = useTrainingLayout(width, height);
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
@@ -207,22 +207,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Matches CombatScreen pattern: positions are pixel-based, converted to 3D for rendering
   const initialPosition = useMemo<Position>(
     () => ({
-      x: arenaBounds.x + arenaBounds.width * 0.25, // 25% from left
-      y: arenaBounds.y + arenaBounds.height * 0.5, // Centered vertically
+      x: trainingAreaBounds.x + trainingAreaBounds.width * 0.25, // 25% from left
+      y: trainingAreaBounds.y + trainingAreaBounds.height * 0.5, // Centered vertically
     }),
-    [arenaBounds]
+    [trainingAreaBounds]
   );
 
   // Expanded bounds to compensate for inputSystem's hardcoded offsets (-60 width, -180 height)
   // This allows full arena movement like in CombatScreen
   const expandedBounds = useMemo(
     () => ({
-      x: arenaBounds.x,
-      y: arenaBounds.y,
-      width: arenaBounds.width + 60, // Compensate for -60 offset in inputSystem
-      height: arenaBounds.height + 180, // Compensate for -180 offset in inputSystem
+      x: trainingAreaBounds.x,
+      y: trainingAreaBounds.y,
+      width: trainingAreaBounds.width + 60, // Compensate for -60 offset in inputSystem
+      height: trainingAreaBounds.height + 180, // Compensate for -180 offset in inputSystem
     }),
-    [arenaBounds]
+    [trainingAreaBounds]
   );
 
   // Player movement with physics-based acceleration and stance modifiers
@@ -245,22 +245,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
-  // Scale 3D coordinates based on arena scale for consistent positioning
+  // Scale 3D coordinates based on training area scale for consistent positioning
   const player3DPosition = useMemo<[number, number, number]>(() => {
-    const relX = (playerPosition.x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (playerPosition.y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates, scaled for arena size (matching CombatScreen)
-    const worldWidth = 16 * arenaBounds.scale;
-    const worldDepth = 8 * arenaBounds.scale;
+    const relX = (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
+    const relZ = (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
+    // Map 0-1 to world coordinates, scaled for training area size (matching CombatScreen)
+    const worldWidth = 16 * trainingAreaBounds.scale;
+    const worldDepth = 8 * trainingAreaBounds.scale;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
-  }, [playerPosition, arenaBounds]);
+  }, [playerPosition, trainingAreaBounds]);
 
-  // Dummy position (fixed in 3D space, right side of arena, scaled)
+  // Dummy position (fixed in 3D space, right side of training area, scaled)
   const dummyPosition = useMemo<[number, number, number]>(
-    () => [5 * arenaBounds.scale, 0, 0],
-    [arenaBounds.scale]
+    () => [5 * trainingAreaBounds.scale, 0, 0],
+    [trainingAreaBounds.scale]
   );
 
   // Track last facing rotation for when movement stops
