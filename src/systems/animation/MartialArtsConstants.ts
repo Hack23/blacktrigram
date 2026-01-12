@@ -469,6 +469,7 @@ export type PunchPhaseName = keyof typeof PUNCH_PHASES;
  * - weightDistribution: Front/back weight ratio (체중분배)
  * - stanceWidth: Distance between feet in shoulder widths (발간격)
  * - hipHeight: Hip height relative to standing (0-1 scale) (엉덩이높이)
+ * - tacticalRationale: Combat purpose of stance width (전술적 근거)
  * 
  * Angle conventions:
  * - 180° = Fully straight leg (완전히 펴진 다리)
@@ -478,6 +479,12 @@ export type PunchPhaseName = keyof typeof PUNCH_PHASES;
  * Weight distribution:
  * - front: 0.6 = 60% weight on front leg (앞발 60% 체중)
  * - back: 0.4 = 40% weight on back leg (뒷발 40% 체중)
+ * 
+ * Stance width tactical purposes:
+ * - Wide stances (1.5-2.0x): Stability, power generation, low center of gravity
+ * - Medium stances (1.0-1.3x): Balance between mobility and stability
+ * - Narrow stances (0.8-1.0x): High mobility, quick footwork
+ * - Single leg (0.0x): Maximum mobility, continuous attack capability
  * 
  * Sources:
  * - Taekwondo (태권도) - KTA/WTF standard stances
@@ -497,6 +504,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Deep front knee bend for power generation
    * - Extended back leg for solid base
    * - 60/40 weight distribution favoring front
+   * - 1.2-1.5x shoulder width for forward power transfer
+   * 
+   * Tactical rationale for stance width:
+   * - Medium-wide base (1.2-1.5x) provides forward power generation
+   * - Wide enough for stability during penetrating strikes
+   * - Narrower than defensive stances for offensive mobility
+   * - Optimal for weight transfer into punches and forward kicks
    * 
    * Korean martial art source: Taekwondo (태권도)
    * 
@@ -506,8 +520,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 70,      // Deep front knee ~70° flexion (깊은 앞무릎 굽힘)
     backKneeBend: 160,      // Extended back leg ~160° (뻗은 뒷다리)
     weightDistribution: { front: 0.6, back: 0.4 },  // 60% front (앞발 60%)
-    stanceWidth: 1.2,       // 1.2x shoulder width (어깨너비의 1.2배)
+    stanceWidth: 1.35,      // 1.2-1.5x shoulder width avg (어깨너비의 1.35배)
     hipHeight: 0.85,        // Lower hips for stability (낮은 엉덩이)
+    tacticalRationale: "power_generation" as const, // Forward striking power
   },
 
   /**
@@ -521,6 +536,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Front leg light and mobile for kicking
    * - Back knee bent for spring-loaded movement
    * - High hip position for quick transitions
+   * - 0.8-1.0x shoulder width for maximum mobility
+   * 
+   * Tactical rationale for stance width:
+   * - Narrow base (0.8-1.0x) enables rapid footwork
+   * - Quick transitions between stances
+   * - Mobile front leg ready for instant kicks or steps
+   * - Back-weighted for defensive redirection
    * 
    * Korean martial art source: Hapkido (합기도)
    * 
@@ -530,8 +552,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 170,     // Nearly straight front leg ~170° (거의 펴진 앞다리)
     backKneeBend: 120,      // Bent back knee ~120° (굽은 뒷무릎)
     weightDistribution: { front: 0.1, back: 0.9 },  // 10% front, 90% back (앞발 10%, 뒷발 90%)
-    stanceWidth: 0.8,       // Narrow stance 0.8x shoulder width (좁은 자세)
+    stanceWidth: 0.9,       // 0.8-1.0x shoulder width avg (좁은 자세)
     hipHeight: 0.90,        // Higher hips for mobility (높은 엉덩이)
+    tacticalRationale: "mobility" as const, // Quick footwork and transitions
   },
 
   /**
@@ -545,6 +568,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Mobile and ready to move in any direction
    * - Medium width for stability and mobility
    * - Standard combat readiness position
+   * - 1.0-1.2x shoulder width for balanced combat
+   * 
+   * Tactical rationale for stance width:
+   * - Standard width (1.0-1.2x) balances all combat attributes
+   * - Quick directional changes while maintaining stability
+   * - Optimal for precision vital point targeting
+   * - Neutral foundation for offensive and defensive transitions
    * 
    * Korean martial art source: Taekwondo (태권도)
    * 
@@ -554,8 +584,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 135,     // Moderate front bend ~135° (중간 앞무릎 굽힘)
     backKneeBend: 135,      // Equal back bend ~135° (같은 뒷무릎 굽힘)
     weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 balance (균형 50/50)
-    stanceWidth: 1.0,       // Shoulder width stance (어깨너비 자세)
+    stanceWidth: 1.1,       // 1.0-1.2x shoulder width avg (어깨너비 자세)
     hipHeight: 0.88,        // Medium height for balance (중간 높이)
+    tacticalRationale: "balance" as const, // All-around combat effectiveness
   },
 
   /**
@@ -569,6 +600,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Equal weight distribution (50/50)
    * - Very low hip position for ground stability
    * - Feet parallel, pointing forward
+   * - 1.8-2.2x shoulder width for maximum stability
+   * 
+   * Tactical rationale for stance width:
+   * - Very wide base (1.8-2.2x) maximizes lateral stability
+   * - Low center of gravity for explosive power generation
+   * - Immovable platform for devastating techniques
+   * - Trades mobility for overwhelming striking force
    * 
    * Korean martial art source: Taekwondo (태권도)
    * 
@@ -578,8 +616,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 90,      // Deep right angle bend ~90° (깊은 직각 굽힘)
     backKneeBend: 90,       // Equal deep bend ~90° (같은 깊은 굽힘)
     weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 power base (힘의 기반 50/50)
-    stanceWidth: 1.5,       // Wide stance 1.5x shoulder width (넓은 자세)
+    stanceWidth: 2.0,       // 1.8-2.2x shoulder width avg (매우 넓은 자세)
     hipHeight: 0.75,        // Very low for explosive power (매우 낮은 높이)
+    tacticalRationale: "stability" as const, // Maximum stability and power
   },
 
   /**
@@ -593,6 +632,14 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - All weight on standing leg (100%)
    * - Raised leg ready for rapid kicks
    * - High hip position for mobility
+   * - 0.0 stance width (single leg stance)
+   * 
+   * Tactical rationale for stance width:
+   * - Zero width (0.0x) - single leg stance for extreme mobility
+   * - Raised leg enables instant kicks without chambering
+   * - Maximum freedom of movement in all directions
+   * - Continuous pressure capability through rapid strikes
+   * - Highest mobility, lowest stability trade-off
    * 
    * Korean martial art source: Taekyon (택견)
    * 
@@ -604,6 +651,7 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     weightDistribution: { front: 1.0, back: 0.0 },  // 100% on standing leg (선 다리 100%)
     stanceWidth: 0.0,       // Single leg stance (한 다리 자세)
     hipHeight: 0.92,        // High for balance and mobility (높은 균형)
+    tacticalRationale: "extreme_mobility" as const, // Maximum mobility and continuous attack
   },
 
   /**
@@ -617,6 +665,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Front leg light for quick defense
    * - 30/70 weight distribution (back-heavy)
    * - Medium-low hip for stability
+   * - 1.0-1.3x shoulder width for adaptive response
+   * 
+   * Tactical rationale for stance width:
+   * - Medium width (1.0-1.3x) enables flow and adaptation
+   * - Wide enough for stable defensive absorption
+   * - Narrow enough for quick counter-movements
+   * - Optimal for redirecting opponent's force
    * 
    * Korean martial art source: Hapkido (합기도)
    * 
@@ -626,8 +681,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 150,     // Extended front leg ~150° (뻗은 앞다리)
     backKneeBend: 100,      // Deep back bend ~100° (깊은 뒷다리 굽힘)
     weightDistribution: { front: 0.3, back: 0.7 },  // 30% front, 70% back (앞발 30%, 뒷발 70%)
-    stanceWidth: 1.1,       // Medium-wide stance (중간 넓이 자세)
+    stanceWidth: 1.15,      // 1.0-1.3x shoulder width avg (중간 넓이 자세)
     hipHeight: 0.82,        // Medium-low for absorption (중간 낮은 높이)
+    tacticalRationale: "adaptability" as const, // Flow and counter techniques
   },
 
   /**
@@ -641,6 +697,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Slightly back-weighted (40/60)
    * - Medium width for solid base
    * - Medium-high hip for counter readiness
+   * - 1.3-1.6x shoulder width for defensive strength
+   * 
+   * Tactical rationale for stance width:
+   * - Wide base (1.3-1.6x) provides immovable blocking platform
+   * - Stable foundation for absorbing powerful attacks
+   * - Wide enough for strong defensive counters
+   * - Rooted position for reversal techniques
    * 
    * Korean martial art source: Hapkido (합기도)
    * 
@@ -650,8 +713,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 120,     // Moderate front bend ~120° (중간 앞무릎 굽힘)
     backKneeBend: 120,      // Equal moderate bend ~120° (같은 중간 굽힘)
     weightDistribution: { front: 0.4, back: 0.6 },  // 40% front, 60% back (앞발 40%, 뒷발 60%)
-    stanceWidth: 1.0,       // Shoulder width stance (어깨너비 자세)
+    stanceWidth: 1.45,      // 1.3-1.6x shoulder width avg (어깨너비 자세)
     hipHeight: 0.87,        // Medium-high for defense (중간 높은 방어)
+    tacticalRationale: "defensive_block" as const, // Immovable blocking and counters
   },
 
   /**
@@ -665,6 +729,13 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Equal weight distribution (50/50)
    * - Wide stance for base and grappling
    * - Very low hip position for ground control
+   * - 1.6-2.0x shoulder width for grappling control
+   * 
+   * Tactical rationale for stance width:
+   * - Very wide base (1.6-2.0x) optimal for takedown defense
+   * - Low center of gravity prevents being thrown
+   * - Wide platform for initiating grappling techniques
+   * - Grounded power for throws and slams
    * 
    * Korean martial art source: Ssireum (씨름) / Hapkido ground techniques
    * 
@@ -674,8 +745,9 @@ export const KOREAN_STANCE_BIOMECHANICS = {
     frontKneeBend: 80,      // Very deep bend ~80° (매우 깊은 굽힘)
     backKneeBend: 80,       // Equal deep bend ~80° (같은 깊은 굽힘)
     weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 grounded (땅에 붙은 50/50)
-    stanceWidth: 1.3,       // Wide for grappling (넓은 그래플링)
+    stanceWidth: 1.8,       // 1.6-2.0x shoulder width avg (넓은 그래플링)
     hipHeight: 0.72,        // Very low for takedowns (매우 낮은 넘어뜨리기)
+    tacticalRationale: "grounding" as const, // Takedown and ground control
   },
 } as const;
 
@@ -945,4 +1017,65 @@ export enum AnimationType {
   // Idle/Stance
   IDLE = "idle",
   STANCE = "stance",
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STANCE WIDTH CALCULATION HELPERS (발너비 계산 헬퍼)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Calculate lateral stance width in world units (meters)
+ * 
+ * Converts stance width from shoulder width multipliers to actual
+ * world-space distance for foot positioning in 3D space.
+ * 
+ * Formula: stanceWidth (m) = shoulderWidth (cm) * multiplier / 100
+ * 
+ * Example:
+ * - shoulderWidth: 46 cm (Musa archetype)
+ * - Jin Thunder stance: 2.0x shoulder width
+ * - Result: 46 * 2.0 / 100 = 0.92m lateral distance between feet
+ * 
+ * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS (e.g., 1.5 for Jin)
+ * @param shoulderWidth - Fighter's shoulder width in centimeters (from physical attributes)
+ * @returns Stance width in meters for 3D world positioning
+ * 
+ * @korean 자세너비계산
+ */
+export function calculateStanceWidth(
+  stanceWidthMultiplier: number,
+  shoulderWidth: number
+): number {
+  // Convert cm to meters: (shoulderWidth_cm * multiplier) / 100
+  return (shoulderWidth * stanceWidthMultiplier) / 100;
+}
+
+/**
+ * Calculate foot X positions for left and right feet based on stance width
+ * 
+ * Returns X-axis offsets for positioning FOOT_L and FOOT_R bones.
+ * Assumes center point (pelvis) is at X=0.
+ * 
+ * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
+ * @param shoulderWidth - Fighter's shoulder width in centimeters
+ * @returns Object with leftFootX (negative) and rightFootX (positive) positions
+ * 
+ * @example
+ * // Jin Thunder stance (2.0x) for Musa (46cm shoulders)
+ * const footPositions = calculateFootPositions(2.0, 46);
+ * // Returns: { leftFootX: -0.46, rightFootX: 0.46 }
+ * 
+ * @korean 발위치계산
+ */
+export function calculateFootPositions(
+  stanceWidthMultiplier: number,
+  shoulderWidth: number
+): { readonly leftFootX: number; readonly rightFootX: number } {
+  const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
+  const halfWidth = totalWidth / 2;
+
+  return {
+    leftFootX: -halfWidth,  // Left foot is negative X
+    rightFootX: halfWidth,  // Right foot is positive X
+  };
 }
