@@ -223,6 +223,11 @@ export class AIDecisionTree {
   private lastStanceChange = 0;
   private readonly stanceChangeCooldown = 3000; // 3 seconds
 
+  // Psychological warfare tracking (Issue #enhance-intelligence-operative-ai)
+  // Tracks cumulative psychological pressure for Intelligence Operative archetype
+  private psychologicalPressure = 0; // 0-100: Cumulative psychological pressure
+  private lastPressureActionTime = 0; // Timestamp of last pressure-building action
+
   // Systems for advanced decision-making
   private trigramSystem: TrigramSystem;
   private difficultyLevel: number = 0.5; // 0.0-1.0: AI skill level
@@ -455,6 +460,16 @@ export class AIDecisionTree {
     
     const modified = { ...weights };
     
+    // Check for psychological pressure buildup (Issue #enhance-intelligence-operative-ai Phase 3)
+    const pressureStrike = this.shouldExecutePressureStrike(vulnerability);
+    if (pressureStrike) {
+      // Psychological pressure ≥ 50 + Opponent VULNERABLE = Decisive Strike
+      modified.technique *= 3.0; // Execute decisive psychological technique
+      modified.attack *= 0.3; // Reduce basic attacks
+      console.log(`[AI] Jeongbo: Psychological pressure at ${this.psychologicalPressure.toFixed(0)} - decisive strike (심리적 압박 결정타)`);
+      return modified; // Override other modifiers for pressure strike
+    }
+    
     // HELPLESS: Execute precision takedown (90% priority)
     if (vulnerability.isHelpless) {
       modified.technique *= 5.0; // Massive technique priority for Precision Takedown
@@ -476,7 +491,7 @@ export class AIDecisionTree {
       modified.feint *= 2.0; // Increase psychological pressure
       modified.circle *= 1.5; // Intimidation tactics (circling)
       modified.technique *= 1.3; // "Psychological Warfare" technique
-      console.log("[AI] Jeongbo: Opponent SHAKEN - psychological warfare (심리전)");
+      console.log(`[AI] Jeongbo: Opponent SHAKEN - psychological warfare (심리전) [pressure: ${this.psychologicalPressure.toFixed(0)}]`);
     }
     
     // Low stamina: Relentless pressure (60% priority)
@@ -494,6 +509,75 @@ export class AIDecisionTree {
     }
     
     return modified;
+  }
+
+  /**
+   * Build psychological pressure through intimidation tactics
+   * 
+   * Intelligence Operative uses feints, circling, and approach/retreat patterns
+   * to build cumulative psychological pressure on opponent. When pressure reaches
+   * 50+ and opponent is VULNERABLE, triggers decisive strike.
+   * 
+   * **Psychological Tactics (심리전 전술)**:
+   * - Feints: +10 pressure (fake attacks create hesitation)
+   * - Circling: +5 pressure (predator circling prey)
+   * - Approach: +3 pressure (aggressive positioning)
+   * - Decay: -3 pressure per second (pressure fades without action)
+   * 
+   * @korean 심리적 압박 증가
+   * 
+   * @param actionType - Type of action taken (FEINT, CIRCLE, APPROACH, etc.)
+   * @param now - Current timestamp for decay calculation
+   */
+  private buildPsychologicalPressure(actionType: AIActionType, now: number): void {
+    // Apply pressure decay (3 points per second since last pressure action)
+    if (this.lastPressureActionTime > 0) {
+      const timeSinceLastAction = now - this.lastPressureActionTime;
+      const decayAmount = (timeSinceLastAction / 1000) * 3; // 3 points per second
+      this.psychologicalPressure = Math.max(0, this.psychologicalPressure - decayAmount);
+    }
+    
+    // Build pressure based on action type
+    switch (actionType) {
+      case AIActionType.FEINT:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 10);
+        this.lastPressureActionTime = now;
+        break;
+      case AIActionType.CIRCLE:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 5);
+        this.lastPressureActionTime = now;
+        break;
+      case AIActionType.APPROACH:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 3);
+        this.lastPressureActionTime = now;
+        break;
+      // Attacks and techniques release pressure (execution phase)
+      case AIActionType.ATTACK:
+      case AIActionType.TECHNIQUE:
+        // Pressure resets after decisive action
+        this.psychologicalPressure = Math.max(0, this.psychologicalPressure * 0.5);
+        break;
+    }
+  }
+
+  /**
+   * Check if psychological pressure should trigger decisive strike
+   * 
+   * Jeongbo executes decisive technique when:
+   * - Psychological pressure ≥ 50 (sustained intimidation)
+   * - Opponent is VULNERABLE or worse (balance < 30)
+   * - Returns true to boost technique priority
+   * 
+   * @korean 심리적 압박 결정타 확인
+   * 
+   * @param vulnerability - Vulnerability assessment context
+   * @returns True if pressure warrants decisive strike
+   */
+  private shouldExecutePressureStrike(vulnerability: VulnerabilityContext): boolean {
+    return (
+      this.psychologicalPressure >= 50 &&
+      (vulnerability.isVulnerable || vulnerability.isHelpless)
+    );
   }
 
   /**
@@ -702,6 +786,11 @@ export class AIDecisionTree {
         current.priority > best.priority ? current : best
       );
 
+      // Build psychological pressure for Jeongbo (Issue #enhance-intelligence-operative-ai Phase 3)
+      if (personality.archetype === PlayerArchetype.JEONGBO_YOWON) {
+        this.buildPsychologicalPressure(bestDecision.action, now);
+      }
+
       // Track consecutive attacks
       if (
         bestDecision.action === AIActionType.ATTACK ||
@@ -719,6 +808,11 @@ export class AIDecisionTree {
     const bestDecision = modifiedDecisions.reduce((best, current) =>
       current.priority > best.priority ? current : best
     );
+
+    // Build psychological pressure for Jeongbo (Issue #enhance-intelligence-operative-ai Phase 3)
+    if (personality.archetype === PlayerArchetype.JEONGBO_YOWON) {
+      this.buildPsychologicalPressure(bestDecision.action, now);
+    }
 
     // Track consecutive attacks
     if (
@@ -1862,5 +1956,8 @@ export class AIDecisionTree {
     this.lastDecisionTime = 0;
     this.consecutiveAttacks = 0;
     this.lastStanceChange = 0;
+    // Reset psychological pressure tracking (Issue #enhance-intelligence-operative-ai Phase 3)
+    this.psychologicalPressure = 0;
+    this.lastPressureActionTime = 0;
   }
 }
