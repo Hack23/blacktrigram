@@ -67,6 +67,7 @@ import {
   UPPERCUT_ANIMATION,
 } from "./PunchAnimations";
 import { STANCE_ANIMATIONS } from "./StanceAnimations";
+import { ALL_ATTACK_ANIMATIONS } from "./StanceAttackAnimations";
 import {
   getAnimationForTechniqueOrDefault,
   getAnimationForTechnique as getTechniqueAnimationConfig,
@@ -149,6 +150,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...DARKOPS_ANIMATIONS,
   ...COMBO_ANIMATIONS,
   ...MOVEMENT_ANIMATIONS,
+  ...ALL_ATTACK_ANIMATIONS, // Stance-specific attack animations (24 unique)
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════
