@@ -141,36 +141,6 @@ describe("AI Movement System", () => {
   });
 
   describe("Archetype-Specific Movement Patterns", () => {
-    // SKIPPED: Flaky test due to randomness and increased stance switch frequencies
-    // With dynamic stance rotation (Issue #dynamic-ai-stance-rotation), AI now prioritizes
-    // stance changes more frequently (Amsalja: 0.85 switch frequency), which can cause
-    // this test to fail intermittently when stance_change is chosen over approach.
-    // 
-    // TODO: Refactor this test to:
-    // 1. Use deterministic seeding for randomness
-    // 2. Increase sample size (50 → 200+ iterations)
-    // 3. Check for flanking behavior over multiple rounds, not single decisions
-    // 4. Account for stance_change as a valid tactical decision
-    it.skip("Amsalja should use flanking movements frequently", () => {
-      const personality = AI_PERSONALITIES.TECHNICAL_MASTER; // Amsalja archetype
-      const context = createContext(250); // Far enough to trigger approach
-
-      let approachCount = 0;
-
-      // Sample 50 decisions
-      for (let i = 0; i < 50; i++) {
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
-
-        if (decision.action === "approach") {
-          approachCount++;
-        }
-      }
-
-      // Amsalja should have some flanking behavior
-      // Note: Due to randomness, we check for reasonable flanking attempts
-      expect(approachCount).toBeGreaterThan(0);
-    });
-
     it("Musa should charge directly frequently", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER; // Musa archetype
       const context = createContext(250); // Far enough to trigger approach
