@@ -80,10 +80,15 @@ function calculateHitAccuracy(
       stance
     );
     
-    const effectiveReach = reachResult.effectiveReach;
+    const effectiveReachMeters = reachResult.effectiveReach;
     
-    // Convert reach from meters to scene units (roughly 1:1 in training)
-    const reachInUnits = effectiveReach;
+    // Convert reach from meters to training scene units.
+    // Training scenes are authored in real-world meters, so we intentionally
+    // use a 1:1 conversion here. Combat AI, by contrast, applies a 100x
+    // multiplier for its own coordinate system; do not mirror that scaling
+    // in training without updating this constant and its documentation.
+    const METERS_TO_TRAINING_UNITS = 1.0 as const;
+    const reachInUnits = effectiveReachMeters * METERS_TO_TRAINING_UNITS;
     
     // Accuracy based on how close actual distance is to effective reach
     if (distance <= reachInUnits) {

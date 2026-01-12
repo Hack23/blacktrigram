@@ -67,6 +67,8 @@ import {
 import { getBalanceState } from "@/utils/player3DHelpers";
 import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttributes";
 import { physicalReachCalculator } from "@/systems/physics";
+import { STANCE_REACH_MODIFIERS } from "@/types/physics";
+import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -140,13 +142,13 @@ function getViableTechniques(
         ? physicalAttributes.legLength 
         : physicalAttributes.armLength;
       
-      // Apply stance modifier (approximate 10% for non-specific stances)
-      const stanceModifier = 1.1;
+      // Apply stance modifier using actual stance-specific modifiers
+      const stanceModifier = STANCE_REACH_MODIFIERS[stance];
       maxReach = (limbLength / 100) * tech.reachConfig.baseExtension * stanceModifier;
     }
     
-    // Convert meters to pixels (approximate: 1m ≈ 100px in combat screen)
-    const maxRange = maxReach * 100;
+    // Convert meters to pixels using shared scaling constant
+    const maxRange = maxReach * METERS_TO_PIXELS_SCALE;
 
     // Check if opponent is within technique range
     const inRange = distance <= maxRange;
