@@ -1,9 +1,9 @@
 /**
  * AI Combo System for Korean Martial Arts
- * Manages multi-hit combo sequences based on trigram stances
+ * Manages multi-hit combo sequences based on trigram stances and archetype signature combos
  */
 
-import { TrigramStance } from "@/types";
+import { TrigramStance, PlayerArchetype } from "@/types";
 import { KoreanTechnique } from "@/systems/vitalpoint";
 import { TRIGRAM_TECHNIQUES } from "@/systems/trigram";
 import { PlayerState } from "@/systems/player";
@@ -23,6 +23,214 @@ export interface ComboSequence {
     readonly korean: string;
     readonly english: string;
   };
+}
+
+/**
+ * Archetype signature combo sequence (2-3 technique chains)
+ * 
+ * These are special technique sequences that represent each archetype's
+ * fighting philosophy and preferred combat patterns.
+ * 
+ * @korean 원형 대표 연계 기술
+ */
+export interface ArchetypeComboSequence {
+  readonly archetype: PlayerArchetype;
+  readonly techniqueIds: readonly string[]; // 2-3 technique IDs in sequence
+  readonly name: {
+    readonly korean: string;
+    readonly english: string;
+  };
+  readonly description: {
+    readonly korean: string;
+    readonly english: string;
+  };
+}
+
+/**
+ * Archetype Signature Combos
+ * 
+ * Each archetype has 2 signature combo sequences that reflect their combat philosophy.
+ * These combos are prioritized by AI for authentic fighting style representation.
+ * 
+ * Combo patterns:
+ * - Musa: Power amplification and defense-to-offense transitions
+ * - Amsalja: Setup-to-execution nerve strike sequences
+ * - Hacker: Analysis-to-burst and stun-to-shutdown patterns
+ * - Jeongbo: Weaken-to-exploit and counter-to-finish sequences
+ * - Jojik: Chaos-to-brutality and aggression-to-desperation patterns
+ * 
+ * @korean 원형 대표 연계 기술 정의
+ */
+export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly ArchetypeComboSequence[]> = {
+  [PlayerArchetype.MUSA]: [
+    {
+      archetype: PlayerArchetype.MUSA,
+      techniqueIds: ["musa_thunder_strike", "musa_dragon_fist"],
+      name: {
+        korean: "천둥용권",
+        english: "Thunder Dragon Combo",
+      },
+      description: {
+        korean: "천둥벽력으로 적을 흔들고 용권으로 관통합니다",
+        english: "Shake enemy with Thunder Strike, pierce through with Dragon Fist",
+      },
+    },
+    {
+      archetype: PlayerArchetype.MUSA,
+      techniqueIds: ["musa_iron_defense", "musa_mountain_breaker"],
+      name: {
+        korean: "철벽파산",
+        english: "Iron Mountain Break",
+      },
+      description: {
+        korean: "철벽방어로 적의 공격을 막고 파산격으로 반격합니다",
+        english: "Block with Iron Defense, counter with Mountain Breaker",
+      },
+    },
+  ],
+  
+  [PlayerArchetype.AMSALJA]: [
+    {
+      archetype: PlayerArchetype.AMSALJA,
+      techniqueIds: ["amsalja_shadow_strike", "amsalja_silent_death"],
+      name: {
+        korean: "암영무음",
+        english: "Shadow Silent Death",
+      },
+      description: {
+        korean: "암영격으로 신경을 교란하고 무음살로 마무리합니다",
+        english: "Disrupt nerves with Shadow Strike, finish with Silent Death",
+      },
+    },
+    {
+      archetype: PlayerArchetype.AMSALJA,
+      techniqueIds: ["amsalja_nerve_strike", "amsalja_deadly_precision"],
+      name: {
+        korean: "신경정밀",
+        english: "Nerve Precision Combo",
+      },
+      description: {
+        korean: "신경타로 마비시키고 치명정밀로 급소를 공격합니다",
+        english: "Paralyze with Nerve Strike, target vitals with Deadly Precision",
+      },
+    },
+  ],
+  
+  [PlayerArchetype.HACKER]: [
+    {
+      archetype: PlayerArchetype.HACKER,
+      techniqueIds: ["hacker_data_strike", "hacker_cyber_overdrive"],
+      name: {
+        korean: "데이터가속",
+        english: "Data Overdrive Burst",
+      },
+      description: {
+        korean: "데이터 타격으로 분석하고 사이버 가속으로 폭발적 공격을 수행합니다",
+        english: "Analyze with Data Strike, burst with Cyber Overdrive",
+      },
+    },
+    {
+      archetype: PlayerArchetype.HACKER,
+      techniqueIds: ["hacker_electric_shock", "hacker_system_crash"],
+      name: {
+        korean: "전격크래시",
+        english: "Electric System Crash",
+      },
+      description: {
+        korean: "전격으로 기절시키고 시스템 크래시로 무력화합니다",
+        english: "Stun with Electric Shock, disable with System Crash",
+      },
+    },
+  ],
+  
+  [PlayerArchetype.JEONGBO_YOWON]: [
+    {
+      archetype: PlayerArchetype.JEONGBO_YOWON,
+      techniqueIds: ["jeongbo_tactical_strike", "jeongbo_psychological_warfare"],
+      name: {
+        korean: "전술심리",
+        english: "Tactical Psychology Combo",
+      },
+      description: {
+        korean: "전술타격으로 약점을 노출시키고 심리전으로 정신을 교란합니다",
+        english: "Expose weakness with Tactical Strike, disrupt with Psychological Warfare",
+      },
+    },
+    {
+      archetype: PlayerArchetype.JEONGBO_YOWON,
+      techniqueIds: ["jeongbo_counter_intelligence", "jeongbo_intelligence_strike"],
+      name: {
+        korean: "역정보타격",
+        english: "Counter Intelligence Strike",
+      },
+      description: {
+        korean: "역정보공작으로 반격하고 정보타격으로 완벽하게 마무리합니다",
+        english: "Counter with Counter Intelligence, finish with Intelligence Strike",
+      },
+    },
+  ],
+  
+  [PlayerArchetype.JOJIK_POKRYEOKBAE]: [
+    {
+      archetype: PlayerArchetype.JOJIK_POKRYEOKBAE,
+      techniqueIds: ["jojik_street_brawl", "jojik_brutal_takedown"],
+      name: {
+        korean: "거리잔혹",
+        english: "Street Brutality Combo",
+      },
+      description: {
+        korean: "거리싸움으로 혼란을 주고 잔혹제압으로 무자비하게 쓰러뜨립니다",
+        english: "Create chaos with Street Brawl, brutalize with Brutal Takedown",
+      },
+    },
+    {
+      archetype: PlayerArchetype.JOJIK_POKRYEOKBAE,
+      techniqueIds: ["jojik_improvised_weapon", "jojik_ruthless_assault"],
+      name: {
+        korean: "즉석무자비",
+        english: "Improvised Ruthless Assault",
+      },
+      description: {
+        korean: "즉석무기로 공격하고 무자비공격으로 자비 없이 마무리합니다",
+        english: "Attack with Improvised Weapon, finish ruthlessly with Ruthless Assault",
+      },
+    },
+  ],
+};
+
+/**
+ * Get next technique in archetype signature combo
+ * 
+ * Checks if current technique is part of a signature combo sequence,
+ * and returns the next technique in that sequence if found.
+ * 
+ * @korean 원형 대표 연계 기술의 다음 기술 가져오기
+ * 
+ * @param currentTechniqueId - Current technique ID just executed
+ * @param archetype - Player archetype
+ * @returns Next technique ID in combo sequence, or undefined if no combo
+ */
+export function getNextComboTechnique(
+  currentTechniqueId: string,
+  archetype: PlayerArchetype
+): string | undefined {
+  const combos = ARCHETYPE_SIGNATURE_COMBOS[archetype];
+  
+  if (!combos) {
+    return undefined;
+  }
+  
+  for (const combo of combos) {
+    const currentIndex = combo.techniqueIds.indexOf(currentTechniqueId);
+    
+    // Found current technique in this combo
+    if (currentIndex !== -1 && currentIndex < combo.techniqueIds.length - 1) {
+      // Return next technique in sequence
+      return combo.techniqueIds[currentIndex + 1];
+    }
+  }
+  
+  return undefined; // No combo continuation found
 }
 
 /**
