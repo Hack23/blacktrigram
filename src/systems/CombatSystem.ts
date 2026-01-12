@@ -28,6 +28,7 @@ import {
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
+import { calculateDistance3D } from "../utils/math";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
 import {
@@ -296,10 +297,11 @@ export class CombatSystem implements CombatSystemInterface {
         attacker.currentStance
       );
       
-      // Check distance to defender
-      const distance = Math.sqrt(
-        Math.pow(defender.position.x - attacker.position.x, 2) +
-        Math.pow(defender.position.y - attacker.position.y, 2)
+      // Check distance to defender using 3D Euclidean distance
+      // Position type is 2D, so default z to 0 for both attacker and defender
+      const distance = calculateDistance3D(
+        [attacker.position.x, attacker.position.y, 0],
+        [defender.position.x, defender.position.y, 0]
       );
       
       // If out of reach, miss

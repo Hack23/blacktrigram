@@ -123,6 +123,51 @@ export interface PhysicalReachConfig {
 }
 
 /**
+ * Runtime validation helper for base extension multiplier.
+ *
+ * Ensures that the provided baseExtension value respects the documented range
+ * of 0.0 to 1.5. This should be used when loading or constructing technique
+ * configurations from dynamic sources (e.g. JSON, network, editors).
+ *
+ * **Korean**: 기본 확장 배수 검증
+ *
+ * @param baseExtension - The base extension multiplier to validate.
+ * @returns `true` if the value is within the inclusive range [0.0, 1.5], otherwise `false`.
+ * @public
+ * @category Combat Types
+ * @korean 기본확장배수검증
+ */
+export function isValidBaseExtension(baseExtension: number): boolean {
+  return baseExtension >= 0.0 && baseExtension <= 1.5;
+}
+
+/**
+ * Asserts that a PhysicalReachConfig has a valid baseExtension value.
+ *
+ * Throws a RangeError if the configuration's baseExtension is outside the
+ * allowed range of 0.0 to 1.5. This provides a canonical runtime check that
+ * can be used by reach calculators or technique loaders.
+ *
+ * **Korean**: 물리적 도달 설정 검증
+ *
+ * @param config - The PhysicalReachConfig instance to validate.
+ * @throws RangeError If baseExtension is outside [0.0, 1.5].
+ * @public
+ * @category Combat Types
+ * @korean 물리적도달설정검증
+ */
+export function assertValidPhysicalReachConfig(
+  config: PhysicalReachConfig
+): void {
+  if (!isValidBaseExtension(config.baseExtension)) {
+    throw new RangeError(
+      `Invalid baseExtension ${config.baseExtension}. ` +
+      "Expected a value between 0.0 and 1.5 inclusive."
+    );
+  }
+}
+
+/**
  * Technique types for attack reach calculation.
  * 
  * **Korean**: 기술 유형

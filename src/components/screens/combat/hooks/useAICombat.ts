@@ -117,32 +117,33 @@ function getViableTechniques(
 
   // Filter techniques that are viable for current situation
   const viableTechniques = stanceTechniques.filter((tech) => {
-    // Calculate technique effective range using PhysicalReachCalculator
+    // Calculate technique effective range using Physical ReachCalculator
     // Get AI player's physical attributes
     const physicalAttributes = getArchetypePhysicalAttributes(archetype);
     
     // Calculate maximum reach for this technique
-    // Use default animationType if not specified
+    // Use animationType if available, otherwise derive from reachConfig
     const animType = tech.animationType;
-    if (!animType) {
-      // Fallback: use reachConfig to estimate
-      // Convert baseExtension to approximate meters
+    let maxReach: number;
+    
+    if (animType) {
+      // Use PhysicalReachCalculator with animation timing
+      maxReach = physicalReachCalculator.calculateMaxReach(
+        physicalAttributes,
+        animType,
+        stance
+      );
+    } else {
+      // Fallback: Calculate reach directly from reachConfig
+      // This ensures consistency with technique definitions when no animation type
       const limbLength = tech.reachConfig.bodyPart === 'leg' 
         ? physicalAttributes.legLength 
         : physicalAttributes.armLength;
-      const maxReachMeters = (limbLength / 100) * tech.reachConfig.baseExtension * 1.1; // Add 10% for stance
-      const maxRange = maxReachMeters * 100; // Convert meters to cm, roughly to pixels
-      const inRange = distance <= maxRange;
-      const hasStamina = stamina >= tech.staminaCost;
-      return inRange && hasStamina;
+      
+      // Apply stance modifier (approximate 10% for non-specific stances)
+      const stanceModifier = 1.1;
+      maxReach = (limbLength / 100) * tech.reachConfig.baseExtension * stanceModifier;
     }
-    
-    // Use PhysicalReachCalculator for precise calculation
-    const maxReach = physicalReachCalculator.calculateMaxReach(
-      physicalAttributes,
-      animType,
-      stance
-    );
     
     // Convert meters to pixels (approximate: 1m ≈ 100px in combat screen)
     const maxRange = maxReach * 100;

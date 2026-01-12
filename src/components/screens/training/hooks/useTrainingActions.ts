@@ -15,6 +15,7 @@ import { Position, TrigramStance } from "../../../../types/common";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 import { physicalReachCalculator } from "../../../../systems/physics";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
+import { calculateDistance3D } from "../../../../utils/math";
 
 export interface UseTrainingActionsConfig {
   readonly state: TrainingScreenState;
@@ -53,19 +54,6 @@ export interface UseTrainingActionsReturn {
   readonly handleDummyDefeated: () => void;
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
-}
-
-/**
- * Calculate 3D Euclidean distance between two positions
- */
-function calculateDistance3D(
-  pos1: [number, number, number],
-  pos2: [number, number, number]
-): number {
-  const dx = pos1[0] - pos2[0];
-  const dy = pos1[1] - pos2[1];
-  const dz = pos1[2] - pos2[2];
-  return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
 /**
@@ -172,7 +160,7 @@ export function useTrainingActions(
       const animationType = pendingAttackRef.current?.animationType;
       const startTime = pendingAttackRef.current?.startTime;
       const currentTime = startTime !== undefined 
-        ? (performance.now() / 1000) - startTime 
+        ? Math.max(0, (performance.now() / 1000) - startTime)
         : undefined;
 
       const accuracy = calculateHitAccuracy(

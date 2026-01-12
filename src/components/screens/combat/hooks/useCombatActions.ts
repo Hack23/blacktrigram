@@ -234,13 +234,6 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
     combatAudio,
   } = config;
 
-  // Track active attack animations for timing-based hit detection
-  const attackAnimations = useRef<Map<number, {
-    animationType: AnimationType;
-    startTime: number;
-    duration: number;
-  }>>(new Map());
-
   // Refs to track knockback recovery timeouts for cleanup
   const player1KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const player2KnockbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -298,15 +291,6 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
 
     combatActions.setExecutingTechnique(true);
 
-    // Track animation start for timing-based hit detection
-    const animationType = attackTechnique.animationType || AnimationType.JAB;
-    const animationDuration = (attackTechnique.executionTime || 500) / 1000; // Convert ms to seconds
-    attackAnimations.current.set(0, {
-      animationType,
-      startTime: performance.now() / 1000, // Convert to seconds
-      duration: animationDuration,
-    });
-
     // Play attack sound based on technique damage/intensity
     const damage = attackTechnique.damage ?? 10;
     const intensity: AttackIntensity = 
@@ -315,11 +299,17 @@ export function useCombatActions(config: UseCombatActionsConfig): UseCombatActio
       damage >= 10 ? "medium" : "light";
     combatAudio?.playAttackSound(intensity);
 
-    // Calculate animation timing context for hit detection
-    const currentAnimTime = (performance.now() / 1000) - (attackAnimations.current.get(0)?.startTime || 0);
+    // Calculate animation timing context for hit detection.
+    // NOTE: Animation context is initialized at attack start (t=0). In a real-time
+    // combat loop with frame-by-frame collision detection, the actual hit detection
+    // would occur later during the animation when visual contact is made. For this
+    // synchronous implementation, we resolve the attack immediately with t=0.
+    // Future enhancement: Integrate with animation event system to detect hits at
+    // precise collision frames (e.g., frame 6 of a punch animation).
+    const animationType = attackTechnique.animationType || AnimationType.JAB;
     const animationContext = {
       animationType,
-      currentTime: currentAnimTime,
+      currentTime: 0, // Initialized at attack start; precise timing during collision in future
     };
 
     // Use combat system for proper calculation with animation context

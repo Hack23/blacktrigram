@@ -261,15 +261,17 @@ export class PhysicalReachCalculator {
   /**
    * Determine technique type from animation type.
    * 
+   * Public method exposed to avoid duplication across codebase.
+   * 
    * **Korean**: 애니메이션 타입에서 기술 유형 결정
    * 
    * @param animationType - Animation type
    * @returns Technique type
    * 
-   * @private
+   * @public
    * @korean 기술유형결정
    */
-  private getTechniqueTypeFromAnimation(animationType: AnimationType): TechniqueType {
+  public getTechniqueTypeFromAnimation(animationType: AnimationType): TechniqueType {
     // Punch techniques
     if (
       animationType === AnimationType.JAB ||

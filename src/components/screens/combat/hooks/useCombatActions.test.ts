@@ -198,10 +198,10 @@ describe("useCombatActions", () => {
           romanized: "teseuteu gisul",
         }),
         undefined, // vitalPointId
-        expect.objectContaining({
-          animationType: expect.any(String),
-          currentTime: expect.any(Number),
-        })
+        {
+          animationType: "jab",
+          currentTime: 0,
+        }
       );
     });
 

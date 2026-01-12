@@ -110,27 +110,23 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       playerStance
     );
 
-    // Determine body part from animation type
+    // Determine body part from technique type using PhysicalReachCalculator
+    const techniqueType = physicalReachCalculator.getTechniqueTypeFromAnimation(animationType);
     let bodyPart: string;
-    if (
-      animationType === AnimationType.JAB ||
-      animationType === AnimationType.CROSS ||
-      animationType === AnimationType.HOOK ||
-      animationType === AnimationType.UPPERCUT ||
-      animationType === AnimationType.ELBOW_STRIKE
-    ) {
-      bodyPart = "Arm (팔)";
-    } else if (
-      animationType === AnimationType.FRONT_KICK ||
-      animationType === AnimationType.ROUNDHOUSE_KICK ||
-      animationType === AnimationType.SIDE_KICK ||
-      animationType === AnimationType.BACK_KICK ||
-      animationType === AnimationType.AXE_KICK ||
-      animationType === AnimationType.KNEE_STRIKE
-    ) {
-      bodyPart = "Leg (다리)";
-    } else {
-      bodyPart = "Body (몸통)";
+    
+    switch (techniqueType) {
+      case "punch":
+      case "elbow":
+        bodyPart = "Arm (팔)";
+        break;
+      case "kick":
+      case "knee":
+        bodyPart = "Leg (다리)";
+        break;
+      case "pressure_point":
+      default:
+        bodyPart = "Body (몸통)";
+        break;
     }
 
     return {
