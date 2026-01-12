@@ -83,7 +83,7 @@ C4Container
     Rel(user, ui, "Interacts via input", "Touch/Mouse/Keyboard")
     Rel(ui, gameEngine, "Dispatches actions", "Function calls")
     Rel(gameEngine, renderer, "Updates visuals", "Three.js API")
-    Rel(gameEngine, audioEngine, "Triggers sounds", "Howler.js API")
+    Rel(gameEngine, audioEngine, "Triggers sounds", "Web Audio API")
     Rel(gameEngine, stateManager, "Updates state", "Zustand actions")
     Rel(gameEngine, animationSystem, "Execute techniques", "Animation API")
     Rel(animationSystem, renderer, "Bone transforms", "Three.js Skeleton")
@@ -928,7 +928,7 @@ src/
 │   ├── archetypePhysicalAttributes.ts  # 5 player archetypes
 │   └── archetypeClothing.ts # Clothing system per archetype
 ├── audio/                   # Audio system
-│   └── AudioProvider.ts     # Howler.js integration
+│   └── AudioProvider.ts     # Web Audio API integration
 ├── types/                   # TypeScript type definitions
 │   ├── constants/           # Korean colors, fonts, animations
 │   ├── skeletal.ts          # 14-bone skeletal system
@@ -1073,7 +1073,7 @@ graph TD
       ObjectPooling[🔄 Object Pooling - Three.js Objects]
       GeometryReuse[🔺 Geometry Reuse - Shared Meshes]
       CodeSplitting[📂 Dynamic import - Three.js Chunks]
-      AudioCompression[🎵 OGG/WebM Streaming - Howler.js]
+      AudioCompression[🎵 OGG/WebM Streaming - Web Audio API]
       Debounce[⏳ Debounce/Throttle - useFrame Optimization]
       Memoization[🧠 React.memo / useMemo - Component Optimization]
       FrustumCulling[👁️ Frustum Culling - Auto Off-screen Culling]
