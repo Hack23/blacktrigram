@@ -136,6 +136,8 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
                 onClick={() => onTechniqueSelect(index)}
                 onHover={onTechniqueHover}
                 isMobile={isMobile}
+                playerArchetype={player.archetype}
+                playerStance={player.currentStance}
                 position={{ x: cardX, y: 0 }}
               />
             </div>

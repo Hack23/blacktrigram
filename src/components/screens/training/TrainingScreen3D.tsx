@@ -347,6 +347,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 5: Training Actions (Hook-based)
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Get current stance for animation transitions (needed before useTrainingActions)
+  // 현재 자세 (애니메이션 전환용)
+  const currentStance = useMemo(
+    () => TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
+    [trainingState.currentStanceIndex]
+  );
+
   // Training actions hook (matches useCombatActions pattern)
   const {
     handleStartTraining,
@@ -361,6 +368,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     playerPosition,
     player3DPosition,
     dummyPosition,
+    playerArchetype: selectedArchetype,
+    playerStance: currentStance,
     audio,
     onPlayerUpdate: (updates) => {
       onPlayerUpdate(updates);
@@ -381,13 +390,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 6: Movement-Animation Synchronization
   // ═══════════════════════════════════════════════════════════════════════════
-
-  // Get current stance for animation transitions
-  // 현재 자세 (애니메이션 전환용)
-  const currentStance = useMemo(
-    () => TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
-    [trainingState.currentStanceIndex]
-  );
 
   // Sync movement with animation (matches CombatScreen pattern)
   const prevIsMovingRef = useRef<boolean>(isMoving);

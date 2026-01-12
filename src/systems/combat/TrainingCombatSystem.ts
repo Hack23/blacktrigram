@@ -3,6 +3,15 @@ import { CombatSystem } from "../CombatSystem";
 import { PlayerState } from "../player";
 import { KoreanTechnique } from "../vitalpoint";
 import { TrainingCombatResult } from "./types";
+import { AnimationType } from "../animation";
+
+/**
+ * Animation context for timing-based hit detection
+ */
+interface AnimationContext {
+  readonly animationType: AnimationType;
+  readonly currentTime: number;
+}
 
 /**
  * Training-specific combat system for Korean martial arts practice
@@ -66,20 +75,23 @@ export class TrainingCombatSystem extends CombatSystem {
 
   /**
    * Execute a training technique with detailed analysis
+   * Supports optional animation context for physics-based hit detection
    */
   executeTrainingTechnique(
     player: PlayerState,
     technique: KoreanTechnique,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
+    animationContext?: AnimationContext
   ): TrainingCombatResult {
     this.techniqueAttempts++;
 
-    // Base combat resolution
+    // Base combat resolution with animation context
     const baseResult = this.resolveAttack(
       player,
       this.trainingDummy,
       technique,
-      targetedVitalPointId
+      targetedVitalPointId,
+      animationContext
     );
 
     // Calculate training-specific scores

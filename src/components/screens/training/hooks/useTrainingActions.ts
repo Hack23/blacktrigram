@@ -9,9 +9,12 @@
 
 import { useCallback, useRef } from "react";
 import { AnimationState } from "../../../../systems/animation/types";
+import { AnimationType } from "../../../../systems/animation/MartialArtsAnimationBuilder";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { Position, TrigramStance } from "../../../../types/common";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
+import { physicalReachCalculator } from "../../../../systems/physics";
+import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 
 export interface UseTrainingActionsConfig {
   readonly state: TrainingScreenState;
@@ -19,6 +22,8 @@ export interface UseTrainingActionsConfig {
   readonly playerPosition: Position;
   readonly player3DPosition: [number, number, number];
   readonly dummyPosition: [number, number, number];
+  readonly playerArchetype: import("../../../../types/common").PlayerArchetype;
+  readonly playerStance: TrigramStance;
   readonly audio: {
     readonly playSFX: (sound: string) => void;
   };
@@ -36,6 +41,8 @@ export interface UseTrainingActionsConfig {
   readonly pendingAttackRef: React.MutableRefObject<{
     accuracy: number;
     vitalPoint: string;
+    animationType?: AnimationType;
+    startTime?: number;
   } | null>;
 }
 
@@ -49,17 +56,60 @@ export interface UseTrainingActionsReturn {
 }
 
 /**
- * Calculate hit accuracy based on distance from player to dummy
- * Uses squared distance to avoid expensive Math.sqrt
+ * Calculate 3D Euclidean distance between two positions
+ */
+function calculateDistance3D(
+  pos1: [number, number, number],
+  pos2: [number, number, number]
+): number {
+  const dx = pos1[0] - pos2[0];
+  const dy = pos1[1] - pos2[1];
+  const dz = pos1[2] - pos2[2];
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+
+/**
+ * Calculate hit accuracy based on distance and effective reach
+ * Uses PhysicalReachCalculator for animation-aware reach calculation
  */
 function calculateHitAccuracy(
   playerPos: [number, number, number],
-  dummyPos: [number, number, number]
+  dummyPos: [number, number, number],
+  archetype: import("../../../../types/common").PlayerArchetype,
+  stance: TrigramStance,
+  animationType?: AnimationType,
+  animationTime?: number
 ): number {
-  const dx = playerPos[0] - dummyPos[0];
-  const dz = playerPos[2] - dummyPos[2];
-  const squaredDistance = dx * dx + dz * dz;
-  // Max effective range is 8 units (squared = 64)
+  const distance = calculateDistance3D(playerPos, dummyPos);
+  
+  // If animation info available, use physics-based reach calculation
+  if (animationType !== undefined && animationTime !== undefined) {
+    const physicalAttributes = getArchetypePhysicalAttributes(archetype);
+    const reachResult = physicalReachCalculator.calculateReach(
+      physicalAttributes,
+      animationType,
+      animationTime,
+      stance
+    );
+    
+    const effectiveReach = reachResult.effectiveReach;
+    
+    // Convert reach from meters to scene units (roughly 1:1 in training)
+    const reachInUnits = effectiveReach;
+    
+    // Accuracy based on how close actual distance is to effective reach
+    if (distance <= reachInUnits) {
+      // Within reach: accuracy based on how centered the hit is
+      return Math.max(0.7, 1.0 - (distance / reachInUnits) * 0.3);
+    } else {
+      // Out of reach: accuracy drops quickly
+      const overreach = distance - reachInUnits;
+      return Math.max(0, 0.7 - overreach * 0.5);
+    }
+  }
+  
+  // Fallback: use simple distance calculation (legacy behavior)
+  const squaredDistance = (playerPos[0] - dummyPos[0]) ** 2 + (playerPos[2] - dummyPos[2]) ** 2;
   return Math.max(0, 1 - squaredDistance / 64);
 }
 
@@ -75,6 +125,8 @@ export function useTrainingActions(
     actions,
     player3DPosition,
     dummyPosition,
+    playerArchetype,
+    playerStance,
     audio,
     onPlayerUpdate,
     playerAnimation,
@@ -116,7 +168,21 @@ export function useTrainingActions(
 
   const handleDummyHit = useCallback(
     (_vitalPointId: string): boolean => {
-      const accuracy = calculateHitAccuracy(player3DPosition, dummyPosition);
+      // Get animation context from pending attack if available
+      const animationType = pendingAttackRef.current?.animationType;
+      const startTime = pendingAttackRef.current?.startTime;
+      const currentTime = startTime !== undefined 
+        ? (performance.now() / 1000) - startTime 
+        : undefined;
+
+      const accuracy = calculateHitAccuracy(
+        player3DPosition, 
+        dummyPosition,
+        playerArchetype,
+        playerStance,
+        animationType,
+        currentTime
+      );
 
       // Determine hit position (dummy center)
       const hitPosition: [number, number, number] = [
@@ -165,7 +231,7 @@ export function useTrainingActions(
         if (state.isTraining) {
           actions.registerMiss();
         }
-        actions.setFeedback("빗나감 | Miss - Get closer!");
+        actions.setFeedback("빗나감 | Miss - Out of reach!");
         audio.playSFX("menu_navigate");
 
         // Add miss effect
@@ -178,7 +244,16 @@ export function useTrainingActions(
         return false;
       }
     },
-    [state.isTraining, player3DPosition, dummyPosition, actions, audio]
+    [
+      state.isTraining, 
+      player3DPosition, 
+      dummyPosition, 
+      playerArchetype,
+      playerStance,
+      actions, 
+      audio, 
+      pendingAttackRef
+    ]
   );
 
   const handleStanceChange = useCallback(
@@ -197,12 +272,26 @@ export function useTrainingActions(
   );
 
   const handleAttack = useCallback(() => {
-    // Calculate attack accuracy and store it (allow attacks even when not training for exploration)
-    const accuracy = calculateHitAccuracy(player3DPosition, dummyPosition);
+    // Calculate attack accuracy and store it with animation timing
+    const animationType = AnimationType.JAB; // Default animation type for training
+    const startTime = performance.now() / 1000; // Current time in seconds
+    
+    const accuracy = calculateHitAccuracy(
+      player3DPosition, 
+      dummyPosition,
+      playerArchetype,
+      playerStance,
+      animationType,
+      0 // At attack initiation, time is 0
+    );
+    
     pendingAttackRef.current = {
       accuracy,
       vitalPoint: state.selectedVitalPoint ?? "generic",
+      animationType,
+      startTime,
     };
+    
     // Trigger attack animation - this will fire onFrame event at frame 6
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
@@ -212,6 +301,8 @@ export function useTrainingActions(
     state.selectedVitalPoint,
     player3DPosition,
     dummyPosition,
+    playerArchetype,
+    playerStance,
     playerAnimation,
     audio,
     pendingAttackRef,
