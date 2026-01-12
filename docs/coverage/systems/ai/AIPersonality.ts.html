@@ -425,7 +425,22 @@
 <a name='L360'></a><a href='#L360'>360</a>
 <a name='L361'></a><a href='#L361'>361</a>
 <a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a>
+<a name='L370'></a><a href='#L370'>370</a>
+<a name='L371'></a><a href='#L371'>371</a>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a>
+<a name='L376'></a><a href='#L376'>376</a>
+<a name='L377'></a><a href='#L377'>377</a>
+<a name='L378'></a><a href='#L378'>378</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,6 +584,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -755,7 +785,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5251x</span>
+<span class="cline-any cline-yes">22048x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -940,6 +970,9 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
    * - Reduced defense: 0.2 → 0.1 (all-in offensive)
    * - Increased combo tendency: 0.7 → 0.8 (sustained pressure)
    * - Reduced retreat threshold: 0.15 → 0.05 (honor code: fights to near-death)
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Increased stance switch frequency: 0.3 → 0.5 (more tactical flexibility)
    */
   AGGRESSIVE_STRIKER: {
     name: "Aggressive Striker",
@@ -948,7 +981,7 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
     aggressionLevel: 0.95, // Enhanced from 0.85
     defensePreference: 0.1, // Reduced from 0.2
     comboTendency: 0.8, // Increased from 0.7
-    stanceSwitchFrequency: 0.3,
+    stanceSwitchFrequency: 0.5, // Increased from 0.3 for dynamic stance rotation
     feintChance: 0.15,
     tacticalRetreatThreshold: 0.05, // Reduced from 0.15
     favoredStances: [
@@ -971,6 +1004,9 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
    * - Reduced defense: 0.6 → 0.3 (opportunistic aggression)
    * - Increased combo tendency: 0.4 → 0.6 (lethal sequences)
    * - Reduced retreat threshold: 0.35 → 0.20 (tactical retreat, not cowardice)
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Increased stance switch frequency: 0.7 → 0.85 (highly adaptive)
    */
   TECHNICAL_MASTER: {
     name: "Technical Master",
@@ -979,7 +1015,7 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
     aggressionLevel: 0.85, // Enhanced from 0.5
     defensePreference: 0.3, // Reduced from 0.6
     comboTendency: 0.6, // Increased from 0.4
-    stanceSwitchFrequency: 0.7,
+    stanceSwitchFrequency: 0.85, // Increased from 0.7 for dynamic stance rotation
     feintChance: 0.35,
     tacticalRetreatThreshold: 0.20, // Reduced from 0.35
     favoredStances: [
@@ -996,6 +1032,9 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
   /**
    * 균형 잡힌 자 (Gyunhyeong Jabin-ja) - Balanced Fighter
    * All-around fighter using Jeongbo Yowon archetype
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Increased stance switch frequency: 0.5 → 0.7 (strategic switching)
    */
   BALANCED_FIGHTER: {
     name: "Balanced Fighter",
@@ -1004,7 +1043,7 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
     aggressionLevel: 0.6,
     defensePreference: 0.5,
     comboTendency: 0.5,
-    stanceSwitchFrequency: 0.5,
+    stanceSwitchFrequency: 0.7, // Increased from 0.5 for dynamic stance rotation
     feintChance: 0.25,
     tacticalRetreatThreshold: 0.25,
     favoredStances: [
@@ -1022,6 +1061,9 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
   /**
    * 방어의 달인 (Bangeo-ui Dallin) - Defensive Specialist
    * Counter-attack focused using Hacker archetype
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Increased stance switch frequency: 0.4 → 0.6 (analytical adaptation)
    */
   DEFENSIVE_SPECIALIST: {
     name: "Defensive Specialist",
@@ -1030,7 +1072,7 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
     aggressionLevel: 0.35,
     defensePreference: 0.8,
     comboTendency: 0.3,
-    stanceSwitchFrequency: 0.4,
+    stanceSwitchFrequency: 0.6, // Increased from 0.4 for dynamic stance rotation
     feintChance: 0.4,
     tacticalRetreatThreshold: 0.4,
     favoredStances: [
@@ -1047,6 +1089,9 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
   /**
    * 혼돈의 전사 (Hondon-ui Jeonsa) - Chaos Warrior
    * Unpredictable fighter using Jojik Pokryeokbae archetype
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Increased stance switch frequency: 0.8 → 0.95 (unpredictable chaos)
    */
   CHAOS_WARRIOR: {
     name: "Chaos Warrior",
@@ -1055,7 +1100,7 @@ export const AI_PERSONALITIES: Record&lt;string, AIPersonality&gt; = {
     aggressionLevel: 0.75,
     defensePreference: 0.3,
     comboTendency: 0.6,
-    stanceSwitchFrequency: 0.8,
+    stanceSwitchFrequency: 0.95, // Increased from 0.8 for dynamic stance rotation
     feintChance: 0.5,
     tacticalRetreatThreshold: 0.1,
     favoredStances: [
@@ -1156,7 +1201,7 @@ export function <span class="fstat-no" title="function not covered" >getOptimalR
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T02:45:37.355Z
+                at 2026-01-12T15:46:36.613Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

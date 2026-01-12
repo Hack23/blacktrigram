@@ -359,6 +359,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/api/functions/applyCounterStanceDamage.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/api/functions/applyDamage.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -378,6 +384,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/functions/applyStatusEffect.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/functions/assertValidPhysicalReachConfig.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -1188,6 +1200,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/functions/isValidArchetype.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/functions/isValidBaseExtension.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -2249,6 +2267,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/api/interfaces/PhysicalReachConfig.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/api/interfaces/PhysicsEntityConfig.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -3275,6 +3299,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/api/types/ReachBodyPart.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/api/types/Required.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -3672,6 +3702,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/variables/ControlsGuide.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/variables/COUNTER_STANCE_DAMAGE_MULTIPLIER.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -4374,6 +4410,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/api/variables/StaminaWarning.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/api/variables/STANCE_COUNTERS.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -7061,6 +7103,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/lcov-report/systems/animation/AnimationHitTiming.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/lcov-report/systems/animation/AnimationOptimizations.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -7529,6 +7577,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/lcov-report/systems/physics/PhysicalReachCalculator.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/lcov-report/systems/physics/SpeedModifierSystem.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -7859,6 +7913,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/lcov-report/types/physicsConstants.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/lcov-report/types/player-visual.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -7949,6 +8009,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/lcov-report/utils/math.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/lcov-report/utils/objectPool.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -8004,6 +8070,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/coverage/lcov-report/utils/responsiveLayout.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/lcov-report/utils/responsiveLayoutHelpers.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -8076,6 +8148,12 @@
   </url>
   <url>
     <loc>https://blacktrigram.com/coverage/systems/animation/AnimationBuilder.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://blacktrigram.com/coverage/systems/animation/AnimationHitTiming.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -8549,6 +8627,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/systems/physics/PhysicalReachCalculator.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/systems/physics/SpeedModifierSystem.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -8879,6 +8963,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/types/physicsConstants.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/types/player-visual.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -8969,6 +9059,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/utils/math.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/utils/objectPool.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -9029,6 +9125,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://blacktrigram.com/coverage/utils/responsiveLayoutHelpers.ts.html</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://blacktrigram.com/coverage/utils/skeletonScaling.ts.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -9061,49 +9163,49 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_023954.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154058.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024135.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154238.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024150.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154252.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024204.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154306.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024217.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154320.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024229.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154331.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024243.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154345.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_024302.html</loc>
+    <loc>https://blacktrigram.com/cypress/mochawesome/mochawesome_01122026_154404.html</loc>
     <lastmod>2026-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

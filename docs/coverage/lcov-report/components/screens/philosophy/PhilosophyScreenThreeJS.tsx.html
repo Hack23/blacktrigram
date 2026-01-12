@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.18% </span>
+                <span class="strong">66.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/64</span>
+                <span class='fraction'>41/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.81% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>48/86</span>
+                <span class='fraction'>30/60</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65% </span>
+                <span class="strong">63.79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/60</span>
+                <span class='fraction'>37/58</span>
             </div>
         
             
@@ -808,12 +808,8 @@
 <a name='L743'></a><a href='#L743'>743</a>
 <a name='L744'></a><a href='#L744'>744</a>
 <a name='L745'></a><a href='#L745'>745</a>
-<a name='L746'></a><a href='#L746'>746</a>
-<a name='L747'></a><a href='#L747'>747</a>
-<a name='L748'></a><a href='#L748'>748</a>
-<a name='L749'></a><a href='#L749'>749</a>
-<a name='L750'></a><a href='#L750'>750</a>
-<a name='L751'></a><a href='#L751'>751</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L746'></a><a href='#L746'>746</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -864,16 +860,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1576,6 +1566,7 @@ import { TrigramStance } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 &nbsp;
@@ -1614,17 +1605,11 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
 &nbsp;
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth &lt; 768;
-  const isTablet = screenWidth &gt;= 768 &amp;&amp; screenWidth &lt; 1024;
-  const isLargeDesktop = screenWidth &gt;= 1920; // 4K/2K displays
 &nbsp;
+  // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
-    () =&gt; ({
-      padding: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >20 : i</span>sTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >25 : i</span>sLargeDesktop ? 18 : 25,
-      headerHeight: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >90 : i</span>sTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >100 : i</span>sLargeDesktop ? 75 : 100,
-      footerHeight: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >90 : i</span>sTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >100 : i</span>sLargeDesktop ? 75 : 100,
-      sectionSpacing: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >15 : i</span>sTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >18 : i</span>sLargeDesktop ? 12 : 18,
-    }),
-    [isMobile, isTablet, isLargeDesktop]
+    () =&gt; getLayoutConstants(screenWidth),
+    [screenWidth]
   );
 &nbsp;
   // Memoize scrollbar style to prevent re-creating style tag on every render
@@ -2320,7 +2305,7 @@ export default PhilosophyScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T02:45:37.655Z
+                at 2026-01-12T15:46:36.918Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

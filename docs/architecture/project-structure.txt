@@ -800,6 +800,7 @@ src/systems/animation/AdvancedJointMovements.test.ts
 src/systems/animation/AdvancedJointMovements.ts
 src/systems/animation/AnimationBuilder.test.ts
 src/systems/animation/AnimationBuilder.ts
+src/systems/animation/AnimationHitTiming.ts
 src/systems/animation/AnimationOptimizations.test.ts
 src/systems/animation/AnimationOptimizations.ts
 src/systems/animation/AnimationPriority.test.ts
@@ -918,6 +919,7 @@ src/systems/physics/KnockbackPhysics.test.ts
 src/systems/physics/KnockbackPhysics.ts
 src/systems/physics/MovementPhysics.test.ts
 src/systems/physics/MovementPhysics.ts
+src/systems/physics/PhysicalReachCalculator.ts
 src/systems/physics/SpeedModifierSystem.test.ts
 src/systems/physics/SpeedModifierSystem.ts
 src/systems/physics/__tests__/CombatPhysicsIntegration.test.ts
@@ -990,9 +992,11 @@ src/types/hand-animation.ts
 src/types/index.ts
 src/types/muscle.ts
 src/types/physics.ts
+src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/utils/__tests__/responsiveLayoutHelpers.test.ts
 src/utils/accessibility.axe.test.tsx
 src/utils/accessibility.test.ts
 src/utils/accessibility.ts
@@ -1018,6 +1022,7 @@ src/utils/htmlOverlayHelpers.test.ts
 src/utils/htmlOverlayHelpers.ts
 src/utils/index.ts
 src/utils/inputSystem.ts
+src/utils/math.ts
 src/utils/objectPool.test.ts
 src/utils/objectPool.ts
 src/utils/performance/PerformanceMonitor.test.ts
@@ -1033,6 +1038,7 @@ src/utils/playerUtils.test.ts
 src/utils/playerUtils.ts
 src/utils/responsiveLayout.test.ts
 src/utils/responsiveLayout.ts
+src/utils/responsiveLayoutHelpers.ts
 src/utils/skeletonScaling.test.ts
 src/utils/skeletonScaling.ts
 src/utils/stanceHelpers.test.ts
