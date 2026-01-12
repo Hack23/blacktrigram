@@ -123,8 +123,10 @@ export {
   SIDE_STEP_ANIMATION,
   WALK_ANIMATION,
   getAnimation,
-  getAnimationForTechnique,
 } from "./AttackAnimations";
+
+// Animation lookup with stance-specific support
+export { getAnimationForTechnique } from "./AnimationRegistry";
 
 // Step movement animations
 export {
