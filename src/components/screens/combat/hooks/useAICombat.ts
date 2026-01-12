@@ -624,11 +624,13 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
 
   // Stance fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
   // Tracks how long AI has been in current stance to encourage dynamic switching
-  const stanceFatigueRef = useRef({
+  // Use useState lazy initializer for Date.now() to avoid impure function call during render
+  const [initialStanceFatigue] = useState(() => ({
     currentStance: player.currentStance,
     timeInStance: 0,
     lastSwitchTime: Date.now(),
-  });
+  }));
+  const stanceFatigueRef = useRef(initialStanceFatigue);
 
   // Initialize previousDamageRef when round starts (issue #2529728007)
   useEffect(() => {
