@@ -25,6 +25,7 @@ import {
   KICK_PHASES,
   MARTIAL_POSES,
   PUNCH_PHASES,
+  calculateStanceWidth,
 } from "./MartialArtsConstants";
 
 // Import keyframe configuration helper
@@ -1675,8 +1676,8 @@ export class MartialArtsAnimationBuilder {
   ): this {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf && lastKf.bonePositions) {
-      // Calculate symmetric foot positions
-      const totalWidth = (shoulderWidth * stanceWidthMultiplier) / 100;
+      // Calculate symmetric foot positions using shared helper
+      const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
       const halfWidth = totalWidth / 2;
       
       // Create new map with existing positions plus foot positions
@@ -1707,7 +1708,7 @@ export class MartialArtsAnimationBuilder {
     stanceWidthMultiplier: number,
     shoulderWidth: number
   ): void {
-    const totalWidth = (shoulderWidth * stanceWidthMultiplier) / 100;
+    const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
     const halfWidth = totalWidth / 2;
     
     kf.position(BoneName.FOOT_L, -halfWidth, 0, 0);
