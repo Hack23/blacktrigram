@@ -6,6 +6,42 @@ import { TrigramCalculator } from "./trigram/TrigramCalculator";
 import { PLAYER_ARCHETYPES_DATA } from "./types";
 
 /**
+ * Stance counter relationships based on I Ching philosophy
+ * 
+ * Each stance has a counter stance that provides tactical advantage:
+ * - **GEON (Heaven)** countered by **GAM (Water)** - Water flows around Heaven's force
+ * - **TAE (Lake)** countered by **GON (Earth)** - Earth contains and grounds Lake
+ * - **LI (Fire)** countered by **SON (Wind)** - Wind disperses Fire's intensity
+ * - **JIN (Thunder)** countered by **GAN (Mountain)** - Mountain absorbs Thunder's impact
+ * - **SON (Wind)** countered by **GEON (Heaven)** - Heaven's force overpowers Wind
+ * - **GAM (Water)** countered by **TAE (Lake)** - Lake contains and channels Water
+ * - **GAN (Mountain)** countered by **LI (Fire)** - Fire melts Mountain's solidity
+ * - **GON (Earth)** countered by **JIN (Thunder)** - Thunder breaks Earth's stability
+ * 
+ * Using a counter stance provides a 1.2x damage multiplier in combat.
+ * 
+ * @korean 팔괘 상극 관계 (Eight Trigram Counter Relationships)
+ */
+export const STANCE_COUNTERS: Record<TrigramStance, TrigramStance> = {
+  [TrigramStance.GEON]: TrigramStance.GAM, // Water flows around Heaven
+  [TrigramStance.TAE]: TrigramStance.GON, // Earth grounds Lake
+  [TrigramStance.LI]: TrigramStance.SON, // Wind disperses Fire
+  [TrigramStance.JIN]: TrigramStance.GAN, // Mountain absorbs Thunder
+  [TrigramStance.SON]: TrigramStance.GEON, // Heaven overpowers Wind
+  [TrigramStance.GAM]: TrigramStance.TAE, // Lake contains Water
+  [TrigramStance.GAN]: TrigramStance.LI, // Fire melts Mountain
+  [TrigramStance.GON]: TrigramStance.JIN, // Thunder breaks Earth
+};
+
+/**
+ * Counter stance damage multiplier
+ * Applied when using a counter stance against opponent's stance
+ * 
+ * @korean 상극 자세 피해 배율
+ */
+export const COUNTER_STANCE_DAMAGE_MULTIPLIER = 1.2;
+
+/**
  * System for managing Eight Trigram (팔괘) stance transitions and combat calculations.
  *
  * **Korean**: 팔괘 시스템 (Eight Trigram System)
@@ -351,6 +387,64 @@ export class TrigramSystem {
     };
 
     return stanceNames[stance] || { korean: "Unknown", english: "Unknown" };
+  }
+
+  /**
+   * Gets the counter stance for opponent's current stance.
+   * 
+   * Returns the stance that provides tactical advantage against the opponent's stance,
+   * based on I Ching elemental relationships. Using a counter stance provides a 1.2x
+   * damage multiplier in combat.
+   * 
+   * **Korean Philosophy (상극 자세)**:
+   * - Water counters Heaven (flows around force)
+   * - Earth counters Lake (grounds and contains)
+   * - Wind counters Fire (disperses intensity)
+   * - Mountain counters Thunder (absorbs impact)
+   * 
+   * @param opponentStance - Opponent's current stance
+   * @returns Counter stance that provides advantage
+   * 
+   * @example
+   * ```typescript
+   * const counterStance = trigramSystem.getCounterStance(TrigramStance.GEON);
+   * console.log(counterStance); // TrigramStance.GAM (Water counters Heaven)
+   * ```
+   * 
+   * @public
+   * @korean 상극자세조회
+   */
+  getCounterStance(opponentStance: TrigramStance): TrigramStance {
+    return STANCE_COUNTERS[opponentStance];
+  }
+
+  /**
+   * Checks if player's stance counters opponent's stance.
+   * 
+   * Determines if the player has a tactical advantage through stance matchup.
+   * When true, player should receive a 1.2x damage multiplier for attacks.
+   * 
+   * @param myStance - Player's current stance
+   * @param opponentStance - Opponent's current stance
+   * @returns True if player's stance counters opponent's stance
+   * 
+   * @example
+   * ```typescript
+   * const hasAdvantage = trigramSystem.isCounterStance(
+   *   TrigramStance.GAM,  // My stance: Water
+   *   TrigramStance.GEON  // Opponent: Heaven
+   * ); // Returns true - Water counters Heaven
+   * 
+   * if (hasAdvantage) {
+   *   damage *= 1.2; // Apply counter bonus
+   * }
+   * ```
+   * 
+   * @public
+   * @korean 상극자세확인
+   */
+  isCounterStance(myStance: TrigramStance, opponentStance: TrigramStance): boolean {
+    return this.getCounterStance(opponentStance) === myStance;
   }
 
   /**

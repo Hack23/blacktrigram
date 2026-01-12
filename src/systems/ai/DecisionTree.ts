@@ -21,6 +21,22 @@ import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 
 /**
+ * Distance-based stance preferences for tactical positioning
+ * 
+ * Stances are categorized by optimal combat range:
+ * - **CLOSE (1-2 cells)**: Aggressive stances for close quarters (GEON, JIN, LI, SON)
+ * - **MID (3-4 cells)**: Adaptive stances for mid-range (GAM, TAE, GAN)
+ * - **FAR (5+ cells)**: Defensive stances for distance (GAN, GON)
+ * 
+ * @korean 거리별 자세 선호도
+ */
+const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
+  CLOSE: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.LI, TrigramStance.SON], // 1-2 cells
+  MID: [TrigramStance.GAM, TrigramStance.TAE, TrigramStance.GAN], // 3-4 cells
+  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells
+};
+
+/**
  * AI action types
  */
 export enum AIActionType {
@@ -654,12 +670,71 @@ export class AIDecisionTree {
   }
 
   /**
-   * Evaluate stance change using TrigramSystem
+   * Select stance based on distance to opponent
+   * 
+   * Chooses optimal stance for current combat range, prioritizing:
+   * 1. Overlap between distance-optimal stances and archetype preferred stances
+   * 2. Any distance-optimal stance if no overlap exists (expands tactical repertoire)
+   * 3. Avoids switching to current stance
+   * 
+   * **Distance Categories**:
+   * - CLOSE (≤2 cells / 80px): GEON, JIN, LI, SON - Aggressive close-quarters stances
+   * - MID (3-4 cells / 120-160px): GAM, TAE, GAN - Adaptive mid-range stances
+   * - FAR (≥5 cells / 200px+): GAN, GON - Defensive distance stances
+   * 
+   * @korean 거리별 자세 선택
+   * 
+   * @param distance - Distance to opponent in pixels
+   * @param preferredStances - Archetype's preferred stances
+   * @param currentStance - Current stance (to avoid redundant switches)
+   * @returns Optimal stance for distance, or undefined if no valid options
+   */
+  private selectStanceForDistance(
+    distance: number,
+    preferredStances: readonly TrigramStance[],
+    currentStance: TrigramStance
+  ): TrigramStance | undefined {
+    // Determine distance category (1 cell = ~40px based on game design)
+    const CELL_SIZE = 40;
+    let distanceCategory: string;
+    if (distance <= 2 * CELL_SIZE) {
+      distanceCategory = "CLOSE";
+    } else if (distance <= 4 * CELL_SIZE) {
+      distanceCategory = "MID";
+    } else {
+      distanceCategory = "FAR";
+    }
+    
+    const optimalStances = DISTANCE_BASED_STANCES[distanceCategory];
+    
+    // Find overlap between optimal stances and preferred stances
+    const candidates = optimalStances.filter(s => preferredStances.includes(s));
+    
+    // If no overlap, use any optimal stance (expand tactical repertoire)
+    const finalCandidates = candidates.length > 0 ? candidates : optimalStances;
+    
+    // Don't switch to current stance
+    const filtered = finalCandidates.filter(s => s !== currentStance);
+    
+    if (filtered.length === 0) {
+      return undefined;
+    }
+    
+    return filtered[Math.floor(Math.random() * filtered.length)];
+  }
+
+  /**
+   * Evaluate stance change using TrigramSystem and distance-based selection
    *
    * **Korean Philosophy (자세 전환)**:
    * Uses I Ching-based trigram system to find optimal stance transitions.
-   * Considers resource costs, counter-stance effectiveness, and archetype preferences.
-   * Each archetype has favored stances that they switch to more frequently.
+   * Considers resource costs, counter-stance effectiveness, archetype preferences,
+   * and distance-based tactical positioning.
+   * 
+   * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
+   * - Integrates distance-based stance selection for tactical variety
+   * - Prioritizes counter-stances for opponent matchup advantage
+   * - Expands tactical repertoire beyond archetype preferences when needed
    */
   private evaluateStanceChange(
     context: CombatContext,
@@ -698,8 +773,7 @@ export class AIDecisionTree {
       };
     }
 
-    // Use TrigramSystem to recommend optimal stance
-    // Create a minimal PlayerState object with only the properties actually used by recommendStance
+    // Create a minimal PlayerState object with only the properties actually used
     const playerState = {
       currentStance: context.playerStance,
       ki: context.playerKi,
@@ -707,53 +781,82 @@ export class AIDecisionTree {
       archetype: personality.archetype,
     } as unknown as PlayerState;
 
-    const recommendedStance = this.trigramSystem.recommendStance(playerState);
-
-    // Check if we can afford the transition
-    const canTransition = this.trigramSystem.canTransitionTo(
-      context.playerStance,
-      recommendedStance,
-      playerState
+    // Priority 1: Try distance-based stance selection for tactical variety
+    const distanceStance = this.selectStanceForDistance(
+      context.distanceToOpponent,
+      behavior.preferredStances,
+      context.playerStance
     );
+    
+    if (distanceStance && this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      distanceStance,
+      playerState
+    )) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: distanceStance,
+        priority: 7,
+        reason: `Distance-optimal stance (거리 최적 자세: ${distanceStance})`,
+      };
+    }
 
-    if (!canTransition) {
-      // Try archetype-preferred stance or counter-stance
-      const preferredAvailable = behavior.preferredStances.find(
-        (stance) => this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
-      );
-      
-      if (preferredAvailable) {
-        this.lastStanceChange = now;
-        return {
-          action: AIActionType.STANCE_CHANGE,
-          targetStance: preferredAvailable,
-          priority: 6,
-          reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
-        };
-      }
-      
-      // Fallback to counter-stance
-      const counterStance = this.selectCounterStance(
-        context.opponentStance,
-        personality
-      );
-
+    // Priority 2: Try counter-stance for opponent matchup
+    const counterStance = this.trigramSystem.getCounterStance(context.opponentStance);
+    if (counterStance !== context.playerStance && this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      counterStance,
+      playerState
+    )) {
       this.lastStanceChange = now;
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: counterStance,
-        priority: 5,
-        reason: `Counter stance to ${context.opponentStance} (급소 대응)`,
+        priority: 6,
+        reason: `Counter stance to ${context.opponentStance} (상극 대응)`,
       };
     }
 
-    this.lastStanceChange = now;
+    // Priority 3: Use TrigramSystem to recommend optimal stance
+    const recommendedStance = this.trigramSystem.recommendStance(playerState);
+    
+    if (this.trigramSystem.canTransitionTo(
+      context.playerStance,
+      recommendedStance,
+      playerState
+    )) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: recommendedStance,
+        priority: 6,
+        reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
+      };
+    }
 
+    // Priority 4: Try archetype-preferred stance
+    const preferredAvailable = behavior.preferredStances.find(
+      (stance) => 
+        stance !== context.playerStance &&
+        this.trigramSystem.canTransitionTo(context.playerStance, stance, playerState)
+    );
+    
+    if (preferredAvailable) {
+      this.lastStanceChange = now;
+      return {
+        action: AIActionType.STANCE_CHANGE,
+        targetStance: preferredAvailable,
+        priority: 5,
+        reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
+      };
+    }
+
+    // No viable stance change available
     return {
-      action: AIActionType.STANCE_CHANGE,
-      targetStance: recommendedStance,
-      priority: 6,
-      reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
+      action: AIActionType.WAIT,
+      priority: 0,
+      reason: "No viable stance transition",
     };
   }
 
