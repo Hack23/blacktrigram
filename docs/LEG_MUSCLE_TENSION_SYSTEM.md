@@ -153,6 +153,8 @@ The hook automatically applies stance tension during idle animations:
 
 ```typescript
 // Example usage from a component file under src/
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { useMuscleActivation } from "../hooks/useMuscleActivation";
 import { TrigramStance } from "../types/common";
 

@@ -95,9 +95,10 @@ export function useMuscleActivation(
 
   // Cleanup muscle manager on unmount
   useEffect(() => {
+    const manager = muscleManager.current;
     return () => {
       try {
-        muscleManager.current.reset();
+        manager.reset();
       } catch (error) {
         console.warn("MuscleActivationManager reset failed:", error);
       }
