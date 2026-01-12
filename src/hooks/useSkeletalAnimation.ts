@@ -26,6 +26,7 @@ import {
   interpolateKeyframeCached,
   performanceMonitor,
 } from "../systems/animation/AnimationOptimizations";
+import type { TrigramStance } from "../types/common";
 import type { PlayerAnimation } from "../types/player-visual";
 import type {
   SkeletalAnimation,
@@ -44,6 +45,8 @@ export interface UseSkeletalAnimationOptions {
   readonly attackAnimation?: string;
   /** Whether player is blocking */
   readonly isBlocking?: boolean;
+  /** Current player stance for trigram-specific idle animations */
+  readonly stance?: TrigramStance;
   /** Callback when animation completes */
   readonly onAnimationComplete?: () => void;
 }
@@ -108,6 +111,7 @@ export function useSkeletalAnimation(
     currentAnimation,
     attackAnimation,
     isBlocking = false,
+    stance,
     onAnimationComplete,
   } = options;
 
@@ -155,16 +159,38 @@ export function useSkeletalAnimation(
       }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "idle") {
-      // Idle animation - uses breathing cycle from BasicAnimations
-      selectedAnim = getAnimation("idle");
+      // Idle animation - use trigram-specific stance idle if stance is provided
+      // Otherwise fall back to generic idle breathing animation
+      if (stance) {
+        const stanceIdleAnim = `stance_${stance}` as PlayerAnimation;
+        selectedAnim = getAnimationByName(stanceIdleAnim);
+      }
+      // Fall back to generic idle if no stance or stance animation not found
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("idle");
+      }
       playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
-      // Walking animation
-      selectedAnim = getAnimation("walk");
+      // Walking animation - use trigram-specific walk if stance is provided
+      if (stance) {
+        const stanceWalkAnim = `walk_${stance}` as PlayerAnimation;
+        selectedAnim = getAnimationByName(stanceWalkAnim);
+      }
+      // Fall back to generic walk if no stance or stance animation not found
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("walk");
+      }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "run") {
-      // Running animation - faster gait from BasicAnimations
-      selectedAnim = getAnimation("run");
+      // Running animation - use trigram-specific run if stance is provided
+      if (stance) {
+        const stanceRunAnim = `run_${stance}` as PlayerAnimation;
+        selectedAnim = getAnimationByName(stanceRunAnim);
+      }
+      // Fall back to generic run if no stance or stance animation not found
+      if (!selectedAnim) {
+        selectedAnim = getAnimation("run");
+      }
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("fall_")) {
       // Fall animations - directional falls from BasicAnimations
@@ -224,7 +250,7 @@ export function useSkeletalAnimation(
         nextKeyframeIndex: 1,
       });
     }
-  }, [currentAnimation, attackAnimation, isBlocking]);
+  }, [currentAnimation, attackAnimation, isBlocking, stance]);
 
   // Update animation and apply to rig (called at 60fps in useFrame)
   // PHASE 2: Now uses cached interpolation and batch bone updates

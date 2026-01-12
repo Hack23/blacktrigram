@@ -166,6 +166,7 @@ export const SkeletalPlayer3D: React.FC<
     currentAnimation,
     attackAnimation,
     isBlocking,
+    stance,
     onAnimationComplete,
   });
 

@@ -315,6 +315,34 @@ export {
   getDefensiveAnimationsForStance,
 } from "./DefensiveAnimations";
 
+// Stance-specific locomotion animations (16 unique - 8 walk, 8 run)
+export {
+  GAM_RUN_ANIMATION,
+  GAM_WALK_ANIMATION,
+  GAN_RUN_ANIMATION,
+  GAN_WALK_ANIMATION,
+  // Run animations
+  GEON_RUN_ANIMATION,
+  // Walk animations
+  GEON_WALK_ANIMATION,
+  GON_RUN_ANIMATION,
+  GON_WALK_ANIMATION,
+  JIN_RUN_ANIMATION,
+  JIN_WALK_ANIMATION,
+  LI_RUN_ANIMATION,
+  LI_WALK_ANIMATION,
+  SON_RUN_ANIMATION,
+  SON_WALK_ANIMATION,
+  STANCE_LOCOMOTION_ANIMATIONS,
+  STANCE_RUN_ANIMATIONS,
+  // Collections and lookup functions
+  STANCE_WALK_ANIMATIONS,
+  TAE_RUN_ANIMATION,
+  TAE_WALK_ANIMATION,
+  getStanceRunAnimation,
+  getStanceWalkAnimation,
+} from "./StanceLocomotionAnimations";
+
 // Stance-specific attack animations (24 unique attacks - 3 per stance)
 export {
   ALL_ATTACK_ANIMATIONS,

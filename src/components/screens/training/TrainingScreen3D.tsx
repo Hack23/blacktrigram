@@ -702,12 +702,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Hide feedback after delay - 1500ms provides adequate time for bilingual text readability
+  // IMPORTANT: We depend on BOTH showFeedback AND feedback message so the timer resets
+  // when a new message arrives (even if showFeedback was already true)
   useEffect(() => {
     if (trainingState.showFeedback) {
       const timer = setTimeout(() => trainingActions.hideFeedback(), 1500);
       return () => clearTimeout(timer);
     }
-  }, [trainingState.showFeedback, trainingActions]);
+  }, [trainingState.showFeedback, trainingState.feedback, trainingActions]);
 
   // Update session duration
   useEffect(() => {

@@ -7,14 +7,14 @@
  * @korean 훈련상태관리훅 - useReducer를 사용한 통합 훈련 상태 관리
  */
 
-import { useCallback, useReducer } from "react";
+import { useCallback, useMemo, useReducer } from "react";
 // Re-export types from components for consistency
 import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
-import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
 import type { FootworkDrill } from "../components/FootworkDrillsHTML";
+import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
 
 // Re-export for convenience
-export type { AnatomyLayer, TrainingMode, FootworkDrill };
+export type { AnatomyLayer, FootworkDrill, TrainingMode };
 
 /**
  * Training statistics
@@ -365,92 +365,152 @@ export interface UseTrainingStateReturn {
 export function useTrainingState(): UseTrainingStateReturn {
   const [state, dispatch] = useReducer(trainingReducer, initialState);
 
-  const actions: TrainingActions = {
-    setTrainingMode: useCallback(
-      (mode: TrainingMode) =>
-        dispatch({ type: "SET_TRAINING_MODE", payload: mode }),
-      []
-    ),
-    startTraining: useCallback(() => dispatch({ type: "START_TRAINING" }), []),
-    stopTraining: useCallback(() => dispatch({ type: "STOP_TRAINING" }), []),
-    setSelectedVitalPoint: useCallback(
-      (point: string | null) =>
-        dispatch({ type: "SET_SELECTED_VITAL_POINT", payload: point }),
-      []
-    ),
-    setFeedback: useCallback(
-      (feedback: string, show = true) =>
-        dispatch({ type: "SET_FEEDBACK", payload: { feedback, show } }),
-      []
-    ),
-    hideFeedback: useCallback(() => dispatch({ type: "HIDE_FEEDBACK" }), []),
-    addHitEffect: useCallback(
-      (effect: Omit<TrainingHitEffect, "id">) =>
-        dispatch({ type: "ADD_HIT_EFFECT", payload: effect }),
-      []
-    ),
-    removeHitEffect: useCallback(
-      (id: number) => dispatch({ type: "REMOVE_HIT_EFFECT", payload: id }),
-      []
-    ),
-    setDummyHealth: useCallback(
-      (health: number) =>
-        dispatch({ type: "SET_DUMMY_HEALTH", payload: health }),
-      []
-    ),
-    resetDummy: useCallback(() => dispatch({ type: "RESET_DUMMY" }), []),
-    updateSessionDuration: useCallback(
-      (duration: number) =>
-        dispatch({ type: "UPDATE_SESSION_DURATION", payload: duration }),
-      []
-    ),
-    registerHit: useCallback(
-      (points: number, damage: number, isPerfect: boolean) =>
-        dispatch({
-          type: "REGISTER_HIT",
-          payload: { points, damage, isPerfect },
-        }),
-      []
-    ),
-    registerMiss: useCallback(() => dispatch({ type: "REGISTER_MISS" }), []),
-    setStanceIndex: useCallback(
-      (index: number) => dispatch({ type: "SET_STANCE_INDEX", payload: index }),
-      []
-    ),
-    toggleStanceWheel: useCallback(
-      () => dispatch({ type: "TOGGLE_STANCE_WHEEL" }),
-      []
-    ),
-    updateBestCombo: useCallback(
-      (combo: number) => dispatch({ type: "UPDATE_BEST_COMBO", payload: combo }),
-      []
-    ),
-    toggleAnatomyLayer: useCallback(
-      (layer: AnatomyLayer) =>
-        dispatch({ type: "TOGGLE_ANATOMY_LAYER", payload: layer }),
-      []
-    ),
-    setAnatomyLayers: useCallback(
-      (layers: AnatomyLayer[]) =>
-        dispatch({ type: "SET_ANATOMY_LAYERS", payload: layers }),
-      []
-    ),
-    startFootworkDrill: useCallback(
-      (drillType: FootworkDrill) => {
-        dispatch({ type: "START_FOOTWORK_DRILL", payload: drillType });
-      },
-      []
-    ),
-    stopFootworkDrill: useCallback(() => {
-      dispatch({ type: "STOP_FOOTWORK_DRILL" });
-    }, []),
-    advanceFootworkStep: useCallback(() => {
-      dispatch({ type: "ADVANCE_FOOTWORK_STEP" });
-    }, []),
-    resetFootworkDrill: useCallback(() => {
-      dispatch({ type: "RESET_FOOTWORK_DRILL" });
-    }, []),
-  };
+  // Memoize individual callbacks to prevent recreating on every render
+  const setTrainingMode = useCallback(
+    (mode: TrainingMode) =>
+      dispatch({ type: "SET_TRAINING_MODE", payload: mode }),
+    []
+  );
+  const startTraining = useCallback(
+    () => dispatch({ type: "START_TRAINING" }),
+    []
+  );
+  const stopTraining = useCallback(
+    () => dispatch({ type: "STOP_TRAINING" }),
+    []
+  );
+  const setSelectedVitalPoint = useCallback(
+    (point: string | null) =>
+      dispatch({ type: "SET_SELECTED_VITAL_POINT", payload: point }),
+    []
+  );
+  const setFeedback = useCallback(
+    (feedback: string, show = true) =>
+      dispatch({ type: "SET_FEEDBACK", payload: { feedback, show } }),
+    []
+  );
+  const hideFeedback = useCallback(
+    () => dispatch({ type: "HIDE_FEEDBACK" }),
+    []
+  );
+  const addHitEffect = useCallback(
+    (effect: Omit<TrainingHitEffect, "id">) =>
+      dispatch({ type: "ADD_HIT_EFFECT", payload: effect }),
+    []
+  );
+  const removeHitEffect = useCallback(
+    (id: number) => dispatch({ type: "REMOVE_HIT_EFFECT", payload: id }),
+    []
+  );
+  const setDummyHealth = useCallback(
+    (health: number) => dispatch({ type: "SET_DUMMY_HEALTH", payload: health }),
+    []
+  );
+  const resetDummy = useCallback(() => dispatch({ type: "RESET_DUMMY" }), []);
+  const updateSessionDuration = useCallback(
+    (duration: number) =>
+      dispatch({ type: "UPDATE_SESSION_DURATION", payload: duration }),
+    []
+  );
+  const registerHit = useCallback(
+    (points: number, damage: number, isPerfect: boolean) =>
+      dispatch({
+        type: "REGISTER_HIT",
+        payload: { points, damage, isPerfect },
+      }),
+    []
+  );
+  const registerMiss = useCallback(
+    () => dispatch({ type: "REGISTER_MISS" }),
+    []
+  );
+  const setStanceIndex = useCallback(
+    (index: number) => dispatch({ type: "SET_STANCE_INDEX", payload: index }),
+    []
+  );
+  const toggleStanceWheel = useCallback(
+    () => dispatch({ type: "TOGGLE_STANCE_WHEEL" }),
+    []
+  );
+  const updateBestCombo = useCallback(
+    (combo: number) => dispatch({ type: "UPDATE_BEST_COMBO", payload: combo }),
+    []
+  );
+  const toggleAnatomyLayer = useCallback(
+    (layer: AnatomyLayer) =>
+      dispatch({ type: "TOGGLE_ANATOMY_LAYER", payload: layer }),
+    []
+  );
+  const setAnatomyLayers = useCallback(
+    (layers: AnatomyLayer[]) =>
+      dispatch({ type: "SET_ANATOMY_LAYERS", payload: layers }),
+    []
+  );
+  const startFootworkDrill = useCallback((drillType: FootworkDrill) => {
+    dispatch({ type: "START_FOOTWORK_DRILL", payload: drillType });
+  }, []);
+  const stopFootworkDrill = useCallback(() => {
+    dispatch({ type: "STOP_FOOTWORK_DRILL" });
+  }, []);
+  const advanceFootworkStep = useCallback(() => {
+    dispatch({ type: "ADVANCE_FOOTWORK_STEP" });
+  }, []);
+  const resetFootworkDrill = useCallback(() => {
+    dispatch({ type: "RESET_FOOTWORK_DRILL" });
+  }, []);
+
+  // Memoize the actions object to prevent unnecessary re-renders
+  // All callbacks are stable since they have empty dependency arrays
+  const actions: TrainingActions = useMemo(
+    () => ({
+      setTrainingMode,
+      startTraining,
+      stopTraining,
+      setSelectedVitalPoint,
+      setFeedback,
+      hideFeedback,
+      addHitEffect,
+      removeHitEffect,
+      setDummyHealth,
+      resetDummy,
+      updateSessionDuration,
+      registerHit,
+      registerMiss,
+      setStanceIndex,
+      toggleStanceWheel,
+      updateBestCombo,
+      toggleAnatomyLayer,
+      setAnatomyLayers,
+      startFootworkDrill,
+      stopFootworkDrill,
+      advanceFootworkStep,
+      resetFootworkDrill,
+    }),
+    [
+      setTrainingMode,
+      startTraining,
+      stopTraining,
+      setSelectedVitalPoint,
+      setFeedback,
+      hideFeedback,
+      addHitEffect,
+      removeHitEffect,
+      setDummyHealth,
+      resetDummy,
+      updateSessionDuration,
+      registerHit,
+      registerMiss,
+      setStanceIndex,
+      toggleStanceWheel,
+      updateBestCombo,
+      toggleAnatomyLayer,
+      setAnatomyLayers,
+      startFootworkDrill,
+      stopFootworkDrill,
+      advanceFootworkStep,
+      resetFootworkDrill,
+    ]
+  );
 
   return { state, actions };
 }
