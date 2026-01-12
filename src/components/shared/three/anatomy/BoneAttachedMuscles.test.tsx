@@ -206,42 +206,95 @@ describe("BONE_MUSCLE_MAP", () => {
   });
 });
 
-describe("calculateMuscleScaleFactor", () => {
-  it("should return 1.0 for reference muscle mass (35kg)", () => {
+describe("calculateMuscleScaleFactor (non-linear)", () => {
+  it("should return 1.0 for reference muscle mass (35kg - Musa)", () => {
     const factor = calculateMuscleScaleFactor(35);
     expect(factor).toBeCloseTo(1.0, 2);
   });
 
-  it("should return > 1.0 for high muscle mass (Jojik - 42kg)", () => {
-    const factor = calculateMuscleScaleFactor(42);
-    expect(factor).toBeGreaterThan(1.0);
-    // With 2.5x amplification: 1.0 + (42/35 - 1) * 2.5 ≈ 1.5
-    expect(factor).toBeGreaterThan(1.4);
+  it("should make Hacker noticeably skinnier than Musa", () => {
+    const hackerScale = calculateMuscleScaleFactor(28); // Hacker
+    const musaScale = calculateMuscleScaleFactor(35); // Musa
+
+    // Hacker should be around 0.64 scale (skinny)
+    expect(hackerScale).toBeGreaterThan(0.6);
+    expect(hackerScale).toBeLessThan(0.7);
+    // Difference should be at least 50% for visual distinction
+    expect(musaScale / hackerScale).toBeGreaterThan(1.4);
   });
 
-  it("should return < 1.0 for low muscle mass (Amsalja - 32kg)", () => {
+  it("should make Amsalja lean athlete (0.78 scale)", () => {
+    const amsaljaScale = calculateMuscleScaleFactor(30); // Amsalja
+
+    // Amsalja should be around 0.78 scale (lean but athletic)
+    expect(amsaljaScale).toBeGreaterThan(0.75);
+    expect(amsaljaScale).toBeLessThan(0.85);
+  });
+
+  it("should make Jojik dramatically larger than Musa", () => {
+    const musaScale = calculateMuscleScaleFactor(35); // Musa
+    const jojikScale = calculateMuscleScaleFactor(48); // Jojik
+
+    // Jojik should be around 1.9 scale (massive)
+    expect(jojikScale).toBeGreaterThan(1.85);
+    expect(jojikScale).toBeLessThan(2.0);
+    // Should be 90% larger than Musa
+    expect(jojikScale / musaScale).toBeGreaterThan(1.85);
+  });
+
+  it("should create clear visual hierarchy across all archetypes", () => {
+    const scales = [
+      { name: "Hacker", scale: calculateMuscleScaleFactor(28) },
+      { name: "Amsalja", scale: calculateMuscleScaleFactor(30) },
+      { name: "Jeongbo", scale: calculateMuscleScaleFactor(32) },
+      { name: "Musa", scale: calculateMuscleScaleFactor(35) },
+      { name: "Jojik", scale: calculateMuscleScaleFactor(48) },
+    ];
+
+    // Verify ascending order
+    for (let i = 1; i < scales.length; i++) {
+      expect(scales[i].scale).toBeGreaterThan(scales[i - 1].scale);
+    }
+
+    // Verify minimum 10% difference between adjacent archetypes
+    for (let i = 1; i < scales.length; i++) {
+      const diff = (scales[i].scale - scales[i - 1].scale) / scales[i - 1].scale;
+      expect(diff).toBeGreaterThan(0.1);
+    }
+  });
+
+  it("should return < 1.0 for low muscle mass (Jeongbo - 32kg)", () => {
     const factor = calculateMuscleScaleFactor(32);
     expect(factor).toBeLessThan(1.0);
+    expect(factor).toBeGreaterThan(0.8); // Should be 0.89
   });
 
-  it("should show significant difference between archetypes", () => {
-    const jojikFactor = calculateMuscleScaleFactor(42); // Jojik
-    const amsaljaFactor = calculateMuscleScaleFactor(32); // Amsalja
+  it("should show dramatic difference between extremes (Hacker vs Jojik)", () => {
+    const hackerFactor = calculateMuscleScaleFactor(28); // Hacker
+    const jojikFactor = calculateMuscleScaleFactor(48); // Jojik
 
-    // Difference should be at least 0.5 for visual distinction
-    expect(jojikFactor - amsaljaFactor).toBeGreaterThan(0.5);
+    // Jojik should be about 3x larger than Hacker
+    expect(jojikFactor / hackerFactor).toBeGreaterThan(2.9);
   });
 });
 
-describe("calculateFatLayerOpacity", () => {
-  it("should return minimum opacity for low fat mass", () => {
-    const opacity = calculateFatLayerOpacity(10);
-    expect(opacity).toBeCloseTo(0.1, 2);
+describe("calculateFatLayerOpacity (enhanced range)", () => {
+  it("should make Amsalja fat layer nearly invisible", () => {
+    const amsaljaOpacity = calculateFatLayerOpacity(10);
+    // Should be 0.05 (very transparent)
+    expect(amsaljaOpacity).toBeLessThan(0.1);
+    expect(amsaljaOpacity).toBeCloseTo(0.05, 2);
   });
 
-  it("should return high opacity for high fat mass (Jojik - 18kg)", () => {
-    const opacity = calculateFatLayerOpacity(18);
-    expect(opacity).toBeGreaterThan(0.4);
+  it("should make Jojik fat layer very visible", () => {
+    const jojikOpacity = calculateFatLayerOpacity(20);
+    // Should be > 0.7 (clearly visible)
+    expect(jojikOpacity).toBeGreaterThan(0.7);
+  });
+
+  it("should return maximum opacity for highest fat mass", () => {
+    const opacity = calculateFatLayerOpacity(22);
+    expect(opacity).toBeCloseTo(0.85, 2);
   });
 
   it("should return moderate opacity for average fat mass", () => {
@@ -249,17 +302,52 @@ describe("calculateFatLayerOpacity", () => {
     expect(opacity).toBeGreaterThan(0.2);
     expect(opacity).toBeLessThan(0.5);
   });
+
+  it("should create clear fat visibility progression", () => {
+    const amsaljaOpacity = calculateFatLayerOpacity(10); // 0.05
+    const hackerOpacity = calculateFatLayerOpacity(15); // ~0.38
+    const jojikOpacity = calculateFatLayerOpacity(20); // ~0.72
+
+    // Each archetype should have distinctly different opacity
+    expect(hackerOpacity - amsaljaOpacity).toBeGreaterThan(0.3);
+    expect(jojikOpacity - hackerOpacity).toBeGreaterThan(0.3);
+  });
 });
 
-describe("calculateFatLayerThickness", () => {
-  it("should return minimum thickness for low fat mass", () => {
+describe("calculateFatLayerThickness (exponential)", () => {
+  it("should return minimum thickness for low fat mass (Amsalja)", () => {
     const thickness = calculateFatLayerThickness(10);
-    expect(thickness).toBeCloseTo(0.05, 2);
+    // New minimum: 0.02 (very thin)
+    expect(thickness).toBeCloseTo(0.02, 2);
   });
 
-  it("should return high thickness for high fat mass", () => {
+  it("should return maximum thickness for high fat mass (Jojik)", () => {
     const thickness = calculateFatLayerThickness(22);
-    expect(thickness).toBeCloseTo(0.45, 2);
+    // New maximum: 0.60 (very thick)
+    expect(thickness).toBeCloseTo(0.6, 2);
+  });
+
+  it("should use exponential curve for dramatic differences", () => {
+    const lowFatThickness = calculateFatLayerThickness(10); // 0.02
+    const midFatThickness = calculateFatLayerThickness(16); // ~0.17
+    const highFatThickness = calculateFatLayerThickness(22); // 0.60
+
+    // Exponential curve means high-fat values grow faster
+    const lowToMidDiff = midFatThickness - lowFatThickness;
+    const midToHighDiff = highFatThickness - midFatThickness;
+
+    // High-end difference should be larger (but may not be 2x due to exponential shape)
+    expect(midToHighDiff).toBeGreaterThan(lowToMidDiff);
+  });
+
+  it("should create visible fat layer progression across archetypes", () => {
+    const amsaljaThickness = calculateFatLayerThickness(10); // Very thin
+    const musaThickness = calculateFatLayerThickness(13); // Moderate
+    const jojikThickness = calculateFatLayerThickness(20); // Very thick
+
+    // Each should be visibly different
+    expect(musaThickness).toBeGreaterThan(amsaljaThickness * 2);
+    expect(jojikThickness).toBeGreaterThan(musaThickness * 2);
   });
 });
 
@@ -331,9 +419,9 @@ describe("BoneAttachedMuscle", () => {
   });
 
   describe("Archetype scaling", () => {
-    it("should render with Jojik muscle scale factor", () => {
+    it("should render with Jojik muscle scale factor (48kg muscle)", () => {
       const attachment = BONE_MUSCLE_MAP.hip_L[0]; // Glute
-      const jojikFactor = calculateMuscleScaleFactor(42);
+      const jojikFactor = calculateMuscleScaleFactor(48); // Jojik: 48kg muscle
 
       const { container } = render3D(
         <BoneAttachedMuscle
@@ -341,17 +429,35 @@ describe("BoneAttachedMuscle", () => {
           tension={0.5}
           isShaking={false}
           muscleScaleFactor={jojikFactor}
-          fatLayerOpacity={0.5}
-          fatLayerThickness={0.3}
+          fatLayerOpacity={0.72}
+          fatLayerThickness={0.45}
         />
       );
 
       expect(container).toBeTruthy();
     });
 
-    it("should render with Amsalja muscle scale factor", () => {
+    it("should render with Hacker muscle scale factor (28kg muscle - skinny)", () => {
       const attachment = BONE_MUSCLE_MAP.upper_arm_R[0];
-      const amsaljaFactor = calculateMuscleScaleFactor(32);
+      const hackerFactor = calculateMuscleScaleFactor(28); // Hacker: 28kg muscle
+
+      const { container } = render3D(
+        <BoneAttachedMuscle
+          attachment={attachment}
+          tension={0.5}
+          isShaking={false}
+          muscleScaleFactor={hackerFactor}
+          fatLayerOpacity={0.38}
+          fatLayerThickness={0.12}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render with Amsalja muscle scale factor (30kg muscle - lean)", () => {
+      const attachment = BONE_MUSCLE_MAP.upper_arm_R[0];
+      const amsaljaFactor = calculateMuscleScaleFactor(30); // Amsalja: 30kg muscle
 
       const { container } = render3D(
         <BoneAttachedMuscle
@@ -359,8 +465,8 @@ describe("BoneAttachedMuscle", () => {
           tension={0.5}
           isShaking={false}
           muscleScaleFactor={amsaljaFactor}
-          fatLayerOpacity={0.1}
-          fatLayerThickness={0.05}
+          fatLayerOpacity={0.05}
+          fatLayerThickness={0.02}
         />
       );
 
@@ -449,7 +555,7 @@ describe("BoneMuscles", () => {
     expect(container).toBeTruthy();
   });
 
-  it("should render with physical attributes (Jojik)", () => {
+  it("should render with physical attributes (Jojik - 48kg muscle, 20kg fat)", () => {
     const muscleStates = new Map<string, number>([["GLUTE_L", 0.5]]);
 
     const { container } = render3D(
@@ -457,7 +563,7 @@ describe("BoneMuscles", () => {
         boneName="hip_L"
         muscleStates={muscleStates}
         isExhausted={false}
-        physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+        physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
       />
     );
 
@@ -479,26 +585,26 @@ describe("BoneMuscles", () => {
   });
 
   describe("Archetype visual differences", () => {
-    it("should render Jojik archetype hip muscles (bulky)", () => {
+    it("should render Jojik archetype hip muscles (bulky - 48kg muscle, 20kg fat)", () => {
       const muscleStates = new Map<string, number>([
         ["GLUTE_L", 0.5],
         ["GLUTE_R", 0.5],
       ]);
 
-      // Jojik: 42kg muscle, 18kg fat - should be bulky and thick
+      // Jojik: 48kg muscle, 20kg fat - should be massive and thick
       const { container } = render3D(
         <>
           <BoneMuscles
             boneName="hip_L"
             muscleStates={muscleStates}
             isExhausted={false}
-            physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+            physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
           />
           <BoneMuscles
             boneName="hip_R"
             muscleStates={muscleStates}
             isExhausted={false}
-            physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+            physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
           />
         </>
       );
@@ -506,39 +612,58 @@ describe("BoneMuscles", () => {
       expect(container).toBeTruthy();
     });
 
-    it("should render Amsalja archetype arm muscles (lean)", () => {
+    it("should render Hacker archetype arm muscles (skinny - 28kg muscle, 15kg fat)", () => {
       const muscleStates = new Map<string, number>([
         ["BICEP_R", 0.5],
         ["TRICEP_R", 0.5],
       ]);
 
-      // Amsalja: 32kg muscle, 9kg fat - should be lean
+      // Hacker: 28kg muscle, 15kg fat - should be skinny
       const { container } = render3D(
         <BoneMuscles
           boneName="upper_arm_R"
           muscleStates={muscleStates}
           isExhausted={false}
-          physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
+          physicalAttributes={{ muscleMass: 28, fatMass: 15 }}
         />
       );
 
       expect(container).toBeTruthy();
     });
 
-    it("should render Musa archetype core muscles (balanced)", () => {
+    it("should render Amsalja archetype arm muscles (lean - 30kg muscle, 10kg fat)", () => {
+      const muscleStates = new Map<string, number>([
+        ["BICEP_R", 0.5],
+        ["TRICEP_R", 0.5],
+      ]);
+
+      // Amsalja: 30kg muscle, 10kg fat - should be very lean
+      const { container } = render3D(
+        <BoneMuscles
+          boneName="upper_arm_R"
+          muscleStates={muscleStates}
+          isExhausted={false}
+          physicalAttributes={{ muscleMass: 30, fatMass: 10 }}
+        />
+      );
+
+      expect(container).toBeTruthy();
+    });
+
+    it("should render Musa archetype core muscles (balanced - 35kg muscle, 13kg fat)", () => {
       const muscleStates = new Map<string, number>([
         ["PECTORALS", 0.5],
         ["CORE", 0.5],
         ["ABS", 0.5],
       ]);
 
-      // Musa: 38kg muscle, 12kg fat - should be balanced
+      // Musa: 35kg muscle, 13kg fat - should be balanced
       const { container } = render3D(
         <BoneMuscles
           boneName="spine_middle"
           muscleStates={muscleStates}
           isExhausted={false}
-          physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
+          physicalAttributes={{ muscleMass: 35, fatMass: 13 }}
         />
       );
 
@@ -676,31 +801,31 @@ describe("Integration scenarios", () => {
           boneName="upper_arm_R"
           muscleStates={muscleStates}
           isExhausted={true}
-          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+          physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
         <BoneMuscles
           boneName="thigh_R"
           muscleStates={muscleStates}
           isExhausted={true}
-          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+          physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
         <BoneMuscles
           boneName="hip_L"
           muscleStates={muscleStates}
           isExhausted={true}
-          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+          physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
         <BoneMuscles
           boneName="hip_R"
           muscleStates={muscleStates}
           isExhausted={true}
-          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+          physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
         <BoneMuscles
           boneName="spine_middle"
           muscleStates={muscleStates}
           isExhausted={true}
-          physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
+          physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
       </>
     );
@@ -729,7 +854,7 @@ describe("Performance", () => {
             boneName={boneName}
             muscleStates={muscleStates}
             isExhausted={false}
-            physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
+            physicalAttributes={{ muscleMass: 35, fatMass: 13 }}
           />
         ))}
       </>
