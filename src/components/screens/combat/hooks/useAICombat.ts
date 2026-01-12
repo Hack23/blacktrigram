@@ -627,7 +627,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   // Use useState lazy initializer for Date.now() to avoid impure function call during render
   const [initialStanceFatigue] = useState(() => ({
     currentStance: player.currentStance,
-    timeInStance: 0,
     lastSwitchTime: Date.now(),
   }));
   const stanceFatigueRef = useRef(initialStanceFatigue);
@@ -643,7 +642,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Reset stance fatigue tracking on round start
       stanceFatigueRef.current = {
         currentStance: player.currentStance,
-        timeInStance: 0,
         lastSwitchTime: Date.now(),
       };
     }
@@ -656,30 +654,14 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       return;
     }
 
-    // Detect stance change and reset fatigue
+    // Detect stance change and reset fatigue timer
     if (player.currentStance !== stanceFatigueRef.current.currentStance) {
       stanceFatigueRef.current = {
         currentStance: player.currentStance,
-        timeInStance: 0,
         lastSwitchTime: Date.now(),
       };
     }
   }, [player.currentStance, roundStarted, roundEnded, isPaused]);
-
-  // Continuous stance fatigue monitoring (updates every second)
-  // Tracks time-in-stance for fatigue modifier calculation
-  useEffect(() => {
-    if (!roundStarted || roundEnded || isPaused) {
-      return;
-    }
-
-    const interval = setInterval(() => {
-      stanceFatigueRef.current.timeInStance = 
-        Date.now() - stanceFatigueRef.current.lastSwitchTime;
-    }, 1000); // Update every second
-
-    return () => clearInterval(interval);
-  }, [roundStarted, roundEnded, isPaused]);
 
   // Smooth interpolation of difficulty parameters using requestAnimationFrame
   useEffect(() => {
@@ -793,7 +775,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       recentDamageTaken,
       opponentBalance, // Added for kill mode detection
       stanceFatigue: {
-        timeInStance: stanceFatigueRef.current.timeInStance,
+        // Compute time in stance on-demand instead of polling with setInterval
+        timeInStance: Date.now() - stanceFatigueRef.current.lastSwitchTime,
       },
       arenaBounds,
     };

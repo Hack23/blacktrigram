@@ -139,6 +139,15 @@ export class AIDecisionTree {
   private static readonly MIN_DISTANCE_THRESHOLD = 5; // Minimum distance to avoid division by zero
   
   /**
+   * Scaling factor for fatigue override probability calculation.
+   * Used to convert fatigue modifier to override chance in non-linear manner.
+   * Value of 0.5 provides gradual scaling: 1.2x fatigue → ~10% override, 1.5x → ~25%.
+   * 
+   * @korean 피로도 우선순위 무시 배율
+   */
+  private static readonly FATIGUE_OVERRIDE_SCALING_FACTOR = 0.5;
+  
+  /**
    * Arena boundary margins - exported for test validation
    * These values represent the player character size/collision margins
    */
@@ -771,7 +780,8 @@ export class AIDecisionTree {
     // Increases stance switch probability based on time in current stance:
     // - After 10 seconds: +20% increase (1.2x multiplier)
     // - After 20 seconds: +50% increase (1.5x multiplier)
-    const fatigueModifier = this.getStanceFatigueModifier(context.stanceFatigue?.timeInStance ?? 0);
+    const timeInStance = Math.max(0, context.stanceFatigue?.timeInStance ?? 0);
+    const fatigueModifier = this.getStanceFatigueModifier(timeInStance);
     const adjustedSwitchFrequency = Math.min(0.95, personality.stanceSwitchFrequency * fatigueModifier);
     
     // Single random check using fatigue-adjusted frequency to avoid compounding probability
@@ -798,7 +808,7 @@ export class AIDecisionTree {
       // - Caps at 80% to preserve some tactical consideration
       const fatigueOverrideProbability =
         fatigueModifier > 1.0
-          ? Math.min(0.8, (fatigueModifier - 1.0) * 0.5)
+          ? Math.min(0.8, (fatigueModifier - 1.0) * AIDecisionTree.FATIGUE_OVERRIDE_SCALING_FACTOR)
           : 0;
       const fatigueOverride =
         fatigueModifier > 1.2 && Math.random() < fatigueOverrideProbability;
