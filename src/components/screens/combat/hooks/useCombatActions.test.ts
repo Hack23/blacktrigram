@@ -196,6 +196,11 @@ describe("useCombatActions", () => {
           critChance: 0.3,
           executionTime: 800,
           romanized: "teseuteu gisul",
+        }),
+        undefined, // vitalPointId
+        expect.objectContaining({
+          animationType: expect.any(String),
+          currentTime: expect.any(Number),
         })
       );
     });
