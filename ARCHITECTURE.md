@@ -16,7 +16,7 @@
 | **[🎨 UI/UX Architecture](docs/UI_UX_ARCHITECTURE.md)**               | UI Components    | Component hierarchy, design patterns, Korean theming, Three.js UI integration                              |
 | **[🔧 File Structure](#-file-structure-q1-2026)**                     | Organization     | Q1 2026 project structure with systems/, components/, data/, types/ layout                                 |
 | **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | Input → Trigram → Vital Point → Damage → Three.js rendering with skeletal animation                        |
-| **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 6 hand poses, muscle tension visualization                                              |
+| **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 7 hand poses, muscle tension visualization                                              |
 | **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
 | **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q1 2026 status: Strengths (70/70 vital points), Weaknesses (67% combat realism), Opportunities, Threats    |
 | **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (76% test coverage, 8/12 combat realism systems, 8/8 trigram stances)                 |
@@ -2110,7 +2110,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 
 - **Three.js Migration Complete**: Modern 3D rendering with @react-three/fiber and @react-three/drei (60fps desktop, 55-60fps high-end mobile)
 - **Authentic Korean Martial Arts**: 70/70 vital points (100% complete), 8 trigram stances, 5 player archetypes with Korean names (무사, 암살자, 해커, 정보요원, 조직폭력배)
-- **Advanced Animation System**: 28-bone skeletal hierarchy, 6 hand poses with Korean terminology (직권, 평권, 복권, 손날, 장타, 잡기), muscle tension visualization
+- **Advanced Animation System**: 28-bone skeletal hierarchy, 7 hand poses with Korean terminology (주먹, 수도, 관수, 장력, 잡기, 펴기, 휴식), muscle tension visualization
 - **Combat Realism Foundation**: 8/12 systems complete (67%) including production-ready pain/consciousness (73 tests), body part health, vital point targeting, enhanced anatomy, visual feedback
 - **High Test Coverage**: 76% overall, 95% on new components (Vitest unit + Cypress E2E)
 - **Zero Backend Complexity**: Pure frontend eliminates server management costs
