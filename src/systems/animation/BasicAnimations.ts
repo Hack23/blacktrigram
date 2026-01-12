@@ -16,6 +16,18 @@ import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
+// DEFAULT STANCE WIDTH FOR BASIC ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Default shoulder width for basic animations (non-stance-specific)
+ * Uses a neutral balanced width (1.1x) for general idle/movement
+ * @korean 기본어깨너비
+ */
+const DEFAULT_SHOULDER_WIDTH_CM = 46;
+const DEFAULT_STANCE_WIDTH_MULTIPLIER = 1.1; // Balanced like Li (Fire) stance
+
+// ═══════════════════════════════════════════════════════════════════════════
 // IDLE ANIMATIONS (대기 애니메이션)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -24,6 +36,7 @@ import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
  *
  * Subtle breathing animation while standing ready.
  * Looping idle state with slight body movement.
+ * Uses neutral balanced stance width (1.1x shoulder width).
  *
  * @korean 대기호흡애니메이션
  */
@@ -39,6 +52,7 @@ export const IDLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.ELBOW_L, 0, 0, -0.4)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.4)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(DEFAULT_STANCE_WIDTH_MULTIPLIER, DEFAULT_SHOULDER_WIDTH_CM)
     .at(0.5, "ease-in-out")
     .rotate(BoneName.SPINE_UPPER, 0.05, 0, 0)
     .rotate(BoneName.SPINE_LOWER, 0.02, 0, 0)
@@ -46,6 +60,7 @@ export const IDLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.SHOULDER_L, 0.12, 0, -0.22)
     .rotate(BoneName.SHOULDER_R, 0.12, 0, 0.22)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(DEFAULT_STANCE_WIDTH_MULTIPLIER, DEFAULT_SHOULDER_WIDTH_CM)
     .at(1.0, "ease-in-out")
     .rotate(BoneName.SPINE_UPPER, 0.06, 0, 0)
     .rotate(BoneName.SPINE_LOWER, 0.03, 0, 0)
@@ -53,6 +68,7 @@ export const IDLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.14, 0, 0)
     .rotate(BoneName.KNEE_R, -0.14, 0, 0)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(DEFAULT_STANCE_WIDTH_MULTIPLIER, DEFAULT_SHOULDER_WIDTH_CM)
     .at(1.5, "ease-in-out")
     .rotate(BoneName.SPINE_UPPER, 0.03, 0, 0)
     .rotate(BoneName.SPINE_LOWER, 0.01, 0, 0)
@@ -60,6 +76,7 @@ export const IDLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.SHOULDER_L, 0.11, 0, -0.21)
     .rotate(BoneName.SHOULDER_R, 0.11, 0, 0.21)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(DEFAULT_STANCE_WIDTH_MULTIPLIER, DEFAULT_SHOULDER_WIDTH_CM)
     .at(2.0, "ease-in-out")
     .rotate(BoneName.KNEE_L, -0.15, 0, 0)
     .rotate(BoneName.KNEE_R, -0.15, 0, 0)
@@ -69,6 +86,7 @@ export const IDLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.ELBOW_L, 0, 0, -0.4)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.4)
     .done<MartialArtsAnimationBuilder>()
+    .withFootWidth(DEFAULT_STANCE_WIDTH_MULTIPLIER, DEFAULT_SHOULDER_WIDTH_CM)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
