@@ -54,10 +54,10 @@ export const PhilosophyScreenThreeJS: React.FC<
 
   const layoutConstants = useMemo(
     () => ({
-      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 18 : 25,
-      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
-      footerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
-      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 12 : 18,
+      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 35 : 30,
+      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 120 : 110,
+      footerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 120 : 110,
+      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 25 : 20,
     }),
     [isMobile, isTablet, isLargeDesktop]
   );

@@ -75,11 +75,11 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
   const layoutConstants = useMemo(
     () => ({
-      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 18 : 25,
-      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
-      footerHeight: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
-      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 12 : 18,
-      buttonArea: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
+      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 35 : 30,
+      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 120 : 110,
+      footerHeight: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 100 : 90,
+      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 25 : 20,
+      buttonArea: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 110 : 95,
     }),
     [isMobile, isTablet, isLargeDesktop]
   );

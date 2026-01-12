@@ -83,10 +83,10 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   const layoutConstants = useMemo<LayoutConstants>(
     () => ({
       padding: 10,
-      hudHeight: isMobile ? 95 : isTablet ? 100 : isLargeDesktop ? 90 : 120,
-      controlsHeight: isMobile ? 160 : isTablet ? 140 : isLargeDesktop ? 120 : 160,
-      footerHeight: isMobile ? 34 : isTablet ? 30 : isLargeDesktop ? 20 : 28,
-      healthBarHeight: isMobile ? 48 : isTablet ? 50 : isLargeDesktop ? 45 : 55,
+      hudHeight: isMobile ? 95 : isTablet ? 100 : isLargeDesktop ? 140 : 130,
+      controlsHeight: isMobile ? 160 : isTablet ? 140 : isLargeDesktop ? 180 : 170,
+      footerHeight: isMobile ? 34 : isTablet ? 30 : isLargeDesktop ? 40 : 35,
+      healthBarHeight: isMobile ? 48 : isTablet ? 50 : isLargeDesktop ? 70 : 65,
     }),
     [isMobile, isTablet, isLargeDesktop]
   );
