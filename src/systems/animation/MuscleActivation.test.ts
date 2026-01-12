@@ -13,8 +13,10 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   getMuscleActivationForTechnique,
   MuscleActivationManager,
+  getMuscleTensionForStance,
 } from "./MuscleActivation";
 import type { MuscleGroupName } from "../../types/muscle";
+import { TrigramStance } from "../../types/common";
 
 describe("getMuscleActivationForTechnique", () => {
   describe("Punching techniques (주먹 기술)", () => {
@@ -536,6 +538,209 @@ describe("MuscleActivationManager", () => {
       expect(armTension).toBeLessThan(0.5);
       // Leg should be flexing
       expect(legTension).toBeGreaterThan(0.5);
+    });
+  });
+});
+
+describe("getMuscleTensionForStance", () => {
+  // All trigram stances for testing
+  const ALL_TRIGRAM_STANCES: TrigramStance[] = [
+    TrigramStance.GEON,
+    TrigramStance.TAE,
+    TrigramStance.LI,
+    TrigramStance.JIN,
+    TrigramStance.SON,
+    TrigramStance.GAM,
+    TrigramStance.GAN,
+    TrigramStance.GON,
+  ];
+
+  describe("Deep stances with high muscle engagement (깊은 자세)", () => {
+    it("should show maximum quad tension for Jin (Thunder) stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
+
+      // Jin has 90° knee bend in both legs with 50/50 weight
+      // Expected: Very high quad tension (>0.65)
+      const quadLeft = activations.get("QUAD_L");
+      const quadRight = activations.get("QUAD_R");
+
+      expect(quadLeft).toBeGreaterThan(0.65);
+      expect(quadRight).toBeGreaterThan(0.65);
+      expect(quadLeft).toBeLessThanOrEqual(1.0);
+      expect(quadRight).toBeLessThanOrEqual(1.0);
+    });
+
+    it("should show high calf tension for Jin stance (deep isometric hold)", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
+
+      // Deep stance (90° knee) requires calf engagement for balance
+      const calfLeft = activations.get("CALF_L");
+      const calfRight = activations.get("CALF_R");
+
+      expect(calfLeft).toBeGreaterThan(0.25);
+      expect(calfRight).toBeGreaterThan(0.25);
+    });
+
+    it("should show very high quad tension for Gon (Earth) stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
+
+      // Gon has 80° knee bend in both legs (deepest stance)
+      // Expected: Maximum quad tension (>0.7)
+      const quadLeft = activations.get("QUAD_L");
+      const quadRight = activations.get("QUAD_R");
+
+      expect(quadLeft).toBeGreaterThan(0.7);
+      expect(quadRight).toBeGreaterThan(0.7);
+    });
+
+    it("should show high calf tension for Gon stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
+
+      // Very deep stance (80° knee) requires maximum calf support
+      const calfLeft = activations.get("CALF_L");
+      const calfRight = activations.get("CALF_R");
+
+      expect(calfLeft).toBeGreaterThan(0.3);
+      expect(calfRight).toBeGreaterThan(0.3);
+    });
+  });
+
+  describe("Weight distribution affecting leg tension (체중분배)", () => {
+    it("should emphasize front leg for Geon (Heaven) 60/40 stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GEON);
+
+      // Geon: 70° front knee, 160° back knee, 60/40 weight
+      const frontQuad = activations.get("QUAD_R");
+      const backQuad = activations.get("QUAD_L");
+
+      // Front leg should have higher tension
+      expect(frontQuad).toBeGreaterThan(backQuad!);
+      expect(frontQuad).toBeGreaterThan(0.5); // Significant front leg load
+    });
+
+    it("should emphasize back leg for Tae (Lake) 10/90 stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.TAE);
+
+      // Tae: 170° front knee (straight), 120° back knee, 10/90 weight
+      const frontQuad = activations.get("QUAD_R");
+      const backQuad = activations.get("QUAD_L");
+
+      // Back leg should have much higher tension
+      expect(backQuad).toBeGreaterThan(frontQuad!);
+      expect(backQuad).toBeGreaterThan(0.3); // Significant back leg load
+    });
+
+    it("should balance tension for Li (Fire) 50/50 stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.LI);
+
+      // Li: 135° both knees, 50/50 weight
+      const frontQuad = activations.get("QUAD_R");
+      const backQuad = activations.get("QUAD_L");
+
+      // Should be relatively balanced
+      const difference = Math.abs(frontQuad! - backQuad!);
+      expect(difference).toBeLessThan(0.15); // Within 15% of each other
+    });
+
+    it("should emphasize back leg for Gam (Water) 30/70 stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GAM);
+
+      // Gam: 150° front knee, 100° back knee, 30/70 weight
+      const frontQuad = activations.get("QUAD_R");
+      const backQuad = activations.get("QUAD_L");
+
+      // Back leg should have higher tension
+      expect(backQuad).toBeGreaterThan(frontQuad!);
+    });
+  });
+
+  describe("Hamstring and glute activation", () => {
+    it("should activate hamstrings in deep stances", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.JIN);
+
+      const hamstringLeft = activations.get("HAMSTRING_L");
+      const hamstringRight = activations.get("HAMSTRING_R");
+
+      // Hamstrings should be activated for stabilization
+      expect(hamstringLeft).toBeGreaterThan(0.2);
+      expect(hamstringRight).toBeGreaterThan(0.2);
+    });
+
+    it("should activate glutes in low hip stances", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GON);
+
+      // Gon has very low hip height (0.72)
+      const gluteLeft = activations.get("GLUTE_L");
+      const gluteRight = activations.get("GLUTE_R");
+
+      expect(gluteLeft).toBeGreaterThan(0.2);
+      expect(gluteRight).toBeGreaterThan(0.2);
+    });
+  });
+
+  describe("Single-leg crane stance (Son Wind)", () => {
+    it("should show tension in both standing and raised legs", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.SON);
+
+      // Son: 170° standing leg, 45° raised leg (deeply bent), 100/0 weight
+      const standingQuad = activations.get("QUAD_R");
+      const raisedQuad = activations.get("QUAD_L");
+
+      // Standing leg carries weight (nearly straight, so lower tension from angle)
+      expect(standingQuad).toBeGreaterThan(0.2);
+      
+      // Raised leg has high tension from holding knee up (45° = deeply bent)
+      // Biomechanically accurate: holding leg up requires significant quad engagement
+      expect(raisedQuad).toBeGreaterThan(0.4);
+      
+      // Both should be within valid range
+      expect(standingQuad).toBeLessThanOrEqual(1.0);
+      expect(raisedQuad).toBeLessThanOrEqual(1.0);
+    });
+  });
+
+  describe("Moderate stances", () => {
+    it("should show moderate quad tension for Gan (Mountain) stance", () => {
+      const activations = getMuscleTensionForStance(TrigramStance.GAN);
+
+      // Gan: 120° both knees, 40/60 weight
+      const quadLeft = activations.get("QUAD_L");
+      const quadRight = activations.get("QUAD_R");
+
+      // Moderate tension for defensive stance
+      expect(quadLeft).toBeGreaterThan(0.3);
+      expect(quadLeft).toBeLessThan(0.8);
+      expect(quadRight).toBeGreaterThan(0.3);
+      expect(quadRight).toBeLessThan(0.8);
+    });
+  });
+
+  describe("All leg muscles activated", () => {
+    it("should activate all leg muscle groups for every stance", () => {
+      ALL_TRIGRAM_STANCES.forEach((stance) => {
+        const activations = getMuscleTensionForStance(stance);
+
+        // All leg muscles should have some activation
+        expect(activations.has("QUAD_L")).toBe(true);
+        expect(activations.has("QUAD_R")).toBe(true);
+        expect(activations.has("HAMSTRING_L")).toBe(true);
+        expect(activations.has("HAMSTRING_R")).toBe(true);
+        expect(activations.has("CALF_L")).toBe(true);
+        expect(activations.has("CALF_R")).toBe(true);
+        expect(activations.has("GLUTE_L")).toBe(true);
+        expect(activations.has("GLUTE_R")).toBe(true);
+      });
+    });
+
+    it("should keep all values within 0-1 range", () => {
+      ALL_TRIGRAM_STANCES.forEach((stance) => {
+        const activations = getMuscleTensionForStance(stance);
+
+        activations.forEach((tension) => {
+          expect(tension).toBeGreaterThanOrEqual(0);
+          expect(tension).toBeLessThanOrEqual(1.0);
+        });
+      });
     });
   });
 });

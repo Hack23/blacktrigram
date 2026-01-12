@@ -3,15 +3,29 @@
  *
  * Manages muscle activation state based on current actions and stamina.
  * Reduces code duplication in skeletal animation components.
+ * Includes stance-based leg muscle tension for isometric holds.
  *
  * @module hooks/useMuscleActivation
  * @category Hooks
  * @korean 근육활성화훅
  */
 
-import { useEffect, useRef, useState } from "react";
-import { MuscleActivationManager } from "../systems/animation/MuscleActivation";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { 
+  MuscleActivationManager,
+  getMuscleTensionForStance,
+} from "../systems/animation/MuscleActivation";
 import type { PlayerAnimation } from "../types/player-visual";
+import type { TrigramStance } from "../types/common";
+import { DEFAULT_MUSCLE_CONFIG } from "../types/muscle";
+
+/**
+ * Simple lerp function for muscle tension interpolation
+ * Defined at module level to avoid recreation
+ * @korean 선형보간함수
+ */
+const lerp = (start: number, end: number, t: number): number => 
+  start + (end - start) * t;
 
 /**
  * Options for useMuscleActivation hook
@@ -26,6 +40,8 @@ export interface UseMuscleActivationOptions {
   readonly isBlocking?: boolean;
   /** Current stamina level (0-100) */
   readonly stamina: number;
+  /** Current trigram stance (for leg muscle tension) */
+  readonly currentStance?: TrigramStance;
 }
 
 /**
@@ -77,7 +93,7 @@ export interface UseMuscleActivationReturn {
 export function useMuscleActivation(
   options: UseMuscleActivationOptions
 ): UseMuscleActivationReturn {
-  const { currentAnimation, attackAnimation, isBlocking = false, stamina } = options;
+  const { currentAnimation, attackAnimation, isBlocking = false, stamina, currentStance } = options;
 
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());
@@ -87,14 +103,20 @@ export function useMuscleActivation(
 
   // Cleanup muscle manager on unmount
   useEffect(() => {
+    const manager = muscleManager.current;
     return () => {
       try {
-        muscleManager.current.reset();
+        manager.reset();
       } catch (error) {
         console.warn("MuscleActivationManager reset failed:", error);
       }
     };
   }, []);
+
+  // Memoize stance tension to avoid recalculation at 60fps
+  const stanceTension = useMemo(() => {
+    return currentStance ? getMuscleTensionForStance(currentStance) : null;
+  }, [currentStance]);
 
   // Update muscle activations (called at 60fps in useFrame)
   const updateMuscleActivations = (
@@ -112,6 +134,30 @@ export function useMuscleActivation(
     ) {
       // Engage stance/leg/core muscles during movement and stance changes
       muscleManager.current.update("stance_change", stamina, delta);
+    } else if (currentAnimation === "idle" && stanceTension) {
+      // Apply stance-based leg muscle tension for idle/guard positions
+      // This provides realistic isometric contraction visualization
+      
+      // Get all activation states once (not in the loop)
+      const allActivations = muscleManager.current.getAllActivations();
+      
+      // Update manager with stance muscle activations
+      stanceTension.forEach((tension, muscleGroup) => {
+        // Get existing activation state
+        const state = allActivations.get(muscleGroup);
+        
+        if (state) {
+          // Set target tension for smooth interpolation
+          state.targetTension = tension;
+          
+          // Smoothly interpolate to target (using config activation speed)
+          state.tension = lerp(
+            state.tension,
+            state.targetTension,
+            DEFAULT_MUSCLE_CONFIG.activationSpeed * delta
+          );
+        }
+      });
     } else {
       muscleManager.current.relaxAllMuscles(delta);
     }
