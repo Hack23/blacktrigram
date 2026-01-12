@@ -8,6 +8,7 @@ import { COMBAT_CONTROLS } from "../../../systems";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
@@ -48,6 +49,7 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
 
   // Responsive layout calculations with large desktop support
   const isMobile = screenWidth < 768;
+  const isTablet = screenWidth >= 768 && screenWidth < 1024;
   
   // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(() => ({
@@ -70,18 +72,11 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
       }
     `
   }), []); // Empty deps - colors are constants
-  const isTablet = screenWidth >= 768 && screenWidth < 1024;
-  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
 
+  // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
-    () => ({
-      padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 18 : 25,
-      headerHeight: isMobile ? 90 : isTablet ? 100 : isLargeDesktop ? 75 : 100,
-      footerHeight: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
-      sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 12 : 18,
-      buttonArea: isMobile ? 75 : isTablet ? 85 : isLargeDesktop ? 65 : 85,
-    }),
-    [isMobile, isTablet, isLargeDesktop]
+    () => getLayoutConstants(screenWidth),
+    [screenWidth]
   );
 
   // Memoize colors for performance
