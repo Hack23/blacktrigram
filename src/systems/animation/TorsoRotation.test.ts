@@ -343,13 +343,30 @@ describe("TorsoRotationSystem", () => {
   });
 
   describe("Technique Torso Rotation Validation", () => {
+    describe("Debug: Check keyframe structure", () => {
+      it("should show JAB_ANIMATION keyframe structure", () => {
+        const jab = JAB_ANIMATION;
+        console.log("\n=== JAB_ANIMATION Keyframes ===");
+        jab.keyframes.forEach((kf, i) => {
+          console.log(`\nKeyframe ${i} at t=${kf.time}:`);
+          console.log(`  Bones: ${Array.from(kf.boneRotations.keys()).join(", ")}`);
+          console.log(`  Has SPINE_LOWER: ${kf.boneRotations.has(BoneName.SPINE_LOWER)}`);
+          console.log(`  Has SPINE_MIDDLE: ${kf.boneRotations.has(BoneName.SPINE_MIDDLE)}`);
+          console.log(`  Has SPINE_UPPER: ${kf.boneRotations.has(BoneName.SPINE_UPPER)}`);
+        });
+        
+        // This test always passes - just for debugging
+        expect(jab.keyframes.length).toBeGreaterThan(0);
+      });
+    });
+
     describe("Straight Punch Torso Rotation", () => {
       it("should have torso rotation in jab extension phase", () => {
         const jab = JAB_ANIMATION;
         
-        // Find extension keyframe (around 0.25s)
+        // Find extension keyframe (should be at 0.25s after chamber at 0.10s)
         const extensionFrame = jab.keyframes.find(kf => 
-          kf.time >= 0.10 && kf.time <= 0.30
+          kf.time >= 0.20 && kf.time <= 0.30
         );
         
         expect(extensionFrame).toBeDefined();
@@ -375,9 +392,9 @@ describe("TorsoRotationSystem", () => {
       it("should have torso rotation in cross extension phase", () => {
         const cross = CROSS_ANIMATION;
         
-        // Find extension keyframe
+        // Find extension keyframe (should be after chamber, around 0.35s)
         const extensionFrame = cross.keyframes.find(kf => 
-          kf.time >= 0.15 && kf.time <= 0.40
+          kf.time >= 0.30 && kf.time <= 0.45
         );
         
         expect(extensionFrame).toBeDefined();
@@ -392,9 +409,9 @@ describe("TorsoRotationSystem", () => {
       it("should have sequential spine rotation (lower < mid < upper)", () => {
         const cross = CROSS_ANIMATION;
         
-        // Find extension keyframe
+        // Find extension keyframe (should be after chamber, around 0.35s)
         const extensionFrame = cross.keyframes.find(kf => 
-          kf.time >= 0.15 && kf.time <= 0.40
+          kf.time >= 0.30 && kf.time <= 0.45
         );
         
         expect(extensionFrame).toBeDefined();
@@ -422,9 +439,9 @@ describe("TorsoRotationSystem", () => {
       it("should have circular torso rotation in hook extension", () => {
         const hook = HOOK_ANIMATION;
         
-        // Find extension keyframe
+        // Find extension keyframe (hook punch at ~0.20-0.35s range)
         const extensionFrame = hook.keyframes.find(kf => 
-          kf.time >= 0.15 && kf.time <= 0.40
+          kf.time >= 0.20 && kf.time <= 0.40
         );
         
         expect(extensionFrame).toBeDefined();
@@ -449,7 +466,7 @@ describe("TorsoRotationSystem", () => {
         const hook = HOOK_ANIMATION;
         
         const extensionFrame = hook.keyframes.find(kf => 
-          kf.time >= 0.15 && kf.time <= 0.40
+          kf.time >= 0.20 && kf.time <= 0.40
         );
         
         expect(extensionFrame).toBeDefined();
