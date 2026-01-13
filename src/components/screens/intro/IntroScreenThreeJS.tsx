@@ -17,6 +17,7 @@ import {
   FONT_FAMILY,
   KOREAN_COLORS,
   getKoreanFontSize,
+  getPerformanceSettings,
 } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
@@ -254,6 +255,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Extra-small mobile detection for low-end devices (<380px)
   const isExtraSmall = useMemo(() => isMobile && screenWidth < 380, [isMobile, screenWidth]);
 
+  // Performance settings based on device tier
+  const performanceSettings = useMemo(() => {
+    return getPerformanceSettings(screenWidth, isMobile);
+  }, [screenWidth, isMobile]);
+
   // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
   const logoSize = isExtraSmall
     ? Math.min(screenWidth, screenHeight) * 0.20 // Extra compact for low-end mobile
@@ -328,11 +334,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
           zIndex: Z_INDEX.ARENA,
         }}
         gl={{
-          antialias: true,
+          antialias: performanceSettings.antialias,
           alpha: true,
           powerPreference: "high-performance",
         }}
-        dpr={[1, 2]}
+        dpr={performanceSettings.dpr}
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
