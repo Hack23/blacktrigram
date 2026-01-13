@@ -96,14 +96,28 @@ describe('responsiveLayoutHelpers', () => {
   });
 
   describe('getCombatLayoutConstants', () => {
-    it('should return mobile combat layout for width < 768', () => {
+    it('should return extra-small mobile combat layout for width < 380', () => {
       const layout = getCombatLayoutConstants(375);
       
+      // Extra-small device optimization (<380px)
+      expect(layout.padding).toBe(8);
+      expect(layout.hudHeight).toBe(85);
+      expect(layout.controlsHeight).toBe(150);
+      expect(layout.footerHeight).toBe(34);
+      expect(layout.healthBarHeight).toBe(48);
+      expect(layout.buttonHeight).toBe(48); // WCAG AA minimum
+    });
+
+    it('should return standard mobile combat layout for width 380-767', () => {
+      const layout = getCombatLayoutConstants(400);
+      
+      // Standard mobile (≥380px)
       expect(layout.padding).toBe(10);
       expect(layout.hudHeight).toBe(95);
       expect(layout.controlsHeight).toBe(160);
       expect(layout.footerHeight).toBe(34);
       expect(layout.healthBarHeight).toBe(48);
+      expect(layout.buttonHeight).toBe(55);
     });
 
     it('should return xlarge combat layout for width >= 1920 (4K)', () => {
@@ -137,15 +151,17 @@ describe('responsiveLayoutHelpers', () => {
     });
 
     it('should use intentional tablet optimizations for controls and footer', () => {
-      const mobile = getCombatLayoutConstants(375);
+      const extraSmall = getCombatLayoutConstants(375); // Extra-small mobile
+      const mobile = getCombatLayoutConstants(400); // Standard mobile
       const tablet = getCombatLayoutConstants(800);
       const desktop = getCombatLayoutConstants(1200);
 
-      // Tablet controlsHeight is intentionally smaller than mobile for landscape ergonomics
-      // Mobile (portrait): 160px for thumb reach
+      // Extra-small (portrait, <380px): 150px optimized for low-end devices
+      // Mobile (portrait, ≥380px): 160px for thumb reach
       // Tablet (landscape): 140px for better screen utilization
-      expect(tablet.controlsHeight).toBe(140);
+      expect(extraSmall.controlsHeight).toBe(150);
       expect(mobile.controlsHeight).toBe(160);
+      expect(tablet.controlsHeight).toBe(140);
       expect(tablet.controlsHeight).toBeLessThan(mobile.controlsHeight);
       expect(desktop.controlsHeight).toBeGreaterThan(tablet.controlsHeight);
 

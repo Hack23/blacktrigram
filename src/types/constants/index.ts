@@ -11,8 +11,20 @@ export {
   // KOREAN_FONT_FAMILY, // Not exported from typography.ts
   KOREAN_FONT_WEIGHTS,
   KOREAN_TEXT_SIZES,
+  KOREAN_MOBILE_FONT_SIZES,
+  getKoreanFontSize,
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS, UI_DIMENSIONS } from "./ui";
+
+// Performance constants
+export {
+  PERFORMANCE_SETTINGS_BY_TIER,
+  FRAME_TIME_BUDGET,
+  getPerformanceTier,
+  getPerformanceSettings,
+  type PerformanceTier,
+  type PerformanceSettings,
+} from "./performance";
 
 // Responsive scaling system exports  
 export {

@@ -90,18 +90,24 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // - Large phones (768-1199px): up to 500px width
   // - 2K devices (1200-1439px): up to 600px width
   // - 4K devices (≥1440px): up to 800px width
+  // Extra-small phones (<380px): up to 320px width with optimized clearances
   // Optimized: Separate calculation dependencies to reduce recalculation frequency
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
+      // Extra-small device detection for optimized clearances
+      const isExtraSmall = width < 380;
+      const minTopClearance = isExtraSmall ? 75 : 80;
+      const minBottomClearance = isExtraSmall ? 110 : 120;
+      
       // Use shared mobile area calculation for consistency with training screen
       return calculateMobileAreaBounds(
         width,
         height,
-        80,  // minTopClearance (HUD space)
-        120, // minBottomClearance (controls space)
+        minTopClearance,
+        minBottomClearance,
         arenaY
       );
     }

@@ -30,7 +30,7 @@ import {
   Position,
   Technique,
 } from "../../../types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS, getPerformanceSettings } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -834,6 +834,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 15: RENDER
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Performance settings based on device tier
+  const performanceSettings = useMemo(() => {
+    return getPerformanceSettings(width, isMobile);
+  }, [width, isMobile]);
+
   return (
     <div
       style={{
@@ -846,11 +851,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       <Canvas
         style={{ width, height }}
         gl={{
-          antialias: true,
+          antialias: performanceSettings.antialias,
           alpha: false,
           powerPreference: "high-performance",
         }}
-        dpr={[1, 2]}
+        dpr={performanceSettings.dpr}
         shadows={false}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
