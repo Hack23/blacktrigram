@@ -10,7 +10,11 @@
  * @korean 애니메이션레지스트리
  */
 
+import { TrigramStance } from "../../types/common";
 import type { SkeletalAnimation } from "../../types/skeletal";
+import type { StanceLaterality } from "../trigram/types";
+import { getAnimationsForStance } from "./TrigramAnimationMapping";
+import { applyLaterality } from "./LateralityTransform";
 import {
   BACKWARD_RETREAT_ANIMATION,
   FORWARD_DASH_ANIMATION,
@@ -255,6 +259,83 @@ export function getAnimationByName(
   return ALL_ANIMATIONS.get(name);
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// TRIGRAM-AWARE ANIMATION RESOLUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Resolve trigram-specific animation with automatic laterality application.
+ *
+ * **Korean**: 팔괘 전용 애니메이션 해석
+ *
+ * Returns a stance-specific animation for the given technique and laterality.
+ * Automatically applies laterality transformation (left/right mirroring) to
+ * the base animation.
+ *
+ * ## Supported Techniques
+ *
+ * - **punch**: Stance-specific punch techniques
+ * - **kick**: Stance-specific kick techniques
+ * - **strike**: Stance-unique strike techniques
+ *
+ * ## Performance
+ *
+ * - Lookup: O(1) - direct map access
+ * - Right laterality: O(1) - returns original animation
+ * - Left laterality: O(n*m) - creates mirrored copy (n=keyframes, m=bones)
+ *
+ * @param technique - Technique type ("punch", "kick", "strike")
+ * @param stance - Trigram stance
+ * @param laterality - Left or right side
+ * @returns Stance-specific animation with laterality applied, or null if not found
+ *
+ * @example
+ * ```typescript
+ * // Get left-handed Heaven stance punch
+ * const anim = resolveTrigramAnimation("punch", TrigramStance.Geon, "left");
+ * console.log(anim?.name); // "geon_bone_breaking_strike_1_left"
+ *
+ * // Get right-handed Water stance kick
+ * const kickAnim = resolveTrigramAnimation("kick", TrigramStance.Gam, "right");
+ * console.log(kickAnim?.name); // "roundhouse_kick"
+ * ```
+ *
+ * @public
+ * @korean 팔괘전용애니메이션해석
+ */
+export function resolveTrigramAnimation(
+  technique: string,
+  stance: TrigramStance,
+  laterality: StanceLaterality
+): SkeletalAnimation | null {
+  try {
+    const stanceAnimations = getAnimationsForStance(stance);
+
+    let baseAnimation: SkeletalAnimation | null = null;
+    switch (technique.toLowerCase()) {
+      case "punch":
+        baseAnimation = stanceAnimations.punch;
+        break;
+      case "kick":
+        baseAnimation = stanceAnimations.kick;
+        break;
+      case "strike":
+        baseAnimation = stanceAnimations.strike;
+        break;
+    }
+
+    if (!baseAnimation) {
+      return null; // Fallback to generic
+    }
+
+    // Apply laterality transformation
+    return applyLaterality(baseAnimation, laterality);
+  } catch (error) {
+    console.warn(`Failed to resolve trigram animation: ${error}`);
+    return null;
+  }
+}
+
 /**
  * Get animation by name - unified lookup across all animation registries
  *
@@ -264,12 +345,32 @@ export function getAnimationByName(
  * - STANCE_ANIMATIONS, MOVEMENT_ANIMATIONS
  * - ALL_ATTACK_ANIMATIONS (stance-specific attacks)
  *
- * @param name - Animation name (e.g., "idle", "front_kick", "walk")
+ * **Enhanced with Trigram Pattern Matching:**
+ * Supports pattern: `{trigram}_{technique}_{laterality}` (e.g., "geon_punch_right")
+ * Falls back to generic animations if trigram-specific not found.
+ *
+ * @param name - Animation name (e.g., "idle", "front_kick", "geon_punch_left")
  * @returns Skeletal animation or undefined
  *
  * @korean 애니메이션가져오기
  */
 export function getAnimation(name: string): SkeletalAnimation | undefined {
+  // Try trigram pattern: "{trigram}_{technique}_{laterality}"
+  const trigramPattern = /^(geon|tae|li|jin|son|gam|gan|gon)_(punch|kick|strike)_(left|right)$/i;
+  const match = name.match(trigramPattern);
+
+  if (match) {
+    const [, stanceName, technique, laterality] = match;
+    const stance = stanceName.toLowerCase() as TrigramStance;
+    const side = laterality.toLowerCase() as StanceLaterality;
+
+    const trigramAnim = resolveTrigramAnimation(technique, stance, side);
+    if (trigramAnim) {
+      return trigramAnim;
+    }
+  }
+
+  // Fallback to existing registry logic
   return ALL_ANIMATIONS.get(name);
 }
 
@@ -416,3 +517,8 @@ export {
 export { AnimationType } from "./MartialArtsAnimationBuilder";
 export { hasAnimationMapping };
 export type { AnimationConfig };
+
+// Re-export trigram-aware animation functions
+export { getAnimationsForStance } from "./TrigramAnimationMapping";
+export { applyLaterality } from "./LateralityTransform";
+export type { StanceAnimationSet } from "./TrigramAnimationMapping";
