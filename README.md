@@ -52,36 +52,6 @@ _"Master the dark arts through the pursuit of the perfect strike"_
 
 _An immersive 3D precision combat game powered by Three.js, inspired by Korean martial arts philosophy and the I Ching_
 
----
-
-## 🚀 v1.0 Release Timeline
-
-<div align="center">
-
-**Target Release: Q2-Q3 2026** | **Current Status: Beta (v0.9.x)** | **Overall Completion: 65%**
-
-[![Roadmap](https://img.shields.io/badge/📋-Full_Roadmap-0066CC?style=for-the-badge)](ROADMAP.md)
-
-### Combat Realism Systems Progress
-
-![Progress](https://img.shields.io/badge/Combat_Realism-67%25_(8/12_Complete)-yellow?style=for-the-badge)
-![Progress](https://img.shields.io/badge/Vital_Points-100%25_(70/70)-success?style=for-the-badge)
-![Progress](https://img.shields.io/badge/Test_Coverage-76%25-yellowgreen?style=for-the-badge)
-![Progress](https://img.shields.io/badge/Overall_Quality-8.4/10-green?style=for-the-badge)
-
-| System Category | Status | Progress | Target |
-|----------------|--------|----------|--------|
-| **🎯 Vital Point System** | ✅ Complete | 70/70 points | 100% |
-| **☯️ Trigram Stances** | ✅ Complete | 8/8 stances | 100% |
-| **👤 Player Archetypes** | ✅ Complete | 5/5 archetypes | 100% |
-| **🩸 Combat Realism** | ⚠️ In Progress | 8/12 systems | 67% |
-| **🧪 Test Coverage** | ⚠️ In Progress | 76% | 80%+ |
-| **📱 Performance** | ⚠️ Partial | Desktop: ✅ Mobile: ⚠️ | 60fps |
-
-**[📋 View Complete v1.0 Roadmap →](ROADMAP.md)**
-
-</div>
-
 </div>
 
 ---
@@ -617,7 +587,7 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 ### Release Timeline: Q2-Q3 2026
 
-Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently in beta (v0.9.x) with **8.4/10 overall quality** and **65% completion**.
+Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**.
 
 <div align="center">
 
