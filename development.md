@@ -436,7 +436,7 @@ npm run test:e2e:smoke:ci         # Smoke tests for CI
 See comprehensive test plans:
 - 📘 [Unit Test Plan](./UnitTestPlan.md) - Unit testing strategy
 - 📘 [E2E Test Plan](./E2ETestPlan.md) - End-to-end testing strategy
-- 📘 [Screen-Specific E2E Strategy](./SCREEN_SPECIFIC_E2E_STRATEGY.md) - Per-screen testing approach
+- 📘 [Screen-Specific E2E Strategy](./cypress/e2e/screens/README.md) - Per-screen Cypress E2E testing approach
 
 ### CI/CD Pipeline
 
@@ -585,11 +585,11 @@ npm run test:e2e -- --spec "cypress/e2e/performance-threejs.cy.ts"
 
 **Performance Optimization Tools**:
 - `npm run build:analyze` - Bundle size visualization
-- `npm run build:stats` - Detailed webpack statistics
+- `npm run build:stats` - Detailed bundle statistics (Vite build analysis)
 - Chrome DevTools Performance profiler
 - Three.js stats panel (development mode)
 
-**See Also**: [Performance Testing Documentation](./performance-testing.md) (if created)
+**See Also**: Lighthouse CI workflow and `budget.json` performance budget configuration.
 
 ## 🇰🇷 Korean Font Development
 
@@ -601,10 +601,12 @@ Black Trigram uses **Noto Sans KR** for authentic Korean typography in a cyberpu
 ```typescript
 export const FONT_FAMILY = {
   PRIMARY: '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif',
-  KOREAN: '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif',
+  SECONDARY: '"Nanum Gothic", Arial, sans-serif',
+  MONO: '"Nanum Gothic Coding", monospace',
   KOREAN_BATTLE: '"Noto Sans KR", Impact, sans-serif',
   CYBER: '"Orbitron", "Noto Sans KR", monospace',
   SYMBOL: '"Arial Unicode MS", Arial, sans-serif',
+  KOREAN: '"Noto Sans KR", "Malgun Gothic", Arial, sans-serif',
 } as const;
 ```
 
@@ -941,7 +943,7 @@ cat .env.production
 
 - **Unit Tests**: [UnitTestPlan.md](./UnitTestPlan.md) - Unit testing strategy
 - **E2E Tests**: [E2ETestPlan.md](./E2ETestPlan.md) - End-to-end testing strategy
-- **Screen Tests**: [SCREEN_SPECIFIC_E2E_STRATEGY.md](./SCREEN_SPECIFIC_E2E_STRATEGY.md) - Per-screen approach
+- **Screen Tests**: [cypress/e2e/screens/README.md](./cypress/e2e/screens/README.md) - Per-screen approach
 
 ### Contributing
 
