@@ -250,9 +250,13 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   // Only use width for tablet/desktop distinction when NOT mobile
   const isTablet = useMemo(() => !isMobile && screenWidth >= 768 && screenWidth < 1024, [isMobile, screenWidth]);
   const isLargeDesktop = useMemo(() => !isMobile && screenWidth >= 1920, [isMobile, screenWidth]); // 4K/2K displays
+  // Extra-small mobile detection for low-end devices (<380px)
+  const isExtraSmall = useMemo(() => isMobile && screenWidth < 380, [isMobile, screenWidth]);
 
   // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
-  const logoSize = isMobile
+  const logoSize = isExtraSmall
+    ? Math.min(screenWidth, screenHeight) * 0.20 // Extra compact for low-end mobile
+    : isMobile
     ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
     : isTablet
     ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
@@ -262,14 +266,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
 
   // Optimized component heights - scale for large displays
   // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
-  const menuHeight = isMobile
+  const menuHeight = isExtraSmall
+    ? 270 // Extra-small: ~18px title + 4×42px buttons + 3×8px gaps + 12px section gap + 2×18px padding = 266px
+    : isMobile
     ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
     : isTablet
     ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
     : isLargeDesktop
     ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
     : 380; // Desktop: same as tablet to ensure all 4 menu items fit
-  const archetypeHeight = isMobile
+  const archetypeHeight = isExtraSmall
+    ? 250
+    : isMobile
     ? 260
     : isTablet
     ? 300
@@ -354,7 +362,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
             {/* Main Title */}
             <div
               style={{
-                marginTop: isMobile
+                marginTop: isExtraSmall
+                  ? "12px"
+                  : isMobile
                   ? "15px"
                   : isTablet
                   ? "20px"
@@ -385,14 +395,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                marginTop: isMobile
+                marginTop: isExtraSmall
+                  ? "4px"
+                  : isMobile
                   ? "5px"
                   : isTablet
                   ? "6px"
                   : isLargeDesktop
                   ? "3px"
                   : "8px",
-                marginBottom: isMobile
+                marginBottom: isExtraSmall
+                  ? "4px"
+                  : isMobile
                   ? "5px"
                   : isTablet
                   ? "6px"
@@ -422,7 +436,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Trigram Symbols */}
               <div
                 style={{
-                  fontSize: isMobile
+                  fontSize: isExtraSmall
+                    ? "16px"
+                    : isMobile
                     ? "18px"
                     : isTablet
                     ? "20px"
@@ -433,7 +449,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                     6,
                     "0"
                   )}`,
-                  letterSpacing: isMobile
+                  letterSpacing: isExtraSmall
+                    ? "5px"
+                    : isMobile
                     ? "6px"
                     : isTablet
                     ? "8px"
@@ -441,7 +459,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                     ? "5px"
                     : "10px",
                   textAlign: "center",
-                  marginTop: isMobile
+                  marginTop: isExtraSmall
+                    ? "8px"
+                    : isMobile
                     ? "10px"
                     : isTablet
                     ? "10px"
@@ -464,28 +484,36 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                gap: isMobile
+                gap: isExtraSmall
+                  ? "8px"
+                  : isMobile
                   ? "10px"
                   : isTablet
                   ? "12px"
                   : isLargeDesktop
                   ? "6px"
                   : "14px",
-                paddingLeft: isMobile
+                paddingLeft: isExtraSmall
+                  ? "12px"
+                  : isMobile
                   ? "15px"
                   : isTablet
                   ? "25px"
                   : isLargeDesktop
                   ? "20px"
                   : "30px",
-                paddingRight: isMobile
+                paddingRight: isExtraSmall
+                  ? "12px"
+                  : isMobile
                   ? "15px"
                   : isTablet
                   ? "25px"
                   : isLargeDesktop
                   ? "20px"
                   : "30px",
-                paddingBottom: isMobile
+                paddingBottom: isExtraSmall
+                  ? "6px"
+                  : isMobile
                   ? "8px"
                   : isLargeDesktop
                   ? "4px"
@@ -497,14 +525,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Menu Section */}
               <div
                 style={{
-                  width: isMobile
+                  width: isExtraSmall
+                    ? "100%"
+                    : isMobile
                     ? "100%"
                     : isTablet
                     ? "80%"
                     : isLargeDesktop
                     ? "55%"
                     : "70%",
-                  maxWidth: isMobile
+                  maxWidth: isExtraSmall
+                    ? "100%"
+                    : isMobile
                     ? "100%"
                     : isTablet
                     ? "850px"
@@ -521,7 +553,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                   onSelectedIndexChange={setSelectedMenuIndex}
                   onPlaySFX={audio.playSFX}
                   width={
-                    isMobile
+                    isExtraSmall
+                      ? screenWidth * 0.95
+                      : isMobile
                       ? screenWidth * 0.9
                       : isTablet
                       ? Math.min(850, screenWidth * 0.8)
@@ -536,14 +570,18 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Archetype Selection */}
               <div
                 style={{
-                  width: isMobile
+                  width: isExtraSmall
+                    ? "100%"
+                    : isMobile
                     ? "100%"
                     : isTablet
                     ? "80%"
                     : isLargeDesktop
                     ? "55%"
                     : "70%",
-                  maxWidth: isMobile
+                  maxWidth: isExtraSmall
+                    ? "100%"
+                    : isMobile
                     ? "100%"
                     : isTablet
                     ? "850px"
@@ -560,7 +598,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                     onArchetypeChange={handleArchetypeIndexChange}
                     onPlaySFX={audio.playSFX}
                     width={
-                      isMobile
+                      isExtraSmall
+                        ? screenWidth * 0.95
+                        : isMobile
                         ? screenWidth * 0.9
                         : isTablet
                         ? Math.min(850, screenWidth * 0.8)
@@ -579,7 +619,9 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                     onArchetypeChange={handleArchetypeIndexChange}
                     onPlaySFX={audio.playSFX}
                     width={
-                      isMobile
+                      isExtraSmall
+                        ? screenWidth * 0.95
+                        : isMobile
                         ? screenWidth * 0.9
                         : isTablet
                         ? Math.min(850, screenWidth * 0.8)
@@ -613,7 +655,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Motto */}
               <div
                 style={{
-                  fontSize: isMobile ? "11px" : "14px",
+                  fontSize: isExtraSmall ? "10px" : isMobile ? "11px" : "14px",
                   color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
                     6,
                     "0"
@@ -631,7 +673,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* GitHub link */}
               <div
                 style={{
-                  fontSize: isMobile ? "9px" : "12px",
+                  fontSize: isExtraSmall ? "8px" : isMobile ? "9px" : "12px",
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
@@ -653,7 +695,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Version */}
               <div
                 style={{
-                  fontSize: isMobile ? "9px" : "12px",
+                  fontSize: isExtraSmall ? "8px" : isMobile ? "9px" : "12px",
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,

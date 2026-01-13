@@ -186,18 +186,22 @@ export function getLayoutConstants(width: number) {
 /**
  * Get combat-specific layout constants for a given screen size
  * 
+ * Enhanced with extra-small device support (<380px) for low-end mobile devices
+ * like iPhone SE, old Android phones, and budget smartphones.
+ * 
  * @param width - Screen width in pixels
  * @returns Object with combat layout constant values
  * 
  * @example
  * ```typescript
- * const layout = getCombatLayoutConstants(3840); // 4K display
+ * const layout = getCombatLayoutConstants(375); // iPhone SE
  * // {
- * //   padding: 10,
- * //   hudHeight: 140,
- * //   controlsHeight: 180,
- * //   footerHeight: 40,
- * //   healthBarHeight: 70
+ * //   padding: 8,
+ * //   hudHeight: 85,
+ * //   controlsHeight: 150,
+ * //   footerHeight: 34,
+ * //   healthBarHeight: 48,
+ * //   buttonHeight: 48
  * // }
  * ```
  * 
@@ -206,9 +210,12 @@ export function getLayoutConstants(width: number) {
 export function getCombatLayoutConstants(width: number) {
   const screenSize = getScreenSize(width);
   
+  // Extra-small detection for low-end mobile devices (<380px)
+  const isExtraSmall = screenSize === 'mobile' && width < 380;
+  
   // Combat screen uses different base values for compact HUD
   const hudHeightMap = {
-    mobile: 95,
+    mobile: isExtraSmall ? 85 : 95,
     tablet: 100,
     desktop: 130,
     large: 135,
@@ -220,7 +227,7 @@ export function getCombatLayoutConstants(width: number) {
   // Mobile (portrait) needs taller controls for thumb reach, while tablets
   // (often landscape) can use more compact controls with better screen utilization.
   const controlsHeightMap = {
-    mobile: 160, // Taller for portrait thumb reach
+    mobile: isExtraSmall ? 150 : 160, // Taller for portrait thumb reach
     tablet: 140,  // Optimized for landscape - more compact
     desktop: 170,
     large: 175,
@@ -243,11 +250,21 @@ export function getCombatLayoutConstants(width: number) {
     xlarge: 70,
   };
   
+  // Touch target heights - WCAG AA compliance (minimum 44px)
+  const buttonHeightMap = {
+    mobile: isExtraSmall ? 48 : 55, // Minimum 48px for extra-small
+    tablet: 55,
+    desktop: 60,
+    large: 60,
+    xlarge: 60,
+  };
+  
   return {
-    padding: 10, // Combat screen uses minimal padding
+    padding: isExtraSmall ? 8 : 10, // Reduced padding for extra-small
     hudHeight: hudHeightMap[screenSize],
     controlsHeight: controlsHeightMap[screenSize],
     footerHeight: footerHeightMap[screenSize],
     healthBarHeight: healthBarHeightMap[screenSize],
+    buttonHeight: buttonHeightMap[screenSize],
   };
 }

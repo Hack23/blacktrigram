@@ -14,6 +14,7 @@
  * 
  * Implements consistent mobile area sizing logic shared between combat and training screens.
  * Adapts to different device resolutions while maintaining a 4:3 aspect ratio.
+ * Enhanced with extra-small device support (<380px) for low-end mobile devices.
  * 
  * @param width - Screen width in pixels
  * @param height - Screen height in pixels
@@ -26,6 +27,9 @@
  * ```typescript
  * const bounds = calculateMobileAreaBounds(375, 667, 80, 120, 100);
  * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125 }
+ * 
+ * const boundsSmall = calculateMobileAreaBounds(320, 568, 75, 110, 90);
+ * // Returns: { x: ~25, y: 90, width: 270, height: 202, scale: 0.28125 }
  * ```
  * 
  * @public
@@ -45,15 +49,18 @@ export function calculateMobileAreaBounds(
   readonly scale: number;
 } {
   // Calculate available space for the area
+  // Extra-small devices (<380px) use tighter margins for more screen real estate
+  const horizontalMargin = width < 380 ? 30 : 40; // 15px vs 20px per side
   const availableHeight = height - topClearance - bottomClearance;
-  const availableWidth = width - 40; // 20px margins on each side
+  const availableWidth = width - horizontalMargin;
 
   // Determine max width based on device resolution
-  // Device-specific sizing:
+  // Device-specific sizing with extra-small support:
   // - 4K/QHD+ (≥1440px): up to 800px
   // - 2K (1200-1439px): up to 600px
   // - Large phones (768-1199px): up to 500px
-  // - Standard phones (<768px): up to 400px
+  // - Standard phones (380-767px): up to 400px
+  // - Extra-small phones (<380px): up to 320px
   let maxMobileWidth: number;
   if (width >= 1440) {
     maxMobileWidth = Math.min(availableWidth, 800);
@@ -61,11 +68,15 @@ export function calculateMobileAreaBounds(
     maxMobileWidth = Math.min(availableWidth, 600);
   } else if (width >= 768) {
     maxMobileWidth = Math.min(availableWidth, 500);
-  } else {
+  } else if (width >= 380) {
     maxMobileWidth = Math.min(availableWidth, 400);
+  } else {
+    // Extra-small devices (iPhone SE, old Android, budget phones)
+    maxMobileWidth = Math.min(availableWidth, 320);
   }
   
-  const maxMobileHeight = Math.min(availableHeight, 800);
+  // Extra-small devices also get reduced max height for better fit
+  const maxMobileHeight = Math.min(availableHeight, width < 380 ? 240 : 800);
 
   // Maintain 4:3 aspect ratio (width:height = 4:3)
   const aspectRatio = 4 / 3;
