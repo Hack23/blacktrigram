@@ -24,6 +24,7 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
  * Ball of foot strikes forward in a snapping motion.
  *
  * Phases:
+ * 0. Stance (기본자세): Initial fighting stance - 0ms
  * 1. Chamber (준비): Knee lifts to torso height - 120ms
  * 2. Extension (차기): Leg snaps forward with hip thrust - 180ms
  * 3. Peak (정점): Hold at full extension - 80ms
@@ -37,6 +38,7 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
 export const FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("front_kick", "앞차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
+    .stance() // 기본자세 - Initial stance at t=0
     .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts to torso
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // 차기 - 180ms leg snaps forward
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // 정점 - 80ms hold at extension
@@ -55,6 +57,7 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
  * Instep or shin strikes target in circular arc.
  *
  * Phases:
+ * 0. Stance (기본자세): Initial fighting stance - 0ms
  * 1. Chamber (준비): Hip rotates out, knee lifts - 150ms
  * 2. Extension (차기): Leg whips through target - 200ms
  * 3. Follow-through: Hip continues rotation - 100ms
@@ -68,8 +71,8 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
 export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("roundhouse_kick", "돌려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
+    .stance() // 기본자세 - Initial stance at t=0
     .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms hip rotates out
-    .withHighGuard() // 상단방어
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 차기 - 200ms leg whips through
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
     .retract(TECHNIQUE_TIMING.HEAVY_LIGHT.retract) // 회수 - 150ms
@@ -87,6 +90,7 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
  * Body turns sideways for maximum reach.
  *
  * Phases:
+ * 0. Stance (기본자세): Initial fighting stance - 0ms
  * 1. Chamber (준비): Turn sideways, knee lifts - 120ms
  * 2. Extension (차기): Heel drives through target - 200ms
  * 3. Peak (정점): Hold at extension - 80ms
@@ -100,8 +104,8 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
 export const SIDE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("side_kick", "옆차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_HEAVY.total)
+    .stance() // 기본자세 - Initial stance at t=0
     .sideKickChamber(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // 준비 - 120ms turn sideways
-    .withHighGuard()
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // 차기 - 200ms heel drives
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak) // 정점 - 80ms hold at extension
     .retract(TECHNIQUE_TIMING.MEDIUM_HEAVY.retract) // 회수 - 150ms
@@ -151,6 +155,7 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
  * Body rotates 180° for surprise attack.
  *
  * Phases:
+ * 0. Stance (기본자세): Initial fighting stance - 0ms
  * 1. Spin & chamber (회전+준비): Body rotates 180° and leg loads - 200ms
  * 2. Thrust (차기): Heel drives backward - 300ms
  * 3. Peak (정점): Hold at extension - 120ms
@@ -163,6 +168,7 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
 export const BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("back_kick", "뒤차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
+    .stance() // 기본자세 - Initial stance at t=0
     .backKickSpin(TECHNIQUE_TIMING.HEAVY.chamber) // 회전+준비 - 200ms body rotates and chambers
     .backKickThrust(TECHNIQUE_TIMING.HEAVY.extend) // 차기 - 300ms heel thrusts
     .backKickThrust(TECHNIQUE_TIMING.HEAVY.peak) // 정점 - 120ms hold at extension

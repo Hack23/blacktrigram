@@ -324,6 +324,53 @@ export class MartialArtsAnimationBuilder {
   }
 
   // ═══════════════════════════════════════════════════════════════════════
+  // STANCE METHODS (자세 메서드)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Add initial fighting stance keyframe (기본 자세)
+   * 
+   * Adds a neutral fighting stance at time 0 as the starting position
+   * for attack animations. This is the ready position before techniques.
+   * 
+   * @korean 기본자세추가
+   */
+  stance(): this {
+    const guard = MARTIAL_POSES.GUARD;
+    this.addKeyframe(0, "linear", (kf) => {
+      // Legs in neutral stance
+      kf.rotate(BoneName.HIP_R, 0, 0, 0);
+      kf.rotate(BoneName.HIP_L, 0, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0, 0);
+      
+      // Spine neutral
+      kf.rotate(BoneName.PELVIS, 0, 0, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
+      kf.rotate(BoneName.HEAD, 0, 0, 0);
+      
+      // Arms in guard position
+      kf.rotate(BoneName.SHOULDER_L, ...guard.leftShoulder);
+      kf.rotate(BoneName.ELBOW_L, ...guard.leftElbow);
+      kf.rotate(BoneName.SHOULDER_R, ...guard.rightShoulder);
+      kf.rotate(BoneName.ELBOW_R, ...guard.rightElbow);
+      
+      // Neutral positions
+      kf.position(BoneName.PELVIS, 0, 0, 0);
+      kf.position(BoneName.FOOT_R, 0, 0, 0);
+      kf.position(BoneName.FOOT_L, 0, 0, 0);
+      
+      // Fists in guard
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
+    });
+    // Don't advance currentTime - stance is at time 0
+    return this;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
   // KICK TECHNIQUES (발차기 기술)
   // ═══════════════════════════════════════════════════════════════════════
 

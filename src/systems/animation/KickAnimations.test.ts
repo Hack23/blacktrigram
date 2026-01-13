@@ -24,7 +24,16 @@ function getBoneRotation(
   keyframe: any,
   boneName: BoneName
 ): readonly [number, number, number] | undefined {
-  return keyframe.boneRotations.get(boneName);
+  const rotation = keyframe.boneRotations.get(boneName);
+  if (!rotation) return undefined;
+  
+  // Handle THREE.Euler objects
+  if (rotation.isEuler) {
+    return [rotation._x, rotation._y, rotation._z] as const;
+  }
+  
+  // Handle plain arrays
+  return rotation;
 }
 
 // Helper to check if bone rotation exists and is within expected range
