@@ -90,6 +90,9 @@ export function calculateTransitionDuration(
   }
   
   // Calculate shortest distance around the circular wheel
+  // For a circular array, the shortest path between two positions can wrap around.
+  // Example: In an 8-element array, going from index 7 to 0 is 1 step (wrapping),
+  // not 7 steps (direct). We compare both paths and take the shorter one.
   const directDistance = Math.abs(toIndex - fromIndex);
   const wrapDistance = TRIGRAM_STANCES_ORDER.length - directDistance;
   const distance = Math.min(directDistance, wrapDistance);
@@ -110,6 +113,32 @@ export function calculateTransitionDuration(
  */
 const WEIGHT_TRANSFER_KNEE_BEND = 0.1; // Additional knee bend during weight transfer (radians)
 const MAX_KNEE_FLEX_ANGLE = 0.6; // Maximum knee flex angle to prevent over-bending (radians)
+
+/**
+ * Helper function for blending Euler rotations between two poses.
+ * 
+ * **Korean**: 오일러 회전 블렌딩
+ * 
+ * Linearly interpolates between two Euler angles based on a blend factor.
+ * 
+ * @param fromEuler - Starting rotation
+ * @param toEuler - Target rotation
+ * @param blend - Blend factor (0.0 = all from, 1.0 = all to)
+ * @returns Blended rotation as [x, y, z] tuple
+ * 
+ * @korean 오일러회전블렌딩
+ */
+function blendRotation(
+  fromEuler: THREE.Euler,
+  toEuler: THREE.Euler,
+  blend: number
+): [number, number, number] {
+  return [
+    fromEuler.x + (toEuler.x - fromEuler.x) * blend,
+    fromEuler.y + (toEuler.y - fromEuler.y) * blend,
+    fromEuler.z + (toEuler.z - fromEuler.z) * blend,
+  ];
+}
 
 /**
  * Generate trigram stance-to-stance transition animation.
@@ -178,7 +207,7 @@ export function transitionBetweenStances(
       `${from}_to_${to}_${laterality}`,
       `${from}에서${to}로_${laterality === "left" ? "왼" : "오른"}`
     )
-    .asMovement(duration, false);
+    .asStance(duration, false);
   
   // Keyframe 1: Start from original guard pose (0% - t=0)
   const startTime = 0;
@@ -202,15 +231,6 @@ export function transitionBetweenStances(
     .position(BoneName.FOOT_L, -fromHalfWidth, 0, 0)
     .position(BoneName.FOOT_R, fromHalfWidth, 0, 0)
     .done<typeof builder>();
-  
-  // Helper function for blending Euler rotations
-  const blendRotation = (fromEuler: THREE.Euler, toEuler: THREE.Euler, blend: number): [number, number, number] => {
-    return [
-      fromEuler.x + (toEuler.x - fromEuler.x) * blend,
-      fromEuler.y + (toEuler.y - fromEuler.y) * blend,
-      fromEuler.z + (toEuler.z - fromEuler.z) * blend,
-    ];
-  };
   
   // Keyframe 2: Weight transfer phase (40% of duration)
   const weightTransferTime = duration * 0.4;
@@ -317,11 +337,6 @@ export function initializeStanceTransitions(): void {
       }
     }
   }
-  
-  // Only log in development environment
-  if (process.env.NODE_ENV === "development") {
-    console.info(`[TrigramStanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
-  }
 }
 
 /**
@@ -359,15 +374,25 @@ export function getStanceTransition(
 }
 
 /**
- * Initialize transitions on module load for convenience in browser environments.
+ * Ensure stance transitions have been initialized.
  * 
- * **Note**: For production applications, consider calling `initializeStanceTransitions()`
- * explicitly during application startup for better control and performance.
- * This auto-initialization only runs in browser context (not during SSR or build).
+ * **Korean**: 전환이미초기화확인
  * 
- * @korean 모듈로드시자동초기화
+ * This helper provides a convenient way for application startup code to lazily
+ * initialize the stance transition matrix without performing any work at module
+ * load time. It is safe to call multiple times; transitions will only be generated
+ * on the first call when the internal map is still empty.
+ * 
+ * @example
+ * ```typescript
+ * // During app startup or before using stance transitions
+ * ensureStanceTransitionsInitialized();
+ * ```
+ * 
+ * @korean 전환이미초기화확인
  */
-if (typeof window !== 'undefined' && STANCE_TRANSITIONS.size === 0) {
-  // Only initialize in browser context and if not already initialized
-  initializeStanceTransitions();
+export function ensureStanceTransitionsInitialized(): void {
+  if (STANCE_TRANSITIONS.size === 0) {
+    initializeStanceTransitions();
+  }
 }

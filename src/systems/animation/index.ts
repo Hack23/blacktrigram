@@ -434,6 +434,7 @@ export {
   STANCE_TRANSITIONS,
   TRIGRAM_STANCES_ORDER,
   calculateTransitionDuration,
+  ensureStanceTransitionsInitialized,
   getStanceTransition,
   initializeStanceTransitions,
   transitionBetweenStances,

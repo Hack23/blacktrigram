@@ -14,7 +14,7 @@
  * @korean 팔괘자세전환테스트
  */
 
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll, vi } from "vitest";
 import { TrigramStance } from "../../types/common";
 import {
   calculateTransitionDuration,
@@ -25,6 +25,7 @@ import {
   STANCE_TRANSITIONS,
 } from "./TrigramStanceTransitions";
 import type { StanceLaterality } from "../trigram/types";
+import { getGuardPoseForStance } from "./StanceGuardPoses";
 
 describe("TrigramStanceTransitions", () => {
   beforeAll(() => {
@@ -125,7 +126,7 @@ describe("TrigramStanceTransitions", () => {
         expect(transition.name).toContain("geon_to_tae");
         expect(transition.koreanName).toContain("geon");
         expect(transition.koreanName).toContain("tae");
-        expect(transition.type).toBe("movement");
+        expect(transition.type).toBe("stance");
       });
 
       it("should use correct duration for adjacent stances", () => {
@@ -448,8 +449,14 @@ describe("TrigramStanceTransitions", () => {
             Math.abs(startLeftFoot.y - endLeftFoot.y) > 0.001 ||
             Math.abs(startLeftFoot.z - endLeftFoot.z) > 0.001;
           
-          // Allow for same positions if stances happen to have same width
-          expect(positionChanged || true).toBe(true);
+          // Get guard poses to check if widths are different
+          const fromGuard = getGuardPoseForStance(TrigramStance.GEON, "right");
+          const toGuard = getGuardPoseForStance(TrigramStance.GAM, "right");
+          
+          // Some stances may have the same width, so we only test when they differ
+          if (fromGuard && toGuard && fromGuard.stanceWidth !== toGuard.stanceWidth) {
+            expect(positionChanged).toBe(true);
+          }
         }
       });
 
@@ -538,6 +545,28 @@ describe("TrigramStanceTransitions", () => {
             "right"
           );
         }).toThrow();
+      });
+
+      it("should warn and use default duration for stance not in TRIGRAM_STANCES_ORDER", () => {
+        // Create a spy to capture console.warn calls
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        
+        // Use a stance that's technically valid but may not be in the order array
+        // This simulates the runtime scenario where indexOf returns -1
+        const duration = calculateTransitionDuration(
+          "invalid_stance" as TrigramStance,
+          TrigramStance.TAE
+        );
+        
+        // Should have warned about invalid stance
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid stance in transition")
+        );
+        
+        // Should return default duration (0.3)
+        expect(duration).toBe(0.3);
+        
+        warnSpy.mockRestore();
       });
     });
   });
