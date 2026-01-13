@@ -12,74 +12,342 @@
  */
 
 import type { SkeletalAnimation } from "../../types/skeletal";
+import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITY FUNCTIONS (유틸리티 함수)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Convert degrees to radians
+ * 각도를 라디안으로 변환
+ * 
+ * @param degrees - Angle in degrees
+ * @returns Angle in radians
+ * @korean 각도변환
+ */
+const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BASIC FOOTWORK (기본 풋워크)
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Forward Step - 전진스텝
+ * Forward Step - 전진스텝 with Korean Martial Arts Weight Transfer
  *
- * Advancing step toward opponent.
- * Closes distance safely.
+ * Advancing step toward opponent with authentic Korean martial arts footwork mechanics.
+ * Implements proper weight transfer (체중이동), stepping foot mechanics (디딤발),
+ * and pivot foot stability (축발) principles.
  *
- * @korean 전진스텝애니메이션
+ * Weight Transfer Mechanics (체중이동 원리):
+ * - Phase 1 (0-0.15s): Weight shift to back foot, front leg prepares (준비단계)
+ * - Phase 2 (0.15-0.35s): Front foot lifts and extends forward (이동단계)
+ * - Phase 3 (0.35-0.45s): Heel strikes ground, weight begins transfer (착지단계)
+ * - Phase 4 (0.45-0.6s): Complete weight transfer, foot rolls to flat (안정단계)
+ *
+ * Korean Martial Arts Principles:
+ * - 디딤발 (Didimbal): Stepping foot lands heel-first, rolls to ball
+ * - 축발 (Chukbal): Pivot foot maintains balance during weight shift
+ * - 체중이동 (Chejung Idong): Weight transfers smoothly, not abruptly
+ * - 중심이동 (Jungsim Idong): Center of mass moves with body
+ *
+ * @korean 전진스텝애니메이션_체중이동
  */
-export const MOVEMENT_FORWARD_STEP_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("movement_forward_step", "전진스텝")
-    .asMovement(0.3)
-    .step(0.15)
-    .recover(0.15)
-    .build();
+export const MOVEMENT_FORWARD_STEP_ANIMATION: SkeletalAnimation = (() => {
+  const builder = MartialArtsAnimationBuilder.create("movement_forward_step", "전진스텝")
+    .asMovement(0.6);
+  
+  // Phase 1: Preparation - Weight shift to back leg (준비단계)
+  builder["addKeyframe"](0, "linear", (kf) => {
+    // Neutral stance
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+    kf.position(BoneName.PELVIS, 0, 0, 0);
+  });
+  
+  builder["addKeyframe"](0.03, "ease-out", (kf) => {
+    // Shift weight to back leg (right leg in orthodox stance)
+    kf.position(BoneName.PELVIS, 0.05, 0, 0); // Hip shifts over back leg
+    kf.rotate(BoneName.KNEE_R, toRadians(-8), 0, 0); // Back leg bends to accept weight
+    kf.rotate(BoneName.KNEE_L, toRadians(-3), 0, 0); // Front leg lightens
+  });
+  
+  // Phase 2: Lift step leg (이동단계 - 들어올리기)
+  builder["addKeyframe"](0.15, "ease-out", (kf) => {
+    // Front leg lifts
+    kf.rotate(BoneName.HIP_L, toRadians(-30), 0, 0); // Knee lifts
+    kf.rotate(BoneName.KNEE_L, toRadians(-40), 0, 0); // Shin forward
+    kf.position(BoneName.PELVIS, 0.05, -0.02, 0); // Drop slightly for power
+    // Back leg bears full weight
+    kf.rotate(BoneName.KNEE_R, toRadians(-10), 0, 0);
+  });
+  
+  // Phase 3: Extend forward (이동단계 - 앞으로)
+  builder["addKeyframe"](0.25, "linear", (kf) => {
+    // Front foot extends forward, preparing for heel strike
+    kf.rotate(BoneName.HIP_L, toRadians(-15), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-10), 0, 0);
+    kf.rotate(BoneName.FOOT_L, toRadians(25), 0, 0); // Toe up, heel ready
+    kf.position(BoneName.PELVIS, 0.03, -0.025, 0.15); // Forward, slightly lower
+  });
+  
+  // Phase 4: Heel strike (착지단계 - 뒤꿈치 착지)
+  builder["addKeyframe"](0.35, "linear", (kf) => {
+    // Heel contacts ground - 디딤발 (Didimbal) principle
+    kf.rotate(BoneName.HIP_L, toRadians(-10), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-8), 0, 0);
+    kf.rotate(BoneName.FOOT_L, toRadians(20), 0, 0); // Heel down, toe still up
+    kf.position(BoneName.PELVIS, 0, -0.03, 0.3); // Forward and lower on impact
+    // Back leg still supporting
+    kf.rotate(BoneName.KNEE_R, toRadians(-6), 0, 0);
+  });
+  
+  // Phase 5: Weight transfer begins (체중이동 시작)
+  builder["addKeyframe"](0.45, "ease-in", (kf) => {
+    // Weight shifts to front leg - 체중이동 (Chejung Idong)
+    kf.position(BoneName.PELVIS, -0.03, -0.02, 0.35); // Hip shifts toward front leg
+    kf.rotate(BoneName.KNEE_L, toRadians(-12), 0, 0); // Front leg accepts weight
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0); // Back leg relaxes
+    kf.rotate(BoneName.FOOT_L, toRadians(5), 0, 0); // Foot rolling to flat
+  });
+  
+  // Phase 6: Complete transfer and stabilization (안정단계)
+  builder["addKeyframe"](0.6, "ease-in", (kf) => {
+    // Full weight on front leg, stable stance
+    kf.position(BoneName.PELVIS, -0.05, 0, 0.4); // Center over front leg
+    kf.rotate(BoneName.KNEE_L, toRadians(-10), 0, 0); // Front leg stable
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0); // Back leg light
+    kf.rotate(BoneName.FOOT_L, toRadians(-5), 0, 0); // Foot completely flat, slight pressure on ball
+    // Guard maintained throughout
+    kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+    kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+    kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+    kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+  });
+  
+  return builder.build();
+})();
 
 /**
- * Backward Step - 후진스텝
+ * Backward Step - 후진스텝 with Korean Martial Arts Weight Transfer
  *
- * Retreating step from opponent.
- * Creates safe distance.
+ * Retreating step from opponent with authentic Korean martial arts footwork.
+ * Implements proper rear weight transfer and defensive positioning.
  *
- * @korean 후진스텝애니메이션
+ * Weight Transfer Mechanics (후퇴 체중이동):
+ * - Phase 1 (0-0.15s): Weight shift to front foot, back leg prepares
+ * - Phase 2 (0.15-0.35s): Back foot lifts and extends backward
+ * - Phase 3 (0.35-0.45s): Ball of foot touches down, weight begins transfer
+ * - Phase 4 (0.45-0.6s): Complete weight transfer, maintain guard
+ *
+ * Korean Martial Arts Principles:
+ * - Backward steps land on ball of foot first (unlike forward heel-first)
+ * - Maintain forward-facing guard throughout retreat
+ * - Center of mass moves smoothly backward
+ * - Front leg remains ready to kick or defend
+ *
+ * @korean 후진스텝애니메이션_체중이동
  */
-export const MOVEMENT_BACKWARD_STEP_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("movement_backward_step", "후진스텝")
-    .asMovement(0.3)
-    .step(0.15)
-    .recover(0.15)
-    .build();
+export const MOVEMENT_BACKWARD_STEP_ANIMATION: SkeletalAnimation = (() => {
+  const builder = MartialArtsAnimationBuilder.create("movement_backward_step", "후진스텝")
+    .asMovement(0.6);
+  
+  builder["addKeyframe"](0, "linear", (kf) => {
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+    kf.position(BoneName.PELVIS, 0, 0, 0);
+  });
+  
+  builder["addKeyframe"](0.03, "ease-out", (kf) => {
+    // Weight shifts to front leg (left leg in orthodox stance)
+    kf.position(BoneName.PELVIS, -0.05, 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-8), 0, 0); // Front leg accepts weight
+    kf.rotate(BoneName.KNEE_R, toRadians(-3), 0, 0); // Back leg lightens
+  });
+  
+  builder["addKeyframe"](0.15, "ease-out", (kf) => {
+    // Back leg lifts
+    kf.rotate(BoneName.HIP_R, toRadians(20), 0, 0); // Hip extends back
+    kf.rotate(BoneName.KNEE_R, toRadians(-25), 0, 0); // Knee lifts slightly
+    kf.position(BoneName.PELVIS, -0.05, -0.015, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-10), 0, 0); // Front leg stable
+  });
+  
+  builder["addKeyframe"](0.25, "linear", (kf) => {
+    // Back foot extends backward
+    kf.rotate(BoneName.HIP_R, toRadians(12), 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-8), 0, 0);
+    kf.rotate(BoneName.FOOT_R, toRadians(-15), 0, 0); // Ball of foot ready to land
+    kf.position(BoneName.PELVIS, -0.03, -0.02, -0.15); // Backward motion
+  });
+  
+  builder["addKeyframe"](0.35, "linear", (kf) => {
+    // Ball of foot contacts ground (backward steps land on ball first)
+    kf.rotate(BoneName.HIP_R, toRadians(8), 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-6), 0, 0);
+    kf.rotate(BoneName.FOOT_R, toRadians(-12), 0, 0);
+    kf.position(BoneName.PELVIS, 0, -0.025, -0.3);
+    kf.rotate(BoneName.KNEE_L, toRadians(-8), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.45, "ease-in", (kf) => {
+    // Weight transfers to back leg
+    kf.position(BoneName.PELVIS, 0.03, -0.015, -0.35);
+    kf.rotate(BoneName.KNEE_R, toRadians(-10), 0, 0); // Back leg accepts weight
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0); // Front leg lightens
+    kf.rotate(BoneName.FOOT_R, toRadians(-5), 0, 0); // Heel settles down
+  });
+  
+  builder["addKeyframe"](0.6, "ease-in", (kf) => {
+    // Stable rear stance
+    kf.position(BoneName.PELVIS, 0.05, 0, -0.4);
+    kf.rotate(BoneName.KNEE_R, toRadians(-8), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+    kf.rotate(BoneName.FOOT_R, 0, 0, 0);
+    // Guard maintained
+    kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+    kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+    kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+    kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+  });
+  
+  return builder.build();
+})();
 
 /**
- * Left Sidestep - 왼쪽측면스텝
+ * Left Sidestep - 왼쪽측면스텝 with Korean Martial Arts Weight Transfer
  *
- * Lateral movement left.
- * Creates angle advantage.
+ * Lateral movement left with authentic Korean martial arts footwork.
+ * Creates angle advantage while maintaining forward guard.
  *
- * @korean 왼쪽측면스텝애니메이션
+ * Weight Transfer Mechanics (측면 체중이동):
+ * - Phase 1: Weight shifts to right leg
+ * - Phase 2: Left foot slides lateral
+ * - Phase 3: Weight transfers smoothly to left
+ * - Phase 4: Right foot follows, stance width maintained
+ *
+ * Korean Martial Arts Principles:
+ * - Guard faces forward throughout (원형보 - Circular footwork)
+ * - Pelvis rotates slightly to engage hip
+ * - Spine counter-rotates to maintain guard orientation
+ * - Smooth weight distribution prevents telegraphing
+ *
+ * @korean 왼쪽측면스텝애니메이션_체중이동
  */
-export const MOVEMENT_SIDESTEP_LEFT_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("movement_sidestep_left", "왼쪽측면스텝")
-    .asMovement(0.28)
-    .shift(0.14)
-    .recover(0.14)
-    .build();
+export const MOVEMENT_SIDESTEP_LEFT_ANIMATION: SkeletalAnimation = (() => {
+  const builder = MartialArtsAnimationBuilder.create("movement_sidestep_left", "왼쪽측면스텝")
+    .asMovement(0.5);
+  
+  builder["addKeyframe"](0, "linear", (kf) => {
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+    kf.position(BoneName.PELVIS, 0, 0, 0);
+  });
+  
+  builder["addKeyframe"](0.08, "ease-out", (kf) => {
+    // Weight shifts to right leg
+    kf.position(BoneName.PELVIS, 0.04, 0, 0);
+    kf.rotate(BoneName.PELVIS, 0, 0, toRadians(3)); // Slight tilt right
+    kf.rotate(BoneName.KNEE_R, toRadians(-10), 0, 0); // Right leg accepts weight
+    kf.rotate(BoneName.KNEE_L, toRadians(-3), 0, 0); // Left leg lightens
+  });
+  
+  builder["addKeyframe"](0.18, "linear", (kf) => {
+    // Left foot slides lateral
+    kf.position(BoneName.PELVIS, 0.02, -0.01, 0); // Slight drop during slide
+    kf.rotate(BoneName.PELVIS, 0, toRadians(5), toRadians(5)); // Hip engages for lateral movement
+    kf.rotate(BoneName.SPINE_LOWER, 0, toRadians(-3), 0); // Counter-rotate to maintain guard
+    kf.rotate(BoneName.KNEE_R, toRadians(-12), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.3, "ease-in", (kf) => {
+    // Weight begins transfer to left
+    kf.position(BoneName.PELVIS, -0.15, 0, 0); // Lateral 15cm
+    kf.rotate(BoneName.PELVIS, 0, toRadians(3), 0);
+    kf.rotate(BoneName.SPINE_LOWER, 0, toRadians(-2), 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-10), 0, 0); // Left leg accepts weight
+    kf.rotate(BoneName.KNEE_R, toRadians(-6), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.5, "ease-in", (kf) => {
+    // Stable lateral stance
+    kf.position(BoneName.PELVIS, -0.3, 0, 0); // Full 30cm lateral
+    kf.rotate(BoneName.PELVIS, 0, 0, 0); // Return to neutral
+    kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-8), 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-8), 0, 0);
+    // Guard maintained forward
+    kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+    kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+    kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+    kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+  });
+  
+  return builder.build();
+})();
 
 /**
- * Right Sidestep - 오른쪽측면스텝
+ * Right Sidestep - 오른쪽측면스텝 with Korean Martial Arts Weight Transfer
  *
- * Lateral movement right.
- * Creates angle advantage.
+ * Lateral movement right with authentic Korean martial arts footwork.
+ * Mirror of left sidestep.
  *
- * @korean 오른쪽측면스텝애니메이션
+ * @korean 오른쪽측면스텝애니메이션_체중이동
  */
-export const MOVEMENT_SIDESTEP_RIGHT_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create(
-    "movement_sidestep_right",
-    "오른쪽측면스텝"
-  )
-    .asMovement(0.28)
-    .shift(0.14)
-    .recover(0.14)
-    .build();
+export const MOVEMENT_SIDESTEP_RIGHT_ANIMATION: SkeletalAnimation = (() => {
+  const builder = MartialArtsAnimationBuilder.create("movement_sidestep_right", "오른쪽측면스텝")
+    .asMovement(0.5);
+  
+  builder["addKeyframe"](0, "linear", (kf) => {
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-5), 0, 0);
+    kf.position(BoneName.PELVIS, 0, 0, 0);
+  });
+  
+  builder["addKeyframe"](0.08, "ease-out", (kf) => {
+    // Weight shifts to left leg
+    kf.position(BoneName.PELVIS, -0.04, 0, 0);
+    kf.rotate(BoneName.PELVIS, 0, 0, toRadians(-3));
+    kf.rotate(BoneName.KNEE_L, toRadians(-10), 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-3), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.18, "linear", (kf) => {
+    // Right foot slides lateral
+    kf.position(BoneName.PELVIS, -0.02, -0.01, 0);
+    kf.rotate(BoneName.PELVIS, 0, toRadians(-5), toRadians(-5));
+    kf.rotate(BoneName.SPINE_LOWER, 0, toRadians(3), 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-12), 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-5), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.3, "ease-in", (kf) => {
+    // Weight begins transfer to right
+    kf.position(BoneName.PELVIS, 0.15, 0, 0);
+    kf.rotate(BoneName.PELVIS, 0, toRadians(-3), 0);
+    kf.rotate(BoneName.SPINE_LOWER, 0, toRadians(2), 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-10), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-6), 0, 0);
+  });
+  
+  builder["addKeyframe"](0.5, "ease-in", (kf) => {
+    // Stable lateral stance
+    kf.position(BoneName.PELVIS, 0.3, 0, 0);
+    kf.rotate(BoneName.PELVIS, 0, 0, 0);
+    kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+    kf.rotate(BoneName.KNEE_R, toRadians(-8), 0, 0);
+    kf.rotate(BoneName.KNEE_L, toRadians(-8), 0, 0);
+    // Guard maintained
+    kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
+    kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+    kf.rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3);
+    kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+  });
+  
+  return builder.build();
+})();
 
 /**
  * Step Drag - 스텝드래그
