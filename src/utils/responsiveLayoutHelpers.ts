@@ -186,15 +186,17 @@ export function getLayoutConstants(width: number) {
 /**
  * Get combat-specific layout constants for a given screen size
  * 
- * Enhanced with extra-small device support (<380px) for low-end mobile devices
- * like iPhone SE, old Android phones, and budget smartphones.
+ * Optimized for narrow devices (<450px), with extra-small device support
+ * explicitly tuned for ultra-small screens (<380px) like iPhone SE, old
+ * Android phones, and budget smartphones.
  * 
  * @param width - Screen width in pixels
  * @returns Object with combat layout constant values
  * 
  * @example
  * ```typescript
- * const layout = getCombatLayoutConstants(375); // iPhone SE
+ * const layout = getCombatLayoutConstants(375); // iPhone SE (extra-small)
+ * // Returns:
  * // {
  * //   padding: 8,
  * //   hudHeight: 85,

@@ -1,8 +1,8 @@
-# Low-End Mobile Device Optimization (<380px)
+# Low-End Mobile Device Optimization (<450px, extra-small tier <380px)
 
 ## 📱 Overview
 
-Comprehensive optimization for low-end mobile devices including iPhone SE, old Android phones, and budget smartphones (screen width <380px).
+Comprehensive optimization for low-end mobile devices including iPhone SE, old Android phones, and budget smartphones (screen width <450px), with focused tuning for the extra-small subset (<380px). This corresponds to the "<450px" low-end mobile category used in the PR title, which encompasses both the extra-small (<380px) and small (380–450px) tiers defined in the Korean font sizes.
 
 ## 🎯 Target Devices
 
