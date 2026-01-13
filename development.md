@@ -543,13 +543,19 @@ Black Trigram targets 60fps for all Three.js rendering:
 # Manual run via GitHub Actions workflow dispatch
 ```
 
-**Performance Metrics**:
-- 🎯 **Performance Score**: >90
-- 🎯 **First Contentful Paint (FCP)**: <1.8s
-- 🎯 **Largest Contentful Paint (LCP)**: <2.5s
-- 🎯 **Total Blocking Time (TBT)**: <300ms
+**Performance Budget Thresholds** (from `budget.json`):
+- 🎯 **Time to Interactive (TTI)**: <6.0s
+- 🎯 **First Contentful Paint (FCP)**: <3.5s
+- 🎯 **Largest Contentful Paint (LCP)**: <4.0s
+- 🎯 **Total Blocking Time (TBT)**: <1.6s
 - 🎯 **Cumulative Layout Shift (CLS)**: <0.1
-- 🎯 **Speed Index**: <3.4s
+- 🎯 **Speed Index**: <5.0s
+
+**Target Goals** (stricter than CI budgets):
+- ⭐ **Performance Score**: >90 (Lighthouse)
+- ⭐ **FCP Target**: <1.8s (best practice)
+- ⭐ **LCP Target**: <2.5s (best practice)
+- ⭐ **TBT Target**: <300ms (best practice)
 
 **2. Manual FPS Validation**
 ```bash
@@ -564,24 +570,48 @@ npm run test:e2e -- --spec "cypress/e2e/performance-threejs.cy.ts"
 ```
 
 **3. Performance Budget Monitoring**
+
+Budget configuration in `budget.json`:
+
 ```json
-// budget.json - Lighthouse CI budget
+// Actual budget.json values
 {
   "timings": [
     {
       "metric": "interactive",
-      "budget": 3000,  // 3s
-      "tolerance": 0.1
+      "budget": 6000        // 6s - Time to Interactive
+    },
+    {
+      "metric": "first-contentful-paint",
+      "budget": 3500        // 3.5s
+    },
+    {
+      "metric": "largest-contentful-paint",
+      "budget": 4000        // 4s
+    },
+    {
+      "metric": "total-blocking-time",
+      "budget": 1600        // 1.6s
+    },
+    {
+      "metric": "speed-index",
+      "budget": 5000        // 5s
     }
   ],
   "resourceSizes": [
     {
       "resourceType": "script",
-      "budget": 600     // 600KB
+      "budget": 180         // 180KB (minified+gzipped)
+    },
+    {
+      "resourceType": "total",
+      "budget": 500         // 500KB total
     }
   ]
 }
 ```
+
+**Note**: CI budgets are lenient to account for slower CI environments. Aim for the stricter target goals listed above in development.
 
 **Performance Optimization Tools**:
 - `npm run build:analyze` - Bundle size visualization
