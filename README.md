@@ -60,29 +60,6 @@ _An immersive 3D precision combat game powered by Three.js, inspired by Korean m
 
 **Black Trigram** is a **realistic combat simulator** that teaches authentic Korean martial arts through precise anatomical targeting. Master traditional vital-point techniques via modern 3D combat mechanics powered by Three.js across 5 distinct fighter archetypes.
 
-### 🩸 Combat Realism Systems (6 Complete + 2 Near-Complete - 67%)
-
-<div align="center">
-
-| System | Status | Completion | Description |
-|--------|--------|------------|-------------|
-| **Body Part Health** | ✅ Complete | 100% | 8-part damage tracking system |
-| **Vital Point Targeting** | ✅ Complete | 100% | 70 authentic Korean vital points |
-| **Enhanced Anatomy** | ✅ Complete | 95% | Polygon-based zone detection |
-| **Visual Feedback** | ✅ Complete | 90% | Damage numbers, hit effects, combos |
-| **Pain Response** | ✅ Complete | 90% | Realistic pain accumulation |
-| **Consciousness Levels** | ✅ Complete | 90% | 4-level awareness system |
-| **Breathing Disruption** | ⚠️ Near-Complete | 75% | Respiratory targeting |
-| **Trauma Visualization** | ⚠️ In Progress | 65% | Injury rendering system |
-| **Balance/Vulnerability** | ⚠️ In Progress | 70% | Stance-based weaknesses |
-| **Combat Readiness HUD** | ⚠️ In Progress | 60% | Real-time status display |
-| **Injury-Based Movement** | 📋 Planned | 10% | Damage affects mobility |
-| **Bone Impact Audio** | 📋 Planned | 0% | Realistic fracture sounds |
-
-**[📊 Detailed Status Report →](game-status.md)** | **[🗺️ v1.0 Roadmap →](ROADMAP.md)**
-
-</div>
-
 ### 🎯 Combat Disciplines
 
 <table>
@@ -583,49 +560,6 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 ---
 
-## 🗺️ Roadmap to v1.0
-
-### Release Timeline: Q2-Q3 2026
-
-Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**. Roadmap milestones may reference an internal **beta track (v0.9.x)** that reflects feature-completeness targets, while **0.6.5** remains the latest public release version.
-
-<div align="center">
-
-### Q1 2026 (Current) - Combat Realism Foundation ✅
-- ✅ Pain Response System (90% production-ready)
-- ✅ Consciousness Levels (90% production-ready)
-- ✅ Breathing Disruption (75% near-complete)
-- ⚠️ Test Coverage 76% (target: 80%+)
-
-### Q2 2026 (Apr-Jun) - Feature Completion 🎯
-- 🎯 Complete remaining combat realism systems (4/12)
-- 🎯 Training Mode with progressive difficulty
-- 🎯 EndScreen with combat statistics
-- 🎯 Mobile performance optimization (55-60fps)
-- 🎯 Korean localization 100%
-
-### Q3 2026 (Jul-Sep) - Release Candidate 🚀
-- 🚀 v1.0.0-rc.1 Release Candidate
-- 🚀 User acceptance testing
-- 🚀 Complete documentation and marketing materials
-- 🚀 Security audit and compliance verification
-
-### Success Criteria for v1.0
-- [ ] 9.0/10+ overall quality
-- [ ] 100% combat realism systems (12/12)
-- [ ] 80%+ test coverage
-- [ ] 60fps desktop, 55fps+ mobile
-- [ ] Zero critical bugs
-- [ ] Complete Korean/English localization
-
-</div>
-
-**[📋 View Complete Roadmap with Dependencies →](ROADMAP.md)**
-
-**[📊 Current Detailed Status Report →](game-status.md)**
-
----
-
 ## 🚀 Quick Start
 
 ### 🌐 Enter the Dojang
@@ -769,6 +703,74 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 **🥋 무도의 길을 걸어라 (Walk the Path of Martial Arts) 🥋**
 
 </div>
+
+---
+
+## 🩸 Combat Realism Systems (6 Complete + 2 Near-Complete - 67%)
+
+<div align="center">
+
+| System | Status | Completion | Description |
+|--------|--------|------------|-------------|
+| **Body Part Health** | ✅ Complete | 100% | 8-part damage tracking system |
+| **Vital Point Targeting** | ✅ Complete | 100% | 70 authentic Korean vital points |
+| **Enhanced Anatomy** | ✅ Complete | 95% | Polygon-based zone detection |
+| **Visual Feedback** | ✅ Complete | 90% | Damage numbers, hit effects, combos |
+| **Pain Response** | ✅ Complete | 90% | Realistic pain accumulation |
+| **Consciousness Levels** | ✅ Complete | 90% | 4-level awareness system |
+| **Breathing Disruption** | ⚠️ Near-Complete | 75% | Respiratory targeting |
+| **Trauma Visualization** | ⚠️ In Progress | 65% | Injury rendering system |
+| **Balance/Vulnerability** | ⚠️ In Progress | 70% | Stance-based weaknesses |
+| **Combat Readiness HUD** | ⚠️ In Progress | 60% | Real-time status display |
+| **Injury-Based Movement** | 📋 Planned | 10% | Damage affects mobility |
+| **Bone Impact Audio** | 📋 Planned | 0% | Realistic fracture sounds |
+
+**[📊 Detailed Status Report →](game-status.md)** | **[🗺️ v1.0 Roadmap →](ROADMAP.md)**
+
+</div>
+
+---
+
+## 🗺️ Roadmap to v1.0
+
+### Release Timeline: Q2-Q3 2026
+
+Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**. Roadmap milestones may reference an internal **beta track (v0.9.x)** that reflects feature-completeness targets, while **0.6.5** remains the latest public release version.
+
+<div align="center">
+
+### Q1 2026 (Current) - Combat Realism Foundation ✅
+- ✅ Pain Response System (90% production-ready)
+- ✅ Consciousness Levels (90% production-ready)
+- ✅ Breathing Disruption (75% near-complete)
+- ⚠️ Test Coverage 76% (target: 80%+)
+
+### Q2 2026 (Apr-Jun) - Feature Completion 🎯
+- 🎯 Complete remaining combat realism systems (4/12)
+- 🎯 Training Mode with progressive difficulty
+- 🎯 EndScreen with combat statistics
+- 🎯 Mobile performance optimization (55-60fps)
+- 🎯 Korean localization 100%
+
+### Q3 2026 (Jul-Sep) - Release Candidate 🚀
+- 🚀 v1.0.0-rc.1 Release Candidate
+- 🚀 User acceptance testing
+- 🚀 Complete documentation and marketing materials
+- 🚀 Security audit and compliance verification
+
+### Success Criteria for v1.0
+- [ ] 9.0/10+ overall quality
+- [ ] 100% combat realism systems (12/12)
+- [ ] 80%+ test coverage
+- [ ] 60fps desktop, 55fps+ mobile
+- [ ] Zero critical bugs
+- [ ] Complete Korean/English localization
+
+</div>
+
+**[📋 View Complete Roadmap with Dependencies →](ROADMAP.md)**
+
+**[📊 Current Detailed Status Report →](game-status.md)**
 
 ---
 
