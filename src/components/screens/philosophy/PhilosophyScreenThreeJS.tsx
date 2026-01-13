@@ -11,6 +11,7 @@ import { TrigramStance } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
@@ -49,9 +50,11 @@ export const PhilosophyScreenThreeJS: React.FC<
   const screenHeight = propHeight ?? height;
 
   // Responsive layout calculations with large desktop support
-  const isMobile = screenWidth < 768;
-  const isTablet = screenWidth >= 768 && screenWidth < 1024;
-  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
+  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
+  const isMobile = shouldUseMobileControls();
+  // Only use width for tablet/desktop distinction when NOT mobile
+  const isTablet = useMemo(() => !isMobile && screenWidth >= 768 && screenWidth < 1024, [isMobile, screenWidth]);
+  const isLargeDesktop = useMemo(() => !isMobile && screenWidth >= 1920, [isMobile, screenWidth]); // 4K/2K displays
 
   // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
