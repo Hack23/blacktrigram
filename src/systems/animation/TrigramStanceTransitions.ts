@@ -102,6 +102,16 @@ export function calculateTransitionDuration(
 }
 
 /**
+ * Weight transfer constants for realistic knee bending during stance transitions.
+ * 
+ * **Korean**: 체중 이동 상수
+ * 
+ * @korean 체중이동상수
+ */
+const WEIGHT_TRANSFER_KNEE_BEND = 0.1; // Additional knee bend during weight transfer (radians)
+const MAX_KNEE_FLEX_ANGLE = 0.6; // Maximum knee flex angle to prevent over-bending (radians)
+
+/**
  * Generate trigram stance-to-stance transition animation.
  * 
  * **Korean**: 팔괘 자세 전환 애니메이션 생성
@@ -153,7 +163,8 @@ export function transitionBetweenStances(
 ): SkeletalAnimation {
   const duration = calculateTransitionDuration(from, to);
   
-  // Get guard poses for blending (laterality applies to both from and to)
+  // Get guard poses - same laterality used for both source and target stances
+  // (the transition maintains laterality throughout)
   const fromGuard = getGuardPoseForStance(from, laterality);
   const toGuard = getGuardPoseForStance(to, laterality);
   
@@ -204,8 +215,8 @@ export function transitionBetweenStances(
   // Keyframe 2: Weight transfer phase (40% of duration)
   const weightTransferTime = duration * 0.4;
   builder.at(weightTransferTime, "linear")
-    .rotate(BoneName.KNEE_L, Math.min(fromGuard.leftLeg.knee.x + 0.1, 0.6), 0, 0)
-    .rotate(BoneName.KNEE_R, Math.min(fromGuard.rightLeg.knee.x + 0.1, 0.6), 0, 0)
+    .rotate(BoneName.KNEE_L, Math.min(fromGuard.leftLeg.knee.x + WEIGHT_TRANSFER_KNEE_BEND, MAX_KNEE_FLEX_ANGLE), 0, 0)
+    .rotate(BoneName.KNEE_R, Math.min(fromGuard.rightLeg.knee.x + WEIGHT_TRANSFER_KNEE_BEND, MAX_KNEE_FLEX_ANGLE), 0, 0)
     .rotate(BoneName.PELVIS, fromGuard.pelvis.x, fromGuard.pelvis.y + (toGuard.pelvis.y - fromGuard.pelvis.y) * 0.3, fromGuard.pelvis.z)
     .rotate(BoneName.SHOULDER_L, ...blendRotation(fromGuard.leftArm.shoulder, toGuard.leftArm.shoulder, 0.2))
     .rotate(BoneName.ELBOW_L, ...blendRotation(fromGuard.leftArm.elbow, toGuard.leftArm.elbow, 0.2))
@@ -283,7 +294,15 @@ export const STANCE_TRANSITIONS: Map<string, SkeletalAnimation> = new Map();
  * **Korean**: 전환 행렬 초기화
  * 
  * Generates all 128 stance transitions (8 from × 8 to × 2 laterality) and populates the transition map.
- * Call this during system initialization.
+ * 
+ * **Important**: Call this during application initialization, not during module load, to avoid
+ * blocking the main thread and to provide better control over when transitions are generated.
+ * 
+ * @example
+ * ```typescript
+ * // During app startup
+ * initializeStanceTransitions();
+ * ```
  * 
  * @korean 전환행렬초기화
  */
@@ -299,8 +318,9 @@ export function initializeStanceTransitions(): void {
     }
   }
   
+  // Only log in development environment
   if (process.env.NODE_ENV === "development") {
-    console.log(`[TrigramStanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
+    console.info(`[TrigramStanceTransitions] Initialized ${STANCE_TRANSITIONS.size} stance transitions`);
   }
 }
 
@@ -338,10 +358,16 @@ export function getStanceTransition(
   return STANCE_TRANSITIONS.get(key);
 }
 
-// Initialize transitions on module load for convenience
-// For production use, consider calling initializeStanceTransitions()
-// during application startup to avoid blocking the main thread.
-if (typeof window !== 'undefined') {
-  // Only initialize in browser context (not during SSR or build)
+/**
+ * Initialize transitions on module load for convenience in browser environments.
+ * 
+ * **Note**: For production applications, consider calling `initializeStanceTransitions()`
+ * explicitly during application startup for better control and performance.
+ * This auto-initialization only runs in browser context (not during SSR or build).
+ * 
+ * @korean 모듈로드시자동초기화
+ */
+if (typeof window !== 'undefined' && STANCE_TRANSITIONS.size === 0) {
+  // Only initialize in browser context and if not already initialized
   initializeStanceTransitions();
 }
