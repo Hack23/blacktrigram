@@ -274,9 +274,12 @@ describe("Weight Transfer Animations", () => {
       expect(pelvisXPositions.length).toBeGreaterThanOrEqual(5);
       
       // Check for smooth progression (no huge jumps)
+      // Maximum 15cm per keyframe ensures smooth, natural movement without jarring transitions
+      // This threshold is based on typical human gait where hip shift occurs gradually over multiple phases
+      const MAX_SMOOTH_MOVEMENT_DELTA = 0.15; // meters (15cm)
       for (let i = 1; i < pelvisXPositions.length; i++) {
         const diff = Math.abs(pelvisXPositions[i] - pelvisXPositions[i - 1]);
-        expect(diff).toBeLessThan(0.15); // No single step > 15cm
+        expect(diff).toBeLessThan(MAX_SMOOTH_MOVEMENT_DELTA);
       }
     });
 

@@ -25,6 +25,7 @@ import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
  * 
  * @param degrees - Angle in degrees
  * @returns Angle in radians
+ * @example toRadians(90) // returns approximately 1.5708 (π/2)
  * @korean 각도변환
  */
 const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
