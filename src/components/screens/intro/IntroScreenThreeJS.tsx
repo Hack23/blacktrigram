@@ -19,6 +19,7 @@ import {
 } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getArchetypeAssets } from "../../../utils/playerUtils";
 import { BackgroundScene3D } from "../../shared/three";
 import { KoreanHeaderHTML } from "../../shared/ui/KoreanHeaderHTML";
@@ -244,9 +245,11 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   ]);
 
   // Responsive layout calculations with large desktop support
-  const isMobile = screenWidth < 768;
-  const isTablet = screenWidth >= 768 && screenWidth < 1024;
-  const isLargeDesktop = screenWidth >= 1920; // 4K/2K displays
+  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
+  const isMobile = shouldUseMobileControls();
+  // Only use width for tablet/desktop distinction when NOT mobile
+  const isTablet = useMemo(() => !isMobile && screenWidth >= 768 && screenWidth < 1024, [isMobile, screenWidth]);
+  const isLargeDesktop = useMemo(() => !isMobile && screenWidth >= 1920, [isMobile, screenWidth]); // 4K/2K displays
 
   // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
   const logoSize = isMobile
