@@ -1227,7 +1227,7 @@ All security workflows will automatically protect your game from common vulnerab
 ### 🧪 Testing Documentation
 - [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
 - [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
-- [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
+- [⚡ Lighthouse Performance](./budget.json) - Performance budget configuration
 
 ### 🏗️ Architecture Documentation
 - [📐 Architecture](./ARCHITECTURE.md) - Overall system design
