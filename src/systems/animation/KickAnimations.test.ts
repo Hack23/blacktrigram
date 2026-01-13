@@ -17,11 +17,11 @@ import {
   SIDE_KICK_ANIMATION,
   BACK_KICK_ANIMATION,
 } from "./KickAnimations";
-import { BoneName } from "../../types/skeletal";
+import { BoneName, AnimationKeyframe } from "../../types/skeletal";
 
 // Helper to get bone rotation from keyframe
 function getBoneRotation(
-  keyframe: any,
+  keyframe: AnimationKeyframe,
   boneName: BoneName
 ): readonly [number, number, number] | undefined {
   const rotation = keyframe.boneRotations.get(boneName);
@@ -38,7 +38,7 @@ function getBoneRotation(
 
 // Helper to check if bone rotation exists and is within expected range
 function assertBoneRotationInRange(
-  keyframe: any,
+  keyframe: AnimationKeyframe,
   boneName: BoneName,
   axis: 0 | 1 | 2, // x, y, or z
   min: number,
