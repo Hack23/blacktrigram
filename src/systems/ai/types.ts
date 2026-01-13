@@ -82,6 +82,7 @@ export interface CombatContext {
   readonly playerStamina: number;
   readonly playerMaxStamina: number;
   readonly opponentHealth: number;
+  readonly opponentMaxHealth?: number; // Opponent max health (if undefined, assumes symmetric with playerMaxHealth)
   readonly opponentStance: TrigramStance;
   readonly playerStance: TrigramStance;
   readonly distanceToOpponent: number;

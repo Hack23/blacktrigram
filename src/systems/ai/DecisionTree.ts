@@ -60,6 +60,20 @@ const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
 };
 
 /**
+ * Hacker observation phase actions
+ * 
+ * During the 10-second observation phase, Hacker only uses non-aggressive
+ * positioning actions to collect combat data.
+ * 
+ * @korean 해커 관찰 단계 행동
+ */
+const HACKER_OBSERVATION_ACTIONS: readonly AIActionType[] = [
+  AIActionType.WAIT,
+  AIActionType.CIRCLE,
+  AIActionType.APPROACH,
+] as const;
+
+/**
  * Assess opponent vulnerability for exploitation tactics
  * 
  * Analyzes multiple vulnerability factors to create comprehensive assessment:
@@ -545,7 +559,8 @@ export class AIDecisionTree {
     const healthPercent = context.playerHealth / context.playerMaxHealth;
     const tacticalRetreatThreshold = personality.tacticalRetreatThreshold;
     const isBelowRetreatThreshold = healthPercent < tacticalRetreatThreshold; // Need to retreat
-    const opponentHealthPercent = context.opponentHealth / context.playerMaxHealth;
+    const opponentMaxHealth = context.opponentMaxHealth ?? context.playerMaxHealth; // Use opponent max health if available, fallback to symmetric assumption
+    const opponentHealthPercent = context.opponentHealth / opponentMaxHealth;
     const isKillOpportunity = opponentHealthPercent < 0.3; // Kill mode opportunity
     const isOpponentVulnerable = 
       context.opponentBalance === "VULNERABLE" || 
@@ -560,8 +575,7 @@ export class AIDecisionTree {
     ) {
       // During observation phase, Hacker only circles and waits
       // No attacks or techniques until data collection is complete
-      const observationActions: AIActionType[] = [AIActionType.WAIT, AIActionType.CIRCLE, AIActionType.APPROACH];
-      const randomObservationAction = observationActions[Math.floor(Math.random() * observationActions.length)];
+      const randomObservationAction = HACKER_OBSERVATION_ACTIONS[Math.floor(Math.random() * HACKER_OBSERVATION_ACTIONS.length)];
       
       return {
         action: randomObservationAction,

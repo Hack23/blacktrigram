@@ -72,24 +72,38 @@ export const ARCHETYPE_ENFORCEMENT: Record<PlayerArchetype, ArchetypeEnforcement
     signatureMove: "musa_mountain_breaker",
     signatureCondition: (context) => {
       /**
-       * NOTE: This condition assumes symmetric max-health pools for player and opponent,
-       * i.e. context.playerMaxHealth === opponentMaxHealth. Under this design, using
-       * playerMaxHealth as the denominator yields the opponent's true health percentage.
-       * If asymmetric max health is introduced in the future, CombatContext should be
-       * extended with opponentMaxHealth and this logic updated accordingly.
+       * Musa (무사) signature move condition: Mountain Breaker when opponent <40% health
+       * 
+       * NOTE: Uses opponentMaxHealth if available, otherwise assumes symmetric max-health
+       * pools (context.playerMaxHealth === opponentMaxHealth). If asymmetric max health
+       * exists, CombatContext provides opponentMaxHealth for accurate calculation.
        */
-      const maxHealth = context.playerMaxHealth;
+      const maxHealth = context.opponentMaxHealth ?? context.playerMaxHealth;
       if (maxHealth <= 0) {
         // Defensive guard: avoid divide-by-zero / invalid percentages
         return false;
       }
       const opponentHealthPercent = context.opponentHealth / maxHealth;
-      return opponentHealthPercent < 0.40; // Finishing move when opponent <40% of shared max health
+      return opponentHealthPercent < 0.40; // Finishing move when opponent <40% health
     },
     actionFrequencies: {
+      /**
+       * Musa (무사) Action Frequencies - Honor Code Warrior
+       * 
+       * These frequencies represent behavioral targets (not strict probability distributions).
+       * Multiple actions can have high frequencies as they represent overlapping aggressive behavior.
+       * 
+       * **Honor Code Rules**:
+       * - FEINT: 0% (prohibited - no deception)
+       * - RETREAT: 2% (minimal - only at critical health <10%, handled by evaluateSurvival)
+       * - DEFEND: 10% (minimal - offense-focused philosophy)
+       * 
+       * The 2% retreat frequency applies only when health drops below the honor threshold (~5-10%),
+       * enforced by evaluateSurvival logic. Above this threshold, Musa never retreats.
+       */
       [AIActionType.ATTACK]: 0.70, // 70% aggressive attacks
       [AIActionType.DEFEND]: 0.10, // 10% defense (honor code: minimal defense)
-      [AIActionType.RETREAT]: 0.02, // 2% retreat (honor code: fights to near-death)
+      [AIActionType.RETREAT]: 0.02, // 2% retreat (only at critical health <10%)
       [AIActionType.APPROACH]: 0.15, // 15% approach
       [AIActionType.FEINT]: 0.00, // 0% feints (prohibited by honor code)
       [AIActionType.TECHNIQUE]: 0.70, // 70% techniques (overlaps with attack)
@@ -178,20 +192,39 @@ export const ARCHETYPE_ENFORCEMENT: Record<PlayerArchetype, ArchetypeEnforcement
     prohibitedActions: [], // No rules, survival at any cost
     signatureMove: "jojik_improvised_weapon",
     signatureCondition: (context) => {
-      // Execute Improvised Weapon when desperate (<30% health)
-      // Defensive guard: avoid divide-by-zero
+      /**
+       * Jojik (조직폭력배) signature move: Improvised Weapon when desperate (<30% health)
+       * 
+       * This condition uses playerHealth (the AI's health) to trigger desperate tactics.
+       */
       const maxHealth = context.playerMaxHealth;
       if (maxHealth <= 0) {
+        // Defensive guard: avoid divide-by-zero
         return false;
       }
       const playerHealthPercent = context.playerHealth / maxHealth;
-      return playerHealthPercent < 0.30;
+      return playerHealthPercent < 0.30; // Desperate improvised weapon when health <30%
     },
     actionFrequencies: {
+      /**
+       * Jojik (조직폭력배) Action Frequencies - Chaotic Survivor
+       * 
+       * These frequencies represent behavioral targets for Jojik's unpredictable fighting style.
+       * 
+       * **Key Behavioral Characteristics**:
+       * - STANCE_CHANGE: 80% (extremely high for unpredictability)
+       *   This means approximately 80% of decision cycles will include or consider a stance change,
+       *   creating the erratic, chaotic movement pattern that defines Jojik's combat style.
+       * 
+       * - RETREAT: 5% base, but survival instinct triggers tactical retreat at 70% health
+       *   (handled by evaluateSurvival logic with personality.tacticalRetreatThreshold)
+       * 
+       * The high stance change frequency is the primary mechanism for Jojik's unpredictable behavior.
+       */
       [AIActionType.ATTACK]: 0.50, // 50% chaotic attacks
       [AIActionType.TECHNIQUE]: 0.25, // 25% dirty techniques
-      [AIActionType.STANCE_CHANGE]: 0.80, // 80% unpredictable stance changes (high frequency)
-      [AIActionType.RETREAT]: 0.05, // 5% pragmatic retreats (survival instinct at 70% health)
+      [AIActionType.STANCE_CHANGE]: 0.80, // 80% unpredictable stance changes (defines chaotic behavior)
+      [AIActionType.RETREAT]: 0.05, // 5% pragmatic retreats (survival instinct at 70% health via threshold)
       [AIActionType.FEINT]: 0.05, // 5% deceptive moves
       [AIActionType.DEFEND]: 0.10, // 10% defense
       [AIActionType.APPROACH]: 0.15, // 15% approach
