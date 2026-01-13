@@ -656,7 +656,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Motto */}
               <div
                 style={{
-                  fontSize: `${getKoreanFontSize('SMALL', screenWidth)}px`,
+                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 3, 10)}px`,
                   color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
                     6,
                     "0"
@@ -674,7 +674,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* GitHub link */}
               <div
                 style={{
-                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 2, 8)}px`,
+                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 5, 8)}px`,
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
