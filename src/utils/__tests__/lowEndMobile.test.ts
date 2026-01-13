@@ -11,10 +11,7 @@
 import { describe, it, expect } from 'vitest';
 import { getCombatLayoutConstants } from '../responsiveLayoutHelpers';
 import { calculateMobileAreaBounds } from '../mobileLayoutHelpers';
-import {
-  getKoreanFontSize,
-  KOREAN_MOBILE_FONT_SIZES,
-} from '../../types/constants/typography';
+import { getKoreanFontSize } from '../../types/constants/typography';
 import {
   getPerformanceTier,
   getPerformanceSettings,
