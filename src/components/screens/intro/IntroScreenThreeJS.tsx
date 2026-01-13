@@ -696,7 +696,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Version */}
               <div
                 style={{
-                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 2, 8)}px`,
+                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 5, 8)}px`,
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
