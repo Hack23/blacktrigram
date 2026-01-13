@@ -31,18 +31,22 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "./MartialArtsAnim
  * Probing attack to gauge distance and set up combinations.
  *
  * Korean martial arts biomechanics:
+ * - Start: Middle guard position (중단막기)
  * - Chamber: Fist at hip, palm vertical (세로주먹)
  * - Extension: Full arm extension with fist rotation to pronated (palm-down)
+ * - Non-striking hand: Maintains middle guard (중단막기) throughout
+ * - Recovery: Return to middle guard position
  * - Hip engagement: Minimal hip rotation for speed
- * - Hikite: Opposite arm pulls slightly back for power
+ * - Hikite: Opposite arm maintains guard for protection
  * - Fist rotation: Vertical → Pronated (~90° wrist rotation)
  *
  * Phases:
- * 1. Chamber (준비): Fist at hip, elbow bent 90° - 100ms
- * 2. Extension (지르기): Arm snaps forward with fist rotation - 150ms
- * 3. Peak hold (정점): Maximum reach, fist pronated - 50ms
- * 4. Retract (회수): Return to chamber - 100ms
- * 5. Recovery (복귀): Return to guard - 150ms
+ * 1. Start (시작): Both hands in middle guard - 0ms
+ * 2. Chamber (준비): Fist at hip, elbow bent 90° - 100ms
+ * 3. Extension (지르기): Arm snaps forward with fist rotation - 150ms
+ * 4. Peak hold (정점): Maximum reach, fist pronated - 50ms
+ * 5. Retract (회수): Return to chamber - 100ms
+ * 6. Recovery (복귀): Return to middle guard - 150ms
  *
  * Total duration: 550ms (FAST technique)
  *
@@ -52,9 +56,13 @@ export const JAB_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab", "잽")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchChamber(TECHNIQUE_TIMING.FAST.chamber, "left") // 준비 - Chamber at hip
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
     .punchExtend(TECHNIQUE_TIMING.FAST.extend, "left") // 지르기 - Extension with rotation
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
     .punchPeak(TECHNIQUE_TIMING.FAST.peak, "left") // 정점 - Peak extension
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
     .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀 - Return to guard
+    .withKoreanMiddleGuard() // Both hands back to middle guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -68,19 +76,23 @@ export const JAB_ANIMATION: SkeletalAnimation =
  * Full body rotation generates maximum power through hip and shoulder engagement.
  *
  * Korean martial arts biomechanics (역권지르기 - Yeokwon Jireugi):
+ * - Start: Middle guard position (중단막기)
  * - Chamber: Rear fist at hip, palm vertical, body coiled
+ * - Non-striking hand: Maintains middle guard throughout
  * - Hip drive: Full hip rotation (엉덩이회전) ~20-25°
  * - Shoulder torque: Shoulder rotates with punch (어깨비틀기)  
- * - Hikite: Lead arm pulls back strongly to hip (당기기)
+ * - Hikite: Lead arm maintains guard for protection
  * - Fist rotation: Vertical → Pronated for power transfer
  * - Full extension: Elbow nearly straight (~175°) at impact
+ * - Recovery: Return to middle guard position
  *
  * Phases:
- * 1. Chamber (준비): Rear fist coiled at hip - 150ms
- * 2. Hip rotation (회전): Power generation from hips - 200ms
- * 3. Extension (지르기): Arm extends with torso rotation - 80ms
- * 4. Follow-through (관통): Complete rotation and extension
- * 5. Recovery (복귀): Return to guard - 300ms
+ * 1. Start (시작): Both hands in middle guard - 0ms
+ * 2. Chamber (준비): Rear fist coiled at hip - 150ms
+ * 3. Hip rotation (회전): Power generation from hips - 200ms
+ * 4. Extension (지르기): Arm extends with torso rotation - 80ms
+ * 5. Follow-through (관통): Complete rotation and extension
+ * 6. Recovery (복귀): Return to middle guard - 300ms
  *
  * Total duration: 730ms (MEDIUM technique)
  *
@@ -90,9 +102,13 @@ export const CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("cross", "크로스")
     .asAttack(TECHNIQUE_TIMING.MEDIUM.total)
     .punchChamber(TECHNIQUE_TIMING.MEDIUM.chamber, "right") // 준비 - Chamber at hip
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
     .punchExtend(TECHNIQUE_TIMING.MEDIUM.extend, "right") // 지르기 - Extension with full hip rotation
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
     .punchPeak(TECHNIQUE_TIMING.MEDIUM.peak, "right") // 정점 - Peak impact
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
     .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover) // 복귀 - Return to guard
+    .withKoreanMiddleGuard() // Both hands back to middle guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
