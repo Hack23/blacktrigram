@@ -273,6 +273,27 @@ export function generateStrikeAnimation(stance: TrigramStance): SkeletalAnimatio
 }
 
 /**
+ * Timing multipliers for punch animations relative to base windup duration.
+ * 
+ * **Korean**: 주먹 타이밍 배율
+ */
+const PUNCH_WINDUP_MULTIPLIER = 0.8;  // Punches wind up slightly faster
+const PUNCH_EXTEND_MULTIPLIER = 1.2;  // Punches extend slightly longer
+
+/**
+ * Fixed timing phases for kick animations (in seconds).
+ * Kicks have consistent timing across all stances with only power/speed variations.
+ * 
+ * **Korean**: 발차기 고정 타이밍
+ */
+const KICK_TIMING = {
+  CHAMBER: 0.1,   // Knee lifts to chamber position
+  EXTEND: 0.12,   // Leg extends for impact
+  RETRACT: 0.13,  // Return to chamber
+  SET_DOWN: 0.15, // Foot returns to ground
+} as const;
+
+/**
  * Generate punch animation for a specific trigram stance.
  * 
  * **Korean**: 팔괘 자세 주먹 애니메이션 생성
@@ -299,8 +320,9 @@ export function generatePunchAnimation(stance: TrigramStance): SkeletalAnimation
     throw new Error(`No configuration for stance: ${stance}`);
   }
   
-  const windupTime = config.windupDuration * 0.8; // Slightly faster windup for punches
-  const extendTime = config.windupDuration * 1.2;
+  // Punch timing derived from base configuration with punch-specific multipliers
+  const windupTime = config.windupDuration * PUNCH_WINDUP_MULTIPLIER;
+  const extendTime = config.windupDuration * PUNCH_EXTEND_MULTIPLIER;
   const totalDuration = windupTime + extendTime + config.recoveryDuration;
   
   return MartialArtsAnimationBuilder
@@ -319,6 +341,10 @@ export function generatePunchAnimation(stance: TrigramStance): SkeletalAnimation
  * 
  * Creates a stance-specific kick animation with chamber, extension,
  * and recovery phases tailored to the stance's mechanics.
+ * 
+ * Kick timing is standardized across all stances (chamber, extend, retract, set down)
+ * with stance-specific power multipliers applied at the combat calculation level.
+ * This ensures consistent kick execution while maintaining stance uniqueness.
  * 
  * @param stance - Trigram stance for animation
  * @returns Stance-specific kick animation
@@ -339,21 +365,21 @@ export function generateKickAnimation(stance: TrigramStance): SkeletalAnimation 
     throw new Error(`No configuration for stance: ${stance}`);
   }
   
-  // Kicks have more phases than strikes/punches, so they take longer
-  const chamberTime = 0.1;
-  const extendTime = 0.12;
-  const retractTime = 0.13;
-  const setDownTime = 0.15;
-  const totalDuration = chamberTime + extendTime + retractTime + setDownTime;
+  // Kicks have standardized timing with stance-specific power applied elsewhere
+  const totalDuration = 
+    KICK_TIMING.CHAMBER + 
+    KICK_TIMING.EXTEND + 
+    KICK_TIMING.RETRACT + 
+    KICK_TIMING.SET_DOWN;
   
   return MartialArtsAnimationBuilder
     .create(`${stance}_kick`, config.koreanNames.kick)
     .asAttack(totalDuration)
-    .chamber(chamberTime)
+    .chamber(KICK_TIMING.CHAMBER)
     .withHighGuard()
-    .extend(extendTime)
-    .retract(retractTime)
-    .setDown(setDownTime)
+    .extend(KICK_TIMING.EXTEND)
+    .retract(KICK_TIMING.RETRACT)
+    .setDown(KICK_TIMING.SET_DOWN)
     .build();
 }
 
