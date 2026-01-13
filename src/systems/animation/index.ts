@@ -428,3 +428,10 @@ export type {
   AnimationHitWindow,
   TechniqueHitTiming,
 } from './AnimationHitTiming';
+
+// Laterality Transform System (측면성 변환 시스템)
+export {
+  applyLaterality,
+  getAnimationLaterality,
+  areLateralityVariants,
+} from './LateralityTransform';
