@@ -143,9 +143,10 @@ describe("useCombatLayout", () => {
       expect(arenaBounds.x).toBeGreaterThanOrEqual(0);
       expect(arenaBounds.y).toBeGreaterThanOrEqual(0);
 
-      // Arena should fit within available space (320 - 40 = 280px)
+      // Extra-small devices (<380px) use tighter margins (30px total instead of 40px)
+      // Arena should fit within available space (320 - 30 = 290px)
       // and not exceed it to prevent overflow
-      const availableWidth = 320 - 40; // 280px
+      const availableWidth = 320 - 30; // 290px for extra-small devices
       expect(arenaBounds.width).toBeLessThanOrEqual(availableWidth);
       
       // Arena should still be playable (reasonable size)
