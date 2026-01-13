@@ -18,7 +18,7 @@
  */
 
 import { PlayerArchetype } from "@/types";
-import { AIDecision, AIActionType, CombatContext } from "./DecisionTree";
+import { AIDecision, AIActionType, CombatContext } from "./types";
 
 /**
  * Archetype enforcement rules defining distinct combat behaviors
