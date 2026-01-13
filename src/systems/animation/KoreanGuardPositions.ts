@@ -55,7 +55,17 @@ export interface GuardPosition {
   readonly right: GuardArmPosition;
   /** Height level of guard */
   readonly height: "temple_level" | "chest_level" | "abdomen_level";
-  /** Default hand pose for this guard */
+  /**
+   * Default hand pose description for this guard.
+   *
+   * NOTE: This field is documentation/metadata only and is not wired into the
+   * hand pose system or the HandPoseType enum. Actual hand poses are applied
+   * directly in animation code (e.g., via HAND_POSES.FIST). Do not use these
+   * string literal values for programmatic logic.
+   *
+   * @see HandPoseType for the actual hand pose enum values
+   * @see HAND_POSES for applying hand poses in animations
+   */
   readonly handPose: "fist_vertical" | "fist_horizontal" | "open_hand";
   /** Vital areas protected by this guard */
   readonly protects: readonly string[];
