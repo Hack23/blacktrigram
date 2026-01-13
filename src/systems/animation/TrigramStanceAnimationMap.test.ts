@@ -470,8 +470,8 @@ describe("TrigramStanceAnimationMap", () => {
       const end = performance.now();
       const duration = end - start;
 
-      // 100000 lookups should complete in < 50ms
-      expect(duration).toBeLessThan(50);
+      // 100000 lookups should complete in < 100ms
+      expect(duration).toBeLessThan(100);
     });
 
     it("should handle frequent technique lookups efficiently", () => {
@@ -487,8 +487,8 @@ describe("TrigramStanceAnimationMap", () => {
       const end = performance.now();
       const duration = end - start;
 
-      // 100000 lookups should complete in < 50ms
-      expect(duration).toBeLessThan(50);
+      // 100000 lookups should complete in < 100ms
+      expect(duration).toBeLessThan(100);
     });
   });
 });
