@@ -29,6 +29,7 @@ import {
   TAE_FLUID_GUARD_POSE,
 } from "./StanceGuardPoses";
 import { toRadians } from "../../utils/math";
+import { TrigramStance } from "../../types/common";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
@@ -54,6 +55,267 @@ import { toRadians } from "../../utils/math";
 const DEFAULT_SHOULDER_WIDTH_CM = 46;
 
 // ═══════════════════════════════════════════════════════════════════════════
+// DYNAMIC TRIGRAM TECHNIQUE CONFIGURATION (팔괘 기술 설정)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Stance-specific configuration for technique animations.
+ * 
+ * **Korean**: 자세별 기술 설정
+ * 
+ * Defines timing, power, and animation parameters for each trigram stance.
+ * Used by factory functions to generate dynamic animations.
+ */
+interface StanceTechniqueConfig {
+  /** Damage/impact multiplier for stance */
+  readonly powerMultiplier: number;
+  /** Animation speed multiplier */
+  readonly executionSpeed: number;
+  /** Time before impact (seconds) */
+  readonly windupDuration: number;
+  /** Normalized time of impact (0-1) */
+  readonly impactTiming: number;
+  /** Time after impact (seconds) */
+  readonly recoveryDuration: number;
+  /** Korean name for techniques */
+  readonly koreanNames: {
+    readonly strike: string;
+    readonly punch: string;
+    readonly kick: string;
+  };
+}
+
+/**
+ * Trigram stance technique configurations.
+ * 
+ * **Korean**: 팔괘 자세 기술 설정
+ * 
+ * Each stance has unique timing, power, and execution characteristics
+ * based on its philosophy and combat style.
+ */
+const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfig> = new Map([
+  [TrigramStance.GEON, {
+    powerMultiplier: 1.2,     // Heaven: Direct force
+    executionSpeed: 1.0,
+    windupDuration: 0.18,
+    impactTiming: 0.6,
+    recoveryDuration: 0.32,
+    koreanNames: {
+      strike: "건천격",
+      punch: "건천권",
+      kick: "건앞차기",
+    },
+  }],
+  [TrigramStance.TAE, {
+    powerMultiplier: 0.9,     // Lake: Fluid techniques
+    executionSpeed: 1.2,
+    windupDuration: 0.12,
+    impactTiming: 0.5,
+    recoveryDuration: 0.23,
+    koreanNames: {
+      strike: "태유권",
+      punch: "태직권",
+      kick: "태회전차기",
+    },
+  }],
+  [TrigramStance.LI, {
+    powerMultiplier: 0.85,    // Fire: Precision and speed
+    executionSpeed: 1.3,
+    windupDuration: 0.06,
+    impactTiming: 0.55,
+    recoveryDuration: 0.16,
+    koreanNames: {
+      strike: "리화창",
+      punch: "리화권",
+      kick: "리옆차기",
+    },
+  }],
+  [TrigramStance.JIN, {
+    powerMultiplier: 1.4,     // Thunder: Explosive power
+    executionSpeed: 0.9,
+    windupDuration: 0.04,
+    impactTiming: 0.65,
+    recoveryDuration: 0.16,
+    koreanNames: {
+      strike: "진전광",
+      punch: "진뇌권",
+      kick: "진뛰어앞차기",
+    },
+  }],
+  [TrigramStance.SON, {
+    powerMultiplier: 0.8,     // Wind: Continuous pressure
+    executionSpeed: 1.4,
+    windupDuration: 0.05,
+    impactTiming: 0.45,
+    recoveryDuration: 0.24,
+    koreanNames: {
+      strike: "손선풍연격",
+      punch: "손선풍권",
+      kick: "손하단차기",
+    },
+  }],
+  [TrigramStance.GAM, {
+    powerMultiplier: 1.0,     // Water: Flow and adaptation
+    executionSpeed: 1.1,
+    windupDuration: 0.10,
+    impactTiming: 0.5,
+    recoveryDuration: 0.23,
+    koreanNames: {
+      strike: "감수반격",
+      punch: "감수권",
+      kick: "감유동차기",
+    },
+  }],
+  [TrigramStance.GAN, {
+    powerMultiplier: 1.1,     // Mountain: Defensive mastery
+    executionSpeed: 0.95,
+    windupDuration: 0.12,
+    impactTiming: 0.55,
+    recoveryDuration: 0.23,
+    koreanNames: {
+      strike: "간반격",
+      punch: "간산권",
+      kick: "간강력차기",
+    },
+  }],
+  [TrigramStance.GON, {
+    powerMultiplier: 1.3,     // Earth: Grounding techniques
+    executionSpeed: 0.85,
+    windupDuration: 0.15,
+    impactTiming: 0.6,
+    recoveryDuration: 0.25,
+    koreanNames: {
+      strike: "곤대지격",
+      punch: "곤대지권",
+      kick: "곤걸기",
+    },
+  }],
+]);
+
+/**
+ * Generate strike animation for a specific trigram stance.
+ * 
+ * **Korean**: 팔괘 자세 타격 애니메이션 생성
+ * 
+ * Creates a stance-specific strike animation with unique timing,
+ * power, and execution characteristics based on the stance philosophy.
+ * 
+ * @param stance - Trigram stance for animation
+ * @returns Stance-specific strike animation
+ * 
+ * @example
+ * ```typescript
+ * const geonStrike = generateStrikeAnimation(TrigramStance.GEON);
+ * // Heaven stance strike with 1.2x power, direct force
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 팔괘자세타격애니메이션생성
+ */
+export function generateStrikeAnimation(stance: TrigramStance): SkeletalAnimation {
+  const config = TRIGRAM_TECHNIQUE_CONFIGS.get(stance);
+  if (!config) {
+    throw new Error(`No configuration for stance: ${stance}`);
+  }
+  
+  const totalDuration = config.windupDuration + config.recoveryDuration;
+  
+  return MartialArtsAnimationBuilder
+    .create(`${stance}_strike`, config.koreanNames.strike)
+    .asAttack(totalDuration)
+    .withHighGuard()
+    .overhandPunch(config.windupDuration)
+    .recover(config.recoveryDuration)
+    .build();
+}
+
+/**
+ * Generate punch animation for a specific trigram stance.
+ * 
+ * **Korean**: 팔괘 자세 주먹 애니메이션 생성
+ * 
+ * Creates a stance-specific straight punch animation with timing
+ * and power based on the stance's combat philosophy.
+ * 
+ * @param stance - Trigram stance for animation
+ * @returns Stance-specific punch animation
+ * 
+ * @example
+ * ```typescript
+ * const taPunch = generatePunchAnimation(TrigramStance.TAE);
+ * // Lake stance punch with 1.2x speed, fluid execution
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 팔괘자세주먹애니메이션생성
+ */
+export function generatePunchAnimation(stance: TrigramStance): SkeletalAnimation {
+  const config = TRIGRAM_TECHNIQUE_CONFIGS.get(stance);
+  if (!config) {
+    throw new Error(`No configuration for stance: ${stance}`);
+  }
+  
+  const windupTime = config.windupDuration * 0.8; // Slightly faster windup for punches
+  const extendTime = config.windupDuration * 1.2;
+  const totalDuration = windupTime + extendTime + config.recoveryDuration;
+  
+  return MartialArtsAnimationBuilder
+    .create(`${stance}_punch`, config.koreanNames.punch)
+    .asAttack(totalDuration)
+    .punchWindup(windupTime)
+    .punchExtend(extendTime)
+    .recover(config.recoveryDuration)
+    .build();
+}
+
+/**
+ * Generate kick animation for a specific trigram stance.
+ * 
+ * **Korean**: 팔괘 자세 발차기 애니메이션 생성
+ * 
+ * Creates a stance-specific kick animation with chamber, extension,
+ * and recovery phases tailored to the stance's mechanics.
+ * 
+ * @param stance - Trigram stance for animation
+ * @returns Stance-specific kick animation
+ * 
+ * @example
+ * ```typescript
+ * const jinKick = generateKickAnimation(TrigramStance.JIN);
+ * // Thunder stance kick with 1.4x power, explosive execution
+ * ```
+ * 
+ * @public
+ * @category Trigram System
+ * @korean 팔괘자세발차기애니메이션생성
+ */
+export function generateKickAnimation(stance: TrigramStance): SkeletalAnimation {
+  const config = TRIGRAM_TECHNIQUE_CONFIGS.get(stance);
+  if (!config) {
+    throw new Error(`No configuration for stance: ${stance}`);
+  }
+  
+  // Kicks have more phases than strikes/punches, so they take longer
+  const chamberTime = 0.1;
+  const extendTime = 0.12;
+  const retractTime = 0.13;
+  const setDownTime = 0.15;
+  const totalDuration = chamberTime + extendTime + retractTime + setDownTime;
+  
+  return MartialArtsAnimationBuilder
+    .create(`${stance}_kick`, config.koreanNames.kick)
+    .asAttack(totalDuration)
+    .chamber(chamberTime)
+    .withHighGuard()
+    .extend(extendTime)
+    .retract(retractTime)
+    .setDown(setDownTime)
+    .build();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON (건) - HEAVEN: Direct Force (태권도 타격)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -66,12 +328,7 @@ const DEFAULT_SHOULDER_WIDTH_CM = 46;
  * @korean 건천격애니메이션
  */
 export const GEON_HEAVEN_STRIKE_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("geon_heaven_strike", "건천격")
-    .asAttack(0.5)
-    .withHighGuard()
-    .overhandPunch(0.18) // Descending strike
-    .recover(0.32)
-    .build();
+  generateStrikeAnimation(TrigramStance.GEON);
 
 /**
  * Geon Heavenly Fist - 건천권
@@ -82,12 +339,7 @@ export const GEON_HEAVEN_STRIKE_ANIMATION: SkeletalAnimation =
  * @korean 건천권애니메이션
  */
 export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("geon_heavenly_fist", "건천권")
-    .asAttack(0.35)
-    .punchWindup(0.08)
-    .punchExtend(0.1)
-    .recover(0.17)
-    .build();
+  generatePunchAnimation(TrigramStance.GEON);
 
 /**
  * Geon Frontal Kick - 건앞차기
@@ -98,14 +350,7 @@ export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
  * @korean 건앞차기애니메이션
  */
 export const GEON_FRONTAL_KICK_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("geon_frontal_kick", "건앞차기")
-    .asAttack(0.5)
-    .chamber(0.1)
-    .withHighGuard()
-    .extend(0.12)
-    .retract(0.13)
-    .setDown(0.15)
-    .build();
+  generateKickAnimation(TrigramStance.GEON);
 
 /**
  * Geon Roundhouse - 건돌려차기
