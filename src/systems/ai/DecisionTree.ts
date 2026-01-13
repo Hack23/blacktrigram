@@ -613,6 +613,21 @@ export class AIDecisionTree {
 
     this.lastDecisionTime = now;
 
+    // Hacker observation phase (Issue #enforce-distinct-combat-philosophies)
+    // Hacker archetype observes for first 10 seconds before attacking (data collection)
+    if (personality.archetype === PlayerArchetype.HACKER && context.timeInMatch < 10000) {
+      // During observation phase, Hacker only circles and waits
+      // No attacks or techniques until data collection is complete
+      const observationActions: AIActionType[] = [AIActionType.WAIT, AIActionType.CIRCLE, AIActionType.APPROACH];
+      const randomObservationAction = observationActions[Math.floor(Math.random() * observationActions.length)];
+      
+      return {
+        action: randomObservationAction,
+        priority: 10, // High priority to ensure observation phase is respected
+        reason: `Hacker observation phase: collecting data (${(context.timeInMatch / 1000).toFixed(1)}s / 10s) (해커 관찰 단계)`,
+      };
+    }
+
     // Check for kill mode activation (Issue #enhance-ai-aggression)
     const killModeActive = this.isKillModeActive(context, personality);
 
