@@ -318,7 +318,7 @@ npm run preview
 ### Build Optimization
 
 The build is optimized for:
-- **Bundle Size**: Single JS bundle (~500KB gzipped)
+- **Bundle Size**: JavaScript ~180KB (minified+gzipped), Total ~500KB including all assets
 - **Korean Text**: UTF-8 charset with Noto Sans KR
 - **Three.js**: Tree-shaking for unused modules
 - **Assets**: Inline small assets (<1KB), hash for caching
@@ -645,7 +645,7 @@ export const FONT_FAMILY = {
 <!-- Noto Sans KR loaded from Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 ```
 
 ### Bilingual Text Patterns
@@ -678,13 +678,11 @@ interface BilingualTextProps {
 - **Body**: 16px Korean, 14px English
 - **Small**: 12px Korean, 10px English
 
-**Font Weights**:
-- **Light**: 300 (informational text)
-- **Regular**: 400 (body text)
-- **Medium**: 500 (emphasis)
-- **Semibold**: 600 (headings)
+**Font Weights** (currently loaded):
+- **Regular**: 400 (body text, default weight)
 - **Bold**: 700 (titles, important UI)
-- **Heavy**: 900 (display text, logos)
+
+> **Note**: Only weights 400 and 700 are currently loaded from Google Fonts for Noto Sans KR to optimize page load performance. If you need additional weights (e.g., 300 Light, 500 Medium, 600 Semibold, 900 Heavy), update the font import in `index.html`, but be aware this will increase initial page load size by ~20-30KB per weight.
 
 ### Testing Korean Text
 
