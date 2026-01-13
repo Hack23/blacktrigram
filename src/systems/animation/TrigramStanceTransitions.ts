@@ -18,7 +18,7 @@
  */
 
 import { TrigramStance } from "../../types/common";
-import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
+import type { SkeletalAnimation } from "../../types/skeletal";
 import type { StanceLaterality } from "../trigram/types";
 import { getGuardPoseForStance } from "./StanceGuardPoses";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
@@ -99,14 +99,6 @@ export function calculateTransitionDuration(
   if (distance <= 2) return 0.2;  // Adjacent stances (1-2 steps)
   if (distance <= 3) return 0.3;  // Medium distance (3 steps)
   return 0.4; // Opposite stances (4 steps)
-}
-
-/**
- * Convert radians to degrees for readability in comments.
- * @internal
- */
-function toDegrees(radians: number): number {
-  return radians * (180 / Math.PI);
 }
 
 /**
