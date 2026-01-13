@@ -582,11 +582,14 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0.3);
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, -1.0, 0);
       
       // Apply compensatory torso lean for balance (12° away from kick)
+      // This must be called BEFORE setting Y-axis spine rotations
       this.applyKickTorsoLean(kf, "right", 12);
+      
+      // Spine counter-rotation for torque generation (applied after Z-axis lean)
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.0, 0);
       
       // Support leg pivots
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
@@ -1023,14 +1026,14 @@ export class MartialArtsAnimationBuilder {
     easing: string = "ease-out"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Apply enhanced torso rotation for power generation FIRST (허리비틀기)
-      this.applyPunchTorsoRotation(kf, hand, 20);
-      // Then apply punch phase (this will override spine rotations if includeSpineMiddle is false)
+      // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, hand, {
         includeWrist: true,
-        includeSpineMiddle: false, // Don't override our torso rotation
+        includeSpineMiddle: true,
         includeOppositeArm: true,
       });
+      // Then apply enhanced torso rotation which combines with existing values
+      this.applyPunchTorsoRotation(kf, hand, 20);
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1057,14 +1060,14 @@ export class MartialArtsAnimationBuilder {
     easing: string = "linear"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Maintain torso rotation at peak for power transfer FIRST
-      this.applyPunchTorsoRotation(kf, hand, 20);
-      // Then apply punch phase
+      // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.PEAK, hand, {
         includeWrist: true,
-        includeSpineMiddle: false, // Don't override our torso rotation
+        includeSpineMiddle: true,
         includeOppositeArm: true,
       });
+      // Maintain torso rotation at peak which combines with existing values
+      this.applyPunchTorsoRotation(kf, hand, 20);
       // Hold fist pose
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1148,7 +1151,7 @@ export class MartialArtsAnimationBuilder {
       
       // Apply enhanced hook torso rotation for circular power (50°)
       this.applyHookTorsoRotation(kf, hand, 50);
-      kf.rotate(BoneName.PELVIS, 0, isRight ? -0.35 : 0.35, 0);
+      kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
       
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
@@ -2310,24 +2313,30 @@ export class MartialArtsAnimationBuilder {
     const direction = isRight ? 1 : -1;
     const rotationRad = (rotationDegrees * Math.PI) / 180;
 
+    // Get existing spine rotations if any (from applyPunchPhaseToConfig)
+    const existingUpper = kf.rotations.get(BoneName.SPINE_UPPER);
+    const existingMiddle = kf.rotations.get(BoneName.SPINE_MIDDLE);
+    const existingLower = kf.rotations.get(BoneName.SPINE_LOWER);
+
     // Sequential spine rotation (lower → mid → upper)
+    // Combine with existing Y-axis rotations
     kf.rotate(
       BoneName.SPINE_LOWER,
-      0,
-      rotationRad * direction * 0.5,
-      0
+      existingLower?.x ?? 0,
+      (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
+      existingLower?.z ?? 0
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
-      0,
-      rotationRad * direction * 0.7,
-      0
+      existingMiddle?.x ?? 0,
+      (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
+      existingMiddle?.z ?? 0
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
-      0,
-      rotationRad * direction,
-      0
+      existingUpper?.x ?? 0,
+      (existingUpper?.y ?? 0) + rotationRad * direction,
+      existingUpper?.z ?? 0
     );
   }
 
@@ -2428,7 +2437,7 @@ export class MartialArtsAnimationBuilder {
     const direction = isRight ? -1 : 1;
     const leanRad = (leanDegrees * Math.PI) / 180;
 
-    // Lateral lean on X-axis (side-to-side)
+    // Lateral lean on Z-axis (side-to-side roll)
     kf.rotate(
       BoneName.SPINE_LOWER,
       0,
