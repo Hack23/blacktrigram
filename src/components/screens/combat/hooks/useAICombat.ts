@@ -56,6 +56,8 @@ import {
   getArchetypeBehavior,
   getNextComboTechnique,
   interpolateDifficultyParameters,
+  shouldExecuteSignatureMove,
+  getSignatureMove,
 } from "@/systems/ai";
 import { PlayerState } from "@/systems/player";
 import { Position, TrigramStance, DamageType, CombatAttackType, PlayerArchetype } from "@/types";
@@ -653,6 +655,44 @@ function selectTechniqueForAction(
   actionType: string;
   isCrossStance?: boolean;
 } {
+  // Check for signature move condition (Issue #enforce-distinct-combat-philosophies)
+  // This provides archetype-specific finishing moves under specific conditions
+  if (shouldExecuteSignatureMove(player.archetype, context)) {
+    const signatureMoveId = getSignatureMove(player.archetype);
+    const allTechniques = getAllArchetypeTechniques(player.archetype);
+    const signatureTechnique = allTechniques.find(t => t.id === signatureMoveId);
+    
+    if (signatureTechnique) {
+      // Check if signature move is off cooldown
+      const now = Date.now();
+      const lastUsed = cooldownMap.get(signatureMoveId) ?? 0;
+      // KoreanTechnique may not have cooldown, default to 0 if missing
+      const techniqueCooldown = (signatureTechnique as any).cooldown ?? 0;
+      const cooldownRemaining = Math.max(0, techniqueCooldown - (now - lastUsed));
+      
+      // Only execute signature if off cooldown and have resources
+      if (cooldownRemaining === 0 && 
+          player.stamina >= signatureTechnique.staminaCost &&
+          player.ki >= signatureTechnique.kiCost) {
+        console.log(`[AI] Executing signature move: ${signatureMoveId} for ${player.archetype}`);
+        
+        const difficultyLevel = adaptiveDifficulty.calculatePlayerSkill();
+        const vitalPoint = selectOptimalVitalPoint(
+          player.currentStance, 
+          difficultyLevel, 
+          player.archetype
+        ) ?? undefined;
+        
+        return {
+          technique: signatureTechnique,
+          vitalPoint,
+          actionType: "signature_move",
+          isCrossStance: signatureTechnique.stance !== player.currentStance,
+        };
+      }
+    }
+  }
+  
   // Get viable techniques for current stance
   const viableTechniques = getViableTechniques(
     context.distanceToOpponent,
