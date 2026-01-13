@@ -19,6 +19,7 @@ import { BalanceState } from "@/types/player-visual";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
+import { enforceArchetypeBehavior } from "./ArchetypeEnforcer";
 
 /**
  * Game grid cell size in pixels for distance calculations
@@ -817,7 +818,15 @@ export class AIDecisionTree {
         this.consecutiveAttacks = 0;
       }
 
-      return bestDecision;
+      // Apply archetype behavior enforcement (Issue #enforce-distinct-combat-philosophies)
+      // This ensures each archetype has immediately recognizable combat patterns in kill mode
+      const enforcedDecision = enforceArchetypeBehavior(
+        bestDecision,
+        personality.archetype,
+        context
+      );
+
+      return enforcedDecision;
     }
 
     // Normal mode: Select highest priority decision (may have Jeongbo exploitation applied)
@@ -840,7 +849,15 @@ export class AIDecisionTree {
       this.consecutiveAttacks = 0;
     }
 
-    return bestDecision;
+    // Apply archetype behavior enforcement (Issue #enforce-distinct-combat-philosophies)
+    // This ensures each archetype has immediately recognizable combat patterns
+    const enforcedDecision = enforceArchetypeBehavior(
+      bestDecision,
+      personality.archetype,
+      context
+    );
+
+    return enforcedDecision;
   }
 
   /**
