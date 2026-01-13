@@ -702,12 +702,14 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 
 🔗 **Combat & Mechanics**
 
+- [🗺️ **ROADMAP.md**](https://github.com/Hack23/blacktrigram/blob/main/ROADMAP.md)
+  _**v1.0 release timeline (Q2-Q3 2026), quarterly milestones, and combat realism system tracking.**_
+- [📊 **game-status.md**](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
+  _**Current metrics: 8.4/10 quality, 76% test coverage, 67% combat realism (8/12 systems).**_
 - [🥋 COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)
   _In-depth battleflow, trigram integration, vital-point targeting, and damage pipeline._
 - [🗺️ game-design.md](https://github.com/Hack23/blacktrigram/blob/main/game-design.md)
   _Overall game mechanics, archetype breakdowns, and design decisions._
-- [📊 game-status.md](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
-  _Current progress, feature roadmap, and milestone tracking._
 
 🔗 **Assets & Media**
 
@@ -802,6 +804,14 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 
 ## 📚 Related Documents
 
+### 🗺️ Planning & Progress
+- [🗺️ **v1.0 Roadmap**](./ROADMAP.md) - **Complete v1.0 release timeline (Q2-Q3 2026)**
+- [📊 **Game Status Report**](./game-status.md) - **Current metrics (8.4/10, 76% coverage, 67% combat realism)**
+- [🎮 Game Design](./game-design.md) - Overall game mechanics
+- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
+- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
+- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
+
 ### 🔐 Security & Compliance
 - [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Enterprise-grade security framework
 - [🛡️ Security Architecture](./SECURITY_ARCHITECTURE.md) - Complete security implementation
@@ -820,18 +830,14 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 - [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
 
 ### 📊 Testing & Quality
-- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
+- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy (76% coverage)
 - [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
 - [🎮 Screen-Specific E2E Strategy](./SCREEN_SPECIFIC_E2E_STRATEGY.md) - One test per screen (3-4 min each)
 - [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
 - [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
 
 ### 🎮 Game Design & Assets
-- [🎮 Game Design](./game-design.md) - Overall game mechanics
-- [📊 Game Status](./game-status.md) - Development progress
-- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
-- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
-- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
+- _Moved to Planning & Progress section above_
 
 ### 🌐 ISMS Public Repository
 - [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
