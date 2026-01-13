@@ -11,6 +11,8 @@
 import * as THREE from "three";
 import type { AnimationKeyframe } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
+import type { GuardPositionType } from "./KoreanGuardPositions";
+import { getGuardPosition } from "./KoreanGuardPositions";
 
 // Forward declaration for builder type
 interface AnimationBuilderLike {
@@ -101,6 +103,78 @@ export class KeyframeConfig {
    */
   position(bone: BoneName, x: number, y: number, z: number): this {
     this.positions.set(bone, new THREE.Vector3(x, y, z));
+    return this;
+  }
+
+  /**
+   * Apply Korean guard position to arms
+   *
+   * Sets proper Korean martial arts guard positions (막기자세) for defensive posture.
+   * Supports applying guard to one side or both sides.
+   *
+   * @param guardType - Type of guard ("HIGH_GUARD" | "MIDDLE_GUARD" | "LOW_GUARD")
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   *
+   * @example
+   * ```typescript
+   * // Apply middle guard to both hands
+   * kf.withGuard("MIDDLE_GUARD");
+   *
+   * // Apply middle guard only to left hand (right hand attacks)
+   * kf.withGuard("MIDDLE_GUARD", "left");
+   * ```
+   *
+   * @korean 방어자세적용
+   */
+  withGuard(
+    guardType: GuardPositionType,
+    side: "left" | "right" | "both" = "both"
+  ): this {
+    const guard = getGuardPosition(guardType);
+
+    if (side === "left" || side === "both") {
+      this.rotate(
+        BoneName.SHOULDER_L,
+        guard.left.shoulder[0],
+        guard.left.shoulder[1],
+        guard.left.shoulder[2]
+      );
+      this.rotate(
+        BoneName.ELBOW_L,
+        guard.left.elbow[0],
+        guard.left.elbow[1],
+        guard.left.elbow[2]
+      );
+      this.rotate(
+        BoneName.WRIST_L,
+        guard.left.wrist[0],
+        guard.left.wrist[1],
+        guard.left.wrist[2]
+      );
+    }
+
+    if (side === "right" || side === "both") {
+      this.rotate(
+        BoneName.SHOULDER_R,
+        guard.right.shoulder[0],
+        guard.right.shoulder[1],
+        guard.right.shoulder[2]
+      );
+      this.rotate(
+        BoneName.ELBOW_R,
+        guard.right.elbow[0],
+        guard.right.elbow[1],
+        guard.right.elbow[2]
+      );
+      this.rotate(
+        BoneName.WRIST_R,
+        guard.right.wrist[0],
+        guard.right.wrist[1],
+        guard.right.wrist[2]
+      );
+    }
+
     return this;
   }
 

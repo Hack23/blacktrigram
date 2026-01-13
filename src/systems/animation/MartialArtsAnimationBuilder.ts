@@ -1940,6 +1940,88 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
+   * Apply Korean high guard position (상단막기)
+   * 
+   * Traditional Korean martial arts high guard with hands at temple level
+   * protecting head and face. Uses authentic 막기자세 positioning.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 상단막기자세
+   */
+  withKoreanHighGuard(side: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      // Import and apply guard using KeyframeConfig helper
+      const kf = new KeyframeConfig();
+      kf.withGuard("HIGH_GUARD", side);
+      
+      // Merge rotations into last keyframe
+      for (const [bone, rotation] of kf.rotations.entries()) {
+        lastKf.boneRotations.set(bone, rotation);
+      }
+      
+      // Apply fist pose to hands in guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
+    }
+    return this;
+  }
+
+  /**
+   * Apply Korean middle guard position (중단막기)
+   * 
+   * Standard Korean martial arts guard at chest/solar plexus level.
+   * Most versatile guard position, used in most fighting stances.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 중단막기자세
+   */
+  withKoreanMiddleGuard(side: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      const kf = new KeyframeConfig();
+      kf.withGuard("MIDDLE_GUARD", side);
+      
+      // Merge rotations into last keyframe
+      for (const [bone, rotation] of kf.rotations.entries()) {
+        lastKf.boneRotations.set(bone, rotation);
+      }
+      
+      // Apply fist pose to hands in guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
+    }
+    return this;
+  }
+
+  /**
+   * Apply Korean low guard position (하단막기)
+   * 
+   * Low guard position protecting lower body and groin.
+   * Used in grappling and ground-fighting scenarios.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 하단막기자세
+   */
+  withKoreanLowGuard(side: "left" | "right" | "both" = "both"): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      const kf = new KeyframeConfig();
+      kf.withGuard("LOW_GUARD", side);
+      
+      // Merge rotations into last keyframe
+      for (const [bone, rotation] of kf.rotations.entries()) {
+        lastKf.boneRotations.set(bone, rotation);
+      }
+      
+      // Apply fist pose to hands in guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
+    }
+    return this;
+  }
+
+  /**
    * Apply clinch position (클린치)
    * @korean 클린치
    */
