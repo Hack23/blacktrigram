@@ -71,8 +71,20 @@ export const ARCHETYPE_ENFORCEMENT: Record<PlayerArchetype, ArchetypeEnforcement
     prohibitedActions: [AIActionType.FEINT], // Honor code: No deception
     signatureMove: "musa_mountain_breaker",
     signatureCondition: (context) => {
-      const opponentHealthPercent = context.opponentHealth / context.playerMaxHealth;
-      return opponentHealthPercent < 0.40; // Finishing move when opponent <40% health
+      /**
+       * NOTE: This condition assumes symmetric max-health pools for player and opponent,
+       * i.e. context.playerMaxHealth === opponentMaxHealth. Under this design, using
+       * playerMaxHealth as the denominator yields the opponent's true health percentage.
+       * If asymmetric max health is introduced in the future, CombatContext should be
+       * extended with opponentMaxHealth and this logic updated accordingly.
+       */
+      const maxHealth = context.playerMaxHealth;
+      if (maxHealth <= 0) {
+        // Defensive guard: avoid divide-by-zero / invalid percentages
+        return false;
+      }
+      const opponentHealthPercent = context.opponentHealth / maxHealth;
+      return opponentHealthPercent < 0.40; // Finishing move when opponent <40% of shared max health
     },
     actionFrequencies: {
       [AIActionType.ATTACK]: 0.70, // 70% aggressive attacks
@@ -167,7 +179,12 @@ export const ARCHETYPE_ENFORCEMENT: Record<PlayerArchetype, ArchetypeEnforcement
     signatureMove: "jojik_improvised_weapon",
     signatureCondition: (context) => {
       // Execute Improvised Weapon when desperate (<30% health)
-      const playerHealthPercent = context.playerHealth / context.playerMaxHealth;
+      // Defensive guard: avoid divide-by-zero
+      const maxHealth = context.playerMaxHealth;
+      if (maxHealth <= 0) {
+        return false;
+      }
+      const playerHealthPercent = context.playerHealth / maxHealth;
       return playerHealthPercent < 0.30;
     },
     actionFrequencies: {
