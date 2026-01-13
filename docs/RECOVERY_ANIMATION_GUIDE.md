@@ -224,12 +224,12 @@ export const FRONT_KICK_WITH_RECOVERY: SkeletalAnimation =
     .chamber(0.12)               // t=120ms: Knee lifts
     .extend(0.18)                // t=300ms: Leg extends (peak)
     .retract(0.10)               // t=400ms: Return to chamber
-    .recover(0.22)               // t=620ms: Recovery phase
+    .recover(0.22)               // t=400–620ms: Recovery phase (220ms)
                                  //   → t=532ms: Intermediate (80% back)
                                  //   → t=620ms: Final guard position
     .build();
 
-// Result: 700ms total duration (500ms technique + 200ms recovery)
+// Result: 620ms total duration (400ms technique + 220ms recovery)
 // Smooth transition without instant snap-back
 ```
 

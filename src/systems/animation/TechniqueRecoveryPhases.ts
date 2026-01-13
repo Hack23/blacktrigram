@@ -19,7 +19,6 @@
 import type { AnimationKeyframe, SkeletalAnimation } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
 import * as THREE from "three";
-import type { EasingName } from "./KeyframeInterpolation";
 
 /**
  * Muscle tension state for animation keyframes
@@ -88,8 +87,9 @@ export interface RecoveryPhaseConfig {
   /**
    * Easing function for recovery interpolation
    * Default: "ease-out" for gradual deceleration
+   * Note: Only base easing types supported ("linear", "ease-in", "ease-out", "ease-in-out")
    */
-  readonly easing?: EasingName;
+  readonly easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
   /**
    * Include breathing synchronization
    * Default: true
@@ -248,41 +248,50 @@ export function addRecoveryPhase(
     return animation;
   }
   
-  // Get peak keyframe (second to last, before any existing recovery)
-  const peakIndex = animation.keyframes.length - 2;
-  const peakKeyframe = animation.keyframes[peakIndex];
-  const lastKeyframe = animation.keyframes[animation.keyframes.length - 1];
+  // Heuristically determine peak keyframe
+  // Default assumption: second to last keyframe is the peak (technique apex)
+  const keyframes = animation.keyframes;
+  const lastKeyframe = keyframes[keyframes.length - 1];
+  let peakIndex = keyframes.length - 2;
+
+  // Validate that we're not adding recovery to an animation that already has it
+  if (keyframes.length > 2) {
+    // Compute average positive time delta between consecutive keyframes
+    let totalDelta = 0;
+    let deltaCount = 0;
+    for (let i = 1; i < keyframes.length; i += 1) {
+      const dt = keyframes[i].time - keyframes[i - 1].time;
+      if (dt > 0) {
+        totalDelta += dt;
+        deltaCount += 1;
+      }
+    }
+
+    const averageDelta = deltaCount > 0 ? totalDelta / deltaCount : 0;
+    const finalGap = lastKeyframe.time - keyframes[peakIndex].time;
+
+    // If the final segment is significantly longer than the average spacing,
+    // treat it as likely existing recovery and skip adding another
+    const significantGapFactor = 1.5;
+    if (averageDelta > 0 && finalGap > averageDelta * significantGapFactor) {
+      console.warn(
+        "addRecoveryPhase: Animation may already have a recovery phase (large final gap detected). Skipping additional recovery."
+      );
+      return animation;
+    }
+  }
+
+  const peakKeyframe = keyframes[peakIndex];
   
   // Calculate recovery timings
   const recoveryStart = lastKeyframe.time;
   const intermediateTime = recoveryStart + (recoveryConfig.duration * recoveryConfig.intermediateTimeRatio);
   const finalTime = recoveryStart + recoveryConfig.duration;
   
-  // Map extended easing names to base easing types
-  const mapEasingToBase = (easing: EasingName): "linear" | "ease-in" | "ease-out" | "ease-in-out" => {
-    // Extended easing types map to their closest base equivalent
-    switch (easing) {
-      case "natural-motion":
-      case "smooth-transition":
-      case "quick-start":
-      case "controlled-slow":
-        return "ease-out"; // All recovery easings use ease-out style deceleration
-      case "explosive-power":
-        return "ease-in";
-      case "ease-in":
-        return "ease-in";
-      case "ease-in-out":
-        return "ease-in-out";
-      case "linear":
-      default:
-        return "ease-out"; // Default for recovery
-    }
-  };
-  
   // Create intermediate recovery keyframe (e.g., 80% back to neutral)
   const intermediateFrame: TensionKeyframe = {
     time: intermediateTime,
-    easing: mapEasingToBase(recoveryConfig.easing),
+    easing: recoveryConfig.easing,
     boneRotations: new Map(),
     bonePositions: new Map(),
     muscleTension: new Map(),
@@ -325,7 +334,7 @@ export function addRecoveryPhase(
   // Create final recovery keyframe (100% back to neutral)
   const finalFrame: TensionKeyframe = {
     time: finalTime,
-    easing: mapEasingToBase(recoveryConfig.easing),
+    easing: recoveryConfig.easing,
     boneRotations: new Map(),
     bonePositions: new Map(),
     muscleTension: new Map(),
@@ -402,7 +411,7 @@ export function createTechniqueRecovery(
         duration: 0.28, // 280ms
         intermediateProgress: 0.7, // 70% back (significant body repositioning)
         intermediateTimeRatio: 0.5,
-        easing: "natural-motion", // More natural physics-based recovery
+        easing: "ease-out", // Gradual deceleration
       };
     
     case "spin":
@@ -411,7 +420,7 @@ export function createTechniqueRecovery(
         duration: 0.28, // 280ms
         intermediateProgress: 0.7, // 70% back (rotational momentum dissipates)
         intermediateTimeRatio: 0.55,
-        easing: "controlled-slow", // Controlled deceleration
+        easing: "ease-out", // Gradual deceleration
       };
     
     default:
@@ -526,8 +535,8 @@ export function validateRecoveryPhase(
   }
   
   // Easing check: Should use ease-out
-  const validEasings: EasingName[] = ["ease-out", "natural-motion", "controlled-slow"];
-  if (!validEasings.includes(intermediate.easing as EasingName)) {
+  const validEasings = ["ease-out", "ease-in-out"];
+  if (!validEasings.includes(intermediate.easing ?? "linear")) {
     issues.push(
       `Intermediate keyframe should use ease-out interpolation, got: ${intermediate.easing}`
     );

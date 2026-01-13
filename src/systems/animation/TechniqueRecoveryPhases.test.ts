@@ -235,9 +235,10 @@ describe("TechniqueRecoveryPhases", () => {
         const remainingRotation = Math.abs(intermediateHipRotation.x);
         const peakRotation = Math.abs(peakHipRotation.x);
         
-        // Should be roughly 20% of peak rotation remaining
-        expect(remainingRotation / peakRotation).toBeLessThan(0.35);
-        expect(remainingRotation / peakRotation).toBeGreaterThan(0.0);
+        // Should be roughly 20% of peak rotation remaining (80% back to neutral)
+        // Allow 15-25% range (75-85% interpolation) for realistic tolerance
+        expect(remainingRotation / peakRotation).toBeLessThan(0.25);
+        expect(remainingRotation / peakRotation).toBeGreaterThan(0.15);
       }
     });
 
@@ -325,7 +326,7 @@ describe("TechniqueRecoveryPhases", () => {
       
       // Spinning techniques need longest recovery
       expect(spinRecovery.duration).toBeGreaterThan(0.25);
-      expect(spinRecovery.easing).toBe("controlled-slow");
+      expect(spinRecovery.easing).toBe("ease-out");
     });
   });
 
