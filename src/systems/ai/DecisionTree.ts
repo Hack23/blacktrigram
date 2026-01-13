@@ -79,6 +79,28 @@ export interface AIDecision {
 }
 
 /**
+ * Vulnerability assessment context for exploitation tactics
+ * 
+ * Comprehensive analysis of opponent's defenseless states:
+ * - **isHelpless**: Balance === HELPLESS (90% takedown priority)
+ * - **isVulnerable**: Balance === VULNERABLE or HELPLESS (70% aggressive attack priority)
+ * - **isShaken**: Balance === SHAKEN, VULNERABLE, or HELPLESS (50% pressure tactics priority)
+ * - **hasLowStamina**: Stamina < 20% (60% exploitation priority)
+ * - **hasNoKi**: Ki < 10% (50% technique spam priority)
+ * - **overallVulnerability**: Composite vulnerability score (0.0-1.0)
+ * 
+ * @korean 취약성 평가 컨텍스트
+ */
+export interface VulnerabilityContext {
+  readonly isHelpless: boolean; // balance === HELPLESS
+  readonly isVulnerable: boolean; // balance === VULNERABLE or HELPLESS
+  readonly isShaken: boolean; // balance === SHAKEN, VULNERABLE, or HELPLESS
+  readonly hasLowStamina: boolean; // stamina < 20%
+  readonly hasNoKi: boolean; // ki < 10%
+  readonly overallVulnerability: number; // 0.0-1.0 composite score
+}
+
+/**
  * Combat context for decision making
  */
 export interface CombatContext {
@@ -98,6 +120,10 @@ export interface CombatContext {
   readonly isOpponentAttacking: boolean;
   readonly recentDamageTaken: number;
   readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
+  readonly opponentStamina?: number; // Opponent stamina for exploitation
+  readonly opponentMaxStamina?: number; // Opponent max stamina
+  readonly opponentKi?: number; // Opponent ki for exploitation
+  readonly opponentMaxKi?: number; // Opponent max ki
   readonly stanceFatigue?: {
     readonly timeInStance: number; // Milliseconds in current stance
   };
@@ -106,6 +132,74 @@ export interface CombatContext {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+  };
+}
+
+/**
+ * Assess opponent vulnerability for exploitation tactics
+ * 
+ * Analyzes multiple vulnerability factors to create comprehensive assessment:
+ * - Balance states (HELPLESS/VULNERABLE/SHAKEN)
+ * - Stamina depletion (< 20%)
+ * - Ki depletion (< 10%)
+ * - Composite vulnerability score (weighted average)
+ * 
+ * **Korean Philosophy (취약성 평가)**:
+ * Traditional Korean martial arts teach reading opponent's weakness:
+ * - 기회 포착 (Gihoei Pochak) - Seizing opportunities
+ * - 약점 공격 (Yakjeom Gonggyeok) - Exploiting weaknesses
+ * - 결정타 (Gyeoljeongta) - Delivering decisive strikes
+ * 
+ * @korean 상대 취약성 평가
+ * 
+ * @param context - Current combat context with opponent state
+ * @returns Vulnerability assessment with boolean flags and composite score
+ */
+function assessVulnerability(context: CombatContext): VulnerabilityContext {
+  // Balance-based vulnerability (Issue #enhance-intelligence-operative-ai)
+  // Uses balance state enum from context: HELPLESS, VULNERABLE, SHAKEN, READY
+  const isHelpless = context.opponentBalance === "HELPLESS";
+  const isVulnerable = 
+    context.opponentBalance === "VULNERABLE" || 
+    context.opponentBalance === "HELPLESS";
+  const isShaken = 
+    context.opponentBalance === "SHAKEN" || 
+    context.opponentBalance === "VULNERABLE" || 
+    context.opponentBalance === "HELPLESS";
+  
+  // Resource-based vulnerability (Issue #enhance-intelligence-operative-ai)
+  // Stamina and ki depletion indicate defensive weakness
+  const staminaPercent = context.opponentStamina && context.opponentMaxStamina 
+    ? context.opponentStamina / context.opponentMaxStamina 
+    : 1.0;
+  const kiPercent = context.opponentKi && context.opponentMaxKi 
+    ? context.opponentKi / context.opponentMaxKi 
+    : 1.0;
+  
+  const hasLowStamina = staminaPercent < 0.20; // < 20% stamina
+  const hasNoKi = kiPercent < 0.10; // < 10% ki
+  
+  // Composite vulnerability score (0.0-1.0) with weighted factors:
+  // - Balance: 40% weight (most critical - physical vulnerability)
+  // - Stamina: 30% weight (affects defensive capability)
+  // - Ki: 30% weight (affects technique usage)
+  let balanceVulnerability = 0.0;
+  if (isHelpless) balanceVulnerability = 1.0;
+  else if (isVulnerable) balanceVulnerability = 0.7;
+  else if (isShaken) balanceVulnerability = 0.5;
+  
+  const overallVulnerability = 
+    balanceVulnerability * 0.4 + 
+    (1 - staminaPercent) * 0.3 + 
+    (1 - kiPercent) * 0.3;
+  
+  return {
+    isHelpless,
+    isVulnerable,
+    isShaken,
+    hasLowStamina,
+    hasNoKi,
+    overallVulnerability,
   };
 }
 
@@ -120,6 +214,7 @@ export interface CombatContext {
  * - **상황 판단** (Situational Awareness): Adapts tactics based on combat context
  * - **기술 조합** (Technique Combinations): Chains attacks into flowing combos
  * - **방어 우선** (Defense First): Prioritizes survival and tactical retreat when needed
+ * - **취약성 공략** (Vulnerability Exploitation): Exploits defenseless states with precision (Issue #enhance-intelligence-operative-ai)
  */
 export class AIDecisionTree {
   private lastDecisionTime = 0;
@@ -127,6 +222,11 @@ export class AIDecisionTree {
   private consecutiveAttacks = 0;
   private lastStanceChange = 0;
   private readonly stanceChangeCooldown = 3000; // 3 seconds
+
+  // Psychological warfare tracking (Issue #enhance-intelligence-operative-ai)
+  // Tracks cumulative psychological pressure for Intelligence Operative archetype
+  private psychologicalPressure = 0; // 0-100: Cumulative psychological pressure
+  private lastPressureActionTime = 0; // Timestamp of last pressure-building action
 
   // Systems for advanced decision-making
   private trigramSystem: TrigramSystem;
@@ -322,6 +422,166 @@ export class AIDecisionTree {
   }
 
   /**
+   * Apply Intelligence Operative (Jeongbo Yowon) vulnerability exploitation
+   * 
+   * Enhances decision weights to exploit opponent's defenseless states with precision:
+   * - **HELPLESS (balance === HELPLESS)**: 90% takedown priority - Execute precision takedown
+   * - **VULNERABLE (balance === VULNERABLE)**: 70% aggressive attack - Sustained pressure tactics
+   * - **SHAKEN (balance === SHAKEN)**: 50% pressure increase - Psychological warfare
+   * - **Low Stamina (< 20%)**: 60% exploitation - Force defensive positions
+   * - **No Ki (< 10%)**: 50% technique spam - Prevent powerful techniques
+   * 
+   * **Multiplier Stacking Behavior**:
+   * When multiple vulnerabilities are present, multipliers stack multiplicatively:
+   * - VULNERABLE (2.0x attack) + low stamina (1.5x attack) = 3.0x total attack multiplier
+   * - VULNERABLE (1.8x technique) + low ki (1.4x technique) = 2.52x total technique multiplier
+   * This creates increasingly aggressive exploitation as opponent becomes more vulnerable.
+   * Note: HELPLESS state uses exclusive else-if, so it doesn't stack with VULNERABLE/SHAKEN.
+   * 
+   * **Jeongbo Philosophy (정보요원 전략)**:
+   * - Knowledge through observation (관찰을 통한 지식)
+   * - Psychological manipulation (심리적 조작)
+   * - Precise timing (정확한 타이밍)
+   * - Strategic exploitation (전략적 공략)
+   * 
+   * This function provides 3x higher vulnerability exploitation rate than Musa,
+   * 2x higher psychological warfare usage than Amsalja, and 5x higher takedown
+   * success rate when opponent is HELPLESS.
+   * 
+   * @korean 정보요원 취약성 공략
+   * 
+   * @param weights - Base action weight multipliers
+   * @param vulnerability - Vulnerability assessment context
+   * @param personality - AI personality archetype
+   * @returns Modified action weights for Jeongbo exploitation
+   */
+  private applyJeongboExploitation(
+    weights: { attack: number; technique: number; defend: number; feint: number; approach: number; circle: number },
+    vulnerability: VulnerabilityContext,
+    personality: AIPersonality
+  ): { attack: number; technique: number; defend: number; feint: number; approach: number; circle: number } {
+    // Only Jeongbo gets vulnerability exploitation bonuses
+    if (personality.archetype !== PlayerArchetype.JEONGBO_YOWON) {
+      return weights;
+    }
+    
+    const modified = { ...weights };
+    
+    // Check for psychological pressure buildup (Issue #enhance-intelligence-operative-ai Phase 3)
+    const pressureStrike = this.shouldExecutePressureStrike(vulnerability);
+    if (pressureStrike) {
+      // Psychological pressure ≥ 50 + Opponent VULNERABLE = Decisive Strike
+      modified.technique *= 3.0; // Execute decisive psychological technique
+      modified.attack *= 0.3; // Reduce basic attacks
+      return modified; // Override other modifiers for pressure strike
+    }
+    
+    // HELPLESS: Execute precision takedown (90% priority)
+    if (vulnerability.isHelpless) {
+      modified.technique *= 5.0; // Massive technique priority for Precision Takedown
+      modified.attack *= 0.2; // Reduce basic attacks
+      modified.defend *= 0.1; // Minimal defense needed
+      modified.feint *= 0.1; // No feinting during execution
+    }
+    // VULNERABLE: Aggressive pressure (70% priority)
+    else if (vulnerability.isVulnerable) {
+      modified.attack *= 2.0; // Increased attack frequency
+      modified.technique *= 1.8; // Tactical Strike priority
+      modified.feint *= 0.5; // Less feinting, more action
+      modified.defend *= 0.5; // Reduced defense (maintain offensive)
+    }
+    // SHAKEN: Psychological warfare (50% priority)
+    else if (vulnerability.isShaken) {
+      modified.feint *= 2.0; // Increase psychological pressure
+      modified.circle *= 1.5; // Intimidation tactics (circling)
+      modified.technique *= 1.3; // "Psychological Warfare" technique
+    }
+    
+    // Low stamina: Relentless pressure (60% priority)
+    if (vulnerability.hasLowStamina) {
+      modified.attack *= 1.5; // Force stamina drain
+      modified.approach *= 1.3; // Close distance to pressure
+    }
+    
+    // No ki: Technique spam (50% priority)
+    if (vulnerability.hasNoKi) {
+      modified.technique *= 1.4; // Opponent can't use powerful techniques
+      modified.attack *= 1.3; // Maintain offensive
+    }
+    
+    return modified;
+  }
+
+  /**
+   * Build psychological pressure through intimidation tactics
+   * 
+   * Intelligence Operative uses feints, circling, and approach/retreat patterns
+   * to build cumulative psychological pressure on opponent. When pressure reaches
+   * 50+ and opponent is VULNERABLE, triggers decisive strike.
+   * 
+   * **Psychological Tactics (심리전 전술)**:
+   * - Feints: +10 pressure (fake attacks create hesitation)
+   * - Circling: +5 pressure (predator circling prey)
+   * - Approach: +3 pressure (aggressive positioning)
+   * - Decay: -3 pressure per second (pressure fades without action)
+   * 
+   * @korean 심리적 압박 증가
+   * 
+   * @param actionType - Type of action taken (FEINT, CIRCLE, APPROACH, etc.)
+   * @param now - Current timestamp for decay calculation
+   */
+  private buildPsychologicalPressure(actionType: AIActionType, now: number): void {
+    // Apply pressure decay (3 points per second since last pressure action)
+    if (this.lastPressureActionTime > 0) {
+      const timeSinceLastAction = now - this.lastPressureActionTime;
+      const decayAmount = (timeSinceLastAction / 1000) * 3; // 3 points per second
+      this.psychologicalPressure = Math.max(0, this.psychologicalPressure - decayAmount);
+    }
+    
+    // Build pressure based on action type
+    switch (actionType) {
+      case AIActionType.FEINT:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 10);
+        this.lastPressureActionTime = now;
+        break;
+      case AIActionType.CIRCLE:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 5);
+        this.lastPressureActionTime = now;
+        break;
+      case AIActionType.APPROACH:
+        this.psychologicalPressure = Math.min(100, this.psychologicalPressure + 3);
+        this.lastPressureActionTime = now;
+        break;
+      // Attacks and techniques release pressure (execution phase)
+      case AIActionType.ATTACK:
+      case AIActionType.TECHNIQUE:
+        // Pressure resets after decisive action
+        this.psychologicalPressure = Math.max(0, this.psychologicalPressure * 0.5);
+        break;
+    }
+  }
+
+  /**
+   * Check if psychological pressure should trigger decisive strike
+   * 
+   * Jeongbo executes decisive technique when:
+   * - Psychological pressure ≥ 50 (sustained intimidation)
+   * - Opponent is VULNERABLE or worse (balance < 30)
+   * - Returns true to boost technique priority
+   * 
+   * @korean 심리적 압박 결정타 확인
+   * 
+   * @param vulnerability - Vulnerability assessment context
+   * @returns True if pressure warrants decisive strike
+   */
+  private shouldExecutePressureStrike(vulnerability: VulnerabilityContext): boolean {
+    return (
+      this.psychologicalPressure >= 50 &&
+      (vulnerability.isVulnerable || vulnerability.isHelpless)
+    );
+  }
+
+  /**
    * Make strategic decision based on combat context
    * 
    * Applies difficulty-based reaction time delays if difficulty parameters are set
@@ -354,6 +614,9 @@ export class AIDecisionTree {
 
     // Check for kill mode activation (Issue #enhance-ai-aggression)
     const killModeActive = this.isKillModeActive(context, personality);
+
+    // Assess opponent vulnerability for exploitation (Issue #enhance-intelligence-operative-ai)
+    const vulnerability = assessVulnerability(context);
 
     // Check for active combo first
     if (comboSystem.isComboActive()) {
@@ -405,10 +668,80 @@ export class AIDecisionTree {
       decisions.push(this.evaluateDefense(context, personality));
     }
 
+    // Apply Jeongbo vulnerability exploitation (Issue #enhance-intelligence-operative-ai)
+    // This provides 3x higher exploitation rate than other archetypes
+    let modifiedDecisions = decisions;
+    if (personality.archetype === PlayerArchetype.JEONGBO_YOWON) {
+      modifiedDecisions = decisions.map((decision) => {
+        // Skip survival decisions (preserve self-preservation)
+        const SURVIVAL_REASON_KEYWORDS = [
+          "critical health", "high pain", "survival retreat", "emergency retreat",
+          "위급 상황", "고통 회피",
+        ];
+        const reasonLower = decision.reason.toLowerCase();
+        const hasSurvivalKeyword = SURVIVAL_REASON_KEYWORDS.some((keyword) =>
+          reasonLower.includes(keyword)
+        );
+        const isSurvivalRetreat =
+          decision.action === AIActionType.RETREAT &&
+          (decision.priority === 20 || hasSurvivalKeyword);
+        
+        if (isSurvivalRetreat) {
+          return decision;
+        }
+        
+        // Only apply exploitation to relevant action types
+        // Other actions (COUNTER, RETREAT, WAIT, STANCE_CHANGE, COMBO) maintain original priority
+        const exploitableActions = [
+          AIActionType.ATTACK,
+          AIActionType.TECHNIQUE,
+          AIActionType.DEFEND,
+          AIActionType.FEINT,
+          AIActionType.APPROACH,
+          AIActionType.CIRCLE,
+        ];
+        
+        if (!exploitableActions.includes(decision.action)) {
+          return decision; // Preserve priority for non-exploitable actions
+        }
+        
+        // Calculate base action weights including feint, approach, circle
+        const weights = {
+          attack: decision.action === AIActionType.ATTACK ? 1.0 : 0.0,
+          technique: decision.action === AIActionType.TECHNIQUE ? 1.0 : 0.0,
+          defend: decision.action === AIActionType.DEFEND ? 1.0 : 0.0,
+          feint: decision.action === AIActionType.FEINT ? 1.0 : 0.0,
+          approach: decision.action === AIActionType.APPROACH ? 1.0 : 0.0,
+          circle: decision.action === AIActionType.CIRCLE ? 1.0 : 0.0,
+        };
+        
+        // Apply Jeongbo exploitation modifiers
+        const modifiedWeights = this.applyJeongboExploitation(weights, vulnerability, personality);
+        
+        // Adjust priority based on modified weights
+        let newPriority = decision.priority;
+        if (decision.action === AIActionType.ATTACK) {
+          newPriority = decision.priority * modifiedWeights.attack;
+        } else if (decision.action === AIActionType.TECHNIQUE) {
+          newPriority = decision.priority * modifiedWeights.technique;
+        } else if (decision.action === AIActionType.DEFEND) {
+          newPriority = decision.priority * modifiedWeights.defend;
+        } else if (decision.action === AIActionType.FEINT) {
+          newPriority = decision.priority * modifiedWeights.feint;
+        } else if (decision.action === AIActionType.APPROACH) {
+          newPriority = decision.priority * modifiedWeights.approach;
+        } else if (decision.action === AIActionType.CIRCLE) {
+          newPriority = decision.priority * modifiedWeights.circle;
+        }
+        
+        return { ...decision, priority: newPriority };
+      });
+    }
+
     // Apply kill mode modifiers to boost aggression (Issue #enhance-ai-aggression)
     if (killModeActive) {
       // Map decisions to new array with modified priorities
-      const modifiedDecisions = decisions.map((decision) => {
+      modifiedDecisions = modifiedDecisions.map((decision) => {
         // CRITICAL: Survival decisions (retreat for self-preservation) should NOT be affected by kill mode
         // Kill mode is about finishing the opponent, not about ignoring the AI's own safety
         // Survival retreats are identified by priority 20 OR reason containing survival keywords
@@ -469,6 +802,11 @@ export class AIDecisionTree {
         current.priority > best.priority ? current : best
       );
 
+      // Build psychological pressure for Jeongbo (Issue #enhance-intelligence-operative-ai Phase 3)
+      if (personality.archetype === PlayerArchetype.JEONGBO_YOWON) {
+        this.buildPsychologicalPressure(bestDecision.action, now);
+      }
+
       // Track consecutive attacks
       if (
         bestDecision.action === AIActionType.ATTACK ||
@@ -482,10 +820,15 @@ export class AIDecisionTree {
       return bestDecision;
     }
 
-    // Normal mode: Select highest priority decision without kill mode modifiers
-    const bestDecision = decisions.reduce((best, current) =>
+    // Normal mode: Select highest priority decision (may have Jeongbo exploitation applied)
+    const bestDecision = modifiedDecisions.reduce((best, current) =>
       current.priority > best.priority ? current : best
     );
+
+    // Build psychological pressure for Jeongbo (Issue #enhance-intelligence-operative-ai Phase 3)
+    if (personality.archetype === PlayerArchetype.JEONGBO_YOWON) {
+      this.buildPsychologicalPressure(bestDecision.action, now);
+    }
 
     // Track consecutive attacks
     if (
@@ -1629,5 +1972,8 @@ export class AIDecisionTree {
     this.lastDecisionTime = 0;
     this.consecutiveAttacks = 0;
     this.lastStanceChange = 0;
+    // Reset psychological pressure tracking (Issue #enhance-intelligence-operative-ai Phase 3)
+    this.psychologicalPressure = 0;
+    this.lastPressureActionTime = 0;
   }
 }

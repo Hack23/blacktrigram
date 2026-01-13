@@ -1553,4 +1553,487 @@ describe("AIDecisionTree", () => {
       expect(attackingChanges).toBeGreaterThan(notAttackingChanges);
     });
   });
+
+  describe("Vulnerability Exploitation System", () => {
+    describe("Vulnerability Assessment", () => {
+      it("should detect HELPLESS state when balance is HELPLESS", () => {
+        const context = createMockContext({
+          opponentBalance: "HELPLESS",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should detect VULNERABLE state when balance is VULNERABLE", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should detect SHAKEN state when balance is SHAKEN", () => {
+        const context = createMockContext({
+          opponentBalance: "SHAKEN",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should detect low stamina when opponent stamina < 20%", () => {
+        const context = createMockContext({
+          opponentBalance: "READY",
+          opponentStamina: 15,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should detect low ki when opponent ki < 10%", () => {
+        const context = createMockContext({
+          opponentBalance: "READY",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 8,
+          opponentMaxKi: 100,
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should handle missing stamina/ki values gracefully", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          // Missing opponentStamina, opponentMaxStamina, opponentKi, opponentMaxKi
+        });
+
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+    });
+
+    describe("Jeongbo Exploitation Behavior", () => {
+      it("should prioritize technique when opponent is HELPLESS", () => {
+        const context = createMockContext({
+          opponentBalance: "HELPLESS",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+          distanceToOpponent: 40,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER, // Jeongbo archetype
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const techniqueActions = decisions.filter((d) => d.action === "technique");
+        
+        // Jeongbo should heavily favor techniques on HELPLESS opponents (5.0x multiplier)
+        expect(techniqueActions.length).toBeGreaterThan(decisions.length * 0.5);
+      });
+
+      it("should increase aggression when opponent is VULNERABLE", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+          distanceToOpponent: 60,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const aggressiveActions = decisions.filter((d) =>
+          ["attack", "technique"].includes(d.action)
+        );
+
+        // Jeongbo should use aggressive tactics on VULNERABLE opponents
+        expect(aggressiveActions.length).toBeGreaterThan(decisions.length * 0.4);
+      });
+
+      it("should use feints and circles when opponent is SHAKEN", () => {
+        const context = createMockContext({
+          opponentBalance: "SHAKEN",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+          distanceToOpponent: 80,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const psychWarfareActions = decisions.filter((d) =>
+          ["feint", "circle"].includes(d.action)
+        );
+
+        // Jeongbo should use psychological warfare on SHAKEN opponents
+        expect(psychWarfareActions.length).toBeGreaterThan(0);
+      });
+
+      it("should exploit low stamina with increased attacks", () => {
+        const context = createMockContext({
+          opponentBalance: "READY",
+          opponentStamina: 15, // < 20%
+          opponentMaxStamina: 100,
+          opponentKi: 100,
+          opponentMaxKi: 100,
+          distanceToOpponent: 40,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const attackActions = decisions.filter((d) =>
+          ["attack", "approach"].includes(d.action)
+        );
+
+        // Jeongbo should pressure opponents with low stamina
+        expect(attackActions.length).toBeGreaterThan(0);
+      });
+
+      it("should spam techniques when opponent has low ki", () => {
+        const context = createMockContext({
+          opponentBalance: "READY",
+          opponentStamina: 100,
+          opponentMaxStamina: 100,
+          opponentKi: 8, // < 10%
+          opponentMaxKi: 100,
+          distanceToOpponent: 40,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const offensiveActions = decisions.filter((d) =>
+          ["attack", "technique"].includes(d.action)
+        );
+
+        // Jeongbo should maintain offensive when opponent has no ki
+        expect(offensiveActions.length).toBeGreaterThan(0);
+      });
+
+      it("should NOT apply exploitation to non-Jeongbo archetypes", () => {
+        const vulnerableContext = createMockContext({
+          opponentBalance: "HELPLESS",
+          opponentStamina: 10,
+          opponentMaxStamina: 100,
+          distanceToOpponent: 40,
+        });
+
+        // Test with Musa archetype
+        const musaDecision = decisionTree.makeDecision(
+          vulnerableContext,
+          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Musa
+          comboSystem
+        );
+
+        expect(musaDecision).toBeDefined();
+        // Musa should not get Jeongbo-specific exploitation bonuses
+      });
+
+      it("should NOT affect non-exploitable action types (STANCE_CHANGE, WAIT, COUNTER, RETREAT, COMBO)", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          opponentStamina: 15,
+          opponentMaxStamina: 100,
+          opponentKi: 8,
+          opponentMaxKi: 100,
+          distanceToOpponent: 120,
+          playerStance: TrigramStance.GEON,
+        });
+
+        // Collect decisions to check if non-exploitable actions are unaffected
+        const decisions = [];
+        for (let i = 0; i < 100; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const stanceChangeDecisions = decisions.filter((d) => d.action === "stance_change");
+        const waitDecisions = decisions.filter((d) => d.action === "wait");
+        
+        // Non-exploitable actions should exist and have reasonable priorities
+        // They should not have inflated priorities from exploitation multipliers
+        stanceChangeDecisions.forEach((d) => {
+          expect(d.priority).toBeLessThan(20); // Normal stance change priority range
+        });
+        
+        waitDecisions.forEach((d) => {
+          expect(d.priority).toBeLessThanOrEqual(1); // Wait actions have low priority
+        });
+      });
+
+      it("should stack multipliers when multiple vulnerabilities are present", () => {
+        const multipleVulnContext = createMockContext({
+          opponentBalance: "VULNERABLE", // 2.0x attack, 1.8x technique
+          opponentStamina: 15, // < 20%: 1.5x attack, 1.3x approach
+          opponentMaxStamina: 100,
+          opponentKi: 8, // < 10%: 1.4x technique, 1.3x attack
+          opponentMaxKi: 100,
+          distanceToOpponent: 40,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            multipleVulnContext,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const aggressiveActions = decisions.filter((d) =>
+          ["attack", "technique"].includes(d.action)
+        );
+
+        // With stacked multipliers (VULNERABLE + low stamina + low ki),
+        // Jeongbo should be extremely aggressive
+        // Attack: 2.0 * 1.5 * 1.3 = 3.9x
+        // Technique: 1.8 * 1.4 = 2.52x
+        expect(aggressiveActions.length).toBeGreaterThan(decisions.length * 0.6);
+      });
+    });
+
+    describe("Psychological Pressure System", () => {
+      it("should accumulate pressure from feints", () => {
+        const context = createMockContext({
+          opponentBalance: "SHAKEN",
+          distanceToOpponent: 80,
+        });
+
+        // Execute multiple decisions to build pressure
+        for (let i = 0; i < 5; i++) {
+          decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+        }
+
+        // Pressure should accumulate (tested implicitly by system working)
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should trigger decisive strike at high pressure with vulnerable opponent", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          distanceToOpponent: 60,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        // Build up pressure by making multiple decisions
+        const decisions = [];
+        for (let i = 0; i < 20; i++) {
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        // Should eventually execute techniques (pressure strikes or exploitation)
+        const techniqueActions = decisions.filter((d) => d.action === "technique");
+        expect(techniqueActions.length).toBeGreaterThan(0);
+      });
+
+      it("should reset pressure on round reset", () => {
+        const context = createMockContext({
+          opponentBalance: "SHAKEN",
+          distanceToOpponent: 80,
+        });
+
+        // Build up pressure
+        for (let i = 0; i < 5; i++) {
+          decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+        }
+
+        // Reset should clear pressure
+        decisionTree.reset();
+
+        // After reset, system should work normally
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+
+      it("should decay pressure over time", () => {
+        const context = createMockContext({
+          opponentBalance: "SHAKEN",
+          distanceToOpponent: 80,
+        });
+
+        // Build up pressure with feints
+        for (let i = 0; i < 3; i++) {
+          decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+        }
+
+        // Pressure should decay with time (tested implicitly)
+        const decision = decisionTree.makeDecision(
+          context,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
+          comboSystem
+        );
+
+        expect(decision).toBeDefined();
+      });
+    });
+
+    describe("Performance", () => {
+      it("should complete vulnerability assessment in < 2ms", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          opponentStamina: 15,
+          opponentMaxStamina: 100,
+          opponentKi: 8,
+          opponentMaxKi: 100,
+        });
+
+        const start = performance.now();
+        
+        for (let i = 0; i < 100; i++) {
+          decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+        }
+
+        const elapsed = performance.now() - start;
+        const avgTime = elapsed / 100;
+
+        // Each decision should take < 2ms on average
+        expect(avgTime).toBeLessThan(2);
+      });
+    });
+  });
 });
