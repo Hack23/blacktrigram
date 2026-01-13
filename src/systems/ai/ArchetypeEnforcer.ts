@@ -29,6 +29,15 @@ import { AIDecision, AIActionType, CombatContext } from "./DecisionTree";
  * - Signature move (iconic technique with specific trigger condition)
  * - Action frequencies (target distribution percentages)
  * 
+ * **Note on Action Frequencies**:
+ * These frequencies represent **independent probabilities** for each action type,
+ * not a mutually exclusive probability distribution. Multiple actions can have
+ * high frequencies because they can occur in overlapping situations:
+ * - ATTACK (70%) and TECHNIQUE (70%) both represent aggressive behavior
+ * - STANCE_CHANGE (80%) occurs frequently but doesn't prevent other actions
+ * - The frequencies serve as **behavioral targets** to guide AI personality,
+ *   not strict probability weights that must sum to 100%
+ * 
  * @korean 원형 강화 규칙
  */
 export interface ArchetypeEnforcementRules {

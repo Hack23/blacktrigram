@@ -666,8 +666,15 @@ function selectTechniqueForAction(
       // Check if signature move is off cooldown
       const now = Date.now();
       const lastUsed = cooldownMap.get(signatureMoveId) ?? 0;
-      // KoreanTechnique may not have cooldown, default to 0 if missing
-      const techniqueCooldown = (signatureTechnique as any).cooldown ?? 0;
+      
+      // Type-safe access to cooldown property
+      // KoreanTechnique doesn't have cooldown in its interface, but the actual
+      // technique objects do have it. We use a type guard to safely access it.
+      const hasCooldown = (tech: KoreanTechnique): tech is KoreanTechnique & { cooldown: number } => {
+        return 'cooldown' in tech && typeof (tech as any).cooldown === 'number';
+      };
+      
+      const techniqueCooldown = hasCooldown(signatureTechnique) ? signatureTechnique.cooldown : 0;
       const cooldownRemaining = Math.max(0, techniqueCooldown - (now - lastUsed));
       
       // Only execute signature if off cooldown and have resources
