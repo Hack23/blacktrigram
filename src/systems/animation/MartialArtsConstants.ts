@@ -419,14 +419,49 @@ export type KickPhaseName = keyof typeof KICK_PHASES;
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Punch phases for proper striking mechanics
- * 주먹 단계별 자세
+ * Punch phases for proper striking mechanics with Korean martial arts biomechanics
+ * 주먹 단계별 자세 - 한국 무술 생체역학 기반
+ * 
+ * Based on traditional Korean martial arts principles:
+ * - 정권지르기 (Jeongkwon Jireugi) - Straight punch with fist rotation
+ * - 역권지르기 (Yeokwon Jireugi) - Reverse punch with full hip drive
+ * - 당기기 (Dangigi) - Pulling hand (hikite) for power generation
+ * - 엉덩이회전 (Eongdeongi Hoejeon) - Hip rotation for maximum power
+ * - 어깨비틀기 (Eokkae Biteulgi) - Shoulder torque coordination
  *
  * @korean 주먹단계
  */
 export const PUNCH_PHASES = {
   /**
-   * Wind-up (준비) - Arm coiled back
+   * Chamber (준비) - Arm coiled back with fist vertical
+   * 
+   * Korean martial arts chamber position:
+   * - Fist at hip level, palm facing up/in (세로주먹)
+   * - Elbow bent ~90 degrees
+   * - Opposite arm in guard position
+   * - Hip neutral or slightly turned away
+   * - Coiled for explosive extension
+   */
+  CHAMBER: {
+    // Punching arm chamber - elbow bent, fist at hip
+    shoulder: [-0.15, 0, -0.2] as const,  // Shoulder slightly back and down
+    elbow: [0, 0, -1.57] as const,         // Elbow bent 90° inward (-π/2)
+    wrist: [0, 0, 0] as const,             // Wrist neutral, fist vertical
+    
+    // Opposite arm guard position
+    oppositeShoulder: [-0.1, 0, 0.2] as const,  // Guard up
+    oppositeElbow: [0, 0, 1.4] as const,      // Elbow bent for guard
+    
+    // Body position - neutral or slightly turned away
+    spineY: -0.1,   // Slight counter-rotation
+    pelvisY: -0.1,  // Hip slightly turned away from punch direction
+  },
+
+  /**
+   * Wind-up (준비강화) - Brief additional coil before strike
+   * 
+   * Minimal wind-up for fast punches like jab.
+   * More pronounced for power punches like cross.
    */
   WINDUP: {
     shoulder: [0.3, 0, -0.3] as const,
@@ -436,14 +471,50 @@ export const PUNCH_PHASES = {
   },
 
   /**
-   * Extension (지르기) - Full extension
+   * Extension with Hip Drive (지르기) - Full extension with body rotation
+   * 
+   * Korean martial arts extension mechanics:
+   * - Fist rotates from vertical to pronated (palm-down)
+   * - Hip drives forward and rotates (엉덩이회전)
+   * - Shoulder rotates with punch (어깨비틀기)
+   * - Opposite arm pulls back to hip (당기기/hikite)
+   * - Elbow nearly straight at impact (~170-175°)
    */
   EXTENSION: {
-    shoulder: [-0.7, 0, 0.5] as const,
-    elbow: [0, 0, 0.05] as const,
-    wrist: [0, 0, -0.2] as const,
-    spineY: 0.35,
-    pelvisY: 0.2,
+    // Punching arm full extension
+    shoulder: [0.25, 0, 0.15] as const,  // Shoulder forward and slightly up
+    elbow: [0, 0, -0.09] as const,        // Elbow nearly straight (~175° = 180° - 5°)
+    wrist: [0, 0, 0.2] as const,          // Fist pronated (palm-down rotation)
+    
+    // Opposite arm hikite - pulls back for power
+    oppositeShoulder: [-0.2, 0, -0.3] as const,  // Pulled back to hip
+    oppositeElbow: [0, 0, -1.1] as const,         // Elbow bent, fist at hip
+    
+    // Body rotation - hip and shoulder drive
+    spineY: 0.4,    // Shoulder rotation into punch
+    pelvisY: 0.25,  // Hip rotation for power generation
+  },
+
+  /**
+   * Peak Impact (정점) - Maximum extension and rotation
+   * 
+   * Brief hold at full extension for impact frame.
+   * All power delivered through aligned structure.
+   * Slight additional arm extension for maximum reach.
+   */
+  PEAK: {
+    // Maximum extension - slightly more extended than EXTENSION phase
+    shoulder: [0.25, 0, 0.15] as const,
+    elbow: [0, 0, -0.05] as const,        // Even closer to straight (~177° = 180° - 3°)
+    wrist: [0, 0, 0.2] as const,          // Fully pronated
+    
+    // Opposite arm fully retracted
+    oppositeShoulder: [-0.2, 0, -0.3] as const,
+    oppositeElbow: [0, 0, -1.1] as const,
+    
+    // Maximum body rotation
+    spineY: 0.45,
+    pelvisY: 0.3,
   },
 } as const;
 
