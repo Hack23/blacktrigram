@@ -706,7 +706,7 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 
 ---
 
-## 🩸 Combat Realism Systems (6 Complete + 2 Near-Complete - 67%)
+## 🩸 Combat Realism Systems (8/12 Complete - 67%)
 
 <div align="center">
 
@@ -779,6 +779,7 @@ Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Curre
 ### 🗺️ Planning & Progress
 - [🗺️ **v1.0 Roadmap**](./ROADMAP.md) - **Complete v1.0 release timeline (Q2-Q3 2026)**
 - [📊 **Game Status Report**](./game-status.md) - **Current metrics (8.4/10, 76% coverage, 67% combat realism)**
+- [🔮 **Vision 2026-2034**](./VISION_2026_2034.md) - **8-year strategic vision and evolution roadmap**
 - [🎮 Game Design](./game-design.md) - Overall game mechanics
 - [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
 - [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
@@ -796,6 +797,7 @@ Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Curre
 ### 🛠️ Development & Architecture
 - [🛠️ Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md) - Security-integrated SDLC
 - [📐 Architecture](./ARCHITECTURE.md) - High-level system design
+- [🚀 **Future Architecture**](./FUTURE_ARCHITECTURE.md) - **Evolutionary architecture roadmap (2026-2034)**
 - [⚔️ Combat Architecture](./COMBAT_ARCHITECTURE.md) - Combat system mechanics
 - [🔄 Workflows](./WORKFLOWS.md) - CI/CD security automation
 - [🔧 Development Guide](./development.md) - Security features and testing
