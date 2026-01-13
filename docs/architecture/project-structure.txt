@@ -790,6 +790,8 @@ src/systems/ai/AIPersonality.test.ts
 src/systems/ai/AIPersonality.ts
 src/systems/ai/AdaptiveDifficulty.test.ts
 src/systems/ai/AdaptiveDifficulty.ts
+src/systems/ai/ArchetypeEnforcer.test.ts
+src/systems/ai/ArchetypeEnforcer.ts
 src/systems/ai/ComboSystem.test.ts
 src/systems/ai/ComboSystem.ts
 src/systems/ai/DecisionTree.test.ts
@@ -799,6 +801,7 @@ src/systems/ai/TrainingAI.ts
 src/systems/ai/__tests__/AI-Combat-Integration.test.ts
 src/systems/ai/__tests__/AI-Performance.bench.ts
 src/systems/ai/index.ts
+src/systems/ai/types.ts
 src/systems/animation/AdvancedJointMovements.test.ts
 src/systems/animation/AdvancedJointMovements.ts
 src/systems/animation/AnimationBuilder.test.ts
@@ -876,6 +879,7 @@ src/systems/animation/TechniqueAnimationMapper.enhanced.test.ts
 src/systems/animation/TechniqueAnimationMapper.ts
 src/systems/animation/TechniqueAnimationMapping.ts
 src/systems/animation/TorsoRotation.test.ts
+src/systems/animation/WeightTransferAnimations.test.ts
 src/systems/animation/__tests__/StanceAnimations.test.ts
 src/systems/animation/__tests__/StanceLocomotionAnimations.test.ts
 src/systems/animation/index.ts
@@ -990,6 +994,7 @@ src/types/common.ts
 src/types/constants/animations.ts
 src/types/constants/colors.ts
 src/types/constants/index.ts
+src/types/constants/performance.ts
 src/types/constants/typography.ts
 src/types/constants/ui.ts
 src/types/facial.ts
@@ -1001,6 +1006,7 @@ src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/utils/__tests__/lowEndMobile.test.ts
 src/utils/__tests__/responsiveLayoutHelpers.test.ts
 src/utils/accessibility.axe.test.tsx
 src/utils/accessibility.test.ts
@@ -1027,6 +1033,7 @@ src/utils/htmlOverlayHelpers.test.ts
 src/utils/htmlOverlayHelpers.ts
 src/utils/index.ts
 src/utils/inputSystem.ts
+src/utils/math.test.ts
 src/utils/math.ts
 src/utils/mobileLayoutHelpers.ts
 src/utils/objectPool.test.ts
