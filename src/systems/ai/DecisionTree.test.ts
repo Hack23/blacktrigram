@@ -406,7 +406,8 @@ describe("AIDecisionTree", () => {
     it("should defend when taking recent damage", () => {
       const context = createMockContext({
         recentDamageTaken: 30,
-        distanceToOpponent: 100, // Closer range to trigger defensive evaluation (Hacker optimal: 120px)
+        distanceToOpponent: 100, // Closer range to trigger defensive evaluation
+        timeInMatch: 15000, // After observation phase for Hacker
       });
 
       // Make multiple decisions to check for defensive response
@@ -721,16 +722,18 @@ describe("AIDecisionTree", () => {
           comboSystem
         );
 
-        // Should prioritize aggressive finishing attacks
+        // Should prioritize aggressive finishing attacks or signature move
         expect(["attack", "technique", "combo"]).toContain(decision.action);
-        // Should have higher priority
+        // Should have higher priority (kill mode: 7-9, signature move: 10)
         expect(decision.priority).toBeGreaterThanOrEqual(7);
-        // Reason should indicate kill mode
+        // Reason should indicate kill mode or signature move (Mountain Breaker triggers at <40%)
         if (decision.reason) {
           const hasKillModeIndicator = 
             decision.reason.includes("결정타") || 
             decision.reason.includes("Kill mode") ||
-            decision.reason.includes("finishing");
+            decision.reason.includes("finishing") ||
+            decision.reason.includes("Signature move") || // Added for signature moves
+            decision.reason.includes("musa_mountain_breaker"); // Musa's signature
           expect(hasKillModeIndicator).toBe(true);
         }
       });
@@ -807,7 +810,7 @@ describe("AIDecisionTree", () => {
 
       it("should NOT activate kill mode when opponent health is above 30%", () => {
         const context = createMockContext({
-          opponentHealth: 35, // 35% health - above threshold
+          opponentHealth: 45, // 45% health - above threshold (also above Musa signature move 40% threshold)
           playerMaxHealth: 100,
           distanceToOpponent: 40, // Close range
         });
@@ -821,6 +824,7 @@ describe("AIDecisionTree", () => {
         // Should use normal tactics, not kill mode
         expect(decision).toBeDefined();
         // Priority should be normal range (not boosted to 9)
+        // Note: Signature moves (priority 10) also don't trigger since opponent health is above 40%
         if (decision.action === "technique") {
           expect(decision.priority).toBeLessThan(9);
         }

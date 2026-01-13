@@ -15,10 +15,20 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { Position, TrigramStance, PlayerArchetype } from "@/types";
-import { BalanceState } from "@/types/player-visual";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
+import { enforceArchetypeBehavior } from "./ArchetypeEnforcer";
+import { 
+  AIActionType, 
+  AIDecision, 
+  CombatContext, 
+  VulnerabilityContext 
+} from "./types";
+
+// Re-export types for backward compatibility
+export { AIActionType } from "./types"; // Enum (value + type)
+export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; // Type-only
 
 /**
  * Game grid cell size in pixels for distance calculations
@@ -50,90 +60,28 @@ const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
 };
 
 /**
- * AI action types
- */
-export enum AIActionType {
-  ATTACK = "attack",
-  TECHNIQUE = "technique",
-  DEFEND = "defend",
-  COUNTER = "counter",
-  RETREAT = "retreat",
-  APPROACH = "approach",
-  CIRCLE = "circle",
-  STANCE_CHANGE = "stance_change",
-  FEINT = "feint",
-  WAIT = "wait",
-  COMBO = "combo",
-}
-
-/**
- * AI decision result
- */
-export interface AIDecision {
-  readonly action: AIActionType;
-  readonly targetPosition?: Position;
-  readonly targetStance?: TrigramStance;
-  readonly targetVitalPoint?: string; // ID of vital point to target
-  readonly priority: number; // 0-10: Decision confidence
-  readonly reason: string; // For debugging/analysis
-}
-
-/**
- * Vulnerability assessment context for exploitation tactics
+ * Hacker observation phase duration in milliseconds
  * 
- * Comprehensive analysis of opponent's defenseless states:
- * - **isHelpless**: Balance === HELPLESS (90% takedown priority)
- * - **isVulnerable**: Balance === VULNERABLE or HELPLESS (70% aggressive attack priority)
- * - **isShaken**: Balance === SHAKEN, VULNERABLE, or HELPLESS (50% pressure tactics priority)
- * - **hasLowStamina**: Stamina < 20% (60% exploitation priority)
- * - **hasNoKi**: Ki < 10% (50% technique spam priority)
- * - **overallVulnerability**: Composite vulnerability score (0.0-1.0)
+ * Hacker archetype observes opponents for this duration before attacking,
+ * collecting combat data for analysis-based tactics.
  * 
- * @korean 취약성 평가 컨텍스트
+ * @korean 해커 관찰 단계 지속 시간 (밀리초)
  */
-export interface VulnerabilityContext {
-  readonly isHelpless: boolean; // balance === HELPLESS
-  readonly isVulnerable: boolean; // balance === VULNERABLE or HELPLESS
-  readonly isShaken: boolean; // balance === SHAKEN, VULNERABLE, or HELPLESS
-  readonly hasLowStamina: boolean; // stamina < 20%
-  readonly hasNoKi: boolean; // ki < 10%
-  readonly overallVulnerability: number; // 0.0-1.0 composite score
-}
+const HACKER_OBSERVATION_DURATION_MS = 10000; // 10 seconds
 
 /**
- * Combat context for decision making
+ * Hacker observation phase actions
+ * 
+ * During the observation phase, Hacker only uses non-aggressive
+ * positioning actions to collect combat data.
+ * 
+ * @korean 해커 관찰 단계 행동
  */
-export interface CombatContext {
-  readonly playerPosition: Position;
-  readonly opponentPosition: Position;
-  readonly playerHealth: number;
-  readonly playerMaxHealth: number;
-  readonly playerKi: number;
-  readonly playerMaxKi: number;
-  readonly playerStamina: number;
-  readonly playerMaxStamina: number;
-  readonly opponentHealth: number;
-  readonly opponentStance: TrigramStance;
-  readonly playerStance: TrigramStance;
-  readonly distanceToOpponent: number;
-  readonly timeInMatch: number;
-  readonly isOpponentAttacking: boolean;
-  readonly recentDamageTaken: number;
-  readonly opponentBalance?: BalanceState; // Balance state: "READY" | "SHAKEN" | "VULNERABLE" | "HELPLESS"
-  readonly opponentStamina?: number; // Opponent stamina for exploitation
-  readonly opponentMaxStamina?: number; // Opponent max stamina
-  readonly opponentKi?: number; // Opponent ki for exploitation
-  readonly opponentMaxKi?: number; // Opponent max ki
-  readonly stanceFatigue?: {
-    readonly timeInStance: number; // Milliseconds in current stance
-  };
-  readonly arenaBounds: {
-    readonly x: number;
-    readonly y: number;
-    readonly width: number;
-    readonly height: number;
-  };
-}
+const HACKER_OBSERVATION_ACTIONS: readonly AIActionType[] = [
+  AIActionType.WAIT,
+  AIActionType.CIRCLE,
+  AIActionType.APPROACH,
+] as const;
 
 /**
  * Assess opponent vulnerability for exploitation tactics
@@ -612,6 +560,40 @@ export class AIDecisionTree {
 
     this.lastDecisionTime = now;
 
+    // Hacker observation phase (Issue #enforce-distinct-combat-philosophies)
+    // Hacker archetype observes for first 10 seconds before attacking (data collection)
+    // Skip observation phase during critical situations:
+    // - Low health (below tactical retreat threshold)
+    // - Kill mode opportunity (opponent < 30% health)
+    // - Opponent vulnerable or helpless (exploitable state)
+    const healthPercent = context.playerHealth / context.playerMaxHealth;
+    const tacticalRetreatThreshold = personality.tacticalRetreatThreshold;
+    const isBelowRetreatThreshold = healthPercent < tacticalRetreatThreshold; // Need to retreat
+    const opponentMaxHealth = context.opponentMaxHealth ?? context.playerMaxHealth; // Use opponent max health if available, fallback to symmetric assumption
+    const opponentHealthPercent = context.opponentHealth / opponentMaxHealth;
+    const isKillOpportunity = opponentHealthPercent < 0.3; // Kill mode opportunity
+    const isOpponentVulnerable = 
+      context.opponentBalance === "VULNERABLE" || 
+      context.opponentBalance === "HELPLESS"; // Exploitable state
+    
+    if (
+      personality.archetype === PlayerArchetype.HACKER && 
+      context.timeInMatch < HACKER_OBSERVATION_DURATION_MS &&
+      !isBelowRetreatThreshold && // Skip observation if need to retreat
+      !isKillOpportunity && // Skip observation if kill opportunity
+      !isOpponentVulnerable // Skip observation if opponent is vulnerable
+    ) {
+      // During observation phase, Hacker only circles and waits
+      // No attacks or techniques until data collection is complete
+      const randomObservationAction = HACKER_OBSERVATION_ACTIONS[Math.floor(Math.random() * HACKER_OBSERVATION_ACTIONS.length)];
+      
+      return {
+        action: randomObservationAction,
+        priority: 10, // High priority to ensure observation phase is respected
+        reason: `Hacker observation phase: collecting data (${(context.timeInMatch / 1000).toFixed(1)}s / ${HACKER_OBSERVATION_DURATION_MS / 1000}s) (해커 관찰 단계)`,
+      };
+    }
+
     // Check for kill mode activation (Issue #enhance-ai-aggression)
     const killModeActive = this.isKillModeActive(context, personality);
 
@@ -817,7 +799,15 @@ export class AIDecisionTree {
         this.consecutiveAttacks = 0;
       }
 
-      return bestDecision;
+      // Apply archetype behavior enforcement (Issue #enforce-distinct-combat-philosophies)
+      // This ensures each archetype has immediately recognizable combat patterns in kill mode
+      const enforcedDecision = enforceArchetypeBehavior(
+        bestDecision,
+        personality.archetype,
+        context
+      );
+
+      return enforcedDecision;
     }
 
     // Normal mode: Select highest priority decision (may have Jeongbo exploitation applied)
@@ -840,7 +830,15 @@ export class AIDecisionTree {
       this.consecutiveAttacks = 0;
     }
 
-    return bestDecision;
+    // Apply archetype behavior enforcement (Issue #enforce-distinct-combat-philosophies)
+    // This ensures each archetype has immediately recognizable combat patterns
+    const enforcedDecision = enforceArchetypeBehavior(
+      bestDecision,
+      personality.archetype,
+      context
+    );
+
+    return enforcedDecision;
   }
 
   /**
