@@ -31,6 +31,9 @@ import {
 // Import keyframe configuration helper
 import { KeyframeConfig } from "./KeyframeConfig";
 
+// Import guard position types
+import type { GuardPositionType } from "./KoreanGuardPositions";
+
 // Import hand pose utilities
 import {
   applyHandPoseToConfig,
@@ -1940,21 +1943,25 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Apply Korean high guard position (상단막기)
+   * Apply Korean guard position helper
    * 
-   * Traditional Korean martial arts high guard with hands at temple level
-   * protecting head and face. Uses authentic 막기자세 positioning.
+   * Private helper method to reduce code duplication across guard methods.
+   * Applies guard positions to the last keyframe in the animation.
    * 
+   * @param guardType - Type of guard to apply
    * @param side - Which side to apply ("left" | "right" | "both")
    * @returns this for chaining
-   * @korean 상단막기자세
+   * @korean 한국방어자세적용헬퍼
+   * @private
    */
-  withKoreanHighGuard(side: "left" | "right" | "both" = "both"): this {
+  private applyKoreanGuard(
+    guardType: GuardPositionType,
+    side: "left" | "right" | "both" = "both"
+  ): this {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
-      // Import and apply guard using KeyframeConfig helper
       const kf = new KeyframeConfig();
-      kf.withGuard("HIGH_GUARD", side);
+      kf.withGuard(guardType, side);
       
       // Merge rotations into last keyframe
       for (const [bone, rotation] of kf.rotations.entries()) {
@@ -1965,6 +1972,20 @@ export class MartialArtsAnimationBuilder {
       this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
     }
     return this;
+  }
+
+  /**
+   * Apply Korean high guard position (상단막기)
+   * 
+   * Traditional Korean martial arts high guard with hands at temple level
+   * protecting head and face. Uses authentic 막기자세 positioning.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 상단막기자세
+   */
+  withKoreanHighGuard(side: "left" | "right" | "both" = "both"): this {
+    return this.applyKoreanGuard("HIGH_GUARD", side);
   }
 
   /**
@@ -1978,20 +1999,7 @@ export class MartialArtsAnimationBuilder {
    * @korean 중단막기자세
    */
   withKoreanMiddleGuard(side: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      const kf = new KeyframeConfig();
-      kf.withGuard("MIDDLE_GUARD", side);
-      
-      // Merge rotations into last keyframe
-      for (const [bone, rotation] of kf.rotations.entries()) {
-        lastKf.boneRotations.set(bone, rotation);
-      }
-      
-      // Apply fist pose to hands in guard
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
-    }
-    return this;
+    return this.applyKoreanGuard("MIDDLE_GUARD", side);
   }
 
   /**
@@ -2005,20 +2013,7 @@ export class MartialArtsAnimationBuilder {
    * @korean 하단막기자세
    */
   withKoreanLowGuard(side: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      const kf = new KeyframeConfig();
-      kf.withGuard("LOW_GUARD", side);
-      
-      // Merge rotations into last keyframe
-      for (const [bone, rotation] of kf.rotations.entries()) {
-        lastKf.boneRotations.set(bone, rotation);
-      }
-      
-      // Apply fist pose to hands in guard
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
-    }
-    return this;
+    return this.applyKoreanGuard("LOW_GUARD", side);
   }
 
   /**

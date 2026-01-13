@@ -20,8 +20,6 @@
  * @korean 막기자세시스템
  */
 
-import type { BoneName } from "../../types/skeletal";
-
 /**
  * Guard position for a single arm
  * @korean 팔방어위치
@@ -291,34 +289,5 @@ export const getGuardForStanceHeight = (
     case "middle":
     default:
       return MIDDLE_GUARD;
-  }
-};
-
-/**
- * Apply guard position to bone rotations map
- *
- * Utility function to apply a guard position to a Map of bone rotations.
- * Used internally by animation builder methods.
- *
- * @param rotations - Map of bone rotations to modify
- * @param guard - Guard position to apply
- * @param side - Which side to apply ("left" | "right" | "both")
- * @korean 방어자세뼈회전적용
- */
-export const applyGuardToBoneRotations = (
-  rotations: Map<BoneName, readonly [number, number, number]>,
-  guard: GuardPosition,
-  side: "left" | "right" | "both" = "both"
-): void => {
-  if (side === "left" || side === "both") {
-    rotations.set("SHOULDER_L" as BoneName, guard.left.shoulder);
-    rotations.set("ELBOW_L" as BoneName, guard.left.elbow);
-    rotations.set("WRIST_L" as BoneName, guard.left.wrist);
-  }
-
-  if (side === "right" || side === "both") {
-    rotations.set("SHOULDER_R" as BoneName, guard.right.shoulder);
-    rotations.set("ELBOW_R" as BoneName, guard.right.elbow);
-    rotations.set("WRIST_R" as BoneName, guard.right.wrist);
   }
 };
