@@ -7,6 +7,48 @@
  *
  * 팔괘 자세별 고유 애니메이션 모듈
  *
+ * ## Dynamic Animation Generation
+ *
+ * This module provides factory functions for generating stance-specific animations
+ * dynamically based on the TrigramStance enum. This eliminates code duplication
+ * and enables centralized configuration of timing, power, and execution parameters.
+ *
+ * ### Factory Functions
+ *
+ * - `generateStrikeAnimation(stance)` - Generate strike animation for any trigram stance
+ * - `generatePunchAnimation(stance)` - Generate punch animation for any trigram stance
+ * - `generateKickAnimation(stance)` - Generate kick animation for any trigram stance
+ *
+ * ### Usage Example
+ *
+ * ```typescript
+ * import { generateStrikeAnimation, TrigramStance } from './StanceAnimations';
+ *
+ * // Generate Heaven stance strike
+ * const geonStrike = generateStrikeAnimation(TrigramStance.GEON);
+ *
+ * // Generate all strikes for all stances
+ * const allStrikes = Object.values(TrigramStance).map(stance =>
+ *   generateStrikeAnimation(stance)
+ * );
+ * ```
+ *
+ * ### Backward Compatibility
+ *
+ * All previously exported animation constants are still available and now use
+ * the dynamic generation system internally:
+ *
+ * ```typescript
+ * import { GEON_HEAVEN_STRIKE_ANIMATION } from './StanceAnimations';
+ * // This is now generated dynamically but maintains the same API
+ * ```
+ *
+ * ### Configuration
+ *
+ * Stance-specific parameters (power multipliers, timing, Korean names) are
+ * centralized in `TRIGRAM_TECHNIQUE_CONFIGS`. Modify this map to adjust
+ * all related animations for a stance.
+ *
  * @module systems/animation/StanceAnimations
  * @korean 자세애니메이션
  */
