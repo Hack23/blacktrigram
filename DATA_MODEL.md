@@ -18,7 +18,7 @@ Black Trigram (흑괘) is a frontend-only Korean martial arts combat simulator w
 ### **Data Architecture Principles**
 
 - ✅ **Type Safety**: Strict TypeScript with no implicit any
-- ✅ **Immutability**: Readonly properties throughout
+- ✅ **Immutability**: Readonly properties throughout.
 - ✅ **Korean Cultural Authenticity**: Bilingual Korean-English text support
 - ✅ **Session-Only Storage**: No backend persistence (browser session state)
 - ✅ **Functional Design**: Pure functions and immutable state updates
