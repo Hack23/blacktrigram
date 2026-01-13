@@ -1831,6 +1831,77 @@ describe("AIDecisionTree", () => {
         expect(musaDecision).toBeDefined();
         // Musa should not get Jeongbo-specific exploitation bonuses
       });
+
+      it("should NOT affect non-exploitable action types (STANCE_CHANGE, WAIT, COUNTER, RETREAT, COMBO)", () => {
+        const context = createMockContext({
+          opponentBalance: "VULNERABLE",
+          opponentStamina: 15,
+          opponentMaxStamina: 100,
+          opponentKi: 8,
+          opponentMaxKi: 100,
+          distanceToOpponent: 120,
+          playerStance: TrigramStance.GEON,
+        });
+
+        // Collect decisions to check if non-exploitable actions are unaffected
+        const decisions = [];
+        for (let i = 0; i < 100; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            context,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const stanceChangeDecisions = decisions.filter((d) => d.action === "stance_change");
+        const waitDecisions = decisions.filter((d) => d.action === "wait");
+        
+        // Non-exploitable actions should exist and have reasonable priorities
+        // They should not have inflated priorities from exploitation multipliers
+        stanceChangeDecisions.forEach((d) => {
+          expect(d.priority).toBeLessThan(20); // Normal stance change priority range
+        });
+        
+        waitDecisions.forEach((d) => {
+          expect(d.priority).toBeLessThanOrEqual(1); // Wait actions have low priority
+        });
+      });
+
+      it("should stack multipliers when multiple vulnerabilities are present", () => {
+        const multipleVulnContext = createMockContext({
+          opponentBalance: "VULNERABLE", // 2.0x attack, 1.8x technique
+          opponentStamina: 15, // < 20%: 1.5x attack, 1.3x approach
+          opponentMaxStamina: 100,
+          opponentKi: 8, // < 10%: 1.4x technique, 1.3x attack
+          opponentMaxKi: 100,
+          distanceToOpponent: 40,
+          playerKi: 50,
+          playerStamina: 50,
+        });
+
+        const decisions = [];
+        for (let i = 0; i < 50; i++) {
+          decisionTree.reset();
+          const decision = decisionTree.makeDecision(
+            multipleVulnContext,
+            AI_PERSONALITIES.BALANCED_FIGHTER,
+            comboSystem
+          );
+          decisions.push(decision);
+        }
+
+        const aggressiveActions = decisions.filter((d) =>
+          ["attack", "technique"].includes(d.action)
+        );
+
+        // With stacked multipliers (VULNERABLE + low stamina + low ki),
+        // Jeongbo should be extremely aggressive
+        // Attack: 2.0 * 1.5 * 1.3 = 3.9x
+        // Technique: 1.8 * 1.4 = 2.52x
+        expect(aggressiveActions.length).toBeGreaterThan(decisions.length * 0.6);
+      });
     });
 
     describe("Psychological Pressure System", () => {

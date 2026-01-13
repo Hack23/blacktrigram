@@ -431,6 +431,13 @@ export class AIDecisionTree {
    * - **Low Stamina (< 20%)**: 60% exploitation - Force defensive positions
    * - **No Ki (< 10%)**: 50% technique spam - Prevent powerful techniques
    * 
+   * **Multiplier Stacking Behavior**:
+   * When multiple vulnerabilities are present, multipliers stack multiplicatively:
+   * - VULNERABLE (2.0x attack) + low stamina (1.5x attack) = 3.0x total attack multiplier
+   * - VULNERABLE (1.8x technique) + low ki (1.4x technique) = 2.52x total technique multiplier
+   * This creates increasingly aggressive exploitation as opponent becomes more vulnerable.
+   * Note: HELPLESS state uses exclusive else-if, so it doesn't stack with VULNERABLE/SHAKEN.
+   * 
    * **Jeongbo Philosophy (정보요원 전략)**:
    * - Knowledge through observation (관찰을 통한 지식)
    * - Psychological manipulation (심리적 조작)
@@ -681,6 +688,21 @@ export class AIDecisionTree {
         
         if (isSurvivalRetreat) {
           return decision;
+        }
+        
+        // Only apply exploitation to relevant action types
+        // Other actions (COUNTER, RETREAT, WAIT, STANCE_CHANGE, COMBO) maintain original priority
+        const exploitableActions = [
+          AIActionType.ATTACK,
+          AIActionType.TECHNIQUE,
+          AIActionType.DEFEND,
+          AIActionType.FEINT,
+          AIActionType.APPROACH,
+          AIActionType.CIRCLE,
+        ];
+        
+        if (!exploitableActions.includes(decision.action)) {
+          return decision; // Preserve priority for non-exploitable actions
         }
         
         // Calculate base action weights including feint, approach, circle
