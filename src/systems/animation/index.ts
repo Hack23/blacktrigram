@@ -435,3 +435,17 @@ export {
   getAnimationLaterality,
   areLateralityVariants,
 } from './LateralityTransform';
+
+// Trigram Animation Mapping with Laterality Support (팔괘 애니메이션 매핑)
+export {
+  getAnimationsForStance,
+  getGuardPoseForStanceWithSide,
+  getAllGuardPoses,
+  getAttackAnimations,
+  getDefensiveAnimations,
+  getWalkAnimation,
+  getRunAnimation,
+  getAnimationMappingStats,
+  type StanceAnimationCollection,
+  type AnimationMappingStats,
+} from './TrigramAnimationMapping';
