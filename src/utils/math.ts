@@ -70,3 +70,31 @@ export function calculateDistance3DSquared(
   const dz = pos1[2] - pos2[2];
   return dx * dx + dy * dy + dz * dz;
 }
+
+/**
+ * Convert degrees to radians
+ * 
+ * Used throughout animation systems for bone rotations where angles are
+ * specified in degrees for readability but need to be converted to radians
+ * for Three.js rendering.
+ * 
+ * **Korean**: 각도를 라디안으로 변환
+ * 
+ * @param degrees - Angle in degrees (0-360)
+ * @returns Angle in radians (0-2π)
+ * 
+ * @example
+ * const rightAngle = toRadians(90);
+ * // Returns: approximately 1.5708 (π/2)
+ * 
+ * @example
+ * const straightAngle = toRadians(180);
+ * // Returns: approximately 3.1416 (π)
+ * 
+ * @public
+ * @category Math Utilities
+ * @korean 각도변환
+ */
+export function toRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}

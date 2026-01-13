@@ -14,21 +14,7 @@
 import type { SkeletalAnimation } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
 import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
-
-// ═══════════════════════════════════════════════════════════════════════════
-// UTILITY FUNCTIONS (유틸리티 함수)
-// ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Convert degrees to radians
- * 각도를 라디안으로 변환
- * 
- * @param degrees - Angle in degrees
- * @returns Angle in radians
- * @example toRadians(90) // returns approximately 1.5708 (π/2)
- * @korean 각도변환
- */
-const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
+import { toRadians } from "../../utils/math";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BASIC FOOTWORK (기본 풋워크)
