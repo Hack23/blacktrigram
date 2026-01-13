@@ -157,8 +157,8 @@ export function getAnimationsForStance(
     ? baseDefensive
     : baseDefensive.map(anim => applyLaterality(anim, laterality));
   
-  const walk = applyLaterality(baseWalk, laterality);
-  const run = applyLaterality(baseRun, laterality);
+  const walk = laterality === "right" ? baseWalk : applyLaterality(baseWalk, laterality);
+  const run = laterality === "right" ? baseRun : applyLaterality(baseRun, laterality);
 
   return {
     guardPose,
