@@ -266,6 +266,17 @@ export function enforceArchetypeBehavior(
   // Check for prohibited actions
   if (rules.prohibitedActions.includes(decision.action)) {
     // Replace with preferred action (random selection from preferred set)
+    // Defensive guard: Ensure preferredActions is not empty
+    if (rules.preferredActions.length === 0) {
+      console.warn(
+        `[ArchetypeEnforcer] ${archetype} has empty preferredActions array. Using original decision with warning.`
+      );
+      return {
+        ...decision,
+        reason: `Archetype enforcement: ${archetype} prohibited action ${decision.action}, but no alternatives available`,
+      };
+    }
+
     const alternativeAction = rules.preferredActions[
       Math.floor(Math.random() * rules.preferredActions.length)
     ];
