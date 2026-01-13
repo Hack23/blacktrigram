@@ -111,20 +111,26 @@ describe("Korean Martial Arts Kick Phases", () => {
       }
     });
 
-    it("should recover through chamber before returning to stance", () => {
-      // Recovery phase should reuse chamber position
+    it("should recover through intermediate position before returning to stance", () => {
+      // Updated test: Recovery now uses TechniqueRecoveryPhases system
+      // which returns through intermediate position (80% toward neutral), not chamber
       const keyframes = FRONT_KICK_ANIMATION.keyframes;
       const chamberFrame = keyframes[1];
       const recoveryFrame = keyframes[keyframes.length - 2]; // Second to last
 
-      // Hip and knee should return to similar position as chamber
+      // Hip and knee should return closer to neutral than to chamber
       const chamberHip = getBoneRotation(chamberFrame, BoneName.HIP_R);
       const recoveryHip = getBoneRotation(recoveryFrame, BoneName.HIP_R);
 
       if (chamberHip && recoveryHip) {
-        // Recovery hip should be similar to chamber (within 0.5 radians ~28 degrees)
-        const hipDiff = Math.abs(chamberHip[0] - recoveryHip[0]);
-        expect(hipDiff).toBeLessThan(0.8);
+        // Recovery hip should be closer to neutral (0) than to chamber
+        // Recovery goes 80% toward neutral, so hip should be ~20% of chamber value
+        expect(Math.abs(recoveryHip[0])).toBeLessThan(Math.abs(chamberHip[0]));
+        
+        // Hip should be significantly reduced from chamber (more than 50% toward neutral)
+        const neutralDistance = Math.abs(recoveryHip[0]);
+        const chamberDistance = Math.abs(chamberHip[0]);
+        expect(neutralDistance / chamberDistance).toBeLessThan(0.5);
       }
     });
 
@@ -214,18 +220,24 @@ describe("Korean Martial Arts Kick Phases", () => {
       expect(footRotation).toBeDefined();
     });
 
-    it("should pull back through chamber", () => {
+    it("should pull back through intermediate position (not direct to chamber)", () => {
+      // Updated test: Recovery now uses TechniqueRecoveryPhases system
+      // which returns through intermediate position (80% toward neutral), not chamber
       const keyframes = SIDE_KICK_ANIMATION.keyframes;
       const chamberFrame = keyframes[1];
       const retractionFrame = keyframes[keyframes.length - 2];
 
-      // Should return to similar chamber position
+      // Should return closer to neutral than to chamber position
       const chamberKnee = getBoneRotation(chamberFrame, BoneName.KNEE_R);
       const retractionKnee = getBoneRotation(retractionFrame, BoneName.KNEE_R);
 
       if (chamberKnee && retractionKnee) {
-        const kneeDiff = Math.abs(chamberKnee[0] - retractionKnee[0]);
-        expect(kneeDiff).toBeLessThan(1.0);
+        // Retraction knee should be closer to neutral (-0.2 rad) than to chamber
+        const neutralKnee = -0.2; // Fighting stance knee bend
+        const retractionDistanceToNeutral = Math.abs(retractionKnee[0] - neutralKnee);
+        const chamberDistanceToNeutral = Math.abs(chamberKnee[0] - neutralKnee);
+        
+        expect(retractionDistanceToNeutral).toBeLessThan(chamberDistanceToNeutral);
       }
     });
   });

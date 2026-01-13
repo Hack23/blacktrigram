@@ -18,6 +18,9 @@ import type {
 import { BoneName } from "../../types/skeletal";
 import * as THREE from "three";
 
+// Import recovery phase system
+import { addRecoveryPhase, type RecoveryPhaseConfig } from "./TechniqueRecoveryPhases";
+
 // Import constants from dedicated constants module
 import {
   AnimationType,
@@ -2181,34 +2184,96 @@ export class MartialArtsAnimationBuilder {
   // ═══════════════════════════════════════════════════════════════════════
 
   /**
-   * Recover to fighting guard (복귀)
+   * Recover to fighting guard with realistic recovery phase (복귀)
+   * 
+   * **Updated**: Now uses TechniqueRecoveryPhases system for realistic recovery
+   * with intermediate positions, muscle tension release, and gradual deceleration.
+   * 
+   * This method adds TWO keyframes:
+   * 1. Intermediate recovery (80% back to guard, at 60% of recovery duration)
+   * 2. Final guard position (100% back to guard)
+   * 
+   * The recovery prevents instant "snap-back" by:
+   * - Using ease-out interpolation for gradual deceleration
+   * - Releasing muscle tension from peak to relaxed state
+   * - Passing through intermediate positions (not direct)
+   * - Synchronizing with breathing cycle
+   * 
+   * @param timeOffset - Recovery duration in seconds (default: 0.2 = 200ms)
+   * @param config - Optional recovery phase configuration
+   * 
+   * @example
+   * ```typescript
+   * // Standard recovery (200ms with default settings)
+   * .recover()
+   * 
+   * // Custom recovery with longer duration
+   * .recover(0.25)
+   * 
+   * // Advanced: Custom recovery configuration
+   * .recover(0.22, { intermediateProgress: 0.75 })
+   * ```
+   * 
    * @korean 복귀
    */
-  recover(timeOffset: number = 0.1, easing: string = "ease-in"): this {
+  recover(timeOffset: number = 0.2, config?: RecoveryPhaseConfig): this {
     const guard = MARTIAL_POSES.GUARD;
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Reset legs
+    
+    // Build the intermediate animation for manual recovery phase construction
+    const baseAnimation: SkeletalAnimation = {
+      name: this.name,
+      koreanName: this.koreanName,
+      duration: this.currentTime,
+      loop: this.loop,
+      type: this.type,
+      keyframes: [...this.keyframes],
+    };
+    
+    // Apply recovery phase system
+    const withRecovery = addRecoveryPhase(baseAnimation, {
+      duration: timeOffset,
+      ...config,
+    });
+    
+    // Extract the recovery keyframes (last 2 keyframes)
+    const recoveryKeyframes = withRecovery.keyframes.slice(-2);
+    
+    // Add the intermediate recovery keyframe
+    const intermediateFrame = recoveryKeyframes[0];
+    this.keyframes.push(intermediateFrame);
+    this.currentTime = intermediateFrame.time;
+    
+    // Add the final guard position keyframe
+    // Override with proper guard pose (ensure complete return to neutral)
+    this.addKeyframe(this.currentTime + (timeOffset * 0.4), "ease-out", (kf) => {
+      // Reset legs to fighting stance
       kf.rotate(BoneName.HIP_R, 0, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, 0, 0);
-      // Reset spine
+      
+      // Reset spine to neutral
       kf.rotate(BoneName.PELVIS, 0, 0, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
-      // Apply guard
+      kf.rotate(BoneName.HEAD, 0, 0, 0);
+      
+      // Apply guard position
       kf.rotate(BoneName.SHOULDER_L, ...guard.leftShoulder);
       kf.rotate(BoneName.ELBOW_L, ...guard.leftElbow);
       kf.rotate(BoneName.SHOULDER_R, ...guard.rightShoulder);
       kf.rotate(BoneName.ELBOW_R, ...guard.rightElbow);
+      
       // Reset positions
       kf.position(BoneName.PELVIS, 0, 0, 0);
       kf.position(BoneName.FOOT_R, 0, 0, 0);
-      // Fists up for guard
+      kf.position(BoneName.FOOT_L, 0, 0, 0);
+      
+      // Fists in guard
       this.applyHandPose(kf, HAND_POSES.FIST, "both");
     });
-    this.currentTime += timeOffset;
+    
     return this;
   }
 
