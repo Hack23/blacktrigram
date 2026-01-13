@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.12% </span>
+                <span class="strong">68.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>41/62</span>
+                <span class='fraction'>45/66</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">43.83% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>30/60</span>
+                <span class='fraction'>32/73</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.62% </span>
+                <span class="strong">61.29% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/29</span>
+                <span class='fraction'>19/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.79% </span>
+                <span class="strong">65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/58</span>
+                <span class='fraction'>39/60</span>
             </div>
         
             
@@ -808,7 +808,13 @@
 <a name='L743'></a><a href='#L743'>743</a>
 <a name='L744'></a><a href='#L744'>744</a>
 <a name='L745'></a><a href='#L745'>745</a>
-<a name='L746'></a><a href='#L746'>746</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L746'></a><a href='#L746'>746</a>
+<a name='L747'></a><a href='#L747'>747</a>
+<a name='L748'></a><a href='#L748'>748</a>
+<a name='L749'></a><a href='#L749'>749</a>
+<a name='L750'></a><a href='#L750'>750</a>
+<a name='L751'></a><a href='#L751'>751</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -859,6 +865,10 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1566,6 +1576,7 @@ import { TrigramStance } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
@@ -1604,7 +1615,11 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
   const screenHeight = propHeight ?? height;
 &nbsp;
   // Responsive layout calculations with large desktop support
-  const isMobile = screenWidth &lt; 768;
+  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
+  const isMobile = shouldUseMobileControls();
+  // Only use width for tablet/desktop distinction when NOT mobile
+  const isTablet = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 768 &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >s</span>creenWidth &lt; 1024, [</span>isMobile, screenWidth]);
+  const isLargeDesktop = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 1920, [</span>isMobile, screenWidth]); // 4K/2K displays
 &nbsp;
   // Use centralized responsive layout helper for consistent scaling
   const layoutConstants = useMemo(
@@ -1726,8 +1741,8 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
   const archetypes = useMemo(() =&gt; Object.entries(PLAYER_ARCHETYPES_DATA), []);
 &nbsp;
   // Grid layout calculations
-  const valuesPerRow = isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >3 : 6</span>;
-  const trigramsPerRow = isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >2 : 4</span>;
+  const valuesPerRow = isMobile ? 3 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 4 : isLargeDesktop ? 8 : 6;</span>
+  const trigramsPerRow = isMobile ? 2 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 3 : isLargeDesktop ? 5 : 4;</span>
 &nbsp;
   return (
     &lt;div
@@ -1798,7 +1813,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
             &gt;
               &lt;h1
                 style={{
-                  fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"28px" : "</span>36px",
+                  fontSize: isMobile ? "28px" : <span class="branch-1 cbranch-no" title="branch not covered" >"36px",</span>
                   fontWeight: "bold",
                   color: colors.accentGold,
                   margin: 0,
@@ -1812,7 +1827,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               &lt;/h1&gt;
               &lt;p
                 style={{
-                  fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"14px" : "</span>18px",
+                  fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"18px",</span>
                   color: colors.textSecondary,
                   margin: "8px 0 0 0",
                 }}
@@ -1860,7 +1875,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"18px" : "</span>22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 20px 0",
@@ -1894,7 +1909,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                     &gt;
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"16px" : "</span>18px",
+                          fontSize: isMobile ? "16px" : <span class="branch-1 cbranch-no" title="branch not covered" >"18px",</span>
                           fontWeight: "bold",
                           color: colors.textPrimary,
                           marginBottom: "4px",
@@ -1904,7 +1919,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       &lt;/div&gt;
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"11px" : "</span>13px",
+                          fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"13px",</span>
                           color: colors.textSecondary,
                         }}
                       &gt;
@@ -1928,7 +1943,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"18px" : "</span>22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 20px 0",
@@ -1964,7 +1979,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Trigram Symbol */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"32px" : "</span>40px",
+                          fontSize: isMobile ? "32px" : <span class="branch-1 cbranch-no" title="branch not covered" >"40px",</span>
                           color: `#${trigram.theme.primary
                             .toString(16)
                             .padStart(6, "0")}`,
@@ -1978,7 +1993,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Name with Chinese character */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"12px" : "</span>14px",
+                          fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                           fontWeight: "bold",
                           color: colors.textPrimary,
                           textAlign: "center",
@@ -1991,7 +2006,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Chinese character and attribute */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"11px" : "</span>13px",
+                          fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"13px",</span>
                           color: colors.accentGold,
                           textAlign: "center",
                           marginBottom: "8px",
@@ -2005,7 +2020,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Core meaning */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px" : "</span>11px",
+                          fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                           color: colors.accentCyan,
                           textAlign: "center",
                           marginBottom: "8px",
@@ -2017,7 +2032,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Philosophy */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px" : "</span>11px",
+                          fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                           color: colors.textSecondary,
                           textAlign: "center",
                           marginBottom: "6px",
@@ -2029,7 +2044,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Combat description */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"9px" : "</span>10px",
+                          fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                           color: colors.textTertiary,
                           textAlign: "center",
                           fontStyle: "italic",
@@ -2055,7 +2070,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"18px" : "</span>22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 20px 0",
@@ -2088,7 +2103,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       {/* Name */}
                       &lt;div
                         style={{
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"16px" : "</span>18px",
+                          fontSize: isMobile ? "16px" : <span class="branch-1 cbranch-no" title="branch not covered" >"18px",</span>
                           fontWeight: "bold",
                           color: `#${data.colors.primary
                             .toString(16)
@@ -2103,13 +2118,13 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       &lt;div
                         style={{
                           display: "grid",
-                          gridTemplateColumns: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"1fr" : "</span>1fr 1fr",
+                          gridTemplateColumns: isMobile ? "1fr" : <span class="branch-1 cbranch-no" title="branch not covered" >"1fr 1fr",</span>
                           gap: "10px",
                         }}
                       &gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"11px" : "</span>13px",
+                            fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"13px",</span>
                             color: colors.textPrimary,
                           }}
                         &gt;
@@ -2117,7 +2132,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px" : "</span>12px",
+                            fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                             color: colors.textSecondary,
                           }}
                         &gt;
@@ -2129,7 +2144,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                       &lt;div
                         style={{
                           marginTop: "8px",
-                          fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"9px" : "</span>11px",
+                          fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                           color: colors.textTertiary,
                         }}
                       &gt;
@@ -2169,7 +2184,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
               &gt;
                 &lt;div
                   style={{
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"12px" : "</span>14px",
+                    fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                     color: colors.accentGold,
                     fontStyle: "italic",
                     marginBottom: "4px",
@@ -2180,7 +2195,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                 &lt;/div&gt;
                 &lt;div
                   style={{
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px" : "</span>12px",
+                    fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                     color: colors.textSecondary,
                     fontStyle: "italic",
                   }}
@@ -2198,7 +2213,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                   border: `1px solid ${colors.borderGold}`,
                   borderRadius: "6px",
                   padding: "8px 16px",
-                  fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px" : "</span>12px",
+                  fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                   fontWeight: "bold",
                   color: colors.accentGold,
                   cursor: "pointer",
@@ -2241,7 +2256,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                     border: `2px solid ${colors.borderGold}`,
                     borderRadius: "8px",
                     padding: "10px 20px",
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"12px" : "</span>14px",
+                    fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                     fontWeight: "bold",
                     color: "#000",
                     cursor: "pointer",
@@ -2272,7 +2287,7 @@ export const PhilosophyScreenThreeJS: React.FC&lt;
                     ),
                     borderRadius: "6px",
                     padding: "8px 12px",
-                    fontSize: isMobile ? <span class="branch-0 cbranch-no" title="branch not covered" >"11px" : "</span>12px",
+                    fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                     fontWeight: "bold",
                     color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                       16
@@ -2305,7 +2320,7 @@ export default PhilosophyScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T15:46:36.613Z
+                at 2026-01-13T01:21:29.519Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

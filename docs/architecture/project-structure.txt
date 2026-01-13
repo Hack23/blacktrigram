@@ -539,6 +539,7 @@ src/components/screens/combat/helpers/AnimationUpdater.tsx
 src/components/screens/combat/helpers/combatHelpers.ts
 src/components/screens/combat/helpers/index.ts
 src/components/screens/combat/hooks/index.ts
+src/components/screens/combat/hooks/useAICombat.rotation.test.ts
 src/components/screens/combat/hooks/useAICombat.test.ts
 src/components/screens/combat/hooks/useAICombat.ts
 src/components/screens/combat/hooks/useCombatActions.test.ts
@@ -619,6 +620,8 @@ src/components/screens/training/components/VitalPointTrainingHTML.tsx
 src/components/screens/training/components/index.ts
 src/components/screens/training/hooks/index.ts
 src/components/screens/training/hooks/useTrainingActions.ts
+src/components/screens/training/hooks/useTrainingLayout.test.ts
+src/components/screens/training/hooks/useTrainingLayout.ts
 src/components/screens/training/hooks/useTrainingState.test.ts
 src/components/screens/training/hooks/useTrainingState.ts
 src/components/screens/training/index.ts
@@ -843,6 +846,7 @@ src/systems/animation/INTEGRATION_EXAMPLES.md
 src/systems/animation/KeyframeConfig.ts
 src/systems/animation/KeyframeInterpolation.bezier.test.ts
 src/systems/animation/KeyframeInterpolation.ts
+src/systems/animation/KickAnimations.test.ts
 src/systems/animation/KickAnimations.ts
 src/systems/animation/KickPhaseApplicator.ts
 src/systems/animation/MartialArtsAnimationBuilder.ts
@@ -851,6 +855,7 @@ src/systems/animation/MartialPoseApplicator.ts
 src/systems/animation/MovementAnimations.ts
 src/systems/animation/MuscleActivation.test.ts
 src/systems/animation/MuscleActivation.ts
+src/systems/animation/PunchAnimations.test.ts
 src/systems/animation/PunchAnimations.ts
 src/systems/animation/PunchPhaseApplicator.ts
 src/systems/animation/README.md
@@ -1023,6 +1028,7 @@ src/utils/htmlOverlayHelpers.ts
 src/utils/index.ts
 src/utils/inputSystem.ts
 src/utils/math.ts
+src/utils/mobileLayoutHelpers.ts
 src/utils/objectPool.test.ts
 src/utils/objectPool.ts
 src/utils/performance/PerformanceMonitor.test.ts

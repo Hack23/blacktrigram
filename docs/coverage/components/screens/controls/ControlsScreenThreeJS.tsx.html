@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.46% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/49</span>
+                <span class='fraction'>39/52</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.05% </span>
+                <span class="strong">47.2% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>146/152</span>
+                <span class='fraction'>76/161</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.56% </span>
+                <span class="strong">72% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/23</span>
+                <span class='fraction'>18/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.34% </span>
+                <span class="strong">72.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/47</span>
+                <span class='fraction'>35/48</span>
             </div>
         
             
@@ -1416,7 +1416,12 @@
 <a name='L1351'></a><a href='#L1351'>1351</a>
 <a name='L1352'></a><a href='#L1352'>1352</a>
 <a name='L1353'></a><a href='#L1353'>1353</a>
-<a name='L1354'></a><a href='#L1354'>1354</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1354'></a><a href='#L1354'>1354</a>
+<a name='L1355'></a><a href='#L1355'>1355</a>
+<a name='L1356'></a><a href='#L1356'>1356</a>
+<a name='L1357'></a><a href='#L1357'>1357</a>
+<a name='L1358'></a><a href='#L1358'>1358</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1465,6 +1470,9 @@
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">24x</span>
@@ -2779,6 +2787,7 @@ import { COMBAT_CONTROLS } from "../../../systems";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
@@ -2819,8 +2828,11 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
   const screenHeight = propHeight ?? height;
 &nbsp;
   // Responsive layout calculations with large desktop support
-  const isMobile = screenWidth &lt; 768;
-  const isTablet = screenWidth &gt;= 768 &amp;&amp; screenWidth &lt; 1024;
+  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
+  const isMobile = shouldUseMobileControls();
+  // Only use width for tablet/desktop distinction when NOT mobile
+  const isTablet = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 768 &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >s</span>creenWidth &lt; 1024, [</span>isMobile, screenWidth]);
+  const isLargeDesktop = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 1920, [</span>isMobile, screenWidth]); // 4K/2K displays
   
   // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(() =&gt; ({
@@ -2909,8 +2921,8 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
   );
 &nbsp;
   // Grid layout calculations
-  const buttonsPerRow = isMobile ? 2 : isTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >3 : 4</span>;
-  const buttonHeight = isMobile ? 120 : 140;
+  const buttonsPerRow = isMobile ? 2 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 3 : isLargeDesktop ? 5 : 4;</span>
+  const buttonHeight = isMobile ? 120 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 130 : isLargeDesktop ? 120 : 140;</span>
 &nbsp;
   return (
     &lt;div
@@ -2983,7 +2995,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
             &gt;
               &lt;h1
                 style={{
-                  fontSize: isMobile ? "20px" : "24px",
+                  fontSize: isMobile ? "20px" : <span class="branch-1 cbranch-no" title="branch not covered" >"24px",</span>
                   fontWeight: "bold",
                   color: colors.accentGold,
                   margin: 0,
@@ -2997,7 +3009,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &lt;/h1&gt;
               &lt;p
                 style={{
-                  fontSize: isMobile ? "12px" : "16px",
+                  fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                   color: colors.accentCyan,
                   margin: "8px 0 0 0",
                   fontStyle: "italic",
@@ -3035,7 +3047,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 10px 0",
@@ -3045,7 +3057,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;/h2&gt;
                 &lt;p
                   style={{
-                    fontSize: isMobile ? "11px" : "14px",
+                    fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                     color: colors.accentCyan,
                     fontStyle: "italic",
                     margin: "0 0 20px 0",
@@ -3096,7 +3108,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: isMobile ? "14px" : "16px",
+                          fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                           fontWeight: "bold",
                           color: "#000",
                         }}
@@ -3110,7 +3122,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           position: "absolute",
                           top: "8px",
                           right: "8px",
-                          fontSize: isMobile ? "18px" : "22px",
+                          fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                           color: colors.accentGold,
                           fontWeight: "bold",
                         }}
@@ -3122,7 +3134,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div style={{ marginTop: "35px" }}&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "12px" : "14px",
+                            fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                             fontWeight: "bold",
                             color: colors.textPrimary,
                           }}
@@ -3131,7 +3143,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "9px" : "10px",
+                            fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                             color: colors.textSecondary,
                             fontStyle: "italic",
                           }}
@@ -3144,7 +3156,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div style={{ marginTop: "8px" }}&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "9px" : "10px",
+                            fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                             fontWeight: "bold",
                             color: colors.accentCyan,
                           }}
@@ -3153,7 +3165,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "8px" : "9px",
+                            fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                             color: colors.accentCyan,
                             fontStyle: "italic",
                           }}
@@ -3166,7 +3178,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div style={{ marginTop: "6px" }}&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "8px" : "9px",
+                            fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                             fontWeight: "bold",
                             color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                               16
@@ -3177,7 +3189,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "7px" : "8px",
+                            fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                             color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                               16
                             ).padStart(6, "0")}`,
@@ -3192,7 +3204,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div
                         style={{
                           marginTop: "6px",
-                          fontSize: isMobile ? "7px" : "8px",
+                          fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                           fontWeight: "bold",
                           color: `#${KOREAN_COLORS.NEGATIVE_RED.toString(
                             16
@@ -3208,7 +3220,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           position: "absolute",
                           bottom: "8px",
                           right: "8px",
-                          fontSize: isMobile ? "7px" : "8px",
+                          fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                           fontWeight: "bold",
                           color: `#${KOREAN_COLORS.KOREAN_RED.toString(
                             16
@@ -3235,7 +3247,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentCyan,
                     margin: "0 0 20px 0",
@@ -3282,7 +3294,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           ),
                           borderRadius: "6px",
                           padding: "4px 12px",
-                          fontSize: isMobile ? "14px" : "16px",
+                          fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                           fontWeight: "bold",
                           color: colors.accentGold,
                           minWidth: "60px",
@@ -3296,7 +3308,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div style={{ flex: 1 }}&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "11px" : "13px",
+                            fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"13px",</span>
                             fontWeight: "bold",
                             color: colors.textPrimary,
                           }}
@@ -3305,7 +3317,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "9px" : "11px",
+                            fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                             color: colors.textSecondary,
                             fontStyle: "italic",
                           }}
@@ -3334,7 +3346,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                       16
@@ -3349,7 +3361,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;div style={{ marginBottom: "15px" }}&gt;
                   &lt;div
                     style={{
-                      fontSize: isMobile ? "12px" : "14px",
+                      fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                       fontWeight: "bold",
                       color: colors.accentGold,
                       marginBottom: "10px",
@@ -3360,7 +3372,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: isMobile ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
+                      gridTemplateColumns: isMobile ? "1fr 1fr" : <span class="branch-1 cbranch-no" title="branch not covered" >"1fr 1fr 1fr 1fr",</span>
                       gap: "8px",
                     }}
                   &gt;
@@ -3384,7 +3396,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "11px" : "13px",
+                            fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"13px",</span>
                             fontWeight: "bold",
                             color: colors.accentCyan,
                           }}
@@ -3393,7 +3405,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "8px" : "9px",
+                            fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                             color: colors.textSecondary,
                           }}
                         &gt;
@@ -3421,7 +3433,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentCyan,
                     margin: "0 0 10px 0",
@@ -3431,7 +3443,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;/h2&gt;
                 &lt;p
                   style={{
-                    fontSize: isMobile ? "10px" : "12px",
+                    fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                     color: colors.textSecondary,
                     fontStyle: "italic",
                     margin: "0 0 15px 0",
@@ -3444,7 +3456,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;div style={{ marginBottom: "20px" }}&gt;
                   &lt;h3
                     style={{
-                      fontSize: isMobile ? "14px" : "16px",
+                      fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                       fontWeight: "bold",
                       color: colors.accentGold,
                       marginBottom: "10px",
@@ -3454,7 +3466,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;/h3&gt;
                   &lt;p
                     style={{
-                      fontSize: isMobile ? "9px" : "10px",
+                      fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                       color: colors.textSecondary,
                       marginBottom: "10px",
                       fontStyle: "italic",
@@ -3465,7 +3477,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)",
+                      gridTemplateColumns: isMobile ? "1fr 1fr" : <span class="branch-1 cbranch-no" title="branch not covered" >"repeat(4, 1fr)",</span>
                       gap: "8px",
                     }}
                   &gt;
@@ -3494,7 +3506,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "9px" : "10px",
+                            fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                             fontWeight: "bold",
                             color: colors.accentGold,
                             marginBottom: "4px",
@@ -3504,7 +3516,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "7px" : "8px",
+                            fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                             color: colors.textPrimary,
                           }}
                         &gt;
@@ -3512,7 +3524,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "6px" : "7px",
+                            fontSize: isMobile ? "6px" : <span class="branch-1 cbranch-no" title="branch not covered" >"7px",</span>
                             color: colors.textSecondary,
                             fontStyle: "italic",
                           }}
@@ -3528,7 +3540,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;div&gt;
                   &lt;h3
                     style={{
-                      fontSize: isMobile ? "14px" : "16px",
+                      fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                       fontWeight: "bold",
                       color: colors.accentGold,
                       marginBottom: "10px",
@@ -3541,7 +3553,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;div style={{ marginBottom: "12px" }}&gt;
                     &lt;div
                       style={{
-                        fontSize: isMobile ? "11px" : "12px",
+                        fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                         fontWeight: "bold",
                         color: colors.textPrimary,
                         marginBottom: "6px",
@@ -3551,7 +3563,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                     &lt;/div&gt;
                     &lt;p
                       style={{
-                        fontSize: isMobile ? "8px" : "9px",
+                        fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                         color: colors.textSecondary,
                         marginBottom: "8px",
                         fontStyle: "italic",
@@ -3580,7 +3592,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "10px" : "11px",
+                              fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                               fontWeight: "bold",
                               color: colors.accentGold,
                             }}
@@ -3589,7 +3601,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           &lt;/div&gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "8px" : "9px",
+                              fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                               color: colors.textPrimary,
                             }}
                           &gt;
@@ -3597,7 +3609,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           &lt;/div&gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "7px" : "8px",
+                              fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                               color: colors.textSecondary,
                               fontStyle: "italic",
                             }}
@@ -3613,7 +3625,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;div style={{ marginBottom: "12px" }}&gt;
                     &lt;div
                       style={{
-                        fontSize: isMobile ? "11px" : "12px",
+                        fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                         fontWeight: "bold",
                         color: colors.textPrimary,
                         marginBottom: "6px",
@@ -3623,7 +3635,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                     &lt;/div&gt;
                     &lt;p
                       style={{
-                        fontSize: isMobile ? "8px" : "9px",
+                        fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                         color: colors.textSecondary,
                         marginBottom: "8px",
                         fontStyle: "italic",
@@ -3652,7 +3664,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "10px" : "11px",
+                              fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                               fontWeight: "bold",
                               color: colors.accentGold,
                             }}
@@ -3661,7 +3673,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           &lt;/div&gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "8px" : "9px",
+                              fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                               color: colors.textPrimary,
                             }}
                           &gt;
@@ -3669,7 +3681,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           &lt;/div&gt;
                           &lt;div
                             style={{
-                              fontSize: isMobile ? "7px" : "8px",
+                              fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                               color: colors.textSecondary,
                               fontStyle: "italic",
                             }}
@@ -3696,7 +3708,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &gt;
                     &lt;div
                       style={{
-                        fontSize: isMobile ? "10px" : "11px",
+                        fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                         fontWeight: "bold",
                         color: colors.accentGold,
                         marginBottom: "6px",
@@ -3706,7 +3718,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                     &lt;/div&gt;
                     &lt;p
                       style={{
-                        fontSize: isMobile ? "8px" : "9px",
+                        fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                         color: colors.textPrimary,
                         margin: "0 0 6px 0",
                       }}
@@ -3715,7 +3727,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                     &lt;/p&gt;
                     &lt;p
                       style={{
-                        fontSize: isMobile ? "8px" : "9px",
+                        fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"9px",</span>
                         color: colors.textPrimary,
                         margin: 0,
                       }}
@@ -3742,7 +3754,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 10px 0",
@@ -3752,7 +3764,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;/h2&gt;
                 &lt;p
                   style={{
-                    fontSize: isMobile ? "10px" : "12px",
+                    fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                     color: colors.textSecondary,
                     fontStyle: "italic",
                     margin: "0 0 15px 0",
@@ -3775,7 +3787,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &gt;
                   &lt;div
                     style={{
-                      fontSize: isMobile ? "16px" : "18px",
+                      fontSize: isMobile ? "16px" : <span class="branch-1 cbranch-no" title="branch not covered" >"18px",</span>
                       fontWeight: "bold",
                       color: colors.accentGold,
                       marginBottom: "8px",
@@ -3785,7 +3797,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;/div&gt;
                   &lt;div
                     style={{
-                      fontSize: isMobile ? "10px" : "11px",
+                      fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"11px",</span>
                       color: colors.textPrimary,
                       marginBottom: "4px",
                     }}
@@ -3794,7 +3806,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;/div&gt;
                   &lt;div
                     style={{
-                      fontSize: isMobile ? "9px" : "10px",
+                      fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                       color: colors.textSecondary,
                       fontStyle: "italic",
                     }}
@@ -3803,7 +3815,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   &lt;/div&gt;
                   &lt;div
                     style={{
-                      fontSize: isMobile ? "7px" : "8px",
+                      fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                       color: colors.textSecondary,
                       marginTop: "6px",
                       fontStyle: "italic",
@@ -3830,7 +3842,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: colors.accentGold,
                     margin: "0 0 10px 0",
@@ -3840,7 +3852,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;/h2&gt;
                 &lt;p
                   style={{
-                    fontSize: isMobile ? "10px" : "12px",
+                    fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                     color: colors.textSecondary,
                     fontStyle: "italic",
                     margin: "0 0 15px 0",
@@ -3853,8 +3865,8 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                 &lt;div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: isMobile ? "repeat(5, 1fr)" : "repeat(10, 1fr)",
-                    gap: isMobile ? "6px" : "8px",
+                    gridTemplateColumns: isMobile ? "repeat(5, 1fr)" : <span class="branch-1 cbranch-no" title="branch not covered" >"repeat(10, 1fr)",</span>
+                    gap: isMobile ? "6px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                   }}
                 &gt;
                   {["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"].map(
@@ -3868,13 +3880,13 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.1)})`,
                           borderRadius: "6px",
                           border: `2px solid ${colors.borderGold}`,
-                          padding: isMobile ? "8px 4px" : "10px 6px",
+                          padding: isMobile ? "8px 4px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px 6px",</span>
                           textAlign: "center",
                         }}
                       &gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "14px" : "16px",
+                            fontSize: isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                             fontWeight: "bold",
                             color: colors.accentGold,
                           }}
@@ -3883,7 +3895,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "7px" : "8px",
+                            fontSize: isMobile ? "7px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px",</span>
                             color: colors.textSecondary,
                             marginTop: "2px",
                           }}
@@ -3905,7 +3917,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       0.6
                     ),
                     borderRadius: "6px",
-                    fontSize: isMobile ? "9px" : "10px",
+                    fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                     color: colors.textSecondary,
                     fontStyle: "italic",
                   }}
@@ -3928,7 +3940,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               &gt;
                 &lt;h2
                   style={{
-                    fontSize: isMobile ? "18px" : "22px",
+                    fontSize: isMobile ? "18px" : <span class="branch-1 cbranch-no" title="branch not covered" >"22px",</span>
                     fontWeight: "bold",
                     color: `#${KOREAN_COLORS.KOREAN_RED.toString(16).padStart(
                       6,
@@ -3984,7 +3996,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                           background: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.3),
                           borderRadius: "6px",
                           padding: "4px 10px",
-                          fontSize: isMobile ? "12px" : "14px",
+                          fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                           fontWeight: "bold",
                           color: colors.accentGold,
                           minWidth: "50px",
@@ -3996,7 +4008,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                       &lt;div style={{ flex: 1 }}&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "10px" : "12px",
+                            fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                             fontWeight: "bold",
                             color: colors.textPrimary,
                           }}
@@ -4005,7 +4017,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                         &lt;/div&gt;
                         &lt;div
                           style={{
-                            fontSize: isMobile ? "8px" : "10px",
+                            fontSize: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px",</span>
                             color: colors.textSecondary,
                             fontStyle: "italic",
                           }}
@@ -4035,7 +4047,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               {/* Philosophy Text */}
               &lt;div
                 style={{
-                  fontSize: isMobile ? "10px" : "12px",
+                  fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                   color: colors.accentGold,
                   fontStyle: "italic",
                 }}
@@ -4054,7 +4066,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   border: `2px solid ${colors.borderGold}`,
                   borderRadius: "8px",
                   padding: "10px 20px",
-                  fontSize: isMobile ? "12px" : "14px",
+                  fontSize: isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                   fontWeight: "bold",
                   color: "#000",
                   cursor: "pointer",
@@ -4085,7 +4097,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
                   ),
                   borderRadius: "6px",
                   padding: "8px 12px",
-                  fontSize: isMobile ? "11px" : "12px",
+                  fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                   fontWeight: "bold",
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
@@ -4103,7 +4115,7 @@ export const ControlsScreenThreeJS: React.FC&lt;ControlsScreenThreeJSProps&gt; =
               style={{
                 textAlign: "center",
                 padding: "10px",
-                fontSize: isMobile ? "10px" : "12px",
+                fontSize: isMobile ? "10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                 color: colors.textSecondary,
                 fontStyle: "italic",
                 background: hexToRgbaString(
@@ -4129,7 +4141,7 @@ export default ControlsScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T15:46:36.613Z
+                at 2026-01-13T01:21:29.519Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

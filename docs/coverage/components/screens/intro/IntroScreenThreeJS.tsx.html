@@ -23,23 +23,23 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.3% </span>
+                <span class="strong">60.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/86</span>
+                <span class='fraction'>53/88</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.6% </span>
+                <span class="strong">21.81% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>116/162</span>
+                <span class='fraction'>36/165</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.38% </span>
+                <span class="strong">56.52% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/21</span>
+                <span class='fraction'>13/23</span>
             </div>
         
             
@@ -743,7 +743,11 @@
 <a name='L678'></a><a href='#L678'>678</a>
 <a name='L679'></a><a href='#L679'>679</a>
 <a name='L680'></a><a href='#L680'>680</a>
-<a name='L681'></a><a href='#L681'>681</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L681'></a><a href='#L681'>681</a>
+<a name='L682'></a><a href='#L682'>682</a>
+<a name='L683'></a><a href='#L683'>683</a>
+<a name='L684'></a><a href='#L684'>684</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -989,7 +993,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1444,6 +1450,7 @@ import {
 } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getArchetypeAssets } from "../../../utils/playerUtils";
 import { BackgroundScene3D } from "../../shared/three";
 import { KoreanHeaderHTML } from "../../shared/ui/KoreanHeaderHTML";
@@ -1669,15 +1676,17 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
   ]);
 &nbsp;
   // Responsive layout calculations with large desktop support
-  const isMobile = screenWidth &lt; 768;
-  const isTablet = screenWidth &gt;= 768 &amp;&amp; screenWidth &lt; 1024;
-  const isLargeDesktop = screenWidth &gt;= 1920; // 4K/2K displays
+  // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
+  const isMobile = shouldUseMobileControls();
+  // Only use width for tablet/desktop distinction when NOT mobile
+  const isTablet = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 768 &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >s</span>creenWidth &lt; 1024, [</span>isMobile, screenWidth]);
+  const isLargeDesktop = useMemo(() =&gt; !isMobile &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >screenWidth &gt;= 1920, [</span>isMobile, screenWidth]); // 4K/2K displays
 &nbsp;
   // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
   const logoSize = isMobile
     ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
-    : isTablet
-    ? <span class="branch-0 cbranch-no" title="branch not covered" >Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet</span>
+    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+    ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
     : isLargeDesktop
     ? Math.min(screenWidth, screenHeight) * 0.12 // Larger for 4K/2K (was 0.09)
     : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
@@ -1686,15 +1695,15 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
   // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
   const menuHeight = isMobile
     ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
-    : isTablet
-    ? <span class="branch-0 cbranch-no" title="branch not covered" >380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px</span>
+    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+    ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
     : isLargeDesktop
     ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
     : 380; // Desktop: same as tablet to ensure all 4 menu items fit
   const archetypeHeight = isMobile
     ? 260
-    : isTablet
-    ? <span class="branch-0 cbranch-no" title="branch not covered" >300</span>
+    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+    ? 300
     : isLargeDesktop
     ? 220
     : 300;
@@ -1768,7 +1777,7 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 alignItems: "center",
                 justifyContent: "flex-start",
                 padding: 0,
-                gap: isMobile ? "8px" : "16px",
+                gap: isMobile ? "8px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px",</span>
                 pointerEvents: "none",
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
@@ -1778,8 +1787,8 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
               style={{
                 marginTop: isMobile
                   ? "15px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"20px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "20px"
                   : isLargeDesktop
                   ? "8px"
                   : "25px",
@@ -1793,7 +1802,7 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                   korean: "한국 무술 시뮬레이터",
                   english: "Korean Martial Arts Simulator",
                 }}
-                size={isLargeDesktop ? "medium" : "large"}
+                size={isLargeDesktop ? <span class="branch-0 cbranch-no" title="branch not covered" >"medium" : "</span>large"}
                 alignment="center"
                 animated={true}
               /&gt;
@@ -1809,15 +1818,15 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 justifyContent: "flex-start",
                 marginTop: isMobile
                   ? "5px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"6px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "6px"
                   : isLargeDesktop
                   ? "3px"
                   : "8px",
                 marginBottom: isMobile
                   ? "5px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"6px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "6px"
                   : isLargeDesktop
                   ? "3px"
                   : "8px",
@@ -1846,8 +1855,8 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 style={{
                   fontSize: isMobile
                     ? "18px"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"20px"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "20px"
                     : isLargeDesktop
                     ? "16px"
                     : "22px",
@@ -1857,16 +1866,16 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                   )}`,
                   letterSpacing: isMobile
                     ? "6px"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"8px"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "8px"
                     : isLargeDesktop
                     ? "5px"
                     : "10px",
                   textAlign: "center",
                   marginTop: isMobile
                     ? "10px"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"10px"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "10px"
                     : isLargeDesktop
                     ? "5px"
                     : "12px",
@@ -1888,28 +1897,28 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 justifyContent: "flex-start",
                 gap: isMobile
                   ? "10px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"12px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "12px"
                   : isLargeDesktop
                   ? "6px"
                   : "14px",
                 paddingLeft: isMobile
                   ? "15px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"25px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "25px"
                   : isLargeDesktop
                   ? "20px"
                   : "30px",
                 paddingRight: isMobile
                   ? "15px"
-                  : isTablet
-                  ? <span class="branch-0 cbranch-no" title="branch not covered" >"25px"</span>
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                  ? "25px"
                   : isLargeDesktop
                   ? "20px"
                   : "30px",
                 paddingBottom: isMobile
                   ? "8px"
-                  : isLargeDesktop
+                  : <span class="branch-1 cbranch-no" title="branch not covered" >isLargeDesktop</span>
                   ? "4px"
                   : "10px",
                 pointerEvents: "auto",
@@ -1921,15 +1930,15 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 style={{
                   width: isMobile
                     ? "100%"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"80%"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "80%"
                     : isLargeDesktop
                     ? "55%"
                     : "70%",
                   maxWidth: isMobile
                     ? "100%"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"850px"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "850px"
                     : isLargeDesktop
                     ? "1100px"
                     : "900px",
@@ -1945,8 +1954,8 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                   width={
                     isMobile
                       ? screenWidth * 0.9
-                      : isTablet
-                      ? <span class="branch-0 cbranch-no" title="branch not covered" >Math.min(850, screenWidth * 0.8)</span>
+                      : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                      ? Math.min(850, screenWidth * 0.8)
                       : isLargeDesktop
                       ? Math.min(1100, screenWidth * 0.55)
                       : Math.min(900, screenWidth * 0.7)
@@ -1960,15 +1969,15 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                 style={{
                   width: isMobile
                     ? "100%"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"80%"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "80%"
                     : isLargeDesktop
                     ? "55%"
                     : "70%",
                   maxWidth: isMobile
                     ? "100%"
-                    : isTablet
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"850px"</span>
+                    : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                    ? "850px"
                     : isLargeDesktop
                     ? "1100px"
                     : "900px",
@@ -1984,8 +1993,8 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
                     width={
                       isMobile
                         ? screenWidth * 0.9
-                        : isTablet
-                        ? <span class="branch-0 cbranch-no" title="branch not covered" >Math.min(850, screenWidth * 0.8)</span>
+                        : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+                        ? Math.min(850, screenWidth * 0.8)
                         : isLargeDesktop
                         ? Math.min(1100, screenWidth * 0.55)
                         : Math.min(900, screenWidth * 0.7)
@@ -2035,7 +2044,7 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
               {/* Motto */}
               &lt;div
                 style={{
-                  fontSize: isMobile ? "11px" : "14px",
+                  fontSize: isMobile ? "11px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px",</span>
                   color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
                     6,
                     "0"
@@ -2053,7 +2062,7 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
               {/* GitHub link */}
               &lt;div
                 style={{
-                  fontSize: isMobile ? "9px" : "12px",
+                  fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
@@ -2075,7 +2084,7 @@ export const IntroScreenThreeJS: React.FC&lt;IntroScreenThreeJSProps&gt; = ({
               {/* Version */}
               &lt;div
                 style={{
-                  fontSize: isMobile ? "9px" : "12px",
+                  fontSize: isMobile ? "9px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px",</span>
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
@@ -2110,7 +2119,7 @@ export default IntroScreenThreeJS;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-12T15:46:36.613Z
+                at 2026-01-13T01:21:29.519Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
