@@ -30,13 +30,13 @@ import { AIDecision, AIActionType, CombatContext } from "./types";
  * - Action frequencies (target distribution percentages)
  * 
  * **Note on Action Frequencies**:
- * These frequencies represent **independent probabilities** for each action type,
- * not a mutually exclusive probability distribution. Multiple actions can have
- * high frequencies because they can occur in overlapping situations:
+ * These values represent **target frequencies/proportions** for each action type
+ * rather than a single normalized probability distribution. Multiple actions can have
+ * high target frequencies because they can occur in overlapping situations:
  * - ATTACK (70%) and TECHNIQUE (70%) both represent aggressive behavior
  * - STANCE_CHANGE (80%) occurs frequently but doesn't prevent other actions
  * - The frequencies serve as **behavioral targets** to guide AI personality,
- *   not strict probability weights that must sum to 100%
+ *   and are not required to sum to 100% across all actions
  * 
  * @korean 원형 강화 규칙
  */
@@ -213,7 +213,8 @@ export const ARCHETYPE_ENFORCEMENT: Record<PlayerArchetype, ArchetypeEnforcement
        * 
        * **Key Behavioral Characteristics**:
        * - STANCE_CHANGE: 80% (extremely high for unpredictability)
-       *   This means approximately 80% of decision cycles will include or consider a stance change,
+       *   This means that in approximately 80% of decision cycles where a stance change
+       *   is a valid option, the AI will evaluate and strongly favor a stance change,
        *   creating the erratic, chaotic movement pattern that defines Jojik's combat style.
        * 
        * - RETREAT: 5% base, but survival instinct triggers tactical retreat at 70% health

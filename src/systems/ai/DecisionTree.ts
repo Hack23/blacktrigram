@@ -60,9 +60,19 @@ const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
 };
 
 /**
+ * Hacker observation phase duration in milliseconds
+ * 
+ * Hacker archetype observes opponents for this duration before attacking,
+ * collecting combat data for analysis-based tactics.
+ * 
+ * @korean 해커 관찰 단계 지속 시간 (밀리초)
+ */
+const HACKER_OBSERVATION_DURATION_MS = 10000; // 10 seconds
+
+/**
  * Hacker observation phase actions
  * 
- * During the 10-second observation phase, Hacker only uses non-aggressive
+ * During the observation phase, Hacker only uses non-aggressive
  * positioning actions to collect combat data.
  * 
  * @korean 해커 관찰 단계 행동
@@ -568,7 +578,7 @@ export class AIDecisionTree {
     
     if (
       personality.archetype === PlayerArchetype.HACKER && 
-      context.timeInMatch < 10000 &&
+      context.timeInMatch < HACKER_OBSERVATION_DURATION_MS &&
       !isBelowRetreatThreshold && // Skip observation if need to retreat
       !isKillOpportunity && // Skip observation if kill opportunity
       !isOpponentVulnerable // Skip observation if opponent is vulnerable
@@ -580,7 +590,7 @@ export class AIDecisionTree {
       return {
         action: randomObservationAction,
         priority: 10, // High priority to ensure observation phase is respected
-        reason: `Hacker observation phase: collecting data (${(context.timeInMatch / 1000).toFixed(1)}s / 10s) (해커 관찰 단계)`,
+        reason: `Hacker observation phase: collecting data (${(context.timeInMatch / 1000).toFixed(1)}s / ${HACKER_OBSERVATION_DURATION_MS / 1000}s) (해커 관찰 단계)`,
       };
     }
 
