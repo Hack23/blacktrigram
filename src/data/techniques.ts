@@ -444,6 +444,32 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       speedModifier: 0.9, // Powerful decisive strike
     },
   },
+  {
+    id: "jeongbo_precision_takedown",
+    name: {
+      korean: "정밀제압",
+      english: "Precision Takedown",
+    },
+    description: {
+      korean: "무력한 적을 정밀하게 제압합니다 - 서명 기술",
+      english: "Precisely takedown helpless opponent - Signature Move",
+    },
+    staminaCost: 50,
+    kiCost: 40,
+    damage: { min: 45, max: 65 },
+    damageType: DamageType.PIERCING,
+    cooldown: 15000,
+    requiredStance: TrigramStance.GAM,
+    keyboardShortcut: "Y",
+    targetsVitalPoint: true,
+    criticalChance: 0.60,
+    specialEffect: "signature_move",
+    animationDuration: 1200,
+    animation: {
+      type: AttackAnimationType.PRESSURE_POINT,
+      speedModifier: 0.8, // Deliberate, precise execution
+    },
+  },
 ];
 
 /**
