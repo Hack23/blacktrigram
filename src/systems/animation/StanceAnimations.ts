@@ -28,6 +28,7 @@ import {
   SON_WIND_GUARD_POSE,
   TAE_FLUID_GUARD_POSE,
 } from "./StanceGuardPoses";
+import { toRadians } from "../../utils/math";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
@@ -939,14 +940,6 @@ export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
  * @module systems/animation/StanceAnimations
  * @korean 자세대기애니메이션
  */
-
-/**
- * Helper function to convert degrees to radians
- * @param degrees - Angle in degrees
- * @returns Angle in radians
- * @korean 각도를라디안으로변환
- */
-const toRadians = (degrees: number): number => degrees * (Math.PI / 180);
 
 /**
  * ☰ Geon Heaven Stance - 건 하늘 자세
