@@ -32,7 +32,7 @@ export interface PerformanceSettings {
   /** Enable antialiasing */
   readonly antialias: boolean;
   /** Device pixel ratio limit ([min, max] or single value) */
-  readonly dpr: number | readonly [number, number];
+  readonly dpr: number | [number, number];
   /** Enable post-processing effects */
   readonly postProcessing: boolean;
   /** Target frame rate (fps) */

@@ -16,6 +16,7 @@ import {
   ARCHETYPE_BACKGROUNDS,
   FONT_FAMILY,
   KOREAN_COLORS,
+  getKoreanFontSize,
 } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
@@ -655,7 +656,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Motto */}
               <div
                 style={{
-                  fontSize: isExtraSmall ? "10px" : isMobile ? "11px" : "14px",
+                  fontSize: `${getKoreanFontSize('SMALL', screenWidth)}px`,
                   color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
                     6,
                     "0"
@@ -673,7 +674,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* GitHub link */}
               <div
                 style={{
-                  fontSize: isExtraSmall ? "8px" : isMobile ? "9px" : "12px",
+                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 2, 8)}px`,
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,
@@ -695,7 +696,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               {/* Version */}
               <div
                 style={{
-                  fontSize: isExtraSmall ? "8px" : isMobile ? "9px" : "12px",
+                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 2, 8)}px`,
                   color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
                     16
                   ).padStart(6, "0")}`,

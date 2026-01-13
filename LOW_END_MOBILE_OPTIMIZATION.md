@@ -1,4 +1,4 @@
-# Low-End Mobile Device Optimization (<450px)
+# Low-End Mobile Device Optimization (<380px)
 
 ## 📱 Overview
 

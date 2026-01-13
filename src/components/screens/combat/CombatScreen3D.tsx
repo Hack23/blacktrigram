@@ -50,6 +50,7 @@ import {
   FONT_FAMILY,
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
+  getPerformanceSettings,
 } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -255,20 +256,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [isMobile]);
 
   // Rendering quality based on device (optimize for 60fps on mobile)
+  // Uses performance tier system for extra-small, mobile, and desktop devices
   const renderConfig = useMemo(() => {
-    if (isMobile) {
-      return {
-        shadowMapSize: 1024, // Lower shadow resolution for mobile
-        dpr: [1, 1.5] as [number, number], // Lower pixel ratio on mobile
-        antialias: true,
-      };
-    }
+    const performanceSettings = getPerformanceSettings(width, isMobile);
+    
     return {
-      shadowMapSize: 2048, // High-quality shadows on desktop
-      dpr: [1, 2] as [number, number], // Full retina support on desktop
-      antialias: true,
+      shadowMapSize: performanceSettings.shadowMapSize,
+      dpr: performanceSettings.dpr,
+      antialias: performanceSettings.antialias,
+      maxParticles: performanceSettings.maxParticles,
+      postProcessing: performanceSettings.postProcessing,
     };
-  }, [isMobile]);
+  }, [isMobile, width]);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
