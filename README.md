@@ -675,7 +675,7 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 - [🗺️ **ROADMAP.md**](https://github.com/Hack23/blacktrigram/blob/main/ROADMAP.md)
   _**v1.0 release timeline (Q2-Q3 2026), quarterly milestones, and combat realism system tracking.**_
 - [📊 **game-status.md**](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
-  _**Current metrics: 8.4/10 quality, 76% test coverage, 67% combat realism (8/12 systems).**_
+  _**Current metrics: 8.4/10 quality, 76% test coverage, 67% combat realism (8/12 systems)**._
 - [🥋 COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)
   _In-depth battleflow, trigram integration, vital-point targeting, and damage pipeline._
 - [🗺️ game-design.md](https://github.com/Hack23/blacktrigram/blob/main/game-design.md)
