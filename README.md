@@ -60,7 +60,7 @@ _An immersive 3D precision combat game powered by Three.js, inspired by Korean m
 
 **Black Trigram** is a **realistic combat simulator** that teaches authentic Korean martial arts through precise anatomical targeting. Master traditional vital-point techniques via modern 3D combat mechanics powered by Three.js across 5 distinct fighter archetypes.
 
-### 🩸 Combat Realism Systems (8/12 Complete - 67%)
+### 🩸 Combat Realism Systems (6 Complete + 2 Near-Complete - 67%)
 
 <div align="center">
 
@@ -587,7 +587,7 @@ type PlayerArchetype = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
 
 ### Release Timeline: Q2-Q3 2026
 
-Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**.
+Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**. Roadmap milestones may reference an internal **beta track (v0.9.x)** that reflects feature-completeness targets, while **0.6.5** remains the latest public release version.
 
 <div align="center">
 
@@ -611,12 +611,12 @@ Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Curre
 - 🚀 Security audit and compliance verification
 
 ### Success Criteria for v1.0
-- ✅ 9.0/10+ overall quality
-- ✅ 100% combat realism systems (12/12)
-- ✅ 80%+ test coverage
-- ✅ 60fps desktop, 55fps+ mobile
-- ✅ Zero critical bugs
-- ✅ Complete Korean/English localization
+- [ ] 9.0/10+ overall quality
+- [ ] 100% combat realism systems (12/12)
+- [ ] 80%+ test coverage
+- [ ] 60fps desktop, 55fps+ mobile
+- [ ] Zero critical bugs
+- [ ] Complete Korean/English localization
 
 </div>
 
