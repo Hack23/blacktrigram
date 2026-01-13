@@ -606,12 +606,14 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 
 🔗 **Combat & Mechanics**
 
+- [🗺️ **ROADMAP.md**](https://github.com/Hack23/blacktrigram/blob/main/ROADMAP.md)
+  _**v1.0 release timeline (Q2-Q3 2026), quarterly milestones, and combat realism system tracking.**_
+- [📊 **game-status.md**](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
+  _**Current metrics: 8.4/10 quality, 76% test coverage, 67% combat realism (8/12 systems)**._
 - [🥋 COMBAT_ARCHITECTURE.md](https://github.com/Hack23/blacktrigram/blob/main/COMBAT_ARCHITECTURE.md)
   _In-depth battleflow, trigram integration, vital-point targeting, and damage pipeline._
 - [🗺️ game-design.md](https://github.com/Hack23/blacktrigram/blob/main/game-design.md)
   _Overall game mechanics, archetype breakdowns, and design decisions._
-- [📊 game-status.md](https://github.com/Hack23/blacktrigram/blob/main/game-status.md)
-  _Current progress, feature roadmap, and milestone tracking._
 
 🔗 **Assets & Media**
 
@@ -704,7 +706,83 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 
 ---
 
+## 🩸 Combat Realism Systems (6 Complete + 2 Near-Complete - 67%)
+
+<div align="center">
+
+| System | Status | Completion | Description |
+|--------|--------|------------|-------------|
+| **Body Part Health** | ✅ Complete | 100% | 8-part damage tracking system |
+| **Vital Point Targeting** | ✅ Complete | 100% | 70 authentic Korean vital points |
+| **Enhanced Anatomy** | ✅ Complete | 95% | Polygon-based zone detection |
+| **Visual Feedback** | ✅ Complete | 90% | Damage numbers, hit effects, combos |
+| **Pain Response** | ✅ Complete | 90% | Realistic pain accumulation |
+| **Consciousness Levels** | ✅ Complete | 90% | 4-level awareness system |
+| **Breathing Disruption** | ⚠️ Near-Complete | 75% | Respiratory targeting |
+| **Trauma Visualization** | ⚠️ In Progress | 65% | Injury rendering system |
+| **Balance/Vulnerability** | ⚠️ In Progress | 70% | Stance-based weaknesses |
+| **Combat Readiness HUD** | ⚠️ In Progress | 60% | Real-time status display |
+| **Injury-Based Movement** | 📋 Planned | 10% | Damage affects mobility |
+| **Bone Impact Audio** | 📋 Planned | 0% | Realistic fracture sounds |
+
+**[📊 Detailed Status Report →](game-status.md)** | **[🗺️ v1.0 Roadmap →](ROADMAP.md)**
+
+</div>
+
+---
+
+## 🗺️ Roadmap to v1.0
+
+### Release Timeline: Q2-Q3 2026
+
+Black Trigram is on track for a **v1.0 production release in Q2-Q3 2026**. Currently at **version 0.6.5** with **8.4/10 overall quality** and **65% completion**. Roadmap milestones may reference an internal **beta track (v0.9.x)** that reflects feature-completeness targets, while **0.6.5** remains the latest public release version.
+
+<div align="center">
+
+### Q1 2026 (Current) - Combat Realism Foundation ✅
+- ✅ Pain Response System (90% production-ready)
+- ✅ Consciousness Levels (90% production-ready)
+- ✅ Breathing Disruption (75% near-complete)
+- ⚠️ Test Coverage 76% (target: 80%+)
+
+### Q2 2026 (Apr-Jun) - Feature Completion 🎯
+- 🎯 Complete remaining combat realism systems (4/12)
+- 🎯 Training Mode with progressive difficulty
+- 🎯 EndScreen with combat statistics
+- 🎯 Mobile performance optimization (55-60fps)
+- 🎯 Korean localization 100%
+
+### Q3 2026 (Jul-Sep) - Release Candidate 🚀
+- 🚀 v1.0.0-rc.1 Release Candidate
+- 🚀 User acceptance testing
+- 🚀 Complete documentation and marketing materials
+- 🚀 Security audit and compliance verification
+
+### Success Criteria for v1.0
+- [ ] 9.0/10+ overall quality
+- [ ] 100% combat realism systems (12/12)
+- [ ] 80%+ test coverage
+- [ ] 60fps desktop, 55fps+ mobile
+- [ ] Zero critical bugs
+- [ ] Complete Korean/English localization
+
+</div>
+
+**[📋 View Complete Roadmap with Dependencies →](ROADMAP.md)**
+
+**[📊 Current Detailed Status Report →](game-status.md)**
+
+---
+
 ## 📚 Related Documents
+
+### 🗺️ Planning & Progress
+- [🗺️ **v1.0 Roadmap**](./ROADMAP.md) - **Complete v1.0 release timeline (Q2-Q3 2026)**
+- [📊 **Game Status Report**](./game-status.md) - **Current metrics (8.4/10, 76% coverage, 67% combat realism)**
+- [🎮 Game Design](./game-design.md) - Overall game mechanics
+- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
+- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
+- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
 
 ### 🔐 Security & Compliance
 - [🔐 Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) - Enterprise-grade security framework
@@ -724,18 +802,14 @@ _Experience authentic Korean combat techniques with anatomical precision across 
 - [🏷️ Classification Framework](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md) - Business impact analysis
 
 ### 📊 Testing & Quality
-- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy
+- [🧪 Unit Test Plan](./UnitTestPlan.md) - Comprehensive unit testing strategy (76% coverage)
 - [🎯 E2E Test Plan](./E2ETestPlan.md) - End-to-end testing documentation
 - [🎮 Screen-Specific E2E Strategy](./SCREEN_SPECIFIC_E2E_STRATEGY.md) - One test per screen (3-4 min each)
 - [⚡ Performance Testing](./performance-testing.md) - Lighthouse & load testing
 - [🔍 Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) - Security testing procedures
 
 ### 🎮 Game Design & Assets
-- [🎮 Game Design](./game-design.md) - Overall game mechanics
-- [📊 Game Status](./game-status.md) - Development progress
-- [🖼️ Art Assets](./ART_ASSETS.md) - Visual asset guidelines
-- [🎵 Audio Assets](./AUDIO_ASSETS.md) - Sound design documentation
-- [🎬 Video Assets](./VIDEO_ASSETS.md) - Cinematic content
+- _Moved to Planning & Progress section above_
 
 ### 🌐 ISMS Public Repository
 - [🔓 Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md) - Open source governance
