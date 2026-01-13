@@ -72,7 +72,8 @@ export function applyPunchPhaseToConfig(
   const { 
     includeWrist = false, 
     includeSpineMiddle = false,
-    includeOppositeArm = true, // Default to true for authentic Korean martial arts
+    includeOppositeArm = true, // Default to true for authentic Korean martial arts hikite (당기기)
+                                // Set to false for rapid combinations where guard must be maintained
   } = options;
 
   // Select bones based on punching hand

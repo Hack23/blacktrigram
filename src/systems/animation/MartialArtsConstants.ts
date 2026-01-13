@@ -500,11 +500,12 @@ export const PUNCH_PHASES = {
    * 
    * Brief hold at full extension for impact frame.
    * All power delivered through aligned structure.
+   * Slight additional arm extension for maximum reach.
    */
   PEAK: {
-    // Maximum extension
+    // Maximum extension - slightly more extended than EXTENSION phase
     shoulder: [0.25, 0, 0.15] as const,
-    elbow: [0, 0, -0.09] as const,        // Nearly straight
+    elbow: [0, 0, -0.05] as const,        // Even closer to straight (~177° = 180° - 3°)
     wrist: [0, 0, 0.2] as const,          // Fully pronated
     
     // Opposite arm fully retracted
