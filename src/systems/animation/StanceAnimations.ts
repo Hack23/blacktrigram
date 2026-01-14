@@ -105,18 +105,15 @@ const DEFAULT_SHOULDER_WIDTH_CM = 46;
  * 
  * **Korean**: 자세별 기술 설정
  * 
- * Defines timing, power, and animation parameters for each trigram stance.
+ * Defines timing and animation parameters for each trigram stance.
  * Used by factory functions to generate dynamic animations.
+ * 
+ * Note: Power multipliers and execution speeds are applied at the combat
+ * calculation level, not during animation generation.
  */
 interface StanceTechniqueConfig {
-  /** Damage/impact multiplier for stance */
-  readonly powerMultiplier: number;
-  /** Animation speed multiplier */
-  readonly executionSpeed: number;
   /** Time before impact (seconds) */
   readonly windupDuration: number;
-  /** Normalized time of impact (0-1) */
-  readonly impactTiming: number;
   /** Time after impact (seconds) */
   readonly recoveryDuration: number;
   /** Korean name for techniques */
@@ -137,10 +134,7 @@ interface StanceTechniqueConfig {
  */
 const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfig> = new Map([
   [TrigramStance.GEON, {
-    powerMultiplier: 1.2,     // Heaven: Direct force
-    executionSpeed: 1.0,
     windupDuration: 0.18,
-    impactTiming: 0.6,
     recoveryDuration: 0.32,
     koreanNames: {
       strike: "건천격",
@@ -149,10 +143,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.TAE, {
-    powerMultiplier: 0.9,     // Lake: Fluid techniques
-    executionSpeed: 1.2,
     windupDuration: 0.12,
-    impactTiming: 0.5,
     recoveryDuration: 0.23,
     koreanNames: {
       strike: "태유권",
@@ -161,10 +152,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.LI, {
-    powerMultiplier: 0.85,    // Fire: Precision and speed
-    executionSpeed: 1.3,
     windupDuration: 0.06,
-    impactTiming: 0.55,
     recoveryDuration: 0.16,
     koreanNames: {
       strike: "리화창",
@@ -173,10 +161,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.JIN, {
-    powerMultiplier: 1.4,     // Thunder: Explosive power
-    executionSpeed: 0.9,
     windupDuration: 0.04,
-    impactTiming: 0.65,
     recoveryDuration: 0.16,
     koreanNames: {
       strike: "진전광",
@@ -185,10 +170,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.SON, {
-    powerMultiplier: 0.8,     // Wind: Continuous pressure
-    executionSpeed: 1.4,
     windupDuration: 0.05,
-    impactTiming: 0.45,
     recoveryDuration: 0.24,
     koreanNames: {
       strike: "손선풍연격",
@@ -197,10 +179,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.GAM, {
-    powerMultiplier: 1.0,     // Water: Flow and adaptation
-    executionSpeed: 1.1,
     windupDuration: 0.10,
-    impactTiming: 0.5,
     recoveryDuration: 0.23,
     koreanNames: {
       strike: "감수반격",
@@ -209,10 +188,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.GAN, {
-    powerMultiplier: 1.1,     // Mountain: Defensive mastery
-    executionSpeed: 0.95,
     windupDuration: 0.12,
-    impactTiming: 0.55,
     recoveryDuration: 0.23,
     koreanNames: {
       strike: "간반격",
@@ -221,10 +197,7 @@ const TRIGRAM_TECHNIQUE_CONFIGS: ReadonlyMap<TrigramStance, StanceTechniqueConfi
     },
   }],
   [TrigramStance.GON, {
-    powerMultiplier: 1.3,     // Earth: Grounding techniques
-    executionSpeed: 0.85,
     windupDuration: 0.15,
-    impactTiming: 0.6,
     recoveryDuration: 0.25,
     koreanNames: {
       strike: "곤대지격",

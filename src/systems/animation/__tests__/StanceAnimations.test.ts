@@ -681,17 +681,24 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       });
 
       it("should complete generation in <1ms", () => {
-        const start = performance.now();
+        // Warmup call to avoid JIT compilation affecting measurement
         generateStrikeAnimation(TrigramStance.GEON);
+
+        const iterations = 100;
+        const start = performance.now();
+        for (let i = 0; i < iterations; i += 1) {
+          generateStrikeAnimation(TrigramStance.GEON);
+        }
         const end = performance.now();
-        
-        expect(end - start).toBeLessThan(1);
+
+        const averageDurationMs = (end - start) / iterations;
+        expect(averageDurationMs).toBeLessThan(1);
       });
 
       it("should throw error for invalid stance", () => {
         expect(() => {
           generateStrikeAnimation("invalid_stance" as TrigramStance);
-        }).toThrow();
+        }).toThrow("No configuration for stance: invalid_stance");
       });
 
       it("should have unique Korean names for each stance", () => {
@@ -730,11 +737,18 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       });
 
       it("should complete generation in <1ms", () => {
-        const start = performance.now();
+        // Warmup call to avoid JIT compilation affecting measurement
         generatePunchAnimation(TrigramStance.TAE);
+
+        const iterations = 100;
+        const start = performance.now();
+        for (let i = 0; i < iterations; i += 1) {
+          generatePunchAnimation(TrigramStance.TAE);
+        }
         const end = performance.now();
-        
-        expect(end - start).toBeLessThan(1);
+
+        const averageDurationMs = (end - start) / iterations;
+        expect(averageDurationMs).toBeLessThan(1);
       });
 
       it("should have unique Korean names for each stance", () => {
@@ -763,7 +777,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
         });
       });
 
-      it("should have longer duration than strike and punch", () => {
+      it("should have similar or longer duration than strike", () => {
         const geonStrike = generateStrikeAnimation(TrigramStance.GEON);
         const geonPunch = generatePunchAnimation(TrigramStance.GEON);
         const geonKick = generateKickAnimation(TrigramStance.GEON);
@@ -784,11 +798,18 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       });
 
       it("should complete generation in <1ms", () => {
-        const start = performance.now();
+        // Warmup call to avoid JIT compilation affecting measurement
         generateKickAnimation(TrigramStance.LI);
+
+        const iterations = 100;
+        const start = performance.now();
+        for (let i = 0; i < iterations; i += 1) {
+          generateKickAnimation(TrigramStance.LI);
+        }
         const end = performance.now();
-        
-        expect(end - start).toBeLessThan(1);
+
+        const averageDurationMs = (end - start) / iterations;
+        expect(averageDurationMs).toBeLessThan(1);
       });
 
       it("should have unique Korean names for each stance", () => {
