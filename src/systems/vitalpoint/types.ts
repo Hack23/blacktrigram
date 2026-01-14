@@ -14,11 +14,21 @@ import type {
   VitalPointEffectType,
   VitalPointSeverity,
 } from "../../types";
+import type { PhysicalReachConfig } from "../../types/physics";
 import { AnimationType } from "../animation";
 import { EffectIntensity } from "../effects";
-import { PlayerState } from "../player";
 import { StatusEffect } from "../types";
-import type { PhysicalReachConfig } from "../../types/physics";
+
+// Minimal player shape for applying vital point effects without importing full PlayerState
+export interface VitalPointEffectTarget {
+  readonly statusEffects: readonly StatusEffect[];
+  readonly vitalPoints: readonly {
+    readonly id: string;
+    readonly isHit: boolean;
+    readonly damage: number;
+    readonly lastHitTime: number;
+  }[];
+}
 
 /**
  * Korean Technique - Core martial arts technique definition
@@ -63,19 +73,19 @@ export interface KoreanTechnique {
   kiCost: number;
   staminaCost: number;
   accuracy: number;
-  
+
   /**
    * Physical reach configuration using body parts and attributes.
    * Replaces simple range value with complex calculation based on:
    * - Body part length (arm/leg from archetype physical attributes)
    * - Animation extension multiplier (from hit timing)
    * - Stance modifiers (Eight Trigrams bonuses)
-   * 
+   *
    * **Korean**: 물리적 도달 설정
    * @korean 물리적도달설정
    */
   reachConfig: PhysicalReachConfig;
-  
+
   executionTime: number;
   recoveryTime: number;
   critChance: number;
@@ -226,11 +236,11 @@ export interface VitalPointSystemInterface {
     defenderPosition: Position,
     defenderStance: TrigramStance
   ) => VitalPointHitResult;
-  applyVitalPointEffects: (
-    player: PlayerState,
+  applyVitalPointEffects: <T extends VitalPointEffectTarget>(
+    player: T,
     vitalPoint: VitalPoint,
     intensityMultiplier?: number
-  ) => PlayerState;
+  ) => T;
 }
 
 export interface VitalPointSystem {

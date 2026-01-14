@@ -1,5 +1,9 @@
 import { BoneName } from "@/types/skeletal";
-import { KeyframeConfig } from "./KeyframeConfig";
+
+// Minimal contract to apply guard rotations without depending on KeyframeConfig
+interface GuardRotatable {
+  rotate: (bone: BoneName, x: number, y: number, z: number) => unknown;
+}
 
 /**
  * Korean Guard Positions (막기자세)
@@ -311,7 +315,7 @@ export const getGuardForStanceHeight = (
  * @korean KeyframeConfig에방어자세적용
  */
 export const applyGuardPositionToConfig = (
-  config: KeyframeConfig,
+  config: GuardRotatable,
   guardPosition: GuardPosition,
   hand: "left" | "right" | "both" = "both"
 ): void => {
