@@ -3,6 +3,7 @@
  */
 
 import { renderHook } from "@testing-library/react";
+import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   isWebGL2Available,
@@ -31,10 +32,10 @@ describe("useWebGLContextLossHandler", () => {
   it("should attach event listeners to canvas", async () => {
     const addEventListenerSpy = vi.spyOn(canvas, "addEventListener");
 
-    renderHook(() => useWebGLContextLossHandler({ mountDelay: 0 }));
-
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      renderHook(() => useWebGLContextLossHandler({ mountDelay: 0 }));
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     // Should have attached both context loss and restoration listeners
     expect(addEventListenerSpy).toHaveBeenCalledWith(
@@ -52,16 +53,18 @@ describe("useWebGLContextLossHandler", () => {
   it("should call onContextLost callback when context is lost", async () => {
     const onContextLost = vi.fn();
 
-    renderHook(() =>
-      useWebGLContextLossHandler({ onContextLost, mountDelay: 0 })
-    );
-
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      renderHook(() =>
+        useWebGLContextLossHandler({ onContextLost, mountDelay: 0 })
+      );
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     // Simulate context loss
     const event = new Event("webglcontextlost");
-    canvas.dispatchEvent(event);
+    await act(async () => {
+      canvas.dispatchEvent(event);
+    });
 
     expect(onContextLost).toHaveBeenCalledTimes(1);
   });
@@ -69,50 +72,56 @@ describe("useWebGLContextLossHandler", () => {
   it("should call onContextRestored callback when context is restored", async () => {
     const onContextRestored = vi.fn();
 
-    renderHook(() =>
-      useWebGLContextLossHandler({ onContextRestored, mountDelay: 0 })
-    );
-
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      renderHook(() =>
+        useWebGLContextLossHandler({ onContextRestored, mountDelay: 0 })
+      );
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     // Simulate context restoration
     const event = new Event("webglcontextrestored");
-    canvas.dispatchEvent(event);
+    await act(async () => {
+      canvas.dispatchEvent(event);
+    });
 
     expect(onContextRestored).toHaveBeenCalledTimes(1);
   });
 
   it("should prevent default behavior when autoRestore is true", async () => {
-    renderHook(() =>
-      useWebGLContextLossHandler({ autoRestore: true, mountDelay: 0 })
-    );
-
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      renderHook(() =>
+        useWebGLContextLossHandler({ autoRestore: true, mountDelay: 0 })
+      );
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     // Simulate context loss with preventDefault spy
     const event = new Event("webglcontextlost");
     const preventDefaultSpy = vi.spyOn(event, "preventDefault");
 
-    canvas.dispatchEvent(event);
+    await act(async () => {
+      canvas.dispatchEvent(event);
+    });
 
     expect(preventDefaultSpy).toHaveBeenCalled();
   });
 
   it("should not prevent default behavior when autoRestore is false", async () => {
-    renderHook(() =>
-      useWebGLContextLossHandler({ autoRestore: false, mountDelay: 0 })
-    );
-
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      renderHook(() =>
+        useWebGLContextLossHandler({ autoRestore: false, mountDelay: 0 })
+      );
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     // Simulate context loss with preventDefault spy
     const event = new Event("webglcontextlost");
     const preventDefaultSpy = vi.spyOn(event, "preventDefault");
 
-    canvas.dispatchEvent(event);
+    await act(async () => {
+      canvas.dispatchEvent(event);
+    });
 
     expect(preventDefaultSpy).not.toHaveBeenCalled();
   });
@@ -124,8 +133,9 @@ describe("useWebGLContextLossHandler", () => {
       useWebGLContextLossHandler({ mountDelay: 0 })
     );
 
-    // Advance timers to let the hook find the canvas
-    await vi.advanceTimersByTimeAsync(100);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100);
+    });
 
     unmount();
 
@@ -149,8 +159,10 @@ describe("useWebGLContextLossHandler", () => {
       useWebGLContextLossHandler({ mountDelay: 10, maxRetries: 2 })
     );
 
-    // Advance through all retries (2 retries * 10ms = 20ms + initial 10ms delay)
-    await vi.advanceTimersByTimeAsync(50);
+    await act(async () => {
+      // Advance through all retries (2 retries * 10ms = 20ms + initial 10ms delay)
+      await vi.advanceTimersByTimeAsync(50);
+    });
 
     // Should have set up MutationObserver as fallback
     expect(observeSpy).toHaveBeenCalled();

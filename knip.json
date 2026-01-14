@@ -4,9 +4,15 @@
     "./src/main.tsx",
     "./src/index.ts",
     "./scripts/capture-screenshots.ts",
-    "./scripts/post-screenshots-to-pr.ts"
+    "./eslint.config.js"
   ],
   "project": ["**/*.{ts,tsx}"],
+  "ignore": ["src/systems/animation/**/*.test.ts", "typedoc.json"],
+  "ignoreBinaries": ["dot"],
+  "ignoreUnresolved": [],
+  "rules": {
+    "duplicates": "warn"
+  },
   "eslint": {
     "config": [".eslintrc.cjs"]
   },

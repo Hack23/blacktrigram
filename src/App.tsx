@@ -92,10 +92,10 @@ function App() {
 
         // 2. Precompute all animations for 90%+ cache hit rate
         const { precomputeAnimation } = await import(
-          "./systems/animation/AnimationOptimizations"
+          "./systems/animation/core/AnimationOptimizations"
         );
         const { ALL_ANIMATIONS } = await import(
-          "./systems/animation/AnimationRegistry"
+          "./systems/animation/core/AnimationRegistry"
         );
 
         let precomputedCount = 0;
@@ -497,7 +497,7 @@ function App() {
     >
       {/* All screens now use Three.js or pure React/HTML */}
       {renderCurrentScreen()}
-      
+
       {/* Performance debug overlay (dev mode only) */}
       <PerformanceDebugOverlay />
     </div>

@@ -1,9 +1,9 @@
 /**
  * usePlayerAnimation - React hook for player animation state
- * 
+ *
  * Provides a React interface to the PlayerAnimationStateMachine
  * with automatic cleanup and event handling.
- * 
+ *
  * @module hooks/usePlayerAnimation
  * @category Hooks
  * @korean 플레이어애니메이션훅
@@ -16,39 +16,42 @@ import {
   DEFAULT_ANIMATION_CONFIGS,
   PlayerAnimationStateMachine,
 } from "../systems/animation";
-import type { AnimationConfig, AnimationUpdateResult } from "../systems/animation/types";
+import type {
+  AnimationConfig,
+  AnimationUpdateResult,
+} from "../systems/animation/core/types";
 import type { TrigramStance } from "../types/common";
 
 /**
  * Options for usePlayerAnimation hook
- * 
+ *
  * @korean 플레이어애니메이션훅옵션
  */
 export interface UsePlayerAnimationOptions {
   /**
    * Custom animation configurations
    * If not provided, uses DEFAULT_ANIMATION_CONFIGS
-   * 
+   *
    * @korean 커스텀애니메이션설정
    */
   readonly customConfigs?: Map<AnimationState, AnimationConfig>;
 
   /**
    * Animation event callbacks
-   * 
+   *
    * **IMPORTANT**: The events object should be stable (memoized) to prevent
    * unnecessary re-initialization of the animation system. Changes to event
    * callbacks after the hook is initialized will NOT be reflected in the
    * animation system. Use `useMemo` or define events outside the component
    * to ensure stability.
-   * 
+   *
    * @korean 이벤트콜백
    */
   readonly events?: AnimationEvents;
 
   /**
    * Initial animation state (defaults to "idle")
-   * 
+   *
    * @korean 초기상태
    */
   readonly initialState?: AnimationState;
@@ -56,92 +59,95 @@ export interface UsePlayerAnimationOptions {
 
 /**
  * Return type for usePlayerAnimation hook
- * 
+ *
  * @korean 플레이어애니메이션훅반환타입
  */
 export interface UsePlayerAnimationReturn {
   /**
    * Current animation state
-   * 
+   *
    * @korean 현재상태
    */
   readonly currentState: AnimationState;
 
   /**
    * Current frame index
-   * 
+   *
    * @korean 현재프레임
    */
   readonly currentFrame: number;
 
   /**
    * Update animation state (call in useFrame)
-   * 
+   *
    * @param deltaTime - Time elapsed since last update in seconds
    * @returns Animation update result
-   * 
+   *
    * @korean 업데이트
    */
   readonly update: (deltaTime: number) => AnimationUpdateResult;
 
   /**
    * Transition to a new animation state
-   * 
+   *
    * @param newState - Target animation state
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 상태전환
    */
   readonly transitionTo: (newState: AnimationState) => boolean;
 
   /**
    * Transition to stance-specific guard animation
-   * 
+   *
    * @param stance - Trigram stance
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 자세가드전환
    */
   readonly transitionToStanceGuard: (stance: TrigramStance) => boolean;
-  
+
   /**
    * Transition to stance_change animation with specific transition data
-   * 
+   *
    * **Korean**: 자세 전환 애니메이션 시작
-   * 
+   *
    * Initiates a stance change animation with the specific transition data
    * from the 64-transition matrix. This provides stance-specific keyframes
    * and blend weights for smooth interpolation.
-   * 
+   *
    * @param fromStance - Source trigram stance
    * @param toStance - Target trigram stance
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 자세전환애니메이션시작
    */
-  readonly transitionToStanceChange: (fromStance: TrigramStance, toStance: TrigramStance) => boolean;
-  
+  readonly transitionToStanceChange: (
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ) => boolean;
+
   /**
    * Check if currently in a stance guard animation
-   * 
+   *
    * @returns True if in any stance guard state
-   * 
+   *
    * @korean 자세가드확인
    */
   readonly isInStanceGuard: () => boolean;
-  
+
   /**
    * Get current guard stance (if in guard animation)
-   * 
+   *
    * @returns Trigram stance or null
-   * 
+   *
    * @korean 현재가드자세
    */
   readonly getCurrentGuardStance: () => TrigramStance | null;
 
   /**
    * Reset animation to idle state
-   * 
+   *
    * @korean 초기화
    */
   readonly reset: () => void;
@@ -149,14 +155,14 @@ export interface UsePlayerAnimationReturn {
 
 /**
  * React hook for player animation state management
- * 
+ *
  * Provides frame-accurate animation control with priority system
  * and event callbacks. Integrates seamlessly with useFrame for
  * 60fps updates.
- * 
+ *
  * @param options - Animation options
  * @returns Animation control interface
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
@@ -172,23 +178,23 @@ export interface UsePlayerAnimationReturn {
  *     }
  *   }
  * });
- * 
+ *
  * // In useFrame callback
  * useFrame((state, delta) => {
  *   const result = update(delta);
  *   // Update visuals based on result.state and result.frame
  * });
- * 
+ *
  * // Trigger animations
  * const handleAttackInput = () => {
  *   transitionTo("attack");
  * };
- * 
+ *
  * const handleMovement = (isMoving: boolean) => {
  *   transitionTo(isMoving ? "walk" : "idle");
  * };
  * ```
- * 
+ *
  * @korean 플레이어애니메이션훅
  */
 export function usePlayerAnimation(
@@ -226,14 +232,17 @@ export function usePlayerAnimation(
       const result = stateMachine.update(deltaTime);
       const currentState = stateMachine.getCurrentState();
       const currentFrame = stateMachine.getCurrentFrame();
-      
+
       // Only trigger re-render if state or frame changed
-      if (currentState !== prevStateRef.current || currentFrame !== prevFrameRef.current) {
+      if (
+        currentState !== prevStateRef.current ||
+        currentFrame !== prevFrameRef.current
+      ) {
         prevStateRef.current = currentState;
         prevFrameRef.current = currentFrame;
         forceUpdate((n) => n + 1);
       }
-      
+
       return result;
     },
     [stateMachine]
@@ -258,7 +267,7 @@ export function usePlayerAnimation(
     prevFrameRef.current = stateMachine.getCurrentFrame();
     forceUpdate((n) => n + 1);
   }, [stateMachine]);
-  
+
   const transitionToStanceGuard = useCallback(
     (stance: TrigramStance) => {
       const success = stateMachine.transitionToStanceGuard(stance);
@@ -271,10 +280,13 @@ export function usePlayerAnimation(
     },
     [stateMachine]
   );
-  
+
   const transitionToStanceChange = useCallback(
     (fromStance: TrigramStance, toStance: TrigramStance) => {
-      const success = stateMachine.transitionToStanceChange(fromStance, toStance);
+      const success = stateMachine.transitionToStanceChange(
+        fromStance,
+        toStance
+      );
       if (success) {
         prevStateRef.current = stateMachine.getCurrentState();
         prevFrameRef.current = stateMachine.getCurrentFrame();
@@ -284,11 +296,11 @@ export function usePlayerAnimation(
     },
     [stateMachine]
   );
-  
+
   const isInStanceGuard = useCallback(() => {
     return stateMachine.isInStanceGuard();
   }, [stateMachine]);
-  
+
   const getCurrentGuardStance = useCallback(() => {
     return stateMachine.getCurrentGuardStance();
   }, [stateMachine]);
@@ -306,6 +318,16 @@ export function usePlayerAnimation(
       getCurrentGuardStance,
       reset,
     }),
-    [prevStateRef.current, prevFrameRef.current, update, transitionTo, transitionToStanceGuard, transitionToStanceChange, isInStanceGuard, getCurrentGuardStance, reset]
+    [
+      prevStateRef.current,
+      prevFrameRef.current,
+      update,
+      transitionTo,
+      transitionToStanceGuard,
+      transitionToStanceChange,
+      isInStanceGuard,
+      getCurrentGuardStance,
+      reset,
+    ]
   );
 }

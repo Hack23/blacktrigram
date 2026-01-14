@@ -1,11 +1,11 @@
 /**
  * PerformanceMonitor - Real-time FPS and performance tracking for Three.js
- * 
+ *
  * Monitors frame rate, memory usage, and draw calls to maintain 60fps target.
  * Provides warnings in development mode when performance degrades.
  */
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export interface PerformanceMetrics {
   readonly fps: number;
@@ -32,6 +32,10 @@ const DEFAULT_THRESHOLDS: PerformanceThresholds = {
   maxDrawCalls: 100,
 };
 
+// Prevent unrealistic spikes when frame deltas are extremely small (e.g., mocked timers)
+const MAX_SAMPLE_FPS = 180;
+const MIN_FRAME_TIME_MS = 1000 / MAX_SAMPLE_FPS;
+
 /**
  * PerformanceMonitor class for real-time performance tracking
  */
@@ -40,10 +44,10 @@ export class PerformanceMonitor {
   private lastTime = performance.now();
   private frameCount = 0;
   private readonly maxFrameSamples = 60; // Track last 60 frames (1 second at 60fps)
-  
+
   private minFps = Infinity;
   private maxFps = 0;
-  
+
   private readonly thresholds: PerformanceThresholds;
   private performanceWarnings: string[] = [];
 
@@ -63,7 +67,8 @@ export class PerformanceMonitor {
 
     if (delta <= 0) return 0; // Skip invalid frames
 
-    const fps = 1000 / delta;
+    const clampedDelta = Math.max(delta, MIN_FRAME_TIME_MS);
+    const fps = Math.min(1000 / clampedDelta, MAX_SAMPLE_FPS);
     this.frames.push(fps);
 
     // Track min/max FPS
@@ -129,7 +134,7 @@ export class PerformanceMonitor {
   getMetrics(renderer?: THREE.WebGLRenderer): PerformanceMetrics {
     const avgFps = this.getAverageFPS();
     const currentFps = this.getCurrentFPS();
-    
+
     return {
       fps: currentFps,
       avgFps,
@@ -165,14 +170,18 @@ export class PerformanceMonitor {
 
     // Check FPS
     if (avgFps < this.thresholds.minAcceptableFps) {
-      const warning = `⚠️ FPS below threshold: ${avgFps.toFixed(1)} < ${this.thresholds.minAcceptableFps}`;
+      const warning = `⚠️ FPS below threshold: ${avgFps.toFixed(1)} < ${
+        this.thresholds.minAcceptableFps
+      }`;
       this.performanceWarnings.push(warning);
       console.warn(warning);
     }
 
     // Check memory
     if (memoryMB > 0 && memoryMB > this.thresholds.maxMemoryMB) {
-      const warning = `⚠️ Memory usage high: ${memoryMB.toFixed(1)}MB > ${this.thresholds.maxMemoryMB}MB`;
+      const warning = `⚠️ Memory usage high: ${memoryMB.toFixed(1)}MB > ${
+        this.thresholds.maxMemoryMB
+      }MB`;
       this.performanceWarnings.push(warning);
       console.warn(warning);
     }

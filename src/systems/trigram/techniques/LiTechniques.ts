@@ -16,7 +16,7 @@ import {
   DamageType,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 /**
  * ☲ LI (리) - FIRE: Precision Nerve Strikes
@@ -59,7 +59,7 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.15,
     critMultiplier: 1.8,
     effects: [],
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.SPEAR_HAND_STRIKE,
     animationSpeed: 1.3,
   },
   {
@@ -93,7 +93,7 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
-    animationType: AnimationType.ELBOW_STRIKE,
+    animationType: AnimationType.TEMPLE_ELBOW,
     animationSpeed: 1.1,
   },
   {
@@ -127,7 +127,7 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.NERVE_STRIKE,
     animationSpeed: 1.2,
   },
   {
@@ -229,7 +229,7 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
-    animationType: AnimationType.PALM_STRIKE,
+    animationType: AnimationType.SOLAR_PLEXUS_STRIKE,
     animationSpeed: 1.1,
   },
 ];

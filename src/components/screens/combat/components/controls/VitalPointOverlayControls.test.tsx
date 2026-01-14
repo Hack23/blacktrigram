@@ -1,15 +1,15 @@
 /**
  * VitalPointOverlayControls.test.tsx
  * Test suite for vital point overlay control panel
- * 
+ *
  * Note: This component uses @react-three/drei's Html which requires Canvas context.
  * Tests focus on component structure, props, and logical correctness.
  */
 
-import { describe, it, expect, vi } from "vitest";
-import VitalPointOverlayControls from "./VitalPointOverlayControls";
+import { describe, expect, it, vi } from "vitest";
 import { VitalPointSeverity } from "../../../../../types/common";
-import type { BodyRegionFilter } from "./VitalPointMarkers3D";
+import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
+import VitalPointOverlayControls from "./VitalPointOverlayControls";
 
 describe("VitalPointOverlayControls", () => {
   const defaultProps = {
@@ -60,7 +60,7 @@ describe("VitalPointOverlayControls", () => {
         isMobile: true,
         position: [10, 5, 2] as [number, number, number],
       };
-      
+
       expect(propsWithOptional.searchQuery).toBe("test");
       expect(propsWithOptional.onSearchQueryChange).toBeDefined();
       expect(propsWithOptional.isMobile).toBe(true);
@@ -77,7 +77,10 @@ describe("VitalPointOverlayControls", () => {
 
     it("should handle severity filter changes", () => {
       const onSeverityFiltersChange = vi.fn();
-      const newFilters = [VitalPointSeverity.LETHAL, VitalPointSeverity.CRITICAL];
+      const newFilters = [
+        VitalPointSeverity.LETHAL,
+        VitalPointSeverity.CRITICAL,
+      ];
       onSeverityFiltersChange(newFilters);
       expect(onSeverityFiltersChange).toHaveBeenCalledWith(newFilters);
     });
@@ -125,13 +128,19 @@ describe("VitalPointOverlayControls", () => {
 
     it("should allow severity deselection", () => {
       const filters = [VitalPointSeverity.LETHAL];
-      const updated = filters.filter(f => f !== VitalPointSeverity.LETHAL);
+      const updated = filters.filter((f) => f !== VitalPointSeverity.LETHAL);
       expect(updated).toHaveLength(0);
     });
 
     it("should accept all region filter values", () => {
-      const validRegions: BodyRegionFilter[] = ["all", "head", "torso", "arms", "legs"];
-      validRegions.forEach(region => {
+      const validRegions: BodyRegionFilter[] = [
+        "all",
+        "head",
+        "torso",
+        "arms",
+        "legs",
+      ];
+      validRegions.forEach((region) => {
         expect(typeof region).toBe("string");
       });
     });
@@ -142,13 +151,17 @@ describe("VitalPointOverlayControls", () => {
         regionFilter: BodyRegionFilter,
         searchQuery: string
       ) => {
-        return severityFilters.length > 0 || 
-               regionFilter !== "all" || 
-               searchQuery !== "";
+        return (
+          severityFilters.length > 0 ||
+          regionFilter !== "all" ||
+          searchQuery !== ""
+        );
       };
 
       expect(hasActiveFilters([], "all", "")).toBe(false);
-      expect(hasActiveFilters([VitalPointSeverity.LETHAL], "all", "")).toBe(true);
+      expect(hasActiveFilters([VitalPointSeverity.LETHAL], "all", "")).toBe(
+        true
+      );
       expect(hasActiveFilters([], "head", "")).toBe(true);
       expect(hasActiveFilters([], "all", "test")).toBe(true);
     });

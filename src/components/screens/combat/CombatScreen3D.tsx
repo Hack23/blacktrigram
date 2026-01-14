@@ -28,13 +28,11 @@ import {
 } from "../../../systems/ai";
 import {
   AnimationEvents,
-  getAnimationForTechnique,
-} from "../../../systems/animation";
-import {
+  AnimationState,
   determineRecoveryType,
+  getAnimationForTechnique,
   getRecoveryAnimationState,
-} from "../../../systems/animation/RecoveryAnimations";
-import { AnimationState } from "../../../systems/animation/types";
+} from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
@@ -48,9 +46,9 @@ import {
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   FONT_FAMILY,
+  getPerformanceSettings,
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
-  getPerformanceSettings,
 } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -259,7 +257,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Uses performance tier system for extra-small, mobile, and desktop devices
   const renderConfig = useMemo(() => {
     const performanceSettings = getPerformanceSettings(width, isMobile);
-    
+
     return {
       shadowMapSize: performanceSettings.shadowMapSize,
       dpr: performanceSettings.dpr,

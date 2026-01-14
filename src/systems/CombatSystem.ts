@@ -1,7 +1,19 @@
+import * as THREE from "three";
+import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
+import { getTechniqueById } from "../data/techniques";
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { Technique } from "../types/technique";
-import { getTechniqueById } from "../data/techniques";
+import { calculateDistance3D } from "../utils/math";
+import type { DefensiveAnimationType } from "./animation";
+import {
+  AnimationType,
+  calculateSpeedModifierForDamage,
+  determineAnimationTypeForTechnique,
+  getAdjustedAnimationDuration,
+  getAnimationNameForType,
+  isWithinHitWindow,
+} from "./animation";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import {
   applyBreathingDisruptionFromVitalPoint,
@@ -19,6 +31,12 @@ import PainResponseSystem, {
   ShockPainEffect,
 } from "./combat/PainResponseSystem";
 import { CombatResult, CombatSystemInterface } from "./combat/types";
+import {
+  CollisionDetection,
+  KnockbackPhysics,
+  physicalReachCalculator,
+  type KnockbackConfig,
+} from "./physics";
 import { PlayerState } from "./player";
 import {
   addEffectsToPlayer,
@@ -28,20 +46,8 @@ import {
 import { TRIGRAM_TECHNIQUES } from "./trigram";
 import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
-import { calculateDistance3D } from "../utils/math";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
-import {
-  determineAnimationTypeForTechnique,
-  getAnimationNameForType,
-  calculateSpeedModifierForDamage,
-  getAdjustedAnimationDuration,
-} from "./animation/TechniqueAnimationMapper";
-import { AnimationType, isWithinHitWindow } from "./animation";
-import type { DefensiveAnimationType } from "./animation/types";
-import { KnockbackPhysics, type KnockbackConfig, CollisionDetection, physicalReachCalculator } from "./physics";
-import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
-import * as THREE from 'three';
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -94,16 +100,16 @@ export class CombatSystem implements CombatSystemInterface {
     this.shockPainEffects.delete(playerId);
     this.lastHeadTraumaTime.delete(playerId);
   }
-  
+
   /**
    * Dispose of all combat system resources.
-   * 
+   *
    * **Korean**: 전투 시스템 자원 정리
-   * 
+   *
    * Cleans up Three.js resources (geometries, raycaster) used by the collision
    * detection system to prevent memory leaks. Should be called when the
    * CombatSystem is destroyed or reinitialized.
-   * 
+   *
    * @public
    * @korean 전투시스템자원정리
    */
@@ -114,7 +120,7 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Get the balance system instance for fall checking.
-   * 
+   *
    * @returns BalanceSystem instance
    * @public
    * @korean 균형시스템가져오기
@@ -125,7 +131,7 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Get the consciousness system instance for fall checking.
-   * 
+   *
    * @returns ConsciousnessSystem instance
    * @public
    * @korean 의식시스템가져오기
@@ -136,7 +142,7 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Get the collision detection system instance.
-   * 
+   *
    * @returns CollisionDetection instance
    * @public
    * @korean 충돌감지시스템가져오기
@@ -147,26 +153,26 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Calculate knockback physics for combat hit.
-   * 
+   *
    * **Korean**: 밀침 계산 (Calculate Knockback)
-   * 
+   *
    * Determines knockback displacement, duration, and fall state based on:
    * - Attack damage amount
    * - Defender's balance state
    * - Defender's stance resistance
    * - Attack direction vector
-   * 
+   *
    * @param attacker - Attacking player state
    * @param defender - Defending player state
    * @param damage - Total damage dealt
    * @returns Knockback information or undefined if no knockback
-   * 
+   *
    * @example
    * ```typescript
    * const knockback = this.calculateKnockback(attacker, defender, 80);
    * // Returns: { displacement: {x:2.5,y:0,z:0}, duration:0.8, recoveryWindow:0.7, shouldFall:false }
    * ```
-   * 
+   *
    * @private
    * @korean 밀침계산
    */
@@ -219,15 +225,15 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Fix: Update resolveAttack to match interface signature and add animation-aware hit detection
-   * 
+   *
    * **Korean**: 공격 해결 (애니메이션 인식)
-   * 
+   *
    * Integrates animation timing and physical reach calculation for reality-based hit detection.
    * Hits only register when:
    * 1. Animation is in hit window (extension phase)
    * 2. Attacker is within effective reach based on limb length and animation
    * 3. Existing accuracy and stance checks pass
-   * 
+   *
    * @param attacker - Attacking player state
    * @param defender - Defending player state
    * @param technique - Technique being executed
@@ -269,7 +275,7 @@ export class CombatSystem implements CombatSystemInterface {
     // If animation context provided, validate timing and reach
     if (animationContext) {
       const { animationType, currentTime } = animationContext;
-      
+
       // Check if within hit window (extension phase)
       if (!isWithinHitWindow(animationType, currentTime)) {
         return {
@@ -287,23 +293,25 @@ export class CombatSystem implements CombatSystemInterface {
           isBlocked: false,
         };
       }
-      
+
       // Calculate effective reach based on physical attributes and animation
-      const attackerPhysical = getArchetypePhysicalAttributes(attacker.archetype);
+      const attackerPhysical = getArchetypePhysicalAttributes(
+        attacker.archetype
+      );
       const reachResult = physicalReachCalculator.calculateReach(
         attackerPhysical,
         animationType,
         currentTime,
         attacker.currentStance
       );
-      
+
       // Check distance to defender using 3D Euclidean distance
       // Position type is 2D, so default z to 0 for both attacker and defender
       const distance = calculateDistance3D(
         [attacker.position.x, attacker.position.y, 0],
         [defender.position.x, defender.position.y, 0]
       );
-      
+
       // If out of reach, miss
       if (distance > reachResult.effectiveReach) {
         return {
@@ -410,13 +418,13 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Get animation information for a technique
-   * 
+   *
    * Determines the skeletal animation to play, duration, and speed modifier
    * based on technique configuration or automatic determination.
-   * 
+   *
    * @param technique - Korean technique to execute
    * @returns Animation information or undefined
-   * 
+   *
    * @private
    * @korean 기술애니메이션정보가져오기
    */
@@ -426,7 +434,7 @@ export class CombatSystem implements CombatSystemInterface {
     // Check if technique has explicit animation config (from Technique interface)
     // KoreanTechnique may not have animation field, so check the technique data
     const techniqueData = this.getTechniqueData(technique);
-    
+
     let animationType;
     let speedModifier;
 
@@ -455,10 +463,7 @@ export class CombatSystem implements CombatSystemInterface {
     const animationName = getAnimationNameForType(animationType);
 
     // Calculate adjusted duration
-    const duration = getAdjustedAnimationDuration(
-      animationName,
-      speedModifier
-    );
+    const duration = getAdjustedAnimationDuration(animationName, speedModifier);
 
     // Get Korean technique name for display
     const techniqueDisplayName =
@@ -474,10 +479,10 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Get Technique data if this KoreanTechnique has an associated Technique definition
-   * 
+   *
    * @param technique - Korean technique
    * @returns Technique data or null
-   * 
+   *
    * @private
    * @korean 기술데이터가져오기
    */
@@ -495,11 +500,8 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
     // Start with base result
-    const { updatedAttacker, updatedDefender: initialDefender } = CombatSystem.applyCombatResult(
-      result,
-      attacker,
-      defender
-    );
+    const { updatedAttacker, updatedDefender: initialDefender } =
+      CombatSystem.applyCombatResult(result, attacker, defender);
     let updatedDefender = initialDefender;
 
     if (result.hit && result.damage > 0) {
@@ -640,14 +642,14 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Determines body region from combat result for balance disruption.
-   * 
+   *
    * Maps vital points to body regions for balance system integration.
    * Uses string matching on vital point IDs as a pragmatic heuristic since
    * VitalPoint interface doesn't currently include a bodyRegion property.
-   * 
+   *
    * Future improvement: Add bodyRegion: BodyRegion to VitalPoint interface
    * for more robust region mapping without string pattern matching.
-   * 
+   *
    * @param result - Combat result
    * @returns Body region that was struck
    * @private
@@ -659,30 +661,42 @@ export class CombatSystem implements CombatSystemInterface {
       const vitalPoint = this.vitalPointSystem.getVitalPointById(
         result.targetedVitalPointId
       );
-      
+
       if (vitalPoint) {
         const pointId = vitalPoint.id.toLowerCase();
-        
+
         // Check for leg/lower body targets
-        if (pointId.includes('leg') || pointId.includes('knee') || 
-            pointId.includes('ankle') || pointId.includes('thigh')) {
+        if (
+          pointId.includes("leg") ||
+          pointId.includes("knee") ||
+          pointId.includes("ankle") ||
+          pointId.includes("thigh")
+        ) {
           return BodyRegion.LEFT_LEG; // Generic leg for balance disruption
         }
-        
+
         // Check for head targets
-        if (pointId.includes('head') || pointId.includes('temple') || 
-            pointId.includes('jaw') || pointId.includes('nose')) {
+        if (
+          pointId.includes("head") ||
+          pointId.includes("temple") ||
+          pointId.includes("jaw") ||
+          pointId.includes("nose")
+        ) {
           return BodyRegion.HEAD;
         }
-        
+
         // Check for arm targets
-        if (pointId.includes('arm') || pointId.includes('elbow') || 
-            pointId.includes('wrist') || pointId.includes('shoulder')) {
+        if (
+          pointId.includes("arm") ||
+          pointId.includes("elbow") ||
+          pointId.includes("wrist") ||
+          pointId.includes("shoulder")
+        ) {
           return BodyRegion.LEFT_ARM;
         }
       }
     }
-    
+
     // Default to torso for general strikes
     return BodyRegion.TORSO;
   }
@@ -966,10 +980,11 @@ export class CombatSystem implements CombatSystemInterface {
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
       const baseStaminaRegen = regenRate * 3 * effectModifiers.staminaRegen;
       // Apply breathing disruption system's stamina regen modifier
-      const modifiedStaminaRegen = BreathingDisruptionSystem.calculateStaminaRegen(
-        updatedPlayer,
-        baseStaminaRegen
-      );
+      const modifiedStaminaRegen =
+        BreathingDisruptionSystem.calculateStaminaRegen(
+          updatedPlayer,
+          baseStaminaRegen
+        );
       updatedPlayer.stamina = Math.min(
         updatedPlayer.maxStamina,
         updatedPlayer.stamina + modifiedStaminaRegen
@@ -1057,19 +1072,19 @@ export class CombatSystem implements CombatSystemInterface {
 
   /**
    * Process defensive action and determine animation type.
-   * 
+   *
    * Determines the appropriate defensive animation based on:
    * - Defender's balance and stamina (defensive power)
    * - Attacker's technique power
    * - Combat readiness state
-   * 
+   *
    * **Korean**: 방어 행동 처리
-   * 
+   *
    * @param defender - Defending player state
    * @param attacker - Attacking player state (unused but kept for future enhancements)
    * @param attackPower - Power of the incoming attack
    * @returns Defensive animation type to play (parry_deflect, block_success, or guard_break)
-   * 
+   *
    * @example
    * ```typescript
    * const animType = combatSystem.processDefensiveAction(
@@ -1079,7 +1094,7 @@ export class CombatSystem implements CombatSystemInterface {
    * );
    * // Returns: 'parry_deflect', 'block_success', or 'guard_break'
    * ```
-   * 
+   *
    * @public
    * @korean 방어행동처리
    */
@@ -1087,7 +1102,7 @@ export class CombatSystem implements CombatSystemInterface {
     defender: PlayerState,
     _attacker: PlayerState,
     attackPower: number
-  ): Exclude<DefensiveAnimationType, 'guard_recovery'> {
+  ): Exclude<DefensiveAnimationType, "guard_recovery"> {
     // Guard Break: Check balance threshold first (highest priority condition)
     if (defender.balance < 30) {
       return "guard_break";
@@ -1098,16 +1113,17 @@ export class CombatSystem implements CombatSystemInterface {
     // Stamina represents energy reserves (0-100)
     const balanceFactor = defender.balance / 100;
     const staminaFactor = defender.stamina / 100;
-    
+
     // Apply defensive modifiers from effects
     const effectModifiers = getEffectModifiers(defender);
     const defenseMultiplier = effectModifiers.defense;
-    
+
     // Defense stat provides moderate bonus (normalized to 0.5-1.5 range for typical 5-15 defense)
     const defenseBonus = Math.max(0.5, Math.min(1.5, defender.defense / 10));
-    
+
     // Calculate final defensive power
-    const defensePower = balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
+    const defensePower =
+      balanceFactor * staminaFactor * 100 * defenseMultiplier * defenseBonus;
 
     // Determine defensive outcome based on power ratio
     // Parry: Strong defense (1.8x attack power or more) - Perfect deflection

@@ -1,39 +1,39 @@
 /**
  * Consciousness System for managing awareness and cognitive function levels.
- * 
+ *
  * **Korean**: 의식 시스템 (Consciousness System)
- * 
+ *
  * Implements consciousness levels based on head trauma, blood flow restriction,
  * and neural damage. Consciousness affects reaction time, targeting precision,
  * and overall combat effectiveness.
- * 
+ *
  * ## Consciousness Levels
- * 
+ *
  * - **전투각성 (Combat Alert)**: 100% - Full awareness, optimal combat ability
  * - **혼란상태 (Disoriented)**: 70% - Reduced reaction, vulnerability window
  * - **기절직전 (Stunned)**: 40% - Severe impairment, incapacitation opportunity
  * - **무의식 (Unconscious)**: 0% - Complete incapacitation
- * 
+ *
  * ## Fall System Integration
- * 
+ *
  * When consciousness drops below 10%, the system triggers fall animations (낙법).
  * The character loses the ability to stand and collapses to the ground.
  * Fall direction is based on last impact location.
- * 
+ *
  * @module systems/combat/ConsciousnessSystem
  * @category Combat System
  * @korean 의식시스템
  */
 
-import { PlayerState } from "../player";
 import { VitalPointCategory } from "@/types";
-import type { FallType } from "../animation/types";
-import { determineFallFromStance } from "../animation/FallAnimations";
 import type { TrigramStance } from "@/types/common";
+import { determineFallFromStance } from "../animation";
+import type { FallType } from "../animation/core/types";
+import { PlayerState } from "../player";
 
 /**
  * Consciousness levels representing cognitive function and awareness.
- * 
+ *
  * **Korean**: 의식 수준
  */
 export enum ConsciousnessLevel {
@@ -67,34 +67,34 @@ interface ConsciousnessEffects {
 
 /**
  * Consciousness System managing awareness and cognitive function.
- * 
+ *
  * Tracks consciousness damage from:
  * - Head trauma (strikes to head region)
  * - Neurological vital point hits
  * - Blood flow restriction (vascular hits)
  * - Respiratory disruption
- * 
+ *
  * Consciousness naturally recovers over time when not taking damage.
- * 
+ *
  * @example
  * ```typescript
  * const consciousnessSystem = new ConsciousnessSystem();
- * 
+ *
  * // Apply damage from head strike
  * const newPlayer = consciousnessSystem.applyDamage(
  *   player,
  *   15,
  *   VitalPointCategory.NEUROLOGICAL
  * );
- * 
+ *
  * // Check consciousness level
  * const level = consciousnessSystem.getLevel(newPlayer.consciousness);
  * console.log(`Consciousness: ${level}`);
- * 
+ *
  * // Apply recovery over time
  * const recovered = consciousnessSystem.applyRecovery(newPlayer, 1000);
  * ```
- * 
+ *
  * @public
  * @korean 의식시스템
  */
@@ -102,7 +102,10 @@ export class ConsciousnessSystem {
   /**
    * Consciousness level effects and thresholds.
    */
-  private readonly levelEffects: Record<ConsciousnessLevel, ConsciousnessEffects> = {
+  private readonly levelEffects: Record<
+    ConsciousnessLevel,
+    ConsciousnessEffects
+  > = {
     [ConsciousnessLevel.COMBAT_ALERT]: {
       range: [90, 100],
       reactionTimeMultiplier: 1.0,
@@ -154,7 +157,7 @@ export class ConsciousnessSystem {
 
   /**
    * Incapacitation threshold - consciousness <20% renders player helpless.
-   * 
+   *
    * **Korean**: 무력화한계 (Incapacitation Threshold)
    */
   private readonly incapacitationThreshold = 20;
@@ -174,16 +177,16 @@ export class ConsciousnessSystem {
 
   /**
    * Applies consciousness damage from combat.
-   * 
+   *
    * Calculates consciousness reduction based on damage amount and
    * vital point category. Neurological and vascular damage have
    * the highest impact on consciousness.
-   * 
+   *
    * @param player - Current player state
    * @param damage - Base damage amount
    * @param category - Vital point category hit
    * @returns Updated player state with reduced consciousness
-   * 
+   *
    * @example
    * ```typescript
    * // Head strike causes significant consciousness damage
@@ -194,7 +197,7 @@ export class ConsciousnessSystem {
    * );
    * console.log(`Consciousness: ${newPlayer.consciousness}`);
    * ```
-   * 
+   *
    * @public
    * @korean 의식피해적용
    */
@@ -225,29 +228,29 @@ export class ConsciousnessSystem {
 
   /**
    * Applies consciousness recovery over time.
-   * 
+   *
    * Consciousness naturally recovers when not taking damage.
    * Recovery rate depends on current level - severely stunned
    * players recover more slowly.
-   * 
+   *
    * **Note**: Full recovery only occurs after 5 seconds without head trauma.
-   * 
+   *
    * @param player - Current player state
    * @param deltaTime - Time elapsed in milliseconds
    * @param lastHeadTraumaTime - Timestamp of last head trauma (optional)
    * @returns Updated player state with recovered consciousness
-   * 
+   *
    * @example
    * ```typescript
    * // In game loop (60fps, ~16ms per frame)
    * player = system.applyRecovery(player, 16, player.lastActionTime);
    * ```
-   * 
+   *
    * @public
    * @korean 의식회복
    */
   applyRecovery(
-    player: PlayerState, 
+    player: PlayerState,
     deltaTime: number,
     lastHeadTraumaTime?: number
   ): PlayerState {
@@ -257,10 +260,10 @@ export class ConsciousnessSystem {
     }
 
     // Check if enough time has passed since last head trauma
-    const timeSinceTrauma = lastHeadTraumaTime 
-      ? Date.now() - lastHeadTraumaTime 
+    const timeSinceTrauma = lastHeadTraumaTime
+      ? Date.now() - lastHeadTraumaTime
       : Infinity;
-    
+
     // Don't recover if head trauma is recent (within 5 seconds)
     if (timeSinceTrauma < this.noTraumaRecoveryTime) {
       return player;
@@ -289,25 +292,25 @@ export class ConsciousnessSystem {
 
   /**
    * Determines consciousness level from consciousness value.
-   * 
+   *
    * Updated thresholds:
    * - 90-100: Combat Alert
    * - 50-89: Disoriented
    * - 20-49: Stunned
    * - 0-19: Unconscious (incapacitation threshold <20%)
-   * 
+   *
    * @param consciousness - Consciousness value (0-100)
    * @returns Current consciousness level
-   * 
+   *
    * @example
    * ```typescript
    * const level = system.getLevel(75);
    * console.log(level); // DISORIENTED
-   * 
+   *
    * const level2 = system.getLevel(15);
    * console.log(level2); // UNCONSCIOUS (below incapacitation threshold)
    * ```
-   * 
+   *
    * @public
    * @korean 의식수준확인
    */
@@ -320,10 +323,10 @@ export class ConsciousnessSystem {
 
   /**
    * Gets effects for a specific consciousness level.
-   * 
+   *
    * @param level - Consciousness level
    * @returns Effects applied at that level
-   * 
+   *
    * @public
    * @korean 의식효과
    */
@@ -333,12 +336,12 @@ export class ConsciousnessSystem {
 
   /**
    * Applies consciousness effects to player state.
-   * 
+   *
    * Modifies player stats based on current consciousness level.
-   * 
+   *
    * @param player - Current player state
    * @returns Modified player state with consciousness effects
-   * 
+   *
    * @public
    * @korean 의식효과적용
    */
@@ -352,9 +355,7 @@ export class ConsciousnessSystem {
         player.attackPower * (1 - effects.accuracyPenalty)
       ),
       defense: Math.floor(player.defense * (1 - effects.defensePenalty)),
-      technique: Math.floor(
-        player.technique * (1 - effects.accuracyPenalty)
-      ),
+      technique: Math.floor(player.technique * (1 - effects.accuracyPenalty)),
       isStunned:
         player.isStunned ||
         level === ConsciousnessLevel.UNCONSCIOUS ||
@@ -364,14 +365,14 @@ export class ConsciousnessSystem {
 
   /**
    * Checks if player is at incapacitation threshold.
-   * 
+   *
    * **Korean**: 무력화한계 (Incapacitation Threshold)
-   * 
+   *
    * When consciousness drops below 20%, player becomes helpless for 3-5 seconds.
-   * 
+   *
    * @param player - Current player state
    * @returns True if consciousness is below incapacitation threshold (<20%)
-   * 
+   *
    * @example
    * ```typescript
    * if (system.isAtIncapacitationThreshold(player)) {
@@ -380,7 +381,7 @@ export class ConsciousnessSystem {
    *   console.log(`Player helpless for ${helplessDuration}ms`);
    * }
    * ```
-   * 
+   *
    * @public
    * @korean 무력화한계확인
    */
@@ -390,11 +391,11 @@ export class ConsciousnessSystem {
 
   /**
    * Gets random helpless duration when consciousness drops below threshold.
-   * 
+   *
    * Returns a random duration between 3-5 seconds (3000-5000ms).
-   * 
+   *
    * @returns Helpless duration in milliseconds
-   * 
+   *
    * @public
    * @korean 무력화지속시간
    */
@@ -407,12 +408,12 @@ export class ConsciousnessSystem {
 
   /**
    * Checks if enough time has passed for consciousness recovery.
-   * 
+   *
    * Consciousness only recovers after 5 seconds without head trauma.
-   * 
+   *
    * @param lastHeadTraumaTime - Timestamp of last head trauma
    * @returns True if recovery is allowed
-   * 
+   *
    * @public
    * @korean 회복가능확인
    */
@@ -423,28 +424,33 @@ export class ConsciousnessSystem {
 
   /**
    * Checks if player is incapacitated due to consciousness.
-   * 
+   *
    * @param player - Current player state
    * @returns True if player is unconscious
-   * 
+   *
    * @public
    * @korean 무의식확인
    */
   isIncapacitated(player: PlayerState): boolean {
-    return this.getLevel(player.consciousness) === ConsciousnessLevel.UNCONSCIOUS;
+    return (
+      this.getLevel(player.consciousness) === ConsciousnessLevel.UNCONSCIOUS
+    );
   }
 
   /**
    * Gets bilingual name for consciousness level.
-   * 
+   *
    * @param level - Consciousness level
    * @returns Korean and English level names
-   * 
+   *
    * @public
    * @korean 의식이름
    */
   getLevelName(level: ConsciousnessLevel): { korean: string; english: string } {
-    const names: Record<ConsciousnessLevel, { korean: string; english: string }> = {
+    const names: Record<
+      ConsciousnessLevel,
+      { korean: string; english: string }
+    > = {
       [ConsciousnessLevel.COMBAT_ALERT]: {
         korean: "전투각성",
         english: "Combat Alert",
@@ -468,10 +474,10 @@ export class ConsciousnessSystem {
 
   /**
    * Gets description of consciousness level effects.
-   * 
+   *
    * @param level - Consciousness level
    * @returns Bilingual description
-   * 
+   *
    * @public
    * @korean 의식설명
    */
@@ -506,10 +512,10 @@ export class ConsciousnessSystem {
 
   /**
    * Gets color indicator for consciousness level (for UI).
-   * 
+   *
    * @param level - Consciousness level
    * @returns Hex color code
-   * 
+   *
    * @public
    * @korean 의식색상
    */
@@ -526,17 +532,17 @@ export class ConsciousnessSystem {
 
   /**
    * Checks if consciousness is low enough to trigger fall animation.
-   * 
+   *
    * Falls occur when consciousness drops below 10% (UNCONSCIOUS threshold).
    * This represents complete loss of ability to maintain standing position.
-   * 
+   *
    * Korean terminology:
    * - 의식상실낙법 (Uisik Sangsil Nakbeop): Consciousness loss fall
    * - 기절낙하 (Gijeol Nakha): Knockout collapse
-   * 
+   *
    * @param player - Current player state
    * @returns True if fall animation should trigger
-   * 
+   *
    * @example
    * ```typescript
    * if (consciousnessSystem.shouldTriggerFall(player)) {
@@ -547,7 +553,7 @@ export class ConsciousnessSystem {
    *   animationMachine.transitionTo(FALL_TYPE_TO_ANIMATION[fallType]);
    * }
    * ```
-   * 
+   *
    * @public
    * @korean 의식상실낙법확인
    */
@@ -557,20 +563,20 @@ export class ConsciousnessSystem {
 
   /**
    * Determines fall direction based on last impact and stance.
-   * 
+   *
    * When consciousness is lost, fall direction is determined by:
    * - Last attack angle (if available)
    * - Current stance bias (if no attack data)
    * - Default to backward fall (natural collapse)
-   * 
+   *
    * Korean falling from consciousness loss:
    * - 후방의식상실 (Hubang Uisik Sangsil): Backward consciousness loss fall
    * - 전방기절 (Jeonbang Gijeol): Forward knockout
-   * 
+   *
    * @param player - Current player state
    * @param lastImpactAngle - Angle of last hit (optional)
    * @returns Fall type to use for animation
-   * 
+   *
    * @example
    * ```typescript
    * // Player loses consciousness from frontal head strike
@@ -579,34 +585,31 @@ export class ConsciousnessSystem {
    *   0 // Front angle
    * );
    * // Returns: 'backward' (knocked back by frontal strike)
-   * 
+   *
    * // Player loses consciousness without specific impact
    * const fallType = consciousnessSystem.determineFallType(player);
    * // Returns: Stance-based fall or 'backward' default
    * ```
-   * 
+   *
    * @public
    * @korean 의식상실낙법결정
    */
-  determineFallType(
-    _player: PlayerState,
-    lastImpactAngle?: number
-  ): FallType {
+  determineFallType(_player: PlayerState, lastImpactAngle?: number): FallType {
     // If we have impact angle, use simple direction logic
     if (lastImpactAngle !== undefined) {
       const normalizedAngle = Math.abs(lastImpactAngle);
-      
+
       // Front impact (0° ±45°) causes backward fall
       if (normalizedAngle < Math.PI / 4) {
         return "backward";
       }
-      
+
       // Rear impact (180° ±45°) causes forward fall
       // Since normalizedAngle is in [0, π], any angle > 3π/4 is a rear impact
       if (normalizedAngle > (3 * Math.PI) / 4) {
         return "forward";
       }
-      
+
       // Side impacts: at this point normalizedAngle is in (π/4, 3π/4),
       // so lastImpactAngle cannot be 0 or ±π.
       if (lastImpactAngle < 0) {
@@ -621,23 +624,23 @@ export class ConsciousnessSystem {
       // natural backward collapse rather than a side fall.
       return "backward";
     }
-    
+
     // Default to backward fall (natural collapse from consciousness loss)
     return "backward";
   }
 
   /**
    * Determines fall type based on stance when consciousness is lost.
-   * 
+   *
    * Uses stance bias to determine fall direction when consciousness
    * is lost without specific impact data.
-   * 
+   *
    * Korean terminology:
    * - 자세의식상실 (Jase Uisik Sangsil): Stance-based consciousness loss
-   * 
+   *
    * @param stance - Current trigram stance
    * @returns Fall type based on stance characteristics
-   * 
+   *
    * @example
    * ```typescript
    * // Player in Mountain stance (defensive back)
@@ -646,7 +649,7 @@ export class ConsciousnessSystem {
    * );
    * // Returns: 'backward' (Mountain has defensive backward bias)
    * ```
-   * 
+   *
    * @public
    * @korean 자세의식상실낙법
    */

@@ -230,8 +230,13 @@ export const useWebGLContextLossHandler = (
       }
     };
 
-    // Start with initial delay to let Canvas mount
-    retryTimeout = setTimeout(tryFindCanvas, mountDelay);
+    // Attach immediately if a canvas is already mounted, otherwise retry
+    canvas = canvasRef?.current ?? document.querySelector("canvas");
+    if (canvas) {
+      cleanupFn = attachListeners(canvas);
+    } else {
+      retryTimeout = setTimeout(tryFindCanvas, mountDelay);
+    }
 
     // Cleanup
     return () => {

@@ -29,7 +29,8 @@ beforeAll(() => {
     src = "";
     crossOrigin = null;
     preload = "auto";
-    private eventListeners: Map<string, Set<(...args: any[]) => void>> = new Map();
+    private eventListeners: Map<string, Set<(...args: any[]) => void>> =
+      new Map();
 
     constructor(src?: string) {
       if (src) {
@@ -45,25 +46,33 @@ beforeAll(() => {
       this.play = vi.fn(() => Promise.resolve());
       this.pause = vi.fn();
       this.load = vi.fn();
-      
+
       // Track event listeners and trigger load events automatically
-      this.addEventListener = vi.fn((event: string, handler: (...args: any[]) => void) => {
-        if (!this.eventListeners.has(event)) {
-          this.eventListeners.set(event, new Set());
+      this.addEventListener = vi.fn(
+        (event: string, handler: (...args: any[]) => void) => {
+          if (!this.eventListeners.has(event)) {
+            this.eventListeners.set(event, new Set());
+          }
+          this.eventListeners.get(event)!.add(handler);
+
+          // Automatically trigger canplaythrough event after a microtask
+          if (
+            event === "canplaythrough" ||
+            event === "loadeddata" ||
+            event === "load"
+          ) {
+            queueMicrotask(() => {
+              handler();
+            });
+          }
         }
-        this.eventListeners.get(event)!.add(handler);
-        
-        // Automatically trigger canplaythrough event after a microtask
-        if (event === "canplaythrough" || event === "loadeddata" || event === "load") {
-          queueMicrotask(() => {
-            handler();
-          });
+      );
+
+      this.removeEventListener = vi.fn(
+        (event: string, handler: (...args: any[]) => void) => {
+          this.eventListeners.get(event)?.delete(handler);
         }
-      });
-      
-      this.removeEventListener = vi.fn((event: string, handler: (...args: any[]) => void) => {
-        this.eventListeners.get(event)?.delete(handler);
-      });
+      );
     }
   }
 
@@ -172,6 +181,7 @@ beforeAll(() => {
   }
 
   global.HTMLCanvasElement = EnhancedMockHTMLCanvasElement as any;
+  (window as any).HTMLCanvasElement = EnhancedMockHTMLCanvasElement as any;
 
   // Mock requestAnimationFrame
   global.requestAnimationFrame = vi.fn((cb) => window.setTimeout(cb, 16));
@@ -207,17 +217,42 @@ beforeAll(() => {
 
   // Console warning suppression for cleaner test output
   const originalWarn = console.warn;
+  const originalError = console.error;
+
+  const suppressReactThreeMessage = (input: unknown): boolean => {
+    if (typeof input !== "string") return false;
+    return (
+      input.includes("is using incorrect casing") ||
+      input.includes("The tag <") ||
+      input.includes("is unrecognized in this browser") ||
+      input.includes("React does not recognize the `") ||
+      input.includes("Received `true` for a non-boolean attribute") ||
+      input.includes("sizeAttenuation") ||
+      input.includes("itemSize") ||
+      input.includes("shadow-mapSize") ||
+      input.includes("polygonOffset") ||
+      input.includes("wireframe") ||
+      input.includes("transparent")
+    );
+  };
+
   console.warn = (...args) => {
-    // Suppress specific warnings that are expected in test environment
     const message = args[0];
     if (
-      typeof message === "string" &&
-      (message.includes("WebGL") ||
-        message.includes("AudioContext"))
+      (typeof message === "string" &&
+        (message.includes("WebGL") || message.includes("AudioContext"))) ||
+      suppressReactThreeMessage(message)
     ) {
       return;
     }
     originalWarn(...args);
+  };
+
+  console.error = (...args) => {
+    if (suppressReactThreeMessage(args[0])) {
+      return;
+    }
+    originalError(...args);
   };
 });
 

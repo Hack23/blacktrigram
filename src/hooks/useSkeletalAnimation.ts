@@ -14,18 +14,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  batchUpdateBones,
   getAnimation,
   getAnimationByName,
   getAttackAnimation,
   getDefensiveAnimation,
   getFootworkAnimation,
   getStepAnimation,
-} from "../systems/animation";
-import {
-  batchUpdateBones,
   interpolateKeyframeCached,
   performanceMonitor,
-} from "../systems/animation/AnimationOptimizations";
+} from "../systems/animation";
 import type { TrigramStance } from "../types/common";
 import type { PlayerAnimation } from "../types/player-visual";
 import type {
@@ -138,24 +136,26 @@ export function useSkeletalAnimation(
     // Reset animation time whenever animation changes
     animTimeRef.current = 0;
 
-    let selectedAnim: SkeletalAnimation | undefined;
+    let selectedAnim: SkeletalAnimation | null = null;
     let playbackSpeed = 1.0;
     let shouldClearDiagonalRotation = true;
 
     if (currentAnimation === "attack" && attackAnimation) {
       // Attack animation - first check stance-specific attacks, then generic
       selectedAnim =
-        getAttackAnimation(attackAnimation) ?? getAnimation(attackAnimation);
+        getAttackAnimation(attackAnimation) ??
+        getAnimation(attackAnimation) ??
+        null;
       playbackSpeed = 1.0;
     } else if (currentAnimation === "defend" || isBlocking) {
       // Block/defend animation - check stance-specific defensive animations first
       // If attackAnimation contains a defensive animation name, use it
       if (attackAnimation) {
-        selectedAnim = getDefensiveAnimation(attackAnimation);
+        selectedAnim = getDefensiveAnimation(attackAnimation) ?? null;
       }
       // Fall back to generic block animation
       if (!selectedAnim) {
-        selectedAnim = getAnimation("block");
+        selectedAnim = getAnimation("block") ?? null;
       }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "idle") {
@@ -163,42 +163,42 @@ export function useSkeletalAnimation(
       // Otherwise fall back to generic idle breathing animation
       if (stance) {
         const stanceIdleAnim = `stance_${stance}` as PlayerAnimation;
-        selectedAnim = getAnimationByName(stanceIdleAnim);
+        selectedAnim = getAnimationByName(stanceIdleAnim) ?? null;
       }
       // Fall back to generic idle if no stance or stance animation not found
       if (!selectedAnim) {
-        selectedAnim = getAnimation("idle");
+        selectedAnim = getAnimation("idle") ?? null;
       }
       playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
       // Walking animation - use trigram-specific walk if stance is provided
       if (stance) {
         const stanceWalkAnim = `walk_${stance}` as PlayerAnimation;
-        selectedAnim = getAnimationByName(stanceWalkAnim);
+        selectedAnim = getAnimationByName(stanceWalkAnim) ?? null;
       }
       // Fall back to generic walk if no stance or stance animation not found
       if (!selectedAnim) {
-        selectedAnim = getAnimation("walk");
+        selectedAnim = getAnimation("walk") ?? null;
       }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "run") {
       // Running animation - use trigram-specific run if stance is provided
       if (stance) {
         const stanceRunAnim = `run_${stance}` as PlayerAnimation;
-        selectedAnim = getAnimationByName(stanceRunAnim);
+        selectedAnim = getAnimationByName(stanceRunAnim) ?? null;
       }
       // Fall back to generic run if no stance or stance animation not found
       if (!selectedAnim) {
-        selectedAnim = getAnimation("run");
+        selectedAnim = getAnimation("run") ?? null;
       }
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("fall_")) {
       // Fall animations - directional falls from BasicAnimations
-      selectedAnim = getAnimation(currentAnimation);
+      selectedAnim = getAnimation(currentAnimation) ?? null;
       playbackSpeed = 1.0;
     } else if (currentAnimation === "stance_change") {
       // Stance change animation
-      selectedAnim = getAnimation("idle_stance");
+      selectedAnim = getAnimation("idle_stance") ?? null;
       playbackSpeed = 1.2; // Slightly faster for responsiveness
     } else if (currentAnimation === "hit") {
       // Hit reaction - stop animation
@@ -210,7 +210,7 @@ export function useSkeletalAnimation(
       return;
     } else if (currentAnimation?.startsWith("step_")) {
       // Tactical step animation
-      selectedAnim = getStepAnimation(currentAnimation);
+      selectedAnim = getStepAnimation(currentAnimation) ?? null;
       playbackSpeed = 1.0;
 
       // Handle diagonal step rotation
@@ -221,16 +221,16 @@ export function useSkeletalAnimation(
       }
     } else if (currentAnimation?.startsWith("footwork_")) {
       // Footwork pattern animation
-      selectedAnim = getFootworkAnimation(currentAnimation);
+      selectedAnim = getFootworkAnimation(currentAnimation) ?? null;
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("stance_")) {
       // Stance-specific idle animation with proper biomechanics
       // Use getAnimationByName which searches ALL_ANIMATIONS (includes STANCE_ANIMATIONS)
-      selectedAnim = getAnimationByName(currentAnimation);
+      selectedAnim = getAnimationByName(currentAnimation) ?? null;
       playbackSpeed = 0.5; // Slow breathing animation for stance idle
     } else {
       // Idle animation (fallback)
-      selectedAnim = getAnimation("idle_stance");
+      selectedAnim = getAnimation("idle_stance") ?? null;
       playbackSpeed = 0.5; // Slow breathing animation
     }
 
@@ -239,17 +239,14 @@ export function useSkeletalAnimation(
       setDiagonalRotationY(null);
     }
 
-    // Update animation state
-    if (selectedAnim) {
-      setAnimState({
-        currentAnimation: selectedAnim,
-        currentTime: 0,
-        isPlaying: true,
-        playbackSpeed,
-        previousKeyframeIndex: 0,
-        nextKeyframeIndex: 1,
-      });
-    }
+    setAnimState({
+      currentAnimation: selectedAnim,
+      currentTime: 0,
+      isPlaying: true,
+      playbackSpeed,
+      previousKeyframeIndex: 0,
+      nextKeyframeIndex: 1,
+    });
   }, [currentAnimation, attackAnimation, isBlocking, stance]);
 
   // Update animation and apply to rig (called at 60fps in useFrame)

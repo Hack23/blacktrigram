@@ -3,11 +3,15 @@ import {
   TrigramStance,
   VitalPointSeverity,
 } from "../../types/common";
+import {
+  calculateHipRotationPowerModifier,
+  calculateKickPowerFromHipRotation,
+  type HipRotationState,
+  type KickType,
+} from "../animation";
 import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
 import { StatusEffect } from "../types";
-import { calculateHipRotationPowerModifier } from "../animation/SkeletonRig";
-import { calculateKickPowerFromHipRotation, type HipRotationState, type KickType } from "../animation/AdvancedJointMovements";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
 import {
@@ -304,21 +308,28 @@ export class DamageCalculator {
     // 8. Hip rotation power modifier (허리회전 파워 보너스)
     // Determine technique type for appropriate modifier calculation
     let hipRotationModifier = 1.0;
-    
+
     // Check if this is a kick technique and we have kick-specific hip state
-    const techniqueName = technique.name?.english || technique.englishName || '';
-    const isKickTechnique = technique.type === 'kick' || 
-                           techniqueName.toLowerCase().includes('kick');
-    
+    const techniqueName =
+      technique.name?.english || technique.englishName || "";
+    const isKickTechnique =
+      technique.type === "kick" || techniqueName.toLowerCase().includes("kick");
+
     if (kickHipState && isKickTechnique) {
       // Use advanced kick-specific hip rotation calculation (up to 40% bonus)
       const kickType = DamageCalculator.determineKickType(techniqueName);
-      hipRotationModifier = calculateKickPowerFromHipRotation(kickHipState, kickType);
+      hipRotationModifier = calculateKickPowerFromHipRotation(
+        kickHipState,
+        kickType
+      );
     } else if (hipRotationAngle !== 0) {
       // Use general hip rotation for strikes/throws/joints (up to 30% bonus)
-      const techniqueType: 'strike' | 'throw' | 'joint' = 
-        technique.type === 'throw' ? 'throw' :
-        technique.type === 'joint_lock' ? 'joint' : 'strike';
+      const techniqueType: "strike" | "throw" | "joint" =
+        technique.type === "throw"
+          ? "throw"
+          : technique.type === "joint_lock"
+          ? "joint"
+          : "strike";
       hipRotationModifier = calculateHipRotationPowerModifier(
         hipRotationAngle,
         techniqueType
@@ -366,30 +377,46 @@ export class DamageCalculator {
 
   /**
    * Determine kick type from technique name for hip rotation power calculation
-   * 
+   *
    * @param techniqueName - Name of the technique
    * @returns Kick type for hip rotation calculation
-   * 
+   *
    * @private
    * @korean 차기유형결정
    */
   private static determineKickType(techniqueName: string): KickType {
     const name = techniqueName.toLowerCase();
-    
-    if (name.includes('front') || name.includes('앞차기') || name.includes('snap')) {
-      return 'front';
-    } else if (name.includes('roundhouse') || name.includes('돌려차기') || name.includes('round')) {
-      return 'roundhouse';
-    } else if (name.includes('side') || name.includes('옆차기') || name.includes('lateral')) {
-      return 'side';
-    } else if (name.includes('hook') || name.includes('후려차기')) {
-      return 'hook';
-    } else if (name.includes('axe') || name.includes('내려차기') || name.includes('downward')) {
-      return 'axe';
+
+    if (
+      name.includes("front") ||
+      name.includes("앞차기") ||
+      name.includes("snap")
+    ) {
+      return "front";
+    } else if (
+      name.includes("roundhouse") ||
+      name.includes("돌려차기") ||
+      name.includes("round")
+    ) {
+      return "roundhouse";
+    } else if (
+      name.includes("side") ||
+      name.includes("옆차기") ||
+      name.includes("lateral")
+    ) {
+      return "side";
+    } else if (name.includes("hook") || name.includes("후려차기")) {
+      return "hook";
+    } else if (
+      name.includes("axe") ||
+      name.includes("내려차기") ||
+      name.includes("downward")
+    ) {
+      return "axe";
     }
-    
+
     // Default to front kick for unknown kick types
-    return 'front';
+    return "front";
   }
 
   /**

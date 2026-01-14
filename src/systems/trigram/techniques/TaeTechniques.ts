@@ -16,7 +16,7 @@ import {
   DamageType,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 /**
  * ☱ TAE (태) - LAKE: Fluid Joint Manipulation
@@ -127,7 +127,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.SMALL_CIRCLE_LOCK,
     animationSpeed: 0.85,
   },
   {
@@ -161,7 +161,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.1,
     critMultiplier: 1.4,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.9,
   },
   {
@@ -195,7 +195,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.ELBOW_LOCK,
     animationSpeed: 0.8,
   },
   {
@@ -229,7 +229,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.SHOULDER_MANIPULATION,
     animationSpeed: 0.8,
   },
   {
@@ -263,7 +263,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.ARM_BAR,
     animationSpeed: 0.75,
   },
 ];

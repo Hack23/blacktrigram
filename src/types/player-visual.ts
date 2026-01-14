@@ -10,7 +10,7 @@
  * @korean 플레이어시각타입
  */
 
-import type { BodyFacing } from "../systems/animation/types";
+import type { BodyFacing } from "../systems/animation/core/types";
 import type { PlayerArchetype, TrigramStance } from "./common";
 import type { FacialDamageState, FacialExpression } from "./facial";
 

@@ -1,18 +1,18 @@
 /**
  * Performance Debug Overlay
- * 
+ *
  * Shows real-time animation performance metrics in development mode.
  * Displays frame times, cache hit rate, and object pool status.
- * 
+ *
  * Only visible in development mode.
- * 
+ *
  * @module components/shared/debug/PerformanceDebugOverlay
  * @category Debug
  * @korean 성능디버그오버레이
  */
 
 import React, { useEffect, useState } from "react";
-import { performanceMonitor } from "../../../systems/animation/AnimationOptimizations";
+import { performanceMonitor } from "../../../systems/animation";
 import { ThreeObjectPools } from "../../../utils/threeObjectPool";
 
 /**
@@ -39,14 +39,14 @@ interface PoolStatus {
 
 /**
  * Performance Debug Overlay Component
- * 
+ *
  * Shows real-time animation performance metrics:
  * - Average/max frame times
  * - Cache hit rate
  * - Object pool utilization
- * 
+ *
  * Only renders in development mode.
- * 
+ *
  * @returns Performance overlay or null in production
  * @korean 성능디버그오버레이컴포넌트
  */
@@ -90,15 +90,15 @@ export const PerformanceDebugOverlay: React.FC = () => {
     metrics.avgFrameTime < 5
       ? "#0f0" // Green: Target met
       : metrics.avgFrameTime < 8
-        ? "#ff0" // Yellow: Warning
-        : "#f00"; // Red: Critical
+      ? "#ff0" // Yellow: Warning
+      : "#f00"; // Red: Critical
 
   const cacheColor =
     metrics.cacheHitRate > 0.9
       ? "#0f0" // Green: Excellent
       : metrics.cacheHitRate > 0.7
-        ? "#ff0" // Yellow: Good
-        : "#f00"; // Red: Poor
+      ? "#ff0" // Yellow: Good
+      : "#f00"; // Red: Poor
 
   return (
     <div
@@ -190,13 +190,17 @@ export const PerformanceDebugOverlay: React.FC = () => {
       </div>
 
       {/* Performance Status */}
-      <div style={{ borderTop: "1px solid #0ff", marginTop: "8px", paddingTop: "6px" }}>
+      <div
+        style={{
+          borderTop: "1px solid #0ff",
+          marginTop: "8px",
+          paddingTop: "6px",
+        }}
+      >
         <div style={{ fontSize: "10px" }}>
           <span style={{ color: "#888" }}>Status: </span>
           {metrics.avgFrameTime < 5 && metrics.cacheHitRate > 0.9 ? (
-            <span style={{ color: "#0f0", fontWeight: "bold" }}>
-              ✓ OPTIMAL
-            </span>
+            <span style={{ color: "#0f0", fontWeight: "bold" }}>✓ OPTIMAL</span>
           ) : metrics.avgFrameTime < 8 && metrics.cacheHitRate > 0.7 ? (
             <span style={{ color: "#ff0" }}>⚠ GOOD</span>
           ) : (

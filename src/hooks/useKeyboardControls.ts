@@ -1,43 +1,43 @@
 /**
  * Custom hook for keyboard controls with visual feedback
  * Manages keyboard input for trigram stance switching and combat actions
- * 
+ *
  * @module hooks/useKeyboardControls
  * @category Input System
  * @korean 키보드 컨트롤 훅
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/core/types";
 import { ControlMapper } from "../utils/controlMapping";
-import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/types";
 
 // Korean terminology constants (module-level to avoid recreation on every keystroke)
 const DIAGONAL_KOREAN_TERMS: Record<string, string> = {
-  "step_forward_left": "전좌측보법 (Forward-Left)",
-  "step_forward_right": "전우측보법 (Forward-Right)",
-  "step_back_left": "후좌측보법 (Back-Left)",
-  "step_back_right": "후우측보법 (Back-Right)",
+  step_forward_left: "전좌측보법 (Forward-Left)",
+  step_forward_right: "전우측보법 (Forward-Right)",
+  step_back_left: "후좌측보법 (Back-Left)",
+  step_back_right: "후우측보법 (Back-Right)",
 };
 
 const STEP_KOREAN_TERMS: Record<string, string> = {
-  "step_forward": "전진보법 (Forward Step)",
-  "step_back": "후퇴보법 (Retreat Step)",
-  "step_left": "좌측면보법 (Left Step)",
-  "step_right": "우측면보법 (Right Step)",
+  step_forward: "전진보법 (Forward Step)",
+  step_back: "후퇴보법 (Retreat Step)",
+  step_left: "좌측면보법 (Left Step)",
+  step_right: "우측면보법 (Right Step)",
 };
 
 // Footwork pattern Korean terminology - maps animation states to display names
 // Reuses FOOTWORK_KOREAN_TERMS from types.ts but adds specific animation state labels
 const FOOTWORK_DISPLAY_TERMS: Record<string, string> = {
-  "footwork_circular_left": `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
-  "footwork_circular_right": `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
-  "footwork_pivot_left": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
-  "footwork_pivot_right": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
-  "footwork_slide_forward": `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
-  "footwork_slide_back": `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
-  "footwork_slide_left": `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
-  "footwork_slide_right": `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
-  "footwork_shuffle": `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
+  footwork_circular_left: `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
+  footwork_circular_right: `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
+  footwork_pivot_left: `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
+  footwork_pivot_right: `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
+  footwork_slide_forward: `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
+  footwork_slide_back: `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
+  footwork_slide_left: `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
+  footwork_slide_right: `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
+  footwork_shuffle: `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
 };
 
 // Step direction mapping (all move_* actions covered explicitly)
@@ -101,7 +101,7 @@ const QUEUE_RETENTION_TIME = 2000;
 
 /**
  * Custom hook for handling keyboard controls with visual feedback
- * 
+ *
  * Features:
  * - Trigram stance switching (1-8 keys or custom bindings)
  * - Combat action handling (attack, block, movement)
@@ -109,7 +109,7 @@ const QUEUE_RETENTION_TIME = 2000;
  * - Keyboard hints toggle (F1)
  * - Invalid input prevention
  * - Audio feedback integration
- * 
+ *
  * @example
  * ```typescript
  * const { queuedInputs, showHints, toggleHints } = useKeyboardControls({
@@ -120,7 +120,7 @@ const QUEUE_RETENTION_TIME = 2000;
  *   playSFX: audio.playSFX,
  * });
  * ```
- * 
+ *
  * @public
  * @korean 키보드컨트롤사용
  */
@@ -137,7 +137,7 @@ export function useKeyboardControls({
   const [showHints, setShowHints] = useState(false);
   const controlMapperRef = useRef<ControlMapper>(new ControlMapper());
   const lastStanceChangeRef = useRef<number>(0);
-  
+
   // Track currently pressed keys for diagonal step detection
   const pressedKeysRef = useRef<Set<string>>(new Set());
 
@@ -157,17 +157,17 @@ export function useKeyboardControls({
       return newState;
     });
   }, [onToggleHints, playSFX]);
-  
+
   /**
    * Detect diagonal step direction from pressed keys
    * Returns step action for diagonal or null if not diagonal
-   * 
+   *
    * @korean 대각선발걸음감지
    */
   const getDiagonalStepAction = useCallback((): string | null => {
     const keys = pressedKeysRef.current;
     const mapper = controlMapperRef.current;
-    
+
     // Check for forward diagonals
     if (keys.has(mapper.getBindings().movement.up.toLowerCase())) {
       if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {
@@ -177,7 +177,7 @@ export function useKeyboardControls({
         return "step_forward_right"; // 전우측보법
       }
     }
-    
+
     // Check for backward diagonals
     if (keys.has(mapper.getBindings().movement.down.toLowerCase())) {
       if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {
@@ -187,7 +187,7 @@ export function useKeyboardControls({
         return "step_back_right"; // 후우측보법
       }
     }
-    
+
     return null;
   }, []);
 
@@ -216,7 +216,9 @@ export function useKeyboardControls({
       const now = Date.now();
       setQueuedInputs((prev) => {
         if (prev.length === 0) return prev;
-        return prev.filter((input) => now - input.timestamp < QUEUE_RETENTION_TIME);
+        return prev.filter(
+          (input) => now - input.timestamp < QUEUE_RETENTION_TIME
+        );
       });
     }, 500);
 
@@ -234,7 +236,7 @@ export function useKeyboardControls({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const mapper = controlMapperRef.current;
-      
+
       // Track pressed keys for diagonal detection
       pressedKeysRef.current.add(e.key.toLowerCase());
 
@@ -255,7 +257,7 @@ export function useKeyboardControls({
       // Recovery input detection (기상 입력 감지)
       // When player is in ground state, any button triggers recovery options
       const isGrounded = currentAnimationState?.startsWith("ground_");
-      
+
       if (isGrounded) {
         // Space: Quick/default recovery
         if (e.key === " ") {
@@ -265,7 +267,7 @@ export function useKeyboardControls({
           if (playSFX) playSFX("stance_change");
           return;
         }
-        
+
         // R or Enter: Roll recovery (회전기상) - fast but costs stamina
         if (e.key.toLowerCase() === "r" || e.key === "Enter") {
           e.preventDefault();
@@ -274,7 +276,7 @@ export function useKeyboardControls({
           if (playSFX) playSFX("stance_change");
           return;
         }
-        
+
         // Shift: Defensive getup (방어기상) - slow but protected
         if (e.shiftKey) {
           e.preventDefault();
@@ -283,7 +285,7 @@ export function useKeyboardControls({
           if (playSFX) playSFX("stance_change");
           return;
         }
-        
+
         // If grounded, don't process other inputs (can't attack/move while down)
         return;
       }
@@ -349,7 +351,7 @@ export function useKeyboardControls({
             if (e.altKey) {
               // Alt modifier for slide left/right footwork patterns
               let slideFootwork: string | null = null;
-              
+
               if (action === "move_left") {
                 // Alt+A: Slide left (미끄럼보 좌)
                 slideFootwork = "footwork_slide_left";
@@ -357,7 +359,7 @@ export function useKeyboardControls({
                 // Alt+D: Slide right (미끄럼보 우)
                 slideFootwork = "footwork_slide_right";
               }
-              
+
               if (slideFootwork) {
                 onAction(slideFootwork);
                 addToQueue(
@@ -369,7 +371,7 @@ export function useKeyboardControls({
             } else if (e.shiftKey && e.ctrlKey) {
               // Shift+Ctrl modifier for advanced footwork patterns
               let advancedFootwork: string | null = null;
-              
+
               if (action === "move_left") {
                 // Shift+Ctrl+A: Pivot left (축족회전 좌)
                 advancedFootwork = "footwork_pivot_left";
@@ -380,11 +382,12 @@ export function useKeyboardControls({
                 // Shift+Ctrl+W or Shift+Ctrl+S: Shuffle step (섞음보)
                 advancedFootwork = "footwork_shuffle";
               }
-              
+
               if (advancedFootwork) {
                 onAction(advancedFootwork);
                 addToQueue(
-                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ?? "Advanced Footwork",
+                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ??
+                    "Advanced Footwork",
                   `Shift+Ctrl+${e.key}`
                 );
                 if (playSFX) playSFX("footstep");
@@ -392,7 +395,7 @@ export function useKeyboardControls({
             } else if (e.ctrlKey) {
               // Footwork patterns with Ctrl+WASD
               let footworkAction: string | null = null;
-              
+
               if (action === "move_left") {
                 // Ctrl+A: Circular step left (원형보)
                 footworkAction = "footwork_circular_left";
@@ -406,7 +409,7 @@ export function useKeyboardControls({
                 // Ctrl+S: Slide back (미끄럼보)
                 footworkAction = "footwork_slide_back";
               }
-              
+
               if (footworkAction) {
                 onAction(footworkAction);
                 addToQueue(
@@ -419,22 +422,28 @@ export function useKeyboardControls({
               // Check if Shift is held for tactical step instead of walk
               // Check for diagonal step first
               const diagonalStep = getDiagonalStepAction();
-              
+
               if (diagonalStep) {
                 // Diagonal tactical step
                 onAction(diagonalStep);
-                
-                addToQueue(DIAGONAL_KOREAN_TERMS[diagonalStep] ?? "Diagonal Step", `Shift+${e.key}`);
-                
+
+                addToQueue(
+                  DIAGONAL_KOREAN_TERMS[diagonalStep] ?? "Diagonal Step",
+                  `Shift+${e.key}`
+                );
+
                 if (playSFX) playSFX("footstep");
               } else {
                 // Cardinal direction tactical step
                 // Map move_up/move_down to step_forward/step_back to match AnimationState
                 const stepDirection = STEP_DIRECTION_MAP[action];
                 onAction(stepDirection);
-                
-                addToQueue(STEP_KOREAN_TERMS[stepDirection] ?? "Step", `Shift+${e.key}`);
-                
+
+                addToQueue(
+                  STEP_KOREAN_TERMS[stepDirection] ?? "Step",
+                  `Shift+${e.key}`
+                );
+
                 if (playSFX) playSFX("footstep");
               }
             } else {
@@ -467,7 +476,7 @@ export function useKeyboardControls({
         }
       }
     };
-    
+
     const handleKeyUp = (e: KeyboardEvent) => {
       // Remove key from pressed keys set
       pressedKeysRef.current.delete(e.key.toLowerCase());
@@ -475,7 +484,7 @@ export function useKeyboardControls({
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);

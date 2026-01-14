@@ -8,22 +8,20 @@ export { TrainingScreen3D } from "./screens/training";
 
 // Shared Three.js UI components (explicit exports to avoid naming conflicts)
 export {
+  ArchetypeCard,
   KoreanButton,
   KoreanPanel,
   KoreanText as KoreanText3D,
   MenuList,
-  ArchetypeCard,
   ProgressBar,
-  KoreanUIDemo,
 } from "./shared/three";
 export type {
+  ArchetypeCardProps,
   KoreanButtonProps,
   KoreanPanelProps,
   KoreanTextProps,
-  MenuListProps,
   MenuItem,
-  ArchetypeCardProps,
+  MenuListProps,
   ProgressBarProps,
   ProgressBarType,
-  KoreanUIDemoProps,
 } from "./shared/three";

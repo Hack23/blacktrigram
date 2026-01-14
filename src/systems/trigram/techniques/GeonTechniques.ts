@@ -16,7 +16,7 @@ import {
   DamageType,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 /**
  * ☰ GEON (건) - HEAVEN: Direct Force Techniques
@@ -59,7 +59,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.1,
     critMultiplier: 1.5,
     effects: [],
-    animationType: AnimationType.CROSS,
+    animationType: AnimationType.HEAVEN_STRIKE,
     animationSpeed: 1.0,
   },
   {
@@ -161,7 +161,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
-    animationType: AnimationType.ROUNDHOUSE_KICK,
+    animationType: AnimationType.GEON_ROUNDHOUSE,
     animationSpeed: 1.0,
   },
   {
@@ -263,7 +263,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
-    animationType: AnimationType.ELBOW_STRIKE,
+    animationType: AnimationType.CRUSHING_ELBOW,
     animationSpeed: 1.1,
   },
 ];
