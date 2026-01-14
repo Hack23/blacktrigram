@@ -18,7 +18,6 @@ import {
   createTechniqueWithRecovery,
   validateRecoveryPhase,
   calculateMuscleTension,
-  type RecoveryPhaseConfig,
 } from "./RecoveryPhaseEnhancer";
 import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
@@ -112,11 +111,16 @@ describe("RecoveryPhaseEnhancer", () => {
       const intermediateFrame = enhanced.keyframes[enhanced.keyframes.length - 2];
       
       // Check shoulder rotation is 20% of peak (80% back to neutral)
-      const peakRotation = peakKeyframe.boneRotations.get(BoneName.SHOULDER_R)!;
-      const intermediateRotation = intermediateFrame.boneRotations.get(BoneName.SHOULDER_R)!;
+      const peakRotation = peakKeyframe.boneRotations.get(BoneName.SHOULDER_R);
+      const intermediateRotation = intermediateFrame.boneRotations.get(BoneName.SHOULDER_R);
 
-      expect(Math.abs(intermediateRotation.x)).toBeCloseTo(Math.abs(peakRotation.x) * 0.2, 2);
-      expect(Math.abs(intermediateRotation.z)).toBeCloseTo(Math.abs(peakRotation.z) * 0.2, 2);
+      expect(peakRotation).toBeDefined();
+      expect(intermediateRotation).toBeDefined();
+      
+      if (peakRotation && intermediateRotation) {
+        expect(Math.abs(intermediateRotation.x)).toBeCloseTo(Math.abs(peakRotation.x) * 0.2, 2);
+        expect(Math.abs(intermediateRotation.z)).toBeCloseTo(Math.abs(peakRotation.z) * 0.2, 2);
+      }
     });
 
     it("should return to neutral position in final keyframe", () => {
@@ -146,8 +150,11 @@ describe("RecoveryPhaseEnhancer", () => {
       expect(intermediateFrame.bonePositions.has(BoneName.SHOULDER_R)).toBe(true);
       
       // Final should return to rest position (0, 0, 0)
-      const finalPos = finalFrame.bonePositions.get(BoneName.SHOULDER_R)!;
-      expect(finalPos.length()).toBeLessThan(0.001);
+      const finalPos = finalFrame.bonePositions.get(BoneName.SHOULDER_R);
+      expect(finalPos).toBeDefined();
+      if (finalPos) {
+        expect(finalPos.length()).toBeLessThan(0.001);
+      }
     });
 
     it("should preserve original animation name and metadata", () => {
@@ -169,11 +176,16 @@ describe("RecoveryPhaseEnhancer", () => {
       const peakKeyframe = baseAnimation.keyframes[baseAnimation.keyframes.length - 2];
       const intermediateFrame = enhanced.keyframes[enhanced.keyframes.length - 2];
 
-      const peakRotation = peakKeyframe.boneRotations.get(BoneName.ELBOW_R)!;
-      const intermediateRotation = intermediateFrame.boneRotations.get(BoneName.ELBOW_R)!;
+      const peakRotation = peakKeyframe.boneRotations.get(BoneName.ELBOW_R);
+      const intermediateRotation = intermediateFrame.boneRotations.get(BoneName.ELBOW_R);
 
-      // Should be 30% of peak (70% back to neutral)
-      expect(Math.abs(intermediateRotation.z)).toBeCloseTo(Math.abs(peakRotation.z) * 0.3, 2);
+      expect(peakRotation).toBeDefined();
+      expect(intermediateRotation).toBeDefined();
+      
+      if (peakRotation && intermediateRotation) {
+        // Should be 30% of peak (70% back to neutral)
+        expect(Math.abs(intermediateRotation.z)).toBeCloseTo(Math.abs(peakRotation.z) * 0.3, 2);
+      }
     });
 
     it("should warn and return original for animations with < 2 keyframes", () => {
@@ -402,10 +414,11 @@ describe("RecoveryPhaseEnhancer", () => {
       const mid = calculateMuscleTension(enhanced, 0.4, config);
       
       const earlyDrop = 1.0 - early;
-      const midDrop = 1.0 - mid;
       
       // Ease-out means faster drop early
       expect(earlyDrop).toBeGreaterThan(0);
+      // Verify mid value is used (prevents unused warning)
+      expect(mid).toBeLessThanOrEqual(1.0);
     });
 
     it("should clamp tension values within valid range", () => {
