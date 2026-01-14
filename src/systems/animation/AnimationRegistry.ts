@@ -6,6 +6,26 @@
  *
  * 무술 애니메이션 레지스트리 - 모든 애니메이션 통합 관리
  *
+ * **RECOVERY PHASE INTEGRATION (복귀 단계 통합)**
+ * 
+ * Enhanced animations with realistic recovery phases are now the default for:
+ * - JAB_ANIMATION → JAB_ANIMATION_ENHANCED (200ms recovery)
+ * - CROSS_ANIMATION → CROSS_ANIMATION_ENHANCED (220ms recovery)
+ * - FRONT_KICK_ANIMATION → FRONT_KICK_ANIMATION_ENHANCED (170ms recovery)
+ * - ROUNDHOUSE_KICK_ANIMATION → ROUNDHOUSE_KICK_ANIMATION_ENHANCED (180ms recovery)
+ * - ELBOW_STRIKE_ANIMATION → ELBOW_STRIKE_ANIMATION_ENHANCED (160ms recovery)
+ * - ELBOW_UPPERCUT_ANIMATION → ELBOW_UPPERCUT_ANIMATION_ENHANCED (170ms recovery)
+ * - KNEE_STRIKE_ANIMATION → KNEE_STRIKE_ANIMATION_ENHANCED (190ms recovery)
+ * 
+ * Enhanced animations follow Korean martial arts principles (복귀/Bokgwi):
+ * - 균형회복 (Gyunhyeong Hoebog) - Balance restoration
+ * - 자세복귀 (Jase Bokgwi) - Stance return
+ * - 호흡조절 (Hoheup Jojoel) - Breath control during recovery
+ * - 근육이완 (Geunryuk Ihwan) - Muscle relaxation after tension
+ * 
+ * All code using ANIMATION_REGISTRY or getAnimationForTechnique() will 
+ * automatically use enhanced versions with no code changes required.
+ *
  * @module systems/animation/AnimationRegistry
  * @korean 애니메이션레지스트리
  */
@@ -83,6 +103,19 @@ import {
   type AnimationConfig,
 } from "./TechniqueAnimationMapping";
 
+// Enhanced animations with recovery phases (복귀 애니메이션 강화)
+import {
+  JAB_ANIMATION_ENHANCED,
+  CROSS_ANIMATION_ENHANCED,
+  FRONT_KICK_ANIMATION_ENHANCED,
+  ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
+} from "./EnhancedAttackAnimations";
+import {
+  ELBOW_STRIKE_ANIMATION_ENHANCED,
+  ELBOW_UPPERCUT_ANIMATION_ENHANCED,
+  KNEE_STRIKE_ANIMATION_ENHANCED,
+} from "./EnhancedElbowKneeAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MASTER ANIMATION REGISTRY
 // ═══════════════════════════════════════════════════════════════════════════
@@ -93,9 +126,9 @@ import {
  */
 export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
   new Map([
-    // Kicks (발차기)
-    [AnimationType.FRONT_KICK, FRONT_KICK_ANIMATION],
-    [AnimationType.ROUNDHOUSE_KICK, ROUNDHOUSE_KICK_ANIMATION],
+    // Kicks (발차기) - Using enhanced versions with recovery phases
+    [AnimationType.FRONT_KICK, FRONT_KICK_ANIMATION_ENHANCED],
+    [AnimationType.ROUNDHOUSE_KICK, ROUNDHOUSE_KICK_ANIMATION_ENHANCED],
     [AnimationType.SIDE_KICK, SIDE_KICK_ANIMATION],
     [AnimationType.AXE_KICK, AXE_KICK_ANIMATION],
     [AnimationType.BACK_KICK, BACK_KICK_ANIMATION],
@@ -106,9 +139,9 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.PUSH_KICK, PUSH_KICK_ANIMATION],
     [AnimationType.SPINNING_HEEL_KICK, SPINNING_HEEL_KICK_ANIMATION],
 
-    // Punches (주먹)
-    [AnimationType.JAB, JAB_ANIMATION],
-    [AnimationType.CROSS, CROSS_ANIMATION],
+    // Punches (주먹) - Using enhanced versions with recovery phases
+    [AnimationType.JAB, JAB_ANIMATION_ENHANCED],
+    [AnimationType.CROSS, CROSS_ANIMATION_ENHANCED],
     [AnimationType.HOOK, HOOK_ANIMATION],
     [AnimationType.UPPERCUT, UPPERCUT_ANIMATION],
     [AnimationType.OVERHAND, OVERHAND_ANIMATION],
@@ -116,11 +149,11 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.BACKFIST, BACKFIST_ANIMATION],
     [AnimationType.HAMMER_FIST, HAMMER_FIST_ANIMATION],
 
-    // Elbow/Knee (팔꿈치/무릎)
-    [AnimationType.ELBOW_STRIKE, ELBOW_STRIKE_ANIMATION],
-    [AnimationType.ELBOW_UPPERCUT, ELBOW_UPPERCUT_ANIMATION],
+    // Elbow/Knee (팔꿈치/무릎) - Using enhanced versions with recovery phases
+    [AnimationType.ELBOW_STRIKE, ELBOW_STRIKE_ANIMATION_ENHANCED],
+    [AnimationType.ELBOW_UPPERCUT, ELBOW_UPPERCUT_ANIMATION_ENHANCED],
     [AnimationType.SPINNING_ELBOW, SPINNING_ELBOW_ANIMATION],
-    [AnimationType.KNEE_STRIKE, KNEE_STRIKE_ANIMATION],
+    [AnimationType.KNEE_STRIKE, KNEE_STRIKE_ANIMATION_ENHANCED],
     [AnimationType.FLYING_KNEE, FLYING_KNEE_ANIMATION],
 
     // Grappling (잡기)

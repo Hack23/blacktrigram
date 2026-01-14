@@ -125,6 +125,10 @@ export {
   WALK_ANIMATION,
 } from "./AttackAnimations";
 
+// NOTE: Enhanced animations with recovery phases are now the default in ANIMATION_REGISTRY
+// The base animations above are exported for backward compatibility and testing
+// Use getAnimationForTechnique() or ANIMATION_REGISTRY to get enhanced versions
+
 // Animation lookup with stance-specific support
 export { getAnimationForTechnique } from "./AnimationRegistry";
 
@@ -459,3 +463,42 @@ export {
   initializeStanceTransitions,
   transitionBetweenStances,
 } from './TrigramStanceTransitions';
+
+// Recovery Phase Enhancement System (복귀 단계 강화)
+export {
+  addRecoveryPhase,
+  calculateMuscleTension,
+  createTechniqueWithRecovery,
+  validateRecoveryPhase,
+  type RecoveryPhaseConfig,
+  type RecoveryValidationResult,
+} from './RecoveryPhaseEnhancer';
+
+// Enhanced Attack Animations with Recovery Phases
+export {
+  CROSS_ANIMATION_ENHANCED,
+  ENHANCED_ANIMATIONS,
+  FRONT_KICK_ANIMATION_ENHANCED,
+  JAB_ANIMATION_ENHANCED,
+  RECOVERY_PRESETS,
+  ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
+  applyRecoveryPreset,
+} from './EnhancedAttackAnimations';
+
+// Enhanced Elbow and Knee Animations with Recovery Phases
+export {
+  ELBOW_STRIKE_ANIMATION_ENHANCED,
+  ELBOW_UPPERCUT_ANIMATION_ENHANCED,
+  ENHANCED_ELBOW_KNEE_ANIMATIONS,
+  KNEE_STRIKE_ANIMATION_ENHANCED,
+} from './EnhancedElbowKneeAnimations';
+
+// Recovery Phase Visualization Utilities
+export {
+  compareRecoveryPhases,
+  generateRecoveryVisualization,
+  generateTensionChart,
+  printRecoveryAnalysis,
+  type RecoveryTimelinePoint,
+  type RecoveryVisualization,
+} from './RecoveryVisualization';
