@@ -1,3 +1,6 @@
+import { BoneName } from "../../types/skeletal";
+import { KeyframeConfig } from "./KeyframeConfig";
+
 /**
  * Korean Guard Positions (막기자세)
  *
@@ -126,14 +129,7 @@ export const HIGH_GUARD: GuardPosition = {
   },
   height: "temple_level",
   handPose: "fist_vertical",
-  protects: [
-    "head",
-    "temple",
-    "forehead",
-    "eyes",
-    "nose",
-    "jaw",
-  ] as const,
+  protects: ["head", "temple", "forehead", "eyes", "nose", "jaw"] as const,
 };
 
 /**
@@ -242,13 +238,7 @@ export const LOW_GUARD: GuardPosition = {
   },
   height: "abdomen_level",
   handPose: "fist_vertical",
-  protects: [
-    "abdomen",
-    "groin",
-    "hip",
-    "thigh",
-    "lower_ribs",
-  ] as const,
+  protects: ["abdomen", "groin", "hip", "thigh", "lower_ribs"] as const,
 };
 
 /**
@@ -321,26 +311,26 @@ export const getGuardForStanceHeight = (
  * @korean KeyframeConfig에방어자세적용
  */
 export const applyGuardPositionToConfig = (
-  config: any, // Will be typed as KeyframeConfig in implementation
+  config: KeyframeConfig,
   guardPosition: GuardPosition,
   hand: "left" | "right" | "both" = "both"
 ): void => {
   // Apply left hand guard
   if (hand === "left" || hand === "both") {
     config.rotate(
-      "SHOULDER_L" as any,
+      BoneName.SHOULDER_L,
       guardPosition.left.shoulder[0],
       guardPosition.left.shoulder[1],
       guardPosition.left.shoulder[2]
     );
     config.rotate(
-      "ELBOW_L" as any,
+      BoneName.ELBOW_L,
       guardPosition.left.elbow[0],
       guardPosition.left.elbow[1],
       guardPosition.left.elbow[2]
     );
     config.rotate(
-      "WRIST_L" as any,
+      BoneName.WRIST_L,
       guardPosition.left.wrist[0],
       guardPosition.left.wrist[1],
       guardPosition.left.wrist[2]
@@ -350,19 +340,19 @@ export const applyGuardPositionToConfig = (
   // Apply right hand guard
   if (hand === "right" || hand === "both") {
     config.rotate(
-      "SHOULDER_R" as any,
+      BoneName.SHOULDER_R,
       guardPosition.right.shoulder[0],
       guardPosition.right.shoulder[1],
       guardPosition.right.shoulder[2]
     );
     config.rotate(
-      "ELBOW_R" as any,
+      BoneName.ELBOW_R,
       guardPosition.right.elbow[0],
       guardPosition.right.elbow[1],
       guardPosition.right.elbow[2]
     );
     config.rotate(
-      "WRIST_R" as any,
+      BoneName.WRIST_R,
       guardPosition.right.wrist[0],
       guardPosition.right.wrist[1],
       guardPosition.right.wrist[2]
