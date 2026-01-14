@@ -166,13 +166,18 @@ export function addRecoveryPhase(
   });
 
   // Interpolate bone positions 80% toward rest
-  peakKeyframe.bonePositions.forEach((position, bone) => {
-    const restPosition = new THREE.Vector3(0, 0, 0);
-    const intermediate = position
-      .clone()
-      .lerp(restPosition, finalConfig.intermediateReturnPercent);
-    intermediateFrame.bonePositions.set(bone, intermediate);
-  });
+  if (peakKeyframe.bonePositions) {
+    peakKeyframe.bonePositions.forEach((position, bone) => {
+      // Manually interpolate position toward (0, 0, 0)
+      const returnPercent = finalConfig.intermediateReturnPercent;
+      const intermediate = new THREE.Vector3(
+        position.x * (1 - returnPercent),
+        position.y * (1 - returnPercent),
+        position.z * (1 - returnPercent)
+      );
+      intermediateFrame.bonePositions.set(bone, intermediate);
+    });
+  }
 
   // Create final recovery frame (100% neutral)
   const finalFrame: AnimationKeyframe = {
@@ -191,9 +196,11 @@ export function addRecoveryPhase(
   });
 
   // All positions return to rest
-  peakKeyframe.bonePositions.forEach((_, bone) => {
-    finalFrame.bonePositions.set(bone, new THREE.Vector3(0, 0, 0));
-  });
+  if (peakKeyframe.bonePositions) {
+    peakKeyframe.bonePositions.forEach((_, bone) => {
+      finalFrame.bonePositions.set(bone, new THREE.Vector3(0, 0, 0));
+    });
+  }
 
   // Build enhanced animation
   return {
