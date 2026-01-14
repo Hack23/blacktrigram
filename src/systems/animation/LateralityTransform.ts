@@ -28,6 +28,13 @@ import type { StanceLaterality } from "../trigram/types";
  * Maps right-side bones to their left-side counterparts and vice versa.
  * Used for automatic animation mirroring.
  *
+ * **Limitation**: This map only includes main body bones (arms and legs).
+ * The 38 optional finger bones (19 per hand) defined in BoneName enum are
+ * not included. If stance-specific animations include finger articulation
+ * (e.g., for precise nerve strikes in Li stance), those details will not
+ * be mirrored for left laterality. The mirrorBoneName function handles
+ * unmapped bones by returning the original bone name unchanged.
+ *
  * @internal
  * @korean 좌우대칭뼈맵
  */

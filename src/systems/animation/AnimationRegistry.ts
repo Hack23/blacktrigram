@@ -292,11 +292,11 @@ export function getAnimationByName(
  * @example
  * ```typescript
  * // Get left-handed Heaven stance punch
- * const anim = resolveTrigramAnimation("punch", TrigramStance.Geon, "left");
+ * const anim = resolveTrigramAnimation("punch", TrigramStance.GEON, "left");
  * console.log(anim?.name); // "geon_bone_breaking_strike_1_left"
  *
  * // Get right-handed Water stance kick
- * const kickAnim = resolveTrigramAnimation("kick", TrigramStance.Gam, "right");
+ * const kickAnim = resolveTrigramAnimation("kick", TrigramStance.GAM, "right");
  * console.log(kickAnim?.name); // "roundhouse_kick"
  * ```
  *
@@ -361,6 +361,7 @@ export function getAnimation(name: string): SkeletalAnimation | undefined {
 
   if (match) {
     const [, stanceName, technique, laterality] = match;
+    // Case-insensitive regex captures original case, normalize to match enum values
     const stance = stanceName.toLowerCase() as TrigramStance;
     const side = laterality.toLowerCase() as StanceLaterality;
 

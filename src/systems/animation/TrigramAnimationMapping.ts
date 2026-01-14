@@ -151,9 +151,9 @@ export const TRIGRAM_ANIMATION_MAP: Record<TrigramStance, StanceAnimationSet> =
  *
  * @example
  * ```typescript
- * const geonAnims = getAnimationsForStance(TrigramStance.Geon);
+ * const geonAnims = getAnimationsForStance(TrigramStance.GEON);
  * console.log(geonAnims.punch.name); // "geon_bone_breaking_strike_1"
- * console.log(geonAnims.strike.name); // "geon_heaven_strike"
+ * console.log(geonAnims.strike.name); // "geon_thunderous_uppercut"
  * ```
  *
  * @public
@@ -176,7 +176,7 @@ export function getAnimationsForStance(
  *
  * @example
  * ```typescript
- * const animation = getAnimationForTechnique(TrigramStance.Geon, "punch");
+ * const animation = getAnimationForTechnique(TrigramStance.GEON, "punch");
  * console.log(animation?.name); // "geon_bone_breaking_strike_1"
  * ```
  *
@@ -188,9 +188,6 @@ export function getAnimationForTechnique(
   technique: "punch" | "kick" | "strike"
 ): SkeletalAnimation | null {
   const animSet = TRIGRAM_ANIMATION_MAP[stance];
-  if (!animSet) {
-    return null;
-  }
 
   switch (technique.toLowerCase()) {
     case "punch":

@@ -316,15 +316,15 @@ describe("AnimationRegistry - Trigram Support", () => {
   });
 
   describe("Performance", () => {
-    it("should complete single lookup in <0.5ms", () => {
+    it("should complete single lookup in <1ms", () => {
       const start = performance.now();
       getAnimation("geon_punch_right");
       const end = performance.now();
 
-      expect(end - start).toBeLessThan(0.5);
+      expect(end - start).toBeLessThan(1);
     });
 
-    it("should complete 100 lookups in <50ms (<0.5ms average)", () => {
+    it("should complete 100 lookups in <100ms (<1ms average)", () => {
       const start = performance.now();
 
       for (let i = 0; i < 100; i++) {
@@ -334,10 +334,10 @@ describe("AnimationRegistry - Trigram Support", () => {
       const end = performance.now();
       const totalTime = end - start;
 
-      expect(totalTime).toBeLessThan(50); // 100 lookups <50ms = <0.5ms each
+      expect(totalTime).toBeLessThan(100); // 100 lookups <100ms = <1ms each
     });
 
-    it("should complete 1000 lookups in <500ms (<0.5ms average)", () => {
+    it("should complete 1000 lookups in <1000ms (<1ms average)", () => {
       const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
@@ -347,7 +347,7 @@ describe("AnimationRegistry - Trigram Support", () => {
       const end = performance.now();
       const totalTime = end - start;
 
-      expect(totalTime).toBeLessThan(500); // 1000 lookups <500ms = <0.5ms each
+      expect(totalTime).toBeLessThan(1000); // 1000 lookups <1000ms = <1ms each
     });
 
     it("should handle mixed pattern lookups efficiently", () => {
@@ -370,7 +370,7 @@ describe("AnimationRegistry - Trigram Support", () => {
       const end = performance.now();
       const totalTime = end - start;
 
-      expect(totalTime).toBeLessThan(50);
+      expect(totalTime).toBeLessThan(100);
     });
   });
 

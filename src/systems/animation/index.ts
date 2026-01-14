@@ -52,7 +52,15 @@ export {
   getAnimationByTypeOrDefault,
   getAnimationForTechniqueId,
   getAnimationForTechniqueIdWithConfig,
+  resolveTrigramAnimation,
+  getAnimationsForStance,
+  applyLaterality,
+  type StanceAnimationSet,
 } from "./AnimationRegistry";
+
+// Re-export full trigram/laterality modules for advanced usage
+export * as TrigramAnimationMapping from "./TrigramAnimationMapping";
+export * as LateralityTransform from "./LateralityTransform";
 
 export * from "./AnimationPriority";
 export * from "./AnimationStateMachine";
