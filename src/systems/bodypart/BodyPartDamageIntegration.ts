@@ -13,10 +13,18 @@
  */
 
 import { BodyRegion } from "@/types";
-import { PlayerState } from "../player";
-import { VitalPoint } from "../vitalpoint/types";
+import type { VitalPoint } from "../vitalpoint/types";
 import { bodyPartHealthSystem } from "./BodyPartHealthSystem";
-import { BodyPart } from "./types";
+import { BodyPart, BodyPartHealth, BodyPartMaxHealth } from "./types";
+
+/**
+ * Minimal player view needed for body part damage operations.
+ */
+export interface BodyPartDamageTarget {
+  readonly health: number;
+  readonly bodyPartHealth?: BodyPartHealth;
+  readonly bodyPartMaxHealth?: BodyPartMaxHealth;
+}
 
 /**
  * Map vital point to its corresponding body region.
@@ -154,11 +162,11 @@ export function getBodyRegionFromVitalPoint(
  *
  * @public
  */
-export function applyDamageToBodyParts(
-  player: PlayerState,
+export function applyDamageToBodyParts<T extends BodyPartDamageTarget>(
+  player: T,
   totalDamage: number,
   bodyRegion: BodyRegion
-): PlayerState {
+): T {
   // If body part health not initialized, initialize it
   const bodyPartHealth =
     player.bodyPartHealth ?? bodyPartHealthSystem.createDefaultBodyPartHealth();
@@ -201,11 +209,9 @@ export function applyDamageToBodyParts(
  *
  * @public
  */
-export function applyVitalPointDamageToBodyParts(
-  player: PlayerState,
-  totalDamage: number,
-  vitalPoint: VitalPoint
-): PlayerState {
+export function applyVitalPointDamageToBodyParts<
+  T extends BodyPartDamageTarget
+>(player: T, totalDamage: number, vitalPoint: VitalPoint): T {
   const bodyRegion = getBodyRegionFromVitalPoint(vitalPoint);
   return applyDamageToBodyParts(player, totalDamage, bodyRegion);
 }
@@ -236,7 +242,7 @@ export function applyVitalPointDamageToBodyParts(
  *
  * @public
  */
-export function getBodyPartCombatEffects(player: PlayerState) {
+export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
   // If no body part health, return no effects
   if (!player.bodyPartHealth) {
     return {
@@ -272,7 +278,7 @@ export function getBodyPartCombatEffects(player: PlayerState) {
  * @public
  */
 export function isPlayerIncapacitatedByBodyDamage(
-  player: PlayerState
+  player: BodyPartDamageTarget
 ): boolean {
   if (!player.bodyPartHealth) {
     return false; // No body part system = use aggregate health only
@@ -295,10 +301,9 @@ export function isPlayerIncapacitatedByBodyDamage(
  *
  * @public
  */
-export function initializeBodyPartHealthForPlayer(
-  player: PlayerState,
-  maxHealthPerPart: number = 100
-): PlayerState {
+export function initializeBodyPartHealthForPlayer<
+  T extends BodyPartDamageTarget
+>(player: T, maxHealthPerPart: number = 100): T {
   // Skip if already initialized
   if (player.bodyPartHealth && player.bodyPartMaxHealth) {
     return player;
@@ -331,10 +336,10 @@ export function initializeBodyPartHealthForPlayer(
  *
  * @public
  */
-export function healBodyPartsProportionally(
-  player: PlayerState,
+export function healBodyPartsProportionally<T extends BodyPartDamageTarget>(
+  player: T,
   totalHealAmount: number
-): PlayerState {
+): T {
   if (!player.bodyPartHealth || !player.bodyPartMaxHealth) {
     return player; // No body part system active
   }

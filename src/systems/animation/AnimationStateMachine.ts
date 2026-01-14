@@ -1,31 +1,40 @@
 /**
  * Player Animation State Machine for Black Trigram
- * 
+ *
  * Manages player character animations with frame-accurate timing at 60fps.
  * Supports animation priorities, transitions, and event callbacks.
- * 
+ *
  * Based on game-design.md specifications:
  * - Attack: 12 frames (200ms at 60fps)
  * - Block: 4 frames (67ms at 60fps)
  * - Walk: 6 frames
  * - Stance change: 600ms
- * 
+ *
  * @module systems/animation/AnimationStateMachine
  * @category Animation
  * @korean 애니메이션상태머신
  */
 
-import { canInterrupt, AnimationQueue, type ConflictResolutionStrategy, type AnimationRequest } from "./AnimationPriority";
-import { isTransitionAllowed, getStanceTransition, type StanceTransition } from "./AnimationTransitions";
-import { 
-  createMotionPredictionState, 
-  updateMotionPrediction,
-  predictFutureKeyframe,
-  type MotionPredictionState,
-  type EasingName,
-} from "./KeyframeInterpolation";
 import { TrigramStance } from "../../types/common";
-import { AnimationState } from "./types";
+import type { AnimationKeyframe } from "../../types/skeletal";
+import {
+  AnimationQueue,
+  canInterrupt,
+  type AnimationRequest,
+  type ConflictResolutionStrategy,
+} from "./AnimationPriority";
+import {
+  getStanceTransition,
+  isTransitionAllowed,
+  type StanceTransition,
+} from "./AnimationTransitions";
+import {
+  createMotionPredictionState,
+  predictFutureKeyframe,
+  updateMotionPrediction,
+  type EasingName,
+  type MotionPredictionState,
+} from "./KeyframeInterpolation";
 import type {
   AnimationConfig,
   AnimationEvents,
@@ -34,13 +43,11 @@ import type {
   AnimationUpdateResult,
   FallType,
 } from "./types";
-import type { AnimationKeyframe } from "../../types/skeletal";
-import { STEP_PRIORITY } from "./types";
-import { FALL_TO_GROUND_MAP } from "./types";
+import { AnimationState, FALL_TO_GROUND_MAP, STEP_PRIORITY } from "./types";
 
 /**
  * Default animation configurations based on game-design.md
- * 
+ *
  * Frame timings:
  * - Attack: 12 frames = 200ms at 60fps
  * - Block: 4 frames = 67ms at 60fps
@@ -49,13 +56,13 @@ import { FALL_TO_GROUND_MAP } from "./types";
  * - Stance change: 36 frames = 600ms at 60fps
  * - Stance guards: 4-6 frames = breathing animation at 60fps
  * - Tactical steps: 18 frames = 300ms at 60fps, 30cm distance
- * 
+ *
  * Defensive animations (방어 애니메이션):
  * - Block Success (막기): 8 frames = 133ms - absorb impact, maintain guard
  * - Parry Deflect (받아넘기기): 10 frames = 167ms - redirect attack, counter window
  * - Guard Break (방어붕괴): 15 frames = 250ms - arms forced wide, vulnerable
  * - Guard Recovery (방어복구): 12 frames = 200ms - restore guard position
- * 
+ *
  * @korean 기본애니메이션설정
  */
 export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
@@ -707,14 +714,14 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
 
 /**
  * Player Animation State Machine
- * 
+ *
  * Manages animation state, transitions, and timing with frame-accurate updates.
  * Integrates priority system, automatic animation queueing, and event callbacks.
- * 
+ *
  * **Animation Queue**: Enabled by default with max size 3 and timestamp-based
  * conflict resolution. Automatically queues animations that cannot execute
  * immediately and processes them when the current animation completes.
- * 
+ *
  * @example
  * ```typescript
  * const machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS, {
@@ -727,21 +734,21 @@ export const DEFAULT_ANIMATION_CONFIGS: Map<AnimationState, AnimationConfig> =
  *     }
  *   }
  * });
- * 
+ *
  * // Animation queue is enabled by default
  * // Use transitionToQueued() for automatic queueing
  * machine.transitionToQueued(AnimationState.ATTACK); // Queues if can't execute
- * 
+ *
  * // Or use regular transitionTo() (no queueing)
  * machine.transitionTo(AnimationState.ATTACK); // Fails if can't execute
- * 
+ *
  * // In game loop (useFrame)
  * useFrame((state, delta) => {
  *   const result = machine.update(delta);
  *   updatePlayerVisuals(result.state, result.frame);
  * });
  * ```
- * 
+ *
  * @korean 플레이어애니메이션상태머신
  */
 export class PlayerAnimationStateMachine {
@@ -750,7 +757,10 @@ export class PlayerAnimationStateMachine {
    * Prevents repeated object allocation in transitionToStanceGuard()
    * @korean 자세방어상태맵
    */
-  private static readonly GUARD_STATE_MAP: Record<TrigramStance, AnimationState> = {
+  private static readonly GUARD_STATE_MAP: Record<
+    TrigramStance,
+    AnimationState
+  > = {
     [TrigramStance.GEON]: AnimationState.STANCE_GUARD_GEON,
     [TrigramStance.TAE]: AnimationState.STANCE_GUARD_TAE,
     [TrigramStance.LI]: AnimationState.STANCE_GUARD_LI,
@@ -766,16 +776,17 @@ export class PlayerAnimationStateMachine {
    * Prevents repeated object allocation in getCurrentGuardStance()
    * @korean 방어상태자세맵
    */
-  private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> = {
-    [AnimationState.STANCE_GUARD_GEON]: TrigramStance.GEON,
-    [AnimationState.STANCE_GUARD_TAE]: TrigramStance.TAE,
-    [AnimationState.STANCE_GUARD_LI]: TrigramStance.LI,
-    [AnimationState.STANCE_GUARD_JIN]: TrigramStance.JIN,
-    [AnimationState.STANCE_GUARD_SON]: TrigramStance.SON,
-    [AnimationState.STANCE_GUARD_GAM]: TrigramStance.GAM,
-    [AnimationState.STANCE_GUARD_GAN]: TrigramStance.GAN,
-    [AnimationState.STANCE_GUARD_GON]: TrigramStance.GON,
-  };
+  private static readonly STANCE_FROM_GUARD_MAP: Record<string, TrigramStance> =
+    {
+      [AnimationState.STANCE_GUARD_GEON]: TrigramStance.GEON,
+      [AnimationState.STANCE_GUARD_TAE]: TrigramStance.TAE,
+      [AnimationState.STANCE_GUARD_LI]: TrigramStance.LI,
+      [AnimationState.STANCE_GUARD_JIN]: TrigramStance.JIN,
+      [AnimationState.STANCE_GUARD_SON]: TrigramStance.SON,
+      [AnimationState.STANCE_GUARD_GAM]: TrigramStance.GAM,
+      [AnimationState.STANCE_GUARD_GAN]: TrigramStance.GAN,
+      [AnimationState.STANCE_GUARD_GON]: TrigramStance.GON,
+    };
 
   private currentState: AnimationState = AnimationState.IDLE;
   private frameIndex = 0;
@@ -783,110 +794,114 @@ export class PlayerAnimationStateMachine {
   private previousState: AnimationState | null = null;
   private justStarted = false;
   private justCompleted = false;
-  
+
   /**
    * Current stance transition data (null when not in stance_change animation)
-   * 
+   *
    * **Korean**: 현재 자세 전환 데이터
-   * 
+   *
    * Tracks the active stance transition for use during stance_change animation.
    * Provides access to keyframes and blend weights for smooth interpolation.
-   * 
+   *
    * @korean 현재자세전환데이터
    */
   private currentStanceTransition: StanceTransition | null = null;
 
   /**
    * Motion prediction state for latency reduction
-   * 
+   *
    * **Korean**: 동작 예측 상태
-   * 
+   *
    * Tracks animation velocities for motion prediction to reduce perceived latency.
    * Updated each frame with velocity calculations for smooth anticipation.
-   * 
+   *
    * @korean 동작예측상태
    */
-  private motionPrediction: MotionPredictionState = createMotionPredictionState();
+  private motionPrediction: MotionPredictionState =
+    createMotionPredictionState();
 
   /**
    * Enable motion prediction for latency reduction
-   * 
+   *
    * **Korean**: 동작 예측 활성화
-   * 
+   *
    * When enabled, predicts future animation frames based on current velocity
    * to reduce perceived input latency by 16-33ms (1-2 frames at 60fps).
-   * 
+   *
    * @korean 동작예측활성화
    */
   private enableMotionPrediction: boolean = false;
 
   /**
    * Motion prediction time ahead (seconds)
-   * 
+   *
    * **Korean**: 예측 시간
-   * 
+   *
    * How far ahead to predict motion (default: 1 frame = 16.67ms at 60fps).
    * Typical range: 0.016-0.033 seconds for <50ms total latency.
-   * 
+   *
    * @korean 예측시간
    */
   private predictionTimeAhead: number = 0.01667; // 1 frame at 60fps
-  
+
   /**
    * Previous keyframe for motion prediction velocity calculation
-   * 
+   *
    * **Korean**: 이전 키프레임
-   * 
+   *
    * @korean 이전키프레임
    */
   private previousKeyframe: AnimationKeyframe | null = null;
 
   /**
    * Preferred easing function for smooth transitions
-   * 
+   *
    * **Korean**: 선호 이징 함수
-   * 
+   *
    * Default easing curve for animation blending and transitions.
    * Can be overridden per animation or transition.
-   * 
+   *
    * @korean 선호이징함수
    */
   private preferredEasing: EasingName = "natural-motion";
 
   /**
    * Animation queue for pending animations
-   * 
+   *
    * **Korean**: 애니메이션 대기열
-   * 
+   *
    * Stores animation requests that couldn't be executed immediately
    * due to non-interruptible animations or priority conflicts.
    * Processed automatically when current animation completes.
-   * 
+   *
    * Enabled by default with max size 3 and timestamp-based conflict resolution.
    * Can be disabled with disableQueue() or reconfigured with enableQueue().
-   * 
+   *
    * @korean 애니메이션대기열
    */
-  private animationQueue: AnimationQueue | null = new AnimationQueue(3, "timestamp");
+  private animationQueue: AnimationQueue | null = new AnimationQueue(
+    3,
+    "timestamp"
+  );
 
   /**
    * Conflict resolution strategy for equal-priority animations
-   * 
+   *
    * **Korean**: 충돌 해결 전략
-   * 
+   *
    * Determines how to resolve conflicts when multiple animations
    * have equal priority. Default: timestamp (FIFO).
-   * 
+   *
    * @korean 충돌해결전략
    */
   private conflictStrategy: ConflictResolutionStrategy = "timestamp";
 
   /**
    * Create a new animation state machine
-   * 
+   *
    * @param animations - Map of animation configurations
    * @param events - Optional event callbacks
-   * 
+   *
    * @korean 생성자
    */
   constructor(
@@ -896,13 +911,13 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Update animation state with delta time
-   * 
+   *
    * Call this in useFrame for 60fps updates.
    * Handles frame progression, looping, and completion.
-   * 
+   *
    * @param deltaTime - Time elapsed since last update (in seconds)
    * @returns Animation update result with current state and frame
-   * 
+   *
    * @korean 업데이트
    */
   update(deltaTime: number): AnimationUpdateResult {
@@ -954,15 +969,21 @@ export class PlayerAnimationStateMachine {
           // Fall animations transition to ground states using the mapping
           if (this.currentState.startsWith("fall_")) {
             const fallType = this.currentState.replace("fall_", "");
-            
+
             // Validate that fallType is a valid FallType before using in map
-            if (fallType === "forward" || fallType === "backward" || 
-                fallType === "side_left" || fallType === "side_right") {
+            if (
+              fallType === "forward" ||
+              fallType === "backward" ||
+              fallType === "side_left" ||
+              fallType === "side_right"
+            ) {
               const groundState = FALL_TO_GROUND_MAP[fallType as FallType];
               const groundAnimKey = `ground_${groundState}`;
 
               // Validate that the constructed ground animation state actually exists
-              if (DEFAULT_ANIMATION_CONFIGS.has(groundAnimKey as AnimationState)) {
+              if (
+                DEFAULT_ANIMATION_CONFIGS.has(groundAnimKey as AnimationState)
+              ) {
                 const groundAnimState = groundAnimKey as AnimationState;
 
                 this.previousState = this.currentState;
@@ -1023,14 +1044,16 @@ export class PlayerAnimationStateMachine {
             }
           }
           // Non-fall, non-recovery, non-looping animations transition to idle
-          else if (this.currentState !== AnimationState.IDLE && 
-                   this.currentState !== AnimationState.KO &&
-                   !this.currentState.startsWith("ground_")) {
+          else if (
+            this.currentState !== AnimationState.IDLE &&
+            this.currentState !== AnimationState.KO &&
+            !this.currentState.startsWith("ground_")
+          ) {
             // Clear stance transition data if completing stance_change
             if (this.currentState === AnimationState.STANCE_CHANGE) {
               this.clearStanceTransition();
             }
-            
+
             // Transition to idle first
             this.previousState = this.currentState;
             this.currentState = AnimationState.IDLE;
@@ -1041,7 +1064,7 @@ export class PlayerAnimationStateMachine {
             if (this.events?.onAnimationStart) {
               this.events.onAnimationStart(AnimationState.IDLE);
             }
-            
+
             // Then try to process next queued animation (from idle state)
             this.processNextQueuedAnimation();
           } else {
@@ -1052,7 +1075,8 @@ export class PlayerAnimationStateMachine {
       }
     }
 
-    const progress = currentAnim.frames > 0 ? this.frameIndex / currentAnim.frames : 0;
+    const progress =
+      currentAnim.frames > 0 ? this.frameIndex / currentAnim.frames : 0;
 
     return {
       state: this.currentState,
@@ -1065,22 +1089,22 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Attempt to transition to a new animation state
-   * 
+   *
    * Checks transition rules and priority system before transitioning.
-   * 
+   *
    * @param newState - Target animation state
    * @returns Whether transition was successful
-   * 
+   *
    * @example
    * ```typescript
    * // Successful transitions
    * machine.transitionTo("walk"); // idle -> walk
    * machine.transitionTo("attack"); // walk -> attack
-   * 
+   *
    * // Failed transition (invalid or lower priority)
    * machine.transitionTo("walk"); // attack -> walk (blocked, must complete first)
    * ```
-   * 
+   *
    * @korean 상태전환
    */
   transitionTo(newState: AnimationState): boolean {
@@ -1139,7 +1163,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current animation state
-   * 
+   *
    * @returns Current animation state
    * @korean 현재상태가져오기
    */
@@ -1149,7 +1173,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current frame index
-   * 
+   *
    * @returns Current frame index (0 to frames-1)
    * @korean 현재프레임가져오기
    */
@@ -1159,7 +1183,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get previous animation state
-   * 
+   *
    * @returns Previous animation state or null
    * @korean 이전상태가져오기
    */
@@ -1169,7 +1193,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current animation configuration
-   * 
+   *
    * @returns Current animation config or undefined
    * @korean 현재애니메이션설정가져오기
    */
@@ -1179,7 +1203,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Reset animation state machine to idle
-   * 
+   *
    * @korean 초기화
    */
   reset(): void {
@@ -1193,7 +1217,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get full internal state (for debugging/testing)
-   * 
+   *
    * @returns Current state machine state
    * @korean 상태가져오기
    */
@@ -1209,25 +1233,26 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Transition to stance-specific guard animation
-   * 
+   *
    * Convenience method to transition to a stance guard based on trigram stance.
    * Automatically maps trigram stance to corresponding guard animation state.
-   * 
+   *
    * @param stance - Trigram stance identifier
    * @returns Whether transition was successful
-   * 
+   *
    * @example
    * ```typescript
    * // When player changes to Fire stance
    * machine.transitionToStanceGuard(TrigramStance.LI);
    * // Internally transitions to "stance_guard_li" animation state
    * ```
-   * 
+   *
    * @korean 자세방어전환
    */
   transitionToStanceGuard(stance: TrigramStance): boolean {
-    const guardAnimationState = PlayerAnimationStateMachine.GUARD_STATE_MAP[stance];
-    
+    const guardAnimationState =
+      PlayerAnimationStateMachine.GUARD_STATE_MAP[stance];
+
     // Verify the guard animation exists in our configs
     if (!guardAnimationState || !this.animations.has(guardAnimationState)) {
       console.warn(`No guard animation configured for stance: ${stance}`);
@@ -1239,7 +1264,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Check if current animation is a stance guard
-   * 
+   *
    * @returns True if currently in a stance guard animation
    * @korean 자세방어상태확인
    */
@@ -1249,7 +1274,7 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current guard stance if in a guard animation
-   * 
+   *
    * @returns Trigram stance or null if not in guard
    * @korean 현재방어자세가져오기
    */
@@ -1258,8 +1283,9 @@ export class PlayerAnimationStateMachine {
       return null;
     }
 
-    const stance = PlayerAnimationStateMachine.STANCE_FROM_GUARD_MAP[this.currentState];
-    
+    const stance =
+      PlayerAnimationStateMachine.STANCE_FROM_GUARD_MAP[this.currentState];
+
     // Validate that we got a valid stance
     if (!stance) {
       console.warn(`Invalid guard state detected: ${this.currentState}`);
@@ -1271,25 +1297,25 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Transition to stance_change animation with specific stance transition data
-   * 
+   *
    * **Korean**: 자세 전환 애니메이션 시작
-   * 
+   *
    * Initiates a stance change animation with the specific transition data
    * from the 64-transition matrix. This provides stance-specific keyframes
    * and blend weights for smooth interpolation.
-   * 
+   *
    * @param fromStance - Source trigram stance
    * @param toStance - Target trigram stance
    * @returns Whether transition was successful
-   * 
+   *
    * @example
    * ```typescript
    * // Start transition from Heaven to Lake stance
    * const success = machine.transitionToStanceChange(
-   *   TrigramStance.GEON, 
+   *   TrigramStance.GEON,
    *   TrigramStance.TAE
    * );
-   * 
+   *
    * if (success) {
    *   // During update loop, use getStanceTransitionBlend() to interpolate
    *   const blend = machine.getStanceTransitionBlend();
@@ -1299,7 +1325,7 @@ export class PlayerAnimationStateMachine {
    *   }
    * }
    * ```
-   * 
+   *
    * @korean 자세전환애니메이션시작
    */
   transitionToStanceChange(
@@ -1308,7 +1334,7 @@ export class PlayerAnimationStateMachine {
   ): boolean {
     // Get the specific transition data from the 64-transition matrix
     const transitionData = getStanceTransition(fromStance, toStance);
-    
+
     if (!transitionData) {
       console.warn(
         `[AnimationStateMachine] No transition data found for ${fromStance} -> ${toStance}`
@@ -1335,14 +1361,14 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current stance transition data
-   * 
+   *
    * **Korean**: 현재 자세 전환 데이터 가져오기
-   * 
+   *
    * Returns the active stance transition data during stance_change animation.
    * Null if not currently in a stance transition.
-   * 
+   *
    * @returns Current stance transition or null
-   * 
+   *
    * @korean 현재자세전환데이터가져오기
    */
   getCurrentStanceTransition(): StanceTransition | null {
@@ -1351,15 +1377,15 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get interpolated blend weights for current stance transition frame
-   * 
+   *
    * **Korean**: 현재 프레임 블렌드 가중치
-   * 
+   *
    * Returns the interpolated blend data for the current frame during
    * stance_change animation. Uses the keyframe data from the transition
    * matrix to provide smooth stance interpolation.
-   * 
+   *
    * @returns Blend data with stance and weight, or null if not in transition
-   * 
+   *
    * @example
    * ```typescript
    * // In rendering loop during stance transition
@@ -1369,16 +1395,19 @@ export class PlayerAnimationStateMachine {
    *   // Apply blended pose: blend.blend * targetPose + (1 - blend.blend) * sourcePose
    * }
    * ```
-   * 
+   *
    * @korean 현재프레임블렌드가중치
    */
   getStanceTransitionBlend(): {
     frame: number;
-    stance: TrigramStance | 'neutral';
+    stance: TrigramStance | "neutral";
     blend: number;
   } | null {
     // Only valid during stance_change animation
-    if (this.currentState !== AnimationState.STANCE_CHANGE || !this.currentStanceTransition) {
+    if (
+      this.currentState !== AnimationState.STANCE_CHANGE ||
+      !this.currentStanceTransition
+    ) {
       return null;
     }
 
@@ -1390,7 +1419,10 @@ export class PlayerAnimationStateMachine {
     let nextKeyframe = keyframes[keyframes.length - 1];
 
     for (let i = 0; i < keyframes.length - 1; i++) {
-      if (keyframes[i].frame <= currentFrame && keyframes[i + 1].frame > currentFrame) {
+      if (
+        keyframes[i].frame <= currentFrame &&
+        keyframes[i + 1].frame > currentFrame
+      ) {
         prevKeyframe = keyframes[i];
         nextKeyframe = keyframes[i + 1];
         break;
@@ -1398,7 +1430,7 @@ export class PlayerAnimationStateMachine {
     }
 
     // If we're exactly on a keyframe, return it directly
-    const exactKeyframe = keyframes.find(kf => kf.frame === currentFrame);
+    const exactKeyframe = keyframes.find((kf) => kf.frame === currentFrame);
     if (exactKeyframe) {
       return {
         frame: currentFrame,
@@ -1409,12 +1441,12 @@ export class PlayerAnimationStateMachine {
 
     // Linear interpolation between keyframes
     const frameRange = nextKeyframe.frame - prevKeyframe.frame;
-    const frameProgress = frameRange > 0 
-      ? (currentFrame - prevKeyframe.frame) / frameRange 
-      : 0;
+    const frameProgress =
+      frameRange > 0 ? (currentFrame - prevKeyframe.frame) / frameRange : 0;
 
-    const interpolatedBlend = 
-      prevKeyframe.blend + (nextKeyframe.blend - prevKeyframe.blend) * frameProgress;
+    const interpolatedBlend =
+      prevKeyframe.blend +
+      (nextKeyframe.blend - prevKeyframe.blend) * frameProgress;
 
     // Use the next keyframe's stance as we're transitioning towards it
     return {
@@ -1426,21 +1458,24 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Check if currently in a stance transition animation
-   * 
+   *
    * **Korean**: 자세 전환 중 확인
-   * 
+   *
    * @returns True if currently executing a stance_change animation
    * @korean 자세전환중확인
    */
   isInStanceTransition(): boolean {
-    return this.currentState === AnimationState.STANCE_CHANGE && this.currentStanceTransition !== null;
+    return (
+      this.currentState === AnimationState.STANCE_CHANGE &&
+      this.currentStanceTransition !== null
+    );
   }
 
   /**
    * Clear stance transition data (called automatically when transition completes)
-   * 
+   *
    * **Korean**: 자세 전환 데이터 초기화
-   * 
+   *
    * @internal
    * @korean 자세전환데이터초기화
    */
@@ -1450,24 +1485,24 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Enable or disable motion prediction
-   * 
+   *
    * **Korean**: 동작 예측 설정
-   * 
+   *
    * Enables motion prediction to reduce perceived input latency by predicting
    * future animation frames based on current velocity (1-2 frames ahead).
-   * 
+   *
    * @param enabled - Whether to enable motion prediction
    * @param predictionTime - Optional: time ahead to predict (default: 16.67ms)
-   * 
+   *
    * @example
    * ```typescript
    * // Enable motion prediction for 1 frame (16.67ms at 60fps)
    * machine.setMotionPrediction(true);
-   * 
+   *
    * // Enable with 2 frames prediction (33.33ms)
    * machine.setMotionPrediction(true, 0.03333);
    * ```
-   * 
+   *
    * @korean 동작예측설정
    */
   setMotionPrediction(enabled: boolean, predictionTime?: number): void {
@@ -1480,9 +1515,9 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get motion prediction state
-   * 
+   *
    * **Korean**: 동작 예측 상태 가져오기
-   * 
+   *
    * @returns Current motion prediction state
    * @korean 동작예측상태가져오기
    */
@@ -1492,9 +1527,9 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Check if motion prediction is enabled
-   * 
+   *
    * **Korean**: 동작 예측 활성화 확인
-   * 
+   *
    * @returns True if motion prediction is enabled
    * @korean 동작예측활성화확인
    */
@@ -1504,23 +1539,23 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Set preferred easing function for transitions
-   * 
+   *
    * **Korean**: 선호 이징 함수 설정
-   * 
+   *
    * Sets the default easing curve for animation transitions.
    * Can use presets like "natural-motion", "smooth-transition", etc.
-   * 
+   *
    * @param easingName - Easing function name
-   * 
+   *
    * @example
    * ```typescript
    * // Use natural motion for Korean martial arts
    * machine.setPreferredEasing("natural-motion");
-   * 
+   *
    * // Use explosive power for strike animations
    * machine.setPreferredEasing("explosive-power");
    * ```
-   * 
+   *
    * @korean 선호이징함수설정
    */
   setPreferredEasing(easingName: EasingName): void {
@@ -1529,9 +1564,9 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get preferred easing function
-   * 
+   *
    * **Korean**: 선호 이징 함수 가져오기
-   * 
+   *
    * @returns Current preferred easing name
    * @korean 선호이징함수가져오기
    */
@@ -1541,36 +1576,39 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Update motion prediction with skeletal keyframe data
-   * 
+   *
    * **Korean**: 동작 예측 업데이트
-   * 
+   *
    * This should be called from the skeletal animation layer when applying
    * interpolated keyframes to the rig. It updates velocity tracking for
    * motion prediction to reduce perceived latency.
-   * 
+   *
    * Integration point: Call this from your skeletal animation system after
    * computing the current interpolated keyframe (e.g., from getInterpolatedKeyframe).
-   * 
+   *
    * @param currentKeyframe - Current skeletal animation keyframe with bone positions/rotations
    * @param deltaTime - Time elapsed since last update
-   * 
+   *
    * @example
    * ```typescript
    * // In your skeletal animation update loop:
    * const currentKeyframe = getInterpolatedKeyframe(animation, time);
-   * 
+   *
    * // Update motion prediction (for next frame)
    * if (machine.isMotionPredictionEnabled()) {
    *   machine.updateMotionPredictionState(currentKeyframe, deltaTime);
    * }
-   * 
+   *
    * // Apply keyframe to rig
    * applyKeyframeToRig(rig, currentKeyframe);
    * ```
-   * 
+   *
    * @korean 동작예측업데이트
    */
-  updateMotionPredictionState(currentKeyframe: AnimationKeyframe, deltaTime: number): void {
+  updateMotionPredictionState(
+    currentKeyframe: AnimationKeyframe,
+    deltaTime: number
+  ): void {
     if (!this.enableMotionPrediction) {
       return;
     }
@@ -1591,31 +1629,31 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get predicted future keyframe for latency reduction
-   * 
+   *
    * **Korean**: 예측된 미래 키프레임 가져오기
-   * 
+   *
    * Returns a keyframe predicted ahead by predictionTimeAhead (default: 1 frame).
    * This reduces perceived input latency by showing where the animation will be
    * in the near future rather than where it currently is.
-   * 
+   *
    * Integration point: Use this instead of the current keyframe when applying
    * to the rig if motion prediction is enabled.
-   * 
+   *
    * @param currentKeyframe - Current skeletal animation keyframe
    * @returns Predicted future keyframe, or current if prediction disabled
-   * 
+   *
    * @example
    * ```typescript
    * // In your skeletal animation update loop:
    * let keyframeToApply = currentKeyframe;
-   * 
+   *
    * if (machine.isMotionPredictionEnabled()) {
    *   keyframeToApply = machine.getPredictedKeyframe(currentKeyframe);
    * }
-   * 
+   *
    * applyKeyframeToRig(rig, keyframeToApply);
    * ```
-   * 
+   *
    * @korean 예측키프레임가져오기
    */
   getPredictedKeyframe(currentKeyframe: AnimationKeyframe): AnimationKeyframe {
@@ -1634,35 +1672,38 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Enable or reconfigure animation queue system
-   * 
+   *
    * **Korean**: 애니메이션 대기열 활성화/재설정
-   * 
+   *
    * The queue is enabled by default. Use this method to reconfigure the
    * queue size or conflict resolution strategy.
-   * 
+   *
    * @param maxSize - Maximum queue size (default: 3)
    * @param conflictStrategy - Conflict resolution strategy (default: "timestamp")
-   * 
+   *
    * @example
    * ```typescript
    * // Queue is enabled by default, but you can reconfigure it
    * machine.enableQueue(5, "requested");
    * ```
-   * 
+   *
    * @korean 대기열활성화
    */
-  enableQueue(maxSize: number = 3, conflictStrategy: ConflictResolutionStrategy = "timestamp"): void {
+  enableQueue(
+    maxSize: number = 3,
+    conflictStrategy: ConflictResolutionStrategy = "timestamp"
+  ): void {
     this.animationQueue = new AnimationQueue(maxSize, conflictStrategy);
     this.conflictStrategy = conflictStrategy;
   }
 
   /**
    * Disable animation queue system
-   * 
+   *
    * **Korean**: 애니메이션 대기열 비활성화
-   * 
+   *
    * Disables the queue and clears any pending animations.
-   * 
+   *
    * @korean 대기열비활성화
    */
   disableQueue(): void {
@@ -1671,9 +1712,9 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Check if queue is enabled
-   * 
+   *
    * **Korean**: 대기열 활성화 여부
-   * 
+   *
    * @returns True if queue is enabled
    * @korean 대기열활성화여부
    */
@@ -1683,19 +1724,19 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Attempt to transition to a new animation state with queue support
-   * 
+   *
    * **Korean**: 대기열 지원 상태 전환
-   * 
+   *
    * Enhanced version of transitionTo() that automatically queues animations
    * when they cannot be executed immediately. Since the queue is enabled by
    * default, this is the recommended method for animation transitions.
-   * 
+   *
    * The queued animation will be automatically processed when the current
    * animation completes, following priority and conflict resolution rules.
-   * 
+   *
    * @param newState - Target animation state
    * @returns Whether transition was successful, queued, or failed
-   * 
+   *
    * @example
    * ```typescript
    * // Queue is enabled by default
@@ -1704,10 +1745,12 @@ export class PlayerAnimationStateMachine {
    * // Returns "queued" if couldn't interrupt but was queued
    * // Returns "failed" if queue is full or disabled
    * ```
-   * 
+   *
    * @korean 대기열상태전환
    */
-  transitionToQueued(newState: AnimationState): "success" | "queued" | "failed" {
+  transitionToQueued(
+    newState: AnimationState
+  ): "success" | "queued" | "failed" {
     // Try normal transition first
     const timestamp = performance.now();
     const priority = this.animations.get(newState)?.priority ?? 0;
@@ -1734,14 +1777,14 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Process next queued animation if available
-   * 
+   *
    * **Korean**: 다음 대기열 애니메이션 처리
-   * 
+   *
    * Should be called automatically when an animation completes.
    * Dequeues and executes the highest priority pending animation.
-   * 
+   *
    * @returns Whether a queued animation was executed
-   * 
+   *
    * @internal
    * @korean 다음대기열처리
    */
@@ -1763,13 +1806,12 @@ export class PlayerAnimationStateMachine {
       // Korean: 대기열 애니메이션 전이가 실패했음을 로그로 남깁니다.
       // This helps diagnose cases where transition rules, missing states,
       // or priority conflicts prevent a queued animation from playing.
-      // eslint-disable-next-line no-console
       console.warn(
         "[AnimationStateMachine] Failed to transition to queued animation state",
         {
           requestedState: nextRequest.state,
           currentState: this.currentState,
-        },
+        }
       );
     }
 
@@ -1778,14 +1820,14 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current animation queue state
-   * 
+   *
    * **Korean**: 현재 대기열 상태
-   * 
+   *
    * Returns information about the current queue state for debugging
    * or UI display.
-   * 
+   *
    * @returns Queue state information
-   * 
+   *
    * @korean 현재대기열상태
    */
   getQueueState(): {
@@ -1813,11 +1855,11 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Clear all pending queued animations
-   * 
+   *
    * **Korean**: 모든 대기열 초기화
-   * 
+   *
    * Removes all pending animations from the queue.
-   * 
+   *
    * @korean 모든대기열초기화
    */
   clearQueue(): void {
@@ -1826,13 +1868,13 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Set conflict resolution strategy
-   * 
+   *
    * **Korean**: 충돌 해결 전략 설정
-   * 
+   *
    * Changes the strategy used to resolve equal-priority conflicts.
-   * 
+   *
    * @param strategy - Conflict resolution strategy
-   * 
+   *
    * @korean 충돌해결전략설정
    */
   setConflictStrategy(strategy: ConflictResolutionStrategy): void {
@@ -1846,9 +1888,9 @@ export class PlayerAnimationStateMachine {
 
   /**
    * Get current conflict resolution strategy
-   * 
+   *
    * **Korean**: 충돌 해결 전략 가져오기
-   * 
+   *
    * @returns Current conflict resolution strategy
    * @korean 충돌해결전략가져오기
    */

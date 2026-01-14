@@ -1,25 +1,28 @@
 /**
  * Recovery Phase Enhancement for Black Trigram Animations
- * 
+ *
  * Implements realistic recovery animations following Korean martial arts principles:
  * - 균형회복 (Gyunhyeong Hoebog) - Balance restoration
  * - 자세복귀 (Jase Bokgwi) - Stance return
  * - 호흡조절 (Hoheup Jojoel) - Breath control during recovery
  * - 근육이완 (Geunryuk Ihwan) - Muscle relaxation after tension
- * 
+ *
  * @module systems/animation/RecoveryPhaseEnhancer
  * @category Animation System
  * @korean 복귀애니메이션강화
  */
 
 import * as THREE from "three";
-import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
+import type {
+  AnimationKeyframe,
+  SkeletalAnimation,
+} from "../../types/skeletal";
 
 /**
  * Recovery phase configuration options
- * 
+ *
  * **Korean**: 복귀 설정
- * 
+ *
  * @public
  * @category Animation
  * @korean 복귀설정
@@ -66,7 +69,7 @@ export interface RecoveryPhaseConfig {
 /**
  * Default recovery phase configuration
  * Based on Korean martial arts recovery principles
- * 
+ *
  * **Korean**: 기본 복귀 설정
  */
 const DEFAULT_RECOVERY_CONFIG: Required<RecoveryPhaseConfig> = {
@@ -80,32 +83,32 @@ const DEFAULT_RECOVERY_CONFIG: Required<RecoveryPhaseConfig> = {
 
 /**
  * Add realistic recovery phase to technique animation
- * 
+ *
  * **Korean**: 기술 애니메이션에 복귀 단계 추가
- * 
+ *
  * Enhances technique animations with proper recovery phases following
  * Korean martial arts principles of 복귀 (Bokgwi - recovery/return).
- * 
+ *
  * The recovery phase consists of two keyframes:
  * 1. **Intermediate recovery** (60% of recovery duration):
  *    - Returns 80% toward neutral position
  *    - Reduces muscle tension to 40%
  *    - Uses ease-out for gradual deceleration
- * 
+ *
  * 2. **Final recovery** (100% of recovery duration):
  *    - Fully returns to neutral stance
  *    - Relaxes muscle tension to 10%
  *    - Completes breath cycle
- * 
+ *
  * @param animation - Base technique animation
  * @param config - Recovery phase configuration options
  * @returns Enhanced animation with recovery phase
- * 
+ *
  * @example
  * ```typescript
  * // Add default 220ms recovery to front kick
  * const kickWithRecovery = addRecoveryPhase(FRONT_KICK_ANIMATION);
- * 
+ *
  * // Add custom 180ms recovery with faster muscle release
  * const quickRecovery = addRecoveryPhase(JAB_ANIMATION, {
  *   duration: 0.18,
@@ -113,7 +116,7 @@ const DEFAULT_RECOVERY_CONFIG: Required<RecoveryPhaseConfig> = {
  *   finalMuscleTension: 0.05,
  * });
  * ```
- * 
+ *
  * @korean 복귀단계추가
  */
 export function addRecoveryPhase(
@@ -132,7 +135,7 @@ export function addRecoveryPhase(
     // For now, using console.warn is acceptable for development
     // Suppress console output during tests to avoid cluttering test output
     // Note: In test environments, proper assertions should validate this condition
-    if (process.env.NODE_ENV !== 'test') {
+    if (process.env.NODE_ENV !== "test") {
       console.warn(
         `Animation "${animation.name}" has fewer than 2 keyframes. Recovery phase not added.`
       );
@@ -216,16 +219,16 @@ export function addRecoveryPhase(
 
 /**
  * Create technique animation with recovery phase
- * 
+ *
  * **Korean**: 복귀 단계를 포함한 기술 애니메이션 생성
- * 
+ *
  * Convenience function that wraps animation creation with automatic recovery phase.
  * Use this when creating new technique animations from scratch.
- * 
+ *
  * @param baseAnimation - Base animation without recovery
  * @param config - Recovery configuration
  * @returns Complete animation with recovery phase
- * 
+ *
  * @example
  * ```typescript
  * // Create front kick with recovery
@@ -234,7 +237,7 @@ export function addRecoveryPhase(
  *   { duration: 0.22 }
  * );
  * ```
- * 
+ *
  * @korean 복귀단계기술생성
  */
 export function createTechniqueWithRecovery(
@@ -246,18 +249,18 @@ export function createTechniqueWithRecovery(
 
 /**
  * Validate recovery phase quality
- * 
+ *
  * **Korean**: 복귀 단계 품질 검증
- * 
+ *
  * Checks if an animation has proper recovery phase characteristics:
  * - Has at least 2 recovery keyframes
  * - Recovery duration between 150-250ms
  * - Uses ease-out interpolation
  * - Returns to neutral position
- * 
+ *
  * @param animation - Animation to validate
  * @returns Validation result with details
- * 
+ *
  * @korean 복귀품질검증
  */
 export interface RecoveryValidationResult {
@@ -273,19 +276,21 @@ export interface RecoveryValidationResult {
 
 /**
  * Validate recovery phase in animation
- * 
+ *
  * @param animation - Animation to validate
  * @returns Validation result
- * 
+ *
  * @korean 복귀검증
  */
 export function validateRecoveryPhase(
   animation: SkeletalAnimation
 ): RecoveryValidationResult {
   const issues: string[] = [];
-  
+
   if (animation.keyframes.length < 3) {
-    issues.push("Animation has fewer than 3 keyframes (needs at least 3 for recovery)");
+    issues.push(
+      "Animation has fewer than 3 keyframes (needs at least 3 for recovery)"
+    );
     return {
       isValid: false,
       issues,
@@ -298,32 +303,46 @@ export function validateRecoveryPhase(
   // This is because addRecoveryPhase adds TWO keyframes: intermediate and final
   const lastKeyframe = animation.keyframes[animation.keyframes.length - 1];
   const thirdLastKeyframe = animation.keyframes[animation.keyframes.length - 3];
-  
+
   const recoveryDuration = (lastKeyframe.time - thirdLastKeyframe.time) * 1000; // ms
-  
+
   // Validate duration
   if (recoveryDuration < 150) {
-    issues.push(`Recovery duration too short: ${recoveryDuration.toFixed(0)}ms (minimum: 150ms)`);
+    issues.push(
+      `Recovery duration too short: ${recoveryDuration.toFixed(
+        0
+      )}ms (minimum: 150ms)`
+    );
   }
   if (recoveryDuration > 250) {
-    issues.push(`Recovery duration too long: ${recoveryDuration.toFixed(0)}ms (maximum: 250ms)`);
+    issues.push(
+      `Recovery duration too long: ${recoveryDuration.toFixed(
+        0
+      )}ms (maximum: 250ms)`
+    );
   }
 
   // Validate easing - both ease-out and ease-in are acceptable for recovery
   // ease-out is preferred but ease-in can also work for final deceleration
-  const acceptableEasings = ['ease-out', 'ease-in'];
-  if (!acceptableEasings.includes(lastKeyframe.easing || '')) {
-    issues.push(`Last keyframe should use ease-out or ease-in interpolation, found: ${lastKeyframe.easing}`);
+  const acceptableEasings = ["ease-out", "ease-in"];
+  if (!acceptableEasings.includes(lastKeyframe.easing ?? "")) {
+    issues.push(
+      `Last keyframe should use ease-out or ease-in interpolation, found: ${lastKeyframe.easing}`
+    );
   }
 
   // Validate return to neutral
   let hasNonZeroRotation = false;
   lastKeyframe.boneRotations.forEach((rotation) => {
-    if (Math.abs(rotation.x) > 0.01 || Math.abs(rotation.y) > 0.01 || Math.abs(rotation.z) > 0.01) {
+    if (
+      Math.abs(rotation.x) > 0.01 ||
+      Math.abs(rotation.y) > 0.01 ||
+      Math.abs(rotation.z) > 0.01
+    ) {
       hasNonZeroRotation = true;
     }
   });
-  
+
   if (hasNonZeroRotation) {
     issues.push("Final keyframe should return to neutral position (0, 0, 0)");
   }
@@ -338,17 +357,17 @@ export function validateRecoveryPhase(
 
 /**
  * Calculate muscle tension at specific time in animation
- * 
+ *
  * **Korean**: 애니메이션 시간별 근육 긴장도 계산
- * 
+ *
  * Interpolates muscle tension based on animation progress and recovery phase.
  * Tension peaks during technique execution and gradually releases during recovery.
- * 
+ *
  * @param animation - Animation with recovery phase
  * @param currentTime - Current time in animation (seconds)
  * @param config - Recovery configuration used
  * @returns Muscle tension value (0.0 to 1.0)
- * 
+ *
  * @korean 근육긴장도계산
  */
 export function calculateMuscleTension(
@@ -357,39 +376,47 @@ export function calculateMuscleTension(
   config: RecoveryPhaseConfig = {}
 ): number {
   const finalConfig = { ...DEFAULT_RECOVERY_CONFIG, ...config };
-  
+
   if (animation.keyframes.length < 2) {
     return finalConfig.finalMuscleTension;
   }
 
   // Recovery phase starts at the third-to-last keyframe (after peak)
   const lastKeyframe = animation.keyframes[animation.keyframes.length - 1];
-  const recoveryStartTime = animation.keyframes.length >= 3
-    ? animation.keyframes[animation.keyframes.length - 3].time
-    : animation.keyframes[animation.keyframes.length - 2].time;
-  
+  const recoveryStartTime =
+    animation.keyframes.length >= 3
+      ? animation.keyframes[animation.keyframes.length - 3].time
+      : animation.keyframes[animation.keyframes.length - 2].time;
+
   // Before recovery: peak tension
   if (currentTime < recoveryStartTime) {
     return finalConfig.peakMuscleTension;
   }
-  
+
   // During recovery: interpolate from peak to relaxed
-  const recoveryProgress = (currentTime - recoveryStartTime) / (lastKeyframe.time - recoveryStartTime);
+  const recoveryProgress =
+    (currentTime - recoveryStartTime) / (lastKeyframe.time - recoveryStartTime);
   const clampedProgress = Math.max(0, Math.min(1, recoveryProgress));
-  
+
   // Use ease-out curve for natural muscle release
   const easedProgress = 1 - Math.pow(1 - clampedProgress, 2);
-  
+
   // Interpolate tension
   if (easedProgress < 0.6) {
     // First 60%: peak -> intermediate
     const t = easedProgress / 0.6;
-    return finalConfig.peakMuscleTension + 
-      (finalConfig.intermediateMuscleTension - finalConfig.peakMuscleTension) * t;
+    return (
+      finalConfig.peakMuscleTension +
+      (finalConfig.intermediateMuscleTension - finalConfig.peakMuscleTension) *
+        t
+    );
   } else {
     // Last 40%: intermediate -> final
     const t = (easedProgress - 0.6) / 0.4;
-    return finalConfig.intermediateMuscleTension + 
-      (finalConfig.finalMuscleTension - finalConfig.intermediateMuscleTension) * t;
+    return (
+      finalConfig.intermediateMuscleTension +
+      (finalConfig.finalMuscleTension - finalConfig.intermediateMuscleTension) *
+        t
+    );
   }
 }
