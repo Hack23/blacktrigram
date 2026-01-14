@@ -234,10 +234,21 @@ function mirrorEuler(euler: THREE.Euler): THREE.Euler {
  * 
  * **Korean**: 뼈 위치 대칭
  * 
- * Mirrors position across the YZ plane (body centerline):
- * - X coordinate: Preserved (forward/back)
- * - Y coordinate: Negated (left/right - this is what we mirror)
- * - Z coordinate: Preserved (up/down)
+ * Mirrors position across the YZ plane (body centerline).
+ * 
+ * **Character-Relative Coordinate System:**
+ * Skeletal animations use character-relative coordinates (not world-space):
+ * - X coordinate: Forward/back relative to character facing direction
+ * - Y coordinate: Left/right relative to character's lateral axis
+ * - Z coordinate: Up/down relative to character's vertical axis
+ * 
+ * This differs from world-space coordinates used elsewhere in the codebase
+ * (e.g., CoordinateMapper uses X=left/right, Y=up/down, Z=forward/back).
+ * 
+ * For mirroring:
+ * - X: Preserved (forward/back is symmetric)
+ * - Y: Negated (left ↔ right)
+ * - Z: Preserved (up/down is symmetric)
  * 
  * Used for IK targets and special move positioning where
  * absolute bone positions are specified.

@@ -370,7 +370,9 @@ export function getWalkAnimation(
 
   const baseAnimation = getStanceWalkAnimation(stance);
   
-  return baseAnimation ? applyLaterality(baseAnimation, laterality) : undefined;
+  return baseAnimation
+    ? (laterality === "right" ? baseAnimation : applyLaterality(baseAnimation, laterality))
+    : undefined;
 }
 
 /**
@@ -414,7 +416,9 @@ export function getRunAnimation(
 
   const baseAnimation = getStanceRunAnimation(stance);
   
-  return baseAnimation ? applyLaterality(baseAnimation, laterality) : undefined;
+  return baseAnimation
+    ? (laterality === "right" ? baseAnimation : applyLaterality(baseAnimation, laterality))
+    : undefined;
 }
 
 /**
