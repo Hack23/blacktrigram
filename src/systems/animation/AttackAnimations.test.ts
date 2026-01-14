@@ -33,8 +33,8 @@ describe("AttackAnimations", () => {
       expect(JAB_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 4 keyframes", () => {
-      expect(JAB_ANIMATION.keyframes).toHaveLength(4);
+    it("should have 5 keyframes", () => {
+      expect(JAB_ANIMATION.keyframes).toHaveLength(5);
     });
 
     it("should have keyframes in chronological order", () => {
@@ -85,8 +85,8 @@ describe("AttackAnimations", () => {
       expect(CROSS_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 5 keyframes", () => {
-      expect(CROSS_ANIMATION.keyframes).toHaveLength(5);
+    it("should have 6 keyframes", () => {
+      expect(CROSS_ANIMATION.keyframes).toHaveLength(6);
     });
 
     it("should animate left arm bones", () => {
