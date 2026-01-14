@@ -324,10 +324,14 @@ export const KNEE_KICK_ANIMATION: SkeletalAnimation =
  * @korean 멱살잡고무릎차기애니메이션
  */
 export const CLINCH_KNEE_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("clinch_knee", "멱살잡고무릎차기")
-    .asAttack(0.45)
+  MartialArtsAnimationBuilder.create(
+    "clinch_knee",
+    "Myeoksal-japgo Mureup Chagi"
+  )
+    .asAttack(0.55)
+    .clinchGrab(0.12) // Clinch opponent (Explicit grab phase)
     .withClinch()
-    .kneeStrike(0.2)
+    .kneeStrike(0.18)
     .recover(0.25)
     .build();
 

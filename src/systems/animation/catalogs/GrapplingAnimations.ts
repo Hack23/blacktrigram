@@ -474,25 +474,8 @@ export const PARRY_COUNTER_ANIMATION: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CLINCH KNEE (클린치무릎) - Clinch to Knee Strike
+// REMOVED - MOVED TO ELBOWKNEEANIMATIONS
 // ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Clinch Knee - 클린치무릎
- *
- * Grab opponent in clinch, deliver knee strikes.
- * Muay Thai influenced technique.
- *
- * @korean 클린치무릎애니메이션
- */
-export const CLINCH_KNEE_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("clinch_knee", "클린치무릎")
-    .asAttack(0.55)
-    .clinchGrab(0.12) // Clinch opponent
-    .withClinch() // Maintain clinch position
-    .kneeStrike(0.18) // Knee to body
-    .recover(0.25) // Release
-    .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DOUBLE KNEE (더블무릎) - Two Rapid Knee Strikes
@@ -634,7 +617,7 @@ export const GRAPPLING_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["shoulder_lock", SHOULDER_LOCK_ANIMATION],
     ["counter_strike", COUNTER_STRIKE_ANIMATION],
     ["parry_counter", PARRY_COUNTER_ANIMATION],
-    ["clinch_knee", CLINCH_KNEE_ANIMATION],
+    // Clinch knee moved to ElbowKneeAnimations
     ["double_knee", DOUBLE_KNEE_ANIMATION],
     ["suplex", SUPLEX_ANIMATION],
     ["block_high", HIGH_BLOCK_ANIMATION],

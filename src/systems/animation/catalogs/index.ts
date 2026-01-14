@@ -207,9 +207,11 @@ export {
 export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
 export * from "./ElbowKneeAnimations";
+export * from "./GamRedirectionAnimations";
 export * from "./GrapplingAnimations";
 export * from "./KickAnimations";
 export * from "./MovementAnimations";
 export * from "./PunchAnimations";
 export * from "./RecoveryAnimations";
 export * from "./StanceAnimations";
+export * from "./TaeJointLockAnimations";
