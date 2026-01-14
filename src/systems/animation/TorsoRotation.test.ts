@@ -343,23 +343,6 @@ describe("TorsoRotationSystem", () => {
   });
 
   describe("Technique Torso Rotation Validation", () => {
-    describe("Debug: Check keyframe structure", () => {
-      it("should show JAB_ANIMATION keyframe structure", () => {
-        const jab = JAB_ANIMATION;
-        console.log("\n=== JAB_ANIMATION Keyframes ===");
-        jab.keyframes.forEach((kf, i) => {
-          console.log(`\nKeyframe ${i} at t=${kf.time}:`);
-          console.log(`  Bones: ${Array.from(kf.boneRotations.keys()).join(", ")}`);
-          console.log(`  Has SPINE_LOWER: ${kf.boneRotations.has(BoneName.SPINE_LOWER)}`);
-          console.log(`  Has SPINE_MIDDLE: ${kf.boneRotations.has(BoneName.SPINE_MIDDLE)}`);
-          console.log(`  Has SPINE_UPPER: ${kf.boneRotations.has(BoneName.SPINE_UPPER)}`);
-        });
-        
-        // This test always passes - just for debugging
-        expect(jab.keyframes.length).toBeGreaterThan(0);
-      });
-    });
-
     describe("Straight Punch Torso Rotation", () => {
       it("should have torso rotation in jab extension phase", () => {
         const jab = JAB_ANIMATION;
@@ -427,10 +410,10 @@ describe("TorsoRotationSystem", () => {
           const midAbs = Math.abs(spineMid.y);
           const upperAbs = Math.abs(spineUpper.y);
           
-          // Lower should rotate less than mid
-          expect(lowerAbs).toBeLessThanOrEqual(midAbs + 0.1); // Allow small margin
-          // Mid should rotate less than upper
-          expect(midAbs).toBeLessThanOrEqual(upperAbs + 0.1);
+          // Lower should rotate strictly less than mid
+          expect(lowerAbs).toBeLessThan(midAbs);
+          // Mid should rotate strictly less than upper
+          expect(midAbs).toBeLessThan(upperAbs);
         }
       });
     });

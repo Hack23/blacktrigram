@@ -588,8 +588,21 @@ export class MartialArtsAnimationBuilder {
       this.applyKickTorsoLean(kf, "right", 12);
       
       // Spine counter-rotation for torque generation (applied after Z-axis lean)
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, -1.0, 0);
+      // Preserve existing Z-axis lean from applyKickTorsoLean
+      const upperSpineRot = kf.rotations.get(BoneName.SPINE_UPPER);
+      const lowerSpineRot = kf.rotations.get(BoneName.SPINE_LOWER);
+      kf.rotate(
+        BoneName.SPINE_UPPER,
+        upperSpineRot?.x ?? 0,
+        0.8,
+        upperSpineRot?.z ?? 0
+      );
+      kf.rotate(
+        BoneName.SPINE_LOWER,
+        lowerSpineRot?.x ?? 0,
+        -1.0,
+        lowerSpineRot?.z ?? 0
+      );
       
       // Support leg pivots
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
@@ -2377,24 +2390,29 @@ export class MartialArtsAnimationBuilder {
     const direction = isRight ? -1 : 1;
     const rotationRad = (rotationDegrees * Math.PI) / 180;
 
-    // Sequential spine rotation for circular motion
+    // Get existing spine rotations if any and preserve X/Z axes
+    const existingLower = kf.rotations.get(BoneName.SPINE_LOWER);
+    const existingMiddle = kf.rotations.get(BoneName.SPINE_MIDDLE);
+    const existingUpper = kf.rotations.get(BoneName.SPINE_UPPER);
+
+    // Sequential spine rotation for circular motion, combining with existing rotations
     kf.rotate(
       BoneName.SPINE_LOWER,
-      0,
-      rotationRad * direction * 0.5,
-      0
+      existingLower?.x ?? 0,
+      (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
+      existingLower?.z ?? 0
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
-      0,
-      rotationRad * direction * 0.7,
-      0
+      existingMiddle?.x ?? 0,
+      (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
+      existingMiddle?.z ?? 0
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
-      0,
-      rotationRad * direction,
-      0
+      existingUpper?.x ?? 0,
+      (existingUpper?.y ?? 0) + rotationRad * direction,
+      existingUpper?.z ?? 0
     );
   }
 
@@ -2437,7 +2455,10 @@ export class MartialArtsAnimationBuilder {
     const direction = isRight ? -1 : 1;
     const leanRad = (leanDegrees * Math.PI) / 180;
 
-    // Lateral lean on Z-axis (side-to-side roll)
+    // Lateral lean on Z-axis (side-to-side roll) for torso balance.
+    // NOTE: This method only sets the Z-axis roll component. Any subsequent kf.rotate
+    // calls on these spine bones (e.g. adding Y-axis twist in a kick phase) must
+    // preserve or explicitly incorporate this roll, otherwise the lean will be lost.
     kf.rotate(
       BoneName.SPINE_LOWER,
       0,
