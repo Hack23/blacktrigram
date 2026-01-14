@@ -14,15 +14,15 @@
  * @korean 방어자세통합테스트
  */
 
-import { describe, it, expect } from "vitest";
-import { BoneName } from "../@/types/skeletal";
-import { MartialArtsAnimationBuilder } from "../MartialArtsAnimationBuilder";
+import { BoneName } from "@/types/skeletal";
+import { describe, expect, it } from "vitest";
 import {
   HIGH_GUARD,
-  MIDDLE_GUARD,
   LOW_GUARD,
+  MIDDLE_GUARD,
   getGuardPosition,
 } from "../KoreanGuardPositions";
+import { MartialArtsAnimationBuilder } from "../MartialArtsAnimationBuilder";
 
 /**
  * Helper to check if a keyframe has proper guard position
@@ -33,8 +33,7 @@ function hasGuardPosition(
   hand: "left" | "right"
 ): boolean {
   const guard = getGuardPosition(guardType);
-  const boneName =
-    hand === "left" ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+  const boneName = hand === "left" ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
   const elbowName = hand === "left" ? BoneName.ELBOW_L : BoneName.ELBOW_R;
 
   const shoulderRot = keyframe.boneRotations.get(boneName);

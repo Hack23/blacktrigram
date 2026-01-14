@@ -1,29 +1,29 @@
 /**
  * Stance Animations Test Suite
- * 
+ *
  * Validates Korean martial arts biomechanics for all eight trigram stances.
  * Tests knee bend angles, weight distribution, hip positioning, and stance uniqueness.
- * 
+ *
  * 팔괘 자세 애니메이션 테스트
- * 
+ *
  * @module systems/animation/__tests__/StanceAnimations
  * @korean 자세애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
+import { BoneName } from "@/types/skeletal";
+import * as THREE from "three";
+import { describe, expect, it } from "vitest";
+import { KOREAN_STANCE_BIOMECHANICS } from "../MartialArtsConstants";
 import {
-  createGeonStance,
-  createTaeStance,
-  createLiStance,
-  createJinStance,
-  createSonStance,
   createGamStance,
   createGanStance,
+  createGeonStance,
   createGonStance,
+  createJinStance,
+  createLiStance,
+  createSonStance,
+  createTaeStance,
 } from "../StanceAnimations";
-import { KOREAN_STANCE_BIOMECHANICS } from "../MartialArtsConstants";
-import { BoneName } from "../@/types/skeletal";
-import * as THREE from "three";
 
 /**
  * Helper function to convert degrees to radians
@@ -145,10 +145,10 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     it("should have equal knee bend on both legs (~135°)", () => {
       const rightThigh = getRotation(liStance, BoneName.THIGH_R);
       const leftThigh = getRotation(liStance, BoneName.THIGH_L);
-      
+
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
-      
+
       if (rightThigh && leftThigh) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
         expect(rightThigh.x).toBeCloseTo(expectedRotation, 1);
@@ -181,10 +181,10 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     it("should have deep knee bend on both legs (~90°)", () => {
       const rightThigh = getRotation(jinStance, BoneName.THIGH_R);
       const leftThigh = getRotation(jinStance, BoneName.THIGH_L);
-      
+
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
-      
+
       if (rightThigh && leftThigh) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
         expect(rightThigh.x).toBeCloseTo(expectedRotation, 1);
@@ -291,10 +291,10 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     it("should have moderate knee bend on both legs (~120°)", () => {
       const rightThigh = getRotation(ganStance, BoneName.THIGH_R);
       const leftThigh = getRotation(ganStance, BoneName.THIGH_L);
-      
+
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
-      
+
       if (rightThigh && leftThigh) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
         expect(rightThigh.x).toBeCloseTo(expectedRotation, 1);
@@ -325,10 +325,10 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     it("should have very deep knee bend on both legs (~80°)", () => {
       const rightThigh = getRotation(gonStance, BoneName.THIGH_R);
       const leftThigh = getRotation(gonStance, BoneName.THIGH_L);
-      
+
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
-      
+
       if (rightThigh && leftThigh) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
         expect(rightThigh.x).toBeCloseTo(expectedRotation, 1);
@@ -369,7 +369,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const uniqueAngles = new Set(
         rightKneeAngles.map((angle) => Math.round(angle * 100) / 100)
       );
-      
+
       // Should have at least 6 unique angles (some stances like Li/Gan might be similar)
       expect(uniqueAngles.size).toBeGreaterThanOrEqual(6);
     });
@@ -396,7 +396,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const uniqueHeights = new Set(
         hipHeights.map((height) => Math.round(height * 100) / 100)
       );
-      
+
       // Should have at least 5 unique heights
       expect(uniqueHeights.size).toBeGreaterThanOrEqual(5);
     });
@@ -422,9 +422,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       // Check that we have forward, backward, and centered stances
       const hasForward = weightDistributions.some((z) => z > 0.05);
       const hasBackward = weightDistributions.some((z) => z < -0.05);
-      const hasCentered = weightDistributions.some(
-        (z) => Math.abs(z) < 0.05
-      );
+      const hasCentered = weightDistributions.some((z) => Math.abs(z) < 0.05);
 
       expect(hasForward).toBe(true);
       expect(hasBackward).toBe(true);
@@ -437,19 +435,19 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const jinStance = createJinStance();
       const leftFootPos = getPosition(jinStance, BoneName.FOOT_L);
       const rightFootPos = getPosition(jinStance, BoneName.FOOT_R);
-      
+
       expect(leftFootPos).toBeDefined();
       expect(rightFootPos).toBeDefined();
-      
+
       if (leftFootPos && rightFootPos) {
         // Calculate actual width (distance between feet)
         const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
-        
+
         // Expected width: 46cm * 2.0 / 100 = 0.92m
         const expectedWidth = (46 * 2.0) / 100;
-        
+
         expect(actualWidth).toBeCloseTo(expectedWidth, 2);
-        
+
         // Jin should be wider than all other stances
         expect(actualWidth).toBeGreaterThan(0.8); // > 0.8m
       }
@@ -459,16 +457,16 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const gonStance = createGonStance();
       const leftFootPos = getPosition(gonStance, BoneName.FOOT_L);
       const rightFootPos = getPosition(gonStance, BoneName.FOOT_R);
-      
+
       expect(leftFootPos).toBeDefined();
       expect(rightFootPos).toBeDefined();
-      
+
       if (leftFootPos && rightFootPos) {
         const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
-        
+
         // Expected width: 46cm * 1.8 / 100 = 0.828m
         const expectedWidth = (46 * 1.8) / 100;
-        
+
         expect(actualWidth).toBeCloseTo(expectedWidth, 2);
         expect(actualWidth).toBeGreaterThan(0.7); // > 0.7m
       }
@@ -478,14 +476,14 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const sonStance = createSonStance();
       const leftFootPos = getPosition(sonStance, BoneName.FOOT_L);
       const rightFootPos = getPosition(sonStance, BoneName.FOOT_R);
-      
+
       expect(leftFootPos).toBeDefined();
       expect(rightFootPos).toBeDefined();
-      
+
       if (leftFootPos && rightFootPos) {
         // Both feet should be at center (zero width)
         const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
-        
+
         // Expected width: 46cm * 0.0 / 100 = 0.0m
         expect(actualWidth).toBe(0);
         expect(Math.abs(leftFootPos.x)).toBeCloseTo(0, 10); // Use toBeCloseTo to handle -0 vs +0
@@ -497,16 +495,16 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const taeStance = createTaeStance();
       const leftFootPos = getPosition(taeStance, BoneName.FOOT_L);
       const rightFootPos = getPosition(taeStance, BoneName.FOOT_R);
-      
+
       expect(leftFootPos).toBeDefined();
       expect(rightFootPos).toBeDefined();
-      
+
       if (leftFootPos && rightFootPos) {
         const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
-        
+
         // Expected width: 46cm * 0.9 / 100 = 0.414m
         const expectedWidth = (46 * 0.9) / 100;
-        
+
         expect(actualWidth).toBeCloseTo(expectedWidth, 2);
         expect(actualWidth).toBeLessThan(0.5); // < 0.5m (narrow for mobility)
       }
@@ -527,17 +525,17 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       stances.forEach(({ stance, width }) => {
         const leftFootPos = getPosition(stance, BoneName.FOOT_L);
         const rightFootPos = getPosition(stance, BoneName.FOOT_R);
-        
+
         expect(leftFootPos).toBeDefined();
         expect(rightFootPos).toBeDefined();
-        
+
         if (leftFootPos && rightFootPos) {
           const expectedWidth = (46 * width) / 100;
           const actualWidth = Math.abs(rightFootPos.x - leftFootPos.x);
-          
+
           // Verify stance width matches specification
           expect(actualWidth).toBeCloseTo(expectedWidth, 2);
-          
+
           // Verify feet are symmetric around center
           expect(leftFootPos.x).toBeCloseTo(-rightFootPos.x, 2);
         }
@@ -559,7 +557,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       const widths = stances.map(({ stance }) => {
         const leftFootPos = getPosition(stance, BoneName.FOOT_L);
         const rightFootPos = getPosition(stance, BoneName.FOOT_R);
-        
+
         if (leftFootPos && rightFootPos) {
           return Math.abs(rightFootPos.x - leftFootPos.x);
         }
@@ -593,7 +591,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       // Verify proportional scaling
       const ratio1 = footPositions[1] / footPositions[0];
       const ratio2 = footPositions[2] / footPositions[1];
-      
+
       expect(ratio1).toBeCloseTo(shoulderWidths[1] / shoulderWidths[0], 1);
       expect(ratio2).toBeCloseTo(shoulderWidths[2] / shoulderWidths[1], 1);
     });
@@ -602,7 +600,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
   describe("Performance and Structure", () => {
     it("should create all stances within performance budget", () => {
       const start = performance.now();
-      
+
       createGeonStance();
       createTaeStance();
       createLiStance();
@@ -611,10 +609,10 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
       createGamStance();
       createGanStance();
       createGonStance();
-      
+
       const end = performance.now();
       const duration = end - start;
-      
+
       // Should create all 8 stances in less than 50ms
       expect(duration).toBeLessThan(50);
     });

@@ -4,15 +4,15 @@
     "./src/main.tsx",
     "./src/index.ts",
     "./scripts/capture-screenshots.ts",
-    "./eslint.config.js",
-    "./typedoc.json",
-    "./vite.config.ts",
-    "./vitest.config.ts",
-    "./cypress.config.ts"
+    "./eslint.config.js"
   ],
   "project": ["**/*.{ts,tsx}"],
   "ignore": [],
   "ignoreBinaries": ["dot"],
+  "ignoreUnresolved": [
+    "^src/systems/animation/.*\\.test\\.ts$",
+    "typedoc\\.json$"
+  ],
   "eslint": {
     "config": [".eslintrc.cjs"]
   },

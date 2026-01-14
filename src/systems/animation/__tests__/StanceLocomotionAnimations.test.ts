@@ -8,8 +8,8 @@
  * @korean 자세별이동애니메이션테스트
  */
 
+import { BoneName } from "@/types/skeletal";
 import { describe, expect, it } from "vitest";
-import { BoneName } from "../@/types/skeletal";
 import { ALL_ANIMATIONS, getAnimation } from "../AnimationRegistry";
 import {
   GAM_RUN_ANIMATION,
