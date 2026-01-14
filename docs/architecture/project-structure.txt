@@ -811,6 +811,7 @@ src/systems/animation/AnimationOptimizations.test.ts
 src/systems/animation/AnimationOptimizations.ts
 src/systems/animation/AnimationPriority.test.ts
 src/systems/animation/AnimationPriority.ts
+src/systems/animation/AnimationRegistry.integration.test.ts
 src/systems/animation/AnimationRegistry.ts
 src/systems/animation/AnimationStateMachine.recovery.test.ts
 src/systems/animation/AnimationStateMachine.stance-guards.test.ts
@@ -831,6 +832,10 @@ src/systems/animation/DarkOpsAnimations.ts
 src/systems/animation/DefensiveAnimations.test.ts
 src/systems/animation/DefensiveAnimations.ts
 src/systems/animation/ElbowKneeAnimations.ts
+src/systems/animation/EnhancedAttackAnimations.test.ts
+src/systems/animation/EnhancedAttackAnimations.ts
+src/systems/animation/EnhancedElbowKneeAnimations.test.ts
+src/systems/animation/EnhancedElbowKneeAnimations.ts
 src/systems/animation/FOOTWORK_INTEGRATION.md
 src/systems/animation/FacialExpressions.test.ts
 src/systems/animation/FacialExpressions.ts
@@ -839,7 +844,9 @@ src/systems/animation/FallAnimations.ts
 src/systems/animation/FootworkAnimations.test.ts
 src/systems/animation/FootworkSkeletalAnimations.test.ts
 src/systems/animation/FootworkSkeletalAnimations.ts
+src/systems/animation/GUARD_POSITIONS.md
 src/systems/animation/GrapplingAnimations.ts
+src/systems/animation/GuardPositionIntegration.test.ts
 src/systems/animation/HandPoseApplicator.ts
 src/systems/animation/HandPoses.test.ts
 src/systems/animation/HandPoses.ts
@@ -852,6 +859,10 @@ src/systems/animation/KeyframeInterpolation.ts
 src/systems/animation/KickAnimations.test.ts
 src/systems/animation/KickAnimations.ts
 src/systems/animation/KickPhaseApplicator.ts
+src/systems/animation/KoreanGuardPositions.test.ts
+src/systems/animation/KoreanGuardPositions.ts
+src/systems/animation/LateralityTransform.test.ts
+src/systems/animation/LateralityTransform.ts
 src/systems/animation/MartialArtsAnimationBuilder.ts
 src/systems/animation/MartialArtsConstants.ts
 src/systems/animation/MartialPoseApplicator.ts
@@ -864,6 +875,9 @@ src/systems/animation/PunchPhaseApplicator.ts
 src/systems/animation/README.md
 src/systems/animation/RecoveryAnimations.test.ts
 src/systems/animation/RecoveryAnimations.ts
+src/systems/animation/RecoveryPhaseEnhancer.test.ts
+src/systems/animation/RecoveryPhaseEnhancer.ts
+src/systems/animation/RecoveryVisualization.ts
 src/systems/animation/SkeletonRig.test.ts
 src/systems/animation/SkeletonRig.ts
 src/systems/animation/StanceAnimations.ts
@@ -879,7 +893,12 @@ src/systems/animation/TechniqueAnimationMapper.enhanced.test.ts
 src/systems/animation/TechniqueAnimationMapper.ts
 src/systems/animation/TechniqueAnimationMapping.ts
 src/systems/animation/TorsoRotation.test.ts
+src/systems/animation/TrigramAnimationMapping.test.ts
+src/systems/animation/TrigramAnimationMapping.ts
+src/systems/animation/TrigramStanceTransitions.test.ts
+src/systems/animation/TrigramStanceTransitions.ts
 src/systems/animation/WeightTransferAnimations.test.ts
+src/systems/animation/__tests__/GuardPositionIntegration.test.ts
 src/systems/animation/__tests__/StanceAnimations.test.ts
 src/systems/animation/__tests__/StanceLocomotionAnimations.test.ts
 src/systems/animation/index.ts
@@ -1006,6 +1025,7 @@ src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/utils/__tests__/highResMobile.test.ts
 src/utils/__tests__/lowEndMobile.test.ts
 src/utils/__tests__/responsiveLayoutHelpers.test.ts
 src/utils/accessibility.axe.test.tsx
