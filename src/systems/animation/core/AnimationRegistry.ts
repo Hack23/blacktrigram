@@ -42,8 +42,6 @@ import { BASIC_ANIMATIONS } from "../catalogs/BasicAnimations";
 import { COMBO_ANIMATIONS } from "../catalogs/ComboAnimations";
 import { DARKOPS_ANIMATIONS } from "../catalogs/DarkOpsAnimations";
 import {
-  GAM_FLOW_DEFENSE,
-  GAM_REDIRECTION_COUNTER,
   GAN_COUNTER_FORTRESS,
   GAN_IMMOVABLE_BLOCK,
   GEON_COUNTER_STRIKE,
@@ -56,7 +54,6 @@ import {
   LI_PRECISION_PARRY,
   SON_CONTINUOUS_DEFLECTION,
   SON_PRESSURE_COUNTER,
-  TAE_JOINT_LOCK_DEFENSE,
   TAE_SWEEP_DEFENSE,
 } from "../catalogs/DefensiveAnimations";
 import {
@@ -161,6 +158,21 @@ import {
   KNEE_STRIKE_ANIMATION_ENHANCED,
 } from "../catalogs/EnhancedElbowKneeAnimations";
 
+import {
+  TAE_ELBOW_HYPEREXTENSION,
+  TAE_FINGER_LOCK,
+  TAE_FLOWING_COUNTER,
+  TAE_SMALL_CIRCLE_LOCK,
+} from "../catalogs/TaeJointLockAnimations";
+
+import {
+  GAM_FLOWING_BLOCK,
+  GAM_FLOWING_RIVER_STRIKE,
+  GAM_REDIRECTION_COUNTER,
+  GAM_TIDAL_WAVE_PALM,
+  GAM_WHIRLPOOL_COUNTER,
+} from "../catalogs/GamRedirectionAnimations";
+
 // Specialized punch variant animations (특수 주먹 변형 애니메이션)
 import {
   EAR_STRIKE_ANIMATION,
@@ -251,9 +263,15 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     // Tae (태)
     [AnimationType.WRIST_LOCK_STRIKE, WRIST_LOCK_ANIMATION],
     [AnimationType.SPIRAL_SHOULDER_THROW, HIP_THROW_ANIMATION],
-    [AnimationType.JOINT_LOCK_DEFENSE, TAE_JOINT_LOCK_DEFENSE],
+    [AnimationType.JOINT_LOCK_DEFENSE, TAE_FLOWING_COUNTER], // Updated to specific Tae counter
     [AnimationType.SWEEP_DEFENSE, TAE_SWEEP_DEFENSE],
-    [AnimationType.WRIST_TWIST_COUNTER, WRIST_LOCK_ANIMATION], // Fallback if no specific
+    [AnimationType.WRIST_TWIST_COUNTER, TAE_FLOWING_COUNTER], // Mapped to Flowing Lock Counter
+    [AnimationType.SMALL_CIRCLE_LOCK, TAE_SMALL_CIRCLE_LOCK],
+    [AnimationType.FINGER_LOCK, TAE_FINGER_LOCK],
+    [AnimationType.ELBOW_LOCK, TAE_ELBOW_HYPEREXTENSION],
+    [AnimationType.ELBOW_HYPEREXTEND, TAE_ELBOW_HYPEREXTENSION],
+    [AnimationType.SHOULDER_MANIPULATION, SHOULDER_MANIPULATION_ANIMATION],
+    [AnimationType.FLOWING_ARM_BAR, FLOWING_ARM_BAR_ANIMATION],
 
     // Jin (진)
     [AnimationType.EXPLOSIVE_KNEE, KNEE_STRIKE_ANIMATION_ENHANCED],
@@ -271,12 +289,12 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
 
     // Gam (감)
     [AnimationType.WATER_COUNTER, GAM_REDIRECTION_COUNTER],
-    [AnimationType.CIRCULAR_PARRY, GAM_FLOW_DEFENSE],
-    [AnimationType.FLOW_DEFENSE, GAM_FLOW_DEFENSE],
-    [AnimationType.FLOWING_RIVER_STRIKE, FLOWING_PUSH_ANIMATION],
+    [AnimationType.CIRCULAR_PARRY, GAM_FLOWING_BLOCK], // Updated to Flowing Block
+    [AnimationType.FLOW_DEFENSE, GAM_FLOWING_BLOCK], // Updated to Flowing Block
+    [AnimationType.FLOWING_RIVER_STRIKE, GAM_FLOWING_RIVER_STRIKE],
     [AnimationType.REDIRECTION_COUNTER, GAM_REDIRECTION_COUNTER],
-    [AnimationType.TIDAL_WAVE_PALM, PALM_STRIKE_ANIMATION],
-    [AnimationType.WHIRLPOOL_COUNTER, PARRY_COUNTER_ANIMATION],
+    [AnimationType.TIDAL_WAVE_PALM, GAM_TIDAL_WAVE_PALM],
+    [AnimationType.WHIRLPOOL_COUNTER, GAM_WHIRLPOOL_COUNTER],
 
     // Gan (간)
     [AnimationType.ROCK_COUNTER, GAN_COUNTER_FORTRESS],
@@ -313,7 +331,7 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.BLOCK, BLOCK_ANIMATION],
     [AnimationType.BLOCK_HIGH, HIGH_BLOCK_ANIMATION],
     [AnimationType.BLOCK_LOW, LOW_BLOCK_ANIMATION],
-    [AnimationType.FLOWING_BLOCK, GAM_FLOW_DEFENSE],
+    [AnimationType.FLOWING_BLOCK, GAM_FLOWING_BLOCK],
     [AnimationType.IRON_BLOCK, GAN_IMMOVABLE_BLOCK],
     [AnimationType.IMMOVABLE_BLOCK, GAN_IMMOVABLE_BLOCK],
     [AnimationType.THUNDEROUS_UPPERCUT, ELBOW_UPPERCUT_ANIMATION],
