@@ -398,7 +398,7 @@ export function interpolateKeyframeCached(
       const prevVal = prevMuscles.get(muscle) ?? 0;
       const nextVal = nextMuscles.get(muscle) ?? 0;
       // Linear interpolation for muscle tension
-      interpolatedMuscles.set(muscle, prevVal + (nextVal - prevVal) * t);
+      interpolatedMuscles?.set(muscle, prevVal + (nextVal - prevVal) * t);
     });
   }
 
