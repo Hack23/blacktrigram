@@ -4,12 +4,20 @@
  * Demonstrates application of RecoveryPhaseEnhancer to existing attack animations
  * following Korean martial arts principles of 복귀 (Bokgwi - recovery/return).
  * 
+ * Note: Imports individual animations directly for explicit dependency tracking.
+ * This makes it clear which animations are being enhanced and simplifies debugging.
+ * 
  * @module systems/animation/EnhancedAttackAnimations
  * @category Animation System
  * @korean 향상된공격애니메이션
  */
 
-import { JAB_ANIMATION, CROSS_ANIMATION, FRONT_KICK_ANIMATION, ROUNDHOUSE_KICK_ANIMATION } from "./AttackAnimations";
+import { 
+  JAB_ANIMATION, 
+  CROSS_ANIMATION, 
+  FRONT_KICK_ANIMATION, 
+  ROUNDHOUSE_KICK_ANIMATION 
+} from "./AttackAnimations";
 import { addRecoveryPhase, type RecoveryPhaseConfig } from "./RecoveryPhaseEnhancer";
 import type { SkeletalAnimation } from "../../types/skeletal";
 

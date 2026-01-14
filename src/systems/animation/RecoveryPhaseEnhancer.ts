@@ -128,9 +128,13 @@ export function addRecoveryPhase(
 
   // Validate animation has at least 2 keyframes
   if (animation.keyframes.length < 2) {
-    console.warn(
-      `Animation "${animation.name}" has fewer than 2 keyframes. Recovery phase not added.`
-    );
+    // In production, this would use proper logging system
+    // For now, using console.warn is acceptable for development
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn(
+        `Animation "${animation.name}" has fewer than 2 keyframes. Recovery phase not added.`
+      );
+    }
     return animation;
   }
 
@@ -294,9 +298,11 @@ export function validateRecoveryPhase(
     issues.push(`Recovery duration too long: ${recoveryDuration.toFixed(0)}ms (maximum: 250ms)`);
   }
 
-  // Validate easing
-  if (lastKeyframe.easing !== "ease-out" && lastKeyframe.easing !== "ease-in") {
-    issues.push(`Last keyframe should use ease-out interpolation, found: ${lastKeyframe.easing}`);
+  // Validate easing - both ease-out and ease-in are acceptable for recovery
+  // ease-out is preferred but ease-in can also work for final deceleration
+  const acceptableEasings = ['ease-out', 'ease-in'];
+  if (!acceptableEasings.includes(lastKeyframe.easing || '')) {
+    issues.push(`Last keyframe should use ease-out or ease-in interpolation, found: ${lastKeyframe.easing}`);
   }
 
   // Validate return to neutral
