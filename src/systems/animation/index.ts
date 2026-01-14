@@ -125,6 +125,10 @@ export {
   WALK_ANIMATION,
 } from "./AttackAnimations";
 
+// NOTE: Enhanced animations with recovery phases are now the default in ANIMATION_REGISTRY
+// The base animations above are exported for backward compatibility and testing
+// Use getAnimationForTechnique() or ANIMATION_REGISTRY to get enhanced versions
+
 // Animation lookup with stance-specific support
 export { getAnimationForTechnique } from "./AnimationRegistry";
 
