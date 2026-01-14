@@ -14,13 +14,13 @@
  * @korean 애니메이션최적화
  */
 
-import * as THREE from "three";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
   SkeletalRig,
 } from "@/types/skeletal";
 import { ThreeObjectPools } from "@/utils/threeObjectPool";
+import * as THREE from "three";
 
 /**
  * Cached keyframe with interpolated values
@@ -376,11 +376,47 @@ export function interpolateKeyframeCached(
     });
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ANATOMY STATE INTERPOLATION (해부학 상태 보간)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // For anatomy state, we use discrete values (no interpolation - nearest keyframe wins)
+  // At t < 0.5 use prevKeyframe, at t >= 0.5 use nextKeyframe
+  const useNextAnatomy = t >= 0.5;
+  const anatomySource = useNextAnatomy ? nextKeyframe : prevKeyframe;
+
+  // Interpolate muscle activations if present
+  let interpolatedMuscles: Map<string, number> | undefined;
+  if (prevKeyframe.muscleActivations || nextKeyframe.muscleActivations) {
+    interpolatedMuscles = new Map();
+    const prevMuscles = prevKeyframe.muscleActivations ?? new Map();
+    const nextMuscles = nextKeyframe.muscleActivations ?? new Map();
+
+    // Collect all muscle groups from both keyframes
+    const allMuscles = new Set([...prevMuscles.keys(), ...nextMuscles.keys()]);
+    allMuscles.forEach((muscle) => {
+      const prevVal = prevMuscles.get(muscle) ?? 0;
+      const nextVal = nextMuscles.get(muscle) ?? 0;
+      // Linear interpolation for muscle tension
+      interpolatedMuscles!.set(muscle, prevVal + (nextVal - prevVal) * t);
+    });
+  }
+
   const interpolatedKeyframe: AnimationKeyframe = {
     time,
     boneRotations: interpolatedRotations,
     bonePositions: interpolatedPositions,
     easing: prevKeyframe.easing,
+    // Anatomy state (discrete, from nearest keyframe)
+    leftHandPose: anatomySource.leftHandPose,
+    rightHandPose: anatomySource.rightHandPose,
+    leftHandHighlightMode: anatomySource.leftHandHighlightMode,
+    rightHandHighlightMode: anatomySource.rightHandHighlightMode,
+    leftFootHighlight: anatomySource.leftFootHighlight,
+    rightFootHighlight: anatomySource.rightFootHighlight,
+    facialExpression: anatomySource.facialExpression,
+    // Muscle activations (interpolated)
+    muscleActivations: interpolatedMuscles,
   };
 
   // Cache for future use

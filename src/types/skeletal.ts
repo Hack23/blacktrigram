@@ -1,9 +1,9 @@
 /**
  * Skeletal rigging types for articulated body model
- * 
+ *
  * Defines bone hierarchy, skeletal rig structure, and animation keyframes
  * for realistic human-like fighter animations with independent limb movement.
- * 
+ *
  * @module types/skeletal
  * @category Type Definitions
  * @korean 골격타입
@@ -13,10 +13,10 @@ import * as THREE from "three";
 
 /**
  * Bone in skeletal rig hierarchy
- * 
+ *
  * Represents a single bone with position, rotation, scale, and parent-child relationships.
  * Bones form a tree structure for realistic articulated body movement.
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 뼈
@@ -79,10 +79,10 @@ export interface Bone {
 
 /**
  * Skeletal rig with complete bone hierarchy
- * 
+ *
  * Contains root bone and map of all bones for efficient lookup.
  * Maximum 30 bones for 60fps performance.
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 골격
@@ -109,10 +109,11 @@ export interface SkeletalRig {
 
 /**
  * Animation keyframe for skeletal animation
- * 
+ *
  * Defines bone transformations at a specific time in the animation.
  * Keyframes are interpolated for smooth animation between poses.
- * 
+ * Now includes integrated anatomy state for hands, feet, and facial expressions.
+ *
  * @public
  * @category Animation
  * @korean 애니메이션키프레임
@@ -143,14 +144,77 @@ export interface AnimationKeyframe {
    * @korean 이징함수
    */
   readonly easing?: "linear" | "ease-in" | "ease-out" | "ease-in-out";
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ANATOMY STATE (해부학 상태) - Integrated hand, foot, and facial animation
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Left hand pose type at this keyframe
+   * @korean 왼손자세
+   */
+  readonly leftHandPose?: string;
+
+  /**
+   * Right hand pose type at this keyframe
+   * @korean 오른손자세
+   */
+  readonly rightHandPose?: string;
+
+  /**
+   * Whether left foot is highlighted (e.g., during kicks)
+   * @korean 왼발강조
+   */
+  readonly leftFootHighlight?: boolean;
+
+  /**
+   * Whether right foot is highlighted (e.g., during kicks)
+   * @korean 오른발강조
+   */
+  readonly rightFootHighlight?: boolean;
+
+  /**
+   * Left hand highlight mode for striking surface
+   * @korean 왼손강조모드
+   */
+  readonly leftHandHighlightMode?:
+    | "none"
+    | "knuckles"
+    | "palm"
+    | "knife_edge"
+    | "fingertips";
+
+  /**
+   * Right hand highlight mode for striking surface
+   * @korean 오른손강조모드
+   */
+  readonly rightHandHighlightMode?:
+    | "none"
+    | "knuckles"
+    | "palm"
+    | "knife_edge"
+    | "fingertips";
+
+  /**
+   * Facial expression at this keyframe
+   * @korean 얼굴표정
+   */
+  readonly facialExpression?: string;
+
+  /**
+   * Muscle activation targets at this keyframe
+   * Map of muscle group name to tension level (0-1)
+   * @korean 근육활성화
+   */
+  readonly muscleActivations?: Map<string, number>;
 }
 
 /**
  * Attack animation type categories
- * 
+ *
  * Defines the 5 base categories of attack animations with variants.
  * Each technique maps to one of these animation types.
- * 
+ *
  * @public
  * @category Animation
  * @korean 공격애니메이션타입
@@ -181,9 +245,9 @@ export enum AttackAnimationType {
 
 /**
  * Animation configuration for a technique
- * 
+ *
  * Links a technique to its specific attack animation with speed modifier.
- * 
+ *
  * @public
  * @category Animation
  * @korean 기술애니메이션설정
@@ -207,10 +271,10 @@ export interface TechniqueAnimationConfig {
 
 /**
  * Complete skeletal animation sequence
- * 
+ *
  * Sequence of keyframes defining a complete animation
  * (e.g., jab, cross, roundhouse kick).
- * 
+ *
  * @public
  * @category Animation
  * @korean 골격애니메이션
@@ -255,10 +319,10 @@ export interface SkeletalAnimation {
 
 /**
  * Bone chain definition for IK (Inverse Kinematics)
- * 
+ *
  * Defines a chain of bones for IK solving (e.g., arm chain, leg chain).
  * Used for realistic limb positioning and movement.
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 뼈체인
@@ -297,10 +361,10 @@ export interface BoneChain {
 
 /**
  * Hand bone structure with 5 fingers
- * 
+ *
  * Simplified hand model with palm and 5 fingers.
  * Each finger has 3 segments (proximal, middle, distal).
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 손뼈
@@ -345,10 +409,10 @@ export interface HandBones {
 
 /**
  * Joint constraint for realistic movement
- * 
+ *
  * Defines rotation limits for joints (e.g., elbow can't bend backward).
  * Ensures anatomically correct movement.
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 관절제약
@@ -381,12 +445,12 @@ export interface JointConstraint {
 
 /**
  * Bone names for humanoid rig
- * 
+ *
  * Standard bone naming convention for humanoid skeleton.
  * Total: 28 bones base + optional 38 hand bones (19 per hand) = 66 bones max.
- * 
+ *
  * Hand bones are optional and can be excluded for performance (LOD system).
- * 
+ *
  * @public
  * @category Skeletal System
  * @korean 뼈이름들
@@ -479,9 +543,9 @@ export enum BoneName {
 
 /**
  * Animation state for skeletal player
- * 
+ *
  * Tracks current animation playback state for skeletal animations.
- * 
+ *
  * @public
  * @category Animation
  * @korean 애니메이션상태
@@ -526,13 +590,13 @@ export interface SkeletalAnimationState {
 
 /**
  * Fighting stance guard pose configuration
- * 
+ *
  * Defines complete body positioning for authentic Korean martial arts stances.
  * Includes arms, torso, legs, and pelvis rotations based on traditional Taekwondo/Hapkido.
- * 
+ *
  * Each stance corresponds to a real martial arts position with unique leg positioning.
  * Used for stance-specific idle animations at 60fps.
- * 
+ *
  * @public
  * @category Animation
  * @korean 자세방어포즈
@@ -570,9 +634,9 @@ export interface StanceGuardPose {
    * @korean 왼다리
    */
   readonly leftLeg: {
-    readonly hip: THREE.Euler;      // Hip rotation/abduction
-    readonly knee: THREE.Euler;     // Knee bend angle
-    readonly ankle: THREE.Euler;    // Ankle dorsiflexion/plantarflexion
+    readonly hip: THREE.Euler; // Hip rotation/abduction
+    readonly knee: THREE.Euler; // Knee bend angle
+    readonly ankle: THREE.Euler; // Ankle dorsiflexion/plantarflexion
   };
 
   /**
@@ -581,9 +645,9 @@ export interface StanceGuardPose {
    * @korean 오른다리
    */
   readonly rightLeg: {
-    readonly hip: THREE.Euler;      // Hip rotation/abduction
-    readonly knee: THREE.Euler;     // Knee bend angle
-    readonly ankle: THREE.Euler;    // Ankle dorsiflexion/plantarflexion
+    readonly hip: THREE.Euler; // Hip rotation/abduction
+    readonly knee: THREE.Euler; // Knee bend angle
+    readonly ankle: THREE.Euler; // Ankle dorsiflexion/plantarflexion
   };
 
   /**
@@ -625,10 +689,10 @@ export interface StanceGuardPose {
 
 /**
  * Stance guard animation configuration
- * 
+ *
  * Extends base AnimationConfig with stance-specific guard pose data.
  * Includes 4-6 frame breathing animation for realistic idle behavior.
- * 
+ *
  * @public
  * @category Animation
  * @korean 자세방어애니메이션설정
@@ -685,33 +749,33 @@ export interface StanceGuardAnimationConfig {
 
 /**
  * Mirror a guard pose for left/right stance laterality.
- * 
+ *
  * **Korean**: 자세 좌우 대칭
- * 
+ *
  * Creates a mirror-image guard pose by swapping left and right limb positions
  * and negating lateral (Y-axis and Z-axis) rotations. This enables authentic
  * left/right stance differentiation in Korean martial arts.
- * 
+ *
  * Key transformations:
  * - Swap leftArm ↔ rightArm bone rotations
  * - Negate Y rotation (lateral twist)
  * - Negate Z rotation (roll)
  * - Preserve X rotation (forward/back bend)
  * - Keep weight distribution and breathing range unchanged
- * 
+ *
  * @param pose - Original guard pose to mirror
  * @returns Mirrored guard pose with swapped and negated rotations
- * 
+ *
  * @example
  * ```typescript
  * // Create right-handed version of a left-handed guard
  * const leftGeonGuard = GEON_HIGH_GUARD_POSE;
  * const rightGeonGuard = mirrorGuardPose(leftGeonGuard);
- * 
+ *
  * // leftGeonGuard has left hand forward
  * // rightGeonGuard has right hand forward (mirrored)
  * ```
- * 
+ *
  * @public
  * @category Animation
  * @korean 방어포즈대칭
@@ -720,9 +784,9 @@ export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
   // Helper to negate Y and Z rotations while preserving X
   const mirrorEuler = (euler: THREE.Euler): THREE.Euler => {
     return new THREE.Euler(
-      euler.x,      // Preserve forward/back bend
-      -euler.y,     // Negate lateral twist
-      -euler.z      // Negate roll
+      euler.x, // Preserve forward/back bend
+      -euler.y, // Negate lateral twist
+      -euler.z // Negate roll
     );
   };
 

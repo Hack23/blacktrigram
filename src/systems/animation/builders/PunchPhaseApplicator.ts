@@ -1,15 +1,16 @@
 /**
  * Punch Phase Application Utilities
  *
- * Utilities for applying punch phase poses to keyframes.
- * 주먹 단계 적용 유틸리티
+ * Utilities for applying punch phase poses to keyframes with integrated
+ * anatomy awareness (hand poses and highlighting for strikes).
+ * 주먹 단계 적용 유틸리티 (해부학 통합)
  *
  * @module systems/animation/PunchPhaseApplicator
  * @korean 주먹단계적용기
  */
 
 import { BoneName } from "@/types/skeletal";
-import type { KeyframeConfig } from "./KeyframeConfig";
+import type { HandHighlightMode, KeyframeConfig } from "./KeyframeConfig";
 import { PUNCH_PHASES } from "./MartialArtsConstants";
 
 /**
@@ -31,29 +32,28 @@ interface PunchPhase {
 /** Phase name keys */
 export type PunchPhaseName = keyof typeof PUNCH_PHASES;
 
+/** Punch hand side */
+export type PunchSide = "left" | "right";
+
 /**
  * Apply punch phase to a KeyframeConfig with Korean martial arts biomechanics
+ * and anatomy integration (hand poses, highlighting).
+ *
  * Handles common punch phase bones: shoulder, elbow, wrist, spine, pelvis
- * Now includes opposite arm hikite (당기기) for authentic Korean martial arts form
+ * Now includes opposite arm hikite (당기기) and automatic hand pose/highlight
  *
  * @param kf - KeyframeConfig to apply phase to
  * @param phase - Punch phase data from PUNCH_PHASES
  * @param hand - Which hand is punching ("left" | "right")
- * @param options - Optional configuration
+ * @param options - Configuration including anatomy options
  *
  * @example
  * ```typescript
- * // Apply chamber position with opposite arm guard
- * applyPunchPhaseToConfig(kf, PUNCH_PHASES.CHAMBER, "right", { 
- *   includeWrist: true, 
- *   includeOppositeArm: true 
- * });
- * 
- * // Apply extension with hip rotation and hikite
- * applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, "right", { 
- *   includeWrist: true,
- *   includeOppositeArm: true,
- *   includeSpineMiddle: true 
+ * // Apply extension with automatic fist pose and knuckle highlight
+ * applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, "right", {
+ *   handPose: "fist",
+ *   handHighlightMode: "knuckles",
+ *   includeOppositeArm: true
  * });
  * ```
  *
@@ -62,18 +62,24 @@ export type PunchPhaseName = keyof typeof PUNCH_PHASES;
 export function applyPunchPhaseToConfig(
   kf: KeyframeConfig,
   phase: PunchPhase,
-  hand: "left" | "right" = "right",
+  hand: PunchSide = "right",
   options: {
     readonly includeWrist?: boolean;
     readonly includeSpineMiddle?: boolean;
     readonly includeOppositeArm?: boolean;
+    // Anatomy integration
+    readonly handPose?: string;
+    readonly handHighlightMode?: HandHighlightMode;
+    readonly oppositeHandPose?: string;
   } = {}
 ): void {
-  const { 
-    includeWrist = false, 
+  const {
+    includeWrist = false,
     includeSpineMiddle = false,
-    includeOppositeArm = true, // Default to true for authentic Korean martial arts hikite (당기기)
-                                // Set to false for rapid combinations where guard must be maintained
+    includeOppositeArm = true,
+    handPose,
+    handHighlightMode,
+    oppositeHandPose,
   } = options;
 
   // Select bones based on punching hand
@@ -149,6 +155,28 @@ export function applyPunchPhaseToConfig(
   }
   if (phase.pelvisY !== undefined) {
     kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ANATOMY INTEGRATION (해부학 통합)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Set punching hand pose and highlight
+  if (handPose) {
+    if (hand === "right") {
+      kf.setRightHandPose(handPose, handHighlightMode);
+    } else {
+      kf.setLeftHandPose(handPose, handHighlightMode);
+    }
+  }
+
+  // Set opposite hand pose (guard position)
+  if (oppositeHandPose) {
+    if (hand === "right") {
+      kf.setLeftHandPose(oppositeHandPose);
+    } else {
+      kf.setRightHandPose(oppositeHandPose);
+    }
   }
 }
 

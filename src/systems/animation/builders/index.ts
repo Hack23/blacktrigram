@@ -2,7 +2,7 @@
  * Builder and pose utilities sub-package
  *
  * Fluent builders, keyframe helpers, phase applicators, and rig utilities
- * for constructing skeletal animations.
+ * for constructing skeletal animations with integrated anatomy state.
  */
 
 export {
@@ -16,6 +16,7 @@ export {
 export * from "./MartialArtsAnimationBuilder";
 
 export { KeyframeConfig } from "./KeyframeConfig";
+export type { HandHighlightMode } from "./KeyframeConfig";
 export {
   applyKeyframeToRig,
   blendKeyframes,
@@ -42,12 +43,14 @@ export {
   applySideKickPhaseToConfig,
   getKickPhase,
 } from "./KickPhaseApplicator";
+export type { KickPhaseName, KickSide } from "./KickPhaseApplicator";
 export {
   applyMartialPoseToConfig,
   applyMartialPoseToKeyframe,
   getMartialPose,
 } from "./MartialPoseApplicator";
 export { applyPunchPhaseToConfig, getPunchPhase } from "./PunchPhaseApplicator";
+export type { PunchPhaseName, PunchSide } from "./PunchPhaseApplicator";
 
 export {
   TECHNIQUE_HAND_POSES,
