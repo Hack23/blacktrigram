@@ -190,30 +190,38 @@ export function getLayoutConstants(width: number) {
  * explicitly tuned for ultra-small screens (<380px) like iPhone SE, old
  * Android phones, and budget smartphones.
  * 
+ * Now properly handles high-resolution mobile devices (2K+, Super HD) by
+ * checking isMobile flag to ensure they get mobile-optimized layout values
+ * regardless of pixel width.
+ * 
  * @param width - Screen width in pixels
+ * @param isMobile - Optional: Whether device is mobile (from user-agent detection)
  * @returns Object with combat layout constant values
  * 
  * @example
  * ```typescript
- * const layout = getCombatLayoutConstants(375); // iPhone SE (extra-small)
- * // Returns:
- * // {
- * //   padding: 8,
- * //   hudHeight: 85,
- * //   controlsHeight: 150,
- * //   footerHeight: 34,
- * //   healthBarHeight: 48,
- * //   buttonHeight: 48
- * // }
+ * // Extra-small mobile (iPhone SE)
+ * const layout = getCombatLayoutConstants(375, true);
+ * // { padding: 8, hudHeight: 85, controlsHeight: 150, ... }
+ * 
+ * // High-res mobile (Motorola Edge 60 Pro)
+ * const layoutHD = getCombatLayoutConstants(2712, true);
+ * // { padding: 10, hudHeight: 95, controlsHeight: 160, ... } (mobile values!)
+ * 
+ * // Desktop
+ * const layoutDesktop = getCombatLayoutConstants(1920, false);
+ * // { padding: 10, hudHeight: 135, controlsHeight: 175, ... } (desktop values)
  * ```
  * 
  * @public
  */
-export function getCombatLayoutConstants(width: number) {
-  const screenSize = getScreenSize(width);
+export function getCombatLayoutConstants(width: number, isMobile?: boolean) {
+  // For mobile devices, force 'mobile' screen size regardless of pixel width
+  // This ensures high-res mobile devices (2K+) get mobile-optimized layouts
+  const screenSize = isMobile ? 'mobile' : getScreenSize(width);
   
   // Extra-small detection for low-end mobile devices (<380px)
-  const isExtraSmall = screenSize === 'mobile' && width < 380;
+  const isExtraSmall = isMobile && width < 380;
   
   // Combat screen uses different base values for compact HUD
   const hudHeightMap = {
