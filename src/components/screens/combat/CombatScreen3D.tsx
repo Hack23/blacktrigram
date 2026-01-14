@@ -7,6 +7,12 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import {
+  Bloom,
+  EffectComposer,
+  SSAO,
+  Vignette,
+} from "@react-three/postprocessing";
 import React, {
   useCallback,
   useEffect,
@@ -2109,7 +2115,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={renderConfig.dpr}
-        shadows={false}
+        shadows
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
@@ -2340,6 +2346,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             onGesture={handleMobileGesture}
           />
         )}
+
+        {/* Post-processing Effects */}
+        <EffectComposer>
+          <Bloom
+            luminanceThreshold={1}
+            mipmapBlur
+            intensity={1.5}
+            radius={0.6}
+          />
+          <SSAO
+            radius={0.05}
+            intensity={50}
+            luminanceInfluence={0.5}
+            color={new THREE.Color("black")}
+          />
+          <Vignette eskil={false} offset={0.1} darkness={0.5} />
+        </EffectComposer>
 
         {/* Performance Monitoring - FPS display (dev mode only) */}
         {process.env.NODE_ENV === "development" && (

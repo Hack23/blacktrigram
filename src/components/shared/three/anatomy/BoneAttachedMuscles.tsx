@@ -359,7 +359,8 @@ export const calculateMuscleScaleFactor = (muscleMass: number): number => {
 
   // Exponential curve for dramatic differences
   const exponentialDeviation =
-    Math.sign(deviation) * Math.pow(Math.abs(deviation), MUSCLE_AMPLIFICATION_EXPONENT);
+    Math.sign(deviation) *
+    Math.pow(Math.abs(deviation), MUSCLE_AMPLIFICATION_EXPONENT);
 
   return Math.max(0.5, 1.0 + exponentialDeviation * MUSCLE_AMPLIFICATION_BASE);
 };
@@ -515,11 +516,13 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
         name={`muscle-${attachment.name}`}
       >
         <capsuleGeometry args={[attachment.radius, attachment.length, 8, 16]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={muscleColor}
-          metalness={0.1}
-          roughness={0.9}
-          transparent={false}
+          metalness={0.3}
+          roughness={0.7}
+          clearcoat={0.5}
+          clearcoatRoughness={0.2}
+          envMapIntensity={0.8}
         />
       </mesh>
 

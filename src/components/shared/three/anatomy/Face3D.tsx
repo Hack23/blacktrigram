@@ -183,7 +183,13 @@ const Nose: React.FC<{
       {/* Nose */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[0.03, 0.06, 8]} />
-        <meshStandardMaterial color={skinColor} />
+        <meshPhysicalMaterial
+          color={skinColor}
+          roughness={0.6}
+          metalness={0.1}
+          clearcoat={0.3}
+          clearcoatRoughness={0.6}
+        />
       </mesh>
 
       {/* Blood from nose */}
@@ -304,11 +310,14 @@ export const Face3D: React.FC<Face3DProps> = ({
       {/* Head sphere */}
       <mesh>
         <sphereGeometry args={[0.2, isMobile ? 12 : 16, isMobile ? 12 : 16]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={headColor}
           map={damageTexture}
-          roughness={0.8}
+          roughness={0.6}
           metalness={0.1}
+          clearcoat={0.3}
+          clearcoatRoughness={0.6}
+          envMapIntensity={0.5}
         />
       </mesh>
 

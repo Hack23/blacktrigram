@@ -55,6 +55,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             position={[10, 10, 5]}
             intensity={1}
             color={KOREAN_COLORS.ACCENT_GOLD}
+            castShadow
+            shadow-mapSize={[2048, 2048]}
           />
           <pointLight
             position={[-10, 5, -5]}
@@ -86,10 +88,12 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Arena floor - dojang mat (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[floorWidth, floorDepth]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
-          roughness={0.8}
-          metalness={0.2}
+          roughness={0.5}
+          metalness={0.4}
+          clearcoat={0.3}
+          clearcoatRoughness={0.4}
         />
       </mesh>
 
@@ -114,10 +118,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       ].map((pos, i) => (
         <mesh key={i} position={pos as [number, number, number]} castShadow>
           <cylinderGeometry args={[0.1 * scale, 0.15 * scale, 0.8, 8]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.3}
+            emissiveIntensity={0.5}
+            metalness={0.8}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}

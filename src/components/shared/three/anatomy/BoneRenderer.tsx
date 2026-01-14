@@ -339,7 +339,14 @@ const SingleBone: React.FC<{
               8,
             ]}
           />
-          <meshStandardMaterial color={color} metalness={0.3} roughness={0.7} />
+          <meshPhysicalMaterial
+            color={color}
+            metalness={0.5}
+            roughness={0.4}
+            clearcoat={1.0}
+            clearcoatRoughness={0.1}
+            envMapIntensity={1.0}
+          />
         </mesh>
       ) : (
         <mesh

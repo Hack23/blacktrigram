@@ -338,12 +338,14 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
   // Create materials with cleanup
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
-      const mat = new THREE.MeshStandardMaterial({
+      const mat = new THREE.MeshPhysicalMaterial({
         color: attachment.color,
         emissive: attachment.emissiveColor ?? 0x000000,
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
         metalness: attachment.metalness ?? 0.3,
         roughness: attachment.roughness ?? 0.7,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.5,
       });
       return mat;
     });

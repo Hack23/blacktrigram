@@ -91,10 +91,11 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
     // Rotate symbol slowly
     groupRef.current.rotation.y = time * ANIMATION_CONSTANTS.ROTATION_SPEED;
 
-    // Gentle vertical bob - oscillate around 0 (group is already positioned at heightOffset)
+    // Gentle vertical bob - oscillate around heightOffset
     groupRef.current.position.y =
+      heightOffset +
       Math.sin(time * ANIMATION_CONSTANTS.BOB_FREQUENCY) *
-      ANIMATION_CONSTANTS.BOB_AMPLITUDE;
+        ANIMATION_CONSTANTS.BOB_AMPLITUDE;
   });
 
   return (
@@ -103,6 +104,9 @@ export const StanceSymbol3D: React.FC<StanceSymbol3DProps> = ({
       position={[0, heightOffset, 0]}
       name="stance-symbol-3d"
     >
+      {/* Interactive Light Source - illuminates player head/shoulders */}
+      <pointLight color={colorHex} intensity={2.5} distance={4} decay={2} />
+
       {/* Trigram symbol with glow effect */}
       <Html
         center
