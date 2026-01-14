@@ -633,11 +633,15 @@ describe("Laterality Support", () => {
       expect(leftPose).not.toBe(rightPose);
 
       // Left arm should match right arm's position (mirrored)
-      expect(leftPose!.leftArm.shoulder.y).toBeCloseTo(
-        -rightPose!.rightArm.shoulder.y
+      expect(leftPose).toBeDefined();
+      expect(rightPose).toBeDefined();
+      if (!leftPose || !rightPose) return;
+
+      expect(leftPose.leftArm.shoulder.y).toBeCloseTo(
+        -rightPose.rightArm.shoulder.y
       );
-      expect(leftPose!.rightArm.shoulder.y).toBeCloseTo(
-        -rightPose!.leftArm.shoulder.y
+      expect(leftPose.rightArm.shoulder.y).toBeCloseTo(
+        -rightPose.leftArm.shoulder.y
       );
     });
 

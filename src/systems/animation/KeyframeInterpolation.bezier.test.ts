@@ -1,38 +1,41 @@
 /**
  * Tests for cubic bezier interpolation and motion smoothing
- * 
+ *
  * Validates:
  * - Cubic bezier easing accuracy
  * - Bezier preset curves
  * - Cross-fade blending
  * - Motion prediction for latency reduction
  * - Performance at 60fps
- * 
+ *
  * @module systems/animation/KeyframeInterpolation.bezier.test
  * @category Animation System Tests
  * @korean 베지어보간테스트
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
 import * as THREE from "three";
+import { beforeEach, describe, expect, it } from "vitest";
+import type {
+  AnimationKeyframe,
+  SkeletalAnimation,
+} from "../../types/skeletal";
 import {
+  BEZIER_PRESETS,
+  createBezierEasing,
+  createMotionPredictionState,
+  crossFadeAnimations,
   cubicBezier,
   cubicBezierWithOptions,
-  createBezierEasing,
-  BEZIER_PRESETS,
+  easeExplosivePower,
   easeNaturalMotion,
   easeSmoothTransition,
-  easeExplosivePower,
   getEasingFunction,
-  crossFadeAnimations,
-  createMotionPredictionState,
-  updateMotionPrediction,
   predictFutureKeyframe,
+  updateMotionPrediction,
   type BezierControlPoints,
-  type MotionPredictionState,
   type EasingName,
+  type MotionPredictionState,
 } from "./KeyframeInterpolation";
-import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
 
 describe("Cubic Bezier Interpolation", () => {
   describe("cubicBezier() - Core Function (Legacy API)", () => {
@@ -77,9 +80,7 @@ describe("Cubic Bezier Interpolation", () => {
     it("should be monotonic for standard easing curves", () => {
       // Natural motion preset should be monotonically increasing
       const points = [0, 0.25, 0.5, 0.75, 1.0];
-      const results = points.map((t) =>
-        cubicBezier(t, 0.25, 0.1, 0.25, 1.0)
-      );
+      const results = points.map((t) => cubicBezier(t, 0.25, 0.1, 0.25, 1.0));
 
       for (let i = 1; i < results.length; i++) {
         expect(results[i]).toBeGreaterThanOrEqual(results[i - 1]);
@@ -118,11 +119,17 @@ describe("Cubic Bezier Interpolation", () => {
 
       // Test multiple points
       const testPoints = [0, 0.25, 0.5, 0.75, 1.0];
-      
+
       testPoints.forEach((t) => {
         const modernResult = cubicBezierWithOptions(t, options);
-        const legacyResult = cubicBezier(t, options.p1x, options.p1y, options.p2x, options.p2y);
-        
+        const legacyResult = cubicBezier(
+          t,
+          options.p1x,
+          options.p1y,
+          options.p2x,
+          options.p2y
+        );
+
         expect(modernResult).toBeCloseTo(legacyResult, 5);
       });
     });
@@ -166,12 +173,18 @@ describe("Cubic Bezier Interpolation", () => {
 
     it("should work with Korean martial arts preset control points", () => {
       // Test with natural motion preset
-      const naturalMotion = cubicBezierWithOptions(0.5, BEZIER_PRESETS.naturalMotion);
+      const naturalMotion = cubicBezierWithOptions(
+        0.5,
+        BEZIER_PRESETS.naturalMotion
+      );
       expect(typeof naturalMotion).toBe("number");
       expect(isFinite(naturalMotion)).toBe(true);
 
       // Test with explosive power preset
-      const explosivePower = cubicBezierWithOptions(0.5, BEZIER_PRESETS.explosivePower);
+      const explosivePower = cubicBezierWithOptions(
+        0.5,
+        BEZIER_PRESETS.explosivePower
+      );
       expect(typeof explosivePower).toBe("number");
       expect(isFinite(explosivePower)).toBe(true);
 
@@ -481,8 +494,9 @@ describe("Cubic Bezier Interpolation", () => {
       expect(blendedSpineRot).toBeDefined();
 
       // Should be between idle and attack values
-      expect(blendedSpineRot!.x).toBeLessThan(0);
-      expect(blendedSpineRot!.x).toBeGreaterThan(-0.3);
+      if (!blendedSpineRot) return;
+      expect(blendedSpineRot.x).toBeLessThan(0);
+      expect(blendedSpineRot.x).toBeGreaterThan(-0.3);
     });
 
     it("should support different easing curves", () => {
@@ -505,8 +519,12 @@ describe("Cubic Bezier Interpolation", () => {
       );
 
       // Different easing should produce different results
-      const linearRot = linear.boneRotations.get("spine")!.x;
-      const smoothRot = smooth.boneRotations.get("spine")!.x;
+      const linearRot = linear.boneRotations.get("spine")?.x;
+      const smoothRot = smooth.boneRotations.get("spine")?.x;
+
+      expect(linearRot).toBeDefined();
+      expect(smoothRot).toBeDefined();
+      if (linearRot === undefined || smoothRot === undefined) return;
 
       // May differ due to easing
       expect(typeof linearRot).toBe("number");
@@ -567,9 +585,10 @@ describe("Cubic Bezier Interpolation", () => {
 
       const velocity = updated.velocities.get("spine");
       expect(velocity).toBeDefined();
-      expect(velocity!.x).toBeCloseTo(1.0, 5); // 0.1 / 0.1
-      expect(velocity!.y).toBeCloseTo(0.5, 5); // 0.05 / 0.1
-      expect(velocity!.z).toBeCloseTo(0.5, 5); // 0.05 / 0.1
+      if (!velocity) return;
+      expect(velocity.x).toBeCloseTo(1.0, 5); // 0.1 / 0.1
+      expect(velocity.y).toBeCloseTo(0.5, 5); // 0.05 / 0.1
+      expect(velocity.z).toBeCloseTo(0.5, 5); // 0.05 / 0.1
     });
 
     it("should calculate angular velocities", () => {
@@ -582,11 +601,12 @@ describe("Cubic Bezier Interpolation", () => {
 
       const angularVel = updated.angularVelocities.get("spine");
       expect(angularVel).toBeDefined();
-      
+
       // Quaternion-based angular velocity is more accurate than simple Euler differences
       // The values will be close but not exactly the same due to proper rotation math
-      expect(angularVel!.x).toBeCloseTo(1.0, 3); // 0.1 / 0.1, allowing for quaternion precision
-      expect(angularVel!.y).toBeCloseTo(0.5, 3); // 0.05 / 0.1, allowing for quaternion precision
+      if (!angularVel) return;
+      expect(angularVel.x).toBeCloseTo(1.0, 3); // 0.1 / 0.1, allowing for quaternion precision
+      expect(angularVel.y).toBeCloseTo(0.5, 3); // 0.05 / 0.1, allowing for quaternion precision
     });
 
     it("should update timestamp", () => {
@@ -644,8 +664,9 @@ describe("Cubic Bezier Interpolation", () => {
       const currentPos = currentKeyframe.bonePositions.get("spine")!;
 
       expect(predictedPos).toBeDefined();
-      expect(predictedPos!.x).toBeGreaterThan(currentPos.x);
-      expect(predictedPos!.y).toBeGreaterThan(currentPos.y);
+      if (!predictedPos) return;
+      expect(predictedPos.x).toBeGreaterThan(currentPos.x);
+      expect(predictedPos.y).toBeGreaterThan(currentPos.y);
     });
 
     it("should apply damping to prevent overshoot", () => {
@@ -699,7 +720,8 @@ describe("Cubic Bezier Interpolation", () => {
       // Bone without velocity should remain unchanged
       const armPos = predicted.bonePositions.get("arm_r");
       expect(armPos).toBeDefined();
-      expect(armPos!.x).toBeCloseTo(0.5, 5);
+      if (!armPos) return;
+      expect(armPos.x).toBeCloseTo(0.5, 5);
     });
 
     it("should achieve <50ms latency reduction", () => {

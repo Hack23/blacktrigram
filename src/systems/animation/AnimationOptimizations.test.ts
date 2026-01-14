@@ -97,13 +97,15 @@ describe("Animation Optimizations", () => {
       // Interpolate at 25% (between 0.0 and 0.5)
       const keyframe = interpolateKeyframeCached("test", animation, 0.25);
       expect(keyframe).not.toBeNull();
+      if (!keyframe) return;
 
-      const rotation = keyframe!.boneRotations.get(BoneName.SHOULDER_R);
+      const rotation = keyframe.boneRotations.get(BoneName.SHOULDER_R);
       expect(rotation).toBeDefined();
+      if (!rotation) return;
 
       // Should be roughly halfway between 0 and PI/4
-      expect(rotation!.x).toBeGreaterThan(0);
-      expect(rotation!.x).toBeLessThan(Math.PI / 4);
+      expect(rotation.x).toBeGreaterThan(0);
+      expect(rotation.x).toBeLessThan(Math.PI / 4);
     });
 
     it("should return exact keyframe when time matches", () => {
@@ -111,10 +113,12 @@ describe("Animation Optimizations", () => {
 
       const keyframe = interpolateKeyframeCached("test", animation, 0.5);
       expect(keyframe).not.toBeNull();
+      if (!keyframe) return;
 
-      const rotation = keyframe!.boneRotations.get(BoneName.SHOULDER_R);
+      const rotation = keyframe.boneRotations.get(BoneName.SHOULDER_R);
       expect(rotation).toBeDefined();
-      expect(rotation!.x).toBeCloseTo(Math.PI / 4, 3);
+      if (!rotation) return;
+      expect(rotation.x).toBeCloseTo(Math.PI / 4, 3);
     });
 
     it("should cache multiple animations independently", () => {

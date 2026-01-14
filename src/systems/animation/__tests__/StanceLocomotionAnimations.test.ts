@@ -206,7 +206,8 @@ describe("StanceLocomotionAnimations", () => {
         const pelvisRot = firstKeyframe.boneRotations.get(BoneName.PELVIS);
         expect(pelvisRot).toBeDefined();
         // Positive X rotation indicates forward lean
-        expect(pelvisRot!.x).toBeGreaterThan(0);
+        if (!pelvisRot) return;
+        expect(pelvisRot.x).toBeGreaterThan(0);
       });
     });
 
@@ -240,7 +241,8 @@ describe("StanceLocomotionAnimations", () => {
         const pelvisRot = firstKeyframe.boneRotations.get(BoneName.PELVIS);
         expect(pelvisRot).toBeDefined();
         // Jin should have aggressive forward lean
-        expect(pelvisRot!.x).toBeGreaterThan(0.1);
+        if (!pelvisRot) return;
+        expect(pelvisRot.x).toBeGreaterThan(0.1);
       });
     });
 
@@ -258,7 +260,8 @@ describe("StanceLocomotionAnimations", () => {
         const pelvisRot = firstKeyframe.boneRotations.get(BoneName.PELVIS);
         expect(pelvisRot).toBeDefined();
         // Gam should have some lateral tilt (Z rotation)
-        expect(Math.abs(pelvisRot!.z)).toBeGreaterThan(0);
+        if (!pelvisRot) return;
+        expect(Math.abs(pelvisRot.z)).toBeGreaterThan(0);
       });
     });
 
@@ -268,7 +271,8 @@ describe("StanceLocomotionAnimations", () => {
         // Check for lowered pelvis (lower center of gravity)
         const pelvisPos = firstKeyframe.bonePositions.get(BoneName.PELVIS);
         expect(pelvisPos).toBeDefined();
-        expect(pelvisPos!.y).toBeLessThanOrEqual(0); // Y position at or below origin
+        if (!pelvisPos) return;
+        expect(pelvisPos.y).toBeLessThanOrEqual(0); // Y position at or below origin
       });
     });
 
@@ -293,7 +297,8 @@ describe("StanceLocomotionAnimations", () => {
         const pelvisPos = firstKeyframe.bonePositions.get(BoneName.PELVIS);
         expect(pelvisPos).toBeDefined();
         // Gon should have the lowest stance
-        expect(pelvisPos!.y).toBeLessThan(0);
+        if (!pelvisPos) return;
+        expect(pelvisPos.y).toBeLessThan(0);
       });
     });
   });

@@ -7,7 +7,7 @@
  * 무술 애니메이션 레지스트리 - 모든 애니메이션 통합 관리
  *
  * **RECOVERY PHASE INTEGRATION (복귀 단계 통합)**
- * 
+ *
  * Enhanced animations with realistic recovery phases are now the default for:
  * - JAB_ANIMATION → JAB_ANIMATION_ENHANCED (200ms recovery)
  * - CROSS_ANIMATION → CROSS_ANIMATION_ENHANCED (220ms recovery)
@@ -16,14 +16,14 @@
  * - ELBOW_STRIKE_ANIMATION → ELBOW_STRIKE_ANIMATION_ENHANCED (160ms recovery)
  * - ELBOW_UPPERCUT_ANIMATION → ELBOW_UPPERCUT_ANIMATION_ENHANCED (170ms recovery)
  * - KNEE_STRIKE_ANIMATION → KNEE_STRIKE_ANIMATION_ENHANCED (190ms recovery)
- * 
+ *
  * Enhanced animations follow Korean martial arts principles (복귀/Bokgwi):
  * - 균형회복 (Gyunhyeong Hoebog) - Balance restoration
  * - 자세복귀 (Jase Bokgwi) - Stance return
  * - 호흡조절 (Hoheup Jojoel) - Breath control during recovery
  * - 근육이완 (Geunryuk Ihwan) - Muscle relaxation after tension
- * 
- * All code using ANIMATION_REGISTRY or getAnimationForTechnique() will 
+ *
+ * All code using ANIMATION_REGISTRY or getAnimationForTechnique() will
  * automatically use enhanced versions with no code changes required.
  *
  * @module systems/animation/AnimationRegistry
@@ -105,9 +105,9 @@ import {
 
 // Enhanced animations with recovery phases (복귀 애니메이션 강화)
 import {
-  JAB_ANIMATION_ENHANCED,
   CROSS_ANIMATION_ENHANCED,
   FRONT_KICK_ANIMATION_ENHANCED,
+  JAB_ANIMATION_ENHANCED,
   ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
 } from "./EnhancedAttackAnimations";
 import {
@@ -232,7 +232,14 @@ export function getAnimationByTypeOrDefault(
   type: AnimationType,
   fallback: AnimationType = AnimationType.JAB
 ): SkeletalAnimation {
-  return ANIMATION_REGISTRY.get(type) ?? ANIMATION_REGISTRY.get(fallback)!;
+  const animation =
+    ANIMATION_REGISTRY.get(type) ?? ANIMATION_REGISTRY.get(fallback);
+
+  if (!animation) {
+    throw new Error(`Missing animation for ${type} with fallback ${fallback}`);
+  }
+
+  return animation;
 }
 
 /**
@@ -269,8 +276,13 @@ export function getAnimationForTechniqueIdWithConfig(
 ): { animation: SkeletalAnimation; speed: number } {
   const config = getAnimationForTechniqueOrDefault(techniqueId, fallbackType);
   const animation =
-    ANIMATION_REGISTRY.get(config.type) ??
-    ANIMATION_REGISTRY.get(fallbackType)!;
+    ANIMATION_REGISTRY.get(config.type) ?? ANIMATION_REGISTRY.get(fallbackType);
+
+  if (!animation) {
+    throw new Error(
+      `Missing animation for ${config.type} with fallback ${fallbackType}`
+    );
+  }
   return { animation, speed: config.speed };
 }
 

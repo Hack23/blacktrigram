@@ -587,9 +587,13 @@ describe("AttackAnimations", () => {
       const rightHipFrame3 = frame3.boneRotations.get(BoneName.HIP_R);
 
       // Left hip should move from forward to back
-      expect(leftHipFrame1?.x).toBeLessThan(leftHipFrame3!.x);
+      expect(leftHipFrame3).toBeDefined();
+      expect(rightHipFrame3).toBeDefined();
+      if (!leftHipFrame3 || !rightHipFrame3) return;
+
+      expect(leftHipFrame1?.x).toBeLessThan(leftHipFrame3.x);
       // Right hip should move from back to forward
-      expect(rightHipFrame1?.x).toBeGreaterThan(rightHipFrame3!.x);
+      expect(rightHipFrame1?.x).toBeGreaterThan(rightHipFrame3.x);
     });
 
     it("should animate arms opposite to legs", () => {
@@ -613,7 +617,10 @@ describe("AttackAnimations", () => {
       const firstLeftHip = firstFrame.boneRotations.get(BoneName.HIP_L);
       const lastLeftHip = lastFrame.boneRotations.get(BoneName.HIP_L);
 
-      expect(firstLeftHip?.x).toBeCloseTo(lastLeftHip!.x, 1);
+      expect(lastLeftHip).toBeDefined();
+      if (!lastLeftHip) return;
+
+      expect(firstLeftHip?.x).toBeCloseTo(lastLeftHip.x, 1);
     });
   });
 
@@ -685,8 +692,12 @@ describe("AttackAnimations", () => {
       // Both knees should be significantly bent (negative rotation)
       expect(leftKnee).toBeDefined();
       expect(rightKnee).toBeDefined();
-      expect(leftKnee!.x).toBeLessThan(-0.5);
-      expect(rightKnee!.x).toBeLessThan(-0.5);
+      expect(leftKnee).toBeDefined();
+      expect(rightKnee).toBeDefined();
+      if (!leftKnee || !rightKnee) return;
+
+      expect(leftKnee.x).toBeLessThan(-0.5);
+      expect(rightKnee.x).toBeLessThan(-0.5);
     });
 
     it("should have explosive knee extension", () => {
@@ -701,7 +712,8 @@ describe("AttackAnimations", () => {
       const pelvisPos = driveKeyframe.bonePositions?.get(BoneName.PELVIS);
 
       expect(pelvisPos).toBeDefined();
-      expect(pelvisPos!.z).toBeGreaterThan(0.5); // Significant forward movement
+      if (!pelvisPos) return;
+      expect(pelvisPos.z).toBeGreaterThan(0.5); // Significant forward movement
     });
   });
 
@@ -723,7 +735,8 @@ describe("AttackAnimations", () => {
       const pelvisPos = slideKeyframe.bonePositions?.get(BoneName.PELVIS);
 
       expect(pelvisPos).toBeDefined();
-      expect(pelvisPos!.z).toBeLessThan(0); // Negative z = backward
+      if (!pelvisPos) return;
+      expect(pelvisPos.z).toBeLessThan(0); // Negative z = backward
     });
 
     it("should maintain defensive guard", () => {
@@ -761,7 +774,8 @@ describe("AttackAnimations", () => {
 
       expect(pelvisPos).toBeDefined();
       expect(pelvisRot).toBeDefined();
-      expect(Math.abs(pelvisPos!.x)).toBeGreaterThan(0.2); // Lateral movement
+      if (!pelvisPos) return;
+      expect(Math.abs(pelvisPos.x)).toBeGreaterThan(0.2); // Lateral movement
     });
 
     it("should have asymmetric knee bend for weight shift", () => {
@@ -772,7 +786,11 @@ describe("AttackAnimations", () => {
       expect(leftKnee).toBeDefined();
       expect(rightKnee).toBeDefined();
       // One knee should bend more than the other
-      expect(Math.abs(leftKnee!.x - rightKnee!.x)).toBeGreaterThan(0.1);
+      expect(leftKnee).toBeDefined();
+      expect(rightKnee).toBeDefined();
+      if (!leftKnee || !rightKnee) return;
+
+      expect(Math.abs(leftKnee.x - rightKnee.x)).toBeGreaterThan(0.1);
     });
 
     it("should compensate with spine rotation", () => {
@@ -788,7 +806,9 @@ describe("AttackAnimations", () => {
       const foot = extensionKeyframe.boneRotations.get(BoneName.FOOT_R);
 
       expect(foot).toBeDefined();
-      expect(foot!.x).toBeCloseTo(0.5, 1); // Dorsiflexion 0.5 rad
+      expect(foot).toBeDefined();
+      if (!foot) return;
+      expect(foot.x).toBeCloseTo(0.5, 1); // Dorsiflexion 0.5 rad
     });
 
     it("FRONT_KICK should have support leg micro-adjustments", () => {
@@ -804,8 +824,11 @@ describe("AttackAnimations", () => {
       const pelvisRot = recoveryKeyframe.boneRotations.get(BoneName.PELVIS);
 
       expect(pelvisRot).toBeDefined();
-      expect(pelvisRot!.x).toBe(0); // Returns to neutral tilt
-      expect(pelvisRot!.y).toBe(0); // Returns to neutral rotation
+      expect(pelvisRot).toBeDefined();
+      if (!pelvisRot) return;
+
+      expect(pelvisRot.x).toBe(0); // Returns to neutral tilt
+      expect(pelvisRot.y).toBe(0); // Returns to neutral rotation
     });
 
     it("ROUNDHOUSE_KICK should have ankle flexion on impact", () => {
@@ -813,7 +836,9 @@ describe("AttackAnimations", () => {
       const foot = impactKeyframe.boneRotations.get(BoneName.FOOT_R);
 
       expect(foot).toBeDefined();
-      expect(foot!.x).toBeGreaterThan(0.3); // Plantar flexion
+      expect(foot).toBeDefined();
+      if (!foot) return;
+      expect(foot.x).toBeGreaterThan(0.3); // Plantar flexion
     });
 
     it("ROUNDHOUSE_KICK should have support leg pivot", () => {

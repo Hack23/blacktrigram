@@ -12,11 +12,11 @@
  * @korean 체중이동애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { BoneName } from "../../types/skeletal";
 import {
-  MOVEMENT_FORWARD_STEP_ANIMATION,
   MOVEMENT_BACKWARD_STEP_ANIMATION,
+  MOVEMENT_FORWARD_STEP_ANIMATION,
   MOVEMENT_SIDESTEP_LEFT_ANIMATION,
   MOVEMENT_SIDESTEP_RIGHT_ANIMATION,
 } from "./MovementAnimations";
@@ -35,37 +35,47 @@ describe("Weight Transfer Animations", () => {
 
     it("should shift hip toward stepping leg during weight transfer", () => {
       // Find the weight transfer phase (around 0.45s)
-      const transferFrame = animation.keyframes.find((kf) => kf.time >= 0.45 && kf.time <= 0.5);
+      const transferFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.45 && kf.time <= 0.5
+      );
       expect(transferFrame).toBeDefined();
 
       const pelvisPos = transferFrame?.bonePositions.get(BoneName.PELVIS);
       expect(pelvisPos).toBeDefined();
       // Hip should move forward (positive Z) and toward left leg (negative X)
-      expect(pelvisPos!.x).toBeLessThan(0); // Hip shifts left toward front leg
-      expect(pelvisPos!.z).toBeGreaterThan(0.3); // Hip moves forward
+      if (!pelvisPos) return;
+      expect(pelvisPos.x).toBeLessThan(0); // Hip shifts left toward front leg
+      expect(pelvisPos.z).toBeGreaterThan(0.3); // Hip moves forward
     });
 
     it("should show heel-first landing (디딤발 principle)", () => {
       // Find the heel strike phase (around 0.35s)
-      const heelStrikeFrame = animation.keyframes.find((kf) => kf.time >= 0.35 && kf.time <= 0.4);
+      const heelStrikeFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.35 && kf.time <= 0.4
+      );
       expect(heelStrikeFrame).toBeDefined();
 
       const footRotation = heelStrikeFrame?.boneRotations.get(BoneName.FOOT_L);
       expect(footRotation).toBeDefined();
       // Positive X rotation means toe up, heel down
-      expect(footRotation!.x).toBeGreaterThan(0);
+      if (!footRotation) return;
+      expect(footRotation.x).toBeGreaterThan(0);
     });
 
     it("should drop pelvis height during weight transfer", () => {
       // Initial frame
       const initialFrame = animation.keyframes[0];
-      const initialPelvisY = initialFrame.bonePositions.get(BoneName.PELVIS)?.y ?? 0;
+      const initialPelvisY =
+        initialFrame.bonePositions.get(BoneName.PELVIS)?.y ?? 0;
 
       // Find mid-transfer frame (around 0.25-0.35s)
-      const midTransferFrame = animation.keyframes.find((kf) => kf.time >= 0.25 && kf.time <= 0.35);
+      const midTransferFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.25 && kf.time <= 0.35
+      );
       expect(midTransferFrame).toBeDefined();
 
-      const midPelvisY = midTransferFrame?.bonePositions.get(BoneName.PELVIS)?.y ?? 0;
+      const midPelvisY =
+        midTransferFrame?.bonePositions.get(BoneName.PELVIS)?.y ?? 0;
       // Pelvis should drop slightly during movement
       expect(midPelvisY).toBeLessThan(initialPelvisY);
     });
@@ -76,7 +86,8 @@ describe("Weight Transfer Animations", () => {
 
       const pelvisPos = finalFrame.bonePositions.get(BoneName.PELVIS);
       expect(pelvisPos).toBeDefined();
-      expect(pelvisPos!.y).toBe(0); // Return to neutral height
+      if (!pelvisPos) return;
+      expect(pelvisPos.y).toBe(0); // Return to neutral height
     });
   });
 
@@ -90,36 +101,42 @@ describe("Weight Transfer Animations", () => {
     });
 
     it("should shift hip toward back leg during weight transfer", () => {
-      const transferFrame = animation.keyframes.find((kf) => kf.time >= 0.45 && kf.time <= 0.5);
+      const transferFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.45 && kf.time <= 0.5
+      );
       expect(transferFrame).toBeDefined();
 
       const pelvisPos = transferFrame?.bonePositions.get(BoneName.PELVIS);
       expect(pelvisPos).toBeDefined();
       // Hip should move backward (negative Z) and toward right leg (positive X)
-      expect(pelvisPos!.x).toBeGreaterThan(0); // Hip shifts right toward back leg
-      expect(pelvisPos!.z).toBeLessThan(-0.3); // Hip moves backward
+      if (!pelvisPos) return;
+      expect(pelvisPos.x).toBeGreaterThan(0); // Hip shifts right toward back leg
+      expect(pelvisPos.z).toBeLessThan(-0.3); // Hip moves backward
     });
 
     it("should show ball-of-foot first landing (backward step principle)", () => {
       // Find the landing phase (around 0.35s)
-      const landingFrame = animation.keyframes.find((kf) => kf.time >= 0.35 && kf.time <= 0.4);
+      const landingFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.35 && kf.time <= 0.4
+      );
       expect(landingFrame).toBeDefined();
 
       const footRotation = landingFrame?.boneRotations.get(BoneName.FOOT_R);
       expect(footRotation).toBeDefined();
       // Negative X rotation means ball of foot down, heel up
-      expect(footRotation!.x).toBeLessThan(0);
+      if (!footRotation) return;
+      expect(footRotation.x).toBeLessThan(0);
     });
 
     it("should maintain forward-facing guard throughout", () => {
       const finalFrame = animation.keyframes[animation.keyframes.length - 1];
-      
+
       // Check guard positions are defined
       const leftShoulder = finalFrame.boneRotations.get(BoneName.SHOULDER_L);
       const leftElbow = finalFrame.boneRotations.get(BoneName.ELBOW_L);
       const rightShoulder = finalFrame.boneRotations.get(BoneName.SHOULDER_R);
       const rightElbow = finalFrame.boneRotations.get(BoneName.ELBOW_R);
-      
+
       expect(leftShoulder).toBeDefined();
       expect(leftElbow).toBeDefined();
       expect(rightShoulder).toBeDefined();
@@ -139,39 +156,47 @@ describe("Weight Transfer Animations", () => {
     it("should shift hip laterally to the left", () => {
       const finalFrame = animation.keyframes[animation.keyframes.length - 1];
       const pelvisPos = finalFrame.bonePositions.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       // Full 30cm lateral movement to the left (negative X)
-      expect(pelvisPos!.x).toBeLessThan(-0.25);
+      if (!pelvisPos) return;
+      expect(pelvisPos.x).toBeLessThan(-0.25);
       // No significant forward/backward movement
-      expect(Math.abs(pelvisPos!.z)).toBeLessThan(0.05);
+      expect(Math.abs(pelvisPos.z)).toBeLessThan(0.05);
     });
 
     it("should engage hip with pelvis rotation during lateral movement", () => {
       // Find the mid-movement phase (around 0.18s)
-      const midFrame = animation.keyframes.find((kf) => kf.time >= 0.18 && kf.time <= 0.2);
+      const midFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.18 && kf.time <= 0.2
+      );
       expect(midFrame).toBeDefined();
 
       const pelvisRotation = midFrame?.boneRotations.get(BoneName.PELVIS);
       expect(pelvisRotation).toBeDefined();
       // Pelvis should have Y-rotation for hip engagement
-      expect(Math.abs(pelvisRotation!.y)).toBeGreaterThan(0);
+      if (!pelvisRotation) return;
+      expect(Math.abs(pelvisRotation.y)).toBeGreaterThan(0);
     });
 
     it("should counter-rotate spine to maintain forward guard", () => {
-      const midFrame = animation.keyframes.find((kf) => kf.time >= 0.18 && kf.time <= 0.2);
+      const midFrame = animation.keyframes.find(
+        (kf) => kf.time >= 0.18 && kf.time <= 0.2
+      );
       expect(midFrame).toBeDefined();
 
       const spineRotation = midFrame?.boneRotations.get(BoneName.SPINE_LOWER);
       const pelvisRotation = midFrame?.boneRotations.get(BoneName.PELVIS);
-      
+
       expect(spineRotation).toBeDefined();
       expect(pelvisRotation).toBeDefined();
-      
+
       // Spine should counter-rotate opposite to pelvis
       // If pelvis rotates positive Y, spine rotates negative Y
-      if (pelvisRotation!.y > 0) {
-        expect(spineRotation!.y).toBeLessThan(0);
+      if (!pelvisRotation || !spineRotation) return;
+
+      if (pelvisRotation.y > 0) {
+        expect(spineRotation.y).toBeLessThan(0);
       }
     });
 
@@ -179,13 +204,15 @@ describe("Weight Transfer Animations", () => {
       const finalFrame = animation.keyframes[animation.keyframes.length - 1];
       const pelvisRotation = finalFrame.boneRotations.get(BoneName.PELVIS);
       const spineRotation = finalFrame.boneRotations.get(BoneName.SPINE_LOWER);
-      
+
       expect(pelvisRotation).toBeDefined();
       expect(spineRotation).toBeDefined();
-      
+
       // Both should return to neutral (0) rotation
-      expect(Math.abs(pelvisRotation!.y)).toBeLessThan(0.01);
-      expect(Math.abs(spineRotation!.y)).toBeLessThan(0.01);
+      if (!pelvisRotation || !spineRotation) return;
+
+      expect(Math.abs(pelvisRotation.y)).toBeLessThan(0.01);
+      expect(Math.abs(spineRotation.y)).toBeLessThan(0.01);
     });
   });
 
@@ -201,30 +228,37 @@ describe("Weight Transfer Animations", () => {
     it("should shift hip laterally to the right", () => {
       const finalFrame = animation.keyframes[animation.keyframes.length - 1];
       const pelvisPos = finalFrame.bonePositions.get(BoneName.PELVIS);
-      
+
       expect(pelvisPos).toBeDefined();
       // Full 30cm lateral movement to the right (positive X)
-      expect(pelvisPos!.x).toBeGreaterThan(0.25);
+      if (!pelvisPos) return;
+      expect(pelvisPos.x).toBeGreaterThan(0.25);
       // No significant forward/backward movement
-      expect(Math.abs(pelvisPos!.z)).toBeLessThan(0.05);
+      expect(Math.abs(pelvisPos.z)).toBeLessThan(0.05);
     });
 
     it("should mirror left sidestep mechanics", () => {
       const leftAnim = MOVEMENT_SIDESTEP_LEFT_ANIMATION;
       const rightAnim = MOVEMENT_SIDESTEP_RIGHT_ANIMATION;
-      
+
       // Should have same number of keyframes
       expect(rightAnim.keyframes.length).toBe(leftAnim.keyframes.length);
-      
+
       // Should have same duration
       expect(rightAnim.duration).toBe(leftAnim.duration);
-      
+
       // Final pelvis X positions should be opposite signs but similar magnitude
-      const leftFinalX = leftAnim.keyframes[leftAnim.keyframes.length - 1]
-        .bonePositions.get(BoneName.PELVIS)!.x;
-      const rightFinalX = rightAnim.keyframes[rightAnim.keyframes.length - 1]
-        .bonePositions.get(BoneName.PELVIS)!.x;
-      
+      const leftFinalX = leftAnim.keyframes[
+        leftAnim.keyframes.length - 1
+      ].bonePositions.get(BoneName.PELVIS)?.x;
+      const rightFinalX = rightAnim.keyframes[
+        rightAnim.keyframes.length - 1
+      ].bonePositions.get(BoneName.PELVIS)?.x;
+
+      expect(leftFinalX).toBeDefined();
+      expect(rightFinalX).toBeDefined();
+      if (leftFinalX === undefined || rightFinalX === undefined) return;
+
       expect(Math.abs(leftFinalX)).toBeCloseTo(Math.abs(rightFinalX), 1);
       expect(Math.sign(leftFinalX)).toBe(-Math.sign(rightFinalX));
     });
@@ -233,46 +267,52 @@ describe("Weight Transfer Animations", () => {
   describe("Korean Martial Arts Principles (한국 무술 원리)", () => {
     it("should implement 디딤발 (Didimbal) - heel-first stepping", () => {
       const forwardStep = MOVEMENT_FORWARD_STEP_ANIMATION;
-      
+
       // Find heel strike frame
-      const heelFrame = forwardStep.keyframes.find((kf) => kf.time >= 0.35 && kf.time <= 0.4);
+      const heelFrame = forwardStep.keyframes.find(
+        (kf) => kf.time >= 0.35 && kf.time <= 0.4
+      );
       expect(heelFrame).toBeDefined();
-      
+
       const footRot = heelFrame?.boneRotations.get(BoneName.FOOT_L);
       expect(footRot).toBeDefined();
-      expect(footRot!.x).toBeGreaterThan(0); // Toe up = heel down first
+      if (!footRot) return;
+      expect(footRot.x).toBeGreaterThan(0); // Toe up = heel down first
     });
 
     it("should implement 축발 (Chukbal) - pivot foot stability", () => {
       const forwardStep = MOVEMENT_FORWARD_STEP_ANIMATION;
-      
+
       // During step, back leg (pivot foot) maintains stability
-      const liftPhase = forwardStep.keyframes.find((kf) => kf.time >= 0.15 && kf.time <= 0.2);
+      const liftPhase = forwardStep.keyframes.find(
+        (kf) => kf.time >= 0.15 && kf.time <= 0.2
+      );
       expect(liftPhase).toBeDefined();
-      
+
       const backKnee = liftPhase?.boneRotations.get(BoneName.KNEE_R);
       expect(backKnee).toBeDefined();
       // Back knee should be flexed for stability
-      expect(backKnee!.x).toBeLessThan(0);
+      if (!backKnee) return;
+      expect(backKnee.x).toBeLessThan(0);
     });
 
     it("should implement 체중이동 (Chejung Idong) - smooth weight transfer", () => {
       const forwardStep = MOVEMENT_FORWARD_STEP_ANIMATION;
-      
+
       // Weight should transfer gradually, not abruptly
       // Check that pelvis X position changes smoothly across multiple frames
       const pelvisXPositions: number[] = [];
-      
+
       for (const kf of forwardStep.keyframes) {
         const pelvisPos = kf.bonePositions.get(BoneName.PELVIS);
         if (pelvisPos) {
           pelvisXPositions.push(pelvisPos.x);
         }
       }
-      
+
       // Should have multiple intermediate values (not just start and end)
       expect(pelvisXPositions.length).toBeGreaterThanOrEqual(5);
-      
+
       // Check for smooth progression (no huge jumps)
       // Maximum 15cm per keyframe ensures smooth, natural movement without jarring transitions
       // This threshold is based on typical human gait where hip shift occurs gradually over multiple phases
@@ -285,17 +325,21 @@ describe("Weight Transfer Animations", () => {
 
     it("should implement 중심이동 (Jungsim Idong) - center of mass movement", () => {
       const forwardStep = MOVEMENT_FORWARD_STEP_ANIMATION;
-      
+
       // Center of mass (pelvis) should follow body movement
-      const startPelvis = forwardStep.keyframes[0].bonePositions.get(BoneName.PELVIS);
-      const endPelvis = forwardStep.keyframes[forwardStep.keyframes.length - 1]
-        .bonePositions.get(BoneName.PELVIS);
-      
+      const startPelvis = forwardStep.keyframes[0].bonePositions.get(
+        BoneName.PELVIS
+      );
+      const endPelvis = forwardStep.keyframes[
+        forwardStep.keyframes.length - 1
+      ].bonePositions.get(BoneName.PELVIS);
+
       expect(startPelvis).toBeDefined();
       expect(endPelvis).toBeDefined();
-      
+
       // Pelvis should move significantly forward (positive Z)
-      expect(endPelvis!.z).toBeGreaterThan(startPelvis!.z + 0.3);
+      if (!startPelvis || !endPelvis) return;
+      expect(endPelvis.z).toBeGreaterThan(startPelvis.z + 0.3);
     });
   });
 
@@ -307,12 +351,12 @@ describe("Weight Transfer Animations", () => {
         MOVEMENT_SIDESTEP_LEFT_ANIMATION,
         MOVEMENT_SIDESTEP_RIGHT_ANIMATION,
       ];
-      
+
       for (const anim of animations) {
         // Duration should be between 300ms (minimum for visibility) and 1000ms (maximum for responsiveness)
         expect(anim.duration).toBeGreaterThanOrEqual(0.3);
         expect(anim.duration).toBeLessThanOrEqual(1.0);
-        
+
         // Should have reasonable number of keyframes (not too many for performance)
         expect(anim.keyframes.length).toBeLessThanOrEqual(20);
         expect(anim.keyframes.length).toBeGreaterThanOrEqual(4);
@@ -326,10 +370,12 @@ describe("Weight Transfer Animations", () => {
         MOVEMENT_SIDESTEP_LEFT_ANIMATION,
         MOVEMENT_SIDESTEP_RIGHT_ANIMATION,
       ];
-      
+
       for (const anim of animations) {
         for (let i = 1; i < anim.keyframes.length; i++) {
-          expect(anim.keyframes[i].time).toBeGreaterThan(anim.keyframes[i - 1].time);
+          expect(anim.keyframes[i].time).toBeGreaterThan(
+            anim.keyframes[i - 1].time
+          );
         }
       }
     });

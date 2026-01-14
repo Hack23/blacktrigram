@@ -11,12 +11,12 @@
  * @korean 무술애니메이션빌더
  */
 
+import * as THREE from "three";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
 } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
-import * as THREE from "three";
 
 // Import constants from dedicated constants module
 import {
@@ -83,12 +83,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 550ms
    */
   FAST: {
-    chamber: 0.10,    // 100ms wind-up (준비)
-    extend: 0.15,     // 150ms strike (실행)
-    peak: 0.05,       // 50ms hold at extension (정점)
-    retract: 0.10,    // 100ms pull back (회수)
-    recover: 0.15,    // 150ms return to stance (복귀)
-    total: 0.55,      // 550ms total
+    chamber: 0.1, // 100ms wind-up (준비)
+    extend: 0.15, // 150ms strike (실행)
+    peak: 0.05, // 50ms hold at extension (정점)
+    retract: 0.1, // 100ms pull back (회수)
+    recover: 0.15, // 150ms return to stance (복귀)
+    total: 0.55, // 550ms total
   },
   /**
    * Fast-Medium techniques (빠른-중간 기술)
@@ -96,12 +96,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 600ms
    */
   FAST_MEDIUM: {
-    chamber: 0.10,    // 100ms wind-up (준비)
-    extend: 0.15,     // 150ms strike (실행)
-    peak: 0.05,       // 50ms hold at extension (정점)
-    retract: 0.10,    // 100ms pull back (회수)
-    recover: 0.20,    // 200ms return to stance (복귀)
-    total: 0.60,      // 600ms total
+    chamber: 0.1, // 100ms wind-up (준비)
+    extend: 0.15, // 150ms strike (실행)
+    peak: 0.05, // 50ms hold at extension (정점)
+    retract: 0.1, // 100ms pull back (회수)
+    recover: 0.2, // 200ms return to stance (복귀)
+    total: 0.6, // 600ms total
   },
   /**
    * Medium-Light techniques (중간-가벼운 기술)
@@ -109,12 +109,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 700ms
    */
   MEDIUM_LIGHT: {
-    chamber: 0.12,    // 120ms wind-up (준비)
-    extend: 0.18,     // 180ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.10,    // 100ms pull back (회수)
-    recover: 0.22,    // 220ms return to stance (복귀)
-    total: 0.70,      // 700ms total
+    chamber: 0.12, // 120ms wind-up (준비)
+    extend: 0.18, // 180ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.1, // 100ms pull back (회수)
+    recover: 0.22, // 220ms return to stance (복귀)
+    total: 0.7, // 700ms total
   },
   /**
    * Medium techniques (중간 기술)
@@ -122,12 +122,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 730ms
    */
   MEDIUM: {
-    chamber: 0.15,    // 150ms wind-up (준비)
-    extend: 0.20,     // 200ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.12,    // 120ms pull back (회수)
-    recover: 0.18,    // 180ms return to stance (복귀)
-    total: 0.73,      // 730ms total
+    chamber: 0.15, // 150ms wind-up (준비)
+    extend: 0.2, // 200ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.12, // 120ms pull back (회수)
+    recover: 0.18, // 180ms return to stance (복귀)
+    total: 0.73, // 730ms total
   },
   /**
    * Medium-Heavy techniques (중간-무거운 기술)
@@ -135,12 +135,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 750ms
    */
   MEDIUM_HEAVY: {
-    chamber: 0.12,    // 120ms wind-up (준비)
-    extend: 0.20,     // 200ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.20,    // 200ms return to stance (복귀)
-    total: 0.75,      // 750ms total
+    chamber: 0.12, // 120ms wind-up (준비)
+    extend: 0.2, // 200ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.2, // 200ms return to stance (복귀)
+    total: 0.75, // 750ms total
   },
   /**
    * Heavy-Light techniques (무거운-가벼운 기술)
@@ -148,12 +148,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 800ms
    */
   HEAVY_LIGHT: {
-    chamber: 0.15,    // 150ms wind-up (준비)
-    extend: 0.20,     // 200ms strike (실행)
-    peak: 0.10,       // 100ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.20,    // 200ms return to stance (복귀)
-    total: 0.80,      // 800ms total
+    chamber: 0.15, // 150ms wind-up (준비)
+    extend: 0.2, // 200ms strike (실행)
+    peak: 0.1, // 100ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.2, // 200ms return to stance (복귀)
+    total: 0.8, // 800ms total
   },
   /**
    * Heavy-Medium techniques (무거운-중간 기술)
@@ -161,12 +161,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 850ms
    */
   HEAVY_MEDIUM: {
-    chamber: 0.12,    // 120ms wind-up (준비)
-    extend: 0.22,     // 220ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.28,    // 280ms return to stance (복귀)
-    total: 0.85,      // 850ms total
+    chamber: 0.12, // 120ms wind-up (준비)
+    extend: 0.22, // 220ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.28, // 280ms return to stance (복귀)
+    total: 0.85, // 850ms total
   },
   /**
    * Heavy techniques (무거운 기술)
@@ -174,12 +174,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 1000ms
    */
   HEAVY: {
-    chamber: 0.20,    // 200ms wind-up (준비)
-    extend: 0.30,     // 300ms strike (실행)
-    peak: 0.12,       // 120ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.23,    // 230ms return to stance (복귀)
-    total: 1.00,      // 1000ms total
+    chamber: 0.2, // 200ms wind-up (준비)
+    extend: 0.3, // 300ms strike (실행)
+    peak: 0.12, // 120ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.23, // 230ms return to stance (복귀)
+    total: 1.0, // 1000ms total
   },
   /**
    * Combo techniques (연속 기술)
@@ -187,12 +187,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 700ms
    */
   COMBO_FAST: {
-    chamber: 0.08,    // 80ms wind-up (준비)
-    extend: 0.12,     // 120ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.10,    // 100ms pull back (회수)
-    recover: 0.32,    // 320ms return to stance (복귀)
-    total: 0.70,      // 700ms total (sum of all phases)
+    chamber: 0.08, // 80ms wind-up (준비)
+    extend: 0.12, // 120ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.1, // 100ms pull back (회수)
+    recover: 0.32, // 320ms return to stance (복귀)
+    total: 0.7, // 700ms total (sum of all phases)
   },
   /**
    * Jumping techniques (뛰어차기 기술)
@@ -200,12 +200,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 900ms
    */
   JUMPING: {
-    chamber: 0.18,    // 180ms wind-up (준비)
-    extend: 0.22,     // 220ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.12,    // 120ms pull back (회수)
-    recover: 0.30,    // 300ms return to stance (복귀)
-    total: 0.90,      // 900ms total
+    chamber: 0.18, // 180ms wind-up (준비)
+    extend: 0.22, // 220ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.12, // 120ms pull back (회수)
+    recover: 0.3, // 300ms return to stance (복귀)
+    total: 0.9, // 900ms total
   },
   /**
    * Combo heavy techniques (연속 무거운 기술)
@@ -213,12 +213,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 950ms
    */
   COMBO_HEAVY: {
-    chamber: 0.12,    // 120ms wind-up (준비)
-    extend: 0.22,     // 220ms strike (실행)
-    peak: 0.08,       // 80ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.38,    // 380ms return to stance (복귀)
-    total: 0.95,      // 950ms total (sum of all phases)
+    chamber: 0.12, // 120ms wind-up (준비)
+    extend: 0.22, // 220ms strike (실행)
+    peak: 0.08, // 80ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.38, // 380ms return to stance (복귀)
+    total: 0.95, // 950ms total (sum of all phases)
   },
   /**
    * Spinning techniques (회전 기술)
@@ -226,12 +226,12 @@ export const TECHNIQUE_TIMING = {
    * Total: 1200ms
    */
   SPINNING: {
-    chamber: 0.30,    // 300ms wind-up with rotation start (준비+회전)
-    extend: 0.35,     // 350ms strike through rotation (실행)
-    peak: 0.12,       // 120ms hold at extension (정점)
-    retract: 0.15,    // 150ms pull back (회수)
-    recover: 0.28,    // 280ms complete rotation recovery (복귀)
-    total: 1.20,      // 1200ms total
+    chamber: 0.3, // 300ms wind-up with rotation start (준비+회전)
+    extend: 0.35, // 350ms strike through rotation (실행)
+    peak: 0.12, // 120ms hold at extension (정점)
+    retract: 0.15, // 150ms pull back (회수)
+    recover: 0.28, // 280ms complete rotation recovery (복귀)
+    total: 1.2, // 1200ms total
   },
 } as const;
 
@@ -265,7 +265,8 @@ export class MartialArtsAnimationBuilder {
   private name: string;
   private koreanName: string;
   private duration: number = 0.5;
-  private type: "attack" | "defense" | "movement" | "idle" | "stance" | "walk" = "attack";
+  private type: "attack" | "defense" | "movement" | "idle" | "stance" | "walk" =
+    "attack";
   private loop: boolean = false;
   private keyframes: AnimationKeyframe[] = [];
   private currentTime: number = 0;
@@ -342,10 +343,10 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Add initial fighting stance keyframe (기본 자세)
-   * 
+   *
    * Adds a neutral fighting stance at time 0 as the starting position
    * for attack animations. This is the ready position before techniques.
-   * 
+   *
    * @korean 기본자세추가
    */
   stance(): this {
@@ -358,24 +359,24 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, 0, 0);
-      
+
       // Spine neutral
       kf.rotate(BoneName.PELVIS, 0, 0, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
       kf.rotate(BoneName.HEAD, 0, 0, 0);
-      
+
       // Arms in guard position
       kf.rotate(BoneName.SHOULDER_L, ...guard.leftShoulder);
       kf.rotate(BoneName.ELBOW_L, ...guard.leftElbow);
       kf.rotate(BoneName.SHOULDER_R, ...guard.rightShoulder);
       kf.rotate(BoneName.ELBOW_R, ...guard.rightElbow);
-      
+
       // Neutral positions
       kf.position(BoneName.PELVIS, 0, 0, 0);
       kf.position(BoneName.FOOT_R, 0, 0, 0);
       kf.position(BoneName.FOOT_L, 0, 0, 0);
-      
+
       // Fists in guard
       this.applyHandPose(kf, HAND_POSES.FIST, "both");
     });
@@ -390,14 +391,14 @@ export class MartialArtsAnimationBuilder {
   /**
    * Chamber - Knee lifts to waist height (준비자세)
    * Starting position for all kicks
-   * 
+   *
    * Authentic Korean martial arts chamber mechanics:
    * - Hip flexed to 90° (1.57 rad) bringing knee to torso height
    * - Knee bent tight (120° angle = -2.0 rad) for power generation
    * - Support leg slightly bent for stability
    * - Pelvis tilts back slightly for balance
    * - Toe neutral, ready for extension
-   * 
+   *
    * @korean 준비자세
    */
   chamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -407,11 +408,11 @@ export class MartialArtsAnimationBuilder {
         includeAnkle: true,
         includePelvis: true,
       });
-      
+
       // Additional stability and balance
       kf.rotate(BoneName.SPINE_LOWER, -0.05, 0, 0); // Slight back lean
       kf.rotate(BoneName.SPINE_UPPER, -0.03, 0, 0); // Upper body stable
-      
+
       // Arms in guard position
       kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
@@ -424,7 +425,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Extend - Leg snaps forward (차기 - 확장)
-   * 
+   *
    * Authentic Korean martial arts extension mechanics:
    * - Hip maintains elevation (1.7 rad ~97°) for target height
    * - Knee extends fully (0.1 rad ~6°) for maximum reach
@@ -432,9 +433,9 @@ export class MartialArtsAnimationBuilder {
    * - Pelvis tilts forward (0.15 rad ~9°) for hip thrust
    * - Support leg bends deeper (-0.35 rad) for power transfer
    * - Spine remains upright for balance
-   * 
+   *
    * This is the impact frame where the strike connects.
-   * 
+   *
    * @korean 차기확장
    */
   extend(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -444,14 +445,14 @@ export class MartialArtsAnimationBuilder {
         includeAnkle: true,
         includePelvis: true,
       });
-      
+
       // Hip thrust forward (key to Korean kick power)
       kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0); // Slight forward lean
       kf.rotate(BoneName.SPINE_UPPER, 0.03, 0, 0); // Follow through
-      
+
       // Position foot forward for impact
       kf.position(BoneName.FOOT_R, 0.6, 0, 0); // Forward position
-      
+
       // Arms maintain guard
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
@@ -464,7 +465,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Retract - Return to chamber (회수)
-   * 
+   *
    * Authentic Korean martial arts retraction mechanics:
    * - Leg returns THROUGH chamber position (proper 낙법)
    * - Knee bends back to tight position (-2.0 rad)
@@ -472,10 +473,10 @@ export class MartialArtsAnimationBuilder {
    * - Foot resets to neutral from pointed position
    * - Pelvis returns to neutral
    * - Support leg maintains stability
-   * 
+   *
    * This is critical for proper technique - the leg must return
    * through chamber to protect against counters and maintain balance.
-   * 
+   *
    * @korean 회수자세
    */
   retract(timeOffset: number = 0.15, easing: string = "ease-in"): this {
@@ -486,17 +487,17 @@ export class MartialArtsAnimationBuilder {
         includePelvis: true,
         resetFoot: false, // Foot returns to neutral, not reset
       });
-      
+
       // Spine returns to neutral
       kf.rotate(BoneName.SPINE_LOWER, -0.05, 0, 0);
       kf.rotate(BoneName.SPINE_UPPER, -0.03, 0, 0);
-      
+
       // Foot back to neutral
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
-      
+
       // Position foot back closer to body
       kf.position(BoneName.FOOT_R, 0, 0, 0);
-      
+
       // Arms still in guard
       kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
@@ -524,7 +525,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Roundhouse chamber - Hip rotates for 돌려차기
-   * 
+   *
    * Authentic Taekwondo roundhouse chamber (돌려차기 준비):
    * - Hip flexed and rotated out (~1.2 rad flex, ~0.8 rad external rotation)
    * - Knee bent tight (-1.5 rad) preparing for snap
@@ -532,10 +533,10 @@ export class MartialArtsAnimationBuilder {
    * - Spine counter-rotates for power (0.3 rad on Y-axis)
    * - Support leg stable
    * - Arms in high guard
-   * 
+   *
    * The hip rotation is KEY - it opens the hip for the circular strike path
    * that defines a roundhouse kick vs. a front kick.
-   * 
+   *
    * @korean 돌려차기준비
    */
   roundhouseChamber(
@@ -545,14 +546,14 @@ export class MartialArtsAnimationBuilder {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply rotational phase
       applyRoundhousePhaseToConfig(kf, KICK_PHASES.ROUNDHOUSE_CHAMBER);
-      
+
       // Support leg stability
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, 0, 0);
-      
+
       // Spine lower follows pelvis rotation
       kf.rotate(BoneName.SPINE_LOWER, 0, -0.3, 0);
-      
+
       // High guard for head protection
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
@@ -565,7 +566,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Roundhouse extension - Full hip rotation for 돌려차기
-   * 
+   *
    * Authentic Taekwondo roundhouse extension (돌려차기 실행):
    * - Hip fully extended with maximal rotation (1.2 rad flex, 1.6 rad rotation)
    * - Knee snaps out to nearly straight (-0.1 rad)
@@ -574,15 +575,15 @@ export class MartialArtsAnimationBuilder {
    * - Spine counter-rotates (0.8 rad) for torque generation
    * - Foot position extends laterally (0.8m forward)
    * - Support leg pivots on ball of foot
-   * 
+   *
    * Enhanced with compensatory torso lean (중심축회전):
    * - Torso leans AWAY from kicking leg for balance
    * - Increases reach and prevents backward fall
    * - 12° lateral lean on Z-axis for high kicks
-   * 
+   *
    * The "snap" comes from the sudden knee extension combined with
    * the hip rotation - this is the signature of Taekwondo roundhouse.
-   * 
+   *
    * @korean 돌려차기
    */
   roundhouseExtend(
@@ -595,11 +596,11 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0.3);
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
-      
+
       // Apply compensatory torso lean for balance (12° away from kick)
       // This must be called BEFORE setting Y-axis spine rotations
       this.applyKickTorsoLean(kf, "right", 12);
-      
+
       // Spine counter-rotation for torque generation (applied after Z-axis lean)
       // Preserve existing Z-axis lean from applyKickTorsoLean
       const upperSpineRot = kf.rotations.get(BoneName.SPINE_UPPER);
@@ -616,14 +617,14 @@ export class MartialArtsAnimationBuilder {
         -1.0,
         lowerSpineRot?.z ?? 0
       );
-      
+
       // Support leg pivots
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, 0.3, 0); // Pivot on ball
-      
+
       // Foot extends laterally
       kf.position(BoneName.FOOT_R, 0.8, 0, 0);
-      
+
       // Arms maintain high guard
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
@@ -636,7 +637,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Side kick chamber - Turn sideways for 옆차기
-   * 
+   *
    * Authentic Taekwondo side kick chamber (옆차기 준비):
    * - Body turns 90° sideways (pelvis -1.57 rad on Y-axis)
    * - Hip flexed and chambered (1.3 rad flex, 0.3 rad rotation)
@@ -645,25 +646,25 @@ export class MartialArtsAnimationBuilder {
    * - Lean away from kick for balance (0.2 rad lean)
    * - Support leg stable and aligned
    * - Arms protect vital areas
-   * 
+   *
    * The perpendicular chamber is essential - the hips must turn
    * sideways to allow the heel to drive through the target laterally.
-   * 
+   *
    * @korean 옆차기준비
    */
   sideKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply side kick rotational phase
       applySideKickPhaseToConfig(kf, KICK_PHASES.SIDE_CHAMBER);
-      
+
       // Support leg alignment
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, -0.3, 0); // Turn with body
       kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
-      
+
       // Head looks at target
       kf.rotate(BoneName.HEAD, 0, -0.5, 0);
-      
+
       // Arms in defensive position
       kf.rotate(BoneName.SHOULDER_L, -0.7, 0.5, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
@@ -676,7 +677,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Side kick extension - Lateral heel thrust for 옆차기
-   * 
+   *
    * Authentic Taekwondo side kick extension (옆차기 실행):
    * - Hip extends laterally (1.3 rad flex, 0.7 rad rotation)
    * - Knee extends fully (-0.1 rad) driving heel through target
@@ -685,10 +686,10 @@ export class MartialArtsAnimationBuilder {
    * - Spine leans away (0.4 rad) for counterbalance
    * - Foot extends laterally (0.7m to side)
    * - Support leg drives power
-   * 
+   *
    * The side kick is one of the most powerful kicks because the
    * entire body mass drives through the heel in a straight line.
-   * 
+   *
    * @korean 옆차기
    */
   sideKickExtend(timeOffset: number = 0.1, easing: string = "linear"): this {
@@ -700,18 +701,18 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0, -1.57, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -1.2, 0.2);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.2, 0.4);
-      
+
       // Support leg powers the kick
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
       kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
-      
+
       // Foot extends to side
       kf.position(BoneName.FOOT_R, 0.7, 0, 0);
-      
+
       // Head maintains target focus
       kf.rotate(BoneName.HEAD, 0, -0.5, 0);
-      
+
       // Arms balanced
       kf.rotate(BoneName.SHOULDER_L, -0.7, 0.5, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
@@ -757,7 +758,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Back kick spin - 180° turn for 뒤차기
-   * 
+   *
    * Authentic Taekwondo back kick spin (뒤차기 회전):
    * - Body rotates 180° (pelvis -1.5 rad initially)
    * - Spine rotates with body (lower: -1.3 rad, upper: -1.0 rad)
@@ -765,11 +766,11 @@ export class MartialArtsAnimationBuilder {
    * - Hip chambers (0.3 rad flex)
    * - Knee bends (-0.8 rad) preparing for backward thrust
    * - Support leg maintains balance
-   * 
+   *
    * Looking over the shoulder is CRITICAL - you must see the target
    * to execute an accurate back kick. This is emphasized in all
    * traditional Korean martial arts.
-   * 
+   *
    * @korean 뒤차기회전
    */
   backKickSpin(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -778,20 +779,20 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -1.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
-      
+
       // CRITICAL: Look over shoulder to see target
       kf.rotate(BoneName.HEAD, 0, 0.5, 0);
-      
+
       // Leg chambers during rotation
       kf.rotate(BoneName.HIP_R, 0.3, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.8, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
-      
+
       // Support leg stability
       kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
-      
+
       // Arms balance during spin
       kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, 0.2);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
@@ -804,7 +805,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Back kick thrust - Heel drives backward for 뒤차기
-   * 
+   *
    * Authentic Taekwondo back kick thrust (뒤차기 밀기):
    * - Body completes 180° rotation (pelvis -3.14 rad = π)
    * - Hip extends backward (0.5 rad flex maintained)
@@ -814,11 +815,11 @@ export class MartialArtsAnimationBuilder {
    * - Head maintains target visual (1.0 rad look-back)
    * - Spine fully rotated with body
    * - Support leg powers the thrust
-   * 
+   *
    * The back kick delivers tremendous power because the entire
    * body mass drives through the strongest leg muscles (glutes,
    * hamstrings) in a straight line backward.
-   * 
+   *
    * @korean 뒤차기
    */
   backKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -827,23 +828,23 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.PELVIS, 0, -3.14, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -3.0, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -2.8, 0.2);
-      
+
       // Head still looking at target
       kf.rotate(BoneName.HEAD, 0, 1.0, 0);
-      
+
       // Full leg extension backward
       kf.rotate(BoneName.HIP_R, 0.5, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, -0.4, 0, 0);
-      
+
       // Foot drives backward
       kf.position(BoneName.FOOT_R, 0, 0, -0.8);
-      
+
       // Support leg powers thrust
       kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
       kf.rotate(BoneName.KNEE_L, -0.5, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
-      
+
       // Arms for balance
       kf.rotate(BoneName.SHOULDER_L, -0.6, 0.7, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
@@ -1035,12 +1036,12 @@ export class MartialArtsAnimationBuilder {
   /**
    * Punch extension - Arm extends with torso rotation (지르기)
    * Includes fist rotation from vertical to pronated and hikite
-   * 
+   *
    * Enhanced with realistic torso rotation (허리비틀기):
    * - Straight punches: 20° counter-rotation for power
    * - Torso rotates OPPOSITE to punch direction
    * - Sequential spine rotation (lower → mid → upper)
-   * 
+   *
    * @param timeOffset Time offset in seconds
    * @param hand Which hand to extend ("left" | "right")
    * @param easing Easing function
@@ -1070,11 +1071,11 @@ export class MartialArtsAnimationBuilder {
   /**
    * Punch peak - Maximum extension with full rotation (정점)
    * Hold at full extension for impact frame
-   * 
+   *
    * Enhanced with sustained torso rotation at impact:
    * - Maintains 20° counter-rotation at peak
    * - Maximizes power transfer through spine
-   * 
+   *
    * @param timeOffset Time offset in seconds
    * @param hand Which hand is extended ("left" | "right")
    * @param easing Easing function
@@ -1142,12 +1143,12 @@ export class MartialArtsAnimationBuilder {
   /**
    * Hook punch - Circular punch targeting temple (후크)
    * Enhanced with Korean martial arts shoulder rotation and hikite (당기기)
-   * 
+   *
    * Enhanced with realistic circular torso rotation (몸통회전):
    * - Hook punches: 50° rotation for circular power
    * - Torso rotates INTO the punch for arc generation
    * - Sequential spine rotation creates whipping motion
-   * 
+   *
    * @param timeOffset Time offset in seconds
    * @param hand Which hand is hooking ("left" | "right")
    * @param easing Easing function
@@ -1162,23 +1163,25 @@ export class MartialArtsAnimationBuilder {
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
     const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
     const wristBone = isRight ? BoneName.WRIST_R : BoneName.WRIST_L;
-    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeShoulder = isRight
+      ? BoneName.SHOULDER_L
+      : BoneName.SHOULDER_R;
     const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
-    
+
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Hook arm arcs across
       kf.rotate(shoulderBone, -0.1, isRight ? 0.6 : -0.6, isRight ? 0.4 : -0.4);
       kf.rotate(elbowBone, 0, 0, isRight ? 1.35 : -1.35);
       kf.rotate(wristBone, 0, isRight ? 0.2 : -0.2, 0);
-      
+
       // Opposite arm pulls back (hikite)
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
-      
+
       // Apply enhanced hook torso rotation for circular power (50°)
       this.applyHookTorsoRotation(kf, hand, 50);
       kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
-      
+
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1202,22 +1205,24 @@ export class MartialArtsAnimationBuilder {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
     const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
-    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeShoulder = isRight
+      ? BoneName.SHOULDER_L
+      : BoneName.SHOULDER_R;
     const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
-    
+
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Hook arm pulls back to side
       kf.rotate(shoulderBone, 0.1, isRight ? -0.6 : 0.6, isRight ? -0.5 : 0.5);
       kf.rotate(elbowBone, 0, 0, isRight ? 1.57 : -1.57);
-      
+
       // Opposite arm in guard
       kf.rotate(oppositeShoulder, -0.1, 0, isRight ? 0.2 : -0.2);
       kf.rotate(oppositeElbow, 0, 0, isRight ? 1.4 : -1.4);
-      
+
       // Body coiled away
       kf.rotate(BoneName.SPINE_UPPER, 0, isRight ? -0.3 : 0.3, 0);
       kf.rotate(BoneName.PELVIS, 0, isRight ? -0.2 : 0.2, 0);
-      
+
       // Form fist during hook windup
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1241,24 +1246,26 @@ export class MartialArtsAnimationBuilder {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
     const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
-    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeShoulder = isRight
+      ? BoneName.SHOULDER_L
+      : BoneName.SHOULDER_R;
     const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
-    
+
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Uppercut arm rises
       kf.rotate(shoulderBone, 0.8, 0, isRight ? 1.0 : -1.0);
       kf.rotate(elbowBone, 0, 0, isRight ? 1.2 : -1.2);
-      
+
       // Opposite arm pulls back (hikite)
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
-      
+
       // Drive up through legs
       kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.PELVIS, -0.2, isRight ? 0.15 : -0.15, 0);
       kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
-      
+
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1282,24 +1289,26 @@ export class MartialArtsAnimationBuilder {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
     const elbowBone = isRight ? BoneName.ELBOW_R : BoneName.ELBOW_L;
-    const oppositeShoulder = isRight ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
+    const oppositeShoulder = isRight
+      ? BoneName.SHOULDER_L
+      : BoneName.SHOULDER_R;
     const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
-    
+
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Uppercut arm coils low
       kf.rotate(shoulderBone, 0.3, 0, isRight ? 0.2 : -0.2);
       kf.rotate(elbowBone, 0, 0, isRight ? 1.5 : -1.5);
-      
+
       // Opposite arm in guard
       kf.rotate(oppositeShoulder, -0.1, 0, isRight ? 0.2 : -0.2);
       kf.rotate(oppositeElbow, 0, 0, isRight ? 1.4 : -1.4);
-      
+
       // Drop level to load legs
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
       kf.rotate(BoneName.PELVIS, 0.15, isRight ? -0.1 : 0.1, 0);
       kf.position(BoneName.PELVIS, 0, -0.1, 0);
-      
+
       // Apply fist pose to punching hand during preparation
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -2000,10 +2009,10 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply Korean guard position helper
-   * 
+   *
    * Private helper method to reduce code duplication across guard methods.
    * Applies guard positions to the last keyframe in the animation.
-   * 
+   *
    * @param guardType - Type of guard to apply
    * @param side - Which side to apply ("left" | "right" | "both")
    * @returns this for chaining
@@ -2018,12 +2027,12 @@ export class MartialArtsAnimationBuilder {
     if (lastKf) {
       const kf = new KeyframeConfig();
       kf.withGuard(guardType, side);
-      
+
       // Merge rotations into last keyframe
       for (const [bone, rotation] of kf.rotations.entries()) {
         lastKf.boneRotations.set(bone, rotation);
       }
-      
+
       // Apply fist pose to hands in guard
       this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
     }
@@ -2032,10 +2041,10 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply Korean high guard position (상단막기)
-   * 
+   *
    * Traditional Korean martial arts high guard with hands at temple level
    * protecting head and face. Uses authentic 막기자세 positioning.
-   * 
+   *
    * @param side - Which side to apply ("left" | "right" | "both")
    * @returns this for chaining
    * @korean 상단막기자세
@@ -2046,10 +2055,10 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply Korean middle guard position (중단막기)
-   * 
+   *
    * Standard Korean martial arts guard at chest/solar plexus level.
    * Most versatile guard position, used in most fighting stances.
-   * 
+   *
    * @param side - Which side to apply ("left" | "right" | "both")
    * @returns this for chaining
    * @korean 중단막기자세
@@ -2060,10 +2069,10 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply Korean low guard position (하단막기)
-   * 
+   *
    * Low guard position protecting lower body and groin.
    * Used in grappling and ground-fighting scenarios.
-   * 
+   *
    * @param side - Which side to apply ("left" | "right" | "both")
    * @returns this for chaining
    * @korean 하단막기자세
@@ -2250,40 +2259,43 @@ export class MartialArtsAnimationBuilder {
   /**
    * Apply foot positions based on stance width (발너비)
    * Sets left and right foot X positions symmetrically around center
-   * 
+   *
    * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
    * @param shoulderWidth - Fighter's shoulder width in centimeters
    * @korean 발너비적용
-   * 
+   *
    * @example
    * ```typescript
    * // Jin Thunder stance (2.0x shoulder width)
    * .withFootWidth(2.0, 46)  // 0.92m total width
-   * 
+   *
    * // Son Wind stance (0.0x - crane stance)
    * .withFootWidth(0.0, 46)  // 0m - single leg
    * ```
    */
-  withFootWidth(
-    stanceWidthMultiplier: number,
-    shoulderWidth: number
-  ): this {
+  withFootWidth(stanceWidthMultiplier: number, shoulderWidth: number): this {
     const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf && lastKf.bonePositions) {
+    const bonePositions = lastKf?.bonePositions;
+    if (bonePositions) {
       // Calculate symmetric foot positions using shared helper
-      const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
+      const totalWidth = calculateStanceWidth(
+        stanceWidthMultiplier,
+        shoulderWidth
+      );
       const halfWidth = totalWidth / 2;
-      
+
       // Create new map with existing positions plus foot positions
       const newPositions = new Map<BoneName, THREE.Vector3>();
-      lastKf.bonePositions.forEach((pos, bone) => {
+      bonePositions.forEach((pos, bone) => {
         newPositions.set(bone as BoneName, pos);
       });
       newPositions.set(BoneName.FOOT_L, new THREE.Vector3(-halfWidth, 0, 0));
       newPositions.set(BoneName.FOOT_R, new THREE.Vector3(halfWidth, 0, 0));
-      
+
       // Replace with new map (cast to writable for assignment)
-      (lastKf as {bonePositions: ReadonlyMap<BoneName, THREE.Vector3>}).bonePositions = newPositions as ReadonlyMap<BoneName, THREE.Vector3>;
+      (
+        lastKf as { bonePositions: ReadonlyMap<BoneName, THREE.Vector3> }
+      ).bonePositions = newPositions as ReadonlyMap<BoneName, THREE.Vector3>;
     }
     return this;
   }
@@ -2291,7 +2303,7 @@ export class MartialArtsAnimationBuilder {
   /**
    * Apply foot positions to current keyframe during addKeyframe
    * Inline version for use within keyframe callback
-   * 
+   *
    * @param kf - KeyframeConfig to modify
    * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
    * @param shoulderWidth - Fighter's shoulder width in centimeters
@@ -2302,9 +2314,12 @@ export class MartialArtsAnimationBuilder {
     stanceWidthMultiplier: number,
     shoulderWidth: number
   ): void {
-    const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
+    const totalWidth = calculateStanceWidth(
+      stanceWidthMultiplier,
+      shoulderWidth
+    );
     const halfWidth = totalWidth / 2;
-    
+
     kf.position(BoneName.FOOT_L, -halfWidth, 0, 0);
     kf.position(BoneName.FOOT_R, halfWidth, 0, 0);
   }
@@ -2378,20 +2393,20 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply torso rotation for straight punch power generation (주먹허리비틀기)
-   * 
+   *
    * Korean martial arts principle: 허리비틀기 (Heori Biteulgi) - Waist twist for power
    * The torso rotates OPPOSITE to the punch direction, creating torque through
    * the spine that transfers power into the strike.
-   * 
+   *
    * Biomechanics:
    * - SPINE_LOWER rotates 50% of target angle (foundation rotation)
    * - SPINE_MIDDLE rotates 70% of target angle (power transfer zone)
    * - SPINE_UPPER rotates 100% of target angle (maximum rotation at shoulders)
-   * 
+   *
    * @param kf - KeyframeConfig to apply rotation to
    * @param side - Which hand is punching ("left" | "right")
    * @param rotationDegrees - Target rotation in degrees (15-25° recommended)
-   * 
+   *
    * @example
    * ```typescript
    * // Right cross with 20° counter-rotation
@@ -2400,7 +2415,7 @@ export class MartialArtsAnimationBuilder {
    *   // ... other punch mechanics
    * });
    * ```
-   * 
+   *
    * @korean 주먹허리비틀기
    */
   private applyPunchTorsoRotation(
@@ -2442,20 +2457,20 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply torso rotation for hook punch circular power (훅허리비틀기)
-   * 
+   *
    * Korean martial arts principle: 몸통회전 (Momtong Hoejeon) - Full torso rotation
    * Hook punches generate power from hip and shoulder rotation in a circular motion.
    * Larger rotation angle (45-60°) creates the circular arc needed for hooks.
-   * 
+   *
    * Biomechanics:
    * - SPINE_LOWER rotates 50% (hip engagement)
    * - SPINE_MIDDLE rotates 70% (core power transfer)
    * - SPINE_UPPER rotates 100% (shoulder whip into target)
-   * 
+   *
    * @param kf - KeyframeConfig to apply rotation to
    * @param side - Which hand is hooking ("left" | "right")
    * @param rotationDegrees - Target rotation in degrees (45-60° recommended)
-   * 
+   *
    * @example
    * ```typescript
    * // Right hook with 50° rotation
@@ -2464,7 +2479,7 @@ export class MartialArtsAnimationBuilder {
    *   // ... other hook mechanics
    * });
    * ```
-   * 
+   *
    * @korean 훅허리비틀기
    */
   private applyHookTorsoRotation(
@@ -2505,22 +2520,22 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Apply torso lean for kick balance (차기허리기울이기)
-   * 
+   *
    * Korean martial arts principle: 중심축회전 (Jungsim Chuk Hoejeon) - Central axis rotation
    * When executing kicks, the torso leans AWAY from the kicking leg to:
    * 1. Maintain balance on the support leg
    * 2. Increase reach by extending the kick further
    * 3. Prevent falling backward during high kicks
-   * 
+   *
    * Biomechanics:
    * - SPINE_LOWER leans away from kick (foundation)
    * - SPINE_MIDDLE leans with lower spine (stability)
    * - SPINE_UPPER leans slightly less (control)
-   * 
+   *
    * @param kf - KeyframeConfig to apply lean to
    * @param side - Which leg is kicking ("left" | "right")
    * @param leanDegrees - Amount of lean in degrees (10-20° recommended)
-   * 
+   *
    * @example
    * ```typescript
    * // Right roundhouse kick with compensatory lean
@@ -2529,7 +2544,7 @@ export class MartialArtsAnimationBuilder {
    *   // ... other kick mechanics
    * });
    * ```
-   * 
+   *
    * @korean 차기허리기울이기
    */
   private applyKickTorsoLean(
@@ -2546,34 +2561,19 @@ export class MartialArtsAnimationBuilder {
     // NOTE: This method only sets the Z-axis roll component. Any subsequent kf.rotate
     // calls on these spine bones (e.g. adding Y-axis twist in a kick phase) must
     // preserve or explicitly incorporate this roll, otherwise the lean will be lost.
-    kf.rotate(
-      BoneName.SPINE_LOWER,
-      0,
-      0,
-      leanRad * direction * 0.9
-    );
-    kf.rotate(
-      BoneName.SPINE_MIDDLE,
-      0,
-      0,
-      leanRad * direction * 0.7
-    );
-    kf.rotate(
-      BoneName.SPINE_UPPER,
-      0,
-      0,
-      leanRad * direction * 0.5
-    );
+    kf.rotate(BoneName.SPINE_LOWER, 0, 0, leanRad * direction * 0.9);
+    kf.rotate(BoneName.SPINE_MIDDLE, 0, 0, leanRad * direction * 0.7);
+    kf.rotate(BoneName.SPINE_UPPER, 0, 0, leanRad * direction * 0.5);
   }
 
   /**
    * Reset torso to neutral position (허리중립)
-   * 
+   *
    * Returns all spine bones to neutral rotation (0, 0, 0).
    * Used during recovery phases to return to fighting stance.
-   * 
+   *
    * @param kf - KeyframeConfig to reset
-   * 
+   *
    * @korean 허리중립
    */
   private resetTorsoRotation(kf: KeyframeConfig): void {
