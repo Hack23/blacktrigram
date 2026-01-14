@@ -262,7 +262,7 @@ export class MartialArtsAnimationBuilder {
   private name: string;
   private koreanName: string;
   private duration: number = 0.5;
-  private type: "attack" | "defense" | "movement" | "idle" = "attack";
+  private type: "attack" | "defense" | "movement" | "idle" | "stance" | "walk" = "attack";
   private loop: boolean = false;
   private keyframes: AnimationKeyframe[] = [];
   private currentTime: number = 0;
@@ -318,6 +318,16 @@ export class MartialArtsAnimationBuilder {
    */
   asIdle(duration: number, shouldLoop: boolean = true): this {
     this.type = "idle";
+    this.duration = duration;
+    this.loop = shouldLoop;
+    return this;
+  }
+
+  /**
+   * Configure as stance transition animation (자세 전환 애니메이션)
+   */
+  asStance(duration: number, shouldLoop: boolean = false): this {
+    this.type = "stance";
     this.duration = duration;
     this.loop = shouldLoop;
     return this;

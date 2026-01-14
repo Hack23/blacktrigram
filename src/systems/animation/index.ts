@@ -428,3 +428,14 @@ export type {
   AnimationHitWindow,
   TechniqueHitTiming,
 } from './AnimationHitTiming';
+
+// Trigram Stance Transition System
+export {
+  STANCE_TRANSITIONS,
+  TRIGRAM_STANCES_ORDER,
+  calculateTransitionDuration,
+  ensureStanceTransitionsInitialized,
+  getStanceTransition,
+  initializeStanceTransitions,
+  transitionBetweenStances,
+} from './TrigramStanceTransitions';
