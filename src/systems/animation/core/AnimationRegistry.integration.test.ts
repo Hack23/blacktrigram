@@ -10,7 +10,11 @@
 
 import { describe, expect, it } from "vitest";
 import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
-import { ANIMATION_REGISTRY, getAnimationByType } from "./AnimationRegistry";
+import {
+  ALL_ANIMATIONS,
+  ANIMATION_REGISTRY,
+  getAnimationByType,
+} from "./AnimationRegistry";
 import { validateRecoveryPhase } from "./RecoveryPhaseEnhancer";
 
 describe("Enhanced Animation Registry Integration", () => {
@@ -265,6 +269,49 @@ describe("Enhanced Animation Registry Integration", () => {
 
       // Should be extremely fast (just Map lookups)
       expect(avgTime).toBeLessThan(0.01);
+    });
+  });
+
+  describe("Trigram Idle Animations", () => {
+    it("should have stance_geon with multiple keyframes for breathing animation", () => {
+      const anim = ALL_ANIMATIONS.get("stance_geon");
+
+      expect(anim).toBeDefined();
+      expect(anim!.name).toBe("stance_geon");
+      expect(anim!.keyframes.length).toBeGreaterThan(1);
+      expect(anim!.loop).toBe(true);
+      expect(anim!.duration).toBeGreaterThan(1);
+
+      // Check what bones are actually present
+      const firstKeyframe = anim!.keyframes[0];
+      const boneNames = [...firstKeyframe.boneRotations.keys()];
+
+      // Debug: Log what bones are present
+      console.log("stance_geon bone names:", boneNames);
+      console.log("Total bones:", boneNames.length);
+
+      // Bones should include arm and leg bones with dramatic rotations
+      expect(boneNames.length).toBeGreaterThan(5);
+    });
+
+    it("should have all 8 stance animations in ALL_ANIMATIONS", () => {
+      const stances = [
+        "stance_geon",
+        "stance_tae",
+        "stance_li",
+        "stance_jin",
+        "stance_son",
+        "stance_gam",
+        "stance_gan",
+        "stance_gon",
+      ];
+
+      for (const stance of stances) {
+        const anim = ALL_ANIMATIONS.get(stance);
+        expect(anim).toBeDefined();
+        expect(anim!.keyframes.length).toBeGreaterThan(1);
+        expect(anim!.loop).toBe(true);
+      }
     });
   });
 });
