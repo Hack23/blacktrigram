@@ -232,13 +232,6 @@ describe("Korean Guard Positions (막기자세)", () => {
     });
 
     it("should protect vital points according to Korean martial arts", () => {
-      // Guards should protect key vital point categories
-      const allProtectedAreas = new Set([
-        ...HIGH_GUARD.protects,
-        ...MIDDLE_GUARD.protects,
-        ...LOW_GUARD.protects,
-      ]);
-      
       // Should protect all three major regions
       const hasHeadProtection = HIGH_GUARD.protects.some(area => 
         ["head", "temple", "jaw"].includes(area)

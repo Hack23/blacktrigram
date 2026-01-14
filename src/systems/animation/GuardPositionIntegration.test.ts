@@ -126,7 +126,7 @@ describe("Guard Position Integration in Animations", () => {
     it("should have valid rotation values in radians", () => {
       // Check JAB animation
       for (const kf of JAB_ANIMATION.keyframes) {
-        for (const [boneName, rotation] of kf.boneRotations.entries()) {
+        for (const [, rotation] of kf.boneRotations.entries()) {
           // Rotation values should be in reasonable range (radians)
           expect(Math.abs(rotation.x)).toBeLessThanOrEqual(Math.PI);
           expect(Math.abs(rotation.y)).toBeLessThanOrEqual(Math.PI * 2);
@@ -136,7 +136,7 @@ describe("Guard Position Integration in Animations", () => {
 
       // Check CROSS animation
       for (const kf of CROSS_ANIMATION.keyframes) {
-        for (const [boneName, rotation] of kf.boneRotations.entries()) {
+        for (const [, rotation] of kf.boneRotations.entries()) {
           // Rotation values should be in reasonable range (radians)
           expect(Math.abs(rotation.x)).toBeLessThanOrEqual(Math.PI);
           expect(Math.abs(rotation.y)).toBeLessThanOrEqual(Math.PI * 2);
