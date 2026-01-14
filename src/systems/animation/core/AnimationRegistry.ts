@@ -117,6 +117,26 @@ import {
   KNEE_STRIKE_ANIMATION_ENHANCED,
 } from "../catalogs/EnhancedElbowKneeAnimations";
 
+// Specialized punch variant animations (특수 주먹 변형 애니메이션)
+import {
+  EAR_STRIKE_ANIMATION,
+  EYE_GOUGE_ANIMATION,
+  FLOWING_CROSS_ANIMATION,
+  FLOWING_PUSH_ANIMATION,
+  HEAVEN_STRIKE_ANIMATION,
+  LIGHTNING_STRIKE_ANIMATION,
+  LIVER_DISRUPTION_ANIMATION,
+  NERVE_PARALYSIS_ANIMATION,
+  NERVE_STRIKE_ANIMATION,
+  PRESSURE_POINT_STRIKE_ANIMATION,
+  RAPID_BARRAGE_ANIMATION,
+  RHYTHMIC_STRIKES_ANIMATION,
+  SOLAR_PLEXUS_STRIKE_ANIMATION,
+  SPEAR_HAND_STRIKE_ANIMATION,
+  SPECIALIZED_PUNCH_ANIMATIONS,
+  THROAT_STRIKE_ANIMATION,
+} from "../catalogs/SpecializedPunchAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MASTER ANIMATION REGISTRY
 // ═══════════════════════════════════════════════════════════════════════════
@@ -149,6 +169,23 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.PALM_STRIKE, PALM_STRIKE_ANIMATION],
     [AnimationType.BACKFIST, BACKFIST_ANIMATION],
     [AnimationType.HAMMER_FIST, HAMMER_FIST_ANIMATION],
+
+    // Specialized Punch Variants (특수 주먹 변형)
+    [AnimationType.SPEAR_HAND_STRIKE, SPEAR_HAND_STRIKE_ANIMATION],
+    [AnimationType.NERVE_STRIKE, NERVE_STRIKE_ANIMATION],
+    [AnimationType.PRESSURE_POINT_STRIKE, PRESSURE_POINT_STRIKE_ANIMATION],
+    [AnimationType.LIGHTNING_STRIKE, LIGHTNING_STRIKE_ANIMATION],
+    [AnimationType.HEAVEN_STRIKE, HEAVEN_STRIKE_ANIMATION],
+    [AnimationType.FLOWING_CROSS, FLOWING_CROSS_ANIMATION],
+    [AnimationType.RAPID_BARRAGE, RAPID_BARRAGE_ANIMATION],
+    [AnimationType.RHYTHMIC_STRIKES, RHYTHMIC_STRIKES_ANIMATION],
+    [AnimationType.SOLAR_PLEXUS_STRIKE, SOLAR_PLEXUS_STRIKE_ANIMATION],
+    [AnimationType.FLOWING_PUSH, FLOWING_PUSH_ANIMATION],
+    [AnimationType.THROAT_STRIKE, THROAT_STRIKE_ANIMATION],
+    [AnimationType.EYE_GOUGE, EYE_GOUGE_ANIMATION],
+    [AnimationType.NERVE_PARALYSIS, NERVE_PARALYSIS_ANIMATION],
+    [AnimationType.LIVER_DISRUPTION, LIVER_DISRUPTION_ANIMATION],
+    [AnimationType.EAR_STRIKE, EAR_STRIKE_ANIMATION],
 
     // Elbow/Knee (팔꿈치/무릎) - Using enhanced versions with recovery phases
     [AnimationType.ELBOW_STRIKE, ELBOW_STRIKE_ANIMATION_ENHANCED],
@@ -186,6 +223,7 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
 export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...KICK_ANIMATIONS,
   ...PUNCH_ANIMATIONS,
+  ...SPECIALIZED_PUNCH_ANIMATIONS, // Add specialized punch variants
   ...ELBOW_KNEE_ANIMATIONS,
   ...GRAPPLING_ANIMATIONS,
   ...STANCE_ANIMATIONS,

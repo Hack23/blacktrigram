@@ -11,7 +11,10 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
-import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/MartialArtsAnimationBuilder";
+import {
+  MartialArtsAnimationBuilder,
+  TECHNIQUE_TIMING,
+} from "../builders/MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // FRONT KICK (앞차기) - Basic Taekwondo Kick
@@ -39,11 +42,16 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("front_kick", "앞차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
     .stance() // 기본자세 - Initial stance at t=0
+    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
     .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts to torso
+    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // 차기 - 180ms leg snaps forward
+    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during kick
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // 정점 - 80ms hold at extension
+    .withKoreanMiddleGuard() // 중단막기 - Maintain guard at peak
     .retract(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract) // 회수 - 100ms return through chamber
     .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // 복귀 - 220ms return to stance
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -72,11 +80,16 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("roundhouse_kick", "돌려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
     .stance() // 기본자세 - Initial stance at t=0
+    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
     .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms hip rotates out
+    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 차기 - 200ms leg whips through
+    .withKoreanHighGuard() // 상단막기 - High guard during spinning kick
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
+    .withKoreanHighGuard() // 상단막기 - Maintain high guard at peak
     .retract(TECHNIQUE_TIMING.HEAVY_LIGHT.retract) // 회수 - 150ms
     .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 200ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -105,11 +118,16 @@ export const SIDE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("side_kick", "옆차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_HEAVY.total)
     .stance() // 기본자세 - Initial stance at t=0
+    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
     .sideKickChamber(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // 준비 - 120ms turn sideways
+    .withKoreanHighGuard() // 상단막기 - High guard when turned sideways
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // 차기 - 200ms heel drives
+    .withKoreanHighGuard() // 상단막기 - Maintain high guard during thrust
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak) // 정점 - 80ms hold at extension
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
     .retract(TECHNIQUE_TIMING.MEDIUM_HEAVY.retract) // 회수 - 150ms
     .recover(TECHNIQUE_TIMING.MEDIUM_HEAVY.recover) // 복귀 - 200ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -169,10 +187,17 @@ export const BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("back_kick", "뒤차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
     .stance() // 기본자세 - Initial stance at t=0
+    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
     .backKickSpin(TECHNIQUE_TIMING.HEAVY.chamber) // 회전+준비 - 200ms body rotates and chambers
+    .withKoreanHighGuard() // 상단막기 - High guard during spin (exposed)
     .backKickThrust(TECHNIQUE_TIMING.HEAVY.extend) // 차기 - 300ms heel thrusts
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during thrust
     .backKickThrust(TECHNIQUE_TIMING.HEAVY.peak) // 정점 - 120ms hold at extension
-    .spinRecover(TECHNIQUE_TIMING.HEAVY.retract + TECHNIQUE_TIMING.HEAVY.recover) // 복귀 - 380ms (150ms + 230ms)
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
+    .spinRecover(
+      TECHNIQUE_TIMING.HEAVY.retract + TECHNIQUE_TIMING.HEAVY.recover
+    ) // 복귀 - 380ms (150ms + 230ms)
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -199,9 +224,15 @@ export const TORNADO_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tornado_kick", "회전차기")
     .asAttack(TECHNIQUE_TIMING.SPINNING.total)
     .chamber(TECHNIQUE_TIMING.SPINNING.chamber) // Jump prep & begin spin - 300ms
+    .withKoreanHighGuard() // 상단막기 - High guard during airborne spin
     .roundhouseExtend(TECHNIQUE_TIMING.SPINNING.extend) // Strike through spin - 350ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during strike
     .roundhouseExtend(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
-    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // Land and recover - 430ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
+    .spinRecover(
+      TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover
+    ) // Land and recover - 430ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard on landing
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -222,9 +253,13 @@ export const JUMPING_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jumping_kick", "뛰어차기")
     .asAttack(TECHNIQUE_TIMING.JUMPING.total)
     .chamber(TECHNIQUE_TIMING.JUMPING.chamber) // Jump prep with chamber - 180ms
+    .withKoreanHighGuard() // 상단막기 - High guard during airborne attack
     .extend(TECHNIQUE_TIMING.JUMPING.extend) // Kick in air - 220ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during kick
     .retract(TECHNIQUE_TIMING.JUMPING.retract) // Retract before landing - 120ms
+    .withKoreanMiddleGuard() // 중단막기 - Prepare for landing
     .recover(TECHNIQUE_TIMING.JUMPING.recover) // Land and recover - 300ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -244,8 +279,17 @@ export const JUMPING_KICK_ANIMATION: SkeletalAnimation =
 export const SWEEP_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("sweep", "걸기")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
-    .sweep(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber + TECHNIQUE_TIMING.HEAVY_LIGHT.extend + TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // Sweeping motion - 450ms
-    .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // Recover from low position - 350ms
+    .sweep(
+      TECHNIQUE_TIMING.HEAVY_LIGHT.chamber +
+        TECHNIQUE_TIMING.HEAVY_LIGHT.extend +
+        TECHNIQUE_TIMING.HEAVY_LIGHT.peak
+    ) // Sweeping motion - 450ms
+    .withKoreanLowGuard() // 하단막기 - Low guard during low sweep (protect groin)
+    .recover(
+      TECHNIQUE_TIMING.HEAVY_LIGHT.retract +
+        TECHNIQUE_TIMING.HEAVY_LIGHT.recover
+    ) // Recover from low position - 350ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -274,7 +318,10 @@ export const LOW_KICK_ANIMATION: SkeletalAnimation =
     .withGuard() // Hands protect
     .lowKickSweep(TECHNIQUE_TIMING.FAST_MEDIUM.extend) // 차기 - 150ms shin sweeps
     .lowKickSweep(TECHNIQUE_TIMING.FAST_MEDIUM.peak) // 정점 - 50ms hold
-    .recover(TECHNIQUE_TIMING.FAST_MEDIUM.retract + TECHNIQUE_TIMING.FAST_MEDIUM.recover) // 복귀 - 300ms
+    .recover(
+      TECHNIQUE_TIMING.FAST_MEDIUM.retract +
+        TECHNIQUE_TIMING.FAST_MEDIUM.recover
+    ) // 복귀 - 300ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -359,9 +406,15 @@ export const SPINNING_HEEL_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinning_heel_kick", "뒤돌려차기")
     .asAttack(TECHNIQUE_TIMING.SPINNING.total)
     .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // 회전 - 300ms begin spin
+    .withKoreanHighGuard() // 상단막기 - High guard during spin
     .spinningHeelKick(TECHNIQUE_TIMING.SPINNING.extend) // 차기 - 350ms heel hooks
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during hook
     .spinningHeelKick(TECHNIQUE_TIMING.SPINNING.peak) // 정점 - 120ms hold
-    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // 복귀 - 430ms complete rotation
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
+    .spinRecover(
+      TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover
+    ) // 복귀 - 430ms complete rotation
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -382,10 +435,15 @@ export const JUMPING_ROUNDHOUSE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jumping_roundhouse", "뛰어돌려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
     .chamber(TECHNIQUE_TIMING.HEAVY.chamber * 0.75) // Jump prep - 150ms (0.75 × 200ms)
+    .withKoreanHighGuard() // 상단막기 - High guard during jump
     .roundhouseChamber(TECHNIQUE_TIMING.HEAVY.chamber) // Chamber in air - 200ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard in air
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY.extend * 0.83) // Strike through - 250ms (0.83 × 300ms)
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during strike
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY.retract * 0.67) // Peak - 100ms (0.67 × 150ms)
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
     .recover(TECHNIQUE_TIMING.HEAVY.recover + 0.07) // Land - 300ms (230ms + 70ms landing adjustment)
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard on landing
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -409,7 +467,10 @@ export const QUESTION_MARK_KICK_ANIMATION: SkeletalAnimation =
     .withHighGuard()
     .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_MEDIUM.extend) // Redirect up - 220ms (includes transition)
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_MEDIUM.peak) // Strike high - 80ms
-    .recover(TECHNIQUE_TIMING.HEAVY_MEDIUM.retract + TECHNIQUE_TIMING.HEAVY_MEDIUM.recover) // Recover - 430ms
+    .recover(
+      TECHNIQUE_TIMING.HEAVY_MEDIUM.retract +
+        TECHNIQUE_TIMING.HEAVY_MEDIUM.recover
+    ) // Recover - 430ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -432,8 +493,14 @@ export const HOOK_KICK_ANIMATION: SkeletalAnimation =
     .sideKickChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // Chamber like side kick - 150ms
     .withHighGuard()
     .sideKickExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5) // Extend past target - 100ms (split extension phase)
-    .crescentKickArc(TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5 + TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // Hook back - 200ms (remaining extend + peak)
-    .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // Recover - 350ms
+    .crescentKickArc(
+      TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5 +
+        TECHNIQUE_TIMING.HEAVY_LIGHT.peak
+    ) // Hook back - 200ms (remaining extend + peak)
+    .recover(
+      TECHNIQUE_TIMING.HEAVY_LIGHT.retract +
+        TECHNIQUE_TIMING.HEAVY_LIGHT.recover
+    ) // Recover - 350ms
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -463,11 +530,17 @@ export const DOUBLE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_kick", "이중차기")
     .asAttack(TECHNIQUE_TIMING.COMBO_HEAVY.total)
     .lowKickChamber(TECHNIQUE_TIMING.COMBO_HEAVY.chamber) // First kick chamber - 120ms
+    .withKoreanMiddleGuard() // 중단막기 - Guard during low kick
     .lowKickSweep(TECHNIQUE_TIMING.COMBO_HEAVY.extend * 0.66) // First kick strikes - 145ms (shortened for speed)
+    .withKoreanMiddleGuard() // 중단막기 - Maintain guard
     .roundhouseChamber(TECHNIQUE_TIMING.COMBO_HEAVY.peak) // Second kick chamber - 80ms (using peak for quick transition)
+    .withKoreanHighGuard() // 상단막기 - High guard for high kick
     .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.extend * 0.66) // Second kick strikes - 145ms (shortened for speed)
+    .withKoreanHighGuard() // 상단막기 - Maintain guard
     .roundhouseExtend(TECHNIQUE_TIMING.COMBO_HEAVY.peak) // Peak - 80ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
     .recover(TECHNIQUE_TIMING.COMBO_HEAVY.recover) // Recover - 380ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -488,9 +561,15 @@ export const SPINNING_BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinning_back_kick", "뒤돌아차기")
     .asAttack(TECHNIQUE_TIMING.SPINNING.total)
     .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // Full spin - 300ms
+    .withKoreanHighGuard() // 상단막기 - High guard during spin
     .backKickThrust(TECHNIQUE_TIMING.SPINNING.extend) // Thrust heel - 350ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard during thrust
     .backKickThrust(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
-    .spinRecover(TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover) // Complete rotation - 430ms
+    .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
+    .spinRecover(
+      TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover
+    ) // Complete rotation - 430ms
+    .withKoreanMiddleGuard() // 중단막기 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
