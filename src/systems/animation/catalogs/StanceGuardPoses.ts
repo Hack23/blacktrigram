@@ -116,7 +116,7 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.4, 1.0, 0.3), // Lead arm EXTENDED FAR FORWARD - reaching
+    shoulder: new THREE.Euler(-0.8, 1.0, 0.3), // Lead arm EXTENDED FAR FORWARD - reaching
     elbow: new THREE.Euler(0, 0, -0.8), // Almost straight - maximum reach
     wrist: new THREE.Euler(0.1, 0.4, 0.2), // Open palm facing down - grappling ready
   },
