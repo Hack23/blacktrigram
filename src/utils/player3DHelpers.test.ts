@@ -2,14 +2,14 @@
  * Unit tests for player3DHelpers utility functions
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { PlayerState } from "../systems";
+import { CombatState, PlayerArchetype, TrigramStance } from "../types/common";
 import {
+  convertPlayerStateToProps,
   getBalanceState,
   getPlayerAnimation,
-  convertPlayerStateToProps,
 } from "./player3DHelpers";
-import type { PlayerState } from "../systems";
-import { PlayerArchetype, TrigramStance, CombatState } from "../types/common";
 
 describe("player3DHelpers", () => {
   describe("getBalanceState", () => {
@@ -100,14 +100,36 @@ describe("player3DHelpers", () => {
       expect(getPlayerAnimation(player)).toBe("defend");
     });
 
-    it("should return 'idle' when in idle state", () => {
+    it("should return stance-specific animation when in idle state", () => {
       const player = { ...basePlayer, combatState: CombatState.IDLE };
-      expect(getPlayerAnimation(player)).toBe("idle");
+      expect(getPlayerAnimation(player)).toBe("stance_geon");
     });
 
-    it("should return 'idle' when in recovering state", () => {
+    it("should return stance-specific animation when in recovering state", () => {
       const player = { ...basePlayer, combatState: CombatState.RECOVERING };
-      expect(getPlayerAnimation(player)).toBe("idle");
+      expect(getPlayerAnimation(player)).toBe("stance_geon");
+    });
+
+    it("should return different animation for different stances", () => {
+      const playerGeon = {
+        ...basePlayer,
+        currentStance: TrigramStance.GEON,
+        combatState: CombatState.IDLE,
+      };
+      const playerTae = {
+        ...basePlayer,
+        currentStance: TrigramStance.TAE,
+        combatState: CombatState.IDLE,
+      };
+      const playerLi = {
+        ...basePlayer,
+        currentStance: TrigramStance.LI,
+        combatState: CombatState.IDLE,
+      };
+
+      expect(getPlayerAnimation(playerGeon)).toBe("stance_geon");
+      expect(getPlayerAnimation(playerTae)).toBe("stance_tae");
+      expect(getPlayerAnimation(playerLi)).toBe("stance_li");
     });
   });
 
@@ -165,7 +187,7 @@ describe("player3DHelpers", () => {
       expect(props.pain).toBe(20);
       expect(props.consciousness).toBe(100);
       expect(props.balance).toBe("SHAKEN"); // 75 -> SHAKEN
-      expect(props.currentAnimation).toBe("idle");
+      expect(props.currentAnimation).toBe("stance_geon"); // Uses stance-specific animation
     });
 
     it("should handle custom position and rotation", () => {
@@ -180,16 +202,11 @@ describe("player3DHelpers", () => {
     });
 
     it("should handle options", () => {
-      const props = convertPlayerStateToProps(
-        basePlayer,
-        [0, 0, 0],
-        0,
-        {
-          isMobile: true,
-          facing: "left",
-          scale: 1.5,
-        }
-      );
+      const props = convertPlayerStateToProps(basePlayer, [0, 0, 0], 0, {
+        isMobile: true,
+        facing: "left",
+        scale: 1.5,
+      });
 
       expect(props.isMobile).toBe(true);
       expect(props.facing).toBe("left");

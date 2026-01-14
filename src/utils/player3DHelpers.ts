@@ -122,8 +122,12 @@ export function getBalanceState(balance: number): BalanceState {
 /**
  * Get current animation state from PlayerState
  *
+ * Returns stance-specific idle animations when player is in idle/recovering state.
+ * This ensures each trigram stance displays the correct guard pose with proper
+ * leg positioning and breathing animation.
+ *
  * @param player - Current player state
- * @returns PlayerAnimation enum value
+ * @returns PlayerAnimation enum value (stance-specific for idle states)
  * @korean 애니메이션상태가져오기
  */
 export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
@@ -140,10 +144,11 @@ export function getPlayerAnimation(player: PlayerState): PlayerAnimation {
     case "stunned":
       return "hit";
     case "recovering":
-      return "idle";
     case "idle":
     default:
-      return "idle";
+      // Use stance-specific idle animation for proper guard pose
+      // This ensures correct leg positioning for each trigram stance
+      return `stance_${player.currentStance}` as PlayerAnimation;
   }
 }
 
