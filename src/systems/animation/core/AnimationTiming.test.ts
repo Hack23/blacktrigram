@@ -14,24 +14,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { TECHNIQUE_TIMING } from "./MartialArtsAnimationBuilder";
-import {
-  BACKFIST_ANIMATION,
-  BODY_SHOT_ANIMATION,
-  CROSS_ANIMATION,
-  DOUBLE_HOOK_ANIMATION,
-  HAMMER_FIST_ANIMATION,
-  HOOK_ANIMATION,
-  JAB_ANIMATION,
-  JAB_CROSS_ANIMATION,
-  LEAD_HOOK_ANIMATION,
-  LEAD_UPPERCUT_ANIMATION,
-  OVERHAND_ANIMATION,
-  PALM_STRIKE_ANIMATION,
-  SPINNING_BACKFIST_ANIMATION,
-  SUPERMAN_PUNCH_ANIMATION,
-  UPPERCUT_ANIMATION,
-} from "./PunchAnimations";
+import { TECHNIQUE_TIMING } from "../builders/MartialArtsAnimationBuilder";
 import {
   AXE_KICK_ANIMATION,
   BACK_KICK_ANIMATION,
@@ -50,7 +33,24 @@ import {
   SPINNING_HEEL_KICK_ANIMATION,
   SWEEP_ANIMATION,
   TORNADO_KICK_ANIMATION,
-} from "./KickAnimations";
+} from "../catalogs/KickAnimations";
+import {
+  BACKFIST_ANIMATION,
+  BODY_SHOT_ANIMATION,
+  CROSS_ANIMATION,
+  DOUBLE_HOOK_ANIMATION,
+  HAMMER_FIST_ANIMATION,
+  HOOK_ANIMATION,
+  JAB_ANIMATION,
+  JAB_CROSS_ANIMATION,
+  LEAD_HOOK_ANIMATION,
+  LEAD_UPPERCUT_ANIMATION,
+  OVERHAND_ANIMATION,
+  PALM_STRIKE_ANIMATION,
+  SPINNING_BACKFIST_ANIMATION,
+  SUPERMAN_PUNCH_ANIMATION,
+  UPPERCUT_ANIMATION,
+} from "../catalogs/PunchAnimations";
 
 describe("Animation Timing Validation", () => {
   describe("TECHNIQUE_TIMING constants", () => {
@@ -134,11 +134,12 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.COMBO_FAST.recover).toBe(0.32);
       expect(TECHNIQUE_TIMING.COMBO_FAST.total).toBe(0.7);
       // Validate sum of phases equals total
-      const sum = TECHNIQUE_TIMING.COMBO_FAST.chamber + 
-                  TECHNIQUE_TIMING.COMBO_FAST.extend + 
-                  TECHNIQUE_TIMING.COMBO_FAST.peak + 
-                  TECHNIQUE_TIMING.COMBO_FAST.retract + 
-                  TECHNIQUE_TIMING.COMBO_FAST.recover;
+      const sum =
+        TECHNIQUE_TIMING.COMBO_FAST.chamber +
+        TECHNIQUE_TIMING.COMBO_FAST.extend +
+        TECHNIQUE_TIMING.COMBO_FAST.peak +
+        TECHNIQUE_TIMING.COMBO_FAST.retract +
+        TECHNIQUE_TIMING.COMBO_FAST.recover;
       expect(sum).toBeCloseTo(TECHNIQUE_TIMING.COMBO_FAST.total, 10);
     });
 
@@ -159,11 +160,12 @@ describe("Animation Timing Validation", () => {
       expect(TECHNIQUE_TIMING.COMBO_HEAVY.recover).toBe(0.38);
       expect(TECHNIQUE_TIMING.COMBO_HEAVY.total).toBe(0.95);
       // Validate sum of phases equals total
-      const sum = TECHNIQUE_TIMING.COMBO_HEAVY.chamber + 
-                  TECHNIQUE_TIMING.COMBO_HEAVY.extend + 
-                  TECHNIQUE_TIMING.COMBO_HEAVY.peak + 
-                  TECHNIQUE_TIMING.COMBO_HEAVY.retract + 
-                  TECHNIQUE_TIMING.COMBO_HEAVY.recover;
+      const sum =
+        TECHNIQUE_TIMING.COMBO_HEAVY.chamber +
+        TECHNIQUE_TIMING.COMBO_HEAVY.extend +
+        TECHNIQUE_TIMING.COMBO_HEAVY.peak +
+        TECHNIQUE_TIMING.COMBO_HEAVY.retract +
+        TECHNIQUE_TIMING.COMBO_HEAVY.recover;
       expect(sum).toBeCloseTo(TECHNIQUE_TIMING.COMBO_HEAVY.total, 10);
     });
 
@@ -241,17 +243,19 @@ describe("Animation Timing Validation", () => {
 
     it("all animations should have minimum 0.5s duration", () => {
       allAnimations.forEach((anim) => {
-        expect(anim.duration, `${anim.name} (${anim.koreanName})`).toBeGreaterThanOrEqual(
-          0.5
-        );
+        expect(
+          anim.duration,
+          `${anim.name} (${anim.koreanName})`
+        ).toBeGreaterThanOrEqual(0.5);
       });
     });
 
     it("all animations should have reasonable maximum duration", () => {
       allAnimations.forEach((anim) => {
-        expect(anim.duration, `${anim.name} (${anim.koreanName})`).toBeLessThanOrEqual(
-          1.5
-        );
+        expect(
+          anim.duration,
+          `${anim.name} (${anim.koreanName})`
+        ).toBeLessThanOrEqual(1.5);
       });
     });
   });
@@ -284,8 +288,14 @@ describe("Animation Timing Validation", () => {
 
     mediumTechniques.forEach(({ anim, name }) => {
       it(`${name} should be in medium range`, () => {
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeGreaterThanOrEqual(0.6);
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeLessThanOrEqual(0.9);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeGreaterThanOrEqual(0.6);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeLessThanOrEqual(0.9);
       });
     });
   });
@@ -312,8 +322,14 @@ describe("Animation Timing Validation", () => {
 
     heavyTechniques.forEach(({ anim, name }) => {
       it(`${name} should be in heavy range`, () => {
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeGreaterThanOrEqual(0.7);
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeLessThanOrEqual(1.1);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeGreaterThanOrEqual(0.7);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeLessThanOrEqual(1.1);
       });
     });
   });
@@ -328,8 +344,14 @@ describe("Animation Timing Validation", () => {
 
     spinningTechniques.forEach(({ anim, name }) => {
       it(`${name} should be in spinning/combo range`, () => {
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeGreaterThanOrEqual(1.0);
-        expect(anim.duration, `${name} (${anim.koreanName})`).toBeLessThanOrEqual(1.3);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeGreaterThanOrEqual(1.0);
+        expect(
+          anim.duration,
+          `${name} (${anim.koreanName})`
+        ).toBeLessThanOrEqual(1.3);
       });
     });
   });
@@ -337,15 +359,18 @@ describe("Animation Timing Validation", () => {
   describe("Animation Keyframe Coverage", () => {
     it("JAB_ANIMATION should have appropriate keyframes", () => {
       expect(JAB_ANIMATION.keyframes.length).toBeGreaterThanOrEqual(4);
-      
+
       // Verify keyframes span animation duration
-      const lastKeyframe = JAB_ANIMATION.keyframes[JAB_ANIMATION.keyframes.length - 1];
+      const lastKeyframe =
+        JAB_ANIMATION.keyframes[JAB_ANIMATION.keyframes.length - 1];
       expect(lastKeyframe.time).toBeCloseTo(JAB_ANIMATION.duration, 1);
     });
 
     it("SPINNING_BACKFIST_ANIMATION should have distinct phases", () => {
-      expect(SPINNING_BACKFIST_ANIMATION.keyframes.length).toBeGreaterThanOrEqual(4);
-      
+      expect(
+        SPINNING_BACKFIST_ANIMATION.keyframes.length
+      ).toBeGreaterThanOrEqual(4);
+
       // Check for chronological order
       for (let i = 1; i < SPINNING_BACKFIST_ANIMATION.keyframes.length; i++) {
         expect(SPINNING_BACKFIST_ANIMATION.keyframes[i].time).toBeGreaterThan(
@@ -358,31 +383,47 @@ describe("Animation Timing Validation", () => {
   describe("Technique Speed Relationship", () => {
     it("fast techniques should be faster than medium techniques", () => {
       expect(JAB_ANIMATION.duration).toBeLessThan(CROSS_ANIMATION.duration);
-      expect(LOW_KICK_ANIMATION.duration).toBeLessThan(ROUNDHOUSE_KICK_ANIMATION.duration);
+      expect(LOW_KICK_ANIMATION.duration).toBeLessThan(
+        ROUNDHOUSE_KICK_ANIMATION.duration
+      );
     });
 
     it("medium techniques should be faster than heavy techniques", () => {
-      expect(CROSS_ANIMATION.duration).toBeLessThan(OVERHAND_ANIMATION.duration);
-      expect(FRONT_KICK_ANIMATION.duration).toBeLessThan(AXE_KICK_ANIMATION.duration);
+      expect(CROSS_ANIMATION.duration).toBeLessThan(
+        OVERHAND_ANIMATION.duration
+      );
+      expect(FRONT_KICK_ANIMATION.duration).toBeLessThan(
+        AXE_KICK_ANIMATION.duration
+      );
     });
 
     it("heavy techniques should be faster than spinning techniques", () => {
-      expect(OVERHAND_ANIMATION.duration).toBeLessThan(SPINNING_BACKFIST_ANIMATION.duration);
-      expect(BACK_KICK_ANIMATION.duration).toBeLessThan(SPINNING_BACK_KICK_ANIMATION.duration);
+      expect(OVERHAND_ANIMATION.duration).toBeLessThan(
+        SPINNING_BACKFIST_ANIMATION.duration
+      );
+      expect(BACK_KICK_ANIMATION.duration).toBeLessThan(
+        SPINNING_BACK_KICK_ANIMATION.duration
+      );
     });
   });
 
   describe("Combo Animation Duration", () => {
     it("JAB_CROSS should be longer than single jab", () => {
-      expect(JAB_CROSS_ANIMATION.duration).toBeGreaterThan(JAB_ANIMATION.duration);
+      expect(JAB_CROSS_ANIMATION.duration).toBeGreaterThan(
+        JAB_ANIMATION.duration
+      );
     });
 
     it("DOUBLE_HOOK should be longer than single hook", () => {
-      expect(DOUBLE_HOOK_ANIMATION.duration).toBeGreaterThan(HOOK_ANIMATION.duration);
+      expect(DOUBLE_HOOK_ANIMATION.duration).toBeGreaterThan(
+        HOOK_ANIMATION.duration
+      );
     });
 
     it("DOUBLE_KICK should be longer than single kick", () => {
-      expect(DOUBLE_KICK_ANIMATION.duration).toBeGreaterThan(FRONT_KICK_ANIMATION.duration);
+      expect(DOUBLE_KICK_ANIMATION.duration).toBeGreaterThan(
+        FRONT_KICK_ANIMATION.duration
+      );
     });
   });
 
@@ -420,23 +461,36 @@ describe("Animation Timing Validation", () => {
     it("JAB_CROSS_ANIMATION phases should match declared duration", () => {
       // JAB_CROSS uses COMBO_FAST.total (700ms)
       // Phases: chamber(80) + extend(120) + peak(80) + retract(100) + recover(320) = 700ms
-      expect(JAB_CROSS_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.COMBO_FAST.total, 2);
+      expect(JAB_CROSS_ANIMATION.duration).toBeCloseTo(
+        TECHNIQUE_TIMING.COMBO_FAST.total,
+        2
+      );
     });
 
     it("DOUBLE_HOOK_ANIMATION phases should match declared duration", () => {
       // DOUBLE_HOOK uses HEAVY.total (1000ms)
       // Phases should sum to 1000ms
-      expect(DOUBLE_HOOK_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.HEAVY.total, 2);
-      
+      expect(DOUBLE_HOOK_ANIMATION.duration).toBeCloseTo(
+        TECHNIQUE_TIMING.HEAVY.total,
+        2
+      );
+
       // Verify that keyframes don't extend beyond declared duration
-      const lastKeyframeTime = Math.max(...DOUBLE_HOOK_ANIMATION.keyframes.map(kf => kf.time));
-      expect(lastKeyframeTime).toBeLessThanOrEqual(DOUBLE_HOOK_ANIMATION.duration);
+      const lastKeyframeTime = Math.max(
+        ...DOUBLE_HOOK_ANIMATION.keyframes.map((kf) => kf.time)
+      );
+      expect(lastKeyframeTime).toBeLessThanOrEqual(
+        DOUBLE_HOOK_ANIMATION.duration
+      );
     });
 
     it("DOUBLE_KICK_ANIMATION phases should match declared duration", () => {
       // DOUBLE_KICK uses COMBO_HEAVY.total (950ms)
       // Phases should sum to 950ms
-      expect(DOUBLE_KICK_ANIMATION.duration).toBeCloseTo(TECHNIQUE_TIMING.COMBO_HEAVY.total, 2);
+      expect(DOUBLE_KICK_ANIMATION.duration).toBeCloseTo(
+        TECHNIQUE_TIMING.COMBO_HEAVY.total,
+        2
+      );
     });
   });
 });

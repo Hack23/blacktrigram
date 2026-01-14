@@ -1,29 +1,35 @@
 /**
  * Tests for Enhanced Attack Animations with Recovery Phases
- * 
+ *
  * Validates Korean martial arts recovery principles applied to actual techniques.
- * 
+ *
  * @category Tests
  * @korean 향상된공격애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { validateRecoveryPhase } from "../core/RecoveryPhaseEnhancer";
 import {
-  JAB_ANIMATION_ENHANCED,
+  CROSS_ANIMATION,
+  FRONT_KICK_ANIMATION,
+  JAB_ANIMATION,
+} from "./AttackAnimations";
+import {
   CROSS_ANIMATION_ENHANCED,
-  FRONT_KICK_ANIMATION_ENHANCED,
-  ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
   ENHANCED_ANIMATIONS,
+  FRONT_KICK_ANIMATION_ENHANCED,
+  JAB_ANIMATION_ENHANCED,
   RECOVERY_PRESETS,
+  ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
   applyRecoveryPreset,
 } from "./EnhancedAttackAnimations";
-import { JAB_ANIMATION, CROSS_ANIMATION, FRONT_KICK_ANIMATION } from "./AttackAnimations";
-import { validateRecoveryPhase } from "./RecoveryPhaseEnhancer";
 
 describe("EnhancedAttackAnimations", () => {
   describe("JAB_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
-      expect(JAB_ANIMATION_ENHANCED.duration).toBeGreaterThan(JAB_ANIMATION.duration);
+      expect(JAB_ANIMATION_ENHANCED.duration).toBeGreaterThan(
+        JAB_ANIMATION.duration
+      );
     });
 
     it("should add 2 recovery keyframes to base animation", () => {
@@ -51,10 +57,11 @@ describe("EnhancedAttackAnimations", () => {
     });
 
     it("should return to neutral in final keyframe", () => {
-      const finalFrame = JAB_ANIMATION_ENHANCED.keyframes[
-        JAB_ANIMATION_ENHANCED.keyframes.length - 1
-      ];
-      
+      const finalFrame =
+        JAB_ANIMATION_ENHANCED.keyframes[
+          JAB_ANIMATION_ENHANCED.keyframes.length - 1
+        ];
+
       finalFrame.boneRotations.forEach((rotation) => {
         expect(Math.abs(rotation.x)).toBeLessThan(0.01);
         expect(Math.abs(rotation.y)).toBeLessThan(0.01);
@@ -65,7 +72,9 @@ describe("EnhancedAttackAnimations", () => {
 
   describe("CROSS_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
-      expect(CROSS_ANIMATION_ENHANCED.duration).toBeGreaterThan(CROSS_ANIMATION.duration);
+      expect(CROSS_ANIMATION_ENHANCED.duration).toBeGreaterThan(
+        CROSS_ANIMATION.duration
+      );
     });
 
     it("should add 2 recovery keyframes", () => {
@@ -94,7 +103,9 @@ describe("EnhancedAttackAnimations", () => {
 
   describe("FRONT_KICK_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
-      expect(FRONT_KICK_ANIMATION_ENHANCED.duration).toBeGreaterThan(FRONT_KICK_ANIMATION.duration);
+      expect(FRONT_KICK_ANIMATION_ENHANCED.duration).toBeGreaterThan(
+        FRONT_KICK_ANIMATION.duration
+      );
     });
 
     it("should add 2 recovery keyframes", () => {
@@ -151,8 +162,12 @@ describe("EnhancedAttackAnimations", () => {
     });
 
     it("should provide enhanced versions of animations", () => {
-      expect(ENHANCED_ANIMATIONS.jab.duration).toBeGreaterThan(JAB_ANIMATION.duration);
-      expect(ENHANCED_ANIMATIONS.cross.duration).toBeGreaterThan(CROSS_ANIMATION.duration);
+      expect(ENHANCED_ANIMATIONS.jab.duration).toBeGreaterThan(
+        JAB_ANIMATION.duration
+      );
+      expect(ENHANCED_ANIMATIONS.cross.duration).toBeGreaterThan(
+        CROSS_ANIMATION.duration
+      );
     });
 
     it("should all have valid recovery phases", () => {
@@ -188,7 +203,9 @@ describe("EnhancedAttackAnimations", () => {
     });
 
     it("should have combo recovery with fastest duration", () => {
-      expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(RECOVERY_PRESETS.fast.duration);
+      expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(
+        RECOVERY_PRESETS.fast.duration
+      );
       expect(RECOVERY_PRESETS.combo.finalMuscleTension).toBe(0.03); // Very low
     });
 
@@ -198,9 +215,15 @@ describe("EnhancedAttackAnimations", () => {
     });
 
     it("should have progressively longer durations", () => {
-      expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(RECOVERY_PRESETS.fast.duration);
-      expect(RECOVERY_PRESETS.fast.duration).toBeLessThan(RECOVERY_PRESETS.power.duration);
-      expect(RECOVERY_PRESETS.power.duration).toBeLessThan(RECOVERY_PRESETS.finishing.duration);
+      expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(
+        RECOVERY_PRESETS.fast.duration
+      );
+      expect(RECOVERY_PRESETS.fast.duration).toBeLessThan(
+        RECOVERY_PRESETS.power.duration
+      );
+      expect(RECOVERY_PRESETS.power.duration).toBeLessThan(
+        RECOVERY_PRESETS.finishing.duration
+      );
     });
   });
 
@@ -208,7 +231,7 @@ describe("EnhancedAttackAnimations", () => {
     it("should apply fast preset correctly", () => {
       const enhanced = applyRecoveryPreset(JAB_ANIMATION, "fast");
       const result = validateRecoveryPhase(enhanced);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.recoveryDuration).toBeCloseTo(190, 5);
     });
@@ -216,7 +239,7 @@ describe("EnhancedAttackAnimations", () => {
     it("should apply power preset correctly", () => {
       const enhanced = applyRecoveryPreset(CROSS_ANIMATION, "power");
       const result = validateRecoveryPhase(enhanced);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.recoveryDuration).toBeCloseTo(220, 5);
     });
@@ -224,7 +247,7 @@ describe("EnhancedAttackAnimations", () => {
     it("should apply kick preset correctly", () => {
       const enhanced = applyRecoveryPreset(FRONT_KICK_ANIMATION, "kick");
       const result = validateRecoveryPhase(enhanced);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.recoveryDuration).toBeCloseTo(180, 5);
     });
@@ -232,7 +255,7 @@ describe("EnhancedAttackAnimations", () => {
     it("should apply combo preset for fastest recovery", () => {
       const enhanced = applyRecoveryPreset(JAB_ANIMATION, "combo");
       const result = validateRecoveryPhase(enhanced);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.recoveryDuration).toBeCloseTo(160, 5);
     });
@@ -240,26 +263,28 @@ describe("EnhancedAttackAnimations", () => {
     it("should apply finishing preset for longest recovery", () => {
       const enhanced = applyRecoveryPreset(CROSS_ANIMATION, "finishing");
       const result = validateRecoveryPhase(enhanced);
-      
+
       expect(result.isValid).toBe(true);
       expect(result.recoveryDuration).toBeCloseTo(250, 5);
     });
 
     it("should preserve original animation properties", () => {
       const enhanced = applyRecoveryPreset(JAB_ANIMATION, "fast");
-      
+
       expect(enhanced.name).toBe(JAB_ANIMATION.name);
       expect(enhanced.koreanName).toBe(JAB_ANIMATION.koreanName);
       expect(enhanced.type).toBe(JAB_ANIMATION.type);
     });
 
     it("should return to neutral position in all presets", () => {
-      const presetNames = Object.keys(RECOVERY_PRESETS) as Array<keyof typeof RECOVERY_PRESETS>;
-      
+      const presetNames = Object.keys(RECOVERY_PRESETS) as Array<
+        keyof typeof RECOVERY_PRESETS
+      >;
+
       presetNames.forEach((presetName) => {
         const enhanced = applyRecoveryPreset(JAB_ANIMATION, presetName);
         const finalFrame = enhanced.keyframes[enhanced.keyframes.length - 1];
-        
+
         finalFrame.boneRotations.forEach((rotation) => {
           expect(Math.abs(rotation.x)).toBeLessThan(0.01);
           expect(Math.abs(rotation.y)).toBeLessThan(0.01);
@@ -289,13 +314,15 @@ describe("EnhancedAttackAnimations", () => {
       // Jab (fast technique) should have faster recovery than cross (power technique)
       const jabResult = validateRecoveryPhase(JAB_ANIMATION_ENHANCED);
       const crossResult = validateRecoveryPhase(CROSS_ANIMATION_ENHANCED);
-      
-      expect(jabResult.recoveryDuration).toBeLessThan(crossResult.recoveryDuration);
+
+      expect(jabResult.recoveryDuration).toBeLessThan(
+        crossResult.recoveryDuration
+      );
     });
 
     it("should have all recovery durations within 150-250ms range", () => {
       const animations = Object.values(ENHANCED_ANIMATIONS);
-      
+
       animations.forEach((anim) => {
         const result = validateRecoveryPhase(anim);
         expect(result.recoveryDuration).toBeGreaterThanOrEqual(150);
@@ -305,10 +332,10 @@ describe("EnhancedAttackAnimations", () => {
 
     it("should return all enhanced animations to neutral stance", () => {
       const animations = Object.values(ENHANCED_ANIMATIONS);
-      
+
       animations.forEach((anim) => {
         const finalFrame = anim.keyframes[anim.keyframes.length - 1];
-        
+
         finalFrame.boneRotations.forEach((rotation) => {
           expect(Math.abs(rotation.x)).toBeLessThan(0.01);
           expect(Math.abs(rotation.y)).toBeLessThan(0.01);
@@ -321,31 +348,31 @@ describe("EnhancedAttackAnimations", () => {
   describe("Performance Requirements", () => {
     it("should maintain 60fps with enhanced animations", () => {
       const startTime = performance.now();
-      
+
       // Process 1000 enhanced animations
       for (let i = 0; i < 1000; i++) {
         const anim = Object.values(ENHANCED_ANIMATIONS)[i % 4];
         validateRecoveryPhase(anim);
       }
-      
+
       const endTime = performance.now();
       const avgTime = (endTime - startTime) / 1000;
-      
+
       // Should process well under 1ms per animation for 60fps
       expect(avgTime).toBeLessThan(1.0);
     });
 
     it("should apply presets efficiently", () => {
       const startTime = performance.now();
-      
+
       // Apply 1000 presets
       for (let i = 0; i < 1000; i++) {
         applyRecoveryPreset(JAB_ANIMATION, "fast");
       }
-      
+
       const endTime = performance.now();
       const avgTime = (endTime - startTime) / 1000;
-      
+
       expect(avgTime).toBeLessThan(1.0);
     });
   });

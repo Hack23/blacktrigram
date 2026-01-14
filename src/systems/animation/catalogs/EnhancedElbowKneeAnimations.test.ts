@@ -1,25 +1,25 @@
 /**
  * Tests for Enhanced Elbow and Knee Animations with Recovery Phases
- * 
+ *
  * Validates Korean martial arts recovery principles for close-range techniques.
- * 
+ *
  * @category Tests
  * @korean 향상된팔꿈치무릎애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
-import {
-  ELBOW_STRIKE_ANIMATION_ENHANCED,
-  ELBOW_UPPERCUT_ANIMATION_ENHANCED,
-  KNEE_STRIKE_ANIMATION_ENHANCED,
-  ENHANCED_ELBOW_KNEE_ANIMATIONS,
-} from "./EnhancedElbowKneeAnimations";
+import { describe, expect, it } from "vitest";
+import { validateRecoveryPhase } from "../core/RecoveryPhaseEnhancer";
 import {
   ELBOW_STRIKE_ANIMATION,
   ELBOW_UPPERCUT_ANIMATION,
   KNEE_STRIKE_ANIMATION,
 } from "./ElbowKneeAnimations";
-import { validateRecoveryPhase } from "./RecoveryPhaseEnhancer";
+import {
+  ELBOW_STRIKE_ANIMATION_ENHANCED,
+  ELBOW_UPPERCUT_ANIMATION_ENHANCED,
+  ENHANCED_ELBOW_KNEE_ANIMATIONS,
+  KNEE_STRIKE_ANIMATION_ENHANCED,
+} from "./EnhancedElbowKneeAnimations";
 
 describe("EnhancedElbowKneeAnimations", () => {
   describe("ELBOW_STRIKE_ANIMATION_ENHANCED", () => {
@@ -54,9 +54,10 @@ describe("EnhancedElbowKneeAnimations", () => {
     });
 
     it("should return to neutral position", () => {
-      const finalFrame = ELBOW_STRIKE_ANIMATION_ENHANCED.keyframes[
-        ELBOW_STRIKE_ANIMATION_ENHANCED.keyframes.length - 1
-      ];
+      const finalFrame =
+        ELBOW_STRIKE_ANIMATION_ENHANCED.keyframes[
+          ELBOW_STRIKE_ANIMATION_ENHANCED.keyframes.length - 1
+        ];
 
       finalFrame.boneRotations.forEach((rotation) => {
         expect(Math.abs(rotation.x)).toBeLessThan(0.01);
@@ -91,7 +92,9 @@ describe("EnhancedElbowKneeAnimations", () => {
 
     it("should preserve animation identity", () => {
       expect(ELBOW_UPPERCUT_ANIMATION_ENHANCED.name).toBe("elbow_uppercut");
-      expect(ELBOW_UPPERCUT_ANIMATION_ENHANCED.koreanName).toBe("팔꿈치올려치기");
+      expect(ELBOW_UPPERCUT_ANIMATION_ENHANCED.koreanName).toBe(
+        "팔꿈치올려치기"
+      );
     });
   });
 
@@ -124,9 +127,10 @@ describe("EnhancedElbowKneeAnimations", () => {
     });
 
     it("should return to neutral position", () => {
-      const finalFrame = KNEE_STRIKE_ANIMATION_ENHANCED.keyframes[
-        KNEE_STRIKE_ANIMATION_ENHANCED.keyframes.length - 1
-      ];
+      const finalFrame =
+        KNEE_STRIKE_ANIMATION_ENHANCED.keyframes[
+          KNEE_STRIKE_ANIMATION_ENHANCED.keyframes.length - 1
+        ];
 
       finalFrame.boneRotations.forEach((rotation) => {
         expect(Math.abs(rotation.x)).toBeLessThan(0.01);
@@ -144,15 +148,15 @@ describe("EnhancedElbowKneeAnimations", () => {
     });
 
     it("should provide enhanced versions", () => {
-      expect(ENHANCED_ELBOW_KNEE_ANIMATIONS.elbow_strike.duration).toBeGreaterThan(
-        ELBOW_STRIKE_ANIMATION.duration
-      );
-      expect(ENHANCED_ELBOW_KNEE_ANIMATIONS.elbow_uppercut.duration).toBeGreaterThan(
-        ELBOW_UPPERCUT_ANIMATION.duration
-      );
-      expect(ENHANCED_ELBOW_KNEE_ANIMATIONS.knee_strike.duration).toBeGreaterThan(
-        KNEE_STRIKE_ANIMATION.duration
-      );
+      expect(
+        ENHANCED_ELBOW_KNEE_ANIMATIONS.elbow_strike.duration
+      ).toBeGreaterThan(ELBOW_STRIKE_ANIMATION.duration);
+      expect(
+        ENHANCED_ELBOW_KNEE_ANIMATIONS.elbow_uppercut.duration
+      ).toBeGreaterThan(ELBOW_UPPERCUT_ANIMATION.duration);
+      expect(
+        ENHANCED_ELBOW_KNEE_ANIMATIONS.knee_strike.duration
+      ).toBeGreaterThan(KNEE_STRIKE_ANIMATION.duration);
     });
 
     it("should all have valid recovery phases", () => {
@@ -165,8 +169,12 @@ describe("EnhancedElbowKneeAnimations", () => {
 
   describe("Close-Range Combat Principles", () => {
     it("should have faster recovery than standard strikes", () => {
-      const elbowResult = validateRecoveryPhase(ELBOW_STRIKE_ANIMATION_ENHANCED);
-      const elbowUppercutResult = validateRecoveryPhase(ELBOW_UPPERCUT_ANIMATION_ENHANCED);
+      const elbowResult = validateRecoveryPhase(
+        ELBOW_STRIKE_ANIMATION_ENHANCED
+      );
+      const elbowUppercutResult = validateRecoveryPhase(
+        ELBOW_UPPERCUT_ANIMATION_ENHANCED
+      );
 
       // Close-range techniques should have <170ms recovery
       expect(elbowResult.recoveryDuration).toBeLessThan(170);
@@ -175,7 +183,7 @@ describe("EnhancedElbowKneeAnimations", () => {
 
     it("should have complete balance restoration for knee strike", () => {
       const result = validateRecoveryPhase(KNEE_STRIKE_ANIMATION_ENHANCED);
-      
+
       // Knee strike needs longer recovery for balance (single-leg position)
       expect(result.recoveryDuration).toBeGreaterThan(180);
       expect(result.recoveryDuration).toBeLessThan(200);

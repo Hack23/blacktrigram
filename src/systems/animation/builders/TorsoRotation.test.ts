@@ -10,22 +10,20 @@
  * - Sequential spine rotation (lower → mid → upper)
  */
 
+import { BoneName } from "@/types/skeletal";
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
+import { ROUNDHOUSE_KICK_ANIMATION } from "../catalogs/KickAnimations";
 import {
-  TORSO_CONSTRAINTS,
-  calculateTorsoRotation,
-  calculateHipRotationPowerModifier,
-} from "./SkeletonRig";
-import {
-  JAB_ANIMATION,
   CROSS_ANIMATION,
   HOOK_ANIMATION,
-} from "./PunchAnimations";
+  JAB_ANIMATION,
+} from "../catalogs/PunchAnimations";
 import {
-  ROUNDHOUSE_KICK_ANIMATION,
-} from "./KickAnimations";
-import { BoneName } from "@/types/skeletal";
+  TORSO_CONSTRAINTS,
+  calculateHipRotationPowerModifier,
+  calculateTorsoRotation,
+} from "./SkeletonRig";
 
 describe("TorsoRotationSystem", () => {
   describe("TORSO_CONSTRAINTS", () => {
@@ -36,7 +34,7 @@ describe("TorsoRotationSystem", () => {
     });
 
     it("should define power modifier range for hip rotation", () => {
-      expect(TORSO_CONSTRAINTS.POWER_MODIFIER_RANGE).toEqual([0.10, 0.30]);
+      expect(TORSO_CONSTRAINTS.POWER_MODIFIER_RANGE).toEqual([0.1, 0.3]);
     });
   });
 
@@ -87,7 +85,9 @@ describe("TorsoRotationSystem", () => {
       );
 
       // Should be clamped to max rotation (±90°)
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
     });
 
     it("should clamp rotation to minimum -90° (anatomical constraint)", () => {
@@ -104,7 +104,9 @@ describe("TorsoRotationSystem", () => {
       );
 
       // Should be clamped to min/max rotation (±90°)
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
     });
 
     it("should calculate rotation relative to hip direction, not world", () => {
@@ -123,7 +125,9 @@ describe("TorsoRotationSystem", () => {
       // Torso rotation should be 45° to the right
       expect(torsoRot).toBeGreaterThan(0);
       expect(torsoRot).toBeCloseTo(Math.PI / 4, 5); // ~45°
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
     });
 
     it("should handle negative hip rotations correctly", () => {
@@ -140,7 +144,9 @@ describe("TorsoRotationSystem", () => {
       );
 
       // Should still be within constraints
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
       // With hips at -45° and opponent at 0°, torso should rotate +45° to face them
       expect(torsoRot).toBeCloseTo(Math.PI / 4, 5);
     });
@@ -160,7 +166,9 @@ describe("TorsoRotationSystem", () => {
 
       // Should return valid number (not NaN)
       expect(torsoRot).not.toBeNaN();
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
     });
   });
 
@@ -172,12 +180,18 @@ describe("TorsoRotationSystem", () => {
       });
 
       it("should return 1.30 modifier with full 90° rotation", () => {
-        const modifier = calculateHipRotationPowerModifier(Math.PI / 2, "strike");
-        expect(modifier).toBeCloseTo(1.30, 5); // Maximum 30% bonus for strikes
+        const modifier = calculateHipRotationPowerModifier(
+          Math.PI / 2,
+          "strike"
+        );
+        expect(modifier).toBeCloseTo(1.3, 5); // Maximum 30% bonus for strikes
       });
 
       it("should return 1.15 modifier with half rotation (45°)", () => {
-        const modifier = calculateHipRotationPowerModifier(Math.PI / 4, "strike");
+        const modifier = calculateHipRotationPowerModifier(
+          Math.PI / 4,
+          "strike"
+        );
         expect(modifier).toBeCloseTo(1.15, 2); // Half rotation = half bonus
       });
 
@@ -201,8 +215,11 @@ describe("TorsoRotationSystem", () => {
       });
 
       it("should return 1.10 modifier with full 90° rotation", () => {
-        const modifier = calculateHipRotationPowerModifier(Math.PI / 2, "throw");
-        expect(modifier).toBeCloseTo(1.10, 5); // Maximum 10% bonus for throws
+        const modifier = calculateHipRotationPowerModifier(
+          Math.PI / 2,
+          "throw"
+        );
+        expect(modifier).toBeCloseTo(1.1, 5); // Maximum 10% bonus for throws
       });
 
       it("should return lower modifier than strikes at same rotation", () => {
@@ -225,8 +242,11 @@ describe("TorsoRotationSystem", () => {
       });
 
       it("should return 1.10 modifier with full 90° rotation", () => {
-        const modifier = calculateHipRotationPowerModifier(Math.PI / 2, "joint");
-        expect(modifier).toBeCloseTo(1.10, 5); // Maximum 10% bonus for joints
+        const modifier = calculateHipRotationPowerModifier(
+          Math.PI / 2,
+          "joint"
+        );
+        expect(modifier).toBeCloseTo(1.1, 5); // Maximum 10% bonus for joints
       });
 
       it("should return same modifier as throws at same rotation", () => {
@@ -261,9 +281,12 @@ describe("TorsoRotationSystem", () => {
 
         techniques.forEach((technique) => {
           rotations.forEach((rotation) => {
-            const modifier = calculateHipRotationPowerModifier(rotation, technique);
+            const modifier = calculateHipRotationPowerModifier(
+              rotation,
+              technique
+            );
             expect(modifier).toBeGreaterThanOrEqual(1.0);
-            expect(modifier).toBeLessThanOrEqual(1.30);
+            expect(modifier).toBeLessThanOrEqual(1.3);
           });
         });
       });
@@ -293,9 +316,11 @@ describe("TorsoRotationSystem", () => {
       );
 
       // Verify both calculations work together
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
       expect(powerModifier).toBeGreaterThanOrEqual(1.0);
-      expect(powerModifier).toBeLessThanOrEqual(1.30);
+      expect(powerModifier).toBeLessThanOrEqual(1.3);
     });
 
     it("should demonstrate realistic combat scenario: lateral strike", () => {
@@ -317,8 +342,10 @@ describe("TorsoRotationSystem", () => {
       );
 
       // Torso should rotate to face opponent within anatomical limits
-      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(TORSO_CONSTRAINTS.MAX_ROTATION);
-      
+      expect(Math.abs(torsoRot)).toBeLessThanOrEqual(
+        TORSO_CONSTRAINTS.MAX_ROTATION
+      );
+
       // Power modifier should be applied based on torso rotation
       expect(powerModifier).toBeGreaterThan(1.0); // Some rotation = some bonus
     });
@@ -328,7 +355,7 @@ describe("TorsoRotationSystem", () => {
     it("should complete rotation within target 200ms timeframe", () => {
       // This is a functional test - actual timing would be tested in integration
       expect(TORSO_CONSTRAINTS.INTERPOLATION_TIME).toBe(0.2);
-      
+
       // Verify the interpolation time is appropriate for 60fps
       const framesAt60fps = TORSO_CONSTRAINTS.INTERPOLATION_TIME * 60;
       expect(framesAt60fps).toBe(12); // 12 frames at 60fps
@@ -346,24 +373,36 @@ describe("TorsoRotationSystem", () => {
     describe("Straight Punch Torso Rotation", () => {
       it("should have torso rotation in jab extension phase", () => {
         const jab = JAB_ANIMATION;
-        
+
         // Find extension keyframe (should be at 0.25s after chamber at 0.10s)
-        const extensionFrame = jab.keyframes.find(kf => 
-          kf.time >= 0.20 && kf.time <= 0.30
+        const extensionFrame = jab.keyframes.find(
+          (kf) => kf.time >= 0.2 && kf.time <= 0.3
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
+
         // Check that spine bones are rotated
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
-        
-        const spineLower = extensionFrame.boneRotations.get(BoneName.SPINE_LOWER);
-        const spineMid = extensionFrame.boneRotations.get(BoneName.SPINE_MIDDLE);
-        const spineUpper = extensionFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
+          true
+        );
+
+        const spineLower = extensionFrame.boneRotations.get(
+          BoneName.SPINE_LOWER
+        );
+        const spineMid = extensionFrame.boneRotations.get(
+          BoneName.SPINE_MIDDLE
+        );
+        const spineUpper = extensionFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         // Spine should have Y-axis rotation (counter-rotation for power)
         if (spineLower && spineMid && spineUpper) {
           expect(Math.abs(spineLower.y)).toBeGreaterThan(0);
@@ -374,42 +413,54 @@ describe("TorsoRotationSystem", () => {
 
       it("should have torso rotation in cross extension phase", () => {
         const cross = CROSS_ANIMATION;
-        
+
         // Find extension keyframe (should be after chamber, around 0.35s)
-        const extensionFrame = cross.keyframes.find(kf => 
-          kf.time >= 0.30 && kf.time <= 0.45
+        const extensionFrame = cross.keyframes.find(
+          (kf) => kf.time >= 0.3 && kf.time <= 0.45
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
+
         // Cross should have spine rotation
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
+          true
+        );
       });
 
       it("should have sequential spine rotation (lower < mid < upper)", () => {
         const cross = CROSS_ANIMATION;
-        
+
         // Find extension keyframe (should be after chamber, around 0.35s)
-        const extensionFrame = cross.keyframes.find(kf => 
-          kf.time >= 0.30 && kf.time <= 0.45
+        const extensionFrame = cross.keyframes.find(
+          (kf) => kf.time >= 0.3 && kf.time <= 0.45
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
-        const spineLower = extensionFrame.boneRotations.get(BoneName.SPINE_LOWER);
-        const spineMid = extensionFrame.boneRotations.get(BoneName.SPINE_MIDDLE);
-        const spineUpper = extensionFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+
+        const spineLower = extensionFrame.boneRotations.get(
+          BoneName.SPINE_LOWER
+        );
+        const spineMid = extensionFrame.boneRotations.get(
+          BoneName.SPINE_MIDDLE
+        );
+        const spineUpper = extensionFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         // Sequential rotation: lower rotates least, upper rotates most
         if (spineLower && spineMid && spineUpper) {
           const lowerAbs = Math.abs(spineLower.y);
           const midAbs = Math.abs(spineMid.y);
           const upperAbs = Math.abs(spineUpper.y);
-          
+
           // Lower should rotate strictly less than mid
           expect(lowerAbs).toBeLessThan(midAbs);
           // Mid should rotate strictly less than upper
@@ -421,22 +472,30 @@ describe("TorsoRotationSystem", () => {
     describe("Hook Punch Torso Rotation", () => {
       it("should have circular torso rotation in hook extension", () => {
         const hook = HOOK_ANIMATION;
-        
+
         // Find extension keyframe (hook punch at ~0.20-0.35s range)
-        const extensionFrame = hook.keyframes.find(kf => 
-          kf.time >= 0.20 && kf.time <= 0.40
+        const extensionFrame = hook.keyframes.find(
+          (kf) => kf.time >= 0.2 && kf.time <= 0.4
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
+
         // Hook should have all spine bones rotated
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
-        
-        const spineUpper = extensionFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
+          true
+        );
+
+        const spineUpper = extensionFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         // Hook should have larger rotation than straight punch (45-60° range)
         if (spineUpper) {
           const rotationDegrees = Math.abs(spineUpper.y) * (180 / Math.PI);
@@ -447,23 +506,29 @@ describe("TorsoRotationSystem", () => {
 
       it("should have sequential spine rotation in hooks", () => {
         const hook = HOOK_ANIMATION;
-        
-        const extensionFrame = hook.keyframes.find(kf => 
-          kf.time >= 0.20 && kf.time <= 0.40
+
+        const extensionFrame = hook.keyframes.find(
+          (kf) => kf.time >= 0.2 && kf.time <= 0.4
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
-        const spineLower = extensionFrame.boneRotations.get(BoneName.SPINE_LOWER);
-        const spineMid = extensionFrame.boneRotations.get(BoneName.SPINE_MIDDLE);
-        const spineUpper = extensionFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+
+        const spineLower = extensionFrame.boneRotations.get(
+          BoneName.SPINE_LOWER
+        );
+        const spineMid = extensionFrame.boneRotations.get(
+          BoneName.SPINE_MIDDLE
+        );
+        const spineUpper = extensionFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         // All spine bones should be present and rotating
         expect(spineLower).toBeDefined();
         expect(spineMid).toBeDefined();
         expect(spineUpper).toBeDefined();
-        
+
         if (spineLower && spineMid && spineUpper) {
           // Should have Y-axis rotation for circular motion
           expect(Math.abs(spineLower.y)).toBeGreaterThan(0);
@@ -476,28 +541,40 @@ describe("TorsoRotationSystem", () => {
     describe("Kick Torso Lean", () => {
       it("should have compensatory torso lean in roundhouse kick", () => {
         const roundhouse = ROUNDHOUSE_KICK_ANIMATION;
-        
+
         // Find extension keyframe (kick fully extended)
-        const extensionFrame = roundhouse.keyframes.find(kf => 
-          kf.time >= 0.30 && kf.time <= 0.50
+        const extensionFrame = roundhouse.keyframes.find(
+          (kf) => kf.time >= 0.3 && kf.time <= 0.5
         );
-        
+
         expect(extensionFrame).toBeDefined();
         if (!extensionFrame) return;
-        
+
         // Should have spine rotation (lean on Z-axis)
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
-        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(true);
-        
-        const spineLower = extensionFrame.boneRotations.get(BoneName.SPINE_LOWER);
-        const spineMid = extensionFrame.boneRotations.get(BoneName.SPINE_MIDDLE);
-        const spineUpper = extensionFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
+          true
+        );
+        expect(extensionFrame.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
+          true
+        );
+
+        const spineLower = extensionFrame.boneRotations.get(
+          BoneName.SPINE_LOWER
+        );
+        const spineMid = extensionFrame.boneRotations.get(
+          BoneName.SPINE_MIDDLE
+        );
+        const spineUpper = extensionFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         // Should have Z-axis rotation for lateral lean
         if (spineLower && spineMid && spineUpper) {
           // At least one spine bone should have Z rotation for balance
-          const hasZRotation = 
+          const hasZRotation =
             Math.abs(spineLower.z) > 0.01 ||
             Math.abs(spineMid.z) > 0.01 ||
             Math.abs(spineUpper.z) > 0.01;
@@ -507,15 +584,15 @@ describe("TorsoRotationSystem", () => {
 
       it("should have spine rotation synchronized with kick extension", () => {
         const roundhouse = ROUNDHOUSE_KICK_ANIMATION;
-        
+
         // Check that spine rotation exists at the peak of kick
-        const peakFrame = roundhouse.keyframes.find(kf => 
-          kf.time >= 0.40 && kf.time <= 0.55
+        const peakFrame = roundhouse.keyframes.find(
+          (kf) => kf.time >= 0.4 && kf.time <= 0.55
         );
-        
+
         expect(peakFrame).toBeDefined();
         if (!peakFrame) return;
-        
+
         // Peak should maintain spine rotation for balance
         expect(peakFrame.boneRotations.has(BoneName.SPINE_LOWER)).toBe(true);
         expect(peakFrame.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(true);
@@ -526,17 +603,21 @@ describe("TorsoRotationSystem", () => {
     describe("Torso Recovery", () => {
       it("should reset torso rotation during recovery phase", () => {
         const jab = JAB_ANIMATION;
-        
+
         // Find recovery keyframe (last keyframe)
         const recoveryFrame = jab.keyframes[jab.keyframes.length - 1];
-        
+
         expect(recoveryFrame).toBeDefined();
-        
+
         // Recovery should reset spine to neutral or near-neutral
-        const spineLower = recoveryFrame.boneRotations.get(BoneName.SPINE_LOWER);
+        const spineLower = recoveryFrame.boneRotations.get(
+          BoneName.SPINE_LOWER
+        );
         const spineMid = recoveryFrame.boneRotations.get(BoneName.SPINE_MIDDLE);
-        const spineUpper = recoveryFrame.boneRotations.get(BoneName.SPINE_UPPER);
-        
+        const spineUpper = recoveryFrame.boneRotations.get(
+          BoneName.SPINE_UPPER
+        );
+
         if (spineLower && spineMid && spineUpper) {
           // Should be close to neutral (allowing for small guard adjustments)
           expect(Math.abs(spineLower.y)).toBeLessThan(0.2); // ~11°

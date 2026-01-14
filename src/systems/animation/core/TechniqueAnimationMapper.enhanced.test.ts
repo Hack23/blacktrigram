@@ -9,7 +9,7 @@
 
 import { TrigramStance } from "@/types";
 import { beforeEach, describe, expect, it } from "vitest";
-import { BodyPart } from "../bodypart/types";
+import { BodyPart } from "../../bodypart/types";
 import {
   TechniqueAnimationMapper,
   techniqueAnimationMapper,

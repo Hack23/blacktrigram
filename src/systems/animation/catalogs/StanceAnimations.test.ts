@@ -13,7 +13,7 @@
 import { BoneName } from "@/types/skeletal";
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { KOREAN_STANCE_BIOMECHANICS } from "../MartialArtsConstants";
+import { KOREAN_STANCE_BIOMECHANICS } from "../builders/MartialArtsConstants";
 import {
   createGamStance,
   createGanStance,
@@ -23,7 +23,7 @@ import {
   createLiStance,
   createSonStance,
   createTaeStance,
-} from "../StanceAnimations";
+} from "./StanceAnimations";
 
 /**
  * Helper function to convert degrees to radians

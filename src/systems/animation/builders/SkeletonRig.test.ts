@@ -5,6 +5,7 @@
  * and bone transformation calculations.
  */
 
+import { BoneName } from "@/types/skeletal";
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import {
@@ -13,8 +14,7 @@ import {
   JEONGBO_PHYSICAL,
   JOJIK_PHYSICAL,
   MUSA_PHYSICAL,
-} from "../../data/archetypePhysicalAttributes";
-import { BoneName } from "@/types/skeletal";
+} from "../../../data/archetypePhysicalAttributes";
 import {
   applyJointConstraint,
   BONE_CHAINS,

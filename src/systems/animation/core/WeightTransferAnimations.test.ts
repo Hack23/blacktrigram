@@ -12,14 +12,14 @@
  * @korean 체중이동애니메이션테스트
  */
 
-import { describe, expect, it } from "vitest";
 import { BoneName } from "@/types/skeletal";
+import { describe, expect, it } from "vitest";
 import {
   MOVEMENT_BACKWARD_STEP_ANIMATION,
   MOVEMENT_FORWARD_STEP_ANIMATION,
   MOVEMENT_SIDESTEP_LEFT_ANIMATION,
   MOVEMENT_SIDESTEP_RIGHT_ANIMATION,
-} from "./MovementAnimations";
+} from "../catalogs/MovementAnimations";
 
 describe("Weight Transfer Animations", () => {
   describe("Forward Step (전진스텝) Weight Transfer", () => {

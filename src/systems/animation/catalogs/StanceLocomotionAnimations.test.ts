@@ -10,7 +10,7 @@
 
 import { BoneName } from "@/types/skeletal";
 import { describe, expect, it } from "vitest";
-import { ALL_ANIMATIONS, getAnimation } from "../AnimationRegistry";
+import { ALL_ANIMATIONS, getAnimation } from "../core/AnimationRegistry";
 import {
   GAM_RUN_ANIMATION,
   GAM_WALK_ANIMATION,
@@ -33,7 +33,7 @@ import {
   TAE_WALK_ANIMATION,
   getStanceRunAnimation,
   getStanceWalkAnimation,
-} from "../StanceLocomotionAnimations";
+} from "./StanceLocomotionAnimations";
 
 describe("StanceLocomotionAnimations", () => {
   describe("Walk Animations", () => {

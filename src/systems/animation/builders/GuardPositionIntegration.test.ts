@@ -21,8 +21,8 @@ import {
   LOW_GUARD,
   MIDDLE_GUARD,
   getGuardPosition,
-} from "../KoreanGuardPositions";
-import { MartialArtsAnimationBuilder } from "../MartialArtsAnimationBuilder";
+} from "./KoreanGuardPositions";
+import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
 
 /**
  * Helper to check if a keyframe has proper guard position

@@ -1,50 +1,48 @@
 /**
  * Unit tests for Defensive Animations
- * 
+ *
  * Tests guard break and defensive stance animation configurations,
  * timing, and priority behavior.
- * 
+ *
  * @module systems/animation/DefensiveAnimations.test
  * @category Animation Tests
  * @korean 방어애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
-import {
-  DEFAULT_ANIMATION_CONFIGS,
-} from "./AnimationStateMachine";
-import { AnimationPriority } from "./types";
 import { TrigramStance } from "@/types/common";
+import { describe, expect, it } from "vitest";
+import { DEFAULT_ANIMATION_CONFIGS } from "../core/AnimationStateMachine";
+import { AnimationPriority } from "../core/types";
 import {
-  // GEON (Heaven) defenses
-  GEON_HIGH_BLOCK,
-  GEON_COUNTER_STRIKE,
-  // TAE (Lake) defenses
-  TAE_JOINT_LOCK_DEFENSE,
-  TAE_SWEEP_DEFENSE,
-  // LI (Fire) defenses
-  LI_PRECISION_PARRY,
-  LI_NERVE_STRIKE_COUNTER,
-  // JIN (Thunder) defenses
-  JIN_EXPLOSIVE_BLOCK,
-  JIN_SHOCKING_COUNTER,
-  // SON (Wind) defenses
-  SON_CONTINUOUS_DEFLECTION,
-  SON_PRESSURE_COUNTER,
+  ALL_DEFENSIVE_ANIMATIONS,
+  DEFENSIVE_ANIMATIONS_BY_STANCE,
   // GAM (Water) defenses
   GAM_FLOW_DEFENSE,
   GAM_REDIRECTION_COUNTER,
+  GAN_COUNTER_FORTRESS,
   // GAN (Mountain) defenses
   GAN_IMMOVABLE_BLOCK,
-  GAN_COUNTER_FORTRESS,
+  GEON_COUNTER_STRIKE,
+  // GEON (Heaven) defenses
+  GEON_HIGH_BLOCK,
   // GON (Earth) defenses
   GON_GROUNDING_DEFENSE,
   GON_TAKEDOWN_COUNTER,
+  // JIN (Thunder) defenses
+  JIN_EXPLOSIVE_BLOCK,
+  JIN_SHOCKING_COUNTER,
+  LI_NERVE_STRIKE_COUNTER,
+  // LI (Fire) defenses
+  LI_PRECISION_PARRY,
+  // SON (Wind) defenses
+  SON_CONTINUOUS_DEFLECTION,
+  SON_PRESSURE_COUNTER,
+  // TAE (Lake) defenses
+  TAE_JOINT_LOCK_DEFENSE,
+  TAE_SWEEP_DEFENSE,
+  getDefensiveAnimation,
   // Helper functions
   getDefensiveAnimationsForStance,
-  getDefensiveAnimation,
-  DEFENSIVE_ANIMATIONS_BY_STANCE,
-  ALL_DEFENSIVE_ANIMATIONS,
 } from "./DefensiveAnimations";
 
 describe("Defensive Animations - Configuration", () => {
@@ -130,17 +128,23 @@ describe("Defensive Animations - Configuration", () => {
     it("should have correct priority hierarchy", () => {
       const blockConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
       const parryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
-      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const guardBreakConfig =
+        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
       const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
 
       // Priority order: guard_break (8) > parry (7) > block (6) > recovery (2)
-      expect(guardBreakConfig?.priority).toBeGreaterThan(parryConfig?.priority ?? 0);
+      expect(guardBreakConfig?.priority).toBeGreaterThan(
+        parryConfig?.priority ?? 0
+      );
       expect(parryConfig?.priority).toBeGreaterThan(blockConfig?.priority ?? 0);
-      expect(blockConfig?.priority).toBeGreaterThan(recoveryConfig?.priority ?? 0);
+      expect(blockConfig?.priority).toBeGreaterThan(
+        recoveryConfig?.priority ?? 0
+      );
     });
 
     it("should have guard_break at highest priority (same as fall)", () => {
-      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const guardBreakConfig =
+        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
       expect(guardBreakConfig?.priority).toBe(AnimationPriority.FALL);
     });
 
@@ -168,7 +172,8 @@ describe("Defensive Animations - Configuration", () => {
     it("should have frame counts that target 60fps", () => {
       const blockConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
       const parryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
-      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const guardBreakConfig =
+        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
       const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
 
       // Verify frame counts match expected durations at 60fps
@@ -208,7 +213,7 @@ describe("Defensive Animations - Configuration", () => {
 
 /**
  * Tests for Stance-Specific Defensive Animations
- * 
+ *
  * Tests all 16 stance-specific defensive animations (2 per stance × 8 stances),
  * verifying keyframe data, Korean terminology, and animation integrity.
  */
@@ -434,7 +439,9 @@ describe("Stance-Specific Defensive Animations", () => {
       });
 
       it("should return empty array for invalid stance", () => {
-        const animations = getDefensiveAnimationsForStance("invalid" as TrigramStance);
+        const animations = getDefensiveAnimationsForStance(
+          "invalid" as TrigramStance
+        );
         expect(animations).toHaveLength(0);
       });
     });
@@ -469,7 +476,7 @@ describe("Stance-Specific Defensive Animations", () => {
 
     it("should have valid easing values", () => {
       const validEasings = ["linear", "ease-in", "ease-out", "ease-in-out"];
-      
+
       ALL_DEFENSIVE_ANIMATIONS.forEach((animation) => {
         animation.keyframes.forEach((keyframe) => {
           expect(validEasings).toContain(keyframe.easing);
@@ -490,24 +497,28 @@ describe("Stance-Specific Defensive Animations", () => {
     it("should reflect stance philosophy in defense characteristics", () => {
       // Thunder (JIN) should have fastest defenses (explosive)
       const jinAnimations = getDefensiveAnimationsForStance(TrigramStance.JIN);
-      const jinAvgDuration = jinAnimations.reduce((sum, a) => sum + a.duration, 0) / jinAnimations.length;
-      
+      const jinAvgDuration =
+        jinAnimations.reduce((sum, a) => sum + a.duration, 0) /
+        jinAnimations.length;
+
       // Wind (SON) should have longer defenses (continuous)
       const sonAnimations = getDefensiveAnimationsForStance(TrigramStance.SON);
-      const sonAvgDuration = sonAnimations.reduce((sum, a) => sum + a.duration, 0) / sonAnimations.length;
-      
+      const sonAvgDuration =
+        sonAnimations.reduce((sum, a) => sum + a.duration, 0) /
+        sonAnimations.length;
+
       expect(jinAvgDuration).toBeLessThan(sonAvgDuration);
     });
 
     it("should have unique defense names per stance", () => {
       const animationNames = new Set();
-      
+
       DEFENSIVE_ANIMATIONS_BY_STANCE.forEach((animations) => {
         animations.forEach((animation) => {
           animationNames.add(animation.name);
         });
       });
-      
+
       // All 16 animations should be unique
       expect(animationNames.size).toBe(16);
     });

@@ -1,6 +1,6 @@
 /**
  * Tests for Trigram Stance Transition System
- * 
+ *
  * Validates trigram-specific animation transitions including:
  * - Transition duration calculation based on stance distance
  * - Complete stance-to-stance transition animations
@@ -8,24 +8,24 @@
  * - Guard pose blending
  * - Laterality support
  * - All 64 stance-to-stance combinations
- * 
+ *
  * @module systems/animation/TrigramStanceTransitions.test
  * @category Animation System Tests
  * @korean 팔괘자세전환테스트
  */
 
-import { describe, it, expect, beforeAll, vi } from "vitest";
 import { TrigramStance } from "@/types/common";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import { getGuardPoseForStance } from "../catalogs/StanceGuardPoses";
+import type { StanceLaterality } from "../trigram/types";
 import {
   calculateTransitionDuration,
-  transitionBetweenStances,
-  initializeStanceTransitions,
   getStanceTransition,
-  TRIGRAM_STANCES_ORDER,
+  initializeStanceTransitions,
   STANCE_TRANSITIONS,
+  transitionBetweenStances,
+  TRIGRAM_STANCES_ORDER,
 } from "./TrigramStanceTransitions";
-import type { StanceLaterality } from "../trigram/types";
-import { getGuardPoseForStance } from "./StanceGuardPoses";
 
 describe("TrigramStanceTransitions", () => {
   beforeAll(() => {
@@ -101,11 +101,11 @@ describe("TrigramStanceTransitions", () => {
 
     it("should handle all stance pairs consistently", () => {
       const stances = Object.values(TrigramStance);
-      
-      stances.forEach(from => {
-        stances.forEach(to => {
+
+      stances.forEach((from) => {
+        stances.forEach((to) => {
           const duration = calculateTransitionDuration(from, to);
-          
+
           // Durations should be one of the valid values
           expect([0.2, 0.3, 0.4]).toContain(duration);
         });
@@ -121,7 +121,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         expect(transition).toBeDefined();
         expect(transition.name).toContain("geon_to_tae");
         expect(transition.koreanName).toContain("geon");
@@ -135,7 +135,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         expect(transition.duration).toBeCloseTo(0.2, 2);
       });
 
@@ -145,7 +145,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.SON,
           "left"
         );
-        
+
         expect(transition.duration).toBeCloseTo(0.4, 2);
       });
 
@@ -160,7 +160,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         expect(leftTransition.koreanName).toContain("왼"); // Left
         expect(rightTransition.koreanName).toContain("오른"); // Right
       });
@@ -171,7 +171,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         expect(transition.loop).toBe(false);
       });
     });
@@ -183,7 +183,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.GAM,
           "right"
         );
-        
+
         expect(transition.keyframes.length).toBeGreaterThanOrEqual(4);
       });
 
@@ -193,18 +193,18 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
-        const times = transition.keyframes.map(kf => kf.time);
-        
+
+        const times = transition.keyframes.map((kf) => kf.time);
+
         // Should have keyframe at start (0)
         expect(times).toContain(0);
-        
+
         // Should have keyframe at end (duration)
         expect(times).toContain(transition.duration);
-        
+
         // Should have intermediate keyframes
         expect(times.length).toBeGreaterThanOrEqual(4);
-        
+
         // Times should be in ascending order
         for (let i = 1; i < times.length; i++) {
           expect(times[i]).toBeGreaterThan(times[i - 1]);
@@ -217,13 +217,13 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const weightTransferTime = transition.duration * 0.4;
-        const times = transition.keyframes.map(kf => kf.time);
-        
+        const times = transition.keyframes.map((kf) => kf.time);
+
         // Should have a keyframe close to 40% mark
         const hasWeightTransferKeyframe = times.some(
-          t => Math.abs(t - weightTransferTime) < 0.01
+          (t) => Math.abs(t - weightTransferTime) < 0.01
         );
         expect(hasWeightTransferKeyframe).toBe(true);
       });
@@ -234,13 +234,13 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const guardBlendTime = transition.duration * 0.7;
-        const times = transition.keyframes.map(kf => kf.time);
-        
+        const times = transition.keyframes.map((kf) => kf.time);
+
         // Should have a keyframe close to 70% mark
         const hasGuardBlendKeyframe = times.some(
-          t => Math.abs(t - guardBlendTime) < 0.01
+          (t) => Math.abs(t - guardBlendTime) < 0.01
         );
         expect(hasGuardBlendKeyframe).toBe(true);
       });
@@ -253,7 +253,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         expect(startFrame.boneRotations.size).toBeGreaterThan(0);
       });
@@ -264,7 +264,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const endFrame = transition.keyframes[transition.keyframes.length - 1];
         expect(endFrame.boneRotations.size).toBeGreaterThan(0);
       });
@@ -275,7 +275,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         expect(startFrame.bonePositions.size).toBeGreaterThan(0);
       });
@@ -286,15 +286,15 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         const boneNames = Array.from(startFrame.boneRotations.keys());
-        
+
         // Should have shoulder rotations
-        expect(boneNames.some(name => name.includes("shoulder"))).toBe(true);
-        
+        expect(boneNames.some((name) => name.includes("shoulder"))).toBe(true);
+
         // Should have elbow rotations
-        expect(boneNames.some(name => name.includes("elbow"))).toBe(true);
+        expect(boneNames.some((name) => name.includes("elbow"))).toBe(true);
       });
 
       it("should include leg bone rotations (hips, knees, feet)", () => {
@@ -303,18 +303,18 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         const boneNames = Array.from(startFrame.boneRotations.keys());
-        
+
         // Should have hip rotations
-        expect(boneNames.some(name => name.includes("hip"))).toBe(true);
-        
+        expect(boneNames.some((name) => name.includes("hip"))).toBe(true);
+
         // Should have knee rotations
-        expect(boneNames.some(name => name.includes("knee"))).toBe(true);
-        
+        expect(boneNames.some((name) => name.includes("knee"))).toBe(true);
+
         // Should have foot rotations
-        expect(boneNames.some(name => name.includes("foot"))).toBe(true);
+        expect(boneNames.some((name) => name.includes("foot"))).toBe(true);
       });
 
       it("should include torso and pelvis rotations", () => {
@@ -323,15 +323,15 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         const boneNames = Array.from(startFrame.boneRotations.keys());
-        
+
         // Should have spine rotation
-        expect(boneNames.some(name => name.includes("spine"))).toBe(true);
-        
+        expect(boneNames.some((name) => name.includes("spine"))).toBe(true);
+
         // Should have pelvis rotation
-        expect(boneNames.some(name => name.includes("pelvis"))).toBe(true);
+        expect(boneNames.some((name) => name.includes("pelvis"))).toBe(true);
       });
     });
 
@@ -342,14 +342,14 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         const endFrame = transition.keyframes[transition.keyframes.length - 1];
-        
+
         // Verify bones are animated (rotations change during transition)
         expect(startFrame.boneRotations.size).toBeGreaterThan(0);
         expect(endFrame.boneRotations.size).toBeGreaterThan(0);
-        
+
         // Start and end frames should have different rotations for at least some bones
         // (since we're transitioning between different stances)
         let hasChangedRotation = false;
@@ -365,7 +365,7 @@ describe("TrigramStanceTransitions", () => {
             }
           }
         });
-        
+
         expect(hasChangedRotation).toBe(true);
       });
 
@@ -375,15 +375,15 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         expect(transition.keyframes.length).toBeGreaterThanOrEqual(3);
-        
+
         // Middle keyframes should exist
         const middleFrames = transition.keyframes.slice(1, -1);
         expect(middleFrames.length).toBeGreaterThan(0);
-        
+
         // Middle keyframes should have bone rotations
-        middleFrames.forEach(frame => {
+        middleFrames.forEach((frame) => {
           expect(frame.boneRotations.size).toBeGreaterThan(0);
         });
       });
@@ -401,11 +401,11 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         // Names should be different
         expect(leftTransition.name).not.toBe(rightTransition.name);
         expect(leftTransition.koreanName).not.toBe(rightTransition.koreanName);
-        
+
         // Both should have same duration
         expect(leftTransition.duration).toBe(rightTransition.duration);
       });
@@ -416,7 +416,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "left"
         );
-        
+
         // Transition should be named with left laterality
         expect(transition.name).toContain("left");
         expect(transition.koreanName).toContain("왼");
@@ -430,31 +430,35 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.GAM,
           "right"
         );
-        
+
         const startFrame = transition.keyframes[0];
         const endFrame = transition.keyframes[transition.keyframes.length - 1];
-        
+
         // Should have foot positions in both frames
         expect(startFrame.bonePositions.size).toBeGreaterThan(0);
         expect(endFrame.bonePositions.size).toBeGreaterThan(0);
-        
+
         // Foot positions should change (different stance widths)
         const startLeftFoot = startFrame.bonePositions.get("foot_L");
         const endLeftFoot = endFrame.bonePositions.get("foot_L");
-        
+
         if (startLeftFoot && endLeftFoot) {
           // Positions should be different (unless stances have same width)
-          const positionChanged = 
+          const positionChanged =
             Math.abs(startLeftFoot.x - endLeftFoot.x) > 0.001 ||
             Math.abs(startLeftFoot.y - endLeftFoot.y) > 0.001 ||
             Math.abs(startLeftFoot.z - endLeftFoot.z) > 0.001;
-          
+
           // Get guard poses to check if widths are different
           const fromGuard = getGuardPoseForStance(TrigramStance.GEON, "right");
           const toGuard = getGuardPoseForStance(TrigramStance.GAM, "right");
-          
+
           // Some stances may have the same width, so we only test when they differ
-          if (fromGuard && toGuard && fromGuard.stanceWidth !== toGuard.stanceWidth) {
+          if (
+            fromGuard &&
+            toGuard &&
+            fromGuard.stanceWidth !== toGuard.stanceWidth
+          ) {
             expect(positionChanged).toBe(true);
           }
         }
@@ -466,12 +470,13 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.TAE,
           "right"
         );
-        
+
         // Weight transfer keyframe should have knee rotations
         const weightTransferFrame = transition.keyframes[1]; // Second keyframe
-        const kneeRotations = Array.from(weightTransferFrame.boneRotations.keys())
-          .filter(name => name.includes("knee"));
-        
+        const kneeRotations = Array.from(
+          weightTransferFrame.boneRotations.keys()
+        ).filter((name) => name.includes("knee"));
+
         expect(kneeRotations.length).toBeGreaterThan(0);
       });
     });
@@ -479,12 +484,12 @@ describe("TrigramStanceTransitions", () => {
     describe("all stance combinations", () => {
       it("should generate all 64 stance-to-stance transitions (8×8)", () => {
         const stances = Object.values(TrigramStance);
-        
-        stances.forEach(from => {
-          stances.forEach(to => {
+
+        stances.forEach((from) => {
+          stances.forEach((to) => {
             // Test right laterality (left is tested separately)
             const transition = transitionBetweenStances(from, to, "right");
-            
+
             expect(transition).toBeDefined();
             expect(transition.name).toBeDefined();
             expect(transition.keyframes.length).toBeGreaterThan(0);
@@ -496,20 +501,20 @@ describe("TrigramStanceTransitions", () => {
       it("should generate transitions for all stances with both lateralities", () => {
         const stances = Object.values(TrigramStance);
         const lateralities: StanceLaterality[] = ["left", "right"];
-        
+
         let transitionCount = 0;
-        
-        stances.forEach(from => {
-          stances.forEach(to => {
-            lateralities.forEach(laterality => {
+
+        stances.forEach((from) => {
+          stances.forEach((to) => {
+            lateralities.forEach((laterality) => {
               const transition = transitionBetweenStances(from, to, laterality);
-              
+
               expect(transition).toBeDefined();
               transitionCount++;
             });
           });
         });
-        
+
         // Should have 8 × 8 × 2 = 128 transitions
         expect(transitionCount).toBe(128);
       });
@@ -520,7 +525,7 @@ describe("TrigramStanceTransitions", () => {
           TrigramStance.GEON,
           "left"
         );
-        
+
         expect(sameStanceTransition.duration).toBeCloseTo(0.3, 2);
         expect(sameStanceTransition.keyframes.length).toBeGreaterThanOrEqual(4);
       });
@@ -550,22 +555,22 @@ describe("TrigramStanceTransitions", () => {
       it("should warn and use default duration for stance not in TRIGRAM_STANCES_ORDER", () => {
         // Create a spy to capture console.warn calls
         const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-        
+
         // Use a stance that's technically valid but may not be in the order array
         // This simulates the runtime scenario where indexOf returns -1
         const duration = calculateTransitionDuration(
           "invalid_stance" as TrigramStance,
           TrigramStance.TAE
         );
-        
+
         // Should have warned about invalid stance
         expect(warnSpy).toHaveBeenCalledWith(
           expect.stringContaining("Invalid stance in transition")
         );
-        
+
         // Should return default duration (0.3)
         expect(duration).toBe(0.3);
-        
+
         warnSpy.mockRestore();
       });
     });
@@ -583,10 +588,10 @@ describe("TrigramStanceTransitions", () => {
     it("should create transitions for all stance pairs with both lateralities", () => {
       const stances = Object.values(TrigramStance);
       const lateralities: StanceLaterality[] = ["left", "right"];
-      
-      stances.forEach(from => {
-        stances.forEach(to => {
-          lateralities.forEach(laterality => {
+
+      stances.forEach((from) => {
+        stances.forEach((to) => {
+          lateralities.forEach((laterality) => {
             const key = `${from}_${to}_${laterality}`;
             expect(STANCE_TRANSITIONS.has(key)).toBe(true);
           });
@@ -596,7 +601,7 @@ describe("TrigramStanceTransitions", () => {
 
     it("should store transitions with correct keys", () => {
       const transition = STANCE_TRANSITIONS.get("geon_tae_right");
-      
+
       expect(transition).toBeDefined();
       expect(transition?.name).toContain("geon_to_tae");
     });
@@ -609,7 +614,7 @@ describe("TrigramStanceTransitions", () => {
         TrigramStance.TAE,
         "right"
       );
-      
+
       expect(transition).toBeDefined();
       expect(transition?.name).toContain("geon_to_tae");
     });
@@ -620,7 +625,7 @@ describe("TrigramStanceTransitions", () => {
         TrigramStance.TAE,
         "right"
       );
-      
+
       expect(transition).toBeUndefined();
     });
 
@@ -635,7 +640,7 @@ describe("TrigramStanceTransitions", () => {
         TrigramStance.TAE,
         "right"
       );
-      
+
       expect(leftTransition).toBeDefined();
       expect(rightTransition).toBeDefined();
       expect(leftTransition?.name).not.toBe(rightTransition?.name);
@@ -643,11 +648,11 @@ describe("TrigramStanceTransitions", () => {
 
     it("should retrieve all 64 stance pair transitions", () => {
       const stances = Object.values(TrigramStance);
-      
-      stances.forEach(from => {
-        stances.forEach(to => {
+
+      stances.forEach((from) => {
+        stances.forEach((to) => {
           const transition = getStanceTransition(from, to, "right");
-          
+
           expect(transition).toBeDefined();
           expect(transition?.keyframes.length).toBeGreaterThan(0);
         });
@@ -667,9 +672,9 @@ describe("TrigramStanceTransitions", () => {
 
     it("should contain each trigram stance exactly once", () => {
       const stances = Object.values(TrigramStance);
-      
-      stances.forEach(stance => {
-        const count = TRIGRAM_STANCES_ORDER.filter(s => s === stance).length;
+
+      stances.forEach((stance) => {
+        const count = TRIGRAM_STANCES_ORDER.filter((s) => s === stance).length;
         expect(count).toBe(1);
       });
     });
@@ -695,7 +700,7 @@ describe("TrigramStanceTransitions", () => {
         TrigramStance.TAE,
         "right"
       );
-      
+
       // Should have successfully created transition (no errors thrown)
       expect(transition).toBeDefined();
       expect(transition.keyframes.length).toBeGreaterThan(0);
@@ -703,10 +708,10 @@ describe("TrigramStanceTransitions", () => {
 
     it("should handle all stances that have guard poses defined", () => {
       const stances = Object.values(TrigramStance);
-      
+
       // All stances should have working transitions
-      stances.forEach(from => {
-        stances.forEach(to => {
+      stances.forEach((from) => {
+        stances.forEach((to) => {
           expect(() => {
             transitionBetweenStances(from, to, "right");
           }).not.toThrow();

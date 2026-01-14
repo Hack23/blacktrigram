@@ -5,9 +5,9 @@
  * and animation data integrity.
  */
 
-import { describe, expect, it } from "vitest";
 import { BoneName } from "@/types/skeletal";
-import { getAnimationForTechnique } from "./AnimationRegistry";
+import { describe, expect, it } from "vitest";
+import { getAnimationForTechnique } from "../core/AnimationRegistry";
 import {
   ATTACK_ANIMATIONS,
   BACKWARD_RETREAT_ANIMATION,
