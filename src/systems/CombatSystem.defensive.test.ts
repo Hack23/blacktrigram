@@ -11,7 +11,7 @@
 
 import { CombatState, PlayerArchetype, TrigramStance } from "@/types";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { DefensiveAnimationType } from "./animation/types";
+import type { DefensiveAnimationType } from "./animation/core/types";
 import CombatSystem from "./CombatSystem";
 import { PlayerState } from "./player";
 

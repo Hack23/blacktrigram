@@ -8,7 +8,7 @@
  */
 
 import React, { useMemo } from "react";
-import { STANCE_GUARD_CONFIGS } from "../../../../../systems/animation/StanceGuardPoses";
+import { STANCE_GUARD_CONFIGS } from "../../../../../systems/animation";
 import { TRIGRAM_DATA } from "../../../../../systems/trigram/types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { TrigramStance } from "../../../../../types/common";

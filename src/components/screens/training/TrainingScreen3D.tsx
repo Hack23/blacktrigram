@@ -7,8 +7,6 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
-import { AnimationState } from "../../../systems/animation/types";
-
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
@@ -21,6 +19,7 @@ import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHa
 import { PlayerState } from "../../../systems";
 import {
   AnimationEvents,
+  AnimationState,
   getAnimationForTechnique,
 } from "../../../systems/animation";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
@@ -30,7 +29,11 @@ import {
   Position,
   Technique,
 } from "../../../types";
-import { FONT_FAMILY, KOREAN_COLORS, getPerformanceSettings } from "../../../types/constants";
+import {
+  FONT_FAMILY,
+  getPerformanceSettings,
+  KOREAN_COLORS,
+} from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -56,7 +59,6 @@ import {
 } from "../combat/components";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
-import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -73,6 +75,7 @@ import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
 import TrainingStatsHTML from "./components/TrainingStatsHTML";
 import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
 import useTrainingActions from "./hooks/useTrainingActions";
+import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
 
 /**
@@ -247,8 +250,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
   // Scale 3D coordinates based on training area scale for consistent positioning
   const player3DPosition = useMemo<[number, number, number]>(() => {
-    const relX = (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
-    const relZ = (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
+    const relX =
+      (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
+    const relZ =
+      (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
     // Map 0-1 to world coordinates, scaled for training area size (matching CombatScreen)
     const worldWidth = 16 * trainingAreaBounds.scale;
     const worldDepth = 8 * trainingAreaBounds.scale;

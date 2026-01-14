@@ -19,7 +19,7 @@ import {
   FALL_SIDE_KEYFRAMES,
   FALL_IMPACT_FRAMES,
 } from "./FallAnimations";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 
 describe("FallAnimations", () => {
   describe("determineFallDirection", () => {

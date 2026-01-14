@@ -10,7 +10,7 @@
  */
 
 import type { PlayerState } from "../systems";
-import type { AnimationState } from "../systems/animation/types";
+import type { AnimationState } from "../systems/animation/core/types";
 import type {
   BalanceState,
   Player3DUnifiedProps,

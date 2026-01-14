@@ -22,7 +22,7 @@
 
 import { describe, expect, it, beforeEach } from "vitest";
 import * as THREE from "three";
-import type { SkeletalAnimation } from "../../types/skeletal";
+import type { SkeletalAnimation } from "@/types/skeletal";
 import {
   applyLaterality,
   getAnimationLaterality,

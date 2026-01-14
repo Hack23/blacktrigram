@@ -5,7 +5,7 @@
  * registries, hit timing, optimization, laterality, and stance mappings.
  */
 
-export * from "../types";
+export * from "./types";
 
 export {
   ANIMATION_PRIORITY_MAP,
@@ -13,7 +13,7 @@ export {
   comparePriority,
   getPriority,
   PRIORITY_LEVEL_KOREAN_NAMES,
-} from "../AnimationPriority";
+} from "./AnimationPriority";
 
 export {
   buildTransitionMap,
@@ -22,9 +22,9 @@ export {
   getValidTransitions,
   isTransitionAllowed,
   TRIGRAM_STANCES_ORDER,
-} from "../AnimationTransitions";
+} from "./AnimationTransitions";
 
-export * from "../AnimationStateMachine";
+export * from "./AnimationStateMachine";
 
 export {
   ALL_ANIMATIONS,
@@ -40,18 +40,18 @@ export {
   GRAPPLING_ANIMATIONS,
   KICK_ANIMATIONS,
   PUNCH_ANIMATIONS,
-} from "../AnimationRegistry";
+} from "./AnimationRegistry";
 
 export {
   ANIMATION_HIT_TIMING,
   getAnimationHitTiming,
   getCurrentReachMultiplier,
   isWithinHitWindow,
-} from "../AnimationHitTiming";
+} from "./AnimationHitTiming";
 export type {
   AnimationHitWindow,
   TechniqueHitTiming,
-} from "../AnimationHitTiming";
+} from "./AnimationHitTiming";
 
 export {
   animationCache,
@@ -59,15 +59,16 @@ export {
   batchUpdateBones,
   calculateDirtyBones,
   interpolateKeyframeCached,
+  performanceMonitor,
   precomputeAnimation,
-} from "../AnimationOptimizations";
-export type { AnimationPerformanceMetrics } from "../AnimationOptimizations";
+} from "./AnimationOptimizations";
+export type { AnimationPerformanceMetrics } from "./AnimationOptimizations";
 
 export {
   applyLaterality,
   areLateralityVariants,
   getAnimationLaterality,
-} from "../LateralityTransform";
+} from "./LateralityTransform";
 
 export {
   calculateSpeedModifierForDamage,
@@ -77,7 +78,7 @@ export {
   hasAnimationForType,
   TechniqueAnimationMapper,
   techniqueAnimationMapper,
-} from "../TechniqueAnimationMapper";
+} from "./TechniqueAnimationMapper";
 
 export {
   getAllGuardPoses,
@@ -88,11 +89,11 @@ export {
   getGuardPoseForStanceWithSide,
   getRunAnimation,
   getWalkAnimation,
-} from "../TrigramAnimationMapping";
+} from "./TrigramAnimationMapping";
 export type {
   AnimationMappingStats,
   StanceAnimationCollection,
-} from "../TrigramAnimationMapping";
+} from "./TrigramAnimationMapping";
 
 export {
   calculateTransitionDuration,
@@ -102,15 +103,15 @@ export {
   STANCE_TRANSITIONS,
   transitionBetweenStances,
   TRIGRAM_STANCES_ORDER as TRIGRAM_STANCES_ORDER_TRANSITIONS,
-} from "../TrigramStanceTransitions";
+} from "./TrigramStanceTransitions";
 
 export {
   addRecoveryPhase,
   calculateMuscleTension,
   createTechniqueWithRecovery,
   validateRecoveryPhase,
-} from "../RecoveryPhaseEnhancer";
+} from "./RecoveryPhaseEnhancer";
 export type {
   RecoveryPhaseConfig,
   RecoveryValidationResult,
-} from "../RecoveryPhaseEnhancer";
+} from "./RecoveryPhaseEnhancer";

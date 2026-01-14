@@ -22,7 +22,7 @@ import {
   createGonStance,
 } from "../StanceAnimations";
 import { KOREAN_STANCE_BIOMECHANICS } from "../MartialArtsConstants";
-import { BoneName } from "../../../types/skeletal";
+import { BoneName } from "../@/types/skeletal";
 import * as THREE from "three";
 
 /**

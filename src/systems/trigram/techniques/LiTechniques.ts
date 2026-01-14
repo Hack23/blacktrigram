@@ -16,7 +16,7 @@ import {
   DamageType,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 /**
  * ☲ LI (리) - FIRE: Precision Nerve Strikes

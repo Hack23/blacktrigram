@@ -20,7 +20,7 @@ import {
 } from "./HeadMovements";
 import {
   HeadMovementType,
-} from "../../types/facial";
+} from "@/types/facial";
 
 describe("HeadMovements", () => {
   describe("createHeadRecoilAnimation", () => {

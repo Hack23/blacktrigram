@@ -17,7 +17,7 @@ import {
   SIDE_KICK_ANIMATION,
   BACK_KICK_ANIMATION,
 } from "./KickAnimations";
-import { BoneName, AnimationKeyframe } from "../../types/skeletal";
+import { BoneName, AnimationKeyframe } from "@/types/skeletal";
 
 // Helper to get bone rotation from keyframe
 function getBoneRotation(

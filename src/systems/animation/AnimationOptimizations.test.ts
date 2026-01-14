@@ -7,9 +7,9 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
-} from "../../types/skeletal";
-import { BoneName } from "../../types/skeletal";
-import { ThreeObjectPools } from "../../utils/threeObjectPool";
+} from "@/types/skeletal";
+import { BoneName } from "@/types/skeletal";
+import { ThreeObjectPools } from "@/utils/threeObjectPool";
 import {
   animationCache,
   batchTransformBones,

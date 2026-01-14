@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import { CROSS_ANIMATION, JAB_ANIMATION } from "./PunchAnimations";
 import { MIDDLE_GUARD } from "./KoreanGuardPositions";
 

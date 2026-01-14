@@ -10,21 +10,21 @@
  * @korean 근육활성화훅
  */
 
-import { useEffect, useRef, useState, useMemo } from "react";
-import { 
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
   MuscleActivationManager,
   getMuscleTensionForStance,
-} from "../systems/animation/MuscleActivation";
-import type { PlayerAnimation } from "../types/player-visual";
+} from "../systems/animation";
 import type { TrigramStance } from "../types/common";
 import { DEFAULT_MUSCLE_CONFIG } from "../types/muscle";
+import type { PlayerAnimation } from "../types/player-visual";
 
 /**
  * Simple lerp function for muscle tension interpolation
  * Defined at module level to avoid recreation
  * @korean 선형보간함수
  */
-const lerp = (start: number, end: number, t: number): number => 
+const lerp = (start: number, end: number, t: number): number =>
   start + (end - start) * t;
 
 /**
@@ -52,7 +52,10 @@ export interface UseMuscleActivationReturn {
   /** Current muscle activation states (bone name -> activation 0-1) */
   readonly muscleStates: Map<string, number>;
   /** Update muscle activations (call in useFrame) */
-  readonly updateMuscleActivations: (delta: number, frameCounter: number) => void;
+  readonly updateMuscleActivations: (
+    delta: number,
+    frameCounter: number
+  ) => void;
 }
 
 /**
@@ -93,7 +96,13 @@ export interface UseMuscleActivationReturn {
 export function useMuscleActivation(
   options: UseMuscleActivationOptions
 ): UseMuscleActivationReturn {
-  const { currentAnimation, attackAnimation, isBlocking = false, stamina, currentStance } = options;
+  const {
+    currentAnimation,
+    attackAnimation,
+    isBlocking = false,
+    stamina,
+    currentStance,
+  } = options;
 
   // Muscle activation manager
   const muscleManager = useRef(new MuscleActivationManager());
@@ -137,19 +146,19 @@ export function useMuscleActivation(
     } else if (currentAnimation === "idle" && stanceTension) {
       // Apply stance-based leg muscle tension for idle/guard positions
       // This provides realistic isometric contraction visualization
-      
+
       // Get all activation states once (not in the loop)
       const allActivations = muscleManager.current.getAllActivations();
-      
+
       // Update manager with stance muscle activations
       stanceTension.forEach((tension, muscleGroup) => {
         // Get existing activation state
         const state = allActivations.get(muscleGroup);
-        
+
         if (state) {
           // Set target tension for smooth interpolation
           state.targetTension = tension;
-          
+
           // Smoothly interpolate to target (using config activation speed)
           state.tension = lerp(
             state.tension,

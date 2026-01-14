@@ -15,7 +15,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { BoneName } from "../../../types/skeletal";
+import { BoneName } from "../@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../MartialArtsAnimationBuilder";
 import {
   HIGH_GUARD,

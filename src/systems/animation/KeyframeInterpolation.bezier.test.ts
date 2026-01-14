@@ -18,7 +18,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
-} from "../../types/skeletal";
+} from "@/types/skeletal";
 import {
   BEZIER_PRESETS,
   createBezierEasing,

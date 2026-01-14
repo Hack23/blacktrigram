@@ -11,7 +11,7 @@
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { PlayerAnimationStateMachine, DEFAULT_ANIMATION_CONFIGS } from "./AnimationStateMachine";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import { initializeStanceTransitions } from "./AnimationTransitions";
 
 describe("AnimationStateMachine - Stance Transition Integration", () => {

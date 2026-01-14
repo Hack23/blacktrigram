@@ -11,7 +11,7 @@
 
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import {
   // GEON (Heaven) attacks
   GEON_BONE_BREAKING_STRIKE_1,

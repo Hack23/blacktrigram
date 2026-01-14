@@ -10,16 +10,16 @@ export {
   GAM_WATER_GUARD_POSE,
   GAN_MOUNTAIN_GUARD_POSE,
   GEON_HIGH_GUARD_POSE,
-  getAllStanceGuardPoses,
-  getGuardConfigForStance,
-  getGuardPoseForStance,
   GON_EARTH_GUARD_POSE,
   JIN_THUNDER_GUARD_POSE,
   LI_FIRE_GUARD_POSE,
   SON_WIND_GUARD_POSE,
   STANCE_GUARD_CONFIGS,
   TAE_FLUID_GUARD_POSE,
-} from "../StanceGuardPoses";
+  getAllStanceGuardPoses,
+  getGuardConfigForStance,
+  getGuardPoseForStance,
+} from "./StanceGuardPoses";
 
 // Core attack animations
 export {
@@ -34,7 +34,7 @@ export {
   ROUNDHOUSE_KICK_ANIMATION,
   SIDE_STEP_ANIMATION,
   WALK_ANIMATION,
-} from "../AttackAnimations";
+} from "./AttackAnimations";
 
 // Basic locomotion and fall animations
 export {
@@ -46,17 +46,17 @@ export {
   IDLE_ANIMATION,
   RUN_ANIMATION,
   WALK_ANIMATION as WALK_ANIMATION_NEW,
-} from "../BasicAnimations";
+} from "./BasicAnimations";
 
 // Step movement animations
 export {
-  getStepAnimation,
   STEP_ANIMATIONS,
   STEP_BACK_ANIMATION,
   STEP_FORWARD_ANIMATION,
   STEP_LEFT_ANIMATION,
   STEP_RIGHT_ANIMATION,
-} from "../StepSkeletalAnimations";
+  getStepAnimation,
+} from "./StepSkeletalAnimations";
 
 // Footwork pattern animations
 export {
@@ -71,19 +71,19 @@ export {
   FOOTWORK_SLIDE_LEFT_ANIMATION,
   FOOTWORK_SLIDE_RIGHT_ANIMATION,
   getFootworkAnimation,
-} from "../FootworkSkeletalAnimations";
+} from "./FootworkSkeletalAnimations";
 
 // Step animation configuration helpers
 export {
-  createStepConfig,
-  getStepDirectionVector,
-  getStepKeyframeAtFrame,
-  interpolateStepKeyframes,
   STEP_ANIMATION_CONFIGS,
   STEP_ANIMATION_PARAMS,
   STEP_KEYFRAMES,
   STEP_KOREAN_TERMS,
-} from "../StepAnimations";
+  createStepConfig,
+  getStepDirectionVector,
+  getStepKeyframeAtFrame,
+  interpolateStepKeyframes,
+} from "./StepAnimations";
 
 // Defensive animations system (16 stance-specific defensive moves)
 export {
@@ -95,8 +95,6 @@ export {
   GAN_IMMOVABLE_BLOCK,
   GEON_COUNTER_STRIKE,
   GEON_HIGH_BLOCK,
-  getDefensiveAnimation,
-  getDefensiveAnimationsForStance,
   GON_GROUNDING_DEFENSE,
   GON_TAKEDOWN_COUNTER,
   JIN_EXPLOSIVE_BLOCK,
@@ -107,7 +105,9 @@ export {
   SON_PRESSURE_COUNTER,
   TAE_JOINT_LOCK_DEFENSE,
   TAE_SWEEP_DEFENSE,
-} from "../DefensiveAnimations";
+  getDefensiveAnimation,
+  getDefensiveAnimationsForStance,
+} from "./DefensiveAnimations";
 
 // Stance-specific locomotion animations (16 unique - 8 walk, 8 run)
 export {
@@ -117,8 +117,6 @@ export {
   GAN_WALK_ANIMATION,
   GEON_RUN_ANIMATION,
   GEON_WALK_ANIMATION,
-  getStanceRunAnimation,
-  getStanceWalkAnimation,
   GON_RUN_ANIMATION,
   GON_WALK_ANIMATION,
   JIN_RUN_ANIMATION,
@@ -132,7 +130,9 @@ export {
   STANCE_WALK_ANIMATIONS,
   TAE_RUN_ANIMATION,
   TAE_WALK_ANIMATION,
-} from "../StanceLocomotionAnimations";
+  getStanceRunAnimation,
+  getStanceWalkAnimation,
+} from "./StanceLocomotionAnimations";
 
 // Stance-specific attack animations (24 unique attacks - 3 per stance)
 export {
@@ -147,8 +147,6 @@ export {
   GEON_BONE_BREAKING_STRIKE_1,
   GEON_CRUSHING_ELBOW,
   GEON_THUNDEROUS_UPPERCUT,
-  getAttackAnimation,
-  getAttackAnimationsForStance,
   GON_EARTHQUAKE_STOMP,
   GON_GROUND_SWEEP_STRIKE,
   GON_ROOTING_TAKEDOWN,
@@ -164,18 +162,20 @@ export {
   TAE_FLOWING_ARM_BAR,
   TAE_SPIRAL_SHOULDER_THROW,
   TAE_WRIST_LOCK_STRIKE,
-} from "../StanceAttackAnimations";
+  getAttackAnimation,
+  getAttackAnimationsForStance,
+} from "./StanceAttackAnimations";
 
 // Enhanced attack animations with recovery phases
 export {
-  applyRecoveryPreset,
   CROSS_ANIMATION_ENHANCED,
   ENHANCED_ANIMATIONS,
   FRONT_KICK_ANIMATION_ENHANCED,
   JAB_ANIMATION_ENHANCED,
   RECOVERY_PRESETS,
   ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
-} from "../EnhancedAttackAnimations";
+  applyRecoveryPreset,
+} from "./EnhancedAttackAnimations";
 
 // Enhanced elbow and knee animations with recovery phases
 export {
@@ -183,4 +183,15 @@ export {
   ELBOW_UPPERCUT_ANIMATION_ENHANCED,
   ENHANCED_ELBOW_KNEE_ANIMATIONS,
   KNEE_STRIKE_ANIMATION_ENHANCED,
-} from "../EnhancedElbowKneeAnimations";
+} from "./EnhancedElbowKneeAnimations";
+
+// Additional curated animation catalogs
+export * from "./ComboAnimations";
+export * from "./DarkOpsAnimations";
+export * from "./ElbowKneeAnimations";
+export * from "./GrapplingAnimations";
+export * from "./KickAnimations";
+export * from "./MovementAnimations";
+export * from "./PunchAnimations";
+export * from "./RecoveryAnimations";
+export * from "./StanceAnimations";

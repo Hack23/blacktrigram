@@ -6,17 +6,17 @@
  */
 
 export {
-  DEFAULT_TRANSITION_CONFIG,
   calculateFacialDamage,
   createDefaultExpressionState,
   createDefaultFacialDamage,
   createExpressionTransition,
+  DEFAULT_TRANSITION_CONFIG,
   getExpressionFromCombatState,
   getExpressionIntensity,
   resetFacialDamage,
   updateExpressionState,
-} from "../FacialExpressions";
-export type { ExpressionTransitionConfig } from "../FacialExpressions";
+} from "./FacialExpressions";
+export type { ExpressionTransitionConfig } from "./FacialExpressions";
 
 export {
   applyHeadMovementKeyframe,
@@ -29,42 +29,42 @@ export {
   createHeadTurnAnimation,
   getHeadMovementByType,
   isHeadMovementComplete,
-} from "../HeadMovements";
+} from "./HeadMovements";
 
 export {
+  determineFallDirection,
+  determineFallFromStance,
   FALL_BACKWARD_KEYFRAMES,
   FALL_FORWARD_KEYFRAMES,
   FALL_IMPACT_FRAMES,
   FALL_SIDE_KEYFRAMES,
-  determineFallDirection,
-  determineFallFromStance,
   getFallKeyframes,
   getImpactFrame,
-} from "../FallAnimations";
+} from "./FallAnimations";
 
 export {
   BodyFacingSystem,
-  DEFAULT_ROTATION_SPEED,
-  HEAD_TRACKING_SMOOTHING,
-  MAX_HEAD_ROTATION,
-  MAX_TORSO_ROTATION,
-  TURN_ANIMATION_DURATION,
-  TURN_THRESHOLD_ANGLE,
   bodyFacingSystem,
   calculateAngleDifference,
   calculateAngleToTarget,
   createDefaultBodyFacing,
+  DEFAULT_ROTATION_SPEED,
   getFacingAngleRadians,
   getHeadAngleRadians,
   getHipRotationRadians,
   getTorsoRotationRadians,
+  HEAD_TRACKING_SMOOTHING,
   isTurning,
   lockFacing,
+  MAX_HEAD_ROTATION,
+  MAX_TORSO_ROTATION,
   normalizeAngle,
+  TURN_ANIMATION_DURATION,
+  TURN_THRESHOLD_ANGLE,
   unlockFacing,
   updateBodyFacing,
   updateFacingTowardOpponent,
-} from "../BodyFacingSystem";
+} from "./BodyFacingSystem";
 
 export {
   ADVANCED_JOINT_CONSTRAINTS,
@@ -78,7 +78,7 @@ export {
   calculateSpinalFlexion,
   calculateWristSnap,
   calculateWristSnapPowerModifier,
-} from "../AdvancedJointMovements";
+} from "./AdvancedJointMovements";
 export type {
   AnkleArticulationState,
   BodySide,
@@ -97,15 +97,17 @@ export type {
   StrikePhase,
   TechniquePhase,
   WristSnapState,
-} from "../AdvancedJointMovements";
+} from "./AdvancedJointMovements";
 
 export {
   compareRecoveryPhases,
   generateRecoveryVisualization,
   generateTensionChart,
   printRecoveryAnalysis,
-} from "../RecoveryVisualization";
+} from "./RecoveryVisualization";
 export type {
   RecoveryTimelinePoint,
   RecoveryVisualization,
-} from "../RecoveryVisualization";
+} from "./RecoveryVisualization";
+
+export * from "./MuscleActivation";

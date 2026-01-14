@@ -14,7 +14,7 @@ import type {
   VitalPointEffectType,
   VitalPointSeverity,
 } from "../../types";
-import { AnimationType } from "../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../animation";
 import { EffectIntensity } from "../effects";
 import { PlayerState } from "../player";
 import { StatusEffect } from "../types";

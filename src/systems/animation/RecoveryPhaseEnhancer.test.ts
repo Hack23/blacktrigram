@@ -19,8 +19,8 @@ import {
   validateRecoveryPhase,
   calculateMuscleTension,
 } from "./RecoveryPhaseEnhancer";
-import type { SkeletalAnimation, AnimationKeyframe } from "../../types/skeletal";
-import { BoneName } from "../../types/skeletal";
+import type { SkeletalAnimation, AnimationKeyframe } from "@/types/skeletal";
+import { BoneName } from "@/types/skeletal";
 
 /**
  * Create a simple test animation for validation

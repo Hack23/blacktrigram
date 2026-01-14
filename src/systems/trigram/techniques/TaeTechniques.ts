@@ -16,7 +16,7 @@ import {
   DamageType,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 /**
  * ☱ TAE (태) - LAKE: Fluid Joint Manipulation

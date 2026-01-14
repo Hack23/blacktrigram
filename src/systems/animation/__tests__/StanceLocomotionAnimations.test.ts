@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { BoneName } from "../../../types/skeletal";
+import { BoneName } from "../@/types/skeletal";
 import { ALL_ANIMATIONS, getAnimation } from "../AnimationRegistry";
 import {
   GAM_RUN_ANIMATION,

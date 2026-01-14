@@ -1,8 +1,8 @@
 /**
  * Balance System for managing stability and vulnerability windows.
- * 
+ *
  * **Korean**: 균형 시스템 (Balance System)
- * 
+ *
  * Implements physical balance and stability mechanics. Loss of balance creates
  * vulnerability windows where damage is increased and defensive options limited.
  * Balance is affected by:
@@ -10,34 +10,42 @@
  * - Throws and sweeps
  * - Heavy impacts
  * - Fatigue (low stamina)
- * 
+ *
  * ## Balance States
- * 
+ *
  * - **Stable**: 80-100 balance - Full mobility and defense
  * - **Unsteady**: 50-79 balance - Reduced evasion, slower movement
  * - **Off-Balance**: 20-49 balance - Vulnerability window, defense penalty
  * - **Falling**: 0-19 balance - Severe vulnerability, possible knockdown
- * 
+ *
  * ## Fall System Integration
- * 
+ *
  * When balance falls below 20%, the system can trigger fall animations (낙법).
  * Fall direction is determined by attack vector and player stance.
- * 
+ *
  * @module systems/combat/BalanceSystem
  * @category Combat System
  * @korean 균형시스템
  */
 
-import { PlayerState } from "../player";
 import { BodyRegion } from "@/types";
-import type { FallType, RecoveryAnimationType, GroundState } from "../animation/types";
-import { determineFallDirection, determineFallFromStance } from "../animation/FallAnimations";
-import { getRecoveryConfig, isVulnerableFrame } from "../animation/RecoveryAnimations";
 import type { TrigramStance } from "@/types/common";
+import {
+  determineFallDirection,
+  determineFallFromStance,
+  getRecoveryConfig,
+  isVulnerableFrame,
+} from "../animation";
+import type {
+  FallType,
+  GroundState,
+  RecoveryAnimationType,
+} from "../animation/core/types";
+import { PlayerState } from "../player";
 
 /**
  * Balance levels representing physical stability.
- * 
+ *
  * **Korean**: 균형 수준
  */
 export enum BalanceLevel {
@@ -73,29 +81,29 @@ interface BalanceEffects {
 
 /**
  * Balance System managing stability and vulnerability.
- * 
+ *
  * Balance represents physical stability and center of gravity control.
  * Low balance creates vulnerability windows where opponents can capitalize
  * with increased damage and reduced defensive options.
- * 
+ *
  * @example
  * ```typescript
  * const balanceSystem = new BalanceSystem();
- * 
+ *
  * // Apply balance disruption from leg strike
  * const newPlayer = balanceSystem.disruptBalance(
  *   player,
  *   15,
  *   BodyRegion.LEFT_LEG
  * );
- * 
+ *
  * // Check if vulnerable
  * const isVulnerable = balanceSystem.isVulnerable(newPlayer);
- * 
+ *
  * // Apply recovery
  * const recovered = balanceSystem.applyRecovery(newPlayer, 1000);
  * ```
- * 
+ *
  * @public
  * @korean 균형시스템
  */
@@ -166,15 +174,15 @@ export class BalanceSystem {
 
   /**
    * Disrupts balance from combat impact.
-   * 
+   *
    * Calculates balance loss based on damage amount and body region hit.
    * Leg strikes cause maximum balance disruption.
-   * 
+   *
    * @param player - Current player state
    * @param impact - Impact force amount
    * @param region - Body region affected
    * @returns Updated player state with reduced balance
-   * 
+   *
    * @example
    * ```typescript
    * // Leg sweep causes major balance disruption
@@ -184,7 +192,7 @@ export class BalanceSystem {
    *   BodyRegion.RIGHT_LEG
    * );
    * ```
-   * 
+   *
    * @public
    * @korean 균형파괴
    */
@@ -212,20 +220,20 @@ export class BalanceSystem {
 
   /**
    * Applies balance recovery over time.
-   * 
+   *
    * Balance recovers quickly when not being disrupted, allowing
    * fighters to regain stable footing between exchanges.
-   * 
+   *
    * @param player - Current player state
    * @param deltaTime - Time elapsed in milliseconds
    * @returns Updated player state with recovered balance
-   * 
+   *
    * @example
    * ```typescript
    * // In game loop
    * player = system.applyRecovery(player, 16); // ~60fps
    * ```
-   * 
+   *
    * @public
    * @korean 균형회복
    */
@@ -261,10 +269,10 @@ export class BalanceSystem {
 
   /**
    * Determines balance level from balance value.
-   * 
+   *
    * @param balance - Balance value (0-100)
    * @returns Current balance level
-   * 
+   *
    * @public
    * @korean 균형수준확인
    */
@@ -277,10 +285,10 @@ export class BalanceSystem {
 
   /**
    * Gets effects for a specific balance level.
-   * 
+   *
    * @param level - Balance level
    * @returns Effects applied at that level
-   * 
+   *
    * @public
    * @korean 균형효과
    */
@@ -290,12 +298,12 @@ export class BalanceSystem {
 
   /**
    * Applies balance effects to player state.
-   * 
+   *
    * Modifies player stats based on current balance level.
-   * 
+   *
    * @param player - Current player state
    * @returns Modified player state with balance effects
-   * 
+   *
    * @public
    * @korean 균형효과적용
    */
@@ -312,26 +320,24 @@ export class BalanceSystem {
 
   /**
    * Checks if player is vulnerable due to balance.
-   * 
+   *
    * @param player - Current player state
    * @returns True if off-balance or falling
-   * 
+   *
    * @public
    * @korean 균형취약확인
    */
   isVulnerable(player: PlayerState): boolean {
     const level = this.getBalanceLevel(player.balance);
-    return (
-      level === BalanceLevel.OFF_BALANCE || level === BalanceLevel.FALLING
-    );
+    return level === BalanceLevel.OFF_BALANCE || level === BalanceLevel.FALLING;
   }
 
   /**
    * Calculates damage multiplier for vulnerable balance state.
-   * 
+   *
    * @param player - Current player state
    * @returns Damage multiplier (1.0 = normal, >1.0 = increased damage)
-   * 
+   *
    * @public
    * @korean 취약성배율
    */
@@ -343,11 +349,11 @@ export class BalanceSystem {
 
   /**
    * Checks if knockdown should occur, using a provided random function for determinism.
-   * 
+   *
    * @param player - Current player state
    * @param randomFn - Optional random number generator (returns number in [0,1)), defaults to Math.random
    * @returns True if knockdown should occur
-   * 
+   *
    * @public
    * @korean 넘어짐확인
    */
@@ -362,10 +368,10 @@ export class BalanceSystem {
 
   /**
    * Gets bilingual name for balance level.
-   * 
+   *
    * @param level - Balance level
    * @returns Korean and English level names
-   * 
+   *
    * @public
    * @korean 균형이름
    */
@@ -394,10 +400,10 @@ export class BalanceSystem {
 
   /**
    * Gets color indicator for balance level (for UI).
-   * 
+   *
    * @param level - Balance level
    * @returns Hex color code
-   * 
+   *
    * @public
    * @korean 균형색상
    */
@@ -414,13 +420,13 @@ export class BalanceSystem {
 
   /**
    * Checks if balance is low enough to trigger fall animation.
-   * 
+   *
    * Falls occur when balance drops below 20% (FALLING state).
    * This creates realistic knockdown conditions from balance loss.
-   * 
+   *
    * @param player - Current player state
    * @returns True if fall animation should trigger
-   * 
+   *
    * @example
    * ```typescript
    * if (balanceSystem.shouldTriggerFall(player)) {
@@ -432,7 +438,7 @@ export class BalanceSystem {
    *   animationMachine.transitionTo(FALL_TYPE_TO_ANIMATION[fallType]);
    * }
    * ```
-   * 
+   *
    * @public
    * @korean 낙법발동확인
    */
@@ -442,22 +448,22 @@ export class BalanceSystem {
 
   /**
    * Determines which fall animation to play based on attack and stance.
-   * 
+   *
    * Calculates fall direction using:
    * - Attack angle relative to player
    * - Attack height (high/mid/low)
    * - Player's current stance bias
-   * 
+   *
    * Korean falling techniques (낙법):
    * - 전방낙법 (Jeonbang Nakbeop): Forward fall
    * - 후방낙법 (Hubang Nakbeop): Backward fall
    * - 측방낙법 (Cheukbang Nakbeop): Side fall
-   * 
+   *
    * @param player - Current player state
    * @param attackAngle - Angle of attack in radians (0 = from front)
    * @param attackHeight - Attack height: 'high', 'mid', or 'low'
    * @returns Fall type to use for animation
-   * 
+   *
    * @example
    * ```typescript
    * // Player facing forward (0°), attacked from behind (π)
@@ -467,7 +473,7 @@ export class BalanceSystem {
    *   'mid'
    * );
    * // Returns: 'forward' (pushed forward by rear attack)
-   * 
+   *
    * // Low sweep from right side
    * const fallType = balanceSystem.determineFallType(
    *   player,
@@ -476,7 +482,7 @@ export class BalanceSystem {
    * );
    * // Returns: 'side_right' (swept to the side)
    * ```
-   * 
+   *
    * @public
    * @korean 낙법유형결정
    */
@@ -487,20 +493,20 @@ export class BalanceSystem {
   ): FallType {
     // Get player facing angle from position or default to 0
     const playerFacing = 0; // Default facing forward
-    
+
     // Use attack direction to determine fall
     return determineFallDirection(attackAngle, playerFacing, attackHeight);
   }
 
   /**
    * Determines fall type based on player stance when no attack direction available.
-   * 
+   *
    * Uses stance bias to determine likely fall direction when balance is lost
    * without a specific attack (e.g., from fatigue, leg damage accumulation).
-   * 
+   *
    * @param stance - Current trigram stance
    * @returns Fall type based on stance characteristics
-   * 
+   *
    * @example
    * ```typescript
    * // Player in Heaven stance (aggressive forward)
@@ -509,7 +515,7 @@ export class BalanceSystem {
    * );
    * // Returns: 'forward' (Heaven stance has forward bias)
    * ```
-   * 
+   *
    * @public
    * @korean 자세낙법결정
    */
@@ -519,22 +525,22 @@ export class BalanceSystem {
 
   /**
    * Check if player is in a grounded state based on animation state.
-   * 
+   *
    * Player is considered grounded when in any ground_* animation state
    * (ground_prone, ground_supine, ground_side_left, ground_side_right).
-   * 
+   *
    * @param animationState - Current animation state from AnimationStateMachine
    * @returns True if player is on the ground
-   * 
+   *
    * @example
    * ```typescript
    * const isGrounded = balanceSystem.isGrounded("ground_prone");
    * // Returns: true
-   * 
+   *
    * const notGrounded = balanceSystem.isGrounded("idle");
    * // Returns: false
    * ```
-   * 
+   *
    * @public
    * @korean 지면상태확인
    */
@@ -544,22 +550,22 @@ export class BalanceSystem {
 
   /**
    * Get ground state from animation state.
-   * 
+   *
    * Extracts the ground position type from animation state name.
    * Returns null if not in a ground state.
-   * 
+   *
    * @param animationState - Current animation state from AnimationStateMachine
    * @returns Ground state or null if not grounded
-   * 
+   *
    * @example
    * ```typescript
    * const state = balanceSystem.getGroundState("ground_prone");
    * // Returns: "prone"
-   * 
+   *
    * const none = balanceSystem.getGroundState("idle");
    * // Returns: null
    * ```
-   * 
+   *
    * @public
    * @korean 지면자세가져오기
    */
@@ -571,10 +577,14 @@ export class BalanceSystem {
     // Extract ground state from animation state name
     // "ground_prone" -> "prone"
     const groundType = animationState.replace("ground_", "");
-    
+
     // Validate that it's a valid ground state
-    if (groundType === "prone" || groundType === "supine" || 
-        groundType === "side_left" || groundType === "side_right") {
+    if (
+      groundType === "prone" ||
+      groundType === "supine" ||
+      groundType === "side_left" ||
+      groundType === "side_right"
+    ) {
       return groundType as GroundState;
     }
 
@@ -583,25 +593,25 @@ export class BalanceSystem {
 
   /**
    * Check if player can execute recovery based on stamina.
-   * 
+   *
    * Some recovery animations (like roll recovery) require stamina.
    * This checks if player has sufficient stamina for the recovery type.
-   * 
+   *
    * @param player - Current player state
    * @param recoveryType - Type of recovery animation
    * @returns True if player has enough stamina
-   * 
+   *
    * @example
    * ```typescript
    * // Roll recovery costs 20 stamina
    * const canRoll = balanceSystem.canRecoverWithType(player, "roll_recovery");
    * // Returns: true if player.stamina >= 20
-   * 
+   *
    * // Normal recoveries have no cost
    * const canStand = balanceSystem.canRecoverWithType(player, "prone_standup");
    * // Returns: true (no stamina requirement)
    * ```
-   * 
+   *
    * @public
    * @korean 회복가능확인
    */
@@ -610,28 +620,28 @@ export class BalanceSystem {
     recoveryType: RecoveryAnimationType
   ): boolean {
     const config = getRecoveryConfig(recoveryType);
-    
+
     // Check if player has enough stamina
     return player.stamina >= config.staminaCost;
   }
 
   /**
    * Apply stamina cost for recovery animation.
-   * 
+   *
    * Deducts stamina cost from player state for recovery animations
    * that require stamina (like roll recovery).
-   * 
+   *
    * @param player - Current player state
    * @param recoveryType - Type of recovery animation
    * @returns Updated player state with stamina deducted
-   * 
+   *
    * @example
    * ```typescript
    * // Roll recovery costs 20 stamina
    * const recovered = balanceSystem.applyRecoveryCost(player, "roll_recovery");
    * // recovered.stamina = player.stamina - 20
    * ```
-   * 
+   *
    * @public
    * @korean 회복비용적용
    */
@@ -640,7 +650,7 @@ export class BalanceSystem {
     recoveryType: RecoveryAnimationType
   ): PlayerState {
     const config = getRecoveryConfig(recoveryType);
-    
+
     if (config.staminaCost === 0) {
       return player;
     }
@@ -653,25 +663,25 @@ export class BalanceSystem {
 
   /**
    * Get damage multiplier during recovery animation.
-   * 
+   *
    * Some recovery animations (like defensive getup) provide damage reduction.
    * This returns the multiplier to apply to incoming damage.
-   * 
+   *
    * @param recoveryType - Type of recovery animation
    * @param currentFrame - Current frame in the animation
    * @returns Damage multiplier (1.0 = normal, 0.5 = 50% reduction)
-   * 
+   *
    * @example
    * ```typescript
    * // Defensive getup has 50% damage reduction
    * const multiplier = balanceSystem.getRecoveryDamageMultiplier("defensive_getup", 20);
    * // Returns: 0.5 (50% damage reduction)
-   * 
+   *
    * // Normal recoveries have no reduction
    * const normal = balanceSystem.getRecoveryDamageMultiplier("prone_standup", 15);
    * // Returns: 1.0 (full damage)
    * ```
-   * 
+   *
    * @public
    * @korean 회복피해배율
    */
@@ -680,7 +690,7 @@ export class BalanceSystem {
     currentFrame: number
   ): number {
     const config = getRecoveryConfig(recoveryType);
-    
+
     // Only apply damage reduction during vulnerable frames
     if (!isVulnerableFrame(recoveryType, currentFrame)) {
       return 1.0; // No vulnerability = full damage (or no damage if invulnerable)

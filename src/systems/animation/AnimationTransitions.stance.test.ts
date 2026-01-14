@@ -10,7 +10,7 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import {
   calculateStanceDistance,
   determineTransitionType,

@@ -13,7 +13,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import {
   MOVEMENT_BACKWARD_STEP_ANIMATION,
   MOVEMENT_FORWARD_STEP_ANIMATION,

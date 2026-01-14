@@ -15,7 +15,7 @@
  */
 
 import { describe, it, expect, beforeAll, vi } from "vitest";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import {
   calculateTransitionDuration,
   transitionBetweenStances,

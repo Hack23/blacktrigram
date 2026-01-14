@@ -25,7 +25,7 @@ import {
 import {
   ROUNDHOUSE_KICK_ANIMATION,
 } from "./KickAnimations";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 
 describe("TorsoRotationSystem", () => {
   describe("TORSO_CONSTRAINTS", () => {

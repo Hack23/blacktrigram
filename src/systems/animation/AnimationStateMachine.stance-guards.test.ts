@@ -14,7 +14,7 @@ import {
   PlayerAnimationStateMachine,
   DEFAULT_ANIMATION_CONFIGS,
 } from "./AnimationStateMachine";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import type { AnimationState } from "./types";
 
 describe("AnimationStateMachine - Stance Guard Extensions", () => {

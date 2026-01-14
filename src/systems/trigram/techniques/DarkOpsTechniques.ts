@@ -19,7 +19,7 @@ import {
   PlayerArchetype,
   TrigramStance,
 } from "../../../types/common";
-import { AnimationType } from "../../animation/MartialArtsAnimationBuilder";
+import { AnimationType } from "../../animation";
 
 // =====================================================
 // DARK OPS UNIT DEFINITIONS

@@ -10,8 +10,8 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { TrigramStance } from "../../types/common";
-import type { MuscleGroupName } from "../../types/muscle";
+import { TrigramStance } from "@/types/common";
+import type { MuscleGroupName } from "@/types/muscle";
 import {
   getMuscleActivationForTechnique,
   getMuscleTensionForStance,

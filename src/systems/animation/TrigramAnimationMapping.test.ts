@@ -22,7 +22,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import { getAnimationLaterality } from "./LateralityTransform";
 import {
   getAllGuardPoses,

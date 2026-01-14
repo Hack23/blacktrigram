@@ -9,12 +9,12 @@
  * @korean 낙법통합
  */
 
-import type { AnimationState, FallType } from "../animation/types";
+import type { AnimationState, FallType } from "../animation/core/types";
 import {
   FALL_TYPE_TO_ANIMATION,
   isFallState,
   isGroundState,
-} from "../animation/types";
+} from "../animation/core/types";
 import type { CombatSystem } from "../CombatSystem";
 import type { PlayerState } from "../player";
 

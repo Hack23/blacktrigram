@@ -11,11 +11,11 @@ export {
   AnimationPresets,
   BoneRotationHelpers,
   KeyframeFactories,
-} from "../AnimationBuilder";
+} from "./AnimationBuilder";
 
-export * from "../MartialArtsAnimationBuilder";
+export * from "./MartialArtsAnimationBuilder";
 
-export { KeyframeConfig } from "../KeyframeConfig";
+export { KeyframeConfig } from "./KeyframeConfig";
 export {
   applyKeyframeToRig,
   blendKeyframes,
@@ -29,28 +29,25 @@ export {
   interpolatePosition,
   interpolateRotation,
   updateAnimation,
-} from "../KeyframeInterpolation";
+} from "./KeyframeInterpolation";
 
 export {
   applyHandPoseToConfig,
   applyHandPoseToKeyframe,
-} from "../HandPoseApplicator";
+} from "./HandPoseApplicator";
 export {
   applyHighPeakPhaseToConfig,
   applyKickPhaseToConfig,
   applyRoundhousePhaseToConfig,
   applySideKickPhaseToConfig,
   getKickPhase,
-} from "../KickPhaseApplicator";
+} from "./KickPhaseApplicator";
 export {
   applyMartialPoseToConfig,
   applyMartialPoseToKeyframe,
   getMartialPose,
-} from "../MartialPoseApplicator";
-export {
-  applyPunchPhaseToConfig,
-  getPunchPhase,
-} from "../PunchPhaseApplicator";
+} from "./MartialPoseApplicator";
+export { applyPunchPhaseToConfig, getPunchPhase } from "./PunchPhaseApplicator";
 
 export {
   TECHNIQUE_HAND_POSES,
@@ -58,15 +55,16 @@ export {
   getHandPose,
   getTechniqueHandPose,
   updateHandAnimationState,
-} from "../HandPoses";
-export * from "../KoreanGuardPositions";
-export * from "../MartialArtsConstants";
+} from "./HandPoses";
+export * from "./KoreanGuardPositions";
+export * from "./MartialArtsConstants";
 
 export {
   BONE_CHAINS,
   JOINT_CONSTRAINTS,
   TORSO_CONSTRAINTS,
   applyJointConstraint,
+  calculateHipRotationPowerModifier,
   createBone,
   createHandBones,
   createHumanoidRig,
@@ -76,4 +74,4 @@ export {
   getBoneWorldRotation,
   resetBoneToRestPose,
   resetRigToRestPose,
-} from "../SkeletonRig";
+} from "./SkeletonRig";

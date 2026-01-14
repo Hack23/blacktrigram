@@ -14,7 +14,7 @@ import {
   JOJIK_PHYSICAL,
   MUSA_PHYSICAL,
 } from "../../data/archetypePhysicalAttributes";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import {
   applyJointConstraint,
   BONE_CHAINS,

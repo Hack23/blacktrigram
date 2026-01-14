@@ -1,14 +1,14 @@
 /**
  * Player state and related types for Korean martial arts combat system.
- * 
+ *
  * **Korean**: 플레이어 시스템 (Player System)
- * 
+ *
  * This module defines the complete state structure for combat participants,
  * including resources (Health, Ki, Stamina), combat attributes, positioning,
  * and tracking for vital point strikes and statistics.
- * 
+ *
  * ## Player State Structure
- * 
+ *
  * The player state encompasses:
  * - **Identity**: Name, archetype, unique ID
  * - **Resources**: Health, Ki (氣), Stamina, Energy
@@ -17,14 +17,14 @@
  * - **Position**: 2D coordinates in combat arena
  * - **Effects**: Status effects and active modifiers
  * - **Statistics**: Match performance metrics
- * 
+ *
  * @module systems/player
  * @category Player & Archetypes
  * @korean 플레이어
  */
 
+import type { BodyFacing } from "@/systems/animation/core/types";
 import { StatusEffect } from "@/systems/types";
-import type { BodyFacing } from "@/systems/animation/types";
 import {
   CombatState,
   KoreanText,
@@ -35,34 +35,34 @@ import {
 
 /**
  * Complete player state for Korean martial arts combat.
- * 
+ *
  * **Korean**: 플레이어 상태 (Player State)
- * 
+ *
  * Represents the complete state of a combatant including physical resources,
  * combat attributes, current stance, position, and accumulated statistics.
  * All properties are readonly to enforce immutable state updates.
- * 
+ *
  * ## Resource System
- * 
+ *
  * - **Health**: Physical integrity (0 = defeated)
  * - **Ki (氣)**: Spiritual energy for techniques and stance transitions
  * - **Stamina**: Physical endurance for sustained combat
  * - **Energy**: Action points for moves per turn
- * 
+ *
  * ## Combat Attributes
- * 
+ *
  * - **Attack Power**: Base damage output modifier
  * - **Defense**: Damage reduction and blocking effectiveness
  * - **Speed**: Action priority and dodge capability
  * - **Technique**: Precision for vital point targeting
- * 
+ *
  * @example
  * ```typescript
  * const player: PlayerState = {
  *   id: "player-1",
  *   name: { korean: "이순신", english: "Yi Sun-sin" },
  *   archetype: PlayerArchetype.MUSA,
- *   
+ *
  *   // Resources
  *   health: 100,
  *   maxHealth: 100,
@@ -72,24 +72,24 @@ import {
  *   maxStamina: 100,
  *   energy: 100,
  *   maxEnergy: 100,
- *   
+ *
  *   // Attributes
  *   attackPower: 15,
  *   defense: 12,
  *   speed: 10,
  *   technique: 14,
- *   
+ *
  *   // Combat state
  *   currentStance: TrigramStance.GEON,
  *   combatState: CombatState.IDLE,
  *   position: { x: 100, y: 200 },
  *   isBlocking: false,
  *   isStunned: false,
- *   
+ *
  *   // ... other properties
  * };
  * ```
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 플레이어상태
@@ -101,12 +101,12 @@ export interface PlayerState {
   readonly name: KoreanText;
   /** Player combat archetype (무사, 암살자, etc.) */
   readonly archetype: PlayerArchetype;
-  
+
   // Physical attributes
-  /** 
+  /**
    * Physical body attributes affecting combat calculations.
    * **Korean**: 신체 속성 (Body Attributes)
-   * 
+   *
    * These attributes determine reach, movement speed, damage output,
    * defense capability, and stamina based on realistic body dimensions
    * and composition. Loaded from archetype defaults on player creation.
@@ -237,11 +237,11 @@ export interface PlayerState {
 
 /**
  * Data required to create a new player.
- * 
+ *
  * **Korean**: 플레이어 생성 데이터
- * 
+ *
  * Used when initializing a new combatant with customizations.
- * 
+ *
  * @example
  * ```typescript
  * const creationData: PlayerCreationData = {
@@ -254,7 +254,7 @@ export interface PlayerState {
  *   }
  * };
  * ```
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 플레이어생성
@@ -277,11 +277,11 @@ export interface PlayerCreationData {
 
 /**
  * Player statistics accumulated over a match.
- * 
+ *
  * **Korean**: 플레이어 경기 통계
- * 
+ *
  * Tracks performance metrics for a single combat match.
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 경기통계
@@ -313,11 +313,11 @@ export interface PlayerMatchStats {
 
 /**
  * Partial update data for player state.
- * 
+ *
  * **Korean**: 플레이어 업데이트 데이터
- * 
+ *
  * Allows updating specific player properties without replacing entire state.
- * 
+ *
  * @example
  * ```typescript
  * const update: PlayerUpdateData = {
@@ -326,7 +326,7 @@ export interface PlayerMatchStats {
  *   currentStance: TrigramStance.GAM
  * };
  * ```
- * 
+ *
  * @public
  * @category Player & Archetypes
  */
@@ -334,12 +334,12 @@ export type PlayerUpdateData = Partial<PlayerState>;
 
 /**
  * Minimal player state with only essential properties.
- * 
+ *
  * **Korean**: 최소 플레이어 상태
- * 
+ *
  * Simplified player state for systems that don't require full combat data.
  * Useful for UI displays and simple calculations.
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 최소상태

@@ -14,7 +14,7 @@ import {
   DEFAULT_ANIMATION_CONFIGS,
 } from "./AnimationStateMachine";
 import { AnimationPriority } from "./types";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance } from "@/types/common";
 import {
   // GEON (Heaven) defenses
   GEON_HIGH_BLOCK,

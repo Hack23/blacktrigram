@@ -6,7 +6,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import { getAnimationForTechnique } from "./AnimationRegistry";
 import {
   ATTACK_ANIMATIONS,

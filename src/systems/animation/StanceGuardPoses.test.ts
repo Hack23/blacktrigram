@@ -12,8 +12,8 @@
 
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { TrigramStance } from "../../types/common";
-import type { StanceGuardPose } from "../../types/skeletal";
+import { TrigramStance } from "@/types/common";
+import type { StanceGuardPose } from "@/types/skeletal";
 import {
   GAM_WATER_GUARD_POSE,
   GAN_MOUNTAIN_GUARD_POSE,

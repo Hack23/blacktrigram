@@ -22,7 +22,7 @@ import {
   DEFAULT_FACIAL_DAMAGE,
   type FacialDamageState,
   type ExpressionState,
-} from "../../types/facial";
+} from "@/types/facial";
 
 describe("FacialExpressions", () => {
   describe("getExpressionFromCombatState", () => {

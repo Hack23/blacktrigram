@@ -10,7 +10,7 @@ import {
   KeyframeFactories,
   BoneRotationHelpers,
 } from "./AnimationBuilder";
-import { BoneName } from "../../types/skeletal";
+import { BoneName } from "@/types/skeletal";
 
 describe("AnimationBuilder", () => {
   describe("basic animation creation", () => {

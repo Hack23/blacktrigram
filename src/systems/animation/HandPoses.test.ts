@@ -11,7 +11,7 @@
 
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { HandPoseType } from "../../types/hand-animation";
+import { HandPoseType } from "@/types/hand-animation";
 import {
   createInitialHandAnimationState,
   FIST_POSE,
