@@ -43,27 +43,27 @@ describe('Low-End Mobile Optimization', () => {
 
   describe('Combat Layout Constants', () => {
     it('should use reduced padding for extra-small devices', () => {
-      const constants = getCombatLayoutConstants(375);
-      expect(constants.padding).toBe(8); // Extra-small padding
+      const constants = getCombatLayoutConstants(375, true); // Pass isMobile=true
+      expect(constants.padding).toBe(8); // Extra-small padding for <380px
     });
 
     it('should use reduced HUD height for extra-small devices', () => {
-      const constants = getCombatLayoutConstants(360);
+      const constants = getCombatLayoutConstants(360, true); // Pass isMobile=true
       expect(constants.hudHeight).toBe(85); // Extra-small HUD
     });
 
     it('should use reduced controls height for extra-small devices', () => {
-      const constants = getCombatLayoutConstants(320);
+      const constants = getCombatLayoutConstants(320, true); // Pass isMobile=true
       expect(constants.controlsHeight).toBe(150); // Extra-small controls
     });
 
     it('should ensure minimum button height for WCAG AA (48px)', () => {
-      const constants = getCombatLayoutConstants(375);
+      const constants = getCombatLayoutConstants(375, true); // Pass isMobile=true
       expect(constants.buttonHeight).toBeGreaterThanOrEqual(48);
     });
 
     it('should use standard mobile values for devices ≥380px', () => {
-      const constants = getCombatLayoutConstants(400);
+      const constants = getCombatLayoutConstants(400, true); // Pass isMobile=true
       expect(constants.padding).toBe(10);
       expect(constants.hudHeight).toBe(95);
       expect(constants.controlsHeight).toBe(160);

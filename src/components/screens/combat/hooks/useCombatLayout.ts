@@ -78,9 +78,10 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Enhanced with tablet-specific values for better responsive support
   // Updated mobile controls height for new sizing: D-Pad (140px), buttons (80px+70px)
   // Uses centralized responsive helper for consistent scaling
+  // Now passes isMobile flag to ensure high-res mobile devices get mobile layouts
   const layoutConstants = useMemo<LayoutConstants>(
-    () => getCombatLayoutConstants(width),
-    [width]
+    () => getCombatLayoutConstants(width, isMobile),
+    [width, isMobile]
   );
 
   // Fixed player positions for 2-player combat with proper bounds

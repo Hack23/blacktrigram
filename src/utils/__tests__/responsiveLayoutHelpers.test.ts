@@ -97,7 +97,7 @@ describe('responsiveLayoutHelpers', () => {
 
   describe('getCombatLayoutConstants', () => {
     it('should return extra-small mobile combat layout for width < 380', () => {
-      const layout = getCombatLayoutConstants(375);
+      const layout = getCombatLayoutConstants(375, true); // Pass isMobile=true
       
       // Extra-small device optimization (<380px)
       expect(layout.padding).toBe(8);
@@ -109,7 +109,7 @@ describe('responsiveLayoutHelpers', () => {
     });
 
     it('should return standard mobile combat layout for width 380-767', () => {
-      const layout = getCombatLayoutConstants(400);
+      const layout = getCombatLayoutConstants(400, true); // Pass isMobile=true
       
       // Standard mobile (≥380px)
       expect(layout.padding).toBe(10);
@@ -120,8 +120,30 @@ describe('responsiveLayoutHelpers', () => {
       expect(layout.buttonHeight).toBe(55);
     });
 
+    it('should return mobile layout for high-res mobile devices (2K+, Super HD)', () => {
+      // Motorola Edge 60 Pro: 2712px width, but isMobile=true
+      const layoutMotorola = getCombatLayoutConstants(2712, true);
+      
+      // Should get mobile layout values, NOT xlarge desktop values
+      expect(layoutMotorola.padding).toBe(10); // Mobile value (not xlarge 10)
+      expect(layoutMotorola.hudHeight).toBe(95); // Mobile value (not xlarge 140)
+      expect(layoutMotorola.controlsHeight).toBe(160); // Mobile value (not xlarge 180)
+      expect(layoutMotorola.footerHeight).toBe(34); // Mobile value (not xlarge 40)
+      expect(layoutMotorola.healthBarHeight).toBe(48); // Mobile value (not xlarge 70)
+      
+      // Samsung Galaxy S23 Ultra: 3088px width
+      const layoutSamsung = getCombatLayoutConstants(3088, true);
+      expect(layoutSamsung.hudHeight).toBe(95); // Mobile, not xlarge
+      expect(layoutSamsung.controlsHeight).toBe(160); // Mobile, not xlarge
+      
+      // Verify these are significantly different from desktop values
+      const desktopLayout = getCombatLayoutConstants(2712, false);
+      expect(layoutMotorola.hudHeight).toBeLessThan(desktopLayout.hudHeight);
+      expect(layoutMotorola.controlsHeight).toBeLessThan(desktopLayout.controlsHeight);
+    });
+
     it('should return xlarge combat layout for width >= 1920 (4K)', () => {
-      const layout = getCombatLayoutConstants(3840);
+      const layout = getCombatLayoutConstants(3840, false); // Desktop, not mobile
       
       expect(layout.padding).toBe(10);
       expect(layout.hudHeight).toBe(140);
@@ -131,11 +153,11 @@ describe('responsiveLayoutHelpers', () => {
     });
 
     it('should follow progressive scaling for HUD elements', () => {
-      const mobile = getCombatLayoutConstants(375);
-      const tablet = getCombatLayoutConstants(800);
-      const desktop = getCombatLayoutConstants(1200);
-      const large = getCombatLayoutConstants(1600);
-      const xlarge = getCombatLayoutConstants(3840);
+      const mobile = getCombatLayoutConstants(375, true);
+      const tablet = getCombatLayoutConstants(800, false);
+      const desktop = getCombatLayoutConstants(1200, false);
+      const large = getCombatLayoutConstants(1600, false);
+      const xlarge = getCombatLayoutConstants(3840, false);
 
       // HUD height should increase progressively (no tablet optimization)
       expect(mobile.hudHeight).toBeLessThan(tablet.hudHeight);
@@ -151,10 +173,10 @@ describe('responsiveLayoutHelpers', () => {
     });
 
     it('should use intentional tablet optimizations for controls and footer', () => {
-      const extraSmall = getCombatLayoutConstants(375); // Extra-small mobile
-      const mobile = getCombatLayoutConstants(400); // Standard mobile
-      const tablet = getCombatLayoutConstants(800);
-      const desktop = getCombatLayoutConstants(1200);
+      const extraSmall = getCombatLayoutConstants(375, true); // Extra-small mobile
+      const mobile = getCombatLayoutConstants(400, true); // Standard mobile
+      const tablet = getCombatLayoutConstants(800, false); // Tablet (not mobile)
+      const desktop = getCombatLayoutConstants(1200, false); // Desktop
 
       // Extra-small (portrait, <380px): 150px optimized for low-end devices
       // Mobile (portrait, ≥380px): 160px for thumb reach

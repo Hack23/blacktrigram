@@ -15,7 +15,7 @@
  * @category Performance
  * @korean 성능등급
  */
-export type PerformanceTier = 'low' | 'medium' | 'high';
+export type PerformanceTier = 'low' | 'medium' | 'high' | 'mobile-high';
 
 /**
  * Performance settings for different device tiers
@@ -44,6 +44,7 @@ export interface PerformanceSettings {
  * 
  * Low tier: Extra-small mobile (<380px), older devices, budget hardware
  * Medium tier: Standard mobile (380-768px), tablets
+ * Mobile-high tier: High-resolution mobile devices (≥768px, 2K+, Motorola Edge, etc.)
  * High tier: Desktop, large displays, modern hardware
  * 
  * @constant
@@ -67,6 +68,14 @@ export const PERFORMANCE_SETTINGS_BY_TIER: Record<PerformanceTier, PerformanceSe
     postProcessing: false, // Keep disabled for mobile
     targetFPS: 55,
   },
+  'mobile-high': {
+    maxParticles: 50, // Between medium and high
+    shadowMapSize: 1536, // Between 1024 and 2048
+    antialias: true,
+    dpr: [1, 3.5], // Support up to 3.5x for Super HD displays (2712x1220)
+    postProcessing: false, // Keep disabled for mobile battery life
+    targetFPS: 55, // Realistic for high-end mobile
+  },
   high: {
     maxParticles: 100,
     shadowMapSize: 2048,
@@ -80,14 +89,19 @@ export const PERFORMANCE_SETTINGS_BY_TIER: Record<PerformanceTier, PerformanceSe
 /**
  * Determine performance tier based on device characteristics
  * 
+ * Now properly handles high-resolution mobile devices (Motorola Edge 60 Pro, etc.)
+ * by checking isMobile flag before using screen width to determine tier.
+ * 
  * @param screenWidth - Screen width in pixels
- * @param isMobile - Whether device is mobile
+ * @param isMobile - Whether device is mobile (from user-agent detection)
  * @returns Performance tier
  * 
  * @example
  * ```typescript
- * getPerformanceTier(320, true);  // 'low' (extra-small mobile)
- * getPerformanceTier(768, false); // 'medium' (tablet)
+ * getPerformanceTier(320, true);   // 'low' (extra-small mobile)
+ * getPerformanceTier(768, true);   // 'medium' (standard mobile)
+ * getPerformanceTier(2712, true);  // 'mobile-high' (Motorola Edge 60 Pro, 2K+ mobile)
+ * getPerformanceTier(768, false);  // 'medium' (tablet)
  * getPerformanceTier(1920, false); // 'high' (desktop)
  * ```
  * 
@@ -98,14 +112,26 @@ export function getPerformanceTier(
   screenWidth: number,
   isMobile: boolean
 ): PerformanceTier {
-  // Extra-small mobile devices (<380px) are always low tier
-  if (isMobile && screenWidth < 380) {
-    return 'low';
+  // Mobile device tiers (user-agent detection takes priority)
+  if (isMobile) {
+    // Extra-small mobile devices (<380px) are always low tier
+    if (screenWidth < 380) {
+      return 'low';
+    }
+    
+    // High-resolution mobile devices (≥768px, 2K+ displays like Motorola Edge 60 Pro)
+    // Get optimized settings for Super HD mobile displays
+    if (screenWidth >= 768) {
+      return 'mobile-high';
+    }
+    
+    // Standard mobile devices (380-768px)
+    return 'medium';
   }
   
-  // Standard mobile and tablets are medium tier
-  if (isMobile || screenWidth < 1024) {
-    return 'medium';
+  // Non-mobile devices (tablets and desktop)
+  if (screenWidth < 1024) {
+    return 'medium'; // Tablet tier
   }
   
   // Desktop and large displays are high tier
@@ -115,14 +141,29 @@ export function getPerformanceTier(
 /**
  * Get performance settings for current device
  * 
+ * Properly handles high-resolution mobile devices (2K+, Super HD) by using
+ * the isMobile flag from user-agent detection before screen width classification.
+ * 
+ * This ensures devices like Motorola Edge 60 Pro (2712x1220) get mobile-optimized
+ * settings with proper dpr support up to 3.5x for their Super HD displays.
+ * 
  * @param screenWidth - Screen width in pixels
- * @param isMobile - Whether device is mobile
+ * @param isMobile - Whether device is mobile (from user-agent detection)
  * @returns Performance settings object
  * 
  * @example
  * ```typescript
+ * // Standard mobile (iPhone SE)
  * const settings = getPerformanceSettings(375, true);
- * // { maxParticles: 20, shadowMapSize: 512, ... }
+ * // { maxParticles: 40, shadowMapSize: 1024, dpr: [1, 2], ... }
+ * 
+ * // High-res mobile (Motorola Edge 60 Pro)
+ * const settingsHD = getPerformanceSettings(2712, true);
+ * // { maxParticles: 50, shadowMapSize: 1536, dpr: [1, 3.5], ... }
+ * 
+ * // Desktop
+ * const settingsDesktop = getPerformanceSettings(1920, false);
+ * // { maxParticles: 100, shadowMapSize: 2048, dpr: [1, 2], ... }
  * 
  * <Canvas
  *   dpr={settings.dpr}
