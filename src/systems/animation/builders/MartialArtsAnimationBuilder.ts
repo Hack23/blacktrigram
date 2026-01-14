@@ -11,12 +11,9 @@
  * @korean 무술애니메이션빌더
  */
 
-import * as THREE from "three";
-import type {
-  AnimationKeyframe,
-  SkeletalAnimation,
-} from "@/types/skeletal";
+import type { AnimationKeyframe, SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
+import * as THREE from "three";
 
 // Import constants from dedicated constants module
 import {
@@ -53,6 +50,14 @@ import { applyMartialPoseToKeyframe } from "./MartialPoseApplicator";
 
 // Import punch phase utilities
 import { applyPunchPhaseToConfig } from "./PunchPhaseApplicator";
+
+// Import trigram guard applicator for full-body stance poses
+import { TrigramStance } from "@/types/common";
+import {
+  applyTrigramGuardToConfig,
+  getGuardArmBase,
+  type TrigramGuardOptions,
+} from "./TrigramGuardApplicator";
 
 // Re-export constants for backward compatibility
 export { AnimationType, HAND_POSES, KICK_PHASES, MARTIAL_POSES, PUNCH_PHASES };
@@ -2079,6 +2084,90 @@ export class MartialArtsAnimationBuilder {
    */
   withKoreanLowGuard(side: "left" | "right" | "both" = "both"): this {
     return this.applyKoreanGuard("LOW_GUARD", side);
+  }
+
+  /**
+   * Apply trigram-specific guard pose (팔괘자세)
+   *
+   * Sets the complete body position for the specified trigram stance,
+   * including arms, legs, torso, and pelvis. Unlike generic guards,
+   * this applies the authentic Korean martial arts posture for each
+   * of the eight trigram stances.
+   *
+   * Use this for:
+   * - Idle stance animations
+   * - Returning to guard after techniques
+   * - Walk/run animations (arms only mode)
+   *
+   * @param stance - Trigram stance (e.g., TrigramStance.GEON)
+   * @param options - Application options (what body parts to apply)
+   * @returns this for chaining
+   *
+   * @example
+   * ```typescript
+   * // Full guard pose in idle stance
+   * builder.at(0).withTrigramGuard(TrigramStance.GEON);
+   *
+   * // Arms only for walk animation (legs handled separately)
+   * builder.at(0).withTrigramGuard(TrigramStance.TAE, {
+   *   includeLegs: false,
+   *   includePelvis: false
+   * });
+   * ```
+   *
+   * @korean 팔괘방어자세
+   */
+  withTrigramGuard(stance: TrigramStance, options?: TrigramGuardOptions): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      const kf = new KeyframeConfig();
+      applyTrigramGuardToConfig(kf, stance, options);
+
+      // Merge rotations into last keyframe
+      for (const [bone, rotation] of kf.rotations.entries()) {
+        lastKf.boneRotations.set(bone, rotation);
+      }
+
+      // Apply fist pose to hands in guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, "both");
+    }
+    return this;
+  }
+
+  /**
+   * Get trigram guard arm positions for locomotion animations
+   *
+   * Returns the base arm positions for the specified trigram's guard pose.
+   * Use this when building walk/run animations that need to maintain
+   * the trigram's arm guard while adding swing motion.
+   *
+   * @param stance - Trigram stance
+   * @returns Left and right arm base rotations (shoulder, elbow)
+   *
+   * @example
+   * ```typescript
+   * const arms = builder.getTrigramArmGuard(TrigramStance.GEON);
+   * // Add swing to left shoulder while keeping guard shape
+   * kf.rotate(BoneName.SHOULDER_L,
+   *   arms.left.shoulder[0] + swingOffset,
+   *   arms.left.shoulder[1],
+   *   arms.left.shoulder[2]
+   * );
+   * ```
+   *
+   * @korean 팔괘팔자세가져오기
+   */
+  static getTrigramArmGuard(stance: TrigramStance): {
+    left: {
+      shoulder: [number, number, number];
+      elbow: [number, number, number];
+    };
+    right: {
+      shoulder: [number, number, number];
+      elbow: [number, number, number];
+    };
+  } {
+    return getGuardArmBase(stance);
   }
 
   /**
