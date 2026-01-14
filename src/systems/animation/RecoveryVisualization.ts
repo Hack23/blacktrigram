@@ -17,6 +17,14 @@ import {
 } from "./RecoveryPhaseEnhancer";
 
 /**
+ * Chart symbols for ASCII visualization
+ */
+const CHART_SYMBOLS = {
+  RECOVERY: '●',
+  EXECUTION: '○',
+} as const;
+
+/**
  * Recovery phase timeline point for visualization
  * 
  * **Korean**: 복귀 타임라인 포인트
@@ -261,9 +269,9 @@ export function generateTensionChart(
       if (Math.abs(point.tension - threshold) < (1 / height)) {
         // Mark recovery phases
         if (point.time >= viz.recoveryStartTime && point.time < viz.recoveryEndTime) {
-          line += '●'; // Recovery phase
+          line += CHART_SYMBOLS.RECOVERY; // Recovery phase
         } else {
-          line += '○'; // Execution phase
+          line += CHART_SYMBOLS.EXECUTION; // Execution phase
         }
       } else {
         line += ' ';
@@ -279,7 +287,7 @@ export function generateTensionChart(
   
   // Legend
   lines.push('');
-  lines.push('Legend: ○ Execution  ● Recovery Phase');
+  lines.push(`Legend: ${CHART_SYMBOLS.EXECUTION} Execution  ${CHART_SYMBOLS.RECOVERY} Recovery Phase`);
   
   return lines.join('\n');
 }

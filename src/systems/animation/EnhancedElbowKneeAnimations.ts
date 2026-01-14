@@ -20,6 +20,28 @@ import { addRecoveryPhase } from "./RecoveryPhaseEnhancer";
 import type { SkeletalAnimation } from "../../types/skeletal";
 
 /**
+ * Close-range recovery tension values
+ * Optimized for rapid repositioning after elbow/knee techniques
+ */
+const CLOSE_RANGE_TENSION = {
+  ELBOW_STRIKE: {
+    intermediateReturn: 0.7,
+    intermediate: 0.35,
+    final: 0.08,
+  },
+  ELBOW_UPPERCUT: {
+    intermediateReturn: 0.75,
+    intermediate: 0.38,
+    final: 0.09,
+  },
+  KNEE_STRIKE: {
+    intermediateReturn: 0.85,
+    intermediate: 0.42,
+    final: 0.12,
+  },
+} as const;
+
+/**
  * Enhanced elbow strike animation with proper recovery phase
  * 
  * **Korean**: 복귀 단계가 포함된 팔꿈치치기
@@ -38,10 +60,10 @@ export const ELBOW_STRIKE_ANIMATION_ENHANCED: SkeletalAnimation = addRecoveryPha
   ELBOW_STRIKE_ANIMATION,
   {
     duration: 0.16, // Very fast recovery for close-range
-    intermediateReturnPercent: 0.7, // Rapid return
+    intermediateReturnPercent: CLOSE_RANGE_TENSION.ELBOW_STRIKE.intermediateReturn,
     peakMuscleTension: 1.0, // Full power strike
-    intermediateMuscleTension: 0.35,
-    finalMuscleTension: 0.08, // Ready for immediate follow-up
+    intermediateMuscleTension: CLOSE_RANGE_TENSION.ELBOW_STRIKE.intermediate,
+    finalMuscleTension: CLOSE_RANGE_TENSION.ELBOW_STRIKE.final,
   }
 );
 
@@ -64,10 +86,10 @@ export const ELBOW_UPPERCUT_ANIMATION_ENHANCED: SkeletalAnimation = addRecoveryP
   ELBOW_UPPERCUT_ANIMATION,
   {
     duration: 0.17, // Fast recovery
-    intermediateReturnPercent: 0.75, // Controlled return from vertical
+    intermediateReturnPercent: CLOSE_RANGE_TENSION.ELBOW_UPPERCUT.intermediateReturn,
     peakMuscleTension: 1.0, // Explosive vertical power
-    intermediateMuscleTension: 0.38,
-    finalMuscleTension: 0.09,
+    intermediateMuscleTension: CLOSE_RANGE_TENSION.ELBOW_UPPERCUT.intermediate,
+    finalMuscleTension: CLOSE_RANGE_TENSION.ELBOW_UPPERCUT.final,
   }
 );
 
@@ -90,10 +112,10 @@ export const KNEE_STRIKE_ANIMATION_ENHANCED: SkeletalAnimation = addRecoveryPhas
   KNEE_STRIKE_ANIMATION,
   {
     duration: 0.19, // Moderate recovery for balance
-    intermediateReturnPercent: 0.85, // Complete balance restoration
+    intermediateReturnPercent: CLOSE_RANGE_TENSION.KNEE_STRIKE.intermediateReturn,
     peakMuscleTension: 1.0, // Maximum driving power
-    intermediateMuscleTension: 0.42, // Maintain core stability
-    finalMuscleTension: 0.12, // Stable grounded position
+    intermediateMuscleTension: CLOSE_RANGE_TENSION.KNEE_STRIKE.intermediate,
+    finalMuscleTension: CLOSE_RANGE_TENSION.KNEE_STRIKE.final,
   }
 );
 
