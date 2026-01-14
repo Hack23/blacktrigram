@@ -9,7 +9,8 @@
  * @korean 뼈렌더러컴포넌트
  */
 
-import React, { useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
+import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
@@ -256,6 +257,28 @@ const SingleBone: React.FC<{
   physicalAttributes,
   archetype,
 }) => {
+  // Ref for the bone group to update rotation imperatively
+  const groupRef = useRef<THREE.Group>(null);
+
+  // Sync bone rotation from animation system each frame
+  // This is necessary because bone.rotation is mutated in place by batchUpdateBones
+  // and React doesn't detect the mutation (no state/prop change)
+  useFrame(() => {
+    if (groupRef.current) {
+      // Apply current bone rotation and position from animation system
+      groupRef.current.rotation.set(
+        bone.rotation.x,
+        bone.rotation.y,
+        bone.rotation.z
+      );
+      groupRef.current.position.set(
+        bone.position.x,
+        bone.position.y,
+        bone.position.z
+      );
+    }
+  });
+
   // Calculate bone direction and length
   const boneTransform = useMemo(() => {
     const length = bone.length;
@@ -293,8 +316,7 @@ const SingleBone: React.FC<{
 
   return (
     <group
-      position={bone.position.toArray()}
-      rotation={[bone.rotation.x, bone.rotation.y, bone.rotation.z]}
+      ref={groupRef}
       scale={bone.scale.toArray()}
       name={`bone-${bone.name}`}
     >

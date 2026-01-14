@@ -290,6 +290,25 @@ describe("Enhanced Animation Registry Integration", () => {
       console.log("stance_geon bone names:", boneNames);
       console.log("Total bones:", boneNames.length);
 
+      // Log first keyframe rotations for key bones
+      const shoulderL = firstKeyframe.boneRotations.get("shoulder_L");
+      const hipL = firstKeyframe.boneRotations.get("hip_L");
+      const pelvis = firstKeyframe.boneRotations.get("pelvis");
+      console.log(
+        "shoulder_L rotation:",
+        shoulderL?.x,
+        shoulderL?.y,
+        shoulderL?.z
+      );
+      console.log("hip_L rotation:", hipL?.x, hipL?.y, hipL?.z);
+      console.log("pelvis rotation:", pelvis?.x, pelvis?.y, pelvis?.z);
+
+      // Log foot positions
+      const footLPos = firstKeyframe.bonePositions?.get("foot_L");
+      const footRPos = firstKeyframe.bonePositions?.get("foot_R");
+      console.log("foot_L position:", footLPos?.x, footLPos?.y, footLPos?.z);
+      console.log("foot_R position:", footRPos?.x, footRPos?.y, footRPos?.z);
+
       // Bones should include arm and leg bones with dramatic rotations
       expect(boneNames.length).toBeGreaterThan(5);
     });
