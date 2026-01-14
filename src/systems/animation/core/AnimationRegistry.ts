@@ -101,6 +101,7 @@ import {
   SHOULDER_MANIPULATION_ANIMATION,
   SLAM_ANIMATION,
   SMALL_CIRCLE_LOCK_ANIMATION,
+  SUPLEX_ANIMATION,
   SWEEP_DEFENSE_ANIMATION,
   TAKEDOWN_ANIMATION,
   THROW_ANIMATION,
@@ -264,7 +265,7 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     // Son (손)
     [AnimationType.CONTINUOUS_DEFLECTION, SON_CONTINUOUS_DEFLECTION],
     [AnimationType.PRESSURE_COUNTER, SON_PRESSURE_COUNTER],
-    [AnimationType.RAPID_FOOTWORK, FLOWING_PUSH_ANIMATION], // Placeholder/Close Match
+    [AnimationType.RAPID_FOOTWORK, FLOWING_PUSH_ANIMATION], // Placeholder until dedicated footwork
     [AnimationType.PENETRATING_PALM_RUSH, FLOWING_PUSH_ANIMATION],
     [AnimationType.PRESSURE_POINT_CHAIN, RAPID_BARRAGE_ANIMATION],
 
@@ -272,7 +273,6 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.WATER_COUNTER, GAM_REDIRECTION_COUNTER],
     [AnimationType.CIRCULAR_PARRY, GAM_FLOW_DEFENSE],
     [AnimationType.FLOW_DEFENSE, GAM_FLOW_DEFENSE],
-    [AnimationType.FLOWING_DEFENSE, GAM_FLOW_DEFENSE],
     [AnimationType.FLOWING_RIVER_STRIKE, FLOWING_PUSH_ANIMATION],
     [AnimationType.REDIRECTION_COUNTER, GAM_REDIRECTION_COUNTER],
     [AnimationType.TIDAL_WAVE_PALM, PALM_STRIKE_ANIMATION],
@@ -280,12 +280,43 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
 
     // Gan (간)
     [AnimationType.ROCK_COUNTER, GAN_COUNTER_FORTRESS],
-    [AnimationType.IMMOVABLE_STANCE, GAN_IMMOVABLE_BLOCK],
     [AnimationType.ROCK_DEFENSE, GAN_IMMOVABLE_BLOCK],
     [AnimationType.AVALANCHE_HAMMER, HAMMER_FIST_ANIMATION],
     [AnimationType.COUNTER_FORTRESS, GAN_COUNTER_FORTRESS],
     [AnimationType.FORTRESS_COUNTER_STRIKE, COUNTER_STRIKE_ANIMATION],
     [AnimationType.STONE_WALL_THRUST, PUSH_KICK_ANIMATION],
+
+    // General Grappling
+    [AnimationType.TAKEDOWN, TAKEDOWN_ANIMATION],
+    [AnimationType.JOINT_LOCK, JOINT_LOCK_DEFENSE_ANIMATION],
+    [AnimationType.HIP_WHEEL_THROW, HIP_THROW_ANIMATION],
+    [AnimationType.SSIREUM_THROW, BODY_LOCK_THROW_ANIMATION], // Korean wrestling style
+    [AnimationType.SACRIFICE_THROW, SUPLEX_ANIMATION], // Close match
+    [AnimationType.CLINCH, CLINCH_KNEE_ANIMATION],
+    [AnimationType.PARRY, PARRY_COUNTER_ANIMATION],
+
+    // Movement/Basic
+    [AnimationType.SIDESTEP, SIDE_STEP_ANIMATION],
+    [AnimationType.PIVOT, SIDE_STEP_ANIMATION], // Reusing side step
+    [AnimationType.STEP_FORWARD, FORWARD_DASH_ANIMATION],
+    [AnimationType.STEP_BACK, BACKWARD_RETREAT_ANIMATION],
+    [AnimationType.FORWARD_DASH, FORWARD_DASH_ANIMATION],
+    [AnimationType.BACKWARD_RETREAT, BACKWARD_RETREAT_ANIMATION],
+    [AnimationType.WALK, FORWARD_DASH_ANIMATION], // Placeholder
+    [AnimationType.RECOVERY, IDLE_STANCE_ANIMATION],
+    [AnimationType.STANCE, IDLE_STANCE_ANIMATION],
+    [AnimationType.IDLE, IDLE_STANCE_ANIMATION],
+    [AnimationType.DUCK, IDLE_STANCE_ANIMATION], // Placeholder
+    [AnimationType.LEAN, IDLE_STANCE_ANIMATION], // Placeholder
+
+    // Defense Aliases
+    [AnimationType.BLOCK, BLOCK_ANIMATION],
+    [AnimationType.BLOCK_HIGH, HIGH_BLOCK_ANIMATION],
+    [AnimationType.BLOCK_LOW, LOW_BLOCK_ANIMATION],
+    [AnimationType.FLOWING_BLOCK, GAM_FLOW_DEFENSE],
+    [AnimationType.IRON_BLOCK, GAN_IMMOVABLE_BLOCK],
+    [AnimationType.IMMOVABLE_BLOCK, GAN_IMMOVABLE_BLOCK],
+    [AnimationType.THUNDEROUS_UPPERCUT, ELBOW_UPPERCUT_ANIMATION],
 
     // Gon (곤)
     [AnimationType.GROUNDING_DEFENSE, GON_GROUNDING_DEFENSE],
@@ -304,11 +335,7 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.CERVICAL_TWIST, REAR_NAKED_CHOKE_ANIMATION],
     [AnimationType.ELBOW_HYPEREXTEND, ARM_BAR_ANIMATION],
     [AnimationType.FEMORAL_NERVE, FEMORAL_KNEE_ANIMATION],
-    [AnimationType.SPINAL_STRIKE, SPINAL_ELBOW_ANIMATION],
-    [AnimationType.KIDNEY_BLOW, KIDNEY_KNEE_ANIMATION],
     [AnimationType.LARYNX_CRUSH, THROAT_STRIKE_ANIMATION],
-    [AnimationType.RADIAL_NERVE, HAMMER_FIST_ANIMATION],
-    [AnimationType.CAROTID_CUT, CAROTID_CHOKE_ANIMATION],
     [AnimationType.JAW_DISLOCATION, HOOK_ANIMATION],
     [AnimationType.FINGER_BREAK, FINGER_LOCK_ANIMATION],
     [AnimationType.GUILLOTINE_CHOKE, CAROTID_CHOKE_ANIMATION],
@@ -320,7 +347,6 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.SLEEPER_HOLD, REAR_NAKED_CHOKE_ANIMATION],
     [AnimationType.TRIANGLE_CHOKE, LEG_REAP_ANIMATION], // Uses legs
     [AnimationType.SPLEEN_RUPTURE, KNEE_STRIKE_ANIMATION_ENHANCED],
-    [AnimationType.LIVER_BLOW, HOOK_ANIMATION], // Generic body hook
 
     // Musa (무사)
     [AnimationType.DRAGON_FIST, HEAVEN_STRIKE_ANIMATION],

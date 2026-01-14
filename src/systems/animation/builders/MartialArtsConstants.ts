@@ -421,7 +421,7 @@ export type KickPhaseName = keyof typeof KICK_PHASES;
 /**
  * Punch phases for proper striking mechanics with Korean martial arts biomechanics
  * 주먹 단계별 자세 - 한국 무술 생체역학 기반
- * 
+ *
  * Based on traditional Korean martial arts principles:
  * - 정권지르기 (Jeongkwon Jireugi) - Straight punch with fist rotation
  * - 역권지르기 (Yeokwon Jireugi) - Reverse punch with full hip drive
@@ -434,7 +434,7 @@ export type KickPhaseName = keyof typeof KICK_PHASES;
 export const PUNCH_PHASES = {
   /**
    * Chamber (준비) - Arm coiled back with fist vertical
-   * 
+   *
    * Korean martial arts chamber position:
    * - Fist at hip level, palm facing up/in (세로주먹)
    * - Elbow bent ~90 degrees
@@ -444,22 +444,22 @@ export const PUNCH_PHASES = {
    */
   CHAMBER: {
     // Punching arm chamber - elbow bent, fist at hip
-    shoulder: [-0.15, 0, -0.2] as const,  // Shoulder slightly back and down
-    elbow: [0, 0, -1.57] as const,         // Elbow bent 90° inward (-π/2)
-    wrist: [0, 0, 0] as const,             // Wrist neutral, fist vertical
-    
+    shoulder: [-0.15, 0, -0.2] as const, // Shoulder slightly back and down
+    elbow: [0, 0, -1.57] as const, // Elbow bent 90° inward (-π/2)
+    wrist: [0, 0, 0] as const, // Wrist neutral, fist vertical
+
     // Opposite arm guard position
-    oppositeShoulder: [-0.1, 0, 0.2] as const,  // Guard up
-    oppositeElbow: [0, 0, 1.4] as const,      // Elbow bent for guard
-    
+    oppositeShoulder: [-0.1, 0, 0.2] as const, // Guard up
+    oppositeElbow: [0, 0, 1.4] as const, // Elbow bent for guard
+
     // Body position - neutral or slightly turned away
-    spineY: -0.1,   // Slight counter-rotation
-    pelvisY: -0.1,  // Hip slightly turned away from punch direction
+    spineY: -0.1, // Slight counter-rotation
+    pelvisY: -0.1, // Hip slightly turned away from punch direction
   },
 
   /**
    * Wind-up (준비강화) - Brief additional coil before strike
-   * 
+   *
    * Minimal wind-up for fast punches like jab.
    * More pronounced for power punches like cross.
    */
@@ -472,7 +472,7 @@ export const PUNCH_PHASES = {
 
   /**
    * Extension with Hip Drive (지르기) - Full extension with body rotation
-   * 
+   *
    * Korean martial arts extension mechanics:
    * - Fist rotates from vertical to pronated (palm-down)
    * - Hip drives forward and rotates (엉덩이회전)
@@ -482,22 +482,22 @@ export const PUNCH_PHASES = {
    */
   EXTENSION: {
     // Punching arm full extension
-    shoulder: [0.25, 0, 0.15] as const,  // Shoulder forward and slightly up
-    elbow: [0, 0, -0.09] as const,        // Elbow nearly straight (~175° = 180° - 5°)
-    wrist: [0, 0, 0.2] as const,          // Fist pronated (palm-down rotation)
-    
+    shoulder: [0.25, 0, 0.15] as const, // Shoulder forward and slightly up
+    elbow: [0, 0, -0.09] as const, // Elbow nearly straight (~175° = 180° - 5°)
+    wrist: [0, 0, 0.2] as const, // Fist pronated (palm-down rotation)
+
     // Opposite arm hikite - pulls back for power
-    oppositeShoulder: [-0.2, 0, -0.3] as const,  // Pulled back to hip
-    oppositeElbow: [0, 0, -1.1] as const,         // Elbow bent, fist at hip
-    
+    oppositeShoulder: [-0.2, 0, -0.3] as const, // Pulled back to hip
+    oppositeElbow: [0, 0, -1.1] as const, // Elbow bent, fist at hip
+
     // Body rotation - hip and shoulder drive
-    spineY: 0.4,    // Shoulder rotation into punch
-    pelvisY: 0.25,  // Hip rotation for power generation
+    spineY: 0.4, // Shoulder rotation into punch
+    pelvisY: 0.25, // Hip rotation for power generation
   },
 
   /**
    * Peak Impact (정점) - Maximum extension and rotation
-   * 
+   *
    * Brief hold at full extension for impact frame.
    * All power delivered through aligned structure.
    * Slight additional arm extension for maximum reach.
@@ -505,13 +505,13 @@ export const PUNCH_PHASES = {
   PEAK: {
     // Maximum extension - slightly more extended than EXTENSION phase
     shoulder: [0.25, 0, 0.15] as const,
-    elbow: [0, 0, -0.05] as const,        // Even closer to straight (~177° = 180° - 3°)
-    wrist: [0, 0, 0.2] as const,          // Fully pronated
-    
+    elbow: [0, 0, -0.05] as const, // Even closer to straight (~177° = 180° - 3°)
+    wrist: [0, 0, 0.2] as const, // Fully pronated
+
     // Opposite arm fully retracted
     oppositeShoulder: [-0.2, 0, -0.3] as const,
     oppositeElbow: [0, 0, -1.1] as const,
-    
+
     // Maximum body rotation
     spineY: 0.45,
     pelvisY: 0.3,
@@ -530,10 +530,10 @@ export type PunchPhaseName = keyof typeof PUNCH_PHASES;
 
 /**
  * Korean Martial Arts Stance Biomechanics
- * 
+ *
  * Authentic biomechanical configurations for all eight trigram stances (팔괘 자세),
  * based on traditional Korean martial arts (Taekwondo 태권도, Hapkido 합기도, Taekyon 택견).
- * 
+ *
  * Each stance defines:
  * - frontKneeBend: Front leg knee flexion angle in degrees (무릎굽힘각도)
  * - backKneeBend: Back leg knee flexion angle in degrees (뒷다리무릎각도)
@@ -541,66 +541,66 @@ export type PunchPhaseName = keyof typeof PUNCH_PHASES;
  * - stanceWidth: Distance between feet in shoulder widths (발간격)
  * - hipHeight: Hip height relative to standing (0-1 scale) (엉덩이높이)
  * - tacticalRationale: Combat purpose of stance width (전술적 근거)
- * 
+ *
  * Angle conventions:
  * - 180° = Fully straight leg (완전히 펴진 다리)
  * - 90° = Right angle bend (직각 굽힘)
  * - Lower angles = Deeper bend (낮은 각도 = 더 깊은 굽힘)
- * 
+ *
  * Weight distribution:
  * - front: 0.6 = 60% weight on front leg (앞발 60% 체중)
  * - back: 0.4 = 40% weight on back leg (뒷발 40% 체중)
- * 
+ *
  * Stance width tactical purposes:
  * - Wide stances (1.5-2.0x): Stability, power generation, low center of gravity
  * - Medium stances (1.0-1.3x): Balance between mobility and stability
  * - Narrow stances (0.8-1.0x): High mobility, quick footwork
  * - Single leg (0.0x): Maximum mobility, continuous attack capability
- * 
+ *
  * Sources:
  * - Taekwondo (태권도) - KTA/WTF standard stances
  * - Hapkido (합기도) - Traditional defensive stances
  * - Taekyon (택견) - Korean traditional martial art stances
- * 
+ *
  * @korean 한국무술자세생체역학
  */
 export const KOREAN_STANCE_BIOMECHANICS = {
   /**
    * ☰ GEON (건) - HEAVEN STANCE | 하늘 자세
-   * 
+   *
    * Forward stance (앞서기) - Taekwondo Ap Seogi
-   * 
+   *
    * Characteristics:
    * - Aggressive forward position for direct force techniques
    * - Deep front knee bend for power generation
    * - Extended back leg for solid base
    * - 60/40 weight distribution favoring front
    * - 1.2-1.5x shoulder width for forward power transfer
-   * 
+   *
    * Tactical rationale for stance width:
    * - Medium-wide base (1.2-1.5x) provides forward power generation
    * - Wide enough for stability during penetrating strikes
    * - Narrower than defensive stances for offensive mobility
    * - Optimal for weight transfer into punches and forward kicks
-   * 
+   *
    * Korean martial art source: Taekwondo (태권도)
-   * 
+   *
    * @korean 건천자세
    */
   GEON_HEAVEN: {
-    frontKneeBend: 70,      // Deep front knee ~70° flexion (깊은 앞무릎 굽힘)
-    backKneeBend: 160,      // Extended back leg ~160° (뻗은 뒷다리)
-    weightDistribution: { front: 0.6, back: 0.4 },  // 60% front (앞발 60%)
-    stanceWidth: 1.35,      // 1.2-1.5x shoulder width avg (어깨너비의 1.35배)
-    hipHeight: 0.85,        // Lower hips for stability (낮은 엉덩이)
+    frontKneeBend: 70, // Deep front knee ~70° flexion (깊은 앞무릎 굽힘)
+    backKneeBend: 160, // Extended back leg ~160° (뻗은 뒷다리)
+    weightDistribution: { front: 0.6, back: 0.4 }, // 60% front (앞발 60%)
+    stanceWidth: 1.35, // 1.2-1.5x shoulder width avg (어깨너비의 1.35배)
+    hipHeight: 0.85, // Lower hips for stability (낮은 엉덩이)
     tacticalRationale: "power_generation" as const, // Forward striking power
   },
 
   /**
    * ☱ TAE (태) - LAKE STANCE | 호수 자세
-   * 
+   *
    * Cat stance (고양이서기) - Taekwondo Beom Seogi
-   * 
+   *
    * Characteristics:
    * - Fluid defensive position for joint manipulation
    * - Most weight on back leg (90/10)
@@ -608,31 +608,31 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Back knee bent for spring-loaded movement
    * - High hip position for quick transitions
    * - 0.8-1.0x shoulder width for maximum mobility
-   * 
+   *
    * Tactical rationale for stance width:
    * - Narrow base (0.8-1.0x) enables rapid footwork
    * - Quick transitions between stances
    * - Mobile front leg ready for instant kicks or steps
    * - Back-weighted for defensive redirection
-   * 
+   *
    * Korean martial art source: Hapkido (합기도)
-   * 
+   *
    * @korean 태호수자세
    */
   TAE_LAKE: {
-    frontKneeBend: 170,     // Nearly straight front leg ~170° (거의 펴진 앞다리)
-    backKneeBend: 120,      // Bent back knee ~120° (굽은 뒷무릎)
-    weightDistribution: { front: 0.1, back: 0.9 },  // 10% front, 90% back (앞발 10%, 뒷발 90%)
-    stanceWidth: 0.9,       // 0.8-1.0x shoulder width avg (좁은 자세)
-    hipHeight: 0.90,        // Higher hips for mobility (높은 엉덩이)
+    frontKneeBend: 170, // Nearly straight front leg ~170° (거의 펴진 앞다리)
+    backKneeBend: 120, // Bent back knee ~120° (굽은 뒷무릎)
+    weightDistribution: { front: 0.1, back: 0.9 }, // 10% front, 90% back (앞발 10%, 뒷발 90%)
+    stanceWidth: 0.9, // 0.8-1.0x shoulder width avg (좁은 자세)
+    hipHeight: 0.9, // Higher hips for mobility (높은 엉덩이)
     tacticalRationale: "mobility" as const, // Quick footwork and transitions
   },
 
   /**
    * ☲ LI (리) - FIRE STANCE | 불 자세
-   * 
+   *
    * Fighting stance (전투서기) - Taekwondo Gyeorugi Junbi Seogi
-   * 
+   *
    * Characteristics:
    * - Balanced 50/50 stance for precision strikes
    * - Both knees moderately bent (~135°)
@@ -640,31 +640,31 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Medium width for stability and mobility
    * - Standard combat readiness position
    * - 1.0-1.2x shoulder width for balanced combat
-   * 
+   *
    * Tactical rationale for stance width:
    * - Standard width (1.0-1.2x) balances all combat attributes
    * - Quick directional changes while maintaining stability
    * - Optimal for precision vital point targeting
    * - Neutral foundation for offensive and defensive transitions
-   * 
+   *
    * Korean martial art source: Taekwondo (태권도)
-   * 
+   *
    * @korean 리화염자세
    */
   LI_FIRE: {
-    frontKneeBend: 135,     // Moderate front bend ~135° (중간 앞무릎 굽힘)
-    backKneeBend: 135,      // Equal back bend ~135° (같은 뒷무릎 굽힘)
-    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 balance (균형 50/50)
-    stanceWidth: 1.1,       // 1.0-1.2x shoulder width avg (어깨너비 자세)
-    hipHeight: 0.88,        // Medium height for balance (중간 높이)
+    frontKneeBend: 135, // Moderate front bend ~135° (중간 앞무릎 굽힘)
+    backKneeBend: 135, // Equal back bend ~135° (같은 뒷무릎 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 }, // 50/50 balance (균형 50/50)
+    stanceWidth: 1.1, // 1.0-1.2x shoulder width avg (어깨너비 자세)
+    hipHeight: 0.88, // Medium height for balance (중간 높이)
     tacticalRationale: "balance" as const, // All-around combat effectiveness
   },
 
   /**
    * ☳ JIN (진) - THUNDER STANCE | 천둥 자세
-   * 
+   *
    * Horse stance (기마서기) - Taekwondo Juchum Seogi
-   * 
+   *
    * Characteristics:
    * - Wide, powerful stance for explosive techniques
    * - Deep knee bend in both legs (~90°)
@@ -672,31 +672,31 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Very low hip position for ground stability
    * - Feet parallel, pointing forward
    * - 1.8-2.2x shoulder width for maximum stability
-   * 
+   *
    * Tactical rationale for stance width:
    * - Very wide base (1.8-2.2x) maximizes lateral stability
    * - Low center of gravity for explosive power generation
    * - Immovable platform for devastating techniques
    * - Trades mobility for overwhelming striking force
-   * 
+   *
    * Korean martial art source: Taekwondo (태권도)
-   * 
+   *
    * @korean 진천둥자세
    */
   JIN_THUNDER: {
-    frontKneeBend: 90,      // Deep right angle bend ~90° (깊은 직각 굽힘)
-    backKneeBend: 90,       // Equal deep bend ~90° (같은 깊은 굽힘)
-    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 power base (힘의 기반 50/50)
-    stanceWidth: 2.0,       // 1.8-2.2x shoulder width avg (매우 넓은 자세)
-    hipHeight: 0.75,        // Very low for explosive power (매우 낮은 높이)
+    frontKneeBend: 90, // Deep right angle bend ~90° (깊은 직각 굽힘)
+    backKneeBend: 90, // Equal deep bend ~90° (같은 깊은 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 }, // 50/50 power base (힘의 기반 50/50)
+    stanceWidth: 2.0, // 1.8-2.2x shoulder width avg (매우 넓은 자세)
+    hipHeight: 0.75, // Very low for explosive power (매우 낮은 높이)
     tacticalRationale: "stability" as const, // Maximum stability and power
   },
 
   /**
    * ☴ SON (손) - WIND STANCE | 바람 자세
-   * 
+   *
    * Crane stance (학서기) - Taekwondo Hakdari Seogi
-   * 
+   *
    * Characteristics:
    * - One-legged balance for continuous movement
    * - Standing leg nearly straight (~170°)
@@ -704,32 +704,32 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Raised leg ready for rapid kicks
    * - High hip position for mobility
    * - 0.0 stance width (single leg stance)
-   * 
+   *
    * Tactical rationale for stance width:
    * - Zero width (0.0x) - single leg stance for extreme mobility
    * - Raised leg enables instant kicks without chambering
    * - Maximum freedom of movement in all directions
    * - Continuous pressure capability through rapid strikes
    * - Highest mobility, lowest stability trade-off
-   * 
+   *
    * Korean martial art source: Taekyon (택견)
-   * 
+   *
    * @korean 손바람자세
    */
   SON_WIND: {
-    frontKneeBend: 170,     // Standing leg straight ~170° (선 다리 곧게)
-    backKneeBend: 45,       // Raised leg deeply bent ~45° (올린 다리 깊게 굽힘)
-    weightDistribution: { front: 1.0, back: 0.0 },  // 100% on standing leg (선 다리 100%)
-    stanceWidth: 0.0,       // Single leg stance (한 다리 자세)
-    hipHeight: 0.92,        // High for balance and mobility (높은 균형)
+    frontKneeBend: 170, // Standing leg straight ~170° (선 다리 곧게)
+    backKneeBend: 45, // Raised leg deeply bent ~45° (올린 다리 깊게 굽힘)
+    weightDistribution: { front: 1.0, back: 0.0 }, // 100% on standing leg (선 다리 100%)
+    stanceWidth: 0.0, // Single leg stance (한 다리 자세)
+    hipHeight: 0.92, // High for balance and mobility (높은 균형)
     tacticalRationale: "extreme_mobility" as const, // Maximum mobility and continuous attack
   },
 
   /**
    * ☵ GAM (감) - WATER STANCE | 물 자세
-   * 
+   *
    * Back stance (뒤서기) - Taekwondo Dwit Seogi
-   * 
+   *
    * Characteristics:
    * - Defensive stance with weight on back leg
    * - Deep back knee bend (~100°) for absorption
@@ -737,31 +737,31 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - 30/70 weight distribution (back-heavy)
    * - Medium-low hip for stability
    * - 1.0-1.3x shoulder width for adaptive response
-   * 
+   *
    * Tactical rationale for stance width:
    * - Medium width (1.0-1.3x) enables flow and adaptation
    * - Wide enough for stable defensive absorption
    * - Narrow enough for quick counter-movements
    * - Optimal for redirecting opponent's force
-   * 
+   *
    * Korean martial art source: Hapkido (합기도)
-   * 
+   *
    * @korean 감물자세
    */
   GAM_WATER: {
-    frontKneeBend: 150,     // Extended front leg ~150° (뻗은 앞다리)
-    backKneeBend: 100,      // Deep back bend ~100° (깊은 뒷다리 굽힘)
-    weightDistribution: { front: 0.3, back: 0.7 },  // 30% front, 70% back (앞발 30%, 뒷발 70%)
-    stanceWidth: 1.15,      // 1.0-1.3x shoulder width avg (중간 넓이 자세)
-    hipHeight: 0.82,        // Medium-low for absorption (중간 낮은 높이)
+    frontKneeBend: 150, // Extended front leg ~150° (뻗은 앞다리)
+    backKneeBend: 100, // Deep back bend ~100° (깊은 뒷다리 굽힘)
+    weightDistribution: { front: 0.3, back: 0.7 }, // 30% front, 70% back (앞발 30%, 뒷발 70%)
+    stanceWidth: 1.15, // 1.0-1.3x shoulder width avg (중간 넓이 자세)
+    hipHeight: 0.82, // Medium-low for absorption (중간 낮은 높이)
     tacticalRationale: "adaptability" as const, // Flow and counter techniques
   },
 
   /**
    * ☶ GAN (간) - MOUNTAIN STANCE | 산 자세
-   * 
+   *
    * Defensive stance (방어서기) - Hapkido Bangeoseogi
-   * 
+   *
    * Characteristics:
    * - Immovable defensive position
    * - Moderate knee bend in both legs (~120°)
@@ -769,31 +769,31 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Medium width for solid base
    * - Medium-high hip for counter readiness
    * - 1.3-1.6x shoulder width for defensive strength
-   * 
+   *
    * Tactical rationale for stance width:
    * - Wide base (1.3-1.6x) provides immovable blocking platform
    * - Stable foundation for absorbing powerful attacks
    * - Wide enough for strong defensive counters
    * - Rooted position for reversal techniques
-   * 
+   *
    * Korean martial art source: Hapkido (합기도)
-   * 
+   *
    * @korean 간산자세
    */
   GAN_MOUNTAIN: {
-    frontKneeBend: 120,     // Moderate front bend ~120° (중간 앞무릎 굽힘)
-    backKneeBend: 120,      // Equal moderate bend ~120° (같은 중간 굽힘)
-    weightDistribution: { front: 0.4, back: 0.6 },  // 40% front, 60% back (앞발 40%, 뒷발 60%)
-    stanceWidth: 1.45,      // 1.3-1.6x shoulder width avg (어깨너비 자세)
-    hipHeight: 0.87,        // Medium-high for defense (중간 높은 방어)
+    frontKneeBend: 120, // Moderate front bend ~120° (중간 앞무릎 굽힘)
+    backKneeBend: 120, // Equal moderate bend ~120° (같은 중간 굽힘)
+    weightDistribution: { front: 0.4, back: 0.6 }, // 40% front, 60% back (앞발 40%, 뒷발 60%)
+    stanceWidth: 1.45, // 1.3-1.6x shoulder width avg (어깨너비 자세)
+    hipHeight: 0.87, // Medium-high for defense (중간 높은 방어)
     tacticalRationale: "defensive_block" as const, // Immovable blocking and counters
   },
 
   /**
    * ☷ GON (곤) - EARTH STANCE | 땅 자세
-   * 
+   *
    * Low stance (낮은서기) - Korean Ssireum (씨름) wrestling stance
-   * 
+   *
    * Characteristics:
    * - Very low, grounded position for takedowns
    * - Deep knee bend in both legs (~80°)
@@ -801,29 +801,29 @@ export const KOREAN_STANCE_BIOMECHANICS = {
    * - Wide stance for base and grappling
    * - Very low hip position for ground control
    * - 1.6-2.0x shoulder width for grappling control
-   * 
+   *
    * Tactical rationale for stance width:
    * - Very wide base (1.6-2.0x) optimal for takedown defense
    * - Low center of gravity prevents being thrown
    * - Wide platform for initiating grappling techniques
    * - Grounded power for throws and slams
-   * 
+   *
    * Korean martial art source: Ssireum (씨름) / Hapkido ground techniques
-   * 
+   *
    * @korean 곤땅자세
    */
   GON_EARTH: {
-    frontKneeBend: 80,      // Very deep bend ~80° (매우 깊은 굽힘)
-    backKneeBend: 80,       // Equal deep bend ~80° (같은 깊은 굽힘)
-    weightDistribution: { front: 0.5, back: 0.5 },  // 50/50 grounded (땅에 붙은 50/50)
-    stanceWidth: 1.8,       // 1.6-2.0x shoulder width avg (넓은 그래플링)
-    hipHeight: 0.72,        // Very low for takedowns (매우 낮은 넘어뜨리기)
+    frontKneeBend: 80, // Very deep bend ~80° (매우 깊은 굽힘)
+    backKneeBend: 80, // Equal deep bend ~80° (같은 깊은 굽힘)
+    weightDistribution: { front: 0.5, back: 0.5 }, // 50/50 grounded (땅에 붙은 50/50)
+    stanceWidth: 1.8, // 1.6-2.0x shoulder width avg (넓은 그래플링)
+    hipHeight: 0.72, // Very low for takedowns (매우 낮은 넘어뜨리기)
     tacticalRationale: "grounding" as const, // Takedown and ground control
   },
 } as const;
 
 /** Type for Korean stance biomechanics */
-export type KoreanStanceBiomechanicsType = 
+export type KoreanStanceBiomechanicsType =
   (typeof KOREAN_STANCE_BIOMECHANICS)[keyof typeof KOREAN_STANCE_BIOMECHANICS];
 
 /** Available Korean stance biomechanics names */
@@ -992,6 +992,7 @@ export enum AnimationType {
   FEMORAL_NERVE = "femoral_nerve", // darkops_femoral_nerve - Thigh nerve
 
   // ═══ ADDITIONAL GEON (건) TECHNIQUES ═══
+  GEON_HEAVEN_STRIKE = "geon_heaven_strike",
   HIGH_BLOCK = "high_block", // geon_high_block - Overhead defense
   CRUSHING_ELBOW = "crushing_elbow", // geon_crushing_elbow - Downward elbow
   THUNDEROUS_UPPERCUT = "thunderous_uppercut", // geon_thunderous_uppercut - Rising power
@@ -1081,6 +1082,7 @@ export enum AnimationType {
   FORWARD_DASH = "forward_dash",
   BACKWARD_RETREAT = "backward_retreat",
   SIDE_STEP = "side_step",
+  RAPID_FOOTWORK = "rapid_footwork",
 
   // Recovery (복귀)
   RECOVERY = "recovery",
@@ -1096,21 +1098,21 @@ export enum AnimationType {
 
 /**
  * Calculate lateral stance width in world units (meters)
- * 
+ *
  * Converts stance width from shoulder width multipliers to actual
  * world-space distance for foot positioning in 3D space.
- * 
+ *
  * Formula: stanceWidth (m) = shoulderWidth (cm) * multiplier / 100
- * 
+ *
  * Example:
  * - shoulderWidth: 46 cm (Musa archetype)
  * - Jin Thunder stance: 2.0x shoulder width
  * - Result: 46 * 2.0 / 100 = 0.92m lateral distance between feet
- * 
+ *
  * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS (e.g., 1.5 for Jin)
  * @param shoulderWidth - Fighter's shoulder width in centimeters (from physical attributes)
  * @returns Stance width in meters for 3D world positioning
- * 
+ *
  * @korean 자세너비계산
  */
 export function calculateStanceWidth(
@@ -1123,19 +1125,19 @@ export function calculateStanceWidth(
 
 /**
  * Calculate foot X positions for left and right feet based on stance width
- * 
+ *
  * Returns X-axis offsets for positioning FOOT_L and FOOT_R bones.
  * Assumes center point (pelvis) is at X=0.
- * 
+ *
  * @param stanceWidthMultiplier - Multiplier from KOREAN_STANCE_BIOMECHANICS
  * @param shoulderWidth - Fighter's shoulder width in centimeters
  * @returns Object with leftFootX (negative) and rightFootX (positive) positions
- * 
+ *
  * @example
  * // Jin Thunder stance (2.0x) for Musa (46cm shoulders)
  * const footPositions = calculateFootPositions(2.0, 46);
  * // Returns: { leftFootX: -0.46, rightFootX: 0.46 }
- * 
+ *
  * @korean 발위치계산
  */
 export function calculateFootPositions(
@@ -1146,7 +1148,7 @@ export function calculateFootPositions(
   const halfWidth = totalWidth / 2;
 
   return {
-    leftFootX: -halfWidth,  // Left foot is negative X
-    rightFootX: halfWidth,  // Right foot is positive X
+    leftFootX: -halfWidth, // Left foot is negative X
+    rightFootX: halfWidth, // Right foot is positive X
   };
 }
