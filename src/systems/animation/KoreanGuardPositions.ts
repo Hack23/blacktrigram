@@ -301,3 +301,71 @@ export const getGuardForStanceHeight = (
       return MIDDLE_GUARD;
   }
 };
+
+/**
+ * Apply guard position to KeyframeConfig
+ *
+ * Applies a Korean martial arts guard position to a keyframe configuration.
+ * Can apply to one hand (for techniques where one hand strikes) or both hands.
+ *
+ * Usage:
+ * ```typescript
+ * const kf = new KeyframeConfig(0.0);
+ * applyGuardPositionToConfig(kf, MIDDLE_GUARD, "both"); // Both hands in guard
+ * applyGuardPositionToConfig(kf, MIDDLE_GUARD, "left");  // Only left hand guards
+ * ```
+ *
+ * @param config - KeyframeConfig to apply guard to
+ * @param guardPosition - Guard position configuration
+ * @param hand - Which hand(s) to apply ("left" | "right" | "both")
+ * @korean KeyframeConfig에방어자세적용
+ */
+export const applyGuardPositionToConfig = (
+  config: any, // Will be typed as KeyframeConfig in implementation
+  guardPosition: GuardPosition,
+  hand: "left" | "right" | "both" = "both"
+): void => {
+  // Apply left hand guard
+  if (hand === "left" || hand === "both") {
+    config.rotate(
+      "SHOULDER_L" as any,
+      guardPosition.left.shoulder[0],
+      guardPosition.left.shoulder[1],
+      guardPosition.left.shoulder[2]
+    );
+    config.rotate(
+      "ELBOW_L" as any,
+      guardPosition.left.elbow[0],
+      guardPosition.left.elbow[1],
+      guardPosition.left.elbow[2]
+    );
+    config.rotate(
+      "WRIST_L" as any,
+      guardPosition.left.wrist[0],
+      guardPosition.left.wrist[1],
+      guardPosition.left.wrist[2]
+    );
+  }
+
+  // Apply right hand guard
+  if (hand === "right" || hand === "both") {
+    config.rotate(
+      "SHOULDER_R" as any,
+      guardPosition.right.shoulder[0],
+      guardPosition.right.shoulder[1],
+      guardPosition.right.shoulder[2]
+    );
+    config.rotate(
+      "ELBOW_R" as any,
+      guardPosition.right.elbow[0],
+      guardPosition.right.elbow[1],
+      guardPosition.right.elbow[2]
+    );
+    config.rotate(
+      "WRIST_R" as any,
+      guardPosition.right.wrist[0],
+      guardPosition.right.wrist[1],
+      guardPosition.right.wrist[2]
+    );
+  }
+};
