@@ -284,6 +284,78 @@ describe("StanceIdleAnimations - Metadata", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
+// LEG CONSISTENCY TESTS - Legs should NOT move during idle breathing
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("StanceIdleAnimations - Leg Consistency", () => {
+  it("should have consistent leg rotations across all keyframes (not walking)", () => {
+    // For a proper fighting stance idle, legs should stay FIXED
+    // Only breathing (torso) should move, not legs
+    const animations = [
+      { name: "geon", anim: GEON_IDLE_ANIMATION },
+      { name: "tae", anim: TAE_IDLE_ANIMATION },
+      { name: "li", anim: LI_IDLE_ANIMATION },
+      { name: "jin", anim: JIN_IDLE_ANIMATION },
+      { name: "son", anim: SON_IDLE_ANIMATION },
+      { name: "gam", anim: GAM_IDLE_ANIMATION },
+      { name: "gan", anim: GAN_IDLE_ANIMATION },
+      { name: "gon", anim: GON_IDLE_ANIMATION },
+    ];
+
+    for (const { name, anim } of animations) {
+      const firstKf = anim.keyframes[0];
+      const firstHipL = firstKf.boneRotations.get("hip_L");
+      const firstHipR = firstKf.boneRotations.get("hip_R");
+      const firstKneeL = firstKf.boneRotations.get("knee_L");
+      const firstKneeR = firstKf.boneRotations.get("knee_R");
+
+      // Check all keyframes have SAME leg values
+      for (let i = 1; i < anim.keyframes.length; i++) {
+        const kf = anim.keyframes[i];
+        const hipL = kf.boneRotations.get("hip_L");
+        const hipR = kf.boneRotations.get("hip_R");
+        const kneeL = kf.boneRotations.get("knee_L");
+        const kneeR = kf.boneRotations.get("knee_R");
+
+        // HIP rotations should be identical (no walking)
+        if (firstHipL && hipL) {
+          expect(hipL.x).toBeCloseTo(firstHipL.x, 3);
+          expect(hipL.y).toBeCloseTo(firstHipL.y, 3);
+          expect(hipL.z).toBeCloseTo(firstHipL.z, 3);
+        }
+        if (firstHipR && hipR) {
+          expect(hipR.x).toBeCloseTo(firstHipR.x, 3);
+          expect(hipR.y).toBeCloseTo(firstHipR.y, 3);
+          expect(hipR.z).toBeCloseTo(firstHipR.z, 3);
+        }
+
+        // KNEE rotations should be identical (no walking)
+        if (firstKneeL && kneeL) {
+          expect(kneeL.x).toBeCloseTo(firstKneeL.x, 3);
+        }
+        if (firstKneeR && kneeR) {
+          expect(kneeR.x).toBeCloseTo(firstKneeR.x, 3);
+        }
+      }
+    }
+  });
+
+  it("should have dramatic leg differences between stances", () => {
+    // Different stances should have visually distinct leg positions
+    const geonHipL =
+      GEON_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
+    const jinHipL = JIN_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
+    const sonHipL = SON_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
+
+    // Geon (forward stance) vs Jin (horse stance) should be different
+    expect(geonHipL?.x).not.toBeCloseTo(jinHipL?.x ?? 0, 1);
+
+    // Son (crane stance with raised leg) should be most dramatic
+    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.5);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
 // BREATHING CYCLE TESTS
 // ═══════════════════════════════════════════════════════════════════════════
 
