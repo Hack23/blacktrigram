@@ -3,6 +3,7 @@
  */
 
 import { render, screen } from "@testing-library/react";
+import { act } from "react-dom/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RoundStartAnnouncement } from "./RoundStartAnnouncement";
 
@@ -88,7 +89,9 @@ describe("RoundStartAnnouncement", () => {
     expect(onComplete).not.toHaveBeenCalled();
 
     // Advance time by duration + fade out time
-    vi.advanceTimersByTime(2300);
+    act(() => {
+      vi.advanceTimersByTime(2300);
+    });
 
     // Should complete after duration
     expect(onComplete).toHaveBeenCalledTimes(1);
@@ -106,12 +109,16 @@ describe("RoundStartAnnouncement", () => {
     );
 
     // Advance by less than custom duration
-    vi.advanceTimersByTime(2500);
+    act(() => {
+      vi.advanceTimersByTime(2500);
+    });
 
     expect(onComplete).not.toHaveBeenCalled();
 
     // Advance to complete custom duration + fade out
-    vi.advanceTimersByTime(800);
+    act(() => {
+      vi.advanceTimersByTime(800);
+    });
 
     expect(onComplete).toHaveBeenCalledTimes(1);
   });

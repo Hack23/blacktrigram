@@ -103,7 +103,7 @@ const CRITICAL_COMBAT_ASSETS = [
 export function usePreloadCombatAudio(): PreloadCombatAudioState {
   const audio = useAudio();
   const [state, setState] = useState<PreloadCombatAudioState>({
-    isLoading: false,
+    isLoading: true,
     isLoaded: false,
     errors: [],
     progress: 0,
