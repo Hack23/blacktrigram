@@ -32,6 +32,10 @@ const DEFAULT_THRESHOLDS: PerformanceThresholds = {
   maxDrawCalls: 100,
 };
 
+// Prevent unrealistic spikes when frame deltas are extremely small (e.g., mocked timers)
+const MAX_SAMPLE_FPS = 180;
+const MIN_FRAME_TIME_MS = 1000 / MAX_SAMPLE_FPS;
+
 /**
  * PerformanceMonitor class for real-time performance tracking
  */
@@ -63,7 +67,8 @@ export class PerformanceMonitor {
 
     if (delta <= 0) return 0; // Skip invalid frames
 
-    const fps = 1000 / delta;
+    const clampedDelta = Math.max(delta, MIN_FRAME_TIME_MS);
+    const fps = Math.min(1000 / clampedDelta, MAX_SAMPLE_FPS);
     this.frames.push(fps);
 
     // Track min/max FPS
