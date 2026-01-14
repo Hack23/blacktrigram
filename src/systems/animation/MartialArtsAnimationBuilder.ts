@@ -31,6 +31,9 @@ import {
 // Import keyframe configuration helper
 import { KeyframeConfig } from "./KeyframeConfig";
 
+// Import guard position types
+import type { GuardPositionType } from "./KoreanGuardPositions";
+
 // Import hand pose utilities
 import {
   applyHandPoseToConfig,
@@ -1993,6 +1996,80 @@ export class MartialArtsAnimationBuilder {
       applyMartialPoseToKeyframe(lastKf, MARTIAL_POSES.HIGH_GUARD);
     }
     return this;
+  }
+
+  /**
+   * Apply Korean guard position helper
+   * 
+   * Private helper method to reduce code duplication across guard methods.
+   * Applies guard positions to the last keyframe in the animation.
+   * 
+   * @param guardType - Type of guard to apply
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 한국방어자세적용헬퍼
+   * @private
+   */
+  private applyKoreanGuard(
+    guardType: GuardPositionType,
+    side: "left" | "right" | "both" = "both"
+  ): this {
+    const lastKf = this.keyframes[this.keyframes.length - 1];
+    if (lastKf) {
+      const kf = new KeyframeConfig();
+      kf.withGuard(guardType, side);
+      
+      // Merge rotations into last keyframe
+      for (const [bone, rotation] of kf.rotations.entries()) {
+        lastKf.boneRotations.set(bone, rotation);
+      }
+      
+      // Apply fist pose to hands in guard
+      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, side);
+    }
+    return this;
+  }
+
+  /**
+   * Apply Korean high guard position (상단막기)
+   * 
+   * Traditional Korean martial arts high guard with hands at temple level
+   * protecting head and face. Uses authentic 막기자세 positioning.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 상단막기자세
+   */
+  withKoreanHighGuard(side: "left" | "right" | "both" = "both"): this {
+    return this.applyKoreanGuard("HIGH_GUARD", side);
+  }
+
+  /**
+   * Apply Korean middle guard position (중단막기)
+   * 
+   * Standard Korean martial arts guard at chest/solar plexus level.
+   * Most versatile guard position, used in most fighting stances.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 중단막기자세
+   */
+  withKoreanMiddleGuard(side: "left" | "right" | "both" = "both"): this {
+    return this.applyKoreanGuard("MIDDLE_GUARD", side);
+  }
+
+  /**
+   * Apply Korean low guard position (하단막기)
+   * 
+   * Low guard position protecting lower body and groin.
+   * Used in grappling and ground-fighting scenarios.
+   * 
+   * @param side - Which side to apply ("left" | "right" | "both")
+   * @returns this for chaining
+   * @korean 하단막기자세
+   */
+  withKoreanLowGuard(side: "left" | "right" | "both" = "both"): this {
+    return this.applyKoreanGuard("LOW_GUARD", side);
   }
 
   /**
