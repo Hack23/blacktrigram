@@ -120,7 +120,7 @@ function getWalkArmSwing(
  *
  * @korean 걷기다리스윙가져오기
  */
-function getWalkLegSwing(
+export function getWalkLegSwing(
   stance: TrigramStance,
   leftHipSwing: number,
   leftKneeSwing: number,
@@ -185,7 +185,7 @@ function getWalkLegSwing(
  *
  * @korean 걷기몸통스윙가져오기
  */
-function getWalkBodySway(
+export function getWalkBodySway(
   stance: TrigramStance,
   pelvisTiltOffset: number,
   pelvisRotateOffset: number,

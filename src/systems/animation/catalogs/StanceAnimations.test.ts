@@ -66,7 +66,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have correct front knee bend angle (~70°)", () => {
-      const thighRotation = getRotation(geonStance, BoneName.THIGH_R);
+      const thighRotation = getRotation(geonStance, BoneName.HIP_R);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
@@ -75,7 +75,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have correct back leg extension (~160°)", () => {
-      const thighRotation = getRotation(geonStance, BoneName.THIGH_L);
+      const thighRotation = getRotation(geonStance, BoneName.HIP_L);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.backKneeBend));
@@ -105,7 +105,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have nearly straight front leg (~170°)", () => {
-      const thighRotation = getRotation(taeStance, BoneName.THIGH_R);
+      const thighRotation = getRotation(taeStance, BoneName.HIP_R);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
@@ -114,7 +114,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have bent back knee (~120°)", () => {
-      const thighRotation = getRotation(taeStance, BoneName.THIGH_L);
+      const thighRotation = getRotation(taeStance, BoneName.HIP_L);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.backKneeBend));
@@ -143,8 +143,8 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have equal knee bend on both legs (~135°)", () => {
-      const rightThigh = getRotation(liStance, BoneName.THIGH_R);
-      const leftThigh = getRotation(liStance, BoneName.THIGH_L);
+      const rightThigh = getRotation(liStance, BoneName.HIP_R);
+      const leftThigh = getRotation(liStance, BoneName.HIP_L);
 
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
@@ -179,8 +179,8 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have deep knee bend on both legs (~90°)", () => {
-      const rightThigh = getRotation(jinStance, BoneName.THIGH_R);
-      const leftThigh = getRotation(jinStance, BoneName.THIGH_L);
+      const rightThigh = getRotation(jinStance, BoneName.HIP_R);
+      const leftThigh = getRotation(jinStance, BoneName.HIP_L);
 
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
@@ -213,7 +213,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have straight standing leg (~170°)", () => {
-      const thighRotation = getRotation(sonStance, BoneName.THIGH_R);
+      const thighRotation = getRotation(sonStance, BoneName.HIP_R);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
@@ -222,7 +222,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have raised leg with knee up", () => {
-      const leftThigh = getRotation(sonStance, BoneName.THIGH_L);
+      const leftThigh = getRotation(sonStance, BoneName.HIP_L);
       expect(leftThigh).toBeDefined();
       if (leftThigh) {
         // Raised leg should have significant positive rotation
@@ -251,7 +251,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have extended front leg (~150°)", () => {
-      const thighRotation = getRotation(gamStance, BoneName.THIGH_R);
+      const thighRotation = getRotation(gamStance, BoneName.HIP_R);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.frontKneeBend));
@@ -260,7 +260,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have deep back knee bend (~100°)", () => {
-      const thighRotation = getRotation(gamStance, BoneName.THIGH_L);
+      const thighRotation = getRotation(gamStance, BoneName.HIP_L);
       expect(thighRotation).toBeDefined();
       if (thighRotation) {
         const expectedRotation = toRadians(-(180 - biomech.backKneeBend));
@@ -289,8 +289,8 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have moderate knee bend on both legs (~120°)", () => {
-      const rightThigh = getRotation(ganStance, BoneName.THIGH_R);
-      const leftThigh = getRotation(ganStance, BoneName.THIGH_L);
+      const rightThigh = getRotation(ganStance, BoneName.HIP_R);
+      const leftThigh = getRotation(ganStance, BoneName.HIP_L);
 
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
@@ -323,8 +323,8 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
     });
 
     it("should have very deep knee bend on both legs (~80°)", () => {
-      const rightThigh = getRotation(gonStance, BoneName.THIGH_R);
-      const leftThigh = getRotation(gonStance, BoneName.THIGH_L);
+      const rightThigh = getRotation(gonStance, BoneName.HIP_R);
+      const leftThigh = getRotation(gonStance, BoneName.HIP_L);
 
       expect(rightThigh).toBeDefined();
       expect(leftThigh).toBeDefined();
@@ -361,7 +361,7 @@ describe("Korean Martial Arts Stance Biomechanics", () => {
 
       // Extract right thigh rotations from each stance
       const rightKneeAngles = stances.map((stance) => {
-        const rotation = getRotation(stance, BoneName.THIGH_R);
+        const rotation = getRotation(stance, BoneName.HIP_R);
         return rotation ? rotation.x : 0;
       });
 

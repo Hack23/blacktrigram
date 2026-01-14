@@ -672,6 +672,31 @@ export interface StanceGuardPose {
   readonly stanceWidth: number;
 
   /**
+   * Stance depth (front-to-back foot spacing in meters)
+   * Optional: Defaults to 0 for parallel stances (Juchum Seogi, Narani Seogi)
+   *
+   * For forward stances (Ap Koobi Seogi): positive value (~0.6-0.9m)
+   * For back stances (Dwi Seogi): negative value (~-0.3m with back foot forward)
+   *
+   * Left foot gets -depth/2, right foot gets +depth/2 on Z-axis.
+   * Combined with stanceWidth, this defines the full 2D foot placement.
+   *
+   * @korean 자세깊이
+   */
+  readonly stanceDepth?: number;
+
+  /**
+   * Pelvis height offset (vertical drop in meters)
+   * Optional: Defaults to 0 for normal standing height
+   *
+   * For deep stances (Juchum Seogi, Joong Ha Seogi): negative value (~-0.15 to -0.3m)
+   * This lowers the center of gravity for power and stability.
+   *
+   * @korean 골반높이
+   */
+  readonly pelvisHeight?: number;
+
+  /**
    * Weight distribution (forward/neutral/back)
    * @korean 무게중심
    */
@@ -819,6 +844,10 @@ export function mirrorGuardPose(pose: StanceGuardPose): StanceGuardPose {
     pelvis: mirrorEuler(pose.pelvis),
     // Stance width remains the same
     stanceWidth: pose.stanceWidth,
+    // Stance depth: negate for mirrored stance (front foot becomes back foot)
+    stanceDepth: pose.stanceDepth !== undefined ? -pose.stanceDepth : undefined,
+    // Pelvis height remains unchanged (not affected by laterality)
+    pelvisHeight: pose.pelvisHeight,
     // Weight distribution remains the same
     weight: pose.weight,
     // Breathing range unchanged (not affected by laterality, reuse original object)

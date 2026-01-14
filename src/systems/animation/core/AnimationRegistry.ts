@@ -95,6 +95,7 @@ import {
 } from "../catalogs/PunchAnimations";
 import { STANCE_ANIMATIONS } from "../catalogs/StanceAnimations";
 import { ALL_ATTACK_ANIMATIONS } from "../catalogs/StanceAttackAnimations";
+import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimations";
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
 import {
   getAnimationForTechniqueOrDefault,
@@ -194,6 +195,9 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ...ALL_ATTACK_ANIMATIONS, // Stance-specific attack animations (24 unique)
   ...BASIC_ANIMATIONS, // Idle, Walk, Run, Fall animations
   ...STANCE_LOCOMOTION_ANIMATIONS, // Stance-specific walk/run animations (16 unique)
+  // Trigram idle animations with breathing/weight shifts (overrides static stance poses)
+  // Must come after STANCE_ANIMATIONS to properly override stance_geon, stance_tae, etc.
+  ...TRIGRAM_IDLE_ANIMATIONS_BY_NAME,
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],

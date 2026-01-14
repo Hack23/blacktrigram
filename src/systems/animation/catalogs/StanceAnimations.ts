@@ -982,38 +982,38 @@ export const createGeonStance = (): SkeletalAnimation => {
       // === ARM POSITIONS (from StanceGuardPoses) ===
       // Left arm - high guard protecting temple
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       // Right arm - high guard protecting temple
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1023,11 +1023,11 @@ export const createGeonStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Front leg (right): Deep knee bend for forward stance
-      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, frontKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, frontKneeRotation - 0.1, 0, 0)
 
       // Back leg (left): Extended for power base
-      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.1, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 1.35x shoulder width) ===
@@ -1077,37 +1077,37 @@ export const createTaeStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1116,11 +1116,11 @@ export const createTaeStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Front leg (right): Nearly straight, light weight
-      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, frontKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, frontKneeRotation - 0.05, 0, 0)
 
       // Back leg (left): Bent for spring-loaded movement
-      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 0.9x shoulder width) ===
@@ -1168,37 +1168,37 @@ export const createLiStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1207,9 +1207,9 @@ export const createLiStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Both legs: Equal moderate bend for balance
-      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, kneeRotation - 0.08, 0, 0)
-      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.08, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 1.1x shoulder width) ===
@@ -1258,37 +1258,37 @@ export const createJinStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1297,9 +1297,9 @@ export const createJinStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Both legs: Deep bend for explosive power
-      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, kneeRotation - 0.12, 0, 0)
-      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.12, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 2.0x shoulder width - WIDEST) ===
@@ -1349,37 +1349,37 @@ export const createSonStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1388,11 +1388,11 @@ export const createSonStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Standing leg (right): Straight for balance
-      .rotate(BoneName.THIGH_R, standingLegRotation, 0, 0)
+      .rotate(BoneName.HIP_R, standingLegRotation, 0, 0)
       .rotate(BoneName.KNEE_R, standingLegRotation - 0.05, 0, 0)
 
       // Raised leg (left): Knee up, deeply bent
-      .rotate(BoneName.THIGH_L, raisedLegRotation, 0, 0)
+      .rotate(BoneName.HIP_L, raisedLegRotation, 0, 0)
       .rotate(BoneName.KNEE_L, toRadians(-(180 - biomech.backKneeBend)), 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 0.0x - ZERO WIDTH CRANE STANCE) ===
@@ -1443,37 +1443,37 @@ export const createGamStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1482,11 +1482,11 @@ export const createGamStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Front leg (right): Extended, light weight
-      .rotate(BoneName.THIGH_R, frontKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, frontKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, frontKneeRotation - 0.06, 0, 0)
 
       // Back leg (left): Deep bend for absorption
-      .rotate(BoneName.THIGH_L, backKneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, backKneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, backKneeRotation + 0.15, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 1.15x shoulder width) ===
@@ -1535,37 +1535,37 @@ export const createGanStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1574,9 +1574,9 @@ export const createGanStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Both legs: Moderate bend for solid defense
-      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, kneeRotation - 0.09, 0, 0)
-      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.09, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 1.45x shoulder width) ===
@@ -1625,37 +1625,37 @@ export const createGonStance = (): SkeletalAnimation => {
       .at(0)
       // === ARM POSITIONS (from StanceGuardPoses) ===
       .rotate(
-        BoneName.UPPER_ARM_L,
+        BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
         guard.leftArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_L,
+        BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
         guard.leftArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_L,
+        BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
         guard.leftArm.wrist.z
       )
       .rotate(
-        BoneName.UPPER_ARM_R,
+        BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
         guard.rightArm.shoulder.z
       )
       .rotate(
-        BoneName.FOREARM_R,
+        BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
         guard.rightArm.elbow.z
       )
       .rotate(
-        BoneName.HAND_R,
+        BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
         guard.rightArm.wrist.z
@@ -1664,9 +1664,9 @@ export const createGonStance = (): SkeletalAnimation => {
 
       // === LEG POSITIONS (from biomechanics) ===
       // Both legs: Very deep bend for takedowns
-      .rotate(BoneName.THIGH_R, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_R, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_R, kneeRotation - 0.15, 0, 0)
-      .rotate(BoneName.THIGH_L, kneeRotation, 0, 0)
+      .rotate(BoneName.HIP_L, kneeRotation, 0, 0)
       .rotate(BoneName.KNEE_L, kneeRotation - 0.15, 0, 0)
 
       // === FOOT POSITIONING (Stance Width: 1.8x shoulder width - SECOND WIDEST) ===

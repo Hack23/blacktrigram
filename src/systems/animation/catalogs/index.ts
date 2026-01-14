@@ -185,6 +185,24 @@ export {
   KNEE_STRIKE_ANIMATION_ENHANCED,
 } from "./EnhancedElbowKneeAnimations";
 
+// Trigram stance idle animations (8 unique idle stances with breathing)
+export {
+  ALL_TRIGRAM_IDLE_ANIMATIONS,
+  GAM_IDLE_ANIMATION,
+  GAN_IDLE_ANIMATION,
+  GEON_IDLE_ANIMATION,
+  GON_IDLE_ANIMATION,
+  JIN_IDLE_ANIMATION,
+  LI_IDLE_ANIMATION,
+  SON_IDLE_ANIMATION,
+  TAE_IDLE_ANIMATION,
+  TRIGRAM_IDLE_ANIMATIONS,
+  TRIGRAM_IDLE_ANIMATIONS_BY_NAME,
+  TRIGRAM_IDLE_METADATA,
+  getTrigramIdleAnimation,
+  getTrigramIdleByName,
+} from "./StanceIdleAnimations";
+
 // Additional curated animation catalogs
 export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";

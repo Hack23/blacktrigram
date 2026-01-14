@@ -21,8 +21,8 @@
  * @korean 팔괘애니메이션매핑테스트
  */
 
-import { describe, expect, it } from "vitest";
 import { TrigramStance } from "@/types/common";
+import { describe, expect, it } from "vitest";
 import { getAnimationLaterality } from "./LateralityTransform";
 import {
   getAllGuardPoses,
@@ -215,10 +215,10 @@ describe("TrigramAnimationMapping", () => {
 
       // Poses should be different (mirrored)
       // Left pose's left arm should have been the right arm swapped
-      // Original right arm: (-1.2, -0.5, -0.6)
-      // After mirroring to left arm: (-1.2, 0.5, 0.6)
-      expect(leftGeon?.leftArm.shoulder.y).toBeCloseTo(0.5);
-      expect(rightGeon?.leftArm.shoulder.y).toBeCloseTo(0.5);
+      // Original right arm: (-1.5, -0.3, -0.8)
+      // After mirroring to left arm: (-1.5, 0.3, 0.8)
+      expect(leftGeon?.leftArm.shoulder.y).toBeCloseTo(0.3);
+      expect(rightGeon?.leftArm.shoulder.y).toBeCloseTo(0.3);
     });
 
     it("should work for all 8 stances", () => {
