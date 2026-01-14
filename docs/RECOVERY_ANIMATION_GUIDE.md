@@ -251,7 +251,7 @@ const withCustomRecovery = addRecoveryPhase(baseTechnique, {
   duration: 0.25,              // 250ms recovery
   intermediateProgress: 0.7,   // 70% back at intermediate
   intermediateTimeRatio: 0.5,  // Intermediate at 50% of duration
-  easing: "controlled-slow",   // Controlled deceleration
+  easing: "ease-out",          // Gradual deceleration
   includeBreathing: true,      // Enable breathing sync
 });
 ```

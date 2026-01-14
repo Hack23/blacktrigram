@@ -352,8 +352,8 @@ export function addRecoveryPhase(
     finalFrame.bonePositions.set(boneName, new THREE.Vector3(0, 0, 0));
   });
   
-  // Add breathing completion
-  if (recoveryConfig.includeBreathing) {
+  // Add breathing completion only if spine was in peak keyframe
+  if (recoveryConfig.includeBreathing && peakKeyframe.boneRotations.has(BoneName.SPINE_UPPER)) {
     const breathingOffset = Math.sin(finalTime * 2 * Math.PI) * 0.01;
     finalFrame.boneRotations.set(
       BoneName.SPINE_UPPER,

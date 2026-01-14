@@ -32,13 +32,11 @@ import * as THREE from "three";
  */
 function createTestTechniqueAnimation(): SkeletalAnimation {
   return {
-    id: "test_front_kick",
-    names: {
-      korean: "앞차기",
-      english: "Front Kick",
-    },
+    name: "Front Kick",
+    koreanName: "앞차기",
     duration: 0.5, // 500ms base animation
     loop: false,
+    type: "attack",
     keyframes: [
       // Initial stance
       {
@@ -273,10 +271,11 @@ describe("TechniqueRecoveryPhases", () => {
 
     it("should handle animations with insufficient keyframes gracefully", () => {
       const incompleteAnimation: SkeletalAnimation = {
-        id: "incomplete",
-        names: { korean: "불완전", english: "Incomplete" },
+        name: "Incomplete",
+        koreanName: "불완전",
         duration: 0.1,
         loop: false,
+        type: "attack",
         keyframes: [
           {
             time: 0,
@@ -392,10 +391,11 @@ describe("TechniqueRecoveryPhases", () => {
 
     it("should fail validation for insufficient keyframes", () => {
       const incompleteAnimation: SkeletalAnimation = {
-        id: "incomplete",
-        names: { korean: "불완전", english: "Incomplete" },
+        name: "Incomplete",
+        koreanName: "불완전",
         duration: 0.1,
         loop: false,
+        type: "attack",
         keyframes: [
           {
             time: 0,
@@ -450,10 +450,11 @@ describe("TechniqueRecoveryPhases", () => {
 
     it("should warn about missing intermediate positions", () => {
       const animationWithoutIntermediate: SkeletalAnimation = {
-        id: "no_intermediate",
-        names: { korean: "중간없음", english: "No Intermediate" },
+        name: "No Intermediate",
+        koreanName: "중간없음",
         duration: 0.7,
         loop: false,
+        type: "attack",
         keyframes: [
           {
             time: 0,
