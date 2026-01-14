@@ -4,8 +4,8 @@
  * Defines realistic attack animation sequences for Taekwondo, Hapkido,
  * and Taekyon techniques using skeletal keyframes.
  *
- * MIGRATED TO ANIMATIONBUILDER: First two animations use fluent API for cleaner code.
- * Demonstrates 55% code reduction and improved maintainability.
+ * UPDATED: Migrating to MartialArtsAnimationBuilder with proper guard positions.
+ * Guards ensure proper hand positioning throughout attack animations.
  *
  * @module systems/animation/AttackAnimations
  * @category Animation System
@@ -14,7 +14,7 @@
 
 import type { SkeletalAnimation } from "../../types/skeletal";
 import { BoneName } from "../../types/skeletal";
-import { AnimationBuilder } from "./AnimationBuilder";
+import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
 
 /**
  * Jab animation (빠른 직권 - 정권지르기)
@@ -22,54 +22,58 @@ import { AnimationBuilder } from "./AnimationBuilder";
  * Fast straight punch with right arm. Traditional Taekwondo technique.
  *
  * Animation phases:
- * 1. Wind-up (0.0s): Right arm bent at elbow, ready position
- * 2. Extension (0.1s): Right arm extends, elbow straightens
- * 3. Full extension (0.15s): Maximum reach, fist forward
- * 4. Retraction (0.3s): Return to guard position
+ * 1. Guard (0.0s): Both hands in middle guard position (중단막기)
+ * 2. Wind-up (0.05s): Right arm prepares, left maintains guard
+ * 3. Extension (0.1s): Right arm extends, left maintains guard  
+ * 4. Full extension (0.15s): Maximum reach, left maintains guard
+ * 5. Retraction (0.3s): Return to middle guard position
  *
  * Duration: 300ms
  *
- * MIGRATED: Now uses AnimationBuilder (was 111 lines, now 28 lines = 75% reduction)
+ * MIGRATED: Now uses MartialArtsAnimationBuilder with guard positions
  *
  * @korean 잽애니메이션
  */
-export const JAB_ANIMATION = AnimationBuilder.create("jab")
-  .withKoreanName("잽")
-  .withDuration(0.3)
-  .withType("attack")
-  // Wind-up: arm bent, ready position
-  .keyframe(0.0, "linear")
+export const JAB_ANIMATION = MartialArtsAnimationBuilder.create("jab", "잽")
+  .asAttack(0.3)
+  // Start in middle guard (중단막기)
+  .at(0.0)
+  .withGuard("MIDDLE_GUARD")
+  .done()
+  // Wind-up: right arm prepares, left maintains guard  
+  .at(0.05)
   .rotate(BoneName.SHOULDER_R, 0.3, 0, -0.3) // Shoulder pulled back
   .rotate(BoneName.ELBOW_R, 0, 0, 1.8) // Arm bent tight
   .rotate(BoneName.SPINE_UPPER, 0, -0.15, 0) // Torso rotated back
-  .rotate(BoneName.ELBOW_L, 0, 0, -1.2) // Guard arm
-  .build()
-  // Extension: arm snaps forward
-  .keyframe(0.1, "ease-out")
+  .withGuard("MIDDLE_GUARD", "left") // Left hand maintains guard
+  .done()
+  // Extension: arm snaps forward, left maintains guard
+  .at(0.1)
   .rotate(BoneName.SHOULDER_R, -0.5, 0, 0.4) // Shoulder drives forward
   .rotate(BoneName.ELBOW_R, 0, 0, 0.3) // Elbow extends
   .rotate(BoneName.SPINE_UPPER, 0, 0.25, 0) // Torso rotates into punch
   .rotate(BoneName.SPINE_MIDDLE, 0, 0.15, 0)
   .rotate(BoneName.PELVIS, 0, 0.1, 0) // Hip rotation for power
-  .build()
-  // Full extension: maximum reach
-  .keyframe(0.15, "linear")
+  .withGuard("MIDDLE_GUARD", "left") // Left hand maintains guard
+  .done()
+  // Full extension: maximum reach, left maintains guard
+  .at(0.15)
   .rotate(BoneName.SHOULDER_R, -0.7, 0, 0.5) // Full shoulder extension
   .rotate(BoneName.ELBOW_R, 0, 0, 0.05) // Nearly straight arm
   .rotate(BoneName.WRIST_R, 0, 0, -0.2) // Wrist aligned for impact
   .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // Peak torso rotation
   .rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0)
   .rotate(BoneName.PELVIS, 0, 0.2, 0)
-  .build()
-  // Recovery: return to guard
-  .keyframe(0.3, "ease-in")
-  .rotate(BoneName.SHOULDER_R, 0, 0, -0.1)
-  .rotate(BoneName.ELBOW_R, 0, 0, 1.2)
-  .rotate(BoneName.WRIST_R, 0, 0, 0)
+  .withGuard("MIDDLE_GUARD", "left") // Left hand maintains guard
+  .done()
+  // Recovery: return to middle guard
+  .at(0.3)
+  .withGuard("MIDDLE_GUARD") // Both hands return to guard
   .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
   .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, 0, 0)
-  .build()
+  .rotate(BoneName.WRIST_R, 0, 0, 0)
+  .done()
   .build();
 
 /**
@@ -78,45 +82,53 @@ export const JAB_ANIMATION = AnimationBuilder.create("jab")
  * Left arm punch with full body rotation. Power technique from Taekwondo.
  *
  * Animation phases:
- * 1. Wind-up (0.0s): Left arm bent, weight on right side
- * 2. Hip rotation (0.08s): Hips begin rotating left
+ * 1. Guard (0.0s): Both hands in middle guard position (중단막기)
+ * 2. Wind-up (0.08s): Left arm prepares, right maintains guard
  * 3. Extension (0.15s): Left arm extends with torso rotation
  * 4. Full extension (0.2s): Maximum reach and power
  * 5. Recovery (0.35s): Return to guard
  *
  * Duration: 350ms
  *
- * MIGRATED: Now uses AnimationBuilder (was 117 lines, now 30 lines = 74% reduction)
+ * MIGRATED: Now uses MartialArtsAnimationBuilder with guard positions
  *
  * @korean 크로스펀치애니메이션
  */
-export const CROSS_ANIMATION = AnimationBuilder.create("cross")
-  .withKoreanName("크로스")
-  .withDuration(0.35)
-  .withType("attack")
-  // Wind-up: weight shifts, arm coils
-  .keyframe(0.0, "linear")
+export const CROSS_ANIMATION = MartialArtsAnimationBuilder.create(
+  "cross",
+  "크로스"
+)
+  .asAttack(0.35)
+  // Start in middle guard (중단막기)
+  .at(0.0)
+  .withGuard("MIDDLE_GUARD")
+  .done()
+  // Wind-up: weight shifts, arm coils, right maintains guard
+  .at(0.08)
   .rotate(BoneName.SHOULDER_L, 0.2, 0, 0.3) // Shoulder pulled back
   .rotate(BoneName.ELBOW_L, 0, 0, -1.8) // Arm bent tight
   .rotate(BoneName.SPINE_UPPER, 0, -0.2, 0) // Torso rotated back
   .rotate(BoneName.PELVIS, 0, -0.15, 0) // Hips coiled
-  .build()
-  // Hip rotation begins: power generation
-  .keyframe(0.08, "ease-out")
+  .withGuard("MIDDLE_GUARD", "right") // Right hand maintains guard
+  .done()
+  // Hip rotation begins: power generation, right maintains guard
+  .at(0.12)
   .rotate(BoneName.PELVIS, 0, 0.15, 0) // Hips drive forward
   .rotate(BoneName.SPINE_LOWER, 0, 0.2, 0)
   .rotate(BoneName.HIP_R, 0, 0.1, 0) // Rear foot pivots
-  .build()
-  // Extension: arm snaps forward with torso
-  .keyframe(0.15, "ease-out")
+  .withGuard("MIDDLE_GUARD", "right") // Right hand maintains guard
+  .done()
+  // Extension: arm snaps forward with torso, right maintains guard
+  .at(0.15)
   .rotate(BoneName.SHOULDER_L, -0.5, 0, -0.4) // Shoulder drives forward
   .rotate(BoneName.ELBOW_L, 0, 0, -0.3) // Elbow extends
   .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // Torso rotates through
   .rotate(BoneName.SPINE_MIDDLE, 0, 0.3, 0)
   .rotate(BoneName.PELVIS, 0, 0.25, 0) // Full hip rotation
-  .build()
-  // Full extension: maximum power delivery
-  .keyframe(0.2, "linear")
+  .withGuard("MIDDLE_GUARD", "right") // Right hand maintains guard
+  .done()
+  // Full extension: maximum power delivery, right maintains guard
+  .at(0.2)
   .rotate(BoneName.SHOULDER_L, -0.7, 0, -0.5) // Full extension
   .rotate(BoneName.ELBOW_L, 0, 0, -0.05) // Nearly straight
   .rotate(BoneName.WRIST_L, 0, 0, 0.2) // Wrist aligned
@@ -124,17 +136,17 @@ export const CROSS_ANIMATION = AnimationBuilder.create("cross")
   .rotate(BoneName.SPINE_MIDDLE, 0, 0.35, 0)
   .rotate(BoneName.SPINE_LOWER, 0, 0.25, 0)
   .rotate(BoneName.PELVIS, 0, 0.3, 0)
-  .build()
+  .withGuard("MIDDLE_GUARD", "right") // Right hand maintains guard
+  .done()
   // Recovery: return to guard
-  .keyframe(0.35, "ease-in")
-  .rotate(BoneName.SHOULDER_L, 0, 0, 0.1)
-  .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
-  .rotate(BoneName.WRIST_L, 0, 0, 0)
+  .at(0.35)
+  .withGuard("MIDDLE_GUARD") // Both hands return to guard
   .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
   .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
   .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
   .rotate(BoneName.PELVIS, 0, 0, 0)
-  .build()
+  .rotate(BoneName.WRIST_L, 0, 0, 0)
+  .done()
   .build();
 
 /**
