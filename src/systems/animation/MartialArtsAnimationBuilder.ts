@@ -265,7 +265,7 @@ export class MartialArtsAnimationBuilder {
   private name: string;
   private koreanName: string;
   private duration: number = 0.5;
-  private type: "attack" | "defense" | "movement" | "idle" = "attack";
+  private type: "attack" | "defense" | "movement" | "idle" | "stance" | "walk" = "attack";
   private loop: boolean = false;
   private keyframes: AnimationKeyframe[] = [];
   private currentTime: number = 0;
@@ -321,6 +321,16 @@ export class MartialArtsAnimationBuilder {
    */
   asIdle(duration: number, shouldLoop: boolean = true): this {
     this.type = "idle";
+    this.duration = duration;
+    this.loop = shouldLoop;
+    return this;
+  }
+
+  /**
+   * Configure as stance transition animation (자세 전환 애니메이션)
+   */
+  asStance(duration: number, shouldLoop: boolean = false): this {
+    this.type = "stance";
     this.duration = duration;
     this.loop = shouldLoop;
     return this;
@@ -565,6 +575,11 @@ export class MartialArtsAnimationBuilder {
    * - Foot position extends laterally (0.8m forward)
    * - Support leg pivots on ball of foot
    * 
+   * Enhanced with compensatory torso lean (중심축회전):
+   * - Torso leans AWAY from kicking leg for balance
+   * - Increases reach and prevents backward fall
+   * - 12° lateral lean on Z-axis for high kicks
+   * 
    * The "snap" comes from the sudden knee extension combined with
    * the hip rotation - this is the signature of Taekwondo roundhouse.
    * 
@@ -580,8 +595,27 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0.3);
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, -1.0, 0);
+      
+      // Apply compensatory torso lean for balance (12° away from kick)
+      // This must be called BEFORE setting Y-axis spine rotations
+      this.applyKickTorsoLean(kf, "right", 12);
+      
+      // Spine counter-rotation for torque generation (applied after Z-axis lean)
+      // Preserve existing Z-axis lean from applyKickTorsoLean
+      const upperSpineRot = kf.rotations.get(BoneName.SPINE_UPPER);
+      const lowerSpineRot = kf.rotations.get(BoneName.SPINE_LOWER);
+      kf.rotate(
+        BoneName.SPINE_UPPER,
+        upperSpineRot?.x ?? 0,
+        0.8,
+        upperSpineRot?.z ?? 0
+      );
+      kf.rotate(
+        BoneName.SPINE_LOWER,
+        lowerSpineRot?.x ?? 0,
+        -1.0,
+        lowerSpineRot?.z ?? 0
+      );
       
       // Support leg pivots
       kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
@@ -1001,6 +1035,12 @@ export class MartialArtsAnimationBuilder {
   /**
    * Punch extension - Arm extends with torso rotation (지르기)
    * Includes fist rotation from vertical to pronated and hikite
+   * 
+   * Enhanced with realistic torso rotation (허리비틀기):
+   * - Straight punches: 20° counter-rotation for power
+   * - Torso rotates OPPOSITE to punch direction
+   * - Sequential spine rotation (lower → mid → upper)
+   * 
    * @param timeOffset Time offset in seconds
    * @param hand Which hand to extend ("left" | "right")
    * @param easing Easing function
@@ -1012,11 +1052,14 @@ export class MartialArtsAnimationBuilder {
     easing: string = "ease-out"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.EXTENSION, hand, {
         includeWrist: true,
         includeSpineMiddle: true,
         includeOppositeArm: true,
       });
+      // Then apply enhanced torso rotation which combines with existing values
+      this.applyPunchTorsoRotation(kf, hand, 20);
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1027,6 +1070,11 @@ export class MartialArtsAnimationBuilder {
   /**
    * Punch peak - Maximum extension with full rotation (정점)
    * Hold at full extension for impact frame
+   * 
+   * Enhanced with sustained torso rotation at impact:
+   * - Maintains 20° counter-rotation at peak
+   * - Maximizes power transfer through spine
+   * 
    * @param timeOffset Time offset in seconds
    * @param hand Which hand is extended ("left" | "right")
    * @param easing Easing function
@@ -1038,11 +1086,14 @@ export class MartialArtsAnimationBuilder {
     easing: string = "linear"
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.PEAK, hand, {
         includeWrist: true,
         includeSpineMiddle: true,
         includeOppositeArm: true,
       });
+      // Maintain torso rotation at peak which combines with existing values
+      this.applyPunchTorsoRotation(kf, hand, 20);
       // Hold fist pose
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1091,6 +1142,12 @@ export class MartialArtsAnimationBuilder {
   /**
    * Hook punch - Circular punch targeting temple (후크)
    * Enhanced with Korean martial arts shoulder rotation and hikite (당기기)
+   * 
+   * Enhanced with realistic circular torso rotation (몸통회전):
+   * - Hook punches: 50° rotation for circular power
+   * - Torso rotates INTO the punch for arc generation
+   * - Sequential spine rotation creates whipping motion
+   * 
    * @param timeOffset Time offset in seconds
    * @param hand Which hand is hooking ("left" | "right")
    * @param easing Easing function
@@ -1118,9 +1175,8 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
       
-      // Full body rotation
-      kf.rotate(BoneName.SPINE_UPPER, 0, isRight ? 0.5 : -0.5, 0);
-      kf.rotate(BoneName.SPINE_MIDDLE, 0, isRight ? 0.4 : -0.4, 0);
+      // Apply enhanced hook torso rotation for circular power (50°)
+      this.applyHookTorsoRotation(kf, hand, 50);
       kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
       
       // Apply fist pose to punching hand
@@ -2259,6 +2315,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Recover to fighting guard (복귀)
+   * Returns to neutral stance with torso reset
    * @korean 복귀
    */
   recover(timeOffset: number = 0.1, easing: string = "ease-in"): this {
@@ -2270,10 +2327,9 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
       kf.rotate(BoneName.FOOT_L, 0, 0, 0);
-      // Reset spine
+      // Reset spine and pelvis to neutral
       kf.rotate(BoneName.PELVIS, 0, 0, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
+      this.resetTorsoRotation(kf);
       // Apply guard
       kf.rotate(BoneName.SHOULDER_L, ...guard.leftShoulder);
       kf.rotate(BoneName.ELBOW_L, ...guard.leftElbow);
@@ -2314,6 +2370,216 @@ export class MartialArtsAnimationBuilder {
     });
     this.currentTime += timeOffset;
     return this;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // TORSO ROTATION HELPERS (허리비틀기 도우미)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Apply torso rotation for straight punch power generation (주먹허리비틀기)
+   * 
+   * Korean martial arts principle: 허리비틀기 (Heori Biteulgi) - Waist twist for power
+   * The torso rotates OPPOSITE to the punch direction, creating torque through
+   * the spine that transfers power into the strike.
+   * 
+   * Biomechanics:
+   * - SPINE_LOWER rotates 50% of target angle (foundation rotation)
+   * - SPINE_MIDDLE rotates 70% of target angle (power transfer zone)
+   * - SPINE_UPPER rotates 100% of target angle (maximum rotation at shoulders)
+   * 
+   * @param kf - KeyframeConfig to apply rotation to
+   * @param side - Which hand is punching ("left" | "right")
+   * @param rotationDegrees - Target rotation in degrees (15-25° recommended)
+   * 
+   * @example
+   * ```typescript
+   * // Right cross with 20° counter-rotation
+   * this.addKeyframe(0.35, "ease-out", (kf) => {
+   *   this.applyPunchTorsoRotation(kf, "right", 20);
+   *   // ... other punch mechanics
+   * });
+   * ```
+   * 
+   * @korean 주먹허리비틀기
+   */
+  private applyPunchTorsoRotation(
+    kf: KeyframeConfig,
+    side: "left" | "right",
+    rotationDegrees: number
+  ): void {
+    const isRight = side === "right";
+    // Punch rotates torso OPPOSITE to punch direction for power
+    const direction = isRight ? 1 : -1;
+    const rotationRad = (rotationDegrees * Math.PI) / 180;
+
+    // Get existing spine rotations if any (from applyPunchPhaseToConfig)
+    const existingUpper = kf.rotations.get(BoneName.SPINE_UPPER);
+    const existingMiddle = kf.rotations.get(BoneName.SPINE_MIDDLE);
+    const existingLower = kf.rotations.get(BoneName.SPINE_LOWER);
+
+    // Sequential spine rotation (lower → mid → upper)
+    // Combine with existing Y-axis rotations
+    kf.rotate(
+      BoneName.SPINE_LOWER,
+      existingLower?.x ?? 0,
+      (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
+      existingLower?.z ?? 0
+    );
+    kf.rotate(
+      BoneName.SPINE_MIDDLE,
+      existingMiddle?.x ?? 0,
+      (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
+      existingMiddle?.z ?? 0
+    );
+    kf.rotate(
+      BoneName.SPINE_UPPER,
+      existingUpper?.x ?? 0,
+      (existingUpper?.y ?? 0) + rotationRad * direction,
+      existingUpper?.z ?? 0
+    );
+  }
+
+  /**
+   * Apply torso rotation for hook punch circular power (훅허리비틀기)
+   * 
+   * Korean martial arts principle: 몸통회전 (Momtong Hoejeon) - Full torso rotation
+   * Hook punches generate power from hip and shoulder rotation in a circular motion.
+   * Larger rotation angle (45-60°) creates the circular arc needed for hooks.
+   * 
+   * Biomechanics:
+   * - SPINE_LOWER rotates 50% (hip engagement)
+   * - SPINE_MIDDLE rotates 70% (core power transfer)
+   * - SPINE_UPPER rotates 100% (shoulder whip into target)
+   * 
+   * @param kf - KeyframeConfig to apply rotation to
+   * @param side - Which hand is hooking ("left" | "right")
+   * @param rotationDegrees - Target rotation in degrees (45-60° recommended)
+   * 
+   * @example
+   * ```typescript
+   * // Right hook with 50° rotation
+   * this.addKeyframe(0.30, "ease-out", (kf) => {
+   *   this.applyHookTorsoRotation(kf, "right", 50);
+   *   // ... other hook mechanics
+   * });
+   * ```
+   * 
+   * @korean 훅허리비틀기
+   */
+  private applyHookTorsoRotation(
+    kf: KeyframeConfig,
+    side: "left" | "right",
+    rotationDegrees: number
+  ): void {
+    const isRight = side === "right";
+    // Hook rotates torso INTO the punch for circular power
+    const direction = isRight ? -1 : 1;
+    const rotationRad = (rotationDegrees * Math.PI) / 180;
+
+    // Get existing spine rotations if any and preserve X/Z axes
+    const existingLower = kf.rotations.get(BoneName.SPINE_LOWER);
+    const existingMiddle = kf.rotations.get(BoneName.SPINE_MIDDLE);
+    const existingUpper = kf.rotations.get(BoneName.SPINE_UPPER);
+
+    // Sequential spine rotation for circular motion, combining with existing rotations
+    kf.rotate(
+      BoneName.SPINE_LOWER,
+      existingLower?.x ?? 0,
+      (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
+      existingLower?.z ?? 0
+    );
+    kf.rotate(
+      BoneName.SPINE_MIDDLE,
+      existingMiddle?.x ?? 0,
+      (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
+      existingMiddle?.z ?? 0
+    );
+    kf.rotate(
+      BoneName.SPINE_UPPER,
+      existingUpper?.x ?? 0,
+      (existingUpper?.y ?? 0) + rotationRad * direction,
+      existingUpper?.z ?? 0
+    );
+  }
+
+  /**
+   * Apply torso lean for kick balance (차기허리기울이기)
+   * 
+   * Korean martial arts principle: 중심축회전 (Jungsim Chuk Hoejeon) - Central axis rotation
+   * When executing kicks, the torso leans AWAY from the kicking leg to:
+   * 1. Maintain balance on the support leg
+   * 2. Increase reach by extending the kick further
+   * 3. Prevent falling backward during high kicks
+   * 
+   * Biomechanics:
+   * - SPINE_LOWER leans away from kick (foundation)
+   * - SPINE_MIDDLE leans with lower spine (stability)
+   * - SPINE_UPPER leans slightly less (control)
+   * 
+   * @param kf - KeyframeConfig to apply lean to
+   * @param side - Which leg is kicking ("left" | "right")
+   * @param leanDegrees - Amount of lean in degrees (10-20° recommended)
+   * 
+   * @example
+   * ```typescript
+   * // Right roundhouse kick with compensatory lean
+   * this.addKeyframe(0.35, "ease-out", (kf) => {
+   *   this.applyKickTorsoLean(kf, "right", 15);
+   *   // ... other kick mechanics
+   * });
+   * ```
+   * 
+   * @korean 차기허리기울이기
+   */
+  private applyKickTorsoLean(
+    kf: KeyframeConfig,
+    side: "left" | "right",
+    leanDegrees: number
+  ): void {
+    const isRight = side === "right";
+    // Lean AWAY from kicking leg (left kick = lean right, right kick = lean left)
+    const direction = isRight ? -1 : 1;
+    const leanRad = (leanDegrees * Math.PI) / 180;
+
+    // Lateral lean on Z-axis (side-to-side roll) for torso balance.
+    // NOTE: This method only sets the Z-axis roll component. Any subsequent kf.rotate
+    // calls on these spine bones (e.g. adding Y-axis twist in a kick phase) must
+    // preserve or explicitly incorporate this roll, otherwise the lean will be lost.
+    kf.rotate(
+      BoneName.SPINE_LOWER,
+      0,
+      0,
+      leanRad * direction * 0.9
+    );
+    kf.rotate(
+      BoneName.SPINE_MIDDLE,
+      0,
+      0,
+      leanRad * direction * 0.7
+    );
+    kf.rotate(
+      BoneName.SPINE_UPPER,
+      0,
+      0,
+      leanRad * direction * 0.5
+    );
+  }
+
+  /**
+   * Reset torso to neutral position (허리중립)
+   * 
+   * Returns all spine bones to neutral rotation (0, 0, 0).
+   * Used during recovery phases to return to fighting stance.
+   * 
+   * @param kf - KeyframeConfig to reset
+   * 
+   * @korean 허리중립
+   */
+  private resetTorsoRotation(kf: KeyframeConfig): void {
+    kf.rotate(BoneName.SPINE_LOWER, 0, 0, 0);
+    kf.rotate(BoneName.SPINE_MIDDLE, 0, 0, 0);
+    kf.rotate(BoneName.SPINE_UPPER, 0, 0, 0);
   }
 
   // ═══════════════════════════════════════════════════════════════════════
