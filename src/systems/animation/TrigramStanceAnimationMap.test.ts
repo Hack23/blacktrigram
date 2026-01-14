@@ -12,7 +12,6 @@
 
 import { describe, expect, it } from "vitest";
 import { TrigramStance } from "../../types/common";
-import type { SkeletalAnimation } from "../../types/skeletal";
 import {
   TRIGRAM_GUARD_POSE_MAP,
   TRIGRAM_TECHNIQUE_ANIMATIONS_MAP,
