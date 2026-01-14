@@ -480,3 +480,21 @@ export {
   ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
   applyRecoveryPreset,
 } from './EnhancedAttackAnimations';
+
+// Enhanced Elbow and Knee Animations with Recovery Phases
+export {
+  ELBOW_STRIKE_ANIMATION_ENHANCED,
+  ELBOW_UPPERCUT_ANIMATION_ENHANCED,
+  ENHANCED_ELBOW_KNEE_ANIMATIONS,
+  KNEE_STRIKE_ANIMATION_ENHANCED,
+} from './EnhancedElbowKneeAnimations';
+
+// Recovery Phase Visualization Utilities
+export {
+  compareRecoveryPhases,
+  generateRecoveryVisualization,
+  generateTensionChart,
+  printRecoveryAnalysis,
+  type RecoveryTimelinePoint,
+  type RecoveryVisualization,
+} from './RecoveryVisualization';
