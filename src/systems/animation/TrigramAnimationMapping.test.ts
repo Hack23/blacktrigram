@@ -345,8 +345,10 @@ describe("TrigramAnimationMapping", () => {
       expect(rightWalk).toBeDefined();
       expect(leftWalk).toBeDefined();
 
-      expect(getAnimationLaterality(rightWalk!)).toBe("right");
-      expect(getAnimationLaterality(leftWalk!)).toBe("left");
+      if (!rightWalk || !leftWalk) return;
+
+      expect(getAnimationLaterality(rightWalk)).toBe("right");
+      expect(getAnimationLaterality(leftWalk)).toBe("left");
     });
 
     it("should work for all 8 stances", () => {
@@ -373,8 +375,10 @@ describe("TrigramAnimationMapping", () => {
       expect(rightRun).toBeDefined();
       expect(leftRun).toBeDefined();
 
-      expect(getAnimationLaterality(rightRun!)).toBe("right");
-      expect(getAnimationLaterality(leftRun!)).toBe("left");
+      if (!rightRun || !leftRun) return;
+
+      expect(getAnimationLaterality(rightRun)).toBe("right");
+      expect(getAnimationLaterality(leftRun)).toBe("left");
     });
 
     it("should work for all 8 stances", () => {

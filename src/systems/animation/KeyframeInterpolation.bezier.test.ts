@@ -661,10 +661,11 @@ describe("Cubic Bezier Interpolation", () => {
       );
 
       const predictedPos = predicted.bonePositions.get("spine");
-      const currentPos = currentKeyframe.bonePositions.get("spine")!;
+      const currentPos = currentKeyframe.bonePositions.get("spine");
 
       expect(predictedPos).toBeDefined();
-      if (!predictedPos) return;
+      expect(currentPos).toBeDefined();
+      if (!predictedPos || !currentPos) return;
       expect(predictedPos.x).toBeGreaterThan(currentPos.x);
       expect(predictedPos.y).toBeGreaterThan(currentPos.y);
     });
@@ -676,11 +677,13 @@ describe("Cubic Bezier Interpolation", () => {
         0.01667
       );
 
-      const predictedPos = predicted.bonePositions.get("spine")!;
-      const currentPos = currentKeyframe.bonePositions.get("spine")!;
-      const velocity = predictionState.velocities.get("spine")!;
+      const predictedPos = predicted.bonePositions.get("spine");
+      const currentPos = currentKeyframe.bonePositions.get("spine");
+      const velocity = predictionState.velocities.get("spine");
 
       // Prediction should be less than full velocity * time (due to 0.8 damping)
+      if (!predictedPos || !currentPos || !velocity) return;
+
       const fullPrediction = currentPos.x + velocity.x * 0.01667;
       const dampedPrediction = predictedPos.x;
 

@@ -1,22 +1,22 @@
 /**
  * Tests for muscle activation system
- * 
+ *
  * Validates Korean martial arts technique-to-muscle mappings,
  * tension interpolation, stamina effects, and performance.
- * 
+ *
  * @module systems/animation/MuscleActivation.test
  * @category Tests
  * @korean 근육활성화시스템테스트
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { TrigramStance } from "../../types/common";
+import type { MuscleGroupName } from "../../types/muscle";
 import {
   getMuscleActivationForTechnique,
-  MuscleActivationManager,
   getMuscleTensionForStance,
+  MuscleActivationManager,
 } from "./MuscleActivation";
-import type { MuscleGroupName } from "../../types/muscle";
-import { TrigramStance } from "../../types/common";
 
 describe("getMuscleActivationForTechnique", () => {
   describe("Punching techniques (주먹 기술)", () => {
@@ -234,7 +234,7 @@ describe("MuscleActivationManager", () => {
       for (let i = 0; i < 20; i++) {
         manager.update("jab", 50, 0.016); // Build tension to high level
       }
-      
+
       // Then reduce stamina to exhaustion level while maintaining technique
       for (let i = 0; i < 20; i++) {
         manager.update("jab", 15, 0.016); // Exhausted state
@@ -242,7 +242,7 @@ describe("MuscleActivationManager", () => {
 
       const tension = manager.getTension("BICEP_R");
       const isShaking = manager.isShaking("BICEP_R");
-      
+
       // At exhaustion levels, should shake if tension is maintained above 0.3
       if (tension > 0.3) {
         expect(isShaking).toBe(true);
@@ -365,7 +365,7 @@ describe("MuscleActivationManager", () => {
 
       expect(scratchMap).toBeInstanceOf(Map);
       expect(scratchMap.size).toBeGreaterThan(0);
-      
+
       // Verify some muscles have tension
       const bicepTension = scratchMap.get("BICEP_R");
       expect(bicepTension).toBeDefined();
@@ -391,9 +391,13 @@ describe("MuscleActivationManager", () => {
 
       // Should be same map instance (reused)
       expect(firstMap).toBe(secondMap);
-      
+
       // But values should be different
-      expect(secondBicepTension).toBeLessThan(firstBicepTension!);
+      expect(firstBicepTension).toBeDefined();
+      expect(secondBicepTension).toBeDefined();
+      if (firstBicepTension === undefined || secondBicepTension === undefined)
+        return;
+      expect(secondBicepTension).toBeLessThan(firstBicepTension);
     });
 
     it("should be safe to call multiple times", () => {
@@ -431,7 +435,8 @@ describe("MuscleActivationManager", () => {
       // Arms should have minimal activation
       const bicepTension = scratchMap.get("BICEP_R");
       expect(bicepTension).toBeDefined();
-      expect(bicepTension).toBeLessThan(quadTension!);
+      if (quadTension === undefined || bicepTension === undefined) return;
+      expect(bicepTension).toBeLessThan(quadTension);
     });
   });
 
@@ -614,7 +619,10 @@ describe("getMuscleTensionForStance", () => {
       const backQuad = activations.get("QUAD_L");
 
       // Front leg should have higher tension
-      expect(frontQuad).toBeGreaterThan(backQuad!);
+      expect(frontQuad).toBeDefined();
+      expect(backQuad).toBeDefined();
+      if (frontQuad === undefined || backQuad === undefined) return;
+      expect(frontQuad).toBeGreaterThan(backQuad);
       expect(frontQuad).toBeGreaterThan(0.5); // Significant front leg load
     });
 
@@ -626,7 +634,10 @@ describe("getMuscleTensionForStance", () => {
       const backQuad = activations.get("QUAD_L");
 
       // Back leg should have much higher tension
-      expect(backQuad).toBeGreaterThan(frontQuad!);
+      expect(frontQuad).toBeDefined();
+      expect(backQuad).toBeDefined();
+      if (frontQuad === undefined || backQuad === undefined) return;
+      expect(backQuad).toBeGreaterThan(frontQuad);
       expect(backQuad).toBeGreaterThan(0.3); // Significant back leg load
     });
 
@@ -638,7 +649,10 @@ describe("getMuscleTensionForStance", () => {
       const backQuad = activations.get("QUAD_L");
 
       // Should be relatively balanced
-      const difference = Math.abs(frontQuad! - backQuad!);
+      expect(frontQuad).toBeDefined();
+      expect(backQuad).toBeDefined();
+      if (frontQuad === undefined || backQuad === undefined) return;
+      const difference = Math.abs(frontQuad - backQuad);
       expect(difference).toBeLessThan(0.15); // Within 15% of each other
     });
 
@@ -650,7 +664,10 @@ describe("getMuscleTensionForStance", () => {
       const backQuad = activations.get("QUAD_L");
 
       // Back leg should have higher tension
-      expect(backQuad).toBeGreaterThan(frontQuad!);
+      expect(frontQuad).toBeDefined();
+      expect(backQuad).toBeDefined();
+      if (frontQuad === undefined || backQuad === undefined) return;
+      expect(backQuad).toBeGreaterThan(frontQuad);
     });
   });
 
@@ -688,11 +705,11 @@ describe("getMuscleTensionForStance", () => {
 
       // Standing leg carries weight (nearly straight, so lower tension from angle)
       expect(standingQuad).toBeGreaterThan(0.2);
-      
+
       // Raised leg has high tension from holding knee up (45° = deeply bent)
       // Biomechanically accurate: holding leg up requires significant quad engagement
       expect(raisedQuad).toBeGreaterThan(0.4);
-      
+
       // Both should be within valid range
       expect(standingQuad).toBeLessThanOrEqual(1.0);
       expect(raisedQuad).toBeLessThanOrEqual(1.0);

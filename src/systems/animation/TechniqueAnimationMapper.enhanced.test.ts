@@ -1,19 +1,19 @@
 /**
  * Unit tests for enhanced TechniqueAnimationMapper
- * 
+ *
  * **Korean**: 향상된 기술 애니메이션 매퍼 단위 테스트
- * 
+ *
  * Tests comprehensive technique-stance-animation mapping system
  * with O(1) lookup performance and intelligent fallback.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
+import { BodyPart } from "../bodypart/types";
 import {
   TechniqueAnimationMapper,
   techniqueAnimationMapper,
 } from "./TechniqueAnimationMapper";
-import { TrigramStance } from "@/types";
-import { BodyPart } from "../bodypart/types";
 import {
   AnimationState,
   type TechniqueAnimationKey,
@@ -177,9 +177,18 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const lightKey: TechniqueAnimationKey = { ...baseKey, intensity: "light" };
-      const heavyKey: TechniqueAnimationKey = { ...baseKey, intensity: "heavy" };
-      const criticalKey: TechniqueAnimationKey = { ...baseKey, intensity: "critical" };
+      const lightKey: TechniqueAnimationKey = {
+        ...baseKey,
+        intensity: "light",
+      };
+      const heavyKey: TechniqueAnimationKey = {
+        ...baseKey,
+        intensity: "heavy",
+      };
+      const criticalKey: TechniqueAnimationKey = {
+        ...baseKey,
+        intensity: "critical",
+      };
 
       const mediumAnim = techniqueAnimationMapper.getAnimation(baseKey);
       const lightAnim = techniqueAnimationMapper.getAnimation(lightKey);
@@ -411,10 +420,12 @@ describe("TechniqueAnimationMapper", () => {
       expect(animation.koreanName.length).toBeGreaterThan(0);
       expect(animation.englishName).toBeTruthy();
       expect(animation.englishName.length).toBeGreaterThan(0);
-      
+
       // Korean name should contain Korean characters
-      expect(animation.koreanName).toMatch(/[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/);
-      
+      expect(animation.koreanName).toMatch(
+        /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/
+      );
+
       // English name should be readable ASCII
       expect(animation.englishName).toMatch(/^[A-Za-z\s]+$/);
     });
@@ -442,7 +453,7 @@ describe("TechniqueAnimationMapper", () => {
 
       expect(validation.missing).toBeDefined();
       expect(Array.isArray(validation.missing)).toBe(true);
-      
+
       // Each missing item should have required properties
       validation.missing.forEach((missing) => {
         expect(missing.stance).toBeDefined();
@@ -475,9 +486,19 @@ describe("TechniqueAnimationMapper", () => {
 
       for (let i = 0; i < iterations; i++) {
         const stance = Object.values(TrigramStance)[i % 8];
-        const techniqueType: TechniqueTypeCategory = ["strike", "joint", "throw", "pressure_point"][i % 4];
+        const techniqueType: TechniqueTypeCategory = [
+          "strike",
+          "joint",
+          "throw",
+          "pressure_point",
+        ][i % 4];
         const bodyPart = Object.values(BodyPart)[i % 8];
-        const intensity: TechniqueIntensity = ["light", "medium", "heavy", "critical"][i % 4];
+        const intensity: TechniqueIntensity = [
+          "light",
+          "medium",
+          "heavy",
+          "critical",
+        ][i % 4];
 
         const key: TechniqueAnimationKey = {
           stance,
@@ -556,9 +577,14 @@ describe("TechniqueAnimationMapper", () => {
       for (let i = 0; i < 50; i++) {
         const key: TechniqueAnimationKey = {
           stance: allStances[Math.floor(Math.random() * allStances.length)],
-          techniqueType: allTechniqueTypes[Math.floor(Math.random() * allTechniqueTypes.length)],
-          bodyPart: allBodyParts[Math.floor(Math.random() * allBodyParts.length)],
-          intensity: allIntensities[Math.floor(Math.random() * allIntensities.length)],
+          techniqueType:
+            allTechniqueTypes[
+              Math.floor(Math.random() * allTechniqueTypes.length)
+            ],
+          bodyPart:
+            allBodyParts[Math.floor(Math.random() * allBodyParts.length)],
+          intensity:
+            allIntensities[Math.floor(Math.random() * allIntensities.length)],
         };
 
         const animation = techniqueAnimationMapper.getAnimation(key);
@@ -629,15 +655,26 @@ describe("TechniqueAnimationMapper", () => {
         intensity: "medium",
       };
 
-      const lightAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "light" });
+      const lightAnim = techniqueAnimationMapper.getAnimation({
+        ...key,
+        intensity: "light",
+      });
       const mediumAnim = techniqueAnimationMapper.getAnimation(key);
-      const heavyAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "heavy" });
-      const criticalAnim = techniqueAnimationMapper.getAnimation({ ...key, intensity: "critical" });
+      const heavyAnim = techniqueAnimationMapper.getAnimation({
+        ...key,
+        intensity: "heavy",
+      });
+      const criticalAnim = techniqueAnimationMapper.getAnimation({
+        ...key,
+        intensity: "critical",
+      });
 
       // Recovery frames should increase with intensity
       expect(lightAnim.recoveryFrames).toBeLessThan(mediumAnim.recoveryFrames);
       expect(mediumAnim.recoveryFrames).toBeLessThan(heavyAnim.recoveryFrames);
-      expect(heavyAnim.recoveryFrames).toBeLessThan(criticalAnim.recoveryFrames);
+      expect(heavyAnim.recoveryFrames).toBeLessThan(
+        criticalAnim.recoveryFrames
+      );
     });
   });
 
@@ -695,7 +732,7 @@ describe("techniqueAnimationMapper singleton", () => {
   });
 
   // ===== Torso & Hip Rotation Tests (허리 및 골반 회전 테스트) =====
-  
+
   describe("Torso and Hip Rotation Integration", () => {
     it("should include torso rotation for all techniques", () => {
       const key: TechniqueAnimationKey = {
@@ -763,7 +800,18 @@ describe("techniqueAnimationMapper singleton", () => {
       const jinAnimation = techniqueAnimationMapper.getAnimation(jinKey);
       const ganAnimation = techniqueAnimationMapper.getAnimation(ganKey);
 
-      expect(jinAnimation.hipEngagement).toBeGreaterThan(ganAnimation.hipEngagement!);
+      expect(jinAnimation.hipEngagement).toBeDefined();
+      expect(ganAnimation.hipEngagement).toBeDefined();
+      if (
+        jinAnimation.hipEngagement === undefined ||
+        ganAnimation.hipEngagement === undefined
+      ) {
+        return;
+      }
+
+      expect(jinAnimation.hipEngagement).toBeGreaterThan(
+        ganAnimation.hipEngagement
+      );
     });
 
     it("should have higher torso rotation for throws than joint techniques", () => {
@@ -784,7 +832,18 @@ describe("techniqueAnimationMapper singleton", () => {
       const throwAnimation = techniqueAnimationMapper.getAnimation(throwKey);
       const jointAnimation = techniqueAnimationMapper.getAnimation(jointKey);
 
-      expect(throwAnimation.torsoRotation).toBeGreaterThan(jointAnimation.torsoRotation!);
+      expect(throwAnimation.torsoRotation).toBeDefined();
+      expect(jointAnimation.torsoRotation).toBeDefined();
+      if (
+        throwAnimation.torsoRotation === undefined ||
+        jointAnimation.torsoRotation === undefined
+      ) {
+        return;
+      }
+
+      expect(throwAnimation.torsoRotation).toBeGreaterThan(
+        jointAnimation.torsoRotation
+      );
     });
 
     it("should increase hip engagement with technique intensity", () => {
@@ -803,9 +862,21 @@ describe("techniqueAnimationMapper singleton", () => {
       };
 
       const lightAnimation = techniqueAnimationMapper.getAnimation(lightKey);
-      const criticalAnimation = techniqueAnimationMapper.getAnimation(criticalKey);
+      const criticalAnimation =
+        techniqueAnimationMapper.getAnimation(criticalKey);
 
-      expect(criticalAnimation.hipEngagement).toBeGreaterThan(lightAnimation.hipEngagement!);
+      expect(criticalAnimation.hipEngagement).toBeDefined();
+      expect(lightAnimation.hipEngagement).toBeDefined();
+      if (
+        criticalAnimation.hipEngagement === undefined ||
+        lightAnimation.hipEngagement === undefined
+      ) {
+        return;
+      }
+
+      expect(criticalAnimation.hipEngagement).toBeGreaterThan(
+        lightAnimation.hipEngagement
+      );
     });
 
     it("should give strikes higher power modifier than joint techniques", () => {
@@ -826,7 +897,18 @@ describe("techniqueAnimationMapper singleton", () => {
       const strikeAnimation = techniqueAnimationMapper.getAnimation(strikeKey);
       const jointAnimation = techniqueAnimationMapper.getAnimation(jointKey);
 
-      expect(strikeAnimation.powerModifier).toBeGreaterThan(jointAnimation.powerModifier!);
+      expect(strikeAnimation.powerModifier).toBeDefined();
+      expect(jointAnimation.powerModifier).toBeDefined();
+      if (
+        strikeAnimation.powerModifier === undefined ||
+        jointAnimation.powerModifier === undefined
+      ) {
+        return;
+      }
+
+      expect(strikeAnimation.powerModifier).toBeGreaterThan(
+        jointAnimation.powerModifier
+      );
     });
 
     it("should have minimal torso rotation for Gan (Mountain) stance", () => {
@@ -847,15 +929,36 @@ describe("techniqueAnimationMapper singleton", () => {
       const ganAnimation = techniqueAnimationMapper.getAnimation(ganKey);
       const gonAnimation = techniqueAnimationMapper.getAnimation(gonKey);
 
-      expect(ganAnimation.torsoRotation).toBeLessThan(gonAnimation.torsoRotation!);
+      expect(ganAnimation.torsoRotation).toBeDefined();
+      expect(gonAnimation.torsoRotation).toBeDefined();
+      if (
+        ganAnimation.torsoRotation === undefined ||
+        gonAnimation.torsoRotation === undefined
+      ) {
+        return;
+      }
+
+      expect(ganAnimation.torsoRotation).toBeLessThan(
+        gonAnimation.torsoRotation
+      );
       expect(ganAnimation.torsoRotation).toBeLessThan(Math.PI / 18); // Less than 10°
     });
 
     it("should provide rotation data for all 1024 combinations", () => {
       const stances = Object.values(TrigramStance);
-      const techniqueTypes: TechniqueTypeCategory[] = ["strike", "joint", "throw", "pressure_point"];
+      const techniqueTypes: TechniqueTypeCategory[] = [
+        "strike",
+        "joint",
+        "throw",
+        "pressure_point",
+      ];
       const bodyParts = Object.values(BodyPart);
-      const intensities: TechniqueIntensity[] = ["light", "medium", "heavy", "critical"];
+      const intensities: TechniqueIntensity[] = [
+        "light",
+        "medium",
+        "heavy",
+        "critical",
+      ];
 
       let countWithRotation = 0;
 
@@ -870,9 +973,11 @@ describe("techniqueAnimationMapper singleton", () => {
                 intensity,
               });
 
-              if (animation.torsoRotation !== undefined && 
-                  animation.hipEngagement !== undefined &&
-                  animation.powerModifier !== undefined) {
+              if (
+                animation.torsoRotation !== undefined &&
+                animation.hipEngagement !== undefined &&
+                animation.powerModifier !== undefined
+              ) {
                 countWithRotation++;
               }
             });
