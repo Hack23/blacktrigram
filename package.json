@@ -75,7 +75,6 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@types/fs-extra": "11.0.4",
     "@types/node": "^25.0.8",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
@@ -84,14 +83,15 @@
     "@typescript-eslint/parser": "^8.53.0",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.17",
-    "@vitest/ui": "^4.0.16",
-    "axe-core": "^4.11.1",
+    "@vitest/ui": "^4.0.17",
     "cypress": "^15.9.0",
     "cypress-junit-reporter": "^1.3.1",
     "cypress-multi-reporters": "^2.0.5",
     "cypress-wait-until": "^3.0.2",
     "dependency-cruiser": "^17.3.6",
+    "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
@@ -100,6 +100,7 @@
     "jsdom": "^27.4.0",
     "knip": "^5.81.0",
     "license-compliance": "3.0.1",
+    "madge": "^8.0.0",
     "mocha-junit-reporter": "2.2.1",
     "mochawesome": "7.1.4",
     "mochawesome-merge": "5.1.0",
@@ -118,6 +119,7 @@
     "vite": "^7.3.1",
     "vite-bundle-analyzer": "^1.3.2",
     "vite-tsconfig-paths": "^6.0.4",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.17",
+    "tsx": "^4.21.0"
   }
 }

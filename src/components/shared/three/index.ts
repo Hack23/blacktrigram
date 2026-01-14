@@ -25,9 +25,6 @@ export type { ArchetypeCardProps } from "./ui/ArchetypeCard";
 export { ProgressBar } from "./ui/ProgressBar";
 export type { ProgressBarProps, ProgressBarType } from "./ui/ProgressBar";
 
-export { KoreanUIDemo } from "./ui/KoreanUIDemo";
-export type { KoreanUIDemoProps } from "./ui/KoreanUIDemo";
-
 // Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
 

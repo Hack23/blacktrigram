@@ -4,9 +4,15 @@
     "./src/main.tsx",
     "./src/index.ts",
     "./scripts/capture-screenshots.ts",
-    "./scripts/post-screenshots-to-pr.ts"
+    "./eslint.config.js",
+    "./typedoc.json",
+    "./vite.config.ts",
+    "./vitest.config.ts",
+    "./cypress.config.ts"
   ],
   "project": ["**/*.{ts,tsx}"],
+  "ignore": [],
+  "ignoreBinaries": ["dot"],
   "eslint": {
     "config": [".eslintrc.cjs"]
   },
