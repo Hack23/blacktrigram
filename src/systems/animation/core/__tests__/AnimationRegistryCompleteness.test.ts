@@ -959,6 +959,13 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
       "crescent_kick",
       "push_kick",
       "spinning_heel_kick",
+      "spinning_hook",
+      "flying_kick",
+      "jumping_roundhouse",
+      "question_mark_kick",
+      "hook_kick",
+      "double_kick",
+      "spinning_back_kick",
     ];
 
     const kicksWithGuard: string[] = [];

@@ -300,6 +300,118 @@ export const KNEE_BODY_HOOK_ANIMATION: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
+// NEW KOREAN VITAL POINT VARIATIONS (추가 한국 급소 공격 변형)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Knee Kick - 무릎차기 (일반)
+ * Generic knee kick (no clinch).
+ * @korean 무릎차기애니메이션
+ */
+export const KNEE_KICK_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("knee_kick", "무릎차기")
+    .asAttack(0.4)
+    .chamber(0.12)
+    .withKoreanMiddleGuard()
+    .kneeStrike(0.15)
+    .recover(0.13)
+    .withKoreanMiddleGuard()
+    .build();
+
+/**
+ * Clinch Knee - 멱살잡고무릎차기
+ * Explicit clinch knee.
+ * @korean 멱살잡고무릎차기애니메이션
+ */
+export const CLINCH_KNEE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("clinch_knee", "멱살잡고무릎차기")
+    .asAttack(0.45)
+    .withClinch()
+    .kneeStrike(0.2)
+    .recover(0.25)
+    .build();
+
+/**
+ * Temple Elbow - 관자놀이치기
+ * Horizontal elbow to temple (Gwanjanoli).
+ * @korean 관자놀이치기애니메이션
+ */
+export const TEMPLE_ELBOW_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("temple_elbow", "관자놀이치기")
+    .asAttack(0.35)
+    .elbowChamber(0.1)
+    .withKoreanHighGuard()
+    .elbowStrike(0.12) // High target
+    .recover(0.13)
+    .build();
+
+/**
+ * Spinning Back Elbow - 뒤돌아팔꿈치
+ * Reverse elbow strike.
+ * @korean 뒤돌아팔꿈치애니메이션
+ */
+export const SPINNING_BACK_ELBOW_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("spinning_back_elbow", "뒤돌아팔꿈치")
+    .asAttack(0.5)
+    .backKickSpin(0.15)
+    .withKoreanHighGuard()
+    .elbowStrike(0.15)
+    .spinRecover(0.2)
+    .build();
+
+/**
+ * Spinal Elbow - 척추치기
+ * Downward elbow to spine.
+ * @korean 척추치기애니메이션
+ */
+export const SPINAL_ELBOW_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("spinal_elbow", "척추치기")
+    .asAttack(0.4)
+    .withHighGuard()
+    .elbowStrike(0.15) // Downward
+    .recover(0.25)
+    .build();
+
+/**
+ * Brachial Elbow - 상박치기
+ * Elbow to brachial nerve.
+ * @korean 상박치기애니메이션
+ */
+export const BRACHIAL_ELBOW_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("brachial_elbow", "상박치기")
+    .asAttack(0.35)
+    .elbowChamber(0.1)
+    .elbowStrike(0.12)
+    .recover(0.13)
+    .build();
+
+/**
+ * Kidney Knee - 신장차기
+ * Knee strike to kidney from side/behind.
+ * @korean 신장차기애니메이션
+ */
+export const KIDNEY_KNEE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("kidney_knee", "신장차기")
+    .asAttack(0.42)
+    .withClinch()
+    .kneeStrike(0.17)
+    .recover(0.25)
+    .build();
+
+/**
+ * Femoral Knee - 대퇴부차기
+ * Knee strike to femoral nerve (thigh).
+ * @korean 대퇴부차기애니메이션
+ */
+export const FEMORAL_KNEE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("femoral_knee", "대퇴부차기")
+    .asAttack(0.4)
+    .chamber(0.1)
+    .kneeStrike(0.15) // Low target
+    .recover(0.15)
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
 // EXPORT ELBOW/KNEE ANIMATION MAP
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -322,4 +434,12 @@ export const ELBOW_KNEE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["step_knee", STEP_KNEE_ANIMATION],
     ["elbow_knee_combo", ELBOW_KNEE_COMBO_ANIMATION],
     ["knee_body_hook", KNEE_BODY_HOOK_ANIMATION],
+    ["knee_kick", KNEE_KICK_ANIMATION],
+    ["clinch_knee", CLINCH_KNEE_ANIMATION],
+    ["temple_elbow", TEMPLE_ELBOW_ANIMATION],
+    ["spinning_back_elbow", SPINNING_BACK_ELBOW_ANIMATION],
+    ["spinal_elbow", SPINAL_ELBOW_ANIMATION],
+    ["brachial_elbow", BRACHIAL_ELBOW_ANIMATION],
+    ["kidney_knee", KIDNEY_KNEE_ANIMATION],
+    ["femoral_knee", FEMORAL_KNEE_ANIMATION],
   ]);
