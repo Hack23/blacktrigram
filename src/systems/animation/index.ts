@@ -459,3 +459,24 @@ export {
   initializeStanceTransitions,
   transitionBetweenStances,
 } from './TrigramStanceTransitions';
+
+// Recovery Phase Enhancement System (복귀 단계 강화)
+export {
+  addRecoveryPhase,
+  calculateMuscleTension,
+  createTechniqueWithRecovery,
+  validateRecoveryPhase,
+  type RecoveryPhaseConfig,
+  type RecoveryValidationResult,
+} from './RecoveryPhaseEnhancer';
+
+// Enhanced Attack Animations with Recovery Phases
+export {
+  CROSS_ANIMATION_ENHANCED,
+  ENHANCED_ANIMATIONS,
+  FRONT_KICK_ANIMATION_ENHANCED,
+  JAB_ANIMATION_ENHANCED,
+  RECOVERY_PRESETS,
+  ROUNDHOUSE_KICK_ANIMATION_ENHANCED,
+  applyRecoveryPreset,
+} from './EnhancedAttackAnimations';

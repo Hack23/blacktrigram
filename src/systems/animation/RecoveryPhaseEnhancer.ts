@@ -152,7 +152,6 @@ export function addRecoveryPhase(
 
   // Interpolate bone rotations 80% toward neutral
   peakKeyframe.boneRotations.forEach((rotation, bone) => {
-    const neutralRotation = new THREE.Euler(0, 0, 0, rotation.order);
     const intermediate = new THREE.Euler(
       rotation.x * (1 - finalConfig.intermediateReturnPercent),
       rotation.y * (1 - finalConfig.intermediateReturnPercent),
