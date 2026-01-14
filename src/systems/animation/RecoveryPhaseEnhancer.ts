@@ -130,6 +130,8 @@ export function addRecoveryPhase(
   if (animation.keyframes.length < 2) {
     // In production, this would use proper logging system
     // For now, using console.warn is acceptable for development
+    // Suppress console output during tests to avoid cluttering test output
+    // Note: In test environments, proper assertions should validate this condition
     if (process.env.NODE_ENV !== 'test') {
       console.warn(
         `Animation "${animation.name}" has fewer than 2 keyframes. Recovery phase not added.`
@@ -168,7 +170,9 @@ export function addRecoveryPhase(
   // Interpolate bone positions 80% toward rest
   if (peakKeyframe.bonePositions) {
     peakKeyframe.bonePositions.forEach((position, bone) => {
-      // Manually interpolate position toward (0, 0, 0)
+      // Manual interpolation instead of Vector3.lerp() because bonePositions map
+      // may contain objects that aren't true THREE.Vector3 instances with prototype methods.
+      // This approach ensures compatibility with any object having x, y, z properties.
       const returnPercent = finalConfig.intermediateReturnPercent;
       const intermediate = new THREE.Vector3(
         position.x * (1 - returnPercent),
