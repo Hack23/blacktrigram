@@ -8,12 +8,19 @@
  * @module blacktrigram
  */
 
-// Re-export all public APIs
+// Public API barrels
+export * from "./audio";
+export * from "./components";
+export * from "./systems";
 export * from "./types";
 export * from "./utils";
-export * from "./audio";
-export * from "./systems";
-export * from "./components";
 
-// Export main application components
+// Namespaced exports for typedoc/navigation clarity
+export * as Audio from "./audio";
+export * as Components from "./components";
+export * as Systems from "./systems";
+export * as Types from "./types";
+export * as Utils from "./utils";
+
+// Export main application component
 export { default as App } from "./App";

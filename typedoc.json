@@ -1,7 +1,13 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/index.ts"],
-  "entryPointStrategy": "expand",
+  "entryPoints": [
+    "./src/index.ts",
+    "./src/audio/index.ts",
+    "./src/systems/index.ts",
+    "./src/components/index.ts",
+    "./src/utils/index.ts"
+  ],
+  "entryPointStrategy": "resolve",
   "out": "docs/api",
   "name": "Black Trigram (흑괘) - Korean Martial Arts Combat Simulator API",
   "readme": "README.md",

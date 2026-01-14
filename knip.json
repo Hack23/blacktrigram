@@ -7,12 +7,12 @@
     "./eslint.config.js"
   ],
   "project": ["**/*.{ts,tsx}"],
-  "ignore": [],
+  "ignore": ["src/systems/animation/**/*.test.ts", "typedoc.json"],
   "ignoreBinaries": ["dot"],
-  "ignoreUnresolved": [
-    "^src/systems/animation/.*\\.test\\.ts$",
-    "typedoc\\.json$"
-  ],
+  "ignoreUnresolved": [],
+  "rules": {
+    "duplicates": "warn"
+  },
   "eslint": {
     "config": [".eslintrc.cjs"]
   },
