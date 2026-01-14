@@ -277,13 +277,15 @@ describe("Enhanced Animation Registry Integration", () => {
       const anim = ALL_ANIMATIONS.get("stance_geon");
 
       expect(anim).toBeDefined();
-      expect(anim!.name).toBe("stance_geon");
-      expect(anim!.keyframes.length).toBeGreaterThan(1);
-      expect(anim!.loop).toBe(true);
-      expect(anim!.duration).toBeGreaterThan(1);
+      if (!anim) throw new Error("Animation not found");
+
+      expect(anim.name).toBe("stance_geon");
+      expect(anim.keyframes.length).toBeGreaterThan(1);
+      expect(anim.loop).toBe(true);
+      expect(anim.duration).toBeGreaterThan(1);
 
       // Check what bones are actually present
-      const firstKeyframe = anim!.keyframes[0];
+      const firstKeyframe = anim.keyframes[0];
       const boneNames = [...firstKeyframe.boneRotations.keys()];
 
       // Debug: Log what bones are present
@@ -328,8 +330,10 @@ describe("Enhanced Animation Registry Integration", () => {
       for (const stance of stances) {
         const anim = ALL_ANIMATIONS.get(stance);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(1);
-        expect(anim!.loop).toBe(true);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(1);
+          expect(anim.loop).toBe(true);
+        }
       }
     });
   });

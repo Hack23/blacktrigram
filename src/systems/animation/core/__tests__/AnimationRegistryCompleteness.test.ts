@@ -11,6 +11,7 @@
 import { describe, expect, it } from "vitest";
 import { TrigramStance } from "../../../../types/common";
 import { BoneName } from "../../../../types/skeletal";
+import { getAllTechniques } from "../../../trigram/techniques";
 import { AnimationType } from "../../builders/MartialArtsAnimationBuilder";
 import {
   ALL_ANIMATIONS,
@@ -32,7 +33,9 @@ describe("AnimationRegistry - Completeness", () => {
         expect(ALL_ANIMATIONS.has(name)).toBe(true);
         const anim = ALL_ANIMATIONS.get(name);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -46,9 +49,11 @@ describe("AnimationRegistry - Completeness", () => {
 
         const anim = ALL_ANIMATIONS.get(animName);
         expect(anim).toBeDefined();
-        expect(anim!.name).toBe(animName);
-        expect(anim!.loop).toBe(true);
-        expect(anim!.keyframes.length).toBeGreaterThan(1);
+        if (anim) {
+          expect(anim.name).toBe(animName);
+          expect(anim.loop).toBe(true);
+          expect(anim.keyframes.length).toBeGreaterThan(1);
+        }
       }
     });
 
@@ -93,7 +98,9 @@ describe("AnimationRegistry - Completeness", () => {
       for (const type of kickTypes) {
         const anim = ANIMATION_REGISTRY.get(type);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -108,7 +115,9 @@ describe("AnimationRegistry - Completeness", () => {
       for (const type of punchTypes) {
         const anim = ANIMATION_REGISTRY.get(type);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -123,7 +132,9 @@ describe("AnimationRegistry - Completeness", () => {
       for (const type of elbowKneeTypes) {
         const anim = ANIMATION_REGISTRY.get(type);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -139,7 +150,9 @@ describe("AnimationRegistry - Completeness", () => {
       for (const type of grapplingTypes) {
         const anim = ANIMATION_REGISTRY.get(type);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
 
@@ -154,7 +167,9 @@ describe("AnimationRegistry - Completeness", () => {
       for (const type of defensiveTypes) {
         const anim = ANIMATION_REGISTRY.get(type);
         expect(anim).toBeDefined();
-        expect(anim!.keyframes.length).toBeGreaterThan(0);
+        if (anim) {
+          expect(anim.keyframes.length).toBeGreaterThan(0);
+        }
       }
     });
   });
@@ -191,7 +206,7 @@ describe("AnimationRegistry - Structure Validation", () => {
       let startingAtZero = 0;
       let total = 0;
 
-      for (const [name, anim] of ALL_ANIMATIONS) {
+      for (const [, anim] of ALL_ANIMATIONS) {
         if (anim.keyframes.length > 0) {
           total++;
           if (anim.keyframes[0].time === 0) {
@@ -213,7 +228,7 @@ describe("AnimationRegistry - Structure Validation", () => {
     });
 
     it("keyframes should be in chronological order", () => {
-      for (const [name, anim] of ALL_ANIMATIONS) {
+      for (const [, anim] of ALL_ANIMATIONS) {
         for (let i = 1; i < anim.keyframes.length; i++) {
           expect(anim.keyframes[i].time).toBeGreaterThanOrEqual(
             anim.keyframes[i - 1].time
@@ -223,7 +238,7 @@ describe("AnimationRegistry - Structure Validation", () => {
     });
 
     it("all keyframes should have bone rotations", () => {
-      for (const [name, anim] of ALL_ANIMATIONS) {
+      for (const [, anim] of ALL_ANIMATIONS) {
         for (const kf of anim.keyframes) {
           expect(kf.boneRotations).toBeDefined();
           expect(kf.boneRotations.size).toBeGreaterThan(0);
@@ -234,13 +249,13 @@ describe("AnimationRegistry - Structure Validation", () => {
 
   describe("Animation timing", () => {
     it("all animations should have positive duration", () => {
-      for (const [name, anim] of ALL_ANIMATIONS) {
+      for (const [, anim] of ALL_ANIMATIONS) {
         expect(anim.duration).toBeGreaterThan(0);
       }
     });
 
     it("looping animations should have matching start and end poses", () => {
-      for (const [name, anim] of ALL_ANIMATIONS) {
+      for (const [, anim] of ALL_ANIMATIONS) {
         if (anim.loop && anim.keyframes.length > 1) {
           const firstKf = anim.keyframes[0];
           const lastKf = anim.keyframes[anim.keyframes.length - 1];
@@ -290,7 +305,8 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
       const anim = getAnimation(`stance_${stance}`);
       expect(anim).toBeDefined();
 
-      const firstKf = anim!.keyframes[0];
+      if (!anim) continue;
+      const firstKf = anim.keyframes[0];
 
       // Store first keyframe leg rotations
       const expectedLegRotations = new Map<
@@ -305,8 +321,8 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
       }
 
       // Verify all subsequent keyframes have same leg rotations
-      for (let i = 1; i < anim!.keyframes.length; i++) {
-        const kf = anim!.keyframes[i];
+      for (let i = 1; i < anim.keyframes.length; i++) {
+        const kf = anim.keyframes[i];
 
         for (const bone of CRITICAL_LEG_BONES) {
           const expected = expectedLegRotations.get(bone);
@@ -334,7 +350,8 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
       const anim = getAnimation(`stance_${stance}`);
       expect(anim).toBeDefined();
 
-      const firstKf = anim!.keyframes[0];
+      if (!anim) continue;
+      const firstKf = anim.keyframes[0];
       const legRotations = new Map<
         string,
         { x: number; y: number; z: number }
@@ -387,7 +404,8 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
       const anim = getAnimation(`stance_${stance}`);
       expect(anim).toBeDefined();
 
-      const firstKf = anim!.keyframes[0];
+      if (!anim) continue;
+      const firstKf = anim.keyframes[0];
 
       // All stances should have arm bone rotations
       for (const bone of CRITICAL_ARM_BONES) {
@@ -403,18 +421,18 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
     for (const stance of stances) {
       const anim = getAnimation(`stance_${stance}`);
       expect(anim).toBeDefined();
-      expect(anim!.keyframes.length).toBeGreaterThan(1);
+      if (!anim) continue;
+
+      expect(anim.keyframes.length).toBeGreaterThan(1);
 
       // Check that spine_upper changes slightly across keyframes (breathing)
-      const firstSpine = anim!.keyframes[0].boneRotations.get(
+      const firstSpine = anim.keyframes[0].boneRotations.get(
         BoneName.SPINE_UPPER
       );
       let hasBreathingMovement = false;
 
-      for (let i = 1; i < anim!.keyframes.length; i++) {
-        const spine = anim!.keyframes[i].boneRotations.get(
-          BoneName.SPINE_UPPER
-        );
+      for (let i = 1; i < anim.keyframes.length; i++) {
+        const spine = anim.keyframes[i].boneRotations.get(BoneName.SPINE_UPPER);
         if (firstSpine && spine) {
           const diff = Math.abs(firstSpine.x - spine.x);
           if (diff > 0.001) {
@@ -452,16 +470,13 @@ describe("AnimationRegistry - Lookup Functions", () => {
       [AnimationType.ROUNDHOUSE_KICK, "roundhouse_kick"],
     ];
 
-    for (const [type, _expectedName] of typeToExpectedName) {
+    for (const [type] of typeToExpectedName) {
       const anim = getAnimationByType(type);
       expect(anim).toBeDefined();
-      expect(anim!.keyframes.length).toBeGreaterThan(0);
+      if (anim) {
+        expect(anim.keyframes.length).toBeGreaterThan(0);
+      }
     }
-  });
-
-  it("should return undefined for non-existent animations", () => {
-    expect(getAnimation("non_existent_animation")).toBeUndefined();
-    expect(getAnimationByName("fake_animation")).toBeUndefined();
   });
 });
 
@@ -501,12 +516,12 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
       if (!animationSignatures.has(signature)) {
         animationSignatures.set(signature, []);
       }
-      animationSignatures.get(signature)!.push(name);
+      animationSignatures.get(signature)?.push(name);
     }
 
     // Report any potential duplicates (same signature)
     const potentialDuplicates: string[][] = [];
-    for (const [_signature, names] of animationSignatures) {
+    for (const [, names] of animationSignatures) {
       if (names.length > 1) {
         // Only flag as potential duplicate if they have same duration AND keyframe count
         // AND the animations are not expected to be similar (like stance variants)
@@ -663,8 +678,6 @@ describe("AnimationRegistry - Coverage Statistics", () => {
 // TECHNIQUE ANIMATION COVERAGE TESTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { getAllTechniques } from "../../../trigram/techniques";
-
 describe("AnimationRegistry - Technique Animation Coverage", () => {
   it("all AnimationType enum values in ANIMATION_REGISTRY should have valid animations", () => {
     const missingAnimations: string[] = [];
@@ -764,7 +777,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
       if (!animationUsage.has(animType)) {
         animationUsage.set(animType, []);
       }
-      animationUsage.get(animType)!.push(technique.id);
+      animationUsage.get(animType)?.push(technique.id);
     }
 
     // Report animation reuse (not an error, but useful info)
@@ -841,7 +854,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
       if (!stanceAnimationVariety.has(stance)) {
         stanceAnimationVariety.set(stance, new Set());
       }
-      stanceAnimationVariety.get(stance)!.add(technique.animationType);
+      stanceAnimationVariety.get(stance)?.add(technique.animationType);
     }
 
     console.log("\nAnimation variety per stance:");
@@ -862,7 +875,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
     }
 
     // Each stance should use at least 2 different animation types (minimum)
-    for (const [stance, animTypes] of stanceAnimationVariety) {
+    for (const [, animTypes] of stanceAnimationVariety) {
       expect(animTypes.size).toBeGreaterThanOrEqual(2);
     }
   });

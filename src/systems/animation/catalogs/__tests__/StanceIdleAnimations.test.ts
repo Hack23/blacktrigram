@@ -302,7 +302,7 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
       { name: "gon", anim: GON_IDLE_ANIMATION },
     ];
 
-    for (const { name, anim } of animations) {
+    for (const { anim } of animations) {
       const firstKf = anim.keyframes[0];
       const firstHipL = firstKf.boneRotations.get("hip_L");
       const firstHipR = firstKf.boneRotations.get("hip_R");
