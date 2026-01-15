@@ -1,12 +1,24 @@
 /**
  * VitalPointTrainingOverlayHtml - Html overlay for vital point selection
  * 
+ * Provides vital point selection interface with consistent Korean martial arts theming.
+ * 
+ * @module components/screens/training/components/VitalPointTrainingOverlayHtml
+ * @category Training UI
+ * @korean 급소훈련오버레이
  */
 
 import React, { useMemo } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../../types/common";
-import { FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { SPACING } from "../../../../types/constants/ui";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getKoreanOverlayBaseStyles,
+  formatBilingualText,
+  getResponsiveSpacing,
+} from "../../../../utils/koreanThemeHelpers";
 import "../training.css";
 
 /**
@@ -22,17 +34,20 @@ export interface VitalPointTrainingOverlayHtmlProps {
 }
 
 /**
- * Get color hex string from severity
+ * Get Korean color from severity
+ * Maps vital point severity to KOREAN_COLORS constants
+ * 
+ * @korean 심각도별색상
  */
-const getSeverityColorHex = (severity: VitalPointSeverity): string => {
-  const colorMap: Record<VitalPointSeverity, string> = {
-    [VitalPointSeverity.MINOR]: "#00ff88",
-    [VitalPointSeverity.MODERATE]: "#ffaa00",
-    [VitalPointSeverity.MAJOR]: "#ffd700",
-    [VitalPointSeverity.CRITICAL]: "#ff4444",
-    [VitalPointSeverity.LETHAL]: "#ff0000",
+const getSeverityColor = (severity: VitalPointSeverity): number => {
+  const colorMap: Record<VitalPointSeverity, number> = {
+    [VitalPointSeverity.MINOR]: KOREAN_COLORS.POSITIVE_GREEN,
+    [VitalPointSeverity.MODERATE]: KOREAN_COLORS.WARNING_ORANGE,
+    [VitalPointSeverity.MAJOR]: KOREAN_COLORS.ACCENT_GOLD,
+    [VitalPointSeverity.CRITICAL]: KOREAN_COLORS.ACCENT_RED,
+    [VitalPointSeverity.LETHAL]: KOREAN_COLORS.PRIMARY_RED,
   };
-  return colorMap[severity] ?? "#999999";
+  return colorMap[severity] ?? KOREAN_COLORS.TEXT_TERTIARY;
 };
 
 /**
@@ -65,50 +80,41 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
 
   const panelWidth = isMobile ? 240 : 280;
   const maxHeight = isMobile ? 300 : 400;
+  const padding = getResponsiveSpacing("md", isMobile);
+
+  const panelStyle: React.CSSProperties = {
+    ...getKoreanOverlayBaseStyles(0.85),
+    width: `${panelWidth}px`,
+    maxHeight: `${maxHeight}px`,
+    padding: `${padding}px`,
+    overflow: "auto",
+    border: `2px solid ${hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.9)}`,
+  };
 
   return (
     <div
-      style={{
-        width: `${panelWidth}px`,
-        maxHeight: `${maxHeight}px`,
-        background: "rgba(26, 26, 26, 0.85)",
-        border: "2px solid rgba(255, 0, 255, 0.9)",
-        borderRadius: "12px",
-        padding: "15px",
-        fontFamily: FONT_FAMILY.KOREAN,
-        color: "#ffffff",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-        overflow: "auto",
-      }}
+      style={panelStyle}
       data-testid="vital-point-training-html"
     >
-      {/* Header */}
-      <div style={{ marginBottom: "15px" }}>
+      {/* Header with bilingual text */}
+      <div style={{ marginBottom: `${SPACING.MD}px` }}>
         <div
           style={{
             fontSize: isMobile ? "14px" : "16px",
             fontWeight: "bold",
-            color: "#ff00ff",
+            color: hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA),
           }}
         >
-          급소 선택
-        </div>
-        <div
-          style={{
-            fontSize: isMobile ? "10px" : "12px",
-            color: "#999999",
-            fontStyle: "italic",
-          }}
-        >
-          Vital Point Selection
+          {formatBilingualText("급소 선택", "Vital Point Selection", "pipe")}
         </div>
       </div>
 
       {/* Vital Points List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: `${SPACING.SM}px` }}>
         {availableVitalPoints.map((point) => {
           const isSelected = point.id === selectedVitalPoint;
-          const severityColor = getSeverityColorHex(point.severity);
+          const severityColor = getSeverityColor(point.severity);
+          const severityColorRgba = hexToRgbaString(severityColor);
 
           return (
             <button
@@ -116,7 +122,10 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
               onClick={() => onVitalPointSelect(point.id)}
               className={`vital-point-button ${isSelected ? "selected" : ""}`}
               style={{
-                borderColor: isSelected ? "#ffd700" : severityColor,
+                borderColor: isSelected 
+                  ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD) 
+                  : severityColorRgba,
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               data-testid={`vital-point-${point.id}`}
             >
@@ -124,7 +133,7 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
                 style={{
                   fontSize: isMobile ? "11px" : "12px",
                   fontWeight: "bold",
-                  color: severityColor,
+                  color: severityColorRgba,
                 }}
               >
                 {point.names.korean}
@@ -132,7 +141,7 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
               <div
                 style={{
                   fontSize: isMobile ? "9px" : "10px",
-                  color: "#999999",
+                  color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
                 }}
               >
                 {point.names.english}
@@ -140,8 +149,8 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
               <div
                 style={{
                   fontSize: isMobile ? "8px" : "9px",
-                  color: "#ffd700",
-                  marginTop: "4px",
+                  color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD),
+                  marginTop: `${SPACING.XS}px`,
                 }}
               >
                 {getDifficultyStars(point.targetingDifficulty ?? 0.5)}
@@ -155,44 +164,54 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
       {selectedPoint && (
         <div
           style={{
-            marginTop: "15px",
-            paddingTop: "15px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+            marginTop: `${SPACING.MD}px`,
+            paddingTop: `${SPACING.MD}px`,
+            borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.2)}`,
           }}
         >
           <div
             style={{
               fontSize: isMobile ? "11px" : "12px",
               fontWeight: "bold",
-              color: "#00ffff",
-              marginBottom: "8px",
+              color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
+              marginBottom: `${SPACING.SM}px`,
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
-            선택된 급소 | Selected Point
+            {formatBilingualText("선택된 급소", "Selected Point", "pipe")}
           </div>
           <div
             style={{
               fontSize: isMobile ? "10px" : "11px",
-              color: "#ffffff",
+              color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY),
               lineHeight: "1.4",
+              fontFamily: FONT_FAMILY.KOREAN,
             }}
           >
-            <div style={{ marginBottom: "4px" }}>
-              <span style={{ color: "#ffd700" }}>위치:</span>{" "}
+            <div style={{ marginBottom: `${SPACING.XS}px` }}>
+              <span style={{ color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD) }}>
+                {formatBilingualText("위치", "Location", "parentheses")}:
+              </span>{" "}
               {selectedPoint.category}
             </div>
-            <div style={{ marginBottom: "4px" }}>
-              <span style={{ color: "#ffd700" }}>심각도:</span>{" "}
+            <div style={{ marginBottom: `${SPACING.XS}px` }}>
+              <span style={{ color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD) }}>
+                {formatBilingualText("심각도", "Severity", "parentheses")}:
+              </span>{" "}
               {selectedPoint.severity}
             </div>
             <div
               style={{
                 fontSize: isMobile ? "9px" : "10px",
-                color: "#888888",
-                marginTop: "8px",
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
+                marginTop: `${SPACING.SM}px`,
               }}
             >
-              {selectedPoint.description.korean} | {selectedPoint.description.english}
+              {formatBilingualText(
+                selectedPoint.description.korean, 
+                selectedPoint.description.english, 
+                "pipe"
+              )}
             </div>
           </div>
         </div>

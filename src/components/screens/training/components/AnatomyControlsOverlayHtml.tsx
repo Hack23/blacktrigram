@@ -2,11 +2,23 @@
  * AnatomyControlsOverlayHtml - Html UI for toggling anatomy visualization layers
  * 
  * Provides buttons to toggle skeleton, nerves, vascular, and surface layers
+ * with consistent Korean martial arts cyberpunk theming.
+ * 
+ * @module components/screens/training/components/AnatomyControlsOverlayHtml
+ * @category Training UI
+ * @korean 해부학제어오버레이
  */
 
 import React, { useCallback, useState } from "react";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
-import { FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { SPACING } from "../../../../types/constants/ui";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getKoreanOverlayBaseStyles,
+  formatBilingualText,
+  getResponsiveSpacing,
+} from "../../../../utils/koreanThemeHelpers";
 import "../training.css";
 
 /**
@@ -22,14 +34,16 @@ export interface AnatomyControlsOverlayHtmlProps {
 }
 
 /**
- * Layer button configuration
+ * Layer button configuration with Korean colors
+ * 
+ * @korean 레이어설정
  */
 interface LayerConfig {
   readonly id: AnatomyLayer;
   readonly korean: string;
   readonly english: string;
   readonly icon: string;
-  readonly color: string;
+  readonly color: number; // Numeric hex color from KOREAN_COLORS
 }
 
 const LAYER_CONFIGS: readonly LayerConfig[] = [
@@ -38,28 +52,28 @@ const LAYER_CONFIGS: readonly LayerConfig[] = [
     korean: "골격",
     english: "Skeleton",
     icon: "🦴",
-    color: "#ffffff",
+    color: KOREAN_COLORS.TEXT_PRIMARY,
   },
   {
     id: "nerves",
     korean: "신경",
     english: "Nerves",
     icon: "⚡",
-    color: "#ffaa00",
+    color: KOREAN_COLORS.ACCENT_GOLD,
   },
   {
     id: "vascular",
     korean: "혈관",
     english: "Vascular",
     icon: "❤️",
-    color: "#ff4444",
+    color: KOREAN_COLORS.ACCENT_RED,
   },
   {
     id: "surface",
     korean: "표면",
     english: "Surface",
     icon: "👤",
-    color: "#00ffff",
+    color: KOREAN_COLORS.PRIMARY_CYAN,
   },
 ];
 
@@ -82,38 +96,30 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
     [onLayerToggle]
   );
 
+  const panelWidth = isMobile ? 220 : 260;
+  const padding = getResponsiveSpacing("md", isMobile);
+
+  const panelStyle: React.CSSProperties = {
+    ...getKoreanOverlayBaseStyles(0.85),
+    width: `${panelWidth}px`,
+    padding: `${padding}px`,
+  };
+
   return (
     <div
-      style={{
-        background: "rgba(26, 26, 26, 0.85)",
-        border: "2px solid rgba(0, 255, 255, 0.9)",
-        borderRadius: "12px",
-        padding: isMobile ? "12px" : "15px",
-        fontFamily: FONT_FAMILY.KOREAN,
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-        width: isMobile ? "220px" : "260px",
-      }}
+      style={panelStyle}
       data-testid="anatomy-controls-html"
     >
-      {/* Header */}
-      <div style={{ marginBottom: "15px" }}>
+      {/* Header with bilingual text */}
+      <div style={{ marginBottom: `${SPACING.MD}px` }}>
         <div
           style={{
             fontSize: isMobile ? "14px" : "16px",
             fontWeight: "bold",
-            color: "#00ffff",
+            color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
           }}
         >
-          해부학 표시
-        </div>
-        <div
-          style={{
-            fontSize: isMobile ? "10px" : "12px",
-            color: "#999999",
-            fontStyle: "italic",
-          }}
-        >
-          Anatomy Display
+          {formatBilingualText("해부학 표시", "Anatomy Display", "pipe")}
         </div>
       </div>
 
@@ -122,11 +128,15 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "8px",
+          gap: `${SPACING.SM}px`,
         }}
       >
         {LAYER_CONFIGS.map((config) => {
           const isActive = visibleLayers.includes(config.id);
+          const layerColor = hexToRgbaString(config.color);
+          const activeBackground = hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2);
+          const inactiveBackground = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.6);
+          const inactiveBorder = hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.2);
 
           return (
             <button
@@ -135,21 +145,19 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
-                background: isActive
-                  ? "rgba(0, 255, 255, 0.2)"
-                  : "rgba(40, 40, 40, 0.6)",
-                border: `2px solid ${isActive ? config.color : "rgba(255, 255, 255, 0.2)"}`,
-                borderRadius: "8px",
-                padding: isMobile ? "8px 10px" : "10px 12px",
+                gap: `${SPACING.SM}px`,
+                background: isActive ? activeBackground : inactiveBackground,
+                border: `2px solid ${isActive ? layerColor : inactiveBorder}`,
+                borderRadius: `${SPACING.SM}px`,
+                padding: isMobile ? `${SPACING.SM}px ${SPACING.SM}px` : `${SPACING.SM}px ${SPACING.MD}px`,
                 cursor: "pointer",
                 transition: "all 0.2s ease",
                 fontFamily: FONT_FAMILY.KOREAN,
-                color: "#ffffff",
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY),
                 width: "100%",
                 // Hover effects managed by React state for better maintainability
                 transform: hoveredLayer === config.id ? "scale(1.02)" : "scale(1)",
-                boxShadow: hoveredLayer === config.id ? `0 0 15px ${config.color}50` : "none",
+                boxShadow: hoveredLayer === config.id ? `0 0 15px ${hexToRgbaString(config.color, 0.5)}` : "none",
               }}
               onMouseEnter={() => setHoveredLayer(config.id)}
               onMouseLeave={() => setHoveredLayer(null)}
@@ -179,7 +187,7 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
                   style={{
                     fontSize: isMobile ? "12px" : "13px",
                     fontWeight: "bold",
-                    color: isActive ? config.color : "#999999",
+                    color: isActive ? layerColor : hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
                   }}
                 >
                   {config.korean}
@@ -187,7 +195,9 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
                 <div
                   style={{
                     fontSize: isMobile ? "9px" : "10px",
-                    color: isActive ? "#cccccc" : "#666666",
+                    color: isActive 
+                      ? hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY) 
+                      : hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.6),
                   }}
                 >
                   {config.english}
@@ -200,8 +210,8 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
                   width: isMobile ? "8px" : "10px",
                   height: isMobile ? "8px" : "10px",
                   borderRadius: "50%",
-                  background: isActive ? config.color : "rgba(255, 255, 255, 0.2)",
-                  boxShadow: isActive ? `0 0 10px ${config.color}` : "none",
+                  background: isActive ? layerColor : hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.2),
+                  boxShadow: isActive ? `0 0 10px ${layerColor}` : "none",
                 }}
               />
             </button>
@@ -212,18 +222,17 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
       {/* Info text */}
       <div
         style={{
-          marginTop: "12px",
-          paddingTop: "12px",
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+          marginTop: `${SPACING.MD}px`,
+          paddingTop: `${SPACING.MD}px`,
+          borderTop: `1px solid ${hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY, 0.1)}`,
           fontSize: isMobile ? "9px" : "10px",
-          color: "#888888",
+          color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
           textAlign: "center",
           lineHeight: "1.4",
+          fontFamily: FONT_FAMILY.KOREAN,
         }}
       >
-        클릭하여 표시/숨김
-        <br />
-        Click to show/hide
+        {formatBilingualText("클릭하여 표시/숨김", "Click to show/hide", "pipe")}
       </div>
     </div>
   );

@@ -2,10 +2,16 @@
  * TrainingFeedbackOverlayHtml - Html overlay for training feedback messages
  * 
  * Displays temporary feedback messages for hits, misses, and achievements
+ * with consistent Korean martial arts cyberpunk theming.
+ * 
+ * @module components/screens/training/components/TrainingFeedbackOverlayHtml
+ * @category Training UI
+ * @korean 훈련피드백오버레이
  */
 
 import React from "react";
-import { FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import "../training.css";
 
 /**
@@ -20,7 +26,9 @@ export interface TrainingFeedbackOverlayHtmlProps {
 
 /**
  * TrainingFeedbackOverlayHtml Component
- * Html overlay for displaying training feedback
+ * Html overlay for displaying training feedback with Korean theming
+ * 
+ * @korean 훈련피드백오버레이컴포넌트
  */
 export const TrainingFeedbackOverlayHtml: React.FC<TrainingFeedbackOverlayHtmlProps> = ({
   message,
@@ -32,6 +40,8 @@ export const TrainingFeedbackOverlayHtml: React.FC<TrainingFeedbackOverlayHtmlPr
       style={{
         fontFamily: FONT_FAMILY.KOREAN,
         fontWeight: "bold",
+        color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD),
+        textShadow: `0 2px 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)}`,
       }}
       data-testid="training-feedback-html"
     >
