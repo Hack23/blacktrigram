@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { PlayerArchetype } from "../../../types/common";
-import { IntroScreenThreeJS } from "./IntroScreenThreeJS";
+import { IntroScreen3D } from "./IntroScreen3D";
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
@@ -49,14 +49,14 @@ vi.mock("@react-three/drei", () => ({
   ),
 }));
 
-describe("IntroScreenThreeJS", () => {
+describe("IntroScreen3D", () => {
   it("should render without crashing", () => {
     const mockOnMenuSelect = vi.fn();
     const mockOnArchetypeSelect = vi.fn();
 
     const { container } = render(
       <AudioProvider>
-        <IntroScreenThreeJS
+        <IntroScreen3D
           onMenuSelect={mockOnMenuSelect}
           onArchetypeSelect={mockOnArchetypeSelect}
           selectedArchetype={PlayerArchetype.MUSA}
@@ -75,7 +75,7 @@ describe("IntroScreenThreeJS", () => {
 
     const { getByTestId } = render(
       <AudioProvider>
-        <IntroScreenThreeJS
+        <IntroScreen3D
           onMenuSelect={mockOnMenuSelect}
           onArchetypeSelect={mockOnArchetypeSelect}
           selectedArchetype={PlayerArchetype.MUSA}
@@ -93,7 +93,7 @@ describe("IntroScreenThreeJS", () => {
 
     const { container } = render(
       <AudioProvider>
-        <IntroScreenThreeJS
+        <IntroScreen3D
           onMenuSelect={mockOnMenuSelect}
           selectedArchetype={PlayerArchetype.MUSA}
         />
@@ -108,7 +108,7 @@ describe("IntroScreenThreeJS", () => {
 
     render(
       <AudioProvider>
-        <IntroScreenThreeJS
+        <IntroScreen3D
           onMenuSelect={mockOnMenuSelect}
           selectedArchetype={PlayerArchetype.HACKER}
         />
@@ -124,7 +124,7 @@ describe("IntroScreenThreeJS", () => {
 
     const { container } = render(
       <AudioProvider>
-        <IntroScreenThreeJS
+        <IntroScreen3D
           onMenuSelect={mockOnMenuSelect}
           selectedArchetype={PlayerArchetype.AMSALJA}
           width={375}

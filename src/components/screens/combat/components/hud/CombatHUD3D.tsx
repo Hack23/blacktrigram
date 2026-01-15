@@ -1,5 +1,5 @@
 /**
- * CombatHUDThree - Combat HUD using Three.js Korean UI components
+ * CombatHUD3D - Combat HUD using Three.js Korean UI components
  * 
  * Performance optimized with React.memo to reduce unnecessary re-renders.
  */
@@ -11,7 +11,7 @@ import { KOREAN_COLORS } from "../../../../../types/constants";
 import { ProgressBar, KoreanText as KoreanText3D } from "../../../../shared/three";
 import { calculateProgressBarSize } from "../../../../../utils/responsiveLayout";
 
-export interface CombatHUDThreeProps {
+export interface CombatHUD3DProps {
   readonly player1: PlayerState;
   readonly player2: PlayerState;
   readonly timeRemaining: number;
@@ -24,7 +24,7 @@ export interface CombatHUDThreeProps {
 }
 
 /**
- * CombatHUDThree Component
+ * CombatHUD3D Component
  * 
  * Displays player health, ki, stamina, and round information
  * using the new Three.js Korean UI components.
@@ -33,7 +33,7 @@ export interface CombatHUDThreeProps {
  * 
  * @example
  * ```tsx
- * <CombatHUDThree
+ * <CombatHUD3D
  *   player1={player1State}
  *   player2={player2State}
  *   timeRemaining={90}
@@ -43,7 +43,7 @@ export interface CombatHUDThreeProps {
  * />
  * ```
  */
-const CombatHUDThreeComponent: React.FC<CombatHUDThreeProps> = ({
+const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
   player1,
   player2,
   timeRemaining,
@@ -301,11 +301,11 @@ const CombatHUDThreeComponent: React.FC<CombatHUDThreeProps> = ({
 };
 
 /**
- * Memoized CombatHUDThree with custom comparison
+ * Memoized CombatHUD3D with custom comparison
  * Only re-renders when relevant props change
  */
-export const CombatHUDThree = React.memo(
-  CombatHUDThreeComponent,
+export const CombatHUD3D = React.memo(
+  CombatHUD3DComponent,
   (prevProps, nextProps) => {
     // Compare player health, ki, stamina, archetype, and names
     const p1HealthSame = prevProps.player1.health === nextProps.player1.health;
@@ -375,4 +375,4 @@ export const CombatHUDThree = React.memo(
   }
 );
 
-CombatHUDThree.displayName = "CombatHUDThree";
+CombatHUD3D.displayName = "CombatHUD3D";
