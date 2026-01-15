@@ -29,8 +29,8 @@ describe("AnatomyControlsOverlayHtml", () => {
       />
     );
 
-    expect(screen.getByText("해부학 표시")).toBeInTheDocument();
-    expect(screen.getByText("Anatomy Display")).toBeInTheDocument();
+    // Header uses formatBilingualText with pipe format
+    expect(screen.getByText("해부학 표시 | Anatomy Display")).toBeInTheDocument();
   });
 
   it("should render all four anatomy layer buttons", () => {
