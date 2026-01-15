@@ -78,7 +78,7 @@ describe("TrainingStatsOverlayHtml", () => {
   });
 
   it("should apply Korean font family consistently throughout the component", () => {
-    const { container } = render(
+    render(
       <TrainingStatsOverlayHtml
         stats={mockStats}
         isMobile={false}

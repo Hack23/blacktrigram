@@ -65,7 +65,7 @@ describe("TrainingModeSelectorOverlayHtml", () => {
   });
 
   it("should apply Korean font family consistently throughout the component", () => {
-    const { container } = render(
+    render(
       <TrainingModeSelectorOverlayHtml
         currentMode="basics"
         onModeChange={vi.fn()}

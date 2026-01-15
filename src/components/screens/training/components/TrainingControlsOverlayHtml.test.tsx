@@ -126,7 +126,7 @@ describe("TrainingControlsOverlayHtml", () => {
   });
 
   it("should apply Korean font family consistently throughout the component", () => {
-    const { container } = render(
+    render(
       <TrainingControlsOverlayHtml
         isTraining={false}
         onStartTraining={vi.fn()}
