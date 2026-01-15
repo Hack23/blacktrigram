@@ -19,6 +19,11 @@ import {
   GEON_DIAGONAL_POWER_STEP,
   GEON_HEAVENLY_FIST_ANIMATION,
   GEON_OVERHEAD_HAMMER,
+  GEON_FRONT_KICK,
+  GEON_ROUNDHOUSE_KICK,
+  GEON_AXE_KICK,
+  GEON_PALM_STRIKE,
+  GEON_ELBOW_SMASH,
   GEON_ANIMATIONS,
 } from "./GeonStanceAnimations";
 
@@ -385,12 +390,17 @@ describe("GEON_OVERHEAD_HAMMER", () => {
 
 describe("GEON_ANIMATIONS Map", () => {
   it("should contain all Geon animations", () => {
-    expect(GEON_ANIMATIONS.size).toBe(5);
+    expect(GEON_ANIMATIONS.size).toBe(10);
     expect(GEON_ANIMATIONS.has("geon_idle_breathing")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_forward_advance")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_diagonal_power_step")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_heavenly_fist")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_overhead_hammer")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_front_kick")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_roundhouse_kick")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_axe_kick")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_palm_strike")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_elbow_smash")).toBe(true);
   });
 
   it("should provide correct animation references", () => {
@@ -407,6 +417,228 @@ describe("GEON_ANIMATIONS Map", () => {
       expect(animation.koreanName).toBeTruthy();
       expect(animation.duration).toBeGreaterThan(0);
       expect(animation.keyframes.length).toBeGreaterThan(0);
+    });
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEON FRONT KICK TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_FRONT_KICK", () => {
+  it("should have correct duration and animation metadata", () => {
+    expect(GEON_FRONT_KICK.duration).toBe(0.9);
+    expect(GEON_FRONT_KICK.name).toBe("geon_front_kick");
+    expect(GEON_FRONT_KICK.koreanName).toBe("앞차기");
+  });
+
+  it("should have chamber, extension, and recovery phases", () => {
+    const keyframes = GEON_FRONT_KICK.keyframes;
+    expect(keyframes.length).toBeGreaterThanOrEqual(5);
+    
+    // Chamber phase
+    const chamberFrame = keyframes.find(f => f.time <= 0.3);
+    expect(chamberFrame).toBeDefined();
+    
+    // Extension phase
+    const extensionFrame = keyframes.find(f => f.time >= 0.5 && f.time <= 0.7);
+    expect(extensionFrame).toBeDefined();
+    
+    // Recovery phase
+    const recoveryFrame = keyframes.find(f => f.time >= 0.9);
+    expect(recoveryFrame).toBeDefined();
+  });
+
+  it("should raise knee in chamber position", () => {
+    const chamberFrame = GEON_FRONT_KICK.keyframes[0];
+    const hipRotation = chamberFrame?.boneRotations.get(BoneName.HIP_R);
+    
+    expect(hipRotation).toBeDefined();
+    expect(hipRotation!.x).toBeGreaterThan(0.5); // Hip flexion > 30°
+  });
+
+  it("should fully extend leg at impact", () => {
+    const impactFrame = GEON_FRONT_KICK.keyframes.find(f => f.time === 0.6);
+    const kneeRotation = impactFrame?.boneRotations.get(BoneName.KNEE_R);
+    
+    expect(kneeRotation).toBeDefined();
+    expect(Math.abs(kneeRotation!.x)).toBeLessThan(0.2); // Near-straight leg at impact
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEON ROUNDHOUSE KICK TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_ROUNDHOUSE_KICK", () => {
+  it("should have correct duration matching technique", () => {
+    expect(GEON_ROUNDHOUSE_KICK.duration).toBe(1.1);
+    expect(GEON_ROUNDHOUSE_KICK.name).toBe("geon_roundhouse_kick");
+    expect(GEON_ROUNDHOUSE_KICK.koreanName).toBe("돌려차기");
+  });
+
+  it("should have proper hip rotation for roundhouse mechanics", () => {
+    const extensionFrame = GEON_ROUNDHOUSE_KICK.keyframes.find(f => f.time === 0.8);
+    const pelvisRotation = extensionFrame?.boneRotations.get(BoneName.PELVIS);
+    
+    expect(pelvisRotation).toBeDefined();
+    expect(Math.abs(pelvisRotation!.y)).toBeGreaterThan(1.0); // Significant hip rotation (>57°)
+  });
+
+  it("should pivot support leg during kick", () => {
+    const pivotFrame = GEON_ROUNDHOUSE_KICK.keyframes.find(f => f.time >= 0.5);
+    const footRotation = pivotFrame?.boneRotations.get(BoneName.FOOT_L);
+    
+    expect(footRotation).toBeDefined();
+    expect(Math.abs(footRotation!.y)).toBeGreaterThan(0.3); // Support foot pivots
+  });
+
+  it("should whip leg extension at peak", () => {
+    const peakFrame = GEON_ROUNDHOUSE_KICK.keyframes.find(f => f.time === 0.8);
+    const kneeRotation = peakFrame?.boneRotations.get(BoneName.KNEE_R);
+    
+    expect(kneeRotation).toBeDefined();
+    expect(Math.abs(kneeRotation!.x)).toBeLessThan(0.3); // Nearly extended at impact
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEON AXE KICK TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_AXE_KICK", () => {
+  it("should have correct duration for complex technique", () => {
+    expect(GEON_AXE_KICK.duration).toBe(1.2);
+    expect(GEON_AXE_KICK.name).toBe("geon_axe_kick");
+    expect(GEON_AXE_KICK.koreanName).toBe("내려차기");
+  });
+
+  it("should raise leg overhead in peak phase", () => {
+    const peakFrame = GEON_AXE_KICK.keyframes.find(f => f.time === 0.5);
+    const hipRotation = peakFrame?.boneRotations.get(BoneName.HIP_R);
+    
+    expect(hipRotation).toBeDefined();
+    expect(hipRotation!.x).toBeGreaterThan(2.0); // High overhead position (>115°)
+  });
+
+  it("should maintain straight leg throughout", () => {
+    GEON_AXE_KICK.keyframes.forEach(frame => {
+      const kneeRotation = frame.boneRotations.get(BoneName.KNEE_R);
+      if (kneeRotation) {
+        expect(Math.abs(kneeRotation.x)).toBeLessThan(0.6); // Leg stays relatively straight
+      }
+    });
+  });
+
+  it("should drop body weight during impact", () => {
+    const impactFrame = GEON_AXE_KICK.keyframes.find(f => f.time === 0.9);
+    const pelvisPosition = impactFrame?.bonePositions.get(BoneName.PELVIS);
+    
+    expect(pelvisPosition).toBeDefined();
+    expect(pelvisPosition!.y).toBeLessThan(0); // Body drops downward
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEON PALM STRIKE TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_PALM_STRIKE", () => {
+  it("should have faster execution than closed fist techniques", () => {
+    expect(GEON_PALM_STRIKE.duration).toBe(0.95);
+    expect(GEON_PALM_STRIKE.duration).toBeLessThan(GEON_HEAVENLY_FIST_ANIMATION.duration);
+  });
+
+  it("should chamber similar to punch but with wrist positioning", () => {
+    const chamberFrame = GEON_PALM_STRIKE.keyframes.find(f => f.time === 0);
+    const wristRotation = chamberFrame?.boneRotations.get(BoneName.WRIST_R);
+    
+    expect(wristRotation).toBeDefined();
+    expect(wristRotation!.x).toBeLessThan(0); // Wrist cocked back
+  });
+
+  it("should achieve full extension at impact", () => {
+    const impactFrame = GEON_PALM_STRIKE.keyframes.find(f => f.time === 0.65);
+    const elbowRotation = impactFrame?.boneRotations.get(BoneName.ELBOW_R);
+    
+    expect(elbowRotation).toBeDefined();
+    expect(Math.abs(elbowRotation!.x)).toBeLessThan(0.2); // Nearly straight arm
+  });
+
+  it("should generate power from hip rotation", () => {
+    const impactFrame = GEON_PALM_STRIKE.keyframes.find(f => f.time === 0.65);
+    const spineRotation = impactFrame?.boneRotations.get(BoneName.SPINE_UPPER);
+    
+    expect(spineRotation).toBeDefined();
+    expect(Math.abs(spineRotation!.y)).toBeGreaterThan(0.3); // Significant torso rotation
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEON ELBOW SMASH TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_ELBOW_SMASH", () => {
+  it("should have fastest execution for close-range technique", () => {
+    expect(GEON_ELBOW_SMASH.duration).toBe(0.85);
+    expect(GEON_ELBOW_SMASH.duration).toBeLessThan(GEON_PALM_STRIKE.duration);
+  });
+
+  it("should maintain tight elbow angle throughout", () => {
+    GEON_ELBOW_SMASH.keyframes.forEach(frame => {
+      const elbowRotation = frame.boneRotations.get(BoneName.ELBOW_R);
+      if (elbowRotation && frame.time < 0.7) {
+        expect(elbowRotation.x).toBeLessThan(-1.5); // Elbow stays bent (< -86°)
+      }
+    });
+  });
+
+  it("should generate power from torso rotation", () => {
+    const impactFrame = GEON_ELBOW_SMASH.keyframes.find(f => f.time === 0.55);
+    const spineRotation = impactFrame?.boneRotations.get(BoneName.SPINE_UPPER);
+    const pelvisRotation = impactFrame?.boneRotations.get(BoneName.PELVIS);
+    
+    expect(spineRotation).toBeDefined();
+    expect(pelvisRotation).toBeDefined();
+    expect(Math.abs(spineRotation!.y)).toBeGreaterThan(0.6); // Major torso rotation
+    expect(Math.abs(pelvisRotation!.y)).toBeGreaterThan(0.4); // Hip drive
+  });
+
+  it("should have close-range positioning", () => {
+    const impactFrame = GEON_ELBOW_SMASH.keyframes.find(f => f.time === 0.55);
+    const pelvisPosition = impactFrame?.bonePositions.get(BoneName.PELVIS);
+    
+    expect(pelvisPosition).toBeDefined();
+    expect(pelvisPosition!.z).toBeLessThan(0.15); // Close-range forward movement
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ANIMATION INTEGRATION TESTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_ANIMATIONS Map", () => {
+  it("should contain all 10 Geon animations", () => {
+    expect(GEON_ANIMATIONS.size).toBe(10);
+  });
+
+  it("should have all technique animations accessible by ID", () => {
+    expect(GEON_ANIMATIONS.get("geon_idle_breathing")).toBe(GEON_IDLE_BREATHING);
+    expect(GEON_ANIMATIONS.get("geon_forward_advance")).toBe(GEON_FORWARD_ADVANCE);
+    expect(GEON_ANIMATIONS.get("geon_diagonal_power_step")).toBe(GEON_DIAGONAL_POWER_STEP);
+    expect(GEON_ANIMATIONS.get("geon_heavenly_fist")).toBe(GEON_HEAVENLY_FIST_ANIMATION);
+    expect(GEON_ANIMATIONS.get("geon_overhead_hammer")).toBe(GEON_OVERHEAD_HAMMER);
+    expect(GEON_ANIMATIONS.get("geon_front_kick")).toBe(GEON_FRONT_KICK);
+    expect(GEON_ANIMATIONS.get("geon_roundhouse_kick")).toBe(GEON_ROUNDHOUSE_KICK);
+    expect(GEON_ANIMATIONS.get("geon_axe_kick")).toBe(GEON_AXE_KICK);
+    expect(GEON_ANIMATIONS.get("geon_palm_strike")).toBe(GEON_PALM_STRIKE);
+    expect(GEON_ANIMATIONS.get("geon_elbow_smash")).toBe(GEON_ELBOW_SMASH);
+  });
+
+  it("should have all animations with Korean names", () => {
+    GEON_ANIMATIONS.forEach((animation) => {
+      expect(animation.koreanName).toBeDefined();
+      expect(animation.koreanName.length).toBeGreaterThan(0);
     });
   });
 });
@@ -434,6 +666,21 @@ describe("Geon Animations Performance", () => {
     
     expect(GEON_OVERHEAD_HAMMER).toBeDefined();
     expect(GEON_OVERHEAD_HAMMER.keyframes.length).toBeGreaterThan(0);
+
+    expect(GEON_FRONT_KICK).toBeDefined();
+    expect(GEON_FRONT_KICK.keyframes.length).toBeGreaterThan(0);
+
+    expect(GEON_ROUNDHOUSE_KICK).toBeDefined();
+    expect(GEON_ROUNDHOUSE_KICK.keyframes.length).toBeGreaterThan(0);
+
+    expect(GEON_AXE_KICK).toBeDefined();
+    expect(GEON_AXE_KICK.keyframes.length).toBeGreaterThan(0);
+
+    expect(GEON_PALM_STRIKE).toBeDefined();
+    expect(GEON_PALM_STRIKE.keyframes.length).toBeGreaterThan(0);
+
+    expect(GEON_ELBOW_SMASH).toBeDefined();
+    expect(GEON_ELBOW_SMASH.keyframes.length).toBeGreaterThan(0);
 
     const end = performance.now();
 

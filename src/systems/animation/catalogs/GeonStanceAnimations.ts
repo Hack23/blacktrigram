@@ -442,6 +442,489 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON FRONT KICK (앞차기)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Front Kick Animation
+ *
+ * **Korean**: 앞차기 (Ap-chagi)
+ * **Philosophy**: Direct frontal assault with explosive leg extension
+ *
+ * Authentic Taekwondo Front Kick Technique:
+ * - Targets solar plexus (명치) and abdomen
+ * - Snap-style kick with quick retraction
+ * - Ball of foot or heel as striking surface
+ * - Minimal telegraphing for speed
+ *
+ * Animation Phases:
+ * - Chamber (0-300ms): Knee raised to chest level, supporting leg stable
+ * - Extension (300-600ms): Explosive forward thrust, hip drive
+ * - Impact (600ms): Full extension with locked knee
+ * - Recovery (600-900ms): Rapid snap-back to chamber then guard
+ *
+ * Target Vital Points:
+ * - 명치 (Myeongchi) - Solar Plexus: Breath disruption
+ * - 단전 (Danjeon) - Energy Center: Ki flow disruption
+ * - 늑골 (Neukgol) - Floating Ribs: Internal trauma
+ *
+ * @korean 앞차기
+ * @duration 900ms
+ * @category Attack Animation
+ */
+export const GEON_FRONT_KICK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_front_kick", "앞차기")
+    .asAttack(0.9)
+    // =================================================================
+    // CHAMBER PHASE (0-300ms)
+    // =================================================================
+    .at(0)
+    .rotate(BoneName.HIP_R, 0.79, 0, 0) // 45° hip flexion - knee to chest
+    .rotate(BoneName.KNEE_R, -1.92, 0, 0) // -110° knee fully bent (chamber)
+    .rotate(BoneName.FOOT_R, -0.35, 0, 0) // -20° ankle flexed
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° support leg stable
+    .rotate(BoneName.PELVIS, 0.09, 0, 0) // 5° forward tilt
+    .rotate(BoneName.SPINE_UPPER, -0.09, 0, 0) // -5° compensatory lean back
+    // Guard arms for balance
+    .rotate(BoneName.SHOULDER_L, -0.44, 0, 0.35) // -25°, 0°, 20° high guard
+    .rotate(BoneName.SHOULDER_R, -0.44, 0, -0.35) // -25°, 0°, -20°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.57) // -90° bent
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // 90° bent
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // EXTENSION PHASE (300-600ms)
+    // =================================================================
+    .at(0.5)
+    .rotate(BoneName.HIP_R, 0.52, 0, 0) // 30° hip extension begins
+    .rotate(BoneName.KNEE_R, -0.35, 0, 0) // -20° knee extending
+    .rotate(BoneName.FOOT_R, 0.26, 0, 0) // 15° ankle extends (ball of foot strikes)
+    .rotate(BoneName.PELVIS, 0.17, 0, 0) // 10° driving forward
+    .rotate(BoneName.SPINE_UPPER, -0.17, 0, 0) // -10° lean back for balance
+    .position(BoneName.PELVIS, 0, 0, 0.15) // Forward hip drive
+    .done<MartialArtsAnimationBuilder>()
+    // Frame: Full Extension (600ms)
+    .at(0.6)
+    .rotate(BoneName.HIP_R, 0.26, 0, 0) // 15° near full extension
+    .rotate(BoneName.KNEE_R, -0.09, 0, 0) // -5° knee locked at impact
+    .rotate(BoneName.FOOT_R, 0.35, 0, 0) // 20° full ankle extension
+    .rotate(BoneName.PELVIS, 0.26, 0, 0) // 15° maximum forward
+    .position(BoneName.PELVIS, 0, 0, 0.25) // Full reach
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (600-900ms)
+    // =================================================================
+    .at(0.75)
+    .rotate(BoneName.HIP_R, 0.79, 0, 0) // 45° return to chamber
+    .rotate(BoneName.KNEE_R, -1.92, 0, 0) // -110° knee bent again
+    .rotate(BoneName.FOOT_R, -0.35, 0, 0) // -20° ankle flexed
+    .rotate(BoneName.PELVIS, 0.09, 0, 0) // 5° pull back
+    .position(BoneName.PELVIS, 0, 0, 0.1)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.9)
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Return to neutral
+    .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° stance
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON ROUNDHOUSE KICK (돌려차기)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Roundhouse Kick Animation
+ *
+ * **Korean**: 돌려차기 (Dolryeo-chagi)
+ * **Philosophy**: Signature Taekwondo technique combining rotation and whipping power
+ *
+ * Authentic Taekwondo Roundhouse Kick Mechanics:
+ * - Hip rotation drives the kick (not just leg swing)
+ * - Support leg pivots 90-180° on ball of foot
+ * - Instep or shin as striking surface
+ * - Whipping motion with full body torque
+ *
+ * Animation Phases:
+ * - Chamber (0-300ms): Hip rotation begins, knee rises laterally
+ * - Pivot (300-600ms): Support leg pivots, kicking leg chambers high
+ * - Extension (600-800ms): Explosive whip extension with hip snap
+ * - Recovery (800-1100ms): Controlled retraction and stance return
+ *
+ * Target Vital Points:
+ * - 태양혈 (Taeyanghyeol) - Temple: Knockout potential
+ * - 늑골 (Neukgol) - Ribs: Breathing impediment
+ * - 간 (Gan) - Liver: Internal organ trauma
+ *
+ * @korean 돌려차기
+ * @duration 1100ms
+ * @category Attack Animation
+ */
+export const GEON_ROUNDHOUSE_KICK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_roundhouse_kick", "돌려차기")
+    .asAttack(1.1)
+    // =================================================================
+    // CHAMBER PHASE (0-300ms)
+    // =================================================================
+    .at(0)
+    .rotate(BoneName.PELVIS, 0, -0.79, 0) // 0°, -45° hip rotation begins
+    .rotate(BoneName.HIP_R, 1.05, 0, 1.22) // 60°, 0°, 70° hip flexion + abduction
+    .rotate(BoneName.KNEE_R, -1.57, 0, 0) // -90° knee chambered
+    .rotate(BoneName.FOOT_R, -0.17, 0, 0.26) // -10°, 0°, 15° instep positioning
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° support leg slight bend
+    .rotate(BoneName.FOOT_L, 0, 0.26, 0) // 0°, 15° beginning pivot
+    .rotate(BoneName.SPINE_UPPER, 0.09, 0.52, 0) // 5°, 30° counter-rotation
+    // Guard positioning
+    .rotate(BoneName.SHOULDER_L, -0.79, 0.35, 0.52) // -45°, 20°, 30° high guard
+    .rotate(BoneName.SHOULDER_R, -0.79, -0.35, -0.52) // -45°, -20°, -30°
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // PIVOT & EXTENSION PHASE (300-800ms)
+    // =================================================================
+    .at(0.5)
+    .rotate(BoneName.PELVIS, 0, -1.22, 0) // 0°, -70° deep rotation
+    .rotate(BoneName.HIP_R, 1.22, 0, 1.57) // 70°, 0°, 90° peak chamber height
+    .rotate(BoneName.KNEE_R, -1.22, 0, 0) // -70° beginning extension
+    .rotate(BoneName.FOOT_L, 0, 0.79, 0) // 0°, 45° support pivot
+    .rotate(BoneName.SPINE_UPPER, 0.17, 0.79, 0) // 10°, 45° counter-rotation
+    .position(BoneName.PELVIS, 0, 0, 0.05)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.8)
+    .rotate(BoneName.PELVIS, 0, -1.57, 0) // 0°, -90° full hip rotation
+    .rotate(BoneName.HIP_R, 1.05, 0, 1.57) // 60°, 0°, 90° extended position
+    .rotate(BoneName.KNEE_R, -0.17, 0, 0) // -10° near full extension (impact)
+    .rotate(BoneName.FOOT_R, 0.35, 0, 0.52) // 20°, 0°, 30° instep whip
+    .rotate(BoneName.FOOT_L, 0, 1.22, 0) // 0°, 70° full pivot
+    .rotate(BoneName.SPINE_UPPER, 0.26, 1.05, 0) // 15°, 60° maximum counter
+    .position(BoneName.PELVIS, -0.1, 0, 0.15) // Lateral shift for reach
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (800-1100ms)
+    // =================================================================
+    .at(0.95)
+    .rotate(BoneName.PELVIS, 0, -0.52, 0) // 0°, -30° rotation unwinding
+    .rotate(BoneName.HIP_R, 0.52, 0, 0.52) // 30°, 0°, 30° retracting
+    .rotate(BoneName.KNEE_R, -0.79, 0, 0) // -45° controlled retraction
+    .rotate(BoneName.FOOT_L, 0, 0.35, 0) // 0°, 20° pivot returning
+    .position(BoneName.PELVIS, -0.05, 0, 0.05)
+    .done<MartialArtsAnimationBuilder>()
+    .at(1.1)
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Return to neutral
+    .rotate(BoneName.HIP_R, 0, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° stance
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.17, 0, 0.09)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, -0.09)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON AXE KICK (내려차기)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Axe Kick Animation
+ *
+ * **Korean**: 내려차기 (Naeryeo-chagi)
+ * **Philosophy**: Downward crushing power from above, like an axe splitting wood
+ *
+ * Authentic Taekwondo Axe Kick Technique:
+ * - Leg raises straight up overhead (no chamber)
+ * - Downward chopping motion using heel or entire foot
+ * - Targets crown, shoulder, clavicle
+ * - Requires exceptional flexibility and control
+ * - Devastating crushing damage on impact
+ *
+ * Animation Phases:
+ * - Raise (0-400ms): Straight leg rises overhead with hip flexion
+ * - Peak (400-500ms): Leg reaches maximum height above head
+ * - Descent (500-900ms): Rapid downward arc with gravity assist
+ * - Impact (900ms): Heel drives down onto target
+ * - Recovery (900-1200ms): Controlled leg return to stance
+ *
+ * Target Vital Points:
+ * - 백회혈 (Baekhoehoel) - Crown: Neurological knockout
+ * - 쇄골 (Swaegol) - Clavicle: Structural break
+ * - 어깨 (Eokkae) - Shoulder: Joint destruction
+ *
+ * @korean 내려차기
+ * @duration 1200ms
+ * @category Attack Animation
+ */
+export const GEON_AXE_KICK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_axe_kick", "내려차기")
+    .asAttack(1.2)
+    // =================================================================
+    // RAISE PHASE (0-400ms)
+    // =================================================================
+    .at(0)
+    .rotate(BoneName.HIP_R, 0.52, 0, 0) // 30° beginning lift
+    .rotate(BoneName.KNEE_R, -0.09, 0, 0) // -5° nearly straight
+    .rotate(BoneName.FOOT_R, -0.17, 0, 0) // -10° ankle flexed
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° support leg
+    .rotate(BoneName.PELVIS, -0.09, 0, 0) // -5° slight back lean
+    .rotate(BoneName.SPINE_UPPER, -0.17, 0, 0) // -10° compensatory lean
+    // Arms for balance
+    .rotate(BoneName.SHOULDER_L, -0.52, 0.26, 0.35) // -30°, 15°, 20°
+    .rotate(BoneName.SHOULDER_R, -0.52, -0.26, -0.35) // -30°, -15°, -20°
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.3)
+    .rotate(BoneName.HIP_R, 1.57, 0, 0) // 90° leg rising high
+    .rotate(BoneName.KNEE_R, 0, 0, 0) // 0° straight leg
+    .rotate(BoneName.FOOT_R, -0.26, 0, 0) // -15° ankle ready
+    .rotate(BoneName.PELVIS, -0.17, 0, 0) // -10° lean back more
+    .rotate(BoneName.SPINE_UPPER, -0.26, 0, 0) // -15° counter-balance
+    .position(BoneName.PELVIS, 0, -0.02, -0.05) // Slight back shift
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // PEAK PHASE (400-500ms)
+    // =================================================================
+    .at(0.5)
+    .rotate(BoneName.HIP_R, 2.27, 0, 0) // 130° peak overhead
+    .rotate(BoneName.KNEE_R, 0.09, 0, 0) // 5° slight hyper-extension
+    .rotate(BoneName.FOOT_R, -0.35, 0, 0) // -20° ankle cocked
+    .rotate(BoneName.PELVIS, -0.26, 0, 0) // -15° maximum lean
+    .rotate(BoneName.SPINE_UPPER, -0.35, 0, 0) // -20° deep lean back
+    .rotate(BoneName.HEAD, -0.26, 0, 0) // -15° looking up at target
+    .position(BoneName.PELVIS, 0, -0.03, -0.1) // Back positioning
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // DESCENT PHASE (500-900ms)
+    // =================================================================
+    .at(0.7)
+    .rotate(BoneName.HIP_R, 1.22, 0, 0) // 70° descending rapidly
+    .rotate(BoneName.KNEE_R, 0, 0, 0) // 0° maintaining straight
+    .rotate(BoneName.FOOT_R, 0.17, 0, 0) // 10° ankle extending for heel strike
+    .rotate(BoneName.PELVIS, 0.09, 0, 0) // 5° forward shifting
+    .rotate(BoneName.SPINE_UPPER, 0.17, 0, 0) // 10° leaning forward
+    .position(BoneName.PELVIS, 0, -0.01, 0.05) // Forward momentum
+    .done<MartialArtsAnimationBuilder>()
+    // Frame: Impact (900ms)
+    .at(0.9)
+    .rotate(BoneName.HIP_R, 0.35, 0, 0) // 20° impact position
+    .rotate(BoneName.KNEE_R, -0.09, 0, 0) // -5° slight bend on impact
+    .rotate(BoneName.FOOT_R, 0.35, 0, 0) // 20° heel drives down
+    .rotate(BoneName.PELVIS, 0.26, 0, 0) // 15° forward drive
+    .rotate(BoneName.SPINE_UPPER, 0.35, 0, 0) // 20° full forward
+    .rotate(BoneName.KNEE_L, -0.52, 0, 0) // -30° support leg absorbing impact
+    .position(BoneName.PELVIS, 0, -0.08, 0.2) // Body weight drops
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (900-1200ms)
+    // =================================================================
+    .at(1.05)
+    .rotate(BoneName.HIP_R, 0.17, 0, 0) // 10° lifting from impact
+    .rotate(BoneName.KNEE_R, -0.17, 0, 0) // -10° bending
+    .rotate(BoneName.PELVIS, 0.09, 0, 0) // 5° pulling back
+    .position(BoneName.PELVIS, 0, -0.04, 0.1)
+    .done<MartialArtsAnimationBuilder>()
+    .at(1.2)
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Return to neutral
+    .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° stance
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON PALM STRIKE (장권)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Palm Strike Animation
+ *
+ * **Korean**: 장권 (Jang-gwon)
+ * **Philosophy**: Open-hand power strike using palm heel, safer than closed fist
+ *
+ * Authentic Taekwondo Palm Heel Strike:
+ * - Palm heel (thenar eminence) as striking surface
+ * - Fingers pointing upward for jaw strikes, forward for body strikes
+ * - Hip rotation generates power (same as punch mechanics)
+ * - Safer for striker's hand, effective for close combat
+ *
+ * Animation Phases:
+ * - Chamber (0-250ms): Open hand cocks back at ear level
+ * - Drive (250-650ms): Explosive palm thrust with hip rotation
+ * - Impact (650ms): Full extension with palm heel forward
+ * - Recovery (650-950ms): Retraction to guard position
+ *
+ * Target Vital Points:
+ * - 턱끝 (Teokkkeut) - Jaw: Knockout via head snap
+ * - 명치 (Myeongchi) - Solar Plexus: Breath disruption
+ * - 인영 (Inmyeong) - Throat: Respiratory trauma
+ *
+ * @korean 장권
+ * @duration 950ms
+ * @category Attack Animation
+ */
+export const GEON_PALM_STRIKE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_palm_strike", "장권")
+    .asAttack(0.95)
+    // =================================================================
+    // CHAMBER PHASE (0-250ms)
+    // =================================================================
+    .at(0)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.26) // -20°, 0°, 15° chamber
+    .rotate(BoneName.ELBOW_R, -1.92, 0, 0) // -110° bent
+    .rotate(BoneName.WRIST_R, -0.17, 0, 0) // -10° wrist cocked back
+    .rotate(BoneName.SPINE_UPPER, 0, -0.26, 0) // 0°, -15° torso winds
+    .rotate(BoneName.PELVIS, 0, -0.17, 0) // 0°, -10° hip winds
+    // Left hand guard
+    .rotate(BoneName.SHOULDER_L, -0.26, 0, 0.17) // -15°, 0°, 10°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.57) // -90°
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.25)
+    .rotate(BoneName.SHOULDER_R, -0.44, 0, 0.35) // -25°, 0°, 20° maximum chamber
+    .rotate(BoneName.ELBOW_R, -2.09, 0, 0) // -120° deep bend
+    .rotate(BoneName.SPINE_UPPER, 0, -0.35, 0) // 0°, -20° peak twist
+    .rotate(BoneName.PELVIS, 0, -0.26, 0) // 0°, -15° coiled
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // DRIVE PHASE (250-650ms)
+    // =================================================================
+    .at(0.45)
+    .rotate(BoneName.SHOULDER_R, 0.52, 0, 0) // 30° driving forward
+    .rotate(BoneName.ELBOW_R, -0.52, 0, 0) // -30° extending
+    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // 5° palm alignment
+    .rotate(BoneName.SPINE_UPPER, 0, 0.26, 0) // 0°, 15° rotation through
+    .rotate(BoneName.PELVIS, 0, 0.17, 0) // 0°, 10° hip drives
+    .position(BoneName.PELVIS, 0, 0, 0.05)
+    .done<MartialArtsAnimationBuilder>()
+    // Frame: Impact (650ms)
+    .at(0.65)
+    .rotate(BoneName.SHOULDER_R, 0.87, 0, -0.09) // 50°, 0°, -5° full extension
+    .rotate(BoneName.ELBOW_R, -0.09, 0, 0) // -5° nearly straight
+    .rotate(BoneName.WRIST_R, 0.17, 0, 0) // 10° palm heel forward
+    .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // 0°, 20° full rotation
+    .rotate(BoneName.PELVIS, 0, 0.26, 0) // 0°, 15° maximum drive
+    .position(BoneName.PELVIS, 0, 0, 0.1)
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (650-950ms)
+    // =================================================================
+    .at(0.8)
+    .rotate(BoneName.SHOULDER_R, 0.26, 0, 0.09) // 15°, 0°, 5° retracting
+    .rotate(BoneName.ELBOW_R, -0.79, 0, 0) // -45° bending
+    .rotate(BoneName.SPINE_UPPER, 0, 0.17, 0) // 0°, 10°
+    .position(BoneName.PELVIS, 0, 0, 0.05)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.95)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5° guard
+    .rotate(BoneName.ELBOW_R, -1.57, 0, 0) // -90° guard position
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON ELBOW SMASH (팔꿈치치기)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Elbow Smash Animation
+ *
+ * **Korean**: 팔꿈치치기 (Palkkumchi-chigi)
+ * **Philosophy**: Devastating close-range strike using hardest part of arm
+ *
+ * Authentic Close-Range Elbow Strike:
+ * - Effective at clinch range (0.3-0.5m)
+ * - Elbow point (olecranon) as striking surface
+ * - Rotational power from torso, not just arm
+ * - Horizontal or rising trajectory to temple/jaw
+ * - Extremely high knockout potential
+ *
+ * Animation Phases:
+ * - Chamber (0-200ms): Elbow cocks back with torso rotation
+ * - Drive (200-550ms): Explosive rotation with elbow leading
+ * - Impact (550ms): Elbow point connects with full body torque
+ * - Recovery (550-850ms): Quick retraction to guard
+ *
+ * Target Vital Points:
+ * - 태양혈 (Taeyanghyeol) - Temple: Knockout via concussion
+ * - 턱끝 (Teokkkeut) - Jaw: Mandible fracture
+ * - 인영 (Inmyeong) - Carotid: Blood flow disruption
+ *
+ * @korean 팔꿈치치기
+ * @duration 850ms
+ * @category Attack Animation
+ */
+export const GEON_ELBOW_SMASH: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_elbow_smash", "팔꿈치치기")
+    .asAttack(0.85)
+    // =================================================================
+    // CHAMBER PHASE (0-200ms)
+    // =================================================================
+    .at(0)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.52, 0) // 0°, -30° torso winds away
+    .rotate(BoneName.PELVIS, 0, -0.35, 0) // 0°, -20° hip winds
+    .rotate(BoneName.SHOULDER_R, -0.26, 0.52, 0.79) // -15°, 30°, 45° elbow back
+    .rotate(BoneName.ELBOW_R, -2.27, 0, 0) // -130° tight bend
+    .rotate(BoneName.WRIST_R, 0, 0, 0) // Neutral for elbow point
+    // Close guard with left
+    .rotate(BoneName.SHOULDER_L, -0.52, 0, 0.52) // -30°, 0°, 30°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° tight guard
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.2)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.7, 0) // 0°, -40° maximum wind
+    .rotate(BoneName.PELVIS, 0, -0.52, 0) // 0°, -30° deep coil
+    .rotate(BoneName.SHOULDER_R, -0.35, 0.7, 1.05) // -20°, 40°, 60° fully back
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // DRIVE PHASE (200-550ms)
+    // =================================================================
+    .at(0.4)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // 0°, 20° explosive rotation
+    .rotate(BoneName.PELVIS, 0, 0.26, 0) // 0°, 15° hip drives
+    .rotate(BoneName.SHOULDER_R, -0.17, -0.26, 0.52) // -10°, -15°, 30° elbow coming through
+    .rotate(BoneName.ELBOW_R, -2.09, 0, 0) // -120° maintaining tight angle
+    .position(BoneName.PELVIS, 0, 0, 0.03)
+    .done<MartialArtsAnimationBuilder>()
+    // Frame: Impact (550ms)
+    .at(0.55)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.7, 0) // 0°, 40° full rotation through
+    .rotate(BoneName.PELVIS, 0, 0.52, 0) // 0°, 30° maximum torque
+    .rotate(BoneName.SHOULDER_R, -0.09, -0.7, 0.26) // -5°, -40°, 15° elbow point forward
+    .rotate(BoneName.ELBOW_R, -1.92, 0, 0) // -110° impact angle
+    .rotate(BoneName.HEAD, 0, 0.26, 0) // 0°, 15° looking at target
+    .position(BoneName.PELVIS, 0, 0, 0.08) // Close-range drive
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (550-850ms)
+    // =================================================================
+    .at(0.7)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // 0°, 20° unwinding
+    .rotate(BoneName.PELVIS, 0, 0.17, 0) // 0°, 10°
+    .rotate(BoneName.SHOULDER_R, -0.17, -0.35, 0.35) // -10°, -20°, 20° pulling back
+    .position(BoneName.PELVIS, 0, 0, 0.04)
+    .done<MartialArtsAnimationBuilder>()
+    .at(0.85)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Return to neutral
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5° guard
+    .rotate(BoneName.ELBOW_R, -1.57, 0, 0) // -90° guard position
+    .rotate(BoneName.SHOULDER_L, -0.17, 0, 0.09)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.57)
+    .rotate(BoneName.HEAD, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
 // EXPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -450,9 +933,17 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
  * @korean 건괘애니메이션맵
  */
 export const GEON_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
+  // Idle & Movement
   ["geon_idle_breathing", GEON_IDLE_BREATHING],
   ["geon_forward_advance", GEON_FORWARD_ADVANCE],
   ["geon_diagonal_power_step", GEON_DIAGONAL_POWER_STEP],
+  
+  // Combat Techniques
   ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION],
   ["geon_overhead_hammer", GEON_OVERHEAD_HAMMER],
+  ["geon_front_kick", GEON_FRONT_KICK],
+  ["geon_roundhouse_kick", GEON_ROUNDHOUSE_KICK],
+  ["geon_axe_kick", GEON_AXE_KICK],
+  ["geon_palm_strike", GEON_PALM_STRIKE],
+  ["geon_elbow_smash", GEON_ELBOW_SMASH],
 ]);
