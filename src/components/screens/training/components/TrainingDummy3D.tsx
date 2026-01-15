@@ -203,10 +203,14 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   // Memoize shared material for dummy body
   const bodyMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
+      new THREE.MeshPhysicalMaterial({
         color: KOREAN_COLORS.UI_STEEL_GRAY,
-        metalness: 0.3,
-        roughness: 0.7,
+        metalness: 0.8,
+        roughness: 0.2,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+        sheen: 0.5,
+        sheenColor: KOREAN_COLORS.PRIMARY_CYAN,
       }),
     []
   );

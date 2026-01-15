@@ -9,7 +9,9 @@ import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import {
   Bloom,
+  ChromaticAberration,
   EffectComposer,
+  Noise,
   SSAO,
   Vignette,
 } from "@react-three/postprocessing";
@@ -2356,6 +2358,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               intensity={1.5}
               radius={0.6}
             />
+            <Noise opacity={0.02} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         ) : (
@@ -2372,6 +2375,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               luminanceInfluence={0.5}
               color={new THREE.Color("black")}
             />
+            <ChromaticAberration
+              offset={[0.002, 0.002]}
+              radialModulation={false}
+              modulationOffset={0}
+            />
+            <Noise opacity={0.02} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         )}

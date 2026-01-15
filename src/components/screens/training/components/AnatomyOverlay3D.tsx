@@ -166,7 +166,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   // Pulsing animation for nerve pathways
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
-    const targetIntensity = 0.4 + pulse * 0.3;
+    const targetIntensity = 2.0 + pulse * 1.5;
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
@@ -181,12 +181,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Spinal cord - central nerve */}
       <mesh position={[0, 1.0, -0.08]}>
         <cylinderGeometry args={[0.025, 0.025, 1.6, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.SECONDARY_YELLOW}
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.SECONDARY_YELLOW}
-          emissiveIntensity={0.5}
+          emissiveIntensity={3.0}
+          roughness={0.2}
+          clearcoat={1.0}
         />
       </mesh>
 
@@ -199,12 +201,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}
         >
           <cylinderGeometry args={[0.015, 0.015, 0.2, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.8}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={3.0}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
@@ -217,12 +221,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 3 : Math.PI / 3]}
         >
           <cylinderGeometry args={[0.015, 0.01, 0.3, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.7}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={3.0}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
@@ -235,12 +241,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 6 : Math.PI / 6]}
         >
           <cylinderGeometry args={[0.015, 0.01, 0.4, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.7}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={3.0}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
