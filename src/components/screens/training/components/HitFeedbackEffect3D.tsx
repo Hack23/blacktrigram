@@ -127,12 +127,13 @@ const ImpactParticles: React.FC<{
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.08}
         color={color}
         transparent
-        opacity={0.8}
+        opacity={1.0}
         sizeAttenuation
         depthWrite={false}
+        blending={THREE.AdditiveBlending}
       />
     </points>
   );
@@ -281,7 +282,18 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     }
   }, [type]);
 
-  const particleCount = type === "perfect" ? 30 : type === "success" ? 20 : 10;
+  // Reduce particle counts on mobile to avoid frame drops
+  const particleCount = useMemo(() => {
+    const isPerfect = type === "perfect";
+    const isSuccess = type === "success";
+
+    if (isMobile) {
+      return isPerfect ? 30 : isSuccess ? 20 : 10;
+    }
+
+    // Higher fidelity on non-mobile devices
+    return isPerfect ? 80 : isSuccess ? 50 : 25;
+  }, [type, isMobile]);
   const ringRadius = type === "perfect" ? 1.5 : 1.0;
 
   // Track completion to prevent multiple calls

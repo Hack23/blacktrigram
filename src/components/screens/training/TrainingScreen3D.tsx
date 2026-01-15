@@ -9,6 +9,14 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import {
+  Bloom,
+  ChromaticAberration,
+  EffectComposer,
+  Noise,
+  SSAO,
+  Vignette,
+} from "@react-three/postprocessing";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
@@ -57,6 +65,7 @@ import {
   VitalPointOverlayControls,
   type BodyRegionFilter,
 } from "../combat/components";
+import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
 import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
@@ -66,7 +75,6 @@ import AnatomyOverlay3D, {
 import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
 import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
 import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import TrainingArena3D from "./components/TrainingArena3D";
 import TrainingControlsHTML from "./components/TrainingControlsHTML";
 import type { DifficultyMode } from "./components/TrainingDummy3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
@@ -844,6 +852,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return getPerformanceSettings(width, isMobile);
   }, [width, isMobile]);
 
+  // Memoized SSAO color to avoid creating new THREE.Color on every render
+  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
+
   return (
     <div
       style={{
@@ -861,7 +872,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={performanceSettings.dpr}
-        shadows={false}
+        shadows={!isMobile}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           // Add atmospheric fog (matching CombatScreen3D)
@@ -869,28 +880,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         camera={cameraConfig}
       >
-        {/* Korean-themed lighting (오방색 - Five Cardinal Colors) */}
-        <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
-
-        {/* Main directional light - Center (황색/Gold) */}
-        <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
-          color={KOREAN_COLORS.ACCENT_GOLD}
-        />
-
-        {/* Secondary accent light - Blue */}
-        <pointLight
-          position={[-10, 5, -5]}
-          intensity={0.4}
-          color={KOREAN_COLORS.ACCENT_BLUE}
-        />
+        {/* Arena environment with lighting included */}
+        <CombatArena3D lighting="cyberpunk" scale={1.0} />
 
         {/* Animation updater - updates player animation at 60fps */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
-
-        {/* Training arena ground */}
-        <TrainingArena3D />
 
         {/* Training dummy at fixed position */}
         <TrainingDummy3D
@@ -1455,6 +1449,42 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               minSwipeDistance={50}
             />
           </>
+        )}
+
+        {/* Post-processing Effects - Optimized for Mobile */}
+        {isMobile ? (
+          <EffectComposer multisampling={0}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <Noise opacity={0.02} />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
+        ) : (
+          <EffectComposer multisampling={4}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <SSAO
+              radius={0.05}
+              intensity={50}
+              luminanceInfluence={0.5}
+              color={ssaoColor}
+            />
+            <ChromaticAberration
+              offset={[0.002, 0.002]}
+              radialModulation={false}
+              modulationOffset={0}
+            />
+            <Noise opacity={0.02} />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
         )}
       </Canvas>
 

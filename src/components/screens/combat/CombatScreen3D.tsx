@@ -7,6 +7,14 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import {
+  Bloom,
+  ChromaticAberration,
+  EffectComposer,
+  Noise,
+  SSAO,
+  Vignette,
+} from "@react-three/postprocessing";
 import React, {
   useCallback,
   useEffect,
@@ -266,6 +274,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       postProcessing: performanceSettings.postProcessing,
     };
   }, [isMobile, width]);
+
+  // Memoized SSAO color to avoid creating new THREE.Color on every render
+  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -2109,7 +2120,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={renderConfig.dpr}
-        shadows={false}
+        shadows={!isMobile}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
@@ -2339,6 +2350,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             }
             onGesture={handleMobileGesture}
           />
+        )}
+
+        {/* Post-processing Effects - Optimized for Mobile */}
+        {isMobile ? (
+          <EffectComposer multisampling={0}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <Noise opacity={0.02} />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
+        ) : (
+          <EffectComposer multisampling={4}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <SSAO
+              radius={0.05}
+              intensity={50}
+              luminanceInfluence={0.5}
+              color={ssaoColor}
+            />
+            <ChromaticAberration
+              offset={[0.002, 0.002]}
+              radialModulation={false}
+              modulationOffset={0}
+            />
+            <Noise opacity={0.02} />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
         )}
 
         {/* Performance Monitoring - FPS display (dev mode only) */}

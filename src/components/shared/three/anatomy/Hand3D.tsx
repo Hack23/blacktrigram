@@ -149,7 +149,13 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
   return (
     <mesh position={position} rotation={rotation} castShadow receiveShadow>
       <capsuleGeometry args={[radius, length, 4, 8]} />
-      <meshStandardMaterial color={color} metalness={0.1} roughness={0.8} />
+      <meshPhysicalMaterial
+        color={color}
+        metalness={0.1}
+        roughness={0.6}
+        clearcoat={0.3}
+        clearcoatRoughness={0.5}
+      />
     </mesh>
   );
 };
@@ -331,10 +337,12 @@ export const Hand3D: React.FC<Hand3DProps> = ({
       {/* Palm */}
       <mesh castShadow receiveShadow name={`hand-palm-${side}`}>
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={palmColor}
           metalness={0.1}
-          roughness={0.8}
+          roughness={0.6}
+          clearcoat={0.3}
+          clearcoatRoughness={0.5}
         />
       </mesh>
 
@@ -347,10 +355,12 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           name={`hand-knife-edge-${side}`}
         >
           <boxGeometry args={[0.005, palmLength, palmThickness]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             metalness={0.3}
-            roughness={0.5}
+            roughness={0.4}
+            clearcoat={0.5}
+            clearcoatRoughness={0.2}
           />
         </mesh>
       )}

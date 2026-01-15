@@ -87,6 +87,7 @@ const getVitalPointPosition = (
 // Constants defined outside component to avoid recreation
 const HEALTH_BAR_WIDTH = 1.2;
 const HEALTH_BAR_HEIGHT = 0.1;
+const HIT_FLASH_INTENSITY_MULTIPLIER = 2.0;
 
 const DummyHealthBar: React.FC<{
   health: number;
@@ -203,10 +204,14 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
   // Memoize shared material for dummy body
   const bodyMaterial = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
+      new THREE.MeshPhysicalMaterial({
         color: KOREAN_COLORS.UI_STEEL_GRAY,
-        metalness: 0.3,
-        roughness: 0.7,
+        metalness: 0.8,
+        roughness: 0.2,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+        sheen: 0.5,
+        sheenColor: KOREAN_COLORS.PRIMARY_CYAN,
       }),
     []
   );
@@ -279,6 +284,10 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     healthRef.current = health;
   }, [health]);
 
+  // Ref for hit flash intensity
+  const flashIntensityRef = useRef(0);
+  const emissiveSetRef = useRef(false);
+
   // Breathing animation (slower when health is low)
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -288,11 +297,34 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
       Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
     scaleVector.set(1, breathScale, 1);
     groupRef.current.scale.copy(scaleVector);
+
+    // Hit flash effect - decay intensity
+    if (flashIntensityRef.current > 0.01) {
+      flashIntensityRef.current = THREE.MathUtils.lerp(
+        flashIntensityRef.current,
+        0,
+        0.1
+      );
+      // Only set emissive color when starting the flash
+      if (!emissiveSetRef.current) {
+        bodyMaterial.emissive.setHex(KOREAN_COLORS.PRIMARY_CYAN);
+        emissiveSetRef.current = true;
+      }
+      // eslint-disable-next-line react-hooks/immutability -- Material properties must be modified for animation
+      bodyMaterial.emissiveIntensity =
+        flashIntensityRef.current * HIT_FLASH_INTENSITY_MULTIPLIER;
+    } else if (emissiveSetRef.current) {
+      bodyMaterial.emissiveIntensity = 0;
+      bodyMaterial.emissive.setHex(0x000000); // Reset to black for complete cleanup
+      emissiveSetRef.current = false;
+    }
   });
 
   // Handle vital point hit
   const handlePointHit = useCallback(
     (pointId: string) => {
+      // Trigger flash effect
+      flashIntensityRef.current = 1.0;
       onVitalPointHit?.(pointId);
     },
     [onVitalPointHit]

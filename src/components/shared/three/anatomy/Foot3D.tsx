@@ -130,10 +130,12 @@ export const Foot3D: React.FC<Foot3DProps> = ({
             footDimensions.heelLength,
           ]}
         />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={footColor}
           metalness={0.1}
-          roughness={0.9}
+          roughness={0.8}
+          clearcoat={0.3}
+          clearcoatRoughness={0.5}
         />
       </mesh>
 
@@ -155,10 +157,12 @@ export const Foot3D: React.FC<Foot3DProps> = ({
             footDimensions.toeLength,
           ]}
         />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={footColor}
           metalness={0.1}
-          roughness={0.9}
+          roughness={0.8}
+          clearcoat={0.3}
+          clearcoatRoughness={0.5}
         />
       </mesh>
 
@@ -169,10 +173,12 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         name={`foot-ankle-${side}`}
       >
         <sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={footColor}
           metalness={0.1}
-          roughness={0.9}
+          roughness={0.8}
+          clearcoat={0.3}
+          clearcoatRoughness={0.5}
         />
       </mesh>
     </group>

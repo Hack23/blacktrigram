@@ -76,14 +76,23 @@ const Eye: React.FC<EyeProps> = ({
       {/* Eye white (sclera) */}
       <mesh scale={[1, eyeOpenness, 1]}>
         <sphereGeometry args={[0.04, 8, 8]} />
-        <meshBasicMaterial color={0xffffff} />
+        <meshPhysicalMaterial
+          color={0xffffff}
+          roughness={0.1}
+          clearcoat={1.0}
+          clearcoatRoughness={0.1}
+        />
       </mesh>
 
       {/* Pupil (tracks opponent) */}
       {eyeOpenness > 0.1 && (
         <mesh position={pupilOffset}>
           <sphereGeometry args={[0.015, 8, 8]} />
-          <meshBasicMaterial color={0x000000} />
+          <meshPhysicalMaterial
+            color={0x000000}
+            roughness={0.2}
+            clearcoat={0.8}
+          />
         </mesh>
       )}
 
@@ -126,7 +135,7 @@ const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
       {/* Mouth line */}
       <mesh scale={[0.08, mouthOpenness * 0.04 + 0.005, 0.01]}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={0x330000} />
+        <meshPhysicalMaterial color={0x330000} roughness={0.5} />
       </mesh>
 
       {/* Blood effect */}
@@ -135,10 +144,12 @@ const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
           {/* Blood on lip */}
           <mesh position={[0, -0.01, 0]}>
             <sphereGeometry args={[0.015, 8, 8]} />
-            <meshBasicMaterial
+            <meshPhysicalMaterial
               color={bloodColor}
+              roughness={0.2}
+              clearcoat={1.0}
               transparent
-              opacity={bleeding * 0.8}
+              opacity={bleeding * 0.9}
             />
           </mesh>
 
@@ -146,8 +157,10 @@ const Mouth: React.FC<MouthProps> = ({ position, expression, bleeding }) => {
           {bleeding > 0.5 && (
             <mesh position={[0, -0.03, 0]} scale={[0.5, 1, 0.5]}>
               <cylinderGeometry args={[0.005, 0.008, 0.04, 8]} />
-              <meshBasicMaterial
+              <meshPhysicalMaterial
                 color={bloodColor}
+                roughness={0.2}
+                clearcoat={1.0}
                 transparent
                 opacity={bleeding * 0.7}
               />
@@ -183,7 +196,13 @@ const Nose: React.FC<{
       {/* Nose */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[0.03, 0.06, 8]} />
-        <meshStandardMaterial color={skinColor} />
+        <meshPhysicalMaterial
+          color={skinColor}
+          roughness={0.6}
+          metalness={0.1}
+          clearcoat={0.3}
+          clearcoatRoughness={0.6}
+        />
       </mesh>
 
       {/* Blood from nose */}
@@ -304,11 +323,14 @@ export const Face3D: React.FC<Face3DProps> = ({
       {/* Head sphere */}
       <mesh>
         <sphereGeometry args={[0.2, isMobile ? 12 : 16, isMobile ? 12 : 16]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={headColor}
           map={damageTexture}
-          roughness={0.8}
+          roughness={0.6}
           metalness={0.1}
+          clearcoat={0.3}
+          clearcoatRoughness={0.6}
+          envMapIntensity={0.5}
         />
       </mesh>
 
@@ -350,13 +372,25 @@ export const Face3D: React.FC<Face3DProps> = ({
           {/* Left ear */}
           <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 6]}>
             <sphereGeometry args={[0.04, 8, 8]} />
-            <meshStandardMaterial color={headColor} />
+            <meshPhysicalMaterial
+              color={headColor}
+              roughness={0.6}
+              metalness={0.1}
+              clearcoat={0.3}
+              clearcoatRoughness={0.6}
+            />
           </mesh>
 
           {/* Right ear */}
           <mesh position={[0.2, 0, 0]} rotation={[0, 0, -Math.PI / 6]}>
             <sphereGeometry args={[0.04, 8, 8]} />
-            <meshStandardMaterial color={headColor} />
+            <meshPhysicalMaterial
+              color={headColor}
+              roughness={0.6}
+              metalness={0.1}
+              clearcoat={0.3}
+              clearcoatRoughness={0.6}
+            />
           </mesh>
         </>
       )}

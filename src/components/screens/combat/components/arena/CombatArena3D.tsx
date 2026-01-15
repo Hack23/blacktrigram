@@ -5,6 +5,7 @@
  * Includes floor, lighting, and atmospheric effects
  */
 
+import { Environment } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useRef } from "react";
 import * as THREE from "three";
@@ -20,6 +21,13 @@ export interface CombatArena3DProps {
   /** Scale factor for arena size (1.0 = desktop, <1.0 = mobile). Defaults to 1.0 */
   readonly scale?: number;
 }
+
+// Floor scaling constant for extended arena boundaries
+const FLOOR_SCALE_FACTOR = 1.5;
+
+// Shadow map size constants for performance optimization
+const SHADOW_MAP_SIZE_MOBILE: [number, number] = [512, 512];
+const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [1024, 1024];
 
 /**
  * CombatArena3D Component
@@ -50,11 +58,17 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
+          <Environment preset="city" />
+          <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
           <directionalLight
             position={[10, 10, 5]}
-            intensity={1}
+            intensity={0.8}
             color={KOREAN_COLORS.ACCENT_GOLD}
+            castShadow
+            shadow-mapSize={
+              scale < 1.0 ? SHADOW_MAP_SIZE_MOBILE : SHADOW_MAP_SIZE_DESKTOP
+            }
+            shadow-bias={-0.0005}
           />
           <pointLight
             position={[-10, 5, -5]}
@@ -85,11 +99,19 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 
       {/* Arena floor - dojang mat (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[floorWidth, floorDepth]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
-          roughness={0.8}
-          metalness={0.2}
+        <planeGeometry
+          args={[floorWidth * FLOOR_SCALE_FACTOR, floorDepth * FLOOR_SCALE_FACTOR]}
+        />
+        <meshPhysicalMaterial
+          color={
+            lighting === "cyberpunk"
+              ? KOREAN_COLORS.UI_BACKGROUND_DARK
+              : KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+          }
+          roughness={lighting === "cyberpunk" ? 0.2 : 0.7}
+          metalness={lighting === "cyberpunk" ? 0.6 : 0.1}
+          clearcoat={lighting === "cyberpunk" ? 0.5 : 0}
+          clearcoatRoughness={0.2}
         />
       </mesh>
 
@@ -114,10 +136,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       ].map((pos, i) => (
         <mesh key={i} position={pos as [number, number, number]} castShadow>
           <cylinderGeometry args={[0.1 * scale, 0.15 * scale, 0.8, 8]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.3}
+            emissiveIntensity={0.5}
+            metalness={0.8}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}

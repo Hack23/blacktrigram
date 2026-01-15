@@ -10,6 +10,13 @@ import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
+// Visual effect constants for bloom optimization
+const SKELETON_EMISSIVE_INTENSITY = 0.5; // Subtle glow for skeletal structure
+const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
+const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels
+const VASCULAR_PULSE_BASE = 1.0; // Base intensity for vascular pulse animation
+const VASCULAR_PULSE_AMPLITUDE = 0.5; // Pulse variation amplitude (max 1.5 total)
+
 /**
  * Anatomy layer types
  */
@@ -48,12 +55,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Spine - vertical line */}
       <mesh position={[0, 1.0, -0.05]}>
         <cylinderGeometry args={[0.03, 0.03, 1.6, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
-          emissiveIntensity={0.3}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
+          clearcoat={0.3}
         />
       </mesh>
 
@@ -71,12 +80,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {[1.3, 1.15, 1.0, 0.85, 0.7].map((y, i) => (
         <mesh key={i} position={[0, y, 0]} rotation={[0, 0, Math.PI / 2]}>
           <torusGeometry args={[0.25 - i * 0.02, 0.02, 8, 16]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.WHITE_SOLID}
             transparent
             opacity={opacity * 0.7}
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
-            emissiveIntensity={0.2}
+            emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+            roughness={0.4}
+            clearcoat={0.3}
           />
         </mesh>
       ))}
@@ -84,50 +95,64 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Pelvis - simplified structure */}
       <mesh position={[0, 0.5, 0]} rotation={[0, 0, Math.PI / 2]}>
         <torusGeometry args={[0.25, 0.03, 8, 16]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
-          emissiveIntensity={0.3}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
+          clearcoat={0.3}
         />
       </mesh>
 
       {/* Left arm bones */}
       <mesh position={[-0.4, 1.0, 0]} rotation={[0, 0, Math.PI / 6]}>
         <cylinderGeometry args={[0.02, 0.02, 0.6, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
         />
       </mesh>
 
       {/* Right arm bones */}
       <mesh position={[0.4, 1.0, 0]} rotation={[0, 0, -Math.PI / 6]}>
         <cylinderGeometry args={[0.02, 0.02, 0.6, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
         />
       </mesh>
 
       {/* Leg bones */}
       <mesh position={[-0.2, 0.3, 0]}>
         <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
         />
       </mesh>
       <mesh position={[0.2, 0.3, 0]}>
         <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          emissive={KOREAN_COLORS.PRIMARY_CYAN}
+          emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          roughness={0.4}
         />
       </mesh>
     </group>
@@ -166,7 +191,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   // Pulsing animation for nerve pathways
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
-    const targetIntensity = 0.4 + pulse * 0.3;
+    const targetIntensity = 1.0 + pulse * 0.5;
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
@@ -181,12 +206,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Spinal cord - central nerve */}
       <mesh position={[0, 1.0, -0.08]}>
         <cylinderGeometry args={[0.025, 0.025, 1.6, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.SECONDARY_YELLOW}
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.SECONDARY_YELLOW}
-          emissiveIntensity={0.5}
+          emissiveIntensity={NERVE_EMISSIVE_INTENSITY}
+          roughness={0.2}
+          clearcoat={1.0}
         />
       </mesh>
 
@@ -199,12 +226,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}
         >
           <cylinderGeometry args={[0.015, 0.015, 0.2, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.8}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={1.5}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
@@ -217,12 +246,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 3 : Math.PI / 3]}
         >
           <cylinderGeometry args={[0.015, 0.01, 0.3, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.7}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={NERVE_EMISSIVE_INTENSITY}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
@@ -235,12 +266,14 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 6 : Math.PI / 6]}
         >
           <cylinderGeometry args={[0.015, 0.01, 0.4, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
             transparent
             opacity={opacity * 0.7}
             emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.4}
+            emissiveIntensity={NERVE_EMISSIVE_INTENSITY}
+            roughness={0.2}
+            clearcoat={1.0}
           />
         </mesh>
       ))}
@@ -280,7 +313,7 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   // Pulsing animation simulating blood flow
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.5 + 0.5;
-    const targetIntensity = 0.3 + pulse * 0.4;
+    const targetIntensity = VASCULAR_PULSE_BASE + pulse * VASCULAR_PULSE_AMPLITUDE;
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
@@ -295,12 +328,14 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {/* Aorta - main artery */}
       <mesh position={[0, 1.0, -0.1]}>
         <cylinderGeometry args={[0.02, 0.02, 1.4, 8]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={KOREAN_COLORS.ACCENT_RED}
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.ACCENT_RED}
-          emissiveIntensity={0.5}
+          emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+          roughness={0.2}
+          clearcoat={0.8}
         />
       </mesh>
 
@@ -308,12 +343,14 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {[-0.1, 0.1].map((x, i) => (
         <mesh key={`carotid-${i}`} position={[x, 1.4, -0.05]}>
           <cylinderGeometry args={[0.015, 0.015, 0.3, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.9}
             emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={0.6}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            roughness={0.2}
+            clearcoat={0.8}
           />
         </mesh>
       ))}
@@ -326,12 +363,14 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           rotation={[0, 0, x > 0 ? -Math.PI / 4 : Math.PI / 4]}
         >
           <cylinderGeometry args={[0.012, 0.012, 0.25, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={0.5}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            roughness={0.2}
+            clearcoat={0.8}
           />
         </mesh>
       ))}
@@ -340,12 +379,14 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       {[-0.15, 0.15].map((x, i) => (
         <mesh key={`femoral-${i}`} position={[x, 0.4, -0.08]}>
           <cylinderGeometry args={[0.012, 0.012, 0.35, 6]} />
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={0.5}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            roughness={0.2}
+            clearcoat={0.8}
           />
         </mesh>
       ))}
@@ -355,33 +396,83 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
 /**
  * Surface Layer Component
- * Surface anatomy landmarks
+ * Surface anatomy landmarks and skin layer
  */
 const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   return (
     <group>
-      {/* Surface contour lines */}
-      {[
-        { y: 1.6, r: 0.25, name: "head" },
-        { y: 1.3, r: 0.18, name: "neck" },
-        { y: 1.0, r: 0.3, name: "chest" },
-        { y: 0.7, r: 0.28, name: "abdomen" },
-        { y: 0.5, r: 0.25, name: "pelvis" },
-      ].map((section) => (
-        <mesh
-          key={section.name}
-          position={[0, section.y, 0]}
-          rotation={[Math.PI / 2, 0, 0]}
-        >
-          <ringGeometry args={[section.r, section.r + 0.01, 32]} />
-          <meshBasicMaterial
-            color={KOREAN_COLORS.PRIMARY_CYAN}
-            transparent
-            opacity={opacity * 0.5}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
+      {/* Glass Skin Shell - Slightly larger than dummy to envelop internals */}
+      <mesh position={[0, 1.6, 0]}>
+        <sphereGeometry args={[0.26, 32, 32]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      <mesh position={[0, 1.0, 0]}>
+        <capsuleGeometry args={[0.31, 0.8, 8, 16]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      {/* Arms */}
+      <mesh position={[-0.4, 1.0, 0]} rotation={[0, 0, Math.PI / 6]}>
+        <capsuleGeometry args={[0.11, 0.6, 4, 8]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+      <mesh position={[0.4, 1.0, 0]} rotation={[0, 0, -Math.PI / 6]}>
+        <capsuleGeometry args={[0.11, 0.6, 4, 8]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      {/* Legs */}
+      <mesh position={[-0.2, 0.3, 0]}>
+        <capsuleGeometry args={[0.13, 0.5, 4, 8]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+      <mesh position={[0.2, 0.3, 0]}>
+        <capsuleGeometry args={[0.13, 0.5, 4, 8]} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
     </group>
   );
 };

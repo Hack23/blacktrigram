@@ -44,6 +44,19 @@ vi.mock("@react-three/drei", () => ({
     <div data-testid="html-overlay">{children}</div>
   ),
   OrbitControls: () => null,
+  Environment: () => null,
+}));
+
+// Mock @react-three/postprocessing
+vi.mock("@react-three/postprocessing", () => ({
+  EffectComposer: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  Bloom: () => null,
+  SSAO: () => null,
+  Vignette: () => null,
+  ChromaticAberration: () => null,
+  Noise: () => null,
 }));
 
 // Mock Three.js
@@ -151,6 +164,9 @@ vi.mock("three", () => ({
     far = 1000;
   },
   MeshStandardMaterial: class MockMeshStandardMaterial {
+    dispose() {}
+  },
+  MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
     dispose() {}
   },
   DoubleSide: 2,
