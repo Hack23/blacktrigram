@@ -880,7 +880,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         camera={cameraConfig}
       >
-        {/* Arena environment with lighting included */}
+        {/* Arena environment with lighting included (includes Environment preset="city") */}
         <CombatArena3D lighting="cyberpunk" scale={1.0} />
 
         {/* Animation updater - updates player animation at 60fps */}
@@ -1451,7 +1451,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </>
         )}
 
-        {/* Post-processing Effects - Optimized for Mobile */}
+        {/* Post-processing Effects - Matches Combat Screen settings for visual parity */}
         {isMobile ? (
           <EffectComposer multisampling={0}>
             <Bloom
