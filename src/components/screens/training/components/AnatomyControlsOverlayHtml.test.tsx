@@ -1,16 +1,16 @@
 /**
- * Tests for AnatomyControlsHTML component
+ * Tests for AnatomyControlsOverlayHtml component
  */
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AnatomyControlsHTML } from "./AnatomyControlsHTML";
+import { AnatomyControlsOverlayHtml } from "./AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
 
-describe("AnatomyControlsHTML", () => {
+describe("AnatomyControlsOverlayHtml", () => {
   it("should render without crashing", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -22,7 +22,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should render Korean and English header text", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -35,7 +35,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should render all four anatomy layer buttons", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -50,7 +50,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should show Korean and English labels for each layer", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -78,7 +78,7 @@ describe("AnatomyControlsHTML", () => {
     const mockToggle = vi.fn();
 
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={mockToggle}
         isMobile={false}
@@ -95,7 +95,7 @@ describe("AnatomyControlsHTML", () => {
     const mockToggle = vi.fn();
 
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={mockToggle}
         isMobile={false}
@@ -112,7 +112,7 @@ describe("AnatomyControlsHTML", () => {
     const mockToggle = vi.fn();
 
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={mockToggle}
         isMobile={false}
@@ -129,7 +129,7 @@ describe("AnatomyControlsHTML", () => {
     const mockToggle = vi.fn();
 
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={mockToggle}
         isMobile={false}
@@ -146,7 +146,7 @@ describe("AnatomyControlsHTML", () => {
     const visibleLayers: AnatomyLayer[] = ["skeleton", "nerves"];
 
     const { container } = render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={visibleLayers}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -170,7 +170,7 @@ describe("AnatomyControlsHTML", () => {
     const allLayers: AnatomyLayer[] = ["skeleton", "nerves", "vascular", "surface"];
 
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={allLayers}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -185,7 +185,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should render in mobile mode with smaller layout", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={true}
@@ -197,7 +197,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should render info text", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -210,7 +210,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should have accessible aria labels", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={[]}
         onLayerToggle={vi.fn()}
         isMobile={false}
@@ -230,7 +230,7 @@ describe("AnatomyControlsHTML", () => {
 
   it("should have aria-pressed state matching visibility", () => {
     render(
-      <AnatomyControlsHTML
+      <AnatomyControlsOverlayHtml
         visibleLayers={["skeleton"]}
         onLayerToggle={vi.fn()}
         isMobile={false}

@@ -10,8 +10,8 @@
 import { useCallback, useMemo, useReducer } from "react";
 // Re-export types from components for consistency
 import type { AnatomyLayer } from "../components/AnatomyOverlay3D";
-import type { FootworkDrill } from "../components/FootworkDrillsHTML";
-import type { TrainingMode } from "../components/TrainingModeSelectorHTML";
+import type { FootworkDrill } from "../components/FootworkDrillsOverlayHtml";
+import type { TrainingMode } from "../components/TrainingModeSelectorOverlayHtml";
 
 // Re-export for convenience
 export type { AnatomyLayer, FootworkDrill, TrainingMode };

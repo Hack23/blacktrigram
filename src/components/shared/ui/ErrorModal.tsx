@@ -3,13 +3,13 @@
  * Provides user-friendly error recovery with retry functionality
  * Follows Korean cyberpunk aesthetic and accessibility best practices
  * 
- * Now uses BaseButtonHTML for consistent Korean theming
+ * Now uses BaseButtonOverlayHtml for consistent Korean theming
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { toHex } from "../../../utils/colorUtils";
-import { BaseButtonHTML } from "../base";
+import { BaseButtonOverlayHtml } from "../base";
 
 interface ErrorModalProps {
   readonly message: string;
@@ -127,7 +127,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
           {message}
         </p>
 
-        {/* Action Buttons - Now using BaseButtonHTML */}
+        {/* Action Buttons - Now using BaseButtonOverlayHtml */}
         <div
           ref={containerRef}
           style={{
@@ -136,7 +136,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
             justifyContent: "center",
           }}
         >
-          <BaseButtonHTML
+          <BaseButtonOverlayHtml
             korean="재시도"
             english="Retry"
             onClick={handleRetry}
@@ -146,7 +146,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
             autoFocus={true}
           />
 
-          <BaseButtonHTML
+          <BaseButtonOverlayHtml
             korean="무음으로 계속"
             english="Continue Without Sound"
             onClick={handleContinue}

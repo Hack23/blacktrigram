@@ -261,7 +261,7 @@ src/components/
 │   ├── combat/               # Combat-specific UI components
 │   │   ├── TrigramSelector.tsx # Trigram stance selection component
 │   │   ├── HealthBar.tsx    # Health bar with Korean aesthetics
-│   │   └── VitalPointOverlay.tsx # Anatomical targeting interface
+│   │   └── VitalPointOverlayControlsHtml.tsx # Anatomical targeting interface
 │   ├── containers/           # Layout containers and panels
 │   │   ├── CombatHUD.tsx    # Main combat interface layout
 │   │   └── PlayerStatusPanel.tsx # Player information display
@@ -303,6 +303,31 @@ src/components/
 - **Extensibility**: Components designed for easy customization and extension
 - **Composition**: Build complex interfaces through component composition
 - **Responsiveness**: All components adapt to mobile, tablet, and desktop screen sizes
+
+### Component Naming Conventions
+
+**HTML Overlay Components** (2D UI over 3D scenes):
+- **Pattern**: `*OverlayHtml.tsx` suffix for all HTML overlay components
+- **Purpose**: Clear distinction between HTML UI content and Three.js 3D meshes
+- **Examples**:
+  - `TrainingStatsOverlayHtml.tsx` - Training statistics display
+  - `PlayerStateOverlayHtml.tsx` - Player health/status overlay
+  - `MenuSectionOverlayHtml.tsx` - Menu UI overlay
+  - `BaseButtonOverlayHtml.tsx` - Reusable button component
+
+**Three.js 3D Components** (3D objects in scene):
+- **Pattern**: `*3D.tsx` suffix for all Three.js mesh/group components
+- **Purpose**: Clearly identifies components that render 3D geometry
+- **Examples**:
+  - `TrainingDummy3D.tsx` - 3D training dummy model
+  - `CombatArena3D.tsx` - 3D combat arena environment
+  - `VitalPointMarker3D.tsx` - 3D vital point indicators
+
+**Why This Matters**:
+- ✅ **Clarity**: Instantly know if a component renders HTML UI or 3D content
+- ✅ **Maintainability**: Consistent patterns make codebase easier to navigate
+- ✅ **Separation of Concerns**: Clear boundary between UI layer and 3D world
+- ✅ **Korean Martial Arts Context**: Aligns with 명명 규칙 (naming convention) philosophy
 
 ### Three.js Component Extensions for Korean Martial Arts
 

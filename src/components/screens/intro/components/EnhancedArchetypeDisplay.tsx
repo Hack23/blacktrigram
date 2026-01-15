@@ -3,7 +3,7 @@ import { PlayerArchetype } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 import { ArchetypeCardGrid } from "./ArchetypeCardGrid";
-import { ArchetypeDisplayHTML, ArchetypeDataShape } from "./ArchetypeDisplayHTML";
+import { ArchetypeDisplayOverlayHtml, ArchetypeDataShape } from "./ArchetypeDisplayOverlayHtml";
 
 export interface EnhancedArchetypeDisplayProps {
   readonly archetypes: readonly ArchetypeDataShape[];
@@ -18,7 +18,7 @@ export interface EnhancedArchetypeDisplayProps {
 
 /**
  * EnhancedArchetypeDisplay - Provides both compact and detailed card view modes
- * Can switch between ArchetypeDisplayHTML (compact) and ArchetypeCardGrid (detailed)
+ * Can switch between ArchetypeDisplayOverlayHtml (compact) and ArchetypeCardGrid (detailed)
  */
 export const EnhancedArchetypeDisplay: React.FC<
   EnhancedArchetypeDisplayProps
@@ -140,7 +140,7 @@ export const EnhancedArchetypeDisplay: React.FC<
 
         {/* Render appropriate view */}
         {viewMode === "compact" ? (
-          <ArchetypeDisplayHTML
+          <ArchetypeDisplayOverlayHtml
             archetypes={archetypes}
             selectedIndex={selectedIndex}
             onArchetypeChange={onArchetypeChange}

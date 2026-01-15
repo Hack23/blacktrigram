@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { EnhancedArchetypeDisplay, EnhancedArchetypeDisplayProps } from "./EnhancedArchetypeDisplay";
-import { ArchetypeDataShape } from "./ArchetypeDisplayHTML";
+import { ArchetypeDataShape } from "./ArchetypeDisplayOverlayHtml";
 
 const mockArchetypeData: ArchetypeDataShape[] = [
   {
@@ -60,7 +60,7 @@ describe("EnhancedArchetypeDisplay", () => {
   it("should render in compact view by default", () => {
     render(<EnhancedArchetypeDisplay {...defaultProps} />);
 
-    // Should show compact view (ArchetypeDisplayHTML)
+    // Should show compact view (ArchetypeDisplayOverlayHtml)
     expect(screen.getByTestId("archetype-display-container")).toBeInTheDocument();
   });
 

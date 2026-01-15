@@ -13,7 +13,7 @@ import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/co
 import { EndScreen3D } from "./components/screens/endscreen";
 import { IntroScreenThreeJS as IntroScreen } from "./components/screens/intro/IntroScreenThreeJS";
 import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/philosophy/PhilosophyScreenThreeJS";
-import { PerformanceDebugOverlay } from "./components/shared/debug/PerformanceDebugOverlay";
+import { PerformanceDebugOverlayHtml } from "./components/shared/debug/PerformanceDebugOverlayHtml";
 import { ErrorModal } from "./components/shared/ui/ErrorModal";
 import { LoadingState } from "./components/shared/ui/LoadingState";
 import { SplashScreen } from "./components/shared/ui/SplashScreen";
@@ -499,7 +499,7 @@ function App() {
       {renderCurrentScreen()}
 
       {/* Performance debug overlay (dev mode only) */}
-      <PerformanceDebugOverlay />
+      <PerformanceDebugOverlayHtml />
     </div>
   );
 }

@@ -7,7 +7,7 @@
  * verification, see:
  * - Integration tests in TrainingScreen3D.test.tsx
  * - Manual QA testing scenarios in the issue documentation
- * - AnatomyControlsHTML.test.tsx for behavioral test examples
+ * - AnatomyControlsOverlayHtml.test.tsx for behavioral test examples
  */
 
 import { render } from "@testing-library/react";

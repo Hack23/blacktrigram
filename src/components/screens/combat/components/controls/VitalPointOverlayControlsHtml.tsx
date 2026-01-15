@@ -1,5 +1,5 @@
 /**
- * VitalPointOverlayControls - UI controls for vital point visualization
+ * VitalPointOverlayControlsHtml - UI controls for vital point visualization
  *
  * Provides comprehensive controls for the 70-point vital point overlay system:
  * - Toggle overlay visibility
@@ -10,7 +10,7 @@
  * - Toggle labels
  * - Toggle animations
  *
- * @module components/combat/components/VitalPointOverlayControls
+ * @module components/combat/components/VitalPointOverlayControlsHtml
  */
 
 import { Html } from "@react-three/drei";
@@ -27,7 +27,7 @@ import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 export type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 
 /**
- * Props for VitalPointOverlayControls component
+ * Props for VitalPointOverlayControlsHtml component
  */
 export interface VitalPointOverlayControlsProps {
   /** Whether overlay is currently visible */
@@ -106,10 +106,10 @@ const getSeverityColor = (severity: VitalPointSeverity): string => {
 };
 
 /**
- * VitalPointOverlayControls Component
+ * VitalPointOverlayControlsHtml Component
  * Provides comprehensive UI for vital point visualization control
  */
-export const VitalPointOverlayControls: React.FC<
+export const VitalPointOverlayControlsHtml: React.FC<
   VitalPointOverlayControlsProps
 > = ({
   visible,
@@ -775,4 +775,4 @@ export const VitalPointOverlayControls: React.FC<
   );
 };
 
-export default VitalPointOverlayControls;
+export default VitalPointOverlayControlsHtml;

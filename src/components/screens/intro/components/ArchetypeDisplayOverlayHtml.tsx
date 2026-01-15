@@ -24,7 +24,7 @@ export interface ArchetypeDataShape {
   readonly specialAbilities?: readonly string[]; // Optional special abilities
 }
 
-export interface ArchetypeDisplayHTMLProps {
+export interface ArchetypeDisplayOverlayHtmlProps {
   readonly archetypes: readonly ArchetypeDataShape[];
   readonly selectedIndex: number;
   readonly onArchetypeChange: (index: number) => void;
@@ -37,7 +37,7 @@ export interface ArchetypeDisplayHTMLProps {
 /**
  * HTML-based ArchetypeDisplay component for Three.js integration
  */
-export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> =
+export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlProps> =
   React.memo(
     ({
       archetypes,
@@ -440,6 +440,6 @@ export const ArchetypeDisplayHTML: React.FC<ArchetypeDisplayHTMLProps> =
     }
   );
 
-ArchetypeDisplayHTML.displayName = "ArchetypeDisplayHTML";
+ArchetypeDisplayOverlayHtml.displayName = "ArchetypeDisplayOverlayHtml";
 
-export default ArchetypeDisplayHTML;
+export default ArchetypeDisplayOverlayHtml;

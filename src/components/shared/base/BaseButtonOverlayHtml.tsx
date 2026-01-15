@@ -1,5 +1,5 @@
 /**
- * BaseButtonHTML - HTML button component with Korean theming (non-Three.js)
+ * BaseButtonOverlayHtml - HTML button component with Korean theming (non-Three.js)
  * 
  * A version of BaseButton that doesn't require Three.js/Canvas context
  * Can be used in regular DOM components
@@ -13,9 +13,9 @@ import { hexToRgbaString } from "../../../utils/colorUtils";
 import { useKoreanTheme } from "./useKoreanTheme";
 
 /**
- * Props for BaseButtonHTML component
+ * Props for BaseButtonOverlayHtml component
  */
-export interface BaseButtonHTMLProps {
+export interface BaseButtonOverlayHtmlProps {
   readonly korean: string;
   readonly english: string;
   readonly onClick: () => void;
@@ -32,14 +32,14 @@ export interface BaseButtonHTMLProps {
 }
 
 /**
- * BaseButtonHTML Component
+ * BaseButtonOverlayHtml Component
  * 
  * HTML button with Korean theming (no Three.js dependency).
  * Uses useKoreanTheme hook for consistent styling.
  * 
  * @example
  * ```tsx
- * <BaseButtonHTML
+ * <BaseButtonOverlayHtml
  *   korean="확인"
  *   english="Confirm"
  *   onClick={() => handleConfirm()}
@@ -48,7 +48,7 @@ export interface BaseButtonHTMLProps {
  * />
  * ```
  */
-export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
+export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
   korean,
   english,
   onClick,
@@ -178,4 +178,4 @@ export const BaseButtonHTML: React.FC<BaseButtonHTMLProps> = ({
   );
 };
 
-BaseButtonHTML.displayName = "BaseButtonHTML";
+BaseButtonOverlayHtml.displayName = "BaseButtonOverlayHtml";

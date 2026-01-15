@@ -1,5 +1,5 @@
 /**
- * PlayerStateOverlay Component - Unified player state visual indicators
+ * PlayerStateOverlayHtml Component - Unified player state visual indicators
  * 
  * Combines all player state visual effects into a single overlay:
  * - Pain vignette
@@ -8,7 +8,7 @@
  * - Blood loss warning
  * - Stamina warning
  * 
- * @module components/combat/PlayerStateOverlay
+ * @module components/combat/PlayerStateOverlayHtml
  * @category Combat UI
  * @korean 플레이어상태오버레이
  */
@@ -17,7 +17,7 @@ import React from "react";
 import { PainVignette } from "../effects/PainVignette";
 import { BalanceIndicator } from "../indicators/BalanceIndicator";
 import { ConsciousnessBlur } from "../effects/ConsciousnessBlur";
-import { BloodLossOverlay } from "../effects/BloodLossOverlay";
+import { BloodLossOverlayHtml } from "../effects/BloodLossOverlayHtml";
 import { StaminaWarning } from "../indicators/StaminaWarning";
 import type { BalanceState } from "../../../../../types/player-visual";
 
@@ -66,7 +66,7 @@ export interface PlayerStateOverlayProps {
 }
 
 /**
- * PlayerStateOverlay - Unified visual effects for player state
+ * PlayerStateOverlayHtml - Unified visual effects for player state
  * 
  * Combines all player state visual indicators into a single component
  * with optimal performance and consistent rendering. All effects use
@@ -74,7 +74,7 @@ export interface PlayerStateOverlayProps {
  * 
  * @example
  * ```tsx
- * <PlayerStateOverlay
+ * <PlayerStateOverlayHtml
  *   pain={65}
  *   balanceState="SHAKEN"
  *   position="left"
@@ -85,7 +85,7 @@ export interface PlayerStateOverlayProps {
  * />
  * ```
  */
-export const PlayerStateOverlay: React.FC<PlayerStateOverlayProps> = ({
+export const PlayerStateOverlayHtml: React.FC<PlayerStateOverlayProps> = ({
   pain,
   balanceState,
   position,
@@ -109,8 +109,8 @@ export const PlayerStateOverlay: React.FC<PlayerStateOverlayProps> = ({
       {/* Consciousness blur - shows when consciousness <= 90 (see ConsciousnessBlur.tsx) */}
       <ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} />
 
-      {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlay.tsx) */}
-      <BloodLossOverlay bloodLoss={bloodLoss} isMobile={isMobile} />
+      {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlayHtml.tsx) */}
+      <BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} />
 
       {/* Stamina warning - flashes when stamina < 20 (see StaminaWarning.tsx) */}
       <StaminaWarning stamina={stamina} isMobile={isMobile} />
@@ -118,4 +118,4 @@ export const PlayerStateOverlay: React.FC<PlayerStateOverlayProps> = ({
   );
 };
 
-PlayerStateOverlay.displayName = "PlayerStateOverlay";
+PlayerStateOverlayHtml.displayName = "PlayerStateOverlayHtml";
