@@ -164,9 +164,10 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
           color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissiveIntensity={isSelected || hovered ? 2.0 : 1.0}
-          metalness={0.6}
-          roughness={0.2}
-          clearcoat={0.5}
+          metalness={0.8}
+          roughness={0.1}
+          clearcoat={1.0}
+          clearcoatRoughness={0.1}
           transparent
           opacity={isTraining ? 0.9 : 0.6}
         />

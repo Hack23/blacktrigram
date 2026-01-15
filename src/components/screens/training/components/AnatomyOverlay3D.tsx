@@ -38,16 +38,43 @@ export interface AnatomyOverlay3DProps {
 
 /**
  * Skeleton Layer Component
- * Simplified skeletal structure visualization
+ * Simplified skeletal structure visualization with glass-like transmission
  */
 const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Subtle breathing animation
+  // Cache mesh references for efficient updates
+  const meshesRef = useRef<THREE.Mesh[]>([]);
+
+  // Initialize mesh cache on first render
+  React.useEffect(() => {
+    if (groupRef.current && meshesRef.current.length === 0) {
+      groupRef.current.traverse((child) => {
+        if (
+          child instanceof THREE.Mesh &&
+          child.material instanceof THREE.MeshPhysicalMaterial
+        ) {
+          meshesRef.current.push(child);
+        }
+      });
+    }
+
+    // Cleanup: reset mesh cache on unmount to avoid stale references
+    return () => {
+      meshesRef.current = [];
+    };
+  }, []);
+
+  // Pulsing emissive animation for skeleton layer
   useFrame((state) => {
-    if (!groupRef.current) return;
-    const breathScale = Math.sin(state.clock.elapsedTime * 1.5) * 0.01 + 1;
-    groupRef.current.scale.y = breathScale;
+    const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.2 + 0.3;
+
+    // Update cached meshes efficiently
+    meshesRef.current.forEach((mesh) => {
+      if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
+        mesh.material.emissiveIntensity = pulse;
+      }
+    });
   });
 
   return (
@@ -59,10 +86,12 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
+          clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
-          clearcoat={0.3}
         />
       </mesh>
 
@@ -84,10 +113,12 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.WHITE_SOLID}
             transparent
             opacity={opacity * 0.7}
+            transmission={0.5}
+            thickness={0.5}
+            roughness={0.1}
+            clearcoat={0.3}
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
             emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-            roughness={0.4}
-            clearcoat={0.3}
           />
         </mesh>
       ))}
@@ -99,10 +130,12 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
+          clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
-          clearcoat={0.3}
         />
       </mesh>
 
@@ -113,9 +146,11 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
         />
       </mesh>
 
@@ -126,9 +161,11 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
         />
       </mesh>
 
@@ -139,9 +176,11 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
         />
       </mesh>
       <mesh position={[0.2, 0.3, 0]}>
@@ -150,9 +189,11 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
+          transmission={0.5}
+          thickness={0.5}
+          roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
-          roughness={0.4}
         />
       </mesh>
     </group>
@@ -175,7 +216,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       groupRef.current.traverse((child) => {
         if (
           child instanceof THREE.Mesh &&
-          child.material instanceof THREE.MeshStandardMaterial
+          child.material instanceof THREE.MeshPhysicalMaterial
         ) {
           meshesRef.current.push(child);
         }
@@ -195,7 +236,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
-      if (mesh.material instanceof THREE.MeshStandardMaterial) {
+      if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
         mesh.material.emissiveIntensity = targetIntensity;
       }
     });
@@ -283,7 +324,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
 /**
  * Vascular Layer Component
- * Blood vessel system visualization
+ * Blood vessel system visualization with glass-like transmission
  */
 const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -297,7 +338,7 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       groupRef.current.traverse((child) => {
         if (
           child instanceof THREE.Mesh &&
-          child.material instanceof THREE.MeshStandardMaterial
+          child.material instanceof THREE.MeshPhysicalMaterial
         ) {
           meshesRef.current.push(child);
         }
@@ -317,7 +358,7 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
-      if (mesh.material instanceof THREE.MeshStandardMaterial) {
+      if (mesh.material instanceof THREE.MeshPhysicalMaterial) {
         mesh.material.emissiveIntensity = targetIntensity;
       }
     });
@@ -332,10 +373,12 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.ACCENT_RED}
           transparent
           opacity={opacity}
-          emissive={KOREAN_COLORS.ACCENT_RED}
-          emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+          transmission={0.3}
+          thickness={0.3}
           roughness={0.2}
           clearcoat={0.8}
+          emissive={KOREAN_COLORS.ACCENT_RED}
+          emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
         />
       </mesh>
 
@@ -347,10 +390,12 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.9}
-            emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            transmission={0.3}
+            thickness={0.3}
             roughness={0.2}
             clearcoat={0.8}
+            emissive={KOREAN_COLORS.ACCENT_RED}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
           />
         </mesh>
       ))}
@@ -367,10 +412,12 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            transmission={0.3}
+            thickness={0.3}
             roughness={0.2}
             clearcoat={0.8}
+            emissive={KOREAN_COLORS.ACCENT_RED}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
           />
         </mesh>
       ))}
@@ -383,10 +430,12 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            emissive={KOREAN_COLORS.ACCENT_RED}
-            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
+            transmission={0.3}
+            thickness={0.3}
             roughness={0.2}
             clearcoat={0.8}
+            emissive={KOREAN_COLORS.ACCENT_RED}
+            emissiveIntensity={VASCULAR_EMISSIVE_INTENSITY}
           />
         </mesh>
       ))}

@@ -7,7 +7,7 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
-import { Html } from "@react-three/drei";
+import { Environment, Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -883,6 +883,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {/* Arena environment with lighting included */}
         <CombatArena3D lighting="cyberpunk" scale={1.0} />
 
+        {/* Environment preset for realistic reflections - matches Combat Screen */}
+        <Environment preset="city" />
+
         {/* Animation updater - updates player animation at 60fps */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
 
@@ -1455,25 +1458,27 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {isMobile ? (
           <EffectComposer multisampling={0}>
             <Bloom
-              luminanceThreshold={1}
+              luminanceThreshold={0.2}
+              luminanceSmoothing={0.9}
               mipmapBlur
               intensity={1.5}
               radius={0.6}
             />
-            <Noise opacity={0.02} />
+            <Noise opacity={0.05} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         ) : (
           <EffectComposer multisampling={4}>
             <Bloom
-              luminanceThreshold={1}
+              luminanceThreshold={0.2}
+              luminanceSmoothing={0.9}
               mipmapBlur
               intensity={1.5}
               radius={0.6}
             />
             <SSAO
-              radius={0.05}
-              intensity={50}
+              radius={5}
+              intensity={30}
               luminanceInfluence={0.5}
               color={ssaoColor}
             />
@@ -1482,7 +1487,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               radialModulation={false}
               modulationOffset={0}
             />
-            <Noise opacity={0.02} />
+            <Noise opacity={0.05} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         )}
