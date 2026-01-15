@@ -1,5 +1,5 @@
 /**
- * BloodLossOverlay Component - Visual warning for blood loss
+ * BloodLossOverlayHtml Component - Visual warning for blood loss
  *
  * Displays a pulsing red overlay when blood loss exceeds critical threshold (50%).
  * Uses CSS animation for smooth pulsing effect.
@@ -7,7 +7,7 @@
  * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
  * It does NOT use Html from drei - it's a standard React component.
  *
- * @module components/combat/BloodLossOverlay
+ * @module components/combat/BloodLossOverlayHtml
  * @category Combat UI
  * @korean 출혈오버레이
  */
@@ -30,7 +30,7 @@ export interface BloodLossOverlayProps {
 }
 
 /**
- * BloodLossOverlay - Pulsing red warning for critical blood loss
+ * BloodLossOverlayHtml - Pulsing red warning for critical blood loss
  *
  * Renders a fullscreen pulsing red overlay when blood loss is 50 or higher.
  * Only visible when bloodLoss is 50 or above; does not render for values below 50.
@@ -39,13 +39,13 @@ export interface BloodLossOverlayProps {
  * @example
  * ```tsx
  * // Overlay is rendered (bloodLoss >= 50)
- * <BloodLossOverlay bloodLoss={75} isMobile={false} />
+ * <BloodLossOverlayHtml bloodLoss={75} isMobile={false} />
  *
  * // Overlay is not rendered (bloodLoss < 50)
- * <BloodLossOverlay bloodLoss={30} isMobile={false} />
+ * <BloodLossOverlayHtml bloodLoss={30} isMobile={false} />
  * ```
  */
-export const BloodLossOverlay: React.FC<BloodLossOverlayProps> = ({
+export const BloodLossOverlayHtml: React.FC<BloodLossOverlayProps> = ({
   bloodLoss,
   isMobile,
 }) => {
@@ -118,4 +118,4 @@ export const BloodLossOverlay: React.FC<BloodLossOverlayProps> = ({
   );
 };
 
-BloodLossOverlay.displayName = "BloodLossOverlay";
+BloodLossOverlayHtml.displayName = "BloodLossOverlayHtml";

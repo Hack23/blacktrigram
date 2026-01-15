@@ -1,17 +1,17 @@
 /**
- * PlayerStateOverlay Component Tests
+ * PlayerStateOverlayHtml Component Tests
  * 
  * Tests component props, integration logic, and TypeScript interfaces.
  * Full rendering tests are done in E2E tests with Three.js context.
  */
 
 import { describe, it, expect } from "vitest";
-import { PlayerStateOverlay } from "./PlayerStateOverlay";
+import { PlayerStateOverlayHtml } from "./PlayerStateOverlayHtml";
 
-describe("PlayerStateOverlay", () => {
+describe("PlayerStateOverlayHtml", () => {
   it("should be defined and importable", () => {
-    expect(PlayerStateOverlay).toBeDefined();
-    expect(typeof PlayerStateOverlay).toBe("function");
+    expect(PlayerStateOverlayHtml).toBeDefined();
+    expect(typeof PlayerStateOverlayHtml).toBe("function");
   });
 
   describe("Props Interface", () => {

@@ -1,10 +1,10 @@
 /**
- * FootworkDrillsHTML - Training component for footwork drills
+ * FootworkDrillsOverlayHtml - Training component for footwork drills
  * 
  * Provides specialized footwork training exercises for Korean martial arts
  * footwork patterns (보법, Bobeop).
  * 
- * @module components/screens/training/components/FootworkDrillsHTML
+ * @module components/screens/training/components/FootworkDrillsOverlayHtml
  * @category Training Components
  * @korean 보법훈련컴포넌트
  */
@@ -91,9 +91,9 @@ const DRILL_INFO: Record<FootworkDrill, {
 };
 
 /**
- * Props for FootworkDrillsHTML component
+ * Props for FootworkDrillsOverlayHtml component
  */
-export interface FootworkDrillsHTMLProps {
+export interface FootworkDrillsOverlayHtmlProps {
   /** Currently selected drill */
   readonly currentDrill: FootworkDrill;
   /** Callback when drill changes */
@@ -111,14 +111,14 @@ export interface FootworkDrillsHTMLProps {
 }
 
 /**
- * FootworkDrillsHTML Component
+ * FootworkDrillsOverlayHtml Component
  * 
  * Provides UI for footwork training drills with step-by-step guidance
  * and Korean martial arts terminology.
  * 
  * @korean 보법훈련UI컴포넌트
  */
-export const FootworkDrillsHTML: React.FC<FootworkDrillsHTMLProps> = ({
+export const FootworkDrillsOverlayHtml: React.FC<FootworkDrillsOverlayHtmlProps> = ({
   currentDrill,
   onDrillChange,
   currentStep,
@@ -357,4 +357,4 @@ export const FootworkDrillsHTML: React.FC<FootworkDrillsHTMLProps> = ({
   );
 };
 
-export default FootworkDrillsHTML;
+export default FootworkDrillsOverlayHtml;

@@ -6,7 +6,7 @@
  *
  * Only visible in development mode.
  *
- * @module components/shared/debug/PerformanceDebugOverlay
+ * @module components/shared/debug/PerformanceDebugOverlayHtml
  * @category Debug
  * @korean 성능디버그오버레이
  */
@@ -50,7 +50,7 @@ interface PoolStatus {
  * @returns Performance overlay or null in production
  * @korean 성능디버그오버레이컴포넌트
  */
-export const PerformanceDebugOverlay: React.FC = () => {
+export const PerformanceDebugOverlayHtml: React.FC = () => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     avgFrameTime: 0,
     maxFrameTime: 0,

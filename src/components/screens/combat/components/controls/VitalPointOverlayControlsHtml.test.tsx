@@ -1,5 +1,5 @@
 /**
- * VitalPointOverlayControls.test.tsx
+ * VitalPointOverlayControlsHtml.test.tsx
  * Test suite for vital point overlay control panel
  *
  * Note: This component uses @react-three/drei's Html which requires Canvas context.
@@ -9,9 +9,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { VitalPointSeverity } from "../../../../../types/common";
 import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
-import VitalPointOverlayControls from "./VitalPointOverlayControls";
+import VitalPointOverlayControlsHtml from "./VitalPointOverlayControlsHtml";
 
-describe("VitalPointOverlayControls", () => {
+describe("VitalPointOverlayControlsHtml", () => {
   const defaultProps = {
     visible: true,
     onVisibleChange: vi.fn(),
@@ -32,8 +32,8 @@ describe("VitalPointOverlayControls", () => {
 
   describe("Component Definition", () => {
     it("should be defined and importable", () => {
-      expect(VitalPointOverlayControls).toBeDefined();
-      expect(typeof VitalPointOverlayControls).toBe("function");
+      expect(VitalPointOverlayControlsHtml).toBeDefined();
+      expect(typeof VitalPointOverlayControlsHtml).toBe("function");
     });
 
     it("should accept all required props", () => {

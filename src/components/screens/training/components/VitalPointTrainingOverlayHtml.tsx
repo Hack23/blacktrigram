@@ -1,5 +1,5 @@
 /**
- * VitalPointTrainingHTML - Html overlay for vital point selection
+ * VitalPointTrainingOverlayHtml - Html overlay for vital point selection
  * 
  */
 
@@ -10,9 +10,9 @@ import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**
- * Props for VitalPointTrainingHTML component
+ * Props for VitalPointTrainingOverlayHtml component
  */
-export interface VitalPointTrainingHTMLProps {
+export interface VitalPointTrainingOverlayHtmlProps {
   /** Currently selected vital point ID */
   readonly selectedVitalPoint: string | null;
   /** Callback when vital point is selected */
@@ -44,10 +44,10 @@ const getDifficultyStars = (difficulty: number): string => {
 };
 
 /**
- * VitalPointTrainingHTML Component
+ * VitalPointTrainingOverlayHtml Component
  * Html overlay for vital point selection and information
  */
-export const VitalPointTrainingHTML: React.FC<VitalPointTrainingHTMLProps> = ({
+export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHtmlProps> = ({
   selectedVitalPoint,
   onVitalPointSelect,
   isMobile,
@@ -201,4 +201,4 @@ export const VitalPointTrainingHTML: React.FC<VitalPointTrainingHTMLProps> = ({
   );
 };
 
-export default VitalPointTrainingHTML;
+export default VitalPointTrainingOverlayHtml;

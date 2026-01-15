@@ -62,26 +62,26 @@ import { Player3DWithTransitions } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import {
   VitalPointMarkers3D,
-  VitalPointOverlayControls,
+  VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
-import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
+import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
 import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
-import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
+import FootworkDrillsOverlayHtml from "./components/FootworkDrillsOverlayHtml";
 import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import TrainingControlsHTML from "./components/TrainingControlsHTML";
+import TrainingControlsOverlayHtml from "./components/TrainingControlsOverlayHtml";
 import type { DifficultyMode } from "./components/TrainingDummy3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
-import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
-import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
-import TrainingStatsHTML from "./components/TrainingStatsHTML";
-import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
+import TrainingFeedbackOverlayHtml from "./components/TrainingFeedbackOverlayHtml";
+import TrainingModeSelectorOverlayHtml from "./components/TrainingModeSelectorOverlayHtml";
+import TrainingStatsOverlayHtml from "./components/TrainingStatsOverlayHtml";
+import VitalPointTrainingOverlayHtml from "./components/VitalPointTrainingOverlayHtml";
 import useTrainingActions from "./hooks/useTrainingActions";
 import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
@@ -928,9 +928,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           />
         )}
 
-        {/* VitalPointOverlayControls - fixed screen position */}
+        {/* VitalPointOverlayControlsHtml - fixed screen position */}
         {overlayVisible && (
-          <VitalPointOverlayControls
+          <VitalPointOverlayControlsHtml
             visible={overlayVisible}
             onVisibleChange={setOverlayVisible}
             severityFilters={severityFilters}
@@ -1025,7 +1025,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               zIndex={Z_INDEX.HUD}
               style={{ pointerEvents: "all" }}
             >
-              <TrainingControlsHTML
+              <TrainingControlsOverlayHtml
                 isTraining={trainingState.isTraining}
                 onStartTraining={handleStartTraining}
                 onStopTraining={handleStopTraining}
@@ -1053,7 +1053,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 alignItems: "flex-end",
               }}
             >
-              <TrainingStatsHTML
+              <TrainingStatsOverlayHtml
                 stats={{
                   ...trainingState.stats,
                   sessionDuration: trainingState.sessionDuration,
@@ -1080,7 +1080,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 pointerEvents: "all",
               }}
             >
-              <TrainingModeSelectorHTML
+              <TrainingModeSelectorOverlayHtml
                 currentMode={trainingState.trainingMode}
                 onModeChange={trainingActions.setTrainingMode}
                 isMobile={isMobile}
@@ -1203,7 +1203,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 gap: "15px",
               }}
             >
-              <AnatomyControlsHTML
+              <AnatomyControlsOverlayHtml
                 visibleLayers={trainingState.visibleAnatomyLayers}
                 onLayerToggle={handleAnatomyLayerToggle}
                 isMobile={isMobile}
@@ -1244,7 +1244,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               style={{ pointerEvents: "all" }}
             >
               {trainingState.trainingMode === "footwork" ? (
-                <FootworkDrillsHTML
+                <FootworkDrillsOverlayHtml
                   currentDrill={trainingState.footworkDrillType}
                   onDrillChange={(drill) =>
                     trainingActions.startFootworkDrill(drill)
@@ -1264,7 +1264,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   isMobile={isMobile}
                 />
               ) : (
-                <VitalPointTrainingHTML
+                <VitalPointTrainingOverlayHtml
                   selectedVitalPoint={trainingState.selectedVitalPoint}
                   onVitalPointSelect={trainingActions.setSelectedVitalPoint}
                   isMobile={isMobile}
@@ -1336,7 +1336,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   height: "100%",
                 }}
               >
-                <TrainingFeedbackHTML
+                <TrainingFeedbackOverlayHtml
                   message={trainingState.feedback}
                   isMobile={isMobile}
                 />

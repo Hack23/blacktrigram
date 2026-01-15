@@ -14,7 +14,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import type { FootworkDrill } from "./FootworkDrillsHTML";
+import type { FootworkDrill } from "./FootworkDrillsOverlayHtml";
 
 /**
  * Footwork drill pattern types for 3D visualization

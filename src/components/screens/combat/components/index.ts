@@ -15,7 +15,7 @@ export { default as VitalPointMarkers3D } from "./effects/VitalPointMarkers3D";
 export type { BodyRegionFilter } from "./effects/VitalPointMarkers3D";
 
 // Controls
-export { default as VitalPointOverlayControls } from "./controls/VitalPointOverlayControls";
+export { default as VitalPointOverlayControlsHtml } from "./controls/VitalPointOverlayControlsHtml";
 
 // Action Feedback components
 export { ActionFeedback, TechniqueName } from "./feedback/ActionFeedback";
@@ -25,12 +25,12 @@ export { TechniqueNameDisplay } from "./indicators/TechniqueNameDisplay";
 
 // Player State Visual Indicators
 export { BalanceIndicator } from "./indicators/BalanceIndicator";
-export { BloodLossOverlay } from "./effects/BloodLossOverlay";
+export { BloodLossOverlayHtml } from "./effects/BloodLossOverlayHtml";
 export { BodyPartHealthDisplay } from "./indicators/BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./effects/ConsciousnessBlur";
 export { GuardIndicator } from "./indicators/GuardIndicator";
 export { PainVignette } from "./effects/PainVignette";
-export { PlayerStateOverlay } from "./hud/PlayerStateOverlay";
+export { PlayerStateOverlayHtml } from "./hud/PlayerStateOverlayHtml";
 export { SpeedIndicatorHUD } from "./hud/SpeedIndicatorHUD";
 export { StaminaWarning } from "./indicators/StaminaWarning";
 
@@ -89,16 +89,16 @@ export type {
   InjuryType,
 } from "./effects/TraumaOverlay3D";
 export type { VitalPointMarkers3DProps } from "./effects/VitalPointMarkers3D";
-export type { VitalPointOverlayControlsProps } from "./controls/VitalPointOverlayControls";
+export type { VitalPointOverlayControlsProps } from "./controls/VitalPointOverlayControlsHtml";
 
 // Player State Indicator prop types
 export type { BalanceIndicatorProps } from "./indicators/BalanceIndicator";
-export type { BloodLossOverlayProps } from "./effects/BloodLossOverlay";
+export type { BloodLossOverlayProps } from "./effects/BloodLossOverlayHtml";
 export type { BodyPartHealthDisplayProps } from "./indicators/BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./effects/ConsciousnessBlur";
 export type { GuardIndicatorProps } from "./indicators/GuardIndicator";
 export type { PainVignetteProps } from "./effects/PainVignette";
-export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlay";
+export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlayHtml";
 export type { StaminaWarningProps } from "./indicators/StaminaWarning";
 
 // Additional HUD prop types
