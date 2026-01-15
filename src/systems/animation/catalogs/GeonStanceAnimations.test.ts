@@ -17,6 +17,7 @@ import {
   GEON_IDLE_BREATHING,
   GEON_FORWARD_ADVANCE,
   GEON_DIAGONAL_POWER_STEP,
+  GEON_HEAVEN_STRIKE,
   GEON_HEAVENLY_FIST_ANIMATION,
   GEON_OVERHEAD_HAMMER,
   GEON_FRONT_KICK,
@@ -206,6 +207,102 @@ describe("GEON_DIAGONAL_POWER_STEP", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
+// GEON HEAVEN STRIKE ANIMATION TESTS (천둥벽력)
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("GEON_HEAVEN_STRIKE", () => {
+  it("should have correct frame count and timing", () => {
+    expect(GEON_HEAVEN_STRIKE.duration).toBe(1.0);
+    expect(GEON_HEAVEN_STRIKE.keyframes.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it("should have Korean and English names", () => {
+    expect(GEON_HEAVEN_STRIKE.name).toBe("geon_heaven_strike");
+    expect(GEON_HEAVEN_STRIKE.koreanName).toBe("천둥벽력");
+  });
+
+  it("should have wind-up, strike, and recovery phases", () => {
+    const keyframes = GEON_HEAVEN_STRIKE.keyframes;
+
+    // Wind-up phase (first 30%)
+    expect(keyframes[0].time).toBe(0);
+    const windupFrame = keyframes.find((f) => f.time === 0.3);
+    expect(windupFrame).toBeDefined();
+
+    // Strike phase (middle 40%)
+    const strikeFrame = keyframes.find((f) => f.time === 0.7);
+    expect(strikeFrame).toBeDefined();
+
+    // Recovery phase (last 30%)
+    const recoveryFrame = keyframes.find((f) => f.time === 1.0);
+    expect(recoveryFrame).toBeDefined();
+  });
+
+  it("should achieve high overhead chamber during wind-up", () => {
+    const chamberFrame = GEON_HEAVEN_STRIKE.keyframes.find((f) => f.time === 0.3);
+    expect(chamberFrame).toBeDefined();
+
+    const shoulderRotation = chamberFrame!.boneRotations.get(BoneName.SHOULDER_R);
+    expect(shoulderRotation).toBeDefined();
+    // Should be raised high overhead (significant negative X rotation)
+    expect(shoulderRotation!.x).toBeLessThan(-1.5); // Less than -85°
+  });
+
+  it("should have diagonal downward-forward strike trajectory", () => {
+    const strikeFrame = GEON_HEAVEN_STRIKE.keyframes.find((f) => f.time === 0.7);
+    expect(strikeFrame).toBeDefined();
+
+    const shoulderRotation = strikeFrame!.boneRotations.get(BoneName.SHOULDER_R);
+    const elbowRotation = strikeFrame!.boneRotations.get(BoneName.ELBOW_R);
+
+    // Shoulder should be forward and down (positive X, indicates 45° downward angle)
+    expect(shoulderRotation!.x).toBeGreaterThan(0.5); // Greater than ~30°
+
+    // Elbow should be nearly straight at full extension
+    expect(Math.abs(elbowRotation!.x)).toBeLessThan(0.01); // Within ~0.6° of straight
+  });
+
+  it("should generate power from hip rotation", () => {
+    const strikeFrame = GEON_HEAVEN_STRIKE.keyframes.find((f) => f.time === 0.7);
+    expect(strikeFrame).toBeDefined();
+
+    const spineRotation = strikeFrame!.boneRotations.get(BoneName.SPINE_UPPER);
+    const pelvisRotation = strikeFrame!.boneRotations.get(BoneName.PELVIS);
+
+    // Significant forward rotation for power
+    expect(spineRotation!.y).toBeGreaterThan(0.4); // Greater than ~23°
+    expect(pelvisRotation!.y).toBeGreaterThan(0.4); // Hip drives through
+  });
+
+  it("should include body drop for gravity assist", () => {
+    const strikeFrame = GEON_HEAVEN_STRIKE.keyframes.find((f) => f.time === 0.7);
+    expect(strikeFrame).toBeDefined();
+
+    const pelvisPosition = strikeFrame!.bonePositions.get(BoneName.PELVIS);
+    expect(pelvisPosition).toBeDefined();
+
+    // Body should drop significantly (negative Y)
+    expect(pelvisPosition!.y).toBeLessThan(-0.05);
+    // Body should shift forward (negative Z)
+    expect(pelvisPosition!.z).toBeLessThan(-0.1);
+  });
+
+  it("should return to neutral guard position", () => {
+    const finalFrame = GEON_HEAVEN_STRIKE.keyframes.find((f) => f.time === 1.0);
+    expect(finalFrame).toBeDefined();
+
+    const shoulderRotation = finalFrame!.boneRotations.get(BoneName.SHOULDER_R);
+    const elbowRotation = finalFrame!.boneRotations.get(BoneName.ELBOW_R);
+    const spineRotation = finalFrame!.boneRotations.get(BoneName.SPINE_UPPER);
+
+    // Should return to guard position
+    expect(Math.abs(shoulderRotation!.x + 0.17)).toBeLessThan(0.01); // -10° guard
+    expect(Math.abs(elbowRotation!.x + 1.57)).toBeLessThan(0.01); // -90° guard
+    expect(Math.abs(spineRotation!.y)).toBeLessThan(0.01); // Neutral torso
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
 // GEON HEAVENLY FIST ANIMATION TESTS
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -390,21 +487,23 @@ describe("GEON_OVERHEAD_HAMMER", () => {
 
 describe("GEON_ANIMATIONS Map", () => {
   it("should contain all Geon animations", () => {
-    expect(GEON_ANIMATIONS.size).toBe(10);
+    expect(GEON_ANIMATIONS.size).toBe(11);
     expect(GEON_ANIMATIONS.has("geon_idle_breathing")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_forward_advance")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_diagonal_power_step")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_heaven_strike")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_heavenly_fist")).toBe(true);
-    expect(GEON_ANIMATIONS.has("geon_overhead_hammer")).toBe(true);
-    expect(GEON_ANIMATIONS.has("geon_front_kick")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_frontal_kick")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_roundhouse_kick")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_axe_kick")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_palm_strike")).toBe(true);
     expect(GEON_ANIMATIONS.has("geon_elbow_smash")).toBe(true);
+    expect(GEON_ANIMATIONS.has("geon_overhead_hammer")).toBe(true);
   });
 
   it("should provide correct animation references", () => {
     expect(GEON_ANIMATIONS.get("geon_idle_breathing")).toBe(GEON_IDLE_BREATHING);
+    expect(GEON_ANIMATIONS.get("geon_heaven_strike")).toBe(GEON_HEAVEN_STRIKE);
     expect(GEON_ANIMATIONS.get("geon_heavenly_fist")).toBe(
       GEON_HEAVENLY_FIST_ANIMATION
     );
@@ -428,7 +527,7 @@ describe("GEON_ANIMATIONS Map", () => {
 describe("GEON_FRONT_KICK", () => {
   it("should have correct duration and animation metadata", () => {
     expect(GEON_FRONT_KICK.duration).toBe(0.9);
-    expect(GEON_FRONT_KICK.name).toBe("geon_front_kick");
+    expect(GEON_FRONT_KICK.name).toBe("geon_frontal_kick");
     expect(GEON_FRONT_KICK.koreanName).toBe("앞차기");
   });
 
@@ -618,21 +717,22 @@ describe("GEON_ELBOW_SMASH", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("GEON_ANIMATIONS Map", () => {
-  it("should contain all 10 Geon animations", () => {
-    expect(GEON_ANIMATIONS.size).toBe(10);
+  it("should contain all 11 Geon animations", () => {
+    expect(GEON_ANIMATIONS.size).toBe(11);
   });
 
   it("should have all technique animations accessible by ID", () => {
     expect(GEON_ANIMATIONS.get("geon_idle_breathing")).toBe(GEON_IDLE_BREATHING);
     expect(GEON_ANIMATIONS.get("geon_forward_advance")).toBe(GEON_FORWARD_ADVANCE);
     expect(GEON_ANIMATIONS.get("geon_diagonal_power_step")).toBe(GEON_DIAGONAL_POWER_STEP);
+    expect(GEON_ANIMATIONS.get("geon_heaven_strike")).toBe(GEON_HEAVEN_STRIKE);
     expect(GEON_ANIMATIONS.get("geon_heavenly_fist")).toBe(GEON_HEAVENLY_FIST_ANIMATION);
-    expect(GEON_ANIMATIONS.get("geon_overhead_hammer")).toBe(GEON_OVERHEAD_HAMMER);
-    expect(GEON_ANIMATIONS.get("geon_front_kick")).toBe(GEON_FRONT_KICK);
+    expect(GEON_ANIMATIONS.get("geon_frontal_kick")).toBe(GEON_FRONT_KICK);
     expect(GEON_ANIMATIONS.get("geon_roundhouse_kick")).toBe(GEON_ROUNDHOUSE_KICK);
     expect(GEON_ANIMATIONS.get("geon_axe_kick")).toBe(GEON_AXE_KICK);
     expect(GEON_ANIMATIONS.get("geon_palm_strike")).toBe(GEON_PALM_STRIKE);
     expect(GEON_ANIMATIONS.get("geon_elbow_smash")).toBe(GEON_ELBOW_SMASH);
+    expect(GEON_ANIMATIONS.get("geon_overhead_hammer")).toBe(GEON_OVERHEAD_HAMMER);
   });
 
   it("should have all animations with Korean names", () => {
@@ -661,6 +761,9 @@ describe("Geon Animations Performance", () => {
     expect(GEON_DIAGONAL_POWER_STEP).toBeDefined();
     expect(GEON_DIAGONAL_POWER_STEP.keyframes.length).toBeGreaterThan(0);
     
+    expect(GEON_HEAVEN_STRIKE).toBeDefined();
+    expect(GEON_HEAVEN_STRIKE.keyframes.length).toBeGreaterThan(0);
+
     expect(GEON_HEAVENLY_FIST_ANIMATION).toBeDefined();
     expect(GEON_HEAVENLY_FIST_ANIMATION.keyframes.length).toBeGreaterThan(0);
     

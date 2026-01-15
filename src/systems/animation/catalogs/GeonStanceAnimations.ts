@@ -473,7 +473,7 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
  * @category Attack Animation
  */
 export const GEON_FRONT_KICK: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("geon_front_kick", "앞차기")
+  MartialArtsAnimationBuilder.create("geon_frontal_kick", "앞차기")
     .asAttack(0.9)
     // =================================================================
     // CHAMBER PHASE (0-300ms)
@@ -833,6 +833,124 @@ export const GEON_PALM_STRIKE: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON ELBOW SMASH (팔꿈치치기)
 // ═══════════════════════════════════════════════════════════════════════════
+// ☰ GEON HEAVEN STRIKE ANIMATION (천둥벽력)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Geon Heaven Strike Animation
+ *
+ * **Korean**: 천둥벽력 (Cheondung Byeokryeok)
+ * **English**: Thunder Strike
+ * **Philosophy**: Direct strike imbued with heavenly power
+ *
+ * Unique Geon Signature Technique - Distinct from both Heavenly Fist (straight punch)
+ * and Overhead Hammer (vertical drop). This technique combines overhead positioning
+ * with explosive diagonal strike, channeling heaven's authority through the arm.
+ *
+ * Authentic Taekwondo Diagonal Strike:
+ * - High chamber position emphasizing downward angle
+ * - Diagonal trajectory (45° downward-forward)
+ * - Gravity-assisted power generation
+ * - Full body commitment with hip rotation
+ * - Designed to overwhelm opponent's guard
+ *
+ * Animation Phases:
+ * - Wind-up (0-300ms): Arm raises to high chamber
+ * - Strike (300-700ms): Diagonal explosive drive down-forward
+ * - Impact (700ms): Full extension with body drop
+ * - Recovery (700-1000ms): Return to guard maintaining authority
+ *
+ * Target Vital Points:
+ * - 백회혈 (Baekhoehyeol) - Crown: Direct cranial impact
+ * - 쇄골 (Swaegor) - Collarbone: Structural damage
+ * - 명치 (Myeongchi) - Solar Plexus: Breath disruption
+ *
+ * @korean 천둥벽력
+ * @duration 1000ms
+ * @category Attack Animation
+ * @targets Crown, Collarbone, Solar Plexus
+ */
+export const GEON_HEAVEN_STRIKE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_heaven_strike", "천둥벽력")
+    .asAttack(1.0)
+    // =================================================================
+    // WIND-UP PHASE (0-300ms, frames 0-5)
+    // =================================================================
+    // Frame 0: Neutral guard baseline (0ms)
+    .at(0)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5° guard
+    .rotate(BoneName.ELBOW_R, -1.57, 0, 0) // -90° guard position
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Frame 2: Begin raising arm (100ms)
+    .at(0.1)
+    .rotate(BoneName.SHOULDER_R, -0.87, 0.17, 0.26) // -50°, 10°, 15° lifting
+    .rotate(BoneName.ELBOW_R, -1.74, 0, 0) // -100° bent
+    .rotate(BoneName.SPINE_UPPER, 0, -0.09, 0) // -5° slight twist back
+    .rotate(BoneName.PELVIS, 0, -0.09, 0) // -5° hip winds
+    .done<MartialArtsAnimationBuilder>()
+    // Frame 5: High chamber position (300ms)
+    .at(0.3)
+    .rotate(BoneName.SHOULDER_R, -1.92, 0.35, 0.52) // -110°, 20°, 30° overhead ready
+    .rotate(BoneName.ELBOW_R, -2.09, 0, 0) // -120° cocked
+    .rotate(BoneName.SPINE_UPPER, 0, -0.17, 0) // -10° torso wound
+    .rotate(BoneName.PELVIS, 0, -0.17, 0) // -10° hip rotation
+    .rotate(BoneName.HEAD, 0.09, -0.09, 0) // 5°, -5° focused on target
+    .position(BoneName.PELVIS, 0, -0.03, 0) // Slight crouch for power
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // STRIKE PHASE (300-700ms, frames 6-12)
+    // =================================================================
+    // Frame 8: Mid-strike - explosive rotation (500ms)
+    .at(0.5)
+    .rotate(BoneName.SHOULDER_R, 0.35, 0, -0.17) // 20°, 0°, -10° driving down-forward
+    .rotate(BoneName.ELBOW_R, -0.35, 0, 0) // -20° extending
+    .rotate(BoneName.SPINE_UPPER, 0, 0.26, 0) // 15° forward rotation
+    .rotate(BoneName.PELVIS, 0, 0.26, 0) // 15° hip drives through
+    .rotate(BoneName.HEAD, 0, 0.09, 0) // 5° head follows
+    .rotate(BoneName.KNEE_R, -0.09, 0, 0) // -5° rear leg pushes
+    .position(BoneName.PELVIS, 0, -0.05, -0.1) // Drop and forward shift
+    .done<MartialArtsAnimationBuilder>()
+    // Frame 12: Full extension - impact (700ms)
+    // NOTE: This aggressive forward extension embodies Geon's 천둥벽력 (heavenly
+    // thunder) philosophy - maximum penetration with gravity-assisted downward angle
+    .at(0.7)
+    .rotate(BoneName.SHOULDER_R, 0.79, 0, -0.26) // 45°, 0°, -15° full extension
+    .rotate(BoneName.ELBOW_R, 0, 0, 0) // 0° straight arm at impact
+    .rotate(BoneName.WRIST_R, 0.17, 0, 0) // 10° wrist alignment for strike
+    .rotate(BoneName.SPINE_UPPER, 0, 0.44, 0) // 25° explosive forward rotation
+    .rotate(BoneName.PELVIS, 0, 0.44, 0) // 25° full hip through
+    .rotate(BoneName.HEAD, 0, 0.17, 0) // 10° commitment
+    .rotate(BoneName.KNEE_R, -0.17, 0, 0) // -10° rear leg drive
+    .position(BoneName.PELVIS, 0, -0.08, -0.15) // Maximum drop and forward
+    .done<MartialArtsAnimationBuilder>()
+    // =================================================================
+    // RECOVERY PHASE (700-1000ms, frames 13-18)
+    // =================================================================
+    // Frame 15: Begin retraction (850ms)
+    .at(0.85)
+    .rotate(BoneName.SHOULDER_R, 0.26, 0, 0) // 15°, 0°, 0° starting back
+    .rotate(BoneName.ELBOW_R, -0.79, 0, 0) // -45° retracting
+    .rotate(BoneName.SPINE_UPPER, 0, 0.17, 0) // 10° still forward
+    .rotate(BoneName.PELVIS, 0, 0.17, 0) // 10° settling
+    .position(BoneName.PELVIS, 0, -0.03, -0.05) // Rising back up
+    .done<MartialArtsAnimationBuilder>()
+    // Frame 18: Return to guard (1000ms)
+    .at(1.0)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5° guard restored
+    .rotate(BoneName.ELBOW_R, -1.57, 0, 0) // -90° guard position
+    .rotate(BoneName.WRIST_R, 0, 0, 0) // Neutral
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral
+    .rotate(BoneName.HEAD, 0, 0, 0) // Neutral
+    .rotate(BoneName.KNEE_R, 0, 0, 0) // Neutral
+    .position(BoneName.PELVIS, 0, 0, 0) // Neutral stance
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * Geon Elbow Smash Animation
@@ -938,12 +1056,13 @@ export const GEON_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ["geon_forward_advance", GEON_FORWARD_ADVANCE],
   ["geon_diagonal_power_step", GEON_DIAGONAL_POWER_STEP],
   
-  // Combat Techniques
-  ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION],
-  ["geon_overhead_hammer", GEON_OVERHEAD_HAMMER],
-  ["geon_front_kick", GEON_FRONT_KICK],
-  ["geon_roundhouse_kick", GEON_ROUNDHOUSE_KICK],
-  ["geon_axe_kick", GEON_AXE_KICK],
-  ["geon_palm_strike", GEON_PALM_STRIKE],
-  ["geon_elbow_smash", GEON_ELBOW_SMASH],
+  // Combat Techniques (All 7 from GeonTechniques.ts)
+  ["geon_heaven_strike", GEON_HEAVEN_STRIKE], // 천둥벽력 (Thunder Strike)
+  ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION], // 천권 (Heavenly Fist)
+  ["geon_frontal_kick", GEON_FRONT_KICK], // 앞차기 (Front Kick)
+  ["geon_roundhouse_kick", GEON_ROUNDHOUSE_KICK], // 돌려차기 (Roundhouse Kick)
+  ["geon_axe_kick", GEON_AXE_KICK], // 내려차기 (Axe Kick)
+  ["geon_palm_strike", GEON_PALM_STRIKE], // 장권 (Palm Strike)
+  ["geon_elbow_smash", GEON_ELBOW_SMASH], // 팔꿈치치기 (Elbow Smash)
+  ["geon_overhead_hammer", GEON_OVERHEAD_HAMMER], // 천둥 망치타 (Thunder Hammer) - Bonus technique
 ]);
