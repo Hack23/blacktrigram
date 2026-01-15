@@ -1,11 +1,26 @@
 /**
  * TrainingModeSelectorOverlayHtml - Html overlay for training mode selection
  * 
- * Allows switching between different training modes
+ * Allows switching between different training modes with consistent Korean theming.
+ * Uses KOREAN_COLORS constants and bilingual formatting.
+ * 
+ * @module components/screens/training
+ * @category Training UI
+ * @korean 훈련모드선택오버레이
  */
 
 import React from "react";
-import { FONT_FAMILY } from "../../../../types/constants";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../../types/constants";
+import { SPACING } from "../../../../types/constants/ui";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getKoreanOverlayBaseStyles,
+  formatBilingualText,
+  getResponsiveSpacing,
+} from "../../../../utils/koreanThemeHelpers";
 import "../training.css";
 
 /**
@@ -75,7 +90,20 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
 
 /**
  * TrainingModeSelectorOverlayHtml Component
- * Html overlay for selecting training mode - Compact horizontal layout
+ * 
+ * Html overlay for selecting training mode with Korean theming.
+ * Compact horizontal grid layout optimized for desktop and mobile.
+ * 
+ * @example
+ * ```tsx
+ * <TrainingModeSelectorOverlayHtml
+ *   currentMode="vital_point"
+ *   onModeChange={(mode) => console.log(mode)}
+ *   isMobile={false}
+ * />
+ * ```
+ * 
+ * @korean 훈련모드선택오버레이컴포넌트
  */
 export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverlayHtmlProps> = ({
   currentMode,
@@ -83,51 +111,52 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
   isMobile,
 }) => {
   const panelWidth = isMobile ? 280 : 320;
+  const padding = getResponsiveSpacing("sm", isMobile);
+  const gap = getResponsiveSpacing("xs", isMobile);
+
+  const panelStyle: React.CSSProperties = {
+    ...getKoreanOverlayBaseStyles(0.9),
+    width: `${panelWidth}px`,
+    padding: `${padding}px`,
+  };
+
+  const titleFontSize = isMobile ? 13 : 15;
+  const descFontSize = isMobile ? 9 : 10;
 
   return (
-    <div
-      style={{
-        width: `${panelWidth}px`,
-        background: "rgba(26, 26, 26, 0.9)",
-        border: "2px solid rgba(0, 255, 255, 0.9)",
-        borderRadius: "12px",
-        padding: isMobile ? "10px" : "12px",
-        fontFamily: FONT_FAMILY.KOREAN,
-        color: "#ffffff",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-      }}
-      data-testid="training-mode-selector-html"
-    >
-      {/* Header */}
-      <div style={{ marginBottom: "10px", textAlign: "center" }}>
+    <div style={panelStyle} data-testid="training-mode-selector-html">
+      {/* Header with bilingual title */}
+      <div style={{ marginBottom: `${SPACING.SM}px`, textAlign: "center" }}>
         <div
           style={{
-            fontSize: isMobile ? "13px" : "15px",
+            fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
-            color: "#00ffff",
+            color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
-          훈련 모드 | Training Mode
+          {formatBilingualText("훈련 모드", "Training Mode", "pipe")}
         </div>
         <div
           style={{
-            fontSize: isMobile ? "9px" : "10px",
-            color: "#999999",
+            fontSize: `${descFontSize}px`,
+            color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
             fontStyle: "italic",
             marginTop: "2px",
             minHeight: "16px",
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
           {MODE_INFO[currentMode].description}
         </div>
       </div>
 
-      {/* Mode Buttons - Horizontal Grid */}
+      {/* Mode Buttons - Horizontal Grid with Korean theming */}
       <div 
         style={{ 
           display: "grid", 
           gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
-          gap: "6px" 
+          gap: `${gap}px` 
         }}
       >
         {(Object.keys(MODE_INFO) as TrainingMode[]).map((mode) => {
@@ -148,13 +177,16 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
+                fontFamily: FONT_FAMILY.KOREAN,
               }}
               data-testid={`mode-${mode}`}
             >
               <div
                 style={{
                   fontWeight: "bold",
-                  color: isSelected ? "#00ffff" : "#ffffff",
+                  color: hexToRgbaString(
+                    isSelected ? KOREAN_COLORS.PRIMARY_CYAN : KOREAN_COLORS.TEXT_PRIMARY
+                  ),
                   fontSize: isMobile ? "11px" : "12px",
                   marginBottom: "2px",
                   overflow: "hidden",
@@ -168,7 +200,9 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
               <div
                 style={{
                   fontSize: isMobile ? "8px" : "9px",
-                  color: isSelected ? "#ffd700" : "#999999",
+                  color: hexToRgbaString(
+                    isSelected ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.TEXT_TERTIARY
+                  ),
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   width: "100%",

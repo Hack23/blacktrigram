@@ -1,11 +1,26 @@
 /**
  * TrainingStatsOverlayHtml - Html overlay for training statistics
  * 
- * Displays score, combo, hits, misses, and accuracy
+ * Displays score, combo, hits, misses, and accuracy with consistent Korean theming.
+ * Uses Korean cyberpunk color palette and bilingual text formatting.
+ * 
+ * @module components/screens/training
+ * @category Training UI
+ * @korean 훈련통계오버레이
  */
 
 import React, { useMemo } from "react";
-import { FONT_FAMILY } from "../../../../types/constants";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../../types/constants";
+import { SPACING } from "../../../../types/constants/ui";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getKoreanOverlayBaseStyles,
+  formatBilingualText,
+  getResponsiveSpacing,
+} from "../../../../utils/koreanThemeHelpers";
 
 /**
  * Training statistics interface
@@ -33,13 +48,27 @@ export interface TrainingStatsOverlayHtmlProps {
 
 /**
  * TrainingStatsOverlayHtml Component
- * Html overlay displaying training performance metrics
+ * 
+ * Html overlay displaying training performance metrics with Korean theming.
+ * All colors use KOREAN_COLORS constants for consistency.
+ * 
+ * @example
+ * ```tsx
+ * <TrainingStatsOverlayHtml
+ *   stats={{ score: 1500, combo: 8, hits: 45, misses: 5, accuracy: 90 }}
+ *   isMobile={false}
+ * />
+ * ```
+ * 
+ * @korean 훈련통계오버레이컴포넌트
  */
 export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> = ({
   stats,
   isMobile,
 }) => {
   const panelWidth = isMobile ? 240 : 260;
+  const padding = getResponsiveSpacing("md", isMobile);
+  const gap = getResponsiveSpacing("sm", isMobile);
   
   // Format accuracy with memoization
   const formattedAccuracy = useMemo(
@@ -62,118 +91,112 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
     return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
   }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
+  // Base panel styles using Korean theme
+  const panelStyle: React.CSSProperties = {
+    ...getKoreanOverlayBaseStyles(0.9),
+    width: `${panelWidth}px`,
+    padding: `${padding}px`,
+  };
+
+  // Header title styles
+  const titleFontSize = isMobile ? 14 : 16;
+
   return (
-    <div
-      style={{
-        width: `${panelWidth}px`,
-        background: "rgba(26, 26, 26, 0.85)",
-        border: "2px solid rgba(255, 170, 0, 0.9)",
-        borderRadius: "12px",
-        padding: "15px",
-        fontFamily: FONT_FAMILY.KOREAN,
-        color: "#ffffff",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-      }}
-      data-testid="training-stats-html"
-    >
-      {/* Header */}
-      <div style={{ marginBottom: "15px" }}>
+    <div style={panelStyle} data-testid="training-stats-html">
+      {/* Header with bilingual title */}
+      <div style={{ marginBottom: `${padding}px` }}>
         <div
           style={{
-            fontSize: isMobile ? "14px" : "16px",
+            fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
-            color: "#ffd700",
+            color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD),
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
-          훈련 통계
-        </div>
-        <div
-          style={{
-            fontSize: isMobile ? "10px" : "12px",
-            color: "#999999",
-            fontStyle: "italic",
-          }}
-        >
-          Training Statistics
+          {formatBilingualText("훈련 통계", "Training Statistics", "pipe")}
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        {/* Score */}
+      {/* Stats Grid with consistent Korean theming */}
+      <div style={{ display: "flex", flexDirection: "column", gap: `${gap}px` }}>
+        {/* Score - 점수 */}
         <StatRow
           korean="점수"
           english="Score"
           value={stats.score.toLocaleString()}
-          color="#ffd700"
+          color={KOREAN_COLORS.ACCENT_GOLD}
           isMobile={isMobile}
         />
 
-        {/* Combo */}
+        {/* Combo - 콤보 */}
         <StatRow
           korean="콤보"
           english="Combo"
           value={`${stats.combo}x`}
-          color={stats.combo > 5 ? "#ff4444" : "#00ffff"}
+          color={
+            stats.combo > 5
+              ? KOREAN_COLORS.ACCENT_RED
+              : KOREAN_COLORS.PRIMARY_CYAN
+          }
           isMobile={isMobile}
         />
 
-        {/* Hits */}
+        {/* Hits - 성공 */}
         <StatRow
           korean="성공"
           english="Hits"
           value={stats.hits.toString()}
-          color="#00ff88"
+          color={KOREAN_COLORS.ACCENT_GREEN}
           isMobile={isMobile}
         />
 
-        {/* Misses */}
+        {/* Misses - 실패 */}
         <StatRow
           korean="실패"
           english="Misses"
           value={stats.misses.toString()}
-          color="#888888"
+          color={KOREAN_COLORS.TEXT_TERTIARY}
           isMobile={isMobile}
         />
 
-        {/* Accuracy */}
+        {/* Accuracy - 정확도 */}
         <StatRow
           korean="정확도"
           english="Accuracy"
           value={`${formattedAccuracy}%`}
           color={
             stats.accuracy >= 80
-              ? "#00ff88"
+              ? KOREAN_COLORS.ACCENT_GREEN
               : stats.accuracy >= 50
-              ? "#ffd700"
-              : "#ff4444"
+              ? KOREAN_COLORS.ACCENT_GOLD
+              : KOREAN_COLORS.ACCENT_RED
           }
           isMobile={isMobile}
         />
 
-        {/* Session Duration */}
+        {/* Session Duration - 시간 */}
         {stats.sessionDuration !== undefined && (
           <StatRow
             korean="시간"
             english="Duration"
             value={formattedDuration}
-            color="#00ffff"
+            color={KOREAN_COLORS.PRIMARY_CYAN}
             isMobile={isMobile}
           />
         )}
 
-        {/* Best Combo */}
+        {/* Best Combo - 최고 콤보 */}
         {stats.bestCombo !== undefined && stats.bestCombo > 0 && (
           <StatRow
             korean="최고 콤보"
             english="Best Combo"
             value={`${stats.bestCombo}x`}
-            color="#ffd700"
+            color={KOREAN_COLORS.ACCENT_GOLD}
             isMobile={isMobile}
           />
         )}
 
-        {/* Perfect Rate */}
+        {/* Perfect Rate - 완벽률 */}
         {stats.hits + stats.misses > 0 && (
           <StatRow
             korean="완벽률"
@@ -181,10 +204,10 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
             value={`${perfectRate}%`}
             color={
               parseFloat(perfectRate) >= 30
-                ? "#ffd700"
+                ? KOREAN_COLORS.ACCENT_GOLD
                 : parseFloat(perfectRate) >= 10
-                ? "#00ffff"
-                : "#888888"
+                ? KOREAN_COLORS.PRIMARY_CYAN
+                : KOREAN_COLORS.TEXT_TERTIARY
             }
             isMobile={isMobile}
           />
@@ -195,39 +218,49 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
 };
 
 /**
- * Single stat row component
+ * Single stat row component with Korean theming
+ * 
+ * Uses KOREAN_COLORS constants for all text colors
+ * 
+ * @korean 통계행컴포넌트
  */
 const StatRow: React.FC<{
   korean: string;
   english: string;
   value: string;
-  color: string;
+  color: number; // Hex color from KOREAN_COLORS
   isMobile: boolean;
 }> = ({ korean, english, value, color, isMobile }) => {
+  const labelFontSize = isMobile ? 11 : 12;
+  const sublabelFontSize = isMobile ? 8 : 9;
+  const valueFontSize = isMobile ? 16 : 18;
+
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingBottom: "8px",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        paddingBottom: `${SPACING.SM}px`,
+        borderBottom: `1px solid ${hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.1)}`,
       }}
     >
       <div>
         <div
           style={{
-            fontSize: isMobile ? "11px" : "12px",
-            color: "#00ffff",
+            fontSize: `${labelFontSize}px`,
+            color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
             fontWeight: "bold",
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
           {korean}
         </div>
         <div
           style={{
-            fontSize: isMobile ? "8px" : "9px",
-            color: "#888888",
+            fontSize: `${sublabelFontSize}px`,
+            color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
           {english}
@@ -235,9 +268,10 @@ const StatRow: React.FC<{
       </div>
       <div
         style={{
-          fontSize: isMobile ? "16px" : "18px",
+          fontSize: `${valueFontSize}px`,
           fontWeight: "bold",
-          color: color,
+          color: hexToRgbaString(color),
+          fontFamily: FONT_FAMILY.KOREAN,
         }}
       >
         {value}

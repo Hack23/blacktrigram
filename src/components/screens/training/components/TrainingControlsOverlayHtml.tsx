@@ -1,12 +1,26 @@
 /**
  * TrainingControlsOverlayHtml - Html overlay for training controls
  * 
- * Displays start/stop button and training status.
- * Training auto-starts on mount, but users can manually stop and restart.
+ * Displays start/stop button and training status with consistent Korean theming.
+ * Uses KOREAN_COLORS constants and bilingual formatting.
+ * 
+ * @module components/screens/training
+ * @category Training UI
+ * @korean 훈련제어오버레이
  */
 
 import React from "react";
-import { FONT_FAMILY } from "../../../../types/constants";
+import {
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../../types/constants";
+import { SPACING } from "../../../../types/constants/ui";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getKoreanOverlayBaseStyles,
+  formatBilingualText,
+  getResponsiveSpacing,
+} from "../../../../utils/koreanThemeHelpers";
 import "../training.css";
 
 /**
@@ -25,7 +39,21 @@ export interface TrainingControlsOverlayHtmlProps {
 
 /**
  * TrainingControlsOverlayHtml Component
- * Html overlay showing training status and start/stop controls
+ * 
+ * Html overlay showing training status and start/stop controls with Korean theming.
+ * All colors use KOREAN_COLORS constants for consistency.
+ * 
+ * @example
+ * ```tsx
+ * <TrainingControlsOverlayHtml
+ *   isTraining={true}
+ *   onStartTraining={() => console.log('start')}
+ *   onStopTraining={() => console.log('stop')}
+ *   isMobile={false}
+ * />
+ * ```
+ * 
+ * @korean 훈련제어오버레이컴포넌트
  */
 export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlProps> = ({
   isTraining,
@@ -35,46 +63,45 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
 }) => {
   const panelWidth = isMobile ? 200 : 220;
   const panelHeight = isMobile ? 90 : 100;
+  const padding = getResponsiveSpacing("sm", isMobile);
 
-  const borderColor = isTraining
-    ? "rgba(0, 255, 136, 0.9)"
-    : "rgba(255, 68, 68, 0.9)";
+  // Use Korean colors for border based on training state
+  const borderColor = hexToRgbaString(
+    isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED,
+    0.9
+  );
+
+  const panelStyle: React.CSSProperties = {
+    ...getKoreanOverlayBaseStyles(0.85),
+    width: `${panelWidth}px`,
+    height: `${panelHeight}px`,
+    padding: `${padding}px`,
+    border: `2px solid ${borderColor}`,
+    position: "relative",
+  };
+
+  const titleFontSize = isMobile ? 13 : 14;
+  const infoFontSize = isMobile ? 9 : 10;
 
   return (
-    <div
-      style={{
-        width: `${panelWidth}px`,
-        height: `${panelHeight}px`,
-        background: "rgba(26, 26, 26, 0.85)",
-        border: `2px solid ${borderColor}`,
-        borderRadius: "12px",
-        padding: "12px",
-        fontFamily: FONT_FAMILY.KOREAN,
-        color: "#ffffff",
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
-        position: "relative",
-      }}
-      data-testid="training-controls-html"
-    >
-      {/* Header */}
-      <div style={{ marginBottom: "8px" }}>
+    <div style={panelStyle} data-testid="training-controls-html">
+      {/* Header with bilingual status */}
+      <div style={{ marginBottom: `${SPACING.SM}px` }}>
         <div
           style={{
-            fontSize: isMobile ? "13px" : "14px",
+            fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
-            color: isTraining ? "#00ff88" : "#ff4444",
+            color: hexToRgbaString(
+              isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED
+            ),
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
-          {isTraining ? "훈련 진행중" : "훈련 대기"}
-        </div>
-        <div
-          style={{
-            fontSize: isMobile ? "9px" : "10px",
-            color: "#999999",
-            fontStyle: "italic",
-          }}
-        >
-          {isTraining ? "Training Active" : "Training Stopped"}
+          {formatBilingualText(
+            isTraining ? "훈련 진행중" : "훈련 대기",
+            isTraining ? "Training Active" : "Training Stopped",
+            "pipe"
+          )}
         </div>
       </div>
 
@@ -88,12 +115,12 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
         }}
       />
 
-      {/* Start/Stop Button */}
+      {/* Start/Stop Button with Korean theming */}
       <button
         onClick={isTraining ? onStopTraining : onStartTraining}
         className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
         style={{
-          fontSize: isMobile ? "13px" : "14px",
+          fontSize: `${titleFontSize}px`,
           fontFamily: FONT_FAMILY.KOREAN,
           height: "35px",
         }}
@@ -101,22 +128,33 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
         data-training-state={isTraining ? "active" : "inactive"}
       >
         <span>{isTraining ? "⏹" : "▶"}</span>
-        <span>{isTraining ? "중지 | Stop" : "시작 | Start"}</span>
+        <span>
+          {formatBilingualText(
+            isTraining ? "중지" : "시작",
+            isTraining ? "Stop" : "Start",
+            "pipe"
+          )}
+        </span>
       </button>
 
-      {/* Info text about auto-restart */}
+      {/* Info text about auto-restart with Korean colors */}
       {!isTraining && (
         <div
           style={{
-            fontSize: isMobile ? "9px" : "10px",
-            color: "#999999",
+            fontSize: `${infoFontSize}px`,
+            color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
             textAlign: "center",
-            marginTop: "4px",
+            marginTop: `${SPACING.XS}px`,
+            fontFamily: FONT_FAMILY.KOREAN,
           }}
         >
-          모드 변경시 자동 재시작
-          <br />
-          Auto-restarts on mode change
+          {formatBilingualText(
+            "모드 변경시 자동 재시작",
+            "Auto-restarts on mode change",
+            "pipe"
+          ).split(" | ").map((line, i) => (
+            <div key={i}>{line}</div>
+          ))}
         </div>
       )}
     </div>
