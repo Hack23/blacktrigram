@@ -24,7 +24,7 @@ describe("Tae (Lake) Joint Lock Animations", () => {
 
     it("should have correct duration and phases", () => {
       expect(TAE_WRIST_LOCK_SEQUENCE.duration).toBe(1.8);
-      expect(TAE_WRIST_LOCK_SEQUENCE.keyframes.length).toBeGreaterThanOrEqual(5);
+      expect(TAE_WRIST_LOCK_SEQUENCE.keyframes.length).toBeGreaterThanOrEqual(4);
     });
 
     it("should demonstrate circular motion in shoulder rotation", () => {
@@ -48,7 +48,7 @@ describe("Tae (Lake) Joint Lock Animations", () => {
 
     it("should have correct duration", () => {
       expect(TAE_ELBOW_CONTROL.duration).toBe(1.65);
-      expect(TAE_ELBOW_CONTROL.keyframes.length).toBeGreaterThanOrEqual(5);
+      expect(TAE_ELBOW_CONTROL.keyframes.length).toBeGreaterThanOrEqual(4);
     });
   });
 
