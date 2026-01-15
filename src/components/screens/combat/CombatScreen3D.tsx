@@ -2123,7 +2123,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         shadows={!isMobile}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
-          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
+          // Atmospheric fog with Korean cyberpunk gradient (closer fog for better depth)
+          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 10, 50);
         }}
       >
         {/* Animation updater - updates both player animations at 60fps */}
