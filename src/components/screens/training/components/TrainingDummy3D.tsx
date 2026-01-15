@@ -87,6 +87,7 @@ const getVitalPointPosition = (
 // Constants defined outside component to avoid recreation
 const HEALTH_BAR_WIDTH = 1.2;
 const HEALTH_BAR_HEIGHT = 0.1;
+const HIT_FLASH_INTENSITY_MULTIPLIER = 2.0;
 
 const DummyHealthBar: React.FC<{
   health: number;
@@ -310,7 +311,8 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         emissiveSetRef.current = true;
       }
       // eslint-disable-next-line react-hooks/immutability -- Material properties must be modified for animation
-      bodyMaterial.emissiveIntensity = flashIntensityRef.current * 2.0;
+      bodyMaterial.emissiveIntensity =
+        flashIntensityRef.current * HIT_FLASH_INTENSITY_MULTIPLIER;
     } else if (emissiveSetRef.current) {
       bodyMaterial.emissiveIntensity = 0;
       bodyMaterial.emissive.setHex(0x000000); // Reset to black for complete cleanup
