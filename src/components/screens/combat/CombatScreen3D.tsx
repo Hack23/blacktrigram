@@ -275,6 +275,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     };
   }, [isMobile, width]);
 
+  // Memoized SSAO color to avoid creating new THREE.Color on every render
+  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
+
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
 
@@ -2373,7 +2376,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               radius={0.05}
               intensity={50}
               luminanceInfluence={0.5}
-              color={new THREE.Color("black")}
+              color={ssaoColor}
             />
             <ChromaticAberration
               offset={[0.002, 0.002]}

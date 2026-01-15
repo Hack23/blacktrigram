@@ -285,6 +285,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
 
   // Ref for hit flash intensity
   const flashIntensityRef = useRef(0);
+  const emissiveSetRef = useRef(false);
 
   // Breathing animation (slower when health is low)
   useFrame((state) => {
@@ -303,11 +304,16 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         0,
         0.1
       );
-      bodyMaterial.emissive.setHex(KOREAN_COLORS.PRIMARY_CYAN);
+      // Only set emissive color when starting the flash
+      if (!emissiveSetRef.current) {
+        bodyMaterial.emissive.setHex(KOREAN_COLORS.PRIMARY_CYAN);
+        emissiveSetRef.current = true;
+      }
       // eslint-disable-next-line react-hooks/immutability -- Material properties must be modified for animation
       bodyMaterial.emissiveIntensity = flashIntensityRef.current * 2.0;
-    } else {
+    } else if (emissiveSetRef.current) {
       bodyMaterial.emissiveIntensity = 0;
+      emissiveSetRef.current = false;
     }
   });
 
