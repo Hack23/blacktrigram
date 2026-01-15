@@ -7,7 +7,7 @@
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
-import { Environment, Html } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -880,11 +880,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }}
         camera={cameraConfig}
       >
-        {/* Arena environment with lighting included */}
+        {/* Arena environment with lighting included (includes Environment preset="city") */}
         <CombatArena3D lighting="cyberpunk" scale={1.0} />
-
-        {/* Environment preset for realistic reflections - matches Combat Screen */}
-        <Environment preset="city" />
 
         {/* Animation updater - updates player animation at 60fps */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
@@ -1477,8 +1474,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               radius={0.6}
             />
             <SSAO
-              radius={0.5}
-              intensity={30}
+              radius={0.05}
+              intensity={50}
               luminanceInfluence={0.5}
               color={ssaoColor}
             />
