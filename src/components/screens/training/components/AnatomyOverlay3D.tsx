@@ -10,6 +10,9 @@ import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
+// Visual effect constants for bloom optimization
+const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
+
 /**
  * Anatomy layer types
  */
@@ -204,7 +207,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.SECONDARY_YELLOW}
-          emissiveIntensity={1.5}
+          emissiveIntensity={NERVE_EMISSIVE_INTENSITY}
           roughness={0.2}
           clearcoat={1.0}
         />

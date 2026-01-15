@@ -313,6 +313,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
       bodyMaterial.emissiveIntensity = flashIntensityRef.current * 2.0;
     } else if (emissiveSetRef.current) {
       bodyMaterial.emissiveIntensity = 0;
+      bodyMaterial.emissive.setHex(0x000000); // Reset to black for complete cleanup
       emissiveSetRef.current = false;
     }
   });
