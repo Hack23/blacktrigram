@@ -17,10 +17,14 @@ import {
 import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getKoreanOverlayBaseStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+} from "../../../../utils/visualEffects";
 import "../training.css";
 
 /**
@@ -114,8 +118,15 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
   const padding = getResponsiveSpacing("sm", isMobile);
   const gap = getResponsiveSpacing("xs", isMobile);
 
+  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
-    ...getKoreanOverlayBaseStyles(0.9),
+    ...getEnhancedKoreanOverlayStyles({
+      opacity: 0.9,
+      glowIntensity: "medium",
+      includeGradient: false,
+      includeBackdropBlur: true,
+      depthLayers: 3,
+    }),
     width: `${panelWidth}px`,
     padding: `${padding}px`,
   };
@@ -133,6 +144,8 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
             fontWeight: "bold",
             color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
             fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: getNeonTextShadow(KOREAN_COLORS.PRIMARY_CYAN, "medium"),
+            transition: getSmoothTransition("all", "normal"),
           }}
         >
           {formatBilingualText("훈련 모드", "Training Mode", "pipe")}
@@ -145,6 +158,7 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
             marginTop: "2px",
             minHeight: "16px",
             fontFamily: FONT_FAMILY.KOREAN,
+            transition: getSmoothTransition("all", "normal"),
           }}
         >
           {MODE_INFO[currentMode].description}

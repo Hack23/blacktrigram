@@ -15,10 +15,15 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getKoreanOverlayBaseStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+  getNeonGlowEffect,
+} from "../../../../utils/visualEffects";
 import "../training.css";
 
 /**
@@ -82,8 +87,15 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
   const maxHeight = isMobile ? 300 : 400;
   const padding = getResponsiveSpacing("md", isMobile);
 
+  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
-    ...getKoreanOverlayBaseStyles(0.85),
+    ...getEnhancedKoreanOverlayStyles({
+      opacity: 0.88,
+      glowIntensity: "medium",
+      includeGradient: false,
+      includeBackdropBlur: true,
+      depthLayers: 3,
+    }),
     width: `${panelWidth}px`,
     maxHeight: `${maxHeight}px`,
     padding: `${padding}px`,
@@ -103,6 +115,8 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
             fontSize: isMobile ? "14px" : "16px",
             fontWeight: "bold",
             color: hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA),
+            textShadow: getNeonTextShadow(KOREAN_COLORS.SECONDARY_MAGENTA, "medium"),
+            transition: getSmoothTransition("all", "normal"),
           }}
         >
           {formatBilingualText("급소 선택", "Vital Point Selection", "pipe")}
@@ -116,6 +130,11 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
           const severityColor = getSeverityColor(point.severity);
           const severityColorRgba = hexToRgbaString(severityColor);
 
+          // Enhanced glow effect for selected vital points
+          const glowEffect = isSelected 
+            ? getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true)
+            : "none";
+
           return (
             <button
               key={point.id}
@@ -126,6 +145,8 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
                   ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD) 
                   : severityColorRgba,
                 fontFamily: FONT_FAMILY.KOREAN,
+                boxShadow: glowEffect,
+                transition: getSmoothTransition("all", "normal"),
               }}
               data-testid={`vital-point-${point.id}`}
             >

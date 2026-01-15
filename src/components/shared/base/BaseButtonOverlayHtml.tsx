@@ -8,8 +8,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getKoreanButtonWithGlow } from "../../../utils/koreanThemeHelpers";
 import { useKoreanTheme } from "./useKoreanTheme";
 
 /**
@@ -66,8 +65,8 @@ export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
-  // Use Korean theme hook for consistent styling
-  const { buttonVariant, buttonSize, fontFamily } = useKoreanTheme({
+  // Use Korean theme hook for size and font info only
+  const { buttonSize } = useKoreanTheme({
     variant,
     size,
     disabled,
@@ -102,43 +101,35 @@ export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
     setIsPressed(false);
   }, []);
 
-  // Memoize button styles for performance
+  // Memoize button styles for performance - now using enhanced visual effects
   const buttonStyle = useMemo<React.CSSProperties>(() => {
-    let background = hexToRgbaString(buttonVariant.background, 0.9);
-    
-    if (isPressed) {
-      background = buttonVariant.activeBg;
-    } else if (isHovered) {
-      background = buttonVariant.hoverBg;
-    }
+    // Get enhanced button styles with neon glow
+    const enhancedStyles = getKoreanButtonWithGlow({
+      variant,
+      isHovered: isHovered && !disabled,
+      isPressed: isPressed && !disabled,
+      isFocused: false,
+      glowIntensity: "medium",
+      hoverAnimation: "combined",
+    });
 
+    // Merge with size-specific styles
     return {
-      background,
-      border: `${buttonSize.borderWidth} solid ${hexToRgbaString(buttonVariant.border)}`,
-      color: hexToRgbaString(buttonVariant.text),
+      ...enhancedStyles,
       padding: buttonSize.padding,
       fontSize: buttonSize.fontSize,
-      fontFamily: fontFamily.KOREAN,
-      fontWeight: "bold",
       cursor: disabled ? "not-allowed" : "pointer",
       opacity: disabled ? 0.5 : 1,
       borderRadius: "4px",
-      transition: "all 0.2s ease",
-      textAlign: "center",
-      userSelect: "none",
-      WebkitUserSelect: "none",
+      textAlign: "center" as const,
+      userSelect: "none" as const,
+      WebkitUserSelect: "none" as const,
       width: fullWidth ? "100%" : "auto",
-      boxShadow: isHovered && !disabled
-        ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
-        : "none",
-      transform: isPressed && !disabled ? "scale(0.98)" : "scale(1)",
-      textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       ...customStyle,
     };
   }, [
-    buttonVariant,
+    variant,
     buttonSize,
-    fontFamily,
     disabled,
     fullWidth,
     isHovered,
