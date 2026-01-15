@@ -55,6 +55,8 @@ vi.mock("@react-three/postprocessing", () => ({
   Bloom: () => null,
   SSAO: () => null,
   Vignette: () => null,
+  ChromaticAberration: () => null,
+  Noise: () => null,
 }));
 
 // Mock Three.js

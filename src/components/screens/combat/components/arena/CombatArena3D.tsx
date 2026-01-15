@@ -22,6 +22,9 @@ export interface CombatArena3DProps {
   readonly scale?: number;
 }
 
+// Floor scaling constant for extended arena boundaries
+const FLOOR_SCALE_FACTOR = 1.5;
+
 /**
  * CombatArena3D Component
  * Creates a Korean-themed 3D arena environment
@@ -90,7 +93,9 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 
       {/* Arena floor - dojang mat (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[floorWidth * 1.5, floorDepth * 1.5]} />
+        <planeGeometry
+          args={[floorWidth * FLOOR_SCALE_FACTOR, floorDepth * FLOOR_SCALE_FACTOR]}
+        />
         <meshPhysicalMaterial
           color={
             lighting === "cyberpunk"
