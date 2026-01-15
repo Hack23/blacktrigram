@@ -283,6 +283,9 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     healthRef.current = health;
   }, [health]);
 
+  // Scale ref for breathing animation
+  const flashIntensityRef = useRef(0);
+
   // Breathing animation (slower when health is low)
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -292,11 +295,26 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
       Math.sin(state.clock.elapsedTime * breathSpeed) * 0.02 + 1;
     scaleVector.set(1, breathScale, 1);
     groupRef.current.scale.copy(scaleVector);
+
+    // Hit flash effect - decay intensity
+    if (flashIntensityRef.current > 0.01) {
+      flashIntensityRef.current = THREE.MathUtils.lerp(
+        flashIntensityRef.current,
+        0,
+        0.1
+      );
+      bodyMaterial.emissive.setHex(KOREAN_COLORS.PRIMARY_CYAN);
+      bodyMaterial.emissiveIntensity = flashIntensityRef.current * 2.0;
+    } else {
+      bodyMaterial.emissiveIntensity = 0;
+    }
   });
 
   // Handle vital point hit
   const handlePointHit = useCallback(
     (pointId: string) => {
+      // Trigger flash effect
+      flashIntensityRef.current = 1.0;
       onVitalPointHit?.(pointId);
     },
     [onVitalPointHit]
