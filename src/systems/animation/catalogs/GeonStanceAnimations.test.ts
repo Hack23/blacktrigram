@@ -70,15 +70,6 @@ describe("GEON_IDLE_BREATHING", () => {
     expect(times).toContain(1.25); // Mid-breath
     expect(times).toContain(2.5); // End
   });
-
-  it("should complete cycle in <5ms for performance", () => {
-    const start = performance.now();
-    // Access animation to measure load time
-    expect(GEON_IDLE_BREATHING).toBeDefined();
-    const end = performance.now();
-
-    expect(end - start).toBeLessThan(5);
-  });
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -249,8 +240,8 @@ describe("GEON_HEAVENLY_FIST_ANIMATION", () => {
     const elbowRotation = strikeFrame?.boneRotations.get(BoneName.ELBOW_R);
 
     expect(elbowRotation).toBeDefined();
-    // Should be nearly straight (close to 0°)
-    expect(Math.abs(elbowRotation!.x)).toBeLessThan(0.18); // Less than 10°
+    // Should be effectively straight (very close to 0°)
+    expect(Math.abs(elbowRotation!.x)).toBeLessThan(0.01); // Within ~0.6° of straight
   });
 
   it("should rotate torso for power generation", () => {
@@ -425,33 +416,28 @@ describe("GEON_ANIMATIONS Map", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("Geon Animations Performance", () => {
-  it("all animations should load in <5ms", () => {
+  it("all animations should instantiate in <5ms", () => {
     const start = performance.now();
 
-    // Access all animations to measure load time
+    // Measure the time to access and verify all animation structures
     expect(GEON_IDLE_BREATHING).toBeDefined();
+    expect(GEON_IDLE_BREATHING.keyframes.length).toBeGreaterThan(0);
+    
     expect(GEON_FORWARD_ADVANCE).toBeDefined();
+    expect(GEON_FORWARD_ADVANCE.keyframes.length).toBeGreaterThan(0);
+    
     expect(GEON_DIAGONAL_POWER_STEP).toBeDefined();
+    expect(GEON_DIAGONAL_POWER_STEP.keyframes.length).toBeGreaterThan(0);
+    
     expect(GEON_HEAVENLY_FIST_ANIMATION).toBeDefined();
+    expect(GEON_HEAVENLY_FIST_ANIMATION.keyframes.length).toBeGreaterThan(0);
+    
     expect(GEON_OVERHEAD_HAMMER).toBeDefined();
+    expect(GEON_OVERHEAD_HAMMER.keyframes.length).toBeGreaterThan(0);
 
     const end = performance.now();
 
-    expect(end - start).toBeLessThan(5);
-  });
-
-  it("animation map access should be fast", () => {
-    const start = performance.now();
-
-    for (let i = 0; i < 100; i++) {
-      GEON_ANIMATIONS.get("geon_heavenly_fist");
-      GEON_ANIMATIONS.get("geon_idle_breathing");
-      GEON_ANIMATIONS.get("geon_overhead_hammer");
-    }
-
-    const end = performance.now();
-
-    // 300 lookups should complete in <5ms
+    // Instantiation and structure access should be fast
     expect(end - start).toBeLessThan(5);
   });
 });

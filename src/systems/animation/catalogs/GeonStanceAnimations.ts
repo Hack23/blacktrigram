@@ -236,13 +236,20 @@ export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
     // =================================================================
     // WIND-UP PHASE (0-300ms, frames 0-6)
     // =================================================================
-    // Frame 0: Start position
+    // Frame 0: Neutral Geon guard baseline
     .at(0)
+    .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5° guard position
+    .rotate(BoneName.ELBOW_R, -1.57, 0, 0) // -90° guard bend
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Frame 2: Start of wind-up (100ms)
+    .at(0.1)
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.26) // -20°, 0°, 15° cock back
     .rotate(BoneName.ELBOW_R, -2.09, 0, 0) // -120° bent
     .rotate(BoneName.SPINE_UPPER, 0, -0.26, 0) // 0°, -15° torso winds up
     .rotate(BoneName.PELVIS, 0, -0.17, 0) // 0°, -10° hip winds
-    .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Frame 6: Maximum wind-up (300ms)
     .at(0.3)
@@ -264,8 +271,13 @@ export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
     .position(BoneName.PELVIS, 0, 0, 0.05)
     .done<MartialArtsAnimationBuilder>()
     // Frame 14: Full extension + follow-through (800ms)
+    // NOTE: Shoulder rotation of 1.05 rad (~60°) is intentionally more aggressive
+    // than the generic PUNCH_PHASES.EXTENSION (~30-45°) to reflect Geon's
+    // 골절력 (bone-breaking power) philosophy. This over-rotation emphasizes
+    // maximum penetration and dominance while remaining within anatomically
+    // plausible limits for a stylized power strike.
     .at(0.8)
-    .rotate(BoneName.SHOULDER_R, 1.05, 0, -0.09) // 60°, 0°, -5° full extension
+    .rotate(BoneName.SHOULDER_R, 1.05, 0, -0.09) // 60°, 0°, -5° full extension (power-optimized)
     .rotate(BoneName.ELBOW_R, 0, 0, 0) // 0° fully extended
     .rotate(BoneName.WRIST_R, 0.17, 0, 0) // 10° impact alignment
     .rotate(BoneName.SPINE_UPPER, 0, 0.44, 0) // 0°, 25° maximum rotation
@@ -350,12 +362,12 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
     .rotate(BoneName.SPINE_UPPER, -0.17, 0, 0) // -10° leaning back
     .position(BoneName.PELVIS, 0, -0.02, 0) // Slight crouch
     .done<MartialArtsAnimationBuilder>()
-    // Frame 7: Maximum overhead chamber (350ms)
+    // Frame 7: Near-maximum overhead chamber (350ms)
     .at(0.35)
-    .rotate(BoneName.SHOULDER_L, -2.62, 0.35, 0.7) // -150°, 20°, 40° fully overhead
-    .rotate(BoneName.SHOULDER_R, -2.62, -0.35, -0.7) // -150°, -20°, -40°
-    .rotate(BoneName.ELBOW_L, 0, 0, -2.36) // -135° maximum bend
-    .rotate(BoneName.ELBOW_R, 0, 0, 2.36) // 135° maximum bend
+    .rotate(BoneName.SHOULDER_L, -2.35, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
+    .rotate(BoneName.SHOULDER_R, -2.35, -0.35, -0.7) // -135°, -20°, -40°
+    .rotate(BoneName.ELBOW_L, 0, 0, -2.18) // ~-125° strong bend within safe limit
+    .rotate(BoneName.ELBOW_R, 0, 0, 2.18) // ~125° strong bend within safe limit
     .rotate(BoneName.WRIST_L, -0.17, 0, 0) // -10° wrists cocked
     .rotate(BoneName.WRIST_R, -0.17, 0, 0) // -10°
     .rotate(BoneName.SPINE_UPPER, -0.26, 0, 0) // -15° back lean
