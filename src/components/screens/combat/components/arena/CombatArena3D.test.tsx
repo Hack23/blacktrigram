@@ -3,12 +3,19 @@
  */
 
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import CombatArena3D from "./CombatArena3D";
 
 // Mock Three.js and React Three Fiber
 vi.mock("@react-three/fiber", () => ({
   useFrame: vi.fn(),
+  Canvas: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
+
+vi.mock("@react-three/drei", () => ({
+  Environment: () => null,
 }));
 
 vi.mock("three", () => ({

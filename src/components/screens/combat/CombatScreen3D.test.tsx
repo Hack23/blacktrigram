@@ -44,6 +44,7 @@ vi.mock("@react-three/drei", () => ({
     <div data-testid="html-overlay">{children}</div>
   ),
   OrbitControls: () => null,
+  Environment: () => null,
 }));
 
 // Mock @react-three/postprocessing

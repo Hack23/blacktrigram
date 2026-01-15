@@ -5,6 +5,7 @@
  * Includes floor, lighting, and atmospheric effects
  */
 
+import { Environment } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import React, { useRef } from "react";
 import * as THREE from "three";
@@ -50,10 +51,11 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
+          <Environment preset="city" />
+          <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
           <directionalLight
             position={[10, 10, 5]}
-            intensity={1}
+            intensity={0.8}
             color={KOREAN_COLORS.ACCENT_GOLD}
             castShadow
             shadow-mapSize={scale < 1.0 ? [512, 512] : [1024, 1024]}
@@ -88,13 +90,17 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
 
       {/* Arena floor - dojang mat (scale-aware) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry args={[floorWidth, floorDepth]} />
+        <planeGeometry args={[floorWidth * 1.5, floorDepth * 1.5]} />
         <meshPhysicalMaterial
-          color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
-          roughness={0.5}
-          metalness={0.4}
-          clearcoat={0.3}
-          clearcoatRoughness={0.4}
+          color={
+            lighting === "cyberpunk"
+              ? KOREAN_COLORS.UI_BACKGROUND_DARK
+              : KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+          }
+          roughness={lighting === "cyberpunk" ? 0.2 : 0.7}
+          metalness={lighting === "cyberpunk" ? 0.6 : 0.1}
+          clearcoat={lighting === "cyberpunk" ? 0.5 : 0}
+          clearcoatRoughness={0.2}
         />
       </mesh>
 
