@@ -2120,7 +2120,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={renderConfig.dpr}
-        shadows
+        shadows={!isMobile}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
