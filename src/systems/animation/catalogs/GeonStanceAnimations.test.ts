@@ -259,8 +259,9 @@ describe("GEON_HEAVEN_STRIKE", () => {
     expect(shoulderRotation!.x).toBeGreaterThan(0.5); // Greater than ~30°
 
     // Elbow should be nearly straight at full extension
-    // Using 0.02 rad tolerance (~1.1°) to account for floating-point precision
-    // while still catching regressions from the exact (0, 0, 0) implementation
+    // Using 0.02 rad tolerance (~1.1°) as a pragmatic balance between floating-point noise
+    // and regression detection; relaxed from 0.01 rad to avoid flakiness while still
+    // catching meaningful deviations from the original exact (0, 0, 0) implementation
     expect(Math.abs(elbowRotation!.x)).toBeLessThan(0.02); // Within ~1.1° of straight
   });
 
@@ -750,12 +751,12 @@ describe("GEON_ANIMATIONS Map", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("Geon Animations Performance", () => {
-  it("all animation modules should load in <5ms", () => {
-    // NOTE: This tests module load time, not individual animation instantiation.
-    // Animations are module-level constants created at import time, so this
-    // validates that all 11 Geon animations load and initialize efficiently
-    // when the module is first imported. Individual MartialArtsAnimationBuilder
-    // construction time is tested in builder-specific tests.
+  it("all animation structures should be accessible in <5ms", () => {
+    // NOTE: This test measures access time to already-loaded animation structures,
+    // not actual module load time or instantiation time. Animations are module-level
+    // constants created at import time, so this validates efficient access to the
+    // pre-constructed animation data structures. Individual MartialArtsAnimationBuilder
+    // construction performance is tested in builder-specific tests.
     const start = performance.now();
 
     // Measure the time to access and verify all animation structures

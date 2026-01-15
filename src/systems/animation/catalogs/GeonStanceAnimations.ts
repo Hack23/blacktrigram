@@ -1081,7 +1081,7 @@ export const GEON_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   ["geon_forward_advance", GEON_FORWARD_ADVANCE],
   ["geon_diagonal_power_step", GEON_DIAGONAL_POWER_STEP],
   
-  // Combat Techniques (All 7 from GeonTechniques.ts)
+  // Combat Techniques (7 core from GeonTechniques.ts + 1 bonus technique)
   ["geon_heaven_strike", GEON_HEAVEN_STRIKE], // 천둥벽력 (Thunder Strike)
   ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION], // 천권 (Heavenly Fist)
   ["geon_frontal_kick", GEON_FRONTAL_KICK], // 앞차기 (Front Kick)
