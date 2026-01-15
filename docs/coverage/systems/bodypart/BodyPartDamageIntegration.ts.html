@@ -447,7 +447,20 @@
 <a name='L382'></a><a href='#L382'>382</a>
 <a name='L383'></a><a href='#L383'>383</a>
 <a name='L384'></a><a href='#L384'>384</a>
-<a name='L385'></a><a href='#L385'>385</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L385'></a><a href='#L385'>385</a>
+<a name='L386'></a><a href='#L386'>386</a>
+<a name='L387'></a><a href='#L387'>387</a>
+<a name='L388'></a><a href='#L388'>388</a>
+<a name='L389'></a><a href='#L389'>389</a>
+<a name='L390'></a><a href='#L390'>390</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -610,26 +623,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -728,7 +739,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -846,10 +856,18 @@
  */
 &nbsp;
 import { BodyRegion } from "@/types";
-import { PlayerState } from "../player";
-import { VitalPoint } from "../vitalpoint/types";
+import type { VitalPoint } from "../vitalpoint/types";
 import { bodyPartHealthSystem } from "./BodyPartHealthSystem";
-import { BodyPart } from "./types";
+import { BodyPart, BodyPartHealth, BodyPartMaxHealth } from "./types";
+&nbsp;
+/**
+ * Minimal player view needed for body part damage operations.
+ */
+export interface BodyPartDamageTarget {
+  readonly health: number;
+  readonly bodyPartHealth?: BodyPartHealth;
+  readonly bodyPartMaxHealth?: BodyPartMaxHealth;
+}
 &nbsp;
 /**
  * Map vital point to its corresponding body region.
@@ -987,11 +1005,11 @@ export function getBodyRegionFromVitalPoint(
  *
  * @public
  */
-export function applyDamageToBodyParts(
-  player: PlayerState,
+export function applyDamageToBodyParts&lt;T extends BodyPartDamageTarget&gt;(
+  player: T,
   totalDamage: number,
   bodyRegion: BodyRegion
-): PlayerState {
+): T {
   // If body part health not initialized, initialize it
   const bodyPartHealth =
     player.bodyPartHealth ?? bodyPartHealthSystem.createDefaultBodyPartHealth();
@@ -1034,11 +1052,9 @@ export function applyDamageToBodyParts(
  *
  * @public
  */
-export function applyVitalPointDamageToBodyParts(
-  player: PlayerState,
-  totalDamage: number,
-  vitalPoint: VitalPoint
-): PlayerState {
+export function applyVitalPointDamageToBodyParts&lt;
+  T extends BodyPartDamageTarget
+&gt;(player: T, totalDamage: number, vitalPoint: VitalPoint): T {
   const bodyRegion = getBodyRegionFromVitalPoint(vitalPoint);
   return applyDamageToBodyParts(player, totalDamage, bodyRegion);
 }
@@ -1069,7 +1085,7 @@ export function applyVitalPointDamageToBodyParts(
  *
  * @public
  */
-export function getBodyPartCombatEffects(player: PlayerState) {
+export function getBodyPartCombatEffects(player: BodyPartDamageTarget) {
   // If no body part health, return no effects
   if (!player.bodyPartHealth) {
     return {
@@ -1105,7 +1121,7 @@ export function getBodyPartCombatEffects(player: PlayerState) {
  * @public
  */
 export function isPlayerIncapacitatedByBodyDamage(
-  player: PlayerState
+  player: BodyPartDamageTarget
 ): boolean {
   if (!player.bodyPartHealth) {
     return false; // No body part system = use aggregate health only
@@ -1128,10 +1144,9 @@ export function isPlayerIncapacitatedByBodyDamage(
  *
  * @public
  */
-export function initializeBodyPartHealthForPlayer(
-  player: PlayerState,
-  maxHealthPerPart: number = 100
-): PlayerState {
+export function initializeBodyPartHealthForPlayer&lt;
+  T extends BodyPartDamageTarget
+&gt;(player: T, maxHealthPerPart: number = 100): T {
   // Skip if already initialized
   if (player.bodyPartHealth &amp;&amp; player.bodyPartMaxHealth) {
     return player;
@@ -1164,10 +1179,10 @@ export function initializeBodyPartHealthForPlayer(
  *
  * @public
  */
-export function healBodyPartsProportionally(
-  player: PlayerState,
+export function healBodyPartsProportionally&lt;T extends BodyPartDamageTarget&gt;(
+  player: T,
   totalHealAmount: number
-): PlayerState {
+): T {
   if (!player.bodyPartHealth || !player.bodyPartMaxHealth) {
     return player; // No body part system active
   }
@@ -1222,7 +1237,7 @@ export function healBodyPartsProportionally(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.246Z
+                at 2026-01-15T00:30:21.002Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

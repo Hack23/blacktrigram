@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.38% </span>
+                <span class="strong">60.86% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>49/65</span>
+                <span class='fraction'>56/92</span>
             </div>
         
             
@@ -381,12 +381,7 @@
 <a name='L316'></a><a href='#L316'>316</a>
 <a name='L317'></a><a href='#L317'>317</a>
 <a name='L318'></a><a href='#L318'>318</a>
-<a name='L319'></a><a href='#L319'>319</a>
-<a name='L320'></a><a href='#L320'>320</a>
-<a name='L321'></a><a href='#L321'>321</a>
-<a name='L322'></a><a href='#L322'>322</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L319'></a><a href='#L319'>319</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -524,13 +519,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">88x</span>
@@ -625,10 +622,7 @@
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">90x</span>
-<span class="cline-any cline-yes">90x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -721,18 +715,16 @@
 &nbsp;
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  batchUpdateBones,
   getAnimation,
   getAnimationByName,
   getAttackAnimation,
   getDefensiveAnimation,
   getFootworkAnimation,
   getStepAnimation,
-} from "../systems/animation";
-import {
-  batchUpdateBones,
   interpolateKeyframeCached,
   performanceMonitor,
-} from "../systems/animation/AnimationOptimizations";
+} from "../systems/animation";
 import type { TrigramStance } from "../types/common";
 import type { PlayerAnimation } from "../types/player-visual";
 import type {
@@ -845,24 +837,26 @@ export function useSkeletalAnimation(
     // Reset animation time whenever animation changes
     animTimeRef.current = 0;
 &nbsp;
-    let selectedAnim: SkeletalAnimation | undefined;
+    let selectedAnim: SkeletalAnimation | null = null;
     let playbackSpeed = 1.0;
     let shouldClearDiagonalRotation = true;
 &nbsp;
     if (currentAnimation === "attack" &amp;&amp; attackAnimation) {
       // Attack animation - first check stance-specific attacks, then generic
       selectedAnim =
-        getAttackAnimation(attackAnimation) ?? getAnimation(attackAnimation);
+        getAttackAnimation(attackAnimation) ??
+        getAnimation(attackAnimation) ??
+<span class="branch-2 cbranch-no" title="branch not covered" >        null;</span>
       playbackSpeed = 1.0;
     } else if (currentAnimation === "defend" || isBlocking) {
       // Block/defend animation - check stance-specific defensive animations first
       // If attackAnimation contains a defensive animation name, use it
       <span class="missing-if-branch" title="if path not taken" >I</span>if (attackAnimation) {
-<span class="cstat-no" title="statement not covered" >        selectedAnim = getDefensiveAnimation(attackAnimation);</span>
+<span class="cstat-no" title="statement not covered" >        selectedAnim = getDefensiveAnimation(attackAnimation) ?? null;</span>
       }
       // Fall back to generic block animation
       <span class="missing-if-branch" title="else path not taken" >E</span>if (!selectedAnim) {
-        selectedAnim = getAnimation("block");
+        selectedAnim = getAnimation("block") ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       }
       playbackSpeed = 1.0;
     } else if (currentAnimation === "idle") {
@@ -870,42 +864,42 @@ export function useSkeletalAnimation(
       // Otherwise fall back to generic idle breathing animation
       if (stance) {
         const stanceIdleAnim = `stance_${stance}` as PlayerAnimation;
-        selectedAnim = getAnimationByName(stanceIdleAnim);
+        selectedAnim = getAnimationByName(stanceIdleAnim) ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       }
       // Fall back to generic idle if no stance or stance animation not found
       if (!selectedAnim) {
-        selectedAnim = getAnimation("idle");
+        selectedAnim = getAnimation("idle") ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       }
       playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
       // Walking animation - use trigram-specific walk if stance is provided
       <span class="missing-if-branch" title="if path not taken" >I</span>if (stance) {
         const stanceWalkAnim = <span class="cstat-no" title="statement not covered" >`walk_${stance}` as PlayerAnimation;</span>
-<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimationByName(stanceWalkAnim);</span>
+<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimationByName(stanceWalkAnim) ?? null;</span>
       }
       // Fall back to generic walk if no stance or stance animation not found
       <span class="missing-if-branch" title="else path not taken" >E</span>if (!selectedAnim) {
-        selectedAnim = getAnimation("walk");
+        selectedAnim = getAnimation("walk") ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       }
       playbackSpeed = 1.0;
     <span class="missing-if-branch" title="if path not taken" >I</span>} else if (currentAnimation === "run") {
       // Running animation - use trigram-specific run if stance is provided
 <span class="cstat-no" title="statement not covered" >      if (stance) {</span>
         const stanceRunAnim = <span class="cstat-no" title="statement not covered" >`run_${stance}` as PlayerAnimation;</span>
-<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimationByName(stanceRunAnim);</span>
+<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimationByName(stanceRunAnim) ?? null;</span>
       }
       // Fall back to generic run if no stance or stance animation not found
 <span class="cstat-no" title="statement not covered" >      if (!selectedAnim) {</span>
-<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimation("run");</span>
+<span class="cstat-no" title="statement not covered" >        selectedAnim = getAnimation("run") ?? null;</span>
       }
 <span class="cstat-no" title="statement not covered" >      playbackSpeed = 1.0;</span>
     <span class="missing-if-branch" title="if path not taken" >I</span>} else if (currentAnimation?.startsWith("fall_")) {
       // Fall animations - directional falls from BasicAnimations
-<span class="cstat-no" title="statement not covered" >      selectedAnim = getAnimation(currentAnimation);</span>
+<span class="cstat-no" title="statement not covered" >      selectedAnim = getAnimation(currentAnimation) ?? null;</span>
 <span class="cstat-no" title="statement not covered" >      playbackSpeed = 1.0;</span>
     } else if (currentAnimation === "stance_change") {
       // Stance change animation
-      selectedAnim = getAnimation("idle_stance");
+      selectedAnim = getAnimation("idle_stance") ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       playbackSpeed = 1.2; // Slightly faster for responsiveness
     } else if (currentAnimation === "hit") {
       // Hit reaction - stop animation
@@ -917,7 +911,7 @@ export function useSkeletalAnimation(
       return;
     } else if (currentAnimation?.startsWith("step_")) {
       // Tactical step animation
-      selectedAnim = getStepAnimation(currentAnimation);
+      selectedAnim = getStepAnimation(currentAnimation) ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       playbackSpeed = 1.0;
 &nbsp;
       // Handle diagonal step rotation
@@ -928,16 +922,16 @@ export function useSkeletalAnimation(
       }
     } else if (currentAnimation?.startsWith("footwork_")) {
       // Footwork pattern animation
-      selectedAnim = getFootworkAnimation(currentAnimation);
+      selectedAnim = getFootworkAnimation(currentAnimation) ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("stance_")) {
       // Stance-specific idle animation with proper biomechanics
       // Use getAnimationByName which searches ALL_ANIMATIONS (includes STANCE_ANIMATIONS)
-      selectedAnim = getAnimationByName(currentAnimation);
+      selectedAnim = getAnimationByName(currentAnimation) ?? <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
       playbackSpeed = 0.5; // Slow breathing animation for stance idle
     } else <span class="missing-if-branch" title="else path not taken" >E</span>{
       // Idle animation (fallback)
-<span class="cstat-no" title="statement not covered" >      selectedAnim = getAnimation("idle_stance");</span>
+<span class="cstat-no" title="statement not covered" >      selectedAnim = getAnimation("idle_stance") ?? null;</span>
 <span class="cstat-no" title="statement not covered" >      playbackSpeed = 0.5; // Slow breathing animation</span>
     }
 &nbsp;
@@ -946,17 +940,14 @@ export function useSkeletalAnimation(
       setDiagonalRotationY(null);
     }
 &nbsp;
-    // Update animation state
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (selectedAnim) {
-      setAnimState({
-        currentAnimation: selectedAnim,
-        currentTime: 0,
-        isPlaying: true,
-        playbackSpeed,
-        previousKeyframeIndex: 0,
-        nextKeyframeIndex: 1,
-      });
-    }
+    setAnimState({
+      currentAnimation: selectedAnim,
+      currentTime: 0,
+      isPlaying: true,
+      playbackSpeed,
+      previousKeyframeIndex: 0,
+      nextKeyframeIndex: 1,
+    });
   }, [currentAnimation, attackAnimation, isBlocking, stance]);
 &nbsp;
   // Update animation and apply to rig (called at 60fps in useFrame)
@@ -1033,7 +1024,7 @@ export function useSkeletalAnimation(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.542Z
+                at 2026-01-15T00:30:21.321Z
             </div>
         <script src="../prettify.js"></script>
         <script>

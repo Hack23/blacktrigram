@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.27% </span>
+                <span class="strong">68.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>124/179</span>
+                <span class='fraction'>124/180</span>
             </div>
         
             
@@ -566,7 +566,16 @@
 <a name='L501'></a><a href='#L501'>501</a>
 <a name='L502'></a><a href='#L502'>502</a>
 <a name='L503'></a><a href='#L503'>503</a>
-<a name='L504'></a><a href='#L504'>504</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a>
+<a name='L513'></a><a href='#L513'>513</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -785,6 +794,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -955,6 +966,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
@@ -994,6 +1006,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1002,6 +1017,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1072,43 +1090,43 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Custom hook for keyboard controls with visual feedback
  * Manages keyboard input for trigram stance switching and combat actions
- * 
+ *
  * @module hooks/useKeyboardControls
  * @category Input System
  * @korean 키보드 컨트롤 훅
  */
 &nbsp;
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/core/types";
 import { ControlMapper } from "../utils/controlMapping";
-import { FOOTWORK_KOREAN_TERMS } from "../systems/animation/types";
 &nbsp;
 // Korean terminology constants (module-level to avoid recreation on every keystroke)
 const DIAGONAL_KOREAN_TERMS: Record&lt;string, string&gt; = {
-  "step_forward_left": "전좌측보법 (Forward-Left)",
-  "step_forward_right": "전우측보법 (Forward-Right)",
-  "step_back_left": "후좌측보법 (Back-Left)",
-  "step_back_right": "후우측보법 (Back-Right)",
+  step_forward_left: "전좌측보법 (Forward-Left)",
+  step_forward_right: "전우측보법 (Forward-Right)",
+  step_back_left: "후좌측보법 (Back-Left)",
+  step_back_right: "후우측보법 (Back-Right)",
 };
 &nbsp;
 const STEP_KOREAN_TERMS: Record&lt;string, string&gt; = {
-  "step_forward": "전진보법 (Forward Step)",
-  "step_back": "후퇴보법 (Retreat Step)",
-  "step_left": "좌측면보법 (Left Step)",
-  "step_right": "우측면보법 (Right Step)",
+  step_forward: "전진보법 (Forward Step)",
+  step_back: "후퇴보법 (Retreat Step)",
+  step_left: "좌측면보법 (Left Step)",
+  step_right: "우측면보법 (Right Step)",
 };
 &nbsp;
 // Footwork pattern Korean terminology - maps animation states to display names
 // Reuses FOOTWORK_KOREAN_TERMS from types.ts but adds specific animation state labels
 const FOOTWORK_DISPLAY_TERMS: Record&lt;string, string&gt; = {
-  "footwork_circular_left": `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
-  "footwork_circular_right": `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
-  "footwork_pivot_left": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
-  "footwork_pivot_right": `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
-  "footwork_slide_forward": `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
-  "footwork_slide_back": `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
-  "footwork_slide_left": `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
-  "footwork_slide_right": `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
-  "footwork_shuffle": `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
+  footwork_circular_left: `${FOOTWORK_KOREAN_TERMS.circular.korean} 좌 (Circular Left)`,
+  footwork_circular_right: `${FOOTWORK_KOREAN_TERMS.circular.korean} 우 (Circular Right)`,
+  footwork_pivot_left: `${FOOTWORK_KOREAN_TERMS.pivot.korean} 좌 (Pivot Left)`,
+  footwork_pivot_right: `${FOOTWORK_KOREAN_TERMS.pivot.korean} 우 (Pivot Right)`,
+  footwork_slide_forward: `${FOOTWORK_KOREAN_TERMS.slide.korean} 전 (Slide Forward)`,
+  footwork_slide_back: `${FOOTWORK_KOREAN_TERMS.slide.korean} 후 (Slide Back)`,
+  footwork_slide_left: `${FOOTWORK_KOREAN_TERMS.slide.korean} 좌 (Slide Left)`,
+  footwork_slide_right: `${FOOTWORK_KOREAN_TERMS.slide.korean} 우 (Slide Right)`,
+  footwork_shuffle: `${FOOTWORK_KOREAN_TERMS.shuffle.korean} (Shuffle)`,
 };
 &nbsp;
 // Step direction mapping (all move_* actions covered explicitly)
@@ -1172,7 +1190,7 @@ const QUEUE_RETENTION_TIME = 2000;
 &nbsp;
 /**
  * Custom hook for handling keyboard controls with visual feedback
- * 
+ *
  * Features:
  * - Trigram stance switching (1-8 keys or custom bindings)
  * - Combat action handling (attack, block, movement)
@@ -1180,7 +1198,7 @@ const QUEUE_RETENTION_TIME = 2000;
  * - Keyboard hints toggle (F1)
  * - Invalid input prevention
  * - Audio feedback integration
- * 
+ *
  * @example
  * ```typescript
  * const { queuedInputs, showHints, toggleHints } = useKeyboardControls({
@@ -1191,7 +1209,7 @@ const QUEUE_RETENTION_TIME = 2000;
  *   playSFX: audio.playSFX,
  * });
  * ```
- * 
+ *
  * @public
  * @korean 키보드컨트롤사용
  */
@@ -1208,7 +1226,7 @@ export function useKeyboardControls({
   const [showHints, setShowHints] = useState(false);
   const controlMapperRef = useRef&lt;ControlMapper&gt;(new ControlMapper());
   const lastStanceChangeRef = useRef&lt;number&gt;(0);
-  
+&nbsp;
   // Track currently pressed keys for diagonal step detection
   const pressedKeysRef = useRef&lt;Set&lt;string&gt;&gt;(new Set());
 &nbsp;
@@ -1228,17 +1246,17 @@ export function useKeyboardControls({
       return newState;
     });
   }, [onToggleHints, playSFX]);
-  
+&nbsp;
   /**
    * Detect diagonal step direction from pressed keys
    * Returns step action for diagonal or null if not diagonal
-   * 
+   *
    * @korean 대각선발걸음감지
    */
   const getDiagonalStepAction = useCallback(<span class="fstat-no" title="function not covered" >(): string | null =&gt; {</span>
     const keys = <span class="cstat-no" title="statement not covered" >pressedKeysRef.current;</span>
     const mapper = <span class="cstat-no" title="statement not covered" >controlMapperRef.current;</span>
-    
+&nbsp;
     // Check for forward diagonals
 <span class="cstat-no" title="statement not covered" >    if (keys.has(mapper.getBindings().movement.up.toLowerCase())) {</span>
 <span class="cstat-no" title="statement not covered" >      if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {</span>
@@ -1248,7 +1266,7 @@ export function useKeyboardControls({
 <span class="cstat-no" title="statement not covered" >        return "step_forward_right"; // 전우측보법</span>
       }
     }
-    
+&nbsp;
     // Check for backward diagonals
 <span class="cstat-no" title="statement not covered" >    if (keys.has(mapper.getBindings().movement.down.toLowerCase())) {</span>
 <span class="cstat-no" title="statement not covered" >      if (keys.has(mapper.getBindings().movement.left.toLowerCase())) {</span>
@@ -1258,7 +1276,7 @@ export function useKeyboardControls({
 <span class="cstat-no" title="statement not covered" >        return "step_back_right"; // 후우측보법</span>
       }
     }
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return null;</span>
   }, []);
 &nbsp;
@@ -1287,7 +1305,9 @@ export function useKeyboardControls({
       const now = <span class="cstat-no" title="statement not covered" >Date.now();</span>
 <span class="cstat-no" title="statement not covered" >      setQueuedInputs(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (prev.length === 0) <span class="cstat-no" title="statement not covered" >return prev;</span></span>
-<span class="cstat-no" title="statement not covered" >        return prev.filter(<span class="fstat-no" title="function not covered" >(i</span>nput) =&gt; <span class="cstat-no" title="statement not covered" >now - input.timestamp &lt; QUEUE_RETENTION_TIME)</span>;</span>
+<span class="cstat-no" title="statement not covered" >        return prev.filter(</span>
+<span class="fstat-no" title="function not covered" >          (i</span>nput) =&gt; <span class="cstat-no" title="statement not covered" >now - input.timestamp &lt; QUEUE_RETENTION_TIME</span>
+        );
       });
     }, 500);
 &nbsp;
@@ -1305,7 +1325,7 @@ export function useKeyboardControls({
 &nbsp;
     const handleKeyDown = (e: KeyboardEvent) =&gt; {
       const mapper = controlMapperRef.current;
-      
+&nbsp;
       // Track pressed keys for diagonal detection
       pressedKeysRef.current.add(e.key.toLowerCase());
 &nbsp;
@@ -1326,7 +1346,7 @@ export function useKeyboardControls({
       // Recovery input detection (기상 입력 감지)
       // When player is in ground state, any button triggers recovery options
       const isGrounded = currentAnimationState?.startsWith("ground_");
-      
+&nbsp;
       <span class="missing-if-branch" title="if path not taken" >I</span>if (isGrounded) {
         // Space: Quick/default recovery
 <span class="cstat-no" title="statement not covered" >        if (e.key === " ") {</span>
@@ -1336,7 +1356,7 @@ export function useKeyboardControls({
 <span class="cstat-no" title="statement not covered" >          if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("stance_change");</span></span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-        
+&nbsp;
         // R or Enter: Roll recovery (회전기상) - fast but costs stamina
 <span class="cstat-no" title="statement not covered" >        if (e.key.toLowerCase() === "r" || e.key === "Enter") {</span>
 <span class="cstat-no" title="statement not covered" >          e.preventDefault();</span>
@@ -1345,7 +1365,7 @@ export function useKeyboardControls({
 <span class="cstat-no" title="statement not covered" >          if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("stance_change");</span></span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-        
+&nbsp;
         // Shift: Defensive getup (방어기상) - slow but protected
 <span class="cstat-no" title="statement not covered" >        if (e.shiftKey) {</span>
 <span class="cstat-no" title="statement not covered" >          e.preventDefault();</span>
@@ -1354,7 +1374,7 @@ export function useKeyboardControls({
 <span class="cstat-no" title="statement not covered" >          if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("stance_change");</span></span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-        
+&nbsp;
         // If grounded, don't process other inputs (can't attack/move while down)
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
@@ -1420,7 +1440,7 @@ export function useKeyboardControls({
             <span class="missing-if-branch" title="if path not taken" >I</span>if (e.altKey) {
               // Alt modifier for slide left/right footwork patterns
               let slideFootwork: string | null = <span class="cstat-no" title="statement not covered" >null;</span>
-              
+&nbsp;
 <span class="cstat-no" title="statement not covered" >              if (action === "move_left") {</span>
                 // Alt+A: Slide left (미끄럼보 좌)
 <span class="cstat-no" title="statement not covered" >                slideFootwork = "footwork_slide_left";</span>
@@ -1428,7 +1448,7 @@ export function useKeyboardControls({
                 // Alt+D: Slide right (미끄럼보 우)
 <span class="cstat-no" title="statement not covered" >                slideFootwork = "footwork_slide_right";</span>
               }
-              
+&nbsp;
 <span class="cstat-no" title="statement not covered" >              if (slideFootwork) {</span>
 <span class="cstat-no" title="statement not covered" >                onAction(slideFootwork);</span>
 <span class="cstat-no" title="statement not covered" >                addToQueue(</span>
@@ -1440,7 +1460,7 @@ export function useKeyboardControls({
             } else if (e.shiftKey &amp;&amp; e.ctrlKey) {
               // Shift+Ctrl modifier for advanced footwork patterns
               let advancedFootwork: string | null = null;
-              
+&nbsp;
               if (action === "move_left") {
                 // Shift+Ctrl+A: Pivot left (축족회전 좌)
                 advancedFootwork = "footwork_pivot_left";
@@ -1451,11 +1471,12 @@ export function useKeyboardControls({
                 // Shift+Ctrl+W or Shift+Ctrl+S: Shuffle step (섞음보)
                 advancedFootwork = "footwork_shuffle";
               }
-              
+&nbsp;
               <span class="missing-if-branch" title="else path not taken" >E</span>if (advancedFootwork) {
                 onAction(advancedFootwork);
                 addToQueue(
-                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ?? <span class="branch-1 cbranch-no" title="branch not covered" >"Advanced Footwork",</span>
+                  FOOTWORK_DISPLAY_TERMS[advancedFootwork] ??
+<span class="branch-1 cbranch-no" title="branch not covered" >                    "Advanced Footwork",</span>
                   `Shift+Ctrl+${e.key}`
                 );
                 <span class="missing-if-branch" title="if path not taken" >I</span>if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("footstep");</span>
@@ -1463,7 +1484,7 @@ export function useKeyboardControls({
             } else if (e.ctrlKey) {
               // Footwork patterns with Ctrl+WASD
               let footworkAction: string | null = null;
-              
+&nbsp;
               if (action === "move_left") {
                 // Ctrl+A: Circular step left (원형보)
                 footworkAction = "footwork_circular_left";
@@ -1477,7 +1498,7 @@ export function useKeyboardControls({
                 // Ctrl+S: Slide back (미끄럼보)
                 footworkAction = "footwork_slide_back";
               }
-              
+&nbsp;
               <span class="missing-if-branch" title="else path not taken" >E</span>if (footworkAction) {
                 onAction(footworkAction);
                 addToQueue(
@@ -1490,22 +1511,28 @@ export function useKeyboardControls({
               // Check if Shift is held for tactical step instead of walk
               // Check for diagonal step first
               const diagonalStep = <span class="cstat-no" title="statement not covered" >getDiagonalStepAction();</span>
-              
+&nbsp;
 <span class="cstat-no" title="statement not covered" >              if (diagonalStep) {</span>
                 // Diagonal tactical step
 <span class="cstat-no" title="statement not covered" >                onAction(diagonalStep);</span>
-                
-<span class="cstat-no" title="statement not covered" >                addToQueue(DIAGONAL_KOREAN_TERMS[diagonalStep] ?? "Diagonal Step", `Shift+${e.key}`);</span>
-                
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                addToQueue(</span>
+                  DIAGONAL_KOREAN_TERMS[diagonalStep] ?? "Diagonal Step",
+                  `Shift+${e.key}`
+                );
+&nbsp;
 <span class="cstat-no" title="statement not covered" >                if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("footstep");</span></span>
               } else {
                 // Cardinal direction tactical step
                 // Map move_up/move_down to step_forward/step_back to match AnimationState
                 const stepDirection = <span class="cstat-no" title="statement not covered" >STEP_DIRECTION_MAP[action];</span>
 <span class="cstat-no" title="statement not covered" >                onAction(stepDirection);</span>
-                
-<span class="cstat-no" title="statement not covered" >                addToQueue(STEP_KOREAN_TERMS[stepDirection] ?? "Step", `Shift+${e.key}`);</span>
-                
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                addToQueue(</span>
+                  STEP_KOREAN_TERMS[stepDirection] ?? "Step",
+                  `Shift+${e.key}`
+                );
+&nbsp;
 <span class="cstat-no" title="statement not covered" >                if (playSFX) <span class="cstat-no" title="statement not covered" >playSFX("footstep");</span></span>
               }
             } else {
@@ -1538,7 +1565,7 @@ export function useKeyboardControls({
         }
       }
     };
-    
+&nbsp;
     const handleKeyUp = <span class="fstat-no" title="function not covered" >(e</span>: KeyboardEvent) =&gt; {
       // Remove key from pressed keys set
 <span class="cstat-no" title="statement not covered" >      pressedKeysRef.current.delete(e.key.toLowerCase());</span>
@@ -1546,7 +1573,7 @@ export function useKeyboardControls({
 &nbsp;
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    
+&nbsp;
     return () =&gt; {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
@@ -1579,7 +1606,7 @@ export function useKeyboardControls({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.246Z
+                at 2026-01-15T00:30:21.002Z
             </div>
         <script src="../prettify.js"></script>
         <script>

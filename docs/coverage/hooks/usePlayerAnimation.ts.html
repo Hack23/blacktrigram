@@ -374,7 +374,35 @@
 <a name='L309'></a><a href='#L309'>309</a>
 <a name='L310'></a><a href='#L310'>310</a>
 <a name='L311'></a><a href='#L311'>311</a>
-<a name='L312'></a><a href='#L312'>312</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a>
+<a name='L334'></a><a href='#L334'>334</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -605,6 +633,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">130x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">130x</span>
 <span class="cline-any cline-yes">130x</span>
 <span class="cline-any cline-yes">130x</span>
@@ -651,6 +682,9 @@
 <span class="cline-any cline-yes">344x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">68x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">68x</span>
 <span class="cline-any cline-yes">68x</span>
 <span class="cline-any cline-yes">68x</span>
@@ -685,12 +719,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * usePlayerAnimation - React hook for player animation state
- * 
+ *
  * Provides a React interface to the PlayerAnimationStateMachine
  * with automatic cleanup and event handling.
- * 
+ *
  * @module hooks/usePlayerAnimation
  * @category Hooks
  * @korean 플레이어애니메이션훅
@@ -703,39 +747,42 @@ import {
   DEFAULT_ANIMATION_CONFIGS,
   PlayerAnimationStateMachine,
 } from "../systems/animation";
-import type { AnimationConfig, AnimationUpdateResult } from "../systems/animation/types";
+import type {
+  AnimationConfig,
+  AnimationUpdateResult,
+} from "../systems/animation/core/types";
 import type { TrigramStance } from "../types/common";
 &nbsp;
 /**
  * Options for usePlayerAnimation hook
- * 
+ *
  * @korean 플레이어애니메이션훅옵션
  */
 export interface UsePlayerAnimationOptions {
   /**
    * Custom animation configurations
    * If not provided, uses DEFAULT_ANIMATION_CONFIGS
-   * 
+   *
    * @korean 커스텀애니메이션설정
    */
   readonly customConfigs?: Map&lt;AnimationState, AnimationConfig&gt;;
 &nbsp;
   /**
    * Animation event callbacks
-   * 
+   *
    * **IMPORTANT**: The events object should be stable (memoized) to prevent
    * unnecessary re-initialization of the animation system. Changes to event
    * callbacks after the hook is initialized will NOT be reflected in the
    * animation system. Use `useMemo` or define events outside the component
    * to ensure stability.
-   * 
+   *
    * @korean 이벤트콜백
    */
   readonly events?: AnimationEvents;
 &nbsp;
   /**
    * Initial animation state (defaults to "idle")
-   * 
+   *
    * @korean 초기상태
    */
   readonly initialState?: AnimationState;
@@ -743,92 +790,95 @@ export interface UsePlayerAnimationOptions {
 &nbsp;
 /**
  * Return type for usePlayerAnimation hook
- * 
+ *
  * @korean 플레이어애니메이션훅반환타입
  */
 export interface UsePlayerAnimationReturn {
   /**
    * Current animation state
-   * 
+   *
    * @korean 현재상태
    */
   readonly currentState: AnimationState;
 &nbsp;
   /**
    * Current frame index
-   * 
+   *
    * @korean 현재프레임
    */
   readonly currentFrame: number;
 &nbsp;
   /**
    * Update animation state (call in useFrame)
-   * 
+   *
    * @param deltaTime - Time elapsed since last update in seconds
    * @returns Animation update result
-   * 
+   *
    * @korean 업데이트
    */
   readonly update: (deltaTime: number) =&gt; AnimationUpdateResult;
 &nbsp;
   /**
    * Transition to a new animation state
-   * 
+   *
    * @param newState - Target animation state
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 상태전환
    */
   readonly transitionTo: (newState: AnimationState) =&gt; boolean;
 &nbsp;
   /**
    * Transition to stance-specific guard animation
-   * 
+   *
    * @param stance - Trigram stance
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 자세가드전환
    */
   readonly transitionToStanceGuard: (stance: TrigramStance) =&gt; boolean;
-  
+&nbsp;
   /**
    * Transition to stance_change animation with specific transition data
-   * 
+   *
    * **Korean**: 자세 전환 애니메이션 시작
-   * 
+   *
    * Initiates a stance change animation with the specific transition data
    * from the 64-transition matrix. This provides stance-specific keyframes
    * and blend weights for smooth interpolation.
-   * 
+   *
    * @param fromStance - Source trigram stance
    * @param toStance - Target trigram stance
    * @returns Whether transition was successful
-   * 
+   *
    * @korean 자세전환애니메이션시작
    */
-  readonly transitionToStanceChange: (fromStance: TrigramStance, toStance: TrigramStance) =&gt; boolean;
-  
+  readonly transitionToStanceChange: (
+    fromStance: TrigramStance,
+    toStance: TrigramStance
+  ) =&gt; boolean;
+&nbsp;
   /**
    * Check if currently in a stance guard animation
-   * 
+   *
    * @returns True if in any stance guard state
-   * 
+   *
    * @korean 자세가드확인
    */
   readonly isInStanceGuard: () =&gt; boolean;
-  
+&nbsp;
   /**
    * Get current guard stance (if in guard animation)
-   * 
+   *
    * @returns Trigram stance or null
-   * 
+   *
    * @korean 현재가드자세
    */
   readonly getCurrentGuardStance: () =&gt; TrigramStance | null;
 &nbsp;
   /**
    * Reset animation to idle state
-   * 
+   *
    * @korean 초기화
    */
   readonly reset: () =&gt; void;
@@ -836,14 +886,14 @@ export interface UsePlayerAnimationReturn {
 &nbsp;
 /**
  * React hook for player animation state management
- * 
+ *
  * Provides frame-accurate animation control with priority system
  * and event callbacks. Integrates seamlessly with useFrame for
  * 60fps updates.
- * 
+ *
  * @param options - Animation options
  * @returns Animation control interface
- * 
+ *
  * @example
  * ```typescript
  * // Basic usage
@@ -859,23 +909,23 @@ export interface UsePlayerAnimationReturn {
  *     }
  *   }
  * });
- * 
+ *
  * // In useFrame callback
  * useFrame((state, delta) =&gt; {
  *   const result = update(delta);
  *   // Update visuals based on result.state and result.frame
  * });
- * 
+ *
  * // Trigger animations
  * const handleAttackInput = () =&gt; {
  *   transitionTo("attack");
  * };
- * 
+ *
  * const handleMovement = (isMoving: boolean) =&gt; {
  *   transitionTo(isMoving ? "walk" : "idle");
  * };
  * ```
- * 
+ *
  * @korean 플레이어애니메이션훅
  */
 export function usePlayerAnimation(
@@ -913,14 +963,17 @@ export function usePlayerAnimation(
       const result = stateMachine.update(deltaTime);
       const currentState = stateMachine.getCurrentState();
       const currentFrame = stateMachine.getCurrentFrame();
-      
+&nbsp;
       // Only trigger re-render if state or frame changed
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (currentState !== prevStateRef.current || currentFrame !== prevFrameRef.current) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (
+        currentState !== prevStateRef.current ||
+        currentFrame !== prevFrameRef.current
+      ) {
         prevStateRef.current = currentState;
         prevFrameRef.current = currentFrame;
         forceUpdate((n) =&gt; n + 1);
       }
-      
+&nbsp;
       return result;
     },
     [stateMachine]
@@ -945,7 +998,7 @@ export function usePlayerAnimation(
     prevFrameRef.current = stateMachine.getCurrentFrame();
     forceUpdate((n) =&gt; n + 1);
   }, [stateMachine]);
-  
+&nbsp;
   const transitionToStanceGuard = useCallback(
     (stance: TrigramStance) =&gt; {
       const success = stateMachine.transitionToStanceGuard(stance);
@@ -958,10 +1011,13 @@ export function usePlayerAnimation(
     },
     [stateMachine]
   );
-  
+&nbsp;
   const transitionToStanceChange = useCallback(
     (fromStance: TrigramStance, toStance: TrigramStance) =&gt; {
-      const success = stateMachine.transitionToStanceChange(fromStance, toStance);
+      const success = stateMachine.transitionToStanceChange(
+        fromStance,
+        toStance
+      );
       <span class="missing-if-branch" title="else path not taken" >E</span>if (success) {
         prevStateRef.current = stateMachine.getCurrentState();
         prevFrameRef.current = stateMachine.getCurrentFrame();
@@ -971,11 +1027,11 @@ export function usePlayerAnimation(
     },
     [stateMachine]
   );
-  
+&nbsp;
   const isInStanceGuard = useCallback(() =&gt; {
     return stateMachine.isInStanceGuard();
   }, [stateMachine]);
-  
+&nbsp;
   const getCurrentGuardStance = useCallback(() =&gt; {
     return stateMachine.getCurrentGuardStance();
   }, [stateMachine]);
@@ -993,7 +1049,17 @@ export function usePlayerAnimation(
       getCurrentGuardStance,
       reset,
     }),
-    [prevStateRef.current, prevFrameRef.current, update, transitionTo, transitionToStanceGuard, transitionToStanceChange, isInStanceGuard, getCurrentGuardStance, reset]
+    [
+      prevStateRef.current,
+      prevFrameRef.current,
+      update,
+      transitionTo,
+      transitionToStanceGuard,
+      transitionToStanceChange,
+      isInStanceGuard,
+      getCurrentGuardStance,
+      reset,
+    ]
   );
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -1003,7 +1069,7 @@ export function usePlayerAnimation(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.246Z
+                at 2026-01-15T00:30:21.002Z
             </div>
         <script src="../prettify.js"></script>
         <script>

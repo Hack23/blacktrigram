@@ -361,10 +361,7 @@
 <a name='L296'></a><a href='#L296'>296</a>
 <a name='L297'></a><a href='#L297'>297</a>
 <a name='L298'></a><a href='#L298'>298</a>
-<a name='L299'></a><a href='#L299'>299</a>
-<a name='L300'></a><a href='#L300'>300</a>
-<a name='L301'></a><a href='#L301'>301</a>
-<a name='L302'></a><a href='#L302'>302</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L299'></a><a href='#L299'>299</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -593,9 +590,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -667,23 +661,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { TrigramStance } from "../../types";
 import { TrigramStance as TrigramStanceEnum } from "../../types/common";
-import { PlayerState } from "../player";
-import { TrigramTransitionCost, TrigramTransitionRule } from "./types";
-import { 
-  calculateStanceDistance, 
+import {
+  calculateStanceDistance,
   determineTransitionType,
   getStanceTransition,
-  type StanceTransitionType 
-} from "../animation/AnimationTransitions";
+  type StanceTransitionType,
+} from "../animation/core/AnimationTransitions";
+import { PlayerState } from "../player";
+import { TrigramTransitionCost, TrigramTransitionRule } from "./types";
 &nbsp;
 /**
  * Calculator for trigram stance transition costs and validation
- * 
+ *
  * **Korean**: 자세 전환 계산기
- * 
+ *
  * Calculates costs, paths, and validation for transitions between trigram stances.
  * Integrates with the animation system's stance transition matrix.
- * 
+ *
  * @category Trigram System
  * @korean 자세전환계산기
  */
@@ -720,16 +714,16 @@ export class TransitionCalculator {
 &nbsp;
   /**
    * Calculate the cost of transitioning between stances
-   * 
+   *
    * **Korean**: 자세 전환 비용 계산
-   * 
+   *
    * Calculates ki, stamina, and time costs based on stance distance.
    * Uses animation system's transition configurations for accurate timing.
-   * 
+   *
    * @param from - Source stance
    * @param to - Target stance
    * @returns Transition cost breakdown
-   * 
+   *
    * @korean 자세전환비용계산
    */
   static calculateCost(
@@ -812,16 +806,16 @@ export class TransitionCalculator {
 &nbsp;
   /**
    * Get adjacency modifier for stance transitions
-   * 
+   *
    * **Korean**: 인접도 수정자
-   * 
+   *
    * Uses the animation system's distance calculation for consistency.
    * Adjacent stances (distance 1) get 0.7x cost, others get 1.0x cost.
-   * 
+   *
    * @param from - Source stance
    * @param to - Target stance
    * @returns Cost modifier (0.7 for adjacent, 1.0 for distant)
-   * 
+   *
    * @korean 인접도수정자
    */
   private static getAdjacencyModifier(
@@ -829,40 +823,40 @@ export class TransitionCalculator {
     to: TrigramStance
   ): number {
     const <span class="cstat-no" title="statement not covered" >distance = calculateStanceDistance(from, to);</span>
-    
+&nbsp;
     // Adjacent stances (distance 1) have reduced cost
 <span class="cstat-no" title="statement not covered" >    if (distance === 1) <span class="cstat-no" title="statement not covered" >return 0.7;</span></span>
-    
+&nbsp;
     // Near-adjacent (distance 2) have slightly reduced cost
 <span class="cstat-no" title="statement not covered" >    if (distance === 2) <span class="cstat-no" title="statement not covered" >return 0.85;</span></span>
-    
+&nbsp;
     // Distant/opposite stances have full cost
 <span class="cstat-no" title="statement not covered" >    return 1.0;</span>
   }
 &nbsp;
   /**
    * Get the shortest transition path between stances
-   * 
+   *
    * **Korean**: 최단 전환 경로
-   * 
+   *
    * For direct transitions, returns [from, to].
    * For indirect transitions, may include intermediate stances for smoother animation.
-   * 
+   *
    * @param from - Source stance
    * @param to - Target stance
    * @returns Array of stances in transition path
-   * 
+   *
    * @example
    * ```typescript
    * // Adjacent stances - direct path
    * getTransitionPath(TrigramStance.GEON, TrigramStance.TAE);
    * // Returns: ["geon", "tae"]
-   * 
+   *
    * // Opposite stances - may use intermediate
    * getTransitionPath(TrigramStance.GEON, TrigramStance.GON);
    * // Returns: ["geon", "gon"] (direct is shortest even though opposite)
    * ```
-   * 
+   *
    * @korean 최단전환경로
    */
   static getTransitionPath(
@@ -870,23 +864,23 @@ export class TransitionCalculator {
     to: TrigramStance
   ): TrigramStance[] {
 <span class="cstat-no" title="statement not covered" >    if (from === to) <span class="cstat-no" title="statement not covered" >return [from];</span></span>
-    
+&nbsp;
     // For all transitions, direct path is used
     // The animation system handles the complexity with keyframes
 <span class="cstat-no" title="statement not covered" >    return [from, to];</span>
   }
-  
+&nbsp;
   /**
    * Get transition type for a stance change
-   * 
+   *
    * **Korean**: 전환 유형 가져오기
-   * 
+   *
    * Determines if transition is direct (adjacent), indirect (opposite), or self.
-   * 
+   *
    * @param from - Source stance
    * @param to - Target stance
    * @returns Transition type classification
-   * 
+   *
    * @korean 전환유형가져오기
    */
   static getTransitionType(
@@ -895,24 +889,21 @@ export class TransitionCalculator {
   ): StanceTransitionType {
 <span class="cstat-no" title="statement not covered" >    return determineTransitionType(from, to);</span>
   }
-  
+&nbsp;
   /**
    * Calculate stance distance around the wheel
-   * 
+   *
    * **Korean**: 자세 거리 계산
-   * 
+   *
    * Returns the number of steps between stances on the octagonal wheel.
-   * 
+   *
    * @param from - Source stance
    * @param to - Target stance
    * @returns Distance (0-4)
-   * 
+   *
    * @korean 자세거리계산
    */
-  static getStanceDistance(
-    from: TrigramStance,
-    to: TrigramStance
-  ): number {
+  static getStanceDistance(from: TrigramStance, to: TrigramStance): number {
 <span class="cstat-no" title="statement not covered" >    return calculateStanceDistance(from, to);</span>
   }
 &nbsp;
@@ -973,7 +964,7 @@ export class TransitionCalculator {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.542Z
+                at 2026-01-15T00:30:21.321Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

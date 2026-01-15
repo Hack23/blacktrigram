@@ -377,8 +377,8 @@
 <a name='L312'></a><a href='#L312'>312</a>
 <a name='L313'></a><a href='#L313'>313</a>
 <a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -482,6 +482,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -543,6 +544,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -701,15 +703,14 @@
  */
 &nbsp;
 import { useCallback, useRef } from "react";
-import { AnimationState } from "../../../../systems/animation/types";
-import { AnimationType } from "../../../../systems/animation/MartialArtsAnimationBuilder";
+import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
+import { AnimationState, AnimationType } from "../../../../systems/animation";
+import { physicalReachCalculator } from "../../../../systems/physics";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { Position, TrigramStance } from "../../../../types/common";
-import { TrainingActions, TrainingScreenState } from "./useTrainingState";
-import { physicalReachCalculator } from "../../../../systems/physics";
-import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
-import { calculateDistance3D } from "../../../../utils/math";
 import { METERS_TO_TRAINING_UNITS } from "../../../../types/physicsConstants";
+import { calculateDistance3D } from "../../../../utils/math";
+import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 &nbsp;
 export interface UseTrainingActionsConfig {
   readonly state: TrainingScreenState;
@@ -763,7 +764,7 @@ function <span class="fstat-no" title="function not covered" >calculateHitAccura
   animationTime?: number
 ): number {
   const <span class="cstat-no" title="statement not covered" >distance = calculateDistance3D(playerPos, dummyPos);</span>
-  
+&nbsp;
   // If animation info available, use physics-based reach calculation
 <span class="cstat-no" title="statement not covered" >  if (animationType !== undefined &amp;&amp; animationTime !== undefined) {</span>
     const <span class="cstat-no" title="statement not covered" >physicalAttributes = getArchetypePhysicalAttributes(archetype);</span>
@@ -773,16 +774,16 @@ function <span class="fstat-no" title="function not covered" >calculateHitAccura
       animationTime,
       stance
     );
-    
+&nbsp;
     const effectiveReachMeters = <span class="cstat-no" title="statement not covered" >reachResult.effectiveReach;</span>
-    
+&nbsp;
     // Convert reach from meters to training scene units.
     // Training scenes are authored in real-world meters, so we intentionally
     // use a 1:1 conversion here. Combat AI, by contrast, applies a 100x
     // multiplier for its own coordinate system; do not mirror that scaling
     // in training without updating this constant and its documentation.
     const reachInUnits = <span class="cstat-no" title="statement not covered" >effectiveReachMeters * METERS_TO_TRAINING_UNITS;</span>
-    
+&nbsp;
     // Accuracy based on how close actual distance is to effective reach
 <span class="cstat-no" title="statement not covered" >    if (distance &lt;= reachInUnits) {</span>
       // Within reach: accuracy based on how centered the hit is
@@ -793,9 +794,10 @@ function <span class="fstat-no" title="function not covered" >calculateHitAccura
 <span class="cstat-no" title="statement not covered" >      return Math.max(0, 0.7 - overreach * 0.5);</span>
     }
   }
-  
+&nbsp;
   // Fallback: use simple distance calculation (legacy behavior)
-  const <span class="cstat-no" title="statement not covered" >squaredDistance = (playerPos[0] - dummyPos[0]) ** 2 + (playerPos[2] - dummyPos[2]) ** 2;</span>
+  const <span class="cstat-no" title="statement not covered" >squaredDistance =</span>
+    (playerPos[0] - dummyPos[0]) ** 2 + (playerPos[2] - dummyPos[2]) ** 2;
 <span class="cstat-no" title="statement not covered" >  return Math.max(0, 1 - squaredDistance / 64);</span>
 }
 &nbsp;
@@ -857,12 +859,13 @@ export function useTrainingActions(
       // Get animation context from pending attack if available
       const animationType = <span class="cstat-no" title="statement not covered" >pendingAttackRef.current?.animationType;</span>
       const startTime = <span class="cstat-no" title="statement not covered" >pendingAttackRef.current?.startTime;</span>
-      const currentTime = <span class="cstat-no" title="statement not covered" >startTime !== undefined </span>
-        ? Math.max(0, (performance.now() / 1000) - startTime)
-        : undefined;
+      const currentTime =
+<span class="cstat-no" title="statement not covered" >        startTime !== undefined</span>
+          ? Math.max(0, performance.now() / 1000 - startTime)
+          : undefined;
 &nbsp;
       const accuracy = <span class="cstat-no" title="statement not covered" >calculateHitAccuracy(</span>
-        player3DPosition, 
+        player3DPosition,
         dummyPosition,
         playerArchetype,
         playerStance,
@@ -931,14 +934,14 @@ export function useTrainingActions(
       }
     },
     [
-      state.isTraining, 
-      player3DPosition, 
-      dummyPosition, 
+      state.isTraining,
+      player3DPosition,
+      dummyPosition,
       playerArchetype,
       playerStance,
-      actions, 
-      audio, 
-      pendingAttackRef
+      actions,
+      audio,
+      pendingAttackRef,
     ]
   );
 &nbsp;
@@ -961,23 +964,23 @@ export function useTrainingActions(
     // Calculate attack accuracy and store it with animation timing
     const animationType = <span class="cstat-no" title="statement not covered" >AnimationType.JAB; // Default animation type for training</span>
     const startTime = <span class="cstat-no" title="statement not covered" >performance.now() / 1000; // Current time in seconds</span>
-    
+&nbsp;
     const accuracy = <span class="cstat-no" title="statement not covered" >calculateHitAccuracy(</span>
-      player3DPosition, 
+      player3DPosition,
       dummyPosition,
       playerArchetype,
       playerStance,
       animationType,
       0 // At attack initiation, time is 0
     );
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    pendingAttackRef.current = {</span>
       accuracy,
       vitalPoint: state.selectedVitalPoint ?? "generic",
       animationType,
       startTime,
     };
-    
+&nbsp;
     // Trigger attack animation - this will fire onFrame event at frame 6
 <span class="cstat-no" title="statement not covered" >    playerAnimation.transitionTo(AnimationState.ATTACK);</span>
 &nbsp;
@@ -1012,7 +1015,7 @@ export default useTrainingActions;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-14T11:12:03.542Z
+                at 2026-01-15T00:30:21.321Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
