@@ -146,15 +146,11 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
             textAlign: "center",
             marginTop: `${SPACING.XS}px`,
             fontFamily: FONT_FAMILY.KOREAN,
+            lineHeight: "1.4",
           }}
         >
-          {formatBilingualText(
-            "모드 변경시 자동 재시작",
-            "Auto-restarts on mode change",
-            "pipe"
-          ).split(" | ").map((line, i) => (
-            <div key={i}>{line}</div>
-          ))}
+          <div key="korean">모드 변경시 자동 재시작</div>
+          <div key="english">Auto-restarts on mode change</div>
         </div>
       )}
     </div>

@@ -228,7 +228,7 @@ const StatRow: React.FC<{
   korean: string;
   english: string;
   value: string;
-  color: number; // Hex color from KOREAN_COLORS
+  color: number; // Numeric hex color from KOREAN_COLORS (e.g., 0x00ffff)
   isMobile: boolean;
 }> = ({ korean, english, value, color, isMobile }) => {
   const labelFontSize = isMobile ? 11 : 12;

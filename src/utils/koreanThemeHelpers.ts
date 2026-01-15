@@ -215,7 +215,10 @@ export function getKoreanButtonStyles(
  * Returns SPACING constant value for consistent spacing across components.
  * Optionally scales for mobile devices.
  * 
- * @param size - Spacing size constant
+ * Note: The function accepts lowercase size parameter ('xs', 'sm', 'md', etc.)
+ * and internally converts it to uppercase to match SPACING constant keys.
+ * 
+ * @param size - Spacing size constant ('xs', 'sm', 'md', 'lg', 'xl', 'xxl')
  * @param isMobile - Whether to apply mobile scaling
  * @returns Spacing value in pixels
  * 
@@ -231,8 +234,23 @@ export function getResponsiveSpacing(
   size: SpacingSize,
   isMobile: boolean = false
 ): number {
-  const spacingValue = SPACING[size.toUpperCase() as keyof typeof SPACING];
+  const spacingKey = size.toUpperCase() as keyof typeof SPACING;
+  const spacingValue = SPACING[spacingKey];
   const mobileScale = 0.875; // 87.5% for mobile
+
+  if (spacingValue === undefined) {
+    // Fallback to a safe default to avoid NaN if an invalid size is provided
+    const fallback = SPACING.MD;
+    if (typeof console !== "undefined") {
+      console.warn(
+        `[koreanThemeHelpers:getResponsiveSpacing] Invalid spacing size "${String(
+          size
+        )}" provided. Falling back to "MD".`
+      );
+    }
+    return isMobile ? Math.round(fallback * mobileScale) : fallback;
+  }
+
   return isMobile ? Math.round(spacingValue * mobileScale) : spacingValue;
 }
 
