@@ -852,6 +852,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return getPerformanceSettings(width, isMobile);
   }, [width, isMobile]);
 
+  // Memoized SSAO color to avoid creating new THREE.Color on every render
+  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
+
   return (
     <div
       style={{
@@ -869,7 +872,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={performanceSettings.dpr}
-        shadows
+        shadows={!isMobile}
         onCreated={({ gl, scene }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
           // Add atmospheric fog (matching CombatScreen3D)
@@ -1472,7 +1475,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               radius={0.05}
               intensity={50}
               luminanceInfluence={0.5}
-              color={new THREE.Color("black")}
+              color={ssaoColor}
             />
             <ChromaticAberration
               offset={[0.002, 0.002]}

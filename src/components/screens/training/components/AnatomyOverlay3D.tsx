@@ -10,6 +10,9 @@ import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
+// Visual effect constants for bloom optimization
+const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
+
 /**
  * Anatomy layer types
  */
@@ -204,7 +207,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           transparent
           opacity={opacity}
           emissive={KOREAN_COLORS.SECONDARY_YELLOW}
-          emissiveIntensity={3.0}
+          emissiveIntensity={NERVE_EMISSIVE_INTENSITY}
           roughness={0.2}
           clearcoat={1.0}
         />
@@ -396,8 +399,10 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
     () => ({
       head: new THREE.SphereGeometry(0.26, 32, 32),
       torso: new THREE.CapsuleGeometry(0.31, 0.8, 8, 16),
-      arm: new THREE.CapsuleGeometry(0.11, 0.6, 4, 8),
-      leg: new THREE.CapsuleGeometry(0.13, 0.5, 4, 8),
+      leftArm: new THREE.CapsuleGeometry(0.11, 0.6, 4, 8),
+      rightArm: new THREE.CapsuleGeometry(0.11, 0.6, 4, 8),
+      leftLeg: new THREE.CapsuleGeometry(0.13, 0.5, 4, 8),
+      rightLeg: new THREE.CapsuleGeometry(0.13, 0.5, 4, 8),
     }),
     []
   );
@@ -407,8 +412,10 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
     return () => {
       geometries.head.dispose();
       geometries.torso.dispose();
-      geometries.arm.dispose();
-      geometries.leg.dispose();
+      geometries.leftArm.dispose();
+      geometries.rightArm.dispose();
+      geometries.leftLeg.dispose();
+      geometries.rightLeg.dispose();
     };
   }, [geometries]);
 
@@ -441,7 +448,7 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Arms */}
       <mesh position={[-0.4, 1.0, 0]} rotation={[0, 0, Math.PI / 6]}>
-        <primitive object={geometries.arm} />
+        <primitive object={geometries.leftArm} />
         <meshPhysicalMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           roughness={0.2}
@@ -452,7 +459,7 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
         />
       </mesh>
       <mesh position={[0.4, 1.0, 0]} rotation={[0, 0, -Math.PI / 6]}>
-        <primitive object={geometries.arm} />
+        <primitive object={geometries.rightArm} />
         <meshPhysicalMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           roughness={0.2}
@@ -465,7 +472,7 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Legs */}
       <mesh position={[-0.2, 0.3, 0]}>
-        <primitive object={geometries.leg} />
+        <primitive object={geometries.leftLeg} />
         <meshPhysicalMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           roughness={0.2}
@@ -476,7 +483,7 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
         />
       </mesh>
       <mesh position={[0.2, 0.3, 0]}>
-        <primitive object={geometries.leg} />
+        <primitive object={geometries.rightLeg} />
         <meshPhysicalMaterial
           color={KOREAN_COLORS.PRIMARY_CYAN}
           roughness={0.2}

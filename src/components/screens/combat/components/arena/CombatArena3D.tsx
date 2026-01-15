@@ -25,6 +25,10 @@ export interface CombatArena3DProps {
 // Floor scaling constant for extended arena boundaries
 const FLOOR_SCALE_FACTOR = 1.5;
 
+// Shadow map size constants for performance optimization
+const SHADOW_MAP_SIZE_MOBILE: [number, number] = [512, 512];
+const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [1024, 1024];
+
 /**
  * CombatArena3D Component
  * Creates a Korean-themed 3D arena environment
@@ -61,7 +65,9 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             intensity={0.8}
             color={KOREAN_COLORS.ACCENT_GOLD}
             castShadow
-            shadow-mapSize={scale < 1.0 ? [512, 512] : [1024, 1024]}
+            shadow-mapSize={
+              scale < 1.0 ? SHADOW_MAP_SIZE_MOBILE : SHADOW_MAP_SIZE_DESKTOP
+            }
             shadow-bias={-0.0005}
           />
           <pointLight
