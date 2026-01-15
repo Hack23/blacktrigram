@@ -17,6 +17,14 @@ const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels
 const VASCULAR_PULSE_BASE = 1.0; // Base intensity for vascular pulse animation
 const VASCULAR_PULSE_AMPLITUDE = 0.5; // Pulse variation amplitude (max 1.5 total)
 
+// Transmission constants for glass-like anatomy layers
+const SKELETON_MAJOR_TRANSMISSION = 0.3; // Major bones (spine, rib cage, pelvis)
+const SKELETON_MAJOR_THICKNESS = 0.3;
+const SKELETON_LIMB_TRANSMISSION = 0.2; // Limbs (arms, legs)
+const SKELETON_LIMB_THICKNESS = 0.2;
+const VASCULAR_TRANSMISSION = 0.2; // All vascular system meshes
+const VASCULAR_THICKNESS = 0.2;
+
 /**
  * Anatomy layer types
  */
@@ -86,8 +94,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
-          transmission={0.3}
-          thickness={0.3}
+          transmission={SKELETON_MAJOR_TRANSMISSION}
+          thickness={SKELETON_MAJOR_THICKNESS}
           roughness={0.1}
           clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -113,8 +121,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.WHITE_SOLID}
             transparent
             opacity={opacity * 0.7}
-            transmission={0.3}
-            thickness={0.3}
+            transmission={SKELETON_MAJOR_TRANSMISSION}
+            thickness={SKELETON_MAJOR_THICKNESS}
             roughness={0.1}
             clearcoat={0.3}
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -130,8 +138,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
-          transmission={0.3}
-          thickness={0.3}
+          transmission={SKELETON_MAJOR_TRANSMISSION}
+          thickness={SKELETON_MAJOR_THICKNESS}
           roughness={0.1}
           clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -146,8 +154,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.2}
-          thickness={0.2}
+          transmission={SKELETON_LIMB_TRANSMISSION}
+          thickness={SKELETON_LIMB_THICKNESS}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -161,8 +169,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.2}
-          thickness={0.2}
+          transmission={SKELETON_LIMB_TRANSMISSION}
+          thickness={SKELETON_LIMB_THICKNESS}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -176,8 +184,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.2}
-          thickness={0.2}
+          transmission={SKELETON_LIMB_TRANSMISSION}
+          thickness={SKELETON_LIMB_THICKNESS}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -189,8 +197,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.2}
-          thickness={0.2}
+          transmission={SKELETON_LIMB_TRANSMISSION}
+          thickness={SKELETON_LIMB_THICKNESS}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -373,8 +381,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.ACCENT_RED}
           transparent
           opacity={opacity}
-          transmission={0.2}
-          thickness={0.2}
+          transmission={VASCULAR_TRANSMISSION}
+          thickness={VASCULAR_THICKNESS}
           roughness={0.2}
           clearcoat={0.8}
           emissive={KOREAN_COLORS.ACCENT_RED}
@@ -390,8 +398,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.9}
-            transmission={0.2}
-            thickness={0.2}
+            transmission={VASCULAR_TRANSMISSION}
+            thickness={VASCULAR_THICKNESS}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
@@ -412,8 +420,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            transmission={0.2}
-            thickness={0.2}
+            transmission={VASCULAR_TRANSMISSION}
+            thickness={VASCULAR_THICKNESS}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
@@ -430,8 +438,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            transmission={0.2}
-            thickness={0.2}
+            transmission={VASCULAR_TRANSMISSION}
+            thickness={VASCULAR_THICKNESS}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}

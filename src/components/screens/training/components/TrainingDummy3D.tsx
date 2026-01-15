@@ -211,8 +211,8 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         clearcoat: 1.0, // Glossy cyborg synthetic skin
         clearcoatRoughness: 0.1, // High gloss
         sheen: 0.5, // Cyborg aesthetic sheen
-        sheenColor: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
-        emissive: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
+        sheenColor: KOREAN_COLORS.PRIMARY_CYAN,
+        emissive: KOREAN_COLORS.PRIMARY_CYAN,
         emissiveIntensity: 0, // Animated via useFrame
       }),
     []
