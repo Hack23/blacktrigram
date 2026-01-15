@@ -19,6 +19,32 @@ import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+/**
+ * Anatomical safety constants for Geon (Heaven) trigram animations
+ *
+ * These limits ensure joint rotations remain within safe physiological ranges
+ * while maintaining powerful, dramatic animation for Geon's bone-breaking techniques.
+ */
+const ANATOMICAL_LIMITS = {
+  /**
+   * Maximum safe elbow bend: ±125° (±2.18 radians)
+   * 
+   * Typical elbow flexion limit is 145-160°, making 125° a conservative
+   * threshold that prevents joint constraint violations while allowing
+   * powerful chambering positions for overhead strikes.
+   */
+  MAX_ELBOW_BEND: 2.18, // ±125° in radians
+  
+  /**
+   * Maximum safe shoulder overhead rotation: -135° (-2.35 radians)
+   * 
+   * Shoulder flexion limit is approximately 150-180°, making -135° a safe
+   * threshold for dramatic overhead positioning without risking constraint
+   * violations in the skeletal system.
+   */
+  MAX_SHOULDER_OVERHEAD: -2.35, // -135° in radians
+} as const;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON IDLE BREATHING ANIMATION (건괘 호흡 자세)
 // ═══════════════════════════════════════════════════════════════════════════
@@ -50,9 +76,10 @@ export const GEON_IDLE_BREATHING: SkeletalAnimation =
     "건괘 호흡 자세"
   )
     .asIdle(2.5, true)
-    // Keyframe 0ms: Neutral breathing position
+    // Keyframe 0ms: Neutral breathing position (baseline)
     .at(0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral spine
     .rotate(BoneName.SHOULDER_L, -0.17, 0, -0.09) // -10°, 0°, -5° (relaxed high guard)
     .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5°
     .rotate(BoneName.ELBOW_L, 0, 0, -1.57) // -90° (bent)
@@ -277,7 +304,7 @@ export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
     // maximum penetration and dominance while remaining within anatomically
     // plausible limits for a stylized power strike.
     .at(0.8)
-    .rotate(BoneName.SHOULDER_R, 1.05, 0, -0.09) // 60°, 0°, -5° full extension (power-optimized)
+    .rotate(BoneName.SHOULDER_R, 1.05, 0, -0.09) // 60° full extension (Geon power strike)
     .rotate(BoneName.ELBOW_R, 0, 0, 0) // 0° fully extended
     .rotate(BoneName.WRIST_R, 0.17, 0, 0) // 10° impact alignment
     .rotate(BoneName.SPINE_UPPER, 0, 0.44, 0) // 0°, 25° maximum rotation
@@ -364,10 +391,10 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     // Frame 7: Near-maximum overhead chamber (350ms)
     .at(0.35)
-    .rotate(BoneName.SHOULDER_L, -2.35, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
-    .rotate(BoneName.SHOULDER_R, -2.35, -0.35, -0.7) // -135°, -20°, -40°
-    .rotate(BoneName.ELBOW_L, 0, 0, -2.18) // ~-125° strong bend within safe limit
-    .rotate(BoneName.ELBOW_R, 0, 0, 2.18) // ~125° strong bend within safe limit
+    .rotate(BoneName.SHOULDER_L, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
+    .rotate(BoneName.SHOULDER_R, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, -0.35, -0.7) // -135°, -20°, -40°
+    .rotate(BoneName.ELBOW_L, 0, 0, -ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // -125° strong bend within safe limit
+    .rotate(BoneName.ELBOW_R, 0, 0, ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // 125° strong bend within safe limit
     .rotate(BoneName.WRIST_L, -0.17, 0, 0) // -10° wrists cocked
     .rotate(BoneName.WRIST_R, -0.17, 0, 0) // -10°
     .rotate(BoneName.SPINE_UPPER, -0.26, 0, 0) // -15° back lean
@@ -472,7 +499,7 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
  * @duration 900ms
  * @category Attack Animation
  */
-export const GEON_FRONT_KICK: SkeletalAnimation =
+export const GEON_FRONTAL_KICK: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_frontal_kick", "앞차기")
     .asAttack(0.9)
     // =================================================================
@@ -831,8 +858,6 @@ export const GEON_PALM_STRIKE: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ☰ GEON ELBOW SMASH (팔꿈치치기)
-// ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON HEAVEN STRIKE ANIMATION (천둥벽력)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -1059,7 +1084,7 @@ export const GEON_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   // Combat Techniques (All 7 from GeonTechniques.ts)
   ["geon_heaven_strike", GEON_HEAVEN_STRIKE], // 천둥벽력 (Thunder Strike)
   ["geon_heavenly_fist", GEON_HEAVENLY_FIST_ANIMATION], // 천권 (Heavenly Fist)
-  ["geon_frontal_kick", GEON_FRONT_KICK], // 앞차기 (Front Kick)
+  ["geon_frontal_kick", GEON_FRONTAL_KICK], // 앞차기 (Front Kick)
   ["geon_roundhouse_kick", GEON_ROUNDHOUSE_KICK], // 돌려차기 (Roundhouse Kick)
   ["geon_axe_kick", GEON_AXE_KICK], // 내려차기 (Axe Kick)
   ["geon_palm_strike", GEON_PALM_STRIKE], // 장권 (Palm Strike)

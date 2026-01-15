@@ -206,11 +206,17 @@ export {
 // Geon (Heaven) trigram-specific animations
 export {
   GEON_ANIMATIONS,
+  GEON_AXE_KICK,
   GEON_DIAGONAL_POWER_STEP,
+  GEON_ELBOW_SMASH,
   GEON_FORWARD_ADVANCE,
+  GEON_FRONTAL_KICK,
+  GEON_HEAVEN_STRIKE,
   GEON_HEAVENLY_FIST_ANIMATION,
   GEON_IDLE_BREATHING,
   GEON_OVERHEAD_HAMMER,
+  GEON_PALM_STRIKE,
+  GEON_ROUNDHOUSE_KICK,
 } from "./GeonStanceAnimations";
 
 // Additional curated animation catalogs
