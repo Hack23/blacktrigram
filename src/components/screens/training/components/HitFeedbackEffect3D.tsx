@@ -282,7 +282,19 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     }
   }, [type]);
 
-  const particleCount = type === "perfect" ? 80 : type === "success" ? 50 : 25;
+  // Reduce particle counts on mobile to avoid frame drops
+  const particleCount = useMemo(() => {
+    const isPerfect = type === "perfect";
+    const isSuccess = type === "success";
+
+    // Reduce particle counts on mobile to avoid frame drops
+    if (isMobile) {
+      return isPerfect ? 30 : isSuccess ? 20 : 10;
+    }
+
+    // Higher fidelity on non-mobile devices
+    return isPerfect ? 80 : isSuccess ? 50 : 25;
+  }, [type, isMobile]);
   const ringRadius = type === "perfect" ? 1.5 : 1.0;
 
   // Track completion to prevent multiple calls

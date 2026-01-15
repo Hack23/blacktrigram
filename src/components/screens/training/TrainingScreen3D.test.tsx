@@ -18,6 +18,7 @@ vi.mock("@react-three/drei", () => ({
   Html: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="html-overlay">{children}</div>
   ),
+  Environment: () => null,
 }));
 
 vi.mock("@react-three/postprocessing", () => ({
@@ -27,6 +28,8 @@ vi.mock("@react-three/postprocessing", () => ({
   Bloom: () => null,
   SSAO: () => null,
   Vignette: () => null,
+  ChromaticAberration: () => null,
+  Noise: () => null,
 }));
 
 // Mock audio provider

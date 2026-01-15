@@ -283,7 +283,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
     healthRef.current = health;
   }, [health]);
 
-  // Scale ref for breathing animation
+  // Ref for hit flash intensity
   const flashIntensityRef = useRef(0);
 
   // Breathing animation (slower when health is low)
@@ -304,6 +304,7 @@ export const TrainingDummy3D: React.FC<TrainingDummy3DProps> = ({
         0.1
       );
       bodyMaterial.emissive.setHex(KOREAN_COLORS.PRIMARY_CYAN);
+      // eslint-disable-next-line react-hooks/immutability -- Material properties must be modified for animation
       bodyMaterial.emissiveIntensity = flashIntensityRef.current * 2.0;
     } else {
       bodyMaterial.emissiveIntensity = 0;

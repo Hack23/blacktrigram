@@ -6,7 +6,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -184,7 +184,7 @@ const NervesLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   // Pulsing animation for nerve pathways
   useFrame((state) => {
     const pulse = Math.sin(state.clock.elapsedTime * 3) * 0.5 + 0.5;
-    const targetIntensity = 2.0 + pulse * 1.5;
+    const targetIntensity = 1.0 + pulse * 0.5;
 
     // Update cached meshes efficiently
     meshesRef.current.forEach((mesh) => {
@@ -401,6 +401,16 @@ const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
     }),
     []
   );
+
+  // Cleanup geometries to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      geometries.head.dispose();
+      geometries.torso.dispose();
+      geometries.arm.dispose();
+      geometries.leg.dispose();
+    };
+  }, [geometries]);
 
   return (
     <group>
