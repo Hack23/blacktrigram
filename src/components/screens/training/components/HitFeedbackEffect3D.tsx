@@ -287,7 +287,6 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     const isPerfect = type === "perfect";
     const isSuccess = type === "success";
 
-    // Reduce particle counts on mobile to avoid frame drops
     if (isMobile) {
       return isPerfect ? 30 : isSuccess ? 20 : 10;
     }
