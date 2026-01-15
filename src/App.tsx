@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import "./App.css";
+// Main application component - manages game state and screen navigation
 import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/screens/combat/CombatScreen3D";
 import { ControlsScreen3D as ControlsScreen } from "./components/screens/controls/ControlsScreen3D";
