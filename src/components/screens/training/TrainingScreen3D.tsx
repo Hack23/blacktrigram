@@ -1451,24 +1451,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </>
         )}
 
-        {/* Post-processing Effects - Optimized for Mobile */}
+        {/* Post-processing Effects - Matches Combat Screen settings for visual parity */}
         {isMobile ? (
           <EffectComposer multisampling={0}>
             <Bloom
-              luminanceThreshold={0.2}
-              luminanceSmoothing={0.9}
+              luminanceThreshold={1}
               mipmapBlur
               intensity={1.5}
               radius={0.6}
             />
-            <Noise opacity={0.05} />
+            <Noise opacity={0.02} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         ) : (
           <EffectComposer multisampling={4}>
             <Bloom
-              luminanceThreshold={0.2}
-              luminanceSmoothing={0.9}
+              luminanceThreshold={1}
               mipmapBlur
               intensity={1.5}
               radius={0.6}
@@ -1484,7 +1482,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               radialModulation={false}
               modulationOffset={0}
             />
-            <Noise opacity={0.05} />
+            <Noise opacity={0.02} />
             <Vignette eskil={false} offset={0.1} darkness={0.5} />
           </EffectComposer>
         )}
