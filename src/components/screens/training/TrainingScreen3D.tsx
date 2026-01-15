@@ -1477,7 +1477,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               radius={0.6}
             />
             <SSAO
-              radius={5}
+              radius={0.5}
               intensity={30}
               luminanceInfluence={0.5}
               color={ssaoColor}

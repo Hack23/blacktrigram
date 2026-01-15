@@ -86,8 +86,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.3}
+          thickness={0.3}
           roughness={0.1}
           clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -113,8 +113,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.WHITE_SOLID}
             transparent
             opacity={opacity * 0.7}
-            transmission={0.5}
-            thickness={0.5}
+            transmission={0.3}
+            thickness={0.3}
             roughness={0.1}
             clearcoat={0.3}
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -130,8 +130,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.3}
+          thickness={0.3}
           roughness={0.1}
           clearcoat={0.3}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
@@ -146,8 +146,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.2}
+          thickness={0.2}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -161,8 +161,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.2}
+          thickness={0.2}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -176,8 +176,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.2}
+          thickness={0.2}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -189,8 +189,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
           opacity={opacity * 0.8}
-          transmission={0.5}
-          thickness={0.5}
+          transmission={0.2}
+          thickness={0.2}
           roughness={0.1}
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
@@ -373,8 +373,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           color={KOREAN_COLORS.ACCENT_RED}
           transparent
           opacity={opacity}
-          transmission={0.3}
-          thickness={0.3}
+          transmission={0.2}
+          thickness={0.2}
           roughness={0.2}
           clearcoat={0.8}
           emissive={KOREAN_COLORS.ACCENT_RED}
@@ -390,8 +390,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.9}
-            transmission={0.3}
-            thickness={0.3}
+            transmission={0.2}
+            thickness={0.2}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
@@ -412,8 +412,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            transmission={0.3}
-            thickness={0.3}
+            transmission={0.2}
+            thickness={0.2}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
@@ -430,8 +430,8 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             color={KOREAN_COLORS.ACCENT_RED}
             transparent
             opacity={opacity * 0.8}
-            transmission={0.3}
-            thickness={0.3}
+            transmission={0.2}
+            thickness={0.2}
             roughness={0.2}
             clearcoat={0.8}
             emissive={KOREAN_COLORS.ACCENT_RED}
