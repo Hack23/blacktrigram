@@ -2347,22 +2347,34 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Post-processing Effects */}
-        <EffectComposer>
-          <Bloom
-            luminanceThreshold={1}
-            mipmapBlur
-            intensity={1.5}
-            radius={0.6}
-          />
-          <SSAO
-            radius={0.05}
-            intensity={50}
-            luminanceInfluence={0.5}
-            color={new THREE.Color("black")}
-          />
-          <Vignette eskil={false} offset={0.1} darkness={0.5} />
-        </EffectComposer>
+        {/* Post-processing Effects - Optimized for Mobile */}
+        {isMobile ? (
+          <EffectComposer multisampling={0}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
+        ) : (
+          <EffectComposer multisampling={4}>
+            <Bloom
+              luminanceThreshold={1}
+              mipmapBlur
+              intensity={1.5}
+              radius={0.6}
+            />
+            <SSAO
+              radius={0.05}
+              intensity={50}
+              luminanceInfluence={0.5}
+              color={new THREE.Color("black")}
+            />
+            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+          </EffectComposer>
+        )}
 
         {/* Performance Monitoring - FPS display (dev mode only) */}
         {process.env.NODE_ENV === "development" && (

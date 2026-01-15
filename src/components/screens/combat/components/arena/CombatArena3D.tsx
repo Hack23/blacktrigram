@@ -56,7 +56,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             intensity={1}
             color={KOREAN_COLORS.ACCENT_GOLD}
             castShadow
-            shadow-mapSize={[2048, 2048]}
+            shadow-mapSize={scale < 1.0 ? [512, 512] : [1024, 1024]}
+            shadow-bias={-0.0005}
           />
           <pointLight
             position={[-10, 5, -5]}
