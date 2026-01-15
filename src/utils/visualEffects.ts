@@ -512,10 +512,20 @@ export function combineShadowEffects(shadows: string[]): string {
  * Get pulsing animation keyframes
  * 
  * Returns CSS keyframe animation for pulsing glow effect.
- * Should be injected into global styles or style tag.
+ * Should be injected into global styles or style tag once.
+ * Use unique animation names to avoid conflicts.
  * 
- * @param animationName - Name for the animation (default: 'pulse')
+ * @param animationName - Unique name for the animation (default: 'pulse')
  * @returns CSS keyframes string
+ * 
+ * @example
+ * ```typescript
+ * const keyframes = getPulsingKeyframes('pulse-glow');
+ * // Inject into global styles once:
+ * const style = document.createElement('style');
+ * style.innerHTML = keyframes;
+ * document.head.appendChild(style);
+ * ```
  * 
  * @korean 펄스애니메이션키프레임얻기
  */

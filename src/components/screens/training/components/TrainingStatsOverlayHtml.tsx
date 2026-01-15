@@ -10,15 +10,15 @@
  */
 
 import React, { useMemo } from "react";
+import { SPACING } from "../../../../types/constants/ui";
 import {
   FONT_FAMILY,
   KOREAN_COLORS,
 } from "../../../../types/constants";
-import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getEnhancedKoreanOverlayStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
 import {

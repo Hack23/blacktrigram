@@ -394,12 +394,19 @@ export function getKoreanButtonWithGlow(
     focusStyles = getFocusStateStyles(glowColor, true);
   }
 
+  // Safe font size extraction with fallback
+  const baseFontSize = typeof baseStyles.fontSize === "string"
+    ? parseInt(baseStyles.fontSize, 10) || 14
+    : typeof baseStyles.fontSize === "number"
+    ? baseStyles.fontSize
+    : 14;
+
   // Neon text glow for button text
   const textGlow = getNeonTextShadow(glowColor, isHovered ? "medium" : "subtle");
 
   // Korean font optimization
   const fontOptimization = getKoreanFontOptimization(
-    parseInt(baseStyles.fontSize as string) || 14,
+    baseFontSize,
     "bold"
   );
 
