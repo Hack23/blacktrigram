@@ -3121,26 +3121,26 @@ import { Player3DWithTransitions } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import {
   VitalPointMarkers3D,
-  VitalPointOverlayControls,
+  VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
-import AnatomyControlsHTML from "./components/AnatomyControlsHTML";
+import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
 import FootPlacementMarkers3D from "./components/FootPlacementMarkers3D";
-import FootworkDrillsHTML from "./components/FootworkDrillsHTML";
+import FootworkDrillsOverlayHtml from "./components/FootworkDrillsOverlayHtml";
 import HitFeedbackEffect3D from "./components/HitFeedbackEffect3D";
-import TrainingControlsHTML from "./components/TrainingControlsHTML";
+import TrainingControlsOverlayHtml from "./components/TrainingControlsOverlayHtml";
 import type { DifficultyMode } from "./components/TrainingDummy3D";
 import TrainingDummy3D from "./components/TrainingDummy3D";
-import TrainingFeedbackHTML from "./components/TrainingFeedbackHTML";
-import TrainingModeSelectorHTML from "./components/TrainingModeSelectorHTML";
-import TrainingStatsHTML from "./components/TrainingStatsHTML";
-import VitalPointTrainingHTML from "./components/VitalPointTrainingHTML";
+import TrainingFeedbackOverlayHtml from "./components/TrainingFeedbackOverlayHtml";
+import TrainingModeSelectorOverlayHtml from "./components/TrainingModeSelectorOverlayHtml";
+import TrainingStatsOverlayHtml from "./components/TrainingStatsOverlayHtml";
+import VitalPointTrainingOverlayHtml from "./components/VitalPointTrainingOverlayHtml";
 import useTrainingActions from "./hooks/useTrainingActions";
 import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
@@ -3939,7 +3939,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
         }}
         camera={cameraConfig}
       &gt;
-        {/* Arena environment with lighting included */}
+        {/* Arena environment with lighting included (includes Environment preset="city") */}
         &lt;CombatArena3D lighting="cyberpunk" scale={1.0} /&gt;
 &nbsp;
         {/* Animation updater - updates player animation at 60fps */}
@@ -3987,9 +3987,9 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
           /&gt;
         )}
 &nbsp;
-        {/* VitalPointOverlayControls - fixed screen position */}
+        {/* VitalPointOverlayControlsHtml - fixed screen position */}
         {overlayVisible &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;VitalPointOverlayControls</span>
+<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;VitalPointOverlayControlsHtml</span>
             visible={overlayVisible}
             onVisibleChange={setOverlayVisible}
             severityFilters={severityFilters}
@@ -4084,7 +4084,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               zIndex={Z_INDEX.HUD}
               style={{ pointerEvents: "all" }}
             &gt;
-              &lt;TrainingControlsHTML
+              &lt;TrainingControlsOverlayHtml
                 isTraining={trainingState.isTraining}
                 onStartTraining={handleStartTraining}
                 onStopTraining={handleStopTraining}
@@ -4112,7 +4112,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                 alignItems: "flex-end",
               }}
             &gt;
-              &lt;TrainingStatsHTML
+              &lt;TrainingStatsOverlayHtml
                 stats={{
                   ...trainingState.stats,
                   sessionDuration: trainingState.sessionDuration,
@@ -4139,7 +4139,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                 pointerEvents: "all",
               }}
             &gt;
-              &lt;TrainingModeSelectorHTML
+              &lt;TrainingModeSelectorOverlayHtml
                 currentMode={trainingState.trainingMode}
                 onModeChange={trainingActions.setTrainingMode}
                 isMobile={isMobile}
@@ -4262,7 +4262,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                 gap: "15px",
               }}
             &gt;
-              &lt;AnatomyControlsHTML
+              &lt;AnatomyControlsOverlayHtml
                 visibleLayers={trainingState.visibleAnatomyLayers}
                 onLayerToggle={handleAnatomyLayerToggle}
                 isMobile={isMobile}
@@ -4303,7 +4303,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               style={{ pointerEvents: "all" }}
             &gt;
               {trainingState.trainingMode === "footwork" ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >                &lt;FootworkDrillsHTML</span>
+<span class="branch-0 cbranch-no" title="branch not covered" >                &lt;FootworkDrillsOverlayHtml</span>
                   currentDrill={trainingState.footworkDrillType}
                   onDrillChange={<span class="fstat-no" title="function not covered" >(d</span>rill) =&gt;
 <span class="cstat-no" title="statement not covered" >                    trainingActions.startFootworkDrill(drill)</span>
@@ -4323,7 +4323,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                   isMobile={isMobile}
                 /&gt;
               ) : (
-                &lt;VitalPointTrainingHTML
+                &lt;VitalPointTrainingOverlayHtml
                   selectedVitalPoint={trainingState.selectedVitalPoint}
                   onVitalPointSelect={trainingActions.setSelectedVitalPoint}
                   isMobile={isMobile}
@@ -4395,7 +4395,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                   height: "100%",
                 }}
               &gt;
-                &lt;TrainingFeedbackHTML
+                &lt;TrainingFeedbackOverlayHtml
                   message={trainingState.feedback}
                   isMobile={isMobile}
                 /&gt;
@@ -4510,7 +4510,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
           &lt;/&gt;
         )}
 &nbsp;
-        {/* Post-processing Effects - Optimized for Mobile */}
+        {/* Post-processing Effects - Matches Combat Screen settings for visual parity */}
         {isMobile ? (
           &lt;EffectComposer multisampling={0}&gt;
             &lt;Bloom
@@ -4561,7 +4561,7 @@ export default TrainingScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-15T04:52:37.132Z
+                at 2026-01-15T21:33:14.695Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
