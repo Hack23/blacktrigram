@@ -127,12 +127,13 @@ const ImpactParticles: React.FC<{
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.08}
         color={color}
         transparent
-        opacity={0.8}
+        opacity={1.0}
         sizeAttenuation
         depthWrite={false}
+        blending={THREE.AdditiveBlending}
       />
     </points>
   );
@@ -281,7 +282,7 @@ export const HitFeedbackEffect3D: React.FC<HitFeedbackEffect3DProps> = ({
     }
   }, [type]);
 
-  const particleCount = type === "perfect" ? 30 : type === "success" ? 20 : 10;
+  const particleCount = type === "perfect" ? 80 : type === "success" ? 50 : 25;
   const ringRadius = type === "perfect" ? 1.5 : 1.0;
 
   // Track completion to prevent multiple calls

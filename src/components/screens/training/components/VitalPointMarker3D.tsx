@@ -160,14 +160,15 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         name={`vital-point-marker-${vitalPoint.id}`}
       >
         <sphereGeometry args={[markerSize, 16, 16]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissiveIntensity={isSelected ? 0.7 : hovered ? 0.5 : 0.2}
+          emissiveIntensity={isSelected ? 3.0 : hovered ? 2.0 : 1.0}
           metalness={0.6}
-          roughness={0.3}
+          roughness={0.2}
+          clearcoat={0.5}
           transparent
-          opacity={isTraining ? 0.9 : 0.5}
+          opacity={isTraining ? 0.9 : 0.6}
         />
       </mesh>
 

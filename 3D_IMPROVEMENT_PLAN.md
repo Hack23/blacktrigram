@@ -52,7 +52,9 @@ The training screen currently looks flatter than the combat screen.
 
 ## 5. Execution Plan
 
-1.  **Refine Training Screen**: Add new post-processing effects.
-2.  **Upgrade Dummy**: Replace materials in `TrainingDummy3D`.
-3.  **Upgrade Anatomy**: Experiment with transmission materials for 'X-Ray' feel.
-4.  **Fix Combat Screen**: Ensure `CombatScreen3D` also receives the intended post-processing updates.
+1.  **Refine Training Screen**: Add new post-processing effects. [DONE]
+2.  **Upgrade Dummy**: Replace materials in `TrainingDummy3D`. [DONE]
+3.  **Upgrade Anatomy**: Upgrade Skeleton and Vascular layers to `MeshPhysicalMaterial` with emissive pulsing. [DONE]
+4.  **Vital Point Markers**: Upgrade to `MeshPhysicalMaterial` with high bloom. [DONE]
+5.  **Particle Effects**: Increase density and use additive blending. [DONE]
+6.  **Fix Combat Screen**: Ensure `CombatScreen3D` also receives the intended post-processing updates. [DONE]
