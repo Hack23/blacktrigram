@@ -241,13 +241,11 @@ export function getResponsiveSpacing(
   if (spacingValue === undefined) {
     // Fallback to a safe default to avoid NaN if an invalid size is provided
     const fallback = SPACING.MD;
-    if (typeof console !== "undefined") {
-      console.warn(
-        `[koreanThemeHelpers:getResponsiveSpacing] Invalid spacing size "${String(
-          size
-        )}" provided. Falling back to "MD".`
-      );
-    }
+    console.warn(
+      `[koreanThemeHelpers:getResponsiveSpacing] Invalid spacing size "${String(
+        size
+      )}" provided. Falling back to "MD".`
+    );
     return isMobile ? Math.round(fallback * mobileScale) : fallback;
   }
 

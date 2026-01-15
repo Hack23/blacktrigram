@@ -149,8 +149,8 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
             lineHeight: "1.4",
           }}
         >
-          <div key="korean">모드 변경시 자동 재시작</div>
-          <div key="english">Auto-restarts on mode change</div>
+          <div>모드 변경시 자동 재시작</div>
+          <div>Auto-restarts on mode change</div>
         </div>
       )}
     </div>
