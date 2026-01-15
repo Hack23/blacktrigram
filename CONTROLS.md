@@ -579,7 +579,7 @@ The following controls are documented in `game-design.md` but **NOT YET IMPLEMEN
 - **Combat Controls**: `src/systems/types.ts` (line 744: `COMBAT_CONTROLS`)
 - **Keyboard Hooks**: `src/hooks/useKeyboardControls.ts`
 - **Mobile Controls**: `src/components/mobile/*`
-- **Controls Screen**: `src/components/screens/ControlsScreenThreeJS.tsx`
+- **Controls Screen**: `src/components/screens/controls/ControlsScreen3D.tsx`
 
 ### Documentation
 - **Game Design**: `game-design.md` (lines 939-1133: Combat Controls & Stamina)

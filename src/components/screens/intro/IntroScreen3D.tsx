@@ -32,7 +32,7 @@ import { MenuSectionOverlayHtml } from "./components/MenuSectionOverlayHtml";
 
 const APP_VERSION = import.meta.env.APP_VERSION;
 
-export interface IntroScreenThreeJSProps {
+export interface IntroScreen3DProps {
   readonly onMenuSelect: (mode: GameMode, archetype?: PlayerArchetype) => void;
   readonly onArchetypeSelect?: (archetype: PlayerArchetype) => void;
   readonly selectedArchetype?: PlayerArchetype;
@@ -76,7 +76,7 @@ const getArchetypeFromIndex = (index: number): PlayerArchetype => {
 /**
  * Three.js-based IntroScreen Component
  */
-export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
+export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   onMenuSelect,
   onArchetypeSelect,
   selectedArchetype = PlayerArchetype.MUSA,
@@ -729,4 +729,4 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
   );
 };
 
-export default IntroScreenThreeJS;
+export default IntroScreen3D;

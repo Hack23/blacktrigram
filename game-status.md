@@ -686,7 +686,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### IntroScreen – **8.4/10** ✅ Production Ready
 
-**File**: `src/components/intro/IntroScreenThreeJS.tsx` (414 lines)
+**File**: `src/components/intro/IntroScreen3D.tsx` (414 lines)
 
 **What Works:**
 - ✅ Three.js implementation with Html overlays
@@ -709,7 +709,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 - ⚠️ Touch gesture support for mobile (swipe to change archetype)
 - ⚠️ Version/MOTD blocks (hardcoded)
 
-**Test Coverage**: 60% (IntroScreenThreeJS.test.tsx)
+**Test Coverage**: 60% (IntroScreen3D.test.tsx)
 
 **Priority Actions:**
 1. 🟡 Add parallax background layers
@@ -764,7 +764,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 - `DamageNumbers.tsx` - Floating damage display (89% coverage)
 - `ComboCounter.tsx` - Combo tracking (86% coverage)
 - `ActionFeedback.tsx` - Block/Parry/Critical indicators (72% coverage)
-- `CombatHUDThree.tsx` - UI overlay
+- `CombatHUD3D.tsx` - UI overlay
 - `VitalPointMarkers3D.tsx` - 70-point vital point visualization
 - `VitalPointOverlayControls.tsx` (NEW - 673 lines) - Vital point filtering UI
 
@@ -857,7 +857,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### ControlsScreen – **9.5/10** ✅ Excellent
 
-**File**: `src/components/screens/ControlsScreenThreeJS.tsx` (572 lines)
+**File**: `src/components/screens/ControlsScreen3D.tsx` (572 lines)
 
 **What Works:**
 - ✅ Comprehensive control listing
@@ -883,7 +883,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### PhilosophyScreen – **9.5/10** ✅ Excellent
 
-**File**: `src/components/screens/PhilosophyScreenThreeJS.tsx` (657 lines)
+**File**: `src/components/screens/PhilosophyScreen3D.tsx` (657 lines)
 
 **What Works:**
 - ✅ Eight trigram philosophy detailed
@@ -993,10 +993,10 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 - ✅ `CombatArena3D.test.tsx`
 - ✅ `Player3DModel.test.tsx`
 - ✅ `HitEffects3D.test.tsx`
-- ✅ `IntroScreenThreeJS.test.tsx`
+- ✅ `IntroScreen3D.test.tsx`
 - ✅ `TrainingScreen3D.test.tsx`
-- ✅ `ControlsScreenThreeJS.test.tsx`
-- ✅ `PhilosophyScreenThreeJS.test.tsx`
+- ✅ `ControlsScreen3D.test.tsx`
+- ✅ `PhilosophyScreen3D.test.tsx`
 
 ### Areas Needing More Tests:
 - 🔴 Combat components: 51% → Target 80%
@@ -1011,11 +1011,11 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 ### Three.js Migration: ✅ **Complete**
 
 All screens migrated from PixiJS to Three.js:
-- ✅ IntroScreen → IntroScreenThreeJS.tsx
+- ✅ IntroScreen → IntroScreen3D.tsx
 - ✅ CombatScreen → CombatScreen3D.tsx
 - ✅ TrainingScreen → TrainingScreen3D.tsx
-- ✅ ControlsScreen → ControlsScreenThreeJS.tsx
-- ✅ PhilosophyScreen → PhilosophyScreenThreeJS.tsx
+- ✅ ControlsScreen → ControlsScreen3D.tsx
+- ✅ PhilosophyScreen → PhilosophyScreen3D.tsx
 
 ### Architecture Strengths:
 - ✅ Clear separation of concerns (Systems, Components, Hooks)

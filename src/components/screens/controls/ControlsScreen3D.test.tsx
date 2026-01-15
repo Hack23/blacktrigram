@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { ControlsScreenThreeJS } from "./ControlsScreenThreeJS";
+import { ControlsScreen3D } from "./ControlsScreen3D";
 
 // Mock Three.js Canvas to avoid WebGL issues in test environment
 vi.mock("@react-three/fiber", () => ({
@@ -24,11 +24,11 @@ vi.mock("../../../audio/AudioProvider", () => ({
   }),
 }));
 
-describe("ControlsScreenThreeJS", () => {
+describe("ControlsScreen3D", () => {
   it("should render without crashing", () => {
     const onReturnToMenu = vi.fn();
     const { container } = render(
-      <ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <ControlsScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(container).toBeTruthy();
@@ -37,7 +37,7 @@ describe("ControlsScreenThreeJS", () => {
   it("should have controls-screen test id", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <ControlsScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("controls-screen")).toBeTruthy();
@@ -46,7 +46,7 @@ describe("ControlsScreenThreeJS", () => {
   it("should render Three.js Canvas", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <ControlsScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("three-canvas")).toBeTruthy();
@@ -55,7 +55,7 @@ describe("ControlsScreenThreeJS", () => {
   it("should render HTML overlay", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <ControlsScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("three-html")).toBeTruthy();
@@ -64,7 +64,7 @@ describe("ControlsScreenThreeJS", () => {
   it("should accept width and height props", () => {
     const onReturnToMenu = vi.fn();
     const { container } = render(
-      <ControlsScreenThreeJS 
+      <ControlsScreen3D 
         onReturnToMenu={onReturnToMenu} 
         width={1920}
         height={1080}
@@ -78,7 +78,7 @@ describe("ControlsScreenThreeJS", () => {
   describe("Control Sections", () => {
     it("should render trigram stances section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const trigramSection = screen.getByTestId("trigram-controls");
       expect(trigramSection).toBeTruthy();
@@ -88,7 +88,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render all 8 stance controls", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       // Check for all 8 stances (1-8 keys)
       for (let i = 1; i <= 8; i++) {
@@ -99,7 +99,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render combat controls section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const combatSection = screen.getByTestId("combat-controls");
       expect(combatSection).toBeTruthy();
@@ -109,7 +109,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render movement controls section with WASD and Arrow keys", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const movementSection = screen.getByTestId("movement-controls");
       expect(movementSection).toBeTruthy();
@@ -121,7 +121,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render advanced footwork section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const footworkSection = screen.getByTestId("advanced-footwork");
       expect(footworkSection).toBeTruthy();
@@ -131,7 +131,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display tactical steps (Shift+WASD) with IMPLEMENTED status", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const footworkSection = screen.getByTestId("advanced-footwork");
       expect(footworkSection.textContent).toContain("전술보법");
@@ -143,7 +143,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display footwork patterns (Ctrl+WASD) with IMPLEMENTED status", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const footworkSection = screen.getByTestId("advanced-footwork");
       expect(footworkSection.textContent).toContain("원형보"); // Circular step
@@ -156,7 +156,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display all advanced footwork patterns including pivot and shuffle", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const footworkSection = screen.getByTestId("advanced-footwork");
       expect(footworkSection.textContent).toContain("추가 보법"); // Advanced Patterns
@@ -168,7 +168,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render stance side switch section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const sideSwitchSection = screen.getByTestId("stance-side-switch");
       expect(sideSwitchSection).toBeTruthy();
@@ -181,7 +181,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render technique controls section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const techniqueSection = screen.getByTestId("technique-controls");
       expect(techniqueSection).toBeTruthy();
@@ -191,7 +191,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display all 10 technique keys", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const techniqueSection = screen.getByTestId("technique-controls");
       const techniqueKeys = ["Q", "E", "R", "T", "Y", "F", "G", "Z", "X", "C"];
@@ -203,7 +203,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should render special features section", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const specialSection = screen.getByTestId("special-features");
       expect(specialSection).toBeTruthy();
@@ -213,7 +213,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display vital points overlay control (V key)", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const specialSection = screen.getByTestId("special-features");
       expect(specialSection.textContent).toContain("V");
@@ -223,7 +223,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display block/guard control (B key)", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const specialSection = screen.getByTestId("special-features");
       expect(specialSection.textContent).toContain("B");
@@ -232,7 +232,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display control hints key (F1)", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const specialSection = screen.getByTestId("special-features");
       expect(specialSection.textContent).toContain("F1");
@@ -241,7 +241,7 @@ describe("ControlsScreenThreeJS", () => {
 
     it("should display pause/menu controls (ESC/M)", () => {
       const onReturnToMenu = vi.fn();
-      render(<ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />);
+      render(<ControlsScreen3D onReturnToMenu={onReturnToMenu} />);
 
       const specialSection = screen.getByTestId("special-features");
       expect(specialSection.textContent).toContain("ESC");
@@ -254,7 +254,7 @@ describe("ControlsScreenThreeJS", () => {
     it("should adapt to mobile layout (width < 768px)", () => {
       const onReturnToMenu = vi.fn();
       const { container } = render(
-        <ControlsScreenThreeJS 
+        <ControlsScreen3D 
           onReturnToMenu={onReturnToMenu} 
           width={400}
           height={600}
@@ -268,7 +268,7 @@ describe("ControlsScreenThreeJS", () => {
     it("should adapt to desktop layout (width >= 768px)", () => {
       const onReturnToMenu = vi.fn();
       const { container } = render(
-        <ControlsScreenThreeJS 
+        <ControlsScreen3D 
           onReturnToMenu={onReturnToMenu} 
           width={1200}
           height={800}
@@ -284,7 +284,7 @@ describe("ControlsScreenThreeJS", () => {
     it("should display Korean text for all major sections", () => {
       const onReturnToMenu = vi.fn();
       const { container } = render(
-        <ControlsScreenThreeJS onReturnToMenu={onReturnToMenu} />
+        <ControlsScreen3D onReturnToMenu={onReturnToMenu} />
       );
 
       const content = container.textContent || "";

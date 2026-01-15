@@ -16,7 +16,7 @@ import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
-export interface PhilosophyScreenThreeJSProps {
+export interface PhilosophyScreen3DProps {
   readonly onReturnToMenu: () => void;
   readonly width?: number;
   readonly height?: number;
@@ -25,8 +25,8 @@ export interface PhilosophyScreenThreeJSProps {
 /**
  * Three.js-based PhilosophyScreen Component
  */
-export const PhilosophyScreenThreeJS: React.FC<
-  PhilosophyScreenThreeJSProps
+export const PhilosophyScreen3D: React.FC<
+  PhilosophyScreen3DProps
 > = ({ onReturnToMenu, width: propWidth, height: propHeight }) => {
   // Content is always mounted/visible (no loading gate)
   const isMounted = true;
@@ -747,4 +747,4 @@ export const PhilosophyScreenThreeJS: React.FC<
   );
 };
 
-export default PhilosophyScreenThreeJS;
+export default PhilosophyScreen3D;

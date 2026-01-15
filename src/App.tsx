@@ -7,12 +7,13 @@ import {
   useState,
 } from "react";
 import "./App.css";
+// Main application component - manages game state and screen navigation
 import { useAudio } from "./audio/AudioProvider";
 import { CombatScreen3D as CombatScreen } from "./components/screens/combat/CombatScreen3D";
-import { ControlsScreenThreeJS as ControlsScreen } from "./components/screens/controls/ControlsScreenThreeJS";
+import { ControlsScreen3D as ControlsScreen } from "./components/screens/controls/ControlsScreen3D";
 import { EndScreen3D } from "./components/screens/endscreen";
-import { IntroScreenThreeJS as IntroScreen } from "./components/screens/intro/IntroScreenThreeJS";
-import { PhilosophyScreenThreeJS as PhilosophyScreen } from "./components/screens/philosophy/PhilosophyScreenThreeJS";
+import { IntroScreen3D as IntroScreen } from "./components/screens/intro/IntroScreen3D";
+import { PhilosophyScreen3D as PhilosophyScreen } from "./components/screens/philosophy/PhilosophyScreen3D";
 import { PerformanceDebugOverlayHtml } from "./components/shared/debug/PerformanceDebugOverlayHtml";
 import { ErrorModal } from "./components/shared/ui/ErrorModal";
 import { LoadingState } from "./components/shared/ui/LoadingState";

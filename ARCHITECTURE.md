@@ -97,7 +97,7 @@ C4Container
 > - **🖥️ UI Layer**:
 >
 >   - React 19 + TypeScript functional components.
->   - Screens: `CombatScreen3D`, `TrainingScreen3D`, `IntroScreenThreeJS`, `ControlsScreenThreeJS`, `PhilosophyScreenThreeJS`.
+>   - Screens: `CombatScreen3D`, `TrainingScreen3D`, `IntroScreen3D`, `ControlsScreen3D`, `PhilosophyScreen3D`.
 >   - Common UI: Html overlays from `@react-three/drei` for HUD elements, health bars, stance indicators.
 >   - Base modules: Korean-themed UI components with bilingual support (Korean | English).
 >   - CSS: App.css, component-specific styling for overlays.
@@ -363,9 +363,9 @@ sequenceDiagram
 
 #### Current Implementation
 - **src/components/test/**
-  - `HelloThreeJS.tsx` - Test component demonstrating Three.js setup
-  - `HelloThreeJS.test.tsx` - Unit tests for Three.js infrastructure
-  - `HelloThreeJS-demo.tsx` - Interactive demo with controls
+  - `Hello3D.tsx` - Test component demonstrating Three.js setup
+  - `Hello3D.test.tsx` - Unit tests for Three.js infrastructure
+  - `Hello3D-demo.tsx` - Interactive demo with controls
 
 #### Planned Structure
 ```
@@ -635,7 +635,7 @@ const particlePool = new ParticlePool(createParticle, resetParticle, 100);
 
 #### Phase 1: Infrastructure Setup ✅ COMPLETE
 - [x] Three.js dependencies installed
-- [x] Test component created (`HelloThreeJS`)
+- [x] Test component created (`Hello3D`)
 - [x] Korean theming verified
 - [x] Build and test pipeline working
 
