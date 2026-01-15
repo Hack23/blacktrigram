@@ -14,6 +14,8 @@
 import React, { useEffect, useState } from "react";
 import { performanceMonitor } from "../../../systems/animation";
 import { ThreeObjectPools } from "../../../utils/threeObjectPool";
+import { KOREAN_COLORS } from "../../../types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 
 /**
  * Performance metrics interface
@@ -85,20 +87,25 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
     return null;
   }
 
-  // Color coding for frame times
+  // Color coding for frame times using KOREAN_COLORS
   const frameTimeColor =
     metrics.avgFrameTime < 5
-      ? "#0f0" // Green: Target met
+      ? `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, "0")}` // Green: Target met
       : metrics.avgFrameTime < 8
-      ? "#ff0" // Yellow: Warning
-      : "#f00"; // Red: Critical
+      ? `#${KOREAN_COLORS.WARNING_YELLOW.toString(16).padStart(6, "0")}` // Yellow: Warning
+      : `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`; // Red: Critical
 
   const cacheColor =
     metrics.cacheHitRate > 0.9
-      ? "#0f0" // Green: Excellent
+      ? `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, "0")}` // Green: Excellent
       : metrics.cacheHitRate > 0.7
-      ? "#ff0" // Yellow: Good
-      : "#f00"; // Red: Poor
+      ? `#${KOREAN_COLORS.WARNING_YELLOW.toString(16).padStart(6, "0")}` // Yellow: Good
+      : `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`; // Red: Poor
+  
+  const poolColor = (available: number, threshold: number) =>
+    available > threshold
+      ? `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, "0")}`
+      : `#${KOREAN_COLORS.WARNING_YELLOW.toString(16).padStart(6, "0")}`;
 
   return (
     <div
@@ -106,14 +113,14 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
         position: "fixed",
         top: 10,
         right: 10,
-        background: "rgba(0, 0, 0, 0.85)",
-        color: "#0ff",
+        background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85),
+        color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
         padding: "12px",
         fontFamily: "monospace",
         fontSize: "11px",
         lineHeight: "1.4",
         zIndex: 9999,
-        border: "1px solid #0ff",
+        border: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
         borderRadius: "4px",
         minWidth: "200px",
         userSelect: "none",
@@ -121,23 +128,23 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
       }}
       data-testid="performance-debug-overlay"
     >
-      <div style={{ fontWeight: "bold", marginBottom: "8px", color: "#fff" }}>
+      <div style={{ fontWeight: "bold", marginBottom: "8px", color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}` }}>
         🎯 Animation Performance
       </div>
-      <div style={{ borderBottom: "1px solid #0ff", marginBottom: "6px" }} />
+      <div style={{ borderBottom: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`, marginBottom: "6px" }} />
 
       {/* Frame Times */}
       <div style={{ marginBottom: "4px" }}>
-        <span style={{ color: "#888" }}>Avg Frame: </span>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Avg Frame: </span>
         <span style={{ color: frameTimeColor, fontWeight: "bold" }}>
           {metrics.avgFrameTime.toFixed(2)}ms
         </span>
-        <span style={{ color: "#666", fontSize: "9px", marginLeft: "4px" }}>
+        <span style={{ color: `#${KOREAN_COLORS.UI_BACKGROUND_LIGHT.toString(16).padStart(6, "0")}`, fontSize: "9px", marginLeft: "4px" }}>
           (target: &lt;5ms)
         </span>
       </div>
       <div style={{ marginBottom: "6px" }}>
-        <span style={{ color: "#888" }}>Max Frame: </span>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Max Frame: </span>
         <span style={{ color: frameTimeColor }}>
           {metrics.maxFrameTime.toFixed(2)}ms
         </span>
@@ -145,46 +152,46 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
 
       {/* Cache Performance */}
       <div style={{ marginBottom: "4px" }}>
-        <span style={{ color: "#888" }}>Cache Hit: </span>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Cache Hit: </span>
         <span style={{ color: cacheColor, fontWeight: "bold" }}>
           {(metrics.cacheHitRate * 100).toFixed(1)}%
         </span>
-        <span style={{ color: "#666", fontSize: "9px", marginLeft: "4px" }}>
+        <span style={{ color: `#${KOREAN_COLORS.UI_BACKGROUND_LIGHT.toString(16).padStart(6, "0")}`, fontSize: "9px", marginLeft: "4px" }}>
           (target: &gt;90%)
         </span>
       </div>
       <div style={{ marginBottom: "8px" }}>
-        <span style={{ color: "#888" }}>Cached: </span>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Cached: </span>
         <span>{metrics.cacheEntries} keyframes</span>
       </div>
 
-      <div style={{ borderBottom: "1px solid #0ff", marginBottom: "6px" }} />
+      <div style={{ borderBottom: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`, marginBottom: "6px" }} />
 
       {/* Object Pools */}
-      <div style={{ fontSize: "10px", color: "#888", marginBottom: "4px" }}>
+      <div style={{ fontSize: "10px", color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`, marginBottom: "4px" }}>
         Object Pools (available)
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: "#888" }}>Euler: </span>
-        <span style={{ color: pools.euler > 100 ? "#0f0" : "#ff0" }}>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Euler: </span>
+        <span style={{ color: poolColor(pools.euler, 100) }}>
           {pools.euler}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: "#888" }}>Vector3: </span>
-        <span style={{ color: pools.vector3 > 100 ? "#0f0" : "#ff0" }}>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Vector3: </span>
+        <span style={{ color: poolColor(pools.vector3, 100) }}>
           {pools.vector3}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: "#888" }}>Matrix4: </span>
-        <span style={{ color: pools.matrix4 > 50 ? "#0f0" : "#ff0" }}>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Matrix4: </span>
+        <span style={{ color: poolColor(pools.matrix4, 50) }}>
           {pools.matrix4}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: "#888" }}>Quaternion: </span>
-        <span style={{ color: pools.quaternion > 50 ? "#0f0" : "#ff0" }}>
+        <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Quaternion: </span>
+        <span style={{ color: poolColor(pools.quaternion, 50) }}>
           {pools.quaternion}
         </span>
       </div>
@@ -192,19 +199,19 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
       {/* Performance Status */}
       <div
         style={{
-          borderTop: "1px solid #0ff",
+          borderTop: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
           marginTop: "8px",
           paddingTop: "6px",
         }}
       >
         <div style={{ fontSize: "10px" }}>
-          <span style={{ color: "#888" }}>Status: </span>
+          <span style={{ color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}` }}>Status: </span>
           {metrics.avgFrameTime < 5 && metrics.cacheHitRate > 0.9 ? (
-            <span style={{ color: "#0f0", fontWeight: "bold" }}>✓ OPTIMAL</span>
+            <span style={{ color: `#${KOREAN_COLORS.POSITIVE_GREEN.toString(16).padStart(6, "0")}`, fontWeight: "bold" }}>✓ OPTIMAL</span>
           ) : metrics.avgFrameTime < 8 && metrics.cacheHitRate > 0.7 ? (
-            <span style={{ color: "#ff0" }}>⚠ GOOD</span>
+            <span style={{ color: `#${KOREAN_COLORS.WARNING_YELLOW.toString(16).padStart(6, "0")}` }}>⚠ GOOD</span>
           ) : (
-            <span style={{ color: "#f00" }}>✗ NEEDS OPTIMIZATION</span>
+            <span style={{ color: `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}` }}>✗ NEEDS OPTIMIZATION</span>
           )}
         </div>
       </div>
