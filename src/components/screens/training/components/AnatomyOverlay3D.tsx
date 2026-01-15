@@ -389,33 +389,93 @@ const VascularLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
 /**
  * Surface Layer Component
- * Surface anatomy landmarks
+ * Surface anatomy landmarks and skin layer
  */
 const SurfaceLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
+  const geometries = useMemo(
+    () => ({
+      head: new THREE.SphereGeometry(0.26, 32, 32),
+      torso: new THREE.CapsuleGeometry(0.31, 0.8, 8, 16),
+      arm: new THREE.CapsuleGeometry(0.11, 0.6, 4, 8),
+      leg: new THREE.CapsuleGeometry(0.13, 0.5, 4, 8),
+    }),
+    []
+  );
+
   return (
     <group>
-      {/* Surface contour lines */}
-      {[
-        { y: 1.6, r: 0.25, name: "head" },
-        { y: 1.3, r: 0.18, name: "neck" },
-        { y: 1.0, r: 0.3, name: "chest" },
-        { y: 0.7, r: 0.28, name: "abdomen" },
-        { y: 0.5, r: 0.25, name: "pelvis" },
-      ].map((section) => (
-        <mesh
-          key={section.name}
-          position={[0, section.y, 0]}
-          rotation={[Math.PI / 2, 0, 0]}
-        >
-          <ringGeometry args={[section.r, section.r + 0.01, 32]} />
-          <meshBasicMaterial
-            color={KOREAN_COLORS.PRIMARY_CYAN}
-            transparent
-            opacity={opacity * 0.5}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
+      {/* Glass Skin Shell - Slightly larger than dummy to envelop internals */}
+      <mesh position={[0, 1.6, 0]}>
+        <primitive object={geometries.head} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      <mesh position={[0, 1.0, 0]}>
+        <primitive object={geometries.torso} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      {/* Arms */}
+      <mesh position={[-0.4, 1.0, 0]} rotation={[0, 0, Math.PI / 6]}>
+        <primitive object={geometries.arm} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+      <mesh position={[0.4, 1.0, 0]} rotation={[0, 0, -Math.PI / 6]}>
+        <primitive object={geometries.arm} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+
+      {/* Legs */}
+      <mesh position={[-0.2, 0.3, 0]}>
+        <primitive object={geometries.leg} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
+      <mesh position={[0.2, 0.3, 0]}>
+        <primitive object={geometries.leg} />
+        <meshPhysicalMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          roughness={0.2}
+          transmission={0.9}
+          thickness={0.5}
+          transparent
+          opacity={opacity * 0.5}
+        />
+      </mesh>
     </group>
   );
 };
