@@ -3,7 +3,7 @@
  */
 
 import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import TrainingScreen3D from "./TrainingScreen3D";
 
 // Mock Three.js and React Three Fiber
@@ -18,6 +18,15 @@ vi.mock("@react-three/drei", () => ({
   Html: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="html-overlay">{children}</div>
   ),
+}));
+
+vi.mock("@react-three/postprocessing", () => ({
+  EffectComposer: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  Bloom: () => null,
+  SSAO: () => null,
+  Vignette: () => null,
 }));
 
 // Mock audio provider

@@ -9,6 +9,12 @@
 
 import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import {
+  Bloom,
+  EffectComposer,
+  SSAO,
+  Vignette,
+} from "@react-three/postprocessing";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
