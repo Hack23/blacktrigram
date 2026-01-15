@@ -46,6 +46,16 @@ vi.mock("@react-three/drei", () => ({
   OrbitControls: () => null,
 }));
 
+// Mock @react-three/postprocessing
+vi.mock("@react-three/postprocessing", () => ({
+  EffectComposer: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  Bloom: () => null,
+  SSAO: () => null,
+  Vignette: () => null,
+}));
+
 // Mock Three.js
 vi.mock("three", () => ({
   Group: class MockGroup {},
