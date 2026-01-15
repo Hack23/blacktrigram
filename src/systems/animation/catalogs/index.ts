@@ -203,6 +203,16 @@ export {
   getTrigramIdleByName,
 } from "./StanceIdleAnimations";
 
+// Geon (Heaven) trigram-specific animations
+export {
+  GEON_ANIMATIONS,
+  GEON_DIAGONAL_POWER_STEP,
+  GEON_FORWARD_ADVANCE,
+  GEON_HEAVENLY_FIST_ANIMATION,
+  GEON_IDLE_BREATHING,
+  GEON_OVERHEAD_HAMMER,
+} from "./GeonStanceAnimations";
+
 // Additional curated animation catalogs
 export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
