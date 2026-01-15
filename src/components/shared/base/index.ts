@@ -18,8 +18,8 @@ export { BaseText } from "./BaseText";
 export type { BaseTextProps } from "./BaseText";
 
 // HTML-based components (no Three.js dependency)
-export { BaseButtonHTML } from "./BaseButtonHTML";
-export type { BaseButtonHTMLProps } from "./BaseButtonHTML";
+export { BaseButtonOverlayHtml } from "./BaseButtonOverlayHtml";
+export type { BaseButtonOverlayHtmlProps } from "./BaseButtonOverlayHtml";
 
 // Hooks - useKoreanTheme is used by 5 files
 export { useKoreanTheme } from "./useKoreanTheme";

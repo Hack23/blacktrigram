@@ -1,5 +1,5 @@
 /**
- * TrainingModeSelectorHTML - Html overlay for training mode selection
+ * TrainingModeSelectorOverlayHtml - Html overlay for training mode selection
  * 
  * Allows switching between different training modes
  */
@@ -21,9 +21,9 @@ export type TrainingMode =
   | "footwork";           // Footwork Training - Movement drills (보법 훈련)
 
 /**
- * Props for TrainingModeSelectorHTML component
+ * Props for TrainingModeSelectorOverlayHtml component
  */
-export interface TrainingModeSelectorHTMLProps {
+export interface TrainingModeSelectorOverlayHtmlProps {
   /** Currently selected training mode */
   readonly currentMode: TrainingMode;
   /** Callback when mode changes */
@@ -74,10 +74,10 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
 };
 
 /**
- * TrainingModeSelectorHTML Component
+ * TrainingModeSelectorOverlayHtml Component
  * Html overlay for selecting training mode - Compact horizontal layout
  */
-export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> = ({
+export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverlayHtmlProps> = ({
   currentMode,
   onModeChange,
   isMobile,
@@ -185,4 +185,4 @@ export const TrainingModeSelectorHTML: React.FC<TrainingModeSelectorHTMLProps> =
   );
 };
 
-export default TrainingModeSelectorHTML;
+export default TrainingModeSelectorOverlayHtml;

@@ -24,11 +24,11 @@ import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getArchetypeAssets } from "../../../utils/playerUtils";
 import { BackgroundScene3D } from "../../shared/three";
-import { KoreanHeaderHTML } from "../../shared/ui/KoreanHeaderHTML";
+import { KoreanHeaderOverlayHtml } from "../../shared/ui/KoreanHeaderOverlayHtml";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
-import { ArchetypeDisplayHTML } from "./components/ArchetypeDisplayHTML";
+import { ArchetypeDisplayOverlayHtml } from "./components/ArchetypeDisplayOverlayHtml";
 import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplay";
-import { MenuSectionHTML } from "./components/MenuSectionHTML";
+import { MenuSectionOverlayHtml } from "./components/MenuSectionOverlayHtml";
 
 const APP_VERSION = import.meta.env.APP_VERSION;
 
@@ -382,7 +382,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
               }}
               data-testid="main-title-container"
             >
-              <KoreanHeaderHTML
+              <KoreanHeaderOverlayHtml
                 title={{ korean: "흑괘", english: "Black Trigram" }}
                 subtitle={{
                   korean: "한국 무술 시뮬레이터",
@@ -553,7 +553,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                 }}
                 data-testid="menu-section-container"
               >
-                <MenuSectionHTML
+                <MenuSectionOverlayHtml
                   menuItems={MENU_ITEMS}
                   selectedIndex={selectedMenuIndex}
                   onModeSelect={handleMenuItemSelect}
@@ -620,7 +620,7 @@ export const IntroScreenThreeJS: React.FC<IntroScreenThreeJSProps> = ({
                     allowDetailedView={!isMobile}
                   />
                 ) : (
-                  <ArchetypeDisplayHTML
+                  <ArchetypeDisplayOverlayHtml
                     archetypes={archetypeData}
                     selectedIndex={selectedArchetypeIndex}
                     onArchetypeChange={handleArchetypeIndexChange}

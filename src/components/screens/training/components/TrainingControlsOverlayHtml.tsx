@@ -1,5 +1,5 @@
 /**
- * TrainingControlsHTML - Html overlay for training controls
+ * TrainingControlsOverlayHtml - Html overlay for training controls
  * 
  * Displays start/stop button and training status.
  * Training auto-starts on mount, but users can manually stop and restart.
@@ -10,9 +10,9 @@ import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**
- * Props for TrainingControlsHTML component
+ * Props for TrainingControlsOverlayHtml component
  */
-export interface TrainingControlsHTMLProps {
+export interface TrainingControlsOverlayHtmlProps {
   /** Whether training is currently active */
   readonly isTraining: boolean;
   /** Callback to start training */
@@ -24,10 +24,10 @@ export interface TrainingControlsHTMLProps {
 }
 
 /**
- * TrainingControlsHTML Component
+ * TrainingControlsOverlayHtml Component
  * Html overlay showing training status and start/stop controls
  */
-export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
+export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlProps> = ({
   isTraining,
   onStartTraining,
   onStopTraining,
@@ -123,4 +123,4 @@ export const TrainingControlsHTML: React.FC<TrainingControlsHTMLProps> = ({
   );
 };
 
-export default TrainingControlsHTML;
+export default TrainingControlsOverlayHtml;

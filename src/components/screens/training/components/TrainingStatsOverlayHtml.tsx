@@ -1,5 +1,5 @@
 /**
- * TrainingStatsHTML - Html overlay for training statistics
+ * TrainingStatsOverlayHtml - Html overlay for training statistics
  * 
  * Displays score, combo, hits, misses, and accuracy
  */
@@ -22,9 +22,9 @@ export interface TrainingStats {
 }
 
 /**
- * Props for TrainingStatsHTML component
+ * Props for TrainingStatsOverlayHtml component
  */
-export interface TrainingStatsHTMLProps {
+export interface TrainingStatsOverlayHtmlProps {
   /** Current training statistics */
   readonly stats: TrainingStats;
   /** Whether on mobile device */
@@ -32,10 +32,10 @@ export interface TrainingStatsHTMLProps {
 }
 
 /**
- * TrainingStatsHTML Component
+ * TrainingStatsOverlayHtml Component
  * Html overlay displaying training performance metrics
  */
-export const TrainingStatsHTML: React.FC<TrainingStatsHTMLProps> = ({
+export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> = ({
   stats,
   isMobile,
 }) => {
@@ -246,4 +246,4 @@ const StatRow: React.FC<{
   );
 };
 
-export default TrainingStatsHTML;
+export default TrainingStatsOverlayHtml;

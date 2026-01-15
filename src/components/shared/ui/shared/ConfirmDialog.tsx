@@ -8,14 +8,14 @@
  * - Responsive sizing
  * - Keyboard shortcuts (Enter = confirm, Esc = cancel)
  * 
- * Now uses BaseButtonHTML for consistent styling
+ * Now uses BaseButtonOverlayHtml for consistent styling
  */
 
 import React, { useEffect } from "react";
 import { useAudio } from "../../../../audio/AudioProvider";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { BaseButtonHTML } from "../../base";
+import { BaseButtonOverlayHtml } from "../../base";
 
 export interface ConfirmDialogProps {
   readonly isOpen: boolean;
@@ -132,14 +132,14 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {message}
         </p>
 
-        {/* Buttons - Now using BaseButtonHTML */}
+        {/* Buttons - Now using BaseButtonOverlayHtml */}
         <div
           style={{
             display: "flex",
             gap: "12px",
           }}
         >
-          <BaseButtonHTML
+          <BaseButtonOverlayHtml
             korean="취소"
             english="Cancel"
             onClick={() => {
@@ -153,7 +153,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             testId="cancel-button"
             style={{ flex: 1 }}
           />
-          <BaseButtonHTML
+          <BaseButtonOverlayHtml
             korean="확인"
             english="Confirm"
             onClick={() => {

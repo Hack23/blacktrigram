@@ -4,7 +4,7 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import "./MenuSection.css";
 
-export interface MenuSectionHTMLProps {
+export interface MenuSectionOverlayHtmlProps {
   readonly menuItems: Array<{
     mode: GameMode;
     korean: string;
@@ -21,7 +21,7 @@ export interface MenuSectionHTMLProps {
 /**
  * HTML-based MenuSection component for Three.js integration
  */
-export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
+export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   menuItems,
   selectedIndex,
   onModeSelect,
@@ -290,4 +290,4 @@ export const MenuSectionHTML: React.FC<MenuSectionHTMLProps> = ({
   );
 };
 
-export default MenuSectionHTML;
+export default MenuSectionOverlayHtml;

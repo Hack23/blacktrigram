@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import type { KoreanText } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import "./KoreanHeaderHTML.css";
+import "./KoreanHeaderOverlayHtml.css";
 
-export interface KoreanHeaderHTMLProps {
+export interface KoreanHeaderOverlayHtmlProps {
   readonly title: KoreanText;
   readonly subtitle?: KoreanText;
   readonly size?: "small" | "medium" | "large";
@@ -17,7 +17,7 @@ export interface KoreanHeaderHTMLProps {
 /**
  * HTML-based KoreanHeader component for Three.js integration
  */
-export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
+export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = ({
   title,
   subtitle,
   size = "medium",
@@ -265,4 +265,4 @@ export const KoreanHeaderHTML: React.FC<KoreanHeaderHTMLProps> = ({
   );
 };
 
-export default KoreanHeaderHTML;
+export default KoreanHeaderOverlayHtml;

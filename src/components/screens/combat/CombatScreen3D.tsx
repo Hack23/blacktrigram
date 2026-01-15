@@ -92,7 +92,7 @@ import {
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three";
-import { VitalPointMarkers3D, VitalPointOverlayControls } from "./components";
+import { VitalPointMarkers3D, VitalPointOverlayControlsHtml } from "./components";
 import CombatArena3D from "./components/arena/CombatArena3D";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
@@ -107,7 +107,7 @@ import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
-import { PlayerStateOverlay } from "./components/hud/PlayerStateOverlay";
+import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
@@ -2228,7 +2228,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         )}
 
         {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
-        <VitalPointOverlayControls
+        <VitalPointOverlayControlsHtml
           screenPosition={{ top: "200px", left: "20px" }}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
@@ -2532,7 +2532,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Player State Visual Indicators */}
         {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc. */}
-        <PlayerStateOverlay
+        <PlayerStateOverlayHtml
           pain={validPlayers[0].pain}
           balanceState={getBalanceState(validPlayers[0].balance)}
           position="left"

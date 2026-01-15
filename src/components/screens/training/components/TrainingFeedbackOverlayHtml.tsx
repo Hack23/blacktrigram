@@ -1,5 +1,5 @@
 /**
- * TrainingFeedbackHTML - Html overlay for training feedback messages
+ * TrainingFeedbackOverlayHtml - Html overlay for training feedback messages
  * 
  * Displays temporary feedback messages for hits, misses, and achievements
  */
@@ -9,9 +9,9 @@ import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**
- * Props for TrainingFeedbackHTML component
+ * Props for TrainingFeedbackOverlayHtml component
  */
-export interface TrainingFeedbackHTMLProps {
+export interface TrainingFeedbackOverlayHtmlProps {
   /** Feedback message to display */
   readonly message: string;
   /** Whether on mobile device */
@@ -19,10 +19,10 @@ export interface TrainingFeedbackHTMLProps {
 }
 
 /**
- * TrainingFeedbackHTML Component
+ * TrainingFeedbackOverlayHtml Component
  * Html overlay for displaying training feedback
  */
-export const TrainingFeedbackHTML: React.FC<TrainingFeedbackHTMLProps> = ({
+export const TrainingFeedbackOverlayHtml: React.FC<TrainingFeedbackOverlayHtmlProps> = ({
   message,
   isMobile,
 }) => {
@@ -40,4 +40,4 @@ export const TrainingFeedbackHTML: React.FC<TrainingFeedbackHTMLProps> = ({
   );
 };
 
-export default TrainingFeedbackHTML;
+export default TrainingFeedbackOverlayHtml;
