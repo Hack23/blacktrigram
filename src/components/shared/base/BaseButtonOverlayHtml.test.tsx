@@ -1,25 +1,25 @@
 /**
- * Tests for BaseButtonHTML component
+ * Tests for BaseButtonOverlayHtml component
  */
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { BaseButtonHTML } from "./BaseButtonHTML";
+import { BaseButtonOverlayHtml } from "./BaseButtonOverlayHtml";
 
-describe("BaseButtonHTML", () => {
+describe("BaseButtonOverlayHtml", () => {
   it("should be defined and importable", () => {
-    expect(BaseButtonHTML).toBeDefined();
-    expect(typeof BaseButtonHTML).toBe("function");
+    expect(BaseButtonOverlayHtml).toBeDefined();
+    expect(typeof BaseButtonOverlayHtml).toBe("function");
   });
 
   it("should have proper display name", () => {
-    expect(BaseButtonHTML.displayName).toBe("BaseButtonHTML");
+    expect(BaseButtonOverlayHtml.displayName).toBe("BaseButtonOverlayHtml");
   });
 
   it("should render Korean and English text", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="공격"
         english="Attack"
         onClick={handleClick}
@@ -33,7 +33,7 @@ describe("BaseButtonHTML", () => {
   it("should call onClick handler when clicked", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="클릭"
         english="Click"
         onClick={handleClick}
@@ -49,7 +49,7 @@ describe("BaseButtonHTML", () => {
   it("should not call onClick when disabled", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="비활성"
         english="Disabled"
         onClick={handleClick}
@@ -66,7 +66,7 @@ describe("BaseButtonHTML", () => {
   it("should render with custom test ID", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="테스트"
         english="Test"
         onClick={handleClick}
@@ -80,7 +80,7 @@ describe("BaseButtonHTML", () => {
   it("should render with default test ID when not provided", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="기본"
         english="Default"
         onClick={handleClick}
@@ -93,7 +93,7 @@ describe("BaseButtonHTML", () => {
   it("should render with primary variant", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="주요"
         english="Primary"
         onClick={handleClick}
@@ -108,7 +108,7 @@ describe("BaseButtonHTML", () => {
   it("should render with secondary variant", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="보조"
         english="Secondary"
         onClick={handleClick}
@@ -123,7 +123,7 @@ describe("BaseButtonHTML", () => {
   it("should render with danger variant", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="위험"
         english="Danger"
         onClick={handleClick}
@@ -138,7 +138,7 @@ describe("BaseButtonHTML", () => {
   it("should render with small size", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="작음"
         english="Small"
         onClick={handleClick}
@@ -153,7 +153,7 @@ describe("BaseButtonHTML", () => {
   it("should render with medium size", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="중간"
         english="Medium"
         onClick={handleClick}
@@ -168,7 +168,7 @@ describe("BaseButtonHTML", () => {
   it("should render with large size", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="큼"
         english="Large"
         onClick={handleClick}
@@ -183,7 +183,7 @@ describe("BaseButtonHTML", () => {
   it("should render full width button", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="전체 너비"
         english="Full Width"
         onClick={handleClick}
@@ -199,7 +199,7 @@ describe("BaseButtonHTML", () => {
     const handleClick = vi.fn();
     const handleHover = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="호버"
         english="Hover"
         onClick={handleClick}
@@ -216,7 +216,7 @@ describe("BaseButtonHTML", () => {
   it("should handle mouse down and up events", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="클릭"
         english="Click"
         onClick={handleClick}
@@ -233,7 +233,7 @@ describe("BaseButtonHTML", () => {
   it("should render for mobile", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="모바일"
         english="Mobile"
         onClick={handleClick}
@@ -248,7 +248,7 @@ describe("BaseButtonHTML", () => {
   it("should accept custom className", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="클래스"
         english="Class"
         onClick={handleClick}
@@ -263,7 +263,7 @@ describe("BaseButtonHTML", () => {
   it("should accept custom style", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="스타일"
         english="Style"
         onClick={handleClick}
@@ -278,7 +278,7 @@ describe("BaseButtonHTML", () => {
   it("should apply custom styles last (allowing overrides)", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="재정의"
         english="Override"
         onClick={handleClick}
@@ -293,7 +293,7 @@ describe("BaseButtonHTML", () => {
   it("should support autoFocus prop", () => {
     const handleClick = vi.fn();
     render(
-      <BaseButtonHTML
+      <BaseButtonOverlayHtml
         korean="자동 포커스"
         english="Auto Focus"
         onClick={handleClick}

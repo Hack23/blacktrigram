@@ -1,17 +1,17 @@
 /**
- * BloodLossOverlay Component Tests
+ * BloodLossOverlayHtml Component Tests
  * 
  * Tests component props, threshold logic, and TypeScript interfaces.
  * Full rendering tests are done in E2E tests with Three.js context.
  */
 
 import { describe, it, expect } from "vitest";
-import { BloodLossOverlay } from "./BloodLossOverlay";
+import { BloodLossOverlayHtml } from "./BloodLossOverlayHtml";
 
-describe("BloodLossOverlay", () => {
+describe("BloodLossOverlayHtml", () => {
   it("should be defined and importable", () => {
-    expect(BloodLossOverlay).toBeDefined();
-    expect(typeof BloodLossOverlay).toBe("function");
+    expect(BloodLossOverlayHtml).toBeDefined();
+    expect(typeof BloodLossOverlayHtml).toBe("function");
   });
 
   describe("Props Interface", () => {

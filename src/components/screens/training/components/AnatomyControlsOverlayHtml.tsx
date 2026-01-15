@@ -1,5 +1,5 @@
 /**
- * AnatomyControlsHTML - Html UI for toggling anatomy visualization layers
+ * AnatomyControlsOverlayHtml - Html UI for toggling anatomy visualization layers
  * 
  * Provides buttons to toggle skeleton, nerves, vascular, and surface layers
  */
@@ -10,9 +10,9 @@ import { FONT_FAMILY } from "../../../../types/constants";
 import "../training.css";
 
 /**
- * Props for AnatomyControlsHTML component
+ * Props for AnatomyControlsOverlayHtml component
  */
-export interface AnatomyControlsHTMLProps {
+export interface AnatomyControlsOverlayHtmlProps {
   /** Currently visible anatomy layers */
   readonly visibleLayers: readonly AnatomyLayer[];
   /** Callback when layer visibility changes */
@@ -64,10 +64,10 @@ const LAYER_CONFIGS: readonly LayerConfig[] = [
 ];
 
 /**
- * AnatomyControlsHTML Component
+ * AnatomyControlsOverlayHtml Component
  * UI controls for anatomy layer visibility
  */
-export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
+export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProps> = ({
   visibleLayers,
   onLayerToggle,
   isMobile = false,
@@ -229,4 +229,4 @@ export const AnatomyControlsHTML: React.FC<AnatomyControlsHTMLProps> = ({
   );
 };
 
-export default AnatomyControlsHTML;
+export default AnatomyControlsOverlayHtml;

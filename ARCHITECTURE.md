@@ -384,7 +384,7 @@ src/components/combat/
 │   ├── DojangFloor3D.tsx              # Traditional dojang floor
 │   └── KoreanLighting3D.tsx           # Korean-themed lighting setup
 └── ui/
-    ├── CombatHUDOverlay.tsx           # Html UI over 3D scene
+    ├── CombatHUDOverlayHtml.tsx       # Html UI over 3D scene
     ├── PlayerNameplate3D.tsx          # Player info in 3D space
     └── VitalPointTooltip3D.tsx        # Interactive tooltips
 ```

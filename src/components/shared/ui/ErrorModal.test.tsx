@@ -129,7 +129,7 @@ describe("ErrorModal", () => {
       />
     );
 
-    // BaseButtonHTML renders Korean and English in separate spans
+    // BaseButtonOverlayHtml renders Korean and English in separate spans
     // Check for both texts separately
     expect(screen.getByText("재시도")).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
