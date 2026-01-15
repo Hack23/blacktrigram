@@ -15,7 +15,7 @@
 
 import { Environment } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
 import KoreanSignage3D from "./KoreanSignage3D";
@@ -83,6 +83,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       }),
     []
   );
+
+  // Cleanup floor material on unmount
+  useEffect(() => {
+    return () => {
+      floorMaterial.dispose();
+    };
+  }, [floorMaterial]);
 
   return (
     <group>

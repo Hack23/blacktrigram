@@ -6,7 +6,7 @@
  */
 
 import { Text } from "@react-three/drei";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
 
@@ -66,6 +66,15 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
   const signHeight = 5 * scale;
   const fontSize = 1.5 * scale;
   const outlineWidth = 0.05 * scale;
+
+  // Cleanup materials on unmount
+  useEffect(() => {
+    return () => {
+      goldNeonMaterial.dispose();
+      cyanNeonMaterial.dispose();
+      redNeonMaterial.dispose();
+    };
+  }, [goldNeonMaterial, cyanNeonMaterial, redNeonMaterial]);
 
   return (
     <group>
