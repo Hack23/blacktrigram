@@ -50,7 +50,7 @@ export { TechniqueBar } from "./indicators/TechniqueBar";
 export { TechniqueCard } from "./indicators/TechniqueCard";
 
 // HUD components (not originally exported but used in screens)
-export { CombatHUDThree } from "./hud/CombatHUDThree";
+export { CombatHUD3D } from "./hud/CombatHUD3D";
 export { default as PlayerHUD } from "./hud/PlayerHUD";
 export { CombatReadinessBar } from "./hud/CombatReadinessBar";
 
@@ -102,7 +102,7 @@ export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlay";
 export type { StaminaWarningProps } from "./indicators/StaminaWarning";
 
 // Additional HUD prop types
-export type { CombatHUDThreeProps } from "./hud/CombatHUDThree";
+export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
 export type { PlayerHUDProps } from "./hud/PlayerHUD";
 export type { CombatReadinessBarProps } from "./hud/CombatReadinessBar";
 export type { SpeedIndicatorHUDProps } from "./hud/SpeedIndicatorHUD";

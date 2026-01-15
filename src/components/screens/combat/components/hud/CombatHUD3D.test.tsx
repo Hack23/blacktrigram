@@ -1,11 +1,11 @@
 /**
- * Unit tests for CombatHUDThree component
+ * Unit tests for CombatHUD3D component
  * Tests the Three.js-based combat HUD display
  */
 
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { CombatHUDThree } from "./CombatHUDThree";
+import { CombatHUD3D } from "./CombatHUD3D";
 import { PlayerState } from "../../../../../systems";
 import { PlayerArchetype } from "../../../../../types/common";
 import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
@@ -17,7 +17,7 @@ vi.mock("@react-three/drei", () => ({
   ),
 }));
 
-describe("CombatHUDThree", () => {
+describe("CombatHUD3D", () => {
   let mockPlayer1: PlayerState;
   let mockPlayer2: PlayerState;
 
@@ -28,7 +28,7 @@ describe("CombatHUDThree", () => {
 
   it("should render without crashing", () => {
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -42,7 +42,7 @@ describe("CombatHUDThree", () => {
 
   it("should display round information", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -57,7 +57,7 @@ describe("CombatHUDThree", () => {
 
   it("should display timer", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={90}
@@ -72,7 +72,7 @@ describe("CombatHUDThree", () => {
 
   it("should display player names", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -87,7 +87,7 @@ describe("CombatHUDThree", () => {
 
   it("should display player health bars", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -102,7 +102,7 @@ describe("CombatHUDThree", () => {
 
   it("should display player ki bars", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -117,7 +117,7 @@ describe("CombatHUDThree", () => {
 
   it("should display player stamina bars", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -135,7 +135,7 @@ describe("CombatHUDThree", () => {
 
     rounds.forEach((round) => {
       const { unmount } = render(
-        <CombatHUDThree
+        <CombatHUD3D
           player1={mockPlayer1}
           player2={mockPlayer2}
           timeRemaining={120}
@@ -154,7 +154,7 @@ describe("CombatHUDThree", () => {
 
     times.forEach((time) => {
       const { unmount } = render(
-        <CombatHUDThree
+        <CombatHUD3D
           player1={mockPlayer1}
           player2={mockPlayer2}
           timeRemaining={time}
@@ -171,7 +171,7 @@ describe("CombatHUDThree", () => {
   it("should render with custom position", () => {
     const position: [number, number, number] = [5, 10, 15];
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -186,7 +186,7 @@ describe("CombatHUDThree", () => {
 
   it("should render in mobile mode", () => {
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -201,7 +201,7 @@ describe("CombatHUDThree", () => {
 
   it("should render in desktop mode", () => {
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -216,7 +216,7 @@ describe("CombatHUDThree", () => {
 
   it("should render with paused state", () => {
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -231,7 +231,7 @@ describe("CombatHUDThree", () => {
 
   it("should render with rounds won information", () => {
     const { container } = render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -256,7 +256,7 @@ describe("CombatHUDThree", () => {
     archetypes.forEach((archetype) => {
       const player = createPlayerFromArchetype(archetype, 0);
       const { unmount } = render(
-        <CombatHUDThree
+        <CombatHUD3D
           player1={player}
           player2={mockPlayer2}
           timeRemaining={120}
@@ -281,7 +281,7 @@ describe("CombatHUDThree", () => {
       };
 
       const { unmount } = render(
-        <CombatHUDThree
+        <CombatHUD3D
           player1={player}
           player2={mockPlayer2}
           timeRemaining={120}
@@ -297,7 +297,7 @@ describe("CombatHUDThree", () => {
 
   it("should handle low time warning", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={5}
@@ -312,7 +312,7 @@ describe("CombatHUDThree", () => {
 
   it("should display player scores", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -330,7 +330,7 @@ describe("CombatHUDThree", () => {
 
   it("should display pause indicator when paused", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}
@@ -346,7 +346,7 @@ describe("CombatHUDThree", () => {
 
   it("should not display pause indicator when not paused", () => {
     render(
-      <CombatHUDThree
+      <CombatHUD3D
         player1={mockPlayer1}
         player2={mockPlayer2}
         timeRemaining={120}

@@ -13,7 +13,7 @@ import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
-export interface ControlsScreenThreeJSProps {
+export interface ControlsScreen3DProps {
   readonly onReturnToMenu: () => void;
   readonly width?: number;
   readonly height?: number;
@@ -22,7 +22,7 @@ export interface ControlsScreenThreeJSProps {
 /**
  * Three.js-based ControlsScreen Component
  */
-export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
+export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
   onReturnToMenu,
   width: propWidth,
   height: propHeight,
@@ -1354,4 +1354,4 @@ export const ControlsScreenThreeJS: React.FC<ControlsScreenThreeJSProps> = ({
   );
 };
 
-export default ControlsScreenThreeJS;
+export default ControlsScreen3D;

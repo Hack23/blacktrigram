@@ -1,5 +1,5 @@
 /**
- * Tests for HelloThreeJS component
+ * Tests for Hello3D component
  * 
  * Verifies Three.js infrastructure setup including:
  * - Component imports (TypeScript type safety)
@@ -13,16 +13,16 @@
 
 import { describe, expect, it } from "vitest";
 import { KOREAN_COLORS } from "../../types/constants";
-import { HelloThreeJS } from "./HelloThreeJS";
+import { Hello3D } from "./Hello3D";
 
-describe("HelloThreeJS", () => {
+describe("Hello3D", () => {
   it("should be defined and importable", () => {
-    expect(HelloThreeJS).toBeDefined();
-    expect(typeof HelloThreeJS).toBe("function");
+    expect(Hello3D).toBeDefined();
+    expect(typeof Hello3D).toBe("function");
   });
 
   it("should have proper display name", () => {
-    expect(HelloThreeJS.displayName).toBe("HelloThreeJS");
+    expect(Hello3D.displayName).toBe("Hello3D");
   });
 
   it("should accept TypeScript props correctly", () => {

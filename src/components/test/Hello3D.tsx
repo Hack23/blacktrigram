@@ -1,5 +1,5 @@
 /**
- * HelloThreeJS - Test component for Three.js infrastructure
+ * Hello3D - Test component for Three.js infrastructure
  * 
  * This component verifies that Three.js, @react-three/fiber, and @react-three/drei
  * are properly installed and configured. It renders a simple 3D scene with:
@@ -47,16 +47,16 @@ const RotatingBox: React.FC<RotatingBoxProps> = ({ color }) => {
 };
 
 /**
- * Props for the HelloThreeJS component
+ * Props for the Hello3D component
  */
-export interface HelloThreeJSProps {
+export interface Hello3DProps {
   readonly width?: number;
   readonly height?: number;
   readonly color?: number;
 }
 
 /**
- * HelloThreeJS - Minimal test component for Three.js infrastructure
+ * Hello3D - Minimal test component for Three.js infrastructure
  * 
  * Renders a simple 3D scene to verify:
  * - @react-three/fiber Canvas integration
@@ -66,10 +66,10 @@ export interface HelloThreeJSProps {
  * 
  * @example
  * ```tsx
- * <HelloThreeJS width={800} height={600} color={KOREAN_COLORS.ACCENT_GOLD} />
+ * <Hello3D width={800} height={600} color={KOREAN_COLORS.ACCENT_GOLD} />
  * ```
  */
-export const HelloThreeJS: React.FC<HelloThreeJSProps> = ({
+export const Hello3D: React.FC<Hello3DProps> = ({
   width = 800,
   height = 600,
   color = KOREAN_COLORS.PRIMARY_CYAN,
@@ -103,4 +103,4 @@ export const HelloThreeJS: React.FC<HelloThreeJSProps> = ({
   );
 };
 
-HelloThreeJS.displayName = "HelloThreeJS";
+Hello3D.displayName = "Hello3D";

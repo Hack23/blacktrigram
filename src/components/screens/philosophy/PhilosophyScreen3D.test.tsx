@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render } from "@testing-library/react";
-import { PhilosophyScreenThreeJS } from "./PhilosophyScreenThreeJS";
+import { PhilosophyScreen3D } from "./PhilosophyScreen3D";
 
 // Mock Three.js Canvas to avoid WebGL issues in test environment
 vi.mock("@react-three/fiber", () => ({
@@ -24,11 +24,11 @@ vi.mock("../../../audio/AudioProvider", () => ({
   }),
 }));
 
-describe("PhilosophyScreenThreeJS", () => {
+describe("PhilosophyScreen3D", () => {
   it("should render without crashing", () => {
     const onReturnToMenu = vi.fn();
     const { container } = render(
-      <PhilosophyScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <PhilosophyScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(container).toBeTruthy();
@@ -37,7 +37,7 @@ describe("PhilosophyScreenThreeJS", () => {
   it("should have philosophy-screen test id", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <PhilosophyScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <PhilosophyScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("philosophy-screen")).toBeTruthy();
@@ -46,7 +46,7 @@ describe("PhilosophyScreenThreeJS", () => {
   it("should render Three.js Canvas", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <PhilosophyScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <PhilosophyScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("three-canvas")).toBeTruthy();
@@ -55,7 +55,7 @@ describe("PhilosophyScreenThreeJS", () => {
   it("should render HTML overlay", () => {
     const onReturnToMenu = vi.fn();
     const { getByTestId } = render(
-      <PhilosophyScreenThreeJS onReturnToMenu={onReturnToMenu} />
+      <PhilosophyScreen3D onReturnToMenu={onReturnToMenu} />
     );
 
     expect(getByTestId("three-html")).toBeTruthy();
@@ -64,7 +64,7 @@ describe("PhilosophyScreenThreeJS", () => {
   it("should accept width and height props", () => {
     const onReturnToMenu = vi.fn();
     const { container } = render(
-      <PhilosophyScreenThreeJS 
+      <PhilosophyScreen3D 
         onReturnToMenu={onReturnToMenu} 
         width={1920}
         height={1080}
