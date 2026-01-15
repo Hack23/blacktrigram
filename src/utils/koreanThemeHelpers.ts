@@ -215,11 +215,13 @@ export function getKoreanButtonStyles(
  * Returns SPACING constant value for consistent spacing across components.
  * Optionally scales for mobile devices.
  * 
- * Note: The function accepts lowercase size parameter ('xs', 'sm', 'md', etc.)
- * and internally converts it to uppercase to match SPACING constant keys.
+ * **IMPORTANT**: This function accepts lowercase size parameters ('xs', 'sm', 'md', etc.)
+ * to provide a more intuitive API, then internally converts to uppercase to match
+ * SPACING constant keys ('XS', 'SM', 'MD', etc.). This design choice prioritizes
+ * developer experience while maintaining compatibility with the SPACING constants.
  * 
  * @param size - Spacing size constant ('xs', 'sm', 'md', 'lg', 'xl', 'xxl')
- * @param isMobile - Whether to apply mobile scaling
+ * @param isMobile - Whether to apply mobile scaling (87.5% for mobile devices)
  * @returns Spacing value in pixels
  * 
  * @example
@@ -234,12 +236,16 @@ export function getResponsiveSpacing(
   size: SpacingSize,
   isMobile: boolean = false
 ): number {
+  // Convert lowercase API parameter to uppercase SPACING constant key
+  // This provides a more ergonomic API while maintaining internal consistency
   const spacingKey = size.toUpperCase() as keyof typeof SPACING;
   const spacingValue = SPACING[spacingKey];
   const mobileScale = 0.875; // 87.5% for mobile
 
+  // Runtime validation: While TypeScript prevents invalid sizes at compile time,
+  // this check provides safety for JavaScript consumers and edge cases where
+  // type assertions bypass TypeScript checks (e.g., 'as any', dynamic values)
   if (spacingValue === undefined) {
-    // Fallback to a safe default to avoid NaN if an invalid size is provided
     const fallback = SPACING.MD;
     console.warn(
       `[koreanThemeHelpers:getResponsiveSpacing] Invalid spacing size "${String(
