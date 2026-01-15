@@ -159,11 +159,19 @@ import {
 } from "../catalogs/EnhancedElbowKneeAnimations";
 
 import {
-  TAE_ELBOW_HYPEREXTENSION,
+  TAE_WRIST_LOCK_SEQUENCE,
+  TAE_ELBOW_CONTROL,
   TAE_FINGER_LOCK,
   TAE_FLOWING_COUNTER,
-  TAE_SMALL_CIRCLE_LOCK,
 } from "../catalogs/TaeJointLockAnimations";
+
+// TODO: Register Tae stance animations when trigram-specific idle/movement system is implemented
+// import {
+//   TAE_IDLE_FLOWING,
+//   TAE_CIRCULAR_SIDESTEP,
+//   TAE_DIAGONAL_CIRCULAR_APPROACH,
+//   TAE_FLEXIBLE_GUARD_TRANSITION,
+// } from "../catalogs/TaeStanceAnimations";
 
 import {
   GAM_FLOWING_BLOCK,
@@ -260,16 +268,16 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
     [AnimationType.LI_SOLAR_PLEXUS, SOLAR_PLEXUS_STRIKE_ANIMATION],
     [AnimationType.SOLAR_PLEXUS_SPEAR, SPEAR_HAND_ANIMATION],
 
-    // Tae (태)
+    // Tae (태) - Lake: Joint Manipulation
     [AnimationType.WRIST_LOCK_STRIKE, WRIST_LOCK_ANIMATION],
     [AnimationType.SPIRAL_SHOULDER_THROW, HIP_THROW_ANIMATION],
-    [AnimationType.JOINT_LOCK_DEFENSE, TAE_FLOWING_COUNTER], // Updated to specific Tae counter
+    [AnimationType.JOINT_LOCK_DEFENSE, TAE_FLOWING_COUNTER],
     [AnimationType.SWEEP_DEFENSE, TAE_SWEEP_DEFENSE],
-    [AnimationType.WRIST_TWIST_COUNTER, TAE_FLOWING_COUNTER], // Mapped to Flowing Lock Counter
-    [AnimationType.SMALL_CIRCLE_LOCK, TAE_SMALL_CIRCLE_LOCK],
+    [AnimationType.WRIST_TWIST_COUNTER, TAE_FLOWING_COUNTER],
+    [AnimationType.SMALL_CIRCLE_LOCK, TAE_WRIST_LOCK_SEQUENCE], // Updated to enhanced version
     [AnimationType.FINGER_LOCK, TAE_FINGER_LOCK],
-    [AnimationType.ELBOW_LOCK, TAE_ELBOW_HYPEREXTENSION],
-    [AnimationType.ELBOW_HYPEREXTEND, TAE_ELBOW_HYPEREXTENSION],
+    [AnimationType.ELBOW_LOCK, TAE_ELBOW_CONTROL], // Updated to enhanced version
+    [AnimationType.ELBOW_HYPEREXTEND, TAE_ELBOW_CONTROL],
     [AnimationType.SHOULDER_MANIPULATION, SHOULDER_MANIPULATION_ANIMATION],
     [AnimationType.FLOWING_ARM_BAR, FLOWING_ARM_BAR_ANIMATION],
 
