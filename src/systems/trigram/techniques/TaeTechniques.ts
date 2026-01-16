@@ -59,7 +59,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
-    animationType: AnimationType.CROSS,
+    animationType: AnimationType.FLOWING_CROSS,
     animationSpeed: 1.2,
   },
   {
@@ -93,7 +93,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 0.85,
   },
   {
