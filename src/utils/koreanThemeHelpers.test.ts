@@ -11,6 +11,9 @@ import {
   getTrigramSymbol,
   getKoreanColorName,
   formatStatRow,
+  getEnhancedKoreanOverlayStyles,
+  getKoreanButtonWithGlow,
+  getTrigramSymbolWithGlow,
 } from "./koreanThemeHelpers";
 import { KOREAN_COLORS, FONT_FAMILY } from "../types/constants";
 import { SPACING, BORDER_RADIUS } from "../types/constants/ui";
@@ -304,6 +307,175 @@ describe("koreanThemeHelpers", () => {
       // Both should use KOREAN_COLORS constants
       expect(baseStyles.fontFamily).toBe(FONT_FAMILY.KOREAN);
       expect(buttonStyles.fontFamily).toBe(FONT_FAMILY.KOREAN);
+    });
+  });
+
+  describe("getEnhancedKoreanOverlayStyles", () => {
+    it("should return enhanced overlay styles with default options", () => {
+
+      const styles = getEnhancedKoreanOverlayStyles({});
+
+      expect(styles).toHaveProperty("backgroundColor");
+      expect(styles).toHaveProperty("border");
+      expect(styles).toHaveProperty("borderRadius");
+      expect(styles).toHaveProperty("boxShadow");
+      expect(styles.fontFamily).toBe(FONT_FAMILY.KOREAN);
+    });
+
+    it("should support custom opacity", () => {
+
+      const styles = getEnhancedKoreanOverlayStyles({ opacity: 0.5 });
+
+      expect(styles.backgroundColor).toContain("0.5");
+    });
+
+    it("should include neon glow effect based on intensity", () => {
+
+      const stylesSubtle = getEnhancedKoreanOverlayStyles({ glowIntensity: "subtle" });
+      const stylesStrong = getEnhancedKoreanOverlayStyles({ glowIntensity: "strong" });
+
+      expect(stylesSubtle.boxShadow).toBeDefined();
+      expect(stylesStrong.boxShadow).toBeDefined();
+      expect(stylesStrong.boxShadow!.length).toBeGreaterThan(stylesSubtle.boxShadow!.length);
+    });
+
+    it("should include backdrop blur when enabled", () => {
+
+      const styles = getEnhancedKoreanOverlayStyles({ includeBackdropBlur: true });
+
+      expect(styles.backdropFilter).toBeDefined();
+      expect(styles.backdropFilter).toContain("blur");
+    });
+
+    it("should include gradient when enabled", () => {
+
+      const styles = getEnhancedKoreanOverlayStyles({ includeGradient: true });
+
+      expect(styles.background).toBeDefined();
+    });
+
+    it("should support custom depth layers", () => {
+
+      const styles2 = getEnhancedKoreanOverlayStyles({ depthLayers: 2 });
+      const styles4 = getEnhancedKoreanOverlayStyles({ depthLayers: 4 });
+
+      expect(styles2.boxShadow).toBeDefined();
+      expect(styles4.boxShadow).toBeDefined();
+    });
+  });
+
+  describe("getKoreanButtonWithGlow", () => {
+    it("should return button styles with glow effect", () => {
+      
+      const styles = getKoreanButtonWithGlow({ variant: "primary" });
+
+      expect(styles).toHaveProperty("backgroundColor");
+      expect(styles).toHaveProperty("border");
+      expect(styles).toHaveProperty("color");
+      expect(styles).toHaveProperty("boxShadow");
+      expect(styles).toHaveProperty("transition");
+      expect(styles.fontFamily).toBe(FONT_FAMILY.KOREAN);
+    });
+
+    it("should support different variants", () => {
+
+      const primaryStyles = getKoreanButtonWithGlow({ variant: "primary" });
+      const secondaryStyles = getKoreanButtonWithGlow({ variant: "secondary" });
+      const dangerStyles = getKoreanButtonWithGlow({ variant: "danger" });
+
+      expect(primaryStyles.backgroundColor).toBeDefined();
+      expect(secondaryStyles.backgroundColor).toBeDefined();
+      expect(dangerStyles.backgroundColor).toBeDefined();
+      // Variants differ by border color, not background
+      expect(primaryStyles.border).not.toBe(secondaryStyles.border);
+    });
+
+    it("should enhance glow on hover", () => {
+      
+      const normalStyles = getKoreanButtonWithGlow({ variant: "primary", isHovered: false });
+      const hoverStyles = getKoreanButtonWithGlow({ variant: "primary", isHovered: true });
+
+      expect(normalStyles.boxShadow).toBeDefined();
+      expect(hoverStyles.boxShadow).toBeDefined();
+      expect(hoverStyles.transform).toContain("scale");
+    });
+
+    it("should show pressed state", () => {
+      
+      const normalStyles = getKoreanButtonWithGlow({ variant: "primary", isPressed: false });
+      const pressedStyles = getKoreanButtonWithGlow({ variant: "primary", isPressed: true });
+
+      expect(pressedStyles.transform).toContain("scale");
+    });
+
+    it("should show focused state", () => {
+      
+      const normalStyles = getKoreanButtonWithGlow({ variant: "primary", isFocused: false });
+      const focusedStyles = getKoreanButtonWithGlow({ variant: "primary", isFocused: true });
+
+      expect(focusedStyles.boxShadow).toBeDefined();
+    });
+
+    it("should support different glow intensities", () => {
+      
+      const subtleGlow = getKoreanButtonWithGlow({ variant: "primary", glowIntensity: "subtle" });
+      const strongGlow = getKoreanButtonWithGlow({ variant: "primary", glowIntensity: "strong" });
+
+      expect(subtleGlow.boxShadow).toBeDefined();
+      expect(strongGlow.boxShadow).toBeDefined();
+    });
+
+    it("should support different hover animations", () => {
+      
+      const glowAnimation = getKoreanButtonWithGlow({ variant: "primary", isHovered: true, hoverAnimation: "glow" });
+      const scaleAnimation = getKoreanButtonWithGlow({ variant: "primary", isHovered: true, hoverAnimation: "scale" });
+      const combinedAnimation = getKoreanButtonWithGlow({ variant: "primary", isHovered: true, hoverAnimation: "combined" });
+
+      expect(glowAnimation.transform).toBeDefined();
+      expect(scaleAnimation.transform).toContain("scale");
+      expect(combinedAnimation.transform).toContain("scale");
+    });
+  });
+
+  describe("getTrigramSymbolWithGlow", () => {
+    it("should return trigram symbol styles with glow", () => {
+
+      const styles = getTrigramSymbolWithGlow({ stance: "geon" });
+
+      expect(styles).toHaveProperty("color");
+      expect(styles).toHaveProperty("textShadow");
+      expect(styles).toHaveProperty("transition");
+      expect(styles.fontFamily).toBe(FONT_FAMILY.KOREAN);
+    });
+
+    it("should support all eight trigram stances", () => {
+
+      const stances = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
+
+      stances.forEach((stance) => {
+        const styles = getTrigramSymbolWithGlow({ stance: stance as any });
+        expect(styles.color).toBeDefined();
+        expect(styles.textShadow).toBeDefined();
+      });
+    });
+
+    it("should show different styles for active state", () => {
+
+      const inactiveStyles = getTrigramSymbolWithGlow({ stance: "geon", isActive: false });
+      const activeStyles = getTrigramSymbolWithGlow({ stance: "geon", isActive: true });
+
+      expect(inactiveStyles.textShadow).toBeDefined();
+      expect(activeStyles.textShadow).toBeDefined();
+      expect(activeStyles.transform).toContain("scale");
+    });
+
+    it("should support custom size", () => {
+
+      const smallStyles = getTrigramSymbolWithGlow({ stance: "geon", size: 16 });
+      const largeStyles = getTrigramSymbolWithGlow({ stance: "geon", size: 32 });
+
+      expect(smallStyles.fontSize).toBe("16px");
+      expect(largeStyles.fontSize).toBe("32px");
     });
   });
 });

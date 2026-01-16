@@ -168,7 +168,7 @@ export function getLayeredDepthEffect(config: DepthEffectConfig): string {
   for (let i = 1; i <= layers; i++) {
     const offset = baseOffset * i;
     const blur = baseBlur * i;
-    const layerOpacity = opacity * (1 - (i - 1) / layers * 0.3); // Fade each layer
+    const layerOpacity = opacity * (1 - ((i - 1) / layers) * 0.3); // Fade each layer
     shadows.push(
       `0 ${offset}px ${blur}px ${hexToRgbaString(color, layerOpacity)}`
     );
@@ -284,6 +284,29 @@ export function getKoreanFontOptimization(
   };
 }
 
+
+/**
+ * Map numeric glow intensity to GlowIntensity type
+ * 
+ * Helper to standardize glow intensity mapping across components.
+ * Converts numeric intensity values to discrete levels.
+ * 
+ * @param glowIntensity - Numeric glow intensity (0-1+ scale)
+ * @returns GlowIntensity level ("subtle", "medium", "strong", "intense")
+ * 
+ * @example
+ * ```typescript
+ * const level = mapGlowIntensityLevel(0.8);
+ * // Returns: "medium"
+ * ```
+ * 
+ * @korean 광도레벨매핑
+ */
+export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
+  if (glowIntensity >= 1.0) return "strong";
+  if (glowIntensity >= 0.6) return "medium";
+  return "subtle";
+}
 /**
  * Get hover state styles with glow effect
  * 

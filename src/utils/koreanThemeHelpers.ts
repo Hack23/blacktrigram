@@ -506,24 +506,43 @@ export function getTrigramSymbol(
  * Enhances trigram symbols (☰☱☲☳☴☵☶☷) with cyberpunk neon glow
  * based on stance-specific colors and active state.
  * 
- * @param name - Trigram name in Korean
- * @param isActive - Whether the trigram stance is currently active
+ * @param config - Configuration object
+ * @param config.stance - Trigram stance identifier ("geon", "tae", etc.)
+ * @param config.isActive - Whether the trigram stance is currently active
+ * @param config.size - Font size in pixels (optional, defaults based on active state)
  * @returns React.CSSProperties with trigram-specific glow
  * 
  * @example
  * ```tsx
- * const trigramStyle = getTrigramSymbolWithGlow('건', true);
+ * const trigramStyle = getTrigramSymbolWithGlow({ stance: 'geon', isActive: true });
  * <div style={trigramStyle}>
- *   {getTrigramSymbol('건')} 건 | Geon
+ *   ☰ 건 | Geon
  * </div>
  * ```
  * 
  * @korean 팔괘기호네온글로우스타일얻기
  */
-export function getTrigramSymbolWithGlow(
-  name: "건" | "태" | "리" | "진" | "손" | "감" | "간" | "곤",
-  isActive: boolean = false
-): React.CSSProperties {
+export function getTrigramSymbolWithGlow(config: {
+  readonly stance: "geon" | "tae" | "li" | "jin" | "son" | "gam" | "gan" | "gon";
+  readonly isActive?: boolean;
+  readonly size?: number;
+}): React.CSSProperties {
+  const { stance, isActive = false, size } = config;
+  
+  // Map English stance names to Korean
+  const stanceToKorean = {
+    geon: "건",
+    tae: "태",
+    li: "리",
+    jin: "진",
+    son: "손",
+    gam: "감",
+    gan: "간",
+    gon: "곤",
+  };
+  
+  const koreanName = stanceToKorean[stance];
+  
   // Trigram-specific colors matching KOREAN_COLORS
   const trigramColors = {
     건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
@@ -536,21 +555,19 @@ export function getTrigramSymbolWithGlow(
     곤: KOREAN_COLORS.TRIGRAM_GON_PRIMARY, // Earth - Dark Gray
   };
 
-  const trigramColor = trigramColors[name];
+  const trigramColor = trigramColors[koreanName];
 
   // Get glow effect from visualEffects
   const glowStyles = getTrigramGlowEffect(trigramColor, isActive);
 
   // Korean font optimization for trigram symbols
-  const fontStyles = getKoreanFontOptimization(
-    isActive ? 32 : 28,
-    "bold"
-  );
+  const fontSize = size ?? (isActive ? 32 : 28);
+  const fontStyles = getKoreanFontOptimization(fontSize, "bold");
 
   return {
     ...fontStyles,
     ...glowStyles,
-    fontFamily: FONT_FAMILY.SYMBOL,
+    fontFamily: FONT_FAMILY.KOREAN,
     display: "inline-block",
     userSelect: "none",
     WebkitUserSelect: "none",
