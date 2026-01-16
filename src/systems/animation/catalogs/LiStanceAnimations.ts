@@ -417,12 +417,12 @@ export const LI_LINEAR_PIERCE_STEP: SkeletalAnimation =
  * - Immediate nerve strike capability from guard
  * - Narrow stance enables rapid direction changes
  *
- * @duration Static pose (no animation cycle)
+ * @duration 100ms (minimal transition time to static pose)
  * @korean 불꽃방어
  */
 export const LI_FORWARD_TARGETING_GUARD: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_forward_targeting_guard", "불꽃 방어")
-    .asStance(0, false) // Static stance, 0 duration for instantaneous position
+    .asStance(0.1, false) // Static stance, minimal duration for pose transition
     
     // === Single keyframe: Static guard position ===
     .at(0, "linear")

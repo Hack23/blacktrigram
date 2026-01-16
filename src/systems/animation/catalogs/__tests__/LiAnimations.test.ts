@@ -188,8 +188,8 @@ describe("Li Linear Pierce Step Animation (직선 관통보)", () => {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("Li Forward Targeting Guard Position (불꽃 방어)", () => {
-  it("should be a static stance (instantaneous pose)", () => {
-    expect(LI_FORWARD_TARGETING_GUARD.duration).toBe(0);
+  it("should be a static stance (minimal transition time)", () => {
+    expect(LI_FORWARD_TARGETING_GUARD.duration).toBe(0.1);
     expect(LI_FORWARD_TARGETING_GUARD.loop).toBe(false);
   });
 
@@ -456,10 +456,11 @@ describe("Li Animation Structure Validation", () => {
       const lastKeyframe = animation.keyframes[animation.keyframes.length - 1];
       const timeDiff = Math.abs(lastKeyframe.time - animation.duration);
       
-      // Static poses (duration = 0) should have keyframe at time 0
+      // Static poses have minimal duration (0.1s) with single keyframe at time 0
       // Animated poses should have final keyframe matching duration
-      if (animation.duration === 0) {
-        expect(lastKeyframe.time, `${name} static pose should be at time 0`).toBe(0);
+      if (animation.keyframes.length === 1 && lastKeyframe.time === 0) {
+        // Static pose - acceptable to have keyframe at 0 with small duration
+        expect(animation.duration, `${name} static pose should have minimal positive duration`).toBeGreaterThan(0);
       } else {
         expect(timeDiff, `${name} final keyframe should match duration`).toBeLessThan(0.01);
       }
