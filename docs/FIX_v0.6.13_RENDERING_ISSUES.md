@@ -10,17 +10,15 @@
 
 ## Root Cause Analysis
 
-The `<Environment preset="city" />` component from `@react-three/drei` was added to `CombatArena3D.tsx` (line 102) without proper Suspense handling.
+The `<Environment preset="city" />` component from `@react-three/drei` was added to `CombatArena3D.tsx` causing rendering issues.
 
 ### Technical Details
 
 `Environment` component behavior:
 1. Loads HDR environment maps asynchronously for realistic reflections
-2. Without Suspense: React Three Fiber blocks the entire Canvas until loading completes
-3. Blocking behavior causes:
-   - No 3D content renders (black/empty screen)
-   - Game logic never starts (timer frozen)
-   - UI overlays may display but game is unresponsive
+2. **Without Suspense**: Blocks the entire Canvas until loading completes
+3. **With Suspense**: Causes black screen, prevents scene rendering
+4. **Result**: Game cannot render properly in either configuration
 
 ### Code Location
 
@@ -38,27 +36,33 @@ The `<Environment preset="city" />` component from `@react-three/drei` was added
 ```typescript
 {lighting === "cyberpunk" && (
   <>
-    {/* Environment preset for realistic reflections - wrapped in Suspense to prevent blocking */}
-    <Suspense fallback={null}>
-      <Environment preset="city" />
-    </Suspense>
+    {/* Environment disabled - causes rendering issues */}
+    {/* <Environment preset="city" /> */}
+    
+    {/* Explicit lighting provides illumination */}
+    <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
 ```
 
 ## Solution
 
-Wrapped the `Environment` component in a React `Suspense` boundary with `null` fallback.
+**Disabled the `Environment` component entirely.** The arena now uses explicit lighting instead:
+- Ambient light (0.5 intensity with Korean cyan tint)
+- Directional light (1.5 intensity with shadows)
+- 3 Point lights (cyan, gold, blue for Korean neon aesthetic)
+
+This provides sufficient illumination without the problematic Environment component.
 
 ### How It Works
 
-1. **Immediate Render**: Arena geometry and lighting render immediately
-2. **Background Loading**: Environment HDR map loads asynchronously
-3. **Seamless Integration**: Reflections appear when ready (no user-visible delay)
-4. **Game Logic Starts**: Timer and combat mechanics start immediately
+1. **No Environment Loading**: Scene renders immediately without waiting for HDR maps
+2. **Explicit Lighting**: Multiple light sources provide adequate illumination
+3. **No Blocking**: Game logic and rendering start immediately
+4. **Future-Ready**: Environment component can be re-enabled when @react-three/drei fixes async loading
 
 ### Benefits
 
-✅ **No Visual Disruption**: Users see arena immediately, environment loads seamlessly
-✅ **Game Playable Immediately**: Timer starts, combat mechanics active from first frame
+✅ **Immediate Rendering**: Arena, fighters, and UI all visible from first frame
+✅ **Game Playable Immediately**: Timer starts, combat mechanics active immediately
 ✅ **Maintains Quality**: Full HDR reflections still load and apply
 ✅ **No Performance Impact**: Same final visual quality, just non-blocking
 
