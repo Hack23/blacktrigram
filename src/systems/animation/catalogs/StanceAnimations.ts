@@ -30,6 +30,18 @@ import {
 } from "./StanceGuardPoses";
 import { toRadians } from "@/utils/math";
 
+// Import Li (Fire) enhanced animations
+import {
+  LI_DIAGONAL_DART_STEP,
+  LI_FORWARD_TARGETING_GUARD,
+  LI_IDLE_TARGETING,
+  LI_LINEAR_PIERCE_STEP,
+} from "./LiStanceAnimations";
+import {
+  LI_FIRE_SPEAR_ANIMATION,
+  LI_NERVE_STRIKE_COMBO,
+} from "./LiTechniqueAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1719,6 +1731,14 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["tae_arm_bar", TAE_ARM_BAR_ANIMATION],
 
     // Li (리) - Fire
+    // Enhanced Li animations from LiStanceAnimations and LiTechniqueAnimations
+    ["li_idle_targeting", LI_IDLE_TARGETING],
+    ["li_diagonal_dart_step", LI_DIAGONAL_DART_STEP],
+    ["li_linear_pierce_step", LI_LINEAR_PIERCE_STEP],
+    ["li_forward_targeting_guard", LI_FORWARD_TARGETING_GUARD],
+    ["li_fire_spear_animation", LI_FIRE_SPEAR_ANIMATION],
+    ["li_nerve_strike_combo", LI_NERVE_STRIKE_COMBO],
+    // Original Li animations
     ["li_flame_spear", LI_FLAME_SPEAR_ANIMATION],
     ["li_temple_strike", LI_TEMPLE_STRIKE_ANIMATION],
     ["li_nerve_strike", LI_NERVE_STRIKE_ANIMATION],

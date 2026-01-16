@@ -417,7 +417,7 @@ export const LI_LINEAR_PIERCE_STEP: SkeletalAnimation =
  */
 export const LI_FORWARD_TARGETING_GUARD: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_forward_targeting_guard", "불꽃 방어")
-    .asStance(1.0, false) // Static stance, no loop
+    .asStance(0, false) // Static stance, 0 duration for instantaneous position
     
     // === Single keyframe: Static guard position ===
     .at(0, "linear")
