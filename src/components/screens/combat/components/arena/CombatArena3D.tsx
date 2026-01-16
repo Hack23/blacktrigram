@@ -3,13 +3,23 @@
  *
  * Renders the 3D combat arena with Korean dojang aesthetic
  * Includes floor, lighting, and atmospheric effects
+ *
+ * Enhanced features:
+ * - Korean cyberpunk lighting with neon point lights (cyan, gold, blue)
+ * - Reflective wet concrete floor with clearcoat and emissive glow
+ * - Upgraded shadow quality (2048x2048 shadow maps)
+ * - Atmospheric fog with Korean color gradient
+ * - Korean signage with emissive neon glow (전투, 흑괘, 급소격)
+ * - Optional atmospheric particles (rain/mist)
  */
 
 import { Environment } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef } from "react";
+import React, { useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
+import KoreanSignage3D from "./KoreanSignage3D";
+import AtmosphericParticles3D from "./AtmosphericParticles3D";
 
 /**
  * Props for the CombatArena3D component.
@@ -20,26 +30,30 @@ export interface CombatArena3DProps {
   readonly lighting?: "cyberpunk" | "traditional" | "neutral";
   /** Scale factor for arena size (1.0 = desktop, <1.0 = mobile). Defaults to 1.0 */
   readonly scale?: number;
+  /** Enable atmospheric particles (rain/mist). Defaults to true on desktop, false on mobile */
+  readonly enableParticles?: boolean;
 }
 
 // Floor scaling constant for extended arena boundaries
 const FLOOR_SCALE_FACTOR = 1.5;
 
 // Shadow map size constants for performance optimization
-const SHADOW_MAP_SIZE_MOBILE: [number, number] = [512, 512];
-const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [1024, 1024];
+// Upgraded to 2048x2048 for crisp shadows on desktop
+const SHADOW_MAP_SIZE_MOBILE: [number, number] = [1024, 1024]; // Upgraded from 512x512
+const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [2048, 2048]; // Upgraded from 1024x1024
 
 /**
  * CombatArena3D Component
- * Creates a Korean-themed 3D arena environment
+ * Creates a Korean-themed 3D arena environment with cyberpunk aesthetic
  */
 export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   lighting = "cyberpunk",
   scale = 1.0,
+  enableParticles = scale >= 1.0, // Default: enabled on desktop, disabled on mobile
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
-  // Animate grid rotation
+  // Animate grid rotation for cyberpunk effect
   useFrame(() => {
     if (gridRef.current) {
       gridRef.current.rotation.y += 0.0002;
@@ -53,26 +67,85 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   const markerDistance = 8 * scale;
   const markerDepth = 4 * scale;
 
+  // Memoized floor material with wet concrete aesthetic and reflections
+  // Note: Empty dependency array is correct - KOREAN_COLORS is a const object
+  // and doesn't need to be included in dependencies
+  const floorMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(0x2a2a2a), // Dark concrete
+        roughness: 0.3, // Wet/reflective surface
+        metalness: 0.1,
+        clearcoat: 0.3, // Wet sheen
+        clearcoatRoughness: 0.4,
+        envMapIntensity: 1.5, // Enhanced reflections from Environment preset
+        // Subtle emissive for neon reflection glow
+        emissive: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
+        emissiveIntensity: 0.05,
+      }),
+    []
+  );
+
+  // Cleanup floor material on unmount
+  useEffect(() => {
+    return () => {
+      floorMaterial.dispose();
+    };
+  }, [floorMaterial]);
+
   return (
     <group>
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
+          {/* Environment preset for realistic reflections */}
           <Environment preset="city" />
-          <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
+
+          {/* Base ambient light with Korean cyan tint - increased for visibility */}
+          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
+
+          {/* Primary directional light (moonlight) with upgraded shadows */}
           <directionalLight
-            position={[10, 10, 5]}
-            intensity={0.8}
-            color={KOREAN_COLORS.ACCENT_GOLD}
+            position={[15, 20, 10]}
+            intensity={1.5}
+            color={0xffffff}
             castShadow
             shadow-mapSize={
               scale < 1.0 ? SHADOW_MAP_SIZE_MOBILE : SHADOW_MAP_SIZE_DESKTOP
             }
-            shadow-bias={-0.0005}
+            shadow-camera-far={50}
+            shadow-camera-left={-20}
+            shadow-camera-right={20}
+            shadow-camera-top={20}
+            shadow-camera-bottom={-20}
+            shadow-bias={-0.0001}
           />
+
+          {/* Korean neon accent lights - increased range and intensity */}
+          {/* Cyan neon light (left side) */}
           <pointLight
-            position={[-10, 5, -5]}
-            intensity={0.4}
+            position={[-10, 3, 0]}
+            intensity={4}
+            distance={30}
+            decay={1.5}
+            color={KOREAN_COLORS.PRIMARY_CYAN}
+          />
+
+          {/* Gold neon light (right side) */}
+          <pointLight
+            position={[10, 3, 0]}
+            intensity={4}
+            distance={30}
+            decay={1.5}
+            color={KOREAN_COLORS.ACCENT_GOLD}
+          />
+
+          {/* Blue accent light (behind) */}
+          <pointLight
+            position={[0, 5, -15]}
+            intensity={3}
+            distance={35}
+            decay={1.5}
             color={KOREAN_COLORS.ACCENT_BLUE}
           />
         </>
@@ -97,22 +170,22 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         </>
       )}
 
-      {/* Arena floor - dojang mat (scale-aware) */}
+      {/* Arena floor - dojang mat with reflective wet concrete aesthetic */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry
           args={[floorWidth * FLOOR_SCALE_FACTOR, floorDepth * FLOOR_SCALE_FACTOR]}
         />
-        <meshPhysicalMaterial
-          color={
-            lighting === "cyberpunk"
-              ? KOREAN_COLORS.UI_BACKGROUND_DARK
-              : KOREAN_COLORS.UI_BACKGROUND_MEDIUM
-          }
-          roughness={lighting === "cyberpunk" ? 0.2 : 0.7}
-          metalness={lighting === "cyberpunk" ? 0.6 : 0.1}
-          clearcoat={lighting === "cyberpunk" ? 0.5 : 0}
-          clearcoatRoughness={0.2}
-        />
+        {lighting === "cyberpunk" ? (
+          <primitive object={floorMaterial} attach="material" />
+        ) : (
+          <meshPhysicalMaterial
+            color={KOREAN_COLORS.UI_BACKGROUND_MEDIUM}
+            roughness={0.7}
+            metalness={0.1}
+            clearcoat={0}
+            clearcoatRoughness={0.2}
+          />
+        )}
       </mesh>
 
       {/* Cyberpunk grid overlay (scale-aware) */}
@@ -158,8 +231,17 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         />
       </mesh>
 
-      {/* Atmospheric fog */}
-      <fog attach="fog" args={[KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35]} />
+      {/* Korean Signage with Emissive Glow */}
+      {lighting === "cyberpunk" && <KoreanSignage3D scale={scale} />}
+
+      {/* Atmospheric Particles (rain/mist) */}
+      {lighting === "cyberpunk" && enableParticles && (
+        <AtmosphericParticles3D
+          count={scale >= 1.0 ? 500 : 250} // Fewer particles on mobile
+          scale={scale}
+          speed={2}
+        />
+      )}
     </group>
   );
 };

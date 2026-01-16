@@ -16,12 +16,30 @@ vi.mock("@react-three/fiber", () => ({
 
 vi.mock("@react-three/drei", () => ({
   Environment: () => null,
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <mesh>{children}</mesh>
+  ),
 }));
 
 vi.mock("three", () => ({
   GridHelper: class MockGridHelper {},
   Fog: class MockFog {},
   DoubleSide: 2,
+  Color: class MockColor {
+    constructor(public color?: number | string) {}
+  },
+  MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
+    dispose() {}
+  },
+  MeshBasicMaterial: class MockMeshBasicMaterial {
+    dispose() {}
+  },
+  BufferGeometry: class MockBufferGeometry {
+    dispose() {}
+    setAttribute() {}
+  },
+  BufferAttribute: class MockBufferAttribute {},
+  AdditiveBlending: 1,
 }));
 
 describe("CombatArena3D", () => {
