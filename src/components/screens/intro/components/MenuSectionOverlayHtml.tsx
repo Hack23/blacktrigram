@@ -188,15 +188,15 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         ...enhancedOverlayStyles,
         ...safeAreaStyles,
         width: `${width}px`,
-        height: `${height}px`,
+        minHeight: `${height}px`,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "center",
         gap: `${sectionGap}px`,
         padding: `${containerPadding}px`,
         position: "relative",
-        overflow: "hidden",
+        overflow: "visible",
       }}
       data-testid="main-menu-section"
     >

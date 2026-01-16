@@ -288,26 +288,28 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     const availableHeight = screenHeight;
 
     // Title area - small header with title and description
-    const titleHeight = screenWidth < 768 ? 35 : 40;
+    const titleHeight = screenWidth < 768 ? 32 : 38;
 
     // Logo area - based on logo size plus trigram symbols (compact)
-    const trigramHeight = screenWidth < 768 ? 18 : 24;
-    const logoAreaHeight = logoSize + trigramHeight + 4;
+    const trigramHeight = screenWidth < 768 ? 16 : 22;
+    const logoAreaHeight = logoSize + trigramHeight;
 
     // Footer - compact with all info
-    const footerHeight = Math.max(availableHeight * 0.055, 50);
+    const footerHeight = Math.max(availableHeight * 0.05, 48);
 
     // Remaining space for menu + archetype
     const contentHeight =
       availableHeight - titleHeight - logoAreaHeight - footerHeight;
 
-    // Menu is compact with 2x2 grid, archetype gets more space
-    const menuPercent = screenWidth < 768 ? 0.35 : 0.28;
-    const menuHeight = Math.max(contentHeight * menuPercent, 130);
-    const archetypeHeight = Math.max(contentHeight * (1 - menuPercent), 180);
+    // Menu needs enough height for 2x2 grid (2 rows of ~40px buttons + title + padding)
+    // Mobile needs column layout (4 buttons stacked)
+    const menuMinHeight = screenWidth < 768 ? 180 : 120;
+    const menuPercent = screenWidth < 768 ? 0.38 : 0.25;
+    const menuHeight = Math.max(contentHeight * menuPercent, menuMinHeight);
+    const archetypeHeight = contentHeight - menuHeight - 8; // 8px gap
 
     // Gap scales with screen (minimal)
-    const gap = Math.max(screenHeight * 0.003, 3);
+    const gap = Math.max(screenHeight * 0.002, 2);
 
     return {
       titleHeight,
@@ -370,7 +372,10 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
         onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
           // Signal that Canvas is ready for Html overlay to mount
-          setCanvasReady(true);
+          // Use requestAnimationFrame to ensure paint cycle completes
+          requestAnimationFrame(() => {
+            setCanvasReady(true);
+          });
         }}
       >
         {/* 3D Background Scene */}
@@ -386,11 +391,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "flex-start",
+                justifyContent: "space-between",
                 padding: 0,
-                gap: `${layoutHeights.gap}px`,
                 pointerEvents: "none",
-                zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
+                zIndex: Z_INDEX.HUD,
+                overflow: "hidden",
               }}
             >
               {/* Title - Small, above logo */}
@@ -401,7 +406,8 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   alignItems: "center",
                   gap: "2px",
                   pointerEvents: "none",
-                  marginTop: "8px",
+                  marginTop: "4px",
+                  flexShrink: 0,
                 }}
                 data-testid="main-title-container"
               >
@@ -430,7 +436,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               {/* Logo Section - Primary branding */}
               <div
                 style={{
-                  flex: 0,
+                  flexShrink: 0,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -484,12 +490,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "flex-start",
-                  gap: `${layoutHeights.gap}px`,
-                  paddingLeft: screenWidth < 768 ? "12px" : "20px",
-                  paddingRight: screenWidth < 768 ? "12px" : "20px",
-                  paddingBottom: `${layoutHeights.gap}px`,
+                  gap: "4px",
+                  paddingLeft: screenWidth < 768 ? "8px" : "16px",
+                  paddingRight: screenWidth < 768 ? "8px" : "16px",
                   overflow: "hidden",
                   pointerEvents: "auto",
+                  minHeight: 0,
                 }}
                 data-testid="main-content"
               >
@@ -520,13 +526,15 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   />
                 </div>
 
-                {/* Archetype Selection */}
+                {/* Archetype Selection - Scrollable container */}
                 <div
                   style={{
-                    width: screenWidth < 768 ? "100%" : "80%",
-                    maxWidth: screenWidth < 768 ? "100%" : "1000px",
+                    width: screenWidth < 768 ? "100%" : "85%",
+                    maxWidth: screenWidth < 768 ? "100%" : "900px",
                     flex: 1,
                     minHeight: 0,
+                    overflowY: "auto",
+                    overflowX: "hidden",
                   }}
                   data-testid="archetype-section-container"
                 >
@@ -538,12 +546,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                       onPlaySFX={audio.playSFX}
                       width={
                         screenWidth < 768
-                          ? screenWidth * 0.92
+                          ? screenWidth * 0.9
                           : screenWidth < 1024
-                            ? Math.min(850, screenWidth * 0.8)
-                            : Math.min(1000, screenWidth * 0.6)
+                            ? Math.min(700, screenWidth * 0.7)
+                            : Math.min(850, screenWidth * 0.55)
                       }
-                      height={layoutHeights.archetypeHeight}
+                      height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
                       isMobile={isMobile}
                       allowDetailedView={screenWidth >= 768}
                     />
@@ -555,12 +563,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                       onPlaySFX={audio.playSFX}
                       width={
                         screenWidth < 768
-                          ? screenWidth * 0.92
+                          ? screenWidth * 0.9
                           : screenWidth < 1024
-                            ? Math.min(850, screenWidth * 0.8)
-                            : Math.min(1000, screenWidth * 0.6)
+                            ? Math.min(700, screenWidth * 0.7)
+                            : Math.min(850, screenWidth * 0.55)
                       }
-                      height={layoutHeights.archetypeHeight}
+                      height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
                       isMobile={isMobile}
                     />
                   )}
@@ -571,16 +579,17 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               <div
                 style={{
                   width: "100%",
-                  height: `${layoutHeights.footerHeight}px`,
+                  minHeight: `${layoutHeights.footerHeight}px`,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "2px",
+                  gap: "1px",
                   background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
                   borderTop: `1px solid ${colors.footerBorder}`,
                   pointerEvents: "auto",
-                  paddingBottom: "4px",
+                  paddingBottom: "2px",
+                  flexShrink: 0,
                 }}
                 data-testid="intro-footer"
               >
@@ -601,7 +610,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 <div
                   style={{
                     fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 4, 9)}px`,
-                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
+                    color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
                     textAlign: "center",
                     cursor: "pointer",
                   }}
@@ -619,7 +628,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 <div
                   style={{
                     fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
-                    color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                    color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
                     textAlign: "center",
                     cursor: "pointer",
                   }}
