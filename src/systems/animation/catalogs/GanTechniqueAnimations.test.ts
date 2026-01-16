@@ -216,14 +216,16 @@ describe("Gan Technique Combat Animations", () => {
         expect(shoulderL).toBeDefined();
         expect(wristL).toBeDefined();
         expect(shoulderR).toBeDefined();
+        expect(wristR).toBeDefined();
         
-        if (shoulderL && wristL && shoulderR) {
+        if (shoulderL && wristL && shoulderR && wristR) {
           // Both arms should be engaged in control
           expect(shoulderL.y).toBeGreaterThan(0.349); // > 20° rotation for control
           expect(shoulderR.y).toBeGreaterThan(0.174); // > 10° assisting
           
           // Wrists should be positioned for grip control
           expect(wristL.x).toBeGreaterThan(0); // Positive for control grip
+          expect(wristR.x).toBeGreaterThan(0); // Right wrist also engaged in control
         }
         
         if (spine) {

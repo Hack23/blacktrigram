@@ -100,21 +100,28 @@ export const GAN_IDLE_ROOTED: SkeletalAnimation =
     // Keyframe 1600ms: Deep breath (minimal movement - mountain stillness)
     .at(1.6)
     .rotate(BoneName.SPINE_UPPER, -0.017, 0, 0) // -1° (tiny chest expansion)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Lower spine remains stable
     .rotate(BoneName.SHOULDER_L, -0.366, 0, -0.453) // -21°, 0°, -26° (slight shoulder adjustment)
     .rotate(BoneName.SHOULDER_R, -0.366, 0, 0.453) // -21°, 0°, 26°
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (maintained guard structure)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (maintained guard structure)
+    .rotate(BoneName.WRIST_L, 0, 0, 0) // Wrists remain neutral
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
     .rotate(BoneName.KNEE_L, -0.279, 0, 0) // -16° (slightly deeper root)
     .rotate(BoneName.KNEE_R, -0.279, 0, 0) // -16°
+    .rotate(BoneName.HEAD, 0, 0, 0) // Head steady - mountain focus
     .position(BoneName.PELVIS, 0, 0, 0) // No movement - mountain doesn't shift
     .done<MartialArtsAnimationBuilder>()
     // Keyframe 3200ms: Return to start (complete cycle)
     .at(3.2)
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Stable lower spine
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44)
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (guard restored)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (guard restored)
+    .rotate(BoneName.WRIST_L, 0, 0, 0) // Neutral wrists
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
     .rotate(BoneName.KNEE_L, -0.26, 0, 0)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0)
     .rotate(BoneName.HEAD, 0, 0, 0)
@@ -159,10 +166,13 @@ export const GAN_SHORT_ROOT_STEP: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0.087, 0, 0) // 5° forward tilt (minimal)
     .rotate(BoneName.KNEE_R, -0.35, 0, 0) // -20° rear leg prepares
     .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° front leg ready
+    .rotate(BoneName.FOOT_L, 0, 0, 0) // Front foot flat
+    .rotate(BoneName.FOOT_R, 0.087, 0, 0) // 5° rear foot prepares to push
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92)
+    .rotate(BoneName.HEAD, 0.052, 0, 0) // 3° head slightly forward (aware)
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Phase 2: Minimal forward step (200ms, frame 5)
@@ -170,10 +180,13 @@ export const GAN_SHORT_ROOT_STEP: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0.105, 0, 0) // 6° slight forward
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° extending
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° absorbing weight
+    .rotate(BoneName.FOOT_L, -0.052, 0, 0) // -3° foot plants
+    .rotate(BoneName.FOOT_R, 0.174, 0, 0) // 10° rear foot pushes off
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard solid
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (maintained)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (maintained)
+    .rotate(BoneName.HEAD, 0.052, 0, 0) // 3° head tracks forward
     .position(BoneName.PELVIS, 0, 0, 0.15) // Minimal forward movement
     .done<MartialArtsAnimationBuilder>()
     // Phase 3: Root reinforcement (400ms, frame 9)
@@ -181,10 +194,13 @@ export const GAN_SHORT_ROOT_STEP: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0, 0, 0) // Return to neutral
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° rooted
     .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° rooted
+    .rotate(BoneName.FOOT_L, 0, 0, 0) // Front foot grounded
+    .rotate(BoneName.FOOT_R, 0, 0, 0) // Rear foot settled
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Head returns to neutral focus
     .position(BoneName.PELVIS, 0, 0, 0.25) // Short step complete
     .done<MartialArtsAnimationBuilder>()
     .build();
@@ -227,10 +243,12 @@ export const GAN_DEFENSIVE_ANGLE_SHIFT: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (pivot foot loads)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (support foot stable)
     .rotate(BoneName.FOOT_L, 0, -0.087, 0) // 0°, -5° (beginning pivot)
+    .rotate(BoneName.FOOT_R, 0, 0, 0) // Support foot flat
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.92)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92)
+    .rotate(BoneName.HEAD, 0, -0.087, 0) // 0°, -5° (head begins tracking)
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Phase 2: Angle rotation (267ms, frame 6)
@@ -241,6 +259,7 @@ export const GAN_DEFENSIVE_ANGLE_SHIFT: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (pivot foot)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (support foot)
     .rotate(BoneName.FOOT_L, 0, -0.262, 0) // 0°, -15° (pivot complete)
+    .rotate(BoneName.FOOT_R, 0, 0.052, 0) // 0°, 3° (support adjusts)
     .rotate(BoneName.HEAD, 0, -0.174, 0) // 0°, -10° (eyes track forward)
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
@@ -256,6 +275,7 @@ export const GAN_DEFENSIVE_ANGLE_SHIFT: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (rooted)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (rooted)
     .rotate(BoneName.FOOT_L, 0, -0.262, 0) // 0°, -15° (planted)
+    .rotate(BoneName.FOOT_R, 0, 0, 0) // Support foot flat and stable
     .rotate(BoneName.HEAD, 0, -0.174, 0) // 0°, -10°
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard solid
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
@@ -301,7 +321,10 @@ export const GAN_HIGH_SOLID_GUARD_TRANSITION: SkeletalAnimation =
     .rotate(BoneName.SHOULDER_R, -0.262, 0, 0.349) // -15°, 0°, 20° (raising)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.57) // -90° (transitioning)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // 90° (transitioning)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral upper spine
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Stable lower spine
     .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
+    .rotate(BoneName.HEAD, 0.052, 0, 0) // 3° head lifts slightly
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Phase 2: Establish high solid guard (333ms)
@@ -312,8 +335,11 @@ export const GAN_HIGH_SOLID_GUARD_TRANSITION: SkeletalAnimation =
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (reinforced structure)
     .rotate(BoneName.WRIST_L, 0, 0, 0) // Neutral wrists for blocking
     .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, -0.035, 0, 0) // -2° slight chest lift for solid structure
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Lower spine stable
     .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (stable stance)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (stable stance)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Head neutral, focused
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     .build();

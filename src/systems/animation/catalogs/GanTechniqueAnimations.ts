@@ -145,6 +145,8 @@ export const GAN_ROCK_DEFENSE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.SHOULDER_R, 1.047, 0, -0.087) // 60°, 0°, -5° (counter strike extended)
     .rotate(BoneName.ELBOW_R, 0, 0, 0) // 0° (fully extended)
     .rotate(BoneName.WRIST_R, 0.174, 0, 0) // 10° (impact position)
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
+    .rotate(BoneName.HEAD, 0, 0.174, 0) // 0°, 10° (head tracks strike)
     .position(BoneName.PELVIS, 0, 0, 0.1) // Full forward drive
     .done<MartialArtsAnimationBuilder>()
     // =================================================================
@@ -162,6 +164,7 @@ export const GAN_ROCK_DEFENSE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110°
     .rotate(BoneName.WRIST_L, 0, 0, 0)
     .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Head returns to neutral focus
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     .build();
@@ -298,6 +301,7 @@ export const GAN_DEFENSIVE_REVERSAL: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, 0.174, 0, 0) // 10° (push position)
     .rotate(BoneName.KNEE_L, -0.174, 0, 0) // -10° (stable)
     .rotate(BoneName.KNEE_R, -0.174, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0.349, 0) // 0°, 20° (head tracks reversal direction)
     .position(BoneName.PELVIS, 0, 0, 0.15) // Maximum forward reversal
     .done<MartialArtsAnimationBuilder>()
     // =================================================================
@@ -315,6 +319,7 @@ export const GAN_DEFENSIVE_REVERSAL: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, 0, 0, 0)
     .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (stable stance)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Head returns to neutral focus
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     .build();
