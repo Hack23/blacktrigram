@@ -1811,8 +1811,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ||
-              aiState.selectedTechnique.englishName ||
+              aiState.selectedTechnique.name?.english ??
+              aiState.selectedTechnique.englishName ??
               "jab";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
@@ -1834,8 +1834,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ||
-              aiState.selectedTechnique.englishName ||
+              aiState.selectedTechnique.name?.english ??
+              aiState.selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
@@ -1906,8 +1906,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ||
-              aiState.selectedTechnique.englishName ||
+              aiState.selectedTechnique.name?.english ??
+              aiState.selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
