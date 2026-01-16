@@ -25,6 +25,8 @@ import {
   getNeonTextShadow,
   getSmoothTransition,
 } from "../../../../utils/visualEffects";
+import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
+import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
 
 /**
  * Training statistics interface
@@ -70,9 +72,15 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
   stats,
   isMobile,
 }) => {
-  const panelWidth = isMobile ? 240 : 260;
+  const panelWidth = isMobile ? 260 : 280; // Increased for better readability
   const padding = getResponsiveSpacing("md", isMobile);
   const gap = getResponsiveSpacing("sm", isMobile);
+  
+  // Safe area support for notched devices
+  const safeAreaStyles = useMemo(
+    () => (isMobile ? getSafeAreaPadding(["top"], padding) : {}),
+    [isMobile, padding]
+  );
   
   // Format accuracy with memoization
   const formattedAccuracy = useMemo(
@@ -95,7 +103,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
     return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
   }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
-  // Enhanced panel styles with neon glow
+  // Enhanced panel styles with neon glow and safe area support
   const panelStyle: React.CSSProperties = {
     ...getEnhancedKoreanOverlayStyles({
       opacity: 0.92,
@@ -104,12 +112,15 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
       includeBackdropBlur: true,
       depthLayers: 3,
     }),
+    ...safeAreaStyles,
     width: `${panelWidth}px`,
     padding: `${padding}px`,
   };
 
-  // Header title styles
-  const titleFontSize = isMobile ? 14 : 16;
+  // Header title styles with improved mobile font size (16px+ for Korean)
+  const titleFontSize = isMobile
+    ? getMobileKoreanFontSize("SMALL", 375) // 16px minimum
+    : 18;
 
   return (
     <div style={panelStyle} data-testid="training-stats-html">
@@ -244,9 +255,14 @@ const StatRow: React.FC<{
   color: number; // Numeric hex color from KOREAN_COLORS (e.g., 0x00ffff)
   isMobile: boolean;
 }> = ({ korean, english, value, color, isMobile }) => {
-  const labelFontSize = isMobile ? 11 : 12;
-  const sublabelFontSize = isMobile ? 8 : 9;
-  const valueFontSize = isMobile ? 16 : 18;
+  // Improved font sizes for mobile readability (min 16px for Korean body text)
+  const labelFontSize = isMobile
+    ? getMobileKoreanFontSize("SMALL", 375) // 16px minimum
+    : 14;
+  const sublabelFontSize = isMobile ? 12 : 11; // Increased from 8-9px
+  const valueFontSize = isMobile
+    ? getMobileKoreanFontSize("MEDIUM", 375) // 18px minimum
+    : 20;
 
   return (
     <div
