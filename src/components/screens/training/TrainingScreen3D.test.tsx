@@ -19,6 +19,9 @@ vi.mock("@react-three/drei", () => ({
     <div data-testid="html-overlay">{children}</div>
   ),
   Environment: () => null,
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <mesh>{children}</mesh>
+  ),
 }));
 
 vi.mock("@react-three/postprocessing", () => ({

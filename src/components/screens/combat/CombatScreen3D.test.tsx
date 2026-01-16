@@ -45,6 +45,9 @@ vi.mock("@react-three/drei", () => ({
   ),
   OrbitControls: () => null,
   Environment: () => null,
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <mesh>{children}</mesh>
+  ),
 }));
 
 // Mock @react-three/postprocessing
@@ -169,8 +172,18 @@ vi.mock("three", () => ({
   MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
     dispose() {}
   },
+  MeshBasicMaterial: class MockMeshBasicMaterial {
+    dispose() {}
+  },
   DoubleSide: 2,
-  Color: class MockColor {},
+  Color: class MockColor {
+    constructor(public color?: number | string) {}
+  },
+  BufferAttribute: class MockBufferAttribute {},
+  AdditiveBlending: 1,
+  Fog: class MockFog {
+    constructor(public color: number, public near: number, public far: number) {}
+  },
   BoxGeometry: class MockBoxGeometry {
     dispose() {}
   },
