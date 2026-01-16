@@ -70,23 +70,27 @@ function App() {
   });
 
   useEffect(() => {
+    // Define handlers outside async function for proper cleanup
+    const handleGlobalError = (e: ErrorEvent) => {
+      console.error("Global error:", e.error);
+    };
+
+    const handleUnhandledRejection = (e: PromiseRejectionEvent) => {
+      console.error("Unhandled promise rejection:", e.reason);
+      if (
+        e.reason?.message?.includes("Failed to load") ||
+        e.reason?.message?.includes("no supported source")
+      ) {
+        e.preventDefault();
+      }
+    };
+
     const initializeApp = async () => {
       try {
         window.focus();
 
-        window.addEventListener("error", (e) => {
-          console.error("Global error:", e.error);
-        });
-
-        window.addEventListener("unhandledrejection", (e) => {
-          console.error("Unhandled promise rejection:", e.reason);
-          if (
-            e.reason?.message?.includes("Failed to load") ||
-            e.reason?.message?.includes("no supported source")
-          ) {
-            e.preventDefault();
-          }
-        });
+        window.addEventListener("error", handleGlobalError);
+        window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
         // PHASE 2: Performance optimization initialization
         console.log("🔧 Initializing animation performance optimizations...");
@@ -126,6 +130,15 @@ function App() {
     };
 
     initializeApp();
+
+    // Cleanup global event handlers to prevent memory leaks
+    return () => {
+      window.removeEventListener("error", handleGlobalError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
+    };
   }, []);
 
   // Shared audio initialization logic for splash and retry
