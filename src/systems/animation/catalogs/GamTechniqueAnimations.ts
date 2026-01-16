@@ -150,10 +150,10 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     
     // Frame 24 (1400ms): Complete counter - opponent off-balance/down
     .at(1.4)
-    .rotate(BoneName.PELVIS, 0, 0.31, 0.10) // 0°, 18°, 6° (full counter rotation)
+    .rotate(BoneName.PELVIS, 0, 0.314, 0.105) // 0°, ~18°, ~6° (full counter rotation)
     .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // 0°, 20°, 0° (complete counter)
     .rotate(BoneName.SHOULDER_L, 0.70, 0.26, -0.14) // 40°, 15°, -8° (counter complete)
-    .rotate(BoneName.SHOULDER_R, 0.79, -0.31, 0.17) // 45°, -18°, 10° (control maintained)
+    .rotate(BoneName.SHOULDER_R, 0.79, -0.314, 0.17) // 45°, ~-18°, 10° (control maintained)
     .rotate(BoneName.ELBOW_L, 0, 0, -0.44) // -25° (arms control opponent)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.35) // -20°
     .rotate(BoneName.WRIST_L, 0.17, 0.07, -0.12) // Control grip applied

@@ -94,8 +94,8 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     // Keyframe 1950ms: Subtle weight shift right
     .at(1.95)
-    .rotate(BoneName.PELVIS, 0, 0, 0.03) // 0°, 0°, 2° (minimal shift)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.03, 0) // 0°, 2°, 0°
+    .rotate(BoneName.PELVIS, 0, 0, 0.0349) // 0°, 0°, 2° (minimal shift)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.0349, 0) // 0°, 2°, 0°
     .rotate(BoneName.SHOULDER_L, 0.07, 0.10, -0.14) // 4°, 6°, -8° (left lowers)
     .rotate(BoneName.SHOULDER_R, 0.10, -0.17, 0.21) // 6°, -10°, 12° (right rises)
     .rotate(BoneName.WRIST_L, -0.12, 0, -0.02) // -7°, 0°, -1°

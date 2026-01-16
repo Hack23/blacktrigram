@@ -54,13 +54,13 @@ describe("Gam Stance Animations", () => {
       }
     });
 
-    it("should demonstrate subtle weight shifts (< 3 degrees)", () => {
+    it("should demonstrate subtle weight shifts (< 3° (0.05 rad))", () => {
       const hipRotations = GAM_IDLE_FLOWING.keyframes.map((f) => {
         const rotation = f.boneRotations.get(BoneName.PELVIS);
         return rotation ? rotation.z : 0;
       });
 
-      // All shifts should be minimal (< 0.05 radians ≈ 3 degrees)
+      // All shifts should be minimal (< 3° (0.05 rad))
       hipRotations.forEach((rotation) => {
         expect(Math.abs(rotation)).toBeLessThan(0.05);
       });

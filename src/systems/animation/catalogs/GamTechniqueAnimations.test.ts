@@ -95,8 +95,8 @@ describe("Gam Technique Combat Animations", () => {
 
         if (leftElbow && rightElbow) {
           // Both elbows should show significant bend (control position)
-          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.4); // > 23°
-          expect(Math.abs(rightElbow.z)).toBeGreaterThan(0.3); // > 17°
+          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.4); // > ~23°
+          expect(Math.abs(rightElbow.z)).toBeGreaterThan(0.3); // > ~17°
         }
       });
     });
