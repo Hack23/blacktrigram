@@ -1069,6 +1069,7 @@ src/utils/controlMapping.ts
 src/utils/deviceDetection.test.ts
 src/utils/deviceDetection.ts
 src/utils/effectUtils.ts
+src/utils/hapticFeedback.ts
 src/utils/haptics.test.ts
 src/utils/haptics.ts
 src/utils/htmlOverlayHelpers.test.ts
@@ -1080,6 +1081,7 @@ src/utils/koreanThemeHelpers.ts
 src/utils/math.test.ts
 src/utils/math.ts
 src/utils/mobileLayoutHelpers.ts
+src/utils/mobileUIUtils.ts
 src/utils/objectPool.test.ts
 src/utils/objectPool.ts
 src/utils/performance/PerformanceMonitor.test.ts
@@ -1096,6 +1098,7 @@ src/utils/playerUtils.ts
 src/utils/responsiveLayout.test.ts
 src/utils/responsiveLayout.ts
 src/utils/responsiveLayoutHelpers.ts
+src/utils/safeAreaUtils.ts
 src/utils/skeletonScaling.test.ts
 src/utils/skeletonScaling.ts
 src/utils/stanceHelpers.test.ts

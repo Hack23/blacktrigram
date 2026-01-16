@@ -2794,7 +2794,25 @@
 <a name='L2729'></a><a href='#L2729'>2729</a>
 <a name='L2730'></a><a href='#L2730'>2730</a>
 <a name='L2731'></a><a href='#L2731'>2731</a>
-<a name='L2732'></a><a href='#L2732'>2732</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2732'></a><a href='#L2732'>2732</a>
+<a name='L2733'></a><a href='#L2733'>2733</a>
+<a name='L2734'></a><a href='#L2734'>2734</a>
+<a name='L2735'></a><a href='#L2735'>2735</a>
+<a name='L2736'></a><a href='#L2736'>2736</a>
+<a name='L2737'></a><a href='#L2737'>2737</a>
+<a name='L2738'></a><a href='#L2738'>2738</a>
+<a name='L2739'></a><a href='#L2739'>2739</a>
+<a name='L2740'></a><a href='#L2740'>2740</a>
+<a name='L2741'></a><a href='#L2741'>2741</a>
+<a name='L2742'></a><a href='#L2742'>2742</a>
+<a name='L2743'></a><a href='#L2743'>2743</a>
+<a name='L2744'></a><a href='#L2744'>2744</a>
+<a name='L2745'></a><a href='#L2745'>2745</a>
+<a name='L2746'></a><a href='#L2746'>2746</a>
+<a name='L2747'></a><a href='#L2747'>2747</a>
+<a name='L2748'></a><a href='#L2748'>2748</a>
+<a name='L2749'></a><a href='#L2749'>2749</a>
+<a name='L2750'></a><a href='#L2750'>2750</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5428,6 +5446,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -7338,8 +7374,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ||</span>
-              aiState.selectedTechnique.englishName ||
+<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ??</span>
+              aiState.selectedTechnique.englishName ??
               "jab";
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation(getAnimationForTechnique(techName));</span>
           } else {
@@ -7361,8 +7397,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ||</span>
-              aiState.selectedTechnique.englishName ||
+<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ??</span>
+              aiState.selectedTechnique.englishName ??
               "cross";
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation(getAnimationForTechnique(techName));</span>
           } else {
@@ -7433,8 +7469,8 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
             aiState.selectedTechnique?.englishName
           ) {
             const techName =
-<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ||</span>
-              aiState.selectedTechnique.englishName ||
+<span class="cstat-no" title="statement not covered" >              aiState.selectedTechnique.name?.english ??</span>
+              aiState.selectedTechnique.englishName ??
               "cross";
 <span class="cstat-no" title="statement not covered" >            setPlayer2AttackAnimation(getAnimationForTechnique(techName));</span>
           } else {
@@ -7668,7 +7704,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
-            player1Rotation, // Dynamic rotation - always faces opponent
+              player1Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
               facing: "right", // No flip - rotation handles facing direction
@@ -8073,24 +8109,42 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
 &nbsp;
-        {/* Technique Bar - Bottom Center */}
+        {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
         {combatState.roundStarted &amp;&amp;
           !combatState.roundEnded &amp;&amp;
           matchCountdownComplete &amp;&amp;
           !showRoundStart &amp;&amp; (
-            &lt;TechniqueBar
-              techniques={techniqueSelection.availableTechniques}
-              player={validPlayers[0]}
-              selectedIndex={techniqueSelection.selectedIndex}
-              cooldowns={cooldownsMap}
-              onTechniqueSelect={techniqueSelection.selectTechnique}
-              onTechniqueHover={<span class="fstat-no" title="function not covered" >(_</span>tech) =&gt; {
-                // Could add additional hover effects here
+            &lt;div
+              style={{
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                width: "100%",
+                height: "200px",
+                pointerEvents: "none", // Container is non-interactive
+                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
               }}
-              isMobile={isMobile}
-              screenWidth={width}
-              screenHeight={height}
-            /&gt;
+            &gt;
+              &lt;div style={{ pointerEvents: "auto" }}&gt;
+                {/* This inner div allows TechniqueBar to receive pointer events */}
+                &lt;TechniqueBar
+                  techniques={techniqueSelection.availableTechniques}
+                  player={validPlayers[0]}
+                  selectedIndex={techniqueSelection.selectedIndex}
+                  cooldowns={cooldownsMap}
+                  onTechniqueSelect={techniqueSelection.selectTechnique}
+                  onTechniqueHover={<span class="fstat-no" title="function not covered" >(_</span>tech) =&gt; {
+                    // Could add additional hover effects here
+                  }}
+                  isMobile={isMobile}
+                  screenWidth={width}
+                  screenHeight={height}
+                /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
           )}
 &nbsp;
         {/* Combat Controls and Stats */}
@@ -8263,7 +8317,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T13:56:24.858Z
+                at 2026-01-16T18:16:35.562Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
