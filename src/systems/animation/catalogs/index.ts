@@ -242,6 +242,20 @@ export {
   TAE_IDLE_FLOWING,
   TAE_STANCE_ANIMATIONS,
 } from "./TaeStanceAnimations";
+// Jin (Thunder) trigram-specific animations
+export {
+  JIN_ANIMATIONS,
+  JIN_IDLE_COILED,
+  JIN_EXPLOSIVE_BURST,
+  JIN_JUMPING_ADVANCE,
+} from "./JinStanceAnimations";
+
+// Jin technique animations
+export {
+  JIN_TECHNIQUE_ANIMATIONS,
+  JIN_THUNDER_FLASH_ANIMATION,
+  JIN_JUMPING_KNEE_STRIKE,
+} from "./JinTechniqueAnimations";
 
 // Additional curated animation catalogs
 export * from "./ComboAnimations";
