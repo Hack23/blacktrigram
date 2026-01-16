@@ -165,6 +165,5 @@ export const GON_GUARD_VARIANTS = {
    * Low Grappling Guard - Default Gon guard position
    * @korean 낮은잡기방어
    */
-  LOW_GRAPPLING: GON_LOW_GRAPPLING_GUARD,
-  
+  LOW_GRAPPLING: GON_LOW_GRAPPLING_GUARD
 } as const;

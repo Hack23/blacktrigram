@@ -61,8 +61,14 @@ export const ANATOMICAL_LIMITS_GON_STANCE = {
  * **Philosophy**: Earth's grounding power through low center of gravity
  *
  * Specialized Ssireum wrestling idle stance that differs from the general
- * Gon idle animation (stance_gon) by emphasizing deeper grounding, lower
- * center of gravity, and wrestling-specific hand positioning.
+ * Gon idle animation (`stance_gon` in StanceIdleAnimations.ts). This animation
+ * emphasizes deeper grounding, lower center of gravity, and wrestling-specific
+ * hand positioning for grappling readiness.
+ *
+ * **When to use**:
+ * - Use `GON_IDLE_SSIREUM_STANCE` for active combat scenarios requiring
+ *   wrestling/grappling readiness with very low center of gravity
+ * - Use `stance_gon` idle for general Gon stance with standard posture
  *
  * Characteristics:
  * - Very low center of gravity with wide stance
@@ -142,7 +148,7 @@ export const GON_IDLE_SSIREUM_STANCE: SkeletalAnimation =
  * - Center of gravity stays low throughout
  * - Arms ready for grappling engagement
  *
- * Animation Keyframes (4 keyframes spanning 267ms, ~16 rendered frames at 60fps):
+ * Animation Keyframes (4 keyframes spanning 267ms; ~16 interpolated frames when rendered at 60fps):
  * - 0ms: Start position (low stance)
  * - 90ms: Weight shift to left leg
  * - 180ms: Right foot lifts and steps forward
@@ -213,7 +219,7 @@ export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
  * - Hands reaching for grappling control
  * - Weight shifts for throw setup
  *
- * Animation Keyframes (4 keyframes spanning 300ms, ~18 rendered frames at 60fps):
+ * Animation Keyframes (4 keyframes spanning 300ms; ~18 interpolated frames when rendered at 60fps):
  * - 0ms: Start position (low stance)
  * - 100ms: Weight shift to right leg
  * - 200ms: Left foot slides laterally

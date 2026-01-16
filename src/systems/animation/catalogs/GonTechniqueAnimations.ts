@@ -32,7 +32,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * The fighter drops low, secures opponent's body, lifts with legs and hips,
  * then rotates through a circular arc to bring opponent to ground.
  *
- * Animation Phases (1867ms duration, 7+ keyframes):
+ * Animation Phases (1867ms duration, 8 keyframes):
  * - Close Phase (0-540ms): Drop level and penetrate for grab
  * - Lift Phase (540-1080ms): Secure grip and lift opponent
  * - Throw Phase (1080-1620ms): Execute circular throw
@@ -185,7 +185,7 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
  * Fighter transitions from standing to ground position while maintaining
  * control through weight distribution and grip strength.
  *
- * Animation Phases (2000ms duration, 6+ keyframes):
+ * Animation Phases (2000ms duration, 7 keyframes):
  * - Takedown Phase (0-667ms): Bring opponent to ground
  * - Transition Phase (667-1333ms): Move to dominant position
  * - Control Phase (1333-2000ms): Establish ground control
