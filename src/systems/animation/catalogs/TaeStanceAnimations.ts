@@ -27,8 +27,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  *
  * Note: These are documentation constants. The actual animation rotations are designed
  * to stay well within these limits naturally through authentic Hapkido biomechanics.
- *
- * @internal - For documentation purposes only
  */
 export const ANATOMICAL_LIMITS_TAE_STANCE = {
   /**

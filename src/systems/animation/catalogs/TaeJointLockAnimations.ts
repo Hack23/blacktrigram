@@ -12,8 +12,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  *
  * Note: These are documentation constants. The actual animation rotations are designed
  * to stay within these limits naturally through authentic joint lock biomechanics.
- *
- * @internal - For documentation purposes only
  */
 export const ANATOMICAL_LIMITS_TAE_JOINT_LOCKS = {
   /**
@@ -46,9 +44,9 @@ export const ANATOMICAL_LIMITS_TAE_JOINT_LOCKS = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * TAE WRIST LOCK SEQUENCE - 손목꺾기 (Wrist Lock)
+ * TAE WRIST LOCK SEQUENCE - 손목꺾기 (Wrist Lock Sequence)
  *
- * Simplified 3-phase Hapkido wrist lock with circular small-circle technique.
+ * Simplified 3-phase Hapkido wrist lock sequence with circular small-circle technique.
  * 
  * Phases:
  * - Setup (0-600ms): Reach and grasp opponent's wrist
