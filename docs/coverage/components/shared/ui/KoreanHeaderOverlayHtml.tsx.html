@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -331,11 +331,43 @@
 <a name='L266'></a><a href='#L266'>266</a>
 <a name='L267'></a><a href='#L267'>267</a>
 <a name='L268'></a><a href='#L268'>268</a>
-<a name='L269'></a><a href='#L269'>269</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,6 +399,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -376,6 +414,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -603,7 +647,17 @@
 import type { KoreanText } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import {
+  getNeonTextShadow,
+  getKoreanFontOptimization,
+  mapGlowIntensityLevel,
+} from "../../../utils/visualEffects";
 import "./KoreanHeaderOverlayHtml.css";
+&nbsp;
+// Static color calculations moved outside component to avoid recalculation on every render
+const TITLE_STROKE = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8);
+const SVG_CIRCLE_FILL = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3);
+const SVG_CIRCLE_CENTER_FILL = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6);
 &nbsp;
 export interface KoreanHeaderOverlayHtmlProps {
   readonly title: KoreanText;
@@ -633,15 +687,26 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
   const alignmentStyle =
     alignment === "center" ? "center" : <span class="branch-1 cbranch-no" title="branch not covered" >alignment === "right" ? "flex-end" : "flex-start";</span>
 &nbsp;
-  // Memoize RGBA color calculations with glowIntensity
-  const colors = useMemo(() =&gt; ({
-    titleTextShadow: `0 3px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6 * glowIntensity)}, 0 0 40px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4 * glowIntensity)}`,
-    titleStroke: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-    subtitleTextShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4 * glowIntensity)}`,
-    subtitleSectionTextShadow: `0 1px 4px ${hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.3 * glowIntensity)}`,
-    svgCircleFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
-    svgCircleCenterFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
-  }), [glowIntensity]);
+  // Use enhanced neon text shadow utilities with helper function (memoized to avoid recalculation)
+  const titleTextShadow = useMemo(
+    () =&gt; getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, mapGlowIntensityLevel(glowIntensity)),
+    [glowIntensity]
+  );
+&nbsp;
+  const subtitleTextShadow = useMemo(
+    () =&gt;
+      getNeonTextShadow(
+        KOREAN_COLORS.PRIMARY_CYAN,
+        mapGlowIntensityLevel(glowIntensity * 0.8) // Slightly less intense for subtitle
+      ),
+    [glowIntensity]
+  );
+&nbsp;
+  // Korean font optimization (memoized based on size)
+  const fontOptimization = useMemo(
+    () =&gt; getKoreanFontOptimization(titleSize, "bold"),
+    [titleSize]
+  );
 &nbsp;
   return (
     &lt;div
@@ -657,14 +722,15 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
       {/* Main Korean title */}
       &lt;div
         style={{
-          fontFamily: FONT_FAMILY.KOREAN,
-          fontSize: `${titleSize}px`,
+          ...fontOptimization,
           color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-          fontWeight: "bold",
+          // Note: fontFamily already included in fontOptimization, but explicitly set here for clarity
+          // as it's a critical property for Korean text rendering
+          fontFamily: FONT_FAMILY.KOREAN,
           textAlign: alignment,
-          textShadow: colors.titleTextShadow,
+          textShadow: titleTextShadow,
           animation: animated ? "pulse 2s ease-in-out infinite" : <span class="branch-1 cbranch-no" title="branch not covered" >"none",</span>
-          WebkitTextStroke: `1px ${colors.titleStroke}`,
+          WebkitTextStroke: `1px ${TITLE_STROKE}`,
         }}
       &gt;
         {title.korean}
@@ -678,7 +744,7 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
           color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
           fontStyle: "italic",
           textAlign: alignment,
-          textShadow: colors.subtitleTextShadow,
+          textShadow: subtitleTextShadow,
           opacity: 0.9,
         }}
       &gt;
@@ -816,7 +882,7 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
               cx={titleSize * 3}
               cy={14}
               r="6"
-              fill={colors.svgCircleFill}
+              fill={SVG_CIRCLE_FILL}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : <span class="branch-1 cbranch-no" title="branch not covered" >"none",</span>
               }}
@@ -825,7 +891,7 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
               cx={titleSize * 3}
               cy={14}
               r="3"
-              fill={colors.svgCircleCenterFill}
+              fill={SVG_CIRCLE_CENTER_FILL}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : <span class="branch-1 cbranch-no" title="branch not covered" >"none",</span>
               }}
@@ -843,7 +909,7 @@ export const KoreanHeaderOverlayHtml: React.FC&lt;KoreanHeaderOverlayHtmlProps&g
               fontSize: `${subtitleSize}px`,
               color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
               textAlign: alignment,
-              textShadow: colors.subtitleSectionTextShadow,
+              textShadow: getNeonTextShadow(KOREAN_COLORS.TEXT_SECONDARY, "subtle"),
               marginTop: "10px",
             }}
           &gt;
@@ -874,7 +940,7 @@ export default KoreanHeaderOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-15T21:33:14.360Z
+                at 2026-01-16T13:56:24.858Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

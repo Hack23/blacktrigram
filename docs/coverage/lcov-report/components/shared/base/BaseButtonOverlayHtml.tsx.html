@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.62% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>29/32</span>
+                <span class='fraction'>21/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>22/24</span>
             </div>
         
             
@@ -238,14 +238,7 @@
 <a name='L173'></a><a href='#L173'>173</a>
 <a name='L174'></a><a href='#L174'>174</a>
 <a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L176'></a><a href='#L176'>176</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -350,13 +343,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">83x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -370,6 +356,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">88x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -435,8 +423,7 @@
  */
 &nbsp;
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "../../../types/constants";
-import { hexToRgbaString } from "../../../utils/colorUtils";
+import { getKoreanButtonWithGlow } from "../../../utils/koreanThemeHelpers";
 import { useKoreanTheme } from "./useKoreanTheme";
 &nbsp;
 /**
@@ -493,8 +480,8 @@ export const BaseButtonOverlayHtml: React.FC&lt;BaseButtonOverlayHtmlProps&gt; =
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 &nbsp;
-  // Use Korean theme hook for consistent styling
-  const { buttonVariant, buttonSize, fontFamily } = useKoreanTheme({
+  // Use Korean theme hook for size and font info only
+  const { buttonSize } = useKoreanTheme({
     variant,
     size,
     disabled,
@@ -529,43 +516,38 @@ export const BaseButtonOverlayHtml: React.FC&lt;BaseButtonOverlayHtmlProps&gt; =
     setIsPressed(false);
   }, []);
 &nbsp;
-  // Memoize button styles for performance
+  // Memoize button styles for performance - now using enhanced visual effects
   const buttonStyle = useMemo&lt;React.CSSProperties&gt;(() =&gt; {
-    let background = hexToRgbaString(buttonVariant.background, 0.9);
-    
-    if (isPressed) {
-      background = buttonVariant.activeBg;
-    } else if (isHovered) {
-      background = buttonVariant.hoverBg;
-    }
+    // Get enhanced button styles with neon glow
+    const enhancedStyles = getKoreanButtonWithGlow({
+      variant,
+      isHovered: isHovered &amp;&amp; !disabled,
+      isPressed: isPressed &amp;&amp; !disabled,
+      isFocused: false,
+      glowIntensity: "medium",
+      hoverAnimation: "combined",
+    });
 &nbsp;
+    // Merge with size-specific styles
+    // Note: fontSize from enhancedStyles is intentionally overridden by buttonSize.fontSize
+    // to ensure consistent sizing across button size variants (small/medium/large).
+    // The Korean font optimization (anti-aliasing, letter-spacing) is preserved.
     return {
-      background,
-      border: `${buttonSize.borderWidth} solid ${hexToRgbaString(buttonVariant.border)}`,
-      color: hexToRgbaString(buttonVariant.text),
+      ...enhancedStyles,
       padding: buttonSize.padding,
-      fontSize: buttonSize.fontSize,
-      fontFamily: fontFamily.KOREAN,
-      fontWeight: "bold",
+      fontSize: buttonSize.fontSize, // Override for size consistency
       cursor: disabled ? "not-allowed" : "pointer",
       opacity: disabled ? 0.5 : 1,
       borderRadius: "4px",
-      transition: "all 0.2s ease",
-      textAlign: "center",
-      userSelect: "none",
-      WebkitUserSelect: "none",
+      textAlign: "center" as const,
+      userSelect: "none" as const,
+      WebkitUserSelect: "none" as const,
       width: fullWidth ? "100%" : "auto",
-      boxShadow: isHovered &amp;&amp; !disabled
-        ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
-        : "none",
-      transform: isPressed &amp;&amp; !disabled ? "scale(0.98)" : "scale(1)",
-      textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       ...customStyle,
     };
   }, [
-    buttonVariant,
+    variant,
     buttonSize,
-    fontFamily,
     disabled,
     fullWidth,
     isHovered,
@@ -613,7 +595,7 @@ BaseButtonOverlayHtml.displayName = "BaseButtonOverlayHtml";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-15T21:33:14.695Z
+                at 2026-01-16T13:56:25.187Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

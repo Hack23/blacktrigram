@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>36/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -223,7 +223,35 @@
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
 <a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,10 +320,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -309,6 +353,8 @@
 <span class="cline-any cline-yes">35x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,10 +448,15 @@ import {
 import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getKoreanOverlayBaseStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
+  getKoreanButtonWithGlow,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+} from "../../../../utils/visualEffects";
 import "../training.css";
 &nbsp;
 /**
@@ -451,19 +502,35 @@ export const TrainingControlsOverlayHtml: React.FC&lt;TrainingControlsOverlayHtm
   const padding = getResponsiveSpacing("sm", isMobile);
 &nbsp;
   // Use Korean colors for border based on training state
-  const borderColor = hexToRgbaString(
-    isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED,
-    0.9
-  );
+  const stateColor = isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED;
+  const borderColor = hexToRgbaString(stateColor, 0.9);
 &nbsp;
+  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
-    ...getKoreanOverlayBaseStyles(0.85),
+    ...getEnhancedKoreanOverlayStyles({
+      opacity: 0.88,
+      glowIntensity: isTraining ? "medium" : "subtle",
+      includeGradient: false,
+      includeBackdropBlur: true,
+      depthLayers: 2,
+    }),
     width: `${panelWidth}px`,
     height: `${panelHeight}px`,
     padding: `${padding}px`,
     border: `2px solid ${borderColor}`,
     position: "relative",
   };
+&nbsp;
+  // Enhanced button styles (memoized, interaction states handled internally by getKoreanButtonWithGlow)
+  const buttonStyles = React.useMemo(
+    () =&gt;
+      getKoreanButtonWithGlow({
+        variant: isTraining ? "danger" : "success",
+        glowIntensity: "strong",
+        hoverAnimation: "combined",
+      }),
+    [isTraining]
+  );
 &nbsp;
   const titleFontSize = isMobile ? 13 : 14;
   const infoFontSize = isMobile ? 9 : 10;
@@ -476,10 +543,10 @@ export const TrainingControlsOverlayHtml: React.FC&lt;TrainingControlsOverlayHtm
           style={{
             fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
-            color: hexToRgbaString(
-              isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED
-            ),
+            color: hexToRgbaString(stateColor),
             fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: getNeonTextShadow(stateColor, isTraining ? "medium" : "subtle"),
+            transition: getSmoothTransition("all", "normal"),
           }}
         &gt;
           {formatBilingualText(
@@ -505,8 +572,10 @@ export const TrainingControlsOverlayHtml: React.FC&lt;TrainingControlsOverlayHtm
         onClick={isTraining ? onStopTraining : onStartTraining}
         className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
         style={{
+          ...buttonStyles,
+          // Note: fontSize from buttonStyles is intentionally overridden with titleFontSize
+          // to maintain consistent sizing with the training header/title typography
           fontSize: `${titleFontSize}px`,
-          fontFamily: FONT_FAMILY.KOREAN,
           height: "35px",
         }}
         data-testid="training-toggle-button"
@@ -550,7 +619,7 @@ export default TrainingControlsOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-15T21:33:14.695Z
+                at 2026-01-16T13:56:25.187Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
