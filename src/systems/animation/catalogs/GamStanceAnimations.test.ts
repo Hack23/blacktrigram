@@ -24,7 +24,7 @@ describe("Gam Stance Animations", () => {
 
   describe("GAM_IDLE_FLOWING (감괘 흐름 자세)", () => {
     it("should have correct duration for flowing cycle", () => {
-      expect(GAM_IDLE_FLOWING.duration).toBe(2.6);
+      expect(GAM_IDLE_FLOWING.duration).toBe(2.5);
       expect(GAM_IDLE_FLOWING.loop).toBe(true);
     });
 
@@ -77,7 +77,7 @@ describe("Gam Stance Animations", () => {
         if (leftShoulder && rightShoulder) {
           // Shoulders should be low (positive x rotation, small values)
           expect(leftShoulder.x).toBeGreaterThanOrEqual(0);
-          expect(leftShoulder.x).toBeLessThan(0.2); // < 11 degrees
+          expect(leftShoulder.x).toBeLessThan(0.2); // < ~11.5°
           expect(rightShoulder.x).toBeGreaterThanOrEqual(0);
           expect(rightShoulder.x).toBeLessThan(0.2);
         }
@@ -88,10 +88,10 @@ describe("Gam Stance Animations", () => {
       const times = GAM_IDLE_FLOWING.keyframes.map((f) => f.time);
 
       expect(times).toContain(0); // Start
-      expect(times).toContain(0.65); // Weight shift left
-      expect(times).toContain(1.3); // Return center
-      expect(times).toContain(1.95); // Weight shift right
-      expect(times).toContain(2.6); // Complete cycle
+      expect(times).toContain(0.625); // Weight shift left
+      expect(times).toContain(1.25); // Return center
+      expect(times).toContain(1.875); // Weight shift right
+      expect(times).toContain(2.5); // Complete cycle
     });
   });
 
@@ -141,7 +141,7 @@ describe("Gam Stance Animations", () => {
 
         if (spineRotation) {
           // Spine should remain mostly upright (minimal y rotation)
-          expect(Math.abs(spineRotation.y)).toBeLessThan(0.1); // < 6 degrees
+          expect(Math.abs(spineRotation.y)).toBeLessThan(0.1); // < ~5.7°
         }
       });
     });
@@ -222,7 +222,7 @@ describe("Gam Stance Animations", () => {
         if (leftElbow && rightElbow) {
           // Elbows should be extended (negative z for left, positive for right)
           // Values should be significant showing arms extended forward
-          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.4); // > 23 degrees
+          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.4); // > ~23°
           expect(Math.abs(rightElbow.z)).toBeGreaterThan(0.4);
         }
       });

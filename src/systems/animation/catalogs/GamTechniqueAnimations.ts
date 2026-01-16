@@ -69,7 +69,7 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     .at(0)
     .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Upright spine
-    .rotate(BoneName.SHOULDER_L, 0.17, 0.26, -0.17) // 10°, 15°, -10° (receiving position)
+    .rotate(BoneName.SHOULDER_L, 0.17, 0.26, -0.17) // ~10°, ~15°, ~-10° (receiving position)
     .rotate(BoneName.SHOULDER_R, 0.09, -0.14, 0.17) // Ready to yield
     .rotate(BoneName.ELBOW_L, 0, 0, -0.70) // -40° (arm extended to receive)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.52) // -30° (support position)
@@ -81,7 +81,7 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     // Frame 6 (350ms): Maximum yield - accept force
     .at(0.35)
     .rotate(BoneName.PELVIS, 0, -0.14, -0.05) // 0°, -8°, -3° (weight shifts away)
-    .rotate(BoneName.SPINE_UPPER, 0, -0.17, 0) // 0°, -10°, 0° (spine yields away)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.17, 0) // 0°, ~-10°, 0° (spine yields away)
     .rotate(BoneName.SHOULDER_L, 0.26, 0.35, -0.21) // 15°, 20°, -12° (accept force)
     .rotate(BoneName.SHOULDER_R, 0.12, -0.17, 0.21) // Supporting position
     .rotate(BoneName.ELBOW_L, 0, 0, -0.87) // -50° (arm absorbs)

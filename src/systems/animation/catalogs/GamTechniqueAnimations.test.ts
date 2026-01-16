@@ -202,7 +202,7 @@ describe("Gam Technique Combat Animations", () => {
 
         if (leftElbow && rightElbow) {
           // Elbows should be deeply bent for wrapping/blending
-          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.8); // > 46°
+          expect(Math.abs(leftElbow.z)).toBeGreaterThan(0.8); // > ~45.8°
           expect(Math.abs(rightElbow.z)).toBeGreaterThan(0.8);
         }
       }
@@ -222,7 +222,7 @@ describe("Gam Technique Combat Animations", () => {
         if (pelvisRotation) {
           // Pelvis should show subtle shifts (not extreme)
           // Y rotation for off-balancing, but should be controlled
-          expect(Math.abs(pelvisRotation.y)).toBeLessThan(0.4); // < 23°
+          expect(Math.abs(pelvisRotation.y)).toBeLessThan(0.4); // < ~22.9°
         }
       });
     });
@@ -242,7 +242,7 @@ describe("Gam Technique Combat Animations", () => {
 
         if (leftKnee && rightKnee) {
           // Knees should be deeply bent for descent
-          expect(leftKnee.x).toBeLessThan(-0.3); // < -17°
+          expect(leftKnee.x).toBeLessThan(-0.3); // < ~-17.2°
           expect(rightKnee.x).toBeLessThan(-0.3);
         }
       });

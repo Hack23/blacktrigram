@@ -44,13 +44,13 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  *
  * Animation Cycle:
  * - 0ms: Neutral relaxed position
- * - 650ms: Subtle weight shift left (물의 호흡)
- * - 1300ms: Return to center
- * - 1950ms: Subtle weight shift right
- * - 2600ms: Complete cycle
+ * - 625ms: Subtle weight shift left (물의 호흡)
+ * - 1250ms: Return to center
+ * - 1875ms: Subtle weight shift right
+ * - 2500ms: Complete cycle
  *
  * @korean 감괘흐름자세
- * @duration 2600ms (2.6 second cycle)
+ * @duration 2500ms (2.5 second cycle)
  * @category Idle Animation
  */
 export const GAM_IDLE_FLOWING: SkeletalAnimation =
@@ -58,7 +58,7 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     "gam_idle_flowing",
     "감괘 흐름 자세"
   )
-    .asIdle(2.6, true)
+    .asIdle(2.5, true)
     // Keyframe 0ms: Neutral relaxed position (baseline)
     .at(0)
     .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
@@ -72,8 +72,8 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     .rotate(BoneName.HEAD, 0, 0, 0) // Head neutral, aware
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 650ms: Subtle weight shift left (물의 호흡)
-    .at(0.65)
+    // Keyframe 625ms: Subtle weight shift left (물의 호흡)
+    .at(0.625)
     .rotate(BoneName.PELVIS, 0, 0, -0.0349) // 0°, 0°, -2° (minimal shift)
     .rotate(BoneName.SPINE_UPPER, 0, -0.0349, 0) // 0°, -2°, 0° (flowing with weight)
     .rotate(BoneName.SHOULDER_L, 0.10, 0.17, -0.21) // 6°, 10°, -12° (left rises slightly)
@@ -82,8 +82,8 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, -0.12, 0, 0.02) // -7°, 0°, 1°
     .position(BoneName.PELVIS, -0.01, 0, 0) // Minimal lateral shift left
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 1300ms: Return to center
-    .at(1.3)
+    // Keyframe 1250ms: Return to center
+    .at(1.25)
     .rotate(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
     .rotate(BoneName.SHOULDER_L, 0.09, 0.14, -0.17)
@@ -92,8 +92,8 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, -0.09, 0, 0.05)
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 1950ms: Subtle weight shift right
-    .at(1.95)
+    // Keyframe 1875ms: Subtle weight shift right
+    .at(1.875)
     .rotate(BoneName.PELVIS, 0, 0, 0.0349) // 0°, 0°, 2° (minimal shift)
     .rotate(BoneName.SPINE_UPPER, 0, 0.0349, 0) // 0°, 2°, 0°
     .rotate(BoneName.SHOULDER_L, 0.07, 0.10, -0.14) // 4°, 6°, -8° (left lowers)
@@ -102,8 +102,8 @@ export const GAM_IDLE_FLOWING: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, -0.05, 0, 0.09) // -3°, 0°, 5°
     .position(BoneName.PELVIS, 0.01, 0, 0) // Minimal lateral shift right
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 2600ms: Return to start (complete cycle)
-    .at(2.6)
+    // Keyframe 2500ms: Return to start (complete cycle)
+    .at(2.5)
     .rotate(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
     .rotate(BoneName.SHOULDER_L, 0.09, 0.14, -0.17)
