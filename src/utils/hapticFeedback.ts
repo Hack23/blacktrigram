@@ -4,6 +4,10 @@
  * Provides vibration feedback for button presses and combat actions
  * with support for different intensity levels on iOS and Android.
  * 
+ * This module provides an enhanced haptic feedback API with typed intensity levels
+ * and pattern support. For legacy compatibility with basic vibration patterns,
+ * see src/utils/haptics.ts
+ * 
  * @module utils/hapticFeedback
  * @category Mobile Utilities
  * @korean 햅틱피드백유틸리티
@@ -114,7 +118,9 @@ export function triggerHapticFeedback(intensity: HapticIntensity): boolean {
       return nav.webkitVibrate(pattern.duration);
     }
   } catch (error) {
-    console.warn("Haptic feedback failed:", error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn("Haptic feedback failed:", error);
+    }
   }
 
   return false;

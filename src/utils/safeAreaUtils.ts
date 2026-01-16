@@ -164,11 +164,11 @@ export function hasSafeAreaInsets(): boolean {
   const ua = navigator.userAgent;
   return (
     /iPhone/.test(ua) &&
-    (screen.width === 375 && screen.height === 812) || // iPhone X, XS, 11 Pro
-    (screen.width === 414 && screen.height === 896) || // iPhone XR, XS Max, 11, 11 Pro Max
-    (screen.width === 390 && screen.height === 844) || // iPhone 12, 12 Pro, 13, 13 Pro, 14
-    (screen.width === 393 && screen.height === 852) || // iPhone 14 Pro
-    (screen.width === 428 && screen.height === 926) // iPhone 12/13/14 Pro Max
+    ((screen.width === 375 && screen.height === 812) || // iPhone X, XS, 11 Pro
+     (screen.width === 414 && screen.height === 896) || // iPhone XR, XS Max, 11, 11 Pro Max
+     (screen.width === 390 && screen.height === 844) || // iPhone 12, 12 Pro, 13, 13 Pro, 14
+     (screen.width === 393 && screen.height === 852) || // iPhone 14 Pro
+     (screen.width === 428 && screen.height === 926)) // iPhone 12/13/14 Pro Max
   );
 }
 

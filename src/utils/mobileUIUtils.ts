@@ -371,10 +371,16 @@ export const ViewportDetection = {
 
   /**
    * Check if high-end mobile device (Super HD, 2K+)
-   * Motorola Edge 60 Pro (2712x1220), Samsung Galaxy S-series, etc.
+   * Uses height + DPR to distinguish phones from tablets
+   * High-end phones: short side 400-600px, long side >=800px, DPR >=2
    * @korean 고급모바일여부
    */
-  isSuperHDMobile: (width: number) => width >= 768 && width < 1024,
+  isSuperHDMobile: (width: number, height: number = window.innerHeight) => {
+    const shortSide = Math.min(width, height);
+    const longSide = Math.max(width, height);
+    const dpr = window.devicePixelRatio || 1;
+    return shortSide >= 400 && shortSide <= 600 && longSide >= 800 && dpr >= 2;
+  },
 
   /**
    * Check if tablet device

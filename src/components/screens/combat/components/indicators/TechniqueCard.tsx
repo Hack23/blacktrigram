@@ -195,9 +195,9 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
 
   // Touch handler for mobile - provides immediate response without 300ms delay
   const handleTouch = useCallback(
-    (_e: React.TouchEvent) => {
+    (e: React.TouchEvent) => {
       if (!isAvailable) return;
-      // Don't prevent default - allow both touch and click to work
+      e.preventDefault(); // Prevent ghost click on mobile
       triggerHaptic("light");
       onClick();
     },

@@ -141,13 +141,13 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   // Touch-optimized button sizing (48px minimum for mobile)
   const buttonHeight = isMobile ? 48 : isLargeDesktop ? 38 : 55; // Was 45px on mobile
   const buttonFontSize = isMobile
-    ? getMobileKoreanFontSize("SMALL", 375) // 16px minimum for Korean
+    ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
     : isLargeDesktop
     ? 12
     : 16;
   const containerPadding = isMobile ? 20 : isLargeDesktop ? 12 : 32;
   const titleFontSize = isMobile
-    ? getMobileKoreanFontSize("MEDIUM", 375) // 18px minimum for Korean
+    ? getMobileKoreanFontSize("MEDIUM", width ?? 375) // 18px minimum for Korean
     : isLargeDesktop
     ? 18
     : 28;

@@ -14,9 +14,9 @@ describe("Mobile HTML Overlay Responsiveness", () => {
   const mobileViewports = [
     {
       name: "Motorola Edge 60 Pro (Super HD)",
-      width: 768,
-      height: 1080,
-      description: "High-end Super HD mobile - TOP PRIORITY",
+      width: 540,
+      height: 1220,
+      description: "High-end Super HD mobile - TOP PRIORITY (CSS pixels in portrait, 2712x1220 physical ÷ 5 DPR)",
       safeArea: { top: 0, bottom: 0 },
       priority: 1,
     },

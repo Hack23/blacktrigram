@@ -50,6 +50,8 @@ export interface TrainingStatsOverlayHtmlProps {
   readonly stats: TrainingStats;
   /** Whether on mobile device */
   readonly isMobile: boolean;
+  /** Viewport width for Super HD font scaling */
+  readonly width?: number;
 }
 
 /**
@@ -71,8 +73,9 @@ export interface TrainingStatsOverlayHtmlProps {
 export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> = ({
   stats,
   isMobile,
+  width = 375,
 }) => {
-  const panelWidth = isMobile ? 260 : 280; // Increased for better readability
+  const panelWidth = isMobile ? (width < 400 ? 240 : 260) : 280; // Responsive panel width
   const padding = getResponsiveSpacing("md", isMobile);
   const gap = getResponsiveSpacing("sm", isMobile);
   
@@ -119,7 +122,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
 
   // Header title styles with improved mobile font size (16px+ for Korean)
   const titleFontSize = isMobile
-    ? getMobileKoreanFontSize("SMALL", 375) // 16px minimum
+    ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum
     : 18;
 
   return (
@@ -149,6 +152,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
           value={stats.score.toLocaleString()}
           color={KOREAN_COLORS.ACCENT_GOLD}
           isMobile={isMobile}
+          width={width}
         />
 
         {/* Combo - 콤보 */}
@@ -162,6 +166,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
               : KOREAN_COLORS.PRIMARY_CYAN
           }
           isMobile={isMobile}
+          width={width}
         />
 
         {/* Hits - 성공 */}
@@ -171,6 +176,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
           value={stats.hits.toString()}
           color={KOREAN_COLORS.ACCENT_GREEN}
           isMobile={isMobile}
+          width={width}
         />
 
         {/* Misses - 실패 */}
@@ -180,6 +186,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
           value={stats.misses.toString()}
           color={KOREAN_COLORS.TEXT_TERTIARY}
           isMobile={isMobile}
+          width={width}
         />
 
         {/* Accuracy - 정확도 */}
@@ -195,6 +202,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
               : KOREAN_COLORS.ACCENT_RED
           }
           isMobile={isMobile}
+          width={width}
         />
 
         {/* Session Duration - 시간 */}
@@ -205,6 +213,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
             value={formattedDuration}
             color={KOREAN_COLORS.PRIMARY_CYAN}
             isMobile={isMobile}
+            width={width}
           />
         )}
 
@@ -216,6 +225,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
             value={`${stats.bestCombo}x`}
             color={KOREAN_COLORS.ACCENT_GOLD}
             isMobile={isMobile}
+            width={width}
           />
         )}
 
@@ -233,6 +243,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
                 : KOREAN_COLORS.TEXT_TERTIARY
             }
             isMobile={isMobile}
+            width={width}
           />
         )}
       </div>
@@ -254,14 +265,15 @@ const StatRow: React.FC<{
   value: string;
   color: number; // Numeric hex color from KOREAN_COLORS (e.g., 0x00ffff)
   isMobile: boolean;
-}> = ({ korean, english, value, color, isMobile }) => {
+  width: number; // Width for Super HD font scaling
+}> = ({ korean, english, value, color, isMobile, width }) => {
   // Improved font sizes for mobile readability (min 16px for Korean body text)
   const labelFontSize = isMobile
-    ? getMobileKoreanFontSize("SMALL", 375) // 16px minimum
+    ? getMobileKoreanFontSize("SMALL", width) // 16px minimum
     : 14;
   const sublabelFontSize = isMobile ? 12 : 11; // Increased from 8-9px
   const valueFontSize = isMobile
-    ? getMobileKoreanFontSize("MEDIUM", 375) // 18px minimum
+    ? getMobileKoreanFontSize("MEDIUM", width) // 18px minimum
     : 20;
 
   return (
