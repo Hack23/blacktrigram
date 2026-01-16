@@ -219,6 +219,29 @@ export {
   GEON_ROUNDHOUSE_KICK,
 } from "./GeonStanceAnimations";
 
+// Gan (Mountain) trigram-specific animations
+export {
+  GAN_DEFENSIVE_ANGLE_SHIFT,
+  GAN_HIGH_SOLID_GUARD_TRANSITION,
+  GAN_IDLE_ROOTED,
+  GAN_SHORT_ROOT_STEP,
+  GAN_STANCE_ANIMATIONS,
+} from "./GanStanceAnimations";
+
+export {
+  GAN_DEFENSIVE_REVERSAL,
+  GAN_ROCK_DEFENSE_ANIMATION,
+  GAN_TECHNIQUE_ANIMATIONS,
+} from "./GanTechniqueAnimations";
+
+// Tae (Lake) trigram-specific animations
+export {
+  TAE_CIRCULAR_SIDESTEP,
+  TAE_DIAGONAL_CIRCULAR_APPROACH,
+  TAE_FLEXIBLE_GUARD_TRANSITION,
+  TAE_IDLE_FLOWING,
+  TAE_STANCE_ANIMATIONS,
+} from "./TaeStanceAnimations";
 // Jin (Thunder) trigram-specific animations
 export {
   JIN_ANIMATIONS,
@@ -239,8 +262,21 @@ export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
 export * from "./ElbowKneeAnimations";
 export * from "./GamRedirectionAnimations";
+export {
+  GAM_IDLE_FLOWING,
+  GAM_YIELDING_SIDESTEP,
+  GAM_FLOWING_RETREAT_STEP,
+  GAM_STANCE_ANIMATIONS,
+} from "./GamStanceAnimations";
+export {
+  GAM_WATER_FLOW_COUNTER_ANIMATION,
+  GAM_FLOWING_TAKEDOWN,
+  GAM_TECHNIQUE_ANIMATIONS,
+} from "./GamTechniqueAnimations";
 export * from "./GrapplingAnimations";
 export * from "./KickAnimations";
+export * from "./LiStanceAnimations";
+export * from "./LiTechniqueAnimations";
 export * from "./MovementAnimations";
 export * from "./PunchAnimations";
 export * from "./RecoveryAnimations";
