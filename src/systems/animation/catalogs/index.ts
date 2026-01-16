@@ -219,6 +219,30 @@ export {
   GEON_ROUNDHOUSE_KICK,
 } from "./GeonStanceAnimations";
 
+// Gan (Mountain) trigram-specific animations
+export {
+  GAN_DEFENSIVE_ANGLE_SHIFT,
+  GAN_HIGH_SOLID_GUARD_TRANSITION,
+  GAN_IDLE_ROOTED,
+  GAN_SHORT_ROOT_STEP,
+  GAN_STANCE_ANIMATIONS,
+} from "./GanStanceAnimations";
+
+export {
+  GAN_DEFENSIVE_REVERSAL,
+  GAN_ROCK_DEFENSE_ANIMATION,
+  GAN_TECHNIQUE_ANIMATIONS,
+} from "./GanTechniqueAnimations";
+
+// Tae (Lake) trigram-specific animations
+export {
+  TAE_CIRCULAR_SIDESTEP,
+  TAE_DIAGONAL_CIRCULAR_APPROACH,
+  TAE_FLEXIBLE_GUARD_TRANSITION,
+  TAE_IDLE_FLOWING,
+  TAE_STANCE_ANIMATIONS,
+} from "./TaeStanceAnimations";
+
 // Additional curated animation catalogs
 export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
