@@ -23,6 +23,24 @@ import {
 import { BoneName } from "@/types/skeletal";
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TEST CONSTANTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Threshold for validating near-full arm extension during strikes.
+ * Used to verify proper technique execution where elbow is nearly straight.
+ * Value: 0.2 radians (~11° flexion remaining)
+ */
+const NEAR_FULL_EXTENSION_THRESHOLD = 0.2;
+
+/**
+ * Threshold for validating strike extension in combo sequences.
+ * Used to check that arms extend sufficiently during rapid strikes.
+ * Value: 0.3 radians (~17° flexion remaining)
+ */
+const STRIKE_EXTENSION_THRESHOLD = 0.3;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // LI IDLE TARGETING ANIMATION TESTS (리괘 조준 자세)
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -274,7 +292,7 @@ describe("Li Fire Spear Animation (화염지창)", () => {
       
       if (elbowRotation) {
         // Elbow should be nearly straight (close to 0° flexion)
-        expect(Math.abs(elbowRotation.z)).toBeLessThan(0.2); // <~11° flexion
+        expect(Math.abs(elbowRotation.z)).toBeLessThan(NEAR_FULL_EXTENSION_THRESHOLD);
       }
     }
   });
@@ -355,7 +373,7 @@ describe("Li Nerve Strike Combo Animation (화염 연속타)", () => {
       expect(rightElbow).toBeDefined();
       if (rightElbow) {
         // Elbow Z rotation should be close to 0 (nearly straight/extended)
-        expect(Math.abs(rightElbow.z)).toBeLessThan(0.3);
+        expect(Math.abs(rightElbow.z)).toBeLessThan(STRIKE_EXTENSION_THRESHOLD);
       }
     }
     
@@ -366,7 +384,7 @@ describe("Li Nerve Strike Combo Animation (화염 연속타)", () => {
       expect(leftElbow).toBeDefined();
       if (leftElbow) {
         // Elbow Z rotation should be close to 0 (nearly straight/extended)
-        expect(Math.abs(leftElbow.z)).toBeLessThan(0.3);
+        expect(Math.abs(leftElbow.z)).toBeLessThan(STRIKE_EXTENSION_THRESHOLD);
       }
     }
     

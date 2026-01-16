@@ -193,7 +193,7 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     // Right arm: FULL EXTENSION with wrist snap
     .rotate(BoneName.SHOULDER_R, -0.75, 0, -0.6) // Complete extension
     .rotate(BoneName.ELBOW_R, 0, 0, -0.05) // Nearly straight (5° for safety)
-    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - extension for penetration (positive X = extension)
+    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - dorsiflexion/extension for penetration (in this rig, positive X = dorsiflexion)
     
     // NOTE: Finger rigidity expressed through hand pose (spear-hand)
     // Individual finger bones not available in current skeletal system
