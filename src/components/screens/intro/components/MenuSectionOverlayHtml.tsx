@@ -207,6 +207,10 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
 
           // Get glow and transition effects from enhanced button utility
           // Color/background/border are menu-specific and applied directly below
+          // Note: This pattern extracts only visual effects (boxShadow, transition, transform, textShadow)
+          // while excluding properties that have menu-specific requirements. If getKoreanButtonWithGlow
+          // adds new color-related properties (backgroundColor, borderColor, etc.), they should be
+          // added to the exclusion list to prevent unintended overrides.
           const enhancedButtonStyles = getKoreanButtonWithGlow({
             variant: "primary",
             isHovered,

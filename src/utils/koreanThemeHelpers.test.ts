@@ -336,7 +336,7 @@ describe("koreanThemeHelpers", () => {
 
       expect(stylesSubtle.boxShadow).toBeDefined();
       expect(stylesStrong.boxShadow).toBeDefined();
-      expect(stylesStrong.boxShadow!.length).toBeGreaterThan(stylesSubtle.boxShadow!.length);
+      expect(stylesStrong.boxShadow?.length ?? 0).toBeGreaterThan(stylesSubtle.boxShadow?.length ?? 0);
     });
 
     it("should include backdrop blur when enabled", () => {
@@ -401,16 +401,12 @@ describe("koreanThemeHelpers", () => {
     });
 
     it("should show pressed state", () => {
-      
-      const normalStyles = getKoreanButtonWithGlow({ variant: "primary", isPressed: false });
       const pressedStyles = getKoreanButtonWithGlow({ variant: "primary", isPressed: true });
 
       expect(pressedStyles.transform).toContain("scale");
     });
 
     it("should show focused state", () => {
-      
-      const normalStyles = getKoreanButtonWithGlow({ variant: "primary", isFocused: false });
       const focusedStyles = getKoreanButtonWithGlow({ variant: "primary", isFocused: true });
 
       expect(focusedStyles.boxShadow).toBeDefined();

@@ -400,6 +400,11 @@ export function getHoverStateStyles(
  * Creates WCAG-compliant focus indicators with Korean cyberpunk styling.
  * Ensures 2px border with high contrast (4.5:1 minimum).
  * 
+ * Note: While outline is set to "none", the custom 2px border provides
+ * equivalent accessibility. For users relying on high-contrast mode or
+ * custom browser settings, consider using outline-offset as an additional
+ * fallback or ensure the custom border has sufficient contrast (4.5:1+).
+ * 
  * @param color - Hex color for focus indicator
  * @param includeGlow - Whether to include glow effect (default: true)
  * @returns React.CSSProperties for focus state
@@ -560,6 +565,20 @@ export function combineShadowEffects(shadows: string[]): string {
  * const style = document.createElement('style');
  * style.innerHTML = keyframes;
  * document.head.appendChild(style);
+ * ```
+ * 
+ * @warning SSR and Duplicate Keyframes
+ * When using this in Server-Side Rendering (SSR) environments or with multiple
+ * component instances, ensure keyframe definitions are registered globally only once.
+ * Consider using a global registry or checking for existing keyframe definitions
+ * before injection to prevent duplicates and hydration mismatches. Example:
+ * ```typescript
+ * if (!document.querySelector(`style[data-keyframe="${animationName}"]`)) {
+ *   const style = document.createElement('style');
+ *   style.setAttribute('data-keyframe', animationName);
+ *   style.innerHTML = getPulsingKeyframes(animationName);
+ *   document.head.appendChild(style);
+ * }
  * ```
  * 
  * @korean 펄스애니메이션키프레임얻기
