@@ -271,7 +271,10 @@ export function getSmoothTransition(
 export function getKoreanFontOptimization(
   fontSize: number,
   fontWeight: "normal" | "bold" = "normal"
-): React.CSSProperties {
+): React.CSSProperties & {
+  WebkitFontSmoothing?: string;
+  MozOsxFontSmoothing?: string;
+} {
   return {
     fontSize: `${fontSize}px`,
     fontWeight,
