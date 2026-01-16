@@ -278,11 +278,11 @@ describe("Gam Stance Animations", () => {
           const curr = positions[i];
 
           if (prev && curr) {
-            // Calculate movement vector
-            const dx = Math.abs(curr.x - prev.x);
-            const dy = Math.abs(curr.y - prev.y);
-            const dz = Math.abs(curr.z - prev.z);
-            const totalMovement = dx + dy + dz;
+            // Calculate Euclidean movement magnitude
+            const dx = curr.x - prev.x;
+            const dy = curr.y - prev.y;
+            const dz = curr.z - prev.z;
+            const totalMovement = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             // Should have some movement between frames
             if (i < positions.length - 1) {

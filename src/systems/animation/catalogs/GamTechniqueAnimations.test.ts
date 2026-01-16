@@ -128,15 +128,23 @@ describe("Gam Technique Combat Animations", () => {
 
       // Check that there's movement representing flow with opponent
       if (positionsWithData.length >= 2) {
+        // Helper to determine if a position represents meaningful movement
+        const hasNonZeroPosition = (
+          pos: { x: number; y: number; z: number }
+        ): boolean =>
+          Math.abs(pos.x) > 0.001 ||
+          Math.abs(pos.y) > 0.001 ||
+          Math.abs(pos.z) > 0.001;
+
         // Check for any non-zero positions indicating flow movement
         let hasMovement = false;
         for (const pos of positionsWithData) {
-          if (pos && (Math.abs(pos.x) > 0.001 || Math.abs(pos.y) > 0.001 || Math.abs(pos.z) > 0.001)) {
+          if (pos && hasNonZeroPosition(pos)) {
             hasMovement = true;
             break;
           }
         }
-        
+
         // At least some frames should show positional flow
         expect(hasMovement).toBe(true);
       }

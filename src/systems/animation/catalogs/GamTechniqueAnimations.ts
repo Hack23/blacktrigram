@@ -39,10 +39,10 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Flow into takedown or strike with opponent's momentum (counter)
  * - Return to adaptive guard maintaining contact (recovery)
  *
- * Animation Phases (Total: 24 frames at 60fps = 1400ms):
- * - Receive Phase (0-350ms, frames 0-6): Accept incoming attack with yield
- * - Redirect Phase (350-950ms, frames 7-16): Circular redirection of force
- * - Counter Phase (950-1400ms, frames 17-24): Flow into counter with opponent's momentum
+ * Animation Phases (Total: 1400ms):
+ * - Receive Phase (0-350ms): Accept incoming attack with yield
+ * - Redirect Phase (350-950ms): Circular redirection of force
+ * - Counter Phase (950-1400ms): Flow into counter with opponent's momentum
  *
  * Biomechanics:
  * - Initial yield: Spine rotates away (-20°), hips shift (-5°)
@@ -50,8 +50,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Counter: Spine reverses (+20°), both hands push/pull
  *
  * @korean 수류반격
- * @frames 24 total (6 receive + 10 redirect + 8 counter)
- * @duration 1400ms
+ * @duration 1400ms (receive 350ms + redirect 600ms + counter 450ms)
  * @category Counter Animation
  */
 export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
@@ -180,10 +179,10 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
  * - Subtle shift to break balance (minimal force)
  * - Flowing takedown following natural gravity
  *
- * Animation Phases (Total: 26 frames at 60fps = 1517ms):
- * - Blend Phase (0-444ms, frames 0-8): Match opponent's movement
- * - Off-Balance Phase (444-889ms, frames 9-16): Subtle balance disruption
- * - Takedown Phase (889-1517ms, frames 17-26): Flowing descent to ground
+ * Animation Phases (Total: 1517ms):
+ * - Blend Phase (0-444ms): Match opponent's movement
+ * - Off-Balance Phase (444-889ms): Subtle balance disruption
+ * - Takedown Phase (889-1517ms): Flowing descent to ground
  *
  * Biomechanics:
  * - Blend: Arms wrap and match movement, spine neutral
@@ -191,8 +190,7 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
  * - Takedown: Controlled descent, maintaining contact throughout
  *
  * @korean 수류넘어뜨리기
- * @frames 26 total (8 blend + 8 off-balance + 10 takedown)
- * @duration 1517ms (~1.5 seconds)
+ * @duration 1517ms (blend 444ms + off-balance 445ms + takedown 628ms)
  * @category Throw Animation
  */
 export const GAM_FLOWING_TAKEDOWN: SkeletalAnimation =
