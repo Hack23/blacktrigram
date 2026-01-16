@@ -102,6 +102,8 @@ export const GAN_IDLE_ROOTED: SkeletalAnimation =
     .rotate(BoneName.SPINE_UPPER, -0.017, 0, 0) // -1° (tiny chest expansion)
     .rotate(BoneName.SHOULDER_L, -0.366, 0, -0.453) // -21°, 0°, -26° (slight shoulder adjustment)
     .rotate(BoneName.SHOULDER_R, -0.366, 0, 0.453) // -21°, 0°, 26°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (maintained guard structure)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (maintained guard structure)
     .rotate(BoneName.KNEE_L, -0.279, 0, 0) // -16° (slightly deeper root)
     .rotate(BoneName.KNEE_R, -0.279, 0, 0) // -16°
     .position(BoneName.PELVIS, 0, 0, 0) // No movement - mountain doesn't shift
@@ -111,6 +113,8 @@ export const GAN_IDLE_ROOTED: SkeletalAnimation =
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44)
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (guard restored)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (guard restored)
     .rotate(BoneName.KNEE_L, -0.26, 0, 0)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0)
     .rotate(BoneName.HEAD, 0, 0, 0)
@@ -168,6 +172,8 @@ export const GAN_SHORT_ROOT_STEP: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° absorbing weight
     .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard solid
     .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (maintained)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (maintained)
     .position(BoneName.PELVIS, 0, 0, 0.15) // Minimal forward movement
     .done<MartialArtsAnimationBuilder>()
     // Phase 3: Root reinforcement (400ms, frame 9)
@@ -236,6 +242,10 @@ export const GAN_DEFENSIVE_ANGLE_SHIFT: SkeletalAnimation =
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (support foot)
     .rotate(BoneName.FOOT_L, 0, -0.262, 0) // 0°, -15° (pivot complete)
     .rotate(BoneName.HEAD, 0, -0.174, 0) // 0°, -10° (eyes track forward)
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // Guard maintained
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (maintained)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (maintained)
     .position(BoneName.PELVIS, -0.05, 0, 0) // Minimal lateral shift
     .done<MartialArtsAnimationBuilder>()
     // Phase 3: Settle and root (500ms, frame 11)
