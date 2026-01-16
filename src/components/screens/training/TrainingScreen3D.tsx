@@ -17,6 +17,7 @@ import {
 } from "@react-three/postprocessing";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
+import { getArchetypePhysicalAttributes } from "../../../data/archetypePhysicalAttributes";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { GestureEvent } from "../../../hooks/useTouchControls";
@@ -25,8 +26,11 @@ import { PlayerState } from "../../../systems";
 import {
   AnimationEvents,
   AnimationState,
+  AnimationType,
   getAnimationForTechnique,
 } from "../../../systems/animation";
+import { getAnimationForTechniqueOrDefault } from "../../../systems/animation/core/TechniqueAnimationMapping";
+import { physicalReachCalculator } from "../../../systems/physics";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   CombatState,
@@ -42,6 +46,7 @@ import {
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
+import { calculateDistance3D } from "../../../utils/math";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
@@ -295,6 +300,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingAreaBounds.scale],
   );
 
+  // Calculate distance to dummy in meters (training scene uses 1:1 meter scale)
+  // Used for distance-based hit detection matching combat system
+  const distanceToDummy = useMemo(
+    () => calculateDistance3D(player3DPosition, dummyPosition),
+    [player3DPosition, dummyPosition],
+  );
+
   // Track last facing rotation for when movement stops
   const lastFacingRotationRef = useRef<number>(0);
 
@@ -323,9 +335,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Reference for pending attack (executed at animation frame 6)
+  // Includes animationType and startTime for distance-based hit detection
+  // matching CombatSystem behavior
   const pendingAttackRef = useRef<{
     accuracy: number;
     vitalPoint: string;
+    animationType?: AnimationType;
+    startTime?: number;
   } | null>(null);
 
   // Forward ref for handleDummyHit (defined in actions hook)
@@ -386,6 +402,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingState.currentStanceIndex],
   );
 
+  // Ref to track current technique's animation type (updated by technique selection)
+  // This allows useTrainingActions to access the current technique's animation type
+  // without creating circular dependencies
+  const currentTechniqueAnimationTypeRef = useRef<AnimationType>(
+    AnimationType.JAB,
+  );
+
   // Training actions hook (matches useCombatActions pattern)
   const {
     handleStartTraining,
@@ -402,6 +425,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     dummyPosition,
     playerArchetype: selectedArchetype,
     playerStance: currentStance,
+    currentTechniqueAnimationTypeRef, // Ref for technique's animation type
     audio,
     onPlayerUpdate: (updates) => {
       onPlayerUpdate(updates);
@@ -528,6 +552,41 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     });
     return map;
   }, [techniqueSelection.activeCooldowns]);
+
+  // Calculate effective reach based on selected technique (matches CombatSystem)
+  // 선택된 기술에 따른 유효 사정거리 계산 (전투 시스템과 동일)
+  // Also updates the animation type ref for use in handleAttack
+  const currentTechniqueReach = useMemo(() => {
+    const techniques = techniqueSelection.availableTechniques;
+    const selectedIdx = techniqueSelection.selectedIndex;
+    if (techniques.length === 0) {
+      currentTechniqueAnimationTypeRef.current = AnimationType.JAB;
+      return 0.7; // Default punch reach
+    }
+    const currentTechnique =
+      techniques[Math.min(selectedIdx, techniques.length - 1)];
+    if (!currentTechnique) {
+      currentTechniqueAnimationTypeRef.current = AnimationType.JAB;
+      return 0.7;
+    }
+    // Get animation type from technique ID
+    const animConfig = getAnimationForTechniqueOrDefault(currentTechnique.id);
+    // Update the ref so handleAttack uses the correct animation type
+    currentTechniqueAnimationTypeRef.current = animConfig.type;
+    // Calculate max reach using physical attributes and stance
+    const physicalAttributes =
+      getArchetypePhysicalAttributes(selectedArchetype);
+    return physicalReachCalculator.calculateMaxReach(
+      physicalAttributes,
+      animConfig.type,
+      currentStance,
+    );
+  }, [
+    techniqueSelection.availableTechniques,
+    techniqueSelection.selectedIndex,
+    selectedArchetype,
+    currentStance,
+  ]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 8: Mobile Touch Controls
@@ -1083,6 +1142,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   perfectStrikes: trainingState.perfectStrikes,
                 }}
                 isMobile={isMobile}
+                distanceToDummy={distanceToDummy}
+                effectiveReach={currentTechniqueReach}
               />
             </ResponsiveContainer>
 

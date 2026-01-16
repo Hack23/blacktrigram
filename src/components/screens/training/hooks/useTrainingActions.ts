@@ -25,6 +25,8 @@ export interface UseTrainingActionsConfig {
   readonly dummyPosition: [number, number, number];
   readonly playerArchetype: import("../../../../types/common").PlayerArchetype;
   readonly playerStance: TrigramStance;
+  /** Ref to current selected technique's animation type for distance-based hit detection */
+  readonly currentTechniqueAnimationTypeRef: React.MutableRefObject<AnimationType>;
   readonly audio: {
     readonly playSFX: (sound: string) => void;
   };
@@ -57,8 +59,13 @@ export interface UseTrainingActionsReturn {
 }
 
 /**
- * Calculate hit accuracy based on distance and effective reach
- * Uses PhysicalReachCalculator for animation-aware reach calculation
+ * Calculate hit accuracy based on distance and effective reach.
+ * Uses PhysicalReachCalculator for animation-aware reach calculation.
+ *
+ * Distance logic matches CombatSystem: if out of reach, guaranteed miss (accuracy 0).
+ * Training scene coordinates are in meters, using METERS_TO_TRAINING_UNITS = 1.0.
+ *
+ * @korean 거리 기반 명중률 계산 - 사정거리 밖이면 빗나감
  */
 function calculateHitAccuracy(
   playerPos: [number, number, number],
@@ -66,8 +73,9 @@ function calculateHitAccuracy(
   archetype: import("../../../../types/common").PlayerArchetype,
   stance: TrigramStance,
   animationType?: AnimationType,
-  animationTime?: number
+  animationTime?: number,
 ): number {
+  // Calculate 3D distance between player and dummy (in training scene units = meters)
   const distance = calculateDistance3D(playerPos, dummyPos);
 
   // If animation info available, use physics-based reach calculation
@@ -77,33 +85,35 @@ function calculateHitAccuracy(
       physicalAttributes,
       animationType,
       animationTime,
-      stance
+      stance,
     );
 
     const effectiveReachMeters = reachResult.effectiveReach;
 
     // Convert reach from meters to training scene units.
     // Training scenes are authored in real-world meters, so we intentionally
-    // use a 1:1 conversion here. Combat AI, by contrast, applies a 100x
-    // multiplier for its own coordinate system; do not mirror that scaling
-    // in training without updating this constant and its documentation.
+    // use a 1:1 conversion here (METERS_TO_TRAINING_UNITS = 1.0).
+    // Combat AI uses METERS_TO_PIXELS_SCALE (100) for pixel coordinates.
     const reachInUnits = effectiveReachMeters * METERS_TO_TRAINING_UNITS;
 
-    // Accuracy based on how close actual distance is to effective reach
-    if (distance <= reachInUnits) {
-      // Within reach: accuracy based on how centered the hit is
-      return Math.max(0.7, 1.0 - (distance / reachInUnits) * 0.3);
-    } else {
-      // Out of reach: accuracy drops quickly
-      const overreach = distance - reachInUnits;
-      return Math.max(0, 0.7 - overreach * 0.5);
+    // STRICT DISTANCE CHECK (matches CombatSystem behavior):
+    // Out of reach = guaranteed miss with accuracy 0
+    if (distance > reachInUnits) {
+      return 0;
     }
+
+    // Within reach: accuracy based on how centered the hit is
+    // Closer = higher accuracy (0.7 to 1.0 range)
+    return Math.max(0.7, 1.0 - (distance / reachInUnits) * 0.3);
   }
 
-  // Fallback: use simple distance calculation (legacy behavior)
-  const squaredDistance =
-    (playerPos[0] - dummyPos[0]) ** 2 + (playerPos[2] - dummyPos[2]) ** 2;
-  return Math.max(0, 1 - squaredDistance / 64);
+  // Fallback: use default punch reach (0.7 meters) for legacy behavior
+  const defaultReach = 0.7 * METERS_TO_TRAINING_UNITS;
+  if (distance > defaultReach) {
+    return 0; // Out of reach = miss
+  }
+  // Within default reach: linear accuracy based on distance
+  return Math.max(0.5, 1.0 - (distance / defaultReach) * 0.5);
 }
 
 /**
@@ -111,7 +121,7 @@ function calculateHitAccuracy(
  * Provides training action handlers with proper memoization
  */
 export function useTrainingActions(
-  config: UseTrainingActionsConfig
+  config: UseTrainingActionsConfig,
 ): UseTrainingActionsReturn {
   const {
     state,
@@ -120,6 +130,7 @@ export function useTrainingActions(
     dummyPosition,
     playerArchetype,
     playerStance,
+    currentTechniqueAnimationTypeRef,
     audio,
     onPlayerUpdate,
     playerAnimation,
@@ -175,7 +186,7 @@ export function useTrainingActions(
         playerArchetype,
         playerStance,
         animationType,
-        currentTime
+        currentTime,
       );
 
       // Determine hit position (dummy center)
@@ -247,7 +258,7 @@ export function useTrainingActions(
       actions,
       audio,
       pendingAttackRef,
-    ]
+    ],
   );
 
   const handleStanceChange = useCallback(
@@ -262,12 +273,14 @@ export function useTrainingActions(
         audio.playSFX("stance_change");
       }
     },
-    [actions, onPlayerUpdate, audio, playerAnimation]
+    [actions, onPlayerUpdate, audio, playerAnimation],
   );
 
   const handleAttack = useCallback(() => {
-    // Calculate attack accuracy and store it with animation timing
-    const animationType = AnimationType.JAB; // Default animation type for training
+    // Use the current technique's animation type for distance-based hit detection
+    // This ensures kicks have longer reach than punches, elbows shorter, etc.
+    // 현재 기술의 애니메이션 타입을 사용하여 거리 기반 명중 판정
+    const animationType = currentTechniqueAnimationTypeRef.current;
     const startTime = performance.now() / 1000; // Current time in seconds
 
     const accuracy = calculateHitAccuracy(
@@ -276,7 +289,7 @@ export function useTrainingActions(
       playerArchetype,
       playerStance,
       animationType,
-      0 // At attack initiation, time is 0
+      0, // At attack initiation, time is 0
     );
 
     pendingAttackRef.current = {
@@ -297,6 +310,7 @@ export function useTrainingActions(
     dummyPosition,
     playerArchetype,
     playerStance,
+    currentTechniqueAnimationTypeRef,
     playerAnimation,
     audio,
     pendingAttackRef,
