@@ -91,8 +91,8 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     if (!meshRef.current) return;
 
     if (isSelected || hovered) {
-      // Pulsing animation for selected/hovered markers
-      const pulse = Math.sin(state.clock.elapsedTime * 4) * 0.15 + 1;
+      // Rapid pulsing animation for selected/hovered markers (increased frequency and amplitude)
+      const pulse = Math.sin(state.clock.elapsedTime * 6) * 0.25 + 1.15;
       meshRef.current.scale.setScalar(pulse);
     } else {
       // Smooth return to normal scale
@@ -163,13 +163,19 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         <meshPhysicalMaterial
           color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissiveIntensity={isSelected || hovered ? 2.0 : 1.0}
-          metalness={0.8}
-          roughness={0.2} // Balanced for bloom: higher than 0.1 to reduce excessive reflections while maintaining strong emissive glow
+          emissiveIntensity={isSelected || hovered ? 3.5 : 2.0} // Increased emissive for bloom (was 2.0/1.0)
+          metalness={0.9} // Increased metalness for more reflective appearance (was 0.8)
+          roughness={0.1} // Reduced roughness for stronger reflections (was 0.2)
           clearcoat={1.0}
-          clearcoatRoughness={0.1}
+          clearcoatRoughness={0.05} // Reduced for sharper clearcoat (was 0.1)
           transparent
           opacity={isTraining ? 0.9 : 0.6}
+          // Enhanced PBR properties
+          transmission={0.1} // Slight transmission for glass-like effect
+          thickness={0.2}
+          ior={2.4} // High IOR for gem-like appearance
+          sheen={0.3} // Increased sheen
+          sheenRoughness={0.1}
         />
       </mesh>
 

@@ -132,10 +132,19 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         />
         <meshPhysicalMaterial
           color={footColor}
-          metalness={0.1}
+          metalness={0}
           roughness={0.8}
           clearcoat={0.3}
           clearcoatRoughness={0.5}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.1}
+          ior={1.4} // Index of refraction for skin
+          sheen={0.1} // Subtle skin sheen
+          sheenRoughness={0.8}
+          // Subtle emissive for alive appearance
+          emissive={footColor}
+          emissiveIntensity={isHighlighted ? 0.3 : 0.02}
         />
       </mesh>
 
@@ -159,10 +168,19 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         />
         <meshPhysicalMaterial
           color={footColor}
-          metalness={0.1}
+          metalness={0}
           roughness={0.8}
           clearcoat={0.3}
           clearcoatRoughness={0.5}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.1}
+          ior={1.4} // Index of refraction for skin
+          sheen={0.1} // Subtle skin sheen
+          sheenRoughness={0.8}
+          // Subtle emissive for alive appearance
+          emissive={footColor}
+          emissiveIntensity={isHighlighted ? 0.3 : 0.02}
         />
       </mesh>
 
@@ -175,10 +193,19 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         <sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} />
         <meshPhysicalMaterial
           color={footColor}
-          metalness={0.1}
+          metalness={0}
           roughness={0.8}
           clearcoat={0.3}
           clearcoatRoughness={0.5}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.1}
+          ior={1.4} // Index of refraction for skin
+          sheen={0.1} // Subtle skin sheen
+          sheenRoughness={0.8}
+          // Subtle emissive for alive appearance
+          emissive={footColor}
+          emissiveIntensity={isHighlighted ? 0.3 : 0.02}
         />
       </mesh>
     </group>

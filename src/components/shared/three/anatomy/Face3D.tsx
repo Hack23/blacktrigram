@@ -199,9 +199,18 @@ const Nose: React.FC<{
         <meshPhysicalMaterial
           color={skinColor}
           roughness={0.6}
-          metalness={0.1}
+          metalness={0}
           clearcoat={0.3}
           clearcoatRoughness={0.6}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.05}
+          ior={1.4}
+          sheen={0.1}
+          sheenRoughness={0.8}
+          // Subtle emissive
+          emissive={new THREE.Color(0xff6040)}
+          emissiveIntensity={0.02}
         />
       </mesh>
 
@@ -327,10 +336,19 @@ export const Face3D: React.FC<Face3DProps> = ({
           color={headColor}
           map={damageTexture}
           roughness={0.6}
-          metalness={0.1}
+          metalness={0}
           clearcoat={0.3}
           clearcoatRoughness={0.6}
           envMapIntensity={0.5}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.1}
+          ior={1.4} // Index of refraction for skin
+          sheen={0.15} // Facial skin has more sheen
+          sheenRoughness={0.7}
+          // Subtle emissive for alive appearance
+          emissive={new THREE.Color(0xff6040)}
+          emissiveIntensity={0.02}
         />
       </mesh>
 
@@ -375,9 +393,18 @@ export const Face3D: React.FC<Face3DProps> = ({
             <meshPhysicalMaterial
               color={headColor}
               roughness={0.6}
-              metalness={0.1}
+              metalness={0}
               clearcoat={0.3}
               clearcoatRoughness={0.6}
+              // PBR skin properties
+              transmission={0}
+              thickness={0.05}
+              ior={1.4}
+              sheen={0.1}
+              sheenRoughness={0.8}
+              // Subtle emissive
+              emissive={new THREE.Color(0xff6040)}
+              emissiveIntensity={0.02}
             />
           </mesh>
 
@@ -387,9 +414,18 @@ export const Face3D: React.FC<Face3DProps> = ({
             <meshPhysicalMaterial
               color={headColor}
               roughness={0.6}
-              metalness={0.1}
+              metalness={0}
               clearcoat={0.3}
               clearcoatRoughness={0.6}
+              // PBR skin properties
+              transmission={0}
+              thickness={0.05}
+              ior={1.4}
+              sheen={0.1}
+              sheenRoughness={0.8}
+              // Subtle emissive
+              emissive={new THREE.Color(0xff6040)}
+              emissiveIntensity={0.02}
             />
           </mesh>
         </>

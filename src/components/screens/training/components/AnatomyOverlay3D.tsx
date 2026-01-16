@@ -11,17 +11,17 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
 // Visual effect constants for bloom optimization
-const SKELETON_EMISSIVE_INTENSITY = 0.5; // Subtle glow for skeletal structure
+const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure (increased from 0.5)
 const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
 const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels
 const VASCULAR_PULSE_BASE = 1.0; // Base intensity for vascular pulse animation
 const VASCULAR_PULSE_AMPLITUDE = 0.5; // Pulse variation amplitude (max 1.5 total)
 
 // Transmission constants for glass-like anatomy layers
-const SKELETON_MAJOR_TRANSMISSION = 0.3; // Major bones (spine, rib cage, pelvis)
-const SKELETON_MAJOR_THICKNESS = 0.3;
-const SKELETON_LIMB_TRANSMISSION = 0.2; // Limbs (arms, legs)
-const SKELETON_LIMB_THICKNESS = 0.2;
+const SKELETON_MAJOR_TRANSMISSION = 0.1; // Reduced transmission for more solid bone appearance (was 0.3)
+const SKELETON_MAJOR_THICKNESS = 0.5; // Increased thickness for realistic bone structure (was 0.3)
+const SKELETON_LIMB_TRANSMISSION = 0.05; // Reduced transmission for limbs (was 0.2)
+const SKELETON_LIMB_THICKNESS = 0.4; // Increased thickness for limb bones (was 0.2)
 const VASCULAR_TRANSMISSION = 0.2; // All vascular system meshes
 const VASCULAR_THICKNESS = 0.2;
 
@@ -55,7 +55,8 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   useFrame((state) => {
     if (!groupRef.current) return;
 
-    const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.2 + 0.3;
+    // Enhanced pulse for better visibility (amplitude increased from 0.2 to 0.4)
+    const pulse = Math.sin(state.clock.elapsedTime * 2) * 0.4 + 0.6;
 
     // Rebuild mesh cache each frame to ensure all meshes are captured
     const meshes: THREE.Mesh[] = [];
@@ -87,10 +88,15 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity}
           transmission={SKELETON_MAJOR_TRANSMISSION}
           thickness={SKELETON_MAJOR_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Increased roughness for bone texture (was 0.1)
           clearcoat={0.3}
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
 
