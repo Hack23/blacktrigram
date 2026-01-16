@@ -3,12 +3,15 @@
  *
  * Renders Korean text signs with neon emissive effects positioned around the arena
  * Creates an immersive cyberpunk Korean martial arts atmosphere
+ *
+ * Note: Uses drei's Text component with default Inter font which supports Korean
+ * The `font` prop requires a font FILE URL (.ttf/.woff), not a CSS font-family string
  */
 
 import { Text } from "@react-three/drei";
-import React, { useMemo, useEffect } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../../types/constants";
 
 /**
  * Props for the KoreanSignage3D component.
@@ -38,7 +41,7 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
         color: KOREAN_COLORS.ACCENT_GOLD,
         toneMapped: false, // Prevent tone mapping for bloom effect
       }),
-    []
+    [],
   );
 
   const cyanNeonMaterial = useMemo(
@@ -47,7 +50,7 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
         color: KOREAN_COLORS.PRIMARY_CYAN,
         toneMapped: false,
       }),
-    []
+    [],
   );
 
   const redNeonMaterial = useMemo(
@@ -56,7 +59,7 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
         color: KOREAN_COLORS.KOREAN_RED,
         toneMapped: false,
       }),
-    []
+    [],
   );
 
   // Scale-aware positioning and sizing
@@ -77,53 +80,53 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
   }, [goldNeonMaterial, cyanNeonMaterial, redNeonMaterial]);
 
   return (
-    <group>
-      {/* "전투" (Combat) sign - left wall */}
-      {/* Note: material prop takes precedence over color prop in Text component */}
-      <Text
-        position={[leftWallX, signHeight, 0]}
-        rotation={[0, Math.PI / 2, 0]}
-        font={FONT_FAMILY.KOREAN}
-        fontSize={fontSize}
-        outlineColor={KOREAN_COLORS.PRIMARY_CYAN}
-        outlineWidth={outlineWidth}
-        material={goldNeonMaterial}
-        anchorX="center"
-        anchorY="middle"
-      >
-        전투
-      </Text>
+    <Suspense fallback={null}>
+      <group>
+        {/* "전투" (Combat) sign - left wall */}
+        {/* Note: material prop takes precedence over color prop in Text component */}
+        {/* Note: Omitting font prop uses default Inter font which supports Korean */}
+        <Text
+          position={[leftWallX, signHeight, 0]}
+          rotation={[0, Math.PI / 2, 0]}
+          fontSize={fontSize}
+          outlineColor={KOREAN_COLORS.PRIMARY_CYAN}
+          outlineWidth={outlineWidth}
+          material={goldNeonMaterial}
+          anchorX="center"
+          anchorY="middle"
+        >
+          전투
+        </Text>
 
-      {/* "흑괘" (Black Trigram) sign - right wall */}
-      <Text
-        position={[rightWallX, signHeight, 0]}
-        rotation={[0, -Math.PI / 2, 0]}
-        font={FONT_FAMILY.KOREAN}
-        fontSize={fontSize}
-        outlineColor={KOREAN_COLORS.ACCENT_GOLD}
-        outlineWidth={outlineWidth}
-        material={cyanNeonMaterial}
-        anchorX="center"
-        anchorY="middle"
-      >
-        흑괘
-      </Text>
+        {/* "흑괘" (Black Trigram) sign - right wall */}
+        <Text
+          position={[rightWallX, signHeight, 0]}
+          rotation={[0, -Math.PI / 2, 0]}
+          fontSize={fontSize}
+          outlineColor={KOREAN_COLORS.ACCENT_GOLD}
+          outlineWidth={outlineWidth}
+          material={cyanNeonMaterial}
+          anchorX="center"
+          anchorY="middle"
+        >
+          흑괘
+        </Text>
 
-      {/* "급소격" (Vital Point Strike) sign - back wall */}
-      <Text
-        position={[0, signHeight, backWallZ]}
-        rotation={[0, 0, 0]}
-        font={FONT_FAMILY.KOREAN}
-        fontSize={fontSize * 0.8} // Slightly smaller for back wall
-        outlineColor={KOREAN_COLORS.ACCENT_GOLD}
-        outlineWidth={outlineWidth}
-        material={redNeonMaterial}
-        anchorX="center"
-        anchorY="middle"
-      >
-        급소격
-      </Text>
-    </group>
+        {/* "급소격" (Vital Point Strike) sign - back wall */}
+        <Text
+          position={[0, signHeight, backWallZ]}
+          rotation={[0, 0, 0]}
+          fontSize={fontSize * 0.8} // Slightly smaller for back wall
+          outlineColor={KOREAN_COLORS.ACCENT_GOLD}
+          outlineWidth={outlineWidth}
+          material={redNeonMaterial}
+          anchorX="center"
+          anchorY="middle"
+        >
+          급소격
+        </Text>
+      </group>
+    </Suspense>
   );
 };
 

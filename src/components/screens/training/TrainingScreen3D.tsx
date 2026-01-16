@@ -11,14 +11,11 @@ import { Html } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
-  ChromaticAberration,
   EffectComposer,
   Noise,
-  SSAO,
   Vignette,
 } from "@react-three/postprocessing";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -221,7 +218,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       x: trainingAreaBounds.x + trainingAreaBounds.width * 0.25, // 25% from left
       y: trainingAreaBounds.y + trainingAreaBounds.height * 0.5, // Centered vertically
     }),
-    [trainingAreaBounds]
+    [trainingAreaBounds],
   );
 
   // Expanded bounds to compensate for inputSystem's hardcoded offsets (-60 width, -180 height)
@@ -233,7 +230,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       width: trainingAreaBounds.width + 60, // Compensate for -60 offset in inputSystem
       height: trainingAreaBounds.height + 180, // Compensate for -180 offset in inputSystem
     }),
-    [trainingAreaBounds]
+    [trainingAreaBounds],
   );
 
   // Player movement with physics-based acceleration and stance modifiers
@@ -273,7 +270,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Dummy position (fixed in 3D space, right side of training area, scaled)
   const dummyPosition = useMemo<[number, number, number]>(
     () => [5 * trainingAreaBounds.scale, 0, 0],
-    [trainingAreaBounds.scale]
+    [trainingAreaBounds.scale],
   );
 
   // Track last facing rotation for when movement stops
@@ -311,7 +308,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Forward ref for handleDummyHit (defined in actions hook)
   const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
-    () => false
+    () => false,
   );
 
   // Ref for playerAnimation to avoid circular dependencies in animation events
@@ -344,7 +341,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }
       },
     }),
-    [audio, trainingState.currentStanceIndex]
+    [audio, trainingState.currentStanceIndex],
   );
 
   const playerAnimation = usePlayerAnimation({
@@ -364,7 +361,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // 현재 자세 (애니메이션 전환용)
   const currentStance = useMemo(
     () => TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
-    [trainingState.currentStanceIndex]
+    [trainingState.currentStanceIndex],
   );
 
   // Training actions hook (matches useCombatActions pattern)
@@ -481,13 +478,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       (technique: Technique) => {
         // Show technique usage feedback
         trainingActions.setFeedback(
-          `${technique.name.korean} 사용! | Used ${technique.name.english}!`
+          `${technique.name.korean} 사용! | Used ${technique.name.english}!`,
         );
 
         // Set attack animation based on technique
         // 기술에 따른 공격 애니메이션 설정
         const animationName = getAnimationForTechnique(
-          technique.name.english || technique.id
+          technique.name.english || technique.id,
         );
         setAttackAnimation(animationName);
 
@@ -497,7 +494,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         // Execute attack with technique (visual feedback)
         handleAttack();
       },
-      [handleAttack, trainingActions]
+      [handleAttack, trainingActions],
     ),
   });
 
@@ -548,7 +545,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               code: `Key${prevKey.toUpperCase()}`,
               bubbles: true,
               cancelable: true,
-            })
+            }),
           );
         }
 
@@ -561,7 +558,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             code: `Key${key.toUpperCase()}`,
             bubbles: true,
             cancelable: true,
-          })
+          }),
         );
       } else if (eventType === "end") {
         // Release active key when D-pad released
@@ -573,13 +570,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               code: `Key${key.toUpperCase()}`,
               bubbles: true,
               cancelable: true,
-            })
+            }),
           );
           activeMobileKeyRef.current = null;
         }
       }
     },
-    []
+    [],
   );
 
   // Mobile attack handler - uses the same handleAttack from training actions
@@ -594,7 +591,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         audio.playSFX("block");
       }
     },
-    [audio]
+    [audio],
   );
 
   // Mobile gesture handler
@@ -619,13 +616,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           trainingActions.setTrainingMode(
             trainingState.trainingMode === "vital_point"
               ? "basics"
-              : "vital_point"
+              : "vital_point",
           );
           audio.playSFX("menu_select");
           break;
       }
     },
-    [trainingState, trainingActions, audio]
+    [trainingState, trainingActions, audio],
   );
 
   // Mobile stance change handler
@@ -633,7 +630,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     (stanceIndex: number) => {
       handleStanceChange(stanceIndex);
     },
-    [handleStanceChange]
+    [handleStanceChange],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -687,7 +684,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       } catch (err) {
         console.warn("Failed to start training music:", err);
         trainingActions.setFeedback(
-          "오디오 초기화 실패 | Audio initialization failed"
+          "오디오 초기화 실패 | Audio initialization failed",
         );
       }
     };
@@ -732,7 +729,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     const interval = setInterval(() => {
       trainingActions.updateSessionDuration(
-        Math.floor((Date.now() - (trainingState.sessionStartTime ?? 0)) / 1000)
+        Math.floor((Date.now() - (trainingState.sessionStartTime ?? 0)) / 1000),
       );
     }, 1000);
 
@@ -745,7 +742,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Auto-restart training when mode changes
   const prevTrainingModeRef = useRef<typeof trainingState.trainingMode>(
-    trainingState.trainingMode
+    trainingState.trainingMode,
   );
   const isFirstModeEffectRef = useRef<boolean>(true);
   const isTrainingRef = useRef<boolean>(trainingState.isTraining);
@@ -816,7 +813,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     (effectId: number) => {
       trainingActions.removeHitEffect(effectId);
     },
-    [trainingActions]
+    [trainingActions],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -828,7 +825,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       trainingActions.toggleAnatomyLayer(layer);
       audio.playSFX("menu_click");
     },
-    [trainingActions, audio]
+    [trainingActions, audio],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -840,7 +837,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       position: [0, 8, 12] as [number, number, number],
       fov: 60,
     }),
-    []
+    [],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -852,8 +849,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return getPerformanceSettings(width, isMobile);
   }, [width, isMobile]);
 
-  // Memoized SSAO color to avoid creating new THREE.Color on every render
-  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
+  // SSAO removed - was causing WebGL context loss without NormalPass
 
   return (
     <div
@@ -872,18 +868,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         dpr={performanceSettings.dpr}
-        shadows={!isMobile}
-        onCreated={({ gl, scene }) => {
+        shadows={false} // Temporarily disable shadows
+        onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
-          // Add atmospheric fog (matching CombatScreen3D)
-          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 15, 35);
+          // Disable fog temporarily for debugging
         }}
         camera={cameraConfig}
       >
-        {/* Arena environment with lighting included (includes Environment preset="city") */}
-        <CombatArena3D lighting="cyberpunk" scale={1.0} />
+        {/* Lighting - base lighting, arena provides additional */}
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
-        {/* Animation updater - updates player animation at 60fps */}
+        {/* Combat Arena 3D Environment - reuse from combat */}
+        <CombatArena3D lighting="cyberpunk" scale={1} />
+
+        {/* Animation updater - 60fps updates */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
 
         {/* Training dummy at fixed position */}
@@ -955,18 +954,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           {...convertPlayerStateToProps(
             trainingPlayerState,
             player3DPosition,
-            playerRotation, // rotation - dynamically face towards dummy
+            playerRotation,
             {
               isMobile,
               facing: "right",
-              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
               enableFacialExpressions: true,
               enableEyeTracking: true,
               opponentPosition: dummyPosition,
-            }
+            },
           )}
           currentAnimation={animationStateToPlayerAnimation(
-            playerAnimation.currentState
+            playerAnimation.currentState,
           )}
           attackAnimation={attackAnimation}
           enableTransitionEffects={!isMobile}
@@ -1111,11 +1109,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   padding: isMobile ? "8px 12px" : "10px 16px",
                   background: hexToRgbaString(
                     KOREAN_COLORS.UI_BACKGROUND_DARK,
-                    0.9
+                    0.9,
                   ),
                   border: `2px solid ${hexToRgbaString(
                     KOREAN_COLORS.ACCENT_GOLD,
-                    0.6
+                    0.6,
                   )}`,
                   borderRadius: "8px",
                   fontFamily: FONT_FAMILY.KOREAN,
@@ -1157,20 +1155,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                             ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)
                             : hexToRgbaString(
                                 KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                                0.8
+                                0.8,
                               ),
                         color:
                           selectedArchetype === arch
                             ? hexToRgbaString(
                                 KOREAN_COLORS.UI_BACKGROUND_DARK,
-                                1
+                                1,
                               )
                             : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
                         border: `1px solid ${hexToRgbaString(
                           selectedArchetype === arch
                             ? KOREAN_COLORS.ACCENT_GOLD
                             : KOREAN_COLORS.UI_BORDER,
-                          0.6
+                          0.6,
                         )}`,
                         borderRadius: "4px",
                         cursor: "pointer",
@@ -1257,7 +1255,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                       trainingActions.stopFootworkDrill();
                     } else {
                       trainingActions.startFootworkDrill(
-                        trainingState.footworkDrillType
+                        trainingState.footworkDrillType,
                       );
                     }
                   }}
@@ -1292,11 +1290,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     padding: isMobile ? "8px 12px" : "10px 16px",
                     background: hexToRgbaString(
                       KOREAN_COLORS.UI_BACKGROUND_DARK,
-                      0.9
+                      0.9,
                     ),
                     border: `2px solid ${hexToRgbaString(
                       KOREAN_COLORS.PRIMARY_CYAN,
-                      0.6
+                      0.6,
                     )}`,
                     borderRadius: "8px",
                     fontSize: isMobile ? "12px" : "14px",
@@ -1378,7 +1376,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   .training-return-menu-btn {
                     background: ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
-                      1
+                      1,
                     )};
                     border: none;
                     border-radius: 8px;
@@ -1391,7 +1389,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     transition: all 0.2s ease;
                     box-shadow: 0 0 10px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
-                      0.5
+                      0.5,
                     )};
                     min-height: 40px;
                   }
@@ -1399,7 +1397,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                     transform: scale(1.05);
                     box-shadow: 0 0 20px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
-                      0.8
+                      0.8,
                     )};
                   }
                 `}
@@ -1451,39 +1449,30 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </>
         )}
 
-        {/* Post-processing Effects - Matches Combat Screen settings for visual parity */}
+        {/* Post-processing Effects - lightweight only */}
         {isMobile ? (
           <EffectComposer multisampling={0}>
             <Bloom
-              luminanceThreshold={1}
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.9}
               mipmapBlur
-              intensity={1.5}
-              radius={0.6}
+              intensity={0.8}
+              radius={0.4}
             />
-            <Noise opacity={0.02} />
-            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+            <Noise opacity={0.03} />
+            <Vignette eskil={false} offset={0.1} darkness={0.3} />
           </EffectComposer>
         ) : (
           <EffectComposer multisampling={4}>
             <Bloom
-              luminanceThreshold={1}
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.9}
               mipmapBlur
-              intensity={1.5}
-              radius={0.6}
+              intensity={0.8}
+              radius={0.4}
             />
-            <SSAO
-              radius={0.05}
-              intensity={50}
-              luminanceInfluence={0.5}
-              color={ssaoColor}
-            />
-            <ChromaticAberration
-              offset={[0.002, 0.002]}
-              radialModulation={false}
-              modulationOffset={0}
-            />
-            <Noise opacity={0.02} />
-            <Vignette eskil={false} offset={0.1} darkness={0.5} />
+            <Noise opacity={0.03} />
+            <Vignette eskil={false} offset={0.1} darkness={0.3} />
           </EffectComposer>
         )}
       </Canvas>
