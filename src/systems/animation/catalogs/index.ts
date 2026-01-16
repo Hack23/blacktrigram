@@ -264,6 +264,8 @@ export * from "./ElbowKneeAnimations";
 export * from "./GamRedirectionAnimations";
 export * from "./GrapplingAnimations";
 export * from "./KickAnimations";
+export * from "./LiStanceAnimations";
+export * from "./LiTechniqueAnimations";
 export * from "./MovementAnimations";
 export * from "./PunchAnimations";
 export * from "./RecoveryAnimations";
