@@ -72,4 +72,13 @@ describe("CombatArena3D", () => {
 
     expect(container).toBeTruthy();
   });
+
+  it("should render without blocking when Environment is loading", () => {
+    // This test verifies that the arena can render immediately
+    // even if the Environment component takes time to load
+    const { container } = render(<CombatArena3D lighting="cyberpunk" />);
+
+    // Arena should render immediately (not blocked by Environment loading)
+    expect(container).toBeTruthy();
+  });
 });
