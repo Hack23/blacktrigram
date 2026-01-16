@@ -30,6 +30,17 @@ import {
 } from "./StanceGuardPoses";
 import { toRadians } from "@/utils/math";
 
+// Import Li (Fire) enhanced animations
+import {
+  LI_DIAGONAL_DART_STEP,
+  LI_FORWARD_TARGETING_GUARD,
+  LI_IDLE_TARGETING,
+  LI_LINEAR_PIERCE_STEP,
+} from "./LiStanceAnimations";
+import {
+  LI_FIRE_SPEAR_ANIMATION,
+  LI_NERVE_STRIKE_COMBO,
+} from "./LiTechniqueAnimations";
 // Import enhanced Jin animations
 import {
   JIN_IDLE_COILED,
@@ -722,15 +733,20 @@ export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Gan Rock Defense - 간암방어
+ * Gan Rock Defense (Legacy) - 간암방어
  *
  * Mountain's immovable rock defense.
  * Absorbing attacks like a mountain.
  *
+ * @deprecated This is a legacy simplified animation. Use the comprehensive
+ * `GAN_ROCK_DEFENSE_ANIMATION` from `GanTechniqueAnimations.ts` instead,
+ * which provides detailed block-absorb-counter mechanics with authentic
+ * Hapkido defensive techniques (반석방어).
+ *
  * @korean 간암방어애니메이션
  */
-export const GAN_ROCK_DEFENSE_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("gan_rock_defense", "간암방어")
+export const GAN_ROCK_DEFENSE_ANIMATION_LEGACY: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gan_rock_defense_legacy", "간암방어")
     .asDefense(0.4)
     .withHighGuard()
     .parry(0.18)
@@ -1732,6 +1748,14 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["tae_arm_bar", TAE_ARM_BAR_ANIMATION],
 
     // Li (리) - Fire
+    // Enhanced Li animations from LiStanceAnimations and LiTechniqueAnimations
+    ["li_idle_targeting", LI_IDLE_TARGETING],
+    ["li_diagonal_dart_step", LI_DIAGONAL_DART_STEP],
+    ["li_linear_pierce_step", LI_LINEAR_PIERCE_STEP],
+    ["li_forward_targeting_guard", LI_FORWARD_TARGETING_GUARD],
+    ["li_fire_spear", LI_FIRE_SPEAR_ANIMATION],
+    ["li_nerve_strike_combo", LI_NERVE_STRIKE_COMBO],
+    // Original Li animations
     ["li_flame_spear", LI_FLAME_SPEAR_ANIMATION],
     ["li_temple_strike", LI_TEMPLE_STRIKE_ANIMATION],
     ["li_nerve_strike", LI_NERVE_STRIKE_ANIMATION],
@@ -1769,7 +1793,7 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["gam_wrist_twist_counter", GAM_WRIST_TWIST_COUNTER_ANIMATION],
 
     // Gan (간) - Mountain
-    ["gan_rock_defense", GAN_ROCK_DEFENSE_ANIMATION],
+    ["gan_rock_defense_legacy", GAN_ROCK_DEFENSE_ANIMATION_LEGACY],
     ["gan_immovable_stance", GAN_IMMOVABLE_STANCE_ANIMATION],
     ["gan_iron_block", GAN_IRON_BLOCK_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_STRIKE_ANIMATION],
