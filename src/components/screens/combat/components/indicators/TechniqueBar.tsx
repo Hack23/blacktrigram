@@ -105,12 +105,16 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
       {/* Technique Bar Container - positioned at bottom center */}
       <div
         style={{
-          position: "relative",
+          position: "absolute",
+          left: "50%",
+          bottom: `${bottomOffset}px`,
+          transform: "translateX(-50%)",
           width: `${layout.totalWidth}px`,
           height: `${layout.cardHeight}px`,
           display: "flex",
           gap: `${layout.gap}px`,
-          marginBottom: `${bottomOffset}px`,
+          pointerEvents: "auto",
+          zIndex: 100,
         }}
         data-testid="technique-bar"
       >
