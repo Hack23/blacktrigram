@@ -163,7 +163,7 @@ export const JIN_THUNDER_FLASH_ANIMATION: SkeletalAnimation =
 /**
  * Jin Jumping Knee Strike Animation
  *
- * **Korean**: 도약 무릎격 (Doyak Mureupgyeok) - Jumping Knee Strike
+ * **Korean**: 번개 무릎격 (Byeonggae Mureupgyeok) - Lightning Knee Strike
  * **Technique**: Airborne knee attack with explosive momentum
  * **Target Points**: 명치 (Solar Plexus), 턱 (Jaw), 얼굴 (Face)
  *
