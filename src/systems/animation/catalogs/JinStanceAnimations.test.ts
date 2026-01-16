@@ -229,6 +229,7 @@ describe("JIN_JUMPING_ADVANCE", () => {
 
     // Should have rotation for striking (Y-axis rotation)
     expect(Math.abs(spine?.y ?? 0) > 0.1).toBe(true); // Some rotation
+    expect(Math.abs(pelvis?.y ?? 0) > 0.1).toBe(true); // Pelvis rotation for power
   });
 
   it("should land in stable striking stance", () => {
