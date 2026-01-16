@@ -239,7 +239,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const { arenaBounds, isMobile } = useCombatLayout(width, height);
+  const { arenaBounds, isMobile, screenSize } = useCombatLayout(width, height);
+
+  // Screen size scaling for 4K and large displays
+  // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
+  const positionScale = useMemo(() => {
+    switch (screenSize) {
+      case "mobile":
+        return 1.0; // Mobile already has special handling
+      case "tablet":
+        return 1.0;
+      case "desktop":
+        return 1.0;
+      case "large":
+        return 1.25;
+      case "xlarge":
+        return 1.5; // 4K displays need 1.5x offsets
+      default:
+        return 1.0;
+    }
+  }, [screenSize]);
 
   // Camera and rendering configuration based on device
   const cameraConfig = useMemo(() => {
@@ -2405,7 +2424,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       >
         {/* Combat Title - Top Center */}
         <ResponsiveContainer
-          position={{ base: { x: 0, y: 10 } }}
+          position={{ base: { x: 0, y: 10 * positionScale } }}
           containerWidth={width}
           useSafeArea
           safeAreaEdge="top"
@@ -2584,7 +2603,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Combat Footer - Back Button */}
         <ResponsiveContainer
-          position={{ base: { x: 0, y: height - (isMobile ? 70 : 80) } }}
+          position={{
+            base: { x: 0, y: height - (isMobile ? 70 : 90 * positionScale) },
+          }}
           containerWidth={width}
           useSafeArea
           safeAreaEdge="bottom"

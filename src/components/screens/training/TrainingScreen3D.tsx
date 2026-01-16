@@ -145,7 +145,29 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const audio = useAudio();
 
   // Responsive detection and layout (using dedicated training layout hook)
-  const { trainingAreaBounds, isMobile } = useTrainingLayout(width, height);
+  const { trainingAreaBounds, isMobile, screenSize } = useTrainingLayout(
+    width,
+    height,
+  );
+
+  // Screen size scaling for 4K and large displays
+  // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
+  const positionScale = React.useMemo(() => {
+    switch (screenSize) {
+      case "mobile":
+        return 1.0; // Mobile already has special handling
+      case "tablet":
+        return 1.0;
+      case "desktop":
+        return 1.0;
+      case "large":
+        return 1.25;
+      case "xlarge":
+        return 1.5; // 4K displays need 1.5x offsets
+      default:
+        return 1.0;
+    }
+  }, [screenSize]);
 
   // Training difficulty and vital point configuration
   const difficulty: DifficultyMode = "normal";
@@ -1016,7 +1038,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           >
             {/* Top Left - Training Controls */}
             <ResponsiveContainer
-              position={{ base: { x: 20, y: 20 } }}
+              position={{
+                base: { x: 20 * positionScale, y: 20 * positionScale },
+              }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="top"
@@ -1035,8 +1059,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: width - (isMobile ? 310 : 320),
-                  y: isMobile ? 90 : 120,
+                  x: width - (isMobile ? 310 : 320 * positionScale),
+                  y: isMobile ? 90 : 120 * positionScale,
                 },
               }}
               containerWidth={width}
@@ -1066,8 +1090,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: width / 2 - (isMobile ? 140 : 160),
-                  y: isMobile ? 70 : 90,
+                  x: width / 2 - (isMobile ? 140 : 160 * positionScale),
+                  y: isMobile ? 70 : 90 * positionScale,
                 },
               }}
               containerWidth={width}
@@ -1089,8 +1113,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: 20,
-                  y: isMobile ? 80 : 100,
+                  x: 20 * positionScale,
+                  y: isMobile ? 80 : 100 * positionScale,
                 },
               }}
               containerWidth={width}
@@ -1186,8 +1210,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: isMobile ? 10 : 20,
-                  y: height - (isMobile ? 180 : 200),
+                  x: isMobile ? 10 : 20 * positionScale,
+                  y: height - (isMobile ? 180 : 280 * positionScale),
                 },
               }}
               containerWidth={width}
@@ -1212,8 +1236,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <div
               style={{
                 position: "absolute",
-                bottom: isMobile ? "65px" : "75px",
-                left: isMobile ? "10px" : "20px",
+                bottom: isMobile ? "65px" : `${90 * positionScale}px`,
+                left: isMobile ? "10px" : `${20 * positionScale}px`,
                 pointerEvents: "none",
               }}
             >
@@ -1231,8 +1255,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             <ResponsiveContainer
               position={{
                 base: {
-                  x: width - (isMobile ? 310 : 420),
-                  y: height - (isMobile ? 100 : 110),
+                  x: width - (isMobile ? 310 : 420 * positionScale),
+                  y: height - (isMobile ? 100 : 180 * positionScale),
                 },
               }}
               containerWidth={width}
@@ -1273,7 +1297,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             {/* Vital Point Overlay Hint - Top Center */}
             {!overlayVisible && (
               <ResponsiveContainer
-                position={{ base: { x: 0, y: isMobile ? 20 : 30 } }}
+                position={{
+                  base: { x: 0, y: isMobile ? 20 : 30 * positionScale },
+                }}
                 containerWidth={width}
                 useSafeArea
                 safeAreaEdge="top"
@@ -1358,7 +1384,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
             {/* Bottom Center - Return to Menu Button */}
             <ResponsiveContainer
-              position={{ base: { x: 0, y: height - (isMobile ? 75 : 85) } }}
+              position={{
+                base: {
+                  x: 0,
+                  y: height - (isMobile ? 75 : 100 * positionScale),
+                },
+              }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="bottom"
