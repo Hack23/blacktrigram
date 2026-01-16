@@ -68,6 +68,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   const markerDepth = 4 * scale;
 
   // Memoized floor material with wet concrete aesthetic and reflections
+  // Note: Empty dependency array is correct - KOREAN_COLORS is a const object
+  // and doesn't need to be included in dependencies
   const floorMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({

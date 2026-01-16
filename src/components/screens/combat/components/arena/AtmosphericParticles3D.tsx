@@ -80,14 +80,21 @@ export const AtmosphericParticles3D: React.FC<
       spreadY,
       spreadZ
     );
+    
+    // Note: BufferAttribute doesn't have a dispose method in Three.js
+    // The geometry cleanup on unmount will handle attribute cleanup
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     return () => {
+      // Clean up geometry on unmount (this also cleans up attributes)
       geometry.dispose();
     };
   }, [count, spreadX, spreadY, spreadZ, geometry]);
 
   // Animate particles (rain/mist effect)
+  // Performance note: Current implementation modifies geometry buffer every frame.
+  // This is acceptable for up to ~500 particles but may impact performance beyond 1000.
+  // For larger particle counts, consider using shader-based vertex displacement or instancing.
   useFrame((_state, delta) => {
     if (!particlesRef.current) return;
 

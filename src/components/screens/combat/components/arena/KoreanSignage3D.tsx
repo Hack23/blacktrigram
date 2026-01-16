@@ -79,12 +79,12 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
   return (
     <group>
       {/* "전투" (Combat) sign - left wall */}
+      {/* Note: material prop takes precedence over color prop in Text component */}
       <Text
         position={[leftWallX, signHeight, 0]}
         rotation={[0, Math.PI / 2, 0]}
         font={FONT_FAMILY.KOREAN}
         fontSize={fontSize}
-        color={KOREAN_COLORS.ACCENT_GOLD}
         outlineColor={KOREAN_COLORS.PRIMARY_CYAN}
         outlineWidth={outlineWidth}
         material={goldNeonMaterial}
@@ -100,7 +100,6 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
         rotation={[0, -Math.PI / 2, 0]}
         font={FONT_FAMILY.KOREAN}
         fontSize={fontSize}
-        color={KOREAN_COLORS.PRIMARY_CYAN}
         outlineColor={KOREAN_COLORS.ACCENT_GOLD}
         outlineWidth={outlineWidth}
         material={cyanNeonMaterial}
@@ -116,7 +115,6 @@ export const KoreanSignage3D: React.FC<KoreanSignage3DProps> = ({
         rotation={[0, 0, 0]}
         font={FONT_FAMILY.KOREAN}
         fontSize={fontSize * 0.8} // Slightly smaller for back wall
-        color={KOREAN_COLORS.KOREAN_RED}
         outlineColor={KOREAN_COLORS.ACCENT_GOLD}
         outlineWidth={outlineWidth}
         material={redNeonMaterial}
