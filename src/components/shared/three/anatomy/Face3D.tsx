@@ -12,7 +12,7 @@
  * @korean 얼굴3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import {
@@ -191,18 +191,41 @@ const Nose: React.FC<{
 }> = ({ position, skinColor, bleeding }) => {
   const bloodColor = KOREAN_COLORS.ACCENT_RED;
 
+  // Memoize skin material for nose
+  const noseMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: skinColor,
+        roughness: 0.6,
+        metalness: 0,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.6,
+        // PBR skin properties
+        transmission: 0,
+        thickness: 0.05,
+        ior: 1.4,
+        sheen: 0.1,
+        sheenRoughness: 0.8,
+        // Subtle emissive
+        emissive: new THREE.Color(0xff6040),
+        emissiveIntensity: 0.02,
+      }),
+    [skinColor]
+  );
+
+  // Dispose nose material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      noseMaterial.dispose();
+    };
+  }, [noseMaterial]);
+
   return (
     <group position={position} name="nose">
       {/* Nose */}
       <mesh rotation={[Math.PI, 0, 0]}>
         <coneGeometry args={[0.03, 0.06, 8]} />
-        <meshPhysicalMaterial
-          color={skinColor}
-          roughness={0.6}
-          metalness={0.1}
-          clearcoat={0.3}
-          clearcoatRoughness={0.6}
-        />
+        <primitive object={noseMaterial} attach="material" />
       </mesh>
 
       {/* Blood from nose */}
@@ -314,6 +337,60 @@ export const Face3D: React.FC<Face3DProps> = ({
   // In a future implementation, this could be replaced with a canvas-based texture.
   const damageTexture = null;
 
+  // Memoize head material to avoid recreating on every render
+  const headMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: headColor,
+        map: damageTexture,
+        roughness: 0.6,
+        metalness: 0,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.6,
+        envMapIntensity: 0.5,
+        // PBR skin properties
+        transmission: 0,
+        thickness: 0.1,
+        ior: 1.4, // Index of refraction for skin
+        sheen: 0.15, // Facial skin has more sheen
+        sheenRoughness: 0.7,
+        // Subtle emissive for alive appearance
+        emissive: new THREE.Color(0xff6040),
+        emissiveIntensity: 0.02,
+      }),
+    [headColor, damageTexture]
+  );
+
+  // Memoize ear material to avoid recreating on every render
+  const earMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: headColor,
+        roughness: 0.6,
+        metalness: 0,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.6,
+        // PBR skin properties
+        transmission: 0,
+        thickness: 0.05,
+        ior: 1.4,
+        sheen: 0.1,
+        sheenRoughness: 0.8,
+        // Subtle emissive
+        emissive: new THREE.Color(0xff6040),
+        emissiveIntensity: 0.02,
+      }),
+    [headColor]
+  );
+
+  // Dispose materials on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      headMaterial.dispose();
+      earMaterial.dispose();
+    };
+  }, [headMaterial, earMaterial]);
+
   return (
     <group
       position={[0, HEAD_POSITION_OFFSET, 0]}
@@ -323,15 +400,7 @@ export const Face3D: React.FC<Face3DProps> = ({
       {/* Head sphere */}
       <mesh>
         <sphereGeometry args={[0.2, isMobile ? 12 : 16, isMobile ? 12 : 16]} />
-        <meshPhysicalMaterial
-          color={headColor}
-          map={damageTexture}
-          roughness={0.6}
-          metalness={0.1}
-          clearcoat={0.3}
-          clearcoatRoughness={0.6}
-          envMapIntensity={0.5}
-        />
+        <primitive object={headMaterial} attach="material" />
       </mesh>
 
       {/* Left eye */}
@@ -372,25 +441,13 @@ export const Face3D: React.FC<Face3DProps> = ({
           {/* Left ear */}
           <mesh position={[-0.2, 0, 0]} rotation={[0, 0, Math.PI / 6]}>
             <sphereGeometry args={[0.04, 8, 8]} />
-            <meshPhysicalMaterial
-              color={headColor}
-              roughness={0.6}
-              metalness={0.1}
-              clearcoat={0.3}
-              clearcoatRoughness={0.6}
-            />
+            <primitive object={earMaterial} attach="material" />
           </mesh>
 
           {/* Right ear */}
           <mesh position={[0.2, 0, 0]} rotation={[0, 0, -Math.PI / 6]}>
             <sphereGeometry args={[0.04, 8, 8]} />
-            <meshPhysicalMaterial
-              color={headColor}
-              roughness={0.6}
-              metalness={0.1}
-              clearcoat={0.3}
-              clearcoatRoughness={0.6}
-            />
+            <primitive object={earMaterial} attach="material" />
           </mesh>
         </>
       )}

@@ -14,7 +14,8 @@
  * @korean 발3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
 /**
@@ -114,6 +115,35 @@ export const Foot3D: React.FC<Foot3DProps> = ({
     return skinColor;
   }, [isHighlighted, skinColor]);
 
+  // Memoize shared skin material for all foot parts
+  const skinMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: footColor,
+        metalness: 0,
+        roughness: 0.8,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.5,
+        // PBR skin properties
+        transmission: 0,
+        thickness: 0.1,
+        ior: 1.4, // Index of refraction for skin
+        sheen: 0.1, // Subtle skin sheen
+        sheenRoughness: 0.8,
+        // Subtle emissive for alive appearance
+        emissive: new THREE.Color(footColor),
+        emissiveIntensity: isHighlighted ? 0.3 : 0.02,
+      }),
+    [footColor, isHighlighted]
+  );
+
+  // Dispose skin material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      skinMaterial.dispose();
+    };
+  }, [skinMaterial]);
+
   return (
     <group name={`foot-3d-${side}`}>
       {/* Main heel/midfoot body */}
@@ -130,13 +160,7 @@ export const Foot3D: React.FC<Foot3DProps> = ({
             footDimensions.heelLength,
           ]}
         />
-        <meshPhysicalMaterial
-          color={footColor}
-          metalness={0.1}
-          roughness={0.8}
-          clearcoat={0.3}
-          clearcoatRoughness={0.5}
-        />
+        <primitive object={skinMaterial} attach="material" />
       </mesh>
 
       {/* Toe area (slightly raised and forward) */}
@@ -157,13 +181,7 @@ export const Foot3D: React.FC<Foot3DProps> = ({
             footDimensions.toeLength,
           ]}
         />
-        <meshPhysicalMaterial
-          color={footColor}
-          metalness={0.1}
-          roughness={0.8}
-          clearcoat={0.3}
-          clearcoatRoughness={0.5}
-        />
+        <primitive object={skinMaterial} attach="material" />
       </mesh>
 
       {/* Ankle connection point indicator (small sphere for visual continuity) */}
@@ -173,13 +191,7 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         name={`foot-ankle-${side}`}
       >
         <sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} />
-        <meshPhysicalMaterial
-          color={footColor}
-          metalness={0.1}
-          roughness={0.8}
-          clearcoat={0.3}
-          clearcoatRoughness={0.5}
-        />
+        <primitive object={skinMaterial} attach="material" />
       </mesh>
     </group>
   );

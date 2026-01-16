@@ -14,7 +14,7 @@
  * @korean 손3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
@@ -146,16 +146,39 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
   radius,
   color,
 }) => {
+  // Memoize material to avoid recreating on every render
+  const material = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: color,
+        metalness: 0,
+        roughness: 0.6,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.5,
+        // PBR skin properties
+        transmission: 0,
+        thickness: 0.1,
+        ior: 1.4, // Index of refraction for skin
+        sheen: 0.1, // Subtle skin sheen
+        sheenRoughness: 0.8,
+        // Subtle emissive for alive appearance
+        emissive: new THREE.Color(color),
+        emissiveIntensity: 0.02,
+      }),
+    [color]
+  );
+
+  // Dispose material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      material.dispose();
+    };
+  }, [material]);
+
   return (
     <mesh position={position} rotation={rotation} castShadow receiveShadow>
       <capsuleGeometry args={[radius, length, 4, 8]} />
-      <meshPhysicalMaterial
-        color={color}
-        metalness={0.1}
-        roughness={0.6}
-        clearcoat={0.3}
-        clearcoatRoughness={0.5}
-      />
+      <primitive object={material} attach="material" />
     </mesh>
   );
 };
@@ -339,14 +362,23 @@ export const Hand3D: React.FC<Hand3DProps> = ({
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />
         <meshPhysicalMaterial
           color={palmColor}
-          metalness={0.1}
+          metalness={0}
           roughness={0.6}
           clearcoat={0.3}
           clearcoatRoughness={0.5}
+          // PBR skin properties
+          transmission={0}
+          thickness={0.1}
+          ior={1.4} // Index of refraction for skin
+          sheen={0.1} // Subtle skin sheen
+          sheenRoughness={0.8}
+          // Subtle emissive for alive appearance
+          emissive={new THREE.Color(0xff6040)}
+          emissiveIntensity={0.02}
         />
       </mesh>
 
-      {/* Knife edge highlight (pinky side of hand) - color only, NO glow */}
+      {/* Knife edge highlight (pinky side of hand) - emissive highlight for visibility */}
       {isHighlighted && highlightKnifeEdge && (
         <mesh
           position={[(-palmWidth / 2) * sideMultiplier, 0, 0]}
@@ -357,10 +389,15 @@ export const Hand3D: React.FC<Hand3DProps> = ({
           <boxGeometry args={[0.005, palmLength, palmThickness]} />
           <meshPhysicalMaterial
             color={KOREAN_COLORS.ACCENT_GOLD}
-            metalness={0.3}
-            roughness={0.4}
-            clearcoat={0.5}
-            clearcoatRoughness={0.2}
+            metalness={0.8}
+            roughness={0.2}
+            clearcoat={0.8}
+            clearcoatRoughness={0.1}
+            // High emissive for striking surface visibility
+            emissive={KOREAN_COLORS.ACCENT_GOLD}
+            emissiveIntensity={2.0}
+            transmission={0}
+            thickness={0.05}
           />
         </mesh>
       )}
