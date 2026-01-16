@@ -67,8 +67,10 @@ Wrapped the `Environment` component in a React `Suspense` boundary with `null` f
 ### Unit Tests
 - ✅ **CombatArena3D**: 6/6 tests pass (added non-blocking render test)
 - ✅ **CombatScreen3D**: 18/18 tests pass
-- ✅ **TrainingScreen3D**: 11/11 tests pass
+- ✅ **TrainingScreen3D**: 11/11 tests pass (unchanged; uses same CombatArena3D component with Environment Suspense fix)
 - ✅ **Total**: 35/35 tests pass
+
+Note: `TrainingScreen3D` was not modified as part of this fix. It already uses `CombatArena3D` which contains the Environment component wrapped in Suspense, so it benefits from the same fix without requiring additional changes.
 
 ### Build Verification
 - ✅ TypeScript compilation: No errors
@@ -118,9 +120,9 @@ Existing Cypress tests should now pass:
 
 ### Rollback Plan
 
-If issues occur, revert commit `912efca`:
+If issues occur, revert this commit:
 ```bash
-git revert 912efca
+git revert HEAD
 ```
 
 This will remove the Suspense wrapper, but note that it will restore the broken behavior.

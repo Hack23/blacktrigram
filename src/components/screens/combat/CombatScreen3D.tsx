@@ -16,7 +16,6 @@ import {
   Vignette,
 } from "@react-three/postprocessing";
 import React, {
-  Suspense,
   useCallback,
   useEffect,
   useMemo,
@@ -2128,21 +2127,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 10, 50);
         }}
       >
-        <Suspense fallback={null}>
-          {/* Animation updater - updates both player animations at 60fps */}
-          <AnimationUpdater
-            player1Animation={player1Animation}
-            player2Animation={player2Animation}
-          />
+        {/* Animation updater - updates both player animations at 60fps */}
+        <AnimationUpdater
+          player1Animation={player1Animation}
+          player2Animation={player2Animation}
+        />
 
-          {/* 3D Combat Arena - with scale for mobile optimization */}
-          <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
+        {/* 3D Combat Arena - with scale for mobile optimization */}
+        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
 
-          {/* Player 1 */}
-          <Player3DWithTransitions
-            {...convertPlayerStateToProps(
-              validPlayers[0],
-              player1Position3D,
+        {/* Player 1 */}
+        <Player3DWithTransitions
+          {...convertPlayerStateToProps(
+            validPlayers[0],
+            player1Position3D,
               player1Rotation, // Dynamic rotation - always faces opponent
             {
               isMobile,
@@ -2399,7 +2397,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             criticalThreshold={30}
           />
         )}
-        </Suspense>
       </Canvas>
 
       {/* Html UI Overlays (positioned absolutely over Canvas) */}
