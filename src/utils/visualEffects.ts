@@ -319,6 +319,7 @@ export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
   if (glowIntensity >= 0.6) return "medium";
   return "subtle";
 }
+
 /**
  * Get hover state styles with glow effect
  * 

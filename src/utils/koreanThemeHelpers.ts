@@ -430,6 +430,21 @@ export function getKoreanButtonWithGlow(
  * fragile coupling that could occur with destructuring patterns. If getKoreanButtonWithGlow
  * adds new visual effect properties in the future, they should be explicitly added here.
  * 
+ * **Intentionally Excluded Properties:**
+ * - Layout: fontSize, fontFamily, fontWeight, padding, width, height, cursor
+ * - Typography: letterSpacing, lineHeight, textRendering, WebkitFontSmoothing, MozOsxFontSmoothing
+ * - Colors: color, background, backgroundColor, border, borderColor
+ * 
+ * **Included Visual Effects:**
+ * - boxShadow: Neon glow effects
+ * - transition: Smooth state changes (0.2s ease)
+ * - transform: Hover/press animations (scale)
+ * - textShadow: Text glow effects
+ * 
+ * **Note:** If getKoreanButtonWithGlow adds new visual effect properties (e.g., 'filter', 
+ * 'opacity', 'willChange', 'backdropFilter'), they must be explicitly added to this function's 
+ * return type and extraction logic to maintain the explicit contract.
+ * 
  * @param config - Same configuration as getKoreanButtonWithGlow
  * @returns React.CSSProperties with only visual effects (boxShadow, transition, transform, textShadow)
  * 
@@ -459,7 +474,9 @@ export function getButtonVisualEffectsOnly(
   const fullStyles = getKoreanButtonWithGlow(config);
   
   // Explicitly extract only visual effect properties
-  // If new visual effects are added to getKoreanButtonWithGlow, add them here
+  // Note: This explicitly excludes layout, typography, and color properties.
+  // If new visual effects (filter, opacity, willChange, etc.) are added to 
+  // getKoreanButtonWithGlow, they must be added here to maintain the contract.
   return {
     boxShadow: fullStyles.boxShadow,
     transition: fullStyles.transition,
