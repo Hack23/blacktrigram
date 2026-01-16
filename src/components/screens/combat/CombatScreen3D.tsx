@@ -634,14 +634,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Track speed modifiers for HUD display
   const [player1SpeedModifiers, setPlayer1SpeedModifiers] = useState({
-    finalSpeed: 2.0,
-    baseSpeed: 2.0,
-    finalAcceleration: 4.0,
+    finalSpeed: 4.0,
+    baseSpeed: 4.0,
+    finalAcceleration: 8.0,
   });
   const [player2SpeedModifiers, setPlayer2SpeedModifiers] = useState({
-    finalSpeed: 2.0,
-    baseSpeed: 2.0,
-    finalAcceleration: 4.0,
+    finalSpeed: 4.0,
+    baseSpeed: 4.0,
+    finalAcceleration: 8.0,
   });
 
   // Calculate speed modifiers for both players when state changes
