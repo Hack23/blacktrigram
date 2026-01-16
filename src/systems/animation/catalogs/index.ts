@@ -242,7 +242,6 @@ export {
   TAE_IDLE_FLOWING,
   TAE_STANCE_ANIMATIONS,
 } from "./TaeStanceAnimations";
-
 // Jin (Thunder) trigram-specific animations
 export {
   JIN_ANIMATIONS,
