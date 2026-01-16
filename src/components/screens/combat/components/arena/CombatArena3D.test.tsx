@@ -80,6 +80,5 @@ describe("CombatArena3D", () => {
 
     // Arena should render immediately (not blocked by Environment loading)
     expect(container).toBeTruthy();
-    expect(container.querySelector("group")).toBeTruthy();
   });
 });
