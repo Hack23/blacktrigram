@@ -8,15 +8,14 @@
  * - **무술**: 합기도 관절기 (Hapkido Joint Manipulation)
  * - **특성**: 유동적 관절기 (Fluid Joint Locks), 소원 기술 (Small Circle Techniques)
  * - **철학**: 물처럼 흐르는 힘 (Flowing Power Like Water), 호수의 적응 (Lake's Adaptation)
- * - **대표 기술**: 유수연타 (Flowing Water Strike/Wrist Lock Sequence), 팔꿈치 제어 (Elbow Control)
+ * - **대표 기술**: 유수연타 (Flowing Water Strikes), 손목꺾기 (Wrist Lock), 팔꿈치 제어 (Elbow Control)
  *
  * @module systems/animation/catalogs/TaeStanceAnimations
  * @category Animation
  * @korean 태괘자세애니메이션
  */
 
-import { BoneName } from "@/types/skeletal";
-import type { SkeletalAnimation } from "@/types/skeletal";
+import { BoneName, type SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
 /**

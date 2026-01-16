@@ -130,7 +130,7 @@ export const TAE_WRIST_LOCK_SEQUENCE: SkeletalAnimation =
  *
  * Target vital points: Elbow joint
  *
- * @korean 팔꿈치제어
+ * @korean 팔꿈치 제어
  * @duration 1650ms (1.65 seconds)
  * @category Attack Animation
  */
@@ -270,7 +270,10 @@ export const TAE_FLOWING_COUNTER: SkeletalAnimation =
 /**
  * TAE FLOWING STRIKES - 유수연타 (Flowing Water Strikes)
  *
- * Continuous strikes with fluid transitions between attacks.
+ * Continuous palm strikes with fluid transitions between attacks.
+ * This is a flowing strike sequence (연타), not a wrist-lock chain;
+ * wrist-lock flows are modeled separately as 손목꺾기 (Wrist Lock).
+ *
  * Hapkido principle: Flowing like water, never stopping.
  *
  * Phases:
