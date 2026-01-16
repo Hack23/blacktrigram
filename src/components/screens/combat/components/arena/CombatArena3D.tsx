@@ -99,13 +99,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
           {/* Environment preset for realistic reflections */}
           <Environment preset="city" />
 
-          {/* Base ambient light with Korean cyan tint */}
-          <ambientLight intensity={0.3} color={KOREAN_COLORS.PRIMARY_CYAN} />
+          {/* Base ambient light with Korean cyan tint - increased for visibility */}
+          <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
 
           {/* Primary directional light (moonlight) with upgraded shadows */}
           <directionalLight
             position={[15, 20, 10]}
-            intensity={1.2}
+            intensity={1.5}
             color={0xffffff}
             castShadow
             shadow-mapSize={
@@ -119,31 +119,31 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             shadow-bias={-0.0001}
           />
 
-          {/* Korean neon accent lights */}
+          {/* Korean neon accent lights - increased range and intensity */}
           {/* Cyan neon light (left side) */}
           <pointLight
             position={[-10, 3, 0]}
-            intensity={3}
-            distance={20}
-            decay={2}
+            intensity={4}
+            distance={30}
+            decay={1.5}
             color={KOREAN_COLORS.PRIMARY_CYAN}
           />
 
           {/* Gold neon light (right side) */}
           <pointLight
             position={[10, 3, 0]}
-            intensity={3}
-            distance={20}
-            decay={2}
+            intensity={4}
+            distance={30}
+            decay={1.5}
             color={KOREAN_COLORS.ACCENT_GOLD}
           />
 
           {/* Blue accent light (behind) */}
           <pointLight
             position={[0, 5, -15]}
-            intensity={2}
-            distance={25}
-            decay={2}
+            intensity={3}
+            distance={35}
+            decay={1.5}
             color={KOREAN_COLORS.ACCENT_BLUE}
           />
         </>
