@@ -150,24 +150,26 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
   }, [variant]);
 
   /**
-   * Get size dimensions for buttons
+   * Get size dimensions for buttons with touch-optimized mobile values
+   * Mobile: 48px+ minimum touch targets with 16px+ Korean font
    */
   const buttonSize = useMemo<SizeDimensions>(() => {
-    const scale = isMobile ? 0.9 : 1.0;
+    // Touch-optimized sizing for mobile (no scale down)
+    const scale = isMobile ? 1.0 : 1.0; // Keep full size on mobile for 48px+ targets
     
     switch (size) {
       case "sm":
       case "small":
         return {
           padding: `${Math.round(8 * scale)}px ${Math.round(16 * scale)}px`,
-          fontSize: `${Math.round(14 * scale)}px`,
+          fontSize: isMobile ? "14px" : `${Math.round(14 * scale)}px`, // Maintain readable size
           borderWidth: "1px",
         };
       case "lg":
       case "large":
         return {
           padding: `${Math.round(16 * scale)}px ${Math.round(32 * scale)}px`,
-          fontSize: `${Math.round(20 * scale)}px`,
+          fontSize: isMobile ? "18px" : `${Math.round(20 * scale)}px`, // 18px minimum for Korean
           borderWidth: "3px",
         };
       case "md":
@@ -175,7 +177,7 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
       default:
         return {
           padding: `${Math.round(12 * scale)}px ${Math.round(24 * scale)}px`,
-          fontSize: `${Math.round(16 * scale)}px`,
+          fontSize: isMobile ? "16px" : `${Math.round(16 * scale)}px`, // 16px minimum for Korean
           borderWidth: "2px",
         };
     }

@@ -114,21 +114,21 @@ describe('Low-End Mobile Optimization', () => {
 
   describe('Korean Font Sizes', () => {
     it('should provide extra-small font sizes for <380px devices', () => {
-      expect(getKoreanFontSize('SMALL', 375)).toBe(13);
-      expect(getKoreanFontSize('MEDIUM', 360)).toBe(15);
-      expect(getKoreanFontSize('LARGE', 320)).toBe(18);
+      expect(getKoreanFontSize('SMALL', 375)).toBe(15); // Increased from 13 to 15
+      expect(getKoreanFontSize('MEDIUM', 360)).toBe(17); // Increased from 15 to 17
+      expect(getKoreanFontSize('LARGE', 320)).toBe(20); // Increased from 18 to 20
     });
 
     it('should provide small font sizes for 380-450px devices', () => {
-      expect(getKoreanFontSize('SMALL', 400)).toBe(14);
-      expect(getKoreanFontSize('MEDIUM', 420)).toBe(17);
-      expect(getKoreanFontSize('LARGE', 440)).toBe(20);
+      expect(getKoreanFontSize('SMALL', 400)).toBe(16); // Increased from 14 to 16
+      expect(getKoreanFontSize('MEDIUM', 420)).toBe(18); // Increased from 17 to 18
+      expect(getKoreanFontSize('LARGE', 440)).toBe(22); // Increased from 20 to 22
     });
 
     it('should provide regular font sizes for ≥450px devices', () => {
-      expect(getKoreanFontSize('SMALL', 768)).toBe(16);
-      expect(getKoreanFontSize('MEDIUM', 1024)).toBe(19);
-      expect(getKoreanFontSize('LARGE', 1920)).toBe(22);
+      expect(getKoreanFontSize('SMALL', 768)).toBe(17); // Increased from 16 to 17
+      expect(getKoreanFontSize('MEDIUM', 1024)).toBe(20); // Increased from 19 to 20
+      expect(getKoreanFontSize('LARGE', 1920)).toBe(24); // Increased from 22 to 24
     });
 
     it('should ensure minimum readable size (13px)', () => {

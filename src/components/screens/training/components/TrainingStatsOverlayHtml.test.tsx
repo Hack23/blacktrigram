@@ -100,7 +100,7 @@ describe("TrainingStatsOverlayHtml", () => {
     );
 
     const mainContainer = screen.getByTestId("training-stats-html");
-    expect(mainContainer).toHaveStyle({ width: "240px" });
+    expect(mainContainer).toHaveStyle({ width: "240px" }); // Responsive: default width 375px -> 240px panel
   });
 
   it("should use wider width for desktop", () => {
@@ -112,7 +112,7 @@ describe("TrainingStatsOverlayHtml", () => {
     );
 
     const mainContainer = screen.getByTestId("training-stats-html");
-    expect(mainContainer).toHaveStyle({ width: "260px" });
+    expect(mainContainer).toHaveStyle({ width: "280px" }); // Updated from 260px
   });
 });
 

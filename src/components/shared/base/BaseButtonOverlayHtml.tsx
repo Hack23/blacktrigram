@@ -10,6 +10,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { getKoreanButtonWithGlow } from "../../../utils/koreanThemeHelpers";
 import { useKoreanTheme } from "./useKoreanTheme";
+import { UIHaptics } from "../../../utils/hapticFeedback";
 
 /**
  * Props for BaseButtonOverlayHtml component
@@ -75,12 +76,14 @@ export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
 
   const handleClick = useCallback(() => {
     if (!disabled) {
+      UIHaptics.buttonTap(); // Add haptic feedback
       onClick();
     }
   }, [onClick, disabled]);
 
   const handleMouseEnterInternal = useCallback(() => {
     if (!disabled) {
+      UIHaptics.menuHover(); // Add haptic feedback
       setIsHovered(true);
       onMouseEnter?.();
     }

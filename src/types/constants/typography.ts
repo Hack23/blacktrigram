@@ -53,6 +53,8 @@ export const KOREAN_TEXT_SIZES: Record<string, number> = {
  * Korean font sizes optimized for mobile devices
  * Korean characters need ~10-15% larger size than Latin for equal readability
  * 
+ * UPDATED: Minimum mobile size increased from 14px to 16px for better readability
+ * 
  * Extra-small: <380px width (iPhone SE, old Android, budget phones)
  * Small: 380-450px width (standard mobile phones)
  * Regular: 450+ width (large phones, tablets, desktop)
@@ -62,19 +64,19 @@ export const KOREAN_TEXT_SIZES: Record<string, number> = {
  */
 export const KOREAN_MOBILE_FONT_SIZES = {
   SMALL: {
-    extraSmall: 13, // 320-380px width
-    small: 14,      // 380-450px width
-    regular: 16,    // 450+ width
+    extraSmall: 15, // 320-380px width (was 13)
+    small: 16,      // 380-450px width (was 14)
+    regular: 17,    // 450+ width (was 16)
   },
   MEDIUM: {
-    extraSmall: 15, // 320-380px width
-    small: 17,      // 380-450px width
-    regular: 19,    // 450+ width
+    extraSmall: 17, // 320-380px width (was 15)
+    small: 18,      // 380-450px width (was 17)
+    regular: 20,    // 450+ width (was 19)
   },
   LARGE: {
-    extraSmall: 18, // 320-380px width
-    small: 20,      // 380-450px width
-    regular: 22,    // 450+ width
+    extraSmall: 20, // 320-380px width (was 18)
+    small: 22,      // 380-450px width (was 20)
+    regular: 24,    // 450+ width (was 22)
   },
 } as const;
 
