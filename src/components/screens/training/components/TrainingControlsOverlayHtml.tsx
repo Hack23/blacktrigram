@@ -17,10 +17,15 @@ import {
 import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getKoreanOverlayBaseStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
+  getKoreanButtonWithGlow,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+} from "../../../../utils/visualEffects";
 import "../training.css";
 
 /**
@@ -66,19 +71,35 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
   const padding = getResponsiveSpacing("sm", isMobile);
 
   // Use Korean colors for border based on training state
-  const borderColor = hexToRgbaString(
-    isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED,
-    0.9
-  );
+  const stateColor = isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED;
+  const borderColor = hexToRgbaString(stateColor, 0.9);
 
+  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
-    ...getKoreanOverlayBaseStyles(0.85),
+    ...getEnhancedKoreanOverlayStyles({
+      opacity: 0.88,
+      glowIntensity: isTraining ? "medium" : "subtle",
+      includeGradient: false,
+      includeBackdropBlur: true,
+      depthLayers: 2,
+    }),
     width: `${panelWidth}px`,
     height: `${panelHeight}px`,
     padding: `${padding}px`,
     border: `2px solid ${borderColor}`,
     position: "relative",
   };
+
+  // Enhanced button styles (memoized, interaction states handled internally by getKoreanButtonWithGlow)
+  const buttonStyles = React.useMemo(
+    () =>
+      getKoreanButtonWithGlow({
+        variant: isTraining ? "danger" : "success",
+        glowIntensity: "strong",
+        hoverAnimation: "combined",
+      }),
+    [isTraining]
+  );
 
   const titleFontSize = isMobile ? 13 : 14;
   const infoFontSize = isMobile ? 9 : 10;
@@ -91,10 +112,10 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
           style={{
             fontSize: `${titleFontSize}px`,
             fontWeight: "bold",
-            color: hexToRgbaString(
-              isTraining ? KOREAN_COLORS.ACCENT_GREEN : KOREAN_COLORS.ACCENT_RED
-            ),
+            color: hexToRgbaString(stateColor),
             fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: getNeonTextShadow(stateColor, isTraining ? "medium" : "subtle"),
+            transition: getSmoothTransition("all", "normal"),
           }}
         >
           {formatBilingualText(
@@ -120,8 +141,10 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
         onClick={isTraining ? onStopTraining : onStartTraining}
         className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
         style={{
+          ...buttonStyles,
+          // Note: fontSize from buttonStyles is intentionally overridden with titleFontSize
+          // to maintain consistent sizing with the training header/title typography
           fontSize: `${titleFontSize}px`,
-          fontFamily: FONT_FAMILY.KOREAN,
           height: "35px",
         }}
         data-testid="training-toggle-button"

@@ -2,7 +2,17 @@ import React, { useMemo } from "react";
 import type { KoreanText } from "../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import {
+  getNeonTextShadow,
+  getKoreanFontOptimization,
+  mapGlowIntensityLevel,
+} from "../../../utils/visualEffects";
 import "./KoreanHeaderOverlayHtml.css";
+
+// Static color calculations moved outside component to avoid recalculation on every render
+const TITLE_STROKE = hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8);
+const SVG_CIRCLE_FILL = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3);
+const SVG_CIRCLE_CENTER_FILL = hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6);
 
 export interface KoreanHeaderOverlayHtmlProps {
   readonly title: KoreanText;
@@ -32,15 +42,26 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
   const alignmentStyle =
     alignment === "center" ? "center" : alignment === "right" ? "flex-end" : "flex-start";
 
-  // Memoize RGBA color calculations with glowIntensity
-  const colors = useMemo(() => ({
-    titleTextShadow: `0 3px 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6 * glowIntensity)}, 0 0 40px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4 * glowIntensity)}`,
-    titleStroke: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-    subtitleTextShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4 * glowIntensity)}`,
-    subtitleSectionTextShadow: `0 1px 4px ${hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 0.3 * glowIntensity)}`,
-    svgCircleFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
-    svgCircleCenterFill: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
-  }), [glowIntensity]);
+  // Use enhanced neon text shadow utilities with helper function (memoized to avoid recalculation)
+  const titleTextShadow = useMemo(
+    () => getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, mapGlowIntensityLevel(glowIntensity)),
+    [glowIntensity]
+  );
+
+  const subtitleTextShadow = useMemo(
+    () =>
+      getNeonTextShadow(
+        KOREAN_COLORS.PRIMARY_CYAN,
+        mapGlowIntensityLevel(glowIntensity * 0.8) // Slightly less intense for subtitle
+      ),
+    [glowIntensity]
+  );
+
+  // Korean font optimization (memoized based on size)
+  const fontOptimization = useMemo(
+    () => getKoreanFontOptimization(titleSize, "bold"),
+    [titleSize]
+  );
 
   return (
     <div
@@ -56,14 +77,15 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
       {/* Main Korean title */}
       <div
         style={{
-          fontFamily: FONT_FAMILY.KOREAN,
-          fontSize: `${titleSize}px`,
+          ...fontOptimization,
           color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-          fontWeight: "bold",
+          // Note: fontFamily already included in fontOptimization, but explicitly set here for clarity
+          // as it's a critical property for Korean text rendering
+          fontFamily: FONT_FAMILY.KOREAN,
           textAlign: alignment,
-          textShadow: colors.titleTextShadow,
+          textShadow: titleTextShadow,
           animation: animated ? "pulse 2s ease-in-out infinite" : "none",
-          WebkitTextStroke: `1px ${colors.titleStroke}`,
+          WebkitTextStroke: `1px ${TITLE_STROKE}`,
         }}
       >
         {title.korean}
@@ -77,7 +99,7 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
           color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
           fontStyle: "italic",
           textAlign: alignment,
-          textShadow: colors.subtitleTextShadow,
+          textShadow: subtitleTextShadow,
           opacity: 0.9,
         }}
       >
@@ -215,7 +237,7 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
               cx={titleSize * 3}
               cy={14}
               r="6"
-              fill={colors.svgCircleFill}
+              fill={SVG_CIRCLE_FILL}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
               }}
@@ -224,7 +246,7 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
               cx={titleSize * 3}
               cy={14}
               r="3"
-              fill={colors.svgCircleCenterFill}
+              fill={SVG_CIRCLE_CENTER_FILL}
               style={{
                 animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
               }}
@@ -242,7 +264,7 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
               fontSize: `${subtitleSize}px`,
               color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
               textAlign: alignment,
-              textShadow: colors.subtitleSectionTextShadow,
+              textShadow: getNeonTextShadow(KOREAN_COLORS.TEXT_SECONDARY, "subtle"),
               marginTop: "10px",
             }}
           >

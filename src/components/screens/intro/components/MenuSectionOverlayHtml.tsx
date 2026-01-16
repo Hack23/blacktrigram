@@ -2,6 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { GameMode } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getEnhancedKoreanOverlayStyles,
+  getButtonVisualEffectsOnly,
+} from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getKoreanFontOptimization,
+} from "../../../../utils/visualEffects";
 import "./MenuSection.css";
 
 export interface MenuSectionOverlayHtmlProps {
@@ -33,12 +41,22 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
 
+  // Enhanced overlay styles with neon glow and depth
+  const enhancedOverlayStyles = useMemo(
+    () =>
+      getEnhancedKoreanOverlayStyles({
+        opacity: 0.96,
+        glowIntensity: focused ? "medium" : "subtle",
+        includeGradient: false,
+        includeBackdropBlur: false,
+        depthLayers: 2,
+      }),
+    [focused]
+  );
+
   // Memoize RGBA color calculations to avoid repeated bit-shift operations
   const colors = useMemo(
     () => ({
-      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.96),
-      border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8),
-      shadow: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.8),
       titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
       // Button state colors
       buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
@@ -53,7 +71,6 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
       ),
       buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
       buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
-      buttonTextShadow: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.7),
     }),
     []
   );
@@ -146,6 +163,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   return (
     <div
       style={{
+        ...enhancedOverlayStyles,
         width: `${width}px`,
         height: `${height}px`,
         display: "flex",
@@ -154,10 +172,6 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         justifyContent: "flex-start",
         gap: `${sectionGap}px`,
         padding: `${containerPadding}px`,
-        background: colors.background,
-        borderRadius: isMobile ? "6px" : "8px",
-        border: `3px solid ${colors.border}`,
-        boxShadow: focused ? `0 0 20px ${colors.shadow}` : "none",
         position: "relative",
         overflow: "hidden",
       }}
@@ -171,7 +185,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
           textAlign: "center",
-          textShadow: `0 2px 8px ${colors.buttonTextShadow}`,
+          textShadow: getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, "medium"),
         }}
         data-testid="menu-title"
       >
@@ -192,6 +206,22 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           const isSelected = selectedIndex === index;
           const isHovered = hoveredItem === index;
 
+          // Get only visual effects (glow, transitions, transforms) from utility
+          // Color/background/border are menu-specific and applied directly below
+          // Using dedicated helper function to avoid fragile destructuring coupling
+          // Note: Glow intensity is balanced with background colors to maintain contrast:
+          // - Selected: medium glow + bright gold background = balanced
+          // - Hovered: medium glow + translucent background = clear feedback
+          // - Default: subtle glow + dark background = clean appearance
+          const visualEffects = getButtonVisualEffectsOnly({
+            variant: "primary",
+            isHovered,
+            isPressed: false,
+            isFocused: false,
+            glowIntensity: isSelected ? "medium" : isHovered ? "medium" : "subtle",
+            hoverAnimation: "combined",
+          });
+
           return (
             <button
               key={item.mode}
@@ -203,12 +233,12 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
               role="menuitem"
               className="menu-button"
               style={{
+                ...visualEffects,
+                ...getKoreanFontOptimization(buttonFontSize, isSelected ? 'bold' : 'normal'),
+                fontFamily: FONT_FAMILY.KOREAN,
                 width: "100%",
                 height: `${buttonHeight}px`,
-                fontSize: `${buttonFontSize}px`,
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: isSelected ? "bold" : "normal",
-                letterSpacing: "1.2px",
+                // Menu-specific color, background, and border (not overrides)
                 color: isSelected
                   ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
                       6,
@@ -233,12 +263,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
                   : isHovered
                   ? `2px solid ${colors.buttonHoveredBorder}`
                   : `2px solid ${colors.buttonDefaultBorder}`,
-                borderRadius: "8px",
                 cursor: "pointer",
-                transition: "all 0.2s ease",
-                textShadow: isSelected
-                  ? `0 2px 4px ${colors.buttonTextShadow}`
-                  : "none",
               }}
               data-testid={`menu-item-${item.mode}`}
             >

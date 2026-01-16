@@ -10,17 +10,21 @@
  */
 
 import React, { useMemo } from "react";
+import { SPACING } from "../../../../types/constants/ui";
 import {
   FONT_FAMILY,
   KOREAN_COLORS,
 } from "../../../../types/constants";
-import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
-  getKoreanOverlayBaseStyles,
   formatBilingualText,
+  getEnhancedKoreanOverlayStyles,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+} from "../../../../utils/visualEffects";
 
 /**
  * Training statistics interface
@@ -91,9 +95,15 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
     return ((stats.perfectStrikes / totalAttempts) * 100).toFixed(1);
   }, [stats.hits, stats.misses, stats.perfectStrikes]);
 
-  // Base panel styles using Korean theme
+  // Enhanced panel styles with neon glow
   const panelStyle: React.CSSProperties = {
-    ...getKoreanOverlayBaseStyles(0.9),
+    ...getEnhancedKoreanOverlayStyles({
+      opacity: 0.92,
+      glowIntensity: "medium",
+      includeGradient: false,
+      includeBackdropBlur: true,
+      depthLayers: 3,
+    }),
     width: `${panelWidth}px`,
     padding: `${padding}px`,
   };
@@ -111,6 +121,8 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
             fontWeight: "bold",
             color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD),
             fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, "medium"),
+            transition: getSmoothTransition("all", "normal"),
           }}
         >
           {formatBilingualText("훈련 통계", "Training Statistics", "pipe")}
@@ -221,6 +233,7 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
  * Single stat row component with Korean theming
  * 
  * Uses KOREAN_COLORS constants for all text colors
+ * Enhanced with smooth transitions and neon glow on value
  * 
  * @korean 통계행컴포넌트
  */
@@ -243,6 +256,7 @@ const StatRow: React.FC<{
         alignItems: "center",
         paddingBottom: `${SPACING.SM}px`,
         borderBottom: `1px solid ${hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 0.1)}`,
+        transition: getSmoothTransition("all", "normal"),
       }}
     >
       <div>
@@ -252,6 +266,7 @@ const StatRow: React.FC<{
             color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
             fontWeight: "bold",
             fontFamily: FONT_FAMILY.KOREAN,
+            textShadow: getNeonTextShadow(KOREAN_COLORS.PRIMARY_CYAN, "subtle"),
           }}
         >
           {korean}
@@ -272,6 +287,9 @@ const StatRow: React.FC<{
           fontWeight: "bold",
           color: hexToRgbaString(color),
           fontFamily: FONT_FAMILY.KOREAN,
+          textShadow: getNeonTextShadow(color, "medium"),
+          transition: getSmoothTransition("transform, color", "normal"),
+          transform: "scale(1)",
         }}
       >
         {value}

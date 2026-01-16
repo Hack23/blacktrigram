@@ -1,6 +1,14 @@
 import React, { useCallback, useMemo } from "react";
 import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import {
+  getEnhancedKoreanOverlayStyles,
+} from "../../../../utils/koreanThemeHelpers";
+import {
+  getNeonTextShadow,
+  getSmoothTransition,
+  getKoreanFontOptimization,
+} from "../../../../utils/visualEffects";
 import "./MenuSection.css";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
@@ -106,14 +114,12 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         ];
       }, [selectedArchetype.stats]);
 
-      // Memoize RGBA color calculations
+      // Memoize RGBA color calculations and enhanced styles
       const colors = useMemo(
         () => ({
           archetypeColor: `#${selectedArchetype.color
             .toString(16)
             .padStart(6, "0")}`,
-          background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
-          border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
           titleGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
             6,
             "0"
@@ -132,6 +138,31 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         [selectedArchetype.color]
       );
 
+      // Enhanced overlay styles
+      const containerStyle = useMemo(
+        () => ({
+          ...getEnhancedKoreanOverlayStyles({
+            opacity: 0.95,
+            glowIntensity: "medium",
+            includeGradient: false,
+            includeBackdropBlur: false,
+            depthLayers: 3,
+          }),
+          width: `${width}px`,
+          height: `${height}px`,
+          display: "flex",
+          flexDirection: "row" as const,
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+          gap: `${contentGap}px`,
+          border: `2px solid ${colors.archetypeColor}`,
+          padding: `${containerPadding}px`,
+          position: "relative" as const,
+          overflow: "hidden" as const,
+        }),
+        [width, height, contentGap, containerPadding, colors.archetypeColor]
+      );
+
       // Get archetype image path
       const archetypeImagePath = useMemo(() => {
         return `/assets/visual/archetypes/${selectedArchetype.textureKey}.png`;
@@ -139,21 +170,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
 
       return (
         <div
-          style={{
-            width: `${width}px`,
-            height: `${height}px`,
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-            gap: `${contentGap}px`,
-            background: colors.background,
-            borderRadius: "8px",
-            border: `2px solid ${colors.archetypeColor}`,
-            padding: `${containerPadding}px`,
-            position: "relative",
-            overflow: "hidden",
-          }}
+          style={containerStyle}
           data-testid="archetype-display-container"
         >
           {/* Left Side - Character Image and Navigation */}
@@ -308,6 +325,8 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.KOREAN,
                   color: colors.archetypeColor,
+                  textShadow: getNeonTextShadow(selectedArchetype.color, "strong"),
+                  transition: getSmoothTransition("all", "normal"),
                 }}
                 data-testid="archetype-title"
               >
@@ -319,6 +338,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.PRIMARY,
                   color: colors.archetypeColor,
+                  textShadow: getNeonTextShadow(selectedArchetype.color, "subtle"),
                 }}
                 data-testid="archetype-counter"
               >
@@ -337,6 +357,8 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   "0"
                 )}`,
                 lineHeight: "1.4",
+                ...getKoreanFontOptimization(philosophyFontSize, "normal"),
+                transition: getSmoothTransition("all", "normal"),
               }}
               data-testid="archetype-philosophy"
             >
