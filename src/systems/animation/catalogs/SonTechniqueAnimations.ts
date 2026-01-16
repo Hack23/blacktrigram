@@ -98,7 +98,7 @@ export const SON_WHIRLWIND_STRIKE_ANIMATION: SkeletalAnimation =
     // Frame 9: Mid-strike-1 (562ms)
     .at(0.562)
     .rotate(BoneName.SPINE_UPPER, 0, 0.09, 0) // 0°, 5°, 0° (torso follows hip rotation)
-    .rotate(BoneName.PELVIS, 0, 0.09, 0) // 0°, 5°, 0° (hip drives forward)
+    .rotate(BoneName.PELVIS, 0, 0.12, 0) // 0°, 7°, 0° (hip leads and drives forward)
     .rotate(BoneName.SHOULDER_R, 0.7, 0, 0) // 40°, 0°, 0° (first strike extends)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.17) // 10° (nearly extended)
     .rotate(BoneName.WRIST_R, 0.17, 0, 0) // 10°, 0°, 0° (strike alignment)

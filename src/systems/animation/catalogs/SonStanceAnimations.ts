@@ -26,8 +26,12 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * 
  * Note: These are documentation constants that guide animation design. Actual animation
  * rotations stay well within these limits naturally through authentic Taekyon biomechanics.
+ * 
+ * @internal Documentation-only constants for animation design reference
  */
-export const ANATOMICAL_LIMITS_SON_STANCE = {
+// @ts-ignore - Documentation-only constant for animation design reference
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const ANATOMICAL_LIMITS_SON_STANCE = {
   /**
    * Maximum safe shoulder rotation for continuous circular motion: ±90° (±1.57 radians)
    * 
