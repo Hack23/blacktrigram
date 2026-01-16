@@ -4,6 +4,11 @@
  * Precision nerve strike technique animations for the Li Fire trigram (리괘).
  * Emphasizes surgical spear-hand strikes, speed combinations, and vital point targeting.
  *
+ * **Spear-Hand Formation**: Index and middle fingers extended, ring/pinky curled.
+ * This hand formation is applied via withSpearHand() method from MartialArtsAnimationBuilder.
+ * Individual finger bones are not modeled in the current skeletal system; finger positions
+ * are expressed through wrist angles and hand pose metadata.
+ *
  * Philosophy: 외과적 정밀성 (Surgical Precision), 속도의 연속성 (Continuity of Speed)
  * Martial Art Origin: 태권도 정밀 타격 (Taekwondo Precision Strikes)
  * Target Areas: 경동맥 (Carotid), 태양혈 (Temple), 명치 (Solar Plexus), 신경총 (Nerve Clusters)
@@ -188,7 +193,7 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     // Right arm: FULL EXTENSION with wrist snap
     .rotate(BoneName.SHOULDER_R, -0.75, 0, -0.6) // Complete extension
     .rotate(BoneName.ELBOW_R, 0, 0, -0.05) // Nearly straight (5° for safety)
-    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - dorsiflexion for penetration
+    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - extension for penetration (positive X = extension)
     
     // NOTE: Finger rigidity expressed through hand pose (spear-hand)
     // Individual finger bones not available in current skeletal system

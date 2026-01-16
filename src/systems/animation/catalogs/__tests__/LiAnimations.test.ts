@@ -354,7 +354,8 @@ describe("Li Nerve Strike Combo Animation (화염 연속타)", () => {
       const rightElbow = strike1.boneRotations.get(BoneName.ELBOW_R);
       expect(rightElbow).toBeDefined();
       if (rightElbow) {
-        expect(Math.abs(rightElbow.z)).toBeLessThan(0.3); // Extended
+        // Elbow Z rotation should be close to 0 (nearly straight/extended)
+        expect(Math.abs(rightElbow.z)).toBeLessThan(0.3);
       }
     }
     
@@ -364,7 +365,8 @@ describe("Li Nerve Strike Combo Animation (화염 연속타)", () => {
       const leftElbow = strike2.boneRotations.get(BoneName.ELBOW_L);
       expect(leftElbow).toBeDefined();
       if (leftElbow) {
-        expect(Math.abs(leftElbow.z)).toBeLessThan(0.3); // Extended
+        // Elbow Z rotation should be close to 0 (nearly straight/extended)
+        expect(Math.abs(leftElbow.z)).toBeLessThan(0.3);
       }
     }
     

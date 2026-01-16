@@ -4,6 +4,11 @@
  * Precision-focused stance animations for the Li Fire trigram (리괘).
  * Emphasizes surgical precision, targeting accuracy, and speed combinations.
  *
+ * **Spear-Hand Formation**: Index and middle fingers extended, ring/pinky curled.
+ * This hand formation is applied via withSpearHand() method from MartialArtsAnimationBuilder.
+ * Individual finger bones are not modeled in the current skeletal system; finger positions
+ * are expressed through wrist angles and hand pose metadata.
+ *
  * Philosophy: 외과적 정밀성 (Surgical Precision), 불꽃의 예리함 (Flame's Sharpness)
  * Martial Art Origin: 태권도 정밀 타격 (Taekwondo Precision Strikes)
  * Combat Focus: 정확한 신경 타격 (Accurate Nerve Strikes), 속도 연속 공격 (Speed Combinations)
@@ -97,7 +102,7 @@ export const LI_IDLE_TARGETING: SkeletalAnimation =
     .rotate(BoneName.SHOULDER_R, -0.55, -0.35, -0.25) // Ready to thrust
     .rotate(BoneName.ELBOW_R, 0, 0, 1.45) // Slight tension release
     
-    // NOTE: Finger tension expressed through wrist position
+    // NOTE: Finger tension expressed through wrist position and hand pose metadata
     // Individual finger bones not available in current skeletal system
     
     // Legs: Increased readiness
