@@ -131,10 +131,15 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
             opacity={opacity * 0.7}
             transmission={SKELETON_MAJOR_TRANSMISSION}
             thickness={SKELETON_MAJOR_THICKNESS}
-            roughness={0.1}
+            roughness={0.4} // Bone texture (consistent with spine)
             clearcoat={0.3}
+            metalness={0} // Bone is non-metallic
             emissive={KOREAN_COLORS.PRIMARY_CYAN}
             emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+            // Bone surface detail
+            ior={1.55} // Index of refraction for bone
+            sheen={0.1} // Slight sheen for bone surface
+            sheenRoughness={0.9}
           />
         </mesh>
       ))}
@@ -148,10 +153,15 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity}
           transmission={SKELETON_MAJOR_TRANSMISSION}
           thickness={SKELETON_MAJOR_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Bone texture (consistent with spine)
           clearcoat={0.3}
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
 
@@ -164,9 +174,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity * 0.8}
           transmission={SKELETON_LIMB_TRANSMISSION}
           thickness={SKELETON_LIMB_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Bone texture (consistent with spine)
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
 
@@ -179,9 +194,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity * 0.8}
           transmission={SKELETON_LIMB_TRANSMISSION}
           thickness={SKELETON_LIMB_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Bone texture (consistent with spine)
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
 
@@ -194,9 +214,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity * 0.8}
           transmission={SKELETON_LIMB_TRANSMISSION}
           thickness={SKELETON_LIMB_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Bone texture (consistent with spine)
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
       <mesh position={[0.2, 0.3, 0]}>
@@ -207,9 +232,14 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
           opacity={opacity * 0.8}
           transmission={SKELETON_LIMB_TRANSMISSION}
           thickness={SKELETON_LIMB_THICKNESS}
-          roughness={0.1}
+          roughness={0.4} // Bone texture (consistent with spine)
+          metalness={0} // Bone is non-metallic
           emissive={KOREAN_COLORS.PRIMARY_CYAN}
           emissiveIntensity={SKELETON_EMISSIVE_INTENSITY}
+          // Bone surface detail
+          ior={1.55} // Index of refraction for bone
+          sheen={0.1} // Slight sheen for bone surface
+          sheenRoughness={0.9}
         />
       </mesh>
     </group>

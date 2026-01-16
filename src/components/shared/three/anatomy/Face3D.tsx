@@ -213,6 +213,13 @@ const Nose: React.FC<{
     [skinColor]
   );
 
+  // Dispose nose material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      noseMaterial.dispose();
+    };
+  }, [noseMaterial]);
+
   return (
     <group position={position} name="nose">
       {/* Nose */}
