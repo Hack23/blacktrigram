@@ -8,6 +8,7 @@ import {
 } from "../../../../utils/koreanThemeHelpers";
 import {
   getNeonTextShadow,
+  getKoreanFontOptimization,
 } from "../../../../utils/visualEffects";
 import "./MenuSection.css";
 
@@ -233,10 +234,10 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
               className="menu-button"
               style={{
                 ...visualEffects,
+                ...getKoreanFontOptimization(buttonFontSize, isSelected ? 'bold' : 'normal'),
+                fontFamily: FONT_FAMILY.KOREAN,
                 width: "100%",
                 height: `${buttonHeight}px`,
-                fontSize: `${buttonFontSize}px`,
-                letterSpacing: "1.2px",
                 // Menu-specific color, background, and border (not overrides)
                 color: isSelected
                   ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
