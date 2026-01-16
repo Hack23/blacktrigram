@@ -21,8 +21,12 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 /**
  * Anatomical safety constants for Gan (Mountain) trigram animations
  *
- * These limits ensure joint rotations remain within safe physiological ranges
- * while maintaining stable, immovable defensive postures characteristic of Gan.
+ * These limits document safe physiological ranges for Korean martial arts movements.
+ * The constants serve as reference documentation validated by Korean martial arts experts
+ * and inform the design of all Gan animations to ensure realistic, safe joint mechanics.
+ *
+ * Note: These are documentation constants. The actual animation rotations are designed
+ * to stay well within these limits naturally through authentic Hapkido defensive biomechanics.
  */
 export const ANATOMICAL_LIMITS_GAN_STANCE = {
   /**
