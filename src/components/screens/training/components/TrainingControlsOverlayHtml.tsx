@@ -142,6 +142,8 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
         className={`training-button ${isTraining ? "training-button-stop" : "training-button-start"}`}
         style={{
           ...buttonStyles,
+          // Note: fontSize from buttonStyles is intentionally overridden with titleFontSize
+          // to maintain consistent sizing with the training header/title typography
           fontSize: `${titleFontSize}px`,
           height: "35px",
         }}

@@ -611,11 +611,12 @@ export function getTrigramSymbolWithGlow(config: {
   const koreanName = stanceToKorean[stance];
   
   // Trigram-specific colors matching KOREAN_COLORS
+  // Note: Comments reflect actual hex color values, not semantic names from constants
   const trigramColors: Record<string, number> = {
-    건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
+    건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold (0xffd700, despite "White" comment in constants)
     태: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY, // Lake - Sky Blue
     리: KOREAN_COLORS.TRIGRAM_LI_PRIMARY, // Fire - Orange Red
-    진: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY, // Thunder - Medium Purple (0x9370db)
+    진: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY, // Thunder - Medium Purple (0x9370db, despite "Yellow" comment in constants)
     손: KOREAN_COLORS.TRIGRAM_SON_PRIMARY, // Wind - Light Green
     감: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY, // Water - Blue
     간: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY, // Mountain - Brown
