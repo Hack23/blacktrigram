@@ -60,7 +60,7 @@ const ARCHETYPE_TEXTURE_MAPPING: Record<PlayerArchetype, string> = {
 // Helper function to convert PlayerArchetype enum to array index
 const getArchetypeIndex = (archetype: PlayerArchetype): number => {
   const archetypeKeys = Object.keys(
-    PLAYER_ARCHETYPES_DATA
+    PLAYER_ARCHETYPES_DATA,
   ) as PlayerArchetype[];
   return archetypeKeys.indexOf(archetype);
 };
@@ -68,7 +68,7 @@ const getArchetypeIndex = (archetype: PlayerArchetype): number => {
 // Helper function to convert array index to PlayerArchetype enum
 const getArchetypeFromIndex = (index: number): PlayerArchetype => {
   const archetypeKeys = Object.keys(
-    PLAYER_ARCHETYPES_DATA
+    PLAYER_ARCHETYPES_DATA,
   ) as PlayerArchetype[];
   return archetypeKeys[index] ?? PlayerArchetype.MUSA;
 };
@@ -105,7 +105,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   const [currentArchetype, setCurrentArchetype] =
     useState<PlayerArchetype>(selectedArchetype);
   const [selectedArchetypeIndex, setSelectedArchetypeIndex] = useState<number>(
-    getArchetypeIndex(selectedArchetype)
+    getArchetypeIndex(selectedArchetype),
   );
 
   const { width, height } = useWindowSize();
@@ -120,12 +120,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     () => ({
       trigramTextShadow: `0 0 10px ${hexToRgbaString(
         KOREAN_COLORS.PRIMARY_CYAN,
-        0.8
+        0.8,
       )}`,
       footerBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
       footerBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
     }),
-    []
+    [],
   );
 
   // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
@@ -157,7 +157,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     (mode: GameMode) => {
       onMenuSelect(mode, currentArchetype);
     },
-    [onMenuSelect, currentArchetype]
+    [onMenuSelect, currentArchetype],
   );
 
   // Handle archetype change by index - MOVED BEFORE useEffect that uses it
@@ -180,7 +180,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
         audio.playMusic(archetypeAssets.themeId);
       }
     },
-    [onArchetypeSelect, audio]
+    [onArchetypeSelect, audio],
   );
 
   // Play intro music after first user interaction
@@ -248,12 +248,26 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
 
   // Responsive layout calculations with large desktop support
   // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
-  const isMobile = shouldUseMobileControls();
+  // shouldUseMobileControls() internally caches based on screen dimensions,
+  // so we include screenWidth/screenHeight as dependencies to trigger re-evaluation on resize
+  const isMobile = useMemo(
+    () => shouldUseMobileControls(),
+    [screenWidth, screenHeight],
+  );
   // Only use width for tablet/desktop distinction when NOT mobile
-  const isTablet = useMemo(() => !isMobile && screenWidth >= 768 && screenWidth < 1024, [isMobile, screenWidth]);
-  const isLargeDesktop = useMemo(() => !isMobile && screenWidth >= 1920, [isMobile, screenWidth]); // 4K/2K displays
+  const isTablet = useMemo(
+    () => !isMobile && screenWidth >= 768 && screenWidth < 1024,
+    [isMobile, screenWidth],
+  );
+  const isLargeDesktop = useMemo(
+    () => !isMobile && screenWidth >= 1920,
+    [isMobile, screenWidth],
+  ); // 4K/2K displays
   // Extra-small mobile detection for low-end devices (<380px)
-  const isExtraSmall = useMemo(() => isMobile && screenWidth < 380, [isMobile, screenWidth]);
+  const isExtraSmall = useMemo(
+    () => isMobile && screenWidth < 380,
+    [isMobile, screenWidth],
+  );
 
   // Performance settings based on device tier
   const performanceSettings = useMemo(() => {
@@ -262,35 +276,35 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
 
   // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
   const logoSize = isExtraSmall
-    ? Math.min(screenWidth, screenHeight) * 0.20 // Extra compact for low-end mobile
+    ? Math.min(screenWidth, screenHeight) * 0.2 // Extra compact for low-end mobile
     : isMobile
-    ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
-    : isTablet
-    ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
-    : isLargeDesktop
-    ? Math.min(screenWidth, screenHeight) * 0.12 // Larger for 4K/2K (was 0.09)
-    : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
+      ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
+      : isTablet
+        ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
+        : isLargeDesktop
+          ? Math.min(screenWidth, screenHeight) * 0.12 // Larger for 4K/2K (was 0.09)
+          : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
 
   // Optimized component heights - scale for large displays
   // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
   const menuHeight = isExtraSmall
     ? 270 // Extra-small: ~18px title + 4×42px buttons + 3×8px gaps + 12px section gap + 2×18px padding = 266px
     : isMobile
-    ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
-    : isTablet
-    ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
-    : isLargeDesktop
-    ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
-    : 380; // Desktop: same as tablet to ensure all 4 menu items fit
+      ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
+      : isTablet
+        ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
+        : isLargeDesktop
+          ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
+          : 380; // Desktop: same as tablet to ensure all 4 menu items fit
   const archetypeHeight = isExtraSmall
     ? 250
     : isMobile
-    ? 260
-    : isTablet
-    ? 300
-    : isLargeDesktop
-    ? 220
-    : 300;
+      ? 260
+      : isTablet
+        ? 300
+        : isLargeDesktop
+          ? 220
+          : 300;
   return (
     <div
       style={{
@@ -366,363 +380,364 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
             >
-            {/* Main Title */}
-            <div
-              style={{
-                marginTop: isExtraSmall
-                  ? "12px"
-                  : isMobile
-                  ? "15px"
-                  : isTablet
-                  ? "20px"
-                  : isLargeDesktop
-                  ? "8px"
-                  : "25px",
-                pointerEvents: "none",
-              }}
-              data-testid="main-title-container"
-            >
-              <KoreanHeaderOverlayHtml
-                title={{ korean: "흑괘", english: "Black Trigram" }}
-                subtitle={{
-                  korean: "한국 무술 시뮬레이터",
-                  english: "Korean Martial Arts Simulator",
-                }}
-                size={isLargeDesktop ? "medium" : "large"}
-                alignment="center"
-                animated={true}
-              />
-            </div>
-
-            {/* Logo Section */}
-            <div
-              style={{
-                flex: 0,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                marginTop: isExtraSmall
-                  ? "4px"
-                  : isMobile
-                  ? "5px"
-                  : isTablet
-                  ? "6px"
-                  : isLargeDesktop
-                  ? "3px"
-                  : "8px",
-                marginBottom: isExtraSmall
-                  ? "4px"
-                  : isMobile
-                  ? "5px"
-                  : isTablet
-                  ? "6px"
-                  : isLargeDesktop
-                  ? "3px"
-                  : "8px",
-                pointerEvents: "none",
-              }}
-              data-testid="logo-section"
-            >
-              {/* Logo Image */}
-              <img
-                src="/assets/visual/logo/black-trigram.png"
-                alt="Black Trigram Logo"
-                style={{
-                  width: `${logoSize}px`,
-                  height: `${logoSize}px`,
-                  objectFit: "contain",
-                  filter: "drop-shadow(0 0 20px rgba(0, 255, 255, 0.5))",
-                }}
-                data-testid="main-logo"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-
-              {/* Trigram Symbols */}
+              {/* Main Title */}
               <div
                 style={{
-                  fontSize: isExtraSmall
-                    ? "16px"
-                    : isMobile
-                    ? "18px"
-                    : isTablet
-                    ? "20px"
-                    : isLargeDesktop
-                    ? "16px"
-                    : "22px",
-                  color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
-                    6,
-                    "0"
-                  )}`,
-                  letterSpacing: isExtraSmall
-                    ? "5px"
-                    : isMobile
-                    ? "6px"
-                    : isTablet
-                    ? "8px"
-                    : isLargeDesktop
-                    ? "5px"
-                    : "10px",
-                  textAlign: "center",
                   marginTop: isExtraSmall
-                    ? "8px"
+                    ? "12px"
                     : isMobile
-                    ? "10px"
-                    : isTablet
-                    ? "10px"
-                    : isLargeDesktop
-                    ? "5px"
-                    : "12px",
-                  textShadow: colors.trigramTextShadow,
-                }}
-                data-testid="trigram-symbols"
-              >
-                ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷
-              </div>
-            </div>
-
-            {/* Main Content Area */}
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                gap: isExtraSmall
-                  ? "8px"
-                  : isMobile
-                  ? "10px"
-                  : isTablet
-                  ? "12px"
-                  : isLargeDesktop
-                  ? "6px"
-                  : "14px",
-                paddingLeft: isExtraSmall
-                  ? "12px"
-                  : isMobile
-                  ? "15px"
-                  : isTablet
-                  ? "25px"
-                  : isLargeDesktop
-                  ? "20px"
-                  : "30px",
-                paddingRight: isExtraSmall
-                  ? "12px"
-                  : isMobile
-                  ? "15px"
-                  : isTablet
-                  ? "25px"
-                  : isLargeDesktop
-                  ? "20px"
-                  : "30px",
-                paddingBottom: isExtraSmall
-                  ? "6px"
-                  : isMobile
-                  ? "8px"
-                  : isLargeDesktop
-                  ? "4px"
-                  : "10px",
-                pointerEvents: "auto",
-              }}
-              data-testid="main-content"
-            >
-              {/* Menu Section */}
-              <div
-                style={{
-                  width: isExtraSmall
-                    ? "100%"
-                    : isMobile
-                    ? "100%"
-                    : isTablet
-                    ? "80%"
-                    : isLargeDesktop
-                    ? "55%"
-                    : "70%",
-                  maxWidth: isExtraSmall
-                    ? "100%"
-                    : isMobile
-                    ? "100%"
-                    : isTablet
-                    ? "850px"
-                    : isLargeDesktop
-                    ? "1100px"
-                    : "900px",
-                }}
-                data-testid="menu-section-container"
-              >
-                <MenuSectionOverlayHtml
-                  menuItems={MENU_ITEMS}
-                  selectedIndex={selectedMenuIndex}
-                  onModeSelect={handleMenuItemSelect}
-                  onSelectedIndexChange={setSelectedMenuIndex}
-                  onPlaySFX={audio.playSFX}
-                  width={
-                    isExtraSmall
-                      ? screenWidth * 0.95
-                      : isMobile
-                      ? screenWidth * 0.9
+                      ? "15px"
                       : isTablet
-                      ? Math.min(850, screenWidth * 0.8)
-                      : isLargeDesktop
-                      ? Math.min(1100, screenWidth * 0.55)
-                      : Math.min(900, screenWidth * 0.7)
-                  }
-                  height={menuHeight}
+                        ? "20px"
+                        : isLargeDesktop
+                          ? "8px"
+                          : "25px",
+                  pointerEvents: "none",
+                }}
+                data-testid="main-title-container"
+              >
+                <KoreanHeaderOverlayHtml
+                  title={{ korean: "흑괘", english: "Black Trigram" }}
+                  subtitle={{
+                    korean: "한국 무술 시뮬레이터",
+                    english: "Korean Martial Arts Simulator",
+                  }}
+                  size={isLargeDesktop ? "medium" : "large"}
+                  alignment="center"
+                  animated={true}
                 />
               </div>
 
-              {/* Archetype Selection */}
+              {/* Logo Section */}
               <div
                 style={{
-                  width: isExtraSmall
-                    ? "100%"
+                  flex: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  marginTop: isExtraSmall
+                    ? "4px"
                     : isMobile
-                    ? "100%"
-                    : isTablet
-                    ? "80%"
-                    : isLargeDesktop
-                    ? "55%"
-                    : "70%",
-                  maxWidth: isExtraSmall
-                    ? "100%"
+                      ? "5px"
+                      : isTablet
+                        ? "6px"
+                        : isLargeDesktop
+                          ? "3px"
+                          : "8px",
+                  marginBottom: isExtraSmall
+                    ? "4px"
                     : isMobile
-                    ? "100%"
-                    : isTablet
-                    ? "850px"
-                    : isLargeDesktop
-                    ? "1100px"
-                    : "900px",
+                      ? "5px"
+                      : isTablet
+                        ? "6px"
+                        : isLargeDesktop
+                          ? "3px"
+                          : "8px",
+                  pointerEvents: "none",
                 }}
-                data-testid="archetype-section-container"
+                data-testid="logo-section"
               >
-                {useEnhancedArchetypeDisplay ? (
-                  <EnhancedArchetypeDisplay
-                    archetypes={archetypeData}
-                    selectedIndex={selectedArchetypeIndex}
-                    onArchetypeChange={handleArchetypeIndexChange}
+                {/* Logo Image */}
+                <img
+                  src="/assets/visual/logo/black-trigram.png"
+                  alt="Black Trigram Logo"
+                  style={{
+                    width: `${logoSize}px`,
+                    height: `${logoSize}px`,
+                    objectFit: "contain",
+                    filter: "drop-shadow(0 0 20px rgba(0, 255, 255, 0.5))",
+                  }}
+                  data-testid="main-logo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+
+                {/* Trigram Symbols */}
+                <div
+                  style={{
+                    fontSize: isExtraSmall
+                      ? "16px"
+                      : isMobile
+                        ? "18px"
+                        : isTablet
+                          ? "20px"
+                          : isLargeDesktop
+                            ? "16px"
+                            : "22px",
+                    color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+                      6,
+                      "0",
+                    )}`,
+                    letterSpacing: isExtraSmall
+                      ? "5px"
+                      : isMobile
+                        ? "6px"
+                        : isTablet
+                          ? "8px"
+                          : isLargeDesktop
+                            ? "5px"
+                            : "10px",
+                    textAlign: "center",
+                    marginTop: isExtraSmall
+                      ? "8px"
+                      : isMobile
+                        ? "10px"
+                        : isTablet
+                          ? "10px"
+                          : isLargeDesktop
+                            ? "5px"
+                            : "12px",
+                    textShadow: colors.trigramTextShadow,
+                  }}
+                  data-testid="trigram-symbols"
+                >
+                  ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷
+                </div>
+              </div>
+
+              {/* Main Content Area */}
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  gap: isExtraSmall
+                    ? "8px"
+                    : isMobile
+                      ? "10px"
+                      : isTablet
+                        ? "12px"
+                        : isLargeDesktop
+                          ? "6px"
+                          : "14px",
+                  paddingLeft: isExtraSmall
+                    ? "12px"
+                    : isMobile
+                      ? "15px"
+                      : isTablet
+                        ? "25px"
+                        : isLargeDesktop
+                          ? "20px"
+                          : "30px",
+                  paddingRight: isExtraSmall
+                    ? "12px"
+                    : isMobile
+                      ? "15px"
+                      : isTablet
+                        ? "25px"
+                        : isLargeDesktop
+                          ? "20px"
+                          : "30px",
+                  paddingBottom: isExtraSmall
+                    ? "6px"
+                    : isMobile
+                      ? "8px"
+                      : isLargeDesktop
+                        ? "4px"
+                        : "10px",
+                  pointerEvents: "auto",
+                }}
+                data-testid="main-content"
+              >
+                {/* Menu Section */}
+                <div
+                  style={{
+                    width: isExtraSmall
+                      ? "100%"
+                      : isMobile
+                        ? "100%"
+                        : isTablet
+                          ? "80%"
+                          : isLargeDesktop
+                            ? "55%"
+                            : "70%",
+                    maxWidth: isExtraSmall
+                      ? "100%"
+                      : isMobile
+                        ? "100%"
+                        : isTablet
+                          ? "850px"
+                          : isLargeDesktop
+                            ? "1100px"
+                            : "900px",
+                  }}
+                  data-testid="menu-section-container"
+                >
+                  <MenuSectionOverlayHtml
+                    menuItems={MENU_ITEMS}
+                    selectedIndex={selectedMenuIndex}
+                    onModeSelect={handleMenuItemSelect}
+                    onSelectedIndexChange={setSelectedMenuIndex}
                     onPlaySFX={audio.playSFX}
                     width={
                       isExtraSmall
                         ? screenWidth * 0.95
                         : isMobile
-                        ? screenWidth * 0.9
-                        : isTablet
-                        ? Math.min(850, screenWidth * 0.8)
-                        : isLargeDesktop
-                        ? Math.min(1100, screenWidth * 0.55)
-                        : Math.min(900, screenWidth * 0.7)
+                          ? screenWidth * 0.9
+                          : isTablet
+                            ? Math.min(850, screenWidth * 0.8)
+                            : isLargeDesktop
+                              ? Math.min(1100, screenWidth * 0.55)
+                              : Math.min(900, screenWidth * 0.7)
                     }
-                    height={archetypeHeight}
-                    isMobile={isMobile}
-                    allowDetailedView={!isMobile}
-                  />
-                ) : (
-                  <ArchetypeDisplayOverlayHtml
-                    archetypes={archetypeData}
-                    selectedIndex={selectedArchetypeIndex}
-                    onArchetypeChange={handleArchetypeIndexChange}
-                    onPlaySFX={audio.playSFX}
-                    width={
-                      isExtraSmall
-                        ? screenWidth * 0.95
-                        : isMobile
-                        ? screenWidth * 0.9
-                        : isTablet
-                        ? Math.min(850, screenWidth * 0.8)
-                        : isLargeDesktop
-                        ? Math.min(1100, screenWidth * 0.55)
-                        : Math.min(900, screenWidth * 0.7)
-                    }
-                    height={archetypeHeight}
+                    height={menuHeight}
                     isMobile={isMobile}
                   />
-                )}
+                </div>
+
+                {/* Archetype Selection */}
+                <div
+                  style={{
+                    width: isExtraSmall
+                      ? "100%"
+                      : isMobile
+                        ? "100%"
+                        : isTablet
+                          ? "80%"
+                          : isLargeDesktop
+                            ? "55%"
+                            : "70%",
+                    maxWidth: isExtraSmall
+                      ? "100%"
+                      : isMobile
+                        ? "100%"
+                        : isTablet
+                          ? "850px"
+                          : isLargeDesktop
+                            ? "1100px"
+                            : "900px",
+                  }}
+                  data-testid="archetype-section-container"
+                >
+                  {useEnhancedArchetypeDisplay ? (
+                    <EnhancedArchetypeDisplay
+                      archetypes={archetypeData}
+                      selectedIndex={selectedArchetypeIndex}
+                      onArchetypeChange={handleArchetypeIndexChange}
+                      onPlaySFX={audio.playSFX}
+                      width={
+                        isExtraSmall
+                          ? screenWidth * 0.95
+                          : isMobile
+                            ? screenWidth * 0.9
+                            : isTablet
+                              ? Math.min(850, screenWidth * 0.8)
+                              : isLargeDesktop
+                                ? Math.min(1100, screenWidth * 0.55)
+                                : Math.min(900, screenWidth * 0.7)
+                      }
+                      height={archetypeHeight}
+                      isMobile={isMobile}
+                      allowDetailedView={!isMobile}
+                    />
+                  ) : (
+                    <ArchetypeDisplayOverlayHtml
+                      archetypes={archetypeData}
+                      selectedIndex={selectedArchetypeIndex}
+                      onArchetypeChange={handleArchetypeIndexChange}
+                      onPlaySFX={audio.playSFX}
+                      width={
+                        isExtraSmall
+                          ? screenWidth * 0.95
+                          : isMobile
+                            ? screenWidth * 0.9
+                            : isTablet
+                              ? Math.min(850, screenWidth * 0.8)
+                              : isLargeDesktop
+                                ? Math.min(1100, screenWidth * 0.55)
+                                : Math.min(900, screenWidth * 0.7)
+                      }
+                      height={archetypeHeight}
+                      isMobile={isMobile}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  paddingBottom: "10px",
+                  background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
+                  borderTop: `1px solid ${colors.footerBorder}`,
+                  pointerEvents: "auto",
+                }}
+                data-testid="intro-footer"
+              >
+                {/* Motto */}
+                <div
+                  style={{
+                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 3, 10)}px`,
+                    color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
+                      6,
+                      "0",
+                    )}`,
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontStyle: "italic",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                  data-testid="footer-motto"
+                >
+                  흑괘의 길을 걸어라 - Walk the Path of the Black Trigram
+                </div>
+
+                {/* GitHub link */}
+                <div
+                  style={{
+                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
+                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                      16,
+                    ).padStart(6, "0")}`,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    window.open(
+                      "https://github.com/Hack23/blacktrigram",
+                      "_blank",
+                    )
+                  }
+                  data-testid="footer-link"
+                >
+                  Open Source Korean Martial Arts Game by Hack23
+                </div>
+
+                {/* Version */}
+                <div
+                  style={{
+                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
+                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                      16,
+                    ).padStart(6, "0")}`,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    window.open(
+                      `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
+                      "_blank",
+                    )
+                  }
+                  data-testid="footer-version"
+                >
+                  Version {APP_VERSION}
+                </div>
               </div>
             </div>
-
-            {/* Footer */}
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                paddingBottom: "10px",
-                background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
-                borderTop: `1px solid ${colors.footerBorder}`,
-                pointerEvents: "auto",
-              }}
-              data-testid="intro-footer"
-            >
-              {/* Motto */}
-              <div
-                style={{
-                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 3, 10)}px`,
-                  color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
-                    6,
-                    "0"
-                  )}`,
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  fontStyle: "italic",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-                data-testid="footer-motto"
-              >
-                흑괘의 길을 걸어라 - Walk the Path of the Black Trigram
-              </div>
-
-              {/* GitHub link */}
-              <div
-                style={{
-                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 5, 8)}px`,
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
-                    16
-                  ).padStart(6, "0")}`,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() =>
-                  window.open(
-                    "https://github.com/Hack23/blacktrigram",
-                    "_blank"
-                  )
-                }
-                data-testid="footer-link"
-              >
-                Open Source Korean Martial Arts Game by Hack23
-              </div>
-
-              {/* Version */}
-              <div
-                style={{
-                  fontSize: `${Math.max(getKoreanFontSize('SMALL', screenWidth) - 5, 8)}px`,
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
-                    16
-                  ).padStart(6, "0")}`,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  cursor: "pointer",
-                }}
-                onClick={() =>
-                  window.open(
-                    `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
-                    "_blank"
-                  )
-                }
-                data-testid="footer-version"
-              >
-                Version {APP_VERSION}
-              </div>
-            </div>
-          </div>
-        </Html>
+          </Html>
         )}
       </Canvas>
     </div>

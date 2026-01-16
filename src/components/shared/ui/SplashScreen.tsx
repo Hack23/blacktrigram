@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { toHex } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
 // Constants
 // Small delay to show loading state for visual feedback.
@@ -31,18 +32,23 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Memoize responsive breakpoint calculation
-  const isMobile = useMemo(() => width < 768, [width]);
+  // Use proper device detection (user-agent priority for high-res phones)
+  // This ensures mobile layout is used even on 4K Android devices
+  // Include width/height as deps to re-evaluate on resize
+  const isMobile = useMemo(() => shouldUseMobileControls(), [width, height]);
 
   // Memoize responsive layout values
-  const layoutCalculation = useMemo(() => ({
-    titleFontSize: isMobile ? 36 : 64,
-    subtitleFontSize: isMobile ? 16 : 24,
-    bodyFontSize: isMobile ? 12 : 14,
-    instructionsFontSize: isMobile ? 11 : 12,
-    buttonPadding: isMobile ? "16px 48px" : "20px 60px",
-    buttonFontSize: isMobile ? 16 : 20,
-  }), [isMobile]);
+  const layoutCalculation = useMemo(
+    () => ({
+      titleFontSize: isMobile ? 36 : 64,
+      subtitleFontSize: isMobile ? 16 : 24,
+      bodyFontSize: isMobile ? 12 : 14,
+      instructionsFontSize: isMobile ? 11 : 12,
+      buttonPadding: isMobile ? "16px 48px" : "20px 60px",
+      buttonFontSize: isMobile ? 16 : 20,
+    }),
+    [isMobile],
+  );
 
   const handleStart = useCallback(() => {
     setIsLoading(true);
@@ -158,7 +164,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
       <button
         onClick={handleStart}
         disabled={isLoading}
-        aria-label={isLoading ? "Starting game and initializing audio" : "Start game and initialize audio"}
+        aria-label={
+          isLoading
+            ? "Starting game and initializing audio"
+            : "Start game and initialize audio"
+        }
         aria-busy={isLoading}
         aria-describedby="splash-instructions"
         style={{

@@ -2,17 +2,17 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { GameMode } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { UIHaptics } from "../../../../utils/hapticFeedback";
 import {
-  getEnhancedKoreanOverlayStyles,
   getButtonVisualEffectsOnly,
+  getEnhancedKoreanOverlayStyles,
 } from "../../../../utils/koreanThemeHelpers";
-import {
-  getNeonTextShadow,
-  getKoreanFontOptimization,
-} from "../../../../utils/visualEffects";
 import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
 import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
-import { UIHaptics } from "../../../../utils/hapticFeedback";
+import {
+  getKoreanFontOptimization,
+  getNeonTextShadow,
+} from "../../../../utils/visualEffects";
 import "./MenuSection.css";
 
 export interface MenuSectionOverlayHtmlProps {
@@ -27,6 +27,7 @@ export interface MenuSectionOverlayHtmlProps {
   readonly onPlaySFX?: (sound: string) => void;
   readonly width?: number;
   readonly height?: number;
+  readonly isMobile?: boolean; // Proper device detection from parent
 }
 
 /**
@@ -40,6 +41,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   onPlaySFX,
   width = 800,
   height = 300,
+  isMobile = false, // Default to false, parent should pass proper device detection
 }) => {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
@@ -54,7 +56,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         includeBackdropBlur: false,
         depthLayers: 2,
       }),
-    [focused]
+    [focused],
   );
 
   // Memoize RGBA color calculations to avoid repeated bit-shift operations
@@ -66,16 +68,16 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
       buttonHoveredBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.92),
       buttonDefaultBg: hexToRgbaString(
         KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-        0.92
+        0.92,
       ),
       buttonSelectedBorder: hexToRgbaString(
         KOREAN_COLORS.UI_BACKGROUND_DARK,
-        1.0
+        1.0,
       ),
       buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
       buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
     }),
-    []
+    [],
   );
 
   // Keyboard navigation - stops propagation to prevent conflicts with parent
@@ -135,7 +137,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
     };
   }, []);
 
-  const isMobile = width < 480;
+  // Use device detection from prop, with width-based fallback for sizing adjustments
   const isLargeDesktop = width >= 1100; // Scale down for large containers
 
   // Touch-optimized button sizing (48px minimum for mobile)
@@ -143,21 +145,22 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   const buttonFontSize = isMobile
     ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
     : isLargeDesktop
-    ? 12
-    : 16;
+      ? 12
+      : 16;
   const containerPadding = isMobile ? 20 : isLargeDesktop ? 12 : 32;
   const titleFontSize = isMobile
     ? getMobileKoreanFontSize("MEDIUM", width ?? 375) // 18px minimum for Korean
     : isLargeDesktop
-    ? 18
-    : 28;
+      ? 18
+      : 28;
   const buttonGap = isMobile ? 8 : isLargeDesktop ? 4 : 12; // 8px minimum spacing
   const sectionGap = isMobile ? 12 : isLargeDesktop ? 8 : 20;
 
   // Safe area support for notched devices
   const safeAreaStyles = useMemo(
-    () => (isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {}),
-    [isMobile, containerPadding]
+    () =>
+      isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {},
+    [isMobile, containerPadding],
   );
 
   const handleButtonClick = useCallback(
@@ -166,7 +169,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
       onModeSelect(mode);
       onPlaySFX?.("menu_select");
     },
-    [onModeSelect, onPlaySFX]
+    [onModeSelect, onPlaySFX],
   );
 
   const handleButtonHover = useCallback(
@@ -177,7 +180,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         onPlaySFX?.("menu_hover");
       }
     },
-    [onPlaySFX]
+    [onPlaySFX],
   );
 
   return (
@@ -239,7 +242,11 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
             isHovered,
             isPressed: false,
             isFocused: false,
-            glowIntensity: isSelected ? "medium" : isHovered ? "medium" : "subtle",
+            glowIntensity: isSelected
+              ? "medium"
+              : isHovered
+                ? "medium"
+                : "subtle",
             hoverAnimation: "combined",
           });
 
@@ -255,7 +262,10 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
               className="menu-button"
               style={{
                 ...visualEffects,
-                ...getKoreanFontOptimization(buttonFontSize, isSelected ? 'bold' : 'normal'),
+                ...getKoreanFontOptimization(
+                  buttonFontSize,
+                  isSelected ? "bold" : "normal",
+                ),
                 fontFamily: FONT_FAMILY.KOREAN,
                 width: "100%",
                 height: `${buttonHeight}px`,
@@ -263,27 +273,27 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
                 color: isSelected
                   ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
                       6,
-                      "0"
+                      "0",
                     )}`
                   : isHovered
-                  ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-                      6,
-                      "0"
-                    )}`
-                  : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-                      6,
-                      "0"
-                    )}`,
+                    ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                        6,
+                        "0",
+                      )}`
+                    : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
+                        6,
+                        "0",
+                      )}`,
                 background: isSelected
                   ? colors.buttonSelectedBg
                   : isHovered
-                  ? colors.buttonHoveredBg
-                  : colors.buttonDefaultBg,
+                    ? colors.buttonHoveredBg
+                    : colors.buttonDefaultBg,
                 border: isSelected
                   ? `3px solid ${colors.buttonSelectedBorder}`
                   : isHovered
-                  ? `2px solid ${colors.buttonHoveredBorder}`
-                  : `2px solid ${colors.buttonDefaultBorder}`,
+                    ? `2px solid ${colors.buttonHoveredBorder}`
+                    : `2px solid ${colors.buttonDefaultBorder}`,
                 cursor: "pointer",
               }}
               data-testid={`menu-item-${item.mode}`}
@@ -314,7 +324,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           fontSize: isMobile ? "10px" : "12px",
           color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
             6,
-            "0"
+            "0",
           )}`,
           fontFamily: FONT_FAMILY.KOREAN,
           marginTop: "auto",

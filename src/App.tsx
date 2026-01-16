@@ -21,19 +21,20 @@ import { SplashScreen } from "./components/shared/ui/SplashScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
+import { clearPlatformCache, detectPlatform } from "./utils/deviceDetection";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
 const TrainingScreen = lazy(() =>
   import("./components/screens/training/TrainingScreen3D").then((m) => ({
     default: m.TrainingScreen3D,
-  }))
+  })),
 );
 
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
-    PlayerArchetype.MUSA
+    PlayerArchetype.MUSA,
   );
   const [isGameActive, setIsGameActive] = useState(false);
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
@@ -53,13 +54,17 @@ function App() {
 
   const audio = useAudio();
 
-  // Add responsive screen size detection
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    isMobile: window.innerWidth < 768,
-    isTablet: window.innerWidth >= 768 && window.innerWidth < 1024,
-    isDesktop: window.innerWidth >= 1024,
+  // Add responsive screen size detection with proper device detection
+  // Uses user-agent detection first for high-res mobile devices
+  const [screenSize, setScreenSize] = useState(() => {
+    const platform = detectPlatform();
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      isMobile: platform.isMobile,
+      isTablet: platform.isTablet,
+      isDesktop: platform.isDesktop,
+    };
   });
 
   useEffect(() => {
@@ -92,12 +97,10 @@ function App() {
         console.log("  ✓ Object pools prewarmed:", poolStatus);
 
         // 2. Precompute all animations for 90%+ cache hit rate
-        const { precomputeAnimation } = await import(
-          "./systems/animation/core/AnimationOptimizations"
-        );
-        const { ALL_ANIMATIONS } = await import(
-          "./systems/animation/core/AnimationRegistry"
-        );
+        const { precomputeAnimation } =
+          await import("./systems/animation/core/AnimationOptimizations");
+        const { ALL_ANIMATIONS } =
+          await import("./systems/animation/core/AnimationRegistry");
 
         let precomputedCount = 0;
         ALL_ANIMATIONS.forEach((animation) => {
@@ -109,7 +112,7 @@ function App() {
         console.log(`  ✓ Precomputed ${precomputedCount} animations at 60fps`);
 
         console.log(
-          "✅ Animation optimizations ready (expect <5ms frame time, 90%+ cache hit)"
+          "✅ Animation optimizations ready (expect <5ms frame time, 90%+ cache hit)",
         );
 
         setAppReady(true);
@@ -208,7 +211,7 @@ function App() {
         pendingModeRef.current = null;
       }, 150); // Increased delay for WebGL cleanup (was 100ms)
     },
-    []
+    [],
   );
 
   const handleGameEnd = useCallback(
@@ -270,7 +273,7 @@ function App() {
         },
       });
     },
-    [selectedArchetype]
+    [selectedArchetype],
   );
 
   const handleReturnToMenu = useCallback(() => {
@@ -363,7 +366,7 @@ function App() {
             const player1 = createPlayerFromArchetype(selectedArchetype, 0);
             const player2 = createPlayerFromArchetype(
               PlayerArchetype.AMSALJA,
-              1
+              1,
             );
             // Use setTimeout to defer state update and avoid render-during-render
             setTimeout(() => setCombatPlayers([player1, player2]), 0);
@@ -436,14 +439,15 @@ function App() {
 
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      // Clear cached platform info to get fresh detection on resize
+      clearPlatformCache();
+      const platform = detectPlatform();
       setScreenSize({
-        width,
-        height,
-        isMobile: width < 768,
-        isTablet: width >= 768 && width < 1024,
-        isDesktop: width >= 1024,
+        width: platform.screenWidth,
+        height: platform.screenHeight,
+        isMobile: platform.isMobile,
+        isTablet: platform.isTablet,
+        isDesktop: platform.isDesktop,
       });
     };
 
