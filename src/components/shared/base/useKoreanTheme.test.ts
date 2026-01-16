@@ -98,7 +98,7 @@ describe("useKoreanTheme", () => {
     expect(result.current.buttonSize.borderWidth).toBe("3px");
   });
 
-  it("should scale sizes for mobile", () => {
+  it("should maintain readable font sizes on mobile (no scale-down)", () => {
     const { result: desktopResult } = renderHook(() =>
       useKoreanTheme({ size: "md", isMobile: false })
     );
@@ -109,7 +109,10 @@ describe("useKoreanTheme", () => {
     const desktopFontSize = parseInt(desktopResult.current.buttonSize.fontSize);
     const mobileFontSize = parseInt(mobileResult.current.buttonSize.fontSize);
 
-    expect(mobileFontSize).toBeLessThan(desktopFontSize);
+    // Mobile font should be same as desktop (16px) for readability
+    // No longer scaling down on mobile to meet 48px+ touch target requirements
+    expect(mobileFontSize).toBe(desktopFontSize);
+    expect(mobileFontSize).toBeGreaterThanOrEqual(16); // Minimum 16px for Korean text
   });
 
   it("should return small text size configuration", () => {
