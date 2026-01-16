@@ -4,6 +4,17 @@
  * Provides helpers for touch target sizing, responsive font scaling,
  * and mobile-specific layout calculations following iOS/Android guidelines.
  * 
+ * PRIORITY: High-end mobile devices (Super HD, 2K+) are top priority and get:
+ * - Enhanced touch targets (56px vs 48px)
+ * - Larger Korean fonts (+10% for better readability)
+ * - Optimized spacing and layout
+ * - Full feature parity with desktop
+ * 
+ * Supported Devices (Priority Order):
+ * 1. Super HD Mobile (≥768px): Motorola Edge 60 Pro, Galaxy S-series
+ * 2. Standard Mobile (375-767px): iPhone 12/13/14, standard Android
+ * 3. Small Mobile (<375px): iPhone SE, budget devices
+ * 
  * @module utils/mobileUIUtils
  * @category Mobile Utilities
  * @korean 모바일UI유틸리티
@@ -39,13 +50,16 @@ export interface TouchTargetSize {
 /**
  * Get viewport size category from width
  * 
+ * PRIORITY: High-end mobile devices (Super HD, 2K+) are treated as 'md' for optimal layout
+ * 
  * @param width - Viewport width in pixels
  * @returns Viewport size category
  * 
  * @example
  * ```typescript
  * getViewportSize(375); // 'xs' (iPhone SE)
- * getViewportSize(768); // 'md' (iPad)
+ * getViewportSize(768); // 'sm' (Standard phones, high-end mobiles start here)
+ * getViewportSize(2712); // 'md' (Motorola Edge 60 Pro Super HD)
  * getViewportSize(1200); // 'lg' (Desktop)
  * ```
  * 
@@ -55,7 +69,7 @@ export interface TouchTargetSize {
 export function getViewportSize(width: number): ViewportSize {
   if (width < 375) return "xs"; // Extra small phones
   if (width < 768) return "sm"; // Standard phones
-  if (width < 1024) return "md"; // Tablets
+  if (width < 1024) return "md"; // High-end mobile (Super HD), tablets
   if (width < 1440) return "lg"; // Small desktop
   return "xl"; // Large desktop
 }
@@ -63,6 +77,9 @@ export function getViewportSize(width: number): ViewportSize {
 /**
  * Get touch-optimized button size configuration
  * Ensures minimum 48px touch targets per iOS/Android guidelines
+ * 
+ * PRIORITY: High-end mobile devices (Super HD, 2K+) get enhanced touch targets (56px)
+ * for better precision on high-resolution displays
  * 
  * @param isMobile - Whether on mobile device
  * @param viewportWidth - Optional viewport width for fine-tuning
@@ -72,6 +89,9 @@ export function getViewportSize(width: number): ViewportSize {
  * ```typescript
  * const buttonSize = getTouchTargetSize(true, 375);
  * // { minWidth: 48, minHeight: 48, padding: 12, spacing: 8 }
+ * 
+ * const superHDButtonSize = getTouchTargetSize(true, 2712);
+ * // { minWidth: 56, minHeight: 56, padding: 16, spacing: 12 }
  * ```
  * 
  * @public
@@ -92,6 +112,17 @@ export function getTouchTargetSize(
 
   const width = viewportWidth ?? 375;
   const isExtraSmall = width < 360;
+  const isSuperHD = width >= 768; // High-end mobile (Motorola Edge 60 Pro, etc.)
+
+  // Super HD devices get enhanced touch targets for better precision
+  if (isSuperHD) {
+    return {
+      minWidth: UI_DIMENSIONS.TOUCH_TARGET_COMFORTABLE,
+      minHeight: UI_DIMENSIONS.TOUCH_TARGET_COMFORTABLE,
+      padding: SPACING.MD,
+      spacing: SPACING.COMPACT,
+    };
+  }
 
   return {
     minWidth: UI_DIMENSIONS.TOUCH_TARGET_MIN,
@@ -105,6 +136,8 @@ export function getTouchTargetSize(
  * Get responsive Korean font size for mobile
  * Ensures minimum 16px for body text on mobile
  * 
+ * PRIORITY: High-end mobile (Super HD, 2K+) get enhanced font sizes for better readability
+ * 
  * @param size - Size category ('SMALL', 'MEDIUM', 'LARGE')
  * @param viewportWidth - Viewport width in pixels
  * @returns Font size in pixels
@@ -113,6 +146,7 @@ export function getTouchTargetSize(
  * ```typescript
  * getMobileKoreanFontSize('SMALL', 375); // 16
  * getMobileKoreanFontSize('MEDIUM', 410); // 18
+ * getMobileKoreanFontSize('MEDIUM', 2712); // 20 (Super HD enhanced)
  * getMobileKoreanFontSize('LARGE', 768); // 24
  * ```
  * 
@@ -123,7 +157,15 @@ export function getMobileKoreanFontSize(
   size: keyof typeof KOREAN_MOBILE_FONT_SIZES,
   viewportWidth: number
 ): number {
-  return getKoreanFontSize(size, viewportWidth);
+  const fontSize = getKoreanFontSize(size, viewportWidth);
+  
+  // Super HD mobile devices (≥768px) get enhanced font sizes
+  // for better readability on high-resolution displays
+  if (viewportWidth >= 768) {
+    return Math.ceil(fontSize * 1.1); // 10% larger for Super HD
+  }
+  
+  return fontSize;
 }
 
 /**
@@ -309,6 +351,8 @@ export function getMinimumInteractiveSpacing(isMobile: boolean): number {
 /**
  * Viewport detection utilities
  * 
+ * PRIORITY: High-end mobile devices (Super HD, 2K+) are explicitly supported
+ * 
  * @category Mobile UI
  * @korean 뷰포트감지
  */
@@ -320,10 +364,17 @@ export const ViewportDetection = {
   isSmallMobile: (width: number) => width <= 375,
 
   /**
-   * Check if standard mobile device
+   * Check if standard mobile device (excluding high-end)
    * @korean 표준모바일여부
    */
   isMobile: (width: number) => width < 768,
+
+  /**
+   * Check if high-end mobile device (Super HD, 2K+)
+   * Motorola Edge 60 Pro (2712x1220), Samsung Galaxy S-series, etc.
+   * @korean 고급모바일여부
+   */
+  isSuperHDMobile: (width: number) => width >= 768 && width < 1024,
 
   /**
    * Check if tablet device

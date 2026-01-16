@@ -10,20 +10,23 @@
 
 describe("Mobile HTML Overlay Responsiveness", () => {
   // Mobile viewport configurations to test
+  // PRIORITY ORDER: Super HD devices are top priority
   const mobileViewports = [
     {
-      name: "iPhone SE",
-      width: 375,
-      height: 667,
-      description: "Minimum supported mobile device",
+      name: "Motorola Edge 60 Pro (Super HD)",
+      width: 768,
+      height: 1080,
+      description: "High-end Super HD mobile - TOP PRIORITY",
       safeArea: { top: 0, bottom: 0 },
+      priority: 1,
     },
     {
-      name: "iPhone 12/13",
-      width: 390,
-      height: 844,
-      description: "Standard modern mobile",
-      safeArea: { top: 0, bottom: 34 },
+      name: "iPhone 14 Pro Max",
+      width: 428,
+      height: 926,
+      description: "Large high-end mobile",
+      safeArea: { top: 44, bottom: 34 },
+      priority: 2,
     },
     {
       name: "iPhone 14 Pro",
@@ -31,6 +34,23 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       height: 852,
       description: "Notched device with safe area",
       safeArea: { top: 44, bottom: 34 },
+      priority: 2,
+    },
+    {
+      name: "iPhone 12/13",
+      width: 390,
+      height: 844,
+      description: "Standard modern mobile",
+      safeArea: { top: 0, bottom: 34 },
+      priority: 3,
+    },
+    {
+      name: "iPhone SE",
+      width: 375,
+      height: 667,
+      description: "Minimum supported mobile device",
+      safeArea: { top: 0, bottom: 0 },
+      priority: 4,
     },
     {
       name: "Android Small",
@@ -38,13 +58,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       height: 640,
       description: "Small Android device",
       safeArea: { top: 0, bottom: 0 },
-    },
-    {
-      name: "iPhone 14 Pro Max",
-      width: 428,
-      height: 926,
-      description: "Large mobile device",
-      safeArea: { top: 44, bottom: 34 },
+      priority: 4,
     },
   ];
 
@@ -65,13 +79,15 @@ describe("Mobile HTML Overlay Responsiveness", () => {
         });
       });
 
-      it("should have touch-optimized button sizes (48px minimum)", () => {
+      it("should have touch-optimized button sizes (48px minimum, 56px for Super HD)", () => {
         // Navigate to training mode to test buttons
         cy.get('[data-testid="menu-item-training"]')
           .should("be.visible")
           .then(($btn) => {
             const height = $btn.height();
-            expect(height).to.be.at.least(48, "Button height should be at least 48px");
+            const minSize = viewport.width >= 768 ? 56 : 48; // Super HD gets enhanced targets
+            expect(height).to.be.at.least(minSize, 
+              `Button height should be at least ${minSize}px for ${viewport.name}`);
           });
       });
 
@@ -89,13 +105,15 @@ describe("Mobile HTML Overlay Responsiveness", () => {
         });
       });
 
-      it("should display Korean text with readable font size (16px+)", () => {
+      it("should display Korean text with readable font size (16px+, enhanced for Super HD)", () => {
         // Check menu title Korean text
         cy.get('[data-testid="menu-title"]')
           .should("be.visible")
           .then(($title) => {
             const fontSize = parseInt(window.getComputedStyle($title[0]).fontSize);
-            expect(fontSize).to.be.at.least(16, "Korean text should be at least 16px");
+            const minSize = viewport.width >= 768 ? 18 : 16; // Super HD gets enhanced fonts
+            expect(fontSize).to.be.at.least(minSize, 
+              `Korean text should be at least ${minSize}px for ${viewport.name}`);
           });
       });
 
