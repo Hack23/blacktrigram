@@ -74,6 +74,7 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
  * Base scale offset for pulsing animation
  * This value (1.15) ensures the marker pulses around a slightly enlarged baseline,
  * making the pulsing effect more visible without excessive size variation.
+ * Used in useFrame hook for scale calculation (see line ~180).
  */
 const PULSE_BASE_SCALE = 1.15;
 

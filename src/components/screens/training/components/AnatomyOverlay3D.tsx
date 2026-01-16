@@ -18,6 +18,10 @@ import { KOREAN_COLORS } from "../../../../types/constants";
 // acceptable because the total marker count is low. For dense anatomy overlays, prefer
 // keeping emissive intensities at or below ~2.0 and consider implementing LOD or
 // distance-based emissive scaling if brighter values or higher object counts are needed.
+// See VitalPointMarker3D for a concrete example: it exposes a configurable
+// `maxEmissiveIntensity` prop that caps per-marker glow. Use higher caps there for a
+// small number of critical vital point markers, while keeping dense overlay layers like
+// those in AnatomyOverlay3D within the ~2.0 guideline to maintain 60fps performance.
 const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure
 const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
 const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels

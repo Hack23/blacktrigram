@@ -119,6 +119,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
   const vascularMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
+        // Standard red accent color (0xff4444) for blood vessel visualization
         color: KOREAN_COLORS.ACCENT_RED,
         transparent: true,
         opacity: opacity,
