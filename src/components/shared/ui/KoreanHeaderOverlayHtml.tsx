@@ -71,8 +71,8 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
       <div
         style={{
           ...fontOptimization,
-          fontFamily: FONT_FAMILY.KOREAN,
           color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          fontFamily: FONT_FAMILY.KOREAN,
           textAlign: alignment,
           textShadow: titleTextShadow,
           animation: animated ? "pulse 2s ease-in-out infinite" : "none",

@@ -206,6 +206,8 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           const isHovered = hoveredItem === index;
 
           // Enhanced button styles with glow effects
+          // Note: Base styles are applied from getKoreanButtonWithGlow(), but color/background/border
+          // are intentionally overridden below to implement menu-specific selection state visuals
           const enhancedButtonStyles = getKoreanButtonWithGlow({
             variant: "primary",
             isHovered,

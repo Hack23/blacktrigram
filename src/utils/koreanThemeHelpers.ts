@@ -394,12 +394,10 @@ export function getKoreanButtonWithGlow(
     focusStyles = getFocusStateStyles(glowColor, true);
   }
 
-  // Safe font size extraction with fallback
-  const baseFontSize = typeof baseStyles.fontSize === "string"
-    ? parseInt(baseStyles.fontSize, 10) || 14
-    : typeof baseStyles.fontSize === "number"
+  // Extract font size from base styles (getKoreanButtonStyles always returns number | string)
+  const baseFontSize = typeof baseStyles.fontSize === "number"
     ? baseStyles.fontSize
-    : 14;
+    : parseInt(String(baseStyles.fontSize), 10) || 14;
 
   // Neon text glow for button text
   const textGlow = getNeonTextShadow(glowColor, isHovered ? "medium" : "subtle");
@@ -544,7 +542,7 @@ export function getTrigramSymbolWithGlow(config: {
   const koreanName = stanceToKorean[stance];
   
   // Trigram-specific colors matching KOREAN_COLORS
-  const trigramColors = {
+  const trigramColors: Record<string, number> = {
     건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
     태: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY, // Lake - Sky Blue
     리: KOREAN_COLORS.TRIGRAM_LI_PRIMARY, // Fire - Orange Red

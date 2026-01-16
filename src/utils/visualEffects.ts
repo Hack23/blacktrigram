@@ -291,18 +291,27 @@ export function getKoreanFontOptimization(
  * Helper to standardize glow intensity mapping across components.
  * Converts numeric intensity values to discrete levels.
  * 
- * @param glowIntensity - Numeric glow intensity (0-1+ scale)
+ * @param glowIntensity - Numeric glow intensity (0-2+ scale)
  * @returns GlowIntensity level ("subtle", "medium", "strong", "intense")
+ * 
+ * Mapping thresholds:
+ * - intense: >= 1.5
+ * - strong: >= 1.0
+ * - medium: >= 0.6
+ * - subtle: < 0.6
  * 
  * @example
  * ```typescript
  * const level = mapGlowIntensityLevel(0.8);
  * // Returns: "medium"
+ * mapGlowIntensityLevel(2.0);
+ * // Returns: "intense"
  * ```
  * 
  * @korean 광도레벨매핑
  */
 export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
+  if (glowIntensity >= 1.5) return "intense";
   if (glowIntensity >= 1.0) return "strong";
   if (glowIntensity >= 0.6) return "medium";
   return "subtle";

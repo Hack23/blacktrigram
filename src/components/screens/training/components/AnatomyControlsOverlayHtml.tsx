@@ -156,7 +156,7 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
           // Enhanced glow effect for active/hovered states
           const glowEffect = (isActive || isHovered) 
             ? getNeonGlowEffect(config.color, isActive ? "strong" : "medium", true)
-            : "none";
+            : undefined;
 
           return (
             <button
