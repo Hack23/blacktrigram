@@ -239,7 +239,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, []);
 
   // Layout calculations
-  const { arenaBounds, isMobile, screenSize } = useCombatLayout(width, height);
+  const { arenaBounds, isMobile, screenSize, layoutConstants } =
+    useCombatLayout(width, height);
 
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
@@ -2248,9 +2249,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </>
         )}
 
-        {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
+        {/* Vital Point Overlay Controls - dynamic screen position, left side below player status */}
+        {/* Position uses layoutConstants for consistent responsive placement */}
         <VitalPointOverlayControlsHtml
-          screenPosition={{ top: "200px", left: "20px" }}
+          screenPosition={{
+            top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+            left: `${layoutConstants.padding}px`,
+          }}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
           severityFilters={severityFilters}
