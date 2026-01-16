@@ -455,7 +455,9 @@ export function getFocusStateStyles(
 export function getBackdropBlurEffect(
   blurAmount: number = 10,
   saturation: number = 1.5
-): React.CSSProperties {
+): React.CSSProperties & {
+  WebkitBackdropFilter?: string;
+} {
   return {
     backdropFilter: `blur(${blurAmount}px) saturate(${saturation})`,
     WebkitBackdropFilter: `blur(${blurAmount}px) saturate(${saturation})`,

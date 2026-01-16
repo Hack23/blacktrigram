@@ -4,7 +4,7 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
   getEnhancedKoreanOverlayStyles,
-  getKoreanButtonWithGlow,
+  getButtonVisualEffectsOnly,
 } from "../../../../utils/koreanThemeHelpers";
 import {
   getNeonTextShadow,
@@ -205,13 +205,10 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           const isSelected = selectedIndex === index;
           const isHovered = hoveredItem === index;
 
-          // Get glow and transition effects from enhanced button utility
+          // Get only visual effects (glow, transitions, transforms) from utility
           // Color/background/border are menu-specific and applied directly below
-          // Note: This pattern extracts only visual effects (boxShadow, transition, transform, textShadow)
-          // while excluding properties that have menu-specific requirements. If getKoreanButtonWithGlow
-          // adds new color-related properties (backgroundColor, borderColor, etc.), they should be
-          // added to the exclusion list to prevent unintended overrides.
-          const enhancedButtonStyles = getKoreanButtonWithGlow({
+          // Using dedicated helper function to avoid fragile destructuring coupling
+          const visualEffects = getButtonVisualEffectsOnly({
             variant: "primary",
             isHovered,
             isPressed: false,
@@ -219,10 +216,6 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
             glowIntensity: isSelected ? "strong" : "medium",
             hoverAnimation: "combined",
           });
-
-          // Extract only the visual effects we want (glow, transitions, transforms)
-          // Exclude color, background, border which are menu-specific
-          const { color: _color, background: _bg, border: _border, ...visualEffects } = enhancedButtonStyles;
 
           return (
             <button

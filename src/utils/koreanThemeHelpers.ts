@@ -419,6 +419,56 @@ export function getKoreanButtonWithGlow(
 }
 
 /**
+ * Get button visual effects only (no color/background/border)
+ * 
+ * Extracts only visual effects (boxShadow, transition, transform, textShadow) from
+ * getKoreanButtonWithGlow without color-related properties. This is useful for cases
+ * where buttons need custom colors (e.g., menu selection states) but want to preserve
+ * the visual effects system.
+ * 
+ * This function provides an explicit contract for visual effects extraction, preventing
+ * fragile coupling that could occur with destructuring patterns. If getKoreanButtonWithGlow
+ * adds new visual effect properties in the future, they should be explicitly added here.
+ * 
+ * @param config - Same configuration as getKoreanButtonWithGlow
+ * @returns React.CSSProperties with only visual effects (boxShadow, transition, transform, textShadow)
+ * 
+ * @example
+ * ```tsx
+ * const visualEffects = getButtonVisualEffectsOnly({
+ *   variant: 'primary',
+ *   glowIntensity: 'strong',
+ *   hoverAnimation: 'combined'
+ * });
+ * 
+ * <button style={{
+ *   ...visualEffects,
+ *   color: customColor,        // Apply custom colors
+ *   background: customBg,
+ *   border: customBorder
+ * }}>
+ *   Custom Button
+ * </button>
+ * ```
+ * 
+ * @korean 버튼시각효과만얻기
+ */
+export function getButtonVisualEffectsOnly(
+  config: Parameters<typeof getKoreanButtonWithGlow>[0]
+): Pick<React.CSSProperties, 'boxShadow' | 'transition' | 'transform' | 'textShadow'> {
+  const fullStyles = getKoreanButtonWithGlow(config);
+  
+  // Explicitly extract only visual effect properties
+  // If new visual effects are added to getKoreanButtonWithGlow, add them here
+  return {
+    boxShadow: fullStyles.boxShadow,
+    transition: fullStyles.transition,
+    transform: fullStyles.transform,
+    textShadow: fullStyles.textShadow,
+  };
+}
+
+/**
  * Get responsive spacing value
  * 
  * Returns SPACING constant value for consistent spacing across components.
@@ -524,7 +574,9 @@ export function getTrigramSymbolWithGlow(config: {
   readonly stance: "geon" | "tae" | "li" | "jin" | "son" | "gam" | "gan" | "gon";
   readonly isActive?: boolean;
   readonly size?: number;
-}): React.CSSProperties {
+}): React.CSSProperties & {
+  WebkitUserSelect?: string;
+} {
   const { stance, isActive = false, size } = config;
   
   // Map English stance names to Korean

@@ -13,6 +13,7 @@ import {
   formatStatRow,
   getEnhancedKoreanOverlayStyles,
   getKoreanButtonWithGlow,
+  getButtonVisualEffectsOnly,
   getTrigramSymbolWithGlow,
 } from "./koreanThemeHelpers";
 import { KOREAN_COLORS, FONT_FAMILY } from "../types/constants";
@@ -430,6 +431,51 @@ describe("koreanThemeHelpers", () => {
       expect(glowAnimation.transform).toBeDefined();
       expect(scaleAnimation.transform).toContain("scale");
       expect(combinedAnimation.transform).toContain("scale");
+    });
+  });
+
+  describe("getButtonVisualEffectsOnly", () => {
+    it("should return only visual effect properties", () => {
+      const visualEffects = getButtonVisualEffectsOnly({ 
+        variant: "primary", 
+        glowIntensity: "strong" 
+      });
+
+      // Should have visual effects
+      expect(visualEffects).toHaveProperty("boxShadow");
+      expect(visualEffects).toHaveProperty("transition");
+      expect(visualEffects).toHaveProperty("textShadow");
+      // transform may be undefined if not hovered, so we just check the property exists
+      expect("transform" in visualEffects).toBe(true);
+
+      // Should NOT have color-related properties
+      expect(visualEffects).not.toHaveProperty("color");
+      expect(visualEffects).not.toHaveProperty("background");
+      expect(visualEffects).not.toHaveProperty("border");
+      expect(visualEffects).not.toHaveProperty("backgroundColor");
+      expect(visualEffects).not.toHaveProperty("borderColor");
+    });
+
+    it("should preserve visual effects from different configurations", () => {
+      const normalEffects = getButtonVisualEffectsOnly({ 
+        variant: "primary", 
+        isHovered: false,
+        glowIntensity: "medium" 
+      });
+      const hoveredEffects = getButtonVisualEffectsOnly({ 
+        variant: "primary", 
+        isHovered: true,
+        glowIntensity: "strong",
+        hoverAnimation: "combined"
+      });
+
+      // Both should have visual effects but with different values
+      expect(normalEffects.boxShadow).toBeDefined();
+      expect(hoveredEffects.boxShadow).toBeDefined();
+      expect(normalEffects.boxShadow).not.toBe(hoveredEffects.boxShadow);
+      
+      // Hovered should have transform animation
+      expect(hoveredEffects.transform).toBeDefined();
     });
   });
 
