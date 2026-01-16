@@ -11,6 +11,9 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
 // Visual effect constants for bloom optimization
+// Note: Emissive intensity values are balanced for visual clarity and performance.
+// High emissive intensities (>2.0) can impact rendering with many simultaneous markers.
+// Consider implementing LOD for emissive intensity based on distance if performance issues arise.
 const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure (increased from 0.5)
 const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
 const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels

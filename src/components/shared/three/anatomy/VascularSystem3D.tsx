@@ -3,7 +3,7 @@
  *
  * Provides realistic blood vessel rendering with:
  * - PBR materials with transmission for glass-like blood vessels
- * - Animated blood flow pulsing at realistic heartbeat rate (1.2 BPM)
+ * - Animated blood flow pulsing at realistic heartbeat rate (1.2 beats per second = 72 BPM)
  * - Major arteries and veins with anatomically correct positioning
  * - High emissive intensity for bloom effects
  *
@@ -149,7 +149,6 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
 
   // Geometry segment counts (reduced for mobile)
   const radialSegments = isMobile ? 6 : 8;
-  const heightSegments = isMobile ? 1 : 1;
 
   return (
     <group
@@ -159,17 +158,17 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
     >
       {/* Aorta - main artery from heart (largest vessel) */}
       <mesh position={[0, 1.0, -0.1]} name="aorta">
-        <cylinderGeometry args={[0.02, 0.02, 1.4, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.02, 0.02, 1.4, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
 
       {/* Carotid arteries - neck blood supply (critical vital points) */}
       <mesh position={[-0.1, 1.4, -0.05]} name="carotid-left">
-        <cylinderGeometry args={[0.015, 0.015, 0.3, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.015, 0.015, 0.3, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
       <mesh position={[0.1, 1.4, -0.05]} name="carotid-right">
-        <cylinderGeometry args={[0.015, 0.015, 0.3, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.015, 0.015, 0.3, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
 
@@ -179,7 +178,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
         rotation={[0, 0, Math.PI / 4]}
         name="subclavian-left"
       >
-        <cylinderGeometry args={[0.012, 0.012, 0.25, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.25, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
       <mesh
@@ -187,7 +186,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
         rotation={[0, 0, -Math.PI / 4]}
         name="subclavian-right"
       >
-        <cylinderGeometry args={[0.012, 0.012, 0.25, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.25, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
 
@@ -197,7 +196,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
         rotation={[0, 0, Math.PI / 6]}
         name="brachial-left"
       >
-        <cylinderGeometry args={[0.01, 0.01, 0.3, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.01, 0.01, 0.3, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
       <mesh
@@ -205,17 +204,17 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
         rotation={[0, 0, -Math.PI / 6]}
         name="brachial-right"
       >
-        <cylinderGeometry args={[0.01, 0.01, 0.3, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.01, 0.01, 0.3, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
 
       {/* Femoral arteries - legs (major vessels, vital points) */}
       <mesh position={[-0.15, 0.4, -0.08]} name="femoral-left">
-        <cylinderGeometry args={[0.012, 0.012, 0.35, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.35, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
       <mesh position={[0.15, 0.4, -0.08]} name="femoral-right">
-        <cylinderGeometry args={[0.012, 0.012, 0.35, radialSegments, heightSegments]} />
+        <cylinderGeometry args={[0.012, 0.012, 0.35, radialSegments]} />
         <primitive object={vascularMaterial} attach="material" />
       </mesh>
 
@@ -223,11 +222,11 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
       {!isMobile && (
         <>
           <mesh position={[-0.15, 0.2, 0.05]} name="popliteal-left">
-            <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments, heightSegments]} />
+            <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments]} />
             <primitive object={vascularMaterial} attach="material" />
           </mesh>
           <mesh position={[0.15, 0.2, 0.05]} name="popliteal-right">
-            <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments, heightSegments]} />
+            <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments]} />
             <primitive object={vascularMaterial} attach="material" />
           </mesh>
         </>
@@ -240,7 +239,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
           rotation={[Math.PI / 4, 0, Math.PI / 6]}
           name="hepatic"
         >
-          <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments, heightSegments]} />
+          <cylinderGeometry args={[0.01, 0.01, 0.15, radialSegments]} />
           <primitive object={vascularMaterial} attach="material" />
         </mesh>
       )}
@@ -253,7 +252,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
             rotation={[0, 0, Math.PI / 2]}
             name="renal-left"
           >
-            <cylinderGeometry args={[0.008, 0.008, 0.12, radialSegments, heightSegments]} />
+            <cylinderGeometry args={[0.008, 0.008, 0.12, radialSegments]} />
             <primitive object={vascularMaterial} attach="material" />
           </mesh>
           <mesh
@@ -261,7 +260,7 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
             rotation={[0, 0, -Math.PI / 2]}
             name="renal-right"
           >
-            <cylinderGeometry args={[0.008, 0.008, 0.12, radialSegments, heightSegments]} />
+            <cylinderGeometry args={[0.008, 0.008, 0.12, radialSegments]} />
             <primitive object={vascularMaterial} attach="material" />
           </mesh>
         </>

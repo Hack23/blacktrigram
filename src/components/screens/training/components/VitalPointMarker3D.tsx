@@ -87,6 +87,8 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
   const targetScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
   // Animate selected and hovered markers
+  // Note: Higher pulse frequency (6Hz) provides better visual feedback but may cause
+  // fatigue during extended training. Consider making frequency configurable if needed.
   useFrame((state) => {
     if (!meshRef.current) return;
 
@@ -163,7 +165,10 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         <meshPhysicalMaterial
           color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissiveIntensity={isSelected || hovered ? 3.5 : 2.0} // Increased emissive for bloom (was 2.0/1.0)
+          emissiveIntensity={isSelected || hovered ? 3.5 : 2.0} // Increased for bloom (was 2.0/1.0)
+          // Note: High emissive intensity optimized for single/few markers.
+          // With many simultaneous markers, consider implementing LOD for emissive
+          // intensity based on distance or marker importance.
           metalness={0.9} // Increased metalness for more reflective appearance (was 0.8)
           roughness={0.1} // Reduced roughness for stronger reflections (was 0.2)
           clearcoat={1.0}
