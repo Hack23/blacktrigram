@@ -315,18 +315,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
   const [scale, setScale] = useState(1.2); // Larger scale for better visibility in combat
-  // Performance monitor visibility toggle (P key)
+  // Performance monitor visibility toggle (F9 key)
   const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key) and performance monitor (P key)
+  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9 key)
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
       }
-      // P key toggles performance monitor (development only)
-      if ((e.key === "p" || e.key === "P") && import.meta.env.DEV) {
+      // F9 key toggles performance monitor (development only)
+      // Note: P key is reserved for Philosophy screen
+      if (e.key === "F9" && import.meta.env.DEV) {
+        e.preventDefault();
         setShowPerformanceMonitor((prev) => !prev);
       }
     };

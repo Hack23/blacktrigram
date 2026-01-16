@@ -457,12 +457,14 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // P key toggle for performance debug overlay (dev mode only)
+  // F9 key toggle for performance debug overlay (dev mode only)
+  // Note: P key is reserved for Philosophy screen
   useEffect(() => {
     if (!import.meta.env.DEV) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "p" || e.key === "P") {
+      if (e.key === "F9") {
+        e.preventDefault();
         setShowPerformanceDebug((prev) => !prev);
       }
     };

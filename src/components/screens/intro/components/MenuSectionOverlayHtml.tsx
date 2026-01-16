@@ -139,23 +139,21 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
 
   // Use device detection from prop, with width-based fallback for sizing adjustments
   const isSmallScreen = width < 768; // Mobile-sized screens
-  const isLargeDesktop = width >= 1100; // Scale down for large containers
 
-  // Touch-optimized button sizing (48px minimum for mobile)
-  const buttonHeight = isSmallScreen ? 48 : isLargeDesktop ? 48 : 55; // Consistent 48px on large desktop to fit all 4 buttons
+  // Use 2x2 grid layout for compact display on larger screens
+  const useGridLayout = !isSmallScreen;
+
+  // Compact button sizing for 2x2 grid
+  const buttonHeight = isSmallScreen ? 44 : 40;
   const buttonFontSize = isSmallScreen
     ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
-    : isLargeDesktop
-      ? 14
-      : 16;
-  const containerPadding = isSmallScreen ? 20 : isLargeDesktop ? 16 : 32;
+    : 13;
+  const containerPadding = isSmallScreen ? 16 : 12;
   const titleFontSize = isSmallScreen
-    ? getMobileKoreanFontSize("MEDIUM", width ?? 375) // 18px minimum for Korean
-    : isLargeDesktop
-      ? 18
-      : 28;
-  const buttonGap = isSmallScreen ? 8 : isLargeDesktop ? 6 : 12; // 6px spacing on large desktop
-  const sectionGap = isSmallScreen ? 12 : isLargeDesktop ? 10 : 20;
+    ? getMobileKoreanFontSize("SMALL", width ?? 375)
+    : 14;
+  const buttonGap = isSmallScreen ? 6 : 8;
+  const sectionGap = isSmallScreen ? 8 : 6;
 
   // Safe area support for notched devices (use isMobile for actual device detection)
   const safeAreaStyles = useMemo(
@@ -217,11 +215,11 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         메인 메뉴 | Main Menu
       </div>
 
-      {/* Menu Items */}
+      {/* Menu Items - 2x2 grid on desktop, column on mobile */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: useGridLayout ? "1fr 1fr" : "1fr",
           gap: `${buttonGap}px`,
           width: "100%",
         }}

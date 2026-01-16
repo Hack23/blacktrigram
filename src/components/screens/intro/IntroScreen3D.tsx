@@ -25,7 +25,6 @@ import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getArchetypeAssets } from "../../../utils/playerUtils";
 import { BackgroundScene3D } from "../../shared/three";
-import { KoreanHeaderOverlayHtml } from "../../shared/ui/KoreanHeaderOverlayHtml";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { ArchetypeDisplayOverlayHtml } from "./components/ArchetypeDisplayOverlayHtml";
 import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplay";
@@ -288,32 +287,30 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   const layoutHeights = useMemo(() => {
     const availableHeight = screenHeight;
 
-    // Header area (title only - scales with screen height)
-    const headerPercent = screenWidth < 768 ? 0.06 : 0.05;
-    const headerHeight = availableHeight * headerPercent;
+    // Title area - small header with title and description
+    const titleHeight = screenWidth < 768 ? 35 : 40;
 
-    // Logo area - based on logo size plus trigram symbols
-    const trigramHeight = screenWidth < 768 ? 30 : 40;
-    const logoAreaHeight = logoSize + trigramHeight;
+    // Logo area - based on logo size plus trigram symbols (compact)
+    const trigramHeight = screenWidth < 768 ? 18 : 24;
+    const logoAreaHeight = logoSize + trigramHeight + 4;
 
-    // Footer - scales with screen height
-    const footerHeight = Math.max(availableHeight * 0.08, 60);
+    // Footer - compact with all info
+    const footerHeight = Math.max(availableHeight * 0.055, 50);
 
     // Remaining space for menu + archetype
     const contentHeight =
-      availableHeight - headerHeight - logoAreaHeight - footerHeight;
+      availableHeight - titleHeight - logoAreaHeight - footerHeight;
 
-    // Split remaining space based on screen size
-    // Smaller screens need more menu space for touch targets
-    const menuPercent = screenWidth < 768 ? 0.45 : 0.4;
-    const menuHeight = Math.max(contentHeight * menuPercent, 200);
+    // Menu is compact with 2x2 grid, archetype gets more space
+    const menuPercent = screenWidth < 768 ? 0.35 : 0.28;
+    const menuHeight = Math.max(contentHeight * menuPercent, 130);
     const archetypeHeight = Math.max(contentHeight * (1 - menuPercent), 180);
 
-    // Gap scales with screen
-    const gap = Math.max(screenHeight * 0.005, 4);
+    // Gap scales with screen (minimal)
+    const gap = Math.max(screenHeight * 0.003, 3);
 
     return {
-      headerHeight,
+      titleHeight,
       logoAreaHeight,
       menuHeight,
       archetypeHeight,
@@ -396,30 +393,41 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
             >
-              {/* Main Title - Compact, above logo */}
+              {/* Title - Small, above logo */}
               <div
                 style={{
-                  height: `${layoutHeights.headerHeight}px`,
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "center",
+                  gap: "2px",
                   pointerEvents: "none",
+                  marginTop: "8px",
                 }}
                 data-testid="main-title-container"
               >
-                <KoreanHeaderOverlayHtml
-                  title={{ korean: "흑괘", english: "Black Trigram" }}
-                  subtitle={{
-                    korean: "한국 무술 시뮬레이터",
-                    english: "Korean Martial Arts Simulator",
+                <div
+                  style={{
+                    fontSize: screenWidth < 768 ? "14px" : "16px",
+                    fontWeight: "bold",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+                    textShadow: "0 0 10px rgba(255, 170, 0, 0.5)",
                   }}
-                  size={screenWidth < 768 ? "small" : "medium"}
-                  alignment="center"
-                  animated={true}
-                />
+                >
+                  흑괘 | Black Trigram
+                </div>
+                <div
+                  style={{
+                    fontSize: screenWidth < 768 ? "10px" : "11px",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                  }}
+                >
+                  한국 무술 시뮬레이터 | Korean Martial Arts Simulator
+                </div>
               </div>
 
-              {/* Logo Section - Prominent */}
+              {/* Logo Section - Primary branding */}
               <div
                 style={{
                   flex: 0,
@@ -485,11 +493,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 }}
                 data-testid="main-content"
               >
-                {/* Menu Section */}
+                {/* Menu Section - Compact */}
                 <div
                   style={{
-                    width: screenWidth < 768 ? "100%" : "80%",
-                    maxWidth: screenWidth < 768 ? "100%" : "1000px",
+                    width: screenWidth < 768 ? "95%" : "70%",
+                    maxWidth: screenWidth < 768 ? "100%" : "600px",
                   }}
                   data-testid="menu-section-container"
                 >
@@ -500,12 +508,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                     onSelectedIndexChange={setSelectedMenuIndex}
                     onPlaySFX={audio.playSFX}
                     width={
-                      // Scale width based on screen size - wider on small screens for touch
+                      // Compact menu width - narrower for better proportions
                       screenWidth < 768
-                        ? screenWidth * 0.92
+                        ? screenWidth * 0.9
                         : screenWidth < 1024
-                          ? Math.min(850, screenWidth * 0.8)
-                          : Math.min(1000, screenWidth * 0.6)
+                          ? Math.min(500, screenWidth * 0.6)
+                          : Math.min(550, screenWidth * 0.4)
                     }
                     height={layoutHeights.menuHeight}
                     isMobile={isMobile}
@@ -559,7 +567,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Footer - Compact with all info */}
               <div
                 style={{
                   width: "100%",
@@ -568,10 +576,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "4px",
+                  gap: "2px",
                   background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
                   borderTop: `1px solid ${colors.footerBorder}`,
                   pointerEvents: "auto",
+                  paddingBottom: "4px",
                 }}
                 data-testid="intro-footer"
               >
@@ -579,28 +588,20 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 <div
                   style={{
                     fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 3, 10)}px`,
-                    color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`,
+                    color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
                     fontFamily: FONT_FAMILY.KOREAN,
                     fontStyle: "italic",
-                    fontWeight: "bold",
                     textAlign: "center",
                   }}
                   data-testid="footer-motto"
                 >
                   흑괘의 길을 걸어라 - Walk the Path of the Black Trigram
                 </div>
-
-                {/* GitHub link */}
+                {/* Open Source Link */}
                 <div
                   style={{
-                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
-                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
-                      16,
-                    ).padStart(6, "0")}`,
-                    fontWeight: "bold",
+                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 4, 9)}px`,
+                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(16).padStart(6, "0")}`,
                     textAlign: "center",
                     cursor: "pointer",
                   }}
@@ -614,15 +615,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 >
                   Open Source Korean Martial Arts Game by Hack23
                 </div>
-
                 {/* Version */}
                 <div
                   style={{
                     fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
-                    color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
-                      16,
-                    ).padStart(6, "0")}`,
-                    fontWeight: "bold",
+                    color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
                     textAlign: "center",
                     cursor: "pointer",
                   }}
@@ -634,7 +631,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   }
                   data-testid="footer-version"
                 >
-                  Version {APP_VERSION}
+                  v{APP_VERSION}
                 </div>
               </div>
             </div>
