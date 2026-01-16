@@ -9,7 +9,7 @@
  * @korean 얼굴3D테스트
  */
 
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
