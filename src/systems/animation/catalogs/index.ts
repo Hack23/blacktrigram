@@ -219,6 +219,25 @@ export {
   GEON_ROUNDHOUSE_KICK,
 } from "./GeonStanceAnimations";
 
+// Gon (Earth) trigram-specific animations
+export {
+  ANATOMICAL_LIMITS_GON_STANCE,
+  GON_HEAVY_GROUNDING_STEP,
+  GON_IDLE_SSIREUM_STANCE,
+  GON_SWEEP_POSITIONING_STEP,
+} from "./GonStanceAnimations";
+
+// Gon (Earth) technique animations
+export {
+  GON_EARTH_EMBRACE_ANIMATION,
+  GON_GROUND_CONTROL_TRANSITION,
+} from "./GonTechniqueAnimations";
+
+// Gon (Earth) guard poses
+export {
+  GON_GUARD_VARIANTS,
+  GON_LOW_GRAPPLING_GUARD,
+} from "./GonGuardPoses";
 // Gan (Mountain) trigram-specific animations
 export {
   GAN_DEFENSIVE_ANGLE_SHIFT,
