@@ -41,6 +41,18 @@ import {
   LI_FIRE_SPEAR_ANIMATION,
   LI_NERVE_STRIKE_COMBO,
 } from "./LiTechniqueAnimations";
+// Import enhanced Jin animations
+import {
+  JIN_IDLE_COILED,
+  JIN_EXPLOSIVE_BURST,
+  JIN_JUMPING_ADVANCE,
+} from "./JinStanceAnimations";
+
+// Import Jin technique animations
+import {
+  JIN_THUNDER_FLASH_ANIMATION,
+  JIN_JUMPING_KNEE_STRIKE,
+} from "./JinTechniqueAnimations";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DEFAULT SHOULDER WIDTH CONSTANT
@@ -1747,6 +1759,11 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["li_solar_plexus_strike", LI_SOLAR_PLEXUS_ANIMATION],
 
     // Jin (진) - Thunder
+    ["jin_idle_coiled", JIN_IDLE_COILED],
+    ["jin_explosive_burst", JIN_EXPLOSIVE_BURST],
+    ["jin_jumping_advance", JIN_JUMPING_ADVANCE],
+    ["jin_thunder_flash", JIN_THUNDER_FLASH_ANIMATION],
+    ["jin_jumping_knee_strike", JIN_JUMPING_KNEE_STRIKE],
     ["jin_lightning_flash", JIN_LIGHTNING_FLASH_ANIMATION],
     ["jin_jumping_front_kick", JIN_JUMPING_FRONT_KICK_ANIMATION],
     ["jin_tornado_kick", JIN_TORNADO_KICK_ANIMATION],

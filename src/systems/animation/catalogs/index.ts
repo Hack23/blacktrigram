@@ -219,6 +219,21 @@ export {
   GEON_ROUNDHOUSE_KICK,
 } from "./GeonStanceAnimations";
 
+// Jin (Thunder) trigram-specific animations
+export {
+  JIN_ANIMATIONS,
+  JIN_IDLE_COILED,
+  JIN_EXPLOSIVE_BURST,
+  JIN_JUMPING_ADVANCE,
+} from "./JinStanceAnimations";
+
+// Jin technique animations
+export {
+  JIN_TECHNIQUE_ANIMATIONS,
+  JIN_THUNDER_FLASH_ANIMATION,
+  JIN_JUMPING_KNEE_STRIKE,
+} from "./JinTechniqueAnimations";
+
 // Additional curated animation catalogs
 export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
