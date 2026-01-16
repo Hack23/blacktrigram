@@ -3,6 +3,7 @@ import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttribu
 import { getTechniqueById } from "../data/techniques";
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { METERS_TO_PIXELS_SCALE } from "../types/physicsConstants";
 import { Technique } from "../types/technique";
 import { calculateDistance3D } from "../utils/math";
 import type { DefensiveAnimationType } from "./animation";
@@ -179,13 +180,13 @@ export class CombatSystem implements CombatSystemInterface {
   private calculateKnockback(
     attacker: PlayerState,
     defender: PlayerState,
-    damage: number
+    damage: number,
   ): CombatResult["knockback"] {
     // Calculate attack direction vector (attacker → defender)
     const attackDirection = new THREE.Vector3(
       defender.position.x - attacker.position.x,
       0, // Keep knockback on horizontal plane
-      defender.position.y - attacker.position.y
+      defender.position.y - attacker.position.y,
     );
 
     // If attacker and defender are at the exact same position, skip knockback to avoid NaN direction
@@ -249,7 +250,7 @@ export class CombatSystem implements CombatSystemInterface {
     animationContext?: {
       animationType: AnimationType;
       currentTime: number;
-    }
+    },
   ): CombatResult {
     const timestamp = Date.now();
 
@@ -296,21 +297,23 @@ export class CombatSystem implements CombatSystemInterface {
 
       // Calculate effective reach based on physical attributes and animation
       const attackerPhysical = getArchetypePhysicalAttributes(
-        attacker.archetype
+        attacker.archetype,
       );
       const reachResult = physicalReachCalculator.calculateReach(
         attackerPhysical,
         animationType,
         currentTime,
-        attacker.currentStance
+        attacker.currentStance,
       );
 
       // Check distance to defender using 3D Euclidean distance
-      // Position type is 2D, so default z to 0 for both attacker and defender
-      const distance = calculateDistance3D(
+      // Position type is 2D (in pixels), so default z to 0 for both attacker and defender
+      // Convert pixel distance to meters (METERS_TO_PIXELS_SCALE = 100 px/m)
+      const distanceInPixels = calculateDistance3D(
         [attacker.position.x, attacker.position.y, 0],
-        [defender.position.x, defender.position.y, 0]
+        [defender.position.x, defender.position.y, 0],
       );
+      const distance = distanceInPixels / METERS_TO_PIXELS_SCALE;
 
       // If out of reach, miss
       if (distance > reachResult.effectiveReach) {
@@ -334,7 +337,7 @@ export class CombatSystem implements CombatSystemInterface {
     // Fix: Use correct method signature
     const stanceEffectiveness = this.trigramSystem.calculateStanceEffectiveness(
       attacker.currentStance,
-      defender.currentStance
+      defender.currentStance,
     );
 
     // Calculate base hit chance
@@ -366,7 +369,7 @@ export class CombatSystem implements CombatSystemInterface {
         targetedVitalPointId,
         technique.damage ?? 15,
         attacker,
-        defender
+        defender,
       );
     }
 
@@ -380,7 +383,7 @@ export class CombatSystem implements CombatSystemInterface {
         damage: 0,
         effects: [],
         severity: VitalPointSeverity.MINOR,
-      }
+      },
     );
 
     // Check for critical hit
@@ -394,7 +397,7 @@ export class CombatSystem implements CombatSystemInterface {
     const knockbackInfo = this.calculateKnockback(
       attacker,
       defender,
-      damageResult.totalDamage
+      damageResult.totalDamage,
     );
 
     return {
@@ -429,7 +432,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @korean 기술애니메이션정보가져오기
    */
   private getAnimationInfoForTechnique(
-    technique: KoreanTechnique
+    technique: KoreanTechnique,
   ): CombatResult["animation"] {
     // Check if technique has explicit animation config (from Technique interface)
     // KoreanTechnique may not have animation field, so check the technique data
@@ -452,7 +455,7 @@ export class CombatSystem implements CombatSystemInterface {
       animationType = determineAnimationTypeForTechnique(
         techniqueName,
         techniqueId,
-        damageType
+        damageType,
       );
 
       // Calculate speed modifier based on technique damage
@@ -497,7 +500,7 @@ export class CombatSystem implements CombatSystemInterface {
   applyCombatResult(
     result: CombatResult,
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
     // Start with base result
     const { updatedAttacker, updatedDefender: initialDefender } =
@@ -515,7 +518,7 @@ export class CombatSystem implements CombatSystemInterface {
           updatedDefender,
           result.damage,
           severity,
-          category
+          category,
         );
       updatedDefender = defenderWithPain;
 
@@ -537,7 +540,7 @@ export class CombatSystem implements CombatSystemInterface {
         updatedDefender = this.consciousnessSystem.applyDamage(
           updatedDefender,
           result.damage,
-          category
+          category,
         );
 
         // Track head trauma time for recovery gating
@@ -559,7 +562,7 @@ export class CombatSystem implements CombatSystemInterface {
       const currentShockEffect = this.shockPainEffects.get(updatedDefender.id);
       updatedDefender = this.painSystem.applyEffects(
         updatedDefender,
-        currentShockEffect
+        currentShockEffect,
       );
       updatedDefender = this.consciousnessSystem.applyEffects(updatedDefender);
 
@@ -569,19 +572,19 @@ export class CombatSystem implements CombatSystemInterface {
       updatedDefender = this.balanceSystem.disruptBalance(
         updatedDefender,
         result.damage,
-        bodyRegion
+        bodyRegion,
       );
 
       // Apply breathing disruption for torso vital point strikes
       if (result.vitalPointHit && result.targetedVitalPointId) {
         const vitalPoint = this.vitalPointSystem.getVitalPointById(
-          result.targetedVitalPointId
+          result.targetedVitalPointId,
         );
         if (vitalPoint && causesBreathingDisruption(vitalPoint.id)) {
           updatedDefender = applyBreathingDisruptionFromVitalPoint(
             updatedDefender,
             vitalPoint,
-            Date.now()
+            Date.now(),
           );
         }
       }
@@ -599,7 +602,7 @@ export class CombatSystem implements CombatSystemInterface {
    */
   private isHeadTrauma(
     result: CombatResult,
-    category?: VitalPointCategory
+    category?: VitalPointCategory,
   ): boolean {
     return isHeadTraumaHit(result, category);
   }
@@ -611,7 +614,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @returns Vital point category if available
    */
   private getVitalPointCategory(
-    result: CombatResult
+    result: CombatResult,
   ): VitalPointCategory | undefined {
     return extractVitalPointCategory(result);
   }
@@ -623,7 +626,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @returns Vital point severity if critical hit
    */
   private getVitalPointSeverity(
-    result: CombatResult
+    result: CombatResult,
   ): VitalPointSeverity | undefined {
     if (result.vitalPointHit) {
       if (result.isCritical) {
@@ -659,7 +662,7 @@ export class CombatSystem implements CombatSystemInterface {
     // If we have a targeted vital point, try to determine region
     if (result.targetedVitalPointId) {
       const vitalPoint = this.vitalPointSystem.getVitalPointById(
-        result.targetedVitalPointId
+        result.targetedVitalPointId,
       );
 
       if (vitalPoint) {
@@ -720,7 +723,7 @@ export class CombatSystem implements CombatSystemInterface {
     updatedPlayer = this.consciousnessSystem.applyRecovery(
       updatedPlayer,
       deltaTime,
-      lastTrauma
+      lastTrauma,
     );
 
     // Apply balance recovery
@@ -746,7 +749,7 @@ export class CombatSystem implements CombatSystemInterface {
   static applyCombatResult(
     result: CombatResult,
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
   ): { updatedAttacker: PlayerState; updatedDefender: PlayerState } {
     // Apply damage and effects
     let updatedDefender = defender;
@@ -755,14 +758,14 @@ export class CombatSystem implements CombatSystemInterface {
     if (result.hit) {
       // Determine body region from technique or use random distribution
       const bodyRegion = CombatSystem.getBodyRegionFromTechnique(
-        result.technique
+        result.technique,
       );
 
       // Apply damage to body parts (this also updates aggregate health)
       updatedDefender = applyDamageToBodyParts(
         defender,
         result.damage,
-        bodyRegion
+        bodyRegion,
       );
 
       // Update tracking stats (applyDamageToBodyParts already sets health)
@@ -817,7 +820,7 @@ export class CombatSystem implements CombatSystemInterface {
    * @returns Body region to apply damage to
    */
   private static getBodyRegionFromTechnique(
-    technique?: KoreanTechnique
+    technique?: KoreanTechnique,
   ): BodyRegion {
     if (!technique) {
       // Default to torso if no technique specified
@@ -915,7 +918,7 @@ export class CombatSystem implements CombatSystemInterface {
 
     // Filter techniques based on available resources using canExecuteTechnique
     return allTechniques.filter((technique) =>
-      this.canExecuteTechnique(player, technique as KoreanTechnique)
+      this.canExecuteTechnique(player, technique as KoreanTechnique),
     ) as readonly KoreanTechnique[];
   }
 
@@ -924,7 +927,7 @@ export class CombatSystem implements CombatSystemInterface {
    */
   private canExecuteTechnique(
     player: PlayerState,
-    technique: KoreanTechnique
+    technique: KoreanTechnique,
   ): boolean {
     return (
       player.ki >= technique.kiCost &&
@@ -940,7 +943,7 @@ export class CombatSystem implements CombatSystemInterface {
   static resolveAttack(
     attacker: PlayerState,
     defender: PlayerState,
-    technique: KoreanTechnique
+    technique: KoreanTechnique,
   ): CombatResult {
     const instance = new CombatSystem();
     return instance.executeAttack(attacker, defender, technique);
@@ -972,7 +975,7 @@ export class CombatSystem implements CombatSystemInterface {
     if (updatedPlayer.ki < updatedPlayer.maxKi) {
       updatedPlayer.ki = Math.min(
         updatedPlayer.maxKi,
-        updatedPlayer.ki + regenRate * 2 * effectModifiers.kiRegen
+        updatedPlayer.ki + regenRate * 2 * effectModifiers.kiRegen,
       );
     }
 
@@ -983,11 +986,11 @@ export class CombatSystem implements CombatSystemInterface {
       const modifiedStaminaRegen =
         BreathingDisruptionSystem.calculateStaminaRegen(
           updatedPlayer,
-          baseStaminaRegen
+          baseStaminaRegen,
         );
       updatedPlayer.stamina = Math.min(
         updatedPlayer.maxStamina,
-        updatedPlayer.stamina + modifiedStaminaRegen
+        updatedPlayer.stamina + modifiedStaminaRegen,
       );
     }
 
@@ -998,7 +1001,7 @@ export class CombatSystem implements CombatSystemInterface {
     ) {
       updatedPlayer.health = Math.min(
         updatedPlayer.maxHealth,
-        updatedPlayer.health + regenRate * 0.5
+        updatedPlayer.health + regenRate * 0.5,
       );
     }
 
@@ -1006,7 +1009,7 @@ export class CombatSystem implements CombatSystemInterface {
     updatedPlayer = updateBreathingDisruption(
       updatedPlayer,
       deltaTime,
-      Date.now()
+      Date.now(),
     );
 
     // Clear temporary combat states
@@ -1046,7 +1049,7 @@ export class CombatSystem implements CombatSystemInterface {
     vitalPointId: string,
     _baseDamage: number, // Unused but kept for interface compatibility
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
   ): VitalPointHitResult {
     const vitalPoint = this.vitalPointSystem.getVitalPointById(vitalPointId);
 
@@ -1066,7 +1069,7 @@ export class CombatSystem implements CombatSystemInterface {
       vitalPointId, // Targeted vital point
       undefined, // Use current hour from system
       attacker.archetype, // Attacker archetype for offensive modifiers
-      defender.archetype // Defender archetype for defensive modifiers
+      defender.archetype, // Defender archetype for defensive modifiers
     );
   }
 
@@ -1101,7 +1104,7 @@ export class CombatSystem implements CombatSystemInterface {
   public processDefensiveAction(
     defender: PlayerState,
     _attacker: PlayerState,
-    attackPower: number
+    attackPower: number,
   ): Exclude<DefensiveAnimationType, "guard_recovery"> {
     // Guard Break: Check balance threshold first (highest priority condition)
     if (defender.balance < 30) {
@@ -1150,7 +1153,7 @@ export class CombatSystem implements CombatSystemInterface {
   protected executeAttack(
     attacker: PlayerState,
     defender: PlayerState,
-    technique: KoreanTechnique
+    technique: KoreanTechnique,
   ): CombatResult {
     const hitRoll = Math.random();
     const accuracy = technique.accuracy || 0.8;
@@ -1185,7 +1188,7 @@ export class CombatSystem implements CombatSystemInterface {
       technique,
       attacker,
       defender,
-      vitalPointHit
+      vitalPointHit,
     );
 
     return {
@@ -1211,7 +1214,7 @@ export class CombatSystem implements CombatSystemInterface {
     technique: KoreanTechnique,
     attacker: PlayerState,
     defender: PlayerState,
-    hitResult: VitalPointHitResult
+    hitResult: VitalPointHitResult,
   ): {
     baseDamage: number;
     modifierDamage: number;
@@ -1248,7 +1251,7 @@ export class CombatSystem implements CombatSystemInterface {
     const defenseReduction = defender.defense * 0.05;
     const totalDamage = Math.max(
       1,
-      baseDamage + modifierDamage - defenseReduction
+      baseDamage + modifierDamage - defenseReduction,
     );
 
     // Combine effects from technique and vital point hit
@@ -1271,7 +1274,7 @@ export class CombatSystem implements CombatSystemInterface {
  * Ensures both 'critical' and 'criticalHit' are present for API compatibility
  */
 export function createCombatResult(
-  partialResult: Partial<CombatResult>
+  partialResult: Partial<CombatResult>,
 ): CombatResult {
   // Set default values
   const result: CombatResult = {
