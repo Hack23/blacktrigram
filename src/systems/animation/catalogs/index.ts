@@ -262,6 +262,17 @@ export * from "./ComboAnimations";
 export * from "./DarkOpsAnimations";
 export * from "./ElbowKneeAnimations";
 export * from "./GamRedirectionAnimations";
+export {
+  GAM_IDLE_FLOWING,
+  GAM_YIELDING_SIDESTEP,
+  GAM_FLOWING_RETREAT_STEP,
+  GAM_STANCE_ANIMATIONS,
+} from "./GamStanceAnimations";
+export {
+  GAM_WATER_FLOW_COUNTER_ANIMATION,
+  GAM_FLOWING_TAKEDOWN,
+  GAM_TECHNIQUE_ANIMATIONS,
+} from "./GamTechniqueAnimations";
 export * from "./GrapplingAnimations";
 export * from "./KickAnimations";
 export * from "./LiStanceAnimations";
