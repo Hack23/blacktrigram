@@ -62,7 +62,7 @@ describe("SON_WHIRLWIND_STRIKE_ANIMATION", () => {
 
     // Rotation should continuously increase through the strikes
     for (let i = 1; i < spineRotations.length; i++) {
-      expect(spineRotations[i]).toBeGreaterThanOrEqual(spineRotations[i - 1] - 0.01);
+      expect(spineRotations[i]).toBeGreaterThanOrEqual(spineRotations[i - 1] - 0.001);
     }
   });
 
@@ -112,9 +112,9 @@ describe("SON_WHIRLWIND_STRIKE_ANIMATION", () => {
     const spineRot = finalFrame!.boneRotations.get(BoneName.SPINE_UPPER);
     const pelvisRot = finalFrame!.boneRotations.get(BoneName.PELVIS);
 
-    // Should have significant rotation (approaching 90°)
-    expect(spineRot!.y).toBeGreaterThan(1.3); // > 74°
-    expect(pelvisRot!.y).toBeGreaterThan(1.1); // > 63°
+    // Should have significant rotation (pelvis drives, spine follows)
+    expect(spineRot!.y).toBeGreaterThan(1.1); // > 63° (spine follows pelvis)
+    expect(pelvisRot!.y).toBeGreaterThan(1.3); // > 74° (pelvis drives rotation)
   });
 
   it("should generate power from hip rotation", () => {

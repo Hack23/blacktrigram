@@ -267,7 +267,7 @@ export const SON_SWEEPING_CIRCLE_STEP: SkeletalAnimation =
     // Phase 3: Complete circle (889ms)
     .at(0.889)
     .rotate(BoneName.PELVIS, 0.09, -2.79, 0) // 5°, -160°, 0° (near full circle)
-    .rotate(BoneName.SPINE_UPPER, 0.12, -3.05, 0) // 7°, -175°, 0°
+    .rotate(BoneName.SPINE_UPPER, 0.12, -2.79, 0) // 7°, -160°, 0° (spine follows pelvis)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (stable)
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (grounded)
     .rotate(BoneName.SHOULDER_L, 0.17, 0.09, -0.26) // Guard maintained throughout
