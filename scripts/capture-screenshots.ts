@@ -56,14 +56,14 @@ interface ValidationResult {
 // Timing constants for Three.js rendering and animations
 // Optimized for reliable content rendering with minimal overhead
 const TIMING = {
-  CANVAS_TIMEOUT: 15000, // Max wait for canvas element
-  INITIAL_RENDER_DELAY: 3000, // Wait for initial Three.js render (increased from 2500ms)
-  ANIMATION_SETTLE_DELAY: 2500, // Wait for animations to settle (increased from 2000ms)
-  BUTTON_CLICK_DELAY: 3500, // Wait after button clicks (increased from 3000ms)
-  CONTENT_LOAD_DELAY: 5000, // Wait for dynamic content to load (increased from 4000ms)
+  CANVAS_TIMEOUT: 25000, // Max wait for canvas element
+  INITIAL_RENDER_DELAY: 7000, // Wait for initial Three.js render (increased from 2500ms)
+  ANIMATION_SETTLE_DELAY: 4500, // Wait for animations to settle (increased from 2000ms)
+  BUTTON_CLICK_DELAY: 5000, // Wait after button clicks (increased from 3000ms)
+  CONTENT_LOAD_DELAY: 8000, // Wait for dynamic content to load (increased from 4000ms)
   RETRY_DELAY: 3000, // Delay between retries (increased from 2500ms)
-  HTML_OVERLAY_DELAY: 5000, // Wait for Html overlays in Three.js to render (increased from 4000ms)
-  SCREEN_TRANSITION_DELAY: 6000, // Wait for screen transitions with lazy loading (increased from 5000ms)
+  HTML_OVERLAY_DELAY: 8000, // Wait for Html overlays in Three.js to render (increased from 4000ms)
+  SCREEN_TRANSITION_DELAY: 10000, // Wait for screen transitions with lazy loading (increased from 5000ms)
 } as const;
 
 const SCREENSHOTS_DIR = path.join(process.cwd(), "screenshots");
