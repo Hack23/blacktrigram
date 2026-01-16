@@ -63,6 +63,7 @@ export interface DepthEffectConfig {
  * ```typescript
  * const glow = getNeonGlowEffect(KOREAN_COLORS.PRIMARY_CYAN, 'medium', true);
  * // Returns: "0 0 20px rgba(0,230,230,0.6), inset 0 0 10px rgba(0,230,230,0.3)"
+ * // Note: Color conversion is handled by hexToRgbaString utility
  * ```
  * 
  * @korean 네온글로우효과얻기

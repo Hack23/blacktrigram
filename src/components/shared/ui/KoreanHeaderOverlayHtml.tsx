@@ -79,6 +79,8 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
         style={{
           ...fontOptimization,
           color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          // Note: fontFamily already included in fontOptimization, but explicitly set here for clarity
+          // as it's a critical property for Korean text rendering
           fontFamily: FONT_FAMILY.KOREAN,
           textAlign: alignment,
           textShadow: titleTextShadow,
