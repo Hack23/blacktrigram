@@ -114,10 +114,13 @@ export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
     });
 
     // Merge with size-specific styles
+    // Note: fontSize from enhancedStyles is intentionally overridden by buttonSize.fontSize
+    // to ensure consistent sizing across button size variants (small/medium/large).
+    // The Korean font optimization (anti-aliasing, letter-spacing) is preserved.
     return {
       ...enhancedStyles,
       padding: buttonSize.padding,
-      fontSize: buttonSize.fontSize,
+      fontSize: buttonSize.fontSize, // Override for size consistency
       cursor: disabled ? "not-allowed" : "pointer",
       opacity: disabled ? 0.5 : 1,
       borderRadius: "4px",

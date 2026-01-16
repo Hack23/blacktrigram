@@ -83,6 +83,12 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
     [availableVitalPoints, selectedVitalPoint]
   );
 
+  // Memoize glow effect for selected vital points to avoid repeated calculations
+  const selectedVitalPointGlow = React.useMemo(
+    () => getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true),
+    []
+  );
+
   const panelWidth = isMobile ? 240 : 280;
   const maxHeight = isMobile ? 300 : 400;
   const padding = getResponsiveSpacing("md", isMobile);
@@ -130,9 +136,9 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
           const severityColor = getSeverityColor(point.severity);
           const severityColorRgba = hexToRgbaString(severityColor);
 
-          // Enhanced glow effect for selected vital points
+          // Enhanced glow effect for selected vital points (memoized to avoid recalculation)
           const glowEffect = isSelected 
-            ? getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true)
+            ? selectedVitalPointGlow
             : undefined;
 
           return (

@@ -208,12 +208,16 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           // Get only visual effects (glow, transitions, transforms) from utility
           // Color/background/border are menu-specific and applied directly below
           // Using dedicated helper function to avoid fragile destructuring coupling
+          // Note: Glow intensity is balanced with background colors to maintain contrast:
+          // - Selected: medium glow + bright gold background = balanced
+          // - Hovered: medium glow + translucent background = clear feedback
+          // - Default: subtle glow + dark background = clean appearance
           const visualEffects = getButtonVisualEffectsOnly({
             variant: "primary",
             isHovered,
             isPressed: false,
             isFocused: false,
-            glowIntensity: isSelected ? "strong" : "medium",
+            glowIntensity: isSelected ? "medium" : isHovered ? "medium" : "subtle",
             hoverAnimation: "combined",
           });
 
