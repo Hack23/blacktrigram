@@ -22,11 +22,16 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 /**
  * Anatomical safety constants for Tae (Lake) trigram animations
  *
- * These limits ensure joint rotations remain within safe physiological ranges
- * while maintaining fluid, circular movements for Tae's joint manipulation techniques.
+ * These limits document safe physiological ranges for Korean martial arts movements.
+ * The constants serve as reference documentation validated by Korean martial arts experts
+ * and inform the design of all Tae animations to ensure realistic, safe joint mechanics.
+ *
+ * Note: These are documentation constants. The actual animation rotations are designed
+ * to stay well within these limits naturally through authentic Hapkido biomechanics.
+ *
+ * @internal - For documentation purposes only
  */
-// @ts-expect-error - Anatomical limits documented for reference, validated by Korean martial arts expert
-const ANATOMICAL_LIMITS = {
+export const ANATOMICAL_LIMITS_TAE_STANCE = {
   /**
    * Maximum safe wrist flexion/extension: ±70° (±1.22 radians)
    * 

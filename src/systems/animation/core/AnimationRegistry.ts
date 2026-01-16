@@ -163,6 +163,10 @@ import {
   TAE_ELBOW_CONTROL,
   TAE_FINGER_LOCK,
   TAE_FLOWING_COUNTER,
+  TAE_FLOWING_STRIKES,
+  TAE_SMALL_CIRCLE,
+  TAE_SHOULDER_LOCK,
+  TAE_ARM_BAR,
 } from "../catalogs/TaeJointLockAnimations";
 
 // TODO: Register Tae stance animations when trigram-specific idle/movement system is implemented
@@ -270,16 +274,19 @@ export const ANIMATION_REGISTRY: ReadonlyMap<AnimationType, SkeletalAnimation> =
 
     // Tae (태) - Lake: Joint Manipulation
     [AnimationType.WRIST_LOCK_STRIKE, WRIST_LOCK_ANIMATION],
+    [AnimationType.WRIST_LOCK, TAE_WRIST_LOCK_SEQUENCE], // Enhanced Hapkido wrist lock
     [AnimationType.SPIRAL_SHOULDER_THROW, HIP_THROW_ANIMATION],
     [AnimationType.JOINT_LOCK_DEFENSE, TAE_FLOWING_COUNTER],
     [AnimationType.SWEEP_DEFENSE, TAE_SWEEP_DEFENSE],
     [AnimationType.WRIST_TWIST_COUNTER, TAE_FLOWING_COUNTER],
-    [AnimationType.SMALL_CIRCLE_LOCK, TAE_WRIST_LOCK_SEQUENCE], // Updated to enhanced version
+    [AnimationType.FLOWING_CROSS, TAE_FLOWING_STRIKES], // Continuous palm strikes
+    [AnimationType.SMALL_CIRCLE_LOCK, TAE_SMALL_CIRCLE], // Advanced dual joint control
     [AnimationType.FINGER_LOCK, TAE_FINGER_LOCK],
-    [AnimationType.ELBOW_LOCK, TAE_ELBOW_CONTROL], // Updated to enhanced version
+    [AnimationType.ELBOW_LOCK, TAE_ELBOW_CONTROL], // Enhanced two-handed control
     [AnimationType.ELBOW_HYPEREXTEND, TAE_ELBOW_CONTROL],
-    [AnimationType.SHOULDER_MANIPULATION, SHOULDER_MANIPULATION_ANIMATION],
-    [AnimationType.FLOWING_ARM_BAR, FLOWING_ARM_BAR_ANIMATION],
+    [AnimationType.SHOULDER_MANIPULATION, TAE_SHOULDER_LOCK], // Enhanced shoulder lock
+    [AnimationType.ARM_BAR, TAE_ARM_BAR], // Most powerful submission
+    [AnimationType.FLOWING_ARM_BAR, TAE_ARM_BAR], // Alias for flowing arm bar
 
     // Jin (진)
     [AnimationType.EXPLOSIVE_KNEE, KNEE_STRIKE_ANIMATION_ENHANCED],

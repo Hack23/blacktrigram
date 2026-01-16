@@ -5,11 +5,17 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 /**
  * Anatomical safety constants for Tae (Lake) joint lock animations
  *
- * These limits ensure joint rotations remain within safe physiological ranges
- * while maintaining realistic joint manipulation techniques for Hapkido locks.
+ * These limits document safe physiological ranges for joint manipulation techniques.
+ * The constants serve as reference documentation validated by Korean martial arts experts
+ * and inform the design of all joint lock animations to ensure realistic Hapkido mechanics
+ * without exceeding anatomical safety thresholds.
+ *
+ * Note: These are documentation constants. The actual animation rotations are designed
+ * to stay within these limits naturally through authentic joint lock biomechanics.
+ *
+ * @internal - For documentation purposes only
  */
-// @ts-expect-error - Anatomical limits documented for reference, validated by Korean martial arts expert
-const ANATOMICAL_LIMITS = {
+export const ANATOMICAL_LIMITS_TAE_JOINT_LOCKS = {
   /**
    * Maximum safe wrist hyperextension: 70° (1.22 radians)
    * 
@@ -40,7 +46,7 @@ const ANATOMICAL_LIMITS = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * TAE WRIST LOCK SEQUENCE - 유수연타 (Flowing Water Strike)
+ * TAE WRIST LOCK SEQUENCE - 손목꺾기 (Wrist Lock)
  *
  * Simplified 3-phase Hapkido wrist lock with circular small-circle technique.
  * 
@@ -57,12 +63,12 @@ const ANATOMICAL_LIMITS = {
  *
  * Target vital points: Wrist joint, elbow joint
  *
- * @korean 유수연타
+ * @korean 손목꺾기
  * @duration 1800ms (1.8 seconds)
- * @category Attack Animation
+ * @category Joint Lock Animation
  */
 export const TAE_WRIST_LOCK_SEQUENCE: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("tae_wrist_lock_sequence", "유수연타")
+  MartialArtsAnimationBuilder.create("tae_wrist_lock_sequence", "손목꺾기")
     .asAttack(1.8)
     // Phase 1: Setup - Reach and grasp wrist (0ms)
     .at(0)

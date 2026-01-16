@@ -24,10 +24,10 @@ describe("Tae (Lake) Joint Lock Animations", () => {
   // EXISTING ANIMATIONS
   // ═══════════════════════════════════════════════════════════════════════
 
-  describe("TAE_WRIST_LOCK_SEQUENCE (유수연타)", () => {
+  describe("TAE_WRIST_LOCK_SEQUENCE (손목꺾기)", () => {
     it("should have correct metadata", () => {
       expect(TAE_WRIST_LOCK_SEQUENCE.name).toBe("tae_wrist_lock_sequence");
-      expect(TAE_WRIST_LOCK_SEQUENCE.koreanName).toBe("유수연타");
+      expect(TAE_WRIST_LOCK_SEQUENCE.koreanName).toBe("손목꺾기");
     });
 
     it("should have correct duration and phases", () => {
