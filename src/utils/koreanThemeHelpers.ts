@@ -546,7 +546,7 @@ export function getTrigramSymbolWithGlow(config: {
     건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
     태: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY, // Lake - Sky Blue
     리: KOREAN_COLORS.TRIGRAM_LI_PRIMARY, // Fire - Orange Red
-    진: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY, // Thunder - Purple
+    진: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY, // Thunder - Medium Purple (0x9370db)
     손: KOREAN_COLORS.TRIGRAM_SON_PRIMARY, // Wind - Light Green
     감: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY, // Water - Blue
     간: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY, // Mountain - Brown

@@ -133,7 +133,7 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
           // Enhanced glow effect for selected vital points
           const glowEffect = isSelected 
             ? getNeonGlowEffect(KOREAN_COLORS.ACCENT_GOLD, "strong", true)
-            : "none";
+            : undefined;
 
           return (
             <button

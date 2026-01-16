@@ -233,7 +233,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
                 height: `${buttonHeight}px`,
                 fontSize: `${buttonFontSize}px`,
                 letterSpacing: "1.2px",
-                // Override colors based on selection state
+                // Override color, background, and border based on selection state
                 color: isSelected
                   ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
                       6,

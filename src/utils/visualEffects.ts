@@ -484,7 +484,7 @@ export function getTrigramSymbolGlow(
   const scale = isActive ? 1.1 : 1.0;
 
   return {
-    color: hexToRgbaString(trigramColor),
+    color: hexToRgbaString(trigramColor, 1.0),
     textShadow: getNeonTextShadow(trigramColor, intensity),
     transform: `scale(${scale})`,
     transition: getSmoothTransition("all", "normal"),
