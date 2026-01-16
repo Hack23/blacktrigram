@@ -24,7 +24,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 /**
  * Gon Earth Embrace Attack Animation
  *
- * **Korean**: 대지포옹 (Daeji Pooong)
+ * **Korean**: 대지포옹 (Daeji Poong)
  * **Technique**: Full body throw with ground transition
  * **Target Points**: Balance disruption, ground impact control
  *
@@ -32,14 +32,13 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * The fighter drops low, secures opponent's body, lifts with legs and hips,
  * then rotates through a circular arc to bring opponent to ground.
  *
- * Animation Phases (28 frames total = 1867ms):
- * - Close Phase (0-540ms, 8 frames): Drop level and penetrate for grab
- * - Lift Phase (540-1080ms, 8 frames): Secure grip and lift opponent
- * - Throw Phase (1080-1620ms, 8 frames): Execute circular throw
- * - Control Phase (1620-1867ms, 4 frames): Follow to ground for dominance
+ * Animation Phases (1867ms duration, 7+ keyframes):
+ * - Close Phase (0-540ms): Drop level and penetrate for grab
+ * - Lift Phase (540-1080ms): Secure grip and lift opponent
+ * - Throw Phase (1080-1620ms): Execute circular throw
+ * - Control Phase (1620-1867ms): Follow to ground for dominance
  *
  * @korean 대지포옹
- * @frames 28 total
  * @duration 1867ms (~1.9 seconds)
  * @category Throw Animation
  */
@@ -186,13 +185,12 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
  * Fighter transitions from standing to ground position while maintaining
  * control through weight distribution and grip strength.
  *
- * Animation Phases (30 frames total = 2000ms):
- * - Takedown Phase (0-667ms, 10 frames): Bring opponent to ground
- * - Transition Phase (667-1333ms, 10 frames): Move to dominant position
- * - Control Phase (1333-2000ms, 10 frames): Establish ground control
+ * Animation Phases (2000ms duration, 6+ keyframes):
+ * - Takedown Phase (0-667ms): Bring opponent to ground
+ * - Transition Phase (667-1333ms): Move to dominant position
+ * - Control Phase (1333-2000ms): Establish ground control
  *
  * @korean 땅장악
- * @frames 30 total
  * @duration 2000ms (2.0 seconds)
  * @category Ground Control Animation
  */

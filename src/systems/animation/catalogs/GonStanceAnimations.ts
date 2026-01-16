@@ -55,10 +55,14 @@ export const ANATOMICAL_LIMITS_GON_STANCE = {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Gon Idle Grounded Animation
+ * Gon Idle Ssireum Stance Animation
  *
- * **Korean**: 곤괘 대지 자세 (Gon-gwae Daeji Jase)
+ * **Korean**: 곤괘 씨름 자세 (Gon-gwae Ssireum Jase)
  * **Philosophy**: Earth's grounding power through low center of gravity
+ *
+ * Specialized Ssireum wrestling idle stance that differs from the general
+ * Gon idle animation (stance_gon) by emphasizing deeper grounding, lower
+ * center of gravity, and wrestling-specific hand positioning.
  *
  * Characteristics:
  * - Very low center of gravity with wide stance
@@ -72,14 +76,14 @@ export const ANATOMICAL_LIMITS_GON_STANCE = {
  * - 1700ms: Deep breath settling (sink deeper)
  * - 3400ms: Return to neutral (complete cycle)
  *
- * @korean 곤괘대지자세
+ * @korean 곤괘씨름자세
  * @duration 3400ms (3.4 second cycle)
  * @category Idle Animation
  */
-export const GON_IDLE_GROUNDED: SkeletalAnimation =
+export const GON_IDLE_SSIREUM_STANCE: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
-    "gon_idle_grounded",
-    "곤괘 대지 자세"
+    "gon_idle_ssireum_stance",
+    "곤괘 씨름 자세"
   )
     .asIdle(3.4, true)
     // Keyframe 0ms: Low grounded neutral
@@ -138,14 +142,14 @@ export const GON_IDLE_GROUNDED: SkeletalAnimation =
  * - Center of gravity stays low throughout
  * - Arms ready for grappling engagement
  *
- * Animation Phases (16 frames at 60fps = 267ms):
+ * Animation Keyframes (4 keyframes spanning 267ms, ~16 rendered frames at 60fps):
  * - 0ms: Start position (low stance)
  * - 90ms: Weight shift to left leg
  * - 180ms: Right foot lifts and steps forward
  * - 267ms: Right foot plants firmly
  *
  * @korean 땅밟기
- * @duration 267ms (~16 frames at 60fps)
+ * @duration 267ms
  * @category Movement Animation
  */
 export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
@@ -209,14 +213,14 @@ export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
  * - Hands reaching for grappling control
  * - Weight shifts for throw setup
  *
- * Animation Phases (18 frames at 60fps = 300ms):
+ * Animation Keyframes (4 keyframes spanning 300ms, ~18 rendered frames at 60fps):
  * - 0ms: Start position (low stance)
  * - 100ms: Weight shift to right leg
  * - 200ms: Left foot slides laterally
  * - 300ms: Positioned for sweep
  *
  * @korean 쓸기준비
- * @duration 300ms (~18 frames at 60fps)
+ * @duration 300ms
  * @category Movement Animation
  */
 export const GON_SWEEP_POSITIONING_STEP: SkeletalAnimation =

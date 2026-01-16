@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from "vitest";
 import {
-  GON_IDLE_GROUNDED,
+  GON_IDLE_SSIREUM_STANCE,
   GON_HEAVY_GROUNDING_STEP,
   GON_SWEEP_POSITIONING_STEP,
   ANATOMICAL_LIMITS_GON_STANCE,
@@ -25,24 +25,24 @@ describe("Gon Stance Animations", () => {
     });
   });
 
-  describe("GON_IDLE_GROUNDED", () => {
+  describe("GON_IDLE_SSIREUM_STANCE", () => {
     it("should have correct animation properties", () => {
-      expect(GON_IDLE_GROUNDED.name).toBe("gon_idle_grounded");
-      expect(GON_IDLE_GROUNDED.koreanName).toBe("곤괘 대지 자세");
-      expect(GON_IDLE_GROUNDED.duration).toBe(3.4);
-      expect(GON_IDLE_GROUNDED.loop).toBe(true);
-      expect(GON_IDLE_GROUNDED.type).toBe("idle");
+      expect(GON_IDLE_SSIREUM_STANCE.name).toBe("gon_idle_ssireum_stance");
+      expect(GON_IDLE_SSIREUM_STANCE.koreanName).toBe("곤괘 씨름 자세");
+      expect(GON_IDLE_SSIREUM_STANCE.duration).toBe(3.4);
+      expect(GON_IDLE_SSIREUM_STANCE.loop).toBe(true);
+      expect(GON_IDLE_SSIREUM_STANCE.type).toBe("idle");
     });
 
     it("should have 3 keyframes for breathing cycle", () => {
-      expect(GON_IDLE_GROUNDED.keyframes.length).toBe(3);
-      expect(GON_IDLE_GROUNDED.keyframes[0].time).toBe(0);
-      expect(GON_IDLE_GROUNDED.keyframes[1].time).toBe(1.7);
-      expect(GON_IDLE_GROUNDED.keyframes[2].time).toBe(3.4);
+      expect(GON_IDLE_SSIREUM_STANCE.keyframes.length).toBe(3);
+      expect(GON_IDLE_SSIREUM_STANCE.keyframes[0].time).toBe(0);
+      expect(GON_IDLE_SSIREUM_STANCE.keyframes[1].time).toBe(1.7);
+      expect(GON_IDLE_SSIREUM_STANCE.keyframes[2].time).toBe(3.4);
     });
 
     it("should maintain deeply bent knees for low center throughout", () => {
-      GON_IDLE_GROUNDED.keyframes.forEach((frame) => {
+      GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {
         const kneeL = frame.boneRotations.get(BoneName.KNEE_L);
         const kneeR = frame.boneRotations.get(BoneName.KNEE_R);
         
@@ -59,7 +59,7 @@ describe("Gon Stance Animations", () => {
     });
 
     it("should keep hips low and back for grounding", () => {
-      GON_IDLE_GROUNDED.keyframes.forEach((frame) => {
+      GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {
         const pelvis = frame.boneRotations.get(BoneName.PELVIS);
         
         expect(pelvis).toBeDefined();
@@ -72,7 +72,7 @@ describe("Gon Stance Animations", () => {
     });
 
     it("should have hands positioned low for grappling", () => {
-      GON_IDLE_GROUNDED.keyframes.forEach((frame) => {
+      GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {
         const shoulderL = frame.boneRotations.get(BoneName.SHOULDER_L);
         const shoulderR = frame.boneRotations.get(BoneName.SHOULDER_R);
         
@@ -88,7 +88,7 @@ describe("Gon Stance Animations", () => {
     });
 
     it("should have lowered pelvis position", () => {
-      GON_IDLE_GROUNDED.keyframes.forEach((frame) => {
+      GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {
         const pelvisPos = frame.bonePositions.get(BoneName.PELVIS);
         
         expect(pelvisPos).toBeDefined();
@@ -101,7 +101,7 @@ describe("Gon Stance Animations", () => {
     });
 
     it("should not exceed anatomical limits", () => {
-      GON_IDLE_GROUNDED.keyframes.forEach((frame) => {
+      GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {
         const kneeL = frame.boneRotations.get(BoneName.KNEE_L);
         const kneeR = frame.boneRotations.get(BoneName.KNEE_R);
         const ankleL = frame.boneRotations.get(BoneName.FOOT_L);
@@ -274,24 +274,24 @@ describe("Gon Stance Animations", () => {
 
   describe("General Animation Integrity", () => {
     it("all animations should have valid Korean names", () => {
-      expect(GON_IDLE_GROUNDED.koreanName).toBeTruthy();
+      expect(GON_IDLE_SSIREUM_STANCE.koreanName).toBeTruthy();
       expect(GON_HEAVY_GROUNDING_STEP.koreanName).toBeTruthy();
       expect(GON_SWEEP_POSITIONING_STEP.koreanName).toBeTruthy();
       
       // Should be in Korean (Unicode Korean range: \uAC00-\uD7AF)
-      expect(GON_IDLE_GROUNDED.koreanName).toMatch(/[가-힣]/);
+      expect(GON_IDLE_SSIREUM_STANCE.koreanName).toMatch(/[가-힣]/);
       expect(GON_HEAVY_GROUNDING_STEP.koreanName).toMatch(/[가-힣]/);
       expect(GON_SWEEP_POSITIONING_STEP.koreanName).toMatch(/[가-힣]/);
     });
 
     it("all animations should have non-empty keyframes", () => {
-      expect(GON_IDLE_GROUNDED.keyframes.length).toBeGreaterThan(0);
+      expect(GON_IDLE_SSIREUM_STANCE.keyframes.length).toBeGreaterThan(0);
       expect(GON_HEAVY_GROUNDING_STEP.keyframes.length).toBeGreaterThan(0);
       expect(GON_SWEEP_POSITIONING_STEP.keyframes.length).toBeGreaterThan(0);
     });
 
     it("all animations should have keyframes in chronological order", () => {
-      [GON_IDLE_GROUNDED, GON_HEAVY_GROUNDING_STEP, GON_SWEEP_POSITIONING_STEP].forEach((animation) => {
+      [GON_IDLE_SSIREUM_STANCE, GON_HEAVY_GROUNDING_STEP, GON_SWEEP_POSITIONING_STEP].forEach((animation) => {
         for (let i = 1; i < animation.keyframes.length; i++) {
           expect(animation.keyframes[i].time).toBeGreaterThanOrEqual(animation.keyframes[i - 1].time);
         }

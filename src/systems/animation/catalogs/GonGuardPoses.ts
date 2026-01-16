@@ -152,7 +152,11 @@ export const GON_LOW_GRAPPLING_GUARD: StanceGuardPose = {
 /**
  * Gon Guard Variants
  *
- * Collection of all Gon guard positions for different scenarios.
+ * Collection of Gon guard positions for different scenarios.
+ * 
+ * Currently contains only the low grappling guard. Additional guard variants
+ * (e.g., high wrestling guard, sprawl position) may be added in future updates
+ * to provide more tactical options for the Gon trigram stance.
  * 
  * @korean 곤괘방어변형들
  */
