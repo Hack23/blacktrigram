@@ -111,6 +111,11 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
   );
 
   // Create reusable PBR material for blood vessels
+  // Note: This single material instance is shared across all blood vessel meshes for
+  // performance optimization. All vessels pulse in perfect synchronization as the
+  // useFrame animation modifies emissiveIntensity on all meshes simultaneously.
+  // If differentiated pulsing is desired (e.g., arterial vs venous flow with phase
+  // offsets), consider creating separate materials or adding per-mesh timing offsets.
   const vascularMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({

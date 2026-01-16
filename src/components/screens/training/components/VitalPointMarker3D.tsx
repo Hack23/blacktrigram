@@ -42,6 +42,12 @@ export interface VitalPointMarker3DProps {
   readonly onHit?: (vitalPointId: string) => void;
   /** Base size multiplier (for difficulty modes) */
   readonly sizeMultiplier?: number;
+  /** Pulse frequency in Hz (default: 6Hz for selected, 4Hz for training mode) */
+  readonly pulseFrequency?: number;
+  /** Pulse amplitude (default: 0.25 for selected, 0.15 for training mode) */
+  readonly pulseAmplitude?: number;
+  /** Maximum emissive intensity for selected/hovered state (default: 3.5) */
+  readonly maxEmissiveIntensity?: number;
 }
 
 /**
@@ -75,7 +81,16 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
   isMobile = false,
   onHit,
   sizeMultiplier = 1.0,
+  pulseFrequency,
+  pulseAmplitude,
+  maxEmissiveIntensity = 3.5,
 }) => {
+  // Default pulse settings: higher frequency/amplitude for selected, lower for training mode
+  const defaultPulseFrequency = isTraining && !isSelected ? 4 : 6;
+  const defaultPulseAmplitude = isTraining && !isSelected ? 0.15 : 0.25;
+  
+  const activePulseFrequency = pulseFrequency ?? defaultPulseFrequency;
+  const activePulseAmplitude = pulseAmplitude ?? defaultPulseAmplitude;
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -87,14 +102,14 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
   const targetScale = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
   // Animate selected and hovered markers
-  // Note: Higher pulse frequency (6Hz) provides better visual feedback but may cause
-  // fatigue during extended training. Consider making frequency configurable if needed.
+  // Note: Pulse frequency and amplitude are configurable via props to allow adjustment
+  // for extended training sessions where high frequency may cause visual fatigue.
   useFrame((state) => {
     if (!meshRef.current) return;
 
     if (isSelected || hovered) {
-      // Rapid pulsing animation for selected/hovered markers (increased frequency and amplitude)
-      const pulse = Math.sin(state.clock.elapsedTime * 6) * 0.25 + 1.15;
+      // Pulsing animation with configurable frequency and amplitude
+      const pulse = Math.sin(state.clock.elapsedTime * activePulseFrequency) * activePulseAmplitude + 1.15;
       meshRef.current.scale.setScalar(pulse);
     } else {
       // Smooth return to normal scale
@@ -165,10 +180,12 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         <meshPhysicalMaterial
           color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
           emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissiveIntensity={isSelected || hovered ? 3.5 : 2.0} // Increased for bloom (was 2.0/1.0)
-          // Note: High emissive intensity optimized for single/few markers.
-          // With many simultaneous markers, consider implementing LOD for emissive
-          // intensity based on distance or marker importance.
+          emissiveIntensity={isSelected || hovered ? maxEmissiveIntensity : 2.0}
+          // Note: High emissive intensity (default 3.5 for selected) is optimized for
+          // a small number of simultaneously highlighted markers. When many markers are
+          // active (e.g., displaying all 70 vital points), reduce maxEmissiveIntensity
+          // via props or implement LOD to cap total high-intensity markers at ~10-15.
+          // See AnatomyOverlay3D.tsx for consistent guidance on emissive thresholds.
           metalness={0.9} // Increased metalness for more reflective appearance (was 0.8)
           roughness={0.1} // Reduced roughness for stronger reflections (was 0.2)
           clearcoat={1.0}
