@@ -274,16 +274,16 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     return getPerformanceSettings(screenWidth, isMobile);
   }, [screenWidth, isMobile]);
 
-  // Optimized logo sizing - larger logo on large desktop, compensated by smaller header
+  // Optimized logo sizing - reduced to save vertical space and show more menu content
   const logoSize = isExtraSmall
-    ? Math.min(screenWidth, screenHeight) * 0.2 // Extra compact for low-end mobile
+    ? Math.min(screenWidth, screenHeight) * 0.15 // Extra compact for low-end mobile
     : isMobile
-      ? Math.min(screenWidth, screenHeight) * 0.22 // Compact for mobile
+      ? Math.min(screenWidth, screenHeight) * 0.16 // Compact for mobile
       : isTablet
-        ? Math.min(screenWidth, screenHeight) * 0.18 // Balanced for tablet
+        ? Math.min(screenWidth, screenHeight) * 0.12 // Balanced for tablet
         : isLargeDesktop
-          ? Math.min(screenWidth, screenHeight) * 0.12 // Larger for 4K/2K (was 0.09)
-          : Math.min(screenWidth, screenHeight) * 0.14; // Standard desktop
+          ? Math.min(screenWidth, screenHeight) * 0.08 // Compact for 4K/2K
+          : Math.min(screenWidth, screenHeight) * 0.1; // Standard desktop
 
   // Optimized component heights - scale for large displays
   // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
@@ -375,7 +375,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 alignItems: "center",
                 justifyContent: "flex-start",
                 padding: 0,
-                gap: isMobile ? "8px" : "16px",
+                gap: isMobile ? "4px" : "8px",
                 pointerEvents: "none",
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
@@ -384,14 +384,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               <div
                 style={{
                   marginTop: isExtraSmall
-                    ? "12px"
+                    ? "6px"
                     : isMobile
-                      ? "15px"
+                      ? "8px"
                       : isTablet
-                        ? "20px"
+                        ? "10px"
                         : isLargeDesktop
-                          ? "8px"
-                          : "25px",
+                          ? "4px"
+                          : "12px",
                   pointerEvents: "none",
                 }}
                 data-testid="main-title-container"
@@ -417,23 +417,23 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   alignItems: "center",
                   justifyContent: "flex-start",
                   marginTop: isExtraSmall
-                    ? "4px"
+                    ? "2px"
                     : isMobile
-                      ? "5px"
+                      ? "2px"
                       : isTablet
-                        ? "6px"
+                        ? "3px"
                         : isLargeDesktop
-                          ? "3px"
-                          : "8px",
+                          ? "2px"
+                          : "4px",
                   marginBottom: isExtraSmall
-                    ? "4px"
+                    ? "2px"
                     : isMobile
-                      ? "5px"
+                      ? "2px"
                       : isTablet
-                        ? "6px"
+                        ? "3px"
                         : isLargeDesktop
-                          ? "3px"
-                          : "8px",
+                          ? "2px"
+                          : "4px",
                   pointerEvents: "none",
                 }}
                 data-testid="logo-section"
@@ -506,14 +506,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                   alignItems: "center",
                   justifyContent: "flex-start",
                   gap: isExtraSmall
-                    ? "8px"
+                    ? "4px"
                     : isMobile
-                      ? "10px"
+                      ? "6px"
                       : isTablet
-                        ? "12px"
+                        ? "8px"
                         : isLargeDesktop
-                          ? "6px"
-                          : "14px",
+                          ? "4px"
+                          : "10px",
                   paddingLeft: isExtraSmall
                     ? "12px"
                     : isMobile
@@ -533,12 +533,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                           ? "20px"
                           : "30px",
                   paddingBottom: isExtraSmall
-                    ? "6px"
+                    ? "4px"
                     : isMobile
-                      ? "8px"
+                      ? "6px"
                       : isLargeDesktop
-                        ? "4px"
-                        : "10px",
+                        ? "3px"
+                        : "8px",
                   pointerEvents: "auto",
                 }}
                 data-testid="main-content"

@@ -315,13 +315,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
   const [scale, setScale] = useState(1.2); // Larger scale for better visibility in combat
+  // Performance monitor visibility toggle (P key)
+  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key)
+  // Keyboard shortcut for toggling overlay (V key) and performance monitor (P key)
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
+      }
+      // P key toggles performance monitor (development only)
+      if ((e.key === "p" || e.key === "P") && import.meta.env.DEV) {
+        setShowPerformanceMonitor((prev) => !prev);
       }
     };
 
@@ -2300,8 +2306,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Performance Overlay (Development Only) - positioned in bottom-left of 3D scene */}
-        {import.meta.env.DEV && (
+        {/* Performance Overlay (Development Only) - Toggle with P key */}
+        {import.meta.env.DEV && showPerformanceMonitor && (
           <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
         )}
 
@@ -2378,8 +2384,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Performance Monitoring - FPS display (dev mode only) */}
-        {process.env.NODE_ENV === "development" && (
+        {/* Performance Monitoring - FPS display (dev mode, toggle with P key) */}
+        {process.env.NODE_ENV === "development" && showPerformanceMonitor && (
           <FPSMonitor
             enabled={true}
             warningThreshold={50}
@@ -2563,6 +2569,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* as those effects would incorrectly affect the player's view */}
 
         {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
+        {/* Positioned above the footer button to prevent overlap */}
         {combatState.roundStarted &&
           !combatState.roundEnded &&
           matchCountdownComplete &&
@@ -2571,9 +2578,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 position: "absolute",
                 left: 0,
-                bottom: 0,
+                bottom: isMobile ? 80 : 100 * positionScale, // Clear space for back button
                 width: "100%",
-                height: "200px",
+                height: "180px",
                 pointerEvents: "none", // Container is non-interactive
                 zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
                 display: "flex",
