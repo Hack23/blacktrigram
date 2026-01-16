@@ -97,11 +97,6 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          {/* Environment preset for realistic reflections - optional, loads in background */}
-          {/* Note: Environment can cause blocking issues, so it's commented out for now */}
-          {/* Uncomment when @react-three/drei Suspense handling is fixed */}
-          {/* <Environment preset="city" /> */}
-
           {/* Base ambient light with Korean cyan tint - increased for visibility */}
           <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
 
