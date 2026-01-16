@@ -29,7 +29,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * 
  * @internal Documentation-only constants for animation design reference
  */
-// @ts-ignore - Documentation-only constant for animation design reference
+// @ts-expect-error - Documentation-only constant for animation design reference
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ANATOMICAL_LIMITS_SON_STANCE = {
   /**
