@@ -13,7 +13,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -131,6 +131,13 @@ export const VascularSystem3D: React.FC<VascularSystem3DProps> = ({
       }),
     [opacity]
   );
+
+  // Clean up material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      vascularMaterial.dispose();
+    };
+  }, [vascularMaterial]);
 
   // Animate blood flow pulsing with heartbeat simulation
   useFrame((state) => {

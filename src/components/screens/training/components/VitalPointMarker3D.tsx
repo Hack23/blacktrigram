@@ -71,6 +71,13 @@ const getSeverityColor = (severity: VitalPointSeverity): number => {
 };
 
 /**
+ * Base scale offset for pulsing animation
+ * This value (1.15) ensures the marker pulses around a slightly enlarged baseline,
+ * making the pulsing effect more visible without excessive size variation.
+ */
+const PULSE_BASE_SCALE = 1.15;
+
+/**
  * VitalPointMarker3D Component
  * Individual 3D marker with hover tooltip
  */
@@ -109,7 +116,7 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
 
     if (isSelected || hovered) {
       // Pulsing animation with configurable frequency and amplitude
-      const pulse = Math.sin(state.clock.elapsedTime * activePulseFrequency) * activePulseAmplitude + 1.15;
+      const pulse = Math.sin(state.clock.elapsedTime * activePulseFrequency) * activePulseAmplitude + PULSE_BASE_SCALE;
       meshRef.current.scale.setScalar(pulse);
     } else {
       // Smooth return to normal scale

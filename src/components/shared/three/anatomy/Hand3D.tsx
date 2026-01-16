@@ -364,7 +364,7 @@ export const Hand3D: React.FC<Hand3DProps> = ({
         />
       </mesh>
 
-      {/* Knife edge highlight (pinky side of hand) - with emissive glow */}
+      {/* Knife edge highlight (pinky side of hand) - emissive highlight for visibility */}
       {isHighlighted && highlightKnifeEdge && (
         <mesh
           position={[(-palmWidth / 2) * sideMultiplier, 0, 0]}

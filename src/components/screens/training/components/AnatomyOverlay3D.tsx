@@ -18,7 +18,7 @@ import { KOREAN_COLORS } from "../../../../types/constants";
 // acceptable because the total marker count is low. For dense anatomy overlays, prefer
 // keeping emissive intensities at or below ~2.0 and consider implementing LOD or
 // distance-based emissive scaling if brighter values or higher object counts are needed.
-const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure (increased from 0.5)
+const SKELETON_EMISSIVE_INTENSITY = 1.0; // Enhanced glow for skeletal structure
 const NERVE_EMISSIVE_INTENSITY = 1.5; // Balanced for bloom without performance impact
 const VASCULAR_EMISSIVE_INTENSITY = 2.0; // Moderate intensity for blood vessels
 const VASCULAR_PULSE_BASE = 1.0; // Base intensity for vascular pulse animation
