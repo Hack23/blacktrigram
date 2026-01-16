@@ -130,6 +130,34 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     [vitalPoint.severity]
   );
 
+  // Memoize marker material to avoid recreating on every render
+  const markerMaterial = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        color: isSelected ? KOREAN_COLORS.ACCENT_GOLD : color,
+        emissive: isSelected ? KOREAN_COLORS.ACCENT_GOLD : color,
+        emissiveIntensity: isSelected || hovered ? maxEmissiveIntensity : 2.0,
+        // Note: High emissive intensity (default 3.5 for selected) is optimized for
+        // a small number of simultaneously highlighted markers. When many markers are
+        // active (e.g., displaying all 70 vital points), reduce maxEmissiveIntensity
+        // via props or implement LOD to cap total high-intensity markers at ~10-15.
+        // See AnatomyOverlay3D.tsx for consistent guidance on emissive thresholds.
+        metalness: 0.9, // Increased metalness for more reflective appearance (was 0.8)
+        roughness: 0.1, // Reduced roughness for stronger reflections (was 0.2)
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.05, // Reduced for sharper clearcoat (was 0.1)
+        transparent: true,
+        opacity: isTraining ? 0.9 : 0.6,
+        // Enhanced PBR properties
+        transmission: 0.1, // Slight transmission for glass-like effect
+        thickness: 0.2,
+        ior: 2.4, // High IOR for gem-like appearance
+        sheen: 0.3, // Increased sheen
+        sheenRoughness: 0.1,
+      }),
+    [isSelected, hovered, color, maxEmissiveIntensity, isTraining]
+  );
+
   // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =>
     typeof window !== "undefined"
@@ -184,28 +212,7 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
         name={`vital-point-marker-${vitalPoint.id}`}
       >
         <sphereGeometry args={[markerSize, 16, 16]} />
-        <meshPhysicalMaterial
-          color={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissive={isSelected ? KOREAN_COLORS.ACCENT_GOLD : color}
-          emissiveIntensity={isSelected || hovered ? maxEmissiveIntensity : 2.0}
-          // Note: High emissive intensity (default 3.5 for selected) is optimized for
-          // a small number of simultaneously highlighted markers. When many markers are
-          // active (e.g., displaying all 70 vital points), reduce maxEmissiveIntensity
-          // via props or implement LOD to cap total high-intensity markers at ~10-15.
-          // See AnatomyOverlay3D.tsx for consistent guidance on emissive thresholds.
-          metalness={0.9} // Increased metalness for more reflective appearance (was 0.8)
-          roughness={0.1} // Reduced roughness for stronger reflections (was 0.2)
-          clearcoat={1.0}
-          clearcoatRoughness={0.05} // Reduced for sharper clearcoat (was 0.1)
-          transparent
-          opacity={isTraining ? 0.9 : 0.6}
-          // Enhanced PBR properties
-          transmission={0.1} // Slight transmission for glass-like effect
-          thickness={0.2}
-          ior={2.4} // High IOR for gem-like appearance
-          sheen={0.3} // Increased sheen
-          sheenRoughness={0.1}
-        />
+        <primitive object={markerMaterial} attach="material" />
       </mesh>
 
       {/* Ring indicator for selected marker */}
