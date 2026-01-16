@@ -12,7 +12,7 @@
  * @korean 얼굴3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import {
@@ -375,6 +375,14 @@ export const Face3D: React.FC<Face3DProps> = ({
       }),
     [headColor]
   );
+
+  // Dispose materials on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      headMaterial.dispose();
+      earMaterial.dispose();
+    };
+  }, [headMaterial, earMaterial]);
 
   return (
     <group

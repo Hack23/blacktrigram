@@ -14,7 +14,7 @@
  * @korean 발3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -136,6 +136,13 @@ export const Foot3D: React.FC<Foot3DProps> = ({
       }),
     [footColor, isHighlighted]
   );
+
+  // Dispose skin material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      skinMaterial.dispose();
+    };
+  }, [skinMaterial]);
 
   return (
     <group name={`foot-3d-${side}`}>

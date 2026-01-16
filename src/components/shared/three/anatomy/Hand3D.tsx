@@ -14,7 +14,7 @@
  * @korean 손3D컴포넌트
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
@@ -167,6 +167,13 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
       }),
     [color]
   );
+
+  // Dispose material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      material.dispose();
+    };
+  }, [material]);
 
   return (
     <mesh position={position} rotation={rotation} castShadow receiveShadow>

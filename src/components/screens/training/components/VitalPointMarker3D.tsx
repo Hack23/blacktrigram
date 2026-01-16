@@ -158,6 +158,13 @@ export const VitalPointMarker3D: React.FC<VitalPointMarker3DProps> = ({
     [isSelected, hovered, color, maxEmissiveIntensity, isTraining]
   );
 
+  // Dispose marker material on unmount or when a new material is created
+  useEffect(() => {
+    return () => {
+      markerMaterial.dispose();
+    };
+  }, [markerMaterial]);
+
   // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() =>
     typeof window !== "undefined"
