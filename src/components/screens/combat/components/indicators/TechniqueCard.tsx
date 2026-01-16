@@ -194,10 +194,10 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
   }, [isSelected, isAvailable]);
 
   // Touch handler for mobile - provides immediate response without 300ms delay
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
+  const handleTouch = useCallback(
+    (_e: React.TouchEvent) => {
       if (!isAvailable) return;
-      e.preventDefault(); // Prevent ghost clicks
+      // Don't prevent default - allow both touch and click to work
       triggerHaptic("light");
       onClick();
     },
@@ -232,7 +232,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         userSelect: "none", // Prevent text selection on touch
       }}
       onClick={isAvailable ? onClick : undefined}
-      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouch}
       onMouseEnter={() => {
         setShowTooltip(true);
         onHover(technique);
