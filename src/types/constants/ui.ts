@@ -4,6 +4,21 @@
 
 import { KOREAN_COLORS } from "./colors";
 
+/**
+ * Safe area inset defaults for notched devices
+ * iOS devices: iPhone X+ have notches and home indicators
+ * Android devices: Various implementations
+ * 
+ * @category UI Constants
+ * @korean 안전영역삽입
+ */
+export const SAFE_AREA_INSETS = {
+  TOP: 44, // Status bar and notch area
+  BOTTOM: 34, // Home indicator area
+  LEFT: 0, // No side notches on most devices
+  RIGHT: 0, // No side notches on most devices
+} as const;
+
 // Layout dimensions
 export const UI_DIMENSIONS = {
   HEADER_HEIGHT: 80,
@@ -24,6 +39,11 @@ export const UI_DIMENSIONS = {
   // Default screen dimensions for fallback calculations
   DEFAULT_SCREEN_WIDTH: 1920,
   DEFAULT_SCREEN_HEIGHT: 1080,
+
+  // Mobile touch target sizes (iOS/Android guidelines: 48px minimum)
+  TOUCH_TARGET_MIN: 48,
+  TOUCH_TARGET_COMFORTABLE: 56,
+  TOUCH_TARGET_SPACING: 8, // Minimum spacing between touch targets
 } as const;
 
 // Z-index layers
@@ -45,6 +65,7 @@ export const SPACING = {
   LG: 24,
   XL: 32,
   XXL: 48,
+  COMPACT: 12, // Mobile compact spacing
 } as const;
 
 // Border radius values

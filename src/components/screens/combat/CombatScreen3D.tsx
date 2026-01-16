@@ -2546,24 +2546,42 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
 
-        {/* Technique Bar - Bottom Center */}
+        {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
         {combatState.roundStarted &&
           !combatState.roundEnded &&
           matchCountdownComplete &&
           !showRoundStart && (
-            <TechniqueBar
-              techniques={techniqueSelection.availableTechniques}
-              player={validPlayers[0]}
-              selectedIndex={techniqueSelection.selectedIndex}
-              cooldowns={cooldownsMap}
-              onTechniqueSelect={techniqueSelection.selectTechnique}
-              onTechniqueHover={(_tech) => {
-                // Could add additional hover effects here
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                width: "100%",
+                height: "200px",
+                pointerEvents: "none", // Container is non-interactive
+                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
               }}
-              isMobile={isMobile}
-              screenWidth={width}
-              screenHeight={height}
-            />
+            >
+              <div style={{ pointerEvents: "auto" }}>
+                {/* This inner div allows TechniqueBar to receive pointer events */}
+                <TechniqueBar
+                  techniques={techniqueSelection.availableTechniques}
+                  player={validPlayers[0]}
+                  selectedIndex={techniqueSelection.selectedIndex}
+                  cooldowns={cooldownsMap}
+                  onTechniqueSelect={techniqueSelection.selectTechnique}
+                  onTechniqueHover={(_tech) => {
+                    // Could add additional hover effects here
+                  }}
+                  isMobile={isMobile}
+                  screenWidth={width}
+                  screenHeight={height}
+                />
+              </div>
+            </div>
           )}
 
         {/* Combat Controls and Stats */}

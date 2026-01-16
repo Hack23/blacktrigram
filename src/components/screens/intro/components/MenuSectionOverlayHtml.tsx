@@ -10,6 +10,9 @@ import {
   getNeonTextShadow,
   getKoreanFontOptimization,
 } from "../../../../utils/visualEffects";
+import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
+import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
+import { UIHaptics } from "../../../../utils/hapticFeedback";
 import "./MenuSection.css";
 
 export interface MenuSectionOverlayHtmlProps {
@@ -135,15 +138,31 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   const isMobile = width < 480;
   const isLargeDesktop = width >= 1100; // Scale down for large containers
 
-  const buttonHeight = isMobile ? 45 : isLargeDesktop ? 38 : 55;
-  const buttonFontSize = isMobile ? 14 : isLargeDesktop ? 12 : 16;
+  // Touch-optimized button sizing (48px minimum for mobile)
+  const buttonHeight = isMobile ? 48 : isLargeDesktop ? 38 : 55; // Was 45px on mobile
+  const buttonFontSize = isMobile
+    ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
+    : isLargeDesktop
+    ? 12
+    : 16;
   const containerPadding = isMobile ? 20 : isLargeDesktop ? 12 : 32;
-  const titleFontSize = isMobile ? 20 : isLargeDesktop ? 18 : 28;
-  const buttonGap = isMobile ? 8 : isLargeDesktop ? 4 : 12;
+  const titleFontSize = isMobile
+    ? getMobileKoreanFontSize("MEDIUM", width ?? 375) // 18px minimum for Korean
+    : isLargeDesktop
+    ? 18
+    : 28;
+  const buttonGap = isMobile ? 8 : isLargeDesktop ? 4 : 12; // 8px minimum spacing
   const sectionGap = isMobile ? 12 : isLargeDesktop ? 8 : 20;
+
+  // Safe area support for notched devices
+  const safeAreaStyles = useMemo(
+    () => (isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {}),
+    [isMobile, containerPadding]
+  );
 
   const handleButtonClick = useCallback(
     (mode: GameMode) => {
+      UIHaptics.buttonTap(); // Add haptic feedback
       onModeSelect(mode);
       onPlaySFX?.("menu_select");
     },
@@ -154,6 +173,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
     (index: number, isHovering: boolean) => {
       setHoveredItem(isHovering ? index : null);
       if (isHovering) {
+        UIHaptics.menuHover(); // Add haptic feedback
         onPlaySFX?.("menu_hover");
       }
     },
@@ -164,6 +184,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
     <div
       style={{
         ...enhancedOverlayStyles,
+        ...safeAreaStyles,
         width: `${width}px`,
         height: `${height}px`,
         display: "flex",

@@ -7,6 +7,17 @@
  * - Stance wheel for trigram stance selection
  * - Gesture recognizer for swipe actions
  *
+ * PRIORITY SUPPORT: Optimized for high-end mobile devices (Super HD, 2K+)
+ * - Enhanced touch targets (56px on Super HD vs 48px standard)
+ * - Larger fonts and better spacing on high-resolution displays
+ * - Full feature parity with desktop experience
+ *
+ * Integrated with:
+ * - CombatScreen3D: Full combat gameplay with mobile controls
+ * - TrainingScreen3D: Training mode with mobile controls
+ * - deviceDetection.ts: Robust mobile detection (handles 2712x1220 Super HD)
+ * - mobileUIUtils.ts: Touch target and font sizing utilities
+ *
  * Only rendered on mobile devices (isMobile=true)
  *
  * @module components/combat/components/MobileControlsWrapper
