@@ -17,6 +17,7 @@ import {
   getGPUAccelerationHint,
   combineShadowEffects,
   getPulsingKeyframes,
+  mapGlowIntensityLevel,
 } from "./visualEffects";
 import { KOREAN_COLORS } from "../types/constants";
 
@@ -501,6 +502,40 @@ describe("visualEffects", () => {
       expect(combined.fontSize).toBe("16px");
       expect(combined.border).toBeDefined();
       expect(combined.letterSpacing).toBe("0.02em");
+    });
+  });
+
+  describe("mapGlowIntensityLevel", () => {
+    it("should map low values to subtle", () => {
+      expect(mapGlowIntensityLevel(0)).toBe("subtle");
+      expect(mapGlowIntensityLevel(0.3)).toBe("subtle");
+      expect(mapGlowIntensityLevel(0.59)).toBe("subtle");
+    });
+
+    it("should map medium values to medium", () => {
+      expect(mapGlowIntensityLevel(0.6)).toBe("medium");
+      expect(mapGlowIntensityLevel(0.8)).toBe("medium");
+      expect(mapGlowIntensityLevel(0.99)).toBe("medium");
+    });
+
+    it("should map high values to strong", () => {
+      expect(mapGlowIntensityLevel(1.0)).toBe("strong");
+      expect(mapGlowIntensityLevel(1.2)).toBe("strong");
+      expect(mapGlowIntensityLevel(1.49)).toBe("strong");
+    });
+
+    it("should map very high values to intense", () => {
+      expect(mapGlowIntensityLevel(1.5)).toBe("intense");
+      expect(mapGlowIntensityLevel(2.0)).toBe("intense");
+      expect(mapGlowIntensityLevel(10)).toBe("intense");
+    });
+
+    it("should handle edge cases", () => {
+      expect(mapGlowIntensityLevel(0)).toBe("subtle");
+      expect(mapGlowIntensityLevel(-1)).toBe("subtle"); // Negative values
+      expect(mapGlowIntensityLevel(0.6)).toBe("medium"); // Exact threshold
+      expect(mapGlowIntensityLevel(1.0)).toBe("strong"); // Exact threshold
+      expect(mapGlowIntensityLevel(1.5)).toBe("intense"); // Exact threshold
     });
   });
 });

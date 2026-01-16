@@ -90,15 +90,16 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
     position: "relative",
   };
 
-  // Enhanced button styles
-  const buttonStyles = getKoreanButtonWithGlow({
-    variant: isTraining ? "danger" : "success",
-    isHovered: false,
-    isPressed: false,
-    isFocused: false,
-    glowIntensity: "strong",
-    hoverAnimation: "combined",
-  });
+  // Enhanced button styles (memoized, interaction states handled internally by getKoreanButtonWithGlow)
+  const buttonStyles = React.useMemo(
+    () =>
+      getKoreanButtonWithGlow({
+        variant: isTraining ? "danger" : "success",
+        glowIntensity: "strong",
+        hoverAnimation: "combined",
+      }),
+    [isTraining]
+  );
 
   const titleFontSize = isMobile ? 13 : 14;
   const infoFontSize = isMobile ? 9 : 10;

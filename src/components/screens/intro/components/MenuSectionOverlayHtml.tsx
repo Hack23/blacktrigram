@@ -205,9 +205,8 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           const isSelected = selectedIndex === index;
           const isHovered = hoveredItem === index;
 
-          // Enhanced button styles with glow effects
-          // Note: Base styles are applied from getKoreanButtonWithGlow(), but color/background/border
-          // are intentionally overridden below to implement menu-specific selection state visuals
+          // Get glow and transition effects from enhanced button utility
+          // Color/background/border are menu-specific and applied directly below
           const enhancedButtonStyles = getKoreanButtonWithGlow({
             variant: "primary",
             isHovered,
@@ -216,6 +215,10 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
             glowIntensity: isSelected ? "strong" : "medium",
             hoverAnimation: "combined",
           });
+
+          // Extract only the visual effects we want (glow, transitions, transforms)
+          // Exclude color, background, border which are menu-specific
+          const { color: _color, background: _bg, border: _border, ...visualEffects } = enhancedButtonStyles;
 
           return (
             <button
@@ -228,12 +231,12 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
               role="menuitem"
               className="menu-button"
               style={{
-                ...enhancedButtonStyles,
+                ...visualEffects,
                 width: "100%",
                 height: `${buttonHeight}px`,
                 fontSize: `${buttonFontSize}px`,
                 letterSpacing: "1.2px",
-                // Override color, background, and border based on selection state
+                // Menu-specific color, background, and border (not overrides)
                 color: isSelected
                   ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
                       6,
