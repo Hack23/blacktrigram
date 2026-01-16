@@ -1748,7 +1748,7 @@ export const STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
     ["li_diagonal_dart_step", LI_DIAGONAL_DART_STEP],
     ["li_linear_pierce_step", LI_LINEAR_PIERCE_STEP],
     ["li_forward_targeting_guard", LI_FORWARD_TARGETING_GUARD],
-    ["li_fire_spear_animation", LI_FIRE_SPEAR_ANIMATION],
+    ["li_fire_spear", LI_FIRE_SPEAR_ANIMATION],
     ["li_nerve_strike_combo", LI_NERVE_STRIKE_COMBO],
     // Original Li animations
     ["li_flame_spear", LI_FLAME_SPEAR_ANIMATION],
