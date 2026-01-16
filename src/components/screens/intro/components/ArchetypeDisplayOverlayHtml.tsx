@@ -1,13 +1,15 @@
 import React, { useCallback, useMemo } from "react";
-import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import {
+  FALLBACK_ARCHETYPE_IMAGE,
+  FONT_FAMILY,
+  KOREAN_COLORS,
+} from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { getEnhancedKoreanOverlayStyles } from "../../../../utils/koreanThemeHelpers";
 import {
-  getEnhancedKoreanOverlayStyles,
-} from "../../../../utils/koreanThemeHelpers";
-import {
+  getKoreanFontOptimization,
   getNeonTextShadow,
   getSmoothTransition,
-  getKoreanFontOptimization,
 } from "../../../../utils/visualEffects";
 import "./MenuSection.css";
 
@@ -54,21 +56,32 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
       onPlaySFX,
       width = 800,
       height = 300,
-      isMobile = false,
+      isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
     }) => {
+      // Note: _isMobile intentionally unused - layout sizing uses width-based checks
+      void _isMobile;
       const selectedArchetype = archetypes[selectedIndex];
 
-      // Responsive sizing with large desktop support
+      // Responsive sizing with large desktop support - use width for layout
+      const isSmallScreen = width < 768;
       const isLargeContainer = width >= 1100;
-      const archImageWidth = isMobile ? 140 : isLargeContainer ? 120 : 180;
-      const archImageHeight = isMobile ? 200 : isLargeContainer ? 170 : 260;
-      const containerPadding = isMobile ? 20 : isLargeContainer ? 12 : 20;
-      const contentGap = isMobile ? 10 : isLargeContainer ? 8 : 16;
-      const infoGap = isMobile ? 8 : isLargeContainer ? 6 : 12;
-      const titleFontSize = isMobile ? 14 : isLargeContainer ? 14 : 18;
-      const philosophyFontSize = isMobile ? 10 : isLargeContainer ? 10 : 12;
-      const statLabelFontSize = isMobile ? 9 : isLargeContainer ? 9 : 11;
-      const statBarHeight = isMobile ? 10 : isLargeContainer ? 10 : 12;
+      const archImageWidth = isSmallScreen ? 140 : isLargeContainer ? 120 : 180;
+      const archImageHeight = isSmallScreen
+        ? 200
+        : isLargeContainer
+          ? 170
+          : 260;
+      const containerPadding = isSmallScreen ? 20 : isLargeContainer ? 12 : 20;
+      const contentGap = isSmallScreen ? 10 : isLargeContainer ? 8 : 16;
+      const infoGap = isSmallScreen ? 8 : isLargeContainer ? 6 : 12;
+      const titleFontSize = isSmallScreen ? 14 : isLargeContainer ? 14 : 18;
+      const philosophyFontSize = isSmallScreen
+        ? 10
+        : isLargeContainer
+          ? 10
+          : 12;
+      const statLabelFontSize = isSmallScreen ? 9 : isLargeContainer ? 9 : 11;
+      const statBarHeight = isSmallScreen ? 10 : isLargeContainer ? 10 : 12;
 
       const handlePrevious = useCallback(() => {
         const newIndex =
@@ -122,20 +135,20 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
             .padStart(6, "0")}`,
           titleGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
             6,
-            "0"
+            "0",
           )}`,
           statsBackground: hexToRgbaString(
             KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-            0.9
+            0.9,
           ),
           statsBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5),
           statBarBackground: hexToRgbaString(
             KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-            1
+            1,
           ),
           statBarFill: hexToRgbaString(selectedArchetype.color, 0.9),
         }),
-        [selectedArchetype.color]
+        [selectedArchetype.color],
       );
 
       // Enhanced overlay styles
@@ -160,7 +173,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
           position: "relative" as const,
           overflow: "hidden" as const,
         }),
-        [width, height, contentGap, containerPadding, colors.archetypeColor]
+        [width, height, contentGap, containerPadding, colors.archetypeColor],
       );
 
       // Get archetype image path
@@ -169,10 +182,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
       }, [selectedArchetype.textureKey]);
 
       return (
-        <div
-          style={containerStyle}
-          data-testid="archetype-display-container"
-        >
+        <div style={containerStyle} data-testid="archetype-display-container">
           {/* Left Side - Character Image and Navigation */}
           <div
             style={{
@@ -253,12 +263,12 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
                     6,
-                    "0"
+                    "0",
                   )}`,
                   background: colors.statsBackground,
                   border: `1px solid ${hexToRgbaString(
                     KOREAN_COLORS.ACCENT_GOLD,
-                    0.7
+                    0.7,
                   )}`,
                   borderRadius: "4px",
                   cursor: "pointer",
@@ -278,12 +288,12 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
                     6,
-                    "0"
+                    "0",
                   )}`,
                   background: colors.statsBackground,
                   border: `1px solid ${hexToRgbaString(
                     KOREAN_COLORS.ACCENT_GOLD,
-                    0.7
+                    0.7,
                   )}`,
                   borderRadius: "4px",
                   cursor: "pointer",
@@ -325,7 +335,10 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.KOREAN,
                   color: colors.archetypeColor,
-                  textShadow: getNeonTextShadow(selectedArchetype.color, "strong"),
+                  textShadow: getNeonTextShadow(
+                    selectedArchetype.color,
+                    "strong",
+                  ),
                   transition: getSmoothTransition("all", "normal"),
                 }}
                 data-testid="archetype-title"
@@ -338,7 +351,10 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.PRIMARY,
                   color: colors.archetypeColor,
-                  textShadow: getNeonTextShadow(selectedArchetype.color, "subtle"),
+                  textShadow: getNeonTextShadow(
+                    selectedArchetype.color,
+                    "subtle",
+                  ),
                 }}
                 data-testid="archetype-counter"
               >
@@ -354,7 +370,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                 fontFamily: FONT_FAMILY.KOREAN,
                 color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
                   6,
-                  "0"
+                  "0",
                 )}`,
                 lineHeight: "1.4",
                 ...getKoreanFontOptimization(philosophyFontSize, "normal"),
@@ -378,12 +394,12 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
             >
               <div
                 style={{
-                  fontSize: isMobile ? "12px" : "14px",
+                  fontSize: isSmallScreen ? "12px" : "14px",
                   fontWeight: "bold",
                   fontFamily: FONT_FAMILY.KOREAN,
                   color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
                     6,
-                    "0"
+                    "0",
                   )}`,
                 }}
               >
@@ -409,7 +425,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                       fontSize: `${statLabelFontSize}px`,
                       fontFamily: FONT_FAMILY.KOREAN,
                       color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(
-                        16
+                        16,
                       ).padStart(6, "0")}`,
                       flexShrink: 0,
                     }}
@@ -443,7 +459,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   <div
                     style={{
                       width: "30px",
-                      fontSize: isMobile ? "9px" : "11px",
+                      fontSize: isSmallScreen ? "9px" : "11px",
                       fontWeight: "bold",
                       fontFamily: FONT_FAMILY.PRIMARY,
                       color: colors.archetypeColor,
@@ -459,7 +475,7 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
           </div>
         </div>
       );
-    }
+    },
   );
 
 ArchetypeDisplayOverlayHtml.displayName = "ArchetypeDisplayOverlayHtml";

@@ -10,6 +10,7 @@ import React, {
 import { useAudio } from "../../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../../hooks/useWindowSize";
+import { getScreenSize } from "../../../systems/ResponsiveScaling";
 import { PLAYER_ARCHETYPES_DATA } from "../../../systems/types";
 import { GameMode, PlayerArchetype } from "../../../types/common";
 import {
@@ -250,23 +251,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
   // shouldUseMobileControls() internally caches based on screen dimensions,
   // so we include screenWidth/screenHeight as dependencies to trigger re-evaluation on resize
+  // Use isMobile only for mobile CONTROLS (touch controls, etc.)
+  // Layout sizing should use screenWidth-based calculations
   const isMobile = useMemo(
     () => shouldUseMobileControls(),
     [screenWidth, screenHeight],
-  );
-  // Only use width for tablet/desktop distinction when NOT mobile
-  const isTablet = useMemo(
-    () => !isMobile && screenWidth >= 768 && screenWidth < 1024,
-    [isMobile, screenWidth],
-  );
-  const isLargeDesktop = useMemo(
-    () => !isMobile && screenWidth >= 1920,
-    [isMobile, screenWidth],
-  ); // 4K/2K displays
-  // Extra-small mobile detection for low-end devices (<380px)
-  const isExtraSmall = useMemo(
-    () => isMobile && screenWidth < 380,
-    [isMobile, screenWidth],
   );
 
   // Performance settings based on device tier
@@ -274,37 +263,64 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     return getPerformanceSettings(screenWidth, isMobile);
   }, [screenWidth, isMobile]);
 
-  // Optimized logo sizing - reduced to save vertical space and show more menu content
-  const logoSize = isExtraSmall
-    ? Math.min(screenWidth, screenHeight) * 0.15 // Extra compact for low-end mobile
-    : isMobile
-      ? Math.min(screenWidth, screenHeight) * 0.16 // Compact for mobile
-      : isTablet
-        ? Math.min(screenWidth, screenHeight) * 0.12 // Balanced for tablet
-        : isLargeDesktop
-          ? Math.min(screenWidth, screenHeight) * 0.08 // Compact for 4K/2K
-          : Math.min(screenWidth, screenHeight) * 0.1; // Standard desktop
+  // Get screen size category for layout calculations (mobile, tablet, desktop, large, xlarge)
+  const screenSize = useMemo(() => getScreenSize(screenWidth), [screenWidth]);
 
-  // Optimized component heights - scale for large displays
-  // Menu needs to fit 4 buttons vertically: title + 4 buttons + gaps + padding
-  const menuHeight = isExtraSmall
-    ? 270 // Extra-small: ~18px title + 4×42px buttons + 3×8px gaps + 12px section gap + 2×18px padding = 266px
-    : isMobile
-      ? 280 // Mobile: ~20px title + 4×45px buttons + 3×8px gaps + 12px section gap + 2×20px padding = 276px
-      : isTablet
-        ? 380 // Tablet: ~28px title + 4×55px buttons + 3×12px gaps + 20px section gap + 2×32px padding = 368px
-        : isLargeDesktop
-          ? 220 // Large desktop: ~18px title + 4×38px buttons + 3×4px gaps + 8px section gap + 2×12px padding = 214px
-          : 380; // Desktop: same as tablet to ensure all 4 menu items fit
-  const archetypeHeight = isExtraSmall
-    ? 250
-    : isMobile
-      ? 260
-      : isTablet
-        ? 300
-        : isLargeDesktop
-          ? 220
-          : 300;
+  // Use percentage-based layout based on screen dimensions
+  // Logo takes priority - larger and more prominent
+  const logoSize = useMemo(() => {
+    // Logo should be prominent - use percentage of smaller dimension
+    const minDim = Math.min(screenWidth, screenHeight);
+    // Scale based on screen size category
+    const logoScale = {
+      mobile: 0.28,
+      tablet: 0.22,
+      desktop: 0.18,
+      large: 0.15,
+      xlarge: 0.12,
+    }[screenSize];
+    // Cap at reasonable max size for very large screens
+    return Math.min(minDim * logoScale, screenSize === "xlarge" ? 250 : 300);
+  }, [screenWidth, screenHeight, screenSize]);
+
+  // Dynamic heights based on available screen space (percentage-based)
+  // All calculations use screen dimensions, not device type
+  const layoutHeights = useMemo(() => {
+    const availableHeight = screenHeight;
+
+    // Header area (title only - scales with screen height)
+    const headerPercent = screenWidth < 768 ? 0.06 : 0.05;
+    const headerHeight = availableHeight * headerPercent;
+
+    // Logo area - based on logo size plus trigram symbols
+    const trigramHeight = screenWidth < 768 ? 30 : 40;
+    const logoAreaHeight = logoSize + trigramHeight;
+
+    // Footer - scales with screen height
+    const footerHeight = Math.max(availableHeight * 0.08, 60);
+
+    // Remaining space for menu + archetype
+    const contentHeight =
+      availableHeight - headerHeight - logoAreaHeight - footerHeight;
+
+    // Split remaining space based on screen size
+    // Smaller screens need more menu space for touch targets
+    const menuPercent = screenWidth < 768 ? 0.45 : 0.4;
+    const menuHeight = Math.max(contentHeight * menuPercent, 200);
+    const archetypeHeight = Math.max(contentHeight * (1 - menuPercent), 180);
+
+    // Gap scales with screen
+    const gap = Math.max(screenHeight * 0.005, 4);
+
+    return {
+      headerHeight,
+      logoAreaHeight,
+      menuHeight,
+      archetypeHeight,
+      footerHeight,
+      gap,
+    };
+  }, [screenHeight, screenWidth, logoSize]);
   return (
     <div
       style={{
@@ -375,23 +391,18 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 alignItems: "center",
                 justifyContent: "flex-start",
                 padding: 0,
-                gap: isMobile ? "4px" : "8px",
+                gap: `${layoutHeights.gap}px`,
                 pointerEvents: "none",
                 zIndex: Z_INDEX.HUD, // Ensure proper layering for UI elements
               }}
             >
-              {/* Main Title */}
+              {/* Main Title - Compact, above logo */}
               <div
                 style={{
-                  marginTop: isExtraSmall
-                    ? "6px"
-                    : isMobile
-                      ? "8px"
-                      : isTablet
-                        ? "10px"
-                        : isLargeDesktop
-                          ? "4px"
-                          : "12px",
+                  height: `${layoutHeights.headerHeight}px`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   pointerEvents: "none",
                 }}
                 data-testid="main-title-container"
@@ -402,43 +413,26 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                     korean: "한국 무술 시뮬레이터",
                     english: "Korean Martial Arts Simulator",
                   }}
-                  size={isLargeDesktop ? "medium" : "large"}
+                  size={screenWidth < 768 ? "small" : "medium"}
                   alignment="center"
                   animated={true}
                 />
               </div>
 
-              {/* Logo Section */}
+              {/* Logo Section - Prominent */}
               <div
                 style={{
                   flex: 0,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  justifyContent: "flex-start",
-                  marginTop: isExtraSmall
-                    ? "2px"
-                    : isMobile
-                      ? "2px"
-                      : isTablet
-                        ? "3px"
-                        : isLargeDesktop
-                          ? "2px"
-                          : "4px",
-                  marginBottom: isExtraSmall
-                    ? "2px"
-                    : isMobile
-                      ? "2px"
-                      : isTablet
-                        ? "3px"
-                        : isLargeDesktop
-                          ? "2px"
-                          : "4px",
+                  justifyContent: "center",
+                  height: `${layoutHeights.logoAreaHeight}px`,
                   pointerEvents: "none",
                 }}
                 data-testid="logo-section"
               >
-                {/* Logo Image */}
+                {/* Logo Image - Prominent */}
                 <img
                   src="/assets/visual/logo/black-trigram.png"
                   alt="Black Trigram Logo"
@@ -446,7 +440,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                     width: `${logoSize}px`,
                     height: `${logoSize}px`,
                     objectFit: "contain",
-                    filter: "drop-shadow(0 0 20px rgba(0, 255, 255, 0.5))",
+                    filter: "drop-shadow(0 0 30px rgba(0, 255, 255, 0.6))",
                   }}
                   data-testid="main-logo"
                   onError={(e) => {
@@ -457,38 +451,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 {/* Trigram Symbols */}
                 <div
                   style={{
-                    fontSize: isExtraSmall
-                      ? "16px"
-                      : isMobile
-                        ? "18px"
-                        : isTablet
-                          ? "20px"
-                          : isLargeDesktop
-                            ? "16px"
-                            : "22px",
+                    fontSize: screenWidth < 768 ? "16px" : "18px",
                     color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
                       6,
                       "0",
                     )}`,
-                    letterSpacing: isExtraSmall
-                      ? "5px"
-                      : isMobile
-                        ? "6px"
-                        : isTablet
-                          ? "8px"
-                          : isLargeDesktop
-                            ? "5px"
-                            : "10px",
+                    letterSpacing: screenWidth < 768 ? "6px" : "8px",
                     textAlign: "center",
-                    marginTop: isExtraSmall
-                      ? "8px"
-                      : isMobile
-                        ? "10px"
-                        : isTablet
-                          ? "10px"
-                          : isLargeDesktop
-                            ? "5px"
-                            : "12px",
+                    marginTop: screenWidth < 768 ? "8px" : "10px",
                     textShadow: colors.trigramTextShadow,
                   }}
                   data-testid="trigram-symbols"
@@ -501,44 +471,16 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               <div
                 style={{
                   width: "100%",
+                  flex: 1,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "flex-start",
-                  gap: isExtraSmall
-                    ? "4px"
-                    : isMobile
-                      ? "6px"
-                      : isTablet
-                        ? "8px"
-                        : isLargeDesktop
-                          ? "4px"
-                          : "10px",
-                  paddingLeft: isExtraSmall
-                    ? "12px"
-                    : isMobile
-                      ? "15px"
-                      : isTablet
-                        ? "25px"
-                        : isLargeDesktop
-                          ? "20px"
-                          : "30px",
-                  paddingRight: isExtraSmall
-                    ? "12px"
-                    : isMobile
-                      ? "15px"
-                      : isTablet
-                        ? "25px"
-                        : isLargeDesktop
-                          ? "20px"
-                          : "30px",
-                  paddingBottom: isExtraSmall
-                    ? "4px"
-                    : isMobile
-                      ? "6px"
-                      : isLargeDesktop
-                        ? "3px"
-                        : "8px",
+                  gap: `${layoutHeights.gap}px`,
+                  paddingLeft: screenWidth < 768 ? "12px" : "20px",
+                  paddingRight: screenWidth < 768 ? "12px" : "20px",
+                  paddingBottom: `${layoutHeights.gap}px`,
+                  overflow: "hidden",
                   pointerEvents: "auto",
                 }}
                 data-testid="main-content"
@@ -546,24 +488,8 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 {/* Menu Section */}
                 <div
                   style={{
-                    width: isExtraSmall
-                      ? "100%"
-                      : isMobile
-                        ? "100%"
-                        : isTablet
-                          ? "80%"
-                          : isLargeDesktop
-                            ? "55%"
-                            : "70%",
-                    maxWidth: isExtraSmall
-                      ? "100%"
-                      : isMobile
-                        ? "100%"
-                        : isTablet
-                          ? "850px"
-                          : isLargeDesktop
-                            ? "1100px"
-                            : "900px",
+                    width: screenWidth < 768 ? "100%" : "80%",
+                    maxWidth: screenWidth < 768 ? "100%" : "1000px",
                   }}
                   data-testid="menu-section-container"
                 >
@@ -574,17 +500,14 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                     onSelectedIndexChange={setSelectedMenuIndex}
                     onPlaySFX={audio.playSFX}
                     width={
-                      isExtraSmall
-                        ? screenWidth * 0.95
-                        : isMobile
-                          ? screenWidth * 0.9
-                          : isTablet
-                            ? Math.min(850, screenWidth * 0.8)
-                            : isLargeDesktop
-                              ? Math.min(1100, screenWidth * 0.55)
-                              : Math.min(900, screenWidth * 0.7)
+                      // Scale width based on screen size - wider on small screens for touch
+                      screenWidth < 768
+                        ? screenWidth * 0.92
+                        : screenWidth < 1024
+                          ? Math.min(850, screenWidth * 0.8)
+                          : Math.min(1000, screenWidth * 0.6)
                     }
-                    height={menuHeight}
+                    height={layoutHeights.menuHeight}
                     isMobile={isMobile}
                   />
                 </div>
@@ -592,24 +515,10 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 {/* Archetype Selection */}
                 <div
                   style={{
-                    width: isExtraSmall
-                      ? "100%"
-                      : isMobile
-                        ? "100%"
-                        : isTablet
-                          ? "80%"
-                          : isLargeDesktop
-                            ? "55%"
-                            : "70%",
-                    maxWidth: isExtraSmall
-                      ? "100%"
-                      : isMobile
-                        ? "100%"
-                        : isTablet
-                          ? "850px"
-                          : isLargeDesktop
-                            ? "1100px"
-                            : "900px",
+                    width: screenWidth < 768 ? "100%" : "80%",
+                    maxWidth: screenWidth < 768 ? "100%" : "1000px",
+                    flex: 1,
+                    minHeight: 0,
                   }}
                   data-testid="archetype-section-container"
                 >
@@ -620,19 +529,15 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                       onArchetypeChange={handleArchetypeIndexChange}
                       onPlaySFX={audio.playSFX}
                       width={
-                        isExtraSmall
-                          ? screenWidth * 0.95
-                          : isMobile
-                            ? screenWidth * 0.9
-                            : isTablet
-                              ? Math.min(850, screenWidth * 0.8)
-                              : isLargeDesktop
-                                ? Math.min(1100, screenWidth * 0.55)
-                                : Math.min(900, screenWidth * 0.7)
+                        screenWidth < 768
+                          ? screenWidth * 0.92
+                          : screenWidth < 1024
+                            ? Math.min(850, screenWidth * 0.8)
+                            : Math.min(1000, screenWidth * 0.6)
                       }
-                      height={archetypeHeight}
+                      height={layoutHeights.archetypeHeight}
                       isMobile={isMobile}
-                      allowDetailedView={!isMobile}
+                      allowDetailedView={screenWidth >= 768}
                     />
                   ) : (
                     <ArchetypeDisplayOverlayHtml
@@ -641,17 +546,13 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                       onArchetypeChange={handleArchetypeIndexChange}
                       onPlaySFX={audio.playSFX}
                       width={
-                        isExtraSmall
-                          ? screenWidth * 0.95
-                          : isMobile
-                            ? screenWidth * 0.9
-                            : isTablet
-                              ? Math.min(850, screenWidth * 0.8)
-                              : isLargeDesktop
-                                ? Math.min(1100, screenWidth * 0.55)
-                                : Math.min(900, screenWidth * 0.7)
+                        screenWidth < 768
+                          ? screenWidth * 0.92
+                          : screenWidth < 1024
+                            ? Math.min(850, screenWidth * 0.8)
+                            : Math.min(1000, screenWidth * 0.6)
                       }
-                      height={archetypeHeight}
+                      height={layoutHeights.archetypeHeight}
                       isMobile={isMobile}
                     />
                   )}
@@ -662,12 +563,12 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               <div
                 style={{
                   width: "100%",
+                  height: `${layoutHeights.footerHeight}px`,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "6px",
-                  paddingBottom: "10px",
+                  gap: "4px",
                   background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
                   borderTop: `1px solid ${colors.footerBorder}`,
                   pointerEvents: "auto",

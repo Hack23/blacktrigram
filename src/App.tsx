@@ -42,6 +42,8 @@ function App() {
   const [appReady, setAppReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showAudioError, setShowAudioError] = useState(false);
+  // Performance debug overlay toggle (P key in dev mode)
+  const [showPerformanceDebug, setShowPerformanceDebug] = useState(false);
   // Transition state to allow WebGL cleanup between screens
   const [isTransitioning, setIsTransitioning] = useState(false);
   const pendingModeRef = useRef<{
@@ -455,6 +457,20 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // P key toggle for performance debug overlay (dev mode only)
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "p" || e.key === "P") {
+        setShowPerformanceDebug((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   if (!appReady) {
     return (
       <div className="app loading" data-testid="app-container">
@@ -503,8 +519,8 @@ function App() {
       {/* All screens now use Three.js or pure React/HTML */}
       {renderCurrentScreen()}
 
-      {/* Performance debug overlay (dev mode only) */}
-      <PerformanceDebugOverlayHtml />
+      {/* Performance debug overlay (dev mode only, toggle with P key) */}
+      {showPerformanceDebug && <PerformanceDebugOverlayHtml />}
     </div>
   );
 }

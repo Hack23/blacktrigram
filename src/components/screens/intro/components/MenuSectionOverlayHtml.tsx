@@ -27,7 +27,7 @@ export interface MenuSectionOverlayHtmlProps {
   readonly onPlaySFX?: (sound: string) => void;
   readonly width?: number;
   readonly height?: number;
-  readonly isMobile?: boolean; // Proper device detection from parent
+  readonly isMobile?: boolean; // For controls/haptics only, use width for layout sizing
 }
 
 /**
@@ -138,25 +138,26 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
   }, []);
 
   // Use device detection from prop, with width-based fallback for sizing adjustments
+  const isSmallScreen = width < 768; // Mobile-sized screens
   const isLargeDesktop = width >= 1100; // Scale down for large containers
 
   // Touch-optimized button sizing (48px minimum for mobile)
-  const buttonHeight = isMobile ? 48 : isLargeDesktop ? 38 : 55; // Was 45px on mobile
-  const buttonFontSize = isMobile
+  const buttonHeight = isSmallScreen ? 48 : isLargeDesktop ? 48 : 55; // Consistent 48px on large desktop to fit all 4 buttons
+  const buttonFontSize = isSmallScreen
     ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
     : isLargeDesktop
-      ? 12
+      ? 14
       : 16;
-  const containerPadding = isMobile ? 20 : isLargeDesktop ? 12 : 32;
-  const titleFontSize = isMobile
+  const containerPadding = isSmallScreen ? 20 : isLargeDesktop ? 16 : 32;
+  const titleFontSize = isSmallScreen
     ? getMobileKoreanFontSize("MEDIUM", width ?? 375) // 18px minimum for Korean
     : isLargeDesktop
       ? 18
       : 28;
-  const buttonGap = isMobile ? 8 : isLargeDesktop ? 4 : 12; // 8px minimum spacing
-  const sectionGap = isMobile ? 12 : isLargeDesktop ? 8 : 20;
+  const buttonGap = isSmallScreen ? 8 : isLargeDesktop ? 6 : 12; // 6px spacing on large desktop
+  const sectionGap = isSmallScreen ? 12 : isLargeDesktop ? 10 : 20;
 
-  // Safe area support for notched devices
+  // Safe area support for notched devices (use isMobile for actual device detection)
   const safeAreaStyles = useMemo(
     () =>
       isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {},
@@ -319,9 +320,9 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: isMobile ? "4px" : "6px",
+          gap: isSmallScreen ? "4px" : "6px",
           textAlign: "center",
-          fontSize: isMobile ? "10px" : "12px",
+          fontSize: isSmallScreen ? "10px" : "12px",
           color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
             6,
             "0",
@@ -335,7 +336,7 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
           방향키/마우스로 이동 • Enter/클릭으로 선택 • 숫자키로 바로가기
         </div>
         <div
-          style={{ fontSize: isMobile ? "9px" : "10px" }}
+          style={{ fontSize: isSmallScreen ? "9px" : "10px" }}
           data-testid="menu-navigation-hint-english"
         >
           Arrow keys/mouse to navigate • Enter/click to select • Number keys for
