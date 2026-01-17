@@ -181,12 +181,15 @@ export function usePlayerMovement(
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
-      // Use BASE_PIXELS_PER_METER for initial conversion (scale not yet available)
+      // Use scale-aware conversion to match update loop and prevent position jumps
+      // Desktop (scale=1.0): 100 px/m, Mobile (scale=0.3125): 320 px/m
+      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
+      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       physicsStateRef.current = {
         position: new THREE.Vector3(
-          initialPosition.x / BASE_PIXELS_PER_METER,
+          initialPosition.x / pixelsPerMeter,
           0,
-          initialPosition.y / BASE_PIXELS_PER_METER
+          initialPosition.y / pixelsPerMeter
         ),
         velocity: new THREE.Vector3(0, 0, 0),
         acceleration: 0,
