@@ -56,6 +56,7 @@ export const TechniqueBarContainer: React.FC<TechniqueBarContainerProps> = ({
   const { isMobile } = techniqueBarProps;
 
   // Memoize container styles to prevent unnecessary re-renders
+  // Positioned at bottom to minimize arena obstruction (gameplay priority)
   const containerStyle = useMemo(() => ({
     position: "absolute" as const,
     left: 0,
@@ -67,6 +68,8 @@ export const TechniqueBarContainer: React.FC<TechniqueBarContainerProps> = ({
     display: "flex",
     justifyContent: "center" as const,
     alignItems: "flex-end" as const,
+    // Semi-transparent background to not fully obstruct arena
+    background: "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)",
   }), [isMobile]);
 
   // Memoize inner div style for pointer events

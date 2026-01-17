@@ -73,10 +73,10 @@ describe("TechniqueBarContainer", () => {
       );
     });
 
-    it("should use consistent positioning (200px mobile, 220px desktop)", () => {
-      // This test documents the expected behavior
-      const mobileExpected = 200;
-      const desktopExpected = 220;
+    it("should use consistent positioning (20px mobile, 30px desktop) for arena visibility", () => {
+      // Updated: TechniqueBar lowered to minimize arena obstruction
+      const mobileExpected = 20;  // Near bottom to prioritize gameplay
+      const desktopExpected = 30; // Slightly higher on desktop
 
       expect(LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.MOBILE).toBe(mobileExpected);
       expect(LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.DESKTOP).toBe(desktopExpected);
@@ -256,15 +256,15 @@ describe("TechniqueBarContainer", () => {
       const wrapperMobile = container.firstChild as HTMLElement;
       const mobileBottom = wrapperMobile.style.bottom;
 
-      // Mobile should use 200px, desktop should use 220px
-      expect(mobileBottom).toBe("200px");
-      expect(desktopBottom).toBe("220px");
+      // Updated: TechniqueBar lowered for arena visibility (20px mobile, 30px desktop)
+      expect(mobileBottom).toBe("20px");
+      expect(desktopBottom).toBe("30px");
       expect(mobileBottom).not.toBe(desktopBottom);
     });
   });
 
   describe("Regression Prevention", () => {
-    it("should prevent overlap with mobile controls (200px)", () => {
+    it("should be positioned at bottom for minimal arena obstruction", () => {
       const { container } = render(
         <TechniqueBarContainer {...mockProps} isMobile={true} />
       );
@@ -272,23 +272,24 @@ describe("TechniqueBarContainer", () => {
       const wrapper = container.firstChild as HTMLElement;
       const bottom = parseInt(wrapper.style.bottom, 10);
 
-      // TechniqueBar bottom should equal mobile controls position
-      // This prevents overlap
-      expect(bottom).toBe(LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS);
+      // Updated: TechniqueBar at 20px (mobile) to minimize arena obstruction
+      // Mobile controls remain at 200px for ergonomic access
+      expect(bottom).toBe(LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.MOBILE);
+      expect(bottom).toBeLessThan(LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS); // Well below mobile controls
     });
 
-    it("should maintain clearance from back button (80px)", () => {
+    it("should maintain clearance below mobile controls", () => {
       const { container } = render(
         <TechniqueBarContainer {...mockProps} isMobile={true} />
       );
 
       const wrapper = container.firstChild as HTMLElement;
       const techniqueBarBottom = parseInt(wrapper.style.bottom, 10);
-      const backButtonBottom = LAYOUT_BOTTOM_POSITIONS.BACK_BUTTON.MOBILE;
+      const mobileControlsBottom = LAYOUT_BOTTOM_POSITIONS.MOBILE_CONTROLS;
 
-      // TechniqueBar should be well above back button
-      const clearance = techniqueBarBottom - backButtonBottom;
-      expect(clearance).toBeGreaterThan(100); // 200 - 80 = 120px clearance
+      // TechniqueBar should be well below mobile controls (20px vs 200px = 180px clearance)
+      const clearance = mobileControlsBottom - techniqueBarBottom;
+      expect(clearance).toBeGreaterThan(100); // At least 100px clearance
     });
 
     it("should use semantic constants (no magic numbers)", () => {
