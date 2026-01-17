@@ -106,7 +106,7 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
 function applyKnockbackDisplacement(
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: { x: number; y: number; width: number; height: number },
+  arenaBounds: { x: number; y: number; width: number; height: number; scale?: number },
 ): Position {
   if (!result.knockback) {
     return defenderPos;
@@ -154,6 +154,7 @@ export interface UseCombatActionsConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number;
   };
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;

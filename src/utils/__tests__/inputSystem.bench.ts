@@ -15,29 +15,29 @@ describe('Movement Performance Benchmarks', () => {
     bench('desktop scale (1.0) conversion', () => {
       const scale = 1.0;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
-      const x = 5.0 * pixelsPerMeter;
-      const y = 3.0 * pixelsPerMeter;
+      void (5.0 * pixelsPerMeter);
+      void (3.0 * pixelsPerMeter);
     });
 
     bench('mobile scale (0.3125) conversion', () => {
       const scale = 0.3125;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
-      const x = 5.0 * pixelsPerMeter;
-      const y = 3.0 * pixelsPerMeter;
+      void (5.0 * pixelsPerMeter);
+      void (3.0 * pixelsPerMeter);
     });
 
     bench('tablet scale (0.5) conversion', () => {
       const scale = 0.5;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
-      const x = 5.0 * pixelsPerMeter;
-      const y = 3.0 * pixelsPerMeter;
+      void (5.0 * pixelsPerMeter);
+      void (3.0 * pixelsPerMeter);
     });
 
     bench('default scale fallback', () => {
       const scale = undefined;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / (scale ?? 1.0);
-      const x = 5.0 * pixelsPerMeter;
-      const y = 3.0 * pixelsPerMeter;
+      void (5.0 * pixelsPerMeter);
+      void (3.0 * pixelsPerMeter);
     });
   });
 
@@ -45,35 +45,35 @@ describe('Movement Performance Benchmarks', () => {
     bench('desktop scale (1.0) reverse conversion', () => {
       const scale = 1.0;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
-      const posX = 200 / pixelsPerMeter;
-      const posZ = 150 / pixelsPerMeter;
+      void (200 / pixelsPerMeter);
+      void (150 / pixelsPerMeter);
     });
 
     bench('mobile scale (0.3125) reverse conversion', () => {
       const scale = 0.3125;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
-      const posX = 320 / pixelsPerMeter;
-      const posZ = 160 / pixelsPerMeter;
+      void (320 / pixelsPerMeter);
+      void (160 / pixelsPerMeter);
     });
   });
 
   describe('Bounds Clamping', () => {
     bench('simple bounds clamping (desktop)', () => {
       const bounds = { x: 120, y: 100, width: 960, height: 600 };
-      const x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, 500));
-      const y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, 300));
+      void Math.max(bounds.x, Math.min(bounds.x + bounds.width, 500));
+      void Math.max(bounds.y, Math.min(bounds.y + bounds.height, 300));
     });
 
     bench('simple bounds clamping (mobile)', () => {
       const bounds = { x: 37.5, y: 100, width: 300, height: 225 };
-      const x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, 200));
-      const y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, 150));
+      void Math.max(bounds.x, Math.min(bounds.x + bounds.width, 200));
+      void Math.max(bounds.y, Math.min(bounds.y + bounds.height, 150));
     });
 
     bench('bounds clamping with edge case (out of bounds)', () => {
       const bounds = { x: 120, y: 100, width: 960, height: 600 };
-      const x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, 2000));
-      const y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, 1000));
+      void Math.max(bounds.x, Math.min(bounds.x + bounds.width, 2000));
+      void Math.max(bounds.y, Math.min(bounds.y + bounds.height, 1000));
     });
   });
 
@@ -93,8 +93,8 @@ describe('Movement Performance Benchmarks', () => {
       newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
       
       // Convert back to meters
-      const finalX = newX / pixelsPerMeter;
-      const finalZ = newY / pixelsPerMeter;
+      void (newX / pixelsPerMeter);
+      void (newY / pixelsPerMeter);
     });
 
     bench('complete mobile movement calculation', () => {
@@ -112,25 +112,25 @@ describe('Movement Performance Benchmarks', () => {
       newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
       
       // Convert back to meters
-      const finalX = newX / pixelsPerMeter;
-      const finalZ = newY / pixelsPerMeter;
+      void (newX / pixelsPerMeter);
+      void (newY / pixelsPerMeter);
     });
   });
 
   describe('Scale Validation', () => {
     bench('scale validation check', () => {
       const scale = 0.3125;
-      const isValid = isFinite(scale) && scale > 0;
+      void (isFinite(scale) && scale > 0);
     });
 
     bench('scale validation with NaN', () => {
       const scale = NaN;
-      const isValid = !isNaN(scale) && isFinite(scale) && scale > 0;
+      void (!isNaN(scale) && isFinite(scale) && scale > 0);
     });
 
     bench('scale validation with negative', () => {
       const scale = -1.0;
-      const isValid = scale > 0;
+      void (scale > 0);
     });
   });
 
@@ -142,7 +142,7 @@ describe('Movement Performance Benchmarks', () => {
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const distanceMeters = speed * deltaTime;
-      const distancePixels = distanceMeters * pixelsPerMeter;
+      void (distanceMeters * pixelsPerMeter);
     });
 
     bench('60fps frame movement calculation (mobile)', () => {
@@ -152,7 +152,7 @@ describe('Movement Performance Benchmarks', () => {
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const distanceMeters = speed * deltaTime;
-      const distancePixels = distanceMeters * pixelsPerMeter;
+      void (distanceMeters * pixelsPerMeter);
     });
 
     bench('arena crossing time calculation', () => {
@@ -162,7 +162,7 @@ describe('Movement Performance Benchmarks', () => {
       const arenaWidthMeters = arenaWidthPixels / pixelsPerMeter;
       const speed = 2.0; // m/s
       
-      const timeToCross = arenaWidthMeters / speed;
+      void (arenaWidthMeters / speed);
     });
   });
 
@@ -184,8 +184,8 @@ describe('Movement Performance Benchmarks', () => {
       ];
       
       positions.forEach(pos => {
-        const pixelX = pos.x * pixelsPerMeter;
-        const pixelY = pos.z * pixelsPerMeter;
+        void (pos.x * pixelsPerMeter);
+        void (pos.z * pixelsPerMeter);
       });
     });
 
@@ -206,8 +206,8 @@ describe('Movement Performance Benchmarks', () => {
       ];
       
       positions.forEach(pos => {
-        const pixelX = pos.x * pixelsPerMeter;
-        const pixelY = pos.z * pixelsPerMeter;
+        void (pos.x * pixelsPerMeter);
+        void (pos.z * pixelsPerMeter);
       });
     });
   });

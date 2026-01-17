@@ -895,6 +895,7 @@ interface UseAICombatConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number;
   };
   readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
