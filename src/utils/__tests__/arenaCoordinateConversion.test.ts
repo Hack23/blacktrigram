@@ -238,11 +238,11 @@ describe("Arena Coordinate Conversion", () => {
       
       const speed = 2.0; // m/s
       const arenaWidthMeters = 960 / 100; // Convert pixels to meters
-      const timeToTross = arenaWidthMeters / speed;
+      const timeToCross = arenaWidthMeters / speed;
       
-      expect(timeToTross).toBeCloseTo(4.8, 1);
-      expect(timeToTross).toBeGreaterThan(3); // Should take at least 3 seconds
-      expect(timeToTross).toBeLessThan(6);    // Should take less than 6 seconds
+      expect(timeToCross).toBeCloseTo(4.8, 1);
+      expect(timeToCross).toBeGreaterThan(3); // Should take at least 3 seconds
+      expect(timeToCross).toBeLessThan(6);    // Should take less than 6 seconds
     });
 
     it("should move player across mobile training arena in similar time", () => {
