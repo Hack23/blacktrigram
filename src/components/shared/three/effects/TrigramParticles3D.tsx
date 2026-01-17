@@ -23,7 +23,8 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { TrigramStance, TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import { TrigramStance } from "../../../../types/common";
+import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
 
 /**
  * Trigram symbol particle effect data
@@ -55,17 +56,17 @@ export interface TrigramParticles3DProps {
  * Get color for trigram stance
  */
 const getTrigramColor = (stance: TrigramStance): number => {
-  const colorMap: Record<TrigramStance, number> = {
-    geon: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
-    tae: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
-    li: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
-    jin: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
-    son: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
-    gam: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
-    gan: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
-    gon: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
+  const colorMap: Record<string, number> = {
+    [TrigramStance.GEON]: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY,
+    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,
+    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,
+    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,
+    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,
+    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,
+    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,
+    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,
   };
-  return colorMap[stance];
+  return colorMap[stance] ?? KOREAN_COLORS.PRIMARY_CYAN;
 };
 
 /**
@@ -194,7 +195,7 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
         const rise = progress * TRIGRAM_CONSTANTS.RISE_SPEED * TRIGRAM_CONSTANTS.LIFETIME;
 
         // Get trigram symbol and color
-        const trigramData = TRIGRAM_DATA[instance.stance];
+        const trigramData = TRIGRAM_DATA[instance.stance as unknown as TrigramStance];
         const symbol = trigramData.symbol;
         const color = getTrigramColor(instance.stance);
 
