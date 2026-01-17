@@ -831,7 +831,30 @@
 <a name='L766'></a><a href='#L766'>766</a>
 <a name='L767'></a><a href='#L767'>767</a>
 <a name='L768'></a><a href='#L768'>768</a>
-<a name='L769'></a><a href='#L769'>769</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L769'></a><a href='#L769'>769</a>
+<a name='L770'></a><a href='#L770'>770</a>
+<a name='L771'></a><a href='#L771'>771</a>
+<a name='L772'></a><a href='#L772'>772</a>
+<a name='L773'></a><a href='#L773'>773</a>
+<a name='L774'></a><a href='#L774'>774</a>
+<a name='L775'></a><a href='#L775'>775</a>
+<a name='L776'></a><a href='#L776'>776</a>
+<a name='L777'></a><a href='#L777'>777</a>
+<a name='L778'></a><a href='#L778'>778</a>
+<a name='L779'></a><a href='#L779'>779</a>
+<a name='L780'></a><a href='#L780'>780</a>
+<a name='L781'></a><a href='#L781'>781</a>
+<a name='L782'></a><a href='#L782'>782</a>
+<a name='L783'></a><a href='#L783'>783</a>
+<a name='L784'></a><a href='#L784'>784</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1313,6 +1336,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1739,8 +1769,16 @@ import { STANCE_ANIMATIONS } from "../catalogs/StanceAnimations";
 import { ALL_ATTACK_ANIMATIONS } from "../catalogs/StanceAttackAnimations";
 import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimations";
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
+&nbsp;
+// Trigram-specific stance and technique animation maps
 import { GAN_STANCE_ANIMATIONS } from "../catalogs/GanStanceAnimations";
 import { GAN_TECHNIQUE_ANIMATIONS } from "../catalogs/GanTechniqueAnimations";
+import { GEON_ANIMATIONS } from "../catalogs/GeonStanceAnimations";
+import { JIN_ANIMATIONS } from "../catalogs/JinStanceAnimations";
+import { JIN_TECHNIQUE_ANIMATIONS } from "../catalogs/JinTechniqueAnimations";
+import { SON_STANCE_ANIMATIONS } from "../catalogs/SonStanceAnimations";
+import { SON_TECHNIQUE_ANIMATIONS } from "../catalogs/SonTechniqueAnimations";
+import { TAE_STANCE_ANIMATIONS } from "../catalogs/TaeStanceAnimations";
 import {
   getAnimationForTechniqueOrDefault,
   getAnimationForTechnique as getTechniqueAnimationConfig,
@@ -1762,14 +1800,14 @@ import {
 } from "../catalogs/EnhancedElbowKneeAnimations";
 &nbsp;
 import {
-  TAE_WRIST_LOCK_SEQUENCE,
+  TAE_ARM_BAR,
   TAE_ELBOW_CONTROL,
   TAE_FINGER_LOCK,
   TAE_FLOWING_COUNTER,
   TAE_FLOWING_STRIKES,
-  TAE_SMALL_CIRCLE,
   TAE_SHOULDER_LOCK,
-  TAE_ARM_BAR,
+  TAE_SMALL_CIRCLE,
+  TAE_WRIST_LOCK_SEQUENCE,
 } from "../catalogs/TaeJointLockAnimations";
 &nbsp;
 // TODO: Register Tae stance animations when trigram-specific idle/movement system is implemented
@@ -2096,10 +2134,17 @@ export const ALL_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; = new 
   // Trigram idle animations with breathing/weight shifts (overrides static stance poses)
   // Must come after STANCE_ANIMATIONS to properly override stance_geon, stance_tae, etc.
   ...TRIGRAM_IDLE_ANIMATIONS_BY_NAME,
-  // Gan (Mountain) trigram-specific animations
-  // Must come after STANCE_ANIMATIONS to override legacy gan_rock_defense with comprehensive version
-  ...GAN_STANCE_ANIMATIONS,
-  ...GAN_TECHNIQUE_ANIMATIONS,
+&nbsp;
+  // ═══ Trigram-specific stance and technique animations (팔괘 자세/기술 애니메이션) ═══
+  // Each trigram has unique movement patterns and combat techniques
+  ...GEON_ANIMATIONS, // ☰ Heaven: Direct force, power strikes
+  ...TAE_STANCE_ANIMATIONS, // ☱ Lake: Fluid joint manipulation
+  ...JIN_ANIMATIONS, // ☳ Thunder: Explosive power
+  ...JIN_TECHNIQUE_ANIMATIONS, // ☳ Thunder techniques
+  ...SON_STANCE_ANIMATIONS, // ☴ Wind: Continuous pressure
+  ...SON_TECHNIQUE_ANIMATIONS, // ☴ Wind techniques
+  ...GAN_STANCE_ANIMATIONS, // ☶ Mountain: Defensive mastery
+  ...GAN_TECHNIQUE_ANIMATIONS, // ☶ Mountain techniques
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],
@@ -2120,7 +2165,7 @@ export const ALL_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; = new 
  * @korean 애니메이션타입으로조회
  */
 export function getAnimationByType(
-  type: AnimationType
+  type: AnimationType,
 ): SkeletalAnimation | undefined {
   return ANIMATION_REGISTRY.get(type);
 }
@@ -2136,7 +2181,7 @@ export function getAnimationByType(
  */
 export function <span class="fstat-no" title="function not covered" >getAnimationByTypeOrDefault(</span>
   type: AnimationType,
-  fallback: AnimationType = <span class="branch-0 cbranch-no" title="branch not covered" >AnimationType.JAB</span>
+  fallback: AnimationType = <span class="branch-0 cbranch-no" title="branch not covered" >AnimationType.JAB,</span>
 ): SkeletalAnimation {
   const animation =
 <span class="cstat-no" title="statement not covered" >    ANIMATION_REGISTRY.get(type) ?? ANIMATION_REGISTRY.get(fallback);</span>
@@ -2160,7 +2205,7 @@ export function <span class="fstat-no" title="function not covered" >getAnimatio
  * @korean 기술ID로애니메이션조회
  */
 export function <span class="fstat-no" title="function not covered" >getAnimationForTechniqueId(</span>
-  techniqueId: string
+  techniqueId: string,
 ): SkeletalAnimation | undefined {
   const <span class="cstat-no" title="statement not covered" >config = getTechniqueAnimationConfig(techniqueId);</span>
 <span class="cstat-no" title="statement not covered" >  if (!config) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
@@ -2178,7 +2223,7 @@ export function <span class="fstat-no" title="function not covered" >getAnimatio
  */
 export function <span class="fstat-no" title="function not covered" >getAnimationForTechniqueIdWithConfig(</span>
   techniqueId: string,
-  fallbackType: AnimationType = <span class="branch-0 cbranch-no" title="branch not covered" >AnimationType.JAB</span>
+  fallbackType: AnimationType = <span class="branch-0 cbranch-no" title="branch not covered" >AnimationType.JAB,</span>
 ): { animation: SkeletalAnimation; speed: number } {
   const <span class="cstat-no" title="statement not covered" >config = getAnimationForTechniqueOrDefault(techniqueId, fallbackType);</span>
   const animation =
@@ -2186,7 +2231,7 @@ export function <span class="fstat-no" title="function not covered" >getAnimatio
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  if (!animation) {</span>
 <span class="cstat-no" title="statement not covered" >    throw new Error(</span>
-      `Missing animation for ${config.type} with fallback ${fallbackType}`
+      `Missing animation for ${config.type} with fallback ${fallbackType}`,
     );
   }
 <span class="cstat-no" title="statement not covered" >  return { animation, speed: config.speed };</span>
@@ -2201,7 +2246,7 @@ export function <span class="fstat-no" title="function not covered" >getAnimatio
  * @korean 이름으로애니메이션조회
  */
 export function getAnimationByName(
-  name: string
+  name: string,
 ): SkeletalAnimation | undefined {
   return ALL_ANIMATIONS.get(name);
 }
@@ -2374,7 +2419,7 @@ export type { AnimationConfig };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.562Z
+                at 2026-01-17T03:50:12.397Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

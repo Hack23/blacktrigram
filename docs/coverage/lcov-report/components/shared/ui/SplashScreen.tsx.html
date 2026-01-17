@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.11% </span>
+                <span class="strong">69.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>31/36</span>
+                <span class='fraction'>25/36</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.35% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/17</span>
+                <span class='fraction'>15/18</span>
             </div>
         
             
@@ -306,7 +306,18 @@
 <a name='L241'></a><a href='#L241'>241</a>
 <a name='L242'></a><a href='#L242'>242</a>
 <a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -340,10 +351,15 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -361,6 +377,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -550,8 +570,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { toHex } from "../../../utils/colorUtils";
+import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 &nbsp;
 // Constants
 // Small delay to show loading state for visual feedback.
@@ -582,18 +603,23 @@ export const SplashScreen: React.FC&lt;SplashScreenProps&gt; = ({
 }) =&gt; {
   const [isLoading, setIsLoading] = useState(false);
 &nbsp;
-  // Memoize responsive breakpoint calculation
-  const isMobile = useMemo(() =&gt; width &lt; 768, [width]);
+  // Use proper device detection (user-agent priority for high-res phones)
+  // This ensures mobile layout is used even on 4K Android devices
+  // Include width/height as deps to re-evaluate on resize
+  const isMobile = useMemo(() =&gt; shouldUseMobileControls(), [width, height]);
 &nbsp;
   // Memoize responsive layout values
-  const layoutCalculation = useMemo(() =&gt; ({
-    titleFontSize: isMobile ? 36 : 64,
-    subtitleFontSize: isMobile ? 16 : 24,
-    bodyFontSize: isMobile ? 12 : 14,
-    instructionsFontSize: isMobile ? 11 : 12,
-    buttonPadding: isMobile ? "16px 48px" : "20px 60px",
-    buttonFontSize: isMobile ? 16 : 20,
-  }), [isMobile]);
+  const layoutCalculation = useMemo(
+    () =&gt; ({
+      titleFontSize: isMobile ? 36 : <span class="branch-1 cbranch-no" title="branch not covered" >64,</span>
+      subtitleFontSize: isMobile ? 16 : <span class="branch-1 cbranch-no" title="branch not covered" >24,</span>
+      bodyFontSize: isMobile ? 12 : <span class="branch-1 cbranch-no" title="branch not covered" >14,</span>
+      instructionsFontSize: isMobile ? 11 : <span class="branch-1 cbranch-no" title="branch not covered" >12,</span>
+      buttonPadding: isMobile ? "16px 48px" : <span class="branch-1 cbranch-no" title="branch not covered" >"20px 60px",</span>
+      buttonFontSize: isMobile ? 16 : <span class="branch-1 cbranch-no" title="branch not covered" >20,</span>
+    }),
+    [isMobile],
+  );
 &nbsp;
   const handleStart = useCallback(() =&gt; {
     setIsLoading(true);
@@ -709,7 +735,11 @@ export const SplashScreen: React.FC&lt;SplashScreenProps&gt; = ({
       &lt;button
         onClick={handleStart}
         disabled={isLoading}
-        aria-label={isLoading ? "Starting game and initializing audio" : "Start game and initialize audio"}
+        aria-label={
+          isLoading
+            ? "Starting game and initializing audio"
+            : "Start game and initialize audio"
+        }
         aria-busy={isLoading}
         aria-describedby="splash-instructions"
         style={{
@@ -799,7 +829,7 @@ export default SplashScreen;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.897Z
+                at 2026-01-17T03:50:12.743Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

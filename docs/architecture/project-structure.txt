@@ -790,6 +790,8 @@ src/systems/ai/types.ts
 src/systems/animation/README.md
 src/systems/animation/builders/AnimationBuilder.test.ts
 src/systems/animation/builders/AnimationBuilder.ts
+src/systems/animation/builders/AnimationFactoryPresets.test.ts
+src/systems/animation/builders/AnimationFactoryPresets.ts
 src/systems/animation/builders/GuardPositionIntegration.test.ts
 src/systems/animation/builders/HandPoseApplicator.ts
 src/systems/animation/builders/HandPoses.test.ts
@@ -878,7 +880,9 @@ src/systems/animation/catalogs/TaeStanceAnimations.test.ts
 src/systems/animation/catalogs/TaeStanceAnimations.ts
 src/systems/animation/catalogs/__tests__/LiAnimations.test.ts
 src/systems/animation/catalogs/__tests__/StanceIdleAnimations.test.ts
+src/systems/animation/catalogs/animation-catalog-validation.test.ts
 src/systems/animation/catalogs/index.ts
+src/systems/animation/catalogs/technique-validation.test.ts
 src/systems/animation/core/AnimationHitTiming.ts
 src/systems/animation/core/AnimationOptimizations.test.ts
 src/systems/animation/core/AnimationOptimizations.ts
@@ -926,6 +930,8 @@ src/systems/animation/systems/MuscleActivation.test.ts
 src/systems/animation/systems/MuscleActivation.ts
 src/systems/animation/systems/RecoveryVisualization.ts
 src/systems/animation/systems/index.ts
+src/systems/animation/utils/AnimationMirror.test.ts
+src/systems/animation/utils/AnimationMirror.ts
 src/systems/bodypart/BodyPartDamageIntegration.ts
 src/systems/bodypart/BodyPartHealthSystem.ts
 src/systems/bodypart/MovementPenaltySystem.ts

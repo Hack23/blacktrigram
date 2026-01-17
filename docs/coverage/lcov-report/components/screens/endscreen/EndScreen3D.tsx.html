@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.24% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>50/83</span>
+                <span class='fraction'>55/88</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.38% </span>
+                <span class="strong">28.78% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>36/65</span>
+                <span class='fraction'>19/66</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">52.17% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>11/22</span>
+                <span class='fraction'>12/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/75</span>
+                <span class='fraction'>50/80</span>
             </div>
         
             
@@ -470,7 +470,29 @@
 <a name='L405'></a><a href='#L405'>405</a>
 <a name='L406'></a><a href='#L406'>406</a>
 <a name='L407'></a><a href='#L407'>407</a>
-<a name='L408'></a><a href='#L408'>408</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L408'></a><a href='#L408'>408</a>
+<a name='L409'></a><a href='#L409'>409</a>
+<a name='L410'></a><a href='#L410'>410</a>
+<a name='L411'></a><a href='#L411'>411</a>
+<a name='L412'></a><a href='#L412'>412</a>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -659,6 +681,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -668,6 +691,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
@@ -889,11 +923,16 @@ import React, {
 import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../../hooks/useWindowSize";
 import { PlayerState } from "../../../systems";
 import { MatchStatistics } from "../../../systems/combat";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import {
+  detectPlatform,
+  shouldUseMobileControls,
+} from "../../../utils/deviceDetection";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { NavigationButtons } from "./components/NavigationButtons";
@@ -1063,7 +1102,8 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
   onReturnToMenu,
   onRematch,
   onViewReplay,
-  width = 1920,
+  width: propWidth,
+  height: propHeight,
 }) =&gt; {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
@@ -1076,37 +1116,48 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
   const audio = useAudio();
   const [showStats, setShowStats] = useState(false);
 &nbsp;
+  // Use window size for responsive layout with resize support
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
+  const screenWidth = propWidth ?? windowWidth;
+  const screenHeight = propHeight ?? windowHeight;
+&nbsp;
   // Determine if this is a victory screen (winner is player 0 by convention - extracted from id)
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 &nbsp;
-  // Responsive layout with large desktop support
-  const isMobile = useMemo(() =&gt; width &lt; 768, [width]);
-  const isTablet = useMemo(() =&gt; width &gt;= 768 &amp;&amp; width &lt; 1024, [width]);
-  const isLargeDesktop = useMemo(() =&gt; width &gt;= 1920, [width]); // 4K/2K displays
+  // Responsive layout with proper device detection
+  // Uses user-agent detection for mobile controls (supports high-res phones)
+  // Include screen dimensions as deps to re-evaluate on resize
+  const isMobile = useMemo(
+    () =&gt; shouldUseMobileControls(),
+    [screenWidth, screenHeight],
+  );
+  const platform = useMemo(() =&gt; detectPlatform(), [screenWidth, screenHeight]);
+  const isTablet = useMemo(() =&gt; platform.isTablet, [platform]);
+  const isLargeDesktop = useMemo(() =&gt; screenWidth &gt;= 1920, [screenWidth]); // 4K/2K displays
 &nbsp;
   const layoutConstants = useMemo(
     () =&gt; ({
-      titleFontSize: isMobile ? 36 : isTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >44 : i</span>sLargeDesktop ? 44 : <span class="branch-1 cbranch-no" title="branch not covered" >54,</span>
+      titleFontSize: isMobile ? 36 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 44 : isLargeDesktop ? 44 : 54,</span>
       subtitleFontSize: isMobile
         ? 18
-        : isTablet
-        ? <span class="branch-0 cbranch-no" title="branch not covered" >22</span>
-        : isLargeDesktop
-        ? 22
-        : <span class="branch-1 cbranch-no" title="branch not covered" >28,</span>
-      buttonFontSize: isMobile ? 14 : isTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >15 : i</span>sLargeDesktop ? 14 : <span class="branch-1 cbranch-no" title="branch not covered" >16,</span>
-      padding: isMobile ? 15 : isTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >18 : i</span>sLargeDesktop ? 15 : <span class="branch-1 cbranch-no" title="branch not covered" >20,</span>
+        : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+          ? 22
+          : isLargeDesktop
+            ? 22
+            : 28,
+      buttonFontSize: isMobile ? 14 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 15 : isLargeDesktop ? 14 : 16,</span>
+      padding: isMobile ? 15 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 18 : isLargeDesktop ? 15 : 20,</span>
       buttonPadding: isMobile
         ? "10px 20px"
-        : isTablet
-        ? <span class="branch-0 cbranch-no" title="branch not covered" >"11px 22px"</span>
-        : isLargeDesktop
-        ? "10px 20px"
-        : <span class="branch-1 cbranch-no" title="branch not covered" >"12px 25px",</span>
-      spacing: isMobile ? 15 : isTablet ? <span class="branch-0 cbranch-no" title="branch not covered" >18 : i</span>sLargeDesktop ? 15 : <span class="branch-1 cbranch-no" title="branch not covered" >20,</span>
+        : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet</span>
+          ? "11px 22px"
+          : isLargeDesktop
+            ? "10px 20px"
+            : "12px 25px",
+      spacing: isMobile ? 15 : <span class="branch-1 cbranch-no" title="branch not covered" >isTablet ? 18 : isLargeDesktop ? 15 : 20,</span>
     }),
-    [isMobile, isTablet, isLargeDesktop]
+    [isMobile, isTablet, isLargeDesktop],
   );
 &nbsp;
   // Play victory/defeat audio on mount
@@ -1239,11 +1290,11 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
             style={{
               background: hexToRgbaString(
                 KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                0.8
+                0.8,
               ),
               border: `2px solid ${hexToRgbaString(
                 KOREAN_COLORS.PRIMARY_CYAN,
-                0.8
+                0.8,
               )}`,
               borderRadius: "8px",
               padding: layoutConstants.buttonPadding,
@@ -1291,7 +1342,7 @@ export const EndScreen3D: React.FC&lt;EndScreen3DProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.897Z
+                at 2026-01-17T03:50:12.743Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

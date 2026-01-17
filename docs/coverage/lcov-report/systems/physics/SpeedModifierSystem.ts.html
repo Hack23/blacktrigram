@@ -511,7 +511,27 @@
 <a name='L446'></a><a href='#L446'>446</a>
 <a name='L447'></a><a href='#L447'>447</a>
 <a name='L448'></a><a href='#L448'>448</a>
-<a name='L449'></a><a href='#L449'>449</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -728,13 +748,6 @@
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">167x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">167x</span>
@@ -747,6 +760,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">167x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">167x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -757,6 +785,9 @@
 <span class="cline-any cline-yes">167x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">167x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -955,60 +986,66 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Speed Modifier System
- * 
+ *
  * **Korean**: 속도 변경 시스템 (Speed Modifier System)
- * 
+ *
  * Implements comprehensive movement speed modifier system that dynamically adjusts
  * player movement speed based on multiple factors: combat stance, leg injuries,
  * stamina depletion, and combat state. Integrates with physics-based movement
  * system for authentic Korean martial arts combat feel.
- * 
+ *
  * ## System Features
- * 
+ *
  * - Base movement speeds for walking, running, backward, lateral, and crouching
  * - Eight Trigram stance-based speed modifiers (80% to 125%)
  * - Injury-based speed reduction from leg damage (0% to 75% penalty)
  * - Stamina-based acceleration penalty (0% to 75% penalty)
  * - Combat state speed adjustments (0% to 100% penalty)
  * - Multiplicative and additive modifier stacking
- * 
+ *
  * ## Speed Calculation Formula
- * 
+ *
  * ```
- * Final Speed = Base Speed 
- *               × Stance Modifier 
- *               × (1 - Injury Penalty) 
+ * Final Speed = Base Speed
+ *               × Stance Modifier
+ *               × (1 - Injury Penalty)
  *               × (1 - Combat State Penalty)
- * 
- * Final Acceleration = Base Acceleration 
+ *
+ * Final Acceleration = Base Acceleration
  *                      × (1 - Stamina Penalty)
  * ```
- * 
+ *
  * @module systems/physics/SpeedModifierSystem
  * @category Physics System
  * @korean 속도변경시스템
  */
 &nbsp;
-import { TrigramStance, CombatState } from '@/types/common';
-import type { PlayerState } from '@/systems/player';
-import { MovementPenaltySystem } from '@/systems/bodypart/MovementPenaltySystem';
-import type { BodyPartHealth, BodyPartMaxHealth } from '@/systems/bodypart/types';
-import { STANCE_SPEED_MODIFIERS } from './MovementPhysics';
+import { MovementPenaltySystem } from "@/systems/bodypart/MovementPenaltySystem";
+import type {
+  BodyPartHealth,
+  BodyPartMaxHealth,
+} from "@/systems/bodypart/types";
+import type { PlayerState } from "@/systems/player";
+import { CombatState, TrigramStance } from "@/types/common";
+import { STANCE_SPEED_MODIFIERS } from "./MovementPhysics";
 &nbsp;
 /**
  * Complete speed modifier state for physics calculations.
- * 
+ *
  * **Korean**: 속도 변경 상태 (Speed Modifier State)
- * 
+ *
  * Contains all calculated speed modifiers and final values for application
  * to the physics-based movement system.
- * 
+ *
  * @public
  * @category Physics System
  * @korean 속도변경상태
@@ -1034,112 +1071,112 @@ export interface SpeedModifierState {
 &nbsp;
 /**
  * Movement type enumeration.
- * 
+ *
  * **Korean**: 이동 유형 (Movement Type)
- * 
+ *
  * @public
  * @category Physics System
  */
 export enum MovementType {
   /** Walking forward - Korean: 걷기 */
-  WALKING = 'walking',
+  WALKING = "walking",
   /** Running/sprinting forward - Korean: 달리기 */
-  RUNNING = 'running',
+  RUNNING = "running",
   /** Moving backward - Korean: 후퇴 */
-  BACKWARD = 'backward',
+  BACKWARD = "backward",
   /** Side-stepping left/right - Korean: 측면이동 */
-  LATERAL = 'lateral',
+  LATERAL = "lateral",
   /** Crouching movement - Korean: 웅크리기 */
-  CROUCHING = 'crouching',
+  CROUCHING = "crouching",
 }
 &nbsp;
 /**
  * Speed Modifier System class.
- * 
+ *
  * **Korean**: 속도 변경 시스템 클래스
- * 
+ *
  * Calculates comprehensive speed modifiers from multiple factors including
  * stance, injuries, stamina, and combat state. Integrates with existing
  * body part and movement systems.
- * 
+ *
  * @example
  * ```typescript
  * const system = new SpeedModifierSystem();
- * 
+ *
  * const modifiers = system.calculateSpeedModifiers(
  *   playerState,
  *   MovementType.RUNNING,
  *   true // isCrouching
  * );
- * 
+ *
  * // Apply to movement physics
  * movementPhysics.setMaxSpeed(modifiers.finalSpeed);
  * movementPhysics.setAcceleration(modifiers.finalAcceleration);
  * ```
- * 
+ *
  * @public
  * @category Physics System
  */
 export class SpeedModifierSystem {
   /**
    * Base walking speed (m/s)
-   * Standard walking pace for combat movement
-   * 
+   * Standard walking pace for combat movement (400 pixels/second)
+   *
    * **Korean**: 기본 걷기 속도 (Base Walking Speed)
    */
-  private readonly BASE_WALKING_SPEED = 2.0;
+  private readonly BASE_WALKING_SPEED = 4.0;
 &nbsp;
   /**
    * Base running speed (m/s)
-   * Sprint speed when running key is held
-   * 
+   * Sprint speed when running key is held (700 pixels/second)
+   *
    * **Korean**: 기본 달리기 속도 (Base Running Speed)
    */
-  private readonly BASE_RUNNING_SPEED = 4.0;
+  private readonly BASE_RUNNING_SPEED = 7.0;
 &nbsp;
   /**
    * Lateral movement speed (m/s)
-   * Side-stepping left/right
-   * 
+   * Side-stepping left/right (360 pixels/second)
+   *
    * **Korean**: 측면 이동 속도 (Lateral Movement Speed)
    */
-  private readonly LATERAL_SPEED = 1.8;
+  private readonly LATERAL_SPEED = 3.6;
 &nbsp;
   /**
    * Crouching movement speed (m/s)
-   * Defensive low movement
-   * 
+   * Defensive low movement (200 pixels/second)
+   *
    * **Korean**: 웅크림 이동 속도 (Crouching Movement Speed)
    */
-  private readonly CROUCHING_SPEED = 1.0;
+  private readonly CROUCHING_SPEED = 2.0;
 &nbsp;
   /**
    * Backward speed multiplier (75% of forward speed)
-   * 
+   *
    * **Korean**: 후퇴 속도 배수 (Backward Speed Multiplier)
    */
   private readonly BACKWARD_SPEED_MULTIPLIER = 0.75;
 &nbsp;
   /**
    * Base acceleration rate (m/s²)
-   * Time to reach max speed from standstill
-   * 
+   * Responsive acceleration for combat movement
+   *
    * **Korean**: 기본 가속도 (Base Acceleration)
    */
-  private readonly BASE_ACCELERATION = 4.0;
+  private readonly BASE_ACCELERATION = 8.0;
 &nbsp;
   /**
    * Combat state speed penalty multipliers
-   * 
+   *
    * **Korean**: 전투 상태 속도 패널티 (Combat State Speed Penalties)
    */
   private readonly COMBAT_STATE_PENALTIES: Record&lt;CombatState, number&gt; = {
-    [CombatState.IDLE]: 0.0,           // No penalty when idle
-    [CombatState.ATTACKING]: 0.30,     // -30% during attack commitment
-    [CombatState.DEFENDING]: 0.20,     // -20% while guarding
-    [CombatState.STUNNED]: 1.0,        // Cannot move when stunned
-    [CombatState.RECOVERING]: 0.40,    // -40% during recovery frames
-    [CombatState.COUNTERING]: 0.25,    // -25% during counter execution
+    [CombatState.IDLE]: 0.0, // No penalty when idle
+    [CombatState.ATTACKING]: 0.3, // -30% during attack commitment
+    [CombatState.DEFENDING]: 0.2, // -20% while guarding
+    [CombatState.STUNNED]: 1.0, // Cannot move when stunned
+    [CombatState.RECOVERING]: 0.4, // -40% during recovery frames
+    [CombatState.COUNTERING]: 0.25, // -25% during counter execution
     [CombatState.TRANSITIONING]: 0.15, // -15% during stance transitions
   };
 &nbsp;
@@ -1151,59 +1188,67 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Calculate comprehensive speed modifiers for player movement.
-   * 
+   *
    * **Korean**: 속도 변경 계산 (Calculate Speed Modifiers)
-   * 
+   *
    * Analyzes player state and returns complete speed modifier information
    * including all individual factors and final calculated values.
-   * 
+   *
    * @param playerState - Current player state with stance, health, stamina
    * @param movementType - Type of movement being performed
    * @param isCrouching - Whether player is in crouching stance
    * @returns Complete speed modifier state with all factors
-   * 
+   *
    * @public
    */
   public calculateSpeedModifiers(
     playerState: PlayerState,
     movementType: MovementType = MovementType.WALKING,
-    isCrouching: boolean = false
+    isCrouching: boolean = false,
   ): SpeedModifierState {
     // Get base speed based on movement type
     const baseSpeed = this.getBaseSpeed(movementType, isCrouching);
-    
+&nbsp;
     // Calculate stance modifier
-    const stanceModifier = this.getStanceSpeedModifier(playerState.currentStance);
-    
+    const stanceModifier = this.getStanceSpeedModifier(
+      playerState.currentStance,
+    );
+&nbsp;
     // Calculate injury penalty from leg damage
     const injuryPenalty = this.calculateInjuryPenalty(
       playerState.bodyPartHealth,
-      playerState.bodyPartMaxHealth
+      playerState.bodyPartMaxHealth,
     );
-    
+&nbsp;
     // Calculate combat state penalty
-    const combatStatePenalty = this.getCombatStatePenalty(playerState.combatState);
-    
+    const combatStatePenalty = this.getCombatStatePenalty(
+      playerState.combatState,
+    );
+&nbsp;
     // Calculate stamina penalty (affects acceleration only)
     const staminaPenalty = this.calculateStaminaPenalty(
       playerState.stamina,
-      playerState.maxStamina
+      playerState.maxStamina,
     );
-    
+&nbsp;
     // Check if running is allowed
-    const canRun = this.canPlayerRun(playerState.stamina, playerState.maxStamina);
-    
+    const canRun = this.canPlayerRun(
+      playerState.stamina,
+      playerState.maxStamina,
+    );
+&nbsp;
     // Calculate final speed using multiplicative stance and additive penalties
     // Formula: Base × Stance × (1 - Injury) × (1 - CombatState)
-    const finalSpeed = baseSpeed 
-      * stanceModifier 
-      * (1.0 - injuryPenalty) 
-      * (1.0 - combatStatePenalty);
-    
+    const finalSpeed =
+      baseSpeed *
+      stanceModifier *
+      (1.0 - injuryPenalty) *
+      (1.0 - combatStatePenalty);
+&nbsp;
     // Calculate final acceleration using stamina penalty
     // Formula: Base × (1 - Stamina)
     const finalAcceleration = this.BASE_ACCELERATION * (1.0 - staminaPenalty);
-    
+&nbsp;
     return {
       baseSpeed,
       stanceModifier,
@@ -1218,16 +1263,19 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Get base speed for movement type.
-   * 
+   *
    * **Korean**: 기본 속도 계산 (Get Base Speed)
-   * 
+   *
    * @param movementType - Type of movement
    * @param isCrouching - Whether player is crouching
    * @returns Base speed in m/s
-   * 
+   *
    * @private
    */
-  private getBaseSpeed(movementType: MovementType, isCrouching: boolean): number {
+  private getBaseSpeed(
+    movementType: MovementType,
+    isCrouching: boolean,
+  ): number {
     if (isCrouching) {
       return this.CROUCHING_SPEED;
     }
@@ -1250,12 +1298,12 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Get stance-based speed modifier.
-   * 
+   *
    * **Korean**: 자세 속도 배수 계산 (Get Stance Speed Modifier)
-   * 
+   *
    * @param stance - Current Eight Trigram stance
    * @returns Speed multiplier (0.80 to 1.25)
-   * 
+   *
    * @private
    */
   private getStanceSpeedModifier(stance: TrigramStance): number {
@@ -1264,25 +1312,25 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Calculate injury-based speed penalty from leg damage.
-   * 
+   *
    * **Korean**: 부상 속도 패널티 계산 (Calculate Injury Penalty)
-   * 
+   *
    * Uses MovementPenaltySystem to determine speed reduction based on
    * leg damage severity. Penalties are progressive:
    * - Light damage (10-30%): -10% speed
    * - Moderate damage (30-60%): -25% speed
    * - Heavy damage (60-90%): -50% speed
    * - Critical damage (90-100%): -75% speed (limping)
-   * 
+   *
    * @param bodyPartHealth - Current body part health
    * @param bodyPartMaxHealth - Maximum body part health
    * @returns Speed penalty as percentage (0.0 to 0.75)
-   * 
+   *
    * @private
    */
   private calculateInjuryPenalty(
     bodyPartHealth: BodyPartHealth | undefined,
-    bodyPartMaxHealth: BodyPartMaxHealth | undefined
+    bodyPartMaxHealth: BodyPartMaxHealth | undefined,
   ): number {
     if (!bodyPartHealth || !bodyPartMaxHealth) {
       return 0.0; // No penalty if body part health not tracked
@@ -1291,7 +1339,7 @@ export class SpeedModifierSystem {
     // Use MovementPenaltySystem to calculate comprehensive penalty
     const movementPenalty = this.movementPenaltySystem.calculateMovementPenalty(
       bodyPartHealth,
-      bodyPartMaxHealth
+      bodyPartMaxHealth,
     );
 &nbsp;
     // Convert speedMultiplier to penalty percentage
@@ -1299,16 +1347,16 @@ export class SpeedModifierSystem {
     // speedMultiplier of 0.5 = 50% penalty (0.5)
     // speedMultiplier of 0.25 = 75% penalty (0.75)
     const penalty = 1.0 - movementPenalty.speedMultiplier;
-    
+&nbsp;
     // Clamp to maximum 75% penalty (minimum 25% speed)
     return Math.min(penalty, 0.75);
   }
 &nbsp;
   /**
    * Calculate combat state speed penalty.
-   * 
+   *
    * **Korean**: 전투 상태 속도 패널티 계산 (Get Combat State Penalty)
-   * 
+   *
    * Different combat states restrict movement:
    * - IDLE: 0% penalty (full movement)
    * - ATTACKING: -30% penalty (committed to technique)
@@ -1317,10 +1365,10 @@ export class SpeedModifierSystem {
    * - RECOVERING: -40% penalty (vulnerable, slow movement)
    * - COUNTERING: -25% penalty (counter execution)
    * - TRANSITIONING: -15% penalty (stance change)
-   * 
+   *
    * @param combatState - Current combat state
    * @returns Speed penalty as percentage (0.0 to 1.0)
-   * 
+   *
    * @private
    */
   private getCombatStatePenalty(combatState: CombatState): number {
@@ -1329,52 +1377,52 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Calculate stamina-based acceleration penalty.
-   * 
+   *
    * **Korean**: 스태미나 가속 패널티 계산 (Calculate Stamina Penalty)
-   * 
+   *
    * Stamina affects acceleration rate, making it harder to change direction
    * or speed up when fatigued:
    * - High stamina (70-100%): 0% penalty (normal acceleration)
    * - Medium stamina (40-70%): -20% penalty
    * - Low stamina (10-40%): -50% penalty
    * - Depleted stamina (&lt;10%): -75% penalty, cannot run
-   * 
+   *
    * @param currentStamina - Current stamina points
    * @param maxStamina - Maximum stamina capacity
    * @returns Acceleration penalty as percentage (0.0 to 0.75)
-   * 
+   *
    * @private
    */
   private calculateStaminaPenalty(
     currentStamina: number,
-    maxStamina: number
+    maxStamina: number,
   ): number {
     if (maxStamina &lt;= 0) {
       return 0.0; // No penalty if stamina not tracked
     }
 &nbsp;
     const staminaPercent = (currentStamina / maxStamina) * 100;
-    
+&nbsp;
     if (staminaPercent &gt;= 70) {
-      return 0.0;   // High stamina: no penalty
+      return 0.0; // High stamina: no penalty
     } else if (staminaPercent &gt;= 40) {
-      return 0.20;  // Medium stamina: -20% acceleration
+      return 0.2; // Medium stamina: -20% acceleration
     } else if (staminaPercent &gt;= 10) {
-      return 0.50;  // Low stamina: -50% acceleration
+      return 0.5; // Low stamina: -50% acceleration
     } else {
-      return 0.75;  // Depleted stamina: -75% acceleration
+      return 0.75; // Depleted stamina: -75% acceleration
     }
   }
 &nbsp;
   /**
    * Check if player can run based on stamina level.
-   * 
+   *
    * **Korean**: 달리기 가능 확인 (Can Player Run)
-   * 
+   *
    * @param currentStamina - Current stamina points
    * @param maxStamina - Maximum stamina capacity
    * @returns True if player has enough stamina to run
-   * 
+   *
    * @private
    */
   private canPlayerRun(currentStamina: number, maxStamina: number): boolean {
@@ -1388,20 +1436,23 @@ export class SpeedModifierSystem {
 &nbsp;
   /**
    * Apply speed modifiers to movement physics system.
-   * 
+   *
    * **Korean**: 속도 변경 적용 (Apply Speed Modifiers)
-   * 
+   *
    * Convenience method to directly apply calculated modifiers to a
    * movement physics instance.
-   * 
+   *
    * @param movementPhysics - Movement physics system to update
    * @param modifiers - Calculated speed modifier state
-   * 
+   *
    * @public
    */
   public applySpeedModifiers(
-    movementPhysics: { setMaxSpeed: (speed: number) =&gt; void; setAcceleration: (accel: number) =&gt; void },
-    modifiers: SpeedModifierState
+    movementPhysics: {
+      setMaxSpeed: (speed: number) =&gt; void;
+      setAcceleration: (accel: number) =&gt; void;
+    },
+    modifiers: SpeedModifierState,
   ): void {
     movementPhysics.setMaxSpeed(modifiers.finalSpeed);
     movementPhysics.setAcceleration(modifiers.finalAcceleration);
@@ -1414,7 +1465,7 @@ export class SpeedModifierSystem {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.897Z
+                at 2026-01-17T03:50:12.743Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

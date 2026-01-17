@@ -308,7 +308,12 @@
 <a name='L243'></a><a href='#L243'>243</a>
 <a name='L244'></a><a href='#L244'>244</a>
 <a name='L245'></a><a href='#L245'>245</a>
-<a name='L246'></a><a href='#L246'>246</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -403,6 +408,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,11 +577,12 @@
  */
 &nbsp;
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
-import KoreanSignage3D from "./KoreanSignage3D";
+// Re-enabled after fixing KoreanSignage3D font prop issue
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
+import KoreanSignage3D from "./KoreanSignage3D";
 &nbsp;
 /**
  * Props for the CombatArena3D component.
@@ -603,7 +612,7 @@ const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [2048, 2048]; // Upgraded from
 export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
   lighting = "cyberpunk",
   scale = 1.0,
-  enableParticles = scale &gt;= 1.0, // Default: enabled on desktop, disabled on mobile
+  enableParticles = scale &gt;= 1.0, // Enable particles on desktop by default
 }) =&gt; {
   const gridRef = useRef&lt;THREE.GridHelper&gt;(null);
 &nbsp;
@@ -637,7 +646,7 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         emissive: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
         emissiveIntensity: 0.05,
       }),
-    []
+    [],
   );
 &nbsp;
   // Cleanup floor material on unmount
@@ -652,7 +661,7 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" &amp;&amp; (
         &lt;&gt;
-          {/* Base ambient light with Korean cyan tint - increased for visibility */}
+          {/* Base ambient light with Korean cyan tint */}
           &lt;ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} /&gt;
 &nbsp;
           {/* Primary directional light (moonlight) with upgraded shadows */}
@@ -672,13 +681,13 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
             shadow-bias={-0.0001}
           /&gt;
 &nbsp;
-          {/* Korean neon accent lights - increased range and intensity */}
+          {/* Korean neon accent lights */}
           {/* Cyan neon light (left side) */}
           &lt;pointLight
             position={[-10, 3, 0]}
             intensity={4}
-            distance={30}
-            decay={1.5}
+            distance={25}
+            decay={2}
             color={KOREAN_COLORS.PRIMARY_CYAN}
           /&gt;
 &nbsp;
@@ -686,8 +695,8 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
           &lt;pointLight
             position={[10, 3, 0]}
             intensity={4}
-            distance={30}
-            decay={1.5}
+            distance={25}
+            decay={2}
             color={KOREAN_COLORS.ACCENT_GOLD}
           /&gt;
 &nbsp;
@@ -695,8 +704,8 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
           &lt;pointLight
             position={[0, 5, -15]}
             intensity={3}
-            distance={35}
-            decay={1.5}
+            distance={30}
+            decay={2}
             color={KOREAN_COLORS.ACCENT_BLUE}
           /&gt;
         &lt;/&gt;
@@ -724,7 +733,10 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
       {/* Arena floor - dojang mat with reflective wet concrete aesthetic */}
       &lt;mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow&gt;
         &lt;planeGeometry
-          args={[floorWidth * FLOOR_SCALE_FACTOR, floorDepth * FLOOR_SCALE_FACTOR]}
+          args={[
+            floorWidth * FLOOR_SCALE_FACTOR,
+            floorDepth * FLOOR_SCALE_FACTOR,
+          ]}
         /&gt;
         {lighting === "cyberpunk" ? (
           &lt;primitive object={floorMaterial} attach="material" /&gt;
@@ -782,13 +794,13 @@ export const CombatArena3D: React.FC&lt;CombatArena3DProps&gt; = ({
         /&gt;
       &lt;/mesh&gt;
 &nbsp;
-      {/* Korean Signage with Emissive Glow */}
+      {/* Korean Signage with neon glow */}
       {lighting === "cyberpunk" &amp;&amp; &lt;KoreanSignage3D scale={scale} /&gt;}
 &nbsp;
       {/* Atmospheric Particles (rain/mist) */}
       {lighting === "cyberpunk" &amp;&amp; enableParticles &amp;&amp; (
         &lt;AtmosphericParticles3D
-          count={scale &gt;= 1.0 ? 500 : <span class="branch-1 cbranch-no" title="branch not covered" >250} // Fewer particles on mobile</span>
+          count={scale &gt;= 1.0 ? 500 : <span class="branch-1 cbranch-no" title="branch not covered" >250}</span>
           scale={scale}
           speed={2}
         /&gt;
@@ -805,7 +817,7 @@ export default CombatArena3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.562Z
+                at 2026-01-17T03:50:12.397Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

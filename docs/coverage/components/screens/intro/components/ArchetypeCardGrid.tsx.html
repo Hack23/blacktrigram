@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">93.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/42</span>
+                <span class='fraction'>41/44</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.5% </span>
+                <span class="strong">92.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/40</span>
+                <span class='fraction'>39/42</span>
             </div>
         
             
@@ -294,7 +294,13 @@
 <a name='L229'></a><a href='#L229'>229</a>
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -325,6 +331,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">34x</span>
@@ -528,7 +540,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
+import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
 &nbsp;
 export interface ArchetypeCardGridProps {
@@ -555,8 +567,14 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
     onPlaySFX,
     width = 900,
     height = 600,
-    isMobile = false,
+    isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
   }) =&gt; {
+    // Note: _isMobile intentionally unused - layout sizing uses width-based checks
+    void _isMobile;
+&nbsp;
+    // Use width for layout sizing decisions
+    const isSmallScreen = width &lt; 768;
+&nbsp;
     // Find selected archetype index
     const selectedIndex = useMemo(() =&gt; {
       return archetypes.findIndex((a) =&gt; a.archetype === selectedArchetype);
@@ -564,10 +582,10 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
 &nbsp;
     // Calculate card dimensions based on container and screen size
     const cardWidth = useMemo(() =&gt; {
-      if (isMobile) return Math.min(280, width - 40);
+      if (isSmallScreen) return Math.min(280, width - 40);
       const isLargeContainer = width &gt;= 1100;
       return isLargeContainer ? 340 : 380;
-    }, [isMobile, width]);
+    }, [isSmallScreen, width]);
 &nbsp;
     // Memoize colors
     const colors = useMemo(
@@ -576,7 +594,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
         headerColor: hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
       }),
-      []
+      [],
     );
 &nbsp;
     // Handle card selection
@@ -585,7 +603,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         onArchetypeChange(archetype);
         onPlaySFX("menu_hover");
       },
-      [onArchetypeChange, onPlaySFX]
+      [onArchetypeChange, onPlaySFX],
     );
 &nbsp;
     // Handle card confirmation
@@ -594,7 +612,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         onArchetypeConfirm?.(archetype);
         onPlaySFX("menu_select");
       },
-      [onArchetypeConfirm, onPlaySFX]
+      [onArchetypeConfirm, onPlaySFX],
     );
 &nbsp;
     // Handle keyboard navigation (scoped to container)
@@ -625,12 +643,12 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         handleCardSelect,
         handleCardConfirm,
         onArchetypeConfirm,
-      ]
+      ],
     );
 &nbsp;
     // Calculate grid layout
-    const columnsCount = isMobile ? 1 : width &gt;= 1400 ? 3 : 2;
-    const gap = isMobile ? 16 : 20;
+    const columnsCount = isSmallScreen ? 1 : width &gt;= 1400 ? 3 : 2;
+    const gap = isSmallScreen ? 16 : 20;
 &nbsp;
     // Custom focus style for keyboard navigation
     const [isFocused, setIsFocused] = React.useState(false);
@@ -651,7 +669,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
           background: colors.background,
           borderRadius: "12px",
           border: `2px solid ${colors.border}`,
-          padding: isMobile ? "16px" : "24px",
+          padding: isSmallScreen ? "16px" : "24px",
           overflow: "auto",
           maxHeight: `${height}px`,
           outline: isFocused ? <span class="branch-0 cbranch-no" title="branch not covered" >`3px solid ${colors.headerColor}` : "</span>none",
@@ -674,7 +692,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         &gt;
           &lt;h2
             style={{
-              fontSize: isMobile ? "20px" : "28px",
+              fontSize: isSmallScreen ? "20px" : "28px",
               fontWeight: "bold",
               fontFamily: FONT_FAMILY.KOREAN,
               color: colors.headerColor,
@@ -688,7 +706,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
 &nbsp;
           &lt;div
             style={{
-              fontSize: isMobile ? "12px" : "14px",
+              fontSize: isSmallScreen ? "12px" : "14px",
               fontFamily: FONT_FAMILY.KOREAN,
               color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               textAlign: "center",
@@ -696,7 +714,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
             }}
             data-testid="grid-hint"
           &gt;
-            {isMobile
+            {isSmallScreen
               ? "카드를 탭하여 선택"
               : "화살표 키로 탐색, 엔터로 확인 | Arrow keys to navigate, Enter to confirm"}
           &lt;/div&gt;
@@ -724,7 +742,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
                   ? <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >h</span>andleCardConfirm(archetype.archetype)</span></span>
                   : undefined
               }
-              isMobile={isMobile}
+              isMobile={isSmallScreen}
               width={cardWidth}
               showSelectButton={!!onArchetypeConfirm}
             /&gt;
@@ -732,7 +750,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         &lt;/div&gt;
 &nbsp;
         {/* Footer navigation hint */}
-        {!isMobile &amp;&amp; (
+        {!isSmallScreen &amp;&amp; (
           &lt;div
             style={{
               marginTop: `${gap}px`,
@@ -750,7 +768,7 @@ export const ArchetypeCardGrid: React.FC&lt;ArchetypeCardGridProps&gt; = React.m
         )}
       &lt;/div&gt;
     );
-  }
+  },
 );
 &nbsp;
 ArchetypeCardGrid.displayName = "ArchetypeCardGrid";
@@ -763,7 +781,7 @@ export default ArchetypeCardGrid;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.562Z
+                at 2026-01-17T03:50:12.397Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
