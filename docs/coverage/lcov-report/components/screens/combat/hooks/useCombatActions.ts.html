@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.51% </span>
+                <span class="strong">61.78% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>171/278</span>
+                <span class='fraction'>173/280</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.25% </span>
+                <span class="strong">61.53% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>166/271</span>
+                <span class='fraction'>168/273</span>
             </div>
         
             
@@ -1287,7 +1287,14 @@
 <a name='L1222'></a><a href='#L1222'>1222</a>
 <a name='L1223'></a><a href='#L1223'>1223</a>
 <a name='L1224'></a><a href='#L1224'>1224</a>
-<a name='L1225'></a><a href='#L1225'>1225</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1225'></a><a href='#L1225'>1225</a>
+<a name='L1226'></a><a href='#L1226'>1226</a>
+<a name='L1227'></a><a href='#L1227'>1227</a>
+<a name='L1228'></a><a href='#L1228'>1228</a>
+<a name='L1229'></a><a href='#L1229'>1229</a>
+<a name='L1230'></a><a href='#L1230'>1230</a>
+<a name='L1231'></a><a href='#L1231'>1231</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1416,6 +1423,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2434,6 +2442,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">99x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -2472,6 +2481,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -2566,7 +2578,8 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
-import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
+import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -2619,7 +2632,7 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
 function <span class="fstat-no" title="function not covered" >applyKnockbackDisplacement(</span>
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: { x: number; y: number; width: number; height: number },
+  arenaBounds: { x: number; y: number; width: number; height: number; scale?: number },
 ): Position {
 <span class="cstat-no" title="statement not covered" >  if (!result.knockback) {</span>
 <span class="cstat-no" title="statement not covered" >    return defenderPos;</span>
@@ -2667,6 +2680,7 @@ export interface UseCombatActionsConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number;
   };
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) =&gt; Promise&lt;void&gt;;
@@ -3658,6 +3672,7 @@ export function useCombatActions(
   );
 &nbsp;
   // AI movement handler with injury-based movement penalties
+  // **UPDATED**: Now scale-aware for consistent movement and distance calculations
   const moveAIPlayer = useCallback(
     (targetPos: Position) =&gt; {
       const currentPos = playerPositions[1];
@@ -3696,9 +3711,12 @@ export function useCombatActions(
 &nbsp;
       // Calculate distance in pixels, then convert to meters for threshold comparison
       // Stop moving when within 0.05 meters (5cm) of target - close enough for melee range
+      // **UPDATED**: Use scale-aware conversion to match movement system
       const MIN_MOVEMENT_THRESHOLD_METERS = 0.05;
+      const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useCombatActions");
+      const scaleAwarePixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const MIN_MOVEMENT_THRESHOLD_PIXELS =
-        MIN_MOVEMENT_THRESHOLD_METERS * METERS_TO_PIXELS_SCALE;
+        MIN_MOVEMENT_THRESHOLD_METERS * scaleAwarePixelsPerMeter;
 &nbsp;
       if (distance &gt; MIN_MOVEMENT_THRESHOLD_PIXELS) {
         const newPos = {
@@ -3706,14 +3724,14 @@ export function useCombatActions(
           y: currentPos.y + (dy / distance) * finalSpeed,
         };
 &nbsp;
-        // Keep AI within bounds
+        // Keep AI within bounds (no hardcoded offsets - fixed to match movement system)
         newPos.x = Math.max(
           arenaBounds.x,
-          Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x),
+          Math.min(arenaBounds.x + arenaBounds.width, newPos.x),
         );
         newPos.y = Math.max(
           arenaBounds.y,
-          Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y),
+          Math.min(arenaBounds.y + arenaBounds.height, newPos.y),
         );
 &nbsp;
         // Update position through parent - this should trigger playerPositions state update in parent
@@ -3742,7 +3760,7 @@ export function useCombatActions(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T16:24:14.035Z
+                at 2026-01-17T18:43:50.901Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

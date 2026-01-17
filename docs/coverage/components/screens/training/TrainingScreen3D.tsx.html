@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.98% </span>
+                <span class="strong">56.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>155/272</span>
+                <span class='fraction'>153/270</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.64% </span>
+                <span class="strong">37.79% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/170</span>
+                <span class='fraction'>65/172</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.05% </span>
+                <span class="strong">51.38% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>38/73</span>
+                <span class='fraction'>37/72</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.6% </span>
+                <span class="strong">56.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>150/265</span>
+                <span class='fraction'>148/263</span>
             </div>
         
             
@@ -1652,7 +1652,13 @@
 <a name='L1587'></a><a href='#L1587'>1587</a>
 <a name='L1588'></a><a href='#L1588'>1588</a>
 <a name='L1589'></a><a href='#L1589'>1589</a>
-<a name='L1590'></a><a href='#L1590'>1590</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1590'></a><a href='#L1590'>1590</a>
+<a name='L1591'></a><a href='#L1591'>1591</a>
+<a name='L1592'></a><a href='#L1592'>1592</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1905,18 +1911,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3161,7 +3161,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3286,6 +3290,10 @@ import {
   getPerformanceSettings,
   KOREAN_COLORS,
 } from "../../../types/constants";
+import {
+  getBackButtonTop,
+  getMobileControlsBottom,
+} from "../../../types/constants/layout";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -3312,7 +3320,7 @@ import {
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
-import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
+import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -3491,23 +3499,17 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
     [trainingAreaBounds],
   );
 &nbsp;
-  // Expanded bounds to compensate for inputSystem's hardcoded offsets (-60 width, -180 height)
-  // This allows full arena movement like in CombatScreen
-  const expandedBounds = useMemo(
-    () =&gt; ({
-      x: trainingAreaBounds.x,
-      y: trainingAreaBounds.y,
-      width: trainingAreaBounds.width + 60, // Compensate for -60 offset in inputSystem
-      height: trainingAreaBounds.height + 180, // Compensate for -180 offset in inputSystem
-    }),
-    [trainingAreaBounds],
-  );
-&nbsp;
   // Player movement with physics-based acceleration and stance modifiers
   // Speed modifiers matching CombatScreen (2.0 m/s walking, 4.0 m/s² acceleration)
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
-    bounds: expandedBounds,
+    bounds: {
+      x: trainingAreaBounds.x,
+      y: trainingAreaBounds.y,
+      width: trainingAreaBounds.width,
+      height: trainingAreaBounds.height,
+      scale: trainingAreaBounds.scale, // Pass arena scale for proper pixel conversion
+    },
     onPositionChange: <span class="fstat-no" title="function not covered" >(n</span>ewPosition: Position) =&gt; {
 <span class="cstat-no" title="statement not covered" >      onPlayerUpdate({ position: newPosition });</span>
     },
@@ -4682,8 +4684,9 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               &lt;/ResponsiveContainer&gt;
             )}
 &nbsp;
-            {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
-            &lt;TechniqueBar
+            {/* Technique Bar - Bottom Center - Using centralized container component */}
+            &lt;TechniqueBarContainer
+              visible={true}
               techniques={techniqueSelection.availableTechniques}
               player={trainingPlayerState}
               selectedIndex={techniqueSelection.selectedIndex}
@@ -4697,24 +4700,23 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               screenHeight={height}
             /&gt;
 &nbsp;
-            {/* Bottom Center - Return to Menu Button */}
+            {/* Top Right - Return to Menu Button */}
+            {/* Moved from bottom center to top-right for gameplay visibility */}
             &lt;ResponsiveContainer
               position={{
                 base: {
-                  x: 0,
-                  y: height - (isMobile ? 75 : <span class="branch-1 cbranch-no" title="branch not covered" >100 * positionScale),</span>
+                  x: width - (isMobile ? 100 : <span class="branch-1 cbranch-no" title="branch not covered" >150),</span>
+                  y: getBackButtonTop(isMobile), // Top-right corner
                 },
               }}
               containerWidth={width}
               useSafeArea
-              safeAreaEdge="bottom"
-              zIndex={Z_INDEX.HUD}
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD} // Standard HUD layer
               style={{
                 pointerEvents: "all",
-                minHeight: "50px",
                 display: "flex",
-                justifyContent: "center",
-                width: "100%",
+                justifyContent: "flex-end",
               }}
             &gt;
               &lt;style&gt;
@@ -4725,23 +4727,24 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                       1,
                     )};
                     border: none;
-                    border-radius: 8px;
-                    padding: ${isMobile ? "10px 16px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px 24px"}</span>;
-                    font-size: ${isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px"}</span>;
-                    font-weight: bold;
-                    font-family: ${FONT_FAMILY.KOREAN};
+                    borderRadius: 8px;
+                    padding: ${isMobile ? "6px 10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px 12px"}</span>;
+                    font-size: ${isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px"}</span>;
+                    fontWeight: bold;
+                    fontFamily: ${FONT_FAMILY.KOREAN};
                     color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    box-shadow: 0 0 10px ${hexToRgbaString(
+                    boxShadow: 0 0 10px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
                       0.5,
                     )};
-                    min-height: 40px;
+                    minHeight: 36px;
+                    whiteSpace: nowrap;
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 0 20px ${hexToRgbaString(
+                    boxShadow: 0 0 20px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
                       0.8,
                     )};
@@ -4755,19 +4758,21 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
                 data-testid="return-to-menu-button"
                 aria-label="Return to main menu"
               &gt;
-                메뉴로 | Return to Menu
+                {isMobile ? "메뉴 | Menu" : <span class="branch-1 cbranch-no" title="branch not covered" >"메뉴로 | Return to Menu"}</span>
               &lt;/button&gt;
             &lt;/ResponsiveContainer&gt;
           &lt;/div&gt;
         &lt;/Html&gt;
 &nbsp;
         {/* Mobile Touch Controls - Only shown on mobile devices */}
+        {/* Positioned above TechniqueBar and "Back to Menu" button to prevent overlap */}
         {isMobile &amp;&amp; (
           &lt;&gt;
             &lt;VirtualDPad
               onMove={handleMobileMove}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={getMobileControlsBottom()} // Use centralized constant
             /&gt;
 &nbsp;
             &lt;ActionButtons
@@ -4775,6 +4780,7 @@ export const TrainingScreen3D: React.FC&lt;TrainingScreen3DProps&gt; = ({
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={getMobileControlsBottom()} // Use centralized constant
             /&gt;
 &nbsp;
             &lt;StanceWheel
@@ -4837,7 +4843,7 @@ export default TrainingScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T16:24:13.686Z
+                at 2026-01-17T18:43:50.554Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.71% </span>
+                <span class="strong">26.54% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>117/438</span>
+                <span class='fraction'>116/437</span>
             </div>
         
             
@@ -2828,18 +2828,8 @@
 <a name='L2763'></a><a href='#L2763'>2763</a>
 <a name='L2764'></a><a href='#L2764'>2764</a>
 <a name='L2765'></a><a href='#L2765'>2765</a>
-<a name='L2766'></a><a href='#L2766'>2766</a>
-<a name='L2767'></a><a href='#L2767'>2767</a>
-<a name='L2768'></a><a href='#L2768'>2768</a>
-<a name='L2769'></a><a href='#L2769'>2769</a>
-<a name='L2770'></a><a href='#L2770'>2770</a>
-<a name='L2771'></a><a href='#L2771'>2771</a>
-<a name='L2772'></a><a href='#L2772'>2772</a>
-<a name='L2773'></a><a href='#L2773'>2773</a>
-<a name='L2774'></a><a href='#L2774'>2774</a>
-<a name='L2775'></a><a href='#L2775'>2775</a>
-<a name='L2776'></a><a href='#L2776'>2776</a>
-<a name='L2777'></a><a href='#L2777'>2777</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2766'></a><a href='#L2766'>2766</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3565,6 +3555,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5500,24 +5496,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5672,6 +5650,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import { getBackButtonTop } from "../../../types/constants/layout";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -5723,13 +5702,13 @@ import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
+import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
-import { TechniqueBar } from "./components/indicators/TechniqueBar";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -6348,7 +6327,13 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
         !combatState.roundEnded &amp;&amp;
         matchCountdownComplete &amp;&amp;
         !showRoundStart,
-      bounds: arenaBounds,
+      bounds: {
+        x: arenaBounds.x,
+        y: arenaBounds.y,
+        width: arenaBounds.width,
+        height: arenaBounds.height,
+        scale: arenaBounds.scale, // Pass arena scale for proper pixel conversion
+      },
       onPositionChange: <span class="fstat-no" title="function not covered" >(n</span>ewPosition: Position) =&gt; {
 <span class="cstat-no" title="statement not covered" >        setPlayer1Position(newPosition);</span>
 <span class="cstat-no" title="statement not covered" >        onPlayerUpdate(0, { position: newPosition });</span>
@@ -8187,44 +8172,26 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
 &nbsp;
-        {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
-        {/* Positioned above the footer button to prevent overlap */}
-        {combatState.roundStarted &amp;&amp;
-          !combatState.roundEnded &amp;&amp;
-          matchCountdownComplete &amp;&amp;
-          !showRoundStart &amp;&amp; (
-            &lt;div
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: isMobile ? 80 : <span class="branch-1 cbranch-no" title="branch not covered" >100 * positionScale, // Clear space for back button</span>
-                width: "100%",
-                height: "180px",
-                pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-end",
-              }}
-            &gt;
-              &lt;div style={{ pointerEvents: "auto" }}&gt;
-                {/* This inner div allows TechniqueBar to receive pointer events */}
-                &lt;TechniqueBar
-                  techniques={techniqueSelection.availableTechniques}
-                  player={validPlayers[0]}
-                  selectedIndex={techniqueSelection.selectedIndex}
-                  cooldowns={cooldownsMap}
-                  onTechniqueSelect={techniqueSelection.selectTechnique}
-                  onTechniqueHover={<span class="fstat-no" title="function not covered" >(_</span>tech) =&gt; {
-                    // Could add additional hover effects here
-                  }}
-                  isMobile={isMobile}
-                  screenWidth={width}
-                  screenHeight={height}
-                /&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-          )}
+        {/* Technique Bar - Bottom Center - Using centralized container component */}
+        &lt;TechniqueBarContainer
+          visible={
+            combatState.roundStarted &amp;&amp;
+            !combatState.roundEnded &amp;&amp;
+            matchCountdownComplete &amp;&amp;
+            !showRoundStart
+          }
+          techniques={techniqueSelection.availableTechniques}
+          player={validPlayers[0]}
+          selectedIndex={techniqueSelection.selectedIndex}
+          cooldowns={cooldownsMap}
+          onTechniqueSelect={techniqueSelection.selectTechnique}
+          onTechniqueHover={<span class="fstat-no" title="function not covered" >(_</span>tech) =&gt; {
+            // Could add additional hover effects here
+          }}
+          isMobile={isMobile}
+          screenWidth={width}
+          screenHeight={height}
+        /&gt;
 &nbsp;
         {/* Combat Controls and Stats */}
         &lt;CombatControlsPanel
@@ -8232,21 +8199,20 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
           isMobile={isMobile}
         /&gt;
 &nbsp;
-        {/* Combat Footer - Back Button */}
+        {/* Back Button - Positioned at top-right corner for visibility and gameplay priority */}
+        {/* Moved from bottom center to avoid any overlap with TechniqueBar and arena */}
         &lt;ResponsiveContainer
           position={{
-            base: { x: 0, y: height - (isMobile ? 70 : <span class="branch-1 cbranch-no" title="branch not covered" >90 * positionScale) }</span>,
+            base: { x: width - (isMobile ? 100 : <span class="branch-1 cbranch-no" title="branch not covered" >150), y</span>: getBackButtonTop(isMobile) }, // Top-right corner
           }}
           containerWidth={width}
           useSafeArea
-          safeAreaEdge="bottom"
-          zIndex={Z_INDEX.HUD}
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD} // Standard HUD layer
           style={{
             pointerEvents: "auto",
-            minHeight: "50px",
             display: "flex",
-            justifyContent: "center",
-            width: "100%",
+            justifyContent: "flex-end",
           }}
         &gt;
           {/* Back button container */}
@@ -8259,7 +8225,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
                 0.8,
               )}`,
               borderRadius: "8px",
-              padding: isMobile ? "8px 12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px 16px",</span>
+              padding: isMobile ? "6px 10px" : <span class="branch-1 cbranch-no" title="branch not covered" >"8px 12px",</span>
             }}
           &gt;
             &lt;style&gt;
@@ -8275,13 +8241,14 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
                   )};
                   border: none;
                   border-radius: 8px;
-                  padding: ${isMobile ? "10px 16px" : <span class="branch-1 cbranch-no" title="branch not covered" >"12px 24px"}</span>;
-                  font-size: ${isMobile ? "14px" : <span class="branch-1 cbranch-no" title="branch not covered" >"16px"}</span>;
+                  padding: ${isMobile ? "8px 12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"10px 16px"}</span>;
+                  font-size: ${isMobile ? "12px" : <span class="branch-1 cbranch-no" title="branch not covered" >"14px"}</span>;
                   font-family: ${FONT_FAMILY.KOREAN};
                   font-weight: bold;
                   cursor: pointer;
                   transition: all 0.2s ease;
-                  min-height: 40px;
+                  min-height: 36px;
+                  white-space: nowrap;
                 }
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
@@ -8299,7 +8266,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
               data-testid="return-to-menu-button"
               aria-label="Return to main menu"
             &gt;
-              메뉴로 | Return to Menu
+              {isMobile ? "메뉴 | Menu" : <span class="branch-1 cbranch-no" title="branch not covered" >"메뉴로 | Return to Menu"}</span>
             &lt;/button&gt;
           &lt;/div&gt;
         &lt;/ResponsiveContainer&gt;
@@ -8398,7 +8365,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T16:24:14.035Z
+                at 2026-01-17T18:43:50.901Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

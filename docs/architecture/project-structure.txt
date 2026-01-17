@@ -440,6 +440,7 @@ src/audio/placeholder-sounds.ts
 src/audio/types.ts
 src/components/game/GameAudio.test.tsx
 src/components/index.ts
+src/components/screens/__tests__/movementIntegration.test.ts
 src/components/screens/combat/CombatScreen3D.test.tsx
 src/components/screens/combat/CombatScreen3D.tsx
 src/components/screens/combat/components/arena/AtmosphericParticles3D.tsx
@@ -519,6 +520,8 @@ src/components/screens/combat/components/hud/PlayerStateOverlayHtml.test.tsx
 src/components/screens/combat/components/hud/PlayerStateOverlayHtml.tsx
 src/components/screens/combat/components/hud/SpeedIndicatorHUD.test.tsx
 src/components/screens/combat/components/hud/SpeedIndicatorHUD.tsx
+src/components/screens/combat/components/hud/TechniqueBarContainer.test.tsx
+src/components/screens/combat/components/hud/TechniqueBarContainer.tsx
 src/components/screens/combat/components/index.ts
 src/components/screens/combat/components/indicators/BalanceIndicator.test.tsx
 src/components/screens/combat/components/indicators/BalanceIndicator.tsx
@@ -1042,6 +1045,7 @@ src/systems/vitalpoint/MeridianVitalPointMapping.ts
 src/systems/vitalpoint/VitalPointsData.ts
 src/systems/vitalpoint/index.ts
 src/systems/vitalpoint/types.ts
+src/test/arenaScaleConstants.ts
 src/test/service-worker.test.ts
 src/test/setup.ts
 src/test/test-setup.ts
@@ -1057,6 +1061,7 @@ src/types/common.ts
 src/types/constants/animations.ts
 src/types/constants/colors.ts
 src/types/constants/index.ts
+src/types/constants/layout.ts
 src/types/constants/performance.ts
 src/types/constants/typography.ts
 src/types/constants/ui.ts
@@ -1069,7 +1074,12 @@ src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/utils/__tests__/arenaCoordinateConversion.test.ts
+src/utils/__tests__/arenaScaleValidation.test.ts
+src/utils/__tests__/combatDistanceScaling.test.ts
 src/utils/__tests__/highResMobile.test.ts
+src/utils/__tests__/inputSystem.bench.ts
+src/utils/__tests__/inputSystem.test.ts
 src/utils/__tests__/lowEndMobile.test.ts
 src/utils/__tests__/particlePool.test.ts
 src/utils/__tests__/responsiveLayoutHelpers.test.ts
@@ -1078,6 +1088,7 @@ src/utils/accessibility.axe.test.tsx
 src/utils/accessibility.test.ts
 src/utils/accessibility.ts
 src/utils/archetypeAssets.test.ts
+src/utils/arenaScaleValidation.ts
 src/utils/clothingColors.test.ts
 src/utils/clothingColors.ts
 src/utils/clothingMaterials.test.ts
