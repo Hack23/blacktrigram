@@ -593,10 +593,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates using actual world dimensions from bounds
-    // Desktop: 16m world, Mobile: 5m world (scaled proportionally)
-    const worldWidth = arenaBounds.worldWidthMeters;
-    const worldDepth = arenaBounds.worldDepthMeters;
+    // Map 0-1 to world coordinates, scaled for arena size
+    const worldWidth = 16 * arenaBounds.scale;
+    const worldDepth = 8 * arenaBounds.scale;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
@@ -605,10 +604,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player2Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates using actual world dimensions from bounds
-    // Desktop: 16m world, Mobile: 5m world (scaled proportionally)
-    const worldWidth = arenaBounds.worldWidthMeters;
-    const worldDepth = arenaBounds.worldDepthMeters;
+    // Map 0-1 to world coordinates, scaled for arena size
+    const worldWidth = 16 * arenaBounds.scale;
+    const worldDepth = 8 * arenaBounds.scale;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];

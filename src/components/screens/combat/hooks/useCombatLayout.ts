@@ -35,7 +35,6 @@ import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
-import { calculateArenaWorldDimensions } from "../../../../types/ArenaConfig";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -53,8 +52,6 @@ export interface ArenaBounds {
   readonly width: number;
   readonly height: number;
   readonly scale: number; // 3D scale factor for arena (1.0 = desktop, <1.0 = mobile)
-  readonly worldWidthMeters: number; // Physical arena width in meters
-  readonly worldDepthMeters: number; // Physical arena depth in meters
 }
 
 export interface CombatLayout {
@@ -124,20 +121,14 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     const totalPadding = layoutConstants.padding * 3;
     const arenaHeight = height - totalReservedHeight - totalPadding;
 
-    // Calculate arena world dimensions based on screen size
-    // Larger screens get larger arenas for better gameplay
-    const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
-
     return {
       x: width * 0.1,
       y: arenaY,
       width: width * 0.8,
       height: arenaHeight,
       scale: 1.0, // Desktop uses full scale
-      worldWidthMeters: worldDimensions.widthMeters,
-      worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile, screenSize]);
+  }, [width, height, layoutConstants, isMobile]);
 
   return {
     layoutConstants,

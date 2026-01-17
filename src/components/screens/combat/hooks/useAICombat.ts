@@ -72,6 +72,8 @@ import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttribut
 import { physicalReachCalculator } from "@/systems/physics";
 import { STANCE_REACH_MODIFIERS } from "@/types/physics";
 import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
+import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -895,8 +897,6 @@ interface UseAICombatConfig {
     readonly width: number;
     readonly height: number;
     readonly scale?: number;
-    readonly worldWidthMeters?: number;
-    readonly worldDepthMeters?: number;
   };
   readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
@@ -1154,12 +1154,20 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const dy = player.position.y - opponent.position.y;
     const distanceInPixels = Math.sqrt(dx * dx + dy * dy);
     
-    // Convert pixel distance to meters using arena dimensions and world size
-    // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 5m = 60 px/m (constant!)
-    // Then convert to standard pixels for technique reach comparisons
-    const pixelsPerMeter = arenaBounds.worldWidthMeters
-      ? arenaBounds.width / arenaBounds.worldWidthMeters
-      : 60; // fallback to desktop default (960/16)
+    // Convert pixel distance to meters using arena scale, then back to standard pixels
+    // This ensures distance is in the same units as technique reach calculations
+    // 
+    // Example (mobile with scale=0.3125):
+    //   - Positions use 320 px/m (BASE_PIXELS_PER_METER / 0.3125)
+    //   - Distance of 320 pixels = 1.0 meters (320 / 320)
+    //   - Convert to standard: 1.0 meters * 100 = 100 pixels (for comparison)
+    // 
+    // Example (desktop with scale=1.0):
+    //   - Positions use 100 px/m (BASE_PIXELS_PER_METER / 1.0)
+    //   - Distance of 100 pixels = 1.0 meters (100 / 100)
+    //   - Convert to standard: 1.0 meters * 100 = 100 pixels (unchanged)
+    const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useAICombat");
+    const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
     const distanceInMeters = distanceInPixels / pixelsPerMeter;
     const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;
 

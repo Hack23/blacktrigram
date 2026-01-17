@@ -278,26 +278,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
-  // Uses world dimensions from layout to properly scale coordinates
+  // Scale 3D coordinates based on training area scale for consistent positioning
   const player3DPosition = useMemo<[number, number, number]>(() => {
     const relX =
       (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
     const relZ =
       (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
-    // Map 0-1 to world coordinates using actual world dimensions from bounds
-    // Desktop: 16m world, Mobile: 5m world (scaled proportionally)
-    const worldWidth = trainingAreaBounds.worldWidthMeters;
-    const worldDepth = trainingAreaBounds.worldDepthMeters;
+    // Map 0-1 to world coordinates, scaled for training area size (matching CombatScreen)
+    const worldWidth = 16 * trainingAreaBounds.scale;
+    const worldDepth = 8 * trainingAreaBounds.scale;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
   }, [playerPosition, trainingAreaBounds]);
 
-  // Dummy position (right side of training area, 31% from center, scales with world)
-  // Position ratio stays constant: 5/16 = 0.3125 of world width
+  // Dummy position (fixed in 3D space, right side of training area, scaled)
   const dummyPosition = useMemo<[number, number, number]>(
-    () => [trainingAreaBounds.worldWidthMeters * 0.3125, 0, 0],
-    [trainingAreaBounds.worldWidthMeters],
+    () => [5 * trainingAreaBounds.scale, 0, 0],
+    [trainingAreaBounds.scale],
   );
 
   // Calculate distance to dummy in meters (training scene uses 1:1 meter scale)
