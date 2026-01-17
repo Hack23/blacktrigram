@@ -36,6 +36,18 @@ export type { BoneCrackEffect, BoneCrackParticles3DProps, FractureType, BoneType
 export { NerveStrikeParticles3D } from './NerveStrikeParticles3D';
 export type { NerveStrikeEffect, NerveStrikeParticles3DProps } from './NerveStrikeParticles3D';
 
+// Internal damage visualization for organ strikes
+export { InternalDamage3D } from './InternalDamage3D';
+export type { InternalDamageEffect, InternalDamage3DProps, OrganType, PenetrationDepth } from './InternalDamage3D';
+
+// Enhanced blood viscosity for realistic droplets
+export { BloodViscosity3D } from './BloodViscosity3D';
+export type { BloodViscosityEffect, BloodViscosity3DProps, ViscosityType } from './BloodViscosity3D';
+
+// Particle audio integration for synchronized sound effects
+export { ParticleAudio3D, createAudioTrigger } from './ParticleAudio3D';
+export type { ParticleAudioTrigger, ParticleAudio3DProps, ParticleEffectType } from './ParticleAudio3D';
+
 // Impact spark effects for critical hits
 export { ImpactSparks3D } from './ImpactSparks3D';
 export type { ImpactSparkEffect, ImpactSparks3DProps } from './ImpactSparks3D';
