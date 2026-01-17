@@ -55,6 +55,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import { getBackButtonTop } from "../../../types/constants/layout";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -106,13 +107,13 @@ import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
+import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
-import { TechniqueBar } from "./components/indicators/TechniqueBar";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -2576,44 +2577,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
 
-        {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
-        {/* Positioned above the footer button to prevent overlap */}
-        {combatState.roundStarted &&
-          !combatState.roundEnded &&
-          matchCountdownComplete &&
-          !showRoundStart && (
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: isMobile ? 80 : 100 * positionScale, // Clear space for back button
-                width: "100%",
-                height: "180px",
-                pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-end",
-              }}
-            >
-              <div style={{ pointerEvents: "auto" }}>
-                {/* This inner div allows TechniqueBar to receive pointer events */}
-                <TechniqueBar
-                  techniques={techniqueSelection.availableTechniques}
-                  player={validPlayers[0]}
-                  selectedIndex={techniqueSelection.selectedIndex}
-                  cooldowns={cooldownsMap}
-                  onTechniqueSelect={techniqueSelection.selectTechnique}
-                  onTechniqueHover={(_tech) => {
-                    // Could add additional hover effects here
-                  }}
-                  isMobile={isMobile}
-                  screenWidth={width}
-                  screenHeight={height}
-                />
-              </div>
-            </div>
-          )}
+        {/* Technique Bar - Bottom Center - Using centralized container component */}
+        <TechniqueBarContainer
+          visible={
+            combatState.roundStarted &&
+            !combatState.roundEnded &&
+            matchCountdownComplete &&
+            !showRoundStart
+          }
+          techniques={techniqueSelection.availableTechniques}
+          player={validPlayers[0]}
+          selectedIndex={techniqueSelection.selectedIndex}
+          cooldowns={cooldownsMap}
+          onTechniqueSelect={techniqueSelection.selectTechnique}
+          onTechniqueHover={(_tech) => {
+            // Could add additional hover effects here
+          }}
+          isMobile={isMobile}
+          screenWidth={width}
+          screenHeight={height}
+        />
 
         {/* Combat Controls and Stats */}
         <CombatControlsPanel
@@ -2621,21 +2604,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
         />
 
-        {/* Combat Footer - Back Button */}
+        {/* Back Button - Positioned at top-right corner for visibility and gameplay priority */}
+        {/* Moved from bottom center to avoid any overlap with TechniqueBar and arena */}
         <ResponsiveContainer
           position={{
-            base: { x: 0, y: height - (isMobile ? 70 : 90 * positionScale) },
+            base: { x: width - (isMobile ? 100 : 150), y: getBackButtonTop(isMobile) }, // Top-right corner
           }}
           containerWidth={width}
           useSafeArea
-          safeAreaEdge="bottom"
-          zIndex={Z_INDEX.HUD}
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD} // Standard HUD layer
           style={{
             pointerEvents: "auto",
-            minHeight: "50px",
             display: "flex",
-            justifyContent: "center",
-            width: "100%",
+            justifyContent: "flex-end",
           }}
         >
           {/* Back button container */}
@@ -2648,7 +2630,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 0.8,
               )}`,
               borderRadius: "8px",
-              padding: isMobile ? "8px 12px" : "10px 16px",
+              padding: isMobile ? "6px 10px" : "8px 12px",
             }}
           >
             <style>
@@ -2664,13 +2646,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                   )};
                   border: none;
                   border-radius: 8px;
-                  padding: ${isMobile ? "10px 16px" : "12px 24px"};
-                  font-size: ${isMobile ? "14px" : "16px"};
+                  padding: ${isMobile ? "8px 12px" : "10px 16px"};
+                  font-size: ${isMobile ? "12px" : "14px"};
                   font-family: ${FONT_FAMILY.KOREAN};
                   font-weight: bold;
                   cursor: pointer;
                   transition: all 0.2s ease;
-                  min-height: 40px;
+                  min-height: 36px;
+                  white-space: nowrap;
                 }
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
@@ -2688,7 +2671,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               data-testid="return-to-menu-button"
               aria-label="Return to main menu"
             >
-              메뉴로 | Return to Menu
+              {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
             </button>
           </div>
         </ResponsiveContainer>

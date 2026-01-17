@@ -43,6 +43,10 @@ import {
   getPerformanceSettings,
   KOREAN_COLORS,
 } from "../../../types/constants";
+import {
+  getBackButtonTop,
+  getMobileControlsBottom,
+} from "../../../types/constants/layout";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -69,7 +73,7 @@ import {
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
-import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
+import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -1433,8 +1437,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               </ResponsiveContainer>
             )}
 
-            {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
-            <TechniqueBar
+            {/* Technique Bar - Bottom Center - Using centralized container component */}
+            <TechniqueBarContainer
+              visible={true}
               techniques={techniqueSelection.availableTechniques}
               player={trainingPlayerState}
               selectedIndex={techniqueSelection.selectedIndex}
@@ -1448,24 +1453,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               screenHeight={height}
             />
 
-            {/* Bottom Center - Return to Menu Button */}
+            {/* Top Right - Return to Menu Button */}
+            {/* Moved from bottom center to top-right for gameplay visibility */}
             <ResponsiveContainer
               position={{
                 base: {
-                  x: 0,
-                  y: height - (isMobile ? 75 : 100 * positionScale),
+                  x: width - (isMobile ? 100 : 150),
+                  y: getBackButtonTop(isMobile), // Top-right corner
                 },
               }}
               containerWidth={width}
               useSafeArea
-              safeAreaEdge="bottom"
-              zIndex={Z_INDEX.HUD}
+              safeAreaEdge="top"
+              zIndex={Z_INDEX.HUD} // Standard HUD layer
               style={{
                 pointerEvents: "all",
-                minHeight: "50px",
                 display: "flex",
-                justifyContent: "center",
-                width: "100%",
+                justifyContent: "flex-end",
               }}
             >
               <style>
@@ -1476,23 +1480,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                       1,
                     )};
                     border: none;
-                    border-radius: 8px;
-                    padding: ${isMobile ? "10px 16px" : "12px 24px"};
-                    font-size: ${isMobile ? "14px" : "16px"};
-                    font-weight: bold;
-                    font-family: ${FONT_FAMILY.KOREAN};
+                    borderRadius: 8px;
+                    padding: ${isMobile ? "6px 10px" : "8px 12px"};
+                    font-size: ${isMobile ? "12px" : "14px"};
+                    fontWeight: bold;
+                    fontFamily: ${FONT_FAMILY.KOREAN};
                     color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    box-shadow: 0 0 10px ${hexToRgbaString(
+                    boxShadow: 0 0 10px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
                       0.5,
                     )};
-                    min-height: 40px;
+                    minHeight: 36px;
+                    whiteSpace: nowrap;
                   }
                   .training-return-menu-btn:hover {
                     transform: scale(1.05);
-                    box-shadow: 0 0 20px ${hexToRgbaString(
+                    boxShadow: 0 0 20px ${hexToRgbaString(
                       KOREAN_COLORS.ACCENT_GOLD,
                       0.8,
                     )};
@@ -1506,19 +1511,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 data-testid="return-to-menu-button"
                 aria-label="Return to main menu"
               >
-                메뉴로 | Return to Menu
+                {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
               </button>
             </ResponsiveContainer>
           </div>
         </Html>
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
+        {/* Positioned above TechniqueBar and "Back to Menu" button to prevent overlap */}
         {isMobile && (
           <>
             <VirtualDPad
               onMove={handleMobileMove}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={getMobileControlsBottom()} // Use centralized constant
             />
 
             <ActionButtons
@@ -1526,6 +1533,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={getMobileControlsBottom()} // Use centralized constant
             />
 
             <StanceWheel
