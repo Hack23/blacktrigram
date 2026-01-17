@@ -143,7 +143,7 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile, screenSize]);
+  }, [width, height, layoutConstants, isMobile]);
 
   return {
     layoutConstants,

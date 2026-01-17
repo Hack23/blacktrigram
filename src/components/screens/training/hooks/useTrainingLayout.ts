@@ -98,10 +98,6 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
   // Mobile training area sizing adapts to device resolution
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
-    
-    // Calculate world dimensions based on screen WIDTH (resolution, not device type)
-    // Square arenas (aspectRatio = 1.0) for all devices
-    const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
@@ -124,6 +120,10 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
     const totalPadding = layoutConstants.padding * 3;
     const areaHeight = height - totalReservedHeight - totalPadding;
 
+    // Calculate world dimensions for desktop based on screen WIDTH (resolution, not device type)
+    // Square arenas (aspectRatio = 1.0) for all devices
+    const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
+
     return {
       x: width * 0.1,
       y: areaY,
@@ -133,7 +133,7 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile, screenSize]);
+  }, [width, height, layoutConstants, isMobile]);
 
   return {
     layoutConstants,

@@ -76,7 +76,10 @@ function isValidPosition(pos: unknown): pos is Position3D | THREE.Vector3 {
     "z" in pos &&
     typeof (pos as Position3D).x === "number" &&
     typeof (pos as Position3D).y === "number" &&
-    typeof (pos as Position3D).z === "number"
+    typeof (pos as Position3D).z === "number" &&
+    Number.isFinite((pos as Position3D).x) &&
+    Number.isFinite((pos as Position3D).y) &&
+    Number.isFinite((pos as Position3D).z)
   );
 }
 
