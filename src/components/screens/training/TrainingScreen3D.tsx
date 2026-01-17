@@ -555,38 +555,49 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Calculate effective reach based on selected technique (matches CombatSystem)
   // 선택된 기술에 따른 유효 사정거리 계산 (전투 시스템과 동일)
-  // Also updates the animation type ref for use in handleAttack
-  const currentTechniqueReach = useMemo(() => {
+  const { currentTechniqueReach, currentAnimationType } = useMemo(() => {
     const techniques = techniqueSelection.availableTechniques;
     const selectedIdx = techniqueSelection.selectedIndex;
     if (techniques.length === 0) {
-      currentTechniqueAnimationTypeRef.current = AnimationType.JAB;
-      return 0.7; // Default punch reach
+      return {
+        currentTechniqueReach: 0.7,
+        currentAnimationType: AnimationType.JAB,
+      };
     }
     const currentTechnique =
       techniques[Math.min(selectedIdx, techniques.length - 1)];
     if (!currentTechnique) {
-      currentTechniqueAnimationTypeRef.current = AnimationType.JAB;
-      return 0.7;
+      return {
+        currentTechniqueReach: 0.7,
+        currentAnimationType: AnimationType.JAB,
+      };
     }
     // Get animation type from technique ID
     const animConfig = getAnimationForTechniqueOrDefault(currentTechnique.id);
-    // Update the ref so handleAttack uses the correct animation type
-    currentTechniqueAnimationTypeRef.current = animConfig.type;
     // Calculate max reach using physical attributes and stance
     const physicalAttributes =
       getArchetypePhysicalAttributes(selectedArchetype);
-    return physicalReachCalculator.calculateMaxReach(
+    const reach = physicalReachCalculator.calculateMaxReach(
       physicalAttributes,
       animConfig.type,
       currentStance,
     );
+    return {
+      currentTechniqueReach: reach,
+      currentAnimationType: animConfig.type,
+    };
   }, [
     techniqueSelection.availableTechniques,
     techniqueSelection.selectedIndex,
     selectedArchetype,
     currentStance,
   ]);
+
+  // Update the animation type ref in an effect (not during render)
+  // 렌더링 중이 아닌 effect에서 ref 업데이트
+  useEffect(() => {
+    currentTechniqueAnimationTypeRef.current = currentAnimationType;
+  }, [currentAnimationType]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 8: Mobile Touch Controls
