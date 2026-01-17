@@ -55,11 +55,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
-import {
-  getTechniqueBarBottom,
-  getBackButtonBottom,
-  LAYOUT_BOTTOM_POSITIONS,
-} from "../../../types/constants/layout";
+import { getBackButtonBottom } from "../../../types/constants/layout";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -111,13 +107,13 @@ import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
+import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
-import { TechniqueBar } from "./components/indicators/TechniqueBar";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -2575,44 +2571,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
 
-        {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
-        {/* Positioned above mobile controls and footer button to prevent overlap */}
-        {combatState.roundStarted &&
-          !combatState.roundEnded &&
-          matchCountdownComplete &&
-          !showRoundStart && (
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: getTechniqueBarBottom(isMobile), // Use centralized constant, no positionScale
-                width: "100%",
-                height: `${LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR_HEIGHT}px`,
-                pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.TECHNIQUE_BAR, // Semantic z-index constant
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-end",
-              }}
-            >
-              <div style={{ pointerEvents: "auto" }}>
-                {/* This inner div allows TechniqueBar to receive pointer events */}
-                <TechniqueBar
-                  techniques={techniqueSelection.availableTechniques}
-                  player={validPlayers[0]}
-                  selectedIndex={techniqueSelection.selectedIndex}
-                  cooldowns={cooldownsMap}
-                  onTechniqueSelect={techniqueSelection.selectTechnique}
-                  onTechniqueHover={(_tech) => {
-                    // Could add additional hover effects here
-                  }}
-                  isMobile={isMobile}
-                  screenWidth={width}
-                  screenHeight={height}
-                />
-              </div>
-            </div>
-          )}
+        {/* Technique Bar - Bottom Center - Using centralized container component */}
+        <TechniqueBarContainer
+          visible={
+            combatState.roundStarted &&
+            !combatState.roundEnded &&
+            matchCountdownComplete &&
+            !showRoundStart
+          }
+          techniques={techniqueSelection.availableTechniques}
+          player={validPlayers[0]}
+          selectedIndex={techniqueSelection.selectedIndex}
+          cooldowns={cooldownsMap}
+          onTechniqueSelect={techniqueSelection.selectTechnique}
+          onTechniqueHover={(_tech) => {
+            // Could add additional hover effects here
+          }}
+          isMobile={isMobile}
+          screenWidth={width}
+          screenHeight={height}
+        />
 
         {/* Combat Controls and Stats */}
         <CombatControlsPanel

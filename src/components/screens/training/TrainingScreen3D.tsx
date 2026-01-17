@@ -44,10 +44,8 @@ import {
   KOREAN_COLORS,
 } from "../../../types/constants";
 import {
-  getTechniqueBarBottom,
   getBackButtonBottom,
   getMobileControlsBottom,
-  LAYOUT_BOTTOM_POSITIONS,
 } from "../../../types/constants/layout";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
@@ -75,7 +73,7 @@ import {
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
-import { TechniqueBar } from "../combat/components/indicators/TechniqueBar";
+import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -1445,38 +1443,21 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               </ResponsiveContainer>
             )}
 
-            {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
-            {/* Positioned above mobile controls and "Back to Menu" button to prevent overlap */}
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: getTechniqueBarBottom(isMobile), // Use centralized constant, no positionScale
-                width: "100%",
-                height: `${LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR_HEIGHT}px`,
-                pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.TECHNIQUE_BAR, // Semantic z-index constant
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "flex-end",
+            {/* Technique Bar - Bottom Center - Using centralized container component */}
+            <TechniqueBarContainer
+              visible={true}
+              techniques={techniqueSelection.availableTechniques}
+              player={trainingPlayerState}
+              selectedIndex={techniqueSelection.selectedIndex}
+              cooldowns={cooldownsMap}
+              onTechniqueSelect={techniqueSelection.selectTechnique}
+              onTechniqueHover={(_tech) => {
+                // Could add additional hover effects here
               }}
-            >
-              <div style={{ pointerEvents: "auto" }}>
-                <TechniqueBar
-                  techniques={techniqueSelection.availableTechniques}
-                  player={trainingPlayerState}
-                  selectedIndex={techniqueSelection.selectedIndex}
-                  cooldowns={cooldownsMap}
-                  onTechniqueSelect={techniqueSelection.selectTechnique}
-                  onTechniqueHover={(_tech) => {
-                    // Could add additional hover effects here
-                  }}
-                  isMobile={isMobile}
-                  screenWidth={width}
-                  screenHeight={height}
-                />
-              </div>
-            </div>
+              isMobile={isMobile}
+              screenWidth={width}
+              screenHeight={height}
+            />
 
             {/* Bottom Center - Return to Menu Button */}
             {/* Positioned below TechniqueBar with sufficient clearance */}
