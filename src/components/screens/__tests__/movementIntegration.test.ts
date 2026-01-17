@@ -12,8 +12,6 @@ import type { Position } from '../../../types/common';
 import { TrigramStance } from '../../../types/common';
 import {
   MOBILE_ARENA_SCALE,
-  TABLET_ARENA_SCALE,
-  DESKTOP_ARENA_SCALE,
 } from '../../../test/arenaScaleConstants';
 
 describe('Screen Movement Integration', () => {
