@@ -13,6 +13,7 @@ export interface InputSystemConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number; // Arena scale factor (1.0 = desktop, <1.0 = mobile)
   };
   readonly onPositionChange?: (position: Position) => void;
   readonly initialPosition?: Position;
@@ -274,16 +275,20 @@ export function usePlayerMovement(
       physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      let newX = state.position.x * 100;
-      let newY = state.position.z * 100;
+      // Scale pixels-per-meter by arena scale for consistent visual speed across devices
+      // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
+      const arenaScale = bounds?.scale ?? 1.0;
+      const pixelsPerMeter = 100 / arenaScale;
+      let newX = state.position.x * pixelsPerMeter;
+      let newY = state.position.z * pixelsPerMeter;
 
-      // Apply bounds
+      // Apply bounds (use full arena bounds without hardcoded offsets)
       if (bounds) {
-        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width - 60, newX));
-        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height - 180, newY));
+        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width, newX));
+        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
         // Update 3D position to match clamped 2D position
-        state.position.x = newX / 100;
-        state.position.z = newY / 100;
+        state.position.x = newX / pixelsPerMeter;
+        state.position.z = newY / pixelsPerMeter;
       }
 
       const newPosition = { x: newX, y: newY };
