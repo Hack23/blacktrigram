@@ -28,6 +28,10 @@ export type { BloodSplatterEffect, BloodParticles3DProps } from './BloodParticle
 export { ArterialSpray3D } from './ArterialSpray3D';
 export type { ArterialSprayEffect, ArterialSpray3DProps, ArterialVitalPoint } from './ArterialSpray3D';
 
+// Bone fracture particles for bone-breaking techniques
+export { BoneCrackParticles3D } from './BoneCrackParticles3D';
+export type { BoneCrackEffect, BoneCrackParticles3DProps, FractureType, BoneType } from './BoneCrackParticles3D';
+
 // Impact spark effects for critical hits
 export { ImpactSparks3D } from './ImpactSparks3D';
 export type { ImpactSparkEffect, ImpactSparks3DProps } from './ImpactSparks3D';
@@ -52,6 +56,7 @@ export type { HitEffects3DProps } from './HitEffects3D';
  * - Dust Clouds: 30-60 particles  
  * - Blood Splatter: 100-300 particles
  * - Arterial Spray: 250 particles (high-velocity jets)
+ * - Bone Fractures: 15-60 particles (fracture type dependent)
  * - Trigram Symbols: 8 symbols per effect
  * - Max concurrent effects: 10-15
  * 
@@ -60,6 +65,7 @@ export type { HitEffects3DProps } from './HitEffects3D';
  * - Dust Clouds: 15-30 particles
  * - Blood Splatter: 50-100 particles
  * - Arterial Spray: 120 particles (optimized)
+ * - Bone Fractures: 8-30 particles (reduced)
  * - Trigram Symbols: 8 symbols per effect
  * - Max concurrent effects: 5-8
  * 
