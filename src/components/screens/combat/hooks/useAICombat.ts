@@ -1165,7 +1165,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     //   - Positions use 100 px/m (BASE_PIXELS_PER_METER / 1.0)
     //   - Distance of 100 pixels = 1.0 meters (100 / 100)
     //   - Convert to standard: 1.0 meters * 100 = 100 pixels (unchanged)
-    const arenaScale = arenaBounds.scale ?? 1.0;
+    const rawArenaScale = arenaBounds.scale ?? 1.0;
+    const arenaScale =
+      Number.isFinite(rawArenaScale) && rawArenaScale > 0
+        ? rawArenaScale
+        : (() => {
+            console.warn(
+              `[useAICombat] Invalid arena scale: ${rawArenaScale}, falling back to 1.0`
+            );
+            return 1.0;
+          })();
     const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
     const distanceInMeters = distanceInPixels / pixelsPerMeter;
     const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;

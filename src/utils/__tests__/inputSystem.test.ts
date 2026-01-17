@@ -8,24 +8,32 @@
 import { describe, expect, it } from 'vitest';
 import { BASE_PIXELS_PER_METER } from '../inputSystem';
 
+// Arena scale constants for different device sizes
+// Mobile: 300px arena / 960px desktop = 0.3125
+// Tablet: 480px arena / 960px desktop = 0.5
+// Desktop: 960px arena / 960px desktop = 1.0
+export const MOBILE_ARENA_SCALE = 0.3125;
+export const TABLET_ARENA_SCALE = 0.5;
+export const DESKTOP_ARENA_SCALE = 1.0;
+
 describe('inputSystem - Scale Conversion Logic', () => {
   describe('Pixel-to-Meter Conversion', () => {
     it('should use 100 pixels per meter for desktop scale (1.0)', () => {
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       expect(pixelsPerMeter).toBe(100);
     });
 
     it('should use 320 pixels per meter for mobile scale (0.3125)', () => {
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       expect(pixelsPerMeter).toBeCloseTo(320, 1);
     });
 
     it('should use 200 pixels per meter for tablet scale (0.5)', () => {
-      const scale = 0.5;
+      const scale = TABLET_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       expect(pixelsPerMeter).toBe(200);
@@ -54,7 +62,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should default to 100 pixels per meter when scale is undefined', () => {
       const scale = undefined;
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / (scale ?? 1.0);
+      const pixelsPerMeter = BASE_PIXELS_PER_METER / (scale ?? DESKTOP_ARENA_SCALE);
       
       expect(pixelsPerMeter).toBe(100);
     });
@@ -63,7 +71,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
   describe('Position to Pixels Conversion', () => {
     it('should convert 3D position to pixels with desktop scale', () => {
       const position = { x: 2.0, z: 1.5 }; // meters
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const pixelX = position.x * pixelsPerMeter;
@@ -75,7 +83,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should convert 3D position to pixels with mobile scale', () => {
       const position = { x: 1.0, z: 0.5 }; // meters
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const pixelX = position.x * pixelsPerMeter;
@@ -87,7 +95,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should handle negative positions', () => {
       const position = { x: -1.0, z: -0.5 };
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const pixelX = position.x * pixelsPerMeter;
@@ -99,7 +107,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should handle zero position', () => {
       const position = { x: 0, z: 0 };
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const pixelX = position.x * pixelsPerMeter;
@@ -159,7 +167,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
   describe('Pixels to 3D Position Reverse Conversion', () => {
     it('should convert pixels back to 3D position with desktop scale', () => {
       const pixels = { x: 200, y: 150 };
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const posX = pixels.x / pixelsPerMeter;
@@ -171,7 +179,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should convert pixels back to 3D position with mobile scale', () => {
       const pixels = { x: 320, y: 160 };
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const posX = pixels.x / pixelsPerMeter;
@@ -183,7 +191,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should maintain round-trip conversion accuracy (desktop)', () => {
       const originalPos = { x: 3.5, z: 2.7 };
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       // Convert to pixels
@@ -200,7 +208,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should maintain round-trip conversion accuracy (mobile)', () => {
       const originalPos = { x: 1.2, z: 0.8 };
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       // Convert to pixels
@@ -259,7 +267,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
     it('should calculate correct pixel movement per frame at 60fps (desktop)', () => {
       const speed = 2.0; // m/s
       const deltaTime = 1 / 60; // 60fps
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const distanceMeters = speed * deltaTime;
@@ -271,7 +279,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
     it('should calculate correct pixel movement per frame at 60fps (mobile)', () => {
       const speed = 2.0; // m/s
       const deltaTime = 1 / 60; // 60fps
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       
       const distanceMeters = speed * deltaTime;
@@ -282,7 +290,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should calculate time to cross arena (desktop)', () => {
       const arenaWidthPixels = 960;
-      const scale = 1.0;
+      const scale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       const arenaWidthMeters = arenaWidthPixels / pixelsPerMeter;
       const speed = 2.0; // m/s
@@ -294,7 +302,7 @@ describe('inputSystem - Scale Conversion Logic', () => {
 
     it('should calculate time to cross arena (mobile)', () => {
       const arenaWidthPixels = 300;
-      const scale = 0.3125;
+      const scale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
       const arenaWidthMeters = arenaWidthPixels / pixelsPerMeter;
       const speed = 2.0; // m/s

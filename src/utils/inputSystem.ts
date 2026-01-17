@@ -341,7 +341,16 @@ export function usePlayerMovement(
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
       // Scale pixels-per-meter by arena scale for consistent visual speed across devices
       // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
-      const arenaScale = bounds?.scale ?? 1.0;
+      const rawArenaScale = bounds?.scale ?? 1.0;
+      const arenaScale =
+        Number.isFinite(rawArenaScale) && rawArenaScale > 0
+          ? rawArenaScale
+          : (() => {
+              console.warn(
+                `[inputSystem] Invalid arena scale: ${rawArenaScale}, falling back to 1.0`
+              );
+              return 1.0;
+            })();
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
