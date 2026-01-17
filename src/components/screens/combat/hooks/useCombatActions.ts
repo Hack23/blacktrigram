@@ -53,7 +53,6 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
-import { calculatePixelsPerMeter } from "@/types/arenaConstants";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -155,6 +154,8 @@ export interface UseCombatActionsConfig {
     readonly width: number;
     readonly height: number;
     readonly scale?: number;
+    readonly worldWidthMeters?: number;
+    readonly worldDepthMeters?: number;
   };
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
@@ -1152,15 +1153,15 @@ export function useCombatActions(
       const currentPos = playerPositions[1];
       const aiPlayer = validPlayers[1];
 
-      // Movement speed calibrated for 16m×8m arena with realistic combat closing speed
-      // Calculate correct pixels-per-meter from arena width and fixed world width
-      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
+      // Movement speed calibrated for arena with realistic combat closing speed
+      // Calculate pixels-per-meter from arena dimensions and world size
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 5m = 60 px/m (constant!)
       // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
       // Real fights are over in 4-5 seconds - AI must close distance quickly
       // Calculation: 2.5 m/s × pixelsPerMeter / 20 calls/s = px/call
-      const pixelsPerMeter = arenaBounds.width
-        ? calculatePixelsPerMeter(arenaBounds.width)
-        : 60; // fallback to desktop default
+      const pixelsPerMeter = arenaBounds.worldWidthMeters
+        ? arenaBounds.width / arenaBounds.worldWidthMeters
+        : 60; // fallback to desktop default (960/16)
       const baseSpeed = (2.5 * pixelsPerMeter) / 20;
 
       // Calculate movement direction vector

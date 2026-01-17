@@ -72,7 +72,6 @@ import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttribut
 import { physicalReachCalculator } from "@/systems/physics";
 import { STANCE_REACH_MODIFIERS } from "@/types/physics";
 import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
-import { calculatePixelsPerMeter } from "@/types/arenaConstants";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -896,6 +895,8 @@ interface UseAICombatConfig {
     readonly width: number;
     readonly height: number;
     readonly scale?: number;
+    readonly worldWidthMeters?: number;
+    readonly worldDepthMeters?: number;
   };
   readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
@@ -1142,9 +1143,9 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   /**
    * Build combat context for decision-making.
    * 
-   * **IMPORTANT**: Distance calculation must use correct pixels-per-meter based on arena width.
-   * Player positions are in pixels derived from arena dimensions (arena width / world width in meters),
-   * and distances need to be converted to meters for technique reach comparisons.
+   * **IMPORTANT**: Distance calculation must account for arena scale.
+   * Player positions are in scale-adjusted pixels (BASE_PIXELS_PER_METER / scale),
+   * but combat system expects distances in "standard" pixels (METERS_TO_PIXELS_SCALE).
    * 
    * @korean 전투 컨텍스트 구축
    */
@@ -1153,12 +1154,12 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const dy = player.position.y - opponent.position.y;
     const distanceInPixels = Math.sqrt(dx * dx + dy * dy);
     
-    // Convert pixel distance to meters using correct arena-based calculation
-    // Desktop: 960px / 16m = 60 px/m → 60px distance = 1.0 meter
-    // Mobile: 300px / 16m = 18.75 px/m → 18.75px distance = 1.0 meter
-    const pixelsPerMeter = arenaBounds.width
-      ? calculatePixelsPerMeter(arenaBounds.width)
-      : 60; // fallback to desktop default
+    // Convert pixel distance to meters using arena dimensions and world size
+    // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 5m = 60 px/m (constant!)
+    // Then convert to standard pixels for technique reach comparisons
+    const pixelsPerMeter = arenaBounds.worldWidthMeters
+      ? arenaBounds.width / arenaBounds.worldWidthMeters
+      : 60; // fallback to desktop default (960/16)
     const distanceInMeters = distanceInPixels / pixelsPerMeter;
     const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;
 

@@ -52,6 +52,8 @@ export interface ArenaBounds {
   readonly width: number;
   readonly height: number;
   readonly scale: number; // 3D scale factor for arena (1.0 = desktop, <1.0 = mobile)
+  readonly worldWidthMeters: number; // Physical arena width in meters
+  readonly worldDepthMeters: number; // Physical arena depth in meters
 }
 
 export interface CombatLayout {
@@ -121,12 +123,18 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
     const totalPadding = layoutConstants.padding * 3;
     const arenaHeight = height - totalReservedHeight - totalPadding;
 
+    // Desktop reference: 16m × 8m world
+    const DESKTOP_WORLD_WIDTH_METERS = 16;
+    const DESKTOP_WORLD_DEPTH_METERS = 8;
+
     return {
       x: width * 0.1,
       y: arenaY,
       width: width * 0.8,
       height: arenaHeight,
       scale: 1.0, // Desktop uses full scale
+      worldWidthMeters: DESKTOP_WORLD_WIDTH_METERS,
+      worldDepthMeters: DESKTOP_WORLD_DEPTH_METERS,
     };
   }, [width, height, layoutConstants, isMobile]);
 

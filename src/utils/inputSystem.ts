@@ -5,7 +5,6 @@ import { TrigramStance } from "../types/common";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
-import { calculatePixelsPerMeter } from "../types/arenaConstants";
 
 /**
  * Base pixel-to-meter conversion ratio for desktop scale (1.0).
@@ -13,14 +12,16 @@ import { calculatePixelsPerMeter } from "../types/arenaConstants";
  * at default desktop scale. The actual pixels per meter is calculated by
  * dividing this value by the arena scale factor.
  * 
- * **DEPRECATED**: Use calculatePixelsPerMeter(arenaWidth) instead for accurate conversion.
- * This constant is kept for backward compatibility only.
- * 
  * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
  * 
  * @constant
  * @public
- * @deprecated Use calculatePixelsPerMeter() from arenaConstants instead
+ * @example
+ * // Desktop (scale = 1.0): 100 pixels per meter
+ * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
+ * 
+ * // Mobile (scale = 0.3125): 320 pixels per meter
+ * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
  */
 export const BASE_PIXELS_PER_METER = 100;
 
@@ -34,7 +35,7 @@ export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
   
-  /** Arena bounds configuration with optional scale factor */
+  /** Arena bounds configuration with world dimensions */
   readonly bounds?: {
     /** X coordinate of arena top-left corner (pixels) */
     readonly x: number;
@@ -46,14 +47,15 @@ export interface InputSystemConfig {
     readonly height: number;
     /**
      * Arena scale factor for responsive sizing.
-     * - 1.0 = desktop (960px arena, 100 pixels per meter)
-     * - 0.3125 = mobile (300px arena, 320 pixels per meter)
+     * - 1.0 = desktop (960px arena, 16m world)
+     * - 0.3125 = mobile (300px arena, 5m world)
      * - Default: 1.0 if not provided
-     * 
-     * This scale factor is used to maintain consistent visual movement speed
-     * across different device sizes by adjusting the pixel-to-meter conversion.
      */
     readonly scale?: number;
+    /** Physical arena width in meters (scales with arena size) */
+    readonly worldWidthMeters?: number;
+    /** Physical arena depth in meters (scales with arena size) */
+    readonly worldDepthMeters?: number;
   };
   
   /** Callback invoked when player position changes */
@@ -179,12 +181,11 @@ export function usePlayerMovement(
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
-      // Calculate pixels-per-meter from actual arena width and fixed world size
-      // This ensures consistent coordinate system between physics and 3D rendering
-      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
-      const pixelsPerMeter = bounds?.width
-        ? calculatePixelsPerMeter(bounds.width)
-        : 60; // fallback to desktop default
+      // Calculate pixels-per-meter from arena dimensions and world size
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 5m = 60 px/m (constant ratio!)
+      const pixelsPerMeter = bounds?.worldWidthMeters
+        ? bounds.width / bounds.worldWidthMeters
+        : 60; // fallback to desktop default (960/16)
       physicsStateRef.current = {
         position: new THREE.Vector3(
           initialPosition.x / pixelsPerMeter,
@@ -343,12 +344,11 @@ export function usePlayerMovement(
       physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      // Calculate pixels-per-meter from actual arena width and fixed world size
-      // This ensures consistent coordinate system between physics and 3D rendering
-      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
-      const pixelsPerMeter = bounds?.width
-        ? calculatePixelsPerMeter(bounds.width)
-        : 60; // fallback to desktop default
+      // Calculate pixels-per-meter from arena dimensions and world size
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 5m = 60 px/m (constant ratio!)
+      const pixelsPerMeter = bounds?.worldWidthMeters
+        ? bounds.width / bounds.worldWidthMeters
+        : 60; // fallback to desktop default (960/16)
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
 

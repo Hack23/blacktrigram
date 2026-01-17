@@ -21,15 +21,13 @@
  * @param topClearance - Minimum space to reserve at top (for HUD/header)
  * @param bottomClearance - Minimum space to reserve at bottom (for controls)
  * @param yOffset - Y position offset (typically header height + padding)
- * @returns Mobile area bounds with position, dimensions, and scale factor
+ * @returns Mobile area bounds with position, dimensions, scale factor, and world dimensions
  * 
  * @example
  * ```typescript
  * const bounds = calculateMobileAreaBounds(375, 667, 80, 120, 100);
- * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125 }
- * 
- * const boundsSmall = calculateMobileAreaBounds(320, 568, 75, 110, 90);
- * // Returns: { x: ~25, y: 90, width: 270, height: 202, scale: 0.28125 }
+ * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125, 
+ * //            worldWidthMeters: 5, worldDepthMeters: 2.5 }
  * ```
  * 
  * @public
@@ -47,6 +45,8 @@ export function calculateMobileAreaBounds(
   readonly width: number;
   readonly height: number;
   readonly scale: number;
+  readonly worldWidthMeters: number;
+  readonly worldDepthMeters: number;
 } {
   // Calculate available space for the area
   // Extra-small devices (<380px) use tighter margins for more screen real estate
@@ -97,11 +97,20 @@ export function calculateMobileAreaBounds(
   const desktopWidth = 960; // 80% of 1200px reference
   const scale = areaWidth / desktopWidth;
 
+  // Desktop reference world: 16m × 8m
+  // Mobile world scales proportionally with arena size
+  const DESKTOP_WORLD_WIDTH_METERS = 16;
+  const DESKTOP_WORLD_DEPTH_METERS = 8;
+  const worldWidthMeters = DESKTOP_WORLD_WIDTH_METERS * scale;
+  const worldDepthMeters = DESKTOP_WORLD_DEPTH_METERS * scale;
+
   return {
     x: (width - areaWidth) / 2, // Centered horizontally
     y: yOffset,
     width: areaWidth,
     height: areaHeight,
     scale,
+    worldWidthMeters,
+    worldDepthMeters,
   };
 }
