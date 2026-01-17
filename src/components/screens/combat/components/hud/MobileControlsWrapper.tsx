@@ -35,6 +35,7 @@ import {
 import { ButtonEventType } from "../../../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../../../shared/mobile/VirtualDPad";
 import { GestureEvent } from "../../../../../hooks/useTouchControls";
+import { getMobileControlsBottom } from "../../../../../types/constants/layout";
 
 export interface MobileControlsWrapperProps {
   /** Whether mobile controls are enabled */
@@ -66,6 +67,11 @@ export interface MobileControlsWrapperProps {
  * - Stance Wheel (right-center) for trigram stance selection
  * - Gesture Recognition for swipe-based actions
  *
+ * Positioning Strategy:
+ * - All controls positioned using centralized layout constants
+ * - D-Pad and ActionButtons use getMobileControlsBottom() for consistency
+ * - Z-index: MOBILE_CONTROLS (50) to ensure visibility over HUD elements
+ *
  * @example
  * ```tsx
  * <MobileControlsWrapper
@@ -95,18 +101,22 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
   return (
     <>
       {/* Virtual D-Pad - Bottom-left for movement */}
+      {/* Positioned using centralized constant for consistency */}
       <VirtualDPad
         onMove={onMove}
         disabled={!enabled}
         opacity={0.8}
+        bottom={getMobileControlsBottom()}
       />
 
       {/* Action Buttons - Bottom-right for attack/block */}
+      {/* Positioned using centralized constant for consistency */}
       <ActionButtons
         onAttack={onAttack}
         onBlock={onBlock}
         disabled={!enabled}
         opacity={0.8}
+        bottom={getMobileControlsBottom()}
       />
 
       {/* Stance Wheel - Right-center for trigram stance selection */}
