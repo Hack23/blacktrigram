@@ -5,7 +5,7 @@ import { TrigramStance } from "../types/common";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
-import { getValidatedArenaScale } from "./arenaScaleValidation";
+import { calculatePixelsPerMeter } from "../types/arenaConstants";
 
 /**
  * Base pixel-to-meter conversion ratio for desktop scale (1.0).
@@ -13,16 +13,14 @@ import { getValidatedArenaScale } from "./arenaScaleValidation";
  * at default desktop scale. The actual pixels per meter is calculated by
  * dividing this value by the arena scale factor.
  * 
+ * **DEPRECATED**: Use calculatePixelsPerMeter(arenaWidth) instead for accurate conversion.
+ * This constant is kept for backward compatibility only.
+ * 
  * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
  * 
  * @constant
  * @public
- * @example
- * // Desktop (scale = 1.0): 100 pixels per meter
- * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
- * 
- * // Mobile (scale = 0.3125): 320 pixels per meter
- * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
+ * @deprecated Use calculatePixelsPerMeter() from arenaConstants instead
  */
 export const BASE_PIXELS_PER_METER = 100;
 
@@ -181,10 +179,12 @@ export function usePlayerMovement(
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
-      // Use scale-aware conversion to match update loop and prevent position jumps
-      // Desktop (scale=1.0): 100 px/m, Mobile (scale=0.3125): 320 px/m
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+      // Calculate pixels-per-meter from actual arena width and fixed world size
+      // This ensures consistent coordinate system between physics and 3D rendering
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
+      const pixelsPerMeter = bounds?.width
+        ? calculatePixelsPerMeter(bounds.width)
+        : 60; // fallback to desktop default
       physicsStateRef.current = {
         position: new THREE.Vector3(
           initialPosition.x / pixelsPerMeter,
@@ -343,10 +343,12 @@ export function usePlayerMovement(
       physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      // Scale pixels-per-meter by arena scale for consistent visual speed across devices
-      // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+      // Calculate pixels-per-meter from actual arena width and fixed world size
+      // This ensures consistent coordinate system between physics and 3D rendering
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
+      const pixelsPerMeter = bounds?.width
+        ? calculatePixelsPerMeter(bounds.width)
+        : 60; // fallback to desktop default
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
 

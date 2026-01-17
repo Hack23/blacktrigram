@@ -53,8 +53,7 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
-import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
-import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
+import { calculatePixelsPerMeter } from "@/types/arenaConstants";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -1153,12 +1152,15 @@ export function useCombatActions(
       const currentPos = playerPositions[1];
       const aiPlayer = validPlayers[1];
 
-      // Movement speed calibrated for 8m×8m arena with realistic combat closing speed
-      // Arena width is dynamic: arenaBounds.width is in pixels and represents an 8m-wide arena, so pixelsPerMeter = arenaBounds.width / 8
+      // Movement speed calibrated for 16m×8m arena with realistic combat closing speed
+      // Calculate correct pixels-per-meter from arena width and fixed world width
+      // Desktop: 960px / 16m = 60 px/m, Mobile: 300px / 16m = 18.75 px/m
       // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
       // Real fights are over in 4-5 seconds - AI must close distance quickly
       // Calculation: 2.5 m/s × pixelsPerMeter / 20 calls/s = px/call
-      const pixelsPerMeter = arenaBounds.width / 8;
+      const pixelsPerMeter = arenaBounds.width
+        ? calculatePixelsPerMeter(arenaBounds.width)
+        : 60; // fallback to desktop default
       const baseSpeed = (2.5 * pixelsPerMeter) / 20;
 
       // Calculate movement direction vector
@@ -1186,12 +1188,9 @@ export function useCombatActions(
 
       // Calculate distance in pixels, then convert to meters for threshold comparison
       // Stop moving when within 0.05 meters (5cm) of target - close enough for melee range
-      // **UPDATED**: Use scale-aware conversion to match movement system
       const MIN_MOVEMENT_THRESHOLD_METERS = 0.05;
-      const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useCombatActions");
-      const scaleAwarePixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const MIN_MOVEMENT_THRESHOLD_PIXELS =
-        MIN_MOVEMENT_THRESHOLD_METERS * scaleAwarePixelsPerMeter;
+        MIN_MOVEMENT_THRESHOLD_METERS * pixelsPerMeter;
 
       if (distance > MIN_MOVEMENT_THRESHOLD_PIXELS) {
         const newPos = {
