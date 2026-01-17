@@ -162,6 +162,28 @@ export interface PlayerState {
   readonly position: Position;
   /** Body facing direction for opponent tracking */
   readonly bodyFacing?: BodyFacing;
+  /**
+   * Which foot is currently forward in stance
+   *
+   * Orthodox stance: left foot forward (traditional right-handed fighter)
+   * Southpaw stance: right foot forward (traditional left-handed fighter)
+   *
+   * This affects animation mirroring - techniques will be mirrored
+   * appropriately based on the lead foot.
+   *
+   * **Korean**: 선발발 (Lead Foot)
+   */
+  readonly leadFoot?: "left" | "right";
+  /**
+   * Stance side for combat positioning
+   *
+   * Derived from leadFoot:
+   * - Orthodox: left foot forward
+   * - Southpaw: right foot forward
+   *
+   * **Korean**: 자세방향 (Stance Side)
+   */
+  readonly stanceSide?: "orthodox" | "southpaw";
   /** Whether player is actively blocking */
   readonly isBlocking: boolean;
   /** Whether player is stunned (cannot act) */

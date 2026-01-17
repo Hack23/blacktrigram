@@ -53,7 +53,7 @@ const DEFAULT_BODY_PART_MAX_HEALTH: BodyPartMaxHealth = {
  */
 export function createPlayerFromArchetype(
   archetype: PlayerArchetype,
-  playerIndex: number
+  playerIndex: number,
 ): PlayerState {
   const archetypeData = PLAYER_ARCHETYPES_DATA[archetype];
 
@@ -96,6 +96,10 @@ export function createPlayerFromArchetype(
     currentStance: archetypeData.coreStance,
     combatState: CombatState.IDLE,
     position: basePosition,
+    // Default to orthodox stance (left foot forward)
+    // Player 1 starts orthodox, Player 2 starts southpaw for facing each other
+    leadFoot: playerIndex === 0 ? "left" : "right",
+    stanceSide: playerIndex === 0 ? "orthodox" : "southpaw",
     isBlocking: false,
     isStunned: false,
     isCountering: false,
@@ -125,7 +129,7 @@ export function createPlayerFromArchetype(
  */
 export function updatePlayerState(
   player: PlayerState,
-  updates: Partial<PlayerState>
+  updates: Partial<PlayerState>,
 ): PlayerState {
   return {
     ...player,
@@ -133,16 +137,16 @@ export function updatePlayerState(
     // Ensure vital constraints
     health: Math.max(
       0,
-      Math.min(updates.health ?? player.health, player.maxHealth)
+      Math.min(updates.health ?? player.health, player.maxHealth),
     ),
     ki: Math.max(0, Math.min(updates.ki ?? player.ki, player.maxKi)),
     stamina: Math.max(
       0,
-      Math.min(updates.stamina ?? player.stamina, player.maxStamina)
+      Math.min(updates.stamina ?? player.stamina, player.maxStamina),
     ),
     consciousness: Math.max(
       0,
-      Math.min(updates.consciousness ?? player.consciousness, 100)
+      Math.min(updates.consciousness ?? player.consciousness, 100),
     ),
     balance: Math.max(0, Math.min(updates.balance ?? player.balance, 100)),
   };
@@ -154,7 +158,7 @@ export function updatePlayerState(
 export function applyDamage(
   player: PlayerState,
   damage: number,
-  _damageType?: string // Fix: Add underscore for unused parameter
+  _damageType?: string, // Fix: Add underscore for unused parameter
 ): PlayerState {
   const newHealth = Math.max(0, player.health - damage);
   const isKnockedOut = newHealth <= 0;
@@ -173,10 +177,10 @@ export function applyDamage(
  */
 export function applyStatusEffect(
   player: PlayerState,
-  effect: StatusEffect
+  effect: StatusEffect,
 ): PlayerState {
   const existingEffectIndex = player.statusEffects.findIndex(
-    (e) => e.type === effect.type && !e.stackable
+    (e) => e.type === effect.type && !e.stackable,
   );
 
   let newEffects: StatusEffect[];
@@ -200,7 +204,7 @@ export function applyStatusEffect(
  */
 export function getVitalPointByOnPlayerId(
   player: PlayerState,
-  vitalPointId: string
+  vitalPointId: string,
 ): {
   readonly id: string;
   readonly isHit: boolean;
@@ -226,7 +230,7 @@ export function canPlayerAct(player: PlayerState): boolean {
  */
 export function getStanceEffectiveness(
   _playerStance: TrigramStance, // Fix: Add underscore to unused parameter
-  _opponentStance: TrigramStance // Fix: Add underscore to unused parameter
+  _opponentStance: TrigramStance, // Fix: Add underscore to unused parameter
 ): number {
   // Basic implementation - could be enhanced with stance matrix
   return 1.0;
@@ -238,7 +242,7 @@ export function getStanceEffectiveness(
 export function hasEnoughResources(
   player: PlayerState,
   kiCost: number,
-  staminaCost: number
+  staminaCost: number,
 ): boolean {
   return player.ki >= kiCost && player.stamina >= staminaCost;
 }
@@ -280,10 +284,10 @@ export function calculateCombatEffectiveness(player: PlayerState): number {
  */
 export function updateStatusEffects(
   player: PlayerState,
-  currentTime: number
+  currentTime: number,
 ): PlayerState {
   const activeEffects = player.statusEffects.filter(
-    (effect) => effect.endTime > currentTime
+    (effect) => effect.endTime > currentTime,
   );
 
   return updatePlayerState(player, {
@@ -297,7 +301,7 @@ export function updateStatusEffects(
  */
 export function resetPlayerState(
   archetype: PlayerArchetype,
-  playerIndex: number
+  playerIndex: number,
 ): PlayerState {
   return createPlayerFromArchetype(archetype, playerIndex);
 }
@@ -359,10 +363,61 @@ export function getArchetypeAssets(archetype: PlayerArchetype): {
  */
 export function initializeBodyFacing(
   playerPosition: Position,
-  opponentPosition: Position
+  opponentPosition: Position,
 ): BodyFacing {
   // Calculate initial angle to face opponent
   const initialAngle = calculateAngleToTarget(playerPosition, opponentPosition);
 
   return createDefaultBodyFacing(initialAngle);
+}
+
+/**
+ * Toggle the player's lead foot (switch stance side)
+ *
+ * Switches between orthodox (left foot forward) and southpaw (right foot forward).
+ * This is used when executing stance switches or certain techniques.
+ *
+ * @param player - Current player state
+ * @returns Updated player state with toggled stance side
+ * @korean 선발발전환
+ *
+ * @example
+ * ```typescript
+ * // Switch from orthodox to southpaw
+ * const newState = toggleLeadFoot(player);
+ * // newState.leadFoot === 'right'
+ * // newState.stanceSide === 'southpaw'
+ * ```
+ */
+export function toggleLeadFoot(player: PlayerState): PlayerState {
+  const newLeadFoot = player.leadFoot === "left" ? "right" : "left";
+  const newStanceSide = newLeadFoot === "left" ? "orthodox" : "southpaw";
+
+  return {
+    ...player,
+    leadFoot: newLeadFoot,
+    stanceSide: newStanceSide,
+  };
+}
+
+/**
+ * Get the lead foot for a player, defaulting to orthodox if not set
+ *
+ * @param player - Player state
+ * @returns Lead foot ('left' for orthodox, 'right' for southpaw)
+ * @korean 선발발가져오기
+ */
+export function getPlayerLeadFoot(player: PlayerState): "left" | "right" {
+  return player.leadFoot ?? "left"; // Default to orthodox
+}
+
+/**
+ * Get the rear (power) foot for a player
+ *
+ * @param player - Player state
+ * @returns Rear foot ('right' for orthodox, 'left' for southpaw)
+ * @korean 후발발가져오기
+ */
+export function getPlayerRearFoot(player: PlayerState): "left" | "right" {
+  return player.leadFoot === "right" ? "left" : "right";
 }
