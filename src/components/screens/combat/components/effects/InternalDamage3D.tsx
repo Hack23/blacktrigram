@@ -176,12 +176,12 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       points.position.set(...effect.position);
 
       // Store phi/theta for sphere expansion
-      (geometry as any).sphereData = { positions: positions.slice() };
+      (geometry as THREE.BufferGeometry & { sphereData: Record<string, number | Float32Array> }).sphereData = { positions: positions.slice() };
       for (let i = 0; i < pulseCount; i++) {
         const phi = Math.acos(1 - 2 * (i + 0.5) / pulseCount);
         const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-        (geometry as any).sphereData[`phi_${i}`] = phi;
-        (geometry as any).sphereData[`theta_${i}`] = theta;
+        (geometry as THREE.BufferGeometry & { sphereData: Record<string, number | Float32Array> }).sphereData[`phi_${i}`] = phi;
+        (geometry as THREE.BufferGeometry & { sphereData: Record<string, number | Float32Array> }).sphereData[`theta_${i}`] = theta;
       }
 
       return points;
@@ -214,7 +214,7 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
         sizes[i] = 0.02;
 
         // Store angle for ring expansion
-        (geometry as any)[`angle_${i}`] = angle;
+        (geometry as THREE.BufferGeometry & { [key: string]: number })[`angle_${i}`] = angle;
       }
 
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -303,9 +303,10 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
           INTERNAL_DAMAGE_CONSTANTS.MAX_RADIUS[effect.penetrationDepth];
 
         const { pulseCount } = particleCounts;
+        const sphereData = (pulseGeometry as THREE.BufferGeometry & { sphereData: Record<string, number | Float32Array> }).sphereData;
         for (let i = 0; i < pulseCount; i++) {
-          const phi = (pulseGeometry as any).sphereData[`phi_${i}`];
-          const theta = (pulseGeometry as any).sphereData[`theta_${i}`];
+          const phi = sphereData[`phi_${i}`] as number;
+          const theta = sphereData[`theta_${i}`] as number;
           const radius = maxRadius * pulseProgress;
 
           pulsePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
@@ -333,7 +334,7 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
         const { rippleCount } = particleCounts;
         const rippleRadius = 0.6 * rippleProgress;
         for (let i = 0; i < rippleCount; i++) {
-          const angle = (rippleGeometry as any)[`angle_${i}`];
+          const angle = (rippleGeometry as THREE.BufferGeometry & { [key: string]: number })[`angle_${i}`];
           ripplePositions[i * 3] = rippleRadius * Math.cos(angle);
           ripplePositions[i * 3 + 1] = 0;
           ripplePositions[i * 3 + 2] = rippleRadius * Math.sin(angle);
