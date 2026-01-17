@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
+import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
 
 export interface ArchetypeCardGridProps {
@@ -28,8 +28,14 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
     onPlaySFX,
     width = 900,
     height = 600,
-    isMobile = false,
+    isMobile: _isMobile = false, // Kept for interface compatibility, layout uses width
   }) => {
+    // Note: _isMobile intentionally unused - layout sizing uses width-based checks
+    void _isMobile;
+
+    // Use width for layout sizing decisions
+    const isSmallScreen = width < 768;
+
     // Find selected archetype index
     const selectedIndex = useMemo(() => {
       return archetypes.findIndex((a) => a.archetype === selectedArchetype);
@@ -37,10 +43,10 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
 
     // Calculate card dimensions based on container and screen size
     const cardWidth = useMemo(() => {
-      if (isMobile) return Math.min(280, width - 40);
+      if (isSmallScreen) return Math.min(280, width - 40);
       const isLargeContainer = width >= 1100;
       return isLargeContainer ? 340 : 380;
-    }, [isMobile, width]);
+    }, [isSmallScreen, width]);
 
     // Memoize colors
     const colors = useMemo(
@@ -49,7 +55,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         border: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
         headerColor: hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD),
       }),
-      []
+      [],
     );
 
     // Handle card selection
@@ -58,7 +64,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         onArchetypeChange(archetype);
         onPlaySFX("menu_hover");
       },
-      [onArchetypeChange, onPlaySFX]
+      [onArchetypeChange, onPlaySFX],
     );
 
     // Handle card confirmation
@@ -67,7 +73,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         onArchetypeConfirm?.(archetype);
         onPlaySFX("menu_select");
       },
-      [onArchetypeConfirm, onPlaySFX]
+      [onArchetypeConfirm, onPlaySFX],
     );
 
     // Handle keyboard navigation (scoped to container)
@@ -98,12 +104,12 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         handleCardSelect,
         handleCardConfirm,
         onArchetypeConfirm,
-      ]
+      ],
     );
 
     // Calculate grid layout
-    const columnsCount = isMobile ? 1 : width >= 1400 ? 3 : 2;
-    const gap = isMobile ? 16 : 20;
+    const columnsCount = isSmallScreen ? 1 : width >= 1400 ? 3 : 2;
+    const gap = isSmallScreen ? 16 : 20;
 
     // Custom focus style for keyboard navigation
     const [isFocused, setIsFocused] = React.useState(false);
@@ -124,7 +130,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
           background: colors.background,
           borderRadius: "12px",
           border: `2px solid ${colors.border}`,
-          padding: isMobile ? "16px" : "24px",
+          padding: isSmallScreen ? "16px" : "24px",
           overflow: "auto",
           maxHeight: `${height}px`,
           outline: isFocused ? `3px solid ${colors.headerColor}` : "none",
@@ -147,7 +153,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         >
           <h2
             style={{
-              fontSize: isMobile ? "20px" : "28px",
+              fontSize: isSmallScreen ? "20px" : "28px",
               fontWeight: "bold",
               fontFamily: FONT_FAMILY.KOREAN,
               color: colors.headerColor,
@@ -161,7 +167,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
 
           <div
             style={{
-              fontSize: isMobile ? "12px" : "14px",
+              fontSize: isSmallScreen ? "12px" : "14px",
               fontFamily: FONT_FAMILY.KOREAN,
               color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
               textAlign: "center",
@@ -169,7 +175,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
             }}
             data-testid="grid-hint"
           >
-            {isMobile
+            {isSmallScreen
               ? "카드를 탭하여 선택"
               : "화살표 키로 탐색, 엔터로 확인 | Arrow keys to navigate, Enter to confirm"}
           </div>
@@ -197,7 +203,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
                   ? () => handleCardConfirm(archetype.archetype)
                   : undefined
               }
-              isMobile={isMobile}
+              isMobile={isSmallScreen}
               width={cardWidth}
               showSelectButton={!!onArchetypeConfirm}
             />
@@ -205,7 +211,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         </div>
 
         {/* Footer navigation hint */}
-        {!isMobile && (
+        {!isSmallScreen && (
           <div
             style={{
               marginTop: `${gap}px`,
@@ -223,7 +229,7 @@ export const ArchetypeCardGrid: React.FC<ArchetypeCardGridProps> = React.memo(
         )}
       </div>
     );
-  }
+  },
 );
 
 ArchetypeCardGrid.displayName = "ArchetypeCardGrid";

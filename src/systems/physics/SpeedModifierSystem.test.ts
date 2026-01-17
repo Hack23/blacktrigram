@@ -1,30 +1,30 @@
 /**
  * Unit tests for Speed Modifier System
- * 
+ *
  * **Korean**: 속도 변경 시스템 테스트
- * 
+ *
  * Tests comprehensive speed modifier calculations including stance modifiers,
  * injury penalties, stamina effects, and combat state adjustments.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { SpeedModifierSystem, MovementType } from './SpeedModifierSystem';
-import { TrigramStance, CombatState } from '@/types/common';
-import type { PlayerState } from '@/systems/player';
+import type { PlayerState } from "@/systems/player";
+import { CombatState, TrigramStance } from "@/types/common";
+import { beforeEach, describe, expect, it } from "vitest";
+import { MovementType, SpeedModifierSystem } from "./SpeedModifierSystem";
 
-describe('SpeedModifierSystem', () => {
+describe("SpeedModifierSystem", () => {
   let system: SpeedModifierSystem;
   let basePlayerState: PlayerState;
 
   beforeEach(() => {
     system = new SpeedModifierSystem();
-    
+
     // Create base player state for testing
     basePlayerState = {
-      id: 'test-player',
-      name: { korean: '테스트', english: 'Test' },
-      archetype: 'musa' as any,
-      
+      id: "test-player",
+      name: { korean: "테스트", english: "Test" },
+      archetype: "musa" as any,
+
       // Resources
       health: 100,
       maxHealth: 100,
@@ -34,7 +34,7 @@ describe('SpeedModifierSystem', () => {
       maxStamina: 100,
       energy: 100,
       maxEnergy: 100,
-      
+
       // Body part health (all at full health initially)
       bodyPartHealth: {
         head: 100,
@@ -56,7 +56,7 @@ describe('SpeedModifierSystem', () => {
         legLeft: 100,
         legRight: 100,
       },
-      
+
       // Combat attributes
       attackPower: 10,
       defense: 10,
@@ -66,7 +66,7 @@ describe('SpeedModifierSystem', () => {
       consciousness: 100,
       balance: 100,
       momentum: 0,
-      
+
       // Combat state
       currentStance: TrigramStance.GEON,
       combatState: CombatState.IDLE,
@@ -77,12 +77,12 @@ describe('SpeedModifierSystem', () => {
       lastActionTime: 0,
       recoveryTime: 0,
       lastStanceChangeTime: 0,
-      
+
       // Effects and vital points
       statusEffects: [],
       activeEffects: [],
       vitalPoints: [],
-      
+
       // Statistics
       totalDamageReceived: 0,
       totalDamageDealt: 0,
@@ -93,162 +93,162 @@ describe('SpeedModifierSystem', () => {
     };
   });
 
-  describe('Base Speed Calculations', () => {
-    it('should calculate correct walking speed', () => {
+  describe("Base Speed Calculations", () => {
+    it("should calculate correct walking speed", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.WALKING,
-        false
+        false,
       );
 
-      expect(modifiers.baseSpeed).toBe(2.0); // BASE_WALKING_SPEED
+      expect(modifiers.baseSpeed).toBe(4.0); // BASE_WALKING_SPEED
     });
 
-    it('should calculate correct running speed', () => {
+    it("should calculate correct running speed", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.RUNNING,
-        false
+        false,
       );
 
-      expect(modifiers.baseSpeed).toBe(4.0); // BASE_RUNNING_SPEED
+      expect(modifiers.baseSpeed).toBe(7.0); // BASE_RUNNING_SPEED
     });
 
-    it('should calculate correct backward speed (75% of walking)', () => {
+    it("should calculate correct backward speed (75% of walking)", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.BACKWARD,
-        false
+        false,
       );
 
-      expect(modifiers.baseSpeed).toBe(1.5); // 2.0 * 0.75
+      expect(modifiers.baseSpeed).toBe(3.0); // 4.0 * 0.75
     });
 
-    it('should calculate correct lateral speed', () => {
+    it("should calculate correct lateral speed", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.LATERAL,
-        false
+        false,
       );
 
-      expect(modifiers.baseSpeed).toBe(1.8); // LATERAL_SPEED
+      expect(modifiers.baseSpeed).toBe(3.6); // LATERAL_SPEED
     });
 
-    it('should calculate correct crouching speed', () => {
+    it("should calculate correct crouching speed", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.WALKING,
-        true // isCrouching
+        true, // isCrouching
       );
 
-      expect(modifiers.baseSpeed).toBe(1.0); // CROUCHING_SPEED
+      expect(modifiers.baseSpeed).toBe(2.0); // CROUCHING_SPEED
     });
 
-    it('should override movement type when crouching', () => {
+    it("should override movement type when crouching", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
         MovementType.RUNNING,
-        true // isCrouching overrides running
+        true, // isCrouching overrides running
       );
 
-      expect(modifiers.baseSpeed).toBe(1.0); // CROUCHING_SPEED
+      expect(modifiers.baseSpeed).toBe(2.0); // CROUCHING_SPEED
     });
   });
 
-  describe('Stance Speed Modifiers', () => {
-    it('should apply Geon (Heaven) stance modifier (100%)', () => {
+  describe("Stance Speed Modifiers", () => {
+    it("should apply Geon (Heaven) stance modifier (100%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.GEON },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.stanceModifier).toBe(1.00);
-      expect(modifiers.finalSpeed).toBe(2.0); // 2.0 * 1.00
+      expect(modifiers.stanceModifier).toBe(1.0);
+      expect(modifiers.finalSpeed).toBe(4.0); // 4.0 * 1.00
     });
 
-    it('should apply Tae (Lake) stance modifier (110%)', () => {
+    it("should apply Tae (Lake) stance modifier (110%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.TAE },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.stanceModifier).toBe(1.10);
-      expect(modifiers.finalSpeed).toBe(2.2); // 2.0 * 1.10
+      expect(modifiers.stanceModifier).toBe(1.1);
+      expect(modifiers.finalSpeed).toBe(4.4); // 4.0 * 1.10
     });
 
-    it('should apply Li (Fire) stance modifier (120%)', () => {
+    it("should apply Li (Fire) stance modifier (120%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.LI },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.stanceModifier).toBe(1.20);
-      expect(modifiers.finalSpeed).toBe(2.4); // 2.0 * 1.20
+      expect(modifiers.stanceModifier).toBe(1.2);
+      expect(modifiers.finalSpeed).toBe(4.8); // 4.0 * 1.20
     });
 
-    it('should apply Jin (Thunder) stance modifier (115%)', () => {
+    it("should apply Jin (Thunder) stance modifier (115%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.JIN },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.stanceModifier).toBe(1.15);
-      expect(modifiers.finalSpeed).toBe(2.3); // 2.0 * 1.15
+      expect(modifiers.finalSpeed).toBe(4.6); // 4.0 * 1.15
     });
 
-    it('should apply Son (Wind) stance modifier (125% - fastest)', () => {
+    it("should apply Son (Wind) stance modifier (125% - fastest)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.SON },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.stanceModifier).toBe(1.25);
-      expect(modifiers.finalSpeed).toBe(2.5); // 2.0 * 1.25
+      expect(modifiers.finalSpeed).toBe(5.0); // 4.0 * 1.25
     });
 
-    it('should apply Gam (Water) stance modifier (105%)', () => {
+    it("should apply Gam (Water) stance modifier (105%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.GAM },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.stanceModifier).toBe(1.05);
-      expect(modifiers.finalSpeed).toBe(2.1); // 2.0 * 1.05
+      expect(modifiers.finalSpeed).toBe(4.2); // 4.0 * 1.05
     });
 
-    it('should apply Gan (Mountain) stance modifier (80% - defensive)', () => {
+    it("should apply Gan (Mountain) stance modifier (80% - defensive)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.GAN },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.stanceModifier).toBe(0.80);
-      expect(modifiers.finalSpeed).toBe(1.6); // 2.0 * 0.80
+      expect(modifiers.stanceModifier).toBe(0.8);
+      expect(modifiers.finalSpeed).toBe(3.2); // 4.0 * 0.80
     });
 
-    it('should apply Gon (Earth) stance modifier (85%)', () => {
+    it("should apply Gon (Earth) stance modifier (85%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, currentStance: TrigramStance.GON },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.stanceModifier).toBe(0.85);
-      expect(modifiers.finalSpeed).toBe(1.7); // 2.0 * 0.85
+      expect(modifiers.finalSpeed).toBe(3.4); // 4.0 * 0.85
     });
   });
 
-  describe('Injury Penalty Calculations', () => {
-    it('should have no penalty with healthy legs (100% health)', () => {
+  describe("Injury Penalty Calculations", () => {
+    it("should have no penalty with healthy legs (100% health)", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.injuryPenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(2.0);
+      expect(modifiers.finalSpeed).toBe(4.0);
     });
 
-    it('should apply light penalty with light leg damage (20% damage)', () => {
+    it("should apply light penalty with light leg damage (20% damage)", () => {
       const injuredState = {
         ...basePlayerState,
         bodyPartHealth: {
@@ -260,14 +260,14 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         injuredState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // 80% health is above 70% threshold, so no penalty (NORMAL state)
       expect(modifiers.injuryPenalty).toBe(0.0);
     });
 
-    it('should apply moderate penalty with moderate leg damage (50% damage)', () => {
+    it("should apply moderate penalty with moderate leg damage (50% damage)", () => {
       const injuredState = {
         ...basePlayerState,
         bodyPartHealth: {
@@ -279,14 +279,14 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         injuredState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // 50% health triggers LIMPING state (0.8 multiplier = 0.2 penalty)
       expect(modifiers.injuryPenalty).toBeCloseTo(0.2, 2);
     });
 
-    it('should apply heavy penalty with heavy leg damage (80% damage)', () => {
+    it("should apply heavy penalty with heavy leg damage (80% damage)", () => {
       const injuredState = {
         ...basePlayerState,
         bodyPartHealth: {
@@ -298,14 +298,14 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         injuredState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // Heavy damage should apply significant penalty
-      expect(modifiers.injuryPenalty).toBeGreaterThan(0.40);
+      expect(modifiers.injuryPenalty).toBeGreaterThan(0.4);
     });
 
-    it('should apply maximum penalty with critical leg damage (95% damage)', () => {
+    it("should apply maximum penalty with critical leg damage (95% damage)", () => {
       const injuredState = {
         ...basePlayerState,
         bodyPartHealth: {
@@ -317,26 +317,26 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         injuredState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // 5% health triggers HOBBLED state (0.4 multiplier = 0.6 penalty, clamped to 0.6)
       expect(modifiers.injuryPenalty).toBeCloseTo(0.6, 2);
     });
 
-    it('should use average leg damage (both legs considered)', () => {
+    it("should use average leg damage (both legs considered)", () => {
       const asymmetricInjury = {
         ...basePlayerState,
         bodyPartHealth: {
           ...basePlayerState.bodyPartHealth!,
           legLeft: 100, // Healthy (100%)
-          legRight: 20,  // 20% health
+          legRight: 20, // 20% health
         },
       };
 
       const modifiers = system.calculateSpeedModifiers(
         asymmetricInjury,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // MovementPenaltySystem uses average: (100 + 20) / 2 = 60% -> LIMPING state
@@ -344,7 +344,7 @@ describe('SpeedModifierSystem', () => {
       expect(modifiers.injuryPenalty).toBeCloseTo(0.2, 2);
     });
 
-    it('should handle missing body part health gracefully', () => {
+    it("should handle missing body part health gracefully", () => {
       const noBodyPartHealth = {
         ...basePlayerState,
         bodyPartHealth: undefined,
@@ -353,163 +353,172 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         noBodyPartHealth,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.injuryPenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(2.0);
+      expect(modifiers.finalSpeed).toBe(4.0);
     });
   });
 
-  describe('Stamina Penalty Calculations', () => {
-    it('should have no penalty with high stamina (100%)', () => {
+  describe("Stamina Penalty Calculations", () => {
+    it("should have no penalty with high stamina (100%)", () => {
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(4.0);
+      expect(modifiers.finalAcceleration).toBe(8.0);
       expect(modifiers.canRun).toBe(true);
     });
 
-    it('should have no penalty with high stamina (75%)', () => {
+    it("should have no penalty with high stamina (75%)", () => {
       const highStamina = { ...basePlayerState, stamina: 75 };
 
       const modifiers = system.calculateSpeedModifiers(
         highStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(4.0);
+      expect(modifiers.finalAcceleration).toBe(8.0);
       expect(modifiers.canRun).toBe(true);
     });
 
-    it('should apply 20% penalty with medium stamina (50%)', () => {
+    it("should apply 20% penalty with medium stamina (50%)", () => {
       const mediumStamina = { ...basePlayerState, stamina: 50 };
 
       const modifiers = system.calculateSpeedModifiers(
         mediumStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.staminaPenalty).toBe(0.20);
-      expect(modifiers.finalAcceleration).toBe(3.2); // 4.0 * (1 - 0.20)
+      expect(modifiers.staminaPenalty).toBe(0.2);
+      expect(modifiers.finalAcceleration).toBe(6.4); // 8.0 * (1 - 0.20)
       expect(modifiers.canRun).toBe(true);
     });
 
-    it('should apply 50% penalty with low stamina (25%)', () => {
+    it("should apply 50% penalty with low stamina (25%)", () => {
       const lowStamina = { ...basePlayerState, stamina: 25 };
 
       const modifiers = system.calculateSpeedModifiers(
         lowStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.staminaPenalty).toBe(0.50);
-      expect(modifiers.finalAcceleration).toBe(2.0); // 4.0 * (1 - 0.50)
+      expect(modifiers.staminaPenalty).toBe(0.5);
+      expect(modifiers.finalAcceleration).toBe(4.0); // 8.0 * (1 - 0.50)
       expect(modifiers.canRun).toBe(true);
     });
 
-    it('should apply 75% penalty with depleted stamina (5%)', () => {
+    it("should apply 75% penalty with depleted stamina (5%)", () => {
       const depletedStamina = { ...basePlayerState, stamina: 5 };
 
       const modifiers = system.calculateSpeedModifiers(
         depletedStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.staminaPenalty).toBe(0.75);
-      expect(modifiers.finalAcceleration).toBe(1.0); // 4.0 * (1 - 0.75)
+      expect(modifiers.finalAcceleration).toBe(2.0); // 8.0 * (1 - 0.75)
       expect(modifiers.canRun).toBe(false); // Cannot run below 10%
     });
 
-    it('should prevent running when stamina below 10%', () => {
+    it("should prevent running when stamina below 10%", () => {
       const veryLowStamina = { ...basePlayerState, stamina: 8 };
 
       const modifiers = system.calculateSpeedModifiers(
         veryLowStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.canRun).toBe(false);
     });
 
-    it('should allow running at exactly 10% stamina', () => {
+    it("should allow running at exactly 10% stamina", () => {
       const minRunStamina = { ...basePlayerState, stamina: 10 };
 
       const modifiers = system.calculateSpeedModifiers(
         minRunStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.canRun).toBe(true);
     });
   });
 
-  describe('Combat State Penalties', () => {
-    it('should have no penalty when idle', () => {
+  describe("Combat State Penalties", () => {
+    it("should have no penalty when idle", () => {
       const modifiers = system.calculateSpeedModifiers(
         { ...basePlayerState, combatState: CombatState.IDLE },
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.combatStatePenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(2.0);
+      expect(modifiers.finalSpeed).toBe(4.0);
     });
 
-    it('should apply 30% penalty when attacking', () => {
-      const attacking = { ...basePlayerState, combatState: CombatState.ATTACKING };
+    it("should apply 30% penalty when attacking", () => {
+      const attacking = {
+        ...basePlayerState,
+        combatState: CombatState.ATTACKING,
+      };
 
       const modifiers = system.calculateSpeedModifiers(
         attacking,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.combatStatePenalty).toBe(0.30);
-      expect(modifiers.finalSpeed).toBe(1.4); // 2.0 * (1 - 0.30)
+      expect(modifiers.combatStatePenalty).toBe(0.3);
+      expect(modifiers.finalSpeed).toBe(2.8); // 4.0 * (1 - 0.30)
     });
 
-    it('should apply 20% penalty when defending', () => {
-      const defending = { ...basePlayerState, combatState: CombatState.DEFENDING };
+    it("should apply 20% penalty when defending", () => {
+      const defending = {
+        ...basePlayerState,
+        combatState: CombatState.DEFENDING,
+      };
 
       const modifiers = system.calculateSpeedModifiers(
         defending,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.combatStatePenalty).toBe(0.20);
-      expect(modifiers.finalSpeed).toBe(1.6); // 2.0 * (1 - 0.20)
+      expect(modifiers.combatStatePenalty).toBe(0.2);
+      expect(modifiers.finalSpeed).toBe(3.2); // 4.0 * (1 - 0.20)
     });
 
-    it('should apply 100% penalty when stunned (cannot move)', () => {
+    it("should apply 100% penalty when stunned (cannot move)", () => {
       const stunned = { ...basePlayerState, combatState: CombatState.STUNNED };
 
       const modifiers = system.calculateSpeedModifiers(
         stunned,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.combatStatePenalty).toBe(1.0);
-      expect(modifiers.finalSpeed).toBe(0.0); // 2.0 * (1 - 1.0)
+      expect(modifiers.finalSpeed).toBe(0.0); // 4.0 * (1 - 1.0)
     });
 
-    it('should apply 40% penalty when recovering', () => {
-      const recovering = { ...basePlayerState, combatState: CombatState.RECOVERING };
+    it("should apply 40% penalty when recovering", () => {
+      const recovering = {
+        ...basePlayerState,
+        combatState: CombatState.RECOVERING,
+      };
 
       const modifiers = system.calculateSpeedModifiers(
         recovering,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      expect(modifiers.combatStatePenalty).toBe(0.40);
-      expect(modifiers.finalSpeed).toBe(1.2); // 2.0 * (1 - 0.40)
+      expect(modifiers.combatStatePenalty).toBe(0.4);
+      expect(modifiers.finalSpeed).toBe(2.4); // 4.0 * (1 - 0.40)
     });
   });
 
-  describe('Modifier Stacking', () => {
-    it('should stack stance modifier and injury penalty multiplicatively', () => {
+  describe("Modifier Stacking", () => {
+    it("should stack stance modifier and injury penalty multiplicatively", () => {
       const stackedModifiers = {
         ...basePlayerState,
         currentStance: TrigramStance.SON, // 125% speed
@@ -522,16 +531,16 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         stackedModifiers,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      // Expected: 2.0 * 1.25 * (1 - injuryPenalty)
-      // With moderate injury, should be significantly reduced from 2.5
-      expect(modifiers.finalSpeed).toBeGreaterThan(1.0);
-      expect(modifiers.finalSpeed).toBeLessThan(2.5);
+      // Expected: 4.0 * 1.25 * (1 - injuryPenalty)
+      // With moderate injury, should be significantly reduced from 5.0
+      expect(modifiers.finalSpeed).toBeGreaterThan(2.0);
+      expect(modifiers.finalSpeed).toBeLessThan(5.0);
     });
 
-    it('should combine all penalties in complex scenario', () => {
+    it("should combine all penalties in complex scenario", () => {
       const complexScenario = {
         ...basePlayerState,
         currentStance: TrigramStance.GAN, // 80% speed (defensive)
@@ -546,23 +555,23 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         complexScenario,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
-      // Expected speed: 2.0 * 0.80 * (1 - injury) * (1 - 0.30)
-      expect(modifiers.stanceModifier).toBe(0.80);
-      expect(modifiers.combatStatePenalty).toBe(0.30);
+      // Expected speed: 4.0 * 0.80 * (1 - injury) * (1 - 0.30)
+      expect(modifiers.stanceModifier).toBe(0.8);
+      expect(modifiers.combatStatePenalty).toBe(0.3);
       expect(modifiers.injuryPenalty).toBeGreaterThan(0.0);
-      
+
       // Final speed should be significantly reduced
-      expect(modifiers.finalSpeed).toBeLessThan(1.2);
-      
+      expect(modifiers.finalSpeed).toBeLessThan(2.4);
+
       // Acceleration should have stamina penalty
-      expect(modifiers.staminaPenalty).toBe(0.50);
-      expect(modifiers.finalAcceleration).toBe(2.0); // 4.0 * (1 - 0.50)
+      expect(modifiers.staminaPenalty).toBe(0.5);
+      expect(modifiers.finalAcceleration).toBe(4.0); // 8.0 * (1 - 0.50)
     });
 
-    it('should result in minimal speed with all negative factors', () => {
+    it("should result in minimal speed with all negative factors", () => {
       const worstCase = {
         ...basePlayerState,
         currentStance: TrigramStance.GAN, // 80% (slowest practical)
@@ -577,16 +586,16 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         worstCase,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // Should be very slow but not zero (not stunned)
       expect(modifiers.finalSpeed).toBeGreaterThan(0.0);
-      expect(modifiers.finalSpeed).toBeLessThan(0.5);
+      expect(modifiers.finalSpeed).toBeLessThan(1.0);
       expect(modifiers.canRun).toBe(false);
     });
 
-    it('should result in zero speed when stunned regardless of other factors', () => {
+    it("should result in zero speed when stunned regardless of other factors", () => {
       const stunnedWithGoodCondition = {
         ...basePlayerState,
         currentStance: TrigramStance.SON, // Fast stance
@@ -597,26 +606,30 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         stunnedWithGoodCondition,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.finalSpeed).toBe(0.0); // Cannot move when stunned
     });
   });
 
-  describe('Apply Speed Modifiers', () => {
-    it('should apply modifiers to movement physics interface', () => {
+  describe("Apply Speed Modifiers", () => {
+    it("should apply modifiers to movement physics interface", () => {
       let appliedSpeed = 0;
       let appliedAccel = 0;
 
       const mockPhysics = {
-        setMaxSpeed: (speed: number) => { appliedSpeed = speed; },
-        setAcceleration: (accel: number) => { appliedAccel = accel; },
+        setMaxSpeed: (speed: number) => {
+          appliedSpeed = speed;
+        },
+        setAcceleration: (accel: number) => {
+          appliedAccel = accel;
+        },
       };
 
       const modifiers = system.calculateSpeedModifiers(
         basePlayerState,
-        MovementType.RUNNING
+        MovementType.RUNNING,
       );
 
       system.applySpeedModifiers(mockPhysics, modifiers);
@@ -626,8 +639,8 @@ describe('SpeedModifierSystem', () => {
     });
   });
 
-  describe('Edge Cases', () => {
-    it('should handle zero max stamina', () => {
+  describe("Edge Cases", () => {
+    it("should handle zero max stamina", () => {
       const zeroMaxStamina = {
         ...basePlayerState,
         stamina: 0,
@@ -636,14 +649,14 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         zeroMaxStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
       expect(modifiers.canRun).toBe(true); // Allow running if stamina not tracked
     });
 
-    it('should handle negative stamina values', () => {
+    it("should handle negative stamina values", () => {
       const negativeStamina = {
         ...basePlayerState,
         stamina: -10,
@@ -652,7 +665,7 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         negativeStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // Should treat as depleted stamina
@@ -660,7 +673,7 @@ describe('SpeedModifierSystem', () => {
       expect(modifiers.canRun).toBe(false);
     });
 
-    it('should handle stamina exceeding maximum', () => {
+    it("should handle stamina exceeding maximum", () => {
       const excessStamina = {
         ...basePlayerState,
         stamina: 150,
@@ -669,7 +682,7 @@ describe('SpeedModifierSystem', () => {
 
       const modifiers = system.calculateSpeedModifiers(
         excessStamina,
-        MovementType.WALKING
+        MovementType.WALKING,
       );
 
       // Should treat as high stamina

@@ -78,3 +78,6 @@ export {
   resetBoneToRestPose,
   resetRigToRestPose,
 } from "./SkeletonRig";
+
+// Animation factory presets for reducing code duplication
+export * from "./AnimationFactoryPresets";

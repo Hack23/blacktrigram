@@ -9,10 +9,8 @@ import { Html } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import {
   Bloom,
-  ChromaticAberration,
   EffectComposer,
   Noise,
-  SSAO,
   Vignette,
 } from "@react-three/postprocessing";
 import React, {
@@ -22,7 +20,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
 import { useKeyboardControls } from "../../../hooks/useKeyboardControls";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
@@ -91,9 +88,12 @@ import {
 } from "../../../utils/player3DHelpers";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
-import { Player3DWithTransitions } from "../../shared/three";
-import { VitalPointMarkers3D, VitalPointOverlayControlsHtml } from "./components";
-import CombatArena3D from "./components/arena/CombatArena3D";
+import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
+import {
+  VitalPointMarkers3D,
+  VitalPointOverlayControlsHtml,
+} from "./components";
+import { CombatArena3D } from "./components/arena/CombatArena3D";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
 import HitEffects3D from "./components/effects/HitEffects3D";
@@ -114,11 +114,11 @@ import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
 import { TechniqueBar } from "./components/indicators/TechniqueBar";
 import {
-  AnimationUpdater,
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
   STANCE_INDEX_MAP,
 } from "./helpers";
+import { AnimationUpdater } from "./helpers/AnimationUpdater";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -142,7 +142,7 @@ export interface CombatScreen3DProps {
    */
   readonly onPlayerUpdate: (
     playerIndex: number,
-    updates: Partial<PlayerState>
+    updates: Partial<PlayerState>,
   ) => void;
   /**
    * Current round number (1-based).
@@ -232,14 +232,34 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         performance.measure(
           "combat-3d-render",
           "combat-3d-render-start",
-          "combat-3d-render-end"
+          "combat-3d-render-end",
         );
       };
     }
   }, []);
 
   // Layout calculations
-  const { arenaBounds, isMobile } = useCombatLayout(width, height);
+  const { arenaBounds, isMobile, screenSize, layoutConstants } =
+    useCombatLayout(width, height);
+
+  // Screen size scaling for 4K and large displays
+  // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
+  const positionScale = useMemo(() => {
+    switch (screenSize) {
+      case "mobile":
+        return 1.0; // Mobile already has special handling
+      case "tablet":
+        return 1.0;
+      case "desktop":
+        return 1.0;
+      case "large":
+        return 1.25;
+      case "xlarge":
+        return 1.5; // 4K displays need 1.5x offsets
+      default:
+        return 1.0;
+    }
+  }, [screenSize]);
 
   // Camera and rendering configuration based on device
   const cameraConfig = useMemo(() => {
@@ -275,8 +295,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     };
   }, [isMobile, width]);
 
-  // Memoized SSAO color to avoid creating new THREE.Color on every render
-  const ssaoColor = useMemo(() => new THREE.Color("black"), []);
+  // SSAO removed - was causing WebGL context loss without NormalPass
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -296,13 +315,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
   const [scale, setScale] = useState(1.2); // Larger scale for better visibility in combat
+  // Performance monitor visibility toggle (F9 key)
+  const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key)
+  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9 key)
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
+      }
+      // F9 key toggles performance monitor (development only)
+      // Note: P key is reserved for Philosophy screen
+      if (e.key === "F9" && import.meta.env.DEV) {
+        e.preventDefault();
+        setShowPerformanceMonitor((prev) => !prev);
       }
     };
 
@@ -471,7 +498,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         if (import.meta.env.DEV) {
           console.log(
             "[DEV] Showing round start announcement for round",
-            nextRound
+            nextRound,
           );
         }
         setShowRoundStart(true);
@@ -539,7 +566,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       countdownDuration: ROUND_ANNOUNCEMENT_TIMINGS.COUNTDOWN_DURATION,
       transitionDuration: ROUND_ANNOUNCEMENT_TIMINGS.TRANSITION_DURATION,
     },
-    handleRoundTransitionComplete
+    handleRoundTransitionComplete,
   );
 
   // Player 2 position - derived from players prop (AI-controlled)
@@ -607,14 +634,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Track speed modifiers for HUD display
   const [player1SpeedModifiers, setPlayer1SpeedModifiers] = useState({
-    finalSpeed: 2.0,
-    baseSpeed: 2.0,
-    finalAcceleration: 4.0,
+    finalSpeed: 4.0,
+    baseSpeed: 4.0,
+    finalAcceleration: 8.0,
   });
   const [player2SpeedModifiers, setPlayer2SpeedModifiers] = useState({
-    finalSpeed: 2.0,
-    baseSpeed: 2.0,
-    finalAcceleration: 4.0,
+    finalSpeed: 4.0,
+    baseSpeed: 4.0,
+    finalAcceleration: 8.0,
   });
 
   // Calculate speed modifiers for both players when state changes
@@ -626,7 +653,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         const player1Modifiers = speedModifierSystem.calculateSpeedModifiers(
           players[0],
           MovementType.WALKING, // Base calculation, actual type determined by input
-          false // isCrouching
+          false, // isCrouching
         );
         setPlayer1SpeedModifiers({
           finalSpeed: player1Modifiers.finalSpeed,
@@ -638,7 +665,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         const player2Modifiers = speedModifierSystem.calculateSpeedModifiers(
           players[1],
           MovementType.WALKING,
-          false
+          false,
         );
         setPlayer2SpeedModifiers({
           finalSpeed: player2Modifiers.finalSpeed,
@@ -671,7 +698,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const averageLegHealth = (leftLeg + rightLeg) / (2 * maxHealth);
       return Math.max(0, Math.min(1, 1.0 - averageLegHealth)); // 0 = healthy, 1 = critical
     },
-    []
+    [],
   );
 
   // Get player1 data for movement physics
@@ -732,7 +759,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // When moving: face movement direction
       const movementRotation = Math.atan2(
         player1Velocity.x,
-        -player1Velocity.y
+        -player1Velocity.y,
       );
       player1LastRotationRef.current = movementRotation;
       return movementRotation;
@@ -756,7 +783,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Ref for validPlayers to avoid circular dependencies
   const validPlayersRefForAnimation = useRef<[PlayerState, PlayerState] | null>(
-    null
+    null,
   );
 
   // Refs to clear attack animations after completion
@@ -802,7 +829,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         }
       },
     }),
-    [combatActions, audio]
+    [combatActions, audio],
   );
 
   const player1Animation = usePlayerAnimation({
@@ -931,7 +958,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       const message = `${korean} | ${english}`;
       combatActions.addCombatMessage(message);
     },
-    [combatActions]
+    [combatActions],
   );
 
   // Combat timer with warnings and time up handler
@@ -1068,7 +1095,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   const aiPersonality = useMemo(
     () => getPersonalityByArchetype(validPlayers[1].archetype),
-    [validPlayers]
+    [validPlayers],
   );
 
   // AI stance change handler
@@ -1082,10 +1109,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       onPlayerUpdate(1, { currentStance: stance });
       addCombatMessage(
         `AI 자세 변경: ${stance}`,
-        `AI Stance Change: ${stance}`
+        `AI Stance Change: ${stance}`,
       );
     },
-    [validPlayers, player2Animation, onPlayerUpdate, addCombatMessage]
+    [validPlayers, player2Animation, onPlayerUpdate, addCombatMessage],
   );
 
   // Hit effect handlers
@@ -1093,7 +1120,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (effectId: string) => {
       combatActions.removeHitEffect(effectId);
     },
-    [combatActions]
+    [combatActions],
   );
 
   const createHitEffect = useCallback(
@@ -1101,7 +1128,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       id: string,
       type: HitEffectType,
       position: Position,
-      intensity: number
+      intensity: number,
     ): HitEffect => ({
       id,
       type,
@@ -1113,7 +1140,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       intensity,
       startTime: Date.now(),
     }),
-    []
+    [],
   );
 
   const addHitEffect = useCallback(
@@ -1122,11 +1149,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         `effect_${Date.now()}`,
         type,
         position,
-        intensity
+        intensity,
       );
       combatActions.addHitEffect(effect);
     },
-    [createHitEffect, combatActions]
+    [createHitEffect, combatActions],
   );
 
   // Callback for updating player positions after knockback
@@ -1141,7 +1168,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         onPlayerUpdate(1, { position });
       }
     },
-    [onPlayerUpdate, setPlayer1Position]
+    [onPlayerUpdate, setPlayer1Position],
   );
 
   // Combat action handlers
@@ -1191,13 +1218,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         // Show technique name in action feedback
         feedbackActions.showTechnique(
           technique.name.korean,
-          technique.name.english
+          technique.name.english,
         );
 
         // Set attack animation based on technique
         // 기술에 따른 공격 애니메이션 설정
         const animationName = getAnimationForTechnique(
-          technique.name.english || technique.id
+          technique.name.english || technique.id,
         );
         setPlayer1AttackAnimation(animationName);
 
@@ -1218,7 +1245,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         // Add combat message
         addCombatMessage(
           `${technique.name.korean} 사용!`,
-          `Used ${technique.name.english}!`
+          `Used ${technique.name.english}!`,
         );
       },
       [
@@ -1229,7 +1256,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         addCombatMessage,
         player1Animation,
         combatActions,
-      ]
+      ],
     ),
   });
 
@@ -1273,7 +1300,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         audio.playSFX("menu_select");
       }
     },
-    [validPlayers, player1Animation, handleStanceSwitch, audio]
+    [validPlayers, player1Animation, handleStanceSwitch, audio],
   );
 
   // Extract player health values for dependency arrays
@@ -1300,7 +1327,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       feedbackActions.addDamageNumber(
         Math.round(damageDone),
         playerPositions[1],
-        damageType
+        damageType,
       );
 
       // Increment combo
@@ -1312,7 +1339,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           "critical",
           "Critical!",
           "치명타!",
-          playerPositions[0]
+          playerPositions[0],
         );
       }
     }
@@ -1341,7 +1368,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       feedbackActions.addDamageNumber(
         Math.round(damageDone),
         playerPositions[0],
-        damageType
+        damageType,
       );
     }
 
@@ -1369,7 +1396,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     } else {
       // Fallback: animation transition failed, execute attack logic immediately
       console.warn(
-        "Attack animation transition failed; executing attack logic directly."
+        "Attack animation transition failed; executing attack logic directly.",
       );
       handleAttack();
     }
@@ -1386,19 +1413,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         "blocked",
         "Blocked",
         "방어!",
-        defenderPos
+        defenderPos,
       );
     } else {
       // Fallback: animation transition failed, execute defend logic immediately
       console.warn(
-        "Defend animation transition failed; executing defend logic directly."
+        "Defend animation transition failed; executing defend logic directly.",
       );
       handleDefend();
       feedbackActions.addActionFeedback(
         "blocked",
         "Blocked",
         "방어!",
-        defenderPos
+        defenderPos,
       );
     }
   }, [handleDefend, playerPositions, feedbackActions, player1Animation]);
@@ -1414,7 +1441,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
    */
   const executeFallbackRecovery = useCallback(() => {
     const groundState = balanceSystem.getGroundState(
-      player1Animation.currentState
+      player1Animation.currentState,
     );
     if (groundState) {
       const recoveryType = determineRecoveryType(groundState);
@@ -1433,7 +1460,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           handleStanceChangeWithAnimation(stance);
         }
       },
-      [handleStanceChangeWithAnimation]
+      [handleStanceChangeWithAnimation],
     ),
     onAction: useCallback(
       (action: string) => {
@@ -1457,7 +1484,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             if (balanceSystem.canRecoverWithType(player1, "roll_recovery")) {
               const updatedPlayer = balanceSystem.applyRecoveryCost(
                 player1,
-                "roll_recovery"
+                "roll_recovery",
               );
               onPlayerUpdate(0, { stamina: updatedPlayer.stamina });
               player1Animation.transitionTo(AnimationState.RECOVERY_ROLL);
@@ -1469,7 +1496,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 "blocked",
                 "Not enough stamina!",
                 "체력 부족!",
-                player1Pos
+                player1Pos,
               );
               executeFallbackRecovery();
             }
@@ -1513,7 +1540,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         audio,
         feedbackActions,
         playerPositions,
-      ]
+      ],
     ),
     enabled:
       !isPaused &&
@@ -1575,7 +1602,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               code: `Key${prevKey.toUpperCase()}`,
               bubbles: true,
               cancelable: true,
-            })
+            }),
           );
         }
 
@@ -1589,7 +1616,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             code: `Key${key.toUpperCase()}`,
             bubbles: true,
             cancelable: true,
-          })
+          }),
         );
       } else if (eventType === "end") {
         // Release active key when D-pad released
@@ -1601,13 +1628,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               code: `Key${key.toUpperCase()}`,
               bubbles: true,
               cancelable: true,
-            })
+            }),
           );
           activeMobileKeyRef.current = null;
         }
       }
     },
-    []
+    [],
   );
 
   const handleMobileAttack = useCallback(() => {
@@ -1621,7 +1648,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleDefendWithFeedback();
       }
     },
-    [handleDefendWithFeedback]
+    [handleDefendWithFeedback],
   );
 
   const handleMobileStanceChange = useCallback(
@@ -1632,7 +1659,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleStanceChangeWithAnimation(stance);
       }
     },
-    [handleStanceChangeWithAnimation]
+    [handleStanceChangeWithAnimation],
   );
 
   const handleMobileGesture = useCallback(
@@ -1661,7 +1688,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           break;
       }
     },
-    [techniqueSelection, audio]
+    [techniqueSelection, audio],
   );
 
   // Check if mobile controls should be enabled
@@ -1746,7 +1773,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Force recalculation when the adaptive difficulty system changes
   const currentDifficultyTier = useMemo(
     () => adaptiveDifficulty.getDifficultyTier(),
-    [adaptiveDifficulty]
+    [adaptiveDifficulty],
   );
 
   // Adaptive difficulty adjustment every 2-3 rounds after round ends
@@ -1788,7 +1815,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       if (import.meta.env.DEV) {
         const tier = adaptiveDifficulty.getDifficultyTier();
         console.log(
-          `[DEV] Difficulty adjusted after round ${roundsCompleted}, new tier: ${tier}`
+          `[DEV] Difficulty adjusted after round ${roundsCompleted}, new tier: ${tier}`,
         );
       }
     }
@@ -1844,7 +1871,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           player2Animation.transitionTo(AnimationState.ATTACK);
           handleAITechnique(
             aiState.selectedTechnique,
-            aiState.targetVitalPoint
+            aiState.targetVitalPoint,
           );
           break;
         case "approach":
@@ -1882,15 +1909,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                     arenaBounds.x,
                     Math.min(
                       arenaBounds.x + arenaBounds.width - 60,
-                      currentPlayerPos.x + (dx / dist) * retreatDistance
-                    )
+                      currentPlayerPos.x + (dx / dist) * retreatDistance,
+                    ),
                   ),
                   y: Math.max(
                     arenaBounds.y,
                     Math.min(
                       arenaBounds.y + arenaBounds.height - 180,
-                      currentPlayerPos.y + (dy / dist) * retreatDistance
-                    )
+                      currentPlayerPos.y + (dy / dist) * retreatDistance,
+                    ),
                   ),
                 };
                 moveAIPlayer(retreatPos);
@@ -1932,7 +1959,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       aiState.selectedTechnique,
       aiState.targetVitalPoint,
       player2Animation,
-    ]
+    ],
   );
 
   // Update the ref
@@ -1981,7 +2008,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
       addCombatMessage(
         p1Defeated ? "플레이어 1 패배" : "플레이어 1 승리!",
-        p1Defeated ? "Player 1 Defeated" : "Player 1 Victory!"
+        p1Defeated ? "Player 1 Defeated" : "Player 1 Victory!",
       );
 
       // Start round transition
@@ -2118,41 +2145,44 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           antialias: renderConfig.antialias,
           alpha: false,
           powerPreference: "high-performance",
+          // Add failIfMajorPerformanceCaveat to detect GPU issues
+          failIfMajorPerformanceCaveat: false,
         }}
         dpr={renderConfig.dpr}
-        shadows={!isMobile}
-        onCreated={({ gl, scene }) => {
+        shadows={false} // Temporarily disable shadows
+        onCreated={({ gl }) => {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
-          // Atmospheric fog with Korean cyberpunk gradient (closer fog for better depth)
-          scene.fog = new THREE.Fog(KOREAN_COLORS.UI_BACKGROUND_DARK, 10, 50);
         }}
       >
+        {/* Lighting - CombatArena3D provides ambient, we add directional for shadows */}
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 10, 5]} intensity={1.2} />
+
+        {/* Combat Arena 3D Environment */}
+        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
+
         {/* Animation updater - updates both player animations at 60fps */}
         <AnimationUpdater
           player1Animation={player1Animation}
           player2Animation={player2Animation}
         />
 
-        {/* 3D Combat Arena - with scale for mobile optimization */}
-        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
-
-        {/* Player 1 */}
+        {/* Player 1 (Human) */}
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[0],
             player1Position3D,
-              player1Rotation, // Dynamic rotation - always faces opponent
+            player1Rotation,
             {
               isMobile,
-              facing: "right", // No flip - rotation handles facing direction
-              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
+              facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
               opponentPosition: player2Position3D,
-            }
+            },
           )}
           currentAnimation={animationStateToPlayerAnimation(
-            player1Animation.currentState
+            player1Animation.currentState,
           )}
           attackAnimation={player1AttackAnimation}
           laterality={combatState.playerLaterality[0]}
@@ -2166,18 +2196,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           {...convertPlayerStateToProps(
             validPlayers[1],
             player2Position3D,
-            player2Rotation, // Dynamic rotation - always faces opponent
+            player2Rotation,
             {
               isMobile,
-              facing: "right", // No flip - rotation handles facing direction
-              // Enable facial expressions and eye tracking - 얼굴 표정 및 눈 추적 활성화
+              facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
               opponentPosition: player1Position3D,
-            }
+            },
           )}
           currentAnimation={animationStateToPlayerAnimation(
-            player2Animation.currentState
+            player2Animation.currentState,
           )}
           attackAnimation={player2AttackAnimation}
           laterality={combatState.playerLaterality[1]}
@@ -2228,9 +2257,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           </>
         )}
 
-        {/* Vital Point Overlay Controls - fixed screen position, left side below player status */}
+        {/* Vital Point Overlay Controls - dynamic screen position, left side below player status */}
+        {/* Position uses layoutConstants for consistent responsive placement */}
         <VitalPointOverlayControlsHtml
-          screenPosition={{ top: "200px", left: "20px" }}
+          screenPosition={{
+            top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+            left: `${layoutConstants.padding}px`,
+          }}
           visible={overlayVisible}
           onVisibleChange={setOverlayVisible}
           severityFilters={severityFilters}
@@ -2275,8 +2308,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Performance Overlay (Development Only) - positioned in bottom-left of 3D scene */}
-        {import.meta.env.DEV && (
+        {/* Performance Overlay (Development Only) - Toggle with P key */}
+        {import.meta.env.DEV && showPerformanceMonitor && (
           <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
         )}
 
@@ -2307,7 +2340,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                     textAlign: "center",
                     color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
                       6,
-                      "0"
+                      "0",
                     )}`,
                     textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
                   }}
@@ -2353,49 +2386,40 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           />
         )}
 
-        {/* Post-processing Effects - Optimized for Mobile */}
-        {isMobile ? (
-          <EffectComposer multisampling={0}>
-            <Bloom
-              luminanceThreshold={1}
-              mipmapBlur
-              intensity={1.5}
-              radius={0.6}
-            />
-            <Noise opacity={0.02} />
-            <Vignette eskil={false} offset={0.1} darkness={0.5} />
-          </EffectComposer>
-        ) : (
-          <EffectComposer multisampling={4}>
-            <Bloom
-              luminanceThreshold={1}
-              mipmapBlur
-              intensity={1.5}
-              radius={0.6}
-            />
-            <SSAO
-              radius={0.05}
-              intensity={50}
-              luminanceInfluence={0.5}
-              color={ssaoColor}
-            />
-            <ChromaticAberration
-              offset={[0.002, 0.002]}
-              radialModulation={false}
-              modulationOffset={0}
-            />
-            <Noise opacity={0.02} />
-            <Vignette eskil={false} offset={0.1} darkness={0.5} />
-          </EffectComposer>
-        )}
-
-        {/* Performance Monitoring - FPS display (dev mode only) */}
-        {process.env.NODE_ENV === "development" && (
+        {/* Performance Monitoring - FPS display (dev mode, toggle with P key) */}
+        {process.env.NODE_ENV === "development" && showPerformanceMonitor && (
           <FPSMonitor
             enabled={true}
             warningThreshold={50}
             criticalThreshold={30}
           />
+        )}
+
+        {/* Post-processing Effects - lightweight only */}
+        {isMobile ? (
+          <EffectComposer multisampling={0}>
+            <Bloom
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.9}
+              mipmapBlur
+              intensity={0.8}
+              radius={0.4}
+            />
+            <Noise opacity={0.03} />
+            <Vignette eskil={false} offset={0.1} darkness={0.3} />
+          </EffectComposer>
+        ) : (
+          <EffectComposer multisampling={4}>
+            <Bloom
+              luminanceThreshold={0.9}
+              luminanceSmoothing={0.9}
+              mipmapBlur
+              intensity={0.8}
+              radius={0.4}
+            />
+            <Noise opacity={0.03} />
+            <Vignette eskil={false} offset={0.1} darkness={0.3} />
+          </EffectComposer>
         )}
       </Canvas>
 
@@ -2413,7 +2437,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       >
         {/* Combat Title - Top Center */}
         <ResponsiveContainer
-          position={{ base: { x: 0, y: 10 } }}
+          position={{ base: { x: 0, y: 10 * positionScale } }}
           containerWidth={width}
           useSafeArea
           safeAreaEdge="top"
@@ -2433,7 +2457,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               fontFamily: FONT_FAMILY.KOREAN,
               color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
                 6,
-                "0"
+                "0",
               )}`,
               textShadow: "0 0 4px rgba(0,0,0,0.8)",
             }}
@@ -2547,6 +2571,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* as those effects would incorrectly affect the player's view */}
 
         {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
+        {/* Positioned above the footer button to prevent overlap */}
         {combatState.roundStarted &&
           !combatState.roundEnded &&
           matchCountdownComplete &&
@@ -2555,9 +2580,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 position: "absolute",
                 left: 0,
-                bottom: 0,
+                bottom: isMobile ? 80 : 100 * positionScale, // Clear space for back button
                 width: "100%",
-                height: "200px",
+                height: "180px",
                 pointerEvents: "none", // Container is non-interactive
                 zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
                 display: "flex",
@@ -2592,7 +2617,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Combat Footer - Back Button */}
         <ResponsiveContainer
-          position={{ base: { x: 0, y: height - (isMobile ? 70 : 80) } }}
+          position={{
+            base: { x: 0, y: height - (isMobile ? 70 : 90 * positionScale) },
+          }}
           containerWidth={width}
           useSafeArea
           safeAreaEdge="bottom"
@@ -2612,7 +2639,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               background: "rgba(10, 10, 15, 0.85)",
               border: `2px solid ${hexToRgbaString(
                 KOREAN_COLORS.PRIMARY_CYAN,
-                0.8
+                0.8,
               )}`,
               borderRadius: "8px",
               padding: isMobile ? "8px 12px" : "10px 16px",
@@ -2623,11 +2650,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 .combat-return-menu-btn {
                   background: ${hexToRgbaString(
                     KOREAN_COLORS.PRIMARY_CYAN,
-                    0.9
+                    0.9,
                   )};
                   color: ${hexToRgbaString(
                     KOREAN_COLORS.UI_BACKGROUND_DARK,
-                    1
+                    1,
                   )};
                   border: none;
                   border-radius: 8px;
@@ -2643,7 +2670,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                   transform: scale(1.05);
                   box-shadow: 0 0 20px ${hexToRgbaString(
                     KOREAN_COLORS.PRIMARY_CYAN,
-                    0.8
+                    0.8,
                   )};
                 }
               `}
@@ -2732,7 +2759,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             if (import.meta.env.DEV) {
               console.log(
                 "[DEV] Round start announcement complete for round",
-                internalRound
+                internalRound,
               );
             }
             setShowRoundStart(false);

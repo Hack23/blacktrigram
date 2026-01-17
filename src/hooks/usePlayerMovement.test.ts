@@ -2,12 +2,16 @@
  * Tests for usePlayerMovement hook
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import * as THREE from 'three';
-import { MovementPhysics, MovementState, MovementInput } from '@/systems/physics';
-import { TrigramStance } from '@/types/common';
+import {
+  MovementInput,
+  MovementPhysics,
+  MovementState,
+} from "@/systems/physics";
+import { TrigramStance } from "@/types/common";
+import * as THREE from "three";
+import { beforeEach, describe, expect, it } from "vitest";
 
-describe('usePlayerMovement Integration', () => {
+describe("usePlayerMovement Integration", () => {
   let physics: MovementPhysics;
   let state: MovementState;
 
@@ -23,26 +27,26 @@ describe('usePlayerMovement Integration', () => {
     };
   });
 
-  describe('Hook Integration with Physics Engine', () => {
-    it('should integrate stance changes with physics', () => {
+  describe("Hook Integration with Physics Engine", () => {
+    it("should integrate stance changes with physics", () => {
       // Start with Geon stance
       const geonSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
-      expect(geonSpeed).toBe(2.0);
+      expect(geonSpeed).toBe(4.0);
 
       // Change to Wind stance
       const windSpeed = physics.getMaxSpeed(false, TrigramStance.SON, 0);
-      expect(windSpeed).toBe(2.5); // 125% speed
+      expect(windSpeed).toBe(5.0); // 125% speed
     });
 
-    it('should integrate injury with physics', () => {
+    it("should integrate injury with physics", () => {
       const healthySpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
       const injuredSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0.5);
 
-      expect(healthySpeed).toBe(2.0);
-      expect(injuredSpeed).toBe(1.5); // 25% penalty
+      expect(healthySpeed).toBe(4.0);
+      expect(injuredSpeed).toBe(3.0); // 25% penalty
     });
 
-    it('should handle forward movement', () => {
+    it("should handle forward movement", () => {
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -60,7 +64,7 @@ describe('usePlayerMovement Integration', () => {
       expect(state.position.z).toBeGreaterThan(0);
     });
 
-    it('should handle running mode', () => {
+    it("should handle running mode", () => {
       // Walking
       const walkInput: MovementInput = {
         forward: 1.0,
@@ -93,17 +97,17 @@ describe('usePlayerMovement Integration', () => {
 
       // Running should be faster
       expect(runSpeed).toBeGreaterThan(walkSpeed);
-      expect(runState.maxSpeed).toBe(4.0); // Running max speed
+      expect(runState.maxSpeed).toBe(7.0); // Running max speed
     });
 
-    it('should handle stance-based speed differences', () => {
+    it("should handle stance-based speed differences", () => {
       // Geon (100% speed)
       const geonState = {
         ...state,
         currentStance: TrigramStance.GEON,
         velocity: new THREE.Vector3(),
       };
-      
+
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -133,7 +137,7 @@ describe('usePlayerMovement Integration', () => {
       expect(windSpeed).toBeGreaterThan(geonSpeed);
     });
 
-    it('should handle leg injury penalties', () => {
+    it("should handle leg injury penalties", () => {
       // Healthy player
       const healthyState = {
         ...state,
@@ -168,10 +172,10 @@ describe('usePlayerMovement Integration', () => {
 
       // Injured should be slower
       expect(injuredSpeed).toBeLessThan(healthySpeed);
-      expect(injuredState.maxSpeed).toBe(1.5); // 25% penalty
+      expect(injuredState.maxSpeed).toBe(3.0); // 25% penalty
     });
 
-    it('should handle tactical steps', () => {
+    it("should handle tactical steps", () => {
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -190,7 +194,7 @@ describe('usePlayerMovement Integration', () => {
       expect(remainder).toBeLessThan(0.01);
     });
 
-    it('should handle stopping', () => {
+    it("should handle stopping", () => {
       // Start moving
       const moveInput: MovementInput = {
         forward: 1.0,

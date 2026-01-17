@@ -21,19 +21,20 @@ import { SplashScreen } from "./components/shared/ui/SplashScreen";
 import { PlayerState } from "./systems";
 import { MatchStatistics } from "./systems/combat";
 import { GameMode, PlayerArchetype } from "./types/common";
+import { clearPlatformCache, detectPlatform } from "./utils/deviceDetection";
 import { createPlayerFromArchetype } from "./utils/playerUtils";
 
 // Lazy load heavy screens
 const TrainingScreen = lazy(() =>
   import("./components/screens/training/TrainingScreen3D").then((m) => ({
     default: m.TrainingScreen3D,
-  }))
+  })),
 );
 
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
-    PlayerArchetype.MUSA
+    PlayerArchetype.MUSA,
   );
   const [isGameActive, setIsGameActive] = useState(false);
   const [gameWinner, setGameWinner] = useState<PlayerState | null>(null);
@@ -41,6 +42,8 @@ function App() {
   const [appReady, setAppReady] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showAudioError, setShowAudioError] = useState(false);
+  // Performance debug overlay toggle (P key in dev mode)
+  const [showPerformanceDebug, setShowPerformanceDebug] = useState(false);
   // Transition state to allow WebGL cleanup between screens
   const [isTransitioning, setIsTransitioning] = useState(false);
   const pendingModeRef = useRef<{
@@ -53,33 +56,41 @@ function App() {
 
   const audio = useAudio();
 
-  // Add responsive screen size detection
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    isMobile: window.innerWidth < 768,
-    isTablet: window.innerWidth >= 768 && window.innerWidth < 1024,
-    isDesktop: window.innerWidth >= 1024,
+  // Add responsive screen size detection with proper device detection
+  // Uses user-agent detection first for high-res mobile devices
+  const [screenSize, setScreenSize] = useState(() => {
+    const platform = detectPlatform();
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      isMobile: platform.isMobile,
+      isTablet: platform.isTablet,
+      isDesktop: platform.isDesktop,
+    };
   });
 
   useEffect(() => {
+    // Define handlers outside async function for proper cleanup
+    const handleGlobalError = (e: ErrorEvent) => {
+      console.error("Global error:", e.error);
+    };
+
+    const handleUnhandledRejection = (e: PromiseRejectionEvent) => {
+      console.error("Unhandled promise rejection:", e.reason);
+      if (
+        e.reason?.message?.includes("Failed to load") ||
+        e.reason?.message?.includes("no supported source")
+      ) {
+        e.preventDefault();
+      }
+    };
+
     const initializeApp = async () => {
       try {
         window.focus();
 
-        window.addEventListener("error", (e) => {
-          console.error("Global error:", e.error);
-        });
-
-        window.addEventListener("unhandledrejection", (e) => {
-          console.error("Unhandled promise rejection:", e.reason);
-          if (
-            e.reason?.message?.includes("Failed to load") ||
-            e.reason?.message?.includes("no supported source")
-          ) {
-            e.preventDefault();
-          }
-        });
+        window.addEventListener("error", handleGlobalError);
+        window.addEventListener("unhandledrejection", handleUnhandledRejection);
 
         // PHASE 2: Performance optimization initialization
         console.log("🔧 Initializing animation performance optimizations...");
@@ -92,12 +103,10 @@ function App() {
         console.log("  ✓ Object pools prewarmed:", poolStatus);
 
         // 2. Precompute all animations for 90%+ cache hit rate
-        const { precomputeAnimation } = await import(
-          "./systems/animation/core/AnimationOptimizations"
-        );
-        const { ALL_ANIMATIONS } = await import(
-          "./systems/animation/core/AnimationRegistry"
-        );
+        const { precomputeAnimation } =
+          await import("./systems/animation/core/AnimationOptimizations");
+        const { ALL_ANIMATIONS } =
+          await import("./systems/animation/core/AnimationRegistry");
 
         let precomputedCount = 0;
         ALL_ANIMATIONS.forEach((animation) => {
@@ -109,7 +118,7 @@ function App() {
         console.log(`  ✓ Precomputed ${precomputedCount} animations at 60fps`);
 
         console.log(
-          "✅ Animation optimizations ready (expect <5ms frame time, 90%+ cache hit)"
+          "✅ Animation optimizations ready (expect <5ms frame time, 90%+ cache hit)",
         );
 
         setAppReady(true);
@@ -121,6 +130,15 @@ function App() {
     };
 
     initializeApp();
+
+    // Cleanup global event handlers to prevent memory leaks
+    return () => {
+      window.removeEventListener("error", handleGlobalError);
+      window.removeEventListener(
+        "unhandledrejection",
+        handleUnhandledRejection,
+      );
+    };
   }, []);
 
   // Shared audio initialization logic for splash and retry
@@ -208,7 +226,7 @@ function App() {
         pendingModeRef.current = null;
       }, 150); // Increased delay for WebGL cleanup (was 100ms)
     },
-    []
+    [],
   );
 
   const handleGameEnd = useCallback(
@@ -270,7 +288,7 @@ function App() {
         },
       });
     },
-    [selectedArchetype]
+    [selectedArchetype],
   );
 
   const handleReturnToMenu = useCallback(() => {
@@ -363,7 +381,7 @@ function App() {
             const player1 = createPlayerFromArchetype(selectedArchetype, 0);
             const player2 = createPlayerFromArchetype(
               PlayerArchetype.AMSALJA,
-              1
+              1,
             );
             // Use setTimeout to defer state update and avoid render-during-render
             setTimeout(() => setCombatPlayers([player1, player2]), 0);
@@ -436,19 +454,36 @@ function App() {
 
   useEffect(() => {
     const handleResize = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      // Clear cached platform info to get fresh detection on resize
+      clearPlatformCache();
+      const platform = detectPlatform();
       setScreenSize({
-        width,
-        height,
-        isMobile: width < 768,
-        isTablet: width >= 768 && width < 1024,
-        isDesktop: width >= 1024,
+        width: platform.screenWidth,
+        height: platform.screenHeight,
+        isMobile: platform.isMobile,
+        isTablet: platform.isTablet,
+        isDesktop: platform.isDesktop,
       });
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // F9 key toggle for performance debug overlay (dev mode only)
+  // Note: P key is reserved for Philosophy screen
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F9") {
+        e.preventDefault();
+        setShowPerformanceDebug((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   if (!appReady) {
@@ -499,8 +534,8 @@ function App() {
       {/* All screens now use Three.js or pure React/HTML */}
       {renderCurrentScreen()}
 
-      {/* Performance debug overlay (dev mode only) */}
-      <PerformanceDebugOverlayHtml />
+      {/* Performance debug overlay (dev mode only, toggle with P key) */}
+      {showPerformanceDebug && <PerformanceDebugOverlayHtml />}
     </div>
   );
 }

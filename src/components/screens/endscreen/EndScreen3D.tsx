@@ -10,11 +10,16 @@ import React, {
 import * as THREE from "three";
 import { useAudio } from "../../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useWindowSize } from "../../../hooks/useWindowSize";
 import { PlayerState } from "../../../systems";
 import { MatchStatistics } from "../../../systems/combat";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
+import {
+  detectPlatform,
+  shouldUseMobileControls,
+} from "../../../utils/deviceDetection";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { NavigationButtons } from "./components/NavigationButtons";
@@ -184,7 +189,8 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   onReturnToMenu,
   onRematch,
   onViewReplay,
-  width = 1920,
+  width: propWidth,
+  height: propHeight,
 }) => {
   // Handle WebGL context loss and restoration
   useWebGLContextLossHandler({
@@ -197,14 +203,25 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   const audio = useAudio();
   const [showStats, setShowStats] = useState(false);
 
+  // Use window size for responsive layout with resize support
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
+  const screenWidth = propWidth ?? windowWidth;
+  const screenHeight = propHeight ?? windowHeight;
+
   // Determine if this is a victory screen (winner is player 0 by convention - extracted from id)
   const winnerId = winner.id;
   const isVictory = winnerId === "player-0" || winnerId.endsWith("-0");
 
-  // Responsive layout with large desktop support
-  const isMobile = useMemo(() => width < 768, [width]);
-  const isTablet = useMemo(() => width >= 768 && width < 1024, [width]);
-  const isLargeDesktop = useMemo(() => width >= 1920, [width]); // 4K/2K displays
+  // Responsive layout with proper device detection
+  // Uses user-agent detection for mobile controls (supports high-res phones)
+  // Include screen dimensions as deps to re-evaluate on resize
+  const isMobile = useMemo(
+    () => shouldUseMobileControls(),
+    [screenWidth, screenHeight],
+  );
+  const platform = useMemo(() => detectPlatform(), [screenWidth, screenHeight]);
+  const isTablet = useMemo(() => platform.isTablet, [platform]);
+  const isLargeDesktop = useMemo(() => screenWidth >= 1920, [screenWidth]); // 4K/2K displays
 
   const layoutConstants = useMemo(
     () => ({
@@ -212,22 +229,22 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
       subtitleFontSize: isMobile
         ? 18
         : isTablet
-        ? 22
-        : isLargeDesktop
-        ? 22
-        : 28,
+          ? 22
+          : isLargeDesktop
+            ? 22
+            : 28,
       buttonFontSize: isMobile ? 14 : isTablet ? 15 : isLargeDesktop ? 14 : 16,
       padding: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
       buttonPadding: isMobile
         ? "10px 20px"
         : isTablet
-        ? "11px 22px"
-        : isLargeDesktop
-        ? "10px 20px"
-        : "12px 25px",
+          ? "11px 22px"
+          : isLargeDesktop
+            ? "10px 20px"
+            : "12px 25px",
       spacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 15 : 20,
     }),
-    [isMobile, isTablet, isLargeDesktop]
+    [isMobile, isTablet, isLargeDesktop],
   );
 
   // Play victory/defeat audio on mount
@@ -360,11 +377,11 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
             style={{
               background: hexToRgbaString(
                 KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                0.8
+                0.8,
               ),
               border: `2px solid ${hexToRgbaString(
                 KOREAN_COLORS.PRIMARY_CYAN,
-                0.8
+                0.8,
               )}`,
               borderRadius: "8px",
               padding: layoutConstants.buttonPadding,

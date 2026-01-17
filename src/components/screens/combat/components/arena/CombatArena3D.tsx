@@ -14,11 +14,12 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
-import KoreanSignage3D from "./KoreanSignage3D";
+// Re-enabled after fixing KoreanSignage3D font prop issue
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
+import KoreanSignage3D from "./KoreanSignage3D";
 
 /**
  * Props for the CombatArena3D component.
@@ -48,7 +49,7 @@ const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [2048, 2048]; // Upgraded from
 export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   lighting = "cyberpunk",
   scale = 1.0,
-  enableParticles = scale >= 1.0, // Default: enabled on desktop, disabled on mobile
+  enableParticles = scale >= 1.0, // Enable particles on desktop by default
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
 
@@ -82,7 +83,7 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         emissive: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
         emissiveIntensity: 0.05,
       }),
-    []
+    [],
   );
 
   // Cleanup floor material on unmount
@@ -97,7 +98,7 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Lighting based on theme */}
       {lighting === "cyberpunk" && (
         <>
-          {/* Base ambient light with Korean cyan tint - increased for visibility */}
+          {/* Base ambient light with Korean cyan tint */}
           <ambientLight intensity={0.5} color={KOREAN_COLORS.PRIMARY_CYAN} />
 
           {/* Primary directional light (moonlight) with upgraded shadows */}
@@ -117,13 +118,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
             shadow-bias={-0.0001}
           />
 
-          {/* Korean neon accent lights - increased range and intensity */}
+          {/* Korean neon accent lights */}
           {/* Cyan neon light (left side) */}
           <pointLight
             position={[-10, 3, 0]}
             intensity={4}
-            distance={30}
-            decay={1.5}
+            distance={25}
+            decay={2}
             color={KOREAN_COLORS.PRIMARY_CYAN}
           />
 
@@ -131,8 +132,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
           <pointLight
             position={[10, 3, 0]}
             intensity={4}
-            distance={30}
-            decay={1.5}
+            distance={25}
+            decay={2}
             color={KOREAN_COLORS.ACCENT_GOLD}
           />
 
@@ -140,8 +141,8 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
           <pointLight
             position={[0, 5, -15]}
             intensity={3}
-            distance={35}
-            decay={1.5}
+            distance={30}
+            decay={2}
             color={KOREAN_COLORS.ACCENT_BLUE}
           />
         </>
@@ -169,7 +170,10 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       {/* Arena floor - dojang mat with reflective wet concrete aesthetic */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry
-          args={[floorWidth * FLOOR_SCALE_FACTOR, floorDepth * FLOOR_SCALE_FACTOR]}
+          args={[
+            floorWidth * FLOOR_SCALE_FACTOR,
+            floorDepth * FLOOR_SCALE_FACTOR,
+          ]}
         />
         {lighting === "cyberpunk" ? (
           <primitive object={floorMaterial} attach="material" />
@@ -227,13 +231,13 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
         />
       </mesh>
 
-      {/* Korean Signage with Emissive Glow */}
+      {/* Korean Signage with neon glow */}
       {lighting === "cyberpunk" && <KoreanSignage3D scale={scale} />}
 
       {/* Atmospheric Particles (rain/mist) */}
       {lighting === "cyberpunk" && enableParticles && (
         <AtmosphericParticles3D
-          count={scale >= 1.0 ? 500 : 250} // Fewer particles on mobile
+          count={scale >= 1.0 ? 500 : 250}
           scale={scale}
           speed={2}
         />

@@ -1,32 +1,29 @@
 /**
  * TrainingStatsOverlayHtml - Html overlay for training statistics
- * 
+ *
  * Displays score, combo, hits, misses, and accuracy with consistent Korean theming.
  * Uses Korean cyberpunk color palette and bilingual text formatting.
- * 
+ *
  * @module components/screens/training
  * @category Training UI
  * @korean 훈련통계오버레이
  */
 
 import React, { useMemo } from "react";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { SPACING } from "../../../../types/constants/ui";
-import {
-  FONT_FAMILY,
-  KOREAN_COLORS,
-} from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
   formatBilingualText,
   getEnhancedKoreanOverlayStyles,
   getResponsiveSpacing,
 } from "../../../../utils/koreanThemeHelpers";
+import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
+import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
 import {
   getNeonTextShadow,
   getSmoothTransition,
 } from "../../../../utils/visualEffects";
-import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
-import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
 
 /**
  * Training statistics interface
@@ -52,14 +49,18 @@ export interface TrainingStatsOverlayHtmlProps {
   readonly isMobile: boolean;
   /** Viewport width for Super HD font scaling */
   readonly width?: number;
+  /** Distance to training dummy in meters (for distance-based hit feedback) */
+  readonly distanceToDummy?: number;
+  /** Effective reach for current technique in meters */
+  readonly effectiveReach?: number;
 }
 
 /**
  * TrainingStatsOverlayHtml Component
- * 
+ *
  * Html overlay displaying training performance metrics with Korean theming.
  * All colors use KOREAN_COLORS constants for consistency.
- * 
+ *
  * @example
  * ```tsx
  * <TrainingStatsOverlayHtml
@@ -67,28 +68,32 @@ export interface TrainingStatsOverlayHtmlProps {
  *   isMobile={false}
  * />
  * ```
- * 
+ *
  * @korean 훈련통계오버레이컴포넌트
  */
-export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> = ({
+export const TrainingStatsOverlayHtml: React.FC<
+  TrainingStatsOverlayHtmlProps
+> = ({
   stats,
   isMobile,
   width = 375,
+  distanceToDummy,
+  effectiveReach = 0.7, // Default punch reach
 }) => {
   const panelWidth = isMobile ? (width < 400 ? 240 : 260) : 280; // Responsive panel width
   const padding = getResponsiveSpacing("md", isMobile);
   const gap = getResponsiveSpacing("sm", isMobile);
-  
+
   // Safe area support for notched devices
   const safeAreaStyles = useMemo(
     () => (isMobile ? getSafeAreaPadding(["top"], padding) : {}),
-    [isMobile, padding]
+    [isMobile, padding],
   );
-  
+
   // Format accuracy with memoization
   const formattedAccuracy = useMemo(
     () => stats.accuracy.toFixed(1),
-    [stats.accuracy]
+    [stats.accuracy],
   );
 
   // Format session duration
@@ -98,6 +103,19 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
     const seconds = stats.sessionDuration % 60;
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }, [stats.sessionDuration]);
+
+  // Format distance to dummy and check if in range
+  const distanceInfo = useMemo(() => {
+    if (distanceToDummy === undefined) return null;
+    const isInRange = distanceToDummy <= effectiveReach;
+    return {
+      formatted: distanceToDummy.toFixed(2),
+      isInRange,
+      rangeStatus: isInRange
+        ? "사정거리 내 | In Range"
+        : "사정거리 밖 | Out of Range",
+    };
+  }, [distanceToDummy, effectiveReach]);
 
   // Calculate perfect strike rate
   const perfectRate = useMemo(() => {
@@ -144,7 +162,9 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
       </div>
 
       {/* Stats Grid with consistent Korean theming */}
-      <div style={{ display: "flex", flexDirection: "column", gap: `${gap}px` }}>
+      <div
+        style={{ display: "flex", flexDirection: "column", gap: `${gap}px` }}
+      >
         {/* Score - 점수 */}
         <StatRow
           korean="점수"
@@ -198,8 +218,8 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
             stats.accuracy >= 80
               ? KOREAN_COLORS.ACCENT_GREEN
               : stats.accuracy >= 50
-              ? KOREAN_COLORS.ACCENT_GOLD
-              : KOREAN_COLORS.ACCENT_RED
+                ? KOREAN_COLORS.ACCENT_GOLD
+                : KOREAN_COLORS.ACCENT_RED
           }
           isMobile={isMobile}
           width={width}
@@ -239,12 +259,42 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
               parseFloat(perfectRate) >= 30
                 ? KOREAN_COLORS.ACCENT_GOLD
                 : parseFloat(perfectRate) >= 10
-                ? KOREAN_COLORS.PRIMARY_CYAN
-                : KOREAN_COLORS.TEXT_TERTIARY
+                  ? KOREAN_COLORS.PRIMARY_CYAN
+                  : KOREAN_COLORS.TEXT_TERTIARY
             }
             isMobile={isMobile}
             width={width}
           />
+        )}
+
+        {/* Distance to Dummy - 거리 */}
+        {distanceInfo && (
+          <>
+            <StatRow
+              korean="거리"
+              english="Distance"
+              value={`${distanceInfo.formatted}m`}
+              color={
+                distanceInfo.isInRange
+                  ? KOREAN_COLORS.ACCENT_GREEN
+                  : KOREAN_COLORS.ACCENT_RED
+              }
+              isMobile={isMobile}
+              width={width}
+            />
+            <StatRow
+              korean="상태"
+              english="Status"
+              value={distanceInfo.rangeStatus.split(" | ")[isMobile ? 0 : 1]}
+              color={
+                distanceInfo.isInRange
+                  ? KOREAN_COLORS.ACCENT_GREEN
+                  : KOREAN_COLORS.ACCENT_RED
+              }
+              isMobile={isMobile}
+              width={width}
+            />
+          </>
         )}
       </div>
     </div>
@@ -253,10 +303,10 @@ export const TrainingStatsOverlayHtml: React.FC<TrainingStatsOverlayHtmlProps> =
 
 /**
  * Single stat row component with Korean theming
- * 
+ *
  * Uses KOREAN_COLORS constants for all text colors
  * Enhanced with smooth transitions and neon glow on value
- * 
+ *
  * @korean 통계행컴포넌트
  */
 const StatRow: React.FC<{
