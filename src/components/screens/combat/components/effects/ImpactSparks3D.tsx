@@ -171,18 +171,6 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
   const pointsRef = useRef<THREE.Points>(null);
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Performance configuration
-  const getParticleCount = (effect: ImpactSparkEffect): number => {
-    if (effect.isCritical) {
-      return isMobile
-        ? SPARK_CONSTANTS.PARTICLES_CRITICAL_MOBILE
-        : SPARK_CONSTANTS.PARTICLES_CRITICAL_DESKTOP;
-    }
-    return isMobile
-      ? SPARK_CONSTANTS.PARTICLES_NORMAL_MOBILE
-      : SPARK_CONSTANTS.PARTICLES_NORMAL_DESKTOP;
-  };
-
   // Calculate max particles needed
   const maxParticles = useMemo(() => {
     return isMobile
@@ -203,6 +191,18 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
   useEffect(() => {
     if (!enabled) return;
 
+    // Performance configuration - moved inside useEffect to avoid dependency issues
+    const getParticleCount = (effect: ImpactSparkEffect): number => {
+      if (effect.isCritical) {
+        return isMobile
+          ? SPARK_CONSTANTS.PARTICLES_CRITICAL_MOBILE
+          : SPARK_CONSTANTS.PARTICLES_CRITICAL_DESKTOP;
+      }
+      return isMobile
+        ? SPARK_CONSTANTS.PARTICLES_NORMAL_MOBILE
+        : SPARK_CONSTANTS.PARTICLES_NORMAL_DESKTOP;
+    };
+
     effects.forEach((effect) => {
       if (!particlesRef.current.has(effect.id)) {
         const particleCount = getParticleCount(effect);
@@ -219,7 +219,7 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
         completedEffectsRef.current.delete(id);
       }
     });
-  }, [effects, enabled, isMobile, getParticleCount]);
+  }, [effects, enabled, isMobile]);
 
   // Initial positions for buffer (updated in useFrame)
   const initialPositions = useMemo(() => {

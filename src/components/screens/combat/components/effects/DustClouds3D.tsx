@@ -193,14 +193,6 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
   const pointsRef = useRef<THREE.Points>(null);
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
-  // Performance configuration
-  const getParticleCount = (effect: DustCloudEffect): number => {
-    const counts = isMobile
-      ? DUST_CONSTANTS.PARTICLES_MOBILE
-      : DUST_CONSTANTS.PARTICLES_DESKTOP;
-    return Math.floor(counts[effect.type] * effect.intensity);
-  };
-
   // Calculate max particles needed
   const maxParticles = useMemo(() => {
     const maxCounts = isMobile
@@ -215,6 +207,14 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
   // Initialize particles for new effects
   useEffect(() => {
     if (!enabled) return;
+
+    // Performance configuration - moved inside useEffect to avoid dependency issues
+    const getParticleCount = (effect: DustCloudEffect): number => {
+      const counts = isMobile
+        ? DUST_CONSTANTS.PARTICLES_MOBILE
+        : DUST_CONSTANTS.PARTICLES_DESKTOP;
+      return Math.floor(counts[effect.type] * effect.intensity);
+    };
 
     effects.forEach((effect) => {
       if (!particlesRef.current.has(effect.id)) {
@@ -232,7 +232,7 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
         completedEffectsRef.current.delete(id);
       }
     });
-  }, [effects, enabled, isMobile, getParticleCount]);
+  }, [effects, enabled, isMobile]);
 
   // Initial positions for buffer (updated in useFrame)
   const initialPositions = useMemo(() => {
