@@ -72,6 +72,8 @@ import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttribut
 import { physicalReachCalculator } from "@/systems/physics";
 import { STANCE_REACH_MODIFIERS } from "@/types/physics";
 import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
+import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -894,6 +896,7 @@ interface UseAICombatConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number;
   };
   readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
@@ -1138,12 +1141,35 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   }, [currentParams]);
 
   /**
-   * Build combat context for decision-making
+   * Build combat context for decision-making.
+   * 
+   * **IMPORTANT**: Distance calculation must account for arena scale.
+   * Player positions are in scale-adjusted pixels (BASE_PIXELS_PER_METER / scale),
+   * but combat system expects distances in "standard" pixels (METERS_TO_PIXELS_SCALE).
+   * 
+   * @korean 전투 컨텍스트 구축
    */
   const buildCombatContext = useCallback((): CombatContext => {
     const dx = player.position.x - opponent.position.x;
     const dy = player.position.y - opponent.position.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distanceInPixels = Math.sqrt(dx * dx + dy * dy);
+    
+    // Convert pixel distance to meters using arena scale, then back to standard pixels
+    // This ensures distance is in the same units as technique reach calculations
+    // 
+    // Example (mobile with scale=0.3125):
+    //   - Positions use 320 px/m (BASE_PIXELS_PER_METER / 0.3125)
+    //   - Distance of 320 pixels = 1.0 meters (320 / 320)
+    //   - Convert to standard: 1.0 meters * 100 = 100 pixels (for comparison)
+    // 
+    // Example (desktop with scale=1.0):
+    //   - Positions use 100 px/m (BASE_PIXELS_PER_METER / 1.0)
+    //   - Distance of 100 pixels = 1.0 meters (100 / 100)
+    //   - Convert to standard: 1.0 meters * 100 = 100 pixels (unchanged)
+    const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useAICombat");
+    const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+    const distanceInMeters = distanceInPixels / pixelsPerMeter;
+    const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;
 
     // Calculate recent damage taken (fix for issue #2529467021)
     const recentDamageTaken = Math.max(
@@ -1169,7 +1195,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       opponentHealth: opponent.health,
       opponentStance: opponent.currentStance,
       playerStance: player.currentStance,
-      distanceToOpponent: distance,
+      distanceToOpponent: distanceInStandardPixels, // Now scale-aware!
       timeInMatch: Date.now() - matchStartTimeRef.current,
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,

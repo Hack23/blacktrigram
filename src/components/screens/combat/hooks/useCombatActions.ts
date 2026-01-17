@@ -53,7 +53,8 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
-import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
+import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -106,7 +107,7 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
 function applyKnockbackDisplacement(
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: { x: number; y: number; width: number; height: number },
+  arenaBounds: { x: number; y: number; width: number; height: number; scale?: number },
 ): Position {
   if (!result.knockback) {
     return defenderPos;
@@ -154,6 +155,7 @@ export interface UseCombatActionsConfig {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly scale?: number;
   };
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
@@ -1145,6 +1147,7 @@ export function useCombatActions(
   );
 
   // AI movement handler with injury-based movement penalties
+  // **UPDATED**: Now scale-aware for consistent movement and distance calculations
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
@@ -1183,9 +1186,12 @@ export function useCombatActions(
 
       // Calculate distance in pixels, then convert to meters for threshold comparison
       // Stop moving when within 0.05 meters (5cm) of target - close enough for melee range
+      // **UPDATED**: Use scale-aware conversion to match movement system
       const MIN_MOVEMENT_THRESHOLD_METERS = 0.05;
+      const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useCombatActions");
+      const scaleAwarePixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const MIN_MOVEMENT_THRESHOLD_PIXELS =
-        MIN_MOVEMENT_THRESHOLD_METERS * METERS_TO_PIXELS_SCALE;
+        MIN_MOVEMENT_THRESHOLD_METERS * scaleAwarePixelsPerMeter;
 
       if (distance > MIN_MOVEMENT_THRESHOLD_PIXELS) {
         const newPos = {
@@ -1193,14 +1199,14 @@ export function useCombatActions(
           y: currentPos.y + (dy / distance) * finalSpeed,
         };
 
-        // Keep AI within bounds
+        // Keep AI within bounds (no hardcoded offsets - fixed to match movement system)
         newPos.x = Math.max(
           arenaBounds.x,
-          Math.min(arenaBounds.x + arenaBounds.width - 60, newPos.x),
+          Math.min(arenaBounds.x + arenaBounds.width, newPos.x),
         );
         newPos.y = Math.max(
           arenaBounds.y,
-          Math.min(arenaBounds.y + arenaBounds.height - 180, newPos.y),
+          Math.min(arenaBounds.y + arenaBounds.height, newPos.y),
         );
 
         // Update position through parent - this should trigger playerPositions state update in parent

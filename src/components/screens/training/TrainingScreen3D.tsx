@@ -252,23 +252,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingAreaBounds],
   );
 
-  // Expanded bounds to compensate for inputSystem's hardcoded offsets (-60 width, -180 height)
-  // This allows full arena movement like in CombatScreen
-  const expandedBounds = useMemo(
-    () => ({
-      x: trainingAreaBounds.x,
-      y: trainingAreaBounds.y,
-      width: trainingAreaBounds.width + 60, // Compensate for -60 offset in inputSystem
-      height: trainingAreaBounds.height + 180, // Compensate for -180 offset in inputSystem
-    }),
-    [trainingAreaBounds],
-  );
-
   // Player movement with physics-based acceleration and stance modifiers
   // Speed modifiers matching CombatScreen (2.0 m/s walking, 4.0 m/s² acceleration)
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
-    bounds: expandedBounds,
+    bounds: {
+      x: trainingAreaBounds.x,
+      y: trainingAreaBounds.y,
+      width: trainingAreaBounds.width,
+      height: trainingAreaBounds.height,
+      scale: trainingAreaBounds.scale, // Pass arena scale for proper pixel conversion
+    },
     onPositionChange: (newPosition: Position) => {
       onPlayerUpdate({ position: newPosition });
     },

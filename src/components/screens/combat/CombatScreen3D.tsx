@@ -732,7 +732,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         !combatState.roundEnded &&
         matchCountdownComplete &&
         !showRoundStart,
-      bounds: arenaBounds,
+      bounds: {
+        x: arenaBounds.x,
+        y: arenaBounds.y,
+        width: arenaBounds.width,
+        height: arenaBounds.height,
+        scale: arenaBounds.scale, // Pass arena scale for proper pixel conversion
+      },
       onPositionChange: (newPosition: Position) => {
         setPlayer1Position(newPosition);
         onPlayerUpdate(0, { position: newPosition });
