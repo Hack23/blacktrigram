@@ -5,24 +5,22 @@ import { TrigramStance } from "../types/common";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
-import { getValidatedArenaScale } from "./arenaScaleValidation";
 
 /**
  * Base pixel-to-meter conversion ratio for desktop scale (1.0).
- * This constant defines how many pixels represent one meter in the game world
- * at default desktop scale. The actual pixels per meter is calculated by
- * dividing this value by the arena scale factor.
  * 
- * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
+ * **DEPRECATED**: This constant represents the flawed approach from PR #1306.
+ * Do NOT use this for new code. Instead, calculate pixels-per-meter dynamically:
+ * `pixelsPerMeter = bounds.width / bounds.worldWidthMeters`
  * 
+ * This constant is kept ONLY for backward compatibility and will be removed
+ * once all references are updated to use the physics-first approach.
+ * 
+ * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter) - DEPRECATED
+ * 
+ * @deprecated Use `bounds.width / bounds.worldWidthMeters` instead
  * @constant
  * @public
- * @example
- * // Desktop (scale = 1.0): 100 pixels per meter
- * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
- * 
- * // Mobile (scale = 0.3125): 320 pixels per meter
- * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
  */
 export const BASE_PIXELS_PER_METER = 100;
 
@@ -36,7 +34,7 @@ export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
   
-  /** Arena bounds configuration with optional scale factor */
+  /** Arena bounds configuration with optional scale factor and world dimensions */
   readonly bounds?: {
     /** X coordinate of arena top-left corner (pixels) */
     readonly x: number;
@@ -56,6 +54,18 @@ export interface InputSystemConfig {
      * across different device sizes by adjusting the pixel-to-meter conversion.
      */
     readonly scale?: number;
+    
+    /**
+     * Physical arena width in meters (for physics-first calculations).
+     * When provided, pixels-per-meter is calculated as: width / worldWidthMeters
+     * This replaces the flawed BASE_PIXELS_PER_METER / scale approach.
+     */
+    readonly worldWidthMeters?: number;
+    
+    /**
+     * Physical arena depth in meters (for physics-first calculations).
+     */
+    readonly worldDepthMeters?: number;
   };
   
   /** Callback invoked when player position changes */
@@ -181,10 +191,12 @@ export function usePlayerMovement(
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
-      // Use scale-aware conversion to match update loop and prevent position jumps
-      // Desktop (scale=1.0): 100 px/m, Mobile (scale=0.3125): 320 px/m
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+      // Calculate pixels-per-meter from arena bounds (NO fixed constants)
+      // If bounds not available yet, use fallback until they are
+      const pixelsPerMeter = bounds?.worldWidthMeters
+        ? bounds.width / bounds.worldWidthMeters
+        : BASE_PIXELS_PER_METER; // Fallback only for initialization
+      
       physicsStateRef.current = {
         position: new THREE.Vector3(
           initialPosition.x / pixelsPerMeter,
@@ -343,21 +355,31 @@ export function usePlayerMovement(
       physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      // Scale pixels-per-meter by arena scale for consistent visual speed across devices
-      // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+      // Calculate pixels-per-meter from arena bounds (NO fixed constants)
+      // If bounds not available, skip pixel conversion until they are
+      if (!bounds?.worldWidthMeters) {
+        // Continue animation if still moving
+        if (isMoving) {
+          animationFrameId.current = requestAnimationFrame(() =>
+            updatePositionRef.current?.()
+          );
+        } else {
+          animationFrameId.current = null;
+        }
+        return;
+      }
+      
+      const pixelsPerMeter = bounds.width / bounds.worldWidthMeters;
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
 
       // Apply bounds (use full arena bounds without hardcoded offsets)
-      if (bounds) {
-        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width, newX));
-        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
-        // Update 3D position to match clamped 2D position
-        state.position.x = newX / pixelsPerMeter;
-        state.position.z = newY / pixelsPerMeter;
-      }
+      newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width, newX));
+      newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
+      
+      // Update 3D position to match clamped 2D position (keep physics in meters)
+      state.position.x = newX / pixelsPerMeter;
+      state.position.z = newY / pixelsPerMeter;
 
       const newPosition = { x: newX, y: newY };
 
