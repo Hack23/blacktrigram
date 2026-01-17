@@ -235,7 +235,7 @@ export const BoneCrackParticles3D: React.FC<BoneCrackParticles3DProps> = ({
   }, [effects, enabled, isMobile, particleInstances]);
 
   // Animate bone fragments with physics
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (!enabled) return;
 
     const safeDelta = Math.min(delta, BONE_PHYSICS.MAX_DELTA);
