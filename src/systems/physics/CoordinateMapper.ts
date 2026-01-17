@@ -39,7 +39,7 @@ import type { VitalPoint } from "../vitalpoint/types";
  * **Korean**: 캐릭터 모델 설정
  */
 export interface CharacterModelConfig {
-  /** Character height in meters (default: 1.75m) */
+  /** Character height in meters (from physical attributes or default: 1.75m) */
   readonly height: number;
   
   /** Character shoulder width in meters (default: 0.5m) */
@@ -53,6 +53,25 @@ export interface CharacterModelConfig {
   
   /** UI overlay height in pixels (default: 300px) */
   readonly overlayHeight: number;
+  
+  /** 
+   * Arena pixels-per-meter ratio for scaling (optional).
+   * When provided, enables dynamic scaling based on arena size.
+   * Calculate as: arenaWidthPixels / arenaWidthMeters
+   */
+  readonly pixelsPerMeter?: number;
+  
+  /**
+   * Arm length in meters (from physical attributes, optional).
+   * Used for reach calculations in hit detection.
+   */
+  readonly armLength?: number;
+  
+  /**
+   * Leg length in meters (from physical attributes, optional).
+   * Used for reach calculations in hit detection.
+   */
+  readonly legLength?: number;
 }
 
 /**
@@ -144,7 +163,8 @@ const REGION_DEPTH_OFFSETS: Record<AnatomicalRegionPhysics, number> = {
  * **Korean**: 좌표 변환기
  * 
  * Provides bidirectional mapping between the 2D UI overlay coordinate system
- * and the 3D physics world coordinate system.
+ * and the 3D physics world coordinate system. Now supports dynamic arena sizing
+ * and archetype physical attributes for accurate hit detection.
  * 
  * @public
  * @category Physics System
@@ -156,10 +176,77 @@ export class CoordinateMapper {
   /**
    * Creates a new CoordinateMapper with optional custom configuration.
    * 
-   * @param config - Optional character model configuration
+   * For dynamic arena sizing, provide pixelsPerMeter calculated from arena bounds:
+   * `pixelsPerMeter = arenaWidthPixels / arenaWidthMeters`
+   * 
+   * For archetype-specific scaling, provide height, armLength, legLength from PhysicalAttributes.
+   * 
+   * @param config - Optional character model configuration with arena and archetype data
+   * 
+   * @example
+   * ```typescript
+   * // With dynamic arena sizing
+   * const mapper = new CoordinateMapper({
+   *   height: 1.80, // from archetype
+   *   armLength: 0.75, // from archetype
+   *   legLength: 0.95, // from archetype
+   *   pixelsPerMeter: 96 // arena: 960px / 10m
+   * });
+   * ```
    */
   constructor(config: Partial<CharacterModelConfig> = {}) {
     this.config = { ...DEFAULT_CHARACTER_CONFIG, ...config };
+  }
+  
+  /**
+   * Get the current pixels-per-meter ratio.
+   * 
+   * **Korean**: 픽셀당미터비율
+   * 
+   * Returns the configured pixels-per-meter for this mapper,
+   * or undefined if not set (using default fixed scaling).
+   * 
+   * @returns Pixels-per-meter ratio or undefined
+   * @public
+   */
+  getPixelsPerMeter(): number | undefined {
+    return this.config.pixelsPerMeter;
+  }
+  
+  /**
+   * Get arm length in meters for reach calculations.
+   * 
+   * **Korean**: 팔길이가져오기
+   * 
+   * @returns Arm length in meters
+   * @public
+   */
+  getArmLength(): number {
+    return this.config.armLength ?? AVERAGE_SHOULDER_WIDTH_M;
+  }
+  
+  /**
+   * Get leg length in meters for reach calculations.
+   * 
+   * **Korean**: 다리길이가져오기
+   * 
+   * @returns Leg length in meters
+   * @public
+   */
+  getLegLength(): number {
+    return this.config.legLength ?? AVERAGE_ADULT_HEIGHT_M * 0.5; // Approximate leg as 50% of height
+  }
+  
+  /**
+   * Get character height in meters.
+   * 
+   * **Korean**: 키가져오기
+   * 
+   * @returns Height in meters
+   * @public
+   */
+  getHeight(): number {
+    return this.config.height;
   }
   
   /**

@@ -49,6 +49,7 @@
 
 import * as THREE from "three";
 import { TrigramStance } from "../../types/common";
+import type { PhysicalAttributes } from "../../types/common";
 import type {
   AnatomicalRegionPhysics,
   BoundingBox,
@@ -56,6 +57,7 @@ import type {
   Position3D,
   RaycastQuery,
   TechniqueType,
+  PhysicalReachConfig,
 } from "../../types/physics";
 import { 
   BASE_REACH, 
@@ -73,6 +75,7 @@ import { CoordinateMapper } from "./CoordinateMapper";
  * 
  * Provides efficient collision detection for combat using bounding boxes and raycasting.
  * Optimized for 60fps performance with multiple simultaneous collision checks.
+ * Now supports dynamic arena sizing and archetype physical attributes.
  * 
  * @public
  * @category Combat Systems
@@ -86,20 +89,74 @@ export class CollisionDetection {
   // Geometry cache for object pooling to avoid repeated allocations during combat
   private readonly geometryCache: Map<string, THREE.BufferGeometry> = new Map();
   
-  // Coordinate mapper for 2D→3D conversion
-  private readonly coordinateMapper: CoordinateMapper;
+  // Coordinate mapper for 2D→3D conversion with dynamic arena sizing
+  private coordinateMapper: CoordinateMapper;
 
   /**
    * Creates a new CollisionDetection instance.
    * 
    * Initializes bounding boxes for all anatomical regions and organizes
    * vital points by region for efficient lookup.
+   * 
+   * @param config - Optional configuration for arena bounds and physical attributes
+   * @param config.pixelsPerMeter - Arena pixels-per-meter ratio (arenaPixels / arenaMeters)
+   * @param config.physicalAttributes - Character physical attributes for accurate scaling
+   * 
+   * @example
+   * ```typescript
+   * const collision = new CollisionDetection({
+   *   pixelsPerMeter: 96, // 960px arena / 10m world
+   *   physicalAttributes: {
+   *     height: 180, // cm
+   *     armLength: 75, // cm
+   *     legLength: 95, // cm
+   *     // ... other attributes
+   *   }
+   * });
+   * ```
    */
-  constructor() {
-    this.coordinateMapper = new CoordinateMapper();
+  constructor(config?: {
+    pixelsPerMeter?: number;
+    physicalAttributes?: PhysicalAttributes;
+  }) {
+    // Initialize coordinate mapper with arena and archetype data
+    const mapperConfig = config ? {
+      pixelsPerMeter: config.pixelsPerMeter,
+      height: config.physicalAttributes?.totalHeight ? config.physicalAttributes.totalHeight / 100 : undefined,
+      armLength: config.physicalAttributes?.armLength ? config.physicalAttributes.armLength / 100 : undefined,
+      legLength: config.physicalAttributes?.legLength ? config.physicalAttributes.legLength / 100 : undefined,
+    } : undefined;
+    
+    this.coordinateMapper = new CoordinateMapper(mapperConfig);
     this.initializeBoundingBoxes();
     this.organizeVitalPointsByRegion();
     this.initializeGeometryCache();
+  }
+  
+  /**
+   * Updates the collision detection system with new arena bounds or physical attributes.
+   * 
+   * **Korean**: 충돌 시스템 업데이트
+   * 
+   * Call this when arena size changes (e.g., screen resize) or when character changes.
+   * 
+   * @param config - New configuration for arena and/or physical attributes
+   * @public
+   * @korean 충돌시스템업데이트
+   */
+  updateConfiguration(config: {
+    pixelsPerMeter?: number;
+    physicalAttributes?: PhysicalAttributes;
+  }): void {
+    const mapperConfig = {
+      pixelsPerMeter: config.pixelsPerMeter,
+      height: config.physicalAttributes?.totalHeight ? config.physicalAttributes.totalHeight / 100 : undefined,
+      armLength: config.physicalAttributes?.armLength ? config.physicalAttributes.armLength / 100 : undefined,
+      legLength: config.physicalAttributes?.legLength ? config.physicalAttributes.legLength / 100 : undefined,
+    };
+    
+    this.coordinateMapper = new CoordinateMapper(mapperConfig);
+    // Bounding boxes remain the same; they're relative to character
   }
   
   /**
@@ -238,12 +295,105 @@ export class CollisionDetection {
   }
 
   /**
+   * Calculates attack reach using physical attributes and reach configuration.
+   * 
+   * **Korean**: 공격 범위 계산 (물리 속성 기반)
+   * 
+   * This method provides accurate reach calculation based on:
+   * - Character's physical attributes (arm/leg length)
+   * - Technique reach configuration
+   * - Stance modifiers
+   * 
+   * @param reachConfig - Physical reach configuration for the technique
+   * @param stance - Current trigram stance
+   * @param physicalAttributes - Character's physical attributes (optional, uses mapper config if not provided)
+   * @returns Attack reach with all modifiers applied
+   * 
+   * @example
+   * ```typescript
+   * const punchReach = collision.calculateAttackReachFromPhysical(
+   *   { bodyPart: "arm", techniqueType: "punch", baseExtension: 0.9 },
+   *   TrigramStance.GEON,
+   *   { armLength: 75, legLength: 95, height: 180, ... }
+   * );
+   * ```
+   * 
+   * @public
+   * @korean 물리속성기반공격범위계산
+   */
+  calculateAttackReachFromPhysical(
+    reachConfig: PhysicalReachConfig,
+    stance: TrigramStance,
+    physicalAttributes?: PhysicalAttributes
+  ): {
+    technique: TechniqueType;
+    baseReach: number;
+    stance: TrigramStance;
+    stanceModifier: number;
+    effectiveReach: number;
+    bodyPartLength: number;
+  } {
+    // Get body part length in meters
+    let bodyPartLengthMeters: number;
+    
+    if (physicalAttributes) {
+      // Use provided physical attributes (convert cm to meters)
+      switch (reachConfig.bodyPart) {
+        case "arm":
+          bodyPartLengthMeters = physicalAttributes.armLength / 100;
+          break;
+        case "leg":
+          bodyPartLengthMeters = physicalAttributes.legLength / 100;
+          break;
+        case "torso":
+          // Approximate torso as 40% of height
+          bodyPartLengthMeters = (physicalAttributes.totalHeight / 100) * 0.4;
+          break;
+        default:
+          bodyPartLengthMeters = this.coordinateMapper.getArmLength();
+      }
+    } else {
+      // Use coordinate mapper's configured values
+      switch (reachConfig.bodyPart) {
+        case "arm":
+          bodyPartLengthMeters = this.coordinateMapper.getArmLength();
+          break;
+        case "leg":
+          bodyPartLengthMeters = this.coordinateMapper.getLegLength();
+          break;
+        case "torso":
+          bodyPartLengthMeters = this.coordinateMapper.getHeight() * 0.4;
+          break;
+        default:
+          bodyPartLengthMeters = this.coordinateMapper.getArmLength();
+      }
+    }
+    
+    // Calculate base reach: body part length × extension multiplier
+    const baseReach = bodyPartLengthMeters * reachConfig.baseExtension;
+    
+    // Apply stance modifier
+    const stanceModifier = STANCE_REACH_MODIFIERS[stance];
+    const effectiveReach = baseReach * stanceModifier;
+    
+    return {
+      technique: reachConfig.techniqueType,
+      baseReach,
+      stance,
+      stanceModifier,
+      effectiveReach,
+      bodyPartLength: bodyPartLengthMeters,
+    };
+  }
+
+  /**
    * Calculates effective attack reach for a technique.
    * 
    * **Korean**: 공격 범위 계산
    * 
    * Applies stance modifiers to base technique reach.
    * 
+   * @deprecated Use calculateAttackReachFromPhysical for accurate archetype-based reach
    * @param techniqueType - Type of technique
    * @param stance - Current trigram stance
    * @returns Attack reach with all modifiers applied
