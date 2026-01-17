@@ -9,6 +9,24 @@
  * @korean 모바일레이아웃도우미
  */
 
+import { getScreenSize } from "../systems/ResponsiveScaling";
+import { calculateArenaWorldDimensions } from "./arenaWorldDimensions";
+
+/**
+ * Mobile area bounds with world dimensions.
+ * 
+ * @public
+ */
+export interface MobileAreaBounds {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+  readonly scale: number;
+  readonly worldWidthMeters: number;
+  readonly worldDepthMeters: number;
+}
+
 /**
  * Calculate mobile area bounds with 4:3 aspect ratio
  * 
@@ -21,15 +39,15 @@
  * @param topClearance - Minimum space to reserve at top (for HUD/header)
  * @param bottomClearance - Minimum space to reserve at bottom (for controls)
  * @param yOffset - Y position offset (typically header height + padding)
- * @returns Mobile area bounds with position, dimensions, and scale factor
+ * @returns Mobile area bounds with position, dimensions, scale, and world dimensions
  * 
  * @example
  * ```typescript
  * const bounds = calculateMobileAreaBounds(375, 667, 80, 120, 100);
- * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125 }
+ * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125, worldWidthMeters: 6, worldDepthMeters: 6 }
  * 
  * const boundsSmall = calculateMobileAreaBounds(320, 568, 75, 110, 90);
- * // Returns: { x: ~25, y: 90, width: 270, height: 202, scale: 0.28125 }
+ * // Returns: { x: ~25, y: 90, width: 270, height: 202, scale: 0.28125, worldWidthMeters: 6, worldDepthMeters: 6 }
  * ```
  * 
  * @public
@@ -41,13 +59,7 @@ export function calculateMobileAreaBounds(
   topClearance: number,
   bottomClearance: number,
   yOffset: number
-): {
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-  readonly scale: number;
-} {
+): MobileAreaBounds {
   // Calculate available space for the area
   // Extra-small devices (<380px) use tighter margins for more screen real estate
   const horizontalMargin = width < 380 ? 30 : 40; // 15px vs 20px per side
@@ -96,6 +108,10 @@ export function calculateMobileAreaBounds(
   // Calculate 3D scale factor (mobile area is smaller than desktop reference)
   const desktopWidth = 960; // 80% of 1200px reference
   const scale = areaWidth / desktopWidth;
+  
+  // Calculate world dimensions based on screen size
+  const screenSize = getScreenSize(width);
+  const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
 
   return {
     x: (width - areaWidth) / 2, // Centered horizontally
@@ -103,5 +119,7 @@ export function calculateMobileAreaBounds(
     width: areaWidth,
     height: areaHeight,
     scale,
+    worldWidthMeters: worldDimensions.widthMeters,
+    worldDepthMeters: worldDimensions.depthMeters,
   };
 }

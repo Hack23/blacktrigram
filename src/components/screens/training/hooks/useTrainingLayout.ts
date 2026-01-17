@@ -34,6 +34,7 @@ import { useMemo } from "react";
 import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
+import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -52,6 +53,8 @@ export interface TrainingAreaBounds {
   readonly width: number;
   readonly height: number;
   readonly scale: number; // 3D scale factor for training area (1.0 = desktop, <1.0 = mobile)
+  readonly worldWidthMeters: number; // Physical training area width in meters
+  readonly worldDepthMeters: number; // Physical training area depth in meters
 }
 
 export interface TrainingLayout {
@@ -95,10 +98,15 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
   // Mobile training area sizing adapts to device resolution
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
+    
+    // Calculate world dimensions based on screen size
+    // Square arenas (aspectRatio = 1.0) for all devices
+    const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
       // Use shared mobile area calculation for consistency with combat screen
+      // (already includes world dimensions)
       return calculateMobileAreaBounds(
         width,
         height,
@@ -122,8 +130,10 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
       width: width * 0.8,
       height: areaHeight,
       scale: 1.0, // Desktop uses full scale
+      worldWidthMeters: worldDimensions.widthMeters,
+      worldDepthMeters: worldDimensions.depthMeters,
     };
-  }, [width, height, layoutConstants, isMobile]);
+  }, [width, height, layoutConstants, isMobile, screenSize]);
 
   return {
     layoutConstants,
