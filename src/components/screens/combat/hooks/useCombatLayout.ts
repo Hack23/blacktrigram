@@ -99,9 +99,9 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
     
-    // Calculate world dimensions based on screen size
+    // Calculate world dimensions based on screen WIDTH (resolution, not device type)
     // Square arenas (aspectRatio = 1.0) for all devices
-    const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
+    const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {

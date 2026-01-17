@@ -9,7 +9,6 @@
  * @korean 모바일레이아웃도우미
  */
 
-import { getScreenSize } from "../systems/ResponsiveScaling";
 import { calculateArenaWorldDimensions } from "./arenaWorldDimensions";
 
 /**
@@ -109,9 +108,8 @@ export function calculateMobileAreaBounds(
   const desktopWidth = 960; // 80% of 1200px reference
   const scale = areaWidth / desktopWidth;
   
-  // Calculate world dimensions based on screen size
-  const screenSize = getScreenSize(width);
-  const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
+  // Calculate world dimensions based on screen WIDTH (resolution, not device type)
+  const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
 
   return {
     x: (width - areaWidth) / 2, // Centered horizontally

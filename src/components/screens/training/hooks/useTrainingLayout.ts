@@ -99,14 +99,14 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
     
-    // Calculate world dimensions based on screen size
+    // Calculate world dimensions based on screen WIDTH (resolution, not device type)
     // Square arenas (aspectRatio = 1.0) for all devices
-    const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
+    const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
       // Use shared mobile area calculation for consistency with combat screen
-      // (already includes world dimensions)
+      // Mobile bounds calculation includes world dimensions internally
       return calculateMobileAreaBounds(
         width,
         height,

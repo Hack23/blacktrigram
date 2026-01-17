@@ -11,26 +11,7 @@
  */
 
 import * as THREE from "three";
-
-/**
- * Position in 3D space measured in **meters**.
- * 
- * This is the fundamental position type for all physics calculations.
- * Never store positions in pixels internally.
- * 
- * **Korean**: 물리 위치 (Physics Position)
- * 
- * @public
- * @category Physics Types
- */
-export interface PhysicsPosition {
-  /** X coordinate in meters */
-  readonly x: number;
-  /** Y coordinate in meters (vertical, usually 0 for ground plane) */
-  readonly y: number;
-  /** Z coordinate in meters (depth) */
-  readonly z: number;
-}
+import type { Position3D } from "./physics";
 
 /**
  * Arena bounds with both pixel dimensions (for rendering) and 
@@ -79,6 +60,27 @@ export interface PhysicsArenaBounds {
 }
 
 /**
+ * Validates if a value is a valid Position3D or THREE.Vector3.
+ * 
+ * @param pos - Value to check
+ * @returns True if valid position with x, y, z properties
+ * @internal
+ */
+function isValidPosition(pos: unknown): pos is Position3D | THREE.Vector3 {
+  return (
+    pos !== null &&
+    pos !== undefined &&
+    typeof pos === "object" &&
+    "x" in pos &&
+    "y" in pos &&
+    "z" in pos &&
+    typeof (pos as Position3D).x === "number" &&
+    typeof (pos as Position3D).y === "number" &&
+    typeof (pos as Position3D).z === "number"
+  );
+}
+
+/**
  * Calculate pixels-per-meter ratio from arena bounds.
  * 
  * This is the fundamental conversion factor between screen space (pixels)
@@ -88,6 +90,7 @@ export interface PhysicsArenaBounds {
  * 
  * @param bounds - Arena bounds with pixel and meter dimensions
  * @returns Conversion ratio (pixels per meter)
+ * @throws Error if worldWidthMeters is not positive
  * 
  * @example
  * ```typescript
@@ -104,6 +107,11 @@ export interface PhysicsArenaBounds {
  * @category Physics Types
  */
 export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
+  if (bounds.worldWidthMeters <= 0) {
+    throw new Error(
+      `worldWidthMeters must be positive, got: ${bounds.worldWidthMeters}`
+    );
+  }
   return bounds.width / bounds.worldWidthMeters;
 }
 
@@ -118,23 +126,26 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
  * @param positionMeters - Position in meters
  * @param bounds - Arena bounds for conversion
  * @returns Position in pixels for rendering
+ * @throws Error if position is invalid
  * 
  * @public
  * @category Physics Types
  */
 export function metersToPixels(
-  positionMeters: PhysicsPosition | THREE.Vector3,
+  positionMeters: Position3D | THREE.Vector3,
   bounds: PhysicsArenaBounds
 ): { x: number; y: number } {
+  if (!isValidPosition(positionMeters)) {
+    throw new Error(
+      "Invalid position: must be Vector3 or Position3D with numeric x, y, z properties"
+    );
+  }
+  
   const pixelsPerMeter = getPixelsPerMeter(bounds);
   
-  // Handle both PhysicsPosition and THREE.Vector3
-  const x = "x" in positionMeters ? positionMeters.x : 0;
-  const z = "z" in positionMeters ? positionMeters.z : 0;
-  
   return {
-    x: x * pixelsPerMeter,
-    y: z * pixelsPerMeter, // Z axis maps to screen Y
+    x: positionMeters.x * pixelsPerMeter,
+    y: positionMeters.z * pixelsPerMeter, // Z axis maps to screen Y
   };
 }
 
@@ -149,6 +160,7 @@ export function metersToPixels(
  * @param pixelPosition - Position in pixels
  * @param bounds - Arena bounds for conversion
  * @returns Position in meters
+ * @throws Error if pixel coordinates are not finite numbers
  * 
  * @public
  * @category Physics Types
@@ -156,7 +168,13 @@ export function metersToPixels(
 export function pixelsToMeters(
   pixelPosition: { x: number; y: number },
   bounds: PhysicsArenaBounds
-): PhysicsPosition {
+): Position3D {
+  if (!Number.isFinite(pixelPosition.x) || !Number.isFinite(pixelPosition.y)) {
+    throw new Error(
+      `Invalid pixel coordinates: x=${pixelPosition.x}, y=${pixelPosition.y}`
+    );
+  }
+  
   const pixelsPerMeter = getPixelsPerMeter(bounds);
   
   return {
@@ -177,17 +195,24 @@ export function pixelsToMeters(
  * @param pos1 - First position in meters
  * @param pos2 - Second position in meters
  * @returns Distance in meters
+ * @throws Error if either position is invalid
  * 
  * @public
  * @category Physics Types
  */
 export function calculateDistanceMeters(
-  pos1: PhysicsPosition | THREE.Vector3,
-  pos2: PhysicsPosition | THREE.Vector3
+  pos1: Position3D | THREE.Vector3,
+  pos2: Position3D | THREE.Vector3
 ): number {
-  const dx = ("x" in pos1 ? pos1.x : 0) - ("x" in pos2 ? pos2.x : 0);
-  const dy = ("y" in pos1 ? pos1.y : 0) - ("y" in pos2 ? pos2.y : 0);
-  const dz = ("z" in pos1 ? pos1.z : 0) - ("z" in pos2 ? pos2.z : 0);
+  if (!isValidPosition(pos1) || !isValidPosition(pos2)) {
+    throw new Error(
+      "Invalid positions for distance calculation: both positions must be valid Vector3 or Position3D objects"
+    );
+  }
+  
+  const dx = pos2.x - pos1.x;
+  const dy = pos2.y - pos1.y;
+  const dz = pos2.z - pos1.z;
   
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
