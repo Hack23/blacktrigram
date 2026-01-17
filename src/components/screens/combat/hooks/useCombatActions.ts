@@ -53,7 +53,6 @@ import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
-import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
 import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
