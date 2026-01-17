@@ -55,11 +55,12 @@ This document is the **single source of truth** for all game controls in Black T
 
 > **🆕 Enhanced Mobile Layout (v0.6.15+)**:
 > 
-> - **Improved Visibility**: All mobile controls positioned 200px from bottom edge
-> - **No Overlap**: Clear separation from TechniqueBar and "Back to Menu" button
+> - **Improved Visibility**: On-screen D-Pad and action buttons are positioned 200px from the bottom edge so they don't cover the combat arena.
+> - **TechniqueBar Positioning**: TechniqueBar sits lower at 20px (mobile) / 30px (desktop) from the bottom edge to maximize arena visibility while remaining easily reachable.
+> - **No Overlap**: Clear separation between TechniqueBar, on-screen mobile controls (D-Pad / action buttons), and the "Back to Menu" button.
 > - **Portrait Mode**: Full functionality in vertical orientation
 > - **Touch Targets**: Minimum 48px for accessibility compliance (WCAG 2.1 Level AA)
-> - **Z-Index Layering**: Mobile controls (50) > TechniqueBar (45) > HUD (40)
+> - **Z-Index Layering**: On-screen mobile controls (z-index 50) > TechniqueBar (45) > HUD (40)
 
 ---
 

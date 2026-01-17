@@ -74,7 +74,7 @@ describe("TechniqueBarContainer", () => {
     });
 
     it("should use consistent positioning (20px mobile, 30px desktop) for arena visibility", () => {
-      // Updated: TechniqueBar lowered to minimize arena obstruction
+      // TechniqueBar lowered to minimize arena obstruction (20px mobile, 30px desktop)
       const mobileExpected = 20;  // Near bottom to prioritize gameplay
       const desktopExpected = 30; // Slightly higher on desktop
 

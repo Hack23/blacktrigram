@@ -25,12 +25,6 @@ export const LAYOUT_BOTTOM_POSITIONS = {
     DESKTOP: 30,  // Slightly higher on desktop for better visibility
   },
   
-  /** Back to Menu button - moved to top-right corner (see getBackButtonPosition) */
-  BACK_BUTTON: {
-    MOBILE: 80,    // Only used if positioned at bottom (deprecated)
-    DESKTOP: 100,  // Only used if positioned at bottom (deprecated)
-  },
-  
   /** TechniqueBar container height (for overlap calculations) */
   TECHNIQUE_BAR_HEIGHT: 180,
 } as const;
@@ -61,19 +55,6 @@ export function getTechniqueBarBottom(isMobile: boolean): number {
   return isMobile 
     ? LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.MOBILE
     : LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.DESKTOP;
-}
-
-/**
- * Helper function to get back button bottom position
- * NOTE: positionScale NOT applied to prevent layout bugs on 4K displays
- * 
- * @param isMobile - Whether device is mobile (<768px)
- * @returns Bottom position in pixels
- */
-export function getBackButtonBottom(isMobile: boolean): number {
-  return isMobile
-    ? LAYOUT_BOTTOM_POSITIONS.BACK_BUTTON.MOBILE
-    : LAYOUT_BOTTOM_POSITIONS.BACK_BUTTON.DESKTOP;
 }
 
 /**

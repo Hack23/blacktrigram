@@ -1,6 +1,6 @@
 # Code Quality Analysis: Mobile Controls Layout Fix
 
-**Date**: 2024-01-17  
+**Date**: 2026-01-17  
 **Scope**: CombatScreen3D.tsx, TrainingScreen3D.tsx, MobileControlsWrapper.tsx  
 **Focus**: Layout positioning, magic numbers, DRY violations, maintainability
 
@@ -71,24 +71,18 @@ bottom={200}  // Line 119 - ActionButtons
 /**
  * Bottom positioning for UI elements (in pixels)
  * Values designed to prevent overlap:
- * - Mobile controls at 200px provide space for TechniqueBar
- * - TechniqueBar at 200px (mobile) / 220px (desktop)
- * - Back button at 80px (mobile) / 100px (desktop) below TechniqueBar
+ * - Mobile controls at 200px from bottom
+ * - TechniqueBar at 20px (mobile) / 30px (desktop) - lowered for arena visibility
+ * - Back button moved to top-right corner (see LAYOUT_TOP_POSITIONS)
  */
 export const LAYOUT_BOTTOM_POSITIONS = {
   /** Mobile controls (VirtualDPad, ActionButtons) */
   MOBILE_CONTROLS: 200,
   
-  /** TechniqueBar container */
+  /** TechniqueBar container - lowered to minimize arena obstruction */
   TECHNIQUE_BAR: {
-    MOBILE: 200,
-    DESKTOP: 220,  // Extra space for desktop scaling
-  },
-  
-  /** Back to Menu button */
-  BACK_BUTTON: {
-    MOBILE: 80,
-    DESKTOP: 100,
+    MOBILE: 20,    // Near bottom to prioritize gameplay
+    DESKTOP: 30,   // Slightly higher on desktop
   },
   
   /** TechniqueBar container height (for overlap calculations) */
@@ -97,27 +91,14 @@ export const LAYOUT_BOTTOM_POSITIONS = {
 
 /**
  * Helper function to get technique bar bottom position
- * Handles mobile vs desktop and positionScale
+ * Handles mobile vs desktop with fixed desktop values
  */
 export function getTechniqueBarBottom(
-  isMobile: boolean,
-  positionScale: number = 1.0
+  isMobile: boolean
 ): number {
   return isMobile 
     ? LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.MOBILE
-    : LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.DESKTOP * positionScale;
-}
-
-/**
- * Helper function to get back button bottom position
- */
-export function getBackButtonBottom(
-  isMobile: boolean,
-  positionScale: number = 1.0
-): number {
-  return isMobile
-    ? LAYOUT_BOTTOM_POSITIONS.BACK_BUTTON.MOBILE
-    : LAYOUT_BOTTOM_POSITIONS.BACK_BUTTON.DESKTOP * positionScale;
+    : LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR.DESKTOP;
 }
 
 /**
@@ -130,11 +111,11 @@ export type LayoutBottomPosition = number;
 
 ```typescript
 // CombatScreen3D.tsx
-import { getTechniqueBarBottom, getBackButtonBottom } from '../../../types/constants/layout';
+import { getTechniqueBarBottom, getBackButtonTop } from '../../../types/constants/layout';
 
 // Replace magic numbers with semantic functions
 <div style={{
-  bottom: getTechniqueBarBottom(isMobile, positionScale),
+  bottom: getTechniqueBarBottom(isMobile),
   // ... rest of styles
 }}>
   <TechniqueBar />
@@ -142,10 +123,10 @@ import { getTechniqueBarBottom, getBackButtonBottom } from '../../../types/const
 
 <ResponsiveContainer
   position={{
-    base: { x: 0, y: height - getBackButtonBottom(isMobile, positionScale) }
+    base: { x: width - getBackButtonRight(isMobile), y: getBackButtonTop(isMobile) }
   }}
 >
-  {/* Back button */}
+  {/* Back button - now in top-right corner */}
 </ResponsiveContainer>
 ```
 
@@ -165,19 +146,19 @@ import { getTechniqueBarBottom, getBackButtonBottom } from '../../../types/const
 The `positionScale` logic causes layout bugs on large/xlarge screens:
 
 ```typescript
-// positionScale values:
-// mobile/tablet/desktop: 1.0
-// large (2560x1440): 1.25
-// xlarge (3840x2160): 1.5
+// Previous implementation with positionScale bug:
+// positionScale values: mobile/tablet/desktop: 1.0, large: 1.25, xlarge: 1.5
+// bottom: isMobile ? 200 : 220 * positionScale  // TechniqueBar
+// On xlarge: 220 * 1.5 = 330px (50% larger - BUG!)
+// bottom={200}  // Mobile controls - NOT SCALED (inconsistent!)
 
-bottom: isMobile ? 200 : 220 * positionScale,  // TechniqueBar
-// On xlarge: 220 * 1.5 = 330px (50% larger!)
-
-bottom={200}  // Mobile controls - NOT SCALED
+// Current implementation (FIXED):
+bottom: getTechniqueBarBottom(isMobile)  // Fixed 20px (mobile) or 30px (desktop)
+bottom={getMobileControlsBottom()}       // Fixed 200px (consistent!)
 ```
 
-**The Bug**:
-1. TechniqueBar moves down 330px on 4K screens
+**The Bug** (FIXED):
+1. Previously: TechniqueBar would move to 330px on 4K screens (220 * 1.5)
 2. Mobile controls stay at 200px (not scaled)
 3. **Gap between them grows from 20px to 130px**
 4. TechniqueBar container height (180px) doesn't scale
@@ -1071,5 +1052,5 @@ The mobile controls overlap fix successfully resolves the immediate issue but in
 ---
 
 **Reviewed by**: Code Quality Engineer  
-**Date**: 2024-01-17  
+**Date**: 2026-01-17  
 **Next Review**: After refactoring completion
