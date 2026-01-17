@@ -1440,32 +1440,51 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             )}
 
             {/* Technique Bar - Bottom Center (above menu button) - Always visible for training */}
-            <TechniqueBar
-              techniques={techniqueSelection.availableTechniques}
-              player={trainingPlayerState}
-              selectedIndex={techniqueSelection.selectedIndex}
-              cooldowns={cooldownsMap}
-              onTechniqueSelect={techniqueSelection.selectTechnique}
-              onTechniqueHover={(_tech) => {
-                // Could add additional hover effects here
+            {/* Positioned above mobile controls and "Back to Menu" button to prevent overlap */}
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                bottom: isMobile ? 200 : 220 * positionScale, // Increased clearance for mobile controls and back button
+                width: "100%",
+                height: "180px",
+                pointerEvents: "none", // Container is non-interactive
+                zIndex: Z_INDEX.MOBILE_CONTROLS - 5, // Below mobile controls but above HUD
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-end",
               }}
-              isMobile={isMobile}
-              screenWidth={width}
-              screenHeight={height}
-            />
+            >
+              <div style={{ pointerEvents: "auto" }}>
+                <TechniqueBar
+                  techniques={techniqueSelection.availableTechniques}
+                  player={trainingPlayerState}
+                  selectedIndex={techniqueSelection.selectedIndex}
+                  cooldowns={cooldownsMap}
+                  onTechniqueSelect={techniqueSelection.selectTechnique}
+                  onTechniqueHover={(_tech) => {
+                    // Could add additional hover effects here
+                  }}
+                  isMobile={isMobile}
+                  screenWidth={width}
+                  screenHeight={height}
+                />
+              </div>
+            </div>
 
             {/* Bottom Center - Return to Menu Button */}
+            {/* Positioned below TechniqueBar with sufficient clearance */}
             <ResponsiveContainer
               position={{
                 base: {
                   x: 0,
-                  y: height - (isMobile ? 75 : 100 * positionScale),
+                  y: height - (isMobile ? 80 : 100 * positionScale),
                 },
               }}
               containerWidth={width}
               useSafeArea
               safeAreaEdge="bottom"
-              zIndex={Z_INDEX.HUD}
+              zIndex={Z_INDEX.HUD} // Standard HUD layer
               style={{
                 pointerEvents: "all",
                 minHeight: "50px",
@@ -1519,12 +1538,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         </Html>
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
+        {/* Positioned above TechniqueBar and "Back to Menu" button to prevent overlap */}
         {isMobile && (
           <>
             <VirtualDPad
               onMove={handleMobileMove}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={200} // Increased from 34px to clear TechniqueBar and footer button
             />
 
             <ActionButtons
@@ -1532,6 +1553,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
+              bottom={200} // Increased from 34px to clear TechniqueBar and footer button
             />
 
             <StanceWheel

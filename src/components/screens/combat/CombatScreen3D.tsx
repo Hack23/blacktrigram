@@ -2571,7 +2571,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* as those effects would incorrectly affect the player's view */}
 
         {/* Technique Bar - Bottom Center - Wrapped to ensure pointer events work */}
-        {/* Positioned above the footer button to prevent overlap */}
+        {/* Positioned above mobile controls and footer button to prevent overlap */}
         {combatState.roundStarted &&
           !combatState.roundEnded &&
           matchCountdownComplete &&
@@ -2580,11 +2580,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 position: "absolute",
                 left: 0,
-                bottom: isMobile ? 80 : 100 * positionScale, // Clear space for back button
+                bottom: isMobile ? 200 : 220 * positionScale, // Increased clearance for mobile controls and back button
                 width: "100%",
                 height: "180px",
                 pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements
+                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements but below mobile controls
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-end",
@@ -2616,14 +2616,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         {/* Combat Footer - Back Button */}
+        {/* Positioned below TechniqueBar with sufficient clearance */}
         <ResponsiveContainer
           position={{
-            base: { x: 0, y: height - (isMobile ? 70 : 90 * positionScale) },
+            base: { x: 0, y: height - (isMobile ? 80 : 100 * positionScale) },
           }}
           containerWidth={width}
           useSafeArea
           safeAreaEdge="bottom"
-          zIndex={Z_INDEX.HUD}
+          zIndex={Z_INDEX.HUD} // Standard HUD layer
           style={{
             pointerEvents: "auto",
             minHeight: "50px",

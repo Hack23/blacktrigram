@@ -66,6 +66,12 @@ export interface MobileControlsWrapperProps {
  * - Stance Wheel (right-center) for trigram stance selection
  * - Gesture Recognition for swipe-based actions
  *
+ * Positioning Strategy:
+ * - All controls positioned above TechniqueBar and "Back to Menu" button
+ * - D-Pad and ActionButtons at bottom: 160px (mobile) / 180px (desktop)
+ * - StanceWheel at right-center for easy thumb access
+ * - Z-index: MOBILE_CONTROLS (50) to ensure visibility over HUD elements
+ *
  * @example
  * ```tsx
  * <MobileControlsWrapper
@@ -95,18 +101,22 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
   return (
     <>
       {/* Virtual D-Pad - Bottom-left for movement */}
+      {/* Positioned above TechniqueBar (200px) for visibility */}
       <VirtualDPad
         onMove={onMove}
         disabled={!enabled}
         opacity={0.8}
+        bottom={200} // Increased from 34px to clear TechniqueBar and footer button
       />
 
       {/* Action Buttons - Bottom-right for attack/block */}
+      {/* Positioned above TechniqueBar (200px) for visibility */}
       <ActionButtons
         onAttack={onAttack}
         onBlock={onBlock}
         disabled={!enabled}
         opacity={0.8}
+        bottom={200} // Increased from 34px to clear TechniqueBar and footer button
       />
 
       {/* Stance Wheel - Right-center for trigram stance selection */}
