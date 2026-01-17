@@ -68,8 +68,8 @@ describe("ParticlePool", () => {
 
       // Fill the pool
       const points1 = pool.acquire(50, testMaterial);
-      const points2 = pool.acquire(50, material2);
-      const points3 = pool.acquire(50, material3);
+      pool.acquire(50, material2);
+      pool.acquire(50, material3);
 
       // Make points1 the oldest by updating lifetimes
       pool.update(1.0); // All active systems get +1s lifetime
@@ -137,7 +137,7 @@ describe("ParticlePool", () => {
 
   describe("update", () => {
     it("should track lifetime of active systems", () => {
-      const points = pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
 
       pool.update(1.0);
       pool.update(0.5);
@@ -173,9 +173,9 @@ describe("ParticlePool", () => {
     });
 
     it("should return correct stats for mixed pool", () => {
-      const points1 = pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
       const points2 = pool.acquire(50, testMaterial);
-      const points3 = pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
 
       pool.release(points2);
 
@@ -192,7 +192,7 @@ describe("ParticlePool", () => {
     it("should remove inactive systems", () => {
       const points1 = pool.acquire(50, testMaterial);
       const points2 = pool.acquire(50, testMaterial);
-      const points3 = pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
 
       pool.release(points1);
       pool.release(points2);
@@ -210,8 +210,8 @@ describe("ParticlePool", () => {
     });
 
     it("should not remove active systems", () => {
-      const points1 = pool.acquire(50, testMaterial);
-      const points2 = pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
+      pool.acquire(50, testMaterial);
 
       pool.clearInactive();
 

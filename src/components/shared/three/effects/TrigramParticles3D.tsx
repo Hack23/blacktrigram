@@ -20,7 +20,7 @@
 
 import { Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { TrigramStance } from "../../../../types/common";
@@ -133,32 +133,38 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
   enabled = true,
   onEffectComplete,
 }) => {
-  const effectInstancesRef = useRef<Map<string, TrigramEffectInstance>>(new Map());
+  const [effectInstances, setEffectInstances] = useState<Map<string, TrigramEffectInstance>>(new Map());
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
   // Initialize effect instances
-  useMemo(() => {
+  useEffect(() => {
     if (!enabled) return;
 
-    effects.forEach((effect) => {
-      if (!effectInstancesRef.current.has(effect.id)) {
-        effectInstancesRef.current.set(effect.id, {
-          id: effect.id,
-          position: new THREE.Vector3(...effect.position),
-          stance: effect.stance,
-          age: 0,
-          rotation: 0,
-        });
-      }
-    });
+    setEffectInstances((prevInstances) => {
+      const newInstances = new Map(prevInstances);
+      
+      effects.forEach((effect) => {
+        if (!newInstances.has(effect.id)) {
+          newInstances.set(effect.id, {
+            id: effect.id,
+            position: new THREE.Vector3(...effect.position),
+            stance: effect.stance,
+            age: 0,
+            rotation: 0,
+          });
+        }
+      });
 
-    // Clean up removed effects
-    const effectIds = new Set(effects.map((e) => e.id));
-    effectInstancesRef.current.forEach((_, id) => {
-      if (!effectIds.has(id)) {
-        effectInstancesRef.current.delete(id);
-        completedEffectsRef.current.delete(id);
-      }
+      // Clean up removed effects
+      const effectIds = new Set(effects.map((e) => e.id));
+      newInstances.forEach((_, id) => {
+        if (!effectIds.has(id)) {
+          newInstances.delete(id);
+          completedEffectsRef.current.delete(id);
+        }
+      });
+      
+      return newInstances;
     });
   }, [effects, enabled]);
 
@@ -166,18 +172,26 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
   useFrame((_, delta) => {
     if (!enabled) return;
 
-    effectInstancesRef.current.forEach((instance, effectId) => {
-      instance.age += delta;
-      instance.rotation += TRIGRAM_CONSTANTS.ROTATION_SPEED * delta;
+    setEffectInstances((prevInstances) => {
+      const newInstances = new Map(prevInstances);
+      let hasChanges = false;
 
-      // Check if effect is complete
-      if (
-        instance.age >= TRIGRAM_CONSTANTS.LIFETIME &&
-        !completedEffectsRef.current.has(effectId)
-      ) {
-        completedEffectsRef.current.add(effectId);
-        onEffectComplete?.(effectId);
-      }
+      newInstances.forEach((instance, effectId) => {
+        instance.age += delta;
+        instance.rotation += TRIGRAM_CONSTANTS.ROTATION_SPEED * delta;
+        hasChanges = true;
+
+        // Check if effect is complete
+        if (
+          instance.age >= TRIGRAM_CONSTANTS.LIFETIME &&
+          !completedEffectsRef.current.has(effectId)
+        ) {
+          completedEffectsRef.current.add(effectId);
+          onEffectComplete?.(effectId);
+        }
+      });
+
+      return hasChanges ? newInstances : prevInstances;
     });
   });
 
@@ -188,7 +202,7 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
 
   return (
     <group>
-      {Array.from(effectInstancesRef.current.values()).map((instance) => {
+      {Array.from(effectInstances.values()).map((instance) => {
         const progress = Math.min(instance.age / TRIGRAM_CONSTANTS.LIFETIME, 1);
         const opacity = 1 - progress; // Fade out
         const scale = 0.5 + progress * 0.5; // Slight growth
