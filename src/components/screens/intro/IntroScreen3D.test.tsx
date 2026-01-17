@@ -63,7 +63,7 @@ describe("IntroScreen3D", () => {
           width={1920}
           height={1080}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(container).toBeTruthy();
@@ -80,12 +80,13 @@ describe("IntroScreen3D", () => {
           onArchetypeSelect={mockOnArchetypeSelect}
           selectedArchetype={PlayerArchetype.MUSA}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
+    // Check core screen elements that render outside of Canvas context
     expect(getByTestId("intro-screen")).toBeInTheDocument();
-    expect(getByTestId("three-canvas")).toBeInTheDocument();
-    expect(getByTestId("html-overlay")).toBeInTheDocument();
+    expect(getByTestId("archetype-background")).toBeInTheDocument();
+    expect(getByTestId("volume-control")).toBeInTheDocument();
   });
 
   it("should render with default archetype", () => {
@@ -97,7 +98,7 @@ describe("IntroScreen3D", () => {
           onMenuSelect={mockOnMenuSelect}
           selectedArchetype={PlayerArchetype.MUSA}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(container).toBeTruthy();
@@ -112,7 +113,7 @@ describe("IntroScreen3D", () => {
           onMenuSelect={mockOnMenuSelect}
           selectedArchetype={PlayerArchetype.HACKER}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     // Component should render successfully
@@ -130,7 +131,7 @@ describe("IntroScreen3D", () => {
           width={375}
           height={667}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(container).toBeTruthy();

@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { ArchetypeCardGrid, ArchetypeCardGridProps } from "./ArchetypeCardGrid";
 import { ArchetypeCardData } from "./ArchetypeCard";
+import { ArchetypeCardGrid, ArchetypeCardGridProps } from "./ArchetypeCardGrid";
 
 const mockArchetypeData: ArchetypeCardData[] = [
   {
@@ -109,7 +109,7 @@ describe("ArchetypeCardGrid", () => {
       <ArchetypeCardGrid
         {...defaultProps}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const amsaljaCard = screen.getByTestId("archetype-card-amsalja");
@@ -134,7 +134,7 @@ describe("ArchetypeCardGrid", () => {
       <ArchetypeCardGrid
         {...defaultProps}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -150,7 +150,7 @@ describe("ArchetypeCardGrid", () => {
         {...defaultProps}
         selectedArchetype={PlayerArchetype.AMSALJA}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -165,7 +165,7 @@ describe("ArchetypeCardGrid", () => {
       <ArchetypeCardGrid
         {...defaultProps}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -181,7 +181,7 @@ describe("ArchetypeCardGrid", () => {
         {...defaultProps}
         selectedArchetype={PlayerArchetype.AMSALJA}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -196,7 +196,7 @@ describe("ArchetypeCardGrid", () => {
       <ArchetypeCardGrid
         {...defaultProps}
         onArchetypeConfirm={onArchetypeConfirm}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -212,7 +212,7 @@ describe("ArchetypeCardGrid", () => {
         {...defaultProps}
         selectedArchetype={PlayerArchetype.MUSA}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -228,7 +228,7 @@ describe("ArchetypeCardGrid", () => {
         {...defaultProps}
         selectedArchetype={PlayerArchetype.HACKER}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const grid = screen.getByTestId("archetype-card-grid");
@@ -259,7 +259,7 @@ describe("ArchetypeCardGrid", () => {
   });
 
   it("should show mobile hint text when on mobile", () => {
-    render(<ArchetypeCardGrid {...defaultProps} isMobile={true} />);
+    render(<ArchetypeCardGrid {...defaultProps} width={600} isMobile={true} />);
 
     const hint = screen.getByTestId("grid-hint");
     expect(hint.textContent).toBe("카드를 탭하여 선택");
@@ -270,12 +270,12 @@ describe("ArchetypeCardGrid", () => {
 
     const hint = screen.getByTestId("grid-hint");
     expect(hint.textContent).toContain(
-      "화살표 키로 탐색, 엔터로 확인 | Arrow keys to navigate, Enter to confirm"
+      "화살표 키로 탐색, 엔터로 확인 | Arrow keys to navigate, Enter to confirm",
     );
   });
 
   it("should not show footer hint on mobile", () => {
-    render(<ArchetypeCardGrid {...defaultProps} isMobile={true} />);
+    render(<ArchetypeCardGrid {...defaultProps} width={600} isMobile={true} />);
 
     const footer = screen.queryByTestId("grid-footer");
     expect(footer).not.toBeInTheDocument();
@@ -289,7 +289,9 @@ describe("ArchetypeCardGrid", () => {
   });
 
   it("should not call onArchetypeConfirm when Enter pressed without callback", () => {
-    render(<ArchetypeCardGrid {...defaultProps} onArchetypeConfirm={undefined} />);
+    render(
+      <ArchetypeCardGrid {...defaultProps} onArchetypeConfirm={undefined} />,
+    );
 
     const grid = screen.getByTestId("archetype-card-grid");
     // Should not throw error

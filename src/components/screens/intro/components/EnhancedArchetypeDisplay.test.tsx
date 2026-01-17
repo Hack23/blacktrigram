@@ -1,8 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { EnhancedArchetypeDisplay, EnhancedArchetypeDisplayProps } from "./EnhancedArchetypeDisplay";
 import { ArchetypeDataShape } from "./ArchetypeDisplayOverlayHtml";
+import {
+  EnhancedArchetypeDisplay,
+  EnhancedArchetypeDisplayProps,
+} from "./EnhancedArchetypeDisplay";
 
 const mockArchetypeData: ArchetypeDataShape[] = [
   {
@@ -61,7 +64,9 @@ describe("EnhancedArchetypeDisplay", () => {
     render(<EnhancedArchetypeDisplay {...defaultProps} />);
 
     // Should show compact view (ArchetypeDisplayOverlayHtml)
-    expect(screen.getByTestId("archetype-display-container")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("archetype-display-container"),
+    ).toBeInTheDocument();
   });
 
   it("should show view toggle button when allowDetailedView is true", () => {
@@ -73,7 +78,13 @@ describe("EnhancedArchetypeDisplay", () => {
   });
 
   it("should not show view toggle button on mobile", () => {
-    render(<EnhancedArchetypeDisplay {...defaultProps} isMobile={true} />);
+    render(
+      <EnhancedArchetypeDisplay
+        {...defaultProps}
+        width={600}
+        isMobile={true}
+      />,
+    );
 
     const toggleButton = screen.queryByTestId("view-toggle-button");
     expect(toggleButton).not.toBeInTheDocument();
@@ -81,7 +92,7 @@ describe("EnhancedArchetypeDisplay", () => {
 
   it("should not show view toggle button when allowDetailedView is false", () => {
     render(
-      <EnhancedArchetypeDisplay {...defaultProps} allowDetailedView={false} />
+      <EnhancedArchetypeDisplay {...defaultProps} allowDetailedView={false} />,
     );
 
     const toggleButton = screen.queryByTestId("view-toggle-button");
@@ -100,7 +111,9 @@ describe("EnhancedArchetypeDisplay", () => {
 
   it("should play SFX when toggling view", () => {
     const onPlaySFX = vi.fn();
-    render(<EnhancedArchetypeDisplay {...defaultProps} onPlaySFX={onPlaySFX} />);
+    render(
+      <EnhancedArchetypeDisplay {...defaultProps} onPlaySFX={onPlaySFX} />,
+    );
 
     const toggleButton = screen.getByTestId("view-toggle-button");
     fireEvent.click(toggleButton);
@@ -128,7 +141,9 @@ describe("EnhancedArchetypeDisplay", () => {
 
     // Toggle back to compact
     fireEvent.click(toggleButton);
-    expect(screen.getByTestId("archetype-display-container")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("archetype-display-container"),
+    ).toBeInTheDocument();
   });
 
   it("should transform archetype data to card format for detailed view", () => {
@@ -165,7 +180,7 @@ describe("EnhancedArchetypeDisplay", () => {
       <EnhancedArchetypeDisplay
         {...defaultProps}
         archetypes={dataWithoutAbilities}
-      />
+      />,
     );
 
     const toggleButton = screen.getByTestId("view-toggle-button");
@@ -181,7 +196,7 @@ describe("EnhancedArchetypeDisplay", () => {
       <EnhancedArchetypeDisplay
         {...defaultProps}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const nextButton = screen.getByTestId("next-archetype-button");
@@ -196,7 +211,7 @@ describe("EnhancedArchetypeDisplay", () => {
       <EnhancedArchetypeDisplay
         {...defaultProps}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     // Toggle to detailed view
@@ -232,7 +247,7 @@ describe("EnhancedArchetypeDisplay", () => {
 
   it("should use custom width and height for compact view", () => {
     render(
-      <EnhancedArchetypeDisplay {...defaultProps} width={1000} height={400} />
+      <EnhancedArchetypeDisplay {...defaultProps} width={1000} height={400} />,
     );
 
     const displayContainer = screen.getByTestId("archetype-display-container");
@@ -267,7 +282,7 @@ describe("EnhancedArchetypeDisplay", () => {
         {...defaultProps}
         selectedIndex={0}
         onArchetypeChange={onArchetypeChange}
-      />
+      />,
     );
 
     const toggleButton = screen.getByTestId("view-toggle-button");
