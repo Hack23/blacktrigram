@@ -9,12 +9,17 @@
 import { describe, expect, it } from 'vitest';
 import { BASE_PIXELS_PER_METER } from '../inputSystem';
 import { METERS_TO_PIXELS_SCALE } from '../../types/physicsConstants';
+import {
+  MOBILE_ARENA_SCALE,
+  TABLET_ARENA_SCALE,
+  DESKTOP_ARENA_SCALE,
+} from '../../test/arenaScaleConstants';
 
 describe('Combat Distance Calculations with Arena Scale', () => {
   describe('Scale-Aware Distance Conversion', () => {
     it('should convert desktop pixel distance to standard pixels correctly', () => {
       // Desktop arena (scale=1.0)
-      const arenaScale = 1.0;
+      const arenaScale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale; // 100
       
       // Two players 100 pixels apart
@@ -30,7 +35,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
 
     it('should convert mobile pixel distance to standard pixels correctly', () => {
       // Mobile arena (scale=0.3125)
-      const arenaScale = 0.3125;
+      const arenaScale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale; // 320
       
       // Two players 320 pixels apart (visually same distance as 100px on desktop)
@@ -45,7 +50,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
     });
 
     it('should maintain consistent meter distance across scales', () => {
-      const scales = [1.0, 0.75, 0.5, 0.3125];
+      const scales = [DESKTOP_ARENA_SCALE, 0.75, TABLET_ARENA_SCALE, MOBILE_ARENA_SCALE];
       const expectedMeters = 2.5;
       
       scales.forEach(scale => {
@@ -66,7 +71,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
 
   describe('Technique Reach Comparison', () => {
     it('should correctly detect kick in range (desktop)', () => {
-      const arenaScale = 1.0;
+      const arenaScale = DESKTOP_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       
       // Kick with 1.5m reach
@@ -84,7 +89,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
     });
 
     it('should correctly detect kick in range (mobile)', () => {
-      const arenaScale = 0.3125;
+      const arenaScale = MOBILE_ARENA_SCALE;
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale; // 320
       
       // Kick with 1.5m reach
@@ -104,7 +109,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
     });
 
     it('should detect same in-range status across scales', () => {
-      const scales = [1.0, 0.5, 0.3125];
+      const scales = [DESKTOP_ARENA_SCALE, TABLET_ARENA_SCALE, MOBILE_ARENA_SCALE];
       const kickReachMeters = 1.5;
       const actualDistanceMeters = 1.4;
       
@@ -124,7 +129,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
 
   describe('AI Movement Threshold', () => {
     it('should use correct movement threshold on desktop', () => {
-      const arenaScale = 1.0;
+      const arenaScale = DESKTOP_ARENA_SCALE;
       const thresholdMeters = 0.05; // 5cm
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const thresholdPixels = thresholdMeters * pixelsPerMeter;
@@ -133,7 +138,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
     });
 
     it('should use correct movement threshold on mobile', () => {
-      const arenaScale = 0.3125;
+      const arenaScale = MOBILE_ARENA_SCALE;
       const thresholdMeters = 0.05; // 5cm
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const thresholdPixels = thresholdMeters * pixelsPerMeter;
@@ -143,7 +148,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
 
     it('should represent same physical distance across scales', () => {
       const thresholdMeters = 0.05;
-      const scales = [1.0, 0.5, 0.3125];
+      const scales = [DESKTOP_ARENA_SCALE, TABLET_ARENA_SCALE, MOBILE_ARENA_SCALE];
       
       scales.forEach(scale => {
         const pixelsPerMeter = BASE_PIXELS_PER_METER / scale;
@@ -184,7 +189,7 @@ describe('Combat Distance Calculations with Arena Scale', () => {
         y: 100,
         width: 300,
         height: 225,
-        scale: 0.3125,
+        scale: MOBILE_ARENA_SCALE,
       };
       
       // Position at right edge
@@ -207,13 +212,13 @@ describe('Combat Distance Calculations with Arena Scale', () => {
       const actualDistanceMeters = 0.8;
       
       // Desktop
-      const desktopScale = 1.0;
+      const desktopScale = DESKTOP_ARENA_SCALE;
       const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / desktopScale;
       const desktopDistancePixels = actualDistanceMeters * desktopPixelsPerMeter;
       const desktopDistanceStandard = (desktopDistancePixels / desktopPixelsPerMeter) * METERS_TO_PIXELS_SCALE;
       
       // Mobile
-      const mobileScale = 0.3125;
+      const mobileScale = MOBILE_ARENA_SCALE;
       const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / mobileScale;
       const mobileDistancePixels = actualDistanceMeters * mobilePixelsPerMeter;
       const mobileDistanceStandard = (mobileDistancePixels / mobilePixelsPerMeter) * METERS_TO_PIXELS_SCALE;
@@ -234,13 +239,13 @@ describe('Combat Distance Calculations with Arena Scale', () => {
       const actualDistanceMeters = 1.8;
       
       // Desktop
-      const desktopScale = 1.0;
+      const desktopScale = DESKTOP_ARENA_SCALE;
       const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / desktopScale;
       const desktopDistancePixels = actualDistanceMeters * desktopPixelsPerMeter;
       const desktopDistanceStandard = (desktopDistancePixels / desktopPixelsPerMeter) * METERS_TO_PIXELS_SCALE;
       
       // Mobile
-      const mobileScale = 0.3125;
+      const mobileScale = MOBILE_ARENA_SCALE;
       const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / mobileScale;
       const mobileDistancePixels = actualDistanceMeters * mobilePixelsPerMeter;
       const mobileDistanceStandard = (mobileDistancePixels / mobilePixelsPerMeter) * METERS_TO_PIXELS_SCALE;

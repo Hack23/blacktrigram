@@ -7,14 +7,11 @@
 
 import { describe, expect, it } from 'vitest';
 import { BASE_PIXELS_PER_METER } from '../inputSystem';
-
-// Arena scale constants for different device sizes
-// Mobile: 300px arena / 960px desktop = 0.3125
-// Tablet: 480px arena / 960px desktop = 0.5
-// Desktop: 960px arena / 960px desktop = 1.0
-export const MOBILE_ARENA_SCALE = 0.3125;
-export const TABLET_ARENA_SCALE = 0.5;
-export const DESKTOP_ARENA_SCALE = 1.0;
+import {
+  MOBILE_ARENA_SCALE,
+  TABLET_ARENA_SCALE,
+  DESKTOP_ARENA_SCALE,
+} from '../../test/arenaScaleConstants';
 
 describe('inputSystem - Scale Conversion Logic', () => {
   describe('Pixel-to-Meter Conversion', () => {

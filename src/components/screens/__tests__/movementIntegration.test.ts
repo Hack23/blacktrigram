@@ -10,6 +10,11 @@ import { renderHook } from '@testing-library/react';
 import { usePlayerMovement } from '../../../utils/inputSystem';
 import type { Position } from '../../../types/common';
 import { TrigramStance } from '../../../types/common';
+import {
+  MOBILE_ARENA_SCALE,
+  TABLET_ARENA_SCALE,
+  DESKTOP_ARENA_SCALE,
+} from '../../../test/arenaScaleConstants';
 
 describe('Screen Movement Integration', () => {
   describe('Arena Scale Passing', () => {
@@ -68,7 +73,7 @@ describe('Screen Movement Integration', () => {
         y: 100,
         width: 300,
         height: 225,
-        scale: 0.3125,
+        scale: MOBILE_ARENA_SCALE,
       };
 
       const { result } = renderHook(() =>
@@ -184,7 +189,7 @@ describe('Screen Movement Integration', () => {
         y: 100,
         width: 300,
         height: 225,
-        scale: 0.3125,
+        scale: MOBILE_ARENA_SCALE,
       };
 
       // Position at corner of mobile arena
@@ -232,7 +237,7 @@ describe('Screen Movement Integration', () => {
       const mobileResult = renderHook(() =>
         usePlayerMovement({
           enabled: false, // Disabled to avoid animation frame issues
-          bounds: { x: 37.5, y: 100, width: 300, height: 225, scale: 0.3125 },
+          bounds: { x: 37.5, y: 100, width: 300, height: 225, scale: MOBILE_ARENA_SCALE },
           initialPosition: { x: 187.5, y: 212.5 },
           currentStance: TrigramStance.GEON,
           maxSpeedOverride: 2.0,
@@ -262,7 +267,7 @@ describe('Screen Movement Integration', () => {
       const mobileResult = renderHook(() =>
         usePlayerMovement({
           enabled: false,
-          bounds: { x: 37.5, y: 100, width: 300, height: 225, scale: 0.3125 },
+          bounds: { x: 37.5, y: 100, width: 300, height: 225, scale: MOBILE_ARENA_SCALE },
           initialPosition: { x: 187.5, y: 212.5 },
           currentStance: TrigramStance.GEON,
           maxSpeedOverride: 2.0,

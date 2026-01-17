@@ -54,6 +54,7 @@ import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
 import { Position, Technique, TrigramStance } from "@/types";
 import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -1187,16 +1188,7 @@ export function useCombatActions(
       // Stop moving when within 0.05 meters (5cm) of target - close enough for melee range
       // **UPDATED**: Use scale-aware conversion to match movement system
       const MIN_MOVEMENT_THRESHOLD_METERS = 0.05;
-      const rawArenaScale = arenaBounds.scale ?? 1.0;
-      const arenaScale =
-        Number.isFinite(rawArenaScale) && rawArenaScale > 0
-          ? rawArenaScale
-          : (() => {
-              console.warn(
-                `[useCombatActions] Invalid arena scale: ${rawArenaScale}, falling back to 1.0`
-              );
-              return 1.0;
-            })();
+      const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useCombatActions");
       const scaleAwarePixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       const MIN_MOVEMENT_THRESHOLD_PIXELS =
         MIN_MOVEMENT_THRESHOLD_METERS * scaleAwarePixelsPerMeter;

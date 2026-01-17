@@ -73,6 +73,7 @@ import { physicalReachCalculator } from "@/systems/physics";
 import { STANCE_REACH_MODIFIERS } from "@/types/physics";
 import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
 import { BASE_PIXELS_PER_METER } from "@/utils/inputSystem";
+import { getValidatedArenaScale } from "@/utils/arenaScaleValidation";
 
 // Performance monitoring constants
 const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
@@ -1165,16 +1166,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     //   - Positions use 100 px/m (BASE_PIXELS_PER_METER / 1.0)
     //   - Distance of 100 pixels = 1.0 meters (100 / 100)
     //   - Convert to standard: 1.0 meters * 100 = 100 pixels (unchanged)
-    const rawArenaScale = arenaBounds.scale ?? 1.0;
-    const arenaScale =
-      Number.isFinite(rawArenaScale) && rawArenaScale > 0
-        ? rawArenaScale
-        : (() => {
-            console.warn(
-              `[useAICombat] Invalid arena scale: ${rawArenaScale}, falling back to 1.0`
-            );
-            return 1.0;
-          })();
+    const arenaScale = getValidatedArenaScale(arenaBounds.scale, "useAICombat");
     const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
     const distanceInMeters = distanceInPixels / pixelsPerMeter;
     const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;

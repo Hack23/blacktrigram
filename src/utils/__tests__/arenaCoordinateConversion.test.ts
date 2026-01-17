@@ -260,8 +260,10 @@ describe("Arena Coordinate Conversion", () => {
       
       expect(timeToCross).toBeCloseTo(2.5, 1);
       
-      // Mobile arena is smaller, so crossing time is shorter
-      // This is expected and correct behavior
+      // Mobile arena has smaller world size (5m vs 16m), so crossing time is shorter
+      // This is expected because the arenas represent different physical spaces
+      // Desktop: 960px / 100 px/m = 9.6m effective width (scaled to 16m world)
+      // Mobile: 300px / 320 px/m = 0.9375m effective width (scaled to 5m world)
     });
   });
 });

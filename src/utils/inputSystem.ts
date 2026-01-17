@@ -5,6 +5,7 @@ import { TrigramStance } from "../types/common";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
+import { getValidatedArenaScale } from "./arenaScaleValidation";
 
 /**
  * Base pixel-to-meter conversion ratio for desktop scale (1.0).
@@ -341,16 +342,7 @@ export function usePlayerMovement(
       // Convert 3D position back to 2D pixel coordinates (z becomes y)
       // Scale pixels-per-meter by arena scale for consistent visual speed across devices
       // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
-      const rawArenaScale = bounds?.scale ?? 1.0;
-      const arenaScale =
-        Number.isFinite(rawArenaScale) && rawArenaScale > 0
-          ? rawArenaScale
-          : (() => {
-              console.warn(
-                `[inputSystem] Invalid arena scale: ${rawArenaScale}, falling back to 1.0`
-              );
-              return 1.0;
-            })();
+      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
       const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
