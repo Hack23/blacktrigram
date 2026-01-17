@@ -43,15 +43,23 @@ This document is the **single source of truth** for all game controls in Black T
 
 | **Control** | **Location** | **Korean** | **Description** |
 |-------------|--------------|------------|-----------------|
-| **Virtual D-Pad** | Bottom-Left | 가상 방향키 | 8-directional movement (140x140px) |
-| **Attack Button** | Bottom-Right | 공격 버튼 | Gold ⚡ button (80x80px) |
-| **Block Button** | Bottom-Right | 방어 버튼 | Blue 🛡️ button (70x70px) |
-| **Stance Wheel** | Bottom-Center | 자세 선택 | Circular 8-trigram selector (200px) |
+| **Virtual D-Pad** | Bottom-Left (200px from bottom) | 가상 방향키 | 8-directional movement (140x140px) |
+| **Attack Button** | Bottom-Right (200px from bottom) | 공격 버튼 | Gold ⚡ button (80x80px) |
+| **Block Button** | Bottom-Right (200px from bottom) | 방어 버튼 | Blue 🛡️ button (70x70px) |
+| **Stance Wheel** | Right-Center | 자세 선택 | Circular 8-trigram selector (200px) |
 | **Swipe Right →** | Anywhere | 전진 | Advance toward opponent |
 | **Swipe Left ←** | Anywhere | 후퇴 | Retreat from opponent |
 | **Swipe Up ↑** | Anywhere | 상단 공격 | High attack execution |
 | **Swipe Down ↓** | Anywhere | 하단 공격 | Low attack execution |
 | **Two-Finger Tap** | Anywhere | 급소 모드 | Toggle vital point targeting mode |
+
+> **🆕 Enhanced Mobile Layout (v0.6.15+)**:
+> 
+> - **Improved Visibility**: All mobile controls positioned 200px from bottom edge
+> - **No Overlap**: Clear separation from TechniqueBar and "Back to Menu" button
+> - **Portrait Mode**: Full functionality in vertical orientation
+> - **Touch Targets**: Minimum 48px for accessibility compliance (WCAG 2.1 Level AA)
+> - **Z-Index Layering**: Mobile controls (50) > TechniqueBar (45) > HUD (40)
 
 ---
 
