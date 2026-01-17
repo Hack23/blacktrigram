@@ -6,26 +6,84 @@ import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
 
+/**
+ * Base pixel-to-meter conversion ratio for desktop scale (1.0).
+ * This constant defines how many pixels represent one meter in the game world
+ * at default desktop scale. The actual pixels per meter is calculated by
+ * dividing this value by the arena scale factor.
+ * 
+ * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
+ * 
+ * @constant
+ * @example
+ * // Desktop (scale = 1.0): 100 pixels per meter
+ * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
+ * 
+ * // Mobile (scale = 0.3125): 320 pixels per meter
+ * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
+ */
+const BASE_PIXELS_PER_METER = 100;
+
+/**
+ * Configuration interface for the input system and player movement.
+ * Supports both physics-based movement and legacy configurations.
+ * 
+ * **Korean**: 입력 시스템 설정 (Input System Configuration)
+ */
 export interface InputSystemConfig {
+  /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
+  
+  /** Arena bounds configuration with optional scale factor */
   readonly bounds?: {
+    /** X coordinate of arena top-left corner (pixels) */
     readonly x: number;
+    /** Y coordinate of arena top-left corner (pixels) */
     readonly y: number;
+    /** Arena width (pixels) */
     readonly width: number;
+    /** Arena height (pixels) */
     readonly height: number;
-    readonly scale?: number; // Arena scale factor (1.0 = desktop, <1.0 = mobile)
+    /**
+     * Arena scale factor for responsive sizing.
+     * - 1.0 = desktop (960px arena, 100 pixels per meter)
+     * - 0.3125 = mobile (300px arena, 320 pixels per meter)
+     * - Default: 1.0 if not provided
+     * 
+     * This scale factor is used to maintain consistent visual movement speed
+     * across different device sizes by adjusting the pixel-to-meter conversion.
+     */
+    readonly scale?: number;
   };
+  
+  /** Callback invoked when player position changes */
   readonly onPositionChange?: (position: Position) => void;
+  
+  /** Initial player position (pixels) */
   readonly initialPosition?: Position;
+  
+  /** @deprecated Legacy move speed parameter (pixels/second). Use physics parameters instead. */
   readonly moveSpeed?: number;
+  
   // Physics-based movement parameters (always enabled)
+  /** Current trigram stance affecting movement speed */
   readonly currentStance?: TrigramStance;
+  
+  /** Leg injury factor (0-1, where 1 is fully injured) affecting movement speed */
   readonly legInjuryFactor?: number;
+  
+  /** Whether player is running (sprint mode) */
   readonly isRunning?: boolean;
+  
+  /** Whether to use tactical step mode (30cm grid quantization) */
   readonly useTacticalSteps?: boolean;
+  
   // Speed modifier overrides from SpeedModifierSystem
-  readonly maxSpeedOverride?: number; // Final calculated speed in m/s
-  readonly accelerationOverride?: number; // Final calculated acceleration in m/s²
+  /** Final calculated maximum speed in meters per second */
+  readonly maxSpeedOverride?: number;
+  
+  /** Final calculated acceleration in meters per second squared */
+  readonly accelerationOverride?: number;
 }
 
 export interface MovementState {
@@ -121,8 +179,13 @@ export function usePlayerMovement(
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
       // Convert 2D position to 3D (y becomes z for 3D)
+      // Use BASE_PIXELS_PER_METER for initial conversion (scale not yet available)
       physicsStateRef.current = {
-        position: new THREE.Vector3(initialPosition.x / 100, 0, initialPosition.y / 100),
+        position: new THREE.Vector3(
+          initialPosition.x / BASE_PIXELS_PER_METER,
+          0,
+          initialPosition.y / BASE_PIXELS_PER_METER
+        ),
         velocity: new THREE.Vector3(0, 0, 0),
         acceleration: 0,
         maxSpeed: 2.0,
@@ -278,7 +341,7 @@ export function usePlayerMovement(
       // Scale pixels-per-meter by arena scale for consistent visual speed across devices
       // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
       const arenaScale = bounds?.scale ?? 1.0;
-      const pixelsPerMeter = 100 / arenaScale;
+      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
       let newX = state.position.x * pixelsPerMeter;
       let newY = state.position.z * pixelsPerMeter;
 
