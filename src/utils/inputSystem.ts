@@ -15,6 +15,7 @@ import * as THREE from "three";
  * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
  * 
  * @constant
+ * @public
  * @example
  * // Desktop (scale = 1.0): 100 pixels per meter
  * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
@@ -22,7 +23,7 @@ import * as THREE from "three";
  * // Mobile (scale = 0.3125): 320 pixels per meter
  * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
  */
-const BASE_PIXELS_PER_METER = 100;
+export const BASE_PIXELS_PER_METER = 100;
 
 /**
  * Configuration interface for the input system and player movement.

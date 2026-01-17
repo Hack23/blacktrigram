@@ -6,12 +6,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-
-/**
- * Base pixel-to-meter ratio for desktop scale (1.0)
- * This constant should match the value used in inputSystem.ts
- */
-const BASE_PIXELS_PER_METER = 100;
+import { BASE_PIXELS_PER_METER } from '../inputSystem';
 
 describe('inputSystem - Scale Conversion Logic', () => {
   describe('Pixel-to-Meter Conversion', () => {
