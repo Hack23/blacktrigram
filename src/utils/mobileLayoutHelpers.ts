@@ -9,6 +9,9 @@
  * @korean 모바일레이아웃도우미
  */
 
+import { calculateArenaWorldDimensions } from "../types/ArenaConfig";
+import { getScreenSize } from "../systems/ResponsiveScaling";
+
 /**
  * Calculate mobile area bounds with 4:3 aspect ratio
  * 
@@ -16,18 +19,23 @@
  * Adapts to different device resolutions while maintaining a 4:3 aspect ratio.
  * Enhanced with extra-small device support (<380px) for low-end mobile devices.
  * 
+ * **World size is calculated based on screen size** - no fixed constants.
+ * Larger screens get larger arenas for better gameplay experience.
+ * Pixels-per-meter varies by resolution to maintain realistic proportions.
+ * 
  * @param width - Screen width in pixels
  * @param height - Screen height in pixels
  * @param topClearance - Minimum space to reserve at top (for HUD/header)
  * @param bottomClearance - Minimum space to reserve at bottom (for controls)
  * @param yOffset - Y position offset (typically header height + padding)
- * @returns Mobile area bounds with position, dimensions, scale factor, and world dimensions
+ * @returns Mobile area bounds with position, dimensions, scale factor, and calculated world dimensions
  * 
  * @example
  * ```typescript
  * const bounds = calculateMobileAreaBounds(375, 667, 80, 120, 100);
  * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125, 
- * //            worldWidthMeters: 5, worldDepthMeters: 2.5 }
+ * //            worldWidthMeters: 6, worldDepthMeters: 6 }
+ * // Mobile gets 6m arena, tablet 8m, desktop 10m+
  * ```
  * 
  * @public
@@ -97,12 +105,10 @@ export function calculateMobileAreaBounds(
   const desktopWidth = 960; // 80% of 1200px reference
   const scale = areaWidth / desktopWidth;
 
-  // Desktop reference world: 16m × 8m
-  // Mobile world scales proportionally with arena size
-  const DESKTOP_WORLD_WIDTH_METERS = 16;
-  const DESKTOP_WORLD_DEPTH_METERS = 8;
-  const worldWidthMeters = DESKTOP_WORLD_WIDTH_METERS * scale;
-  const worldDepthMeters = DESKTOP_WORLD_DEPTH_METERS * scale;
+  // Calculate arena world dimensions based on screen width
+  // NO FIXED CONSTANTS - dimensions scale with device capabilities
+  const screenSize = getScreenSize(width);
+  const worldDimensions = calculateArenaWorldDimensions(screenSize, 1.0);
 
   return {
     x: (width - areaWidth) / 2, // Centered horizontally
@@ -110,7 +116,7 @@ export function calculateMobileAreaBounds(
     width: areaWidth,
     height: areaHeight,
     scale,
-    worldWidthMeters,
-    worldDepthMeters,
+    worldWidthMeters: worldDimensions.widthMeters,
+    worldDepthMeters: worldDimensions.depthMeters,
   };
 }
