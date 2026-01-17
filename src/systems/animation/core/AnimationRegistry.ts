@@ -138,8 +138,16 @@ import { STANCE_ANIMATIONS } from "../catalogs/StanceAnimations";
 import { ALL_ATTACK_ANIMATIONS } from "../catalogs/StanceAttackAnimations";
 import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimations";
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
+
+// Trigram-specific stance and technique animation maps
 import { GAN_STANCE_ANIMATIONS } from "../catalogs/GanStanceAnimations";
 import { GAN_TECHNIQUE_ANIMATIONS } from "../catalogs/GanTechniqueAnimations";
+import { GEON_ANIMATIONS } from "../catalogs/GeonStanceAnimations";
+import { JIN_ANIMATIONS } from "../catalogs/JinStanceAnimations";
+import { JIN_TECHNIQUE_ANIMATIONS } from "../catalogs/JinTechniqueAnimations";
+import { SON_STANCE_ANIMATIONS } from "../catalogs/SonStanceAnimations";
+import { SON_TECHNIQUE_ANIMATIONS } from "../catalogs/SonTechniqueAnimations";
+import { TAE_STANCE_ANIMATIONS } from "../catalogs/TaeStanceAnimations";
 import {
   getAnimationForTechniqueOrDefault,
   getAnimationForTechnique as getTechniqueAnimationConfig,
@@ -161,14 +169,14 @@ import {
 } from "../catalogs/EnhancedElbowKneeAnimations";
 
 import {
-  TAE_WRIST_LOCK_SEQUENCE,
+  TAE_ARM_BAR,
   TAE_ELBOW_CONTROL,
   TAE_FINGER_LOCK,
   TAE_FLOWING_COUNTER,
   TAE_FLOWING_STRIKES,
-  TAE_SMALL_CIRCLE,
   TAE_SHOULDER_LOCK,
-  TAE_ARM_BAR,
+  TAE_SMALL_CIRCLE,
+  TAE_WRIST_LOCK_SEQUENCE,
 } from "../catalogs/TaeJointLockAnimations";
 
 // TODO: Register Tae stance animations when trigram-specific idle/movement system is implemented
@@ -495,10 +503,17 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
   // Trigram idle animations with breathing/weight shifts (overrides static stance poses)
   // Must come after STANCE_ANIMATIONS to properly override stance_geon, stance_tae, etc.
   ...TRIGRAM_IDLE_ANIMATIONS_BY_NAME,
-  // Gan (Mountain) trigram-specific animations
-  // Must come after STANCE_ANIMATIONS to override legacy gan_rock_defense with comprehensive version
-  ...GAN_STANCE_ANIMATIONS,
-  ...GAN_TECHNIQUE_ANIMATIONS,
+
+  // ═══ Trigram-specific stance and technique animations (팔괘 자세/기술 애니메이션) ═══
+  // Each trigram has unique movement patterns and combat techniques
+  ...GEON_ANIMATIONS, // ☰ Heaven: Direct force, power strikes
+  ...TAE_STANCE_ANIMATIONS, // ☱ Lake: Fluid joint manipulation
+  ...JIN_ANIMATIONS, // ☳ Thunder: Explosive power
+  ...JIN_TECHNIQUE_ANIMATIONS, // ☳ Thunder techniques
+  ...SON_STANCE_ANIMATIONS, // ☴ Wind: Continuous pressure
+  ...SON_TECHNIQUE_ANIMATIONS, // ☴ Wind techniques
+  ...GAN_STANCE_ANIMATIONS, // ☶ Mountain: Defensive mastery
+  ...GAN_TECHNIQUE_ANIMATIONS, // ☶ Mountain techniques
   // Additional animations from AttackAnimations not in other maps
   ["idle_stance", IDLE_STANCE_ANIMATION],
   ["forward_dash", FORWARD_DASH_ANIMATION],
@@ -519,7 +534,7 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
  * @korean 애니메이션타입으로조회
  */
 export function getAnimationByType(
-  type: AnimationType
+  type: AnimationType,
 ): SkeletalAnimation | undefined {
   return ANIMATION_REGISTRY.get(type);
 }
@@ -535,7 +550,7 @@ export function getAnimationByType(
  */
 export function getAnimationByTypeOrDefault(
   type: AnimationType,
-  fallback: AnimationType = AnimationType.JAB
+  fallback: AnimationType = AnimationType.JAB,
 ): SkeletalAnimation {
   const animation =
     ANIMATION_REGISTRY.get(type) ?? ANIMATION_REGISTRY.get(fallback);
@@ -559,7 +574,7 @@ export function getAnimationByTypeOrDefault(
  * @korean 기술ID로애니메이션조회
  */
 export function getAnimationForTechniqueId(
-  techniqueId: string
+  techniqueId: string,
 ): SkeletalAnimation | undefined {
   const config = getTechniqueAnimationConfig(techniqueId);
   if (!config) return undefined;
@@ -577,7 +592,7 @@ export function getAnimationForTechniqueId(
  */
 export function getAnimationForTechniqueIdWithConfig(
   techniqueId: string,
-  fallbackType: AnimationType = AnimationType.JAB
+  fallbackType: AnimationType = AnimationType.JAB,
 ): { animation: SkeletalAnimation; speed: number } {
   const config = getAnimationForTechniqueOrDefault(techniqueId, fallbackType);
   const animation =
@@ -585,7 +600,7 @@ export function getAnimationForTechniqueIdWithConfig(
 
   if (!animation) {
     throw new Error(
-      `Missing animation for ${config.type} with fallback ${fallbackType}`
+      `Missing animation for ${config.type} with fallback ${fallbackType}`,
     );
   }
   return { animation, speed: config.speed };
@@ -600,7 +615,7 @@ export function getAnimationForTechniqueIdWithConfig(
  * @korean 이름으로애니메이션조회
  */
 export function getAnimationByName(
-  name: string
+  name: string,
 ): SkeletalAnimation | undefined {
   return ALL_ANIMATIONS.get(name);
 }

@@ -688,7 +688,6 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       "geon_roundhouse_kick",
       { type: AnimationType.ROUNDHOUSE_KICK, speed: 1.0 },
     ],
-    ["geon_roundhouse", { type: AnimationType.GEON_ROUNDHOUSE, speed: 1.0 }],
     ["geon_axe_kick", { type: AnimationType.AXE_KICK, speed: 0.9 }],
     ["geon_palm_strike", { type: AnimationType.PALM_STRIKE, speed: 1.0 }],
     ["geon_elbow_smash", { type: AnimationType.ELBOW_STRIKE, speed: 1.1 }],
@@ -758,11 +757,6 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
       { type: AnimationType.NERVE_STRIKE_COUNTER, speed: 1.1 },
     ],
     ["li_precision_parry", { type: AnimationType.PRECISION_PARRY, speed: 1.1 }],
-    ["li_solar_plexus", { type: AnimationType.LI_SOLAR_PLEXUS, speed: 1.0 }],
-    [
-      "li_solar_plexus_spear",
-      { type: AnimationType.SOLAR_PLEXUS_SPEAR, speed: 1.1 },
-    ],
 
     // ═══════════════════════════════════════════════════════════════════════
     // ☳ JIN (진) - THUNDER: Explosive Power (폭발력)
@@ -986,11 +980,7 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     ],
     ["darkops_ear_strike", { type: AnimationType.EAR_STRIKE, speed: 1.2 }],
     ["darkops_eye_gouge", { type: AnimationType.EYE_GOUGE, speed: 1.3 }],
-    // Additional Dark Ops techniques
-    [
-      "darkops_brachial_plexus",
-      { type: AnimationType.BRACHIAL_PLEXUS, speed: 1.1 },
-    ],
+    // Additional Dark Ops techniques (extended set for future use)
     [
       "darkops_cervical_twist",
       { type: AnimationType.CERVICAL_TWIST, speed: 0.8 },
@@ -998,10 +988,6 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
     [
       "darkops_elbow_hyperextend",
       { type: AnimationType.ELBOW_HYPEREXTEND, speed: 0.85 },
-    ],
-    [
-      "darkops_femoral_nerve",
-      { type: AnimationType.FEMORAL_NERVE, speed: 1.0 },
     ],
     ["darkops_finger_break", { type: AnimationType.FINGER_BREAK, speed: 1.0 }],
     [
@@ -1122,7 +1108,7 @@ export const TECHNIQUE_ANIMATIONS: ReadonlyMap<string, AnimationConfig> =
  * @korean 기술별애니메이션설정조회
  */
 export function getAnimationForTechnique(
-  techniqueId: string
+  techniqueId: string,
 ): AnimationConfig | undefined {
   return TECHNIQUE_ANIMATIONS.get(techniqueId);
 }
@@ -1138,7 +1124,7 @@ export function getAnimationForTechnique(
  */
 export function getAnimationForTechniqueOrDefault(
   techniqueId: string,
-  fallbackType: AnimationType = AnimationType.JAB
+  fallbackType: AnimationType = AnimationType.JAB,
 ): AnimationConfig {
   const mapped = TECHNIQUE_ANIMATIONS.get(techniqueId);
   if (mapped) return mapped;
@@ -1168,7 +1154,7 @@ export function hasAnimationMapping(techniqueId: string): boolean {
  * @korean 애니메이션타입별기술조회
  */
 export function getTechniquesByAnimationType(
-  animationType: AnimationType
+  animationType: AnimationType,
 ): readonly string[] {
   const techniques: string[] = [];
   for (const [id, config] of TECHNIQUE_ANIMATIONS) {
