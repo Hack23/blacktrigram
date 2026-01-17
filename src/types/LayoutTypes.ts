@@ -110,6 +110,8 @@ export const Z_INDEX = {
   EFFECTS: 30,
   /** HUD elements (health bars, timers) - HUD */
   HUD: 40,
+  /** TechniqueBar for combat techniques - 기술바 */
+  TECHNIQUE_BAR: 45,
   /** Mobile touch controls - 모바일제어 */
   MOBILE_CONTROLS: 50,
   /** Modal dialogs and overlays - 모달 */

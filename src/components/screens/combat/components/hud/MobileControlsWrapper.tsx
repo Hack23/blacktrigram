@@ -35,6 +35,7 @@ import {
 import { ButtonEventType } from "../../../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../../../shared/mobile/VirtualDPad";
 import { GestureEvent } from "../../../../../hooks/useTouchControls";
+import { getMobileControlsBottom } from "../../../../../types/constants/layout";
 
 export interface MobileControlsWrapperProps {
   /** Whether mobile controls are enabled */
@@ -67,9 +68,8 @@ export interface MobileControlsWrapperProps {
  * - Gesture Recognition for swipe-based actions
  *
  * Positioning Strategy:
- * - All controls positioned above TechniqueBar and "Back to Menu" button
- * - D-Pad and ActionButtons at bottom: 160px (mobile) / 180px (desktop)
- * - StanceWheel at right-center for easy thumb access
+ * - All controls positioned using centralized layout constants
+ * - D-Pad and ActionButtons use getMobileControlsBottom() for consistency
  * - Z-index: MOBILE_CONTROLS (50) to ensure visibility over HUD elements
  *
  * @example
@@ -101,22 +101,22 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
   return (
     <>
       {/* Virtual D-Pad - Bottom-left for movement */}
-      {/* Positioned above TechniqueBar (200px) for visibility */}
+      {/* Positioned using centralized constant for consistency */}
       <VirtualDPad
         onMove={onMove}
         disabled={!enabled}
         opacity={0.8}
-        bottom={200} // Increased from 34px to clear TechniqueBar and footer button
+        bottom={getMobileControlsBottom()}
       />
 
       {/* Action Buttons - Bottom-right for attack/block */}
-      {/* Positioned above TechniqueBar (200px) for visibility */}
+      {/* Positioned using centralized constant for consistency */}
       <ActionButtons
         onAttack={onAttack}
         onBlock={onBlock}
         disabled={!enabled}
         opacity={0.8}
-        bottom={200} // Increased from 34px to clear TechniqueBar and footer button
+        bottom={getMobileControlsBottom()}
       />
 
       {/* Stance Wheel - Right-center for trigram stance selection */}

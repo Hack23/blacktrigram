@@ -55,6 +55,11 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import {
+  getTechniqueBarBottom,
+  getBackButtonBottom,
+  LAYOUT_BOTTOM_POSITIONS,
+} from "../../../types/constants/layout";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -2580,11 +2585,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 position: "absolute",
                 left: 0,
-                bottom: isMobile ? 200 : 220 * positionScale, // Increased clearance for mobile controls and back button
+                bottom: getTechniqueBarBottom(isMobile), // Use centralized constant, no positionScale
                 width: "100%",
-                height: "180px",
+                height: `${LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR_HEIGHT}px`,
                 pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.HUD + 10, // Above other HUD elements but below mobile controls
+                zIndex: Z_INDEX.TECHNIQUE_BAR, // Semantic z-index constant
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-end",
@@ -2619,7 +2624,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Positioned below TechniqueBar with sufficient clearance */}
         <ResponsiveContainer
           position={{
-            base: { x: 0, y: height - (isMobile ? 80 : 100 * positionScale) },
+            base: { x: 0, y: height - getBackButtonBottom(isMobile) }, // Use centralized constant, no positionScale
           }}
           containerWidth={width}
           useSafeArea

@@ -43,6 +43,12 @@ import {
   getPerformanceSettings,
   KOREAN_COLORS,
 } from "../../../types/constants";
+import {
+  getTechniqueBarBottom,
+  getBackButtonBottom,
+  getMobileControlsBottom,
+  LAYOUT_BOTTOM_POSITIONS,
+} from "../../../types/constants/layout";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -1445,11 +1451,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               style={{
                 position: "absolute",
                 left: 0,
-                bottom: isMobile ? 200 : 220 * positionScale, // Increased clearance for mobile controls and back button
+                bottom: getTechniqueBarBottom(isMobile), // Use centralized constant, no positionScale
                 width: "100%",
-                height: "180px",
+                height: `${LAYOUT_BOTTOM_POSITIONS.TECHNIQUE_BAR_HEIGHT}px`,
                 pointerEvents: "none", // Container is non-interactive
-                zIndex: Z_INDEX.MOBILE_CONTROLS - 5, // Below mobile controls but above HUD
+                zIndex: Z_INDEX.TECHNIQUE_BAR, // Semantic z-index constant
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "flex-end",
@@ -1478,7 +1484,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               position={{
                 base: {
                   x: 0,
-                  y: height - (isMobile ? 80 : 100 * positionScale),
+                  y: height - getBackButtonBottom(isMobile), // Use centralized constant, no positionScale
                 },
               }}
               containerWidth={width}
@@ -1545,7 +1551,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onMove={handleMobileMove}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
-              bottom={200} // Increased from 34px to clear TechniqueBar and footer button
+              bottom={getMobileControlsBottom()} // Use centralized constant
             />
 
             <ActionButtons
@@ -1553,7 +1559,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               onBlock={handleMobileBlock}
               disabled={!mobileControlsEnabled}
               opacity={0.8}
-              bottom={200} // Increased from 34px to clear TechniqueBar and footer button
+              bottom={getMobileControlsBottom()} // Use centralized constant
             />
 
             <StanceWheel
