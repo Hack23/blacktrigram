@@ -9,10 +9,22 @@
 
 import { useCallback, useRef } from "react";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
-import { AnimationState, AnimationType } from "../../../../systems/animation";
+import {
+  AnimationState,
+  AnimationType,
+  getAnimationForTechnique,
+} from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
+import { getTechniquesByStance } from "../../../../systems/trigram/techniques";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
-import { Position, TrigramStance } from "../../../../types/common";
+import type { KoreanTechnique } from "../../../../systems/vitalpoint/types";
+import {
+  CombatAttackType,
+  DamageType,
+  PlayerArchetype,
+  Position,
+  TrigramStance,
+} from "../../../../types/common";
 import { METERS_TO_TRAINING_UNITS } from "../../../../types/physicsConstants";
 import { calculateDistance3D } from "../../../../utils/math";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
@@ -47,6 +59,10 @@ export interface UseTrainingActionsConfig {
     animationType?: AnimationType;
     startTime?: number;
   } | null>;
+  /** Currently selected technique ID (from technique bar) */
+  readonly selectedTechniqueId?: string;
+  /** Callback to set the visual attack animation */
+  readonly setAttackAnimation?: (animationName: string | undefined) => void;
 }
 
 export interface UseTrainingActionsReturn {
@@ -56,6 +72,90 @@ export interface UseTrainingActionsReturn {
   readonly handleDummyDefeated: () => void;
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
+}
+
+/**
+ * Get the best default technique for an archetype based on current stance.
+ *
+ * Each archetype has preferred combat styles:
+ * - MUSA: Direct strikes, joint techniques (BLUNT/JOINT damage)
+ * - AMSALJA: Nerve strikes, pressure points (NERVE/PRESSURE damage)
+ * - HACKER: Precise calculated strikes (high accuracy)
+ * - JEONGBO_YOWON: Psychological pressure, submissions (PRESSURE/JOINT)
+ * - JOJIK_POKRYEOKBAE: High damage brutal strikes
+ *
+ * @korean 원형별 기본 기술 선택 - 8개 자세에 따른 최적 기술
+ */
+function getDefaultTechniqueForArchetype(
+  archetype: PlayerArchetype,
+  stance: TrigramStance,
+): KoreanTechnique | undefined {
+  const techniques = getTechniquesByStance(stance);
+  if (techniques.length === 0) return undefined;
+
+  // Score each technique based on archetype preference
+  const scoredTechniques = techniques.map((tech) => {
+    let score = 0;
+    const damageType = tech.damageType;
+    const attackType = tech.type;
+    const isAdvanced =
+      (tech.kiCost || 0) >= 10 || (tech.staminaCost || 0) >= 15;
+
+    switch (archetype) {
+      case PlayerArchetype.MUSA:
+        // Musa prefers: strikes, blocks, counter-attacks (BLUNT/JOINT/CRUSHING)
+        if (damageType === DamageType.JOINT) score += 30;
+        if (damageType === DamageType.CRUSHING) score += 25;
+        if (damageType === DamageType.BLUNT) score += 20;
+        if (attackType === CombatAttackType.STRIKE) score += 15;
+        if (attackType === CombatAttackType.PUNCH) score += 10;
+        if (isAdvanced) score += 10;
+        break;
+
+      case PlayerArchetype.AMSALJA:
+        // Amsalja prefers: nerve strikes, pressure points, thrusts
+        if (damageType === DamageType.NERVE) score += 35;
+        if (damageType === DamageType.PRESSURE) score += 30;
+        if (attackType === CombatAttackType.NERVE_STRIKE) score += 25;
+        if (attackType === CombatAttackType.PRESSURE_POINT) score += 25;
+        if (attackType === CombatAttackType.THRUST) score += 15;
+        if ((tech.accuracy || 0) >= 0.9) score += 10;
+        break;
+
+      case PlayerArchetype.HACKER:
+        // Hacker prefers: high accuracy, calculated strikes
+        if ((tech.accuracy || 0) >= 0.9) score += 30;
+        if ((tech.accuracy || 0) >= 0.8) score += 15;
+        if (damageType === DamageType.NERVE) score += 20;
+        if (damageType === DamageType.INTERNAL) score += 20;
+        if (attackType === CombatAttackType.PRESSURE_POINT) score += 15;
+        break;
+
+      case PlayerArchetype.JEONGBO_YOWON:
+        // Jeongbo prefers: psychological pressure, submissions
+        if (damageType === DamageType.PRESSURE) score += 30;
+        if (damageType === DamageType.JOINT) score += 25;
+        if (attackType === CombatAttackType.GRAPPLE) score += 20;
+        if (attackType === CombatAttackType.PRESSURE_POINT) score += 15;
+        break;
+
+      case PlayerArchetype.JOJIK_POKRYEOKBAE:
+        // Jojik prefers: high damage, brutal techniques
+        if ((tech.damage || 0) >= 35) score += 35;
+        if ((tech.damage || 0) >= 30) score += 20;
+        if (damageType === DamageType.SLASHING) score += 20;
+        if (damageType === DamageType.PIERCING) score += 15;
+        if (damageType === DamageType.CRUSHING) score += 15;
+        if (attackType === CombatAttackType.KICK) score += 10;
+        break;
+    }
+
+    return { technique: tech, score };
+  });
+
+  // Sort by score descending, return highest scoring technique
+  scoredTechniques.sort((a, b) => b.score - a.score);
+  return scoredTechniques[0]?.technique;
 }
 
 /**
@@ -135,6 +235,8 @@ export function useTrainingActions(
     onPlayerUpdate,
     playerAnimation,
     pendingAttackRef,
+    selectedTechniqueId,
+    setAttackAnimation,
   } = config;
 
   // Ref to store timeout for dummy reset
@@ -277,10 +379,34 @@ export function useTrainingActions(
   );
 
   const handleAttack = useCallback(() => {
-    // Use the current technique's animation type for distance-based hit detection
-    // This ensures kicks have longer reach than punches, elbows shorter, etc.
-    // 현재 기술의 애니메이션 타입을 사용하여 거리 기반 명중 판정
-    const animationType = currentTechniqueAnimationTypeRef.current;
+    // Determine which technique to use:
+    // 1. If a technique is explicitly selected from the TechniqueBar, use that
+    // 2. Otherwise, use the best default technique for the archetype + stance
+    // 사용할 기술 결정: 명시적 선택 또는 원형+자세 기반 기본 기술
+    let techniqueToUse: KoreanTechnique | undefined;
+    let techniqueId = selectedTechniqueId;
+
+    if (!techniqueId) {
+      // No technique explicitly selected - get default for archetype + stance
+      // 명시적 선택 없음 - 원형과 자세에 맞는 기본 기술 사용
+      const defaultTechnique = getDefaultTechniqueForArchetype(
+        playerArchetype,
+        playerStance,
+      );
+      if (defaultTechnique) {
+        techniqueToUse = defaultTechnique;
+        techniqueId = defaultTechnique.id;
+      }
+    }
+
+    // Get the animation type from the technique
+    // 기술에서 애니메이션 타입 가져오기
+    let animationType = currentTechniqueAnimationTypeRef.current;
+    if (techniqueToUse?.animationType) {
+      animationType = techniqueToUse.animationType;
+      currentTechniqueAnimationTypeRef.current = animationType;
+    }
+
     const startTime = performance.now() / 1000; // Current time in seconds
 
     const accuracy = calculateHitAccuracy(
@@ -299,6 +425,14 @@ export function useTrainingActions(
       startTime,
     };
 
+    // Set visual attack animation based on technique (AnimationRegistry lookup)
+    // This ensures the 3D model plays the correct technique animation (kick vs punch vs elbow)
+    // 기술에 따른 시각적 공격 애니메이션 설정 (발차기 vs 주먹 vs 팔꿈치)
+    if (setAttackAnimation && techniqueId) {
+      const animationName = getAnimationForTechnique(techniqueId);
+      setAttackAnimation(animationName);
+    }
+
     // Trigger attack animation - this will fire onFrame event at frame 6
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
@@ -314,6 +448,8 @@ export function useTrainingActions(
     playerAnimation,
     audio,
     pendingAttackRef,
+    selectedTechniqueId,
+    setAttackAnimation,
   ]);
 
   return {
