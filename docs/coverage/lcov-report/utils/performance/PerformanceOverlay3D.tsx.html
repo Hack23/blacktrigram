@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>1/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.16% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/24</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/7</span>
+                <span class='fraction'>1/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -327,22 +327,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -561,26 +561,26 @@ export interface PerformanceOverlay3DProps {
  * Shows FPS, memory, draw calls, and warnings
  * Uses screen-space positioning (bottom-left corner)
  */
-export const PerformanceOverlay3D: React.FC&lt;PerformanceOverlay3DProps&gt; = ({
-  position: _position = [0, 0, 0],
-  visible = import.meta.env.DEV,
+export const PerformanceOverlay3D: React.FC&lt;PerformanceOverlay3DProps&gt; = <span class="fstat-no" title="function not covered" >({</span>
+  position: _position = <span class="branch-0 cbranch-no" title="branch not covered" >[0, 0, 0],</span>
+  visible = <span class="branch-0 cbranch-no" title="branch not covered" >import.meta.env.DEV,</span>
 }) =&gt; {
-  const { metrics, isGood, warnings } = usePerformanceMonitor({
+  const { metrics, isGood, warnings <span class="cstat-no" title="statement not covered" >} = usePerformanceMonitor({</span>
     enabled: visible,
     updateInterval: 500, // Update UI every 500ms
   });
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!visible) {
+<span class="cstat-no" title="statement not covered" >  if (!visible) {</span>
 <span class="cstat-no" title="statement not covered" >    return null;</span>
   }
 &nbsp;
-  const fpsColor = isGood
-    ? <span class="branch-0 cbranch-no" title="branch not covered" >"#00ff88"</span>
+  const fpsColor = <span class="cstat-no" title="statement not covered" >isGood</span>
+    ? "#00ff88"
     : metrics.avgFps &lt; 30
     ? "#ff4444"
-    : <span class="branch-1 cbranch-no" title="branch not covered" >"#ffaa00";</span>
+    : "#ffaa00";
 &nbsp;
-  return (
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Html fullscreen style={{ pointerEvents: "none" }}&gt;
       &lt;div
         style={{
@@ -677,14 +677,14 @@ export const PerformanceOverlay3D: React.FC&lt;PerformanceOverlay3DProps&gt; = (
               style={{
                 color:
                   metrics.memoryMB &gt; 300
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"#ff4444"</span>
+                    ? "#ff4444"
                     : metrics.memoryMB &gt; 250
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"#ffaa00"</span>
+                    ? "#ffaa00"
                     : "#00ffff",
               }}
             &gt;
               {metrics.memoryMB &gt; 0
-                ? <span class="branch-0 cbranch-no" title="branch not covered" >`${metrics.memoryMB.toFixed(1)}MB`</span>
+                ? `${metrics.memoryMB.toFixed(1)}MB`
                 : "N/A"}
             &lt;/span&gt;
           &lt;/div&gt;
@@ -700,9 +700,9 @@ export const PerformanceOverlay3D: React.FC&lt;PerformanceOverlay3DProps&gt; = (
               style={{
                 color:
                   metrics.drawCalls &gt; 150
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"#ff4444"</span>
+                    ? "#ff4444"
                     : metrics.drawCalls &gt; 100
-                    ? <span class="branch-0 cbranch-no" title="branch not covered" >"#ffaa00"</span>
+                    ? "#ffaa00"
                     : "#00ffff",
               }}
             &gt;
@@ -729,19 +729,19 @@ export const PerformanceOverlay3D: React.FC&lt;PerformanceOverlay3DProps&gt; = (
                 width: "12px",
                 height: "12px",
                 borderRadius: "50%",
-                backgroundColor: isGood ? <span class="branch-0 cbranch-no" title="branch not covered" >"#00ff88" : "</span>#ff4444",
+                backgroundColor: isGood ? "#00ff88" : "#ff4444",
                 display: "inline-block",
               }}
             /&gt;
             &lt;span style={{ fontWeight: "bold" }}&gt;
-              {isGood ? <span class="branch-0 cbranch-no" title="branch not covered" >"Performance Good" : "</span>Performance Degraded"}
+              {isGood ? "Performance Good" : "Performance Degraded"}
             &lt;/span&gt;
           &lt;/div&gt;
         &lt;/div&gt;
 &nbsp;
         {/* Warnings */}
         {warnings.length &gt; 0 &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;div</span>
+          &lt;div
             style={{
               marginTop: "8px",
               borderTop: "1px solid #ff4444",
@@ -784,7 +784,7 @@ export default PerformanceOverlay3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-16T18:16:35.897Z
+                at 2026-01-17T03:50:12.743Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
