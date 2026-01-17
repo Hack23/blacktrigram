@@ -1,0 +1,330 @@
+/**
+ * BloodViscosity3D - Enhanced blood droplets with thicker physics for brutal combat realism
+ *
+ * Priority #5: Enhanced Blood Viscosity
+ * - Thicker droplets with slower fall rate
+ * - Variable splatter sizes (gouts vs mist)
+ * - Cling/drip physics (stick to surfaces)
+ * - Enhanced viscosity simulation
+ *
+ * Korean martial arts context:
+ * - 절단격 (Cutting strikes) - Thin blood mist
+ * - 타격 (Impact strikes) - Medium blood splatter
+ * - 관통격 (Penetrating strikes) - Thick blood droplets
+ * - 깊은 상처 (Deep wounds) - Large blood gouts
+ */
+
+import React, { useEffect, useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+
+/**
+ * Viscosity types for blood splatter
+ */
+export type ViscosityType = 'thin' | 'medium' | 'thick' | 'gout';
+
+/**
+ * Individual blood viscosity effect
+ */
+export interface BloodViscosityEffect {
+  readonly id: string;
+  readonly position: [number, number, number];
+  readonly direction: [number, number, number];
+  readonly viscosityType: ViscosityType;
+  readonly intensity: number; // 0.0-1.0
+  readonly startTime: number;
+}
+
+/**
+ * Props for BloodViscosity3D component
+ */
+export interface BloodViscosity3DProps {
+  readonly effects: readonly BloodViscosityEffect[];
+  readonly enabled?: boolean;
+  readonly isMobile?: boolean;
+  readonly onEffectComplete?: (id: string) => void;
+}
+
+// Physics constants for blood viscosity
+const BLOOD_VISCOSITY_CONSTANTS = {
+  // Gravity and air resistance
+  GRAVITY: -9.8, // m/s²
+  AIR_RESISTANCE: 0.94, // Thicker than arterial (0.97) or bone (0.96)
+  
+  // Particle counts by viscosity type (desktop)
+  PARTICLE_COUNT: {
+    thin: 50, // Mist
+    medium: 80, // Normal splatter
+    thick: 120, // Heavy droplets
+    gout: 200, // Deep wound large gouts
+  },
+  
+  // Velocity ranges (m/s) - slower than arterial
+  VELOCITY: {
+    thin: { min: 2.0, max: 4.0 },
+    medium: { min: 1.5, max: 3.0 },
+    thick: { min: 1.0, max: 2.5 },
+    gout: { min: 0.5, max: 2.0 },
+  },
+  
+  // Particle sizes
+  SIZE: {
+    thin: { min: 0.02, max: 0.04 },
+    medium: { min: 0.04, max: 0.08 },
+    thick: { min: 0.06, max: 0.12 },
+    gout: { min: 0.10, max: 0.20 },
+  },
+  
+  // Spread cone angles (radians)
+  SPREAD_ANGLE: {
+    thin: Math.PI / 3, // 60° wide spray
+    medium: Math.PI / 4, // 45° normal
+    thick: Math.PI / 6, // 30° narrow
+    gout: Math.PI / 8, // 22.5° very narrow
+  },
+  
+  // Lifetimes
+  ACTIVE_LIFETIME: 2.5, // Active falling time
+  CLING_LIFETIME: 3.0, // Time stuck to ground
+  TOTAL_LIFETIME: 5.5, // Total before cleanup
+  
+  // Ground cling physics
+  GROUND_LEVEL: 0.1, // y-position for ground contact
+  CLING_DAMPING: 0.3, // Velocity reduction on contact
+  
+  // Color
+  BLOOD_COLOR: 0x8b0000, // Dark red
+  
+  // Max delta time to prevent physics spiral
+  MAX_DELTA: 1 / 30,
+} as const;
+
+/**
+ * BloodViscosity3D - Enhanced blood droplets with realistic thicker physics
+ *
+ * Features:
+ * - Variable viscosity types (thin mist to thick gouts)
+ * - Cling/drip physics when hitting ground
+ * - Slower fall rates than arterial spray
+ * - Larger droplet sizes
+ * - Mobile optimization (50% particles)
+ */
+export const BloodViscosity3D: React.FC<BloodViscosity3DProps> = ({
+  effects,
+  enabled = true,
+  isMobile = false,
+  onEffectComplete,
+}) => {
+  // Track active effect instances
+  const [effectInstances, setEffectInstances] = React.useState<
+    Map<
+      string,
+      {
+        particles: THREE.Points;
+        velocities: THREE.Vector3[];
+        startTime: number;
+        effect: BloodViscosityEffect;
+        clinging: boolean[];
+      }
+    >
+  >(new Map());
+
+  // Calculate particle count based on viscosity and mobile
+  const getParticleCount = useMemo(
+    () => (viscosityType: ViscosityType) => {
+      const baseCount = BLOOD_VISCOSITY_CONSTANTS.PARTICLE_COUNT[viscosityType];
+      return isMobile ? Math.floor(baseCount * 0.5) : baseCount;
+    },
+    [isMobile]
+  );
+
+  // Create particle system for blood droplets
+  const createBloodParticles = useMemo(
+    () => (effect: BloodViscosityEffect) => {
+      const count = getParticleCount(effect.viscosityType);
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+      const velocities: THREE.Vector3[] = [];
+      const clinging: boolean[] = [];
+
+      const direction = new THREE.Vector3(...effect.direction).normalize();
+      const spreadAngle = BLOOD_VISCOSITY_CONSTANTS.SPREAD_ANGLE[effect.viscosityType];
+      const velocityRange = BLOOD_VISCOSITY_CONSTANTS.VELOCITY[effect.viscosityType];
+      const sizeRange = BLOOD_VISCOSITY_CONSTANTS.SIZE[effect.viscosityType];
+
+      for (let i = 0; i < count; i++) {
+        // Start at impact position
+        positions[i * 3] = 0;
+        positions[i * 3 + 1] = 0;
+        positions[i * 3 + 2] = 0;
+
+        // Dark red color
+        const color = new THREE.Color(BLOOD_VISCOSITY_CONSTANTS.BLOOD_COLOR);
+        colors[i * 3] = color.r;
+        colors[i * 3 + 1] = color.g;
+        colors[i * 3 + 2] = color.b;
+
+        // Variable size based on viscosity
+        const size =
+          sizeRange.min +
+          Math.random() * (sizeRange.max - sizeRange.min) *
+            effect.intensity;
+        sizes[i] = size;
+
+        // Calculate velocity with spread
+        const speed =
+          velocityRange.min +
+          Math.random() * (velocityRange.max - velocityRange.min);
+
+        // Random deviation within spread angle
+        const theta = (Math.random() - 0.5) * spreadAngle;
+        const phi = Math.random() * Math.PI * 2;
+
+        const velocity = new THREE.Vector3(
+          direction.x + Math.sin(theta) * Math.cos(phi),
+          direction.y + Math.sin(theta) * Math.sin(phi),
+          direction.z + Math.cos(theta)
+        )
+          .normalize()
+          .multiplyScalar(speed);
+
+        velocities.push(velocity);
+        clinging.push(false);
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+      const material = new THREE.PointsMaterial({
+        size: 0.08,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.9,
+        blending: THREE.NormalBlending,
+        depthWrite: false,
+        sizeAttenuation: true,
+      });
+
+      const points = new THREE.Points(geometry, material);
+      points.position.set(...effect.position);
+
+      return { points, velocities, clinging };
+    },
+    [getParticleCount]
+  );
+
+  // Update effect instances
+  useEffect(() => {
+    if (!enabled) return;
+
+    setEffectInstances((prev) => {
+      const updated = new Map(prev);
+
+      effects.forEach((effect) => {
+        if (!updated.has(effect.id)) {
+          const { points, velocities, clinging } = createBloodParticles(effect);
+          updated.set(effect.id, {
+            particles: points,
+            velocities,
+            startTime: effect.startTime,
+            effect,
+            clinging,
+          });
+        }
+      });
+
+      const currentIds = new Set(effects.map((e) => e.id));
+      Array.from(updated.keys()).forEach((id) => {
+        if (!currentIds.has(id)) {
+          const instance = updated.get(id);
+          if (instance) {
+            instance.particles.geometry.dispose();
+            (instance.particles.material as THREE.Material).dispose();
+          }
+          updated.delete(id);
+        }
+      });
+
+      return updated;
+    });
+  }, [effects, enabled, createBloodParticles]);
+
+  // Animation loop
+  useFrame((_state, delta) => {
+    if (!enabled || effectInstances.size === 0) return;
+
+    const clampedDelta = Math.min(delta, BLOOD_VISCOSITY_CONSTANTS.MAX_DELTA);
+    const now = Date.now();
+    const completedIds: string[] = [];
+
+    effectInstances.forEach((instance, id) => {
+      const elapsed = (now - instance.startTime) / 1000;
+
+      // Check for completion
+      if (elapsed >= BLOOD_VISCOSITY_CONSTANTS.TOTAL_LIFETIME) {
+        completedIds.push(id);
+        return;
+      }
+
+      const geometry = instance.particles.geometry;
+      const positions = geometry.attributes.position.array as Float32Array;
+      const count = positions.length / 3;
+
+      // Update each particle
+      for (let i = 0; i < count; i++) {
+        const idx = i * 3;
+
+        if (!instance.clinging[i]) {
+          // Apply gravity
+          instance.velocities[i].y +=
+            BLOOD_VISCOSITY_CONSTANTS.GRAVITY * clampedDelta;
+
+          // Apply air resistance
+          instance.velocities[i].multiplyScalar(
+            BLOOD_VISCOSITY_CONSTANTS.AIR_RESISTANCE
+          );
+
+          // Update position
+          positions[idx] += instance.velocities[i].x * clampedDelta;
+          positions[idx + 1] += instance.velocities[i].y * clampedDelta;
+          positions[idx + 2] += instance.velocities[i].z * clampedDelta;
+
+          // Check ground contact
+          if (positions[idx + 1] <= BLOOD_VISCOSITY_CONSTANTS.GROUND_LEVEL) {
+            positions[idx + 1] = BLOOD_VISCOSITY_CONSTANTS.GROUND_LEVEL;
+            instance.velocities[i].multiplyScalar(
+              BLOOD_VISCOSITY_CONSTANTS.CLING_DAMPING
+            );
+            instance.clinging[i] = true;
+          }
+        }
+      }
+
+      geometry.attributes.position.needsUpdate = true;
+
+      // Fade out during cling phase
+      if (elapsed >= BLOOD_VISCOSITY_CONSTANTS.ACTIVE_LIFETIME) {
+        const fadeProgress =
+          (elapsed - BLOOD_VISCOSITY_CONSTANTS.ACTIVE_LIFETIME) /
+          BLOOD_VISCOSITY_CONSTANTS.CLING_LIFETIME;
+        const material = instance.particles.material as THREE.PointsMaterial;
+        material.opacity = 0.9 * (1.0 - fadeProgress);
+      }
+    });
+
+    completedIds.forEach((id) => {
+      onEffectComplete?.(id);
+    });
+  });
+
+  return (
+    <>
+      {Array.from(effectInstances.values()).map((instance) => (
+        <primitive key={instance.effect.id} object={instance.particles} />
+      ))}
+    </>
+  );
+};
