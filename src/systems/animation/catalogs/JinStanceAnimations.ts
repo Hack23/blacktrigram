@@ -18,6 +18,7 @@
 import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import { ANATOMICAL_LIMITS } from "../constants";
 
 /**
  * Anatomical safety constants for Jin (Thunder) trigram animations
@@ -25,23 +26,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * These limits ensure joint rotations remain within safe physiological ranges
  * while maintaining explosive, dramatic animation for Jin's jumping techniques.
  */
-const ANATOMICAL_LIMITS = {
-  /**
-   * Maximum safe knee flexion: 90° (1.57 radians)
-   * 
-   * Deep horse stance requires maximum knee bend for explosive power generation.
-   * 90° (right angle) is safe and provides coiled spring tension.
-   */
-  MAX_KNEE_FLEXION: 1.57, // 90° in radians
-  
-  /**
-   * Maximum safe ankle dorsiflexion: 25° (0.44 radians)
-   * 
-   * Heel raising for explosive launch requires significant dorsiflexion
-   * while maintaining safe joint alignment.
-   */
-  MAX_ANKLE_DORSIFLEXION: 0.44, // 25° in radians
-} as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☳ JIN IDLE COILED ANIMATION (진괘 도약 자세)
@@ -96,8 +80,8 @@ export const JIN_IDLE_COILED: SkeletalAnimation =
     .at(1.25)
     .rotate(BoneName.PELVIS, 0.14, 0, 0) // 8° more forward
     .rotate(BoneName.SPINE_UPPER, -0.12, 0, 0) // -7° more backward
-    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
-    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
+    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
+    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
     .rotate(BoneName.FOOT_L, 0.31, 0, 0) // 18° more on toes
     .rotate(BoneName.FOOT_R, 0.31, 0, 0) // 18° more on toes
     .rotate(BoneName.SHOULDER_L, -0.30, 0, -0.38) // -17°, 0°, -22° (tighter)
@@ -158,8 +142,8 @@ export const JIN_EXPLOSIVE_BURST: SkeletalAnimation =
     .at(0)
     .rotate(BoneName.PELVIS, 0.14, 0, 0) // 8° deep coil
     .rotate(BoneName.SPINE_UPPER, -0.12, 0, 0) // -7° loaded
-    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° maximum coil
-    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° maximum coil
+    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° maximum coil
+    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° maximum coil
     .rotate(BoneName.FOOT_L, 0.31, 0, 0) // 18° on toes
     .rotate(BoneName.FOOT_R, 0.31, 0, 0) // 18° on toes
     .rotate(BoneName.SHOULDER_L, -0.30, 0, -0.38) // Fists chambered

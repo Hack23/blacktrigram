@@ -28,31 +28,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * Note: These are documentation constants. The actual animation rotations are designed
  * to stay well within these limits naturally through authentic Hapkido defensive biomechanics.
  */
-export const ANATOMICAL_LIMITS_GAN_STANCE = {
-  /**
-   * Maximum safe knee bend for deep rooted stance: 25° (0.44 radians)
-   * 
-   * Gan stance requires deep, stable leg positioning. Knees bent to ~15-25°
-   * provide optimal balance between stability and mobility for defensive counters.
-   */
-  MAX_KNEE_BEND_ROOTED: 0.44, // 25° in radians
-  
-  /**
-   * Maximum safe elbow bend for solid guard: 120° (2.09 radians)
-   * 
-   * High solid guard requires elbows bent to create reinforced blocking structure.
-   * 110-120° provides maximum structural integrity for absorbing attacks.
-   */
-  MAX_ELBOW_BEND_GUARD: 2.09, // 120° in radians
-  
-  /**
-   * Maximum safe shoulder elevation for high guard: -35° (-0.61 radians)
-   * 
-   * High guard positioning with shoulders elevated to protect head and face.
-   * -30° to -35° elevation creates solid defensive wall without strain.
-   */
-  MAX_SHOULDER_ELEVATION: -0.61, // -35° in radians
-} as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☶ GAN IDLE ROOTED ANIMATION (간괘 뿌리 자세)
