@@ -1,14 +1,14 @@
 /**
  * AIMovement.test.ts - AI Movement System Tests
- * 
+ *
  * Tests for archetype-specific movement patterns and distance-based behavior.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { AIDecisionTree, CombatContext } from "./DecisionTree";
-import { AIComboSystem } from "./ComboSystem";
-import { AI_PERSONALITIES } from "./AIPersonality";
 import { TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
+import { AI_PERSONALITIES } from "./AIPersonality";
+import { AIComboSystem } from "./ComboSystem";
+import { AIDecisionTree, CombatContext } from "./DecisionTree";
 
 // Import arena boundary constants from DecisionTree for test validation
 const ARENA_MARGIN_X = AIDecisionTree.ARENA_MARGIN_X;
@@ -27,7 +27,10 @@ describe("AI Movement System", () => {
   /**
    * Helper to create a combat context with specific distance
    */
-  const createContext = (distance: number, healthPercent: number = 1.0): CombatContext => {
+  const createContext = (
+    distance: number,
+    healthPercent: number = 1.0,
+  ): CombatContext => {
     return {
       playerPosition: { x: 100, y: 100 },
       opponentPosition: { x: 100 + distance, y: 100 },
@@ -44,7 +47,14 @@ describe("AI Movement System", () => {
       timeInMatch: 5000,
       isOpponentAttacking: false,
       recentDamageTaken: 0,
-      arenaBounds: { x: 0, y: 0, width: 800, height: 600 },
+      arenaBounds: {
+        x: 0,
+        y: 0,
+        width: 800,
+        height: 600,
+        worldWidthMeters: 8,
+        worldDepthMeters: 6,
+      },
     };
   };
 
@@ -58,12 +68,20 @@ describe("AI Movement System", () => {
       let foundApproach = false;
       for (let i = 0; i < 50; i++) {
         decisionTree.reset(); // Reset to clear any cooldowns
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
+        const decision = decisionTree.makeDecision(
+          context,
+          personality,
+          comboSystem,
+        );
         if (decision.action === "approach" && decision.targetPosition) {
           foundApproach = true;
           // Verify target position is closer to opponent
-          const currentDist = Math.abs(context.playerPosition.x - context.opponentPosition.x);
-          const newDist = Math.abs(decision.targetPosition.x - context.opponentPosition.x);
+          const currentDist = Math.abs(
+            context.playerPosition.x - context.opponentPosition.x,
+          );
+          const newDist = Math.abs(
+            decision.targetPosition.x - context.opponentPosition.x,
+          );
           expect(newDist).toBeLessThan(currentDist);
           break;
         }
@@ -79,7 +97,11 @@ describe("AI Movement System", () => {
       // Simulate 10 decision cycles
       for (let i = 0; i < 10; i++) {
         const context = createContext(currentDistance);
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
+        const decision = decisionTree.makeDecision(
+          context,
+          personality,
+          comboSystem,
+        );
 
         if (decision.action === "approach" && decision.targetPosition) {
           const dx = decision.targetPosition.x - context.opponentPosition.x;
@@ -105,7 +127,11 @@ describe("AI Movement System", () => {
       };
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
 
-      const decision = decisionTree.makeDecision(context, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        context,
+        personality,
+        comboSystem,
+      );
 
       // Should prioritize retreat
       expect(decision.action).toBe("retreat");
@@ -114,9 +140,16 @@ describe("AI Movement System", () => {
 
     it("should retreat when health < tactical retreat threshold", () => {
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
-      const context = createContext(150, personality.tacticalRetreatThreshold - 0.05);
+      const context = createContext(
+        150,
+        personality.tacticalRetreatThreshold - 0.05,
+      );
 
-      const decision = decisionTree.makeDecision(context, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        context,
+        personality,
+        comboSystem,
+      );
 
       // Should prioritize retreat
       expect(decision.action).toBe("retreat");
@@ -127,12 +160,20 @@ describe("AI Movement System", () => {
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
       const context = createContext(150, 0.2); // 20% health
 
-      const decision = decisionTree.makeDecision(context, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        context,
+        personality,
+        comboSystem,
+      );
 
       if (decision.action === "retreat" && decision.targetPosition) {
         // Calculate distances
-        const currentDist = Math.abs(context.playerPosition.x - context.opponentPosition.x);
-        const newDist = Math.abs(decision.targetPosition.x - context.opponentPosition.x);
+        const currentDist = Math.abs(
+          context.playerPosition.x - context.opponentPosition.x,
+        );
+        const newDist = Math.abs(
+          decision.targetPosition.x - context.opponentPosition.x,
+        );
 
         // New position should be farther from opponent
         expect(newDist).toBeGreaterThan(currentDist);
@@ -151,7 +192,11 @@ describe("AI Movement System", () => {
       // With AGGRESSIVE_STRIKER's aggressive movement tendency, should see approach actions
       for (let i = 0; i < 100; i++) {
         decisionTree.reset(); // Clear cooldowns between iterations
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
+        const decision = decisionTree.makeDecision(
+          context,
+          personality,
+          comboSystem,
+        );
 
         if (decision.action === "approach") {
           approachCount++;
@@ -176,7 +221,11 @@ describe("AI Movement System", () => {
 
       testCases.forEach(({ distance }) => {
         const context = createContext(distance);
-        const decision = decisionTree.makeDecision(context, personality, comboSystem);
+        const decision = decisionTree.makeDecision(
+          context,
+          personality,
+          comboSystem,
+        );
 
         // Verify that decisions are made at all distances
         expect(decision).toBeDefined();
@@ -200,17 +249,25 @@ describe("AI Movement System", () => {
         arenaBounds: { x: 0, y: 0, width: 400, height: 300 },
       };
 
-      const decision = decisionTree.makeDecision(context, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        context,
+        personality,
+        comboSystem,
+      );
 
       if (decision.targetPosition) {
         // Target position should be within bounds (using DecisionTree's arena margin constants)
-        expect(decision.targetPosition.x).toBeGreaterThanOrEqual(context.arenaBounds.x);
-        expect(decision.targetPosition.x).toBeLessThanOrEqual(
-          context.arenaBounds.x + context.arenaBounds.width - ARENA_MARGIN_X
+        expect(decision.targetPosition.x).toBeGreaterThanOrEqual(
+          context.arenaBounds.x,
         );
-        expect(decision.targetPosition.y).toBeGreaterThanOrEqual(context.arenaBounds.y);
+        expect(decision.targetPosition.x).toBeLessThanOrEqual(
+          context.arenaBounds.x + context.arenaBounds.width - ARENA_MARGIN_X,
+        );
+        expect(decision.targetPosition.y).toBeGreaterThanOrEqual(
+          context.arenaBounds.y,
+        );
         expect(decision.targetPosition.y).toBeLessThanOrEqual(
-          context.arenaBounds.y + context.arenaBounds.height - ARENA_MARGIN_Y
+          context.arenaBounds.y + context.arenaBounds.height - ARENA_MARGIN_Y,
         );
       }
     });
@@ -223,7 +280,11 @@ describe("AI Movement System", () => {
         playerMaxStamina: 100,
       };
 
-      const decision = decisionTree.makeDecision(lowStaminaContext, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        lowStaminaContext,
+        personality,
+        comboSystem,
+      );
 
       // With low stamina, should still make valid decisions
       // Note: The decision tree itself doesn't enforce stamina costs directly,
@@ -241,7 +302,11 @@ describe("AI Movement System", () => {
       const context = createContext(200);
 
       const startTime = performance.now();
-      const decision = decisionTree.makeDecision(context, personality, comboSystem);
+      const decision = decisionTree.makeDecision(
+        context,
+        personality,
+        comboSystem,
+      );
       const endTime = performance.now();
 
       const duration = endTime - startTime;
@@ -263,7 +328,8 @@ describe("AI Movement System", () => {
         durations.push(endTime - startTime);
       }
 
-      const avgDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
+      const avgDuration =
+        durations.reduce((sum, d) => sum + d, 0) / durations.length;
       const maxDuration = Math.max(...durations);
 
       expect(avgDuration).toBeLessThan(10);
