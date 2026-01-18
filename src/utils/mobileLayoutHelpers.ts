@@ -89,9 +89,6 @@ export function calculateMobileAreaBounds(
   // Extra-small devices also get reduced max height for better fit
   const maxMobileHeight = Math.min(availableHeight, width < 380 ? 240 : 800);
 
-  // Calculate world dimensions based on screen resolution (not device type)
-  const worldDimensions = calculateArenaWorldDimensions(width);
-
   // Use 4:3 aspect ratio for arena (width > height)
   // Calculate area width first, constrained by available space
   const areaWidth = Math.max(
@@ -99,6 +96,10 @@ export function calculateMobileAreaBounds(
     280,
   );
   const areaHeight = areaWidth * (3 / 4); // 4:3 aspect ratio
+
+  // Calculate world dimensions based on RENDERED arena width (not screen width)
+  // This ensures correct pixels-per-meter ratio for the actual visible arena
+  const worldDimensions = calculateArenaWorldDimensions(areaWidth);
 
   // Calculate 3D scale factor based on reference arena
   // Reference: 10m arena at 1000px = 100 px/m

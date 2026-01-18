@@ -11,16 +11,54 @@ import { TrigramStance } from "../types/common";
  * Uses physics-first approach: all positions and velocities are in meters.
  *
  * **Korean**: 입력 시스템 설정 (Input System Configuration)
+ * 
+ * ## Physics-First Architecture
+ * 
+ * This interface requires worldWidthMeters and worldDepthMeters to enable
+ * the new physics-first coordinate system. Without these properties, the
+ * movement system cannot properly convert between physics (meters) and
+ * rendering (pixels).
+ * 
+ * ### Migration Guide
+ * 
+ * Existing code must be updated to pass world dimensions:
+ * 
+ * ```typescript
+ * // Before (incorrect):
+ * const config = { bounds: { x: 0, y: 0, width: 960, height: 480 } };
+ * 
+ * // After (correct):
+ * const config = { 
+ *   bounds: { 
+ *     worldWidthMeters: 10,   // From layout hook
+ *     worldDepthMeters: 10    // From layout hook
+ *   } 
+ * };
+ * ```
+ * 
+ * ### Fallback Behavior
+ * 
+ * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
+ * function and movement will be disabled. Callers MUST provide these values
+ * from their layout hooks (useCombatLayout, useTrainingLayout).
  */
 export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
 
-  /** Arena world dimensions in meters for physics calculations */
+  /**
+   * Arena world dimensions in meters for physics calculations.
+   * 
+   * **REQUIRED for physics-first coordinate system to work.**
+   * 
+   * These values must come from layout hooks:
+   * - CombatScreen3D: Use arenaBounds.worldWidthMeters/worldDepthMeters from useCombatLayout()
+   * - TrainingScreen3D: Use trainingAreaBounds.worldWidthMeters/worldDepthMeters from useTrainingLayout()
+   */
   readonly bounds?: {
-    /** Physical arena width in meters (required for physics) */
+    /** Physical arena width in meters (e.g., 6m mobile, 10m desktop, 14m 4K) */
     readonly worldWidthMeters: number;
-    /** Physical arena depth in meters (required for physics) */
+    /** Physical arena depth in meters (e.g., 6m mobile, 10m desktop, 14m 4K) */
     readonly worldDepthMeters: number;
   };
 

@@ -121,6 +121,18 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
 /**
  * Convert physics position (meters) to screen position (pixels).
  * 
+ * **IMPORTANT**: This function only handles scaling conversion between
+ * meters and pixels. It does NOT account for arena position offsets
+ * (bounds.x and bounds.y). Callers must add these offsets separately
+ * when rendering to screen.
+ * 
+ * Example:
+ * ```typescript
+ * const pixelPos = metersToPixels(physicsPos, bounds);
+ * const screenX = bounds.x + pixelPos.x;  // Add arena offset
+ * const screenY = bounds.y + pixelPos.y;  // Add arena offset
+ * ```
+ * 
  * This conversion should ONLY be used at render time.
  * Internal game logic should always work in meters.
  * 
@@ -128,7 +140,7 @@ export function getPixelsPerMeter(bounds: PhysicsArenaBounds): number {
  * 
  * @param positionMeters - Position in meters
  * @param bounds - Arena bounds for conversion
- * @returns Position in pixels for rendering
+ * @returns Position in pixels RELATIVE to arena origin (add bounds.x/y for screen position)
  * @throws Error if position is invalid
  * 
  * @public
@@ -155,12 +167,23 @@ export function metersToPixels(
 /**
  * Convert screen position (pixels) to physics position (meters).
  * 
+ * **IMPORTANT**: This function only handles scaling conversion between
+ * pixels and meters. If you're converting from screen coordinates, you
+ * must first subtract arena position offsets (bounds.x and bounds.y).
+ * 
+ * Example:
+ * ```typescript
+ * const arenaRelativeX = screenX - bounds.x;  // Remove arena offset
+ * const arenaRelativeY = screenY - bounds.y;  // Remove arena offset
+ * const physicsPos = pixelsToMeters({ x: arenaRelativeX, y: arenaRelativeY }, bounds);
+ * ```
+ * 
  * Use this when converting user input or initial positions.
  * After conversion, work entirely in meters.
  * 
  * **Korean**: 픽셀을미터로 (Pixels To Meters)
  * 
- * @param pixelPosition - Position in pixels
+ * @param pixelPosition - Position in pixels RELATIVE to arena origin (subtract bounds.x/y first)
  * @param bounds - Arena bounds for conversion
  * @returns Position in meters
  * @throws Error if pixel coordinates are not finite numbers
