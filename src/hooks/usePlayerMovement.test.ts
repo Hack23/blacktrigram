@@ -29,21 +29,21 @@ describe("usePlayerMovement Integration", () => {
 
   describe("Hook Integration with Physics Engine", () => {
     it("should integrate stance changes with physics", () => {
-      // Start with Geon stance
+      // Start with Geon stance (6.0 m/s base walking speed)
       const geonSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
-      expect(geonSpeed).toBe(4.0);
+      expect(geonSpeed).toBe(6.0);
 
-      // Change to Wind stance
+      // Change to Wind stance (125% of 6.0 = 7.5 m/s)
       const windSpeed = physics.getMaxSpeed(false, TrigramStance.SON, 0);
-      expect(windSpeed).toBe(5.0); // 125% speed
+      expect(windSpeed).toBe(7.5);
     });
 
     it("should integrate injury with physics", () => {
       const healthySpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
       const injuredSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0.5);
 
-      expect(healthySpeed).toBe(4.0);
-      expect(injuredSpeed).toBe(3.0); // 25% penalty
+      expect(healthySpeed).toBe(6.0);
+      expect(injuredSpeed).toBe(4.5); // 25% penalty (6 * 0.75 = 4.5)
     });
 
     it("should handle forward movement", () => {
