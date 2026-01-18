@@ -3,7 +3,7 @@
  */
 
 import { render, screen, cleanup } from "@testing-library/react";
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it, afterEach, vi } from "vitest";
 import { TrainingStatsOverlayHtml } from "./TrainingStatsOverlayHtml";
 import { FONT_FAMILY } from "../../../../types/constants";
 
