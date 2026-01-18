@@ -711,6 +711,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
+  // Without this, a new function is created every render, causing animation frame cancellation
+  const handlePlayer1PositionChange = useCallback(
+    (newPosition: Position) => {
+      setPlayer1Position(newPosition);
+      onPlayerUpdate(0, { position: newPosition });
+    },
+    [onPlayerUpdate],
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
@@ -725,10 +735,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         worldWidthMeters: arenaBounds.worldWidthMeters,
         worldDepthMeters: arenaBounds.worldDepthMeters,
       },
-      onPositionChange: (newPosition: Position) => {
-        setPlayer1Position(newPosition);
-        onPlayerUpdate(0, { position: newPosition });
-      },
+      onPositionChange: handlePlayer1PositionChange, // Use memoized callback
       initialPositionMeters: player1Position,
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,

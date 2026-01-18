@@ -286,6 +286,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingAreaBounds],
   );
 
+  // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
+  // Without this, a new function is created every render, causing animation frame cancellation
+  const handlePositionChange = useCallback(
+    (newPosition: Position) => {
+      onPlayerUpdate({ position: newPosition });
+    },
+    [onPlayerUpdate],
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
   const { playerPosition, isMoving, velocity, debugFrameCount } =
@@ -295,9 +304,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         worldWidthMeters: trainingAreaBounds.worldWidthMeters,
         worldDepthMeters: trainingAreaBounds.worldDepthMeters,
       },
-      onPositionChange: (newPosition: Position) => {
-        onPlayerUpdate({ position: newPosition });
-      },
+      onPositionChange: handlePositionChange, // Use memoized callback
       initialPositionMeters,
       // Physics parameters for realistic training movement (always enabled)
       currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],

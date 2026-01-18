@@ -349,17 +349,8 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
-      // DEBUG: Track frame count and position for real speed calculation
+      // DEBUG: Track frame count for diagnostics
       debugFrameCount.current += 1;
-
-      // AGGRESSIVE DEBUG: Log every frame for first 20 frames, then every 30
-      if (debugFrameCount.current <= 20 || debugFrameCount.current % 30 === 0) {
-        console.log(
-          `[MOVE F${debugFrameCount.current}] dt=${deltaTime.toFixed(1)}ms, keys=${JSON.stringify(keys)}, input=(${forward},${lateral}), pos=(${state.position.x.toFixed(2)},${state.position.z.toFixed(2)})`,
-        );
-      }
-
-      const posBeforeUpdate = { x: state.position.x, z: state.position.z };
 
       physicsEngineRef.current.updateMovement(
         state,
@@ -367,17 +358,10 @@ export function usePlayerMovement(
         clampedDeltaTimeMs / 1000,
       );
 
-      const posAfterUpdate = { x: state.position.x, z: state.position.z };
-      const frameDelta = Math.sqrt(
-        Math.pow(posAfterUpdate.x - posBeforeUpdate.x, 2) +
-          Math.pow(posAfterUpdate.z - posBeforeUpdate.z, 2),
-      );
-
       // DEBUG: Log movement data every ~60 frames (1s at 60fps)
-      const DEBUG_MOVEMENT = true; // ENABLED for movement speed debugging
+      const DEBUG_MOVEMENT = false; // Set to true for movement speed debugging
       if (DEBUG_MOVEMENT && debugFrameCount.current % 60 === 0) {
         const speedMs = state.velocity.length();
-        const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
 
         // Calculate actual speed over last second
         if (debugStartPos.current === null || debugStartTime.current === null) {
@@ -396,17 +380,10 @@ export function usePlayerMovement(
           dt: clampedDeltaTimeMs.toFixed(1) + "ms",
           velocity: speedMs.toFixed(2) + " m/s (reported)",
           actualSpeed: actualSpeed.toFixed(2) + " m/s (measured)",
-          frameDelta: frameDelta.toFixed(4) + " m/frame",
           maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
           pos: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)}) m`,
           totalDist: totalDist.toFixed(2) + " m",
           elapsedSec: elapsedSec.toFixed(2) + "s",
-          overrides: {
-            speed: maxSpeedOverride?.toFixed(2),
-            accel: accelerationOverride?.toFixed(2),
-          },
-          traverseTime:
-            expectedTimeToTraverse.toFixed(1) + "s (expected for 14m)",
         });
 
         // Reset tracking every 5 seconds
@@ -536,9 +513,9 @@ export function usePlayerMovement(
     if (isMoving && !animationFrameId.current) {
       lastUpdateTime.current = performance.now();
       // Use ref to avoid dependency on updatePosition callback
-      animationFrameId.current = requestAnimationFrame(() =>
-        updatePositionRef.current?.(),
-      );
+      animationFrameId.current = requestAnimationFrame(() => {
+        updatePositionRef.current?.();
+      });
     } else if (!isMoving && animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
       animationFrameId.current = null;
