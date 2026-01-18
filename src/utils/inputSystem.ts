@@ -143,7 +143,7 @@ export function usePlayerMovement(
         ),
         velocity: new THREE.Vector3(0, 0, 0),
         acceleration: 0,
-        maxSpeed: 4.0, // Default to BASE_WALK_SPEED
+        maxSpeed: 6.0, // Default to BASE_WALK_SPEED (6.0 m/s for responsive combat)
         currentStance,
         legInjuryFactor: legInjuryFactor ?? 0,
       };
@@ -314,24 +314,27 @@ export function usePlayerMovement(
         clampedDeltaTimeMs / 1000,
       );
 
-      // DEBUG: Log movement data every 60 frames (once per second)
+      // DEBUG: Log movement data every 30 frames (~0.5s at 60fps)
       const DEBUG_MOVEMENT = true; // Enabled for debugging
-      if (DEBUG_MOVEMENT && Math.random() < 0.017) {
+      if (DEBUG_MOVEMENT && Math.random() < 0.033) {
+        const speedMs = state.velocity.length();
+        const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
         console.log("[Movement Debug]", {
-          deltaTimeMs: clampedDeltaTimeMs.toFixed(2),
-          velocityMs: state.velocity.length().toFixed(3),
-          maxSpeed: state.maxSpeed.toFixed(2),
-          positionMeters: {
-            x: state.position.x.toFixed(3),
-            z: state.position.z.toFixed(3),
+          dt: clampedDeltaTimeMs.toFixed(1) + "ms",
+          velocity: speedMs.toFixed(2) + " m/s",
+          maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
+          pos: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)}) m`,
+          input: {
+            fwd: physicsInput.forward,
+            lat: physicsInput.lateral,
+            run: physicsInput.isRunning,
           },
-          forward: physicsInput.forward,
-          lateral: physicsInput.lateral,
-          isRunning: physicsInput.isRunning,
-          boundsWorldWidth: bounds?.worldWidthMeters,
-          boundsWorldDepth: bounds?.worldDepthMeters,
-          maxSpeedOverride,
-          accelerationOverride,
+          overrides: {
+            speed: maxSpeedOverride?.toFixed(2),
+            accel: accelerationOverride?.toFixed(2),
+          },
+          traverseTime:
+            expectedTimeToTraverse.toFixed(1) + "s (expected for 14m)",
         });
       }
 

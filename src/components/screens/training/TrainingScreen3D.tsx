@@ -256,10 +256,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
 
   // Track speed modifiers for movement (simplified for training - no injuries)
+  // Initial values match SpeedModifierSystem.BASE_WALKING_SPEED and BASE_ACCELERATION
   const [speedModifiers, setSpeedModifiers] = useState({
-    finalSpeed: 4.0, // BASE_WALK_SPEED
-    baseSpeed: 4.0,
-    finalAcceleration: 8.0, // BASE_ACCELERATION
+    finalSpeed: 6.0, // BASE_WALK_SPEED (6.0 m/s for responsive combat)
+    baseSpeed: 6.0,
+    finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s² for quick response)
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
