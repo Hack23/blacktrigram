@@ -315,7 +315,7 @@ export function usePlayerMovement(
       );
 
       // DEBUG: Log movement data every 60 frames (once per second)
-      const DEBUG_MOVEMENT = false; // Disabled for production
+      const DEBUG_MOVEMENT = true; // Enabled for debugging
       if (DEBUG_MOVEMENT && Math.random() < 0.017) {
         console.log("[Movement Debug]", {
           deltaTimeMs: clampedDeltaTimeMs.toFixed(2),
@@ -330,6 +330,8 @@ export function usePlayerMovement(
           isRunning: physicsInput.isRunning,
           boundsWorldWidth: bounds?.worldWidthMeters,
           boundsWorldDepth: bounds?.worldDepthMeters,
+          maxSpeedOverride,
+          accelerationOverride,
         });
       }
 
