@@ -30,6 +30,10 @@ export interface CombatArena3DProps {
   readonly lighting?: "cyberpunk" | "traditional" | "neutral";
   /** Scale factor for arena size (1.0 = desktop, <1.0 = mobile). Defaults to 1.0 */
   readonly scale?: number;
+  /** Physical arena width in meters. Defaults to 10m (desktop standard) */
+  readonly worldWidthMeters?: number;
+  /** Physical arena depth in meters. Defaults to worldWidthMeters for square arena */
+  readonly worldDepthMeters?: number;
   /** Enable atmospheric particles (rain/mist). Defaults to true on desktop, false on mobile */
   readonly enableParticles?: boolean;
 }
@@ -49,6 +53,8 @@ const SHADOW_MAP_SIZE_DESKTOP: [number, number] = [2048, 2048]; // Upgraded from
 export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   lighting = "cyberpunk",
   scale = 1.0,
+  worldWidthMeters = 10, // Default desktop standard
+  worldDepthMeters,
   enableParticles = scale >= 1.0, // Enable particles on desktop by default
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
@@ -60,12 +66,15 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
     }
   });
 
-  // Scale-aware dimensions for arena elements
-  const floorWidth = 20 * scale;
-  const floorDepth = 10 * scale;
-  const gridSize = 20 * scale;
-  const markerDistance = 8 * scale;
-  const markerDepth = 4 * scale;
+  // Use physics-based world dimensions for 1:1 meter mapping
+  // Floor extends 50% beyond arena bounds for visual buffer
+  const effectiveDepth = worldDepthMeters ?? worldWidthMeters;
+  const floorWidth = worldWidthMeters * FLOOR_SCALE_FACTOR;
+  const floorDepth = effectiveDepth * FLOOR_SCALE_FACTOR;
+  const gridSize = worldWidthMeters * FLOOR_SCALE_FACTOR;
+  // Boundary markers at 80% of arena width, 40% of depth
+  const markerDistance = worldWidthMeters * 0.8;
+  const markerDepth = effectiveDepth * 0.4;
 
   // Memoized floor material with wet concrete aesthetic and reflections
   // Note: Empty dependency array is correct - KOREAN_COLORS is a const object

@@ -72,8 +72,8 @@ import {
   type BodyRegionFilter,
 } from "../combat/components";
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
-import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
+import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -262,6 +262,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       width: trainingAreaBounds.width,
       height: trainingAreaBounds.height,
       scale: trainingAreaBounds.scale, // Pass arena scale for proper pixel conversion
+      worldWidthMeters: trainingAreaBounds.worldWidthMeters, // Required for physics-first coordinate system
+      worldDepthMeters: trainingAreaBounds.worldDepthMeters, // Required for physics-first coordinate system
     },
     onPositionChange: (newPosition: Position) => {
       onPlayerUpdate({ position: newPosition });
@@ -278,24 +280,25 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
-  // Scale 3D coordinates based on training area scale for consistent positioning
+  // Use physics-based arena dimensions for consistent 1:1 meter mapping
   const player3DPosition = useMemo<[number, number, number]>(() => {
     const relX =
       (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
     const relZ =
       (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
-    // Map 0-1 to world coordinates, scaled for training area size (matching CombatScreen)
-    const worldWidth = 16 * trainingAreaBounds.scale;
-    const worldDepth = 8 * trainingAreaBounds.scale;
+    // Use actual world dimensions from physics system (6-14m based on resolution)
+    const worldWidth = trainingAreaBounds.worldWidthMeters;
+    const worldDepth = trainingAreaBounds.worldDepthMeters;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
   }, [playerPosition, trainingAreaBounds]);
 
-  // Dummy position (fixed in 3D space, right side of training area, scaled)
+  // Dummy position in meters (at 40% of arena width from center, right side)
+  // Uses world dimensions for physics-consistent positioning
   const dummyPosition = useMemo<[number, number, number]>(
-    () => [5 * trainingAreaBounds.scale, 0, 0],
-    [trainingAreaBounds.scale],
+    () => [trainingAreaBounds.worldWidthMeters * 0.4, 0, 0],
+    [trainingAreaBounds.worldWidthMeters],
   );
 
   // Calculate distance to dummy in meters (training scene uses 1:1 meter scale)
@@ -969,8 +972,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
-        {/* Combat Arena 3D Environment - reuse from combat */}
-        <CombatArena3D lighting="cyberpunk" scale={1} />
+        {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
+        <CombatArena3D
+          lighting="cyberpunk"
+          scale={trainingAreaBounds.scale}
+          worldWidthMeters={trainingAreaBounds.worldWidthMeters}
+          worldDepthMeters={trainingAreaBounds.worldDepthMeters}
+        />
 
         {/* Animation updater - 60fps updates */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />

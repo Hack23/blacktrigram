@@ -107,10 +107,10 @@ import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
+import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
@@ -589,13 +589,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [player1Position, player2Position]);
 
   // Convert 2D positions to 3D world coordinates
-  // Scale 3D coordinates based on arena scale for consistent positioning
+  // Use physics-based arena dimensions for consistent 1:1 meter mapping
   const player1Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates, scaled for arena size
-    const worldWidth = 16 * arenaBounds.scale;
-    const worldDepth = 8 * arenaBounds.scale;
+    // Use actual world dimensions from physics system (6-14m based on resolution)
+    const worldWidth = arenaBounds.worldWidthMeters;
+    const worldDepth = arenaBounds.worldDepthMeters;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
@@ -604,9 +604,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player2Position3D: [number, number, number] = useMemo(() => {
     const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
     const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates, scaled for arena size
-    const worldWidth = 16 * arenaBounds.scale;
-    const worldDepth = 8 * arenaBounds.scale;
+    // Use actual world dimensions from physics system (6-14m based on resolution)
+    const worldWidth = arenaBounds.worldWidthMeters;
+    const worldDepth = arenaBounds.worldDepthMeters;
     const x = relX * worldWidth - worldWidth / 2;
     const z = relZ * worldDepth - worldDepth / 2;
     return [x, 0, z];
@@ -738,6 +738,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         width: arenaBounds.width,
         height: arenaBounds.height,
         scale: arenaBounds.scale, // Pass arena scale for proper pixel conversion
+        worldWidthMeters: arenaBounds.worldWidthMeters, // Required for physics-first coordinate system
+        worldDepthMeters: arenaBounds.worldDepthMeters, // Required for physics-first coordinate system
       },
       onPositionChange: (newPosition: Position) => {
         setPlayer1Position(newPosition);
@@ -2165,8 +2167,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
-        {/* Combat Arena 3D Environment */}
-        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
+        {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
+        <CombatArena3D
+          lighting="cyberpunk"
+          scale={arenaBounds.scale}
+          worldWidthMeters={arenaBounds.worldWidthMeters}
+          worldDepthMeters={arenaBounds.worldDepthMeters}
+        />
 
         {/* Animation updater - updates both player animations at 60fps */}
         <AnimationUpdater
@@ -2608,7 +2615,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Moved from bottom center to avoid any overlap with TechniqueBar and arena */}
         <ResponsiveContainer
           position={{
-            base: { x: width - (isMobile ? 100 : 150), y: getBackButtonTop(isMobile) }, // Top-right corner
+            base: {
+              x: width - (isMobile ? 100 : 150),
+              y: getBackButtonTop(isMobile),
+            }, // Top-right corner
           }}
           containerWidth={width}
           useSafeArea

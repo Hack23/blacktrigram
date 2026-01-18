@@ -31,11 +31,11 @@
  */
 
 import { useMemo } from "react";
-import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
-import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
-import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
+import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
+import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
+import { getCombatLayoutConstants } from "../../../../utils/responsiveLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
 
@@ -72,7 +72,7 @@ export interface CombatLayout {
 export function useCombatLayout(width: number, height: number): CombatLayout {
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
-  
+
   // Device detection has its own internal caching based on screen dimensions
   // No need for additional React memoization here
   const isMobile = shouldUseMobileControls();
@@ -84,24 +84,18 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
   // Now passes isMobile flag to ensure high-res mobile devices get mobile layouts
   const layoutConstants = useMemo<LayoutConstants>(
     () => getCombatLayoutConstants(width, isMobile),
-    [width, isMobile]
+    [width, isMobile],
   );
 
-  // Fixed player positions for 2-player combat with proper bounds
-  // Arena bounds should account for HUD at top and controls at bottom
-  // Mobile arena sizing with 4:3 aspect ratio adapts to device resolution:
-  // - Standard phones (< 768px): up to 400px width
-  // - Large phones (768-1199px): up to 500px width
-  // - 2K devices (1200-1439px): up to 600px width
-  // - 4K devices (≥1440px): up to 800px width
-  // Extra-small phones (<380px): up to 320px width with optimized clearances
-  // Optimized: Separate calculation dependencies to reduce recalculation frequency
+  // Arena bounds calculation using physics-first square arena sizing
+  // All arenas are square (6×6, 8×8, 10×10, 12×12, 14×14 meters) based on resolution
+  // Mobile controls are determined separately by device detection
   const arenaBounds = useMemo<ArenaBounds>(() => {
     const arenaY = layoutConstants.hudHeight + layoutConstants.padding;
-    
-    // Calculate world dimensions based on screen WIDTH (resolution, not device type)
-    // Square arenas (aspectRatio = 1.0) for all devices
-    const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
+
+    // Calculate world dimensions based on screen resolution (not device type)
+    // All arenas are SQUARE for consistent combat mechanics
+    const worldDimensions = calculateArenaWorldDimensions(width);
 
     // Mobile-specific arena sizing for better screen fit
     if (isMobile) {
@@ -109,37 +103,43 @@ export function useCombatLayout(width: number, height: number): CombatLayout {
       const isExtraSmall = width < 380;
       const minTopClearance = isExtraSmall ? 75 : 80;
       const minBottomClearance = isExtraSmall ? 110 : 120;
-      
+
       // Use shared mobile area calculation for consistency with training screen
       const mobileBounds = calculateMobileAreaBounds(
         width,
         height,
         minTopClearance,
         minBottomClearance,
-        arenaY
+        arenaY,
       );
-      
-      return {
-        ...mobileBounds,
-        worldWidthMeters: worldDimensions.widthMeters,
-        worldDepthMeters: worldDimensions.depthMeters,
-      };
+
+      // Mobile bounds already include world dimensions from resolution
+      return mobileBounds;
     }
 
-    // Desktop arena sizing - use full available space
+    // Desktop arena sizing - create SQUARE arena that fits available space
     const totalReservedHeight =
       layoutConstants.hudHeight +
       layoutConstants.controlsHeight +
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
-    const arenaHeight = height - totalReservedHeight - totalPadding;
+    const availableHeight = height - totalReservedHeight - totalPadding;
+    const availableWidth = width * 0.8;
+
+    // Square arena uses smaller of available dimensions
+    const arenaSize = Math.min(availableWidth, availableHeight);
+
+    // Calculate pixels-per-meter and scale
+    const pixelsPerMeter = arenaSize / worldDimensions.sizeMeters;
+    const referencePixelsPerMeter = 100;
+    const scale = pixelsPerMeter / referencePixelsPerMeter;
 
     return {
-      x: width * 0.1,
+      x: (width - arenaSize) / 2, // Center horizontally
       y: arenaY,
-      width: width * 0.8,
-      height: arenaHeight,
-      scale: 1.0, // Desktop uses full scale
+      width: arenaSize,
+      height: arenaSize, // Square arena
+      scale,
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
     };

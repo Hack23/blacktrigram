@@ -1,9 +1,9 @@
 /**
  * Mobile Layout Helpers
- * 
+ *
  * Shared utilities for calculating mobile area bounds with consistent aspect ratios
  * and device-specific sizing. Used by both combat and training layout hooks.
- * 
+ *
  * @module utils/mobileLayoutHelpers
  * @category Layout
  * @korean 모바일레이아웃도우미
@@ -13,7 +13,7 @@ import { calculateArenaWorldDimensions } from "./arenaWorldDimensions";
 
 /**
  * Mobile area bounds with world dimensions.
- * 
+ *
  * @public
  */
 export interface MobileAreaBounds {
@@ -28,27 +28,27 @@ export interface MobileAreaBounds {
 
 /**
  * Calculate mobile area bounds with 4:3 aspect ratio
- * 
+ *
  * Implements consistent mobile area sizing logic shared between combat and training screens.
  * Adapts to different device resolutions while maintaining a 4:3 aspect ratio.
  * Enhanced with extra-small device support (<380px) for low-end mobile devices.
- * 
+ *
  * @param width - Screen width in pixels
  * @param height - Screen height in pixels
  * @param topClearance - Minimum space to reserve at top (for HUD/header)
  * @param bottomClearance - Minimum space to reserve at bottom (for controls)
  * @param yOffset - Y position offset (typically header height + padding)
  * @returns Mobile area bounds with position, dimensions, scale, and world dimensions
- * 
+ *
  * @example
  * ```typescript
  * const bounds = calculateMobileAreaBounds(375, 667, 80, 120, 100);
  * // Returns: { x: ~37, y: 100, width: 300, height: 225, scale: 0.3125, worldWidthMeters: 6, worldDepthMeters: 6 }
- * 
+ *
  * const boundsSmall = calculateMobileAreaBounds(320, 568, 75, 110, 90);
  * // Returns: { x: ~25, y: 90, width: 270, height: 202, scale: 0.28125, worldWidthMeters: 6, worldDepthMeters: 6 }
  * ```
- * 
+ *
  * @public
  * @korean 모바일영역경계계산
  */
@@ -57,7 +57,7 @@ export function calculateMobileAreaBounds(
   height: number,
   topClearance: number,
   bottomClearance: number,
-  yOffset: number
+  yOffset: number,
 ): MobileAreaBounds {
   // Calculate available space for the area
   // Extra-small devices (<380px) use tighter margins for more screen real estate
@@ -85,37 +85,30 @@ export function calculateMobileAreaBounds(
     // Extra-small devices (iPhone SE, old Android, budget phones)
     maxMobileWidth = Math.min(availableWidth, 320);
   }
-  
+
   // Extra-small devices also get reduced max height for better fit
   const maxMobileHeight = Math.min(availableHeight, width < 380 ? 240 : 800);
 
-  // Maintain 4:3 aspect ratio (width:height = 4:3)
-  const aspectRatio = 4 / 3;
-  let areaWidth = maxMobileWidth;
-  let areaHeight = areaWidth / aspectRatio;
+  // Calculate world dimensions based on screen resolution (not device type)
+  // All arenas are SQUARE for consistent combat mechanics
+  const worldDimensions = calculateArenaWorldDimensions(width);
 
-  // If height exceeds available, recalculate based on height constraint
-  if (areaHeight > maxMobileHeight) {
-    areaHeight = maxMobileHeight;
-    areaWidth = areaHeight * aspectRatio;
-  }
+  // For square arenas, use same dimension for width and height
+  // Determine max square size that fits in available space
+  const maxSquareSize = Math.min(maxMobileWidth, maxMobileHeight);
+  const areaSize = Math.max(maxSquareSize, 280); // Minimum 280px for usability
 
-  // Ensure minimum size for usability
-  areaWidth = Math.min(Math.max(areaWidth, 300), availableWidth);
-  areaHeight = Math.min(Math.max(areaHeight, 225), maxMobileHeight);
-
-  // Calculate 3D scale factor (mobile area is smaller than desktop reference)
-  const desktopWidth = 960; // 80% of 1200px reference
-  const scale = areaWidth / desktopWidth;
-  
-  // Calculate world dimensions based on screen WIDTH (resolution, not device type)
-  const worldDimensions = calculateArenaWorldDimensions(width, 1.0);
+  // Calculate 3D scale factor based on reference arena
+  // Reference: 10m arena at 1000px = 100 px/m
+  const pixelsPerMeter = areaSize / worldDimensions.sizeMeters;
+  const referencePixelsPerMeter = 100;
+  const scale = pixelsPerMeter / referencePixelsPerMeter;
 
   return {
-    x: (width - areaWidth) / 2, // Centered horizontally
+    x: (width - areaSize) / 2, // Centered horizontally
     y: yOffset,
-    width: areaWidth,
-    height: areaHeight,
+    width: areaSize,
+    height: areaSize, // Square arena
     scale,
     worldWidthMeters: worldDimensions.widthMeters,
     worldDepthMeters: worldDimensions.depthMeters,
