@@ -9,12 +9,14 @@
  * A mobile device with a 4K screen gets a larger arena than a desktop with
  * 1080p resolution, because arena size should match display capability.
  *
- * **Square Arena Philosophy**:
- * All arenas are square (6×6, 8×8, 10×10 meters) for consistent combat mechanics.
+ * **4:3 Aspect Ratio Philosophy**:
+ * All arenas use 4:3 aspect ratio (width > height) for optimal screen usage.
+ * Width sizes: 6m, 8m, 10m, 12m, 14m based on resolution.
+ * Height is calculated as width × 0.75 (3/4).
  * This ensures:
- * - Equal movement range in all directions
- * - Predictable positioning and spacing
+ * - Efficient use of horizontal screen space
  * - Consistent physics across all devices
+ * - Traditional fighting game proportions
  *
  * **Korean**: 경기장세계크기 (Arena World Size)
  *
@@ -37,21 +39,21 @@ export type ScreenSizeCategory =
   | "ultra";
 
 /**
- * Standard square arena sizes in meters.
- * Arenas are always square for consistent combat mechanics.
+ * Standard arena widths in meters.
+ * Arenas use 4:3 aspect ratio (height = width × 0.75).
  *
  * @public
  */
 export const ARENA_SIZES = {
-  /** Small arena for compact screens (6m × 6m) */
+  /** Small arena for compact screens (6m × 4.5m) */
   SMALL: 6,
-  /** Medium arena for tablets and small laptops (8m × 8m) */
+  /** Medium arena for tablets and small laptops (8m × 6m) */
   MEDIUM: 8,
-  /** Large arena for standard desktops (10m × 10m) */
+  /** Large arena for standard desktops (10m × 7.5m) */
   LARGE: 10,
-  /** Extra-large arena for high-res displays (12m × 12m) */
+  /** Extra-large arena for high-res displays (12m × 9m) */
   XLARGE: 12,
-  /** Ultra arena for 4K+ displays (14m × 14m) */
+  /** Ultra arena for 4K+ displays (14m × 10.5m) */
   ULTRA: 14,
 } as const;
 
@@ -81,11 +83,11 @@ export const RESOLUTION_BREAKPOINTS = {
  * @public
  */
 export interface WorldDimensions {
-  /** Arena width in meters (always equals depth for square arenas) */
+  /** Arena width in meters */
   readonly widthMeters: number;
-  /** Arena depth in meters (always equals width for square arenas) */
+  /** Arena depth in meters (height = width × 0.75 for 4:3 ratio) */
   readonly depthMeters: number;
-  /** Arena size in meters (same as widthMeters for square arenas) */
+  /** Arena width in meters (same as widthMeters, for convenience) */
   readonly sizeMeters: number;
   /** Screen category used to determine arena size */
   readonly screenCategory: ScreenSizeCategory;
@@ -175,27 +177,27 @@ export function getArenaSizeForCategory(category: ScreenSizeCategory): number {
  * maintaining the same physical combat mechanics. Movement speed in m/s
  * remains constant, but larger arenas provide more tactical space.
  *
- * **All arenas are square** for consistent combat mechanics:
- * - < 768px: 6m × 6m (compact, fast-paced combat)
- * - 768-1199px: 8m × 8m (balanced gameplay)
- * - 1200-1919px: 10m × 10m (tactical combat)
- * - 1920-2559px: 12m × 12m (advanced positioning)
- * - ≥ 2560px: 14m × 14m (maximum tactical space)
+ * **Arenas use 4:3 aspect ratio** (width > depth):
+ * - < 768px: 6m × 4.5m (compact, fast-paced combat)
+ * - 768-1199px: 8m × 6m (balanced gameplay)
+ * - 1200-1919px: 10m × 7.5m (tactical combat)
+ * - 1920-2559px: 12m × 9m (advanced positioning)
+ * - ≥ 2560px: 14m × 10.5m (maximum tactical space)
  *
  * **Korean**: 경기장크기계산 (Calculate Arena Size)
  *
  * @param screenWidth - Screen width in pixels (resolution, not device type)
- * @returns World dimensions in meters (always square)
+ * @returns World dimensions in meters (4:3 aspect ratio)
  *
  * @example
  * ```typescript
  * // Mobile phone 640px width
  * const smallPhone = calculateArenaWorldDimensions(640);
- * // Result: { widthMeters: 6, depthMeters: 6, sizeMeters: 6, screenCategory: "small" }
+ * // Result: { widthMeters: 6, depthMeters: 4.5, sizeMeters: 6, screenCategory: "small" }
  *
  * // Desktop 1920×1080
  * const desktop = calculateArenaWorldDimensions(1920);
- * // Result: { widthMeters: 12, depthMeters: 12, sizeMeters: 12, screenCategory: "xlarge" }
+ * // Result: { widthMeters: 12, depthMeters: 9, sizeMeters: 12, screenCategory: "xlarge" }
  * ```
  *
  * @public
@@ -205,10 +207,12 @@ export function calculateArenaWorldDimensions(
 ): WorldDimensions {
   const category = getScreenSizeCategory(screenWidth);
   const sizeMeters = getArenaSizeForCategory(category);
+  // 4:3 aspect ratio: depth = width × 0.75
+  const depthMeters = sizeMeters * 0.75;
 
   return {
     widthMeters: sizeMeters,
-    depthMeters: sizeMeters,
+    depthMeters,
     sizeMeters,
     screenCategory: category,
   };

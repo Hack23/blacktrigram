@@ -90,25 +90,27 @@ export function calculateMobileAreaBounds(
   const maxMobileHeight = Math.min(availableHeight, width < 380 ? 240 : 800);
 
   // Calculate world dimensions based on screen resolution (not device type)
-  // All arenas are SQUARE for consistent combat mechanics
   const worldDimensions = calculateArenaWorldDimensions(width);
 
-  // For square arenas, use same dimension for width and height
-  // Determine max square size that fits in available space
-  const maxSquareSize = Math.min(maxMobileWidth, maxMobileHeight);
-  const areaSize = Math.max(maxSquareSize, 280); // Minimum 280px for usability
+  // Use 4:3 aspect ratio for arena (width > height)
+  // Calculate area width first, constrained by available space
+  const areaWidth = Math.max(
+    Math.min(maxMobileWidth, maxMobileHeight * (4 / 3)),
+    280,
+  );
+  const areaHeight = areaWidth * (3 / 4); // 4:3 aspect ratio
 
   // Calculate 3D scale factor based on reference arena
   // Reference: 10m arena at 1000px = 100 px/m
-  const pixelsPerMeter = areaSize / worldDimensions.sizeMeters;
+  const pixelsPerMeter = areaWidth / worldDimensions.widthMeters;
   const referencePixelsPerMeter = 100;
   const scale = pixelsPerMeter / referencePixelsPerMeter;
 
   return {
-    x: (width - areaSize) / 2, // Centered horizontally
+    x: (width - areaWidth) / 2, // Centered horizontally
     y: yOffset,
-    width: areaSize,
-    height: areaSize, // Square arena
+    width: areaWidth,
+    height: areaHeight, // 4:3 aspect ratio
     scale,
     worldWidthMeters: worldDimensions.widthMeters,
     worldDepthMeters: worldDimensions.depthMeters,

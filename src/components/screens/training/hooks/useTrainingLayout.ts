@@ -103,8 +103,8 @@ export function useTrainingLayout(
     };
   }, [isMobile, screenSize]);
 
-  // Training area bounds using physics-first square arena sizing
-  // All arenas are square (6×6, 8×8, 10×10, 12×12, 14×14 meters) based on resolution
+  // Training area bounds using physics-first 4:3 aspect ratio sizing
+  // Arena size is based on resolution (6×4.5, 8×6, 10×7.5, 12×9, 14×10.5 meters)
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
 
@@ -124,7 +124,7 @@ export function useTrainingLayout(
       );
     }
 
-    // Desktop training area sizing - create SQUARE arena that fits available space
+    // Desktop training area sizing - create 4:3 aspect ratio arena
     const totalReservedHeight =
       layoutConstants.headerHeight +
       layoutConstants.controlsHeight +
@@ -133,19 +133,27 @@ export function useTrainingLayout(
     const availableHeight = height - totalReservedHeight - totalPadding;
     const availableWidth = width * 0.8;
 
-    // Square arena uses smaller of available dimensions
-    const arenaSize = Math.min(availableWidth, availableHeight);
+    // Calculate arena dimensions with 4:3 aspect ratio (width > height)
+    // Start with available width, constrain by height if needed
+    let arenaWidth = availableWidth;
+    let arenaHeight = arenaWidth * (3 / 4); // 4:3 aspect ratio
+
+    // If height is constrained, recalculate from height
+    if (arenaHeight > availableHeight) {
+      arenaHeight = availableHeight;
+      arenaWidth = arenaHeight * (4 / 3);
+    }
 
     // Calculate pixels-per-meter and scale
-    const pixelsPerMeter = arenaSize / worldDimensions.sizeMeters;
+    const pixelsPerMeter = arenaWidth / worldDimensions.widthMeters;
     const referencePixelsPerMeter = 100;
     const scale = pixelsPerMeter / referencePixelsPerMeter;
 
     return {
-      x: (width - arenaSize) / 2, // Center horizontally
+      x: (width - arenaWidth) / 2, // Center horizontally
       y: areaY,
-      width: arenaSize,
-      height: arenaSize, // Square arena
+      width: arenaWidth,
+      height: arenaHeight, // 4:3 aspect ratio
       scale,
       worldWidthMeters: worldDimensions.widthMeters,
       worldDepthMeters: worldDimensions.depthMeters,
