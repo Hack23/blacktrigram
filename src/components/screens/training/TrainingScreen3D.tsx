@@ -253,7 +253,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Player movement with physics-based acceleration and stance modifiers
-  // Speed modifiers matching CombatScreen (2.0 m/s walking, 4.0 m/s² acceleration)
+  // Speed modifiers matching CombatScreen BASE_WALK_SPEED and BASE_ACCELERATION
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: {
@@ -274,9 +274,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
     isRunning: false,
-    // Speed modifier overrides from SpeedModifierSystem (matching CombatScreen)
-    maxSpeedOverride: 2.0, // Base walking speed 2.0 m/s
-    accelerationOverride: 4.0, // Base acceleration 4.0 m/s²
+    // Speed modifier overrides matching CombatScreen and MovementPhysics
+    maxSpeedOverride: 4.0, // BASE_WALK_SPEED = 4.0 m/s (walking pace for combat movement)
+    accelerationOverride: 8.0, // BASE_ACCELERATION = 8.0 m/s² (responsive combat acceleration)
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
