@@ -360,23 +360,8 @@ export class MovementPhysics {
     // Calculate movement delta for this frame
     this.tempMovement.copy(state.velocity).multiplyScalar(deltaTime);
 
-    // DEBUG: Log physics calculations every 60 frames
+    // DEBUG: Frame counter available for diagnostics (logging disabled)
     this._debugFrameCount++;
-    if (this._debugFrameCount % 60 === 0) {
-      console.log("[Physics] Frame", this._debugFrameCount, {
-        input: {
-          forward: input.forward,
-          lateral: input.lateral,
-          isMoving: input.isMoving,
-        },
-        deltaTime: deltaTime.toFixed(4) + "s",
-        maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
-        velocity: state.velocity.length().toFixed(2) + " m/s",
-        movement: this.tempMovement.length().toFixed(4) + " m/frame",
-        position: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)})`,
-        overrideMaxSpeed: this._overrideMaxSpeed,
-      });
-    }
 
     // Apply tactical step quantization if enabled
     if (input.useTacticalSteps) {

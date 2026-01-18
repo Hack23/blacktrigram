@@ -97,7 +97,7 @@ describe("usePlayerMovement Integration", () => {
 
       // Running should be faster
       expect(runSpeed).toBeGreaterThan(walkSpeed);
-      expect(runState.maxSpeed).toBe(7.0); // Running max speed
+      expect(runState.maxSpeed).toBe(10.0); // Running max speed (updated from 7.0 for responsive combat)
     });
 
     it("should handle stance-based speed differences", () => {
@@ -172,7 +172,10 @@ describe("usePlayerMovement Integration", () => {
 
       // Injured should be slower
       expect(injuredSpeed).toBeLessThan(healthySpeed);
-      expect(injuredState.maxSpeed).toBe(3.0); // 25% penalty
+      // With base speed 6.0 m/s and 0.5 injury factor:
+      // injuryPenalty = 1.0 - (0.5 * 0.5) = 0.75
+      // maxSpeed = 6.0 * 0.75 = 4.5 m/s
+      expect(injuredState.maxSpeed).toBe(4.5); // 25% penalty from leg injury
     });
 
     it("should handle tactical steps", () => {

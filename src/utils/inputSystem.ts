@@ -343,7 +343,7 @@ export function usePlayerMovement(
       );
 
       // DEBUG: Log movement data every ~60 frames (1s at 60fps)
-      const DEBUG_MOVEMENT = true; // Enabled for debugging
+      const DEBUG_MOVEMENT = false; // Disabled - enable for movement speed debugging
       if (DEBUG_MOVEMENT && debugFrameCount.current % 60 === 0) {
         const speedMs = state.velocity.length();
         const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
@@ -409,12 +409,13 @@ export function usePlayerMovement(
       const newVelocity = { x: state.velocity.x, y: state.velocity.z };
       const newSpeed = state.velocity.length();
 
-      // DEBUG: Log position and velocity every frame to diagnose speed issue
-      if (debugFrameCount.current <= 10 || debugFrameCount.current % 30 === 0) {
-        console.warn(
-          `[Frame ${debugFrameCount.current}] Physics: pos=(${state.position.x.toFixed(3)}, ${state.position.z.toFixed(3)}), vel=${newSpeed.toFixed(2)} m/s, dt=${clampedDeltaTimeMs.toFixed(1)}ms`,
-        );
-      }
+      // DEBUG: Frame-by-frame position/velocity logging (disabled)
+      // Enable for detailed movement speed diagnostics
+      // if (debugFrameCount.current <= 10 || debugFrameCount.current % 30 === 0) {
+      //   console.warn(
+      //     `[Frame ${debugFrameCount.current}] Physics: pos=(${state.position.x.toFixed(3)}, ${state.position.z.toFixed(3)}), vel=${newSpeed.toFixed(2)} m/s, dt=${clampedDeltaTimeMs.toFixed(1)}ms`,
+      //   );
+      // }
 
       // Use refs for comparison to avoid recreating callback on every frame
       // This prevents the animation frame from being cancelled due to useCallback recreation

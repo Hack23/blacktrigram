@@ -127,7 +127,7 @@ describe("MovementPhysics", () => {
       expect(runSpeed).toBe(10.0);
     });
 
-    it("should have 5m/s lateral speed", () => {
+    it("should have 6m/s lateral speed (matches forward speed for responsive combat)", () => {
       const input: MovementInput = {
         forward: 0,
         lateral: 1.0,
@@ -143,8 +143,9 @@ describe("MovementPhysics", () => {
       }
 
       const lateralSpeed = Math.abs(state.velocity.x);
-      expect(lateralSpeed).toBeGreaterThanOrEqual(4.5);
-      expect(lateralSpeed).toBeLessThanOrEqual(5.5);
+      // Lateral speed now matches forward speed (6.0 m/s) for consistent movement
+      expect(lateralSpeed).toBeGreaterThanOrEqual(5.5);
+      expect(lateralSpeed).toBeLessThanOrEqual(6.5);
     });
 
     it("should have same speed in forward and backward directions", () => {
