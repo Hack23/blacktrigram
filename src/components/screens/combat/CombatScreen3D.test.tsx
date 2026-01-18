@@ -197,6 +197,14 @@ vi.mock("three", () => ({
     dispose() {}
   },
   BufferGeometry: class MockBufferGeometry {
+    attributes: Record<string, any> = {};
+    setAttribute(name: string, attribute: any) {
+      this.attributes[name] = attribute;
+      return this;
+    }
+    getAttribute(name: string) {
+      return this.attributes[name];
+    }
     dispose() {}
   },
 }));
