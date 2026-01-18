@@ -2,10 +2,17 @@
  * Tests for TrainingControlsOverlayHtml component
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { TrainingControlsOverlayHtml } from "./TrainingControlsOverlayHtml";
 import { FONT_FAMILY } from "../../../../types/constants";
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("TrainingControlsOverlayHtml", () => {
   it("should render without crashing", () => {

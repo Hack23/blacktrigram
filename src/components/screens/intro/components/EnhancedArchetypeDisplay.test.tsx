@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { ArchetypeDataShape } from "./ArchetypeDisplayOverlayHtml";
 import {
@@ -47,6 +47,13 @@ const mockArchetypeData: ArchetypeDataShape[] = [
     specialAbilities: ["Shadow Strike", "Vital Point Mastery"],
   },
 ];
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("EnhancedArchetypeDisplay", () => {
   const defaultProps: EnhancedArchetypeDisplayProps = {

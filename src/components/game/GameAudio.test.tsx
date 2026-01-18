@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import React, { type ReactElement } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
 import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../systems/trigram";
 
 // Mock audio manager
@@ -20,6 +20,13 @@ const mockAudio = {
 vi.mock("../../audio/AudioManager", () => ({
   useAudio: () => mockAudio,
 }));
+
+// Cleanup after each test to prevent memory leaks
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("Game Audio Integration", () => {
   beforeEach(() => {

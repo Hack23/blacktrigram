@@ -10,9 +10,9 @@
  * - AnatomyControlsOverlayHtml.test.tsx for behavioral test examples
  */
 
-import { render } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { Suspense } from "react";
 import { VitalPointMarker3D } from "./VitalPointMarker3D";
 import type { VitalPoint } from "../../../../systems/vitalpoint/types";
@@ -63,6 +63,13 @@ const mockVitalPoint: VitalPoint = {
   targetingDifficulty: 0.7,
   effectiveStances: [TrigramStance.GEON, TrigramStance.LI],
 };
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("VitalPointMarker3D", () => {
   it("should render without crashing", () => {

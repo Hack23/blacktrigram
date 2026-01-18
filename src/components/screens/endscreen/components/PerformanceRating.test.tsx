@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { AudioProvider } from "../../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../../systems/combat";
 import { PerformanceRating } from "./PerformanceRating";
@@ -17,6 +17,13 @@ vi.mock("../../../../audio/AudioProvider", () => ({
     fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("PerformanceRating", () => {
   const createMockMatchStats = (

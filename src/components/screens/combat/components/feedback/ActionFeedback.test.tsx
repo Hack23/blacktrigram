@@ -4,8 +4,8 @@
  * Tests for the action feedback display components.
  */
 
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { ActionFeedback, TechniqueName } from "./ActionFeedback";
 import type { ActionFeedback as ActionFeedbackData } from "../../../../../hooks/useActionFeedback";
 
@@ -21,6 +21,13 @@ vi.mock("@react-three/drei", () => ({
 vi.mock("three", () => ({
   Group: class MockGroup {},
 }));
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("ActionFeedback", () => {
   const mockArenaBounds = { x: 0, y: 0, width: 1200, height: 800 };

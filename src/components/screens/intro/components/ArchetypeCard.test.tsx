@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
@@ -24,6 +24,13 @@ const mockArchetypeData: ArchetypeCardData = {
   },
   specialAbilities: ["Honor Strike", "Defensive Mastery"],
 };
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("ArchetypeCard", () => {
   it("should render archetype name in Korean and English", () => {

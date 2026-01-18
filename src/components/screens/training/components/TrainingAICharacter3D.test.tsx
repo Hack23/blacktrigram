@@ -2,8 +2,8 @@
  * Tests for TrainingAICharacter3D component
  */
 
-import { render } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { TrainingAICharacter3D } from "./TrainingAICharacter3D";
 import { TrigramStance } from "../../../../types/common";
 
@@ -11,6 +11,13 @@ import { TrigramStance } from "../../../../types/common";
 vi.mock("@react-three/fiber", () => ({
   useFrame: vi.fn(),
 }));
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("TrainingAICharacter3D", () => {
   const defaultProps = {

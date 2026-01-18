@@ -4,8 +4,8 @@
  * Tests for the floating damage number display component.
  */
 
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { DamageNumbers } from "./DamageNumbers";
 import type { DamageNumber } from "../../../../../hooks/useActionFeedback";
 
@@ -21,6 +21,13 @@ vi.mock("@react-three/drei", () => ({
 vi.mock("three", () => ({
   Group: class MockGroup {},
 }));
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("DamageNumbers", () => {
   const mockArenaBounds = { x: 0, y: 0, width: 1200, height: 800 };

@@ -1,7 +1,14 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
+import { describe, expect, it, afterEach } from "vitest";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { AbilityList } from "./AbilityList";
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("AbilityList", () => {
   it("should render list header in Korean and English", () => {

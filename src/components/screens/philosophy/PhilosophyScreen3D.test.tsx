@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, cleanup } from "@testing-library/react";
 import { PhilosophyScreen3D } from "./PhilosophyScreen3D";
 
 // Mock Three.js Canvas to avoid WebGL issues in test environment
@@ -23,6 +23,13 @@ vi.mock("../../../audio/AudioProvider", () => ({
     isInitialized: true,
   }),
 }));
+
+// Cleanup after each test to prevent memory leaks
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("PhilosophyScreen3D", () => {
   it("should render without crashing", () => {

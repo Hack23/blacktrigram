@@ -1,5 +1,5 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { AudioProvider } from "../../../../audio/AudioProvider";
 import { asMutable } from "../../../../test/test-utils";
 import { PlayerArchetype } from "../../../../types/common";
@@ -19,6 +19,13 @@ vi.mock("../../../../audio/AudioProvider", () => ({
     fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("WinnerDisplay", () => {
   it("should render without crashing", () => {

@@ -3,8 +3,8 @@
  * Tests the Three.js-based combat screen with 3D characters and effects
  */
 
-import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
 import { PlayerState } from "../../../systems";
 import { PlayerArchetype, TrigramStance } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
@@ -208,6 +208,13 @@ vi.mock("three", () => ({
     dispose() {}
   },
 }));
+
+// Cleanup after each test to prevent memory leaks
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("CombatScreen3D", () => {
   let mockPlayers: PlayerState[];

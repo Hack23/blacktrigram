@@ -6,9 +6,9 @@
  * @react-three/test-renderer which adds significant complexity.
  */
 
-import { render } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, afterEach } from "vitest";
 import { Suspense } from "react";
 import { FootPlacementMarkers3D } from "./FootPlacementMarkers3D";
 import type { FootworkDrillPattern } from "./FootPlacementMarkers3D";
@@ -23,6 +23,13 @@ function render3D(component: React.ReactElement) {
     </Canvas>
   );
 }
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
+
 
 describe("FootPlacementMarkers3D", () => {
   const defaultProps = {
