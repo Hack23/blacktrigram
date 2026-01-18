@@ -704,19 +704,20 @@ describe("useCombatActions", () => {
         const config = {
           ...mockConfig,
           playerPositions: [
-            { x: 300, y: 400 },
-            { x: 700, y: 400 },
+            { x: 3.0, y: 0 }, // Player 1 at 3m from center
+            { x: -3.0, y: 0 }, // AI at -3m from center
           ] as const,
         };
 
         const { result } = renderHook(() => useCombatActions(config));
-        const targetPos = { x: 701, y: 400 }; // Very close
+        // Target position very close to current: within 0.05m threshold (5cm)
+        const targetPos = { x: -3.02, y: 0 }; // Only 2cm away
 
         act(() => {
           result.current.moveAIPlayer(targetPos);
         });
 
-        // Should not update position when distance < 5
+        // Should not update position when distance < 0.05m (5cm threshold from physics-first architecture)
         expect(config.onPlayerUpdate).not.toHaveBeenCalled();
       });
     });

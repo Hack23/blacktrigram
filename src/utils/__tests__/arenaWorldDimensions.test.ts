@@ -6,6 +6,7 @@
 import { describe, expect, it } from "vitest";
 import {
   calculateArenaWorldDimensions,
+  calculateArenaConfiguration,
   getScreenSizeCategory,
   getPlayerHeightMeters,
 } from "../arenaWorldDimensions";
@@ -187,6 +188,144 @@ describe("arenaWorldDimensions", () => {
       // Both speeds should appear proportional to screen size
       // XLarge speed should be ~1.6x small speed (320/200 = 1.6)
       expect(xlargeSpeedPxPerSec / smallSpeedPxPerSec).toBe(1.6);
+    });
+  });
+
+  describe("Edge Cases and Additional Coverage", () => {
+    it("should handle extreme screen sizes gracefully", () => {
+      // Very small screen
+      const tiny = calculateArenaWorldDimensions(100);
+      expect(tiny.widthMeters).toBeGreaterThan(0);
+      expect(tiny.depthMeters).toBeGreaterThan(0);
+      expect(tiny.screenCategory).toBe("small");
+
+      // Very large screen
+      const huge = calculateArenaWorldDimensions(10000);
+      expect(huge.widthMeters).toBeGreaterThan(0);
+      expect(huge.depthMeters).toBeGreaterThan(0);
+      expect(huge.screenCategory).toBe("ultra");
+    });
+
+    it("should always maintain 4:3 aspect ratio (depth = width × 0.75)", () => {
+      const sizes = [320, 800, 1400, 2000, 3000];
+
+      sizes.forEach((width) => {
+        const dimensions = calculateArenaWorldDimensions(width);
+        // Depth should always be 75% of width (4:3 aspect ratio)
+        expect(dimensions.depthMeters).toBeCloseTo(
+          dimensions.widthMeters * 0.75,
+          2,
+        );
+      });
+    });
+
+    it("should return consistent dimensions for same category", () => {
+      // Multiple widths in same category should give same arena size
+      const medium1 = calculateArenaWorldDimensions(768);
+      const medium2 = calculateArenaWorldDimensions(1000);
+      const medium3 = calculateArenaWorldDimensions(1199);
+
+      expect(medium1.widthMeters).toBe(medium2.widthMeters);
+      expect(medium2.widthMeters).toBe(medium3.widthMeters);
+      expect(medium1.depthMeters).toBe(medium2.depthMeters);
+    });
+
+    it("should increase arena size as screen width increases", () => {
+      const small = calculateArenaWorldDimensions(640);
+      const medium = calculateArenaWorldDimensions(1024);
+      const large = calculateArenaWorldDimensions(1600);
+      const xlarge = calculateArenaWorldDimensions(2400);
+
+      // Arena should get larger as screen size increases
+      expect(medium.widthMeters).toBeGreaterThan(small.widthMeters);
+      expect(large.widthMeters).toBeGreaterThan(medium.widthMeters);
+      expect(xlarge.widthMeters).toBeGreaterThan(large.widthMeters);
+
+      // Depth should also increase proportionally
+      expect(medium.depthMeters).toBeGreaterThan(small.depthMeters);
+      expect(large.depthMeters).toBeGreaterThan(medium.depthMeters);
+      expect(xlarge.depthMeters).toBeGreaterThan(large.depthMeters);
+    });
+  });
+
+  describe("calculateArenaConfiguration", () => {
+    it("should calculate complete arena configuration with pixel and meter dimensions", () => {
+      const config = calculateArenaConfiguration(1920, 1080, 100, 50);
+
+      // Should have world dimensions
+      expect(config.worldWidthMeters).toBeGreaterThan(0);
+      expect(config.worldDepthMeters).toBeGreaterThan(0);
+
+      // Should have pixel dimensions
+      expect(config.width).toBeGreaterThan(0);
+      expect(config.height).toBeGreaterThan(0);
+
+      // Should have position
+      expect(config.x).toBeGreaterThanOrEqual(0);
+      expect(config.y).toBeGreaterThanOrEqual(0);
+
+      // Should calculate pixels per meter
+      expect(config.pixelsPerMeter).toBeGreaterThan(0);
+      expect(config.pixelsPerMeter).toBe(
+        config.width / config.worldWidthMeters,
+      );
+
+      // Should calculate scale
+      expect(config.scale).toBeGreaterThan(0);
+    });
+
+    it("should respect top and bottom offsets", () => {
+      const topOffset = 100;
+      const bottomOffset = 50;
+      const config = calculateArenaConfiguration(
+        1920,
+        1080,
+        topOffset,
+        bottomOffset,
+      );
+
+      // Arena should start at topOffset
+      expect(config.y).toBe(topOffset);
+
+      // Arena height should account for offsets
+      const availableHeight = 1080 - topOffset - bottomOffset;
+      expect(config.height).toBeLessThanOrEqual(availableHeight);
+    });
+
+    it("should center arena horizontally with margins", () => {
+      const screenWidth = 1920;
+      const horizontalMargin = 0.1;
+      const config = calculateArenaConfiguration(
+        screenWidth,
+        1080,
+        100,
+        50,
+        horizontalMargin,
+      );
+
+      // Arena should be centered
+      const expectedAvailableWidth = screenWidth * (1 - 2 * horizontalMargin);
+      expect(config.width).toBeLessThanOrEqual(expectedAvailableWidth);
+
+      // X position should account for centering
+      expect(config.x).toBeGreaterThan(0);
+      expect(config.x + config.width).toBeLessThanOrEqual(screenWidth);
+    });
+
+    it("should handle different screen sizes correctly", () => {
+      const small = calculateArenaConfiguration(640, 480, 50, 30);
+      const large = calculateArenaConfiguration(3840, 2160, 100, 50);
+
+      // Larger screen should have larger world dimensions
+      expect(large.worldWidthMeters).toBeGreaterThan(small.worldWidthMeters);
+
+      // Both should have valid pixel-to-meter ratios
+      expect(small.pixelsPerMeter).toBeGreaterThan(0);
+      expect(large.pixelsPerMeter).toBeGreaterThan(0);
+
+      // Arena should fit within screen bounds
+      expect(small.x + small.width).toBeLessThanOrEqual(640);
+      expect(large.x + large.width).toBeLessThanOrEqual(3840);
     });
   });
 });
