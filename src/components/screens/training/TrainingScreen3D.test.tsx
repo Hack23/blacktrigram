@@ -5,8 +5,8 @@
  * Tests are focused on critical functionality only
  */
 
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, cleanup } from "@testing-library/react";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import TrainingScreen3D from "./TrainingScreen3D";
 
 // Mock Three.js and React Three Fiber - simplified
@@ -66,6 +66,12 @@ vi.mock("./components/TrainingDummy3D", () => ({
 vi.mock("./components/TrainingAICharacter3D", () => ({
   default: () => null,
 }));
+
+// Add cleanup after each test to prevent memory leaks
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 describe("TrainingScreen3D - Core Functionality", () => {
   const defaultProps = {
