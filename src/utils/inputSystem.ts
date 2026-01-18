@@ -315,7 +315,7 @@ export function usePlayerMovement(
       );
 
       // DEBUG: Log movement data every 60 frames (once per second)
-      const DEBUG_MOVEMENT = true;
+      const DEBUG_MOVEMENT = false; // Disabled for production
       if (DEBUG_MOVEMENT && Math.random() < 0.017) {
         console.log("[Movement Debug]", {
           deltaTimeMs: clampedDeltaTimeMs.toFixed(2),
@@ -333,13 +333,22 @@ export function usePlayerMovement(
         });
       }
 
-      // Clamp position to arena bounds (in meters)
+      // Clamp position to arena bounds (in meters, centered at origin)
+      // Position range: -halfWidth to +halfWidth, -halfDepth to +halfDepth
       const worldWidth = bounds?.worldWidthMeters ?? 14;
       const worldDepth = bounds?.worldDepthMeters ?? 10.5;
+      const halfWidth = worldWidth / 2;
+      const halfDepth = worldDepth / 2;
 
-      // Clamp position to arena bounds (0 to worldWidth/worldDepth)
-      state.position.x = Math.max(0, Math.min(worldWidth, state.position.x));
-      state.position.z = Math.max(0, Math.min(worldDepth, state.position.z));
+      // Clamp position to centered arena bounds
+      state.position.x = Math.max(
+        -halfWidth,
+        Math.min(halfWidth, state.position.x),
+      );
+      state.position.z = Math.max(
+        -halfDepth,
+        Math.min(halfDepth, state.position.z),
+      );
 
       // Position in meters (x = lateral, y = forward/backward)
       const newPosition = { x: state.position.x, y: state.position.z };
