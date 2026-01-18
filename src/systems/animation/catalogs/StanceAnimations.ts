@@ -13,7 +13,10 @@
 
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
-import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import { 
+  MartialArtsAnimationBuilder,
+  TECHNIQUE_TIMING,
+} from "../builders/MartialArtsAnimationBuilder";
 import { 
   KOREAN_STANCE_BIOMECHANICS,
   calculateFootPositions,
@@ -141,7 +144,7 @@ export const GEON_FRONTAL_KICK_ANIMATION: SkeletalAnimation =
  */
 export const GEON_ROUNDHOUSE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_roundhouse", "건돌려차기")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .roundhouseChamber(0.12)
     .withHighGuard()
     .roundhouseExtend(0.15)
@@ -159,7 +162,7 @@ export const GEON_ROUNDHOUSE_ANIMATION: SkeletalAnimation =
  */
 export const GEON_AXE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_axe_kick", "건내려차기")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .axeKickRise(0.2)
     .withHighGuard()
     .axeKickChop(0.15)
@@ -247,7 +250,7 @@ export const TAE_WRIST_LOCK_ANIMATION: SkeletalAnimation =
  */
 export const TAE_SMALL_CIRCLE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tae_small_circle", "태소원")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .wristGrab(0.12)
     .jointLock(0.2)
     .recover(0.23)
@@ -279,7 +282,7 @@ export const TAE_FINGER_LOCK_ANIMATION: SkeletalAnimation =
  */
 export const TAE_ELBOW_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tae_elbow_lock", "태팔꿈치꺾기")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .armBarEntry(0.15)
     .jointLock(0.22)
     .recover(0.23)
@@ -312,7 +315,7 @@ export const TAE_SHOULDER_LOCK_ANIMATION: SkeletalAnimation =
  */
 export const TAE_ARM_BAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tae_arm_bar", "태팔꺾기")
-    .asAttack(0.7)
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
     .armBarEntry(0.18)
     .armBarDrop(0.22)
     .recover(0.3)
@@ -450,7 +453,7 @@ export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
  */
 export const JIN_JUMPING_FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_jumping_front_kick", "진뛰어앞차기")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .chamber(0.08) // Jump prep
     .extend(0.15) // Kick in air
     .retract(0.12)
@@ -484,7 +487,7 @@ export const JIN_TORNADO_KICK_ANIMATION: SkeletalAnimation =
  */
 export const JIN_FLYING_SIDEKICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_flying_sidekick", "진뛰어옆차기")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .chamber(0.1)
     .sideKickChamber(0.1)
     .sideKickExtend(0.15)
@@ -501,7 +504,7 @@ export const JIN_FLYING_SIDEKICK_ANIMATION: SkeletalAnimation =
  */
 export const JIN_BACK_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_back_kick", "진뒤차기")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .backKickSpin(0.15)
     .backKickThrust(0.15)
     .spinRecover(0.3)
@@ -538,7 +541,7 @@ export const JIN_KNEE_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const SON_WHIRLWIND_BARRAGE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_whirlwind_barrage", "손선풍연격")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchWindup(0.05)
     .punchExtend(0.08) // First jab
     .punchExtend(0.08) // Second jab
@@ -657,7 +660,7 @@ export const GAM_WATER_COUNTER_ANIMATION: SkeletalAnimation =
  */
 export const GAM_REDIRECT_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_redirect_throw", "감유도던지기")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .parry(0.12)
     .throwEntry(0.15)
     .throwExecute(0.18)
@@ -721,7 +724,7 @@ export const GAM_HIP_THROW_ANIMATION: SkeletalAnimation =
  */
 export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_wrist_twist_counter", "감손목비틀기")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .parry(0.1)
     .wristGrab(0.12)
     .wristTwist(0.15)
@@ -809,7 +812,7 @@ export const GAN_COUNTER_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const GAN_MOUNTAIN_STANCE_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_mountain_stance_lock", "간산악잠금")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .wristGrab(0.15)
     .jointLock(0.22)
     .recover(0.23)
@@ -825,7 +828,7 @@ export const GAN_MOUNTAIN_STANCE_LOCK_ANIMATION: SkeletalAnimation =
  */
 export const GAN_REVERSAL_TECHNIQUE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_reversal_technique", "간역전기")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .parry(0.12)
     .counterParry(0.1)
     .counterStrike(0.15)
@@ -846,7 +849,7 @@ export const GAN_REVERSAL_TECHNIQUE_ANIMATION: SkeletalAnimation =
  */
 export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_earth_embrace", "곤대지포옹")
-    .asAttack(0.6)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .clinchGrab(0.15)
     .withClinch()
     .jointLock(0.2)
@@ -863,7 +866,7 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
  */
 export const GON_LEG_SWEEP_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_leg_sweep", "곤걸기")
-    .asAttack(0.55)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .sweep(0.2)
     .recover(0.35)
     .build();
@@ -895,7 +898,7 @@ export const GON_SSIREUM_THROW_ANIMATION: SkeletalAnimation =
  */
 export const GON_GROUND_POUND_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_ground_pound", "곤땅내리기")
-    .asAttack(0.7)
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
     .slamLift(0.22)
     .slamDown(0.2)
     .recover(0.28)
@@ -926,7 +929,7 @@ export const GON_ANKLE_PICK_ANIMATION: SkeletalAnimation =
  */
 export const GON_BODY_LOCK_TAKEDOWN_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_body_lock_takedown", "곤바디락")
-    .asAttack(0.7)
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
     .clinchGrab(0.15)
     .slamLift(0.2)
     .slamDown(0.18)
@@ -943,7 +946,7 @@ export const GON_BODY_LOCK_TAKEDOWN_ANIMATION: SkeletalAnimation =
  */
 export const GON_SACRIFICE_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_sacrifice_throw", "곤희생던지기")
-    .asAttack(0.75)
+    .asAttack(TECHNIQUE_TIMING.MEDIUM_HEAVY.total)
     .clinchGrab(0.12)
     .throwEntry(0.18)
     .throwExecute(0.2)

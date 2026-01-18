@@ -28,31 +28,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * Note: These are documentation constants. The actual animation rotations are designed
  * to stay well within these limits naturally through authentic Hapkido biomechanics.
  */
-export const ANATOMICAL_LIMITS_TAE_STANCE = {
-  /**
-   * Maximum safe wrist flexion/extension: ±70° (±1.22 radians)
-   * 
-   * Typical wrist range is 70-90° flexion/extension. We use 70° as a safe
-   * threshold for joint lock techniques without risking constraint violations.
-   */
-  MAX_WRIST_BEND: 1.22, // ±70° in radians
-  
-  /**
-   * Maximum safe elbow flexion: 145° (2.53 radians)
-   * 
-   * Full elbow flexion is approximately 145-150°, allowing natural
-   * guard positions and joint manipulation techniques.
-   */
-  MAX_ELBOW_FLEXION: 2.53, // 145° in radians
-  
-  /**
-   * Maximum safe shoulder rotation: ±90° (±1.57 radians)
-   * 
-   * Safe shoulder rotation range for circular Hapkido movements
-   * without risking impingement or constraint violations.
-   */
-  MAX_SHOULDER_ROTATION: 1.57, // ±90° in radians
-} as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☱ TAE IDLE FLOWING ANIMATION (태괘 유동 자세)

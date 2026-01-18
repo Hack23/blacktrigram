@@ -12,16 +12,16 @@ import {
   GON_IDLE_SSIREUM_STANCE,
   GON_HEAVY_GROUNDING_STEP,
   GON_SWEEP_POSITIONING_STEP,
-  ANATOMICAL_LIMITS_GON_STANCE,
 } from "./GonStanceAnimations";
+import { ANATOMICAL_LIMITS } from "../constants";
 import { BoneName } from "@/types/skeletal";
 
 describe("Gon Stance Animations", () => {
-  describe("ANATOMICAL_LIMITS_GON_STANCE", () => {
-    it("should define safe anatomical limits", () => {
-      expect(ANATOMICAL_LIMITS_GON_STANCE.MAX_KNEE_BEND).toBe(2.27); // 130°
-      expect(ANATOMICAL_LIMITS_GON_STANCE.MAX_HIP_FLEXION).toBe(1.92); // 110°
-      expect(ANATOMICAL_LIMITS_GON_STANCE.MAX_ANKLE_DORSIFLEX).toBe(0.35); // 20°
+  describe("ANATOMICAL_LIMITS (Centralized)", () => {
+    it("should define safe anatomical limits for Gon techniques", () => {
+      expect(ANATOMICAL_LIMITS.KNEE.MAX_BEND).toBe(2.27); // 130°
+      expect(ANATOMICAL_LIMITS.HIP.MAX_FLEXION).toBe(1.92); // 110°
+      expect(ANATOMICAL_LIMITS.ANKLE.MAX_DORSIFLEX).toBe(0.35); // 20°
     });
   });
 
@@ -108,16 +108,16 @@ describe("Gon Stance Animations", () => {
         const ankleR = frame.boneRotations.get(BoneName.FOOT_R);
         
         if (kneeL) {
-          expect(Math.abs(kneeL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_KNEE_BEND);
+          expect(Math.abs(kneeL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.KNEE.MAX_BEND);
         }
         if (kneeR) {
-          expect(Math.abs(kneeR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_KNEE_BEND);
+          expect(Math.abs(kneeR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.KNEE.MAX_BEND);
         }
         if (ankleL) {
-          expect(Math.abs(ankleL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_ANKLE_DORSIFLEX);
+          expect(Math.abs(ankleL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.ANKLE.MAX_DORSIFLEX);
         }
         if (ankleR) {
-          expect(Math.abs(ankleR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_ANKLE_DORSIFLEX);
+          expect(Math.abs(ankleR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.ANKLE.MAX_DORSIFLEX);
         }
       });
     });
@@ -263,10 +263,10 @@ describe("Gon Stance Animations", () => {
         const kneeR = frame.boneRotations.get(BoneName.KNEE_R);
         
         if (kneeL) {
-          expect(Math.abs(kneeL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_KNEE_BEND);
+          expect(Math.abs(kneeL.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.KNEE.MAX_BEND);
         }
         if (kneeR) {
-          expect(Math.abs(kneeR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS_GON_STANCE.MAX_KNEE_BEND);
+          expect(Math.abs(kneeR.x)).toBeLessThanOrEqual(ANATOMICAL_LIMITS.KNEE.MAX_BEND);
         }
       });
     });
