@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">6.83% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/161</span>
+                <span class='fraction'>0/161</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">8.33% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/132</span>
+                <span class='fraction'>0/132</span>
             </div>
         
             
@@ -767,17 +767,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -787,9 +787,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -802,7 +802,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -893,7 +893,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -908,7 +908,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -982,7 +982,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1215,7 +1215,7 @@ function <span class="fstat-no" title="function not covered" >calculateHitAccura
  * useTrainingActions hook
  * Provides training action handlers with proper memoization
  */
-export function useTrainingActions(
+export function <span class="fstat-no" title="function not covered" >useTrainingActions(</span>
   config: UseTrainingActionsConfig,
 ): UseTrainingActionsReturn {
   const {
@@ -1232,17 +1232,17 @@ export function useTrainingActions(
     pendingAttackRef,
     selectedTechniqueId,
     setAttackAnimation,
-  } = config;
+  } = <span class="cstat-no" title="statement not covered" >config;</span>
 &nbsp;
   // Ref to store timeout for dummy reset
-  const dummyResetTimeoutRef = useRef&lt;NodeJS.Timeout | null&gt;(null);
+  const <span class="cstat-no" title="statement not covered" >dummyResetTimeoutRef = useRef&lt;NodeJS.Timeout | null&gt;(null);</span>
 &nbsp;
-  const handleStartTraining = useCallback(() =&gt; {
-    actions.startTraining();
-    audio.playSFX("menu_select");
+  const <span class="cstat-no" title="statement not covered" >handleStartTraining = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >    actions.startTraining();</span>
+<span class="cstat-no" title="statement not covered" >    audio.playSFX("menu_select");</span>
   }, [actions, audio]);
 &nbsp;
-  const handleStopTraining = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
+  const <span class="cstat-no" title="statement not covered" >handleStopTraining = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
     // Clear any pending dummy reset timeout
 <span class="cstat-no" title="statement not covered" >    if (dummyResetTimeoutRef.current) {</span>
 <span class="cstat-no" title="statement not covered" >      clearTimeout(dummyResetTimeoutRef.current);</span>
@@ -1252,7 +1252,7 @@ export function useTrainingActions(
 <span class="cstat-no" title="statement not covered" >    audio.playSFX("menu_back");</span>
   }, [actions, audio]);
 &nbsp;
-  const handleDummyDefeated = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
+  const <span class="cstat-no" title="statement not covered" >handleDummyDefeated = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    actions.setFeedback("훈련 더미 무력화! | Dummy Defeated!");</span>
 <span class="cstat-no" title="statement not covered" >    audio.playSFX("ki_release");</span>
 &nbsp;
@@ -1267,7 +1267,7 @@ export function useTrainingActions(
     }, 2000);
   }, [actions, audio]);
 &nbsp;
-  const handleDummyHit = useCallback(
+  const <span class="cstat-no" title="statement not covered" >handleDummyHit = useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (_</span>vitalPointId: string): boolean =&gt; {
       // Get animation context from pending attack if available
       const animationType = <span class="cstat-no" title="statement not covered" >pendingAttackRef.current?.animationType;</span>
@@ -1358,7 +1358,7 @@ export function useTrainingActions(
     ],
   );
 &nbsp;
-  const handleStanceChange = useCallback(
+  const <span class="cstat-no" title="statement not covered" >handleStanceChange = useCallback(</span>
 <span class="fstat-no" title="function not covered" >    (s</span>tanceIndex: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >      actions.setStanceIndex(stanceIndex);</span>
       const stance = <span class="cstat-no" title="statement not covered" >TRIGRAM_STANCES_ORDER[stanceIndex];</span>
@@ -1373,7 +1373,7 @@ export function useTrainingActions(
     [actions, onPlayerUpdate, audio, playerAnimation],
   );
 &nbsp;
-  const handleAttack = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
+  const <span class="cstat-no" title="statement not covered" >handleAttack = useCallback(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
     // Determine which technique to use:
     // 1. If a technique is explicitly selected from the TechniqueBar, use that
     // 2. Otherwise, use the best default technique for the archetype + stance
@@ -1447,7 +1447,7 @@ export function useTrainingActions(
     setAttackAnimation,
   ]);
 &nbsp;
-  return {
+<span class="cstat-no" title="statement not covered" >  return {</span>
     handleStartTraining,
     handleStopTraining,
     handleDummyHit,
@@ -1465,7 +1465,7 @@ export default useTrainingActions;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T18:43:50.901Z
+                at 2026-01-18T23:50:42.336Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

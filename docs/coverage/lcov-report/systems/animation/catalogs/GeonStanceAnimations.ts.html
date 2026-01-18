@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -1131,59 +1131,9 @@
 <a name='L1066'></a><a href='#L1066'>1066</a>
 <a name='L1067'></a><a href='#L1067'>1067</a>
 <a name='L1068'></a><a href='#L1068'>1068</a>
-<a name='L1069'></a><a href='#L1069'>1069</a>
-<a name='L1070'></a><a href='#L1070'>1070</a>
-<a name='L1071'></a><a href='#L1071'>1071</a>
-<a name='L1072'></a><a href='#L1072'>1072</a>
-<a name='L1073'></a><a href='#L1073'>1073</a>
-<a name='L1074'></a><a href='#L1074'>1074</a>
-<a name='L1075'></a><a href='#L1075'>1075</a>
-<a name='L1076'></a><a href='#L1076'>1076</a>
-<a name='L1077'></a><a href='#L1077'>1077</a>
-<a name='L1078'></a><a href='#L1078'>1078</a>
-<a name='L1079'></a><a href='#L1079'>1079</a>
-<a name='L1080'></a><a href='#L1080'>1080</a>
-<a name='L1081'></a><a href='#L1081'>1081</a>
-<a name='L1082'></a><a href='#L1082'>1082</a>
-<a name='L1083'></a><a href='#L1083'>1083</a>
-<a name='L1084'></a><a href='#L1084'>1084</a>
-<a name='L1085'></a><a href='#L1085'>1085</a>
-<a name='L1086'></a><a href='#L1086'>1086</a>
-<a name='L1087'></a><a href='#L1087'>1087</a>
-<a name='L1088'></a><a href='#L1088'>1088</a>
-<a name='L1089'></a><a href='#L1089'>1089</a>
-<a name='L1090'></a><a href='#L1090'>1090</a>
-<a name='L1091'></a><a href='#L1091'>1091</a>
-<a name='L1092'></a><a href='#L1092'>1092</a>
-<a name='L1093'></a><a href='#L1093'>1093</a>
-<a name='L1094'></a><a href='#L1094'>1094</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1069'></a><a href='#L1069'>1069</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2269,32 +2219,7 @@
 import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
-&nbsp;
-/**
- * Anatomical safety constants for Geon (Heaven) trigram animations
- *
- * These limits ensure joint rotations remain within safe physiological ranges
- * while maintaining powerful, dramatic animation for Geon's bone-breaking techniques.
- */
-const ANATOMICAL_LIMITS = {
-  /**
-   * Maximum safe elbow bend: ±125° (±2.18 radians)
-   * 
-   * Typical elbow flexion limit is 145-160°, making 125° a conservative
-   * threshold that prevents joint constraint violations while allowing
-   * powerful chambering positions for overhead strikes.
-   */
-  MAX_ELBOW_BEND: 2.18, // ±125° in radians
-  
-  /**
-   * Maximum safe shoulder overhead rotation: -135° (-2.35 radians)
-   * 
-   * Shoulder flexion limit is approximately 150-180°, making -135° a safe
-   * threshold for dramatic overhead positioning without risking constraint
-   * violations in the skeletal system.
-   */
-  MAX_SHOULDER_OVERHEAD: -2.35, // -135° in radians
-} as const;
+import { ANATOMICAL_LIMITS } from "../constants";
 &nbsp;
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON IDLE BREATHING ANIMATION (건괘 호흡 자세)
@@ -2642,10 +2567,10 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
     .done&lt;MartialArtsAnimationBuilder&gt;()
     // Frame 7: Near-maximum overhead chamber (350ms)
     .at(0.35)
-    .rotate(BoneName.SHOULDER_L, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
-    .rotate(BoneName.SHOULDER_R, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, -0.35, -0.7) // -135°, -20°, -40°
-    .rotate(BoneName.ELBOW_L, 0, 0, -ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // -125° strong bend within safe limit
-    .rotate(BoneName.ELBOW_R, 0, 0, ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // 125° strong bend within safe limit
+    .rotate(BoneName.SHOULDER_L, ANATOMICAL_LIMITS.SHOULDER.MAX_OVERHEAD, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
+    .rotate(BoneName.SHOULDER_R, ANATOMICAL_LIMITS.SHOULDER.MAX_OVERHEAD, -0.35, -0.7) // -135°, -20°, -40°
+    .rotate(BoneName.ELBOW_L, 0, 0, -ANATOMICAL_LIMITS.ELBOW.MAX_BEND) // -125° strong bend within safe limit
+    .rotate(BoneName.ELBOW_R, 0, 0, ANATOMICAL_LIMITS.ELBOW.MAX_BEND) // 125° strong bend within safe limit
     .rotate(BoneName.WRIST_L, -0.17, 0, 0) // -10° wrists cocked
     .rotate(BoneName.WRIST_R, -0.17, 0, 0) // -10°
     .rotate(BoneName.SPINE_UPPER, -0.26, 0, 0) // -15° back lean
@@ -3349,7 +3274,7 @@ export const GEON_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; = new
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T18:43:50.901Z
+                at 2026-01-18T23:50:42.336Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

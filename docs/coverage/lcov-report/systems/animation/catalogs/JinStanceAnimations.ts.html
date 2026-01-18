@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -337,23 +337,7 @@
 <a name='L272'></a><a href='#L272'>272</a>
 <a name='L273'></a><a href='#L273'>273</a>
 <a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a>
-<a name='L285'></a><a href='#L285'>285</a>
-<a name='L286'></a><a href='#L286'>286</a>
-<a name='L287'></a><a href='#L287'>287</a>
-<a name='L288'></a><a href='#L288'>288</a>
-<a name='L289'></a><a href='#L289'>289</a>
-<a name='L290'></a><a href='#L290'>290</a>
-<a name='L291'></a><a href='#L291'>291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L275'></a><a href='#L275'>275</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -365,22 +349,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -663,6 +631,7 @@
 import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import { ANATOMICAL_LIMITS } from "../constants";
 &nbsp;
 /**
  * Anatomical safety constants for Jin (Thunder) trigram animations
@@ -670,23 +639,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * These limits ensure joint rotations remain within safe physiological ranges
  * while maintaining explosive, dramatic animation for Jin's jumping techniques.
  */
-const ANATOMICAL_LIMITS = {
-  /**
-   * Maximum safe knee flexion: 90° (1.57 radians)
-   * 
-   * Deep horse stance requires maximum knee bend for explosive power generation.
-   * 90° (right angle) is safe and provides coiled spring tension.
-   */
-  MAX_KNEE_FLEXION: 1.57, // 90° in radians
-  
-  /**
-   * Maximum safe ankle dorsiflexion: 25° (0.44 radians)
-   * 
-   * Heel raising for explosive launch requires significant dorsiflexion
-   * while maintaining safe joint alignment.
-   */
-  MAX_ANKLE_DORSIFLEXION: 0.44, // 25° in radians
-} as const;
 &nbsp;
 // ═══════════════════════════════════════════════════════════════════════════
 // ☳ JIN IDLE COILED ANIMATION (진괘 도약 자세)
@@ -741,8 +693,8 @@ export const JIN_IDLE_COILED: SkeletalAnimation =
     .at(1.25)
     .rotate(BoneName.PELVIS, 0.14, 0, 0) // 8° more forward
     .rotate(BoneName.SPINE_UPPER, -0.12, 0, 0) // -7° more backward
-    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
-    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
+    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
+    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° MAXIMUM coil
     .rotate(BoneName.FOOT_L, 0.31, 0, 0) // 18° more on toes
     .rotate(BoneName.FOOT_R, 0.31, 0, 0) // 18° more on toes
     .rotate(BoneName.SHOULDER_L, -0.30, 0, -0.38) // -17°, 0°, -22° (tighter)
@@ -803,8 +755,8 @@ export const JIN_EXPLOSIVE_BURST: SkeletalAnimation =
     .at(0)
     .rotate(BoneName.PELVIS, 0.14, 0, 0) // 8° deep coil
     .rotate(BoneName.SPINE_UPPER, -0.12, 0, 0) // -7° loaded
-    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° maximum coil
-    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.MAX_KNEE_FLEXION * -1, 0, 0) // -90° maximum coil
+    .rotate(BoneName.KNEE_L, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° maximum coil
+    .rotate(BoneName.KNEE_R, ANATOMICAL_LIMITS.KNEE.MAX_FLEXION * -1, 0, 0) // -90° maximum coil
     .rotate(BoneName.FOOT_L, 0.31, 0, 0) // 18° on toes
     .rotate(BoneName.FOOT_R, 0.31, 0, 0) // 18° on toes
     .rotate(BoneName.SHOULDER_L, -0.30, 0, -0.38) // Fists chambered
@@ -940,7 +892,7 @@ export const JIN_ANIMATIONS: ReadonlyMap&lt;string, SkeletalAnimation&gt; =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-17T18:43:50.901Z
+                at 2026-01-18T23:50:42.336Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
