@@ -218,6 +218,9 @@ export type AnatomicalLimits = typeof ANATOMICAL_LIMITS;
 /**
  * Helper function to get anatomical limit by body part and movement type
  *
+ * Type-safe function that ensures valid body part and limit type combinations
+ * are used at compile time, catching typos before runtime.
+ *
  * @param bodyPart - Body part category (SHOULDER, ELBOW, WRIST, HIP, KNEE, ANKLE)
  * @param limitType - Specific limit type (MAX_BEND, MAX_FLEXION, etc.)
  * @returns The anatomical limit value in radians
@@ -227,17 +230,23 @@ export type AnatomicalLimits = typeof ANATOMICAL_LIMITS;
  * const maxElbowBend = getAnatomicalLimit('ELBOW', 'MAX_BEND'); // 2.18 radians
  * ```
  */
-export function getAnatomicalLimit(
-  bodyPart: keyof AnatomicalLimits,
-  limitType: string
-): number {
+export function getAnatomicalLimit<
+  B extends keyof AnatomicalLimits,
+  L extends keyof AnatomicalLimits[B] & string
+>(
+  bodyPart: B,
+  limitType: L
+): AnatomicalLimits[B][L] {
   const part = ANATOMICAL_LIMITS[bodyPart];
-  if (typeof part === "object" && limitType in part) {
-    return (part as Record<string, number>)[limitType];
+  const value = part[limitType];
+
+  if (typeof value !== "number") {
+    throw new Error(
+      `Invalid anatomical limit: ${String(bodyPart)}.${String(limitType)}`
+    );
   }
-  throw new Error(
-    `Invalid anatomical limit: ${bodyPart}.${limitType}`
-  );
+
+  return value;
 }
 
 /**
