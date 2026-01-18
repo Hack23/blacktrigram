@@ -32,6 +32,18 @@ export default defineConfig({
     css: true,
     // Korean martial arts specific test configuration
     testTimeout: 10000, // Allow longer tests for complex combat calculations
+    // Pool configuration for better memory management
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: false,
+        maxForks: 4,
+        minForks: 1,
+      },
+    },
+    // Increase heap size for memory-intensive tests
+    maxConcurrency: 5,
+    isolate: true, // Run tests in isolation to prevent memory leaks between files
 
     // Test result reporters - output to build/test-results
     reporters: [

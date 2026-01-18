@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "preview": "vite preview --host",
     "preview:analyze": "vite preview --host --mode analyze",
-    "test": "vitest run",
+    "test": "NODE_OPTIONS='--max-old-space-size=4096' vitest run",
     "test:systems": "vitest run src/systems",
     "test:systems:watch": "vitest src/systems",
     "test:systems:ui": "vitest --ui src/systems",
