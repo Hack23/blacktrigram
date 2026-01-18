@@ -70,8 +70,6 @@ export interface PlayerMovementResult {
   readonly velocity?: { x: number; y: number };
   /** Current speed magnitude in m/s */
   readonly speed?: number;
-  /** DEBUG: Frame count for diagnosing animation loop issues */
-  readonly debugFrameCount?: number;
 }
 
 /**
@@ -174,11 +172,6 @@ export function usePlayerMovement(
     left: false,
     right: false,
   });
-
-  // DEBUG: Frame counter and position tracking for diagnosing movement speed
-  const debugFrameCount = useRef(0);
-  const debugStartPos = useRef<{ x: number; y: number } | null>(null);
-  const debugStartTime = useRef<number | null>(null);
 
   // Calculate if currently moving
   const isMoving =
@@ -349,49 +342,11 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
-      // DEBUG: Track frame count for diagnostics
-      debugFrameCount.current += 1;
-
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
       );
-
-      // DEBUG: Log movement data every ~60 frames (1s at 60fps)
-      const DEBUG_MOVEMENT = false; // Set to true for movement speed debugging
-      if (DEBUG_MOVEMENT && debugFrameCount.current % 60 === 0) {
-        const speedMs = state.velocity.length();
-
-        // Calculate actual speed over last second
-        if (debugStartPos.current === null || debugStartTime.current === null) {
-          debugStartPos.current = { x: state.position.x, y: state.position.z };
-          debugStartTime.current = performance.now();
-        }
-        const elapsedSec = (performance.now() - debugStartTime.current) / 1000;
-        const totalDist = Math.sqrt(
-          Math.pow(state.position.x - debugStartPos.current.x, 2) +
-            Math.pow(state.position.z - debugStartPos.current.y, 2),
-        );
-        const actualSpeed = elapsedSec > 0 ? totalDist / elapsedSec : 0;
-
-        console.warn("[Movement Debug]", {
-          frame: debugFrameCount.current,
-          dt: clampedDeltaTimeMs.toFixed(1) + "ms",
-          velocity: speedMs.toFixed(2) + " m/s (reported)",
-          actualSpeed: actualSpeed.toFixed(2) + " m/s (measured)",
-          maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
-          pos: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)}) m`,
-          totalDist: totalDist.toFixed(2) + " m",
-          elapsedSec: elapsedSec.toFixed(2) + "s",
-        });
-
-        // Reset tracking every 5 seconds
-        if (elapsedSec > 5) {
-          debugStartPos.current = { x: state.position.x, y: state.position.z };
-          debugStartTime.current = performance.now();
-        }
-      }
 
       // Clamp position to arena bounds (in meters, centered at origin)
       // Position range: -halfWidth to +halfWidth, -halfDepth to +halfDepth
@@ -416,14 +371,6 @@ export function usePlayerMovement(
       // Velocity in m/s (x = lateral, y = forward/backward)
       const newVelocity = { x: state.velocity.x, y: state.velocity.z };
       const newSpeed = state.velocity.length();
-
-      // DEBUG: Frame-by-frame position/velocity logging (disabled)
-      // Enable for detailed movement speed diagnostics
-      // if (debugFrameCount.current <= 10 || debugFrameCount.current % 30 === 0) {
-      //   console.warn(
-      //     `[Frame ${debugFrameCount.current}] Physics: pos=(${state.position.x.toFixed(3)}, ${state.position.z.toFixed(3)}), vel=${newSpeed.toFixed(2)} m/s, dt=${clampedDeltaTimeMs.toFixed(1)}ms`,
-      //   );
-      // }
 
       // Use refs for comparison to avoid recreating callback on every frame
       // This prevents the animation frame from being cancelled due to useCallback recreation
@@ -537,7 +484,6 @@ export function usePlayerMovement(
     isKeyPressed,
     velocity,
     speed,
-    debugFrameCount: debugFrameCount.current,
   };
 }
 

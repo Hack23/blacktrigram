@@ -307,20 +307,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
-  const { playerPosition, isMoving, velocity, debugFrameCount } =
-    usePlayerMovement({
-      enabled: true, // Always allow movement in training screen
-      bounds: movementBounds, // Use memoized bounds object
-      onPositionChange: handlePositionChange, // Use memoized callback
-      initialPositionMeters,
-      // Physics parameters for realistic training movement (always enabled)
-      currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
-      legInjuryFactor: 0, // No injury in training mode
-      isRunning: false,
-      // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
-      maxSpeedOverride: speedModifiers.finalSpeed,
-      accelerationOverride: speedModifiers.finalAcceleration,
-    });
+  const { playerPosition, isMoving, velocity } = usePlayerMovement({
+    enabled: true, // Always allow movement in training screen
+    bounds: movementBounds, // Use memoized bounds object
+    onPositionChange: handlePositionChange, // Use memoized callback
+    initialPositionMeters,
+    // Physics parameters for realistic training movement (always enabled)
+    currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
+    legInjuryFactor: 0, // No injury in training mode
+    isRunning: false,
+    // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
+    maxSpeedOverride: speedModifiers.finalSpeed,
+    accelerationOverride: speedModifiers.finalAcceleration,
+  });
 
   // Physics-first: playerPosition is already in METERS (x = lateral, y = forward/backward)
   // Direct conversion to 3D world coordinates - no pixel math needed
@@ -1176,56 +1175,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 position: "relative",
               }}
             >
-              {/* DEBUG: Velocity Display - REMOVE AFTER DEBUGGING */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 50,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  background: "rgba(255, 0, 0, 0.8)",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  fontFamily: "monospace",
-                  fontSize: "14px",
-                  zIndex: 9999,
-                  pointerEvents: "none",
-                }}
-              >
-                <div>
-                  Position: ({playerPosition.x.toFixed(2)},{" "}
-                  {playerPosition.y.toFixed(2)}) m
-                </div>
-                <div>
-                  Velocity (reported):{" "}
-                  {velocity
-                    ? Math.sqrt(
-                        velocity.x * velocity.x + velocity.y * velocity.y,
-                      ).toFixed(2)
-                    : "0.00"}{" "}
-                  m/s
-                </div>
-                <div>Moving: {isMoving ? "YES" : "NO"}</div>
-                <div>
-                  Speed Override: {speedModifiers.finalSpeed.toFixed(2)} m/s
-                </div>
-                <div>
-                  Accel Override: {speedModifiers.finalAcceleration.toFixed(2)}{" "}
-                  m/s²
-                </div>
-                <div>Frames: {debugFrameCount ?? 0}</div>
-                <div
-                  style={{
-                    fontSize: "10px",
-                    marginTop: "5px",
-                    color: "#ffff00",
-                  }}
-                >
-                  Check browser console (F12) for actual speed
-                </div>
-              </div>
-
               {/* Top Left - Training Controls */}
               <ResponsiveContainer
                 position={{

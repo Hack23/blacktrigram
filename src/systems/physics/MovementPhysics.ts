@@ -213,11 +213,6 @@ export class MovementPhysics {
    */
   private _overrideAcceleration: number | null = null;
 
-  /**
-   * Debug frame counter for periodic logging.
-   */
-  private _debugFrameCount: number = 0;
-
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
   private readonly tempMovement = new THREE.Vector3();
@@ -359,9 +354,6 @@ export class MovementPhysics {
 
     // Calculate movement delta for this frame
     this.tempMovement.copy(state.velocity).multiplyScalar(deltaTime);
-
-    // DEBUG: Frame counter available for diagnostics (logging disabled)
-    this._debugFrameCount++;
 
     // Apply tactical step quantization if enabled
     if (input.useTacticalSteps) {
