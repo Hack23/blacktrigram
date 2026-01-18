@@ -535,6 +535,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         MovementType.WALKING, // Base calculation, actual type determined by input
         false, // isCrouching
       );
+
       setSpeedModifiers({
         finalSpeed: modifiers.finalSpeed,
         baseSpeed: modifiers.baseSpeed,
@@ -1151,6 +1152,46 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               transition: "opacity 0.2s ease-out",
             }}
           >
+            {/* DEBUG: Velocity Display - REMOVE AFTER DEBUGGING */}
+            <div
+              style={{
+                position: "absolute",
+                top: 50,
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "rgba(255, 0, 0, 0.8)",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                fontFamily: "monospace",
+                fontSize: "14px",
+                zIndex: 9999,
+                pointerEvents: "none",
+              }}
+            >
+              <div>
+                Position: ({playerPosition.x.toFixed(2)},{" "}
+                {playerPosition.y.toFixed(2)}) m
+              </div>
+              <div>
+                Velocity:{" "}
+                {velocity
+                  ? Math.sqrt(
+                      velocity.x * velocity.x + velocity.y * velocity.y,
+                    ).toFixed(2)
+                  : "0.00"}{" "}
+                m/s
+              </div>
+              <div>Moving: {isMoving ? "YES" : "NO"}</div>
+              <div>
+                Speed Override: {speedModifiers.finalSpeed.toFixed(2)} m/s
+              </div>
+              <div>
+                Accel Override: {speedModifiers.finalAcceleration.toFixed(2)}{" "}
+                m/s²
+              </div>
+            </div>
+
             {/* Top Left - Training Controls */}
             <ResponsiveContainer
               position={{

@@ -262,9 +262,7 @@ export function usePlayerMovement(
     // Physics-based movement (always enabled for realistic combat)
     if (physicsEngineRef.current && physicsStateRef.current) {
       // Apply speed modifiers if provided by SpeedModifierSystem
-      if (maxSpeedOverride !== undefined) {
-        physicsEngineRef.current.setMaxSpeed(maxSpeedOverride);
-      }
+
       if (accelerationOverride !== undefined) {
         physicsEngineRef.current.setAcceleration(accelerationOverride);
       }
@@ -319,7 +317,7 @@ export function usePlayerMovement(
       if (DEBUG_MOVEMENT && Math.random() < 0.033) {
         const speedMs = state.velocity.length();
         const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
-        console.log("[Movement Debug]", {
+        console.warn("[Movement Debug]", {
           dt: clampedDeltaTimeMs.toFixed(1) + "ms",
           velocity: speedMs.toFixed(2) + " m/s",
           maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
