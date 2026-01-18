@@ -101,7 +101,7 @@ describe("SpeedModifierSystem", () => {
         false,
       );
 
-      expect(modifiers.baseSpeed).toBe(4.0); // BASE_WALKING_SPEED
+      expect(modifiers.baseSpeed).toBe(6.0); // BASE_WALKING_SPEED
     });
 
     it("should calculate correct running speed", () => {
@@ -111,7 +111,7 @@ describe("SpeedModifierSystem", () => {
         false,
       );
 
-      expect(modifiers.baseSpeed).toBe(7.0); // BASE_RUNNING_SPEED
+      expect(modifiers.baseSpeed).toBe(10.0); // BASE_RUNNING_SPEED
     });
 
     it("should calculate correct backward speed (75% of walking)", () => {
@@ -121,7 +121,7 @@ describe("SpeedModifierSystem", () => {
         false,
       );
 
-      expect(modifiers.baseSpeed).toBe(3.0); // 4.0 * 0.75
+      expect(modifiers.baseSpeed).toBe(4.5); // 6.0 * 0.75
     });
 
     it("should calculate correct lateral speed", () => {
@@ -131,7 +131,7 @@ describe("SpeedModifierSystem", () => {
         false,
       );
 
-      expect(modifiers.baseSpeed).toBe(3.6); // LATERAL_SPEED
+      expect(modifiers.baseSpeed).toBe(5.0); // LATERAL_SPEED
     });
 
     it("should calculate correct crouching speed", () => {
@@ -141,7 +141,7 @@ describe("SpeedModifierSystem", () => {
         true, // isCrouching
       );
 
-      expect(modifiers.baseSpeed).toBe(2.0); // CROUCHING_SPEED
+      expect(modifiers.baseSpeed).toBe(3.0); // CROUCHING_SPEED
     });
 
     it("should override movement type when crouching", () => {
@@ -151,7 +151,7 @@ describe("SpeedModifierSystem", () => {
         true, // isCrouching overrides running
       );
 
-      expect(modifiers.baseSpeed).toBe(2.0); // CROUCHING_SPEED
+      expect(modifiers.baseSpeed).toBe(3.0); // CROUCHING_SPEED
     });
   });
 
@@ -163,7 +163,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.0);
-      expect(modifiers.finalSpeed).toBe(4.0); // 4.0 * 1.00
+      expect(modifiers.finalSpeed).toBeCloseTo(6.0, 5); // 6.0 * 1.00
     });
 
     it("should apply Tae (Lake) stance modifier (110%)", () => {
@@ -173,7 +173,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.1);
-      expect(modifiers.finalSpeed).toBe(4.4); // 4.0 * 1.10
+      expect(modifiers.finalSpeed).toBeCloseTo(6.6, 5); // 6.0 * 1.10
     });
 
     it("should apply Li (Fire) stance modifier (120%)", () => {
@@ -183,7 +183,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.2);
-      expect(modifiers.finalSpeed).toBe(4.8); // 4.0 * 1.20
+      expect(modifiers.finalSpeed).toBeCloseTo(7.2, 5); // 6.0 * 1.20
     });
 
     it("should apply Jin (Thunder) stance modifier (115%)", () => {
@@ -193,7 +193,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.15);
-      expect(modifiers.finalSpeed).toBe(4.6); // 4.0 * 1.15
+      expect(modifiers.finalSpeed).toBeCloseTo(6.9, 5); // 6.0 * 1.15
     });
 
     it("should apply Son (Wind) stance modifier (125% - fastest)", () => {
@@ -203,7 +203,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.25);
-      expect(modifiers.finalSpeed).toBe(5.0); // 4.0 * 1.25
+      expect(modifiers.finalSpeed).toBeCloseTo(7.5, 5); // 6.0 * 1.25
     });
 
     it("should apply Gam (Water) stance modifier (105%)", () => {
@@ -213,7 +213,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(1.05);
-      expect(modifiers.finalSpeed).toBe(4.2); // 4.0 * 1.05
+      expect(modifiers.finalSpeed).toBeCloseTo(6.3, 5); // 6.0 * 1.05
     });
 
     it("should apply Gan (Mountain) stance modifier (80% - defensive)", () => {
@@ -223,7 +223,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(0.8);
-      expect(modifiers.finalSpeed).toBe(3.2); // 4.0 * 0.80
+      expect(modifiers.finalSpeed).toBeCloseTo(4.8, 5); // 6.0 * 0.80
     });
 
     it("should apply Gon (Earth) stance modifier (85%)", () => {
@@ -233,7 +233,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.stanceModifier).toBe(0.85);
-      expect(modifiers.finalSpeed).toBe(3.4); // 4.0 * 0.85
+      expect(modifiers.finalSpeed).toBeCloseTo(5.1, 5); // 6.0 * 0.85
     });
   });
 
@@ -245,7 +245,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.injuryPenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(4.0);
+      expect(modifiers.finalSpeed).toBeCloseTo(6.0, 5);
     });
 
     it("should apply light penalty with light leg damage (20% damage)", () => {
@@ -357,7 +357,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.injuryPenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(4.0);
+      expect(modifiers.finalSpeed).toBe(6.0);
     });
   });
 
@@ -369,7 +369,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(8.0);
+      expect(modifiers.finalAcceleration).toBe(12.0);
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -382,7 +382,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(8.0);
+      expect(modifiers.finalAcceleration).toBe(12.0);
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -395,7 +395,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.2);
-      expect(modifiers.finalAcceleration).toBe(6.4); // 8.0 * (1 - 0.20)
+      expect(modifiers.finalAcceleration).toBeCloseTo(9.6, 5); // 12.0 * (1 - 0.20)
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -408,7 +408,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.5);
-      expect(modifiers.finalAcceleration).toBe(4.0); // 8.0 * (1 - 0.50)
+      expect(modifiers.finalAcceleration).toBe(6.0); // 12.0 * (1 - 0.50)
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -421,7 +421,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.75);
-      expect(modifiers.finalAcceleration).toBe(2.0); // 8.0 * (1 - 0.75)
+      expect(modifiers.finalAcceleration).toBe(3.0); // 12.0 * (1 - 0.75)
       expect(modifiers.canRun).toBe(false); // Cannot run below 10%
     });
 
@@ -456,7 +456,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.combatStatePenalty).toBe(0.0);
-      expect(modifiers.finalSpeed).toBe(4.0);
+      expect(modifiers.finalSpeed).toBeCloseTo(6.0, 5);
     });
 
     it("should apply 30% penalty when attacking", () => {
@@ -471,7 +471,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.combatStatePenalty).toBe(0.3);
-      expect(modifiers.finalSpeed).toBe(2.8); // 4.0 * (1 - 0.30)
+      expect(modifiers.finalSpeed).toBeCloseTo(4.2, 5); // 6.0 * (1 - 0.30)
     });
 
     it("should apply 20% penalty when defending", () => {
@@ -486,7 +486,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.combatStatePenalty).toBe(0.2);
-      expect(modifiers.finalSpeed).toBe(3.2); // 4.0 * (1 - 0.20)
+      expect(modifiers.finalSpeed).toBeCloseTo(4.8, 5); // 6.0 * (1 - 0.20)
     });
 
     it("should apply 100% penalty when stunned (cannot move)", () => {
@@ -498,7 +498,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.combatStatePenalty).toBe(1.0);
-      expect(modifiers.finalSpeed).toBe(0.0); // 4.0 * (1 - 1.0)
+      expect(modifiers.finalSpeed).toBe(0.0); // 6.0 * (1 - 1.0)
     });
 
     it("should apply 40% penalty when recovering", () => {
@@ -513,7 +513,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.combatStatePenalty).toBe(0.4);
-      expect(modifiers.finalSpeed).toBe(2.4); // 4.0 * (1 - 0.40)
+      expect(modifiers.finalSpeed).toBeCloseTo(3.6, 5); // 6.0 * (1 - 0.40)
     });
   });
 
@@ -534,10 +534,10 @@ describe("SpeedModifierSystem", () => {
         MovementType.WALKING,
       );
 
-      // Expected: 4.0 * 1.25 * (1 - injuryPenalty)
-      // With moderate injury, should be significantly reduced from 5.0
-      expect(modifiers.finalSpeed).toBeGreaterThan(2.0);
-      expect(modifiers.finalSpeed).toBeLessThan(5.0);
+      // Expected: 6.0 * 1.25 * (1 - injuryPenalty)
+      // With moderate injury, should be significantly reduced from 7.5
+      expect(modifiers.finalSpeed).toBeGreaterThan(3.0);
+      expect(modifiers.finalSpeed).toBeLessThan(7.5);
     });
 
     it("should combine all penalties in complex scenario", () => {
@@ -558,17 +558,17 @@ describe("SpeedModifierSystem", () => {
         MovementType.WALKING,
       );
 
-      // Expected speed: 4.0 * 0.80 * (1 - injury) * (1 - 0.30)
+      // Expected speed: 6.0 * 0.80 * (1 - injury) * (1 - 0.30)
       expect(modifiers.stanceModifier).toBe(0.8);
       expect(modifiers.combatStatePenalty).toBe(0.3);
       expect(modifiers.injuryPenalty).toBeGreaterThan(0.0);
 
       // Final speed should be significantly reduced
-      expect(modifiers.finalSpeed).toBeLessThan(2.4);
+      expect(modifiers.finalSpeed).toBeLessThan(3.6);
 
       // Acceleration should have stamina penalty
       expect(modifiers.staminaPenalty).toBe(0.5);
-      expect(modifiers.finalAcceleration).toBe(4.0); // 8.0 * (1 - 0.50)
+      expect(modifiers.finalAcceleration).toBe(6.0); // 12.0 * (1 - 0.50)
     });
 
     it("should result in minimal speed with all negative factors", () => {
@@ -591,7 +591,7 @@ describe("SpeedModifierSystem", () => {
 
       // Should be very slow but not zero (not stunned)
       expect(modifiers.finalSpeed).toBeGreaterThan(0.0);
-      expect(modifiers.finalSpeed).toBeLessThan(1.0);
+      expect(modifiers.finalSpeed).toBeLessThan(1.5); // Adjusted for 6.0 base
       expect(modifiers.canRun).toBe(false);
     });
 

@@ -64,7 +64,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -91,7 +91,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -114,7 +114,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -138,7 +138,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -163,7 +163,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -190,7 +190,7 @@ describe("useAICombat", () => {
             isPaused: false,
             roundStarted,
             roundEnded: false,
-            arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+            arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
             onExecuteAction: mockOnExecuteAction,
             onStanceChange: mockOnStanceChange,
           }),
@@ -219,7 +219,7 @@ describe("useAICombat", () => {
             isPaused: false,
             roundStarted,
             roundEnded: false,
-            arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+            arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
             onExecuteAction: mockOnExecuteAction,
             onStanceChange: mockOnStanceChange,
           }),
@@ -247,7 +247,7 @@ describe("useAICombat", () => {
           isPaused: true,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -274,7 +274,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -300,7 +300,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: true,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -326,7 +326,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -352,7 +352,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -386,7 +386,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -413,7 +413,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: false,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -444,7 +444,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -473,7 +473,7 @@ describe("useAICombat", () => {
             isPaused: false,
             roundStarted: true,
             roundEnded: false,
-            arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+            arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
             onExecuteAction: mockOnExecuteAction,
             onStanceChange: mockOnStanceChange,
           }),
@@ -508,7 +508,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -536,7 +536,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           // No onStanceChange provided
         })
@@ -564,7 +564,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -595,7 +595,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -631,7 +631,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -660,7 +660,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -689,7 +689,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -715,7 +715,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -743,7 +743,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -791,7 +791,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -828,7 +828,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -855,7 +855,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -885,7 +885,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -918,7 +918,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })
@@ -952,7 +952,7 @@ describe("useAICombat", () => {
           isPaused: false,
           roundStarted: true,
           roundEnded: false,
-          arenaBounds: { x: 0, y: 0, width: 1200, height: 800 },
+          arenaBounds: { x: 0, y: 0, width: 1200, height: 800, worldWidthMeters: 10, worldDepthMeters: 7.5 },
           onExecuteAction: mockOnExecuteAction,
           onStanceChange: mockOnStanceChange,
         })

@@ -125,35 +125,35 @@ export enum MovementType {
 export class SpeedModifierSystem {
   /**
    * Base walking speed (m/s)
-   * Standard walking pace for combat movement (400 pixels/second)
+   * Standard walking pace for combat movement - crosses 14m arena in ~2.3s
    *
    * **Korean**: 기본 걷기 속도 (Base Walking Speed)
    */
-  private readonly BASE_WALKING_SPEED = 4.0;
+  private readonly BASE_WALKING_SPEED = 6.0;
 
   /**
    * Base running speed (m/s)
-   * Sprint speed when running key is held (700 pixels/second)
+   * Sprint speed for rapid repositioning - crosses 14m arena in ~1.4s
    *
    * **Korean**: 기본 달리기 속도 (Base Running Speed)
    */
-  private readonly BASE_RUNNING_SPEED = 7.0;
+  private readonly BASE_RUNNING_SPEED = 10.0;
 
   /**
    * Lateral movement speed (m/s)
-   * Side-stepping left/right (360 pixels/second)
+   * Fast side-stepping for combat positioning
    *
    * **Korean**: 측면 이동 속도 (Lateral Movement Speed)
    */
-  private readonly LATERAL_SPEED = 3.6;
+  private readonly LATERAL_SPEED = 5.0;
 
   /**
    * Crouching movement speed (m/s)
-   * Defensive low movement (200 pixels/second)
+   * Defensive low movement for cautious approach
    *
    * **Korean**: 웅크림 이동 속도 (Crouching Movement Speed)
    */
-  private readonly CROUCHING_SPEED = 2.0;
+  private readonly CROUCHING_SPEED = 3.0;
 
   /**
    * Backward speed multiplier (75% of forward speed)
@@ -164,11 +164,11 @@ export class SpeedModifierSystem {
 
   /**
    * Base acceleration rate (m/s²)
-   * Responsive acceleration for combat movement
+   * Responsive acceleration for combat movement - reaches max speed in 0.5s
    *
    * **Korean**: 기본 가속도 (Base Acceleration)
    */
-  private readonly BASE_ACCELERATION = 8.0;
+  private readonly BASE_ACCELERATION = 12.0;
 
   /**
    * Combat state speed penalty multipliers

@@ -31,8 +31,9 @@
  */
 
 import { useMemo } from "react";
-import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { getScreenSize } from "../../../../systems/ResponsiveScaling";
+import { calculateArenaWorldDimensions } from "../../../../utils/arenaWorldDimensions";
+import { shouldUseMobileControls } from "../../../../utils/deviceDetection";
 import { calculateMobileAreaBounds } from "../../../../utils/mobileLayoutHelpers";
 
 import type { ScreenSize } from "../../../../systems/ResponsiveScaling";
@@ -52,6 +53,8 @@ export interface TrainingAreaBounds {
   readonly width: number;
   readonly height: number;
   readonly scale: number; // 3D scale factor for training area (1.0 = desktop, <1.0 = mobile)
+  readonly worldWidthMeters: number; // Physical training area width in meters
+  readonly worldDepthMeters: number; // Physical training area depth in meters
 }
 
 export interface TrainingLayout {
@@ -66,10 +69,13 @@ export interface TrainingLayout {
  * Enhanced with centralized responsive scaling system
  * Optimized to reduce recalculations and improve 60fps performance
  */
-export function useTrainingLayout(width: number, height: number): TrainingLayout {
+export function useTrainingLayout(
+  width: number,
+  height: number,
+): TrainingLayout {
   // Determine screen size category using centralized scaling system
   const screenSize = useMemo(() => getScreenSize(width), [width]);
-  
+
   // Device detection has its own internal caching based on screen dimensions
   // No need for additional React memoization here
   const isMobile = shouldUseMobileControls();
@@ -78,50 +84,79 @@ export function useTrainingLayout(width: number, height: number): TrainingLayout
   // Enhanced with tablet-specific values for better responsive support
   const layoutConstants = useMemo<TrainingLayoutConstants>(() => {
     // Determine if large desktop
-    const isLargeDesktop = screenSize === 'xlarge';
-    const isTablet = screenSize === 'tablet';
+    const isLargeDesktop = screenSize === "xlarge";
+    const isTablet = screenSize === "tablet";
 
     return {
       padding: isMobile ? 20 : isTablet ? 25 : isLargeDesktop ? 35 : 30,
       headerHeight: isMobile ? 80 : isTablet ? 90 : isLargeDesktop ? 110 : 100,
       buttonHeight: isMobile ? 45 : isTablet ? 50 : isLargeDesktop ? 60 : 55,
       sectionSpacing: isMobile ? 15 : isTablet ? 18 : isLargeDesktop ? 25 : 20,
-      controlsHeight: isMobile ? 120 : isTablet ? 110 : isLargeDesktop ? 150 : 130,
+      controlsHeight: isMobile
+        ? 120
+        : isTablet
+          ? 110
+          : isLargeDesktop
+            ? 150
+            : 130,
       footerHeight: isMobile ? 60 : isTablet ? 70 : isLargeDesktop ? 90 : 80,
     };
   }, [isMobile, screenSize]);
 
-  // Training area bounds should account for header at top and controls at bottom
-  // Mobile training area sizing adapts to device resolution
+  // Training area bounds using physics-first 4:3 aspect ratio sizing
+  // Arena size is based on resolution (6×4.5, 8×6, 10×7.5, 12×9, 14×10.5 meters)
   const trainingAreaBounds = useMemo<TrainingAreaBounds>(() => {
     const areaY = layoutConstants.headerHeight + layoutConstants.padding;
+
+    // Calculate world dimensions based on screen resolution (not device type)
+    const worldDimensions = calculateArenaWorldDimensions(width);
 
     // Mobile-specific training area sizing for better screen fit
     if (isMobile) {
       // Use shared mobile area calculation for consistency with combat screen
+      // Mobile bounds already include world dimensions from resolution
       return calculateMobileAreaBounds(
         width,
         height,
-        80,  // minTopClearance (header space)
+        80, // minTopClearance (header space)
         120, // minBottomClearance (controls space)
-        areaY
+        areaY,
       );
     }
 
-    // Desktop training area sizing - use full available space
+    // Desktop training area sizing - create 4:3 aspect ratio arena
     const totalReservedHeight =
       layoutConstants.headerHeight +
       layoutConstants.controlsHeight +
       layoutConstants.footerHeight;
     const totalPadding = layoutConstants.padding * 3;
-    const areaHeight = height - totalReservedHeight - totalPadding;
+    const availableHeight = height - totalReservedHeight - totalPadding;
+    const availableWidth = width * 0.8;
+
+    // Calculate arena dimensions with 4:3 aspect ratio (width > height)
+    // Start with available width, constrain by height if needed
+    let arenaWidth = availableWidth;
+    let arenaHeight = arenaWidth * (3 / 4); // 4:3 aspect ratio
+
+    // If height is constrained, recalculate from height
+    if (arenaHeight > availableHeight) {
+      arenaHeight = availableHeight;
+      arenaWidth = arenaHeight * (4 / 3);
+    }
+
+    // Calculate pixels-per-meter and scale
+    const pixelsPerMeter = arenaWidth / worldDimensions.widthMeters;
+    const referencePixelsPerMeter = 100;
+    const scale = pixelsPerMeter / referencePixelsPerMeter;
 
     return {
-      x: width * 0.1,
+      x: (width - arenaWidth) / 2, // Center horizontally
       y: areaY,
-      width: width * 0.8,
-      height: areaHeight,
-      scale: 1.0, // Desktop uses full scale
+      width: arenaWidth,
+      height: arenaHeight, // 4:3 aspect ratio
+      scale,
+      worldWidthMeters: worldDimensions.widthMeters,
+      worldDepthMeters: worldDimensions.depthMeters,
     };
   }, [width, height, layoutConstants, isMobile]);
 

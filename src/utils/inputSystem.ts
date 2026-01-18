@@ -1,89 +1,90 @@
 import { COMBAT_CONTROLS } from "@/systems/types";
 import type { Position } from "@/types/common";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TrigramStance } from "../types/common";
-import { MovementPhysics } from "../systems/physics/MovementPhysics";
-import type { MovementInput } from "../systems/physics/MovementPhysics";
 import * as THREE from "three";
-import { getValidatedArenaScale } from "./arenaScaleValidation";
-
-/**
- * Base pixel-to-meter conversion ratio for desktop scale (1.0).
- * This constant defines how many pixels represent one meter in the game world
- * at default desktop scale. The actual pixels per meter is calculated by
- * dividing this value by the arena scale factor.
- * 
- * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter)
- * 
- * @constant
- * @public
- * @example
- * // Desktop (scale = 1.0): 100 pixels per meter
- * const desktopPixelsPerMeter = BASE_PIXELS_PER_METER / 1.0; // 100
- * 
- * // Mobile (scale = 0.3125): 320 pixels per meter
- * const mobilePixelsPerMeter = BASE_PIXELS_PER_METER / 0.3125; // 320
- */
-export const BASE_PIXELS_PER_METER = 100;
+import type { MovementInput } from "../systems/physics/MovementPhysics";
+import { MovementPhysics } from "../systems/physics/MovementPhysics";
+import { TrigramStance } from "../types/common";
 
 /**
  * Configuration interface for the input system and player movement.
- * Supports both physics-based movement and legacy configurations.
- * 
+ * Uses physics-first approach: all positions and velocities are in meters.
+ *
  * **Korean**: 입력 시스템 설정 (Input System Configuration)
+ * 
+ * ## Physics-First Architecture
+ * 
+ * This interface requires worldWidthMeters and worldDepthMeters to enable
+ * the new physics-first coordinate system. Without these properties, the
+ * movement system cannot properly convert between physics (meters) and
+ * rendering (pixels).
+ * 
+ * ### Migration Guide
+ * 
+ * Existing code must be updated to pass world dimensions:
+ * 
+ * ```typescript
+ * // Before (incorrect):
+ * const config = { bounds: { x: 0, y: 0, width: 960, height: 480 } };
+ * 
+ * // After (correct):
+ * const config = { 
+ *   bounds: { 
+ *     worldWidthMeters: 10,   // From layout hook
+ *     worldDepthMeters: 10    // From layout hook
+ *   } 
+ * };
+ * ```
+ * 
+ * ### Fallback Behavior
+ * 
+ * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
+ * function and movement will be disabled. Callers MUST provide these values
+ * from their layout hooks (useCombatLayout, useTrainingLayout).
  */
 export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
-  
-  /** Arena bounds configuration with optional scale factor */
+
+  /**
+   * Arena world dimensions in meters for physics calculations.
+   * 
+   * **REQUIRED for physics-first coordinate system to work.**
+   * 
+   * These values must come from layout hooks:
+   * - CombatScreen3D: Use arenaBounds.worldWidthMeters/worldDepthMeters from useCombatLayout()
+   * - TrainingScreen3D: Use trainingAreaBounds.worldWidthMeters/worldDepthMeters from useTrainingLayout()
+   */
   readonly bounds?: {
-    /** X coordinate of arena top-left corner (pixels) */
-    readonly x: number;
-    /** Y coordinate of arena top-left corner (pixels) */
-    readonly y: number;
-    /** Arena width (pixels) */
-    readonly width: number;
-    /** Arena height (pixels) */
-    readonly height: number;
-    /**
-     * Arena scale factor for responsive sizing.
-     * - 1.0 = desktop (960px arena, 100 pixels per meter)
-     * - 0.3125 = mobile (300px arena, 320 pixels per meter)
-     * - Default: 1.0 if not provided
-     * 
-     * This scale factor is used to maintain consistent visual movement speed
-     * across different device sizes by adjusting the pixel-to-meter conversion.
-     */
-    readonly scale?: number;
+    /** Physical arena width in meters (e.g., 6m mobile, 10m desktop, 14m 4K) */
+    readonly worldWidthMeters: number;
+    /** Physical arena depth in meters (e.g., 6m mobile, 10m desktop, 14m 4K) */
+    readonly worldDepthMeters: number;
   };
-  
-  /** Callback invoked when player position changes */
+
+  /** Callback invoked when player position changes (position in meters) */
   readonly onPositionChange?: (position: Position) => void;
-  
-  /** Initial player position (pixels) */
-  readonly initialPosition?: Position;
-  
-  /** @deprecated Legacy move speed parameter (pixels/second). Use physics parameters instead. */
-  readonly moveSpeed?: number;
-  
+
+  /** Initial player position in METERS (x = lateral, y = forward/backward) */
+  readonly initialPositionMeters?: Position;
+
   // Physics-based movement parameters (always enabled)
   /** Current trigram stance affecting movement speed */
   readonly currentStance?: TrigramStance;
-  
+
   /** Leg injury factor (0-1, where 1 is fully injured) affecting movement speed */
   readonly legInjuryFactor?: number;
-  
+
   /** Whether player is running (sprint mode) */
   readonly isRunning?: boolean;
-  
+
   /** Whether to use tactical step mode (30cm grid quantization) */
   readonly useTacticalSteps?: boolean;
-  
+
   // Speed modifier overrides from SpeedModifierSystem
   /** Final calculated maximum speed in meters per second */
   readonly maxSpeedOverride?: number;
-  
+
   /** Final calculated acceleration in meters per second squared */
   readonly accelerationOverride?: number;
 }
@@ -98,51 +99,34 @@ export interface MovementState {
 }
 
 export interface PlayerMovementResult {
+  /** Player position in METERS (x = lateral, y = forward/backward in arena) */
   readonly playerPosition: Position;
   readonly movementState: MovementState;
   readonly isMoving: boolean;
   readonly isKeyPressed: (key: string) => boolean;
-  readonly velocity?: { x: number; y: number }; // For physics mode
-  readonly speed?: number; // Current speed in m/s for physics mode
+  /** Velocity in m/s (x = lateral, y = forward/backward) */
+  readonly velocity?: { x: number; y: number };
+  /** Current speed magnitude in m/s */
+  readonly speed?: number;
 }
 
 /**
- * Hook for handling player movement input - supports both config and legacy APIs
- * Now with physics-based movement as the default, always-on system for realistic acceleration/deceleration
- * 
+ * Hook for handling player movement with physics-first approach.
+ * All positions and velocities are in METERS - no pixel conversions.
+ *
  * **Korean**: 플레이어 이동 훅 (Player Movement Hook)
- * 
- * @param configOrPosition - Configuration object or legacy position
- * @param legacyBounds - Legacy bounds for backward compatibility
- * @returns Movement state and physics data
+ *
+ * @param config - Physics-first configuration with positions in meters
+ * @returns Movement state and physics data (all in meters)
  */
 export function usePlayerMovement(
-  configOrPosition: InputSystemConfig | Position,
-  legacyBounds?: { width: number; height: number }
+  config: InputSystemConfig,
 ): PlayerMovementResult {
-  // Handle legacy API (position, bounds) for CombatScreen compatibility
-  const config: InputSystemConfig =
-    typeof configOrPosition === "object" && "x" in configOrPosition
-      ? {
-          enabled: true,
-          bounds: legacyBounds
-            ? {
-                x: 0,
-                y: 0,
-                width: legacyBounds.width,
-                height: legacyBounds.height,
-              }
-            : undefined,
-          initialPosition: configOrPosition,
-          moveSpeed: 200,
-        }
-      : configOrPosition;
-
   const {
     enabled = true,
     bounds,
     onPositionChange,
-    initialPosition = { x: 0, y: 0 },
+    initialPositionMeters = { x: 0, y: 0 },
     currentStance = TrigramStance.GEON,
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
@@ -151,17 +135,26 @@ export function usePlayerMovement(
     accelerationOverride,
   } = config;
 
-  const [playerPosition, setPlayerPosition] =
-    useState<Position>(initialPosition);
+  // Position in METERS (x = lateral position, y = forward/backward position)
+  const [playerPosition, setPlayerPosition] = useState<Position>(
+    initialPositionMeters,
+  );
   const [keyState, setKeyState] = useState({
     up: false,
     down: false,
     left: false,
     right: false,
   });
-  // Physics state for render (velocity and speed)
-  const [velocity, setVelocity] = useState<{ x: number; y: number } | undefined>(undefined);
+  // Physics state for render (velocity and speed in m/s)
+  const [velocity, setVelocity] = useState<
+    { x: number; y: number } | undefined
+  >(undefined);
   const [speed, setSpeed] = useState<number | undefined>(undefined);
+
+  // Auto-run detection: track how long movement keys have been held
+  // After sustained movement, automatically transition from walking to running
+  const movementStartTimeRef = useRef<number | null>(null);
+  const AUTO_RUN_THRESHOLD_MS = 300; // Transition to run after 300ms of sustained movement
 
   // Physics-based movement state (always initialized for realistic combat)
   const physicsEngineRef = useRef<MovementPhysics | null>(null);
@@ -175,25 +168,20 @@ export function usePlayerMovement(
   } | null>(null);
 
   // Initialize physics engine once on mount (always enabled)
-  // Note: stance and legInjuryFactor are updated dynamically in updatePosition callback
-  // Note: initialPosition only used for initial state; position updates happen in updatePosition
+  // All positions are in METERS - no pixel conversion needed
   useEffect(() => {
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
-      // Convert 2D position to 3D (y becomes z for 3D)
-      // Use scale-aware conversion to match update loop and prevent position jumps
-      // Desktop (scale=1.0): 100 px/m, Mobile (scale=0.3125): 320 px/m
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
+      // Initial position in meters (x = lateral, z = forward/backward)
       physicsStateRef.current = {
         position: new THREE.Vector3(
-          initialPosition.x / pixelsPerMeter,
+          initialPositionMeters.x,
           0,
-          initialPosition.y / pixelsPerMeter
+          initialPositionMeters.y,
         ),
         velocity: new THREE.Vector3(0, 0, 0),
         acceleration: 0,
-        maxSpeed: 2.0,
+        maxSpeed: 6.0, // Default to BASE_WALK_SPEED (6.0 m/s for responsive combat)
         currentStance,
         legInjuryFactor: legInjuryFactor ?? 0,
       };
@@ -206,6 +194,22 @@ export function usePlayerMovement(
   const [initialTime] = useState(() => performance.now());
   const lastUpdateTime = useRef(initialTime);
   const animationFrameId = useRef<number | null>(null);
+
+  // Refs to track last reported position/velocity to avoid useCallback dependency issues
+  // This prevents the animation frame from being cancelled every frame due to callback recreation
+  const lastReportedPositionRef = useRef<Position>(initialPositionMeters);
+  const lastReportedVelocityRef = useRef<{ x: number; y: number } | undefined>(
+    undefined,
+  );
+  const lastReportedSpeedRef = useRef<number | undefined>(undefined);
+
+  // Ref to track keyState for physics loop - avoids recreating callback on key changes
+  const keyStateRef = useRef({
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+  });
 
   // Calculate if currently moving
   const isMoving =
@@ -232,30 +236,35 @@ export function usePlayerMovement(
       pressedKeys.current.add(key);
 
       // ✅ FIXED: Add all movement keys including WASD and arrows
+      // Update both ref (for physics loop) and state (for React re-render)
       switch (key) {
         case "w":
         case "arrowup":
+          keyStateRef.current.up = true;
           setKeyState((prev) => ({ ...prev, up: true }));
           event.preventDefault();
           break;
         case "s":
         case "arrowdown":
+          keyStateRef.current.down = true;
           setKeyState((prev) => ({ ...prev, down: true }));
           event.preventDefault();
           break;
         case "a":
         case "arrowleft":
+          keyStateRef.current.left = true;
           setKeyState((prev) => ({ ...prev, left: true }));
           event.preventDefault();
           break;
         case "d":
         case "arrowright":
+          keyStateRef.current.right = true;
           setKeyState((prev) => ({ ...prev, right: true }));
           event.preventDefault();
           break;
       }
     },
-    [enabled]
+    [enabled],
   );
 
   const handleKeyUp = useCallback(
@@ -266,26 +275,31 @@ export function usePlayerMovement(
       pressedKeys.current.delete(key);
 
       // ✅ FIXED: Handle key release for all movement keys
+      // Update both ref (for physics loop) and state (for React re-render)
       switch (key) {
         case "w":
         case "arrowup":
+          keyStateRef.current.up = false;
           setKeyState((prev) => ({ ...prev, up: false }));
           break;
         case "s":
         case "arrowdown":
+          keyStateRef.current.down = false;
           setKeyState((prev) => ({ ...prev, down: false }));
           break;
         case "a":
         case "arrowleft":
+          keyStateRef.current.left = false;
           setKeyState((prev) => ({ ...prev, left: false }));
           break;
         case "d":
         case "arrowright":
+          keyStateRef.current.right = false;
           setKeyState((prev) => ({ ...prev, right: false }));
           break;
       }
     },
-    [enabled]
+    [enabled],
   );
 
   // ✅ FIXED: Proper movement calculation with correct bounds
@@ -293,7 +307,11 @@ export function usePlayerMovement(
   const updatePositionRef = useRef<(() => void) | null>(null);
 
   const updatePosition = useCallback(() => {
-    if (!enabled || !isMoving) {
+    // Check if any movement keys are pressed using ref (not stale state)
+    const keys = keyStateRef.current;
+    const isCurrentlyMoving = keys.up || keys.down || keys.left || keys.right;
+
+    if (!enabled || !isCurrentlyMoving) {
       animationFrameId.current = null;
       return;
     }
@@ -304,7 +322,7 @@ export function usePlayerMovement(
 
     if (deltaTime <= 0) {
       animationFrameId.current = requestAnimationFrame(() =>
-        updatePositionRef.current?.()
+        updatePositionRef.current?.(),
       );
       return;
     }
@@ -312,24 +330,45 @@ export function usePlayerMovement(
     // Physics-based movement (always enabled for realistic combat)
     if (physicsEngineRef.current && physicsStateRef.current) {
       // Apply speed modifiers if provided by SpeedModifierSystem
+      // BUG FIX: Now properly passing maxSpeedOverride to physics engine
       if (maxSpeedOverride !== undefined) {
         physicsEngineRef.current.setMaxSpeed(maxSpeedOverride);
       }
+
       if (accelerationOverride !== undefined) {
         physicsEngineRef.current.setAcceleration(accelerationOverride);
       }
-      
-      // Convert key state to physics input
-      // ✅ FIXED: Inverted forward direction so ArrowUp/W moves UP on screen (negative Z/Y)
-      // and ArrowDown/S moves DOWN on screen (positive Z/Y)
-      const forward = keyState.up ? -1 : keyState.down ? 1 : 0;
-      const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
-      
+
+      // Convert key state to physics input (using ref to avoid callback recreation)
+      // Screen coordinates: UP/W = toward top of screen, DOWN/S = toward bottom
+      // Physics Z-axis: negative Z = toward top, positive Z = toward bottom
+      const keys = keyStateRef.current;
+      const forward = keys.up ? -1 : keys.down ? 1 : 0;
+      const lateral = keys.right ? 1 : keys.left ? -1 : 0;
+      const isCurrentlyMoving = forward !== 0 || lateral !== 0;
+
+      // Auto-run detection: transition to running after sustained movement
+      const now = performance.now();
+      if (isCurrentlyMoving) {
+        if (movementStartTimeRef.current === null) {
+          movementStartTimeRef.current = now;
+        }
+      } else {
+        movementStartTimeRef.current = null;
+      }
+
+      // Determine if player should be running (auto-run after threshold)
+      const movementDuration = movementStartTimeRef.current
+        ? now - movementStartTimeRef.current
+        : 0;
+      const shouldRun =
+        isRunningProp || movementDuration > AUTO_RUN_THRESHOLD_MS;
+
       const physicsInput: MovementInput = {
         forward,
         lateral,
-        isRunning: isRunningProp,
-        isMoving: forward !== 0 || lateral !== 0,
+        isRunning: shouldRun,
+        isMoving: isCurrentlyMoving,
         useTacticalSteps,
       };
 
@@ -337,74 +376,98 @@ export function usePlayerMovement(
       const state = physicsStateRef.current;
       state.currentStance = currentStance;
       state.legInjuryFactor = legInjuryFactor;
-      
+
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
-      physicsEngineRef.current.updateMovement(state, physicsInput, clampedDeltaTimeMs / 1000);
 
-      // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      // Scale pixels-per-meter by arena scale for consistent visual speed across devices
-      // Desktop (scale=1.0): 100 pixels/meter, Mobile (scale=0.3125): 320 pixels/meter
-      const arenaScale = getValidatedArenaScale(bounds?.scale, "inputSystem");
-      const pixelsPerMeter = BASE_PIXELS_PER_METER / arenaScale;
-      let newX = state.position.x * pixelsPerMeter;
-      let newY = state.position.z * pixelsPerMeter;
+      physicsEngineRef.current.updateMovement(
+        state,
+        physicsInput,
+        clampedDeltaTimeMs / 1000,
+      );
 
-      // Apply bounds (use full arena bounds without hardcoded offsets)
-      if (bounds) {
-        newX = Math.max(bounds.x, Math.min(bounds.x + bounds.width, newX));
-        newY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, newY));
-        // Update 3D position to match clamped 2D position
-        state.position.x = newX / pixelsPerMeter;
-        state.position.z = newY / pixelsPerMeter;
-      }
+      // Clamp position to arena bounds (in meters, centered at origin)
+      // Position range: -halfWidth to +halfWidth, -halfDepth to +halfDepth
+      const worldWidth = bounds?.worldWidthMeters ?? 14;
+      const worldDepth = bounds?.worldDepthMeters ?? 10.5;
+      const halfWidth = worldWidth / 2;
+      const halfDepth = worldDepth / 2;
 
-      const newPosition = { x: newX, y: newY };
+      // Clamp position to centered arena bounds
+      state.position.x = Math.max(
+        -halfWidth,
+        Math.min(halfWidth, state.position.x),
+      );
+      state.position.z = Math.max(
+        -halfDepth,
+        Math.min(halfDepth, state.position.z),
+      );
 
-      // Update velocity and speed state for render
+      // Position in meters (x = lateral, y = forward/backward)
+      const newPosition = { x: state.position.x, y: state.position.z };
+
+      // Velocity in m/s (x = lateral, y = forward/backward)
       const newVelocity = { x: state.velocity.x, y: state.velocity.z };
       const newSpeed = state.velocity.length();
-      
-      if (newPosition.x !== playerPosition.x || newPosition.y !== playerPosition.y) {
+
+      // Use refs for comparison to avoid recreating callback on every frame
+      // This prevents the animation frame from being cancelled due to useCallback recreation
+      const lastPos = lastReportedPositionRef.current;
+      if (newPosition.x !== lastPos.x || newPosition.y !== lastPos.y) {
+        lastReportedPositionRef.current = newPosition;
         setPlayerPosition(newPosition);
         onPositionChange?.(newPosition);
       }
-      
+
       // Update velocity and speed if changed (with epsilon tolerance for floating-point stability)
       const EPSILON = 0.001;
-      const velocityChanged = !velocity || 
-        Math.abs(velocity.x - newVelocity.x) > EPSILON || 
-        Math.abs(velocity.y - newVelocity.y) > EPSILON;
+      const lastVel = lastReportedVelocityRef.current;
+      const velocityChanged =
+        !lastVel ||
+        Math.abs(lastVel.x - newVelocity.x) > EPSILON ||
+        Math.abs(lastVel.y - newVelocity.y) > EPSILON;
       if (velocityChanged) {
+        lastReportedVelocityRef.current = newVelocity;
         setVelocity(newVelocity);
       }
       // Initialize speed when undefined, then update only on significant changes
-      if (speed === undefined || Math.abs(speed - newSpeed) > EPSILON) {
+      const lastSpd = lastReportedSpeedRef.current;
+      if (lastSpd === undefined || Math.abs(lastSpd - newSpeed) > EPSILON) {
+        lastReportedSpeedRef.current = newSpeed;
         setSpeed(newSpeed);
       }
     }
 
-    // Continue animation if still moving
-    if (isMoving) {
+    // Continue animation if still moving (check ref, not stale closure)
+    const stillMoving =
+      keyStateRef.current.up ||
+      keyStateRef.current.down ||
+      keyStateRef.current.left ||
+      keyStateRef.current.right;
+    if (stillMoving) {
       animationFrameId.current = requestAnimationFrame(() =>
-        updatePositionRef.current?.()
+        updatePositionRef.current?.(),
       );
     } else {
       animationFrameId.current = null;
     }
+    // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
+    // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
+    // for comparison to prevent animation frame cancellation on every state update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
-    playerPosition,
-    keyState,
+    // playerPosition - excluded, using ref
+    // keyState - excluded, using keyStateRef
+    // isMoving - excluded, using keyStateRef for movement check
     bounds,
     onPositionChange,
-    isMoving,
     currentStance,
     legInjuryFactor,
     isRunningProp,
     useTacticalSteps,
-    velocity,
-    speed,
+    // velocity - excluded, using ref
+    // speed - excluded, using ref
     maxSpeedOverride,
     accelerationOverride,
   ]);
@@ -434,7 +497,10 @@ export function usePlayerMovement(
   useEffect(() => {
     if (isMoving && !animationFrameId.current) {
       lastUpdateTime.current = performance.now();
-      animationFrameId.current = requestAnimationFrame(updatePosition);
+      // Use ref to avoid dependency on updatePosition callback
+      animationFrameId.current = requestAnimationFrame(() => {
+        updatePositionRef.current?.();
+      });
     } else if (!isMoving && animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
       animationFrameId.current = null;
@@ -446,7 +512,8 @@ export function usePlayerMovement(
         animationFrameId.current = null;
       }
     };
-  }, [isMoving, updatePosition]);
+    // Only depend on isMoving - updatePositionRef is stable
+  }, [isMoving]);
 
   return {
     playerPosition,

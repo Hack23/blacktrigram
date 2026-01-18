@@ -107,10 +107,10 @@ import { CombatTimer } from "./components/hud/CombatTimer";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
+import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
 import { GuardIndicator } from "./components/indicators/GuardIndicator";
@@ -380,11 +380,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showRoundStart, setShowRoundStart] = useState(false);
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
-  // Player 1 position (controlled by player movement)
-  // Player 1 starts closer to center - adjusted for arena scale
+  // Player 1 position in METERS (relative to arena center)
+  // Player 1 starts at 35% from left = -0.15 * worldWidth from center
   const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.35,
-    y: arenaBounds.y + arenaBounds.height * 0.5,
+    x: arenaBounds.worldWidthMeters * -0.15, // 35% from left = -15% from center
+    y: 0, // Centered
   });
 
   // Pause menu state - local state for pause menu visibility
@@ -570,16 +570,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleRoundTransitionComplete,
   );
 
-  // Player 2 position - derived from players prop (AI-controlled)
-  // Default position is used when players prop is empty or player2 has no position
-  // Player 2 (AI) starts at right side of arena - adjusted for arena scale
+  // Player 2 position in METERS (relative to arena center) - AI-controlled
+  // Player 2 starts at 65% from left = +0.15 * worldWidth from center
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
     }
     return {
-      x: arenaBounds.x + arenaBounds.width * 0.65,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * 0.15, // 65% from left = +15% from center
+      y: 0, // Centered
     };
   }, [players, arenaBounds]);
 
@@ -588,29 +587,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return [player1Position, player2Position];
   }, [player1Position, player2Position]);
 
-  // Convert 2D positions to 3D world coordinates
-  // Scale 3D coordinates based on arena scale for consistent positioning
+  // Physics-first: positions are already in METERS
+  // Direct conversion to 3D world coordinates - no pixel math needed
   const player1Position3D: [number, number, number] = useMemo(() => {
-    const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates, scaled for arena size
-    const worldWidth = 16 * arenaBounds.scale;
-    const worldDepth = 8 * arenaBounds.scale;
-    const x = relX * worldWidth - worldWidth / 2;
-    const z = relZ * worldDepth - worldDepth / 2;
-    return [x, 0, z];
-  }, [playerPositions, arenaBounds]);
+    // playerPosition.x is lateral position in meters (- = left, + = right)
+    // playerPosition.y is forward/backward position in meters (- = toward camera, + = away)
+    return [playerPositions[0].x, 0, playerPositions[0].y];
+  }, [playerPositions]);
 
   const player2Position3D: [number, number, number] = useMemo(() => {
-    const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
-    // Map 0-1 to world coordinates, scaled for arena size
-    const worldWidth = 16 * arenaBounds.scale;
-    const worldDepth = 8 * arenaBounds.scale;
-    const x = relX * worldWidth - worldWidth / 2;
-    const z = relZ * worldDepth - worldDepth / 2;
-    return [x, 0, z];
-  }, [playerPositions, arenaBounds]);
+    return [playerPositions[1].x, 0, playerPositions[1].y];
+  }, [playerPositions]);
 
   // Calculate dynamic rotations so players always face each other
   // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
@@ -634,15 +621,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
 
   // Track speed modifiers for HUD display
+  // Initial values match SpeedModifierSystem.BASE_WALKING_SPEED and BASE_ACCELERATION
   const [player1SpeedModifiers, setPlayer1SpeedModifiers] = useState({
-    finalSpeed: 4.0,
-    baseSpeed: 4.0,
-    finalAcceleration: 8.0,
+    finalSpeed: 6.0, // BASE_WALK_SPEED (6.0 m/s)
+    baseSpeed: 6.0,
+    finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s²)
   });
   const [player2SpeedModifiers, setPlayer2SpeedModifiers] = useState({
-    finalSpeed: 4.0,
-    baseSpeed: 4.0,
-    finalAcceleration: 8.0,
+    finalSpeed: 6.0, // BASE_WALK_SPEED (6.0 m/s)
+    baseSpeed: 6.0,
+    finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s²)
   });
 
   // Calculate speed modifiers for both players when state changes
@@ -723,7 +711,28 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
+  // Without this, a new function is created every render, causing animation frame cancellation
+  const handlePlayer1PositionChange = useCallback(
+    (newPosition: Position) => {
+      setPlayer1Position(newPosition);
+      onPlayerUpdate(0, { position: newPosition });
+    },
+    [onPlayerUpdate],
+  );
+
+  // CRITICAL FIX: Memoize bounds object to prevent usePlayerMovement callback recreation
+  // Without this, a new object reference is created every render, causing animation frame cancellation
+  const movementBounds = useMemo(
+    () => ({
+      worldWidthMeters: arenaBounds.worldWidthMeters,
+      worldDepthMeters: arenaBounds.worldDepthMeters,
+    }),
+    [arenaBounds.worldWidthMeters, arenaBounds.worldDepthMeters],
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
+  // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
     usePlayerMovement({
       enabled:
@@ -732,19 +741,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         !combatState.roundEnded &&
         matchCountdownComplete &&
         !showRoundStart,
-      bounds: {
-        x: arenaBounds.x,
-        y: arenaBounds.y,
-        width: arenaBounds.width,
-        height: arenaBounds.height,
-        scale: arenaBounds.scale, // Pass arena scale for proper pixel conversion
-      },
-      onPositionChange: (newPosition: Position) => {
-        setPlayer1Position(newPosition);
-        onPlayerUpdate(0, { position: newPosition });
-      },
-      initialPosition: player1Position,
-      moveSpeed: 300,
+      bounds: movementBounds, // Use memoized bounds object
+      onPositionChange: handlePlayer1PositionChange, // Use memoized callback
+      initialPositionMeters: player1Position,
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,
@@ -2165,8 +2164,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
-        {/* Combat Arena 3D Environment */}
-        <CombatArena3D lighting="cyberpunk" scale={arenaBounds.scale} />
+        {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
+        <CombatArena3D
+          lighting="cyberpunk"
+          scale={arenaBounds.scale}
+          worldWidthMeters={arenaBounds.worldWidthMeters}
+          worldDepthMeters={arenaBounds.worldDepthMeters}
+        />
 
         {/* Animation updater - updates both player animations at 60fps */}
         <AnimationUpdater
@@ -2608,7 +2612,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Moved from bottom center to avoid any overlap with TechniqueBar and arena */}
         <ResponsiveContainer
           position={{
-            base: { x: width - (isMobile ? 100 : 150), y: getBackButtonTop(isMobile) }, // Top-right corner
+            base: {
+              x: width - (isMobile ? 100 : 150),
+              y: getBackButtonTop(isMobile),
+            }, // Top-right corner
           }}
           containerWidth={width}
           useSafeArea

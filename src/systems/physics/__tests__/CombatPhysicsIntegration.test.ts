@@ -85,13 +85,14 @@ describe("CombatPhysicsIntegration", () => {
       );
 
       // Verify injury penalty exists and reduces final speed
+      // Base walking speed is 6.0 m/s (updated from 4.0 for responsive combat)
       expect(modifiers.injuryPenalty).toBeGreaterThan(0);
-      expect(modifiers.finalSpeed).toBeLessThan(4.0); // Should be 3.2 (4.0 * 0.8 limping)
+      expect(modifiers.finalSpeed).toBeLessThan(6.0); // Should be 4.8 (6.0 * 0.8 limping)
 
       // The integration test validates that the speed modifier system
       // correctly calculates reduced speed. In actual gameplay, the
       // MovementPhysics would be updated with this maxSpeed.
-      expect(modifiers.finalSpeed).toBeCloseTo(3.2, 1); // LIMPING = 0.8 multiplier
+      expect(modifiers.finalSpeed).toBeCloseTo(4.8, 1); // LIMPING = 0.8 multiplier
     });
 
     it("should prevent running when stamina is depleted", () => {
@@ -110,9 +111,9 @@ describe("CombatPhysicsIntegration", () => {
       // Should not be able to run
       expect(modifiers.canRun).toBe(false);
 
-      // Base speed for RUNNING is still 7.0m/s, but canRun flag should prevent it
+      // Base speed for RUNNING is 10.0m/s (updated for responsive combat)
       // The speed modifier system returns the running speed but sets canRun=false
-      expect(modifiers.baseSpeed).toBe(7.0); // BASE_RUNNING_SPEED
+      expect(modifiers.baseSpeed).toBe(10.0); // BASE_RUNNING_SPEED (updated from 7.0)
     });
 
     it("should combine stance modifier with injury and combat state", () => {

@@ -1,9 +1,9 @@
 /**
  * AI Combat System Type Definitions
- * 
+ *
  * Core types for AI decision-making and combat behavior.
  * Separated to avoid circular dependencies between modules.
- * 
+ *
  * @module systems/ai/types
  * @category AI Combat
  * @korean AI 전투 시스템 타입 정의
@@ -14,7 +14,7 @@ import { BalanceState } from "@/types/player-visual";
 
 /**
  * AI action types
- * 
+ *
  * @korean AI 행동 유형
  */
 export enum AIActionType {
@@ -33,7 +33,7 @@ export enum AIActionType {
 
 /**
  * AI decision result
- * 
+ *
  * @korean AI 결정 결과
  */
 export interface AIDecision {
@@ -47,7 +47,7 @@ export interface AIDecision {
 
 /**
  * Vulnerability assessment context for exploitation tactics
- * 
+ *
  * Comprehensive analysis of opponent's defenseless states:
  * - **isHelpless**: Balance === HELPLESS (90% takedown priority)
  * - **isVulnerable**: Balance === VULNERABLE or HELPLESS (70% aggressive attack priority)
@@ -55,7 +55,7 @@ export interface AIDecision {
  * - **hasLowStamina**: Stamina < 20% (60% exploitation priority)
  * - **hasNoKi**: Ki < 10% (50% technique spam priority)
  * - **overallVulnerability**: Composite vulnerability score (0.0-1.0)
- * 
+ *
  * @korean 취약성 평가 컨텍스트
  */
 export interface VulnerabilityContext {
@@ -69,7 +69,7 @@ export interface VulnerabilityContext {
 
 /**
  * Combat context for decision making
- * 
+ *
  * @korean 전투 컨텍스트
  */
 export interface CombatContext {
@@ -102,5 +102,7 @@ export interface CombatContext {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly worldWidthMeters: number; // Arena width in meters for physics calculations
+    readonly worldDepthMeters: number; // Arena depth in meters for physics calculations
   };
 }

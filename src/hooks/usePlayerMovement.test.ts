@@ -29,21 +29,21 @@ describe("usePlayerMovement Integration", () => {
 
   describe("Hook Integration with Physics Engine", () => {
     it("should integrate stance changes with physics", () => {
-      // Start with Geon stance
+      // Start with Geon stance (6.0 m/s base walking speed)
       const geonSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
-      expect(geonSpeed).toBe(4.0);
+      expect(geonSpeed).toBe(6.0);
 
-      // Change to Wind stance
+      // Change to Wind stance (125% of 6.0 = 7.5 m/s)
       const windSpeed = physics.getMaxSpeed(false, TrigramStance.SON, 0);
-      expect(windSpeed).toBe(5.0); // 125% speed
+      expect(windSpeed).toBe(7.5);
     });
 
     it("should integrate injury with physics", () => {
       const healthySpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
       const injuredSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0.5);
 
-      expect(healthySpeed).toBe(4.0);
-      expect(injuredSpeed).toBe(3.0); // 25% penalty
+      expect(healthySpeed).toBe(6.0);
+      expect(injuredSpeed).toBe(4.5); // 25% penalty (6 * 0.75 = 4.5)
     });
 
     it("should handle forward movement", () => {
@@ -97,7 +97,7 @@ describe("usePlayerMovement Integration", () => {
 
       // Running should be faster
       expect(runSpeed).toBeGreaterThan(walkSpeed);
-      expect(runState.maxSpeed).toBe(7.0); // Running max speed
+      expect(runState.maxSpeed).toBe(10.0); // Running max speed (updated from 7.0 for responsive combat)
     });
 
     it("should handle stance-based speed differences", () => {
@@ -172,7 +172,10 @@ describe("usePlayerMovement Integration", () => {
 
       // Injured should be slower
       expect(injuredSpeed).toBeLessThan(healthySpeed);
-      expect(injuredState.maxSpeed).toBe(3.0); // 25% penalty
+      // With base speed 6.0 m/s and 0.5 injury factor:
+      // injuryPenalty = 1.0 - (0.5 * 0.5) = 0.75
+      // maxSpeed = 6.0 * 0.75 = 4.5 m/s
+      expect(injuredState.maxSpeed).toBe(4.5); // 25% penalty from leg injury
     });
 
     it("should handle tactical steps", () => {

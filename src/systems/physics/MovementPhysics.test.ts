@@ -35,7 +35,7 @@ describe("MovementPhysics", () => {
   });
 
   describe("Acceleration", () => {
-    it("should accelerate from 0 to 4m/s in approximately 0.5 seconds", () => {
+    it("should accelerate from 0 to 6m/s in approximately 0.5 seconds", () => {
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -52,13 +52,13 @@ describe("MovementPhysics", () => {
         physics.updateMovement(state, input, deltaTime);
       }
 
-      // Should be close to 4m/s (within 10% tolerance)
+      // Should be close to 6m/s (within 10% tolerance)
       const speed = state.velocity.length();
-      expect(speed).toBeGreaterThanOrEqual(3.6);
-      expect(speed).toBeLessThanOrEqual(4.4);
+      expect(speed).toBeGreaterThanOrEqual(5.4);
+      expect(speed).toBeLessThanOrEqual(6.6);
     });
 
-    it("should have correct acceleration rate (8.0 m/s²)", () => {
+    it("should have correct acceleration rate (12.0 m/s²)", () => {
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -69,14 +69,14 @@ describe("MovementPhysics", () => {
 
       physics.updateMovement(state, input, 0.1);
 
-      expect(state.acceleration).toBe(8.0);
+      expect(state.acceleration).toBe(12.0);
     });
   });
 
   describe("Deceleration", () => {
-    it("should decelerate from 4m/s to 0 in approximately 0.3 seconds", () => {
-      // Start with velocity at 4m/s
-      state.velocity.set(0, 0, 4.0);
+    it("should decelerate from 6m/s to 0 in approximately 0.3 seconds", () => {
+      // Start with velocity at 6m/s
+      state.velocity.set(0, 0, 6.0);
 
       const input: MovementInput = {
         forward: 0,
@@ -94,13 +94,13 @@ describe("MovementPhysics", () => {
         physics.updateMovement(state, input, deltaTime);
       }
 
-      // Should be close to 0m/s (within 0.4m/s tolerance)
+      // Should be close to 0m/s (within 0.6m/s tolerance)
       const speed = state.velocity.length();
-      expect(speed).toBeLessThanOrEqual(0.4);
+      expect(speed).toBeLessThanOrEqual(0.6);
     });
 
-    it("should have correct deceleration rate (13.33 m/s²)", () => {
-      state.velocity.set(0, 0, 4.0);
+    it("should have correct deceleration rate (20.0 m/s²)", () => {
+      state.velocity.set(0, 0, 6.0);
 
       const input: MovementInput = {
         forward: 0,
@@ -112,22 +112,22 @@ describe("MovementPhysics", () => {
 
       physics.updateMovement(state, input, 0.1);
 
-      expect(state.acceleration).toBe(-13.33);
+      expect(state.acceleration).toBe(-20.0);
     });
   });
 
   describe("Movement Speeds", () => {
-    it("should achieve 4m/s walking speed", () => {
+    it("should achieve 6m/s walking speed", () => {
       const walkSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 0);
-      expect(walkSpeed).toBe(4.0);
+      expect(walkSpeed).toBe(6.0);
     });
 
-    it("should achieve 7m/s running speed", () => {
+    it("should achieve 10m/s running speed", () => {
       const runSpeed = physics.getMaxSpeed(true, TrigramStance.GEON, 0);
-      expect(runSpeed).toBe(7.0);
+      expect(runSpeed).toBe(10.0);
     });
 
-    it("should have 3.6m/s lateral speed", () => {
+    it("should have 6m/s lateral speed (matches forward speed for responsive combat)", () => {
       const input: MovementInput = {
         forward: 0,
         lateral: 1.0,
@@ -143,11 +143,14 @@ describe("MovementPhysics", () => {
       }
 
       const lateralSpeed = Math.abs(state.velocity.x);
-      expect(lateralSpeed).toBeGreaterThanOrEqual(3.2);
-      expect(lateralSpeed).toBeLessThanOrEqual(4.0);
+      // Lateral speed now matches forward speed (6.0 m/s) for consistent movement
+      expect(lateralSpeed).toBeGreaterThanOrEqual(5.5);
+      expect(lateralSpeed).toBeLessThanOrEqual(6.5);
     });
 
-    it("should be 25% slower when moving backward", () => {
+    it("should have same speed in forward and backward directions", () => {
+      // Note: Backward speed multiplier was removed for responsive gameplay
+      // Contextual backward penalty should be applied by combat system based on facing
       const forwardInput: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -193,10 +196,10 @@ describe("MovementPhysics", () => {
       }
       const backwardSpeed = Math.abs(backwardState.velocity.z);
 
-      // Backward should be approximately 75% of forward speed
+      // Forward and backward should have same speed (no backward penalty in raw physics)
       const ratio = backwardSpeed / forwardSpeed;
-      expect(ratio).toBeGreaterThanOrEqual(0.7);
-      expect(ratio).toBeLessThanOrEqual(0.8);
+      expect(ratio).toBeGreaterThanOrEqual(0.95);
+      expect(ratio).toBeLessThanOrEqual(1.05);
     });
   });
 
@@ -258,11 +261,11 @@ describe("MovementPhysics", () => {
         physics.updateMovement(state, input, deltaTime);
       }
 
-      // Max speed should be 4.0 * 1.25 = 5.0 m/s
-      expect(state.maxSpeed).toBe(5.0);
+      // Max speed should be 6.0 * 1.25 = 7.5 m/s
+      expect(state.maxSpeed).toBe(7.5);
       const speed = state.velocity.length();
-      expect(speed).toBeGreaterThanOrEqual(4.6);
-      expect(speed).toBeLessThanOrEqual(5.4);
+      expect(speed).toBeGreaterThanOrEqual(7.0);
+      expect(speed).toBeLessThanOrEqual(8.0);
     });
   });
 
@@ -321,7 +324,7 @@ describe("MovementPhysics", () => {
       const injuredSpeed = physics.getMaxSpeed(false, TrigramStance.GEON, 1.0);
 
       expect(injuredSpeed).toBe(healthySpeed * 0.5);
-      expect(injuredSpeed).toBe(2.0); // 4.0 * 0.5
+      expect(injuredSpeed).toBe(3.0); // 6.0 * 0.5
     });
 
     it("should calculate injury penalty from leg health percentage", () => {
@@ -353,7 +356,7 @@ describe("MovementPhysics", () => {
       }
 
       // Max speed should be reduced by 25% (50% injury * 50% max penalty)
-      const expectedSpeed = 4.0 * 0.75; // 3.0 m/s
+      const expectedSpeed = 6.0 * 0.75; // 4.5 m/s
       expect(state.maxSpeed).toBe(expectedSpeed);
     });
 
@@ -367,30 +370,30 @@ describe("MovementPhysics", () => {
         state.legInjuryFactor,
       );
 
-      // 4.0 * 1.25 * 0.75 = 3.75 m/s
-      expect(speed).toBe(3.75);
+      // 6.0 * 1.25 * 0.75 = 5.625 m/s
+      expect(speed).toBe(5.625);
     });
   });
 
   describe("Physics Calculations", () => {
     it("should calculate acceleration time correctly", () => {
-      // Time to go from 0 to 4m/s at 8.0 m/s²
-      const time = physics.getAccelerationTime(0, 4.0);
+      // Time to go from 0 to 6m/s at 12.0 m/s²
+      const time = physics.getAccelerationTime(0, 6.0);
       expect(time).toBe(0.5);
     });
 
     it("should calculate stopping distance correctly", () => {
-      // Distance to stop from 4m/s with 13.33 m/s² deceleration
-      // d = v² / (2a) = 16 / 26.66 ≈ 0.6 meters
-      const distance = physics.getStoppingDistance(4.0);
-      expect(distance).toBeGreaterThanOrEqual(0.58);
-      expect(distance).toBeLessThanOrEqual(0.62);
+      // Distance to stop from 6m/s with 20.0 m/s² deceleration
+      // d = v² / (2a) = 36 / 40 = 0.9 meters
+      const distance = physics.getStoppingDistance(6.0);
+      expect(distance).toBeGreaterThanOrEqual(0.85);
+      expect(distance).toBeLessThanOrEqual(0.95);
     });
   });
 
   describe("Position Updates", () => {
     it("should update position based on velocity and deltaTime", () => {
-      state.velocity.set(0, 0, 4.0); // 4m/s forward
+      state.velocity.set(0, 0, 6.0); // 6m/s forward
 
       const input: MovementInput = {
         forward: 1.0,
@@ -403,9 +406,9 @@ describe("MovementPhysics", () => {
       const deltaTime = 0.1; // 100ms
       physics.updateMovement(state, input, deltaTime);
 
-      // Should move approximately 0.4 meters (4m/s * 0.1s)
-      expect(state.position.z).toBeGreaterThanOrEqual(0.35);
-      expect(state.position.z).toBeLessThanOrEqual(0.45);
+      // Should move approximately 0.6 meters (6m/s * 0.1s)
+      expect(state.position.z).toBeGreaterThanOrEqual(0.55);
+      expect(state.position.z).toBeLessThanOrEqual(0.65);
     });
 
     it("should maintain position at origin when not moving", () => {

@@ -3,12 +3,12 @@
  * Verifies combat action handlers functionality
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { useCombatActions } from "./useCombatActions";
 import { CombatSystem } from "@/systems/CombatSystem";
-import { TrigramStance, PlayerArchetype } from "@/types";
 import { HitEffectType } from "@/systems/effects";
+import { PlayerArchetype, TrigramStance } from "@/types";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useCombatActions } from "./useCombatActions";
 import { useCombatState } from "./useCombatState";
 
 describe("useCombatActions", () => {
@@ -80,6 +80,8 @@ describe("useCombatActions", () => {
         y: 100,
         width: 800,
         height: 600,
+        worldWidthMeters: 8,
+        worldDepthMeters: 6,
       },
     };
   });
@@ -172,7 +174,7 @@ describe("useCombatActions", () => {
       };
 
       // Spy on the combat system to verify technique conversion
-      const resolveAttackSpy = vi.spyOn(mockCombatSystem, 'resolveAttack');
+      const resolveAttackSpy = vi.spyOn(mockCombatSystem, "resolveAttack");
 
       const { result } = renderHook(() => useCombatActions(mockConfig));
 
@@ -201,13 +203,13 @@ describe("useCombatActions", () => {
         {
           animationType: "jab",
           currentTime: 0,
-        }
+        },
       );
     });
 
     it("should use stance-based technique when no technique provided", () => {
       // Spy on combat system to verify technique is being used
-      const resolveAttackSpy = vi.spyOn(mockCombatSystem, 'resolveAttack');
+      const resolveAttackSpy = vi.spyOn(mockCombatSystem, "resolveAttack");
 
       const { result } = renderHook(() => useCombatActions(mockConfig));
 
@@ -218,7 +220,7 @@ describe("useCombatActions", () => {
       // Should execute attack with stance-based technique (GEON stance)
       expect(mockConfig.addHitEffect).toHaveBeenCalled();
       expect(mockConfig.addCombatMessage).toHaveBeenCalled();
-      
+
       // Verify a technique from GEON stance was used (not basic attack)
       // Check that stance matches GEON rather than specific technique ID
       const attackCall = resolveAttackSpy.mock.calls[0];
@@ -231,10 +233,10 @@ describe("useCombatActions", () => {
     });
 
     it("should reject attack when player has insufficient resources for stance technique", () => {
-      const lowResourcePlayer = { 
-        ...mockConfig.validPlayers[0], 
+      const lowResourcePlayer = {
+        ...mockConfig.validPlayers[0],
         ki: 5, // GEON techniques require more ki
-        stamina: 10 
+        stamina: 10,
       };
       const config = {
         ...mockConfig,
@@ -250,7 +252,7 @@ describe("useCombatActions", () => {
       // Should show insufficient resources message
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "기력/체력 부족",
-        "Insufficient Ki/Stamina"
+        "Insufficient Ki/Stamina",
       );
       expect(config.onPlayerUpdate).not.toHaveBeenCalled();
     });
@@ -266,11 +268,11 @@ describe("useCombatActions", () => {
 
       expect(mockConfig.onPlayerUpdate).toHaveBeenCalledWith(
         0,
-        expect.objectContaining({ isBlocking: true })
+        expect.objectContaining({ isBlocking: true }),
       );
       expect(mockConfig.addCombatMessage).toHaveBeenCalledWith(
         "방어 자세",
-        "Defensive Stance"
+        "Defensive Stance",
       );
     });
 
@@ -309,7 +311,7 @@ describe("useCombatActions", () => {
 
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "기력/체력 부족",
-        "Insufficient Ki/Stamina"
+        "Insufficient Ki/Stamina",
       );
     });
 
@@ -328,7 +330,7 @@ describe("useCombatActions", () => {
 
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "기력/체력 부족",
-        "Insufficient Ki/Stamina"
+        "Insufficient Ki/Stamina",
       );
     });
 
@@ -342,7 +344,7 @@ describe("useCombatActions", () => {
       expect(mockConfig.addHitEffect).toHaveBeenCalledWith(
         HitEffectType.CRITICAL_HIT,
         expect.any(Object),
-        1.5
+        1.5,
       );
     });
 
@@ -368,7 +370,7 @@ describe("useCombatActions", () => {
 
       expect(mockConfig.onPlayerUpdate).toHaveBeenCalledWith(
         0,
-        expect.objectContaining({ currentStance: TrigramStance.LI })
+        expect.objectContaining({ currentStance: TrigramStance.LI }),
       );
       expect(mockConfig.addCombatMessage).toHaveBeenCalled();
     });
@@ -436,7 +438,7 @@ describe("useCombatActions", () => {
         // Verify combat message includes attack reference
         expect(mockConfig.addCombatMessage).toHaveBeenCalledWith(
           expect.stringContaining("AI"),
-          expect.stringContaining("AI")
+          expect.stringContaining("AI"),
         );
       });
 
@@ -498,7 +500,7 @@ describe("useCombatActions", () => {
         };
         const mockVitalPoint = "baekhoehoel";
 
-        const resolveSpy = vi.spyOn(mockConfig.combatSystem, 'resolveAttack');
+        const resolveSpy = vi.spyOn(mockConfig.combatSystem, "resolveAttack");
         const { result } = renderHook(() => useCombatActions(mockConfig));
 
         act(() => {
@@ -510,7 +512,7 @@ describe("useCombatActions", () => {
           expect.anything(),
           expect.anything(),
           expect.anything(),
-          mockVitalPoint
+          mockVitalPoint,
         );
       });
     });
@@ -525,7 +527,7 @@ describe("useCombatActions", () => {
 
         expect(mockConfig.onPlayerUpdate).toHaveBeenCalledWith(
           1,
-          expect.objectContaining({ isBlocking: true })
+          expect.objectContaining({ isBlocking: true }),
         );
       });
     });
@@ -535,7 +537,10 @@ describe("useCombatActions", () => {
         const lowResourcePlayer = { ...mockConfig.validPlayers[1], ki: 5 };
         const config = {
           ...mockConfig,
-          validPlayers: [mockConfig.validPlayers[0], lowResourcePlayer] as const,
+          validPlayers: [
+            mockConfig.validPlayers[0],
+            lowResourcePlayer,
+          ] as const,
         };
 
         const { result } = renderHook(() => useCombatActions(config));
@@ -584,7 +589,11 @@ describe("useCombatActions", () => {
       it("should use provided technique and vital point when passed", () => {
         const mockTechnique = {
           id: "special_technique",
-          name: { korean: "특수기술", english: "Special Tech", romanized: "special" },
+          name: {
+            korean: "특수기술",
+            english: "Special Tech",
+            romanized: "special",
+          },
           koreanName: "특수기술",
           englishName: "Special Tech",
           romanized: "special",
@@ -605,7 +614,7 @@ describe("useCombatActions", () => {
         };
         const mockVitalPoint = "myeongchi";
 
-        const resolveSpy = vi.spyOn(mockConfig.combatSystem, 'resolveAttack');
+        const resolveSpy = vi.spyOn(mockConfig.combatSystem, "resolveAttack");
         const { result } = renderHook(() => useCombatActions(mockConfig));
 
         act(() => {
@@ -617,14 +626,18 @@ describe("useCombatActions", () => {
           expect.anything(),
           expect.anything(),
           mockTechnique,
-          mockVitalPoint
+          mockVitalPoint,
         );
       });
 
       it("should fall back to basic attack if technique requires too much resources", () => {
         const expensiveTechnique = {
           id: "expensive_technique",
-          name: { korean: "고비용", english: "Expensive", romanized: "expensive" },
+          name: {
+            korean: "고비용",
+            english: "Expensive",
+            romanized: "expensive",
+          },
           koreanName: "고비용",
           englishName: "Expensive",
           romanized: "expensive",
@@ -647,7 +660,10 @@ describe("useCombatActions", () => {
         const { result } = renderHook(() => useCombatActions(mockConfig));
 
         act(() => {
-          result.current.handleAITechnique(expensiveTechnique, "test_vital_point");
+          result.current.handleAITechnique(
+            expensiveTechnique,
+            "test_vital_point",
+          );
         });
 
         // Should still call combat actions (falls back to basic attack)
@@ -668,7 +684,7 @@ describe("useCombatActions", () => {
           1,
           expect.objectContaining({
             position: expect.any(Object),
-          })
+          }),
         );
       });
 
@@ -688,19 +704,20 @@ describe("useCombatActions", () => {
         const config = {
           ...mockConfig,
           playerPositions: [
-            { x: 300, y: 400 },
-            { x: 700, y: 400 },
+            { x: 3.0, y: 0 }, // Player 1 at 3m from center
+            { x: -3.0, y: 0 }, // AI at -3m from center
           ] as const,
         };
 
         const { result } = renderHook(() => useCombatActions(config));
-        const targetPos = { x: 701, y: 400 }; // Very close
+        // Target position very close to current: within 0.05m threshold (5cm)
+        const targetPos = { x: -3.02, y: 0 }; // Only 2cm away
 
         act(() => {
           result.current.moveAIPlayer(targetPos);
         });
 
-        // Should not update position when distance < 5
+        // Should not update position when distance < 0.05m (5cm threshold from physics-first architecture)
         expect(config.onPlayerUpdate).not.toHaveBeenCalled();
       });
     });
@@ -719,13 +736,13 @@ describe("useCombatActions", () => {
         0,
         expect.objectContaining({
           stamina: 78, // 80 - 2
-        })
+        }),
       );
 
       // Should add combat message about stance change
       expect(mockConfig.addCombatMessage).toHaveBeenCalledWith(
         expect.stringMatching(/왼발서기|오른발서기/),
-        expect.stringMatching(/Left Stance|Right Stance/)
+        expect.stringMatching(/Left Stance|Right Stance/),
       );
 
       // Should add visual effect
@@ -748,7 +765,7 @@ describe("useCombatActions", () => {
       // Should show insufficient stamina message
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "체력 부족",
-        "Insufficient Stamina"
+        "Insufficient Stamina",
       );
 
       // Should not update player state
@@ -760,7 +777,10 @@ describe("useCombatActions", () => {
         ...mockConfig,
         combatState: {
           ...mockConfig.combatState,
-          playerLaterality: ["right", "right"] as ["left" | "right", "left" | "right"],
+          playerLaterality: ["right", "right"] as [
+            "left" | "right",
+            "left" | "right",
+          ],
         },
       };
 
@@ -773,7 +793,7 @@ describe("useCombatActions", () => {
       // Should add combat message for left stance
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "왼발서기",
-        "Left Stance"
+        "Left Stance",
       );
     });
 
@@ -782,7 +802,10 @@ describe("useCombatActions", () => {
         ...mockConfig,
         combatState: {
           ...mockConfig.combatState,
-          playerLaterality: ["left", "right"] as ["left" | "right", "left" | "right"],
+          playerLaterality: ["left", "right"] as [
+            "left" | "right",
+            "left" | "right",
+          ],
         },
       };
 
@@ -795,7 +818,7 @@ describe("useCombatActions", () => {
       // Should add combat message for right stance
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "오른발서기",
-        "Right Stance"
+        "Right Stance",
       );
     });
 
@@ -851,7 +874,7 @@ describe("useCombatActions", () => {
         1,
         expect.objectContaining({
           stamina: 78, // 80 - 2
-        })
+        }),
       );
     });
 
@@ -878,7 +901,7 @@ describe("useCombatActions", () => {
       // Second call should show cooldown message
       const calls = config.addCombatMessage.mock.calls;
       const hasCooldownMessage = calls.some(
-        (call) => call[0] === "대기 중" && call[1] === "On Cooldown"
+        (call) => call[0] === "대기 중" && call[1] === "On Cooldown",
       );
       expect(hasCooldownMessage || calls.length === 1).toBe(true);
     });

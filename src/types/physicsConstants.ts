@@ -1,65 +1,184 @@
 /**
  * Shared physics constants for Black Trigram combat system.
- * 
+ *
  * **Korean**: 물리 상수
- * 
+ *
  * This module provides shared constants for physics calculations across
  * combat and training systems, ensuring consistency in coordinate transformations
  * and unit conversions.
- * 
+ *
+ * ## Physics-First Architecture
+ *
+ * The game uses a physics-first coordinate system where:
+ * - All internal calculations use meters (m) and meters/second (m/s)
+ * - Arena sizes are determined by screen resolution (6m, 8m, 10m, 12m, 14m)
+ * - Pixel conversion happens only at render time
+ * - The pixels-per-meter ratio varies by device/resolution
+ *
  * @module types/physicsConstants
  * @category Constants
  * @korean 물리상수
  */
 
 /**
- * Conversion factor from meters to pixels in the combat screen coordinate system.
- * 
- * **Korean**: 미터-픽셀 변환
- * 
- * The combat screen uses a pixel-based coordinate system where approximately
- * 100 pixels equals 1 meter in the game world. This scaling factor is used
- * consistently across:
- * - AI range calculations (useAICombat.ts)
- * - Combat hit detection (CombatSystem.ts)
- * - Movement speed calculations
- * 
+ * Reference pixels-per-meter ratio for scale calculations.
+ *
+ * **Korean**: 참조 미터-픽셀 변환
+ *
+ * This is the REFERENCE ratio used for calculating scale factors.
+ * The actual pixels-per-meter varies by device resolution:
+ * - Calculate actual ratio: `arenaWidthPixels / arenaWidthMeters`
+ * - Calculate scale: `actualRatio / REFERENCE_PIXELS_PER_METER`
+ *
+ * **Do NOT use this for direct coordinate conversion.**
+ * Use `bounds.width / bounds.worldWidthMeters` instead.
+ *
  * @example
  * ```typescript
- * // Convert reach from meters to pixels
- * const reachInPixels = reachInMeters * METERS_TO_PIXELS_SCALE;
- * 
- * // Convert distance from pixels to meters
- * const distanceInMeters = distanceInPixels / METERS_TO_PIXELS_SCALE;
+ * // Calculate actual pixels per meter from arena bounds
+ * const actualPixelsPerMeter = bounds.width / bounds.worldWidthMeters;
+ *
+ * // Calculate scale relative to reference
+ * const scale = actualPixelsPerMeter / REFERENCE_PIXELS_PER_METER;
  * ```
- * 
+ *
  * @public
  * @category Coordinate Constants
- * @korean 미터픽셀비율
+ * @korean 참조픽셀미터비율
+ */
+export const REFERENCE_PIXELS_PER_METER = 100 as const;
+
+/**
+ * @deprecated Use `bounds.width / bounds.worldWidthMeters` for dynamic conversion.
+ * This constant is kept for backward compatibility only.
+ *
+ * Legacy conversion factor from meters to pixels. The actual ratio now varies
+ * by screen resolution and arena size.
  */
 export const METERS_TO_PIXELS_SCALE = 100 as const;
 
 /**
  * Conversion factor from meters to training scene units.
- * 
+ *
  * **Korean**: 미터-훈련 단위 변환
- * 
+ *
  * Training scenes are authored in real-world meters and use a 1:1 conversion
  * ratio. This means 1 meter in the game world equals 1 unit in the training
  * scene coordinate system.
- * 
- * **IMPORTANT**: This differs from combat AI which uses METERS_TO_PIXELS_SCALE.
- * Do not use the combat scaling factor in training without updating this constant
- * and verifying all training hit detection logic.
- * 
+ *
+ * **IMPORTANT**: This differs from combat AI which uses dynamic pixels-per-meter.
+ * The 3D world uses 1:1 meter scale for consistent physics.
+ *
  * @example
  * ```typescript
  * // Convert reach from meters to training units (1:1)
  * const reachInUnits = reachInMeters * METERS_TO_TRAINING_UNITS;
  * ```
- * 
+ *
  * @public
  * @category Coordinate Constants
  * @korean 미터훈련비율
  */
 export const METERS_TO_TRAINING_UNITS = 1.0 as const;
+
+/**
+ * Standard arena sizes in meters (4:3 aspect ratio).
+ *
+ * @public
+ */
+export const ARENA_SIZE_METERS = {
+  /** Small screens (< 768px): 6m × 4.5m */
+  SMALL: 6,
+  /** Medium screens (768-1199px): 8m × 6m */
+  MEDIUM: 8,
+  /** Large screens (1200-1919px): 10m × 7.5m */
+  LARGE: 10,
+  /** XLarge screens (1920-2559px): 12m × 9m */
+  XLARGE: 12,
+  /** Ultra screens (≥ 2560px): 14m × 10.5m */
+  ULTRA: 14,
+} as const;
+
+/**
+ * Combat ranges in METERS for physics-first system.
+ *
+ * **Korean**: 전투범위미터 (Combat Ranges in Meters)
+ *
+ * These values define combat distance thresholds for AI decision-making
+ * and hit detection. Use these instead of pixel-based COMBAT_RANGES.
+ *
+ * @public
+ */
+export const COMBAT_RANGES_METERS = {
+  /** Melee range: very close, grappling distance (0.5m) */
+  MELEE: 0.5,
+  /** Close range: punching/elbow distance (0.8m) */
+  CLOSE: 0.8,
+  /** Medium range: kicking distance (1.2m) */
+  MEDIUM: 1.2,
+  /** Long range: max attack distance (2.0m) */
+  LONG: 2.0,
+  /** Maximum range: engagement distance (3.0m) */
+  MAX: 3.0,
+} as const;
+
+/**
+ * AI movement constants in METERS for physics-first system.
+ *
+ * **Korean**: AI이동상수미터 (AI Movement Constants in Meters)
+ *
+ * @public
+ */
+export const AI_MOVEMENT_METERS = {
+  /** Step size for AI movement (0.5m per step) */
+  STEP_SIZE: 0.5,
+  /** Minimum distance threshold to avoid division by zero */
+  MIN_DISTANCE_THRESHOLD: 0.05,
+  /** Horizontal arena margin (based on character width ~0.6m) */
+  ARENA_MARGIN_X: 0.6,
+  /** Vertical arena margin (based on character depth ~1.8m for movement) */
+  ARENA_MARGIN_Y: 1.8,
+  /** Flanking offset base (0.4m) */
+  FLANK_OFFSET_BASE: 0.4,
+  /** Flanking offset random range (0.2m) */
+  FLANK_OFFSET_RANDOM: 0.2,
+} as const;
+
+/**
+ * Player starting positions as PERCENTAGES of arena dimensions.
+ *
+ * **Korean**: 시작위치비율 (Starting Position Ratios)
+ *
+ * Use these ratios with arena dimensions to calculate starting positions:
+ * - playerStartX = arenaX + (arenaWidth * PLAYER_START_POSITIONS.PLAYER1_X)
+ *
+ * @public
+ */
+export const PLAYER_START_POSITIONS = {
+  /** Player 1 starts at 25% from left edge */
+  PLAYER1_X: 0.25,
+  /** Player 2 starts at 75% from left edge */
+  PLAYER2_X: 0.75,
+  /** Both players start at 50% depth (center vertically) */
+  CENTER_Y: 0.5,
+} as const;
+
+/**
+ * AI personality optimal ranges in METERS.
+ *
+ * **Korean**: AI성격최적범위미터 (AI Personality Optimal Ranges in Meters)
+ *
+ * @public
+ */
+export const AI_OPTIMAL_RANGE_METERS = {
+  /** Musa - Traditional warrior: close quarters */
+  MUSA: 0.5,
+  /** Amsalja - Shadow assassin: stealth melee */
+  AMSALJA: 0.4,
+  /** Hacker - Cyber warrior: mid-range analysis */
+  HACKER: 1.2,
+  /** Jeongbo Yowon - Intelligence operative: tactical mid-range */
+  JEONGBO_YOWON: 0.8,
+  /** Jojik Pokryeokbae - Organized crime: brutal close combat */
+  JOJIK: 0.6,
+} as const;

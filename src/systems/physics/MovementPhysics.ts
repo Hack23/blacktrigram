@@ -162,15 +162,15 @@ export class MovementPhysics {
    *
    * **Korean**: 기본 가속도 (Base Acceleration)
    */
-  private readonly BASE_ACCELERATION = 8.0;
+  private readonly BASE_ACCELERATION = 12.0;
 
   /**
    * Base deceleration rate (m/s²)
-   * Achieves 4m/s to 0 in 0.3 seconds (responsive combat stopping)
+   * Achieves 6m/s to 0 in 0.3 seconds (responsive combat stopping)
    *
    * **Korean**: 기본 감속도 (Base Deceleration)
    */
-  private readonly BASE_DECELERATION = 13.33;
+  private readonly BASE_DECELERATION = 20.0;
 
   /**
    * Foot-wide step size (meters)
@@ -182,34 +182,22 @@ export class MovementPhysics {
 
   /**
    * Base walking speed (m/s)
-   * Optimized for responsive combat movement (400 pixels/second)
+   * Optimized for responsive combat movement - crosses 14m arena in ~2.3s
    *
    * **Korean**: 기본 걷기 속도 (Base Walking Speed)
    */
-  private readonly BASE_WALK_SPEED = 4.0;
+  private readonly BASE_WALK_SPEED = 6.0;
 
   /**
    * Base running speed (m/s)
-   * Sprint speed for rapid repositioning (700 pixels/second)
+   * Sprint speed for rapid repositioning - crosses 14m arena in ~1.4s
    *
    * **Korean**: 기본 달리기 속도 (Base Running Speed)
    */
-  private readonly BASE_RUN_SPEED = 7.0;
+  private readonly BASE_RUN_SPEED = 10.0;
 
-  /**
-   * Lateral movement speed (m/s) - side-stepping
-   * Faster strafing for combat positioning (360 pixels/second)
-   *
-   * **Korean**: 측면 이동 속도 (Lateral Movement Speed)
-   */
-  private readonly LATERAL_SPEED = 3.6;
-
-  /**
-   * Backward movement speed multiplier (25% slower than forward)
-   *
-   * **Korean**: 후퇴 속도 배수 (Backward Speed Multiplier)
-   */
-  private readonly BACKWARD_SPEED_MULTIPLIER = 0.75;
+  // LATERAL_SPEED removed - now using state.maxSpeed for all directions
+  // This ensures speed override applies to lateral movement too
 
   /**
    * Override for max speed from external speed modifier systems.
@@ -275,12 +263,17 @@ export class MovementPhysics {
         : this.BASE_ACCELERATION;
 
     // Calculate target velocity based on input direction
+    // forward > 0 = moving in positive Z direction (toward bottom of screen)
+    // forward < 0 = moving in negative Z direction (toward top of screen)
+    // ✅ REMOVED backward multiplier: All directions use full speed for responsive gameplay
+    // The backward penalty should be applied contextually by the combat system
+    // based on player facing direction vs movement direction
+    // ✅ FIX: Both lateral and forward now use state.maxSpeed (which includes override)
+    // This ensures consistent speed in all movement directions
     this.tempTargetVelocity.set(
-      input.lateral * this.LATERAL_SPEED * stanceModifier * injuryPenalty,
+      input.lateral * state.maxSpeed * stanceModifier * injuryPenalty,
       0,
-      input.forward *
-        state.maxSpeed *
-        (input.forward < 0 ? this.BACKWARD_SPEED_MULTIPLIER : 1.0),
+      input.forward * state.maxSpeed,
     );
 
     // Apply acceleration or deceleration
