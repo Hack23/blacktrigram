@@ -2,17 +2,10 @@
  * Tests for TrainingModeSelectorOverlayHtml component
  */
 
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { TrainingModeSelectorOverlayHtml } from "./TrainingModeSelectorOverlayHtml";
 import { FONT_FAMILY } from "../../../../types/constants";
-
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("TrainingModeSelectorOverlayHtml", () => {
   it("should render without crashing", () => {

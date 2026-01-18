@@ -1,5 +1,5 @@
-import { render, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../systems/combat";
 import { PlayerArchetype } from "../../../types/common";
@@ -37,13 +37,6 @@ vi.mock("@react-three/drei", () => ({
     <div data-testid="perspective-camera">{children}</div>
   ),
 }));
-
-// Cleanup after each test to prevent memory leaks
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("EndScreen3D", () => {
   const mockMatchStats: MatchStatistics = {

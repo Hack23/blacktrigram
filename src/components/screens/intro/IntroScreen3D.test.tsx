@@ -1,6 +1,6 @@
-import { render, cleanup } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import React, { useEffect } from "react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { PlayerArchetype } from "../../../types/common";
 import { IntroScreen3D } from "./IntroScreen3D";
@@ -48,13 +48,6 @@ vi.mock("@react-three/drei", () => ({
     <div data-testid="html-overlay">{children}</div>
   ),
 }));
-
-// Cleanup after each test to prevent memory leaks
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("IntroScreen3D", () => {
   it("should render without crashing", () => {

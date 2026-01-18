@@ -2,9 +2,9 @@
  * Tests for AnatomyOverlay3D component
  */
 
-import { render, cleanup } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, expect, it, afterEach } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Suspense } from "react";
 import { AnatomyOverlay3D } from "./AnatomyOverlay3D";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
@@ -19,13 +19,6 @@ function render3D(component: React.ReactElement) {
     </Canvas>
   );
 }
-
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("AnatomyOverlay3D", () => {
   const testPosition: [number, number, number] = [5, 0, 0];

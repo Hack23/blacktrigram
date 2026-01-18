@@ -2,17 +2,10 @@
  * Tests for AnatomyControlsOverlayHtml component
  */
 
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { AnatomyControlsOverlayHtml } from "./AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "./AnatomyOverlay3D";
-
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("AnatomyControlsOverlayHtml", () => {
   it("should render without crashing", () => {

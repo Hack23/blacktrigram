@@ -2,17 +2,11 @@
  * Unit tests for AtmosphericParticles3D component
  */
 
-import { render, cleanup } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, it, expect, afterEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import AtmosphericParticles3D from "../AtmosphericParticles3D";
 import { Suspense } from "react";
-
-// Cleanup after each test to prevent memory leaks
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
 
 describe("AtmosphericParticles3D", () => {
   it("should render without crashing", () => {

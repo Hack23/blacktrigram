@@ -2,8 +2,8 @@
  * Unit tests for CombatArena3D component
  */
 
-import { render, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import CombatArena3D from "./CombatArena3D";
 
 // Mock Three.js and React Three Fiber
@@ -41,12 +41,6 @@ vi.mock("three", () => ({
   BufferAttribute: class MockBufferAttribute {},
   AdditiveBlending: 1,
 }));
-
-// Cleanup after each test to prevent memory leaks
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
 
 describe("CombatArena3D", () => {
   it("should render without crashing", () => {

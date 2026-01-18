@@ -2,17 +2,10 @@
  * Tests for FootworkDrillsOverlayHtml component
  */
 
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, afterEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { FootworkDrillsOverlayHtml } from "./FootworkDrillsOverlayHtml";
 import type { FootworkDrill } from "./FootworkDrillsOverlayHtml";
-
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("FootworkDrillsOverlayHtml", () => {
   const defaultProps = {

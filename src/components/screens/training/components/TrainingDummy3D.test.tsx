@@ -2,21 +2,14 @@
  * Unit tests for TrainingDummy3D component
  */
 
-import { render, cleanup } from "@testing-library/react";
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import TrainingDummy3D from "./TrainingDummy3D";
 
 // Mock React Three Fiber
 vi.mock("@react-three/fiber", () => ({
   useFrame: vi.fn(),
 }));
-
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
-
 
 describe("TrainingDummy3D", () => {
   const defaultProps = {
