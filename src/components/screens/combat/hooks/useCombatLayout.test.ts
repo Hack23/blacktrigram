@@ -319,9 +319,9 @@ describe("useCombatLayout", () => {
       const aspectRatio = arenaBounds.width / arenaBounds.height;
       expect(aspectRatio).toBeCloseTo(4 / 3, 2);
 
-      // Scale should be appropriate for larger arena
+      // Scale should be appropriate for larger arena (~100 px/m in physics-first)
       expect(arenaBounds.scale).toBeGreaterThan(0.4);
-      expect(arenaBounds.scale).toBeLessThan(0.7);
+      expect(arenaBounds.scale).toBeLessThan(1.2);
     });
 
     it("should handle 4K Android devices (1440x3168) with largest mobile arena", () => {
@@ -350,9 +350,9 @@ describe("useCombatLayout", () => {
       const aspectRatio = arenaBounds.width / arenaBounds.height;
       expect(aspectRatio).toBeCloseTo(4 / 3, 2);
 
-      // Scale should be closer to desktop for high-res devices
+      // Scale should be closer to desktop for high-res devices (~100 px/m in physics-first)
       expect(arenaBounds.scale).toBeGreaterThan(0.6);
-      expect(arenaBounds.scale).toBeLessThan(0.9);
+      expect(arenaBounds.scale).toBeLessThan(1.3);
     });
 
     it("should handle zero dimensions gracefully", () => {
