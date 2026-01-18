@@ -167,6 +167,14 @@ export function usePlayerMovement(
   );
   const lastReportedSpeedRef = useRef<number | undefined>(undefined);
 
+  // Ref to track keyState for physics loop - avoids recreating callback on key changes
+  const keyStateRef = useRef({
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+  });
+
   // DEBUG: Frame counter and position tracking for diagnosing movement speed
   const debugFrameCount = useRef(0);
   const debugStartPos = useRef<{ x: number; y: number } | null>(null);
@@ -197,24 +205,29 @@ export function usePlayerMovement(
       pressedKeys.current.add(key);
 
       // ✅ FIXED: Add all movement keys including WASD and arrows
+      // Update both ref (for physics loop) and state (for React re-render)
       switch (key) {
         case "w":
         case "arrowup":
+          keyStateRef.current.up = true;
           setKeyState((prev) => ({ ...prev, up: true }));
           event.preventDefault();
           break;
         case "s":
         case "arrowdown":
+          keyStateRef.current.down = true;
           setKeyState((prev) => ({ ...prev, down: true }));
           event.preventDefault();
           break;
         case "a":
         case "arrowleft":
+          keyStateRef.current.left = true;
           setKeyState((prev) => ({ ...prev, left: true }));
           event.preventDefault();
           break;
         case "d":
         case "arrowright":
+          keyStateRef.current.right = true;
           setKeyState((prev) => ({ ...prev, right: true }));
           event.preventDefault();
           break;
@@ -231,21 +244,26 @@ export function usePlayerMovement(
       pressedKeys.current.delete(key);
 
       // ✅ FIXED: Handle key release for all movement keys
+      // Update both ref (for physics loop) and state (for React re-render)
       switch (key) {
         case "w":
         case "arrowup":
+          keyStateRef.current.up = false;
           setKeyState((prev) => ({ ...prev, up: false }));
           break;
         case "s":
         case "arrowdown":
+          keyStateRef.current.down = false;
           setKeyState((prev) => ({ ...prev, down: false }));
           break;
         case "a":
         case "arrowleft":
+          keyStateRef.current.left = false;
           setKeyState((prev) => ({ ...prev, left: false }));
           break;
         case "d":
         case "arrowright":
+          keyStateRef.current.right = false;
           setKeyState((prev) => ({ ...prev, right: false }));
           break;
       }
@@ -258,7 +276,11 @@ export function usePlayerMovement(
   const updatePositionRef = useRef<(() => void) | null>(null);
 
   const updatePosition = useCallback(() => {
-    if (!enabled || !isMoving) {
+    // Check if any movement keys are pressed using ref (not stale state)
+    const keys = keyStateRef.current;
+    const isCurrentlyMoving = keys.up || keys.down || keys.left || keys.right;
+
+    if (!enabled || !isCurrentlyMoving) {
       animationFrameId.current = null;
       return;
     }
@@ -286,11 +308,12 @@ export function usePlayerMovement(
         physicsEngineRef.current.setAcceleration(accelerationOverride);
       }
 
-      // Convert key state to physics input
+      // Convert key state to physics input (using ref to avoid callback recreation)
       // Screen coordinates: UP/W = toward top of screen, DOWN/S = toward bottom
       // Physics Z-axis: negative Z = toward top, positive Z = toward bottom
-      const forward = keyState.up ? -1 : keyState.down ? 1 : 0;
-      const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
+      const keys = keyStateRef.current;
+      const forward = keys.up ? -1 : keys.down ? 1 : 0;
+      const lateral = keys.right ? 1 : keys.left ? -1 : 0;
       const isCurrentlyMoving = forward !== 0 || lateral !== 0;
 
       // Auto-run detection: transition to running after sustained movement
@@ -328,6 +351,14 @@ export function usePlayerMovement(
 
       // DEBUG: Track frame count and position for real speed calculation
       debugFrameCount.current += 1;
+
+      // AGGRESSIVE DEBUG: Log every frame for first 20 frames, then every 30
+      if (debugFrameCount.current <= 20 || debugFrameCount.current % 30 === 0) {
+        console.log(
+          `[MOVE F${debugFrameCount.current}] dt=${deltaTime.toFixed(1)}ms, keys=${JSON.stringify(keys)}, input=(${forward},${lateral}), pos=(${state.position.x.toFixed(2)},${state.position.z.toFixed(2)})`,
+        );
+      }
+
       const posBeforeUpdate = { x: state.position.x, z: state.position.z };
 
       physicsEngineRef.current.updateMovement(
@@ -343,7 +374,7 @@ export function usePlayerMovement(
       );
 
       // DEBUG: Log movement data every ~60 frames (1s at 60fps)
-      const DEBUG_MOVEMENT = false; // Disabled - enable for movement speed debugging
+      const DEBUG_MOVEMENT = true; // ENABLED for movement speed debugging
       if (DEBUG_MOVEMENT && debugFrameCount.current % 60 === 0) {
         const speedMs = state.velocity.length();
         const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
@@ -445,25 +476,30 @@ export function usePlayerMovement(
       }
     }
 
-    // Continue animation if still moving
-    if (isMoving) {
+    // Continue animation if still moving (check ref, not stale closure)
+    const stillMoving =
+      keyStateRef.current.up ||
+      keyStateRef.current.down ||
+      keyStateRef.current.left ||
+      keyStateRef.current.right;
+    if (stillMoving) {
       animationFrameId.current = requestAnimationFrame(() =>
         updatePositionRef.current?.(),
       );
     } else {
       animationFrameId.current = null;
     }
-    // NOTE: playerPosition, velocity, speed intentionally excluded from deps
-    // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef)
+    // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
+    // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref
-    keyState,
+    // keyState - excluded, using keyStateRef
+    // isMoving - excluded, using keyStateRef for movement check
     bounds,
     onPositionChange,
-    isMoving,
     currentStance,
     legInjuryFactor,
     isRunningProp,
@@ -499,7 +535,10 @@ export function usePlayerMovement(
   useEffect(() => {
     if (isMoving && !animationFrameId.current) {
       lastUpdateTime.current = performance.now();
-      animationFrameId.current = requestAnimationFrame(updatePosition);
+      // Use ref to avoid dependency on updatePosition callback
+      animationFrameId.current = requestAnimationFrame(() =>
+        updatePositionRef.current?.(),
+      );
     } else if (!isMoving && animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
       animationFrameId.current = null;
@@ -511,7 +550,8 @@ export function usePlayerMovement(
         animationFrameId.current = null;
       }
     };
-  }, [isMoving, updatePosition]);
+    // Only depend on isMoving - updatePositionRef is stable
+  }, [isMoving]);
 
   return {
     playerPosition,
