@@ -721,6 +721,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [onPlayerUpdate],
   );
 
+  // CRITICAL FIX: Memoize bounds object to prevent usePlayerMovement callback recreation
+  // Without this, a new object reference is created every render, causing animation frame cancellation
+  const movementBounds = useMemo(
+    () => ({
+      worldWidthMeters: arenaBounds.worldWidthMeters,
+      worldDepthMeters: arenaBounds.worldDepthMeters,
+    }),
+    [arenaBounds.worldWidthMeters, arenaBounds.worldDepthMeters],
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
@@ -731,10 +741,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         !combatState.roundEnded &&
         matchCountdownComplete &&
         !showRoundStart,
-      bounds: {
-        worldWidthMeters: arenaBounds.worldWidthMeters,
-        worldDepthMeters: arenaBounds.worldDepthMeters,
-      },
+      bounds: movementBounds, // Use memoized bounds object
       onPositionChange: handlePlayer1PositionChange, // Use memoized callback
       initialPositionMeters: player1Position,
       // Physics parameters for realistic movement (always enabled)

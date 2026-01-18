@@ -295,15 +295,22 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [onPlayerUpdate],
   );
 
+  // CRITICAL FIX: Memoize bounds object to prevent usePlayerMovement callback recreation
+  // Without this, a new object reference is created every render, causing animation frame cancellation
+  const movementBounds = useMemo(
+    () => ({
+      worldWidthMeters: trainingAreaBounds.worldWidthMeters,
+      worldDepthMeters: trainingAreaBounds.worldDepthMeters,
+    }),
+    [trainingAreaBounds.worldWidthMeters, trainingAreaBounds.worldDepthMeters],
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
   const { playerPosition, isMoving, velocity, debugFrameCount } =
     usePlayerMovement({
       enabled: true, // Always allow movement in training screen
-      bounds: {
-        worldWidthMeters: trainingAreaBounds.worldWidthMeters,
-        worldDepthMeters: trainingAreaBounds.worldDepthMeters,
-      },
+      bounds: movementBounds, // Use memoized bounds object
       onPositionChange: handlePositionChange, // Use memoized callback
       initialPositionMeters,
       // Physics parameters for realistic training movement (always enabled)
