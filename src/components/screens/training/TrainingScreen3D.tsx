@@ -15,7 +15,13 @@ import {
   Noise,
   Vignette,
 } from "@react-three/postprocessing";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAudio } from "../../../audio/AudioProvider";
 import { getArchetypePhysicalAttributes } from "../../../data/archetypePhysicalAttributes";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
@@ -31,6 +37,10 @@ import {
 } from "../../../systems/animation";
 import { getAnimationForTechniqueOrDefault } from "../../../systems/animation/core/TechniqueAnimationMapping";
 import { physicalReachCalculator } from "../../../systems/physics";
+import {
+  MovementType,
+  SpeedModifierSystem,
+} from "../../../systems/physics/SpeedModifierSystem";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   CombatState,
@@ -239,6 +249,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 2B: Speed Modifier System (matching CombatScreen pattern)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Speed Modifier System for dynamic movement speed calculations
+  const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
+
+  // Track speed modifiers for movement (simplified for training - no injuries)
+  const [speedModifiers, setSpeedModifiers] = useState({
+    finalSpeed: 4.0, // BASE_WALK_SPEED
+    baseSpeed: 4.0,
+    finalAcceleration: 8.0, // BASE_ACCELERATION
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3: Movement & Position Management
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -253,7 +277,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Player movement with physics-based acceleration and stance modifiers
-  // Speed modifiers matching CombatScreen BASE_WALK_SPEED and BASE_ACCELERATION
+  // Speed modifiers from SpeedModifierSystem (matching CombatScreen pattern)
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: {
@@ -274,9 +298,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
     isRunning: false,
-    // Speed modifier overrides matching CombatScreen and MovementPhysics
-    maxSpeedOverride: 4.0, // BASE_WALK_SPEED = 4.0 m/s (walking pace for combat movement)
-    accelerationOverride: 8.0, // BASE_ACCELERATION = 8.0 m/s² (responsive combat acceleration)
+    // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
+    maxSpeedOverride: speedModifiers.finalSpeed,
+    accelerationOverride: speedModifiers.finalAcceleration,
   });
 
   // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
@@ -512,6 +536,32 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       comboCount: trainingState.stats.combo,
     };
   }, [playerPosition, trainingState, selectedArchetype]);
+
+  // Calculate speed modifiers when player state changes
+  // Updates at 5Hz (every 200ms) matching CombatScreen pattern
+  useEffect(() => {
+    const updateSpeedModifiers = () => {
+      const modifiers = speedModifierSystem.calculateSpeedModifiers(
+        trainingPlayerState,
+        MovementType.WALKING, // Base calculation, actual type determined by input
+        false, // isCrouching
+      );
+      setSpeedModifiers({
+        finalSpeed: modifiers.finalSpeed,
+        baseSpeed: modifiers.baseSpeed,
+        finalAcceleration: modifiers.finalAcceleration,
+      });
+    };
+
+    // Initial calculation
+    updateSpeedModifiers();
+
+    // Update every 200ms (5Hz) for responsive feedback without excessive re-renders
+    const intervalId = setInterval(updateSpeedModifiers, 200);
+
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trainingPlayerState]); // speedModifierSystem is memoized and never changes
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7B: Technique Selection System
