@@ -262,6 +262,10 @@ export function usePlayerMovement(
     // Physics-based movement (always enabled for realistic combat)
     if (physicsEngineRef.current && physicsStateRef.current) {
       // Apply speed modifiers if provided by SpeedModifierSystem
+      // BUG FIX: Now properly passing maxSpeedOverride to physics engine
+      if (maxSpeedOverride !== undefined) {
+        physicsEngineRef.current.setMaxSpeed(maxSpeedOverride);
+      }
 
       if (accelerationOverride !== undefined) {
         physicsEngineRef.current.setAcceleration(accelerationOverride);

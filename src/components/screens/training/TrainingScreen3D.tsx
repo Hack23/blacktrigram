@@ -999,6 +999,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           antialias: performanceSettings.antialias,
           alpha: false,
           powerPreference: "high-performance",
+          failIfMajorPerformanceCaveat: false, // Don't fail in software renderer
+          preserveDrawingBuffer: true, // Help with context stability
         }}
         dpr={performanceSettings.dpr}
         shadows={false} // Temporarily disable shadows
