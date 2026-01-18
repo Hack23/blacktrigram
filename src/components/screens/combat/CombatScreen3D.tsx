@@ -380,11 +380,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [showRoundStart, setShowRoundStart] = useState(false);
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
-  // Player 1 position (controlled by player movement)
-  // Player 1 starts closer to center - adjusted for arena scale
+  // Player 1 position in METERS (relative to arena center)
+  // Player 1 starts at 35% from left = -0.15 * worldWidth from center
   const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.x + arenaBounds.width * 0.35,
-    y: arenaBounds.y + arenaBounds.height * 0.5,
+    x: arenaBounds.worldWidthMeters * -0.15, // 35% from left = -15% from center
+    y: 0, // Centered
   });
 
   // Pause menu state - local state for pause menu visibility
@@ -570,16 +570,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleRoundTransitionComplete,
   );
 
-  // Player 2 position - derived from players prop (AI-controlled)
-  // Default position is used when players prop is empty or player2 has no position
-  // Player 2 (AI) starts at right side of arena - adjusted for arena scale
+  // Player 2 position in METERS (relative to arena center) - AI-controlled
+  // Player 2 starts at 65% from left = +0.15 * worldWidth from center
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
     }
     return {
-      x: arenaBounds.x + arenaBounds.width * 0.65,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * 0.15, // 65% from left = +15% from center
+      y: 0, // Centered
     };
   }, [players, arenaBounds]);
 
@@ -588,29 +587,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return [player1Position, player2Position];
   }, [player1Position, player2Position]);
 
-  // Convert 2D positions to 3D world coordinates
-  // Use physics-based arena dimensions for consistent 1:1 meter mapping
+  // Physics-first: positions are already in METERS
+  // Direct conversion to 3D world coordinates - no pixel math needed
   const player1Position3D: [number, number, number] = useMemo(() => {
-    const relX = (playerPositions[0].x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (playerPositions[0].y - arenaBounds.y) / arenaBounds.height;
-    // Use actual world dimensions from physics system (6-14m based on resolution)
-    const worldWidth = arenaBounds.worldWidthMeters;
-    const worldDepth = arenaBounds.worldDepthMeters;
-    const x = relX * worldWidth - worldWidth / 2;
-    const z = relZ * worldDepth - worldDepth / 2;
-    return [x, 0, z];
-  }, [playerPositions, arenaBounds]);
+    // playerPosition.x is lateral position in meters (- = left, + = right)
+    // playerPosition.y is forward/backward position in meters (- = toward camera, + = away)
+    return [playerPositions[0].x, 0, playerPositions[0].y];
+  }, [playerPositions]);
 
   const player2Position3D: [number, number, number] = useMemo(() => {
-    const relX = (playerPositions[1].x - arenaBounds.x) / arenaBounds.width;
-    const relZ = (playerPositions[1].y - arenaBounds.y) / arenaBounds.height;
-    // Use actual world dimensions from physics system (6-14m based on resolution)
-    const worldWidth = arenaBounds.worldWidthMeters;
-    const worldDepth = arenaBounds.worldDepthMeters;
-    const x = relX * worldWidth - worldWidth / 2;
-    const z = relZ * worldDepth - worldDepth / 2;
-    return [x, 0, z];
-  }, [playerPositions, arenaBounds]);
+    return [playerPositions[1].x, 0, playerPositions[1].y];
+  }, [playerPositions]);
 
   // Calculate dynamic rotations so players always face each other
   // atan2(dx, dz) gives the Y-axis rotation needed to face direction (dx, dz)
@@ -724,6 +711,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   >(undefined);
 
   // Player movement with physics-based acceleration and stance modifiers
+  // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
     usePlayerMovement({
       enabled:
@@ -733,20 +721,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         matchCountdownComplete &&
         !showRoundStart,
       bounds: {
-        x: arenaBounds.x,
-        y: arenaBounds.y,
-        width: arenaBounds.width,
-        height: arenaBounds.height,
-        scale: arenaBounds.scale, // Pass arena scale for proper pixel conversion
-        worldWidthMeters: arenaBounds.worldWidthMeters, // Required for physics-first coordinate system
-        worldDepthMeters: arenaBounds.worldDepthMeters, // Required for physics-first coordinate system
+        worldWidthMeters: arenaBounds.worldWidthMeters,
+        worldDepthMeters: arenaBounds.worldDepthMeters,
       },
       onPositionChange: (newPosition: Position) => {
         setPlayer1Position(newPosition);
         onPlayerUpdate(0, { position: newPosition });
       },
-      initialPosition: player1Position,
-      moveSpeed: 300,
+      initialPositionMeters: player1Position,
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,

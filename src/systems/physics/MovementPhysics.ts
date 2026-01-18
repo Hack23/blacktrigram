@@ -205,13 +205,6 @@ export class MovementPhysics {
   private readonly LATERAL_SPEED = 3.6;
 
   /**
-   * Backward movement speed multiplier (25% slower than forward)
-   *
-   * **Korean**: 후퇴 속도 배수 (Backward Speed Multiplier)
-   */
-  private readonly BACKWARD_SPEED_MULTIPLIER = 0.75;
-
-  /**
    * Override for max speed from external speed modifier systems.
    *
    * **Korean**: 최대속도 재정의 (Max Speed Override)
@@ -275,12 +268,15 @@ export class MovementPhysics {
         : this.BASE_ACCELERATION;
 
     // Calculate target velocity based on input direction
+    // forward > 0 = moving in positive Z direction (toward bottom of screen)
+    // forward < 0 = moving in negative Z direction (toward top of screen)
+    // ✅ REMOVED backward multiplier: All directions use full speed for responsive gameplay
+    // The backward penalty should be applied contextually by the combat system
+    // based on player facing direction vs movement direction
     this.tempTargetVelocity.set(
       input.lateral * this.LATERAL_SPEED * stanceModifier * injuryPenalty,
       0,
-      input.forward *
-        state.maxSpeed *
-        (input.forward < 0 ? this.BACKWARD_SPEED_MULTIPLIER : 1.0),
+      input.forward * state.maxSpeed,
     );
 
     // Apply acceleration or deceleration

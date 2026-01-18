@@ -7,26 +7,8 @@ import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
 
 /**
- * Base pixel-to-meter conversion ratio for desktop scale (1.0).
- *
- * **DEPRECATED**: This constant represents the flawed approach from PR #1306.
- * Do NOT use this for new code. Instead, calculate pixels-per-meter dynamically:
- * `pixelsPerMeter = bounds.width / bounds.worldWidthMeters`
- *
- * This constant is kept ONLY for backward compatibility and will be removed
- * once all references are updated to use the physics-first approach.
- *
- * **Korean**: 기본 픽셀/미터 비율 (Base Pixels Per Meter) - DEPRECATED
- *
- * @deprecated Use `bounds.width / bounds.worldWidthMeters` instead
- * @constant
- * @public
- */
-export const BASE_PIXELS_PER_METER = 100;
-
-/**
  * Configuration interface for the input system and player movement.
- * Supports both physics-based movement and legacy configurations.
+ * Uses physics-first approach: all positions and velocities are in meters.
  *
  * **Korean**: 입력 시스템 설정 (Input System Configuration)
  */
@@ -34,48 +16,19 @@ export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
   readonly enabled?: boolean;
 
-  /** Arena bounds configuration with optional scale factor and world dimensions */
+  /** Arena world dimensions in meters for physics calculations */
   readonly bounds?: {
-    /** X coordinate of arena top-left corner (pixels) */
-    readonly x: number;
-    /** Y coordinate of arena top-left corner (pixels) */
-    readonly y: number;
-    /** Arena width (pixels) */
-    readonly width: number;
-    /** Arena height (pixels) */
-    readonly height: number;
-    /**
-     * Arena scale factor for responsive sizing.
-     * - 1.0 = desktop (960px arena, 100 pixels per meter)
-     * - 0.3125 = mobile (300px arena, 320 pixels per meter)
-     * - Default: 1.0 if not provided
-     *
-     * This scale factor is used to maintain consistent visual movement speed
-     * across different device sizes by adjusting the pixel-to-meter conversion.
-     */
-    readonly scale?: number;
-
-    /**
-     * Physical arena width in meters (for physics-first calculations).
-     * When provided, pixels-per-meter is calculated as: width / worldWidthMeters
-     * This replaces the flawed BASE_PIXELS_PER_METER / scale approach.
-     */
-    readonly worldWidthMeters?: number;
-
-    /**
-     * Physical arena depth in meters (for physics-first calculations).
-     */
-    readonly worldDepthMeters?: number;
+    /** Physical arena width in meters (required for physics) */
+    readonly worldWidthMeters: number;
+    /** Physical arena depth in meters (required for physics) */
+    readonly worldDepthMeters: number;
   };
 
-  /** Callback invoked when player position changes */
+  /** Callback invoked when player position changes (position in meters) */
   readonly onPositionChange?: (position: Position) => void;
 
-  /** Initial player position (pixels) */
-  readonly initialPosition?: Position;
-
-  /** @deprecated Legacy move speed parameter (pixels/second). Use physics parameters instead. */
-  readonly moveSpeed?: number;
+  /** Initial player position in METERS (x = lateral, y = forward/backward) */
+  readonly initialPositionMeters?: Position;
 
   // Physics-based movement parameters (always enabled)
   /** Current trigram stance affecting movement speed */
@@ -108,51 +61,34 @@ export interface MovementState {
 }
 
 export interface PlayerMovementResult {
+  /** Player position in METERS (x = lateral, y = forward/backward in arena) */
   readonly playerPosition: Position;
   readonly movementState: MovementState;
   readonly isMoving: boolean;
   readonly isKeyPressed: (key: string) => boolean;
-  readonly velocity?: { x: number; y: number }; // For physics mode
-  readonly speed?: number; // Current speed in m/s for physics mode
+  /** Velocity in m/s (x = lateral, y = forward/backward) */
+  readonly velocity?: { x: number; y: number };
+  /** Current speed magnitude in m/s */
+  readonly speed?: number;
 }
 
 /**
- * Hook for handling player movement input - supports both config and legacy APIs
- * Now with physics-based movement as the default, always-on system for realistic acceleration/deceleration
+ * Hook for handling player movement with physics-first approach.
+ * All positions and velocities are in METERS - no pixel conversions.
  *
  * **Korean**: 플레이어 이동 훅 (Player Movement Hook)
  *
- * @param configOrPosition - Configuration object or legacy position
- * @param legacyBounds - Legacy bounds for backward compatibility
- * @returns Movement state and physics data
+ * @param config - Physics-first configuration with positions in meters
+ * @returns Movement state and physics data (all in meters)
  */
 export function usePlayerMovement(
-  configOrPosition: InputSystemConfig | Position,
-  legacyBounds?: { width: number; height: number },
+  config: InputSystemConfig,
 ): PlayerMovementResult {
-  // Handle legacy API (position, bounds) for CombatScreen compatibility
-  const config: InputSystemConfig =
-    typeof configOrPosition === "object" && "x" in configOrPosition
-      ? {
-          enabled: true,
-          bounds: legacyBounds
-            ? {
-                x: 0,
-                y: 0,
-                width: legacyBounds.width,
-                height: legacyBounds.height,
-              }
-            : undefined,
-          initialPosition: configOrPosition,
-          moveSpeed: 200,
-        }
-      : configOrPosition;
-
   const {
     enabled = true,
     bounds,
     onPositionChange,
-    initialPosition = { x: 0, y: 0 },
+    initialPositionMeters = { x: 0, y: 0 },
     currentStance = TrigramStance.GEON,
     legInjuryFactor = 0,
     isRunning: isRunningProp = false,
@@ -161,19 +97,26 @@ export function usePlayerMovement(
     accelerationOverride,
   } = config;
 
-  const [playerPosition, setPlayerPosition] =
-    useState<Position>(initialPosition);
+  // Position in METERS (x = lateral position, y = forward/backward position)
+  const [playerPosition, setPlayerPosition] = useState<Position>(
+    initialPositionMeters,
+  );
   const [keyState, setKeyState] = useState({
     up: false,
     down: false,
     left: false,
     right: false,
   });
-  // Physics state for render (velocity and speed)
+  // Physics state for render (velocity and speed in m/s)
   const [velocity, setVelocity] = useState<
     { x: number; y: number } | undefined
   >(undefined);
   const [speed, setSpeed] = useState<number | undefined>(undefined);
+
+  // Auto-run detection: track how long movement keys have been held
+  // After sustained movement, automatically transition from walking to running
+  const movementStartTimeRef = useRef<number | null>(null);
+  const AUTO_RUN_THRESHOLD_MS = 300; // Transition to run after 300ms of sustained movement
 
   // Physics-based movement state (always initialized for realistic combat)
   const physicsEngineRef = useRef<MovementPhysics | null>(null);
@@ -187,30 +130,16 @@ export function usePlayerMovement(
   } | null>(null);
 
   // Initialize physics engine once on mount (always enabled)
-  // Note: stance and legInjuryFactor are updated dynamically in updatePosition callback
-  // Note: initialPosition only used for initial state; position updates happen in updatePosition
+  // All positions are in METERS - no pixel conversion needed
   useEffect(() => {
     if (!physicsEngineRef.current) {
       physicsEngineRef.current = new MovementPhysics();
-      // Convert 2D position to 3D (y becomes z for 3D)
-      // Calculate pixels-per-meter from arena bounds (NO fixed constants)
-      // Physics position is ARENA-RELATIVE (0 to worldWidth in meters)
-      // initialPosition is SCREEN-ABSOLUTE (includes arena offset)
-      const pixelsPerMeter = bounds?.worldWidthMeters
-        ? bounds.width / bounds.worldWidthMeters
-        : BASE_PIXELS_PER_METER; // Fallback only for initialization
-
-      // Convert screen-absolute pixels to arena-relative meters
-      const arenaOffsetX = bounds?.x ?? 0;
-      const arenaOffsetY = bounds?.y ?? 0;
-      const arenaRelativeX = initialPosition.x - arenaOffsetX;
-      const arenaRelativeY = initialPosition.y - arenaOffsetY;
-
+      // Initial position in meters (x = lateral, z = forward/backward)
       physicsStateRef.current = {
         position: new THREE.Vector3(
-          arenaRelativeX / pixelsPerMeter,
+          initialPositionMeters.x,
           0,
-          arenaRelativeY / pixelsPerMeter,
+          initialPositionMeters.y,
         ),
         velocity: new THREE.Vector3(0, 0, 0),
         acceleration: 0,
@@ -341,16 +270,34 @@ export function usePlayerMovement(
       }
 
       // Convert key state to physics input
-      // ✅ FIXED: Inverted forward direction so ArrowUp/W moves UP on screen (negative Z/Y)
-      // and ArrowDown/S moves DOWN on screen (positive Z/Y)
+      // Screen coordinates: UP/W = toward top of screen, DOWN/S = toward bottom
+      // Physics Z-axis: negative Z = toward top, positive Z = toward bottom
       const forward = keyState.up ? -1 : keyState.down ? 1 : 0;
       const lateral = keyState.right ? 1 : keyState.left ? -1 : 0;
+      const isCurrentlyMoving = forward !== 0 || lateral !== 0;
+
+      // Auto-run detection: transition to running after sustained movement
+      const now = performance.now();
+      if (isCurrentlyMoving) {
+        if (movementStartTimeRef.current === null) {
+          movementStartTimeRef.current = now;
+        }
+      } else {
+        movementStartTimeRef.current = null;
+      }
+
+      // Determine if player should be running (auto-run after threshold)
+      const movementDuration = movementStartTimeRef.current
+        ? now - movementStartTimeRef.current
+        : 0;
+      const shouldRun =
+        isRunningProp || movementDuration > AUTO_RUN_THRESHOLD_MS;
 
       const physicsInput: MovementInput = {
         forward,
         lateral,
-        isRunning: isRunningProp,
-        isMoving: forward !== 0 || lateral !== 0,
+        isRunning: shouldRun,
+        isMoving: isCurrentlyMoving,
         useTacticalSteps,
       };
 
@@ -367,44 +314,37 @@ export function usePlayerMovement(
         clampedDeltaTimeMs / 1000,
       );
 
-      // Convert 3D position back to 2D pixel coordinates (z becomes y)
-      // Calculate pixels-per-meter from arena bounds (NO fixed constants)
-      // If bounds not available, skip pixel conversion until they are
-      if (!bounds?.worldWidthMeters) {
-        // Continue animation if still moving
-        if (isMoving) {
-          animationFrameId.current = requestAnimationFrame(() =>
-            updatePositionRef.current?.(),
-          );
-        } else {
-          animationFrameId.current = null;
-        }
-        return;
+      // DEBUG: Log movement data every 60 frames (once per second)
+      const DEBUG_MOVEMENT = true;
+      if (DEBUG_MOVEMENT && Math.random() < 0.017) {
+        console.log("[Movement Debug]", {
+          deltaTimeMs: clampedDeltaTimeMs.toFixed(2),
+          velocityMs: state.velocity.length().toFixed(3),
+          maxSpeed: state.maxSpeed.toFixed(2),
+          positionMeters: {
+            x: state.position.x.toFixed(3),
+            z: state.position.z.toFixed(3),
+          },
+          forward: physicsInput.forward,
+          lateral: physicsInput.lateral,
+          isRunning: physicsInput.isRunning,
+          boundsWorldWidth: bounds?.worldWidthMeters,
+          boundsWorldDepth: bounds?.worldDepthMeters,
+        });
       }
 
-      // Physics position is ARENA-RELATIVE (0 to worldWidth in meters)
-      // Screen position is SCREEN-ABSOLUTE (includes arena offset)
-      const pixelsPerMeter = bounds.width / bounds.worldWidthMeters;
+      // Clamp position to arena bounds (in meters)
+      const worldWidth = bounds?.worldWidthMeters ?? 14;
+      const worldDepth = bounds?.worldDepthMeters ?? 10.5;
 
-      // Convert arena-relative meters to arena-relative pixels
-      let arenaRelativeX = state.position.x * pixelsPerMeter;
-      let arenaRelativeZ = state.position.z * pixelsPerMeter;
+      // Clamp position to arena bounds (0 to worldWidth/worldDepth)
+      state.position.x = Math.max(0, Math.min(worldWidth, state.position.x));
+      state.position.z = Math.max(0, Math.min(worldDepth, state.position.z));
 
-      // Clamp to arena bounds (arena-relative: 0 to width/height)
-      arenaRelativeX = Math.max(0, Math.min(bounds.width, arenaRelativeX));
-      arenaRelativeZ = Math.max(0, Math.min(bounds.height, arenaRelativeZ));
+      // Position in meters (x = lateral, y = forward/backward)
+      const newPosition = { x: state.position.x, y: state.position.z };
 
-      // Update physics position to match clamped position (keep in meters)
-      state.position.x = arenaRelativeX / pixelsPerMeter;
-      state.position.z = arenaRelativeZ / pixelsPerMeter;
-
-      // Convert to screen-absolute position by adding arena offset
-      const newX = arenaRelativeX + bounds.x;
-      const newY = arenaRelativeZ + bounds.y;
-
-      const newPosition = { x: newX, y: newY };
-
-      // Update velocity and speed state for render
+      // Velocity in m/s (x = lateral, y = forward/backward)
       const newVelocity = { x: state.velocity.x, y: state.velocity.z };
       const newSpeed = state.velocity.length();
 

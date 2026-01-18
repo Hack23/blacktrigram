@@ -147,7 +147,9 @@ describe("MovementPhysics", () => {
       expect(lateralSpeed).toBeLessThanOrEqual(4.0);
     });
 
-    it("should be 25% slower when moving backward", () => {
+    it("should have same speed in forward and backward directions", () => {
+      // Note: Backward speed multiplier was removed for responsive gameplay
+      // Contextual backward penalty should be applied by combat system based on facing
       const forwardInput: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -193,10 +195,10 @@ describe("MovementPhysics", () => {
       }
       const backwardSpeed = Math.abs(backwardState.velocity.z);
 
-      // Backward should be approximately 75% of forward speed
+      // Forward and backward should have same speed (no backward penalty in raw physics)
       const ratio = backwardSpeed / forwardSpeed;
-      expect(ratio).toBeGreaterThanOrEqual(0.7);
-      expect(ratio).toBeLessThanOrEqual(0.8);
+      expect(ratio).toBeGreaterThanOrEqual(0.95);
+      expect(ratio).toBeLessThanOrEqual(1.05);
     });
   });
 

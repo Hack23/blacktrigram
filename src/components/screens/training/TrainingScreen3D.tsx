@@ -267,33 +267,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Initial player position in pixel space (left side of arena, centered vertically)
-  // Matches CombatScreen pattern: positions are pixel-based, converted to 3D for rendering
-  const initialPosition = useMemo<Position>(
+  // Physics-first: initial position in METERS (relative to arena center)
+  // 25% from left = -0.25 * worldWidth from center
+  const initialPositionMeters = useMemo<Position>(
     () => ({
-      x: trainingAreaBounds.x + trainingAreaBounds.width * 0.25, // 25% from left
-      y: trainingAreaBounds.y + trainingAreaBounds.height * 0.5, // Centered vertically
+      x: trainingAreaBounds.worldWidthMeters * -0.25, // 25% left of center
+      y: 0, // Centered vertically
     }),
     [trainingAreaBounds],
   );
 
   // Player movement with physics-based acceleration and stance modifiers
-  // Speed modifiers from SpeedModifierSystem (matching CombatScreen pattern)
+  // All positions are in METERS - no pixel conversions
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
     enabled: true, // Always allow movement in training screen
     bounds: {
-      x: trainingAreaBounds.x,
-      y: trainingAreaBounds.y,
-      width: trainingAreaBounds.width,
-      height: trainingAreaBounds.height,
-      scale: trainingAreaBounds.scale, // Pass arena scale for proper pixel conversion
-      worldWidthMeters: trainingAreaBounds.worldWidthMeters, // Required for physics-first coordinate system
-      worldDepthMeters: trainingAreaBounds.worldDepthMeters, // Required for physics-first coordinate system
+      worldWidthMeters: trainingAreaBounds.worldWidthMeters,
+      worldDepthMeters: trainingAreaBounds.worldDepthMeters,
     },
     onPositionChange: (newPosition: Position) => {
       onPlayerUpdate({ position: newPosition });
     },
-    initialPosition,
-    moveSpeed: 300,
+    initialPositionMeters,
     // Physics parameters for realistic training movement (always enabled)
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
@@ -303,20 +298,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     accelerationOverride: speedModifiers.finalAcceleration,
   });
 
-  // Convert 2D pixel position to 3D world coordinates (matching CombatScreen pattern)
-  // Use physics-based arena dimensions for consistent 1:1 meter mapping
+  // Physics-first: playerPosition is already in METERS (x = lateral, y = forward/backward)
+  // Direct conversion to 3D world coordinates - no pixel math needed
   const player3DPosition = useMemo<[number, number, number]>(() => {
-    const relX =
-      (playerPosition.x - trainingAreaBounds.x) / trainingAreaBounds.width;
-    const relZ =
-      (playerPosition.y - trainingAreaBounds.y) / trainingAreaBounds.height;
-    // Use actual world dimensions from physics system (6-14m based on resolution)
-    const worldWidth = trainingAreaBounds.worldWidthMeters;
-    const worldDepth = trainingAreaBounds.worldDepthMeters;
-    const x = relX * worldWidth - worldWidth / 2;
-    const z = relZ * worldDepth - worldDepth / 2;
-    return [x, 0, z];
-  }, [playerPosition, trainingAreaBounds]);
+    // playerPosition.x is lateral position in meters (- = left, + = right)
+    // playerPosition.y is forward/backward position in meters (- = toward camera, + = away)
+    return [playerPosition.x, 0, playerPosition.y];
+  }, [playerPosition]);
 
   // Dummy position in meters (at 40% of arena width from center, right side)
   // Uses world dimensions for physics-consistent positioning
