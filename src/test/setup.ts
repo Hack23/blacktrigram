@@ -9,7 +9,7 @@ beforeAll(() => {
   // Mock APP_VERSION for tests
   // APP_VERSION is declared as a const in vite-env.d.ts but we need to set it in test environment
   // Using type assertion is necessary here to override the const declaration
-  (globalThis as any).APP_VERSION = "0.5.3";
+  (globalThis as unknown as { APP_VERSION: string }).APP_VERSION = "0.5.3";
 
   // Enhanced Audio mock with proper HTMLAudioElement that matches test expectations
   // Vitest 4.0 requires proper function/class constructors, not arrow functions
@@ -29,7 +29,7 @@ beforeAll(() => {
     src = "";
     crossOrigin = null;
     preload = "auto";
-    private eventListeners: Map<string, Set<(...args: any[]) => void>> =
+    private eventListeners: Map<string, Set<EventListenerOrEventListenerObject>> =
       new Map();
 
     constructor(src?: string) {
@@ -49,7 +49,7 @@ beforeAll(() => {
 
       // Track event listeners and trigger load events automatically
       this.addEventListener = vi.fn(
-        (event: string, handler: (...args: any[]) => void) => {
+        (event: string, handler: EventListenerOrEventListenerObject) => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
@@ -62,27 +62,31 @@ beforeAll(() => {
             event === "load"
           ) {
             queueMicrotask(() => {
-              handler();
+              if (typeof handler === "function") {
+                handler(new Event(event));
+              } else if (handler && typeof handler === "object") {
+                handler.handleEvent(new Event(event));
+              }
             });
           }
         }
       );
 
       this.removeEventListener = vi.fn(
-        (event: string, handler: (...args: any[]) => void) => {
+        (event: string, handler: EventListenerOrEventListenerObject) => {
           this.eventListeners.get(event)?.delete(handler);
         }
       );
     }
   }
 
-  global.HTMLAudioElement = MockHTMLAudioElement as any;
-  global.Audio = MockHTMLAudioElement as any;
+  global.HTMLAudioElement = MockHTMLAudioElement as unknown as typeof HTMLAudioElement;
+  global.Audio = MockHTMLAudioElement as unknown as typeof Audio;
 
   class MockHTMLCanvasElement {
     width = 800;
     height = 600;
-    style: Record<string, any> = {};
+    style: Record<string, string | number> = {};
     addEventListener: ReturnType<typeof vi.fn>;
     removeEventListener: ReturnType<typeof vi.fn>;
     getContext: ReturnType<typeof vi.fn>;
@@ -108,7 +112,7 @@ beforeAll(() => {
     stroke = vi.fn();
   }
 
-  global.CanvasRenderingContext2D = MockCanvasRenderingContext2D as any;
+  global.CanvasRenderingContext2D = MockCanvasRenderingContext2D as unknown as typeof CanvasRenderingContext2D;
 
   // Mock WebGL context for Three.js
   class MockWebGLRenderingContext {
@@ -159,7 +163,7 @@ beforeAll(() => {
     LINEAR = 0x2601;
   }
 
-  global.WebGLRenderingContext = MockWebGLRenderingContext as any;
+  global.WebGLRenderingContext = MockWebGLRenderingContext as unknown as typeof WebGLRenderingContext;
 
   // Update HTMLCanvasElement getContext to support WebGL
   class EnhancedMockHTMLCanvasElement extends MockHTMLCanvasElement {
@@ -180,8 +184,8 @@ beforeAll(() => {
     }
   }
 
-  global.HTMLCanvasElement = EnhancedMockHTMLCanvasElement as any;
-  (window as any).HTMLCanvasElement = EnhancedMockHTMLCanvasElement as any;
+  global.HTMLCanvasElement = EnhancedMockHTMLCanvasElement as unknown as typeof HTMLCanvasElement;
+  (window as unknown as { HTMLCanvasElement: typeof HTMLCanvasElement }).HTMLCanvasElement = EnhancedMockHTMLCanvasElement as unknown as typeof HTMLCanvasElement;
 
   // Mock requestAnimationFrame
   global.requestAnimationFrame = vi.fn((cb) => window.setTimeout(cb, 16));
@@ -212,8 +216,8 @@ beforeAll(() => {
     }
   }
 
-  global.ResizeObserver = MockResizeObserver as any;
-  (window as any).ResizeObserver = MockResizeObserver;
+  global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+  (window as unknown as { ResizeObserver: typeof ResizeObserver }).ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 
   // Console warning suppression for cleaner test output
   const originalWarn = console.warn;

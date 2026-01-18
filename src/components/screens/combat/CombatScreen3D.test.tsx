@@ -141,27 +141,37 @@ vi.mock("three", () => ({
     toArray() {
       return [this.x, this.y, this.z, this.order];
     }
-    setFromQuaternion(_q: any) {
+    setFromQuaternion(_q: { x: number; y: number; z: number; w: number }) {
       return this;
     }
   },
   Quaternion: class MockQuaternion {
     constructor(public x = 0, public y = 0, public z = 0, public w = 1) {}
-    setFromEuler(_e: any) {
+    setFromEuler(_e: { x: number; y: number; z: number; order?: string }) {
       return this;
     }
-    slerpQuaternions(_qa: any, _qb: any, _t: number) {
+    slerpQuaternions(
+      _qa: { x: number; y: number; z: number; w: number },
+      _qb: { x: number; y: number; z: number; w: number },
+      _t: number
+    ) {
       return this;
     }
-    setFromUnitVectors(_vFrom: any, _vTo: any) {
+    setFromUnitVectors(
+      _vFrom: { x: number; y: number; z: number },
+      _vTo: { x: number; y: number; z: number }
+    ) {
       return this;
     }
   },
   Raycaster: class MockRaycaster {
-    set(_origin: any, _direction: any) {
+    set(
+      _origin: { x: number; y: number; z: number },
+      _direction: { x: number; y: number; z: number }
+    ) {
       return this;
     }
-    intersectObject(_object: any) {
+    intersectObject(_object: object) {
       return [];
     }
     far = 1000;
@@ -197,8 +207,8 @@ vi.mock("three", () => ({
     dispose() {}
   },
   BufferGeometry: class MockBufferGeometry {
-    attributes: Record<string, any> = {};
-    setAttribute(name: string, attribute: any) {
+    attributes: Record<string, unknown> = {};
+    setAttribute(name: string, attribute: unknown) {
       this.attributes[name] = attribute;
       return this;
     }
