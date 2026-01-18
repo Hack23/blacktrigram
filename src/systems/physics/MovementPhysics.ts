@@ -196,13 +196,8 @@ export class MovementPhysics {
    */
   private readonly BASE_RUN_SPEED = 10.0;
 
-  /**
-   * Lateral movement speed (m/s) - side-stepping
-   * Faster strafing for combat positioning
-   *
-   * **Korean**: 측면 이동 속도 (Lateral Movement Speed)
-   */
-  private readonly LATERAL_SPEED = 5.0;
+  // LATERAL_SPEED removed - now using state.maxSpeed for all directions
+  // This ensures speed override applies to lateral movement too
 
   /**
    * Override for max speed from external speed modifier systems.
@@ -217,6 +212,11 @@ export class MovementPhysics {
    * **Korean**: 가속도 재정의 (Acceleration Override)
    */
   private _overrideAcceleration: number | null = null;
+
+  /**
+   * Debug frame counter for periodic logging.
+   */
+  private _debugFrameCount: number = 0;
 
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
@@ -273,8 +273,10 @@ export class MovementPhysics {
     // ✅ REMOVED backward multiplier: All directions use full speed for responsive gameplay
     // The backward penalty should be applied contextually by the combat system
     // based on player facing direction vs movement direction
+    // ✅ FIX: Both lateral and forward now use state.maxSpeed (which includes override)
+    // This ensures consistent speed in all movement directions
     this.tempTargetVelocity.set(
-      input.lateral * this.LATERAL_SPEED * stanceModifier * injuryPenalty,
+      input.lateral * state.maxSpeed * stanceModifier * injuryPenalty,
       0,
       input.forward * state.maxSpeed,
     );
@@ -357,6 +359,24 @@ export class MovementPhysics {
 
     // Calculate movement delta for this frame
     this.tempMovement.copy(state.velocity).multiplyScalar(deltaTime);
+
+    // DEBUG: Log physics calculations every 60 frames
+    this._debugFrameCount++;
+    if (this._debugFrameCount % 60 === 0) {
+      console.log("[Physics] Frame", this._debugFrameCount, {
+        input: {
+          forward: input.forward,
+          lateral: input.lateral,
+          isMoving: input.isMoving,
+        },
+        deltaTime: deltaTime.toFixed(4) + "s",
+        maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
+        velocity: state.velocity.length().toFixed(2) + " m/s",
+        movement: this.tempMovement.length().toFixed(4) + " m/frame",
+        position: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)})`,
+        overrideMaxSpeed: this._overrideMaxSpeed,
+      });
+    }
 
     // Apply tactical step quantization if enabled
     if (input.useTacticalSteps) {

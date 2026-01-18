@@ -70,6 +70,8 @@ export interface PlayerMovementResult {
   readonly velocity?: { x: number; y: number };
   /** Current speed magnitude in m/s */
   readonly speed?: number;
+  /** DEBUG: Frame count for diagnosing animation loop issues */
+  readonly debugFrameCount?: number;
 }
 
 /**
@@ -156,6 +158,19 @@ export function usePlayerMovement(
   const [initialTime] = useState(() => performance.now());
   const lastUpdateTime = useRef(initialTime);
   const animationFrameId = useRef<number | null>(null);
+
+  // Refs to track last reported position/velocity to avoid useCallback dependency issues
+  // This prevents the animation frame from being cancelled every frame due to callback recreation
+  const lastReportedPositionRef = useRef<Position>(initialPositionMeters);
+  const lastReportedVelocityRef = useRef<{ x: number; y: number } | undefined>(
+    undefined,
+  );
+  const lastReportedSpeedRef = useRef<number | undefined>(undefined);
+
+  // DEBUG: Frame counter and position tracking for diagnosing movement speed
+  const debugFrameCount = useRef(0);
+  const debugStartPos = useRef<{ x: number; y: number } | null>(null);
+  const debugStartTime = useRef<number | null>(null);
 
   // Calculate if currently moving
   const isMoving =
@@ -310,27 +325,51 @@ export function usePlayerMovement(
 
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
+
+      // DEBUG: Track frame count and position for real speed calculation
+      debugFrameCount.current += 1;
+      const posBeforeUpdate = { x: state.position.x, z: state.position.z };
+
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
       );
 
-      // DEBUG: Log movement data every 30 frames (~0.5s at 60fps)
+      const posAfterUpdate = { x: state.position.x, z: state.position.z };
+      const frameDelta = Math.sqrt(
+        Math.pow(posAfterUpdate.x - posBeforeUpdate.x, 2) +
+          Math.pow(posAfterUpdate.z - posBeforeUpdate.z, 2),
+      );
+
+      // DEBUG: Log movement data every ~60 frames (1s at 60fps)
       const DEBUG_MOVEMENT = true; // Enabled for debugging
-      if (DEBUG_MOVEMENT && Math.random() < 0.033) {
+      if (DEBUG_MOVEMENT && debugFrameCount.current % 60 === 0) {
         const speedMs = state.velocity.length();
         const expectedTimeToTraverse = 14.0 / Math.max(speedMs, 0.001);
+
+        // Calculate actual speed over last second
+        if (debugStartPos.current === null || debugStartTime.current === null) {
+          debugStartPos.current = { x: state.position.x, y: state.position.z };
+          debugStartTime.current = performance.now();
+        }
+        const elapsedSec = (performance.now() - debugStartTime.current) / 1000;
+        const totalDist = Math.sqrt(
+          Math.pow(state.position.x - debugStartPos.current.x, 2) +
+            Math.pow(state.position.z - debugStartPos.current.y, 2),
+        );
+        const actualSpeed = elapsedSec > 0 ? totalDist / elapsedSec : 0;
+
         console.warn("[Movement Debug]", {
+          frame: debugFrameCount.current,
           dt: clampedDeltaTimeMs.toFixed(1) + "ms",
-          velocity: speedMs.toFixed(2) + " m/s",
+          velocity: speedMs.toFixed(2) + " m/s (reported)",
+          actualSpeed: actualSpeed.toFixed(2) + " m/s (measured)",
+          frameDelta: frameDelta.toFixed(4) + " m/frame",
           maxSpeed: state.maxSpeed.toFixed(2) + " m/s",
           pos: `(${state.position.x.toFixed(2)}, ${state.position.z.toFixed(2)}) m`,
-          input: {
-            fwd: physicsInput.forward,
-            lat: physicsInput.lateral,
-            run: physicsInput.isRunning,
-          },
+          totalDist: totalDist.toFixed(2) + " m",
+          elapsedSec: elapsedSec.toFixed(2) + "s",
           overrides: {
             speed: maxSpeedOverride?.toFixed(2),
             accel: accelerationOverride?.toFixed(2),
@@ -338,6 +377,12 @@ export function usePlayerMovement(
           traverseTime:
             expectedTimeToTraverse.toFixed(1) + "s (expected for 14m)",
         });
+
+        // Reset tracking every 5 seconds
+        if (elapsedSec > 5) {
+          debugStartPos.current = { x: state.position.x, y: state.position.z };
+          debugStartTime.current = performance.now();
+        }
       }
 
       // Clamp position to arena bounds (in meters, centered at origin)
@@ -364,25 +409,37 @@ export function usePlayerMovement(
       const newVelocity = { x: state.velocity.x, y: state.velocity.z };
       const newSpeed = state.velocity.length();
 
-      if (
-        newPosition.x !== playerPosition.x ||
-        newPosition.y !== playerPosition.y
-      ) {
+      // DEBUG: Log position and velocity every frame to diagnose speed issue
+      if (debugFrameCount.current <= 10 || debugFrameCount.current % 30 === 0) {
+        console.warn(
+          `[Frame ${debugFrameCount.current}] Physics: pos=(${state.position.x.toFixed(3)}, ${state.position.z.toFixed(3)}), vel=${newSpeed.toFixed(2)} m/s, dt=${clampedDeltaTimeMs.toFixed(1)}ms`,
+        );
+      }
+
+      // Use refs for comparison to avoid recreating callback on every frame
+      // This prevents the animation frame from being cancelled due to useCallback recreation
+      const lastPos = lastReportedPositionRef.current;
+      if (newPosition.x !== lastPos.x || newPosition.y !== lastPos.y) {
+        lastReportedPositionRef.current = newPosition;
         setPlayerPosition(newPosition);
         onPositionChange?.(newPosition);
       }
 
       // Update velocity and speed if changed (with epsilon tolerance for floating-point stability)
       const EPSILON = 0.001;
+      const lastVel = lastReportedVelocityRef.current;
       const velocityChanged =
-        !velocity ||
-        Math.abs(velocity.x - newVelocity.x) > EPSILON ||
-        Math.abs(velocity.y - newVelocity.y) > EPSILON;
+        !lastVel ||
+        Math.abs(lastVel.x - newVelocity.x) > EPSILON ||
+        Math.abs(lastVel.y - newVelocity.y) > EPSILON;
       if (velocityChanged) {
+        lastReportedVelocityRef.current = newVelocity;
         setVelocity(newVelocity);
       }
       // Initialize speed when undefined, then update only on significant changes
-      if (speed === undefined || Math.abs(speed - newSpeed) > EPSILON) {
+      const lastSpd = lastReportedSpeedRef.current;
+      if (lastSpd === undefined || Math.abs(lastSpd - newSpeed) > EPSILON) {
+        lastReportedSpeedRef.current = newSpeed;
         setSpeed(newSpeed);
       }
     }
@@ -395,9 +452,13 @@ export function usePlayerMovement(
     } else {
       animationFrameId.current = null;
     }
+    // NOTE: playerPosition, velocity, speed intentionally excluded from deps
+    // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef)
+    // for comparison to prevent animation frame cancellation on every state update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
-    playerPosition,
+    // playerPosition - excluded, using ref
     keyState,
     bounds,
     onPositionChange,
@@ -406,8 +467,8 @@ export function usePlayerMovement(
     legInjuryFactor,
     isRunningProp,
     useTacticalSteps,
-    velocity,
-    speed,
+    // velocity - excluded, using ref
+    // speed - excluded, using ref
     maxSpeedOverride,
     accelerationOverride,
   ]);
@@ -458,6 +519,7 @@ export function usePlayerMovement(
     isKeyPressed,
     velocity,
     speed,
+    debugFrameCount: debugFrameCount.current,
   };
 }
 

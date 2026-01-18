@@ -111,9 +111,9 @@ describe("CombatPhysicsIntegration", () => {
       // Should not be able to run
       expect(modifiers.canRun).toBe(false);
 
-      // Base speed for RUNNING is still 7.0m/s, but canRun flag should prevent it
+      // Base speed for RUNNING is 10.0m/s (updated for responsive combat)
       // The speed modifier system returns the running speed but sets canRun=false
-      expect(modifiers.baseSpeed).toBe(7.0); // BASE_RUNNING_SPEED
+      expect(modifiers.baseSpeed).toBe(10.0); // BASE_RUNNING_SPEED (updated from 7.0)
     });
 
     it("should combine stance modifier with injury and combat state", () => {
