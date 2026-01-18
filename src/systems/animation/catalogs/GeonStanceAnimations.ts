@@ -18,32 +18,7 @@
 import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
-
-/**
- * Anatomical safety constants for Geon (Heaven) trigram animations
- *
- * These limits ensure joint rotations remain within safe physiological ranges
- * while maintaining powerful, dramatic animation for Geon's bone-breaking techniques.
- */
-const ANATOMICAL_LIMITS = {
-  /**
-   * Maximum safe elbow bend: ±125° (±2.18 radians)
-   * 
-   * Typical elbow flexion limit is 145-160°, making 125° a conservative
-   * threshold that prevents joint constraint violations while allowing
-   * powerful chambering positions for overhead strikes.
-   */
-  MAX_ELBOW_BEND: 2.18, // ±125° in radians
-  
-  /**
-   * Maximum safe shoulder overhead rotation: -135° (-2.35 radians)
-   * 
-   * Shoulder flexion limit is approximately 150-180°, making -135° a safe
-   * threshold for dramatic overhead positioning without risking constraint
-   * violations in the skeletal system.
-   */
-  MAX_SHOULDER_OVERHEAD: -2.35, // -135° in radians
-} as const;
+import { ANATOMICAL_LIMITS } from "../constants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☰ GEON IDLE BREATHING ANIMATION (건괘 호흡 자세)
@@ -391,10 +366,10 @@ export const GEON_OVERHEAD_HAMMER: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     // Frame 7: Near-maximum overhead chamber (350ms)
     .at(0.35)
-    .rotate(BoneName.SHOULDER_L, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
-    .rotate(BoneName.SHOULDER_R, ANATOMICAL_LIMITS.MAX_SHOULDER_OVERHEAD, -0.35, -0.7) // -135°, -20°, -40°
-    .rotate(BoneName.ELBOW_L, 0, 0, -ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // -125° strong bend within safe limit
-    .rotate(BoneName.ELBOW_R, 0, 0, ANATOMICAL_LIMITS.MAX_ELBOW_BEND) // 125° strong bend within safe limit
+    .rotate(BoneName.SHOULDER_L, ANATOMICAL_LIMITS.SHOULDER.MAX_OVERHEAD, 0.35, 0.7) // -135°, 20°, 40° powerful overhead
+    .rotate(BoneName.SHOULDER_R, ANATOMICAL_LIMITS.SHOULDER.MAX_OVERHEAD, -0.35, -0.7) // -135°, -20°, -40°
+    .rotate(BoneName.ELBOW_L, 0, 0, -ANATOMICAL_LIMITS.ELBOW.MAX_BEND) // -125° strong bend within safe limit
+    .rotate(BoneName.ELBOW_R, 0, 0, ANATOMICAL_LIMITS.ELBOW.MAX_BEND) // 125° strong bend within safe limit
     .rotate(BoneName.WRIST_L, -0.17, 0, 0) // -10° wrists cocked
     .rotate(BoneName.WRIST_R, -0.17, 0, 0) // -10°
     .rotate(BoneName.SPINE_UPPER, -0.26, 0, 0) // -15° back lean

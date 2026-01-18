@@ -24,31 +24,6 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * These limits ensure joint rotations remain within safe physiological ranges
  * while maintaining powerful, grounded animation for Gon's throwing techniques.
  */
-export const ANATOMICAL_LIMITS_GON_STANCE = {
-  /**
-   * Maximum safe knee bend for deep stances: 130° (2.27 radians)
-   * 
-   * Deep knee bends for Ssireum stance require 110-130° flexion.
-   * This maintains low center of gravity while preventing joint strain.
-   */
-  MAX_KNEE_BEND: 2.27, // 130° in radians
-  
-  /**
-   * Maximum safe hip flexion for throws: 110° (1.92 radians)
-   * 
-   * Hip flexion for lifting and throwing motions. Safe range for
-   * power generation without risking lower back strain.
-   */
-  MAX_HIP_FLEXION: 1.92, // 110° in radians
-  
-  /**
-   * Maximum safe ankle dorsiflexion: 20° (0.35 radians)
-   * 
-   * Ankle flexibility for maintaining balance during throws and sweeps.
-   * Conservative limit for stable weight transfer.
-   */
-  MAX_ANKLE_DORSIFLEX: 0.35, // 20° in radians
-} as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ☷ GON IDLE GROUNDED ANIMATION (곤괘 대지 자세)

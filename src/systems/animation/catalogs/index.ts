@@ -221,7 +221,6 @@ export {
 
 // Gon (Earth) trigram-specific animations
 export {
-  ANATOMICAL_LIMITS_GON_STANCE,
   GON_HEAVY_GROUNDING_STEP,
   GON_IDLE_SSIREUM_STANCE,
   GON_SWEEP_POSITIONING_STEP,
