@@ -1,9 +1,9 @@
 /**
  * TrainingAI - AI opponent system for training mode
- * 
+ *
  * Integrates AIPersonality, DecisionTree, and ComboSystem to create
  * a configurable AI opponent for training scenarios.
- * 
+ *
  * **Korean Philosophy (훈련 AI 철학)**:
  * - 단계적 난이도 (Stepped Difficulty): Progressive challenge levels
  * - 교육적 피드백 (Educational Feedback): AI teaches through behavior
@@ -12,10 +12,10 @@
 
 import { Position, TrigramStance } from "@/types";
 import { PlayerState } from "../player";
-import { AIPersonality, AI_PERSONALITIES } from "./AIPersonality";
-import { AIDecisionTree, CombatContext, AIDecision } from "./DecisionTree";
-import { AIComboSystem } from "./ComboSystem";
 import { AdaptiveDifficulty } from "./AdaptiveDifficulty";
+import { AIPersonality, AI_PERSONALITIES } from "./AIPersonality";
+import { AIComboSystem } from "./ComboSystem";
+import { AIDecision, AIDecisionTree, CombatContext } from "./DecisionTree";
 
 /**
  * Training AI difficulty levels
@@ -75,7 +75,7 @@ const DIFFICULTY_CONFIGS: Record<AITrainingDifficulty, DifficultyConfig> = {
 
 /**
  * TrainingAI System
- * 
+ *
  * Manages AI opponent behavior in training mode using existing AI systems.
  * Provides configurable difficulty and realistic martial arts behavior.
  */
@@ -89,11 +89,11 @@ export class TrainingAI {
   constructor(
     difficulty: AITrainingDifficulty = "medium",
     initialPosition: Position = { x: 5, y: 0 },
-    personalityKey?: string
+    personalityKey?: string,
   ) {
     // Select personality based on difficulty or use provided key
     const personality = personalityKey
-      ? AI_PERSONALITIES[personalityKey] ?? AI_PERSONALITIES.BALANCED_FIGHTER
+      ? (AI_PERSONALITIES[personalityKey] ?? AI_PERSONALITIES.BALANCED_FIGHTER)
       : this.selectPersonalityForDifficulty(difficulty);
 
     const config = DIFFICULTY_CONFIGS[difficulty];
@@ -123,7 +123,7 @@ export class TrainingAI {
    * Select appropriate personality for difficulty level
    */
   private selectPersonalityForDifficulty(
-    difficulty: AITrainingDifficulty
+    difficulty: AITrainingDifficulty,
   ): AIPersonality {
     switch (difficulty) {
       case "easy":
@@ -161,10 +161,10 @@ export class TrainingAI {
 
   /**
    * Update AI behavior (60fps game loop)
-   * 
+   *
    * Internal method called each frame by the TrainingAI system to process AI decision-making and update state.
    * Respects reaction time delays based on difficulty level.
-   * 
+   *
    * @param deltaTime - Time since last frame in seconds
    * @param playerState - Current player state
    * @param aiPlayerState - Current AI player state (for combat systems)
@@ -173,7 +173,7 @@ export class TrainingAI {
   update(
     deltaTime: number,
     playerState: PlayerState,
-    aiPlayerState: PlayerState
+    aiPlayerState: PlayerState,
   ): AIDecision | null {
     if (!this.state.isActive) {
       return null;
@@ -182,7 +182,10 @@ export class TrainingAI {
     const now = Date.now();
 
     // Update action delay timer
-    this.actionDelayTimer = Math.max(0, this.actionDelayTimer - deltaTime * 1000);
+    this.actionDelayTimer = Math.max(
+      0,
+      this.actionDelayTimer - deltaTime * 1000,
+    );
 
     // Check if enough time has passed since last decision (reaction time)
     if (this.actionDelayTimer > 0) {
@@ -204,7 +207,7 @@ export class TrainingAI {
       playerStance: this.state.stance,
       distanceToOpponent: this.calculateDistance(
         this.state.position,
-        playerState.position
+        playerState.position,
       ),
       timeInMatch: (now - this.state.lastActionTime) / 1000,
       isOpponentAttacking: this.isPlayerAttacking(playerState),
@@ -214,19 +217,21 @@ export class TrainingAI {
         y: -6,
         width: 16,
         height: 12,
+        worldWidthMeters: 10, // Training area is 10m wide
+        worldDepthMeters: 7.5, // Training area is 7.5m deep (4:3 ratio)
       },
     };
 
     // Get adjusted personality from adaptive difficulty
     const adjustedPersonality = this.adjustPersonalityForTraining(
-      this.state.personality
+      this.state.personality,
     );
 
     // Make decision using decision tree
     const decision = this.decisionTree.makeDecision(
       context,
       adjustedPersonality,
-      this.comboSystem
+      this.comboSystem,
     );
 
     // Apply reaction time delay for next action
@@ -246,14 +251,15 @@ export class TrainingAI {
    * Adjust personality based on training context
    */
   private adjustPersonalityForTraining(
-    basePersonality: AIPersonality
+    basePersonality: AIPersonality,
   ): AIPersonality {
     const config = DIFFICULTY_CONFIGS[this.state.difficulty];
 
     // Apply difficulty multiplier to aggression
     return {
       ...basePersonality,
-      aggressionLevel: basePersonality.aggressionLevel * config.aggressionMultiplier,
+      aggressionLevel:
+        basePersonality.aggressionLevel * config.aggressionMultiplier,
       defensePreference:
         basePersonality.defensePreference * (2 - config.aggressionMultiplier),
     };

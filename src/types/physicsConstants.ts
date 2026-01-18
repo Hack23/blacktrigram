@@ -82,19 +82,103 @@ export const METERS_TO_PIXELS_SCALE = 100 as const;
 export const METERS_TO_TRAINING_UNITS = 1.0 as const;
 
 /**
- * Standard arena sizes in meters (all square).
+ * Standard arena sizes in meters (4:3 aspect ratio).
  *
  * @public
  */
 export const ARENA_SIZE_METERS = {
-  /** Small screens (< 768px): 6m × 6m */
+  /** Small screens (< 768px): 6m × 4.5m */
   SMALL: 6,
-  /** Medium screens (768-1199px): 8m × 8m */
+  /** Medium screens (768-1199px): 8m × 6m */
   MEDIUM: 8,
-  /** Large screens (1200-1919px): 10m × 10m */
+  /** Large screens (1200-1919px): 10m × 7.5m */
   LARGE: 10,
-  /** XLarge screens (1920-2559px): 12m × 12m */
+  /** XLarge screens (1920-2559px): 12m × 9m */
   XLARGE: 12,
-  /** Ultra screens (≥ 2560px): 14m × 14m */
+  /** Ultra screens (≥ 2560px): 14m × 10.5m */
   ULTRA: 14,
+} as const;
+
+/**
+ * Combat ranges in METERS for physics-first system.
+ *
+ * **Korean**: 전투범위미터 (Combat Ranges in Meters)
+ *
+ * These values define combat distance thresholds for AI decision-making
+ * and hit detection. Use these instead of pixel-based COMBAT_RANGES.
+ *
+ * @public
+ */
+export const COMBAT_RANGES_METERS = {
+  /** Melee range: very close, grappling distance (0.5m) */
+  MELEE: 0.5,
+  /** Close range: punching/elbow distance (0.8m) */
+  CLOSE: 0.8,
+  /** Medium range: kicking distance (1.2m) */
+  MEDIUM: 1.2,
+  /** Long range: max attack distance (2.0m) */
+  LONG: 2.0,
+  /** Maximum range: engagement distance (3.0m) */
+  MAX: 3.0,
+} as const;
+
+/**
+ * AI movement constants in METERS for physics-first system.
+ *
+ * **Korean**: AI이동상수미터 (AI Movement Constants in Meters)
+ *
+ * @public
+ */
+export const AI_MOVEMENT_METERS = {
+  /** Step size for AI movement (0.5m per step) */
+  STEP_SIZE: 0.5,
+  /** Minimum distance threshold to avoid division by zero */
+  MIN_DISTANCE_THRESHOLD: 0.05,
+  /** Horizontal arena margin (based on character width ~0.6m) */
+  ARENA_MARGIN_X: 0.6,
+  /** Vertical arena margin (based on character depth ~1.8m for movement) */
+  ARENA_MARGIN_Y: 1.8,
+  /** Flanking offset base (0.4m) */
+  FLANK_OFFSET_BASE: 0.4,
+  /** Flanking offset random range (0.2m) */
+  FLANK_OFFSET_RANDOM: 0.2,
+} as const;
+
+/**
+ * Player starting positions as PERCENTAGES of arena dimensions.
+ *
+ * **Korean**: 시작위치비율 (Starting Position Ratios)
+ *
+ * Use these ratios with arena dimensions to calculate starting positions:
+ * - playerStartX = arenaX + (arenaWidth * PLAYER_START_POSITIONS.PLAYER1_X)
+ *
+ * @public
+ */
+export const PLAYER_START_POSITIONS = {
+  /** Player 1 starts at 25% from left edge */
+  PLAYER1_X: 0.25,
+  /** Player 2 starts at 75% from left edge */
+  PLAYER2_X: 0.75,
+  /** Both players start at 50% depth (center vertically) */
+  CENTER_Y: 0.5,
+} as const;
+
+/**
+ * AI personality optimal ranges in METERS.
+ *
+ * **Korean**: AI성격최적범위미터 (AI Personality Optimal Ranges in Meters)
+ *
+ * @public
+ */
+export const AI_OPTIMAL_RANGE_METERS = {
+  /** Musa - Traditional warrior: close quarters */
+  MUSA: 0.5,
+  /** Amsalja - Shadow assassin: stealth melee */
+  AMSALJA: 0.4,
+  /** Hacker - Cyber warrior: mid-range analysis */
+  HACKER: 1.2,
+  /** Jeongbo Yowon - Intelligence operative: tactical mid-range */
+  JEONGBO_YOWON: 0.8,
+  /** Jojik Pokryeokbae - Organized crime: brutal close combat */
+  JOJIK: 0.6,
 } as const;
