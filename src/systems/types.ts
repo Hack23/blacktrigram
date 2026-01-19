@@ -253,6 +253,7 @@ export interface SystemEvent {
   readonly type: string;
   readonly timestamp: number;
   readonly source: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Event data varies by event type
   readonly data: Record<string, any>;
 }
 
@@ -269,6 +270,10 @@ export interface EventBusInterface {
 }
 
 // Define system interfaces without importing (to avoid circular deps)
+// These interfaces use `any` to avoid circular dependency issues between
+// systems (combat, vital point, trigram) that reference each other's types.
+// Proper typing would require extracting shared types to a separate module.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CombatSystemInterface {
   calculateDamage: (
     technique: any,
@@ -343,6 +348,7 @@ export interface GameSystemManager {
   readonly inputSystem: InputSystemInterface;
   readonly audioSystem: AudioSystemInterface;
   readonly animationSystem?: AnimationSystemInterface;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   readonly physicsSystem?: PhysicsSystemInterface;
   readonly renderingSystem?: RenderingSystemInterface;
   readonly eventBus: EventBusInterface;
@@ -1218,6 +1224,7 @@ export interface InputEvent {
 export interface CombatInput {
   readonly player: number;
   readonly action: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Combat input data varies by action type
   readonly data?: any;
 }
 

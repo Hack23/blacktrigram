@@ -25,6 +25,7 @@
 
 import type { BodyFacing } from "@/systems/animation/core/types";
 import { StatusEffect } from "@/systems/types";
+import type { VitalPoint } from "@/systems/vitalpoint/types";
 import {
   CombatState,
   KoreanText,
@@ -395,9 +396,9 @@ export interface MinimalPlayerState {
   lastActionTime: number;
   recoveryTime: number;
   lastStanceChangeTime: number;
-  statusEffects: any[];
-  activeEffects: any[];
-  vitalPoints: any[];
+  statusEffects: StatusEffect[];
+  activeEffects: StatusEffect[];
+  vitalPoints: VitalPoint[];
   totalDamageReceived: number;
   totalDamageDealt: number;
   hitsTaken: number;

@@ -105,6 +105,7 @@ export type Callback<T = void> = () => T;
  * @public
  * @category Core Types
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic default allows flexible event handling
 export type EventHandler<T = any> = (event: T) => void;
 
 /**
@@ -415,6 +416,7 @@ export interface Theme {
  * @category Core Types
  */
 export interface Config {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Config values can be of various types
   readonly [key: string]: any;
 }
 

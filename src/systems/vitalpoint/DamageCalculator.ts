@@ -50,13 +50,13 @@ export class DamageCalculator {
     vitalPoint: VitalPoint,
     baseDamage: number,
     attacker: PlayerState,
-    accuracy: number
+    accuracy: number,
   ): DamageResult {
     const effects: StatusEffect[] = [];
 
     // Fix: Use static method call instead of this
     const archetypeModifier = DamageCalculator.getArchetypeModifier(
-      attacker.archetype
+      attacker.archetype,
     );
     const techniqueEffectiveness = accuracy;
 
@@ -64,7 +64,7 @@ export class DamageCalculator {
       1,
       (vitalPoint.baseDamage ?? vitalPoint.damage?.min ?? baseDamage) *
         archetypeModifier *
-        techniqueEffectiveness
+        techniqueEffectiveness,
     );
 
     // Create status effects from vital point
@@ -72,6 +72,7 @@ export class DamageCalculator {
       const statusEffect: StatusEffect = {
         id: `${effect.id}_${Date.now()}`,
         type: "weakened", // Map to valid EffectType
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- EffectIntensity type mapping from vital point effect
         intensity: "moderate" as any,
         duration: effect.duration,
         description: effect.description,
@@ -118,12 +119,12 @@ export class DamageCalculator {
     technique: KoreanTechnique,
     attacker: PlayerState,
     vitalPoint: VitalPoint | null,
-    accuracy: number
+    accuracy: number,
   ): DamageResult {
     // Fix: Remove unused baseDamage variable and use technique.damage directly
     const effects: StatusEffect[] = [];
     const archetypeModifier = DamageCalculator.getArchetypeModifier(
-      attacker.archetype
+      attacker.archetype,
     );
 
     let finalDamage = (technique.damage ?? 15) * archetypeModifier * accuracy;
@@ -138,6 +139,7 @@ export class DamageCalculator {
         const statusEffect: StatusEffect = {
           id: `${effect.id}_${Date.now()}`,
           type: "weakened",
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- EffectIntensity type mapping from vital point effect
           intensity: "moderate" as any,
           duration: effect.duration,
           description: effect.description,
@@ -164,14 +166,14 @@ export class DamageCalculator {
   static calculateDamageReduction(
     incomingDamage: number,
     defenderDefense: number,
-    isBlocking: boolean = false
+    isBlocking: boolean = false,
   ): number {
     const blockMultiplier = isBlocking ? 0.5 : 1.0;
     const defenseReduction = Math.min(0.8, defenderDefense / 200); // Max 80% reduction
 
     return Math.max(
       1,
-      incomingDamage * (1 - defenseReduction) * blockMultiplier
+      incomingDamage * (1 - defenseReduction) * blockMultiplier,
     );
   }
 
@@ -181,7 +183,7 @@ export class DamageCalculator {
   static calculateCriticalChance(
     baseCritChance: number,
     attacker: PlayerState,
-    technique: KoreanTechnique
+    technique: KoreanTechnique,
   ): number {
     const archetypeBonus =
       DamageCalculator.getArchetypeModifier(attacker.archetype) * 0.1;
@@ -260,7 +262,7 @@ export class DamageCalculator {
     currentHour: number,
     meridianStates: Record<string, number>,
     hipRotationAngle: number = 0,
-    kickHipState?: HipRotationState
+    kickHipState?: HipRotationState,
   ): DamageResult {
     // 1. Base damage from technique
     const attackerStrength = attacker.attackPower || 50;
@@ -270,12 +272,12 @@ export class DamageCalculator {
     // 2. Stance effectiveness (攻克关系)
     const stanceEffectiveness = TrigramCalculator.calculateStanceEffectiveness(
       attacker.currentStance,
-      defender.currentStance
+      defender.currentStance,
     );
 
     // 3. Vital point severity multiplier
     const vitalPointMultiplier = vitalPointHit.vitalPointHit
-      ? DamageCalculator.SEVERITY_MULTIPLIERS[vitalPointHit.severity] ?? 1
+      ? (DamageCalculator.SEVERITY_MULTIPLIERS[vitalPointHit.severity] ?? 1)
       : 1;
 
     // 4. Accuracy bonus (better aim = more damage)
@@ -289,20 +291,20 @@ export class DamageCalculator {
     const meridianBonus = DamageCalculator.calculateMeridianDamageBonus(
       vitalPointHit.vitalPointHit?.id ?? "",
       currentHour,
-      meridianStates
+      meridianStates,
     );
 
     // 6. Time-of-day bonus (Dark Ops techniques at night)
     const timeBonus = DamageCalculator.calculateTimeBonus(
       technique,
-      currentHour
+      currentHour,
     );
 
     // 7. Archetype-specific bonus
     const archetypeBonus = DamageCalculator.getArchetypeDamageBonus(
       attacker.archetype,
       technique,
-      vitalPointHit.vitalPointHit
+      vitalPointHit.vitalPointHit,
     );
 
     // 8. Hip rotation power modifier (허리회전 파워 보너스)
@@ -320,7 +322,7 @@ export class DamageCalculator {
       const kickType = DamageCalculator.determineKickType(techniqueName);
       hipRotationModifier = calculateKickPowerFromHipRotation(
         kickHipState,
-        kickType
+        kickType,
       );
     } else if (hipRotationAngle !== 0) {
       // Use general hip rotation for strikes/throws/joints (up to 30% bonus)
@@ -328,11 +330,11 @@ export class DamageCalculator {
         technique.type === "throw"
           ? "throw"
           : technique.type === "joint_lock"
-          ? "joint"
-          : "strike";
+            ? "joint"
+            : "strike";
       hipRotationModifier = calculateHipRotationPowerModifier(
         hipRotationAngle,
-        techniqueType
+        techniqueType,
       );
     }
 
@@ -361,7 +363,7 @@ export class DamageCalculator {
     const finalDamage = DamageCalculator.calculateDamageReduction(
       totalDamage,
       defenderDefense,
-      false
+      false,
     );
 
     // 13. Combine effects from vital point hit
@@ -438,7 +440,7 @@ export class DamageCalculator {
   private static calculateMeridianDamageBonus(
     vitalPointId: string,
     currentHour: number,
-    meridianStates: Record<string, number>
+    meridianStates: Record<string, number>,
   ): number {
     if (!vitalPointId) return 1;
 
@@ -481,7 +483,7 @@ export class DamageCalculator {
    */
   private static calculateTimeBonus(
     technique: KoreanTechnique,
-    currentHour: number
+    currentHour: number,
   ): number {
     // Dark Ops techniques get +20% at night (20:00-05:59)
     // Check if technique has dark_ops or stealth in its ID or type
@@ -525,7 +527,7 @@ export class DamageCalculator {
   private static getArchetypeDamageBonus(
     archetype: PlayerArchetype,
     technique: KoreanTechnique,
-    vitalPoint?: VitalPoint
+    vitalPoint?: VitalPoint,
   ): number {
     // Base archetype modifier
     let bonus = DamageCalculator.getArchetypeModifier(archetype);

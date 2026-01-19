@@ -151,6 +151,7 @@ export class PerformanceMonitor {
    * Get current memory usage in MB (Chrome only)
    */
   private getMemoryUsageMB(): number {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Chrome-specific performance.memory API not in standard TS types
     const perf = performance as any;
     if (perf.memory) {
       return perf.memory.usedJSHeapSize / 1024 / 1024;
@@ -235,7 +236,7 @@ export class PerformanceMonitor {
  * Create a performance monitor with optional custom thresholds
  */
 export function createPerformanceMonitor(
-  thresholds?: Partial<PerformanceThresholds>
+  thresholds?: Partial<PerformanceThresholds>,
 ): PerformanceMonitor {
   return new PerformanceMonitor(thresholds);
 }

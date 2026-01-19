@@ -158,6 +158,7 @@ export class CollisionDetection {
   checkAttackHit(
     attackerPosition: Position3D,
     defenderPosition: Position3D,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Technique object has dynamic properties from combat system
     technique: { type?: string; [key: string]: any },
     attackerStance: TrigramStance,
     targetRegion: AnatomicalRegionPhysics,
