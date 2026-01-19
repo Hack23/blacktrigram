@@ -306,6 +306,9 @@ export function usePlayerAnimation(
   }, [stateMachine]);
 
   // Memoize the return value to ensure stable reference unless state/frame changes
+  // Note: Using ref.current as dependencies is intentional here - when state changes,
+  // forceUpdate triggers a re-render, and the refs have new values which cause
+  // the useMemo to recalculate
   return useMemo(
     () => ({
       currentState: prevStateRef.current,
@@ -319,6 +322,10 @@ export function usePlayerAnimation(
       reset,
     }),
     [
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
+      prevStateRef.current,
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
+      prevFrameRef.current,
       update,
       transitionTo,
       transitionToStanceGuard,
