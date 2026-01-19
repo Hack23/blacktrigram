@@ -1,33 +1,44 @@
 /**
  * Unit tests for useKeyboardControls hook
- * 
+ *
  * @module hooks/useKeyboardControls.test
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { useKeyboardControls, UseKeyboardControlsProps } from "./useKeyboardControls";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from "vitest";
+import {
+  useKeyboardControls,
+  UseKeyboardControlsProps,
+} from "./useKeyboardControls";
 
 describe("useKeyboardControls", () => {
-  let onStanceChange: ReturnType<typeof vi.fn>;
-  let onAction: ReturnType<typeof vi.fn>;
-  let playSFX: ReturnType<typeof vi.fn>;
-  let onToggleHints: ReturnType<typeof vi.fn>;
+  let onStanceChange: Mock<(stance: number) => void>;
+  let onAction: Mock<(action: string) => void>;
+  let playSFX: Mock<(soundId: string) => void>;
+  let onToggleHints: Mock<() => void>;
 
   const defaultProps: UseKeyboardControlsProps = {
-    onStanceChange: vi.fn(),
-    onAction: vi.fn(),
+    onStanceChange: vi.fn<(stance: number) => void>(),
+    onAction: vi.fn<(action: string) => void>(),
     enabled: true,
     currentStance: 0,
-    playSFX: vi.fn(),
-    onToggleHints: vi.fn(),
+    playSFX: vi.fn<(soundId: string) => void>(),
+    onToggleHints: vi.fn<() => void>(),
   };
 
   beforeEach(() => {
-    onStanceChange = vi.fn();
-    onAction = vi.fn();
-    playSFX = vi.fn();
-    onToggleHints = vi.fn();
+    onStanceChange = vi.fn<(stance: number) => void>();
+    onAction = vi.fn<(action: string) => void>();
+    playSFX = vi.fn<(soundId: string) => void>();
+    onToggleHints = vi.fn<() => void>();
 
     // Mock localStorage
     const localStorageMock: Record<string, string> = {};
@@ -54,7 +65,7 @@ describe("useKeyboardControls", () => {
           ...defaultProps,
           onStanceChange,
           onAction,
-        })
+        }),
       );
 
       expect(result.current.queuedInputs).toEqual([]);
@@ -67,7 +78,7 @@ describe("useKeyboardControls", () => {
           ...defaultProps,
           onStanceChange,
           onAction,
-        })
+        }),
       );
 
       expect(typeof result.current.toggleHints).toBe("function");
@@ -82,7 +93,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           playSFX,
-        })
+        }),
       );
 
       act(() => {
@@ -101,7 +112,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           currentStance: 0,
-        })
+        }),
       );
 
       act(() => {
@@ -125,7 +136,7 @@ describe("useKeyboardControls", () => {
           onAction,
           currentStance: 2, // Currently on stance 3 (0-indexed)
           playSFX,
-        })
+        }),
       );
 
       act(() => {
@@ -146,7 +157,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           currentStance: 0,
-        })
+        }),
       );
 
       // First stance change
@@ -189,7 +200,7 @@ describe("useKeyboardControls", () => {
           onAction,
           onToggleHints,
           playSFX,
-        })
+        }),
       );
 
       expect(result.current.showHints).toBe(false);
@@ -218,7 +229,7 @@ describe("useKeyboardControls", () => {
           ...defaultProps,
           onStanceChange,
           onAction,
-        })
+        }),
       );
 
       // Open hints first
@@ -246,7 +257,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           playSFX,
-        })
+        }),
       );
 
       act(() => {
@@ -265,7 +276,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           playSFX,
-        })
+        }),
       );
 
       act(() => {
@@ -283,7 +294,7 @@ describe("useKeyboardControls", () => {
           ...defaultProps,
           onStanceChange,
           onAction,
-        })
+        }),
       );
 
       const movementKeys = ["w", "a", "s", "d"];
@@ -313,7 +324,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           playSFX,
-        })
+        }),
       );
 
       // Vital points overlay (v)
@@ -350,7 +361,7 @@ describe("useKeyboardControls", () => {
           ...defaultProps,
           onStanceChange,
           onAction,
-        })
+        }),
       );
 
       act(() => {
@@ -370,7 +381,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           currentStance: 0,
-        })
+        }),
       );
 
       // Add 4 inputs
@@ -395,7 +406,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           currentStance: 0,
-        })
+        }),
       );
 
       // Add first input
@@ -428,7 +439,7 @@ describe("useKeyboardControls", () => {
           onStanceChange,
           onAction,
           enabled: false,
-        })
+        }),
       );
 
       act(() => {
@@ -440,17 +451,14 @@ describe("useKeyboardControls", () => {
     });
 
     it("should resume processing when re-enabled", () => {
-      const { rerender } = renderHook(
-        (props) => useKeyboardControls(props),
-        {
-          initialProps: {
-            ...defaultProps,
-            onStanceChange,
-            onAction,
-            enabled: false,
-          },
-        }
-      );
+      const { rerender } = renderHook((props) => useKeyboardControls(props), {
+        initialProps: {
+          ...defaultProps,
+          onStanceChange,
+          onAction,
+          enabled: false,
+        },
+      });
 
       // Try while disabled
       act(() => {

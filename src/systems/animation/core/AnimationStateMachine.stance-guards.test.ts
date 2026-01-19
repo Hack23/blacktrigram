@@ -9,13 +9,13 @@
  * @korean 자세방어애니메이션상태머신테스트
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import {
-  PlayerAnimationStateMachine,
-  DEFAULT_ANIMATION_CONFIGS,
-} from "./AnimationStateMachine";
 import { TrigramStance } from "@/types/common";
-import type { AnimationState } from "./types";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  DEFAULT_ANIMATION_CONFIGS,
+  PlayerAnimationStateMachine,
+} from "./AnimationStateMachine";
+import { AnimationState } from "./types";
 
 describe("AnimationStateMachine - Stance Guard Extensions", () => {
   let machine: PlayerAnimationStateMachine;
@@ -33,7 +33,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
     });
 
     it("should transition from walk to stance guard", () => {
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
       machine.update(0.001); // Let it start
 
       // Walk has priority 1, stance guards have priority 0 (IDLE)
@@ -48,7 +48,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
         expect(machine.getCurrentState()).toBe("stance_guard_tae");
       } else {
         // Expected to fail due to priority
-        expect(machine.getCurrentState()).toBe("walk");
+        expect(machine.getCurrentState()).toBe(AnimationState.WALK);
       }
     });
 
@@ -82,9 +82,11 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
     });
 
     it("should fail for invalid stance", () => {
-      const success = machine.transitionToStanceGuard("invalid_stance" as TrigramStance);
+      const success = machine.transitionToStanceGuard(
+        "invalid_stance" as TrigramStance,
+      );
       expect(success).toBe(false);
-      expect(machine.getCurrentState()).toBe("idle"); // Should remain in idle
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE); // Should remain in idle
     });
 
     it("should emit onAnimationStart event when transitioning to guard", () => {
@@ -96,7 +98,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
           onAnimationStart: (state) => {
             startedState = state;
           },
-        }
+        },
       );
 
       machineWithEvents.transitionToStanceGuard(TrigramStance.SON);
@@ -119,12 +121,12 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
     });
 
     it("should return false when in walk", () => {
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
       expect(machine.isInStanceGuard()).toBe(false);
     });
 
     it("should return false when in attack", () => {
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
       expect(machine.isInStanceGuard()).toBe(false);
     });
 
@@ -151,7 +153,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
       machine.transitionToStanceGuard(TrigramStance.GEON);
       expect(machine.isInStanceGuard()).toBe(true);
 
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
       expect(machine.isInStanceGuard()).toBe(false);
     });
 
@@ -170,7 +172,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
     });
 
     it("should return null when in walk", () => {
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
       expect(machine.getCurrentGuardStance()).toBeNull();
     });
 
@@ -202,7 +204,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
       machine.transitionToStanceGuard(TrigramStance.TAE);
       expect(machine.getCurrentGuardStance()).toBe(TrigramStance.TAE);
 
-      machine.transitionTo("defend");
+      machine.transitionTo(AnimationState.DEFEND);
       expect(machine.getCurrentGuardStance()).toBeNull();
     });
 
@@ -284,7 +286,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
           onFrame: (frame) => {
             frameEvents.push(frame);
           },
-        }
+        },
       );
 
       machineWithEvents.transitionToStanceGuard(TrigramStance.LI);
@@ -311,46 +313,46 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
       machine.transitionToStanceGuard(TrigramStance.GEON);
       expect(machine.getCurrentState()).toBe("stance_guard_geon");
 
-      const success = machine.transitionTo("attack");
+      const success = machine.transitionTo(AnimationState.ATTACK);
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("attack");
+      expect(machine.getCurrentState()).toBe(AnimationState.ATTACK);
     });
 
     it("should allow defend to interrupt guard", () => {
       machine.transitionToStanceGuard(TrigramStance.TAE);
 
-      const success = machine.transitionTo("defend");
+      const success = machine.transitionTo(AnimationState.DEFEND);
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("defend");
+      expect(machine.getCurrentState()).toBe(AnimationState.DEFEND);
     });
 
     it("should allow hit to interrupt guard", () => {
       machine.transitionToStanceGuard(TrigramStance.LI);
 
-      const success = machine.transitionTo("hit");
+      const success = machine.transitionTo(AnimationState.HIT);
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("hit");
+      expect(machine.getCurrentState()).toBe(AnimationState.HIT);
     });
 
     it("should allow walk to interrupt guard", () => {
       machine.transitionToStanceGuard(TrigramStance.JIN);
 
-      const success = machine.transitionTo("walk");
+      const success = machine.transitionTo(AnimationState.WALK);
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("walk");
+      expect(machine.getCurrentState()).toBe(AnimationState.WALK);
     });
 
     it("should allow stance_change to interrupt guard", () => {
       machine.transitionToStanceGuard(TrigramStance.SON);
 
-      const success = machine.transitionTo("stance_change");
+      const success = machine.transitionTo(AnimationState.STANCE_CHANGE);
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("stance_change");
+      expect(machine.getCurrentState()).toBe(AnimationState.STANCE_CHANGE);
     });
 
     it("should return to idle after non-looping animation completes, not guard", () => {
       machine.transitionToStanceGuard(TrigramStance.GAM);
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       // Simulate attack completion (12 frames at 60fps)
       const frameDuration = 1 / 60;
@@ -359,7 +361,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
       }
 
       // Should auto-transition to idle, not back to guard
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
       expect(machine.isInStanceGuard()).toBe(false);
     });
   });
@@ -367,9 +369,9 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
   describe("Integration with Existing Animation System", () => {
     it("should work with getPreviousState", () => {
       machine.transitionToStanceGuard(TrigramStance.GEON);
-      expect(machine.getPreviousState()).toBe("idle");
+      expect(machine.getPreviousState()).toBe(AnimationState.IDLE);
 
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
       expect(machine.getPreviousState()).toBe("stance_guard_geon");
     });
 
@@ -388,7 +390,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
 
       machine.reset();
 
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
       expect(machine.getCurrentFrame()).toBe(0);
       expect(machine.isInStanceGuard()).toBe(false);
       expect(machine.getCurrentGuardStance()).toBeNull();
@@ -405,15 +407,15 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
             interruptedFrom = from;
             interruptedTo = to;
           },
-        }
+        },
       );
 
       machineWithEvents.transitionToStanceGuard(TrigramStance.LI);
       machineWithEvents.update(0.01); // Play for a bit
-      machineWithEvents.transitionTo("attack");
+      machineWithEvents.transitionTo(AnimationState.ATTACK);
 
       expect(interruptedFrom).toBe("stance_guard_li");
-      expect(interruptedTo).toBe("attack");
+      expect(interruptedTo).toBe(AnimationState.ATTACK);
     });
   });
 
@@ -507,7 +509,7 @@ describe("AnimationStateMachine - Stance Guard Extensions", () => {
               machineWithEvents.transitionToStanceGuard(TrigramStance.GAM);
             }
           },
-        }
+        },
       );
 
       machineWithEvents.transitionToStanceGuard(TrigramStance.GEON);

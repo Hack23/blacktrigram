@@ -8,7 +8,7 @@ import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
 import { PlayerState } from "@/systems/player";
 import { PlayerArchetype, Position, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { useAICombat } from "./useAICombat";
 
 // Mock player state factory
@@ -34,17 +34,17 @@ function createMockPlayer(overrides?: Partial<PlayerState>): PlayerState {
 }
 
 describe("useAICombat", () => {
-  let mockOnExecuteAction: (action: string, targetPosition?: Position) => void;
-  let mockOnStanceChange: (stance: TrigramStance) => void;
+  let mockOnExecuteAction: Mock<
+    (action: string, targetPosition?: Position) => void
+  >;
+  let mockOnStanceChange: Mock<(stance: TrigramStance) => void>;
   let mockAdaptiveDifficulty: AdaptiveDifficulty;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    mockOnExecuteAction = vi.fn<
-      [action: string, targetPosition?: Position],
-      void
-    >();
-    mockOnStanceChange = vi.fn<[stance: TrigramStance], void>();
+    mockOnExecuteAction =
+      vi.fn<(action: string, targetPosition?: Position) => void>();
+    mockOnStanceChange = vi.fn<(stance: TrigramStance) => void>();
     mockAdaptiveDifficulty = new AdaptiveDifficulty();
   });
 

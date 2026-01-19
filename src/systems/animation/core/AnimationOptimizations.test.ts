@@ -77,10 +77,11 @@ describe("Animation Optimizations", () => {
 
     it("should return null for empty animation", () => {
       const emptyAnimation: SkeletalAnimation = {
-        id: "empty",
-        name: { korean: "빈", english: "empty" },
+        name: "empty",
+        koreanName: "빈",
         duration: 1.0,
         type: "idle",
+        loop: false,
         keyframes: [],
       };
 
@@ -120,10 +121,7 @@ describe("Animation Optimizations", () => {
 
     it("should cache multiple animations independently", () => {
       const anim1 = createTestAnimation();
-      anim1.id = "anim1";
-
       const anim2 = createTestAnimation();
-      anim2.id = "anim2";
 
       interpolateKeyframeCached("anim1", anim1, 0.25);
       interpolateKeyframeCached("anim2", anim2, 0.25);
@@ -138,7 +136,6 @@ describe("Animation Optimizations", () => {
       // Create more animations than cache size (50)
       for (let i = 0; i < 60; i++) {
         const anim = createTestAnimation();
-        anim.id = `anim-${i}`;
         animations.push(anim);
         interpolateKeyframeCached(`anim-${i}`, anim, 0.5);
       }
@@ -151,22 +148,25 @@ describe("Animation Optimizations", () => {
   describe("precomputeAnimation", () => {
     it("should precompute animation keyframes", () => {
       const animation: SkeletalAnimation = {
-        id: "precomputed",
-        name: { korean: "사전계산", english: "precomputed" },
+        name: "precomputed",
+        koreanName: "사전계산",
         duration: 1.0,
         type: "attack",
+        loop: false,
         keyframes: [
           {
             time: 0.0,
             boneRotations: new Map([
               [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
           {
             time: 1.0,
             boneRotations: new Map([
               [BoneName.SHOULDER_R, new THREE.Euler(Math.PI, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
         ],
       };
@@ -183,22 +183,25 @@ describe("Animation Optimizations", () => {
 
     it("should support different sample rates", () => {
       const animation: SkeletalAnimation = {
-        id: "sample-rate",
-        name: { korean: "샘플율", english: "sample-rate" },
+        name: "sample-rate",
+        koreanName: "샘플율",
         duration: 0.5,
         type: "attack",
+        loop: false,
         keyframes: [
           {
             time: 0.0,
             boneRotations: new Map([
               [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
           {
             time: 0.5,
             boneRotations: new Map([
               [BoneName.SHOULDER_R, new THREE.Euler(Math.PI / 2, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
         ],
       };
@@ -221,6 +224,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_R, new THREE.Euler(1, 0, 0)],
           [BoneName.SHOULDER_L, new THREE.Euler(-1, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       batchUpdateBones(rig, keyframe);
@@ -242,6 +246,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_L, new THREE.Euler(-1, 0, 0)],
           [BoneName.ELBOW_R, new THREE.Euler(0.5, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       const dirtyBones = new Set([BoneName.SHOULDER_R, BoneName.ELBOW_R]);
@@ -267,6 +272,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_R, new THREE.Euler(1, 0, 0)],
           ["non_existent_bone" as BoneName, new THREE.Euler(2, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       // Should not throw
@@ -337,6 +343,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0)],
           [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       const keyframe2: AnimationKeyframe = {
@@ -346,6 +353,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_L, new THREE.Euler(0, 0, 0)], // Same
           [BoneName.ELBOW_R, new THREE.Euler(0.2, 0, 0)], // Changed
         ]),
+        bonePositions: new Map(),
       };
 
       const dirtyBones = calculateDirtyBones(keyframe1, keyframe2, 0.01);
@@ -361,6 +369,7 @@ describe("Animation Optimizations", () => {
         boneRotations: new Map([
           [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       const keyframe2: AnimationKeyframe = {
@@ -369,6 +378,7 @@ describe("Animation Optimizations", () => {
           [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
           [BoneName.SHOULDER_L, new THREE.Euler(1, 0, 0)], // New bone
         ]),
+        bonePositions: new Map(),
       };
 
       const dirtyBones = calculateDirtyBones(keyframe1, keyframe2);
@@ -382,6 +392,7 @@ describe("Animation Optimizations", () => {
         boneRotations: new Map([
           [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
         ]),
+        bonePositions: new Map(),
       };
 
       const keyframe2: AnimationKeyframe = {
@@ -389,6 +400,7 @@ describe("Animation Optimizations", () => {
         boneRotations: new Map([
           [BoneName.SHOULDER_R, new THREE.Euler(0.001, 0, 0)], // Very small change
         ]),
+        bonePositions: new Map(),
       };
 
       const dirtyBones = calculateDirtyBones(keyframe1, keyframe2, 0.01);
@@ -478,10 +490,11 @@ describe("Animation Optimizations", () => {
 
       // Create test animation
       const animation: SkeletalAnimation = {
-        id: "full-test",
-        name: { korean: "통합테스트", english: "full-test" },
+        name: "full-test",
+        koreanName: "통합테스트",
         duration: 1.0,
         type: "attack",
+        loop: false,
         keyframes: [
           {
             time: 0.0,
@@ -489,6 +502,7 @@ describe("Animation Optimizations", () => {
               [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
               [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
           {
             time: 0.5,
@@ -496,6 +510,7 @@ describe("Animation Optimizations", () => {
               [BoneName.SHOULDER_R, new THREE.Euler(Math.PI / 2, 0, 0)],
               [BoneName.ELBOW_R, new THREE.Euler(Math.PI / 4, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
           {
             time: 1.0,
@@ -503,6 +518,7 @@ describe("Animation Optimizations", () => {
               [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0)],
               [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0)],
             ]),
+            bonePositions: new Map(),
           },
         ],
       };
@@ -524,7 +540,7 @@ describe("Animation Optimizations", () => {
         const keyframe = interpolateKeyframeCached(
           "full-test",
           animation,
-          time
+          time,
         );
 
         if (keyframe) {
@@ -533,7 +549,7 @@ describe("Animation Optimizations", () => {
             const prevKeyframe = interpolateKeyframeCached(
               "full-test",
               animation,
-              ((frame - 1) / 60) * animation.duration
+              ((frame - 1) / 60) * animation.duration,
             );
             if (prevKeyframe) {
               const dirtyBones = calculateDirtyBones(prevKeyframe, keyframe);

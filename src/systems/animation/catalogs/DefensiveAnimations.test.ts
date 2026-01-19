@@ -12,7 +12,7 @@
 import { TrigramStance } from "@/types/common";
 import { describe, expect, it } from "vitest";
 import { DEFAULT_ANIMATION_CONFIGS } from "../core/AnimationStateMachine";
-import { AnimationPriority } from "../core/types";
+import { AnimationPriority, AnimationState } from "../core/types";
 import {
   ALL_DEFENSIVE_ANIMATIONS,
   DEFENSIVE_ANIMATIONS_BY_STANCE,
@@ -48,7 +48,9 @@ import {
 describe("Defensive Animations - Configuration", () => {
   describe("Block Success (막기)", () => {
     it("should have correct configuration with 8 frames (133ms)", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+      );
       expect(config).toBeDefined();
       expect(config?.frames).toBe(8);
       expect(config?.duration).toBeCloseTo(0.133, 3);
@@ -59,19 +61,23 @@ describe("Defensive Animations - Configuration", () => {
     });
 
     it("should not have counter window", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+      );
       expect(config?.counterWindow).toBeUndefined();
     });
 
     it("should not have vulnerability duration", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+      );
       expect(config?.vulnerabilityDuration).toBeUndefined();
     });
   });
 
   describe("Parry Deflection (받아넘기기)", () => {
     it("should have correct configuration with 10 frames (167ms)", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.DEFEND_PARRY);
       expect(config).toBeDefined();
       expect(config?.frames).toBe(10);
       expect(config?.duration).toBeCloseTo(0.167, 3);
@@ -82,7 +88,7 @@ describe("Defensive Animations - Configuration", () => {
     });
 
     it("should have 200ms counter-attack window", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.DEFEND_PARRY);
       expect(config?.counterWindow).toBeDefined();
       expect(config?.counterWindow).toBeCloseTo(0.2, 3);
     });
@@ -90,7 +96,9 @@ describe("Defensive Animations - Configuration", () => {
 
   describe("Guard Break (방어붕괴)", () => {
     it("should have correct configuration with 15 frames (250ms)", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_GUARD_BREAK,
+      );
       expect(config).toBeDefined();
       expect(config?.frames).toBe(15);
       expect(config?.duration).toBeCloseTo(0.25, 3);
@@ -101,7 +109,9 @@ describe("Defensive Animations - Configuration", () => {
     });
 
     it("should have 500ms vulnerability window", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_GUARD_BREAK,
+      );
       expect(config?.vulnerabilityDuration).toBeDefined();
       expect(config?.vulnerabilityDuration).toBeCloseTo(0.5, 3);
     });
@@ -109,7 +119,9 @@ describe("Defensive Animations - Configuration", () => {
 
   describe("Guard Recovery (방어복구)", () => {
     it("should have correct configuration with 12 frames (200ms)", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_RECOVERY,
+      );
       expect(config).toBeDefined();
       expect(config?.frames).toBe(12);
       expect(config?.duration).toBeCloseTo(0.2, 3);
@@ -119,37 +131,49 @@ describe("Defensive Animations - Configuration", () => {
     });
 
     it("should be interruptible", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_RECOVERY,
+      );
       expect(config?.interruptible).toBe(true);
     });
   });
 
   describe("Animation Priority Ordering", () => {
     it("should have correct priority hierarchy", () => {
-      const blockConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
-      const parryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
-      const guardBreakConfig =
-        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
-      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
+      const blockConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+      );
+      const parryConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_PARRY,
+      );
+      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_GUARD_BREAK,
+      );
+      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_RECOVERY,
+      );
 
       // Priority order: guard_break (8) > parry (7) > block (6) > recovery (2)
       expect(guardBreakConfig?.priority).toBeGreaterThan(
-        parryConfig?.priority ?? 0
+        parryConfig?.priority ?? 0,
       );
       expect(parryConfig?.priority).toBeGreaterThan(blockConfig?.priority ?? 0);
       expect(blockConfig?.priority).toBeGreaterThan(
-        recoveryConfig?.priority ?? 0
+        recoveryConfig?.priority ?? 0,
       );
     });
 
     it("should have guard_break at highest priority (same as fall)", () => {
-      const guardBreakConfig =
-        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
+      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_GUARD_BREAK,
+      );
       expect(guardBreakConfig?.priority).toBe(AnimationPriority.FALL);
     });
 
     it("should have recovery at low priority (same as run)", () => {
-      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
+      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_RECOVERY,
+      );
       expect(recoveryConfig?.priority).toBe(AnimationPriority.RUN);
     });
   });
@@ -157,10 +181,10 @@ describe("Defensive Animations - Configuration", () => {
   describe("60fps Performance Target", () => {
     it("should all use 60fps frame rate", () => {
       const defensiveStates = [
-        "defend_block_success",
-        "defend_parry",
-        "defend_guard_break",
-        "defend_recovery",
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+        AnimationState.DEFEND_PARRY,
+        AnimationState.DEFEND_GUARD_BREAK,
+        AnimationState.DEFEND_RECOVERY,
       ] as const;
 
       for (const state of defensiveStates) {
@@ -170,11 +194,18 @@ describe("Defensive Animations - Configuration", () => {
     });
 
     it("should have frame counts that target 60fps", () => {
-      const blockConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_block_success");
-      const parryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_parry");
-      const guardBreakConfig =
-        DEFAULT_ANIMATION_CONFIGS.get("defend_guard_break");
-      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get("defend_recovery");
+      const blockConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+      );
+      const parryConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_PARRY,
+      );
+      const guardBreakConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_GUARD_BREAK,
+      );
+      const recoveryConfig = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.DEFEND_RECOVERY,
+      );
 
       // Verify frame counts match expected durations at 60fps
       expect(blockConfig?.frames).toBe(8); // 133ms / 16.67ms per frame ≈ 8 frames
@@ -187,10 +218,10 @@ describe("Defensive Animations - Configuration", () => {
   describe("Non-Looping Behavior", () => {
     it("should have all defensive animations as non-looping", () => {
       const defensiveStates = [
-        "defend_block_success",
-        "defend_parry",
-        "defend_guard_break",
-        "defend_recovery",
+        AnimationState.DEFEND_BLOCK_SUCCESS,
+        AnimationState.DEFEND_PARRY,
+        AnimationState.DEFEND_GUARD_BREAK,
+        AnimationState.DEFEND_RECOVERY,
       ] as const;
 
       for (const state of defensiveStates) {
@@ -203,10 +234,18 @@ describe("Defensive Animations - Configuration", () => {
   describe("Korean Terminology", () => {
     it("should document Korean terms in config", () => {
       // Verify that defensive animation states exist with Korean naming
-      expect(DEFAULT_ANIMATION_CONFIGS.has("defend_block_success")).toBe(true); // 막기
-      expect(DEFAULT_ANIMATION_CONFIGS.has("defend_parry")).toBe(true); // 받아넘기기
-      expect(DEFAULT_ANIMATION_CONFIGS.has("defend_guard_break")).toBe(true); // 방어붕괴
-      expect(DEFAULT_ANIMATION_CONFIGS.has("defend_recovery")).toBe(true); // 방어복구
+      expect(
+        DEFAULT_ANIMATION_CONFIGS.has(AnimationState.DEFEND_BLOCK_SUCCESS),
+      ).toBe(true); // 막기
+      expect(DEFAULT_ANIMATION_CONFIGS.has(AnimationState.DEFEND_PARRY)).toBe(
+        true,
+      ); // 받아넘기기
+      expect(
+        DEFAULT_ANIMATION_CONFIGS.has(AnimationState.DEFEND_GUARD_BREAK),
+      ).toBe(true); // 방어붕괴
+      expect(
+        DEFAULT_ANIMATION_CONFIGS.has(AnimationState.DEFEND_RECOVERY),
+      ).toBe(true); // 방어복구
     });
   });
 });
@@ -440,7 +479,7 @@ describe("Stance-Specific Defensive Animations", () => {
 
       it("should return empty array for invalid stance", () => {
         const animations = getDefensiveAnimationsForStance(
-          "invalid" as TrigramStance
+          "invalid" as TrigramStance,
         );
         expect(animations).toHaveLength(0);
       });

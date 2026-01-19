@@ -17,25 +17,25 @@ describe("PlayerAnimationStateMachine", () => {
   describe("initialization", () => {
     it("should start in idle state", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
       expect(machine.getCurrentFrame()).toBe(0);
     });
 
     it("should accept custom animation configs", () => {
       const customConfigs = new Map(DEFAULT_ANIMATION_CONFIGS);
       const machine = new PlayerAnimationStateMachine(customConfigs);
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
     });
   });
 
   describe("update", () => {
     it("should advance frames based on delta time", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      const config = DEFAULT_ANIMATION_CONFIGS.get("idle");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.IDLE);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps; // 1/60 = ~0.0167s
@@ -51,9 +51,9 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should loop looping animations", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      const config = DEFAULT_ANIMATION_CONFIGS.get("idle");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.IDLE);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -70,11 +70,11 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should auto-transition to idle after non-looping animation completes", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -85,16 +85,16 @@ describe("PlayerAnimationStateMachine", () => {
       }
 
       // Should have transitioned to idle
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
     });
 
     it("should calculate progress correctly", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -112,11 +112,11 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should set justCompleted flag on animation completion", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -135,56 +135,56 @@ describe("PlayerAnimationStateMachine", () => {
   describe("transitionTo", () => {
     it("should transition to valid states", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      expect(machine.transitionTo("walk")).toBe(true);
-      expect(machine.getCurrentState()).toBe("walk");
+      expect(machine.transitionTo(AnimationState.WALK)).toBe(true);
+      expect(machine.getCurrentState()).toBe(AnimationState.WALK);
     });
 
     it("should not transition to same state", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      expect(machine.transitionTo("idle")).toBe(false);
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.transitionTo(AnimationState.IDLE)).toBe(false);
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
     });
 
     it("should respect transition rules", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       // Attack cannot transition directly to walk
-      expect(machine.transitionTo("walk")).toBe(false);
-      expect(machine.getCurrentState()).toBe("attack");
+      expect(machine.transitionTo(AnimationState.WALK)).toBe(false);
+      expect(machine.getCurrentState()).toBe(AnimationState.ATTACK);
     });
 
     it("should respect priority system", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       // Hit (higher priority) can interrupt attack
-      expect(machine.transitionTo("hit")).toBe(true);
-      expect(machine.getCurrentState()).toBe("hit");
+      expect(machine.transitionTo(AnimationState.HIT)).toBe(true);
+      expect(machine.getCurrentState()).toBe(AnimationState.HIT);
     });
 
     it("should not allow lower priority to interrupt non-interruptible animations", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("hit"); // Hit is non-interruptible
+      machine.transitionTo(AnimationState.HIT); // Hit is non-interruptible
 
       // Attack (lower priority) cannot interrupt hit
-      expect(machine.transitionTo("attack")).toBe(false);
-      expect(machine.getCurrentState()).toBe("hit");
+      expect(machine.transitionTo(AnimationState.ATTACK)).toBe(false);
+      expect(machine.getCurrentState()).toBe(AnimationState.HIT);
     });
 
     it("should reset frame and time accumulator on transition", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       const frameDuration = 1 / 60;
 
@@ -194,23 +194,34 @@ describe("PlayerAnimationStateMachine", () => {
       expect(machine.getCurrentFrame()).toBeGreaterThan(0);
 
       // Transition to walk
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
       expect(machine.getCurrentFrame()).toBe(0);
     });
   });
 
   describe("event callbacks", () => {
     let events: AnimationEvents;
-    let onAnimationStart: ReturnType<typeof vi.fn>;
-    let onFrame: ReturnType<typeof vi.fn>;
-    let onAnimationComplete: ReturnType<typeof vi.fn>;
-    let onAnimationInterrupted: ReturnType<typeof vi.fn>;
+    let onAnimationStart: ReturnType<
+      typeof vi.fn<[state: AnimationState], void>
+    >;
+    let onFrame: ReturnType<
+      typeof vi.fn<[frame: number, state: AnimationState], void>
+    >;
+    let onAnimationComplete: ReturnType<
+      typeof vi.fn<[state: AnimationState], void>
+    >;
+    let onAnimationInterrupted: ReturnType<
+      typeof vi.fn<[fromState: AnimationState, toState: AnimationState], void>
+    >;
 
     beforeEach(() => {
-      onAnimationStart = vi.fn();
-      onFrame = vi.fn();
-      onAnimationComplete = vi.fn();
-      onAnimationInterrupted = vi.fn();
+      onAnimationStart = vi.fn<[state: AnimationState], void>();
+      onFrame = vi.fn<[frame: number, state: AnimationState], void>();
+      onAnimationComplete = vi.fn<[state: AnimationState], void>();
+      onAnimationInterrupted = vi.fn<
+        [fromState: AnimationState, toState: AnimationState],
+        void
+      >();
 
       events = {
         onAnimationStart,
@@ -223,33 +234,33 @@ describe("PlayerAnimationStateMachine", () => {
     it("should call onAnimationStart when transitioning", () => {
       const machine = new PlayerAnimationStateMachine(
         DEFAULT_ANIMATION_CONFIGS,
-        events
+        events,
       );
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
 
-      expect(onAnimationStart).toHaveBeenCalledWith("walk");
+      expect(onAnimationStart).toHaveBeenCalledWith(AnimationState.WALK);
       expect(onAnimationStart).toHaveBeenCalledTimes(1);
     });
 
     it("should call onFrame during updates", () => {
       const machine = new PlayerAnimationStateMachine(
         DEFAULT_ANIMATION_CONFIGS,
-        events
+        events,
       );
       const frameDuration = 1 / 60;
 
       machine.update(frameDuration);
-      expect(onFrame).toHaveBeenCalledWith(1, "idle");
+      expect(onFrame).toHaveBeenCalledWith(1, AnimationState.IDLE);
     });
 
     it("should call onAnimationComplete when animation finishes", () => {
       const machine = new PlayerAnimationStateMachine(
         DEFAULT_ANIMATION_CONFIGS,
-        events
+        events,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -259,33 +270,36 @@ describe("PlayerAnimationStateMachine", () => {
         machine.update(frameDuration);
       }
 
-      expect(onAnimationComplete).toHaveBeenCalledWith("attack");
+      expect(onAnimationComplete).toHaveBeenCalledWith(AnimationState.ATTACK);
     });
 
     it("should call onAnimationInterrupted when animation is interrupted", () => {
       const machine = new PlayerAnimationStateMachine(
         DEFAULT_ANIMATION_CONFIGS,
-        events
+        events,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       // Interrupt with hit
-      machine.transitionTo("hit");
+      machine.transitionTo(AnimationState.HIT);
 
-      expect(onAnimationInterrupted).toHaveBeenCalledWith("attack", "hit");
+      expect(onAnimationInterrupted).toHaveBeenCalledWith(
+        AnimationState.ATTACK,
+        AnimationState.HIT,
+      );
     });
 
     it("should not call onAnimationInterrupted when animation completes naturally", () => {
       const machine = new PlayerAnimationStateMachine(
         DEFAULT_ANIMATION_CONFIGS,
-        events
+        events,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       // Clear any calls from the initial transition
       onAnimationInterrupted.mockClear();
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -302,7 +316,7 @@ describe("PlayerAnimationStateMachine", () => {
 
   describe("frame-accurate timing", () => {
     it("should have attack animation with 12 frames", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       expect(config.frames).toBe(12);
@@ -310,7 +324,7 @@ describe("PlayerAnimationStateMachine", () => {
     });
 
     it("should have defend animation with 4 frames", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("defend");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.DEFEND);
       expect(config).toBeDefined();
       if (!config) return;
       expect(config.frames).toBe(4);
@@ -318,7 +332,9 @@ describe("PlayerAnimationStateMachine", () => {
     });
 
     it("should have stance_change animation with ~600ms duration", () => {
-      const config = DEFAULT_ANIMATION_CONFIGS.get("stance_change");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(
+        AnimationState.STANCE_CHANGE,
+      );
       expect(config).toBeDefined();
       if (!config) return;
       expect(config.duration).toBeCloseTo(0.6, 1);
@@ -334,14 +350,14 @@ describe("PlayerAnimationStateMachine", () => {
   describe("reset", () => {
     it("should reset to idle state", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
       machine.update(1 / 60);
 
       machine.reset();
 
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
       expect(machine.getCurrentFrame()).toBe(0);
       expect(machine.getPreviousState()).toBe(null);
     });
@@ -350,38 +366,38 @@ describe("PlayerAnimationStateMachine", () => {
   describe("getState", () => {
     it("should return current machine state", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("walk");
+      machine.transitionTo(AnimationState.WALK);
       machine.update(1 / 60);
 
       const state = machine.getState();
-      expect(state.currentState).toBe("walk");
+      expect(state.currentState).toBe(AnimationState.WALK);
       expect(state.frameIndex).toBeGreaterThan(0);
       expect(state.isPlaying).toBe(true);
-      expect(state.previousState).toBe("idle");
+      expect(state.previousState).toBe(AnimationState.IDLE);
     });
   });
 
   describe("getCurrentAnimation", () => {
     it("should return current animation config", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       const config = machine.getCurrentAnimation();
 
       expect(config).toBeDefined();
-      expect(config?.state).toBe("idle");
+      expect(config?.state).toBe(AnimationState.IDLE);
     });
 
     it("should return updated config after transition", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
       const config = machine.getCurrentAnimation();
-      expect(config?.state).toBe("attack");
+      expect(config?.state).toBe(AnimationState.ATTACK);
       expect(config?.frames).toBe(12);
     });
   });
@@ -389,22 +405,22 @@ describe("PlayerAnimationStateMachine", () => {
   describe("getPreviousState", () => {
     it("should track previous state", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       expect(machine.getPreviousState()).toBe(null);
 
-      machine.transitionTo("walk");
-      expect(machine.getPreviousState()).toBe("idle");
+      machine.transitionTo(AnimationState.WALK);
+      expect(machine.getPreviousState()).toBe(AnimationState.IDLE);
 
-      machine.transitionTo("attack");
-      expect(machine.getPreviousState()).toBe("walk");
+      machine.transitionTo(AnimationState.ATTACK);
+      expect(machine.getPreviousState()).toBe(AnimationState.WALK);
     });
   });
 
   describe("60fps performance", () => {
     it("should handle rapid updates efficiently", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       const frameDuration = 1 / 60;
 
@@ -421,11 +437,11 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should maintain accuracy over many updates", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
-      machine.transitionTo("attack");
+      machine.transitionTo(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack");
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(config).toBeDefined();
       if (!config) return;
       const frameDuration = 1 / config.fps;
@@ -437,12 +453,12 @@ describe("PlayerAnimationStateMachine", () => {
 
       // Should be on frame 10 (started at 0, advanced 10 times)
       expect(machine.getCurrentFrame()).toBe(10);
-      expect(machine.getCurrentState()).toBe("attack");
+      expect(machine.getCurrentState()).toBe(AnimationState.ATTACK);
 
       // Two more updates should complete and auto-transition to idle
       machine.update(frameDuration); // frame 11
       machine.update(frameDuration); // completes, transitions to idle
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
       expect(machine.getCurrentFrame()).toBe(0);
     });
   });
@@ -450,14 +466,14 @@ describe("PlayerAnimationStateMachine", () => {
   describe("motion prediction API", () => {
     it("should initialize with motion prediction disabled", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       expect(machine.isMotionPredictionEnabled()).toBe(false);
     });
 
     it("should enable motion prediction with default prediction time", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       machine.setMotionPrediction(true);
 
@@ -470,7 +486,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should enable motion prediction with custom prediction time", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       const customTime = 0.033; // 2 frames at 60fps
       machine.setMotionPrediction(true, customTime);
@@ -483,7 +499,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should disable motion prediction", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       machine.setMotionPrediction(true);
       expect(machine.isMotionPredictionEnabled()).toBe(true);
@@ -494,7 +510,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should update motion prediction state with velocity tracking", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       machine.setMotionPrediction(true);
 
@@ -539,7 +555,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should handle getPredictedKeyframe when motion prediction is disabled", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       const currentKeyframe = {
@@ -555,7 +571,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should predict future keyframe when motion prediction is enabled", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       machine.setMotionPrediction(true, 0.01667);
 
@@ -595,7 +611,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should reset velocity tracking when motion prediction is re-enabled", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Enable and setup velocity with two keyframes
@@ -637,14 +653,14 @@ describe("PlayerAnimationStateMachine", () => {
   describe("easing configuration API", () => {
     it("should initialize with natural-motion as default easing", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       expect(machine.getPreferredEasing()).toBe("natural-motion");
     });
 
     it("should set preferred easing curve", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       machine.setPreferredEasing("smooth-transition");
@@ -656,7 +672,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should support all easing curve presets", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       const easingPresets = [
@@ -675,7 +691,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should accept linear easing", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       machine.setPreferredEasing("linear");
@@ -684,7 +700,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should retain easing preference across state transitions", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       machine.setPreferredEasing("explosive-power");
@@ -700,7 +716,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should have configured easing for stance change animations", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Animations like stance_change should have smooth-transition easing configured
@@ -711,7 +727,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should have configured easing for attack animations", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Attack animations should have explosive-power easing
@@ -723,7 +739,7 @@ describe("PlayerAnimationStateMachine", () => {
     it("should have configured easing for defensive animations", () => {
       // Defensive block success should have controlled-slow easing configured
       const config = DEFAULT_ANIMATION_CONFIGS.get(
-        AnimationState.DEFEND_BLOCK_SUCCESS
+        AnimationState.DEFEND_BLOCK_SUCCESS,
       );
       expect(config).toBeDefined();
       expect(config?.easing).toBe("controlled-slow");
@@ -732,7 +748,7 @@ describe("PlayerAnimationStateMachine", () => {
     it("should have configured easing for recovery animations", () => {
       // Recovery animations should have natural-motion easing configured
       const config = DEFAULT_ANIMATION_CONFIGS.get(
-        AnimationState.DEFEND_RECOVERY
+        AnimationState.DEFEND_RECOVERY,
       );
       expect(config).toBeDefined();
       expect(config?.easing).toBe("natural-motion");
@@ -744,7 +760,7 @@ describe("PlayerAnimationStateMachine", () => {
   describe("animation queue integration", () => {
     it("should have queue enabled by default", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       expect(machine.isQueueEnabled()).toBe(true);
 
@@ -756,7 +772,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should queue animations when transition fails", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Start a non-interruptible attack animation
@@ -775,7 +791,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should process queued animation when current animation completes", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
       const attackConfig = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK);
       expect(attackConfig).toBeDefined();
@@ -806,7 +822,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should maintain priority order in queue", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Start attack
@@ -828,7 +844,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should allow immediate transition for high priority animations", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Start attack animation
@@ -843,7 +859,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should clear queue when requested", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Start attack and queue some animations
@@ -860,7 +876,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should reconfigure queue with enableQueue()", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Reconfigure with larger size and different strategy
@@ -873,7 +889,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should disable queue when requested", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       expect(machine.isQueueEnabled()).toBe(true);
@@ -890,7 +906,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should keep conflict strategy in sync with queue", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Change conflict strategy
@@ -908,7 +924,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should respect max queue size", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Start attack
@@ -940,7 +956,7 @@ describe("PlayerAnimationStateMachine", () => {
 
     it("should handle equal-priority conflicts with timestamp strategy", () => {
       const machine = new PlayerAnimationStateMachine(
-        DEFAULT_ANIMATION_CONFIGS
+        DEFAULT_ANIMATION_CONFIGS,
       );
 
       // Ensure timestamp strategy (default)
@@ -963,7 +979,7 @@ describe("PlayerAnimationStateMachine", () => {
 
         // First request should be at index 0 (FIFO with timestamp strategy)
         expect(queueState.pending[0].timestamp).toBeLessThan(
-          queueState.pending[1].timestamp
+          queueState.pending[1].timestamp,
         );
       });
     });
