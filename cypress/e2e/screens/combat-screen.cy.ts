@@ -114,16 +114,16 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         // Wait for health to update using assertion instead of fixed wait
         cy.get('[data-testid="player2-health"]', { timeout: 1500 })
           .invoke("attr", "data-current")
-          .should("not.equal", health)
+          .should((updatedHealth) => {
+            const updatedHealthValue = parseFloat(updatedHealth as string);
+            expect(
+              updatedHealthValue,
+              "Opponent health should decrease after attack"
+            ).to.be.lessThan(initialHealth);
+          })
           .then((newHealth) => {
             const currentHealth = parseFloat(newHealth as string);
             cy.log(`Player 2 current health: ${currentHealth}`);
-
-            // Assert damage was dealt
-            expect(
-              currentHealth,
-              "Attack should deal damage to opponent"
-            ).to.be.lessThan(initialHealth);
             cy.log(
               `✅ Damage verified: ${initialHealth - currentHealth} HP lost`
             );
@@ -141,13 +141,15 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         // Wait for health to update using assertion
         cy.get('[data-testid="player2-health"]', { timeout: 1500 })
           .invoke("attr", "data-current")
-          .should("not.equal", health)
-          .then((newHealth) => {
-            const afterAttack = parseFloat(newHealth as string);
+          .should((updatedHealth) => {
+            const updatedHealthValue = parseFloat(updatedHealth as string);
             expect(
-              afterAttack,
+              updatedHealthValue,
               "Second attack should deal damage"
             ).to.be.lessThan(beforeAttack);
+          })
+          .then((newHealth) => {
+            const afterAttack = parseFloat(newHealth as string);
             cy.log(
               `✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`
             );
@@ -167,13 +169,15 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
             // Wait for health to update using assertion
             cy.get('[data-testid="player2-health"]', { timeout: 1500 })
               .invoke("attr", "data-current")
-              .should("not.equal", health)
-              .then((after) => {
-                const afterValue = parseFloat(after as string);
+              .should((updatedHealth) => {
+                const updatedHealthValue = parseFloat(updatedHealth as string);
                 expect(
-                  afterValue,
+                  updatedHealthValue,
                   "Attack button should deal damage"
                 ).to.be.lessThan(before);
+              })
+              .then((after) => {
+                const afterValue = parseFloat(after as string);
                 cy.log(
                   `✅ Attack button verified (Health: ${before} → ${afterValue})`
                 );

@@ -352,9 +352,8 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Perform some actions
       cy.get('[data-testid="combat-button"]').trigger("mouseover");
-      
+
       cy.get('[data-testid="training-button"]').trigger("mouseover");
-      
 
       cy.window().then((_win) => {
         // Count final WebGL contexts
@@ -397,7 +396,6 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
             // Perform some rendering operations
             cy.gameActions(["1", "2", "3"]);
-            
 
             const finalMemory = perfWithMemory.memory.usedJSHeapSize;
             cy.log(`Final memory: ${(finalMemory / 1024 / 1024).toFixed(2)}MB`);
@@ -448,7 +446,6 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Perform combat actions
       cy.gameActions(["1", " ", "w", "a", "s", "d"]);
-      
 
       // Verify framerate is still good
       cy.assertMinFPS(30, 1500);
@@ -488,7 +485,6 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Practice a stance
       cy.practiceStance(1, 3);
-      
 
       // Verify framerate is still good
       cy.assertMinFPS(30, 1500);
