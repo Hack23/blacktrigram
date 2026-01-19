@@ -488,6 +488,7 @@ export class AIComboSystem {
       (opponent.health ?? 0) < (opponent.maxHealth ?? 100) * 0.3;
     const isLowBalance =
       (opponent.balance ?? 100) < VULNERABLE_BALANCE_THRESHOLD;
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional boolean OR for vulnerability check
     const opponentVulnerable = isLowBalance || isStunned || isLowHealth;
 
     // Higher chance to continue if opponent is vulnerable

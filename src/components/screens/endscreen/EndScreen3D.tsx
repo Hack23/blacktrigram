@@ -206,7 +206,8 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   // Use window size for responsive layout with resize support
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const screenWidth = propWidth ?? windowWidth;
-  const screenHeight = propHeight ?? windowHeight;
+  // Note: windowHeight available but not currently used - screenWidth sufficient for current responsive logic
+  void (propHeight ?? windowHeight); // Consumed but not stored
 
   // Determine if this is a victory screen (winner is player 0 by convention - extracted from id)
   const winnerId = winner.id;
