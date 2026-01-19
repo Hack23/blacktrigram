@@ -1491,12 +1491,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Execute action (technique and vital point are stored in aiState)
       executeAIAction(actionType, newTargetPosition);
 
-      // Calculate next action cooldown
+      // Calculate next action cooldown - expert fighters attack rapidly
+      // Attack/technique: 200-350ms for fast-paced combat (was 600-800ms)
+      // Other actions: 150-300ms for quick repositioning (was 400-600ms)
       const actionCooldown =
-        actionType === "attack" || actionType === "technique" ? 600 : 400;
+        actionType === "attack" || actionType === "technique"
+          ? 200 + Math.random() * 150 // 200-350ms for attacks
+          : 150 + Math.random() * 150; // 150-300ms for movement/defense
 
       // Update next action time using ref (prevents stale closure)
-      nextActionRef.current = now + actionCooldown + Math.random() * 200;
+      nextActionRef.current = now + actionCooldown;
 
       // Track recent techniques for variation (keep last 5)
       let updatedRecentTechniques = [...aiState.recentTechniques];

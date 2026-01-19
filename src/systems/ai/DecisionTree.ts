@@ -1304,6 +1304,7 @@ export class AIDecisionTree {
     } as unknown as PlayerState;
 
     // Priority 1: Try distance-based stance selection for tactical variety
+    // Lower priority than attacks - fighters attack first, adjust stance second
     const distanceStance = this.selectStanceForDistance(
       context.distanceToOpponent,
       behavior.preferredStances,
@@ -1323,7 +1324,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: distanceStance,
-        priority: 7,
+        priority: 3, // Reduced from 7: attacks have priority 6-9
         reason: `Distance-optimal stance (거리 최적 자세: ${distanceStance})`,
       };
     }
@@ -1344,7 +1345,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: counterStance,
-        priority: 6,
+        priority: 3, // Reduced from 6: attacks have priority 6-9
         reason: `Counter stance to ${context.opponentStance} (상극 대응)`,
       };
     }
@@ -1363,7 +1364,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: recommendedStance,
-        priority: 6,
+        priority: 2, // Reduced from 6: attacks have priority 6-9
         reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
       };
     }
@@ -1384,7 +1385,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: preferredAvailable,
-        priority: 5,
+        priority: 2, // Reduced from 5: attacks have priority 6-9
         reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
       };
     }
@@ -1466,7 +1467,7 @@ export class AIDecisionTree {
         return {
           action: AIActionType.TECHNIQUE,
           targetVitalPoint,
-          priority: targetVitalPoint ? 9 : 8, // Highest priority with vital point
+          priority: targetVitalPoint ? 10 : 9, // Maximum priority - finish the fight
           reason: targetVitalPoint
             ? `Kill mode - finishing technique on vital point (급소 결정타: ${vitalPointName})${killModeSuffix}`
             : `Kill mode - finishing technique${killModeSuffix}`,
@@ -1475,7 +1476,7 @@ export class AIDecisionTree {
         return {
           action: AIActionType.ATTACK,
           targetVitalPoint,
-          priority: targetVitalPoint ? 8 : 7, // Very high priority
+          priority: targetVitalPoint ? 9 : 8, // Very high priority
           reason: targetVitalPoint
             ? `Kill mode - finishing attack (결정타 급소: ${vitalPointName})${killModeSuffix}`
             : `Kill mode - finishing attack${killModeSuffix}`,
@@ -1483,21 +1484,22 @@ export class AIDecisionTree {
       }
     }
 
-    // Normal close range behavior
-    if (Math.random() < aggression * 0.8) {
+    // Normal close range behavior - expert fighters attack aggressively
+    // Higher base attack chance for aggressive AI (aggression * 0.95 instead of 0.8)
+    if (Math.random() < aggression * 0.95) {
       return {
         action: AIActionType.ATTACK,
         targetVitalPoint,
-        priority: targetVitalPoint ? 7 : 6,
+        priority: targetVitalPoint ? 8 : 7, // High priority - attacks win over stance changes
         reason: targetVitalPoint
           ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
           : "Close range - aggressive strike",
       };
-    } else if (Math.random() < aggression * 0.9 && hasResources) {
+    } else if (Math.random() < aggression * 0.95 && hasResources) {
       return {
         action: AIActionType.TECHNIQUE,
         targetVitalPoint,
-        priority: targetVitalPoint ? 6 : 5,
+        priority: targetVitalPoint ? 8 : 7, // High priority for techniques too
         reason: targetVitalPoint
           ? `Close range - technique on vital point (급소 기술: ${vitalPointName})`
           : "Close range - technique execution",

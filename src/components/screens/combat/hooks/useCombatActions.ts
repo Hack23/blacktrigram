@@ -759,6 +759,7 @@ export function useCombatActions(
           critChance: 0.1,
           critMultiplier: 1.5,
           effects: [],
+          animationType: AnimationType.JAB, // Default animation for basic attack
         };
       } else {
         return {
@@ -792,6 +793,7 @@ export function useCombatActions(
           critChance: 0.15,
           critMultiplier: 1.8,
           effects: [],
+          animationType: AnimationType.SPINNING_HOOK, // Default animation for special technique
         };
       }
     },
@@ -1033,7 +1035,7 @@ export function useCombatActions(
       // Calculate animation timing context for AI technique hit detection
       // 동기식 타격 판정: AI 특수 기술도 피크 타임 사용
       const animationType =
-        specialTechnique.animationType || AnimationType.SPINNING_HOOK_KICK;
+        specialTechnique.animationType || AnimationType.SPINNING_HOOK;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.25; // Special techniques often have longer peak times
       const animationContext = {
