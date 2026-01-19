@@ -52,8 +52,6 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.get("canvas").should("be.visible");
     cy.log("✅ Canvas rendering verified");
 
-    cy.wait(200);
-
     // ============================================================
     // 2. Verify Control Categories (30s)
     // ============================================================
@@ -86,7 +84,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // 3. Verify Specific Control Bindings (20s)
@@ -126,7 +124,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // 4. Verify Korean/English Text (20s)
@@ -157,7 +155,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // 5. Test Controls Screen UI Elements (15s)
@@ -188,7 +186,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // 6. Test Scrolling or Navigation (10s)
@@ -199,7 +197,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="controls-content"]').length > 0) {
         cy.get('[data-testid="controls-content"]').scrollTo("bottom");
-        cy.wait(100);
+        
         cy.get('[data-testid="controls-content"]').scrollTo("top");
         cy.log("✅ Scrolling tested");
       } else {
@@ -207,7 +205,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // 7. Test Navigation Back (10s)
@@ -216,7 +214,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
 
     // Try ESC key first
     cy.get("body").type("{esc}");
-    cy.wait(500);
+    
 
     // Verify we're back at intro screen
     cy.get("body").then(($body) => {
@@ -228,7 +226,7 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
+    
 
     // ============================================================
     // FINAL: Test Summary

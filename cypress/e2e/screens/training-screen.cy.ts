@@ -52,8 +52,6 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 2. Test Stance Practice (60s)
     // ============================================================
@@ -64,21 +62,15 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.practiceStance(1, 2);
     cy.log("✅ Stance 1 practiced");
 
-    cy.wait(100);
-
     // Practice stance 3 (Li) twice
     cy.log("Practicing Stance 3 (Li)...");
     cy.practiceStance(3, 2);
     cy.log("✅ Stance 3 practiced");
 
-    cy.wait(100);
-
     // Practice stance 5 (Son) twice
     cy.log("Practicing Stance 5 (Son)...");
     cy.practiceStance(5, 2);
     cy.log("✅ Stance 5 practiced");
-
-    cy.wait(200);
 
     // ============================================================
     // 3. Test Training Dummy Interaction (40s)
@@ -111,8 +103,6 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 4. Test All 8 Stances (60s)
     // ============================================================
@@ -123,18 +113,17 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
       // Change to stance
       cy.get("body").type(stance.toString());
-      cy.wait(100);
 
       // Execute technique with space bar
       cy.get("body").type(" ");
-      cy.wait(100);
+
+      // Verify training screen still exists after action
+      cy.get('[data-testid="training-screen"]', { timeout: 1000 }).should('exist');
 
       cy.log(`✅ Stance ${stance} tested`);
     }
 
     cy.log("✅ All 8 stances tested in training");
-
-    cy.wait(200);
 
     // ============================================================
     // 5. Test Extended Training Session (30s)
@@ -145,12 +134,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     for (let i = 0; i < 3; i++) {
       cy.log(`Training repetition ${i + 1}/3`);
       cy.practiceStance(2, 2);
-      cy.wait(100);
     }
 
     cy.log("✅ Extended training session completed");
-
-    cy.wait(200);
 
     // ============================================================
     // 6. Test Training Controls (20s)
@@ -159,16 +145,10 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Test movement in training mode
     cy.get("body").type("w");
-    cy.wait(50);
     cy.get("body").type("a");
-    cy.wait(50);
     cy.get("body").type("s");
-    cy.wait(50);
     cy.get("body").type("d");
-    cy.wait(50);
     cy.log("✅ Movement controls tested");
-
-    cy.wait(200);
 
     // ============================================================
     // 7. Verify Training UI Elements (20s)
@@ -195,8 +175,6 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 8. Verify Korean Text in Training (10s)
     // ============================================================
@@ -215,8 +193,6 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 9. Test Vital Point Display (15s)
     // ============================================================
@@ -234,8 +210,6 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         cy.log("⚠️ Vital points display not found");
       }
     });
-
-    cy.wait(200);
 
     // ============================================================
     // FINAL: Test Summary

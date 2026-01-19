@@ -59,8 +59,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       cy.log(`Player 2 health verified: ${health}`);
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 2. Test Trigram Stance System with Verification (40s)
     // ============================================================
@@ -82,9 +80,8 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     for (let stance = 1; stance <= 8; stance++) {
       cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);
       cy.get("body").type(stance.toString());
-      cy.wait(100); // Allow time for stance change
 
-      // Verify stance indicator updates if present
+      // Wait for stance indicator to update using assertion instead of fixed wait
       cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
         .should("exist")
         .invoke("text")
@@ -94,8 +91,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     }
 
     cy.log("✅ All 8 trigram stances tested");
-
-    cy.wait(200);
 
     // ============================================================
     // 3. Test Combat Actions with Health Verification (60s)
@@ -115,20 +110,20 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
         // Execute attack
         cy.get("body").type(" ");
-        cy.wait(300); // Allow time for combat resolution
 
-        // Verify health decreased (damage was dealt)
-        cy.get('[data-testid="player2-health"]')
+        // Wait for health to update using assertion instead of fixed wait
+        cy.get('[data-testid="player2-health"]', { timeout: 1500 })
           .invoke("attr", "data-current")
+          .should((updatedHealth) => {
+            const updatedHealthValue = parseFloat(updatedHealth as string);
+            expect(
+              updatedHealthValue,
+              "Opponent health should decrease after attack"
+            ).to.be.lessThan(initialHealth);
+          })
           .then((newHealth) => {
             const currentHealth = parseFloat(newHealth as string);
             cy.log(`Player 2 current health: ${currentHealth}`);
-
-            // Assert damage was dealt
-            expect(
-              currentHealth,
-              "Attack should deal damage to opponent"
-            ).to.be.lessThan(initialHealth);
             cy.log(
               `✅ Damage verified: ${initialHealth - currentHealth} HP lost`
             );
@@ -142,16 +137,19 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         const beforeAttack = parseFloat(health as string);
 
         cy.get("body").type(" ");
-        cy.wait(300);
 
-        cy.get('[data-testid="player2-health"]')
+        // Wait for health to update using assertion
+        cy.get('[data-testid="player2-health"]', { timeout: 1500 })
           .invoke("attr", "data-current")
-          .then((newHealth) => {
-            const afterAttack = parseFloat(newHealth as string);
+          .should((updatedHealth) => {
+            const updatedHealthValue = parseFloat(updatedHealth as string);
             expect(
-              afterAttack,
+              updatedHealthValue,
               "Second attack should deal damage"
             ).to.be.lessThan(beforeAttack);
+          })
+          .then((newHealth) => {
+            const afterAttack = parseFloat(newHealth as string);
             cy.log(
               `✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`
             );
@@ -167,16 +165,19 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
             const before = parseFloat(health as string);
 
             cy.get('[data-testid="attack-button"]').click({ force: true });
-            cy.wait(300);
 
-            cy.get('[data-testid="player2-health"]')
+            // Wait for health to update using assertion
+            cy.get('[data-testid="player2-health"]', { timeout: 1500 })
               .invoke("attr", "data-current")
-              .then((after) => {
-                const afterValue = parseFloat(after as string);
+              .should((updatedHealth) => {
+                const updatedHealthValue = parseFloat(updatedHealth as string);
                 expect(
-                  afterValue,
+                  updatedHealthValue,
                   "Attack button should deal damage"
                 ).to.be.lessThan(before);
+              })
+              .then((after) => {
+                const afterValue = parseFloat(after as string);
                 cy.log(
                   `✅ Attack button verified (Health: ${before} → ${afterValue})`
                 );
@@ -187,8 +188,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 4. Test Movement (30s)
     // ============================================================
@@ -198,20 +197,12 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.gameActions(["w", "a", "s", "d"]);
     cy.log("✅ WASD movement tested");
 
-    cy.wait(200);
-
     // Test arrow key movement
     cy.get("body").type("{uparrow}");
-    cy.wait(50);
     cy.get("body").type("{leftarrow}");
-    cy.wait(50);
     cy.get("body").type("{downarrow}");
-    cy.wait(50);
     cy.get("body").type("{rightarrow}");
-    cy.wait(50);
     cy.log("✅ Arrow key movement tested");
-
-    cy.wait(200);
 
     // ============================================================
     // 5. Test Defense (20s)
@@ -220,7 +211,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Test guard/block with Shift key
     cy.get("body").type("{shift}", { release: false });
-    cy.wait(100);
+    cy.get('[data-testid="combat-screen"]', { timeout: 1000 }).should("exist");
     cy.get("body").type("{shift}", { release: true });
     cy.log("✅ Guard/block tested");
 
@@ -228,14 +219,12 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="defend-button"]').length > 0) {
         cy.get('[data-testid="defend-button"]').click({ force: true });
-        cy.wait(100);
+        cy.get('[data-testid="combat-screen"]', { timeout: 1000 }).should("exist");
         cy.log("✅ Defend button clicked");
       } else {
         cy.log("⚠️ Defend button not found");
       }
     });
-
-    cy.wait(200);
 
     // ============================================================
     // 6. Verify Combat HUD Elements (20s)
@@ -264,8 +253,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 7. Test Extended Combat Session (40s)
     // ============================================================
@@ -275,26 +262,26 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     for (let i = 0; i < 5; i++) {
       cy.log(`Combat sequence ${i + 1}/5`);
 
-      // Change stance
+      // Change stance and verify
       cy.get("body").type("1");
-      cy.wait(50);
+      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+        .invoke("text")
+        .should("include", "geon");
 
       // Attack
       cy.get("body").type(" ");
-      cy.wait(100);
 
-      // Change stance again
+      // Change stance again and verify
       cy.get("body").type("3");
-      cy.wait(50);
+      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+        .invoke("text")
+        .should("include", "li");
 
       // Attack
       cy.get("body").type(" ");
-      cy.wait(100);
     }
 
     cy.log("✅ Extended combat session completed");
-
-    cy.wait(300);
 
     // ============================================================
     // 8. Test Combat Controls Panel (15s)
@@ -322,8 +309,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 9. Verify Korean Text in Combat (10s)
     // ============================================================
@@ -342,8 +327,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 10. Test Mouse/Canvas Interaction (15s)
     // ============================================================
@@ -351,11 +334,8 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Test canvas click interactions
     cy.get("canvas").click(400, 300);
-    cy.wait(100);
-    cy.get('[data-testid="combat-screen"]').should("exist");
+    cy.get('[data-testid="combat-screen"]', { timeout: 1000 }).should("exist");
     cy.log("✅ Canvas mouse interaction tested");
-
-    cy.wait(200);
 
     // ============================================================
     // 11. Test AI Movement and State (20s)
@@ -364,11 +344,8 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Move toward then away to test AI response
     cy.gameActions(["d", "d", "a", "a"]);
-    cy.wait(200);
-    cy.get('[data-testid="combat-screen"]').should("exist");
+    cy.get('[data-testid="combat-screen"]', { timeout: 1000 }).should("exist");
     cy.log("✅ AI movement and state management tested");
-
-    cy.wait(200);
 
     // ============================================================
     // 12. Test Combat Performance Under Load (20s)
@@ -379,7 +356,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Execute rapid combat sequence
     cy.gameActions(["1", "2", "3", "4", " ", " "]);
-    cy.wait(100);
 
     cy.wrap(null).then(() => {
       const duration = Date.now() - startTime;
@@ -387,8 +363,6 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       expect(duration).to.be.lessThan(5000);
       cy.log(`✅ Performance maintained: ${duration}ms`);
     });
-
-    cy.wait(200);
 
     // ============================================================
     // FINAL: Test Summary

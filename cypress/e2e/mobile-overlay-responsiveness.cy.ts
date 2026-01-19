@@ -9,6 +9,11 @@
  */
 
 describe("Mobile HTML Overlay Responsiveness", () => {
+  beforeEach(() => {
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
+  });
+
   // Mobile viewport configurations to test
   // PRIORITY ORDER: Super HD devices are top priority
   const mobileViewports = [
@@ -120,7 +125,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       it("should navigate to training mode successfully", () => {
         // Click training button
         cy.get('[data-testid="menu-item-training"]').click();
-        cy.wait(500);
+        
 
         // Verify training screen loaded
         cy.get('[data-testid="training-stats-html"]', { timeout: 5000 })
@@ -130,7 +135,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       it("should display training stats with proper touch targets", () => {
         // Navigate to training
         cy.get('[data-testid="menu-item-training"]').click();
-        cy.wait(1000);
+        
 
         // Check training stats panel
         cy.get('[data-testid="training-stats-html"]')
@@ -233,7 +238,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       mobileViewports.forEach((viewport) => {
         cy.viewport(viewport.width, viewport.height);
         cy.visit("/");
-        cy.wait(500);
+        
 
         // Check that menu structure is consistent
         cy.get('[data-testid="main-menu-section"]').should("be.visible");
@@ -252,7 +257,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
     beforeEach(() => {
       cy.viewport(375, 667); // iPhone SE
       cy.visit("/");
-      cy.wait(500);
+      
     });
 
     it("should provide visual feedback on button hover", () => {
@@ -265,7 +270,7 @@ describe("Mobile HTML Overlay Responsiveness", () => {
       // Simulate rapid taps
       for (let i = 0; i < 5; i++) {
         cy.get('[data-testid="menu-item-training"]').trigger("touchstart");
-        cy.wait(100);
+        
         cy.get('[data-testid="menu-item-training"]').trigger("touchend");
       }
 
