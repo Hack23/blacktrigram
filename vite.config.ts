@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { defineConfig, Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -13,38 +13,40 @@ interface PackageJson {
 }
 
 const packageJson: PackageJson = JSON.parse(
-  readFileSync(path.resolve("./package.json"), "utf8")
+  readFileSync(path.resolve("./package.json"), "utf8"),
 );
 
 // Custom plugin to inject version into service worker
 function injectVersionPlugin(): Plugin {
   return {
-    name: 'inject-version-to-sw',
-    apply: 'build',
+    name: "inject-version-to-sw",
+    apply: "build",
     writeBundle() {
       // Copy service worker from public to dist and inject version
-      const publicSwPath = path.resolve('./public/sw.js');
-      const distSwPath = path.resolve('./dist/sw.js');
-      
+      const publicSwPath = path.resolve("./public/sw.js");
+      const distSwPath = path.resolve("./dist/sw.js");
+
       try {
         // Ensure public/sw.js exists
         if (!existsSync(publicSwPath)) {
-          console.warn('⚠ Service worker not found in public directory');
+          console.warn("⚠ Service worker not found in public directory");
           return;
         }
 
         // Copy and inject version
-        const swContent = readFileSync(publicSwPath, 'utf8');
+        const swContent = readFileSync(publicSwPath, "utf8");
         const updatedContent = swContent.replace(
           /__APP_VERSION__/g,
-          packageJson.version
+          packageJson.version,
         );
-        writeFileSync(distSwPath, updatedContent, 'utf8');
-        console.log(`✓ Service worker updated with version: ${packageJson.version}`);
+        writeFileSync(distSwPath, updatedContent, "utf8");
+        console.log(
+          `✓ Service worker updated with version: ${packageJson.version}`,
+        );
       } catch (error) {
-        console.warn('⚠ Could not update service worker version:', error);
+        console.warn("⚠ Could not update service worker version:", error);
       }
-    }
+    },
   };
 }
 
@@ -82,14 +84,7 @@ export default defineConfig(({ command, mode: _mode }) => ({
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: [
-      "react-reconciler",
-      "howler",
-      // Three.js dependencies for optimized dev performance
-      "three",
-      "@react-three/fiber",
-      "@react-three/drei",
-    ],
+    include: ["three", "@react-three/fiber", "@react-three/drei"],
     // Exclude heavy modules from dev pre-bundling to reduce TBT
     exclude: [
       "src/types/constants/techniques.ts",

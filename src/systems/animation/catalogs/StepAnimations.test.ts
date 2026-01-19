@@ -30,7 +30,7 @@ describe("StepAnimations", () => {
       expect(STEP_ANIMATION_PARAMS.FPS).toBe(60);
       expect(STEP_ANIMATION_PARAMS.DURATION).toBe(0.3); // 300ms
       expect(STEP_ANIMATION_PARAMS.FRAMES / STEP_ANIMATION_PARAMS.FPS).toBe(
-        0.3
+        0.3,
       );
     });
 
@@ -49,7 +49,8 @@ describe("StepAnimations", () => {
     });
 
     it("should define reasonable stamina cost", () => {
-      expect(STEP_ANIMATION_PARAMS.STAMINA_COST).toBe(5);
+      // Reduced from 5 to 3 for balanced combat sustainability
+      expect(STEP_ANIMATION_PARAMS.STAMINA_COST).toBe(3);
       expect(STEP_ANIMATION_PARAMS.STAMINA_COST).toBeGreaterThan(0);
       expect(STEP_ANIMATION_PARAMS.STAMINA_COST).toBeLessThanOrEqual(10);
     });
@@ -84,7 +85,7 @@ describe("StepAnimations", () => {
     it("should have keyframes in ascending frame order", () => {
       for (let i = 1; i < STEP_KEYFRAMES.length; i++) {
         expect(STEP_KEYFRAMES[i].frame).toBeGreaterThan(
-          STEP_KEYFRAMES[i - 1].frame
+          STEP_KEYFRAMES[i - 1].frame,
         );
       }
     });
@@ -97,7 +98,7 @@ describe("StepAnimations", () => {
 
       // Phase 2: Movement (frames 6-11)
       const movementFrames = STEP_KEYFRAMES.filter(
-        (kf) => kf.frame >= 6 && kf.frame <= 11
+        (kf) => kf.frame >= 6 && kf.frame <= 11,
       );
       expect(movementFrames.length).toBeGreaterThan(0);
       const movementKeyframe = movementFrames[0];
@@ -105,7 +106,7 @@ describe("StepAnimations", () => {
 
       // Phase 3: Landing (frames 12-15)
       const landingFrames = STEP_KEYFRAMES.filter(
-        (kf) => kf.frame >= 12 && kf.frame <= 15
+        (kf) => kf.frame >= 12 && kf.frame <= 15,
       );
       expect(landingFrames.length).toBeGreaterThan(0);
 
@@ -189,7 +190,7 @@ describe("StepAnimations", () => {
         expect(config.maintainsGuard).toBe(true);
         expect(config.interruptible).toBe(false);
         expect(config.priority).toBe(STEP_PRIORITY);
-      }
+      },
     );
 
     it("should map direction to correct animation state", () => {
@@ -202,7 +203,8 @@ describe("StepAnimations", () => {
 
     it("should set correct stamina cost", () => {
       const config = createStepConfig("forward");
-      expect(config.staminaCost).toBe(5);
+      // Reduced from 5 to 3 for balanced combat sustainability
+      expect(config.staminaCost).toBe(3);
     });
 
     it("should mark steps as non-looping", () => {

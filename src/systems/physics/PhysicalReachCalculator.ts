@@ -163,7 +163,7 @@ export class PhysicalReachCalculator {
     physicalAttributes: PhysicalAttributes,
     animationType: AnimationType,
     animationTime: number,
-    stance: TrigramStance
+    stance: TrigramStance,
   ): PhysicalReachResult {
     // Determine technique type from animation
     const techniqueType = this.getTechniqueTypeFromAnimation(animationType);
@@ -171,14 +171,14 @@ export class PhysicalReachCalculator {
     // Get base limb length for technique type
     const baseLimbLength = this.getLimbLength(
       physicalAttributes,
-      techniqueType
+      techniqueType,
     );
 
     // Get animation hit timing
     const canHit = isWithinHitWindow(animationType, animationTime);
     const animationReachMultiplier = getCurrentReachMultiplier(
       animationType,
-      animationTime
+      animationTime,
     );
 
     // Get stance modifier
@@ -187,19 +187,44 @@ export class PhysicalReachCalculator {
     // Calculate final effective reach
     // Convert cm to meters for consistency with physics system
     const baseLimbLengthMeters = baseLimbLength / 100;
-    
-    // Add body pivot contribution for kicks
-    // Kicks benefit from hip rotation and torso lean which add 0.25m
-    // This accounts for:
-    // - Hip width/rotation (0.15m)
-    // - Torso lean during kick (0.1m)
-    // Total body pivot contribution: 0.25m for kicks
-    const bodyPivotContribution = techniqueType === "kick" || techniqueType === "knee"
-      ? 0.25  // meters (0.25m total body pivot from hip rotation + torso lean)
-      : 0;
-    
+
+    // Add body pivot/offset contribution based on technique type
+    // This accounts for the fact that limbs extend from the body surface,
+    // not the body center, plus rotational contributions
+    let bodyPivotContribution: number;
+
+    if (techniqueType === "kick" || techniqueType === "knee") {
+      // Kicks benefit from hip rotation and torso lean which add 0.25m
+      // This accounts for:
+      // - Hip width/rotation (0.15m)
+      // - Torso lean during kick (0.1m)
+      // Total body pivot contribution: 0.25m for kicks
+      bodyPivotContribution = 0.25;
+    } else if (
+      techniqueType === "punch" ||
+      techniqueType === "pressure_point"
+    ) {
+      // Punches extend from the shoulder, which is offset from body center
+      // Shoulder offset = shoulderWidth / 2 (converted to meters)
+      // Plus torso rotation contribution for cross/hooks (~0.1m)
+      // Average shoulder width ~45cm → offset ~0.225m, plus rotation ~0.1m
+      // Total: ~0.30m for arm techniques
+      const shoulderOffset = physicalAttributes.shoulderWidth / 2 / 100; // Convert cm to m
+      const torsoRotation = 0.1; // 10cm from torso rotation during punches
+      bodyPivotContribution = shoulderOffset + torsoRotation;
+    } else if (techniqueType === "elbow") {
+      // Elbows are close range but still extend from shoulder
+      // Less torso rotation contribution
+      const shoulderOffset = physicalAttributes.shoulderWidth / 2 / 100;
+      bodyPivotContribution = shoulderOffset;
+    } else {
+      bodyPivotContribution = 0;
+    }
+
     const effectiveReach =
-      (baseLimbLengthMeters + bodyPivotContribution) * animationReachMultiplier * stanceModifier;
+      (baseLimbLengthMeters + bodyPivotContribution) *
+      animationReachMultiplier *
+      stanceModifier;
 
     return {
       baseLimbLength: baseLimbLengthMeters,
@@ -242,7 +267,7 @@ export class PhysicalReachCalculator {
   calculateMaxReach(
     physicalAttributes: PhysicalAttributes,
     animationType: AnimationType,
-    stance: TrigramStance
+    stance: TrigramStance,
   ): number {
     const hitTiming = getAnimationHitTiming(animationType);
     if (!hitTiming) {
@@ -255,7 +280,7 @@ export class PhysicalReachCalculator {
       physicalAttributes,
       animationType,
       peakTime,
-      stance
+      stance,
     );
 
     return result.effectiveReach;
@@ -275,7 +300,7 @@ export class PhysicalReachCalculator {
    */
   private getLimbLength(
     physicalAttributes: PhysicalAttributes,
-    techniqueType: TechniqueType
+    techniqueType: TechniqueType,
   ): number {
     switch (techniqueType) {
       case "punch":
@@ -309,7 +334,7 @@ export class PhysicalReachCalculator {
    * @korean 기술유형결정
    */
   public getTechniqueTypeFromAnimation(
-    animationType: AnimationType
+    animationType: AnimationType,
   ): TechniqueType {
     // Punch techniques
     if (

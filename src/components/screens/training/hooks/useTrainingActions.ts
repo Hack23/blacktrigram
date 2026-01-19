@@ -25,8 +25,13 @@ import {
   Position,
   TrigramStance,
 } from "../../../../types/common";
-import { METERS_TO_TRAINING_UNITS } from "../../../../types/physicsConstants";
+import {
+  DEFAULT_BODY_RADIUS_METERS,
+  METERS_TO_TRAINING_UNITS,
+} from "../../../../types/physicsConstants";
 import { calculateDistance3D } from "../../../../utils/math";
+// Note: calculateBodyRadius is available for PvP combat where targets have archetypes
+// import { calculateBodyRadius } from "../../../../utils/skeletonScaling";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 
 export interface UseTrainingActionsConfig {
@@ -165,6 +170,15 @@ function getDefaultTechniqueForArchetype(
  * Distance logic matches CombatSystem: if out of reach, guaranteed miss (accuracy 0).
  * Training scene coordinates are in meters, using METERS_TO_TRAINING_UNITS = 1.0.
  *
+ * **IMPORTANT**: Distance calculation accounts for body radius.
+ * Center-to-center distance is adjusted by subtracting target body radius
+ * because attacks hit the body surface, not the center point.
+ * The target body radius is calculated from physical attributes for archetypes,
+ * or uses DEFAULT_BODY_RADIUS_METERS for training dummies.
+ *
+ * Example: If player center is 1.5m from dummy center, but dummy body
+ * extends 0.23m from center, the effective distance to hit is 1.27m.
+ *
  * @korean 거리 기반 명중률 계산 - 사정거리 밖이면 빗나감
  */
 function calculateHitAccuracy(
@@ -173,47 +187,62 @@ function calculateHitAccuracy(
   archetype: import("../../../../types/common").PlayerArchetype,
   stance: TrigramStance,
   animationType?: AnimationType,
-  animationTime?: number,
 ): number {
-  // Calculate 3D distance between player and dummy (in training scene units = meters)
-  const distance = calculateDistance3D(playerPos, dummyPos);
+  // Calculate 3D distance between player and dummy centers (in meters)
+  const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
 
-  // If animation info available, use physics-based reach calculation
-  if (animationType !== undefined && animationTime !== undefined) {
+  // Training dummy uses default body radius since it has no archetype
+  // For combat between players, we would use calculateBodyRadius(targetPhysicalAttributes)
+  // 훈련 더미는 원형이 없으므로 기본 몸체 반경 사용
+  const targetBodyRadius = DEFAULT_BODY_RADIUS_METERS;
+
+  // Adjust distance to account for target body radius
+  // Attacks hit the body surface, not the center point
+  // 타격은 중심점이 아닌 몸체 표면에 적중
+  const effectiveDistance = Math.max(
+    0,
+    centerToCenterDistance - targetBodyRadius,
+  );
+
+  // If animation type is available, use physics-based reach calculation
+  // We use calculateMaxReach (peak time reach) because:
+  // 1. Training hit detection happens at animation frame 6 (~100ms)
+  // 2. But technique hit timings expect longer animations (e.g., roundhouse 200-480ms)
+  // 3. Using max reach ensures the technique can hit if within peak reach range
+  // 4. This matches intuitive behavior - if you're close enough to be hit by the kick, it hits
+  // 훈련 타격 감지는 최대 도달 거리 사용 (애니메이션 타이밍과 기술 타이밍 불일치 보정)
+  if (animationType !== undefined) {
     const physicalAttributes = getArchetypePhysicalAttributes(archetype);
-    const reachResult = physicalReachCalculator.calculateReach(
+    const maxReachMeters = physicalReachCalculator.calculateMaxReach(
       physicalAttributes,
       animationType,
-      animationTime,
       stance,
     );
-
-    const effectiveReachMeters = reachResult.effectiveReach;
 
     // Convert reach from meters to training scene units.
     // Training scenes are authored in real-world meters, so we intentionally
     // use a 1:1 conversion here (METERS_TO_TRAINING_UNITS = 1.0).
     // Combat AI uses METERS_TO_PIXELS_SCALE (100) for pixel coordinates.
-    const reachInUnits = effectiveReachMeters * METERS_TO_TRAINING_UNITS;
+    const reachInUnits = maxReachMeters * METERS_TO_TRAINING_UNITS;
 
     // STRICT DISTANCE CHECK (matches CombatSystem behavior):
     // Out of reach = guaranteed miss with accuracy 0
-    if (distance > reachInUnits) {
+    if (effectiveDistance > reachInUnits) {
       return 0;
     }
 
     // Within reach: accuracy based on how centered the hit is
     // Closer = higher accuracy (0.7 to 1.0 range)
-    return Math.max(0.7, 1.0 - (distance / reachInUnits) * 0.3);
+    return Math.max(0.7, 1.0 - (effectiveDistance / reachInUnits) * 0.3);
   }
 
   // Fallback: use default punch reach (0.7 meters) for legacy behavior
   const defaultReach = 0.7 * METERS_TO_TRAINING_UNITS;
-  if (distance > defaultReach) {
+  if (effectiveDistance > defaultReach) {
     return 0; // Out of reach = miss
   }
   // Within default reach: linear accuracy based on distance
-  return Math.max(0.5, 1.0 - (distance / defaultReach) * 0.5);
+  return Math.max(0.5, 1.0 - (effectiveDistance / defaultReach) * 0.5);
 }
 
 /**
@@ -276,11 +305,6 @@ export function useTrainingActions(
     (_vitalPointId: string): boolean => {
       // Get animation context from pending attack if available
       const animationType = pendingAttackRef.current?.animationType;
-      const startTime = pendingAttackRef.current?.startTime;
-      const currentTime =
-        startTime !== undefined
-          ? Math.max(0, performance.now() / 1000 - startTime)
-          : undefined;
 
       const accuracy = calculateHitAccuracy(
         player3DPosition,
@@ -288,7 +312,6 @@ export function useTrainingActions(
         playerArchetype,
         playerStance,
         animationType,
-        currentTime,
       );
 
       // Determine hit position (dummy center)
@@ -415,7 +438,6 @@ export function useTrainingActions(
       playerArchetype,
       playerStance,
       animationType,
-      0, // At attack initiation, time is 0
     );
 
     pendingAttackRef.current = {

@@ -1,22 +1,22 @@
 /**
  * Unit tests for AnimationPriority system
- * 
+ *
  * Tests animation priority comparison, interrupt logic, conflict resolution,
  * animation queue, and interruptibility windows.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-  canInterrupt,
-  getPriority,
-  comparePriority,
   ANIMATION_PRIORITY_MAP,
+  AnimationQueue,
+  canInterrupt,
+  canInterruptAtFrame,
+  comparePriority,
+  getInterruptibilityWindow,
+  getPriority,
   getPriorityKoreanName,
   PRIORITY_LEVEL_KOREAN_NAMES,
   resolveConflict,
-  AnimationQueue,
-  canInterruptAtFrame,
-  getInterruptibilityWindow,
   type AnimationRequest,
   type InterruptibilityWindow,
 } from "./AnimationPriority";
@@ -26,14 +26,14 @@ describe("AnimationPriority", () => {
   describe("ANIMATION_PRIORITY_MAP", () => {
     it("should map all animation states to priority levels", () => {
       const states: AnimationState[] = [
-        "idle",
-        "walk",
-        "run",
-        "stance_change",
-        "defend",
-        "attack",
-        "hit",
-        "ko",
+        AnimationState.IDLE,
+        AnimationState.WALK,
+        AnimationState.RUN,
+        AnimationState.STANCE_CHANGE,
+        AnimationState.DEFEND,
+        AnimationState.ATTACK,
+        AnimationState.HIT,
+        AnimationState.KO,
       ];
 
       states.forEach((state) => {
@@ -44,98 +44,146 @@ describe("AnimationPriority", () => {
 
     it("should have correct priority order: ko > hit > attack > defend > stance_change > movement > idle", () => {
       expect(ANIMATION_PRIORITY_MAP.ko).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.hit
+        ANIMATION_PRIORITY_MAP.hit,
       );
       expect(ANIMATION_PRIORITY_MAP.hit).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.attack
+        ANIMATION_PRIORITY_MAP.attack,
       );
       expect(ANIMATION_PRIORITY_MAP.attack).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.defend
+        ANIMATION_PRIORITY_MAP.defend,
       );
       expect(ANIMATION_PRIORITY_MAP.defend).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.stance_change
+        ANIMATION_PRIORITY_MAP.stance_change,
       );
       expect(ANIMATION_PRIORITY_MAP.stance_change).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.run
+        ANIMATION_PRIORITY_MAP.run,
       );
       expect(ANIMATION_PRIORITY_MAP.run).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.walk
+        ANIMATION_PRIORITY_MAP.walk,
       );
       expect(ANIMATION_PRIORITY_MAP.walk).toBeGreaterThan(
-        ANIMATION_PRIORITY_MAP.idle
+        ANIMATION_PRIORITY_MAP.idle,
       );
     });
   });
 
   describe("canInterrupt", () => {
     it("should allow same priority animations to transition", () => {
-      expect(canInterrupt("walk", "walk", true)).toBe(true);
-      expect(canInterrupt("walk", "walk", false)).toBe(true);
+      expect(canInterrupt(AnimationState.WALK, AnimationState.WALK, true)).toBe(
+        true,
+      );
+      expect(
+        canInterrupt(AnimationState.WALK, AnimationState.WALK, false),
+      ).toBe(true);
     });
 
     it("should allow higher priority to interrupt interruptible animations", () => {
-      expect(canInterrupt("attack", "hit", true)).toBe(true);
-      expect(canInterrupt("defend", "attack", true)).toBe(true);
-      expect(canInterrupt("idle", "walk", true)).toBe(true);
+      expect(
+        canInterrupt(AnimationState.ATTACK, AnimationState.HIT, true),
+      ).toBe(true);
+      expect(
+        canInterrupt(AnimationState.DEFEND, AnimationState.ATTACK, true),
+      ).toBe(true);
+      expect(canInterrupt(AnimationState.IDLE, AnimationState.WALK, true)).toBe(
+        true,
+      );
     });
 
     it("should not allow lower priority to interrupt interruptible animations", () => {
-      expect(canInterrupt("hit", "attack", true)).toBe(false);
-      expect(canInterrupt("attack", "defend", true)).toBe(false);
-      expect(canInterrupt("walk", "idle", true)).toBe(false);
+      expect(
+        canInterrupt(AnimationState.HIT, AnimationState.ATTACK, true),
+      ).toBe(false);
+      expect(
+        canInterrupt(AnimationState.ATTACK, AnimationState.DEFEND, true),
+      ).toBe(false);
+      expect(canInterrupt(AnimationState.WALK, AnimationState.IDLE, true)).toBe(
+        false,
+      );
     });
 
     it("should not allow lower priority to interrupt non-interruptible animations", () => {
-      expect(canInterrupt("hit", "attack", false)).toBe(false);
-      expect(canInterrupt("attack", "walk", false)).toBe(false);
+      expect(
+        canInterrupt(AnimationState.HIT, AnimationState.ATTACK, false),
+      ).toBe(false);
+      expect(
+        canInterrupt(AnimationState.ATTACK, AnimationState.WALK, false),
+      ).toBe(false);
     });
 
     it("should allow higher priority to interrupt non-interruptible animations", () => {
-      expect(canInterrupt("attack", "hit", false)).toBe(true);
-      expect(canInterrupt("defend", "hit", false)).toBe(true);
-      expect(canInterrupt("stance_change", "ko", false)).toBe(true);
+      expect(
+        canInterrupt(AnimationState.ATTACK, AnimationState.HIT, false),
+      ).toBe(true);
+      expect(
+        canInterrupt(AnimationState.DEFEND, AnimationState.HIT, false),
+      ).toBe(true);
+      expect(
+        canInterrupt(AnimationState.STANCE_CHANGE, AnimationState.KO, false),
+      ).toBe(true);
     });
 
     it("should handle KO animation (highest priority)", () => {
-      expect(canInterrupt("attack", "ko", true)).toBe(true);
-      expect(canInterrupt("hit", "ko", true)).toBe(true);
-      expect(canInterrupt("ko", "idle", true)).toBe(false);
-      expect(canInterrupt("ko", "hit", true)).toBe(false);
+      expect(canInterrupt(AnimationState.ATTACK, AnimationState.KO, true)).toBe(
+        true,
+      );
+      expect(canInterrupt(AnimationState.HIT, AnimationState.KO, true)).toBe(
+        true,
+      );
+      expect(canInterrupt(AnimationState.KO, AnimationState.IDLE, true)).toBe(
+        false,
+      );
+      expect(canInterrupt(AnimationState.KO, AnimationState.HIT, true)).toBe(
+        false,
+      );
     });
   });
 
   describe("getPriority", () => {
     it("should return correct priority for each state", () => {
-      expect(getPriority("idle")).toBe(AnimationPriority.IDLE);
-      expect(getPriority("walk")).toBe(AnimationPriority.WALK);
-      expect(getPriority("run")).toBe(AnimationPriority.RUN);
-      expect(getPriority("stance_change")).toBe(
-        AnimationPriority.STANCE_CHANGE
+      expect(getPriority(AnimationState.IDLE)).toBe(AnimationPriority.IDLE);
+      expect(getPriority(AnimationState.WALK)).toBe(AnimationPriority.WALK);
+      expect(getPriority(AnimationState.RUN)).toBe(AnimationPriority.RUN);
+      expect(getPriority(AnimationState.STANCE_CHANGE)).toBe(
+        AnimationPriority.STANCE_CHANGE,
       );
-      expect(getPriority("defend")).toBe(AnimationPriority.DEFEND);
-      expect(getPriority("attack")).toBe(AnimationPriority.ATTACK);
-      expect(getPriority("hit")).toBe(AnimationPriority.HIT);
-      expect(getPriority("ko")).toBe(AnimationPriority.KO);
+      expect(getPriority(AnimationState.DEFEND)).toBe(AnimationPriority.DEFEND);
+      expect(getPriority(AnimationState.ATTACK)).toBe(AnimationPriority.ATTACK);
+      expect(getPriority(AnimationState.HIT)).toBe(AnimationPriority.HIT);
+      expect(getPriority(AnimationState.KO)).toBe(AnimationPriority.KO);
     });
   });
 
   describe("comparePriority", () => {
     it("should return positive when first state has higher priority", () => {
-      expect(comparePriority("hit", "attack")).toBeGreaterThan(0);
-      expect(comparePriority("ko", "hit")).toBeGreaterThan(0);
-      expect(comparePriority("attack", "idle")).toBeGreaterThan(0);
+      expect(
+        comparePriority(AnimationState.HIT, AnimationState.ATTACK),
+      ).toBeGreaterThan(0);
+      expect(
+        comparePriority(AnimationState.KO, AnimationState.HIT),
+      ).toBeGreaterThan(0);
+      expect(
+        comparePriority(AnimationState.ATTACK, AnimationState.IDLE),
+      ).toBeGreaterThan(0);
     });
 
     it("should return negative when second state has higher priority", () => {
-      expect(comparePriority("attack", "hit")).toBeLessThan(0);
-      expect(comparePriority("hit", "ko")).toBeLessThan(0);
-      expect(comparePriority("idle", "attack")).toBeLessThan(0);
+      expect(
+        comparePriority(AnimationState.ATTACK, AnimationState.HIT),
+      ).toBeLessThan(0);
+      expect(
+        comparePriority(AnimationState.HIT, AnimationState.KO),
+      ).toBeLessThan(0);
+      expect(
+        comparePriority(AnimationState.IDLE, AnimationState.ATTACK),
+      ).toBeLessThan(0);
     });
 
     it("should return zero when priorities are equal", () => {
-      expect(comparePriority("idle", "idle")).toBe(0);
-      expect(comparePriority("attack", "attack")).toBe(0);
-      expect(comparePriority("hit", "hit")).toBe(0);
+      expect(comparePriority(AnimationState.IDLE, AnimationState.IDLE)).toBe(0);
+      expect(
+        comparePriority(AnimationState.ATTACK, AnimationState.ATTACK),
+      ).toBe(0);
+      expect(comparePriority(AnimationState.HIT, AnimationState.HIT)).toBe(0);
     });
   });
 
@@ -156,10 +204,10 @@ describe("AnimationPriority", () => {
 
     it("should have names for all priority levels", () => {
       const priorities = Object.values(AnimationPriority).filter(
-        v => typeof v === "number"
+        (v) => typeof v === "number",
       ) as AnimationPriority[];
 
-      priorities.forEach(priority => {
+      priorities.forEach((priority) => {
         const name = getPriorityKoreanName(priority);
         expect(name.korean).toBeDefined();
         expect(name.romanized).toBeDefined();
@@ -173,13 +221,21 @@ describe("AnimationPriority", () => {
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.IDLE]).toBeDefined();
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.WALK]).toBeDefined();
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.RUN]).toBeDefined();
-      expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.STANCE_CHANGE]).toBeDefined();
-      expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.DEFEND]).toBeDefined();
-      expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.ATTACK]).toBeDefined();
+      expect(
+        PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.STANCE_CHANGE],
+      ).toBeDefined();
+      expect(
+        PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.DEFEND],
+      ).toBeDefined();
+      expect(
+        PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.ATTACK],
+      ).toBeDefined();
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.HIT]).toBeDefined();
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.KO]).toBeDefined();
       expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.FALL]).toBeDefined();
-      expect(PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.RECOVERY]).toBeDefined();
+      expect(
+        PRIORITY_LEVEL_KOREAN_NAMES[AnimationPriority.RECOVERY],
+      ).toBeDefined();
     });
   });
 
@@ -251,7 +307,9 @@ describe("AnimationPriority", () => {
       };
 
       // Always accept requested
-      expect(resolveConflict(current, requested, "requested")).toBe("requested");
+      expect(resolveConflict(current, requested, "requested")).toBe(
+        "requested",
+      );
     });
 
     it("should handle forced requests correctly", () => {
@@ -431,7 +489,7 @@ describe("AnimationPriority", () => {
       expect(queue.size()).toBe(3);
 
       // WALK should have been replaced
-      const states = queue.getAll().map(r => r.state);
+      const states = queue.getAll().map((r) => r.state);
       expect(states).not.toContain(AnimationState.WALK);
       expect(states).toContain(AnimationState.KO);
     });
@@ -591,30 +649,50 @@ describe("AnimationPriority", () => {
   describe("canInterruptAtFrame", () => {
     const windows: InterruptibilityWindow[] = [
       // Startup frames: interruptible by attacks or higher
-      { startFrame: 0, endFrame: 3, minPriorityToInterrupt: AnimationPriority.ATTACK },
+      {
+        startFrame: 0,
+        endFrame: 3,
+        minPriorityToInterrupt: AnimationPriority.ATTACK,
+      },
       // Active frames: not in any window (non-interruptible)
       // Recovery frames: interruptible by any action
-      { startFrame: 10, endFrame: 12, minPriorityToInterrupt: AnimationPriority.DEFEND },
+      {
+        startFrame: 10,
+        endFrame: 12,
+        minPriorityToInterrupt: AnimationPriority.DEFEND,
+      },
     ];
 
     it("should allow interrupt during startup window", () => {
       // Frame 2 is in startup window (requires ATTACK priority)
       expect(canInterruptAtFrame(2, AnimationPriority.HIT, windows)).toBe(true);
-      expect(canInterruptAtFrame(2, AnimationPriority.ATTACK, windows)).toBe(true);
-      expect(canInterruptAtFrame(2, AnimationPriority.DEFEND, windows)).toBe(false);
+      expect(canInterruptAtFrame(2, AnimationPriority.ATTACK, windows)).toBe(
+        true,
+      );
+      expect(canInterruptAtFrame(2, AnimationPriority.DEFEND, windows)).toBe(
+        false,
+      );
     });
 
     it("should not allow interrupt during active frames", () => {
       // Frame 5 is not in any window (non-interruptible)
       expect(canInterruptAtFrame(5, AnimationPriority.KO, windows)).toBe(false);
-      expect(canInterruptAtFrame(5, AnimationPriority.HIT, windows)).toBe(false);
+      expect(canInterruptAtFrame(5, AnimationPriority.HIT, windows)).toBe(
+        false,
+      );
     });
 
     it("should allow interrupt during recovery window", () => {
       // Frame 11 is in recovery window (requires DEFEND priority)
-      expect(canInterruptAtFrame(11, AnimationPriority.HIT, windows)).toBe(true);
-      expect(canInterruptAtFrame(11, AnimationPriority.DEFEND, windows)).toBe(true);
-      expect(canInterruptAtFrame(11, AnimationPriority.STANCE_CHANGE, windows)).toBe(false);
+      expect(canInterruptAtFrame(11, AnimationPriority.HIT, windows)).toBe(
+        true,
+      );
+      expect(canInterruptAtFrame(11, AnimationPriority.DEFEND, windows)).toBe(
+        true,
+      );
+      expect(
+        canInterruptAtFrame(11, AnimationPriority.STANCE_CHANGE, windows),
+      ).toBe(false);
     });
 
     it("should handle empty window array", () => {
@@ -624,32 +702,60 @@ describe("AnimationPriority", () => {
 
     it("should handle frame at window boundaries", () => {
       // Test exact boundary frames
-      expect(canInterruptAtFrame(0, AnimationPriority.ATTACK, windows)).toBe(true);
-      expect(canInterruptAtFrame(3, AnimationPriority.ATTACK, windows)).toBe(true);
-      expect(canInterruptAtFrame(10, AnimationPriority.DEFEND, windows)).toBe(true);
-      expect(canInterruptAtFrame(12, AnimationPriority.DEFEND, windows)).toBe(true);
+      expect(canInterruptAtFrame(0, AnimationPriority.ATTACK, windows)).toBe(
+        true,
+      );
+      expect(canInterruptAtFrame(3, AnimationPriority.ATTACK, windows)).toBe(
+        true,
+      );
+      expect(canInterruptAtFrame(10, AnimationPriority.DEFEND, windows)).toBe(
+        true,
+      );
+      expect(canInterruptAtFrame(12, AnimationPriority.DEFEND, windows)).toBe(
+        true,
+      );
 
       // Just outside boundaries
       expect(canInterruptAtFrame(4, AnimationPriority.KO, windows)).toBe(false);
       expect(canInterruptAtFrame(9, AnimationPriority.KO, windows)).toBe(false);
-      expect(canInterruptAtFrame(13, AnimationPriority.KO, windows)).toBe(false);
+      expect(canInterruptAtFrame(13, AnimationPriority.KO, windows)).toBe(
+        false,
+      );
     });
 
     it("should respect minimum priority requirements", () => {
       const strictWindow: InterruptibilityWindow[] = [
-        { startFrame: 0, endFrame: 5, minPriorityToInterrupt: AnimationPriority.KO },
+        {
+          startFrame: 0,
+          endFrame: 5,
+          minPriorityToInterrupt: AnimationPriority.KO,
+        },
       ];
 
-      expect(canInterruptAtFrame(2, AnimationPriority.KO, strictWindow)).toBe(true);
-      expect(canInterruptAtFrame(2, AnimationPriority.RECOVERY, strictWindow)).toBe(true);
-      expect(canInterruptAtFrame(2, AnimationPriority.HIT, strictWindow)).toBe(false);
+      expect(canInterruptAtFrame(2, AnimationPriority.KO, strictWindow)).toBe(
+        true,
+      );
+      expect(
+        canInterruptAtFrame(2, AnimationPriority.RECOVERY, strictWindow),
+      ).toBe(true);
+      expect(canInterruptAtFrame(2, AnimationPriority.HIT, strictWindow)).toBe(
+        false,
+      );
     });
   });
 
   describe("getInterruptibilityWindow", () => {
     const windows: InterruptibilityWindow[] = [
-      { startFrame: 0, endFrame: 3, minPriorityToInterrupt: AnimationPriority.ATTACK },
-      { startFrame: 10, endFrame: 12, minPriorityToInterrupt: AnimationPriority.DEFEND },
+      {
+        startFrame: 0,
+        endFrame: 3,
+        minPriorityToInterrupt: AnimationPriority.ATTACK,
+      },
+      {
+        startFrame: 10,
+        endFrame: 12,
+        minPriorityToInterrupt: AnimationPriority.DEFEND,
+      },
     ];
 
     it("should return correct window for frame in range", () => {
@@ -678,8 +784,16 @@ describe("AnimationPriority", () => {
 
     it("should return first matching window if overlapping", () => {
       const overlappingWindows: InterruptibilityWindow[] = [
-        { startFrame: 0, endFrame: 5, minPriorityToInterrupt: AnimationPriority.ATTACK },
-        { startFrame: 3, endFrame: 8, minPriorityToInterrupt: AnimationPriority.DEFEND },
+        {
+          startFrame: 0,
+          endFrame: 5,
+          minPriorityToInterrupt: AnimationPriority.ATTACK,
+        },
+        {
+          startFrame: 3,
+          endFrame: 8,
+          minPriorityToInterrupt: AnimationPriority.DEFEND,
+        },
       ];
 
       const window = getInterruptibilityWindow(4, overlappingWindows);

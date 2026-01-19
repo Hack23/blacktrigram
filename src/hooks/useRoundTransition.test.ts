@@ -1,14 +1,14 @@
 /**
  * useRoundTransition Hook Tests
- * 
+ *
  * Tests for round transition state management
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { useRoundTransition } from "./useRoundTransition";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerState } from "../systems";
-import { PlayerArchetype, TrigramStance, CombatState } from "../types";
+import { CombatState, PlayerArchetype, TrigramStance } from "../types";
+import { useRoundTransition } from "./useRoundTransition";
 
 describe("useRoundTransition", () => {
   const mockWinner: PlayerState = {
@@ -27,18 +27,26 @@ describe("useRoundTransition", () => {
     defense: 12,
     speed: 10,
     technique: 14,
+    pain: 10,
+    consciousness: 95,
+    balance: 85,
+    momentum: 2,
     currentStance: TrigramStance.GEON,
     combatState: CombatState.IDLE,
     position: { x: 100, y: 200 },
     isBlocking: false,
     isStunned: false,
     isCountering: false,
+    lastActionTime: 0,
+    recoveryTime: 0,
+    lastStanceChangeTime: 0,
     statusEffects: [],
-    vitalPointsHit: {},
+    activeEffects: [],
+    vitalPoints: [],
     hitsLanded: 5,
     hitsTaken: 3,
+    perfectStrikes: 1,
     comboCount: 2,
-    perfectBlockCount: 1,
     totalDamageDealt: 50,
     totalDamageReceived: 30,
     vitalPointHits: 2,
@@ -65,10 +73,13 @@ describe("useRoundTransition", () => {
   it("should start transition and move through states", async () => {
     // Use real timers for this test
     vi.useRealTimers();
-    
+
     const onComplete = vi.fn();
     const { result } = renderHook(() =>
-      useRoundTransition({ announcementDuration: 1, countdownDuration: 2 }, onComplete)
+      useRoundTransition(
+        { announcementDuration: 1, countdownDuration: 2 },
+        onComplete,
+      ),
     );
 
     // Start transition
@@ -87,7 +98,7 @@ describe("useRoundTransition", () => {
       () => {
         expect(result.current.transitionState).toBe("countdown");
       },
-      { timeout: 1500 }
+      { timeout: 1500 },
     );
 
     // Countdown state is now active (component will handle countdown display)
@@ -99,19 +110,22 @@ describe("useRoundTransition", () => {
         expect(result.current.transitionState).toBe("idle");
         expect(onComplete).toHaveBeenCalledTimes(1);
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
-    
+
     vi.useFakeTimers();
   });
 
   it("should skip countdown when skipCountdown is called", async () => {
     // Use real timers for this test
     vi.useRealTimers();
-    
+
     const onComplete = vi.fn();
     const { result } = renderHook(() =>
-      useRoundTransition({ announcementDuration: 1, countdownDuration: 3 }, onComplete)
+      useRoundTransition(
+        { announcementDuration: 1, countdownDuration: 3 },
+        onComplete,
+      ),
     );
 
     // Start transition
@@ -124,7 +138,7 @@ describe("useRoundTransition", () => {
       () => {
         expect(result.current.transitionState).toBe("countdown");
       },
-      { timeout: 1500 }
+      { timeout: 1500 },
     );
 
     // Skip countdown
@@ -140,9 +154,9 @@ describe("useRoundTransition", () => {
         expect(result.current.transitionState).toBe("idle");
         expect(onComplete).toHaveBeenCalledTimes(1);
       },
-      { timeout: 1000 }
+      { timeout: 1000 },
     );
-    
+
     vi.useFakeTimers();
   });
 
@@ -176,7 +190,7 @@ describe("useRoundTransition", () => {
 
   it("should use custom configuration values", () => {
     const { result } = renderHook(() =>
-      useRoundTransition({ countdownDuration: 5 })
+      useRoundTransition({ countdownDuration: 5 }),
     );
 
     // Hook should start in idle state regardless of config
@@ -237,13 +251,13 @@ describe("useRoundTransition", () => {
   it("should not show announcement in idle or transitioning states", async () => {
     // Use real timers for this test
     vi.useRealTimers();
-    
+
     const onComplete = vi.fn();
     const { result } = renderHook(() =>
       useRoundTransition(
         { announcementDuration: 1, countdownDuration: 1 },
-        onComplete
-      )
+        onComplete,
+      ),
     );
 
     expect(result.current.showAnnouncement).toBe(false);
@@ -258,23 +272,23 @@ describe("useRoundTransition", () => {
         expect(result.current.transitionState).toBe("idle");
         expect(result.current.showAnnouncement).toBe(false);
       },
-      { timeout: 3500 }
+      { timeout: 3500 },
     );
-    
+
     vi.useFakeTimers();
   });
 
   describe("Multiple Round Transitions", () => {
     it("should handle transition from round 1 to round 2", async () => {
       vi.useRealTimers();
-      
+
       const onComplete = vi.fn();
-      
+
       const { result } = renderHook(() =>
         useRoundTransition(
           { announcementDuration: 0.5, countdownDuration: 0.5 },
-          onComplete
-        )
+          onComplete,
+        ),
       );
 
       // Start round 1 end transition
@@ -291,7 +305,7 @@ describe("useRoundTransition", () => {
           expect(result.current.transitionState).toBe("idle");
           expect(onComplete).toHaveBeenCalledTimes(1);
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
 
       // Start round 2 end transition
@@ -308,27 +322,27 @@ describe("useRoundTransition", () => {
           expect(result.current.transitionState).toBe("idle");
           expect(onComplete).toHaveBeenCalledTimes(2);
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
-      
+
       vi.useFakeTimers();
     });
 
     it("should handle consecutive transitions with different winners", async () => {
       vi.useRealTimers();
-      
+
       const mockPlayer2: PlayerState = {
         ...mockWinner,
         id: "player2",
         name: { korean: "암살자", english: "Assassin" },
       };
-      
+
       const onComplete = vi.fn();
       const { result } = renderHook(() =>
         useRoundTransition(
           { announcementDuration: 0.5, countdownDuration: 0.5 },
-          onComplete
-        )
+          onComplete,
+        ),
       );
 
       // Player 1 wins round 1
@@ -338,10 +352,9 @@ describe("useRoundTransition", () => {
 
       expect(result.current.roundWinner).toBe(mockWinner);
 
-      await waitFor(
-        () => expect(result.current.transitionState).toBe("idle"),
-        { timeout: 2000 }
-      );
+      await waitFor(() => expect(result.current.transitionState).toBe("idle"), {
+        timeout: 2000,
+      });
 
       // Player 2 wins round 2
       act(() => {
@@ -350,25 +363,24 @@ describe("useRoundTransition", () => {
 
       expect(result.current.roundWinner).toBe(mockPlayer2);
 
-      await waitFor(
-        () => expect(result.current.transitionState).toBe("idle"),
-        { timeout: 2000 }
-      );
+      await waitFor(() => expect(result.current.transitionState).toBe("idle"), {
+        timeout: 2000,
+      });
 
       expect(onComplete).toHaveBeenCalledTimes(2);
-      
+
       vi.useFakeTimers();
     });
 
     it("should handle tie round followed by normal round", async () => {
       vi.useRealTimers();
-      
+
       const onComplete = vi.fn();
       const { result } = renderHook(() =>
         useRoundTransition(
           { announcementDuration: 0.5, countdownDuration: 0.5 },
-          onComplete
-        )
+          onComplete,
+        ),
       );
 
       // Round 1 ends in tie
@@ -378,10 +390,9 @@ describe("useRoundTransition", () => {
 
       expect(result.current.roundWinner).toBeNull();
 
-      await waitFor(
-        () => expect(result.current.transitionState).toBe("idle"),
-        { timeout: 2000 }
-      );
+      await waitFor(() => expect(result.current.transitionState).toBe("idle"), {
+        timeout: 2000,
+      });
 
       // Player 1 wins round 2
       act(() => {
@@ -390,13 +401,12 @@ describe("useRoundTransition", () => {
 
       expect(result.current.roundWinner).toBe(mockWinner);
 
-      await waitFor(
-        () => expect(result.current.transitionState).toBe("idle"),
-        { timeout: 2000 }
-      );
+      await waitFor(() => expect(result.current.transitionState).toBe("idle"), {
+        timeout: 2000,
+      });
 
       expect(onComplete).toHaveBeenCalledTimes(2);
-      
+
       vi.useFakeTimers();
     });
   });
@@ -404,13 +414,13 @@ describe("useRoundTransition", () => {
   describe("State Consistency", () => {
     it("should maintain consistent state during rapid transitions", async () => {
       vi.useRealTimers();
-      
+
       const onComplete = vi.fn();
       const { result } = renderHook(() =>
         useRoundTransition(
           { announcementDuration: 0.3, countdownDuration: 0.3 },
-          onComplete
-        )
+          onComplete,
+        ),
       );
 
       // Start first transition
@@ -429,13 +439,12 @@ describe("useRoundTransition", () => {
       // Should use the new round number
       expect(result.current.currentRoundNumber).toBe(2);
 
-      await waitFor(
-        () => expect(result.current.transitionState).toBe("idle"),
-        { timeout: 2000 }
-      );
+      await waitFor(() => expect(result.current.transitionState).toBe("idle"), {
+        timeout: 2000,
+      });
 
       expect(onComplete).toHaveBeenCalled();
-      
+
       vi.useFakeTimers();
     });
 

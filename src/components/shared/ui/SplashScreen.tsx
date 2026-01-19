@@ -3,6 +3,9 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { toHex } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
+// Declare global APP_VERSION constant (injected by build process)
+declare const APP_VERSION: string | undefined;
+
 // Constants
 // Small delay to show loading state for visual feedback.
 // 100ms is sufficient for users to perceive the state change
@@ -34,8 +37,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({
 
   // Use proper device detection (user-agent priority for high-res phones)
   // This ensures mobile layout is used even on 4K Android devices
-  // Include width/height as deps to re-evaluate on resize
-  const isMobile = useMemo(() => shouldUseMobileControls(), [width, height]);
+  // User-agent doesn't change during session, so no dependencies needed
+  const isMobile = useMemo(() => shouldUseMobileControls(), []);
 
   // Memoize responsive layout values
   const layoutCalculation = useMemo(

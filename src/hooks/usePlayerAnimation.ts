@@ -124,7 +124,7 @@ export interface UsePlayerAnimationReturn {
    */
   readonly transitionToStanceChange: (
     fromStance: TrigramStance,
-    toStance: TrigramStance
+    toStance: TrigramStance,
   ) => boolean;
 
   /**
@@ -198,7 +198,7 @@ export interface UsePlayerAnimationReturn {
  * @korean 플레이어애니메이션훅
  */
 export function usePlayerAnimation(
-  options: UsePlayerAnimationOptions = {}
+  options: UsePlayerAnimationOptions = {},
 ): UsePlayerAnimationReturn {
   const { customConfigs, events, initialState = "idle" } = options;
 
@@ -208,7 +208,7 @@ export function usePlayerAnimation(
   // Create animation configs (memoized)
   const configs = useMemo(
     () => customConfigs ?? DEFAULT_ANIMATION_CONFIGS,
-    [customConfigs]
+    [customConfigs],
   );
 
   // Create animation state machine (persistent across renders via useMemo)
@@ -245,7 +245,7 @@ export function usePlayerAnimation(
 
       return result;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const transitionTo = useCallback(
@@ -258,7 +258,7 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const reset = useCallback(() => {
@@ -278,14 +278,14 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const transitionToStanceChange = useCallback(
     (fromStance: TrigramStance, toStance: TrigramStance) => {
       const success = stateMachine.transitionToStanceChange(
         fromStance,
-        toStance
+        toStance,
       );
       if (success) {
         prevStateRef.current = stateMachine.getCurrentState();
@@ -294,7 +294,7 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const isInStanceGuard = useCallback(() => {
@@ -306,6 +306,9 @@ export function usePlayerAnimation(
   }, [stateMachine]);
 
   // Memoize the return value to ensure stable reference unless state/frame changes
+  // Note: Using ref.current as dependencies is intentional here - when state changes,
+  // forceUpdate triggers a re-render, and the refs have new values which cause
+  // the useMemo to recalculate
   return useMemo(
     () => ({
       currentState: prevStateRef.current,
@@ -319,7 +322,9 @@ export function usePlayerAnimation(
       reset,
     }),
     [
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
       prevStateRef.current,
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
       prevFrameRef.current,
       update,
       transitionTo,
@@ -328,6 +333,6 @@ export function usePlayerAnimation(
       isInStanceGuard,
       getCurrentGuardStance,
       reset,
-    ]
+    ],
   );
 }

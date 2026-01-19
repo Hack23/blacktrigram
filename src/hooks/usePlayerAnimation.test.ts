@@ -1,46 +1,47 @@
 /**
  * Unit tests for usePlayerAnimation hook
- * 
+ *
  * Tests React hook integration with animation state machine.
  */
 
-import { describe, it, expect, vi } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { usePlayerAnimation } from "./usePlayerAnimation";
+import { act, renderHook } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_ANIMATION_CONFIGS } from "../systems/animation";
+import { AnimationState } from "../systems/animation/core/types";
+import { usePlayerAnimation } from "./usePlayerAnimation";
 
 describe("usePlayerAnimation", () => {
   describe("initialization", () => {
     it("should initialize with idle state", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
-      expect(result.current.currentState).toBe("idle");
+      expect(result.current.currentState).toBe(AnimationState.IDLE);
       expect(result.current.currentFrame).toBe(0);
     });
 
     it("should initialize with custom initial state", () => {
       const { result } = renderHook(() =>
-        usePlayerAnimation({ initialState: "walk" })
+        usePlayerAnimation({ initialState: AnimationState.WALK }),
       );
 
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
     });
 
     it("should use default configs if not provided", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       // Check that hook returns expected properties
-      expect(result.current.currentState).toBe("idle");
+      expect(result.current.currentState).toBe(AnimationState.IDLE);
       expect(result.current.currentFrame).toBe(0);
     });
 
     it("should accept custom animation configs", () => {
       const customConfigs = new Map(DEFAULT_ANIMATION_CONFIGS);
       const { result } = renderHook(() =>
-        usePlayerAnimation({ customConfigs })
+        usePlayerAnimation({ customConfigs }),
       );
 
-      expect(result.current.currentState).toBe("idle");
+      expect(result.current.currentState).toBe(AnimationState.IDLE);
     });
   });
 
@@ -50,7 +51,7 @@ describe("usePlayerAnimation", () => {
 
       act(() => {
         const updateResult = result.current.update(1 / 60);
-        expect(updateResult.state).toBe("idle");
+        expect(updateResult.state).toBe(AnimationState.IDLE);
         expect(updateResult.frame).toBeGreaterThan(0);
       });
     });
@@ -59,12 +60,12 @@ describe("usePlayerAnimation", () => {
       const { result, rerender } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
       rerender();
 
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
     });
   });
 
@@ -73,26 +74,26 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        const success = result.current.transitionTo("walk");
+        const success = result.current.transitionTo(AnimationState.WALK);
         expect(success).toBe(true);
       });
 
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
     });
 
     it("should not transition to invalid states", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("attack");
+        result.current.transitionTo(AnimationState.ATTACK);
       });
 
       act(() => {
-        const success = result.current.transitionTo("walk");
+        const success = result.current.transitionTo(AnimationState.WALK);
         expect(success).toBe(false);
       });
 
-      expect(result.current.currentState).toBe("attack");
+      expect(result.current.currentState).toBe(AnimationState.ATTACK);
     });
 
     it("should reset frame count on transition", () => {
@@ -106,7 +107,7 @@ describe("usePlayerAnimation", () => {
       expect(result.current.currentFrame).toBeGreaterThan(0);
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
       expect(result.current.currentFrame).toBe(0);
@@ -118,17 +119,17 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("attack");
+        result.current.transitionTo(AnimationState.ATTACK);
         result.current.update(1 / 60);
       });
 
-      expect(result.current.currentState).toBe("attack");
+      expect(result.current.currentState).toBe(AnimationState.ATTACK);
 
       act(() => {
         result.current.reset();
       });
 
-      expect(result.current.currentState).toBe("idle");
+      expect(result.current.currentState).toBe(AnimationState.IDLE);
       expect(result.current.currentFrame).toBe(0);
     });
   });
@@ -140,14 +141,14 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() =>
         usePlayerAnimation({
           events: { onAnimationStart },
-        })
+        }),
       );
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
-      expect(onAnimationStart).toHaveBeenCalledWith("walk");
+      expect(onAnimationStart).toHaveBeenCalledWith(AnimationState.WALK);
     });
 
     it("should call onFrame callback during updates", () => {
@@ -156,7 +157,7 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() =>
         usePlayerAnimation({
           events: { onFrame },
-        })
+        }),
       );
 
       act(() => {
@@ -172,14 +173,14 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() =>
         usePlayerAnimation({
           events: { onAnimationComplete },
-        })
+        }),
       );
 
       act(() => {
-        result.current.transitionTo("attack");
+        result.current.transitionTo(AnimationState.ATTACK);
       });
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack")!;
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK)!;
       const frameDuration = 1 / config.fps;
 
       act(() => {
@@ -198,15 +199,18 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() =>
         usePlayerAnimation({
           events: { onAnimationInterrupted },
-        })
+        }),
       );
 
       act(() => {
-        result.current.transitionTo("attack");
-        result.current.transitionTo("hit");
+        result.current.transitionTo(AnimationState.ATTACK);
+        result.current.transitionTo(AnimationState.HIT);
       });
 
-      expect(onAnimationInterrupted).toHaveBeenCalledWith("attack", "hit");
+      expect(onAnimationInterrupted).toHaveBeenCalledWith(
+        AnimationState.ATTACK,
+        AnimationState.HIT,
+      );
     });
   });
 
@@ -215,20 +219,20 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
     });
 
     it("should respect transition rules", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
     });
   });
 
@@ -278,16 +282,16 @@ describe("usePlayerAnimation", () => {
             onAnimationComplete,
             onFrame,
           },
-        })
+        }),
       );
 
       act(() => {
-        result.current.transitionTo("attack");
+        result.current.transitionTo(AnimationState.ATTACK);
       });
 
-      expect(onAnimationStart).toHaveBeenCalledWith("attack");
+      expect(onAnimationStart).toHaveBeenCalledWith(AnimationState.ATTACK);
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("attack")!;
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.ATTACK)!;
       const frameDuration = 1 / config.fps;
 
       act(() => {
@@ -299,8 +303,8 @@ describe("usePlayerAnimation", () => {
       // Attack animation is 12 frames, so we should have 12 frame callbacks
       // Plus 1 for the transition to idle after completion
       expect(onFrame).toHaveBeenCalledTimes(config.frames + 1);
-      expect(onAnimationComplete).toHaveBeenCalledWith("attack");
-      expect(result.current.currentState).toBe("idle");
+      expect(onAnimationComplete).toHaveBeenCalledWith(AnimationState.ATTACK);
+      expect(result.current.currentState).toBe(AnimationState.IDLE);
     });
 
     it("should handle interrupted animation", () => {
@@ -309,27 +313,30 @@ describe("usePlayerAnimation", () => {
       const { result } = renderHook(() =>
         usePlayerAnimation({
           events: { onAnimationInterrupted },
-        })
+        }),
       );
 
       act(() => {
-        result.current.transitionTo("attack");
+        result.current.transitionTo(AnimationState.ATTACK);
         result.current.update(1 / 60);
-        result.current.transitionTo("hit");
+        result.current.transitionTo(AnimationState.HIT);
       });
 
-      expect(onAnimationInterrupted).toHaveBeenCalledWith("attack", "hit");
-      expect(result.current.currentState).toBe("hit");
+      expect(onAnimationInterrupted).toHaveBeenCalledWith(
+        AnimationState.ATTACK,
+        AnimationState.HIT,
+      );
+      expect(result.current.currentState).toBe(AnimationState.HIT);
     });
 
     it("should handle movement animation loop", () => {
       const { result } = renderHook(() => usePlayerAnimation());
 
       act(() => {
-        result.current.transitionTo("walk");
+        result.current.transitionTo(AnimationState.WALK);
       });
 
-      const config = DEFAULT_ANIMATION_CONFIGS.get("walk")!;
+      const config = DEFAULT_ANIMATION_CONFIGS.get(AnimationState.WALK)!;
       const frameDuration = 1 / config.fps;
 
       act(() => {
@@ -340,7 +347,7 @@ describe("usePlayerAnimation", () => {
       });
 
       // Should still be in walk state (looping)
-      expect(result.current.currentState).toBe("walk");
+      expect(result.current.currentState).toBe(AnimationState.WALK);
       // Frame should have looped
       expect(result.current.currentFrame).toBeLessThan(config.frames);
     });

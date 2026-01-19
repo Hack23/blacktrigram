@@ -11,33 +11,33 @@ import { TrigramStance } from "../types/common";
  * Uses physics-first approach: all positions and velocities are in meters.
  *
  * **Korean**: 입력 시스템 설정 (Input System Configuration)
- * 
+ *
  * ## Physics-First Architecture
- * 
+ *
  * This interface requires worldWidthMeters and worldDepthMeters to enable
  * the new physics-first coordinate system. Without these properties, the
  * movement system cannot properly convert between physics (meters) and
  * rendering (pixels).
- * 
+ *
  * ### Migration Guide
- * 
+ *
  * Existing code must be updated to pass world dimensions:
- * 
+ *
  * ```typescript
  * // Before (incorrect):
  * const config = { bounds: { x: 0, y: 0, width: 960, height: 480 } };
- * 
+ *
  * // After (correct):
- * const config = { 
- *   bounds: { 
+ * const config = {
+ *   bounds: {
  *     worldWidthMeters: 10,   // From layout hook
  *     worldDepthMeters: 10    // From layout hook
- *   } 
+ *   }
  * };
  * ```
- * 
+ *
  * ### Fallback Behavior
- * 
+ *
  * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
  * function and movement will be disabled. Callers MUST provide these values
  * from their layout hooks (useCombatLayout, useTrainingLayout).
@@ -48,9 +48,9 @@ export interface InputSystemConfig {
 
   /**
    * Arena world dimensions in meters for physics calculations.
-   * 
+   *
    * **REQUIRED for physics-first coordinate system to work.**
-   * 
+   *
    * These values must come from layout hooks:
    * - CombatScreen3D: Use arenaBounds.worldWidthMeters/worldDepthMeters from useCombatLayout()
    * - TrainingScreen3D: Use trainingAreaBounds.worldWidthMeters/worldDepthMeters from useTrainingLayout()
@@ -350,9 +350,7 @@ export function usePlayerMovement(
       // Auto-run detection: transition to running after sustained movement
       const now = performance.now();
       if (isCurrentlyMoving) {
-        if (movementStartTimeRef.current === null) {
-          movementStartTimeRef.current = now;
-        }
+        movementStartTimeRef.current ??= now;
       } else {
         movementStartTimeRef.current = null;
       }
@@ -454,7 +452,6 @@ export function usePlayerMovement(
     // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
     // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref

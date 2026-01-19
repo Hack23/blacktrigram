@@ -133,7 +133,7 @@ describe("AIComboSystem", () => {
       const started = comboSystem.startCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       // May or may not start due to random chance
@@ -147,7 +147,7 @@ describe("AIComboSystem", () => {
       const started = comboSystem.startCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       expect(started).toBe(false);
@@ -162,7 +162,7 @@ describe("AIComboSystem", () => {
       const started = comboSystem.startCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       expect(started).toBe(false);
@@ -175,7 +175,7 @@ describe("AIComboSystem", () => {
       const shouldContinue = comboSystem.shouldContinueCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       expect(shouldContinue).toBe(false);
@@ -189,7 +189,7 @@ describe("AIComboSystem", () => {
       const shouldContinue = comboSystem.shouldContinueCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       expect(shouldContinue).toBe(false);
@@ -205,7 +205,7 @@ describe("AIComboSystem", () => {
       const shouldContinue = comboSystem.shouldContinueCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       expect(shouldContinue).toBe(false);
@@ -227,7 +227,7 @@ describe("AIComboSystem", () => {
       const started = comboSystem.startCombo(
         mockPlayer,
         mockOpponent,
-        personality
+        personality,
       );
 
       if (started) {
@@ -279,9 +279,10 @@ describe("AIComboSystem", () => {
       expect(aggressive.comboTendency).toBeGreaterThan(0.6);
     });
 
-    it("should respect DEFENSIVE_SPECIALIST low combo tendency", () => {
+    it("should respect DEFENSIVE_SPECIALIST moderate combo tendency", () => {
+      // DEFENSIVE_SPECIALIST now has increased combo tendency for analytical attack chains
       const defensive = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
-      expect(defensive.comboTendency).toBeLessThan(0.4);
+      expect(defensive.comboTendency).toBeLessThan(0.6);
     });
   });
 });

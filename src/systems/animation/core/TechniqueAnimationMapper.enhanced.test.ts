@@ -423,7 +423,7 @@ describe("TechniqueAnimationMapper", () => {
 
       // Korean name should contain Korean characters
       expect(animation.koreanName).toMatch(
-        /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/
+        /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/,
       );
 
       // English name should be readable ASCII
@@ -486,19 +486,13 @@ describe("TechniqueAnimationMapper", () => {
 
       for (let i = 0; i < iterations; i++) {
         const stance = Object.values(TrigramStance)[i % 8];
-        const techniqueType: TechniqueTypeCategory = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ][i % 4];
+        const techniqueType = (
+          ["strike", "joint", "throw", "pressure_point"] as const
+        )[i % 4];
         const bodyPart = Object.values(BodyPart)[i % 8];
-        const intensity: TechniqueIntensity = [
-          "light",
-          "medium",
-          "heavy",
-          "critical",
-        ][i % 4];
+        const intensity = (["light", "medium", "heavy", "critical"] as const)[
+          i % 4
+        ];
 
         const key: TechniqueAnimationKey = {
           stance,
@@ -673,7 +667,7 @@ describe("TechniqueAnimationMapper", () => {
       expect(lightAnim.recoveryFrames).toBeLessThan(mediumAnim.recoveryFrames);
       expect(mediumAnim.recoveryFrames).toBeLessThan(heavyAnim.recoveryFrames);
       expect(heavyAnim.recoveryFrames).toBeLessThan(
-        criticalAnim.recoveryFrames
+        criticalAnim.recoveryFrames,
       );
     });
   });
@@ -810,7 +804,7 @@ describe("techniqueAnimationMapper singleton", () => {
       }
 
       expect(jinAnimation.hipEngagement).toBeGreaterThan(
-        ganAnimation.hipEngagement
+        ganAnimation.hipEngagement,
       );
     });
 
@@ -842,7 +836,7 @@ describe("techniqueAnimationMapper singleton", () => {
       }
 
       expect(throwAnimation.torsoRotation).toBeGreaterThan(
-        jointAnimation.torsoRotation
+        jointAnimation.torsoRotation,
       );
     });
 
@@ -875,7 +869,7 @@ describe("techniqueAnimationMapper singleton", () => {
       }
 
       expect(criticalAnimation.hipEngagement).toBeGreaterThan(
-        lightAnimation.hipEngagement
+        lightAnimation.hipEngagement,
       );
     });
 
@@ -907,7 +901,7 @@ describe("techniqueAnimationMapper singleton", () => {
       }
 
       expect(strikeAnimation.powerModifier).toBeGreaterThan(
-        jointAnimation.powerModifier
+        jointAnimation.powerModifier,
       );
     });
 
@@ -939,7 +933,7 @@ describe("techniqueAnimationMapper singleton", () => {
       }
 
       expect(ganAnimation.torsoRotation).toBeLessThan(
-        gonAnimation.torsoRotation
+        gonAnimation.torsoRotation,
       );
       expect(ganAnimation.torsoRotation).toBeLessThan(Math.PI / 18); // Less than 10°
     });

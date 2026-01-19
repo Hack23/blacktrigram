@@ -127,6 +127,30 @@ export const MUSA_PHYSICAL: PhysicalAttributes = {
    * Excellent grappling control points
    */
   shoulderWidth: 46,
+
+  /**
+   * Walk Speed: 6.0 m/s
+   * Balanced tactical movement
+   * Military conditioning for sustained mobility
+   * Optimal for disciplined combat approach
+   */
+  walkSpeed: 6.0,
+
+  /**
+   * Run Speed: 9.5 m/s
+   * Strong sprint capability
+   * Combat-ready rapid repositioning
+   * Efficient for tactical advances
+   */
+  runSpeed: 9.5,
+
+  /**
+   * Acceleration: 12.0 m/s²
+   * Balanced explosiveness
+   * Military conditioning for quick reactions
+   * Optimal muscle-to-weight ratio for combat
+   */
+  acceleration: 12.0,
 };
 
 /**
@@ -230,6 +254,30 @@ export const AMSALJA_PHYSICAL: PhysicalAttributes = {
    * Efficient for striking mechanics
    */
   shoulderWidth: 44,
+
+  /**
+   * Walk Speed: 6.5 m/s
+   * FASTEST tactical movement
+   * Optimized for silent, rapid repositioning
+   * Assassin-level agility and speed
+   */
+  walkSpeed: 6.5,
+
+  /**
+   * Run Speed: 11.0 m/s
+   * FASTEST sprint capability
+   * Peak athletic conditioning for pursuit
+   * Exceptional for closing distance quickly
+   */
+  runSpeed: 11.0,
+
+  /**
+   * Acceleration: 15.0 m/s²
+   * HIGHEST explosiveness
+   * Exceptional muscle-to-weight ratio
+   * Lightning-fast direction changes
+   */
+  acceleration: 15.0,
 };
 
 /**
@@ -333,6 +381,30 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Balanced for wearable tech integration
    */
   shoulderWidth: 43,
+
+  /**
+   * Walk Speed: 5.5 m/s
+   * Average tactical movement
+   * Tech-focused rather than athletic
+   * Compensated by cybernetic enhancements
+   */
+  walkSpeed: 5.5,
+
+  /**
+   * Run Speed: 8.5 m/s
+   * Moderate sprint capability
+   * Supplemental physical training
+   * Relies on tech for combat advantage
+   */
+  runSpeed: 8.5,
+
+  /**
+   * Acceleration: 10.0 m/s²
+   * Moderate explosiveness
+   * Average physical conditioning
+   * Compensated by tech-enhanced reactions
+   */
+  acceleration: 10.0,
 };
 
 /**
@@ -436,6 +508,30 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Versatile grappling control
    */
   shoulderWidth: 45,
+
+  /**
+   * Walk Speed: 6.2 m/s
+   * Fast tactical movement
+   * Agency fitness standards
+   * Excellent for varied operations
+   */
+  walkSpeed: 6.2,
+
+  /**
+   * Run Speed: 10.0 m/s
+   * Strong sprint capability
+   * Intelligence operative conditioning
+   * Efficient pursuit and evasion
+   */
+  runSpeed: 10.0,
+
+  /**
+   * Acceleration: 14.0 m/s²
+   * High explosiveness
+   * Agency combat training
+   * Quick response for tactical situations
+   */
+  acceleration: 14.0,
 };
 
 /**
@@ -539,6 +635,30 @@ export const JOJIK_PHYSICAL: PhysicalAttributes = {
    * Overwhelming physical dominance
    */
   shoulderWidth: 54,
+
+  /**
+   * Walk Speed: 5.0 m/s
+   * Slower tactical movement
+   * Heavy build reduces mobility
+   * Compensated by raw power and reach
+   */
+  walkSpeed: 5.0,
+
+  /**
+   * Run Speed: 8.0 m/s
+   * Moderate sprint capability
+   * Mass limits top speed
+   * Still intimidating when charging
+   */
+  runSpeed: 8.0,
+
+  /**
+   * Acceleration: 9.0 m/s²
+   * Lower explosiveness
+   * Heavy mass requires more force to move
+   * Compensated by devastating power on contact
+   */
+  acceleration: 9.0,
 };
 
 /**
@@ -593,7 +713,7 @@ export const ARCHETYPE_PHYSICAL_ATTRIBUTES: Record<
  * @korean 원형신체가져오기
  */
 export function getArchetypePhysicalAttributes(
-  archetype: PlayerArchetype
+  archetype: PlayerArchetype,
 ): Readonly<PhysicalAttributes> {
   return ARCHETYPE_PHYSICAL_ATTRIBUTES[archetype];
 }
@@ -625,7 +745,7 @@ export function getArchetypePhysicalAttributes(
  */
 export function calculateEffectiveReach(
   limbLength: number,
-  extension: number = 1.0
+  extension: number = 1.0,
 ): number {
   return limbLength * Math.max(0, Math.min(1, extension));
 }
@@ -660,7 +780,7 @@ export function calculateEffectiveReach(
  */
 export function calculateMovementSpeed(
   physical: PhysicalAttributes,
-  baseSpeed: number = 100
+  baseSpeed: number = 100,
 ): number {
   const legFactor = physical.legLength / 95; // Normalized to 95cm average
   const weightFactor = 75 / physical.weight; // Normalized to 75kg average
@@ -762,7 +882,7 @@ export function calculateDefenseModifier(physical: PhysicalAttributes): number {
  */
 export function calculateStaminaRecovery(
   physical: PhysicalAttributes,
-  baseRate: number = 10
+  baseRate: number = 10,
 ): number {
   // Age factor: peaks at 30, decreases before and after
   const ageOptimal = 30;

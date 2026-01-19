@@ -248,14 +248,10 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
 
   // Responsive layout calculations with large desktop support
   // Use device detection instead of width-only breakpoint to correctly identify high-res mobile devices
-  // shouldUseMobileControls() internally caches based on screen dimensions,
-  // so we include screenWidth/screenHeight as dependencies to trigger re-evaluation on resize
+  // shouldUseMobileControls() uses user-agent detection which doesn't change during session
   // Use isMobile only for mobile CONTROLS (touch controls, etc.)
   // Layout sizing should use screenWidth-based calculations
-  const isMobile = useMemo(
-    () => shouldUseMobileControls(),
-    [screenWidth, screenHeight],
-  );
+  const isMobile = useMemo(() => shouldUseMobileControls(), []);
 
   // Performance settings based on device tier
   const performanceSettings = useMemo(() => {

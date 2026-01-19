@@ -20,7 +20,8 @@ export interface GameEvent {
   readonly type: GameEventType;
   readonly timestamp: number;
   readonly playerId?: string;
-  readonly data: Record<string, any>; // Fix: Keep consistent type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Event data can contain various types depending on event type
+  readonly data: Record<string, any>;
   readonly message?: KoreanText;
 }
 

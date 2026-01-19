@@ -4,12 +4,13 @@
  * @module hooks/__tests__/useSkeletalAnimation.test
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { useSkeletalAnimation } from "../useSkeletalAnimation";
-import { createScaledHumanoidRig } from "../../systems/animation";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getArchetypePhysicalAttributes } from "../../data/archetypePhysicalAttributes";
+import { createScaledHumanoidRig } from "../../systems/animation";
 import { PlayerArchetype } from "../../types/common";
+import type { PlayerAnimation } from "../../types/player-visual";
+import { useSkeletalAnimation } from "../useSkeletalAnimation";
 
 describe("useSkeletalAnimation", () => {
   let testRig: ReturnType<typeof createScaledHumanoidRig>;
@@ -17,7 +18,7 @@ describe("useSkeletalAnimation", () => {
   beforeEach(() => {
     // Create a test rig for each test
     const physicalAttributes = getArchetypePhysicalAttributes(
-      PlayerArchetype.MUSA
+      PlayerArchetype.MUSA,
     );
     testRig = createScaledHumanoidRig(physicalAttributes);
   });
@@ -27,7 +28,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "idle",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -40,7 +41,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "walk",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -52,7 +53,7 @@ describe("useSkeletalAnimation", () => {
         useSkeletalAnimation({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -63,13 +64,13 @@ describe("useSkeletalAnimation", () => {
   describe("animation transitions", () => {
     it("should transition from idle to walk", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation }) =>
+        ({ currentAnimation }: { currentAnimation: PlayerAnimation }) =>
           useSkeletalAnimation({
             currentAnimation,
           }),
         {
-          initialProps: { currentAnimation: "idle" as const },
-        }
+          initialProps: { currentAnimation: "idle" as PlayerAnimation },
+        },
       );
 
       // Verify initial state
@@ -84,22 +85,28 @@ describe("useSkeletalAnimation", () => {
 
     it("should transition from walk to attack", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation, attackAnimation }) =>
+        ({
+          currentAnimation,
+          attackAnimation,
+        }: {
+          currentAnimation: PlayerAnimation;
+          attackAnimation?: string;
+        }) =>
           useSkeletalAnimation({
             currentAnimation,
             attackAnimation,
           }),
         {
           initialProps: {
-            currentAnimation: "walk" as const,
-            attackAnimation: undefined,
+            currentAnimation: "walk" as PlayerAnimation,
+            attackAnimation: undefined as string | undefined,
           },
-        }
+        },
       );
 
       // Transition to attack
       rerender({
-        currentAnimation: "attack",
+        currentAnimation: "attack" as PlayerAnimation,
         attackAnimation: "jab",
       });
 
@@ -116,7 +123,7 @@ describe("useSkeletalAnimation", () => {
           }),
         {
           initialProps: { isBlocking: false },
-        }
+        },
       );
 
       // Enable blocking
@@ -132,7 +139,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "step_forward_left",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -144,7 +151,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "step_forward",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -153,17 +160,19 @@ describe("useSkeletalAnimation", () => {
 
     it("should clear diagonal rotation for non-step animations", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation }) =>
+        ({ currentAnimation }: { currentAnimation: PlayerAnimation }) =>
           useSkeletalAnimation({
             currentAnimation,
           }),
         {
-          initialProps: { currentAnimation: "step_forward_left" as const },
-        }
+          initialProps: {
+            currentAnimation: "step_forward_left" as PlayerAnimation,
+          },
+        },
       );
 
       // Transition to walk (non-diagonal)
-      rerender({ currentAnimation: "walk" });
+      rerender({ currentAnimation: "walk" as PlayerAnimation });
 
       expect(result.current.diagonalRotationY).toBe(null);
     });
@@ -174,7 +183,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "walk",
-        })
+        }),
       );
 
       const initialTime = result.current.animTimeRef.current;
@@ -194,7 +203,7 @@ describe("useSkeletalAnimation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           onAnimationComplete: onComplete,
-        })
+        }),
       );
 
       // Simulate animation playing to completion
@@ -214,7 +223,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "walk",
-        })
+        }),
       );
 
       // Get initial bone positions
@@ -235,7 +244,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "hit",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(false);
@@ -246,7 +255,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "stance_change",
-        })
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -256,8 +265,8 @@ describe("useSkeletalAnimation", () => {
     it("should handle footwork animations", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
-          currentAnimation: "footwork_circular_left",
-        })
+          currentAnimation: "step_left",
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);
@@ -267,8 +276,8 @@ describe("useSkeletalAnimation", () => {
     it("should handle stance guard animations", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
-          currentAnimation: "stance_geon",  // Use the mapped PlayerAnimation value
-        })
+          currentAnimation: "stance_geon", // Use the mapped PlayerAnimation value
+        }),
       );
 
       expect(result.current.animState.isPlaying).toBe(true);

@@ -449,14 +449,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     });
 
     // Reset player positions to starting positions for rematch
+    // Use meter-based positions for physics-first system consistency
     setPlayer1Position({
-      x: arenaBounds.x + arenaBounds.width * 0.35,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * -0.1, // 10% left of center in meters
+      y: 0, // Centered
     });
     onPlayerUpdate(1, {
       position: {
-        x: arenaBounds.x + arenaBounds.width * 0.65,
-        y: arenaBounds.y + arenaBounds.height * 0.5,
+        x: arenaBounds.worldWidthMeters * 0.1, // 10% right of center in meters
+        y: 0, // Centered
       },
     });
 
@@ -535,15 +536,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     });
 
     // Reset player positions to starting positions for new round
+    // Use meter-based positions for physics-first system consistency
     setPlayer1Position({
-      x: arenaBounds.x + arenaBounds.width * 0.35,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * -0.1, // 10% left of center in meters
+      y: 0, // Centered
     });
     // Player 2 position is reset via onPlayerUpdate
     onPlayerUpdate(1, {
       position: {
-        x: arenaBounds.x + arenaBounds.width * 0.65,
-        y: arenaBounds.y + arenaBounds.height * 0.5,
+        x: arenaBounds.worldWidthMeters * 0.1, // 10% right of center in meters
+        y: 0, // Centered
       },
     });
   }, [
@@ -952,6 +954,32 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Local stance state for Player 1 - Enables immediate technique bar updates
+  // ═══════════════════════════════════════════════════════════════════════════
+  // The player stance from props requires a round-trip through App.tsx, causing
+  // the technique bar to update with a delay. This local state updates immediately
+  // when stance changes, then syncs with the parent state.
+  // (이 로컬 상태는 자세 변경 시 즉시 업데이트되어 기술바가 바로 반응함)
+  const [player1LocalStance, setPlayer1LocalStance] = useState<TrigramStance>(
+    validPlayers[0].currentStance,
+  );
+
+  // Sync local stance with prop when it changes (e.g., on round restart)
+  useEffect(() => {
+    setPlayer1LocalStance(validPlayers[0].currentStance);
+  }, [validPlayers]);
+
+  // Create player object with local stance for immediate technique bar updates
+  // This ensures useTechniqueSelection gets the updated stance synchronously
+  const player1WithLocalStance = useMemo(
+    (): PlayerState => ({
+      ...validPlayers[0],
+      currentStance: player1LocalStance,
+    }),
+    [validPlayers, player1LocalStance],
+  );
+
   // Use refs for stable access to startTransition and internalRound
   const startTransitionRef = useRef(startTransition);
   const internalRoundRef = useRef(internalRound);
@@ -1213,8 +1241,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [handleAttack]);
 
   // Technique selection and execution
+  // Uses player1WithLocalStance for immediate technique bar updates when stance changes
+  // (자세 변경 시 기술바가 즉시 업데이트되도록 로컬 자세 상태 사용)
   const techniqueSelection = useTechniqueSelection({
-    player: validPlayers[0],
+    player: player1WithLocalStance,
     enabled:
       !isPaused &&
       combatState.roundStarted &&
@@ -1301,7 +1331,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         const prevStance = STANCE_INDEX_MAP.get(currentStance) ?? 0;
         setPreviousStance(prevStance);
 
-        // Update combat state
+        // Update local stance immediately for instant technique bar update
+        // This ensures the technique bar updates before the prop round-trip completes
+        // (기술바가 즉시 업데이트되도록 로컬 자세 상태를 먼저 변경)
+        setPlayer1LocalStance(newStance);
+
+        // Update combat state (triggers prop update through App.tsx)
         handleStanceSwitch(newStance);
 
         // Play stance change sound
@@ -1892,10 +1927,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         case "feint":
           {
             const playerPos = validPlayers[0].position;
-            const feintOffset = 50;
+            // Feint offset in METERS (about half a meter of random movement)
+            const feintOffsetMeters = 0.5;
             const feintPos = {
-              x: playerPos.x + (Math.random() - 0.5) * feintOffset,
-              y: playerPos.y + (Math.random() - 0.5) * feintOffset,
+              x: playerPos.x + (Math.random() - 0.5) * feintOffsetMeters,
+              y: playerPos.y + (Math.random() - 0.5) * feintOffsetMeters,
             };
             moveAIPlayer(feintPos);
             addCombatMessage("AI 페인트", "AI Feint");
@@ -1911,20 +1947,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 const dx = currentAiPos.x - currentPlayerPos.x;
                 const dy = currentAiPos.y - currentPlayerPos.y;
                 const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-                const retreatDistance = 80;
+                // Retreat distance in METERS (about 0.8 meters back)
+                const retreatDistanceMeters = 0.8;
+                // Use world meter bounds instead of pixel bounds
+                const halfWidth = arenaBounds.worldWidthMeters / 2;
+                const halfDepth = arenaBounds.worldDepthMeters / 2;
                 const retreatPos = {
                   x: Math.max(
-                    arenaBounds.x,
+                    -halfWidth + 0.5, // 0.5m from edge
                     Math.min(
-                      arenaBounds.x + arenaBounds.width - 60,
-                      currentPlayerPos.x + (dx / dist) * retreatDistance,
+                      halfWidth - 0.5,
+                      currentPlayerPos.x + (dx / dist) * retreatDistanceMeters,
                     ),
                   ),
                   y: Math.max(
-                    arenaBounds.y,
+                    -halfDepth + 0.5, // 0.5m from edge
                     Math.min(
-                      arenaBounds.y + arenaBounds.height - 180,
-                      currentPlayerPos.y + (dy / dist) * retreatDistance,
+                      halfDepth - 0.5,
+                      currentPlayerPos.y + (dy / dist) * retreatDistanceMeters,
                     ),
                   ),
                 };

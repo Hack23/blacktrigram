@@ -1,11 +1,11 @@
 /**
  * PlayerStateOverlayHtml Component Tests
- * 
+ *
  * Tests component props, integration logic, and TypeScript interfaces.
  * Full rendering tests are done in E2E tests with Three.js context.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { PlayerStateOverlayHtml } from "./PlayerStateOverlayHtml";
 
 describe("PlayerStateOverlayHtml", () => {
@@ -52,8 +52,13 @@ describe("PlayerStateOverlayHtml", () => {
 
   describe("Balance States", () => {
     it("should accept all balance states", () => {
-      const balanceStates = ["READY", "SHAKEN", "VULNERABLE", "HELPLESS"] as const;
-      
+      const balanceStates = [
+        "READY",
+        "SHAKEN",
+        "VULNERABLE",
+        "HELPLESS",
+      ] as const;
+
       balanceStates.forEach((state) => {
         const props = {
           pain: 50,
@@ -177,16 +182,9 @@ describe("PlayerStateOverlayHtml", () => {
 
   describe("Default Values", () => {
     it("should handle missing optional bloodLoss", () => {
-      const props = {
-        pain: 50,
-        balanceState: "READY" as const,
-        position: "left" as const,
-        consciousness: 100,
-        stamina: 80,
-        isMobile: false,
-      };
-      
-      // bloodLoss defaults to 0 in component
+      const props: { bloodLoss?: number } = {};
+
+      // bloodLoss defaults to 0 in component when not provided
       expect(props.bloodLoss).toBeUndefined();
     });
   });

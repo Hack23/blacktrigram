@@ -28,13 +28,13 @@ describe("EnhancedAttackAnimations", () => {
   describe("JAB_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
       expect(JAB_ANIMATION_ENHANCED.duration).toBeGreaterThan(
-        JAB_ANIMATION.duration
+        JAB_ANIMATION.duration,
       );
     });
 
     it("should add 2 recovery keyframes to base animation", () => {
       expect(JAB_ANIMATION_ENHANCED.keyframes.length).toBe(
-        JAB_ANIMATION.keyframes.length + 2
+        JAB_ANIMATION.keyframes.length + 2,
       );
     });
 
@@ -73,13 +73,13 @@ describe("EnhancedAttackAnimations", () => {
   describe("CROSS_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
       expect(CROSS_ANIMATION_ENHANCED.duration).toBeGreaterThan(
-        CROSS_ANIMATION.duration
+        CROSS_ANIMATION.duration,
       );
     });
 
     it("should add 2 recovery keyframes", () => {
       expect(CROSS_ANIMATION_ENHANCED.keyframes.length).toBe(
-        CROSS_ANIMATION.keyframes.length + 2
+        CROSS_ANIMATION.keyframes.length + 2,
       );
     });
 
@@ -104,13 +104,13 @@ describe("EnhancedAttackAnimations", () => {
   describe("FRONT_KICK_ANIMATION_ENHANCED", () => {
     it("should have longer duration than base animation", () => {
       expect(FRONT_KICK_ANIMATION_ENHANCED.duration).toBeGreaterThan(
-        FRONT_KICK_ANIMATION.duration
+        FRONT_KICK_ANIMATION.duration,
       );
     });
 
     it("should add 2 recovery keyframes", () => {
       expect(FRONT_KICK_ANIMATION_ENHANCED.keyframes.length).toBe(
-        FRONT_KICK_ANIMATION.keyframes.length + 2
+        FRONT_KICK_ANIMATION.keyframes.length + 2,
       );
     });
 
@@ -163,10 +163,10 @@ describe("EnhancedAttackAnimations", () => {
 
     it("should provide enhanced versions of animations", () => {
       expect(ENHANCED_ANIMATIONS.jab.duration).toBeGreaterThan(
-        JAB_ANIMATION.duration
+        JAB_ANIMATION.duration,
       );
       expect(ENHANCED_ANIMATIONS.cross.duration).toBeGreaterThan(
-        CROSS_ANIMATION.duration
+        CROSS_ANIMATION.duration,
       );
     });
 
@@ -204,7 +204,7 @@ describe("EnhancedAttackAnimations", () => {
 
     it("should have combo recovery with fastest duration", () => {
       expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(
-        RECOVERY_PRESETS.fast.duration
+        RECOVERY_PRESETS.fast.duration!,
       );
       expect(RECOVERY_PRESETS.combo.finalMuscleTension).toBe(0.03); // Very low
     });
@@ -216,13 +216,13 @@ describe("EnhancedAttackAnimations", () => {
 
     it("should have progressively longer durations", () => {
       expect(RECOVERY_PRESETS.combo.duration).toBeLessThan(
-        RECOVERY_PRESETS.fast.duration
+        RECOVERY_PRESETS.fast.duration!,
       );
       expect(RECOVERY_PRESETS.fast.duration).toBeLessThan(
-        RECOVERY_PRESETS.power.duration
+        RECOVERY_PRESETS.power.duration!,
       );
       expect(RECOVERY_PRESETS.power.duration).toBeLessThan(
-        RECOVERY_PRESETS.finishing.duration
+        RECOVERY_PRESETS.finishing.duration!,
       );
     });
   });
@@ -316,7 +316,7 @@ describe("EnhancedAttackAnimations", () => {
       const crossResult = validateRecoveryPhase(CROSS_ANIMATION_ENHANCED);
 
       expect(jabResult.recoveryDuration).toBeLessThan(
-        crossResult.recoveryDuration
+        crossResult.recoveryDuration,
       );
     });
 

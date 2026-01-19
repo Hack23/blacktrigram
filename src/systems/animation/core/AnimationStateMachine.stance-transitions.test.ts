@@ -1,18 +1,22 @@
 /**
  * Tests for AnimationStateMachine stance transition integration
- * 
+ *
  * Validates the integration of the 64-transition matrix with the animation
  * state machine, including keyframe interpolation and blend weight calculations.
- * 
+ *
  * @module systems/animation/AnimationStateMachine.stance-transitions.test
  * @category Testing
  * @korean 자세전환애니메이션상태머신테스트
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { PlayerAnimationStateMachine, DEFAULT_ANIMATION_CONFIGS } from "./AnimationStateMachine";
 import { TrigramStance } from "@/types/common";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  DEFAULT_ANIMATION_CONFIGS,
+  PlayerAnimationStateMachine,
+} from "./AnimationStateMachine";
 import { initializeStanceTransitions } from "./AnimationTransitions";
+import { AnimationState } from "./types";
 
 describe("AnimationStateMachine - Stance Transition Integration", () => {
   let machine: PlayerAnimationStateMachine;
@@ -20,7 +24,7 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
   beforeEach(() => {
     // Ensure transitions are initialized
     initializeStanceTransitions();
-    
+
     // Create fresh machine instance
     machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
   });
@@ -29,11 +33,11 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
     it("should successfully start stance transition with valid stances", () => {
       const success = machine.transitionToStanceChange(
         TrigramStance.GEON,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
 
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("stance_change");
+      expect(machine.getCurrentState()).toBe(AnimationState.STANCE_CHANGE);
     });
 
     it("should store transition data during stance_change", () => {
@@ -49,7 +53,7 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
     it("should handle self-transitions (same stance)", () => {
       const success = machine.transitionToStanceChange(
         TrigramStance.GEON,
-        TrigramStance.GEON
+        TrigramStance.GEON,
       );
 
       expect(success).toBe(true);
@@ -74,10 +78,10 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
         for (const to of stances) {
           // Reset machine
           machine = new PlayerAnimationStateMachine(DEFAULT_ANIMATION_CONFIGS);
-          
+
           const success = machine.transitionToStanceChange(from, to);
           expect(success).toBe(true);
-          
+
           const transitionData = machine.getCurrentStanceTransition();
           expect(transitionData).not.toBeNull();
           expect(transitionData?.from).toBe(from);
@@ -159,11 +163,11 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       const blend = machine.getStanceTransitionBlend();
       expect(blend?.frame).toBe(35);
       expect(blend?.stance).toBe(TrigramStance.TAE);
-      
+
       // One more update to reach frame 36
       machine.update(1 / 60);
       const finalBlend = machine.getStanceTransitionBlend();
-      
+
       // At frame 36, we should still have blend data or it may have completed
       if (finalBlend) {
         expect(finalBlend.frame).toBe(36);
@@ -188,11 +192,11 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       machine.transitionToStanceChange(TrigramStance.GEON, TrigramStance.SON);
 
       let foundNeutral = false;
-      
+
       // Check all frames
       for (let i = 0; i < 36; i++) {
         const blend = machine.getStanceTransitionBlend();
-        if (blend?.stance === 'neutral') {
+        if (blend?.stance === "neutral") {
           foundNeutral = true;
           break;
         }
@@ -229,7 +233,7 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       expect(machine.isInStanceTransition()).toBe(true);
 
       // Interrupt with hit animation (higher priority)
-      machine.transitionTo("hit");
+      machine.transitionTo(AnimationState.HIT);
       expect(machine.isInStanceTransition()).toBe(false);
     });
   });
@@ -252,7 +256,7 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       expect(machine.getCurrentStanceTransition()).not.toBeNull();
 
       // Interrupt
-      machine.transitionTo("hit");
+      machine.transitionTo(AnimationState.HIT);
       expect(machine.getCurrentStanceTransition()).toBeNull();
     });
 
@@ -269,12 +273,12 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       // Try to start new stance change (should be blocked - stance_change is non-interruptible)
       const success = machine.transitionToStanceChange(
         TrigramStance.TAE,
-        TrigramStance.LI
+        TrigramStance.LI,
       );
-      
+
       // Should fail because stance_change is non-interruptible
       expect(success).toBe(false);
-      
+
       // Should still have original transition (it hasn't been cleared)
       const currentTransition = machine.getCurrentStanceTransition();
       expect(currentTransition).not.toBeNull();
@@ -294,11 +298,11 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       // Transition to new stance
       const success = machine.transitionToStanceChange(
         TrigramStance.GEON,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
 
       expect(success).toBe(true);
-      expect(machine.getCurrentState()).toBe("stance_change");
+      expect(machine.getCurrentState()).toBe(AnimationState.STANCE_CHANGE);
     });
 
     it("should transition to target guard after stance_change completes", () => {
@@ -310,7 +314,7 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       }
 
       // Should be in idle after completion
-      expect(machine.getCurrentState()).toBe("idle");
+      expect(machine.getCurrentState()).toBe(AnimationState.IDLE);
 
       // Can now transition to target guard
       machine.transitionToStanceGuard(TrigramStance.TAE);
@@ -324,12 +328,12 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       machine.transitionToStanceChange(TrigramStance.GEON, TrigramStance.TAE);
 
       const startTime = performance.now();
-      
+
       // Query blend 1000 times
       for (let i = 0; i < 1000; i++) {
         machine.getStanceTransitionBlend();
       }
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 
@@ -341,13 +345,13 @@ describe("AnimationStateMachine - Stance Transition Integration", () => {
       machine.transitionToStanceChange(TrigramStance.GEON, TrigramStance.TAE);
 
       const startTime = performance.now();
-      
+
       // Run through entire animation
       for (let i = 0; i < 36; i++) {
         machine.update(1 / 60);
         machine.getStanceTransitionBlend();
       }
-      
+
       const endTime = performance.now();
       const duration = endTime - startTime;
 

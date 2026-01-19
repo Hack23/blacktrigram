@@ -1,19 +1,41 @@
 /**
  * Unit tests for Face3D component
- * 
+ *
  * Tests 3D face rendering with eyes, nose, mouth, and damage visualization.
  * Validates PBR material memoization and disposal for memory leak prevention.
- * 
+ *
  * @module components/three/Face3D.test
  * @category Tests
  * @korean 얼굴3D테스트
  */
 
-import { describe, it, expect } from "vitest";
-import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
+import { render } from "@testing-library/react";
 import * as THREE from "three";
+import { describe, expect, it } from "vitest";
+import {
+  FacialExpression,
+  type FacialDamageState,
+} from "../../../../types/facial";
 import Face3D from "./Face3D";
+
+/**
+ * Default damage state for testing
+ */
+const createDefaultDamage = (
+  overrides?: Partial<FacialDamageState>,
+): FacialDamageState => ({
+  leftEyeSwelling: 0,
+  rightEyeSwelling: 0,
+  mouthBleeding: 0,
+  noseBleeding: 0,
+  leftCheekBruise: 0,
+  rightCheekBruise: 0,
+  foreheadBruise: 0,
+  jawBruise: 0,
+  totalFacialDamage: 0,
+  ...overrides,
+});
 
 /**
  * Helper to render Three.js components in test environment
@@ -22,20 +44,22 @@ const renderInCanvas = (component: React.ReactElement) => {
   return render(<Canvas>{component}</Canvas>);
 };
 
+/** Default head rotation for tests */
+const defaultHeadRotation = new THREE.Euler(0, 0, 0);
+
+/** Default opponent position for tests */
+const defaultOpponentPosition = new THREE.Vector3(0, 0, -5);
+
 describe("Face3D Component", () => {
   describe("Rendering", () => {
     it("should render without crashing", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -45,49 +69,37 @@ describe("Face3D Component", () => {
     it("should render with neutral expression", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render with angry expression", () => {
+    it("should render with focused expression", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="angry"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.FOCUSED}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render with surprised expression", () => {
+    it("should render with pained expression", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="surprised"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.PAINED}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -95,69 +107,53 @@ describe("Face3D Component", () => {
   });
 
   describe("Look Direction", () => {
-    it("should handle forward look direction", () => {
+    it("should handle forward opponent position", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={new THREE.Vector3(0, 0, -5)}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle left look direction", () => {
+    it("should handle left opponent position", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(-1, 0, 0)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={new THREE.Vector3(-5, 0, 0)}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle right look direction", () => {
+    it("should handle right opponent position", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(1, 0, 0)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={new THREE.Vector3(5, 0, 0)}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle upward look direction", () => {
+    it("should handle upward opponent position", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 1, 0)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={new THREE.Vector3(0, 5, 0)}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -168,15 +164,11 @@ describe("Face3D Component", () => {
     it("should render with left eye swelling", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0.5,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({ leftEyeSwelling: 0.5 })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -185,15 +177,11 @@ describe("Face3D Component", () => {
     it("should render with right eye swelling", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0.5,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({ rightEyeSwelling: 0.5 })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -202,15 +190,11 @@ describe("Face3D Component", () => {
     it("should render with mouth bleeding", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0.7,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({ mouthBleeding: 0.7 })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -219,15 +203,14 @@ describe("Face3D Component", () => {
     it("should render with face bruising", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0.6,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({
+            leftCheekBruise: 0.6,
+            rightCheekBruise: 0.6,
+          })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -236,15 +219,16 @@ describe("Face3D Component", () => {
     it("should render with multiple damage types", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({
             leftEyeSwelling: 0.3,
             rightEyeSwelling: 0.5,
             mouthBleeding: 0.4,
-            faceBruising: 0.7,
-          }}
-        />
+            leftCheekBruise: 0.7,
+          })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -253,15 +237,21 @@ describe("Face3D Component", () => {
     it("should render with maximum damage values", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({
             leftEyeSwelling: 1.0,
             rightEyeSwelling: 1.0,
             mouthBleeding: 1.0,
-            faceBruising: 1.0,
-          }}
-        />
+            noseBleeding: 1.0,
+            leftCheekBruise: 1.0,
+            rightCheekBruise: 1.0,
+            foreheadBruise: 1.0,
+            jawBruise: 1.0,
+            totalFacialDamage: 100,
+          })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -272,34 +262,26 @@ describe("Face3D Component", () => {
     it("should render with skin color prop", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
           skinColor={0xffd0b0}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render with custom head color", () => {
+    it("should render with different skin color", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-          headColor={0xffe0c0}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+          skinColor={0xffe0c0}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -311,34 +293,26 @@ describe("Face3D Component", () => {
       const { rerender } = render(
         <Canvas>
           <Face3D
-            expression="neutral"
-            lookDirection={new THREE.Vector3(0, 0, -1)}
-            damage={{
-              leftEyeSwelling: 0,
-              rightEyeSwelling: 0,
-              mouthBleeding: 0,
-              faceBruising: 0,
-            }}
+            expression={FacialExpression.NEUTRAL}
+            opponentPosition={defaultOpponentPosition}
+            headRotation={defaultHeadRotation}
+            damage={createDefaultDamage()}
             skinColor={0xffd0b0}
           />
-        </Canvas>
+        </Canvas>,
       );
 
       // Rerender with same props should reuse material
       rerender(
         <Canvas>
           <Face3D
-            expression="neutral"
-            lookDirection={new THREE.Vector3(0, 0, -1)}
-            damage={{
-              leftEyeSwelling: 0,
-              rightEyeSwelling: 0,
-              mouthBleeding: 0,
-              faceBruising: 0,
-            }}
+            expression={FacialExpression.NEUTRAL}
+            opponentPosition={defaultOpponentPosition}
+            headRotation={defaultHeadRotation}
+            damage={createDefaultDamage()}
             skinColor={0xffd0b0}
           />
-        </Canvas>
+        </Canvas>,
       );
 
       expect(true).toBe(true); // Material should be reused (memoized)
@@ -348,34 +322,26 @@ describe("Face3D Component", () => {
       const { rerender } = render(
         <Canvas>
           <Face3D
-            expression="neutral"
-            lookDirection={new THREE.Vector3(0, 0, -1)}
-            damage={{
-              leftEyeSwelling: 0,
-              rightEyeSwelling: 0,
-              mouthBleeding: 0,
-              faceBruising: 0,
-            }}
+            expression={FacialExpression.NEUTRAL}
+            opponentPosition={defaultOpponentPosition}
+            headRotation={defaultHeadRotation}
+            damage={createDefaultDamage()}
             skinColor={0xffd0b0}
           />
-        </Canvas>
+        </Canvas>,
       );
 
       // Rerender with different skinColor should create new material
       rerender(
         <Canvas>
           <Face3D
-            expression="neutral"
-            lookDirection={new THREE.Vector3(0, 0, -1)}
-            damage={{
-              leftEyeSwelling: 0,
-              rightEyeSwelling: 0,
-              mouthBleeding: 0,
-              faceBruising: 0,
-            }}
+            expression={FacialExpression.NEUTRAL}
+            opponentPosition={defaultOpponentPosition}
+            headRotation={defaultHeadRotation}
+            damage={createDefaultDamage()}
             skinColor={0xffe0c0}
           />
-        </Canvas>
+        </Canvas>,
       );
 
       expect(true).toBe(true); // New material should be created
@@ -388,15 +354,11 @@ describe("Face3D Component", () => {
       // The useEffect cleanup in Face3D ensures headMaterial and earMaterial are disposed
       const { unmount } = renderInCanvas(
         <Face3D
-          expression="neutral"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
-            leftEyeSwelling: 0,
-            rightEyeSwelling: 0,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          expression={FacialExpression.NEUTRAL}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage()}
+        />,
       );
 
       // Should unmount cleanly with material disposal
@@ -405,35 +367,35 @@ describe("Face3D Component", () => {
   });
 
   describe("Combined Expression and Damage", () => {
-    it("should render angry expression with damage", () => {
+    it("should render focused expression with damage", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="angry"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
+          expression={FacialExpression.FOCUSED}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({
             leftEyeSwelling: 0.4,
             rightEyeSwelling: 0.3,
             mouthBleeding: 0.2,
-            faceBruising: 0.5,
-          }}
-        />
+            leftCheekBruise: 0.5,
+          })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render surprised expression with eye swelling", () => {
+    it("should render pained expression with eye swelling", () => {
       const { container } = renderInCanvas(
         <Face3D
-          expression="surprised"
-          lookDirection={new THREE.Vector3(0, 0, -1)}
-          damage={{
+          expression={FacialExpression.PAINED}
+          opponentPosition={defaultOpponentPosition}
+          headRotation={defaultHeadRotation}
+          damage={createDefaultDamage({
             leftEyeSwelling: 0.6,
             rightEyeSwelling: 0.5,
-            mouthBleeding: 0,
-            faceBruising: 0,
-          }}
-        />
+          })}
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();

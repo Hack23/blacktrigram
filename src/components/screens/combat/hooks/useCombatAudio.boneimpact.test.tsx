@@ -3,10 +3,10 @@
  * Validates the new playBoneImpactSound method
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
-import { useCombatAudio } from "./useCombatAudio";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as AudioProvider from "../../../../audio/AudioProvider";
+import { useCombatAudio } from "./useCombatAudio";
 
 // Mock the AudioProvider
 vi.mock("../../../../audio/AudioProvider", () => ({
@@ -30,7 +30,7 @@ describe("useCombatAudio - Bone Impact Audio", () => {
     };
 
     vi.mocked(AudioProvider.useAudio).mockReturnValue(
-      mockAudio as ReturnType<typeof AudioProvider.useAudio>
+      mockAudio as unknown as ReturnType<typeof AudioProvider.useAudio>,
     );
   });
 
@@ -123,7 +123,7 @@ describe("useCombatAudio - Bone Impact Audio", () => {
       // Should detect head region and use appropriate sound
       expect(mockAudio.playSFX).toHaveBeenCalledWith(
         expect.stringMatching(/^hit_/),
-        expect.any(Number)
+        expect.any(Number),
       );
     });
 
@@ -176,7 +176,7 @@ describe("useCombatAudio - Bone Impact Audio", () => {
       // Should still play a sound even without explicit region
       expect(mockAudio.playSFX).toHaveBeenCalledWith(
         expect.stringMatching(/^hit_/),
-        expect.any(Number)
+        expect.any(Number),
       );
     });
 
@@ -219,9 +219,8 @@ describe("useCombatAudio - Bone Impact Audio", () => {
     it("should handle different body regions", async () => {
       const { result } = renderHook(() => useCombatAudio());
 
-      const regions: Array<
-        "head" | "torso" | "arms" | "legs" | "soft_tissue"
-      > = ["head", "torso", "arms", "legs", "soft_tissue"];
+      const regions: Array<"head" | "torso" | "arms" | "legs" | "soft_tissue"> =
+        ["head", "torso", "arms", "legs", "soft_tissue"];
 
       for (let i = 0; i < regions.length; i++) {
         const region = regions[i];
@@ -249,10 +248,12 @@ describe("useCombatAudio - Bone Impact Audio", () => {
 
     it("should handle audio playback errors gracefully", async () => {
       const { result } = renderHook(() => useCombatAudio());
-      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation();
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
 
       mockAudio.playSFX.mockRejectedValueOnce(
-        new Error("Audio playback failed")
+        new Error("Audio playback failed"),
       );
 
       await result.current.playBoneImpactSound({
@@ -266,7 +267,7 @@ describe("useCombatAudio - Bone Impact Audio", () => {
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to play bone impact sound"),
-        expect.any(Error)
+        expect.any(Error),
       );
 
       consoleWarnSpy.mockRestore();
@@ -319,7 +320,7 @@ describe("useCombatAudio - Bone Impact Audio", () => {
           result.current.playBoneImpactSound({
             region: "torso",
             damage: 20 + i,
-          })
+          }),
         );
       }
 

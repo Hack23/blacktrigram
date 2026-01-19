@@ -23,32 +23,30 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  *
  * These limits document safe physiological ranges validated by Korean martial arts experts
  * and inform the design of all Son animations to ensure realistic, safe joint mechanics.
- * 
+ *
  * Note: These are documentation constants that guide animation design. Actual animation
  * rotations stay well within these limits naturally through authentic Taekyon biomechanics.
- * 
+ *
  * @internal Documentation-only constants for animation design reference
  */
-// @ts-expect-error - Documentation-only constant for animation design reference
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ANATOMICAL_LIMITS_SON_STANCE = {
+export const ANATOMICAL_LIMITS_SON_STANCE = {
   /**
    * Maximum safe shoulder rotation for continuous circular motion: ±90° (±1.57 radians)
-   * 
+   *
    * Son (Wind) emphasizes fluid circular motion requiring safe shoulder range.
    */
   MAX_SHOULDER_ROTATION: 1.57, // ±90° in radians
-  
+
   /**
    * Maximum safe elbow flexion for flowing transitions: 145° (2.53 radians)
-   * 
+   *
    * Allows natural flowing guard positions and continuous strike transitions.
    */
   MAX_ELBOW_FLEXION: 2.53, // 145° in radians
-  
+
   /**
    * Maximum safe hip rotation for circular movement: ±70° (±1.22 radians)
-   * 
+   *
    * Hip rotation drives circular footwork and sweeping techniques.
    */
   MAX_HIP_ROTATION: 1.22, // ±70° in radians
@@ -83,10 +81,7 @@ const ANATOMICAL_LIMITS_SON_STANCE = {
  * @category Idle Animation
  */
 export const SON_IDLE_SWAYING: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create(
-    "son_idle_swaying",
-    "손괘 흐름 자세"
-  )
+  MartialArtsAnimationBuilder.create("son_idle_swaying", "손괘 흐름 자세")
     .asIdle(2.8, true)
     // Keyframe 0ms: Neutral center (baseline)
     .at(0)
@@ -175,10 +170,7 @@ export const SON_IDLE_SWAYING: SkeletalAnimation =
  * @category Movement Animation
  */
 export const SON_FLOWING_ARC_STEP: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create(
-    "son_flowing_arc_step",
-    "바람 호 걸음"
-  )
+  MartialArtsAnimationBuilder.create("son_flowing_arc_step", "바람 호 걸음")
     .asMovement(0.667, false)
     // Phase 1: Initial hip rotation (0ms)
     .at(0)
@@ -244,7 +236,7 @@ export const SON_FLOWING_ARC_STEP: SkeletalAnimation =
 export const SON_SWEEPING_CIRCLE_STEP: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
     "son_sweeping_circle_step",
-    "회오리 원형보"
+    "회오리 원형보",
   )
     .asMovement(0.889, false)
     // Phase 1: Initial circular pivot (0ms)
@@ -309,10 +301,7 @@ export const SON_SWEEPING_CIRCLE_STEP: SkeletalAnimation =
  * @category Stance Animation
  */
 export const SON_MOBILE_GUARD_TRANSITION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create(
-    "son_mobile_guard_transition",
-    "바람 방어"
-  )
+  MartialArtsAnimationBuilder.create("son_mobile_guard_transition", "바람 방어")
     .asStance(0.36, false)
     // Phase 1: Begin transition (0ms)
     .at(0)
@@ -350,12 +339,13 @@ export const SON_MOBILE_GUARD_TRANSITION: SkeletalAnimation =
  * Map of all Son stance-specific animations for easy access
  * @korean 손괘자세애니메이션맵
  */
-export const SON_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
-  // Idle & Movement
-  ["son_idle_swaying", SON_IDLE_SWAYING],
-  ["son_flowing_arc_step", SON_FLOWING_ARC_STEP],
-  ["son_sweeping_circle_step", SON_SWEEPING_CIRCLE_STEP],
-  
-  // Stance Transitions
-  ["son_mobile_guard_transition", SON_MOBILE_GUARD_TRANSITION],
-]);
+export const SON_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
+  new Map([
+    // Idle & Movement
+    ["son_idle_swaying", SON_IDLE_SWAYING],
+    ["son_flowing_arc_step", SON_FLOWING_ARC_STEP],
+    ["son_sweeping_circle_step", SON_SWEEPING_CIRCLE_STEP],
+
+    // Stance Transitions
+    ["son_mobile_guard_transition", SON_MOBILE_GUARD_TRANSITION],
+  ]);

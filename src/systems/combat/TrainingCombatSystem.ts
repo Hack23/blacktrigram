@@ -1,9 +1,9 @@
 import { PlayerArchetype, TrigramStance } from "../../types/common";
+import { AnimationType } from "../animation";
 import { CombatSystem } from "../CombatSystem";
 import { PlayerState } from "../player";
 import { KoreanTechnique } from "../vitalpoint";
 import { TrainingCombatResult } from "./types";
-import { AnimationType } from "../animation";
 
 /**
  * Animation context for timing-based hit detection
@@ -53,6 +53,7 @@ export class TrainingCombatSystem extends CombatSystem {
       balance: 100,
       momentum: 0,
       currentStance: TrigramStance.GAN, // Mountain stance - defensive
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- CombatState type is narrower than string literal
       combatState: "idle" as any,
       position: { x: 600, y: 400 },
       isBlocking: false,
@@ -81,7 +82,7 @@ export class TrainingCombatSystem extends CombatSystem {
     player: PlayerState,
     technique: KoreanTechnique,
     targetedVitalPointId?: string,
-    animationContext?: AnimationContext
+    animationContext?: AnimationContext,
   ): TrainingCombatResult {
     this.techniqueAttempts++;
 
@@ -91,7 +92,7 @@ export class TrainingCombatSystem extends CombatSystem {
       this.trainingDummy,
       technique,
       targetedVitalPointId,
-      animationContext
+      animationContext,
     );
 
     // Calculate training-specific scores
@@ -112,13 +113,13 @@ export class TrainingCombatSystem extends CombatSystem {
     const improvementAreas = this.generateImprovementAreas(
       accuracyScore,
       techniqueScore,
-      formScore
+      formScore,
     );
 
     const nextTrainingGoals = this.generateTrainingGoals(
       player,
       technique,
-      accuracyScore
+      accuracyScore,
     );
 
     return {
@@ -136,7 +137,7 @@ export class TrainingCombatSystem extends CombatSystem {
    */
   private calculateAccuracyScore(
     player: PlayerState,
-    _technique: KoreanTechnique
+    _technique: KoreanTechnique,
   ): number {
     let score = 0.5; // Base score
 
@@ -151,7 +152,7 @@ export class TrainingCombatSystem extends CombatSystem {
    */
   private calculateTechniqueScore(
     player: PlayerState,
-    _technique: KoreanTechnique
+    _technique: KoreanTechnique,
   ): number {
     let score = 0.6; // Base execution
 
@@ -170,7 +171,7 @@ export class TrainingCombatSystem extends CombatSystem {
    */
   private calculateFormScore(
     _player: PlayerState,
-    _technique: KoreanTechnique
+    _technique: KoreanTechnique,
   ): number {
     const score = 0.5; // Base form
 
@@ -184,7 +185,7 @@ export class TrainingCombatSystem extends CombatSystem {
   private generateImprovementAreas(
     accuracy: number,
     technique: number,
-    form: number
+    form: number,
   ): string[] {
     const areas: string[] = [];
 
@@ -224,7 +225,7 @@ export class TrainingCombatSystem extends CombatSystem {
     // Fix: Remove unused player parameter
     _player: PlayerState,
     technique: KoreanTechnique,
-    accuracy: number
+    accuracy: number,
   ): string[] {
     const goals: string[] = [];
 

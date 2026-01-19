@@ -3,10 +3,10 @@
  * Manages multi-hit combo sequences based on trigram stances and archetype signature combos
  */
 
-import { TrigramStance, PlayerArchetype } from "@/types";
-import { KoreanTechnique } from "@/systems/vitalpoint";
-import { TRIGRAM_TECHNIQUES } from "@/systems/trigram";
 import { PlayerState } from "@/systems/player";
+import { TRIGRAM_TECHNIQUES } from "@/systems/trigram";
+import { KoreanTechnique } from "@/systems/vitalpoint";
+import { PlayerArchetype, TrigramStance } from "@/types";
 import { AIPersonality } from "./AIPersonality";
 
 /**
@@ -27,10 +27,10 @@ export interface ComboSequence {
 
 /**
  * Archetype signature combo sequence (2-3 technique chains)
- * 
+ *
  * These are special technique sequences that represent each archetype's
  * fighting philosophy and preferred combat patterns.
- * 
+ *
  * @korean 원형 대표 연계 기술
  */
 export interface ArchetypeComboSequence {
@@ -48,20 +48,23 @@ export interface ArchetypeComboSequence {
 
 /**
  * Archetype Signature Combos
- * 
+ *
  * Each archetype has 2 signature combo sequences that reflect their combat philosophy.
  * These combos are prioritized by AI for authentic fighting style representation.
- * 
+ *
  * Combo patterns:
  * - Musa: Power amplification and defense-to-offense transitions
  * - Amsalja: Setup-to-execution nerve strike sequences
  * - Hacker: Analysis-to-burst and stun-to-shutdown patterns
  * - Jeongbo: Weaken-to-exploit and counter-to-finish sequences
  * - Jojik: Chaos-to-brutality and aggression-to-desperation patterns
- * 
+ *
  * @korean 원형 대표 연계 기술 정의
  */
-export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly ArchetypeComboSequence[]> = {
+export const ARCHETYPE_SIGNATURE_COMBOS: Record<
+  PlayerArchetype,
+  readonly ArchetypeComboSequence[]
+> = {
   [PlayerArchetype.MUSA]: [
     {
       archetype: PlayerArchetype.MUSA,
@@ -72,7 +75,8 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
       description: {
         korean: "천둥벽력으로 적을 흔들고 용권으로 관통합니다",
-        english: "Shake enemy with Thunder Strike, pierce through with Dragon Fist",
+        english:
+          "Shake enemy with Thunder Strike, pierce through with Dragon Fist",
       },
     },
     {
@@ -88,7 +92,7 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
     },
   ],
-  
+
   [PlayerArchetype.AMSALJA]: [
     {
       archetype: PlayerArchetype.AMSALJA,
@@ -111,11 +115,12 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
       description: {
         korean: "신경타로 마비시키고 치명정밀로 급소를 공격합니다",
-        english: "Paralyze with Nerve Strike, target vitals with Deadly Precision",
+        english:
+          "Paralyze with Nerve Strike, target vitals with Deadly Precision",
       },
     },
   ],
-  
+
   [PlayerArchetype.HACKER]: [
     {
       archetype: PlayerArchetype.HACKER,
@@ -125,7 +130,8 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
         english: "Data Overdrive Burst",
       },
       description: {
-        korean: "데이터 타격으로 분석하고 사이버 가속으로 폭발적 공격을 수행합니다",
+        korean:
+          "데이터 타격으로 분석하고 사이버 가속으로 폭발적 공격을 수행합니다",
         english: "Analyze with Data Strike, burst with Cyber Overdrive",
       },
     },
@@ -142,34 +148,42 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
     },
   ],
-  
+
   [PlayerArchetype.JEONGBO_YOWON]: [
     {
       archetype: PlayerArchetype.JEONGBO_YOWON,
-      techniqueIds: ["jeongbo_tactical_strike", "jeongbo_psychological_warfare"],
+      techniqueIds: [
+        "jeongbo_tactical_strike",
+        "jeongbo_psychological_warfare",
+      ],
       name: {
         korean: "전술심리",
         english: "Tactical Psychology Combo",
       },
       description: {
         korean: "전술타격으로 약점을 노출시키고 심리전으로 정신을 교란합니다",
-        english: "Expose weakness with Tactical Strike, disrupt with Psychological Warfare",
+        english:
+          "Expose weakness with Tactical Strike, disrupt with Psychological Warfare",
       },
     },
     {
       archetype: PlayerArchetype.JEONGBO_YOWON,
-      techniqueIds: ["jeongbo_counter_intelligence", "jeongbo_intelligence_strike"],
+      techniqueIds: [
+        "jeongbo_counter_intelligence",
+        "jeongbo_intelligence_strike",
+      ],
       name: {
         korean: "역정보타격",
         english: "Counter Intelligence Strike",
       },
       description: {
         korean: "역정보공작으로 반격하고 정보타격으로 완벽하게 마무리합니다",
-        english: "Counter with Counter Intelligence, finish with Intelligence Strike",
+        english:
+          "Counter with Counter Intelligence, finish with Intelligence Strike",
       },
     },
   ],
-  
+
   [PlayerArchetype.JOJIK_POKRYEOKBAE]: [
     {
       archetype: PlayerArchetype.JOJIK_POKRYEOKBAE,
@@ -180,7 +194,8 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
       description: {
         korean: "거리싸움으로 혼란을 주고 잔혹제압으로 무자비하게 쓰러뜨립니다",
-        english: "Create chaos with Street Brawl, brutalize with Brutal Takedown",
+        english:
+          "Create chaos with Street Brawl, brutalize with Brutal Takedown",
       },
     },
     {
@@ -192,7 +207,8 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
       },
       description: {
         korean: "즉석무기로 공격하고 무자비공격으로 자비 없이 마무리합니다",
-        english: "Attack with Improvised Weapon, finish ruthlessly with Ruthless Assault",
+        english:
+          "Attack with Improvised Weapon, finish ruthlessly with Ruthless Assault",
       },
     },
   ],
@@ -200,36 +216,36 @@ export const ARCHETYPE_SIGNATURE_COMBOS: Record<PlayerArchetype, readonly Archet
 
 /**
  * Get next technique in archetype signature combo
- * 
+ *
  * Checks if current technique is part of a signature combo sequence,
  * and returns the next technique in that sequence if found.
- * 
+ *
  * @korean 원형 대표 연계 기술의 다음 기술 가져오기
- * 
+ *
  * @param currentTechniqueId - Current technique ID just executed
  * @param archetype - Player archetype
  * @returns Next technique ID in combo sequence, or undefined if no combo
  */
 export function getNextComboTechnique(
   currentTechniqueId: string,
-  archetype: PlayerArchetype
+  archetype: PlayerArchetype,
 ): string | undefined {
   const combos = ARCHETYPE_SIGNATURE_COMBOS[archetype];
-  
+
   if (!combos) {
     return undefined;
   }
-  
+
   for (const combo of combos) {
     const currentIndex = combo.techniqueIds.indexOf(currentTechniqueId);
-    
+
     // Found current technique in this combo
     if (currentIndex !== -1 && currentIndex < combo.techniqueIds.length - 1) {
       // Return next technique in sequence
       return combo.techniqueIds[currentIndex + 1];
     }
   }
-  
+
   return undefined; // No combo continuation found
 }
 
@@ -389,17 +405,17 @@ export class AIComboSystem {
    */
   private getTechniqueSequence(
     stance: TrigramStance,
-    count: number
+    count: number,
   ): readonly KoreanTechnique[] {
     const techniques = TRIGRAM_TECHNIQUES[stance] ?? [];
-    
+
     // Warn if not enough techniques for full combo (issue #2529727989)
     if (techniques.length < count) {
       console.warn(
-        `[AIComboSystem] Not enough techniques defined for stance '${stance}'. Requested ${count}, but only ${techniques.length} available. Returning partial combo.`
+        `[AIComboSystem] Not enough techniques defined for stance '${stance}'. Requested ${count}, but only ${techniques.length} available. Returning partial combo.`,
       );
     }
-    
+
     // Return only available techniques
     return techniques.slice(0, count);
   }
@@ -415,18 +431,18 @@ export class AIComboSystem {
 
   /**
    * Check if AI should continue current combo
-   * 
+   *
    * Enhanced with:
    * - Opponent balance state checking (SHAKEN/VULNERABLE)
    * - Combo length limit (max 3 techniques)
    * - Stamina threshold (>20 for combo continuation)
-   * 
+   *
    * @korean 연계 기술 계속 여부 판단
    */
   shouldContinueCombo(
     player: PlayerState,
     opponent: PlayerState,
-    personality: AIPersonality
+    personality: AIPersonality,
   ): boolean {
     const now = Date.now();
 
@@ -456,21 +472,25 @@ export class AIComboSystem {
     // Korean martial arts philosophy: flow like water
     const distance = this.getDistance(player, opponent);
     const distanceOk = distance < 120;
-    
+
     // Stamina threshold for combo continuation (>20)
     const hasResources = player.ki >= 10 && player.stamina > 20;
-    
+
     // Balance thresholds for vulnerability detection
     // Balance is a numeric value (0-100) representing stability
     // Values below 30 indicate SHAKEN/VULNERABLE states in combat
     const VULNERABLE_BALANCE_THRESHOLD = 30;
-    
+
     // Check opponent balance state - continue combo if opponent is vulnerable
-    const opponentVulnerable = 
-      opponent.balance < VULNERABLE_BALANCE_THRESHOLD || // Low balance (SHAKEN/VULNERABLE state)
-      opponent.isStunned || // Stunned state
-      opponent.health < opponent.maxHealth * 0.3; // Low health (<30%)
-    
+    // Using boolean OR (||) intentionally here - these are boolean conditions, not nullish coalescing
+    const isStunned = opponent.isStunned ?? false;
+    const isLowHealth =
+      (opponent.health ?? 0) < (opponent.maxHealth ?? 100) * 0.3;
+    const isLowBalance =
+      (opponent.balance ?? 100) < VULNERABLE_BALANCE_THRESHOLD;
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional boolean OR for vulnerability check
+    const opponentVulnerable = isLowBalance || isStunned || isLowHealth;
+
     // Higher chance to continue if opponent is vulnerable
     const baseChance = personality.comboTendency;
     const vulnerabilityBonus = opponentVulnerable ? 0.3 : 0;
@@ -486,7 +506,7 @@ export class AIComboSystem {
   startCombo(
     player: PlayerState,
     opponent: PlayerState,
-    personality: AIPersonality
+    personality: AIPersonality,
   ): boolean {
     // Check if suitable for combo
     const distance = this.getDistance(player, opponent);
@@ -502,7 +522,7 @@ export class AIComboSystem {
         distance >= seq.minDistance &&
         distance <= seq.maxDistance &&
         player.ki >= seq.requiredKi &&
-        player.stamina >= seq.requiredStamina
+        player.stamina >= seq.requiredStamina,
     );
 
     if (!suitableCombo) {

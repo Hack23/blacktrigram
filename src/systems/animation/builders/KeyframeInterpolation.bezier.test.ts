@@ -13,12 +13,9 @@
  * @korean 베지어보간테스트
  */
 
+import type { AnimationKeyframe, SkeletalAnimation } from "@/types/skeletal";
 import * as THREE from "three";
 import { beforeEach, describe, expect, it } from "vitest";
-import type {
-  AnimationKeyframe,
-  SkeletalAnimation,
-} from "@/types/skeletal";
 import {
   BEZIER_PRESETS,
   createBezierEasing,
@@ -127,7 +124,7 @@ describe("Cubic Bezier Interpolation", () => {
           options.p1x,
           options.p1y,
           options.p2x,
-          options.p2y
+          options.p2y,
         );
 
         expect(modernResult).toBeCloseTo(legacyResult, 5);
@@ -175,7 +172,7 @@ describe("Cubic Bezier Interpolation", () => {
       // Test with natural motion preset
       const naturalMotion = cubicBezierWithOptions(
         0.5,
-        BEZIER_PRESETS.naturalMotion
+        BEZIER_PRESETS.naturalMotion,
       );
       expect(typeof naturalMotion).toBe("number");
       expect(isFinite(naturalMotion)).toBe(true);
@@ -183,7 +180,7 @@ describe("Cubic Bezier Interpolation", () => {
       // Test with explosive power preset
       const explosivePower = cubicBezierWithOptions(
         0.5,
-        BEZIER_PRESETS.explosivePower
+        BEZIER_PRESETS.explosivePower,
       );
       expect(typeof explosivePower).toBe("number");
       expect(isFinite(explosivePower)).toBe(true);
@@ -388,9 +385,10 @@ describe("Cubic Bezier Interpolation", () => {
       // Create mock idle animation
       idleAnimation = {
         name: "idle",
+        koreanName: "대기",
         duration: 1.0,
-        fps: 60,
         loop: true,
+        type: "idle",
         keyframes: [
           {
             time: 0,
@@ -416,9 +414,10 @@ describe("Cubic Bezier Interpolation", () => {
       // Create mock attack animation
       attackAnimation = {
         name: "attack",
+        koreanName: "공격",
         duration: 0.2,
-        fps: 60,
         loop: false,
+        type: "attack",
         keyframes: [
           {
             time: 0,
@@ -448,7 +447,7 @@ describe("Cubic Bezier Interpolation", () => {
         0.5,
         attackAnimation,
         0.1,
-        0.0 // 0% blend = 100% idle
+        0.0, // 0% blend = 100% idle
       );
 
       const blendedSpineRot = blended.boneRotations.get("spine");
@@ -468,7 +467,7 @@ describe("Cubic Bezier Interpolation", () => {
         0.5,
         attackAnimation,
         0.1,
-        1.0 // 100% blend = 100% attack
+        1.0, // 100% blend = 100% attack
       );
 
       const blendedSpineRot = blended.boneRotations.get("spine");
@@ -487,7 +486,7 @@ describe("Cubic Bezier Interpolation", () => {
         attackAnimation,
         0.1,
         0.5, // 50% blend
-        "smooth-transition"
+        "smooth-transition",
       );
 
       const blendedSpineRot = blended.boneRotations.get("spine");
@@ -506,7 +505,7 @@ describe("Cubic Bezier Interpolation", () => {
         attackAnimation,
         0.1,
         0.5,
-        "linear"
+        "linear",
       );
 
       const smooth = crossFadeAnimations(
@@ -515,7 +514,7 @@ describe("Cubic Bezier Interpolation", () => {
         attackAnimation,
         0.1,
         0.5,
-        "smooth-transition"
+        "smooth-transition",
       );
 
       // Different easing should produce different results
@@ -537,7 +536,7 @@ describe("Cubic Bezier Interpolation", () => {
         0.5,
         attackAnimation,
         0.1,
-        0.5
+        0.5,
       );
 
       // Should contain all bones from both animations
@@ -580,7 +579,7 @@ describe("Cubic Bezier Interpolation", () => {
         predictionState,
         keyframe1,
         keyframe2,
-        0.1
+        0.1,
       );
 
       const velocity = updated.velocities.get("spine");
@@ -596,7 +595,7 @@ describe("Cubic Bezier Interpolation", () => {
         predictionState,
         keyframe1,
         keyframe2,
-        0.1
+        0.1,
       );
 
       const angularVel = updated.angularVelocities.get("spine");
@@ -614,7 +613,7 @@ describe("Cubic Bezier Interpolation", () => {
         predictionState,
         keyframe1,
         keyframe2,
-        0.1
+        0.1,
       );
 
       expect(updated.lastUpdateTime).toBeGreaterThan(0);
@@ -625,7 +624,7 @@ describe("Cubic Bezier Interpolation", () => {
         predictionState,
         keyframe1,
         keyframe2,
-        0
+        0,
       );
 
       expect(updated).toBe(predictionState);
@@ -657,7 +656,7 @@ describe("Cubic Bezier Interpolation", () => {
       const predicted = predictFutureKeyframe(
         currentKeyframe,
         predictionState,
-        0.01667
+        0.01667,
       );
 
       const predictedPos = predicted.bonePositions.get("spine");
@@ -674,7 +673,7 @@ describe("Cubic Bezier Interpolation", () => {
       const predicted = predictFutureKeyframe(
         currentKeyframe,
         predictionState,
-        0.01667
+        0.01667,
       );
 
       const predictedPos = predicted.bonePositions.get("spine");
@@ -695,7 +694,7 @@ describe("Cubic Bezier Interpolation", () => {
       const predicted = predictFutureKeyframe(
         currentKeyframe,
         predictionState,
-        0.2 // Request 200ms - should clamp to 50ms
+        0.2, // Request 200ms - should clamp to 50ms
       );
 
       const predictedTime = predicted.time;
@@ -717,7 +716,7 @@ describe("Cubic Bezier Interpolation", () => {
       const predicted = predictFutureKeyframe(
         keyframeWithExtraBone,
         predictionState,
-        0.01667
+        0.01667,
       );
 
       // Bone without velocity should remain unchanged
@@ -735,23 +734,23 @@ describe("Cubic Bezier Interpolation", () => {
       const predicted1 = predictFutureKeyframe(
         currentKeyframe,
         predictionState,
-        prediction1Frame
+        prediction1Frame,
       );
 
       const predicted2 = predictFutureKeyframe(
         currentKeyframe,
         predictionState,
-        prediction2Frames
+        prediction2Frames,
       );
 
       // Both should complete successfully
       expect(predicted1.time).toBeCloseTo(
         currentKeyframe.time + prediction1Frame,
-        4
+        4,
       );
       expect(predicted2.time).toBeCloseTo(
         currentKeyframe.time + prediction2Frames,
-        4
+        4,
       );
 
       // Total latency: input lag + processing + prediction = <50ms
@@ -778,9 +777,10 @@ describe("Cubic Bezier Interpolation", () => {
     it("should handle cross-fade blending efficiently", () => {
       const idleAnimation: SkeletalAnimation = {
         name: "idle",
+        koreanName: "대기",
         duration: 1.0,
-        fps: 60,
         loop: true,
+        type: "idle",
         keyframes: [
           {
             time: 0,
@@ -807,7 +807,7 @@ describe("Cubic Bezier Interpolation", () => {
           idleAnimation,
           0.3,
           i / iterations,
-          "smooth-transition"
+          "smooth-transition",
         );
       }
 
@@ -878,9 +878,10 @@ describe("Cubic Bezier Interpolation", () => {
     it("should maintain continuity during cross-fade", () => {
       const idleAnimation: SkeletalAnimation = {
         name: "idle",
+        koreanName: "대기",
         duration: 1.0,
-        fps: 60,
         loop: true,
+        type: "idle",
         keyframes: [
           {
             time: 0,
@@ -909,7 +910,7 @@ describe("Cubic Bezier Interpolation", () => {
           idleAnimation,
           0.3,
           blendFactor,
-          "smooth-transition"
+          "smooth-transition",
         );
 
         const pos = blended.bonePositions.get("spine");

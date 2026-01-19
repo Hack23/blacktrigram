@@ -20,8 +20,15 @@ vi.mock("../../../../../audio/AudioProvider", () => ({
 const mockStartCountdown = vi.fn();
 const mockSkipCountdown = vi.fn();
 
-let mockHookState = {
-  state: "ready" as const,
+let mockHookState: {
+  state: "ready" | "counting" | "fight" | "complete";
+  currentNumber: number;
+  startCountdown: typeof mockStartCountdown;
+  skipCountdown: typeof mockSkipCountdown;
+  resetCountdown: ReturnType<typeof vi.fn>;
+  isActive: boolean;
+} = {
+  state: "ready",
   currentNumber: 3,
   startCountdown: mockStartCountdown,
   skipCountdown: mockSkipCountdown,
@@ -105,7 +112,7 @@ describe("MatchCountdown", () => {
         isMobile={false}
         showSkip={true}
         onSkip={onSkip}
-      />
+      />,
     );
 
     const skipButton = screen.queryByTestId("skip-countdown-button");
@@ -119,7 +126,7 @@ describe("MatchCountdown", () => {
         onComplete={onComplete}
         isMobile={false}
         showSkip={false}
-      />
+      />,
     );
 
     const skipButton = screen.queryByTestId("skip-countdown-button");
@@ -132,7 +139,7 @@ describe("MatchCountdown", () => {
 
     const onComplete = vi.fn();
     const { container } = render(
-      <MatchCountdown onComplete={onComplete} isMobile={false} />
+      <MatchCountdown onComplete={onComplete} isMobile={false} />,
     );
 
     // Should not render content when not active (returns null)

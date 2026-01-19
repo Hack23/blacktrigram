@@ -18,8 +18,12 @@ declare const APP_VERSION: string;
 declare global {
   namespace JSX {
     // Fix JSX.Element for React 18
-    interface Element
-      extends React.ReactElement<React.ComponentProps<any>, any> {}
+    interface Element extends React.ReactElement<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Standard React pattern for JSX.Element compatibility
+      React.ComponentProps<any>,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Standard React pattern for JSX.Element compatibility
+      any
+    > {}
   }
 }
 

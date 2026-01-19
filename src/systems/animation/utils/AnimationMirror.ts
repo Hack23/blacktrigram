@@ -37,6 +37,7 @@ const LEFT_TO_RIGHT_BONE_MAP: ReadonlyMap<BoneName, BoneName> = new Map([
   [BoneName.HAND_L, BoneName.HAND_R],
   [BoneName.HIP_L, BoneName.HIP_R],
   [BoneName.KNEE_L, BoneName.KNEE_R],
+  [BoneName.SHIN_L, BoneName.SHIN_R],
   [BoneName.FOOT_L, BoneName.FOOT_R],
 ]);
 

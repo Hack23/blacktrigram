@@ -252,15 +252,11 @@ export class MovementPhysics {
 
     // Apply all modifiers to get final max speed (or use override)
     state.maxSpeed =
-      this._overrideMaxSpeed !== null
-        ? this._overrideMaxSpeed
-        : baseSpeed * stanceModifier * injuryPenalty;
+      this._overrideMaxSpeed ?? baseSpeed * stanceModifier * injuryPenalty;
 
     // Use override acceleration if set, otherwise use base
     const currentAcceleration =
-      this._overrideAcceleration !== null
-        ? this._overrideAcceleration
-        : this.BASE_ACCELERATION;
+      this._overrideAcceleration ?? this.BASE_ACCELERATION;
 
     // Calculate target velocity based on input direction
     // forward > 0 = moving in positive Z direction (toward bottom of screen)

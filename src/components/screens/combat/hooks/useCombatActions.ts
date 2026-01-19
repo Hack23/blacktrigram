@@ -38,7 +38,11 @@
  */
 
 import { PlayerState } from "@/systems";
-import { AnimationType, type AnimationState } from "@/systems/animation";
+import {
+  AnimationType,
+  getAnimationHitTiming,
+  type AnimationState,
+} from "@/systems/animation";
 import { movementPenaltySystem } from "@/systems/bodypart";
 import {
   checkForFall,
@@ -351,16 +355,16 @@ export function useCombatActions(
       combatAudio?.playAttackSound(intensity);
 
       // Calculate animation timing context for hit detection.
-      // NOTE: Animation context is initialized at attack start (t=0). In a real-time
-      // combat loop with frame-by-frame collision detection, the actual hit detection
-      // would occur later during the animation when visual contact is made. For this
-      // synchronous implementation, we resolve the attack immediately with t=0.
-      // Future enhancement: Integrate with animation event system to detect hits at
-      // precise collision frames (e.g., frame 6 of a punch animation).
-      const animationType = attackTechnique.animationType || AnimationType.JAB;
+      // For synchronous hit detection, we use the animation's peak time (when limb
+      // is fully extended) rather than t=0 (attack start). This ensures the hit
+      // window check passes when the attack would visually connect.
+      // 동기식 타격 판정: 애니메이션 피크 타임 사용 (팔/다리 완전 신전 시점)
+      const animationType = attackTechnique.animationType ?? AnimationType.JAB;
+      const hitTiming = getAnimationHitTiming(animationType);
+      const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15; // Default to typical punch peak
       const animationContext = {
         animationType,
-        currentTime: 0, // Initialized at attack start; precise timing during collision in future
+        currentTime: peakTime, // Use peak time for synchronous hit detection
       };
 
       // Use combat system for proper calculation with animation context
@@ -755,6 +759,7 @@ export function useCombatActions(
           critChance: 0.1,
           critMultiplier: 1.5,
           effects: [],
+          animationType: AnimationType.JAB, // Default animation for basic attack
         };
       } else {
         return {
@@ -788,6 +793,7 @@ export function useCombatActions(
           critChance: 0.15,
           critMultiplier: 1.8,
           effects: [],
+          animationType: AnimationType.SPINNING_HOOK, // Default animation for special technique
         };
       }
     },
@@ -832,12 +838,23 @@ export function useCombatActions(
               : "light";
       combatAudio?.playAttackSound(intensity);
 
-      // Use combat system for proper calculation with vital point targeting
+      // Calculate animation timing context for AI hit detection (same as player)
+      // 동기식 타격 판정: AI도 피크 타임 사용
+      const animationType = attackTechnique.animationType ?? AnimationType.JAB;
+      const hitTiming = getAnimationHitTiming(animationType);
+      const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15;
+      const animationContext = {
+        animationType,
+        currentTime: peakTime,
+      };
+
+      // Use combat system for proper calculation with vital point targeting and animation context
       const result = combatSystem.resolveAttack(
         aiPlayer,
         targetPlayer,
         attackTechnique,
         targetVitalPoint, // Pass vital point ID for targeting
+        animationContext, // Pass animation context for distance/reach check
       );
 
       const effectType = getHitEffectType(result);
@@ -1015,12 +1032,24 @@ export function useCombatActions(
       // Play special technique sound
       combatAudio?.playSpecialTechniqueSound();
 
-      // Use combat system for proper calculation with vital point targeting
+      // Calculate animation timing context for AI technique hit detection
+      // 동기식 타격 판정: AI 특수 기술도 피크 타임 사용
+      const animationType =
+        specialTechnique.animationType ?? AnimationType.SPINNING_HOOK;
+      const hitTiming = getAnimationHitTiming(animationType);
+      const peakTime = hitTiming?.hitWindow.peakTime ?? 0.25; // Special techniques often have longer peak times
+      const animationContext = {
+        animationType,
+        currentTime: peakTime,
+      };
+
+      // Use combat system for proper calculation with vital point targeting and animation context
       const result = combatSystem.resolveAttack(
         aiPlayer,
         targetPlayer,
         specialTechnique,
         targetVitalPoint, // Pass vital point ID for targeting
+        animationContext, // Pass animation context for distance/reach check
       );
 
       const effectType = result.hit

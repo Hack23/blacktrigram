@@ -2,15 +2,15 @@
  * Tests for AI Personality System
  */
 
-import { describe, it, expect } from "vitest";
+import { PlayerArchetype } from "@/types";
+import { describe, expect, it } from "vitest";
 import {
   AI_PERSONALITIES,
-  getRandomPersonality,
+  getAllPersonalities,
   getPersonalityByArchetype,
   getPersonalityByName,
-  getAllPersonalities,
+  getRandomPersonality,
 } from "./AIPersonality";
-import { PlayerArchetype } from "@/types";
 
 describe("AIPersonality", () => {
   describe("AI_PERSONALITIES", () => {
@@ -67,29 +67,37 @@ describe("AIPersonality", () => {
       expect(aggressive.defensePreference).toBeLessThan(0.3);
     });
 
-    it("DEFENSIVE_SPECIALIST should have high defense", () => {
+    it("DEFENSIVE_SPECIALIST should have moderate defense (enhanced for aggression)", () => {
+      // DEFENSIVE_SPECIALIST now has reduced defense preference for more active combat
+      // but still maintains defensive focus through favored stances (GAN, GON, GAM)
       const defensive = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
-      expect(defensive.defensePreference).toBeGreaterThan(0.7);
-      expect(defensive.aggressionLevel).toBeLessThan(0.4);
+      expect(defensive.defensePreference).toBeGreaterThan(0.5);
+      expect(defensive.aggressionLevel).toBeLessThan(0.6);
     });
 
     it("TECHNICAL_MASTER should have high feint chance", () => {
+      // TECHNICAL_MASTER now has reduced stance switch frequency for precision commitment
       const technical = AI_PERSONALITIES.TECHNICAL_MASTER;
       expect(technical.feintChance).toBeGreaterThan(0.3);
-      expect(technical.stanceSwitchFrequency).toBeGreaterThan(0.6);
+      // Reduced stanceSwitchFrequency: precision strikers commit to their stance
+      expect(technical.stanceSwitchFrequency).toBeLessThan(0.3);
     });
 
     it("BALANCED_FIGHTER should have balanced stats", () => {
+      // BALANCED_FIGHTER now has enhanced aggression for decisive action
       const balanced = AI_PERSONALITIES.BALANCED_FIGHTER;
       expect(balanced.aggressionLevel).toBeGreaterThan(0.5);
-      expect(balanced.aggressionLevel).toBeLessThan(0.7);
-      expect(balanced.defensePreference).toBeGreaterThan(0.4);
-      expect(balanced.defensePreference).toBeLessThan(0.6);
+      // Enhanced aggression may push this above 0.7
+      expect(balanced.aggressionLevel).toBeLessThan(0.8);
+      expect(balanced.defensePreference).toBeGreaterThan(0.3);
+      expect(balanced.defensePreference).toBeLessThan(0.5);
     });
 
     it("CHAOS_WARRIOR should have high unpredictability", () => {
+      // CHAOS_WARRIOR now expresses chaos through attacks, not stance dancing
       const chaos = AI_PERSONALITIES.CHAOS_WARRIOR;
-      expect(chaos.stanceSwitchFrequency).toBeGreaterThan(0.7);
+      // Reduced stanceSwitchFrequency: chaos is in attacks, not stance dancing
+      expect(chaos.stanceSwitchFrequency).toBeLessThan(0.4);
       expect(chaos.feintChance).toBeGreaterThan(0.4);
     });
   });

@@ -58,6 +58,7 @@ import {
   getMobileControlsBottom,
 } from "../../../types/constants/layout";
 import { Z_INDEX } from "../../../types/LayoutTypes";
+import { DEFAULT_BODY_RADIUS_METERS } from "../../../types/physicsConstants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { calculateDistance3D } from "../../../utils/math";
@@ -84,6 +85,7 @@ import {
 import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
 import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
 import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
+import { StanceChangeIndicator } from "../combat/components/indicators/StanceChangeIndicator";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -339,11 +341,20 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingAreaBounds.worldWidthMeters],
   );
 
-  // Calculate distance to dummy in meters (training scene uses 1:1 meter scale)
-  // Used for distance-based hit detection matching combat system
-  const distanceToDummy = useMemo(
+  // Calculate center-to-center distance to dummy in meters
+  const centerToCenterDistance = useMemo(
     () => calculateDistance3D(player3DPosition, dummyPosition),
     [player3DPosition, dummyPosition],
+  );
+
+  // Calculate effective distance (adjusted for body radius)
+  // Attacks hit the body surface, not the center point
+  // Training dummy uses DEFAULT_BODY_RADIUS_METERS since it has no archetype
+  // For combat between players, use calculateBodyRadius(targetPhysicalAttributes)
+  // 실제 타격거리 = 중심간거리 - 목표체 반경
+  const distanceToDummy = useMemo(
+    () => Math.max(0, centerToCenterDistance - DEFAULT_BODY_RADIUS_METERS),
+    [centerToCenterDistance],
   );
 
   // Track last facing rotation for when movement stops
@@ -441,6 +452,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingState.currentStanceIndex],
   );
 
+  // Track previous stance for visual feedback (StanceChangeIndicator)
+  // 이전 자세 추적 - 자세 변경 표시기 시각적 피드백용
+  const [previousStanceIndex, setPreviousStanceIndex] = useState<number>(0);
+
   // Ref to track current technique's animation type (updated by technique selection)
   // This allows useTrainingActions to access the current technique's animation type
   // without creating circular dependencies
@@ -481,6 +496,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   useEffect(() => {
     handleDummyHitRef.current = handleDummyHit;
   }, [handleDummyHit]);
+
+  // Wrapped stance change handler with visual feedback tracking
+  // 시각적 피드백 추적을 포함한 자세 변경 핸들러 래퍼
+  const handleStanceChangeWithVisualFeedback = useCallback(
+    (stanceIndex: number) => {
+      // Capture previous stance before the change for visual indicator
+      setPreviousStanceIndex(trainingState.currentStanceIndex);
+      // Execute the actual stance change
+      handleStanceChange(stanceIndex);
+    },
+    [handleStanceChange, trainingState.currentStanceIndex],
+  );
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 6: Movement-Animation Synchronization
@@ -786,9 +813,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Mobile stance change handler
   const handleMobileStanceChange = useCallback(
     (stanceIndex: number) => {
-      handleStanceChange(stanceIndex);
+      handleStanceChangeWithVisualFeedback(stanceIndex);
     },
-    [handleStanceChange],
+    [handleStanceChangeWithVisualFeedback],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -808,7 +835,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       // Handle stance changes (1-8) - always available for exploration
       if (key >= "1" && key <= "8") {
         const stanceIndex = parseInt(key) - 1;
-        handleStanceChange(stanceIndex);
+        handleStanceChangeWithVisualFeedback(stanceIndex);
         event.preventDefault();
         return;
       }
@@ -823,7 +850,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onReturnToMenu, handleStanceChange, handleAttack]);
+  }, [onReturnToMenu, handleStanceChangeWithVisualFeedback, handleAttack]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 10: Audio Lifecycle Management & Auto-Start Training
@@ -1167,6 +1194,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             isMobile={isMobile}
           />
         ))}
+
+        {/* Stance Change Visual Indicator */}
+        <StanceChangeIndicator
+          currentStance={trainingState.currentStanceIndex}
+          previousStance={previousStanceIndex}
+          isMobile={isMobile}
+        />
 
         {/* Html UI Overlays - key ensures re-render on resize, render after mount */}
         {isMounted && (

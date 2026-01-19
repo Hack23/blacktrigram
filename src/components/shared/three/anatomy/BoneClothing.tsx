@@ -69,7 +69,7 @@ export interface BoneClothingProps {
  */
 const calculateBodyThickness = (
   muscleMass: number,
-  fatMass: number
+  fatMass: number,
 ): number => {
   const referenceMuscle = 35;
   const referenceFat = 12;
@@ -93,14 +93,14 @@ const getClothingForBone = (
     torsoLength: number;
     armLength: number;
     legLength: number;
-  }
+  },
 ): ClothingAttachment[] => {
   const clothingSet = getArchetypeClothing(archetype);
   const attachments: ClothingAttachment[] = [];
 
   const bodyThickness = calculateBodyThickness(
     physicalAttributes.muscleMass,
-    physicalAttributes.fatMass
+    physicalAttributes.fatMass,
   );
 
   // Scaling factors
@@ -114,7 +114,7 @@ const getClothingForBone = (
       bodyThickness,
       torsoScale,
       legScale,
-      physicalAttributes
+      physicalAttributes,
     );
     attachments.push(...attachmentsForItem);
   }
@@ -135,7 +135,7 @@ const getAttachmentsForItem = (
     shoulderWidth: number;
     armLength: number;
     legLength: number;
-  }
+  },
 ): ClothingAttachment[] => {
   const fitScaleMap: Record<string, number> = {
     tight: 1.08,
@@ -177,7 +177,7 @@ const getAttachmentsForItem = (
             armThickness * 1.1,
             armThickness * 0.95,
             upperArmLength,
-            12
+            12,
           ),
           localOffset: new THREE.Vector3(0, -upperArmLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -198,7 +198,7 @@ const getAttachmentsForItem = (
             armThickness * 0.95,
             armThickness * 0.85,
             forearmLength,
-            12
+            12,
           ),
           localOffset: new THREE.Vector3(0, -forearmLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -223,7 +223,7 @@ const getAttachmentsForItem = (
             legThickness * 1.15,
             legThickness * 0.95,
             thighLength,
-            16
+            16,
           ),
           localOffset: new THREE.Vector3(0, -thighLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -246,7 +246,7 @@ const getAttachmentsForItem = (
             legThickness * 0.95,
             legThickness * 0.8,
             shinLength,
-            16
+            16,
           ),
           localOffset: new THREE.Vector3(0, -shinLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -319,20 +319,24 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
   archetype,
   physicalAttributes,
 }) => {
-  // Default physical attributes if not provided
-  const attrs = physicalAttributes ?? {
-    muscleMass: 35,
-    fatMass: 12,
-    shoulderWidth: 45,
-    torsoLength: 59,
-    armLength: 62,
-    legLength: 96,
-  };
+  // Default physical attributes if not provided - memoized to prevent new object on every render
+  const attrs = useMemo(
+    () =>
+      physicalAttributes ?? {
+        muscleMass: 35,
+        fatMass: 12,
+        shoulderWidth: 45,
+        torsoLength: 59,
+        armLength: 62,
+        legLength: 96,
+      },
+    [physicalAttributes],
+  );
 
   // Get clothing attachments for this bone
   const attachments = useMemo(
     () => getClothingForBone(boneName, archetype, attrs),
-    [boneName, archetype, attrs]
+    [boneName, archetype, attrs],
   );
 
   // Create materials with cleanup

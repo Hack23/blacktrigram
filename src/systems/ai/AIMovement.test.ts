@@ -2,6 +2,8 @@
  * AIMovement.test.ts - AI Movement System Tests
  *
  * Tests for archetype-specific movement patterns and distance-based behavior.
+ *
+ * **Physics-First**: All distances and positions are in METERS.
  */
 
 import { TrigramStance } from "@/types";
@@ -24,15 +26,18 @@ describe("AI Movement System", () => {
   });
 
   /**
-   * Helper to create a combat context with specific distance
+   * Helper to create a combat context with specific distance in METERS
+   * Arena is centered at origin for physics-first coordinate system.
    */
   const createContext = (
-    distance: number,
+    distanceMeters: number,
     healthPercent: number = 1.0,
   ): CombatContext => {
+    // Position player at -distance/2, opponent at +distance/2 (centered at origin)
+    const halfDistance = distanceMeters / 2;
     return {
-      playerPosition: { x: 100, y: 100 },
-      opponentPosition: { x: 100 + distance, y: 100 },
+      playerPosition: { x: -halfDistance, y: 0 },
+      opponentPosition: { x: halfDistance, y: 0 },
       playerHealth: 100 * healthPercent,
       playerMaxHealth: 100,
       playerKi: 100,
@@ -42,7 +47,7 @@ describe("AI Movement System", () => {
       opponentHealth: 100,
       opponentStance: TrigramStance.GEON,
       playerStance: TrigramStance.GEON,
-      distanceToOpponent: distance,
+      distanceToOpponent: distanceMeters, // METERS
       timeInMatch: 5000,
       isOpponentAttacking: false,
       recentDamageTaken: 0,
@@ -58,8 +63,8 @@ describe("AI Movement System", () => {
   };
 
   describe("Distance Closing Behavior", () => {
-    it("should move toward opponent when too far (> 250px)", () => {
-      const context = createContext(300); // Far distance
+    it("should move toward opponent when too far (> 2.5m)", () => {
+      const context = createContext(3.0); // 3m = Far distance
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
 
       // Make multiple decisions to get movement action
@@ -91,7 +96,7 @@ describe("AI Movement System", () => {
 
     it("should reduce distance over multiple decisions", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER;
-      let currentDistance = 300;
+      let currentDistance = 3.0; // 3m = far distance
 
       // Simulate 10 decision cycles
       for (let i = 0; i < 10; i++) {
@@ -107,21 +112,21 @@ describe("AI Movement System", () => {
           const dy = decision.targetPosition.y - context.opponentPosition.y;
           const newDistance = Math.sqrt(dx * dx + dy * dy);
 
-          // Distance should decrease or stay similar (not increase)
-          expect(newDistance).toBeLessThanOrEqual(currentDistance + 10);
+          // Distance should decrease or stay similar (not increase by more than 0.1m)
+          expect(newDistance).toBeLessThanOrEqual(currentDistance + 0.1);
           currentDistance = newDistance;
         }
       }
 
       // After 10 cycles, distance should have decreased significantly
-      expect(currentDistance).toBeLessThan(300);
+      expect(currentDistance).toBeLessThan(3.0);
     });
   });
 
   describe("Defensive Retreat Behavior", () => {
     it("should retreat when health < 30% and pain > 50", () => {
       const context: CombatContext = {
-        ...createContext(120, 0.25), // 25% health, close distance
+        ...createContext(1.0, 0.25), // 25% health, 1m = close distance
         recentDamageTaken: 60, // High pain
       };
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
@@ -140,7 +145,7 @@ describe("AI Movement System", () => {
     it("should retreat when health < tactical retreat threshold", () => {
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
       const context = createContext(
-        150,
+        1.25, // 1.25m (close-mid range)
         personality.tacticalRetreatThreshold - 0.05,
       );
 
@@ -157,7 +162,7 @@ describe("AI Movement System", () => {
 
     it("should move away from opponent on retreat", () => {
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST;
-      const context = createContext(150, 0.2); // 20% health
+      const context = createContext(1.25, 0.2); // 20% health, 1.25m distance
 
       const decision = decisionTree.makeDecision(
         context,
@@ -183,7 +188,7 @@ describe("AI Movement System", () => {
   describe("Archetype-Specific Movement Patterns", () => {
     it("Musa should charge directly frequently", () => {
       const personality = AI_PERSONALITIES.AGGRESSIVE_STRIKER; // Musa archetype
-      const context = createContext(250); // Far enough to trigger approach
+      const context = createContext(2.5); // 2.5m = Far enough to trigger approach
 
       let approachCount = 0;
 
@@ -202,20 +207,20 @@ describe("AI Movement System", () => {
         }
       }
 
-      // Musa should approach when far from opponent (distance 250px > optimal 120px * 1.8 = 216px)
+      // Musa should approach when far from opponent (distance 2.5m > optimal ~0.5m * 1.8)
       // With resets clearing stance change cooldown, expect reasonable approach frequency
       // Note: Some iterations may choose stance_change (30% probability) or wait
       expect(approachCount).toBeGreaterThan(20);
     });
 
-    it("Hacker should maintain mid-range (3-4 cells / 200px)", () => {
+    it("Hacker should maintain mid-range (1.0-1.5m)", () => {
       const personality = AI_PERSONALITIES.DEFENSIVE_SPECIALIST; // Hacker archetype
 
-      // Test at various distances
+      // Test at various distances in METERS
       const testCases = [
-        { distance: 100, expectedBehavior: "retreat or circle" }, // Too close
-        { distance: 200, expectedBehavior: "circle or maintain" }, // Optimal
-        { distance: 350, expectedBehavior: "approach" }, // Too far
+        { distance: 0.8, expectedBehavior: "retreat or circle" }, // Too close
+        { distance: 1.5, expectedBehavior: "circle or maintain" }, // Optimal
+        { distance: 3.0, expectedBehavior: "approach" }, // Too far
       ];
 
       testCases.forEach(({ distance }) => {
@@ -230,7 +235,7 @@ describe("AI Movement System", () => {
         expect(decision).toBeDefined();
         expect(decision.action).toBeTruthy();
 
-        if (distance > 300) {
+        if (distance > 2.5) {
           // Too far - should approach or wait (but not retreat away)
           expect(["approach", "wait"]).toContain(decision.action);
         }
@@ -244,8 +249,15 @@ describe("AI Movement System", () => {
     it("should respect arena boundaries in movement decisions", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
       const context: CombatContext = {
-        ...createContext(250),
-        arenaBounds: { x: 0, y: 0, width: 400, height: 300, worldWidthMeters: 8, worldDepthMeters: 6 },
+        ...createContext(2.5), // 2.5m
+        arenaBounds: {
+          x: 0,
+          y: 0,
+          width: 400,
+          height: 300,
+          worldWidthMeters: 8,
+          worldDepthMeters: 6,
+        },
       };
 
       const decision = decisionTree.makeDecision(
@@ -255,25 +267,24 @@ describe("AI Movement System", () => {
       );
 
       if (decision.targetPosition) {
-        // Calculate expected margins based on physics-first system
-        // ARENA_MARGIN_X = 0.6m, arena = 400 pixels / 8m = 50 pixels/m
-        // Margin in pixels = 0.6m * 50 = 30 pixels
-        const pixelsPerMeter = context.arenaBounds.width / context.arenaBounds.worldWidthMeters;
-        const marginXPixels = 0.6 * pixelsPerMeter; // AI_MOVEMENT_METERS.ARENA_MARGIN_X = 0.6m
-        const marginYPixels = 1.8 * pixelsPerMeter * (context.arenaBounds.height / context.arenaBounds.width); // AI_MOVEMENT_METERS.ARENA_MARGIN_Y = 1.8m
-        
-        // Target position should be within bounds
+        // Physics-first: positions are in METERS, arena centered at origin
+        const halfWidth = context.arenaBounds.worldWidthMeters / 2;
+        const halfDepth = context.arenaBounds.worldDepthMeters / 2;
+        const marginX = 0.6; // AI_MOVEMENT_METERS.ARENA_MARGIN_X
+        const marginY = 1.8; // AI_MOVEMENT_METERS.ARENA_MARGIN_Y
+
+        // Target position should be within bounds (in meters)
         expect(decision.targetPosition.x).toBeGreaterThanOrEqual(
-          context.arenaBounds.x,
+          -halfWidth + marginX,
         );
         expect(decision.targetPosition.x).toBeLessThanOrEqual(
-          context.arenaBounds.x + context.arenaBounds.width - marginXPixels,
+          halfWidth - marginX,
         );
         expect(decision.targetPosition.y).toBeGreaterThanOrEqual(
-          context.arenaBounds.y,
+          -halfDepth + marginY,
         );
         expect(decision.targetPosition.y).toBeLessThanOrEqual(
-          context.arenaBounds.y + context.arenaBounds.height - marginYPixels,
+          halfDepth - marginY,
         );
       }
     });
@@ -281,7 +292,7 @@ describe("AI Movement System", () => {
     it("should consider stamina when making movement decisions", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
       const lowStaminaContext: CombatContext = {
-        ...createContext(250),
+        ...createContext(2.5), // 2.5m
         playerStamina: 3, // Very low stamina
         playerMaxStamina: 100,
       };
@@ -305,7 +316,7 @@ describe("AI Movement System", () => {
   describe("Performance", () => {
     it("should make movement decisions within 10ms", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
-      const context = createContext(200);
+      const context = createContext(1.5); // 1.5m
 
       const startTime = performance.now();
       const decision = decisionTree.makeDecision(
@@ -323,7 +334,7 @@ describe("AI Movement System", () => {
 
     it("should maintain <10ms average over 100 decisions", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
-      const context = createContext(200);
+      const context = createContext(1.5); // 1.5m
 
       const durations: number[] = [];
 

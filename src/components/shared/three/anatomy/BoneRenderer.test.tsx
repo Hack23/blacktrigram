@@ -16,6 +16,7 @@ import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import { createHumanoidRig } from "../../../../systems/animation";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { FacialExpression } from "../../../../types/facial";
 import { BoneRenderer } from "./BoneRenderer";
 
 // Helper to render Three.js components
@@ -23,7 +24,7 @@ function render3D(component: React.ReactElement) {
   return render(
     <Canvas>
       <Suspense fallback={null}>{component}</Suspense>
-    </Canvas>
+    </Canvas>,
   );
 }
 
@@ -39,7 +40,7 @@ describe("BoneRenderer", () => {
 
     it("should render with custom color", () => {
       const { container } = render3D(
-        <BoneRenderer rig={testRig} color={KOREAN_COLORS.PRIMARY_CYAN} />
+        <BoneRenderer rig={testRig} color={KOREAN_COLORS.PRIMARY_CYAN} />,
       );
 
       expect(container).toBeTruthy();
@@ -47,7 +48,7 @@ describe("BoneRenderer", () => {
 
     it("should not render when showBones is false", () => {
       const { container } = render3D(
-        <BoneRenderer rig={testRig} showBones={false} />
+        <BoneRenderer rig={testRig} showBones={false} />,
       );
 
       // Component should render canvas but not bones
@@ -56,7 +57,7 @@ describe("BoneRenderer", () => {
 
     it("should render in debug mode", () => {
       const { container } = render3D(
-        <BoneRenderer rig={testRig} renderMode="debug" />
+        <BoneRenderer rig={testRig} renderMode="debug" />,
       );
 
       expect(container).toBeTruthy();
@@ -75,7 +76,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 42, fatMass: 18 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -86,7 +87,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 32, fatMass: 9 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -97,7 +98,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -108,7 +109,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 34, fatMass: 14 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -119,7 +120,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 36, fatMass: 11 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -130,7 +131,7 @@ describe("BoneRenderer", () => {
     // Helper to calculate expected bone thickness
     const calculateExpectedThickness = (
       muscleMass: number,
-      fatMass: number
+      fatMass: number,
     ): number => {
       const muscleContribution = Math.sqrt(muscleMass / 35) * 0.7;
       const fatContribution = Math.sqrt(fatMass / 12) * 0.3;
@@ -174,8 +175,8 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           enableFacialExpressions={true}
-          facialExpression="neutral"
-        />
+          facialExpression={FacialExpression.NEUTRAL}
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -183,7 +184,7 @@ describe("BoneRenderer", () => {
 
     it("should render with eye tracking enabled", () => {
       const { container } = render3D(
-        <BoneRenderer rig={testRig} enableEyeTracking={true} />
+        <BoneRenderer rig={testRig} enableEyeTracking={true} />,
       );
 
       expect(container).toBeTruthy();
@@ -198,7 +199,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 38, fatMass: 12 }}
-        />
+        />,
       );
 
       const endTime = performance.now();
@@ -216,7 +217,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 25, fatMass: 8 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -227,7 +228,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 50, fatMass: 22 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -238,7 +239,7 @@ describe("BoneRenderer", () => {
         <BoneRenderer
           rig={testRig}
           physicalAttributes={{ muscleMass: 35, fatMass: 25 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -266,7 +267,7 @@ describe("BoneRenderer", () => {
         const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
-          normalizedDirection
+          normalizedDirection,
         );
         const rotation = new THREE.Euler().setFromQuaternion(quaternion);
 
@@ -295,7 +296,7 @@ describe("BoneRenderer", () => {
         const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
-          normalizedDirection
+          normalizedDirection,
         );
         const rotation = new THREE.Euler().setFromQuaternion(quaternion);
 
@@ -324,7 +325,7 @@ describe("BoneRenderer", () => {
         const capsuleDefaultDirection = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
-          normalizedDirection
+          normalizedDirection,
         );
         const rotation = new THREE.Euler().setFromQuaternion(quaternion);
 
@@ -338,7 +339,7 @@ describe("BoneRenderer", () => {
     it("should render without crashing with various bone orientations", () => {
       // Smoke test to ensure the component renders with the corrected orientation logic
       const { container } = render3D(
-        <BoneRenderer rig={testRig} renderMode="debug" showBones={true} />
+        <BoneRenderer rig={testRig} renderMode="debug" showBones={true} />,
       );
 
       expect(container).toBeTruthy();

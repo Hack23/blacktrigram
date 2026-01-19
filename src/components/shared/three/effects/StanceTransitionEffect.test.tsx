@@ -1,13 +1,13 @@
 /**
  * Unit tests for StanceTransitionEffect component
- * 
+ *
  * Tests stance transition effect structure and props.
  * Full rendering tests are done in E2E tests.
  */
 
-import { describe, it, expect, vi } from "vitest";
-import { StanceTransitionEffect } from "./StanceTransitionEffect";
+import { describe, expect, it, vi } from "vitest";
 import { TrigramStance } from "../../../../types/common";
+import { StanceTransitionEffect } from "./StanceTransitionEffect";
 
 describe("StanceTransitionEffect", () => {
   it("should be defined and importable", () => {
@@ -21,7 +21,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.TAE,
       };
-      
+
       expect(props.fromStance).toBe(TrigramStance.GEON);
       expect(props.toStance).toBe(TrigramStance.TAE);
     });
@@ -31,7 +31,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: null,
         toStance: TrigramStance.GEON,
       };
-      
+
       expect(props.fromStance).toBeNull();
       expect(props.toStance).toBe(TrigramStance.GEON);
     });
@@ -43,13 +43,13 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.TAE,
         onTransitionComplete: callback,
       };
-      
+
       expect(props.onTransitionComplete).toBe(callback);
     });
 
     it("should accept custom duration", () => {
       const durations = [0.25, 0.5, 0.75, 1.0];
-      
+
       durations.forEach((duration) => {
         const props = {
           fromStance: TrigramStance.GEON,
@@ -66,13 +66,13 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.TAE,
         showNameOverlay: true,
       };
-      
+
       const props2 = {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.TAE,
         showNameOverlay: false,
       };
-      
+
       expect(props1.showNameOverlay).toBe(true);
       expect(props2.showNameOverlay).toBe(false);
     });
@@ -105,7 +105,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.GEON,
       };
-      
+
       expect(props.fromStance).toBe(props.toStance);
     });
   });
@@ -116,7 +116,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.TAE,
       };
-      
+
       expect(props.fromStance).toBeDefined();
       expect(props.toStance).toBeDefined();
     });
@@ -126,7 +126,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.TAE,
       };
-      
+
       expect(props.fromStance).toBeDefined();
       expect(props.toStance).toBeDefined();
     });
@@ -165,9 +165,9 @@ describe("StanceTransitionEffect", () => {
     it("should interpolate between stance colors", () => {
       const transitions = [
         { from: TrigramStance.GEON, to: TrigramStance.TAE }, // Gold to Sky Blue
-        { from: TrigramStance.LI, to: TrigramStance.GAM },   // Orange Red to Blue
-        { from: TrigramStance.JIN, to: TrigramStance.SON },  // Purple to Light Green
-        { from: TrigramStance.GAN, to: TrigramStance.GON },  // Brown to Dark Khaki
+        { from: TrigramStance.LI, to: TrigramStance.GAM }, // Orange Red to Blue
+        { from: TrigramStance.JIN, to: TrigramStance.SON }, // Purple to Light Green
+        { from: TrigramStance.GAN, to: TrigramStance.GON }, // Brown to Dark Khaki
       ];
 
       transitions.forEach(({ from, to }) => {
@@ -220,17 +220,21 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.TAE,
         onTransitionComplete: callback,
       };
-      
+
       expect(props.onTransitionComplete).toBeDefined();
       expect(typeof props.onTransitionComplete).toBe("function");
     });
 
     it("should work without onTransitionComplete callback", () => {
-      const props = {
+      const props: {
+        fromStance: TrigramStance;
+        toStance: TrigramStance;
+        onTransitionComplete?: () => void;
+      } = {
         fromStance: TrigramStance.GEON,
         toStance: TrigramStance.TAE,
       };
-      
+
       expect(props.onTransitionComplete).toBeUndefined();
     });
   });
@@ -241,7 +245,7 @@ describe("StanceTransitionEffect", () => {
         fromStance: null,
         toStance: TrigramStance.GEON,
       };
-      
+
       expect(props.fromStance).toBeNull();
       expect(props.toStance).toBe(TrigramStance.GEON);
     });
@@ -279,7 +283,7 @@ describe("StanceTransitionEffect", () => {
       ];
 
       expect(allStances).toHaveLength(8);
-      
+
       allStances.forEach((stance) => {
         const props = {
           fromStance: null,
@@ -295,7 +299,7 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.GEON,
         showNameOverlay: true,
       };
-      
+
       expect(props.toStance).toBe(TrigramStance.GEON);
       expect(props.showNameOverlay).toBe(true);
     });
@@ -308,7 +312,7 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.TAE,
         duration: 0.5,
       };
-      
+
       // 0.5s is optimal for 60fps: 30 frames
       expect(props.duration).toBe(0.5);
       expect(props.duration * 60).toBe(30); // 30 frames at 60fps
@@ -320,7 +324,7 @@ describe("StanceTransitionEffect", () => {
         toStance: TrigramStance.TAE,
         showNameOverlay: false,
       };
-      
+
       expect(props.showNameOverlay).toBe(false);
     });
   });

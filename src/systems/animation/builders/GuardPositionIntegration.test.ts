@@ -14,6 +14,7 @@
  * @korean 방어자세통합테스트
  */
 
+import type { AnimationKeyframe } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 import { describe, expect, it } from "vitest";
 import {
@@ -30,7 +31,7 @@ import { MartialArtsAnimationBuilder } from "./MartialArtsAnimationBuilder";
 function hasGuardPosition(
   keyframe: any,
   guardType: "HIGH_GUARD" | "MIDDLE_GUARD" | "LOW_GUARD",
-  hand: "left" | "right"
+  hand: "left" | "right",
 ): boolean {
   const guard = getGuardPosition(guardType);
   const boneName = hand === "left" ? BoneName.SHOULDER_L : BoneName.SHOULDER_R;
@@ -100,12 +101,12 @@ describe("Guard Position Integration", () => {
     it("should support withGuard HIGH_GUARD method", () => {
       const animation = MartialArtsAnimationBuilder.create(
         "test_high_guard",
-        "테스트상단막기"
+        "테스트상단막기",
       )
         .asAttack(0.5)
         .at(0)
         .withGuard("HIGH_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(animation.keyframes).toHaveLength(1);
@@ -121,12 +122,12 @@ describe("Guard Position Integration", () => {
     it("should support withGuard MIDDLE_GUARD method", () => {
       const animation = MartialArtsAnimationBuilder.create(
         "test_middle_guard",
-        "테스트중단막기"
+        "테스트중단막기",
       )
         .asAttack(0.5)
         .at(0)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(animation.keyframes).toHaveLength(1);
@@ -139,12 +140,12 @@ describe("Guard Position Integration", () => {
     it("should support withGuard LOW_GUARD method", () => {
       const animation = MartialArtsAnimationBuilder.create(
         "test_low_guard",
-        "테스트하단막기"
+        "테스트하단막기",
       )
         .asAttack(0.5)
         .at(0)
         .withGuard("LOW_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(animation.keyframes).toHaveLength(1);
@@ -157,12 +158,12 @@ describe("Guard Position Integration", () => {
     it("should support one-handed guard for striking techniques", () => {
       const animation = MartialArtsAnimationBuilder.create(
         "test_one_hand_guard",
-        "테스트한손막기"
+        "테스트한손막기",
       )
         .asAttack(0.5)
         .at(0)
         .withGuard("MIDDLE_GUARD", "left") // Only left hand guards
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(animation.keyframes).toHaveLength(1);
@@ -180,23 +181,23 @@ describe("Guard Position Integration", () => {
     it("should start from guard, execute strike, return to guard", () => {
       const punchWithGuard = MartialArtsAnimationBuilder.create(
         "punch_with_guard",
-        "주먹지르기_막기"
+        "주먹지르기_막기",
       )
         .asAttack(0.6)
         // Start in middle guard
         .at(0)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         // Punch extension (right hand strikes, left maintains guard)
         .at(0.25)
         .rotate(BoneName.SHOULDER_R, 0.3, 0, 0.5)
         .rotate(BoneName.ELBOW_R, 0, 0, 0)
         .withGuard("MIDDLE_GUARD", "left") // Left hand stays in guard
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         // Return to guard
         .at(0.6)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(punchWithGuard.keyframes).toHaveLength(3);
@@ -220,25 +221,25 @@ describe("Guard Position Integration", () => {
       // High kick should use high guard to protect face
       const highKick = MartialArtsAnimationBuilder.create(
         "high_kick_guard",
-        "높은차기_막기"
+        "높은차기_막기",
       )
         .asAttack(0.7)
         .at(0)
         .withGuard("HIGH_GUARD") // High guard for high technique
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .at(0.35)
         .rotate(BoneName.HIP_R, 1.5, 0, 0) // High kick
         .withGuard("HIGH_GUARD") // Maintain high guard during kick
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .at(0.7)
         .withGuard("HIGH_GUARD") // Return to high guard
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(highKick.keyframes).toHaveLength(3);
 
       // All frames should maintain high guard
-      highKick.keyframes.forEach((frame) => {
+      highKick.keyframes.forEach((frame: AnimationKeyframe) => {
         expect(hasGuardPosition(frame, "HIGH_GUARD", "left")).toBe(true);
         expect(hasGuardPosition(frame, "HIGH_GUARD", "right")).toBe(true);
       });
@@ -247,27 +248,27 @@ describe("Guard Position Integration", () => {
     it("should adapt guard for defensive techniques", () => {
       const blockAndCounter = MartialArtsAnimationBuilder.create(
         "block_counter",
-        "막기_반격"
+        "막기_반격",
       )
         .asDefense(0.5)
         // Start in middle guard
         .at(0)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         // Block with both hands
         .at(0.2)
         .rotate(BoneName.SHOULDER_L, -0.5, 0.5, 0.3)
         .rotate(BoneName.SHOULDER_R, -0.5, -0.5, -0.3)
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         // Counter strike (right hand)
         .at(0.35)
         .rotate(BoneName.SHOULDER_R, 0.3, 0, 0.5)
         .withGuard("MIDDLE_GUARD", "left") // Left maintains guard
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         // Return to guard
         .at(0.5)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(blockAndCounter.keyframes).toHaveLength(4);
@@ -291,13 +292,13 @@ describe("Guard Position Integration", () => {
           .asAttack(0.5)
           .at(0)
           .withGuard("MIDDLE_GUARD")
-          .done()
+          .done<MartialArtsAnimationBuilder>()
           .at(0.25)
           .withGuard("MIDDLE_GUARD", "left")
-          .done()
+          .done<MartialArtsAnimationBuilder>()
           .at(0.5)
           .withGuard("MIDDLE_GUARD")
-          .done()
+          .done<MartialArtsAnimationBuilder>()
           .build();
       }
 
@@ -308,18 +309,18 @@ describe("Guard Position Integration", () => {
     it("should maintain 60fps animation targets", () => {
       const animation = MartialArtsAnimationBuilder.create(
         "performance_test",
-        "성능테스트"
+        "성능테스트",
       )
         .asAttack(0.6)
         .at(0)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .at(0.3)
         .withGuard("MIDDLE_GUARD", "left")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .at(0.6)
         .withGuard("MIDDLE_GUARD")
-        .done()
+        .done<MartialArtsAnimationBuilder>()
         .build();
 
       expect(animation.duration).toBe(0.6);
@@ -351,17 +352,17 @@ describe("Guard Position Integration", () => {
     it("should protect vital areas according to guard height", () => {
       // High guard protects head
       expect(HIGH_GUARD.protects).toEqual(
-        expect.arrayContaining(["head", "temple", "forehead"])
+        expect.arrayContaining(["head", "temple", "forehead"]),
       );
 
       // Middle guard protects torso
       expect(MIDDLE_GUARD.protects).toEqual(
-        expect.arrayContaining(["chest", "solar_plexus", "ribs"])
+        expect.arrayContaining(["chest", "solar_plexus", "ribs"]),
       );
 
       // Low guard protects lower body
       expect(LOW_GUARD.protects).toEqual(
-        expect.arrayContaining(["abdomen", "groin"])
+        expect.arrayContaining(["abdomen", "groin"]),
       );
     });
   });

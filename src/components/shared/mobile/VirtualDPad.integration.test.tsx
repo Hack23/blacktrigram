@@ -71,7 +71,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
   const simulateMobileMove = (
     direction: Direction | null,
     eventType: DPadEventType,
-    activeMobileKey: { current: string | null }
+    activeMobileKey: { current: string | null },
   ) => {
     const directionMap: Record<Direction, string> = {
       up: "w",
@@ -97,7 +97,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
             code: `Key${prevKey.toUpperCase()}`,
             bubbles: true,
             cancelable: true,
-          })
+          }),
         );
       }
 
@@ -110,7 +110,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
           code: `Key${key.toUpperCase()}`,
           bubbles: true,
           cancelable: true,
-        })
+        }),
       );
     } else if (eventType === "end") {
       // Release active key
@@ -122,7 +122,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
             code: `Key${key.toUpperCase()}`,
             bubbles: true,
             cancelable: true,
-          })
+          }),
         );
         activeMobileKey.current = null;
       }
@@ -224,7 +224,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
       simulateMobileMove("up", "start", activeMobileKey);
 
       expect(capturedEvent).not.toBeNull();
-      expect((capturedEvent as KeyboardEvent).key).toBe("w");
+      expect(capturedEvent!.key).toBe("w");
 
       window.removeEventListener("keydown", listener);
     });
@@ -241,7 +241,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
       simulateMobileMove("up", "start", activeMobileKey);
 
       expect(capturedEvent).not.toBeNull();
-      expect((capturedEvent as KeyboardEvent).code).toBe("KeyW");
+      expect(capturedEvent!.code).toBe("KeyW");
 
       window.removeEventListener("keydown", listener);
     });
@@ -258,7 +258,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
       simulateMobileMove("up", "start", activeMobileKey);
 
       expect(capturedEvent).not.toBeNull();
-      expect((capturedEvent as KeyboardEvent).bubbles).toBe(true);
+      expect(capturedEvent!.bubbles).toBe(true);
 
       window.removeEventListener("keydown", listener);
     });
@@ -275,7 +275,7 @@ describe("VirtualDPad - Player Movement Integration", () => {
       simulateMobileMove("up", "start", activeMobileKey);
 
       expect(capturedEvent).not.toBeNull();
-      expect((capturedEvent as KeyboardEvent).cancelable).toBe(true);
+      expect(capturedEvent!.cancelable).toBe(true);
 
       window.removeEventListener("keydown", listener);
     });

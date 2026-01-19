@@ -49,25 +49,19 @@ describe("CombatSystem - Defensive Action Processing", () => {
       balance: 80, // Good balance
       pain: 10,
       consciousness: 90,
-      recentHits: 0,
-      isAI: false,
+      momentum: 0,
+      lastActionTime: 0,
+      recoveryTime: 0,
+      lastStanceChangeTime: 0,
+      vitalPoints: [],
+      totalDamageReceived: 0,
+      totalDamageDealt: 0,
+      hitsTaken: 0,
+      hitsLanded: 0,
+      perfectStrikes: 0,
+      vitalPointHits: 0,
       statusEffects: [],
       activeEffects: [],
-      bodyFacing: "right" as const,
-      stats: {
-        damageDealt: 0,
-        damageTaken: 0,
-        attacksLanded: 0,
-        attacksMissed: 0,
-        blocksSuccessful: 0,
-        blocksFailed: 0,
-        vitalPointsHit: 0,
-        techniquesUsed: 0,
-        kiUsed: 0,
-        staminaUsed: 0,
-        timeInStance: 0,
-        stanceChanges: 0,
-      },
     };
 
     // Create base attacker
@@ -93,7 +87,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("parry_deflect");
@@ -111,7 +105,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("parry_deflect");
@@ -131,7 +125,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("block_success");
@@ -149,7 +143,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("block_success");
@@ -169,7 +163,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -187,7 +181,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -205,7 +199,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -225,7 +219,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -243,7 +237,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -261,7 +255,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("parry_deflect");
@@ -279,7 +273,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       expect(result).toBe("guard_break");
@@ -300,7 +294,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       let result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
       expect(result).toBe("parry_deflect");
 
@@ -309,7 +303,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
       expect(result).toBe("block_success");
 
@@ -318,7 +312,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
       expect(result).toBe("guard_break");
     });
@@ -343,12 +337,12 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const lowResult = combatSystem.processDefensiveAction(
         lowDefenseDefender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
       const highResult = combatSystem.processDefensiveAction(
         highDefenseDefender,
         baseAttacker,
-        attackPower
+        attackPower,
       );
 
       // High defense should perform better than low defense
@@ -370,7 +364,7 @@ describe("CombatSystem - Defensive Action Processing", () => {
       const result = combatSystem.processDefensiveAction(
         defender,
         baseAttacker,
-        15
+        15,
       );
 
       expect(validTypes).toContain(result);

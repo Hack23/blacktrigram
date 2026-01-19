@@ -24,6 +24,7 @@ import {
 import { BoneName } from "@/types/skeletal";
 import { describe, expect, it } from "vitest";
 import {
+  calculateBodyRadius,
   calculateBoneScalingFactors,
   calculateChokeEffectiveness,
   calculateHeadStrikeVulnerability,
@@ -43,7 +44,7 @@ describe("Skeleton Scaling System", () => {
       expect(factors.overall).toBeLessThan(1.15);
       expect(factors.head).toBeCloseTo(1.0, 1);
       expect(factors.neck).toBeGreaterThan(0.95);
-      expect(factors.neck).toBeLessThan(1.30); // Increased tolerance for amplification
+      expect(factors.neck).toBeLessThan(1.3); // Increased tolerance for amplification
       expect(factors.spine).toBeGreaterThan(0.95);
       expect(factors.spine).toBeLessThan(1.15);
       expect(factors.upperArm).toBeGreaterThan(0.95);
@@ -146,7 +147,7 @@ describe("Skeleton Scaling System", () => {
     it("should return longer legs for Amsalja", () => {
       const amsaljaThigh = getScaledBoneLength(
         BoneName.THIGH_L,
-        AMSALJA_PHYSICAL
+        AMSALJA_PHYSICAL,
       );
       const musaThigh = getScaledBoneLength(BoneName.THIGH_L, MUSA_PHYSICAL);
 
@@ -158,7 +159,7 @@ describe("Skeleton Scaling System", () => {
       const leftThigh = getScaledBoneLength(BoneName.THIGH_L, AMSALJA_PHYSICAL);
       const rightThigh = getScaledBoneLength(
         BoneName.THIGH_R,
-        AMSALJA_PHYSICAL
+        AMSALJA_PHYSICAL,
       );
 
       // Left and right should be identical
@@ -228,7 +229,7 @@ describe("Skeleton Scaling System", () => {
 
       // Difference should be noticeable (>20%)
       const widthDifference = (jojikOffset - hackerOffset) / hackerOffset;
-      expect(widthDifference).toBeGreaterThan(0.20); // At least 20% wider
+      expect(widthDifference).toBeGreaterThan(0.2); // At least 20% wider
     });
   });
 
@@ -278,11 +279,11 @@ describe("Skeleton Scaling System", () => {
     it("should adjust head vital points upward for taller fighters", () => {
       const amsaljaAdj = calculateVitalPointAdjustment(
         "head_temple",
-        AMSALJA_PHYSICAL
+        AMSALJA_PHYSICAL,
       );
       const musaAdj = calculateVitalPointAdjustment(
         "head_temple",
-        MUSA_PHYSICAL
+        MUSA_PHYSICAL,
       );
 
       // Amsalja's head is higher due to longer torso and legs
@@ -292,7 +293,7 @@ describe("Skeleton Scaling System", () => {
     it("should not adjust x position for head vital points", () => {
       const adjustment = calculateVitalPointAdjustment(
         "head_temple",
-        MUSA_PHYSICAL
+        MUSA_PHYSICAL,
       );
 
       // Head vital points don't shift horizontally
@@ -302,11 +303,11 @@ describe("Skeleton Scaling System", () => {
     it("should adjust arm vital points based on shoulder width", () => {
       const jojikAdj = calculateVitalPointAdjustment(
         "arm_radial",
-        JOJIK_PHYSICAL
+        JOJIK_PHYSICAL,
       );
       const amsaljaAdj = calculateVitalPointAdjustment(
         "arm_radial",
-        AMSALJA_PHYSICAL
+        AMSALJA_PHYSICAL,
       );
 
       // Jojik's wider shoulders shift arm vital points outward
@@ -316,11 +317,11 @@ describe("Skeleton Scaling System", () => {
     it("should adjust leg vital points based on leg length", () => {
       const amsaljaAdj = calculateVitalPointAdjustment(
         "leg_femoral",
-        AMSALJA_PHYSICAL
+        AMSALJA_PHYSICAL,
       );
       const jojikAdj = calculateVitalPointAdjustment(
         "leg_femoral",
-        JOJIK_PHYSICAL
+        JOJIK_PHYSICAL,
       );
 
       // Longer legs shift vital points
@@ -330,7 +331,7 @@ describe("Skeleton Scaling System", () => {
     it("should return zero adjustment for unknown vital points", () => {
       const adjustment = calculateVitalPointAdjustment(
         "unknown_point",
-        MUSA_PHYSICAL
+        MUSA_PHYSICAL,
       );
 
       expect(adjustment.x).toBe(0);
@@ -479,11 +480,11 @@ describe("Skeleton Scaling System", () => {
 
       const tallHeadAdj = calculateVitalPointAdjustment(
         "head_temple",
-        tallFighter
+        tallFighter,
       );
       const stockyHeadAdj = calculateVitalPointAdjustment(
         "head_temple",
-        stockyFighter
+        stockyFighter,
       );
 
       // Head positions should differ based on height
@@ -521,20 +522,24 @@ describe("Skeleton Scaling System", () => {
         { name: "Jojik", attrs: JOJIK_PHYSICAL, expectedOrder: 5 }, // Widest
       ];
 
-      const shoulderWidths = archetypes.map(a => ({
+      const shoulderWidths = archetypes.map((a) => ({
         name: a.name,
         width: calculateShoulderOffset(a.attrs) * 2, // Total span
       }));
 
       // Sort by width to verify order
-      const sortedByWidth = [...shoulderWidths].sort((a, b) => a.width - b.width);
+      const sortedByWidth = [...shoulderWidths].sort(
+        (a, b) => a.width - b.width,
+      );
 
       // Verify correct ordering from narrowest to widest
       expect(sortedByWidth[0].name).toBe("Hacker"); // Narrowest
       expect(sortedByWidth[4].name).toBe("Jojik"); // Widest
 
       // Verify all widths are unique
-      const uniqueWidths = new Set(shoulderWidths.map(sw => Math.round(sw.width)));
+      const uniqueWidths = new Set(
+        shoulderWidths.map((sw) => Math.round(sw.width)),
+      );
       expect(uniqueWidths.size).toBe(5);
     });
 
@@ -547,14 +552,14 @@ describe("Skeleton Scaling System", () => {
         { name: "Amsalja", attrs: AMSALJA_PHYSICAL }, // Longest
       ];
 
-      const legLengths = archetypes.map(a => ({
+      const legLengths = archetypes.map((a) => ({
         name: a.name,
         factors: calculateBoneScalingFactors(a.attrs),
       }));
 
       // Hacker should have shortest legs
-      const hackerLegs = legLengths.find(l => l.name === "Hacker");
-      const amsaljaLegs = legLengths.find(l => l.name === "Amsalja");
+      const hackerLegs = legLengths.find((l) => l.name === "Hacker");
+      const amsaljaLegs = legLengths.find((l) => l.name === "Amsalja");
 
       if (!hackerLegs || !amsaljaLegs) {
         throw new Error("Missing expected archetype data");
@@ -564,10 +569,14 @@ describe("Skeleton Scaling System", () => {
       expect(hackerLegs.factors.shin).toBeLessThan(amsaljaLegs.factors.shin);
 
       // Amsalja should have longest legs
-      const allOthers = legLengths.filter(l => l.name !== "Amsalja");
-      allOthers.forEach(other => {
-        expect(amsaljaLegs.factors.thigh).toBeGreaterThanOrEqual(other.factors.thigh);
-        expect(amsaljaLegs.factors.shin).toBeGreaterThanOrEqual(other.factors.shin);
+      const allOthers = legLengths.filter((l) => l.name !== "Amsalja");
+      allOthers.forEach((other) => {
+        expect(amsaljaLegs.factors.thigh).toBeGreaterThanOrEqual(
+          other.factors.thigh,
+        );
+        expect(amsaljaLegs.factors.shin).toBeGreaterThanOrEqual(
+          other.factors.shin,
+        );
       });
     });
 
@@ -580,27 +589,35 @@ describe("Skeleton Scaling System", () => {
         { name: "Jojik", attrs: JOJIK_PHYSICAL, armLength: 84 }, // Longest
       ];
 
-      const armFactors = archetypes.map(a => ({
+      const armFactors = archetypes.map((a) => ({
         name: a.name,
         factors: calculateBoneScalingFactors(a.attrs),
       }));
 
       // Hacker should have shortest arms
-      const hackerArms = armFactors.find(a => a.name === "Hacker");
-      const jojikArms = armFactors.find(a => a.name === "Jojik");
+      const hackerArms = armFactors.find((a) => a.name === "Hacker");
+      const jojikArms = armFactors.find((a) => a.name === "Jojik");
 
       if (!hackerArms || !jojikArms) {
         throw new Error("Missing expected archetype data");
       }
 
-      expect(hackerArms.factors.upperArm).toBeLessThan(jojikArms.factors.upperArm);
-      expect(hackerArms.factors.forearm).toBeLessThan(jojikArms.factors.forearm);
+      expect(hackerArms.factors.upperArm).toBeLessThan(
+        jojikArms.factors.upperArm,
+      );
+      expect(hackerArms.factors.forearm).toBeLessThan(
+        jojikArms.factors.forearm,
+      );
 
       // Jojik should have longest arms
-      const allOthers = armFactors.filter(a => a.name !== "Jojik");
-      allOthers.forEach(other => {
-        expect(jojikArms.factors.upperArm).toBeGreaterThanOrEqual(other.factors.upperArm);
-        expect(jojikArms.factors.forearm).toBeGreaterThanOrEqual(other.factors.forearm);
+      const allOthers = armFactors.filter((a) => a.name !== "Jojik");
+      allOthers.forEach((other) => {
+        expect(jojikArms.factors.upperArm).toBeGreaterThanOrEqual(
+          other.factors.upperArm,
+        );
+        expect(jojikArms.factors.forearm).toBeGreaterThanOrEqual(
+          other.factors.forearm,
+        );
       });
     });
 
@@ -613,14 +630,14 @@ describe("Skeleton Scaling System", () => {
         { name: "Jojik", attrs: JOJIK_PHYSICAL, torsoLength: 64 }, // Longest
       ];
 
-      const torsoFactors = archetypes.map(a => ({
+      const torsoFactors = archetypes.map((a) => ({
         name: a.name,
         factors: calculateBoneScalingFactors(a.attrs),
       }));
 
       // Hacker should have shortest torso
-      const hackerTorso = torsoFactors.find(t => t.name === "Hacker");
-      const jojikTorso = torsoFactors.find(t => t.name === "Jojik");
+      const hackerTorso = torsoFactors.find((t) => t.name === "Hacker");
+      const jojikTorso = torsoFactors.find((t) => t.name === "Jojik");
 
       if (!hackerTorso || !jojikTorso) {
         throw new Error("Missing expected archetype data");
@@ -629,8 +646,8 @@ describe("Skeleton Scaling System", () => {
       expect(hackerTorso.factors.spine).toBeLessThan(jojikTorso.factors.spine);
 
       // Jojik should have longest torso
-      const allOthers = torsoFactors.filter(t => t.name !== "Jojik");
-      allOthers.forEach(other => {
+      const allOthers = torsoFactors.filter((t) => t.name !== "Jojik");
+      allOthers.forEach((other) => {
         expect(jojikTorso.factors.spine).toBeGreaterThan(other.factors.spine);
       });
     });
@@ -644,14 +661,14 @@ describe("Skeleton Scaling System", () => {
         { name: "Jojik", attrs: JOJIK_PHYSICAL, height: 188 }, // Tallest
       ];
 
-      const heightFactors = archetypes.map(a => ({
+      const heightFactors = archetypes.map((a) => ({
         name: a.name,
         factors: calculateBoneScalingFactors(a.attrs),
       }));
 
       // Verify height ordering
-      const sortedByOverall = [...heightFactors].sort((a, b) => 
-        a.factors.overall - b.factors.overall
+      const sortedByOverall = [...heightFactors].sort(
+        (a, b) => a.factors.overall - b.factors.overall,
       );
 
       expect(sortedByOverall[0].name).toBe("Hacker"); // Shortest
@@ -690,29 +707,33 @@ describe("Skeleton Scaling System", () => {
       }));
 
       // Verify Hacker is most compact
-      const hacker = scalingData.find(d => d.name === "Hacker")!;
-      const others = scalingData.filter(d => d.name !== "Hacker");
-      others.forEach(other => {
+      const hacker = scalingData.find((d) => d.name === "Hacker")!;
+      const others = scalingData.filter((d) => d.name !== "Hacker");
+      others.forEach((other) => {
         expect(hacker.shoulderOffset).toBeLessThanOrEqual(other.shoulderOffset);
-        expect(hacker.factors.overall).toBeLessThanOrEqual(other.factors.overall);
+        expect(hacker.factors.overall).toBeLessThanOrEqual(
+          other.factors.overall,
+        );
       });
 
       // Verify Jojik is most massive
-      const jojik = scalingData.find(d => d.name === "Jojik")!;
-      const othersNotJojik = scalingData.filter(d => d.name !== "Jojik");
-      othersNotJojik.forEach(other => {
-        expect(jojik.shoulderOffset).toBeGreaterThanOrEqual(other.shoulderOffset);
+      const jojik = scalingData.find((d) => d.name === "Jojik")!;
+      const othersNotJojik = scalingData.filter((d) => d.name !== "Jojik");
+      othersNotJojik.forEach((other) => {
+        expect(jojik.shoulderOffset).toBeGreaterThanOrEqual(
+          other.shoulderOffset,
+        );
         expect(jojik.factors.spine).toBeGreaterThan(other.factors.spine);
       });
 
       // Verify Amsalja is tallest with longest limbs
-      const amsalja = scalingData.find(d => d.name === "Amsalja")!;
-      const othersNotAmsalja = scalingData.filter(d => d.name !== "Amsalja");
-      othersNotAmsalja.forEach(other => {
+      const amsalja = scalingData.find((d) => d.name === "Amsalja")!;
+      const othersNotAmsalja = scalingData.filter((d) => d.name !== "Amsalja");
+      othersNotAmsalja.forEach((other) => {
         // Amsalja should have longest or tied-longest legs
-        expect(amsalja.factors.thigh + amsalja.factors.shin).toBeGreaterThanOrEqual(
-          other.factors.thigh + other.factors.shin
-        );
+        expect(
+          amsalja.factors.thigh + amsalja.factors.shin,
+        ).toBeGreaterThanOrEqual(other.factors.thigh + other.factors.shin);
       });
     });
 
@@ -758,7 +779,8 @@ describe("Skeleton Scaling System", () => {
       // Visual difference after amplification
       const jojikVisualWidth = calculateShoulderOffset(JOJIK_PHYSICAL) * 2;
       const hackerVisualWidth = calculateShoulderOffset(HACKER_PHYSICAL) * 2;
-      const visualDifference = (jojikVisualWidth - hackerVisualWidth) / hackerVisualWidth;
+      const visualDifference =
+        (jojikVisualWidth - hackerVisualWidth) / hackerVisualWidth;
 
       // Raw difference: (54 - 43) / 43 = 25.6%
       expect(rawDifference).toBeCloseTo(0.256, 2);
@@ -768,8 +790,75 @@ describe("Skeleton Scaling System", () => {
       // This is expected behavior: shoulder amplification applies uniformly to all archetypes
       expect(visualDifference).toBeCloseTo(rawDifference, 2); // Same percentage preserved
       expect(Math.abs(jojikVisualWidth - hackerVisualWidth)).toBeGreaterThan(
-        Math.abs(jojikRawWidth - hackerRawWidth) // Absolute difference amplified
+        Math.abs(jojikRawWidth - hackerRawWidth), // Absolute difference amplified
       );
+    });
+  });
+
+  describe("calculateBodyRadius()", () => {
+    it("should calculate body radius for Musa based on shoulder width", () => {
+      // Musa: shoulderWidth = 46cm → depth = 23cm → radius = 0.23m
+      const radius = calculateBodyRadius(MUSA_PHYSICAL);
+      expect(radius).toBeCloseTo(0.23, 2);
+    });
+
+    it("should calculate body radius for Hacker (lean build)", () => {
+      // Hacker: shoulderWidth = 43cm → depth = 21.5cm → radius = 0.215m
+      const radius = calculateBodyRadius(HACKER_PHYSICAL);
+      expect(radius).toBeCloseTo(0.215, 2);
+    });
+
+    it("should calculate body radius for Jojik (large build)", () => {
+      // Jojik: shoulderWidth = 54cm → depth = 27cm → radius = 0.27m
+      const radius = calculateBodyRadius(JOJIK_PHYSICAL);
+      expect(radius).toBeCloseTo(0.27, 2);
+    });
+
+    it("should return larger radius for broader archetypes", () => {
+      const jojikRadius = calculateBodyRadius(JOJIK_PHYSICAL);
+      const hackerRadius = calculateBodyRadius(HACKER_PHYSICAL);
+      const musaRadius = calculateBodyRadius(MUSA_PHYSICAL);
+      const amsaljaRadius = calculateBodyRadius(AMSALJA_PHYSICAL);
+
+      // Jojik (54cm shoulders) > Musa (46cm) > Amsalja (44cm) > Hacker (43cm)
+      expect(jojikRadius).toBeGreaterThan(musaRadius);
+      expect(musaRadius).toBeGreaterThan(amsaljaRadius);
+      expect(amsaljaRadius).toBeGreaterThan(hackerRadius);
+    });
+
+    it("should return consistent values with hitbox depth", () => {
+      // Body radius should match hitbox depth calculation (shoulderWidth * 0.5 / 100)
+      const allProfiles = [
+        MUSA_PHYSICAL,
+        AMSALJA_PHYSICAL,
+        HACKER_PHYSICAL,
+        JEONGBO_PHYSICAL,
+        JOJIK_PHYSICAL,
+      ];
+
+      allProfiles.forEach((profile) => {
+        const radius = calculateBodyRadius(profile);
+        const hitbox = calculateHitboxDimensions(profile);
+        const expectedRadius = hitbox.depth / 100; // Convert cm to meters
+        expect(radius).toBeCloseTo(expectedRadius, 4);
+      });
+    });
+
+    it("should be within realistic human body proportions", () => {
+      // Human torso depth ranges from ~20cm (lean) to ~30cm (large)
+      const allProfiles = [
+        MUSA_PHYSICAL,
+        AMSALJA_PHYSICAL,
+        HACKER_PHYSICAL,
+        JEONGBO_PHYSICAL,
+        JOJIK_PHYSICAL,
+      ];
+
+      allProfiles.forEach((profile) => {
+        const radius = calculateBodyRadius(profile);
+        expect(radius).toBeGreaterThan(0.2); // Minimum 20cm
+        expect(radius).toBeLessThan(0.3); // Maximum 30cm
+      });
     });
   });
 });

@@ -254,7 +254,7 @@ describe("LateralityTransform", () => {
         result.keyframes.forEach((keyframe, index) => {
           const originalKeyframe = testAnimation.keyframes[index];
           expect(keyframe.boneRotations.size).toBe(
-            originalKeyframe.boneRotations.size
+            originalKeyframe.boneRotations.size,
           );
         });
       });
@@ -536,8 +536,10 @@ describe("LateralityTransform", () => {
 
   describe("Korean Terminology Integration", () => {
     it("should add Korean laterality marker for left animations", () => {
-      const anim = createTestAnimation("test_technique");
-      anim.koreanName = "건 뼈부러뜨리기";
+      const anim = {
+        ...createTestAnimation("test_technique"),
+        koreanName: "건 뼈부러뜨리기",
+      };
 
       const result = applyLaterality(anim, "left");
 
@@ -546,8 +548,10 @@ describe("LateralityTransform", () => {
     });
 
     it("should preserve original Korean name for right laterality", () => {
-      const anim = createTestAnimation("test_technique");
-      anim.koreanName = "건 뼈부러뜨리기";
+      const anim = {
+        ...createTestAnimation("test_technique"),
+        koreanName: "건 뼈부러뜨리기",
+      };
 
       const result = applyLaterality(anim, "right");
 

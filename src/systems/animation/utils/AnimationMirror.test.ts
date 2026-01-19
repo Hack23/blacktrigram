@@ -54,8 +54,8 @@ describe("getMirroredBone", () => {
       expect(getMirroredBone(BoneName.KNEE_L)).toBe(BoneName.KNEE_R);
     });
 
-    it("should swap ANKLE_L to ANKLE_R", () => {
-      expect(getMirroredBone(BoneName.ANKLE_L)).toBe(BoneName.ANKLE_R);
+    it("should swap SHIN_L to SHIN_R", () => {
+      expect(getMirroredBone(BoneName.SHIN_L)).toBe(BoneName.SHIN_R);
     });
 
     it("should swap FOOT_L to FOOT_R", () => {
@@ -226,6 +226,8 @@ describe("mirrorKeyframe", () => {
     const keyframe: AnimationKeyframe = {
       time: 0.5,
       easing: "ease-in-out",
+      boneRotations: new Map(),
+      bonePositions: new Map(),
     };
     const mirrored = mirrorKeyframe(keyframe);
     expect(mirrored.time).toBe(0.5);
@@ -241,6 +243,7 @@ describe("mirrorKeyframe", () => {
     const keyframe: AnimationKeyframe = {
       time: 0.3,
       boneRotations,
+      bonePositions: new Map(),
     };
 
     const mirrored = mirrorKeyframe(keyframe);
@@ -306,6 +309,7 @@ describe("mirrorAnimation", () => {
           [BoneName.HIP_L, new THREE.Euler(0.3, 0, 0)],
           [BoneName.KNEE_L, new THREE.Euler(-0.5, 0, 0)],
         ]),
+        bonePositions: new Map(),
       },
       {
         time: 0.3,
@@ -313,6 +317,7 @@ describe("mirrorAnimation", () => {
           [BoneName.HIP_L, new THREE.Euler(1.7, 0, 0)],
           [BoneName.KNEE_L, new THREE.Euler(-0.1, 0, 0)],
         ]),
+        bonePositions: new Map(),
       },
       {
         time: 0.55,
@@ -320,6 +325,7 @@ describe("mirrorAnimation", () => {
           [BoneName.HIP_L, new THREE.Euler(0, 0, 0)],
           [BoneName.KNEE_L, new THREE.Euler(0, 0, 0)],
         ]),
+        bonePositions: new Map(),
       },
     ],
   };
@@ -387,6 +393,7 @@ describe("getAnimationForStance", () => {
         boneRotations: new Map([
           [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0, 0)],
         ]),
+        bonePositions: new Map(),
       },
     ],
   };
@@ -482,12 +489,13 @@ describe("Biomechanical Correctness", () => {
             [BoneName.HIP_R, new THREE.Euler(1.7, 0, 0)], // Right leg kicks forward
             [BoneName.KNEE_R, new THREE.Euler(-0.1, 0, 0)],
           ]),
+          bonePositions: new Map(),
         },
       ],
     };
 
     const southpawKick = mirrorAnimation(orthodoxKick, {
-      targetStance: "southpaw",
+      nameSuffix: "_southpaw",
     });
 
     // Southpaw: should now kick with left leg
@@ -514,12 +522,13 @@ describe("Biomechanical Correctness", () => {
             [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0, 0.2)], // Left arm extends
             [BoneName.ELBOW_L, new THREE.Euler(0.1, 0, 0)],
           ]),
+          bonePositions: new Map(),
         },
       ],
     };
 
     const southpawJab = mirrorAnimation(orthodoxJab, {
-      targetStance: "southpaw",
+      nameSuffix: "_southpaw",
     });
 
     // Southpaw: should now punch with right hand

@@ -148,7 +148,7 @@ export class VitalPointSystem {
   setMeridianDisruption(meridianId: string, disruptionLevel: number): void {
     this.meridianStates.set(
       meridianId,
-      Math.max(0, Math.min(1, disruptionLevel))
+      Math.max(0, Math.min(1, disruptionLevel)),
     );
   }
 
@@ -239,7 +239,7 @@ export class VitalPointSystem {
     hour?: number,
     attackerArchetype?: PlayerArchetype,
     defenderArchetype?: PlayerArchetype,
-    defenderStance?: TrigramStance
+    defenderStance?: TrigramStance,
   ): VitalPointHitResult {
     // Use provided hour or current system hour
     const effectiveHour = hour ?? this.currentHour;
@@ -259,7 +259,7 @@ export class VitalPointSystem {
           effectiveHour,
           effectiveAttackerArchetype,
           effectiveDefenderArchetype,
-          effectiveDefenderStance
+          effectiveDefenderStance,
         );
       }
     }
@@ -278,7 +278,7 @@ export class VitalPointSystem {
     // Calculate distance to determine hit accuracy
     const distance = this.calculateDistance(
       targetPosition,
-      closestVitalPoint.position
+      closestVitalPoint.position,
     );
     const maxHitDistance = 50; // pixels
 
@@ -289,7 +289,7 @@ export class VitalPointSystem {
         effectiveHour,
         effectiveAttackerArchetype,
         effectiveDefenderArchetype,
-        effectiveDefenderStance
+        effectiveDefenderStance,
       );
     }
 
@@ -372,10 +372,12 @@ export class VitalPointSystem {
    * @korean 기술타격계산
    */
   calculateHit(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- technique type is dynamically determined by combat system
     technique: any,
     attackerPosition: Position,
     _defenderPosition: Position, // Prefixed with underscore to indicate intentionally unused
-    _defenderStance: any // Prefixed with underscore to indicate intentionally unused
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- stance type is dynamically determined by combat system
+    _defenderStance: any, // Prefixed with underscore to indicate intentionally unused
   ): VitalPointHitResult {
     // Find closest vital point to attack
     const closestVitalPoint = this.findClosestVitalPoint(attackerPosition);
@@ -392,7 +394,7 @@ export class VitalPointSystem {
     // Calculate hit based on technique accuracy and distance
     const distance = this.calculateDistance(
       attackerPosition,
-      closestVitalPoint.position
+      closestVitalPoint.position,
     );
     const hitChance = technique.accuracy * (1 - distance / 100);
 
@@ -485,7 +487,7 @@ export class VitalPointSystem {
     hour: number,
     attackerArchetype: PlayerArchetype = PlayerArchetype.MUSA,
     defenderArchetype: PlayerArchetype = PlayerArchetype.MUSA,
-    defenderStance: TrigramStance = TrigramStance.GEON
+    defenderStance: TrigramStance = TrigramStance.GEON,
   ): VitalPointHitResult {
     const distance = this.calculateDistance(hitPosition, vitalPoint.position);
     const baseDamage = this.calculateBaseDamage(vitalPoint, distance);
@@ -505,8 +507,8 @@ export class VitalPointSystem {
       // Use the best meridian flow multiplier
       meridianMultiplier = Math.max(
         ...meridians.map((meridianId) =>
-          calculateMeridianFlow(meridianId, hour)
-        )
+          calculateMeridianFlow(meridianId, hour),
+        ),
       );
 
       // Generate meridian disruption effects for each affected meridian
@@ -514,7 +516,7 @@ export class VitalPointSystem {
         const currentDisruption = this.getMeridianDisruption(meridianId);
         const newDisruption = Math.min(
           1,
-          currentDisruption + DISRUPTION_INCREMENT_PER_HIT
+          currentDisruption + DISRUPTION_INCREMENT_PER_HIT,
         );
         this.setMeridianDisruption(meridianId, newDisruption);
 
@@ -536,12 +538,12 @@ export class VitalPointSystem {
       vitalPoint.position,
       hour,
       defenderStance,
-      meridianStates
+      meridianStates,
     );
 
     // Apply all multipliers to damage: base × meridian flow × vulnerability
     const finalDamage = Math.floor(
-      baseDamage * meridianMultiplier * vulnerabilityMultiplier
+      baseDamage * meridianMultiplier * vulnerabilityMultiplier,
     );
 
     // Convert VitalPointEffect to StatusEffect with comprehensive calculations
@@ -554,8 +556,8 @@ export class VitalPointSystem {
           attackerArchetype,
           defenderArchetype,
           vitalPoint.id,
-          now
-        )
+          now,
+        ),
     );
 
     // Combine vital point effects with meridian effects
@@ -589,7 +591,7 @@ export class VitalPointSystem {
    */
   private calculateBaseDamage(
     vitalPoint: VitalPoint,
-    distance: number
+    distance: number,
   ): number {
     const baseDamage = vitalPoint.baseDamage ?? 10;
     const distanceModifier = Math.max(0.1, 1 - distance / 100);

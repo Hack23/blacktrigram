@@ -7,26 +7,34 @@ import { PlayerArchetype, TrigramStance } from "@/types";
 
 /**
  * Movement pattern types for archetype behavior
- * 
+ *
  * @korean 이동 패턴 타입
  */
-export type MovementPattern = "aggressive" | "evasive" | "analytical" | "unpredictable";
+export type MovementPattern =
+  | "aggressive"
+  | "evasive"
+  | "analytical"
+  | "unpredictable";
 
 /**
  * Vital target priority for archetype-specific combat strategies
- * 
+ *
  * @korean 급소 우선순위
  */
-export type VitalTargetPriority = "health" | "pain" | "consciousness" | "balanced";
+export type VitalTargetPriority =
+  | "health"
+  | "pain"
+  | "consciousness"
+  | "balanced";
 
 /**
  * Technique category types for archetype preferences
- * 
+ *
  * @korean 기술 범주
  */
-export type TechniqueCategory = 
-  | "joint_manipulation" 
-  | "bone_strikes" 
+export type TechniqueCategory =
+  | "joint_manipulation"
+  | "bone_strikes"
   | "nerve_strikes"
   | "silent_takedowns"
   | "anatomical_analysis"
@@ -38,10 +46,10 @@ export type TechniqueCategory =
 
 /**
  * Archetype-specific behavior profile
- * 
+ *
  * Defines combat preferences, movement patterns, and tactical decision-making
  * unique to each of the 5 player archetypes.
- * 
+ *
  * @korean 원형별 행동 프로필
  */
 export interface ArchetypeBehavior {
@@ -83,16 +91,20 @@ export interface AIPersonality {
 
 /**
  * Archetype-specific behavior profiles
- * 
+ *
  * Maps each of the 5 player archetypes to their unique combat behaviors,
  * movement patterns, and tactical preferences based on Korean martial arts
  * traditions and game design philosophy.
- * 
+ *
  * @korean 원형별 행동 프로필
  */
 export const ARCHETYPE_BEHAVIORS: Record<PlayerArchetype, ArchetypeBehavior> = {
   [PlayerArchetype.MUSA]: {
-    preferredStances: [TrigramStance.GEON, TrigramStance.JIN, TrigramStance.GAN], // Heaven, Thunder, Mountain
+    preferredStances: [
+      TrigramStance.GEON,
+      TrigramStance.JIN,
+      TrigramStance.GAN,
+    ], // Heaven, Thunder, Mountain
     optimalRange: 1, // Close quarters (1 cell = ~40px)
     retreatThreshold: 5, // Enhanced: fights to near-death (honor code)
     techniqueSelectionBias: ["joint_manipulation", "bone_strikes"],
@@ -145,13 +157,13 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 맹공자 (Maenggongja) - Fierce Attacker
    * Aggressive pressure fighter using Musa archetype
-   * 
+   *
    * **Enhanced Aggression (Issue #enhance-ai-aggression)**:
    * - Increased aggression: 0.85 → 0.95 (overwhelming force)
    * - Reduced defense: 0.2 → 0.1 (all-in offensive)
    * - Increased combo tendency: 0.7 → 0.8 (sustained pressure)
    * - Reduced retreat threshold: 0.15 → 0.05 (honor code: fights to near-death)
-   * 
+   *
    * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
    * - Increased stance switch frequency: 0.3 → 0.5 (more tactical flexibility)
    */
@@ -162,7 +174,7 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
     aggressionLevel: 0.95, // Enhanced from 0.85
     defensePreference: 0.1, // Reduced from 0.2
     comboTendency: 0.8, // Increased from 0.7
-    stanceSwitchFrequency: 0.5, // Increased from 0.3 for dynamic stance rotation
+    stanceSwitchFrequency: 0.15, // Reduced: Musa focuses on overwhelming force, not stance dancing
     feintChance: 0.15,
     tacticalRetreatThreshold: 0.05, // Reduced from 0.15
     favoredStances: [
@@ -179,13 +191,13 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 기술가 (Gisulga) - Technical Master
    * Precision fighter using Amsalja archetype
-   * 
+   *
    * **Enhanced Aggression (Issue #enhance-ai-aggression)**:
    * - Increased aggression: 0.5 → 0.85 (instant takedown focus)
    * - Reduced defense: 0.6 → 0.3 (opportunistic aggression)
    * - Increased combo tendency: 0.4 → 0.6 (lethal sequences)
    * - Reduced retreat threshold: 0.35 → 0.20 (tactical retreat, not cowardice)
-   * 
+   *
    * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
    * - Increased stance switch frequency: 0.7 → 0.85 (highly adaptive)
    */
@@ -193,12 +205,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
     name: "Technical Master",
     koreanName: "기술가",
     archetype: PlayerArchetype.AMSALJA,
-    aggressionLevel: 0.85, // Enhanced from 0.5
-    defensePreference: 0.3, // Reduced from 0.6
-    comboTendency: 0.6, // Increased from 0.4
-    stanceSwitchFrequency: 0.85, // Increased from 0.7 for dynamic stance rotation
+    aggressionLevel: 0.95, // Enhanced for fatal precision strikes
+    defensePreference: 0.2, // Reduced: assassins attack, don't defend
+    comboTendency: 0.7, // Increased for lethal combinations
+    stanceSwitchFrequency: 0.2, // Reduced: precision strikers commit to their stance
     feintChance: 0.35,
-    tacticalRetreatThreshold: 0.20, // Reduced from 0.35
+    tacticalRetreatThreshold: 0.15, // Reduced: assassins press the attack
     favoredStances: [
       TrigramStance.SON, // Wind - Continuous pressure
       TrigramStance.GAM, // Water - Flow and adaptation
@@ -213,7 +225,7 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 균형 잡힌 자 (Gyunhyeong Jabin-ja) - Balanced Fighter
    * All-around fighter using Jeongbo Yowon archetype
-   * 
+   *
    * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
    * - Increased stance switch frequency: 0.5 → 0.7 (strategic switching)
    */
@@ -221,12 +233,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
     name: "Balanced Fighter",
     koreanName: "균형 잡힌 자",
     archetype: PlayerArchetype.JEONGBO_YOWON,
-    aggressionLevel: 0.6,
-    defensePreference: 0.5,
-    comboTendency: 0.5,
-    stanceSwitchFrequency: 0.7, // Increased from 0.5 for dynamic stance rotation
-    feintChance: 0.25,
-    tacticalRetreatThreshold: 0.25,
+    aggressionLevel: 0.75, // Enhanced: intelligence operatives are decisive
+    defensePreference: 0.4, // Slightly reduced for more aggression
+    comboTendency: 0.6, // Increased for calculated sequences
+    stanceSwitchFrequency: 0.25, // Reduced: strategic, not reactive
+    feintChance: 0.3, // Increased: psychological warfare
+    tacticalRetreatThreshold: 0.2, // Slightly reduced
     favoredStances: [
       TrigramStance.GEON, // Heaven
       TrigramStance.GAM, // Water
@@ -242,7 +254,7 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 방어의 달인 (Bangeo-ui Dallin) - Defensive Specialist
    * Counter-attack focused using Hacker archetype
-   * 
+   *
    * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
    * - Increased stance switch frequency: 0.4 → 0.6 (analytical adaptation)
    */
@@ -250,12 +262,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
     name: "Defensive Specialist",
     koreanName: "방어의 달인",
     archetype: PlayerArchetype.HACKER,
-    aggressionLevel: 0.35,
-    defensePreference: 0.8,
-    comboTendency: 0.3,
-    stanceSwitchFrequency: 0.6, // Increased from 0.4 for dynamic stance rotation
-    feintChance: 0.4,
-    tacticalRetreatThreshold: 0.4,
+    aggressionLevel: 0.55, // Enhanced: hackers exploit vulnerabilities aggressively
+    defensePreference: 0.6, // Reduced: still defensive but not passive
+    comboTendency: 0.5, // Increased for analytical attack chains
+    stanceSwitchFrequency: 0.2, // Reduced: analytical fighters don't fidget
+    feintChance: 0.45, // Increased: data-driven misdirection
+    tacticalRetreatThreshold: 0.3, // Reduced: hackers are more confident
     favoredStances: [
       TrigramStance.GAN, // Mountain - Defensive mastery
       TrigramStance.GON, // Earth - Grounding
@@ -270,7 +282,7 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
   /**
    * 혼돈의 전사 (Hondon-ui Jeonsa) - Chaos Warrior
    * Unpredictable fighter using Jojik Pokryeokbae archetype
-   * 
+   *
    * **Dynamic Stance Rotation (Issue #dynamic-ai-stance-rotation)**:
    * - Increased stance switch frequency: 0.8 → 0.95 (unpredictable chaos)
    */
@@ -278,12 +290,12 @@ export const AI_PERSONALITIES: Record<string, AIPersonality> = {
     name: "Chaos Warrior",
     koreanName: "혼돈의 전사",
     archetype: PlayerArchetype.JOJIK_POKRYEOKBAE,
-    aggressionLevel: 0.75,
-    defensePreference: 0.3,
-    comboTendency: 0.6,
-    stanceSwitchFrequency: 0.95, // Increased from 0.8 for dynamic stance rotation
+    aggressionLevel: 0.9, // Enhanced: brutal pragmatists attack relentlessly
+    defensePreference: 0.2, // Reduced: dirty fighters don't retreat
+    comboTendency: 0.7, // Increased for vicious combinations
+    stanceSwitchFrequency: 0.3, // Reduced: chaos is in attacks, not stance dancing
     feintChance: 0.5,
-    tacticalRetreatThreshold: 0.1,
+    tacticalRetreatThreshold: 0.05, // Reduced: fights to the bitter end
     favoredStances: [
       TrigramStance.LI, // Fire - Unpredictable
       TrigramStance.SON, // Wind - Constant motion
@@ -309,10 +321,10 @@ export function getRandomPersonality(): AIPersonality {
  * Get personality by archetype
  */
 export function getPersonalityByArchetype(
-  archetype: PlayerArchetype
+  archetype: PlayerArchetype,
 ): AIPersonality {
   const personality = Object.values(AI_PERSONALITIES).find(
-    (p) => p.archetype === archetype
+    (p) => p.archetype === archetype,
   );
   return personality ?? AI_PERSONALITIES.BALANCED_FIGHTER;
 }
@@ -333,28 +345,30 @@ export function getAllPersonalities(): readonly AIPersonality[] {
 
 /**
  * Get archetype-specific behavior profile
- * 
+ *
  * Retrieves the unique combat behavior configuration for a given archetype,
  * including movement patterns, optimal ranges, and tactical preferences.
- * 
+ *
  * @param archetype - Player archetype to get behavior for
  * @returns Archetype behavior profile
- * 
+ *
  * @korean 원형별 행동 프로필 가져오기
  */
-export function getArchetypeBehavior(archetype: PlayerArchetype): ArchetypeBehavior {
+export function getArchetypeBehavior(
+  archetype: PlayerArchetype,
+): ArchetypeBehavior {
   return ARCHETYPE_BEHAVIORS[archetype];
 }
 
 /**
  * Check if archetype follows honor code
- * 
+ *
  * Honor code affects retreat behavior - honor-bound archetypes like Musa
  * will not retreat above their health threshold.
- * 
+ *
  * @param archetype - Player archetype to check
  * @returns True if archetype follows honor code
- * 
+ *
  * @korean 명예 규범 확인
  */
 export function followsHonorCode(archetype: PlayerArchetype): boolean {
@@ -363,13 +377,13 @@ export function followsHonorCode(archetype: PlayerArchetype): boolean {
 
 /**
  * Get optimal combat range for archetype
- * 
+ *
  * Returns the preferred distance in grid cells (1 cell = ~40px) where
  * the archetype is most effective in combat.
- * 
+ *
  * @param archetype - Player archetype
  * @returns Optimal range in grid cells
- * 
+ *
  * @korean 최적 전투 거리 가져오기
  */
 export function getOptimalRange(archetype: PlayerArchetype): number {

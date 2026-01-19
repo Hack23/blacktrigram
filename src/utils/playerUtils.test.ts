@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { PLAYER_ARCHETYPES_DATA } from "../systems";
-import {
-  CombatState,
-  PlayerArchetype,
-  TrigramStance,
-} from "../types";
+import { EffectIntensity, PLAYER_ARCHETYPES_DATA } from "../systems";
+import type { PlayerState } from "../systems/player";
+import { CombatState, PlayerArchetype, TrigramStance } from "../types";
 import {
   applyDamage,
   applyStatusEffect,
@@ -13,12 +10,11 @@ import {
   createPlayerFromArchetype,
   getArchetypeBonuses,
   hasEnoughResources,
+  initializeBodyFacing,
+  resetPlayerState,
   updatePlayerState,
   updateStatusEffects,
-  resetPlayerState,
-  initializeBodyFacing,
 } from "./playerUtils";
-import type { PlayerState } from "../systems/player";
 
 describe("playerUtils", () => {
   describe("createPlayerFromArchetype", () => {
@@ -53,7 +49,7 @@ describe("playerUtils", () => {
     it("should create player with JEONGBO_YOWON archetype", () => {
       const player = createPlayerFromArchetype(
         PlayerArchetype.JEONGBO_YOWON,
-        1
+        1,
       );
 
       expect(player.archetype).toBe(PlayerArchetype.JEONGBO_YOWON);
@@ -64,7 +60,7 @@ describe("playerUtils", () => {
     it("should create player with JOJIK_POKRYEOKBAE archetype", () => {
       const player = createPlayerFromArchetype(
         PlayerArchetype.JOJIK_POKRYEOKBAE,
-        0
+        0,
       );
 
       expect(player.archetype).toBe(PlayerArchetype.JOJIK_POKRYEOKBAE);
@@ -272,9 +268,9 @@ describe("playerUtils", () => {
     });
 
     it("should return false when stunned", () => {
-      const stunned = updatePlayerState(player, { 
+      const stunned = updatePlayerState(player, {
         isStunned: true,
-        combatState: CombatState.STUNNED 
+        combatState: CombatState.STUNNED,
       });
 
       expect(canPlayerAct(stunned)).toBe(false);
@@ -316,7 +312,7 @@ describe("playerUtils", () => {
 
     it("should handle exact resource amounts", () => {
       const player = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
-      
+
       expect(hasEnoughResources(player, player.ki, player.stamina)).toBe(true);
     });
   });
@@ -333,10 +329,12 @@ describe("playerUtils", () => {
         id: "stunned",
         type: "stun" as const,
         duration: 1000,
-        intensity: 0.8,
+        intensity: EffectIntensity.HIGH,
         source: "technique",
+        startTime: Date.now(),
         endTime: Date.now() + 1000,
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
 
       const affected = applyStatusEffect(player, effect);
@@ -351,19 +349,23 @@ describe("playerUtils", () => {
         id: "stunned",
         type: "stun" as const,
         duration: 1000,
-        intensity: 0.8,
+        intensity: EffectIntensity.HIGH,
         source: "technique",
+        startTime: Date.now(),
         endTime: Date.now() + 1000,
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
       const effect2 = {
         id: "bleeding",
         type: "bleeding" as const,
         duration: 2000,
-        intensity: 0.5,
+        intensity: EffectIntensity.MEDIUM,
         source: "vital_point",
+        startTime: Date.now(),
         endTime: Date.now() + 2000,
         stackable: true,
+        description: { korean: "출혈", english: "Bleeding" },
       };
 
       let affected = player;
@@ -379,26 +381,30 @@ describe("playerUtils", () => {
         id: "stunned",
         type: "stun" as const,
         duration: 1000,
-        intensity: 0.8,
+        intensity: EffectIntensity.HIGH,
         source: "technique",
+        startTime: Date.now(),
         endTime: Date.now() + 1000,
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
       const effect2 = {
         id: "stunned_longer",
         type: "stun" as const,
         duration: 2000,
-        intensity: 0.9,
+        intensity: EffectIntensity.SEVERE,
         source: "technique",
+        startTime: Date.now(),
         endTime: Date.now() + 2000,
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
 
       let affected = applyStatusEffect(player, effect1);
       affected = applyStatusEffect(affected, effect2);
 
       expect(affected.statusEffects).toHaveLength(1);
-      expect(affected.statusEffects[0].intensity).toBe(0.9);
+      expect(affected.statusEffects[0].intensity).toBe(EffectIntensity.SEVERE);
     });
   });
 
@@ -458,10 +464,12 @@ describe("playerUtils", () => {
         id: "expired",
         type: "stun" as const,
         duration: 1000,
-        intensity: 0.8,
+        intensity: EffectIntensity.HIGH,
         source: "technique",
+        startTime: currentTime - 2000,
         endTime: currentTime - 1000, // Already expired
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
 
       let affected = applyStatusEffect(player, expiredEffect);
@@ -477,10 +485,12 @@ describe("playerUtils", () => {
         id: "active",
         type: "stun" as const,
         duration: 1000,
-        intensity: 0.8,
+        intensity: EffectIntensity.HIGH,
         source: "technique",
+        startTime: currentTime,
         endTime: currentTime + 5000, // Still active
         stackable: false,
+        description: { korean: "기절", english: "Stunned" },
       };
 
       let affected = applyStatusEffect(player, activeEffect);
@@ -522,7 +532,7 @@ describe("playerUtils", () => {
       const damaged = applyDamage(player, 50);
       expect(damaged.health).toBe(player.maxHealth - 50);
       expect(damaged.totalDamageReceived).toBe(50);
-      
+
       const reset = resetPlayerState(PlayerArchetype.MUSA, 0);
 
       expect(reset.health).toBe(reset.maxHealth);
@@ -570,9 +580,9 @@ describe("playerUtils", () => {
     it("should calculate correct initial facing angle toward opponent", () => {
       const playerPos = { x: 0, y: 0 };
       const opponentPos = { x: 10, y: 0 };
-      
+
       const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
-      
+
       // Facing right (0 degrees for +X axis)
       expect(bodyFacing.currentAngle).toBeCloseTo(0, 1);
       expect(bodyFacing.targetAngle).toBeCloseTo(0, 1);
@@ -581,18 +591,18 @@ describe("playerUtils", () => {
     it("should initialize with default rotation speed", () => {
       const playerPos = { x: 0, y: 0 };
       const opponentPos = { x: 5, y: 5 };
-      
+
       const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
-      
+
       expect(bodyFacing.rotationSpeed).toBe(45); // Default 45°/sec
     });
 
     it("should initialize with unlocked state", () => {
       const playerPos = { x: 0, y: 0 };
       const opponentPos = { x: 0, y: 10 };
-      
+
       const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
-      
+
       expect(bodyFacing.isLocked).toBe(false);
       expect(bodyFacing.isTurning).toBe(false);
     });
@@ -600,27 +610,27 @@ describe("playerUtils", () => {
     it("should initialize with zero head offset", () => {
       const playerPos = { x: 100, y: 100 };
       const opponentPos = { x: 200, y: 200 };
-      
+
       const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
-      
+
       expect(bodyFacing.headAngleOffset).toBe(0);
     });
 
     it("should handle different opponent positions", () => {
       const playerPos = { x: 300, y: 400 };
-      
+
       // Test facing opponent to the right
       const facingRight = initializeBodyFacing(playerPos, { x: 500, y: 400 });
       expect(facingRight.currentAngle).toBeCloseTo(0, 1);
-      
+
       // Test facing opponent below (positive Y is down in top-down 2D)
       const facingDown = initializeBodyFacing(playerPos, { x: 300, y: 600 });
       expect(facingDown.currentAngle).toBeCloseTo(90, 1);
-      
+
       // Test facing opponent to the left
       const facingLeft = initializeBodyFacing(playerPos, { x: 100, y: 400 });
       expect(Math.abs(facingLeft.currentAngle - 180)).toBeLessThan(1);
-      
+
       // Test facing opponent above
       const facingUp = initializeBodyFacing(playerPos, { x: 300, y: 200 });
       expect(facingUp.currentAngle).toBeCloseTo(270, 1);
@@ -629,9 +639,9 @@ describe("playerUtils", () => {
     it("should return BodyFacing with all required properties", () => {
       const playerPos = { x: 0, y: 0 };
       const opponentPos = { x: 1, y: 1 };
-      
+
       const bodyFacing = initializeBodyFacing(playerPos, opponentPos);
-      
+
       expect(bodyFacing).toHaveProperty("currentAngle");
       expect(bodyFacing).toHaveProperty("targetAngle");
       expect(bodyFacing).toHaveProperty("rotationSpeed");

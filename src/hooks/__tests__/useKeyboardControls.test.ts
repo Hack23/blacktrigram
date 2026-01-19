@@ -1,21 +1,29 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mock,
+} from "vitest";
 import { useKeyboardControls } from "../useKeyboardControls";
 
 /**
  * Tests for useKeyboardControls hook
- * 
+ *
  * Verifies that keyboard event handling logic works correctly,
  * especially for modifier key combinations (Shift+Ctrl, Ctrl, Shift).
  */
 
 describe("useKeyboardControls - Modifier Key Handling", () => {
-  let mockOnAction: ReturnType<typeof vi.fn>;
-  let mockOnStanceChange: ReturnType<typeof vi.fn>;
+  let mockOnAction: Mock<(action: string) => void>;
+  let mockOnStanceChange: Mock<(stance: number) => void>;
 
   beforeEach(() => {
-    mockOnAction = vi.fn();
-    mockOnStanceChange = vi.fn();
+    mockOnAction = vi.fn<(action: string) => void>();
+    mockOnStanceChange = vi.fn<(stance: number) => void>();
   });
 
   afterEach(() => {
@@ -29,7 +37,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       // Simulate Shift+Ctrl+A keyboard event
@@ -46,11 +54,11 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       // Verify that pivot_left action is triggered
       expect(mockOnAction).toHaveBeenCalledWith("footwork_pivot_left");
       expect(mockOnAction).toHaveBeenCalledTimes(1);
-      
+
       // Verify queued inputs are updated
       expect(result.current.queuedInputs).toHaveLength(1);
       expect(result.current.queuedInputs[0].action).toContain("Pivot Left");
-      
+
       // Clean up event listeners
       unmount();
     });
@@ -61,7 +69,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -87,7 +95,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -113,7 +121,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -141,7 +149,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -167,7 +175,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -192,7 +200,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -219,7 +227,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -244,7 +252,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -269,7 +277,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -294,7 +302,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       act(() => {
@@ -321,7 +329,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
           onAction: mockOnAction,
           onStanceChange: mockOnStanceChange,
           enabled: true,
-        })
+        }),
       );
 
       // First, test Shift+Ctrl combination
@@ -350,7 +358,7 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
       });
 
       expect(mockOnAction).toHaveBeenCalledWith("footwork_circular_left");
-      
+
       // Verify they trigger different actions
       expect(mockOnAction).not.toHaveBeenCalledWith("footwork_pivot_left");
       // Clean up event listeners
@@ -360,12 +368,12 @@ describe("useKeyboardControls - Modifier Key Handling", () => {
 });
 
 describe("useKeyboardControls - Stance Side Switch", () => {
-  let mockOnAction: ReturnType<typeof vi.fn>;
-  let mockOnStanceChange: ReturnType<typeof vi.fn>;
+  let mockOnAction: Mock<(action: string) => void>;
+  let mockOnStanceChange: Mock<(stance: number) => void>;
 
   beforeEach(() => {
-    mockOnAction = vi.fn();
-    mockOnStanceChange = vi.fn();
+    mockOnAction = vi.fn<(action: string) => void>();
+    mockOnStanceChange = vi.fn<(stance: number) => void>();
   });
 
   afterEach(() => {
@@ -378,7 +386,7 @@ describe("useKeyboardControls - Stance Side Switch", () => {
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
         enabled: true,
-      })
+      }),
     );
 
     act(() => {
@@ -402,7 +410,7 @@ describe("useKeyboardControls - Stance Side Switch", () => {
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
         enabled: true,
-      })
+      }),
     );
 
     act(() => {
@@ -422,15 +430,15 @@ describe("useKeyboardControls - Stance Side Switch", () => {
 
 describe("useKeyboardControls - Disabled State", () => {
   it("should not trigger actions when disabled", () => {
-    const mockOnAction = vi.fn();
-    const mockOnStanceChange = vi.fn();
+    const mockOnAction = vi.fn<(action: string) => void>();
+    const mockOnStanceChange = vi.fn<(stance: number) => void>();
 
     const { unmount } = renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
         enabled: false, // Hook disabled
-      })
+      }),
     );
 
     act(() => {
@@ -452,15 +460,15 @@ describe("useKeyboardControls - Disabled State", () => {
 
 describe("useKeyboardControls - Hints Toggle", () => {
   it("should toggle hints with F1 key", () => {
-    const mockOnAction = vi.fn();
-    const mockOnStanceChange = vi.fn();
+    const mockOnAction = vi.fn<(action: string) => void>();
+    const mockOnStanceChange = vi.fn<(stance: number) => void>();
 
     const { result, unmount } = renderHook(() =>
       useKeyboardControls({
         onAction: mockOnAction,
         onStanceChange: mockOnStanceChange,
         enabled: true,
-      })
+      }),
     );
 
     // Initially hints should be hidden

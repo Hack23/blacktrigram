@@ -211,8 +211,12 @@ export class SpeedModifierSystem {
     movementType: MovementType = MovementType.WALKING,
     isCrouching: boolean = false,
   ): SpeedModifierState {
-    // Get base speed based on movement type
-    const baseSpeed = this.getBaseSpeed(movementType, isCrouching);
+    // Get base speed based on movement type and archetype-specific speeds
+    const baseSpeed = this.getBaseSpeed(
+      movementType,
+      isCrouching,
+      playerState.physicalAttributes,
+    );
 
     // Calculate stance modifier
     const stanceModifier = this.getStanceSpeedModifier(
@@ -250,9 +254,11 @@ export class SpeedModifierSystem {
       (1.0 - injuryPenalty) *
       (1.0 - combatStatePenalty);
 
-    // Calculate final acceleration using stamina penalty
-    // Formula: Base × (1 - Stamina)
-    const finalAcceleration = this.BASE_ACCELERATION * (1.0 - staminaPenalty);
+    // Calculate final acceleration using archetype-specific base and stamina penalty
+    // Formula: ArchetypeAcceleration × (1 - StaminaPenalty)
+    const archetypeAcceleration =
+      playerState.physicalAttributes?.acceleration ?? this.BASE_ACCELERATION;
+    const finalAcceleration = archetypeAcceleration * (1.0 - staminaPenalty);
 
     return {
       baseSpeed,
@@ -271,8 +277,12 @@ export class SpeedModifierSystem {
    *
    * **Korean**: 기본 속도 계산 (Get Base Speed)
    *
+   * Uses archetype-specific walk/run speeds when available,
+   * falls back to default values for backwards compatibility.
+   *
    * @param movementType - Type of movement
    * @param isCrouching - Whether player is crouching
+   * @param physicalAttributes - Player's physical attributes (optional)
    * @returns Base speed in m/s
    *
    * @private
@@ -280,24 +290,34 @@ export class SpeedModifierSystem {
   private getBaseSpeed(
     movementType: MovementType,
     isCrouching: boolean,
+    physicalAttributes?: import("@/types").PhysicalAttributes,
   ): number {
     if (isCrouching) {
       return this.CROUCHING_SPEED;
     }
 
+    // Use archetype-specific speeds if available
+    const archetypeWalkSpeed =
+      physicalAttributes?.walkSpeed ?? this.BASE_WALKING_SPEED;
+    const archetypeRunSpeed =
+      physicalAttributes?.runSpeed ?? this.BASE_RUNNING_SPEED;
+
     switch (movementType) {
       case MovementType.WALKING:
-        return this.BASE_WALKING_SPEED;
+        return archetypeWalkSpeed;
       case MovementType.RUNNING:
-        return this.BASE_RUNNING_SPEED;
+        return archetypeRunSpeed;
       case MovementType.BACKWARD:
-        return this.BASE_WALKING_SPEED * this.BACKWARD_SPEED_MULTIPLIER;
+        return archetypeWalkSpeed * this.BACKWARD_SPEED_MULTIPLIER;
       case MovementType.LATERAL:
-        return this.LATERAL_SPEED;
+        // Lateral speed scales proportionally to archetype walk speed
+        return (
+          archetypeWalkSpeed * (this.LATERAL_SPEED / this.BASE_WALKING_SPEED)
+        );
       case MovementType.CROUCHING:
         return this.CROUCHING_SPEED;
       default:
-        return this.BASE_WALKING_SPEED;
+        return archetypeWalkSpeed;
     }
   }
 

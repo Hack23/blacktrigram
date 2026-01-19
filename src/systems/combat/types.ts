@@ -137,7 +137,7 @@ export interface CombatSystemInterface {
     technique: KoreanTechnique,
     attacker: PlayerState,
     defender: PlayerState,
-    hitResult: VitalPointHitResult
+    hitResult: VitalPointHitResult,
   ) => {
     baseDamage: number;
     modifierDamage: number;
@@ -165,12 +165,12 @@ export interface CombatSystemInterface {
     animationContext?: {
       animationType: import("../animation").AnimationType;
       currentTime: number;
-    }
+    },
   ) => CombatResult;
   applyCombatResult: (
     result: CombatResult,
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
   ) => { updatedAttacker: PlayerState; updatedDefender: PlayerState };
   getAvailableTechniques: (player: PlayerState) => readonly KoreanTechnique[];
 }
@@ -178,17 +178,19 @@ export interface CombatSystemInterface {
 export interface CombatSystem {
   readonly update: (
     players: readonly [PlayerState, PlayerState],
-    deltaTime: number
+    deltaTime: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Return type varies by implementation
   ) => any;
   readonly processTechnique: (
     technique: KoreanTechnique,
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Return type varies by implementation
   ) => any;
   readonly calculateDamage: (
     technique: KoreanTechnique,
     attacker: PlayerState,
-    defender: PlayerState
+    defender: PlayerState,
   ) => number;
 }
 

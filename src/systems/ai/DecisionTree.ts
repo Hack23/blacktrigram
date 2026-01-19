@@ -8,6 +8,7 @@
  * - 급소공격 (急所攻擊) - Strike vital points with precision and timing
  */
 
+import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttributes";
 import { PlayerState } from "@/systems/player";
 import { TrigramSystem } from "@/systems/TrigramSystem";
 import {
@@ -32,36 +33,46 @@ export { AIActionType } from "./types"; // Enum (value + type)
 export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; // Type-only
 
 /**
- * @deprecated Use COMBAT_RANGES_METERS instead for physics-first system.
- * Game grid cell size in pixels - kept for backward compatibility.
- */
-const CELL_SIZE = 40;
-
-/**
  * Distance-based stance preferences for tactical positioning
  *
- * Stances are categorized by optimal combat range:
- * - **CLOSE (1-2 cells)**: Aggressive stances for close quarters (GEON, JIN, LI, SON)
- * - **MID (3-4 cells)**: Adaptive stances for mid-range (GAM, TAE, GAN)
- * - **FAR (5+ cells)**: Defensive stances for distance (GAN, GON)
+ * Stances are categorized by optimal combat range based on actual technique
+ * reach configurations (baseExtension values from technique definitions):
  *
- * **Note**: GAN (Mountain) intentionally appears in both MID and FAR ranges.
- * It represents a highly stable defensive posture that can be held while
- * maintaining mid-range pressure or retreating to long distance. This
- * overlap slightly increases GAN's selection frequency by design, reflecting
- * the Mountain's versatility in Korean martial arts philosophy.
+ * **CLOSE (≤0.6m)** - Grappling/clinch range:
+ * - TAE (☱ Lake) - Joint manipulation, grapples (0.9 baseExtension, needs contact)
+ * - GAM (☵ Water) - Throws, counters (0.7-0.9 baseExtension)
+ * - GON (☷ Earth) - Ground techniques, Ssireum throws (0.9 baseExtension)
+ * - GAN (☶ Mountain) - Immovable defense, blocks (0.9 baseExtension)
  *
- * @korean 거리별 자세 선호도
+ * **MID (0.6-1.0m)** - Striking range:
+ * - GEON (☰ Heaven) - Direct force, power strikes (0.95-1.05 baseExtension)
+ * - LI (☲ Fire) - Precision nerve strikes (0.92-0.95 baseExtension)
+ * - SON (☴ Wind) - Continuous pressure, Taekyon (0.95-1.05 baseExtension)
+ *
+ * **FAR (>1.0m)** - Long range kicks/closing distance:
+ * - JIN (☳ Thunder) - Explosive jumping kicks (1.15 baseExtension)
+ * - SON (☴ Wind) - Closing footwork pressure
+ * - GAN (☶ Mountain) - Patient defensive waiting
+ *
+ * @korean 거리별 자세 선호도 (기술 도달 거리 기반)
  */
 const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
   CLOSE: [
-    TrigramStance.GEON,
-    TrigramStance.JIN,
-    TrigramStance.LI,
-    TrigramStance.SON,
-  ], // 1-2 cells
-  MID: [TrigramStance.GAM, TrigramStance.TAE, TrigramStance.GAN], // 3-4 cells
-  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells (GAN shared with MID as versatile defensive stance)
+    TrigramStance.TAE, // ☱ Joint manipulation/grapples
+    TrigramStance.GAM, // ☵ Throws/counters
+    TrigramStance.GON, // ☷ Ground techniques
+    TrigramStance.GAN, // ☶ Blocking defense
+  ],
+  MID: [
+    TrigramStance.GEON, // ☰ Power strikes
+    TrigramStance.LI, // ☲ Precision strikes
+    TrigramStance.SON, // ☴ Continuous pressure
+  ],
+  FAR: [
+    TrigramStance.JIN, // ☳ Explosive jumping kicks
+    TrigramStance.SON, // ☴ Closing pressure
+    TrigramStance.GAN, // ☶ Patient defensive waiting
+  ],
 };
 
 /**
@@ -189,28 +200,6 @@ export class AIDecisionTree {
   private difficultyParams?: DifficultyParameters; // Difficulty parameters for AI behavior
   private currentReactionDelay: number = 50; // Current reaction delay (calculated once per param change)
 
-  // Movement constants - now in METERS using physics-first system
-  // Legacy pixel constants kept for backward compatibility with tests
-  // @ts-expect-error - kept for backward compatibility
-  private static readonly MOVE_STEP_SIZE = 50; // @deprecated Use AI_MOVEMENT_METERS.STEP_SIZE
-  // @ts-expect-error - kept for backward compatibility
-  private static readonly MIN_DISTANCE_THRESHOLD = 5; // @deprecated Use AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD
-
-  /**
-   * Convert meters to pixels using arena bounds.
-   * @param meters - Distance in meters
-   * @param context - Combat context with arena bounds
-   * @returns Distance in pixels
-   */
-  private static metersToPixels(
-    meters: number,
-    context: CombatContext,
-  ): number {
-    const pixelsPerMeter =
-      context.arenaBounds.width / context.arenaBounds.worldWidthMeters;
-    return meters * pixelsPerMeter;
-  }
-
   /**
    * Scaling factor for fatigue override probability calculation.
    * Used to convert fatigue modifier to override chance in non-linear manner.
@@ -220,16 +209,54 @@ export class AIDecisionTree {
    */
   private static readonly FATIGUE_OVERRIDE_SCALING_FACTOR = 0.5;
 
-  /**
-   * Arena boundary margins - exported for test validation
-   * These values represent the player character size/collision margins
-   * Now uses meters-based values internally
-   */
-  public static readonly ARENA_MARGIN_X = 60; // @deprecated Use AI_MOVEMENT_METERS.ARENA_MARGIN_X
-  public static readonly ARENA_MARGIN_Y = 180; // @deprecated Use AI_MOVEMENT_METERS.ARENA_MARGIN_Y
-
   constructor() {
     this.trigramSystem = new TrigramSystem();
+  }
+
+  /**
+   * Calculate maximum combat reach for an archetype based on physical attributes.
+   *
+   * **Physics-First**: Returns reach in METERS based on leg length.
+   * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
+   *
+   * Formula: (legLength / 100) + 0.25 (body pivot) = max reach in meters
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Maximum combat reach in meters
+   * @korean 원형별 최대 도달 거리 (미터)
+   */
+  private getArchetypeMaxReach(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters + body pivot contribution (0.25m)
+    return physical.legLength / 100 + 0.25;
+  }
+
+  /**
+   * Get close range threshold for an archetype (punching/elbow distance).
+   * Based on arm length from physical attributes.
+   *
+   * @param archetype - Player archetype
+   * @returns Close range threshold in meters
+   * @korean 근접 범위 (미터)
+   */
+  private getArchetypeCloseRange(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Arm length in cm -> meters (punching range)
+    return physical.armLength / 100;
+  }
+
+  /**
+   * Get medium range threshold for an archetype (kicking distance).
+   * Based on leg length from physical attributes.
+   *
+   * @param archetype - Player archetype
+   * @returns Medium range threshold in meters
+   * @korean 중거리 범위 (미터)
+   */
+  private getArchetypeMediumRange(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters (kicking range without full body pivot)
+    return physical.legLength / 100;
   }
 
   /**
@@ -1043,8 +1070,10 @@ export class AIDecisionTree {
       }
     }
 
+    // Use archetype-based max reach for counter distance check
+    const maxReach = this.getArchetypeMaxReach(personality.archetype);
     const shouldCounter =
-      Math.random() < counterChance && context.distanceToOpponent < 150;
+      Math.random() < counterChance && context.distanceToOpponent < maxReach;
 
     if (shouldCounter) {
       let killModeReason = "";
@@ -1112,7 +1141,9 @@ export class AIDecisionTree {
       context.playerKi > context.playerMaxKi * 0.3 &&
       context.playerStamina > context.playerMaxStamina * 0.3;
 
-    const goodDistance = context.distanceToOpponent < 130;
+    // Use archetype-based medium range (leg length) for combo distance check
+    const mediumRange = this.getArchetypeMediumRange(personality.archetype);
+    const goodDistance = context.distanceToOpponent < mediumRange;
     const comboChance = Math.random() < personality.comboTendency;
 
     if (hasResources && goodDistance && comboChance) {
@@ -1145,7 +1176,9 @@ export class AIDecisionTree {
    *
    * @korean 거리별 자세 선택
    *
-   * @param distance - Distance to opponent in pixels
+   * **Physics-First**: Distance parameter is in METERS.
+   *
+   * @param distance - Distance to opponent in meters
    * @param preferredStances - Archetype's preferred stances
    * @param currentStance - Current stance (to avoid redundant switches)
    * @returns Optimal stance for distance, or undefined if no valid options
@@ -1154,12 +1187,17 @@ export class AIDecisionTree {
     distance: number,
     preferredStances: readonly TrigramStance[],
     currentStance: TrigramStance,
+    archetype: PlayerArchetype,
   ): TrigramStance | undefined {
-    // Determine distance category using module-level CELL_SIZE constant
+    // Determine distance category using archetype-based physical attributes
+    // Close = arm length (punching range), Medium = leg length (kicking range)
+    const closeRange = this.getArchetypeCloseRange(archetype);
+    const mediumRange = this.getArchetypeMediumRange(archetype);
+
     let distanceCategory: string;
-    if (distance <= 2 * CELL_SIZE) {
+    if (distance <= closeRange) {
       distanceCategory = "CLOSE";
-    } else if (distance <= 4 * CELL_SIZE) {
+    } else if (distance <= mediumRange) {
       distanceCategory = "MID";
     } else {
       distanceCategory = "FAR";
@@ -1282,10 +1320,12 @@ export class AIDecisionTree {
     } as unknown as PlayerState;
 
     // Priority 1: Try distance-based stance selection for tactical variety
+    // Lower priority than attacks but competitive with approach/defense
     const distanceStance = this.selectStanceForDistance(
       context.distanceToOpponent,
       behavior.preferredStances,
       context.playerStance,
+      personality.archetype,
     );
 
     if (
@@ -1300,7 +1340,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: distanceStance,
-        priority: 7,
+        priority: 5, // Competitive with approach (4-6) but below attacks (7-10)
         reason: `Distance-optimal stance (거리 최적 자세: ${distanceStance})`,
       };
     }
@@ -1321,7 +1361,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: counterStance,
-        priority: 6,
+        priority: 5, // Competitive with approach (4-6) but below attacks (7-10)
         reason: `Counter stance to ${context.opponentStance} (상극 대응)`,
       };
     }
@@ -1340,7 +1380,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: recommendedStance,
-        priority: 6,
+        priority: 4, // Lower priority for general optimization
         reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
       };
     }
@@ -1361,7 +1401,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: preferredAvailable,
-        priority: 5,
+        priority: 4, // Lower priority for preferred stance switch
         reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
       };
     }
@@ -1381,9 +1421,11 @@ export class AIDecisionTree {
     context: CombatContext,
     personality: AIPersonality,
   ): AIDecision {
+    // Use archetype-based max reach for feint distance check
+    const maxReach = this.getArchetypeMaxReach(personality.archetype);
     const shouldFeint =
       Math.random() < personality.feintChance &&
-      context.distanceToOpponent < 180;
+      context.distanceToOpponent < maxReach;
 
     if (shouldFeint) {
       return {
@@ -1441,7 +1483,7 @@ export class AIDecisionTree {
         return {
           action: AIActionType.TECHNIQUE,
           targetVitalPoint,
-          priority: targetVitalPoint ? 9 : 8, // Highest priority with vital point
+          priority: targetVitalPoint ? 10 : 9, // Maximum priority - finish the fight
           reason: targetVitalPoint
             ? `Kill mode - finishing technique on vital point (급소 결정타: ${vitalPointName})${killModeSuffix}`
             : `Kill mode - finishing technique${killModeSuffix}`,
@@ -1450,7 +1492,7 @@ export class AIDecisionTree {
         return {
           action: AIActionType.ATTACK,
           targetVitalPoint,
-          priority: targetVitalPoint ? 8 : 7, // Very high priority
+          priority: targetVitalPoint ? 9 : 8, // Very high priority
           reason: targetVitalPoint
             ? `Kill mode - finishing attack (결정타 급소: ${vitalPointName})${killModeSuffix}`
             : `Kill mode - finishing attack${killModeSuffix}`,
@@ -1458,21 +1500,30 @@ export class AIDecisionTree {
       }
     }
 
-    // Normal close range behavior
-    if (Math.random() < aggression * 0.8) {
+    // Normal close range behavior - expert fighters attack aggressively
+    // Higher base attack chance for aggressive AI (aggression * 0.95 instead of 0.8)
+    // Use single random value to determine action type fairly
+    const actionRoll = Math.random();
+    const attackThreshold = aggression * 0.95;
+    const techniqueThreshold = hasResources ? aggression * 0.5 : 0; // Additional threshold for techniques
+
+    if (actionRoll < attackThreshold) {
       return {
         action: AIActionType.ATTACK,
         targetVitalPoint,
-        priority: targetVitalPoint ? 7 : 6,
+        priority: targetVitalPoint ? 8 : 7, // High priority - attacks win over stance changes
         reason: targetVitalPoint
           ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
           : "Close range - aggressive strike",
       };
-    } else if (Math.random() < aggression * 0.9 && hasResources) {
+    } else if (
+      actionRoll < attackThreshold + techniqueThreshold &&
+      hasResources
+    ) {
       return {
         action: AIActionType.TECHNIQUE,
         targetVitalPoint,
-        priority: targetVitalPoint ? 6 : 5,
+        priority: targetVitalPoint ? 8 : 7, // High priority for techniques too
         reason: targetVitalPoint
           ? `Close range - technique on vital point (급소 기술: ${vitalPointName})`
           : "Close range - technique execution",
@@ -1603,29 +1654,23 @@ export class AIDecisionTree {
    * Get optimal combat range based on AI personality archetype
    *
    * Uses archetype behavior profiles to determine preferred combat distance.
-   * **Physics-First**: Returns distance in pixels, converting from meters using arena bounds.
+   * **Physics-First**: Returns distance in METERS directly.
    *
    * @param personality - AI personality with archetype behavior
-   * @param context - Combat context with arena bounds for conversion (optional)
-   * @korean 최적 전투 거리 - 원형별 선호 거리
+   * @param _context - Combat context (unused, kept for API compatibility)
+   * @returns Optimal range in meters
+   * @korean 최적 전투 거리 - 원형별 선호 거리 (미터)
    */
   private getOptimalRange(
     personality: AIPersonality,
-    context?: CombatContext,
+    _context?: CombatContext,
   ): number {
     // Get archetype behavior profile
     const behavior = getArchetypeBehavior(personality.archetype);
 
-    // If context available, use meters-based calculation
-    if (context) {
-      // Convert optimal range from grid cells to meters (1 cell ≈ 0.4m)
-      const optimalRangeMeters = behavior.optimalRange * 0.4;
-      return AIDecisionTree.metersToPixels(optimalRangeMeters, context);
-    }
-
-    // Legacy fallback: 1 cell = 40px (deprecated)
-    const CELL_SIZE = 40;
-    return behavior.optimalRange * CELL_SIZE;
+    // Convert optimal range from grid cells to meters (1 cell ≈ 0.4m)
+    // Physics-first: return directly in meters
+    return behavior.optimalRange * 0.4;
   }
 
   /**
@@ -1798,7 +1843,7 @@ export class AIDecisionTree {
    * - Larger step size for faster closing with leg shifts
    * - Aggressive stride pattern for maximum forward momentum
    *
-   * **Physics-First**: Uses meters for calculations, converts to pixels for arena bounds.
+   * **Physics-First**: All calculations in METERS.
    *
    * @param context - Combat context
    * @param killModeActive - Whether kill mode is active
@@ -1809,41 +1854,30 @@ export class AIDecisionTree {
   ): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
-    const distancePixels = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Convert thresholds from meters to pixels
-    const minDistancePixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD,
-      context,
-    );
+    // All thresholds in meters
+    const minDistance = AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD;
 
     // If already very close to the opponent, hold position (avoid erratic movement)
-    if (distancePixels < minDistancePixels) {
-      return this.clampToArenaBounds(
-        context.playerPosition,
-        context.arenaBounds,
-        context,
-      );
+    if (distance < minDistance) {
+      return this.clampToArenaBoundsMeters(context.playerPosition, context);
     }
 
-    // Convert step size from meters to pixels for this arena
-    const stepSizePixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.STEP_SIZE,
-      context,
-    );
+    // Step size in meters
+    const baseStepSize = AI_MOVEMENT_METERS.STEP_SIZE;
 
     // Kill mode: Enhanced step size for faster charging with leg shifts
     const stepSize = killModeActive
-      ? Math.min(stepSizePixels * 1.5, distancePixels) // 50% larger steps (leg shift technique)
-      : Math.min(stepSizePixels, distancePixels);
+      ? Math.min(baseStepSize * 1.5, distance) // 50% larger steps (leg shift technique)
+      : Math.min(baseStepSize, distance);
 
     // Move straight toward opponent with enhanced step size in kill mode
-    return this.clampToArenaBounds(
+    return this.clampToArenaBoundsMeters(
       {
-        x: context.playerPosition.x + (dx / distancePixels) * stepSize,
-        y: context.playerPosition.y + (dy / distancePixels) * stepSize,
+        x: context.playerPosition.x + (dx / distance) * stepSize,
+        y: context.playerPosition.y + (dy / distance) * stepSize,
       },
-      context.arenaBounds,
       context,
     );
   }
@@ -1856,7 +1890,7 @@ export class AIDecisionTree {
    * - Tighter flanking angle for more aggressive positioning
    * - Swift stepping pattern for rapid side movement
    *
-   * **Physics-First**: Uses meters for calculations, converts to pixels for arena bounds.
+   * **Physics-First**: All calculations in METERS.
    *
    * @param context - Combat context
    * @param killModeActive - Whether kill mode is active
@@ -1867,49 +1901,35 @@ export class AIDecisionTree {
   ): Position {
     const dx = context.opponentPosition.x - context.playerPosition.x;
     const dy = context.opponentPosition.y - context.playerPosition.y;
-    const distancePixels = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Convert thresholds from meters to pixels
-    const minDistancePixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD,
-      context,
-    );
+    // All thresholds in meters
+    const minDistance = AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD;
 
     // If distance is too small, return player's current position (avoid erratic movement)
-    if (distancePixels < minDistancePixels) {
-      return this.clampToArenaBounds(
-        context.playerPosition,
-        context.arenaBounds,
-        context,
-      );
+    if (distance < minDistance) {
+      return this.clampToArenaBoundsMeters(context.playerPosition, context);
     }
 
-    // Convert flank offset from meters to pixels
-    const flankBasePixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.FLANK_OFFSET_BASE,
-      context,
-    );
-    const flankRandomPixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.FLANK_OFFSET_RANDOM,
-      context,
-    );
+    // Flank offset in meters
+    const baseFlankOffset =
+      AI_MOVEMENT_METERS.FLANK_OFFSET_BASE +
+      Math.random() * AI_MOVEMENT_METERS.FLANK_OFFSET_RANDOM;
 
     // Kill mode: Tighter flanking for more aggressive positioning
-    const baseFlankOffset = flankBasePixels + Math.random() * flankRandomPixels;
     const flankOffset = killModeActive
       ? baseFlankOffset * 0.7 // 30% closer flank (swift stepping)
       : baseFlankOffset;
 
-    const perpX = -dy / distancePixels; // Perpendicular vector
-    const perpY = dx / distancePixels;
+    const perpX = -dy / distance; // Perpendicular vector
+    const perpY = dx / distance;
     const flankSide = Math.random() < 0.5 ? 1 : -1; // Random side
 
-    return this.clampToArenaBounds(
+    return this.clampToArenaBoundsMeters(
       {
         x: context.opponentPosition.x + perpX * flankOffset * flankSide,
         y: context.opponentPosition.y + perpY * flankOffset * flankSide,
       },
-      context.arenaBounds,
       context,
     );
   }
@@ -1918,44 +1938,32 @@ export class AIDecisionTree {
    * Clamp position to arena boundaries with proper margins
    * Centralizes boundary validation logic for all movement calculations
    *
-   * **Physics-First**: Margins are calculated from meters-based constants.
+   * **Physics-First**: Works entirely in METERS using worldWidthMeters/worldDepthMeters.
+   * Arena is centered at origin (0,0), so bounds are -halfWidth to +halfWidth.
    *
-   * @param position - Position to clamp
-   * @param arenaBounds - Arena boundaries in pixels
-   * @param context - Combat context for meters-to-pixels conversion
+   * @param position - Position to clamp (in meters)
+   * @param context - Combat context with arena dimensions in meters
    */
-  private clampToArenaBounds(
+  private clampToArenaBoundsMeters(
     position: Position,
-    arenaBounds: {
-      readonly x: number;
-      readonly y: number;
-      readonly width: number;
-      readonly height: number;
-    },
-    context?: CombatContext,
+    context: CombatContext,
   ): Position {
-    // Calculate margins from meters or use legacy pixel values
-    const marginX = context
-      ? AIDecisionTree.metersToPixels(
-          AI_MOVEMENT_METERS.ARENA_MARGIN_X,
-          context,
-        )
-      : AIDecisionTree.ARENA_MARGIN_X;
-    const marginY = context
-      ? AIDecisionTree.metersToPixels(
-          AI_MOVEMENT_METERS.ARENA_MARGIN_Y,
-          context,
-        )
-      : AIDecisionTree.ARENA_MARGIN_Y;
+    // Arena is centered at origin, half dimensions define bounds
+    const halfWidth = context.arenaBounds.worldWidthMeters / 2;
+    const halfDepth = context.arenaBounds.worldDepthMeters / 2;
+
+    // Margins in meters for character collision
+    const marginX = AI_MOVEMENT_METERS.ARENA_MARGIN_X;
+    const marginY = AI_MOVEMENT_METERS.ARENA_MARGIN_Y;
 
     return {
       x: Math.max(
-        arenaBounds.x,
-        Math.min(arenaBounds.x + arenaBounds.width - marginX, position.x),
+        -halfWidth + marginX,
+        Math.min(halfWidth - marginX, position.x),
       ),
       y: Math.max(
-        arenaBounds.y,
-        Math.min(arenaBounds.y + arenaBounds.height - marginY, position.y),
+        -halfDepth + marginY,
+        Math.min(halfDepth - marginY, position.y),
       ),
     };
   }
@@ -1979,8 +1987,8 @@ export class AIDecisionTree {
     const tacticRoll = Math.random();
     const behavior = getArchetypeBehavior(personality.archetype);
 
-    // Convert 50px threshold to meters-based comparison
-    const optimalRangeThreshold = AIDecisionTree.metersToPixels(0.5, context);
+    // Threshold for being "at optimal range" - 0.5 meters tolerance
+    const optimalRangeThreshold = 0.5; // meters
 
     // Archetype-specific mid-range behavior based on movement pattern
     if (
@@ -2118,43 +2126,38 @@ export class AIDecisionTree {
   /**
    * Calculate retreat position
    *
-   * **Physics-First**: Uses meters for calculations, converts to pixels for arena bounds.
+   * **Physics-First**: All calculations in METERS.
    */
   private calculateRetreatPosition(context: CombatContext): Position {
     const dx = context.playerPosition.x - context.opponentPosition.x;
     const dy = context.playerPosition.y - context.opponentPosition.y;
-    const distancePixels = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Convert thresholds from meters to pixels
-    const minDistancePixels = AIDecisionTree.metersToPixels(
-      AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD,
-      context,
-    );
+    // All thresholds in meters
+    const minDistance = AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD;
     // Retreat distance in meters (1.5m)
-    const retreatDistancePixels = AIDecisionTree.metersToPixels(1.5, context);
+    const retreatDistance = 1.5;
 
     // If distance is too small, retreat in a default direction (away from center)
-    if (distancePixels < minDistancePixels) {
-      return this.clampToArenaBounds(
+    if (distance < minDistance) {
+      return this.clampToArenaBoundsMeters(
         {
-          x: context.playerPosition.x + retreatDistancePixels,
+          x: context.playerPosition.x + retreatDistance,
           y: context.playerPosition.y,
         },
-        context.arenaBounds,
         context,
       );
     }
 
     // Normalize and retreat
-    const nx = dx / distancePixels;
-    const ny = dy / distancePixels;
+    const nx = dx / distance;
+    const ny = dy / distance;
 
-    return this.clampToArenaBounds(
+    return this.clampToArenaBoundsMeters(
       {
-        x: context.playerPosition.x + nx * retreatDistancePixels,
-        y: context.playerPosition.y + ny * retreatDistancePixels,
+        x: context.playerPosition.x + nx * retreatDistance,
+        y: context.playerPosition.y + ny * retreatDistance,
       },
-      context.arenaBounds,
       context,
     );
   }
@@ -2162,21 +2165,18 @@ export class AIDecisionTree {
   /**
    * Calculate approach position
    *
-   * **Physics-First**: Uses meters for calculations, converts to pixels.
+   * **Physics-First**: All calculations in METERS.
    */
   private calculateApproachPosition(context: CombatContext): Position {
     // Offset in meters (0.8m max horizontal, 0.6m max vertical)
-    const offsetXMeters = (Math.random() - 0.5) * 0.8;
-    const offsetYMeters = (Math.random() - 0.5) * 0.6;
-    const offsetXPixels = AIDecisionTree.metersToPixels(offsetXMeters, context);
-    const offsetYPixels = AIDecisionTree.metersToPixels(offsetYMeters, context);
+    const offsetX = (Math.random() - 0.5) * 0.8;
+    const offsetY = (Math.random() - 0.5) * 0.6;
 
-    return this.clampToArenaBounds(
+    return this.clampToArenaBoundsMeters(
       {
-        x: context.opponentPosition.x + offsetXPixels,
-        y: context.opponentPosition.y + offsetYPixels,
+        x: context.opponentPosition.x + offsetX,
+        y: context.opponentPosition.y + offsetY,
       },
-      context.arenaBounds,
       context,
     );
   }
@@ -2184,7 +2184,7 @@ export class AIDecisionTree {
   /**
    * Calculate circle position
    *
-   * **Physics-First**: Uses meters for calculations, converts to pixels.
+   * **Physics-First**: All calculations in METERS.
    */
   private calculateCirclePosition(context: CombatContext): Position {
     const angle = Math.atan2(
@@ -2192,22 +2192,17 @@ export class AIDecisionTree {
       context.opponentPosition.x - context.playerPosition.x,
     );
     // Circle radius in meters (1.5m base + 0.5m random)
-    const circleRadiusMeters = 1.5 + Math.random() * 0.5;
-    const circleRadiusPixels = AIDecisionTree.metersToPixels(
-      circleRadiusMeters,
-      context,
-    );
+    const circleRadius = 1.5 + Math.random() * 0.5;
 
-    return this.clampToArenaBounds(
+    return this.clampToArenaBoundsMeters(
       {
         x:
           context.opponentPosition.x +
-          Math.cos(angle + Math.PI / 2) * circleRadiusPixels,
+          Math.cos(angle + Math.PI / 2) * circleRadius,
         y:
           context.opponentPosition.y +
-          Math.sin(angle + Math.PI / 2) * circleRadiusPixels,
+          Math.sin(angle + Math.PI / 2) * circleRadius,
       },
-      context.arenaBounds,
       context,
     );
   }

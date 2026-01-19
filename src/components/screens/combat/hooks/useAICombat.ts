@@ -152,14 +152,24 @@ function getViableTechniques(
           ? physicalAttributes.legLength
           : physicalAttributes.armLength;
 
-      // Apply body pivot for kicks (matching PhysicalReachCalculator logic)
-      const bodyPivot = tech.reachConfig.bodyPart === "leg" ? 0.25 : 0;
-      
+      // Apply body pivot/offset based on technique type (matching PhysicalReachCalculator logic)
+      // Kicks: hip rotation + torso lean = 0.25m
+      // Punches: shoulder offset + torso rotation = shoulderWidth/2 + 0.1m
+      let bodyPivot: number;
+      if (tech.reachConfig.bodyPart === "leg") {
+        bodyPivot = 0.25; // meters for kicks
+      } else {
+        // Arm-based: shoulder offset + torso rotation
+        const shoulderOffset = physicalAttributes.shoulderWidth / 2 / 100;
+        const torsoRotation = 0.1;
+        bodyPivot = shoulderOffset + torsoRotation;
+      }
+
       // Apply stance modifier using actual stance-specific modifiers
       const stanceModifier = STANCE_REACH_MODIFIERS[stance];
       // Convert cm to meters, add body pivot, and apply modifiers
       maxReach =
-        ((limbLength / 100) + bodyPivot) *
+        (limbLength / 100 + bodyPivot) *
         tech.reachConfig.baseExtension *
         stanceModifier;
     }
@@ -302,7 +312,7 @@ function getVitalPointPriorityScore(
   priority: import("@/systems/ai/AIPersonality").VitalTargetPriority,
 ): number {
   // Import effect types to check vital point effects
-  const effects = vitalPoint.effects || [];
+  const effects = vitalPoint.effects ?? [];
 
   switch (priority) {
     case "health":
@@ -358,7 +368,7 @@ function isSignatureTechnique(
   const damageType = technique.damageType;
   const attackType = technique.type;
   const isAdvanced =
-    (technique.kiCost || 0) >= 10 || (technique.staminaCost || 0) >= 15;
+    (technique.kiCost ?? 0) >= 10 || (technique.staminaCost ?? 0) >= 15;
 
   switch (archetype) {
     case PlayerArchetype.MUSA:
@@ -383,7 +393,7 @@ function isSignatureTechnique(
       return (
         damageType === DamageType.INTERNAL ||
         damageType === DamageType.NERVE ||
-        (isAdvanced && (technique.accuracy || 0) >= 0.8) // High accuracy represents calculation
+        (isAdvanced && (technique.accuracy ?? 0) >= 0.8) // High accuracy represents calculation
       );
 
     case PlayerArchetype.JEONGBO_YOWON:
@@ -397,7 +407,7 @@ function isSignatureTechnique(
     case PlayerArchetype.JOJIK_POKRYEOKBAE:
       // Jojik: Dirty techniques (any high-damage strike) and environmental usage
       return (
-        (technique.damage || 0) >= 30 || // High raw damage
+        (technique.damage ?? 0) >= 30 || // High raw damage
         damageType === DamageType.SLASHING || // Brutal cutting
         damageType === DamageType.PIERCING // Dirty stabbing techniques
       );
@@ -757,8 +767,7 @@ function selectTechniqueForAction(
       (t) =>
         t.stance !== player.currentStance &&
         // Physics-first: Compare meters to meters
-        context.distanceToOpponent <=
-          (t.reachConfig?.baseExtension ?? 1.0) &&
+        context.distanceToOpponent <= (t.reachConfig?.baseExtension ?? 1.0) &&
         player.stamina >= t.staminaCost &&
         !isOverused(t.id, rotationQueue), // Apply rotation diversity to cross-stance
     );
@@ -1069,6 +1078,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const stanceFatigueRef = useRef(initialStanceFatigue);
 
   // Initialize previousDamageRef when round starts (issue #2529728007)
+  // player.currentStance and player.totalDamageReceived are intentionally excluded -
+  // this effect only initializes refs when a new round starts, not on every state change
   useEffect(() => {
     if (roundStarted) {
       matchStartTimeRef.current = Date.now();
@@ -1093,6 +1104,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Reset technique cooldown tracking on round start
       techniqueCooldownMapRef.current.clear();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundStarted, decisionTree, comboSystem]);
 
   // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
@@ -1482,12 +1494,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Execute action (technique and vital point are stored in aiState)
       executeAIAction(actionType, newTargetPosition);
 
-      // Calculate next action cooldown
+      // Calculate next action cooldown - expert fighters attack rapidly
+      // Attack/technique: 200-350ms for fast-paced combat (was 600-800ms)
+      // Other actions: 150-300ms for quick repositioning (was 400-600ms)
       const actionCooldown =
-        actionType === "attack" || actionType === "technique" ? 600 : 400;
+        actionType === "attack" || actionType === "technique"
+          ? 200 + Math.random() * 150 // 200-350ms for attacks
+          : 150 + Math.random() * 150; // 150-300ms for movement/defense
 
       // Update next action time using ref (prevents stale closure)
-      nextActionRef.current = now + actionCooldown + Math.random() * 200;
+      nextActionRef.current = now + actionCooldown;
 
       // Track recent techniques for variation (keep last 5)
       let updatedRecentTechniques = [...aiState.recentTechniques];
@@ -1531,6 +1547,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     playerLaterality,
     opponentLaterality,
     adaptiveDifficulty,
+    archetypeTechniqueIds,
   ]);
 
   return {

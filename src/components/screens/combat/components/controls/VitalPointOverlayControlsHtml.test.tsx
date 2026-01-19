@@ -149,7 +149,7 @@ describe("VitalPointOverlayControlsHtml", () => {
       const hasActiveFilters = (
         severityFilters: VitalPointSeverity[],
         regionFilter: BodyRegionFilter,
-        searchQuery: string
+        searchQuery: string,
       ) => {
         return (
           severityFilters.length > 0 ||
@@ -160,7 +160,7 @@ describe("VitalPointOverlayControlsHtml", () => {
 
       expect(hasActiveFilters([], "all", "")).toBe(false);
       expect(hasActiveFilters([VitalPointSeverity.LETHAL], "all", "")).toBe(
-        true
+        true,
       );
       expect(hasActiveFilters([], "head", "")).toBe(true);
       expect(hasActiveFilters([], "all", "test")).toBe(true);
@@ -230,9 +230,8 @@ describe("VitalPointOverlayControlsHtml", () => {
     });
 
     it("should have sensible default positioning", () => {
-      // Component should work without explicit position
-      const props = { ...defaultProps };
-      expect(props.position).toBeUndefined();
+      // Component should work without explicit position - screenPosition is optional
+      expect("screenPosition" in defaultProps).toBe(false);
     });
   });
 
