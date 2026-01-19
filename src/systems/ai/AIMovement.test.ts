@@ -10,9 +10,8 @@ import { AI_PERSONALITIES } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 import { AIDecisionTree, CombatContext } from "./DecisionTree";
 
-// Import arena boundary constants from DecisionTree for test validation
-const ARENA_MARGIN_X = AIDecisionTree.ARENA_MARGIN_X;
-const ARENA_MARGIN_Y = AIDecisionTree.ARENA_MARGIN_Y;
+// Arena boundary constants from DecisionTree are used inline in tests where needed
+// (not needed as top-level constants after physics-first refactoring)
 
 describe("AI Movement System", () => {
   let decisionTree: AIDecisionTree;
