@@ -82,6 +82,47 @@ export const METERS_TO_PIXELS_SCALE = 100 as const;
 export const METERS_TO_TRAINING_UNITS = 1.0 as const;
 
 /**
+ * Default body radius for hit distance calculation (training dummy).
+ *
+ * **Korean**: 기본몸체반경 (Default Body Radius)
+ *
+ * When calculating hit distance, we measure center-to-center, but attacks
+ * land on the target's body surface, not their center point. This constant
+ * represents the default body radius for entities without physical attributes
+ * (like training dummies).
+ *
+ * For player archetypes, use `calculateBodyRadius(physicalAttributes)` from
+ * `utils/skeletonScaling.ts` which calculates based on shoulder width.
+ *
+ * Based on average human proportions:
+ * - Average shoulder width: ~45cm
+ * - Body depth ratio: 0.5 × shoulderWidth = 22.5cm
+ * - Result: ~0.225m (rounded to 0.23m)
+ *
+ * @example
+ * ```typescript
+ * // For training dummy (no archetype):
+ * const effectiveDistance = centerToCenter - DEFAULT_BODY_RADIUS_METERS;
+ *
+ * // For player (use archetype):
+ * import { calculateBodyRadius } from '@/utils/skeletonScaling';
+ * const radius = calculateBodyRadius(physicalAttributes);
+ * const effectiveDistance = centerToCenter - radius;
+ * ```
+ *
+ * @public
+ * @category Physics Constants
+ * @korean 기본몸체반경
+ */
+export const DEFAULT_BODY_RADIUS_METERS = 0.23 as const;
+
+/**
+ * @deprecated Use DEFAULT_BODY_RADIUS_METERS or calculateBodyRadius() instead.
+ * Kept for backward compatibility.
+ */
+export const BODY_RADIUS_METERS = DEFAULT_BODY_RADIUS_METERS;
+
+/**
  * Standard arena sizes in meters (4:3 aspect ratio).
  *
  * @public

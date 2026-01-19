@@ -206,7 +206,7 @@ function amplifyScaling(rawFactor: number): number {
  * @korean 뼈크기비율계산
  */
 export function calculateBoneScalingFactors(
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): BoneScalingFactors {
   // Calculate raw scaling ratios from physical attributes
   const rawOverall = attributes.totalHeight / REFERENCE_ATTRIBUTES.totalHeight;
@@ -272,7 +272,7 @@ export function calculateBoneScalingFactors(
  */
 export function getScaledBoneLength(
   boneName: string,
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): number {
   const factors = calculateBoneScalingFactors(attributes);
 
@@ -353,7 +353,7 @@ export function getScaledBoneLength(
  * @korean 어깨오프셋계산
  */
 export function calculateShoulderOffset(
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): number {
   // Shoulder width is the total span, so divide by 2 for offset from center
   // Apply amplification factor for more visible width differences
@@ -417,7 +417,7 @@ export function calculateHitboxDimensions(attributes: PhysicalAttributes): {
  */
 export function calculateVitalPointAdjustment(
   vitalPointId: string,
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): { x: number; y: number } {
   const factors = calculateBoneScalingFactors(attributes);
 
@@ -489,7 +489,7 @@ export function calculateVitalPointAdjustment(
  * @korean 목조르기효과계산
  */
 export function calculateChokeEffectiveness(
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): number {
   // Longer necks are more vulnerable to chokes
   const lengthFactor = attributes.neckLength / REFERENCE_ATTRIBUTES.neckLength;
@@ -523,7 +523,7 @@ export function calculateChokeEffectiveness(
  * @korean 머리타격취약성계산
  */
 export function calculateHeadStrikeVulnerability(
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): number {
   // Larger heads have more mass, providing some protection
   const sizeFactor = REFERENCE_ATTRIBUTES.headSize / attributes.headSize;
@@ -531,4 +531,52 @@ export function calculateHeadStrikeVulnerability(
   // But larger heads are also bigger targets (handled by hitbox size)
   // Here we only calculate the mass-based resistance
   return sizeFactor;
+}
+
+/**
+ * Calculate body radius for hit distance calculation.
+ *
+ * **Korean**: 몸체 반경 계산 (Body Radius Calculation)
+ *
+ * When calculating hit distance, we measure center-to-center, but attacks
+ * land on the target's body surface. This function calculates the effective
+ * "depth" of a fighter's body from their center point based on their
+ * physical attributes.
+ *
+ * The calculation uses torso depth derived from shoulder width, as broader
+ * fighters have proportionally deeper torsos. This is more anatomically
+ * accurate than using a fixed constant.
+ *
+ * Formula: shoulderWidth * 0.5 (torso depth ratio) / 100 (cm to meters)
+ *
+ * Example body radii:
+ * - Hacker (43cm shoulders): 0.215m depth → 0.215m radius
+ * - Musa (46cm shoulders): 0.23m depth → 0.23m radius
+ * - Jojik (54cm shoulders): 0.27m depth → 0.27m radius
+ *
+ * @param attributes - Player's physical attributes
+ * @returns Body radius in meters (distance from center to body surface)
+ *
+ * @example
+ * ```typescript
+ * const radius = calculateBodyRadius(JOJIK_PHYSICAL);
+ * // Jojik has wide shoulders (54cm): returns 0.27m
+ *
+ * const hackerRadius = calculateBodyRadius(HACKER_PHYSICAL);
+ * // Hacker is lean (43cm shoulders): returns 0.215m
+ * ```
+ *
+ * @public
+ * @korean 몸체반경계산
+ */
+export function calculateBodyRadius(attributes: PhysicalAttributes): number {
+  // Body depth is approximately half of shoulder width (anatomical ratio)
+  // This matches calculateHitboxDimensions which uses shoulderWidth * 0.5
+  const bodyDepthCm = attributes.shoulderWidth * 0.5;
+
+  // Convert from centimeters to meters
+  // The radius is the distance from center to body surface (half of total depth)
+  // Since bodyDepthCm represents front-to-back depth, we use it directly as
+  // the distance from center to front surface
+  return bodyDepthCm / 100;
 }

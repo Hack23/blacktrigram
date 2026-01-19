@@ -67,7 +67,7 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: mockPlayer,
         enabled: true,
-      })
+      }),
     );
 
     // Now returns stance-based techniques + archetype techniques
@@ -85,7 +85,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueSelected,
-      })
+      }),
     );
 
     act(() => {
@@ -94,7 +94,7 @@ describe("useTechniqueSelection", () => {
 
     expect(result.current.selectedIndex).toBe(2);
     expect(onTechniqueSelected).toHaveBeenCalledWith(
-      result.current.availableTechniques[2]
+      result.current.availableTechniques[2],
     );
   });
 
@@ -103,7 +103,7 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: mockPlayer,
         enabled: true,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0];
@@ -119,7 +119,7 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: lowStaminaPlayer,
         enabled: true,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0]; // Costs 30 stamina
@@ -136,7 +136,7 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: lowKiPlayer,
         enabled: true,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0]; // Costs 20 Ki
@@ -154,7 +154,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueExecute,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0];
@@ -175,7 +175,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueExecute,
-      })
+      }),
     );
 
     // Verify we have techniques available before testing cooldown
@@ -202,7 +202,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueExecute,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0];
@@ -230,7 +230,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueExecute,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0];
@@ -257,7 +257,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: true,
         onTechniqueExecute,
-      })
+      }),
     );
 
     // Simulate Q key press
@@ -276,7 +276,7 @@ describe("useTechniqueSelection", () => {
         player: mockPlayer,
         enabled: false,
         onTechniqueExecute,
-      })
+      }),
     );
 
     // Simulate Q key press
@@ -293,7 +293,7 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: mockPlayer,
         enabled: true,
-      })
+      }),
     );
 
     const technique = result.current.availableTechniques[0];
@@ -304,9 +304,41 @@ describe("useTechniqueSelection", () => {
       useTechniqueSelection({
         player: lowResourcePlayer,
         enabled: true,
-      })
+      }),
     );
 
     expect(result2.current.hasResources(technique)).toBe(false);
+  });
+
+  it("should update available techniques when player stance changes", () => {
+    // Start with GEON stance
+    const geonPlayer = { ...mockPlayer, currentStance: TrigramStance.GEON };
+
+    const { result, rerender } = renderHook(
+      (props: { player: PlayerState }) =>
+        useTechniqueSelection({
+          player: props.player,
+          enabled: true,
+        }),
+      { initialProps: { player: geonPlayer } },
+    );
+
+    // Capture GEON techniques
+    const geonTechniques = result.current.availableTechniques;
+    expect(geonTechniques.length).toBeGreaterThan(0);
+    const firstGeonTechnique = geonTechniques[0].name.korean;
+
+    // Change to TAE stance
+    const taePlayer = { ...mockPlayer, currentStance: TrigramStance.TAE };
+    rerender({ player: taePlayer });
+
+    // Capture TAE techniques
+    const taeTechniques = result.current.availableTechniques;
+    expect(taeTechniques.length).toBeGreaterThan(0);
+    const firstTaeTechnique = taeTechniques[0].name.korean;
+
+    // Techniques should be different for different stances
+    // GEON (건/Heaven) has "천둥벽력", TAE (태/Lake) has "유수연타"
+    expect(firstGeonTechnique).not.toBe(firstTaeTechnique);
   });
 });
