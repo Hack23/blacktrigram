@@ -152,14 +152,24 @@ function getViableTechniques(
           ? physicalAttributes.legLength
           : physicalAttributes.armLength;
 
-      // Apply body pivot for kicks (matching PhysicalReachCalculator logic)
-      const bodyPivot = tech.reachConfig.bodyPart === "leg" ? 0.25 : 0;
-      
+      // Apply body pivot/offset based on technique type (matching PhysicalReachCalculator logic)
+      // Kicks: hip rotation + torso lean = 0.25m
+      // Punches: shoulder offset + torso rotation = shoulderWidth/2 + 0.1m
+      let bodyPivot: number;
+      if (tech.reachConfig.bodyPart === "leg") {
+        bodyPivot = 0.25; // meters for kicks
+      } else {
+        // Arm-based: shoulder offset + torso rotation
+        const shoulderOffset = physicalAttributes.shoulderWidth / 2 / 100;
+        const torsoRotation = 0.1;
+        bodyPivot = shoulderOffset + torsoRotation;
+      }
+
       // Apply stance modifier using actual stance-specific modifiers
       const stanceModifier = STANCE_REACH_MODIFIERS[stance];
       // Convert cm to meters, add body pivot, and apply modifiers
       maxReach =
-        ((limbLength / 100) + bodyPivot) *
+        (limbLength / 100 + bodyPivot) *
         tech.reachConfig.baseExtension *
         stanceModifier;
     }
@@ -757,8 +767,7 @@ function selectTechniqueForAction(
       (t) =>
         t.stance !== player.currentStance &&
         // Physics-first: Compare meters to meters
-        context.distanceToOpponent <=
-          (t.reachConfig?.baseExtension ?? 1.0) &&
+        context.distanceToOpponent <= (t.reachConfig?.baseExtension ?? 1.0) &&
         player.stamina >= t.staminaCost &&
         !isOverused(t.id, rotationQueue), // Apply rotation diversity to cross-stance
     );
