@@ -177,13 +177,9 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
       )}
 
       {/* Arena floor - dojang mat with reflective wet concrete aesthetic */}
+      {/* Floor dimensions use pre-calculated floorWidth/floorDepth which already include FLOOR_SCALE_FACTOR */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-        <planeGeometry
-          args={[
-            floorWidth * FLOOR_SCALE_FACTOR,
-            floorDepth * FLOOR_SCALE_FACTOR,
-          ]}
-        />
+        <planeGeometry args={[floorWidth, floorDepth]} />
         {lighting === "cyberpunk" ? (
           <primitive object={floorMaterial} attach="material" />
         ) : (
