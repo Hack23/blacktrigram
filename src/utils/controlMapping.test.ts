@@ -162,7 +162,7 @@ describe("ControlMapper", () => {
 
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "blacktrigram_controls",
-        expect.any(String)
+        expect.any(String),
       );
 
       const saved = localStorageMock["blacktrigram_controls"];
@@ -217,6 +217,7 @@ describe("ControlMapper", () => {
       // Set custom bindings
       mapper.saveBindings({
         stances: ["q", "w", "e", "r", "a", "s", "d", "f"],
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: "Space",
         block: "Shift",
         movement: { up: "i", down: "k", left: "j", right: "l" },
@@ -245,6 +246,7 @@ describe("ControlMapper", () => {
     it("should reject bindings with wrong number of stances", () => {
       const invalidBindings = {
         stances: ["1", "2", "3"], // Only 3 instead of 8
+        techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
         attack: " ",
         block: "b",
         movement: { up: "w", down: "s", left: "a", right: "d" },
@@ -252,7 +254,7 @@ describe("ControlMapper", () => {
         pause: ["Escape", "m"],
       };
 
-      mapper.saveBindings(invalidBindings as ControlBinding);
+      mapper.saveBindings(invalidBindings as unknown as ControlBinding);
 
       // Should not save invalid bindings
       const bindings = mapper.getBindings();

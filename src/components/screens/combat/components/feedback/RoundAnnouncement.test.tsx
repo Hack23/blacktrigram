@@ -31,18 +31,27 @@ describe("RoundAnnouncement", () => {
     defense: 12,
     speed: 10,
     technique: 14,
+    pain: 0,
+    consciousness: 100,
+    balance: 100,
+    momentum: 0,
     currentStance: TrigramStance.GEON,
     combatState: CombatState.IDLE,
     position: { x: 100, y: 200 },
     isBlocking: false,
     isStunned: false,
     isCountering: false,
+    lastActionTime: 0,
+    recoveryTime: 0,
+    lastStanceChangeTime: 0,
     statusEffects: [],
+    activeEffects: [],
+    vitalPoints: [],
     vitalPointHits: 2,
     hitsLanded: 5,
     hitsTaken: 3,
-    comboCount: 2,
-    perfectBlockCount: 1,
+    perfectStrikes: 0,
+    experiencePoints: 0,
     totalDamageDealt: 50,
     totalDamageReceived: 30,
   };
@@ -60,8 +69,8 @@ describe("RoundAnnouncement", () => {
   let onSkipMock: () => void;
 
   beforeEach(() => {
-    onCountdownCompleteMock = vi.fn<[], void>();
-    onSkipMock = vi.fn<[], void>();
+    onCountdownCompleteMock = vi.fn();
+    onSkipMock = vi.fn();
     vi.useFakeTimers();
   });
 

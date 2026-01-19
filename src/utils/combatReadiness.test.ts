@@ -63,6 +63,7 @@ describe("calculateBodyHealthPercentage", () => {
   it("should handle one critically damaged body part", () => {
     const bodyHealth = {
       head: 20, // Critical damage
+      neck: 100,
       torsoUpper: 100,
       torsoLower: 100,
       armLeft: 100,
@@ -79,13 +80,13 @@ describe("calculateBodyHealthPercentage", () => {
 
   it("should throw error for null bodyHealth", () => {
     expect(() => calculateBodyHealthPercentage(null as any)).toThrow(
-      "bodyHealth cannot be null or undefined"
+      "bodyHealth cannot be null or undefined",
     );
   });
 
   it("should throw error for undefined bodyHealth", () => {
     expect(() => calculateBodyHealthPercentage(undefined as any)).toThrow(
-      "bodyHealth cannot be null or undefined"
+      "bodyHealth cannot be null or undefined",
     );
   });
 });
@@ -337,13 +338,13 @@ describe("calculateCombatReadiness", () => {
 
   it("should throw error for null player", () => {
     expect(() => calculateCombatReadiness(null as any)).toThrow(
-      "player cannot be null or undefined"
+      "player cannot be null or undefined",
     );
   });
 
   it("should throw error for undefined player", () => {
     expect(() => calculateCombatReadiness(undefined as any)).toThrow(
-      "player cannot be null or undefined"
+      "player cannot be null or undefined",
     );
   });
 
@@ -367,67 +368,67 @@ describe("calculateCombatReadiness", () => {
 describe("getCombatReadinessColor", () => {
   it("should return green for 100-80% (full capability)", () => {
     expect(getCombatReadinessColor(100)).toBe(
-      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color,
     );
     expect(getCombatReadinessColor(90)).toBe(
-      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color,
     );
     expect(getCombatReadinessColor(80)).toBe(
-      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color
+      COMBAT_READINESS_THRESHOLDS.FULL_CAPABILITY.color,
     );
   });
 
   it("should return yellow for 79-60% (light impairment)", () => {
     expect(getCombatReadinessColor(79)).toBe(
-      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(70)).toBe(
-      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(60)).toBe(
-      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.LIGHT_IMPAIRMENT.color,
     );
   });
 
   it("should return orange for 59-40% (moderate impairment)", () => {
     expect(getCombatReadinessColor(59)).toBe(
-      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(50)).toBe(
-      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(40)).toBe(
-      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.MODERATE_IMPAIRMENT.color,
     );
   });
 
   it("should return red for 39-20% (heavy impairment)", () => {
     expect(getCombatReadinessColor(39)).toBe(
-      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(30)).toBe(
-      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color,
     );
     expect(getCombatReadinessColor(20)).toBe(
-      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color
+      COMBAT_READINESS_THRESHOLDS.HEAVY_IMPAIRMENT.color,
     );
   });
 
   it("should return dark red for 19-0% (critical)", () => {
     expect(getCombatReadinessColor(19)).toBe(
-      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color,
     );
     expect(getCombatReadinessColor(10)).toBe(
-      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color,
     );
     expect(getCombatReadinessColor(0)).toBe(
-      COMBAT_READINESS_THRESHOLDS.CRITICAL.color
+      COMBAT_READINESS_THRESHOLDS.CRITICAL.color,
     );
   });
 
   it("should throw error for NaN readiness", () => {
     expect(() => getCombatReadinessColor(NaN)).toThrow(
-      "readiness cannot be NaN"
+      "readiness cannot be NaN",
     );
   });
 });
@@ -457,7 +458,7 @@ describe("getCombatReadinessLabel", () => {
 
   it("should throw error for NaN readiness", () => {
     expect(() => getCombatReadinessLabel(NaN)).toThrow(
-      "readiness cannot be NaN"
+      "readiness cannot be NaN",
     );
   });
 });
@@ -510,19 +511,19 @@ describe("getCombatReadinessBars", () => {
 
   it("should throw error for NaN readiness", () => {
     expect(() => getCombatReadinessBars(NaN, 10)).toThrow(
-      "readiness cannot be NaN"
+      "readiness cannot be NaN",
     );
   });
 
   it("should throw error for invalid totalBars", () => {
     expect(() => getCombatReadinessBars(50, 0)).toThrow(
-      "totalBars must be a positive integer"
+      "totalBars must be a positive integer",
     );
     expect(() => getCombatReadinessBars(50, -5)).toThrow(
-      "totalBars must be a positive integer"
+      "totalBars must be a positive integer",
     );
     expect(() => getCombatReadinessBars(50, 5.5)).toThrow(
-      "totalBars must be a positive integer"
+      "totalBars must be a positive integer",
     );
   });
 });

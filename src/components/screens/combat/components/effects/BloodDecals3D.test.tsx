@@ -4,24 +4,21 @@
  * Tests decal projection, fading, and performance limits
  */
 
-import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, it, expect, vi } from "vitest";
+import { render } from "@testing-library/react";
 import React, { Suspense, useRef } from "react";
 import * as THREE from "three";
-import BloodDecals3D, {
-  BloodDecals3DProps,
-  BloodDecal,
-} from "./BloodDecals3D";
+import { describe, expect, it, vi } from "vitest";
+import BloodDecals3D, { BloodDecal, BloodDecals3DProps } from "./BloodDecals3D";
 
 /**
  * Test wrapper with target mesh
  */
 const TestWrapper: React.FC<{
   children: React.ReactNode;
-  onMeshReady?: (ref: React.RefObject<THREE.Mesh>) => void;
+  onMeshReady?: (ref: React.RefObject<THREE.Mesh | null>) => void;
 }> = ({ children, onMeshReady }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh | null>(null);
 
   React.useEffect(() => {
     if (meshRef.current && onMeshReady) {
@@ -45,9 +42,9 @@ const TestWrapper: React.FC<{
  * Helper to render Three.js components in test environment
  */
 const renderBloodDecals = (
-  props: Omit<BloodDecals3DProps, "targetMeshRef">
+  props: Omit<BloodDecals3DProps, "targetMeshRef">,
 ) => {
-  let meshRef: React.RefObject<THREE.Mesh> | undefined;
+  let meshRef: React.RefObject<THREE.Mesh | null> | undefined;
 
   const result = render(
     <Canvas>
@@ -57,10 +54,13 @@ const renderBloodDecals = (
             meshRef = ref;
           }}
         >
-          <BloodDecals3D {...props} targetMeshRef={meshRef} />
+          <BloodDecals3D
+            {...props}
+            targetMeshRef={meshRef as React.RefObject<THREE.Mesh>}
+          />
         </TestWrapper>
       </Suspense>
-    </Canvas>
+    </Canvas>,
   );
 
   return { ...result, meshRef };

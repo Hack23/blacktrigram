@@ -13,7 +13,6 @@ describe("CombatReadinessBar", () => {
       bodyPartHealth: {
         head: 100,
         neck: 100,
-        neck: 100,
         torsoUpper: 100,
         torsoLower: 100,
         armLeft: 100,
@@ -33,21 +32,21 @@ describe("CombatReadinessBar", () => {
     it("should render combat readiness bar with correct test ID", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       expect(
-        screen.getByTestId("combat-readiness-bar-player-1")
+        screen.getByTestId("combat-readiness-bar-player-1"),
       ).toBeInTheDocument();
     });
 
     it("should display Korean and English labels", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       expect(
-        screen.getByText(/전투 준비도.*Combat Readiness/)
+        screen.getByText(/전투 준비도.*Combat Readiness/),
       ).toBeInTheDocument();
     });
 
     it("should display combat readiness percentage", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       expect(valueElement.textContent).toContain("100%");
     });
@@ -55,7 +54,7 @@ describe("CombatReadinessBar", () => {
     it("should render correct number of segments (10)", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       const segments = screen.getAllByTestId(
-        /combat-readiness-segment-player-1-/
+        /combat-readiness-segment-player-1-/,
       );
       expect(segments).toHaveLength(10);
     });
@@ -63,7 +62,7 @@ describe("CombatReadinessBar", () => {
     it("should display status label for combat ready state", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       expect(valueElement.textContent).toContain("전투 준비");
     });
@@ -81,7 +80,7 @@ describe("CombatReadinessBar", () => {
       const bar = screen.getByTestId("combat-readiness-bar-player-1");
       expect(bar).toHaveAttribute(
         "aria-label",
-        "전투 준비도 | Combat Readiness"
+        "전투 준비도 | Combat Readiness",
       );
     });
 
@@ -143,7 +142,7 @@ describe("CombatReadinessBar", () => {
     it("should use green color for readiness >80%", () => {
       const { container } = render(<CombatReadinessBar {...defaultProps} />);
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
       const firstSegment = segments[0] as HTMLElement;
       // Green color (full capability)
@@ -168,10 +167,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
       const firstSegment = segments[0] as HTMLElement;
       // Yellow color (light impairment)
@@ -196,10 +195,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
       const firstSegment = segments[0] as HTMLElement;
       // Orange color (moderate impairment)
@@ -224,10 +223,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
       const firstSegment = segments[0] as HTMLElement;
       // Red color (heavy impairment)
@@ -252,10 +251,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
       const firstSegment = segments[0] as HTMLElement;
       // Dark red color (critical)
@@ -267,7 +266,7 @@ describe("CombatReadinessBar", () => {
     it("should fill all 10 segments at 100% readiness", () => {
       const { container } = render(<CombatReadinessBar {...defaultProps} />);
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
 
       segments.forEach((segment) => {
@@ -295,10 +294,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segments = container.querySelectorAll(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       );
 
       // First 5 segments should be filled
@@ -333,7 +332,7 @@ describe("CombatReadinessBar", () => {
 
       render(<CombatReadinessBar {...defaultProps} player={player} />);
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       expect(valueElement.textContent).toContain("0%");
     });
@@ -342,20 +341,20 @@ describe("CombatReadinessBar", () => {
   describe("Responsive Sizing", () => {
     it("should use mobile sizing when isMobile is true", () => {
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} isMobile={true} />
+        <CombatReadinessBar {...defaultProps} isMobile={true} />,
       );
       const bar = container.querySelector(
-        '[data-testid="combat-readiness-bar-player-1"]'
+        '[data-testid="combat-readiness-bar-player-1"]',
       ) as HTMLElement;
       expect(bar.style.width).toBe("180px");
     });
 
     it("should use desktop sizing when isMobile is false", () => {
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} isMobile={false} />
+        <CombatReadinessBar {...defaultProps} isMobile={false} />,
       );
       const bar = container.querySelector(
-        '[data-testid="combat-readiness-bar-player-1"]'
+        '[data-testid="combat-readiness-bar-player-1"]',
       ) as HTMLElement;
       expect(bar.style.width).toBe("250px");
     });
@@ -380,10 +379,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segmentContainer = container.querySelector(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       )?.parentElement;
       expect(segmentContainer?.style.animation).toContain("healthPulse");
     });
@@ -406,10 +405,10 @@ describe("CombatReadinessBar", () => {
       });
 
       const { container } = render(
-        <CombatReadinessBar {...defaultProps} player={player} />
+        <CombatReadinessBar {...defaultProps} player={player} />,
       );
       const segmentContainer = container.querySelector(
-        '[data-testid*="combat-readiness-segment"]'
+        '[data-testid*="combat-readiness-segment"]',
       )?.parentElement;
       expect(segmentContainer?.style.animation).toBe("none");
     });
@@ -419,7 +418,7 @@ describe("CombatReadinessBar", () => {
     it("should show 'Combat Ready' label at 100%", () => {
       render(<CombatReadinessBar {...defaultProps} />);
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       expect(valueElement.textContent).toContain("전투 준비");
     });
@@ -443,7 +442,7 @@ describe("CombatReadinessBar", () => {
 
       render(<CombatReadinessBar {...defaultProps} player={player} />);
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       // Should show Korean label for heavy damage
       expect(valueElement.textContent).toContain("중증 손상");
@@ -493,10 +492,13 @@ describe("CombatReadinessBar", () => {
       const playerWithoutBodyParts = { ...player, bodyPartHealth: undefined };
 
       render(
-        <CombatReadinessBar {...defaultProps} player={playerWithoutBodyParts} />
+        <CombatReadinessBar
+          {...defaultProps}
+          player={playerWithoutBodyParts}
+        />,
       );
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       // Should still calculate readiness
       expect(valueElement.textContent).toMatch(/\d+%/);
@@ -518,10 +520,10 @@ describe("CombatReadinessBar", () => {
         <CombatReadinessBar
           {...defaultProps}
           player={playerWithZeroMaxHealth}
-        />
+        />,
       );
       const valueElement = screen.getByTestId(
-        "combat-readiness-value-player-1"
+        "combat-readiness-value-player-1",
       );
       expect(valueElement.textContent).toMatch(/\d+%/);
     });

@@ -2,10 +2,10 @@
  * Unit tests for KeyboardHints component
  */
 
-import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { KeyboardHints } from "./KeyboardHints";
 import React from "react";
+import { describe, expect, it, vi } from "vitest";
+import { KeyboardHints } from "./KeyboardHints";
 
 // Mock Html from @react-three/drei
 vi.mock("@react-three/drei", () => ({
@@ -49,10 +49,12 @@ describe("KeyboardHints", () => {
   it("should display custom key bindings", () => {
     const customBindings = {
       stances: ["Q", "W", "E", "R", "T", "Y", "U", "I"],
+      techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
       attack: " ",
       block: "b",
       movement: { up: "k", down: "j", left: "h", right: "l" },
-      special: { precision: "Control", quickSwitch: "p", reset: "o" },
+      vitalPointsOverlay: "v",
+      pause: ["escape", "m"],
     };
 
     render(
@@ -60,7 +62,7 @@ describe("KeyboardHints", () => {
         visible={true}
         currentStance={0}
         customBindings={customBindings}
-      />
+      />,
     );
 
     // Check that custom keys are displayed
@@ -103,10 +105,12 @@ describe("KeyboardHints", () => {
   it("should uppercase all key displays", () => {
     const customBindings = {
       stances: ["q", "w", "e", "r", "a", "s", "d", "f"], // lowercase
+      techniques: ["q", "e", "r", "t", "y", "f", "g", "z", "x", "c"],
       attack: " ",
       block: "b",
       movement: { up: "k", down: "j", left: "h", right: "l" },
-      special: { precision: "Control", quickSwitch: "p", reset: "o" },
+      vitalPointsOverlay: "v",
+      pause: ["escape", "m"],
     };
 
     render(
@@ -114,7 +118,7 @@ describe("KeyboardHints", () => {
         visible={true}
         currentStance={0}
         customBindings={customBindings}
-      />
+      />,
     );
 
     const firstKey = screen.getByTestId("stance-key-0");
@@ -124,7 +128,7 @@ describe("KeyboardHints", () => {
   it("should handle all 8 stances being active sequentially", () => {
     for (let stance = 0; stance < 8; stance++) {
       const { unmount } = render(
-        <KeyboardHints visible={true} currentStance={stance} />
+        <KeyboardHints visible={true} currentStance={stance} />,
       );
 
       const activeKey = screen.getByTestId(`stance-key-${stance}`);
@@ -166,7 +170,7 @@ describe("KeyboardHints", () => {
 
     it("should render control hints in both mobile and desktop layouts", () => {
       const { unmount } = render(
-        <KeyboardHints visible={true} currentStance={0} isMobile={false} />
+        <KeyboardHints visible={true} currentStance={0} isMobile={false} />,
       );
 
       let container = screen.getByTestId("keyboard-hints");
@@ -175,7 +179,7 @@ describe("KeyboardHints", () => {
       unmount();
 
       render(
-        <KeyboardHints visible={true} currentStance={0} isMobile={true} />
+        <KeyboardHints visible={true} currentStance={0} isMobile={true} />,
       );
 
       container = screen.getByTestId("keyboard-hints");
