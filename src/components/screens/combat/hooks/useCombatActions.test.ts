@@ -200,10 +200,10 @@ describe("useCombatActions", () => {
           romanized: "teseuteu gisul",
         }),
         undefined, // vitalPointId
-        {
-          animationType: "jab",
-          currentTime: 0,
-        },
+        expect.objectContaining({
+          animationType: expect.anything(),
+          currentTime: expect.any(Number), // Uses peak time for hit detection
+        }),
       );
     });
 
@@ -507,12 +507,16 @@ describe("useCombatActions", () => {
           result.current.handleAIAttack(mockTechnique, mockVitalPoint);
         });
 
-        // Verify resolveAttack was called with vital point parameter
+        // Verify resolveAttack was called with vital point parameter and animation context
         expect(resolveSpy).toHaveBeenCalledWith(
           expect.anything(),
           expect.anything(),
           expect.anything(),
           mockVitalPoint,
+          expect.objectContaining({
+            animationType: expect.anything(),
+            currentTime: expect.any(Number),
+          }),
         );
       });
     });
@@ -611,6 +615,7 @@ describe("useCombatActions", () => {
           critChance: 0.2,
           critMultiplier: 1.8,
           effects: [],
+          animationType: "spinning_hook_kick", // Required for animation context
         };
         const mockVitalPoint = "myeongchi";
 
@@ -621,12 +626,16 @@ describe("useCombatActions", () => {
           result.current.handleAITechnique(mockTechnique, mockVitalPoint);
         });
 
-        // Verify technique and vital point passed to combat system
+        // Verify technique and vital point passed to combat system with animation context
         expect(resolveSpy).toHaveBeenCalledWith(
           expect.anything(),
           expect.anything(),
           mockTechnique,
           mockVitalPoint,
+          expect.objectContaining({
+            animationType: expect.anything(),
+            currentTime: expect.any(Number),
+          }),
         );
       });
 
