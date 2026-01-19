@@ -35,28 +35,44 @@ export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; 
 /**
  * Distance-based stance preferences for tactical positioning
  *
- * Stances are categorized by optimal combat range:
- * - **CLOSE (1-2 cells)**: Aggressive stances for close quarters (GEON, JIN, LI, SON)
- * - **MID (3-4 cells)**: Adaptive stances for mid-range (GAM, TAE, GAN)
- * - **FAR (5+ cells)**: Defensive stances for distance (GAN, GON)
+ * Stances are categorized by optimal combat range based on actual technique
+ * reach configurations (baseExtension values from technique definitions):
  *
- * **Note**: GAN (Mountain) intentionally appears in both MID and FAR ranges.
- * It represents a highly stable defensive posture that can be held while
- * maintaining mid-range pressure or retreating to long distance. This
- * overlap slightly increases GAN's selection frequency by design, reflecting
- * the Mountain's versatility in Korean martial arts philosophy.
+ * **CLOSE (≤0.6m)** - Grappling/clinch range:
+ * - TAE (☱ Lake) - Joint manipulation, grapples (0.9 baseExtension, needs contact)
+ * - GAM (☵ Water) - Throws, counters (0.7-0.9 baseExtension)
+ * - GON (☷ Earth) - Ground techniques, Ssireum throws (0.9 baseExtension)
+ * - GAN (☶ Mountain) - Immovable defense, blocks (0.9 baseExtension)
  *
- * @korean 거리별 자세 선호도
+ * **MID (0.6-1.0m)** - Striking range:
+ * - GEON (☰ Heaven) - Direct force, power strikes (0.95-1.05 baseExtension)
+ * - LI (☲ Fire) - Precision nerve strikes (0.92-0.95 baseExtension)
+ * - SON (☴ Wind) - Continuous pressure, Taekyon (0.95-1.05 baseExtension)
+ *
+ * **FAR (>1.0m)** - Long range kicks/closing distance:
+ * - JIN (☳ Thunder) - Explosive jumping kicks (1.15 baseExtension)
+ * - SON (☴ Wind) - Closing footwork pressure
+ * - GAN (☶ Mountain) - Patient defensive waiting
+ *
+ * @korean 거리별 자세 선호도 (기술 도달 거리 기반)
  */
 const DISTANCE_BASED_STANCES: Record<string, readonly TrigramStance[]> = {
   CLOSE: [
-    TrigramStance.GEON,
-    TrigramStance.JIN,
-    TrigramStance.LI,
-    TrigramStance.SON,
-  ], // 1-2 cells
-  MID: [TrigramStance.GAM, TrigramStance.TAE, TrigramStance.GAN], // 3-4 cells
-  FAR: [TrigramStance.GAN, TrigramStance.GON], // 5+ cells (GAN shared with MID as versatile defensive stance)
+    TrigramStance.TAE, // ☱ Joint manipulation/grapples
+    TrigramStance.GAM, // ☵ Throws/counters
+    TrigramStance.GON, // ☷ Ground techniques
+    TrigramStance.GAN, // ☶ Blocking defense
+  ],
+  MID: [
+    TrigramStance.GEON, // ☰ Power strikes
+    TrigramStance.LI, // ☲ Precision strikes
+    TrigramStance.SON, // ☴ Continuous pressure
+  ],
+  FAR: [
+    TrigramStance.JIN, // ☳ Explosive jumping kicks
+    TrigramStance.SON, // ☴ Closing pressure
+    TrigramStance.GAN, // ☶ Patient defensive waiting
+  ],
 };
 
 /**
@@ -1304,7 +1320,7 @@ export class AIDecisionTree {
     } as unknown as PlayerState;
 
     // Priority 1: Try distance-based stance selection for tactical variety
-    // Lower priority than attacks - fighters attack first, adjust stance second
+    // Lower priority than attacks but competitive with approach/defense
     const distanceStance = this.selectStanceForDistance(
       context.distanceToOpponent,
       behavior.preferredStances,
@@ -1324,7 +1340,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: distanceStance,
-        priority: 3, // Reduced from 7: attacks have priority 6-9
+        priority: 5, // Competitive with approach (4-6) but below attacks (7-10)
         reason: `Distance-optimal stance (거리 최적 자세: ${distanceStance})`,
       };
     }
@@ -1345,7 +1361,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: counterStance,
-        priority: 3, // Reduced from 6: attacks have priority 6-9
+        priority: 5, // Competitive with approach (4-6) but below attacks (7-10)
         reason: `Counter stance to ${context.opponentStance} (상극 대응)`,
       };
     }
@@ -1364,7 +1380,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: recommendedStance,
-        priority: 2, // Reduced from 6: attacks have priority 6-9
+        priority: 4, // Lower priority for general optimization
         reason: `Optimal stance transition via TrigramSystem (팔괘 전환)`,
       };
     }
@@ -1385,7 +1401,7 @@ export class AIDecisionTree {
       return {
         action: AIActionType.STANCE_CHANGE,
         targetStance: preferredAvailable,
-        priority: 2, // Reduced from 5: attacks have priority 6-9
+        priority: 4, // Lower priority for preferred stance switch
         reason: `Switching to preferred stance (선호 자세 전환: ${preferredAvailable})`,
       };
     }
