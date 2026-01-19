@@ -997,6 +997,7 @@ src/systems/physics/KnockbackPhysics.test.ts
 src/systems/physics/KnockbackPhysics.ts
 src/systems/physics/MovementPhysics.test.ts
 src/systems/physics/MovementPhysics.ts
+src/systems/physics/PhysicalReachCalculator.test.ts
 src/systems/physics/PhysicalReachCalculator.ts
 src/systems/physics/SpeedModifierSystem.test.ts
 src/systems/physics/SpeedModifierSystem.ts
