@@ -124,7 +124,7 @@ export interface UsePlayerAnimationReturn {
    */
   readonly transitionToStanceChange: (
     fromStance: TrigramStance,
-    toStance: TrigramStance
+    toStance: TrigramStance,
   ) => boolean;
 
   /**
@@ -198,7 +198,7 @@ export interface UsePlayerAnimationReturn {
  * @korean 플레이어애니메이션훅
  */
 export function usePlayerAnimation(
-  options: UsePlayerAnimationOptions = {}
+  options: UsePlayerAnimationOptions = {},
 ): UsePlayerAnimationReturn {
   const { customConfigs, events, initialState = "idle" } = options;
 
@@ -208,7 +208,7 @@ export function usePlayerAnimation(
   // Create animation configs (memoized)
   const configs = useMemo(
     () => customConfigs ?? DEFAULT_ANIMATION_CONFIGS,
-    [customConfigs]
+    [customConfigs],
   );
 
   // Create animation state machine (persistent across renders via useMemo)
@@ -245,7 +245,7 @@ export function usePlayerAnimation(
 
       return result;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const transitionTo = useCallback(
@@ -258,7 +258,7 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const reset = useCallback(() => {
@@ -278,14 +278,14 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const transitionToStanceChange = useCallback(
     (fromStance: TrigramStance, toStance: TrigramStance) => {
       const success = stateMachine.transitionToStanceChange(
         fromStance,
-        toStance
+        toStance,
       );
       if (success) {
         prevStateRef.current = stateMachine.getCurrentState();
@@ -294,7 +294,7 @@ export function usePlayerAnimation(
       }
       return success;
     },
-    [stateMachine]
+    [stateMachine],
   );
 
   const isInStanceGuard = useCallback(() => {
@@ -319,8 +319,6 @@ export function usePlayerAnimation(
       reset,
     }),
     [
-      prevStateRef.current,
-      prevFrameRef.current,
       update,
       transitionTo,
       transitionToStanceGuard,
@@ -328,6 +326,6 @@ export function usePlayerAnimation(
       isInStanceGuard,
       getCurrentGuardStance,
       reset,
-    ]
+    ],
   );
 }

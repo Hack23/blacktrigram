@@ -5,8 +5,6 @@
  * with Vitest/Jest matchers.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 declare module "jest-axe" {
   import type { AxeResults, RunOptions, Spec } from "axe-core";
 

@@ -2,32 +2,32 @@
  * Accessibility utility functions for WCAG 2.1 Level AA compliance
  * Provides keyboard navigation, focus management, color contrast checking,
  * and screen reader support utilities
- * 
+ *
  * @module utils/accessibility
  * @category Accessibility
  * @korean 접근성 유틸리티
  */
 
-import React from 'react';
+import React from "react";
 import {
-  KeyboardActions,
-  FocusIndicatorStyle,
-  ScreenReaderAnnouncement,
+  AriaAttributes,
   ColorContrastConfig,
+  createBilingualLabel,
+  FocusIndicatorStyle,
+  KeyboardActions,
+  ScreenReaderAnnouncement,
   WCAGComplianceResult,
   WCAGLevel,
-  AriaAttributes,
-  createBilingualLabel,
-} from '../types/AccessibilityTypes';
-import { KOREAN_COLORS } from '../types/constants';
+} from "../types/AccessibilityTypes";
+import { KOREAN_COLORS } from "../types/constants";
 
 /**
  * Handle keyboard navigation events with WCAG compliance
  * Supports Tab, Enter, Space, Escape, Arrow keys, Home, End
- * 
+ *
  * @param event - Keyboard event
  * @param actions - Actions to perform for different keys
- * 
+ *
  * @example
  * ```tsx
  * <div onKeyDown={(e) => handleKeyboardNav(e, {
@@ -39,63 +39,63 @@ import { KOREAN_COLORS } from '../types/constants';
  */
 export function handleKeyboardNav(
   event: KeyboardEvent,
-  actions: KeyboardActions
+  actions: KeyboardActions,
 ): void {
   const { key, shiftKey } = event;
 
   switch (key) {
-    case 'Enter':
-    case ' ':
+    case "Enter":
+    case " ":
       // Activate element (button, link, etc.)
       event.preventDefault();
       actions.onActivate?.();
       break;
 
-    case 'Escape':
+    case "Escape":
       // Cancel or close action
       event.preventDefault();
       actions.onCancel?.();
       break;
 
-    case 'Tab':
+    case "Tab":
       // Tab navigation (forward or backward with Shift)
       actions.onTab?.(shiftKey);
       break;
 
-    case 'ArrowUp':
+    case "ArrowUp":
       // Navigate up
       event.preventDefault();
-      actions.onNavigate?.('up');
+      actions.onNavigate?.("up");
       break;
 
-    case 'ArrowDown':
+    case "ArrowDown":
       // Navigate down
       event.preventDefault();
-      actions.onNavigate?.('down');
+      actions.onNavigate?.("down");
       break;
 
-    case 'ArrowLeft':
+    case "ArrowLeft":
       // Navigate left
       event.preventDefault();
-      actions.onNavigate?.('left');
+      actions.onNavigate?.("left");
       break;
 
-    case 'ArrowRight':
+    case "ArrowRight":
       // Navigate right
       event.preventDefault();
-      actions.onNavigate?.('right');
+      actions.onNavigate?.("right");
       break;
 
-    case 'Home':
+    case "Home":
       // Jump to start
       event.preventDefault();
-      actions.onJump?.('start');
+      actions.onJump?.("start");
       break;
 
-    case 'End':
+    case "End":
       // Jump to end
       event.preventDefault();
-      actions.onJump?.('end');
+      actions.onJump?.("end");
       break;
   }
 }
@@ -111,7 +111,7 @@ function getDefaultFocusStyle(): FocusIndicatorStyle {
     outlineWidth: 2,
     outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
     outlineOffset: 2,
-    outlineStyle: 'solid',
+    outlineStyle: "solid",
     boxShadow: `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`,
     transitionDuration: 0.2,
   };
@@ -125,11 +125,11 @@ export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = getDefaultFocusStyle();
 
 /**
  * Get focus indicator CSS style object
- * 
+ *
  * @param isFocused - Whether element is currently focused
  * @param customStyle - Optional custom focus style overrides
  * @returns CSS style object for focus indicator
- * 
+ *
  * @example
  * ```tsx
  * const [isFocused, setIsFocused] = useState(false);
@@ -142,10 +142,10 @@ export const DEFAULT_FOCUS_STYLE: FocusIndicatorStyle = getDefaultFocusStyle();
  */
 export function getFocusStyle(
   isFocused: boolean,
-  customStyle?: Partial<FocusIndicatorStyle>
+  customStyle?: Partial<FocusIndicatorStyle>,
 ): React.CSSProperties {
   const defaultStyle = getDefaultFocusStyle();
-  
+
   if (!isFocused) {
     return {
       // Preserve browser default focus indicator instead of 'none'
@@ -159,14 +159,15 @@ export function getFocusStyle(
   return {
     outline: `${style.outlineWidth}px ${style.outlineStyle} rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
     outlineOffset: `${style.outlineOffset}px`,
-    boxShadow: style.boxShadow ?? `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`,
+    boxShadow:
+      style.boxShadow ?? `0 0 0 2px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`,
     transition: `all ${style.transitionDuration}s ease`,
   };
 }
 
 /**
  * Convert hex color to RGB components
- * 
+ *
  * @param hex - Hex color code (0xRRGGBB)
  * @returns RGB components
  */
@@ -180,18 +181,21 @@ export function hexToRgb(hex: number): { r: number; g: number; b: number } {
 
 /**
  * Calculate contrast ratio between two colors (WCAG 2.1)
- * 
+ *
  * @param foreground - Foreground color (hex)
  * @param background - Background color (hex)
  * @returns Contrast ratio (1-21)
- * 
+ *
  * @example
  * ```typescript
  * const ratio = getContrastRatio(KOREAN_COLORS.TEXT_PRIMARY, KOREAN_COLORS.UI_BACKGROUND_DARK);
  * console.log(`Contrast ratio: ${ratio.toFixed(2)}:1`); // Should be >= 4.5:1 for WCAG AA
  * ```
  */
-export function getContrastRatio(foreground: number, background: number): number {
+export function getContrastRatio(
+  foreground: number,
+  background: number,
+): number {
   const fg = hexToRgb(foreground);
   const bg = hexToRgb(background);
 
@@ -217,10 +221,10 @@ export function getContrastRatio(foreground: number, background: number): number
 
 /**
  * Check if color combination meets WCAG contrast requirements
- * 
+ *
  * @param config - Color contrast configuration
  * @returns Whether contrast meets WCAG requirements
- * 
+ *
  * @example
  * ```typescript
  * const meetsWCAG = meetsContrastRequirement({
@@ -238,7 +242,7 @@ export function meetsContrastRequirement(config: ColorContrastConfig): boolean {
 /**
  * Get WCAG-compliant foreground color for given background
  * Returns white or black depending on which provides better contrast
- * 
+ *
  * @param background - Background color (hex)
  * @returns Foreground color (hex) that meets WCAG AA
  */
@@ -255,9 +259,9 @@ export function getAccessibleForeground(background: number): number {
 /**
  * Announce message to screen readers
  * Creates a live region announcement with configurable politeness
- * 
+ *
  * @param announcement - Screen reader announcement configuration
- * 
+ *
  * @example
  * ```typescript
  * announceToScreenReader({
@@ -270,17 +274,17 @@ export function getAccessibleForeground(background: number): number {
 let liveRegionInstance: HTMLElement | null = null;
 
 export function announceToScreenReader(
-  announcement: ScreenReaderAnnouncement
+  announcement: ScreenReaderAnnouncement,
 ): void {
-  const { message, politeness = 'polite', delay = 0 } = announcement;
+  const { message, politeness = "polite", delay = 0 } = announcement;
 
   setTimeout(() => {
     // Create or get existing live region
     if (!liveRegionInstance) {
-      liveRegionInstance = document.createElement('div');
-      liveRegionInstance.id = 'sr-live-region';
-      liveRegionInstance.setAttribute('aria-live', politeness);
-      liveRegionInstance.setAttribute('aria-atomic', 'true');
+      liveRegionInstance = document.createElement("div");
+      liveRegionInstance.id = "sr-live-region";
+      liveRegionInstance.setAttribute("aria-live", politeness);
+      liveRegionInstance.setAttribute("aria-atomic", "true");
       liveRegionInstance.style.cssText = `
         position: absolute;
         left: -10000px;
@@ -292,8 +296,8 @@ export function announceToScreenReader(
     }
 
     // Update politeness level if changed
-    if (liveRegionInstance.getAttribute('aria-live') !== politeness) {
-      liveRegionInstance.setAttribute('aria-live', politeness);
+    if (liveRegionInstance.getAttribute("aria-live") !== politeness) {
+      liveRegionInstance.setAttribute("aria-live", politeness);
     }
 
     // Update message
@@ -302,7 +306,7 @@ export function announceToScreenReader(
     // Clear message after 3 seconds
     setTimeout(() => {
       if (liveRegionInstance) {
-        liveRegionInstance.textContent = '';
+        liveRegionInstance.textContent = "";
       }
     }, 3000);
   }, delay);
@@ -312,7 +316,7 @@ export function announceToScreenReader(
  * Clean up screen reader live region (for testing or app unmount)
  */
 export function cleanupScreenReaderRegion(): void {
-  if (liveRegionInstance && liveRegionInstance.parentNode) {
+  if (liveRegionInstance?.parentNode) {
     liveRegionInstance.parentNode.removeChild(liveRegionInstance);
     liveRegionInstance = null;
   }
@@ -321,10 +325,10 @@ export function cleanupScreenReaderRegion(): void {
 /**
  * Trap focus within a container element
  * Prevents focus from leaving the container (e.g., for modals)
- * 
+ *
  * @param container - Container element to trap focus within
  * @returns Cleanup function to remove focus trap
- * 
+ *
  * @example
  * ```typescript
  * useEffect(() => {
@@ -341,7 +345,7 @@ export function trapFocus(container: HTMLElement | null): () => void {
   const lastElement = focusableElements[focusableElements.length - 1];
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key !== 'Tab') return;
+    if (event.key !== "Tab") return;
 
     if (event.shiftKey) {
       // Shift + Tab: Move focus backward
@@ -358,45 +362,43 @@ export function trapFocus(container: HTMLElement | null): () => void {
     }
   };
 
-  container.addEventListener('keydown', handleKeyDown);
+  container.addEventListener("keydown", handleKeyDown);
 
   // Set initial focus
   firstElement?.focus();
 
   // Return cleanup function
   return () => {
-    container.removeEventListener('keydown', handleKeyDown);
+    container.removeEventListener("keydown", handleKeyDown);
   };
 }
 
 /**
  * Get all focusable elements within a container
- * 
+ *
  * @param container - Container element
  * @returns Array of focusable elements
  */
-export function getFocusableElements(
-  container: HTMLElement
-): HTMLElement[] {
+export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const selector = [
-    'a[href]',
-    'button:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
     '[tabindex]:not([tabindex="-1"])',
-  ].join(', ');
+  ].join(", ");
 
   return Array.from(container.querySelectorAll<HTMLElement>(selector));
 }
 
 /**
  * Validate WCAG 2.1 Level AA compliance for a component
- * 
+ *
  * Note: Color contrast checking requires access to computed styles,
  * which is not available in all testing environments. This validation
  * focuses on structural accessibility attributes.
- * 
+ *
  * @param element - Element to validate
  * @param config - Validation configuration
  * @returns Compliance validation result
@@ -407,7 +409,7 @@ export function validateWCAGCompliance(
     checkKeyboard?: boolean;
     checkFocusVisible?: boolean;
     checkAria?: boolean;
-  }
+  },
 ): WCAGComplianceResult {
   const {
     checkKeyboard = true,
@@ -422,7 +424,7 @@ export function validateWCAGCompliance(
   let ariaLabels = true;
 
   if (!element) {
-    issues.push('Element not found');
+    issues.push("Element not found");
     return {
       level: WCAGLevel.A,
       compliant: false,
@@ -441,28 +443,28 @@ export function validateWCAGCompliance(
   // Check keyboard accessibility
   if (checkKeyboard) {
     const isInteractive =
-      element.tagName === 'BUTTON' ||
-      element.tagName === 'A' ||
-      element.tagName === 'INPUT' ||
-      element.hasAttribute('onclick');
+      element.tagName === "BUTTON" ||
+      element.tagName === "A" ||
+      element.tagName === "INPUT" ||
+      element.hasAttribute("onclick");
 
-    if (isInteractive && element.getAttribute('tabindex') === '-1') {
+    if (isInteractive && element.getAttribute("tabindex") === "-1") {
       keyboardAccessible = false;
-      issues.push('Interactive element not keyboard accessible');
+      issues.push("Interactive element not keyboard accessible");
     }
   }
 
   // Check ARIA labels
   if (checkAria) {
     const hasAriaLabel =
-      element.hasAttribute('aria-label') ||
-      element.hasAttribute('aria-labelledby');
+      element.hasAttribute("aria-label") ||
+      element.hasAttribute("aria-labelledby");
 
     const hasTextContent = element.textContent?.trim();
 
     if (!hasAriaLabel && !hasTextContent) {
       ariaLabels = false;
-      issues.push('Missing ARIA label or text content');
+      issues.push("Missing ARIA label or text content");
     }
   }
 
@@ -471,9 +473,9 @@ export function validateWCAGCompliance(
     const computedStyle = window.getComputedStyle(element);
     const outline = computedStyle.outline;
 
-    if (outline === 'none' || outline === '') {
+    if (outline === "none" || outline === "") {
       focusVisible = false;
-      issues.push('Missing visible focus indicator');
+      issues.push("Missing visible focus indicator");
     }
   }
 
@@ -497,12 +499,12 @@ export function validateWCAGCompliance(
 
 /**
  * Create comprehensive ARIA attributes for a component
- * 
+ *
  * @param label - Bilingual label (Korean | English)
  * @param role - ARIA role
  * @param additionalAttrs - Additional ARIA attributes
  * @returns Complete ARIA attributes object
- * 
+ *
  * @example
  * ```tsx
  * const ariaProps = createAriaAttributes(
@@ -515,17 +517,17 @@ export function validateWCAGCompliance(
  */
 export function createAriaAttributes(
   label: string | { korean: string; english: string },
-  role?: AriaAttributes['role'],
-  additionalAttrs?: Partial<AriaAttributes>
+  role?: AriaAttributes["role"],
+  additionalAttrs?: Partial<AriaAttributes>,
 ): AriaAttributes {
   const bilingualLabel =
-    typeof label === 'string'
+    typeof label === "string"
       ? label
       : createBilingualLabel(label.korean, label.english).label;
 
   return {
     role,
-    'aria-label': bilingualLabel,
+    "aria-label": bilingualLabel,
     ...additionalAttrs,
   };
 }
@@ -533,7 +535,7 @@ export function createAriaAttributes(
 /**
  * Check if element is currently visible
  * Useful for skip-to-content and focus management
- * 
+ *
  * @param element - Element to check
  * @returns Whether element is visible
  */
@@ -542,9 +544,9 @@ export function isElementVisible(element: HTMLElement | null): boolean {
 
   const style = window.getComputedStyle(element);
   return (
-    style.display !== 'none' &&
-    style.visibility !== 'hidden' &&
-    style.opacity !== '0' &&
+    style.display !== "none" &&
+    style.visibility !== "hidden" &&
+    style.opacity !== "0" &&
     element.offsetParent !== null
   );
 }
@@ -552,19 +554,19 @@ export function isElementVisible(element: HTMLElement | null): boolean {
 /**
  * Focus first error element in a form
  * Useful for form validation accessibility
- * 
+ *
  * @param container - Form container
  */
 export function focusFirstError(container: HTMLElement): void {
   const errorElements = container.querySelectorAll<HTMLElement>(
-    '[aria-invalid="true"]'
+    '[aria-invalid="true"]',
   );
 
   if (errorElements.length > 0) {
     errorElements[0].focus();
     announceToScreenReader({
-      message: '오류가 발견되었습니다 | Errors found',
-      politeness: 'assertive',
+      message: "오류가 발견되었습니다 | Errors found",
+      politeness: "assertive",
     });
   }
 }
@@ -572,15 +574,15 @@ export function focusFirstError(container: HTMLElement): void {
 /**
  * Create skip to content link for keyboard navigation
  * Returns a link that allows users to skip to main content
- * 
+ *
  * @param targetId - ID of main content element
  * @returns Skip link element
  */
 export function createSkipLink(targetId: string): HTMLAnchorElement {
-  const skipLink = document.createElement('a');
+  const skipLink = document.createElement("a");
   skipLink.href = `#${targetId}`;
-  skipLink.textContent = '본문으로 건너뛰기 | Skip to content';
-  skipLink.className = 'skip-link';
+  skipLink.textContent = "본문으로 건너뛰기 | Skip to content";
+  skipLink.className = "skip-link";
   skipLink.style.cssText = `
     position: absolute;
     top: -40px;
@@ -594,13 +596,13 @@ export function createSkipLink(targetId: string): HTMLAnchorElement {
   `;
 
   // Show on focus
-  skipLink.addEventListener('focus', () => {
-    skipLink.style.top = '0';
+  skipLink.addEventListener("focus", () => {
+    skipLink.style.top = "0";
   });
 
   // Hide on blur
-  skipLink.addEventListener('blur', () => {
-    skipLink.style.top = '-40px';
+  skipLink.addEventListener("blur", () => {
+    skipLink.style.top = "-40px";
   });
 
   return skipLink;

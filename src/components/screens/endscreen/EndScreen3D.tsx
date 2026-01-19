@@ -214,12 +214,9 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 
   // Responsive layout with proper device detection
   // Uses user-agent detection for mobile controls (supports high-res phones)
-  // Include screen dimensions as deps to re-evaluate on resize
-  const isMobile = useMemo(
-    () => shouldUseMobileControls(),
-    [screenWidth, screenHeight],
-  );
-  const platform = useMemo(() => detectPlatform(), [screenWidth, screenHeight]);
+  // User-agent doesn't change during session, so no dependencies needed
+  const isMobile = useMemo(() => shouldUseMobileControls(), []);
+  const platform = useMemo(() => detectPlatform(), []);
   const isTablet = useMemo(() => platform.isTablet, [platform]);
   const isLargeDesktop = useMemo(() => screenWidth >= 1920, [screenWidth]); // 4K/2K displays
 

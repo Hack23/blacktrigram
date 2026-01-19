@@ -72,7 +72,7 @@ function formatTime(seconds: number): string {
 function getWarningLevel(
   timeRemaining: number,
   warningThreshold: number,
-  urgentThreshold: number
+  urgentThreshold: number,
 ): TimerWarningLevel {
   if (timeRemaining <= urgentThreshold) {
     return "urgent";
@@ -111,7 +111,7 @@ function getWarningLevel(
  * ```
  */
 export function useCombatTimer(
-  config: UseCombatTimerConfig
+  config: UseCombatTimerConfig,
 ): UseCombatTimerReturn {
   const {
     initialTime,
@@ -174,16 +174,19 @@ export function useCombatTimer(
         intervalRef.current = null;
       }
     };
+    // timeRemaining is intentionally excluded - we capture the starting value once
+    // and count down from there, not restart the interval on every tick
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaused, isTimeUp, onTimeUp]);
 
   // Warning level calculation
   const warningLevel = getWarningLevel(
     timeRemaining,
     warningThreshold,
-    urgentThreshold
+    urgentThreshold,
   );
 
-  // Audio warnings
+  // Audio warnings - timeRemaining checked via warningLevel which captures threshold transitions
   useEffect(() => {
     if (!audio.isAudioReady) return;
     if (isPaused) return;
@@ -209,15 +212,14 @@ export function useCombatTimer(
       audio.playSFX("attack_heavy"); // Placeholder - will be timer_warning_5s
       lastWarningRef.current = "urgent";
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     warningLevel,
     timeRemaining,
-    audio.isAudioReady,
+    audio,
     isPaused,
     warningThreshold,
     urgentThreshold,
-  ]); // audio.playSFX is stable after initialization, omitted to prevent unnecessary re-renders
+  ]);
 
   // Format time for display
   const formattedTime = formatTime(timeRemaining);

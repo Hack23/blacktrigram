@@ -1078,6 +1078,8 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   const stanceFatigueRef = useRef(initialStanceFatigue);
 
   // Initialize previousDamageRef when round starts (issue #2529728007)
+  // player.currentStance and player.totalDamageReceived are intentionally excluded -
+  // this effect only initializes refs when a new round starts, not on every state change
   useEffect(() => {
     if (roundStarted) {
       matchStartTimeRef.current = Date.now();
@@ -1102,6 +1104,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Reset technique cooldown tracking on round start
       techniqueCooldownMapRef.current.clear();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roundStarted, decisionTree, comboSystem]);
 
   // Monitor stance changes and update fatigue tracking (Issue #dynamic-ai-stance-rotation Phase 4)
@@ -1544,6 +1547,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     playerLaterality,
     opponentLaterality,
     adaptiveDifficulty,
+    archetypeTechniqueIds,
   ]);
 
   return {

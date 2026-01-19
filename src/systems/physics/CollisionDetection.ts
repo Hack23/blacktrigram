@@ -630,7 +630,7 @@ export class CollisionDetection {
    */
   private initializeGeometryCache(): void {
     // Pre-create and cache geometries for all bounding boxes
-    for (const [_region, box] of this.boundingBoxes.entries()) {
+    for (const box of this.boundingBoxes.values()) {
       const cacheKey = `${box.type}-${box.region}`;
       const geometry = this.createGeometryForBox(box);
       this.geometryCache.set(cacheKey, geometry);

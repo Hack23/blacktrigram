@@ -452,7 +452,6 @@ export function usePlayerMovement(
     // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
     // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref
