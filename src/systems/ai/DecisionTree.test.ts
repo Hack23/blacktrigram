@@ -343,8 +343,10 @@ describe("AIDecisionTree", () => {
       const context = createMockContext({
         playerStance: TrigramStance.TAE, // TAE is a CLOSE stance, not MID
         opponentStance: TrigramStance.GON,
-        playerKi: 5, // Low resources to reduce attack priority
-        playerStamina: 5,
+        // Need sufficient ki/stamina to afford stance transitions (min ~5 Ki, ~8 Stamina)
+        // but low enough to reduce attack priority
+        playerKi: 15,
+        playerStamina: 20,
         distanceToOpponent: 0.7, // Mid-range distance (not triggering approach)
         isOpponentAttacking: false,
         stanceFatigue: { timeInStance: 30000 }, // High fatigue to encourage switch
@@ -1496,8 +1498,10 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.LI, // LI is MID stance, should want to switch
           distanceToOpponent: 0.7, // Mid-range (not triggering approach)
           timeInMatch: 15000 + i * 10,
-          playerKi: 2, // Very low resources to minimize attack priority
-          playerStamina: 2,
+          // Need sufficient ki/stamina to afford stance transitions (min ~5 Ki, ~8 Stamina)
+          // but low enough to reduce attack priority
+          playerKi: 15,
+          playerStamina: 20,
           stanceFatigue: { timeInStance: 30000 }, // High fatigue to encourage switch
         });
 
