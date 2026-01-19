@@ -8,6 +8,7 @@
  * - 급소공격 (急所攻擊) - Strike vital points with precision and timing
  */
 
+import { getArchetypePhysicalAttributes } from "@/data/archetypePhysicalAttributes";
 import { PlayerState } from "@/systems/player";
 import { TrigramSystem } from "@/systems/TrigramSystem";
 import {
@@ -15,10 +16,7 @@ import {
   getVitalPointById,
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { PlayerArchetype, Position, TrigramStance } from "@/types";
-import {
-  AI_MOVEMENT_METERS,
-  COMBAT_RANGES_METERS,
-} from "@/types/physicsConstants";
+import { AI_MOVEMENT_METERS } from "@/types/physicsConstants";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { enforceArchetypeBehavior } from "./ArchetypeEnforcer";
@@ -186,13 +184,6 @@ export class AIDecisionTree {
   private difficultyParams?: DifficultyParameters; // Difficulty parameters for AI behavior
   private currentReactionDelay: number = 50; // Current reaction delay (calculated once per param change)
 
-  // Movement constants - now in METERS using physics-first system
-  // Legacy pixel constants kept for backward compatibility with tests
-  // @ts-expect-error - kept for backward compatibility
-  private static readonly MOVE_STEP_SIZE = 50; // @deprecated Use AI_MOVEMENT_METERS.STEP_SIZE
-  // @ts-expect-error - kept for backward compatibility
-  private static readonly MIN_DISTANCE_THRESHOLD = 5; // @deprecated Use AI_MOVEMENT_METERS.MIN_DISTANCE_THRESHOLD
-
   /**
    * Scaling factor for fatigue override probability calculation.
    * Used to convert fatigue modifier to override chance in non-linear manner.
@@ -202,16 +193,54 @@ export class AIDecisionTree {
    */
   private static readonly FATIGUE_OVERRIDE_SCALING_FACTOR = 0.5;
 
-  /**
-   * Arena boundary margins - exported for test validation
-   * These values represent the player character size/collision margins
-   * Now uses meters-based values internally
-   */
-  public static readonly ARENA_MARGIN_X = 60; // @deprecated Use AI_MOVEMENT_METERS.ARENA_MARGIN_X
-  public static readonly ARENA_MARGIN_Y = 180; // @deprecated Use AI_MOVEMENT_METERS.ARENA_MARGIN_Y
-
   constructor() {
     this.trigramSystem = new TrigramSystem();
+  }
+
+  /**
+   * Calculate maximum combat reach for an archetype based on physical attributes.
+   *
+   * **Physics-First**: Returns reach in METERS based on leg length.
+   * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
+   *
+   * Formula: (legLength / 100) + 0.25 (body pivot) = max reach in meters
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Maximum combat reach in meters
+   * @korean 원형별 최대 도달 거리 (미터)
+   */
+  private getArchetypeMaxReach(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters + body pivot contribution (0.25m)
+    return physical.legLength / 100 + 0.25;
+  }
+
+  /**
+   * Get close range threshold for an archetype (punching/elbow distance).
+   * Based on arm length from physical attributes.
+   *
+   * @param archetype - Player archetype
+   * @returns Close range threshold in meters
+   * @korean 근접 범위 (미터)
+   */
+  private getArchetypeCloseRange(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Arm length in cm -> meters (punching range)
+    return physical.armLength / 100;
+  }
+
+  /**
+   * Get medium range threshold for an archetype (kicking distance).
+   * Based on leg length from physical attributes.
+   *
+   * @param archetype - Player archetype
+   * @returns Medium range threshold in meters
+   * @korean 중거리 범위 (미터)
+   */
+  private getArchetypeMediumRange(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters (kicking range without full body pivot)
+    return physical.legLength / 100;
   }
 
   /**
@@ -1025,9 +1054,10 @@ export class AIDecisionTree {
       }
     }
 
+    // Use archetype-based max reach for counter distance check
+    const maxReach = this.getArchetypeMaxReach(personality.archetype);
     const shouldCounter =
-      Math.random() < counterChance &&
-      context.distanceToOpponent < COMBAT_RANGES_METERS.LONG;
+      Math.random() < counterChance && context.distanceToOpponent < maxReach;
 
     if (shouldCounter) {
       let killModeReason = "";
@@ -1095,8 +1125,9 @@ export class AIDecisionTree {
       context.playerKi > context.playerMaxKi * 0.3 &&
       context.playerStamina > context.playerMaxStamina * 0.3;
 
-    const goodDistance =
-      context.distanceToOpponent < COMBAT_RANGES_METERS.MEDIUM;
+    // Use archetype-based medium range (leg length) for combo distance check
+    const mediumRange = this.getArchetypeMediumRange(personality.archetype);
+    const goodDistance = context.distanceToOpponent < mediumRange;
     const comboChance = Math.random() < personality.comboTendency;
 
     if (hasResources && goodDistance && comboChance) {
@@ -1140,12 +1171,17 @@ export class AIDecisionTree {
     distance: number,
     preferredStances: readonly TrigramStance[],
     currentStance: TrigramStance,
+    archetype: PlayerArchetype,
   ): TrigramStance | undefined {
-    // Determine distance category using physics-first meters thresholds
+    // Determine distance category using archetype-based physical attributes
+    // Close = arm length (punching range), Medium = leg length (kicking range)
+    const closeRange = this.getArchetypeCloseRange(archetype);
+    const mediumRange = this.getArchetypeMediumRange(archetype);
+
     let distanceCategory: string;
-    if (distance <= COMBAT_RANGES_METERS.CLOSE) {
+    if (distance <= closeRange) {
       distanceCategory = "CLOSE";
-    } else if (distance <= COMBAT_RANGES_METERS.MEDIUM) {
+    } else if (distance <= mediumRange) {
       distanceCategory = "MID";
     } else {
       distanceCategory = "FAR";
@@ -1272,6 +1308,7 @@ export class AIDecisionTree {
       context.distanceToOpponent,
       behavior.preferredStances,
       context.playerStance,
+      personality.archetype,
     );
 
     if (
@@ -1367,9 +1404,11 @@ export class AIDecisionTree {
     context: CombatContext,
     personality: AIPersonality,
   ): AIDecision {
+    // Use archetype-based max reach for feint distance check
+    const maxReach = this.getArchetypeMaxReach(personality.archetype);
     const shouldFeint =
       Math.random() < personality.feintChance &&
-      context.distanceToOpponent < COMBAT_RANGES_METERS.LONG;
+      context.distanceToOpponent < maxReach;
 
     if (shouldFeint) {
       return {
