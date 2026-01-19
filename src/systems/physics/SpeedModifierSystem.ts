@@ -254,9 +254,11 @@ export class SpeedModifierSystem {
       (1.0 - injuryPenalty) *
       (1.0 - combatStatePenalty);
 
-    // Calculate final acceleration using stamina penalty
-    // Formula: Base × (1 - Stamina)
-    const finalAcceleration = this.BASE_ACCELERATION * (1.0 - staminaPenalty);
+    // Calculate final acceleration using archetype-specific base and stamina penalty
+    // Formula: ArchetypeAcceleration × (1 - StaminaPenalty)
+    const archetypeAcceleration =
+      playerState.physicalAttributes?.acceleration ?? this.BASE_ACCELERATION;
+    const finalAcceleration = archetypeAcceleration * (1.0 - staminaPenalty);
 
     return {
       baseSpeed,

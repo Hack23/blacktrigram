@@ -143,6 +143,14 @@ export const MUSA_PHYSICAL: PhysicalAttributes = {
    * Efficient for tactical advances
    */
   runSpeed: 9.5,
+
+  /**
+   * Acceleration: 12.0 m/s²
+   * Balanced explosiveness
+   * Military conditioning for quick reactions
+   * Optimal muscle-to-weight ratio for combat
+   */
+  acceleration: 12.0,
 };
 
 /**
@@ -262,6 +270,14 @@ export const AMSALJA_PHYSICAL: PhysicalAttributes = {
    * Exceptional for closing distance quickly
    */
   runSpeed: 11.0,
+
+  /**
+   * Acceleration: 15.0 m/s²
+   * HIGHEST explosiveness
+   * Exceptional muscle-to-weight ratio
+   * Lightning-fast direction changes
+   */
+  acceleration: 15.0,
 };
 
 /**
@@ -381,6 +397,14 @@ export const HACKER_PHYSICAL: PhysicalAttributes = {
    * Relies on tech for combat advantage
    */
   runSpeed: 8.5,
+
+  /**
+   * Acceleration: 10.0 m/s²
+   * Moderate explosiveness
+   * Average physical conditioning
+   * Compensated by tech-enhanced reactions
+   */
+  acceleration: 10.0,
 };
 
 /**
@@ -500,6 +524,14 @@ export const JEONGBO_PHYSICAL: PhysicalAttributes = {
    * Efficient pursuit and evasion
    */
   runSpeed: 10.0,
+
+  /**
+   * Acceleration: 14.0 m/s²
+   * High explosiveness
+   * Agency combat training
+   * Quick response for tactical situations
+   */
+  acceleration: 14.0,
 };
 
 /**
@@ -619,6 +651,14 @@ export const JOJIK_PHYSICAL: PhysicalAttributes = {
    * Still intimidating when charging
    */
   runSpeed: 8.0,
+
+  /**
+   * Acceleration: 9.0 m/s²
+   * Lower explosiveness
+   * Heavy mass requires more force to move
+   * Compensated by devastating power on contact
+   */
+  acceleration: 9.0,
 };
 
 /**

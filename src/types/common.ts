@@ -791,6 +791,19 @@ export interface PhysicalAttributes {
    * - Consumes stamina during use
    */
   readonly runSpeed: number;
+
+  /**
+   * Base acceleration in meters per second squared.
+   *
+   * **Korean**: 가속도 (Acceleration)
+   *
+   * Typical Range: 9.0-15.0 m/s² for combat movement
+   * - Determines how quickly fighter reaches max speed
+   * - Based on muscle-to-weight ratio (explosiveness)
+   * - Higher = more explosive starts and direction changes
+   * - Affects combat responsiveness and evasion
+   */
+  readonly acceleration: number;
 }
 
 /**

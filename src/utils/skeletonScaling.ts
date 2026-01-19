@@ -143,6 +143,7 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
   shoulderWidth: 43,
   walkSpeed: 6.0,
   runSpeed: 9.5,
+  acceleration: 12.0,
 };
 
 /**
