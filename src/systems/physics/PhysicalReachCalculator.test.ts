@@ -359,7 +359,7 @@ describe("PhysicalReachCalculator", () => {
         { name: "Amsalja", attrs: AMSALJA_PHYSICAL, expectedMin: 1.3, expectedMax: 1.5 },
       ];
 
-      archetypes.forEach(({ name, attrs, expectedMin, expectedMax }) => {
+      archetypes.forEach(({ name: _name, attrs, expectedMin, expectedMax }) => {
         const result = calculator.calculateReach(
           attrs,
           AnimationType.ROUNDHOUSE_KICK,
@@ -378,7 +378,7 @@ describe("PhysicalReachCalculator", () => {
         { name: "Amsalja", attrs: AMSALJA_PHYSICAL, expectedMin: 0.8, expectedMax: 1.0 },
       ];
 
-      archetypes.forEach(({ name, attrs, expectedMin, expectedMax }) => {
+      archetypes.forEach(({ name: _name, attrs, expectedMin, expectedMax }) => {
         const result = calculator.calculateReach(
           attrs,
           AnimationType.JAB,
