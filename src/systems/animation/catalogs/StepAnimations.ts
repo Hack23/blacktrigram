@@ -47,8 +47,8 @@ export const STEP_ANIMATION_PARAMS = {
   /** Distance moved per step in meters (30cm) */
   DISTANCE: 0.3,
 
-  /** Stamina cost per step */
-  STAMINA_COST: 5,
+  /** Stamina cost per step - reduced for sustained combat (3 min rounds) */
+  STAMINA_COST: 3,
 
   /** Whether steps are interruptible (false for commitment) */
   INTERRUPTIBLE: false,
@@ -227,11 +227,11 @@ export const STEP_ANIMATION_CONFIGS: ReadonlyMap<StepDirection, StepConfig> =
 export function interpolateStepKeyframes(
   keyframe1: StepKeyframe,
   keyframe2: StepKeyframe,
-  t: number
+  t: number,
 ): StepKeyframe {
   return {
     frame: Math.round(
-      keyframe1.frame + (keyframe2.frame - keyframe1.frame) * t
+      keyframe1.frame + (keyframe2.frame - keyframe1.frame) * t,
     ),
     weight: keyframe1.weight + (keyframe2.weight - keyframe1.weight) * t,
     frontFootOffset:
@@ -262,7 +262,7 @@ export function getStepKeyframeAtFrame(frame: number): StepKeyframe {
   // Clamp frame to valid range
   const clampedFrame = Math.max(
     0,
-    Math.min(STEP_ANIMATION_PARAMS.FRAMES - 1, frame)
+    Math.min(STEP_ANIMATION_PARAMS.FRAMES - 1, frame),
   );
 
   // Find exact match
@@ -306,7 +306,7 @@ export function getStepKeyframeAtFrame(frame: number): StepKeyframe {
  * @korean 발걸음방향벡터계산
  */
 export function getStepDirectionVector(
-  direction: StepDirection
+  direction: StepDirection,
 ): [number, number, number] {
   const distance = STEP_ANIMATION_PARAMS.DISTANCE;
   const diagonalFactor = Math.sqrt(2) / 2; // ~0.707 for 45-degree diagonals

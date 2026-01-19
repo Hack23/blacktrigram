@@ -48,7 +48,7 @@ export interface VitalPointSystemConfig {
 }
 
 // Deprecated placeholder type - use unknown for generic texture representation
- 
+
 type Texture = unknown;
 
 // Vital point effect
@@ -233,7 +233,7 @@ export interface PhysicsSystemInterface {
   getEntityState: (entityId: EntityId) => PhysicsEntityState | undefined;
   checkCollision: (
     entityIdA: EntityId,
-    entityIdB: EntityId
+    entityIdB: EntityId,
   ) => CollisionData | null;
   applyForce: (entityId: EntityId, force: Velocity) => void;
 }
@@ -244,7 +244,7 @@ export interface RenderingSystemInterface {
   removeRenderable: (entityId: EntityId) => void;
   updateRenderable: (
     entityId: EntityId,
-    updates: Partial<RenderableConfig>
+    updates: Partial<RenderableConfig>,
   ) => void;
   render: () => void;
 }
@@ -260,11 +260,11 @@ export interface EventBusInterface {
   publish: (event: SystemEvent) => void;
   subscribe: (
     eventType: string,
-    callback: (event: SystemEvent) => void
+    callback: (event: SystemEvent) => void,
   ) => void;
   unsubscribe: (
     eventType: string,
-    callback: (event: SystemEvent) => void
+    callback: (event: SystemEvent) => void,
   ) => void;
 }
 
@@ -274,7 +274,7 @@ export interface CombatSystemInterface {
     technique: any,
     attacker: any,
     defender: any,
-    hitResult: any
+    hitResult: any,
   ) => {
     baseDamage: number;
     modifierDamage: number;
@@ -286,12 +286,12 @@ export interface CombatSystemInterface {
     attacker: any,
     defender: any,
     technique: any,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
   ) => any;
   applyCombatResult: (
     result: any,
     attacker: any,
-    defender: any
+    defender: any,
   ) => { updatedAttacker: any; updatedDefender: any };
   getAvailableTechniques: (player: any) => readonly any[];
 }
@@ -303,7 +303,7 @@ export interface VitalPointSystemInterface {
     baseDamage: number,
     attackerArchetype: any,
     targetDimensions: { width: number; height: number },
-    targetedVitalPointId?: string | null
+    targetedVitalPointId?: string | null,
   ) => any;
   calculateHit: (
     technique: any,
@@ -311,12 +311,12 @@ export interface VitalPointSystemInterface {
     accuracyRoll: number,
     attackerPosition: Position,
     defenderPosition: Position,
-    defenderStance: any
+    defenderStance: any,
   ) => any;
   applyVitalPointEffects: (
     player: any,
     vitalPoint: any,
-    intensityMultiplier?: number
+    intensityMultiplier?: number,
   ) => any;
 }
 
@@ -325,13 +325,13 @@ export interface TrigramSystemInterface {
   calculateStanceEffectiveness: (
     attackerStance: any,
     defenderStance: any,
-    technique?: any
+    technique?: any,
   ) => number;
   isValidTransition: (from: any, to: any) => boolean;
   getTransitionCost: (
     from: any,
     to: any,
-    player?: any
+    player?: any,
   ) => { ki: number; stamina: number; timeMs: number };
   recommendStance: (player: any, opponent?: any) => any;
 }
@@ -665,9 +665,9 @@ export const COMBAT_CONFIG = {
   MAX_BALANCE: 100,
   MAX_CONSCIOUSNESS: 100,
 
-  // Damage multipliers
+  // Damage multipliers - vital points more impactful for Korean martial arts realism
   CRITICAL_HIT_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for more realistic vital point impact
   COUNTER_ATTACK_MULTIPLIER: 1.3,
 
   // Status thresholds
@@ -676,9 +676,9 @@ export const COMBAT_CONFIG = {
   UNCONSCIOUS_THRESHOLD: 0,
   STAMINA_EXHAUSTED_THRESHOLD: 0,
 
-  // Recovery rates (per second)
-  STAMINA_RECOVERY_RATE: 10,
-  KI_RECOVERY_RATE: 5,
+  // Recovery rates (per second) - increased for 3-minute round sustainability
+  STAMINA_RECOVERY_RATE: 15, // Increased from 10 for sustained combat
+  KI_RECOVERY_RATE: 8, // Increased from 5 for more technique usage
   BALANCE_RECOVERY_RATE: 15,
   CONSCIOUSNESS_RECOVERY_RATE: 2,
 
@@ -693,7 +693,7 @@ export const COMBAT_CONFIG = {
 export const ENHANCED_DAMAGE_CONSTANTS = {
   BASE_DAMAGE: 10,
   CRITICAL_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for Korean martial arts vital point realism
   ARMOR_REDUCTION: 0.1,
   STANCE_DEFENSE_BONUS: 0.2,
   BALANCE_IMPACT_MULTIPLIER: 0.3,
@@ -714,16 +714,16 @@ export const COMBAT_CONSTANTS = {
   // Damage calculation
   BASE_DAMAGE: 10,
   CRITICAL_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for Korean martial arts vital point realism
 
   // Status thresholds
   LOW_HEALTH_THRESHOLD: 30,
   CRITICAL_HEALTH_THRESHOLD: 15,
   EXHAUSTED_STAMINA_THRESHOLD: 20,
 
-  // Recovery rates (per second)
-  STAMINA_RECOVERY_RATE: 5,
-  KI_RECOVERY_RATE: 3,
+  // Recovery rates (per second) - increased for 3-minute round sustainability
+  STAMINA_RECOVERY_RATE: 15, // Increased from 5 for sustained combat
+  KI_RECOVERY_RATE: 8, // Increased from 3 for more technique usage
   CONSCIOUSNESS_RECOVERY_RATE: 2,
 
   // Combat timing
@@ -1500,7 +1500,7 @@ export const MARTIAL_ARTS_CONFIG = {
   // Damage calculations
   BASE_DAMAGE_MULTIPLIER: 1.0,
   CRITICAL_HIT_MULTIPLIER: 1.5,
-  VITAL_POINT_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 2.0 for impactful vital point strikes
 } as const;
 
 export default GAME_CONFIG;

@@ -39,11 +39,11 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
       korean: "강력한 하늘의 힘으로 적을 강타합니다",
       english: "Strike with the power of heaven",
     },
-    staminaCost: 30,
-    kiCost: 20,
+    staminaCost: 15,
+    kiCost: 10,
     damage: { min: 25, max: 35 },
     damageType: DamageType.BLUNT,
-    cooldown: 5000,
+    cooldown: 1300, // animationDuration (800) + recovery (500)
     requiredStance: TrigramStance.GEON,
     keyboardShortcut: "Q",
     criticalChance: 0.25,
@@ -63,11 +63,11 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
       korean: "산처럼 굳건한 방어 자세를 취합니다",
       english: "Adopt an immovable defensive stance",
     },
-    staminaCost: 20,
-    kiCost: 15,
+    staminaCost: 10,
+    kiCost: 8,
     damage: { min: 0, max: 5 },
     damageType: DamageType.IMPACT,
-    cooldown: 8000,
+    cooldown: 1100, // animationDuration (600) + recovery (500)
     requiredStance: TrigramStance.GAN,
     keyboardShortcut: "T",
     specialEffect: "defense_boost",
@@ -87,11 +87,11 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
       korean: "용의 기세로 적을 관통합니다",
       english: "Pierce through with dragon's might",
     },
-    staminaCost: 35,
-    kiCost: 25,
+    staminaCost: 18,
+    kiCost: 12,
     damage: { min: 30, max: 40 },
     damageType: DamageType.PIERCING,
-    cooldown: 7000,
+    cooldown: 1500, // animationDuration (1000) + recovery (500)
     keyboardShortcut: "E",
     targetsVitalPoint: true,
     criticalChance: 0.3,
@@ -111,11 +111,11 @@ export const MUSA_TECHNIQUES: readonly Technique[] = [
       korean: "산을 깨뜨리는 강력한 일격",
       english: "A devastating blow that shatters mountains",
     },
-    staminaCost: 40,
-    kiCost: 30,
+    staminaCost: 20,
+    kiCost: 15,
     damage: { min: 35, max: 50 },
     damageType: DamageType.CRUSHING,
-    cooldown: 10000,
+    cooldown: 1700, // animationDuration (1200) + recovery (500)
     requiredStance: TrigramStance.GEON,
     keyboardShortcut: "R",
     criticalChance: 0.2,
@@ -145,11 +145,11 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
       korean: "그림자처럼 빠르게 급소를 노립니다",
       english: "Strike vital points with shadow speed",
     },
-    staminaCost: 25,
-    kiCost: 20,
+    staminaCost: 12,
+    kiCost: 10,
     damage: { min: 20, max: 35 },
     damageType: DamageType.NERVE,
-    cooldown: 4000,
+    cooldown: 1100, // animationDuration (600) + recovery (500)
     requiredStance: TrigramStance.LI,
     keyboardShortcut: "Q",
     targetsVitalPoint: true,
@@ -170,11 +170,11 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
       korean: "정확한 신경 타격으로 적을 마비시킵니다",
       english: "Paralyze the enemy with precise nerve strikes",
     },
-    staminaCost: 30,
-    kiCost: 25,
+    staminaCost: 15,
+    kiCost: 12,
     damage: { min: 15, max: 25 },
     damageType: DamageType.NERVE,
-    cooldown: 6000,
+    cooldown: 1200, // animationDuration (700) + recovery (500)
     keyboardShortcut: "T",
     targetsVitalPoint: true,
     specialEffect: "paralysis",
@@ -194,11 +194,11 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
       korean: "완벽한 정밀도로 치명적인 급소를 공격합니다",
       english: "Attack critical vital points with perfect accuracy",
     },
-    staminaCost: 35,
-    kiCost: 30,
+    staminaCost: 18,
+    kiCost: 15,
     damage: { min: 25, max: 45 },
     damageType: DamageType.PRESSURE,
-    cooldown: 8000,
+    cooldown: 1400, // animationDuration (900) + recovery (500)
     requiredStance: TrigramStance.LI,
     keyboardShortcut: "E",
     targetsVitalPoint: true,
@@ -219,11 +219,11 @@ export const AMSALJA_TECHNIQUES: readonly Technique[] = [
       korean: "소리 없이 치명적인 일격을 가합니다",
       english: "Deliver a silent, lethal strike",
     },
-    staminaCost: 45,
-    kiCost: 35,
+    staminaCost: 22,
+    kiCost: 18,
     damage: { min: 40, max: 60 },
     damageType: DamageType.NERVE,
-    cooldown: 12000,
+    cooldown: 1500, // animationDuration (1000) + recovery (500)
     keyboardShortcut: "R",
     targetsVitalPoint: true,
     criticalChance: 0.6,
@@ -253,11 +253,11 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
       korean: "사이버 임플란트로 전기 충격을 가합니다",
       english: "Deliver electric shock via cyber implants",
     },
-    staminaCost: 20,
-    kiCost: 25,
+    staminaCost: 10,
+    kiCost: 12,
     damage: { min: 18, max: 28 },
     damageType: DamageType.ELECTRIC,
-    cooldown: 4500,
+    cooldown: 1000, // animationDuration (500) + recovery (500)
     requiredStance: TrigramStance.JIN,
     keyboardShortcut: "Q",
     specialEffect: "stun",
@@ -277,11 +277,11 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
       korean: "전투 데이터를 분석하여 최적의 공격을 수행합니다",
       english: "Analyze combat data for optimal attack",
     },
-    staminaCost: 25,
-    kiCost: 20,
+    staminaCost: 12,
+    kiCost: 10,
     damage: { min: 22, max: 32 },
     damageType: DamageType.PIERCING,
-    cooldown: 5000,
+    cooldown: 1200, // animationDuration (700) + recovery (500)
     keyboardShortcut: "T",
     targetsVitalPoint: true,
     criticalChance: 0.35,
@@ -301,11 +301,11 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
       korean: "임플란트를 과부하시켜 초고속 공격을 수행합니다",
       english: "Overload implants for lightning-fast attacks",
     },
-    staminaCost: 35,
-    kiCost: 30,
+    staminaCost: 18,
+    kiCost: 15,
     damage: { min: 15, max: 25 },
     damageType: DamageType.ELECTRIC,
-    cooldown: 7000,
+    cooldown: 1700, // animationDuration (1200) + recovery (500)
     requiredStance: TrigramStance.JIN,
     keyboardShortcut: "E",
     specialEffect: "multi_hit",
@@ -325,11 +325,11 @@ export const HACKER_TECHNIQUES: readonly Technique[] = [
       korean: "적의 신경 시스템을 해킹하여 무력화합니다",
       english: "Hack the enemy's nervous system",
     },
-    staminaCost: 40,
-    kiCost: 35,
+    staminaCost: 20,
+    kiCost: 18,
     damage: { min: 30, max: 45 },
     damageType: DamageType.PSYCHIC,
-    cooldown: 10000,
+    cooldown: 1600, // animationDuration (1100) + recovery (500)
     keyboardShortcut: "R",
     targetsVitalPoint: true,
     specialEffect: "system_shutdown",
@@ -358,11 +358,11 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       korean: "적의 약점을 분석하여 전술적으로 공격합니다",
       english: "Analyze and strike enemy weaknesses tactically",
     },
-    staminaCost: 25,
-    kiCost: 20,
+    staminaCost: 12,
+    kiCost: 10,
     damage: { min: 20, max: 30 },
     damageType: DamageType.PIERCING,
-    cooldown: 4000,
+    cooldown: 1150, // animationDuration (650) + recovery (500)
     requiredStance: TrigramStance.GAM,
     keyboardShortcut: "Q",
     targetsVitalPoint: true,
@@ -383,11 +383,11 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       korean: "적의 움직임을 읽고 반격합니다",
       english: "Read and counter enemy movements",
     },
-    staminaCost: 20,
-    kiCost: 25,
+    staminaCost: 10,
+    kiCost: 12,
     damage: { min: 15, max: 30 },
     damageType: DamageType.IMPACT,
-    cooldown: 5000,
+    cooldown: 1100, // animationDuration (600) + recovery (500)
     keyboardShortcut: "T",
     specialEffect: "counter_stance",
     animationDuration: 600,
@@ -406,11 +406,11 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       korean: "적의 정신을 교란하여 약화시킵니다",
       english: "Disrupt enemy's mental state",
     },
-    staminaCost: 30,
-    kiCost: 30,
+    staminaCost: 15,
+    kiCost: 15,
     damage: { min: 10, max: 20 },
     damageType: DamageType.PSYCHIC,
-    cooldown: 8000,
+    cooldown: 1300, // animationDuration (800) + recovery (500)
     keyboardShortcut: "E",
     specialEffect: "confusion",
     animationDuration: 800,
@@ -429,11 +429,11 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       korean: "수집한 정보를 바탕으로 완벽한 공격을 수행합니다",
       english: "Execute perfect attack based on gathered intelligence",
     },
-    staminaCost: 40,
-    kiCost: 35,
+    staminaCost: 20,
+    kiCost: 18,
     damage: { min: 35, max: 50 },
     damageType: DamageType.PIERCING,
-    cooldown: 10000,
+    cooldown: 1500, // animationDuration (1000) + recovery (500)
     requiredStance: TrigramStance.GAM,
     keyboardShortcut: "R",
     targetsVitalPoint: true,
@@ -454,15 +454,15 @@ export const JEONGBO_YOWON_TECHNIQUES: readonly Technique[] = [
       korean: "무력한 적을 정밀하게 제압합니다 - 서명 기술",
       english: "Precisely takedown helpless opponent - Signature Move",
     },
-    staminaCost: 50,
-    kiCost: 40,
+    staminaCost: 25,
+    kiCost: 20,
     damage: { min: 45, max: 65 },
     damageType: DamageType.PIERCING,
-    cooldown: 15000,
+    cooldown: 1700, // animationDuration (1200) + recovery (500)
     requiredStance: TrigramStance.GAM,
     keyboardShortcut: "Y",
     targetsVitalPoint: true,
-    criticalChance: 0.60,
+    criticalChance: 0.6,
     specialEffect: "signature_move",
     animationDuration: 1200,
     animation: {
@@ -489,11 +489,11 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
       korean: "더러운 싸움으로 적을 제압합니다",
       english: "Overwhelm with dirty fighting",
     },
-    staminaCost: 20,
-    kiCost: 15,
+    staminaCost: 10,
+    kiCost: 8,
     damage: { min: 18, max: 28 },
     damageType: DamageType.BLUNT,
-    cooldown: 3500,
+    cooldown: 1100, // animationDuration (600) + recovery (500)
     requiredStance: TrigramStance.GON,
     keyboardShortcut: "Q",
     criticalChance: 0.25,
@@ -513,11 +513,11 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
       korean: "무자비하게 적을 쓰러뜨립니다",
       english: "Mercilessly takedown the enemy",
     },
-    staminaCost: 30,
-    kiCost: 20,
+    staminaCost: 15,
+    kiCost: 10,
     damage: { min: 25, max: 35 },
     damageType: DamageType.CRUSHING,
-    cooldown: 5000,
+    cooldown: 1300, // animationDuration (800) + recovery (500)
     keyboardShortcut: "T",
     specialEffect: "knockdown",
     animationDuration: 800,
@@ -536,11 +536,11 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
       korean: "주변 물건을 이용하여 공격합니다",
       english: "Attack using improvised objects",
     },
-    staminaCost: 25,
-    kiCost: 20,
+    staminaCost: 12,
+    kiCost: 10,
     damage: { min: 22, max: 38 },
     damageType: DamageType.SHARP,
-    cooldown: 6000,
+    cooldown: 1200, // animationDuration (700) + recovery (500)
     requiredStance: TrigramStance.GON,
     keyboardShortcut: "E",
     criticalChance: 0.3,
@@ -561,11 +561,11 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
       korean: "자비 없이 적을 집중 공격합니다",
       english: "Relentlessly assault without mercy",
     },
-    staminaCost: 45,
-    kiCost: 25,
+    staminaCost: 22,
+    kiCost: 12,
     damage: { min: 30, max: 55 },
     damageType: DamageType.CRUSHING,
-    cooldown: 9000,
+    cooldown: 1800, // animationDuration (1300) + recovery (500)
     keyboardShortcut: "R",
     criticalChance: 0.35,
     specialEffect: "rage",
@@ -586,7 +586,7 @@ export const JOJIK_POKRYEOKBAE_TECHNIQUES: readonly Technique[] = [
  * @public
  */
 export function getTechniquesForArchetype(
-  archetype: PlayerArchetype
+  archetype: PlayerArchetype,
 ): readonly Technique[] {
   switch (archetype) {
     case PlayerArchetype.MUSA:
@@ -662,12 +662,12 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
  */
 export function getTechniquesForStanceAndArchetype(
   stance: TrigramStance,
-  archetype: PlayerArchetype
+  archetype: PlayerArchetype,
 ): readonly Technique[] {
   // Get stance-based techniques from Korean martial arts system
   const koreanTechniques = KoreanTechniquesSystem.getAllAvailableTechniques(
     stance,
-    archetype
+    archetype,
   );
 
   // Convert to Technique format
@@ -678,7 +678,7 @@ export function getTechniquesForStanceAndArchetype(
 
   // Filter archetype techniques to only include those matching current stance or no stance requirement
   const filteredArchetypeTechniques = archetypeTechniques.filter(
-    (tech) => !tech.requiredStance || tech.requiredStance === stance
+    (tech) => !tech.requiredStance || tech.requiredStance === stance,
   );
 
   // Combine both sets, prioritizing stance techniques
