@@ -64,8 +64,11 @@ describe("BreathingIndicator", () => {
             korean: "바람맞음",
             english: "Winded",
           },
-          stackable: true,
+          stackable: true as const,
           source: "vital_point_system",
+          // Required properties for BreathingDisruptionEffect type guard
+          level: BreathingDisruptionLevel.WINDED,
+          staminaRegenMultiplier: 0.75,
         },
       ],
     };

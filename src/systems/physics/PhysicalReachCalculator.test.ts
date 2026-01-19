@@ -100,8 +100,8 @@ describe("PhysicalReachCalculator", () => {
       );
 
       expect(result.baseLimbLength).toBe(0.82); // Arm length in meters
-      // Shoulder offset = 46cm/2 = 0.23m + torso rotation 0.1m = 0.33m
-      expect(result.bodyPivotContribution).toBeCloseTo(0.33, 2);
+      // Shoulder offset = 44cm/2 = 0.22m + torso rotation 0.1m = 0.32m
+      expect(result.bodyPivotContribution).toBeCloseTo(0.32, 2);
     });
 
     it("should add shoulder offset for crosses", () => {
@@ -112,8 +112,8 @@ describe("PhysicalReachCalculator", () => {
         TrigramStance.GEON,
       );
 
-      // Shoulder offset = 46cm/2 = 0.23m + torso rotation 0.1m = 0.33m
-      expect(result.bodyPivotContribution).toBeCloseTo(0.33, 2);
+      // Shoulder offset = 44cm/2 = 0.22m + torso rotation 0.1m = 0.32m
+      expect(result.bodyPivotContribution).toBeCloseTo(0.32, 2);
     });
 
     it("should add shoulder offset for hooks", () => {
@@ -124,8 +124,8 @@ describe("PhysicalReachCalculator", () => {
         TrigramStance.GEON,
       );
 
-      // Shoulder offset = 46cm/2 = 0.23m + torso rotation 0.1m = 0.33m
-      expect(result.bodyPivotContribution).toBeCloseTo(0.33, 2);
+      // Shoulder offset = 44cm/2 = 0.22m + torso rotation 0.1m = 0.32m
+      expect(result.bodyPivotContribution).toBeCloseTo(0.32, 2);
     });
   });
 
@@ -256,7 +256,7 @@ describe("PhysicalReachCalculator", () => {
 
       // Arm length + shoulder offset + torso rotation
       expect(result.baseLimbLength).toBe(0.82); // 82cm → 0.82m
-      expect(result.bodyPivotContribution).toBeCloseTo(0.33, 2); // Shoulder offset + rotation
+      expect(result.bodyPivotContribution).toBeCloseTo(0.32, 2); // Shoulder offset (44cm/2=22cm) + rotation (10cm)
 
       // Final reach should be realistic punch distance (~1.0-1.2m)
       expect(result.effectiveReach).toBeGreaterThan(1.0);
