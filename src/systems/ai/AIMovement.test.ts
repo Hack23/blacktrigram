@@ -246,7 +246,7 @@ describe("AI Movement System", () => {
       const personality = AI_PERSONALITIES.BALANCED_FIGHTER;
       const context: CombatContext = {
         ...createContext(250),
-        arenaBounds: { x: 0, y: 0, width: 400, height: 300 },
+        arenaBounds: { x: 0, y: 0, width: 400, height: 300, worldWidthMeters: 8, worldDepthMeters: 6 },
       };
 
       const decision = decisionTree.makeDecision(
@@ -256,18 +256,25 @@ describe("AI Movement System", () => {
       );
 
       if (decision.targetPosition) {
-        // Target position should be within bounds (using DecisionTree's arena margin constants)
+        // Calculate expected margins based on physics-first system
+        // ARENA_MARGIN_X = 0.6m, arena = 400 pixels / 8m = 50 pixels/m
+        // Margin in pixels = 0.6m * 50 = 30 pixels
+        const pixelsPerMeter = context.arenaBounds.width / context.arenaBounds.worldWidthMeters;
+        const marginXPixels = 0.6 * pixelsPerMeter; // AI_MOVEMENT_METERS.ARENA_MARGIN_X = 0.6m
+        const marginYPixels = 1.8 * pixelsPerMeter * (context.arenaBounds.height / context.arenaBounds.width); // AI_MOVEMENT_METERS.ARENA_MARGIN_Y = 1.8m
+        
+        // Target position should be within bounds
         expect(decision.targetPosition.x).toBeGreaterThanOrEqual(
           context.arenaBounds.x,
         );
         expect(decision.targetPosition.x).toBeLessThanOrEqual(
-          context.arenaBounds.x + context.arenaBounds.width - ARENA_MARGIN_X,
+          context.arenaBounds.x + context.arenaBounds.width - marginXPixels,
         );
         expect(decision.targetPosition.y).toBeGreaterThanOrEqual(
           context.arenaBounds.y,
         );
         expect(decision.targetPosition.y).toBeLessThanOrEqual(
-          context.arenaBounds.y + context.arenaBounds.height - ARENA_MARGIN_Y,
+          context.arenaBounds.y + context.arenaBounds.height - marginYPixels,
         );
       }
     });

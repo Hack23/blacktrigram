@@ -189,13 +189,13 @@ export class PhysicalReachCalculator {
     const baseLimbLengthMeters = baseLimbLength / 100;
     
     // Add body pivot contribution for kicks
-    // Kicks benefit from hip rotation and torso lean which add ~0.2-0.3m
+    // Kicks benefit from hip rotation and torso lean which add 0.25m
     // This accounts for:
-    // - Hip width/rotation (~0.15m)
-    // - Torso lean during kick (~0.1m)
-    // Total body pivot contribution: ~0.25m for kicks
+    // - Hip width/rotation (0.15m)
+    // - Torso lean during kick (0.1m)
+    // Total body pivot contribution: 0.25m for kicks
     const bodyPivotContribution = techniqueType === "kick" || techniqueType === "knee"
-      ? 0.25  // meters (25cm from hip rotation and lean)
+      ? 0.25  // meters (0.25m total body pivot from hip rotation + torso lean)
       : 0;
     
     const effectiveReach =

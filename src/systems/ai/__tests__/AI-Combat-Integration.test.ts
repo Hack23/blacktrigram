@@ -602,8 +602,10 @@ describe("AI Combat Integration", () => {
     });
 
     it("should handle extreme distance scenarios", async () => {
-      const farPlayer = createMockPlayerState({ position: { x: 50, y: 50 } });
-      const farOpponent = createMockPlayerState({ position: { x: 1150, y: 750 } });
+      // Use far but valid positions within arena bounds (1200x800)
+      // Distance: ~1100 pixels (diagonal across most of arena)
+      const farPlayer = createMockPlayerState({ position: { x: 100, y: 100 } });
+      const farOpponent = createMockPlayerState({ position: { x: 1100, y: 700 } });
       const onExecuteAction = vi.fn();
 
       renderHook(() =>
