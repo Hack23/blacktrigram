@@ -12,6 +12,8 @@
     "build:stats": "tsc -b && vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",
     "build:fast": "tsc -b --incremental && vite build --mode production --minify esbuild",
     "check": "tsc -b",
+    "check:test": "tsc -p tsconfig.test.json --noEmit",
+    "check:all": "tsc -b && tsc -p tsconfig.test.json --noEmit",
     "lint": "eslint .",
     "preview": "vite preview --host",
     "preview:analyze": "vite preview --host --mode analyze",
