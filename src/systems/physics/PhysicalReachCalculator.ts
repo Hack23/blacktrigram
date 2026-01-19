@@ -50,6 +50,13 @@ export interface PhysicalReachResult {
   readonly baseLimbLength: number;
 
   /**
+   * Body pivot contribution in meters (kicks only).
+   * Accounts for hip rotation and torso lean during kicks (~0.25m).
+   * @korean 몸통회전기여도
+   */
+  readonly bodyPivotContribution: number;
+
+  /**
    * Technique type used.
    * @korean 기술유형
    */
@@ -75,7 +82,7 @@ export interface PhysicalReachResult {
 
   /**
    * Final effective reach in meters.
-   * baseLimbLength × animationReachMultiplier × stanceModifier
+   * (baseLimbLength + bodyPivotContribution) × animationReachMultiplier × stanceModifier
    * @korean 최종유효도달
    */
   readonly effectiveReach: number;
@@ -108,6 +115,17 @@ export class PhysicalReachCalculator {
    * 1. Physical attributes (archetype-specific limb length)
    * 2. Animation timing (hit window and extension phase)
    * 3. Stance modifiers (Eight Trigrams reach bonuses)
+   * 4. Body pivot contribution (hip rotation and torso lean for kicks)
+   *
+   * **Body Pivot Mechanics for Kicks**:
+   * Kicks benefit from whole-body rotation that punches don't utilize:
+   * - Hip rotation adds ~0.15m (pelvis width + pivot)
+   * - Torso lean adds ~0.1m (forward lean during kick)
+   * - Total body pivot: ~0.25m additional reach
+   *
+   * This accounts for the biomechanics of kicks where the fighter rotates
+   * their entire body to extend reach, unlike punches which rely primarily
+   * on arm extension.
    *
    * @param physicalAttributes - Fighter's physical attributes
    * @param animationType - Animation being executed
@@ -119,23 +137,23 @@ export class PhysicalReachCalculator {
    * ```typescript
    * const calculator = new PhysicalReachCalculator();
    *
-   * // Amsalja (long arms: 82cm) doing a jab at peak time
-   * const amsaljaReach = calculator.calculateReach(
+   * // Amsalja (long legs: 102cm) doing roundhouse kick at peak
+   * const amsaljaKick = calculator.calculateReach(
    *   AMSALJA_PHYSICAL,
-   *   AnimationType.JAB,
-   *   0.15, // Peak time
+   *   AnimationType.ROUNDHOUSE_KICK,
+   *   0.32, // Peak time
    *   TrigramStance.LI
    * );
-   * // Result: 82cm × 0.95 (jab extension) × 1.20 (fire stance) = 93.48cm
+   * // Result: (1.02m base leg + 0.25m pivot) × 1.05 (animation reach multiplier) × 1.20 (stance modifier) ≈ 1.60m
    *
-   * // Hacker (short arms: 73cm) doing same jab at peak time
-   * const hackerReach = calculator.calculateReach(
-   *   HACKER_PHYSICAL,
+   * // Same fighter doing a jab (no body pivot)
+   * const amsaljaJab = calculator.calculateReach(
+   *   AMSALJA_PHYSICAL,
    *   AnimationType.JAB,
    *   0.15,
    *   TrigramStance.LI
    * );
-   * // Result: 73cm × 0.95 × 1.20 = 83.22cm (10cm shorter!)
+   * // Result: 82cm × 0.95 (jab) × 1.20 (fire) = 0.93m (no pivot bonus)
    * ```
    *
    * @public
@@ -169,11 +187,23 @@ export class PhysicalReachCalculator {
     // Calculate final effective reach
     // Convert cm to meters for consistency with physics system
     const baseLimbLengthMeters = baseLimbLength / 100;
+    
+    // Add body pivot contribution for kicks
+    // Kicks benefit from hip rotation and torso lean which add 0.25m
+    // This accounts for:
+    // - Hip width/rotation (0.15m)
+    // - Torso lean during kick (0.1m)
+    // Total body pivot contribution: 0.25m for kicks
+    const bodyPivotContribution = techniqueType === "kick" || techniqueType === "knee"
+      ? 0.25  // meters (0.25m total body pivot from hip rotation + torso lean)
+      : 0;
+    
     const effectiveReach =
-      baseLimbLengthMeters * animationReachMultiplier * stanceModifier;
+      (baseLimbLengthMeters + bodyPivotContribution) * animationReachMultiplier * stanceModifier;
 
     return {
       baseLimbLength: baseLimbLengthMeters,
+      bodyPivotContribution,
       techniqueType,
       animationTime,
       animationReachMultiplier,

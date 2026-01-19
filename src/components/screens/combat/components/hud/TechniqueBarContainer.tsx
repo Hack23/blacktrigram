@@ -84,7 +84,7 @@ export const TechniqueBarContainer: React.FC<TechniqueBarContainerProps> = ({
   return (
     <div style={containerStyle} data-testid="technique-bar-container">
       <div style={innerStyle}>
-        <TechniqueBar {...techniqueBarProps} />
+        <TechniqueBar {...techniqueBarProps} key={techniqueBarProps.player.currentStance} />
       </div>
     </div>
   );

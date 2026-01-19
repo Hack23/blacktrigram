@@ -1154,20 +1154,21 @@ export function useCombatActions(
 
   // AI movement handler with injury-based movement penalties
   // **UPDATED**: Now scale-aware for consistent movement and distance calculations
+  // **FIX**: Positions are in METERS, not pixels - use meters-based speed
   const moveAIPlayer = useCallback(
     (targetPos: Position) => {
       const currentPos = playerPositions[1];
       const aiPlayer = validPlayers[1];
 
-      // Movement speed calibrated for 8m×8m arena with realistic combat closing speed
-      // Arena width is dynamic: arenaBounds.width is in pixels and represents an 8m-wide arena, so pixelsPerMeter = arenaBounds.width / 8
+      // Movement speed calibrated for physics-first system (all in METERS)
       // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
       // Real fights are over in 4-5 seconds - AI must close distance quickly
-      // Calculation: 2.5 m/s × pixelsPerMeter / 20 calls/s = px/call
-      const pixelsPerMeter = arenaBounds.width / 8;
-      const baseSpeed = (2.5 * pixelsPerMeter) / 20;
+      // AI decision loop frequency (defined in useAICombat.ts)
+      const AI_DECISION_FREQUENCY_HZ = 20; // 20 calls/second (50ms interval)
+      // Calculation: 2.5 m/s / 20 calls/s = 0.125 meters per call
+      const baseSpeed = 2.5 / AI_DECISION_FREQUENCY_HZ; // meters per call (0.125m per call)
 
-      // Calculate movement direction vector
+      // Calculate movement direction vector (in meters)
       const dx = targetPos.x - currentPos.x;
       const dy = targetPos.y - currentPos.y;
       const distance = Math.sqrt(dx * dx + dy * dy);

@@ -277,10 +277,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Initial player position in pixel space (left side of arena, centered vertically)
   // Physics-first: initial position in METERS (relative to arena center)
-  // 25% from left = -0.25 * worldWidth from center
+  // 0% from center (centered laterally) creates ~1.2m distance to dummy
+  // This allows most kicks to land immediately, punches require 1-2 steps (realistic)
   const initialPositionMeters = useMemo<Position>(
     () => ({
-      x: trainingAreaBounds.worldWidthMeters * -0.25, // 25% left of center
+      x: trainingAreaBounds.worldWidthMeters * 0.0, // Centered laterally
       y: 0, // Centered vertically
     }),
     [trainingAreaBounds],
@@ -329,10 +330,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return [playerPosition.x, 0, playerPosition.y];
   }, [playerPosition]);
 
-  // Dummy position in meters (at 40% of arena width from center, right side)
+  // Dummy position in meters (right side, creating optimal training distance)
+  // Positioned at 15% from center to give ~1.2-1.6m distance depending on archetype
+  // Allows kicks to hit from starting position, punches with slight approach
   // Uses world dimensions for physics-consistent positioning
   const dummyPosition = useMemo<[number, number, number]>(
-    () => [trainingAreaBounds.worldWidthMeters * 0.4, 0, 0],
+    () => [trainingAreaBounds.worldWidthMeters * 0.15, 0, 0],
     [trainingAreaBounds.worldWidthMeters],
   );
 
@@ -834,6 +837,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     const startMusic = async () => {
       try {
+        // Start training music with a smooth 2s fade-in for better UX
         await audio.fadeIn("cyberpunk_fusion", 2000);
         audioStarted = true;
       } catch (err) {

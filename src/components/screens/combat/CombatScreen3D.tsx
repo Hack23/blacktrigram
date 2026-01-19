@@ -381,9 +381,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [matchCountdownComplete, setMatchCountdownComplete] = useState(true); // Already complete (skipped)
 
   // Player 1 position in METERS (relative to arena center)
-  // Player 1 starts at 35% from left = -0.15 * worldWidth from center
+  // Player 1 starts at 10% left of center for realistic combat distance (~1.6m apart)
+  // Allows kicks to land with 1-2 steps, punches with 2-3 steps (realistic fighting)
   const [player1Position, setPlayer1Position] = useState<Position>({
-    x: arenaBounds.worldWidthMeters * -0.15, // 35% from left = -15% from center
+    x: arenaBounds.worldWidthMeters * -0.1, // 10% left of center (~0.8m for 8m arena)
     y: 0, // Centered
   });
 
@@ -571,13 +572,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   );
 
   // Player 2 position in METERS (relative to arena center) - AI-controlled
-  // Player 2 starts at 65% from left = +0.15 * worldWidth from center
+  // Player 2 starts at 10% right of center for realistic combat distance (~1.6m apart)
+  // Allows kicks to land with 1-2 steps, punches with 2-3 steps (realistic fighting)
   const player2Position = useMemo<Position>(() => {
     if (players.length >= 2 && players[1].position) {
       return players[1].position;
     }
     return {
-      x: arenaBounds.worldWidthMeters * 0.15, // 65% from left = +15% from center
+      x: arenaBounds.worldWidthMeters * 0.1, // 10% right of center (~0.8m for 8m arena)
       y: 0, // Centered
     };
   }, [players, arenaBounds]);
