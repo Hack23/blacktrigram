@@ -152,97 +152,95 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       cy.get("canvas").should("be.visible");
 
-      let frameCount = 0;
-      let startTime = 0;
-
       cy.window().then((win) => {
-        startTime = performance.now();
+        return new Cypress.Promise((resolve) => {
+          let frameCount = 0;
+          const startTime = performance.now();
 
-        const measureFPS = () => {
-          frameCount++;
-          if (frameCount < 60) {
-            win.requestAnimationFrame(measureFPS);
-          } else {
-            const elapsed = performance.now() - startTime;
-            const fps = (frameCount / elapsed) * 1000;
-            cy.log(`Average FPS: ${fps.toFixed(2)}`);
-
-            // Target 60fps, allow some tolerance for software rendering
-            // Minimum 30fps acceptable, optimal 55-60fps
-            expect(fps).to.be.greaterThan(30);
-
-            if (fps >= 55) {
-              cy.log("✅ Excellent framerate (≥55fps)");
-            } else if (fps >= 45) {
-              cy.log("✅ Good framerate (45-55fps)");
+          const measureFPS = () => {
+            frameCount++;
+            if (frameCount < 60) {
+              win.requestAnimationFrame(measureFPS);
             } else {
-              cy.log("⚠️ Acceptable framerate (30-45fps) - software rendering");
+              const elapsed = performance.now() - startTime;
+              const fps = (frameCount / elapsed) * 1000;
+              cy.log(`Average FPS: ${fps.toFixed(2)}`);
+
+              // Target 60fps, allow some tolerance for software rendering
+              // Minimum 30fps acceptable, optimal 55-60fps
+              expect(fps).to.be.greaterThan(30);
+
+              if (fps >= 55) {
+                cy.log("✅ Excellent framerate (≥55fps)");
+              } else if (fps >= 45) {
+                cy.log("✅ Good framerate (45-55fps)");
+              } else {
+                cy.log("⚠️ Acceptable framerate (30-45fps) - software rendering");
+              }
+              resolve();
             }
-          }
-        };
+          };
 
-        win.requestAnimationFrame(measureFPS);
+          win.requestAnimationFrame(measureFPS);
+        });
       });
-
-      // Wait for measurement to complete
-      
     });
 
     it("should maintain consistent frame timing", () => {
       cy.annotate("Testing frame timing consistency");
 
-      const frameTimes: number[] = [];
-      let lastTime = 0;
-      let measurementCount = 0;
-      const targetMeasurements = 30;
-
       cy.window().then((win) => {
-        const measureFrameTime = (timestamp: number) => {
-          if (lastTime > 0) {
-            const deltaTime = timestamp - lastTime;
-            frameTimes.push(deltaTime);
-            measurementCount++;
-          }
-          lastTime = timestamp;
+        return new Cypress.Promise((resolve) => {
+          const frameTimes: number[] = [];
+          let lastTime = 0;
+          let measurementCount = 0;
+          const targetMeasurements = 30;
 
-          if (measurementCount < targetMeasurements) {
-            win.requestAnimationFrame(measureFrameTime);
-          } else {
-            // Calculate frame time statistics
-            const avgFrameTime =
-              frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length;
-            const maxFrameTime = Math.max(...frameTimes);
-            const minFrameTime = Math.min(...frameTimes);
-            const variance =
-              frameTimes.reduce((sum, time) => {
-                return sum + Math.pow(time - avgFrameTime, 2);
-              }, 0) / frameTimes.length;
-            const stdDev = Math.sqrt(variance);
+          const measureFrameTime = (timestamp: number) => {
+            if (lastTime > 0) {
+              const deltaTime = timestamp - lastTime;
+              frameTimes.push(deltaTime);
+              measurementCount++;
+            }
+            lastTime = timestamp;
 
-            cy.log(`Average frame time: ${avgFrameTime.toFixed(2)}ms`);
-            cy.log(
-              `Min/Max frame time: ${minFrameTime.toFixed(
-                2
-              )}ms / ${maxFrameTime.toFixed(2)}ms`
-            );
-            cy.log(`Frame time std dev: ${stdDev.toFixed(2)}ms`);
+            if (measurementCount < targetMeasurements) {
+              win.requestAnimationFrame(measureFrameTime);
+            } else {
+              // Calculate frame time statistics
+              const avgFrameTime =
+                frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length;
+              const maxFrameTime = Math.max(...frameTimes);
+              const minFrameTime = Math.min(...frameTimes);
+              const variance =
+                frameTimes.reduce((sum, time) => {
+                  return sum + Math.pow(time - avgFrameTime, 2);
+                }, 0) / frameTimes.length;
+              const stdDev = Math.sqrt(variance);
 
-            // Frame times should be relatively consistent
-            // Target: 16.67ms (60fps), acceptable up to 33.33ms (30fps)
-            expect(avgFrameTime).to.be.lessThan(50); // Allow for software rendering
+              cy.log(`Average frame time: ${avgFrameTime.toFixed(2)}ms`);
+              cy.log(
+                `Min/Max frame time: ${minFrameTime.toFixed(
+                  2
+                )}ms / ${maxFrameTime.toFixed(2)}ms`
+              );
+              cy.log(`Frame time std dev: ${stdDev.toFixed(2)}ms`);
 
-            // Variance should be reasonable (not too inconsistent)
-            expect(stdDev).to.be.lessThan(20);
+              // Frame times should be relatively consistent
+              // Target: 16.67ms (60fps), acceptable up to 33.33ms (30fps)
+              expect(avgFrameTime).to.be.lessThan(50); // Allow for software rendering
 
-            cy.log("✅ Frame timing is consistent");
-          }
-        };
+              // Variance should be reasonable (not too inconsistent)
+              expect(stdDev).to.be.lessThan(20);
 
-        win.requestAnimationFrame(measureFrameTime);
+              cy.log("✅ Frame timing is consistent");
+              resolve();
+            }
+          };
+
+          win.requestAnimationFrame(measureFrameTime);
+        });
       });
-
-      // Wait for measurements to complete
-      
     });
   });
 
@@ -252,42 +250,49 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       cy.get("canvas").should("be.visible");
 
-      cy.window().then(() => {
-        const canvas = document.querySelector("canvas") as HTMLCanvasElement;
-        expect(canvas).to.exist;
+      cy.window().then((win) => {
+        return new Cypress.Promise((resolve) => {
+          const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+          expect(canvas).to.exist;
 
-        // Capture initial canvas state
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          const initialData = ctx.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
+          // Capture initial canvas state
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            const initialData = ctx.getImageData(
+              0,
+              0,
+              canvas.width,
+              canvas.height
+            );
 
-          // Wait for a few frames
-          
+            // Wait for at least one frame to render before capturing again
+            win.requestAnimationFrame(() => {
+              win.requestAnimationFrame(() => {
+                // Capture new canvas state after frames have rendered
+                const newData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-          // Capture new canvas state
-          const newData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                // Compare pixel data to ensure rendering is happening
+                let differentPixels = 0;
+                for (let i = 0; i < initialData.data.length; i++) {
+                  if (initialData.data[i] !== newData.data[i]) {
+                    differentPixels++;
+                  }
+                }
 
-          // Compare pixel data to ensure rendering is happening
-          let differentPixels = 0;
-          for (let i = 0; i < initialData.data.length; i++) {
-            if (initialData.data[i] !== newData.data[i]) {
-              differentPixels++;
-            }
+                const changePercentage =
+                  (differentPixels / initialData.data.length) * 100;
+                cy.log(`Pixel change: ${changePercentage.toFixed(2)}%`);
+
+                // Canvas should be actively rendering (some pixels changed)
+                expect(differentPixels).to.be.greaterThan(0);
+                cy.log("✅ Canvas is actively rendering");
+                resolve();
+              });
+            });
+          } else {
+            resolve();
           }
-
-          const changePercentage =
-            (differentPixels / initialData.data.length) * 100;
-          cy.log(`Pixel change: ${changePercentage.toFixed(2)}%`);
-
-          // Canvas should be actively rendering (some pixels changed)
-          expect(differentPixels).to.be.greaterThan(0);
-          cy.log("✅ Canvas is actively rendering");
-        }
+        });
       });
     });
 
