@@ -837,8 +837,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
     const startMusic = async () => {
       try {
-        // Use playMusic instead of fadeIn for consistent behavior with CombatScreen
-        await audio.playMusic("cyberpunk_fusion");
+        // Start training music with a smooth 2s fade-in for better UX
+        await audio.fadeIn("cyberpunk_fusion", 2000);
         audioStarted = true;
       } catch (err) {
         console.warn("Failed to start training music:", err);

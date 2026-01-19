@@ -50,6 +50,13 @@ export interface PhysicalReachResult {
   readonly baseLimbLength: number;
 
   /**
+   * Body pivot contribution in meters (kicks only).
+   * Accounts for hip rotation and torso lean during kicks (~0.25m).
+   * @korean 몸통회전기여도
+   */
+  readonly bodyPivotContribution: number;
+
+  /**
    * Technique type used.
    * @korean 기술유형
    */
@@ -75,7 +82,7 @@ export interface PhysicalReachResult {
 
   /**
    * Final effective reach in meters.
-   * baseLimbLength × animationReachMultiplier × stanceModifier
+   * (baseLimbLength + bodyPivotContribution) × animationReachMultiplier × stanceModifier
    * @korean 최종유효도달
    */
   readonly effectiveReach: number;
@@ -137,7 +144,7 @@ export class PhysicalReachCalculator {
    *   0.32, // Peak time
    *   TrigramStance.LI
    * );
-   * // Result: (102cm + 25cm pivot) × 1.05 (extension) × 1.20 (fire) = 1.60m
+   * // Result: (1.02m base leg + 0.25m pivot) × 1.05 (animation reach multiplier) × 1.20 (stance modifier) ≈ 1.60m
    *
    * // Same fighter doing a jab (no body pivot)
    * const amsaljaJab = calculator.calculateReach(
@@ -196,6 +203,7 @@ export class PhysicalReachCalculator {
 
     return {
       baseLimbLength: baseLimbLengthMeters,
+      bodyPivotContribution,
       techniqueType,
       animationTime,
       animationReachMultiplier,

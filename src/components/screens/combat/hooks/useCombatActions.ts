@@ -1163,9 +1163,10 @@ export function useCombatActions(
       // Movement speed calibrated for physics-first system (all in METERS)
       // Combat closing speed: ~2.5 m/s (fast tactical approach, not slow walking)
       // Real fights are over in 4-5 seconds - AI must close distance quickly
-      // AI decision loop runs at ~20 calls/second (50ms interval)
+      // AI decision loop frequency (defined in useAICombat.ts)
+      const AI_DECISION_FREQUENCY_HZ = 20; // 20 calls/second (50ms interval)
       // Calculation: 2.5 m/s / 20 calls/s = 0.125 meters per call
-      const baseSpeed = 2.5 / 20; // meters per call (0.125m per call)
+      const baseSpeed = 2.5 / AI_DECISION_FREQUENCY_HZ; // meters per call (0.125m per call)
 
       // Calculate movement direction vector (in meters)
       const dx = targetPos.x - currentPos.x;

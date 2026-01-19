@@ -152,11 +152,16 @@ function getViableTechniques(
           ? physicalAttributes.legLength
           : physicalAttributes.armLength;
 
+      // Apply body pivot for kicks (matching PhysicalReachCalculator logic)
+      const bodyPivot = tech.reachConfig.bodyPart === "leg" ? 0.25 : 0;
+      
       // Apply stance modifier using actual stance-specific modifiers
       const stanceModifier = STANCE_REACH_MODIFIERS[stance];
-      // Convert cm to meters and apply modifiers
+      // Convert cm to meters, add body pivot, and apply modifiers
       maxReach =
-        (limbLength / 100) * tech.reachConfig.baseExtension * stanceModifier;
+        ((limbLength / 100) + bodyPivot) *
+        tech.reachConfig.baseExtension *
+        stanceModifier;
     }
 
     // All distances are in METERS - no pixel conversion needed
