@@ -73,7 +73,6 @@ import {
   TrigramStance,
 } from "@/types";
 import { STANCE_REACH_MODIFIERS } from "@/types/physics";
-import { METERS_TO_PIXELS_SCALE } from "@/types/physicsConstants";
 import { getBalanceState } from "@/utils/player3DHelpers";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -82,12 +81,13 @@ const AI_DECISION_THRESHOLD_MS = 10; // Threshold for slow decision warnings
 const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 seconds
 
 /**
- * Technique range constants (pixels)
- * Based on game design: 1 cell = ~40px, 2 cells = ~80px, 3 cells = ~120px
+ * Technique range system (physics-first: meters)
+ * All distances and ranges are in meters - no pixel conversions for game logic
  *
- * Each technique has a range property in cell units (e.g., 1.0 = 1 cell = 40px)
+ * Each technique has a reachConfig with baseExtension multiplier
+ * Applied to archetype's limb length: reach = (limbLength/100) × baseExtension × stanceModifier
  *
- * @korean 기술 범위 상수
+ * @korean 기술 범위 시스템 (물리 우선: 미터)
  */
 
 /**
@@ -101,7 +101,7 @@ const WARNING_THROTTLE_MS = 5000; // Throttle performance warnings to every 5 se
  *
  * @korean 거리, 자세, 체력에 따른 실행 가능한 기술 선택
  *
- * @param distance - Distance to opponent in pixels
+ * @param distance - Distance to opponent in meters (physics-first)
  * @param stance - Current trigram stance
  * @param stamina - Available stamina
  * @param archetype - Player archetype for specialized techniques
@@ -154,15 +154,14 @@ function getViableTechniques(
 
       // Apply stance modifier using actual stance-specific modifiers
       const stanceModifier = STANCE_REACH_MODIFIERS[stance];
+      // Convert cm to meters and apply modifiers
       maxReach =
         (limbLength / 100) * tech.reachConfig.baseExtension * stanceModifier;
     }
 
-    // Convert meters to pixels using shared scaling constant
-    const maxRange = maxReach * METERS_TO_PIXELS_SCALE;
-
+    // All distances are in METERS - no pixel conversion needed
     // Check if opponent is within technique range
-    const inRange = distance <= maxRange;
+    const inRange = distance <= maxReach;
 
     // Check if player has sufficient stamina
     const hasStamina = stamina >= tech.staminaCost;
@@ -752,8 +751,9 @@ function selectTechniqueForAction(
     const crossStanceTechniques = allTechniques.filter(
       (t) =>
         t.stance !== player.currentStance &&
+        // Physics-first: Compare meters to meters
         context.distanceToOpponent <=
-          (t.reachConfig?.baseExtension ?? 1.0) * METERS_TO_PIXELS_SCALE &&
+          (t.reachConfig?.baseExtension ?? 1.0) &&
         player.stamina >= t.staminaCost &&
         !isOverused(t.id, rotationQueue), // Apply rotation diversity to cross-stance
     );
@@ -1196,8 +1196,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
     const dy = player.position.y - opponent.position.y;
     // Physics-first: positions are in meters, so distance is directly in meters
     const distanceInMeters = Math.sqrt(dx * dx + dy * dy);
-    // Convert to standard pixels for technique range comparison (legacy compatibility)
-    const distanceInStandardPixels = distanceInMeters * METERS_TO_PIXELS_SCALE;
 
     // Calculate recent damage taken (fix for issue #2529467021)
     const recentDamageTaken = Math.max(
@@ -1223,7 +1221,7 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       opponentHealth: opponent.health,
       opponentStance: opponent.currentStance,
       playerStance: player.currentStance,
-      distanceToOpponent: distanceInStandardPixels, // Now scale-aware!
+      distanceToOpponent: distanceInMeters, // Physics-first: distance in meters
       timeInMatch: Date.now() - matchStartTimeRef.current,
       isOpponentAttacking: opponent.combatState === "attacking",
       recentDamageTaken,
