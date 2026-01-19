@@ -1,9 +1,9 @@
 /**
  * Common utility types for Korean martial arts game.
- * 
+ *
  * This module provides foundational types used throughout the Black Trigram (흑괘) game,
  * including geometric types, Korean text support, and utility type helpers.
- * 
+ *
  * @module types/common
  * @category Type Definitions
  * @korean 공통타입
@@ -11,7 +11,7 @@
 
 /**
  * Represents a position in 2D space.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -24,7 +24,7 @@ export interface Position {
 
 /**
  * Represents size dimensions for game objects.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -37,7 +37,7 @@ export interface Size {
 
 /**
  * Represents rectangle bounds combining position and size.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -45,13 +45,13 @@ export interface Bounds extends Position, Size {}
 
 /**
  * Color represented as a hexadecimal number (e.g., 0xFF0000 for red).
- * 
+ *
  * @example
  * ```typescript
  * const primaryCyan: Color = 0x00FFFF;
  * const accentGold: Color = 0xFFAA00;
  * ```
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -59,7 +59,7 @@ export type Color = number;
 
 /**
  * Time duration in milliseconds.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -67,13 +67,13 @@ export type Duration = number;
 
 /**
  * Percentage value represented as a decimal (0.0 to 1.0).
- * 
+ *
  * @example
  * ```typescript
  * const halfHealth: Percentage = 0.5;
  * const fullAccuracy: Percentage = 1.0;
  * ```
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -81,7 +81,7 @@ export type Percentage = number;
 
 /**
  * Unique identifier string.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -89,9 +89,9 @@ export type ID = string;
 
 /**
  * Generic callback function type.
- * 
+ *
  * @typeParam T - Return type of the callback, defaults to void
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -99,9 +99,9 @@ export type Callback<T = void> = () => T;
 
 /**
  * Event handler function type.
- * 
+ *
  * @typeParam T - Type of event data, defaults to any
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -109,10 +109,10 @@ export type EventHandler<T = any> = (event: T) => void;
 
 /**
  * Utility type to make specific properties optional.
- * 
+ *
  * @typeParam T - The base type
  * @typeParam K - Keys of T to make optional
- * 
+ *
  * @public
  * @category Utility Types
  */
@@ -120,10 +120,10 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 /**
  * Utility type to make specific properties required.
- * 
+ *
  * @typeParam T - The base type
  * @typeParam K - Keys of T to make required
- * 
+ *
  * @public
  * @category Utility Types
  */
@@ -131,9 +131,9 @@ export type Required<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 /**
  * Utility type to make all properties deeply readonly.
- * 
+ *
  * @typeParam T - The type to make deeply readonly
- * 
+ *
  * @public
  * @category Utility Types
  */
@@ -143,10 +143,10 @@ export type DeepReadonly<T> = {
 
 /**
  * Represents bilingual Korean-English text content.
- * 
+ *
  * Used throughout the game to provide authentic Korean terminology with English translations,
  * supporting the cultural authenticity of the Korean martial arts theme.
- * 
+ *
  * @example
  * ```typescript
  * const techniqueName: KoreanText = {
@@ -155,7 +155,7 @@ export type DeepReadonly<T> = {
  *   romanized: "cheondu byeokryeok"
  * };
  * ```
- * 
+ *
  * @public
  * @category Korean Martial Arts
  * @korean 한글텍스트
@@ -171,9 +171,9 @@ export interface KoreanText {
 
 /**
  * Base entity interface with Korean naming support.
- * 
+ *
  * Provides a foundation for game entities with bilingual identification.
- * 
+ *
  * @public
  * @category Korean Martial Arts
  * @korean 한글개체
@@ -189,9 +189,9 @@ export interface KoreanEntity {
 
 /**
  * Font sizes for Korean text rendering.
- * 
+ *
  * Provides consistent typography sizing across the game interface.
- * 
+ *
  * @public
  * @category UI
  * @korean 글자크기
@@ -219,9 +219,9 @@ export enum KoreanTextSize {
 
 /**
  * Font weights for Korean text rendering.
- * 
+ *
  * Provides consistent typography weights for Korean Hangul characters.
- * 
+ *
  * @public
  * @category UI
  * @korean 글자무게
@@ -245,7 +245,7 @@ export enum KoreanTextWeight {
 
 /**
  * Text alignment options for Korean text.
- * 
+ *
  * @public
  * @category UI
  */
@@ -253,7 +253,7 @@ export type KoreanTextAlignment = "left" | "center" | "right";
 
 /**
  * Styling configuration for Korean text rendering.
- * 
+ *
  * @public
  * @category UI
  * @korean 글자스타일
@@ -271,9 +271,9 @@ export interface KoreanTextStyle {
 
 /**
  * Represents a range of damage values for combat calculations.
- * 
+ *
  * Used for techniques and vital point strikes to define variable damage output.
- * 
+ *
  * @public
  * @category Combat
  * @korean 피해범위
@@ -291,9 +291,9 @@ export interface DamageRange {
 
 /**
  * Game settings configuration interface for UI controls.
- * 
+ *
  * Manages volume, graphics quality, control schemes, and language preferences.
- * 
+ *
  * @public
  * @category UI
  * @korean 게임설정
@@ -330,9 +330,9 @@ export interface UIGameSettings {
 
 /**
  * Duration tracking for status effects.
- * 
+ *
  * Tracks when an effect started, when it ends, and its total duration.
- * 
+ *
  * @public
  * @category Combat
  * @korean 효과지속시간
@@ -348,9 +348,9 @@ export interface EffectDuration {
 
 /**
  * Generic game entity with positioning and visibility.
- * 
+ *
  * Extends {@link KoreanEntity} with spatial and state properties.
- * 
+ *
  * @public
  * @category Core Types
  * @korean 게임개체
@@ -368,9 +368,9 @@ export interface GameEntity extends KoreanEntity {
 
 /**
  * Animation transition configuration.
- * 
+ *
  * Defines how to transition between two states with timing and easing.
- * 
+ *
  * @public
  * @category UI
  * @korean 전환
@@ -388,9 +388,9 @@ export interface Transition {
 
 /**
  * Theme color configuration.
- * 
+ *
  * Defines primary colors used throughout the game UI.
- * 
+ *
  * @public
  * @category UI
  * @korean 테마
@@ -410,7 +410,7 @@ export interface Theme {
 
 /**
  * Generic configuration object.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -420,10 +420,10 @@ export interface Config {
 
 /**
  * Generic result wrapper for operations that may succeed or fail.
- * 
+ *
  * @typeParam T - Type of successful result data
  * @typeParam E - Type of error, defaults to Error
- * 
+ *
  * @example
  * ```typescript
  * const result: Result<PlayerState> = {
@@ -431,7 +431,7 @@ export interface Config {
  *   data: playerState
  * };
  * ```
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -448,7 +448,7 @@ export interface Result<T, E = Error> {
 
 /**
  * Validation result with errors and warnings.
- * 
+ *
  * @public
  * @category Core Types
  */
@@ -463,9 +463,9 @@ export interface ValidationResult {
 
 /**
  * Game modes available in Black Trigram.
- * 
+ *
  * Each mode offers different gameplay experiences and training opportunities.
- * 
+ *
  * @public
  * @category Game Systems
  * @korean 게임모드
@@ -491,9 +491,9 @@ export enum GameMode {
 
 /**
  * Game phases representing the current state of the game.
- * 
+ *
  * Controls which screen is displayed and what game logic is active.
- * 
+ *
  * @public
  * @category Game Systems
  * @korean 게임단계
@@ -523,12 +523,12 @@ export enum GamePhase {
 
 /**
  * Player archetypes representing Korean martial arts combat specialists.
- * 
+ *
  * **Korean**: 플레이어 원형 (Player Archetypes)
- * 
+ *
  * Each archetype has unique combat styles, favored stances, and philosophical approaches
  * rooted in Korean martial arts traditions and modern cyberpunk adaptation.
- * 
+ *
  * @example
  * ```typescript
  * const player = createPlayer({
@@ -536,7 +536,7 @@ export enum GamePhase {
  *   name: { korean: "이순신", english: "Yi Sun-sin" }
  * });
  * ```
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 플레이어원형
@@ -544,39 +544,39 @@ export enum GamePhase {
 export enum PlayerArchetype {
   /**
    * 무사 (Musa) - Traditional Warrior
-   * 
+   *
    * Honor-bound martial artist following traditional Korean warrior codes.
    * Favors direct confrontation and disciplined techniques.
    */
   MUSA = "musa",
-  
+
   /**
    * 암살자 (Amsalja) - Shadow Assassin
-   * 
+   *
    * Precision striker focused on vital point targeting and silent elimination.
    * Specializes in nerve strikes and pressure point techniques.
    */
   AMSALJA = "amsalja",
-  
+
   /**
    * 해커 (Hacker) - Cyber Warrior
-   * 
+   *
    * Technology-enhanced combatant blending modern cybernetics with traditional techniques.
    * Uses augmented reflexes and data-driven combat analysis.
    */
   HACKER = "hacker",
-  
+
   /**
    * 정보요원 (Jeongbo Yowon) - Intelligence Operative
-   * 
+   *
    * Strategic analyst who uses combat intelligence and tactical advantage.
    * Excels at reading opponent patterns and exploiting weaknesses.
    */
   JEONGBO_YOWON = "jeongbo_yowon",
-  
+
   /**
    * 조직폭력배 (Jojik Pokryeokbae) - Organized Crime
-   * 
+   *
    * Ruthless pragmatist who ignores traditional honor codes.
    * Uses brutal, efficient techniques with no concern for ethics.
    */
@@ -585,22 +585,22 @@ export enum PlayerArchetype {
 
 /**
  * Physical attributes representing realistic body dimensions and composition.
- * 
+ *
  * **Korean**: 신체 속성 (Body Attributes)
- * 
+ *
  * These attributes affect combat calculations including reach, movement speed,
  * damage output, defense capability, and stamina. Based on realistic human
  * physiology and Korean martial arts biomechanics.
- * 
+ *
  * ## Combat Impact
- * 
+ *
  * - **Weight**: Affects movement speed, knockback resistance, and throw effectiveness
  * - **Leg Length**: Determines kick range and movement speed base
  * - **Arm Length**: Determines punch/strike range and grappling reach
  * - **Muscle Mass**: Affects base damage output and stamina pool
  * - **Fat Mass**: Affects defense absorption and stamina drain rate
  * - **Age**: Affects stamina recovery speed and Ki regeneration
- * 
+ *
  * @example
  * ```typescript
  * const musaPhysical: PhysicalAttributes = {
@@ -612,7 +612,7 @@ export enum PlayerArchetype {
  *   age: 32,           // years - prime combat age
  * };
  * ```
- * 
+ *
  * @public
  * @category Player & Archetypes
  * @korean 신체속성
@@ -620,9 +620,9 @@ export enum PlayerArchetype {
 export interface PhysicalAttributes {
   /**
    * Body weight in kilograms.
-   * 
+   *
    * **Korean**: 체중 (Body Weight)
-   * 
+   *
    * Typical Range: 55-95 kg for combatants
    * - Affects movement speed (inversely)
    * - Affects knockback resistance (positively)
@@ -630,12 +630,12 @@ export interface PhysicalAttributes {
    * - Affects ground control (positively)
    */
   readonly weight: number;
-  
+
   /**
    * Leg length in centimeters (hip to ankle).
-   * 
+   *
    * **Korean**: 다리 길이 (Leg Length)
-   * 
+   *
    * Typical Range: 85-105 cm
    * - Determines kick technique maximum range
    * - Affects base movement speed
@@ -643,12 +643,12 @@ export interface PhysicalAttributes {
    * - Affects jumping attack height
    */
   readonly legLength: number;
-  
+
   /**
    * Arm length in centimeters (shoulder to wrist).
-   * 
+   *
    * **Korean**: 팔 길이 (Arm Length)
-   * 
+   *
    * Typical Range: 65-85 cm
    * - Determines punch/strike technique range
    * - Affects grappling and throw range
@@ -656,12 +656,12 @@ export interface PhysicalAttributes {
    * - Affects elbow strike effectiveness
    */
   readonly armLength: number;
-  
+
   /**
    * Muscle mass in kilograms.
-   * 
+   *
    * **Korean**: 근육량 (Muscle Mass)
-   * 
+   *
    * Typical Range: 25-45 kg
    * - Affects base damage output (positively)
    * - Affects maximum stamina pool (positively)
@@ -669,12 +669,12 @@ export interface PhysicalAttributes {
    * - Affects movement acceleration
    */
   readonly muscleMass: number;
-  
+
   /**
    * Fat mass in kilograms.
-   * 
+   *
    * **Korean**: 지방량 (Fat Mass)
-   * 
+   *
    * Typical Range: 8-20 kg for combatants
    * - Affects blunt damage absorption (positively)
    * - Affects stamina drain rate (negatively)
@@ -682,12 +682,12 @@ export interface PhysicalAttributes {
    * - Affects recovery time between actions
    */
   readonly fatMass: number;
-  
+
   /**
    * Age in years.
-   * 
+   *
    * **Korean**: 나이 (Age)
-   * 
+   *
    * Typical Range: 22-45 years for peak combatants
    * - Affects stamina recovery speed (optimal 25-35)
    * - Affects Ki regeneration rate (wisdom with age)
@@ -695,12 +695,12 @@ export interface PhysicalAttributes {
    * - Affects technique execution speed (prime 28-35)
    */
   readonly age: number;
-  
+
   /**
    * Total body height in centimeters.
-   * 
+   *
    * **Korean**: 키 (Height)
-   * 
+   *
    * Typical Range: 160-195 cm
    * - Scales entire skeleton proportionally
    * - Affects reach calculations (combined with limb ratios)
@@ -709,12 +709,12 @@ export interface PhysicalAttributes {
    * - Influences balance and stability in stances
    */
   readonly totalHeight: number;
-  
+
   /**
    * Torso length in centimeters (pelvis to shoulders).
-   * 
+   *
    * **Korean**: 몸통 길이 (Torso Length)
-   * 
+   *
    * Typical Range: 50-65 cm
    * - Affects core hitbox size and vital point positioning
    * - Influences breath control and stamina capacity
@@ -723,12 +723,12 @@ export interface PhysicalAttributes {
    * - Impacts center of mass calculations
    */
   readonly torsoLength: number;
-  
+
   /**
    * Head size (diameter) in centimeters.
-   * 
+   *
    * **Korean**: 머리 크기 (Head Size)
-   * 
+   *
    * Typical Range: 20-24 cm
    * - Affects head vital point targeting precision
    * - Determines head hitbox size for strikes
@@ -737,12 +737,12 @@ export interface PhysicalAttributes {
    * - Impacts consciousness vulnerability to head trauma
    */
   readonly headSize: number;
-  
+
   /**
    * Neck length in centimeters (skull base to shoulders).
-   * 
+   *
    * **Korean**: 목 길이 (Neck Length)
-   * 
+   *
    * Typical Range: 8-12 cm
    * - Affects vulnerability to chokes and strangles
    * - Determines neck vital point target area
@@ -751,12 +751,12 @@ export interface PhysicalAttributes {
    * - Impacts head mobility and evasion capability
    */
   readonly neckLength: number;
-  
+
   /**
    * Shoulder width in centimeters (shoulder to shoulder).
-   * 
+   *
    * **Korean**: 어깨 너비 (Shoulder Width)
-   * 
+   *
    * Typical Range: 38-48 cm
    * - Affects defense coverage area (blocking)
    * - Determines upper body strike zone width
@@ -765,20 +765,46 @@ export interface PhysicalAttributes {
    * - Impacts balance and stability in wide stances
    */
   readonly shoulderWidth: number;
+
+  /**
+   * Base walking speed in meters per second.
+   *
+   * **Korean**: 걷기 속도 (Walk Speed)
+   *
+   * Typical Range: 5.0-6.5 m/s for combat movement
+   * - Determines tactical repositioning speed
+   * - Affected by weight and leg length
+   * - Base speed for defensive movement
+   * - Modified by stance and combat state
+   */
+  readonly walkSpeed: number;
+
+  /**
+   * Base running speed in meters per second.
+   *
+   * **Korean**: 달리기 속도 (Run Speed)
+   *
+   * Typical Range: 8.0-11.0 m/s for sprint movement
+   * - Determines rapid repositioning speed
+   * - Affected by muscle mass and conditioning
+   * - Base speed for aggressive approach
+   * - Consumes stamina during use
+   */
+  readonly runSpeed: number;
 }
 
 /**
  * Eight Trigram stances (팔괘) representing fundamental combat principles.
- * 
+ *
  * **Korean**: 팔괘 자세 (Eight Trigram Stances)
  * **Origin**: I Ching (易經 / Yijing) divination system adapted for Korean martial arts
- * 
+ *
  * The Eight Trigrams (Bagua / 八卦) form the foundation of the combat system.
  * Each trigram represents a natural element and combat philosophy, influencing
  * available techniques, movement patterns, and strategic advantages.
- * 
+ *
  * ## Trigram Philosophy
- * 
+ *
  * - **☰ 건 (Geon)** - Heaven: Yang energy, direct aggression, overwhelming force
  * - **☱ 태 (Tae)** - Lake: Joy and fluidity, joint locks and flow techniques
  * - **☲ 리 (Li)** - Fire: Precision and speed, nerve strikes and rapid attacks
@@ -787,20 +813,20 @@ export interface PhysicalAttributes {
  * - **☵ 감 (Gam)** - Water: Adaptive flow, counters and redirection
  * - **☶ 간 (Gan)** - Mountain: Immovable defense, endurance and patience
  * - **☷ 곤 (Gon)** - Earth: Grounding techniques, takedowns and throws
- * 
+ *
  * @example
  * ```typescript
  * // Change to Heaven stance for aggressive attack
  * player.currentStance = TrigramStance.GEON;
- * 
+ *
  * // Execute heaven-aligned technique
  * const technique = getTrigramTechniques(TrigramStance.GEON)[0];
  * executeTechnique(player, opponent, technique);
  * ```
- * 
+ *
  * @see {@link https://en.wikipedia.org/wiki/Bagua | Bagua (Eight Trigrams) - Wikipedia}
  * @see {@link https://en.wikipedia.org/wiki/I_Ching | I Ching - Wikipedia}
- * 
+ *
  * @public
  * @category Trigram System
  * @category Korean Martial Arts
@@ -809,96 +835,96 @@ export interface PhysicalAttributes {
 export enum TrigramStance {
   /**
    * ☰ 건 (Geon) - Heaven Stance
-   * 
+   *
    * **Element**: Heaven / Sky (天)
    * **Nature**: Yang, creative, strong
    * **Combat Style**: Direct force, aggressive techniques, overwhelming power
    * **Philosophy**: "The creative principle - pure yang energy that drives forward"
-   * 
+   *
    * Techniques emphasize straight attacks, powerful strikes, and dominant positioning.
    */
   GEON = "geon",
-  
+
   /**
    * ☱ 태 (Tae) - Lake Stance
-   * 
+   *
    * **Element**: Lake / Marsh (澤)
    * **Nature**: Yin exterior, Yang interior - joyful movement
    * **Combat Style**: Fluid joint manipulation, flowing techniques, adaptable responses
    * **Philosophy**: "The joyful - water above earth, freedom of movement"
-   * 
+   *
    * Techniques focus on joint locks, throws, and using opponent's momentum.
    */
   TAE = "tae",
-  
+
   /**
    * ☲ 리 (Li) - Fire Stance
-   * 
+   *
    * **Element**: Fire / Flame (火)
    * **Nature**: Yang exterior, Yin interior - bright and precise
    * **Combat Style**: Precise nerve strikes, rapid attacks, speed techniques
    * **Philosophy**: "The clinging - illuminating and consuming"
-   * 
+   *
    * Techniques emphasize vital point targeting, quick combinations, and precision.
    */
   LI = "li",
-  
+
   /**
    * ☳ 진 (Jin) - Thunder Stance
-   * 
+   *
    * **Element**: Thunder / Arousing (雷)
    * **Nature**: Yang moving, sudden and shocking
    * **Combat Style**: Explosive power, shocking techniques, sudden movements
    * **Philosophy**: "The arousing - thunder brings shock and awakening"
-   * 
+   *
    * Techniques feature explosive bursts, stunning strikes, and overwhelming force.
    */
   JIN = "jin",
-  
+
   /**
    * ☴ 손 (Son) - Wind Stance
-   * 
+   *
    * **Element**: Wind / Wood (風)
    * **Nature**: Yin, gentle but penetrating
    * **Combat Style**: Continuous pressure, evasion techniques, mobility
    * **Philosophy**: "The gentle - penetrating like wind, persistent like wood"
-   * 
+   *
    * Techniques emphasize movement, pressure point chains, and wearing down opponents.
    */
   SON = "son",
-  
+
   /**
    * ☵ 감 (Gam) - Water Stance
-   * 
+   *
    * **Element**: Water / Abyss (水)
    * **Nature**: Yang surrounded by Yin - dangerous depths
    * **Combat Style**: Flow and adaptation, counter techniques, redirection
    * **Philosophy**: "The abysmal - water flows around obstacles and fills voids"
-   * 
+   *
    * Techniques focus on counters, deflections, and adaptive responses.
    */
   GAM = "gam",
-  
+
   /**
    * ☶ 간 (Gan) - Mountain Stance
-   * 
+   *
    * **Element**: Mountain / Stillness (山)
    * **Nature**: Yang above Yin - firm and unyielding
    * **Combat Style**: Defensive mastery, immovable stance, endurance
    * **Philosophy**: "The keeping still - mountains are firm and unmoving"
-   * 
+   *
    * Techniques emphasize blocks, parries, and defensive positioning.
    */
   GAN = "gan",
-  
+
   /**
    * ☷ 곤 (Gon) - Earth Stance
-   * 
+   *
    * **Element**: Earth / Receptive (地)
    * **Nature**: Pure Yin - receptive and yielding
    * **Combat Style**: Grounding techniques, takedowns, throws
    * **Philosophy**: "The receptive - earth receives and supports all"
-   * 
+   *
    * Techniques focus on sweeps, trips, takedowns, and ground control.
    */
   GON = "gon",
@@ -906,10 +932,10 @@ export enum TrigramStance {
 
 /**
  * Combat attack types available in the game.
- * 
+ *
  * Defines the mechanical type of attack being performed, which affects
  * damage calculation, vital point targeting, and defensive options.
- * 
+ *
  * @public
  * @category Combat System
  * @korean 공격타입
@@ -943,10 +969,10 @@ export enum CombatAttackType {
 
 /**
  * Damage types representing different methods of inflicting harm.
- * 
+ *
  * Each damage type interacts differently with vital points and defensive techniques.
  * Some types are more effective against specific body regions or defense styles.
- * 
+ *
  * @public
  * @category Combat System
  * @korean 피해타입
@@ -988,13 +1014,13 @@ export enum DamageType {
 
 /**
  * Vital point categories representing anatomical targeting systems.
- * 
+ *
  * **Korean**: 급소 범주 (Vital Point Categories)
- * 
+ *
  * The game features 70 Korean vital points (급소) based on traditional martial arts
  * knowledge and modern anatomical understanding. Each category represents different
  * physiological systems that can be targeted for combat effectiveness.
- * 
+ *
  * @example
  * ```typescript
  * const vitalPoint: VitalPoint = {
@@ -1004,7 +1030,7 @@ export enum DamageType {
  *   name: { korean: "풍지", english: "Wind Pool" }
  * };
  * ```
- * 
+ *
  * @public
  * @category Vital Point System
  * @korean 급소범주
@@ -1038,18 +1064,18 @@ export enum VitalPointCategory {
 
 /**
  * Vital point severity levels indicating potential impact.
- * 
+ *
  * Determines the damage multiplier and status effects applied when
  * a vital point is successfully struck.
- * 
+ *
  * ## Severity Guidelines
- * 
+ *
  * - **MINOR**: 1.1-1.3x damage, temporary discomfort
  * - **MODERATE**: 1.5-2.0x damage, brief incapacitation
  * - **MAJOR**: 2.5-3.5x damage, significant impairment
  * - **CRITICAL**: 4.0-5.0x damage, severe trauma
  * - **LETHAL**: 6.0-10.0x damage, immediate incapacitation
- * 
+ *
  * @public
  * @category Vital Point System
  * @korean 급소심각도
@@ -1069,11 +1095,11 @@ export enum VitalPointSeverity {
 
 /**
  * Status effects that can result from vital point strikes.
- * 
+ *
  * Each effect type represents a physiological response to targeting
  * specific anatomical structures. Effects stack and interact with
  * combat mechanics.
- * 
+ *
  * @public
  * @category Vital Point System
  * @korean 급소효과
@@ -1103,10 +1129,10 @@ export enum VitalPointEffectType {
 
 /**
  * Combat states representing the current action phase of a fighter.
- * 
+ *
  * Determines available actions, defensive capabilities, and animation states.
  * State transitions follow combat flow logic and timing windows.
- * 
+ *
  * @public
  * @category Combat System
  * @korean 전투상태
@@ -1130,10 +1156,10 @@ export enum CombatState {
 
 /**
  * Body regions for anatomical targeting in combat.
- * 
+ *
  * Each region contains multiple vital points and has different
  * defensive properties and vulnerability profiles.
- * 
+ *
  * @public
  * @category Combat System
  * @korean 신체부위

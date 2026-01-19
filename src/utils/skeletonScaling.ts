@@ -141,6 +141,8 @@ const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
   headSize: 22,
   neckLength: 10,
   shoulderWidth: 43,
+  walkSpeed: 6.0,
+  runSpeed: 9.5,
 };
 
 /**

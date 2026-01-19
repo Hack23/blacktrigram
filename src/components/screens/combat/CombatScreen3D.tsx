@@ -449,14 +449,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     });
 
     // Reset player positions to starting positions for rematch
+    // Use meter-based positions for physics-first system consistency
     setPlayer1Position({
-      x: arenaBounds.x + arenaBounds.width * 0.35,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * -0.1, // 10% left of center in meters
+      y: 0, // Centered
     });
     onPlayerUpdate(1, {
       position: {
-        x: arenaBounds.x + arenaBounds.width * 0.65,
-        y: arenaBounds.y + arenaBounds.height * 0.5,
+        x: arenaBounds.worldWidthMeters * 0.1, // 10% right of center in meters
+        y: 0, // Centered
       },
     });
 
@@ -535,15 +536,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     });
 
     // Reset player positions to starting positions for new round
+    // Use meter-based positions for physics-first system consistency
     setPlayer1Position({
-      x: arenaBounds.x + arenaBounds.width * 0.35,
-      y: arenaBounds.y + arenaBounds.height * 0.5,
+      x: arenaBounds.worldWidthMeters * -0.1, // 10% left of center in meters
+      y: 0, // Centered
     });
     // Player 2 position is reset via onPlayerUpdate
     onPlayerUpdate(1, {
       position: {
-        x: arenaBounds.x + arenaBounds.width * 0.65,
-        y: arenaBounds.y + arenaBounds.height * 0.5,
+        x: arenaBounds.worldWidthMeters * 0.1, // 10% right of center in meters
+        y: 0, // Centered
       },
     });
   }, [
@@ -1925,10 +1927,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         case "feint":
           {
             const playerPos = validPlayers[0].position;
-            const feintOffset = 50;
+            // Feint offset in METERS (about half a meter of random movement)
+            const feintOffsetMeters = 0.5;
             const feintPos = {
-              x: playerPos.x + (Math.random() - 0.5) * feintOffset,
-              y: playerPos.y + (Math.random() - 0.5) * feintOffset,
+              x: playerPos.x + (Math.random() - 0.5) * feintOffsetMeters,
+              y: playerPos.y + (Math.random() - 0.5) * feintOffsetMeters,
             };
             moveAIPlayer(feintPos);
             addCombatMessage("AI 페인트", "AI Feint");
@@ -1944,20 +1947,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 const dx = currentAiPos.x - currentPlayerPos.x;
                 const dy = currentAiPos.y - currentPlayerPos.y;
                 const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-                const retreatDistance = 80;
+                // Retreat distance in METERS (about 0.8 meters back)
+                const retreatDistanceMeters = 0.8;
+                // Use world meter bounds instead of pixel bounds
+                const halfWidth = arenaBounds.worldWidthMeters / 2;
+                const halfDepth = arenaBounds.worldDepthMeters / 2;
                 const retreatPos = {
                   x: Math.max(
-                    arenaBounds.x,
+                    -halfWidth + 0.5, // 0.5m from edge
                     Math.min(
-                      arenaBounds.x + arenaBounds.width - 60,
-                      currentPlayerPos.x + (dx / dist) * retreatDistance,
+                      halfWidth - 0.5,
+                      currentPlayerPos.x + (dx / dist) * retreatDistanceMeters,
                     ),
                   ),
                   y: Math.max(
-                    arenaBounds.y,
+                    -halfDepth + 0.5, // 0.5m from edge
                     Math.min(
-                      arenaBounds.y + arenaBounds.height - 180,
-                      currentPlayerPos.y + (dy / dist) * retreatDistance,
+                      halfDepth - 0.5,
+                      currentPlayerPos.y + (dy / dist) * retreatDistanceMeters,
                     ),
                   ),
                 };

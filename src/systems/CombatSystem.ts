@@ -3,7 +3,6 @@ import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttribu
 import { getTechniqueById } from "../data/techniques";
 import { BodyRegion } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
-import { METERS_TO_PIXELS_SCALE } from "../types/physicsConstants";
 import { Technique } from "../types/technique";
 import { calculateDistance3D } from "../utils/math";
 import { calculateBodyRadius } from "../utils/skeletonScaling";
@@ -308,13 +307,12 @@ export class CombatSystem implements CombatSystemInterface {
       );
 
       // Check distance to defender using 3D Euclidean distance
-      // Position type is 2D (in pixels), so default z to 0 for both attacker and defender
-      // Convert pixel distance to meters (METERS_TO_PIXELS_SCALE = 100 px/m)
-      const distanceInPixels = calculateDistance3D(
+      // Physics-first: Position type is 2D in METERS
+      // No conversion needed - positions are already in meters
+      const centerToCenterDistance = calculateDistance3D(
         [attacker.position.x, attacker.position.y, 0],
         [defender.position.x, defender.position.y, 0],
       );
-      const centerToCenterDistance = distanceInPixels / METERS_TO_PIXELS_SCALE;
 
       // Calculate defender body radius based on their physical attributes
       // Attacks hit the body surface, not the center point
