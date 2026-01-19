@@ -15,22 +15,9 @@
  */
 
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'intro-screen-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-      },
-      {
-        validate: () => {
-          cy.get('[data-testid="intro-screen"]', { timeout: 3000 }).should('exist');
-        }
-      }
-    );
-    // Ensure we're on intro screen after session restore
-    cy.get('[data-testid="intro-screen"]', { timeout: 3000 }).should('exist');
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
   });
 
   it("should render IntroScreen with all UI elements and navigation", () => {

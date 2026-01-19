@@ -13,44 +13,25 @@
  */
 
 describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'controls-mode-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
 
-        // Navigate to controls screen
-        cy.get("body").then(($body) => {
-          if ($body.find('[data-testid="controls-button"]').length > 0) {
-            cy.get('[data-testid="controls-button"]').click({ force: true });
-          } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
-            cy.get('[data-testid="menu-controls"]').click({ force: true });
-          } else {
-            // Use keyboard shortcut as fallback
-            cy.log("Using keyboard shortcut '3' for controls");
-            cy.get("body").type("3");
-          }
-        });
-      },
-      {
-        validate: () => {
-          cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should('exist');
-        }
+    // Navigate to controls screen
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="controls-button"]').length > 0) {
+        cy.get('[data-testid="controls-button"]').click({ force: true });
+      } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
+        cy.get('[data-testid="menu-controls"]').click({ force: true });
+      } else {
+        // Use keyboard shortcut as fallback
+        cy.log("Using keyboard shortcut '3' for controls");
+        cy.get("body").type("3");
       }
-    );
-    // Ensure we're on controls screen after session restore
-    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should('exist');
+    });
   });
 
   afterEach(() => {
-    // Clean up game state
-    cy.window().then(win => {
-      if ((win as any).__game?.cleanup) {
-        (win as any).__game.cleanup();
-      }
-    });
     cy.returnToIntro();
   });
 

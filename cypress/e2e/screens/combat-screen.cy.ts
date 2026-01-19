@@ -15,32 +15,13 @@
  */
 
 describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'combat-mode-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-        cy.enterCombatMode();
-      },
-      {
-        validate: () => {
-          cy.get('[data-testid="combat-screen"]', { timeout: 3000 }).should('exist');
-        }
-      }
-    );
-    // Ensure we're in combat mode after session restore
-    cy.get('[data-testid="combat-screen"]', { timeout: 3000 }).should('exist');
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
+    cy.enterCombatMode();
   });
 
   afterEach(() => {
-    // Clean up game state
-    cy.window().then(win => {
-      if ((win as any).__game?.cleanup) {
-        (win as any).__game.cleanup();
-      }
-    });
     cy.returnToIntro();
   });
 

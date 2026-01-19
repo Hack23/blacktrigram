@@ -15,32 +15,13 @@
  */
 
 describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'training-mode-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-        cy.enterTrainingMode();
-      },
-      {
-        validate: () => {
-          cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should('exist');
-        }
-      }
-    );
-    // Ensure we're in training mode after session restore
-    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should('exist');
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
+    cy.enterTrainingMode();
   });
 
   afterEach(() => {
-    // Clean up game state
-    cy.window().then(win => {
-      if ((win as any).__game?.cleanup) {
-        (win as any).__game.cleanup();
-      }
-    });
     cy.returnToIntro();
   });
 

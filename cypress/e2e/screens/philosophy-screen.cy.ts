@@ -14,44 +14,25 @@
  */
 
 describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'philosophy-mode-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
 
-        // Navigate to philosophy screen
-        cy.get("body").then(($body) => {
-          if ($body.find('[data-testid="philosophy-button"]').length > 0) {
-            cy.get('[data-testid="philosophy-button"]').click({ force: true });
-          } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
-            cy.get('[data-testid="menu-philosophy"]').click({ force: true });
-          } else {
-            // Use keyboard shortcut as fallback
-            cy.log("Using keyboard shortcut '4' for philosophy");
-            cy.get("body").type("4");
-          }
-        });
-      },
-      {
-        validate: () => {
-          cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should('exist');
-        }
+    // Navigate to philosophy screen
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
+        cy.get('[data-testid="philosophy-button"]').click({ force: true });
+      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
+        cy.get('[data-testid="menu-philosophy"]').click({ force: true });
+      } else {
+        // Use keyboard shortcut as fallback
+        cy.log("Using keyboard shortcut '4' for philosophy");
+        cy.get("body").type("4");
       }
-    );
-    // Ensure we're on philosophy screen after session restore
-    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should('exist');
+    });
   });
 
   afterEach(() => {
-    // Clean up game state
-    cy.window().then(win => {
-      if ((win as any).__game?.cleanup) {
-        (win as any).__game.cleanup();
-      }
-    });
     cy.returnToIntro();
   });
 

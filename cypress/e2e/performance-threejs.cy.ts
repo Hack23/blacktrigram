@@ -7,22 +7,9 @@
  */
 
 describe("Black Trigram - Three.js Performance", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'performance-test-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-      },
-      {
-        validate: () => {
-          cy.get("canvas", { timeout: 3000 }).should("be.visible");
-        }
-      }
-    );
-    // Ensure canvas is ready after session restore
-    cy.get("canvas", { timeout: 3000 }).should("be.visible");
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
   });
 
   describe("IntroScreen FPS Performance", () => {

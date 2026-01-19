@@ -9,22 +9,9 @@
  */
 
 describe("Mobile HTML Overlay Responsiveness", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'mobile-overlay-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-      },
-      {
-        validate: () => {
-          cy.get("canvas", { timeout: 3000 }).should("be.visible");
-        }
-      }
-    );
-    // Ensure canvas is ready after session restore
-    cy.get("canvas", { timeout: 3000 }).should("be.visible");
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
   });
 
   // Mobile viewport configurations to test

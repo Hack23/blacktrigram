@@ -11,22 +11,9 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("Black Trigram - WebGL Rendering Verification", () => {
-  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.session(
-      'webgl-verification-session',
-      () => {
-        cy.visitWithWebGLMock("/", { timeout: 12000 });
-        cy.waitForCanvasReady();
-      },
-      {
-        validate: () => {
-          cy.get("canvas", { timeout: 3000 }).should("be.visible");
-        }
-      }
-    );
-    // Ensure canvas is ready after session restore
-    cy.get("canvas", { timeout: 3000 }).should("be.visible");
+    cy.visitWithWebGLMock("/", { timeout: 12000 });
+    cy.waitForCanvasReady();
   });
 
   describe("WebGL Context Verification", () => {
