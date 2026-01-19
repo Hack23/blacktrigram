@@ -11,11 +11,17 @@ import { AIActionType, AIDecisionTree, CombatContext } from "./DecisionTree";
 
 /**
  * Mock combat context factory
+ *
+ * **Physics-First**: All positions and distances are in METERS.
+ * - Arena is centered at origin (0, 0)
+ * - Player 1 at x=-2.5m, Player 2 at x=+2.5m
+ * - Default distance: 2.0m (mid-range engagement)
  */
 function createMockContext(overrides?: Partial<CombatContext>): CombatContext {
   return {
-    playerPosition: { x: 400, y: 300 },
-    opponentPosition: { x: 600, y: 300 },
+    // Positions in meters - arena centered at origin
+    playerPosition: { x: -2.5, y: 0 },
+    opponentPosition: { x: 2.5, y: 0 },
     playerHealth: 100,
     playerMaxHealth: 100,
     playerKi: 100,
@@ -25,7 +31,7 @@ function createMockContext(overrides?: Partial<CombatContext>): CombatContext {
     opponentHealth: 100,
     opponentStance: TrigramStance.GEON,
     playerStance: TrigramStance.TAE,
-    distanceToOpponent: 200,
+    distanceToOpponent: 2.0, // METERS (was 200 pixels)
     timeInMatch: 5000,
     isOpponentAttacking: false,
     recentDamageTaken: 0,
@@ -242,7 +248,7 @@ describe("AIDecisionTree", () => {
       decisionTree.setDifficultyLevel(0.5);
 
       const context = createMockContext({
-        distanceToOpponent: 100,
+        distanceToOpponent: 0.8,
         playerStance: TrigramStance.GEON,
       });
 
@@ -259,7 +265,7 @@ describe("AIDecisionTree", () => {
 
     it("should target vital points more often at higher difficulty", () => {
       const context = createMockContext({
-        distanceToOpponent: 40, // Within close range for Musa (1 cell = 40px, close range = 48px)
+        distanceToOpponent: 0.3, // Within close range for Musa (0.3m = close range for melee)
         playerStance: TrigramStance.LI, // Fire stance
       });
 
@@ -304,7 +310,7 @@ describe("AIDecisionTree", () => {
       decisionTree.setDifficultyLevel(0.1);
 
       const context = createMockContext({
-        distanceToOpponent: 100,
+        distanceToOpponent: 0.8,
         playerStance: TrigramStance.GEON,
       });
 
@@ -327,7 +333,7 @@ describe("AIDecisionTree", () => {
         opponentStance: TrigramStance.GON,
         playerKi: 100,
         playerStamina: 100,
-        distanceToOpponent: 100, // Mid-range to avoid triggering combo/close-range actions for Jojik (optimal 40px)
+        distanceToOpponent: 0.8, // Mid-range to avoid triggering combo/close-range actions for Jojik (optimal 0.3-0.5m)
         isOpponentAttacking: false, // No opponent attack to avoid counter taking priority
       });
 
@@ -405,7 +411,7 @@ describe("AIDecisionTree", () => {
       const context = createMockContext({
         playerHealth: 3, // Critical health - below 5% threshold for Musa
         playerMaxHealth: 100,
-        distanceToOpponent: 120,
+        distanceToOpponent: 1.0,
       });
 
       const decision = decisionTree.makeDecision(
@@ -423,7 +429,7 @@ describe("AIDecisionTree", () => {
     it("should defend when taking recent damage", () => {
       const context = createMockContext({
         recentDamageTaken: 30,
-        distanceToOpponent: 100, // Closer range to trigger defensive evaluation
+        distanceToOpponent: 0.8, // Closer range to trigger defensive evaluation
         timeInMatch: 15000, // After observation phase for Hacker
       });
 
@@ -448,7 +454,7 @@ describe("AIDecisionTree", () => {
     it("should counter when opponent is attacking", () => {
       const context = createMockContext({
         isOpponentAttacking: true,
-        distanceToOpponent: 40, // Within counter range for Amsalja (optimal 40px)
+        distanceToOpponent: 0.3, // Within counter range for Amsalja (optimal 0.3-0.5m)
       });
 
       const decision = decisionTree.makeDecision(
@@ -474,7 +480,7 @@ describe("AIDecisionTree", () => {
       decisionTree.reset(); // Reset to avoid cooldowns and state from previous tests
 
       const context = createMockContext({
-        distanceToOpponent: 300, // Far away
+        distanceToOpponent: 2.5, // Far away
       });
 
       const decision = decisionTree.makeDecision(
@@ -494,7 +500,7 @@ describe("AIDecisionTree", () => {
 
     it("should make close-range decisions when near", () => {
       const context = createMockContext({
-        distanceToOpponent: 40, // Within close range for Musa (optimal 40px)
+        distanceToOpponent: 0.3, // Within close range for Musa (optimal 0.3-0.5m)
       });
 
       const decision = decisionTree.makeDecision(
@@ -515,7 +521,7 @@ describe("AIDecisionTree", () => {
 
     it("should use mid-range tactics appropriately", () => {
       const context = createMockContext({
-        distanceToOpponent: 180, // Mid range
+        distanceToOpponent: 1.5, // Mid range
       });
 
       const decision = decisionTree.makeDecision(
@@ -541,7 +547,7 @@ describe("AIDecisionTree", () => {
   describe("Combo System Integration", () => {
     it("should start combos when conditions are met", () => {
       const context = createMockContext({
-        distanceToOpponent: 45, // Within combo range for Musa (optimal 40px * 1.5 = 60px)
+        distanceToOpponent: 0.35, // Within combo range for Musa (optimal 0.3-0.5m * 1.5 = 60px)
         playerKi: 80,
         playerStamina: 80,
       });
@@ -580,7 +586,7 @@ describe("AIDecisionTree", () => {
 
     it("should not start combo with insufficient resources", () => {
       const context = createMockContext({
-        distanceToOpponent: 100,
+        distanceToOpponent: 0.8,
         playerKi: 15, // Low Ki
         playerStamina: 20, // Low stamina
       });
@@ -642,7 +648,7 @@ describe("AIDecisionTree", () => {
   describe("Personality Integration", () => {
     it("should respect aggressive personality traits", () => {
       const context = createMockContext({
-        distanceToOpponent: 40, // At optimal range for Musa (1 cell = 40px)
+        distanceToOpponent: 0.3, // At optimal range for Musa (1 cell = 40px)
       });
 
       const decisions = [];
@@ -667,7 +673,7 @@ describe("AIDecisionTree", () => {
 
     it("should respect defensive personality traits", () => {
       const context = createMockContext({
-        distanceToOpponent: 150,
+        distanceToOpponent: 1.25,
         recentDamageTaken: 20,
       });
 
@@ -736,7 +742,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 25, // 25% health
           playerMaxHealth: 100,
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
         });
 
         // Musa at close range with low opponent health
@@ -766,7 +772,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 80, // Still good health
           opponentBalance: "HELPLESS", // But helpless balance state
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
         });
 
         // Amsalja should exploit vulnerability
@@ -785,7 +791,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 60, // Moderate health
           opponentBalance: "VULNERABLE", // Vulnerable balance state
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
         });
 
         // Musa should exploit vulnerability
@@ -803,7 +809,7 @@ describe("AIDecisionTree", () => {
       it("should activate kill mode for Hacker (DEFENSIVE_SPECIALIST) at 25% opponent health", () => {
         const context = createMockContext({
           opponentHealth: 24, // Below 25% health threshold for Hacker kill mode
-          distanceToOpponent: 150, // Mid-range for Hacker (optimal ~120px)
+          distanceToOpponent: 1.25, // Mid-range for Hacker (optimal ~1.0m)
         });
 
         // Hacker (DEFENSIVE_SPECIALIST) now supports kill mode at 25% threshold
@@ -839,7 +845,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 45, // 45% health - above threshold (also above Musa signature move 40% threshold)
           playerMaxHealth: 100,
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
         });
 
         const decision = decisionTree.makeDecision(
@@ -863,7 +869,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 20, // 20% health
           playerMaxHealth: 100,
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
         });
 
         const decisions = [];
@@ -893,7 +899,7 @@ describe("AIDecisionTree", () => {
           playerHealth: 10, // AI at 10% health
           playerMaxHealth: 100,
           opponentHealth: 25, // Opponent at 25% health (kill mode threshold)
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
         });
 
         // Musa should continue attacking despite low health (honor code)
@@ -913,7 +919,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 28, // 28% health
           playerMaxHealth: 100,
-          distanceToOpponent: 40, // Close range
+          distanceToOpponent: 0.3, // Close range
           playerKi: 50, // Has resources for techniques
           playerStamina: 50,
         });
@@ -941,7 +947,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 25,
           playerMaxHealth: 100,
-          distanceToOpponent: 60, // Within feint range normally
+          distanceToOpponent: 0.5, // Within feint range normally
         });
 
         const decisions = [];
@@ -966,7 +972,7 @@ describe("AIDecisionTree", () => {
           playerHealth: 10, // AI at 10% health (well below 20% retreat threshold)
           playerMaxHealth: 100,
           opponentHealth: 80, // Opponent at 80% (NOT in kill mode)
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
         });
 
         // Amsalja should retreat when health is critically low and NOT in kill mode
@@ -987,7 +993,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 20,
           playerMaxHealth: 100,
-          distanceToOpponent: 40, // Close range for vital point targeting
+          distanceToOpponent: 0.3, // Close range for vital point targeting
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1010,12 +1016,12 @@ describe("AIDecisionTree", () => {
       it("should have higher priorities for finishing attacks than normal combat", () => {
         const normalContext = createMockContext({
           opponentHealth: 80, // Normal health
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
         });
 
         const killModeContext = createMockContext({
           opponentHealth: 25, // Kill mode health
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
         });
 
         decisionTree.reset();
@@ -1048,7 +1054,7 @@ describe("AIDecisionTree", () => {
       it("should activate kill mode for Jeongbo Yowon (BALANCED_FIGHTER) at 28% opponent health", () => {
         const context = createMockContext({
           opponentHealth: 27, // Below 28% health threshold for Jeongbo Yowon kill mode
-          distanceToOpponent: 100, // Mid-range
+          distanceToOpponent: 0.8, // Mid-range
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1075,7 +1081,7 @@ describe("AIDecisionTree", () => {
       it("should activate kill mode for Jojik Pokryeokbae (CHAOS_WARRIOR) at 35% opponent health", () => {
         const context = createMockContext({
           opponentHealth: 34, // Below 35% health threshold for Jojik Pokryeokbae kill mode
-          distanceToOpponent: 60, // Close-mid range
+          distanceToOpponent: 0.5, // Close-mid range
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1103,7 +1109,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentHealth: 80, // Good health but vulnerable
           opponentBalance: "VULNERABLE", // Vulnerable balance state triggers kill mode
-          distanceToOpponent: 120, // Optimal range for Hacker
+          distanceToOpponent: 1.0, // Optimal range for Hacker
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1302,7 +1308,7 @@ describe("AIDecisionTree", () => {
       for (let i = 0; i < 100; i++) {
         const freshTree = new AIDecisionTree();
         const context = createMockContext({
-          distanceToOpponent: 60, // ~1.5 cells (40px per cell) = CLOSE range
+          distanceToOpponent: 0.5, // ~1.5 cells (meters) = CLOSE range
           playerStance: TrigramStance.TAE, // Not in favored stances for DEFENSIVE_SPECIALIST
           timeInMatch: 15000 + i * 10,
         });
@@ -1347,7 +1353,7 @@ describe("AIDecisionTree", () => {
       for (let i = 0; i < 100; i++) {
         const freshTree = new AIDecisionTree();
         const context = createMockContext({
-          distanceToOpponent: 140, // ~3.5 cells = MID range
+          distanceToOpponent: 1.2, // ~3.5 cells = MID range
           playerStance: TrigramStance.JIN, // Currently in close-range stance
           timeInMatch: 15000 + i * 10,
         });
@@ -1379,7 +1385,7 @@ describe("AIDecisionTree", () => {
       for (let i = 0; i < 100; i++) {
         const freshTree = new AIDecisionTree();
         const context = createMockContext({
-          distanceToOpponent: 240, // 6 cells = FAR range
+          distanceToOpponent: 2.0, // 6 cells = FAR range
           playerStance: TrigramStance.LI, // Currently in close-range stance
           timeInMatch: 15000 + i * 10,
         });
@@ -1416,7 +1422,7 @@ describe("AIDecisionTree", () => {
         const context = createMockContext({
           opponentStance: TrigramStance.GEON, // Opponent in Heaven stance
           playerStance: TrigramStance.LI, // Player not in counter stance
-          distanceToOpponent: 120,
+          distanceToOpponent: 1.0,
           timeInMatch: 15000 + i * 10,
         });
 
@@ -1445,7 +1451,7 @@ describe("AIDecisionTree", () => {
       const context = createMockContext({
         opponentStance: TrigramStance.JIN, // Thunder stance
         playerStance: TrigramStance.TAE,
-        distanceToOpponent: 120,
+        distanceToOpponent: 1.0,
         timeInMatch: 15000,
       });
 
@@ -1477,7 +1483,7 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.GEON,
           stanceFatigue: { timeInStance: 5000 }, // 5 seconds - low fatigue
           isOpponentAttacking: false,
-          distanceToOpponent: 150,
+          distanceToOpponent: 1.25,
           timeInMatch: 15000 + i * 10,
         });
 
@@ -1485,7 +1491,7 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.GEON,
           stanceFatigue: { timeInStance: 25000 }, // 25 seconds - high fatigue (1.5x)
           isOpponentAttacking: false,
-          distanceToOpponent: 150,
+          distanceToOpponent: 1.25,
           timeInMatch: 30000 + i * 10,
         });
 
@@ -1528,7 +1534,7 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.GEON, // Preferred for AGGRESSIVE_STRIKER
           stanceFatigue: { timeInStance: 3000 }, // 3 seconds - very low fatigue
           isOpponentAttacking: false,
-          distanceToOpponent: 150,
+          distanceToOpponent: 1.25,
           timeInMatch: 15000 + i * 10,
         });
 
@@ -1563,7 +1569,7 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.GEON, // Preferred stance
           stanceFatigue: { timeInStance: 5000 },
           isOpponentAttacking: false, // Preferred stance check applies
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
           timeInMatch: 15000 + i * 10,
         });
 
@@ -1571,7 +1577,7 @@ describe("AIDecisionTree", () => {
           playerStance: TrigramStance.GEON,
           stanceFatigue: { timeInStance: 5000 },
           isOpponentAttacking: true, // Bypasses preferred stance check
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
           timeInMatch: 15000 + i * 10,
         });
 
@@ -1720,7 +1726,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 100,
           opponentMaxKi: 100,
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1751,7 +1757,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 100,
           opponentMaxKi: 100,
-          distanceToOpponent: 60,
+          distanceToOpponent: 0.5,
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1784,7 +1790,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 100,
           opponentMaxKi: 100,
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
         });
 
         const decisions = [];
@@ -1813,7 +1819,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 100,
           opponentMaxKi: 100,
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
           playerStamina: 50,
         });
 
@@ -1843,7 +1849,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 8, // < 10%
           opponentMaxKi: 100,
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1872,7 +1878,7 @@ describe("AIDecisionTree", () => {
           opponentBalance: "HELPLESS",
           opponentStamina: 10,
           opponentMaxStamina: 100,
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
         });
 
         // Test with Musa archetype
@@ -1893,7 +1899,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 8,
           opponentMaxKi: 100,
-          distanceToOpponent: 120,
+          distanceToOpponent: 1.0,
           playerStance: TrigramStance.GEON,
         });
 
@@ -1932,7 +1938,7 @@ describe("AIDecisionTree", () => {
           opponentMaxStamina: 100,
           opponentKi: 8, // < 10%: 1.4x technique, 1.3x attack
           opponentMaxKi: 100,
-          distanceToOpponent: 40,
+          distanceToOpponent: 0.3,
           playerKi: 50,
           playerStamina: 50,
         });
@@ -1966,7 +1972,7 @@ describe("AIDecisionTree", () => {
       it("should accumulate pressure from feints", () => {
         const context = createMockContext({
           opponentBalance: "SHAKEN",
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
         });
 
         // Execute multiple decisions to build pressure
@@ -1991,7 +1997,7 @@ describe("AIDecisionTree", () => {
       it("should trigger decisive strike at high pressure with vulnerable opponent", () => {
         const context = createMockContext({
           opponentBalance: "VULNERABLE",
-          distanceToOpponent: 60,
+          distanceToOpponent: 0.5,
           playerKi: 50,
           playerStamina: 50,
         });
@@ -2017,7 +2023,7 @@ describe("AIDecisionTree", () => {
       it("should reset pressure on round reset", () => {
         const context = createMockContext({
           opponentBalance: "SHAKEN",
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
         });
 
         // Build up pressure
@@ -2045,7 +2051,7 @@ describe("AIDecisionTree", () => {
       it("should decay pressure over time", () => {
         const context = createMockContext({
           opponentBalance: "SHAKEN",
-          distanceToOpponent: 80,
+          distanceToOpponent: 0.65,
         });
 
         // Build up pressure with feints

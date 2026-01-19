@@ -187,7 +187,6 @@ function calculateHitAccuracy(
   archetype: import("../../../../types/common").PlayerArchetype,
   stance: TrigramStance,
   animationType?: AnimationType,
-  animationTime?: number,
 ): number {
   // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
@@ -205,23 +204,26 @@ function calculateHitAccuracy(
     centerToCenterDistance - targetBodyRadius,
   );
 
-  // If animation info available, use physics-based reach calculation
-  if (animationType !== undefined && animationTime !== undefined) {
+  // If animation type is available, use physics-based reach calculation
+  // We use calculateMaxReach (peak time reach) because:
+  // 1. Training hit detection happens at animation frame 6 (~100ms)
+  // 2. But technique hit timings expect longer animations (e.g., roundhouse 200-480ms)
+  // 3. Using max reach ensures the technique can hit if within peak reach range
+  // 4. This matches intuitive behavior - if you're close enough to be hit by the kick, it hits
+  // 훈련 타격 감지는 최대 도달 거리 사용 (애니메이션 타이밍과 기술 타이밍 불일치 보정)
+  if (animationType !== undefined) {
     const physicalAttributes = getArchetypePhysicalAttributes(archetype);
-    const reachResult = physicalReachCalculator.calculateReach(
+    const maxReachMeters = physicalReachCalculator.calculateMaxReach(
       physicalAttributes,
       animationType,
-      animationTime,
       stance,
     );
-
-    const effectiveReachMeters = reachResult.effectiveReach;
 
     // Convert reach from meters to training scene units.
     // Training scenes are authored in real-world meters, so we intentionally
     // use a 1:1 conversion here (METERS_TO_TRAINING_UNITS = 1.0).
     // Combat AI uses METERS_TO_PIXELS_SCALE (100) for pixel coordinates.
-    const reachInUnits = effectiveReachMeters * METERS_TO_TRAINING_UNITS;
+    const reachInUnits = maxReachMeters * METERS_TO_TRAINING_UNITS;
 
     // STRICT DISTANCE CHECK (matches CombatSystem behavior):
     // Out of reach = guaranteed miss with accuracy 0
@@ -303,11 +305,6 @@ export function useTrainingActions(
     (_vitalPointId: string): boolean => {
       // Get animation context from pending attack if available
       const animationType = pendingAttackRef.current?.animationType;
-      const startTime = pendingAttackRef.current?.startTime;
-      const currentTime =
-        startTime !== undefined
-          ? Math.max(0, performance.now() / 1000 - startTime)
-          : undefined;
 
       const accuracy = calculateHitAccuracy(
         player3DPosition,
@@ -315,7 +312,6 @@ export function useTrainingActions(
         playerArchetype,
         playerStance,
         animationType,
-        currentTime,
       );
 
       // Determine hit position (dummy center)
@@ -442,7 +438,6 @@ export function useTrainingActions(
       playerArchetype,
       playerStance,
       animationType,
-      0, // At attack initiation, time is 0
     );
 
     pendingAttackRef.current = {
