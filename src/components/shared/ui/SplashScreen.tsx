@@ -3,6 +3,9 @@ import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { toHex } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
+// Declare global APP_VERSION constant (injected by build process)
+declare const APP_VERSION: string | undefined;
+
 // Constants
 // Small delay to show loading state for visual feedback.
 // 100ms is sufficient for users to perceive the state change

@@ -20,7 +20,7 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
   };
 
   describe("Stance Guard Animation Detection", () => {
-    it("should render when currentAnimation is stance_guard_geon", () => {
+    it("should render when currentAnimation is stance_geon", () => {
       const { container } = renderWithCanvas(
         <SkeletalPlayer3D
           playerId="test-player"
@@ -32,15 +32,20 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={50}
-          currentAnimation="stance_guard_geon"
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
+          isMobile={false}
+          currentAnimation="stance_geon"
           showDetails={false}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render when currentAnimation is stance_guard_tae", () => {
+    it("should render when currentAnimation is stance_tae", () => {
       const { container } = renderWithCanvas(
         <SkeletalPlayer3D
           playerId="test-player"
@@ -52,24 +57,40 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={50}
-          currentAnimation="stance_guard_tae"
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
+          isMobile={false}
+          currentAnimation="stance_tae"
           showDetails={false}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should render all 8 trigram stance guards", () => {
-      const stances = [
-        { stance: TrigramStance.GEON, animation: "stance_guard_geon" },
-        { stance: TrigramStance.TAE, animation: "stance_guard_tae" },
-        { stance: TrigramStance.LI, animation: "stance_guard_li" },
-        { stance: TrigramStance.JIN, animation: "stance_guard_jin" },
-        { stance: TrigramStance.SON, animation: "stance_guard_son" },
-        { stance: TrigramStance.GAM, animation: "stance_guard_gam" },
-        { stance: TrigramStance.GAN, animation: "stance_guard_gan" },
-        { stance: TrigramStance.GON, animation: "stance_guard_gon" },
+      const stances: {
+        stance: TrigramStance;
+        animation:
+          | "stance_geon"
+          | "stance_tae"
+          | "stance_li"
+          | "stance_jin"
+          | "stance_son"
+          | "stance_gam"
+          | "stance_gan"
+          | "stance_gon";
+      }[] = [
+        { stance: TrigramStance.GEON, animation: "stance_geon" },
+        { stance: TrigramStance.TAE, animation: "stance_tae" },
+        { stance: TrigramStance.LI, animation: "stance_li" },
+        { stance: TrigramStance.JIN, animation: "stance_jin" },
+        { stance: TrigramStance.SON, animation: "stance_son" },
+        { stance: TrigramStance.GAM, animation: "stance_gam" },
+        { stance: TrigramStance.GAN, animation: "stance_gan" },
+        { stance: TrigramStance.GON, animation: "stance_gon" },
       ];
 
       stances.forEach(({ stance, animation }) => {
@@ -84,9 +105,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             maxHealth={100}
             stamina={100}
             ki={50}
+            pain={0}
+            balance="READY"
+            consciousness={100}
+            isBlocking={false}
+            isMobile={false}
             currentAnimation={animation}
             showDetails={false}
-          />
+          />,
         );
 
         expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -107,9 +133,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={90}
-          currentAnimation="stance_guard_li"
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
+          isMobile={false}
+          currentAnimation="stance_li"
           showDetails={true}
-        />
+        />,
       );
 
       // Should render with ki-enhanced color
@@ -128,9 +159,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={50}
           ki={30}
-          currentAnimation="stance_guard_gam"
+          pain={20}
+          balance="SHAKEN"
+          consciousness={90}
+          isBlocking={false}
+          isMobile={false}
+          currentAnimation="stance_gam"
           showDetails={true}
-        />
+        />,
       );
 
       // Should render with low health color
@@ -151,10 +187,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={70}
           ki={40}
+          pain={5}
+          balance="READY"
+          consciousness={100}
           isBlocking={true}
-          currentAnimation="stance_guard_gan"
+          isMobile={false}
+          currentAnimation="stance_gan"
           showDetails={true}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -162,7 +202,7 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
 
     it("should handle stance guard with balance states", () => {
       const balanceStates = [
-        "STABLE",
+        "READY",
         "SHAKEN",
         "VULNERABLE",
         "HELPLESS",
@@ -180,10 +220,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             maxHealth={100}
             stamina={100}
             ki={50}
+            pain={0}
             balance={balance}
-            currentAnimation="stance_guard_son"
+            consciousness={100}
+            isBlocking={false}
+            isMobile={false}
+            currentAnimation="stance_son"
             showDetails={false}
-          />
+          />,
         );
 
         expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -204,9 +248,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={50}
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
+          isMobile={false}
           currentAnimation="stance_change"
           showDetails={false}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -224,9 +273,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={50}
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
+          isMobile={false}
           currentAnimation="idle"
           showDetails={false}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -246,10 +300,14 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
           maxHealth={100}
           stamina={100}
           ki={50}
-          currentAnimation="stance_guard_jin"
+          pain={0}
+          balance="READY"
+          consciousness={100}
+          isBlocking={false}
           isMobile={true}
+          currentAnimation="stance_jin"
           showDetails={true}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -270,10 +328,15 @@ describe("SkeletalPlayer3D - Guard Visual Integration", () => {
             maxHealth={100}
             stamina={100}
             ki={50}
+            pain={0}
+            balance="READY"
+            consciousness={100}
+            isBlocking={false}
+            isMobile={false}
             scale={scale}
-            currentAnimation="stance_guard_li"
+            currentAnimation="stance_li"
             showDetails={false}
-          />
+          />,
         );
 
         expect(container.querySelector("canvas")).toBeInTheDocument();

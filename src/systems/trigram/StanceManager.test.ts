@@ -1,5 +1,5 @@
+import type { PlayerState } from "@/systems/player";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { PlayerState } from "../../types";
 import { PlayerArchetype, TrigramStance } from "../../types/common";
 import { createPlayerFromArchetype } from "../../utils/playerUtils";
 import { StanceManager } from "./StanceManager";
@@ -36,7 +36,7 @@ describe("StanceManager", () => {
       if (result.success) {
         expect(result.updatedPlayer.ki).toBeLessThanOrEqual(originalKi);
         expect(result.updatedPlayer.stamina).toBeLessThanOrEqual(
-          originalStamina
+          originalStamina,
         );
       }
     });
@@ -51,12 +51,12 @@ describe("StanceManager", () => {
 
       const result = stanceManager.changeStance(
         lowResourcePlayer,
-        TrigramStance.GON
+        TrigramStance.GON,
       );
 
       expect(result.success).toBe(false);
       expect(result.updatedPlayer.currentStance).toBe(
-        lowResourcePlayer.currentStance
+        lowResourcePlayer.currentStance,
       );
     });
 
@@ -73,7 +73,7 @@ describe("StanceManager", () => {
     it("should return true for valid stance changes", () => {
       const canChange = stanceManager.canChangeStance(
         player,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
 
       expect(canChange).toBe(true);
@@ -88,7 +88,7 @@ describe("StanceManager", () => {
 
       const canChange = stanceManager.canChangeStance(
         lowResourcePlayer,
-        TrigramStance.GAM
+        TrigramStance.GAM,
       );
 
       expect(canChange).toBe(false);
@@ -102,7 +102,7 @@ describe("StanceManager", () => {
 
       const canChange = stanceManager.canChangeStance(
         recentChangePlayer,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
 
       // Should respect cooldown
@@ -115,7 +115,7 @@ describe("StanceManager", () => {
       const cost = stanceManager.getStanceTransitionCost(
         player.currentStance,
         player.currentStance,
-        player
+        player,
       );
 
       expect(cost.ki).toBe(0);
@@ -127,7 +127,7 @@ describe("StanceManager", () => {
       const cost = stanceManager.getStanceTransitionCost(
         TrigramStance.GEON,
         TrigramStance.GON,
-        player
+        player,
       );
 
       expect(cost.ki).toBeGreaterThan(0);
@@ -139,14 +139,14 @@ describe("StanceManager", () => {
       const musaCost = stanceManager.getStanceTransitionCost(
         TrigramStance.GEON,
         TrigramStance.GAN, // MUSA favored stance
-        player
+        player,
       );
 
       const hacker = createPlayerFromArchetype(PlayerArchetype.HACKER, 1);
       const hackerCost = stanceManager.getStanceTransitionCost(
         TrigramStance.GEON,
         TrigramStance.GAN,
-        hacker
+        hacker,
       );
 
       // MUSA should have lower cost for favored stances
@@ -199,7 +199,10 @@ describe("StanceManager", () => {
       };
 
       // Second switch: left -> right
-      const secondSwitch = stanceManager.switchStanceSide(playerAfterCooldown, "left");
+      const secondSwitch = stanceManager.switchStanceSide(
+        playerAfterCooldown,
+        "left",
+      );
       expect(secondSwitch.success).toBe(true);
       expect(secondSwitch.laterality).toBe("right");
       expect(stanceManager.getCurrentLaterality()).toBe("right");
@@ -241,7 +244,10 @@ describe("StanceManager", () => {
       expect(firstResult.success).toBe(true);
 
       // Immediate second switch (should fail due to cooldown)
-      const secondResult = stanceManager.switchStanceSide(firstResult.updatedPlayer, "left");
+      const secondResult = stanceManager.switchStanceSide(
+        firstResult.updatedPlayer,
+        "left",
+      );
       expect(secondResult.success).toBe(false);
       expect(secondResult.message).toContain("cooldown");
     });
@@ -264,8 +270,11 @@ describe("StanceManager", () => {
       };
 
       // Change trigram stance
-      const stanceChange = stanceManager.changeStance(updatedPlayer, TrigramStance.LI);
-      
+      const stanceChange = stanceManager.changeStance(
+        updatedPlayer,
+        TrigramStance.LI,
+      );
+
       // Laterality should remain left
       expect(stanceChange.laterality).toBe("left");
       expect(stanceManager.getCurrentLaterality()).toBe("left");
@@ -273,7 +282,10 @@ describe("StanceManager", () => {
 
     it("should allow stance side switch and stance change independently", () => {
       // Change stance first
-      const stanceChange = stanceManager.changeStance(player, TrigramStance.TAE);
+      const stanceChange = stanceManager.changeStance(
+        player,
+        TrigramStance.TAE,
+      );
       expect(stanceChange.success).toBe(true);
       expect(stanceManager.getCurrent()).toBe(TrigramStance.TAE);
 
@@ -284,10 +296,13 @@ describe("StanceManager", () => {
       };
 
       // Switch laterality
-      const lateralitySwitch = stanceManager.switchStanceSide(updatedPlayer, "right");
+      const lateralitySwitch = stanceManager.switchStanceSide(
+        updatedPlayer,
+        "right",
+      );
       expect(lateralitySwitch.success).toBe(true);
       expect(lateralitySwitch.laterality).toBe("left");
-      
+
       // Stance should remain TAE
       expect(stanceManager.getCurrent()).toBe(TrigramStance.TAE);
     });

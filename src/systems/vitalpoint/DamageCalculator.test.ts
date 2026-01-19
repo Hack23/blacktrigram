@@ -9,6 +9,7 @@ import {
   VitalPointEffectType,
   VitalPointSeverity,
 } from "../../types/common";
+import { EffectIntensity } from "../effects";
 import { DamageCalculator } from "./DamageCalculator";
 import { KoreanTechnique, VitalPoint } from "./types";
 
@@ -37,7 +38,7 @@ describe("DamageCalculator", () => {
         {
           id: "stun_effect",
           type: VitalPointEffectType.STUN,
-          intensity: 0.8,
+          intensity: EffectIntensity.HIGH,
           duration: 2000,
           description: { korean: "기절 효과", english: "Stun effect" },
           stackable: false,
@@ -70,7 +71,11 @@ describe("DamageCalculator", () => {
       kiCost: 10,
       staminaCost: 15,
       accuracy: 0.85,
-      range: 1.5,
+      reachConfig: {
+        bodyPart: "arm",
+        techniqueType: "punch",
+        baseExtension: 1.0,
+      },
       executionTime: 300,
       recoveryTime: 500,
       critChance: 0.1,
@@ -85,7 +90,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       expect(result).toBeDefined();
@@ -98,18 +103,18 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0.5
+        0.5,
       );
 
       const highAccuracyResult = DamageCalculator.calculateVitalPointDamage(
         mockVitalPoint,
         15,
         mockPlayer,
-        0.95
+        0.95,
       );
 
       expect(highAccuracyResult.damage).toBeGreaterThan(
-        lowAccuracyResult.damage
+        lowAccuracyResult.damage,
       );
     });
 
@@ -124,14 +129,14 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         musaPlayer,
-        0.9
+        0.9,
       );
 
       const amsaljaResult = DamageCalculator.calculateVitalPointDamage(
         mockVitalPoint,
         15,
         amsaljaPlayer,
-        0.9
+        0.9,
       );
 
       // Assassin should do more damage than warrior
@@ -143,7 +148,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0.95
+        0.95,
       );
 
       expect(criticalResult.isCritical).toBe(true);
@@ -154,7 +159,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0.7
+        0.7,
       );
 
       expect(normalResult.isCritical).toBe(false);
@@ -165,7 +170,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       expect(result.effects).toBeDefined();
@@ -181,7 +186,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         1,
         mockPlayer,
-        0.01
+        0.01,
       );
 
       expect(result.damage).toBeGreaterThanOrEqual(1);
@@ -194,7 +199,7 @@ describe("DamageCalculator", () => {
         vitalPointNoDamage,
         15,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       expect(result.damage).toBeGreaterThan(0);
@@ -204,42 +209,42 @@ describe("DamageCalculator", () => {
   describe("getArchetypeModifier", () => {
     it("should return correct modifier for MUSA", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.MUSA
+        PlayerArchetype.MUSA,
       );
       expect(modifier).toBe(1.2);
     });
 
     it("should return correct modifier for AMSALJA", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.AMSALJA
+        PlayerArchetype.AMSALJA,
       );
       expect(modifier).toBe(1.5);
     });
 
     it("should return correct modifier for HACKER", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.HACKER
+        PlayerArchetype.HACKER,
       );
       expect(modifier).toBe(1.1);
     });
 
     it("should return correct modifier for JEONGBO_YOWON", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.JEONGBO_YOWON
+        PlayerArchetype.JEONGBO_YOWON,
       );
       expect(modifier).toBe(1.1);
     });
 
     it("should return correct modifier for JOJIK_POKRYEOKBAE", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.JOJIK_POKRYEOKBAE
+        PlayerArchetype.JOJIK_POKRYEOKBAE,
       );
       expect(modifier).toBe(1.3);
     });
 
     it("should return 1.0 for unknown archetype", () => {
       const modifier = DamageCalculator.getArchetypeModifier(
-        "UNKNOWN" as PlayerArchetype
+        "UNKNOWN" as PlayerArchetype,
       );
       expect(modifier).toBe(1.0);
     });
@@ -251,7 +256,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.85
+        0.85,
       );
 
       expect(result).toBeDefined();
@@ -264,14 +269,14 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.85
+        0.85,
       );
 
       const withVP = DamageCalculator.calculateTechniqueDamage(
         mockTechnique,
         mockPlayer,
         mockVitalPoint,
-        0.85
+        0.85,
       );
 
       expect(withVP.damage).toBeGreaterThan(withoutVP.damage);
@@ -288,14 +293,14 @@ describe("DamageCalculator", () => {
         mockTechnique,
         musaPlayer,
         null,
-        0.85
+        0.85,
       );
 
       const amsaljaResult = DamageCalculator.calculateTechniqueDamage(
         mockTechnique,
         amsaljaPlayer,
         null,
-        0.85
+        0.85,
       );
 
       expect(amsaljaResult.damage).toBeGreaterThan(musaResult.damage);
@@ -306,14 +311,14 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.5
+        0.5,
       );
 
       const highAccuracy = DamageCalculator.calculateTechniqueDamage(
         mockTechnique,
         mockPlayer,
         null,
-        0.95
+        0.95,
       );
 
       expect(highAccuracy.damage).toBeGreaterThan(lowAccuracy.damage);
@@ -324,7 +329,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.85
+        0.85,
       );
 
       expect(result.isCritical).toBe(true);
@@ -335,7 +340,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.7
+        0.7,
       );
 
       expect(result.isCritical).toBe(false);
@@ -346,7 +351,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         mockVitalPoint,
-        0.85
+        0.85,
       );
 
       expect(result.effects.length).toBeGreaterThan(0);
@@ -360,7 +365,7 @@ describe("DamageCalculator", () => {
         weakTechnique,
         mockPlayer,
         null,
-        0.01
+        0.01,
       );
 
       expect(result.damage).toBeGreaterThanOrEqual(1);
@@ -371,7 +376,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         mockPlayer,
         null,
-        0.85
+        0.85,
       );
 
       expect(result.damage).toBe(Math.floor(result.damage));
@@ -384,7 +389,7 @@ describe("DamageCalculator", () => {
         noDamageTechnique as any,
         mockPlayer,
         null,
-        0.85
+        0.85,
       );
 
       expect(result.damage).toBeGreaterThan(0);
@@ -396,7 +401,7 @@ describe("DamageCalculator", () => {
       const reducedDamage = DamageCalculator.calculateDamageReduction(
         100,
         50,
-        false
+        false,
       );
 
       expect(reducedDamage).toBeLessThan(100);
@@ -406,12 +411,12 @@ describe("DamageCalculator", () => {
       const lowDefense = DamageCalculator.calculateDamageReduction(
         100,
         25,
-        false
+        false,
       );
       const highDefense = DamageCalculator.calculateDamageReduction(
         100,
         100,
-        false
+        false,
       );
 
       expect(highDefense).toBeLessThan(lowDefense);
@@ -421,7 +426,7 @@ describe("DamageCalculator", () => {
       const notBlocking = DamageCalculator.calculateDamageReduction(
         100,
         50,
-        false
+        false,
       );
       const blocking = DamageCalculator.calculateDamageReduction(100, 50, true);
 
@@ -433,7 +438,7 @@ describe("DamageCalculator", () => {
       const maxDefense = DamageCalculator.calculateDamageReduction(
         100,
         999,
-        false
+        false,
       );
 
       // 100 * (1 - 0.8) = 20 minimum (allow floating point tolerance)
@@ -465,7 +470,7 @@ describe("DamageCalculator", () => {
       const critChance = DamageCalculator.calculateCriticalChance(
         0.1,
         mockPlayer,
-        mockTechnique
+        mockTechnique,
       );
 
       expect(critChance).toBeGreaterThan(0.1);
@@ -475,7 +480,7 @@ describe("DamageCalculator", () => {
       const highCritChance = DamageCalculator.calculateCriticalChance(
         0.9,
         mockPlayer,
-        mockTechnique
+        mockTechnique,
       );
 
       expect(highCritChance).toBeLessThanOrEqual(0.95);
@@ -491,13 +496,13 @@ describe("DamageCalculator", () => {
       const musaCrit = DamageCalculator.calculateCriticalChance(
         0.1,
         musaPlayer,
-        mockTechnique
+        mockTechnique,
       );
 
       const amsaljaCrit = DamageCalculator.calculateCriticalChance(
         0.1,
         amsaljaPlayer,
-        mockTechnique
+        mockTechnique,
       );
 
       expect(amsaljaCrit).toBeGreaterThan(musaCrit);
@@ -510,13 +515,13 @@ describe("DamageCalculator", () => {
       const lowCrit = DamageCalculator.calculateCriticalChance(
         0.1,
         mockPlayer,
-        lowCritTechnique
+        lowCritTechnique,
       );
 
       const highCrit = DamageCalculator.calculateCriticalChance(
         0.1,
         mockPlayer,
-        highCritTechnique
+        highCritTechnique,
       );
 
       expect(highCrit).toBeGreaterThan(lowCrit);
@@ -528,7 +533,7 @@ describe("DamageCalculator", () => {
       const result = DamageCalculator.calculateCriticalChance(
         0.1,
         mockPlayer,
-        noCritTechnique as any
+        noCritTechnique as any,
       );
 
       expect(result).toBeGreaterThanOrEqual(0.1);
@@ -538,7 +543,7 @@ describe("DamageCalculator", () => {
       const result = DamageCalculator.calculateCriticalChance(
         0.5,
         mockPlayer,
-        mockTechnique
+        mockTechnique,
       );
 
       expect(result).toBeGreaterThanOrEqual(0);
@@ -552,7 +557,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        0
+        0,
       );
 
       expect(result.damage).toBeGreaterThanOrEqual(1);
@@ -563,7 +568,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         15,
         mockPlayer,
-        1.5
+        1.5,
       );
 
       expect(result.damage).toBeGreaterThan(0);
@@ -574,7 +579,7 @@ describe("DamageCalculator", () => {
         mockVitalPoint,
         -10,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       // Should still ensure minimum damage of 1
@@ -588,7 +593,7 @@ describe("DamageCalculator", () => {
         noEffectsVP,
         15,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       expect(result.effects).toEqual([]);
@@ -601,7 +606,7 @@ describe("DamageCalculator", () => {
           {
             id: "effect1",
             type: VitalPointEffectType.STUN,
-            intensity: 0.8,
+            intensity: EffectIntensity.HIGH,
             duration: 1000,
             description: { korean: "효과1", english: "Effect 1" },
             stackable: false,
@@ -609,7 +614,7 @@ describe("DamageCalculator", () => {
           {
             id: "effect2",
             type: VitalPointEffectType.PAIN,
-            intensity: 0.6,
+            intensity: EffectIntensity.MEDIUM,
             duration: 2000,
             description: { korean: "효과2", english: "Effect 2" },
             stackable: true,
@@ -621,7 +626,7 @@ describe("DamageCalculator", () => {
         multiEffectVP,
         15,
         mockPlayer,
-        0.9
+        0.9,
       );
 
       expect(result.effects.length).toBe(2);
@@ -670,7 +675,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         12, // Noon
-        meridianStates
+        meridianStates,
       );
 
       expect(result.damage).toBeGreaterThan(0);
@@ -685,7 +690,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         12,
-        meridianStates
+        meridianStates,
       );
 
       // Verify damage is reasonable and calculated
@@ -716,7 +721,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           minorVP,
           12,
-          meridianStates
+          meridianStates,
         ).damage;
 
         lethalTotal += DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -725,7 +730,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           lethalVP,
           12,
-          meridianStates
+          meridianStates,
         ).damage;
       }
 
@@ -753,7 +758,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           lowAccuracyHit,
           12,
-          meridianStates
+          meridianStates,
         ).damage;
 
         highTotal += DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -762,7 +767,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           highAccuracyHit,
           12,
-          meridianStates
+          meridianStates,
         ).damage;
       }
 
@@ -781,7 +786,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         2, // Liver peak
-        { liver: 1.0 }
+        { liver: 1.0 },
       );
 
       // Verify calculation works
@@ -801,7 +806,7 @@ describe("DamageCalculator", () => {
         darkOpsTechnique,
         vitalPointHitResult,
         22, // 10 PM - night time
-        meridianStates
+        meridianStates,
       );
 
       const dayResult = DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -810,7 +815,7 @@ describe("DamageCalculator", () => {
         darkOpsTechnique,
         vitalPointHitResult,
         12, // Noon - day time
-        meridianStates
+        meridianStates,
       );
 
       // Both should produce damage, night potentially higher
@@ -821,10 +826,10 @@ describe("DamageCalculator", () => {
     it("should apply archetype-specific bonuses", () => {
       // Test that archetype modifiers are applied by checking the calculation directly
       const musaModifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.MUSA
+        PlayerArchetype.MUSA,
       );
       const amsaljaModifier = DamageCalculator.getArchetypeModifier(
-        PlayerArchetype.AMSALJA
+        PlayerArchetype.AMSALJA,
       );
 
       expect(musaModifier).toBe(1.2);
@@ -849,7 +854,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         12,
-        meridianStates
+        meridianStates,
       );
 
       const amsaljaResult = DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -858,7 +863,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         12,
-        meridianStates
+        meridianStates,
       );
 
       // Both should produce valid damage
@@ -904,7 +909,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           vitalPointHitResult,
           12,
-          meridianStates
+          meridianStates,
         );
 
         const midResult = DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -913,7 +918,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           vitalPointHitResult,
           12,
-          meridianStates
+          meridianStates,
         );
 
         const highResult = DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -922,7 +927,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           vitalPointHitResult,
           12,
-          meridianStates
+          meridianStates,
         );
 
         zeroDefTotal += zeroResult.damage;
@@ -960,7 +965,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           criticalHit,
           12,
-          meridianStates
+          meridianStates,
         );
 
         const normalResult = DamageCalculator.calculateEnhancedVitalPointDamage(
@@ -969,7 +974,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           normalHit,
           12,
-          meridianStates
+          meridianStates,
         );
 
         critTotal += critResult.damage;
@@ -1003,7 +1008,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         vitalPointHitResult,
         12,
-        meridianStates
+        meridianStates,
       );
 
       expect(result.damage).toBeGreaterThanOrEqual(1);
@@ -1022,7 +1027,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         nonVitalHit,
         12,
-        meridianStates
+        meridianStates,
       );
 
       expect(result.isVitalPoint).toBe(false);
@@ -1039,7 +1044,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           vitalPointHitResult,
           12,
-          meridianStates
+          meridianStates,
         );
         damages.push(result.damage);
       }
@@ -1073,7 +1078,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         hitWithEffects,
         12,
-        meridianStates
+        meridianStates,
       );
 
       expect(result.effects.length).toBeGreaterThan(0);
@@ -1090,7 +1095,7 @@ describe("DamageCalculator", () => {
           mockTechnique,
           vitalPointHitResult,
           12,
-          meridianStates
+          meridianStates,
         );
       }
 
@@ -1133,7 +1138,7 @@ describe("DamageCalculator", () => {
         mockTechnique,
         criticalVitalHit,
         2, // Liver peak for meridian bonus
-        { liver: 1.0 }
+        { liver: 1.0 },
       );
 
       // Should be substantial damage with all modifiers

@@ -4,10 +4,11 @@
  * @module hooks/__tests__/useHandPoseTransitions.test
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useHandPoseTransitions } from "../useHandPoseTransitions";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HandPoseType } from "../../types/hand-animation";
+import type { PlayerAnimation } from "../../types/player-visual";
+import { useHandPoseTransitions } from "../useHandPoseTransitions";
 
 describe("useHandPoseTransitions", () => {
   beforeEach(() => {
@@ -19,15 +20,13 @@ describe("useHandPoseTransitions", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "idle",
-        })
+        }),
       );
 
       expect(result.current.leftHandState).toBeDefined();
       expect(result.current.rightHandState).toBeDefined();
       expect(result.current.leftHandState.currentPose).toBe(HandPoseType.OPEN);
-      expect(result.current.rightHandState.currentPose).toBe(
-        HandPoseType.OPEN
-      );
+      expect(result.current.rightHandState.currentPose).toBe(HandPoseType.OPEN);
     });
   });
 
@@ -37,7 +36,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       // Jab should use FIST pose
@@ -50,22 +49,22 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "defend",
           isBlocking: true,
-        })
+        }),
       );
 
       // Wait for useEffect to run and set initial pose
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       // After useEffect, currentPose should be set (targetPose may be null if transition complete)
       expect(
         result.current.leftHandState.currentPose === HandPoseType.OPEN ||
-        result.current.leftHandState.targetPose === HandPoseType.OPEN
+          result.current.leftHandState.targetPose === HandPoseType.OPEN,
       ).toBe(true);
       expect(
         result.current.rightHandState.currentPose === HandPoseType.OPEN ||
-        result.current.rightHandState.targetPose === HandPoseType.OPEN
+          result.current.rightHandState.targetPose === HandPoseType.OPEN,
       ).toBe(true);
     });
 
@@ -73,7 +72,7 @@ describe("useHandPoseTransitions", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "walk",
-        })
+        }),
       );
 
       // Hand states should be defined
@@ -82,7 +81,7 @@ describe("useHandPoseTransitions", () => {
       // Target pose may be null initially after transition completes
       expect(
         result.current.leftHandState.targetPose === HandPoseType.RELAXED ||
-          result.current.leftHandState.targetPose === null
+          result.current.leftHandState.targetPose === null,
       ).toBe(true);
     });
 
@@ -90,7 +89,7 @@ describe("useHandPoseTransitions", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "stance_change",
-        })
+        }),
       );
 
       // Target pose should be set (may be null initially, then OPEN)
@@ -102,7 +101,7 @@ describe("useHandPoseTransitions", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "step_forward",
-        })
+        }),
       );
 
       // Hand states should be defined
@@ -113,8 +112,8 @@ describe("useHandPoseTransitions", () => {
     it("should maintain guard hands during footwork", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
-          currentAnimation: "footwork_circular_left",
-        })
+          currentAnimation: "step_left",
+        }),
       );
 
       // Hand states should be defined
@@ -125,8 +124,8 @@ describe("useHandPoseTransitions", () => {
     it("should use guard hands for stance guard animations", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
-          currentAnimation: "stance_guard_geon",
-        })
+          currentAnimation: "stance_geon",
+        }),
       );
 
       // Hand states should be defined
@@ -138,7 +137,7 @@ describe("useHandPoseTransitions", () => {
       const { result } = renderHook(() =>
         useHandPoseTransitions({
           currentAnimation: "idle",
-        })
+        }),
       );
 
       // Hand states should be defined and have relaxed target
@@ -147,7 +146,7 @@ describe("useHandPoseTransitions", () => {
       // Target pose may be null initially after transition completes
       expect(
         result.current.leftHandState.targetPose === HandPoseType.RELAXED ||
-          result.current.leftHandState.targetPose === null
+          result.current.leftHandState.targetPose === null,
       ).toBe(true);
     });
   });
@@ -155,22 +154,28 @@ describe("useHandPoseTransitions", () => {
   describe("hand pose transitions", () => {
     it("should transition from relaxed to fist for attack", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation, attackAnimation }) =>
+        ({
+          currentAnimation,
+          attackAnimation,
+        }: {
+          currentAnimation: PlayerAnimation;
+          attackAnimation?: string;
+        }) =>
           useHandPoseTransitions({
             currentAnimation,
             attackAnimation,
           }),
         {
           initialProps: {
-            currentAnimation: "idle" as const,
-            attackAnimation: undefined,
+            currentAnimation: "idle" as PlayerAnimation,
+            attackAnimation: undefined as string | undefined,
           },
-        }
+        },
       );
 
       // Verify initial relaxed pose
       expect(result.current.leftHandState.targetPose).toBe(
-        HandPoseType.RELAXED
+        HandPoseType.RELAXED,
       );
 
       // Transition to attack
@@ -181,9 +186,9 @@ describe("useHandPoseTransitions", () => {
 
       // Should have new target pose
       expect(result.current.leftHandState.targetPose).toBeDefined();
-      expect(result.current.leftHandState.transitionProgress).toBeGreaterThanOrEqual(
-        0
-      );
+      expect(
+        result.current.leftHandState.transitionProgress,
+      ).toBeGreaterThanOrEqual(0);
     });
 
     it("should update hand animations over time", () => {
@@ -191,7 +196,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       const initialProgress = result.current.leftHandState.transitionProgress;
@@ -202,7 +207,7 @@ describe("useHandPoseTransitions", () => {
 
       // Progress should have advanced
       expect(
-        result.current.leftHandState.transitionProgress
+        result.current.leftHandState.transitionProgress,
       ).toBeGreaterThanOrEqual(initialProgress);
     });
 
@@ -211,7 +216,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       // Fast forward through transition
@@ -224,7 +229,7 @@ describe("useHandPoseTransitions", () => {
       // Transition should be complete or nearly complete
       expect(result.current.leftHandState.transitionProgress).toBeCloseTo(
         1.0,
-        1
+        1,
       );
     });
   });
@@ -235,7 +240,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "defend",
           isBlocking: true,
-        })
+        }),
       );
 
       // Hand states should be defined
@@ -245,17 +250,23 @@ describe("useHandPoseTransitions", () => {
 
     it("should transition to open hands when blocking starts", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation, isBlocking }) =>
+        ({
+          currentAnimation,
+          isBlocking,
+        }: {
+          currentAnimation: PlayerAnimation;
+          isBlocking: boolean;
+        }) =>
           useHandPoseTransitions({
             currentAnimation,
             isBlocking,
           }),
         {
           initialProps: {
-            currentAnimation: "idle" as const,
+            currentAnimation: "idle" as PlayerAnimation,
             isBlocking: false,
           },
-        }
+        },
       );
 
       // Start blocking with defend animation
@@ -276,7 +287,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "cross",
-        })
+        }),
       );
 
       expect(result.current.leftHandState.targetPose).toBeDefined();
@@ -288,7 +299,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "front_kick",
-        })
+        }),
       );
 
       expect(result.current.leftHandState.targetPose).toBeDefined();
@@ -300,7 +311,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "elbow_strike",
-        })
+        }),
       );
 
       expect(result.current.leftHandState.targetPose).toBeDefined();
@@ -314,7 +325,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       const leftState = result.current.leftHandState;
@@ -332,7 +343,7 @@ describe("useHandPoseTransitions", () => {
         useHandPoseTransitions({
           currentAnimation: "attack",
           attackAnimation: "jab",
-        })
+        }),
       );
 
       act(() => {
@@ -341,10 +352,10 @@ describe("useHandPoseTransitions", () => {
 
       // Both hands should be in transition
       expect(result.current.leftHandState.transitionProgress).toBeGreaterThan(
-        0
+        0,
       );
       expect(result.current.rightHandState.transitionProgress).toBeGreaterThan(
-        0
+        0,
       );
     });
   });

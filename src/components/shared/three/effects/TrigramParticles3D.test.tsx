@@ -2,10 +2,11 @@
  * Tests for TrigramParticles3D component
  */
 
-import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, it, expect, vi } from "vitest";
+import { render } from "@testing-library/react";
 import React, { Suspense } from "react";
+import { describe, expect, it, vi } from "vitest";
+import { TrigramStance } from "../../../../types/common";
 import TrigramParticles3D, {
   type TrigramParticleEffect,
 } from "./TrigramParticles3D";
@@ -17,7 +18,7 @@ const render3D = (component: React.ReactElement) => {
   return render(
     <Canvas>
       <Suspense fallback={null}>{component}</Suspense>
-    </Canvas>
+    </Canvas>,
   );
 };
 
@@ -25,14 +26,14 @@ describe("TrigramParticles3D", () => {
   const mockEffect: TrigramParticleEffect = {
     id: "test-trigram-1",
     position: [0, 1.5, 0],
-    stance: "geon",
+    stance: TrigramStance.GEON,
     startTime: Date.now(),
   };
 
   describe("rendering", () => {
     it("should render without crashing", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -40,7 +41,7 @@ describe("TrigramParticles3D", () => {
 
     it("should not render when disabled", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled={false} />
+        <TrigramParticles3D effects={[mockEffect]} enabled={false} />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -48,7 +49,7 @@ describe("TrigramParticles3D", () => {
 
     it("should not render when no effects", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[]} enabled />
+        <TrigramParticles3D effects={[]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -60,19 +61,19 @@ describe("TrigramParticles3D", () => {
         {
           id: "test-trigram-2",
           position: [2, 1.5, 0],
-          stance: "tae",
+          stance: TrigramStance.TAE,
           startTime: Date.now(),
         },
         {
           id: "test-trigram-3",
           position: [-2, 1.5, 0],
-          stance: "li",
+          stance: TrigramStance.LI,
           startTime: Date.now(),
         },
       ];
 
       const { container } = render3D(
-        <TrigramParticles3D effects={effects} enabled />
+        <TrigramParticles3D effects={effects} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -82,14 +83,14 @@ describe("TrigramParticles3D", () => {
   describe("trigram stances", () => {
     it("should render all eight trigram stances", () => {
       const stances = [
-        "geon",
-        "tae",
-        "li",
-        "jin",
-        "son",
-        "gam",
-        "gan",
-        "gon",
+        TrigramStance.GEON,
+        TrigramStance.TAE,
+        TrigramStance.LI,
+        TrigramStance.JIN,
+        TrigramStance.SON,
+        TrigramStance.GAM,
+        TrigramStance.GAN,
+        TrigramStance.GON,
       ] as const;
 
       stances.forEach((stance, index) => {
@@ -101,7 +102,7 @@ describe("TrigramParticles3D", () => {
         };
 
         const { container } = render3D(
-          <TrigramParticles3D effects={[effect]} enabled />
+          <TrigramParticles3D effects={[effect]} enabled />,
         );
 
         expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -111,9 +112,9 @@ describe("TrigramParticles3D", () => {
     it("should handle stance transitions", () => {
       const { rerender, container } = render3D(
         <TrigramParticles3D
-          effects={[{ ...mockEffect, stance: "geon" }]}
+          effects={[{ ...mockEffect, stance: TrigramStance.GEON }]}
           enabled
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -123,11 +124,11 @@ describe("TrigramParticles3D", () => {
         <Canvas>
           <Suspense fallback={null}>
             <TrigramParticles3D
-              effects={[{ ...mockEffect, stance: "tae" }]}
+              effects={[{ ...mockEffect, stance: TrigramStance.TAE }]}
               enabled
             />
           </Suspense>
-        </Canvas>
+        </Canvas>,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -143,7 +144,7 @@ describe("TrigramParticles3D", () => {
           effects={[mockEffect]}
           enabled
           onEffectComplete={onComplete}
-        />
+        />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -152,7 +153,7 @@ describe("TrigramParticles3D", () => {
 
     it("should accept optional callback", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -172,12 +173,12 @@ describe("TrigramParticles3D", () => {
         const effect: TrigramParticleEffect = {
           id: `test-position-${index}`,
           position,
-          stance: "geon",
+          stance: TrigramStance.GEON,
           startTime: Date.now(),
         };
 
         const { container } = render3D(
-          <TrigramParticles3D effects={[effect]} enabled />
+          <TrigramParticles3D effects={[effect]} enabled />,
         );
 
         expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -188,7 +189,7 @@ describe("TrigramParticles3D", () => {
   describe("effect lifecycle", () => {
     it("should handle effect addition", () => {
       const { container, rerender } = render3D(
-        <TrigramParticles3D effects={[]} enabled />
+        <TrigramParticles3D effects={[]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -198,7 +199,7 @@ describe("TrigramParticles3D", () => {
           <Suspense fallback={null}>
             <TrigramParticles3D effects={[mockEffect]} enabled />
           </Suspense>
-        </Canvas>
+        </Canvas>,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -206,7 +207,7 @@ describe("TrigramParticles3D", () => {
 
     it("should handle effect removal", () => {
       const { container, rerender } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -216,7 +217,7 @@ describe("TrigramParticles3D", () => {
           <Suspense fallback={null}>
             <TrigramParticles3D effects={[]} enabled />
           </Suspense>
-        </Canvas>
+        </Canvas>,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -226,7 +227,7 @@ describe("TrigramParticles3D", () => {
   describe("Korean theming", () => {
     it("should use Korean colors for trigrams", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       // Verify component renders (actual color testing requires WebGL inspection)
@@ -235,7 +236,7 @@ describe("TrigramParticles3D", () => {
 
     it("should render trigram symbols", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       // Trigram symbols should be rendered (☰☱☲☳☴☵☶☷)
@@ -246,7 +247,7 @@ describe("TrigramParticles3D", () => {
   describe("edge cases", () => {
     it("should handle empty effects array", () => {
       const { container } = render3D(
-        <TrigramParticles3D effects={[]} enabled />
+        <TrigramParticles3D effects={[]} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -254,24 +255,25 @@ describe("TrigramParticles3D", () => {
 
     it("should handle rapid effect changes", () => {
       const { rerender, container } = render3D(
-        <TrigramParticles3D effects={[mockEffect]} enabled />
+        <TrigramParticles3D effects={[mockEffect]} enabled />,
       );
 
       // Rapid updates
       for (let i = 0; i < 10; i++) {
+        const stanceArray = [
+          TrigramStance.GEON,
+          TrigramStance.TAE,
+          TrigramStance.LI,
+          TrigramStance.JIN,
+          TrigramStance.SON,
+          TrigramStance.GAM,
+          TrigramStance.GAN,
+          TrigramStance.GON,
+        ];
         const newEffect: TrigramParticleEffect = {
           id: `rapid-effect-${i}`,
           position: [i, 1.5, i],
-          stance: [
-            "geon",
-            "tae",
-            "li",
-            "jin",
-            "son",
-            "gam",
-            "gan",
-            "gon",
-          ][i % 8] as "geon" | "tae" | "li" | "jin" | "son" | "gam" | "gan" | "gon",
+          stance: stanceArray[i % 8],
           startTime: Date.now(),
         };
 
@@ -280,7 +282,7 @@ describe("TrigramParticles3D", () => {
             <Suspense fallback={null}>
               <TrigramParticles3D effects={[newEffect]} enabled />
             </Suspense>
-          </Canvas>
+          </Canvas>,
         );
       }
 
@@ -288,6 +290,16 @@ describe("TrigramParticles3D", () => {
     });
 
     it("should handle multiple simultaneous effects", () => {
+      const stanceArray = [
+        TrigramStance.GEON,
+        TrigramStance.TAE,
+        TrigramStance.LI,
+        TrigramStance.JIN,
+        TrigramStance.SON,
+        TrigramStance.GAM,
+        TrigramStance.GAN,
+        TrigramStance.GON,
+      ];
       const simultaneousEffects: TrigramParticleEffect[] = Array.from(
         { length: 8 },
         (_, i) => ({
@@ -297,22 +309,13 @@ describe("TrigramParticles3D", () => {
             1.5,
             Math.sin((i * Math.PI * 2) / 8) * 5,
           ] as [number, number, number],
-          stance: [
-            "geon",
-            "tae",
-            "li",
-            "jin",
-            "son",
-            "gam",
-            "gan",
-            "gon",
-          ][i] as "geon" | "tae" | "li" | "jin" | "son" | "gam" | "gan" | "gon",
+          stance: stanceArray[i],
           startTime: Date.now(),
-        })
+        }),
       );
 
       const { container } = render3D(
-        <TrigramParticles3D effects={simultaneousEffects} enabled />
+        <TrigramParticles3D effects={simultaneousEffects} enabled />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();

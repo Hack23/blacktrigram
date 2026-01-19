@@ -1,14 +1,14 @@
 /**
  * Unit tests for Combat State System.
- * 
+ *
  * Tests state determination, capability modifiers, and state transitions
  * based on health, pain, consciousness, and balance.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { CombatStateSystem, CombatReadinessState } from "./CombatStateSystem";
+import { CombatState, PlayerArchetype, TrigramStance } from "@/types";
+import { beforeEach, describe, expect, it } from "vitest";
 import { PlayerState } from "../player";
-import { PlayerArchetype, TrigramStance, CombatState } from "@/types";
+import { CombatReadinessState, CombatStateSystem } from "./CombatStateSystem";
 
 describe("CombatStateSystem", () => {
   let system: CombatStateSystem;
@@ -49,7 +49,6 @@ describe("CombatStateSystem", () => {
       isBlocking: false,
       isStunned: false,
       isCountering: false,
-      isInvulnerable: false,
 
       // Timing
       lastActionTime: 0,
@@ -57,19 +56,19 @@ describe("CombatStateSystem", () => {
 
       // Status effects
       statusEffects: [],
+      activeEffects: [],
 
       // Statistics
       hitsLanded: 0,
       hitsTaken: 0,
       totalDamageDealt: 0,
       totalDamageReceived: 0,
-      perfectBlocks: 0,
-      consecutiveHits: 0,
+      perfectStrikes: 0,
+      vitalPointHits: 0,
 
-      // Match state
-      matchesWon: 0,
-      matchesLost: 0,
-      currentWinStreak: 0,
+      // Required PlayerState properties
+      vitalPoints: [],
+      lastStanceChangeTime: 0,
     };
   });
 
@@ -333,7 +332,7 @@ describe("CombatStateSystem", () => {
     it("should not modify player stats in READY state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
-        CombatReadinessState.READY
+        CombatReadinessState.READY,
       );
       expect(modified.attackPower).toBe(basePlayer.attackPower);
       expect(modified.defense).toBe(basePlayer.defense);
@@ -343,7 +342,7 @@ describe("CombatStateSystem", () => {
     it("should reduce attack power by 10% in SHAKEN state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
-        CombatReadinessState.SHAKEN
+        CombatReadinessState.SHAKEN,
       );
       expect(modified.attackPower).toBe(Math.floor(15 * 0.9)); // 13 (-10% from damageModifier)
     });
@@ -351,7 +350,7 @@ describe("CombatStateSystem", () => {
     it("should reduce defense by 25% in VULNERABLE state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
-        CombatReadinessState.VULNERABLE
+        CombatReadinessState.VULNERABLE,
       );
       expect(modified.defense).toBe(Math.floor(12 * 0.75)); // 9 (75% of 12)
     });
@@ -360,7 +359,7 @@ describe("CombatStateSystem", () => {
       const blockingPlayer = { ...basePlayer, isBlocking: true };
       const modified = system.applyStateModifiers(
         blockingPlayer,
-        CombatReadinessState.HELPLESS
+        CombatReadinessState.HELPLESS,
       );
       expect(modified.isBlocking).toBe(false);
     });
@@ -368,7 +367,7 @@ describe("CombatStateSystem", () => {
     it("should stun player in HELPLESS state", () => {
       const modified = system.applyStateModifiers(
         basePlayer,
-        CombatReadinessState.HELPLESS
+        CombatReadinessState.HELPLESS,
       );
       expect(modified.isStunned).toBe(true);
     });
@@ -410,18 +409,20 @@ describe("CombatStateSystem", () => {
   describe("Integration Scenarios", () => {
     it("should handle progressive damage degradation", () => {
       let player = { ...basePlayer };
-      
+
       // Full health - READY
       expect(system.determineState(player)).toBe(CombatReadinessState.READY);
-      
+
       // Take damage - SHAKEN
       player = { ...player, health: 70 };
       expect(system.determineState(player)).toBe(CombatReadinessState.SHAKEN);
-      
+
       // More damage - VULNERABLE
       player = { ...player, health: 50 };
-      expect(system.determineState(player)).toBe(CombatReadinessState.VULNERABLE);
-      
+      expect(system.determineState(player)).toBe(
+        CombatReadinessState.VULNERABLE,
+      );
+
       // Critical damage - HELPLESS
       player = { ...player, health: 30 };
       expect(system.determineState(player)).toBe(CombatReadinessState.HELPLESS);
@@ -429,28 +430,36 @@ describe("CombatStateSystem", () => {
 
     it("should handle pain accumulation", () => {
       let player = { ...basePlayer };
-      
+
       // No pain - READY
-      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.READY);
-      
+      expect(system.determineState(player, Date.now())).toBe(
+        CombatReadinessState.READY,
+      );
+
       // Light pain - SHAKEN
       player = { ...player, pain: 35 };
-      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.SHAKEN);
-      
+      expect(system.determineState(player, Date.now())).toBe(
+        CombatReadinessState.SHAKEN,
+      );
+
       // Moderate pain - VULNERABLE
       player = { ...player, pain: 65 };
-      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.VULNERABLE);
-      
+      expect(system.determineState(player, Date.now())).toBe(
+        CombatReadinessState.VULNERABLE,
+      );
+
       // Severe pain - HELPLESS
       player = { ...player, pain: 85 };
-      expect(system.determineState(player, Date.now())).toBe(CombatReadinessState.HELPLESS);
+      expect(system.determineState(player, Date.now())).toBe(
+        CombatReadinessState.HELPLESS,
+      );
     });
 
     it("should apply cascading modifiers correctly", () => {
       const vulnerablePlayer = { ...basePlayer, health: 50 };
       const state = system.determineState(vulnerablePlayer);
       const modified = system.applyStateModifiers(vulnerablePlayer, state);
-      
+
       expect(state).toBe(CombatReadinessState.VULNERABLE);
       expect(modified.attackPower).toBeLessThan(basePlayer.attackPower);
       expect(modified.defense).toBeLessThan(basePlayer.defense);
@@ -462,7 +471,7 @@ describe("CombatStateSystem", () => {
     it("should record hit with timestamp", () => {
       const currentTime = Date.now();
       const updated = system.recordHit(basePlayer, currentTime);
-      
+
       expect(updated.recentHitTimestamps).toContain(currentTime);
       expect(updated.hitsTaken).toBe(basePlayer.hitsTaken + 1);
     });
@@ -496,7 +505,7 @@ describe("CombatStateSystem", () => {
     it("should record timestamp when entering helpless state", () => {
       const currentTime = Date.now();
       const updated = system.enterHelplessState(basePlayer, currentTime);
-      
+
       expect(updated.lastHelplessStateTime).toBe(currentTime);
     });
 
@@ -578,7 +587,10 @@ describe("CombatStateSystem", () => {
       const state = system.determineState(player, currentTime);
       // Should recover to SHAKEN or VULNERABLE based on stats, not remain HELPLESS
       expect(state).not.toBe(CombatReadinessState.HELPLESS);
-      expect([CombatReadinessState.SHAKEN, CombatReadinessState.VULNERABLE]).toContain(state);
+      expect([
+        CombatReadinessState.SHAKEN,
+        CombatReadinessState.VULNERABLE,
+      ]).toContain(state);
     });
 
     it("should not recover from HELPLESS if still taking hits", () => {
@@ -645,13 +657,13 @@ describe("CombatStateSystem", () => {
     it("should determine state in under 2ms", () => {
       const iterations = 1000;
       const currentTime = Date.now();
-      
+
       const start = performance.now();
       for (let i = 0; i < iterations; i++) {
         system.determineState(basePlayer, currentTime);
       }
       const end = performance.now();
-      
+
       const avgTime = (end - start) / iterations;
       expect(avgTime).toBeLessThan(2);
     });

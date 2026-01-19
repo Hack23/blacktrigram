@@ -16,8 +16,8 @@
 
 import { TrigramStance } from "@/types/common";
 import { beforeAll, describe, expect, it, vi } from "vitest";
+import type { StanceLaterality } from "../../trigram/types";
 import { getGuardPoseForStance } from "../catalogs/StanceGuardPoses";
-import type { StanceLaterality } from "../trigram/types";
 import {
   calculateTransitionDuration,
   getStanceTransition,
@@ -37,7 +37,7 @@ describe("TrigramStanceTransitions", () => {
     it("should return 0.3s for same stance (laterality change)", () => {
       const duration = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.GEON
+        TrigramStance.GEON,
       );
       expect(duration).toBe(0.3);
     });
@@ -46,7 +46,7 @@ describe("TrigramStanceTransitions", () => {
       // Geon → Tae (adjacent in wheel)
       const duration = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
       expect(duration).toBeCloseTo(0.2, 2);
     });
@@ -55,7 +55,7 @@ describe("TrigramStanceTransitions", () => {
       // Geon → Li (2 steps apart in wheel)
       const duration = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.LI
+        TrigramStance.LI,
       );
       expect(duration).toBeCloseTo(0.2, 2);
     });
@@ -64,7 +64,7 @@ describe("TrigramStanceTransitions", () => {
       // Geon → Jin (3 steps apart in wheel)
       const duration = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.JIN
+        TrigramStance.JIN,
       );
       expect(duration).toBeCloseTo(0.3, 2);
     });
@@ -73,7 +73,7 @@ describe("TrigramStanceTransitions", () => {
       // Geon → Son (4 steps apart - opposite side of wheel)
       const duration = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.SON
+        TrigramStance.SON,
       );
       expect(duration).toBeCloseTo(0.4, 2);
     });
@@ -82,7 +82,7 @@ describe("TrigramStanceTransitions", () => {
       // Gon → Geon (1 step wrapping around)
       const duration = calculateTransitionDuration(
         TrigramStance.GON,
-        TrigramStance.GEON
+        TrigramStance.GEON,
       );
       expect(duration).toBeCloseTo(0.2, 2);
     });
@@ -90,11 +90,11 @@ describe("TrigramStanceTransitions", () => {
     it("should return same duration regardless of direction", () => {
       const forward = calculateTransitionDuration(
         TrigramStance.GEON,
-        TrigramStance.TAE
+        TrigramStance.TAE,
       );
       const backward = calculateTransitionDuration(
         TrigramStance.TAE,
-        TrigramStance.GEON
+        TrigramStance.GEON,
       );
       expect(forward).toBe(backward);
     });
@@ -119,7 +119,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         expect(transition).toBeDefined();
@@ -133,7 +133,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         expect(transition.duration).toBeCloseTo(0.2, 2);
@@ -143,7 +143,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.SON,
-          "left"
+          "left",
         );
 
         expect(transition.duration).toBeCloseTo(0.4, 2);
@@ -153,12 +153,12 @@ describe("TrigramStanceTransitions", () => {
         const leftTransition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "left"
+          "left",
         );
         const rightTransition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         expect(leftTransition.koreanName).toContain("왼"); // Left
@@ -169,7 +169,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         expect(transition.loop).toBe(false);
@@ -181,7 +181,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.LI,
           TrigramStance.GAM,
-          "right"
+          "right",
         );
 
         expect(transition.keyframes.length).toBeGreaterThanOrEqual(4);
@@ -191,7 +191,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const times = transition.keyframes.map((kf) => kf.time);
@@ -215,7 +215,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const weightTransferTime = transition.duration * 0.4;
@@ -223,7 +223,7 @@ describe("TrigramStanceTransitions", () => {
 
         // Should have a keyframe close to 40% mark
         const hasWeightTransferKeyframe = times.some(
-          (t) => Math.abs(t - weightTransferTime) < 0.01
+          (t) => Math.abs(t - weightTransferTime) < 0.01,
         );
         expect(hasWeightTransferKeyframe).toBe(true);
       });
@@ -232,7 +232,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const guardBlendTime = transition.duration * 0.7;
@@ -240,7 +240,7 @@ describe("TrigramStanceTransitions", () => {
 
         // Should have a keyframe close to 70% mark
         const hasGuardBlendKeyframe = times.some(
-          (t) => Math.abs(t - guardBlendTime) < 0.01
+          (t) => Math.abs(t - guardBlendTime) < 0.01,
         );
         expect(hasGuardBlendKeyframe).toBe(true);
       });
@@ -251,7 +251,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -262,7 +262,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const endFrame = transition.keyframes[transition.keyframes.length - 1];
@@ -273,7 +273,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -284,7 +284,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -301,7 +301,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -321,7 +321,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -340,7 +340,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -373,7 +373,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         expect(transition.keyframes.length).toBeGreaterThanOrEqual(3);
@@ -394,12 +394,12 @@ describe("TrigramStanceTransitions", () => {
         const leftTransition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "left"
+          "left",
         );
         const rightTransition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         // Names should be different
@@ -414,7 +414,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "left"
+          "left",
         );
 
         // Transition should be named with left laterality
@@ -428,7 +428,7 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.GAM,
-          "right"
+          "right",
         );
 
         const startFrame = transition.keyframes[0];
@@ -468,13 +468,13 @@ describe("TrigramStanceTransitions", () => {
         const transition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.TAE,
-          "right"
+          "right",
         );
 
         // Weight transfer keyframe should have knee rotations
         const weightTransferFrame = transition.keyframes[1]; // Second keyframe
         const kneeRotations = Array.from(
-          weightTransferFrame.boneRotations.keys()
+          weightTransferFrame.boneRotations.keys(),
         ).filter((name) => name.includes("knee"));
 
         expect(kneeRotations.length).toBeGreaterThan(0);
@@ -523,7 +523,7 @@ describe("TrigramStanceTransitions", () => {
         const sameStanceTransition = transitionBetweenStances(
           TrigramStance.GEON,
           TrigramStance.GEON,
-          "left"
+          "left",
         );
 
         expect(sameStanceTransition.duration).toBeCloseTo(0.3, 2);
@@ -537,7 +537,7 @@ describe("TrigramStanceTransitions", () => {
           transitionBetweenStances(
             "invalid" as TrigramStance,
             TrigramStance.TAE,
-            "right"
+            "right",
           );
         }).toThrow();
       });
@@ -547,7 +547,7 @@ describe("TrigramStanceTransitions", () => {
           transitionBetweenStances(
             TrigramStance.GEON,
             "invalid" as TrigramStance,
-            "right"
+            "right",
           );
         }).toThrow();
       });
@@ -560,12 +560,12 @@ describe("TrigramStanceTransitions", () => {
         // This simulates the runtime scenario where indexOf returns -1
         const duration = calculateTransitionDuration(
           "invalid_stance" as TrigramStance,
-          TrigramStance.TAE
+          TrigramStance.TAE,
         );
 
         // Should have warned about invalid stance
         expect(warnSpy).toHaveBeenCalledWith(
-          expect.stringContaining("Invalid stance in transition")
+          expect.stringContaining("Invalid stance in transition"),
         );
 
         // Should return default duration (0.3)
@@ -612,7 +612,7 @@ describe("TrigramStanceTransitions", () => {
       const transition = getStanceTransition(
         TrigramStance.GEON,
         TrigramStance.TAE,
-        "right"
+        "right",
       );
 
       expect(transition).toBeDefined();
@@ -623,7 +623,7 @@ describe("TrigramStanceTransitions", () => {
       const transition = getStanceTransition(
         "invalid" as TrigramStance,
         TrigramStance.TAE,
-        "right"
+        "right",
       );
 
       expect(transition).toBeUndefined();
@@ -633,12 +633,12 @@ describe("TrigramStanceTransitions", () => {
       const leftTransition = getStanceTransition(
         TrigramStance.GEON,
         TrigramStance.TAE,
-        "left"
+        "left",
       );
       const rightTransition = getStanceTransition(
         TrigramStance.GEON,
         TrigramStance.TAE,
-        "right"
+        "right",
       );
 
       expect(leftTransition).toBeDefined();
@@ -698,7 +698,7 @@ describe("TrigramStanceTransitions", () => {
       const transition = transitionBetweenStances(
         TrigramStance.GEON,
         TrigramStance.TAE,
-        "right"
+        "right",
       );
 
       // Should have successfully created transition (no errors thrown)

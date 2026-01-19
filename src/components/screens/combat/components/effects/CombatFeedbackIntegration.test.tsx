@@ -1,6 +1,6 @@
 /**
  * CombatFeedbackIntegration - Integration tests for combat visual feedback system
- * 
+ *
  * Validates that all acceptance criteria for Issue #884 are met:
  * - Floating damage numbers (2s duration, fade out)
  * - Color-coded: Normal (cyan), Critical (gold), Vital (red)
@@ -11,7 +11,7 @@
  * - Block/Parry shows "BLOCK!" or "PARRY!" text
  * - Critical hits have special burst effect
  * - Mobile-optimized sizes (readable on 375x667)
- * 
+ *
  * @module components/combat/components/CombatFeedbackIntegration
  * @category Combat UI Tests
  */
@@ -20,8 +20,8 @@ import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { HitEffectType } from "../../../../../systems/effects";
 import { ActionFeedback, TechniqueName } from "../feedback/ActionFeedback";
-import { ComboCounter } from "../indicators/ComboCounter";
 import { DamageNumbers } from "../feedback/DamageNumbers";
+import { ComboCounter } from "../indicators/ComboCounter";
 import HitEffects3D from "./HitEffects3D";
 
 // Mock Three.js and React Three Fiber
@@ -52,11 +52,11 @@ describe("Combat Feedback Integration", () => {
 
       // When: Rendering DamageNumbers component
       const { container } = render(
-        <DamageNumbers 
-          damages={damages} 
+        <DamageNumbers
+          damages={damages}
           arenaBounds={mockArenaBounds}
           animationDuration={1500} // 1.5s as configured, close to 2s requirement
-        />
+        />,
       );
 
       // Then: Component renders successfully
@@ -68,7 +68,7 @@ describe("Combat Feedback Integration", () => {
       // Note: This test validates color-coding for damage numbers ("normal", "critical", "vital").
       // Blocked attacks do not show damage numbers (since they deal no damage), but instead show text feedback via ActionFeedback.
       // "Vital" is a distinct damage type for anatomical strikes, not a replacement for "blocked".
-      
+
       // Given: Three damage types
       const damages = [
         {
@@ -96,7 +96,7 @@ describe("Combat Feedback Integration", () => {
 
       // When: Rendering with all damage types
       const { getByTestId } = render(
-        <DamageNumbers damages={damages} arenaBounds={mockArenaBounds} />
+        <DamageNumbers damages={damages} arenaBounds={mockArenaBounds} />,
       );
 
       // Then: All damage types render with proper test IDs (prefixed with "damage-")
@@ -117,6 +117,9 @@ describe("Combat Feedback Integration", () => {
           duration: 1000,
           intensity: 1,
           startTime: Date.now(),
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
         {
           id: "effect-2",
@@ -125,12 +128,15 @@ describe("Combat Feedback Integration", () => {
           duration: 1000,
           intensity: 1.5,
           startTime: Date.now(),
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
       ];
 
       // When: Rendering hit effects
       const { container } = render(
-        <HitEffects3D effects={effects} arenaBounds={mockArenaBounds} />
+        <HitEffects3D effects={effects} arenaBounds={mockArenaBounds} />,
       );
 
       // Then: Effects render successfully
@@ -141,38 +147,48 @@ describe("Combat Feedback Integration", () => {
     it("✓ AC4: Combo counter displays active combo (2-hit minimum)", () => {
       // Test case 1: Below minimum threshold - should not display
       const { container: container0 } = render(
-        <ComboCounter combo={0} minDisplayCombo={2} />
+        <ComboCounter combo={0} minDisplayCombo={2} />,
       );
       // Component returns null when combo < minDisplayCombo
-      expect(container0.querySelector('[data-testid="combo-counter"]')).toBeNull();
+      expect(
+        container0.querySelector('[data-testid="combo-counter"]'),
+      ).toBeNull();
 
       // Test case 2: One hit - should not display
       const { container: container1 } = render(
-        <ComboCounter combo={1} minDisplayCombo={2} />
+        <ComboCounter combo={1} minDisplayCombo={2} />,
       );
-      expect(container1.querySelector('[data-testid="combo-counter"]')).toBeNull();
+      expect(
+        container1.querySelector('[data-testid="combo-counter"]'),
+      ).toBeNull();
 
       // Test case 3: At minimum threshold (2 hits) - should display
       const { container: container2 } = render(
-        <ComboCounter combo={2} minDisplayCombo={2} />
+        <ComboCounter combo={2} minDisplayCombo={2} />,
       );
-      const comboElement2 = container2.querySelector('[data-testid="combo-counter"]');
+      const comboElement2 = container2.querySelector(
+        '[data-testid="combo-counter"]',
+      );
       expect(comboElement2).not.toBeNull();
       expect(comboElement2?.textContent).toContain("2");
 
       // Test case 4: Above threshold (5 hits) - should display
       const { container: container5 } = render(
-        <ComboCounter combo={5} minDisplayCombo={2} />
+        <ComboCounter combo={5} minDisplayCombo={2} />,
       );
-      const comboElement5 = container5.querySelector('[data-testid="combo-counter"]');
+      const comboElement5 = container5.querySelector(
+        '[data-testid="combo-counter"]',
+      );
       expect(comboElement5).not.toBeNull();
       expect(comboElement5?.textContent).toContain("5");
 
       // Test case 5: High combo (10 hits) - should display
       const { container: container10 } = render(
-        <ComboCounter combo={10} minDisplayCombo={2} />
+        <ComboCounter combo={10} minDisplayCombo={2} />,
       );
-      const comboElement10 = container10.querySelector('[data-testid="combo-counter"]');
+      const comboElement10 = container10.querySelector(
+        '[data-testid="combo-counter"]',
+      );
       expect(comboElement10).not.toBeNull();
       expect(comboElement10?.textContent).toContain("10");
     });
@@ -190,7 +206,7 @@ describe("Combat Feedback Integration", () => {
           korean={techniqueName.korean}
           english={techniqueName.english}
           duration={2000}
-        />
+        />,
       );
 
       // Then: Technique displays with bilingual text
@@ -221,7 +237,7 @@ describe("Combat Feedback Integration", () => {
 
       // When: Rendering action feedbacks
       const { container } = render(
-        <ActionFeedback feedbacks={feedbacks} arenaBounds={mockArenaBounds} />
+        <ActionFeedback feedbacks={feedbacks} arenaBounds={mockArenaBounds} />,
       );
 
       // Then: Block/Parry text displays
@@ -238,11 +254,17 @@ describe("Combat Feedback Integration", () => {
         duration: 1000,
         intensity: 2,
         startTime: Date.now(),
+        attackerId: "player1",
+        defenderId: "player2",
+        timestamp: Date.now(),
       };
 
       // When: Rendering critical hit effect
       const { container } = render(
-        <HitEffects3D effects={[criticalEffect]} arenaBounds={mockArenaBounds} />
+        <HitEffects3D
+          effects={[criticalEffect]}
+          arenaBounds={mockArenaBounds}
+        />,
       );
 
       // Then: Critical burst renders
@@ -266,7 +288,7 @@ describe("Combat Feedback Integration", () => {
           damages={[mobileDamage]}
           arenaBounds={mobileArenaBounds}
           isMobile={true}
-        />
+        />,
       );
 
       // Then: Mobile rendering succeeds
@@ -294,6 +316,9 @@ describe("Combat Feedback Integration", () => {
           duration: 1000,
           intensity: 1.5,
           startTime: Date.now(),
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
       ];
 
@@ -310,17 +335,15 @@ describe("Combat Feedback Integration", () => {
 
       // When: Rendering all feedback components together
       const { container: damageContainer } = render(
-        <DamageNumbers damages={damages} arenaBounds={mockArenaBounds} />
+        <DamageNumbers damages={damages} arenaBounds={mockArenaBounds} />,
       );
       const { container: effectsContainer } = render(
-        <HitEffects3D effects={effects} arenaBounds={mockArenaBounds} />
+        <HitEffects3D effects={effects} arenaBounds={mockArenaBounds} />,
       );
       const { container: feedbackContainer } = render(
-        <ActionFeedback feedbacks={feedbacks} arenaBounds={mockArenaBounds} />
+        <ActionFeedback feedbacks={feedbacks} arenaBounds={mockArenaBounds} />,
       );
-      const { container: comboContainer } = render(
-        <ComboCounter combo={3} />
-      );
+      const { container: comboContainer } = render(<ComboCounter combo={3} />);
 
       // Then: All components render successfully
       expect(damageContainer).toBeTruthy();
@@ -340,6 +363,9 @@ describe("Combat Feedback Integration", () => {
         duration: 1000,
         intensity: 1,
         startTime: Date.now(),
+        attackerId: "player1",
+        defenderId: "player2",
+        timestamp: Date.now(),
       }));
 
       const maxDamages = Array.from({ length: 10 }, (_, i) => ({
@@ -352,10 +378,10 @@ describe("Combat Feedback Integration", () => {
 
       // When: Rendering maximum load
       const { container: effectsContainer } = render(
-        <HitEffects3D effects={maxEffects} arenaBounds={mockArenaBounds} />
+        <HitEffects3D effects={maxEffects} arenaBounds={mockArenaBounds} />,
       );
       const { container: damagesContainer } = render(
-        <DamageNumbers damages={maxDamages} arenaBounds={mockArenaBounds} />
+        <DamageNumbers damages={maxDamages} arenaBounds={mockArenaBounds} />,
       );
 
       // Then: Rendering succeeds without errors
@@ -374,11 +400,14 @@ describe("Combat Feedback Integration", () => {
         duration: 1000,
         intensity: 1 + (i % 3) * 0.5,
         startTime: Date.now(),
+        attackerId: "player1",
+        defenderId: "player2",
+        timestamp: Date.now(),
       }));
 
       // When: Rendering stress load
       const { container } = render(
-        <HitEffects3D effects={stressEffects} arenaBounds={mockArenaBounds} />
+        <HitEffects3D effects={stressEffects} arenaBounds={mockArenaBounds} />,
       );
 
       // Then: System handles extreme load gracefully
@@ -389,18 +418,22 @@ describe("Combat Feedback Integration", () => {
     it("✓ Extended: Rapid combo accumulation (1-20 hits)", () => {
       // Test combo counter at various thresholds
       const comboTests = [1, 2, 5, 7, 10, 15, 20];
-      
-      comboTests.forEach(combo => {
+
+      comboTests.forEach((combo) => {
         const { container } = render(
-          <ComboCounter combo={combo} minDisplayCombo={2} />
+          <ComboCounter combo={combo} minDisplayCombo={2} />,
         );
-        
+
         if (combo >= 2) {
-          const element = container.querySelector('[data-testid="combo-counter"]');
+          const element = container.querySelector(
+            '[data-testid="combo-counter"]',
+          );
           expect(element).not.toBeNull();
           expect(element?.textContent).toContain(combo.toString());
         } else {
-          expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+          expect(
+            container.querySelector('[data-testid="combo-counter"]'),
+          ).toBeNull();
         }
       });
     });
@@ -409,38 +442,38 @@ describe("Combat Feedback Integration", () => {
   describe("Edge Cases & Resilience", () => {
     it("✓ Handles empty damage array gracefully", () => {
       const { container } = render(
-        <DamageNumbers damages={[]} arenaBounds={mockArenaBounds} />
+        <DamageNumbers damages={[]} arenaBounds={mockArenaBounds} />,
       );
       expect(container).toBeTruthy();
     });
 
     it("✓ Handles missing arena bounds with defaults", () => {
-      const damages = [{
-        id: "dmg-1",
-        damage: 25,
-        position: { x: 100, y: 200 },
-        type: "normal" as const,
-        timestamp: Date.now(),
-      }];
+      const damages = [
+        {
+          id: "dmg-1",
+          damage: 25,
+          position: { x: 100, y: 200 },
+          type: "normal" as const,
+          timestamp: Date.now(),
+        },
+      ];
 
-      const { container } = render(
-        <DamageNumbers damages={damages} />
-      );
+      const { container } = render(<DamageNumbers damages={damages} />);
       expect(container).toBeTruthy();
     });
 
     it("✓ Handles zero combo count", () => {
-      const { container } = render(
-        <ComboCounter combo={0} />
-      );
-      expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+      const { container } = render(<ComboCounter combo={0} />);
+      expect(
+        container.querySelector('[data-testid="combo-counter"]'),
+      ).toBeNull();
     });
 
     it("✓ Handles negative combo count gracefully", () => {
-      const { container } = render(
-        <ComboCounter combo={-1} />
-      );
-      expect(container.querySelector('[data-testid="combo-counter"]')).toBeNull();
+      const { container } = render(<ComboCounter combo={-1} />);
+      expect(
+        container.querySelector('[data-testid="combo-counter"]'),
+      ).toBeNull();
     });
 
     it("✓ Handles primary HitEffectType variants (7 of 9 enum types)", () => {
@@ -448,7 +481,7 @@ describe("Combat Feedback Integration", () => {
       // STATUS_EFFECT, MISS, BLOCK, PARRY, COUNTER, HIT
       // This test validates the 7 primary types used in current combat implementation.
       // GENERAL_DAMAGE and STATUS_EFFECT are not currently used in the visual feedback system.
-      
+
       const primaryEffectTypes = [
         HitEffectType.HIT,
         HitEffectType.CRITICAL_HIT,
@@ -467,12 +500,15 @@ describe("Combat Feedback Integration", () => {
           duration: 1000,
           intensity: 1,
           startTime: Date.now(),
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         };
 
         const { container } = render(
-          <HitEffects3D effects={[effect]} arenaBounds={mockArenaBounds} />
+          <HitEffects3D effects={[effect]} arenaBounds={mockArenaBounds} />,
         );
-        
+
         expect(container).toBeTruthy();
       });
     });

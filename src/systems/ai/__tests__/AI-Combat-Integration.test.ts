@@ -1,27 +1,31 @@
 /**
  * AI-Combat Integration Tests
- * 
+ *
  * Comprehensive integration testing for AI combat behavior across full rounds,
  * round transitions, archetype-specific behavior, and edge cases.
- * 
+ *
  * Tests validate:
  * - Complete 60-second round simulation
  * - Round transition handling (difficulty persistence, stat resets)
  * - All 5 archetype behaviors (Musa, Amsalja, Hacker, Jeongbo, Jojik)
  * - Edge cases (pause, 0 stamina, HELPLESS recovery)
  * - Performance requirements (<10ms average decision time)
- * 
+ *
  * @module systems/ai/__tests__/AI-Combat-Integration
  */
 
+import { useAICombat } from "@/components/screens/combat/hooks/useAICombat";
 import { AdaptiveDifficulty } from "@/systems/ai/AdaptiveDifficulty";
 import { AI_PERSONALITIES } from "@/systems/ai/AIPersonality";
 import { PlayerState } from "@/systems/player";
-import { PlayerArchetype } from "@/types";
+import {
+  createMockArena,
+  createMockPlayerState,
+  type ArenaBounds,
+} from "@/test/test-utils";
+import { CombatState, PlayerArchetype } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useAICombat } from "@/components/screens/combat/hooks/useAICombat";
-import { createMockPlayerState, createMockArena, type ArenaBounds } from "@/test/test-utils";
 
 // ==================== Test Utilities ====================
 
@@ -30,7 +34,7 @@ import { createMockPlayerState, createMockArena, type ArenaBounds } from "@/test
  */
 function resetRoundStats(
   player: PlayerState,
-  options: { preserveHealth?: boolean } = {}
+  options: { preserveHealth?: boolean } = {},
 ): PlayerState {
   return {
     ...player,
@@ -39,7 +43,7 @@ function resetRoundStats(
     balance: 100,
     momentum: 0,
     isStunned: false,
-    combatState: "idle" as const,
+    combatState: CombatState.IDLE,
     health: options.preserveHealth ? player.health : 100,
   };
 }
@@ -109,7 +113,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       // Simulate 60-second round (60000ms)
@@ -124,10 +128,10 @@ describe("AI Combat Integration", () => {
       // Verify mix of movement and attacks
       const actions = onExecuteAction.mock.calls.map((call) => call[0]);
       const hasMovement = actions.some((a) =>
-        ["approach", "retreat", "circle"].includes(a)
+        ["approach", "retreat", "circle"].includes(a),
       );
       const hasAttacks = actions.some((a) =>
-        ["attack", "technique"].includes(a)
+        ["attack", "technique"].includes(a),
       );
 
       expect(hasMovement || hasAttacks).toBe(true); // Should have at least one type
@@ -151,7 +155,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       // Measure actions at different intervals
@@ -166,7 +170,7 @@ describe("AI Combat Integration", () => {
 
       // Actions should increase over time (AI is active)
       const increasing = actionCounts.every(
-        (count, i) => i === 0 || count >= actionCounts[i - 1]
+        (count, i) => i === 0 || count >= actionCounts[i - 1],
       );
       expect(increasing).toBe(true);
     });
@@ -188,7 +192,7 @@ describe("AI Combat Integration", () => {
             arenaBounds,
             onExecuteAction,
           }),
-        { initialProps: { roundStarted: false, roundEnded: false } }
+        { initialProps: { roundStarted: false, roundEnded: false } },
       );
 
       // Before round starts - no actions
@@ -252,13 +256,11 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction: vi.fn(),
-        })
+        }),
       );
 
       // Verify difficulty persisted
-      expect(adaptiveDifficulty.getDifficultyTier()).toBe(
-        initialDifficulty
-      );
+      expect(adaptiveDifficulty.getDifficultyTier()).toBe(initialDifficulty);
       expect(round2Result.current.aiState).toBeDefined();
     });
 
@@ -311,7 +313,7 @@ describe("AI Combat Integration", () => {
             arenaBounds,
             onExecuteAction,
           }),
-        { initialProps: { roundStarted: false } }
+        { initialProps: { roundStarted: false } },
       );
 
       // Start round - AI initializes
@@ -348,7 +350,9 @@ describe("AI Combat Integration", () => {
           archetype,
           position: { x: 600, y: 400 },
         });
-        const humanPlayer = createMockPlayerState({ position: { x: 400, y: 400 } });
+        const humanPlayer = createMockPlayerState({
+          position: { x: 400, y: 400 },
+        });
 
         const onExecuteAction = vi.fn();
         const personality = getPersonalityByArchetype(archetype);
@@ -364,7 +368,7 @@ describe("AI Combat Integration", () => {
             roundEnded: false,
             arenaBounds,
             onExecuteAction,
-          })
+          }),
         );
 
         await act(async () => {
@@ -394,7 +398,9 @@ describe("AI Combat Integration", () => {
           archetype,
           position: { x: 600, y: 400 },
         });
-        const humanPlayer = createMockPlayerState({ position: { x: 400, y: 400 } });
+        const humanPlayer = createMockPlayerState({
+          position: { x: 400, y: 400 },
+        });
         const onExecuteAction = vi.fn();
         const personality = getPersonalityByArchetype(archetype);
 
@@ -409,7 +415,7 @@ describe("AI Combat Integration", () => {
             roundEnded: false,
             arenaBounds,
             onExecuteAction,
-          })
+          }),
         );
 
         await act(async () => {
@@ -418,12 +424,11 @@ describe("AI Combat Integration", () => {
 
         const actions = onExecuteAction.mock.calls.map((call) => call[0]);
         behaviorMetrics[archetype] = {
-          attacks: actions.filter((a) =>
-            ["attack", "technique"].includes(a)
-          ).length,
+          attacks: actions.filter((a) => ["attack", "technique"].includes(a))
+            .length,
           defends: actions.filter((a) => a === "defend").length,
           movements: actions.filter((a) =>
-            ["approach", "retreat", "circle"].includes(a)
+            ["approach", "retreat", "circle"].includes(a),
           ).length,
         };
       }
@@ -451,7 +456,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -481,7 +486,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       act(() => {
@@ -510,7 +515,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -520,7 +525,7 @@ describe("AI Combat Integration", () => {
       // Defensive specialist with low health should prioritize defense
       const actions = onExecuteAction.mock.calls.map((call) => call[0]);
       const defensiveActions = actions.filter((a) =>
-        ["defend", "retreat"].includes(a)
+        ["defend", "retreat"].includes(a),
       );
 
       // Should have some defensive actions
@@ -545,7 +550,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -574,7 +579,7 @@ describe("AI Combat Integration", () => {
             arenaBounds,
             onExecuteAction,
           }),
-        { initialProps: { opponent: player1 } }
+        { initialProps: { opponent: player1 } },
       );
 
       await act(async () => {
@@ -597,7 +602,7 @@ describe("AI Combat Integration", () => {
 
       // AI should continue making decisions after opponent switch
       expect(onExecuteAction.mock.calls.length).toBeGreaterThan(
-        actionsBeforeSwitch
+        actionsBeforeSwitch,
       );
     });
 
@@ -605,7 +610,9 @@ describe("AI Combat Integration", () => {
       // Use far but valid positions within arena bounds (1200x800)
       // Distance: ~1100 pixels (diagonal across most of arena)
       const farPlayer = createMockPlayerState({ position: { x: 100, y: 100 } });
-      const farOpponent = createMockPlayerState({ position: { x: 1100, y: 700 } });
+      const farOpponent = createMockPlayerState({
+        position: { x: 1100, y: 700 },
+      });
       const onExecuteAction = vi.fn();
 
       renderHook(() =>
@@ -619,7 +626,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -630,7 +637,7 @@ describe("AI Combat Integration", () => {
 
       // Should prioritize movement when far away
       const movementActions = actions.filter((a) =>
-        ["approach", "circle"].includes(a)
+        ["approach", "circle"].includes(a),
       );
       expect(movementActions.length).toBeGreaterThan(0);
     });
@@ -650,7 +657,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -680,7 +687,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       // Run for 10 seconds
@@ -717,7 +724,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction: onExecuteAction1,
-        })
+        }),
       );
 
       renderHook(() =>
@@ -731,7 +738,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction: onExecuteAction2,
-        })
+        }),
       );
 
       await act(async () => {
@@ -758,7 +765,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       // Simulate 10 rounds (60 seconds each)
@@ -793,7 +800,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -841,7 +848,7 @@ describe("AI Combat Integration", () => {
           roundEnded: false,
           arenaBounds,
           onExecuteAction,
-        })
+        }),
       );
 
       await act(async () => {
@@ -852,11 +859,9 @@ describe("AI Combat Integration", () => {
       expect(result.current.aiState.lastActionType).toBeDefined();
 
       // Consecutive attacks should be tracked
-      expect(
-        typeof result.current.aiState.consecutiveAttacks
-      ).toBe("number");
+      expect(typeof result.current.aiState.consecutiveAttacks).toBe("number");
       expect(result.current.aiState.consecutiveAttacks).toBeGreaterThanOrEqual(
-        0
+        0,
       );
     });
   });

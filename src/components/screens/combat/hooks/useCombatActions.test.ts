@@ -3,9 +3,10 @@
  * Verifies combat action handlers functionality
  */
 
+import { AnimationType } from "@/systems/animation/builders/MartialArtsConstants";
 import { CombatSystem } from "@/systems/CombatSystem";
 import { HitEffectType } from "@/systems/effects";
-import { PlayerArchetype, TrigramStance } from "@/types";
+import { DamageType, PlayerArchetype, TrigramStance } from "@/types";
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useCombatActions } from "./useCombatActions";
@@ -166,7 +167,7 @@ describe("useCombatActions", () => {
         staminaCost: 20,
         kiCost: 15,
         damage: { min: 25, max: 35 },
-        damageType: "blunt" as const,
+        damageType: DamageType.BLUNT,
         cooldown: 5000,
         keyboardShortcut: "Q" as const,
         criticalChance: 0.3,
@@ -457,7 +458,11 @@ describe("useCombatActions", () => {
           kiCost: 10,
           staminaCost: 12,
           accuracy: 0.9,
-          range: 1.5,
+          reachConfig: {
+            bodyPart: "arm" as const,
+            techniqueType: "punch" as const,
+            baseExtension: 0.95,
+          },
           executionTime: 500,
           recoveryTime: 400,
           critChance: 0.15,
@@ -491,7 +496,11 @@ describe("useCombatActions", () => {
           kiCost: 10,
           staminaCost: 12,
           accuracy: 0.9,
-          range: 1.5,
+          reachConfig: {
+            bodyPart: "arm" as const,
+            techniqueType: "punch" as const,
+            baseExtension: 0.95,
+          },
           executionTime: 500,
           recoveryTime: 400,
           critChance: 0.15,
@@ -609,13 +618,17 @@ describe("useCombatActions", () => {
           kiCost: 15,
           staminaCost: 18,
           accuracy: 0.85,
-          range: 2.0,
+          reachConfig: {
+            bodyPart: "leg" as const,
+            techniqueType: "kick" as const,
+            baseExtension: 1.1,
+          },
           executionTime: 700,
           recoveryTime: 600,
           critChance: 0.2,
           critMultiplier: 1.8,
           effects: [],
-          animationType: "spinning_hook_kick", // Required for animation context
+          animationType: AnimationType.SPINNING_HOOK, // Required for animation context
         };
         const mockVitalPoint = "myeongchi";
 
@@ -658,7 +671,11 @@ describe("useCombatActions", () => {
           kiCost: 100, // More than available
           staminaCost: 100, // More than available
           accuracy: 0.9,
-          range: 2.0,
+          reachConfig: {
+            bodyPart: "arm" as const,
+            techniqueType: "punch" as const,
+            baseExtension: 1.0,
+          },
           executionTime: 1000,
           recoveryTime: 800,
           critChance: 0.25,
@@ -910,7 +927,8 @@ describe("useCombatActions", () => {
       // Second call should show cooldown message
       const calls = config.addCombatMessage.mock.calls;
       const hasCooldownMessage = calls.some(
-        (call) => call[0] === "대기 중" && call[1] === "On Cooldown",
+        (call: [string, string]) =>
+          call[0] === "대기 중" && call[1] === "On Cooldown",
       );
       expect(hasCooldownMessage || calls.length === 1).toBe(true);
     });

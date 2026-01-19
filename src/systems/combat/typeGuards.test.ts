@@ -85,9 +85,9 @@ describe("Combat Type Guards", () => {
     };
 
     // Helper to create object with property omitted
-    const omit = <T extends Record<string, unknown>, K extends keyof T>(
+    const omit = <T extends object, K extends keyof T>(
       obj: T,
-      key: K
+      key: K,
     ): Omit<T, K> => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [key]: _omitted, ...rest } = obj;

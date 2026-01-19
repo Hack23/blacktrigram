@@ -4,8 +4,10 @@
  * @module hooks/__tests__/useBalanceAnimations.test
  */
 
-import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { act, renderHook } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import type { BalanceState } from "../../types";
+import type { PlayerAnimation } from "../../types/player-visual";
 import { useBalanceAnimations } from "../useBalanceAnimations";
 import { useMuscleActivation } from "../useMuscleActivation";
 
@@ -15,7 +17,7 @@ describe("useBalanceAnimations", () => {
       const { result } = renderHook(() =>
         useBalanceAnimations({
           balance: "READY",
-        })
+        }),
       );
 
       expect(result.current.swayPosition).toEqual([0, 0, 0]);
@@ -29,7 +31,7 @@ describe("useBalanceAnimations", () => {
       const { result } = renderHook(() =>
         useBalanceAnimations({
           balance: "SHAKEN",
-        })
+        }),
       );
 
       // Update animation a few times
@@ -49,7 +51,7 @@ describe("useBalanceAnimations", () => {
       const { result } = renderHook(() =>
         useBalanceAnimations({
           balance: "VULNERABLE",
-        })
+        }),
       );
 
       // Update animation
@@ -69,7 +71,7 @@ describe("useBalanceAnimations", () => {
       const { result } = renderHook(() =>
         useBalanceAnimations({
           balance: "HELPLESS",
-        })
+        }),
       );
 
       // Update animation
@@ -87,13 +89,13 @@ describe("useBalanceAnimations", () => {
 
     it("should return to neutral when balance improves", () => {
       const { result, rerender } = renderHook(
-        ({ balance }) =>
+        ({ balance }: { balance: BalanceState }) =>
           useBalanceAnimations({
             balance,
           }),
         {
-          initialProps: { balance: "HELPLESS" as const },
-        }
+          initialProps: { balance: "HELPLESS" as BalanceState },
+        },
       );
 
       // Build up sway
@@ -106,7 +108,7 @@ describe("useBalanceAnimations", () => {
       const swayAfterHelpless = result.current.swayPosition;
 
       // Improve balance
-      rerender({ balance: "READY" });
+      rerender({ balance: "READY" as BalanceState });
 
       // Update to decay sway
       act(() => {
@@ -129,7 +131,7 @@ describe("useBalanceAnimations", () => {
       const { result } = renderHook(() =>
         useBalanceAnimations({
           balance: "SHAKEN",
-        })
+        }),
       );
 
       const initialPosition = result.current.swayPosition;
@@ -155,7 +157,7 @@ describe("useBalanceAnimations", () => {
       const { result, rerender } = renderHook(() =>
         useBalanceAnimations({
           balance: "VULNERABLE",
-        })
+        }),
       );
 
       const xPositions: number[] = [];
@@ -165,18 +167,18 @@ describe("useBalanceAnimations", () => {
         act(() => {
           result.current.updateBalanceAnimations(0.1, i * 2); // Even frames only
         });
-        
+
         // Force a re-render to get updated state
         rerender();
         xPositions.push(result.current.swayPosition[0]);
       }
 
       // X positions should vary (sine wave motion)
-      const uniqueXPositions = new Set(xPositions.map(x => x.toFixed(6)));
+      const uniqueXPositions = new Set(xPositions.map((x) => x.toFixed(6)));
       expect(uniqueXPositions.size).toBeGreaterThan(2);
-      
+
       // Verify sway is actually happening (some non-zero positions)
-      const nonZeroPositions = xPositions.filter(x => Math.abs(x) > 0.001);
+      const nonZeroPositions = xPositions.filter((x) => Math.abs(x) > 0.001);
       expect(nonZeroPositions.length).toBeGreaterThan(0);
     });
   });
@@ -189,7 +191,7 @@ describe("useMuscleActivation", () => {
         useMuscleActivation({
           currentAnimation: "idle",
           stamina: 100,
-        })
+        }),
       );
 
       expect(result.current.muscleStates).toBeDefined();
@@ -205,7 +207,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           stamina: 100,
-        })
+        }),
       );
 
       // Update muscle activations
@@ -225,7 +227,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "defend",
           isBlocking: true,
           stamina: 100,
-        })
+        }),
       );
 
       // Update muscle activations
@@ -243,7 +245,7 @@ describe("useMuscleActivation", () => {
         useMuscleActivation({
           currentAnimation: "walk",
           stamina: 100,
-        })
+        }),
       );
 
       // Update muscle activations
@@ -258,7 +260,13 @@ describe("useMuscleActivation", () => {
 
     it("should relax muscles for idle", () => {
       const { result, rerender } = renderHook(
-        ({ currentAnimation, attackAnimation }) =>
+        ({
+          currentAnimation,
+          attackAnimation,
+        }: {
+          currentAnimation: PlayerAnimation;
+          attackAnimation: string;
+        }) =>
           useMuscleActivation({
             currentAnimation,
             attackAnimation,
@@ -266,10 +274,10 @@ describe("useMuscleActivation", () => {
           }),
         {
           initialProps: {
-            currentAnimation: "attack" as const,
+            currentAnimation: "attack" as PlayerAnimation,
             attackAnimation: "jab",
           },
-        }
+        },
       );
 
       // Activate muscles
@@ -284,8 +292,8 @@ describe("useMuscleActivation", () => {
 
       // Transition to idle
       rerender({
-        currentAnimation: "idle",
-        attackAnimation: undefined,
+        currentAnimation: "idle" as PlayerAnimation,
+        attackAnimation: "jab",
       });
 
       // Let muscles relax
@@ -307,7 +315,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           stamina: 100,
-        })
+        }),
       );
 
       const { result: lowStamina } = renderHook(() =>
@@ -315,7 +323,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           stamina: 10,
-        })
+        }),
       );
 
       // Update both
@@ -339,7 +347,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           stamina: 100,
-        })
+        }),
       );
 
       // Verify initial state exists
@@ -372,7 +380,7 @@ describe("useMuscleActivation", () => {
           currentAnimation: "attack",
           attackAnimation: "jab",
           stamina: 100,
-        })
+        }),
       );
 
       // Should not throw on unmount

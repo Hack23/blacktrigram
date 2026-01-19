@@ -1,49 +1,58 @@
 /**
  * Tests for Recovery Animation System
- * 
+ *
  * Validates recovery animations from fallen states including:
  * - Prone stand-up (엎드린 기상)
  * - Supine stand-up (누운 기상)
  * - Roll recovery (회전기상)
  * - Defensive getup (방어기상)
- * 
+ *
  * @module systems/animation/RecoveryAnimations.test
  * @category Animation Tests
  * @korean 기상애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { GroundState, RecoveryAnimationType } from "../core/types";
 import {
-  getRecoveryKeyframes,
-  isVulnerableFrame,
   determineRecoveryType,
   getRecoveryAnimationState,
   getRecoveryConfig,
-  RECOVERY_PRONE_KEYFRAMES,
-  RECOVERY_SUPINE_KEYFRAMES,
-  RECOVERY_ROLL_KEYFRAMES,
+  getRecoveryKeyframes,
+  isVulnerableFrame,
   RECOVERY_DEFENSIVE_KEYFRAMES,
+  RECOVERY_PRONE_KEYFRAMES,
+  RECOVERY_ROLL_KEYFRAMES,
+  RECOVERY_SUPINE_KEYFRAMES,
 } from "./RecoveryAnimations";
-import type { RecoveryAnimationType, GroundState } from "./types";
 
 describe("RecoveryAnimations", () => {
   describe("Keyframe Data", () => {
     it("should have correct frame counts for each recovery type", () => {
       // Prone: 30 frames (500ms at 60fps)
       expect(RECOVERY_PRONE_KEYFRAMES).toHaveLength(5);
-      expect(RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame).toBe(29);
+      expect(
+        RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame,
+      ).toBe(29);
 
       // Supine: 36 frames (600ms at 60fps)
       expect(RECOVERY_SUPINE_KEYFRAMES).toHaveLength(5);
-      expect(RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame).toBe(35);
+      expect(
+        RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame,
+      ).toBe(35);
 
       // Roll: 24 frames (400ms at 60fps)
       expect(RECOVERY_ROLL_KEYFRAMES).toHaveLength(5);
-      expect(RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame).toBe(23);
+      expect(
+        RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame,
+      ).toBe(23);
 
       // Defensive: 42 frames (700ms at 60fps)
       expect(RECOVERY_DEFENSIVE_KEYFRAMES).toHaveLength(5);
-      expect(RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1].frame).toBe(41);
+      expect(
+        RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1]
+          .frame,
+      ).toBe(41);
     });
 
     it("should have Korean and English descriptions for all keyframes", () => {
@@ -64,14 +73,18 @@ describe("RecoveryAnimations", () => {
 
     it("should have center of mass progress from ground to standing", () => {
       // All recovery animations should start low and end high
-      const checkProgression = (keyframes: readonly typeof RECOVERY_PRONE_KEYFRAMES[number][]) => {
+      const checkProgression = (
+        keyframes: readonly (typeof RECOVERY_PRONE_KEYFRAMES)[number][],
+      ) => {
         expect(keyframes[0].centerOfMassHeight).toBeLessThan(0.2); // Start grounded
-        expect(keyframes[keyframes.length - 1].centerOfMassHeight).toBeGreaterThan(0.8); // End standing
-        
+        expect(
+          keyframes[keyframes.length - 1].centerOfMassHeight,
+        ).toBeGreaterThan(0.8); // End standing
+
         // Should be monotonically increasing
         for (let i = 1; i < keyframes.length; i++) {
           expect(keyframes[i].centerOfMassHeight).toBeGreaterThanOrEqual(
-            keyframes[i - 1].centerOfMassHeight
+            keyframes[i - 1].centerOfMassHeight,
           );
         }
       };
@@ -84,10 +97,21 @@ describe("RecoveryAnimations", () => {
 
     it("should mark last keyframe as not vulnerable", () => {
       // Last 6 frames should be interruptible and not vulnerable
-      expect(RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].vulnerable).toBe(false);
-      expect(RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].vulnerable).toBe(false);
-      expect(RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].vulnerable).toBe(false);
-      expect(RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1].vulnerable).toBe(false);
+      expect(
+        RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1]
+          .vulnerable,
+      ).toBe(false);
+      expect(
+        RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1]
+          .vulnerable,
+      ).toBe(false);
+      expect(
+        RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].vulnerable,
+      ).toBe(false);
+      expect(
+        RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1]
+          .vulnerable,
+      ).toBe(false);
     });
 
     it("should have earlier keyframes marked as vulnerable", () => {
@@ -101,10 +125,18 @@ describe("RecoveryAnimations", () => {
 
   describe("getRecoveryKeyframes", () => {
     it("should return correct keyframes for each recovery type", () => {
-      expect(getRecoveryKeyframes("prone_standup")).toBe(RECOVERY_PRONE_KEYFRAMES);
-      expect(getRecoveryKeyframes("supine_standup")).toBe(RECOVERY_SUPINE_KEYFRAMES);
-      expect(getRecoveryKeyframes("roll_recovery")).toBe(RECOVERY_ROLL_KEYFRAMES);
-      expect(getRecoveryKeyframes("defensive_getup")).toBe(RECOVERY_DEFENSIVE_KEYFRAMES);
+      expect(getRecoveryKeyframes("prone_standup")).toBe(
+        RECOVERY_PRONE_KEYFRAMES,
+      );
+      expect(getRecoveryKeyframes("supine_standup")).toBe(
+        RECOVERY_SUPINE_KEYFRAMES,
+      );
+      expect(getRecoveryKeyframes("roll_recovery")).toBe(
+        RECOVERY_ROLL_KEYFRAMES,
+      );
+      expect(getRecoveryKeyframes("defensive_getup")).toBe(
+        RECOVERY_DEFENSIVE_KEYFRAMES,
+      );
     });
 
     it("should return arrays with at least 5 keyframes each", () => {
@@ -190,7 +222,12 @@ describe("RecoveryAnimations", () => {
     });
 
     it("should handle all ground state types", () => {
-      const groundStates: GroundState[] = ["prone", "supine", "side_left", "side_right"];
+      const groundStates: GroundState[] = [
+        "prone",
+        "supine",
+        "side_left",
+        "side_right",
+      ];
 
       for (const state of groundStates) {
         const recoveryType = determineRecoveryType(state);
@@ -202,10 +239,16 @@ describe("RecoveryAnimations", () => {
 
   describe("getRecoveryAnimationState", () => {
     it("should return correct animation state for each recovery type", () => {
-      expect(getRecoveryAnimationState("prone_standup")).toBe("recovery_prone_standup");
-      expect(getRecoveryAnimationState("supine_standup")).toBe("recovery_supine_standup");
+      expect(getRecoveryAnimationState("prone_standup")).toBe(
+        "recovery_prone_standup",
+      );
+      expect(getRecoveryAnimationState("supine_standup")).toBe(
+        "recovery_supine_standup",
+      );
       expect(getRecoveryAnimationState("roll_recovery")).toBe("recovery_roll");
-      expect(getRecoveryAnimationState("defensive_getup")).toBe("recovery_defensive");
+      expect(getRecoveryAnimationState("defensive_getup")).toBe(
+        "recovery_defensive",
+      );
     });
   });
 
@@ -257,12 +300,14 @@ describe("RecoveryAnimations", () => {
 
         // Vulnerable frames should be less than total frames
         expect(config.vulnerableFrames).toBeLessThan(totalFrames);
-        
+
         // Interruptible frame should be same or less than vulnerable frames end
         expect(config.interruptibleFrame).toBeLessThanOrEqual(totalFrames);
-        
+
         // Last 6 frames should be interruptible
-        expect(totalFrames - config.interruptibleFrame).toBeGreaterThanOrEqual(6);
+        expect(totalFrames - config.interruptibleFrame).toBeGreaterThanOrEqual(
+          6,
+        );
       }
     });
   });
@@ -279,7 +324,7 @@ describe("RecoveryAnimations", () => {
       for (const kf of allKeyframes) {
         // Check Korean text (should contain Hangul characters)
         expect(kf.description.korean).toMatch(/[\u3131-\uD79D]/);
-        
+
         // Check English text
         expect(kf.description.english.length).toBeGreaterThan(0);
       }
@@ -288,10 +333,16 @@ describe("RecoveryAnimations", () => {
 
   describe("Recovery Animation Durations", () => {
     it("should have roll recovery as fastest (24 frames)", () => {
-      const rollFrames = RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame + 1;
-      const proneFrames = RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
-      const supineFrames = RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame + 1;
-      const defensiveFrames = RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1].frame + 1;
+      const rollFrames =
+        RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame + 1;
+      const proneFrames =
+        RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
+      const supineFrames =
+        RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame +
+        1;
+      const defensiveFrames =
+        RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1]
+          .frame + 1;
 
       expect(rollFrames).toBe(24);
       expect(rollFrames).toBeLessThan(proneFrames);
@@ -300,10 +351,16 @@ describe("RecoveryAnimations", () => {
     });
 
     it("should have defensive getup as slowest (42 frames)", () => {
-      const defensiveFrames = RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1].frame + 1;
-      const rollFrames = RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame + 1;
-      const proneFrames = RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
-      const supineFrames = RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame + 1;
+      const defensiveFrames =
+        RECOVERY_DEFENSIVE_KEYFRAMES[RECOVERY_DEFENSIVE_KEYFRAMES.length - 1]
+          .frame + 1;
+      const rollFrames =
+        RECOVERY_ROLL_KEYFRAMES[RECOVERY_ROLL_KEYFRAMES.length - 1].frame + 1;
+      const proneFrames =
+        RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
+      const supineFrames =
+        RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame +
+        1;
 
       expect(defensiveFrames).toBe(42);
       expect(defensiveFrames).toBeGreaterThan(rollFrames);
@@ -312,12 +369,15 @@ describe("RecoveryAnimations", () => {
     });
 
     it("should have prone standup at 30 frames (500ms)", () => {
-      const proneFrames = RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
+      const proneFrames =
+        RECOVERY_PRONE_KEYFRAMES[RECOVERY_PRONE_KEYFRAMES.length - 1].frame + 1;
       expect(proneFrames).toBe(30);
     });
 
     it("should have supine standup at 36 frames (600ms)", () => {
-      const supineFrames = RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame + 1;
+      const supineFrames =
+        RECOVERY_SUPINE_KEYFRAMES[RECOVERY_SUPINE_KEYFRAMES.length - 1].frame +
+        1;
       expect(supineFrames).toBe(36);
     });
   });

@@ -10,30 +10,25 @@
  * @korean 발차기애니메이션테스트
  */
 
-import { describe, it, expect } from "vitest";
+import { AnimationKeyframe, BoneName } from "@/types/skeletal";
+import { describe, expect, it } from "vitest";
 import {
+  BACK_KICK_ANIMATION,
   FRONT_KICK_ANIMATION,
   ROUNDHOUSE_KICK_ANIMATION,
   SIDE_KICK_ANIMATION,
-  BACK_KICK_ANIMATION,
 } from "./KickAnimations";
-import { BoneName, AnimationKeyframe } from "@/types/skeletal";
 
 // Helper to get bone rotation from keyframe
 function getBoneRotation(
   keyframe: AnimationKeyframe,
-  boneName: BoneName
+  boneName: BoneName,
 ): readonly [number, number, number] | undefined {
   const rotation = keyframe.boneRotations.get(boneName);
   if (!rotation) return undefined;
-  
-  // Handle THREE.Euler objects
-  if (rotation.isEuler) {
-    return [rotation._x, rotation._y, rotation._z] as const;
-  }
-  
-  // Handle plain arrays
-  return rotation;
+
+  // THREE.Euler objects - use public x, y, z properties
+  return [rotation.x, rotation.y, rotation.z] as const;
 }
 
 // Helper to check if bone rotation exists and is within expected range
@@ -43,7 +38,7 @@ function assertBoneRotationInRange(
   axis: 0 | 1 | 2, // x, y, or z
   min: number,
   max: number,
-  label: string
+  label: string,
 ): void {
   const rotation = getBoneRotation(keyframe, boneName);
   expect(rotation, `${label}: ${boneName} should have rotation`).toBeDefined();
@@ -51,7 +46,7 @@ function assertBoneRotationInRange(
     const value = rotation[axis];
     expect(
       value,
-      `${label}: ${boneName}[${axis}] should be between ${min} and ${max}, got ${value}`
+      `${label}: ${boneName}[${axis}] should be between ${min} and ${max}, got ${value}`,
     ).toBeGreaterThanOrEqual(min);
     expect(value).toBeLessThanOrEqual(max);
   }
@@ -74,7 +69,7 @@ describe("Korean Martial Arts Kick Phases", () => {
         0, // x-axis (hip flexion)
         1.3, // ~75 degrees minimum
         1.8, // ~103 degrees maximum
-        "Chamber phase hip flexion"
+        "Chamber phase hip flexion",
       );
 
       // Knee should be bent ~90-120 degrees for tight chamber
@@ -84,7 +79,7 @@ describe("Korean Martial Arts Kick Phases", () => {
         0, // x-axis (knee flexion)
         -2.2, // ~126 degrees
         -1.4, // ~80 degrees
-        "Chamber phase knee bend"
+        "Chamber phase knee bend",
       );
     });
 
@@ -100,12 +95,15 @@ describe("Korean Martial Arts Kick Phases", () => {
         0,
         -0.3, // Nearly straight
         0.2, // Slight bend acceptable
-        "Extension peak knee"
+        "Extension peak knee",
       );
 
       // Foot should be pointed (dorsiflexion)
       const footRotation = getBoneRotation(peakFrame, BoneName.FOOT_R);
-      expect(footRotation, "Extension peak should have foot rotation").toBeDefined();
+      expect(
+        footRotation,
+        "Extension peak should have foot rotation",
+      ).toBeDefined();
       if (footRotation) {
         expect(footRotation[0]).toBeGreaterThan(0.2); // At least 11 degrees pointed
       }
@@ -133,7 +131,10 @@ describe("Korean Martial Arts Kick Phases", () => {
 
       // Pelvis should tilt forward for hip thrust
       const pelvisRotation = getBoneRotation(extensionFrame, BoneName.PELVIS);
-      expect(pelvisRotation, "Extension should have pelvis rotation").toBeDefined();
+      expect(
+        pelvisRotation,
+        "Extension should have pelvis rotation",
+      ).toBeDefined();
     });
   });
 
@@ -146,7 +147,8 @@ describe("Korean Martial Arts Kick Phases", () => {
       expect(hipRotation, "Roundhouse chamber should rotate hip").toBeDefined();
       if (hipRotation) {
         // Check for lateral rotation (Y or Z axis should be non-zero)
-        const hasRotation = Math.abs(hipRotation[1]) > 0.3 || Math.abs(hipRotation[2]) > 0.3;
+        const hasRotation =
+          Math.abs(hipRotation[1]) > 0.3 || Math.abs(hipRotation[2]) > 0.3;
         expect(hasRotation).toBe(true);
       }
     });
@@ -173,7 +175,7 @@ describe("Korean Martial Arts Kick Phases", () => {
         0,
         -0.5,
         0.3,
-        "Roundhouse extension knee"
+        "Roundhouse extension knee",
       );
 
       // Hip should have significant rotation
@@ -190,7 +192,10 @@ describe("Korean Martial Arts Kick Phases", () => {
 
       // Pelvis should turn sideways (~90 degrees = 1.57 radians)
       const pelvisRotation = getBoneRotation(chamberFrame, BoneName.PELVIS);
-      expect(pelvisRotation, "Side kick chamber should turn pelvis").toBeDefined();
+      expect(
+        pelvisRotation,
+        "Side kick chamber should turn pelvis",
+      ).toBeDefined();
       if (pelvisRotation) {
         expect(Math.abs(pelvisRotation[1])).toBeGreaterThan(1.0); // Significant Y turn
       }
@@ -206,7 +211,7 @@ describe("Korean Martial Arts Kick Phases", () => {
         0,
         -0.5,
         0.2,
-        "Side kick extension"
+        "Side kick extension",
       );
 
       // Foot should be positioned for heel strike
@@ -252,7 +257,7 @@ describe("Korean Martial Arts Kick Phases", () => {
         0,
         -1.5,
         -0.5,
-        "Back kick chamber"
+        "Back kick chamber",
       );
     });
 
@@ -273,12 +278,13 @@ describe("Korean Martial Arts Kick Phases", () => {
         0,
         -0.5,
         0.2,
-        "Back kick thrust extension"
+        "Back kick thrust extension",
       );
     });
 
     it("should complete rotation in recovery", () => {
-      const recoveryFrame = BACK_KICK_ANIMATION.keyframes[BACK_KICK_ANIMATION.keyframes.length - 1];
+      const recoveryFrame =
+        BACK_KICK_ANIMATION.keyframes[BACK_KICK_ANIMATION.keyframes.length - 1];
 
       // Should return pelvis to neutral or complete 360
       const pelvisRotation = getBoneRotation(recoveryFrame, BoneName.PELVIS);
@@ -337,7 +343,9 @@ describe("Korean Martial Arts Kick Phases", () => {
     it("should have proper time progression in keyframes", () => {
       [FRONT_KICK_ANIMATION].forEach((animation) => {
         for (let i = 1; i < animation.keyframes.length; i++) {
-          expect(animation.keyframes[i].time).toBeGreaterThan(animation.keyframes[i - 1].time);
+          expect(animation.keyframes[i].time).toBeGreaterThan(
+            animation.keyframes[i - 1].time,
+          );
         }
       });
     });

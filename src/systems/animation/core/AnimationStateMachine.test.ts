@@ -202,26 +202,24 @@ describe("PlayerAnimationStateMachine", () => {
   describe("event callbacks", () => {
     let events: AnimationEvents;
     let onAnimationStart: ReturnType<
-      typeof vi.fn<[state: AnimationState], void>
+      typeof vi.fn<(state: AnimationState) => void>
     >;
     let onFrame: ReturnType<
-      typeof vi.fn<[frame: number, state: AnimationState], void>
+      typeof vi.fn<(frame: number, state: AnimationState) => void>
     >;
     let onAnimationComplete: ReturnType<
-      typeof vi.fn<[state: AnimationState], void>
+      typeof vi.fn<(state: AnimationState) => void>
     >;
     let onAnimationInterrupted: ReturnType<
-      typeof vi.fn<[fromState: AnimationState, toState: AnimationState], void>
+      typeof vi.fn<(fromState: AnimationState, toState: AnimationState) => void>
     >;
 
     beforeEach(() => {
-      onAnimationStart = vi.fn<[state: AnimationState], void>();
-      onFrame = vi.fn<[frame: number, state: AnimationState], void>();
-      onAnimationComplete = vi.fn<[state: AnimationState], void>();
-      onAnimationInterrupted = vi.fn<
-        [fromState: AnimationState, toState: AnimationState],
-        void
-      >();
+      onAnimationStart = vi.fn<(state: AnimationState) => void>();
+      onFrame = vi.fn<(frame: number, state: AnimationState) => void>();
+      onAnimationComplete = vi.fn<(state: AnimationState) => void>();
+      onAnimationInterrupted =
+        vi.fn<(fromState: AnimationState, toState: AnimationState) => void>();
 
       events = {
         onAnimationStart,
