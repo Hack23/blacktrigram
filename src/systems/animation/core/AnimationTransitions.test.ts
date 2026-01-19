@@ -1,15 +1,15 @@
 /**
  * Unit tests for AnimationTransitions system
- * 
+ *
  * Tests transition rules and validation logic.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  isTransitionAllowed,
-  getValidTransitions,
   buildTransitionMap,
   DEFAULT_TRANSITIONS,
+  getValidTransitions,
+  isTransitionAllowed,
 } from "./AnimationTransitions";
 import { AnimationState } from "./types";
 
@@ -17,14 +17,14 @@ describe("AnimationTransitions", () => {
   describe("isTransitionAllowed", () => {
     it("should allow same state transitions", () => {
       const states: AnimationState[] = [
-        "idle",
-        "walk",
-        "run",
-        "attack",
-        "defend",
-        "hit",
-        "stance_change",
-        "ko",
+        AnimationState.IDLE,
+        AnimationState.WALK,
+        AnimationState.RUN,
+        AnimationState.ATTACK,
+        AnimationState.DEFEND,
+        AnimationState.HIT,
+        AnimationState.STANCE_CHANGE,
+        AnimationState.KO,
       ];
 
       states.forEach((state) => {
@@ -33,97 +33,170 @@ describe("AnimationTransitions", () => {
     });
 
     it("should allow valid transitions from idle", () => {
-      expect(isTransitionAllowed("idle", "walk")).toBe(true);
-      expect(isTransitionAllowed("idle", "run")).toBe(true);
-      expect(isTransitionAllowed("idle", "attack")).toBe(true);
-      expect(isTransitionAllowed("idle", "defend")).toBe(true);
-      expect(isTransitionAllowed("idle", "stance_change")).toBe(true);
-      expect(isTransitionAllowed("idle", "hit")).toBe(true);
-      expect(isTransitionAllowed("idle", "ko")).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.IDLE, AnimationState.WALK),
+      ).toBe(true);
+      expect(isTransitionAllowed(AnimationState.IDLE, AnimationState.RUN)).toBe(
+        true,
+      );
+      expect(
+        isTransitionAllowed(AnimationState.IDLE, AnimationState.ATTACK),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.IDLE, AnimationState.DEFEND),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.IDLE, AnimationState.STANCE_CHANGE),
+      ).toBe(true);
+      expect(isTransitionAllowed(AnimationState.IDLE, AnimationState.HIT)).toBe(
+        true,
+      );
+      expect(isTransitionAllowed(AnimationState.IDLE, AnimationState.KO)).toBe(
+        true,
+      );
     });
 
     it("should allow valid transitions from walk", () => {
-      expect(isTransitionAllowed("walk", "idle")).toBe(true);
-      expect(isTransitionAllowed("walk", "run")).toBe(true);
-      expect(isTransitionAllowed("walk", "attack")).toBe(true);
-      expect(isTransitionAllowed("walk", "defend")).toBe(true);
-      expect(isTransitionAllowed("walk", "stance_change")).toBe(true);
-      expect(isTransitionAllowed("walk", "hit")).toBe(true);
-      expect(isTransitionAllowed("walk", "ko")).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.WALK, AnimationState.IDLE),
+      ).toBe(true);
+      expect(isTransitionAllowed(AnimationState.WALK, AnimationState.RUN)).toBe(
+        true,
+      );
+      expect(
+        isTransitionAllowed(AnimationState.WALK, AnimationState.ATTACK),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.WALK, AnimationState.DEFEND),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.WALK, AnimationState.STANCE_CHANGE),
+      ).toBe(true);
+      expect(isTransitionAllowed(AnimationState.WALK, AnimationState.HIT)).toBe(
+        true,
+      );
+      expect(isTransitionAllowed(AnimationState.WALK, AnimationState.KO)).toBe(
+        true,
+      );
     });
 
     it("should allow valid transitions from attack", () => {
-      expect(isTransitionAllowed("attack", "idle")).toBe(true);
-      expect(isTransitionAllowed("attack", "hit")).toBe(true);
-      expect(isTransitionAllowed("attack", "ko")).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.IDLE),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.HIT),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.KO),
+      ).toBe(true);
     });
 
     it("should not allow invalid transitions from attack", () => {
-      expect(isTransitionAllowed("attack", "walk")).toBe(false);
-      expect(isTransitionAllowed("attack", "run")).toBe(false);
-      expect(isTransitionAllowed("attack", "defend")).toBe(false);
-      expect(isTransitionAllowed("attack", "stance_change")).toBe(false);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.WALK),
+      ).toBe(false);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.RUN),
+      ).toBe(false);
+      expect(
+        isTransitionAllowed(AnimationState.ATTACK, AnimationState.DEFEND),
+      ).toBe(false);
+      expect(
+        isTransitionAllowed(
+          AnimationState.ATTACK,
+          AnimationState.STANCE_CHANGE,
+        ),
+      ).toBe(false);
     });
 
     it("should allow valid transitions from hit", () => {
-      expect(isTransitionAllowed("hit", "idle")).toBe(true);
-      expect(isTransitionAllowed("hit", "hit")).toBe(true);
-      expect(isTransitionAllowed("hit", "ko")).toBe(true);
+      expect(isTransitionAllowed(AnimationState.HIT, AnimationState.IDLE)).toBe(
+        true,
+      );
+      expect(isTransitionAllowed(AnimationState.HIT, AnimationState.HIT)).toBe(
+        true,
+      );
+      expect(isTransitionAllowed(AnimationState.HIT, AnimationState.KO)).toBe(
+        true,
+      );
     });
 
     it("should not allow transitions from ko (terminal state)", () => {
-      expect(isTransitionAllowed("ko", "idle")).toBe(false);
-      expect(isTransitionAllowed("ko", "walk")).toBe(false);
-      expect(isTransitionAllowed("ko", "attack")).toBe(false);
-      expect(isTransitionAllowed("ko", "hit")).toBe(false);
+      expect(isTransitionAllowed(AnimationState.KO, AnimationState.IDLE)).toBe(
+        false,
+      );
+      expect(isTransitionAllowed(AnimationState.KO, AnimationState.WALK)).toBe(
+        false,
+      );
+      expect(
+        isTransitionAllowed(AnimationState.KO, AnimationState.ATTACK),
+      ).toBe(false);
+      expect(isTransitionAllowed(AnimationState.KO, AnimationState.HIT)).toBe(
+        false,
+      );
     });
 
     it("should allow defend to transition back to idle or to hit", () => {
-      expect(isTransitionAllowed("defend", "idle")).toBe(true);
-      expect(isTransitionAllowed("defend", "walk")).toBe(true);
-      expect(isTransitionAllowed("defend", "hit")).toBe(true);
-      expect(isTransitionAllowed("defend", "ko")).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.DEFEND, AnimationState.IDLE),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.DEFEND, AnimationState.WALK),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.DEFEND, AnimationState.HIT),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.DEFEND, AnimationState.KO),
+      ).toBe(true);
     });
 
     it("should allow stance_change to transition back to idle or to hit", () => {
-      expect(isTransitionAllowed("stance_change", "idle")).toBe(true);
-      expect(isTransitionAllowed("stance_change", "hit")).toBe(true);
-      expect(isTransitionAllowed("stance_change", "ko")).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.STANCE_CHANGE, AnimationState.IDLE),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.STANCE_CHANGE, AnimationState.HIT),
+      ).toBe(true);
+      expect(
+        isTransitionAllowed(AnimationState.STANCE_CHANGE, AnimationState.KO),
+      ).toBe(true);
     });
   });
 
   describe("getValidTransitions", () => {
     it("should return all valid transitions from idle", () => {
-      const valid = getValidTransitions("idle");
-      expect(valid).toContain("walk");
-      expect(valid).toContain("run");
-      expect(valid).toContain("attack");
-      expect(valid).toContain("defend");
-      expect(valid).toContain("stance_change");
-      expect(valid).toContain("hit");
-      expect(valid).toContain("ko");
+      const valid = getValidTransitions(AnimationState.IDLE);
+      expect(valid).toContain(AnimationState.WALK);
+      expect(valid).toContain(AnimationState.RUN);
+      expect(valid).toContain(AnimationState.ATTACK);
+      expect(valid).toContain(AnimationState.DEFEND);
+      expect(valid).toContain(AnimationState.STANCE_CHANGE);
+      expect(valid).toContain(AnimationState.HIT);
+      expect(valid).toContain(AnimationState.KO);
       expect(valid.length).toBeGreaterThan(0);
     });
 
     it("should return limited transitions from attack", () => {
-      const valid = getValidTransitions("attack");
-      expect(valid).toContain("idle");
-      expect(valid).toContain("hit");
-      expect(valid).toContain("ko");
-      expect(valid).not.toContain("walk");
-      expect(valid).not.toContain("run");
+      const valid = getValidTransitions(AnimationState.ATTACK);
+      expect(valid).toContain(AnimationState.IDLE);
+      expect(valid).toContain(AnimationState.HIT);
+      expect(valid).toContain(AnimationState.KO);
+      expect(valid).not.toContain(AnimationState.WALK);
+      expect(valid).not.toContain(AnimationState.RUN);
     });
 
     it("should return empty array for ko (terminal state)", () => {
-      const valid = getValidTransitions("ko");
+      const valid = getValidTransitions(AnimationState.KO);
       expect(valid).toEqual([]);
     });
 
     it("should return valid transitions from walk", () => {
-      const valid = getValidTransitions("walk");
+      const valid = getValidTransitions(AnimationState.WALK);
       expect(valid.length).toBeGreaterThan(0);
-      expect(valid).toContain("idle");
-      expect(valid).toContain("run");
+      expect(valid).toContain(AnimationState.IDLE);
+      expect(valid).toContain(AnimationState.RUN);
     });
   });
 
@@ -136,39 +209,39 @@ describe("AnimationTransitions", () => {
 
     it("should have entries for all non-terminal states", () => {
       const map = buildTransitionMap();
-      expect(map.has("idle")).toBe(true);
-      expect(map.has("walk")).toBe(true);
-      expect(map.has("run")).toBe(true);
-      expect(map.has("attack")).toBe(true);
-      expect(map.has("defend")).toBe(true);
-      expect(map.has("hit")).toBe(true);
-      expect(map.has("stance_change")).toBe(true);
+      expect(map.has(AnimationState.IDLE)).toBe(true);
+      expect(map.has(AnimationState.WALK)).toBe(true);
+      expect(map.has(AnimationState.RUN)).toBe(true);
+      expect(map.has(AnimationState.ATTACK)).toBe(true);
+      expect(map.has(AnimationState.DEFEND)).toBe(true);
+      expect(map.has(AnimationState.HIT)).toBe(true);
+      expect(map.has(AnimationState.STANCE_CHANGE)).toBe(true);
     });
 
     it("should have correct transitions for idle", () => {
       const map = buildTransitionMap();
-      const idleTransitions = map.get("idle");
+      const idleTransitions = map.get(AnimationState.IDLE);
       expect(idleTransitions).toBeDefined();
-      expect(idleTransitions?.has("walk")).toBe(true);
-      expect(idleTransitions?.has("run")).toBe(true);
-      expect(idleTransitions?.has("attack")).toBe(true);
+      expect(idleTransitions?.has(AnimationState.WALK)).toBe(true);
+      expect(idleTransitions?.has(AnimationState.RUN)).toBe(true);
+      expect(idleTransitions?.has(AnimationState.ATTACK)).toBe(true);
     });
 
     it("should not have transitions from ko (terminal state)", () => {
       const map = buildTransitionMap();
-      const koTransitions = map.get("ko");
+      const koTransitions = map.get(AnimationState.KO);
       expect(koTransitions).toBeUndefined();
     });
 
     it("should build map with custom transitions", () => {
       const customTransitions = [
-        { from: "idle" as AnimationState, to: "walk" as AnimationState, allowed: true },
-        { from: "walk" as AnimationState, to: "idle" as AnimationState, allowed: true },
+        { from: AnimationState.IDLE, to: AnimationState.WALK, allowed: true },
+        { from: AnimationState.WALK, to: AnimationState.IDLE, allowed: true },
       ];
       const map = buildTransitionMap(customTransitions);
       expect(map.size).toBe(2);
-      expect(map.get("idle")?.has("walk")).toBe(true);
-      expect(map.get("walk")?.has("idle")).toBe(true);
+      expect(map.get(AnimationState.IDLE)?.has(AnimationState.WALK)).toBe(true);
+      expect(map.get(AnimationState.WALK)?.has(AnimationState.IDLE)).toBe(true);
     });
   });
 
@@ -184,11 +257,11 @@ describe("AnimationTransitions", () => {
 
     it("should have transitions for all major states", () => {
       const fromStates = new Set(DEFAULT_TRANSITIONS.map((t) => t.from));
-      expect(fromStates.has("idle")).toBe(true);
-      expect(fromStates.has("walk")).toBe(true);
-      expect(fromStates.has("attack")).toBe(true);
-      expect(fromStates.has("defend")).toBe(true);
-      expect(fromStates.has("hit")).toBe(true);
+      expect(fromStates.has(AnimationState.IDLE)).toBe(true);
+      expect(fromStates.has(AnimationState.WALK)).toBe(true);
+      expect(fromStates.has(AnimationState.ATTACK)).toBe(true);
+      expect(fromStates.has(AnimationState.DEFEND)).toBe(true);
+      expect(fromStates.has(AnimationState.HIT)).toBe(true);
     });
   });
 });

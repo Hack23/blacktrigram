@@ -34,6 +34,9 @@ export interface ArenaBounds {
   y: number;
   width: number;
   height: number;
+  scale?: number;
+  worldWidthMeters: number;
+  worldDepthMeters: number;
 }
 
 /**
@@ -45,11 +48,14 @@ export function createMockArena(): ArenaBounds {
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
+    worldWidthMeters: 10,
+    worldDepthMeters: 10,
   };
 }
 
 export function createMockPlayerState(
-  overrides?: Partial<PlayerState>
+  overrides?: Partial<PlayerState>,
 ): PlayerState {
   return {
     id: "test",
@@ -100,7 +106,7 @@ export function createMockPlayerState(
  */
 export function withPlayerState(
   player: PlayerState,
-  updates: Partial<PlayerState>
+  updates: Partial<PlayerState>,
 ): PlayerState {
   return { ...player, ...updates };
 }
@@ -108,7 +114,7 @@ export function withPlayerState(
 // Enhanced render function with proper options
 export function customRender(
   ui: React.ReactElement,
-  options?: Omit<RenderOptions, "wrapper">
+  options?: Omit<RenderOptions, "wrapper">,
 ) {
   return render(ui, {
     ...options,

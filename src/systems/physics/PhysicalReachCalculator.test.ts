@@ -20,25 +20,39 @@ import {
 describe("PhysicalReachCalculator", () => {
   const calculator = new PhysicalReachCalculator();
 
-  // Test archetype physical attributes
+  // Test archetype physical attributes (matching canonical data)
   const AMSALJA_PHYSICAL: PhysicalAttributes = {
     weight: 75,
     legLength: 102, // cm - longest legs
-    armLength: 82, // cm
-    shoulderWidth: 46,
-    hipWidth: 38,
-    torsoLength: 55,
-    neckLength: 13,
+    armLength: 82, // cm - longest arms
+    muscleMass: 30, // kg - lean functional muscle
+    fatMass: 10, // kg - 13% body fat
+    age: 28, // years - peak agility
+    totalHeight: 186, // cm - tall for reach
+    torsoLength: 58, // cm - compact torso
+    headSize: 22, // cm - normal profile
+    neckLength: 11, // cm - longer for evasion
+    shoulderWidth: 44, // cm - lean athletic
+    walkSpeed: 6.5, // m/s - fastest
+    runSpeed: 11.0, // m/s - fastest sprint
+    acceleration: 15.0, // m/s² - highest explosiveness
   };
 
   const HACKER_PHYSICAL: PhysicalAttributes = {
-    weight: 65,
-    legLength: 92, // cm - shorter legs
-    armLength: 73, // cm - shorter arms
-    shoulderWidth: 42,
-    hipWidth: 34,
-    torsoLength: 50,
-    neckLength: 12,
+    weight: 72,
+    legLength: 92, // cm - standard proportions
+    armLength: 73, // cm - average reach
+    muscleMass: 28, // kg - moderate for tech worker
+    fatMass: 15, // kg - 21% body fat
+    age: 26, // years - young digital native
+    totalHeight: 175, // cm - average height
+    torsoLength: 57, // cm - average
+    headSize: 22, // cm - average
+    neckLength: 10, // cm - average
+    shoulderWidth: 43, // cm - average span
+    walkSpeed: 5.5, // m/s - average movement
+    runSpeed: 8.5, // m/s - moderate sprint
+    acceleration: 10.0, // m/s² - moderate explosiveness
   };
 
   describe("Body Pivot Contribution", () => {

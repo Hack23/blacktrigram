@@ -34,14 +34,17 @@ function createMockPlayer(overrides?: Partial<PlayerState>): PlayerState {
 }
 
 describe("useAICombat", () => {
-  let mockOnExecuteAction: ReturnType<typeof vi.fn>;
-  let mockOnStanceChange: ReturnType<typeof vi.fn>;
+  let mockOnExecuteAction: (action: string, targetPosition?: Position) => void;
+  let mockOnStanceChange: (stance: TrigramStance) => void;
   let mockAdaptiveDifficulty: AdaptiveDifficulty;
 
   beforeEach(() => {
     vi.useFakeTimers();
-    mockOnExecuteAction = vi.fn();
-    mockOnStanceChange = vi.fn();
+    mockOnExecuteAction = vi.fn<
+      [action: string, targetPosition?: Position],
+      void
+    >();
+    mockOnStanceChange = vi.fn<[stance: TrigramStance], void>();
     mockAdaptiveDifficulty = new AdaptiveDifficulty();
   });
 

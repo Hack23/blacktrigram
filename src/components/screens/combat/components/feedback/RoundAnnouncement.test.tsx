@@ -1,14 +1,18 @@
 /**
  * RoundAnnouncement Component Tests
- * 
+ *
  * Tests for round announcement display and transitions
  */
 
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { RoundAnnouncement, RoundStats } from "./RoundAnnouncement";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerState } from "../../../../../systems";
-import { PlayerArchetype, TrigramStance, CombatState } from "../../../../../types";
+import {
+  CombatState,
+  PlayerArchetype,
+  TrigramStance,
+} from "../../../../../types";
+import { RoundAnnouncement, RoundStats } from "./RoundAnnouncement";
 
 describe("RoundAnnouncement", () => {
   const mockPlayer1: PlayerState = {
@@ -34,14 +38,13 @@ describe("RoundAnnouncement", () => {
     isStunned: false,
     isCountering: false,
     statusEffects: [],
-    vitalPointsHit: {},
+    vitalPointHits: 2,
     hitsLanded: 5,
     hitsTaken: 3,
     comboCount: 2,
     perfectBlockCount: 1,
     totalDamageDealt: 50,
     totalDamageReceived: 30,
-    vitalPointHits: 2,
   };
 
   const mockRoundStats: RoundStats = {
@@ -53,12 +56,12 @@ describe("RoundAnnouncement", () => {
 
   const mockCurrentScore = { player1: 1, player2: 0 };
 
-  let onCountdownCompleteMock: ReturnType<typeof vi.fn>;
-  let onSkipMock: ReturnType<typeof vi.fn>;
+  let onCountdownCompleteMock: () => void;
+  let onSkipMock: () => void;
 
   beforeEach(() => {
-    onCountdownCompleteMock = vi.fn();
-    onSkipMock = vi.fn();
+    onCountdownCompleteMock = vi.fn<[], void>();
+    onSkipMock = vi.fn<[], void>();
     vi.useFakeTimers();
   });
 
@@ -76,7 +79,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const title = screen.getByTestId("round-complete-title");
@@ -94,7 +97,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const winner = screen.getByTestId("round-winner");
@@ -112,7 +115,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const score = screen.getByTestId("current-score");
@@ -131,7 +134,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const stats = screen.getByTestId("round-stats");
@@ -152,7 +155,7 @@ describe("RoundAnnouncement", () => {
         onSkip={onSkipMock}
         isMobile={false}
         countdownDuration={3}
-      />
+      />,
     );
 
     const countdown = screen.getByTestId("countdown-display");
@@ -163,7 +166,7 @@ describe("RoundAnnouncement", () => {
   it("should decrement countdown every second", async () => {
     // Use real timers for this test since we're testing setInterval behavior
     vi.useRealTimers();
-    
+
     render(
       <RoundAnnouncement
         roundNumber={1}
@@ -173,7 +176,7 @@ describe("RoundAnnouncement", () => {
         onSkip={onSkipMock}
         isMobile={false}
         countdownDuration={3}
-      />
+      />,
     );
 
     const countdown = screen.getByTestId("countdown-display");
@@ -184,7 +187,7 @@ describe("RoundAnnouncement", () => {
       () => {
         expect(countdown.textContent).toBe("2");
       },
-      { timeout: 1500 }
+      { timeout: 1500 },
     );
 
     // Wait for another decrement
@@ -192,16 +195,16 @@ describe("RoundAnnouncement", () => {
       () => {
         expect(countdown.textContent).toBe("1");
       },
-      { timeout: 1500 }
+      { timeout: 1500 },
     );
-    
+
     vi.useFakeTimers();
   });
 
   it("should call onCountdownComplete when countdown reaches zero", async () => {
     // Use real timers for this test
     vi.useRealTimers();
-    
+
     render(
       <RoundAnnouncement
         roundNumber={1}
@@ -211,7 +214,7 @@ describe("RoundAnnouncement", () => {
         onSkip={onSkipMock}
         isMobile={false}
         countdownDuration={1}
-      />
+      />,
     );
 
     // Wait for countdown to complete
@@ -219,9 +222,9 @@ describe("RoundAnnouncement", () => {
       () => {
         expect(onCountdownCompleteMock).toHaveBeenCalledTimes(1);
       },
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
-    
+
     vi.useFakeTimers();
   });
 
@@ -234,7 +237,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const skipButton = screen.getByTestId("skip-countdown-button");
@@ -252,7 +255,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const skipButton = screen.getByTestId("skip-countdown-button");
@@ -271,7 +274,7 @@ describe("RoundAnnouncement", () => {
         onSkip={onSkipMock}
         isMobile={false}
         totalRounds={3}
-      />
+      />,
     );
 
     const matchPoint = screen.getByTestId("match-point-indicator");
@@ -288,7 +291,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={true}
-      />
+      />,
     );
 
     const title = screen.getByTestId("round-complete-title");
@@ -306,7 +309,7 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const winner = screen.queryByTestId("round-winner");
@@ -316,7 +319,7 @@ describe("RoundAnnouncement", () => {
   it("should fade in on mount", async () => {
     // Use real timers for this test
     vi.useRealTimers();
-    
+
     render(
       <RoundAnnouncement
         roundNumber={1}
@@ -325,12 +328,12 @@ describe("RoundAnnouncement", () => {
         onCountdownComplete={onCountdownCompleteMock}
         onSkip={onSkipMock}
         isMobile={false}
-      />
+      />,
     );
 
     const announcement = screen.getByTestId("round-announcement");
     expect(announcement).toBeInTheDocument();
-    
+
     // Initially should have opacity 0
     expect(announcement.style.opacity).toBe("0");
 
@@ -339,9 +342,9 @@ describe("RoundAnnouncement", () => {
       () => {
         expect(announcement.style.opacity).toBe("1");
       },
-      { timeout: 200 }
+      { timeout: 200 },
     );
-    
+
     vi.useFakeTimers();
   });
 });
