@@ -14,25 +14,44 @@
  */
 
 describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
+  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    cy.session(
+      'philosophy-mode-session',
+      () => {
+        cy.visitWithWebGLMock("/", { timeout: 12000 });
+        cy.waitForCanvasReady();
 
-    // Navigate to philosophy screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
-        cy.get('[data-testid="philosophy-button"]').click({ force: true });
-      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
-        cy.get('[data-testid="menu-philosophy"]').click({ force: true });
-      } else {
-        // Use keyboard shortcut as fallback
-        cy.log("Using keyboard shortcut '4' for philosophy");
-        cy.get("body").type("4");
+        // Navigate to philosophy screen
+        cy.get("body").then(($body) => {
+          if ($body.find('[data-testid="philosophy-button"]').length > 0) {
+            cy.get('[data-testid="philosophy-button"]').click({ force: true });
+          } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
+            cy.get('[data-testid="menu-philosophy"]').click({ force: true });
+          } else {
+            // Use keyboard shortcut as fallback
+            cy.log("Using keyboard shortcut '4' for philosophy");
+            cy.get("body").type("4");
+          }
+        });
+      },
+      {
+        validate: () => {
+          cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should('exist');
+        }
       }
-    });
+    );
+    // Ensure we're on philosophy screen after session restore
+    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should('exist');
   });
 
   afterEach(() => {
+    // Clean up game state
+    cy.window().then(win => {
+      if ((win as any).__game?.cleanup) {
+        (win as any).__game.cleanup();
+      }
+    });
     cy.returnToIntro();
   });
 
@@ -52,8 +71,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // Verify canvas is visible
     cy.get("canvas").should("be.visible");
     cy.log("✅ Canvas rendering verified");
-
-    cy.wait(200);
 
     // ============================================================
     // 2. Verify Philosophy Content (30s)
@@ -88,8 +105,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
         cy.log("⚠️ Philosophy content may be in canvas");
       }
     });
-
-    cy.wait(200);
 
     // ============================================================
     // 3. Verify Trigram Information (30s)
@@ -151,8 +166,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 4. Verify Korean/English Text (15s)
     // ============================================================
@@ -181,8 +194,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
         cy.log("✅ English text found in philosophy screen");
       }
     });
-
-    cy.wait(200);
 
     // ============================================================
     // 5. Test Philosophy Screen UI Elements (15s)
@@ -213,8 +224,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 6. Test Scrolling or Content Navigation (10s)
     // ============================================================
@@ -224,15 +233,12 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="philosophy-content"]').length > 0) {
         cy.get('[data-testid="philosophy-content"]').scrollTo("bottom");
-        cy.wait(100);
         cy.get('[data-testid="philosophy-content"]').scrollTo("top");
         cy.log("✅ Scrolling tested");
       } else {
         cy.log("⚠️ No scrollable content found");
       }
     });
-
-    cy.wait(200);
 
     // ============================================================
     // 7. Verify Cultural Context (15s)
@@ -272,8 +278,6 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 8. Test Navigation Back (10s)
     // ============================================================
@@ -281,21 +285,10 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
 
     // Try ESC key first
     cy.get("body").type("{esc}");
-    cy.wait(500);
 
-    // Verify we're back at intro screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="intro-screen"]').length > 0) {
-        cy.get('[data-testid="intro-screen"]').should("exist");
-        cy.log("✅ ESC key navigation works");
-      } else {
-        cy.log(
-          "⚠️ May still be on philosophy screen or transition in progress"
-        );
-      }
-    });
-
-    cy.wait(200);
+    // Verify we're back at intro screen with assertion-based wait
+    cy.get('[data-testid="intro-screen"]', { timeout: 3000 }).should('exist');
+    cy.log("✅ ESC key navigation works");
 
     // ============================================================
     // FINAL: Test Summary

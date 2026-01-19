@@ -11,9 +11,22 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 
 describe("Black Trigram - WebGL Rendering Verification", () => {
+  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    cy.session(
+      'webgl-verification-session',
+      () => {
+        cy.visitWithWebGLMock("/", { timeout: 12000 });
+        cy.waitForCanvasReady();
+      },
+      {
+        validate: () => {
+          cy.get("canvas", { timeout: 3000 }).should("be.visible");
+        }
+      }
+    );
+    // Ensure canvas is ready after session restore
+    cy.get("canvas", { timeout: 3000 }).should("be.visible");
   });
 
   describe("WebGL Context Verification", () => {
@@ -185,7 +198,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
       });
 
       // Wait for measurement to complete
-      cy.wait(2000);
+      
     });
 
     it("should maintain consistent frame timing", () => {
@@ -242,7 +255,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
       });
 
       // Wait for measurements to complete
-      cy.wait(1500);
+      
     });
   });
 
@@ -267,7 +280,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
           );
 
           // Wait for a few frames
-          cy.wait(500);
+          
 
           // Capture new canvas state
           const newData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -347,9 +360,9 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Perform some actions
       cy.get('[data-testid="combat-button"]').trigger("mouseover");
-      cy.wait(500);
+      
       cy.get('[data-testid="training-button"]').trigger("mouseover");
-      cy.wait(500);
+      
 
       cy.window().then((_win) => {
         // Count final WebGL contexts
@@ -392,7 +405,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
             // Perform some rendering operations
             cy.gameActions(["1", "2", "3"]);
-            cy.wait(1000);
+            
 
             const finalMemory = perfWithMemory.memory.usedJSHeapSize;
             cy.log(`Final memory: ${(finalMemory / 1024 / 1024).toFixed(2)}MB`);
@@ -443,7 +456,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Perform combat actions
       cy.gameActions(["1", " ", "w", "a", "s", "d"]);
-      cy.wait(500);
+      
 
       // Verify framerate is still good
       cy.assertMinFPS(30, 1500);
@@ -483,7 +496,7 @@ describe("Black Trigram - WebGL Rendering Verification", () => {
 
       // Practice a stance
       cy.practiceStance(1, 3);
-      cy.wait(500);
+      
 
       // Verify framerate is still good
       cy.assertMinFPS(30, 1500);
