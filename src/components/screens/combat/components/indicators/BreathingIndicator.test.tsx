@@ -8,7 +8,10 @@
 
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { BreathingDisruptionLevel } from "../../../../../systems/breathing/BreathingDisruptionSystem";
+import {
+  BreathingDisruptionEffect,
+  BreathingDisruptionLevel,
+} from "../../../../../systems/breathing/BreathingDisruptionSystem";
 import { EffectIntensity } from "../../../../../systems/effects";
 import { PlayerState } from "../../../../../systems/player";
 import {
@@ -69,7 +72,7 @@ describe("BreathingIndicator", () => {
           // Required properties for BreathingDisruptionEffect type guard
           level: BreathingDisruptionLevel.WINDED,
           staminaRegenMultiplier: 0.75,
-        },
+        } as BreathingDisruptionEffect,
       ],
     };
   });
