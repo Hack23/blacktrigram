@@ -15,9 +15,22 @@
  */
 
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
+  // Use cy.session() for better test isolation (Cypress 15 feature)
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    cy.session(
+      'intro-screen-session',
+      () => {
+        cy.visitWithWebGLMock("/", { timeout: 12000 });
+        cy.waitForCanvasReady();
+      },
+      {
+        validate: () => {
+          cy.get('[data-testid="intro-screen"]', { timeout: 3000 }).should('exist');
+        }
+      }
+    );
+    // Ensure we're on intro screen after session restore
+    cy.get('[data-testid="intro-screen"]', { timeout: 3000 }).should('exist');
   });
 
   it("should render IntroScreen with all UI elements and navigation", () => {
@@ -37,8 +50,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       expect(rect.width).to.be.greaterThan(100);
       expect(rect.height).to.be.greaterThan(100);
     });
-
-    cy.wait(300); // Allow rendering to stabilize
 
     // ============================================================
     // 2. Verify Menu Buttons (30s)
@@ -97,8 +108,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200); // Brief stabilization
-
     // ============================================================
     // 3. Verify Korean/English Bilingual Text (20s)
     // ============================================================
@@ -118,8 +127,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.contains(/Combat|Training/i).should("exist");
     cy.log("✅ English text verified");
 
-    cy.wait(200);
-
     // ============================================================
     // 4. Test Navigation to Combat (30s)
     // ============================================================
@@ -132,8 +139,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Combat");
-
-    cy.wait(200); // Allow screen transition
 
     // ============================================================
     // 5. Test Navigation to Training (30s)
@@ -150,8 +155,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Training");
 
-    cy.wait(200); // Allow screen transition
-
     // ============================================================
     // 6. Test Navigation to Controls (25s)
     // ============================================================
@@ -163,8 +166,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.returnToIntro();
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Controls");
-
-    cy.wait(200); // Allow screen transition
 
     // ============================================================
     // 7. Test Navigation to Philosophy (25s)
@@ -183,8 +184,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Returned to Intro from Philosophy");
 
-    cy.wait(200); // Allow screen transition
-
     // ============================================================
     // 8. Test Keyboard Controls (25s)
     // ============================================================
@@ -199,8 +198,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="intro-screen"]', { timeout: 5000 }).should("exist");
     cy.log("✅ Keyboard controls verified");
 
-    cy.wait(150);
-
     // ============================================================
     // 9. Test Responsive Design (25s)
     // ============================================================
@@ -208,9 +205,9 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Test tablet viewport only (removed mobile to save time)
     cy.viewport(768, 1024);
-    cy.wait(200); // Allow responsive adjustment
 
-    cy.get("canvas").should("exist").and("be.visible");
+    // Wait for canvas to be visible after viewport change
+    cy.get("canvas", { timeout: 2000 }).should("exist").and("be.visible");
     cy.log("✅ Canvas visible on tablet viewport");
 
     // Check menu buttons still accessible
@@ -225,7 +222,7 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Reset to desktop viewport
     cy.viewport(1280, 720);
-    cy.wait(150);
+    cy.get("canvas", { timeout: 2000 }).should("be.visible");
     cy.log("✅ Responsive design validated");
 
     // ============================================================
@@ -235,7 +232,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Test non-existent feature navigation
     cy.get("body").type("9"); // Non-existent option
-    cy.wait(200);
 
     // Should still be at intro or handle gracefully
     cy.get("body").then(($body) => {
@@ -249,8 +245,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       }
     });
 
-    cy.wait(200);
-
     // ============================================================
     // 11. Verify Audio System (10s)
     // ============================================================
@@ -258,8 +252,6 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // Audio system is verified through app initialization
     // No explicit audio test needed here to save time
     cy.log("✅ Audio system loaded with app (implicit verification)");
-
-    cy.wait(200);
 
     // ============================================================
     // FINAL: Test Summary
