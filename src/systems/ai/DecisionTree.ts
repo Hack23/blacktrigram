@@ -1502,7 +1502,12 @@ export class AIDecisionTree {
 
     // Normal close range behavior - expert fighters attack aggressively
     // Higher base attack chance for aggressive AI (aggression * 0.95 instead of 0.8)
-    if (Math.random() < aggression * 0.95) {
+    // Use single random value to determine action type fairly
+    const actionRoll = Math.random();
+    const attackThreshold = aggression * 0.95;
+    const techniqueThreshold = hasResources ? aggression * 0.5 : 0; // Additional threshold for techniques
+
+    if (actionRoll < attackThreshold) {
       return {
         action: AIActionType.ATTACK,
         targetVitalPoint,
@@ -1511,7 +1516,10 @@ export class AIDecisionTree {
           ? `Close range - vital point attack (급소 타격: ${vitalPointName})`
           : "Close range - aggressive strike",
       };
-    } else if (Math.random() < aggression * 0.95 && hasResources) {
+    } else if (
+      actionRoll < attackThreshold + techniqueThreshold &&
+      hasResources
+    ) {
       return {
         action: AIActionType.TECHNIQUE,
         targetVitalPoint,

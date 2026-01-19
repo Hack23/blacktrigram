@@ -624,7 +624,7 @@ function convertKoreanToTechnique(koreanTech: KoreanTechnique): Technique {
       electric: DamageType.ELECTRIC,
       psychic: DamageType.PSYCHIC,
     };
-    return typeMap[type.toLowerCase()] || DamageType.BLUNT;
+    return typeMap[type.toLowerCase()] ?? DamageType.BLUNT;
   };
 
   return {

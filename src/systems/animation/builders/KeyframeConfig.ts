@@ -98,7 +98,7 @@ export class KeyframeConfig {
   setBuilder(
     builder: AnimationBuilderLike,
     time: number,
-    easing: string
+    easing: string,
   ): void {
     this.builder = builder;
     this.time = time;
@@ -170,7 +170,7 @@ export class KeyframeConfig {
    */
   withGuard(
     guardType: GuardPositionType,
-    side: "left" | "right" | "both" = "both"
+    side: "left" | "right" | "both" = "both",
   ): this {
     const guard = getGuardPosition(guardType);
 
@@ -179,19 +179,19 @@ export class KeyframeConfig {
         BoneName.SHOULDER_L,
         guard.left.shoulder[0],
         guard.left.shoulder[1],
-        guard.left.shoulder[2]
+        guard.left.shoulder[2],
       );
       this.rotate(
         BoneName.ELBOW_L,
         guard.left.elbow[0],
         guard.left.elbow[1],
-        guard.left.elbow[2]
+        guard.left.elbow[2],
       );
       this.rotate(
         BoneName.WRIST_L,
         guard.left.wrist[0],
         guard.left.wrist[1],
-        guard.left.wrist[2]
+        guard.left.wrist[2],
       );
     }
 
@@ -200,19 +200,19 @@ export class KeyframeConfig {
         BoneName.SHOULDER_R,
         guard.right.shoulder[0],
         guard.right.shoulder[1],
-        guard.right.shoulder[2]
+        guard.right.shoulder[2],
       );
       this.rotate(
         BoneName.ELBOW_R,
         guard.right.elbow[0],
         guard.right.elbow[1],
-        guard.right.elbow[2]
+        guard.right.elbow[2],
       );
       this.rotate(
         BoneName.WRIST_R,
         guard.right.wrist[0],
         guard.right.wrist[1],
-        guard.right.wrist[2]
+        guard.right.wrist[2],
       );
     }
 
@@ -282,7 +282,7 @@ export class KeyframeConfig {
    */
   setFootHighlight(
     side: "left" | "right" | "both",
-    highlighted: boolean
+    highlighted: boolean,
   ): this {
     if (side === "left" || side === "both") {
       this._leftFootHighlight = highlighted;
@@ -316,9 +316,7 @@ export class KeyframeConfig {
    * @korean 근육활성화설정
    */
   setMuscleActivation(muscleGroup: string, tension: number): this {
-    if (!this._muscleActivations) {
-      this._muscleActivations = new Map();
-    }
+    this._muscleActivations ??= new Map();
     this._muscleActivations.set(muscleGroup, Math.max(0, Math.min(1, tension)));
     return this;
   }
@@ -332,11 +330,9 @@ export class KeyframeConfig {
    * @korean 다중근육활성화설정
    */
   setMuscleActivations(
-    activations: Map<string, number> | Record<string, number>
+    activations: Map<string, number> | Record<string, number>,
   ): this {
-    if (!this._muscleActivations) {
-      this._muscleActivations = new Map();
-    }
+    this._muscleActivations ??= new Map();
     if (activations instanceof Map) {
       activations.forEach((tension, group) => {
         this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));

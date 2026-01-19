@@ -312,7 +312,7 @@ function getVitalPointPriorityScore(
   priority: import("@/systems/ai/AIPersonality").VitalTargetPriority,
 ): number {
   // Import effect types to check vital point effects
-  const effects = vitalPoint.effects || [];
+  const effects = vitalPoint.effects ?? [];
 
   switch (priority) {
     case "health":
@@ -368,7 +368,7 @@ function isSignatureTechnique(
   const damageType = technique.damageType;
   const attackType = technique.type;
   const isAdvanced =
-    (technique.kiCost || 0) >= 10 || (technique.staminaCost || 0) >= 15;
+    (technique.kiCost ?? 0) >= 10 || (technique.staminaCost ?? 0) >= 15;
 
   switch (archetype) {
     case PlayerArchetype.MUSA:
@@ -393,7 +393,7 @@ function isSignatureTechnique(
       return (
         damageType === DamageType.INTERNAL ||
         damageType === DamageType.NERVE ||
-        (isAdvanced && (technique.accuracy || 0) >= 0.8) // High accuracy represents calculation
+        (isAdvanced && (technique.accuracy ?? 0) >= 0.8) // High accuracy represents calculation
       );
 
     case PlayerArchetype.JEONGBO_YOWON:
@@ -407,7 +407,7 @@ function isSignatureTechnique(
     case PlayerArchetype.JOJIK_POKRYEOKBAE:
       // Jojik: Dirty techniques (any high-damage strike) and environmental usage
       return (
-        (technique.damage || 0) >= 30 || // High raw damage
+        (technique.damage ?? 0) >= 30 || // High raw damage
         damageType === DamageType.SLASHING || // Brutal cutting
         damageType === DamageType.PIERCING // Dirty stabbing techniques
       );

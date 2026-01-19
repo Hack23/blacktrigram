@@ -359,7 +359,7 @@ export function useCombatActions(
       // is fully extended) rather than t=0 (attack start). This ensures the hit
       // window check passes when the attack would visually connect.
       // 동기식 타격 판정: 애니메이션 피크 타임 사용 (팔/다리 완전 신전 시점)
-      const animationType = attackTechnique.animationType || AnimationType.JAB;
+      const animationType = attackTechnique.animationType ?? AnimationType.JAB;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15; // Default to typical punch peak
       const animationContext = {
@@ -840,7 +840,7 @@ export function useCombatActions(
 
       // Calculate animation timing context for AI hit detection (same as player)
       // 동기식 타격 판정: AI도 피크 타임 사용
-      const animationType = attackTechnique.animationType || AnimationType.JAB;
+      const animationType = attackTechnique.animationType ?? AnimationType.JAB;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.15;
       const animationContext = {
@@ -1035,7 +1035,7 @@ export function useCombatActions(
       // Calculate animation timing context for AI technique hit detection
       // 동기식 타격 판정: AI 특수 기술도 피크 타임 사용
       const animationType =
-        specialTechnique.animationType || AnimationType.SPINNING_HOOK;
+        specialTechnique.animationType ?? AnimationType.SPINNING_HOOK;
       const hitTiming = getAnimationHitTiming(animationType);
       const peakTime = hitTiming?.hitWindow.peakTime ?? 0.25; // Special techniques often have longer peak times
       const animationContext = {

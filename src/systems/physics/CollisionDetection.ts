@@ -1,33 +1,33 @@
 /**
  * Collision Detection System for Black Trigram combat physics.
- * 
+ *
  * **Korean**: 충돌 감지 시스템
- * 
+ *
  * Implements precise collision detection for the 70 vital points combat system using:
  * - Broad-phase AABB (Axis-Aligned Bounding Box) checks for performance
  * - Narrow-phase raycasting for precise vital point detection
  * - Attack reach validation based on technique and stance
  * - Bounding boxes for 5 anatomical regions
- * 
+ *
  * ## Architecture
- * 
+ *
  * The system uses a two-phase collision detection approach:
- * 
+ *
  * 1. **Broad-phase**: Fast AABB checks to eliminate impossible collisions
  * 2. **Narrow-phase**: Precise raycasting to identify specific vital points
- * 
+ *
  * This ensures 60fps performance even with complex collision queries.
- * 
+ *
  * ## Performance
- * 
+ *
  * - Broad-phase: O(1) per check (simple distance comparison)
  * - Narrow-phase: O(n) where n = vital points in region (typically 8-20)
  * - Target: <100 collision checks per frame for 60fps
- * 
+ *
  * @example
  * ```typescript
  * const collision = new CollisionDetection();
- * 
+ *
  * const result = collision.checkAttackHit(
  *   { x: 0, y: 0, z: 5 },        // Attacker position
  *   { x: 0, y: 0, z: 6.5 },      // Defender position
@@ -35,13 +35,13 @@
  *   TrigramStance.LI,             // Attacker stance
  *   "torso"                       // Target region
  * );
- * 
+ *
  * if (result.hit) {
  *   console.log(`Hit ${result.vitalPoint?.names.english}!`);
  *   console.log(`Accuracy: ${(result.accuracy * 100).toFixed(1)}%`);
  * }
  * ```
- * 
+ *
  * @module systems/physics/CollisionDetection
  * @category Combat Systems
  * @korean 충돌감지시스템
@@ -57,10 +57,10 @@ import type {
   RaycastQuery,
   TechniqueType,
 } from "../../types/physics";
-import { 
-  BASE_REACH, 
-  STANCE_REACH_MODIFIERS, 
-  ANATOMICAL_DIMENSIONS 
+import {
+  ANATOMICAL_DIMENSIONS,
+  BASE_REACH,
+  STANCE_REACH_MODIFIERS,
 } from "../../types/physics";
 import type { VitalPoint } from "../vitalpoint/types";
 import { VITAL_POINTS_DATA } from "../vitalpoint/VitalPointsData";
@@ -68,30 +68,32 @@ import { CoordinateMapper } from "./CoordinateMapper";
 
 /**
  * Collision Detection Engine for combat physics.
- * 
+ *
  * **Korean**: 충돌 감지 엔진
- * 
+ *
  * Provides efficient collision detection for combat using bounding boxes and raycasting.
  * Optimized for 60fps performance with multiple simultaneous collision checks.
- * 
+ *
  * @public
  * @category Combat Systems
  * @korean 충돌감지엔진
  */
 export class CollisionDetection {
-  private readonly boundingBoxes: Map<AnatomicalRegionPhysics, BoundingBox> = new Map();
+  private readonly boundingBoxes: Map<AnatomicalRegionPhysics, BoundingBox> =
+    new Map();
   private readonly raycaster: THREE.Raycaster = new THREE.Raycaster();
-  private vitalPointsByRegion: Map<AnatomicalRegionPhysics, VitalPoint[]> = new Map();
-  
+  private vitalPointsByRegion: Map<AnatomicalRegionPhysics, VitalPoint[]> =
+    new Map();
+
   // Geometry cache for object pooling to avoid repeated allocations during combat
   private readonly geometryCache: Map<string, THREE.BufferGeometry> = new Map();
-  
+
   // Coordinate mapper for 2D→3D conversion
   private readonly coordinateMapper: CoordinateMapper;
 
   /**
    * Creates a new CollisionDetection instance.
-   * 
+   *
    * Initializes bounding boxes for all anatomical regions and organizes
    * vital points by region for efficient lookup.
    */
@@ -101,15 +103,15 @@ export class CollisionDetection {
     this.organizeVitalPointsByRegion();
     this.initializeGeometryCache();
   }
-  
+
   /**
    * Cleans up Three.js resources.
-   * 
+   *
    * **Korean**: 자원 정리
-   * 
+   *
    * Disposes of cached geometries and releases memory to prevent leaks.
    * Should be called when the CollisionDetection instance is no longer needed.
-   * 
+   *
    * @public
    * @korean 자원정리
    */
@@ -123,22 +125,22 @@ export class CollisionDetection {
 
   /**
    * Checks if an attack hits the defender.
-   * 
+   *
    * **Korean**: 공격 타격 확인
-   * 
+   *
    * Performs two-phase collision detection:
    * 1. Calculate effective attack reach based on technique and stance
    * 2. Broad-phase: Check if defender is within reach
    * 3. Broad-phase: Check if target region's AABB is within reach
    * 4. Narrow-phase: Raycast to find precise vital point hit
-   * 
+   *
    * @param attackerPosition - 3D position of the attacker
    * @param defenderPosition - 3D position of the defender
    * @param technique - Technique being used with type information
    * @param attackerStance - Attacker's current trigram stance
    * @param targetRegion - Anatomical region being targeted
    * @returns Collision result with hit status, vital point, distance, and accuracy
-   * 
+   *
    * @example
    * ```typescript
    * const result = collision.checkAttackHit(
@@ -149,7 +151,7 @@ export class CollisionDetection {
    *   "head"
    * );
    * ```
-   * 
+   *
    * @public
    * @korean 공격타격확인
    */
@@ -158,15 +160,21 @@ export class CollisionDetection {
     defenderPosition: Position3D,
     technique: { type?: string; [key: string]: any },
     attackerStance: TrigramStance,
-    targetRegion: AnatomicalRegionPhysics
+    targetRegion: AnatomicalRegionPhysics,
   ): CollisionResult {
     // Calculate effective attack reach
     const techniqueType = this.parseTechniqueType(technique.type);
-    const attackReach = this.calculateAttackReach(techniqueType, attackerStance);
-    
+    const attackReach = this.calculateAttackReach(
+      techniqueType,
+      attackerStance,
+    );
+
     // Calculate distance between attacker and defender
-    const distance = this.calculateDistance3D(attackerPosition, defenderPosition);
-    
+    const distance = this.calculateDistance3D(
+      attackerPosition,
+      defenderPosition,
+    );
+
     // Broad-phase: Check if defender is within reach
     if (distance > attackReach.effectiveReach) {
       return {
@@ -175,7 +183,7 @@ export class CollisionDetection {
         accuracy: 0,
       };
     }
-    
+
     // Get target region bounding box
     const targetBox = this.boundingBoxes.get(targetRegion);
     if (!targetBox) {
@@ -185,22 +193,26 @@ export class CollisionDetection {
         accuracy: 0,
       };
     }
-    
+
     // Narrow-phase: Raycast from attacker to target region
     const attackDirection = this.normalizeVector3D(
-      this.subtractVectors3D(defenderPosition, attackerPosition)
+      this.subtractVectors3D(defenderPosition, attackerPosition),
     );
-    
+
     const raycastQuery: RaycastQuery = {
       origin: attackerPosition,
       direction: attackDirection,
       maxDistance: attackReach.effectiveReach,
       targetRegion,
     };
-    
+
     // Check intersection with target bounding box
-    const intersection = this.raycastBoundingBox(raycastQuery, targetBox, defenderPosition);
-    
+    const intersection = this.raycastBoundingBox(
+      raycastQuery,
+      targetBox,
+      defenderPosition,
+    );
+
     if (!intersection) {
       return {
         hit: false,
@@ -208,14 +220,14 @@ export class CollisionDetection {
         accuracy: 0,
       };
     }
-    
+
     // Determine specific vital point within region
     const vitalPoint = this.identifyVitalPoint(
       targetRegion,
       intersection.point,
-      defenderPosition
+      defenderPosition,
     );
-    
+
     if (!vitalPoint) {
       return {
         hit: false,
@@ -223,10 +235,14 @@ export class CollisionDetection {
         accuracy: 0,
       };
     }
-    
+
     // Calculate accuracy (how close to vital point center)
-    const accuracy = this.calculateHitAccuracy(intersection.point, vitalPoint, defenderPosition);
-    
+    const accuracy = this.calculateHitAccuracy(
+      intersection.point,
+      vitalPoint,
+      defenderPosition,
+    );
+
     return {
       hit: true,
       region: targetRegion,
@@ -239,21 +255,21 @@ export class CollisionDetection {
 
   /**
    * Calculates effective attack reach for a technique.
-   * 
+   *
    * **Korean**: 공격 범위 계산
-   * 
+   *
    * Applies stance modifiers to base technique reach.
-   * 
+   *
    * @param techniqueType - Type of technique
    * @param stance - Current trigram stance
    * @returns Attack reach with all modifiers applied
-   * 
+   *
    * @private
    * @korean 공격범위계산
    */
   private calculateAttackReach(
     techniqueType: TechniqueType,
-    stance: TrigramStance
+    stance: TrigramStance,
   ): {
     technique: TechniqueType;
     baseReach: number;
@@ -263,11 +279,11 @@ export class CollisionDetection {
   } {
     // Use BASE_REACH constant from physics types
     const baseReach = BASE_REACH[techniqueType];
-    
+
     // Use STANCE_REACH_MODIFIERS constant from physics types
     const stanceModifier = STANCE_REACH_MODIFIERS[stance];
     const effectiveReach = baseReach * stanceModifier;
-    
+
     return {
       technique: techniqueType,
       baseReach,
@@ -279,75 +295,79 @@ export class CollisionDetection {
 
   /**
    * Performs raycasting against a bounding box.
-   * 
+   *
    * **Korean**: 경계 상자 광선 투사
-   * 
+   *
    * Uses cached geometries from object pool to avoid repeated allocations
    * during combat. Creates a Three.js mesh for the bounding box and performs
    * raycasting to detect intersection points.
-   * 
+   *
    * @param query - Raycast query parameters
    * @param box - Bounding box to test
    * @param defenderPosition - Position of the defender
    * @returns Intersection point or null if no hit
-   * 
+   *
    * @private
    * @korean 경계상자광선투사
    */
   private raycastBoundingBox(
     query: RaycastQuery,
     box: BoundingBox,
-    defenderPosition: Position3D
+    defenderPosition: Position3D,
   ): { point: Position3D } | null {
     // Get cached geometry from pool to avoid repeated allocations
     const cacheKey = `${box.type}-${box.region}`;
     let geometry = this.geometryCache.get(cacheKey);
-    
+
     // If not cached (shouldn't happen after initialization), create it
     if (!geometry) {
       geometry = this.createGeometryForBox(box);
       this.geometryCache.set(cacheKey, geometry);
     }
-    
+
     // Create temporary mesh for raycasting (mesh is lightweight, geometry is cached)
     const mesh = new THREE.Mesh(geometry);
     mesh.position.set(
       defenderPosition.x + box.center.x,
       defenderPosition.y + box.center.y,
-      defenderPosition.z + box.center.z
+      defenderPosition.z + box.center.z,
     );
-    
+
     // Setup raycaster
     this.raycaster.set(
       new THREE.Vector3(query.origin.x, query.origin.y, query.origin.z),
-      new THREE.Vector3(query.direction.x, query.direction.y, query.direction.z)
+      new THREE.Vector3(
+        query.direction.x,
+        query.direction.y,
+        query.direction.z,
+      ),
     );
     this.raycaster.far = query.maxDistance;
-    
+
     // Perform raycast
     const intersections = this.raycaster.intersectObject(mesh);
-    
+
     // Clean up temporary mesh (geometry remains cached)
     // Note: mesh.material is undefined, no need to dispose
-    
+
     if (intersections.length > 0) {
       const point = intersections[0].point;
       return {
         point: { x: point.x, y: point.y, z: point.z },
       };
     }
-    
+
     return null;
   }
-  
+
   /**
    * Creates Three.js geometry for a bounding box.
-   * 
+   *
    * Helper method for geometry cache initialization.
-   * 
+   *
    * @param box - Bounding box specification
    * @returns Three.js geometry
-   * 
+   *
    * @private
    * @korean 경계상자지오메트리생성
    */
@@ -359,96 +379,103 @@ export class CollisionDetection {
         return new THREE.BoxGeometry(
           box.dimensions.x,
           box.dimensions.y,
-          box.dimensions.z
+          box.dimensions.z,
         );
       case "capsule":
         return new THREE.CapsuleGeometry(
           box.dimensions.x,
           box.dimensions.y,
           4,
-          8
+          8,
         );
     }
   }
 
   /**
    * Identifies the specific vital point hit within a region.
-   * 
+   *
    * **Korean**: 급소 식별
-   * 
+   *
    * Finds the closest vital point to the hit location within the targeted region.
-   * 
+   *
    * @param region - Anatomical region hit
    * @param hitPoint - 3D point where attack intersected
    * @param defenderPosition - Position of the defender
    * @returns Closest vital point or null if none found
-   * 
+   *
    * @private
    * @korean 급소식별
    */
   private identifyVitalPoint(
     region: AnatomicalRegionPhysics,
     hitPoint: Position3D,
-    _defenderPosition: Position3D // Prefixed with _ to indicate intentionally unused
+    _defenderPosition: Position3D, // Prefixed with _ to indicate intentionally unused
   ): VitalPoint | null {
     // Get all vital points for this region
     const vitalPoints = this.vitalPointsByRegion.get(region);
     if (!vitalPoints || vitalPoints.length === 0) {
       return null;
     }
-    
+
     // Use CoordinateMapper to find the closest vital point in 3D space
     const result = this.coordinateMapper.findClosestVitalPoint(
       hitPoint,
       vitalPoints,
-      region
+      region,
     );
-    
+
     // For collision detection, we accept any vital point in the region
     // even if it's not very close, as long as the region was hit
     // This provides more forgiving collision detection while still
     // using accurate 3D positioning for scoring/accuracy
-    return result ? result.vitalPoint : (vitalPoints.length > 0 ? vitalPoints[0] : null);
+    return result
+      ? result.vitalPoint
+      : vitalPoints.length > 0
+        ? vitalPoints[0]
+        : null;
   }
 
   /**
    * Calculates hit accuracy based on distance to vital point center.
-   * 
+   *
    * **Korean**: 타격 정확도 계산
-   * 
+   *
    * Accuracy decreases linearly with distance from vital point center.
    * Perfect accuracy (1.0) at center, decreasing to 0 at 5cm radius.
-   * 
+   *
    * @param hitPoint - Point where attack landed
    * @param vitalPoint - Target vital point
    * @param defenderPosition - Position of the defender
    * @returns Accuracy value from 0 to 1
-   * 
+   *
    * @private
    * @korean 타격정확도계산
    */
   private calculateHitAccuracy(
     hitPoint: Position3D,
     vitalPoint: VitalPoint,
-    _defenderPosition: Position3D // Prefixed with _ to indicate intentionally unused
+    _defenderPosition: Position3D, // Prefixed with _ to indicate intentionally unused
   ): number {
     // Use CoordinateMapper to convert vital point to 3D and calculate distance
-    const distance = this.coordinateMapper.distanceToVitalPoint(hitPoint, vitalPoint);
-    
+    const distance = this.coordinateMapper.distanceToVitalPoint(
+      hitPoint,
+      vitalPoint,
+    );
+
     // Accuracy calculation: Perfect (1.0) at center, decreasing to 0 at 5cm radius
     const maxDistance = 0.05; // 5cm radius for vital points
-    const accuracy = Math.max(0, 1 - (distance / maxDistance));
-    
+    const accuracy = Math.max(0, 1 - distance / maxDistance);
+
     return accuracy;
   }
 
   /**
    * Calculates Euclidean distance between two 3D points.
-   * 
+   *
    * @param pos1 - First position
    * @param pos2 - Second position
    * @returns Distance in meters
-   * 
+   *
    * @private
    * @korean 3D거리계산
    */
@@ -461,11 +488,11 @@ export class CollisionDetection {
 
   /**
    * Subtracts one 3D vector from another.
-   * 
+   *
    * @param v1 - First vector
    * @param v2 - Second vector
    * @returns Resulting vector
-   * 
+   *
    * @private
    * @korean 벡터빼기
    */
@@ -479,10 +506,10 @@ export class CollisionDetection {
 
   /**
    * Normalizes a 3D vector to unit length.
-   * 
+   *
    * @param vec - Vector to normalize
    * @returns Normalized vector
-   * 
+   *
    * @private
    * @korean 벡터정규화
    */
@@ -500,10 +527,10 @@ export class CollisionDetection {
 
   /**
    * Parses technique type from string.
-   * 
+   *
    * @param techniqueTypeStr - Technique type as string
    * @returns Parsed technique type
-   * 
+   *
    * @private
    * @korean 기술유형파싱
    */
@@ -516,16 +543,16 @@ export class CollisionDetection {
       pressure_point: "pressure_point",
       strike: "punch", // Default strike to punch
     };
-    
-    return typeMap[techniqueTypeStr || "punch"] || "punch";
+
+    return typeMap[techniqueTypeStr ?? "punch"] ?? "punch";
   }
 
   /**
    * Initializes bounding boxes for all anatomical regions.
-   * 
+   *
    * Creates collision volumes for the 5 anatomical regions using the
    * ANATOMICAL_DIMENSIONS constants from the physics types module.
-   * 
+   *
    * @private
    * @korean 경계상자초기화
    */
@@ -534,70 +561,70 @@ export class CollisionDetection {
     this.boundingBoxes.set("head", {
       type: ANATOMICAL_DIMENSIONS.head.type,
       center: ANATOMICAL_DIMENSIONS.head.center,
-      dimensions: { 
-        x: ANATOMICAL_DIMENSIONS.head.radius, 
-        y: 0, 
-        z: 0 
+      dimensions: {
+        x: ANATOMICAL_DIMENSIONS.head.radius,
+        y: 0,
+        z: 0,
       }, // radius only
       region: "head",
     });
-    
+
     // Neck: Capsule (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("neck", {
       type: ANATOMICAL_DIMENSIONS.neck.type,
       center: ANATOMICAL_DIMENSIONS.neck.center,
-      dimensions: { 
-        x: ANATOMICAL_DIMENSIONS.neck.radius, 
-        y: ANATOMICAL_DIMENSIONS.neck.height, 
-        z: 0 
+      dimensions: {
+        x: ANATOMICAL_DIMENSIONS.neck.radius,
+        y: ANATOMICAL_DIMENSIONS.neck.height,
+        z: 0,
       }, // radius and height
       region: "neck",
     });
-    
+
     // Torso: Box (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("torso", {
       type: ANATOMICAL_DIMENSIONS.torso.type,
       center: ANATOMICAL_DIMENSIONS.torso.center,
-      dimensions: { 
-        x: ANATOMICAL_DIMENSIONS.torso.width, 
-        y: ANATOMICAL_DIMENSIONS.torso.height, 
-        z: ANATOMICAL_DIMENSIONS.torso.depth 
+      dimensions: {
+        x: ANATOMICAL_DIMENSIONS.torso.width,
+        y: ANATOMICAL_DIMENSIONS.torso.height,
+        z: ANATOMICAL_DIMENSIONS.torso.depth,
       }, // width, height, depth
       region: "torso",
     });
-    
+
     // Arms: Capsules (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("arms", {
       type: ANATOMICAL_DIMENSIONS.arms.type,
       center: ANATOMICAL_DIMENSIONS.arms.center,
-      dimensions: { 
-        x: ANATOMICAL_DIMENSIONS.arms.radius, 
-        y: ANATOMICAL_DIMENSIONS.arms.height, 
-        z: 0 
+      dimensions: {
+        x: ANATOMICAL_DIMENSIONS.arms.radius,
+        y: ANATOMICAL_DIMENSIONS.arms.height,
+        z: 0,
       }, // radius and length
       region: "arms",
     });
-    
+
     // Legs: Capsules (from ANATOMICAL_DIMENSIONS)
     this.boundingBoxes.set("legs", {
       type: ANATOMICAL_DIMENSIONS.legs.type,
       center: ANATOMICAL_DIMENSIONS.legs.center,
-      dimensions: { 
-        x: ANATOMICAL_DIMENSIONS.legs.radius, 
-        y: ANATOMICAL_DIMENSIONS.legs.height, 
-        z: 0 
+      dimensions: {
+        x: ANATOMICAL_DIMENSIONS.legs.radius,
+        y: ANATOMICAL_DIMENSIONS.legs.height,
+        z: 0,
       }, // radius and length
       region: "legs",
     });
   }
-  
+
   /**
    * Initializes geometry cache for object pooling.
-   * 
+   *
    * Pre-creates all geometries needed for raycasting to avoid repeated
    * allocations during combat. Critical for maintaining 60fps with up to
    * 100 collision checks per frame.
-   * 
+   *
    * @private
    * @korean 지오메트리캐시초기화
    */
@@ -612,24 +639,24 @@ export class CollisionDetection {
 
   /**
    * Organizes vital points by anatomical region for efficient lookup.
-   * 
+   *
    * NOTE: This categorization currently uses y-coordinate thresholds that assume
    * positions are in meters. However, VITAL_POINTS_DATA uses pixel coordinates
    * (e.g., y: 50), which will cause incorrect categorization. Most vital points
    * will end up in the "legs" region since pixel y-coordinates are typically less
    * than 0.8.
-   * 
+   *
    * TODO: After implementing 2D→3D coordinate mapping, update this method to use
    * the converted 3D positions, or use the anatomical region data that may already
    * exist in the vital points data structure.
-   * 
+   *
    * Categorizes the 70 vital points into their respective regions:
    * - Head: 10 vital points
    * - Neck: 8 vital points
    * - Torso: 20 vital points
    * - Arms: 16 vital points
    * - Legs: 16 vital points
-   * 
+   *
    * @private
    * @korean 급소영역별정리
    */
@@ -641,12 +668,12 @@ export class CollisionDetection {
       ["arms", []],
       ["legs", []],
     ]);
-    
+
     // Use existing VitalPointsData categorization by ID prefix
     // This is more reliable than coordinate-based heuristics
     for (const vp of VITAL_POINTS_DATA) {
       let region: AnatomicalRegionPhysics;
-      
+
       // Categorize by ID prefix (existing VitalPointsData convention)
       // Check neck-related patterns first (more specific) before head (broader)
       if (
@@ -660,30 +687,36 @@ export class CollisionDetection {
         region = "head";
       } else if (vp.id.startsWith("torso_")) {
         region = "torso";
-      } else if (vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")) {
+      } else if (
+        vp.id.startsWith("arm_left_") ||
+        vp.id.startsWith("arm_right_")
+      ) {
         region = "arms";
-      } else if (vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")) {
+      } else if (
+        vp.id.startsWith("leg_left_") ||
+        vp.id.startsWith("leg_right_")
+      ) {
         region = "legs";
       } else {
         // Default to torso for uncategorized points (core region)
         region = "torso";
       }
-      
+
       const list = regionMap.get(region);
       if (list) {
         list.push(vp);
       }
     }
-    
+
     this.vitalPointsByRegion = regionMap;
   }
 
   /**
    * Gets the bounding box for an anatomical region.
-   * 
+   *
    * @param region - Anatomical region
    * @returns Bounding box or undefined if not found
-   * 
+   *
    * @public
    * @korean 경계상자조회
    */
@@ -693,9 +726,9 @@ export class CollisionDetection {
 
   /**
    * Gets all bounding boxes.
-   * 
+   *
    * @returns Map of all bounding boxes by region
-   * 
+   *
    * @public
    * @korean 모든경계상자조회
    */
@@ -705,15 +738,17 @@ export class CollisionDetection {
 
   /**
    * Gets vital points for a specific region.
-   * 
+   *
    * @param region - Anatomical region
    * @returns Array of vital points in that region
-   * 
+   *
    * @public
    * @korean 영역별급소조회
    */
-  getVitalPointsInRegion(region: AnatomicalRegionPhysics): readonly VitalPoint[] {
-    return this.vitalPointsByRegion.get(region) || [];
+  getVitalPointsInRegion(
+    region: AnatomicalRegionPhysics,
+  ): readonly VitalPoint[] {
+    return this.vitalPointsByRegion.get(region) ?? [];
   }
 }
 

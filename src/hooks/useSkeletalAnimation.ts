@@ -103,7 +103,7 @@ const DIAGONAL_STEP_ANIMATIONS = new Set([
  * @korean 골격애니메이션훅
  */
 export function useSkeletalAnimation(
-  options: UseSkeletalAnimationOptions
+  options: UseSkeletalAnimationOptions,
 ): UseSkeletalAnimationReturn {
   const {
     currentAnimation,
@@ -128,7 +128,7 @@ export function useSkeletalAnimation(
 
   // Diagonal step rotation override (Y-axis rotation in radians)
   const [diagonalRotationY, setDiagonalRotationY] = useState<number | null>(
-    null
+    null,
   );
 
   // Load animation when currentAnimation or blocking state changes
@@ -154,9 +154,7 @@ export function useSkeletalAnimation(
         selectedAnim = getDefensiveAnimation(attackAnimation) ?? null;
       }
       // Fall back to generic block animation
-      if (!selectedAnim) {
-        selectedAnim = getAnimation("block") ?? null;
-      }
+      selectedAnim ??= getAnimation("block") ?? null;
       playbackSpeed = 1.0;
     } else if (currentAnimation === "idle") {
       // Idle animation - use trigram-specific stance idle if stance is provided
@@ -166,9 +164,7 @@ export function useSkeletalAnimation(
         selectedAnim = getAnimationByName(stanceIdleAnim) ?? null;
       }
       // Fall back to generic idle if no stance or stance animation not found
-      if (!selectedAnim) {
-        selectedAnim = getAnimation("idle") ?? null;
-      }
+      selectedAnim ??= getAnimation("idle") ?? null;
       playbackSpeed = 0.5; // Slow breathing animation
     } else if (currentAnimation === "walk") {
       // Walking animation - use trigram-specific walk if stance is provided
@@ -177,9 +173,7 @@ export function useSkeletalAnimation(
         selectedAnim = getAnimationByName(stanceWalkAnim) ?? null;
       }
       // Fall back to generic walk if no stance or stance animation not found
-      if (!selectedAnim) {
-        selectedAnim = getAnimation("walk") ?? null;
-      }
+      selectedAnim ??= getAnimation("walk") ?? null;
       playbackSpeed = 1.0;
     } else if (currentAnimation === "run") {
       // Running animation - use trigram-specific run if stance is provided
@@ -188,9 +182,7 @@ export function useSkeletalAnimation(
         selectedAnim = getAnimationByName(stanceRunAnim) ?? null;
       }
       // Fall back to generic run if no stance or stance animation not found
-      if (!selectedAnim) {
-        selectedAnim = getAnimation("run") ?? null;
-      }
+      selectedAnim ??= getAnimation("run") ?? null;
       playbackSpeed = 1.0;
     } else if (currentAnimation?.startsWith("fall_")) {
       // Fall animations - directional falls from BasicAnimations
@@ -275,7 +267,7 @@ export function useSkeletalAnimation(
         const keyframe = interpolateKeyframeCached(
           animState.currentAnimation.name,
           animState.currentAnimation,
-          newTime
+          newTime,
         );
 
         if (keyframe) {
@@ -306,7 +298,7 @@ export function useSkeletalAnimation(
         }
       }
     },
-    [animState, onAnimationComplete]
+    [animState, onAnimationComplete],
   );
 
   return {

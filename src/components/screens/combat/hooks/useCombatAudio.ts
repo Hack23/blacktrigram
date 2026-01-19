@@ -7,15 +7,12 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAudio } from "../../../../audio/AudioProvider";
 import {
-  AudioBodyRegion,
-  ImpactIntensity,
-} from "../../../../audio/types";
-import {
-  getBoneImpactSoundId,
   calculateImpactIntensity,
   detectAudioBodyRegion,
+  getBoneImpactSoundId,
   getImpactVolumeMultiplier,
 } from "../../../../audio/BoneImpactAudioMap";
+import { AudioBodyRegion, ImpactIntensity } from "../../../../audio/types";
 
 /**
  * Attack intensity levels for sound selection
@@ -70,7 +67,7 @@ export const useCombatAudio = () => {
 
       return true;
     },
-    []
+    [],
   );
 
   /**
@@ -98,7 +95,7 @@ export const useCombatAudio = () => {
       const variant = Math.floor(Math.random() * count) + 1;
       return `${base}_${variant}`;
     },
-    []
+    [],
   );
 
   /**
@@ -133,7 +130,7 @@ export const useCombatAudio = () => {
           break;
         default:
           console.warn(
-            `Unknown attack intensity: ${intensity}, defaulting to light`
+            `Unknown attack intensity: ${intensity}, defaulting to light`,
           );
           soundId = getRandomVariant("attack_punch_light", 8);
       }
@@ -146,7 +143,7 @@ export const useCombatAudio = () => {
         console.warn(`Failed to play attack sound: ${soundId}`, error);
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 
   /**
@@ -186,7 +183,7 @@ export const useCombatAudio = () => {
         console.warn(`Failed to play hit sound: ${soundId}`, error);
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 
   /**
@@ -219,7 +216,7 @@ export const useCombatAudio = () => {
         console.warn(`Failed to play block sound: ${soundId}`, error);
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 
   /**
@@ -300,7 +297,7 @@ export const useCombatAudio = () => {
         console.warn("Failed to play combat music", error);
       }
     },
-    [audio]
+    [audio],
   );
 
   /**
@@ -334,7 +331,7 @@ export const useCombatAudio = () => {
         await playCombatMusic(fadeInDuration);
       }
     },
-    [audio, playCombatMusic]
+    [audio, playCombatMusic],
   );
 
   /**
@@ -349,7 +346,7 @@ export const useCombatAudio = () => {
         console.warn("Failed to stop combat music", error);
       }
     },
-    [audio]
+    [audio],
   );
 
   /**
@@ -415,9 +412,7 @@ export const useCombatAudio = () => {
       }
 
       // Default to torso if region still undefined
-      if (!region) {
-        region = "torso";
-      }
+      region ??= "torso";
 
       // Auto-calculate intensity if not provided
       let intensity = options.intensity;
@@ -425,14 +420,12 @@ export const useCombatAudio = () => {
         intensity = calculateImpactIntensity(
           options.damage,
           options.remainingHealth,
-          options.vitalPoint
+          options.vitalPoint,
         );
       }
 
       // Default to medium intensity if still undefined
-      if (!intensity) {
-        intensity = "medium";
-      }
+      intensity ??= "medium";
 
       // Get appropriate sound ID with random variant
       const soundId = getBoneImpactSoundId(region, intensity, true);
@@ -451,11 +444,11 @@ export const useCombatAudio = () => {
       } catch (error) {
         console.warn(
           `Failed to play bone impact sound: ${soundId} (region: ${region}, intensity: ${intensity})`,
-          error
+          error,
         );
       }
     },
-    [audio, canPlaySound, registerActiveSound]
+    [audio, canPlaySound, registerActiveSound],
   );
 
   return {
