@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.64% </span>
+                <span class="strong">46.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>25/56</span>
+                <span class='fraction'>25/54</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.48% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/29</span>
+                <span class='fraction'>10/25</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.64% </span>
+                <span class="strong">46.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/56</span>
+                <span class='fraction'>25/54</span>
             </div>
         
             
@@ -440,11 +440,7 @@
 <a name='L375'></a><a href='#L375'>375</a>
 <a name='L376'></a><a href='#L376'>376</a>
 <a name='L377'></a><a href='#L377'>377</a>
-<a name='L378'></a><a href='#L378'>378</a>
-<a name='L379'></a><a href='#L379'>379</a>
-<a name='L380'></a><a href='#L380'>380</a>
-<a name='L381'></a><a href='#L381'>381</a>
-<a name='L382'></a><a href='#L382'>382</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L378'></a><a href='#L378'>378</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -764,8 +760,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -781,8 +775,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -925,7 +917,7 @@ export class KeyframeConfig {
   setBuilder(
     builder: AnimationBuilderLike,
     time: number,
-    easing: string
+    easing: string,
   ): void {
     this.builder = builder;
     this.time = time;
@@ -997,7 +989,7 @@ export class KeyframeConfig {
    */
   withGuard(
     guardType: GuardPositionType,
-    side: "left" | "right" | "both" = "both"
+    side: "left" | "right" | "both" = "both",
   ): this {
     const guard = getGuardPosition(guardType);
 &nbsp;
@@ -1006,19 +998,19 @@ export class KeyframeConfig {
         BoneName.SHOULDER_L,
         guard.left.shoulder[0],
         guard.left.shoulder[1],
-        guard.left.shoulder[2]
+        guard.left.shoulder[2],
       );
       this.rotate(
         BoneName.ELBOW_L,
         guard.left.elbow[0],
         guard.left.elbow[1],
-        guard.left.elbow[2]
+        guard.left.elbow[2],
       );
       this.rotate(
         BoneName.WRIST_L,
         guard.left.wrist[0],
         guard.left.wrist[1],
-        guard.left.wrist[2]
+        guard.left.wrist[2],
       );
     }
 &nbsp;
@@ -1027,19 +1019,19 @@ export class KeyframeConfig {
         BoneName.SHOULDER_R,
         guard.right.shoulder[0],
         guard.right.shoulder[1],
-        guard.right.shoulder[2]
+        guard.right.shoulder[2],
       );
       this.rotate(
         BoneName.ELBOW_R,
         guard.right.elbow[0],
         guard.right.elbow[1],
-        guard.right.elbow[2]
+        guard.right.elbow[2],
       );
       this.rotate(
         BoneName.WRIST_R,
         guard.right.wrist[0],
         guard.right.wrist[1],
-        guard.right.wrist[2]
+        guard.right.wrist[2],
       );
     }
 &nbsp;
@@ -1109,7 +1101,7 @@ export class KeyframeConfig {
    */
 <span class="fstat-no" title="function not covered" >  setFootHighlight(</span>
     side: "left" | "right" | "both",
-    highlighted: boolean
+    highlighted: boolean,
   ): this {
 <span class="cstat-no" title="statement not covered" >    if (side === "left" || side === "both") {</span>
 <span class="cstat-no" title="statement not covered" >      this._leftFootHighlight = highlighted;</span>
@@ -1143,9 +1135,7 @@ export class KeyframeConfig {
    * @korean 근육활성화설정
    */
 <span class="fstat-no" title="function not covered" >  setMuscleActivation(m</span>uscleGroup: string, tension: number): this {
-<span class="cstat-no" title="statement not covered" >    if (!this._muscleActivations) {</span>
-<span class="cstat-no" title="statement not covered" >      this._muscleActivations = new Map();</span>
-    }
+<span class="cstat-no" title="statement not covered" >    this._muscleActivations ??= new Map();</span>
 <span class="cstat-no" title="statement not covered" >    this._muscleActivations.set(muscleGroup, Math.max(0, Math.min(1, tension)));</span>
 <span class="cstat-no" title="statement not covered" >    return this;</span>
   }
@@ -1159,11 +1149,9 @@ export class KeyframeConfig {
    * @korean 다중근육활성화설정
    */
 <span class="fstat-no" title="function not covered" >  setMuscleActivations(</span>
-    activations: Map&lt;string, number&gt; | Record&lt;string, number&gt;
+    activations: Map&lt;string, number&gt; | Record&lt;string, number&gt;,
   ): this {
-<span class="cstat-no" title="statement not covered" >    if (!this._muscleActivations) {</span>
-<span class="cstat-no" title="statement not covered" >      this._muscleActivations = new Map();</span>
-    }
+<span class="cstat-no" title="statement not covered" >    this._muscleActivations ??= new Map();</span>
 <span class="cstat-no" title="statement not covered" >    if (activations instanceof Map) {</span>
 <span class="cstat-no" title="statement not covered" >      activations.forEach(<span class="fstat-no" title="function not covered" >(t</span>ension, group) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));</span>
@@ -1213,7 +1201,7 @@ export class KeyframeConfig {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:27.101Z
+                at 2026-01-19T23:11:00.065Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

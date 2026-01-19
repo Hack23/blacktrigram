@@ -1072,12 +1072,14 @@ src/types/constants/ui.ts
 src/types/facial.ts
 src/types/hand-animation.ts
 src/types/index.ts
+src/types/jest-axe.d.ts
 src/types/muscle.ts
 src/types/physics.ts
 src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/types/vitest-axe.d.ts
 src/utils/__tests__/arenaCoordinateConversion.test.ts
 src/utils/__tests__/arenaWorldDimensions.test.ts
 src/utils/__tests__/highResMobile.test.ts

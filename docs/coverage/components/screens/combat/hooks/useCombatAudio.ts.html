@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.4% </span>
+                <span class="strong">89.26% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>135/151</span>
+                <span class='fraction'>133/149</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">86.53% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>49/56</span>
+                <span class='fraction'>45/52</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.4% </span>
+                <span class="strong">89.26% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>135/151</span>
+                <span class='fraction'>133/149</span>
             </div>
         
             
@@ -532,17 +532,7 @@
 <a name='L467'></a><a href='#L467'>467</a>
 <a name='L468'></a><a href='#L468'>468</a>
 <a name='L469'></a><a href='#L469'>469</a>
-<a name='L470'></a><a href='#L470'>470</a>
-<a name='L471'></a><a href='#L471'>471</a>
-<a name='L472'></a><a href='#L472'>472</a>
-<a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a>
-<a name='L476'></a><a href='#L476'>476</a>
-<a name='L477'></a><a href='#L477'>477</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L470'></a><a href='#L470'>470</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -957,8 +947,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -972,8 +960,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -1024,15 +1010,12 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAudio } from "../../../../audio/AudioProvider";
 import {
-  AudioBodyRegion,
-  ImpactIntensity,
-} from "../../../../audio/types";
-import {
-  getBoneImpactSoundId,
   calculateImpactIntensity,
   detectAudioBodyRegion,
+  getBoneImpactSoundId,
   getImpactVolumeMultiplier,
 } from "../../../../audio/BoneImpactAudioMap";
+import { AudioBodyRegion, ImpactIntensity } from "../../../../audio/types";
 &nbsp;
 /**
  * Attack intensity levels for sound selection
@@ -1087,7 +1070,7 @@ export const useCombatAudio = () =&gt; {
 &nbsp;
       return true;
     },
-    []
+    [],
   );
 &nbsp;
   /**
@@ -1115,7 +1098,7 @@ export const useCombatAudio = () =&gt; {
       const variant = Math.floor(Math.random() * count) + 1;
       return `${base}_${variant}`;
     },
-    []
+    [],
   );
 &nbsp;
   /**
@@ -1150,7 +1133,7 @@ export const useCombatAudio = () =&gt; {
           break;
 <span class="branch-4 cbranch-no" title="branch not covered" >        default:</span>
 <span class="cstat-no" title="statement not covered" >          console.warn(</span>
-            `Unknown attack intensity: ${intensity}, defaulting to light`
+            `Unknown attack intensity: ${intensity}, defaulting to light`,
           );
 <span class="cstat-no" title="statement not covered" >          soundId = getRandomVariant("attack_punch_light", 8);</span>
       }
@@ -1163,7 +1146,7 @@ export const useCombatAudio = () =&gt; {
         console.warn(`Failed to play attack sound: ${soundId}`, error);
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 &nbsp;
   /**
@@ -1203,7 +1186,7 @@ export const useCombatAudio = () =&gt; {
 <span class="cstat-no" title="statement not covered" >        console.warn(`Failed to play hit sound: ${soundId}`, error);</span>
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 &nbsp;
   /**
@@ -1236,7 +1219,7 @@ export const useCombatAudio = () =&gt; {
 <span class="cstat-no" title="statement not covered" >        console.warn(`Failed to play block sound: ${soundId}`, error);</span>
       }
     },
-    [audio, canPlaySound, getRandomVariant, registerActiveSound]
+    [audio, canPlaySound, getRandomVariant, registerActiveSound],
   );
 &nbsp;
   /**
@@ -1317,7 +1300,7 @@ export const useCombatAudio = () =&gt; {
         console.warn("Failed to play combat music", error);
       }
     },
-    [audio]
+    [audio],
   );
 &nbsp;
   /**
@@ -1351,7 +1334,7 @@ export const useCombatAudio = () =&gt; {
 <span class="cstat-no" title="statement not covered" >        await playCombatMusic(fadeInDuration);</span>
       }
     },
-    [audio, playCombatMusic]
+    [audio, playCombatMusic],
   );
 &nbsp;
   /**
@@ -1366,7 +1349,7 @@ export const useCombatAudio = () =&gt; {
 <span class="cstat-no" title="statement not covered" >        console.warn("Failed to stop combat music", error);</span>
       }
     },
-    [audio]
+    [audio],
   );
 &nbsp;
   /**
@@ -1432,9 +1415,7 @@ export const useCombatAudio = () =&gt; {
       }
 &nbsp;
       // Default to torso if region still undefined
-      if (!region) {
-        region = "torso";
-      }
+      region ??= "torso";
 &nbsp;
       // Auto-calculate intensity if not provided
       let intensity = options.intensity;
@@ -1442,14 +1423,12 @@ export const useCombatAudio = () =&gt; {
         intensity = calculateImpactIntensity(
           options.damage,
           options.remainingHealth,
-          options.vitalPoint
+          options.vitalPoint,
         );
       }
 &nbsp;
       // Default to medium intensity if still undefined
-      if (!intensity) {
-        intensity = "medium";
-      }
+      intensity ??= "medium";
 &nbsp;
       // Get appropriate sound ID with random variant
       const soundId = getBoneImpactSoundId(region, intensity, true);
@@ -1468,11 +1447,11 @@ export const useCombatAudio = () =&gt; {
       } catch (error) {
         console.warn(
           `Failed to play bone impact sound: ${soundId} (region: ${region}, intensity: ${intensity})`,
-          error
+          error,
         );
       }
     },
-    [audio, canPlaySound, registerActiveSound]
+    [audio, canPlaySound, registerActiveSound],
   );
 &nbsp;
   return {
@@ -1498,7 +1477,7 @@ export default useCombatAudio;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:26.751Z
+                at 2026-01-19T23:10:59.701Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

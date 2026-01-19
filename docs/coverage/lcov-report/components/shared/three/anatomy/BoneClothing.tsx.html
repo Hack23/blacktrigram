@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>78/78</span>
+                <span class='fraction'>79/79</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/77</span>
+                <span class='fraction'>78/78</span>
             </div>
         
             
@@ -459,7 +459,11 @@
 <a name='L394'></a><a href='#L394'>394</a>
 <a name='L395'></a><a href='#L395'>395</a>
 <a name='L396'></a><a href='#L396'>396</a>
-<a name='L397'></a><a href='#L397'>397</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L397'></a><a href='#L397'>397</a>
+<a name='L398'></a><a href='#L398'>398</a>
+<a name='L399'></a><a href='#L399'>399</a>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -782,6 +786,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3360x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3360x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -926,7 +934,7 @@ export interface BoneClothingProps {
  */
 const calculateBodyThickness = (
   muscleMass: number,
-  fatMass: number
+  fatMass: number,
 ): number =&gt; {
   const referenceMuscle = 35;
   const referenceFat = 12;
@@ -950,14 +958,14 @@ const getClothingForBone = (
     torsoLength: number;
     armLength: number;
     legLength: number;
-  }
+  },
 ): ClothingAttachment[] =&gt; {
   const clothingSet = getArchetypeClothing(archetype);
   const attachments: ClothingAttachment[] = [];
 &nbsp;
   const bodyThickness = calculateBodyThickness(
     physicalAttributes.muscleMass,
-    physicalAttributes.fatMass
+    physicalAttributes.fatMass,
   );
 &nbsp;
   // Scaling factors
@@ -971,7 +979,7 @@ const getClothingForBone = (
       bodyThickness,
       torsoScale,
       legScale,
-      physicalAttributes
+      physicalAttributes,
     );
     attachments.push(...attachmentsForItem);
   }
@@ -992,7 +1000,7 @@ const getAttachmentsForItem = (
     shoulderWidth: number;
     armLength: number;
     legLength: number;
-  }
+  },
 ): ClothingAttachment[] =&gt; {
   const fitScaleMap: Record&lt;string, number&gt; = {
     tight: 1.08,
@@ -1034,7 +1042,7 @@ const getAttachmentsForItem = (
             armThickness * 1.1,
             armThickness * 0.95,
             upperArmLength,
-            12
+            12,
           ),
           localOffset: new THREE.Vector3(0, -upperArmLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -1055,7 +1063,7 @@ const getAttachmentsForItem = (
             armThickness * 0.95,
             armThickness * 0.85,
             forearmLength,
-            12
+            12,
           ),
           localOffset: new THREE.Vector3(0, -forearmLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -1080,7 +1088,7 @@ const getAttachmentsForItem = (
             legThickness * 1.15,
             legThickness * 0.95,
             thighLength,
-            16
+            16,
           ),
           localOffset: new THREE.Vector3(0, -thighLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -1103,7 +1111,7 @@ const getAttachmentsForItem = (
             legThickness * 0.95,
             legThickness * 0.8,
             shinLength,
-            16
+            16,
           ),
           localOffset: new THREE.Vector3(0, -shinLength * 0.4, 0),
           localRotation: new THREE.Euler(0, 0, 0),
@@ -1176,20 +1184,24 @@ export const BoneClothing: React.FC&lt;BoneClothingProps&gt; = ({
   archetype,
   physicalAttributes,
 }) =&gt; {
-  // Default physical attributes if not provided
-  const attrs = physicalAttributes ?? <span class="branch-1 cbranch-no" title="branch not covered" >{</span>
-    muscleMass: 35,
-    fatMass: 12,
-    shoulderWidth: 45,
-    torsoLength: 59,
-    armLength: 62,
-    legLength: 96,
-  };
+  // Default physical attributes if not provided - memoized to prevent new object on every render
+  const attrs = useMemo(
+    () =&gt;
+      physicalAttributes ?? <span class="branch-1 cbranch-no" title="branch not covered" >{</span>
+        muscleMass: 35,
+        fatMass: 12,
+        shoulderWidth: 45,
+        torsoLength: 59,
+        armLength: 62,
+        legLength: 96,
+      },
+    [physicalAttributes],
+  );
 &nbsp;
   // Get clothing attachments for this bone
   const attachments = useMemo(
     () =&gt; getClothingForBone(boneName, archetype, attrs),
-    [boneName, archetype, attrs]
+    [boneName, archetype, attrs],
   );
 &nbsp;
   // Create materials with cleanup
@@ -1258,7 +1270,7 @@ export default BoneClothing;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:27.101Z
+                at 2026-01-19T23:11:00.065Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

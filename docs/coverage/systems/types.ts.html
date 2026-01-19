@@ -1569,7 +1569,20 @@
 <a name='L1504'></a><a href='#L1504'>1504</a>
 <a name='L1505'></a><a href='#L1505'>1505</a>
 <a name='L1506'></a><a href='#L1506'>1506</a>
-<a name='L1507'></a><a href='#L1507'>1507</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1507'></a><a href='#L1507'>1507</a>
+<a name='L1508'></a><a href='#L1508'>1508</a>
+<a name='L1509'></a><a href='#L1509'>1509</a>
+<a name='L1510'></a><a href='#L1510'>1510</a>
+<a name='L1511'></a><a href='#L1511'>1511</a>
+<a name='L1512'></a><a href='#L1512'>1512</a>
+<a name='L1513'></a><a href='#L1513'>1513</a>
+<a name='L1514'></a><a href='#L1514'>1514</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2766,6 +2779,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -3125,7 +3139,7 @@ export interface VitalPointSystemConfig {
 }
 &nbsp;
 // Deprecated placeholder type - use unknown for generic texture representation
- 
+&nbsp;
 type Texture = unknown;
 &nbsp;
 // Vital point effect
@@ -3310,7 +3324,7 @@ export interface PhysicsSystemInterface {
   getEntityState: (entityId: EntityId) =&gt; PhysicsEntityState | undefined;
   checkCollision: (
     entityIdA: EntityId,
-    entityIdB: EntityId
+    entityIdB: EntityId,
   ) =&gt; CollisionData | null;
   applyForce: (entityId: EntityId, force: Velocity) =&gt; void;
 }
@@ -3321,7 +3335,7 @@ export interface RenderingSystemInterface {
   removeRenderable: (entityId: EntityId) =&gt; void;
   updateRenderable: (
     entityId: EntityId,
-    updates: Partial&lt;RenderableConfig&gt;
+    updates: Partial&lt;RenderableConfig&gt;,
   ) =&gt; void;
   render: () =&gt; void;
 }
@@ -3330,6 +3344,7 @@ export interface SystemEvent {
   readonly type: string;
   readonly timestamp: number;
   readonly source: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Event data varies by event type
   readonly data: Record&lt;string, any&gt;;
 }
 &nbsp;
@@ -3337,21 +3352,25 @@ export interface EventBusInterface {
   publish: (event: SystemEvent) =&gt; void;
   subscribe: (
     eventType: string,
-    callback: (event: SystemEvent) =&gt; void
+    callback: (event: SystemEvent) =&gt; void,
   ) =&gt; void;
   unsubscribe: (
     eventType: string,
-    callback: (event: SystemEvent) =&gt; void
+    callback: (event: SystemEvent) =&gt; void,
   ) =&gt; void;
 }
 &nbsp;
 // Define system interfaces without importing (to avoid circular deps)
+// These interfaces use `any` to avoid circular dependency issues between
+// systems (combat, vital point, trigram) that reference each other's types.
+// Proper typing would require extracting shared types to a separate module.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface CombatSystemInterface {
   calculateDamage: (
     technique: any,
     attacker: any,
     defender: any,
-    hitResult: any
+    hitResult: any,
   ) =&gt; {
     baseDamage: number;
     modifierDamage: number;
@@ -3363,12 +3382,12 @@ export interface CombatSystemInterface {
     attacker: any,
     defender: any,
     technique: any,
-    targetedVitalPointId?: string
+    targetedVitalPointId?: string,
   ) =&gt; any;
   applyCombatResult: (
     result: any,
     attacker: any,
-    defender: any
+    defender: any,
   ) =&gt; { updatedAttacker: any; updatedDefender: any };
   getAvailableTechniques: (player: any) =&gt; readonly any[];
 }
@@ -3380,7 +3399,7 @@ export interface VitalPointSystemInterface {
     baseDamage: number,
     attackerArchetype: any,
     targetDimensions: { width: number; height: number },
-    targetedVitalPointId?: string | null
+    targetedVitalPointId?: string | null,
   ) =&gt; any;
   calculateHit: (
     technique: any,
@@ -3388,12 +3407,12 @@ export interface VitalPointSystemInterface {
     accuracyRoll: number,
     attackerPosition: Position,
     defenderPosition: Position,
-    defenderStance: any
+    defenderStance: any,
   ) =&gt; any;
   applyVitalPointEffects: (
     player: any,
     vitalPoint: any,
-    intensityMultiplier?: number
+    intensityMultiplier?: number,
   ) =&gt; any;
 }
 &nbsp;
@@ -3402,13 +3421,13 @@ export interface TrigramSystemInterface {
   calculateStanceEffectiveness: (
     attackerStance: any,
     defenderStance: any,
-    technique?: any
+    technique?: any,
   ) =&gt; number;
   isValidTransition: (from: any, to: any) =&gt; boolean;
   getTransitionCost: (
     from: any,
     to: any,
-    player?: any
+    player?: any,
   ) =&gt; { ki: number; stamina: number; timeMs: number };
   recommendStance: (player: any, opponent?: any) =&gt; any;
 }
@@ -3420,6 +3439,7 @@ export interface GameSystemManager {
   readonly inputSystem: InputSystemInterface;
   readonly audioSystem: AudioSystemInterface;
   readonly animationSystem?: AnimationSystemInterface;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   readonly physicsSystem?: PhysicsSystemInterface;
   readonly renderingSystem?: RenderingSystemInterface;
   readonly eventBus: EventBusInterface;
@@ -3742,9 +3762,9 @@ export const COMBAT_CONFIG = {
   MAX_BALANCE: 100,
   MAX_CONSCIOUSNESS: 100,
 &nbsp;
-  // Damage multipliers
+  // Damage multipliers - vital points more impactful for Korean martial arts realism
   CRITICAL_HIT_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for more realistic vital point impact
   COUNTER_ATTACK_MULTIPLIER: 1.3,
 &nbsp;
   // Status thresholds
@@ -3753,9 +3773,9 @@ export const COMBAT_CONFIG = {
   UNCONSCIOUS_THRESHOLD: 0,
   STAMINA_EXHAUSTED_THRESHOLD: 0,
 &nbsp;
-  // Recovery rates (per second)
-  STAMINA_RECOVERY_RATE: 10,
-  KI_RECOVERY_RATE: 5,
+  // Recovery rates (per second) - increased for 3-minute round sustainability
+  STAMINA_RECOVERY_RATE: 15, // Increased from 10 for sustained combat
+  KI_RECOVERY_RATE: 8, // Increased from 5 for more technique usage
   BALANCE_RECOVERY_RATE: 15,
   CONSCIOUSNESS_RECOVERY_RATE: 2,
 &nbsp;
@@ -3770,7 +3790,7 @@ export const COMBAT_CONFIG = {
 export const ENHANCED_DAMAGE_CONSTANTS = {
   BASE_DAMAGE: 10,
   CRITICAL_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for Korean martial arts vital point realism
   ARMOR_REDUCTION: 0.1,
   STANCE_DEFENSE_BONUS: 0.2,
   BALANCE_IMPACT_MULTIPLIER: 0.3,
@@ -3791,16 +3811,16 @@ export const COMBAT_CONSTANTS = {
   // Damage calculation
   BASE_DAMAGE: 10,
   CRITICAL_MULTIPLIER: 2.0,
-  VITAL_POINT_MULTIPLIER: 1.5,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 1.5 for Korean martial arts vital point realism
 &nbsp;
   // Status thresholds
   LOW_HEALTH_THRESHOLD: 30,
   CRITICAL_HEALTH_THRESHOLD: 15,
   EXHAUSTED_STAMINA_THRESHOLD: 20,
 &nbsp;
-  // Recovery rates (per second)
-  STAMINA_RECOVERY_RATE: 5,
-  KI_RECOVERY_RATE: 3,
+  // Recovery rates (per second) - increased for 3-minute round sustainability
+  STAMINA_RECOVERY_RATE: 15, // Increased from 5 for sustained combat
+  KI_RECOVERY_RATE: 8, // Increased from 3 for more technique usage
   CONSCIOUSNESS_RECOVERY_RATE: 2,
 &nbsp;
   // Combat timing
@@ -4295,6 +4315,7 @@ export interface InputEvent {
 export interface CombatInput {
   readonly player: number;
   readonly action: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Combat input data varies by action type
   readonly data?: any;
 }
 &nbsp;
@@ -4577,7 +4598,7 @@ export const MARTIAL_ARTS_CONFIG = {
   // Damage calculations
   BASE_DAMAGE_MULTIPLIER: 1.0,
   CRITICAL_HIT_MULTIPLIER: 1.5,
-  VITAL_POINT_MULTIPLIER: 2.0,
+  VITAL_POINT_MULTIPLIER: 2.5, // Increased from 2.0 for impactful vital point strikes
 } as const;
 &nbsp;
 export default GAME_CONFIG;
@@ -4588,7 +4609,7 @@ export default GAME_CONFIG;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:26.751Z
+                at 2026-01-19T23:10:59.701Z
             </div>
         <script src="../prettify.js"></script>
         <script>

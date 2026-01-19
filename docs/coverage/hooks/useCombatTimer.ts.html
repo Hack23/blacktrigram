@@ -294,7 +294,9 @@
 <a name='L229'></a><a href='#L229'>229</a>
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -473,6 +475,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">102x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -480,23 +485,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">102x</span>
 <span class="cline-any cline-yes">102x</span>
 <span class="cline-any cline-yes">100x</span>
-<span class="cline-any cline-yes">98x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">65x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">65x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -504,7 +509,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -599,7 +603,7 @@ function formatTime(seconds: number): string {
 function getWarningLevel(
   timeRemaining: number,
   warningThreshold: number,
-  urgentThreshold: number
+  urgentThreshold: number,
 ): TimerWarningLevel {
   if (timeRemaining &lt;= urgentThreshold) {
     return "urgent";
@@ -638,7 +642,7 @@ function getWarningLevel(
  * ```
  */
 export function useCombatTimer(
-  config: UseCombatTimerConfig
+  config: UseCombatTimerConfig,
 ): UseCombatTimerReturn {
   const {
     initialTime,
@@ -701,16 +705,19 @@ export function useCombatTimer(
         intervalRef.current = null;
       }
     };
+    // timeRemaining is intentionally excluded - we capture the starting value once
+    // and count down from there, not restart the interval on every tick
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPaused, isTimeUp, onTimeUp]);
 &nbsp;
   // Warning level calculation
   const warningLevel = getWarningLevel(
     timeRemaining,
     warningThreshold,
-    urgentThreshold
+    urgentThreshold,
   );
 &nbsp;
-  // Audio warnings
+  // Audio warnings - timeRemaining checked via warningLevel which captures threshold transitions
   useEffect(() =&gt; {
     if (!audio.isAudioReady) return;
     if (isPaused) return;
@@ -736,15 +743,14 @@ export function useCombatTimer(
       audio.playSFX("attack_heavy"); // Placeholder - will be timer_warning_5s
       lastWarningRef.current = "urgent";
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     warningLevel,
     timeRemaining,
-    audio.isAudioReady,
+    audio,
     isPaused,
     warningThreshold,
     urgentThreshold,
-  ]); // audio.playSFX is stable after initialization, omitted to prevent unnecessary re-renders
+  ]);
 &nbsp;
   // Format time for display
   const formattedTime = formatTime(timeRemaining);
@@ -763,7 +769,7 @@ export function useCombatTimer(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:26.751Z
+                at 2026-01-19T23:10:59.701Z
             </div>
         <script src="../prettify.js"></script>
         <script>

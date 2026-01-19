@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.91% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>46/231</span>
+                <span class='fraction'>46/230</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.21% </span>
+                <span class="strong">15.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>21/138</span>
+                <span class='fraction'>21/136</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20.65% </span>
+                <span class="strong">20.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/213</span>
+                <span class='fraction'>44/212</span>
             </div>
         
             
@@ -765,10 +765,7 @@
 <a name='L700'></a><a href='#L700'>700</a>
 <a name='L701'></a><a href='#L701'>701</a>
 <a name='L702'></a><a href='#L702'>702</a>
-<a name='L703'></a><a href='#L703'>703</a>
-<a name='L704'></a><a href='#L704'>704</a>
-<a name='L705'></a><a href='#L705'>705</a>
-<a name='L706'></a><a href='#L706'>706</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L703'></a><a href='#L703'>703</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1121,8 +1118,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1220,7 +1215,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1486,33 +1480,33 @@ import { TrigramStance } from "../types/common";
  * Uses physics-first approach: all positions and velocities are in meters.
  *
  * **Korean**: 입력 시스템 설정 (Input System Configuration)
- * 
+ *
  * ## Physics-First Architecture
- * 
+ *
  * This interface requires worldWidthMeters and worldDepthMeters to enable
  * the new physics-first coordinate system. Without these properties, the
  * movement system cannot properly convert between physics (meters) and
  * rendering (pixels).
- * 
+ *
  * ### Migration Guide
- * 
+ *
  * Existing code must be updated to pass world dimensions:
- * 
+ *
  * ```typescript
  * // Before (incorrect):
  * const config = { bounds: { x: 0, y: 0, width: 960, height: 480 } };
- * 
+ *
  * // After (correct):
- * const config = { 
- *   bounds: { 
+ * const config = {
+ *   bounds: {
  *     worldWidthMeters: 10,   // From layout hook
  *     worldDepthMeters: 10    // From layout hook
- *   } 
+ *   }
  * };
  * ```
- * 
+ *
  * ### Fallback Behavior
- * 
+ *
  * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
  * function and movement will be disabled. Callers MUST provide these values
  * from their layout hooks (useCombatLayout, useTrainingLayout).
@@ -1523,9 +1517,9 @@ export interface InputSystemConfig {
 &nbsp;
   /**
    * Arena world dimensions in meters for physics calculations.
-   * 
+   *
    * **REQUIRED for physics-first coordinate system to work.**
-   * 
+   *
    * These values must come from layout hooks:
    * - CombatScreen3D: Use arenaBounds.worldWidthMeters/worldDepthMeters from useCombatLayout()
    * - TrainingScreen3D: Use trainingAreaBounds.worldWidthMeters/worldDepthMeters from useTrainingLayout()
@@ -1825,9 +1819,7 @@ export function usePlayerMovement(
       // Auto-run detection: transition to running after sustained movement
       const now = <span class="cstat-no" title="statement not covered" >performance.now();</span>
 <span class="cstat-no" title="statement not covered" >      if (isCurrentlyMoving) {</span>
-<span class="cstat-no" title="statement not covered" >        if (movementStartTimeRef.current === null) {</span>
-<span class="cstat-no" title="statement not covered" >          movementStartTimeRef.current = now;</span>
-        }
+<span class="cstat-no" title="statement not covered" >        movementStartTimeRef.current ??= now;</span>
       } else {
 <span class="cstat-no" title="statement not covered" >        movementStartTimeRef.current = null;</span>
       }
@@ -1929,7 +1921,6 @@ export function usePlayerMovement(
     // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
     // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref
@@ -2185,7 +2176,7 @@ export function <span class="fstat-no" title="function not covered" >useCombatIn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T10:54:26.751Z
+                at 2026-01-19T23:10:59.701Z
             </div>
         <script src="../prettify.js"></script>
         <script>
