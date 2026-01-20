@@ -152,6 +152,10 @@ export interface UseCombatActionsConfig {
     playerIndex: number,
     position: Position,
   ) => void;
+  readonly onLateralityUpdate?: (
+    playerIndex: number,
+    laterality: "left" | "right",
+  ) => void;
   readonly addCombatMessage: (korean: string, english: string) => void;
   readonly addHitEffect: (
     type: HitEffectType,
@@ -268,6 +272,7 @@ export function useCombatActions(
     combatActions,
     combatSystem,
     onPlayerUpdate,
+    onLateralityUpdate,
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -671,8 +676,8 @@ export function useCombatActions(
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
       const player = validPlayers[playerIndex];
-      // Use leadFoot from player state, default to "right" if not set
-      const currentLaterality = player.leadFoot ?? "right";
+      // Get current laterality from combat state
+      const currentLaterality = combatState.playerLaterality[playerIndex];
 
       const result = stanceManagerRef.current.switchStanceSide(
         player,
@@ -680,8 +685,11 @@ export function useCombatActions(
       );
 
       if (result.success && result.laterality) {
-        // Update player state with new stamina and leadFoot (now set by StanceManager)
+        // Update player state with new stamina
         onPlayerUpdate(playerIndex, result.updatedPlayer);
+
+        // Update laterality in combat state via callback
+        onLateralityUpdate?.(playerIndex, result.laterality);
 
         // Audio feedback
         combatAudio?.playStanceChangeSound?.();

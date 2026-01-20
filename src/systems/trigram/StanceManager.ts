@@ -109,12 +109,11 @@ export class StanceManager {
       currentLaterality === "left" ? "right" : "left";
     this.currentLaterality = newLaterality;
 
-    // Apply stamina cost, update timestamp, and set leadFoot in PlayerState
+    // Apply stamina cost and update timestamp
     const updatedPlayer: PlayerState = {
       ...player,
       stamina: Math.max(0, player.stamina - lateralityCost.stamina),
       lastStanceChangeTime: Date.now(),
-      leadFoot: newLaterality, // Update leadFoot to match laterality
     };
 
     return {

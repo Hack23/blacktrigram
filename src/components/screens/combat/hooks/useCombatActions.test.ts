@@ -74,6 +74,7 @@ describe("useCombatActions", () => {
       combatActions: stateResult.current.actions,
       combatSystem: mockCombatSystem,
       onPlayerUpdate: vi.fn(),
+      onLateralityUpdate: vi.fn(),
       addCombatMessage: vi.fn(),
       addHitEffect: vi.fn(),
       arenaBounds: {
@@ -824,15 +825,13 @@ describe("useCombatActions", () => {
     });
 
     it("should toggle laterality from left to right", () => {
-      // Create player with left leadFoot
-      const playerWithLeftFoot = {
-        ...mockConfig.validPlayers[0],
-        leadFoot: "left" as "left" | "right",
-      };
-      
+      // Set combat state with left laterality for player 0
       const config = {
         ...mockConfig,
-        validPlayers: [playerWithLeftFoot, mockConfig.validPlayers[1]] as const,
+        combatState: {
+          ...mockConfig.combatState,
+          playerLaterality: ["left" as "left" | "right", "right" as "left" | "right"],
+        },
       };
 
       const { result } = renderHook(() => useCombatActions(config));

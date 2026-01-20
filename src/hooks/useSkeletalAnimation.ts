@@ -47,18 +47,18 @@ export interface UseSkeletalAnimationOptions {
   /** Current player stance for trigram-specific idle animations */
   readonly stance?: TrigramStance;
   /**
-   * Which foot is currently forward in stance (for animation mirroring)
+   * Stance laterality (left or right foot forward)
    *
-   * - "left": Left foot forward (orthodox/traditional right-handed fighter)
-   * - "right": Right foot forward (southpaw/traditional left-handed fighter)
+   * - "left": Left foot forward (왼발서기 - Oenbal Seogi)
+   * - "right": Right foot forward (오른발서기 - Oreun Bal Seogi)
    *
    * This affects animation mirroring - techniques will be mirrored
-   * appropriately based on the lead foot, creating 16 distinct stance
+   * appropriately based on the laterality, creating 16 distinct stance
    * configurations (8 trigrams × 2 laterality).
    *
-   * **Korean**: 앞발 (Lead Foot)
+   * **Korean**: 측면성 (Cheugmyeonseong - Laterality/Sidedness)
    */
-  readonly leadFoot?: "left" | "right";
+  readonly laterality?: "left" | "right";
   /** Callback when animation completes */
   readonly onAnimationComplete?: () => void;
 }
@@ -124,7 +124,7 @@ export function useSkeletalAnimation(
     attackAnimation,
     isBlocking = false,
     stance,
-    leadFoot = "right",
+    laterality = "right",
     onAnimationComplete,
   } = options;
 
@@ -146,7 +146,7 @@ export function useSkeletalAnimation(
     null,
   );
 
-  // Load animation when currentAnimation, blocking state, or leadFoot changes
+  // Load animation when currentAnimation, blocking state, or laterality changes
   useEffect(() => {
     // Reset animation time whenever animation changes
     animTimeRef.current = 0;
@@ -242,10 +242,11 @@ export function useSkeletalAnimation(
     }
 
     // Apply laterality transformation if selectedAnim exists
-    // leadFoot directly maps to laterality: "left" foot forward = "left" laterality
-    // "right" foot forward = "right" laterality (default/base animations)
+    // laterality directly affects animation mirroring:
+    // "left" = left foot forward (왼발서기) → animations mirrored
+    // "right" = right foot forward (오른발서기) → base animations (default)
     if (selectedAnim) {
-      selectedAnim = applyLaterality(selectedAnim, leadFoot);
+      selectedAnim = applyLaterality(selectedAnim, laterality);
     }
 
     // Clear diagonal rotation for non-diagonal animations
@@ -261,7 +262,7 @@ export function useSkeletalAnimation(
       previousKeyframeIndex: 0,
       nextKeyframeIndex: 1,
     });
-  }, [currentAnimation, attackAnimation, isBlocking, stance, leadFoot]);
+  }, [currentAnimation, attackAnimation, isBlocking, stance, laterality]);
 
   // Update animation and apply to rig (called at 60fps in useFrame)
   // PHASE 2: Now uses cached interpolation and batch bone updates

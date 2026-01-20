@@ -1225,6 +1225,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatSystem,
     onPlayerUpdate,
     onPlayerPositionUpdate: handlePlayerPositionUpdate,
+    onLateralityUpdate: (playerIndex, laterality) => {
+      combatActions.setPlayerLateralityIndex(playerIndex as 0 | 1, laterality);
+    },
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -2238,7 +2241,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.currentState,
           )}
           attackAnimation={player1AttackAnimation}
-          leadFoot={validPlayers[0].leadFoot ?? "right"}
+          laterality={combatState.playerLaterality[0]}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}
@@ -2262,7 +2265,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2Animation.currentState,
           )}
           attackAnimation={player2AttackAnimation}
-          leadFoot={validPlayers[1].leadFoot ?? "right"}
+          laterality={combatState.playerLaterality[1]}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}

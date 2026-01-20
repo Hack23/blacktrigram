@@ -290,7 +290,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "idle",
-          leadFoot: "left",
+          laterality: "left",
         }),
       );
 
@@ -324,7 +324,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "idle",
-          leadFoot: "right",
+          laterality: "right",
         }),
       );
 
@@ -337,15 +337,15 @@ describe("useSkeletalAnimation", () => {
       }
     });
 
-    it("should update laterality when leadFoot changes", () => {
+    it("should update laterality when laterality prop changes", () => {
       const { result, rerender } = renderHook(
-        ({ leadFoot }: { leadFoot: "left" | "right" }) =>
+        ({ laterality }: { laterality: "left" | "right" }) =>
           useSkeletalAnimation({
             currentAnimation: "idle",
-            leadFoot,
+            laterality,
           }),
         {
-          initialProps: { leadFoot: "right" as "left" | "right" },
+          initialProps: { laterality: "right" as "left" | "right" },
         },
       );
 
@@ -354,7 +354,7 @@ describe("useSkeletalAnimation", () => {
       expect(animation?.name).not.toContain("_left");
 
       // Change to left laterality (should mirror)
-      rerender({ leadFoot: "left" });
+      rerender({ laterality: "left" });
 
       animation = result.current.animState.currentAnimation;
       expect(animation?.name).toContain("_left");
@@ -365,7 +365,7 @@ describe("useSkeletalAnimation", () => {
         useSkeletalAnimation({
           currentAnimation: "attack",
           attackAnimation: "jab",
-          leadFoot: "left",
+          laterality: "left",
         }),
       );
 
@@ -381,7 +381,7 @@ describe("useSkeletalAnimation", () => {
       const { result } = renderHook(() =>
         useSkeletalAnimation({
           currentAnimation: "walk",
-          leadFoot: "left",
+          laterality: "left",
         }),
       );
 
