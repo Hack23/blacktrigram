@@ -67,11 +67,12 @@ const getDifficultyStars = (difficulty: number): string => {
  * VitalPointTrainingOverlayHtml Component
  * Html overlay for vital point selection and information
  */
-export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHtmlProps> = ({
-  selectedVitalPoint,
-  onVitalPointSelect,
-  isMobile,
-}) => {
+export const VitalPointTrainingOverlayHtml = React.memo<VitalPointTrainingOverlayHtmlProps>(
+  ({
+    selectedVitalPoint,
+    onVitalPointSelect,
+    isMobile,
+  }) => {
   // Use first 8 vital points for training panel
   const availableVitalPoints = useMemo(
     () => KOREAN_VITAL_POINTS.slice(0, isMobile ? 4 : 8),
@@ -245,6 +246,18 @@ export const VitalPointTrainingOverlayHtml: React.FC<VitalPointTrainingOverlayHt
       )}
     </div>
   );
-};
+},
+(prevProps, nextProps) => {
+  // Re-render when vital point selection, mobile state, or callback changes
+  // Including callback prop prevents stale closures when parent provides
+  // a new function that captures updated state.
+  return (
+    prevProps.selectedVitalPoint === nextProps.selectedVitalPoint &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onVitalPointSelect === nextProps.onVitalPointSelect
+  );
+});
+
+VitalPointTrainingOverlayHtml.displayName = "VitalPointTrainingOverlayHtml";
 
 export default VitalPointTrainingOverlayHtml;

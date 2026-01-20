@@ -47,6 +47,10 @@ export interface TrainingControlsOverlayHtmlProps {
  * 
  * Html overlay showing training status and start/stop controls with Korean theming.
  * All colors use KOREAN_COLORS constants for consistency.
+ *
+ * Optimized with React.memo for 60fps performance:
+ * - Prevents re-renders when isTraining state hasn't changed
+ * - Callbacks expected to be stable (parent should use useCallback)
  * 
  * @example
  * ```tsx
@@ -60,12 +64,13 @@ export interface TrainingControlsOverlayHtmlProps {
  * 
  * @korean 훈련제어오버레이컴포넌트
  */
-export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlProps> = ({
-  isTraining,
-  onStartTraining,
-  onStopTraining,
-  isMobile,
-}) => {
+export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtmlProps>(
+  ({
+    isTraining,
+    onStartTraining,
+    onStopTraining,
+    isMobile,
+  }) => {
   const panelWidth = isMobile ? 200 : 220;
   const panelHeight = isMobile ? 90 : 100;
   const padding = getResponsiveSpacing("sm", isMobile);
@@ -178,6 +183,20 @@ export const TrainingControlsOverlayHtml: React.FC<TrainingControlsOverlayHtmlPr
       )}
     </div>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Re-render when training state, mobile state, or callbacks change
+    // Including callback props here avoids stale-closure issues where the
+    // component would keep calling outdated handlers that reference old state.
+    return (
+      prevProps.isTraining === nextProps.isTraining &&
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.onStartTraining === nextProps.onStartTraining &&
+      prevProps.onStopTraining === nextProps.onStopTraining
+    );
+  },
+);
+
+TrainingControlsOverlayHtml.displayName = "TrainingControlsOverlayHtml";
 
 export default TrainingControlsOverlayHtml;

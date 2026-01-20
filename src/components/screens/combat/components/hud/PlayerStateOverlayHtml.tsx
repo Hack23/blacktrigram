@@ -71,6 +71,11 @@ export interface PlayerStateOverlayProps {
  * Combines all player state visual indicators into a single component
  * with optimal performance and consistent rendering. All effects use
  * smooth 0.5s transitions and are optimized for 60fps.
+ *
+ * Optimized with React.memo for performance:
+ * - Prevents re-renders when props haven't changed
+ * - Custom comparison function for precise control
+ * - Reduces DOM updates for 60fps target
  * 
  * @example
  * ```tsx
@@ -85,37 +90,52 @@ export interface PlayerStateOverlayProps {
  * />
  * ```
  */
-export const PlayerStateOverlayHtml: React.FC<PlayerStateOverlayProps> = ({
-  pain,
-  balanceState,
-  position,
-  consciousness,
-  bloodLoss = 0,
-  stamina,
-  isMobile,
-}) => {
-  return (
-    <>
-      {/* Pain vignette - shows when pain >= 5 (see PainVignette.tsx) */}
-      <PainVignette pain={pain} isMobile={isMobile} />
+export const PlayerStateOverlayHtml = React.memo<PlayerStateOverlayProps>(
+  ({
+    pain,
+    balanceState,
+    position,
+    consciousness,
+    bloodLoss = 0,
+    stamina,
+    isMobile,
+  }) => {
+    return (
+      <>
+        {/* Pain vignette - shows when pain >= 5 (see PainVignette.tsx) */}
+        <PainVignette pain={pain} isMobile={isMobile} />
 
-      {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
-      <BalanceIndicator
-        balanceState={balanceState}
-        position={position}
-        isMobile={isMobile}
-      />
+        {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
+        <BalanceIndicator
+          balanceState={balanceState}
+          position={position}
+          isMobile={isMobile}
+        />
 
-      {/* Consciousness blur - shows when consciousness <= 90 (see ConsciousnessBlur.tsx) */}
-      <ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} />
+        {/* Consciousness blur - shows when consciousness <= 90 (see ConsciousnessBlur.tsx) */}
+        <ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} />
 
-      {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlayHtml.tsx) */}
-      <BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} />
+        {/* Blood loss warning - pulses when bloodLoss >= 50 (see BloodLossOverlayHtml.tsx) */}
+        <BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} />
 
-      {/* Stamina warning - flashes when stamina < 20 (see StaminaWarning.tsx) */}
-      <StaminaWarning stamina={stamina} isMobile={isMobile} />
-    </>
-  );
-};
+        {/* Stamina warning - flashes when stamina < 20 (see StaminaWarning.tsx) */}
+        <StaminaWarning stamina={stamina} isMobile={isMobile} />
+      </>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison for optimal re-render prevention
+    // Only re-render if any state value actually changed
+    return (
+      prevProps.pain === nextProps.pain &&
+      prevProps.balanceState === nextProps.balanceState &&
+      prevProps.position === nextProps.position &&
+      prevProps.consciousness === nextProps.consciousness &&
+      prevProps.bloodLoss === nextProps.bloodLoss &&
+      prevProps.stamina === nextProps.stamina &&
+      prevProps.isMobile === nextProps.isMobile
+    );
+  },
+);
 
 PlayerStateOverlayHtml.displayName = "PlayerStateOverlayHtml";

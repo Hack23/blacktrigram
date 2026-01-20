@@ -36,6 +36,10 @@ export interface BloodLossOverlayProps {
  * Only visible when bloodLoss is 50 or above; does not render for values below 50.
  * Uses CSS keyframe animation for smooth pulsing effect at 60fps.
  *
+ * Optimized with React.memo for 60fps performance:
+ * - Prevents re-renders when blood loss hasn't changed significantly
+ * - Memoized style calculations
+ *
  * @example
  * ```tsx
  * // Overlay is rendered (bloodLoss >= 50)
@@ -45,10 +49,8 @@ export interface BloodLossOverlayProps {
  * <BloodLossOverlayHtml bloodLoss={30} isMobile={false} />
  * ```
  */
-export const BloodLossOverlayHtml: React.FC<BloodLossOverlayProps> = ({
-  bloodLoss,
-  isMobile,
-}) => {
+export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
+  ({ bloodLoss, isMobile }) => {
   const overlayStyle = useMemo(() => {
     // Only show when blood loss exceeds critical threshold
     const criticalThreshold = 50;
@@ -116,6 +118,24 @@ export const BloodLossOverlayHtml: React.FC<BloodLossOverlayProps> = ({
       />
     </>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if blood loss crosses critical threshold or changes significantly
+    const wasCritical = prevProps.bloodLoss >= 50;
+    const isCritical = nextProps.bloodLoss >= 50;
+    
+    // If neither are critical, no need to re-render
+    if (!wasCritical && !isCritical) return true;
+    
+    // If crossing threshold, need to re-render
+    if (wasCritical !== isCritical) return false;
+    
+    // If both critical, only re-render if significant change (5+ points)
+    return (
+      Math.abs(prevProps.bloodLoss - nextProps.bloodLoss) < 5 &&
+      prevProps.isMobile === nextProps.isMobile
+    );
+  },
+);
 
 BloodLossOverlayHtml.displayName = "BloodLossOverlayHtml";

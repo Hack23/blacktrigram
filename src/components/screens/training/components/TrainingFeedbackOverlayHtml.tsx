@@ -30,10 +30,11 @@ export interface TrainingFeedbackOverlayHtmlProps {
  * 
  * @korean 훈련피드백오버레이컴포넌트
  */
-export const TrainingFeedbackOverlayHtml: React.FC<TrainingFeedbackOverlayHtmlProps> = ({
-  message,
-  isMobile,
-}) => {
+export const TrainingFeedbackOverlayHtml = React.memo<TrainingFeedbackOverlayHtmlProps>(
+  ({
+    message,
+    isMobile,
+  }) => {
   return (
     <div
       className={`training-feedback ${isMobile ? "mobile" : "desktop"}`}
@@ -48,6 +49,15 @@ export const TrainingFeedbackOverlayHtml: React.FC<TrainingFeedbackOverlayHtmlPr
       {message}
     </div>
   );
-};
+},
+(prevProps, nextProps) => {
+  // Only re-render if message or mobile state changes
+  return (
+    prevProps.message === nextProps.message &&
+    prevProps.isMobile === nextProps.isMobile
+  );
+});
+
+TrainingFeedbackOverlayHtml.displayName = "TrainingFeedbackOverlayHtml";
 
 export default TrainingFeedbackOverlayHtml;

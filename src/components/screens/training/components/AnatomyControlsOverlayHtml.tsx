@@ -86,11 +86,12 @@ const LAYER_CONFIGS: readonly LayerConfig[] = [
  * AnatomyControlsOverlayHtml Component
  * UI controls for anatomy layer visibility
  */
-export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProps> = ({
-  visibleLayers,
-  onLayerToggle,
-  isMobile = false,
-}) => {
+export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlProps>(
+  ({
+    visibleLayers,
+    onLayerToggle,
+    isMobile = false,
+  }) => {
   // State for hover effects
   const [hoveredLayer, setHoveredLayer] = useState<AnatomyLayer | null>(null);
 
@@ -255,6 +256,18 @@ export const AnatomyControlsOverlayHtml: React.FC<AnatomyControlsOverlayHtmlProp
       </div>
     </div>
   );
-};
+},
+(prevProps, nextProps) => {
+  // Re-render when visible layers or callback changes
+  // Including callback prop prevents stale closures when parent provides
+  // a new function that captures updated state.
+  return (
+    prevProps.visibleLayers === nextProps.visibleLayers &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onLayerToggle === nextProps.onLayerToggle
+  );
+});
+
+AnatomyControlsOverlayHtml.displayName = "AnatomyControlsOverlayHtml";
 
 export default AnatomyControlsOverlayHtml;

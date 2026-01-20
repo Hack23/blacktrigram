@@ -26,16 +26,22 @@ export interface KoreanHeaderOverlayHtmlProps {
 
 /**
  * HTML-based KoreanHeader component for Three.js integration
+ *
+ * Optimized with React.memo for 60fps performance:
+ * - Memoized with custom comparison function
+ * - Prevents unnecessary re-renders
+ * - All styles pre-calculated and memoized
  */
-export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = ({
-  title,
-  subtitle,
-  size = "medium",
-  alignment = "center",
-  showUnderline = true,
-  animated = true,
-  glowIntensity = 1.0,
-}) => {
+export const KoreanHeaderOverlayHtml = React.memo<KoreanHeaderOverlayHtmlProps>(
+  ({
+    title,
+    subtitle,
+    size = "medium",
+    alignment = "center",
+    showUnderline = true,
+    animated = true,
+    glowIntensity = 1.0,
+  }) => {
   const titleSize = size === "large" ? 32 : size === "medium" ? 24 : 18;
   const subtitleSize = titleSize * 0.7;
 
@@ -285,6 +291,25 @@ export const KoreanHeaderOverlayHtml: React.FC<KoreanHeaderOverlayHtmlProps> = (
       )}
     </div>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison for optimal re-render prevention
+    // React.memo comparison: return true = skip re-render (props are equal)
+    //                       return false = re-render (props changed)
+    return (
+      prevProps.title.korean === nextProps.title.korean &&
+      prevProps.title.english === nextProps.title.english &&
+      prevProps.subtitle?.korean === nextProps.subtitle?.korean &&
+      prevProps.subtitle?.english === nextProps.subtitle?.english &&
+      prevProps.size === nextProps.size &&
+      prevProps.alignment === nextProps.alignment &&
+      prevProps.showUnderline === nextProps.showUnderline &&
+      prevProps.animated === nextProps.animated &&
+      prevProps.glowIntensity === nextProps.glowIntensity
+    );
+  },
+);
+
+KoreanHeaderOverlayHtml.displayName = "KoreanHeaderOverlayHtml";
 
 export default KoreanHeaderOverlayHtml;

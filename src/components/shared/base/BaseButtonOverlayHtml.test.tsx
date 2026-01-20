@@ -9,7 +9,8 @@ import { BaseButtonOverlayHtml } from "./BaseButtonOverlayHtml";
 describe("BaseButtonOverlayHtml", () => {
   it("should be defined and importable", () => {
     expect(BaseButtonOverlayHtml).toBeDefined();
-    expect(typeof BaseButtonOverlayHtml).toBe("function");
+    // React.memo returns a memoized component (object), not a plain function
+    expect(typeof BaseButtonOverlayHtml).toBe("object");
   });
 
   it("should have proper display name", () => {

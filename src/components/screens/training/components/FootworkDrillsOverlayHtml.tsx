@@ -118,15 +118,16 @@ export interface FootworkDrillsOverlayHtmlProps {
  * 
  * @korean 보법훈련UI컴포넌트
  */
-export const FootworkDrillsOverlayHtml: React.FC<FootworkDrillsOverlayHtmlProps> = ({
-  currentDrill,
-  onDrillChange,
-  currentStep,
-  // onStepComplete, // TODO: Use this for drill pattern validation
-  isActive,
-  onToggleActive,
-  isMobile,
-}) => {
+export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlProps>(
+  ({
+    currentDrill,
+    onDrillChange,
+    currentStep,
+    // onStepComplete, // TODO: Use this for drill pattern validation
+    isActive,
+    onToggleActive,
+    isMobile,
+  }) => {
   const drillInfo = DRILL_INFO[currentDrill];
   const [showInstructions, setShowInstructions] = useState(true);
 
@@ -355,6 +356,21 @@ export const FootworkDrillsOverlayHtml: React.FC<FootworkDrillsOverlayHtmlProps>
       </button>
     </div>
   );
-};
+},
+(prevProps, nextProps) => {
+  // Re-render when drill state, mobile state, or callbacks change
+  // Including callback props prevents stale closures when parent provides
+  // new functions that capture updated state.
+  return (
+    prevProps.currentDrill === nextProps.currentDrill &&
+    prevProps.currentStep === nextProps.currentStep &&
+    prevProps.isActive === nextProps.isActive &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onDrillChange === nextProps.onDrillChange &&
+    prevProps.onToggleActive === nextProps.onToggleActive
+  );
+});
+
+FootworkDrillsOverlayHtml.displayName = "FootworkDrillsOverlayHtml";
 
 export default FootworkDrillsOverlayHtml;
