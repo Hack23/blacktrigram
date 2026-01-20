@@ -30,7 +30,7 @@ Created `useDistanceCulling` hook for rendering optimization:
 
 - **Default cull distance**: 20 meters
 - **Configurable**: Per-component cull distances
-- **Hysteresis support**: `useDistanceCullingWithThreshold` prevents flickering
+- **Simplified thresholding**: `useDistanceCullingWithThreshold` provides basic thresholding to help reduce flickering at distance boundaries, but does not yet implement true hysteresis (see TODO in hook implementation for future enhancement)
 - **Usage examples**: See `useDistanceCulling.examples.tsx`
 
 ## 📈 Expected Performance Improvements

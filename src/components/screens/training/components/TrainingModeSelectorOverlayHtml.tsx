@@ -239,10 +239,12 @@ export const TrainingModeSelectorOverlayHtml = React.memo<TrainingModeSelectorOv
   },
   (prevProps, nextProps) => {
     // Only re-render if current mode or mobile state changes
+    // Note: Callback prop (onModeChange) is excluded from comparison to avoid re-renders
+    // when parent doesn't use useCallback. The component will still call the latest
+    // callback due to closure.
     return (
       prevProps.currentMode === nextProps.currentMode &&
-      prevProps.isMobile === nextProps.isMobile &&
-      prevProps.onModeChange === nextProps.onModeChange
+      prevProps.isMobile === nextProps.isMobile
     );
   },
 );

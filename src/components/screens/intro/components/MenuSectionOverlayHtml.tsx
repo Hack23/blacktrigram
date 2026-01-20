@@ -353,15 +353,14 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
   (prevProps, nextProps) => {
     // Custom comparison for optimal re-render prevention
     // Only re-render if selection or layout changes
+    // Note: Callback props are excluded from comparison to avoid re-renders when parent
+    // doesn't use useCallback. The component will still call the latest callback due to closure.
     return (
       prevProps.selectedIndex === nextProps.selectedIndex &&
       prevProps.width === nextProps.width &&
       prevProps.height === nextProps.height &&
       prevProps.isMobile === nextProps.isMobile &&
-      prevProps.menuItems.length === nextProps.menuItems.length &&
-      prevProps.onModeSelect === nextProps.onModeSelect &&
-      prevProps.onSelectedIndexChange === nextProps.onSelectedIndexChange &&
-      prevProps.onPlaySFX === nextProps.onPlaySFX
+      prevProps.menuItems.length === nextProps.menuItems.length
     );
   },
 );

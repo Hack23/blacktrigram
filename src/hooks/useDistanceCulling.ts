@@ -56,11 +56,12 @@ export interface DistanceCullingOptions {
  * - Reduces DOM rendering for distant overlays
  *
  * @note Camera position dependency
- * This hook recalculates on every camera movement, which is intentional
- * for accurate culling. In practice, camera movement is throttled by the
- * game loop and useMemo prevents redundant calculations within the same frame.
- * For further optimization, consider implementing a threshold-based approach
- * or debouncing at the component level if camera updates are very frequent.
+ * This hook recalculates when camera.position changes. While this tracks camera movement,
+ * React's dependency system will only trigger re-calculation when the position object
+ * reference changes (which typically happens on camera updates in the game loop).
+ * This is intentional for accurate culling. The useMemo prevents redundant calculations
+ * within the same frame. For games with very frequent camera updates, consider implementing
+ * a threshold-based approach or debouncing at the component level.
  *
  * @korean 거리컬링훅사용
  */
@@ -84,7 +85,7 @@ export const useDistanceCulling = (
 
     // Return true if within cull distance, false otherwise
     return distanceSquared <= cullDistanceSquared;
-  }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, enabled]);
+  }, [camera.position, position, cullDistance, enabled]);
 
   return isVisible;
 };
@@ -146,7 +147,7 @@ export const useDistanceCullingWithThreshold = (
     // Simplified hysteresis: show if within either threshold
     // TODO: Implement proper hysteresis with useState for previous visibility
     return distanceSquared <= cullDistanceSquared || distanceSquared <= showDistanceSquared;
-  }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, effectiveShowDistance, enabled]);
+  }, [camera.position, position, cullDistance, effectiveShowDistance, enabled]);
 
   return isVisible;
 };

@@ -246,6 +246,16 @@ export const VitalPointTrainingOverlayHtml = React.memo<VitalPointTrainingOverla
       )}
     </div>
   );
+},
+(prevProps, nextProps) => {
+  // Only re-render if vital point selection or mobile state changes
+  // Note: Callback prop (onVitalPointSelect) is excluded from comparison to avoid
+  // re-renders when parent doesn't use useCallback. The component will still call
+  // the latest callback due to closure.
+  return (
+    prevProps.selectedVitalPoint === nextProps.selectedVitalPoint &&
+    prevProps.isMobile === nextProps.isMobile
+  );
 });
 
 VitalPointTrainingOverlayHtml.displayName = "VitalPointTrainingOverlayHtml";

@@ -356,6 +356,18 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
       </button>
     </div>
   );
+},
+(prevProps, nextProps) => {
+  // Only re-render if drill state or mobile state changes
+  // Note: Callback props (onDrillChange, onToggleActive) are excluded from comparison
+  // to avoid re-renders when parent doesn't use useCallback. The component will still
+  // call the latest callbacks due to closure.
+  return (
+    prevProps.currentDrill === nextProps.currentDrill &&
+    prevProps.currentStep === nextProps.currentStep &&
+    prevProps.isActive === nextProps.isActive &&
+    prevProps.isMobile === nextProps.isMobile
+  );
 });
 
 FootworkDrillsOverlayHtml.displayName = "FootworkDrillsOverlayHtml";
