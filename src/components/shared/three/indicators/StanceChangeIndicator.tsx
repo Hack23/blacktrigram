@@ -2,7 +2,7 @@
  * StanceChangeIndicator - Visual feedback for stance changes
  * Displays Korean and English stance names with trigram symbols
  * 
- * @module components/combat/components/StanceChangeIndicator
+ * @module components/shared/three/indicators/StanceChangeIndicator
  * @category Combat UI
  * @korean 자세변경표시기
  */

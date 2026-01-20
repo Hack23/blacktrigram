@@ -1,7 +1,7 @@
 /**
  * GuardIndicator Component Tests
  * 
- * @module components/combat/components/GuardIndicator.test
+ * @module components/shared/three/indicators/GuardIndicator.test
  * @category Combat UI Tests
  */
 

@@ -2,7 +2,7 @@
  * GuardIndicator - Visual indicator showing current fighting stance guard position
  * Displays Korean traditional stance name, English translation, and guard characteristics
  *
- * @module components/combat/components/GuardIndicator
+ * @module components/shared/three/indicators/GuardIndicator
  * @category Combat UI
  * @korean 방어자세표시기
  */

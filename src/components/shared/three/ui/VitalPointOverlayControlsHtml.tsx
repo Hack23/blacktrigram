@@ -10,7 +10,7 @@
  * - Toggle labels
  * - Toggle animations
  *
- * @module components/combat/components/VitalPointOverlayControlsHtml
+ * @module components/shared/three/ui/VitalPointOverlayControlsHtml
  */
 
 import { Html } from "@react-three/drei";

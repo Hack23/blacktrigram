@@ -6,7 +6,7 @@
  * 
  * Eliminates 60+ lines of duplicate code between CombatScreen3D and TrainingScreen3D.
  * 
- * @module components/combat/components/TechniqueBarContainer
+ * @module components/shared/three/ui/TechniqueBarContainer
  * @category Combat UI
  * @korean 기술바컨테이너
  */
