@@ -824,15 +824,15 @@ describe("useCombatActions", () => {
     });
 
     it("should toggle laterality from left to right", () => {
+      // Create player with left leadFoot
+      const playerWithLeftFoot = {
+        ...mockConfig.validPlayers[0],
+        leadFoot: "left" as "left" | "right",
+      };
+      
       const config = {
         ...mockConfig,
-        combatState: {
-          ...mockConfig.combatState,
-          playerLaterality: ["left", "right"] as [
-            "left" | "right",
-            "left" | "right",
-          ],
-        },
+        validPlayers: [playerWithLeftFoot, mockConfig.validPlayers[1]] as const,
       };
 
       const { result } = renderHook(() => useCombatActions(config));
@@ -841,7 +841,7 @@ describe("useCombatActions", () => {
         result.current.handleStanceSideSwitch(0);
       });
 
-      // Should add combat message for right stance
+      // Should add combat message for right stance (toggled from left)
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "오른발서기",
         "Right Stance",

@@ -2238,8 +2238,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player1Animation.currentState,
           )}
           attackAnimation={player1AttackAnimation}
-          leadFoot={validPlayers[0].leadFoot ?? combatState.playerLaterality[0]}
-          laterality={combatState.playerLaterality[0]}
+          leadFoot={validPlayers[0].leadFoot ?? "right"}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}
@@ -2263,8 +2262,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             player2Animation.currentState,
           )}
           attackAnimation={player2AttackAnimation}
-          leadFoot={validPlayers[1].leadFoot ?? combatState.playerLaterality[1]}
-          laterality={combatState.playerLaterality[1]}
+          leadFoot={validPlayers[1].leadFoot ?? "right"}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}

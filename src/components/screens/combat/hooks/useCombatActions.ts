@@ -671,7 +671,8 @@ export function useCombatActions(
       if (!combatState.roundStarted || combatState.roundEnded) return;
 
       const player = validPlayers[playerIndex];
-      const currentLaterality = combatState.playerLaterality[playerIndex];
+      // Use leadFoot from player state, default to "right" if not set
+      const currentLaterality = player.leadFoot ?? "right";
 
       const result = stanceManagerRef.current.switchStanceSide(
         player,
@@ -679,11 +680,8 @@ export function useCombatActions(
       );
 
       if (result.success && result.laterality) {
-        // Update player state with new stamina
+        // Update player state with new stamina and leadFoot (now set by StanceManager)
         onPlayerUpdate(playerIndex, result.updatedPlayer);
-
-        // Update laterality state with value from StanceManager
-        combatActions.setPlayerLateralityIndex(playerIndex, result.laterality);
 
         // Audio feedback
         combatAudio?.playStanceChangeSound?.();
@@ -713,7 +711,6 @@ export function useCombatActions(
     [
       combatState.roundStarted,
       combatState.roundEnded,
-      combatState.playerLaterality,
       validPlayers,
       onPlayerUpdate,
       combatActions,
