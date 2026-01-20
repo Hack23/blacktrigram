@@ -4,7 +4,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createMockPlayerState } from "../../../../../test/test-utils";
+import { createMockPlayerState } from "../../../../test/test-utils";
 import { CombatReadinessBar } from "./CombatReadinessBar";
 
 describe("CombatReadinessBar", () => {

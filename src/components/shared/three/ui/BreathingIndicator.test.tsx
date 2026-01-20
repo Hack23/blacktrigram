@@ -11,14 +11,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BreathingDisruptionEffect,
   BreathingDisruptionLevel,
-} from "../../../../../systems/breathing/BreathingDisruptionSystem";
-import { EffectIntensity } from "../../../../../systems/effects";
-import { PlayerState } from "../../../../../systems/player";
+} from "../../../../systems/breathing/BreathingDisruptionSystem";
+import { EffectIntensity } from "../../../../systems/effects";
+import { PlayerState } from "../../../../systems/player";
 import {
   asMutable,
   createMockPlayerState,
-} from "../../../../../test/test-utils";
-import { VitalPointEffectType } from "../../../../../types/common";
+} from "../../../../test/test-utils";
+import { VitalPointEffectType } from "../../../../types/common";
 import { BreathingIndicator } from "./BreathingIndicator";
 
 describe("BreathingIndicator", () => {
