@@ -1,12 +1,3 @@
-/**
- * @module components/combat/components
- * @category Combat System
- * 
- * Combat-specific components only.
- * Shared components have been moved to src/components/shared/three/
- */
-
-// Three.js 3D components (Effects) - Combat-specific
 export { default as BloodDecals3D } from "./effects/BloodDecals3D";
 export { default as BloodParticles3D } from "./effects/BloodParticles3D";
 export { default as TraumaOverlay3D } from "./effects/TraumaOverlay3D";
@@ -14,32 +5,27 @@ export { BloodLossOverlayHtml } from "./effects/BloodLossOverlayHtml";
 export { ConsciousnessBlur } from "./effects/ConsciousnessBlur";
 export { PainVignette } from "./effects/PainVignette";
 
-// Combat-specific Indicators
 export { TechniqueNameDisplay } from "./indicators/TechniqueNameDisplay";
 export { BalanceIndicator } from "./indicators/BalanceIndicator";
 export { StaminaWarning } from "./indicators/StaminaWarning";
 export { InputBufferDisplay } from "./indicators/InputBufferDisplay";
 
-// Combat-specific UI Components
 export { CombatControlsPanel } from "./controls/CombatControlsPanel";
 export { default as ControlsGuide } from "./controls/ControlsGuide";
 export { PauseMenu } from "./controls/PauseMenu";
 export { default as QuickSettings } from "./controls/QuickSettings";
 export { KeyboardHints } from "./controls/KeyboardHints";
 
-// Round/Match Feedback - Combat-specific
 export { MatchCountdown } from "./feedback/MatchCountdown";
 export { RoundAnnouncement } from "./feedback/RoundAnnouncement";
 export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncement";
 
-// HUD components - Combat-specific
 export { CombatHUD3D } from "./hud/CombatHUD3D";
 export { DifficultyIndicator } from "./hud/DifficultyIndicator";
 export { FPSMonitor } from "./hud/FPSMonitor";
 export { MobileControlsWrapper } from "./hud/MobileControlsWrapper";
 export { PlayerStateOverlayHtml } from "./hud/PlayerStateOverlayHtml";
 
-// Re-export component prop types
 export type { BloodDecals3DProps, BloodDecal } from "./effects/BloodDecals3D";
 export type { BloodParticles3DProps, BloodSplatterEffect } from "./effects/BloodParticles3D";
 export type {

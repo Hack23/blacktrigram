@@ -70,7 +70,7 @@ vi.mock("./components/TrainingAICharacter3D", () => ({
   default: () => null,
 }));
 
-describe.skip("TrainingScreen3D - Core Functionality", () => {
+describe("TrainingScreen3D - Core Functionality", () => {
   const defaultProps = {
     onPlayerUpdate: vi.fn(),
     onReturnToMenu: vi.fn(),
@@ -94,7 +94,7 @@ describe.skip("TrainingScreen3D - Core Functionality", () => {
   });
 });
 
-describe.skip("TrainingScreen3D - UI Components", () => {
+describe("TrainingScreen3D - UI Components", () => {
   const defaultProps = {
     onPlayerUpdate: vi.fn(),
     onReturnToMenu: vi.fn(),
@@ -118,7 +118,7 @@ describe.skip("TrainingScreen3D - UI Components", () => {
   });
 });
 
-describe.skip("TrainingScreen3D - Responsive Layout", () => {
+describe("TrainingScreen3D - Responsive Layout", () => {
   const defaultProps = {
     onPlayerUpdate: vi.fn(),
     onReturnToMenu: vi.fn(),
@@ -141,7 +141,7 @@ describe.skip("TrainingScreen3D - Responsive Layout", () => {
   });
 });
 
-describe.skip("TrainingScreen3D - User Interactions", () => {
+describe("TrainingScreen3D - User Interactions", () => {
   const defaultProps = {
     onPlayerUpdate: vi.fn(),
     onReturnToMenu: vi.fn(),

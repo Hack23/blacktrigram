@@ -1,12 +1,6 @@
-/**
- * Main components export for Black Trigram
- */
-
-// Screen components
 export * from "./screens/combat";
 export { TrainingScreen3D } from "./screens/training";
 
-// Shared Three.js UI components (explicit exports to avoid naming conflicts)
 export {
   ArchetypeCard,
   KoreanButton,

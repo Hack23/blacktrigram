@@ -1,12 +1,3 @@
-/**
- * Three.js-based Korean UI Component Library
- *
- * Exports all reusable Three.js UI components with Korean theming
- *
- * @module components/three
- */
-
-// UI Components
 export { KoreanButton } from "./ui/KoreanButton";
 export type { KoreanButtonProps } from "./ui/KoreanButton";
 
@@ -32,7 +23,6 @@ export { default as VitalPointOverlayControlsHtml } from "./ui/VitalPointOverlay
 export type { VitalPointOverlayControlsProps } from "./ui/VitalPointOverlayControlsHtml";
 export type { BodyRegionFilter } from "./ui/VitalPointOverlayControlsHtml";
 
-// HUD Components
 export { default as PlayerHUD } from "./ui/PlayerHUD";
 export type { PlayerHUDProps } from "./ui/PlayerHUD";
 
@@ -63,7 +53,6 @@ export type { BreathingIndicatorProps } from "./ui/BreathingIndicator";
 export { CombatReadinessBar } from "./ui/CombatReadinessBar";
 export type { CombatReadinessBarProps } from "./ui/CombatReadinessBar";
 
-// Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
 
 export { StanceSymbol3D } from "./effects/StanceSymbol3D";
@@ -84,21 +73,17 @@ export type { ActionFeedbackProps, TechniqueNameProps } from "./effects/ActionFe
 export { default as HitEffects3D } from "./effects/HitEffects3D";
 export type { HitEffects3DProps } from "./effects/HitEffects3D";
 
-// Indicators
 export { GuardIndicator } from "./indicators/GuardIndicator";
 export type { GuardIndicatorProps } from "./indicators/GuardIndicator";
 
 export { StanceChangeIndicator } from "./indicators/StanceChangeIndicator";
 export type { StanceChangeIndicatorProps } from "./indicators/StanceChangeIndicator";
 
-// Models
 export { Player3DWithTransitions } from "./models/Player3DWithTransitions";
 export type { Player3DWithTransitionsProps } from "./models/Player3DWithTransitions";
 
-// Skeletal Animation Components
 export { SkeletalPlayer3D } from "./models/SkeletalPlayer3D";
 
-// Anatomy
 export {
   BONE_MUSCLE_MAP,
   BoneAttachedMuscle,
@@ -115,7 +100,6 @@ export { Face3D } from "./anatomy/Face3D";
 export { Hand3D } from "./anatomy/Hand3D";
 export type { Hand3DProps } from "./anatomy/Hand3D";
 
-// Scene
 export { BackgroundScene3D } from "./scene/BackgroundScene3D";
 export type { BackgroundScene3DProps } from "./scene/BackgroundScene3D";
 export { DebugCollision } from "./scene/DebugCollision";
