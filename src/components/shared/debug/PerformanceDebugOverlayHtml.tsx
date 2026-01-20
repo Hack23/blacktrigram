@@ -49,10 +49,14 @@ interface PoolStatus {
  *
  * Only renders in development mode.
  *
+ * Optimized with React.memo for 60fps performance:
+ * - Memoized to prevent parent re-renders from affecting it
+ * - Internal state updates only via interval
+ *
  * @returns Performance overlay or null in production
  * @korean 성능디버그오버레이컴포넌트
  */
-export const PerformanceDebugOverlayHtml: React.FC = () => {
+export const PerformanceDebugOverlayHtml = React.memo(() => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     avgFrameTime: 0,
     maxFrameTime: 0,
@@ -217,4 +221,6 @@ export const PerformanceDebugOverlayHtml: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
+PerformanceDebugOverlayHtml.displayName = "PerformanceDebugOverlayHtml";

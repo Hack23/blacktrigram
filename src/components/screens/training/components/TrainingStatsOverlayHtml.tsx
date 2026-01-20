@@ -61,6 +61,11 @@ export interface TrainingStatsOverlayHtmlProps {
  * Html overlay displaying training performance metrics with Korean theming.
  * All colors use KOREAN_COLORS constants for consistency.
  *
+ * Optimized with React.memo for 60fps performance:
+ * - Memoized with custom comparison function
+ * - Only re-renders when stats actually change
+ * - Reduces unnecessary DOM updates
+ *
  * @example
  * ```tsx
  * <TrainingStatsOverlayHtml
@@ -71,9 +76,8 @@ export interface TrainingStatsOverlayHtmlProps {
  *
  * @korean 훈련통계오버레이컴포넌트
  */
-export const TrainingStatsOverlayHtml: React.FC<
-  TrainingStatsOverlayHtmlProps
-> = ({
+export const TrainingStatsOverlayHtml = React.memo<TrainingStatsOverlayHtmlProps>(
+  ({
   stats,
   isMobile,
   width = 375,
@@ -299,7 +303,28 @@ export const TrainingStatsOverlayHtml: React.FC<
       </div>
     </div>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison for optimal re-render prevention
+    // Only re-render if stats values actually changed
+    return (
+      prevProps.stats.score === nextProps.stats.score &&
+      prevProps.stats.combo === nextProps.stats.combo &&
+      prevProps.stats.hits === nextProps.stats.hits &&
+      prevProps.stats.misses === nextProps.stats.misses &&
+      prevProps.stats.accuracy === nextProps.stats.accuracy &&
+      prevProps.stats.sessionDuration === nextProps.stats.sessionDuration &&
+      prevProps.stats.bestCombo === nextProps.stats.bestCombo &&
+      prevProps.stats.perfectStrikes === nextProps.stats.perfectStrikes &&
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.width === nextProps.width &&
+      prevProps.distanceToDummy === nextProps.distanceToDummy &&
+      prevProps.effectiveReach === nextProps.effectiveReach
+    );
+  },
+);
+
+TrainingStatsOverlayHtml.displayName = "TrainingStatsOverlayHtml";
 
 /**
  * Single stat row component with Korean theming
@@ -307,16 +332,18 @@ export const TrainingStatsOverlayHtml: React.FC<
  * Uses KOREAN_COLORS constants for all text colors
  * Enhanced with smooth transitions and neon glow on value
  *
+ * Optimized with React.memo for performance
+ *
  * @korean 통계행컴포넌트
  */
-const StatRow: React.FC<{
+const StatRow = React.memo<{
   korean: string;
   english: string;
   value: string;
   color: number; // Numeric hex color from KOREAN_COLORS (e.g., 0x00ffff)
   isMobile: boolean;
   width: number; // Width for Super HD font scaling
-}> = ({ korean, english, value, color, isMobile, width }) => {
+}>(({ korean, english, value, color, isMobile, width }) => {
   // Improved font sizes for mobile readability (min 16px for Korean body text)
   const labelFontSize = isMobile
     ? getMobileKoreanFontSize("SMALL", width) // 16px minimum
@@ -374,6 +401,8 @@ const StatRow: React.FC<{
       </div>
     </div>
   );
-};
+});
+
+StatRow.displayName = "StatRow";
 
 export default TrainingStatsOverlayHtml;

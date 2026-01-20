@@ -32,17 +32,23 @@ export interface MenuSectionOverlayHtmlProps {
 
 /**
  * HTML-based MenuSection component for Three.js integration
+ *
+ * Optimized with React.memo for 60fps performance:
+ * - Memoized to prevent unnecessary re-renders
+ * - All callbacks use useCallback
+ * - Styles pre-calculated and memoized
  */
-export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
-  menuItems,
-  selectedIndex,
-  onModeSelect,
-  onSelectedIndexChange,
-  onPlaySFX,
-  width = 800,
-  height = 300,
-  isMobile = false, // Default to false, parent should pass proper device detection
-}) => {
+export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
+  ({
+    menuItems,
+    selectedIndex,
+    onModeSelect,
+    onSelectedIndexChange,
+    onPlaySFX,
+    width = 800,
+    height = 300,
+    isMobile = false, // Default to false, parent should pass proper device detection
+  }) => {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
 
@@ -343,6 +349,23 @@ export const MenuSectionOverlayHtml: React.FC<MenuSectionOverlayHtmlProps> = ({
       </div>
     </div>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison for optimal re-render prevention
+    // Only re-render if selection or layout changes
+    return (
+      prevProps.selectedIndex === nextProps.selectedIndex &&
+      prevProps.width === nextProps.width &&
+      prevProps.height === nextProps.height &&
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.menuItems.length === nextProps.menuItems.length &&
+      prevProps.onModeSelect === nextProps.onModeSelect &&
+      prevProps.onSelectedIndexChange === nextProps.onSelectedIndexChange &&
+      prevProps.onPlaySFX === nextProps.onPlaySFX
+    );
+  },
+);
+
+MenuSectionOverlayHtml.displayName = "MenuSectionOverlayHtml";
 
 export default MenuSectionOverlayHtml;
