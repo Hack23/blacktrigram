@@ -719,9 +719,10 @@ export function useCombatActions(
     [
       combatState.roundStarted,
       combatState.roundEnded,
+      combatState.playerLaterality,
       validPlayers,
       onPlayerUpdate,
-      combatActions,
+      onLateralityUpdate,
       combatAudio,
       addCombatMessage,
       addHitEffect,
