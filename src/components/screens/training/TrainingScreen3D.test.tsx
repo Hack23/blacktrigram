@@ -12,7 +12,7 @@ interface MockHtmlProps {
 }
 
 interface MockCameraPosition {
-  readonly set: Mock;
+  readonly set: Mock<(x: number, y: number, z: number) => void>;
 }
 
 interface MockCamera {
@@ -25,10 +25,10 @@ interface MockThreeContext {
 }
 
 interface MockAudioProvider {
-  readonly playSFX: Mock;
-  readonly fadeIn: Mock<() => Promise<void>>;
-  readonly fadeOut: Mock<() => Promise<void>>;
-  readonly stopMusic: Mock;
+  readonly playSFX: Mock<(id: string, volume?: number) => Promise<void>>;
+  readonly fadeIn: Mock<(trackId: string, duration?: number) => Promise<void>>;
+  readonly fadeOut: Mock<(duration?: number) => Promise<void>>;
+  readonly stopMusic: Mock<() => void>;
 }
 
 interface MockPlayerMovement {

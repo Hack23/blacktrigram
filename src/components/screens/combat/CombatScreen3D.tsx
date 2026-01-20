@@ -65,19 +65,15 @@ import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
-import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
 import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
 import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
-import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
-import { PlayerHUD } from "../../shared/three/ui/PlayerHUD";
 import { ComboCounter } from "../../shared/three/ui/ComboCounter";
-import { BodyPartHealthDisplay } from "../../shared/three/ui/BodyPartHealthDisplay";
-import { SpeedIndicatorHUD } from "../../shared/three/ui/SpeedIndicatorHUD";
 import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
 import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
 import HitEffects3D from "../../shared/three/effects/HitEffects3D";
-import { CombatTimer } from "../../shared/ui/CombatTimer";
+import { FPSMonitor } from "./components/hud/FPSMonitor";
+import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -95,25 +91,7 @@ import {
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
-import {
-  ActionFeedback,
-  TechniqueName,
-} from "../../shared/three/effects/ActionFeedback";
-import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
-import HitEffects3D from "../../shared/three/effects/HitEffects3D";
-import {
-  VitalPointMarkers3D,
-} from "../../shared/three/effects/VitalPointMarkers3D";
-import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
-import { ComboCounter } from "../../shared/three/ui/ComboCounter";
-import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
-import { CombatTimer } from "../../shared/ui/CombatTimer";
-import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
-import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
-import { FPSMonitor } from "./components/hud/FPSMonitor";
-import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
