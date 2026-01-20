@@ -81,11 +81,11 @@ import {
   VitalPointMarkers3D,
   VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
-} from "../combat/components";
-import { CombatArena3D } from "../combat/components/arena/CombatArena3D";
-import { TechniqueBarContainer } from "../combat/components/hud/TechniqueBarContainer";
-import { GuardIndicator } from "../combat/components/indicators/GuardIndicator";
-import { StanceChangeIndicator } from "../combat/components/indicators/StanceChangeIndicator";
+} from "../../shared/three";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
+import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
+import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,

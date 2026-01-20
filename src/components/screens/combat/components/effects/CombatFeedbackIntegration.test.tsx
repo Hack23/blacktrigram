@@ -19,10 +19,10 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { HitEffectType } from "../../../../../systems/effects";
-import { ActionFeedback, TechniqueName } from "../feedback/ActionFeedback";
-import { DamageNumbers } from "../feedback/DamageNumbers";
-import { ComboCounter } from "../indicators/ComboCounter";
-import HitEffects3D from "./HitEffects3D";
+import { ActionFeedback, TechniqueName } from "../../../../shared/three/effects/ActionFeedback";
+import { DamageNumbers } from "../../../../shared/three/effects/DamageNumbers";
+import { ComboCounter } from "../../../../shared/three/ui/ComboCounter";
+import HitEffects3D from "../../../../shared/three/effects/HitEffects3D";
 
 // Mock Three.js and React Three Fiber
 vi.mock("@react-three/fiber", () => ({
