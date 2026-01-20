@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.02% </span>
+                <span class="strong">83.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/43</span>
+                <span class='fraction'>36/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/18</span>
+                <span class='fraction'>15/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>19/20</span>
+                <span class='fraction'>18/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.02% </span>
+                <span class="strong">83.72% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/43</span>
+                <span class='fraction'>36/43</span>
             </div>
         
             
@@ -404,7 +404,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-yes">107x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -468,9 +468,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -504,10 +504,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">148x</span>
+<span class="cline-any cline-yes">144x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">148x</span>
+<span class="cline-any cline-yes">144x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -554,7 +554,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -566,12 +566,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">148x</span>
+<span class="cline-any cline-yes">144x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * useCombatState Hook - Consolidated Combat State Management
@@ -722,10 +722,10 @@ function combatReducer(state: CombatScreenState, action: CombatAction): CombatSc
 <span class="branch-15 cbranch-no" title="branch not covered" >    case "SET_PLAYER_LATERALITY":</span>
 <span class="cstat-no" title="statement not covered" >      return { ...state, playerLaterality: action.payload };</span>
 &nbsp;
-    case "SET_PLAYER_LATERALITY_INDEX":
-      const newLaterality: [StanceLaterality, StanceLaterality] = [...state.playerLaterality] as [StanceLaterality, StanceLaterality];
-      newLaterality[action.payload.index] = action.payload.laterality;
-      return { ...state, playerLaterality: newLaterality };
+<span class="branch-16 cbranch-no" title="branch not covered" >    case "SET_PLAYER_LATERALITY_INDEX":</span>
+      const newLaterality: [StanceLaterality, StanceLaterality] = <span class="cstat-no" title="statement not covered" >[...state.playerLaterality] as [StanceLaterality, StanceLaterality];</span>
+<span class="cstat-no" title="statement not covered" >      newLaterality[action.payload.index] = action.payload.laterality;</span>
+<span class="cstat-no" title="statement not covered" >      return { ...state, playerLaterality: newLaterality };</span>
 &nbsp;
 <span class="branch-17 cbranch-no" title="branch not covered" >    default:</span>
 <span class="cstat-no" title="statement not covered" >      return state;</span>
@@ -820,8 +820,8 @@ export function useCombatState() {
       []
     ),
     setPlayerLateralityIndex: useCallback(
-      (index: 0 | 1, laterality: StanceLaterality) =&gt;
-        dispatch({ type: "SET_PLAYER_LATERALITY_INDEX", payload: { index, laterality } }),
+<span class="fstat-no" title="function not covered" >      (i</span>ndex: 0 | 1, laterality: StanceLaterality) =&gt;
+<span class="cstat-no" title="statement not covered" >        dispatch({ type: "SET_PLAYER_LATERALITY_INDEX", payload: { index, laterality } }),</span>
       []
     ),
   };
@@ -835,7 +835,7 @@ export function useCombatState() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T23:11:00.065Z
+                at 2026-01-20T17:34:48.267Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
