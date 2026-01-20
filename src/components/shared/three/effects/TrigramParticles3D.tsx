@@ -13,8 +13,8 @@
  * - Fade-out animation
  * - Stance-specific visual identity
  *
- * @module components/combat/TrigramParticles3D
- * @category Combat Effects
+ * @module components/shared/three/effects/TrigramParticles3D
+ * @category Shared Effects
  * @korean 팔괘입자3D
  */
 

@@ -16,7 +16,7 @@ import { PlayerState } from "../../../../../systems/player";
 import { DifficultyTier } from "../../../../../systems/ai/AdaptiveDifficulty";
 import { CombatControlsPanel } from "../controls/CombatControlsPanel";
 import { DifficultyIndicator } from "./DifficultyIndicator";
-import { TechniqueBarContainer } from "./TechniqueBarContainer";
+import { TechniqueBarContainer } from "../../../../shared/three/ui/TechniqueBarContainer";
 import { MobileControlsWrapper } from "./MobileControlsWrapper";
 import { Direction, DPadEventType } from "../../../../shared/mobile/VirtualDPad";
 import { ButtonEventType } from "../../../../shared/mobile/ActionButtons";

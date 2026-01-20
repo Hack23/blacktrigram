@@ -15,10 +15,10 @@ import { TrigramStance } from "../../../../../types";
 import { PlayerState } from "../../../../../systems/player";
 import { BodyPartHealth } from "../../../../../systems/bodypart/types";
 import { StanceLaterality } from "../../../../../systems/trigram/types";
-import { BodyPartHealthDisplay } from "../indicators/BodyPartHealthDisplay";
-import { GuardIndicator } from "../indicators/GuardIndicator";
-import { PlayerHUD } from "./PlayerHUD";
-import { SpeedIndicatorHUD } from "./SpeedIndicatorHUD";
+import { BodyPartHealthDisplay } from "../../../../shared/three/ui/BodyPartHealthDisplay";
+import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
+import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
+import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
 
 /**
  * Props for the RightHUD component.

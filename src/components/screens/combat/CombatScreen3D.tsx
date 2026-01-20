@@ -64,12 +64,20 @@ import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-import { StanceChangeIndicator } from "./components/indicators/StanceChangeIndicator";
-// TODO: Create HTML versions of these UI components for Three.js
-// import { CombatControls } from "./components/CombatControls";
-// import { CombatFooter } from "./components/CombatFooter";
-// import { CombatHUD } from "./components/CombatHUD";
-// import { CombatStatsPanel } from "./components/CombatStatsPanel";
+import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
+import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
+import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
+import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
+import { PlayerHUD } from "../../shared/three/ui/PlayerHUD";
+import { ComboCounter } from "../../shared/three/ui/ComboCounter";
+import { BodyPartHealthDisplay } from "../../shared/three/ui/BodyPartHealthDisplay";
+import { SpeedIndicatorHUD } from "../../shared/three/ui/SpeedIndicatorHUD";
+import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
+import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
+import HitEffects3D from "../../shared/three/effects/HitEffects3D";
+import { CombatTimer } from "../../shared/ui/CombatTimer";
 import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -88,20 +96,24 @@ import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import {
-  VitalPointMarkers3D,
-  VitalPointOverlayControlsHtml,
-} from "./components";
-import { CombatArena3D } from "./components/arena/CombatArena3D";
-import { PauseMenu } from "./components/controls/PauseMenu";
-import HitEffects3D from "./components/effects/HitEffects3D";
-import {
   ActionFeedback,
   TechniqueName,
-} from "./components/feedback/ActionFeedback";
-import { DamageNumbers } from "./components/feedback/DamageNumbers";
+} from "../../shared/three/effects/ActionFeedback";
+import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
+import HitEffects3D from "../../shared/three/effects/HitEffects3D";
+import {
+  VitalPointMarkers3D,
+} from "../../shared/three/effects/VitalPointMarkers3D";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { ComboCounter } from "../../shared/three/ui/ComboCounter";
+import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
+import { CombatTimer } from "../../shared/ui/CombatTimer";
+import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
+import { PauseMenu } from "./components/controls/PauseMenu";
+import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
+import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
-import { ComboCounter } from "./components/indicators/ComboCounter";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -303,7 +315,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     import("../../../types/common").VitalPointSeverity[]
   >([]);
   const [regionFilter, setRegionFilter] =
-    useState<import("./components").BodyRegionFilter>("all");
+    useState<import("../../shared/three/ui/VitalPointOverlayControlsHtml").BodyRegionFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);

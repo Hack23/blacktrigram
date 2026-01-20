@@ -18,7 +18,7 @@ import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { ResponsiveContainer } from "../../../../shared/base/ResponsiveContainer";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
-import { CombatTimer } from "./CombatTimer";
+import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 
 /**
  * Props for the TopHUD component.
