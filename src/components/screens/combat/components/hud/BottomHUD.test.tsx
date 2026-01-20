@@ -9,8 +9,9 @@ import { describe, it, expect, vi } from "vitest";
 import React from "react";
 import { AudioProvider } from "../../../../../audio/AudioProvider";
 import { BottomHUD } from "./BottomHUD";
-import { PlayerArchetype } from "../../../../../types";
+import { PlayerArchetype, DamageType } from "../../../../../types";
 import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
+import { DifficultyTier } from "../../../../../systems/ai/AdaptiveDifficulty";
 
 // Wrapper component for AudioProvider
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -28,14 +29,13 @@ describe("BottomHUD", () => {
     {
       id: "jab",
       name: { korean: "잽", english: "Jab" },
-      damage: 10,
+      description: { korean: "빠른 잽", english: "Quick jab" },
+      damage: { min: 8, max: 12 },
+      damageType: DamageType.BLUNT,
       staminaCost: 5,
       kiCost: 0,
-      speed: 1.0,
-      accuracy: 0.9,
-      range: 1.0,
       cooldown: 500,
-      animationType: "jab",
+      keyboardShortcut: "Q" as const,
     },
   ];
 
@@ -53,7 +53,7 @@ describe("BottomHUD", () => {
     onTechniqueSelect: vi.fn(),
     onTechniqueHover: vi.fn(),
     combatMessages: ["전투 시작! | Combat Start!"],
-    currentDifficultyTier: "beginner" as const,
+    currentDifficultyTier: DifficultyTier.BEGINNER,
     mobileControlsEnabled: false,
     currentStanceIndex: 0,
     stanceWheelExpanded: false,
@@ -148,14 +148,14 @@ describe("BottomHUD", () => {
 
   it("should handle different difficulty tiers", () => {
     const { rerender } = render(
-      <BottomHUD {...defaultProps} currentDifficultyTier="beginner" />
+      <BottomHUD {...defaultProps} currentDifficultyTier={DifficultyTier.BEGINNER} />
     );
 
     expect(screen.getByTestId("difficulty-indicator")).toBeInTheDocument();
 
     // Change difficulty tier
     rerender(
-      <BottomHUD {...defaultProps} currentDifficultyTier="master" />
+      <BottomHUD {...defaultProps} currentDifficultyTier={DifficultyTier.EXPERT} />
     );
 
     expect(screen.getByTestId("difficulty-indicator")).toBeInTheDocument();
