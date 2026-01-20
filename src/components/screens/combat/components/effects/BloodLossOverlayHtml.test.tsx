@@ -11,7 +11,8 @@ import { BloodLossOverlayHtml } from "./BloodLossOverlayHtml";
 describe("BloodLossOverlayHtml", () => {
   it("should be defined and importable", () => {
     expect(BloodLossOverlayHtml).toBeDefined();
-    expect(typeof BloodLossOverlayHtml).toBe("function");
+    // React.memo returns a memoized component (object), not a plain function
+    expect(typeof BloodLossOverlayHtml).toBe("object");
   });
 
   describe("Props Interface", () => {

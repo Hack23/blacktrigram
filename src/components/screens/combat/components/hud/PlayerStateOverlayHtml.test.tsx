@@ -11,7 +11,8 @@ import { PlayerStateOverlayHtml } from "./PlayerStateOverlayHtml";
 describe("PlayerStateOverlayHtml", () => {
   it("should be defined and importable", () => {
     expect(PlayerStateOverlayHtml).toBeDefined();
-    expect(typeof PlayerStateOverlayHtml).toBe("function");
+    // React.memo returns a memoized component (object), not a plain function
+    expect(typeof PlayerStateOverlayHtml).toBe("object");
   });
 
   describe("Props Interface", () => {

@@ -49,6 +49,13 @@ export const TrainingFeedbackOverlayHtml = React.memo<TrainingFeedbackOverlayHtm
       {message}
     </div>
   );
+},
+(prevProps, nextProps) => {
+  // Only re-render if message or mobile state changes
+  return (
+    prevProps.message === nextProps.message &&
+    prevProps.isMobile === nextProps.isMobile
+  );
 });
 
 TrainingFeedbackOverlayHtml.displayName = "TrainingFeedbackOverlayHtml";
