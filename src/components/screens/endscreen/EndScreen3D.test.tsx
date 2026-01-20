@@ -1,10 +1,15 @@
-import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../systems/combat";
 import { PlayerArchetype } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { EndScreen3D } from "./EndScreen3D";
+
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
@@ -98,7 +103,7 @@ describe("EndScreen3D", () => {
           width={1920}
           height={1080}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(container).toBeTruthy();
@@ -115,7 +120,7 @@ describe("EndScreen3D", () => {
           matchStats={mockMatchStats}
           onReturnToMenu={mockOnReturnToMenu}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("end-screen-3d")).toBeInTheDocument();
@@ -134,7 +139,7 @@ describe("EndScreen3D", () => {
           matchStats={mockMatchStats}
           onReturnToMenu={mockOnReturnToMenu}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     const winnerName = getByTestId("winner-name");
@@ -143,7 +148,7 @@ describe("EndScreen3D", () => {
     expect(winnerName).toBeInTheDocument();
     expect(winnerArchetype).toBeInTheDocument();
     expect(winnerArchetype).toHaveTextContent(
-      PlayerArchetype.MUSA.toUpperCase()
+      PlayerArchetype.MUSA.toUpperCase(),
     );
   });
 
@@ -160,7 +165,7 @@ describe("EndScreen3D", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onRematch={mockOnRematch}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("return-to-menu-button")).toBeInTheDocument();
@@ -178,7 +183,7 @@ describe("EndScreen3D", () => {
           matchStats={mockMatchStats}
           onReturnToMenu={mockOnReturnToMenu}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("toggle-stats-button")).toBeInTheDocument();
@@ -195,7 +200,7 @@ describe("EndScreen3D", () => {
           matchStats={mockMatchStats}
           onReturnToMenu={mockOnReturnToMenu}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("end-screen-3d")).toBeInTheDocument();
@@ -215,11 +220,11 @@ describe("EndScreen3D", () => {
           width={400}
           height={800}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(
-      document.querySelector('[data-testid="end-screen-3d"]')
+      document.querySelector('[data-testid="end-screen-3d"]'),
     ).toBeInTheDocument();
 
     // Desktop width
@@ -232,11 +237,11 @@ describe("EndScreen3D", () => {
           width={1920}
           height={1080}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(
-      document.querySelector('[data-testid="end-screen-3d"]')
+      document.querySelector('[data-testid="end-screen-3d"]'),
     ).toBeInTheDocument();
   });
 
@@ -253,7 +258,7 @@ describe("EndScreen3D", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onRematch={mockOnRematch}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("rematch-button")).toBeInTheDocument();
@@ -272,7 +277,7 @@ describe("EndScreen3D", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onViewReplay={mockOnViewReplay}
         />
-      </AudioProvider>
+      </AudioProvider>,
     );
 
     expect(getByTestId("view-replay-button")).toBeInTheDocument();

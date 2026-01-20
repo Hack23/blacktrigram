@@ -1,9 +1,14 @@
-import { render } from "@testing-library/react";
+import { cleanup, render } from "@testing-library/react";
 import React, { useEffect } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { PlayerArchetype } from "../../../types/common";
 import { IntroScreen3D } from "./IntroScreen3D";
+
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
