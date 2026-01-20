@@ -1160,6 +1160,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             playerAnimation.currentState,
           )}
           attackAnimation={attackAnimation}
+          laterality="right"
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={true}
           enableStanceAudio={true}

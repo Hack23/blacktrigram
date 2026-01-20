@@ -284,4 +284,113 @@ describe("useSkeletalAnimation", () => {
       expect(result.current.animState.playbackSpeed).toBe(0.5);
     });
   });
+
+  describe("laterality support", () => {
+    it("should apply left laterality to animations", () => {
+      const { result } = renderHook(() =>
+        useSkeletalAnimation({
+          currentAnimation: "idle",
+          laterality: "left",
+        }),
+      );
+
+      expect(result.current.animState.isPlaying).toBe(true);
+      // Animation should be mirrored for left laterality
+      const animation = result.current.animState.currentAnimation;
+      expect(animation).toBeDefined();
+      // Check that animation name includes "_left" suffix after mirroring
+      if (animation) {
+        expect(animation.name).toContain("_left");
+      }
+    });
+
+    it("should use right laterality by default", () => {
+      const { result } = renderHook(() =>
+        useSkeletalAnimation({
+          currentAnimation: "idle",
+        }),
+      );
+
+      expect(result.current.animState.isPlaying).toBe(true);
+      const animation = result.current.animState.currentAnimation;
+      expect(animation).toBeDefined();
+      // Default should not have "_left" suffix
+      if (animation) {
+        expect(animation.name).not.toContain("_left");
+      }
+    });
+
+    it("should apply right laterality explicitly", () => {
+      const { result } = renderHook(() =>
+        useSkeletalAnimation({
+          currentAnimation: "idle",
+          laterality: "right",
+        }),
+      );
+
+      expect(result.current.animState.isPlaying).toBe(true);
+      const animation = result.current.animState.currentAnimation;
+      expect(animation).toBeDefined();
+      // Right laterality should not mirror (no "_left" suffix)
+      if (animation) {
+        expect(animation.name).not.toContain("_left");
+      }
+    });
+
+    it("should update laterality when laterality prop changes", () => {
+      const { result, rerender } = renderHook(
+        ({ laterality }: { laterality: "left" | "right" }) =>
+          useSkeletalAnimation({
+            currentAnimation: "idle",
+            laterality,
+          }),
+        {
+          initialProps: { laterality: "right" as "left" | "right" },
+        },
+      );
+
+      // Initial: right laterality (no mirroring)
+      let animation = result.current.animState.currentAnimation;
+      expect(animation?.name).not.toContain("_left");
+
+      // Change to left laterality (should mirror)
+      rerender({ laterality: "left" });
+
+      animation = result.current.animState.currentAnimation;
+      expect(animation?.name).toContain("_left");
+    });
+
+    it("should apply laterality to attack animations", () => {
+      const { result } = renderHook(() =>
+        useSkeletalAnimation({
+          currentAnimation: "attack",
+          attackAnimation: "jab",
+          laterality: "left",
+        }),
+      );
+
+      expect(result.current.animState.isPlaying).toBe(true);
+      const animation = result.current.animState.currentAnimation;
+      expect(animation).toBeDefined();
+      if (animation) {
+        expect(animation.name).toContain("_left");
+      }
+    });
+
+    it("should apply laterality to walk animations", () => {
+      const { result } = renderHook(() =>
+        useSkeletalAnimation({
+          currentAnimation: "walk",
+          laterality: "left",
+        }),
+      );
+
+      expect(result.current.animState.isPlaying).toBe(true);
+      const animation = result.current.animState.currentAnimation;
+      expect(animation).toBeDefined();
+      if (animation) {
+        expect(animation.name).toContain("_left");
+      }
+    });
+  });
 });

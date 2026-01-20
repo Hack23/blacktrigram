@@ -1215,6 +1215,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     combatSystem,
     onPlayerUpdate,
     onPlayerPositionUpdate: handlePlayerPositionUpdate,
+    onLateralityUpdate: (playerIndex, laterality) => {
+      combatActions.setPlayerLateralityIndex(playerIndex as 0 | 1, laterality);
+    },
     addCombatMessage,
     addHitEffect,
     arenaBounds,

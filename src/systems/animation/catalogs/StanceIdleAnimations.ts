@@ -64,18 +64,19 @@ const BREATHING_DURATIONS = {
 /**
  * Weight shift amplitudes per stance (percentage of base)
  * Reflects stability vs. mobility of each stance
+ * REDUCED by 65% to minimize "bouncing in place" appearance
  *
  * @korean 체중이동진폭
  */
 const WEIGHT_SHIFT_AMPLITUDES = {
-  GEON: 0.015, // Subtle shift - mobile stance
-  TAE: 0.02, // Fluid flowing shifts
-  LI: 0.008, // Minimal - precision stance
-  JIN: 0.025, // Larger - coiled spring
-  SON: 0.018, // Rhythmic lateral shifts
-  GAM: 0.022, // Flowing adaptation
-  GAN: 0.005, // Minimal - mountain solid
-  GON: 0.012, // Grounded subtle shifts
+  GEON: 0.005, // Subtle shift - mobile stance (was 0.015)
+  TAE: 0.007, // Fluid flowing shifts (was 0.02)
+  LI: 0.003, // Minimal - precision stance (was 0.008)
+  JIN: 0.009, // Larger - coiled spring (was 0.025)
+  SON: 0.006, // Rhythmic lateral shifts (was 0.018)
+  GAM: 0.008, // Flowing adaptation (was 0.022)
+  GAN: 0.002, // Minimal - mountain solid (was 0.005)
+  GON: 0.004, // Grounded subtle shifts (was 0.012)
 } as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
