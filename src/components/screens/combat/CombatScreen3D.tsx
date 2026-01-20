@@ -67,7 +67,13 @@ import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-import { StanceChangeIndicator } from "./components/indicators/StanceChangeIndicator";
+// Imported from shared - these components are used by multiple screens
+import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
+import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
+import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
+import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -90,11 +96,6 @@ import {
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
-import {
-  VitalPointMarkers3D,
-  VitalPointOverlayControlsHtml,
-} from "./components";
-import { CombatArena3D } from "./components/arena/CombatArena3D";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
 import HitEffects3D from "./components/effects/HitEffects3D";
@@ -110,10 +111,8 @@ import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
 import { PlayerHUD } from "./components/hud/PlayerHUD";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
-import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
 import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
 import { ComboCounter } from "./components/indicators/ComboCounter";
-import { GuardIndicator } from "./components/indicators/GuardIndicator";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,

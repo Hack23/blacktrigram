@@ -11,7 +11,7 @@
 import { Text } from "@react-three/drei";
 import React, { Suspense, useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../types/constants";
 
 /**
  * Props for the KoreanSignage3D component.
