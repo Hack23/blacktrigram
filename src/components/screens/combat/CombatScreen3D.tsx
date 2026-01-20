@@ -2466,7 +2466,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Top HUD - Combat title, timer, volume control, back button */}
         <TopHUD
           width={width}
-          height={height}
           isMobile={isMobile}
           positionScale={positionScale}
           timerState={{

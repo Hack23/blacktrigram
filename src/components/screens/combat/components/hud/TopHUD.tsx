@@ -27,8 +27,6 @@ import { CombatTimer } from "./CombatTimer";
 export interface TopHUDProps {
   /** Screen width for responsive positioning */
   readonly width: number;
-  /** Screen height for responsive positioning */
-  readonly height: number;
   /** Mobile layout flag */
   readonly isMobile: boolean;
   /** Position scale for large displays (1.0, 1.25, 1.5 for 4K) */
@@ -59,7 +57,6 @@ export interface TopHUDProps {
  * ```tsx
  * <TopHUD
  *   width={1200}
- *   height={800}
  *   isMobile={false}
  *   positionScale={1.0}
  *   timerState={timerState}
@@ -120,7 +117,7 @@ export const TopHUD: React.FC<TopHUDProps> = ({
       )}
 
       {/* Volume Control - Top Right */}
-      <VolumeControl position="bottom-right" compact={isMobile} />
+      <VolumeControl position="top-right" compact={isMobile} />
 
       {/* Back Button - Top Right Corner */}
       <ResponsiveContainer

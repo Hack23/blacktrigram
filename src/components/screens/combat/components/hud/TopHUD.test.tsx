@@ -35,7 +35,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -53,7 +52,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -71,7 +69,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -89,7 +86,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -107,7 +103,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -127,7 +122,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -149,7 +143,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -206,7 +199,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={1200}
-        height={800}
         isMobile={false}
         positionScale={1.0}
         timerState={mockTimerState}
