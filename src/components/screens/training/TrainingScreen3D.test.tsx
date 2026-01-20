@@ -6,10 +6,15 @@
  */
 
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerArchetype } from "../../../types/common";
 import { TrainingScreen3D } from "./TrainingScreen3D";
+
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({

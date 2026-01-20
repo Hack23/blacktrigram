@@ -1,6 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ControlsScreen3D } from "./ControlsScreen3D";
+
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
 // Mock Three.js Canvas to avoid WebGL issues in test environment
 vi.mock("@react-three/fiber", () => ({
