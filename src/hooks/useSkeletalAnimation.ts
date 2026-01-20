@@ -24,6 +24,7 @@ import {
   interpolateKeyframeCached,
   performanceMonitor,
 } from "../systems/animation";
+import { applyLaterality } from "../systems/animation/core/LateralityTransform";
 import type { TrigramStance } from "../types/common";
 import type { PlayerAnimation } from "../types/player-visual";
 import type {
@@ -45,6 +46,19 @@ export interface UseSkeletalAnimationOptions {
   readonly isBlocking?: boolean;
   /** Current player stance for trigram-specific idle animations */
   readonly stance?: TrigramStance;
+  /**
+   * Which foot is currently forward in stance (for animation mirroring)
+   *
+   * - "left": Left foot forward (orthodox/traditional right-handed fighter)
+   * - "right": Right foot forward (southpaw/traditional left-handed fighter)
+   *
+   * This affects animation mirroring - techniques will be mirrored
+   * appropriately based on the lead foot, creating 16 distinct stance
+   * configurations (8 trigrams × 2 laterality).
+   *
+   * **Korean**: 선발발 (Lead Foot)
+   */
+  readonly leadFoot?: "left" | "right";
   /** Callback when animation completes */
   readonly onAnimationComplete?: () => void;
 }
@@ -110,6 +124,7 @@ export function useSkeletalAnimation(
     attackAnimation,
     isBlocking = false,
     stance,
+    leadFoot = "right",
     onAnimationComplete,
   } = options;
 
@@ -131,7 +146,7 @@ export function useSkeletalAnimation(
     null,
   );
 
-  // Load animation when currentAnimation or blocking state changes
+  // Load animation when currentAnimation, blocking state, or leadFoot changes
   useEffect(() => {
     // Reset animation time whenever animation changes
     animTimeRef.current = 0;
@@ -226,6 +241,14 @@ export function useSkeletalAnimation(
       playbackSpeed = 0.5; // Slow breathing animation
     }
 
+    // Apply laterality transformation if selectedAnim exists
+    // Convert leadFoot to laterality: "left" foot forward = "left" laterality
+    // "right" foot forward = "right" laterality (default/base animations)
+    if (selectedAnim) {
+      const laterality = leadFoot === "left" ? "left" : "right";
+      selectedAnim = applyLaterality(selectedAnim, laterality);
+    }
+
     // Clear diagonal rotation for non-diagonal animations
     if (shouldClearDiagonalRotation) {
       setDiagonalRotationY(null);
@@ -239,7 +262,7 @@ export function useSkeletalAnimation(
       previousKeyframeIndex: 0,
       nextKeyframeIndex: 1,
     });
-  }, [currentAnimation, attackAnimation, isBlocking, stance]);
+  }, [currentAnimation, attackAnimation, isBlocking, stance, leadFoot]);
 
   // Update animation and apply to rig (called at 60fps in useFrame)
   // PHASE 2: Now uses cached interpolation and batch bone updates

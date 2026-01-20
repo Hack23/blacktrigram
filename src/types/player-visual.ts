@@ -98,8 +98,23 @@ export interface Player3DUnifiedProps {
   /**
    * Stance laterality (left or right foot forward)
    * @korean 측면성
+   * @deprecated Use leadFoot instead for consistency with PlayerState
    */
   readonly laterality?: "left" | "right";
+
+  /**
+   * Which foot is currently forward in stance (for animation mirroring)
+   *
+   * - "left": Left foot forward (orthodox/traditional right-handed fighter)
+   * - "right": Right foot forward (southpaw/traditional left-handed fighter)
+   *
+   * This affects animation mirroring - techniques will be mirrored
+   * appropriately based on the lead foot, creating 16 distinct stance
+   * configurations (8 trigrams × 2 laterality).
+   *
+   * @korean 선발발
+   */
+  readonly leadFoot?: "left" | "right";
 
   /**
    * 3D world position [x, y, z]
