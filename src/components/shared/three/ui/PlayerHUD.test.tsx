@@ -4,8 +4,8 @@
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { PlayerState } from "../../../../../systems/player";
-import { CombatState, PlayerArchetype, TrigramStance } from "../../../../../types";
+import { PlayerState } from "../../../../systems/player";
+import { CombatState, PlayerArchetype, TrigramStance } from "../../../../types";
 import { PlayerHUD } from "./PlayerHUD";
 
 describe("PlayerHUD", () => {
