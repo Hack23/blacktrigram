@@ -77,7 +77,6 @@ import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
-// Imported from shared - these components are used by multiple screens
 import {
   VitalPointMarkers3D,
   VitalPointOverlayControlsHtml,

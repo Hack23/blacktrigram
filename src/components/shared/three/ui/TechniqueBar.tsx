@@ -6,8 +6,8 @@
  * Horizontal bar displaying 3-5 technique cards at the bottom-center of combat HUD.
  * Manages technique selection, resource availability, and cooldown states.
  *
- * @module components/combat/components/TechniqueBar
- * @category Combat UI
+ * @module components/shared/three/ui/TechniqueBar
+ * @category Shared UI
  * @korean 기술바
  */
 

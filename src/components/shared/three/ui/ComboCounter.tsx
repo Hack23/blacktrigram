@@ -6,8 +6,8 @@
  *
  * Uses Html overlay from @react-three/drei for rendering within 3D scenes.
  *
- * @module components/combat/components/ComboCounter
- * @category Combat UI
+ * @module components/shared/three/ui/ComboCounter
+ * @category Shared UI
  * @korean 콤보카운터
  */
 

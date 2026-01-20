@@ -67,7 +67,6 @@ import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-// Imported from shared - these components are used by multiple screens
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
 import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
 import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
@@ -82,11 +81,6 @@ import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
 import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
 import HitEffects3D from "../../shared/three/effects/HitEffects3D";
 import { CombatTimer } from "../../shared/ui/CombatTimer";
-// TODO: Create HTML versions of these UI components for Three.js
-// import { CombatControls } from "./components/CombatControls";
-// import { CombatFooter } from "./components/CombatFooter";
-// import { CombatHUD } from "./components/CombatHUD";
-// import { CombatStatsPanel } from "./components/CombatStatsPanel";
 import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";

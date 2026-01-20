@@ -6,8 +6,8 @@
  *
  * Uses Html overlay from @react-three/drei for rendering within 3D scenes.
  *
- * @module components/combat/components/ActionFeedback
- * @category Combat UI
+ * @module components/shared/three/effects/ActionFeedback
+ * @category Shared Effects
  * @korean 액션피드백
  */
 

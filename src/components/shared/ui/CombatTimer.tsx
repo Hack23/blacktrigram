@@ -9,8 +9,8 @@
  * - Korean cyberpunk aesthetic
  * - Responsive sizing
  * 
- * @module components/combat/CombatTimer
- * @category Combat UI
+ * @module components/shared/ui/CombatTimer
+ * @category Shared UI
  */
 
 import React, { useMemo, useEffect } from "react";

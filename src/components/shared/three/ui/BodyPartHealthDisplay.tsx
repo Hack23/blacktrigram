@@ -11,8 +11,8 @@
  * - Left Leg (좌다리)
  * - Right Leg (우다리)
  *
- * @module components/combat/BodyPartHealthDisplay
- * @category Combat UI
+ * @module components/shared/three/ui/BodyPartHealthDisplay
+ * @category Shared UI
  * @korean 신체부위체력표시
  */
 

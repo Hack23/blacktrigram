@@ -7,8 +7,8 @@
  * Uses Html overlays from @react-three/drei for rendering within 3D scenes.
  * Performance optimized with React.memo to reduce unnecessary re-renders.
  *
- * @module components/combat/components/DamageNumbers
- * @category Combat UI
+ * @module components/shared/three/effects/DamageNumbers
+ * @category Shared Effects
  * @korean 피해숫자
  */
 

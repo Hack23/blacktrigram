@@ -8,8 +8,8 @@
  *
  * Uses Html overlay from @react-three/drei for positioning over 3D scene.
  *
- * @module components/combat/components/TechniqueCard
- * @category Combat UI
+ * @module components/shared/three/ui/TechniqueCard
+ * @category Shared UI
  * @korean 기술카드
  */
 

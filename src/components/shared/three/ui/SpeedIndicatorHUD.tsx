@@ -5,11 +5,8 @@
  * relative to base speed, taking into account stance modifiers, injuries,
  * stamina, and combat state.
  *
- * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
- * It does NOT use Html from drei - it's a standard React component.
- *
- * @module components/combat/SpeedIndicatorHUD
- * @category Combat UI
+ * @module components/shared/three/ui/SpeedIndicatorHUD
+ * @category Shared UI
  * @korean 속도표시기
  */
 

@@ -23,7 +23,6 @@ import { VitalPointSeverity } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 
-// Re-export BodyRegionFilter for convenience
 export type { BodyRegionFilter } from "../effects/VitalPointMarkers3D";
 
 /**
