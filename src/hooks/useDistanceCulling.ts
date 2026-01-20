@@ -52,7 +52,15 @@ export interface DistanceCullingOptions {
  * @performance
  * - Uses useMemo to prevent recalculation on every frame
  * - Distance calculation only runs when camera or position changes
+ * - Uses distanceToSquared() to avoid expensive sqrt operation
  * - Reduces DOM rendering for distant overlays
+ *
+ * @note Camera position dependency
+ * This hook recalculates on every camera movement, which is intentional
+ * for accurate culling. In practice, camera movement is throttled by the
+ * game loop and useMemo prevents redundant calculations within the same frame.
+ * For further optimization, consider implementing a threshold-based approach
+ * or debouncing at the component level if camera updates are very frequent.
  *
  * @korean 거리컬링훅사용
  */
@@ -69,11 +77,13 @@ export const useDistanceCulling = (
     if (!enabled) return true;
 
     // Calculate distance from camera to overlay position
+    // Use Vector3.distanceToSquared() to avoid expensive sqrt operation
     const overlayPosition = new THREE.Vector3(...position);
-    const distance = camera.position.distanceTo(overlayPosition);
+    const distanceSquared = camera.position.distanceToSquared(overlayPosition);
+    const cullDistanceSquared = cullDistance * cullDistance;
 
     // Return true if within cull distance, false otherwise
-    return distance <= cullDistance;
+    return distanceSquared <= cullDistanceSquared;
   }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, enabled]);
 
   return isVisible;
@@ -118,15 +128,24 @@ export const useDistanceCullingWithThreshold = (
 
   const camera = useThree((state) => state.camera);
 
+  // Note: Proper hysteresis requires state tracking (was visible previously?)
+  // This simplified version uses OR logic as a compromise:
+  // - Shows if within showDistance (18m by default)
+  // - OR if within cullDistance (20m by default)
+  // For true hysteresis, implement with useState and previous visibility tracking
   const isVisible = useMemo(() => {
     if (!enabled) return true;
 
     const overlayPosition = new THREE.Vector3(...position);
-    const distance = camera.position.distanceTo(overlayPosition);
+    const distanceSquared = camera.position.distanceToSquared(overlayPosition);
+    
+    // Use squared distances to avoid sqrt
+    const cullDistanceSquared = cullDistance * cullDistance;
+    const showDistanceSquared = effectiveShowDistance * effectiveShowDistance;
 
-    // Use different thresholds for hiding and showing
-    // This prevents flickering at the boundary
-    return distance <= cullDistance || distance <= effectiveShowDistance;
+    // Simplified hysteresis: show if within either threshold
+    // TODO: Implement proper hysteresis with useState for previous visibility
+    return distanceSquared <= cullDistanceSquared || distanceSquared <= showDistanceSquared;
   }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, effectiveShowDistance, enabled]);
 
   return isVisible;

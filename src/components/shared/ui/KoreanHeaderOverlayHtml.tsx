@@ -294,6 +294,8 @@ export const KoreanHeaderOverlayHtml = React.memo<KoreanHeaderOverlayHtmlProps>(
   },
   (prevProps, nextProps) => {
     // Custom comparison for optimal re-render prevention
+    // React.memo comparison: return true = skip re-render (props are equal)
+    //                       return false = re-render (props changed)
     return (
       prevProps.title.korean === nextProps.title.korean &&
       prevProps.title.english === nextProps.title.english &&
