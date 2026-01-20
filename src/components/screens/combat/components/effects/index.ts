@@ -60,9 +60,9 @@ export type { DustCloudEffect, DustClouds3DProps } from './DustClouds3D';
 export { TrigramParticles3D } from '../../../../shared/three/effects/TrigramParticles3D';
 export type { TrigramParticleEffect, TrigramParticles3DProps } from '../../../../shared/three/effects/TrigramParticles3D';
 
-// Hit effects (existing system)
-export { HitEffects3D } from './HitEffects3D';
-export type { HitEffects3DProps } from './HitEffects3D';
+// Hit effects (moved to shared)
+export { default as HitEffects3D } from '../../../../shared/three/effects/HitEffects3D';
+export type { HitEffects3DProps } from '../../../../shared/three/effects/HitEffects3D';
 
 /**
  * Performance Configuration Guide

@@ -307,7 +307,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     import("../../../types/common").VitalPointSeverity[]
   >([]);
   const [regionFilter, setRegionFilter] =
-    useState<import("./components").BodyRegionFilter>("all");
+    useState<import("../../shared/three/ui/VitalPointOverlayControlsHtml").BodyRegionFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);

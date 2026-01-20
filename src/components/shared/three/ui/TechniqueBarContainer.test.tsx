@@ -18,7 +18,7 @@ import { LAYOUT_BOTTOM_POSITIONS } from "../../../../types/constants/layout";
 import type { PlayerState } from "../../../../systems";
 
 // Mock TechniqueBar component
-vi.mock("../../../screens/combat/components/indicators/TechniqueBar", () => ({
+vi.mock("./TechniqueBar", () => ({
   TechniqueBar: ({ isMobile }: { isMobile: boolean }) => (
     <div data-testid="technique-bar">
       Technique Bar (Mobile: {isMobile ? "Yes" : "No"})
