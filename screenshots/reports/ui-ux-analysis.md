@@ -1,6 +1,6 @@
 # Black Trigram - UI/UX Screenshot Analysis Report
 
-**Generated:** 2026-01-07T17:16:53.639Z
+**Generated:** 2026-01-20T16:27:24.740Z
 **Success Rate:** 8/8 (100%)
 
 ---
@@ -87,7 +87,7 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 **Required Content:**
 - 3D canvas (🔴 required)
-- Controls screen container (🟡 optional)
+- Controls screen container (🔴 required)
 - Controls header (🟡 optional)
 
 **Description:** Controls Screen - Game controls and keybindings
@@ -104,7 +104,7 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 **Required Content:**
 - 3D canvas (🔴 required)
-- Philosophy screen container (🟡 optional)
+- Philosophy screen container (🔴 required)
 - Philosophy header (🟡 optional)
 
 **Description:** Philosophy Screen - Korean martial arts philosophy
@@ -121,7 +121,8 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 **Required Content:**
 - 3D canvas (🔴 required)
-- Training screen container (🟡 optional)
+- Training screen container (🔴 required)
+- Return to menu button (🟡 optional)
 
 **Description:** Training Screen - Training mode with vital points
 
@@ -137,7 +138,7 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 **Required Content:**
 - 3D canvas (🔴 required)
-- Combat screen container (🟡 optional)
+- Combat screen container (🔴 required)
 
 **Description:** Combat Screen - Practice mode gameplay
 
@@ -153,7 +154,7 @@ This report contains automated screenshots of all major screens in the Black Tri
 
 **Required Content:**
 - 3D canvas (🔴 required)
-- Combat screen container (🟡 optional)
+- Combat screen container (🔴 required)
 
 **Description:** Combat Screen - Versus mode gameplay
 

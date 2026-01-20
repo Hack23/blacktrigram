@@ -79,11 +79,73 @@ if (!fs.existsSync(REPORT_DIR)) {
 }
 
 /**
+ * Wait for canvas to have actual rendered content (non-black pixels)
+ * This is more reliable than waiting for fixed timeouts
+ */
+async function waitForCanvasContent(
+  page: Page,
+  maxAttempts = 20,
+  intervalMs = 500,
+): Promise<boolean> {
+  console.log("  ⏳ Waiting for canvas to have rendered content...");
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const hasContent = await page.evaluate(() => {
+      const canvas = document.querySelector("canvas") as HTMLCanvasElement;
+      if (!canvas) return false;
+
+      try {
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (ctx) {
+          // Check if canvas has non-transparent pixels (rendered content)
+          const imageData = ctx.getImageData(
+            0,
+            0,
+            Math.min(canvas.width, 100),
+            Math.min(canvas.height, 100),
+          );
+          const data = imageData.data;
+          for (let i = 0; i < data.length; i += 4) {
+            // Check if any pixel is not fully transparent or not pure black
+            if (
+              data[i + 3] > 0 &&
+              (data[i] > 10 || data[i + 1] > 10 || data[i + 2] > 10)
+            ) {
+              return true;
+            }
+          }
+        }
+
+        // For WebGL canvas, check if context exists and is not lost
+        const gl = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
+        if (gl && !(gl as WebGLRenderingContext).isContextLost()) {
+          // WebGL context is active, assume content is rendering
+          return true;
+        }
+      } catch {
+        // Context access failed
+      }
+      return false;
+    });
+
+    if (hasContent) {
+      console.log(`  ✅ Canvas has rendered content (attempt ${attempt})`);
+      return true;
+    }
+
+    await page.waitForTimeout(intervalMs);
+  }
+
+  console.log("  ⚠️  Canvas content check timed out, proceeding anyway");
+  return false;
+}
+
+/**
  * Wait for Three.js canvas to be ready and rendered
  */
 async function waitForThreeJsReady(
   page: Page,
-  timeout = TIMING.CANVAS_TIMEOUT
+  timeout = TIMING.CANVAS_TIMEOUT,
 ): Promise<void> {
   console.log("  ⏳ Waiting for Three.js canvas to render...");
 
@@ -91,8 +153,11 @@ async function waitForThreeJsReady(
     // Wait for canvas element
     await page.waitForSelector("canvas", { timeout });
 
-    // Wait for initial render
-    await page.waitForTimeout(TIMING.INITIAL_RENDER_DELAY);
+    // Wait for initial render - use shorter fixed delay + content polling
+    await page.waitForTimeout(2000);
+
+    // Poll for actual canvas content
+    await waitForCanvasContent(page, 15, 400);
 
     // Check if WebGL context is available
     const hasWebGL = await page.evaluate(() => {
@@ -109,7 +174,7 @@ async function waitForThreeJsReady(
 
     if (!hasWebGL) {
       console.warn(
-        "  ⚠️  WebGL context not available, using software rendering"
+        "  ⚠️  WebGL context not available, using software rendering",
       );
     }
 
@@ -131,7 +196,7 @@ async function waitForHtmlOverlayContent(
   page: Page,
   selector: string,
   description: string,
-  timeout = 15000
+  timeout = 15000,
 ): Promise<boolean> {
   console.log(`  ⏳ Waiting for ${description}...`);
 
@@ -139,14 +204,14 @@ async function waitForHtmlOverlayContent(
     // Try to wait for the element to be visible
     await page.waitForSelector(selector, { state: "visible", timeout });
 
-    // Additional delay for React state updates
-    await page.waitForTimeout(500);
+    // Additional delay for React state updates and Three.js Html positioning
+    await page.waitForTimeout(1000);
 
     console.log(`  ✅ ${description} is visible`);
     return true;
   } catch {
     console.warn(
-      `  ⚠️  ${description} not found within timeout, continuing...`
+      `  ⚠️  ${description} not found within timeout, continuing...`,
     );
     return false;
   }
@@ -164,7 +229,7 @@ async function waitForMenuReady(page: Page): Promise<void> {
     page,
     '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
     "Main menu",
-    10000
+    10000,
   );
 
   if (menuFound) {
@@ -173,7 +238,7 @@ async function waitForMenuReady(page: Page): Promise<void> {
       page,
       '.menu-button, [data-testid="menu-item-versus"], [data-testid="menu-item-training"]',
       "Menu buttons",
-      5000
+      5000,
     );
   }
 
@@ -182,11 +247,70 @@ async function waitForMenuReady(page: Page): Promise<void> {
 }
 
 /**
+ * Wait for screen-specific HUD elements to be visible
+ * This is the key function for reliable screenshots - it polls for multiple selectors
+ */
+async function waitForScreenHUD(
+  page: Page,
+  screenName: string,
+  hudSelectors: string[],
+  maxAttempts = 30,
+  intervalMs = 500,
+): Promise<{ found: string[]; missing: string[] }> {
+  console.log(`  ⏳ Waiting for ${screenName} HUD elements...`);
+
+  const found: string[] = [];
+  const missing: string[] = [...hudSelectors];
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    for (const selector of [...missing]) {
+      try {
+        const element = await page.$(selector);
+        if (element) {
+          const isVisible = await element.isVisible();
+          if (isVisible) {
+            found.push(selector);
+            missing.splice(missing.indexOf(selector), 1);
+          }
+        }
+      } catch {
+        // Element not found yet
+      }
+    }
+
+    if (missing.length === 0) {
+      console.log(
+        `  ✅ All ${screenName} HUD elements found (attempt ${attempt})`,
+      );
+      return { found, missing };
+    }
+
+    // Log progress every 5 attempts
+    if (attempt % 5 === 0) {
+      console.log(
+        `  ⏳ Attempt ${attempt}/${maxAttempts}: ${found.length}/${hudSelectors.length} HUD elements found`,
+      );
+    }
+
+    await page.waitForTimeout(intervalMs);
+  }
+
+  console.log(
+    `  ⚠️  HUD wait timed out. Found: ${found.length}/${hudSelectors.length}`,
+  );
+  if (missing.length > 0) {
+    console.log(`  ⚠️  Missing selectors: ${missing.join(", ")}`);
+  }
+
+  return { found, missing };
+}
+
+/**
  * Validate that required content is present on the page
  */
 async function validateContent(
   page: Page,
-  validations: ContentValidation[]
+  validations: ContentValidation[],
 ): Promise<ValidationResult> {
   const result: ValidationResult = {
     passed: true,
@@ -229,7 +353,7 @@ async function validateContent(
 async function waitForContentWithRetry(
   page: Page,
   config: ScreenshotConfig,
-  maxRetries: number = 3
+  maxRetries: number = 3,
 ): Promise<ValidationResult> {
   let lastResult: ValidationResult = {
     passed: true,
@@ -246,7 +370,7 @@ async function waitForContentWithRetry(
 
     // Wait for network to be idle (no active requests for 500ms)
     try {
-      await page.waitForLoadState('networkidle', { timeout: 5000 });
+      await page.waitForLoadState("networkidle", { timeout: 5000 });
       console.log("  ✅ Network idle");
     } catch {
       console.log("  ⚠️  Network still active, continuing...");
@@ -341,22 +465,34 @@ const screenshotConfigs: ScreenshotConfig[] = [
     actions: async (page) => {
       // Wait for menu to be fully rendered (handles the "just lines" issue)
       await waitForMenuReady(page);
-      
-      // Extra wait to ensure all 4 menu buttons are fully visible
-      await page.waitForTimeout(2000);
-      
+
+      // Use smart HUD polling to wait for intro screen elements
+      await waitForScreenHUD(
+        page,
+        "Intro Menu",
+        [
+          '[data-testid="main-menu-section"], [data-testid="main-menu-buttons"]',
+          '[data-testid="menu-item-versus"]',
+          '[data-testid="menu-item-training"]',
+        ],
+        25,
+        400,
+      );
+
       // Verify all menu items are present
       const menuItems = await page.$$('[data-testid^="menu-item-"]');
       console.log(`  📋 Found ${menuItems.length} menu items`);
-      
+
       // Debug: Check menu visibility and styles
       const menuDebug = await page.evaluate(() => {
-        const menu = document.querySelector('[data-testid="main-menu-section"]');
+        const menu = document.querySelector(
+          '[data-testid="main-menu-section"]',
+        );
         if (!menu) return { found: false };
-        
+
         const rect = menu.getBoundingClientRect();
         const styles = window.getComputedStyle(menu);
-        
+
         return {
           found: true,
           position: {
@@ -377,7 +513,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
           viewport: {
             width: window.innerWidth,
             height: window.innerHeight,
-          }
+          },
         };
       });
       console.log(`  🔍 Menu debug:`, JSON.stringify(menuDebug, null, 2));
@@ -466,7 +602,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
         page,
         '[data-testid="controls-screen"]',
         "Controls screen",
-        15000
+        15000,
       );
 
       if (!controlsFound) {
@@ -475,9 +611,22 @@ const screenshotConfigs: ScreenshotConfig[] = [
           page,
           '[data-testid="controls-header"], [data-testid="controls-content"]',
           "Controls content",
-          5000
+          5000,
         );
       }
+
+      // Use smart HUD polling to wait for controls screen elements
+      await waitForScreenHUD(
+        page,
+        "Controls",
+        [
+          '[data-testid="controls-screen"]',
+          '[data-testid="controls-header"]',
+          '[data-testid="controls-content"]',
+        ],
+        25,
+        400,
+      );
 
       await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
@@ -486,7 +635,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
       {
         selector: '[data-testid="controls-screen"]',
         description: "Controls screen container",
-        required: false,
+        required: true,
       },
       {
         selector: '[data-testid="controls-header"]',
@@ -524,8 +673,22 @@ const screenshotConfigs: ScreenshotConfig[] = [
         page,
         '[data-testid="philosophy-screen"], [data-testid="philosophy-header"]',
         "Philosophy screen content",
-        10000
+        10000,
       );
+
+      // Use smart HUD polling to wait for philosophy screen elements
+      await waitForScreenHUD(
+        page,
+        "Philosophy",
+        [
+          '[data-testid="philosophy-screen"]',
+          '[data-testid="philosophy-header"]',
+          '[data-testid="philosophy-content"]',
+        ],
+        25,
+        400,
+      );
+
       await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
@@ -533,7 +696,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
       {
         selector: '[data-testid="philosophy-screen"]',
         description: "Philosophy screen container",
-        required: false,
+        required: true,
       },
       {
         selector: '[data-testid="philosophy-header"]',
@@ -571,8 +734,21 @@ const screenshotConfigs: ScreenshotConfig[] = [
         page,
         '[data-testid="training-screen-3d"], [data-testid="return-to-menu-button"]',
         "Training screen content",
-        10000
+        10000,
       );
+
+      // Use smart HUD polling to wait for all training HUD elements
+      await waitForScreenHUD(
+        page,
+        "Training",
+        [
+          '[data-testid="training-screen-3d"]',
+          '[data-testid="return-to-menu-button"]',
+        ],
+        25,
+        400,
+      );
+
       await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
@@ -580,6 +756,11 @@ const screenshotConfigs: ScreenshotConfig[] = [
       {
         selector: '[data-testid="training-screen-3d"]',
         description: "Training screen container",
+        required: true,
+      },
+      {
+        selector: '[data-testid="return-to-menu-button"]',
+        description: "Return to menu button",
         required: false,
       },
     ],
@@ -613,8 +794,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
         page,
         '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
         "Combat screen content",
-        10000
+        10000,
       );
+
+      // Use smart HUD polling to wait for combat HUD elements
+      await waitForScreenHUD(
+        page,
+        "Combat",
+        ['[data-testid="combat-screen"]'],
+        25,
+        400,
+      );
+
       await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
@@ -622,7 +813,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
       {
         selector: '[data-testid="combat-screen"]',
         description: "Combat screen container",
-        required: false,
+        required: true,
       },
     ],
   },
@@ -655,8 +846,18 @@ const screenshotConfigs: ScreenshotConfig[] = [
         page,
         '[data-testid="combat-screen"], [data-testid="return-to-menu-button"]',
         "Combat screen content",
-        10000
+        10000,
       );
+
+      // Use smart HUD polling to wait for combat HUD elements
+      await waitForScreenHUD(
+        page,
+        "Combat",
+        ['[data-testid="combat-screen"]'],
+        25,
+        400,
+      );
+
       await page.waitForTimeout(TIMING.HTML_OVERLAY_DELAY);
     },
     requiredContent: [
@@ -664,7 +865,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
       {
         selector: '[data-testid="combat-screen"]',
         description: "Combat screen container",
-        required: false,
+        required: true,
       },
     ],
   },
@@ -675,7 +876,7 @@ const screenshotConfigs: ScreenshotConfig[] = [
  */
 async function captureScreenshot(
   page: Page,
-  config: ScreenshotConfig
+  config: ScreenshotConfig,
 ): Promise<{
   success: boolean;
   path?: string;
@@ -717,7 +918,7 @@ async function captureScreenshot(
     const validationResult = await waitForContentWithRetry(
       page,
       config,
-      maxRetries
+      maxRetries,
     );
 
     // Log validation results
@@ -732,7 +933,7 @@ async function captureScreenshot(
       return {
         success: false,
         error: `Required content missing: ${validationResult.failures.join(
-          "; "
+          "; ",
         )}`,
         validationResult,
       };
@@ -772,19 +973,19 @@ function generateReport(
       error?: string;
       validationResult?: ValidationResult;
     };
-  }>
+  }>,
 ): string {
   const timestamp = new Date().toISOString();
   const successCount = results.filter((r) => r.result.success).length;
   const totalCount = results.length;
   const failedValidations = results.filter(
-    (r) => r.result.validationResult && !r.result.validationResult.passed
+    (r) => r.result.validationResult && !r.result.validationResult.passed,
   ).length;
 
   let report = `# Black Trigram - UI/UX Screenshot Analysis Report\n\n`;
   report += `**Generated:** ${timestamp}\n`;
   report += `**Success Rate:** ${successCount}/${totalCount} (${Math.round(
-    (successCount / totalCount) * 100
+    (successCount / totalCount) * 100,
   )}%)\n`;
   if (failedValidations > 0) {
     report += `**⚠️ Content Validation Failures:** ${failedValidations}\n`;
@@ -924,12 +1125,12 @@ async function main() {
       "--enable-webgl-draft-extensions",
       "--max-gum-fps=60",
       "--autoplay-policy=no-user-gesture-required",
+      "--no-sandbox", // Required for dev containers and Docker environments
     ];
 
     // Add security-relaxed flags only for CI environments
     if (isCI) {
       browserArgs.push("--disable-web-security");
-      browserArgs.push("--no-sandbox");
       console.log("  ⚠️  Running in CI mode with relaxed security flags");
     }
 
@@ -983,7 +1184,7 @@ async function main() {
     console.log(`Successful: ${successCount}`);
     console.log(`Failed: ${totalCount - successCount}`);
     console.log(
-      `Success rate: ${Math.round((successCount / totalCount) * 100)}%`
+      `Success rate: ${Math.round((successCount / totalCount) * 100)}%`,
     );
     console.log("=".repeat(60));
 
