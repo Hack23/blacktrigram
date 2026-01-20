@@ -97,6 +97,10 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
  * 
  * Html overlay for selecting training mode with Korean theming.
  * Compact horizontal grid layout optimized for desktop and mobile.
+ *
+ * Optimized with React.memo for 60fps performance:
+ * - Prevents re-renders when currentMode hasn't changed
+ * - Callback expected to be stable (parent should use useCallback)
  * 
  * @example
  * ```tsx
@@ -109,11 +113,12 @@ const MODE_INFO: Record<TrainingMode, { korean: string; english: string; descrip
  * 
  * @korean 훈련모드선택오버레이컴포넌트
  */
-export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverlayHtmlProps> = ({
-  currentMode,
-  onModeChange,
-  isMobile,
-}) => {
+export const TrainingModeSelectorOverlayHtml = React.memo<TrainingModeSelectorOverlayHtmlProps>(
+  ({
+    currentMode,
+    onModeChange,
+    isMobile,
+  }) => {
   const panelWidth = isMobile ? 280 : 320;
   const padding = getResponsiveSpacing("sm", isMobile);
   const gap = getResponsiveSpacing("xs", isMobile);
@@ -231,6 +236,17 @@ export const TrainingModeSelectorOverlayHtml: React.FC<TrainingModeSelectorOverl
       </div>
     </div>
   );
-};
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if current mode or mobile state changes
+    return (
+      prevProps.currentMode === nextProps.currentMode &&
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.onModeChange === nextProps.onModeChange
+    );
+  },
+);
+
+TrainingModeSelectorOverlayHtml.displayName = "TrainingModeSelectorOverlayHtml";
 
 export default TrainingModeSelectorOverlayHtml;

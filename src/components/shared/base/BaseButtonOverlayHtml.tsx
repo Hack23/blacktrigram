@@ -36,6 +36,10 @@ export interface BaseButtonOverlayHtmlProps {
  * 
  * HTML button with Korean theming (no Three.js dependency).
  * Uses useKoreanTheme hook for consistent styling.
+ *
+ * Optimized with React.memo for 60fps performance:
+ * - Prevents re-renders when props haven't changed
+ * - Event handlers already use useCallback internally
  * 
  * @example
  * ```tsx
@@ -48,12 +52,13 @@ export interface BaseButtonOverlayHtmlProps {
  * />
  * ```
  */
-export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
-  korean,
-  english,
-  onClick,
-  onMouseEnter,
-  disabled = false,
+export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
+  ({
+    korean,
+    english,
+    onClick,
+    onMouseEnter,
+    disabled = false,
   variant = "primary",
   size = "md",
   fullWidth = false,
@@ -173,6 +178,6 @@ export const BaseButtonOverlayHtml: React.FC<BaseButtonOverlayHtmlProps> = ({
       </div>
     </button>
   );
-};
+});
 
 BaseButtonOverlayHtml.displayName = "BaseButtonOverlayHtml";
