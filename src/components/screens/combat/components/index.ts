@@ -1,116 +1,83 @@
 /**
  * @module components/combat/components
  * @category Combat System
+ * 
+ * Combat-specific components only.
+ * Shared components have been moved to src/components/shared/three/
  */
 
-// Three.js 3D components (Arena) - Re-exported from shared for backward compatibility
-export { default as CombatArena3D } from "../../../shared/three/scene/CombatArena3D";
-
-// Three.js 3D components (Effects)
+// Three.js 3D components (Effects) - Combat-specific
 export { default as BloodDecals3D } from "./effects/BloodDecals3D";
 export { default as BloodParticles3D } from "./effects/BloodParticles3D";
-export { default as HitEffects3D } from "./effects/HitEffects3D";
 export { default as TraumaOverlay3D } from "./effects/TraumaOverlay3D";
-export { default as VitalPointMarkers3D } from "../../../shared/three/effects/VitalPointMarkers3D";
-export type { BodyRegionFilter } from "../../../shared/three/effects/VitalPointMarkers3D";
-
-// Controls - Re-exported from shared for backward compatibility
-export { default as VitalPointOverlayControlsHtml } from "../../../shared/three/ui/VitalPointOverlayControlsHtml";
-
-// Action Feedback components
-export { ActionFeedback, TechniqueName } from "./feedback/ActionFeedback";
-export { ComboCounter } from "./indicators/ComboCounter";
-export { DamageNumbers } from "./feedback/DamageNumbers";
-export { TechniqueNameDisplay } from "./indicators/TechniqueNameDisplay";
-
-// Player State Visual Indicators
-export { BalanceIndicator } from "./indicators/BalanceIndicator";
 export { BloodLossOverlayHtml } from "./effects/BloodLossOverlayHtml";
-export { BodyPartHealthDisplay } from "./indicators/BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./effects/ConsciousnessBlur";
-export { GuardIndicator } from "../../../shared/three/indicators/GuardIndicator";
 export { PainVignette } from "./effects/PainVignette";
-export { PlayerStateOverlayHtml } from "./hud/PlayerStateOverlayHtml";
-export { SpeedIndicatorHUD } from "./hud/SpeedIndicatorHUD";
+
+// Combat-specific Indicators
+export { TechniqueNameDisplay } from "./indicators/TechniqueNameDisplay";
+export { BalanceIndicator } from "./indicators/BalanceIndicator";
 export { StaminaWarning } from "./indicators/StaminaWarning";
-
-// UI components
-export { CombatControlsPanel } from "./controls/CombatControlsPanel";
-export { CombatTimer } from "./hud/CombatTimer";
-export { default as ControlsGuide } from "./controls/ControlsGuide";
-export { DifficultyIndicator } from "./hud/DifficultyIndicator";
-export { FPSMonitor } from "./hud/FPSMonitor";
-export { MatchCountdown } from "./feedback/MatchCountdown";
-export { MobileControlsWrapper } from "./hud/MobileControlsWrapper";
-export { PauseMenu } from "./controls/PauseMenu";
-export { default as QuickSettings } from "./controls/QuickSettings";
-export { RoundAnnouncement } from "./feedback/RoundAnnouncement";
-export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncement";
-export { TechniqueBar } from "./indicators/TechniqueBar";
 export { TechniqueCard } from "./indicators/TechniqueCard";
-
-// HUD components (not originally exported but used in screens)
-export { CombatHUD3D } from "./hud/CombatHUD3D";
-export { default as PlayerHUD } from "./hud/PlayerHUD";
-export { CombatReadinessBar } from "./hud/CombatReadinessBar";
-
-// Additional indicator components - Re-exported from shared for backward compatibility
 export { default as HealthBar } from "./indicators/HealthBar";
 export { default as StaminaBar } from "./indicators/StaminaBar";
 export { BreathingIndicator } from "./indicators/BreathingIndicator";
 export { InputBufferDisplay } from "./indicators/InputBufferDisplay";
-export { StanceChangeIndicator } from "../../../shared/three/indicators/StanceChangeIndicator";
+
+// Combat-specific UI Components
+export { CombatControlsPanel } from "./controls/CombatControlsPanel";
+export { default as ControlsGuide } from "./controls/ControlsGuide";
+export { PauseMenu } from "./controls/PauseMenu";
+export { default as QuickSettings } from "./controls/QuickSettings";
 export { KeyboardHints } from "./controls/KeyboardHints";
 
+// Round/Match Feedback - Combat-specific
+export { MatchCountdown } from "./feedback/MatchCountdown";
+export { RoundAnnouncement } from "./feedback/RoundAnnouncement";
+export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncement";
+
+// HUD components - Combat-specific
+export { CombatHUD3D } from "./hud/CombatHUD3D";
+export { CombatReadinessBar } from "./hud/CombatReadinessBar";
+export { DifficultyIndicator } from "./hud/DifficultyIndicator";
+export { FPSMonitor } from "./hud/FPSMonitor";
+export { MobileControlsWrapper } from "./hud/MobileControlsWrapper";
+export { PlayerStateOverlayHtml } from "./hud/PlayerStateOverlayHtml";
+
 // Re-export component prop types
-export type { ActionFeedbackProps, TechniqueNameProps } from "./feedback/ActionFeedback";
 export type { BloodDecals3DProps, BloodDecal } from "./effects/BloodDecals3D";
 export type { BloodParticles3DProps, BloodSplatterEffect } from "./effects/BloodParticles3D";
-export type { CombatControlsPanelProps } from "./controls/CombatControlsPanel";
-export type { CombatTimerProps } from "./hud/CombatTimer";
-export type { ComboCounterProps } from "./indicators/ComboCounter";
-export type { ControlsGuideProps } from "./controls/ControlsGuide";
-export type { DamageNumbersProps } from "./feedback/DamageNumbers";
-export type { DifficultyIndicatorProps } from "./hud/DifficultyIndicator";
-export type { FPSMonitorProps } from "./hud/FPSMonitor";
-export type { HitEffects3DProps } from "./effects/HitEffects3D";
-export type { MatchCountdownProps } from "./feedback/MatchCountdown";
-export type { MobileControlsWrapperProps } from "./hud/MobileControlsWrapper";
-export type { PauseMenuProps } from "./controls/PauseMenu";
-export type { QuickSettingsProps } from "./controls/QuickSettings";
-export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnouncement";
-export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncement";
-export type { TechniqueBarProps } from "./indicators/TechniqueBar";
-export type { TechniqueCardProps } from "./indicators/TechniqueCard";
-export type { TechniqueNameDisplayProps } from "./indicators/TechniqueNameDisplay";
 export type {
   TraumaOverlay3DProps,
   Injury,
   InjuryType,
 } from "./effects/TraumaOverlay3D";
-export type { VitalPointMarkers3DProps } from "../../../shared/three/effects/VitalPointMarkers3D";
-export type { VitalPointOverlayControlsProps } from "../../../shared/three/ui/VitalPointOverlayControlsHtml";
-
-// Player State Indicator prop types
-export type { BalanceIndicatorProps } from "./indicators/BalanceIndicator";
 export type { BloodLossOverlayProps } from "./effects/BloodLossOverlayHtml";
-export type { BodyPartHealthDisplayProps } from "./indicators/BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./effects/ConsciousnessBlur";
-export type { GuardIndicatorProps } from "../../../shared/three/indicators/GuardIndicator";
 export type { PainVignetteProps } from "./effects/PainVignette";
-export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlayHtml";
+
+export type { TechniqueNameDisplayProps } from "./indicators/TechniqueNameDisplay";
+export type { BalanceIndicatorProps } from "./indicators/BalanceIndicator";
 export type { StaminaWarningProps } from "./indicators/StaminaWarning";
-
-// Additional HUD prop types
-export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
-export type { PlayerHUDProps } from "./hud/PlayerHUD";
-export type { CombatReadinessBarProps } from "./hud/CombatReadinessBar";
-export type { SpeedIndicatorHUDProps } from "./hud/SpeedIndicatorHUD";
-
-// Additional indicator prop types
+export type { TechniqueCardProps } from "./indicators/TechniqueCard";
 export type { HealthBarProps } from "./indicators/HealthBar";
 export type { StaminaBarProps } from "./indicators/StaminaBar";
 export type { BreathingIndicatorProps } from "./indicators/BreathingIndicator";
 export type { InputBufferDisplayProps } from "./indicators/InputBufferDisplay";
-export type { StanceChangeIndicatorProps } from "../../../shared/three/indicators/StanceChangeIndicator";
+
+export type { CombatControlsPanelProps } from "./controls/CombatControlsPanel";
+export type { ControlsGuideProps } from "./controls/ControlsGuide";
+export type { PauseMenuProps } from "./controls/PauseMenu";
+export type { QuickSettingsProps } from "./controls/QuickSettings";
 export type { KeyboardHintsProps } from "./controls/KeyboardHints";
+
+export type { MatchCountdownProps } from "./feedback/MatchCountdown";
+export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnouncement";
+export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncement";
+
+export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
+export type { CombatReadinessBarProps } from "./hud/CombatReadinessBar";
+export type { DifficultyIndicatorProps } from "./hud/DifficultyIndicator";
+export type { FPSMonitorProps } from "./hud/FPSMonitor";
+export type { MobileControlsWrapperProps } from "./hud/MobileControlsWrapper";
+export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlayHtml";

@@ -10,14 +10,8 @@
 // Main combat screens (Three.js)
 export { CombatScreen3D, default as CombatScreen3DDefault } from "./CombatScreen3D";
 
-// Combat sub-components
+// Combat sub-components (combat-specific only, no re-exports)
 export * from "./components";
-
-// Three.js 3D components (re-exports from components)
-export { default as HitEffects3D } from "./components/effects/HitEffects3D";
-export { default as CombatArena3D } from "../../shared/three/scene/CombatArena3D";
 
 // Re-export component prop types
 export type { CombatScreen3DProps } from "./CombatScreen3D";
-export type { HitEffects3DProps } from "./components/effects/HitEffects3D";
-export type { CombatArena3DProps } from "../../shared/three/scene/CombatArena3D";

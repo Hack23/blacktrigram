@@ -74,6 +74,14 @@ import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarker
 import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
 import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
+import { PlayerHUD } from "../../shared/three/ui/PlayerHUD";
+import { ComboCounter } from "../../shared/three/ui/ComboCounter";
+import { BodyPartHealthDisplay } from "../../shared/three/ui/BodyPartHealthDisplay";
+import { SpeedIndicatorHUD } from "../../shared/three/ui/SpeedIndicatorHUD";
+import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
+import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
+import HitEffects3D from "../../shared/three/effects/HitEffects3D";
+import { CombatTimer } from "../../shared/ui/CombatTimer";
 // TODO: Create HTML versions of these UI components for Three.js
 // import { CombatControls } from "./components/CombatControls";
 // import { CombatFooter } from "./components/CombatFooter";
@@ -98,21 +106,10 @@ import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
-import HitEffects3D from "./components/effects/HitEffects3D";
-import {
-  ActionFeedback,
-  TechniqueName,
-} from "./components/feedback/ActionFeedback";
-import { DamageNumbers } from "./components/feedback/DamageNumbers";
-import { CombatTimer } from "./components/hud/CombatTimer";
+import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { PlayerHUD } from "./components/hud/PlayerHUD";
-import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
-import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
-import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
-import { ComboCounter } from "./components/indicators/ComboCounter";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,

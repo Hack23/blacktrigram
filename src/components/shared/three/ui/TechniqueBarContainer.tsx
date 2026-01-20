@@ -12,7 +12,7 @@
  */
 
 import React, { useMemo } from "react";
-import { TechniqueBar, type TechniqueBarProps } from "../../../screens/combat/components/indicators/TechniqueBar";
+import { TechniqueBar, type TechniqueBarProps } from "./TechniqueBar";
 import { getTechniqueBarBottom, LAYOUT_BOTTOM_POSITIONS } from "../../../../types/constants/layout";
 import { Z_INDEX } from "../../../../types/LayoutTypes";
 

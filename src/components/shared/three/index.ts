@@ -32,6 +32,22 @@ export { default as VitalPointOverlayControlsHtml } from "./ui/VitalPointOverlay
 export type { VitalPointOverlayControlsProps } from "./ui/VitalPointOverlayControlsHtml";
 export type { BodyRegionFilter } from "./ui/VitalPointOverlayControlsHtml";
 
+// HUD Components
+export { default as PlayerHUD } from "./ui/PlayerHUD";
+export type { PlayerHUDProps } from "./ui/PlayerHUD";
+
+export { ComboCounter } from "./ui/ComboCounter";
+export type { ComboCounterProps } from "./ui/ComboCounter";
+
+export { TechniqueBar } from "./ui/TechniqueBar";
+export type { TechniqueBarProps } from "./ui/TechniqueBar";
+
+export { BodyPartHealthDisplay } from "./ui/BodyPartHealthDisplay";
+export type { BodyPartHealthDisplayProps } from "./ui/BodyPartHealthDisplay";
+
+export { SpeedIndicatorHUD } from "./ui/SpeedIndicatorHUD";
+export type { SpeedIndicatorHUDProps } from "./ui/SpeedIndicatorHUD";
+
 // Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
 
@@ -43,6 +59,15 @@ export type { StanceTransitionEffectProps } from "./effects/StanceTransitionEffe
 
 export { default as VitalPointMarkers3D } from "./effects/VitalPointMarkers3D";
 export type { VitalPointMarkers3DProps } from "./effects/VitalPointMarkers3D";
+
+export { DamageNumbers } from "./effects/DamageNumbers";
+export type { DamageNumbersProps } from "./effects/DamageNumbers";
+
+export { ActionFeedback, TechniqueName } from "./effects/ActionFeedback";
+export type { ActionFeedbackProps, TechniqueNameProps } from "./effects/ActionFeedback";
+
+export { default as HitEffects3D } from "./effects/HitEffects3D";
+export type { HitEffects3DProps } from "./effects/HitEffects3D";
 
 // Indicators
 export { GuardIndicator } from "./indicators/GuardIndicator";

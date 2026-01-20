@@ -14,20 +14,20 @@
  */
 
 import React, { useMemo, useCallback } from "react";
-import { PlayerState } from "../../../../../systems/player";
-import type { StanceLaterality } from "../../../../../systems/trigram/types";
+import { PlayerState } from "../../../../systems/player";
+import type { StanceLaterality } from "../../../../systems/trigram/types";
 import {
   ARCHETYPE_ASSETS,
   FALLBACK_ARCHETYPE_IMAGE,
   FONT_FAMILY,
   KOREAN_COLORS,
-} from "../../../../../types/constants";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { BreathingIndicator } from "../indicators/BreathingIndicator";
-import { HealthBar } from "../indicators/HealthBar";
-import { StaminaBar } from "../indicators/StaminaBar";
-import { CombatReadinessBar } from "./CombatReadinessBar";
+} from "../../../../types/constants";
+import { Z_INDEX } from "../../../../types/LayoutTypes";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
+import { BreathingIndicator } from "../../../screens/combat/components/indicators/BreathingIndicator";
+import { HealthBar } from "../../../screens/combat/components/indicators/HealthBar";
+import { StaminaBar } from "../../../screens/combat/components/indicators/StaminaBar";
+import { CombatReadinessBar } from "../../../screens/combat/components/hud/CombatReadinessBar";
 
 export interface PlayerHUDProps {
   /** Player state with health, stamina, and other data */
