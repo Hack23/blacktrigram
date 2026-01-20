@@ -30,8 +30,11 @@ Created `useDistanceCulling` hook for rendering optimization:
 
 - **Default cull distance**: 20 meters
 - **Configurable**: Per-component cull distances
-- **Simplified thresholding**: `useDistanceCullingWithThreshold` provides basic thresholding to help reduce flickering at distance boundaries, but does not yet implement true hysteresis (see TODO in hook implementation for future enhancement)
+- **Performance optimized**: Uses squared distance calculation to avoid expensive sqrt operation
+- **React Compiler compatible**: Proper dependency tracking
 - **Usage examples**: See `useDistanceCulling.examples.tsx`
+
+Note: A hysteresis variant was considered but not implemented, as true hysteresis requires useState to track previous visibility state. This can be added in the future if flickering becomes an issue at distance boundaries.
 
 ## 📈 Expected Performance Improvements
 
@@ -77,9 +80,28 @@ Component.displayName = "Component";
 
 **Best Practices:**
 - ✅ **Include callback props** in comparison to avoid stale closure bugs
-- ✅ **Parent components should use useCallback** to prevent unnecessary re-renders
+- ✅ **Parent components MUST use useCallback** to prevent unnecessary re-renders
 - ⚠️ **Risk of excluding callbacks**: Component may call outdated handlers that reference old state
 - ✅ **Trade-off**: Including callbacks requires parent to use useCallback for React.memo to be effective
+- ⚠️ **Important**: If parent components don't use useCallback, React.memo will fail and re-render on every parent update
+
+**Parent Component Requirements:**
+All parent components passing callbacks to memoized overlays must wrap callbacks in useCallback:
+```typescript
+// ✅ GOOD: Parent uses useCallback
+const ParentComponent = () => {
+  const handleAction = useCallback((action: string) => {
+    // Handle action
+  }, []);
+  
+  return <MemoizedOverlay onAction={handleAction} />;
+};
+
+// ❌ BAD: Parent creates new function on every render
+const ParentComponent = () => {
+  return <MemoizedOverlay onAction={(action) => { /* ... */ }} />;
+};
+```
 
 ### 2. Existing useCallback Patterns
 Most interactive components already use useCallback for event handlers:
