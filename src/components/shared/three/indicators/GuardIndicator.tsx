@@ -8,12 +8,12 @@
  */
 
 import React, { useMemo } from "react";
-import { STANCE_GUARD_CONFIGS } from "../../../../../systems/animation";
-import { TRIGRAM_DATA } from "../../../../../systems/trigram/types";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { TrigramStance } from "../../../../../types/common";
-import { KOREAN_COLORS } from "../../../../../types/constants";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { STANCE_GUARD_CONFIGS } from "../../../../systems/animation";
+import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import { Z_INDEX } from "../../../../types/LayoutTypes";
+import { TrigramStance } from "../../../../types/common";
+import { KOREAN_COLORS } from "../../../../types/constants";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 
 /**
  * Props for GuardIndicator component

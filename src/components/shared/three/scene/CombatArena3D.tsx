@@ -16,7 +16,7 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { KOREAN_COLORS } from "../../../../types/constants";
 // Re-enabled after fixing KoreanSignage3D font prop issue
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
 import KoreanSignage3D from "./KoreanSignage3D";

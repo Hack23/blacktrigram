@@ -3,19 +3,19 @@
  * @category Combat System
  */
 
-// Three.js 3D components (Arena)
-export { default as CombatArena3D } from "./arena/CombatArena3D";
+// Three.js 3D components (Arena) - Re-exported from shared for backward compatibility
+export { default as CombatArena3D } from "../../../shared/three/scene/CombatArena3D";
 
 // Three.js 3D components (Effects)
 export { default as BloodDecals3D } from "./effects/BloodDecals3D";
 export { default as BloodParticles3D } from "./effects/BloodParticles3D";
 export { default as HitEffects3D } from "./effects/HitEffects3D";
 export { default as TraumaOverlay3D } from "./effects/TraumaOverlay3D";
-export { default as VitalPointMarkers3D } from "./effects/VitalPointMarkers3D";
-export type { BodyRegionFilter } from "./effects/VitalPointMarkers3D";
+export { default as VitalPointMarkers3D } from "../../../shared/three/effects/VitalPointMarkers3D";
+export type { BodyRegionFilter } from "../../../shared/three/effects/VitalPointMarkers3D";
 
-// Controls
-export { default as VitalPointOverlayControlsHtml } from "./controls/VitalPointOverlayControlsHtml";
+// Controls - Re-exported from shared for backward compatibility
+export { default as VitalPointOverlayControlsHtml } from "../../../shared/three/ui/VitalPointOverlayControlsHtml";
 
 // Action Feedback components
 export { ActionFeedback, TechniqueName } from "./feedback/ActionFeedback";
@@ -28,7 +28,7 @@ export { BalanceIndicator } from "./indicators/BalanceIndicator";
 export { BloodLossOverlayHtml } from "./effects/BloodLossOverlayHtml";
 export { BodyPartHealthDisplay } from "./indicators/BodyPartHealthDisplay";
 export { ConsciousnessBlur } from "./effects/ConsciousnessBlur";
-export { GuardIndicator } from "./indicators/GuardIndicator";
+export { GuardIndicator } from "../../../shared/three/indicators/GuardIndicator";
 export { PainVignette } from "./effects/PainVignette";
 export { PlayerStateOverlayHtml } from "./hud/PlayerStateOverlayHtml";
 export { SpeedIndicatorHUD } from "./hud/SpeedIndicatorHUD";
@@ -54,12 +54,12 @@ export { CombatHUD3D } from "./hud/CombatHUD3D";
 export { default as PlayerHUD } from "./hud/PlayerHUD";
 export { CombatReadinessBar } from "./hud/CombatReadinessBar";
 
-// Additional indicator components (not originally exported)
+// Additional indicator components - Re-exported from shared for backward compatibility
 export { default as HealthBar } from "./indicators/HealthBar";
 export { default as StaminaBar } from "./indicators/StaminaBar";
 export { BreathingIndicator } from "./indicators/BreathingIndicator";
 export { InputBufferDisplay } from "./indicators/InputBufferDisplay";
-export { StanceChangeIndicator } from "./indicators/StanceChangeIndicator";
+export { StanceChangeIndicator } from "../../../shared/three/indicators/StanceChangeIndicator";
 export { KeyboardHints } from "./controls/KeyboardHints";
 
 // Re-export component prop types
@@ -88,15 +88,15 @@ export type {
   Injury,
   InjuryType,
 } from "./effects/TraumaOverlay3D";
-export type { VitalPointMarkers3DProps } from "./effects/VitalPointMarkers3D";
-export type { VitalPointOverlayControlsProps } from "./controls/VitalPointOverlayControlsHtml";
+export type { VitalPointMarkers3DProps } from "../../../shared/three/effects/VitalPointMarkers3D";
+export type { VitalPointOverlayControlsProps } from "../../../shared/three/ui/VitalPointOverlayControlsHtml";
 
 // Player State Indicator prop types
 export type { BalanceIndicatorProps } from "./indicators/BalanceIndicator";
 export type { BloodLossOverlayProps } from "./effects/BloodLossOverlayHtml";
 export type { BodyPartHealthDisplayProps } from "./indicators/BodyPartHealthDisplay";
 export type { ConsciousnessBlurProps } from "./effects/ConsciousnessBlur";
-export type { GuardIndicatorProps } from "./indicators/GuardIndicator";
+export type { GuardIndicatorProps } from "../../../shared/three/indicators/GuardIndicator";
 export type { PainVignetteProps } from "./effects/PainVignette";
 export type { PlayerStateOverlayProps } from "./hud/PlayerStateOverlayHtml";
 export type { StaminaWarningProps } from "./indicators/StaminaWarning";
@@ -112,5 +112,5 @@ export type { HealthBarProps } from "./indicators/HealthBar";
 export type { StaminaBarProps } from "./indicators/StaminaBar";
 export type { BreathingIndicatorProps } from "./indicators/BreathingIndicator";
 export type { InputBufferDisplayProps } from "./indicators/InputBufferDisplay";
-export type { StanceChangeIndicatorProps } from "./indicators/StanceChangeIndicator";
+export type { StanceChangeIndicatorProps } from "../../../shared/three/indicators/StanceChangeIndicator";
 export type { KeyboardHintsProps } from "./controls/KeyboardHints";

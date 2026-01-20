@@ -12,9 +12,9 @@
  */
 
 import React, { useMemo } from "react";
-import { TechniqueBar, type TechniqueBarProps } from "../indicators/TechniqueBar";
-import { getTechniqueBarBottom, LAYOUT_BOTTOM_POSITIONS } from "../../../../../types/constants/layout";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { TechniqueBar, type TechniqueBarProps } from "../../../screens/combat/components/indicators/TechniqueBar";
+import { getTechniqueBarBottom, LAYOUT_BOTTOM_POSITIONS } from "../../../../types/constants/layout";
+import { Z_INDEX } from "../../../../types/LayoutTypes";
 
 export interface TechniqueBarContainerProps extends TechniqueBarProps {
   /** Whether to show the TechniqueBar (allows conditional rendering) */

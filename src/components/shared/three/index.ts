@@ -25,6 +25,13 @@ export type { ArchetypeCardProps } from "./ui/ArchetypeCard";
 export { ProgressBar } from "./ui/ProgressBar";
 export type { ProgressBarProps, ProgressBarType } from "./ui/ProgressBar";
 
+export { TechniqueBarContainer } from "./ui/TechniqueBarContainer";
+export type { TechniqueBarContainerProps } from "./ui/TechniqueBarContainer";
+
+export { default as VitalPointOverlayControlsHtml } from "./ui/VitalPointOverlayControlsHtml";
+export type { VitalPointOverlayControlsProps } from "./ui/VitalPointOverlayControlsHtml";
+export type { BodyRegionFilter } from "./ui/VitalPointOverlayControlsHtml";
+
 // Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
 
@@ -33,6 +40,16 @@ export type { StanceSymbol3DProps } from "./effects/StanceSymbol3D";
 
 export { StanceTransitionEffect } from "./effects/StanceTransitionEffect";
 export type { StanceTransitionEffectProps } from "./effects/StanceTransitionEffect";
+
+export { default as VitalPointMarkers3D } from "./effects/VitalPointMarkers3D";
+export type { VitalPointMarkers3DProps } from "./effects/VitalPointMarkers3D";
+
+// Indicators
+export { GuardIndicator } from "./indicators/GuardIndicator";
+export type { GuardIndicatorProps } from "./indicators/GuardIndicator";
+
+export { StanceChangeIndicator } from "./indicators/StanceChangeIndicator";
+export type { StanceChangeIndicatorProps } from "./indicators/StanceChangeIndicator";
 
 // Models
 export { Player3DWithTransitions } from "./models/Player3DWithTransitions";
@@ -63,3 +80,5 @@ export { BackgroundScene3D } from "./scene/BackgroundScene3D";
 export type { BackgroundScene3DProps } from "./scene/BackgroundScene3D";
 export { DebugCollision } from "./scene/DebugCollision";
 export type { DebugCollisionProps } from "./scene/DebugCollision";
+export { default as CombatArena3D } from "./scene/CombatArena3D";
+export type { CombatArena3DProps } from "./scene/CombatArena3D";
