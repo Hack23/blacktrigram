@@ -2,12 +2,17 @@
  * TrainingScreen3D - Three.js-based training screen
  *
  * Refactored to use consolidated hooks matching CombatScreen architecture.
- * Provides 3D training dummy with vital point targeting and Html UI overlays.
+ * Provides 3D training dummy with vital point targeting and UI overlays.
+ *
+ * UI Rendering: All HUD elements are rendered in an absolute-positioned div
+ * OUTSIDE the Canvas, matching CombatScreen's reliable rendering pattern.
+ * This eliminates the need for Html overlays inside Three.js and ensures
+ * HUDs appear immediately without waiting for Canvas initialization.
  *
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
-import { Html } from "@react-three/drei";
+// UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   Bloom,
@@ -75,17 +80,17 @@ import {
 } from "../../shared/mobile";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
-import { Player3DWithTransitions } from "../../shared/three";
-import { VolumeControl } from "../../shared/ui/VolumeControl";
 import {
+  Player3DWithTransitions,
   VitalPointMarkers3D,
   VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
 } from "../../shared/three";
-import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
-import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
 import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
+import { VolumeControl } from "../../shared/ui/VolumeControl";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -156,16 +161,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 1: Core State Management (Hooks)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  // Track component mount state to ensure Html overlays render after Canvas is ready
-  // This fixes the issue where HUD only appears after resize
-  const [isMounted, setIsMounted] = React.useState(false);
-  React.useEffect(() => {
-    // Delay mount state to ensure Canvas/WebGL context is fully initialized
-    const timer = requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-    return () => cancelAnimationFrame(timer);
-  }, []);
+  // UI overlays now render outside Canvas in absolute-positioned div
+  // This matches CombatScreen pattern for reliable, immediate rendering
+  // No mount delay needed - UI is not dependent on Three.js render loop
 
   // Consolidated training state management (matches useCombatState pattern)
   const { state: trainingState, actions: trainingActions } = useTrainingState();
@@ -1160,6 +1158,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             playerAnimation.currentState,
           )}
           attackAnimation={attackAnimation}
+          laterality="right"
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={true}
           enableStanceAudio={true}
@@ -1201,431 +1200,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           previousStance={previousStanceIndex}
           isMobile={isMobile}
         />
-
-        {/* Html UI Overlays - key ensures re-render on resize, render after mount */}
-        {isMounted && (
-          <Html fullscreen key={`hud-${width}-${height}`}>
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                pointerEvents: "none",
-                position: "relative",
-              }}
-            >
-              {/* Top Left - Training Controls */}
-              <ResponsiveContainer
-                position={{
-                  base: { x: 20 * positionScale, y: 20 * positionScale },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="top"
-                zIndex={Z_INDEX.HUD}
-                style={{ pointerEvents: "all" }}
-              >
-                <TrainingControlsOverlayHtml
-                  isTraining={trainingState.isTraining}
-                  onStartTraining={handleStartTraining}
-                  onStopTraining={handleStopTraining}
-                  isMobile={isMobile}
-                />
-              </ResponsiveContainer>
-
-              {/* Top Right - Training Stats (below VolumeControl) */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: width - (isMobile ? 310 : 320 * positionScale),
-                    y: isMobile ? 90 : 120 * positionScale,
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="top"
-                zIndex={Z_INDEX.HUD}
-                style={{
-                  pointerEvents: "all",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
-                  alignItems: "flex-end",
-                }}
-              >
-                <TrainingStatsOverlayHtml
-                  stats={{
-                    ...trainingState.stats,
-                    sessionDuration: trainingState.sessionDuration,
-                    bestCombo: trainingState.bestCombo,
-                    perfectStrikes: trainingState.perfectStrikes,
-                  }}
-                  isMobile={isMobile}
-                  distanceToDummy={distanceToDummy}
-                  effectiveReach={currentTechniqueReach}
-                />
-              </ResponsiveContainer>
-
-              {/* Top Center - Training Mode Selector (below hint/above center) */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: width / 2 - (isMobile ? 140 : 160 * positionScale),
-                    y: isMobile ? 70 : 90 * positionScale,
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="top"
-                zIndex={Z_INDEX.HUD}
-                style={{
-                  pointerEvents: "all",
-                }}
-              >
-                <TrainingModeSelectorOverlayHtml
-                  currentMode={trainingState.trainingMode}
-                  onModeChange={trainingActions.setTrainingMode}
-                  isMobile={isMobile}
-                />
-              </ResponsiveContainer>
-
-              {/* Archetype Selector - Top Left below Training Controls */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: 20 * positionScale,
-                    y: isMobile ? 80 : 100 * positionScale,
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="top"
-                zIndex={Z_INDEX.MODAL}
-                style={{
-                  pointerEvents: "all",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    padding: isMobile ? "8px 12px" : "10px 16px",
-                    background: hexToRgbaString(
-                      KOREAN_COLORS.UI_BACKGROUND_DARK,
-                      0.9,
-                    ),
-                    border: `2px solid ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_GOLD,
-                      0.6,
-                    )}`,
-                    borderRadius: "8px",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: isMobile ? "10px" : "12px",
-                      color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    원형 선택 | Archetype
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "4px",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {Object.values(PlayerArchetype).map((arch) => (
-                      <button
-                        key={arch}
-                        onClick={() => {
-                          setSelectedArchetype(arch);
-                          audio.playSFX("menu_select");
-                        }}
-                        style={{
-                          padding: isMobile ? "4px 8px" : "6px 10px",
-                          fontSize: isMobile ? "9px" : "11px",
-                          fontFamily: FONT_FAMILY.KOREAN,
-                          fontWeight:
-                            selectedArchetype === arch ? "bold" : "normal",
-                          background:
-                            selectedArchetype === arch
-                              ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)
-                              : hexToRgbaString(
-                                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                                  0.8,
-                                ),
-                          color:
-                            selectedArchetype === arch
-                              ? hexToRgbaString(
-                                  KOREAN_COLORS.UI_BACKGROUND_DARK,
-                                  1,
-                                )
-                              : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
-                          border: `1px solid ${hexToRgbaString(
-                            selectedArchetype === arch
-                              ? KOREAN_COLORS.ACCENT_GOLD
-                              : KOREAN_COLORS.UI_BORDER,
-                            0.6,
-                          )}`,
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        {arch.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </ResponsiveContainer>
-
-              {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: isMobile ? 10 : 20 * positionScale,
-                    y: height - (isMobile ? 180 : 280 * positionScale),
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="bottom"
-                zIndex={Z_INDEX.HUD}
-                style={{
-                  pointerEvents: "all",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "15px",
-                }}
-              >
-                <AnatomyControlsOverlayHtml
-                  visibleLayers={trainingState.visibleAnatomyLayers}
-                  onLayerToggle={handleAnatomyLayerToggle}
-                  isMobile={isMobile}
-                />
-              </ResponsiveContainer>
-
-              {/* Bottom Left - Guard Indicator (below anatomy controls) */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: isMobile ? "65px" : `${90 * positionScale}px`,
-                  left: isMobile ? "10px" : `${20 * positionScale}px`,
-                  pointerEvents: "none",
-                }}
-              >
-                <GuardIndicator
-                  currentStance={
-                    TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]
-                  }
-                  isInGuard={playerAnimation.isInStanceGuard()}
-                  position="left"
-                  isMobile={isMobile}
-                />
-              </div>
-
-              {/* Bottom Right - Vital Point Panel / Footwork Drills Panel */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: width - (isMobile ? 310 : 420 * positionScale),
-                    y: height - (isMobile ? 100 : 180 * positionScale),
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="bottom"
-                zIndex={Z_INDEX.HUD}
-                style={{ pointerEvents: "all" }}
-              >
-                {trainingState.trainingMode === "footwork" ? (
-                  <FootworkDrillsOverlayHtml
-                    currentDrill={trainingState.footworkDrillType}
-                    onDrillChange={(drill) =>
-                      trainingActions.startFootworkDrill(drill)
-                    }
-                    currentStep={trainingState.footworkDrillStep}
-                    onStepComplete={() => trainingActions.advanceFootworkStep()}
-                    isActive={trainingState.footworkDrillActive}
-                    onToggleActive={() => {
-                      if (trainingState.footworkDrillActive) {
-                        trainingActions.stopFootworkDrill();
-                      } else {
-                        trainingActions.startFootworkDrill(
-                          trainingState.footworkDrillType,
-                        );
-                      }
-                    }}
-                    isMobile={isMobile}
-                  />
-                ) : (
-                  <VitalPointTrainingOverlayHtml
-                    selectedVitalPoint={trainingState.selectedVitalPoint}
-                    onVitalPointSelect={trainingActions.setSelectedVitalPoint}
-                    isMobile={isMobile}
-                  />
-                )}
-              </ResponsiveContainer>
-
-              {/* Vital Point Overlay Hint - Top Center */}
-              {!overlayVisible && (
-                <ResponsiveContainer
-                  position={{
-                    base: { x: 0, y: isMobile ? 20 : 30 * positionScale },
-                  }}
-                  containerWidth={width}
-                  useSafeArea
-                  safeAreaEdge="top"
-                  zIndex={Z_INDEX.HUD}
-                  style={{
-                    pointerEvents: "none",
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      padding: isMobile ? "8px 12px" : "10px 16px",
-                      background: hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_DARK,
-                        0.9,
-                      ),
-                      border: `2px solid ${hexToRgbaString(
-                        KOREAN_COLORS.PRIMARY_CYAN,
-                        0.6,
-                      )}`,
-                      borderRadius: "8px",
-                      fontSize: isMobile ? "12px" : "14px",
-                      fontFamily: FONT_FAMILY.KOREAN,
-                      color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    <div>
-                      💡 급소 오버레이 | Vital Point Overlay: Press{" "}
-                      <span
-                        style={{
-                          color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-                        }}
-                      >
-                        V
-                      </span>
-                    </div>
-                  </div>
-                </ResponsiveContainer>
-              )}
-
-              {/* Center - Feedback Message */}
-              {trainingState.showFeedback && (
-                <ResponsiveContainer
-                  position={{ base: { x: 0, y: 0 } }}
-                  containerWidth={width}
-                  containerHeight={height}
-                  zIndex={Z_INDEX.MODAL}
-                  style={{
-                    pointerEvents: "none",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <TrainingFeedbackOverlayHtml
-                    message={trainingState.feedback}
-                    isMobile={isMobile}
-                  />
-                </ResponsiveContainer>
-              )}
-
-              {/* Technique Bar - Bottom Center - Using centralized container component */}
-              <TechniqueBarContainer
-                visible={true}
-                techniques={techniqueSelection.availableTechniques}
-                player={trainingPlayerState}
-                selectedIndex={techniqueSelection.selectedIndex}
-                cooldowns={cooldownsMap}
-                onTechniqueSelect={techniqueSelection.selectTechnique}
-                onTechniqueHover={(_tech) => {
-                  // Could add additional hover effects here
-                }}
-                isMobile={isMobile}
-                screenWidth={width}
-                screenHeight={height}
-              />
-
-              {/* Top Right - Return to Menu Button */}
-              {/* Moved from bottom center to top-right for gameplay visibility */}
-              <ResponsiveContainer
-                position={{
-                  base: {
-                    x: width - (isMobile ? 100 : 150),
-                    y: getBackButtonTop(isMobile), // Top-right corner
-                  },
-                }}
-                containerWidth={width}
-                useSafeArea
-                safeAreaEdge="top"
-                zIndex={Z_INDEX.HUD} // Standard HUD layer
-                style={{
-                  pointerEvents: "all",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <style>
-                  {`
-                  .training-return-menu-btn {
-                    background: ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_GOLD,
-                      1,
-                    )};
-                    border: none;
-                    borderRadius: 8px;
-                    padding: ${isMobile ? "6px 10px" : "8px 12px"};
-                    font-size: ${isMobile ? "12px" : "14px"};
-                    fontWeight: bold;
-                    fontFamily: ${FONT_FAMILY.KOREAN};
-                    color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    boxShadow: 0 0 10px ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_GOLD,
-                      0.5,
-                    )};
-                    minHeight: 36px;
-                    whiteSpace: nowrap;
-                  }
-                  .training-return-menu-btn:hover {
-                    transform: scale(1.05);
-                    boxShadow: 0 0 20px ${hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_GOLD,
-                      0.8,
-                    )};
-                  }
-                `}
-                </style>
-                <button
-                  onClick={onReturnToMenu}
-                  onMouseEnter={() => audio.playSFX("menu_hover")}
-                  className="training-return-menu-btn"
-                  data-testid="return-to-menu-button"
-                  aria-label="Return to main menu"
-                >
-                  {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
-                </button>
-              </ResponsiveContainer>
-            </div>
-          </Html>
-        )}
 
         {/* Mobile Touch Controls - Only shown on mobile devices */}
         {/* Positioned above TechniqueBar and "Back to Menu" button to prevent overlap */}
@@ -1691,6 +1265,424 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           </EffectComposer>
         )}
       </Canvas>
+
+      {/* Html UI Overlays (positioned absolutely over Canvas) - matches CombatScreen pattern */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: Z_INDEX.HUD,
+        }}
+        data-testid="training-hud-overlay"
+      >
+        {/* Top Left - Training Controls */}
+        <ResponsiveContainer
+          position={{
+            base: { x: 20 * positionScale, y: 20 * positionScale },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD}
+          style={{ pointerEvents: "all" }}
+        >
+          <TrainingControlsOverlayHtml
+            isTraining={trainingState.isTraining}
+            onStartTraining={handleStartTraining}
+            onStopTraining={handleStopTraining}
+            isMobile={isMobile}
+          />
+        </ResponsiveContainer>
+
+        {/* Top Right - Training Stats (below VolumeControl) */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: width - (isMobile ? 310 : 320 * positionScale),
+              y: isMobile ? 90 : 120 * positionScale,
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD}
+          style={{
+            pointerEvents: "all",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            alignItems: "flex-end",
+          }}
+        >
+          <TrainingStatsOverlayHtml
+            stats={{
+              ...trainingState.stats,
+              sessionDuration: trainingState.sessionDuration,
+              bestCombo: trainingState.bestCombo,
+              perfectStrikes: trainingState.perfectStrikes,
+            }}
+            isMobile={isMobile}
+            distanceToDummy={distanceToDummy}
+            effectiveReach={currentTechniqueReach}
+          />
+        </ResponsiveContainer>
+
+        {/* Top Center - Training Mode Selector (below hint/above center) */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: width / 2 - (isMobile ? 140 : 160 * positionScale),
+              y: isMobile ? 70 : 90 * positionScale,
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD}
+          style={{
+            pointerEvents: "all",
+          }}
+        >
+          <TrainingModeSelectorOverlayHtml
+            currentMode={trainingState.trainingMode}
+            onModeChange={trainingActions.setTrainingMode}
+            isMobile={isMobile}
+          />
+        </ResponsiveContainer>
+
+        {/* Archetype Selector - Top Left below Training Controls */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: 20 * positionScale,
+              y: isMobile ? 80 : 100 * positionScale,
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.MODAL}
+          style={{
+            pointerEvents: "all",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              padding: isMobile ? "8px 12px" : "10px 16px",
+              background: hexToRgbaString(
+                KOREAN_COLORS.UI_BACKGROUND_DARK,
+                0.9,
+              ),
+              border: `2px solid ${hexToRgbaString(
+                KOREAN_COLORS.ACCENT_GOLD,
+                0.6,
+              )}`,
+              borderRadius: "8px",
+              fontFamily: FONT_FAMILY.KOREAN,
+            }}
+          >
+            <div
+              style={{
+                fontSize: isMobile ? "10px" : "12px",
+                color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              원형 선택 | Archetype
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "4px",
+                justifyContent: "center",
+              }}
+            >
+              {Object.values(PlayerArchetype).map((arch) => (
+                <button
+                  key={arch}
+                  onClick={() => {
+                    setSelectedArchetype(arch);
+                    audio.playSFX("menu_select");
+                  }}
+                  style={{
+                    padding: isMobile ? "4px 8px" : "6px 10px",
+                    fontSize: isMobile ? "9px" : "11px",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontWeight: selectedArchetype === arch ? "bold" : "normal",
+                    background:
+                      selectedArchetype === arch
+                        ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)
+                        : hexToRgbaString(
+                            KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                            0.8,
+                          ),
+                    color:
+                      selectedArchetype === arch
+                        ? hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)
+                        : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
+                    border: `1px solid ${hexToRgbaString(
+                      selectedArchetype === arch
+                        ? KOREAN_COLORS.ACCENT_GOLD
+                        : KOREAN_COLORS.UI_BORDER,
+                      0.6,
+                    )}`,
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {arch.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+        </ResponsiveContainer>
+
+        {/* Bottom Left - Anatomy Controls (mode selector is top-center) */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: isMobile ? 10 : 20 * positionScale,
+              y: height - (isMobile ? 180 : 280 * positionScale),
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="bottom"
+          zIndex={Z_INDEX.HUD}
+          style={{
+            pointerEvents: "all",
+            display: "flex",
+            flexDirection: "column",
+            gap: "15px",
+          }}
+        >
+          <AnatomyControlsOverlayHtml
+            visibleLayers={trainingState.visibleAnatomyLayers}
+            onLayerToggle={handleAnatomyLayerToggle}
+            isMobile={isMobile}
+          />
+        </ResponsiveContainer>
+
+        {/* Bottom Left - Guard Indicator (below anatomy controls) */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: isMobile ? "65px" : `${90 * positionScale}px`,
+            left: isMobile ? "10px" : `${20 * positionScale}px`,
+            pointerEvents: "none",
+          }}
+        >
+          <GuardIndicator
+            currentStance={
+              TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex]
+            }
+            isInGuard={playerAnimation.isInStanceGuard()}
+            position="left"
+            isMobile={isMobile}
+          />
+        </div>
+
+        {/* Bottom Right - Vital Point Panel / Footwork Drills Panel */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: width - (isMobile ? 310 : 420 * positionScale),
+              y: height - (isMobile ? 100 : 180 * positionScale),
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="bottom"
+          zIndex={Z_INDEX.HUD}
+          style={{ pointerEvents: "all" }}
+        >
+          {trainingState.trainingMode === "footwork" ? (
+            <FootworkDrillsOverlayHtml
+              currentDrill={trainingState.footworkDrillType}
+              onDrillChange={(drill) =>
+                trainingActions.startFootworkDrill(drill)
+              }
+              currentStep={trainingState.footworkDrillStep}
+              onStepComplete={() => trainingActions.advanceFootworkStep()}
+              isActive={trainingState.footworkDrillActive}
+              onToggleActive={() => {
+                if (trainingState.footworkDrillActive) {
+                  trainingActions.stopFootworkDrill();
+                } else {
+                  trainingActions.startFootworkDrill(
+                    trainingState.footworkDrillType,
+                  );
+                }
+              }}
+              isMobile={isMobile}
+            />
+          ) : (
+            <VitalPointTrainingOverlayHtml
+              selectedVitalPoint={trainingState.selectedVitalPoint}
+              onVitalPointSelect={trainingActions.setSelectedVitalPoint}
+              isMobile={isMobile}
+            />
+          )}
+        </ResponsiveContainer>
+
+        {/* Vital Point Overlay Hint - Top Center */}
+        {!overlayVisible && (
+          <ResponsiveContainer
+            position={{
+              base: { x: 0, y: isMobile ? 20 : 30 * positionScale },
+            }}
+            containerWidth={width}
+            useSafeArea
+            safeAreaEdge="top"
+            zIndex={Z_INDEX.HUD}
+            style={{
+              pointerEvents: "none",
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                padding: isMobile ? "8px 12px" : "10px 16px",
+                background: hexToRgbaString(
+                  KOREAN_COLORS.UI_BACKGROUND_DARK,
+                  0.9,
+                ),
+                border: `2px solid ${hexToRgbaString(
+                  KOREAN_COLORS.PRIMARY_CYAN,
+                  0.6,
+                )}`,
+                borderRadius: "8px",
+                fontSize: isMobile ? "12px" : "14px",
+                fontFamily: FONT_FAMILY.KOREAN,
+                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              <div>
+                💡 급소 오버레이 | Vital Point Overlay: Press{" "}
+                <span
+                  style={{
+                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                  }}
+                >
+                  V
+                </span>
+              </div>
+            </div>
+          </ResponsiveContainer>
+        )}
+
+        {/* Center - Feedback Message */}
+        {trainingState.showFeedback && (
+          <ResponsiveContainer
+            position={{ base: { x: 0, y: 0 } }}
+            containerWidth={width}
+            containerHeight={height}
+            zIndex={Z_INDEX.MODAL}
+            style={{
+              pointerEvents: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <TrainingFeedbackOverlayHtml
+              message={trainingState.feedback}
+              isMobile={isMobile}
+            />
+          </ResponsiveContainer>
+        )}
+
+        {/* Technique Bar - Bottom Center - Using centralized container component */}
+        <TechniqueBarContainer
+          visible={true}
+          techniques={techniqueSelection.availableTechniques}
+          player={trainingPlayerState}
+          selectedIndex={techniqueSelection.selectedIndex}
+          cooldowns={cooldownsMap}
+          onTechniqueSelect={techniqueSelection.selectTechnique}
+          onTechniqueHover={(_tech) => {
+            // Could add additional hover effects here
+          }}
+          isMobile={isMobile}
+          screenWidth={width}
+          screenHeight={height}
+        />
+
+        {/* Top Right - Return to Menu Button */}
+        {/* Moved from bottom center to top-right for gameplay visibility */}
+        <ResponsiveContainer
+          position={{
+            base: {
+              x: width - (isMobile ? 100 : 150),
+              y: getBackButtonTop(isMobile), // Top-right corner
+            },
+          }}
+          containerWidth={width}
+          useSafeArea
+          safeAreaEdge="top"
+          zIndex={Z_INDEX.HUD} // Standard HUD layer
+          style={{
+            pointerEvents: "all",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <style>
+            {`
+            .training-return-menu-btn {
+              background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+              border: none;
+              border-radius: 8px;
+              padding: ${isMobile ? "6px 10px" : "8px 12px"};
+              font-size: ${isMobile ? "12px" : "14px"};
+              font-weight: bold;
+              font-family: ${FONT_FAMILY.KOREAN};
+              color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
+              cursor: pointer;
+              transition: all 0.2s ease;
+              box-shadow: 0 0 10px ${hexToRgbaString(
+                KOREAN_COLORS.ACCENT_GOLD,
+                0.5,
+              )};
+              min-height: 36px;
+              white-space: nowrap;
+            }
+            .training-return-menu-btn:hover {
+              transform: scale(1.05);
+              box-shadow: 0 0 20px ${hexToRgbaString(
+                KOREAN_COLORS.ACCENT_GOLD,
+                0.8,
+              )};
+            }
+          `}
+          </style>
+          <button
+            onClick={onReturnToMenu}
+            onMouseEnter={() => audio.playSFX("menu_hover")}
+            className="training-return-menu-btn"
+            data-testid="return-to-menu-button"
+            aria-label="Return to main menu"
+          >
+            {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
+          </button>
+        </ResponsiveContainer>
+      </div>
 
       {/* Volume Control - positioned outside Canvas to maintain AudioProvider context */}
       <VolumeControl position="top-right" compact={isMobile} />

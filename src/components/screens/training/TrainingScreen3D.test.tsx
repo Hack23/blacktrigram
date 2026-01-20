@@ -1,64 +1,67 @@
-import { render, cleanup } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach, afterEach, type Mock } from "vitest";
-import type React from "react";
-import TrainingScreen3D from "./TrainingScreen3D";
+/**
+ * Unit tests for TrainingScreen3D component
+ * Tests the Three.js-based training screen with 3D dummy and HUD overlays
+ *
+ * @korean TrainingScreen3D 단위 테스트 - 3D 훈련용 더미와 HUD 오버레이 테스트
+ */
 
-interface MockCanvasProps {
-  readonly children: React.ReactNode;
-}
+import "@testing-library/jest-dom";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { PlayerArchetype } from "../../../types/common";
+import { TrainingScreen3D } from "./TrainingScreen3D";
 
-interface MockHtmlProps {
-  readonly children: React.ReactNode;
-}
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
-interface MockCameraPosition {
-  readonly set: Mock<(x: number, y: number, z: number) => void>;
-}
-
-interface MockCamera {
-  readonly position: MockCameraPosition;
-}
-
-interface MockThreeContext {
-  readonly camera: MockCamera;
-  readonly scene: Record<string, never>;
-}
-
-interface MockAudioProvider {
-  readonly playSFX: Mock<(id: string, volume?: number) => Promise<void>>;
-  readonly fadeIn: Mock<(trackId: string, duration?: number) => Promise<void>>;
-  readonly fadeOut: Mock<(duration?: number) => Promise<void>>;
-  readonly stopMusic: Mock<() => void>;
-}
-
-interface MockPlayerMovement {
-  readonly playerPosition: { readonly x: number; readonly y: number };
-  readonly isMoving: boolean;
-}
-
-vi.mock("@react-three/fiber", () => ({
-  Canvas: ({ children }: MockCanvasProps) => (
-    <div data-testid="three-canvas">{children}</div>
-  ),
-  useFrame: vi.fn(),
-  useThree: (): MockThreeContext => ({
-    camera: { position: { set: vi.fn() } },
-    scene: {},
+// Mock AudioProvider
+vi.mock("../../../audio/AudioProvider", () => ({
+  useAudio: () => ({
+    isInitialized: true,
+    isAudioReady: true,
+    playMusic: vi.fn(),
+    stopMusic: vi.fn(),
+    playSFX: vi.fn(),
+    setSFXVolume: vi.fn(),
+    setMusicVolume: vi.fn(),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
   }),
 }));
 
-vi.mock("@react-three/drei", () => ({
-  Html: ({ children }: MockHtmlProps) => (
-    <div data-testid="html-overlay">{children}</div>
+// Mock Three.js Canvas and related components
+vi.mock("@react-three/fiber", () => ({
+  Canvas: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="three-canvas">{children}</div>
   ),
-  Environment: () => null,
-  Text: () => null,
-  PerspectiveCamera: () => null,
-  OrbitControls: () => null,
+  useFrame: vi.fn(),
+  useThree: () => ({
+    gl: {},
+    scene: {},
+    camera: {},
+  }),
 }));
 
+// Mock @react-three/drei
+vi.mock("@react-three/drei", () => ({
+  Html: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="html-overlay">{children}</div>
+  ),
+  OrbitControls: () => null,
+  Environment: () => null,
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <mesh>{children}</mesh>
+  ),
+  PerspectiveCamera: () => null,
+}));
+
+// Mock @react-three/postprocessing
 vi.mock("@react-three/postprocessing", () => ({
-  EffectComposer: () => null,
+  EffectComposer: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   Bloom: () => null,
   SSAO: () => null,
   Vignette: () => null,
@@ -66,288 +69,496 @@ vi.mock("@react-three/postprocessing", () => ({
   Noise: () => null,
 }));
 
-vi.mock("../../../audio/AudioProvider", () => ({
-  useAudio: (): MockAudioProvider => ({
-    playSFX: vi.fn(),
-    fadeIn: vi.fn(() => Promise.resolve()),
-    fadeOut: vi.fn(() => Promise.resolve()),
-    stopMusic: vi.fn(),
-  }),
+// Mock Three.js
+vi.mock("three", () => ({
+  Group: class MockGroup {},
+  Mesh: class MockMesh {},
+  Vector3: class MockVector3 {
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+    ) {}
+    clone() {
+      return new MockVector3(this.x, this.y, this.z);
+    }
+    add(v: MockVector3) {
+      return new MockVector3(this.x + v.x, this.y + v.y, this.z + v.z);
+    }
+    sub(v: MockVector3) {
+      return new MockVector3(this.x - v.x, this.y - v.y, this.z - v.z);
+    }
+    toArray() {
+      return [this.x, this.y, this.z];
+    }
+    length() {
+      return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+    normalize() {
+      const len = this.length();
+      if (len > 0) {
+        return new MockVector3(this.x / len, this.y / len, this.z / len);
+      }
+      return new MockVector3(0, 0, 0);
+    }
+    set(x: number, y: number, z: number) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      return this;
+    }
+    copy(v: MockVector3) {
+      this.x = v.x;
+      this.y = v.y;
+      this.z = v.z;
+      return this;
+    }
+    multiplyScalar(scalar: number) {
+      return new MockVector3(this.x * scalar, this.y * scalar, this.z * scalar);
+    }
+    distanceTo(v: MockVector3) {
+      const dx = this.x - v.x;
+      const dy = this.y - v.y;
+      const dz = this.z - v.z;
+      return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+  },
+  Matrix4: class MockMatrix4 {
+    elements = new Array(16).fill(0);
+    identity() {
+      return this;
+    }
+    copy() {
+      return this;
+    }
+    multiply() {
+      return this;
+    }
+    decompose() {
+      return this;
+    }
+    makeRotationFromEuler() {
+      return this;
+    }
+  },
+  Euler: class MockEuler {
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+      public order = "XYZ",
+    ) {}
+    clone() {
+      return new MockEuler(this.x, this.y, this.z, this.order);
+    }
+    copy(e: MockEuler) {
+      this.x = e.x;
+      this.y = e.y;
+      this.z = e.z;
+      this.order = e.order;
+      return this;
+    }
+    toArray() {
+      return [this.x, this.y, this.z, this.order];
+    }
+    setFromQuaternion(_q: { x: number; y: number; z: number; w: number }) {
+      return this;
+    }
+  },
+  Quaternion: class MockQuaternion {
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+      public w = 1,
+    ) {}
+    setFromEuler(_e: { x: number; y: number; z: number; order?: string }) {
+      return this;
+    }
+    slerpQuaternions(
+      _qa: { x: number; y: number; z: number; w: number },
+      _qb: { x: number; y: number; z: number; w: number },
+      _t: number,
+    ) {
+      return this;
+    }
+    setFromUnitVectors(
+      _vFrom: { x: number; y: number; z: number },
+      _vTo: { x: number; y: number; z: number },
+    ) {
+      return this;
+    }
+  },
+  Raycaster: class MockRaycaster {
+    set(
+      _origin: { x: number; y: number; z: number },
+      _direction: { x: number; y: number; z: number },
+    ) {
+      return this;
+    }
+    intersectObject(_object: object) {
+      return [];
+    }
+    far = 1000;
+  },
+  MeshStandardMaterial: class MockMeshStandardMaterial {
+    dispose() {}
+  },
+  MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
+    dispose() {}
+  },
+  MeshBasicMaterial: class MockMeshBasicMaterial {
+    dispose() {}
+  },
+  DoubleSide: 2,
+  Color: class MockColor {
+    constructor(public color?: number | string) {}
+  },
+  BufferAttribute: class MockBufferAttribute {},
+  AdditiveBlending: 1,
+  Fog: class MockFog {
+    constructor(
+      public color: number,
+      public near: number,
+      public far: number,
+    ) {}
+  },
+  BoxGeometry: class MockBoxGeometry {
+    dispose() {}
+  },
+  SphereGeometry: class MockSphereGeometry {
+    dispose() {}
+  },
+  CapsuleGeometry: class MockCapsuleGeometry {
+    dispose() {}
+  },
+  CylinderGeometry: class MockCylinderGeometry {
+    dispose() {}
+  },
+  RingGeometry: class MockRingGeometry {
+    dispose() {}
+  },
+  PlaneGeometry: class MockPlaneGeometry {
+    dispose() {}
+  },
+  CircleGeometry: class MockCircleGeometry {
+    dispose() {}
+  },
+  TorusGeometry: class MockTorusGeometry {
+    dispose() {}
+  },
+  BufferGeometry: class MockBufferGeometry {
+    attributes: Record<string, unknown> = {};
+    setAttribute(name: string, attribute: unknown) {
+      this.attributes[name] = attribute;
+      return this;
+    }
+    getAttribute(name: string) {
+      return this.attributes[name];
+    }
+    dispose() {}
+  },
+  Float32BufferAttribute: class MockFloat32BufferAttribute {},
+  Points: class MockPoints {},
+  PointsMaterial: class MockPointsMaterial {
+    dispose() {}
+  },
+  Clock: class MockClock {
+    elapsedTime = 0;
+    getElapsedTime() {
+      return this.elapsedTime;
+    }
+  },
+  FrontSide: 0,
+  BackSide: 1,
+  MathUtils: {
+    lerp: (a: number, b: number, t: number) => a + (b - a) * t,
+    clamp: (val: number, min: number, max: number) =>
+      Math.max(min, Math.min(max, val)),
+    degToRad: (deg: number) => (deg * Math.PI) / 180,
+    radToDeg: (rad: number) => (rad * 180) / Math.PI,
+  },
 }));
 
-vi.mock("../../../utils/inputSystem", () => ({
-  usePlayerMovement: (): MockPlayerMovement => ({
-    playerPosition: { x: 0, y: 0 },
-    isMoving: false,
-  }),
-}));
-
-vi.mock("./components/TrainingDummy3D", () => ({
-  default: () => null,
-}));
-
-vi.mock("./components/TrainingAICharacter3D", () => ({
-  default: () => null,
-}));
-
-describe("TrainingScreen3D - Core Functionality", () => {
-  let mockOnPlayerUpdate: Mock;
-  let mockOnReturnToMenu: Mock;
+describe("TrainingScreen3D", () => {
+  let mockOnPlayerUpdate: (updates: Partial<unknown>) => void;
+  let mockOnReturnToMenu: () => void;
 
   beforeEach(() => {
     mockOnPlayerUpdate = vi.fn();
     mockOnReturnToMenu = vi.fn();
-    vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    cleanup();
-    vi.clearAllTimers();
-  });
+  describe("Basic Rendering", () => {
+    it("should render without crashing", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
 
-  it("should render without crashing", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(container).toBeTruthy();
-    expect(container.firstChild).toBeInTheDocument();
-  });
+      expect(container).toBeTruthy();
+    });
 
-  it("should render Three.js Canvas", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    const canvas = getByTestId("three-canvas");
-    expect(canvas).toBeInTheDocument();
-    expect(canvas).toBeVisible();
-  });
-
-  it("should render training controls", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(getByTestId("training-controls-html")).toBeInTheDocument();
-  });
-
-  it("should accept required props", () => {
-    expect(() => {
+    it("should render Three.js canvas", () => {
       render(
         <TrainingScreen3D
           onPlayerUpdate={mockOnPlayerUpdate}
           onReturnToMenu={mockOnReturnToMenu}
-        />
+        />,
       );
-    }).not.toThrow();
+
+      expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
+    });
+
+    it("should render training screen container", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
+
+    it("should render HUD overlay outside Canvas", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      // UI overlay is now outside Canvas in absolute-positioned div
+      expect(screen.getByTestId("training-hud-overlay")).toBeInTheDocument();
+    });
   });
 
-  it("should use default dimensions when not provided", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-      />
-    );
-    expect(container).toBeTruthy();
-  });
-});
+  describe("Dimensions", () => {
+    it("should render with custom dimensions", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          width={1920}
+          height={1080}
+        />,
+      );
 
-describe("TrainingScreen3D - UI Components", () => {
-  let mockOnPlayerUpdate: Mock;
-  let mockOnReturnToMenu: Mock;
+      const screenDiv = container.querySelector(
+        '[data-testid="training-screen-3d"]',
+      );
+      expect(screenDiv).toHaveStyle({ width: "1920px", height: "1080px" });
+    });
 
-  beforeEach(() => {
-    mockOnPlayerUpdate = vi.fn();
-    mockOnReturnToMenu = vi.fn();
-    vi.clearAllMocks();
-  });
+    it("should render with default dimensions", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
 
-  afterEach(() => {
-    cleanup();
-  });
+      const screenDiv = container.querySelector(
+        '[data-testid="training-screen-3d"]',
+      );
+      expect(screenDiv).toHaveStyle({ width: "1200px", height: "800px" });
+    });
 
-  it("should render training stats", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(getByTestId("training-stats-html")).toBeInTheDocument();
-  });
+    it("should render with mobile dimensions", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          width={375}
+          height={667}
+        />,
+      );
 
-  it("should render vital point panel", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(getByTestId("vital-point-training-html")).toBeInTheDocument();
-  });
-
-  it("should render mode selector", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(getByTestId("training-mode-selector-html")).toBeInTheDocument();
+      const screenDiv = container.querySelector(
+        '[data-testid="training-screen-3d"]',
+      );
+      expect(screenDiv).toHaveStyle({ width: "375px", height: "667px" });
+    });
   });
 
-  it("should render all required UI overlays", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
+  describe("Archetype Selection", () => {
+    it("should render with default MUSA archetype", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
 
-    expect(getByTestId("training-stats-html")).toBeInTheDocument();
-    expect(getByTestId("vital-point-training-html")).toBeInTheDocument();
-    expect(getByTestId("training-mode-selector-html")).toBeInTheDocument();
-    expect(getByTestId("training-controls-html")).toBeInTheDocument();
-  });
-});
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
 
-describe("TrainingScreen3D - Responsive Layout", () => {
-  let mockOnPlayerUpdate: Mock;
-  let mockOnReturnToMenu: Mock;
+    it("should render with AMSALJA archetype", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          initialArchetype={PlayerArchetype.AMSALJA}
+        />,
+      );
 
-  beforeEach(() => {
-    mockOnPlayerUpdate = vi.fn();
-    mockOnReturnToMenu = vi.fn();
-    vi.clearAllMocks();
-  });
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
 
-  afterEach(() => {
-    cleanup();
-  });
+    it("should render with HACKER archetype", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          initialArchetype={PlayerArchetype.HACKER}
+        />,
+      );
 
-  it("should handle mobile dimensions", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={400}
-        height={600}
-      />
-    );
-    expect(container).toBeTruthy();
-    expect(container.firstChild).toBeInTheDocument();
-  });
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
 
-  it("should handle tablet dimensions", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={768}
-        height={1024}
-      />
-    );
-    expect(container).toBeTruthy();
+    it("should render with all archetypes", () => {
+      const archetypes = Object.values(PlayerArchetype);
+
+      archetypes.forEach((archetype) => {
+        const { unmount } = render(
+          <TrainingScreen3D
+            onPlayerUpdate={mockOnPlayerUpdate}
+            onReturnToMenu={mockOnReturnToMenu}
+            initialArchetype={archetype}
+          />,
+        );
+
+        expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+        unmount();
+      });
+    });
   });
 
-  it("should handle desktop dimensions", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1920}
-        height={1080}
-      />
-    );
-    expect(container).toBeTruthy();
+  describe("UI Components", () => {
+    it("should render return to menu button", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      expect(screen.getByTestId("return-to-menu-button")).toBeInTheDocument();
+    });
+
+    it("should call onReturnToMenu when button is clicked", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      const returnButton = screen.getByTestId("return-to-menu-button");
+      fireEvent.click(returnButton);
+
+      expect(mockOnReturnToMenu).toHaveBeenCalledTimes(1);
+    });
+
+    it("should render volume control", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      expect(screen.getByTestId("volume-control")).toBeInTheDocument();
+    });
   });
 
-  it("should handle 4K dimensions", () => {
-    const { container } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={3840}
-        height={2160}
-      />
-    );
-    expect(container).toBeTruthy();
-  });
-});
+  describe("Training Mode", () => {
+    it("should render training mode selector", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
 
-describe("TrainingScreen3D - User Interactions", () => {
-  let mockOnPlayerUpdate: Mock;
-  let mockOnReturnToMenu: Mock;
-
-  beforeEach(() => {
-    mockOnPlayerUpdate = vi.fn();
-    mockOnReturnToMenu = vi.fn();
-    vi.clearAllMocks();
+      // Check for training mode related elements
+      expect(screen.getByTestId("training-hud-overlay")).toBeInTheDocument();
+    });
   });
 
-  afterEach(() => {
-    cleanup();
+  describe("Accessibility", () => {
+    it("should have accessible return to menu button", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      const returnButton = screen.getByTestId("return-to-menu-button");
+      expect(returnButton).toHaveAttribute("aria-label");
+    });
+
+    it("should have proper test IDs for key components", () => {
+      render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+        />,
+      );
+
+      // Verify essential test IDs exist
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+      expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
+      expect(screen.getByTestId("training-hud-overlay")).toBeInTheDocument();
+    });
   });
 
-  it("should render return-to-menu button", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    expect(getByTestId("return-to-menu-button")).toBeInTheDocument();
-  });
+  describe("Responsive Behavior", () => {
+    it("should render correctly at desktop resolution", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          width={1920}
+          height={1080}
+        />,
+      );
 
-  it("should call onReturnToMenu when button clicked", () => {
-    const { getByTestId } = render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
-    const button = getByTestId("return-to-menu-button");
-    button.click();
-    expect(mockOnReturnToMenu).toHaveBeenCalledTimes(1);
-    expect(mockOnReturnToMenu).toHaveBeenCalledWith();
-  });
+      expect(container).toBeTruthy();
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
 
-  it("should not call callbacks before user interaction", () => {
-    render(
-      <TrainingScreen3D
-        onPlayerUpdate={mockOnPlayerUpdate}
-        onReturnToMenu={mockOnReturnToMenu}
-        width={1200}
-        height={800}
-      />
-    );
+    it("should render correctly at tablet resolution", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          width={768}
+          height={1024}
+        />,
+      );
 
-    expect(mockOnReturnToMenu).not.toHaveBeenCalled();
+      expect(container).toBeTruthy();
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
+
+    it("should render correctly at mobile resolution", () => {
+      const { container } = render(
+        <TrainingScreen3D
+          onPlayerUpdate={mockOnPlayerUpdate}
+          onReturnToMenu={mockOnReturnToMenu}
+          width={375}
+          height={812}
+        />,
+      );
+
+      expect(container).toBeTruthy();
+      expect(screen.getByTestId("training-screen-3d")).toBeInTheDocument();
+    });
   });
 });

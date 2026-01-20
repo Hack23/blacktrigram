@@ -74,6 +74,7 @@ describe("useCombatActions", () => {
       combatActions: stateResult.current.actions,
       combatSystem: mockCombatSystem,
       onPlayerUpdate: vi.fn(),
+      onLateralityUpdate: vi.fn(),
       addCombatMessage: vi.fn(),
       addHitEffect: vi.fn(),
       arenaBounds: {
@@ -824,14 +825,12 @@ describe("useCombatActions", () => {
     });
 
     it("should toggle laterality from left to right", () => {
+      // Set combat state with left laterality for player 0
       const config = {
         ...mockConfig,
         combatState: {
           ...mockConfig.combatState,
-          playerLaterality: ["left", "right"] as [
-            "left" | "right",
-            "left" | "right",
-          ],
+          playerLaterality: ["left" as "left" | "right", "right" as "left" | "right"],
         },
       };
 
@@ -841,7 +840,7 @@ describe("useCombatActions", () => {
         result.current.handleStanceSideSwitch(0);
       });
 
-      // Should add combat message for right stance
+      // Should add combat message for right stance (toggled from left)
       expect(config.addCombatMessage).toHaveBeenCalledWith(
         "오른발서기",
         "Right Stance",

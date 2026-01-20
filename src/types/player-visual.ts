@@ -97,7 +97,15 @@ export interface Player3DUnifiedProps {
 
   /**
    * Stance laterality (left or right foot forward)
-   * @korean 측면성
+   *
+   * - "left": Left foot forward (왼발서기 - Oenbal Seogi)
+   * - "right": Right foot forward (오른발서기 - Oreun Bal Seogi)
+   *
+   * This affects animation mirroring - techniques will be mirrored
+   * appropriately based on the laterality, creating 16 distinct stance
+   * configurations (8 trigrams × 2 laterality).
+   *
+   * **Korean**: 측면성 (Cheugmyeonseong - Laterality/Sidedness)
    */
   readonly laterality?: "left" | "right";
 

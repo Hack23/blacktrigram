@@ -113,7 +113,6 @@ export const SkeletalPlayer3D: React.FC<
   playerId,
   archetype,
   stance,
-  // laterality removed - guard positions now handled by stance animations
   position,
   rotation,
   health,
@@ -144,7 +143,10 @@ export const SkeletalPlayer3D: React.FC<
   opponentPosition,
   bodyFacing,
   onBodyFacingUpdate,
+  laterality, // Stance laterality (left/right foot forward)
 }) => {
+  // Use laterality with default to "right"
+  const effectiveLaterality = laterality ?? "right";
   // Get physical attributes for the archetype
   const physicalAttributes = useMemo(
     () => getArchetypePhysicalAttributes(archetype),
@@ -167,6 +169,7 @@ export const SkeletalPlayer3D: React.FC<
     attackAnimation,
     isBlocking,
     stance,
+    laterality: effectiveLaterality, // Pass laterality for animation mirroring
     onAnimationComplete,
   });
 

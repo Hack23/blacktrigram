@@ -3,12 +3,17 @@
  * Tests the Three.js-based combat screen with 3D characters and effects
  */
 
-import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerState } from "../../../systems";
 import { PlayerArchetype, TrigramStance } from "../../../types/common";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { CombatScreen3D } from "./CombatScreen3D";
+
+// Cleanup after each test to prevent memory leaks and state pollution
+afterEach(() => {
+  cleanup();
+});
 
 // Mock AudioProvider
 vi.mock("../../../audio/AudioProvider", () => ({
@@ -67,7 +72,11 @@ vi.mock("three", () => ({
   Group: class MockGroup {},
   Mesh: class MockMesh {},
   Vector3: class MockVector3 {
-    constructor(public x = 0, public y = 0, public z = 0) {}
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+    ) {}
     clone() {
       return new MockVector3(this.x, this.y, this.z);
     }
@@ -126,7 +135,7 @@ vi.mock("three", () => ({
       public x = 0,
       public y = 0,
       public z = 0,
-      public order = "XYZ"
+      public order = "XYZ",
     ) {}
     clone() {
       return new MockEuler(this.x, this.y, this.z, this.order);
@@ -146,20 +155,25 @@ vi.mock("three", () => ({
     }
   },
   Quaternion: class MockQuaternion {
-    constructor(public x = 0, public y = 0, public z = 0, public w = 1) {}
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+      public w = 1,
+    ) {}
     setFromEuler(_e: { x: number; y: number; z: number; order?: string }) {
       return this;
     }
     slerpQuaternions(
       _qa: { x: number; y: number; z: number; w: number },
       _qb: { x: number; y: number; z: number; w: number },
-      _t: number
+      _t: number,
     ) {
       return this;
     }
     setFromUnitVectors(
       _vFrom: { x: number; y: number; z: number },
-      _vTo: { x: number; y: number; z: number }
+      _vTo: { x: number; y: number; z: number },
     ) {
       return this;
     }
@@ -167,7 +181,7 @@ vi.mock("three", () => ({
   Raycaster: class MockRaycaster {
     set(
       _origin: { x: number; y: number; z: number },
-      _direction: { x: number; y: number; z: number }
+      _direction: { x: number; y: number; z: number },
     ) {
       return this;
     }
@@ -192,7 +206,11 @@ vi.mock("three", () => ({
   BufferAttribute: class MockBufferAttribute {},
   AdditiveBlending: 1,
   Fog: class MockFog {
-    constructor(public color: number, public near: number, public far: number) {}
+    constructor(
+      public color: number,
+      public near: number,
+      public far: number,
+    ) {}
   },
   BoxGeometry: class MockBoxGeometry {
     dispose() {}
@@ -223,7 +241,7 @@ describe("CombatScreen3D", () => {
   let mockPlayers: PlayerState[];
   let mockOnPlayerUpdate: (
     playerIndex: number,
-    updates: Partial<PlayerState>
+    updates: Partial<PlayerState>,
   ) => void;
   let mockOnReturnToMenu: () => void;
   let mockOnGameEnd: (winner: number) => void;
@@ -252,7 +270,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -268,7 +286,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
@@ -286,7 +304,7 @@ describe("CombatScreen3D", () => {
         onGameEnd={mockOnGameEnd}
         width={1920}
         height={1080}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -302,7 +320,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -318,7 +336,7 @@ describe("CombatScreen3D", () => {
         isPaused={true}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -334,7 +352,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -353,7 +371,7 @@ describe("CombatScreen3D", () => {
           isPaused={false}
           onReturnToMenu={mockOnReturnToMenu}
           onGameEnd={mockOnGameEnd}
-        />
+        />,
       );
 
       expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
@@ -374,7 +392,7 @@ describe("CombatScreen3D", () => {
           isPaused={false}
           onReturnToMenu={mockOnReturnToMenu}
           onGameEnd={mockOnGameEnd}
-        />
+        />,
       );
 
       expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
@@ -397,7 +415,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
@@ -422,13 +440,13 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
     // Check for Korean-English archetype label for both players
     expect(
-      screen.getAllByText(/암살자|Amsalja/i).length
+      screen.getAllByText(/암살자|Amsalja/i).length,
     ).toBeGreaterThanOrEqual(2);
     unmount();
   });
@@ -460,7 +478,7 @@ describe("CombatScreen3D", () => {
           isPaused={false}
           onReturnToMenu={mockOnReturnToMenu}
           onGameEnd={mockOnGameEnd}
-        />
+        />,
       );
 
       expect(screen.getByTestId("three-canvas")).toBeInTheDocument();
@@ -484,7 +502,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -502,7 +520,7 @@ describe("CombatScreen3D", () => {
         onGameEnd={mockOnGameEnd}
         width={375}
         height={667}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -520,7 +538,7 @@ describe("CombatScreen3D", () => {
         onGameEnd={mockOnGameEnd}
         width={768}
         height={1024}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -538,7 +556,7 @@ describe("CombatScreen3D", () => {
         onGameEnd={mockOnGameEnd}
         width={1920}
         height={1080}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -556,7 +574,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -572,7 +590,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockOnReturnToMenu}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
     expect(screen.getByTestId("return-to-menu-button")).toBeInTheDocument();
   });
@@ -588,7 +606,7 @@ describe("CombatScreen3D", () => {
         isPaused={false}
         onReturnToMenu={mockCallback}
         onGameEnd={mockOnGameEnd}
-      />
+      />,
     );
     const button = screen.getByTestId("return-to-menu-button");
     button.click();

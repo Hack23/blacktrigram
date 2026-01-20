@@ -96,9 +96,8 @@ export function createPlayerFromArchetype(
     currentStance: archetypeData.coreStance,
     combatState: CombatState.IDLE,
     position: basePosition,
-    // Default to orthodox stance (left foot forward)
+    // Default to orthodox/southpaw stance
     // Player 1 starts orthodox, Player 2 starts southpaw for facing each other
-    leadFoot: playerIndex === 0 ? "left" : "right",
     stanceSide: playerIndex === 0 ? "orthodox" : "southpaw",
     isBlocking: false,
     isStunned: false,
@@ -372,43 +371,40 @@ export function initializeBodyFacing(
 }
 
 /**
- * Toggle the player's lead foot (switch stance side)
+ * Toggle the player's stance side (orthodox ↔ southpaw)
  *
  * Switches between orthodox (left foot forward) and southpaw (right foot forward).
  * This is used when executing stance switches or certain techniques.
  *
  * @param player - Current player state
  * @returns Updated player state with toggled stance side
- * @korean 선발발전환
+ * @korean 자세측면전환
  *
  * @example
  * ```typescript
  * // Switch from orthodox to southpaw
- * const newState = toggleLeadFoot(player);
- * // newState.leadFoot === 'right'
+ * const newState = toggleStanceSide(player);
  * // newState.stanceSide === 'southpaw'
  * ```
  */
-export function toggleLeadFoot(player: PlayerState): PlayerState {
-  const newLeadFoot = player.leadFoot === "left" ? "right" : "left";
-  const newStanceSide = newLeadFoot === "left" ? "orthodox" : "southpaw";
+export function toggleStanceSide(player: PlayerState): PlayerState {
+  const newStanceSide = player.stanceSide === "orthodox" ? "southpaw" : "orthodox";
 
   return {
     ...player,
-    leadFoot: newLeadFoot,
     stanceSide: newStanceSide,
   };
 }
 
 /**
- * Get the lead foot for a player, defaulting to orthodox if not set
+ * Get the lead foot from stance side, defaulting to orthodox if not set
  *
  * @param player - Player state
  * @returns Lead foot ('left' for orthodox, 'right' for southpaw)
- * @korean 선발발가져오기
+ * @korean 자세측면에서선발발가져오기
  */
 export function getPlayerLeadFoot(player: PlayerState): "left" | "right" {
-  return player.leadFoot ?? "left"; // Default to orthodox
+  return player.stanceSide === "southpaw" ? "right" : "left"; // Default to orthodox
 }
 
 /**
@@ -419,5 +415,5 @@ export function getPlayerLeadFoot(player: PlayerState): "left" | "right" {
  * @korean 후발발가져오기
  */
 export function getPlayerRearFoot(player: PlayerState): "left" | "right" {
-  return player.leadFoot === "right" ? "left" : "right";
+  return player.stanceSide === "southpaw" ? "left" : "right";
 }
