@@ -71,7 +71,6 @@ export interface TopHUDProps {
  */
 export const TopHUD: React.FC<TopHUDProps> = ({
   width,
-  height,
   isMobile,
   positionScale,
   timerState,

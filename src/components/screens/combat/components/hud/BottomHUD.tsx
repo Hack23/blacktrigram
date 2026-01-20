@@ -11,7 +11,8 @@
  */
 
 import React from "react";
-import { Technique, PlayerState } from "../../../../../types";
+import { Technique } from "../../../../../types";
+import { PlayerState } from "../../../../../systems/player";
 import { DifficultyTier } from "../../../../../systems/ai/AdaptiveDifficulty";
 import { CombatControlsPanel } from "../controls/CombatControlsPanel";
 import { DifficultyIndicator } from "./DifficultyIndicator";
@@ -40,7 +41,7 @@ export interface BottomHUDProps {
   readonly selectedTechniqueIndex: number;
   readonly techniqueCooldowns: ReadonlyMap<string, number>;
   readonly onTechniqueSelect: (index: number) => void;
-  readonly onTechniqueHover: (technique: Technique) => void;
+  readonly onTechniqueHover: (technique: Technique | null) => void;
 
   /** Combat controls state */
   readonly combatMessages: readonly string[];

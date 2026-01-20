@@ -11,8 +11,10 @@
  */
 
 import React from "react";
-import { PlayerState, TrigramStance } from "../../../../../types";
-import { BodyPartHealth } from "../../../../../types/combat";
+import { TrigramStance } from "../../../../../types";
+import { PlayerState } from "../../../../../systems/player";
+import { BodyPartHealth } from "../../../../../systems/bodypart/types";
+import { StanceLaterality } from "../../../../../systems/trigram/types";
 import { BodyPartHealthDisplay } from "../indicators/BodyPartHealthDisplay";
 import { GuardIndicator } from "../indicators/GuardIndicator";
 import { PlayerHUD } from "./PlayerHUD";
@@ -29,8 +31,8 @@ export interface LeftHUDProps {
   readonly currentStance: TrigramStance;
   /** Whether player is in guard stance (for guard indicator) */
   readonly isInGuard: boolean;
-  /** Player laterality (orthodox/southpaw) */
-  readonly laterality: "orthodox" | "southpaw";
+  /** Player laterality (left/right stance) */
+  readonly laterality: StanceLaterality;
   /** Speed modifiers for movement */
   readonly speedModifiers: {
     readonly finalSpeed: number;
