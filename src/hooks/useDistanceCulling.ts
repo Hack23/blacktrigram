@@ -12,7 +12,6 @@
 
 import { useThree } from "@react-three/fiber";
 import { useMemo } from "react";
-import * as THREE from "three";
 
 /**
  * Distance culling hook options
@@ -77,9 +76,16 @@ export const useDistanceCulling = (
     if (!enabled) return true;
 
     // Calculate distance from camera to overlay position
-    // Use Vector3.distanceToSquared() to avoid expensive sqrt operation
-    const overlayPosition = new THREE.Vector3(...position);
-    const distanceSquared = camera.position.distanceToSquared(overlayPosition);
+    // Extract camera position components to avoid dependency issues
+    const camX = camera.position.x;
+    const camY = camera.position.y;
+    const camZ = camera.position.z;
+    
+    // Calculate squared distance manually to avoid expensive sqrt operation
+    const dx = position[0] - camX;
+    const dy = position[1] - camY;
+    const dz = position[2] - camZ;
+    const distanceSquared = dx * dx + dy * dy + dz * dz;
     const cullDistanceSquared = cullDistance * cullDistance;
 
     // Return true if within cull distance, false otherwise
@@ -137,10 +143,16 @@ export const useDistanceCullingWithThreshold = (
   const isVisible = useMemo(() => {
     if (!enabled) return true;
 
-    const overlayPosition = new THREE.Vector3(...position);
-    const distanceSquared = camera.position.distanceToSquared(overlayPosition);
+    // Extract camera position components to avoid dependency issues
+    const camX = camera.position.x;
+    const camY = camera.position.y;
+    const camZ = camera.position.z;
     
-    // Use squared distances to avoid sqrt
+    // Calculate squared distance manually to avoid expensive sqrt operation
+    const dx = position[0] - camX;
+    const dy = position[1] - camY;
+    const dz = position[2] - camZ;
+    const distanceSquared = dx * dx + dy * dy + dz * dz;
     const cullDistanceSquared = cullDistance * cullDistance;
 
     // Simplified check - just use cullDistance for now
