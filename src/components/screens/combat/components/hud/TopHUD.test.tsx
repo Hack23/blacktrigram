@@ -162,7 +162,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={400}
-        height={600}
         isMobile={true}
         positionScale={1.0}
         timerState={mockTimerState}
@@ -181,7 +180,6 @@ describe("TopHUD", () => {
     render(
       <TopHUD
         width={2560}
-        height={1440}
         isMobile={false}
         positionScale={1.5}
         timerState={mockTimerState}
