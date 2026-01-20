@@ -4,11 +4,23 @@
  * Tests for the bottom HUD container component.
  */
 
-import { render, screen } from "@testing-library/react";
+import { render as rtlRender, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import React from "react";
+import { AudioProvider } from "../../../../../audio/AudioProvider";
 import { BottomHUD } from "./BottomHUD";
-import { PlayerArchetype, TrigramStance } from "../../../../../types";
+import { PlayerArchetype } from "../../../../../types";
 import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
+
+// Wrapper component for AudioProvider
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <AudioProvider>{children}</AudioProvider>
+);
+
+// Custom render function that wraps in AudioProvider
+const render = (ui: React.ReactElement) => {
+  return rtlRender(ui, { wrapper: TestWrapper });
+};
 
 describe("BottomHUD", () => {
   const mockPlayer = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);

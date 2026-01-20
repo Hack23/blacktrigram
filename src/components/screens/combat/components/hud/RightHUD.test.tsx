@@ -4,11 +4,23 @@
  * Tests for the right-side HUD container component.
  */
 
-import { render, screen } from "@testing-library/react";
+import { render as rtlRender, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
+import React from "react";
+import { AudioProvider } from "../../../../../audio/AudioProvider";
 import { RightHUD } from "./RightHUD";
 import { PlayerArchetype, TrigramStance } from "../../../../../types";
 import { createPlayerFromArchetype } from "../../../../../utils/playerUtils";
+
+// Wrapper component for AudioProvider
+const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <AudioProvider>{children}</AudioProvider>
+);
+
+// Custom render function that wraps in AudioProvider
+const render = (ui: React.ReactElement) => {
+  return rtlRender(ui, { wrapper: TestWrapper });
+};
 
 describe("RightHUD", () => {
   const mockPlayer = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
@@ -23,7 +35,7 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
       />
@@ -39,14 +51,14 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
       />
     );
 
-    // PlayerHUD should be rendered with player data
-    expect(screen.getByTestId("player-hud-right")).toBeInTheDocument();
+    // PlayerHUD should be rendered with player data (uses playerId, not position)
+    expect(screen.getByTestId(`player-hud-${mockPlayer.id}`)).toBeInTheDocument();
   });
 
   it("should render GuardIndicator", () => {
@@ -55,14 +67,14 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={true}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
       />
     );
 
-    // GuardIndicator should be rendered
-    expect(screen.getByTestId("guard-indicator-right")).toBeInTheDocument();
+    // GuardIndicator should be rendered (no position-specific testid)
+    expect(screen.getByTestId("guard-indicator")).toBeInTheDocument();
   });
 
   it("should render SpeedIndicatorHUD when showSpeedIndicator is true", () => {
@@ -71,7 +83,7 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
         showSpeedIndicator={true}
@@ -88,7 +100,7 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
         showSpeedIndicator={false}
@@ -119,7 +131,7 @@ describe("RightHUD", () => {
         player={playerWithBodyParts}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         bodyPartHealth={playerWithBodyParts.bodyPartHealth}
         isMobile={false}
@@ -136,7 +148,7 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={false}
       />
@@ -152,14 +164,14 @@ describe("RightHUD", () => {
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
         isInGuard={false}
-        laterality="orthodox"
+        laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={true}
       />
     );
 
     // All components should render in mobile mode
-    expect(screen.getByTestId("player-hud-right")).toBeInTheDocument();
-    expect(screen.getByTestId("guard-indicator-right")).toBeInTheDocument();
+    expect(screen.getByTestId(`player-hud-${mockPlayer.id}`)).toBeInTheDocument();
+    expect(screen.getByTestId("guard-indicator")).toBeInTheDocument();
   });
 });
