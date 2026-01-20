@@ -172,7 +172,7 @@ export interface PlayerState {
    * This affects animation mirroring - techniques will be mirrored
    * appropriately based on the lead foot.
    *
-   * **Korean**: 선발발 (Lead Foot)
+   * **Korean**: 앞발 (Lead Foot)
    */
   readonly leadFoot?: "left" | "right";
   /**

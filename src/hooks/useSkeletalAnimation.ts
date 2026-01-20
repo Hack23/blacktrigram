@@ -56,7 +56,7 @@ export interface UseSkeletalAnimationOptions {
    * appropriately based on the lead foot, creating 16 distinct stance
    * configurations (8 trigrams × 2 laterality).
    *
-   * **Korean**: 선발발 (Lead Foot)
+   * **Korean**: 앞발 (Lead Foot)
    */
   readonly leadFoot?: "left" | "right";
   /** Callback when animation completes */
@@ -242,11 +242,10 @@ export function useSkeletalAnimation(
     }
 
     // Apply laterality transformation if selectedAnim exists
-    // Convert leadFoot to laterality: "left" foot forward = "left" laterality
+    // leadFoot directly maps to laterality: "left" foot forward = "left" laterality
     // "right" foot forward = "right" laterality (default/base animations)
     if (selectedAnim) {
-      const laterality = leadFoot === "left" ? "left" : "right";
-      selectedAnim = applyLaterality(selectedAnim, laterality);
+      selectedAnim = applyLaterality(selectedAnim, leadFoot);
     }
 
     // Clear diagonal rotation for non-diagonal animations

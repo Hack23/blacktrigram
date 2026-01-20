@@ -112,7 +112,7 @@ export interface Player3DUnifiedProps {
    * appropriately based on the lead foot, creating 16 distinct stance
    * configurations (8 trigrams × 2 laterality).
    *
-   * @korean 선발발
+   * @korean 앞발
    */
   readonly leadFoot?: "left" | "right";
 
