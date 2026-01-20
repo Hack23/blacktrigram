@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.62% </span>
+                <span class="strong">81.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/54</span>
+                <span class='fraction'>43/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>36/48</span>
+                <span class='fraction'>34/44</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.63% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/49</span>
+                <span class='fraction'>40/48</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -482,11 +482,7 @@
 <a name='L417'></a><a href='#L417'>417</a>
 <a name='L418'></a><a href='#L418'>418</a>
 <a name='L419'></a><a href='#L419'>419</a>
-<a name='L420'></a><a href='#L420'>420</a>
-<a name='L421'></a><a href='#L421'>421</a>
-<a name='L422'></a><a href='#L422'>422</a>
-<a name='L423'></a><a href='#L423'>423</a>
-<a name='L424'></a><a href='#L424'>424</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L420'></a><a href='#L420'>420</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -551,7 +547,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">501x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -877,12 +872,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1007,9 +999,8 @@ export function createPlayerFromArchetype(
     currentStance: archetypeData.coreStance,
     combatState: CombatState.IDLE,
     position: basePosition,
-    // Default to orthodox stance (left foot forward)
+    // Default to orthodox/southpaw stance
     // Player 1 starts orthodox, Player 2 starts southpaw for facing each other
-    leadFoot: playerIndex === 0 ? "left" : "right",
     stanceSide: playerIndex === 0 ? "orthodox" : "southpaw",
     isBlocking: false,
     isStunned: false,
@@ -1283,43 +1274,40 @@ export function initializeBodyFacing(
 }
 &nbsp;
 /**
- * Toggle the player's lead foot (switch stance side)
+ * Toggle the player's stance side (orthodox ↔ southpaw)
  *
  * Switches between orthodox (left foot forward) and southpaw (right foot forward).
  * This is used when executing stance switches or certain techniques.
  *
  * @param player - Current player state
  * @returns Updated player state with toggled stance side
- * @korean 선발발전환
+ * @korean 자세측면전환
  *
  * @example
  * ```typescript
  * // Switch from orthodox to southpaw
- * const newState = toggleLeadFoot(player);
- * // newState.leadFoot === 'right'
+ * const newState = toggleStanceSide(player);
  * // newState.stanceSide === 'southpaw'
  * ```
  */
-export function <span class="fstat-no" title="function not covered" >toggleLeadFoot(p</span>layer: PlayerState): PlayerState {
-  const newLeadFoot = <span class="cstat-no" title="statement not covered" >player.leadFoot === "left" ? "right" : "left";</span>
-  const newStanceSide = <span class="cstat-no" title="statement not covered" >newLeadFoot === "left" ? "orthodox" : "southpaw";</span>
+export function <span class="fstat-no" title="function not covered" >toggleStanceSide(p</span>layer: PlayerState): PlayerState {
+  const newStanceSide = <span class="cstat-no" title="statement not covered" >player.stanceSide === "orthodox" ? "southpaw" : "orthodox";</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return {</span>
     ...player,
-    leadFoot: newLeadFoot,
     stanceSide: newStanceSide,
   };
 }
 &nbsp;
 /**
- * Get the lead foot for a player, defaulting to orthodox if not set
+ * Get the lead foot from stance side, defaulting to orthodox if not set
  *
  * @param player - Player state
  * @returns Lead foot ('left' for orthodox, 'right' for southpaw)
- * @korean 선발발가져오기
+ * @korean 자세측면에서선발발가져오기
  */
 export function <span class="fstat-no" title="function not covered" >getPlayerLeadFoot(p</span>layer: PlayerState): "left" | "right" {
-<span class="cstat-no" title="statement not covered" >  return player.leadFoot ?? "left"; // Default to orthodox</span>
+<span class="cstat-no" title="statement not covered" >  return player.stanceSide === "southpaw" ? "right" : "left"; // Default to orthodox</span>
 }
 &nbsp;
 /**
@@ -1330,7 +1318,7 @@ export function <span class="fstat-no" title="function not covered" >getPlayerLe
  * @korean 후발발가져오기
  */
 export function <span class="fstat-no" title="function not covered" >getPlayerRearFoot(p</span>layer: PlayerState): "left" | "right" {
-<span class="cstat-no" title="statement not covered" >  return player.leadFoot === "right" ? "left" : "right";</span>
+<span class="cstat-no" title="statement not covered" >  return player.stanceSide === "southpaw" ? "left" : "right";</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -1339,7 +1327,7 @@ export function <span class="fstat-no" title="function not covered" >getPlayerRe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T23:11:00.065Z
+                at 2026-01-20T17:34:48.267Z
             </div>
         <script src="../prettify.js"></script>
         <script>

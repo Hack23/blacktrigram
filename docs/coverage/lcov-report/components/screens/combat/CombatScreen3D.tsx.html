@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.94% </span>
+                <span class="strong">41.87% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>268/639</span>
+                <span class='fraction'>268/640</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.45% </span>
+                <span class="strong">47.05% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>56/118</span>
+                <span class='fraction'>56/119</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.77% </span>
+                <span class="strong">41.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>259/620</span>
+                <span class='fraction'>259/621</span>
             </div>
         
             
@@ -2870,24 +2870,7 @@
 <a name='L2805'></a><a href='#L2805'>2805</a>
 <a name='L2806'></a><a href='#L2806'>2806</a>
 <a name='L2807'></a><a href='#L2807'>2807</a>
-<a name='L2808'></a><a href='#L2808'>2808</a>
-<a name='L2809'></a><a href='#L2809'>2809</a>
-<a name='L2810'></a><a href='#L2810'>2810</a>
-<a name='L2811'></a><a href='#L2811'>2811</a>
-<a name='L2812'></a><a href='#L2812'>2812</a>
-<a name='L2813'></a><a href='#L2813'>2813</a>
-<a name='L2814'></a><a href='#L2814'>2814</a>
-<a name='L2815'></a><a href='#L2815'>2815</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2808'></a><a href='#L2808'>2808</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -4103,6 +4086,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5760,12 +5746,20 @@ import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncement";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncement";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-import { StanceChangeIndicator } from "./components/indicators/StanceChangeIndicator";
-// TODO: Create HTML versions of these UI components for Three.js
-// import { CombatControls } from "./components/CombatControls";
-// import { CombatFooter } from "./components/CombatFooter";
-// import { CombatHUD } from "./components/CombatHUD";
-// import { CombatStatsPanel } from "./components/CombatStatsPanel";
+import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
+import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
+import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
+import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
+import { PlayerHUD } from "../../shared/three/ui/PlayerHUD";
+import { ComboCounter } from "../../shared/three/ui/ComboCounter";
+import { BodyPartHealthDisplay } from "../../shared/three/ui/BodyPartHealthDisplay";
+import { SpeedIndicatorHUD } from "../../shared/three/ui/SpeedIndicatorHUD";
+import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
+import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
+import HitEffects3D from "../../shared/three/effects/HitEffects3D";
+import { CombatTimer } from "../../shared/ui/CombatTimer";
 import { useActionFeedback } from "../../../hooks/useActionFeedback";
 import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -5783,30 +5777,12 @@ import {
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
-import {
-  VitalPointMarkers3D,
-  VitalPointOverlayControlsHtml,
-} from "./components";
-import { CombatArena3D } from "./components/arena/CombatArena3D";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
-import HitEffects3D from "./components/effects/HitEffects3D";
-import {
-  ActionFeedback,
-  TechniqueName,
-} from "./components/feedback/ActionFeedback";
-import { DamageNumbers } from "./components/feedback/DamageNumbers";
-import { CombatTimer } from "./components/hud/CombatTimer";
+import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
-import { PlayerHUD } from "./components/hud/PlayerHUD";
-import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
-import { SpeedIndicatorHUD } from "./components/hud/SpeedIndicatorHUD";
-import { TechniqueBarContainer } from "./components/hud/TechniqueBarContainer";
-import { BodyPartHealthDisplay } from "./components/indicators/BodyPartHealthDisplay";
-import { ComboCounter } from "./components/indicators/ComboCounter";
-import { GuardIndicator } from "./components/indicators/GuardIndicator";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -6004,7 +5980,7 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     import("../../../types/common").VitalPointSeverity[]
   &gt;([]);
   const [regionFilter, setRegionFilter] =
-    useState&lt;import("./components").BodyRegionFilter&gt;("all");
+    useState&lt;import("../../shared/three/ui/VitalPointOverlayControlsHtml").BodyRegionFilter&gt;("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
@@ -6918,6 +6894,9 @@ export const CombatScreen3D: React.FC&lt;CombatScreen3DProps&gt; = ({
     combatSystem,
     onPlayerUpdate,
     onPlayerPositionUpdate: handlePlayerPositionUpdate,
+    onLateralityUpdate: <span class="fstat-no" title="function not covered" >(p</span>layerIndex, laterality) =&gt; {
+<span class="cstat-no" title="statement not covered" >      combatActions.setPlayerLateralityIndex(playerIndex as 0 | 1, laterality);</span>
+    },
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -8512,7 +8491,7 @@ export default CombatScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T23:11:00.065Z
+                at 2026-01-20T17:34:48.267Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

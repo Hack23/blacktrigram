@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.34% </span>
-                <span class="quiet">Statements</span>
-                <span class='fraction'>69/104</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">23.68% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>18/76</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">62.96% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>17/27</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
                 <span class="strong">65.34% </span>
-                <span class="quiet">Lines</span>
+                <span class="quiet">Statements</span>
                 <span class='fraction'>66/101</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">62.16% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>46/74</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">61.53% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>16/26</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">64.28% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>63/98</span>
             </div>
         
             
@@ -803,7 +803,6 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -1084,8 +1083,14 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1341,9 +1346,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1361,9 +1363,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Html } from "@react-three/drei";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas } from "@react-three/fiber";
 import React, {
   useCallback,
@@ -1452,8 +1452,7 @@ export const IntroScreen3D: React.FC&lt;IntroScreen3DProps&gt; = ({
   const audio = useAudio();
   const introMusicStarted = useRef(false);
   const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
-  // Track Canvas initialization to prevent Html overlay from rendering before Canvas is ready
-  const [canvasReady, setCanvasReady] = useState(false);
+  // UI now renders outside Canvas - no canvas ready state needed
 &nbsp;
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -1732,282 +1731,283 @@ export const IntroScreen3D: React.FC&lt;IntroScreen3DProps&gt; = ({
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) =&gt; {
           gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
-          // Signal that Canvas is ready for Html overlay to mount
-          // Use requestAnimationFrame to ensure paint cycle completes
-          requestAnimationFrame(() =&gt; {
-            setCanvasReady(true);
-          });
         }}
       &gt;
         {/* 3D Background Scene */}
         &lt;BackgroundScene3D theme="intro" /&gt;
+      &lt;/Canvas&gt;
 &nbsp;
-        {/* HTML Overlay for UI - only render after Canvas is initialized */}
-        {canvasReady &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >          &lt;Html fullscreen&gt;</span>
+      {/* UI Overlay (positioned absolutely over Canvas) - matches CombatScreen pattern */}
+      &lt;div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: Z_INDEX.HUD,
+        }}
+        data-testid="intro-hud-overlay"
+      &gt;
+        &lt;div
+          style={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: 0,
+            pointerEvents: "none",
+            zIndex: Z_INDEX.HUD,
+            overflow: "hidden",
+          }}
+        &gt;
+          {/* Title - Small, above logo */}
+          &lt;div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "2px",
+              pointerEvents: "none",
+              marginTop: "4px",
+              flexShrink: 0,
+            }}
+            data-testid="main-title-container"
+          &gt;
             &lt;div
               style={{
-                width: "100vw",
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: 0,
-                pointerEvents: "none",
-                zIndex: Z_INDEX.HUD,
-                overflow: "hidden",
+                fontSize: screenWidth &lt; 768 ? "14px" : "16px",
+                fontWeight: "bold",
+                fontFamily: FONT_FAMILY.KOREAN,
+                color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+                textShadow: "0 0 10px rgba(255, 170, 0, 0.5)",
               }}
             &gt;
-              {/* Title - Small, above logo */}
-              &lt;div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "2px",
-                  pointerEvents: "none",
-                  marginTop: "4px",
-                  flexShrink: 0,
-                }}
-                data-testid="main-title-container"
-              &gt;
-                &lt;div
-                  style={{
-                    fontSize: screenWidth &lt; 768 ? "14px" : "16px",
-                    fontWeight: "bold",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-                    textShadow: "0 0 10px rgba(255, 170, 0, 0.5)",
-                  }}
-                &gt;
-                  흑괘 | Black Trigram
-                &lt;/div&gt;
-                &lt;div
-                  style={{
-                    fontSize: screenWidth &lt; 768 ? "10px" : "11px",
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
-                  }}
-                &gt;
-                  한국 무술 시뮬레이터 | Korean Martial Arts Simulator
-                &lt;/div&gt;
-              &lt;/div&gt;
-&nbsp;
-              {/* Logo Section - Primary branding */}
-              &lt;div
-                style={{
-                  flexShrink: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: `${layoutHeights.logoAreaHeight}px`,
-                  pointerEvents: "none",
-                }}
-                data-testid="logo-section"
-              &gt;
-                {/* Logo Image - Prominent */}
-                &lt;img
-                  src="/assets/visual/logo/black-trigram.png"
-                  alt="Black Trigram Logo"
-                  style={{
-                    width: `${logoSize}px`,
-                    height: `${logoSize}px`,
-                    objectFit: "contain",
-                    filter: "drop-shadow(0 0 30px rgba(0, 255, 255, 0.6))",
-                  }}
-                  data-testid="main-logo"
-                  onError={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.display = "none";</span>
-                  }}
-                /&gt;
-&nbsp;
-                {/* Trigram Symbols */}
-                &lt;div
-                  style={{
-                    fontSize: screenWidth &lt; 768 ? "16px" : "18px",
-                    color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`,
-                    letterSpacing: screenWidth &lt; 768 ? "6px" : "8px",
-                    textAlign: "center",
-                    marginTop: screenWidth &lt; 768 ? "8px" : "10px",
-                    textShadow: colors.trigramTextShadow,
-                  }}
-                  data-testid="trigram-symbols"
-                &gt;
-                  ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷
-                &lt;/div&gt;
-              &lt;/div&gt;
-&nbsp;
-              {/* Main Content Area */}
-              &lt;div
-                style={{
-                  width: "100%",
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                  gap: "4px",
-                  paddingLeft: screenWidth &lt; 768 ? "8px" : "16px",
-                  paddingRight: screenWidth &lt; 768 ? "8px" : "16px",
-                  overflow: "hidden",
-                  pointerEvents: "auto",
-                  minHeight: 0,
-                }}
-                data-testid="main-content"
-              &gt;
-                {/* Menu Section - Compact */}
-                &lt;div
-                  style={{
-                    width: screenWidth &lt; 768 ? "95%" : "70%",
-                    maxWidth: screenWidth &lt; 768 ? "100%" : "600px",
-                  }}
-                  data-testid="menu-section-container"
-                &gt;
-                  &lt;MenuSectionOverlayHtml
-                    menuItems={MENU_ITEMS}
-                    selectedIndex={selectedMenuIndex}
-                    onModeSelect={handleMenuItemSelect}
-                    onSelectedIndexChange={setSelectedMenuIndex}
-                    onPlaySFX={audio.playSFX}
-                    width={
-                      // Compact menu width - narrower for better proportions
-                      screenWidth &lt; 768
-                        ? screenWidth * 0.9
-                        : screenWidth &lt; 1024
-                          ? Math.min(500, screenWidth * 0.6)
-                          : Math.min(550, screenWidth * 0.4)
-                    }
-                    height={layoutHeights.menuHeight}
-                    isMobile={isMobile}
-                  /&gt;
-                &lt;/div&gt;
-&nbsp;
-                {/* Archetype Selection - Scrollable container */}
-                &lt;div
-                  style={{
-                    width: screenWidth &lt; 768 ? "100%" : "85%",
-                    maxWidth: screenWidth &lt; 768 ? "100%" : "900px",
-                    flex: 1,
-                    minHeight: 0,
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                  }}
-                  data-testid="archetype-section-container"
-                &gt;
-                  {useEnhancedArchetypeDisplay ? (
-                    &lt;EnhancedArchetypeDisplay
-                      archetypes={archetypeData}
-                      selectedIndex={selectedArchetypeIndex}
-                      onArchetypeChange={handleArchetypeIndexChange}
-                      onPlaySFX={audio.playSFX}
-                      width={
-                        screenWidth &lt; 768
-                          ? screenWidth * 0.9
-                          : screenWidth &lt; 1024
-                            ? Math.min(700, screenWidth * 0.7)
-                            : Math.min(850, screenWidth * 0.55)
-                      }
-                      height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
-                      isMobile={isMobile}
-                      allowDetailedView={screenWidth &gt;= 768}
-                    /&gt;
-                  ) : (
-                    &lt;ArchetypeDisplayOverlayHtml
-                      archetypes={archetypeData}
-                      selectedIndex={selectedArchetypeIndex}
-                      onArchetypeChange={handleArchetypeIndexChange}
-                      onPlaySFX={audio.playSFX}
-                      width={
-                        screenWidth &lt; 768
-                          ? screenWidth * 0.9
-                          : screenWidth &lt; 1024
-                            ? Math.min(700, screenWidth * 0.7)
-                            : Math.min(850, screenWidth * 0.55)
-                      }
-                      height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
-                      isMobile={isMobile}
-                    /&gt;
-                  )}
-                &lt;/div&gt;
-              &lt;/div&gt;
-&nbsp;
-              {/* Footer - Compact with all info */}
-              &lt;div
-                style={{
-                  width: "100%",
-                  minHeight: `${layoutHeights.footerHeight}px`,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1px",
-                  background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
-                  borderTop: `1px solid ${colors.footerBorder}`,
-                  pointerEvents: "auto",
-                  paddingBottom: "2px",
-                  flexShrink: 0,
-                }}
-                data-testid="intro-footer"
-              &gt;
-                {/* Motto */}
-                &lt;div
-                  style={{
-                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 3, 10)}px`,
-                    color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontStyle: "italic",
-                    textAlign: "center",
-                  }}
-                  data-testid="footer-motto"
-                &gt;
-                  흑괘의 길을 걸어라 - Walk the Path of the Black Trigram
-                &lt;/div&gt;
-                {/* Open Source Link */}
-                &lt;div
-                  style={{
-                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 4, 9)}px`,
-                    color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={<span class="fstat-no" title="function not covered" >() =&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    window.open(</span>
-                      "https://github.com/Hack23/blacktrigram",
-                      "_blank",
-                    )
-                  }
-                  data-testid="footer-link"
-                &gt;
-                  Open Source Korean Martial Arts Game by Hack23
-                &lt;/div&gt;
-                {/* Version */}
-                &lt;div
-                  style={{
-                    fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
-                    color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={<span class="fstat-no" title="function not covered" >() =&gt;</span>
-<span class="cstat-no" title="statement not covered" >                    window.open(</span>
-                      `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
-                      "_blank",
-                    )
-                  }
-                  data-testid="footer-version"
-                &gt;
-                  v{APP_VERSION}
-                &lt;/div&gt;
-              &lt;/div&gt;
+              흑괘 | Black Trigram
             &lt;/div&gt;
-          &lt;/Html&gt;
-        )}
-      &lt;/Canvas&gt;
+            &lt;div
+              style={{
+                fontSize: screenWidth &lt; 768 ? "10px" : "11px",
+                fontFamily: FONT_FAMILY.KOREAN,
+                color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+              }}
+            &gt;
+              한국 무술 시뮬레이터 | Korean Martial Arts Simulator
+            &lt;/div&gt;
+          &lt;/div&gt;
+&nbsp;
+          {/* Logo Section - Primary branding */}
+          &lt;div
+            style={{
+              flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: `${layoutHeights.logoAreaHeight}px`,
+              pointerEvents: "none",
+            }}
+            data-testid="logo-section"
+          &gt;
+            {/* Logo Image - Prominent */}
+            &lt;img
+              src="/assets/visual/logo/black-trigram.png"
+              alt="Black Trigram Logo"
+              style={{
+                width: `${logoSize}px`,
+                height: `${logoSize}px`,
+                objectFit: "contain",
+                filter: "drop-shadow(0 0 30px rgba(0, 255, 255, 0.6))",
+              }}
+              data-testid="main-logo"
+              onError={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
+<span class="cstat-no" title="statement not covered" >                e.currentTarget.style.display = "none";</span>
+              }}
+            /&gt;
+&nbsp;
+            {/* Trigram Symbols */}
+            &lt;div
+              style={{
+                fontSize: screenWidth &lt; 768 ? "16px" : "18px",
+                color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+                  6,
+                  "0",
+                )}`,
+                letterSpacing: screenWidth &lt; 768 ? "6px" : "8px",
+                textAlign: "center",
+                marginTop: screenWidth &lt; 768 ? "8px" : "10px",
+                textShadow: colors.trigramTextShadow,
+              }}
+              data-testid="trigram-symbols"
+            &gt;
+              ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷
+            &lt;/div&gt;
+          &lt;/div&gt;
+&nbsp;
+          {/* Main Content Area */}
+          &lt;div
+            style={{
+              width: "100%",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              gap: "4px",
+              paddingLeft: screenWidth &lt; 768 ? "8px" : "16px",
+              paddingRight: screenWidth &lt; 768 ? "8px" : "16px",
+              overflow: "hidden",
+              pointerEvents: "auto",
+              minHeight: 0,
+            }}
+            data-testid="main-content"
+          &gt;
+            {/* Menu Section - Compact */}
+            &lt;div
+              style={{
+                width: screenWidth &lt; 768 ? "95%" : "70%",
+                maxWidth: screenWidth &lt; 768 ? "100%" : "600px",
+              }}
+              data-testid="menu-section-container"
+            &gt;
+              &lt;MenuSectionOverlayHtml
+                menuItems={MENU_ITEMS}
+                selectedIndex={selectedMenuIndex}
+                onModeSelect={handleMenuItemSelect}
+                onSelectedIndexChange={setSelectedMenuIndex}
+                onPlaySFX={audio.playSFX}
+                width={
+                  // Compact menu width - narrower for better proportions
+                  screenWidth &lt; 768
+                    ? screenWidth * 0.9
+                    : screenWidth &lt; 1024
+                      ? <span class="branch-0 cbranch-no" title="branch not covered" >Math.min(500, screenWidth * 0.6)</span>
+                      : Math.min(550, screenWidth * 0.4)
+                }
+                height={layoutHeights.menuHeight}
+                isMobile={isMobile}
+              /&gt;
+            &lt;/div&gt;
+&nbsp;
+            {/* Archetype Selection - Scrollable container */}
+            &lt;div
+              style={{
+                width: screenWidth &lt; 768 ? "100%" : "85%",
+                maxWidth: screenWidth &lt; 768 ? "100%" : "900px",
+                flex: 1,
+                minHeight: 0,
+                overflowY: "auto",
+                overflowX: "hidden",
+              }}
+              data-testid="archetype-section-container"
+            &gt;
+              {useEnhancedArchetypeDisplay ? (
+                &lt;EnhancedArchetypeDisplay
+                  archetypes={archetypeData}
+                  selectedIndex={selectedArchetypeIndex}
+                  onArchetypeChange={handleArchetypeIndexChange}
+                  onPlaySFX={audio.playSFX}
+                  width={
+                    screenWidth &lt; 768
+                      ? screenWidth * 0.9
+                      : screenWidth &lt; 1024
+                        ? <span class="branch-0 cbranch-no" title="branch not covered" >Math.min(700, screenWidth * 0.7)</span>
+                        : Math.min(850, screenWidth * 0.55)
+                  }
+                  height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
+                  isMobile={isMobile}
+                  allowDetailedView={screenWidth &gt;= 768}
+                /&gt;
+              ) : (
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;ArchetypeDisplayOverlayHtml</span>
+                  archetypes={archetypeData}
+                  selectedIndex={selectedArchetypeIndex}
+                  onArchetypeChange={handleArchetypeIndexChange}
+                  onPlaySFX={audio.playSFX}
+                  width={
+                    screenWidth &lt; 768
+                      ? screenWidth * 0.9
+                      : screenWidth &lt; 1024
+                        ? Math.min(700, screenWidth * 0.7)
+                        : Math.min(850, screenWidth * 0.55)
+                  }
+                  height={Math.max(layoutHeights.archetypeHeight - 40, 200)}
+                  isMobile={isMobile}
+                /&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/div&gt;
+&nbsp;
+          {/* Footer - Compact with all info */}
+          &lt;div
+            style={{
+              width: "100%",
+              minHeight: `${layoutHeights.footerHeight}px`,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "1px",
+              background: `linear-gradient(to bottom, rgba(0, 0, 0, 0), ${colors.footerBackground})`,
+              borderTop: `1px solid ${colors.footerBorder}`,
+              pointerEvents: "auto",
+              paddingBottom: "2px",
+              flexShrink: 0,
+            }}
+            data-testid="intro-footer"
+          &gt;
+            {/* Motto */}
+            &lt;div
+              style={{
+                fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 3, 10)}px`,
+                color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontStyle: "italic",
+                textAlign: "center",
+              }}
+              data-testid="footer-motto"
+            &gt;
+              흑괘의 길을 걸어라 - Walk the Path of the Black Trigram
+            &lt;/div&gt;
+            {/* Open Source Link */}
+            &lt;div
+              style={{
+                fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 4, 9)}px`,
+                color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={<span class="fstat-no" title="function not covered" >() =&gt;</span>
+<span class="cstat-no" title="statement not covered" >                window.open("https://github.com/Hack23/blacktrigram", "_blank")</span>
+              }
+              data-testid="footer-link"
+            &gt;
+              Open Source Korean Martial Arts Game by Hack23
+            &lt;/div&gt;
+            {/* Version */}
+            &lt;div
+              style={{
+                fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
+                color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={<span class="fstat-no" title="function not covered" >() =&gt;</span>
+<span class="cstat-no" title="statement not covered" >                window.open(</span>
+                  `https://github.com/Hack23/blacktrigram/releases/tag/v${APP_VERSION}`,
+                  "_blank",
+                )
+              }
+              data-testid="footer-version"
+            &gt;
+              v{APP_VERSION}
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   );
 };
@@ -2020,7 +2020,7 @@ export default IntroScreen3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-19T23:11:00.065Z
+                at 2026-01-20T17:34:48.267Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
