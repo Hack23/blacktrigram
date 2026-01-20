@@ -13,12 +13,12 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { TechniqueBarContainer } from "./TechniqueBarContainer";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { LAYOUT_BOTTOM_POSITIONS } from "../../../../../types/constants/layout";
-import type { PlayerState } from "../../../../../systems";
+import { Z_INDEX } from "../../../../types/LayoutTypes";
+import { LAYOUT_BOTTOM_POSITIONS } from "../../../../types/constants/layout";
+import type { PlayerState } from "../../../../systems";
 
 // Mock TechniqueBar component
-vi.mock("../indicators/TechniqueBar", () => ({
+vi.mock("../../../screens/combat/components/indicators/TechniqueBar", () => ({
   TechniqueBar: ({ isMobile }: { isMobile: boolean }) => (
     <div data-testid="technique-bar">
       Technique Bar (Mobile: {isMobile ? "Yes" : "No"})

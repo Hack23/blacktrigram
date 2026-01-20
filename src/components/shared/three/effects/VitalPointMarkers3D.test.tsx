@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { KOREAN_VITAL_POINTS } from "../../../../../systems/vitalpoint/KoreanVitalPoints";
-import { VitalPointSeverity } from "../../../../../types/common";
+import { KOREAN_VITAL_POINTS } from "../../../../systems/vitalpoint/KoreanVitalPoints";
+import { VitalPointSeverity } from "../../../../types/common";
 import type { BodyRegionFilter } from "./VitalPointMarkers3D";
 import VitalPointMarkers3D from "./VitalPointMarkers3D";
 
