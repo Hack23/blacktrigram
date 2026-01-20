@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.07% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/26</span>
+                <span class='fraction'>20/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.96% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/66</span>
+                <span class='fraction'>64/72</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.33% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/12</span>
+                <span class='fraction'>7/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">73.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/24</span>
+                <span class='fraction'>19/26</span>
             </div>
         
             
@@ -423,7 +423,23 @@
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a>
+<a name='L370'></a><a href='#L370'>370</a>
+<a name='L371'></a><a href='#L371'>371</a>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a>
+<a name='L376'></a><a href='#L376'>376</a>
+<a name='L377'></a><a href='#L377'>377</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -544,6 +560,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -783,6 +800,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * FootworkDrillsOverlayHtml - Training component for footwork drills
  * 
@@ -903,15 +935,16 @@ export interface FootworkDrillsOverlayHtmlProps {
  * 
  * @korean 보법훈련UI컴포넌트
  */
-export const FootworkDrillsOverlayHtml: React.FC&lt;FootworkDrillsOverlayHtmlProps&gt; = ({
-  currentDrill,
-  onDrillChange,
-  currentStep,
-  // onStepComplete, // TODO: Use this for drill pattern validation
-  isActive,
-  onToggleActive,
-  isMobile,
-}) =&gt; {
+export const FootworkDrillsOverlayHtml = React.memo&lt;FootworkDrillsOverlayHtmlProps&gt;(
+  ({
+    currentDrill,
+    onDrillChange,
+    currentStep,
+    // onStepComplete, // TODO: Use this for drill pattern validation
+    isActive,
+    onToggleActive,
+    isMobile,
+  }) =&gt; {
   const drillInfo = DRILL_INFO[currentDrill];
   const [showInstructions, setShowInstructions] = useState(true);
 &nbsp;
@@ -1140,7 +1173,22 @@ export const FootworkDrillsOverlayHtml: React.FC&lt;FootworkDrillsOverlayHtmlPro
       &lt;/button&gt;
     &lt;/div&gt;
   );
-};
+},
+<span class="fstat-no" title="function not covered" >(p</span>revProps, nextProps) =&gt; {
+  // Re-render when drill state, mobile state, or callbacks change
+  // Including callback props prevents stale closures when parent provides
+  // new functions that capture updated state.
+<span class="cstat-no" title="statement not covered" >  return (</span>
+    prevProps.currentDrill === nextProps.currentDrill &amp;&amp;
+    prevProps.currentStep === nextProps.currentStep &amp;&amp;
+    prevProps.isActive === nextProps.isActive &amp;&amp;
+    prevProps.isMobile === nextProps.isMobile &amp;&amp;
+    prevProps.onDrillChange === nextProps.onDrillChange &amp;&amp;
+    prevProps.onToggleActive === nextProps.onToggleActive
+  );
+});
+&nbsp;
+FootworkDrillsOverlayHtml.displayName = "FootworkDrillsOverlayHtml";
 &nbsp;
 export default FootworkDrillsOverlayHtml;
 &nbsp;</pre></td></tr></table></pre>
@@ -1150,7 +1198,7 @@ export default FootworkDrillsOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-20T17:34:47.887Z
+                at 2026-01-20T23:28:39.618Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

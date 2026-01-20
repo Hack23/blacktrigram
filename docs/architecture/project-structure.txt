@@ -740,6 +740,9 @@ src/hooks/useCombatTimer.test.ts
 src/hooks/useCombatTimer.ts
 src/hooks/useDebounce.test.ts
 src/hooks/useDebounce.ts
+src/hooks/useDistanceCulling.examples.tsx
+src/hooks/useDistanceCulling.test.ts
+src/hooks/useDistanceCulling.ts
 src/hooks/useHandPoseTransitions.ts
 src/hooks/useKeyboardControls.test.ts
 src/hooks/useKeyboardControls.ts

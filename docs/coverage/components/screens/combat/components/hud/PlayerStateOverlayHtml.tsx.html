@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -184,7 +184,32 @@
 <a name='L119'></a><a href='#L119'>119</a>
 <a name='L120'></a><a href='#L120'>120</a>
 <a name='L121'></a><a href='#L121'>121</a>
-<a name='L122'></a><a href='#L122'>122</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,7 +305,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -293,6 +319,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -378,6 +418,11 @@ export interface PlayerStateOverlayProps {
  * Combines all player state visual indicators into a single component
  * with optimal performance and consistent rendering. All effects use
  * smooth 0.5s transitions and are optimized for 60fps.
+ *
+ * Optimized with React.memo for performance:
+ * - Prevents re-renders when props haven't changed
+ * - Custom comparison function for precise control
+ * - Reduces DOM updates for 60fps target
  * 
  * @example
  * ```tsx
@@ -392,38 +437,53 @@ export interface PlayerStateOverlayProps {
  * /&gt;
  * ```
  */
-export const PlayerStateOverlayHtml: React.FC&lt;PlayerStateOverlayProps&gt; = ({
-  pain,
-  balanceState,
-  position,
-  consciousness,
-  bloodLoss = 0,
-  stamina,
-  isMobile,
-}) =&gt; {
-  return (
-    &lt;&gt;
-      {/* Pain vignette - shows when pain &gt;= 5 (see PainVignette.tsx) */}
-      &lt;PainVignette pain={pain} isMobile={isMobile} /&gt;
+export const PlayerStateOverlayHtml = React.memo&lt;PlayerStateOverlayProps&gt;(
+  ({
+    pain,
+    balanceState,
+    position,
+    consciousness,
+    bloodLoss = 0,
+    stamina,
+    isMobile,
+  }) =&gt; {
+    return (
+      &lt;&gt;
+        {/* Pain vignette - shows when pain &gt;= 5 (see PainVignette.tsx) */}
+        &lt;PainVignette pain={pain} isMobile={isMobile} /&gt;
 &nbsp;
-      {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
-      &lt;BalanceIndicator
-        balanceState={balanceState}
-        position={position}
-        isMobile={isMobile}
-      /&gt;
+        {/* Balance indicator - always visible, color-coded by state (see BalanceIndicator.tsx) */}
+        &lt;BalanceIndicator
+          balanceState={balanceState}
+          position={position}
+          isMobile={isMobile}
+        /&gt;
 &nbsp;
-      {/* Consciousness blur - shows when consciousness &lt;= 90 (see ConsciousnessBlur.tsx) */}
-      &lt;ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} /&gt;
+        {/* Consciousness blur - shows when consciousness &lt;= 90 (see ConsciousnessBlur.tsx) */}
+        &lt;ConsciousnessBlur consciousness={consciousness} isMobile={isMobile} /&gt;
 &nbsp;
-      {/* Blood loss warning - pulses when bloodLoss &gt;= 50 (see BloodLossOverlayHtml.tsx) */}
-      &lt;BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} /&gt;
+        {/* Blood loss warning - pulses when bloodLoss &gt;= 50 (see BloodLossOverlayHtml.tsx) */}
+        &lt;BloodLossOverlayHtml bloodLoss={bloodLoss} isMobile={isMobile} /&gt;
 &nbsp;
-      {/* Stamina warning - flashes when stamina &lt; 20 (see StaminaWarning.tsx) */}
-      &lt;StaminaWarning stamina={stamina} isMobile={isMobile} /&gt;
-    &lt;/&gt;
-  );
-};
+        {/* Stamina warning - flashes when stamina &lt; 20 (see StaminaWarning.tsx) */}
+        &lt;StaminaWarning stamina={stamina} isMobile={isMobile} /&gt;
+      &lt;/&gt;
+    );
+  },
+  (prevProps, nextProps) =&gt; {
+    // Custom comparison for optimal re-render prevention
+    // Only re-render if any state value actually changed
+    return (
+      prevProps.pain === nextProps.pain &amp;&amp;
+      prevProps.balanceState === nextProps.balanceState &amp;&amp;
+      prevProps.position === nextProps.position &amp;&amp;
+      prevProps.consciousness === nextProps.consciousness &amp;&amp;
+      prevProps.bloodLoss === nextProps.bloodLoss &amp;&amp;
+      prevProps.stamina === nextProps.stamina &amp;&amp;
+      prevProps.isMobile === nextProps.isMobile
+    );
+  },
+);
 &nbsp;
 PlayerStateOverlayHtml.displayName = "PlayerStateOverlayHtml";
 &nbsp;</pre></td></tr></table></pre>
@@ -433,7 +493,7 @@ PlayerStateOverlayHtml.displayName = "PlayerStateOverlayHtml";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-20T17:34:47.887Z
+                at 2026-01-20T23:28:39.618Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
