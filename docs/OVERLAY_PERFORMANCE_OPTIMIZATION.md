@@ -59,17 +59,27 @@ Created `useDistanceCulling` hook for rendering optimization:
 ### 1. React.memo with Custom Comparisons
 ```typescript
 export const Component = React.memo<Props>(
-  ({ prop1, prop2 }) => {
+  ({ prop1, prop2, onAction }) => {
     // Component implementation
   },
   (prevProps, nextProps) => {
     // Custom comparison for precise control
+    // IMPORTANT: Including callback props prevents stale closure bugs
+    // When a callback closes over state, excluding it from comparison
+    // can cause the component to call outdated handlers with stale state.
     return prevProps.prop1 === nextProps.prop1 &&
-           prevProps.prop2 === nextProps.prop2;
+           prevProps.prop2 === nextProps.prop2 &&
+           prevProps.onAction === nextProps.onAction;
   }
 );
 Component.displayName = "Component";
 ```
+
+**Best Practices:**
+- ✅ **Include callback props** in comparison to avoid stale closure bugs
+- ✅ **Parent components should use useCallback** to prevent unnecessary re-renders
+- ⚠️ **Risk of excluding callbacks**: Component may call outdated handlers that reference old state
+- ✅ **Trade-off**: Including callbacks requires parent to use useCallback for React.memo to be effective
 
 ### 2. Existing useCallback Patterns
 Most interactive components already use useCallback for event handlers:

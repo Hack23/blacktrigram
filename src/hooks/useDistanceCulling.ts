@@ -56,12 +56,11 @@ export interface DistanceCullingOptions {
  * - Reduces DOM rendering for distant overlays
  *
  * @note Camera position dependency
- * This hook recalculates when camera.position changes. While this tracks camera movement,
- * React's dependency system will only trigger re-calculation when the position object
- * reference changes (which typically happens on camera updates in the game loop).
- * This is intentional for accurate culling. The useMemo prevents redundant calculations
- * within the same frame. For games with very frequent camera updates, consider implementing
- * a threshold-based approach or debouncing at the component level.
+ * This hook tracks individual camera position components (x, y, z) in the dependency array.
+ * While this causes recalculation on camera movement, it's necessary for accurate culling.
+ * The useMemo still prevents redundant calculations within the same frame. For games with
+ * very frequent camera updates, consider implementing a threshold-based approach (only update
+ * when camera moves more than a certain distance) or debouncing at the component level.
  *
  * @korean 거리컬링훅사용
  */
@@ -85,7 +84,7 @@ export const useDistanceCulling = (
 
     // Return true if within cull distance, false otherwise
     return distanceSquared <= cullDistanceSquared;
-  }, [camera.position, position, cullDistance, enabled]);
+  }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, enabled]);
 
   return isVisible;
 };
@@ -124,16 +123,17 @@ export const useDistanceCullingWithThreshold = (
   position: readonly [number, number, number] | [number, number, number],
   options: AdvancedCullingOptions = {},
 ): boolean => {
-  const { cullDistance = 20, showDistance, enabled = true } = options;
-  const effectiveShowDistance = showDistance ?? cullDistance * 0.9;
+  const { cullDistance = 20, enabled = true } = options;
+  // Note: showDistance parameter is currently unused due to incomplete hysteresis implementation
+  // const effectiveShowDistance = showDistance ?? cullDistance * 0.9;
 
   const camera = useThree((state) => state.camera);
 
-  // Note: Proper hysteresis requires state tracking (was visible previously?)
-  // This simplified version uses OR logic as a compromise:
-  // - Shows if within showDistance (18m by default)
-  // - OR if within cullDistance (20m by default)
-  // For true hysteresis, implement with useState and previous visibility tracking
+  // Note: This implementation doesn't provide true hysteresis yet.
+  // True hysteresis requires useState to track previous visibility and apply
+  // different thresholds based on current state:
+  // - When hidden: show only if distance < showDistance
+  // - When visible: hide only if distance > cullDistance
   const isVisible = useMemo(() => {
     if (!enabled) return true;
 
@@ -142,12 +142,11 @@ export const useDistanceCullingWithThreshold = (
     
     // Use squared distances to avoid sqrt
     const cullDistanceSquared = cullDistance * cullDistance;
-    const showDistanceSquared = effectiveShowDistance * effectiveShowDistance;
 
-    // Simplified hysteresis: show if within either threshold
-    // TODO: Implement proper hysteresis with useState for previous visibility
-    return distanceSquared <= cullDistanceSquared || distanceSquared <= showDistanceSquared;
-  }, [camera.position, position, cullDistance, effectiveShowDistance, enabled]);
+    // Simplified check - just use cullDistance for now
+    // TODO: Implement proper hysteresis with useState tracking previous visibility
+    return distanceSquared <= cullDistanceSquared;
+  }, [camera.position.x, camera.position.y, camera.position.z, position, cullDistance, enabled]);
 
   return isVisible;
 };

@@ -256,6 +256,16 @@ export const AnatomyControlsOverlayHtml = React.memo<AnatomyControlsOverlayHtmlP
       </div>
     </div>
   );
+},
+(prevProps, nextProps) => {
+  // Re-render when visible layers or callback changes
+  // Including callback prop prevents stale closures when parent provides
+  // a new function that captures updated state.
+  return (
+    prevProps.visibleLayers === nextProps.visibleLayers &&
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onLayerToggle === nextProps.onLayerToggle
+  );
 });
 
 AnatomyControlsOverlayHtml.displayName = "AnatomyControlsOverlayHtml";

@@ -185,13 +185,14 @@ export const TrainingControlsOverlayHtml = React.memo<TrainingControlsOverlayHtm
   );
   },
   (prevProps, nextProps) => {
-    // Only re-render if training state or mobile state changes
-    // Note: Callback props (onStartTraining, onStopTraining) are excluded from comparison
-    // to avoid re-renders when parent doesn't use useCallback. The component will still
-    // call the latest callback due to closure.
+    // Re-render when training state, mobile state, or callbacks change
+    // Including callback props here avoids stale-closure issues where the
+    // component would keep calling outdated handlers that reference old state.
     return (
       prevProps.isTraining === nextProps.isTraining &&
-      prevProps.isMobile === nextProps.isMobile
+      prevProps.isMobile === nextProps.isMobile &&
+      prevProps.onStartTraining === nextProps.onStartTraining &&
+      prevProps.onStopTraining === nextProps.onStopTraining
     );
   },
 );

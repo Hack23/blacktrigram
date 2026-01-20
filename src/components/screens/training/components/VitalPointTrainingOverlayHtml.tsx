@@ -248,13 +248,13 @@ export const VitalPointTrainingOverlayHtml = React.memo<VitalPointTrainingOverla
   );
 },
 (prevProps, nextProps) => {
-  // Only re-render if vital point selection or mobile state changes
-  // Note: Callback prop (onVitalPointSelect) is excluded from comparison to avoid
-  // re-renders when parent doesn't use useCallback. The component will still call
-  // the latest callback due to closure.
+  // Re-render when vital point selection, mobile state, or callback changes
+  // Including callback prop prevents stale closures when parent provides
+  // a new function that captures updated state.
   return (
     prevProps.selectedVitalPoint === nextProps.selectedVitalPoint &&
-    prevProps.isMobile === nextProps.isMobile
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onVitalPointSelect === nextProps.onVitalPointSelect
   );
 });
 

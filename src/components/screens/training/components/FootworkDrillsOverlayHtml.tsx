@@ -358,15 +358,16 @@ export const FootworkDrillsOverlayHtml = React.memo<FootworkDrillsOverlayHtmlPro
   );
 },
 (prevProps, nextProps) => {
-  // Only re-render if drill state or mobile state changes
-  // Note: Callback props (onDrillChange, onToggleActive) are excluded from comparison
-  // to avoid re-renders when parent doesn't use useCallback. The component will still
-  // call the latest callbacks due to closure.
+  // Re-render when drill state, mobile state, or callbacks change
+  // Including callback props prevents stale closures when parent provides
+  // new functions that capture updated state.
   return (
     prevProps.currentDrill === nextProps.currentDrill &&
     prevProps.currentStep === nextProps.currentStep &&
     prevProps.isActive === nextProps.isActive &&
-    prevProps.isMobile === nextProps.isMobile
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.onDrillChange === nextProps.onDrillChange &&
+    prevProps.onToggleActive === nextProps.onToggleActive
   );
 });
 
