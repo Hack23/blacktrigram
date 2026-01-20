@@ -14,13 +14,13 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import { Technique } from "../../../../../types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
-import { triggerHaptic } from "../../../../../utils/haptics";
-import { PlayerArchetype, TrigramStance } from "../../../../../types/common";
-import { getArchetypePhysicalAttributes } from "../../../../../data/archetypePhysicalAttributes";
-import { physicalReachCalculator } from "../../../../../systems/physics";
-import { AnimationType } from "../../../../../systems/animation";
+import { Technique } from "../../../../types";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { triggerHaptic } from "../../../../utils/haptics";
+import { PlayerArchetype, TrigramStance } from "../../../../types/common";
+import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
+import { physicalReachCalculator } from "../../../../systems/physics";
+import { AnimationType } from "../../../../systems/animation";
 
 /**
  * Props for TechniqueCard component.

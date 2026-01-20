@@ -24,10 +24,10 @@ import {
 } from "../../../../types/constants";
 import { Z_INDEX } from "../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { BreathingIndicator } from "../../../screens/combat/components/indicators/BreathingIndicator";
-import { HealthBar } from "../../../screens/combat/components/indicators/HealthBar";
-import { StaminaBar } from "../../../screens/combat/components/indicators/StaminaBar";
-import { CombatReadinessBar } from "../../../screens/combat/components/hud/CombatReadinessBar";
+import { BreathingIndicator } from "./BreathingIndicator";
+import { HealthBar } from "./HealthBar";
+import { StaminaBar } from "./StaminaBar";
+import { CombatReadinessBar } from "./CombatReadinessBar";
 
 export interface PlayerHUDProps {
   /** Player state with health, stamina, and other data */

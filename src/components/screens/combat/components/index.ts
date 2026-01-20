@@ -18,10 +18,6 @@ export { PainVignette } from "./effects/PainVignette";
 export { TechniqueNameDisplay } from "./indicators/TechniqueNameDisplay";
 export { BalanceIndicator } from "./indicators/BalanceIndicator";
 export { StaminaWarning } from "./indicators/StaminaWarning";
-export { TechniqueCard } from "./indicators/TechniqueCard";
-export { default as HealthBar } from "./indicators/HealthBar";
-export { default as StaminaBar } from "./indicators/StaminaBar";
-export { BreathingIndicator } from "./indicators/BreathingIndicator";
 export { InputBufferDisplay } from "./indicators/InputBufferDisplay";
 
 // Combat-specific UI Components
@@ -38,7 +34,6 @@ export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncement";
 
 // HUD components - Combat-specific
 export { CombatHUD3D } from "./hud/CombatHUD3D";
-export { CombatReadinessBar } from "./hud/CombatReadinessBar";
 export { DifficultyIndicator } from "./hud/DifficultyIndicator";
 export { FPSMonitor } from "./hud/FPSMonitor";
 export { MobileControlsWrapper } from "./hud/MobileControlsWrapper";
@@ -59,10 +54,6 @@ export type { PainVignetteProps } from "./effects/PainVignette";
 export type { TechniqueNameDisplayProps } from "./indicators/TechniqueNameDisplay";
 export type { BalanceIndicatorProps } from "./indicators/BalanceIndicator";
 export type { StaminaWarningProps } from "./indicators/StaminaWarning";
-export type { TechniqueCardProps } from "./indicators/TechniqueCard";
-export type { HealthBarProps } from "./indicators/HealthBar";
-export type { StaminaBarProps } from "./indicators/StaminaBar";
-export type { BreathingIndicatorProps } from "./indicators/BreathingIndicator";
 export type { InputBufferDisplayProps } from "./indicators/InputBufferDisplay";
 
 export type { CombatControlsPanelProps } from "./controls/CombatControlsPanel";
@@ -76,7 +67,6 @@ export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnounc
 export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncement";
 
 export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
-export type { CombatReadinessBarProps } from "./hud/CombatReadinessBar";
 export type { DifficultyIndicatorProps } from "./hud/DifficultyIndicator";
 export type { FPSMonitorProps } from "./hud/FPSMonitor";
 export type { MobileControlsWrapperProps } from "./hud/MobileControlsWrapper";

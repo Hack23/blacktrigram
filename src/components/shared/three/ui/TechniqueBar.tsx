@@ -14,7 +14,7 @@
 import React, { useMemo } from "react";
 import { PlayerState } from "../../../../systems/player";
 import { Technique } from "../../../../types";
-import { TechniqueCard } from "../../../screens/combat/components/indicators/TechniqueCard";
+import { TechniqueCard } from "./TechniqueCard";
 
 /**
  * Props for TechniqueBar component.

@@ -42,11 +42,26 @@ export type { ComboCounterProps } from "./ui/ComboCounter";
 export { TechniqueBar } from "./ui/TechniqueBar";
 export type { TechniqueBarProps } from "./ui/TechniqueBar";
 
+export { TechniqueCard } from "./ui/TechniqueCard";
+export type { TechniqueCardProps } from "./ui/TechniqueCard";
+
 export { BodyPartHealthDisplay } from "./ui/BodyPartHealthDisplay";
 export type { BodyPartHealthDisplayProps } from "./ui/BodyPartHealthDisplay";
 
 export { SpeedIndicatorHUD } from "./ui/SpeedIndicatorHUD";
 export type { SpeedIndicatorHUDProps } from "./ui/SpeedIndicatorHUD";
+
+export { default as HealthBar } from "./ui/HealthBar";
+export type { HealthBarProps } from "./ui/HealthBar";
+
+export { default as StaminaBar } from "./ui/StaminaBar";
+export type { StaminaBarProps } from "./ui/StaminaBar";
+
+export { BreathingIndicator } from "./ui/BreathingIndicator";
+export type { BreathingIndicatorProps } from "./ui/BreathingIndicator";
+
+export { CombatReadinessBar } from "./ui/CombatReadinessBar";
+export type { CombatReadinessBarProps } from "./ui/CombatReadinessBar";
 
 // Effects
 export { PlayerStateIndicators } from "./effects/PlayerStateIndicators";
