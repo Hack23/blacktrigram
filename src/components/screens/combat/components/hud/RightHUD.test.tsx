@@ -116,13 +116,13 @@ describe("RightHUD", () => {
       ...mockPlayer,
       bodyPartHealth: {
         head: 100,
-        torso: 100,
+        neck: 100,
+        torsoUpper: 100,
+        torsoLower: 100,
         armLeft: 100,
         armRight: 100,
         legLeft: 100,
         legRight: 100,
-        handLeft: 100,
-        handRight: 100,
       },
     };
 
@@ -163,7 +163,7 @@ describe("RightHUD", () => {
       <RightHUD
         player={mockPlayer}
         currentStance={TrigramStance.GEON}
-        isInGuard={false}
+        isInGuard={true} // Must be true for GuardIndicator to render
         laterality="right"
         speedModifiers={mockSpeedModifiers}
         isMobile={true}
