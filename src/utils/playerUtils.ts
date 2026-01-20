@@ -371,7 +371,7 @@ export function initializeBodyFacing(
 }
 
 /**
- * Toggle the player's lead foot (switch stance side)
+ * Toggle the player's stance side (orthodox ↔ southpaw)
  *
  * Switches between orthodox (left foot forward) and southpaw (right foot forward).
  * This is used when executing stance switches or certain techniques.
