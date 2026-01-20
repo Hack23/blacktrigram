@@ -26,8 +26,8 @@ interface MockThreeContext {
 
 interface MockAudioProvider {
   readonly playSFX: Mock;
-  readonly fadeIn: Mock<[], Promise<void>>;
-  readonly fadeOut: Mock<[], Promise<void>>;
+  readonly fadeIn: Mock<() => Promise<void>>;
+  readonly fadeOut: Mock<() => Promise<void>>;
   readonly stopMusic: Mock;
 }
 
@@ -69,8 +69,8 @@ vi.mock("@react-three/postprocessing", () => ({
 vi.mock("../../../audio/AudioProvider", () => ({
   useAudio: (): MockAudioProvider => ({
     playSFX: vi.fn(),
-    fadeIn: vi.fn<[], Promise<void>>(() => Promise.resolve()),
-    fadeOut: vi.fn<[], Promise<void>>(() => Promise.resolve()),
+    fadeIn: vi.fn(() => Promise.resolve()),
+    fadeOut: vi.fn(() => Promise.resolve()),
     stopMusic: vi.fn(),
   }),
 }));
