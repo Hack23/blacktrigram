@@ -2126,7 +2126,7 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.NECK, -0.1, 0.05, 0);
 
       // Two-finger pose for eye attack
-      this.applyHandPose(kf, HAND_POSES.CLAW, "right");
+      this.applyHandPose(kf, HAND_POSES.TWO_FINGER, "right");
       this.applyHandPose(kf, HAND_POSES.GRAB, "left");
     });
     this.currentTime += timeOffset;
