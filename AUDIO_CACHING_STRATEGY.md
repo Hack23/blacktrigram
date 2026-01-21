@@ -95,7 +95,7 @@ Critical assets are **never evicted**, even if:
 - Asset is least recently used
 - Memory pressure is high
 
-This ensures instant playback (&lt;10ms latency) for essential game sounds.
+This ensures instant playback (<10ms latency) for essential game sounds.
 
 ## 📈 Performance Metrics
 
@@ -106,8 +106,8 @@ This ensures instant playback (&lt;10ms latency) for essential game sounds.
 | Memory limit | 30MB | ✅ Configurable |
 | Initial load | 30-60MB | ✅ 15-20MB |
 | Memory reduction | 40-60% | ✅ 70-80% initial |
-| Critical sound latency | &lt;10ms | ✅ Maintained |
-| Cache hit rate | &gt;85% | ✅ Measured |
+| Critical sound latency | <10ms | ✅ Maintained |
+| Cache hit rate | >85% | ✅ Measured |
 | Cache eviction | Working | ✅ Tested |
 
 ### Cache Statistics

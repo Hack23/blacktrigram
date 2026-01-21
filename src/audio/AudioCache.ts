@@ -29,7 +29,7 @@ interface CacheEntry {
   readonly asset: AudioAsset;
   readonly size: number;
   lastAccessed: number;
-  readonly isCritical: boolean;
+  isCritical: boolean; // Mutable to allow dynamic updates via updateCriticalAssets()
 }
 
 /**
@@ -176,6 +176,20 @@ export class AudioCache {
         );
       }
 
+      // Unload audio element to free memory
+      if (entry.asset && "src" in entry.asset) {
+        const audioElement = entry.asset as AudioAsset & {
+          src?: string;
+          pause?: () => void;
+        };
+        if (audioElement.pause) {
+          audioElement.pause();
+        }
+        if (audioElement.src !== undefined) {
+          audioElement.src = "";
+        }
+      }
+
       return true;
     }
     return false;
@@ -293,9 +307,14 @@ export class AudioCache {
 
     this.cache.clear();
     this.currentSize = 0;
+    
+    // Reset statistics counters to maintain accurate statistics after clear
+    this.evictionCount = 0;
+    this.hitCount = 0;
+    this.missCount = 0;
 
     if (this.debug) {
-      console.log("[AudioCache] Cleared entire cache");
+      console.log("[AudioCache] Cleared entire cache and reset statistics");
     }
   }
 
@@ -352,8 +371,7 @@ export class AudioCache {
 
     // Update isCritical flag for existing entries
     for (const [id, entry] of this.cache) {
-      (entry as { isCritical: boolean }).isCritical =
-        this.criticalAssets.has(id);
+      entry.isCritical = this.criticalAssets.has(id);
     }
 
     if (this.debug) {

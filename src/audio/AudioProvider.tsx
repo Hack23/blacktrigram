@@ -102,9 +102,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       // 중요한 전투 사운드 사전 로드 (즉시 재생 필요)
       const criticalCombatSounds = [
         audioAssetRegistry.getSFX("hit_light"),
+        audioAssetRegistry.getSFX("hit_medium"),
+        audioAssetRegistry.getSFX("hit_heavy"),
         audioAssetRegistry.getSFX("hit_impact"),
         audioAssetRegistry.getSFX("guard_block"),
         audioAssetRegistry.getSFX("attack_light"),
+        audioAssetRegistry.getSFX("attack_whoosh"),
         audioAssetRegistry.getSFX("stance_change"),
       ];
 
