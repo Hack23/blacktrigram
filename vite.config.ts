@@ -4,6 +4,7 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { defineConfig, Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { glslPlugin } from "./vite-plugins/glsl-plugin";
 
 // Read version from package.json
 interface PackageJson {
@@ -56,6 +57,8 @@ export default defineConfig(({ command, mode: _mode }) => ({
     react(),
     // Support for TypeScript paths
     tsconfigPaths(),
+    // Load GLSL shader files
+    glslPlugin(),
     // Inject version into service worker during build
     injectVersionPlugin(),
   ],

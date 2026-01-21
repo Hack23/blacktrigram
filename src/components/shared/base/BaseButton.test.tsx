@@ -16,7 +16,8 @@ vi.mock("@react-three/drei", () => ({
 describe("BaseButton", () => {
   it("should be defined and importable", () => {
     expect(BaseButton).toBeDefined();
-    expect(typeof BaseButton).toBe("function");
+    // React.memo returns an object, not a function
+    expect(typeof BaseButton).toBe("object");
   });
 
   it("should have proper display name", () => {
