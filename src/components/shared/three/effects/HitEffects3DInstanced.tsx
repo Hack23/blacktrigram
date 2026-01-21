@@ -191,6 +191,11 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
     new Map()
   );
 
+  // Store effectRefs as state to avoid ref access during render
+  const [effectRefsSnapshot, setEffectRefsSnapshot] = useState<
+    Map<string, React.MutableRefObject<ActiveEffectInstance>>
+  >(new Map());
+
   // Initialize effect instances
   useEffect(() => {
     const currentIdSet = new Set(effects.map((e) => e.id));
@@ -204,7 +209,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
     });
 
     // Initialize new effects
-    const newInstances = new Map(activeInstances);
+    const newInstances = new Map<string, ActiveEffectInstance>();
     effects.forEach((effect) => {
       if (!effectRefsMap.current.has(effect.id)) {
         const position = positionTo3D(effect, arenaBounds);
@@ -220,6 +225,12 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
           current: instance,
         });
         newInstances.set(effect.id, instance);
+      } else {
+        // Keep existing instance
+        const ref = effectRefsMap.current.get(effect.id);
+        if (ref?.current) {
+          newInstances.set(effect.id, ref.current);
+        }
       }
     });
 
@@ -231,6 +242,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
     });
 
     setActiveInstances(newInstances);
+    setEffectRefsSnapshot(new Map(effectRefsMap.current));
   }, [effects, arenaBounds]);
 
   // Update progress using refs
@@ -280,7 +292,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.HIT}
         instances={instancesByType.get(HitEffectType.HIT) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<sphereGeometry args={[1, 16, 16]} />}
         color={KOREAN_COLORS.ACCENT_RED}
         opacity={0.5}
@@ -290,7 +302,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.CRITICAL_HIT}
         instances={instancesByType.get(HitEffectType.CRITICAL_HIT) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<sphereGeometry args={[1, 16, 16]} />}
         color={KOREAN_COLORS.ACCENT_GOLD}
         opacity={0.7}
@@ -300,7 +312,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.BLOCK}
         instances={instancesByType.get(HitEffectType.BLOCK) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<torusGeometry args={[0.8, 0.1, 8, 16, Math.PI]} />}
         color={KOREAN_COLORS.ACCENT_CYAN}
         opacity={0.8}
@@ -310,7 +322,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.VITAL_POINT_STRIKE}
         instances={instancesByType.get(HitEffectType.VITAL_POINT_STRIKE) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<sphereGeometry args={[1, 16, 16]} />}
         color={KOREAN_COLORS.SECONDARY_MAGENTA}
         opacity={0.5}
@@ -320,7 +332,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.PARRY}
         instances={instancesByType.get(HitEffectType.PARRY) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<torusGeometry args={[0.7, 0.1, 8, 16, Math.PI / 2]} />}
         color={KOREAN_COLORS.ACCENT_GOLD}
         opacity={0.8}
@@ -330,7 +342,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.COUNTER}
         instances={instancesByType.get(HitEffectType.COUNTER) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<boxGeometry args={[1.2, 0.1, 0.1]} />}
         color={KOREAN_COLORS.PRIMARY_CYAN}
         opacity={0.8}
@@ -340,7 +352,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       <EffectInstanceGroup
         type={HitEffectType.MISS}
         instances={instancesByType.get(HitEffectType.MISS) ?? []}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<boxGeometry args={[1.2, 0.04, 0.04]} />}
         color={KOREAN_COLORS.TEXT_TERTIARY}
         opacity={0.6}
@@ -353,7 +365,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
           ...(instancesByType.get(HitEffectType.GENERAL_DAMAGE) ?? []),
           ...(instancesByType.get(HitEffectType.STATUS_EFFECT) ?? []),
         ]}
-        effectRefs={effectRefsMap.current}
+        effectRefs={effectRefsSnapshot}
         geometry={<sphereGeometry args={[1, 16, 16]} />}
         color={KOREAN_COLORS.ACCENT_GREEN}
         opacity={0.5}

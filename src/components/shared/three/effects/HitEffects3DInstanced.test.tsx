@@ -30,13 +30,9 @@ describe("HitEffects3DInstanced", () => {
     intensity: 1.0,
     startTime: Date.now(),
     duration: 500,
-  };
-
-  const mockArenaBounds = {
-    x: 0,
-    y: 0,
-    width: 1200,
-    height: 800,
+    attackerId: "player1",
+    defenderId: "player2",
+    timestamp: Date.now(),
   };
 
   describe("rendering", () => {
@@ -64,6 +60,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.5,
           startTime: Date.now(),
           duration: 600,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
         {
           id: "test-hit-instanced-3",
@@ -72,6 +71,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.0,
           startTime: Date.now(),
           duration: 400,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
       ];
 
@@ -102,6 +104,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.0,
           startTime: Date.now(),
           duration: 500,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
         {
           id: "hit-2",
@@ -110,6 +115,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.0,
           startTime: Date.now(),
           duration: 500,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
         {
           id: "hit-3",
@@ -118,6 +126,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.0,
           startTime: Date.now(),
           duration: 500,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         },
       ];
 
@@ -328,6 +339,9 @@ describe("HitEffects3DInstanced", () => {
         intensity: 0.8 + Math.random() * 0.4,
         startTime: Date.now(),
         duration: 400 + Math.random() * 200,
+        attackerId: "player1",
+        defenderId: "player2",
+        timestamp: Date.now(),
       }));
 
       const { container } = render3D(
@@ -355,6 +369,9 @@ describe("HitEffects3DInstanced", () => {
           intensity: 1.0,
           startTime: Date.now(),
           duration: 500,
+          attackerId: "player1",
+          defenderId: "player2",
+          timestamp: Date.now(),
         };
 
         rerender(
