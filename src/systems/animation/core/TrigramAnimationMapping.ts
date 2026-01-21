@@ -112,7 +112,7 @@ export interface StanceAnimationCollection {
  */
 export function getAnimationsForStance(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): StanceAnimationCollection | undefined {
   // Parse stance and laterality
   const parsed = parseStanceWithSide(stanceOrSide as string);
@@ -196,7 +196,7 @@ export function getAnimationsForStance(
  */
 export function getGuardPoseForStanceWithSide(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): StanceGuardPose | undefined {
   const parsed = parseStanceWithSide(stanceOrSide as string);
 
@@ -205,7 +205,7 @@ export function getGuardPoseForStanceWithSide(
   } else {
     return getGuardPoseForStance(
       stanceOrSide as TrigramStance,
-      defaultLaterality
+      defaultLaterality,
     );
   }
 }
@@ -266,7 +266,7 @@ export function getAllGuardPoses(): Map<string, StanceGuardPose> {
  */
 export function getAttackAnimations(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): readonly SkeletalAnimation[] {
   const parsed = parseStanceWithSide(stanceOrSide as string);
 
@@ -312,7 +312,7 @@ export function getAttackAnimations(
  */
 export function getDefensiveAnimations(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): readonly SkeletalAnimation[] {
   const parsed = parseStanceWithSide(stanceOrSide as string);
 
@@ -358,7 +358,7 @@ export function getDefensiveAnimations(
  */
 export function getWalkAnimation(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): SkeletalAnimation | undefined {
   const parsed = parseStanceWithSide(stanceOrSide as string);
 
@@ -406,7 +406,7 @@ export function getWalkAnimation(
  */
 export function getRunAnimation(
   stanceOrSide: TrigramStance | StanceWithSide,
-  defaultLaterality: StanceLaterality = "right"
+  defaultLaterality: StanceLaterality = "right",
 ): SkeletalAnimation | undefined {
   const parsed = parseStanceWithSide(stanceOrSide as string);
 
@@ -468,7 +468,7 @@ export interface AnimationMappingStats {
  * ```typescript
  * const stats = getAnimationMappingStats();
  * console.log(`Total configurations: ${stats.totalConfigurations}`); // 16
- * console.log(`Total attacks: ${stats.totalAttacks}`); // 8 × 3 × 2 = 48
+ * console.log(`Total attacks: ${stats.totalAttacks}`); // 8 × 5 × 2 = 80
  * ```
  *
  * @public
@@ -477,7 +477,7 @@ export interface AnimationMappingStats {
  */
 export function getAnimationMappingStats(): AnimationMappingStats {
   const stanceCount = ATTACK_ANIMATIONS_BY_STANCE.size;
-  const attacksPerStance = 3; // Each stance has 3 attack variants
+  const attacksPerStance = 5; // Each stance has 5 attack variants
   const defensivePerStance = 2; // Each stance has 2 defensive variants
 
   return {

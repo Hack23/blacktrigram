@@ -43,7 +43,7 @@ describe("TrigramAnimationMapping", () => {
 
         expect(collection).toBeDefined();
         expect(collection?.guardPose).toBeDefined();
-        expect(collection?.attacks).toHaveLength(3);
+        expect(collection?.attacks).toHaveLength(5);
         expect(collection?.defensive).toHaveLength(2);
         expect(collection?.walk).toBeDefined();
         expect(collection?.run).toBeDefined();
@@ -54,7 +54,7 @@ describe("TrigramAnimationMapping", () => {
 
         expect(collection).toBeDefined();
         expect(collection?.guardPose).toBeDefined();
-        expect(collection?.attacks).toHaveLength(3);
+        expect(collection?.attacks).toHaveLength(5);
         expect(collection?.defensive).toHaveLength(2);
         expect(collection?.walk).toBeDefined();
         expect(collection?.run).toBeDefined();
@@ -98,7 +98,7 @@ describe("TrigramAnimationMapping", () => {
         stances.forEach((stanceWithSide) => {
           const collection = getAnimationsForStance(stanceWithSide as any);
           expect(collection).toBeDefined();
-          expect(collection?.attacks).toHaveLength(3);
+          expect(collection?.attacks).toHaveLength(5);
           expect(collection?.defensive).toHaveLength(2);
         });
       });
@@ -118,7 +118,7 @@ describe("TrigramAnimationMapping", () => {
         stances.forEach((stanceWithSide) => {
           const collection = getAnimationsForStance(stanceWithSide as any);
           expect(collection).toBeDefined();
-          expect(collection?.attacks).toHaveLength(3);
+          expect(collection?.attacks).toHaveLength(5);
           expect(collection?.defensive).toHaveLength(2);
         });
       });
@@ -139,11 +139,11 @@ describe("TrigramAnimationMapping", () => {
       it("should respect explicit laterality parameter", () => {
         const rightCollection = getAnimationsForStance(
           TrigramStance.TAE,
-          "right"
+          "right",
         );
         const leftCollection = getAnimationsForStance(
           TrigramStance.TAE,
-          "left"
+          "left",
         );
 
         expect(rightCollection).toBeDefined();
@@ -203,11 +203,11 @@ describe("TrigramAnimationMapping", () => {
     it("should respect explicit laterality parameter", () => {
       const rightGeon = getGuardPoseForStanceWithSide(
         TrigramStance.GEON,
-        "right"
+        "right",
       );
       const leftGeon = getGuardPoseForStanceWithSide(
         TrigramStance.GEON,
-        "left"
+        "left",
       );
 
       expect(rightGeon).toBeDefined();
@@ -260,20 +260,20 @@ describe("TrigramAnimationMapping", () => {
   });
 
   describe("getAttackAnimations()", () => {
-    it("should return 3 attacks for each stance", () => {
+    it("should return 5 attacks for each stance", () => {
       const geonAttacks = getAttackAnimations(TrigramStance.GEON);
       const taeAttacks = getAttackAnimations(TrigramStance.TAE);
 
-      expect(geonAttacks).toHaveLength(3);
-      expect(taeAttacks).toHaveLength(3);
+      expect(geonAttacks).toHaveLength(5);
+      expect(taeAttacks).toHaveLength(5);
     });
 
     it("should apply laterality transformation", () => {
       const rightAttacks = getAttackAnimations("geon_right");
       const leftAttacks = getAttackAnimations("geon_left");
 
-      expect(rightAttacks).toHaveLength(3);
-      expect(leftAttacks).toHaveLength(3);
+      expect(rightAttacks).toHaveLength(5);
+      expect(leftAttacks).toHaveLength(5);
 
       // Right attacks should be right-handed
       rightAttacks.forEach((anim) => {
@@ -395,9 +395,9 @@ describe("TrigramAnimationMapping", () => {
 
       expect(stats.totalConfigurations).toBe(16); // 8 stances × 2 laterality
       expect(stats.completeMappings).toBe(8); // All 8 stances
-      expect(stats.attacksPerStance).toBe(3);
+      expect(stats.attacksPerStance).toBe(5);
       expect(stats.defensivePerStance).toBe(2);
-      expect(stats.totalAttacks).toBe(48); // 8 × 3 × 2
+      expect(stats.totalAttacks).toBe(80); // 8 × 5 × 2
       expect(stats.totalDefensive).toBe(32); // 8 × 2 × 2
     });
 
@@ -437,7 +437,7 @@ describe("TrigramAnimationMapping", () => {
       // Should return equivalent results
       expect(leftByString?.attacks.length).toBe(leftByParam?.attacks.length);
       expect(leftByString?.defensive.length).toBe(
-        leftByParam?.defensive.length
+        leftByParam?.defensive.length,
       );
     });
   });
