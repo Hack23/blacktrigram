@@ -1,0 +1,43 @@
+/**
+ * Optimized Effects Package Index
+ *
+ * Exports GPU-accelerated and instanced rendering components
+ * for high-performance visual effects in Black Trigram.
+ *
+ * @module components/shared/three/effects/optimized
+ * @category Shared Effects
+ */
+
+// GPU-accelerated particle systems
+export { TrigramParticles3DGPU } from "./TrigramParticles3DGPU";
+export type { TrigramParticles3DGPUProps } from "./TrigramParticles3DGPU";
+
+// Instanced mesh rendering
+export { HitEffects3DInstanced } from "./HitEffects3DInstanced";
+export type { HitEffects3DInstancedProps } from "./HitEffects3DInstanced";
+
+// Post-processing effects
+export { EffectsComposer } from "./EffectsComposer";
+export type { EffectsComposerProps } from "./EffectsComposer";
+
+// Particle pooling system
+export { ParticlePool } from "./ParticlePool";
+export type { Particle, ParticlePoolConfig } from "./ParticlePool";
+
+// Original components (for backwards compatibility)
+export { default as TrigramParticles3D } from "./TrigramParticles3D";
+export type { TrigramParticles3DProps, TrigramParticleEffect } from "./TrigramParticles3D";
+export { default as HitEffects3D } from "./HitEffects3D";
+export type { HitEffects3DProps } from "./HitEffects3D";
+export { default as StanceTransitionEffect } from "./StanceTransitionEffect";
+export type { StanceTransitionEffectProps } from "./StanceTransitionEffect";
+export { default as DamageNumbers } from "./DamageNumbers";
+export type { DamageNumbersProps } from "./DamageNumbers";
+export { default as VitalPointMarkers3D } from "./VitalPointMarkers3D";
+export type { VitalPointMarkers3DProps } from "./VitalPointMarkers3D";
+export { default as StanceSymbol3D } from "./StanceSymbol3D";
+export type { StanceSymbol3DProps } from "./StanceSymbol3D";
+export { default as ActionFeedback } from "./ActionFeedback";
+export type { ActionFeedbackProps } from "./ActionFeedback";
+export { default as PlayerStateIndicators } from "./PlayerStateIndicators";
+export type { PlayerStateIndicatorsProps } from "./PlayerStateIndicators";
