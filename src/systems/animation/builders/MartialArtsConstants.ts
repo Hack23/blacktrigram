@@ -365,14 +365,17 @@ export const KICK_PHASES = {
   },
 
   /**
-   * Extension Position (차기자세) - Leg extended
+   * Extension Position (차기자세) - Leg extended with hip drive
+   *
+   * Enhanced with proper hip Y-rotation for power generation (골반회전)
    */
   EXTENSION: {
     hip: [1.7, 0, 0] as const,
     knee: [0.1, 0, 0] as const, // Full extension
     ankle: [0.5, 0, 0] as const, // Dorsiflexion
     supportKnee: [-0.35, 0, 0] as const,
-    pelvis: [0.15, 0, 0] as const,
+    pelvis: [0.15, 0, 0] as const, // X-axis tilt
+    pelvisY: -0.6, // Hip Y-rotation for power (골반회전) ~34°
   },
 
   /**
@@ -1117,7 +1120,7 @@ export enum AnimationType {
  */
 export function calculateStanceWidth(
   stanceWidthMultiplier: number,
-  shoulderWidth: number
+  shoulderWidth: number,
 ): number {
   // Convert cm to meters: (shoulderWidth_cm * multiplier) / 100
   return (shoulderWidth * stanceWidthMultiplier) / 100;
@@ -1142,7 +1145,7 @@ export function calculateStanceWidth(
  */
 export function calculateFootPositions(
   stanceWidthMultiplier: number,
-  shoulderWidth: number
+  shoulderWidth: number,
 ): { readonly leftFootX: number; readonly rightFootX: number } {
   const totalWidth = calculateStanceWidth(stanceWidthMultiplier, shoulderWidth);
   const halfWidth = totalWidth / 2;

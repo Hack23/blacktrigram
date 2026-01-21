@@ -552,18 +552,23 @@ export class MartialArtsAnimationBuilder {
       // Apply rotational phase
       applyRoundhousePhaseToConfig(kf, KICK_PHASES.ROUNDHOUSE_CHAMBER);
 
-      // Support leg stability
+      // Support leg begins pivot (축발 회전 시작)
+      // Even during chamber, the support foot starts rotating
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0); // Standing hip starts rotation
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.79, 0); // 45° pivot start (half of full)
+
+      // Pelvis begins rotation for power loading (힙 회전)
+      kf.rotate(BoneName.PELVIS, 0, -0.79, 0); // 45° hip rotation
 
       // Spine lower follows pelvis rotation
-      kf.rotate(BoneName.SPINE_LOWER, 0, -0.3, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -0.4, 0);
 
-      // High guard for head protection
+      // High guard for head protection - elbows tucked
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0); // Tighter tuck
       kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0); // Tighter tuck
     });
     this.currentTime += timeOffset;
     return this;
@@ -623,9 +628,11 @@ export class MartialArtsAnimationBuilder {
         lowerSpineRot?.z ?? 0,
       );
 
-      // Support leg pivots
-      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, 0.3, 0); // Pivot on ball
+      // Support leg pivots - CRITICAL for Taekwondo roundhouse (축발 회전)
+      // Ball of foot rotates 90-180° to allow full hip opening
+      kf.rotate(BoneName.HIP_L, 0, -0.4, 0); // Standing hip rotates with pivot
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0); // Deeper bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, 1.57, 0); // 90° pivot on ball of foot
 
       // Foot extends laterally
       kf.position(BoneName.FOOT_R, 0.8, 0, 0);
@@ -730,15 +737,33 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Axe kick rise - Leg rises high for 내려차기
+   *
+   * Enhanced with hip rotation and support leg positioning
    * @korean 내려차기올리기
    */
   axeKickRise(timeOffset: number = 0.15, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyHighPeakPhaseToConfig(kf, KICK_PHASES.HIGH_PEAK);
-      // Additional spine lean for axe kick balance
-      kf.rotate(BoneName.SPINE_LOWER, -0.2, 0, 0);
-      kf.rotate(BoneName.SPINE_UPPER, -0.15, 0, 0);
+
+      // Hip rotation for power generation (골반회전)
+      kf.rotate(BoneName.PELVIS, -0.2, -0.6, 0); // Tilt back + Y rotation
+
+      // Spine lean for axe kick balance
+      kf.rotate(BoneName.SPINE_LOWER, -0.2, -0.3, 0);
+      kf.rotate(BoneName.SPINE_UPPER, -0.15, -0.2, 0);
+
+      // Support leg positioning
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0); // Slight pivot
+
       kf.position(BoneName.FOOT_R, 0, 1.5, 0.3);
+
+      // Guard hands protect during exposed position
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -746,16 +771,32 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Axe kick chop - Downward heel strike for 내려차기
+   *
+   * Enhanced with hip rotation and guard hands
    * @korean 내려차기
    */
   axeKickChop(timeOffset: number = 0.1, easing: string = "ease-in"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Kicking leg drives down
       kf.rotate(BoneName.HIP_R, 0.8, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
       kf.rotate(BoneName.FOOT_R, -0.3, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0.1, 0, 0);
+
+      // Hip rotation for power (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.1, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.3, 0);
+
+      // Support leg maintains pivot
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0);
+
       kf.position(BoneName.FOOT_R, 0, 0.5, 0.4);
+
+      // Guard hands remain protective
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -780,7 +821,7 @@ export class MartialArtsAnimationBuilder {
    */
   backKickSpin(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Body rotation
+      // Body rotation - 180° for back kick
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -1.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
@@ -793,16 +834,17 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.8, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
 
-      // Support leg stability
-      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
-      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
+      // Support leg - PROPER PIVOT for 180° rotation (축발 회전)
+      // Ball of foot pivots to allow hip rotation
+      kf.rotate(BoneName.HIP_L, 0, -0.4, 0); // Standing hip follows rotation
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0); // Deeper bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, -1.57, 0); // 90° pivot on ball
 
-      // Arms balance during spin
-      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, 0.2);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
-      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.6, -0.2);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+      // Arms balance during spin - elbows tucked
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -932,6 +974,8 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Push kick chamber - Ball of foot position (밀어차기준비)
+   *
+   * Enhanced with hip rotation and guard hand protection
    * @korean 밀어차기준비
    */
   pushKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -939,8 +983,20 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_R, 1.2, 0, 0);
       kf.rotate(BoneName.KNEE_R, -1.8, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.3, 0, 0);
+
+      // Support leg with slight pivot
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.PELVIS, -0.1, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.4, 0); // Support foot pivot
+
+      // Hip rotation preparation
+      kf.rotate(BoneName.PELVIS, -0.1, -0.3, 0);
+
+      // Guard hands protect during chamber
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -948,6 +1004,8 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Push kick thrust - Foot pushes opponent back (밀어차기)
+   *
+   * Enhanced with hip rotation for power and guard hand protection
    * @korean 밀어차기
    */
   pushKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -955,10 +1013,22 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_R, 1.0, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.5, 0, 0);
+
+      // Support leg with deeper pivot
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
       kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.8, 0); // Support foot pivot for power
+
+      // Hip rotation drives the push (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.1, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, -0.3, 0);
       kf.position(BoneName.FOOT_R, 0, 0, 0.5);
+
+      // Guard hands protect during thrust
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -966,6 +1036,8 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Spinning heel kick - 360° with heel strike (뒤돌려차기)
+   *
+   * Full 360° spin requires complete support foot pivot
    * @korean 뒤돌려차기
    */
   spinningHeelKick(
@@ -973,13 +1045,27 @@ export class MartialArtsAnimationBuilder {
     easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Full body rotation for 360° spin
       kf.rotate(BoneName.PELVIS, 0, -4.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -4.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -4.0, 0.15);
+
+      // Kicking leg - heel strike position
       kf.rotate(BoneName.HIP_R, 0.8, 0, 1.2);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.3, 0, 0.2);
       kf.position(BoneName.FOOT_R, 0.6, 0.5, 0);
+
+      // Support leg - CRITICAL PIVOT for 360° spin (축발 회전)
+      kf.rotate(BoneName.HIP_L, 0, -0.5, 0); // Standing hip rotates
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0); // Deep bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, -2.1, 0); // 120° pivot (continuous spin)
+
+      // Arms tucked for spin speed
+      kf.rotate(BoneName.SHOULDER_L, -0.7, 0.4, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.7, -0.4, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -1556,18 +1642,34 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Knee strike from clinch (무릎차기)
+   *
+   * Enhanced with hip rotation and proper clinch mechanics
    * @korean 무릎차기
    */
   kneeStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_L, 0.2, 0, -0.8);
-      kf.rotate(BoneName.SHOULDER_R, 0.2, 0, 0.8);
+      // Clinch grip - hands pulling opponent in
+      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.3, -0.8);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.8);
+      kf.rotate(BoneName.SHOULDER_R, 0.2, -0.3, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.8);
+
+      // Knee drive - maximum hip rotation for power
       kf.rotate(BoneName.HIP_R, 1.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.5, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.2, 0, 0);
-      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+
+      // Hip rotation drives the knee (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.2, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.3, 0);
+
+      // Support leg stable
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0); // Slight pivot
+
       kf.position(BoneName.KNEE_R, 0, 0.4, 0.5);
+
       // Grab hands for clinch knee strike
       this.applyHandPose(kf, HAND_POSES.GRAB, "both");
     });

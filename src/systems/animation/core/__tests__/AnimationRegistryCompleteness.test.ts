@@ -194,7 +194,7 @@ describe("AnimationRegistry - Structure Validation", () => {
       if (emptyAnimations.length > 0) {
         console.warn(
           `Found ${emptyAnimations.length} animations with 0 keyframes:`,
-          emptyAnimations.slice(0, 5)
+          emptyAnimations.slice(0, 5),
         );
       }
 
@@ -220,7 +220,7 @@ describe("AnimationRegistry - Structure Validation", () => {
       console.log(
         `Animations starting at time 0: ${startingAtZero}/${total} (${(
           ratio * 100
-        ).toFixed(1)}%)`
+        ).toFixed(1)}%)`,
       );
 
       // At least the key animations should exist
@@ -231,7 +231,7 @@ describe("AnimationRegistry - Structure Validation", () => {
       for (const [, anim] of ALL_ANIMATIONS) {
         for (let i = 1; i < anim.keyframes.length; i++) {
           expect(anim.keyframes[i].time).toBeGreaterThanOrEqual(
-            anim.keyframes[i - 1].time
+            anim.keyframes[i - 1].time,
           );
         }
       }
@@ -427,7 +427,7 @@ describe("AnimationRegistry - Stance Idle Animations", () => {
 
       // Check that spine_upper changes slightly across keyframes (breathing)
       const firstSpine = anim.keyframes[0].boneRotations.get(
-        BoneName.SPINE_UPPER
+        BoneName.SPINE_UPPER,
       );
       let hasBreathingMovement = false;
 
@@ -519,33 +519,57 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
       animationSignatures.get(signature)?.push(name);
     }
 
-    // Report any potential duplicates (same signature)
-    const potentialDuplicates: string[][] = [];
-    for (const [, names] of animationSignatures) {
+    // Detect TRUE duplicates: animations with identical bone rotations in first keyframe
+    // This uses detailed bone rotation comparison, not just metadata
+    const trueDuplicates: string[][] = [];
+    const detailedSignatures = new Map<string, string[]>();
+
+    for (const [name, anim] of ALL_ANIMATIONS) {
+      if (anim.keyframes.length === 0) continue;
+
+      // Create detailed signature from actual bone rotations
+      const firstKf = anim.keyframes[0];
+      const boneData: string[] = [];
+      for (const [bone, rot] of firstKf.boneRotations) {
+        boneData.push(
+          `${bone}:${rot.x.toFixed(2)},${rot.y.toFixed(2)},${rot.z.toFixed(2)}`,
+        );
+      }
+      const detailedSig = `d:${anim.duration.toFixed(3)}|${boneData.sort().join("|")}`;
+
+      if (!detailedSignatures.has(detailedSig)) {
+        detailedSignatures.set(detailedSig, []);
+      }
+      detailedSignatures.get(detailedSig)?.push(name);
+    }
+
+    // Find TRUE duplicates (identical bone rotations)
+    for (const [, names] of detailedSignatures) {
       if (names.length > 1) {
-        // Only flag as potential duplicate if they have same duration AND keyframe count
-        // AND the animations are not expected to be similar (like stance variants)
-        const nonStanceNames = names.filter(
+        // Exclude expected duplicates (left/right variants, stance variants)
+        const filtered = names.filter(
           (n) =>
             !n.startsWith("stance_") &&
-            !n.includes("_left") &&
-            !n.includes("_right")
+            !n.endsWith("_left") &&
+            !n.endsWith("_right") &&
+            !n.includes("_legacy"),
         );
-        if (nonStanceNames.length > 1) {
-          potentialDuplicates.push(nonStanceNames);
+        if (filtered.length > 1) {
+          trueDuplicates.push(filtered);
         }
       }
     }
 
-    // Log potential duplicates for review but don't fail
-    if (potentialDuplicates.length > 0) {
-      console.log(
-        "Potential duplicate animations (same signature):",
-        potentialDuplicates.slice(0, 5)
+    // FAIL if true duplicates found (animations with identical bone data)
+    if (trueDuplicates.length > 0) {
+      console.error(
+        "TRUE DUPLICATE ANIMATIONS (identical bone rotations):",
+        trueDuplicates,
       );
     }
+    expect(trueDuplicates.length).toBe(0);
 
-    // The main validation: no exact name duplicates
+    // Also validate: no exact name duplicates
     const allNames = Array.from(ALL_ANIMATIONS.keys());
     expect(new Set(allNames).size).toBe(allNames.length);
   });
@@ -566,8 +590,8 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
         for (const [boneName, rot] of firstKf.boneRotations) {
           boneSignature.push(
             `${boneName}:${rot.x.toFixed(3)},${rot.y.toFixed(
-              3
-            )},${rot.z.toFixed(3)}`
+              3,
+            )},${rot.z.toFixed(3)}`,
           );
         }
 
@@ -635,7 +659,7 @@ describe("AnimationRegistry - Coverage Statistics", () => {
   it("should report animation counts", () => {
     console.log(`Total animations in ALL_ANIMATIONS: ${ALL_ANIMATIONS.size}`);
     console.log(
-      `Total animations in ANIMATION_REGISTRY: ${ANIMATION_REGISTRY.size}`
+      `Total animations in ANIMATION_REGISTRY: ${ANIMATION_REGISTRY.size}`,
     );
 
     // Count by category
@@ -718,14 +742,14 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
     if (techniquesWithoutAnimation.length > 0) {
       console.warn(
         `Techniques without animationType: ${techniquesWithoutAnimation.length}`,
-        techniquesWithoutAnimation.slice(0, 10)
+        techniquesWithoutAnimation.slice(0, 10),
       );
     }
 
     if (missingAnimations.length > 0) {
       console.error(
         "Techniques with unmapped animations:",
-        missingAnimations.slice(0, 20)
+        missingAnimations.slice(0, 20),
       );
     }
 
@@ -744,12 +768,12 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
       if (animation) {
         if (animation.keyframes.length === 0) {
           incompleteAnimations.push(
-            `${technique.id} - ${technique.animationType} (no keyframes)`
+            `${technique.id} - ${technique.animationType} (no keyframes)`,
           );
         }
         if (animation.duration <= 0) {
           incompleteAnimations.push(
-            `${technique.id} - ${technique.animationType} (invalid duration)`
+            `${technique.id} - ${technique.animationType} (invalid duration)`,
           );
         }
       }
@@ -758,7 +782,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
     if (incompleteAnimations.length > 0) {
       console.error(
         "Techniques with incomplete animations:",
-        incompleteAnimations
+        incompleteAnimations,
       );
     }
 
@@ -822,7 +846,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
     console.log(`  Without animationType: ${withoutAnimation}`);
     console.log(`  Unique animation types used: ${animationTypes.size}`);
     console.log(
-      `  Coverage: ${((withAnimation / techniques.length) * 100).toFixed(1)}%`
+      `  Coverage: ${((withAnimation / techniques.length) * 100).toFixed(1)}%`,
     );
 
     // At least 90% of techniques should have animation types
@@ -870,7 +894,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
     if (lowVarietyStances.length > 0) {
       console.warn(
         "\n⚠️ WARNING: Stances with low animation variety (<3 types):",
-        lowVarietyStances
+        lowVarietyStances,
       );
     }
 
@@ -888,9 +912,8 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
 describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
   it("should have animation for every technique in TECHNIQUE_ANIMATIONS map", async () => {
     // Import the technique animation mapping
-    const { TECHNIQUE_ANIMATIONS } = await import(
-      "../TechniqueAnimationMapping"
-    );
+    const { TECHNIQUE_ANIMATIONS } =
+      await import("../TechniqueAnimationMapping");
     const missingAnimations: string[] = [];
 
     for (const [techniqueId, config] of TECHNIQUE_ANIMATIONS) {
@@ -932,7 +955,7 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
     // Report missing animations
     if (missingAnimations.length > 0) {
       console.warn(
-        `\n⚠️ ${missingAnimations.length} technique animations missing from ANIMATION_REGISTRY:`
+        `\n⚠️ ${missingAnimations.length} technique animations missing from ANIMATION_REGISTRY:`,
       );
       for (const missing of missingAnimations.slice(0, 10)) {
         console.warn(`  - ${missing}`);
@@ -949,7 +972,7 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
     const coverage = directMappings / totalMappings;
 
     console.log(
-      `\nTechnique Animation Direct Coverage: ${(coverage * 100).toFixed(1)}%`
+      `\nTechnique Animation Direct Coverage: ${(coverage * 100).toFixed(1)}%`,
     );
     console.log(`  Direct mappings: ${directMappings}/${totalMappings}`);
     console.log(`  Using fallbacks: ${missingAnimations.length}`);
@@ -1022,24 +1045,24 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
     }
 
     console.log(
-      `\nKick animations with guard: ${kicksWithGuard.length}/${kickAnimationNames.length}`
+      `\nKick animations with guard: ${kicksWithGuard.length}/${kickAnimationNames.length}`,
     );
     if (kicksWithoutGuard.length > 0) {
       console.warn(
-        `⚠️ Kicks without guard positions: ${kicksWithoutGuard.join(", ")}`
+        `⚠️ Kicks without guard positions: ${kicksWithoutGuard.join(", ")}`,
       );
     }
 
     // At least 80% of kicks should have guard positions
     expect(kicksWithGuard.length / kickAnimationNames.length).toBeGreaterThan(
-      0.8
+      0.8,
     );
   });
 
   it("AnimationType enum values should match ANIMATION_REGISTRY keys", () => {
     // Get all values from AnimationType enum
     const enumValues = Object.values(AnimationType).filter(
-      (v) => typeof v === "string"
+      (v) => typeof v === "string",
     );
 
     const registeredTypes = new Set(ANIMATION_REGISTRY.keys());
@@ -1056,7 +1079,7 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
     const coverage =
       (enumValues.length - missingFromRegistry.length) / enumValues.length;
     console.log(
-      `\nAnimationType enum coverage: ${(coverage * 100).toFixed(1)}%`
+      `\nAnimationType enum coverage: ${(coverage * 100).toFixed(1)}%`,
     );
     console.log(`  Registered: ${registeredTypes.size}/${enumValues.length}`);
     console.log(`  Missing: ${missingFromRegistry.length}`);
@@ -1071,14 +1094,14 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
 
       if (categories.basic.length > 0) {
         console.log(
-          `  Basic types: ${categories.basic.slice(0, 5).join(", ")}`
+          `  Basic types: ${categories.basic.slice(0, 5).join(", ")}`,
         );
       }
       if (categories.specialized.length > 0) {
         console.log(
           `  Specialized types (first 10): ${categories.specialized
             .slice(0, 10)
-            .join(", ")}`
+            .join(", ")}`,
         );
       }
     }
@@ -1086,5 +1109,274 @@ describe("AnimationRegistry - TechniqueAnimationMapping Validation", () => {
     // We expect most basic types to be covered
     // At least 30% overall (many specialized types may use fallbacks)
     expect(coverage).toBeGreaterThan(0.25);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BIOMECHANICAL VALIDATION TESTS (생체역학 검증)
+// ═══════════════════════════════════════════════════════════════════════════
+
+describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
+  describe("Kick Animations - Support Foot Pivot (축발 회전)", () => {
+    it("grounded roundhouse kicks should have proper support foot pivot (≥1.0 rad)", () => {
+      // Only test grounded kicks - aerial kicks (tornado, jumping) have different mechanics
+      const roundhouseAnimations = [
+        "roundhouse_kick",
+        "geon_roundhouse",
+        "spinning_heel_kick",
+        "spinning_back_kick",
+      ];
+
+      const insufficientPivot: string[] = [];
+      const MINIMUM_PIVOT = 1.0; // ~57° minimum for proper hip opening
+
+      for (const animName of roundhouseAnimations) {
+        const anim = ALL_ANIMATIONS.get(animName);
+        if (!anim) continue;
+
+        // Check for proper support foot pivot during extension (middle keyframes)
+        let maxPivot = 0;
+        for (const kf of anim.keyframes) {
+          const footL = kf.boneRotations.get(BoneName.FOOT_L);
+          if (footL) {
+            // Y-rotation is the pivot rotation
+            maxPivot = Math.max(maxPivot, Math.abs(footL.y));
+          }
+        }
+
+        if (maxPivot < MINIMUM_PIVOT) {
+          insufficientPivot.push(`${animName} (pivot: ${maxPivot.toFixed(2)})`);
+        }
+      }
+
+      if (insufficientPivot.length > 0) {
+        console.error(
+          "❌ Kicks with insufficient support foot pivot:",
+          insufficientPivot,
+        );
+      }
+
+      // All roundhouse-type kicks must have proper pivot
+      expect(insufficientPivot.length).toBe(0);
+    });
+
+    it("all kicks should have hip rotation during extension (≥0.5 rad pelvis Y)", () => {
+      const kickAnimations = Array.from(ALL_ANIMATIONS.entries())
+        .filter(([name]) => name.includes("kick") || name.includes("chagi"))
+        .map(([name]) => name);
+
+      const insufficientHipRotation: string[] = [];
+      const MINIMUM_HIP_ROTATION = 0.5; // ~29° minimum
+
+      for (const animName of kickAnimations) {
+        const anim = ALL_ANIMATIONS.get(animName);
+        if (!anim) continue;
+
+        let maxHipRotation = 0;
+        for (const kf of anim.keyframes) {
+          const pelvis = kf.boneRotations.get(BoneName.PELVIS);
+          if (pelvis) {
+            maxHipRotation = Math.max(maxHipRotation, Math.abs(pelvis.y));
+          }
+        }
+
+        if (maxHipRotation < MINIMUM_HIP_ROTATION) {
+          insufficientHipRotation.push(
+            `${animName} (hip rot: ${maxHipRotation.toFixed(2)})`,
+          );
+        }
+      }
+
+      if (insufficientHipRotation.length > 0) {
+        console.warn(
+          "⚠️ Kicks with low hip rotation:",
+          insufficientHipRotation.slice(0, 5),
+        );
+      }
+
+      // At least 80% of kicks should have proper hip rotation
+      const passRate =
+        1 - insufficientHipRotation.length / kickAnimations.length;
+      expect(passRate).toBeGreaterThan(0.8);
+    });
+  });
+
+  describe("Guard Poses - Body Protection (신체 보호)", () => {
+    it("stance guards should have elbows tucked to protect ribs (Z < -1.5 rad)", () => {
+      const stanceAnimations = Array.from(ALL_ANIMATIONS.entries())
+        .filter(([name]) => name.startsWith("stance_"))
+        .map(([name, anim]) => ({ name, anim }));
+
+      const exposedRibGuards: string[] = [];
+      const MINIMUM_ELBOW_TUCK = -1.5; // Elbow bent inward to protect ribs
+
+      for (const { name, anim } of stanceAnimations) {
+        if (anim.keyframes.length === 0) continue;
+
+        // Check first keyframe (the guard pose)
+        const firstKf = anim.keyframes[0];
+        const elbowL = firstKf.boneRotations.get(BoneName.ELBOW_L);
+        const elbowR = firstKf.boneRotations.get(BoneName.ELBOW_R);
+
+        // Both elbows should be tucked (Z-rotation more negative than -1.5)
+        const leftTucked = elbowL && elbowL.z <= MINIMUM_ELBOW_TUCK;
+        const rightTucked = elbowR && elbowR.z >= -MINIMUM_ELBOW_TUCK; // Right side mirror
+
+        if (!leftTucked || !rightTucked) {
+          const details = `L:${elbowL?.z.toFixed(2) ?? "?"}, R:${elbowR?.z.toFixed(2) ?? "?"}`;
+          exposedRibGuards.push(`${name} (${details})`);
+        }
+      }
+
+      if (exposedRibGuards.length > 0) {
+        console.warn("⚠️ Stance guards with exposed ribs:", exposedRibGuards);
+      }
+
+      // At least 75% should have proper elbow tuck
+      const passRate = 1 - exposedRibGuards.length / stanceAnimations.length;
+      expect(passRate).toBeGreaterThan(0.75);
+    });
+
+    it("attack animations should maintain guard hand protection", () => {
+      const attackAnimations = Array.from(ALL_ANIMATIONS.entries())
+        .filter(
+          ([name]) =>
+            name.includes("punch") ||
+            name.includes("jab") ||
+            name.includes("cross") ||
+            name.includes("strike"),
+        )
+        .map(([name, anim]) => ({ name, anim }));
+
+      const noGuardDuringAttack: string[] = [];
+
+      for (const { name, anim } of attackAnimations) {
+        if (anim.keyframes.length < 2) continue;
+
+        // Check middle keyframes for guard hand (non-striking hand should be up)
+        let hasGuardHand = false;
+        for (const kf of anim.keyframes.slice(1, -1)) {
+          const shoulderL = kf.boneRotations.get(BoneName.SHOULDER_L);
+          const shoulderR = kf.boneRotations.get(BoneName.SHOULDER_R);
+
+          // At least one shoulder should be in guard position (x < -0.3)
+          if (
+            (shoulderL && shoulderL.x < -0.3) ||
+            (shoulderR && shoulderR.x < -0.3)
+          ) {
+            hasGuardHand = true;
+            break;
+          }
+        }
+
+        if (!hasGuardHand) {
+          noGuardDuringAttack.push(name);
+        }
+      }
+
+      if (noGuardDuringAttack.length > 0) {
+        console.warn(
+          "⚠️ Attacks without guard hand protection:",
+          noGuardDuringAttack.slice(0, 5),
+        );
+      }
+
+      // At least 70% should maintain guard hand
+      const passRate = 1 - noGuardDuringAttack.length / attackAnimations.length;
+      expect(passRate).toBeGreaterThan(0.7);
+    });
+  });
+
+  describe("Technique Coverage - Vital Points (급소 범위)", () => {
+    it("each trigram stance should have techniques for major body regions", () => {
+      const techniques = getAllTechniques();
+      const stanceBodyCoverage = new Map<string, Set<string>>();
+
+      // Initialize coverage map for each stance
+      for (const stance of Object.values(TrigramStance)) {
+        stanceBodyCoverage.set(stance, new Set());
+      }
+
+      // Analyze technique descriptions for body part targeting
+      const bodyRegionPatterns: Record<string, RegExp> = {
+        head: /head|temple|jaw|skull|crown|face|눈|관자|정수리|턱/i,
+        neck: /throat|neck|carotid|인후|경동맥|목/i,
+        torso: /chest|ribs|solar plexus|liver|kidney|명치|늑골|간|신장/i,
+        arm: /arm|elbow|wrist|bicep|팔|이두|손목/i,
+        leg: /leg|knee|thigh|ankle|다리|무릎|발목/i,
+        groin: /groin|사타구니|낭심/i,
+      };
+
+      for (const tech of techniques) {
+        const stance = tech.stance;
+        const coverage = stanceBodyCoverage.get(stance);
+        if (!coverage) continue;
+
+        // Check description for body region targeting
+        const desc =
+          (tech.description?.english ?? "") +
+          (tech.description?.korean ?? "") +
+          (tech.englishName ?? "");
+
+        for (const [region, pattern] of Object.entries(bodyRegionPatterns)) {
+          if (pattern.test(desc)) {
+            coverage.add(region);
+          }
+        }
+
+        // Infer from technique type
+        if (tech.type === "KICK") coverage.add("leg");
+        if (tech.type === "PUNCH" || tech.type === "STRIKE")
+          coverage.add("torso");
+      }
+
+      // Report coverage per stance
+      console.log("\nBody region coverage by stance:");
+      const lowCoverageStances: string[] = [];
+      const MINIMUM_REGIONS = 3;
+
+      for (const [stance, regions] of stanceBodyCoverage) {
+        console.log(`  ${stance}: ${Array.from(regions).join(", ")}`);
+        if (regions.size < MINIMUM_REGIONS) {
+          lowCoverageStances.push(`${stance} (${regions.size} regions)`);
+        }
+      }
+
+      if (lowCoverageStances.length > 0) {
+        console.warn("⚠️ Stances with low body coverage:", lowCoverageStances);
+      }
+
+      // At least 6 of 8 stances should cover 3+ body regions
+      expect(lowCoverageStances.length).toBeLessThanOrEqual(2);
+    });
+
+    it("all techniques should have valid animationType in registry", () => {
+      const techniques = getAllTechniques();
+      const missingAnimations: string[] = [];
+
+      for (const tech of techniques) {
+        if (!tech.animationType) {
+          missingAnimations.push(`${tech.id} (no animationType)`);
+          continue;
+        }
+
+        const anim = ANIMATION_REGISTRY.get(tech.animationType);
+        if (!anim) {
+          missingAnimations.push(
+            `${tech.id} (${tech.animationType} not in registry)`,
+          );
+        }
+      }
+
+      if (missingAnimations.length > 0) {
+        console.error(
+          "❌ Techniques with missing animations:",
+          missingAnimations.slice(0, 10),
+        );
+      }
+
+      // All techniques must have valid animations - STRICT
+      expect(missingAnimations.length).toBe(0);
+    });
   });
 });
