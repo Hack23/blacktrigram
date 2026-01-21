@@ -39,7 +39,7 @@ export const THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("throw", "던지기")
     .asAttack(0.6)
     .throwEntry(0.18) // 진입 - Entry and grab
-    .throwExecute(0.22) // 던지기 - Execute throw
+    .hipThrow(0.22) // 던지기 - Execute hip throw
     .recover(0.2) // 복귀
     .build();
 
@@ -109,10 +109,7 @@ export const COUNTER_ATTACK_ANIMATION: SkeletalAnimation =
 export const BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block", "막기")
     .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    ) // 막기 - Block
+    .parry(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend) // 막기 - Block
     .recover(
       TECHNIQUE_TIMING.FAST.peak +
         TECHNIQUE_TIMING.FAST.retract +
@@ -177,8 +174,8 @@ export const SMALL_CIRCLE_LOCK_ANIMATION: SkeletalAnimation =
 export const FINGER_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("finger_lock", "손가락꺾기")
     .asAttack(0.5)
-    .throwEntry(0.1) // 잡기 - Grab fingers
-    .wristTwist(0.15) // 꺾기 - Hyper-extend
+    .wristGrab(0.1) // 잡기 - Grab fingers
+    .fingerLockTwist(0.15) // 꺺기 - Hyper-extend fingers
     .recover(0.25) // 복귀
     .build();
 
@@ -193,7 +190,7 @@ export const ELBOW_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_lock", "팔꿈치꺾기")
     .asAttack(0.65)
     .throwEntry(0.15) // 진입
-    .jointLock(0.3) // 꺾기 - Apply pressure
+    .elbowLockApply(0.3) // 꺺기 - Apply elbow hyperextension
     .recover(0.2) // 복귀
     .build();
 
@@ -208,7 +205,7 @@ export const SHOULDER_MANIPULATION_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("shoulder_manipulation", "어깨비틀기")
     .asAttack(0.7)
     .throwEntry(0.2) // 진입
-    .throwExecute(0.3) // 비틀기 - Torque
+    .shoulderLockTwist(0.3) // 비틀기 - Shoulder manipulation
     .recover(0.2) // 복귀
     .build();
 
@@ -285,9 +282,9 @@ export const MOUNTAIN_LOCK_ANIMATION: SkeletalAnimation =
 export const EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("earth_embrace", "대지포옹")
     .asAttack(0.9)
-    .throwEntry(0.25)
-    .throwExecute(0.35) // Take down
-    .jointLock(0.3) // Control
+    .takedownShoot(0.25) // Shoot for takedown
+    .takedownDump(0.35) // Take down
+    .groundMount(0.3) // Control on ground
     .build();
 
 /**
@@ -299,8 +296,8 @@ export const EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
 export const CAROTID_CHOKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("carotid_choke", "경동맥조르기")
     .asAttack(1.0)
-    .throwEntry(0.2)
-    .jointLock(0.6) // Squeeze
+    .throwEntry(0.2) // Get behind
+    .chokeGrip(0.6) // Apply carotid squeeze
     .recover(0.2)
     .build();
 
@@ -313,8 +310,8 @@ export const CAROTID_CHOKE_ANIMATION: SkeletalAnimation =
 export const REAR_NAKED_CHOKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("rear_naked_choke", "뒤조르기")
     .asAttack(1.2)
-    .throwEntry(0.3) // Get back
-    .jointLock(0.7) // Choke
+    .throwEntry(0.3) // Get back control
+    .chokeGrip(0.7) // Apply rear naked choke
     .recover(0.2)
     .build();
 
@@ -327,8 +324,8 @@ export const REAR_NAKED_CHOKE_ANIMATION: SkeletalAnimation =
 export const REDIRECT_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("redirect_throw", "유수던지기")
     .asAttack(0.7)
-    .parry(0.2) // Flow
-    .throwExecute(0.3) // Redirect
+    .parry(0.2) // Flow with attack
+    .hipThrow(0.3) // Redirect momentum into throw
     .recover(0.2)
     .build();
 
@@ -400,7 +397,7 @@ export const HIP_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hip_throw", "허리치기")
     .asAttack(0.65)
     .throwEntry(0.2) // Entry and grab
-    .throwExecute(0.22) // Hip rotation throw
+    .hipThrow(0.22) // Hip rotation throw
     .recover(0.23) // Recovery
     .build();
 
@@ -440,7 +437,7 @@ export const SHOULDER_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("shoulder_lock", "어깨꺾기")
     .asAttack(0.65)
     .wristGrab(0.15) // Grab arm
-    .jointLock(0.25) // Apply shoulder rotation
+    .shoulderLockTwist(0.25) // Apply shoulder rotation
     .recover(0.25) // Release
     .build();
 
@@ -543,10 +540,7 @@ export const HIGH_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block_high", "상단막기")
     .asDefense(TECHNIQUE_TIMING.FAST.total)
     .withHighGuard() // High guard position
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    ) // Block
+    .blockHigh(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend) // High block technique
     .recover(
       TECHNIQUE_TIMING.FAST.peak +
         TECHNIQUE_TIMING.FAST.retract +
@@ -568,10 +562,7 @@ export const HIGH_BLOCK_ANIMATION: SkeletalAnimation =
 export const LOW_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block_low", "하단막기")
     .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    ) // Low block
+    .blockLow(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend) // Low block technique
     .recover(
       TECHNIQUE_TIMING.FAST.peak +
         TECHNIQUE_TIMING.FAST.retract +
@@ -594,8 +585,8 @@ export const LOW_BLOCK_ANIMATION: SkeletalAnimation =
 export const TAKEDOWN_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("takedown", "테이크다운")
     .asAttack(0.65)
-    .throwEntry(0.2) // Shoot for legs
-    .slamDown(0.2) // Drive through
+    .takedownShoot(0.2) // Shoot for legs
+    .takedownDump(0.2) // Drive through and dump
     .recover(0.25) // Top position
     .build();
 

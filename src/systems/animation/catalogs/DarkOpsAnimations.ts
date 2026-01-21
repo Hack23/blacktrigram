@@ -52,8 +52,7 @@ export const DARKOPS_JUGULAR_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_jugular_strike", "경정맥타격")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Knife-hand to throat
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
+    .jugularStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Knife-hand to jugular
     .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
@@ -75,8 +74,7 @@ export const DARKOPS_NERVE_PARALYSIS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_nerve_paralysis", "신경마비")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Precision fingertip strike
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
+    .nerveStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Precision nerve cluster strike
     .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
@@ -92,7 +90,7 @@ export const DARKOPS_BRACHIAL_PLEXUS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_brachial_plexus", "상완신경총")
     .asAttack(0.4)
     .elbowChamber(0.1)
-    .elbowStrike(0.12) // Strike to neck/shoulder junction
+    .brachialElbow(0.12) // Elbow to brachial nerve cluster
     .recover(0.18)
     .build();
 
@@ -108,7 +106,7 @@ export const DARKOPS_FEMORAL_NERVE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_femoral_nerve", "대퇴신경타격")
     .asAttack(0.45)
     .withClinch()
-    .kneeStrike(0.15) // Knee to inner thigh
+    .femoralKnee(0.15) // Knee to femoral nerve in thigh
     .recover(0.3)
     .build();
 
@@ -144,7 +142,7 @@ export const DARKOPS_LIVER_DISRUPTION_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_liver_disruption", "간장파괴")
     .asAttack(0.45)
     .uppercutCrouch(0.1) // Drop level
-    .hookPunch(0.15) // Hook to liver
+    .liverShot(0.15) // Devastating hook to liver
     .recover(0.2)
     .build();
 
@@ -160,8 +158,7 @@ export const DARKOPS_KIDNEY_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_kidney_strike", "신장타격")
     .asAttack(0.48)
     .clinchGrab(0.1)
-    .withClinch()
-    .kneeStrike(0.15) // Knee to lower back
+    .kidneyStrike(0.15) // Hook to kidney region
     .recover(0.23)
     .build();
 
@@ -196,7 +193,7 @@ export const DARKOPS_SOLAR_PLEXUS_PARALYZE_ANIMATION: SkeletalAnimation =
   )
     .asAttack(0.4)
     .punchWindup(0.08)
-    .palmStrike(0.12) // Palm heel to solar plexus
+    .solarPlexusStrike(0.12) // Deep penetrating strike to solar plexus
     .recover(0.2)
     .build();
 
@@ -216,13 +213,8 @@ export const DARKOPS_THROAT_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_throat_strike", "인후타격")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // Spear hand to throat
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .throatStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Spear hand to trachea
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -258,13 +250,8 @@ export const DARKOPS_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_temple_strike", "관자놀이타격")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .elbowStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // Elbow to temple
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .templeElbow(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Horizontal elbow to temple
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -279,7 +266,7 @@ export const DARKOPS_JAW_DISLOCATION_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_jaw_dislocation", "턱탈구")
     .asAttack(0.42)
     .uppercutCrouch(0.1)
-    .elbowUppercut(0.12) // Rising elbow to jaw
+    .jawStrike(0.12) // Rising palm to jaw
     .recover(0.2)
     .build();
 
@@ -295,13 +282,8 @@ export const DARKOPS_EAR_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_ear_strike", "이타격")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .hookWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .palmStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // Cupped palm to ear
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .palmStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Cupped palm to ear
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -316,13 +298,8 @@ export const DARKOPS_EYE_GOUGE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_eye_gouge", "안구압박")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // Two-finger strike
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .eyeGouge(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Two-finger strike to eyes
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -336,7 +313,7 @@ export const DARKOPS_EYE_GOUGE_ANIMATION: SkeletalAnimation =
 export const DARKOPS_OCCIPITAL_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_occipital_strike", "후두골타격")
     .asAttack(0.4)
-    .overhandPunch(0.15) // Hammer fist to back of head
+    .occipitalStrike(0.15) // Palm heel to base of skull
     .recover(0.25)
     .build();
 
@@ -356,7 +333,7 @@ export const DARKOPS_SPINAL_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_spinal_strike", "척추타격")
     .asAttack(0.45)
     .elbowChamber(0.1)
-    .elbowStrike(0.12) // Elbow to spine
+    .spineStrike(0.12) // Downward elbow to spine
     .recover(0.23)
     .build();
 
