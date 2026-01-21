@@ -550,9 +550,9 @@ The audit tool will:
 
 ## Related Documentation | 관련 문서
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - Overall architecture
-- [CONTROLS.md](./CONTROLS.md) - Keyboard and touch controls
-- [API Reference](./docs/api/utils/EventManager.md) - Generated TypeDoc
+- [ARCHITECTURE.md](../ARCHITECTURE.md) - Overall architecture
+- [CONTROLS.md](../CONTROLS.md) - Keyboard and touch controls
+- [API Reference](./api/modules/utils.html) - Generated TypeDoc
 
 ## Support | 지원
 

@@ -302,6 +302,8 @@ useEffect(() => {
 - [x] No event listener memory leaks detected in major components
 - [x] Performance improvement: 5-10% reduction in event handler overhead
 - [x] Korean/English documentation for event management patterns
+- [ ] Input system refactored to use centralized EventManager (out of scope for this optimization pass)  
+      입력 시스템을 중앙 EventManager로 리팩터링 (이번 최적화 작업의 범위 밖)
 
 ### Additional Achievements | 추가 달성사항
 
