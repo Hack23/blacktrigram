@@ -20,7 +20,16 @@ export type { HitEffects3DInstancedProps } from "./HitEffects3DInstanced";
 export { EffectsComposer } from "./EffectsComposer";
 export type { EffectsComposerProps } from "./EffectsComposer";
 
-// Particle pooling system
+/**
+ * Particle pooling system
+ * 
+ * Note: This utility is provided for custom/advanced particle implementations
+ * that want to manage GPU resources manually. The optimized GPU components
+ * exported from this module (TrigramParticles3DGPU, HitEffects3DInstanced)
+ * implement their own internal resource management and do NOT depend on
+ * ParticlePool. Use this for building custom particle systems or when you
+ * need fine-grained control over particle lifecycle.
+ */
 export { ParticlePool } from "./ParticlePool";
 export type { Particle, ParticlePoolConfig } from "./ParticlePool";
 

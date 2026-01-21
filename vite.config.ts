@@ -50,21 +50,6 @@ function injectVersionPlugin(): Plugin {
   };
 }
 
-// Custom plugin to load GLSL shader files as strings
-function glslPlugin(): Plugin {
-  return {
-    name: "vite-plugin-glsl",
-    transform(code, id) {
-      if (id.endsWith(".glsl") || id.endsWith(".vert") || id.endsWith(".frag")) {
-        return {
-          code: `export default ${JSON.stringify(code)}`,
-          map: null,
-        };
-      }
-    },
-  };
-}
-
 export default defineConfig(({ command, mode: _mode }) => ({
   plugins: [
     // Enable React features

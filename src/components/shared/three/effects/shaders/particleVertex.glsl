@@ -8,6 +8,7 @@ uniform float time;
 uniform float speed;
 uniform float gravity;
 uniform float lifetime;
+uniform float sizeScale; // Configurable perspective scale factor
 
 attribute float startTime;
 attribute vec3 velocity;
@@ -30,7 +31,7 @@ void main() {
   
   // Calculate point size with perspective correction
   float distanceScale = 1.0 / -mvPosition.z;
-  gl_PointSize = size * distanceScale * 300.0;
+  gl_PointSize = size * distanceScale * sizeScale;
   
   // Fade out over lifetime
   vAlpha = 1.0 - progress;

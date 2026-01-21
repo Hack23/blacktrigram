@@ -79,6 +79,16 @@ const positionTo3D = (
 
 /**
  * Individual instanced effect component
+ * 
+ * Performance Note: This component uses refs to store animation state
+ * that is updated in useFrame. While React Three Fiber's useFrame runs
+ * outside of React's render phase, we maintain a state snapshot
+ * (effectRefsSnapshot) for rendering to avoid accessing refs during render.
+ * 
+ * The ref mutation pattern here is necessary for 60fps performance because:
+ * - Updating state on every frame would trigger unnecessary re-renders
+ * - Direct ref mutation in useFrame is safe (it runs outside React render)
+ * - The state snapshot ensures render consistency without frame-by-frame re-renders
  */
 const InstancedEffect: React.FC<{
   instance: ActiveEffectInstance;
@@ -246,6 +256,9 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
   }, [effects, arenaBounds]);
 
   // Update progress using refs
+  // Performance Note: Ref mutations in useFrame are safe and necessary for 60fps.
+  // We avoid state updates here to prevent triggering React re-renders every frame.
+  // The effectRefsSnapshot state is updated only when effects change, not every frame.
   useFrame(() => {
     const now = Date.now();
 
@@ -274,6 +287,9 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
   });
 
   // Group instances by effect type for batched rendering
+  // Optimization: This recalculates on activeInstances change.
+  // For very large effect counts (>1000), consider maintaining groups
+  // incrementally in the useEffect that manages effect lifecycle.
   const instancesByType = useMemo(() => {
     const groups = new Map<HitEffectType, ActiveEffectInstance[]>();
     activeInstances.forEach((instance) => {

@@ -21,9 +21,12 @@ import React from "react";
 
 /**
  * Props for EffectsComposer component
+ * 
+ * Note: EffectComposer automatically processes all scene content.
+ * Render this component as a sibling to your scene content, not as a wrapper.
  */
 export interface EffectsComposerProps {
-  /** Enable bloom effect (default: true) */
+  /** Enable/disable bloom effect */
   readonly enableBloom?: boolean;
   /** Bloom intensity (default: 1.5) */
   readonly bloomIntensity?: number;
@@ -33,14 +36,12 @@ export interface EffectsComposerProps {
   readonly luminanceSmoothing?: number;
   /** Bloom kernel size (default: KernelSize.MEDIUM) */
   readonly kernelSize?: KernelSize;
-  /** Children to render */
-  readonly children?: React.ReactNode;
 }
 
 /**
  * EffectsComposer Component
  *
- * Wraps the 3D scene with post-processing effects for enhanced visuals.
+ * Adds post-processing effects to the 3D scene for enhanced visuals.
  * Primarily used for HDR bloom on emissive materials.
  *
  * Performance notes:
@@ -48,15 +49,14 @@ export interface EffectsComposerProps {
  * - Configured for 60fps target
  * - Bloom only affects emissive materials (toneMapped: false)
  *
+ * Note: Render this as a sibling to your scene, not as a wrapper.
+ * EffectComposer automatically processes the entire scene.
+ *
  * @example
  * ```tsx
  * <Canvas>
  *   <Scene />
- *   <EffectsComposer
- *     enableBloom={true}
- *     bloomIntensity={1.5}
- *     luminanceThreshold={0.9}
- *   />
+ *   <EffectsComposer enableBloom bloomIntensity={1.5} />
  * </Canvas>
  * ```
  *
@@ -77,25 +77,21 @@ export const EffectsComposer: React.FC<EffectsComposerProps> = ({
   luminanceThreshold = 0.9,
   luminanceSmoothing = 0.9,
   kernelSize = KernelSize.MEDIUM,
-  children,
 }) => {
   if (!enableBloom) {
-    return <>{children}</>;
+    return null;
   }
 
   return (
-    <>
-      {children}
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={bloomIntensity}
-          luminanceThreshold={luminanceThreshold}
-          luminanceSmoothing={luminanceSmoothing}
-          kernelSize={kernelSize}
-          blendFunction={BlendFunction.ADD}
-        />
-      </EffectComposer>
-    </>
+    <EffectComposer multisampling={0}>
+      <Bloom
+        intensity={bloomIntensity}
+        luminanceThreshold={luminanceThreshold}
+        luminanceSmoothing={luminanceSmoothing}
+        kernelSize={kernelSize}
+        blendFunction={BlendFunction.ADD}
+      />
+    </EffectComposer>
   );
 };
 

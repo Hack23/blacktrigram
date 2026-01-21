@@ -1,21 +1,7 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
-import { defineConfig, Plugin } from "vitest/config";
-
-// Custom plugin to load GLSL shader files as strings
-function glslPlugin(): Plugin {
-  return {
-    name: "vite-plugin-glsl",
-    transform(code, id) {
-      if (id.endsWith(".glsl") || id.endsWith(".vert") || id.endsWith(".frag")) {
-        return {
-          code: `export default ${JSON.stringify(code)}`,
-          map: null,
-        };
-      }
-    },
-  };
-}
+import { defineConfig } from "vitest/config";
+import { glslPlugin } from "./vite-plugins/glsl-plugin";
 
 export default defineConfig({
   plugins: [react(), glslPlugin()],

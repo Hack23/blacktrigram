@@ -325,7 +325,7 @@ npm run build:analyze
 ## Known Limitations
 
 1. **GLSL Support**: Requires Vite plugin for `.glsl` file imports
-2. **Three.js Version**: Tested with Three.js 0.182.0
+2. **Three.js Version**: Tested with Three.js version specified in `package.json` (currently 0.182.0)
 3. **Browser Support**: WebGL 2.0 required for optimal performance
 4. **Mobile**: LOD automatically adjusts for lower-end devices
 

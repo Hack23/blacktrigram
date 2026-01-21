@@ -40,15 +40,17 @@ export interface Particle {
 }
 
 /**
- * Particle pool configuration
+ * Configuration for particle pool
  */
 export interface ParticlePoolConfig {
   /** Maximum pool size */
   readonly maxSize: number;
-  /** Default particle lifetime (seconds) */
+  /** Default particle lifetime in seconds */
   readonly defaultLifetime: number;
   /** Default particle size */
   readonly defaultSize: number;
+  /** Default particle color (hex value) */
+  readonly defaultColor?: number;
 }
 
 /**
@@ -98,23 +100,29 @@ export class ParticlePool {
       startTime: 0,
       lifetime: this.config.defaultLifetime,
       size: this.config.defaultSize,
-      color: new THREE.Color(0xffffff),
+      color: new THREE.Color(this.config.defaultColor ?? 0xffffff),
       alive: false,
     };
   }
 
   /**
    * Acquire a particle from the pool
-   * Returns null if pool is exhausted
+   * 
+   * @param currentTimeSeconds Optional simulation time in seconds.
+   *        If omitted, falls back to performance.now() / 1000.
+   *        Using simulation time allows correct behavior during pause,
+   *        slow-motion, or other time-manipulation scenarios.
+   * @returns Particle from pool or null if exhausted
    */
-  acquire(): Particle | null {
+  acquire(currentTimeSeconds?: number): Particle | null {
     if (this.pool.length === 0) {
       return null;
     }
 
     const particle = this.pool.pop()!;
     particle.alive = true;
-    particle.startTime = performance.now() / 1000;
+    particle.startTime =
+      currentTimeSeconds ?? performance.now() / 1000;
     this.active.add(particle);
     return particle;
   }
@@ -139,26 +147,27 @@ export class ParticlePool {
     particle.startTime = 0;
     particle.lifetime = this.config.defaultLifetime;
     particle.size = this.config.defaultSize;
-    particle.color.setHex(0xffffff);
+    particle.color.setHex(this.config.defaultColor ?? 0xffffff);
     particle.alive = false;
   }
 
   /**
    * Update all active particles
    * Automatically releases expired particles
+   * 
+   * Optimized single-pass update to avoid per-frame temporary array allocations
    */
   update(currentTime: number): void {
-    const particlesToRelease: Particle[] = [];
-
+    // Single-pass update and release to avoid creating temporary arrays
     for (const particle of this.active) {
       const age = currentTime - particle.startTime;
       if (age >= particle.lifetime) {
-        particlesToRelease.push(particle);
+        // Directly release expired particle without creating a temporary array
+        this.active.delete(particle);
+        this.resetParticle(particle);
+        this.pool.push(particle);
       }
     }
-
-    // Release expired particles
-    particlesToRelease.forEach((particle) => this.release(particle));
   }
 
   /**
@@ -177,7 +186,7 @@ export class ParticlePool {
     available: number;
   } {
     return {
-      total: this.config.maxSize,
+      total: this.pool.length + this.active.size,
       active: this.active.size,
       available: this.pool.length,
     };

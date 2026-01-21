@@ -6,6 +6,9 @@
 
 uniform vec3 color;
 uniform float opacity;
+uniform float edgeStart;    // Configurable edge start threshold
+uniform float edgeEnd;      // Configurable edge end threshold
+uniform float glowPower;    // Configurable glow intensity
 
 varying float vAlpha;
 
@@ -19,12 +22,12 @@ void main() {
     discard;
   }
   
-  // Smooth edge falloff for anti-aliasing
-  float edge = 1.0 - smoothstep(0.3, 0.5, dist);
+  // Smooth edge falloff for anti-aliasing (configurable thresholds)
+  float edge = 1.0 - smoothstep(edgeStart, edgeEnd, dist);
   
-  // Add glow effect for Korean aesthetic
+  // Add glow effect for Korean aesthetic (configurable power)
   float glow = 1.0 - dist * 2.0;
-  glow = pow(glow, 3.0);
+  glow = pow(glow, glowPower);
   
   // Combine effects
   float finalAlpha = opacity * vAlpha * edge;

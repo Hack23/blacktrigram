@@ -203,7 +203,7 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
       geometry.setAttribute("startTime", new THREE.BufferAttribute(startTimes, 1));
       geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
-      // Create shader material
+      // Create shader material with configurable uniforms
       const color = getTrigramColor(effect.stance);
       const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -211,8 +211,12 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
           speed: { value: 1.0 },
           gravity: { value: TRIGRAM_CONSTANTS.GRAVITY },
           lifetime: { value: TRIGRAM_CONSTANTS.LIFETIME },
+          sizeScale: { value: 300.0 }, // Configurable perspective scale
           color: { value: new THREE.Color(color) },
           opacity: { value: 0.8 },
+          edgeStart: { value: 0.3 }, // Configurable edge start
+          edgeEnd: { value: 0.5 }, // Configurable edge end
+          glowPower: { value: 3.0 }, // Configurable glow intensity
         },
         vertexShader: particleVertexShader,
         fragmentShader: particleFragmentShader,
@@ -228,7 +232,7 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
         id: effect.id,
         position: new THREE.Vector3(...effect.position),
         stance: effect.stance,
-        startTime: Date.now() / 1000,
+        startTime: 0, // Will be set from clock in useFrame
         geometry,
         material,
         points,
@@ -275,6 +279,11 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
     const currentTime = state.clock.elapsedTime;
 
     activeEffectsRef.current.forEach((effect, effectId) => {
+      // Initialize startTime on first frame if not set
+      if (effect.startTime === 0) {
+        effect.startTime = currentTime;
+      }
+
       // Update shader time uniform
       effect.material.uniforms.time.value = currentTime;
 
