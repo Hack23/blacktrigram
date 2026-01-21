@@ -38,6 +38,10 @@ export interface BaseTextProps {
   readonly layer?: HtmlOverlayLayer;
   /** Whether text should occlude behind 3D objects (default: false) */
   readonly occlude?: boolean;
+  /** ARIA label for accessibility (optional) */
+  readonly ariaLabel?: string;
+  /** ARIA live region for dynamic content (optional) */
+  readonly ariaLive?: "polite" | "assertive" | "off";
 }
 
 /**
@@ -47,6 +51,19 @@ export interface BaseTextProps {
  * Uses useKoreanTheme hook for consistent text sizing and styling.
  * Now includes Html overlay positioning helpers for proper z-index and performance.
  * 
+ * Korean Typography Features:
+ * - Optimized line height (1.6) for Korean character readability
+ * - Letter spacing (-0.01em) for tighter Korean text
+ * - Word break (keep-all) to prevent breaking Korean words mid-syllable
+ * - Proper language attributes (lang="ko" / lang="en")
+ * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - Proper language attributes for screen readers
+ * - Optional ARIA labels for additional context
+ * - ARIA live regions for dynamic content
+ * 
+ * Optimized with React.memo for performance
+ * 
  * @example
  * ```tsx
  * <BaseText
@@ -55,10 +72,11 @@ export interface BaseTextProps {
  *   size="large"
  *   layout="vertical"
  *   layer="hud"
+ *   ariaLive="polite"
  * />
  * ```
  */
-export const BaseText: React.FC<BaseTextProps> = ({
+const BaseTextComponent: React.FC<BaseTextProps> = ({
   korean,
   english,
   position = [0, 0, 0],
@@ -71,9 +89,11 @@ export const BaseText: React.FC<BaseTextProps> = ({
   isMobile = false,
   layer = "hud",
   occlude = false,
+  ariaLabel,
+  ariaLive = "off",
 }) => {
   // Use Korean theme hook for consistent text sizing
-  const { textSize, fontFamily } = useKoreanTheme({
+  const { textSize, koreanTypography } = useKoreanTheme({
     size,
     isMobile,
   });
@@ -104,16 +124,21 @@ export const BaseText: React.FC<BaseTextProps> = ({
     return applyHtmlOverlayStyles(layer, false, distanceFactor, true, occlude);
   }, [layer, distanceFactor, occlude]);
 
-  // Memoize text styles for performance
+  // Memoize text styles for performance with Korean typography optimization
   const textStyle = useMemo<React.CSSProperties>(() => ({
     color: hexToRgbaString(color),
-    fontFamily: fontFamily.KOREAN,
+    fontFamily: koreanTypography.fontFamily,
     textAlign: align,
     fontWeight: weight === "bold" ? "bold" : "normal",
     textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
     userSelect: "none",
     WebkitUserSelect: "none",
-  }), [color, align, weight, fontFamily]);
+    // Korean typography optimization
+    lineHeight: koreanTypography.lineHeight,
+    letterSpacing: koreanTypography.letterSpacing,
+    wordBreak: koreanTypography.wordBreak,
+    wordWrap: koreanTypography.wordWrap,
+  }), [color, align, weight, koreanTypography]);
 
   const containerStyle = useMemo<React.CSSProperties>(() => ({
     display: "flex",
@@ -146,13 +171,21 @@ export const BaseText: React.FC<BaseTextProps> = ({
       occlude={overlayStyle.occlude}
       style={{ pointerEvents: overlayStyle.pointerEvents }}
     >
-      <div style={containerStyle} data-testid={testId ?? "base-text"}>
-        <span style={koreanStyle}>{korean}</span>
-        {layout === "vertical" && <span style={englishStyle}>{english}</span>}
-        {layout === "horizontal" && <span style={englishStyle}>| {english}</span>}
+      <div 
+        style={containerStyle} 
+        data-testid={testId ?? "base-text"}
+        aria-label={ariaLabel}
+        aria-live={ariaLive}
+      >
+        <span lang="ko" style={koreanStyle}>{korean}</span>
+        {layout === "vertical" && <span lang="en" style={englishStyle}>{english}</span>}
+        {layout === "horizontal" && <span lang="en" style={englishStyle}>| {english}</span>}
       </div>
     </Html>
   );
 };
+
+// Export memoized component for performance optimization
+export const BaseText = React.memo(BaseTextComponent);
 
 BaseText.displayName = "BaseText";

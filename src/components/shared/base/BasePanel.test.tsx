@@ -16,7 +16,8 @@ vi.mock("@react-three/drei", () => ({
 describe("BasePanel", () => {
   it("should be defined and importable", () => {
     expect(BasePanel).toBeDefined();
-    expect(typeof BasePanel).toBe("function");
+    // React.memo returns an object, not a function
+    expect(typeof BasePanel).toBe("object");
   });
 
   it("should have proper display name", () => {

@@ -4,6 +4,11 @@
  * Provides centralized Korean theme styling and responsive utilities
  * Eliminates code duplication across UI components
  * 
+ * Enhanced with:
+ * - Korean typography optimization (line height, letter spacing, word break)
+ * - Accessibility features (focus indicators, touch targets, high contrast)
+ * - WCAG 2.1 AA compliant color contrast ratios
+ * 
  * @module components/base
  */
 
@@ -49,6 +54,27 @@ export interface TextSizeConfig {
 }
 
 /**
+ * Korean typography configuration
+ */
+export interface KoreanTypographyConfig {
+  readonly fontFamily: string;
+  readonly lineHeight: number;
+  readonly letterSpacing: string;
+  readonly wordBreak: "normal" | "break-all" | "keep-all" | "break-word";
+  readonly wordWrap: "normal" | "break-word";
+}
+
+/**
+ * Accessibility configuration
+ */
+export interface AccessibilityConfig {
+  readonly focusOutline: string;
+  readonly focusOutlineOffset: string;
+  readonly minTouchTarget: string;
+  readonly highContrastFocusOutline: string;
+}
+
+/**
  * Korean theme hook configuration
  */
 export interface UseKoreanThemeConfig {
@@ -56,16 +82,18 @@ export interface UseKoreanThemeConfig {
   readonly size?: "sm" | "md" | "lg" | "small" | "medium" | "large" | "xlarge";
   readonly disabled?: boolean;
   readonly isMobile?: boolean;
+  readonly highContrast?: boolean;
 }
 
 /**
  * Custom hook for Korean cyberpunk theming
  * 
  * Provides consistent styling patterns for all Korean-themed components
+ * Enhanced with Korean typography optimization and accessibility features
  * 
  * @example
  * ```tsx
- * const { buttonVariant, sizeDimensions } = useKoreanTheme({
+ * const { buttonVariant, sizeDimensions, koreanTypography } = useKoreanTheme({
  *   variant: "primary",
  *   size: "md"
  * });
@@ -77,6 +105,7 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
     size = "md",
     disabled = false,
     isMobile = false,
+    highContrast = false,
   } = config;
 
   /**
@@ -237,6 +266,36 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
     };
   }, [disabled]);
 
+  /**
+   * Korean typography configuration
+   * Optimized for Korean character readability
+   * 
+   * - Line height: 1.6 for Korean characters (vs 1.5 for Latin)
+   * - Letter spacing: -0.01em for tighter Korean spacing
+   * - Word break: keep-all to prevent breaking Korean words
+   * - Word wrap: break-word for long words
+   */
+  const koreanTypography = useMemo<KoreanTypographyConfig>(() => ({
+    fontFamily: FONT_FAMILY.KOREAN,
+    lineHeight: 1.6, // Optimal for Korean character readability
+    letterSpacing: "-0.01em", // Tighter spacing for Korean
+    wordBreak: "keep-all", // Prevent breaking Korean words mid-syllable
+    wordWrap: "break-word", // Wrap long words appropriately
+  }), []);
+
+  /**
+   * Accessibility configuration
+   * WCAG 2.1 AA compliant focus indicators and touch targets
+   */
+  const accessibility = useMemo<AccessibilityConfig>(() => ({
+    focusOutline: highContrast
+      ? `4px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD)}` // High contrast mode
+      : `3px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN)}`, // Normal mode
+    focusOutlineOffset: "2px",
+    minTouchTarget: "44px", // WCAG 2.1 AA minimum touch target size
+    highContrastFocusOutline: `4px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD)}`,
+  }), [highContrast]);
+
   return {
     buttonVariant,
     panelVariant,
@@ -244,6 +303,8 @@ export function useKoreanTheme(config: UseKoreanThemeConfig = {}) {
     textSize,
     calculateResponsiveSize,
     applyKoreanTheme,
+    koreanTypography,
+    accessibility,
     colors: KOREAN_COLORS,
     fontFamily: FONT_FAMILY,
   };
