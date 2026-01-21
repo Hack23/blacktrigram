@@ -274,7 +274,7 @@ export class AudioCache {
    */
   clear(): void {
     // Unload all audio elements
-    for (const [id, entry] of this.cache) {
+    for (const entry of this.cache.values()) {
       if (entry.asset && "src" in entry.asset) {
         const audioElement = entry.asset as AudioAsset & {
           src?: string;
