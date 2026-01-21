@@ -238,7 +238,8 @@ export function useTouchOptimizer(
       let events: readonly Touch[] = [e.touches[0]];
       
       if (enableCoalescing) {
-        // Feature detection: getCoalescedEvents is experimental
+        // Feature detection: getCoalescedEvents() is experimental (Chrome 58+, Edge 79+)
+        // Not supported in Safari or Firefox as of 2024
         // Fallback to single event if not supported
         const eventWithCoalescing = e as TouchEvent & { getCoalescedEvents?: () => TouchEvent[] };
         if (typeof eventWithCoalescing.getCoalescedEvents === 'function') {

@@ -9,6 +9,11 @@
  * - Differentiated feedback intensities (light, medium, strong)
  * - Frame-drop prevention (<2ms overhead)
  * - Adaptive patterns based on device performance
+ * - Throttling to prevent excessive haptic triggers
+ * 
+ * Browser Compatibility Note:
+ * navigator.vibrate() returns boolean in some browsers (Chrome, Edge) and void in others (Firefox).
+ * This implementation normalizes return values to boolean for consistency.
  * 
  * @module components/mobile/HapticController
  * @category Mobile Controls
@@ -95,7 +100,13 @@ export class HapticController {
   private isSupported: boolean = false;
   private isEnabled: boolean = true;
   private performanceTier: DevicePerformanceTier = 'high';
-  private lastTriggerTime: number = -Infinity; // Allow first trigger immediately
+  /**
+   * Last trigger timestamp for throttling.
+   * Initialized to -Infinity to ensure the first trigger always succeeds.
+   * Using -Infinity instead of 0 prevents throttling when performance.now() returns 0,
+   * which can occur in test environments or immediately after page load.
+   */
+  private lastTriggerTime: number = -Infinity;
   private minTriggerInterval: number = 50; // Minimum 50ms between haptics
 
   /**
@@ -219,9 +230,7 @@ export class HapticController {
     const pattern = patterns[intensity];
 
     try {
-      // Trigger vibration
-      // Note: navigator.vibrate() returns boolean in some browsers, void in others
-      // Always normalize to boolean for consistency
+      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(pattern.vibration);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -270,8 +279,7 @@ export class HapticController {
         }
       }
 
-      // Trigger vibration
-      // Note: navigator.vibrate() returns boolean in some browsers, void in others
+      // Trigger vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(adaptedPattern);
       return result !== false; // Return true if not explicitly false
     } catch (error) {
@@ -294,7 +302,7 @@ export class HapticController {
     }
 
     try {
-      // Note: navigator.vibrate() returns boolean in some browsers, void in others
+      // Stop vibration (see class-level comment for browser compatibility notes)
       const result = navigator.vibrate(0);
       return result !== false; // Return true if not explicitly false
     } catch (error) {

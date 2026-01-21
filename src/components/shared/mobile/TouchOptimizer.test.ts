@@ -20,6 +20,7 @@ describe("TouchOptimizer", () => {
 
   beforeEach(() => {
     // Mock requestAnimationFrame
+    // Executes callback immediately for synchronous test behavior; using 0 as timestamp
     rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
       cb(0);
       return 0;

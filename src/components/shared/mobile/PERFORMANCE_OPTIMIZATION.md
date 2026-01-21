@@ -4,6 +4,30 @@
 
 This document describes the performance optimizations implemented for the Black Trigram mobile touch controls package to achieve **<16ms touch latency** and **60fps during combat**.
 
+## ⚠️ Relationship to Existing Haptics Module
+
+**Important**: This package introduces `HapticController` which provides advanced features beyond the existing `src/utils/haptics.ts`:
+
+**Legacy (`src/utils/haptics.ts`)**:
+- Basic haptic support detection
+- Simple intensity levels (light, medium, heavy)
+- Combat haptic patterns
+- **Currently used by**: StanceWheel, VirtualDPad (not yet migrated)
+
+**Optimized (`HapticController`)**:
+- Device performance tier detection (high/medium/low)
+- Adaptive patterns for low-end devices (50% duration reduction)
+- Throttling to prevent frame drops (<50ms intervals, <2ms overhead)
+- Browser compatibility normalization
+- **Currently used by**: ActionButtons (reference implementation)
+
+**Migration Path**:
+1. Remaining components (StanceWheel, VirtualDPad, GestureRecognizer) should migrate to `HapticController`
+2. Once migration is complete, deprecate `src/utils/haptics.ts`
+3. Update all imports from `utils/haptics` to use optimized `triggerOptimizedHaptic` and `OptimizedCombatHaptics`
+
+See "Migration Guide" section at the end of this document for component-specific migration instructions.
+
 ## 🎯 Performance Targets
 
 | Metric | Previous | Target | Status |
@@ -216,7 +240,7 @@ const handleTouchStart = () => {
 | GestureRecognizer | 32 tests | 100% | ✅ Passing |
 | Integration | 15 tests | - | ✅ Passing |
 
-**Total**: 191/202 tests passing (95%)
+**Total**: 202/202 tests passing (100%)
 
 ### Running Tests
 

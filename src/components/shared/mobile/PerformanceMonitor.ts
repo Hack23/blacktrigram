@@ -105,6 +105,16 @@ export class PerformanceMonitor {
    * Detect device performance tier
    * Uses multiple heuristics to determine device capability
    * 
+   * Edge Cases:
+   * - Low-end desktops (2 cores, 2GB RAM) may score as 'medium' due to desktop bonus
+   * - High-end mobiles (6+ cores, 6GB+ RAM) correctly score as 'high'
+   * - Very low-spec devices (≤2 cores AND ≤2GB) are always 'low' regardless of platform
+   * 
+   * This intentionally favors:
+   * - Devices with more CPU cores and memory
+   * - iOS devices (typically good performance)
+   * - Better network connections (4G/5G)
+   * 
    * @returns Performance tier (high, medium, low)
    * @korean 성능등급감지
    */
@@ -129,6 +139,12 @@ export class PerformanceMonitor {
     const connection = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection;
     const connectionType = connection?.effectiveType ?? '4g';
     
+    // Very low-spec devices are always treated as low tier regardless of platform
+    // This prevents old desktops from being rated above high-end mobile devices
+    if (cores <= 2 && memory <= 2) {
+      return 'low';
+    }
+    
     // Heuristic scoring
     let score = 0;
     
@@ -142,8 +158,8 @@ export class PerformanceMonitor {
     else if (memory >= 6) score += 2;
     else if (memory >= 4) score += 1;
     
-    // Desktop generally performs better
-    if (!isMobile) score += 2;
+    // Desktop generally performs better (limited bonus to avoid over-rating old desktops)
+    if (!isMobile) score += 1;
     
     // iOS devices typically have good performance
     if (isIOS) score += 1;

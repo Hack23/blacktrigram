@@ -213,6 +213,8 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
 
   /**
    * Cleanup on unmount - reset any pending visual states
+   * Note: Captures button refs at effect creation time to avoid stale closures.
+   * If buttons unmount before component cleanup runs, refs will be null and cleanup is skipped (acceptable behavior).
    */
   useEffect(() => {
     // Store refs in variables at effect creation time
