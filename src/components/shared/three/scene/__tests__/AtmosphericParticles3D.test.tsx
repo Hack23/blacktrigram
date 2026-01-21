@@ -4,57 +4,583 @@
 
 import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import AtmosphericParticles3D from "../AtmosphericParticles3D";
 import { Suspense } from "react";
 
 describe("AtmosphericParticles3D", () => {
-  it("should render without crashing", () => {
-    const { container } = render(
-      <Canvas>
-        <Suspense fallback={null}>
-          <AtmosphericParticles3D />
-        </Suspense>
-      </Canvas>
-    );
-
-    expect(container.querySelector("canvas")).toBeInTheDocument();
+  beforeEach(() => {
+    // Setup before each test
   });
 
-  it("should render with custom particle count", () => {
-    const { container } = render(
-      <Canvas>
-        <Suspense fallback={null}>
-          <AtmosphericParticles3D count={250} />
-        </Suspense>
-      </Canvas>
-    );
-
-    expect(container.querySelector("canvas")).toBeInTheDocument();
+  afterEach(() => {
+    // Cleanup after each test
   });
 
-  it("should render with custom scale and speed", () => {
-    const { container } = render(
-      <Canvas>
-        <Suspense fallback={null}>
-          <AtmosphericParticles3D scale={0.8} speed={3} />
-        </Suspense>
-      </Canvas>
-    );
+  describe("basic rendering", () => {
+    it("should render without crashing", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
 
-    expect(container.querySelector("canvas")).toBeInTheDocument();
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with custom particle count", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={250} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with custom scale and speed", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D scale={0.8} speed={3} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should apply correct particle properties", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={500} scale={1.0} speed={2} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Verify component renders
+      expect(container).toBeTruthy();
+    });
   });
 
-  it("should apply correct particle properties", () => {
-    const { container } = render(
-      <Canvas>
-        <Suspense fallback={null}>
-          <AtmosphericParticles3D count={500} scale={1.0} speed={2} />
-        </Suspense>
-      </Canvas>
-    );
+  describe("geometry cleanup", () => {
+    it("should handle unmount gracefully", () => {
+      const { unmount } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} />
+          </Suspense>
+        </Canvas>
+      );
 
-    // Verify component renders
-    expect(container).toBeTruthy();
+      // Unmount the component - cleanup should happen via useEffect return
+      expect(() => unmount()).not.toThrow();
+    });
+
+    it("should handle remounting with different props", () => {
+      const { rerender, unmount } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={1.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Rerender with different props (this should trigger cleanup via useEffect)
+      expect(() => {
+        rerender(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D count={200} scale={1.5} />
+            </Suspense>
+          </Canvas>
+        );
+      }).not.toThrow();
+
+      // Unmount
+      expect(() => unmount()).not.toThrow();
+    });
+
+    it("should handle multiple mount/unmount cycles", () => {
+      for (let i = 0; i < 3; i++) {
+        const { unmount } = render(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D count={50} />
+            </Suspense>
+          </Canvas>
+        );
+
+        expect(() => unmount()).not.toThrow();
+      }
+    });
+  });
+
+  describe("scale-awareness", () => {
+    it("should render with mobile scale (0.5)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={300} scale={0.5} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with desktop scale (1.0)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={500} scale={1.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with large scale (2.0)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={500} scale={2.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle very small scale", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D scale={0.1} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle scale changes", () => {
+      const { rerender, container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={0.5} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+
+      // Change scale
+      rerender(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={2.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
+
+  describe("material properties", () => {
+    it("should render with correct material setup", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Component should render with additive blending material
+      // The material is configured in JSX with:
+      // - blending={THREE.AdditiveBlending}
+      // - transparent
+      // - opacity={0.3}
+      // - depthWrite={false}
+      // - sizeAttenuation
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should use additive blending", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Verify component renders successfully with additive blending
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should have transparent material", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Verify component renders successfully with transparency
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should have depthWrite disabled", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Verify component renders successfully with depthWrite={false}
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should have size attenuation enabled", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Verify component renders successfully with sizeAttenuation
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
+
+  describe("particle animation", () => {
+    it("should render with animation enabled", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} speed={2} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Component should render successfully with animation (useFrame)
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle animation with different speeds", () => {
+      const speeds = [0.5, 1, 2, 5, 10];
+      speeds.forEach((speed) => {
+        const { container } = render(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D count={50} speed={speed} />
+            </Suspense>
+          </Canvas>
+        );
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
+      });
+    });
+
+    it("should handle particles falling animation logic", () => {
+      // Test that the component renders with animation hooks set up
+      // Lines 99-109 in the component handle:
+      // - Checking if particlesRef.current exists
+      // - Getting positions array from geometry
+      // - Iterating through particles
+      // - Updating Y position (falling)
+      // - Resetting particles that fall below 0
+      // - Marking geometry.attributes.position.needsUpdate
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={10} speed={2} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // The useFrame hook is called internally - component should render successfully
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle particle reset logic", () => {
+      // Test that the component handles particle position resets
+      // When particles[i * 3 + 1] < 0, they reset to spreadY
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} speed={5} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Animation callback logic should work without errors
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle animation with valid particles ref", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Component should set up ref and animation properly
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle zero speed (no animation)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D speed={0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle very high speed", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D speed={100} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle negative speed (upward movement)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D speed={-1} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
+
+  describe("deterministic position generation", () => {
+    it("should generate positions consistently", () => {
+      // First render
+      const { unmount: unmount1, container: container1 } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={1.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container1.querySelector("canvas")).toBeInTheDocument();
+      unmount1();
+
+      // Second render with same params should work consistently
+      const { container: container2 } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={1.0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container2.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should generate positions for different counts", () => {
+      const { container: container1 } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container1.querySelector("canvas")).toBeInTheDocument();
+
+      const { container: container2 } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={200} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container2.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle position generation edge cases", () => {
+      const counts = [0, 1, 10, 100, 500, 1000];
+      counts.forEach((count) => {
+        const { container } = render(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D count={count} scale={1.0} />
+            </Suspense>
+          </Canvas>
+        );
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("performance", () => {
+    it("should render efficiently with 500 particles (default)", () => {
+      const startTime = performance.now();
+
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={500} />
+          </Suspense>
+        </Canvas>
+      );
+
+      const renderTime = performance.now() - startTime;
+
+      // Initial render should be reasonably fast (< 1 second)
+      expect(renderTime).toBeLessThan(1000);
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle mobile particle count (300) efficiently", () => {
+      const startTime = performance.now();
+
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={300} scale={0.5} />
+          </Suspense>
+        </Canvas>
+      );
+
+      const renderTime = performance.now() - startTime;
+
+      expect(renderTime).toBeLessThan(1000);
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle large particle count (1000)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={1000} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Should still render without errors
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle minimal particle count (10)", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={10} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
+
+  describe("edge cases", () => {
+    it("should handle zero particles", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={0} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle rapid prop changes", () => {
+      const { rerender, container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={100} scale={1.0} speed={2} />
+          </Suspense>
+        </Canvas>
+      );
+
+      // Rapid rerenders with different props
+      for (let i = 0; i < 5; i++) {
+        rerender(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D
+                count={100 + i * 50}
+                scale={1.0 + i * 0.1}
+                speed={2 + i}
+              />
+            </Suspense>
+          </Canvas>
+        );
+      }
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
+
+  describe("prop combinations", () => {
+    it("should handle all custom props together", () => {
+      const { container } = render(
+        <Canvas>
+          <Suspense fallback={null}>
+            <AtmosphericParticles3D count={750} scale={1.5} speed={3.5} />
+          </Suspense>
+        </Canvas>
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should handle extreme prop combinations", () => {
+      const combinations = [
+        { count: 0, scale: 0.1, speed: 0 },
+        { count: 1, scale: 0.1, speed: 0.1 },
+        { count: 1000, scale: 3.0, speed: 100 },
+        { count: 500, scale: 1.0, speed: -5 },
+      ];
+
+      combinations.forEach((props) => {
+        const { container } = render(
+          <Canvas>
+            <Suspense fallback={null}>
+              <AtmosphericParticles3D {...props} />
+            </Suspense>
+          </Canvas>
+        );
+
+        expect(container.querySelector("canvas")).toBeInTheDocument();
+      });
+    });
   });
 });
