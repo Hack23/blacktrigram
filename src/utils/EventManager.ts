@@ -350,18 +350,19 @@ export class EventManager {
 }
 
 /**
- * Create a React hook for using EventManager in components
- * 컴포넌트에서 EventManager를 사용하기 위한 React 훅 생성
+ * Factory function to create a new EventManager instance
+ * 새로운 EventManager 인스턴스를 생성하기 위한 팩토리 함수
  *
  * @example
  * ```typescript
  * function MyComponent() {
- *   const eventManager = useEventManager();
+ *   // Create a shared EventManager instance for this component
+ *   const eventManager = useMemo(() => createEventManager(), []);
  *
  *   useEffect(() => {
  *     eventManager.add(window, "keydown", handleKeyDown);
  *     return () => eventManager.cleanup();
- *   }, [eventManager]);
+ *   }, [eventManager, handleKeyDown]);
  * }
  * ```
  */
