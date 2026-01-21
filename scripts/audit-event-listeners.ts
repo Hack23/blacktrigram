@@ -17,6 +17,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { PASSIVE_EVENTS } from "../src/utils/eventConstants";
 
 interface EventListenerUsage {
   file: string;
@@ -29,7 +30,7 @@ interface EventListenerUsage {
 
 interface AuditReport {
   totalAddEventListeners: number;
-  totalRemoveEventListeners: number;
+  listenersWithCleanup: number;
   filesWithPotentialLeaks: string[];
   passiveListenerUsage: number;
   recommendedForEventManager: EventListenerUsage[];
@@ -39,17 +40,6 @@ interface AuditReport {
     filesAudited: number;
   };
 }
-
-// Events that should use passive listeners
-const PASSIVE_EVENTS = new Set([
-  "scroll",
-  "wheel",
-  "touchstart",
-  "touchmove",
-  "touchend",
-  "touchcancel",
-  "mousewheel",
-]);
 
 // Directories to scan
 const SRC_DIR = path.join(process.cwd(), "src");
@@ -208,6 +198,7 @@ function auditFile(filePath: string): EventListenerUsage[] {
  */
 function generateReport(allUsages: EventListenerUsage[]): AuditReport {
   const filesWithLeaks = new Set<string>();
+  const seenLocations = new Set<string>(); // Track file:line to prevent duplicates
   const recommendedForEventManager: EventListenerUsage[] = [];
   let passiveListenerCount = 0;
 
@@ -217,21 +208,34 @@ function generateReport(allUsages: EventListenerUsage[]): AuditReport {
       passiveListenerCount++;
     }
 
-    // Check if event should be passive but isn't
-    if (PASSIVE_EVENTS.has(usage.event) && !usage.isPassive) {
-      recommendedForEventManager.push({
-        ...usage,
-        context: `⚠️ Should use passive listener: ${usage.context}`,
-      });
-    }
-
-    // Check for missing cleanup
-    if (!usage.hasCleanup) {
+    const locationKey = `${usage.file}:${usage.line}`;
+    
+    // Only add to recommendations if not already seen (prevents duplicates)
+    if (!seenLocations.has(locationKey)) {
+      const issues: string[] = [];
+      
+      // Check if event should be passive but isn't
+      if (PASSIVE_EVENTS.has(usage.event) && !usage.isPassive) {
+        issues.push("Should use passive listener");
+      }
+      
+      // Check for missing cleanup
+      if (!usage.hasCleanup) {
+        filesWithLeaks.add(usage.file);
+        issues.push("Missing cleanup");
+      }
+      
+      // Add to recommendations if there are any issues
+      if (issues.length > 0) {
+        seenLocations.add(locationKey);
+        recommendedForEventManager.push({
+          ...usage,
+          context: `⚠️ ${issues.join(", ")}: ${usage.context}`,
+        });
+      }
+    } else if (!usage.hasCleanup) {
+      // Still track files with leaks even if already recommended
       filesWithLeaks.add(usage.file);
-      recommendedForEventManager.push({
-        ...usage,
-        context: `⚠️ Missing cleanup: ${usage.context}`,
-      });
     }
   }
 
@@ -245,7 +249,7 @@ function generateReport(allUsages: EventListenerUsage[]): AuditReport {
 
   return {
     totalAddEventListeners: allUsages.length,
-    totalRemoveEventListeners: allUsages.filter((u) => u.hasCleanup).length,
+    listenersWithCleanup: allUsages.filter((u) => u.hasCleanup).length,
     filesWithPotentialLeaks: Array.from(filesWithLeaks),
     passiveListenerUsage: passiveListenerCount,
     recommendedForEventManager,
@@ -269,7 +273,7 @@ function printReport(report: AuditReport) {
   console.log("📊 Summary | 요약:");
   console.log(`  Files Audited: ${report.summary.filesAudited}`);
   console.log(`  Total addEventListener calls: ${report.totalAddEventListeners}`);
-  console.log(`  Total removeEventListener calls: ${report.totalRemoveEventListeners}`);
+  console.log(`  Listeners with cleanup: ${report.listenersWithCleanup}`);
   console.log(`  Cleanup Rate: ${report.summary.cleanupRate.toFixed(1)}%`);
   console.log(`  Passive Listener Usage: ${report.passiveListenerUsage} (${report.summary.passiveRate.toFixed(1)}%)`);
   console.log("");

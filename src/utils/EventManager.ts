@@ -1,3 +1,5 @@
+import { PASSIVE_EVENTS } from "./eventConstants";
+
 /**
  * EventManager - Centralized event listener management system
  * 이벤트 관리자 - 중앙 집중식 이벤트 리스너 관리 시스템
@@ -80,25 +82,6 @@ export class EventManager {
    * 형식: "ElementType-eventName" -> TrackedListener[]
    */
   private listeners: Map<string, TrackedListener[]> = new Map();
-
-  /**
-   * Events that should automatically use passive listeners for performance
-   * 성능을 위해 자동으로 패시브 리스너를 사용해야 하는 이벤트
-   *
-   * Passive listeners indicate to the browser that the event handler will not
-   * call preventDefault(), allowing the browser to optimize scrolling performance.
-   * 패시브 리스너는 이벤트 핸들러가 preventDefault()를 호출하지 않음을 브라우저에
-   * 알려 브라우저가 스크롤 성능을 최적화할 수 있도록 합니다.
-   */
-  private static readonly PASSIVE_EVENTS = new Set([
-    "scroll",
-    "wheel",
-    "touchstart",
-    "touchmove",
-    "touchend",
-    "touchcancel",
-    "mousewheel",
-  ]);
 
   /**
    * Add an event listener with automatic cleanup tracking
@@ -291,7 +274,7 @@ export class EventManager {
 
     // Auto-apply passive to known performance-sensitive events
     // 알려진 성능에 민감한 이벤트에 자동으로 패시브 적용
-    return EventManager.PASSIVE_EVENTS.has(event);
+    return PASSIVE_EVENTS.has(event);
   }
 
   /**
