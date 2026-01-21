@@ -72,8 +72,6 @@ describe("Character Models - Visual Regression Tests", () => {
     it("should verify all stance colors are distinct", () => {
       cy.annotate("Verifying stance color distinctiveness");
       
-      const stanceColors: string[] = [];
-      
       stances.forEach((stance, index) => {
         // Change to stance
         cy.get("body").type(stance.key);
@@ -153,11 +151,6 @@ describe("Character Models - Visual Regression Tests", () => {
   });
 
   describe("Attack Animation Sequences", () => {
-    const attacks = [
-      { key: " ", name: "jab", description: "Quick jab attack" },
-      { key: " ", name: "cross", description: "Power cross punch" },
-    ];
-
     it("should capture jab attack animation sequence", () => {
       cy.annotate("Testing Jab Attack Animation Sequence");
       

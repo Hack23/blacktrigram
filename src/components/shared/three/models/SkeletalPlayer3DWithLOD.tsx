@@ -73,16 +73,6 @@ export const SkeletalPlayer3DWithLOD: React.FC<SkeletalPlayer3DWithLODProps> = (
     return archetypeColors.primary;
   }, [isStunned, health, maxHealth, ki, archetypeColors.primary]);
 
-  // If LOD disabled, render full detail only
-  if (!enableLOD) {
-    return (
-      <SkeletalPlayer3D
-        {...playerProps}
-        showDetails={true}
-      />
-    );
-  }
-
   // LOD High Detail (< 10m): Full skeletal rig with all details
   const HighDetailPlayer = useMemo(
     () => (
@@ -137,6 +127,16 @@ export const SkeletalPlayer3DWithLOD: React.FC<SkeletalPlayer3DWithLODProps> = (
     scale,
     bodyColor,
   ]);
+
+  // If LOD disabled, render full detail only
+  if (!enableLOD) {
+    return (
+      <SkeletalPlayer3D
+        {...playerProps}
+        showDetails={true}
+      />
+    );
+  }
 
   return (
     <Detailed distances={lodDistances}>
