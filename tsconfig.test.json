@@ -18,7 +18,8 @@
     "src/**/*.spec.ts",
     "src/**/*.spec.tsx",
     "src/test/**/*",
-    "src/types/**/*.d.ts"
+    "src/types/**/*.d.ts",
+    "src/vite-env.d.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
