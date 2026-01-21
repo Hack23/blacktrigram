@@ -72,7 +72,7 @@ const STANCE_TO_BIOMECH_KEY = {
  * @korean 자세다리근육긴장도
  */
 export const getMuscleTensionForStance = (
-  stance: TrigramStance
+  stance: TrigramStance,
 ): MuscleActivationMap => {
   const activations = new Map<MuscleGroupName, number>();
 
@@ -100,11 +100,11 @@ export const getMuscleTensionForStance = (
   // This base value is then combined with weight distribution for final tension
   const frontQuadTensionFromBend = Math.max(
     0,
-    Math.min(1.0, (180 - biomech.frontKneeBend) / 110)
+    Math.min(1.0, (180 - biomech.frontKneeBend) / 110),
   );
   const backQuadTensionFromBend = Math.max(
     0,
-    Math.min(1.0, (180 - biomech.backKneeBend) / 110)
+    Math.min(1.0, (180 - biomech.backKneeBend) / 110),
   );
 
   // Apply weight distribution to muscle tension
@@ -114,13 +114,13 @@ export const getMuscleTensionForStance = (
   // (e.g., raised leg in crane stance requires quad engagement to hold position)
   const frontQuadTension = Math.min(
     1.0,
-    frontQuadTensionFromBend * 0.6 + biomech.weightDistribution.front * 0.4
+    frontQuadTensionFromBend * 0.6 + biomech.weightDistribution.front * 0.4,
   );
 
   // Back leg quadriceps
   const backQuadTension = Math.min(
     1.0,
-    backQuadTensionFromBend * 0.6 + biomech.weightDistribution.back * 0.4
+    backQuadTensionFromBend * 0.6 + biomech.weightDistribution.back * 0.4,
   );
 
   // Set quadriceps tension (right = front, left = back in standard stance)
@@ -163,16 +163,16 @@ export const getMuscleTensionForStance = (
     Math.min(
       0.7,
       gluteBaseActivation +
-        frontQuadTensionFromBend * 0.2 * biomech.weightDistribution.front
-    )
+        frontQuadTensionFromBend * 0.2 * biomech.weightDistribution.front,
+    ),
   );
   activations.set(
     "GLUTE_L",
     Math.min(
       0.7,
       gluteBaseActivation +
-        backQuadTensionFromBend * 0.2 * biomech.weightDistribution.back
-    )
+        backQuadTensionFromBend * 0.2 * biomech.weightDistribution.back,
+    ),
   );
 
   return activations;
@@ -201,7 +201,7 @@ export const getMuscleTensionForStance = (
  * @korean 기법근육활성화가져오기
  */
 export const getMuscleActivationForTechnique = (
-  technique: string
+  technique: string,
 ): MuscleActivationMap => {
   const activations = new Map<MuscleGroupName, number>();
 
@@ -465,7 +465,7 @@ export class MuscleActivationManager {
       const newTension = lerp(
         state.tension,
         adjustedTarget,
-        this.config.activationSpeed * delta
+        this.config.activationSpeed * delta,
       );
 
       // Update shaking state for exhaustion
@@ -496,7 +496,7 @@ export class MuscleActivationManager {
       const newTension = lerp(
         state.tension,
         0,
-        this.config.relaxationSpeed * delta
+        this.config.relaxationSpeed * delta,
       );
 
       state.tension = newTension;
@@ -569,6 +569,19 @@ export class MuscleActivationManager {
       state.targetTension = 0;
       state.isShaking = false;
     });
+    this.scratchMap.clear();
+  }
+
+  /**
+   * Dispose of the muscle activation system
+   *
+   * Clears all internal state and references to prevent memory leaks.
+   * Should be called when the system is no longer needed (e.g., component unmount).
+   *
+   * @korean 근육시스템해제
+   */
+  dispose(): void {
+    this.activations.clear();
     this.scratchMap.clear();
   }
 }

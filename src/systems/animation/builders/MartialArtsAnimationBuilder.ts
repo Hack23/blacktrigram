@@ -1426,6 +1426,13 @@ export class MartialArtsAnimationBuilder {
       this.applyHookTorsoRotation(kf, hand, 50);
       kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
 
+      // Rear foot pivot for power generation (축발회전)
+      // The rear foot pivots inward as the hip rotates, driving force through kinetic chain
+      const rearFoot = isRight ? BoneName.FOOT_R : BoneName.FOOT_L;
+      const rearHip = isRight ? BoneName.HIP_R : BoneName.HIP_L;
+      kf.rotate(rearFoot, 0, isRight ? 0.4 : -0.4, 0); // Pivot inward ~23°
+      kf.rotate(rearHip, 0, isRight ? 0.25 : -0.25, 0); // Hip follows rotation
+
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1504,11 +1511,14 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
 
-      // Drive up through legs
-      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
-      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
-      kf.rotate(BoneName.PELVIS, -0.2, isRight ? 0.15 : -0.15, 0);
-      kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
+      // Drive up through legs - explosive extension generates upward force (다리구동력)
+      // From crouch position, knees extend powerfully (positive = straighter)
+      kf.rotate(BoneName.KNEE_L, 0.15, 0, 0); // Extend from crouch
+      kf.rotate(BoneName.KNEE_R, 0.15, 0, 0); // Extend from crouch
+      kf.rotate(BoneName.HIP_L, -0.1, 0, 0); // Hip drives upward
+      kf.rotate(BoneName.HIP_R, -0.1, 0, 0); // Hip drives upward
+      kf.rotate(BoneName.PELVIS, -0.25, isRight ? 0.2 : -0.2, 0); // More explosive rise
+      kf.position(BoneName.PELVIS, 0, 0.15, 0.1); // Higher rise from leg drive
 
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);

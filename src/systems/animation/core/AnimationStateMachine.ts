@@ -881,7 +881,7 @@ export class PlayerAnimationStateMachine {
    */
   private animationQueue: AnimationQueue | null = new AnimationQueue(
     3,
-    "timestamp"
+    "timestamp",
   );
 
   /**
@@ -906,7 +906,7 @@ export class PlayerAnimationStateMachine {
    */
   constructor(
     private readonly animations: Map<AnimationState, AnimationConfig>,
-    private readonly events?: AnimationEvents
+    private readonly events?: AnimationEvents,
   ) {}
 
   /**
@@ -1002,7 +1002,7 @@ export class PlayerAnimationStateMachine {
                   "[AnimationStateMachine] Invalid ground animation mapping for fall type:",
                   fallType,
                   "->",
-                  groundAnimKey
+                  groundAnimKey,
                 );
                 this.previousState = this.currentState;
                 this.currentState = AnimationState.IDLE;
@@ -1018,7 +1018,7 @@ export class PlayerAnimationStateMachine {
               // Invalid fall type - fallback to idle
               console.warn(
                 "[AnimationStateMachine] Invalid fall animation state:",
-                this.currentState
+                this.currentState,
               );
               this.previousState = this.currentState;
               this.currentState = AnimationState.IDLE;
@@ -1330,14 +1330,14 @@ export class PlayerAnimationStateMachine {
    */
   transitionToStanceChange(
     fromStance: TrigramStance,
-    toStance: TrigramStance
+    toStance: TrigramStance,
   ): boolean {
     // Get the specific transition data from the 64-transition matrix
     const transitionData = getStanceTransition(fromStance, toStance);
 
     if (!transitionData) {
       console.warn(
-        `[AnimationStateMachine] No transition data found for ${fromStance} -> ${toStance}`
+        `[AnimationStateMachine] No transition data found for ${fromStance} -> ${toStance}`,
       );
       return false;
     }
@@ -1607,7 +1607,7 @@ export class PlayerAnimationStateMachine {
    */
   updateMotionPredictionState(
     currentKeyframe: AnimationKeyframe,
-    deltaTime: number
+    deltaTime: number,
   ): void {
     if (!this.enableMotionPrediction) {
       return;
@@ -1619,7 +1619,7 @@ export class PlayerAnimationStateMachine {
         this.motionPrediction,
         this.previousKeyframe,
         currentKeyframe,
-        deltaTime
+        deltaTime,
       );
     }
 
@@ -1664,7 +1664,7 @@ export class PlayerAnimationStateMachine {
     return predictFutureKeyframe(
       currentKeyframe,
       this.motionPrediction,
-      this.predictionTimeAhead
+      this.predictionTimeAhead,
     );
   }
 
@@ -1691,7 +1691,7 @@ export class PlayerAnimationStateMachine {
    */
   enableQueue(
     maxSize: number = 3,
-    conflictStrategy: ConflictResolutionStrategy = "timestamp"
+    conflictStrategy: ConflictResolutionStrategy = "timestamp",
   ): void {
     this.animationQueue = new AnimationQueue(maxSize, conflictStrategy);
     this.conflictStrategy = conflictStrategy;
@@ -1749,7 +1749,7 @@ export class PlayerAnimationStateMachine {
    * @korean 대기열상태전환
    */
   transitionToQueued(
-    newState: AnimationState
+    newState: AnimationState,
   ): "success" | "queued" | "failed" {
     // Try normal transition first
     const timestamp = performance.now();
@@ -1811,7 +1811,7 @@ export class PlayerAnimationStateMachine {
         {
           requestedState: nextRequest.state,
           currentState: this.currentState,
-        }
+        },
       );
     }
 
@@ -1896,5 +1896,36 @@ export class PlayerAnimationStateMachine {
    */
   getConflictStrategy(): ConflictResolutionStrategy {
     return this.conflictStrategy;
+  }
+
+  /**
+   * Dispose of the animation state machine
+   *
+   * **Korean**: 애니메이션 상태 머신 해제
+   *
+   * Clears all internal state, queues, and references to prevent memory leaks.
+   * Should be called when the state machine is no longer needed (e.g., component unmount).
+   *
+   * @korean 애니메이션상태머신해제
+   */
+  dispose(): void {
+    // Clear animation queue
+    this.animationQueue?.clear();
+    this.animationQueue = null;
+
+    // Clear stance transition data
+    this.currentStanceTransition = null;
+
+    // Clear motion prediction state
+    this.motionPrediction = createMotionPredictionState();
+    this.previousKeyframe = null;
+
+    // Reset state to initial values
+    this.currentState = AnimationState.IDLE;
+    this.previousState = AnimationState.IDLE;
+    this.frameIndex = 0;
+    this.timeAccumulator = 0;
+    this.justStarted = false;
+    this.justCompleted = false;
   }
 }

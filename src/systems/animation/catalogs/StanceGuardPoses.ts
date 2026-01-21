@@ -178,12 +178,12 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     shoulder: new THREE.Euler(-1.6, 0.2, 0.9), // VERY HIGH - elbows out wide like wings
-    elbow: new THREE.Euler(0, 0, -2.5), // Super tight - fists at temples
+    elbow: new THREE.Euler(0, 0, -2.4), // Super tight - fists at temples (max anatomical flexion)
     wrist: new THREE.Euler(0.4, 0.15, 0), // Fists glued to cheekbones
   },
   rightArm: {
     shoulder: new THREE.Euler(-1.6, -0.2, -0.9), // Mirror - dramatic peekaboo
-    elbow: new THREE.Euler(0, 0, 2.5), // Super tight - fists at temples
+    elbow: new THREE.Euler(0, 0, 2.4), // Super tight - fists at temples (max anatomical flexion)
     wrist: new THREE.Euler(0.4, -0.15, 0), // Fists glued to cheekbones
   },
   torso: new THREE.Euler(0.15, 0, 0), // Chin tucked, facing SQUARE forward
@@ -422,12 +422,12 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     shoulder: new THREE.Euler(-1.8, 0.1, 1.0), // Arms CROSSED in front of face
-    elbow: new THREE.Euler(0, 0, -2.6), // Forearms crossed - X block
+    elbow: new THREE.Euler(0, 0, -2.4), // Forearms crossed - X block (max anatomical flexion)
     wrist: new THREE.Euler(0.5, 0.4, 0.3), // Fists at opposite shoulders
   },
   rightArm: {
     shoulder: new THREE.Euler(-1.8, -0.1, -1.0), // Arms CROSSED - right over left
-    elbow: new THREE.Euler(0, 0, 2.6), // Forearms crossed - X block
+    elbow: new THREE.Euler(0, 0, 2.4), // Forearms crossed - X block (max anatomical flexion)
     wrist: new THREE.Euler(0.5, -0.4, -0.3), // Fists at opposite shoulders
   },
   torso: new THREE.Euler(0.15, 0, 0), // Chin DOWN, facing square - immovable
