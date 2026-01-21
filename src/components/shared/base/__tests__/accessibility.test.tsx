@@ -248,7 +248,7 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
   describe("ResponsiveContainer Accessibility", () => {
     it("should have no accessibility violations", async () => {
       const { container } = render(
-        <ResponsiveContainer>
+        <ResponsiveContainer containerWidth={1200}>
           <div>Responsive content</div>
         </ResponsiveContainer>
       );
@@ -266,7 +266,7 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
       });
 
       const { container: mobileContainer } = render(
-        <ResponsiveContainer>
+        <ResponsiveContainer containerWidth={375}>
           <BaseButton korean="모바일" english="Mobile" onClick={vi.fn()} />
         </ResponsiveContainer>
       );
@@ -282,7 +282,7 @@ describe("Base Components Accessibility (WCAG 2.1 AA)", () => {
       });
 
       const { container: desktopContainer } = render(
-        <ResponsiveContainer>
+        <ResponsiveContainer containerWidth={1920}>
           <BaseButton korean="데스크톱" english="Desktop" onClick={vi.fn()} />
         </ResponsiveContainer>
       );
