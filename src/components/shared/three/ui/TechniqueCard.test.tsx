@@ -21,7 +21,7 @@ import {
   Technique,
   TrigramStance,
 } from "../../../../types";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { FONT_FAMILY } from "../../../../types/constants";
 import * as haptics from "../../../../utils/haptics";
 import { AttackAnimationType } from "../../../../types/skeletal";
 
@@ -761,9 +761,8 @@ describe("TechniqueCard", () => {
       );
       const card = container.querySelector('[data-testid^="technique-card"]') as HTMLElement;
       
-      // Border should use KOREAN_COLORS.ACCENT_GOLD when available and not selected
-      const expectedColor = `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`;
-      // The border includes width and style, so just check it contains the color
+      // Border should use KOREAN_COLORS constants when available and not selected
+      // The border includes width and style, so just check it contains "solid"
       expect(card.style.border).toContain("solid");
     });
   });
