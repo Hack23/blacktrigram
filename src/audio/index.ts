@@ -12,6 +12,7 @@ export * from "./DefaultSoundGenerator";
 export * from "./placeholder-sounds";
 export * from "./types";
 export * from "./VariantSelector";
+export * from "./AudioCache";
 
 // Re-export types that were missing
 export type {

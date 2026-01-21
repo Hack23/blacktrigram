@@ -1,4 +1,5 @@
 import { AudioAssetLoader, LoadOptions } from "./AudioAssetLoader";
+import { AudioCache, AudioCacheConfig } from "./AudioCache";
 import {
   AudioFPSImpact,
   AudioMemoryStats,
@@ -18,6 +19,28 @@ import {
 // Estimated average size per audio asset in MB (based on typical compressed audio file sizes)
 const ESTIMATED_ASSET_SIZE_MB = 0.5;
 
+/**
+ * Critical assets that should never be evicted from cache
+ * 캐시에서 절대 제거되지 않아야 하는 중요한 자산
+ */
+const CRITICAL_AUDIO_ASSETS = [
+  // Menu sounds - instant playback required
+  "menu_hover",
+  "menu_select",
+  "menu_click",
+  "menu_navigate",
+  "menu_back",
+  // Common combat sounds - instant playback required
+  "hit_impact",
+  "hit_light",
+  "hit_medium",
+  "hit_heavy",
+  "guard_block",
+  "attack_whoosh",
+  "attack_light",
+  "stance_change",
+] as const;
+
 export class AudioManager implements IAudioManager {
   private _masterVolume: number = 1.0;
   private _musicVolume: number = 0.7;
@@ -33,6 +56,7 @@ export class AudioManager implements IAudioManager {
   private assetLoader: AudioAssetLoader;
   private audioPool: AudioElementPool;
   private monitor: AudioMonitor;
+  private audioCache: AudioCache;
   private frequentSounds: Set<string> = new Set([
     "hit_light",
     "attack_light",
@@ -50,6 +74,15 @@ export class AudioManager implements IAudioManager {
     this.assetLoader = new AudioAssetLoader();
     this.audioPool = new AudioElementPool();
     this.monitor = new AudioMonitor();
+
+    // Initialize AudioCache with 30MB limit and critical assets
+    // 30MB 제한 및 중요 자산으로 AudioCache 초기화
+    const cacheConfig: AudioCacheConfig = {
+      maxSizeBytes: 30 * 1024 * 1024, // 30MB default
+      criticalAssets: [...CRITICAL_AUDIO_ASSETS],
+      debug: typeof process !== "undefined" && process?.env?.NODE_ENV === "development",
+    };
+    this.audioCache = new AudioCache(cacheConfig);
   }
 
   /**
@@ -137,6 +170,17 @@ export class AudioManager implements IAudioManager {
     const startTime = performance.now();
 
     try {
+      // Check cache first - instant playback for cached assets
+      // 캐시 먼저 확인 - 캐시된 자산의 즉시 재생
+      const cachedAsset = this.audioCache.get(asset.id);
+      if (cachedAsset) {
+        // Asset already loaded in cache, use it
+        const cached = this.soundCache.get(asset.id);
+        if (cached) {
+          return; // Already loaded and cached
+        }
+      }
+
       // Use faster timeouts for testing environment
       // Safely check for Node.js environment to avoid runtime errors in browsers
       const isTest =
@@ -155,9 +199,17 @@ export class AudioManager implements IAudioManager {
         result.audio.volume = asset.volume ?? 1.0;
         this.soundCache.set(asset.id, result.audio);
 
+        // Estimate size for cache management
+        // 캐시 관리를 위한 크기 추정
+        const estimatedSize = this.estimateAudioSize(asset);
+
+        // Add to LRU cache with size tracking
+        // 크기 추적과 함께 LRU 캐시에 추가
+        this.audioCache.set(asset.id, asset, estimatedSize);
+
         // Track performance and memory
         const loadTime = performance.now() - startTime;
-        this.monitor.recordLoad(asset.id, loadTime, ESTIMATED_ASSET_SIZE_MB);
+        this.monitor.recordLoad(asset.id, loadTime, estimatedSize / (1024 * 1024));
 
         // Create pool for frequently used sounds
         if (this.frequentSounds.has(asset.id)) {
@@ -172,9 +224,13 @@ export class AudioManager implements IAudioManager {
         const error = result.error ?? new Error("Unknown load error");
         this.monitor.recordLoadFailure(asset.id, error);
 
-        // Still cache the placeholder audio
+        // Still cache the placeholder audio if available
         if (result.audio) {
           this.soundCache.set(asset.id, result.audio);
+
+          // Add to cache even if failed (placeholder)
+          const estimatedSize = this.estimateAudioSize(asset);
+          this.audioCache.set(asset.id, asset, estimatedSize);
         }
       }
     } catch (error) {
@@ -184,12 +240,28 @@ export class AudioManager implements IAudioManager {
     }
   }
 
+  /**
+   * Estimate audio asset size in bytes
+   * 바이트 단위의 오디오 자산 크기 추정
+   *
+   * @returns Estimated size in bytes
+   */
+  private estimateAudioSize(_asset: AudioAsset): number {
+    // Use ESTIMATED_ASSET_SIZE_MB constant for consistent estimation
+    // Conservative estimate: ~0.5MB per audio file (compressed MP3/WebM)
+    return ESTIMATED_ASSET_SIZE_MB * 1024 * 1024;
+  }
+
   async playSoundEffect(id: SoundEffectId): Promise<void> {
     if (this._muted) return;
 
     const playbackStart = performance.now();
 
     try {
+      // Update cache access time for LRU tracking
+      // LRU 추적을 위한 캐시 액세스 시간 업데이트
+      this.audioCache.get(id);
+
       // Use pool for frequently played sounds
       if (this.frequentSounds.has(id) && this.audioPool.hasPool(id)) {
         const audio = this.audioPool.acquire(id);
@@ -228,6 +300,10 @@ export class AudioManager implements IAudioManager {
     const playbackStart = performance.now();
 
     try {
+      // Update cache access time for LRU tracking
+      // LRU 추적을 위한 캐시 액세스 시간 업데이트
+      this.audioCache.get(id);
+
       // Use pool for frequently played sounds
       if (this.frequentSounds.has(id) && this.audioPool.hasPool(id)) {
         const audio = this.audioPool.acquire(id);
@@ -263,6 +339,10 @@ export class AudioManager implements IAudioManager {
     if (this._muted) return;
 
     this.stopMusic();
+
+    // Update cache access time for LRU tracking
+    // LRU 추적을 위한 캐시 액세스 시간 업데이트
+    this.audioCache.get(id);
 
     const audio = this.soundCache.get(id);
     if (audio) {
@@ -497,6 +577,10 @@ export class AudioManager implements IAudioManager {
       this.soundCache.delete(assetId);
     }
 
+    // Remove from AudioCache (LRU cache)
+    // LRU 캐시에서 제거
+    const removedFromCache = this.audioCache.remove(assetId);
+
     // Remove from loader cache
     const unloaded = this.assetLoader.unloadAsset(assetId);
 
@@ -508,7 +592,34 @@ export class AudioManager implements IAudioManager {
     // Unregister from monitor
     this.monitor.unregisterAsset(assetId);
 
-    return unloaded || audio !== undefined;
+    return unloaded || audio !== undefined || removedFromCache;
+  }
+
+  /**
+   * Get cache statistics including LRU cache metrics
+   * LRU 캐시 메트릭을 포함한 캐시 통계 가져오기
+   *
+   * @returns Cache statistics
+   */
+  getCacheStats(): {
+    readonly lruCache: {
+      readonly totalSize: number;
+      readonly assetCount: number;
+      readonly criticalCount: number;
+      readonly utilizationPercent: number;
+      readonly evictionCount: number;
+      readonly hitCount: number;
+      readonly missCount: number;
+      readonly hitRate: number;
+    };
+    readonly soundCache: number;
+    readonly poolStats: Map<string, PoolStatistics>;
+  } {
+    return {
+      lruCache: this.audioCache.getStats(),
+      soundCache: this.soundCache.size,
+      poolStats: this.audioPool.getAllStatistics(),
+    };
   }
 
   /**
