@@ -10,6 +10,7 @@ import { useFrame } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 
 /**
  * Props for HitFeedbackEffect3D component
@@ -66,21 +67,38 @@ const ImpactParticles: React.FC<{
       return x - Math.floor(x);
     }
 
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      // Start at center
-      pos[i3] = 0;
-      pos[i3 + 1] = 0;
-      pos[i3 + 2] = 0;
+    // Use pooled vector for velocity calculations to reduce allocations
+    // Pool strategy: Acquire once, reuse for all particles, release
+    const tempVel = ThreeObjectPools.vector3.acquire();
+    
+    try {
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        // Start at center
+        pos[i3] = 0;
+        pos[i3 + 1] = 0;
+        pos[i3 + 2] = 0;
 
-      // Random outward velocities using seeded random
-      const theta = seededRandom(i * 3) * Math.PI * 2;
-      const phi = seededRandom(i * 3 + 1) * Math.PI;
-      const speed = 0.5 + seededRandom(i * 3 + 2) * 1.5;
+        // Random outward velocities using seeded random
+        const theta = seededRandom(i * 3) * Math.PI * 2;
+        const phi = seededRandom(i * 3 + 1) * Math.PI;
+        const speed = 0.5 + seededRandom(i * 3 + 2) * 1.5;
 
-      vel[i3] = Math.sin(phi) * Math.cos(theta) * speed;
-      vel[i3 + 1] = Math.cos(phi) * speed + 1; // Upward bias
-      vel[i3 + 2] = Math.sin(phi) * Math.sin(theta) * speed;
+        tempVel.set(
+          Math.sin(phi) * Math.cos(theta),
+          Math.cos(phi),
+          Math.sin(phi) * Math.sin(theta)
+        );
+        tempVel.normalize().multiplyScalar(speed);
+        
+        // Add upward bias
+        vel[i3] = tempVel.x;
+        vel[i3 + 1] = tempVel.y + 1;
+        vel[i3 + 2] = tempVel.z;
+      }
+    } finally {
+      // Always release pooled vector
+      ThreeObjectPools.vector3.release(tempVel);
     }
 
     return { positions: pos, velocities: vel };
@@ -163,9 +181,15 @@ const RingEffect: React.FC<{
     const elapsed = (Date.now() - startTime.current) / 1000;
     const progress = Math.min(elapsed / 0.5, 1); // 0.5 second duration
 
-    // Expand ring
+    // Expand ring - use pooled vector for scale to avoid allocation
     const radius = progress * maxRadius;
-    meshRef.current.scale.setScalar(radius);
+    const tempScale = ThreeObjectPools.vector3.acquire();
+    try {
+      tempScale.setScalar(radius);
+      meshRef.current.scale.copy(tempScale);
+    } finally {
+      ThreeObjectPools.vector3.release(tempScale);
+    }
 
     // Fade out
     const material = meshRef.current.material as THREE.MeshBasicMaterial;

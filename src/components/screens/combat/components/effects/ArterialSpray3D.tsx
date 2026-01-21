@@ -21,6 +21,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
+import { ThreeObjectPools } from "../../../../../utils/threeObjectPool";
 
 /**
  * Arterial vital point types for targeted strikes
@@ -174,43 +175,60 @@ export const ArterialSpray3D: React.FC<ArterialSpray3DProps> = ({
 
         // Initialize particles in narrow jet pattern
         const particles: ArterialParticle[] = [];
-        const dir = new THREE.Vector3(...effect.direction).normalize();
+        
+        // Use pooled objects for direction vector calculations
+        // Pool strategy: Acquire temp vectors for calculations, store owned vectors
+        const tempDir = ThreeObjectPools.vector3.acquire();
+        const tempAxis = ThreeObjectPools.vector3.acquire();
+        const tempUp = ThreeObjectPools.vector3.acquire();
+        const tempVel = ThreeObjectPools.vector3.acquire();
+        
+        try {
+          tempDir.set(...effect.direction).normalize();
+          tempUp.set(0, 1, 0);
 
-        for (let i = 0; i < particleCount; i++) {
-          // Random angle within spray cone
-          const theta = Math.random() * Math.PI * 2;
-          const phi =
-            Math.random() * ARTERIAL_CONSTANTS.SPRAY_CONE_ANGLE;
+          for (let i = 0; i < particleCount; i++) {
+            // Random angle within spray cone
+            const theta = Math.random() * Math.PI * 2;
+            const phi =
+              Math.random() * ARTERIAL_CONSTANTS.SPRAY_CONE_ANGLE;
 
-          // Convert to velocity direction
-          const velocity = dir.clone();
-          velocity.applyAxisAngle(
-            new THREE.Vector3(0, 1, 0).cross(dir).normalize(),
-            phi
-          );
-          velocity.applyAxisAngle(dir, theta);
+            // Convert to velocity direction
+            // Use pooled temp vectors for rotation calculations
+            tempAxis.copy(tempUp).cross(tempDir).normalize();
+            tempVel.copy(tempDir);
+            tempVel.applyAxisAngle(tempAxis, phi);
+            tempVel.applyAxisAngle(tempDir, theta);
 
-          // High-velocity arterial spray
-          const speed =
-            ARTERIAL_CONSTANTS.VELOCITY_MIN +
-            Math.random() *
-              (ARTERIAL_CONSTANTS.VELOCITY_MAX - ARTERIAL_CONSTANTS.VELOCITY_MIN);
-          velocity.multiplyScalar(speed * effect.pressure);
-
-          particles.push({
-            position: new THREE.Vector3(...effect.position),
-            velocity,
-            age: 0,
-            lifetime:
-              ARTERIAL_CONSTANTS.DURATION +
-              ARTERIAL_CONSTANTS.POOL_LIFETIME,
-            settled: false,
-            size:
-              ARTERIAL_CONSTANTS.PARTICLE_SIZE_MIN +
+            // High-velocity arterial spray
+            const speed =
+              ARTERIAL_CONSTANTS.VELOCITY_MIN +
               Math.random() *
-                (ARTERIAL_CONSTANTS.PARTICLE_SIZE_MAX -
-                  ARTERIAL_CONSTANTS.PARTICLE_SIZE_MIN),
-          });
+                (ARTERIAL_CONSTANTS.VELOCITY_MAX - ARTERIAL_CONSTANTS.VELOCITY_MIN);
+            tempVel.multiplyScalar(speed * effect.pressure);
+
+            // Clone for storage - particles own their vectors
+            particles.push({
+              position: new THREE.Vector3(...effect.position),
+              velocity: tempVel.clone(),
+              age: 0,
+              lifetime:
+                ARTERIAL_CONSTANTS.DURATION +
+                ARTERIAL_CONSTANTS.POOL_LIFETIME,
+              settled: false,
+              size:
+                ARTERIAL_CONSTANTS.PARTICLE_SIZE_MIN +
+                Math.random() *
+                  (ARTERIAL_CONSTANTS.PARTICLE_SIZE_MAX -
+                    ARTERIAL_CONSTANTS.PARTICLE_SIZE_MIN),
+            });
+          }
+        } finally {
+          // Always release pooled objects
+          ThreeObjectPools.vector3.release(tempDir);
+          ThreeObjectPools.vector3.release(tempAxis);
+          ThreeObjectPools.vector3.release(tempUp);
+          ThreeObjectPools.vector3.release(tempVel);
         }
 
         effectInstancesRef.current.set(effect.id, {

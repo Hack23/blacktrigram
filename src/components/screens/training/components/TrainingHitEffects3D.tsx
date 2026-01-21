@@ -9,6 +9,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 
 /**
  * Props for TrainingHitEffects3D component
@@ -101,25 +102,38 @@ export const TrainingHitEffects3D: React.FC<TrainingHitEffects3DProps> = ({
     if (visible && !initializedRef.current) {
       initializedRef.current = true;
 
-      particlesRef.current = Array.from({ length: particleCount }, () => {
-        // Random direction in sphere
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        const speed = type === "perfect" ? 5 : type === "success" ? 3 : 2;
+      // Use pooled vector for velocity calculations to reduce allocations
+      // Pool strategy: Acquire once, reuse for all particles, release
+      const tempVel = ThreeObjectPools.vector3.acquire();
+      
+      try {
+        particlesRef.current = Array.from({ length: particleCount }, () => {
+          // Random direction in sphere
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          const speed = type === "perfect" ? 5 : type === "success" ? 3 : 2;
 
-        return {
-          position: new THREE.Vector3(0, 0, 0),
-          velocity: new THREE.Vector3(
-            Math.sin(phi) * Math.cos(theta) * speed,
-            Math.sin(phi) * Math.sin(theta) * speed,
-            Math.cos(phi) * speed
-          ),
-          life: 1.0,
-          maxLife: 1.0,
-          size: type === "perfect" ? 0.15 : 0.1,
-        };
-      });
-      setHasParticles(particlesRef.current.length > 0);
+          // Calculate velocity using pooled vector
+          tempVel.set(
+            Math.sin(phi) * Math.cos(theta),
+            Math.sin(phi) * Math.sin(theta),
+            Math.cos(phi)
+          );
+          tempVel.normalize().multiplyScalar(speed);
+
+          return {
+            position: new THREE.Vector3(0, 0, 0),
+            velocity: tempVel.clone(), // Clone for storage - particle owns this vector
+            life: 1.0,
+            maxLife: 1.0,
+            size: type === "perfect" ? 0.15 : 0.1,
+          };
+        });
+        setHasParticles(particlesRef.current.length > 0);
+      } finally {
+        // Always release pooled vector
+        ThreeObjectPools.vector3.release(tempVel);
+      }
     }
     // Reset initialization tracking when visibility changes to false
     if (!visible) {

@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 
 /**
  * Props for the HitEffects3D component.
