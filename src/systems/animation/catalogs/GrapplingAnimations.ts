@@ -12,7 +12,10 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
-import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import {
+  MartialArtsAnimationBuilder,
+  TECHNIQUE_TIMING,
+} from "../builders/MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // THROW (던지기) - Hip Throw
@@ -105,9 +108,16 @@ export const COUNTER_ATTACK_ANIMATION: SkeletalAnimation =
  */
 export const BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block", "막기")
-    .asDefense(0.35)
-    .parry(0.15) // 막기 - Block
-    .recover(0.2) // 복귀
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend,
+    ) // 막기 - Block
+    .recover(
+      TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    ) // 복귀
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -531,10 +541,17 @@ export const SUPLEX_ANIMATION: SkeletalAnimation =
  */
 export const HIGH_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block_high", "상단막기")
-    .asDefense(0.35)
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
     .withHighGuard() // High guard position
-    .parry(0.15) // Block
-    .recover(0.2) // Recover
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend,
+    ) // Block
+    .recover(
+      TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    ) // Recover
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -550,9 +567,16 @@ export const HIGH_BLOCK_ANIMATION: SkeletalAnimation =
  */
 export const LOW_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block_low", "하단막기")
-    .asDefense(0.35)
-    .parry(0.15) // Low block
-    .recover(0.2) // Recover
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend,
+    ) // Low block
+    .recover(
+      TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    ) // Recover
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

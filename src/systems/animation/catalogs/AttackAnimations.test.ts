@@ -29,19 +29,19 @@ describe("AttackAnimations", () => {
     it("should have correct metadata", () => {
       expect(JAB_ANIMATION.name).toBe("jab");
       expect(JAB_ANIMATION.koreanName).toBe("잽");
-      expect(JAB_ANIMATION.duration).toBe(0.3);
+      expect(JAB_ANIMATION.duration).toBe(0.55);
       expect(JAB_ANIMATION.loop).toBe(false);
       expect(JAB_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 5 keyframes", () => {
-      expect(JAB_ANIMATION.keyframes).toHaveLength(5);
+    it("should have 7 keyframes", () => {
+      expect(JAB_ANIMATION.keyframes).toHaveLength(7);
     });
 
     it("should have keyframes in chronological order", () => {
       for (let i = 1; i < JAB_ANIMATION.keyframes.length; i++) {
         expect(JAB_ANIMATION.keyframes[i].time).toBeGreaterThan(
-          JAB_ANIMATION.keyframes[i - 1].time
+          JAB_ANIMATION.keyframes[i - 1].time,
         );
       }
     });
@@ -58,10 +58,10 @@ describe("AttackAnimations", () => {
 
     it("should animate right arm bones", () => {
       const hasRightShoulder = JAB_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SHOULDER_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SHOULDER_R),
       );
       const hasRightElbow = JAB_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.ELBOW_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.ELBOW_R),
       );
 
       expect(hasRightShoulder).toBe(true);
@@ -70,7 +70,7 @@ describe("AttackAnimations", () => {
 
     it("should have torso rotation for weight transfer", () => {
       const hasTorsoRotation = JAB_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER),
       );
 
       expect(hasTorsoRotation).toBe(true);
@@ -81,21 +81,21 @@ describe("AttackAnimations", () => {
     it("should have correct metadata", () => {
       expect(CROSS_ANIMATION.name).toBe("cross");
       expect(CROSS_ANIMATION.koreanName).toBe("크로스");
-      expect(CROSS_ANIMATION.duration).toBe(0.35);
+      expect(CROSS_ANIMATION.duration).toBe(0.6);
       expect(CROSS_ANIMATION.loop).toBe(false);
       expect(CROSS_ANIMATION.type).toBe("attack");
     });
 
-    it("should have 6 keyframes", () => {
-      expect(CROSS_ANIMATION.keyframes).toHaveLength(6);
+    it("should have 8 keyframes", () => {
+      expect(CROSS_ANIMATION.keyframes).toHaveLength(8);
     });
 
     it("should animate left arm bones", () => {
       const hasLeftShoulder = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SHOULDER_L)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SHOULDER_L),
       );
       const hasLeftElbow = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.ELBOW_L)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.ELBOW_L),
       );
 
       expect(hasLeftShoulder).toBe(true);
@@ -104,7 +104,7 @@ describe("AttackAnimations", () => {
 
     it("should have hip rotation for power", () => {
       const hasPelvisRotation = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.PELVIS)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.PELVIS),
       );
 
       expect(hasPelvisRotation).toBe(true);
@@ -112,13 +112,13 @@ describe("AttackAnimations", () => {
 
     it("should have full body rotation chain", () => {
       const hasSpineLower = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_LOWER)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_LOWER),
       );
       const hasSpineMiddle = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_MIDDLE)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_MIDDLE),
       );
       const hasSpineUpper = CROSS_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER),
       );
 
       expect(hasSpineLower).toBe(true);
@@ -142,10 +142,10 @@ describe("AttackAnimations", () => {
 
     it("should animate right leg bones", () => {
       const hasRightHip = FRONT_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.HIP_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.HIP_R),
       );
       const hasRightKnee = FRONT_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_R),
       );
 
       expect(hasRightHip).toBe(true);
@@ -154,7 +154,7 @@ describe("AttackAnimations", () => {
 
     it("should have balance adjustments on support leg", () => {
       const hasLeftKnee = FRONT_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_L)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_L),
       );
 
       expect(hasLeftKnee).toBe(true);
@@ -164,7 +164,7 @@ describe("AttackAnimations", () => {
       const hasArmMovement = FRONT_KICK_ANIMATION.keyframes.some(
         (kf: AnimationKeyframe) =>
           kf.boneRotations.has(BoneName.SHOULDER_L) ||
-          kf.boneRotations.has(BoneName.SHOULDER_R)
+          kf.boneRotations.has(BoneName.SHOULDER_R),
       );
 
       expect(hasArmMovement).toBe(true);
@@ -186,7 +186,7 @@ describe("AttackAnimations", () => {
 
     it("should have hip rotation for circular motion", () => {
       const hasPelvisRotation = ROUNDHOUSE_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.PELVIS)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.PELVIS),
       );
 
       expect(hasPelvisRotation).toBe(true);
@@ -194,10 +194,10 @@ describe("AttackAnimations", () => {
 
     it("should animate right leg for kick", () => {
       const hasRightHip = ROUNDHOUSE_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.HIP_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.HIP_R),
       );
       const hasRightKnee = ROUNDHOUSE_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_R)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.KNEE_R),
       );
 
       expect(hasRightHip).toBe(true);
@@ -206,7 +206,7 @@ describe("AttackAnimations", () => {
 
     it("should have counter-rotation in torso", () => {
       const hasTorsoRotation = ROUNDHOUSE_KICK_ANIMATION.keyframes.some(
-        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER)
+        (kf: AnimationKeyframe) => kf.boneRotations.has(BoneName.SPINE_UPPER),
       );
 
       expect(hasTorsoRotation).toBe(true);
@@ -230,12 +230,12 @@ describe("AttackAnimations", () => {
       const hasLeftArm = BLOCK_ANIMATION.keyframes.some(
         (kf: AnimationKeyframe) =>
           kf.boneRotations.has(BoneName.SHOULDER_L) ||
-          kf.boneRotations.has(BoneName.ELBOW_L)
+          kf.boneRotations.has(BoneName.ELBOW_L),
       );
       const hasRightArm = BLOCK_ANIMATION.keyframes.some(
         (kf: AnimationKeyframe) =>
           kf.boneRotations.has(BoneName.SHOULDER_R) ||
-          kf.boneRotations.has(BoneName.ELBOW_R)
+          kf.boneRotations.has(BoneName.ELBOW_R),
       );
 
       expect(hasLeftArm).toBe(true);
@@ -246,7 +246,7 @@ describe("AttackAnimations", () => {
       const hasKneeMovement = BLOCK_ANIMATION.keyframes.some(
         (kf: AnimationKeyframe) =>
           kf.boneRotations.has(BoneName.KNEE_L) ||
-          kf.boneRotations.has(BoneName.KNEE_R)
+          kf.boneRotations.has(BoneName.KNEE_R),
       );
 
       expect(hasKneeMovement).toBe(true);
@@ -276,7 +276,7 @@ describe("AttackAnimations", () => {
     it("should have roundhouse_kick animation", () => {
       expect(ATTACK_ANIMATIONS.has("roundhouse_kick")).toBe(true);
       expect(ATTACK_ANIMATIONS.get("roundhouse_kick")).toBe(
-        ROUNDHOUSE_KICK_ANIMATION
+        ROUNDHOUSE_KICK_ANIMATION,
       );
     });
 
@@ -309,7 +309,7 @@ describe("AttackAnimations", () => {
   describe("getAnimationForTechnique", () => {
     it("should return roundhouse_kick for roundhouse kick techniques", () => {
       expect(getAnimationForTechnique("roundhouse_kick")).toBe(
-        "roundhouse_kick"
+        "roundhouse_kick",
       );
       expect(getAnimationForTechnique("돌려차기")).toBe("roundhouse_kick");
       expect(getAnimationForTechnique("dolryeo")).toBe("roundhouse_kick");
@@ -388,53 +388,53 @@ describe("AttackAnimations", () => {
     it("should return stance-specific animations by exact ID", () => {
       // Geon (Heaven) stance animations
       expect(getAnimationForTechnique("geon_heaven_strike")).toBe(
-        "geon_heaven_strike"
+        "geon_heaven_strike",
       );
       expect(getAnimationForTechnique("geon_heavenly_fist")).toBe(
-        "geon_heavenly_fist"
+        "geon_heavenly_fist",
       );
       expect(getAnimationForTechnique("geon_frontal_kick")).toBe(
-        "geon_frontal_kick"
+        "geon_frontal_kick",
       );
 
       // Tae (Lake) stance animations
       expect(getAnimationForTechnique("tae_wrist_lock")).toBe("tae_wrist_lock");
       expect(getAnimationForTechnique("tae_flowing_strikes")).toBe(
-        "tae_flowing_strikes"
+        "tae_flowing_strikes",
       );
 
       // Li (Fire) stance animations
       expect(getAnimationForTechnique("li_flame_spear")).toBe("li_flame_spear");
       expect(getAnimationForTechnique("li_nerve_strike")).toBe(
-        "li_nerve_strike"
+        "li_nerve_strike",
       );
 
       // Jin (Thunder) stance animations
       expect(getAnimationForTechnique("jin_lightning_flash")).toBe(
-        "jin_lightning_flash"
+        "jin_lightning_flash",
       );
       expect(getAnimationForTechnique("jin_tornado_kick")).toBe(
-        "jin_tornado_kick"
+        "jin_tornado_kick",
       );
 
       // Son (Wind) stance animations
       expect(getAnimationForTechnique("son_whirlwind_barrage")).toBe(
-        "son_whirlwind_barrage"
+        "son_whirlwind_barrage",
       );
 
       // Gam (Water) stance animations
       expect(getAnimationForTechnique("gam_water_counter")).toBe(
-        "gam_water_counter"
+        "gam_water_counter",
       );
 
       // Gan (Mountain) stance animations
       expect(getAnimationForTechnique("gan_rock_defense")).toBe(
-        "gan_rock_defense"
+        "gan_rock_defense",
       );
 
       // Gon (Earth) stance animations
       expect(getAnimationForTechnique("gon_earth_embrace")).toBe(
-        "gon_earth_embrace"
+        "gon_earth_embrace",
       );
       expect(getAnimationForTechnique("gon_leg_sweep")).toBe("gon_leg_sweep");
     });
@@ -553,7 +553,7 @@ describe("AttackAnimations", () => {
     it("should have keyframes in chronological order", () => {
       for (let i = 1; i < WALK_ANIMATION.keyframes.length; i++) {
         expect(WALK_ANIMATION.keyframes[i].time).toBeGreaterThan(
-          WALK_ANIMATION.keyframes[i - 1].time
+          WALK_ANIMATION.keyframes[i - 1].time,
         );
       }
     });
@@ -647,13 +647,13 @@ describe("AttackAnimations", () => {
     it("should include breathing motion through spine", () => {
       const breathingKeyframe = IDLE_STANCE_ANIMATION.keyframes[1];
       expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_LOWER)).toBe(
-        true
+        true,
       );
       expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_MIDDLE)).toBe(
-        true
+        true,
       );
       expect(breathingKeyframe.boneRotations.has(BoneName.SPINE_UPPER)).toBe(
-        true
+        true,
       );
     });
 

@@ -546,7 +546,7 @@ export class MartialArtsAnimationBuilder {
    */
   roundhouseChamber(
     timeOffset: number = 0.1,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply rotational phase
@@ -593,7 +593,7 @@ export class MartialArtsAnimationBuilder {
    */
   roundhouseExtend(
     timeOffset: number = 0.15,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Full extension with rotation
@@ -614,13 +614,13 @@ export class MartialArtsAnimationBuilder {
         BoneName.SPINE_UPPER,
         upperSpineRot?.x ?? 0,
         0.8,
-        upperSpineRot?.z ?? 0
+        upperSpineRot?.z ?? 0,
       );
       kf.rotate(
         BoneName.SPINE_LOWER,
         lowerSpineRot?.x ?? 0,
         -1.0,
-        lowerSpineRot?.z ?? 0
+        lowerSpineRot?.z ?? 0,
       );
 
       // Support leg pivots
@@ -898,7 +898,7 @@ export class MartialArtsAnimationBuilder {
    */
   crescentKickChamber(
     timeOffset: number = 0.1,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, 0.8, 0, -0.8);
@@ -916,7 +916,7 @@ export class MartialArtsAnimationBuilder {
    */
   crescentKickArc(
     timeOffset: number = 0.12,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, 1.2, 0, 1.0);
@@ -970,7 +970,7 @@ export class MartialArtsAnimationBuilder {
    */
   spinningHeelKick(
     timeOffset: number = 0.15,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.PELVIS, 0, -4.5, 0);
@@ -981,6 +981,159 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.FOOT_R, 0.3, 0, 0.2);
       kf.position(BoneName.FOOT_R, 0.6, 0.5, 0);
     });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook kick extension - Leg extends past target (후려차기 연장)
+   *
+   * Authentic Korean hook kick (후려차기) first phase:
+   * - Body rotates past perpendicular (~100°)
+   * - Leg extends past target like a missed side kick
+   * - Foot positioned to hook back toward target
+   * - Head maintains target visual
+   *
+   * The hook kick is distinct from crescent kick:
+   * - Crescent: sweeps ACROSS body
+   * - Hook: extends PAST, then hooks BACK
+   *
+   * @korean 후려차기연장
+   */
+  hookKickExtend(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Body rotates past perpendicular
+      kf.rotate(BoneName.PELVIS, 0, -1.8, 0); // ~103° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.6, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -1.4, 0.1);
+
+      // Head tracks target
+      kf.rotate(BoneName.HEAD, 0, 0.6, 0);
+
+      // Leg extends past target (like missed side kick)
+      kf.rotate(BoneName.HIP_R, 1.3, 0, 0.5);
+      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.2, 0, 0.4);
+
+      // Foot positioned past target
+      kf.position(BoneName.FOOT_R, 0.3, 0.8, -0.5);
+
+      // Support leg
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+
+      // Arms for balance
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.4, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook kick hook-back - Heel hooks back toward target (후려차기 후림)
+   *
+   * Authentic Korean hook kick (후려차기) second phase:
+   * - Leg retracts/hooks back toward target
+   * - Heel is the striking surface (발뒤꿈치)
+   * - Body rotates back toward target during hook
+   * - Snapping motion at knee for power
+   *
+   * The hook motion is what makes this kick unique:
+   * - Extends past, then HOOKS back
+   * - Catches opponent from unexpected angle
+   * - Heel strikes back of head or temple
+   *
+   * @korean 후려차기후림
+   */
+  hookKickHook(timeOffset: number = 0.12, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Body rotates back toward target
+      kf.rotate(BoneName.PELVIS, 0, -1.3, 0); // Rotate back ~75°
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.2, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
+
+      // Head stays on target
+      kf.rotate(BoneName.HEAD, 0, 0.4, 0);
+
+      // Leg hooks back - knee bends, hip rotates inward
+      kf.rotate(BoneName.HIP_R, 1.0, 0, -0.3); // Hip rotation inward
+      kf.rotate(BoneName.KNEE_R, -0.6, 0, 0); // Knee snap for power
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, -0.4); // Heel presentation
+
+      // Foot hooks back toward target
+      kf.position(BoneName.FOOT_R, 0, 0.8, 0.2);
+
+      // Support leg
+      kf.rotate(BoneName.HIP_L, 0, -0.1, 0);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+
+      // Arms counter for balance
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.2);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.3, -0.2);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Tornado kick jump with 360° rotation (회전차기 도약)
+   *
+   * Authentic Korean tornado kick (회전차기) jump phase:
+   * - Jump with full 360° body rotation
+   * - Arms swing to generate rotational momentum
+   * - Body elevates during spin
+   * - Prepares for roundhouse at apex
+   *
+   * @korean 회전차기도약
+   */
+  tornadoJump(timeOffset: number = 0.3): this {
+    // First half - 180° rotation while rising
+    this.addKeyframe(this.currentTime + timeOffset * 0.4, "ease-out", (kf) => {
+      kf.rotate(BoneName.PELVIS, 0, -3.14, 0); // 180° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -3.0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -2.8, 0);
+
+      // Jump - elevate body (use pelvis position)
+      kf.position(BoneName.PELVIS, 0, 0.3, 0);
+
+      // Both legs tuck for spin
+      kf.rotate(BoneName.HIP_R, 0.6, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -1.2, 0, 0);
+      kf.rotate(BoneName.HIP_L, 0.4, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -1.0, 0, 0);
+
+      // Arms swing for momentum
+      kf.rotate(BoneName.SHOULDER_L, -0.8, 0.6, 0.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.8, -0.6, -0.4);
+    });
+
+    // Complete 360° at apex
+    this.addKeyframe(this.currentTime + timeOffset, "ease-in", (kf) => {
+      kf.rotate(BoneName.PELVIS, 0, -6.28, 0); // Full 360° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -6.0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -5.8, 0);
+
+      // Peak height (use pelvis position)
+      kf.position(BoneName.PELVIS, 0, 0.5, 0);
+
+      // Kicking leg begins to chamber
+      kf.rotate(BoneName.HIP_R, 1.0, 0, 0.4);
+      kf.rotate(BoneName.KNEE_R, -1.5, 0, 0);
+
+      // Support leg extends
+      kf.rotate(BoneName.HIP_L, 0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+
+      // Arms position for kick
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.3, 0.3);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.3, -0.3);
+    });
+
     this.currentTime += timeOffset;
     return this;
   }
@@ -1000,7 +1153,7 @@ export class MartialArtsAnimationBuilder {
   punchChamber(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.CHAMBER, hand, {
@@ -1025,7 +1178,7 @@ export class MartialArtsAnimationBuilder {
   punchWindup(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.WINDUP, hand, {
@@ -1055,7 +1208,7 @@ export class MartialArtsAnimationBuilder {
   punchExtend(
     timeOffset: number = 0.07,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
@@ -1089,7 +1242,7 @@ export class MartialArtsAnimationBuilder {
   punchPeak(
     timeOffset: number = 0.05,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
@@ -1162,7 +1315,7 @@ export class MartialArtsAnimationBuilder {
   hookPunch(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1205,7 +1358,7 @@ export class MartialArtsAnimationBuilder {
   hookWindup(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1246,7 +1399,7 @@ export class MartialArtsAnimationBuilder {
   uppercutPunch(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1289,7 +1442,7 @@ export class MartialArtsAnimationBuilder {
   uppercutCrouch(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -2026,7 +2179,7 @@ export class MartialArtsAnimationBuilder {
    */
   private applyKoreanGuard(
     guardType: GuardPositionType,
-    side: "left" | "right" | "both" = "both"
+    side: "left" | "right" | "both" = "both",
   ): this {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
@@ -2193,7 +2346,7 @@ export class MartialArtsAnimationBuilder {
   private applyHandPose(
     kf: KeyframeConfig,
     pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
-    hand: "left" | "right" | "both"
+    hand: "left" | "right" | "both",
   ): void {
     applyHandPoseToConfig(kf, pose, hand);
   }
@@ -2322,7 +2475,7 @@ export class MartialArtsAnimationBuilder {
   private applyHandPoseToKeyframe(
     kf: AnimationKeyframe,
     pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
-    hand: "left" | "right" | "both"
+    hand: "left" | "right" | "both",
   ): void {
     applyHandPoseToKeyframe(kf, pose, hand);
   }
@@ -2336,7 +2489,7 @@ export class MartialArtsAnimationBuilder {
   applyHandPoseDuring(
     kf: KeyframeConfig,
     pose: keyof typeof HAND_POSES,
-    hand: "left" | "right" | "both" = "both"
+    hand: "left" | "right" | "both" = "both",
   ): void {
     this.applyHandPose(kf, HAND_POSES[pose], hand);
   }
@@ -2369,7 +2522,7 @@ export class MartialArtsAnimationBuilder {
       // Calculate symmetric foot positions using shared helper
       const totalWidth = calculateStanceWidth(
         stanceWidthMultiplier,
-        shoulderWidth
+        shoulderWidth,
       );
       const halfWidth = totalWidth / 2;
 
@@ -2401,11 +2554,11 @@ export class MartialArtsAnimationBuilder {
   applyFootPositionsDuring(
     kf: KeyframeConfig,
     stanceWidthMultiplier: number,
-    shoulderWidth: number
+    shoulderWidth: number,
   ): void {
     const totalWidth = calculateStanceWidth(
       stanceWidthMultiplier,
-      shoulderWidth
+      shoulderWidth,
     );
     const halfWidth = totalWidth / 2;
 
@@ -2510,7 +2663,7 @@ export class MartialArtsAnimationBuilder {
   private applyPunchTorsoRotation(
     kf: KeyframeConfig,
     side: "left" | "right",
-    rotationDegrees: number
+    rotationDegrees: number,
   ): void {
     const isRight = side === "right";
     // Punch rotates torso OPPOSITE to punch direction for power
@@ -2528,19 +2681,19 @@ export class MartialArtsAnimationBuilder {
       BoneName.SPINE_LOWER,
       existingLower?.x ?? 0,
       (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
-      existingLower?.z ?? 0
+      existingLower?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
       existingMiddle?.x ?? 0,
       (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
-      existingMiddle?.z ?? 0
+      existingMiddle?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
       existingUpper?.x ?? 0,
       (existingUpper?.y ?? 0) + rotationRad * direction,
-      existingUpper?.z ?? 0
+      existingUpper?.z ?? 0,
     );
   }
 
@@ -2574,7 +2727,7 @@ export class MartialArtsAnimationBuilder {
   private applyHookTorsoRotation(
     kf: KeyframeConfig,
     side: "left" | "right",
-    rotationDegrees: number
+    rotationDegrees: number,
   ): void {
     const isRight = side === "right";
     // Hook rotates torso INTO the punch for circular power
@@ -2591,19 +2744,19 @@ export class MartialArtsAnimationBuilder {
       BoneName.SPINE_LOWER,
       existingLower?.x ?? 0,
       (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
-      existingLower?.z ?? 0
+      existingLower?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
       existingMiddle?.x ?? 0,
       (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
-      existingMiddle?.z ?? 0
+      existingMiddle?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
       existingUpper?.x ?? 0,
       (existingUpper?.y ?? 0) + rotationRad * direction,
-      existingUpper?.z ?? 0
+      existingUpper?.z ?? 0,
     );
   }
 
@@ -2639,7 +2792,7 @@ export class MartialArtsAnimationBuilder {
   private applyKickTorsoLean(
     kf: KeyframeConfig,
     side: "left" | "right",
-    leanDegrees: number
+    leanDegrees: number,
   ): void {
     const isRight = side === "right";
     // Lean AWAY from kicking leg (left kick = lean right, right kick = lean left)
@@ -2681,7 +2834,7 @@ export class MartialArtsAnimationBuilder {
   private addKeyframe(
     time: number,
     easing: string,
-    configure: (kf: KeyframeConfig) => void
+    configure: (kf: KeyframeConfig) => void,
   ): void {
     const kf = new KeyframeConfig();
     configure(kf);

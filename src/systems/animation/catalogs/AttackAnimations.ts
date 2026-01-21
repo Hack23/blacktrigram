@@ -14,7 +14,10 @@
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 import { AnimationBuilder } from "../builders/AnimationBuilder";
-import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import {
+  MartialArtsAnimationBuilder,
+  TECHNIQUE_TIMING,
+} from "../builders/MartialArtsAnimationBuilder";
 
 /**
  * Jab animation with guard (잽 - 막기자세)
@@ -27,26 +30,26 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - During: MIDDLE_GUARD left hand (방어 유지)
  * - End: MIDDLE_GUARD both hands (복귀)
  *
- * Duration: 300ms
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
  *
  * @korean 잽애니메이션
  */
 export const JAB_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab", "잽")
-    .asAttack(0.3)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     // Start in middle guard
     .at(0.0)
     .withGuard("MIDDLE_GUARD")
     .done<MartialArtsAnimationBuilder>()
-    // Wind-up: right arm prepares, left maintains guard
-    .at(0.05)
+    // Wind-up: right arm prepares, left maintains guard (준비)
+    .at(TECHNIQUE_TIMING.FAST.chamber * 0.5)
     .rotate(BoneName.SHOULDER_R, 0.3, 0, -0.3)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
     .rotate(BoneName.SPINE_UPPER, 0, -0.15, 0)
     .withGuard("MIDDLE_GUARD", "left")
     .done<MartialArtsAnimationBuilder>()
-    // Extension: arm snaps forward
-    .at(0.1)
+    // Extension: arm snaps forward (실행)
+    .at(TECHNIQUE_TIMING.FAST.chamber)
     .rotate(BoneName.SHOULDER_R, -0.5, 0, 0.4)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.3)
     .rotate(BoneName.SPINE_UPPER, 0, 0.25, 0)
@@ -54,8 +57,8 @@ export const JAB_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0, 0.1, 0)
     .withGuard("MIDDLE_GUARD", "left")
     .done<MartialArtsAnimationBuilder>()
-    // Full extension
-    .at(0.15)
+    // Full extension with peak hold (정점)
+    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend)
     .rotate(BoneName.SHOULDER_R, -0.7, 0, 0.5)
     .rotate(BoneName.ELBOW_R, 0, 0, 0.05)
     .rotate(BoneName.WRIST_R, 0, 0, -0.2)
@@ -64,8 +67,31 @@ export const JAB_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0, 0.2, 0)
     .withGuard("MIDDLE_GUARD", "left")
     .done<MartialArtsAnimationBuilder>()
-    // Recovery: return to guard
-    .at(0.3)
+    // Peak hold for impact clarity
+    .at(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend +
+        TECHNIQUE_TIMING.FAST.peak,
+    )
+    .rotate(BoneName.SHOULDER_R, -0.7, 0, 0.5)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.05)
+    .rotate(BoneName.WRIST_R, 0, 0, -0.2)
+    .withGuard("MIDDLE_GUARD", "left")
+    .done<MartialArtsAnimationBuilder>()
+    // Retraction (회수)
+    .at(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend +
+        TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract,
+    )
+    .rotate(BoneName.SHOULDER_R, 0.1, 0, -0.2)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.2)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.05, 0)
+    .withGuard("MIDDLE_GUARD", "left")
+    .done<MartialArtsAnimationBuilder>()
+    // Recovery: return to guard (복귀)
+    .at(TECHNIQUE_TIMING.FAST.total)
     .withGuard("MIDDLE_GUARD")
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
     .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
@@ -85,19 +111,19 @@ export const JAB_ANIMATION: SkeletalAnimation =
  * - During: MIDDLE_GUARD right hand (방어 유지)
  * - End: MIDDLE_GUARD both hands (복귀)
  *
- * Duration: 350ms
+ * Duration: 600ms (TECHNIQUE_TIMING.FAST_MEDIUM)
  *
  * @korean 크로스펀치애니메이션
  */
 export const CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("cross", "크로스")
-    .asAttack(0.35)
+    .asAttack(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     // Start in middle guard
     .at(0.0)
     .withGuard("MIDDLE_GUARD")
     .done<MartialArtsAnimationBuilder>()
-    // Wind-up: left arm prepares, right maintains guard
-    .at(0.08)
+    // Wind-up: left arm prepares, right maintains guard (준비)
+    .at(TECHNIQUE_TIMING.FAST_MEDIUM.chamber * 0.6)
     .rotate(BoneName.SHOULDER_L, 0.2, 0, 0.3)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
     .rotate(BoneName.SPINE_UPPER, 0, -0.2, 0)
@@ -105,14 +131,17 @@ export const CROSS_ANIMATION: SkeletalAnimation =
     .withGuard("MIDDLE_GUARD", "right")
     .done<MartialArtsAnimationBuilder>()
     // Hip rotation begins
-    .at(0.12)
+    .at(TECHNIQUE_TIMING.FAST_MEDIUM.chamber)
     .rotate(BoneName.PELVIS, 0, 0.15, 0)
     .rotate(BoneName.SPINE_LOWER, 0, 0.2, 0)
     .rotate(BoneName.HIP_R, 0, 0.1, 0)
     .withGuard("MIDDLE_GUARD", "right")
     .done<MartialArtsAnimationBuilder>()
-    // Extension: arm snaps forward
-    .at(0.15)
+    // Extension: arm snaps forward (실행)
+    .at(
+      TECHNIQUE_TIMING.FAST_MEDIUM.chamber +
+        TECHNIQUE_TIMING.FAST_MEDIUM.extend * 0.5,
+    )
     .rotate(BoneName.SHOULDER_L, -0.5, 0, -0.4)
     .rotate(BoneName.ELBOW_L, 0, 0, -0.3)
     .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0)
@@ -120,8 +149,11 @@ export const CROSS_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0, 0.25, 0)
     .withGuard("MIDDLE_GUARD", "right")
     .done<MartialArtsAnimationBuilder>()
-    // Full extension
-    .at(0.2)
+    // Full extension (정점)
+    .at(
+      TECHNIQUE_TIMING.FAST_MEDIUM.chamber +
+        TECHNIQUE_TIMING.FAST_MEDIUM.extend,
+    )
     .rotate(BoneName.SHOULDER_L, -0.7, 0, -0.5)
     .rotate(BoneName.ELBOW_L, 0, 0, -0.05)
     .rotate(BoneName.WRIST_L, 0, 0, 0.2)
@@ -131,8 +163,31 @@ export const CROSS_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.PELVIS, 0, 0.3, 0)
     .withGuard("MIDDLE_GUARD", "right")
     .done<MartialArtsAnimationBuilder>()
-    // Recovery: return to guard
-    .at(0.35)
+    // Peak hold for impact clarity
+    .at(
+      TECHNIQUE_TIMING.FAST_MEDIUM.chamber +
+        TECHNIQUE_TIMING.FAST_MEDIUM.extend +
+        TECHNIQUE_TIMING.FAST_MEDIUM.peak,
+    )
+    .rotate(BoneName.SHOULDER_L, -0.7, 0, -0.5)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.05)
+    .rotate(BoneName.WRIST_L, 0, 0, 0.2)
+    .withGuard("MIDDLE_GUARD", "right")
+    .done<MartialArtsAnimationBuilder>()
+    // Retraction (회수)
+    .at(
+      TECHNIQUE_TIMING.FAST_MEDIUM.chamber +
+        TECHNIQUE_TIMING.FAST_MEDIUM.extend +
+        TECHNIQUE_TIMING.FAST_MEDIUM.peak +
+        TECHNIQUE_TIMING.FAST_MEDIUM.retract,
+    )
+    .rotate(BoneName.SHOULDER_L, 0.1, 0, 0.2)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.2)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.05, 0)
+    .withGuard("MIDDLE_GUARD", "right")
+    .done<MartialArtsAnimationBuilder>()
+    // Recovery: return to guard (복귀)
+    .at(TECHNIQUE_TIMING.FAST_MEDIUM.total)
     .withGuard("MIDDLE_GUARD")
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
     .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
@@ -261,7 +316,7 @@ export const FRONT_KICK_ANIMATION = AnimationBuilder.create("front_kick")
  * @korean 돌려차기애니메이션향상
  */
 export const ROUNDHOUSE_KICK_ANIMATION = AnimationBuilder.create(
-  "roundhouse_kick"
+  "roundhouse_kick",
 )
   .withKoreanName("돌려차기")
   .withDuration(0.6)
@@ -662,7 +717,7 @@ export const FORWARD_DASH_ANIMATION = AnimationBuilder.create("forward_dash")
  * @korean 뒤로물러서기애니메이션
  */
 export const BACKWARD_RETREAT_ANIMATION = AnimationBuilder.create(
-  "backward_retreat"
+  "backward_retreat",
 )
   .withKoreanName("뒤로 물러서기")
   .withDuration(0.45)
@@ -1067,7 +1122,7 @@ export const SIDE_KICK_ANIMATION = AnimationBuilder.create("side_kick")
  * @korean 팔꿈치올려치기애니메이션
  */
 export const ELBOW_UPPERCUT_ANIMATION = AnimationBuilder.create(
-  "elbow_uppercut"
+  "elbow_uppercut",
 )
   .withKoreanName("팔꿈치올려치기")
   .withDuration(0.18)
@@ -1691,7 +1746,7 @@ export const GRAPPLE_ANIMATION = AnimationBuilder.create("grapple")
  * @korean 반격애니메이션
  */
 export const COUNTER_ATTACK_ANIMATION = AnimationBuilder.create(
-  "counter_attack"
+  "counter_attack",
 )
   .withKoreanName("반격")
   .withDuration(0.4)
@@ -2145,7 +2200,7 @@ export const ARM_BAR_ANIMATION = AnimationBuilder.create("arm_bar")
  * @korean 반격애니메이션
  */
 export const COUNTER_STRIKE_ANIMATION = AnimationBuilder.create(
-  "counter_strike"
+  "counter_strike",
 )
   .withKoreanName("반격")
   .withDuration(0.25)
