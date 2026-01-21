@@ -1700,28 +1700,6 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Downward elbow - 12-6 elbow strike (내려팔꿈치)
-   * Vertical downward strike to crown of head
-   * @korean 내려팔꿈치
-   */
-  downwardElbow(timeOffset: number = 0.08, easing: string = "ease-in"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Arm crashes down vertically
-      kf.rotate(BoneName.SHOULDER_R, -1.2, 0, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.8);
-      // Body leans into strike
-      kf.rotate(BoneName.SPINE_UPPER, 0.3, 0, 0);
-      kf.rotate(BoneName.SPINE_MIDDLE, 0.2, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.15, 0, 0);
-      // Elbow drives down
-      kf.position(BoneName.ELBOW_R, 0.1, 0, 0.5);
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
    * Slashing elbow - Diagonal cutting elbow (베기팔꿈치)
    * Diagonal slash across opponent's face/temple
    * @korean 베기팔꿈치
@@ -1927,35 +1905,6 @@ export class MartialArtsAnimationBuilder {
       // Spear hand for throat targeting
       this.applyHandPose(kf, HAND_POSES.KNIFE_HAND, "right");
       this.applyHandPose(kf, HAND_POSES.FIST, "left");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
-   * Carotid grip - Vascular neck control (경동맥잡기)
-   * Precise grip on carotid artery
-   * @korean 경동맥잡기
-   */
-  carotidGrip(timeOffset: number = 0.1, easing: string = "ease-in"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Hand reaches around neck to carotid
-      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.4, 0.5);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.9);
-      kf.rotate(BoneName.WRIST_R, 0.3, 0.4, 0.2);
-
-      // Other hand controls shoulder
-      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.6, -0.3);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.1);
-
-      // Body closes distance
-      kf.rotate(BoneName.SPINE_UPPER, 0.15, 0.3, 0);
-      kf.rotate(BoneName.PELVIS, 0.1, 0.25, 0);
-      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-
-      // Precise grip for vascular control
-      this.applyHandPose(kf, HAND_POSES.GRAB, "right");
-      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
     });
     this.currentTime += timeOffset;
     return this;
@@ -2878,82 +2827,6 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Inside block - Deflecting outward (안막기)
-   * Single arm deflection from inside out
-   * @korean 안막기
-   */
-  blockInside(timeOffset: number = 0.08, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Left arm sweeps outward
-      kf.rotate(BoneName.SHOULDER_L, -0.3, 0.7, -0.6);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.9);
-      kf.rotate(BoneName.WRIST_L, 0, 0.3, 0);
-
-      // Right arm guards
-      kf.rotate(BoneName.SHOULDER_R, 0.2, 0.1, 0.3);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
-
-      kf.rotate(BoneName.SPINE_UPPER, 0, -0.2, 0);
-      kf.rotate(BoneName.PELVIS, 0, -0.1, 0);
-
-      this.applyHandPose(kf, HAND_POSES.FIST, "left");
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
-   * Outside block - Deflecting inward (바깥막기)
-   * Single arm deflection from outside in
-   * @korean 바깥막기
-   */
-  blockOutside(timeOffset: number = 0.08, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Left arm sweeps inward across body
-      kf.rotate(BoneName.SHOULDER_L, -0.2, 0.9, -0.4);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.2);
-      kf.rotate(BoneName.WRIST_L, 0, -0.2, 0);
-
-      // Right arm chambered
-      kf.rotate(BoneName.SHOULDER_R, 0.15, -0.2, 0.25);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
-
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.25, 0);
-      kf.rotate(BoneName.PELVIS, 0, 0.15, 0);
-
-      this.applyHandPose(kf, HAND_POSES.FIST, "left");
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
-   * X-block - Double arm cross block (십자막기)
-   * Both arms crossed for powerful block
-   * @korean 십자막기
-   */
-  blockCross(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Arms crossed in X pattern
-      kf.rotate(BoneName.SHOULDER_L, -0.7, 0.6, -0.3);
-      kf.rotate(BoneName.SHOULDER_R, -0.7, -0.6, 0.3);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.0);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.0);
-
-      // Strong stance
-      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.15, 0, 0);
-
-      this.applyHandPose(kf, HAND_POSES.FIST, "both");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
    * Knife hand block - Open hand deflection (수도막기)
    * Blade of hand for blocking
    * @korean 수도막기
@@ -3264,43 +3137,6 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
-  /**
-   * Throw lift (던지기리프트)
-   * @korean 던지기리프트
-   */
-  throwLift(timeOffset: number = 0.15, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_L, 0.7, 0.6, -0.4);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.9);
-      kf.rotate(BoneName.SHOULDER_R, 0.7, -0.6, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.9);
-      kf.rotate(BoneName.PELVIS, 0.8, 1.2, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0.5, 0.8, 0);
-      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
-      kf.position(BoneName.PELVIS, 0, 0.05, 0.15);
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
-   * Shoulder strike (어깨치기)
-   * @korean 어깨치기
-   */
-  shoulderStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.3, 0.8, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.6, 0.2);
-      kf.rotate(BoneName.PELVIS, 0, 0.5, 0);
-      kf.position(BoneName.SHOULDER_R, 0, 0, 0.15);
-      // Clenched fist for power transfer
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
   // ═══════════════════════════════════════════════════════════════════════
   // GUARD POSITIONS (방어 자세)
   // ═══════════════════════════════════════════════════════════════════════
@@ -3518,19 +3354,6 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Apply fist pose to hands - Closed fist for punches (주먹)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 주먹쥐기
-   */
-  withFist(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, hand);
-    }
-    return this;
-  }
-
-  /**
    * Apply open palm pose - Palm strikes and blocks (장권)
    * @param hand Which hand(s) to apply the pose to
    * @korean 손바닥펴기
@@ -3557,32 +3380,6 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Apply knife hand pose - Ridge hand strikes (수도)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 수도펴기
-   */
-  withKnifeHand(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.KNIFE_HAND, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply hammer fist pose - Bottom fist strikes (철퇴)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 철퇴주먹
-   */
-  withHammerFist(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.HAMMER_FIST, hand);
-    }
-    return this;
-  }
-
-  /**
    * Apply backfist pose - Knuckle strikes (등주먹)
    * @param hand Which hand(s) to apply the pose to
    * @korean 등주먹
@@ -3604,32 +3401,6 @@ export class MartialArtsAnimationBuilder {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
       this.applyHandPoseToKeyframe(lastKf, HAND_POSES.GRAB, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply two finger pose - Eye strikes (이지권)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 이지권
-   */
-  withTwoFinger(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.TWO_FINGER, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply relaxed pose - Natural/idle hands (자연)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 자연손
-   */
-  withRelaxedHands(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.RELAXED, hand);
     }
     return this;
   }
