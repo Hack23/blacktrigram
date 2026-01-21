@@ -82,8 +82,9 @@ describe("ParticlePool", () => {
     it("should release particle back to pool", () => {
       const particle = pool.acquire();
       expect(particle).not.toBeNull();
+      if (!particle) return;
       
-      pool.release(particle!);
+      pool.release(particle);
       
       const stats = pool.getStats();
       expect(stats.active).toBe(0);
@@ -93,13 +94,14 @@ describe("ParticlePool", () => {
     it("should reset particle state on release", () => {
       const particle = pool.acquire();
       expect(particle).not.toBeNull();
+      if (!particle) return;
       
       // Modify particle
-      particle!.position.set(10, 20, 30);
-      particle!.velocity.set(1, 2, 3);
-      particle!.size = 5.0;
+      particle.position.set(10, 20, 30);
+      particle.velocity.set(1, 2, 3);
+      particle.size = 5.0;
       
-      pool.release(particle!);
+      pool.release(particle);
       
       // Acquire again and check reset
       const particle2 = pool.acquire();
@@ -112,10 +114,13 @@ describe("ParticlePool", () => {
 
     it("should ignore release of non-active particle", () => {
       const particle = pool.acquire();
-      pool.release(particle!);
+      expect(particle).not.toBeNull();
+      if (!particle) return;
+      
+      pool.release(particle);
       
       // Try to release again
-      pool.release(particle!);
+      pool.release(particle);
       
       const stats = pool.getStats();
       expect(stats.available).toBe(10);
@@ -150,8 +155,8 @@ describe("ParticlePool", () => {
     });
 
     it("should handle mixed expired and alive particles", () => {
-      const particle1 = pool.acquire(0);
-      const particle2 = pool.acquire(1.5);
+      pool.acquire(0); // Will expire at 2.0
+      pool.acquire(1.5); // Will expire at 3.5
       
       // Update to expire first particle only
       pool.update(2.5);
@@ -239,7 +244,10 @@ describe("ParticlePool", () => {
       });
       
       const particle = pool2.acquire();
-      pool2.release(particle!);
+      expect(particle).not.toBeNull();
+      if (!particle) return;
+      
+      pool2.release(particle);
       
       const particle2 = pool2.acquire();
       expect(particle2?.color.getHex()).toBe(0xffffff);
@@ -258,8 +266,10 @@ describe("ParticlePool", () => {
       expect(pool.acquire()).toBeNull();
       
       // Release some
-      pool.release(particles[0]!);
-      pool.release(particles[1]!);
+      const p0 = particles[0];
+      const p1 = particles[1];
+      if (p0) pool.release(p0);
+      if (p1) pool.release(p1);
       
       // Should be able to acquire again
       const newParticle = pool.acquire();
@@ -269,8 +279,10 @@ describe("ParticlePool", () => {
     it("should maintain particle identity through acquire-release cycles", () => {
       const particle1 = pool.acquire();
       const id1 = particle1?.id;
+      expect(particle1).not.toBeNull();
+      if (!particle1) return;
       
-      pool.release(particle1!);
+      pool.release(particle1);
       
       const particle2 = pool.acquire();
       // Should get same particle object back
@@ -296,7 +308,7 @@ describe("ParticlePool", () => {
         defaultSize: 0.1,
       });
       
-      const particle = pool2.acquire(0);
+      pool2.acquire(0);
       pool2.update(0.002);
       
       const stats = pool2.getStats();
