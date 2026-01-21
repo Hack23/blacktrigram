@@ -175,9 +175,8 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      // Handle keyboard activation (Enter or Space)
+      // Set pressed state for visual feedback on keyboard activation
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
-        e.preventDefault();
         setIsPressed(true);
       }
     },
@@ -186,14 +185,12 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
 
   const handleKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      // Handle keyboard activation (Enter or Space)
+      // Clear pressed state - native button behavior will trigger onClick
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
-        e.preventDefault();
         setIsPressed(false);
-        onClick();
       }
     },
-    [disabled, onClick]
+    [disabled]
   );
 
   // Memoize button styles for performance
