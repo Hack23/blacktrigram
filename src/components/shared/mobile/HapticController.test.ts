@@ -197,6 +197,10 @@ describe("HapticController", () => {
       HapticController.instance = null;
 
       const controller = HapticController.getInstance();
+      
+      // Low-end devices have haptics disabled by default, need to enable
+      controller.enable();
+      
       const pattern = [40, 20, 40];
       
       // Advance time to avoid throttling

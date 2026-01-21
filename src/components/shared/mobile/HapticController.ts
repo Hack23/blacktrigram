@@ -95,7 +95,7 @@ export class HapticController {
   private isSupported: boolean = false;
   private isEnabled: boolean = true;
   private performanceTier: DevicePerformanceTier = 'high';
-  private lastTriggerTime: number = 0;
+  private lastTriggerTime: number = -Infinity; // Allow first trigger immediately
   private minTriggerInterval: number = 50; // Minimum 50ms between haptics
 
   /**

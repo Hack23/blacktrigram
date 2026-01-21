@@ -145,8 +145,8 @@ describe("TouchOptimizer", () => {
       document.dispatchEvent(touchStartEvent);
 
       // Execute RAF callback for touch start
-      if (rafSpy.mock.results[0]?.value) {
-        const callback = rafSpy.mock.calls[0]?.[0];
+      if (rafSpy.mock.calls[0]) {
+        const callback = rafSpy.mock.calls[0][0];
         if (callback) callback(0);
       }
 
@@ -162,9 +162,9 @@ describe("TouchOptimizer", () => {
       });
       document.dispatchEvent(moveEvent);
 
-      // Execute RAF callback for touch move
-      if (rafSpy.mock.results[0]?.value) {
-        const callback = rafSpy.mock.calls[0]?.[0];
+      // Execute RAF callback for touch move (check after mock was cleared)
+      if (rafSpy.mock.calls.length > 0) {
+        const callback = rafSpy.mock.calls[0][0];
         if (callback) callback(0);
       }
 
