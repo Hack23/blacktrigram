@@ -40,4 +40,3 @@ export type { StanceSymbol3DProps } from "./StanceSymbol3D";
 export { default as ActionFeedback } from "./ActionFeedback";
 export type { ActionFeedbackProps } from "./ActionFeedback";
 export { default as PlayerStateIndicators } from "./PlayerStateIndicators";
-export type { PlayerStateIndicatorsProps } from "./PlayerStateIndicators";

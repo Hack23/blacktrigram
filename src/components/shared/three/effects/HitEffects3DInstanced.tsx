@@ -90,7 +90,6 @@ const InstancedEffect: React.FC<{
     if (!ref.current) return;
 
     // Apply transforms from ref state
-    const alpha = 1 - effectRef.current.progress;
     ref.current.scale.setScalar(effectRef.current.scale);
 
     // Rotate for some effects
