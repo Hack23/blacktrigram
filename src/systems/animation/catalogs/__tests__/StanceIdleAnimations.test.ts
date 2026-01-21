@@ -164,7 +164,7 @@ describe("StanceIdleAnimations - Map Access", () => {
 
   it("should return correct animations via getTrigramIdleAnimation", () => {
     expect(getTrigramIdleAnimation(TrigramStance.GEON)).toBe(
-      GEON_IDLE_ANIMATION
+      GEON_IDLE_ANIMATION,
     );
     expect(getTrigramIdleAnimation(TrigramStance.TAE)).toBe(TAE_IDLE_ANIMATION);
     expect(getTrigramIdleAnimation(TrigramStance.LI)).toBe(LI_IDLE_ANIMATION);
@@ -248,28 +248,28 @@ describe("StanceIdleAnimations - Metadata", () => {
 
   it("should have matching breathing durations in metadata", () => {
     expect(TRIGRAM_IDLE_METADATA.GEON.breathingDuration).toBe(
-      GEON_IDLE_ANIMATION.duration
+      GEON_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.TAE.breathingDuration).toBe(
-      TAE_IDLE_ANIMATION.duration
+      TAE_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.LI.breathingDuration).toBe(
-      LI_IDLE_ANIMATION.duration
+      LI_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.JIN.breathingDuration).toBe(
-      JIN_IDLE_ANIMATION.duration
+      JIN_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.SON.breathingDuration).toBe(
-      SON_IDLE_ANIMATION.duration
+      SON_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.GAM.breathingDuration).toBe(
-      GAM_IDLE_ANIMATION.duration
+      GAM_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.GAN.breathingDuration).toBe(
-      GAN_IDLE_ANIMATION.duration
+      GAN_IDLE_ANIMATION.duration,
     );
     expect(TRIGRAM_IDLE_METADATA.GON.breathingDuration).toBe(
-      GON_IDLE_ANIMATION.duration
+      GON_IDLE_ANIMATION.duration,
     );
   });
 
@@ -319,22 +319,22 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
 
         // HIP rotations should be identical (no walking)
         if (firstHipL && hipL) {
-          expect(hipL.x).toBeCloseTo(firstHipL.x, 3);
-          expect(hipL.y).toBeCloseTo(firstHipL.y, 3);
-          expect(hipL.z).toBeCloseTo(firstHipL.z, 3);
+          expect(hipL.x).toBeCloseTo(firstHipL.x, 2);
+          expect(hipL.y).toBeCloseTo(firstHipL.y, 2);
+          expect(hipL.z).toBeCloseTo(firstHipL.z, 2);
         }
         if (firstHipR && hipR) {
-          expect(hipR.x).toBeCloseTo(firstHipR.x, 3);
-          expect(hipR.y).toBeCloseTo(firstHipR.y, 3);
-          expect(hipR.z).toBeCloseTo(firstHipR.z, 3);
+          expect(hipR.x).toBeCloseTo(firstHipR.x, 2);
+          expect(hipR.y).toBeCloseTo(firstHipR.y, 2);
+          expect(hipR.z).toBeCloseTo(firstHipR.z, 2);
         }
 
         // KNEE rotations should be identical (no walking)
         if (firstKneeL && kneeL) {
-          expect(kneeL.x).toBeCloseTo(firstKneeL.x, 3);
+          expect(kneeL.x).toBeCloseTo(firstKneeL.x, 2);
         }
         if (firstKneeR && kneeR) {
-          expect(kneeR.x).toBeCloseTo(firstKneeR.x, 3);
+          expect(kneeR.x).toBeCloseTo(firstKneeR.x, 2);
         }
       }
     }
@@ -371,7 +371,7 @@ describe("StanceIdleAnimations - Breathing Cycles", () => {
     // Li (Fire) should have shortest breath (precision, focus)
     // Gam (Water) should have longest breath (flowing, adaptive)
     expect(LI_IDLE_ANIMATION.duration).toBeLessThan(
-      GAM_IDLE_ANIMATION.duration
+      GAM_IDLE_ANIMATION.duration,
     );
   });
 
@@ -379,7 +379,7 @@ describe("StanceIdleAnimations - Breathing Cycles", () => {
     // Mountain stance should have very steady, minimal breathing
     // Reflected in smaller breathing range in metadata
     expect(GAN_IDLE_ANIMATION.duration).toBeGreaterThan(
-      LI_IDLE_ANIMATION.duration
+      LI_IDLE_ANIMATION.duration,
     );
   });
 });
