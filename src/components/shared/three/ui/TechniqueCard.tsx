@@ -210,7 +210,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       tabIndex={isAvailable ? 0 : -1}
       aria-label={`${technique.name.korean} (${technique.name.english}). Stamina: ${staminaCost}, Ki: ${kiCost}`}
       aria-disabled={!isAvailable}
-      aria-describedby={showTooltip ? `tooltip-${technique.id}` : undefined}
+      aria-describedby={showTooltip && isAvailable ? `tooltip-${technique.id}` : undefined}
       style={{
         position: "relative",
         width: `${cardSize.width}px`,
