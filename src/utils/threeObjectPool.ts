@@ -274,6 +274,72 @@ class QuaternionPool {
 }
 
 /**
+ * Pool for THREE.Color objects used in material and particle effects
+ * 
+ * Reduces GC pressure from creating new Color objects for visual effects,
+ * particle systems, and dynamic material updates.
+ * Prewarmed with 50 objects for typical combat scenarios.
+ * 
+ * @korean 색상풀
+ */
+class ColorPool {
+  private pool: THREE.Color[] = [];
+  private readonly maxSize: number;
+
+  constructor(maxSize = 100) {
+    this.maxSize = maxSize;
+  }
+
+  /**
+   * Acquire a Color object from the pool
+   * @returns Pooled or new Color object (reset to white)
+   */
+  acquire(): THREE.Color {
+    const color = this.pool.pop();
+    if (color) {
+      color.set(0xffffff);
+      return color;
+    }
+    return new THREE.Color(0xffffff);
+  }
+
+  /**
+   * Return a Color object to the pool
+   * @param color - Color object to return
+   */
+  release(color: THREE.Color): void {
+    if (this.pool.length < this.maxSize) {
+      this.pool.push(color);
+    }
+  }
+
+  /**
+   * Pre-populate pool with objects
+   * @param count - Number of objects to create
+   */
+  prewarm(count: number): void {
+    const toCreate = Math.min(count, this.maxSize - this.pool.length);
+    for (let i = 0; i < toCreate; i++) {
+      this.pool.push(new THREE.Color(0xffffff));
+    }
+  }
+
+  /**
+   * Get current pool size
+   */
+  get size(): number {
+    return this.pool.length;
+  }
+
+  /**
+   * Clear all pooled objects
+   */
+  clear(): void {
+    this.pool = [];
+  }
+}
+
+/**
  * Global Three.js object pools
  * 
  * Singleton pools for animation system to reduce GC pressure.
@@ -286,6 +352,12 @@ class QuaternionPool {
  * tempEuler.set(x, y, z);
  * // ... use tempEuler ...
  * ThreeObjectPools.euler.release(tempEuler);
+ * 
+ * // Acquire temporary Color for particle effect
+ * const tempColor = ThreeObjectPools.color.acquire();
+ * tempColor.set(0xff0000);
+ * // ... use tempColor ...
+ * ThreeObjectPools.color.release(tempColor);
  * 
  * // Prewarm pools on app start
  * ThreeObjectPools.prewarmAll();
@@ -306,21 +378,26 @@ export const ThreeObjectPools = {
   /** Quaternion rotation pool */
   quaternion: new QuaternionPool(200),
 
+  /** Color pool for materials and effects */
+  color: new ColorPool(100),
+
   /**
    * Pre-populate all pools with recommended sizes
    * 
    * Call this during app initialization for optimal performance.
-   * Recommended sizes based on 2 characters with 28 bones each:
-   * - Euler: 200 objects
-   * - Vector3: 200 objects
-   * - Matrix4: 100 objects
-   * - Quaternion: 100 objects
+   * Recommended sizes based on 2 characters with 28 bones each plus effects:
+   * - Euler: 200 objects (rotations)
+   * - Vector3: 200 objects (positions, velocities)
+   * - Matrix4: 100 objects (transformations)
+   * - Quaternion: 100 objects (rotations)
+   * - Color: 50 objects (particle effects, materials)
    */
   prewarmAll(): void {
     this.euler.prewarm(200);
     this.vector3.prewarm(200);
     this.matrix4.prewarm(100);
     this.quaternion.prewarm(100);
+    this.color.prewarm(50);
   },
 
   /**
@@ -332,12 +409,14 @@ export const ThreeObjectPools = {
     vector3: number;
     matrix4: number;
     quaternion: number;
+    color: number;
   } {
     return {
       euler: this.euler.size,
       vector3: this.vector3.size,
       matrix4: this.matrix4.size,
       quaternion: this.quaternion.size,
+      color: this.color.size,
     };
   },
 
@@ -349,6 +428,7 @@ export const ThreeObjectPools = {
     this.vector3.clear();
     this.matrix4.clear();
     this.quaternion.clear();
+    this.color.clear();
   },
 } as const;
 
@@ -433,5 +513,39 @@ export function withTempMatrices<T>(
     return fn(matrices);
   } finally {
     matrices.forEach((matrix) => ThreeObjectPools.matrix4.release(matrix));
+  }
+}
+
+/**
+ * Helper to execute a function with temporary Color objects
+ * Automatically acquires and releases Color objects.
+ * 
+ * @param count - Number of Color objects needed
+ * @param fn - Function that uses the Color objects
+ * @returns Result of the function
+ * 
+ * @example
+ * ```typescript
+ * const avgColor = withTempColors(2, ([color1, color2]) => {
+ *   color1.set(0xff0000);
+ *   color2.set(0x0000ff);
+ *   return color1.lerp(color2, 0.5);
+ * });
+ * ```
+ * 
+ * @korean 임시색상사용
+ */
+export function withTempColors<T>(
+  count: number,
+  fn: (colors: THREE.Color[]) => T
+): T {
+  const colors: THREE.Color[] = [];
+  try {
+    for (let i = 0; i < count; i++) {
+      colors.push(ThreeObjectPools.color.acquire());
+    }
+    return fn(colors);
+  } finally {
+    colors.forEach((color) => ThreeObjectPools.color.release(color));
   }
 }
