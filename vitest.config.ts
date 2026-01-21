@@ -1,9 +1,10 @@
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vitest/config";
+import { glslPlugin } from "./vite-plugins/glsl-plugin";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), glslPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
