@@ -1,9 +1,27 @@
 /**
  * Bone-attached clothing system for realistic clothing movement with skeleton
  *
+ * **Enhanced Features (v0.6.23+)**:
+ * - **Subsurface Scattering**: Realistic fabric translucency with light transmission
+ * - **Physical Materials**: Advanced PBR materials with clearcoat and reflectivity
+ * - **Body Thickness Scaling**: Accurate clothing sizing based on muscle/fat mass
+ * - **Archetype Styling**: Unique clothing sets for all 5 player archetypes
+ *
  * Clothing is rendered as children of their parent bones, inheriting bone
  * transformations automatically for proper movement during animation.
  * This mirrors the BoneMuscles approach for consistent rendering.
+ *
+ * **Visual Quality**:
+ * - Transmission: 0.05 (minimal light passing through fabric)
+ * - Thickness: 0.2 (thin fabric simulation)
+ * - IOR: 1.4 (realistic fabric index of refraction)
+ * - Clearcoat: 0.3 (surface depth and sheen)
+ * - Double-sided rendering for cloth folding
+ *
+ * **Performance**:
+ * - Geometry disposal on unmount (prevents memory leaks)
+ * - Material cleanup system
+ * - Optimized attachment calculations with useMemo
  *
  * @module components/three/BoneClothing
  * @category 3D Components
