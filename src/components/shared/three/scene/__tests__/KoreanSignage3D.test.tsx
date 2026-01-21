@@ -151,33 +151,15 @@ describe("KoreanSignage3D", () => {
       expect(KOREAN_COLORS.PRIMARY_CYAN).toBe(0x00e6e6);
       expect(KOREAN_COLORS.KOREAN_RED).toBe(0xc8102e);
     });
-
-    it("should create materials with correct colors", () => {
-      const goldMaterial = new THREE.MeshBasicMaterial({
-        color: KOREAN_COLORS.ACCENT_GOLD,
-        toneMapped: false,
-      });
-      const cyanMaterial = new THREE.MeshBasicMaterial({
-        color: KOREAN_COLORS.PRIMARY_CYAN,
-        toneMapped: false,
-      });
-      const redMaterial = new THREE.MeshBasicMaterial({
-        color: KOREAN_COLORS.KOREAN_RED,
-        toneMapped: false,
-      });
-
-      expect(goldMaterial.color.getHex()).toBe(KOREAN_COLORS.ACCENT_GOLD);
-      expect(cyanMaterial.color.getHex()).toBe(KOREAN_COLORS.PRIMARY_CYAN);
-      expect(redMaterial.color.getHex()).toBe(KOREAN_COLORS.KOREAN_RED);
-
-      goldMaterial.dispose();
-      cyanMaterial.dispose();
-      redMaterial.dispose();
-    });
   });
 
   describe("Korean text rendering", () => {
-    it("should render Korean characters without errors", () => {
+    it("should render without errors (Korean text smoke test)", () => {
+      // Smoke test: Verifies component renders with Korean text without crashing.
+      // Component renders three Korean text signs:
+      // "전투" (Combat), "흑괘" (Black Trigram), "급소격" (Vital Point Strike)
+      // Note: JSDOM doesn't provide access to Three.js Text components to verify
+      // actual text content. Visual validation requires WebGL testing (e.g., Cypress).
       const { container } = render(
         <Canvas>
           <Suspense fallback={null}>
@@ -186,21 +168,7 @@ describe("KoreanSignage3D", () => {
         </Canvas>
       );
 
-      // Component renders three Korean text signs:
-      // "전투" (Combat), "흑괘" (Black Trigram), "급소격" (Vital Point Strike)
       expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-
-
-    it("should handle Korean character encoding properly", () => {
-      const koreanTexts = ["전투", "흑괘", "급소격"];
-
-      koreanTexts.forEach((text) => {
-        // Verify Korean text is valid UTF-8
-        expect(text).toBeTruthy();
-        expect(text.length).toBeGreaterThan(0);
-      });
     });
   });
 
@@ -228,30 +196,6 @@ describe("KoreanSignage3D", () => {
       expect(leftWallRotation).toBeCloseTo(1.5708, 4);
       expect(rightWallRotation).toBeCloseTo(-1.5708, 4);
       expect(backWallRotation).toBe(0);
-    });
-  });
-
-  describe("color verification", () => {
-    it("should use correct Korean colors for all signs", () => {
-      // Verify color constants (no need to render for constant validation)
-      expect(KOREAN_COLORS.ACCENT_GOLD).toBe(0xffc400);
-      expect(KOREAN_COLORS.PRIMARY_CYAN).toBe(0x00e6e6);
-      expect(KOREAN_COLORS.KOREAN_RED).toBe(0xc8102e);
-    });
-
-    it("should apply correct outline colors", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Combat sign: cyan outline
-      // Black Trigram sign: gold outline
-      // Vital Point Strike sign: gold outline
-      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 

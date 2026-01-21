@@ -46,18 +46,7 @@ describe("AtmosphericParticles3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should apply correct particle properties", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={500} scale={1.0} speed={2} />
-          </Suspense>
-        </Canvas>
-      );
 
-      // Verify component renders
-      expect(container).toBeTruthy();
-    });
   });
 
   describe("geometry cleanup", () => {
@@ -166,7 +155,16 @@ describe("AtmosphericParticles3D", () => {
   });
 
   describe("material properties", () => {
-    it("should render with correct material setup", () => {
+    it("should render without errors (material smoke test)", () => {
+      // Smoke test: Verifies component renders with material configuration.
+      // The material is configured in JSX with:
+      // - blending={THREE.AdditiveBlending}
+      // - transparent
+      // - opacity={0.3}
+      // - depthWrite={false}
+      // - sizeAttenuation
+      // Note: JSDOM doesn't provide Three.js scene graph access to verify these properties.
+      // Material property validation requires WebGL testing (e.g., Cypress with real browser).
       const { container } = render(
         <Canvas>
           <Suspense fallback={null}>
@@ -175,14 +173,6 @@ describe("AtmosphericParticles3D", () => {
         </Canvas>
       );
 
-      // Component should render with additive blending material
-      // The material is configured in JSX with:
-      // - blending={THREE.AdditiveBlending}
-      // - transparent
-      // - opacity={0.3}
-      // - depthWrite={false}
-      // - sizeAttenuation
-      // Note: JSDOM doesn't provide Three.js scene graph access for detailed verification
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
@@ -246,7 +236,11 @@ describe("AtmosphericParticles3D", () => {
   });
 
   describe("deterministic position generation", () => {
-    it("should generate positions consistently", () => {
+    it("should render successfully with consistent parameters", () => {
+      // Smoke test: Verifies component renders without errors when called multiple times
+      // with the same parameters. Note: JSDOM doesn't provide access to Three.js scene
+      // graph to verify actual position determinism. Full validation requires WebGL testing.
+      
       // First render
       const { unmount: unmount1, container: container1 } = render(
         <Canvas>
@@ -271,7 +265,8 @@ describe("AtmosphericParticles3D", () => {
       expect(container2.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should generate positions for different counts", () => {
+    it("should render successfully with different particle counts", () => {
+      // Smoke test: Verifies component handles different particle counts without errors
       const { container: container1 } = render(
         <Canvas>
           <Suspense fallback={null}>
