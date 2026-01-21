@@ -198,13 +198,16 @@ describe("TouchOptimizer", () => {
     });
 
     it("should fallback to setTimeout if requestIdleCallback not available", () => {
-      // Remove requestIdleCallback
+      // Save original requestIdleCallback
       const originalIdleCallback = (window as Window & typeof globalThis).requestIdleCallback;
-      // @ts-expect-error - Intentionally setting to undefined for test
-      (window as Window & typeof globalThis).requestIdleCallback = undefined;
+      
+      // Remove requestIdleCallback to test fallback
+      delete (window as Window & typeof globalThis).requestIdleCallback;
 
       const setTimeoutSpy = vi.spyOn(window, 'setTimeout').mockImplementation((cb) => {
-        cb();
+        if (typeof cb === 'function') {
+          cb();
+        }
         return 0 as unknown as NodeJS.Timeout;
       });
 

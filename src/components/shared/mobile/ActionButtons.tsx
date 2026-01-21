@@ -19,7 +19,7 @@ import { Html } from '@react-three/drei';
 import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react';
 import { KOREAN_COLORS } from '../../../types/constants';
 import { triggerOptimizedHaptic } from './HapticController';
-import { applyOptimizedUpdate, createTransformStyle } from './TouchOptimizer';
+import { applyOptimizedUpdate, createTransformStyle, createFilterStyle } from './TouchOptimizer';
 import { getColorRGB } from '../../../utils/colorHelpers';
 import { handleKeyboardNav, getFocusStyle } from '../../../utils/accessibility';
 import { createBilingualLabel } from '../../../types/AccessibilityTypes';
@@ -123,7 +123,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         (element) => {
           // GPU-accelerated transform
           element.style.transform = createTransformStyle(true, 0.95);
-          element.style.filter = 'brightness(1.2)';
+          element.style.filter = createFilterStyle(true, 1.2);
         },
         () => {
           // Deferred state update
@@ -150,7 +150,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         attackButtonRef.current,
         (element) => {
           element.style.transform = createTransformStyle(false);
-          element.style.filter = 'brightness(1)';
+          element.style.filter = createFilterStyle(false);
         },
         () => {
           setAttackPressed(false);
@@ -174,7 +174,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         blockButtonRef.current,
         (element) => {
           element.style.transform = createTransformStyle(true, 0.95);
-          element.style.filter = 'brightness(1.2)';
+          element.style.filter = createFilterStyle(true, 1.2);
         },
         () => {
           setBlockPressed(true);
@@ -200,7 +200,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         blockButtonRef.current,
         (element) => {
           element.style.transform = createTransformStyle(false);
-          element.style.filter = 'brightness(1)';
+          element.style.filter = createFilterStyle(false);
         },
         () => {
           setBlockPressed(false);
@@ -218,11 +218,11 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
     return () => {
       if (attackButtonRef.current) {
         attackButtonRef.current.style.transform = createTransformStyle(false);
-        attackButtonRef.current.style.filter = 'brightness(1)';
+        attackButtonRef.current.style.filter = createFilterStyle(false);
       }
       if (blockButtonRef.current) {
         blockButtonRef.current.style.transform = createTransformStyle(false);
-        blockButtonRef.current.style.filter = 'brightness(1)';
+        blockButtonRef.current.style.filter = createFilterStyle(false);
       }
     };
   }, []);
@@ -320,7 +320,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             touchAction: 'none',
             transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
             transform: createTransformStyle(attackPressed, 0.95),
-            filter: attackPressed ? 'brightness(1.2)' : 'brightness(1)',
+            filter: createFilterStyle(attackPressed, 1.2),
             willChange: 'transform, filter', // GPU hint
             boxShadow: attackPressed
               ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
@@ -369,7 +369,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             touchAction: 'none',
             transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
             transform: createTransformStyle(blockPressed, 0.95),
-            filter: blockPressed ? 'brightness(1.2)' : 'brightness(1)',
+            filter: createFilterStyle(blockPressed, 1.2),
             willChange: 'transform, filter', // GPU hint
             boxShadow: blockPressed
               ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`

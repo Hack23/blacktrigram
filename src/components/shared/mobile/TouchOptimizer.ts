@@ -224,12 +224,21 @@ export function useTouchOptimizer(
       // Get coalesced events for smooth tracking
       let events: readonly Touch[] = [e.touches[0]];
       
-      if (enableCoalescing && 'getCoalescedEvents' in e) {
-        const coalesced = e.getCoalescedEvents?.();
-        if (coalesced && coalesced.length > 0) {
-          // Use only the last N events to reduce overhead
-          const recentEvents = coalesced.slice(-coalescingSampleRate);
-          events = recentEvents.map((evt) => evt.touches[0]).filter(Boolean);
+      if (enableCoalescing) {
+        // Feature detection: getCoalescedEvents is experimental
+        // Fallback to single event if not supported
+        if (typeof e.getCoalescedEvents === 'function') {
+          try {
+            const coalesced = e.getCoalescedEvents();
+            if (coalesced && coalesced.length > 0) {
+              // Use only the last N events to reduce overhead
+              const recentEvents = coalesced.slice(-coalescingSampleRate);
+              events = recentEvents.map((evt) => evt.touches[0]).filter(Boolean);
+            }
+          } catch (error) {
+            // Fallback to single event if getCoalescedEvents fails
+            console.debug('Touch coalescing not supported, using fallback');
+          }
         }
       }
 
@@ -360,18 +369,17 @@ export function applyOptimizedUpdate(
 
 /**
  * Create transform-only style for GPU-accelerated animations
- * Avoids layout thrashing by only using transform and opacity
+ * Avoids layout thrashing by only using transform
  * 
  * @param pressed - Whether element is pressed
  * @param scale - Scale value when pressed (default: 0.95)
- * @param brightness - Brightness multiplier when pressed (default: 1.2)
  * 
  * @returns CSS transform string
  * 
  * @example
  * ```tsx
  * const style = {
- *   transform: createTransformStyle(isPressed, 0.95, 1.1),
+ *   transform: createTransformStyle(isPressed, 0.95),
  *   transition: 'transform 0.1s ease-out',
  *   willChange: 'transform', // Hint to GPU
  * };
@@ -382,8 +390,7 @@ export function applyOptimizedUpdate(
  */
 export function createTransformStyle(
   pressed: boolean,
-  scale: number = 0.95,
-  brightness: number = 1.2
+  scale: number = 0.95
 ): string {
   if (pressed) {
     return `scale(${scale})`;

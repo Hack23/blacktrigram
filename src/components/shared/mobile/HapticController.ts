@@ -222,8 +222,10 @@ export class HapticController {
 
     try {
       // Trigger vibration
-      const success = navigator.vibrate(pattern.vibration);
-      return success;
+      // Note: navigator.vibrate() returns boolean in some browsers, void in others
+      // Always normalize to boolean for consistency
+      const result = navigator.vibrate(pattern.vibration);
+      return result !== false; // Return true if not explicitly false
     } catch (error) {
       console.warn('Haptic feedback failed:', error);
       return false;
@@ -270,8 +272,10 @@ export class HapticController {
         }
       }
 
-      const success = navigator.vibrate(adaptedPattern);
-      return success;
+      // Trigger vibration
+      // Note: navigator.vibrate() returns boolean in some browsers, void in others
+      const result = navigator.vibrate(adaptedPattern);
+      return result !== false; // Return true if not explicitly false
     } catch (error) {
       console.warn('Custom haptic feedback failed:', error);
       return false;
@@ -292,8 +296,9 @@ export class HapticController {
     }
 
     try {
-      const success = navigator.vibrate(0);
-      return success;
+      // Note: navigator.vibrate() returns boolean in some browsers, void in others
+      const result = navigator.vibrate(0);
+      return result !== false; // Return true if not explicitly false
     } catch (error) {
       console.warn('Failed to stop haptic feedback:', error);
       return false;
