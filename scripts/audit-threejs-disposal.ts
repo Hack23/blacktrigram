@@ -26,7 +26,6 @@ interface AuditResult {
 }
 
 interface AuditSummary {
-  totalFiles: number;
   filesWithThreeObjects: number;
   filesWithDisposal: number;
   highRiskFiles: number;
@@ -165,7 +164,6 @@ function auditFile(filePath: string, verbose: boolean = false): AuditResult | nu
  */
 function generateReport(results: AuditResult[]): AuditSummary {
   const summary: AuditSummary = {
-    totalFiles: results.length,
     filesWithThreeObjects: results.length,
     filesWithDisposal: results.filter(r => r.hasDispose).length,
     highRiskFiles: results.filter(r => r.riskLevel === 'HIGH').length,
@@ -188,7 +186,7 @@ function printSummary(summary: AuditSummary, results: AuditResult[], totalScanne
   
   console.log('\n📊 Summary Statistics:');
   console.log(`   Total files scanned: ${totalScanned}`);
-  console.log(`   Files with Three.js objects: ${summary.totalFiles}`);
+  console.log(`   Files with Three.js objects: ${summary.filesWithThreeObjects}`);
   console.log(`   Files with disposal: ${summary.filesWithDisposal} (${((summary.filesWithDisposal / summary.filesWithThreeObjects) * 100).toFixed(1)}%)`);
   console.log(`   Files needing fixes: ${summary.highRiskFiles + summary.mediumRiskFiles + summary.lowRiskFiles}`);
   
