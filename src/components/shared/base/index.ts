@@ -4,6 +4,8 @@
  * Provides centralized Korean cyberpunk theming components
  * to eliminate code duplication across the application.
  * 
+ * Enhanced with WCAG 2.1 AA accessibility features and Korean typography optimization
+ * 
  * @module components/base
  */
 
@@ -21,6 +23,10 @@ export type { BaseTextProps } from "./BaseText";
 export { BaseButtonOverlayHtml } from "./BaseButtonOverlayHtml";
 export type { BaseButtonOverlayHtmlProps } from "./BaseButtonOverlayHtml";
 
+// Accessibility provider and hook
+export { AccessibilityProvider, useAccessibility } from "./AccessibilityProvider";
+export type { AccessibilityProviderProps, AccessibilityContextValue } from "./AccessibilityProvider";
+
 // Hooks - useKoreanTheme is used by 5 files
 export { useKoreanTheme } from "./useKoreanTheme";
 export type {
@@ -29,6 +35,8 @@ export type {
   PanelVariantConfig,
   SizeDimensions,
   TextSizeConfig,
+  KoreanTypographyConfig,
+  AccessibilityConfig,
 } from "./useKoreanTheme";
 
 // Note: layoutUtils exports removed as they are unused in the application

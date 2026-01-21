@@ -13,7 +13,7 @@
  */
 
 import { Html } from "@react-three/drei";
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { KOREAN_COLORS, UI_DIMENSIONS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../utils/htmlOverlayHelpers";
@@ -38,6 +38,12 @@ export interface BaseButtonProps {
   readonly layer?: HtmlOverlayLayer;
   /** Whether button should occlude behind 3D objects (default: false) */
   readonly occlude?: boolean;
+  /** ARIA label for accessibility (optional, defaults to korean text) */
+  readonly ariaLabel?: string;
+  /** ARIA described by ID for additional context */
+  readonly ariaDescribedBy?: string;
+  /** Auto-focus on mount (default: false) */
+  readonly autoFocus?: boolean;
 }
 
 /**
@@ -46,6 +52,15 @@ export interface BaseButtonProps {
  * Enhanced Korean-themed button with common functionality extracted.
  * Uses useKoreanTheme hook for consistent styling.
  * Now includes Html overlay positioning helpers for proper z-index and performance.
+ * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - Proper ARIA labels and semantic HTML
+ * - Keyboard navigation support (Enter and Space keys)
+ * - Visible focus indicators with high contrast
+ * - Disabled state properly communicated
+ * - Minimum 44x44px touch targets on mobile
+ * 
+ * Optimized with React.memo for performance
  * 
  * @example
  * ```tsx
@@ -56,10 +71,11 @@ export interface BaseButtonProps {
  *   variant="primary"
  *   size="md"
  *   layer="hud"
+ *   ariaLabel="Attack button"
  * />
  * ```
  */
-export const BaseButton: React.FC<BaseButtonProps> = ({
+const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   korean,
   english,
   onClick,
@@ -72,17 +88,29 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
   isMobile = false,
   layer = "hud",
   occlude = false,
+  ariaLabel,
+  ariaDescribedBy,
+  autoFocus = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Use Korean theme hook for consistent styling
-  const { buttonVariant, buttonSize, fontFamily } = useKoreanTheme({
+  const { buttonVariant, buttonSize, fontFamily, accessibility } = useKoreanTheme({
     variant,
     size,
     disabled,
     isMobile,
   });
+
+  // Auto-focus on mount if requested
+  useEffect(() => {
+    if (autoFocus && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [autoFocus]);
 
   // Track screen width for responsive distance factor updates on resize
   const [screenWidth, setScreenWidth] = useState(() => 
@@ -137,6 +165,34 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
     setIsPressed(false);
   }, []);
 
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      // Set pressed state for visual feedback on keyboard activation
+      if ((e.key === "Enter" || e.key === " ") && !disabled) {
+        setIsPressed(true);
+      }
+    },
+    [disabled]
+  );
+
+  const handleKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      // Clear pressed state - native button behavior will trigger onClick
+      if ((e.key === "Enter" || e.key === " ") && !disabled) {
+        setIsPressed(false);
+      }
+    },
+    [disabled]
+  );
+
   // Memoize button styles for performance
   const buttonStyle = useMemo<React.CSSProperties>(() => {
     let background = hexToRgbaString(buttonVariant.background, 0.9);
@@ -163,6 +219,9 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
       userSelect: "none",
       WebkitUserSelect: "none",
       width: fullWidth ? "100%" : "auto",
+      // Ensure minimum touch target size on mobile (WCAG 2.1 AA)
+      minWidth: isMobile ? accessibility.minTouchTarget : "auto",
+      minHeight: isMobile ? accessibility.minTouchTarget : "auto",
       boxShadow: isHovered && !disabled
         ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
         : "none",
@@ -171,6 +230,9 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
       // Apply GPU acceleration from overlay style
       WebkitTransform: overlayStyle.transform,
       zIndex: overlayStyle.zIndex,
+      // WCAG 2.1 AA compliant focus indicator
+      outline: isFocused && !disabled ? accessibility.focusOutline : "none",
+      outlineOffset: isFocused && !disabled ? accessibility.focusOutlineOffset : "0",
     };
   }, [
     buttonVariant,
@@ -180,7 +242,10 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
     fullWidth,
     isHovered,
     isPressed,
+    isFocused,
     overlayStyle,
+    isMobile,
+    accessibility,
   ]);
 
   return (
@@ -192,12 +257,21 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
       style={{ pointerEvents: overlayStyle.pointerEvents }}
     >
       <button
+        ref={buttonRef}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
         disabled={disabled}
+        type="button"
+        aria-label={ariaLabel ?? `${korean} ${english}`}
+        aria-describedby={ariaDescribedBy}
+        aria-disabled={disabled}
         style={buttonStyle}
         data-testid={testId ?? "base-button"}
       >
@@ -207,8 +281,8 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
           alignItems: "center",
           gap: "2px"
         }}>
-          <span style={{ fontSize: "1em" }}>{korean}</span>
-          <span style={{ 
+          <span lang="ko" style={{ fontSize: "1em" }}>{korean}</span>
+          <span lang="en" style={{ 
             fontSize: "0.75em", 
             opacity: 0.8,
             fontStyle: "italic"
@@ -220,5 +294,8 @@ export const BaseButton: React.FC<BaseButtonProps> = ({
     </Html>
   );
 };
+
+// Export memoized component for performance optimization
+export const BaseButton = React.memo(BaseButtonComponent);
 
 BaseButton.displayName = "BaseButton";

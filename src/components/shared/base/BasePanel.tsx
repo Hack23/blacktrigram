@@ -23,6 +23,12 @@ export interface BasePanelProps {
   readonly variant?: "default" | "bordered" | "elevated";
   readonly testId?: string;
   readonly isMobile?: boolean;
+  /** ARIA role for semantic HTML (default: "region") */
+  readonly ariaRole?: "region" | "article" | "complementary" | "navigation" | "main";
+  /** ARIA label for accessibility */
+  readonly ariaLabel?: string;
+  /** ARIA described by ID for additional context */
+  readonly ariaDescribedBy?: string;
 }
 
 /**
@@ -31,14 +37,26 @@ export interface BasePanelProps {
  * Enhanced Korean-themed panel with common functionality extracted.
  * Uses useKoreanTheme hook for consistent styling.
  * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - Proper ARIA roles for semantic HTML
+ * - ARIA labels for screen reader context
+ * - Responsive padding for touch targets
+ * 
+ * Optimized with React.memo for performance
+ * 
  * @example
  * ```tsx
- * <BasePanel variant="bordered" padding={20}>
+ * <BasePanel 
+ *   variant="bordered" 
+ *   padding={20}
+ *   ariaRole="region"
+ *   ariaLabel="Combat statistics panel"
+ * >
  *   <h1>Panel Content</h1>
  * </BasePanel>
  * ```
  */
-export const BasePanel: React.FC<BasePanelProps> = ({
+const BasePanelComponent: React.FC<BasePanelProps> = ({
   children,
   position = [0, 0, 0],
   width = "auto",
@@ -47,6 +65,9 @@ export const BasePanel: React.FC<BasePanelProps> = ({
   variant = "default",
   testId,
   isMobile = false,
+  ariaRole = "region",
+  ariaLabel,
+  ariaDescribedBy,
 }) => {
   // Use Korean theme hook for consistent styling
   const { panelVariant, fontFamily } = useKoreanTheme({
@@ -70,11 +91,20 @@ export const BasePanel: React.FC<BasePanelProps> = ({
 
   return (
     <Html position={position} center>
-      <div style={panelStyle} data-testid={testId ?? "base-panel"}>
+      <div 
+        style={panelStyle} 
+        data-testid={testId ?? "base-panel"}
+        role={ariaRole}
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescribedBy}
+      >
         {children}
       </div>
     </Html>
   );
 };
+
+// Export memoized component for performance optimization
+export const BasePanel = React.memo(BasePanelComponent);
 
 BasePanel.displayName = "BasePanel";
