@@ -64,9 +64,11 @@ interface AnimationCache {
 class AnimationCacheManager {
   private cache = new Map<string, AnimationCache>();
   private readonly maxCacheSize: number;
+  private readonly maxKeyframesPerAnimation: number;
 
-  constructor(maxCacheSize = 50) {
+  constructor(maxCacheSize = 50, maxKeyframesPerAnimation = 200) {
     this.maxCacheSize = maxCacheSize;
+    this.maxKeyframesPerAnimation = maxKeyframesPerAnimation;
   }
 
   /**
@@ -80,7 +82,7 @@ class AnimationCacheManager {
   get(
     animationId: string,
     animation: SkeletalAnimation,
-    time: number
+    time: number,
   ): CachedKeyframe | null {
     // Mark parameter as used for future extensibility (e.g., cache invalidation)
     void animation;
@@ -109,7 +111,7 @@ class AnimationCacheManager {
     animationId: string,
     animation: SkeletalAnimation,
     time: number,
-    keyframe: AnimationKeyframe
+    keyframe: AnimationKeyframe,
   ): void {
     let entry = this.cache.get(animationId);
 
@@ -149,6 +151,28 @@ class AnimationCacheManager {
       rotations: cachedRotations,
       positions: cachedPositions,
     });
+
+    // Evict oldest keyframes if this animation has too many cached
+    if (entry.keyframes.size > this.maxKeyframesPerAnimation) {
+      this.evictOldestKeyframes(
+        entry,
+        entry.keyframes.size - this.maxKeyframesPerAnimation,
+      );
+    }
+  }
+
+  /**
+   * Evict oldest keyframes from an animation cache entry
+   * @param entry - Animation cache entry
+   * @param count - Number of keyframes to evict
+   */
+  private evictOldestKeyframes(entry: AnimationCache, count: number): void {
+    const keyframeTimes = Array.from(entry.keyframes.entries())
+      .sort((a, b) => a[1].timestamp - b[1].timestamp)
+      .slice(0, count)
+      .map(([time]) => time);
+
+    keyframeTimes.forEach((time) => entry.keyframes.delete(time));
   }
 
   /**
@@ -220,7 +244,7 @@ export const animationCache = new AnimationCacheManager(50);
 export function batchUpdateBones(
   rig: SkeletalRig,
   keyframe: AnimationKeyframe,
-  dirtyBones?: Set<string>
+  dirtyBones?: Set<string>,
 ): void {
   const bonesToUpdate = dirtyBones ?? new Set(keyframe.boneRotations.keys());
 
@@ -260,7 +284,7 @@ export function batchUpdateBones(
 export function precomputeAnimation(
   animationId: string,
   animation: SkeletalAnimation,
-  sampleRate = 60
+  sampleRate = 60,
 ): void {
   const duration = animation.duration;
   const step = 1 / sampleRate;
@@ -290,7 +314,7 @@ export function precomputeAnimation(
 export function interpolateKeyframeCached(
   animationId: string,
   animation: SkeletalAnimation,
-  time: number
+  time: number,
 ): AnimationKeyframe | null {
   // Check cache first
   const cached = animationCache.get(animationId, animation, time);
@@ -438,7 +462,7 @@ export function interpolateKeyframeCached(
  */
 export function batchTransformBones(
   rig: SkeletalRig,
-  transforms: Map<string, { rotation?: THREE.Euler; position?: THREE.Vector3 }>
+  transforms: Map<string, { rotation?: THREE.Euler; position?: THREE.Vector3 }>,
 ): void {
   transforms.forEach((transform, boneName) => {
     const bone = rig.bones.get(boneName);
@@ -472,7 +496,7 @@ export function batchTransformBones(
 export function calculateDirtyBones(
   prevKeyframe: AnimationKeyframe,
   nextKeyframe: AnimationKeyframe,
-  threshold = 0.01
+  threshold = 0.01,
 ): Set<string> {
   const dirtyBones = new Set<string>();
 

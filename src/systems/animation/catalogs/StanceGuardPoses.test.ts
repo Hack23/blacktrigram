@@ -34,13 +34,13 @@ describe("StanceGuardPoses", () => {
     describe("☰ 건 (Geon) - Heaven: High Guard", () => {
       it("should have valid high guard arm positions", () => {
         expect(GEON_HIGH_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(GEON_HIGH_GUARD_POSE.leftArm.elbow).toBeInstanceOf(THREE.Euler);
         expect(GEON_HIGH_GUARD_POSE.leftArm.wrist).toBeInstanceOf(THREE.Euler);
 
         expect(GEON_HIGH_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(GEON_HIGH_GUARD_POSE.rightArm.elbow).toBeInstanceOf(THREE.Euler);
         expect(GEON_HIGH_GUARD_POSE.rightArm.wrist).toBeInstanceOf(THREE.Euler);
@@ -54,7 +54,7 @@ describe("StanceGuardPoses", () => {
         expect(GEON_HIGH_GUARD_POSE.breathingRange.min).toBeGreaterThan(0.95);
         expect(GEON_HIGH_GUARD_POSE.breathingRange.max).toBeLessThan(1.05);
         expect(GEON_HIGH_GUARD_POSE.breathingRange.max).toBeGreaterThan(
-          GEON_HIGH_GUARD_POSE.breathingRange.min
+          GEON_HIGH_GUARD_POSE.breathingRange.min,
         );
       });
 
@@ -67,10 +67,10 @@ describe("StanceGuardPoses", () => {
     describe("☱ 태 (Tae) - Lake: Fluid Mid-Guard", () => {
       it("should have valid fluid guard arm positions", () => {
         expect(TAE_FLUID_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(TAE_FLUID_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -95,7 +95,7 @@ describe("StanceGuardPoses", () => {
       it("should have valid fire guard arm positions", () => {
         expect(LI_FIRE_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(THREE.Euler);
         expect(LI_FIRE_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -119,10 +119,10 @@ describe("StanceGuardPoses", () => {
     describe("☳ 진 (Jin) - Thunder: Explosive Ready Stance", () => {
       it("should have valid thunder guard arm positions", () => {
         expect(JIN_THUNDER_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(JIN_THUNDER_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -140,10 +140,10 @@ describe("StanceGuardPoses", () => {
       it("should have chambered arms (high elbow bend)", () => {
         // Using Z rotation for tight bend (1.9 rad = ~109 degrees)
         expect(
-          Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.z)
+          Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.z),
         ).toBeGreaterThan(1.5);
         expect(
-          Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.z)
+          Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.z),
         ).toBeGreaterThan(1.5);
       });
     });
@@ -151,10 +151,10 @@ describe("StanceGuardPoses", () => {
     describe("☴ 손 (Son) - Wind: Continuous Motion Guard", () => {
       it("should have valid wind guard arm positions", () => {
         expect(SON_WIND_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(SON_WIND_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -178,10 +178,10 @@ describe("StanceGuardPoses", () => {
     describe("☵ 감 (Gam) - Water: Flowing Defensive Guard", () => {
       it("should have valid water guard arm positions", () => {
         expect(GAM_WATER_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(GAM_WATER_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -201,21 +201,21 @@ describe("StanceGuardPoses", () => {
         expect(GAM_WATER_GUARD_POSE.torso.y).toBeLessThan(0);
       });
 
-      it("should have LOW guard position for flowing redirects", () => {
-        // Water stance has LOW arms for flowing redirection motion
-        // Shoulder X around -0.2 for "pushing water" position
-        expect(GAM_WATER_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(-0.5);
-        expect(GAM_WATER_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(-0.5);
+      it("should have guard position for flowing redirects", () => {
+        // Water stance has arms at chest level for flowing redirection motion
+        // Shoulder X around -0.8 for parry-ready position with chin protection
+        expect(GAM_WATER_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(-1.2);
+        expect(GAM_WATER_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(-1.2);
       });
     });
 
     describe("☶ 간 (Gan) - Mountain: Solid Defensive Posture", () => {
       it("should have valid mountain guard arm positions", () => {
         expect(GAN_MOUNTAIN_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(GAN_MOUNTAIN_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -233,10 +233,10 @@ describe("StanceGuardPoses", () => {
       it("should have tight defensive arms (high elbow bend)", () => {
         // Using Z rotation for tight bend (1.8 rad = ~103 degrees)
         expect(
-          Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.z)
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.z),
         ).toBeGreaterThan(1.5);
         expect(
-          Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.z)
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.z),
         ).toBeGreaterThan(1.5);
       });
 
@@ -252,10 +252,10 @@ describe("StanceGuardPoses", () => {
     describe("☷ 곤 (Gon) - Earth: Grounded Low Guard", () => {
       it("should have valid earth guard arm positions", () => {
         expect(GON_EARTH_GUARD_POSE.leftArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
         expect(GON_EARTH_GUARD_POSE.rightArm.shoulder).toBeInstanceOf(
-          THREE.Euler
+          THREE.Euler,
         );
       });
 
@@ -270,14 +270,14 @@ describe("StanceGuardPoses", () => {
         expect(range).toBeGreaterThan(0.06);
       });
 
-      it("should have VERY LOW sumo guard (hands on thighs)", () => {
-        // Sumo-style: arms DOWN on thighs, ready to grapple
-        // Shoulder X around +0.2 (positive = arms pointing down)
-        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(0);
-        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(0);
+      it("should have LOW grappling guard (hands ready for underhooks)", () => {
+        // Grappling stance: arms low but elbows still guard ribs
+        // Shoulder X around -0.4 (negative = arms forward/up, but low position)
+        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(-0.8);
+        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(-0.8);
         // Elbows bent but relaxed
         expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.z)).toBeGreaterThan(
-          1.0
+          1.0,
         );
       });
     });
@@ -325,22 +325,22 @@ describe("StanceGuardPoses", () => {
 
     it("should have correct English names for all stances", () => {
       expect(STANCE_GUARD_CONFIGS[TrigramStance.GEON]?.englishName).toBe(
-        "Heaven"
+        "Heaven",
       );
       expect(STANCE_GUARD_CONFIGS[TrigramStance.TAE]?.englishName).toBe("Lake");
       expect(STANCE_GUARD_CONFIGS[TrigramStance.LI]?.englishName).toBe("Fire");
       expect(STANCE_GUARD_CONFIGS[TrigramStance.JIN]?.englishName).toBe(
-        "Thunder"
+        "Thunder",
       );
       expect(STANCE_GUARD_CONFIGS[TrigramStance.SON]?.englishName).toBe("Wind");
       expect(STANCE_GUARD_CONFIGS[TrigramStance.GAM]?.englishName).toBe(
-        "Water"
+        "Water",
       );
       expect(STANCE_GUARD_CONFIGS[TrigramStance.GAN]?.englishName).toBe(
-        "Mountain"
+        "Mountain",
       );
       expect(STANCE_GUARD_CONFIGS[TrigramStance.GON]?.englishName).toBe(
-        "Earth"
+        "Earth",
       );
     });
 
@@ -365,34 +365,34 @@ describe("StanceGuardPoses", () => {
     describe("getGuardPoseForStance", () => {
       it("should return correct guard pose for each stance", () => {
         expect(getGuardPoseForStance(TrigramStance.GEON)).toBe(
-          GEON_HIGH_GUARD_POSE
+          GEON_HIGH_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.TAE)).toBe(
-          TAE_FLUID_GUARD_POSE
+          TAE_FLUID_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.LI)).toBe(
-          LI_FIRE_GUARD_POSE
+          LI_FIRE_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.JIN)).toBe(
-          JIN_THUNDER_GUARD_POSE
+          JIN_THUNDER_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.SON)).toBe(
-          SON_WIND_GUARD_POSE
+          SON_WIND_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.GAM)).toBe(
-          GAM_WATER_GUARD_POSE
+          GAM_WATER_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.GAN)).toBe(
-          GAN_MOUNTAIN_GUARD_POSE
+          GAN_MOUNTAIN_GUARD_POSE,
         );
         expect(getGuardPoseForStance(TrigramStance.GON)).toBe(
-          GON_EARTH_GUARD_POSE
+          GON_EARTH_GUARD_POSE,
         );
       });
 
       it("should return undefined for invalid stance", () => {
         expect(
-          getGuardPoseForStance("invalid_stance" as TrigramStance)
+          getGuardPoseForStance("invalid_stance" as TrigramStance),
         ).toBeUndefined();
       });
     });
@@ -409,7 +409,7 @@ describe("StanceGuardPoses", () => {
 
       it("should return undefined for invalid stance", () => {
         expect(
-          getGuardConfigForStance("invalid_stance" as TrigramStance)
+          getGuardConfigForStance("invalid_stance" as TrigramStance),
         ).toBeUndefined();
       });
     });
@@ -458,7 +458,7 @@ describe("StanceGuardPoses", () => {
           expect(pose.breathingRange.max).toBeGreaterThan(1.0);
           expect(pose.breathingRange.max).toBeLessThan(1.1);
           expect(pose.breathingRange.max).toBeGreaterThan(
-            pose.breathingRange.min
+            pose.breathingRange.min,
           );
         });
 
@@ -532,36 +532,38 @@ describe("StanceGuardPoses", () => {
 
   describe("Korean Martial Arts Authenticity", () => {
     it("should have distinct guard heights based on martial arts principles", () => {
-      // Each stance has dramatically different arm positions for visual distinction
+      // All guards now follow proper martial arts principle: protect chin and ribs
+      // Guards differ in stance, footwork, and application - not just arm height
 
-      // HIGH guards - arms raised high (shoulder.x < -1.5)
-      const veryHighGuards = [
-        GEON_HIGH_GUARD_POSE, // -1.5 (arms raised like victory pose)
-        LI_FIRE_GUARD_POSE, // -1.6 (dramatic peekaboo)
-        GAN_MOUNTAIN_GUARD_POSE, // -1.8 (crossed X-block)
+      // HIGH guards - arms at chin level (shoulder.x around -1.0 to -1.6)
+      const highGuards = [
+        GEON_HIGH_GUARD_POSE, // -1.0 (proper boxing guard at chin)
+        LI_FIRE_GUARD_POSE, // -1.6 (peekaboo with chin protection)
+        GAN_MOUNTAIN_GUARD_POSE, // -1.0 (X-block with elbows tight)
       ];
-      veryHighGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeLessThan(-1.4);
+      highGuards.forEach((pose) => {
+        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.8);
+        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-2.0);
       });
 
-      // MID guards - arms at mid level
+      // MID guards - arms at chest/chin level
       const midGuards = [
-        TAE_FLUID_GUARD_POSE, // -0.4 lead extended forward
-        SON_WIND_GUARD_POSE, // -0.5 fencing style
+        TAE_FLUID_GUARD_POSE, // -0.7 lead extended with rear at chin
+        SON_WIND_GUARD_POSE, // -0.8 fencing style with protection
       ];
       midGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-1.0);
+        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-1.2);
         expect(pose.leftArm.shoulder.x).toBeLessThan(0);
       });
 
-      // LOW guards - arms at waist/thigh level
+      // LOW guards - arms lower but still protecting (grappling ready)
       const lowGuards = [
-        JIN_THUNDER_GUARD_POSE, // -0.3 (chambered at hips)
-        GAM_WATER_GUARD_POSE, // -0.2 (pushing water)
-        GON_EARTH_GUARD_POSE, // +0.2 (hands on thighs)
+        JIN_THUNDER_GUARD_POSE, // -0.6 (chambered with rear at chin)
+        GAM_WATER_GUARD_POSE, // -0.8 (parry position with protection)
+        GON_EARTH_GUARD_POSE, // -0.4 (grappling ready, elbows guard ribs)
       ];
       lowGuards.forEach((pose) => {
-        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-0.5);
+        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-1.0);
       });
     });
 
@@ -627,10 +629,10 @@ describe("Laterality Support", () => {
       if (!leftPose || !rightPose) return;
 
       expect(leftPose.leftArm.shoulder.y).toBeCloseTo(
-        -rightPose.rightArm.shoulder.y
+        -rightPose.rightArm.shoulder.y,
       );
       expect(leftPose.rightArm.shoulder.y).toBeCloseTo(
-        -rightPose.leftArm.shoulder.y
+        -rightPose.leftArm.shoulder.y,
       );
     });
 

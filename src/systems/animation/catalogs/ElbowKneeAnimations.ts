@@ -11,7 +11,10 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
-import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+import {
+  MartialArtsAnimationBuilder,
+  TECHNIQUE_TIMING,
+} from "../builders/MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ELBOW STRIKE (팔꿈치치기) - Horizontal Elbow
@@ -26,16 +29,20 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * Phases:
  * 1. Chamber (준비): Arm crosses body
  * 2. Strike (치기): Elbow drives through target
- * 3. Recovery (복귀): Return to guard
+ * 3. Peak (정점): Hold at impact
+ * 4. Recovery (복귀): Return to guard
+ *
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
  *
  * @korean 팔꿈치치기애니메이션
  */
 export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_strike", "팔꿈치치기")
-    .asAttack(0.35)
-    .elbowChamber(0.08) // 준비 - Arm crosses body
-    .elbowStrike(0.12) // 치기 - Elbow drives through
-    .recover(0.15) // 복귀
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber) // 준비 - Arm crosses body
+    .elbowStrike(TECHNIQUE_TIMING.FAST.extend) // 치기 - Elbow drives through
+    .elbowStrike(TECHNIQUE_TIMING.FAST.peak) // 정점 - Hold at impact
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -48,14 +55,17 @@ export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation =
  * Rising elbow strike targeting chin from below.
  * Explosive vertical strike for close-range combat.
  *
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ *
  * @korean 팔꿈치올려치기애니메이션
  */
 export const ELBOW_UPPERCUT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_uppercut", "팔꿈치올려치기")
-    .asAttack(0.35)
-    .elbowChamber(0.08) // 준비
-    .elbowUppercut(0.12) // 올려치기 - Rising elbow
-    .recover(0.15) // 복귀
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber) // 준비
+    .elbowUppercut(TECHNIQUE_TIMING.FAST.extend) // 올려치기 - Rising elbow
+    .elbowUppercut(TECHNIQUE_TIMING.FAST.peak) // 정점 - Hold at peak
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -138,15 +148,16 @@ export const DOWNWARD_ELBOW_ANIMATION: SkeletalAnimation =
  *
  * Elbow strike thrown backward.
  * Used when opponent is behind.
+ * Uses unique rear-strike rotation pattern.
  *
  * @korean 뒤팔꿈치애니메이션
  */
 export const BACK_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("back_elbow", "뒤팔꿈치")
-    .asAttack(0.35)
-    .elbowChamber(0.08) // Chamber
-    .elbowStrike(0.12) // Thrust back
-    .recover(0.15) // Recover
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .withKoreanHighGuard() // Start in guard
+    .brachialElbow(TECHNIQUE_TIMING.FAST.extend) // Unique brachial strike
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -157,18 +168,17 @@ export const BACK_ELBOW_ANIMATION: SkeletalAnimation =
  * Double Elbow - 더블팔꿈치
  *
  * Two rapid elbow strikes.
- * Left-right combination.
+ * Left-right combination with distinct alternating motion.
  *
  * @korean 더블팔꿈치애니메이션
  */
 export const DOUBLE_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("double_elbow", "더블팔꿈치")
-    .asAttack(0.45)
+    .asAttack(0.48)
     .elbowChamber(0.06) // First chamber
-    .elbowStrike(0.1) // First elbow
-    .elbowChamber(0.06) // Second chamber
-    .elbowStrike(0.1) // Second elbow
-    .recover(0.13) // Recover
+    .elbowStrike(0.1) // First horizontal elbow
+    .slashingElbow(0.12) // Second diagonal elbow (unique)
+    .recover(0.2) // Recover
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -179,16 +189,16 @@ export const DOUBLE_ELBOW_ANIMATION: SkeletalAnimation =
  * Slashing Elbow - 베기팔꿈치
  *
  * Diagonal slashing elbow motion.
- * Cuts across opponent's face.
+ * Cuts across opponent's face with unique diagonal path.
  *
  * @korean 베기팔꿈치애니메이션
  */
 export const SLASHING_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("slashing_elbow", "베기팔꿈치")
-    .asAttack(0.38)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
     .withHighGuard() // Arm high
-    .elbowStrike(0.15) // Slash down diagonally
-    .recover(0.23) // Recover
+    .slashingElbow(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // Recover
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -199,11 +209,11 @@ export const SLASHING_ELBOW_ANIMATION: SkeletalAnimation =
  * Flying Knee - 뛰어무릎
  *
  * Jumping knee strike.
- * Maximum power from jumping momentum.
+ * Maximum power from jumping momentum with unique airborne position.
  *
  * Phases:
  * 1. Jump (뛰기): Explosive jump
- * 2. Strike (차기): Knee drives forward
+ * 2. Strike (차기): Knee drives forward in air
  * 3. Land (착지): Return to ground
  *
  * @korean 뛰어무릎애니메이션
@@ -212,7 +222,7 @@ export const FLYING_KNEE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("flying_knee", "뛰어무릎")
     .asAttack(0.55)
     .chamber(0.1) // Jump prep
-    .kneeStrike(0.18) // Knee in air
+    .flyingKnee(0.18) // Unique flying knee motion
     .recover(0.27) // Land
     .build();
 
@@ -224,7 +234,7 @@ export const FLYING_KNEE_ANIMATION: SkeletalAnimation =
  * Side Knee - 옆무릎
  *
  * Lateral knee strike to ribs.
- * Clinch position to side target.
+ * Clinch position to side target with unique lateral motion.
  *
  * @korean 옆무릎애니메이션
  */
@@ -232,7 +242,7 @@ export const SIDE_KNEE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("side_knee", "옆무릎")
     .asAttack(0.42)
     .withClinch() // Clinch
-    .kneeStrike(0.17) // Side knee
+    .sideKneeStrike(0.17) // Unique side knee motion
     .recover(0.25) // Release
     .build();
 
@@ -326,7 +336,7 @@ export const KNEE_KICK_ANIMATION: SkeletalAnimation =
 export const CLINCH_KNEE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
     "clinch_knee",
-    "Myeoksal-japgo Mureup Chagi"
+    "Myeoksal-japgo Mureup Chagi",
   )
     .asAttack(0.55)
     .clinchGrab(0.12) // Clinch opponent (Explicit grab phase)
@@ -342,11 +352,11 @@ export const CLINCH_KNEE_ANIMATION: SkeletalAnimation =
  */
 export const TEMPLE_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("temple_elbow", "관자놀이치기")
-    .asAttack(0.35)
-    .elbowChamber(0.1)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
     .withKoreanHighGuard()
-    .elbowStrike(0.12) // High target
-    .recover(0.13)
+    .elbowStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // High target
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -365,53 +375,53 @@ export const SPINNING_BACK_ELBOW_ANIMATION: SkeletalAnimation =
 
 /**
  * Spinal Elbow - 척추치기
- * Downward elbow to spine.
+ * Downward elbow to spine with unique spinal targeting.
  * @korean 척추치기애니메이션
  */
 export const SPINAL_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("spinal_elbow", "척추치기")
-    .asAttack(0.4)
+    .asAttack(0.42)
     .withHighGuard()
-    .elbowStrike(0.15) // Downward
+    .spinalElbow(0.17) // Unique spinal targeting motion
     .recover(0.25)
     .build();
 
 /**
  * Brachial Elbow - 상박치기
- * Elbow to brachial nerve.
+ * Elbow to brachial nerve with unique targeting.
  * @korean 상박치기애니메이션
  */
 export const BRACHIAL_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("brachial_elbow", "상박치기")
-    .asAttack(0.35)
-    .elbowChamber(0.1)
-    .elbowStrike(0.12)
-    .recover(0.13)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
+    .brachialElbow(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
  * Kidney Knee - 신장차기
- * Knee strike to kidney from side/behind.
+ * Knee strike to kidney from side/behind with unique targeting.
  * @korean 신장차기애니메이션
  */
 export const KIDNEY_KNEE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("kidney_knee", "신장차기")
-    .asAttack(0.42)
+    .asAttack(0.44)
     .withClinch()
-    .kneeStrike(0.17)
+    .kidneyKnee(0.19) // Unique kidney targeting motion
     .recover(0.25)
     .build();
 
 /**
  * Femoral Knee - 대퇴부차기
- * Knee strike to femoral nerve (thigh).
+ * Knee strike to femoral nerve (thigh) with unique low targeting.
  * @korean 대퇴부차기애니메이션
  */
 export const FEMORAL_KNEE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("femoral_knee", "대퇴부차기")
     .asAttack(0.4)
     .chamber(0.1)
-    .kneeStrike(0.15) // Low target
+    .femoralKnee(0.15) // Unique femoral targeting motion
     .recover(0.15)
     .build();
 

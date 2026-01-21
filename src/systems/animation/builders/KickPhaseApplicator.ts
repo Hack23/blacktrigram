@@ -72,7 +72,7 @@ export function applyKickPhaseToConfig(
     // Anatomy integration
     readonly side?: KickSide;
     readonly highlightKickingFoot?: boolean;
-  } = {}
+  } = {},
 ): void {
   const {
     includeAnkle = false,
@@ -97,17 +97,22 @@ export function applyKickPhaseToConfig(
       supportKneeBone,
       phase.supportKnee[0],
       phase.supportKnee[1],
-      phase.supportKnee[2]
+      phase.supportKnee[2],
     );
   }
 
-  // Optional pelvis
+  // Optional pelvis - includes both tilt (X) and rotation (Y)
   if (includePelvis && phase.pelvis) {
+    // Use pelvisY if defined (for hip rotation power), otherwise pelvis[1]
+    const pelvisYRotation =
+      "pelvisY" in phase && typeof phase.pelvisY === "number"
+        ? phase.pelvisY
+        : phase.pelvis[1];
     kf.rotate(
       BoneName.PELVIS,
       phase.pelvis[0],
-      phase.pelvis[1],
-      phase.pelvis[2]
+      pelvisYRotation,
+      phase.pelvis[2],
     );
   }
 
@@ -143,7 +148,7 @@ export function applyRoundhousePhaseToConfig(
   options: {
     readonly side?: KickSide;
     readonly highlightKickingFoot?: boolean;
-  } = {}
+  } = {},
 ): void {
   const { side = "right", highlightKickingFoot = false } = options;
 
@@ -183,7 +188,7 @@ export function applySideKickPhaseToConfig(
   options: {
     readonly side?: KickSide;
     readonly highlightKickingFoot?: boolean;
-  } = {}
+  } = {},
 ): void {
   const { side = "right", highlightKickingFoot = false } = options;
 
@@ -225,7 +230,7 @@ export function applyHighPeakPhaseToConfig(
   options: {
     readonly side?: KickSide;
     readonly highlightKickingFoot?: boolean;
-  } = {}
+  } = {},
 ): void {
   const { side = "right", highlightKickingFoot = false } = options;
 
@@ -245,7 +250,7 @@ export function applyHighPeakPhaseToConfig(
       supportKneeBone,
       phase.supportKnee[0],
       phase.supportKnee[1],
-      phase.supportKnee[2]
+      phase.supportKnee[2],
     );
   }
   if (phase.pelvis) {
@@ -253,7 +258,7 @@ export function applyHighPeakPhaseToConfig(
       BoneName.PELVIS,
       phase.pelvis[0],
       phase.pelvis[1],
-      phase.pelvis[2]
+      phase.pelvis[2],
     );
   }
 

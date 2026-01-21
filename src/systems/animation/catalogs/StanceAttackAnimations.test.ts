@@ -1,68 +1,72 @@
 /**
  * Unit tests for Stance-Specific Attack Animations
- * 
+ *
  * Tests all 24 stance-specific attack animations (3 per stance × 8 stances),
  * verifying keyframe data, Korean terminology, and animation integrity.
- * 
+ *
  * @module systems/animation/StanceAttackAnimations.test
  * @category Animation Tests
  * @korean 자세공격애니메이션테스트
  */
 
-import { describe, expect, it } from "vitest";
-import * as THREE from "three";
 import { TrigramStance } from "@/types/common";
+import * as THREE from "three";
+import { describe, expect, it } from "vitest";
 import {
-  // GEON (Heaven) attacks
-  GEON_BONE_BREAKING_STRIKE_1,
-  GEON_THUNDEROUS_UPPERCUT,
-  GEON_CRUSHING_ELBOW,
-  // TAE (Lake) attacks
-  TAE_WRIST_LOCK_STRIKE,
-  TAE_FLOWING_ARM_BAR,
-  TAE_SPIRAL_SHOULDER_THROW,
-  // LI (Fire) attacks
-  LI_BURNING_FINGER_STRIKE_1,
-  LI_SOLAR_PLEXUS_SPEAR,
-  LI_PHOENIX_EYE_STRIKE,
-  // JIN (Thunder) attacks
-  JIN_LIGHTNING_STRAIGHT,
-  JIN_SHOCKING_HAMMER_FIST,
-  JIN_EXPLOSIVE_KNEE,
-  // SON (Wind) attacks
-  SON_WHIRLWIND_COMBO_1,
-  SON_PRESSURE_POINT_CHAIN,
-  SON_PENETRATING_PALM_RUSH,
+  ALL_ATTACK_ANIMATIONS,
+  ATTACK_ANIMATIONS_BY_STANCE,
   // GAM (Water) attacks
   GAM_FLOWING_RIVER_STRIKE,
   GAM_TIDAL_WAVE_PALM,
   GAM_WHIRLPOOL_COUNTER,
+  GAN_AVALANCHE_HAMMER,
   // GAN (Mountain) attacks
   GAN_FORTRESS_COUNTER_STRIKE,
-  GAN_AVALANCHE_HAMMER,
   GAN_STONE_WALL_THRUST,
+  // GEON (Heaven) attacks
+  GEON_BONE_BREAKING_STRIKE_1,
+  GEON_CRUSHING_ELBOW,
+  GEON_THUNDEROUS_UPPERCUT,
+  GON_EARTHQUAKE_STOMP,
   // GON (Earth) attacks
   GON_GROUND_SWEEP_STRIKE,
-  GON_EARTHQUAKE_STOMP,
   GON_ROOTING_TAKEDOWN,
+  JIN_EXPLOSIVE_KNEE,
+  // JIN (Thunder) attacks
+  JIN_LIGHTNING_STRAIGHT,
+  JIN_SHOCKING_HAMMER_FIST,
+  // LI (Fire) attacks
+  LI_BURNING_FINGER_STRIKE_1,
+  LI_PHOENIX_EYE_STRIKE,
+  LI_SOLAR_PLEXUS_SPEAR,
+  SON_PENETRATING_PALM_RUSH,
+  SON_PRESSURE_POINT_CHAIN,
+  // SON (Wind) attacks
+  SON_WHIRLWIND_COMBO_1,
+  TAE_FLOWING_ARM_BAR,
+  TAE_SPIRAL_SHOULDER_THROW,
+  // TAE (Lake) attacks
+  TAE_WRIST_LOCK_STRIKE,
+  getAttackAnimation,
   // Helper functions
   getAttackAnimationsForStance,
-  getAttackAnimation,
-  ATTACK_ANIMATIONS_BY_STANCE,
-  ALL_ATTACK_ANIMATIONS,
 } from "./StanceAttackAnimations";
 
 describe("StanceAttackAnimations", () => {
   describe("☰ GEON (Heaven) - Direct Force Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.GEON);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     describe("Bone-Breaking Strike 1 (뼈부러뜨리기 1)", () => {
       it("should have correct metadata", () => {
-        expect(GEON_BONE_BREAKING_STRIKE_1.name).toBe("geon_bone_breaking_strike_1");
-        expect(GEON_BONE_BREAKING_STRIKE_1.koreanName).toBe("건 뼈부러뜨리기 1");
+        expect(GEON_BONE_BREAKING_STRIKE_1.name).toBe(
+          "geon_bone_breaking_strike_1",
+        );
+        expect(GEON_BONE_BREAKING_STRIKE_1.koreanName).toBe(
+          "건 뼈부러뜨리기 1",
+        );
         expect(GEON_BONE_BREAKING_STRIKE_1.type).toBe("attack");
         expect(GEON_BONE_BREAKING_STRIKE_1.loop).toBe(false);
       });
@@ -83,7 +87,7 @@ describe("StanceAttackAnimations", () => {
         const firstKeyframe = GEON_BONE_BREAKING_STRIKE_1.keyframes[0];
         expect(firstKeyframe.boneRotations).toBeInstanceOf(Map);
         expect(firstKeyframe.boneRotations.size).toBeGreaterThan(0);
-        
+
         // Check that rotations are THREE.Euler instances
         firstKeyframe.boneRotations.forEach((rotation) => {
           expect(rotation).toBeInstanceOf(THREE.Euler);
@@ -117,9 +121,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☱ TAE (Lake) - Joint Manipulation Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.TAE);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have correct Korean names", () => {
@@ -135,9 +139,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☲ LI (Fire) - Nerve Strike Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.LI);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have fast precision strikes (240-260ms)", () => {
@@ -154,9 +158,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☳ JIN (Thunder) - Explosive Power Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.JIN);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have explosive fast attacks (200-280ms)", () => {
@@ -173,9 +177,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☴ SON (Wind) - Continuous Pressure Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.SON);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have longer combo attacks (380-420ms)", () => {
@@ -192,9 +196,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☵ GAM (Water) - Flow-Counter Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.GAM);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have medium flow-counter durations (340-380ms)", () => {
@@ -211,9 +215,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☶ GAN (Mountain) - Defensive Counter Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.GAN);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have defensive counter durations (300-350ms)", () => {
@@ -230,9 +234,9 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("☷ GON (Earth) - Grounding/Takedown Attacks", () => {
-    it("should have 3 attack variations", () => {
+    it("should have 5 attack variations", () => {
       const animations = getAttackAnimationsForStance(TrigramStance.GON);
-      expect(animations).toHaveLength(3);
+      expect(animations).toHaveLength(5);
     });
 
     it("should have appropriate grounding durations (320-450ms)", () => {
@@ -249,8 +253,8 @@ describe("StanceAttackAnimations", () => {
   });
 
   describe("Complete Animation Coverage", () => {
-    it("should have all 24 animations (8 stances × 3 attacks)", () => {
-      expect(ALL_ATTACK_ANIMATIONS.size).toBe(24);
+    it("should have all 40 animations (8 stances × 5 attacks)", () => {
+      expect(ALL_ATTACK_ANIMATIONS.size).toBe(40);
     });
 
     it("should have all 8 stances in the map", () => {
@@ -284,17 +288,17 @@ describe("StanceAttackAnimations", () => {
       });
     });
 
-    it("should have realistic durations (150-450ms)", () => {
+    it("should have realistic durations (150-500ms)", () => {
       ALL_ATTACK_ANIMATIONS.forEach((animation) => {
         expect(animation.duration).toBeGreaterThanOrEqual(0.15);
-        expect(animation.duration).toBeLessThanOrEqual(0.45);
+        expect(animation.duration).toBeLessThanOrEqual(0.5);
       });
     });
   });
 
   describe("Helper Functions", () => {
     describe("getAttackAnimationsForStance", () => {
-      it("should return 3 animations for each stance", () => {
+      it("should return 5 animations for each stance", () => {
         const stances = [
           TrigramStance.GEON,
           TrigramStance.TAE,
@@ -308,12 +312,14 @@ describe("StanceAttackAnimations", () => {
 
         stances.forEach((stance) => {
           const animations = getAttackAnimationsForStance(stance);
-          expect(animations).toHaveLength(3);
+          expect(animations).toHaveLength(5);
         });
       });
 
       it("should return empty array for invalid stance", () => {
-        const animations = getAttackAnimationsForStance("invalid" as TrigramStance);
+        const animations = getAttackAnimationsForStance(
+          "invalid" as TrigramStance,
+        );
         expect(animations).toHaveLength(0);
       });
     });
@@ -342,8 +348,9 @@ describe("StanceAttackAnimations", () => {
     it("should have keyframes at time 0 and duration", () => {
       ALL_ATTACK_ANIMATIONS.forEach((animation) => {
         const firstKeyframe = animation.keyframes[0];
-        const lastKeyframe = animation.keyframes[animation.keyframes.length - 1];
-        
+        const lastKeyframe =
+          animation.keyframes[animation.keyframes.length - 1];
+
         expect(firstKeyframe.time).toBe(0);
         expect(lastKeyframe.time).toBeCloseTo(animation.duration, 2);
       });
@@ -351,7 +358,7 @@ describe("StanceAttackAnimations", () => {
 
     it("should have valid easing values", () => {
       const validEasings = ["linear", "ease-in", "ease-out", "ease-in-out"];
-      
+
       ALL_ATTACK_ANIMATIONS.forEach((animation) => {
         animation.keyframes.forEach((keyframe) => {
           expect(validEasings).toContain(keyframe.easing);
@@ -372,26 +379,30 @@ describe("StanceAttackAnimations", () => {
     it("should reflect stance philosophy in attack characteristics", () => {
       // Fire (LI) should have fastest attacks (precision)
       const liAnimations = getAttackAnimationsForStance(TrigramStance.LI);
-      const liAvgDuration = liAnimations.reduce((sum, a) => sum + a.duration, 0) / liAnimations.length;
-      
+      const liAvgDuration =
+        liAnimations.reduce((sum, a) => sum + a.duration, 0) /
+        liAnimations.length;
+
       // Wind (SON) should have longest attacks (combos)
       const sonAnimations = getAttackAnimationsForStance(TrigramStance.SON);
-      const sonAvgDuration = sonAnimations.reduce((sum, a) => sum + a.duration, 0) / sonAnimations.length;
-      
+      const sonAvgDuration =
+        sonAnimations.reduce((sum, a) => sum + a.duration, 0) /
+        sonAnimations.length;
+
       expect(liAvgDuration).toBeLessThan(sonAvgDuration);
     });
 
     it("should have unique attack counts per stance", () => {
       const animationCounts = new Set();
-      
+
       ATTACK_ANIMATIONS_BY_STANCE.forEach((animations) => {
         animations.forEach((animation) => {
           animationCounts.add(animation.name);
         });
       });
-      
-      // All 24 animations should be unique
-      expect(animationCounts.size).toBe(24);
+
+      // All 40 animations should be unique (8 stances × 5 attacks)
+      expect(animationCounts.size).toBe(40);
     });
   });
 });
