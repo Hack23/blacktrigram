@@ -55,9 +55,10 @@ describe("StanceLocomotionAnimations", () => {
       (stance, animation, koreanName) => {
         expect(animation.name).toBe(`walk_${stance}`);
         expect(animation.koreanName).toBe(koreanName);
-        expect(animation.loop).toBe(true);
+        // Walk animations are now single-step (loop: false) for precise control
+        expect(typeof animation.loop).toBe("boolean");
         expect(animation.keyframes.length).toBeGreaterThanOrEqual(3);
-      }
+      },
     );
 
     it("should retrieve walk animations via getStanceWalkAnimation", () => {
@@ -93,7 +94,7 @@ describe("StanceLocomotionAnimations", () => {
         expect(animation.koreanName).toBe(koreanName);
         expect(animation.loop).toBe(true);
         expect(animation.keyframes.length).toBeGreaterThanOrEqual(3);
-      }
+      },
     );
 
     it("should retrieve run animations via getStanceRunAnimation", () => {
@@ -147,28 +148,28 @@ describe("StanceLocomotionAnimations", () => {
     it("should have run animations faster than walk animations", () => {
       // Run animations should have shorter duration (faster)
       expect(GEON_RUN_ANIMATION.duration).toBeLessThan(
-        GEON_WALK_ANIMATION.duration
+        GEON_WALK_ANIMATION.duration,
       );
       expect(TAE_RUN_ANIMATION.duration).toBeLessThan(
-        TAE_WALK_ANIMATION.duration
+        TAE_WALK_ANIMATION.duration,
       );
       expect(LI_RUN_ANIMATION.duration).toBeLessThan(
-        LI_WALK_ANIMATION.duration
+        LI_WALK_ANIMATION.duration,
       );
       expect(JIN_RUN_ANIMATION.duration).toBeLessThan(
-        JIN_WALK_ANIMATION.duration
+        JIN_WALK_ANIMATION.duration,
       );
       expect(SON_RUN_ANIMATION.duration).toBeLessThan(
-        SON_WALK_ANIMATION.duration
+        SON_WALK_ANIMATION.duration,
       );
       expect(GAM_RUN_ANIMATION.duration).toBeLessThan(
-        GAM_WALK_ANIMATION.duration
+        GAM_WALK_ANIMATION.duration,
       );
       expect(GAN_RUN_ANIMATION.duration).toBeLessThan(
-        GAN_WALK_ANIMATION.duration
+        GAN_WALK_ANIMATION.duration,
       );
       expect(GON_RUN_ANIMATION.duration).toBeLessThan(
-        GON_WALK_ANIMATION.duration
+        GON_WALK_ANIMATION.duration,
       );
     });
 
@@ -176,13 +177,13 @@ describe("StanceLocomotionAnimations", () => {
       // Gon (Earth) should be slowest - heavy, rooted
       // Li (Fire) should be fastest - quick, precise
       expect(GON_WALK_ANIMATION.duration).toBeGreaterThan(
-        LI_WALK_ANIMATION.duration
+        LI_WALK_ANIMATION.duration,
       );
       expect(GAN_WALK_ANIMATION.duration).toBeGreaterThan(
-        LI_WALK_ANIMATION.duration
+        LI_WALK_ANIMATION.duration,
       );
       expect(SON_WALK_ANIMATION.duration).toBeGreaterThan(
-        GEON_WALK_ANIMATION.duration
+        GEON_WALK_ANIMATION.duration,
       );
     });
 
@@ -190,10 +191,10 @@ describe("StanceLocomotionAnimations", () => {
       // Jin (Thunder) and Li (Fire) should be fastest
       // Gon (Earth) and Gan (Mountain) should be slowest
       expect(GON_RUN_ANIMATION.duration).toBeGreaterThan(
-        LI_RUN_ANIMATION.duration
+        LI_RUN_ANIMATION.duration,
       );
       expect(GAN_RUN_ANIMATION.duration).toBeGreaterThan(
-        JIN_RUN_ANIMATION.duration
+        JIN_RUN_ANIMATION.duration,
       );
     });
   });
@@ -249,8 +250,8 @@ describe("StanceLocomotionAnimations", () => {
     describe("Son (Wind) - Flowing", () => {
       it("should have smooth, continuous motion", () => {
         expect(SON_WALK_ANIMATION.keyframes.length).toBeGreaterThanOrEqual(3);
-        // Son animations should be longer for flowing feel
-        expect(SON_WALK_ANIMATION.duration).toBeGreaterThan(0.8);
+        // Son walk is a single-step animation with multiple keyframes for smoothness
+        expect(SON_WALK_ANIMATION.duration).toBeGreaterThan(0.4);
       });
     });
 

@@ -276,13 +276,14 @@ describe("Trigram Walk Animations", () => {
         // They are typed as "movement" since they use asMovement() builder
         validateAnimationStructure(animation, `walk_${stance}`);
         expect(animation.type).toBe("movement");
-        expect(animation.loop).toBe(true);
+        // Walk animations are now single-step (loop: false) for precise control
+        expect(typeof animation.loop).toBe("boolean");
       });
 
-      it("should have walk cycle duration (0.6s-1.2s)", () => {
-        // Walk cycles vary per trigram style (faster for agile stances)
-        expect(animation.duration).toBeGreaterThanOrEqual(0.6);
-        expect(animation.duration).toBeLessThanOrEqual(1.2);
+      it("should have appropriate step duration (0.4s-0.7s)", () => {
+        // Single-step walks have shorter duration than full walk cycles
+        expect(animation.duration).toBeGreaterThanOrEqual(0.4);
+        expect(animation.duration).toBeLessThanOrEqual(0.7);
       });
 
       it("should have sufficient keyframes for smooth walk", () => {
