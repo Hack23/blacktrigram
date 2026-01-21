@@ -27,6 +27,10 @@ vi.mock("three", () => ({
   DoubleSide: 2,
   Color: class MockColor {
     constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
   },
   MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
     dispose() {}

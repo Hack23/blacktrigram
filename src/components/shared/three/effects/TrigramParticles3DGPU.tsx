@@ -31,6 +31,7 @@ import { TrigramStance } from "../../../../types/common";
 import particleVertexShader from "./shaders/particleVertex.glsl";
 import particleFragmentShader from "./shaders/particleFragment.glsl";
 import type { TrigramParticleEffect } from "./TrigramParticles3D";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 
 /**
  * Props for TrigramParticles3DGPU component
@@ -165,6 +166,7 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
 
   /**
    * Create GPU particle system for an effect
+   * Performance: Uses ThreeObjectPools to reduce GC pressure during effect creation
    */
   const createParticleEffect = useMemo(
     () => (effect: TrigramParticleEffect, count: number): GPUParticleEffect => {
@@ -204,7 +206,11 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
       geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
       // Create shader material with configurable uniforms
-      const color = getTrigramColor(effect.stance);
+      // Use pooled Color object for uniform
+      const colorValue = getTrigramColor(effect.stance);
+      const pooledColor = ThreeObjectPools.color.acquire();
+      pooledColor.set(colorValue);
+      
       const material = new THREE.ShaderMaterial({
         uniforms: {
           time: { value: 0 },
@@ -212,7 +218,7 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
           gravity: { value: TRIGRAM_CONSTANTS.GRAVITY },
           lifetime: { value: TRIGRAM_CONSTANTS.LIFETIME },
           sizeScale: { value: 300.0 }, // Configurable perspective scale
-          color: { value: new THREE.Color(color) },
+          color: { value: pooledColor }, // Use pooled color (will be owned by material)
           opacity: { value: 0.8 },
           edgeStart: { value: 0.3 }, // Configurable edge start
           edgeEnd: { value: 0.5 }, // Configurable edge end
@@ -225,12 +231,20 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
         depthWrite: false,
       });
 
+      // Use pooled Vector3 for position copy
+      const pooledPos = ThreeObjectPools.vector3.acquire();
+      pooledPos.set(...effect.position);
       const points = new THREE.Points(geometry, material);
-      points.position.copy(new THREE.Vector3(...effect.position));
+      points.position.copy(pooledPos);
+      ThreeObjectPools.vector3.release(pooledPos); // Release after copy
+
+      // Acquire and store position for effect tracking
+      const position = ThreeObjectPools.vector3.acquire();
+      position.set(...effect.position);
 
       return {
         id: effect.id,
-        position: new THREE.Vector3(...effect.position),
+        position, // Store pooled vector (will be released in cleanup)
         stance: effect.stance,
         startTime: 0, // Will be set from clock in useFrame
         geometry,
@@ -242,6 +256,7 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
   );
 
   // Manage effect lifecycle
+  // Performance: Releases pooled Vector3 objects during cleanup
   useEffect(() => {
     if (!enabled || !groupRef.current) return;
 
@@ -256,6 +271,8 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
           groupRef.current?.remove(effect.points);
           effect.geometry.dispose();
           effect.material.dispose();
+          // Release pooled Vector3 back to pool
+          ThreeObjectPools.vector3.release(effect.position);
           activeEffectsRef.current.delete(id);
           completedEffectsRef.current.delete(id);
         }
@@ -299,12 +316,14 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
     });
   });
 
-  // Cleanup on unmount
+  // Cleanup on unmount - release all pooled objects
   useEffect(() => {
     return () => {
       activeEffectsRef.current.forEach((effect) => {
         effect.geometry.dispose();
         effect.material.dispose();
+        // Release pooled Vector3 back to pool
+        ThreeObjectPools.vector3.release(effect.position);
       });
       activeEffectsRef.current.clear();
     };
