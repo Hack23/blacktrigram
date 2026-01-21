@@ -491,16 +491,22 @@ describe("TechniqueCard", () => {
   });
 
   describe("Touch Handling", () => {
-    it("should prevent default on touch to avoid ghost click", () => {
+    it("should call preventDefault on touch to avoid ghost click", () => {
       render(<TechniqueCard {...defaultProps} isAvailable={true} />);
       const card = screen.getByTestId(`technique-card-${mockTechnique.id}`);
       
-      // Manually call the component's touch handler
-      // The component calls preventDefault internally
-      fireEvent.touchEnd(card);
+      // Create a touchend event with a spyable preventDefault
+      const mockPreventDefault = vi.fn();
+      const touchEvent = new Event('touchend', { bubbles: true, cancelable: true });
+      Object.defineProperty(touchEvent, 'preventDefault', {
+        value: mockPreventDefault,
+        writable: false,
+      });
       
-      // The component should handle the touch event (test passes if no error)
-      expect(card).toBeInTheDocument();
+      card.dispatchEvent(touchEvent);
+      
+      // preventDefault should be called when available
+      expect(mockPreventDefault).toHaveBeenCalled();
     });
 
     it("should trigger haptic feedback on touch", () => {
@@ -825,13 +831,13 @@ describe("TechniqueCard", () => {
   });
 
   describe("Performance", () => {
-    it("should use memoization for card size calculations", () => {
+    it("should render consistently on rerender with same props", () => {
       const { rerender } = render(<TechniqueCard {...defaultProps} isMobile={false} />);
       
-      // Rerender with same props - memoized values should be used
+      // Rerender with same props - component should remain stable
       rerender(<TechniqueCard {...defaultProps} isMobile={false} />);
       
-      // Component should render without errors (memoization working)
+      // Component should still render correctly after rerender
       expect(screen.getByTestId(`technique-card-${mockTechnique.id}`)).toBeInTheDocument();
     });
 

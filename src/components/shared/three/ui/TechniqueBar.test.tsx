@@ -115,8 +115,10 @@ describe("TechniqueBar", () => {
           <TechniqueBar {...defaultProps} isMobile={false} />
         );
         
-        const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
-        expect(bar).toBeInTheDocument();
+        // Desktop cards should be 90px wide
+        const firstCard = container.querySelector('[data-testid="technique-card-technique-1"]') as HTMLElement;
+        expect(firstCard).not.toBeNull();
+        expect(firstCard.style.width).toBe("90px");
       });
 
       it("should calculate correct gap between cards for desktop", () => {
