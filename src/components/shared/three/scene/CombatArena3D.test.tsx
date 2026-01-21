@@ -46,6 +46,26 @@ vi.mock("three", () => ({
   AdditiveBlending: 1,
 }));
 
+// Mock ThreeObjectPools to return mock Color objects
+vi.mock("../../../../utils/threeObjectPool", () => {
+  const MockColor = class {
+    constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
+  };
+
+  return {
+    ThreeObjectPools: {
+      color: {
+        acquire: () => new MockColor(),
+        release: vi.fn(),
+      },
+    },
+  };
+});
+
 describe("CombatArena3D", () => {
   it("should render without crashing", () => {
     const { container } = render(<CombatArena3D />);

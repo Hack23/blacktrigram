@@ -213,6 +213,10 @@ vi.mock("three", () => ({
   DoubleSide: 2,
   Color: class MockColor {
     constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
   },
   BufferAttribute: class MockBufferAttribute {},
   AdditiveBlending: 1,
@@ -279,6 +283,26 @@ vi.mock("three", () => ({
     radToDeg: (rad: number) => (rad * 180) / Math.PI,
   },
 }));
+
+// Mock ThreeObjectPools to return mock Color objects
+vi.mock("../../../utils/threeObjectPool", () => {
+  const MockColor = class {
+    constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
+  };
+
+  return {
+    ThreeObjectPools: {
+      color: {
+        acquire: () => new MockColor(),
+        release: vi.fn(),
+      },
+    },
+  };
+});
 
 describe("TrainingScreen3D", () => {
   let mockOnPlayerUpdate: (updates: Partial<unknown>) => void;
