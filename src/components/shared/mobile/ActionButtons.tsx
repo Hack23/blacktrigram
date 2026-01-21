@@ -215,14 +215,18 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
    * Cleanup on unmount - reset any pending visual states
    */
   useEffect(() => {
+    // Store refs in variables at effect creation time
+    const attackButton = attackButtonRef.current;
+    const blockButton = blockButtonRef.current;
+    
     return () => {
-      if (attackButtonRef.current) {
-        attackButtonRef.current.style.transform = createTransformStyle(false);
-        attackButtonRef.current.style.filter = createFilterStyle(false);
+      if (attackButton) {
+        attackButton.style.transform = createTransformStyle(false);
+        attackButton.style.filter = createFilterStyle(false);
       }
-      if (blockButtonRef.current) {
-        blockButtonRef.current.style.transform = createTransformStyle(false);
-        blockButtonRef.current.style.filter = createFilterStyle(false);
+      if (blockButton) {
+        blockButton.style.transform = createTransformStyle(false);
+        blockButton.style.filter = createFilterStyle(false);
       }
     };
   }, []);

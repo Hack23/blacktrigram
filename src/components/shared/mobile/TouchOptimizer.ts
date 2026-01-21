@@ -16,7 +16,7 @@
  * @korean 터치 최적화
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Touch position data
@@ -110,6 +110,10 @@ export function useTouchOptimizer(
   const touchStateRef = useRef<TouchPosition | null>(null);
   const isTouchingRef = useRef<boolean>(false);
   const pendingMoveRef = useRef<TouchPosition | null>(null);
+  
+  // State for returning values (not using refs in return)
+  const [rafId, setRafId] = useState<number | null>(null);
+  const [isTouching, setIsTouching] = useState<boolean>(false);
 
   /**
    * Cancel pending RAF
@@ -118,6 +122,7 @@ export function useTouchOptimizer(
     if (rafIdRef.current !== null) {
       cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = null;
+      setRafId(null);
     }
   }, []);
 
@@ -129,6 +134,7 @@ export function useTouchOptimizer(
       const timestamp = performance.now();
       touchStateRef.current = { x, y, timestamp };
       isTouchingRef.current = true;
+      setIsTouching(true);
 
       if (useRAF) {
         // Schedule immediate visual update (next frame, <16ms)
@@ -136,7 +142,9 @@ export function useTouchOptimizer(
         rafIdRef.current = requestAnimationFrame(() => {
           onTouchStart(x, y, timestamp);
           rafIdRef.current = null;
+          setRafId(null);
         });
+        setRafId(rafIdRef.current);
       } else {
         // Direct call (no RAF)
         onTouchStart(x, y, timestamp);
@@ -162,7 +170,9 @@ export function useTouchOptimizer(
             pendingMoveRef.current = null;
           }
           rafIdRef.current = null;
+          setRafId(null);
         });
+        setRafId(rafIdRef.current);
       } else if (!useRAF) {
         // Direct call (no RAF)
         onTouchMove(x, y, timestamp);
@@ -178,6 +188,7 @@ export function useTouchOptimizer(
     (x: number, y: number) => {
       const timestamp = performance.now();
       isTouchingRef.current = false;
+      setIsTouching(false);
       touchStateRef.current = null;
       pendingMoveRef.current = null;
 
@@ -187,7 +198,9 @@ export function useTouchOptimizer(
         rafIdRef.current = requestAnimationFrame(() => {
           onTouchEnd(x, y, timestamp);
           rafIdRef.current = null;
+          setRafId(null);
         });
+        setRafId(rafIdRef.current);
       } else {
         // Direct call (no RAF)
         onTouchEnd(x, y, timestamp);
@@ -227,15 +240,16 @@ export function useTouchOptimizer(
       if (enableCoalescing) {
         // Feature detection: getCoalescedEvents is experimental
         // Fallback to single event if not supported
-        if (typeof e.getCoalescedEvents === 'function') {
+        const eventWithCoalescing = e as TouchEvent & { getCoalescedEvents?: () => TouchEvent[] };
+        if (typeof eventWithCoalescing.getCoalescedEvents === 'function') {
           try {
-            const coalesced = e.getCoalescedEvents();
+            const coalesced = eventWithCoalescing.getCoalescedEvents();
             if (coalesced && coalesced.length > 0) {
               // Use only the last N events to reduce overhead
               const recentEvents = coalesced.slice(-coalescingSampleRate);
-              events = recentEvents.map((evt) => evt.touches[0]).filter(Boolean);
+              events = recentEvents.map((evt: TouchEvent) => evt.touches[0]).filter((touch): touch is Touch => touch !== undefined);
             }
-          } catch (error) {
+          } catch {
             // Fallback to single event if getCoalescedEvents fails
             console.debug('Touch coalescing not supported, using fallback');
           }
@@ -276,6 +290,7 @@ export function useTouchOptimizer(
    */
   const handleTouchCancel = useCallback(() => {
     isTouchingRef.current = false;
+    setIsTouching(false);
     touchStateRef.current = null;
     pendingMoveRef.current = null;
     cancelPendingRAF();
@@ -311,8 +326,8 @@ export function useTouchOptimizer(
   ]);
 
   return {
-    rafId: rafIdRef.current,
-    isTouching: isTouchingRef.current,
+    rafId,
+    isTouching,
   };
 }
 
@@ -357,7 +372,7 @@ export function applyOptimizedUpdate(
   }
 
   // Deferred state update (when idle)
-  if ('requestIdleCallback' in window) {
+  if (typeof (window as Window & typeof globalThis).requestIdleCallback === 'function') {
     (window as Window & typeof globalThis).requestIdleCallback(() => {
       stateUpdate();
     });

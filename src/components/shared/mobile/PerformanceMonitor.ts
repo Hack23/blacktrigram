@@ -70,7 +70,6 @@ export class PerformanceMonitor {
   private memoryUsage: number | null = null;
   
   private sampleWindow: number;
-  private targetFps: number;
   private frameDropThreshold: number;
   private enableMemoryMonitoring: boolean;
   
@@ -84,7 +83,6 @@ export class PerformanceMonitor {
    */
   private constructor(options: PerformanceMonitorOptions = {}) {
     this.sampleWindow = options.sampleWindow ?? 60;
-    this.targetFps = options.targetFps ?? 60;
     this.frameDropThreshold = options.frameDropThreshold ?? 20;
     this.enableMemoryMonitoring = options.enableMemoryMonitoring ?? true;
     
@@ -99,10 +97,8 @@ export class PerformanceMonitor {
    * @korean 인스턴스가져오기
    */
   public static getInstance(options?: PerformanceMonitorOptions): PerformanceMonitor {
-    if (!PerformanceMonitor.instance) {
-      PerformanceMonitor.instance = new PerformanceMonitor(options);
-    }
-    return PerformanceMonitor.instance;
+    this.instance ??= new PerformanceMonitor(options);
+    return this.instance;
   }
 
   /**

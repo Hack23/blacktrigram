@@ -118,10 +118,8 @@ export class HapticController {
    * @korean 인스턴스가져오기
    */
   public static getInstance(): HapticController {
-    if (!HapticController.instance) {
-      HapticController.instance = new HapticController();
-    }
-    return HapticController.instance;
+    this.instance ??= new HapticController();
+    return this.instance;
   }
 
   /**

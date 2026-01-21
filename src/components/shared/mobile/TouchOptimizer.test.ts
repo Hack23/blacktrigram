@@ -5,7 +5,7 @@
  * @category Testing
  */
 
-import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
+import { beforeEach, describe, expect, it, vi, afterEach, type Mock } from "vitest";
 import { renderHook } from '@testing-library/react';
 import { 
   useTouchOptimizer, 
@@ -16,7 +16,7 @@ import {
 
 describe("TouchOptimizer", () => {
   let rafSpy: ReturnType<typeof vi.spyOn>;
-  let idleCallbackSpy: vi.Mock;
+  let idleCallbackSpy: Mock;
 
   beforeEach(() => {
     // Mock requestAnimationFrame
@@ -201,8 +201,12 @@ describe("TouchOptimizer", () => {
       // Save original requestIdleCallback
       const originalIdleCallback = (window as Window & typeof globalThis).requestIdleCallback;
       
-      // Remove requestIdleCallback to test fallback
-      delete (window as Window & typeof globalThis).requestIdleCallback;
+      // Mock out requestIdleCallback to test fallback
+      Object.defineProperty(window, 'requestIdleCallback', {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
 
       const setTimeoutSpy = vi.spyOn(window, 'setTimeout').mockImplementation((cb) => {
         if (typeof cb === 'function') {
@@ -221,7 +225,11 @@ describe("TouchOptimizer", () => {
       expect(stateUpdate).toHaveBeenCalled();
 
       // Restore requestIdleCallback
-      (window as Window & typeof globalThis).requestIdleCallback = originalIdleCallback;
+      Object.defineProperty(window, 'requestIdleCallback', {
+        value: originalIdleCallback,
+        writable: true,
+        configurable: true,
+      });
     });
   });
 
