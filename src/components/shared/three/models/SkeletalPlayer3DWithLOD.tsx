@@ -8,7 +8,7 @@
  *
  * Target performance: <5ms per character at 60fps
  *
- * @module components/three/SkeletalPlayer3DWithLOD
+ * @module components/shared/three/models/SkeletalPlayer3DWithLOD
  * @category 3D Components
  * @korean 레벨오브디테일플레이어3D
  */

@@ -209,9 +209,9 @@ describe("Character Models - Visual Regression Tests", () => {
       cy.get("body").type("4");
       cy.wait(500);
       
-      // Execute kick (implementation-specific key binding)
-      // In a real game, this might be a different key
-      cy.get("body").type("k");
+      // Note: Kick key binding to be determined by game controls
+      // For now, test basic attack animation
+      cy.get("body").type(" ");
       cy.wait(100);
       
       // Capture kick animation frames
@@ -229,7 +229,7 @@ describe("Character Models - Visual Regression Tests", () => {
           overwrite: true,
         });
       
-      cy.log("✅ Kick animation captured");
+      cy.log("✅ Attack animation captured");
     });
   });
 

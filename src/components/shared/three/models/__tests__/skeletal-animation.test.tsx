@@ -38,7 +38,7 @@ describe("Skeletal Animation Validation", () => {
       expect(rig.bones.size).toBeGreaterThan(20); // At least 20 bones
     });
 
-    it("should maintain spine -> upper_arm connection", () => {
+    it("should maintain spine -> shoulder connection", () => {
       const physicalAttributes = getArchetypePhysicalAttributes(
         PlayerArchetype.MUSA
       );
@@ -47,7 +47,7 @@ describe("Skeletal Animation Validation", () => {
       const spineMiddle = rig.bones.get("spine_middle");
       expect(spineMiddle).toBeDefined();
 
-      // Check children include shoulders
+      // Check children include shoulders (via spine_upper)
       const shoulderL = rig.bones.get("shoulder_L");
       expect(shoulderL).toBeDefined();
       expect(shoulderL?.parent?.name).toBe("spine_upper");
@@ -68,8 +68,7 @@ describe("Skeletal Animation Validation", () => {
       expect(handL).toBeDefined();
 
       // Validate parent-child relationships
-      // Note: forearm parent is elbow_L (joint bone between upper_arm and forearm)
-      // Note: hand parent is wrist_L (joint bone between forearm and hand)
+      // Bone hierarchy: upper_arm_L -> elbow_L (joint) -> forearm_L -> wrist_L (joint) -> hand_L
       expect(forearmL?.parent?.name).toBe("elbow_L");
       expect(handL?.parent?.name).toBe("wrist_L");
     });
