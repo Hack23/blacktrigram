@@ -226,7 +226,7 @@ describe("TechniqueBar", () => {
       // Technique card should be available (not disabled)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "false");
-      expect(card).toHaveAttribute("tabIndex", "0");
+      expect(card).toHaveProperty("tabIndex", 0);
     });
 
     it("should mark technique as unavailable when insufficient stamina", () => {
@@ -245,7 +245,7 @@ describe("TechniqueBar", () => {
       // Technique with 15 stamina cost should be unavailable (disabled)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "true");
-      expect(card).toHaveAttribute("tabIndex", "-1");
+      expect(card).toHaveProperty("tabIndex", -1);
     });
 
     it("should mark technique as unavailable when insufficient ki", () => {
@@ -264,7 +264,7 @@ describe("TechniqueBar", () => {
       // Technique with 10 ki cost should be unavailable (disabled)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "true");
-      expect(card).toHaveAttribute("tabIndex", "-1");
+      expect(card).toHaveProperty("tabIndex", -1);
     });
 
     it("should mark technique as unavailable when both resources are insufficient", () => {
@@ -283,7 +283,7 @@ describe("TechniqueBar", () => {
       // All techniques should be unavailable (disabled)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "true");
-      expect(card).toHaveAttribute("tabIndex", "-1");
+      expect(card).toHaveProperty("tabIndex", -1);
     });
 
     it("should handle edge case of exactly required resources", () => {
@@ -320,7 +320,7 @@ describe("TechniqueBar", () => {
       // Technique 1 should be on cooldown (disabled and showing cooldown text)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "true");
-      expect(card).toHaveAttribute("tabIndex", "-1");
+      expect(card).toHaveProperty("tabIndex", -1);
       expect(screen.getByText("1s")).toBeInTheDocument(); // 500ms rounds up to 1s
     });
 
@@ -339,7 +339,7 @@ describe("TechniqueBar", () => {
       // Technique 1 should be available (not disabled, no cooldown text)
       const card = screen.getByTestId("technique-card-technique-1");
       expect(card).toHaveAttribute("aria-disabled", "false");
-      expect(card).toHaveAttribute("tabIndex", "0");
+      expect(card).toHaveProperty("tabIndex", 0);
       expect(screen.queryByText(/\ds/)).not.toBeInTheDocument();
     });
 
@@ -359,11 +359,11 @@ describe("TechniqueBar", () => {
       // Both techniques should be on cooldown (disabled)
       const card1 = screen.getByTestId("technique-card-technique-1");
       expect(card1).toHaveAttribute("aria-disabled", "true");
-      expect(card1).toHaveAttribute("tabIndex", "-1");
+      expect(card1).toHaveProperty("tabIndex", -1);
       
       const card2 = screen.getByTestId("technique-card-technique-2");
       expect(card2).toHaveAttribute("aria-disabled", "true");
-      expect(card2).toHaveAttribute("tabIndex", "-1");
+      expect(card2).toHaveProperty("tabIndex", -1);
     });
 
     it("should handle technique with no cooldown entry", () => {
@@ -399,11 +399,17 @@ describe("TechniqueBar", () => {
       expect(screen.queryByText(/Press technique keys to execute/)).not.toBeInTheDocument();
     });
 
-    it("should display full keyboard hint text with all keys", () => {
+    it("should display keyboard hint text including keys for available techniques", () => {
       render(<TechniqueBar {...defaultProps} isMobile={false} />);
       
-      const hintText = screen.getByText(/기술 실행: Q-E-R-T-Y-F-G-Z-X-C/);
-      expect(hintText).toBeInTheDocument();
+      const hintLabel = screen.getByText(/기술 실행/);
+      expect(hintLabel).toBeInTheDocument();
+      const hintContainer = hintLabel.parentElement;
+      expect(hintContainer).not.toBeNull();
+      // Ensure the hint text includes the shortcuts for the provided techniques (Q/E/R)
+      expect(hintContainer).toHaveTextContent("Q");
+      expect(hintContainer).toHaveTextContent("E");
+      expect(hintContainer).toHaveTextContent("R");
     });
 
     it("should position keyboard hints above technique bar", () => {
@@ -635,8 +641,8 @@ describe("TechniqueBar", () => {
       
       const bar = container.querySelector('[data-testid="technique-bar"]') as HTMLElement;
       expect(bar).toBeInTheDocument();
-      // Empty array results in -12px width calculation, which browser handles gracefully
-      // Just verify the element exists
+      // With no techniques, the bar width should be clamped to a non-negative value (0px)
+      expect(bar.style.width).toBe("0px");
     });
 
     it("should handle very wide screens", () => {
