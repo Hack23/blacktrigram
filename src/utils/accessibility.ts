@@ -575,6 +575,15 @@ export function focusFirstError(container: HTMLElement): void {
  * Create skip to content link for keyboard navigation
  * Returns a link that allows users to skip to main content
  *
+ * Note: Event listeners are attached to the element itself and will be
+ * automatically cleaned up when the element is removed from the DOM.
+ * If you need explicit cleanup, store the element reference and call
+ * element.remove() when done.
+ *
+ * 참고: 이벤트 리스너는 요소 자체에 연결되며 요소가 DOM에서 제거될 때
+ * 자동으로 정리됩니다. 명시적 정리가 필요한 경우 요소 참조를 저장하고
+ * 완료 시 element.remove()를 호출하세요.
+ *
  * @param targetId - ID of main content element
  * @returns Skip link element
  */
