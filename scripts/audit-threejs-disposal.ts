@@ -187,7 +187,13 @@ function printSummary(summary: AuditSummary, results: AuditResult[], totalScanne
   console.log('\n📊 Summary Statistics:');
   console.log(`   Total files scanned: ${totalScanned}`);
   console.log(`   Files with Three.js objects: ${summary.filesWithThreeObjects}`);
-  console.log(`   Files with disposal: ${summary.filesWithDisposal} (${((summary.filesWithDisposal / summary.filesWithThreeObjects) * 100).toFixed(1)}%)`);
+  
+  // Guard against division by zero when calculating percentage
+  const disposalPercentage = summary.filesWithThreeObjects > 0
+    ? ((summary.filesWithDisposal / summary.filesWithThreeObjects) * 100).toFixed(1)
+    : '0.0';
+  
+  console.log(`   Files with disposal: ${summary.filesWithDisposal} (${disposalPercentage}%)`);
   console.log(`   Files needing fixes: ${summary.highRiskFiles + summary.mediumRiskFiles + summary.lowRiskFiles}`);
   
   console.log('\n⚠️  Risk Distribution:');
