@@ -620,6 +620,28 @@ describe("TechniqueCard", () => {
       expect(card).not.toHaveAttribute("aria-describedby");
     });
 
+    it("should not have aria-describedby when unavailable even on hover", () => {
+      render(<TechniqueCard {...defaultProps} isAvailable={false} />);
+      const card = screen.getByRole("button");
+      
+      // Hover over unavailable card
+      fireEvent.mouseEnter(card);
+      
+      // aria-describedby should not be set since tooltip won't render
+      expect(card).not.toHaveAttribute("aria-describedby");
+    });
+
+    it("should not have aria-describedby when unavailable even on focus", () => {
+      render(<TechniqueCard {...defaultProps} isAvailable={false} />);
+      const card = screen.getByRole("button");
+      
+      // Focus unavailable card
+      fireEvent.focus(card);
+      
+      // aria-describedby should not be set since tooltip won't render
+      expect(card).not.toHaveAttribute("aria-describedby");
+    });
+
     it("should update aria-label with different technique", () => {
       const differentTechnique = createMockTechnique({
         name: { korean: "용권", english: "Dragon Fist" },
