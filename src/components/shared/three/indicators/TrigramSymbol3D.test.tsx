@@ -379,8 +379,10 @@ describe("TrigramSymbol3D", () => {
       );
 
       const symbol = screen.getByTestId("trigram-symbol-3d");
-      expect(symbol.style.WebkitFontSmoothing).toBe("antialiased");
-      expect(symbol.style.MozOsxFontSmoothing).toBe("grayscale");
+      // Check vendor-specific font smoothing properties
+      const styleObj = symbol.style as any;
+      expect(styleObj.WebkitFontSmoothing).toBe("antialiased");
+      expect(styleObj.MozOsxFontSmoothing).toBe("grayscale");
     });
 
     it("should use smooth transitions", () => {
