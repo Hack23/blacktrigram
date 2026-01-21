@@ -223,8 +223,10 @@ describe("TechniqueBar", () => {
     it("should mark technique as available when sufficient stamina and ki", () => {
       render(<TechniqueBar {...defaultProps} />);
       
-      // All techniques should be available initially
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // Technique card should be available (not disabled)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "false");
+      expect(card).toHaveAttribute("tabIndex", "0");
     });
 
     it("should mark technique as unavailable when insufficient stamina", () => {
@@ -240,8 +242,10 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // Technique with 15 stamina cost should be unavailable
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // Technique with 15 stamina cost should be unavailable (disabled)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "true");
+      expect(card).toHaveAttribute("tabIndex", "-1");
     });
 
     it("should mark technique as unavailable when insufficient ki", () => {
@@ -257,8 +261,10 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // Technique with 10 ki cost should be unavailable
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // Technique with 10 ki cost should be unavailable (disabled)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "true");
+      expect(card).toHaveAttribute("tabIndex", "-1");
     });
 
     it("should mark technique as unavailable when both resources are insufficient", () => {
@@ -274,8 +280,10 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // All techniques should be unavailable
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // All techniques should be unavailable (disabled)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "true");
+      expect(card).toHaveAttribute("tabIndex", "-1");
     });
 
     it("should handle edge case of exactly required resources", () => {
@@ -309,8 +317,11 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // Technique 1 should be on cooldown
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // Technique 1 should be on cooldown (disabled and showing cooldown text)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "true");
+      expect(card).toHaveAttribute("tabIndex", "-1");
+      expect(screen.getByText("1s")).toBeInTheDocument(); // 500ms rounds up to 1s
     });
 
     it("should mark technique as available when cooldown expires", () => {
@@ -325,8 +336,11 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // Technique 1 should be available
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
+      // Technique 1 should be available (not disabled, no cooldown text)
+      const card = screen.getByTestId("technique-card-technique-1");
+      expect(card).toHaveAttribute("aria-disabled", "false");
+      expect(card).toHaveAttribute("tabIndex", "0");
+      expect(screen.queryByText(/\ds/)).not.toBeInTheDocument();
     });
 
     it("should handle multiple techniques on cooldown", () => {
@@ -342,9 +356,14 @@ describe("TechniqueBar", () => {
         />
       );
       
-      // Both techniques should be on cooldown
-      expect(screen.getByTestId("technique-slot-0")).toBeInTheDocument();
-      expect(screen.getByTestId("technique-slot-1")).toBeInTheDocument();
+      // Both techniques should be on cooldown (disabled)
+      const card1 = screen.getByTestId("technique-card-technique-1");
+      expect(card1).toHaveAttribute("aria-disabled", "true");
+      expect(card1).toHaveAttribute("tabIndex", "-1");
+      
+      const card2 = screen.getByTestId("technique-card-technique-2");
+      expect(card2).toHaveAttribute("aria-disabled", "true");
+      expect(card2).toHaveAttribute("tabIndex", "-1");
     });
 
     it("should handle technique with no cooldown entry", () => {
