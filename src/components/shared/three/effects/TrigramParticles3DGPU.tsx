@@ -206,30 +206,38 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
       geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
       // Create shader material with configurable uniforms
-      // Use pooled Color object for uniform
+      // Use pooled Color object for temporary color creation
       const colorValue = getTrigramColor(effect.stance);
       const pooledColor = ThreeObjectPools.color.acquire();
-      pooledColor.set(colorValue);
       
-      const material = new THREE.ShaderMaterial({
-        uniforms: {
-          time: { value: 0 },
-          speed: { value: 1.0 },
-          gravity: { value: TRIGRAM_CONSTANTS.GRAVITY },
-          lifetime: { value: TRIGRAM_CONSTANTS.LIFETIME },
-          sizeScale: { value: 300.0 }, // Configurable perspective scale
-          color: { value: pooledColor }, // Use pooled color (will be owned by material)
-          opacity: { value: 0.8 },
-          edgeStart: { value: 0.3 }, // Configurable edge start
-          edgeEnd: { value: 0.5 }, // Configurable edge end
-          glowPower: { value: 3.0 }, // Configurable glow intensity
-        },
-        vertexShader: particleVertexShader,
-        fragmentShader: particleFragmentShader,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
+      let material: THREE.ShaderMaterial;
+      try {
+        pooledColor.set(colorValue);
+        
+        // Clone color for shader material uniform (shader needs its own color instance)
+        material = new THREE.ShaderMaterial({
+          uniforms: {
+            time: { value: 0 },
+            speed: { value: 1.0 },
+            gravity: { value: TRIGRAM_CONSTANTS.GRAVITY },
+            lifetime: { value: TRIGRAM_CONSTANTS.LIFETIME },
+            sizeScale: { value: 300.0 }, // Configurable perspective scale
+            color: { value: pooledColor.clone() }, // Use cloned color for material ownership
+            opacity: { value: 0.8 },
+            edgeStart: { value: 0.3 }, // Configurable edge start
+            edgeEnd: { value: 0.5 }, // Configurable edge end
+            glowPower: { value: 3.0 }, // Configurable glow intensity
+          },
+          vertexShader: particleVertexShader,
+          fragmentShader: particleFragmentShader,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
         depthWrite: false,
       });
+      } finally {
+        // Release pooled color back to pool after cloning
+        ThreeObjectPools.color.release(pooledColor);
+      }
 
       // Use pooled Vector3 for position copy
       const pooledPos = ThreeObjectPools.vector3.acquire();

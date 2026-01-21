@@ -338,33 +338,36 @@ export class CollisionDetection {
     );
 
     // Setup raycaster using pooled Vector3 objects to reduce GC pressure
+    // Wrap in try-finally to ensure pooled objects are always released
     const origin = ThreeObjectPools.vector3.acquire();
     const direction = ThreeObjectPools.vector3.acquire();
 
-    origin.set(query.origin.x, query.origin.y, query.origin.z);
-    direction.set(query.direction.x, query.direction.y, query.direction.z);
+    try {
+      origin.set(query.origin.x, query.origin.y, query.origin.z);
+      direction.set(query.direction.x, query.direction.y, query.direction.z);
 
-    this.raycaster.set(origin, direction);
-    this.raycaster.far = query.maxDistance;
+      this.raycaster.set(origin, direction);
+      this.raycaster.far = query.maxDistance;
 
-    // Perform raycast
-    const intersections = this.raycaster.intersectObject(mesh);
+      // Perform raycast
+      const intersections = this.raycaster.intersectObject(mesh);
 
-    // Release pooled objects back to pool
-    ThreeObjectPools.vector3.release(origin);
-    ThreeObjectPools.vector3.release(direction);
+      // Clean up temporary mesh (geometry remains cached)
+      // Note: mesh.material is undefined, no need to dispose
 
-    // Clean up temporary mesh (geometry remains cached)
-    // Note: mesh.material is undefined, no need to dispose
+      if (intersections.length > 0) {
+        const point = intersections[0].point;
+        return {
+          point: { x: point.x, y: point.y, z: point.z },
+        };
+      }
 
-    if (intersections.length > 0) {
-      const point = intersections[0].point;
-      return {
-        point: { x: point.x, y: point.y, z: point.z },
-      };
+      return null;
+    } finally {
+      // Release pooled objects back to pool (guaranteed even if exception occurs)
+      ThreeObjectPools.vector3.release(origin);
+      ThreeObjectPools.vector3.release(direction);
     }
-
-    return null;
   }
 
   /**
