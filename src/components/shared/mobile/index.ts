@@ -20,3 +20,41 @@ export type { StanceWheelProps } from './StanceWheel';
 
 export { GestureRecognizer } from './GestureRecognizer';
 export type { GestureRecognizerProps } from './GestureRecognizer';
+
+// Performance optimization modules
+export {
+  useTouchOptimizer,
+  applyOptimizedUpdate,
+  createTransformStyle,
+  createFilterStyle,
+} from './TouchOptimizer';
+export type {
+  TouchPosition,
+  TouchOptimizerOptions,
+  TouchOptimizerReturn,
+} from './TouchOptimizer';
+
+export {
+  HapticController,
+  triggerOptimizedHaptic,
+  triggerCustomOptimizedHaptic,
+  stopOptimizedHaptic,
+  OptimizedCombatHaptics,
+} from './HapticController';
+export type {
+  HapticIntensity as OptimizedHapticIntensity,
+  DevicePerformanceTier,
+} from './HapticController';
+
+export {
+  PerformanceMonitor,
+  getPerformanceMonitor,
+  getPerformanceTier,
+  canHandle60Fps,
+  getQualityRecommendations,
+} from './PerformanceMonitor';
+export type {
+  PerformanceTier,
+  PerformanceMetrics,
+  PerformanceMonitorOptions,
+} from './PerformanceMonitor';
