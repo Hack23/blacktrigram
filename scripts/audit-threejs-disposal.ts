@@ -46,14 +46,14 @@ const THREE_OBJECT_PATTERNS = [
 
 // Patterns to detect disposal
 const DISPOSAL_PATTERNS = [
-  /\.dispose\(\)/g,
-  /geometry\.dispose/g,
-  /material\.dispose/g,
-  /texture\.dispose/g,
+  /\.dispose\(\)/,
+  /geometry\.dispose/,
+  /material\.dispose/,
+  /texture\.dispose/,
 ];
 
 // Patterns to detect useEffect (React component)
-const USE_EFFECT_PATTERN = /useEffect\(/g;
+const USE_EFFECT_PATTERN = /useEffect\(/;
 
 // File extensions to scan
 const VALID_EXTENSIONS = ['.ts', '.tsx'];
@@ -180,15 +180,15 @@ function generateReport(results: AuditResult[]): AuditSummary {
 /**
  * Print summary report
  */
-function printSummary(summary: AuditSummary, results: AuditResult[]) {
+function printSummary(summary: AuditSummary, results: AuditResult[], totalScanned: number) {
   console.log('\n' + '='.repeat(80));
   console.log('🔍 Three.js Resource Disposal Audit Report');
   console.log('자원 정리 감사 보고서 | Resource Cleanup Audit Report');
   console.log('='.repeat(80));
   
   console.log('\n📊 Summary Statistics:');
-  console.log(`   Total files scanned: ${summary.totalFiles}`);
-  console.log(`   Files with Three.js objects: ${summary.filesWithThreeObjects}`);
+  console.log(`   Total files scanned: ${totalScanned}`);
+  console.log(`   Files with Three.js objects: ${summary.totalFiles}`);
   console.log(`   Files with disposal: ${summary.filesWithDisposal} (${((summary.filesWithDisposal / summary.filesWithThreeObjects) * 100).toFixed(1)}%)`);
   console.log(`   Files needing fixes: ${summary.highRiskFiles + summary.mediumRiskFiles + summary.lowRiskFiles}`);
   
@@ -299,7 +299,7 @@ function main() {
   });
   
   const summary = generateReport(results);
-  printSummary(summary, results);
+  printSummary(summary, results, files.length);
   
   if (fixReport) {
     generateFixReport(results);
