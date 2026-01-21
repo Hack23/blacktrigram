@@ -251,8 +251,7 @@ export function useTouchOptimizer(
               events = recentEvents.map((evt: TouchEvent) => evt.touches[0]).filter((touch): touch is Touch => touch !== undefined);
             }
           } catch {
-            // Fallback to single event if getCoalescedEvents fails
-            console.debug('Touch coalescing not supported, using fallback');
+            // Fallback to single event if getCoalescedEvents fails (expected in Safari/Firefox)
           }
         }
       }
@@ -299,6 +298,12 @@ export function useTouchOptimizer(
 
   /**
    * Setup touch event listeners
+   * 
+   * Note: Event listeners are attached to the document for each component instance.
+   * This allows independent touch handling per component but may result in multiple
+   * document-level listeners if many components use this hook simultaneously.
+   * For applications with many touch-optimized components, consider implementing
+   * an event delegation pattern or singleton event manager for better efficiency.
    */
   useEffect(() => {
     const options: AddEventListenerOptions = {

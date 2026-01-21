@@ -11,6 +11,7 @@ This document describes the performance optimizations implemented for the Black 
 **Legacy (`src/utils/haptics.ts`)**:
 - Basic haptic support detection
 - Simple intensity levels (light, medium, heavy)
+- Vibration durations: 10ms (light), 50ms (medium), 100ms (heavy)
 - Combat haptic patterns
 - **Currently used by**: StanceWheel, VirtualDPad (not yet migrated)
 
@@ -19,12 +20,38 @@ This document describes the performance optimizations implemented for the Black 
 - Adaptive patterns for low-end devices (50% duration reduction)
 - Throttling to prevent frame drops (<50ms intervals, <2ms overhead)
 - Browser compatibility normalization
+- Vibration durations: 20ms (light), 40ms (medium), 60ms (strong)
+- **Type Extension**: Adds 'disabled' intensity type (not in legacy HapticIntensity)
+- **Export Alias**: Exported as `OptimizedHapticIntensity` to avoid naming collision with legacy type
 - **Currently used by**: ActionButtons (reference implementation)
+
+**Vibration Duration Changes Rationale**:
+The optimized system uses adjusted durations (20/40/60ms vs legacy 10/50/100ms) to balance:
+1. Perceptible feedback clarity (10ms too brief on some devices)
+2. Frame budget preservation (<2ms impact target)
+3. Consistent timing increments (20ms steps)
+4. Adaptive reduction for low-end devices (10/20/30ms after 50% reduction)
+
+**Type System Changes**:
+- Legacy: `HapticIntensity = 'light' | 'medium' | 'heavy'`
+- Optimized: `OptimizedHapticIntensity = 'light' | 'medium' | 'strong' | 'disabled'`
+- The 'disabled' type allows explicit opt-out state tracking
+- 'strong' replaces 'heavy' for consistency with intensity naming
+- During migration, use type alias to avoid conflicts:
+  ```typescript
+  import { HapticIntensity as LegacyIntensity } from '../../../utils/haptics';
+  import { OptimizedHapticIntensity } from './mobile';
+  ```
 
 **Migration Path**:
 1. Remaining components (StanceWheel, VirtualDPad, GestureRecognizer) should migrate to `HapticController`
-2. Once migration is complete, deprecate `src/utils/haptics.ts`
-3. Update all imports from `utils/haptics` to use optimized `triggerOptimizedHaptic` and `OptimizedCombatHaptics`
+2. Update type imports to use `OptimizedHapticIntensity`
+3. Replace 'heavy' with 'strong' intensity level
+4. Once migration is complete, deprecate `src/utils/haptics.ts`
+5. Update all imports from `utils/haptics` to use optimized `triggerOptimizedHaptic` and `OptimizedCombatHaptics`
+
+**Inconsistency During Migration**:
+Note that during the transition period, different components will provide different haptic feedback intensities. This is expected and acceptable as the optimized system's improved clarity and consistency will become apparent once migration is complete.
 
 See "Migration Guide" section at the end of this document for component-specific migration instructions.
 

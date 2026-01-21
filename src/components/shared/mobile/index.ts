@@ -42,7 +42,7 @@ export {
   OptimizedCombatHaptics,
 } from './HapticController';
 export type {
-  HapticIntensity,
+  HapticIntensity as OptimizedHapticIntensity,
   DevicePerformanceTier,
 } from './HapticController';
 

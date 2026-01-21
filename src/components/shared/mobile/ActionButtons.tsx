@@ -212,9 +212,12 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
   );
 
   /**
-   * Cleanup on unmount - reset any pending visual states
+   * Cleanup on unmount - reset any pending visual states.
    * Note: Captures button refs at effect creation time to avoid stale closures.
-   * If buttons unmount before component cleanup runs, refs will be null and cleanup is skipped (acceptable behavior).
+   * If the buttons unmount before cleanup runs, the captured variables will still
+   * reference the original DOM elements (now potentially detached), so style changes
+   * are harmless but may not be visible. The null checks primarily guard against
+   * refs that were never set in the first place.
    */
   useEffect(() => {
     // Store refs in variables at effect creation time
@@ -325,6 +328,9 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             userSelect: 'none',
             touchAction: 'none',
             transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            // Note: transform and filter are managed via TouchOptimizer/applyOptimizedUpdate
+            // for immediate visual feedback. React state-driven inline styles serve as baseline
+            // values that are overridden during active touch interactions via direct DOM manipulation.
             transform: createTransformStyle(attackPressed, 0.95),
             filter: createFilterStyle(attackPressed, 1.2),
             willChange: 'transform, filter', // GPU hint

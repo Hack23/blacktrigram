@@ -95,9 +95,23 @@ export class PerformanceMonitor {
    * @param options - Performance monitor options
    * @returns PerformanceMonitor instance
    * @korean 인스턴스가져오기
+   * 
+   * Note: Options are only applied on first initialization. Subsequent calls with
+   * options will ignore them and emit a warning. Configure the PerformanceMonitor
+   * on the first getInstance call only.
    */
   public static getInstance(options?: PerformanceMonitorOptions): PerformanceMonitor {
-    this.instance ??= new PerformanceMonitor(options);
+    if (this.instance !== null) {
+      if (options && Object.keys(options).length > 0) {
+        console.warn(
+          'PerformanceMonitor.getInstance: options provided after initial initialization are ignored. ' +
+          'Configure the PerformanceMonitor on the first getInstance call only.'
+        );
+      }
+      return this.instance;
+    }
+    
+    this.instance = new PerformanceMonitor(options);
     return this.instance;
   }
 
@@ -135,9 +149,11 @@ export class PerformanceMonitor {
     // Check if on iOS (typically good performance)
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     
-    // Check connection type (if available)
+    // Check connection type (if available).
+    // If the Network Information API is unavailable, we treat connection quality as unknown
+    // and do not add any connection-based bonus to avoid overestimating capabilities.
     const connection = (navigator as Navigator & { connection?: { effectiveType?: string } }).connection;
-    const connectionType = connection?.effectiveType ?? '4g';
+    const connectionType = connection?.effectiveType;
     
     // Very low-spec devices are always treated as low tier regardless of platform
     // This prevents old desktops from being rated above high-end mobile devices
@@ -164,7 +180,7 @@ export class PerformanceMonitor {
     // iOS devices typically have good performance
     if (isIOS) score += 1;
     
-    // Better connection = better overall experience
+    // Better connection = better overall experience (only if API is available)
     if (connectionType === '4g' || connectionType === '5g') score += 1;
     
     // Determine tier

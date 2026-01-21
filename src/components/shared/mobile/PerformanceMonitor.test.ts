@@ -102,6 +102,9 @@ describe("PerformanceMonitor", () => {
           hardwareConcurrency: 4,
           deviceMemory: 4,
           userAgent: "Mozilla/5.0 (Android 10)",
+          connection: {
+            effectiveType: '4g',
+          },
         },
         writable: true,
         configurable: true,
@@ -284,6 +287,9 @@ describe("PerformanceMonitor", () => {
           hardwareConcurrency: 4,
           deviceMemory: 4,
           userAgent: "Mozilla/5.0 (Android 10)",
+          connection: {
+            effectiveType: '4g',
+          },
         },
         writable: true,
         configurable: true,
