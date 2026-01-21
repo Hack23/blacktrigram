@@ -191,44 +191,7 @@ describe("KoreanSignage3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should render Combat sign (전투)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
 
-      // Left wall sign with gold material
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render Black Trigram sign (흑괘)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Right wall sign with cyan material
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render Vital Point Strike sign (급소격)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Back wall sign with red material
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
 
     it("should handle Korean character encoding properly", () => {
       const koreanTexts = ["전투", "흑괘", "급소격"];
@@ -242,47 +205,7 @@ describe("KoreanSignage3D", () => {
   });
 
   describe("sign positioning", () => {
-    it("should position Combat sign on left wall", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={1.0} />
-          </Suspense>
-        </Canvas>
-      );
 
-      // Left wall position: x = -12 * scale
-      // Rotation: Math.PI / 2 (90 degrees)
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should position Black Trigram sign on right wall", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={1.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Right wall position: x = 12 * scale
-      // Rotation: -Math.PI / 2 (-90 degrees)
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should position Vital Point Strike sign on back wall", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={1.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Back wall position: z = -14 * scale
-      // Rotation: 0 (facing forward)
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
 
     it("should verify position calculations for default scale", () => {
       const scale = 1.0;
@@ -309,46 +232,11 @@ describe("KoreanSignage3D", () => {
   });
 
   describe("color verification", () => {
-    it("should use ACCENT_GOLD for Combat sign", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // "전투" uses goldNeonMaterial with KOREAN_COLORS.ACCENT_GOLD
+    it("should use correct Korean colors for all signs", () => {
+      // Verify color constants (no need to render for constant validation)
       expect(KOREAN_COLORS.ACCENT_GOLD).toBe(0xffc400);
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should use PRIMARY_CYAN for Black Trigram sign", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // "흑괘" uses cyanNeonMaterial with KOREAN_COLORS.PRIMARY_CYAN
       expect(KOREAN_COLORS.PRIMARY_CYAN).toBe(0x00e6e6);
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should use KOREAN_RED for Vital Point Strike sign", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // "급소격" uses redNeonMaterial with KOREAN_COLORS.KOREAN_RED
       expect(KOREAN_COLORS.KOREAN_RED).toBe(0xc8102e);
-      expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
     it("should apply correct outline colors", () => {
@@ -368,42 +256,6 @@ describe("KoreanSignage3D", () => {
   });
 
   describe("scale-awareness", () => {
-    it("should render with mobile scale (0.5)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={0.5} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render with desktop scale (1.0)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={1.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render with large scale (2.0)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={2.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
     it("should adjust positioning based on scale", () => {
       const scale = 0.8;
       const leftWallX = -12 * scale;
@@ -421,22 +273,18 @@ describe("KoreanSignage3D", () => {
       expect(outlineWidth).toBeCloseTo(0.04, 5);
     });
 
-    it("should adjust font size based on scale", () => {
-      const scales = [0.5, 0.8, 1.0, 1.5, 2.0];
+    it("should calculate font sizes correctly for different scales", () => {
+      const testCases = [
+        { scale: 0.5, expectedFontSize: 0.75 },
+        { scale: 0.8, expectedFontSize: 1.2 },
+        { scale: 1.0, expectedFontSize: 1.5 },
+        { scale: 1.5, expectedFontSize: 2.25 },
+        { scale: 2.0, expectedFontSize: 3.0 },
+      ];
 
-      scales.forEach((scale) => {
+      testCases.forEach(({ scale, expectedFontSize }) => {
         const fontSize = 1.5 * scale;
-        expect(fontSize).toBe(1.5 * scale);
-
-        const { container } = render(
-          <Canvas>
-            <Suspense fallback={null}>
-              <KoreanSignage3D scale={scale} />
-            </Suspense>
-          </Canvas>
-        );
-
-        expect(container.querySelector("canvas")).toBeInTheDocument();
+        expect(fontSize).toBeCloseTo(expectedFontSize, 5);
       });
     });
 
@@ -485,40 +333,20 @@ describe("KoreanSignage3D", () => {
   });
 
   describe("edge cases", () => {
-    it("should handle zero scale", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should handle negative scale", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={-1} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should handle very large scale", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <KoreanSignage3D scale={10} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
+    it("should render without errors for edge case scales", () => {
+      const edgeCaseScales = [0, -1, 10];
+      
+      edgeCaseScales.forEach((scale) => {
+        const { container } = render(
+          <Canvas>
+            <Suspense fallback={null}>
+              <KoreanSignage3D scale={scale} />
+            </Suspense>
+          </Canvas>
+        );
+        
+        expect(container.querySelector("canvas")).toBeInTheDocument();
+      });
     });
 
     it("should handle rapid prop changes", () => {

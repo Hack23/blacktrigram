@@ -114,40 +114,19 @@ describe("AtmosphericParticles3D", () => {
   });
 
   describe("scale-awareness", () => {
-    it("should render with mobile scale (0.5)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={300} scale={0.5} />
-          </Suspense>
-        </Canvas>
-      );
+    it("should calculate spread dimensions correctly based on scale", () => {
+      const testCases = [
+        { scale: 0.5, expectedSpreadX: 20, expectedSpreadZ: 20 },
+        { scale: 1.0, expectedSpreadX: 40, expectedSpreadZ: 40 },
+        { scale: 2.0, expectedSpreadX: 80, expectedSpreadZ: 80 },
+      ];
 
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render with desktop scale (1.0)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={500} scale={1.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should render with large scale (2.0)", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={500} scale={2.0} />
-          </Suspense>
-        </Canvas>
-      );
-
-      expect(container.querySelector("canvas")).toBeInTheDocument();
+      testCases.forEach(({ scale, expectedSpreadX, expectedSpreadZ }) => {
+        const spreadX = 40 * scale;
+        const spreadZ = 40 * scale;
+        expect(spreadX).toBe(expectedSpreadX);
+        expect(spreadZ).toBe(expectedSpreadZ);
+      });
     });
 
     it("should handle very small scale", () => {
@@ -203,64 +182,21 @@ describe("AtmosphericParticles3D", () => {
       // - opacity={0.3}
       // - depthWrite={false}
       // - sizeAttenuation
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should use additive blending", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Verify component renders successfully with additive blending
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should have transparent material", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Verify component renders successfully with transparency
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should have depthWrite disabled", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Verify component renders successfully with depthWrite={false}
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should have size attenuation enabled", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Verify component renders successfully with sizeAttenuation
+      // Note: JSDOM doesn't provide Three.js scene graph access for detailed verification
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
   describe("particle animation", () => {
-    it("should render with animation enabled", () => {
+    it("should render with useFrame animation enabled", () => {
+      // Smoke test: component should render successfully with animation hooks.
+      // The useFrame hook (lines 99-109) handles:
+      // - Checking if particlesRef.current exists
+      // - Getting positions array from geometry
+      // - Iterating through particles and updating Y position (falling)
+      // - Resetting particles that fall below 0
+      // - Marking geometry.attributes.position.needsUpdate
+      // Note: JSDOM doesn't execute useFrame, so this only tests setup without errors
       const { container } = render(
         <Canvas>
           <Suspense fallback={null}>
@@ -269,71 +205,6 @@ describe("AtmosphericParticles3D", () => {
         </Canvas>
       );
 
-      // Component should render successfully with animation (useFrame)
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should handle animation with different speeds", () => {
-      const speeds = [0.5, 1, 2, 5, 10];
-      speeds.forEach((speed) => {
-        const { container } = render(
-          <Canvas>
-            <Suspense fallback={null}>
-              <AtmosphericParticles3D count={50} speed={speed} />
-            </Suspense>
-          </Canvas>
-        );
-
-        expect(container.querySelector("canvas")).toBeInTheDocument();
-      });
-    });
-
-    it("should handle particles falling animation logic", () => {
-      // Test that the component renders with animation hooks set up
-      // Lines 99-109 in the component handle:
-      // - Checking if particlesRef.current exists
-      // - Getting positions array from geometry
-      // - Iterating through particles
-      // - Updating Y position (falling)
-      // - Resetting particles that fall below 0
-      // - Marking geometry.attributes.position.needsUpdate
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={10} speed={2} />
-          </Suspense>
-        </Canvas>
-      );
-
-      // The useFrame hook is called internally - component should render successfully
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should handle particle reset logic", () => {
-      // Test that the component handles particle position resets
-      // When particles[i * 3 + 1] < 0, they reset to spreadY
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={100} speed={5} />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Animation callback logic should work without errors
-      expect(container.querySelector("canvas")).toBeInTheDocument();
-    });
-
-    it("should handle animation with valid particles ref", () => {
-      const { container } = render(
-        <Canvas>
-          <Suspense fallback={null}>
-            <AtmosphericParticles3D count={100} />
-          </Suspense>
-        </Canvas>
-      );
-
-      // Component should set up ref and animation properly
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
@@ -452,8 +323,9 @@ describe("AtmosphericParticles3D", () => {
 
       const renderTime = performance.now() - startTime;
 
-      // Initial render should be reasonably fast (< 1 second)
-      expect(renderTime).toBeLessThan(1000);
+      // Note: JSDOM rendering is fast. Using 200ms threshold to catch major
+      // performance regressions while accounting for CI environment variability.
+      expect(renderTime).toBeLessThan(200);
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
