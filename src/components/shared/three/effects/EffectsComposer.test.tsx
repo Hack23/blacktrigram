@@ -12,25 +12,41 @@ import EffectsComposer from "./EffectsComposer";
 
 /**
  * Helper to render Three.js components in test environment
+ * Note: EffectsComposer should be rendered as a sibling to scene content,
+ * not as a wrapper, since EffectComposer processes the entire scene.
  */
-const render3D = (component: React.ReactElement) => {
+const render3D = (component: React.ReactElement, sceneContent?: React.ReactElement) => {
   return render(
     <Canvas>
-      <Suspense fallback={null}>{component}</Suspense>
+      <Suspense fallback={null}>
+        {sceneContent}
+        {component}
+      </Suspense>
     </Canvas>,
   );
 };
+
+// Test scene content
+const TestMesh = () => (
+  <mesh>
+    <boxGeometry />
+    <meshBasicMaterial color={0x00ffff} />
+  </mesh>
+);
+
+const TestSphereMesh = () => (
+  <mesh>
+    <sphereGeometry />
+    <meshBasicMaterial color={0xffd700} />
+  </mesh>
+);
 
 describe("EffectsComposer", () => {
   describe("rendering", () => {
     it("should render without crashing", () => {
       const { container } = render3D(
-        <EffectsComposer>
-          <mesh>
-            <boxGeometry />
-            <meshBasicMaterial color={0x00ffff} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer />,
+        <TestMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -38,12 +54,8 @@ describe("EffectsComposer", () => {
 
     it("should render with bloom enabled by default", () => {
       const { container } = render3D(
-        <EffectsComposer>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -51,12 +63,8 @@ describe("EffectsComposer", () => {
 
     it("should render without bloom when disabled", () => {
       const { container } = render3D(
-        <EffectsComposer enableBloom={false}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer enableBloom={false} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -66,12 +74,8 @@ describe("EffectsComposer", () => {
   describe("bloom configuration", () => {
     it("should accept custom bloom intensity", () => {
       const { container } = render3D(
-        <EffectsComposer bloomIntensity={2.0}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer bloomIntensity={2.0} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -79,12 +83,8 @@ describe("EffectsComposer", () => {
 
     it("should accept custom luminance threshold", () => {
       const { container } = render3D(
-        <EffectsComposer luminanceThreshold={0.8}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer luminanceThreshold={0.8} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -92,12 +92,8 @@ describe("EffectsComposer", () => {
 
     it("should accept custom luminance smoothing", () => {
       const { container } = render3D(
-        <EffectsComposer luminanceSmoothing={0.8}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer luminanceSmoothing={0.8} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -105,12 +101,8 @@ describe("EffectsComposer", () => {
 
     it("should accept custom kernel size", () => {
       const { container } = render3D(
-        <EffectsComposer kernelSize={KernelSize.LARGE}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer kernelSize={KernelSize.LARGE} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -124,39 +116,34 @@ describe("EffectsComposer", () => {
           luminanceThreshold={0.85}
           luminanceSmoothing={0.85}
           kernelSize={KernelSize.SMALL}
-        >
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
-  describe("children", () => {
-    it("should render children correctly", () => {
+  describe("scene processing", () => {
+    it("should process multiple objects in the scene", () => {
       const { container } = render3D(
-        <EffectsComposer>
-          <group>
-            <mesh>
-              <sphereGeometry />
-              <meshBasicMaterial color={0xff0000} />
-            </mesh>
-            <mesh>
-              <boxGeometry />
-              <meshBasicMaterial color={0x00ff00} />
-            </mesh>
-          </group>
-        </EffectsComposer>,
+        <EffectsComposer />,
+        <group>
+          <mesh>
+            <sphereGeometry />
+            <meshBasicMaterial color={0xff0000} />
+          </mesh>
+          <mesh>
+            <boxGeometry />
+            <meshBasicMaterial color={0x00ff00} />
+          </mesh>
+        </group>,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle empty children", () => {
+    it("should work without scene content", () => {
       const { container } = render3D(<EffectsComposer />);
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -166,16 +153,15 @@ describe("EffectsComposer", () => {
   describe("performance", () => {
     it("should handle multiple emissive objects", () => {
       const { container } = render3D(
-        <EffectsComposer>
-          <group>
-            {Array.from({ length: 10 }).map((_, i) => (
-              <mesh key={i} position={[i, 0, 0]}>
-                <sphereGeometry args={[0.5]} />
-                <meshBasicMaterial color={0x00ffff} toneMapped={false} />
-              </mesh>
-            ))}
-          </group>
-        </EffectsComposer>,
+        <EffectsComposer />,
+        <group>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <mesh key={i} position={[i, 0, 0]}>
+              <sphereGeometry args={[0.5]} />
+              <meshBasicMaterial color={0x00ffff} toneMapped={false} />
+            </mesh>
+          ))}
+        </group>,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -183,12 +169,8 @@ describe("EffectsComposer", () => {
 
     it("should toggle bloom efficiently", () => {
       const { container, rerender } = render3D(
-        <EffectsComposer enableBloom={true}>
-          <mesh>
-            <sphereGeometry />
-            <meshBasicMaterial color={0xffd700} />
-          </mesh>
-        </EffectsComposer>,
+        <EffectsComposer enableBloom={true} />,
+        <TestSphereMesh />,
       );
 
       expect(container.querySelector("canvas")).toBeInTheDocument();
@@ -196,12 +178,8 @@ describe("EffectsComposer", () => {
       rerender(
         <Canvas>
           <Suspense fallback={null}>
-            <EffectsComposer enableBloom={false}>
-              <mesh>
-                <sphereGeometry />
-                <meshBasicMaterial color={0xffd700} />
-              </mesh>
-            </EffectsComposer>
+            <TestSphereMesh />
+            <EffectsComposer enableBloom={false} />
           </Suspense>
         </Canvas>,
       );
