@@ -279,6 +279,18 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
     });
   }, [effects, enabled, createPulseParticles, createRippleParticles]);
 
+  // 자원 정리 | Resource cleanup - Dispose all particle systems on unmount
+  useEffect(() => {
+    return () => {
+      effectInstances.forEach((instance) => {
+        instance.pulseParticles.geometry.dispose();
+        (instance.pulseParticles.material as THREE.Material).dispose();
+        instance.rippleParticles.geometry.dispose();
+        (instance.rippleParticles.material as THREE.Material).dispose();
+      });
+    };
+  }, [effectInstances]);
+
   // Animation loop
   useFrame(() => {
     if (!enabled || effectInstances.size === 0) return;
