@@ -73,8 +73,10 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     const cardWidth = isMobile ? 70 : 90;
     const cardHeight = isMobile ? 80 : 100;
     const gap = isMobile ? 8 : 12;
-    const totalWidth =
-      techniques.length * cardWidth + (techniques.length - 1) * gap;
+    const totalWidth = Math.max(
+      0,
+      techniques.length * cardWidth + (techniques.length - 1) * gap
+    );
 
     return {
       cardWidth,
