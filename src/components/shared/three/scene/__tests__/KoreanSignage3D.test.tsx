@@ -4,7 +4,7 @@
 
 import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import KoreanSignage3D from "../KoreanSignage3D";
 import { Suspense } from "react";
 import * as THREE from "three";
