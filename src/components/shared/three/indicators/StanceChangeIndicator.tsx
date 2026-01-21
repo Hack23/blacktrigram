@@ -12,8 +12,15 @@ import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
+import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types/common";
+import { 
+  getTrigramElementColor, 
+  getTrigramKoreanName, 
+  getTrigramEnglishName,
+  getTrigramSymbol
+} from "./ElementalColorSystem";
+import { triggerStanceChangeHaptic } from "./HapticFeedback";
 
 /**
  * Props for StanceChangeIndicator component
@@ -31,18 +38,6 @@ export interface StanceChangeIndicatorProps {
   readonly showProgress?: boolean;
   /** Transition duration in milliseconds for progress bar (default: 600ms) */
   readonly transitionDuration?: number;
-}
-
-/**
- * Get trigram data for a stance index
- */
-function getTrigramForStance(stanceIndex: number): {
-  stance: TrigramStance;
-  data: typeof TRIGRAM_DATA[TrigramStance];
-} {
-  const stance = TRIGRAM_STANCES_ORDER[stanceIndex] ?? TrigramStance.GEON;
-  const data = TRIGRAM_DATA[stance];
-  return { stance, data };
 }
 
 /**
@@ -106,6 +101,9 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
       setProgress(0);
       startTimeRef.current = 0;
 
+      // Trigger haptic feedback for stance change
+      triggerStanceChangeHaptic();
+
       // Animation loop for progress bar
       if (showProgress) {
         const animate = (timestamp: number) => {
@@ -144,10 +142,32 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     }
   }, [currentStance, previousStance, duration, showProgress, transitionDuration]);
 
-  // Get trigram info
-  const { data } = useMemo(
-    () => getTrigramForStance(currentStance),
+  // Get trigram stance from index
+  const stance = useMemo(
+    () => TRIGRAM_STANCES_ORDER[currentStance] ?? TrigramStance.GEON,
     [currentStance]
+  );
+
+  // Get elemental color for stance
+  const elementalColor = useMemo(
+    () => getTrigramElementColor(stance),
+    [stance]
+  );
+
+  // Get trigram names using elemental color system
+  const koreanName = useMemo(
+    () => getTrigramKoreanName(stance),
+    [stance]
+  );
+
+  const englishName = useMemo(
+    () => getTrigramEnglishName(stance),
+    [stance]
+  );
+
+  const trigramSymbol = useMemo(
+    () => getTrigramSymbol(stance),
+    [stance]
   );
 
   // Memoize animation styles to prevent redefinition on every render
@@ -182,9 +202,8 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   const subFontSize = isMobile ? 14 : 18;
   const top = isMobile ? "30%" : "20%";
 
-  // Get color for current stance
-  const primaryColor = data.theme?.primary ?? KOREAN_COLORS.PRIMARY_CYAN;
-  const primaryColorHex = hexToRgbaString(primaryColor, 1);
+  // Use elemental color system
+  const primaryColorHex = hexToRgbaString(elementalColor, 1);
 
   return (
     <Html fullscreen>
@@ -192,7 +211,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
         data-testid="stance-change-indicator"
         role="status"
         aria-live="polite"
-        aria-label={`Stance changed to ${data.name.english}`}
+        aria-label={`Stance changed to ${englishName}`}
         style={{
           position: "absolute",
           top,
@@ -211,12 +230,12 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
             color: primaryColorHex,
             fontFamily: FONT_FAMILY.KOREAN,
             fontWeight: "bold",
-            textShadow: `0 0 20px ${hexToRgbaString(primaryColor, 0.8)}, 
-                        0 0 40px ${hexToRgbaString(primaryColor, 0.5)}`,
+            textShadow: `0 0 20px ${hexToRgbaString(elementalColor, 0.8)}, 
+                        0 0 40px ${hexToRgbaString(elementalColor, 0.5)}`,
             marginBottom: "8px",
           }}
         >
-          {data.name.korean} {data.symbol}
+          {koreanName} {trigramSymbol}
         </div>
 
         {/* English name */}
@@ -229,7 +248,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
             marginBottom: showProgress ? "12px" : "0",
           }}
         >
-          {data.name.english}
+          {englishName}
         </div>
 
         {/* Transition progress bar (600ms) */}
@@ -263,7 +282,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
                 borderRadius: "3px",
                 overflow: "hidden",
-                border: `1px solid ${hexToRgbaString(primaryColor, 0.3)}`,
+                border: `1px solid ${hexToRgbaString(elementalColor, 0.3)}`,
               }}
             >
               {/* Progress bar fill */}
