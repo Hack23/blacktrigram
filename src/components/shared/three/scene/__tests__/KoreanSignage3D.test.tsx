@@ -11,14 +11,6 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
 
 describe("KoreanSignage3D", () => {
-  beforeEach(() => {
-    // Setup before each test
-  });
-
-  afterEach(() => {
-    // Cleanup after each test
-  });
-
   describe("basic rendering", () => {
     it("should render without crashing", () => {
       const { container } = render(
@@ -567,8 +559,9 @@ describe("KoreanSignage3D", () => {
 
       const renderTime = performance.now() - startTime;
 
-      // Initial render should be reasonably fast (< 1 second)
-      expect(renderTime).toBeLessThan(1000);
+      // Note: JSDOM rendering is fast. Using 200ms threshold to catch major
+      // performance regressions while accounting for CI environment variability.
+      expect(renderTime).toBeLessThan(200);
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
@@ -585,7 +578,7 @@ describe("KoreanSignage3D", () => {
 
       const renderTime = performance.now() - startTime;
 
-      expect(renderTime).toBeLessThan(1000);
+      expect(renderTime).toBeLessThan(200); // Mobile optimization
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
