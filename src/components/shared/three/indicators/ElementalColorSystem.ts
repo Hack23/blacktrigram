@@ -5,12 +5,17 @@
  * Maps each of the eight trigram stances to one of the five elements,
  * providing color-coded visual feedback for combat and training.
  * 
+ * Note: This module provides the correct element mappings based on traditional
+ * Bagua philosophy. The element property in TRIGRAM_DATA currently uses placeholder
+ * "metal" values and should be updated to use this system.
+ * 
  * @module components/shared/three/indicators/ElementalColorSystem
  * @category Combat UI
  * @korean 오행색체계
  */
 
 import { TrigramStance } from "../../../../types/common";
+import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
 
 /**
  * Five Elements (오행) color palette
@@ -69,54 +74,7 @@ export const TRIGRAM_TO_ELEMENT: Record<TrigramStance, Element> = {
   [TrigramStance.GON]: "earth",  // ☷ Earth (곤)
 };
 
-/**
- * Trigram symbol characters for each stance
- * Using Unicode trigram symbols
- * 
- * @korean 팔괘기호
- */
-export const TRIGRAM_SYMBOLS: Record<TrigramStance, string> = {
-  [TrigramStance.GEON]: "☰", // Heaven
-  [TrigramStance.TAE]: "☱",  // Lake
-  [TrigramStance.LI]: "☲",   // Fire
-  [TrigramStance.JIN]: "☳",  // Thunder
-  [TrigramStance.SON]: "☴",  // Wind
-  [TrigramStance.GAM]: "☵",  // Water
-  [TrigramStance.GAN]: "☶",  // Mountain
-  [TrigramStance.GON]: "☷",  // Earth
-};
 
-/**
- * Korean names for each trigram stance
- * 
- * @korean 팔괘한글명
- */
-export const TRIGRAM_KOREAN_NAMES: Record<TrigramStance, string> = {
-  [TrigramStance.GEON]: "건", // Heaven
-  [TrigramStance.TAE]: "태",  // Lake
-  [TrigramStance.LI]: "리",   // Fire
-  [TrigramStance.JIN]: "진",  // Thunder
-  [TrigramStance.SON]: "손",  // Wind
-  [TrigramStance.GAM]: "감",  // Water
-  [TrigramStance.GAN]: "간",  // Mountain
-  [TrigramStance.GON]: "곤",  // Earth
-};
-
-/**
- * English names for each trigram stance
- * 
- * @korean 팔괘영문명
- */
-export const TRIGRAM_ENGLISH_NAMES: Record<TrigramStance, string> = {
-  [TrigramStance.GEON]: "Heaven",
-  [TrigramStance.TAE]: "Lake",
-  [TrigramStance.LI]: "Fire",
-  [TrigramStance.JIN]: "Thunder",
-  [TrigramStance.SON]: "Wind",
-  [TrigramStance.GAM]: "Water",
-  [TrigramStance.GAN]: "Mountain",
-  [TrigramStance.GON]: "Earth",
-};
 
 /**
  * Get the elemental color for a trigram stance
@@ -144,6 +102,7 @@ export function getTrigramElementColor(stance: TrigramStance): number {
  * Get the Unicode symbol for a trigram stance
  * 
  * Returns the Unicode trigram symbol character (☰☱☲☳☴☵☶☷).
+ * Uses the symbol from TRIGRAM_DATA to maintain single source of truth.
  * 
  * @param stance - The trigram stance to get the symbol for
  * @returns Unicode trigram symbol
@@ -158,7 +117,7 @@ export function getTrigramElementColor(stance: TrigramStance): number {
  * @korean 팔괘기호얻기
  */
 export function getTrigramSymbol(stance: TrigramStance): string {
-  return TRIGRAM_SYMBOLS[stance];
+  return TRIGRAM_DATA[stance].symbol;
 }
 
 /**
@@ -183,6 +142,8 @@ export function getTrigramElement(stance: TrigramStance): Element {
 /**
  * Get Korean name for a trigram stance
  * 
+ * Uses the Korean name from TRIGRAM_DATA to maintain single source of truth.
+ * 
  * @param stance - The trigram stance to get the name for
  * @returns Korean name (e.g., "건" for Heaven)
  * 
@@ -196,11 +157,13 @@ export function getTrigramElement(stance: TrigramStance): Element {
  * @korean 팔괘한글명얻기
  */
 export function getTrigramKoreanName(stance: TrigramStance): string {
-  return TRIGRAM_KOREAN_NAMES[stance];
+  return TRIGRAM_DATA[stance].name.korean;
 }
 
 /**
  * Get English name for a trigram stance
+ * 
+ * Uses the English name from TRIGRAM_DATA to maintain single source of truth.
  * 
  * @param stance - The trigram stance to get the name for
  * @returns English name (e.g., "Heaven" for Geon)
@@ -215,7 +178,7 @@ export function getTrigramKoreanName(stance: TrigramStance): string {
  * @korean 팔괘영문명얻기
  */
 export function getTrigramEnglishName(stance: TrigramStance): string {
-  return TRIGRAM_ENGLISH_NAMES[stance];
+  return TRIGRAM_DATA[stance].name.english;
 }
 
 /**

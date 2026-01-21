@@ -12,7 +12,7 @@ import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
+import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types/common";
 import { 
   getTrigramElementColor, 
@@ -38,18 +38,6 @@ export interface StanceChangeIndicatorProps {
   readonly showProgress?: boolean;
   /** Transition duration in milliseconds for progress bar (default: 600ms) */
   readonly transitionDuration?: number;
-}
-
-/**
- * Get trigram data for a stance index
- */
-function getTrigramForStance(stanceIndex: number): {
-  stance: TrigramStance;
-  data: typeof TRIGRAM_DATA[TrigramStance];
-} {
-  const stance = TRIGRAM_STANCES_ORDER[stanceIndex] ?? TrigramStance.GEON;
-  const data = TRIGRAM_DATA[stance];
-  return { stance, data };
 }
 
 /**
@@ -154,9 +142,9 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     }
   }, [currentStance, previousStance, duration, showProgress, transitionDuration]);
 
-  // Get trigram info with elemental colors
-  const { stance } = useMemo(
-    () => getTrigramForStance(currentStance),
+  // Get trigram stance from index
+  const stance = useMemo(
+    () => TRIGRAM_STANCES_ORDER[currentStance] ?? TrigramStance.GEON,
     [currentStance]
   );
 
@@ -166,7 +154,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
     [stance]
   );
 
-  // Get trigram names using new system
+  // Get trigram names using elemental color system
   const koreanName = useMemo(
     () => getTrigramKoreanName(stance),
     [stance]

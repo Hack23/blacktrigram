@@ -181,8 +181,8 @@ export function stopHaptic(): void {
 /**
  * Check if device is mobile
  * 
- * Simple heuristic to detect mobile devices based on screen size
- * and user agent. Used to determine whether to enable haptic feedback.
+ * Simple heuristic to detect mobile devices based on screen size,
+ * user agent, and touch support.
  * 
  * @returns True if device is likely mobile
  * 
@@ -208,11 +208,10 @@ export function isMobileDevice(): boolean {
   const mobileKeywords = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   const isMobileUA = mobileKeywords.test(navigator.userAgent);
 
-  // Check for touch support
+  // Check for touch support (modern browsers)
   const hasTouch =
     "ontouchstart" in window ||
-    navigator.maxTouchPoints > 0 ||
-    (navigator as any).msMaxTouchPoints > 0;
+    navigator.maxTouchPoints > 0;
 
   // Device is mobile if it meets size OR user agent criteria AND has touch
   return (isMobileSize || isMobileUA) && hasTouch;

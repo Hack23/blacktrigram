@@ -12,9 +12,6 @@ import { TrigramStance } from "../../../../types/common";
 import {
   ELEMENT_COLORS,
   TRIGRAM_TO_ELEMENT,
-  TRIGRAM_SYMBOLS,
-  TRIGRAM_KOREAN_NAMES,
-  TRIGRAM_ENGLISH_NAMES,
   getTrigramElementColor,
   getTrigramSymbol,
   getTrigramElement,
@@ -43,39 +40,6 @@ describe("ElementalColorSystem", () => {
       expect(TRIGRAM_TO_ELEMENT[TrigramStance.GAM]).toBe("water");
       expect(TRIGRAM_TO_ELEMENT[TrigramStance.GAN]).toBe("earth");
       expect(TRIGRAM_TO_ELEMENT[TrigramStance.GON]).toBe("earth");
-    });
-
-    it("should define all trigram Unicode symbols", () => {
-      expect(TRIGRAM_SYMBOLS[TrigramStance.GEON]).toBe("☰");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.TAE]).toBe("☱");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.LI]).toBe("☲");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.JIN]).toBe("☳");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.SON]).toBe("☴");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.GAM]).toBe("☵");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.GAN]).toBe("☶");
-      expect(TRIGRAM_SYMBOLS[TrigramStance.GON]).toBe("☷");
-    });
-
-    it("should define all Korean trigram names", () => {
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.GEON]).toBe("건");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.TAE]).toBe("태");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.LI]).toBe("리");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.JIN]).toBe("진");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.SON]).toBe("손");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.GAM]).toBe("감");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.GAN]).toBe("간");
-      expect(TRIGRAM_KOREAN_NAMES[TrigramStance.GON]).toBe("곤");
-    });
-
-    it("should define all English trigram names", () => {
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.GEON]).toBe("Heaven");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.TAE]).toBe("Lake");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.LI]).toBe("Fire");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.JIN]).toBe("Thunder");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.SON]).toBe("Wind");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.GAM]).toBe("Water");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.GAN]).toBe("Mountain");
-      expect(TRIGRAM_ENGLISH_NAMES[TrigramStance.GON]).toBe("Earth");
     });
   });
 
