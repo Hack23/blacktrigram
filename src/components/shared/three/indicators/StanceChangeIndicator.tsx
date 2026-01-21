@@ -10,18 +10,16 @@
  
 import { Html } from "@react-three/drei";
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import * as THREE from "three";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types/common";
 import { 
   getTrigramElementColor, 
-  getTrigramSymbol, 
   getTrigramKoreanName, 
-  getTrigramEnglishName 
+  getTrigramEnglishName,
+  getTrigramSymbol
 } from "./ElementalColorSystem";
-import { TrigramSymbol3D } from "./TrigramSymbol3D";
 import { triggerStanceChangeHaptic } from "./HapticFeedback";
 
 /**
@@ -157,7 +155,7 @@ export const StanceChangeIndicator: React.FC<StanceChangeIndicatorProps> = ({
   }, [currentStance, previousStance, duration, showProgress, transitionDuration]);
 
   // Get trigram info with elemental colors
-  const { data, stance } = useMemo(
+  const { stance } = useMemo(
     () => getTrigramForStance(currentStance),
     [currentStance]
   );
