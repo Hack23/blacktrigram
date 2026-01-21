@@ -19,10 +19,10 @@ describe("PerformanceMonitor", () => {
   let originalNavigator: typeof navigator;
 
   beforeEach(() => {
-    // Mock requestAnimationFrame
-    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
-      cb(0);
-      return 0;
+    // Mock requestAnimationFrame to return an ID but not call callback immediately
+    let rafId = 0;
+    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => {
+      return ++rafId;
     });
 
     // Mock cancelAnimationFrame

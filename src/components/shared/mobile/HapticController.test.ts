@@ -19,9 +19,13 @@ describe("HapticController", () => {
   let originalNavigator: typeof navigator;
 
   beforeEach(() => {
-    // Mock navigator.vibrate
-    vibrateSpy = vi.fn();
+    // Store original navigator
     originalNavigator = global.navigator;
+    
+    // Mock navigator.vibrate
+    vibrateSpy = vi.fn().mockReturnValue(true);
+    
+    // Replace navigator completely
     Object.defineProperty(global, "navigator", {
       value: {
         ...originalNavigator,
@@ -33,9 +37,18 @@ describe("HapticController", () => {
       configurable: true,
     });
 
-    // Reset singleton
+    // Reset singleton AFTER navigator is mocked
     // @ts-expect-error - Accessing private static member for testing
     HapticController.instance = null;
+    
+    // Mock performance.now to control throttling (starts at 0)
+    let currentTime = 0;
+    vi.spyOn(performance, 'now').mockImplementation(() => currentTime);
+    
+    // Provide helper to advance time in tests
+    (global as typeof globalThis & { advanceTime?: (ms: number) => void }).advanceTime = (ms: number) => {
+      currentTime += ms;
+    };
   });
 
   afterEach(() => {
@@ -75,7 +88,7 @@ describe("HapticController", () => {
       const result = controller.trigger('light');
 
       expect(vibrateSpy).toHaveBeenCalledWith([20]);
-      expect(result).toBe(undefined);
+      expect(result).toBe(true);
     });
 
     it("should trigger medium haptic", () => {
@@ -102,6 +115,10 @@ describe("HapticController", () => {
     it("should not trigger when disabled", () => {
       const controller = HapticController.getInstance();
       controller.disable();
+      
+      // Clear any calls from disable() which calls stop()
+      vibrateSpy.mockClear();
+      
       controller.trigger('medium');
 
       expect(vibrateSpy).not.toHaveBeenCalled();
@@ -117,18 +134,26 @@ describe("HapticController", () => {
     });
 
     it("should throttle rapid triggers", () => {
-      vi.useFakeTimers();
       const controller = HapticController.getInstance();
       controller.setMinTriggerInterval(50);
 
+      // First trigger at time 0
       controller.trigger('light');
-      controller.trigger('light');
-      controller.trigger('light');
-
-      // Only first trigger should go through
       expect(vibrateSpy).toHaveBeenCalledTimes(1);
-
-      vi.useRealTimers();
+      
+      // Advance time by 10ms (within 50ms threshold)
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(10);
+      
+      // Second trigger should be throttled
+      controller.trigger('light');
+      expect(vibrateSpy).toHaveBeenCalledTimes(1); // Still 1
+      
+      // Advance time by another 45ms (total 55ms, past threshold)
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(45);
+      
+      // Third trigger should go through
+      controller.trigger('light');
+      expect(vibrateSpy).toHaveBeenCalledTimes(2); // Now 2
     });
   });
 
@@ -136,6 +161,9 @@ describe("HapticController", () => {
     it("should trigger custom pattern array", () => {
       const controller = HapticController.getInstance();
       const pattern = [30, 20, 30];
+      
+      // Advance time to avoid throttling
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       controller.triggerCustom(pattern);
 
       expect(vibrateSpy).toHaveBeenCalledWith(pattern);
@@ -143,6 +171,9 @@ describe("HapticController", () => {
 
     it("should trigger custom pattern number", () => {
       const controller = HapticController.getInstance();
+      
+      // Advance time to avoid throttling
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       controller.triggerCustom(100);
 
       expect(vibrateSpy).toHaveBeenCalledWith(100);
@@ -167,6 +198,9 @@ describe("HapticController", () => {
 
       const controller = HapticController.getInstance();
       const pattern = [40, 20, 40];
+      
+      // Advance time to avoid throttling
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       controller.triggerCustom(pattern);
 
       // Pattern should be reduced by 50%
@@ -307,12 +341,21 @@ describe("HapticController", () => {
   });
 
   describe("Convenience functions", () => {
+    beforeEach(() => {
+      // Reset singleton for each convenience function test
+      // @ts-expect-error - Accessing private static member for testing
+      HapticController.instance = null;
+      vibrateSpy.mockClear();
+    });
+    
     it("should trigger via convenience function", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       triggerOptimizedHaptic('medium');
       expect(vibrateSpy).toHaveBeenCalledWith([40]);
     });
 
     it("should trigger custom via convenience function", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       triggerCustomOptimizedHaptic([25, 15, 25]);
       expect(vibrateSpy).toHaveBeenCalledWith([25, 15, 25]);
     });
@@ -324,42 +367,57 @@ describe("HapticController", () => {
   });
 
   describe("OptimizedCombatHaptics", () => {
+    beforeEach(() => {
+      // Reset singleton for each combat haptics test
+      // @ts-expect-error - Accessing private static member for testing
+      HapticController.instance = null;
+      vibrateSpy.mockClear();
+    });
+    
     it("should trigger attack haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.attack();
       expect(vibrateSpy).toHaveBeenCalledWith([40]);
     });
 
     it("should trigger block haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.block();
       expect(vibrateSpy).toHaveBeenCalledWith([20]);
     });
 
     it("should trigger critical hit haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.criticalHit();
       expect(vibrateSpy).toHaveBeenCalledWith([40, 20, 60]);
     });
 
     it("should trigger vital point strike haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.vitalPointStrike();
       expect(vibrateSpy).toHaveBeenCalledWith([60]);
     });
 
     it("should trigger stance change haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.stanceChange();
       expect(vibrateSpy).toHaveBeenCalledWith([20]);
     });
 
     it("should trigger combo increment haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.comboIncrement();
       expect(vibrateSpy).toHaveBeenCalledWith([20]);
     });
 
     it("should trigger knockout haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.knockout();
       expect(vibrateSpy).toHaveBeenCalledWith([60, 30, 60, 30, 100]);
     });
 
     it("should trigger error haptic", () => {
+      (global as typeof globalThis & { advanceTime: (ms: number) => void }).advanceTime(1000);
       OptimizedCombatHaptics.error();
       expect(vibrateSpy).toHaveBeenCalledWith([15, 10, 15]);
     });

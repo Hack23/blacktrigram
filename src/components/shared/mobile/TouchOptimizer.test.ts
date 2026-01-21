@@ -89,13 +89,37 @@ describe("TouchOptimizer", () => {
         })
       );
 
+      // First, touch start to set isTouching state
+      const touchStartEvent = new TouchEvent('touchstart', {
+        touches: [
+          { clientX: 100, clientY: 200 } as Touch,
+        ],
+      });
+      document.dispatchEvent(touchStartEvent);
+
+      // Execute any pending RAF callbacks
+      if (rafSpy.mock.results[0]?.value) {
+        const callback = rafSpy.mock.calls[0]?.[0];
+        if (callback) callback(0);
+      }
+
+      // Clear mocks to test touch end specifically
+      rafSpy.mockClear();
+      onTouchStart.mockClear();
+
       // Simulate touch end event
-      const touchEvent = new TouchEvent('touchend', {
+      const touchEndEvent = new TouchEvent('touchend', {
         changedTouches: [
           { clientX: 150, clientY: 250 } as Touch,
         ],
       });
-      document.dispatchEvent(touchEvent);
+      document.dispatchEvent(touchEndEvent);
+
+      // Execute RAF callback for touch end
+      if (rafSpy.mock.results[0]?.value) {
+        const callback = rafSpy.mock.calls[0]?.[0];
+        if (callback) callback(0);
+      }
 
       expect(rafSpy).toHaveBeenCalled();
       expect(onTouchEnd).toHaveBeenCalled();
@@ -112,13 +136,23 @@ describe("TouchOptimizer", () => {
         })
       );
 
-      // First trigger touch start
-      const startEvent = new TouchEvent('touchstart', {
+      // First, touch start to set isTouching state
+      const touchStartEvent = new TouchEvent('touchstart', {
         touches: [
           { clientX: 100, clientY: 200 } as Touch,
         ],
       });
-      document.dispatchEvent(startEvent);
+      document.dispatchEvent(touchStartEvent);
+
+      // Execute RAF callback for touch start
+      if (rafSpy.mock.results[0]?.value) {
+        const callback = rafSpy.mock.calls[0]?.[0];
+        if (callback) callback(0);
+      }
+
+      // Clear mocks to test touch move specifically
+      rafSpy.mockClear();
+      onTouchStart.mockClear();
 
       // Then simulate touch move
       const moveEvent = new TouchEvent('touchmove', {
@@ -127,6 +161,12 @@ describe("TouchOptimizer", () => {
         ],
       });
       document.dispatchEvent(moveEvent);
+
+      // Execute RAF callback for touch move
+      if (rafSpy.mock.results[0]?.value) {
+        const callback = rafSpy.mock.calls[0]?.[0];
+        if (callback) callback(0);
+      }
 
       expect(onTouchMove).toHaveBeenCalled();
     });
