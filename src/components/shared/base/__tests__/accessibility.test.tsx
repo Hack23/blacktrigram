@@ -6,7 +6,7 @@
  */
 
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi, beforeAll } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { BaseButton } from "../BaseButton";
 import { BasePanel } from "../BasePanel";
