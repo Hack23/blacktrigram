@@ -1677,6 +1677,229 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
+  /**
+   * Brachial elbow - Horizontal elbow to brachial nerve (상박치기)
+   * Targets the lateral neck/brachial plexus area
+   * @korean 상박치기
+   */
+  brachialElbow(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm swings horizontally targeting neck level
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.2, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+      // Strong torso rotation for power
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0.1);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.6, 0.05);
+      kf.rotate(BoneName.PELVIS, 0, 0.5, 0);
+      // Elbow aimed at neck height
+      kf.position(BoneName.ELBOW_R, 0.3, 0.2, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Downward elbow - 12-6 elbow strike (내려팔꿈치)
+   * Vertical downward strike to crown of head
+   * @korean 내려팔꿈치
+   */
+  downwardElbow(timeOffset: number = 0.08, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm crashes down vertically
+      kf.rotate(BoneName.SHOULDER_R, -1.2, 0, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.8);
+      // Body leans into strike
+      kf.rotate(BoneName.SPINE_UPPER, 0.3, 0, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.2, 0, 0);
+      kf.rotate(BoneName.PELVIS, 0.15, 0, 0);
+      // Elbow drives down
+      kf.position(BoneName.ELBOW_R, 0.1, 0, 0.5);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Slashing elbow - Diagonal cutting elbow (베기팔꿈치)
+   * Diagonal slash across opponent's face/temple
+   * @korean 베기팔꿈치
+   */
+  slashingElbow(timeOffset: number = 0.09, easing: string = "linear"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Diagonal slash motion - high to low
+      kf.rotate(BoneName.SHOULDER_R, -0.6, 0.3, 1.0);
+      kf.rotate(BoneName.ELBOW_R, 0, 0.2, 1.2);
+      // Torso follows diagonal path
+      kf.rotate(BoneName.SPINE_UPPER, 0.2, 0.5, 0.15);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.1, 0.4, 0.1);
+      kf.rotate(BoneName.PELVIS, 0.05, 0.3, 0.05);
+      // Elbow cuts diagonally
+      kf.position(BoneName.ELBOW_R, 0.2, 0.1, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Spinal elbow - Downward elbow to spine (척추팔꿈치)
+   * Strikes spine from behind or above
+   * @korean 척추팔꿈치
+   */
+  spinalElbow(timeOffset: number = 0.1, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm drives down toward spine
+      kf.rotate(BoneName.SHOULDER_R, -0.8, 0.4, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0.3, 1.0);
+      // Body leans forward for reach
+      kf.rotate(BoneName.SPINE_UPPER, 0.4, 0.3, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.3, 0.2, 0);
+      kf.rotate(BoneName.PELVIS, 0.2, 0.2, 0);
+      // Elbow targets lower target
+      kf.position(BoneName.ELBOW_R, 0.15, -0.1, 0.7);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Side knee - Lateral knee to ribs (옆무릎)
+   * Clinch knee targeting opponent's side
+   * @korean 옆무릎
+   */
+  sideKneeStrike(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Clinch position with lateral knee
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.4, -0.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, 0.3, -0.4, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+
+      // Knee drives laterally
+      kf.rotate(BoneName.HIP_R, 1.2, 0, 0.4); // Lateral angle
+      kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, 0);
+
+      // Hip rotation for side angle
+      kf.rotate(BoneName.PELVIS, 0.1, -0.4, 0.1);
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, -0.3, 0.05);
+
+      // Support leg
+      kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.4, 0);
+
+      kf.position(BoneName.KNEE_R, 0.3, 0.3, 0.4);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Flying knee - Jumping knee strike (뛰어무릎)
+   * Explosive airborne knee
+   * @korean 뛰어무릎
+   */
+  flyingKnee(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Both arms drive for momentum
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+
+      // Knee drives high in air
+      kf.rotate(BoneName.HIP_R, 1.6, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.5, 0, 0);
+
+      // Trailing leg extends back
+      kf.rotate(BoneName.HIP_L, -0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+
+      // Body drives forward and up
+      kf.rotate(BoneName.PELVIS, 0.3, -0.5, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.2, -0.3, 0);
+
+      // Airborne position
+      kf.position(BoneName.PELVIS, 0, 0.4, 0.3);
+      kf.position(BoneName.KNEE_R, 0, 0.6, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Kidney knee - Knee to kidney from side (신장무릎)
+   * Targets kidney area from side clinch
+   * @korean 신장무릎
+   */
+  kidneyKnee(timeOffset: number = 0.11, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Side clinch grip
+      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.5, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, 0.4, -0.5, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+
+      // Knee hooks around to kidney
+      kf.rotate(BoneName.HIP_R, 1.3, 0.2, 0.3);
+      kf.rotate(BoneName.KNEE_R, -0.45, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.35, 0.1, 0);
+
+      // Body angles for side target
+      kf.rotate(BoneName.PELVIS, 0.15, -0.5, 0.1);
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.35, 0.05);
+
+      // Support leg angled
+      kf.rotate(BoneName.KNEE_L, -0.22, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.45, 0);
+
+      kf.position(BoneName.KNEE_R, 0.25, 0.35, 0.45);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Femoral knee - Knee to femoral nerve (대퇴부무릎)
+   * Low knee targeting thigh/femoral nerve
+   * @korean 대퇴부무릎
+   */
+  femoralKnee(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Low clinch position
+      kf.rotate(BoneName.SHOULDER_L, 0.5, 0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
+      kf.rotate(BoneName.SHOULDER_R, 0.5, -0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
+
+      // Knee drives low
+      kf.rotate(BoneName.HIP_R, 1.1, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.6, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.25, 0, 0);
+
+      // Body stays lower
+      kf.rotate(BoneName.PELVIS, 0.25, -0.4, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.15, -0.25, 0);
+
+      // Support leg bent
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.35, 0);
+
+      // Low target position
+      kf.position(BoneName.KNEE_R, 0, 0.2, 0.5);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // GRAPPLING TECHNIQUES (잡기 기술)
   // ═══════════════════════════════════════════════════════════════════════

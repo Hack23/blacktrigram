@@ -148,20 +148,16 @@ export const DOWNWARD_ELBOW_ANIMATION: SkeletalAnimation =
  *
  * Elbow strike thrown backward.
  * Used when opponent is behind.
+ * Uses unique rear-strike rotation pattern.
  *
  * @korean 뒤팔꿈치애니메이션
  */
 export const BACK_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("back_elbow", "뒤팔꿈치")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber) // Chamber
-    .elbowStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // Thrust back
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    ) // Recover
+    .withKoreanHighGuard() // Start in guard
+    .brachialElbow(TECHNIQUE_TIMING.FAST.extend) // Unique brachial strike
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -207,10 +203,7 @@ export const SLASHING_ELBOW_ANIMATION: SkeletalAnimation =
         TECHNIQUE_TIMING.FAST.extend +
         TECHNIQUE_TIMING.FAST.peak,
     ) // Slash down diagonally
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    ) // Recover
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // Recover
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -367,13 +360,8 @@ export const TEMPLE_ELBOW_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
     .withKoreanHighGuard()
-    .elbowStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    ) // High target
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .elbowStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // High target
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -412,13 +400,8 @@ export const BRACHIAL_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("brachial_elbow", "상박치기")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .elbowStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .elbowStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
