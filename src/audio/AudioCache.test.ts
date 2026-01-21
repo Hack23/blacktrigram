@@ -20,7 +20,6 @@ class MockAudioElement {
 
 describe("AudioCache", () => {
   const MB = 1024 * 1024;
-  const KB = 1024;
 
   const createMockAsset = (id: string): AudioAsset => {
     const mockAudio = new MockAudioElement();

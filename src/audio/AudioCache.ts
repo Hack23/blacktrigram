@@ -213,7 +213,9 @@ export class AudioCache {
     }
 
     if (oldestId) {
-      const evicted = this.cache.get(oldestId)!;
+      const evicted = this.cache.get(oldestId);
+      if (!evicted) return; // Should not happen, but handle safely
+      
       this.cache.delete(oldestId);
       this.currentSize -= evicted.size;
       this.evictionCount++;

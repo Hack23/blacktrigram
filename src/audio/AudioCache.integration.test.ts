@@ -148,7 +148,6 @@ describe("AudioCache Integration with AudioManager", () => {
     it("should evict least recently used non-critical assets", async () => {
       const asset1 = createMockAsset("lru_test_1", false);
       const asset2 = createMockAsset("lru_test_2", false);
-      const asset3 = createMockAsset("lru_test_3", false);
 
       await audioManager.loadAsset(asset1);
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -262,8 +261,6 @@ describe("AudioCache Integration with AudioManager", () => {
     });
 
     it("should respect memory limits", async () => {
-      const stats = audioManager.getCacheStats();
-
       // 30MB default limit
       const maxSizeBytes = 30 * MB;
 
