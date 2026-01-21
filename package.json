@@ -60,6 +60,9 @@
     "gen:sprites:archetype": "npx tsx scripts/generate_archetype_sprites.ts",
     "audit:assets": "npx tsx scripts/audit-assets.ts",
     "audit:assets:verbose": "npx tsx scripts/audit-assets.ts --verbose",
+    "audit:threejs": "npx tsx scripts/audit-threejs-disposal.ts",
+    "audit:threejs:verbose": "npx tsx scripts/audit-threejs-disposal.ts --verbose",
+    "audit:threejs:fix-report": "npx tsx scripts/audit-threejs-disposal.ts --fix-report",
     "screenshots:capture": "start-server-and-test dev http://localhost:5173 'npx tsx scripts/capture-screenshots.ts'",
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
