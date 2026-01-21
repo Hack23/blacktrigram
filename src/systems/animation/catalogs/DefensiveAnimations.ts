@@ -2,8 +2,7 @@
  * Defensive animations for Eight Trigram stances
  * 
  * Implements stance-specific defensive techniques based on Korean martial arts
- * and I Ching philosophy. Each stance has unique defensive characteristics
- * that reflect its philosophical nature.
+ * and I Ching philosophy using the MartialArtsAnimationBuilder pattern.
  * 
  * Coverage:
  * - 8 stances × 2 defensive moves = 16 defensive animations
@@ -15,888 +14,266 @@
  * @korean 방어애니메이션
  */
 
-import * as THREE from "three";
 import type { SkeletalAnimation } from "@/types/skeletal";
-import { BoneName } from "@/types/skeletal";
 import { TrigramStance } from "@/types/common";
+import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☰ 건 (GEON) - HEAVEN DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☰ 건 (Geon) - Heaven Defensive Move 1: High Block (상단막기)
- * 
  * Strong overhead block with both arms raised high. Direct force meets force.
- * Traditional Taekwondo high block technique.
- * 
- * Duration: 200ms (defensive reaction)
- * 
  * @korean 건상단막기
  */
-export const GEON_HIGH_BLOCK: SkeletalAnimation = {
-  name: "geon_high_block",
-  koreanName: "건 상단막기",
-  duration: 0.2,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-1.0, 0.3, -0.6, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-1.0, -0.3, 0.6, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.2,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.6, 0.2, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.8, -0.6, -0.2, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const GEON_HIGH_BLOCK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_high_block", "건 상단막기")
+    .asDefense(0.2)
+    .blockHigh(0.1, "ease-out")
+    .blockHigh(0.1, "linear")
+    .build();
 
 /**
  * ☰ 건 (Geon) - Heaven Defensive Move 2: Counter Strike (반격)
- * 
  * Quick counter punch after blocking, leveraging forward aggression.
- * Embodies Heaven's active, yang energy.
- * 
- * Duration: 250ms
- * 
  * @korean 건반격
  */
-export const GEON_COUNTER_STRIKE: SkeletalAnimation = {
-  name: "geon_counter_strike",
-  koreanName: "건 반격",
-  duration: 0.25,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, -0.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.5, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0.8)]]),
-    },
-    {
-      time: 0.25,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, -0.1, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
-    },
-  ],
-};
+export const GEON_COUNTER_STRIKE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("geon_counter_strike", "건 반격")
+    .asDefense(0.25)
+    .stance()
+    .counterStrike(0.15, "ease-out")
+    .recover(0.1, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☱ 태 (TAE) - LAKE DEFENSIVE ANIMATIONS  
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☱ 태 (Tae) - Lake Defensive Move 1: Joint Lock Defense (관절꺾기 방어)
- * 
  * Circular deflection leading into joint manipulation. Fluid redirection.
- * 
- * Duration: 300ms
- * 
  * @korean 태관절방어
  */
-export const TAE_JOINT_LOCK_DEFENSE: SkeletalAnimation = {
-  name: "tae_joint_lock_defense",
-  koreanName: "태 관절방어",
-  duration: 0.3,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.4, 0.9, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.4, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 1.2, 0.6, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.0, "XYZ")],
-        [BoneName.WRIST_L, new THREE.Euler(0.3, 0.5, 0, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.3,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.4, 0.9, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.4, "XYZ")],
-        [BoneName.WRIST_L, new THREE.Euler(0.2, 0.3, 0, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const TAE_JOINT_LOCK_DEFENSE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("tae_joint_lock_defense", "태 관절방어")
+    .asDefense(0.3)
+    .stance()
+    .parry(0.1, "ease-out")
+    .jointLock(0.12, "linear")
+    .recover(0.08, "ease-in")
+    .build();
 
 /**
  * ☱ 태 (Tae) - Lake Defensive Move 2: Sweep Defense (쓸어치기 방어)
- * 
  * Low sweeping motion to deflect and unbalance attacker.
- * 
- * Duration: 280ms
- * 
  * @korean 태쓸어치기방어
  */
-export const TAE_SWEEP_DEFENSE: SkeletalAnimation = {
-  name: "tae_sweep_defense",
-  koreanName: "태 쓸어치기방어",
-  duration: 0.28,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.6, -0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.2, -0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, 0.8, 0.5, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.2, 0.4, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.28,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.5, -0.7, -0.4, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.1, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const TAE_SWEEP_DEFENSE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("tae_sweep_defense", "태 쓸어치기방어")
+    .asDefense(0.28)
+    .stance()
+    .parry(0.08, "ease-out")
+    .sweep(0.12, "linear")
+    .recover(0.08, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☲ 리 (LI) - FIRE DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☲ 리 (Li) - Fire Defensive Move 1: Precision Parry (정밀 받아넘기기)
- * 
  * Precise hand deflection targeting specific attack points.
- * 
- * Duration: 180ms (fast precision)
- * 
  * @korean 리정밀받아넘기기
  */
-export const LI_PRECISION_PARRY: SkeletalAnimation = {
-  name: "li_precision_parry",
-  koreanName: "리 정밀받아넘기기",
-  duration: 0.18,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.8, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.5, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.09,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 1.0, 0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.3, "XYZ")],
-        [BoneName.WRIST_L, new THREE.Euler(0.2, 0.4, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.18,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.8, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.6, "XYZ")],
-        [BoneName.WRIST_L, new THREE.Euler(0, 0.1, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const LI_PRECISION_PARRY: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("li_precision_parry", "리 정밀받아넘기기")
+    .asDefense(0.18)
+    .stance()
+    .parry(0.09, "ease-out")
+    .recover(0.09, "ease-in")
+    .build();
 
 /**
  * ☲ 리 (Li) - Fire Defensive Move 2: Nerve Strike Counter (신경타격 반격)
- * 
  * Quick nerve strike counter after deflection.
- * 
- * Duration: 220ms
- * 
  * @korean 리신경타격반격
  */
-export const LI_NERVE_STRIKE_COUNTER: SkeletalAnimation = {
-  name: "li_nerve_strike_counter",
-  koreanName: "리 신경타격반격",
-  duration: 0.22,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.3, -0.6, -0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.12,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.3, 0.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
-        [BoneName.WRIST_R, new THREE.Euler(0.1, -0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0.6)]]),
-    },
-    {
-      time: 0.22,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.3, -0.6, -0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-        [BoneName.WRIST_R, new THREE.Euler(0.1, -0.1, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
-    },
-  ],
-};
+export const LI_NERVE_STRIKE_COUNTER: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("li_nerve_strike_counter", "리 신경타격반격")
+    .asDefense(0.22)
+    .stance()
+    .counterParry(0.06, "linear")
+    .counterStrike(0.1, "ease-out")
+    .recover(0.06, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☳ 진 (JIN) - THUNDER DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☳ 진 (Jin) - Thunder Defensive Move 1: Explosive Block (폭발적 막기)
- * 
  * Powerful explosive block that can stagger attacker.
- * 
- * Duration: 150ms (explosive reaction)
- * 
  * @korean 진폭발막기
  */
-export const JIN_EXPLOSIVE_BLOCK: SkeletalAnimation = {
-  name: "jin_explosive_block",
-  koreanName: "진 폭발막기",
-  duration: 0.15,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.7, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.8, -0.3, -0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.08,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.6, 0.5, 0.9, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.6, -0.5, -0.9, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.8, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.8, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0.1, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.7, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.8, -0.3, -0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const JIN_EXPLOSIVE_BLOCK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("jin_explosive_block", "진 폭발막기")
+    .asDefense(0.15)
+    .stance()
+    .blockHigh(0.08, "ease-out")
+    .recover(0.07, "ease-in")
+    .build();
 
 /**
  * ☳ 진 (Jin) - Thunder Defensive Move 2: Shocking Counter (충격 반격)
- * 
  * Lightning-fast counter strike with explosive power.
- * 
- * Duration: 180ms
- * 
  * @korean 진충격반격
  */
-export const JIN_SHOCKING_COUNTER: SkeletalAnimation = {
-  name: "jin_shocking_counter",
-  koreanName: "진 충격반격",
-  duration: 0.18,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(-0.15, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.09,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.6, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.2, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.3, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0.7)]]),
-    },
-    {
-      time: 0.18,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0)]]),
-    },
-  ],
-};
+export const JIN_SHOCKING_COUNTER: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("jin_shocking_counter", "진 충격반격")
+    .asDefense(0.18)
+    .stance()
+    .counterStrike(0.09, "ease-out")
+    .recover(0.09, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☴ 손 (SON) - WIND DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☴ 손 (Son) - Wind Defensive Move 1: Continuous Deflection (연속 막기)
- * 
  * Rapid circular deflections, multiple in succession.
- * 
- * Duration: 350ms (continuous motion)
- * 
  * @korean 손연속막기
  */
-export const SON_CONTINUOUS_DEFLECTION: SkeletalAnimation = {
-  name: "son_continuous_deflection",
-  koreanName: "손 연속막기",
-  duration: 0.35,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.65, 0.7, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.6, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.12,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.9, 0.7, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.4, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.23,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.1, 0.6, 0.3, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.7, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.1, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.35,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.65, 0.7, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.6, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const SON_CONTINUOUS_DEFLECTION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("son_continuous_deflection", "손 연속막기")
+    .asDefense(0.35)
+    .stance()
+    .parry(0.1, "linear")
+    .parry(0.1, "linear")
+    .parry(0.08, "linear")
+    .recover(0.07, "ease-in")
+    .build();
 
 /**
  * ☴ 손 (Son) - Wind Defensive Move 2: Pressure Counter (압박 반격)
- * 
  * Multiple quick strikes after deflection, maintaining pressure.
- * 
- * Duration: 400ms
- * 
  * @korean 손압박반격
  */
-export const SON_PRESSURE_COUNTER: SkeletalAnimation = {
-  name: "son_pressure_counter",
-  koreanName: "손 압박반격",
-  duration: 0.4,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, -0.7, -0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.13,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.3, 0.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.1, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0.5)]]),
-    },
-    {
-      time: 0.26,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 0.3, -0.2, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.1, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.HAND_R, new THREE.Vector3(0, 0, 0)],
-        [BoneName.HAND_L, new THREE.Vector3(0, 0, 0.5)],
-      ]),
-    },
-    {
-      time: 0.4,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.65, 0.7, 0.5, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, -0.7, -0.3, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.6, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-      ]),
-      bonePositions: new Map([
-        [BoneName.HAND_L, new THREE.Vector3(0, 0, 0)],
-      ]),
-    },
-  ],
-};
+export const SON_PRESSURE_COUNTER: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("son_pressure_counter", "손 압박반격")
+    .asDefense(0.4)
+    .stance()
+    .counterStrike(0.1, "ease-out")
+    .counterStrike(0.1, "ease-out")
+    .counterStrike(0.1, "ease-out")
+    .recover(0.1, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☵ 감 (GAM) - WATER DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☵ 감 (Gam) - Water Defensive Move 1: Flow Defense (흐름 방어)
- * 
  * Yielding circular defense that redirects force.
- * 
- * Duration: 320ms
- * 
  * @korean 감흐름방어
  */
-export const GAM_FLOW_DEFENSE: SkeletalAnimation = {
-  name: "gam_flow_defense",
-  koreanName: "감 흐름방어",
-  duration: 0.32,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.1, 0.5, 0.6, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.8, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.16,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.3, 0.8, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.5, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.15, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.32,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.1, 0.5, 0.6, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.8, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const GAM_FLOW_DEFENSE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gam_flow_defense", "감 흐름방어")
+    .asDefense(0.32)
+    .stance()
+    .parry(0.12, "ease-out")
+    .shift(0.1, "linear")
+    .recover(0.1, "ease-in")
+    .build();
 
 /**
  * ☵ 감 (Gam) - Water Defensive Move 2: Redirection Counter (전환 반격)
- * 
  * Uses opponent's momentum for counter strike.
- * 
- * Duration: 300ms
- * 
  * @korean 감전환반격
  */
-export const GAM_REDIRECTION_COUNTER: SkeletalAnimation = {
-  name: "gam_redirection_counter",
-  koreanName: "감 전환반격",
-  duration: 0.3,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, -0.5, -0.6, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.8, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.3, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.3, -0.2, 0.2, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.3, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.2, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, -0.15, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0.6)]]),
-    },
-    {
-      time: 0.3,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, -0.5, -0.6, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.8, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
-    },
-  ],
-};
+export const GAM_REDIRECTION_COUNTER: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gam_redirection_counter", "감 전환반격")
+    .asDefense(0.3)
+    .stance()
+    .parry(0.1, "ease-out")
+    .counterStrike(0.12, "ease-out")
+    .recover(0.08, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☶ 간 (GAN) - MOUNTAIN DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☶ 간 (Gan) - Mountain Defensive Move 1: Immovable Block (부동 막기)
- * 
  * Solid defensive stance that absorbs attacks.
- * 
- * Duration: 250ms
- * 
  * @korean 간부동막기
  */
-export const GAN_IMMOVABLE_BLOCK: SkeletalAnimation = {
-  name: "gan_immovable_block",
-  koreanName: "간 부동막기",
-  duration: 0.25,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.7, 0.2, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.7, -0.2, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.13,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.8, 0.3, 0.9, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.8, -0.3, -0.9, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.4, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.4, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.25, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.25, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.25,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.7, 0.2, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.7, -0.2, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const GAN_IMMOVABLE_BLOCK: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gan_immovable_block", "간 부동막기")
+    .asDefense(0.25)
+    .stance()
+    .blockHigh(0.13, "linear")
+    .recover(0.12, "ease-in")
+    .build();
 
 /**
  * ☶ 간 (Gan) - Mountain Defensive Move 2: Counter Fortress (반격 요새)
- * 
  * Strong defensive position with delayed power counter.
- * 
- * Duration: 350ms
- * 
  * @korean 간반격요새
  */
-export const GAN_COUNTER_FORTRESS: SkeletalAnimation = {
-  name: "gan_counter_fortress",
-  koreanName: "간 반격요새",
-  duration: 0.35,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.7, 0.2, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.7, -0.2, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.7, 0.2, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.7, -0.2, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.22,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(0, 0, 0.5, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.2, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0.7)]]),
-    },
-    {
-      time: 0.35,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.7, 0.2, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.7, -0.2, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
-    },
-  ],
-};
+export const GAN_COUNTER_FORTRESS: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gan_counter_fortress", "간 반격요새")
+    .asDefense(0.35)
+    .stance()
+    .blockHigh(0.12, "linear")
+    .counterStrike(0.13, "ease-out")
+    .recover(0.1, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ☷ 곤 (GON) - EARTH DEFENSIVE ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * ☷ 곤 (Gon) - Earth Defensive Move 1: Grounding Defense (접지 방어)
- * 
  * Low defensive posture with strong base.
- * 
- * Duration: 280ms
- * 
  * @korean 곤접지방어
  */
-export const GON_GROUNDING_DEFENSE: SkeletalAnimation = {
-  name: "gon_grounding_defense",
-  koreanName: "곤 접지방어",
-  duration: 0.28,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.1, 0.4, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.1, -0.4, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.9, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.9, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.14,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.2, 0.5, 0.9, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.2, -0.5, -0.9, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.0, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.0, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-1.1, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.1, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(-0.1, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.28,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.1, 0.4, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.1, -0.4, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.9, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.9, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const GON_GROUNDING_DEFENSE: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gon_grounding_defense", "곤 접지방어")
+    .asDefense(0.28)
+    .stance()
+    .blockLow(0.14, "ease-out")
+    .recover(0.14, "ease-in")
+    .build();
 
 /**
  * ☷ 곤 (Gon) - Earth Defensive Move 2: Takedown Counter (꺾기 반격)
- * 
  * Defensive takedown using low center of gravity advantage.
- * 
- * Duration: 450ms
- * 
  * @korean 곤꺾기반격
  */
-export const GON_TAKEDOWN_COUNTER: SkeletalAnimation = {
-  name: "gon_takedown_counter",
-  koreanName: "곤 꺾기반격",
-  duration: 0.45,
-  loop: false,
-  type: "defense",
-  keyframes: [
-    {
-      time: 0.0,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.1, 0.4, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.1, -0.4, -0.8, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.15,
-      easing: "ease-out",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.3, 0.6, 1.0, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.3, -0.6, -1.0, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.7, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.7, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-0.8, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-0.8, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.2, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.3,
-      easing: "linear",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.4, 0.7, 1.1, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.4, -0.7, -1.1, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0.3, 0.2, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0.2, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-    {
-      time: 0.45,
-      easing: "ease-in",
-      boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(0.1, 0.4, 0.8, "XYZ")],
-        [BoneName.SHOULDER_R, new THREE.Euler(0.1, -0.4, -0.8, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.9, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.9, "XYZ")],
-        [BoneName.KNEE_L, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.KNEE_R, new THREE.Euler(-1.0, 0, 0, "XYZ")],
-        [BoneName.SPINE_LOWER, new THREE.Euler(0, 0, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
-      ]),
-      bonePositions: new Map(),
-    },
-  ],
-};
+export const GON_TAKEDOWN_COUNTER: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("gon_takedown_counter", "곤 꺾기반격")
+    .asDefense(0.45)
+    .stance()
+    .takedownShoot(0.15, "ease-out")
+    .takedownDump(0.15, "linear")
+    .recover(0.15, "ease-in")
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ANIMATION COLLECTIONS
+// ═══════════════════════════════════════════════════════════════════════════
 
 /**
  * Map of all defensive animations by stance
- * 
- * Each stance has 2 unique defensive animations that reflect its philosophy:
- * - GEON: High blocks and counter strikes (direct force)
- * - TAE: Joint locks and sweeps (fluid manipulation)
- * - LI: Precision parries and nerve counters (targeted precision)
- * - JIN: Explosive blocks and shocking counters (explosive power)
- * - SON: Continuous deflections and pressure counters (sustained pressure)
- * - GAM: Flow defenses and redirection counters (adaptive flow)
- * - GAN: Immovable blocks and fortress counters (solid defense)
- * - GON: Grounding defenses and takedown counters (low control)
- * 
  * @korean 자세별방어애니메이션
  */
 export const DEFENSIVE_ANIMATIONS_BY_STANCE: ReadonlyMap<
@@ -915,7 +292,6 @@ export const DEFENSIVE_ANIMATIONS_BY_STANCE: ReadonlyMap<
 
 /**
  * All defensive animations in a single map for easy lookup
- * 
  * @korean 모든방어애니메이션
  */
 export const ALL_DEFENSIVE_ANIMATIONS = new Map<string, SkeletalAnimation>([
@@ -939,16 +315,6 @@ export const ALL_DEFENSIVE_ANIMATIONS = new Map<string, SkeletalAnimation>([
 
 /**
  * Get defensive animations for a specific stance
- * 
- * @param stance - Trigram stance
- * @returns Array of 2 defensive animations for the stance
- * 
- * @example
- * ```typescript
- * const geonDefenses = getDefensiveAnimationsForStance(TrigramStance.GEON);
- * console.log(geonDefenses[0].koreanName); // "건 상단막기"
- * ```
- * 
  * @korean 자세방어애니메이션가져오기
  */
 export function getDefensiveAnimationsForStance(
@@ -959,10 +325,6 @@ export function getDefensiveAnimationsForStance(
 
 /**
  * Get a defensive animation by name
- * 
- * @param name - Animation name
- * @returns Skeletal animation or undefined
- * 
  * @korean 방어애니메이션가져오기
  */
 export function getDefensiveAnimation(

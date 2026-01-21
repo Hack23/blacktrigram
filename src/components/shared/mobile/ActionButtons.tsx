@@ -16,9 +16,10 @@
  */
 
 import { Html } from '@react-three/drei';
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react';
 import { KOREAN_COLORS } from '../../../types/constants';
-import { triggerHaptic } from '../../../utils/haptics';
+import { triggerOptimizedHaptic } from './HapticController';
+import { applyOptimizedUpdate, createTransformStyle, createFilterStyle } from './TouchOptimizer';
 import { getColorRGB } from '../../../utils/colorHelpers';
 import { handleKeyboardNav, getFocusStyle } from '../../../utils/accessibility';
 import { createBilingualLabel } from '../../../types/AccessibilityTypes';
@@ -98,13 +99,17 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
   const [attackFocused, setAttackFocused] = useState(false);
   const [blockFocused, setBlockFocused] = useState(false);
 
+  // Button refs for direct DOM manipulation (immediate visual feedback)
+  const attackButtonRef = useRef<HTMLButtonElement>(null);
+  const blockButtonRef = useRef<HTMLButtonElement>(null);
+
   // Throttle callbacks to ~60fps for performance
   const throttledOnAttack = useThrottle(onAttack, 16);
   const throttledOnBlock = useThrottle(onBlock, 16);
 
   /**
-   * Handle attack button press (touch or mouse)
-   * Throttled for performance
+   * Handle attack button press with optimized latency (<16ms)
+   * Uses direct DOM manipulation for immediate visual feedback
    */
   const handleAttackStart = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -112,15 +117,27 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      setAttackPressed(true);
-      throttledOnAttack();
-      triggerHaptic('medium');
+      // Immediate visual update using optimized approach (<16ms)
+      applyOptimizedUpdate(
+        attackButtonRef.current,
+        (element) => {
+          // GPU-accelerated transform
+          element.style.transform = createTransformStyle(true, 0.95);
+          element.style.filter = createFilterStyle(true, 1.2);
+        },
+        () => {
+          // Deferred state update
+          setAttackPressed(true);
+          throttledOnAttack();
+          triggerOptimizedHaptic('medium');
+        }
+      );
     },
     [disabled, throttledOnAttack]
   );
 
   /**
-   * Handle attack button release (touch or mouse)
+   * Handle attack button release with optimized latency
    */
   const handleAttackEnd = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -128,14 +145,23 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      setAttackPressed(false);
+      // Immediate visual reset
+      applyOptimizedUpdate(
+        attackButtonRef.current,
+        (element) => {
+          element.style.transform = createTransformStyle(false);
+          element.style.filter = createFilterStyle(false);
+        },
+        () => {
+          setAttackPressed(false);
+        }
+      );
     },
     [disabled]
   );
 
   /**
-   * Handle block button press (touch or mouse)
-   * Throttled for performance
+   * Handle block button press with optimized latency (<16ms)
    */
   const handleBlockStart = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -143,16 +169,25 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      setBlockPressed(true);
-      throttledOnBlock('start');
-      triggerHaptic('light');
+      // Immediate visual update
+      applyOptimizedUpdate(
+        blockButtonRef.current,
+        (element) => {
+          element.style.transform = createTransformStyle(true, 0.95);
+          element.style.filter = createFilterStyle(true, 1.2);
+        },
+        () => {
+          setBlockPressed(true);
+          throttledOnBlock('start');
+          triggerOptimizedHaptic('light');
+        }
+      );
     },
     [disabled, throttledOnBlock]
   );
 
   /**
-   * Handle block button release (touch or mouse)
-   * Throttled for performance
+   * Handle block button release with optimized latency
    */
   const handleBlockEnd = useCallback(
     (e: React.TouchEvent | React.MouseEvent) => {
@@ -160,11 +195,46 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      setBlockPressed(false);
-      throttledOnBlock('end');
+      // Immediate visual reset
+      applyOptimizedUpdate(
+        blockButtonRef.current,
+        (element) => {
+          element.style.transform = createTransformStyle(false);
+          element.style.filter = createFilterStyle(false);
+        },
+        () => {
+          setBlockPressed(false);
+          throttledOnBlock('end');
+        }
+      );
     },
     [disabled, throttledOnBlock]
   );
+
+  /**
+   * Cleanup on unmount - reset any pending visual states.
+   * Note: Captures button refs at effect creation time to avoid stale closures.
+   * If the buttons unmount before cleanup runs, the captured variables will still
+   * reference the original DOM elements (now potentially detached), so style changes
+   * are harmless but may not be visible. The null checks primarily guard against
+   * refs that were never set in the first place.
+   */
+  useEffect(() => {
+    // Store refs in variables at effect creation time
+    const attackButton = attackButtonRef.current;
+    const blockButton = blockButtonRef.current;
+    
+    return () => {
+      if (attackButton) {
+        attackButton.style.transform = createTransformStyle(false);
+        attackButton.style.filter = createFilterStyle(false);
+      }
+      if (blockButton) {
+        blockButton.style.transform = createTransformStyle(false);
+        blockButton.style.filter = createFilterStyle(false);
+      }
+    };
+  }, []);
 
   /**
    * Handle keyboard navigation for attack button
@@ -176,7 +246,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         onActivate: () => {
           setAttackPressed(true);
           onAttack();
-          triggerHaptic('medium');
+          triggerOptimizedHaptic('medium');
           // Release after brief delay
           setTimeout(() => setAttackPressed(false), 150);
         },
@@ -195,7 +265,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         onActivate: () => {
           setBlockPressed(true);
           onBlock('start');
-          triggerHaptic('light');
+          triggerOptimizedHaptic('light');
           // Release after brief delay
           setTimeout(() => {
             setBlockPressed(false);
@@ -231,6 +301,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       >
         {/* Primary Attack Button */}
         <button
+          ref={attackButtonRef}
           onTouchStart={handleAttackStart}
           onTouchEnd={handleAttackEnd}
           onMouseDown={handleAttackStart}
@@ -256,8 +327,13 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'transform 0.2s ease, opacity 0.2s ease',
-            transform: attackPressed ? 'scale(0.95)' : 'scale(1)',
+            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            // Note: transform and filter are managed via TouchOptimizer/applyOptimizedUpdate
+            // for immediate visual feedback. React state-driven inline styles serve as baseline
+            // values that are overridden during active touch interactions via direct DOM manipulation.
+            transform: createTransformStyle(attackPressed, 0.95),
+            filter: createFilterStyle(attackPressed, 1.2),
+            willChange: 'transform, filter', // GPU hint
             boxShadow: attackPressed
               ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.6)`,
@@ -278,6 +354,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
 
         {/* Block Button */}
         <button
+          ref={blockButtonRef}
           onTouchStart={handleBlockStart}
           onTouchEnd={handleBlockEnd}
           onMouseDown={handleBlockStart}
@@ -302,8 +379,10 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             cursor: 'pointer',
             userSelect: 'none',
             touchAction: 'none',
-            transition: 'transform 0.2s ease, opacity 0.2s ease',
-            transform: blockPressed ? 'scale(0.95)' : 'scale(1)',
+            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            transform: createTransformStyle(blockPressed, 0.95),
+            filter: createFilterStyle(blockPressed, 1.2),
+            willChange: 'transform, filter', // GPU hint
             boxShadow: blockPressed
               ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.6)`,

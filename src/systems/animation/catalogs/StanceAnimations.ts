@@ -13,11 +13,12 @@
 
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
-import { 
+import { toRadians } from "@/utils/math";
+import {
   MartialArtsAnimationBuilder,
   TECHNIQUE_TIMING,
 } from "../builders/MartialArtsAnimationBuilder";
-import { 
+import {
   KOREAN_STANCE_BIOMECHANICS,
   calculateFootPositions,
 } from "../builders/MartialArtsConstants";
@@ -31,7 +32,6 @@ import {
   SON_WIND_GUARD_POSE,
   TAE_FLUID_GUARD_POSE,
 } from "./StanceGuardPoses";
-import { toRadians } from "@/utils/math";
 
 // Import Li (Fire) enhanced animations
 import {
@@ -46,15 +46,15 @@ import {
 } from "./LiTechniqueAnimations";
 // Import enhanced Jin animations
 import {
-  JIN_IDLE_COILED,
   JIN_EXPLOSIVE_BURST,
+  JIN_IDLE_COILED,
   JIN_JUMPING_ADVANCE,
 } from "./JinStanceAnimations";
 
 // Import Jin technique animations
 import {
-  JIN_THUNDER_FLASH_ANIMATION,
   JIN_JUMPING_KNEE_STRIKE,
+  JIN_THUNDER_FLASH_ANIMATION,
 } from "./JinTechniqueAnimations";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -63,19 +63,19 @@ import {
 
 /**
  * Default shoulder width for stance calculations
- * 
+ *
  * Uses average shoulder width across all archetypes:
  * - Musa: 46cm
  * - Amsalja: 44cm
  * - Hacker: 43cm
  * - Jeongbo: 45cm
  * - Jojik: 54cm
- * 
+ *
  * Average: (46 + 44 + 43 + 45 + 54) / 5 = 46.4cm ≈ 46cm
- * 
+ *
  * This provides neutral baseline for animations. Actual runtime will scale
  * based on fighter's specific shoulder width from physical attributes.
- * 
+ *
  * @korean 기본어깨너비
  */
 const DEFAULT_SHOULDER_WIDTH_CM = 46;
@@ -110,10 +110,15 @@ export const GEON_HEAVEN_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_heavenly_fist", "건천권")
-    .asAttack(0.35)
-    .punchWindup(0.08)
-    .punchExtend(0.1)
-    .recover(0.17)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
+    .punchExtend(
+      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 /**
@@ -196,10 +201,15 @@ export const GEON_PALM_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const GEON_ELBOW_SMASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_elbow_smash", "건팔꿈치")
-    .asAttack(0.38)
-    .elbowChamber(0.1)
-    .elbowStrike(0.12)
-    .recover(0.16)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
+    .elbowStrike(
+      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -329,16 +339,19 @@ export const TAE_ARM_BAR_ANIMATION: SkeletalAnimation =
  * Li Flame Spear - 리화창
  *
  * Fire's penetrating spear-hand strike.
- * Precision targeting vital points.
+ * Precision targeting vital points with fingertip thrust.
+ *
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
  *
  * @korean 리화창애니메이션
  */
 export const LI_FLAME_SPEAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_flame_spear", "리화창")
-    .asAttack(0.32)
-    .punchWindup(0.06)
-    .punchExtend(0.1) // Spear-like extension
-    .recover(0.16)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Spear-like extension
+    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -367,10 +380,15 @@ export const LI_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const LI_NERVE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_nerve_strike", "리신경타격")
-    .asAttack(0.35)
-    .punchWindup(0.05)
-    .punchExtend(0.12)
-    .recover(0.18)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
+    .punchExtend(
+      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 /**
@@ -395,16 +413,19 @@ export const LI_SIDEKICK_ANIMATION: SkeletalAnimation =
  * Li Pressure Point - 리급소
  *
  * Fire's pressure point strike.
- * Single finger or knuckle attack.
+ * Single finger or knuckle attack with precision targeting.
+ *
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
  *
  * @korean 리급소애니메이션
  */
 export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_pressure_point", "리급소")
-    .asAttack(0.3)
-    .punchWindup(0.05)
-    .punchExtend(0.1)
-    .recover(0.15)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend)
+    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -431,16 +452,19 @@ export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
  * Jin Lightning Flash - 진전광
  *
  * Thunder's lightning-fast straight punch.
- * Explosive acceleration.
+ * Explosive acceleration with proper technique phases.
+ *
+ * Duration: 550ms (TECHNIQUE_TIMING.FAST)
  *
  * @korean 진전광애니메이션
  */
 export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_lightning_flash", "진전광")
-    .asAttack(0.28)
-    .punchWindup(0.04)
-    .punchExtend(0.08) // Lightning speed
-    .recover(0.16)
+    .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .punchWindup(TECHNIQUE_TIMING.FAST.chamber) // Lightning prep
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Lightning speed
+    .punchPeak(TECHNIQUE_TIMING.FAST.peak) // Impact clarity
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -677,9 +701,16 @@ export const GAM_REDIRECT_THROW_ANIMATION: SkeletalAnimation =
  */
 export const GAM_FLOWING_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_flowing_block", "감유막기")
-    .asDefense(0.35)
-    .parry(0.15)
-    .recover(0.2)
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 /**
@@ -692,10 +723,19 @@ export const GAM_FLOWING_BLOCK_ANIMATION: SkeletalAnimation =
  */
 export const GAM_CIRCULAR_PARRY_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_circular_parry", "감원막기")
-    .asDefense(0.38)
-    .parry(0.12)
-    .counterParry(0.1)
-    .recover(0.16)
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend * 0.5,
+    )
+    .counterParry(
+      TECHNIQUE_TIMING.FAST.extend * 0.5 +
+        TECHNIQUE_TIMING.FAST.peak,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 /**
@@ -780,10 +820,17 @@ export const GAN_IMMOVABLE_STANCE_ANIMATION: SkeletalAnimation =
  */
 export const GAN_IRON_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_iron_block", "간철방어")
-    .asDefense(0.38)
+    .asDefense(TECHNIQUE_TIMING.FAST.total)
     .withHighGuard()
-    .parry(0.15)
-    .recover(0.23)
+    .parry(
+      TECHNIQUE_TIMING.FAST.chamber +
+        TECHNIQUE_TIMING.FAST.extend,
+    )
+    .recover(
+      TECHNIQUE_TIMING.FAST.peak +
+        TECHNIQUE_TIMING.FAST.retract +
+        TECHNIQUE_TIMING.FAST.recover,
+    )
     .build();
 
 /**
@@ -1004,7 +1051,7 @@ export const createGeonStance = (): SkeletalAnimation => {
   // Calculate foot positions based on stance width (발너비)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1017,38 +1064,38 @@ export const createGeonStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       // Right arm - high guard protecting temple
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       // Torso rotation for proper stance
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
@@ -1100,7 +1147,7 @@ export const createTaeStance = (): SkeletalAnimation => {
   // Calculate foot positions based on stance width (발너비)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1112,37 +1159,37 @@ export const createTaeStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1191,7 +1238,7 @@ export const createLiStance = (): SkeletalAnimation => {
   // Calculate foot positions based on stance width (발너비)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1203,37 +1250,37 @@ export const createLiStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1281,7 +1328,7 @@ export const createJinStance = (): SkeletalAnimation => {
   // Jin Thunder has widest stance: 2.0x shoulder width
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1293,37 +1340,37 @@ export const createJinStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1372,7 +1419,7 @@ export const createSonStance = (): SkeletalAnimation => {
   // Son Wind has zero width: 0.0x shoulder width (single leg crane stance)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1384,37 +1431,37 @@ export const createSonStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1466,7 +1513,7 @@ export const createGamStance = (): SkeletalAnimation => {
   // Calculate foot positions based on stance width (발너비)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1478,37 +1525,37 @@ export const createGamStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1558,7 +1605,7 @@ export const createGanStance = (): SkeletalAnimation => {
   // Calculate foot positions based on stance width (발너비)
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1570,37 +1617,37 @@ export const createGanStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 
@@ -1648,7 +1695,7 @@ export const createGonStance = (): SkeletalAnimation => {
   // Gon Earth has second-widest stance: 1.8x shoulder width
   const footPositions = calculateFootPositions(
     biomech.stanceWidth,
-    DEFAULT_SHOULDER_WIDTH_CM
+    DEFAULT_SHOULDER_WIDTH_CM,
   );
 
   return (
@@ -1660,37 +1707,37 @@ export const createGonStance = (): SkeletalAnimation => {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_L,
         guard.leftArm.wrist.x,
         guard.leftArm.wrist.y,
-        guard.leftArm.wrist.z
+        guard.leftArm.wrist.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       )
       .rotate(
         BoneName.WRIST_R,
         guard.rightArm.wrist.x,
         guard.rightArm.wrist.y,
-        guard.rightArm.wrist.z
+        guard.rightArm.wrist.z,
       )
       .rotate(BoneName.SPINE_UPPER, guard.torso.x, guard.torso.y, guard.torso.z)
 

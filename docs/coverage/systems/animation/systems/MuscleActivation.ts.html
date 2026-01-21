@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.28% </span>
+                <span class="strong">73.44% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>130/175</span>
+                <span class='fraction'>130/177</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>17/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.28% </span>
+                <span class="strong">73.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>130/175</span>
+                <span class='fraction'>130/177</span>
             </div>
         
             
@@ -637,7 +637,20 @@
 <a name='L572'></a><a href='#L572'>572</a>
 <a name='L573'></a><a href='#L573'>573</a>
 <a name='L574'></a><a href='#L574'>574</a>
-<a name='L575'></a><a href='#L575'>575</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a>
+<a name='L578'></a><a href='#L578'>578</a>
+<a name='L579'></a><a href='#L579'>579</a>
+<a name='L580'></a><a href='#L580'>580</a>
+<a name='L581'></a><a href='#L581'>581</a>
+<a name='L582'></a><a href='#L582'>582</a>
+<a name='L583'></a><a href='#L583'>583</a>
+<a name='L584'></a><a href='#L584'>584</a>
+<a name='L585'></a><a href='#L585'>585</a>
+<a name='L586'></a><a href='#L586'>586</a>
+<a name='L587'></a><a href='#L587'>587</a>
+<a name='L588'></a><a href='#L588'>588</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -663,7 +676,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -710,7 +723,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -839,7 +852,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">529x</span>
@@ -1211,6 +1224,19 @@
 <span class="cline-any cline-yes">96x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Muscle activation system for realistic combat physiology
  *
@@ -1285,7 +1311,7 @@ const STANCE_TO_BIOMECH_KEY = {
  * @korean 자세다리근육긴장도
  */
 export const getMuscleTensionForStance = (
-  stance: TrigramStance
+  stance: TrigramStance,
 ): MuscleActivationMap =&gt; {
   const activations = new Map&lt;MuscleGroupName, number&gt;();
 &nbsp;
@@ -1313,11 +1339,11 @@ export const getMuscleTensionForStance = (
   // This base value is then combined with weight distribution for final tension
   const frontQuadTensionFromBend = Math.max(
     0,
-    Math.min(1.0, (180 - biomech.frontKneeBend) / 110)
+    Math.min(1.0, (180 - biomech.frontKneeBend) / 110),
   );
   const backQuadTensionFromBend = Math.max(
     0,
-    Math.min(1.0, (180 - biomech.backKneeBend) / 110)
+    Math.min(1.0, (180 - biomech.backKneeBend) / 110),
   );
 &nbsp;
   // Apply weight distribution to muscle tension
@@ -1327,13 +1353,13 @@ export const getMuscleTensionForStance = (
   // (e.g., raised leg in crane stance requires quad engagement to hold position)
   const frontQuadTension = Math.min(
     1.0,
-    frontQuadTensionFromBend * 0.6 + biomech.weightDistribution.front * 0.4
+    frontQuadTensionFromBend * 0.6 + biomech.weightDistribution.front * 0.4,
   );
 &nbsp;
   // Back leg quadriceps
   const backQuadTension = Math.min(
     1.0,
-    backQuadTensionFromBend * 0.6 + biomech.weightDistribution.back * 0.4
+    backQuadTensionFromBend * 0.6 + biomech.weightDistribution.back * 0.4,
   );
 &nbsp;
   // Set quadriceps tension (right = front, left = back in standard stance)
@@ -1376,16 +1402,16 @@ export const getMuscleTensionForStance = (
     Math.min(
       0.7,
       gluteBaseActivation +
-        frontQuadTensionFromBend * 0.2 * biomech.weightDistribution.front
-    )
+        frontQuadTensionFromBend * 0.2 * biomech.weightDistribution.front,
+    ),
   );
   activations.set(
     "GLUTE_L",
     Math.min(
       0.7,
       gluteBaseActivation +
-        backQuadTensionFromBend * 0.2 * biomech.weightDistribution.back
-    )
+        backQuadTensionFromBend * 0.2 * biomech.weightDistribution.back,
+    ),
   );
 &nbsp;
   return activations;
@@ -1414,7 +1440,7 @@ export const getMuscleTensionForStance = (
  * @korean 기법근육활성화가져오기
  */
 export const getMuscleActivationForTechnique = (
-  technique: string
+  technique: string,
 ): MuscleActivationMap =&gt; {
   const activations = new Map&lt;MuscleGroupName, number&gt;();
 &nbsp;
@@ -1678,7 +1704,7 @@ export class MuscleActivationManager {
       const newTension = lerp(
         state.tension,
         adjustedTarget,
-        this.config.activationSpeed * delta
+        this.config.activationSpeed * delta,
       );
 &nbsp;
       // Update shaking state for exhaustion
@@ -1709,7 +1735,7 @@ export class MuscleActivationManager {
       const newTension = lerp(
         state.tension,
         0,
-        this.config.relaxationSpeed * delta
+        this.config.relaxationSpeed * delta,
       );
 &nbsp;
       state.tension = newTension;
@@ -1784,6 +1810,19 @@ export class MuscleActivationManager {
     });
     this.scratchMap.clear();
   }
+&nbsp;
+  /**
+   * Dispose of the muscle activation system
+   *
+   * Clears all internal state and references to prevent memory leaks.
+   * Should be called when the system is no longer needed (e.g., component unmount).
+   *
+   * @korean 근육시스템해제
+   */
+<span class="fstat-no" title="function not covered" >  dispose(): void {</span>
+<span class="cstat-no" title="statement not covered" >    this.activations.clear();</span>
+<span class="cstat-no" title="statement not covered" >    this.scratchMap.clear();</span>
+  }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -1792,7 +1831,7 @@ export class MuscleActivationManager {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-20T23:28:39.618Z
+                at 2026-01-21T17:53:52.757Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

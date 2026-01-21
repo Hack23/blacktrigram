@@ -54,7 +54,7 @@ const ANIMATION_TYPE_TO_NAME_MAP: Record<AttackAnimationType, string> = {
  * @korean 애니메이션타입에서이름가져오기
  */
 export function getAnimationNameForType(
-  animationType: AttackAnimationType
+  animationType: AttackAnimationType,
 ): string {
   return ANIMATION_TYPE_TO_NAME_MAP[animationType];
 }
@@ -69,7 +69,7 @@ export function getAnimationNameForType(
  * @korean 애니메이션존재확인
  */
 export function hasAnimationForType(
-  animationType: AttackAnimationType
+  animationType: AttackAnimationType,
 ): boolean {
   const animationName = ANIMATION_TYPE_TO_NAME_MAP[animationType];
   return ATTACK_ANIMATIONS.has(animationName);
@@ -92,7 +92,7 @@ export function hasAnimationForType(
 export function determineAnimationTypeForTechnique(
   techniqueName: string,
   techniqueId: string,
-  damageType?: string
+  damageType?: string,
 ): AttackAnimationType {
   const searchText = `${techniqueName} ${techniqueId}`.toLowerCase();
 
@@ -249,7 +249,7 @@ export function calculateSpeedModifierForDamage(damage: number): number {
  */
 export function getAdjustedAnimationDuration(
   baseAnimationName: string,
-  speedModifier: number
+  speedModifier: number,
 ): number {
   const animation = ATTACK_ANIMATIONS.get(baseAnimationName);
   if (!animation) {
@@ -389,6 +389,116 @@ const STANCE_ENGLISH: Record<string, string> = {
 };
 
 /**
+ * Stance Animation Characteristics Configuration
+ *
+ * **Korean**: 자세 애니메이션 특성 설정
+ *
+ * Data-driven configuration for each stance's animation modifiers,
+ * eliminating code duplication across stance mapping methods.
+ *
+ * @internal
+ */
+interface StanceAnimationConfig {
+  /** Base duration multiplier (1.0 = normal) */
+  readonly durationMultiplier: number;
+  /** Impact frame offset from base */
+  readonly impactFrameOffset: number;
+  /** Recovery frames offset from base */
+  readonly recoveryFrameOffset: number;
+  /** Technique-specific overrides (optional) */
+  readonly techniqueOverrides?: Partial<
+    Record<
+      TechniqueTypeCategory,
+      {
+        durationMultiplier?: number;
+        impactFrameOffset?: number;
+        recoveryFrameOffset?: number;
+      }
+    >
+  >;
+}
+
+/**
+ * Stance animation characteristics by trigram
+ *
+ * **Korean**: 팔괘 자세별 애니메이션 특성
+ *
+ * Each stance has unique timing characteristics reflecting its philosophy:
+ * - ☰ 건 (Geon/Heaven): Direct, powerful - standard timing with technique variations
+ * - ☱ 태 (Tae/Lake): Fluid, flowing - faster recovery
+ * - ☲ 리 (Li/Fire): Precise, rapid - fastest overall
+ * - ☳ 진 (Jin/Thunder): Explosive - fast attack, longer recovery
+ * - ☴ 손 (Son/Wind): Continuous - slightly fast, mobile
+ * - ☵ 감 (Gam/Water): Adaptive - slightly slower, standard recovery
+ * - ☶ 간 (Gan/Mountain): Defensive - slowest, longest recovery
+ * - ☷ 곤 (Gon/Earth): Grounding - standard with throw specialization
+ */
+const STANCE_ANIMATION_CONFIG: Record<TrigramStance, StanceAnimationConfig> = {
+  [TrigramStance.GEON]: {
+    durationMultiplier: 1.0,
+    impactFrameOffset: 0,
+    recoveryFrameOffset: 0,
+    techniqueOverrides: {
+      joint: { durationMultiplier: 1.2 },
+      throw: {
+        durationMultiplier: 1.5,
+        impactFrameOffset: 4,
+        recoveryFrameOffset: 5,
+      },
+      pressure_point: {
+        durationMultiplier: 0.8,
+        impactFrameOffset: -2,
+      },
+    },
+  },
+  [TrigramStance.TAE]: {
+    durationMultiplier: 1.0,
+    impactFrameOffset: 0,
+    recoveryFrameOffset: -2,
+    techniqueOverrides: {
+      joint: { durationMultiplier: 1.3 },
+    },
+  },
+  [TrigramStance.LI]: {
+    durationMultiplier: 0.85,
+    impactFrameOffset: -1,
+    recoveryFrameOffset: -3,
+  },
+  [TrigramStance.JIN]: {
+    durationMultiplier: 0.9,
+    impactFrameOffset: 0,
+    recoveryFrameOffset: 2,
+  },
+  [TrigramStance.SON]: {
+    durationMultiplier: 0.95,
+    impactFrameOffset: 0,
+    recoveryFrameOffset: -1,
+  },
+  [TrigramStance.GAM]: {
+    durationMultiplier: 1.1,
+    impactFrameOffset: 1,
+    recoveryFrameOffset: 0,
+  },
+  [TrigramStance.GAN]: {
+    durationMultiplier: 1.2,
+    impactFrameOffset: 2,
+    recoveryFrameOffset: 3,
+  },
+  [TrigramStance.GON]: {
+    durationMultiplier: 1.0,
+    impactFrameOffset: 0,
+    recoveryFrameOffset: 0,
+    techniqueOverrides: {
+      throw: {
+        durationMultiplier: 1.6,
+        impactFrameOffset: 3,
+        recoveryFrameOffset: 4,
+      },
+    },
+  },
+};
+
+/**
  * Comprehensive Technique Animation Mapper Class
  *
  * **Korean**: 기술 애니메이션 매퍼 클래스
@@ -497,31 +607,11 @@ export class TechniqueAnimationMapper {
    * - 8 body parts
    * - 4 intensity levels
    *
+   * Uses data-driven STANCE_ANIMATION_CONFIG to eliminate code duplication.
+   *
    * @private
    */
   private initializeCompleteMapping(): void {
-    // Map all 8 trigram stances
-    this.mapGeonStanceTechniques();
-    this.mapTaeStanceTechniques();
-    this.mapLiStanceTechniques();
-    this.mapJinStanceTechniques();
-    this.mapSonStanceTechniques();
-    this.mapGamStanceTechniques();
-    this.mapGanStanceTechniques();
-    this.mapGonStanceTechniques();
-  }
-
-  /**
-   * Map all techniques for Geon (Heaven) stance
-   *
-   * **Korean**: 건괘 (하늘) 자세 기술 매핑
-   *
-   * Philosophy: Direct force, overwhelming power, aggressive techniques
-   *
-   * @private
-   */
-  private mapGeonStanceTechniques(): void {
-    const stance = TrigramStance.GEON;
     const bodyParts = Object.values(BodyPart);
     const intensities: TechniqueIntensity[] = [
       "light",
@@ -529,582 +619,60 @@ export class TechniqueAnimationMapper {
       "heavy",
       "critical",
     ];
-
-    // Geon emphasizes direct striking techniques with strong hip engagement
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        // Strike techniques - direct and forceful with full hip rotation
-        const strikeType: TechniqueTypeCategory = "strike";
-        const torsoRotationStrike = this.getTorsoRotationForStanceTechnique(
-          stance,
-          strikeType
-        );
-        const hipEngagementStrike = this.getHipEngagementForStanceTechnique(
-          stance,
-          strikeType,
-          intensity
-        );
-        const powerModifierStrike = this.calculatePowerModifier(
-          hipEngagementStrike,
-          strikeType
-        );
-
-        this.mapTechnique(
-          { stance, techniqueType: strikeType, bodyPart, intensity },
-          {
-            animationState: AnimationState.ATTACK,
-            duration: this.getDurationForIntensity(intensity),
-            impactFrame: this.getImpactFrameForIntensity(intensity),
-            recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
-            priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(
-              stance,
-              strikeType,
-              bodyPart,
-              intensity
-            ),
-            englishName: this.generateEnglishName(
-              stance,
-              strikeType,
-              bodyPart,
-              intensity
-            ),
-            torsoRotation: torsoRotationStrike,
-            hipEngagement: hipEngagementStrike,
-            powerModifier: powerModifierStrike,
-          }
-        );
-
-        // Joint techniques - forceful control with moderate hip engagement
-        const jointType: TechniqueTypeCategory = "joint";
-        const torsoRotationJoint = this.getTorsoRotationForStanceTechnique(
-          stance,
-          jointType
-        );
-        const hipEngagementJoint = this.getHipEngagementForStanceTechnique(
-          stance,
-          jointType,
-          intensity
-        );
-        const powerModifierJoint = this.calculatePowerModifier(
-          hipEngagementJoint,
-          jointType
-        );
-
-        this.mapTechnique(
-          { stance, techniqueType: jointType, bodyPart, intensity },
-          {
-            animationState: AnimationState.ATTACK,
-            duration: this.getDurationForIntensity(intensity) * 1.2, // Slightly slower
-            impactFrame: this.getImpactFrameForIntensity(intensity),
-            recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
-            priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(
-              stance,
-              jointType,
-              bodyPart,
-              intensity
-            ),
-            englishName: this.generateEnglishName(
-              stance,
-              jointType,
-              bodyPart,
-              intensity
-            ),
-            torsoRotation: torsoRotationJoint,
-            hipEngagement: hipEngagementJoint,
-            powerModifier: powerModifierJoint,
-          }
-        );
-
-        // Throw techniques - powerful with maximum hip engagement
-        const throwType: TechniqueTypeCategory = "throw";
-        const torsoRotationThrow = this.getTorsoRotationForStanceTechnique(
-          stance,
-          throwType
-        );
-        const hipEngagementThrow = this.getHipEngagementForStanceTechnique(
-          stance,
-          throwType,
-          intensity
-        );
-        const powerModifierThrow = this.calculatePowerModifier(
-          hipEngagementThrow,
-          throwType
-        );
-
-        this.mapTechnique(
-          { stance, techniqueType: throwType, bodyPart, intensity },
-          {
-            animationState: AnimationState.ATTACK,
-            duration: this.getDurationForIntensity(intensity) * 1.5, // Longer for throws
-            impactFrame: this.getImpactFrameForIntensity(intensity) + 4,
-            recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 5,
-            priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(
-              stance,
-              throwType,
-              bodyPart,
-              intensity
-            ),
-            englishName: this.generateEnglishName(
-              stance,
-              throwType,
-              bodyPart,
-              intensity
-            ),
-            torsoRotation: torsoRotationThrow,
-            hipEngagement: hipEngagementThrow,
-            powerModifier: powerModifierThrow,
-          }
-        );
-
-        // Pressure point techniques - forceful precision with focused hip engagement
-        const pressureType: TechniqueTypeCategory = "pressure_point";
-        const torsoRotationPressure = this.getTorsoRotationForStanceTechnique(
-          stance,
-          pressureType
-        );
-        const hipEngagementPressure = this.getHipEngagementForStanceTechnique(
-          stance,
-          pressureType,
-          intensity
-        );
-        const powerModifierPressure = this.calculatePowerModifier(
-          hipEngagementPressure,
-          pressureType
-        );
-
-        this.mapTechnique(
-          { stance, techniqueType: pressureType, bodyPart, intensity },
-          {
-            animationState: AnimationState.ATTACK,
-            duration: this.getDurationForIntensity(intensity) * 0.8, // Faster
-            impactFrame: this.getImpactFrameForIntensity(intensity) - 2,
-            recoveryFrames: this.getRecoveryFramesForIntensity(intensity),
-            priority: AnimationPriority.ATTACK,
-            koreanName: this.generateKoreanName(
-              stance,
-              pressureType,
-              bodyPart,
-              intensity
-            ),
-            englishName: this.generateEnglishName(
-              stance,
-              pressureType,
-              bodyPart,
-              intensity
-            ),
-            torsoRotation: torsoRotationPressure,
-            hipEngagement: hipEngagementPressure,
-            powerModifier: powerModifierPressure,
-          }
-        );
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Tae (Lake) stance
-   *
-   * **Korean**: 태괘 (호수) 자세 기술 매핑
-   *
-   * Philosophy: Fluid movement, joint manipulation, flowing techniques
-   *
-   * @private
-   */
-  private mapTaeStanceTechniques(): void {
-    const stance = TrigramStance.TAE;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
+    const techniqueTypes: TechniqueTypeCategory[] = [
+      "strike",
+      "joint",
+      "throw",
+      "pressure_point",
     ];
 
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        // All technique types with fluid, flowing characteristics
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
+    // Map all 8 trigram stances using configuration
+    Object.values(TrigramStance).forEach((stance) => {
+      const config = STANCE_ANIMATION_CONFIG[stance];
 
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration:
-                this.getDurationForIntensity(intensity) *
-                (techniqueType === "joint" ? 1.3 : 1.0),
-              impactFrame: this.getImpactFrameForIntensity(intensity),
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 2, // Faster recovery (fluid)
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
+      bodyParts.forEach((bodyPart) => {
+        intensities.forEach((intensity) => {
+          techniqueTypes.forEach((techniqueType) => {
+            // Get base values with technique-specific overrides
+            const override = config.techniqueOverrides?.[techniqueType];
+            const durationMult =
+              override?.durationMultiplier ?? config.durationMultiplier;
+            const impactOffset =
+              override?.impactFrameOffset ?? config.impactFrameOffset;
+            const recoveryOffset =
+              override?.recoveryFrameOffset ?? config.recoveryFrameOffset;
+
+            this.mapTechnique(
+              { stance, techniqueType, bodyPart, intensity },
+              {
+                animationState: AnimationState.ATTACK,
+                duration:
+                  this.getDurationForIntensity(intensity) * durationMult,
+                impactFrame:
+                  this.getImpactFrameForIntensity(intensity) + impactOffset,
+                recoveryFrames:
+                  this.getRecoveryFramesForIntensity(intensity) +
+                  recoveryOffset,
+                priority: AnimationPriority.ATTACK,
+                koreanName: this.generateKoreanName(
+                  stance,
+                  techniqueType,
+                  bodyPart,
+                  intensity,
+                ),
+                englishName: this.generateEnglishName(
+                  stance,
+                  techniqueType,
+                  bodyPart,
+                  intensity,
+                ),
+              },
+            );
+          });
         });
       });
     });
   }
-
-  /**
-   * Map all techniques for Li (Fire) stance
-   *
-   * **Korean**: 리괘 (불) 자세 기술 매핑
-   *
-   * Philosophy: Precision and speed, rapid attacks, nerve strikes
-   *
-   * @private
-   */
-  private mapLiStanceTechniques(): void {
-    const stance = TrigramStance.LI;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration: this.getDurationForIntensity(intensity) * 0.85, // Faster (fire)
-              impactFrame: this.getImpactFrameForIntensity(intensity) - 1,
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 3, // Quick recovery
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Jin (Thunder) stance
-   *
-   * **Korean**: 진괘 (천둥) 자세 기술 매핑
-   *
-   * Philosophy: Explosive power, shocking techniques, sudden movements
-   *
-   * @private
-   */
-  private mapJinStanceTechniques(): void {
-    const stance = TrigramStance.JIN;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration: this.getDurationForIntensity(intensity) * 0.9, // Slightly faster (explosive)
-              impactFrame: this.getImpactFrameForIntensity(intensity),
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 2, // Longer recovery (explosive power)
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Son (Wind) stance
-   *
-   * **Korean**: 손괘 (바람) 자세 기술 매핑
-   *
-   * Philosophy: Continuous pressure, evasion, mobility
-   *
-   * @private
-   */
-  private mapSonStanceTechniques(): void {
-    const stance = TrigramStance.SON;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration: this.getDurationForIntensity(intensity) * 0.95, // Slightly faster (continuous)
-              impactFrame: this.getImpactFrameForIntensity(intensity),
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity) - 1, // Faster recovery (mobility)
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Gam (Water) stance
-   *
-   * **Korean**: 감괘 (물) 자세 기술 매핑
-   *
-   * Philosophy: Flow and adaptation, counter techniques, redirection
-   *
-   * @private
-   */
-  private mapGamStanceTechniques(): void {
-    const stance = TrigramStance.GAM;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration: this.getDurationForIntensity(intensity) * 1.1, // Slightly slower (adaptive)
-              impactFrame: this.getImpactFrameForIntensity(intensity) + 1,
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity), // Standard recovery
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Gan (Mountain) stance
-   *
-   * **Korean**: 간괘 (산) 자세 기술 매핑
-   *
-   * Philosophy: Defensive mastery, immovable stance, endurance
-   *
-   * @private
-   */
-  private mapGanStanceTechniques(): void {
-    const stance = TrigramStance.GAN;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration: this.getDurationForIntensity(intensity) * 1.2, // Slower (defensive)
-              impactFrame: this.getImpactFrameForIntensity(intensity) + 2,
-              recoveryFrames: this.getRecoveryFramesForIntensity(intensity) + 3, // Longer recovery (immovable)
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
-  /**
-   * Map all techniques for Gon (Earth) stance
-   *
-   * **Korean**: 곤괘 (땅) 자세 기술 매핑
-   *
-   * Philosophy: Grounding techniques, takedowns, throws
-   *
-   * @private
-   */
-  private mapGonStanceTechniques(): void {
-    const stance = TrigramStance.GON;
-    const bodyParts = Object.values(BodyPart);
-    const intensities: TechniqueIntensity[] = [
-      "light",
-      "medium",
-      "heavy",
-      "critical",
-    ];
-
-    bodyParts.forEach((bodyPart) => {
-      intensities.forEach((intensity) => {
-        const techniqueTypes: TechniqueTypeCategory[] = [
-          "strike",
-          "joint",
-          "throw",
-          "pressure_point",
-        ];
-
-        techniqueTypes.forEach((techniqueType) => {
-          this.mapTechnique(
-            { stance, techniqueType, bodyPart, intensity },
-            {
-              animationState: AnimationState.ATTACK,
-              duration:
-                this.getDurationForIntensity(intensity) *
-                (techniqueType === "throw" ? 1.6 : 1.0),
-              impactFrame:
-                this.getImpactFrameForIntensity(intensity) +
-                (techniqueType === "throw" ? 3 : 0),
-              recoveryFrames:
-                this.getRecoveryFramesForIntensity(intensity) +
-                (techniqueType === "throw" ? 4 : 0),
-              priority: AnimationPriority.ATTACK,
-              koreanName: this.generateKoreanName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-              englishName: this.generateEnglishName(
-                stance,
-                techniqueType,
-                bodyPart,
-                intensity
-              ),
-            }
-          );
-        });
-      });
-    });
-  }
-
   /**
    * Add single technique mapping to the map with automatic rotation calculation
    *
@@ -1114,7 +682,7 @@ export class TechniqueAnimationMapper {
    */
   private mapTechnique(
     key: TechniqueAnimationKey,
-    animation: TechniqueAnimation
+    animation: TechniqueAnimation,
   ): void {
     // Calculate rotation properties if not provided
     const torsoRotation =
@@ -1125,7 +693,7 @@ export class TechniqueAnimationMapper {
       this.getHipEngagementForStanceTechnique(
         key.stance,
         key.techniqueType,
-        key.intensity
+        key.intensity,
       );
     const powerModifier =
       animation.powerModifier ??
@@ -1215,7 +783,7 @@ export class TechniqueAnimationMapper {
    */
   private getTorsoRotationForStanceTechnique(
     stance: string,
-    techniqueType: TechniqueTypeCategory
+    techniqueType: TechniqueTypeCategory,
   ): number {
     // Stance-specific base rotations (in radians)
     const stanceRotations: Record<string, number> = {
@@ -1255,7 +823,7 @@ export class TechniqueAnimationMapper {
   private getHipEngagementForStanceTechnique(
     stance: string,
     techniqueType: TechniqueTypeCategory,
-    intensity: TechniqueIntensity
+    intensity: TechniqueIntensity,
   ): number {
     // Stance-specific base hip engagement
     const stanceEngagement: Record<string, number> = {
@@ -1306,7 +874,7 @@ export class TechniqueAnimationMapper {
    */
   private calculatePowerModifier(
     hipEngagement: number,
-    techniqueType: TechniqueTypeCategory
+    techniqueType: TechniqueTypeCategory,
   ): number {
     // Base power curve: 1.0 + (engagement * maxBonus)
     const maxBonusByType: Record<TechniqueTypeCategory, number> = {
@@ -1334,7 +902,7 @@ export class TechniqueAnimationMapper {
     stance: string,
     techniqueType: TechniqueTypeCategory,
     bodyPart: string,
-    intensity: TechniqueIntensity
+    intensity: TechniqueIntensity,
   ): string {
     const stanceName = STANCE_KOREAN[stance] ?? stance;
     const bodyPartName = BODY_PART_KOREAN[bodyPart] ?? bodyPart;
@@ -1356,7 +924,7 @@ export class TechniqueAnimationMapper {
     stance: string,
     techniqueType: TechniqueTypeCategory,
     bodyPart: string,
-    intensity: TechniqueIntensity
+    intensity: TechniqueIntensity,
   ): string {
     const stanceName = STANCE_ENGLISH[stance] ?? stance;
     const bodyPartName = BODY_PART_ENGLISH[bodyPart] ?? bodyPart;
@@ -1395,7 +963,7 @@ export class TechniqueAnimationMapper {
    */
   private adjustForIntensity(
     animation: TechniqueAnimation,
-    intensity: TechniqueIntensity
+    intensity: TechniqueIntensity,
   ): TechniqueAnimation {
     const durationMultiplier =
       this.getDurationMultiplierForIntensity(intensity);
@@ -1414,7 +982,7 @@ export class TechniqueAnimationMapper {
    * @private
    */
   private getDurationMultiplierForIntensity(
-    intensity: TechniqueIntensity
+    intensity: TechniqueIntensity,
   ): number {
     switch (intensity) {
       case "light":

@@ -94,7 +94,7 @@ const WEIGHT_SHIFT_AMPLITUDES = {
 function calculateBreathingScale(
   phase: number,
   min: number,
-  max: number
+  max: number,
 ): number {
   // Use sine wave for natural breathing rhythm
   // Phase 0.5 = peak inhale, 0 and 1 = exhale
@@ -116,38 +116,20 @@ function calculateTorsoBreathingOffset(breathingScale: number): number {
 }
 
 /**
- * Calculates weight shift offset at a given phase
+ * Calculates subtle knee bounce offset at a given phase
  *
- * @param phase - Weight shift phase (0-1)
- * @param amplitude - Maximum shift distance
- * @param direction - Primary shift direction ('lateral' | 'forward')
- * @returns Position offset for pelvis/hips
+ * DESIGN: Idle animations should only have light knee bounce - no pelvis
+ * position movement which creates a "walking in place" appearance.
+ *
+ * @param phase - Breathing/bounce phase (0-1)
+ * @param amplitude - Maximum bounce amount (knee bend adjustment)
+ * @returns Knee rotation adjustment for natural bounce
  */
-function calculateWeightShift(
-  phase: number,
-  amplitude: number,
-  direction: "lateral" | "forward" | "circular"
-): { x: number; z: number } {
-  switch (direction) {
-    case "lateral":
-      // Side-to-side weight shift
-      return {
-        x: Math.sin(phase * Math.PI * 2) * amplitude,
-        z: 0,
-      };
-    case "forward":
-      // Front-to-back weight shift
-      return {
-        x: 0,
-        z: Math.sin(phase * Math.PI * 2) * amplitude,
-      };
-    case "circular":
-      // Circular weight shift (water/wind stances)
-      return {
-        x: Math.sin(phase * Math.PI * 2) * amplitude * 0.5,
-        z: Math.cos(phase * Math.PI * 2) * amplitude * 0.5,
-      };
-  }
+function calculateKneeBounce(phase: number, amplitude: number): number {
+  // Subtle knee flex synchronized with breathing
+  // Two bounces per breath cycle for natural feel
+  const bouncePhase = Math.sin(phase * Math.PI * 4);
+  return bouncePhase * amplitude * 0.15; // Very subtle knee flex
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -155,18 +137,23 @@ function calculateWeightShift(
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Applies a complete guard pose to a KeyframeConfig with breathing adjustment
+ * Applies a complete guard pose to a KeyframeConfig with breathing and knee bounce
+ *
+ * DESIGN: Idle animations should only have:
+ * - Chest breathing (torso expansion)
+ * - Subtle knee bounce (slight knee flex variation)
+ * NO pelvis X/Z position movement (causes "walking in place" appearance)
  *
  * @param kf - KeyframeConfig to apply pose to
  * @param pose - Guard pose to apply
  * @param breathingOffset - Torso breathing offset
- * @param weightOffset - Weight shift offset
+ * @param kneeBounce - Subtle knee flex adjustment for bounce effect
  */
 function applyGuardPoseToKeyframe(
   kf: KeyframeConfig,
   pose: StanceGuardPose,
   breathingOffset: number,
-  weightOffset: { x: number; z: number }
+  kneeBounce: number = 0,
 ): void {
   // === ARM POSITIONS (팔 위치) ===
   // IMPORTANT: Use SHOULDER_L/R, ELBOW_L/R, WRIST_L/R bone names
@@ -177,21 +164,21 @@ function applyGuardPoseToKeyframe(
     BoneName.SHOULDER_L,
     pose.leftArm.shoulder.x,
     pose.leftArm.shoulder.y,
-    pose.leftArm.shoulder.z
+    pose.leftArm.shoulder.z,
   );
   // Elbow controls forearm bend
   kf.rotate(
     BoneName.ELBOW_L,
     pose.leftArm.elbow.x,
     pose.leftArm.elbow.y,
-    pose.leftArm.elbow.z
+    pose.leftArm.elbow.z,
   );
   // Wrist controls hand rotation
   kf.rotate(
     BoneName.WRIST_L,
     pose.leftArm.wrist.x,
     pose.leftArm.wrist.y,
-    pose.leftArm.wrist.z
+    pose.leftArm.wrist.z,
   );
 
   // Right arm - mirror bone hierarchy
@@ -199,19 +186,19 @@ function applyGuardPoseToKeyframe(
     BoneName.SHOULDER_R,
     pose.rightArm.shoulder.x,
     pose.rightArm.shoulder.y,
-    pose.rightArm.shoulder.z
+    pose.rightArm.shoulder.z,
   );
   kf.rotate(
     BoneName.ELBOW_R,
     pose.rightArm.elbow.x,
     pose.rightArm.elbow.y,
-    pose.rightArm.elbow.z
+    pose.rightArm.elbow.z,
   );
   kf.rotate(
     BoneName.WRIST_R,
     pose.rightArm.wrist.x,
     pose.rightArm.wrist.y,
-    pose.rightArm.wrist.z
+    pose.rightArm.wrist.z,
   );
 
   // === TORSO (몸통) - Full spine chain for proper rotation ===
@@ -220,21 +207,21 @@ function applyGuardPoseToKeyframe(
     BoneName.SPINE_LOWER,
     pose.torso.x * 0.3,
     pose.torso.y * 0.4,
-    pose.torso.z * 0.3
+    pose.torso.z * 0.3,
   );
   // SPINE_MIDDLE: Mid-torso twist
   kf.rotate(
     BoneName.SPINE_MIDDLE,
     pose.torso.x * 0.3,
     pose.torso.y * 0.3,
-    pose.torso.z * 0.3
+    pose.torso.z * 0.3,
   );
   // SPINE_UPPER: Upper chest with breathing - gets most of the rotation
   kf.rotate(
     BoneName.SPINE_UPPER,
     pose.torso.x * 0.4 + breathingOffset,
     pose.torso.y * 0.3,
-    pose.torso.z * 0.4
+    pose.torso.z * 0.4,
   );
 
   // === LEG POSITIONS (다리 위치) ===
@@ -246,21 +233,22 @@ function applyGuardPoseToKeyframe(
     BoneName.HIP_L,
     pose.leftLeg.hip.x,
     pose.leftLeg.hip.y,
-    pose.leftLeg.hip.z
+    pose.leftLeg.hip.z,
   );
   // KNEE controls lower leg bend (primarily X axis flex)
+  // Add subtle knee bounce for natural idle movement
   kf.rotate(
     BoneName.KNEE_L,
-    pose.leftLeg.knee.x,
+    pose.leftLeg.knee.x + kneeBounce,
     pose.leftLeg.knee.y,
-    pose.leftLeg.knee.z
+    pose.leftLeg.knee.z,
   );
   // FOOT controls ankle rotation
   kf.rotate(
     BoneName.FOOT_L,
     pose.leftLeg.ankle.x,
     pose.leftLeg.ankle.y,
-    pose.leftLeg.ankle.z
+    pose.leftLeg.ankle.z,
   );
 
   // Right leg - mirror bone hierarchy
@@ -268,27 +256,28 @@ function applyGuardPoseToKeyframe(
     BoneName.HIP_R,
     pose.rightLeg.hip.x,
     pose.rightLeg.hip.y,
-    pose.rightLeg.hip.z
+    pose.rightLeg.hip.z,
   );
   kf.rotate(
     BoneName.KNEE_R,
-    pose.rightLeg.knee.x,
+    pose.rightLeg.knee.x + kneeBounce,
     pose.rightLeg.knee.y,
-    pose.rightLeg.knee.z
+    pose.rightLeg.knee.z,
   );
   kf.rotate(
     BoneName.FOOT_R,
     pose.rightLeg.ankle.x,
     pose.rightLeg.ankle.y,
-    pose.rightLeg.ankle.z
+    pose.rightLeg.ankle.z,
   );
 
   // === PELVIS (골반) - Root of entire body ===
   // Controls overall body rotation and position
   kf.rotate(BoneName.PELVIS, pose.pelvis.x, pose.pelvis.y, pose.pelvis.z);
-  // Pelvis position: weight offset (X,Z) + stance height drop (Y)
+  // Pelvis position: ONLY stance height drop (Y)
+  // NO X/Z offset - this prevents "walking in place" appearance
   const pelvisHeight = pose.pelvisHeight ?? 0;
-  kf.position(BoneName.PELVIS, weightOffset.x, pelvisHeight, weightOffset.z);
+  kf.position(BoneName.PELVIS, 0, pelvisHeight, 0);
 
   // === FOOT POSITIONING (발 위치) ===
   // Position feet for stance width and depth
@@ -304,7 +293,8 @@ function applyGuardPoseToKeyframe(
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Geon idle animation with breathing and weight shifts
+ * Creates Geon idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createGeonIdleAnimation(): SkeletalAnimation {
   const pose = GEON_HIGH_GUARD_POSE;
@@ -315,19 +305,19 @@ function createGeonIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_geon",
-    "건 대기"
+    "건 대기",
   ).asIdle(duration, true);
 
-  // Generate keyframes with breathing and weight shift
+  // Generate keyframes with breathing and subtle knee bounce
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    const weightOffset = calculateWeightShift(phase, amplitude, "forward");
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -353,7 +343,8 @@ export const GEON_IDLE_ANIMATION: SkeletalAnimation = createGeonIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Tae idle animation with breathing and weight shifts
+ * Creates Tae idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createTaeIdleAnimation(): SkeletalAnimation {
   const pose = TAE_FLUID_GUARD_POSE;
@@ -364,7 +355,7 @@ function createTaeIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_tae",
-    "태 대기"
+    "태 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -372,10 +363,10 @@ function createTaeIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    const weightOffset = calculateWeightShift(phase, amplitude, "circular");
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -401,7 +392,8 @@ export const TAE_IDLE_ANIMATION: SkeletalAnimation = createTaeIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Li idle animation with breathing and weight shifts
+ * Creates Li idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createLiIdleAnimation(): SkeletalAnimation {
   const pose = LI_FIRE_GUARD_POSE;
@@ -412,7 +404,7 @@ function createLiIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_li",
-    "리 대기"
+    "리 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -420,10 +412,10 @@ function createLiIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    const weightOffset = calculateWeightShift(phase, amplitude, "lateral");
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -449,7 +441,8 @@ export const LI_IDLE_ANIMATION: SkeletalAnimation = createLiIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Jin idle animation with breathing and weight shifts
+ * Creates Jin idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createJinIdleAnimation(): SkeletalAnimation {
   const pose = JIN_THUNDER_GUARD_POSE;
@@ -460,7 +453,7 @@ function createJinIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_jin",
-    "진 대기"
+    "진 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -468,11 +461,11 @@ function createJinIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Jin uses forward weight shift (coiled spring releasing)
-    const weightOffset = calculateWeightShift(phase, amplitude, "forward");
+    // Jin uses slightly larger bounce (coiled spring ready)
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -498,7 +491,8 @@ export const JIN_IDLE_ANIMATION: SkeletalAnimation = createJinIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Son idle animation with breathing and weight shifts
+ * Creates Son idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createSonIdleAnimation(): SkeletalAnimation {
   const pose = SON_WIND_GUARD_POSE;
@@ -509,7 +503,7 @@ function createSonIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_son",
-    "손 대기"
+    "손 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -517,10 +511,10 @@ function createSonIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    const weightOffset = calculateWeightShift(phase, amplitude, "lateral");
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -546,7 +540,8 @@ export const SON_IDLE_ANIMATION: SkeletalAnimation = createSonIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gam idle animation with breathing and weight shifts
+ * Creates Gam idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createGamIdleAnimation(): SkeletalAnimation {
   const pose = GAM_WATER_GUARD_POSE;
@@ -557,7 +552,7 @@ function createGamIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_gam",
-    "감 대기"
+    "감 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -565,10 +560,10 @@ function createGamIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    const weightOffset = calculateWeightShift(phase, amplitude, "circular");
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -594,7 +589,8 @@ export const GAM_IDLE_ANIMATION: SkeletalAnimation = createGamIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gan idle animation with breathing and weight shifts
+ * Creates Gan idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createGanIdleAnimation(): SkeletalAnimation {
   const pose = GAN_MOUNTAIN_GUARD_POSE;
@@ -605,7 +601,7 @@ function createGanIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_gan",
-    "간 대기"
+    "간 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -613,11 +609,11 @@ function createGanIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Gan uses minimal lateral shift (mountain stability)
-    const weightOffset = calculateWeightShift(phase, amplitude, "lateral");
+    // Gan uses minimal bounce (mountain stability)
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -643,7 +639,8 @@ export const GAN_IDLE_ANIMATION: SkeletalAnimation = createGanIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gon idle animation with breathing and weight shifts
+ * Creates Gon idle animation with breathing and subtle knee bounce
+ * NO pelvis position movement - only breathing and knee flex
  */
 function createGonIdleAnimation(): SkeletalAnimation {
   const pose = GON_EARTH_GUARD_POSE;
@@ -654,7 +651,7 @@ function createGonIdleAnimation(): SkeletalAnimation {
 
   const builder = MartialArtsAnimationBuilder.create(
     "stance_gon",
-    "곤 대기"
+    "곤 대기",
   ).asIdle(duration, true);
 
   for (let i = 0; i <= frames; i++) {
@@ -662,11 +659,11 @@ function createGonIdleAnimation(): SkeletalAnimation {
     const frameTime = phase * duration;
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Gon uses forward weight shift (wrestling ready)
-    const weightOffset = calculateWeightShift(phase, amplitude, "forward");
+    // Gon uses grounded knee bounce (wrestling ready)
+    const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, weightOffset);
+    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -753,7 +750,7 @@ export const TRIGRAM_IDLE_ANIMATIONS_BY_NAME: ReadonlyMap<
  * @korean 팔괘대기애니메이션가져오기
  */
 export function getTrigramIdleAnimation(
-  stance: TrigramStance
+  stance: TrigramStance,
 ): SkeletalAnimation | undefined {
   return TRIGRAM_IDLE_ANIMATIONS.get(stance);
 }
@@ -769,7 +766,7 @@ export function getTrigramIdleAnimation(
  * @korean 문자열로대기애니메이션가져오기
  */
 export function getTrigramIdleByName(
-  stanceName: string
+  stanceName: string,
 ): SkeletalAnimation | undefined {
   const normalizedName = stanceName.toLowerCase();
 

@@ -546,24 +546,29 @@ export class MartialArtsAnimationBuilder {
    */
   roundhouseChamber(
     timeOffset: number = 0.1,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply rotational phase
       applyRoundhousePhaseToConfig(kf, KICK_PHASES.ROUNDHOUSE_CHAMBER);
 
-      // Support leg stability
+      // Support leg begins pivot (축발 회전 시작)
+      // Even during chamber, the support foot starts rotating
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0); // Standing hip starts rotation
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.79, 0); // 45° pivot start (half of full)
+
+      // Pelvis begins rotation for power loading (힙 회전)
+      kf.rotate(BoneName.PELVIS, 0, -0.79, 0); // 45° hip rotation
 
       // Spine lower follows pelvis rotation
-      kf.rotate(BoneName.SPINE_LOWER, 0, -0.3, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -0.4, 0);
 
-      // High guard for head protection
+      // High guard for head protection - elbows tucked
       kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0); // Tighter tuck
       kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0); // Tighter tuck
     });
     this.currentTime += timeOffset;
     return this;
@@ -593,7 +598,7 @@ export class MartialArtsAnimationBuilder {
    */
   roundhouseExtend(
     timeOffset: number = 0.15,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Full extension with rotation
@@ -614,18 +619,20 @@ export class MartialArtsAnimationBuilder {
         BoneName.SPINE_UPPER,
         upperSpineRot?.x ?? 0,
         0.8,
-        upperSpineRot?.z ?? 0
+        upperSpineRot?.z ?? 0,
       );
       kf.rotate(
         BoneName.SPINE_LOWER,
         lowerSpineRot?.x ?? 0,
         -1.0,
-        lowerSpineRot?.z ?? 0
+        lowerSpineRot?.z ?? 0,
       );
 
-      // Support leg pivots
-      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, 0.3, 0); // Pivot on ball
+      // Support leg pivots - CRITICAL for Taekwondo roundhouse (축발 회전)
+      // Ball of foot rotates 90-180° to allow full hip opening
+      kf.rotate(BoneName.HIP_L, 0, -0.4, 0); // Standing hip rotates with pivot
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0); // Deeper bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, 1.57, 0); // 90° pivot on ball of foot
 
       // Foot extends laterally
       kf.position(BoneName.FOOT_R, 0.8, 0, 0);
@@ -730,15 +737,33 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Axe kick rise - Leg rises high for 내려차기
+   *
+   * Enhanced with hip rotation and support leg positioning
    * @korean 내려차기올리기
    */
   axeKickRise(timeOffset: number = 0.15, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyHighPeakPhaseToConfig(kf, KICK_PHASES.HIGH_PEAK);
-      // Additional spine lean for axe kick balance
-      kf.rotate(BoneName.SPINE_LOWER, -0.2, 0, 0);
-      kf.rotate(BoneName.SPINE_UPPER, -0.15, 0, 0);
+
+      // Hip rotation for power generation (골반회전)
+      kf.rotate(BoneName.PELVIS, -0.2, -0.6, 0); // Tilt back + Y rotation
+
+      // Spine lean for axe kick balance
+      kf.rotate(BoneName.SPINE_LOWER, -0.2, -0.3, 0);
+      kf.rotate(BoneName.SPINE_UPPER, -0.15, -0.2, 0);
+
+      // Support leg positioning
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0); // Slight pivot
+
       kf.position(BoneName.FOOT_R, 0, 1.5, 0.3);
+
+      // Guard hands protect during exposed position
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -746,16 +771,32 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Axe kick chop - Downward heel strike for 내려차기
+   *
+   * Enhanced with hip rotation and guard hands
    * @korean 내려차기
    */
   axeKickChop(timeOffset: number = 0.1, easing: string = "ease-in"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Kicking leg drives down
       kf.rotate(BoneName.HIP_R, 0.8, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
       kf.rotate(BoneName.FOOT_R, -0.3, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0.1, 0, 0);
+
+      // Hip rotation for power (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.1, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.3, 0);
+
+      // Support leg maintains pivot
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0);
+
       kf.position(BoneName.FOOT_R, 0, 0.5, 0.4);
+
+      // Guard hands remain protective
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -780,7 +821,7 @@ export class MartialArtsAnimationBuilder {
    */
   backKickSpin(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Body rotation
+      // Body rotation - 180° for back kick
       kf.rotate(BoneName.PELVIS, 0, -1.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -1.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
@@ -793,16 +834,17 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.8, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0, 0, 0);
 
-      // Support leg stability
-      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
-      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.FOOT_L, 0, -0.3, 0);
+      // Support leg - PROPER PIVOT for 180° rotation (축발 회전)
+      // Ball of foot pivots to allow hip rotation
+      kf.rotate(BoneName.HIP_L, 0, -0.4, 0); // Standing hip follows rotation
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0); // Deeper bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, -1.57, 0); // 90° pivot on ball
 
-      // Arms balance during spin
-      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, 0.2);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
-      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.6, -0.2);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+      // Arms balance during spin - elbows tucked
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -898,7 +940,7 @@ export class MartialArtsAnimationBuilder {
    */
   crescentKickChamber(
     timeOffset: number = 0.1,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, 0.8, 0, -0.8);
@@ -916,7 +958,7 @@ export class MartialArtsAnimationBuilder {
    */
   crescentKickArc(
     timeOffset: number = 0.12,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.HIP_R, 1.2, 0, 1.0);
@@ -932,6 +974,8 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Push kick chamber - Ball of foot position (밀어차기준비)
+   *
+   * Enhanced with hip rotation and guard hand protection
    * @korean 밀어차기준비
    */
   pushKickChamber(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -939,8 +983,20 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_R, 1.2, 0, 0);
       kf.rotate(BoneName.KNEE_R, -1.8, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.3, 0, 0);
+
+      // Support leg with slight pivot
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
       kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
-      kf.rotate(BoneName.PELVIS, -0.1, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.4, 0); // Support foot pivot
+
+      // Hip rotation preparation
+      kf.rotate(BoneName.PELVIS, -0.1, -0.3, 0);
+
+      // Guard hands protect during chamber
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -948,6 +1004,8 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Push kick thrust - Foot pushes opponent back (밀어차기)
+   *
+   * Enhanced with hip rotation for power and guard hand protection
    * @korean 밀어차기
    */
   pushKickThrust(timeOffset: number = 0.1, easing: string = "ease-out"): this {
@@ -955,10 +1013,22 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_R, 1.0, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.15, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.5, 0, 0);
+
+      // Support leg with deeper pivot
+      kf.rotate(BoneName.HIP_L, 0, -0.3, 0);
       kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.1, 0, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0.05, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.8, 0); // Support foot pivot for power
+
+      // Hip rotation drives the push (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.1, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, -0.3, 0);
       kf.position(BoneName.FOOT_R, 0, 0, 0.5);
+
+      // Guard hands protect during thrust
+      kf.rotate(BoneName.SHOULDER_L, -0.9, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.9, -0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -966,21 +1036,190 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Spinning heel kick - 360° with heel strike (뒤돌려차기)
+   *
+   * Full 360° spin requires complete support foot pivot
    * @korean 뒤돌려차기
    */
   spinningHeelKick(
     timeOffset: number = 0.15,
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Full body rotation for 360° spin
       kf.rotate(BoneName.PELVIS, 0, -4.5, 0);
       kf.rotate(BoneName.SPINE_LOWER, 0, -4.3, 0);
       kf.rotate(BoneName.SPINE_UPPER, 0, -4.0, 0.15);
+
+      // Kicking leg - heel strike position
       kf.rotate(BoneName.HIP_R, 0.8, 0, 1.2);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.3, 0, 0.2);
       kf.position(BoneName.FOOT_R, 0.6, 0.5, 0);
+
+      // Support leg - CRITICAL PIVOT for 360° spin (축발 회전)
+      kf.rotate(BoneName.HIP_L, 0, -0.5, 0); // Standing hip rotates
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0); // Deep bend for stability
+      kf.rotate(BoneName.FOOT_L, 0, -2.1, 0); // 120° pivot (continuous spin)
+
+      // Arms tucked for spin speed
+      kf.rotate(BoneName.SHOULDER_L, -0.7, 0.4, 0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -2.0);
+      kf.rotate(BoneName.SHOULDER_R, -0.7, -0.4, -0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 2.0);
     });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook kick extension - Leg extends past target (후려차기 연장)
+   *
+   * Authentic Korean hook kick (후려차기) first phase:
+   * - Body rotates past perpendicular (~100°)
+   * - Leg extends past target like a missed side kick
+   * - Foot positioned to hook back toward target
+   * - Head maintains target visual
+   *
+   * The hook kick is distinct from crescent kick:
+   * - Crescent: sweeps ACROSS body
+   * - Hook: extends PAST, then hooks BACK
+   *
+   * @korean 후려차기연장
+   */
+  hookKickExtend(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Body rotates past perpendicular
+      kf.rotate(BoneName.PELVIS, 0, -1.8, 0); // ~103° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.6, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -1.4, 0.1);
+
+      // Head tracks target
+      kf.rotate(BoneName.HEAD, 0, 0.6, 0);
+
+      // Leg extends past target (like missed side kick)
+      kf.rotate(BoneName.HIP_R, 1.3, 0, 0.5);
+      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.2, 0, 0.4);
+
+      // Foot positioned past target
+      kf.position(BoneName.FOOT_R, 0.3, 0.8, -0.5);
+
+      // Support leg
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+
+      // Arms for balance
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.5, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.4, -0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Hook kick hook-back - Heel hooks back toward target (후려차기 후림)
+   *
+   * Authentic Korean hook kick (후려차기) second phase:
+   * - Leg retracts/hooks back toward target
+   * - Heel is the striking surface (발뒤꿈치)
+   * - Body rotates back toward target during hook
+   * - Snapping motion at knee for power
+   *
+   * The hook motion is what makes this kick unique:
+   * - Extends past, then HOOKS back
+   * - Catches opponent from unexpected angle
+   * - Heel strikes back of head or temple
+   *
+   * @korean 후려차기후림
+   */
+  hookKickHook(timeOffset: number = 0.12, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Body rotates back toward target
+      kf.rotate(BoneName.PELVIS, 0, -1.3, 0); // Rotate back ~75°
+      kf.rotate(BoneName.SPINE_LOWER, 0, -1.2, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -1.0, 0.1);
+
+      // Head stays on target
+      kf.rotate(BoneName.HEAD, 0, 0.4, 0);
+
+      // Leg hooks back - knee bends, hip rotates inward
+      kf.rotate(BoneName.HIP_R, 1.0, 0, -0.3); // Hip rotation inward
+      kf.rotate(BoneName.KNEE_R, -0.6, 0, 0); // Knee snap for power
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, -0.4); // Heel presentation
+
+      // Foot hooks back toward target
+      kf.position(BoneName.FOOT_R, 0, 0.8, 0.2);
+
+      // Support leg
+      kf.rotate(BoneName.HIP_L, 0, -0.1, 0);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+
+      // Arms counter for balance
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.2);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.3, -0.2);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Tornado kick jump with 360° rotation (회전차기 도약)
+   *
+   * Authentic Korean tornado kick (회전차기) jump phase:
+   * - Jump with full 360° body rotation
+   * - Arms swing to generate rotational momentum
+   * - Body elevates during spin
+   * - Prepares for roundhouse at apex
+   *
+   * @korean 회전차기도약
+   */
+  tornadoJump(timeOffset: number = 0.3): this {
+    // First half - 180° rotation while rising
+    this.addKeyframe(this.currentTime + timeOffset * 0.4, "ease-out", (kf) => {
+      kf.rotate(BoneName.PELVIS, 0, -3.14, 0); // 180° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -3.0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -2.8, 0);
+
+      // Jump - elevate body (use pelvis position)
+      kf.position(BoneName.PELVIS, 0, 0.3, 0);
+
+      // Both legs tuck for spin
+      kf.rotate(BoneName.HIP_R, 0.6, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -1.2, 0, 0);
+      kf.rotate(BoneName.HIP_L, 0.4, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -1.0, 0, 0);
+
+      // Arms swing for momentum
+      kf.rotate(BoneName.SHOULDER_L, -0.8, 0.6, 0.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.8, -0.6, -0.4);
+    });
+
+    // Complete 360° at apex
+    this.addKeyframe(this.currentTime + timeOffset, "ease-in", (kf) => {
+      kf.rotate(BoneName.PELVIS, 0, -6.28, 0); // Full 360° rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0, -6.0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0, -5.8, 0);
+
+      // Peak height (use pelvis position)
+      kf.position(BoneName.PELVIS, 0, 0.5, 0);
+
+      // Kicking leg begins to chamber
+      kf.rotate(BoneName.HIP_R, 1.0, 0, 0.4);
+      kf.rotate(BoneName.KNEE_R, -1.5, 0, 0);
+
+      // Support leg extends
+      kf.rotate(BoneName.HIP_L, 0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+
+      // Arms position for kick
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.3, 0.3);
+      kf.rotate(BoneName.SHOULDER_R, -0.6, -0.3, -0.3);
+    });
+
     this.currentTime += timeOffset;
     return this;
   }
@@ -1000,7 +1239,7 @@ export class MartialArtsAnimationBuilder {
   punchChamber(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.CHAMBER, hand, {
@@ -1025,7 +1264,7 @@ export class MartialArtsAnimationBuilder {
   punchWindup(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       applyPunchPhaseToConfig(kf, PUNCH_PHASES.WINDUP, hand, {
@@ -1055,7 +1294,7 @@ export class MartialArtsAnimationBuilder {
   punchExtend(
     timeOffset: number = 0.07,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
@@ -1089,7 +1328,7 @@ export class MartialArtsAnimationBuilder {
   punchPeak(
     timeOffset: number = 0.05,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       // Apply punch phase first (sets base spine rotation from PUNCH_PHASES)
@@ -1162,7 +1401,7 @@ export class MartialArtsAnimationBuilder {
   hookPunch(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1187,6 +1426,13 @@ export class MartialArtsAnimationBuilder {
       this.applyHookTorsoRotation(kf, hand, 50);
       kf.rotate(BoneName.PELVIS, 0, isRight ? 0.35 : -0.35, 0);
 
+      // Rear foot pivot for power generation (축발회전)
+      // The rear foot pivots inward as the hip rotates, driving force through kinetic chain
+      const rearFoot = isRight ? BoneName.FOOT_R : BoneName.FOOT_L;
+      const rearHip = isRight ? BoneName.HIP_R : BoneName.HIP_L;
+      kf.rotate(rearFoot, 0, isRight ? 0.4 : -0.4, 0); // Pivot inward ~23°
+      kf.rotate(rearHip, 0, isRight ? 0.25 : -0.25, 0); // Hip follows rotation
+
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
     });
@@ -1205,7 +1451,7 @@ export class MartialArtsAnimationBuilder {
   hookWindup(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1246,7 +1492,7 @@ export class MartialArtsAnimationBuilder {
   uppercutPunch(
     timeOffset: number = 0.1,
     hand: "left" | "right" = "right",
-    easing: string = "ease-out"
+    easing: string = "ease-out",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1265,11 +1511,14 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
 
-      // Drive up through legs
-      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
-      kf.rotate(BoneName.KNEE_R, -0.1, 0, 0);
-      kf.rotate(BoneName.PELVIS, -0.2, isRight ? 0.15 : -0.15, 0);
-      kf.position(BoneName.PELVIS, 0, 0.1, 0.1);
+      // Drive up through legs - explosive extension generates upward force (다리구동력)
+      // From crouch position, knees extend powerfully (positive = straighter)
+      kf.rotate(BoneName.KNEE_L, 0.15, 0, 0); // Extend from crouch
+      kf.rotate(BoneName.KNEE_R, 0.15, 0, 0); // Extend from crouch
+      kf.rotate(BoneName.HIP_L, -0.1, 0, 0); // Hip drives upward
+      kf.rotate(BoneName.HIP_R, -0.1, 0, 0); // Hip drives upward
+      kf.rotate(BoneName.PELVIS, -0.25, isRight ? 0.2 : -0.2, 0); // More explosive rise
+      kf.position(BoneName.PELVIS, 0, 0.15, 0.1); // Higher rise from leg drive
 
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, hand);
@@ -1289,7 +1538,7 @@ export class MartialArtsAnimationBuilder {
   uppercutCrouch(
     timeOffset: number = 0.08,
     hand: "left" | "right" = "right",
-    easing: string = "linear"
+    easing: string = "linear",
   ): this {
     const isRight = hand === "right";
     const shoulderBone = isRight ? BoneName.SHOULDER_R : BoneName.SHOULDER_L;
@@ -1403,20 +1652,591 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Knee strike from clinch (무릎차기)
+   *
+   * Enhanced with hip rotation and proper clinch mechanics
    * @korean 무릎차기
    */
   kneeStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_L, 0.2, 0, -0.8);
-      kf.rotate(BoneName.SHOULDER_R, 0.2, 0, 0.8);
+      // Clinch grip - hands pulling opponent in
+      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.3, -0.8);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.8);
+      kf.rotate(BoneName.SHOULDER_R, 0.2, -0.3, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.8);
+
+      // Knee drive - maximum hip rotation for power
       kf.rotate(BoneName.HIP_R, 1.4, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.5, 0, 0);
       kf.rotate(BoneName.FOOT_R, 0.4, 0, 0);
-      kf.rotate(BoneName.PELVIS, 0.2, 0, 0);
-      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+
+      // Hip rotation drives the knee (골반회전)
+      kf.rotate(BoneName.PELVIS, 0.2, -0.6, 0); // Forward tilt + Y rotation
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.3, 0);
+
+      // Support leg stable
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+      kf.rotate(BoneName.HIP_L, 0, -0.2, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.5, 0); // Slight pivot
+
       kf.position(BoneName.KNEE_R, 0, 0.4, 0.5);
+
       // Grab hands for clinch knee strike
       this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Brachial elbow - Horizontal elbow to brachial nerve (상박치기)
+   * Targets the lateral neck/brachial plexus area
+   * @korean 상박치기
+   */
+  brachialElbow(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm swings horizontally targeting neck level
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.2, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+      // Strong torso rotation for power
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.8, 0.1);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.6, 0.05);
+      kf.rotate(BoneName.PELVIS, 0, 0.5, 0);
+      // Elbow aimed at neck height
+      kf.position(BoneName.ELBOW_R, 0.3, 0.2, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Slashing elbow - Diagonal cutting elbow (베기팔꿈치)
+   * Diagonal slash across opponent's face/temple
+   * @korean 베기팔꿈치
+   */
+  slashingElbow(timeOffset: number = 0.09, easing: string = "linear"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Diagonal slash motion - high to low
+      kf.rotate(BoneName.SHOULDER_R, -0.6, 0.3, 1.0);
+      kf.rotate(BoneName.ELBOW_R, 0, 0.2, 1.2);
+      // Torso follows diagonal path
+      kf.rotate(BoneName.SPINE_UPPER, 0.2, 0.5, 0.15);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.1, 0.4, 0.1);
+      kf.rotate(BoneName.PELVIS, 0.05, 0.3, 0.05);
+      // Elbow cuts diagonally
+      kf.position(BoneName.ELBOW_R, 0.2, 0.1, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Spinal elbow - Downward elbow to spine (척추팔꿈치)
+   * Strikes spine from behind or above
+   * @korean 척추팔꿈치
+   */
+  spinalElbow(timeOffset: number = 0.1, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm drives down toward spine
+      kf.rotate(BoneName.SHOULDER_R, -0.8, 0.4, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0.3, 1.0);
+      // Body leans forward for reach
+      kf.rotate(BoneName.SPINE_UPPER, 0.4, 0.3, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.3, 0.2, 0);
+      kf.rotate(BoneName.PELVIS, 0.2, 0.2, 0);
+      // Elbow targets lower target
+      kf.position(BoneName.ELBOW_R, 0.15, -0.1, 0.7);
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Side knee - Lateral knee to ribs (옆무릎)
+   * Clinch knee targeting opponent's side
+   * @korean 옆무릎
+   */
+  sideKneeStrike(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Clinch position with lateral knee
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.4, -0.6);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.SHOULDER_R, 0.3, -0.4, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.6);
+
+      // Knee drives laterally
+      kf.rotate(BoneName.HIP_R, 1.2, 0, 0.4); // Lateral angle
+      kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.3, 0, 0);
+
+      // Hip rotation for side angle
+      kf.rotate(BoneName.PELVIS, 0.1, -0.4, 0.1);
+      kf.rotate(BoneName.SPINE_LOWER, 0.05, -0.3, 0.05);
+
+      // Support leg
+      kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.4, 0);
+
+      kf.position(BoneName.KNEE_R, 0.3, 0.3, 0.4);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Flying knee - Jumping knee strike (뛰어무릎)
+   * Explosive airborne knee
+   * @korean 뛰어무릎
+   */
+  flyingKnee(timeOffset: number = 0.15, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Both arms drive for momentum
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+      kf.rotate(BoneName.SHOULDER_R, -0.5, -0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+
+      // Knee drives high in air
+      kf.rotate(BoneName.HIP_R, 1.6, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.5, 0, 0);
+
+      // Trailing leg extends back
+      kf.rotate(BoneName.HIP_L, -0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.1, 0, 0);
+
+      // Body drives forward and up
+      kf.rotate(BoneName.PELVIS, 0.3, -0.5, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.2, -0.3, 0);
+
+      // Airborne position
+      kf.position(BoneName.PELVIS, 0, 0.4, 0.3);
+      kf.position(BoneName.KNEE_R, 0, 0.6, 0.6);
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Kidney knee - Knee to kidney from side (신장무릎)
+   * Targets kidney area from side clinch
+   * @korean 신장무릎
+   */
+  kidneyKnee(timeOffset: number = 0.11, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Side clinch grip
+      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.5, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+      kf.rotate(BoneName.SHOULDER_R, 0.4, -0.5, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+
+      // Knee hooks around to kidney
+      kf.rotate(BoneName.HIP_R, 1.3, 0.2, 0.3);
+      kf.rotate(BoneName.KNEE_R, -0.45, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.35, 0.1, 0);
+
+      // Body angles for side target
+      kf.rotate(BoneName.PELVIS, 0.15, -0.5, 0.1);
+      kf.rotate(BoneName.SPINE_LOWER, 0.1, -0.35, 0.05);
+
+      // Support leg angled
+      kf.rotate(BoneName.KNEE_L, -0.22, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.45, 0);
+
+      kf.position(BoneName.KNEE_R, 0.25, 0.35, 0.45);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Femoral knee - Knee to femoral nerve (대퇴부무릎)
+   * Low knee targeting thigh/femoral nerve
+   * @korean 대퇴부무릎
+   */
+  femoralKnee(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Low clinch position
+      kf.rotate(BoneName.SHOULDER_L, 0.5, 0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
+      kf.rotate(BoneName.SHOULDER_R, 0.5, -0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
+
+      // Knee drives low
+      kf.rotate(BoneName.HIP_R, 1.1, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.6, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.25, 0, 0);
+
+      // Body stays lower
+      kf.rotate(BoneName.PELVIS, 0.25, -0.4, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.15, -0.25, 0);
+
+      // Support leg bent
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0, 0.35, 0);
+
+      // Low target position
+      kf.position(BoneName.KNEE_R, 0, 0.2, 0.5);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // VITAL POINT STRIKES - DARKOPS (급소격 - 암살기술)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Throat strike - Precise strike to trachea (기도격)
+   * Fingers extended targeting windpipe
+   * @korean 기도격
+   */
+  throatStrike(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Quick dart-like motion to throat level
+      kf.rotate(BoneName.SHOULDER_R, -0.2, 0, 0.15);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.3);
+      kf.rotate(BoneName.WRIST_R, -0.5, 0, 0);
+
+      // Off hand guards low
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.2, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+
+      // Subtle body rotation for precision
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.15, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.1, 0);
+
+      // Spear hand for throat targeting
+      this.applyHandPose(kf, HAND_POSES.KNIFE_HAND, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Temple strike - Precision temple elbow (관자놀이격)
+   * Horizontal elbow targeting temple
+   * @korean 관자놀이격
+   */
+  templeElbow(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // High horizontal elbow arc to temple height
+      kf.rotate(BoneName.SHOULDER_R, -0.8, 0.9, 0.7);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.7);
+      kf.rotate(BoneName.WRIST_R, 0.2, 0, 0);
+
+      // Pulling hand (controls head position)
+      kf.rotate(BoneName.SHOULDER_L, 0.3, 0.7, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+
+      // Heavy torso rotation for power
+      kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.55, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.35, 0);
+
+      // Fist for elbow strike
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Nerve strike - Precision brachial plexus attack (신경격)
+   * Short sharp strike to nerve cluster
+   * @korean 신경격
+   */
+  nerveStrike(timeOffset: number = 0.06, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Compact chambered strike
+      kf.rotate(BoneName.SHOULDER_R, 0.1, 0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.6);
+      kf.rotate(BoneName.WRIST_R, -0.3, -0.2, 0);
+
+      // Guard hand high
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.3, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+
+      // Minimal body movement for stealth
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.12, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.08, 0);
+
+      // Knuckle strike for precise nerve targeting
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Jugular strike - Knife hand to jugular vein (경정맥격)
+   * Slicing motion to jugular
+   * @korean 경정맥격
+   */
+  jugularStrike(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Diagonal knife hand motion
+      kf.rotate(BoneName.SHOULDER_R, -0.4, 0.5, 0.35);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.4);
+      kf.rotate(BoneName.WRIST_R, -0.4, 0.3, -0.2);
+
+      // Other arm draws back
+      kf.rotate(BoneName.SHOULDER_L, 0.2, -0.3, -0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.7);
+
+      // Body rotation for slicing power
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.28, 0.05);
+      kf.rotate(BoneName.PELVIS, 0, 0.18, 0);
+
+      // Knife hand for cutting strike
+      this.applyHandPose(kf, HAND_POSES.KNIFE_HAND, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Occipital strike - Palm heel to base of skull (후두부격)
+   * Upward palm strike to brain stem area
+   * @korean 후두부격
+   */
+  occipitalStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Upward palm heel motion
+      kf.rotate(BoneName.SHOULDER_R, -1.1, 0.2, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.5);
+      kf.rotate(BoneName.WRIST_R, -0.8, 0, 0);
+
+      // Control arm at shoulder
+      kf.rotate(BoneName.SHOULDER_L, 0.5, 0.5, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.2);
+
+      // Body drives upward
+      kf.rotate(BoneName.SPINE_UPPER, -0.2, 0.2, 0);
+      kf.rotate(BoneName.PELVIS, -0.1, 0.15, 0);
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+
+      // Palm heel for strike
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Jaw attack - Upward palm to jaw (턱격)
+   * Palm strike causing jaw dislocation
+   * @korean 턱격
+   */
+  jawStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Sharp upward palm to jaw height
+      kf.rotate(BoneName.SHOULDER_R, -0.9, 0.1, 0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.3);
+      kf.rotate(BoneName.WRIST_R, -0.6, 0, 0.1);
+
+      // Guard arm stays protective
+      kf.rotate(BoneName.SHOULDER_L, 0.1, 0.3, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+
+      // Explosive hip drive
+      kf.rotate(BoneName.SPINE_UPPER, -0.15, 0.22, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, -0.1, 0.15, 0);
+      kf.rotate(BoneName.PELVIS, -0.08, 0.12, 0);
+      kf.rotate(BoneName.KNEE_L, -0.15, 0, 0);
+
+      // Palm strike pose
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Eye gouge approach - Fingers to eyes (안격)
+   * Two finger strike to eyes
+   * @korean 안격
+   */
+  eyeGouge(timeOffset: number = 0.06, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Quick forward dart to face level
+      kf.rotate(BoneName.SHOULDER_R, -0.35, 0.15, 0.25);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.2);
+      kf.rotate(BoneName.WRIST_R, -0.2, 0, 0);
+
+      // Other hand controls head/shoulder
+      kf.rotate(BoneName.SHOULDER_L, 0.35, 0.45, -0.35);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.3);
+
+      // Minimal body telegraph
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.08, 0);
+      kf.rotate(BoneName.NECK, -0.1, 0.05, 0);
+
+      // Two-finger pose for eye attack
+      this.applyHandPose(kf, HAND_POSES.TWO_FINGER, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Solar plexus strike - Deep body shot (명치격)
+   * Penetrating strike to solar plexus
+   * @korean 명치격
+   */
+  solarPlexusStrike(
+    timeOffset: number = 0.1,
+    easing: string = "ease-out",
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Driving straight punch at solar plexus level
+      kf.rotate(BoneName.SHOULDER_R, 0.15, 0.05, 0.35);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.15);
+      kf.rotate(BoneName.WRIST_R, 0, 0, -0.1);
+
+      // Pulling arm for power generation
+      kf.rotate(BoneName.SHOULDER_L, 0.25, -0.3, -0.35);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.8);
+
+      // Full body drive behind punch
+      kf.rotate(BoneName.SPINE_UPPER, 0.08, 0.3, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.05, 0.25, 0);
+      kf.rotate(BoneName.PELVIS, 0.05, 0.2, 0);
+
+      kf.position(BoneName.PELVIS, 0, 0, 0.08);
+
+      // Fist for penetrating strike
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Liver shot - Hook to liver area (간격)
+   * Hooking punch targeting liver
+   * @korean 간격
+   */
+  liverShot(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Hooking motion to right side body
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.6, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.2);
+      kf.rotate(BoneName.WRIST_R, 0, 0.2, 0);
+
+      // Left hand guards head
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.2, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.5);
+
+      // Torso rotates into hook
+      kf.rotate(BoneName.SPINE_UPPER, 0.05, 0.4, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.03, 0.3, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.25, 0);
+
+      // Fist for hooking strike
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Kidney strike - Hook to kidney from behind (신장격)
+   * Rear kidney targeting hook
+   * @korean 신장격
+   */
+  kidneyStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Circular hook coming from behind
+      kf.rotate(BoneName.SHOULDER_R, 0.1, 0.7, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.0);
+      kf.rotate(BoneName.WRIST_R, 0, 0.15, -0.1);
+
+      // Control arm at opponent's shoulder
+      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.2);
+
+      // Body rotates around opponent
+      kf.rotate(BoneName.SPINE_UPPER, 0, 0.5, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0);
+      kf.rotate(BoneName.PELVIS, 0, 0.35, 0);
+
+      // Fist for kidney shot
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Spine strike - Downward elbow to spine (척추격)
+   * 12-6 elbow targeting spine
+   * @korean 척추격
+   */
+  spineStrike(timeOffset: number = 0.12, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Downward elbow from overhead
+      kf.rotate(BoneName.SHOULDER_R, -1.3, 0.1, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.9);
+      kf.rotate(BoneName.WRIST_R, 0.3, 0, 0);
+
+      // Other arm controls opponent's body
+      kf.rotate(BoneName.SHOULDER_L, 0.6, 0.4, -0.35);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.0);
+
+      // Body drives downward
+      kf.rotate(BoneName.SPINE_UPPER, 0.35, 0.1, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.25, 0.08, 0);
+      kf.rotate(BoneName.PELVIS, 0.2, 0.05, 0);
+
+      // Fist for elbow point
+      this.applyHandPose(kf, HAND_POSES.FIST, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Groin strike - Low rising knee or palm (낭심격)
+   * Targeting groin area
+   * @korean 낭심격
+   */
+  groinStrike(timeOffset: number = 0.08, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Rising palm heel to groin
+      kf.rotate(BoneName.SHOULDER_R, 0.4, 0.1, 0.3);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.4);
+      kf.rotate(BoneName.WRIST_R, -0.5, 0, 0.2);
+
+      // Guard arm high
+      kf.rotate(BoneName.SHOULDER_L, -0.4, 0.3, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.4);
+
+      // Body lowers for low target
+      kf.rotate(BoneName.SPINE_UPPER, 0.15, 0.15, 0);
+      kf.rotate(BoneName.PELVIS, 0.2, 0.1, 0);
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+
+      // Palm for groin strike
+      this.applyHandPose(kf, HAND_POSES.OPEN_PALM, "right");
+      this.applyHandPose(kf, HAND_POSES.FIST, "left");
     });
     this.currentTime += timeOffset;
     return this;
@@ -1620,6 +2440,246 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // SPECIALIZED GRAPPLING (특수 잡기 기술)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  /**
+   * Hip throw - Classic hip projection (배대되치기)
+   * Rotating hip throw with arm control
+   * @korean 배대되치기
+   */
+  hipThrow(timeOffset: number = 0.18, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Hip rotation under opponent
+      kf.rotate(BoneName.PELVIS, 0.3, 2.0, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.4, 1.6, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.5, 1.3, -0.15);
+
+      // Arms pull opponent over
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.9, -0.7);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.8);
+      kf.rotate(BoneName.SHOULDER_R, -0.3, -0.5, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
+
+      // Legs provide base
+      kf.rotate(BoneName.KNEE_L, -0.5, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.35, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Takedown entry - Shoot and grab legs (태클진입)
+   * Double leg takedown initiation
+   * @korean 태클진입
+   */
+  takedownShoot(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Low driving position
+      kf.rotate(BoneName.PELVIS, 0.7, 0.1, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.5, 0.08, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.4, 0.05, 0);
+
+      // Arms reach for legs
+      kf.rotate(BoneName.SHOULDER_L, 0.6, 0.4, -0.35);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.6);
+      kf.rotate(BoneName.SHOULDER_R, 0.6, -0.4, 0.35);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.6);
+
+      // Driving legs
+      kf.rotate(BoneName.KNEE_L, -0.8, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -1.2, 0, 0);
+      kf.rotate(BoneName.HIP_R, 0.6, 0, 0);
+
+      kf.position(BoneName.PELVIS, 0, -0.25, 0.15);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Takedown finish - Lift and dump (태클완료)
+   * Complete the takedown with dump
+   * @korean 태클완료
+   */
+  takedownDump(timeOffset: number = 0.15, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Lifting and dumping motion
+      kf.rotate(BoneName.PELVIS, 0.2, 0.5, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0.15, 0.4, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.35, -0.1);
+
+      // Arms secure and dump
+      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.6, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.1);
+      kf.rotate(BoneName.SHOULDER_R, 0.4, -0.6, 0.5);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.1);
+
+      // Legs drive forward
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.5, 0, 0);
+
+      kf.position(BoneName.PELVIS, 0, -0.1, 0.25);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Elbow lock application - Arm bar pressure (팔꿈치꺾기)
+   * Specific elbow hyperextension lock
+   * @korean 팔꿈치꺾기
+   */
+  elbowLockApply(timeOffset: number = 0.18, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Two-on-one arm control
+      kf.rotate(BoneName.SHOULDER_R, 0.3, 0.7, 0.6);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.5);
+      kf.rotate(BoneName.WRIST_R, 0.2, -0.3, 0.1);
+
+      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.8, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.6);
+      kf.rotate(BoneName.WRIST_L, -0.2, 0.35, -0.1);
+
+      // Torso leans back for leverage
+      kf.rotate(BoneName.PELVIS, -0.15, 0.4, 0);
+      kf.rotate(BoneName.SPINE_UPPER, -0.25, 0.35, 0);
+
+      // Wide base
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.35, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Shoulder lock twist - Shoulder manipulation (어깨꺾기)
+   * Rotational shoulder joint attack
+   * @korean 어깨꺾기
+   */
+  shoulderLockTwist(
+    timeOffset: number = 0.2,
+    easing: string = "ease-in",
+  ): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm wrapped and twisting
+      kf.rotate(BoneName.SHOULDER_R, -0.2, 0.9, 0.8);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.2);
+      kf.rotate(BoneName.WRIST_R, 0.4, -0.5, 0.3);
+
+      kf.rotate(BoneName.SHOULDER_L, 0.5, 0.7, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.0);
+
+      // Body rotation for torque
+      kf.rotate(BoneName.PELVIS, 0, 0.7, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.1, 0.55, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0.05, 0.45, 0);
+
+      kf.rotate(BoneName.KNEE_L, -0.4, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Finger manipulation - Small joint lock (손가락비틀기)
+   * Precise finger control technique
+   * @korean 손가락비틀기
+   */
+  fingerLockTwist(timeOffset: number = 0.12, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Fine control hand positions
+      kf.rotate(BoneName.SHOULDER_R, 0.15, 0.4, 0.35);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.9);
+      kf.rotate(BoneName.WRIST_R, 0.5, -0.6, 0.4);
+
+      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.5, -0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.0);
+      kf.rotate(BoneName.WRIST_L, -0.3, 0.5, -0.2);
+
+      // Minimal body movement
+      kf.rotate(BoneName.PELVIS, 0, 0.25, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.08, 0.2, 0);
+
+      // Precision grip for finger control
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Choke grip - Rear naked choke position (교살잡기)
+   * Setting up blood choke
+   * @korean 교살잡기
+   */
+  chokeGrip(timeOffset: number = 0.15, easing: string = "ease-in"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Arm across throat
+      kf.rotate(BoneName.SHOULDER_R, -0.4, 0.6, 0.7);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.8);
+      kf.rotate(BoneName.WRIST_R, 0.2, 0.3, 0);
+
+      // Hand behind head
+      kf.rotate(BoneName.SHOULDER_L, -0.6, 0.5, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.9);
+      kf.rotate(BoneName.WRIST_L, 0, 0.2, -0.1);
+
+      // Chest against back
+      kf.rotate(BoneName.SPINE_UPPER, 0.2, 0.2, 0);
+      kf.rotate(BoneName.PELVIS, 0.15, 0.15, 0);
+
+      kf.rotate(BoneName.KNEE_L, -0.3, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.35, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.GRAB, "right");
+      this.applyHandPose(kf, HAND_POSES.GRAB, "left");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Ground control - Mounted position (마운트)
+   * Dominant ground position
+   * @korean 마운트
+   */
+  groundMount(timeOffset: number = 0.2, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Sitting on opponent's torso
+      kf.rotate(BoneName.PELVIS, 0.4, 0, 0);
+      kf.rotate(BoneName.SPINE_UPPER, 0.15, 0, 0);
+
+      // Hands controlling
+      kf.rotate(BoneName.SHOULDER_L, 0.4, 0.3, -0.4);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.8);
+      kf.rotate(BoneName.SHOULDER_R, 0.4, -0.3, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.8);
+
+      // Knees wide for base
+      kf.rotate(BoneName.HIP_L, 0.8, 0, -0.6);
+      kf.rotate(BoneName.KNEE_L, -1.4, 0, 0);
+      kf.rotate(BoneName.HIP_R, 0.8, 0, 0.6);
+      kf.rotate(BoneName.KNEE_R, -1.4, 0, 0);
+
+      kf.position(BoneName.PELVIS, 0, -0.4, 0);
+      this.applyHandPose(kf, HAND_POSES.GRAB, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
   /**
    * Clinch grab - Arms wrap around opponent (클린치잡기)
    * @korean 클린치잡기
@@ -1754,6 +2814,54 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
+  /**
+   * Mid-section block - Standard middle block (중단막기)
+   * Arms crossed protecting torso
+   * @korean 중단막기
+   */
+  blockMiddle(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Forearm across body at mid-level
+      kf.rotate(BoneName.SHOULDER_L, -0.4, 0.5, -0.5);
+      kf.rotate(BoneName.SHOULDER_R, 0.2, 0, 0.3);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -1.1);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
+
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.15, 0);
+      kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.FIST, "both");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Knife hand block - Open hand deflection (수도막기)
+   * Blade of hand for blocking
+   * @korean 수도막기
+   */
+  blockKnifeHand(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Knife hand position
+      kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, -0.5);
+      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.7);
+      kf.rotate(BoneName.WRIST_L, -0.3, 0.4, 0);
+
+      // Other hand guards solar plexus
+      kf.rotate(BoneName.SHOULDER_R, 0.3, 0.2, 0.4);
+      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
+
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.1, 0);
+      kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
+
+      this.applyHandPose(kf, HAND_POSES.KNIFE_HAND, "left");
+      this.applyHandPose(kf, HAND_POSES.KNIFE_HAND, "right");
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // MOVEMENT TECHNIQUES (이동 기술)
   // ═══════════════════════════════════════════════════════════════════════
@@ -1768,6 +2876,100 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.KNEE_R, -0.4, 0, 0);
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
       kf.position(BoneName.PELVIS, 0, 0, 0.1);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Forward step - Advancing stance (전진)
+   * Weight transfers forward with lead foot
+   * @korean 전진
+   */
+  forwardStep(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Lead leg steps forward
+      kf.rotate(BoneName.HIP_R, 0.35, 0.1, 0);
+      kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
+      kf.rotate(BoneName.FOOT_R, 0.1, 0, 0);
+
+      // Rear leg pushes
+      kf.rotate(BoneName.HIP_L, -0.1, 0, 0);
+      kf.rotate(BoneName.KNEE_L, -0.15, 0, 0);
+
+      // Body moves forward
+      kf.rotate(BoneName.SPINE_UPPER, 0.05, 0, 0);
+      kf.position(BoneName.PELVIS, 0, 0, 0.15);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Backward step - Retreating stance (후진)
+   * Weight transfers backward with rear foot
+   * @korean 후진
+   */
+  backwardStep(timeOffset: number = 0.12, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Lead leg pulls back
+      kf.rotate(BoneName.HIP_R, -0.1, 0, 0);
+      kf.rotate(BoneName.KNEE_R, -0.25, 0, 0);
+
+      // Rear leg steps back
+      kf.rotate(BoneName.HIP_L, 0.25, 0.1, 0);
+      kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
+      kf.rotate(BoneName.FOOT_L, 0.1, 0, 0);
+
+      // Body moves backward
+      kf.rotate(BoneName.SPINE_UPPER, -0.05, 0, 0);
+      kf.position(BoneName.PELVIS, 0, 0, -0.15);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Side step left - Lateral evasion (좌측이동)
+   * Quick lateral movement to the left
+   * @korean 좌측이동
+   */
+  sideStepLeft(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Left leg reaches
+      kf.rotate(BoneName.HIP_L, 0.1, 0, -0.3);
+      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
+
+      // Right leg follows
+      kf.rotate(BoneName.HIP_R, 0.05, 0, -0.15);
+      kf.rotate(BoneName.KNEE_R, -0.25, 0, 0);
+
+      // Body shifts left
+      kf.rotate(BoneName.PELVIS, 0, -0.1, 0);
+      kf.position(BoneName.PELVIS, -0.2, 0, 0);
+    });
+    this.currentTime += timeOffset;
+    return this;
+  }
+
+  /**
+   * Side step right - Lateral evasion (우측이동)
+   * Quick lateral movement to the right
+   * @korean 우측이동
+   */
+  sideStepRight(timeOffset: number = 0.1, easing: string = "ease-out"): this {
+    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
+      // Right leg reaches
+      kf.rotate(BoneName.HIP_R, 0.1, 0, 0.3);
+      kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
+
+      // Left leg follows
+      kf.rotate(BoneName.HIP_L, 0.05, 0, 0.15);
+      kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
+
+      // Body shifts right
+      kf.rotate(BoneName.PELVIS, 0, 0.1, 0);
+      kf.position(BoneName.PELVIS, 0.2, 0, 0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -1945,43 +3147,6 @@ export class MartialArtsAnimationBuilder {
     return this;
   }
 
-  /**
-   * Throw lift (던지기리프트)
-   * @korean 던지기리프트
-   */
-  throwLift(timeOffset: number = 0.15, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_L, 0.7, 0.6, -0.4);
-      kf.rotate(BoneName.ELBOW_L, 0, 0, -0.9);
-      kf.rotate(BoneName.SHOULDER_R, 0.7, -0.6, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 0.9);
-      kf.rotate(BoneName.PELVIS, 0.8, 1.2, 0);
-      kf.rotate(BoneName.SPINE_UPPER, 0.5, 0.8, 0);
-      kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
-      kf.position(BoneName.PELVIS, 0, 0.05, 0.15);
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
-  /**
-   * Shoulder strike (어깨치기)
-   * @korean 어깨치기
-   */
-  shoulderStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
-    this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.3, 0.8, 0.4);
-      kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.6, 0.2);
-      kf.rotate(BoneName.PELVIS, 0, 0.5, 0);
-      kf.position(BoneName.SHOULDER_R, 0, 0, 0.15);
-      // Clenched fist for power transfer
-      this.applyHandPose(kf, HAND_POSES.FIST, "right");
-    });
-    this.currentTime += timeOffset;
-    return this;
-  }
-
   // ═══════════════════════════════════════════════════════════════════════
   // GUARD POSITIONS (방어 자세)
   // ═══════════════════════════════════════════════════════════════════════
@@ -2026,7 +3191,7 @@ export class MartialArtsAnimationBuilder {
    */
   private applyKoreanGuard(
     guardType: GuardPositionType,
-    side: "left" | "right" | "both" = "both"
+    side: "left" | "right" | "both" = "both",
   ): this {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
@@ -2193,22 +3358,9 @@ export class MartialArtsAnimationBuilder {
   private applyHandPose(
     kf: KeyframeConfig,
     pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
-    hand: "left" | "right" | "both"
+    hand: "left" | "right" | "both",
   ): void {
     applyHandPoseToConfig(kf, pose, hand);
-  }
-
-  /**
-   * Apply fist pose to hands - Closed fist for punches (주먹)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 주먹쥐기
-   */
-  withFist(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.FIST, hand);
-    }
-    return this;
   }
 
   /**
@@ -2233,32 +3385,6 @@ export class MartialArtsAnimationBuilder {
     const lastKf = this.keyframes[this.keyframes.length - 1];
     if (lastKf) {
       this.applyHandPoseToKeyframe(lastKf, HAND_POSES.SPEAR_HAND, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply knife hand pose - Ridge hand strikes (수도)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 수도펴기
-   */
-  withKnifeHand(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.KNIFE_HAND, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply hammer fist pose - Bottom fist strikes (철퇴)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 철퇴주먹
-   */
-  withHammerFist(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.HAMMER_FIST, hand);
     }
     return this;
   }
@@ -2290,39 +3416,13 @@ export class MartialArtsAnimationBuilder {
   }
 
   /**
-   * Apply two finger pose - Eye strikes (이지권)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 이지권
-   */
-  withTwoFinger(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.TWO_FINGER, hand);
-    }
-    return this;
-  }
-
-  /**
-   * Apply relaxed pose - Natural/idle hands (자연)
-   * @param hand Which hand(s) to apply the pose to
-   * @korean 자연손
-   */
-  withRelaxedHands(hand: "left" | "right" | "both" = "both"): this {
-    const lastKf = this.keyframes[this.keyframes.length - 1];
-    if (lastKf) {
-      this.applyHandPoseToKeyframe(lastKf, HAND_POSES.RELAXED, hand);
-    }
-    return this;
-  }
-
-  /**
    * Helper to apply finger rotations from a hand pose to an existing keyframe
    * @internal
    */
   private applyHandPoseToKeyframe(
     kf: AnimationKeyframe,
     pose: (typeof HAND_POSES)[keyof typeof HAND_POSES],
-    hand: "left" | "right" | "both"
+    hand: "left" | "right" | "both",
   ): void {
     applyHandPoseToKeyframe(kf, pose, hand);
   }
@@ -2336,7 +3436,7 @@ export class MartialArtsAnimationBuilder {
   applyHandPoseDuring(
     kf: KeyframeConfig,
     pose: keyof typeof HAND_POSES,
-    hand: "left" | "right" | "both" = "both"
+    hand: "left" | "right" | "both" = "both",
   ): void {
     this.applyHandPose(kf, HAND_POSES[pose], hand);
   }
@@ -2369,7 +3469,7 @@ export class MartialArtsAnimationBuilder {
       // Calculate symmetric foot positions using shared helper
       const totalWidth = calculateStanceWidth(
         stanceWidthMultiplier,
-        shoulderWidth
+        shoulderWidth,
       );
       const halfWidth = totalWidth / 2;
 
@@ -2401,11 +3501,11 @@ export class MartialArtsAnimationBuilder {
   applyFootPositionsDuring(
     kf: KeyframeConfig,
     stanceWidthMultiplier: number,
-    shoulderWidth: number
+    shoulderWidth: number,
   ): void {
     const totalWidth = calculateStanceWidth(
       stanceWidthMultiplier,
-      shoulderWidth
+      shoulderWidth,
     );
     const halfWidth = totalWidth / 2;
 
@@ -2510,7 +3610,7 @@ export class MartialArtsAnimationBuilder {
   private applyPunchTorsoRotation(
     kf: KeyframeConfig,
     side: "left" | "right",
-    rotationDegrees: number
+    rotationDegrees: number,
   ): void {
     const isRight = side === "right";
     // Punch rotates torso OPPOSITE to punch direction for power
@@ -2528,19 +3628,19 @@ export class MartialArtsAnimationBuilder {
       BoneName.SPINE_LOWER,
       existingLower?.x ?? 0,
       (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
-      existingLower?.z ?? 0
+      existingLower?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
       existingMiddle?.x ?? 0,
       (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
-      existingMiddle?.z ?? 0
+      existingMiddle?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
       existingUpper?.x ?? 0,
       (existingUpper?.y ?? 0) + rotationRad * direction,
-      existingUpper?.z ?? 0
+      existingUpper?.z ?? 0,
     );
   }
 
@@ -2574,7 +3674,7 @@ export class MartialArtsAnimationBuilder {
   private applyHookTorsoRotation(
     kf: KeyframeConfig,
     side: "left" | "right",
-    rotationDegrees: number
+    rotationDegrees: number,
   ): void {
     const isRight = side === "right";
     // Hook rotates torso INTO the punch for circular power
@@ -2591,19 +3691,19 @@ export class MartialArtsAnimationBuilder {
       BoneName.SPINE_LOWER,
       existingLower?.x ?? 0,
       (existingLower?.y ?? 0) + rotationRad * direction * 0.5,
-      existingLower?.z ?? 0
+      existingLower?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_MIDDLE,
       existingMiddle?.x ?? 0,
       (existingMiddle?.y ?? 0) + rotationRad * direction * 0.7,
-      existingMiddle?.z ?? 0
+      existingMiddle?.z ?? 0,
     );
     kf.rotate(
       BoneName.SPINE_UPPER,
       existingUpper?.x ?? 0,
       (existingUpper?.y ?? 0) + rotationRad * direction,
-      existingUpper?.z ?? 0
+      existingUpper?.z ?? 0,
     );
   }
 
@@ -2639,7 +3739,7 @@ export class MartialArtsAnimationBuilder {
   private applyKickTorsoLean(
     kf: KeyframeConfig,
     side: "left" | "right",
-    leanDegrees: number
+    leanDegrees: number,
   ): void {
     const isRight = side === "right";
     // Lean AWAY from kicking leg (left kick = lean right, right kick = lean left)
@@ -2681,7 +3781,7 @@ export class MartialArtsAnimationBuilder {
   private addKeyframe(
     time: number,
     easing: string,
-    configure: (kf: KeyframeConfig) => void
+    configure: (kf: KeyframeConfig) => void,
   ): void {
     const kf = new KeyframeConfig();
     configure(kf);

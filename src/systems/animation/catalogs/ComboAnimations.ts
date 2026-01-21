@@ -304,7 +304,7 @@ export const COMBO_KNEE_ELBOW_KNEE_ANIMATION: SkeletalAnimation =
 export const COMBO_TAEKWONDO_TRIPLE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
     "combo_taekwondo_triple",
-    "태권도삼중발차기"
+    "태권도삼중발차기",
   )
     .asAttack(0.7)
     .chamber(0.08)
@@ -316,42 +316,44 @@ export const COMBO_TAEKWONDO_TRIPLE_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Karate Ippon Combo - 가라데일본콤보
+ * Taekkyeon Poom Balki - 택견품밟기
  *
- * Traditional karate single-point combo.
- * Precise strike combination.
+ * Traditional Taekkyeon footwork-based combo.
+ * Rhythmic stepping (품밟기) into fluid kick sequence.
+ * Korea's oldest martial art (UNESCO Intangible Cultural Heritage).
  *
- * @korean 가라데일본콤보애니메이션
+ * @korean 택견품밟기콤보애니메이션
  */
-export const COMBO_KARATE_IPPON_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_karate_ippon", "가라데일본콤보")
-    .asAttack(0.5)
-    .punchWindup(0.08)
-    .punchExtend(0.1) // Gyaku-zuki (reverse punch)
+export const COMBO_TAEKKYEON_POOM_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_taekkyeon_poom", "택견품밟기")
+    .asAttack(0.6)
+    .sideStepLeft(0.1) // 품밟기 - rhythmic stepping
+    .lowKickSweep(0.12) // 낮은걸이 - low leg sweep
     .chamber(0.1)
-    .extend(0.12) // Mae-geri (front kick)
-    .recover(0.1)
+    .extend(0.12) // 차올리기 - rising kick
+    .palmStrike(0.08) // 손치기 - palm technique
+    .recover(0.08)
     .build();
 
 /**
- * Wing Chun Chain - 영춘권연쇄
+ * Subak Yeonhwan - 수박연환
  *
- * Wing Chun chain punches.
- * Rapid straight punches.
+ * Subak continuous palm strikes.
+ * Ancient Korean striking art predating Taekwondo.
+ * Emphasis on open-hand techniques and circular motion.
  *
- * @korean 영춘권연쇄애니메이션
+ * @korean 수박연환콤보애니메이션
  */
-export const COMBO_WING_CHUN_CHAIN_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_wing_chun_chain", "영춘권연쇄")
-    .asAttack(0.5)
-    .punchExtend(0.05) // Punch 1
-    .punchExtend(0.05) // Punch 2
-    .punchExtend(0.05) // Punch 3
-    .punchExtend(0.05) // Punch 4
-    .punchExtend(0.05) // Punch 5
-    .punchExtend(0.05) // Punch 6
-    .palmStrike(0.1) // Palm finish
-    .recover(0.1)
+export const COMBO_SUBAK_CHAIN_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_subak_chain", "수박연환")
+    .asAttack(0.55)
+    .palmStrike(0.08) // 수박치기 1
+    .palmStrike(0.08) // 수박치기 2
+    .parry(0.06) // 막기 - deflect
+    .palmStrike(0.08) // 수박치기 3
+    .punchExtend(0.08) // 지르기 - thrust
+    .elbowStrike(0.08) // 팔꿈치 - elbow
+    .recover(0.09)
     .build();
 
 /**
@@ -373,118 +375,324 @@ export const COMBO_HAPKIDO_FLOW_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Judo Counter - 유도반격
+ * Yudo Bangyeok - 유도반격 (Korean Judo Counter)
  *
- * Judo counter throw.
- * Defense into offense.
+ * Korean Judo (Yudo) counter throw technique.
+ * Defense into immediate offense with hip throw.
+ * Yudo has been practiced in Korea since 1909.
  *
- * @korean 유도반격애니메이션
+ * @korean 유도반격콤보애니메이션
  */
-export const COMBO_JUDO_COUNTER_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_judo_counter", "유도반격")
+export const COMBO_YUDO_COUNTER_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_yudo_counter", "유도반격")
     .asAttack(0.7)
-    .parry(0.1) // Block/deflect
-    .clinchGrab(0.12) // Grip
-    .throwEntry(0.15) // Entry
-    .throwLift(0.15) // Throw
+    .parry(0.1) // 막기 - deflect attack
+    .clinchGrab(0.1) // 잡기 - grip
+    .hipThrow(0.18) // 허리치기 - hip throw
+    .slamDown(0.14) // 던지기 - takedown
     .recover(0.18)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MMA COMBOS (종합격투기 콤보)
+// KOREAN GRAPPLING COMBOS (한국 유술 콤보)
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Ground and Pound - 그라운드앤파운드
+ * Ssireum Mechi - 씨름메치기
  *
- * Takedown to ground strikes.
- * MMA finish combo.
+ * Traditional Korean wrestling takedown combo.
+ * Ssireum (Korean wrestling) techniques with satba grip.
+ * Korea's traditional folk wrestling sport.
  *
- * @korean 그라운드앤파운드애니메이션
+ * @korean 씨름메치기콤보애니메이션
  */
-export const COMBO_GROUND_AND_POUND_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create(
-    "combo_ground_and_pound",
-    "그라운드앤파운드"
-  )
+export const COMBO_SSIREUM_MECHI_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_ssireum_mechi", "씨름메치기")
     .asAttack(0.8)
-    .throwEntry(0.15) // Shoot
-    .slamDown(0.2) // Takedown
-    .overhandPunch(0.15) // Ground strike 1
-    .punchExtend(0.1) // Ground strike 2
+    .clinchGrab(0.12) // 샅바잡기 - satba grip
+    .throwEntry(0.15) // 들어올리기 - lift entry
+    .slamDown(0.2) // 메치기 - throw down
+    .groundMount(0.15) // 누르기 - pin
+    .recover(0.18)
+    .build();
+
+/**
+ * Teukgong Counter - 특공반격
+ *
+ * Korean Special Forces combatives counter.
+ * Military-based defensive to offensive transition.
+ * Teukgong Moosool (특공무술) techniques.
+ *
+ * @korean 특공반격콤보애니메이션
+ */
+export const COMBO_TEUKGONG_COUNTER_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_teukgong_counter", "특공반격")
+    .asAttack(0.6)
+    .counterParry(0.1) // 막아치기 - parry-strike
+    .throatStrike(0.08) // 목치기 - throat strike
+    .kneeStrike(0.12) // 무릎차기 - knee strike
+    .sweep(0.12) // 걸기 - sweep
+    .recover(0.18)
+    .build();
+
+/**
+ * Gungdo Geupso - 궁도급소 (Clinch Vital Points)
+ *
+ * Close-range vital point combo from clinch.
+ * Short-range strikes targeting pressure points.
+ * Based on Korean traditional medicine meridians.
+ *
+ * @korean 궁도급소콤보애니메이션
+ */
+export const COMBO_CLINCH_GEUPSO_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_clinch_geupso", "궁도급소")
+    .asAttack(0.55)
+    .withClinch()
+    .clinchGrab(0.1)
+    .nerveStrike(0.08) // 경락치기 - meridian strike
+    .elbowStrike(0.1) // 팔꿈치 - elbow
+    .kneeStrike(0.1) // 무릎치기 - knee
+    .recover(0.17)
+    .build();
+
+/**
+ * Hwarang Bicheon - 화랑비천 (Hwarang Flying Attack)
+ *
+ * Hwarang warrior flying attack sequence.
+ * Spectacular aerial techniques from ancient Korean warriors.
+ * Based on Hwarangdo (화랑도) combat arts.
+ *
+ * @korean 화랑비천콤보애니메이션
+ */
+export const COMBO_HWARANG_BICHEON_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_hwarang_bicheon", "화랑비천")
+    .asAttack(0.7)
+    .jump(0.1)
+    .flyingKnee(0.15) // 비천슬 - flying knee
+    .spin(0.1)
+    .axeKick(0.15) // 내려차기 - descending kick
+    .palmStrike(0.1) // 장풍 - palm strike
+    .recover(0.1)
+    .build();
+
+/**
+ * Taekkyeon Hwalgae - 택견활개
+ *
+ * Taekkyeon arm sweeping technique sequence.
+ * Circular arm movements (활개짓) with finishing kick.
+ * Flowing defensive-offensive transition.
+ *
+ * @korean 택견활개콤보애니메이션
+ */
+export const COMBO_TAEKKYEON_HWALGAE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_taekkyeon_hwalgae", "택견활개")
+    .asAttack(0.7)
+    .parry(0.1) // 활개 - sweeping deflect
+    .palmStrike(0.1) // 손치기 - palm strike
+    .wristGrab(0.1) // 잡아채기 - grab and pull
+    .roundhouse(0.15) // 돌려차기 - roundhouse
+    .recover(0.25)
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KUK SOOL WON COMBOS (국술원 콤보)
+// Traditional Korean martial arts system integrating all fighting arts
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Kuk Sool Su Ki - 국술수기 (Hand Strikes)
+ *
+ * Kuk Sool Won hand striking combination.
+ * Palm strikes, knife hands, and blocking sequence.
+ * Traditional Korean striking techniques (수기).
+ *
+ * @korean 국술수기콤보애니메이션
+ */
+export const COMBO_KUKSOOL_SUKI_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_suki", "국술수기")
+    .asAttack(0.6)
+    .blockMiddle(0.08) // 막기 - middle block
+    .palmStrike(0.1) // 장권 - palm strike
+    .blockKnifeHand(0.08) // 수도막기 - knife hand block
+    .nerveStrike(0.1) // 혈도 - pressure point
+    .elbowStrike(0.1) // 팔꿈치치기 - elbow strike
+    .recover(0.14)
+    .build();
+
+/**
+ * Kuk Sool Jok Sul - 국술족술 (Kicks and Sweeps)
+ *
+ * Kuk Sool Won kicking and leg sweep combination.
+ * Front kick, crescent kick, and leg sweep sequence.
+ * Dynamic lower body techniques (족술).
+ *
+ * @korean 국술족술콤보애니메이션
+ */
+export const COMBO_KUKSOOL_JOKSUL_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_joksul", "국술족술")
+    .asAttack(0.7)
+    .chamber(0.08) // 준비 - chamber
+    .extend(0.1) // 앞차기 - front kick
+    .hookKickExtend(0.12) // 후려차기 - crescent kick
+    .lowKickSweep(0.15) // 걸이 - leg sweep
+    .axeKick(0.12) // 내려차기 - axe kick
+    .recover(0.13)
+    .build();
+
+/**
+ * Kuk Sool Too Ki - 국술투기 (Throws and Grappling)
+ *
+ * Kuk Sool Won throwing and grappling combination.
+ * Entry to hip throw with ground control.
+ * Traditional Korean throwing techniques (투기).
+ *
+ * @korean 국술투기콤보애니메이션
+ */
+export const COMBO_KUKSOOL_TOOKI_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_tooki", "국술투기")
+    .asAttack(0.75)
+    .clinchGrab(0.1) // 잡기 - grip
+    .throwEntry(0.12) // 들어가기 - entry
+    .hipThrow(0.18) // 허리치기 - hip throw
+    .groundMount(0.15) // 누르기 - pin
     .recover(0.2)
     .build();
 
 /**
- * Sprawl and Brawl - 스프롤앤브롤
+ * Kuk Sool Kwan Jyel Sul - 국술관절술 (Joint Locks)
  *
- * Sprawl defense into counter.
- * Anti-wrestling combo.
+ * Kuk Sool Won joint manipulation sequence.
+ * Wrist lock to arm bar transition.
+ * 3,608 joint locking techniques (관절술).
  *
- * @korean 스프롤앤브롤애니메이션
+ * @korean 국술관절술콤보애니메이션
  */
-export const COMBO_SPRAWL_BRAWL_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_sprawl_brawl", "스프롤앤브롤")
-    .asAttack(0.6)
-    .counterParry(0.12) // Sprawl defense
-    .uppercutPunch(0.12) // Rising counter
-    .kneeStrike(0.12) // Knee finish
-    .recover(0.24)
+export const COMBO_KUKSOOL_KWANJYEL_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_kwanjyel", "국술관절술")
+    .asAttack(0.7)
+    .parry(0.08) // 막기 - deflect
+    .wristGrab(0.1) // 손목잡기 - wrist grab
+    .wristTwist(0.12) // 손목꺾기 - wrist twist
+    .elbowLockApply(0.15) // 팔꿈치꺾기 - elbow lock
+    .jointLock(0.12) // 관절꺾기 - joint lock
+    .recover(0.13)
     .build();
 
 /**
- * Dirty Boxing - 더티복싱
+ * Kuk Sool Nak Bup - 국술낙법 (Break-falls and Acrobatics)
  *
- * Clinch fighting combo.
- * Short-range strikes from clinch.
+ * Kuk Sool Won acrobatic counter sequence.
+ * Roll recovery into counter-attack.
+ * Safe falling techniques (낙법).
  *
- * @korean 더티복싱애니메이션
+ * @korean 국술낙법콤보애니메이션
  */
-export const COMBO_DIRTY_BOXING_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_dirty_boxing", "더티복싱")
-    .asAttack(0.55)
-    .withClinch()
-    .clinchGrab(0.1)
-    .elbowStrike(0.1) // Short elbow
-    .uppercutPunch(0.1) // Clinch uppercut
-    .hookPunch(0.1) // Hook inside
-    .recover(0.15)
-    .build();
-
-/**
- * Cage Combo - 케이지콤보
- *
- * Wall fighting combination.
- * Cage-utilizing attacks.
- *
- * @korean 케이지콤보애니메이션
- */
-export const COMBO_CAGE_COMBO_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_cage_combo", "케이지콤보")
+export const COMBO_KUKSOOL_NAKBUP_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_nakbup", "국술낙법")
     .asAttack(0.65)
-    .clinchGrab(0.1) // Cage position
-    .kneeStrike(0.12) // Body knee
-    .elbowStrike(0.1) // Elbow
-    .shoulderStrike(0.1) // Shoulder
+    .duck(0.1) // 피하기 - evade
+    .sweep(0.12) // 걸기 - sweep from ground
+    .chamber(0.1) // 준비 - recovery chamber
+    .extend(0.12) // 발차기 - rising kick
+    .recover(0.21)
+    .build();
+
+/**
+ * Kuk Sool Ho Shin Sul - 국술호신술 (Self-Defense)
+ *
+ * Kuk Sool Won self-defense combination.
+ * Defensive parry into vital point strikes.
+ * Practical self-defense techniques (호신술).
+ *
+ * @korean 국술호신술콤보애니메이션
+ */
+export const COMBO_KUKSOOL_HOSHIN_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_hoshin", "국술호신술")
+    .asAttack(0.55)
+    .counterParry(0.08) // 받아치기 - parry counter
+    .throatStrike(0.08) // 인후타격 - throat strike
+    .groinStrike(0.1) // 낭심타격 - groin strike
+    .kneeStrike(0.1) // 무릎치기 - knee
+    .recover(0.19)
+    .build();
+
+/**
+ * Kuk Sool Beom Hyung - 국술범형 (Tiger Style)
+ *
+ * Kuk Sool Won tiger animal style combo.
+ * Powerful clawing and pouncing attacks.
+ * One of the traditional animal forms (동물형).
+ *
+ * @korean 국술범형콤보애니메이션
+ */
+export const COMBO_KUKSOOL_TIGER_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_tiger", "국술범형")
+    .asAttack(0.65)
+    .punchWindup(0.1) // 준비 - ready
+    .palmStrike(0.1) // 호조 - tiger claw 1
+    .palmStrike(0.1) // 호조 - tiger claw 2
+    .jump(0.1) // 도약 - leap
+    .slamDown(0.12) // 덮치기 - pounce
+    .recover(0.13)
+    .build();
+
+/**
+ * Kuk Sool Hak Hyung - 국술학형 (Crane Style)
+ *
+ * Kuk Sool Won crane animal style combo.
+ * Graceful evasion with precision beak strikes.
+ * Crane form emphasizing balance and accuracy (학형).
+ *
+ * @korean 국술학형콤보애니메이션
+ */
+export const COMBO_KUKSOOL_CRANE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_crane", "국술학형")
+    .asAttack(0.6)
+    .weave(0.1) // 피하기 - graceful evasion
+    .nerveStrike(0.08) // 학부리 - crane beak strike 1
+    .sideStepRight(0.08) // 옆걸음 - side step
+    .nerveStrike(0.08) // 학부리 - crane beak strike 2
+    .chamber(0.1) // 준비 - chamber
+    .sideKickExtend(0.1) // 옆차기 - side kick
+    .recover(0.06)
+    .build();
+
+/**
+ * Kuk Sool Yong Hyung - 국술용형 (Dragon Style)
+ *
+ * Kuk Sool Won dragon animal style combo.
+ * Coiling movements with spiraling attacks.
+ * Dragon form emphasizing fluidity and power (용형).
+ *
+ * @korean 국술용형콤보애니메이션
+ */
+export const COMBO_KUKSOOL_DRAGON_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_dragon", "국술용형")
+    .asAttack(0.7)
+    .spin(0.12) // 회전 - coiling spin
+    .palmStrike(0.1) // 용조 - dragon palm
+    .wristGrab(0.1) // 잡아치기 - grab strike
+    .throwExecute(0.15) // 용휘 - dragon whip throw
     .recover(0.23)
     .build();
 
 /**
- * Flying Attack Combo - 플라잉어택
+ * Kuk Sool Sa Hyung - 국술사형 (Snake Style)
  *
- * Jumping attack sequence.
- * Spectacular finish.
+ * Kuk Sool Won snake animal style combo.
+ * Quick precise strikes to vital points.
+ * Snake form emphasizing speed and precision (사형).
  *
- * @korean 플라잉어택애니메이션
+ * @korean 국술사형콤보애니메이션
  */
-export const COMBO_FLYING_ATTACK_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_flying_attack", "플라잉어택")
-    .asAttack(0.7)
-    .jump(0.12)
-    .kneeStrike(0.15) // Flying knee
-    .punchExtend(0.12) // Punch follow-up
-    .axeKick(0.15) // Axe kick finish
-    .recover(0.16)
+export const COMBO_KUKSOOL_SNAKE_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("combo_kuksool_snake", "국술사형")
+    .asAttack(0.5)
+    .nerveStrike(0.06) // 사두 - snake head strike
+    .jugularStrike(0.08) // 경정맥타격 - jugular strike
+    .fingerLockTwist(0.1) // 손가락꺾기 - finger manipulation
+    .throatStrike(0.08) // 인후타격 - throat strike
+    .recover(0.18)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -537,7 +745,7 @@ export const COMBO_SPINNING_DESTRUCTION_ANIMATION: SkeletalAnimation =
 export const COMBO_QUESTION_MARK_FINISH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
     "combo_question_mark_finish",
-    "물음표마무리"
+    "물음표마무리",
   )
     .asAttack(0.65)
     .lowKickChamber(0.1) // Fake low
@@ -556,43 +764,55 @@ export const COMBO_QUESTION_MARK_FINISH_ANIMATION: SkeletalAnimation =
  */
 export const COMBO_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map(
   [
-    // Boxing
+    // Boxing (복싱)
     ["combo_one_two", COMBO_ONE_TWO_ANIMATION],
     ["combo_one_two_hook", COMBO_ONE_TWO_HOOK_ANIMATION],
     ["combo_double_jab_cross", COMBO_DOUBLE_JAB_CROSS_ANIMATION],
     ["combo_body_head", COMBO_BODY_HEAD_ANIMATION],
     ["combo_hook_uppercut", COMBO_HOOK_UPPERCUT_ANIMATION],
 
-    // Kickboxing
+    // Kickboxing (킥복싱)
     ["combo_one_two_kick", COMBO_ONE_TWO_KICK_ANIMATION],
     ["combo_kick_punch_kick", COMBO_KICK_PUNCH_KICK_ANIMATION],
     ["combo_low_high_kick", COMBO_LOW_HIGH_KICK_ANIMATION],
     ["combo_switch_kick", COMBO_SWITCH_KICK_ANIMATION],
     ["combo_jab_low_kick", COMBO_JAB_LOW_KICK_ANIMATION],
 
-    // Knee/Elbow
+    // Knee/Elbow (무릎/팔꿈치)
     ["combo_clinch_knee_elbow", COMBO_CLINCH_KNEE_ELBOW_ANIMATION],
     ["combo_double_knee", COMBO_DOUBLE_KNEE_ANIMATION],
     ["combo_elbow_chain", COMBO_ELBOW_CHAIN_ANIMATION],
     ["combo_knee_elbow_knee", COMBO_KNEE_ELBOW_KNEE_ANIMATION],
 
-    // Traditional
+    // Korean Traditional Martial Arts (한국전통무술)
     ["combo_taekwondo_triple", COMBO_TAEKWONDO_TRIPLE_ANIMATION],
-    ["combo_karate_ippon", COMBO_KARATE_IPPON_ANIMATION],
-    ["combo_wing_chun_chain", COMBO_WING_CHUN_CHAIN_ANIMATION],
+    ["combo_taekkyeon_poom", COMBO_TAEKKYEON_POOM_ANIMATION],
+    ["combo_taekkyeon_hwalgae", COMBO_TAEKKYEON_HWALGAE_ANIMATION],
+    ["combo_subak_chain", COMBO_SUBAK_CHAIN_ANIMATION],
     ["combo_hapkido_flow", COMBO_HAPKIDO_FLOW_ANIMATION],
-    ["combo_judo_counter", COMBO_JUDO_COUNTER_ANIMATION],
+    ["combo_yudo_counter", COMBO_YUDO_COUNTER_ANIMATION],
 
-    // MMA
-    ["combo_ground_and_pound", COMBO_GROUND_AND_POUND_ANIMATION],
-    ["combo_sprawl_brawl", COMBO_SPRAWL_BRAWL_ANIMATION],
-    ["combo_dirty_boxing", COMBO_DIRTY_BOXING_ANIMATION],
-    ["combo_cage_combo", COMBO_CAGE_COMBO_ANIMATION],
-    ["combo_flying_attack", COMBO_FLYING_ATTACK_ANIMATION],
+    // Korean Grappling/Military (한국유술/군사무술)
+    ["combo_ssireum_mechi", COMBO_SSIREUM_MECHI_ANIMATION],
+    ["combo_teukgong_counter", COMBO_TEUKGONG_COUNTER_ANIMATION],
+    ["combo_clinch_geupso", COMBO_CLINCH_GEUPSO_ANIMATION],
+    ["combo_hwarang_bicheon", COMBO_HWARANG_BICHEON_ANIMATION],
 
-    // Finishers
+    // Kuk Sool Won (국술원)
+    ["combo_kuksool_suki", COMBO_KUKSOOL_SUKI_ANIMATION],
+    ["combo_kuksool_joksul", COMBO_KUKSOOL_JOKSUL_ANIMATION],
+    ["combo_kuksool_tooki", COMBO_KUKSOOL_TOOKI_ANIMATION],
+    ["combo_kuksool_kwanjyel", COMBO_KUKSOOL_KWANJYEL_ANIMATION],
+    ["combo_kuksool_nakbup", COMBO_KUKSOOL_NAKBUP_ANIMATION],
+    ["combo_kuksool_hoshin", COMBO_KUKSOOL_HOSHIN_ANIMATION],
+    ["combo_kuksool_tiger", COMBO_KUKSOOL_TIGER_ANIMATION],
+    ["combo_kuksool_crane", COMBO_KUKSOOL_CRANE_ANIMATION],
+    ["combo_kuksool_dragon", COMBO_KUKSOOL_DRAGON_ANIMATION],
+    ["combo_kuksool_snake", COMBO_KUKSOOL_SNAKE_ANIMATION],
+
+    // Finishers (마무리)
     ["combo_knockout", COMBO_KNOCKOUT_ANIMATION],
     ["combo_spinning_destruction", COMBO_SPINNING_DESTRUCTION_ANIMATION],
     ["combo_question_mark_finish", COMBO_QUESTION_MARK_FINISH_ANIMATION],
-  ]
+  ],
 );

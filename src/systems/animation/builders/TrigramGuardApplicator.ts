@@ -128,7 +128,7 @@ const DEFAULT_OPTIONS: Required<TrigramGuardOptions> = {
 export function applyTrigramGuardToConfig(
   config: KeyframeConfig,
   stance: TrigramStance,
-  options: TrigramGuardOptions = {}
+  options: TrigramGuardOptions = {},
 ): void {
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -140,7 +140,7 @@ export function applyTrigramGuardToConfig(
 
   if (!guardPose) {
     console.warn(
-      `[TrigramGuardApplicator] No guard pose found for stance: ${stance}`
+      `[TrigramGuardApplicator] No guard pose found for stance: ${stance}`,
     );
     return;
   }
@@ -163,7 +163,7 @@ export function applyTrigramGuardToConfig(
       BoneName.SPINE_UPPER,
       guardPose.torso.x * blend,
       guardPose.torso.y * blend,
-      guardPose.torso.z * blend
+      guardPose.torso.z * blend,
     );
   }
 
@@ -173,7 +173,7 @@ export function applyTrigramGuardToConfig(
       BoneName.PELVIS,
       guardPose.pelvis.x * blend,
       guardPose.pelvis.y * blend,
-      guardPose.pelvis.z * blend
+      guardPose.pelvis.z * blend,
     );
   }
 }
@@ -184,26 +184,26 @@ export function applyTrigramGuardToConfig(
 function applyArmsToConfig(
   config: KeyframeConfig,
   guardPose: StanceGuardPose,
-  blend: number
+  blend: number,
 ): void {
   // Left arm
   config.rotate(
     BoneName.SHOULDER_L,
     guardPose.leftArm.shoulder.x * blend,
     guardPose.leftArm.shoulder.y * blend,
-    guardPose.leftArm.shoulder.z * blend
+    guardPose.leftArm.shoulder.z * blend,
   );
   config.rotate(
     BoneName.ELBOW_L,
     guardPose.leftArm.elbow.x * blend,
     guardPose.leftArm.elbow.y * blend,
-    guardPose.leftArm.elbow.z * blend
+    guardPose.leftArm.elbow.z * blend,
   );
   config.rotate(
     BoneName.WRIST_L,
     guardPose.leftArm.wrist.x * blend,
     guardPose.leftArm.wrist.y * blend,
-    guardPose.leftArm.wrist.z * blend
+    guardPose.leftArm.wrist.z * blend,
   );
 
   // Right arm
@@ -211,19 +211,19 @@ function applyArmsToConfig(
     BoneName.SHOULDER_R,
     guardPose.rightArm.shoulder.x * blend,
     guardPose.rightArm.shoulder.y * blend,
-    guardPose.rightArm.shoulder.z * blend
+    guardPose.rightArm.shoulder.z * blend,
   );
   config.rotate(
     BoneName.ELBOW_R,
     guardPose.rightArm.elbow.x * blend,
     guardPose.rightArm.elbow.y * blend,
-    guardPose.rightArm.elbow.z * blend
+    guardPose.rightArm.elbow.z * blend,
   );
   config.rotate(
     BoneName.WRIST_R,
     guardPose.rightArm.wrist.x * blend,
     guardPose.rightArm.wrist.y * blend,
-    guardPose.rightArm.wrist.z * blend
+    guardPose.rightArm.wrist.z * blend,
   );
 }
 
@@ -233,26 +233,26 @@ function applyArmsToConfig(
 function applyLegsToConfig(
   config: KeyframeConfig,
   guardPose: StanceGuardPose,
-  blend: number
+  blend: number,
 ): void {
   // Left leg
   config.rotate(
     BoneName.HIP_L,
     guardPose.leftLeg.hip.x * blend,
     guardPose.leftLeg.hip.y * blend,
-    guardPose.leftLeg.hip.z * blend
+    guardPose.leftLeg.hip.z * blend,
   );
   config.rotate(
     BoneName.KNEE_L,
     guardPose.leftLeg.knee.x * blend,
     guardPose.leftLeg.knee.y * blend,
-    guardPose.leftLeg.knee.z * blend
+    guardPose.leftLeg.knee.z * blend,
   );
   config.rotate(
     BoneName.FOOT_L,
     guardPose.leftLeg.ankle.x * blend,
     guardPose.leftLeg.ankle.y * blend,
-    guardPose.leftLeg.ankle.z * blend
+    guardPose.leftLeg.ankle.z * blend,
   );
 
   // Right leg
@@ -260,63 +260,25 @@ function applyLegsToConfig(
     BoneName.HIP_R,
     guardPose.rightLeg.hip.x * blend,
     guardPose.rightLeg.hip.y * blend,
-    guardPose.rightLeg.hip.z * blend
+    guardPose.rightLeg.hip.z * blend,
   );
   config.rotate(
     BoneName.KNEE_R,
     guardPose.rightLeg.knee.x * blend,
     guardPose.rightLeg.knee.y * blend,
-    guardPose.rightLeg.knee.z * blend
+    guardPose.rightLeg.knee.z * blend,
   );
   config.rotate(
     BoneName.FOOT_R,
     guardPose.rightLeg.ankle.x * blend,
     guardPose.rightLeg.ankle.y * blend,
-    guardPose.rightLeg.ankle.z * blend
+    guardPose.rightLeg.ankle.z * blend,
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// LOCOMOTION HELPERS (For Walk/Run Arm Swing)
+// GUARD ARM HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
-
-/**
- * Get arm guard pose with swing offset for locomotion
- *
- * Applies a shoulder swing offset while maintaining the trigram's
- * guard elbow and wrist positions. This creates authentic walking
- * movement that respects each trigram's guard style.
- *
- * @param stance - Trigram stance
- * @param swingOffset - Shoulder rotation offset from walking motion
- * @param side - Which arm ("left" | "right")
- * @returns Adjusted arm rotation values
- *
- * @korean 이동중팔자세가져오기
- */
-export function getLocomotionArmPose(
-  stance: TrigramStance,
-  swingOffset: number,
-  side: "left" | "right"
-): { shoulder: [number, number, number]; elbow: [number, number, number] } {
-  const guardPose = TRIGRAM_GUARD_POSES[stance];
-  if (!guardPose) {
-    // Fallback to neutral if stance not found
-    return {
-      shoulder: [swingOffset, 0, 0],
-      elbow: [-1.2, 0, 0],
-    };
-  }
-
-  const arm = side === "left" ? guardPose.leftArm : guardPose.rightArm;
-
-  // Add swing offset to the X rotation (forward/back)
-  // while preserving the guard's Y and Z rotations
-  return {
-    shoulder: [arm.shoulder.x + swingOffset, arm.shoulder.y, arm.shoulder.z],
-    elbow: [arm.elbow.x, arm.elbow.y, arm.elbow.z],
-  };
-}
 
 /**
  * Get guard arm base rotations without swing for a trigram

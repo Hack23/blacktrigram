@@ -33,11 +33,11 @@ export interface GuardIndicatorProps {
  * Get guard height label based on arm positions
  *
  * Guard heights based on shoulder.x (vertical angle in radians):
- * - High guard (고위): shoulder raised high (x < -1.0)
- *   GEON (-1.2), LI (-1.3), GAN (-1.4)
- * - Mid guard (중위): shoulder at mid level (-1.0 <= x < -0.5)
- *   TAE (-0.8), JIN (-0.9), SON (-0.9), GAM (-0.85)
- * - Low guard (저위): shoulder low (x >= -0.5)
+ * - High guard (고위): shoulder at chin level (x <= -0.8)
+ *   GEON (-1.0), LI (-1.6), GAN (-1.0)
+ * - Mid guard (중위): shoulder at chest level (-0.8 < x < -0.4)
+ *   TAE (-0.7), JIN (-0.6), SON (-0.8), GAM (-0.8)
+ * - Low guard (저위): shoulder low (x >= -0.4)
  *   GON (-0.4)
  */
 function getGuardHeight(stance: TrigramStance): {
@@ -47,9 +47,9 @@ function getGuardHeight(stance: TrigramStance): {
   const config = STANCE_GUARD_CONFIGS[stance];
   const shoulderY = config.guardPose.leftArm.shoulder.x; // x is vertical in Euler
 
-  if (shoulderY < -1.0) {
+  if (shoulderY <= -0.8) {
     return { korean: "고위", english: "High" };
-  } else if (shoulderY < -0.5) {
+  } else if (shoulderY < -0.4) {
     return { korean: "중위", english: "Mid" };
   } else {
     return { korean: "저위", english: "Low" };
@@ -132,27 +132,27 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
   // Get guard configuration
   const config = useMemo(
     () => STANCE_GUARD_CONFIGS[currentStance],
-    [currentStance]
+    [currentStance],
   );
 
   const trigramData = useMemo(
     () => TRIGRAM_DATA[currentStance],
-    [currentStance]
+    [currentStance],
   );
 
   const stanceName = useMemo(
     () => getTraditionalStanceName(currentStance),
-    [currentStance]
+    [currentStance],
   );
 
   const guardHeight = useMemo(
     () => getGuardHeight(currentStance),
-    [currentStance]
+    [currentStance],
   );
 
   const weightIcon = useMemo(
     () => getWeightIcon(config.guardPose.weight),
-    [config.guardPose.weight]
+    [config.guardPose.weight],
   );
 
   // Memoize responsive sizing
@@ -166,7 +166,7 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       bottom: isMobile ? "45px" : "60px",
       horizontal: isMobile ? "8px" : "12px",
     }),
-    [isMobile]
+    [isMobile],
   );
 
   // Container style with responsive positioning
@@ -188,7 +188,7 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       minWidth: isMobile ? "140px" : "180px",
       boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
     }),
-    [layout, isLeft, isMobile]
+    [layout, isLeft, isMobile],
   );
 
   // Don't render if not in guard state
@@ -211,11 +211,11 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
           textAlign: "center",
           textShadow: `0 0 10px ${hexToRgbaString(
             KOREAN_COLORS.ACCENT_GOLD,
-            0.6
+            0.6,
           )}`,
           borderBottom: `1px solid ${hexToRgbaString(
             KOREAN_COLORS.PRIMARY_CYAN,
-            0.4
+            0.4,
           )}`,
           paddingBottom: layout.gap,
         }}
@@ -256,7 +256,7 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
           paddingTop: layout.gap,
           borderTop: `1px solid ${hexToRgbaString(
             KOREAN_COLORS.PRIMARY_CYAN,
-            0.3
+            0.3,
           )}`,
         }}
       >
