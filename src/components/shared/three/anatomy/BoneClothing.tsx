@@ -339,7 +339,17 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     [boneName, archetype, attrs],
   );
 
-  // Create materials with cleanup
+  /**
+   * Create materials with advanced physical properties for realistic cloth rendering
+   *
+   * Enhanced with:
+   * - Subsurface scattering: Light transmission through fabric for realism
+   * - Clearcoat: Surface depth and sheen for material quality
+   * - Double-sided rendering: Proper display when cloth folds
+   * - Physical properties: IOR, reflectivity for authentic appearance
+   *
+   * @korean 향상된물리재료생성
+   */
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
       const mat = new THREE.MeshPhysicalMaterial({
@@ -348,8 +358,18 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
         metalness: attachment.metalness ?? 0.3,
         roughness: attachment.roughness ?? 0.7,
+        // Enhanced cloth realism with clearcoat for depth
         clearcoat: 0.3,
         clearcoatRoughness: 0.5,
+        // Subsurface scattering for realistic fabric translucency
+        // Subtle effect for cloth materials (not skin)
+        transmission: 0.05, // Minimal light transmission through fabric
+        thickness: 0.2, // Thin fabric thickness
+        ior: 1.4, // Index of refraction for fabric (lower than glass)
+        // Enable proper reflections
+        reflectivity: 0.3,
+        // Double-sided rendering for cloth that may fold
+        side: THREE.DoubleSide,
       });
       return mat;
     });
