@@ -61,17 +61,20 @@ export interface AnatomyOverlay3DProps {
  */
 const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
+  const skullGeometryRef = useRef<THREE.SphereGeometry | null>(null);
 
-  // Memoize skull geometry to prevent memory leaks
-  // 두개골 기하학 메모화 | Skull geometry memoization
-  const skullGeometry = useMemo(() => new THREE.SphereGeometry(0.25, 16, 16), []);
-
-  // 자원 정리 | Resource cleanup - Dispose skull geometry on unmount
+  // Create and dispose skull geometry in a single useEffect for proper lifecycle management
+  // 두개골 기하학 생성 및 정리 | Skull geometry creation and cleanup
   useEffect(() => {
+    skullGeometryRef.current = new THREE.SphereGeometry(0.25, 16, 16);
+    
     return () => {
-      skullGeometry.dispose();
+      if (skullGeometryRef.current) {
+        skullGeometryRef.current.dispose();
+        skullGeometryRef.current = null;
+      }
     };
-  }, [skullGeometry]);
+  }, []);
 
   // Pulsing emissive animation for skeleton layer
   useFrame((state) => {
@@ -123,14 +126,16 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
       </mesh>
 
       {/* Skull - wireframe sphere */}
-      <lineSegments position={[0, 1.6, 0]}>
-        <edgesGeometry args={[skullGeometry]} />
-        <lineBasicMaterial
-          color={KOREAN_COLORS.WHITE_SOLID}
-          transparent
-          opacity={opacity}
-        />
-      </lineSegments>
+      {skullGeometryRef.current && (
+        <lineSegments position={[0, 1.6, 0]}>
+          <edgesGeometry args={[skullGeometryRef.current]} />
+          <lineBasicMaterial
+            color={KOREAN_COLORS.WHITE_SOLID}
+            transparent
+            opacity={opacity}
+          />
+        </lineSegments>
+      )}
 
       {/* Rib cage - horizontal lines */}
       {[1.3, 1.15, 1.0, 0.85, 0.7].map((y, i) => (

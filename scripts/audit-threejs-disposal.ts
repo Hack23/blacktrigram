@@ -95,24 +95,23 @@ function auditFile(filePath: string, verbose: boolean = false): AuditResult | nu
   
   const threeObjectCreations: string[] = [];
   const lineNumbers: number[] = [];
+  const seenObjects = new Set<string>(); // O(1) lookup instead of O(n)
   
-  // Find all Three.js object instantiations
-  THREE_OBJECT_PATTERNS.forEach(pattern => {
-    const matches = content.match(pattern);
-    if (matches) {
-      matches.forEach(match => {
-        if (!threeObjectCreations.includes(match)) {
-          threeObjectCreations.push(match);
+  // Single pass through lines for efficiency - O(lines × patterns)
+  lines.forEach((line, idx) => {
+    THREE_OBJECT_PATTERNS.forEach(pattern => {
+      // Reset lastIndex for global regex
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(line)) !== null) {
+        const matchStr = match[0];
+        if (!seenObjects.has(matchStr)) {
+          seenObjects.add(matchStr);
+          threeObjectCreations.push(matchStr);
         }
-        
-        // Find line numbers
-        lines.forEach((line, idx) => {
-          if (line.includes(match)) {
-            lineNumbers.push(idx + 1);
-          }
-        });
-      });
-    }
+        lineNumbers.push(idx + 1);
+      }
+    });
   });
   
   // Skip files without Three.js objects
