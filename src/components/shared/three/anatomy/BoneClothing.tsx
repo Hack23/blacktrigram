@@ -1,9 +1,27 @@
 /**
  * Bone-attached clothing system for realistic clothing movement with skeleton
  *
+ * **Enhanced Features (v0.6.23+)**:
+ * - **Subsurface Scattering**: Realistic fabric translucency with light transmission
+ * - **Physical Materials**: Advanced PBR materials with clearcoat and reflectivity
+ * - **Body Thickness Scaling**: Accurate clothing sizing based on muscle/fat mass
+ * - **Archetype Styling**: Unique clothing sets for all 5 player archetypes
+ *
  * Clothing is rendered as children of their parent bones, inheriting bone
  * transformations automatically for proper movement during animation.
  * This mirrors the BoneMuscles approach for consistent rendering.
+ *
+ * **Visual Quality**:
+ * - Transmission: 0.05 (minimal light passing through fabric)
+ * - Thickness: 0.2 (thin fabric simulation)
+ * - IOR: 1.4 (realistic fabric index of refraction)
+ * - Clearcoat: 0.3 (surface depth and sheen)
+ * - Double-sided rendering for cloth folding
+ *
+ * **Performance**:
+ * - Geometry disposal on unmount (prevents memory leaks)
+ * - Material cleanup system
+ * - Optimized attachment calculations with useMemo
  *
  * @module components/three/BoneClothing
  * @category 3D Components
@@ -339,7 +357,17 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     [boneName, archetype, attrs],
   );
 
-  // Create materials with cleanup
+  /**
+   * Create materials with advanced physical properties for realistic cloth rendering
+   *
+   * Enhanced with:
+   * - Subsurface scattering: Light transmission through fabric for realism
+   * - Clearcoat: Surface depth and sheen for material quality
+   * - Double-sided rendering: Proper display when cloth folds
+   * - Physical properties: IOR, reflectivity for authentic appearance
+   *
+   * @korean 향상된물리재료생성
+   */
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
       const mat = new THREE.MeshPhysicalMaterial({
@@ -348,8 +376,18 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
         metalness: attachment.metalness ?? 0.3,
         roughness: attachment.roughness ?? 0.7,
+        // Enhanced cloth realism with clearcoat for depth
         clearcoat: 0.3,
         clearcoatRoughness: 0.5,
+        // Subsurface scattering for realistic fabric translucency
+        // Subtle effect for cloth materials (not skin)
+        transmission: 0.05, // Minimal light transmission through fabric
+        thickness: 0.2, // Thin fabric thickness
+        ior: 1.4, // Index of refraction for fabric (lower than glass)
+        // Enable proper reflections
+        reflectivity: 0.3,
+        // Double-sided rendering for cloth that may fold
+        side: THREE.DoubleSide,
       });
       return mat;
     });
