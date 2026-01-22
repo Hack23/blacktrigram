@@ -65,6 +65,7 @@ import {
 import type { VitalPoint } from "../vitalpoint/types";
 import { VITAL_POINTS_DATA } from "../vitalpoint/VitalPointsData";
 import { CoordinateMapper } from "./CoordinateMapper";
+import { ThreeObjectPools } from "../../utils/threeObjectPool";
 
 /**
  * Collision Detection Engine for combat physics.
@@ -303,6 +304,8 @@ export class CollisionDetection {
    * during combat. Creates a Three.js mesh for the bounding box and performs
    * raycasting to detect intersection points.
    *
+   * Uses object pooling for Vector3 allocations to reduce GC pressure.
+   *
    * @param query - Raycast query parameters
    * @param box - Bounding box to test
    * @param defenderPosition - Position of the defender
@@ -334,31 +337,37 @@ export class CollisionDetection {
       defenderPosition.z + box.center.z,
     );
 
-    // Setup raycaster
-    this.raycaster.set(
-      new THREE.Vector3(query.origin.x, query.origin.y, query.origin.z),
-      new THREE.Vector3(
-        query.direction.x,
-        query.direction.y,
-        query.direction.z,
-      ),
-    );
-    this.raycaster.far = query.maxDistance;
+    // Setup raycaster using pooled Vector3 objects to reduce GC pressure
+    // Wrap in try-finally to ensure pooled objects are always released
+    const origin = ThreeObjectPools.vector3.acquire();
+    const direction = ThreeObjectPools.vector3.acquire();
 
-    // Perform raycast
-    const intersections = this.raycaster.intersectObject(mesh);
+    try {
+      origin.set(query.origin.x, query.origin.y, query.origin.z);
+      direction.set(query.direction.x, query.direction.y, query.direction.z);
 
-    // Clean up temporary mesh (geometry remains cached)
-    // Note: mesh.material is undefined, no need to dispose
+      this.raycaster.set(origin, direction);
+      this.raycaster.far = query.maxDistance;
 
-    if (intersections.length > 0) {
-      const point = intersections[0].point;
-      return {
-        point: { x: point.x, y: point.y, z: point.z },
-      };
+      // Perform raycast
+      const intersections = this.raycaster.intersectObject(mesh);
+
+      // Clean up temporary mesh (geometry remains cached)
+      // Note: mesh.material is undefined, no need to dispose
+
+      if (intersections.length > 0) {
+        const point = intersections[0].point;
+        return {
+          point: { x: point.x, y: point.y, z: point.z },
+        };
+      }
+
+      return null;
+    } finally {
+      // Release pooled objects back to pool (guaranteed even if exception occurs)
+      ThreeObjectPools.vector3.release(origin);
+      ThreeObjectPools.vector3.release(direction);
     }
-
-    return null;
   }
 
   /**

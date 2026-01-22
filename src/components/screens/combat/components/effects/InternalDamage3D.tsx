@@ -7,6 +7,17 @@
  * - Penetration depth visualization
  * - Critical organ damage feedback
  *
+ * PERFORMANCE OPTIMIZATION (Object Pooling):
+ * - Reduced allocations from ~120+ per effect to 2 pooled objects
+ * - Pooling strategy:
+ *   1. Temporary Color objects for particle initialization use pool
+ *   2. Colors are copied to Float32Array (no ownership needed)
+ *   3. All pooled objects released after particle system creation
+ * - Estimated reduction:
+ *   - Pulse particles: 60 Color allocations → 1 pooled object
+ *   - Ripple particles: 30 Color allocations → 1 pooled object
+ *   - Total: ~90 Color allocations per effect → 2 pooled objects
+ *
  * Korean martial arts context (내장 공격 - Internal organ strikes):
  * - 간격 (Liver strike) - Right side body blow
  * - 신장격 (Kidney strike) - Lower back strike
@@ -18,6 +29,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { ThreeObjectPools } from '../../../../../utils/threeObjectPool';
 
 /**
  * Organ types for Korean martial arts internal strikes
@@ -136,26 +148,36 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const colors = new Float32Array(pulseCount * 3);
       const sizes = new Float32Array(pulseCount);
 
-      // Create sphere distribution
-      for (let i = 0; i < pulseCount; i++) {
-        // Fibonacci sphere distribution for phi/theta calculations
-        // (values calculated but not stored in positions yet - used later for expansion)
+      // Pooled color for calculations - PERFORMANCE: Eliminates pulseCount Color allocations
+      const tempColor = ThreeObjectPools.color.acquire();
 
-        positions[i * 3] = 0;
-        positions[i * 3 + 1] = 0;
-        positions[i * 3 + 2] = 0;
+      try {
+        // Set color once from pool
+        tempColor.set(INTERNAL_DAMAGE_CONSTANTS.ORGAN_COLOR);
 
-        // Dark red color
-        const color = new THREE.Color(INTERNAL_DAMAGE_CONSTANTS.ORGAN_COLOR);
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
+        // Create sphere distribution
+        for (let i = 0; i < pulseCount; i++) {
+          // Fibonacci sphere distribution for phi/theta calculations
+          // (values calculated but not stored in positions yet - used later for expansion)
 
-        // Size based on penetration depth
-        const baseSize = 0.03;
-        const depthMultiplier =
-          INTERNAL_DAMAGE_CONSTANTS.INTENSITY[effect.penetrationDepth];
-        sizes[i] = baseSize * depthMultiplier;
+          positions[i * 3] = 0;
+          positions[i * 3 + 1] = 0;
+          positions[i * 3 + 2] = 0;
+
+          // Dark red color (reuse pooled color)
+          colors[i * 3] = tempColor.r;
+          colors[i * 3 + 1] = tempColor.g;
+          colors[i * 3 + 2] = tempColor.b;
+
+          // Size based on penetration depth
+          const baseSize = 0.03;
+          const depthMultiplier =
+            INTERNAL_DAMAGE_CONSTANTS.INTENSITY[effect.penetrationDepth];
+          sizes[i] = baseSize * depthMultiplier;
+        }
+      } finally {
+        // Release pooled color back to pool
+        ThreeObjectPools.color.release(tempColor);
       }
 
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -198,23 +220,33 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       const colors = new Float32Array(rippleCount * 3);
       const sizes = new Float32Array(rippleCount);
 
-      // Create ring distribution
-      for (let i = 0; i < rippleCount; i++) {
-        const angle = (i / rippleCount) * Math.PI * 2;
-        positions[i * 3] = 0;
-        positions[i * 3 + 1] = 0;
-        positions[i * 3 + 2] = 0;
+      // Pooled color for calculations - PERFORMANCE: Eliminates rippleCount Color allocations
+      const tempColor = ThreeObjectPools.color.acquire();
 
-        // Crimson color for ripples
-        const color = new THREE.Color(INTERNAL_DAMAGE_CONSTANTS.RIPPLE_COLOR);
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
+      try {
+        // Set color once from pool
+        tempColor.set(INTERNAL_DAMAGE_CONSTANTS.RIPPLE_COLOR);
 
-        sizes[i] = 0.02;
+        // Create ring distribution
+        for (let i = 0; i < rippleCount; i++) {
+          const angle = (i / rippleCount) * Math.PI * 2;
+          positions[i * 3] = 0;
+          positions[i * 3 + 1] = 0;
+          positions[i * 3 + 2] = 0;
 
-        // Store angle for ring expansion
-        (geometry as THREE.BufferGeometry & { [key: string]: number })[`angle_${i}`] = angle;
+          // Crimson color for ripples (reuse pooled color)
+          colors[i * 3] = tempColor.r;
+          colors[i * 3 + 1] = tempColor.g;
+          colors[i * 3 + 2] = tempColor.b;
+
+          sizes[i] = 0.02;
+
+          // Store angle for ring expansion
+          (geometry as THREE.BufferGeometry & { [key: string]: number })[`angle_${i}`] = angle;
+        }
+      } finally {
+        // Release pooled color back to pool
+        ThreeObjectPools.color.release(tempColor);
       }
 
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));

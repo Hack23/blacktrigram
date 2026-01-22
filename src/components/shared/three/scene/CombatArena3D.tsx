@@ -17,6 +17,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 // Re-enabled after fixing KoreanSignage3D font prop issue
 import AtmosphericParticles3D from "./AtmosphericParticles3D";
 import KoreanSignage3D from "./KoreanSignage3D";
@@ -77,21 +78,39 @@ export const CombatArena3D: React.FC<CombatArena3DProps> = ({
   const markerDepth = effectiveDepth * 0.4;
 
   // Memoized floor material with wet concrete aesthetic and reflections
+  // Performance: Uses ThreeObjectPools for temporary Color objects to reduce GC pressure
   // Note: Empty dependency array is correct - KOREAN_COLORS is a const object
   // and doesn't need to be included in dependencies
   const floorMaterial = useMemo(
-    () =>
-      new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color(0x2a2a2a), // Dark concrete
-        roughness: 0.3, // Wet/reflective surface
-        metalness: 0.1,
-        clearcoat: 0.3, // Wet sheen
-        clearcoatRoughness: 0.4,
-        envMapIntensity: 1.5, // Enhanced reflections from Environment preset
-        // Subtle emissive for neon reflection glow
-        emissive: new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN),
-        emissiveIntensity: 0.05,
-      }),
+    () => {
+      // Use pooled Color objects for temporary color creation
+      const pooledBaseColor = ThreeObjectPools.color.acquire();
+      const pooledEmissiveColor = ThreeObjectPools.color.acquire();
+      
+      try {
+        pooledBaseColor.set(0x2a2a2a); // Dark concrete
+        pooledEmissiveColor.set(KOREAN_COLORS.PRIMARY_CYAN);
+        
+        // Clone colors for material ownership (materials need their own color instances)
+        const material = new THREE.MeshPhysicalMaterial({
+          color: pooledBaseColor.clone(), // Material takes ownership of cloned color
+          roughness: 0.3, // Wet/reflective surface
+          metalness: 0.1,
+          clearcoat: 0.3, // Wet sheen
+          clearcoatRoughness: 0.4,
+          envMapIntensity: 1.5, // Enhanced reflections from Environment preset
+          // Subtle emissive for neon reflection glow
+          emissive: pooledEmissiveColor.clone(), // Material takes ownership of cloned color
+          emissiveIntensity: 0.05,
+        });
+        
+        return material;
+      } finally {
+        // Release pooled colors back to pool after cloning
+        ThreeObjectPools.color.release(pooledBaseColor);
+        ThreeObjectPools.color.release(pooledEmissiveColor);
+      }
+    },
     [],
   );
 

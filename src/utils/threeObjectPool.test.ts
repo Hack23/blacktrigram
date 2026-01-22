@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   ThreeObjectPools,
+  withTempColors,
   withTempEulers,
   withTempMatrices,
   withTempVectors,
@@ -172,6 +173,52 @@ describe("ThreeObjectPools", () => {
     });
   });
 
+  describe("ColorPool", () => {
+    it("should create new Color when pool is empty", () => {
+      const color = ThreeObjectPools.color.acquire();
+      expect(color).toBeInstanceOf(THREE.Color);
+      expect(color.getHex()).toBe(0xffffff); // White
+      expect(ThreeObjectPools.color.size).toBe(0);
+    });
+
+    it("should reuse Color from pool", () => {
+      const color1 = ThreeObjectPools.color.acquire();
+      color1.set(0xff0000); // Red
+      ThreeObjectPools.color.release(color1);
+
+      expect(ThreeObjectPools.color.size).toBe(1);
+
+      const color2 = ThreeObjectPools.color.acquire();
+      expect(color2).toBe(color1); // Same object reference
+      expect(color2.getHex()).toBe(0xffffff); // Reset to white
+    });
+
+    it("should prewarm pool with specified count", () => {
+      ThreeObjectPools.color.prewarm(50);
+      expect(ThreeObjectPools.color.size).toBe(50);
+    });
+
+    it("should handle multiple color manipulations", () => {
+      const color = ThreeObjectPools.color.acquire();
+      
+      // Test various color operations
+      color.setHex(0x00ff00); // Green
+      expect(color.getHex()).toBe(0x00ff00);
+      
+      color.setRGB(1, 0, 0); // Red
+      expect(color.r).toBe(1);
+      expect(color.g).toBe(0);
+      expect(color.b).toBe(0);
+      
+      ThreeObjectPools.color.release(color);
+      
+      // Should be reset when acquired again
+      const color2 = ThreeObjectPools.color.acquire();
+      expect(color2).toBe(color);
+      expect(color2.getHex()).toBe(0xffffff);
+    });
+  });
+
   describe("prewarmAll", () => {
     it("should prewarm all pools with recommended sizes", () => {
       ThreeObjectPools.prewarmAll();
@@ -180,18 +227,21 @@ describe("ThreeObjectPools", () => {
       expect(ThreeObjectPools.vector3.size).toBe(200);
       expect(ThreeObjectPools.matrix4.size).toBe(100);
       expect(ThreeObjectPools.quaternion.size).toBe(100);
+      expect(ThreeObjectPools.color.size).toBe(50);
     });
 
     it("should not exceed max sizes when prewarming", () => {
       // First prewarm to max
       ThreeObjectPools.euler.prewarm(500);
       ThreeObjectPools.vector3.prewarm(500);
+      ThreeObjectPools.color.prewarm(100);
 
       // Call prewarmAll (should not add more)
       ThreeObjectPools.prewarmAll();
 
       expect(ThreeObjectPools.euler.size).toBe(500);
       expect(ThreeObjectPools.vector3.size).toBe(500);
+      expect(ThreeObjectPools.color.size).toBe(100);
     });
   });
 
@@ -201,6 +251,7 @@ describe("ThreeObjectPools", () => {
       ThreeObjectPools.vector3.prewarm(100);
       ThreeObjectPools.matrix4.prewarm(25);
       ThreeObjectPools.quaternion.prewarm(30);
+      ThreeObjectPools.color.prewarm(15);
 
       const status = ThreeObjectPools.getStatus();
 
@@ -208,6 +259,7 @@ describe("ThreeObjectPools", () => {
       expect(status.vector3).toBe(100);
       expect(status.matrix4).toBe(25);
       expect(status.quaternion).toBe(30);
+      expect(status.color).toBe(15);
     });
   });
 
@@ -217,6 +269,7 @@ describe("ThreeObjectPools", () => {
 
       expect(ThreeObjectPools.euler.size).toBeGreaterThan(0);
       expect(ThreeObjectPools.vector3.size).toBeGreaterThan(0);
+      expect(ThreeObjectPools.color.size).toBeGreaterThan(0);
 
       ThreeObjectPools.clearAll();
 
@@ -224,6 +277,7 @@ describe("ThreeObjectPools", () => {
       expect(ThreeObjectPools.vector3.size).toBe(0);
       expect(ThreeObjectPools.matrix4.size).toBe(0);
       expect(ThreeObjectPools.quaternion.size).toBe(0);
+      expect(ThreeObjectPools.color.size).toBe(0);
     });
   });
 
@@ -305,6 +359,46 @@ describe("ThreeObjectPools", () => {
       }).toThrow("Test error");
 
       expect(ThreeObjectPools.matrix4.size).toBe(2);
+    });
+  });
+
+  describe("withTempColors", () => {
+    it("should provide temporary Color objects", () => {
+      const result = withTempColors(2, ([c1, c2]) => {
+        c1.setHex(0xff0000); // Red
+        c2.setHex(0x0000ff); // Blue
+        c1.lerp(c2, 0.5); // Mix to purple
+        return c1.getHex();
+      });
+
+      // Color mixing may have slight variations due to floating point precision
+      // Check that it's close to purple (0x7f007f or similar)
+      expect(result).toBeGreaterThan(0x700070);
+      expect(result).toBeLessThan(0xbf00bf);
+      expect(ThreeObjectPools.color.size).toBe(2);
+    });
+
+    it("should release colors even if function throws", () => {
+      expect(() => {
+        withTempColors(3, () => {
+          throw new Error("Test error");
+        });
+      }).toThrow("Test error");
+
+      expect(ThreeObjectPools.color.size).toBe(3);
+    });
+
+    it("should work with prewarmed pool", () => {
+      ThreeObjectPools.color.prewarm(10);
+      expect(ThreeObjectPools.color.size).toBe(10);
+
+      withTempColors(3, ([c1, c2, c3]) => {
+        c1.set(0xff0000);
+        c2.set(0x00ff00);
+        c3.set(0x0000ff);
+      });
+
+      expect(ThreeObjectPools.color.size).toBe(10); // Back to original
     });
   });
 
