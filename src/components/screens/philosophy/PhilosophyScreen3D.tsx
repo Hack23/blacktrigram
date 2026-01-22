@@ -9,10 +9,10 @@ import { KoreanCulture } from "../../../systems/trigram/KoreanCulture";
 import { TRIGRAM_DATA } from "../../../systems/trigram/types";
 import { TrigramStance } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
@@ -69,6 +69,13 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
     [screenWidth],
   );
 
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
   // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(
     () => ({
@@ -78,51 +85,39 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
         display: block !important;
       }
       .philosophy-scrollbar::-webkit-scrollbar-track {
-        background: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        background: ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8)};
         border-radius: 6px;
       }
       .philosophy-scrollbar::-webkit-scrollbar-thumb {
-        background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+        background: ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)};
         border-radius: 6px;
-        border: 2px solid ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        border: 2px solid ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8)};
       }
       .philosophy-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)};
+        background: ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)};
       }
     `,
     }),
-    [],
-  ); // Empty deps - colors are constants
+    [theme],
+  );
 
-  // Memoize colors for performance
+  // Memoize colors from theme for performance
   const colors = useMemo(
     () => ({
-      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
-      headerBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
-      sectionBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.8),
-      borderGold: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
-      borderCyan: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6),
-      borderMagenta: hexToRgbaString(KOREAN_COLORS.SECONDARY_MAGENTA, 0.6),
-      borderRed: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.6),
-      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-        6,
-        "0",
-      )}`,
-      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-        6,
-        "0",
-      )}`,
-      textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(
-        6,
-        "0",
-      )}`,
-      accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
-        6,
-        "0",
-      )}`,
+      background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.95),
+      headerBg: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
+      sectionBg: hexToRgbaString(theme.colors.UI_BACKGROUND_LIGHT, 0.8),
+      borderGold: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.8),
+      borderCyan: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.6),
+      borderMagenta: hexToRgbaString(theme.colors.SECONDARY_MAGENTA, 0.6),
+      borderRed: hexToRgbaString(theme.colors.KOREAN_RED, 0.6),
+      textPrimary: `#${theme.colors.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+      textSecondary: `#${theme.colors.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+      textTertiary: `#${theme.colors.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+      accentGold: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+      accentCyan: `#${theme.colors.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
     }),
-    [],
+    [theme],
   );
 
   // Audio lifecycle management for philosophy screen
@@ -220,7 +215,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
         dpr={[1, 2]}
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
         }}
       >
         {/* 3D Background Scene */}
@@ -247,7 +242,8 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
             display: "flex",
             flexDirection: "column",
             color: colors.textPrimary,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.koreanTypography.fontFamily,
+            lineHeight: theme.koreanTypography.lineHeight,
             pointerEvents: "auto",
           }}
         >
@@ -273,7 +269,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
                 color: colors.accentGold,
                 margin: 0,
                 textShadow: `0 0 15px ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.6,
                 )}`,
               }}
@@ -352,7 +348,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
                     key={key}
                     style={{
                       background: hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_DARK,
+                        theme.colors.UI_BACKGROUND_DARK,
                         0.7,
                       ),
                       borderRadius: "6px",
@@ -626,7 +622,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
             {/* Motivation Quote */}
             <div
               style={{
-                background: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.15),
+                background: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.15),
                 borderRadius: "8px",
                 border: `1px solid ${colors.borderGold}`,
                 padding: "15px",
@@ -673,7 +669,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.2,
                 );
                 e.currentTarget.style.transform = "scale(1.05)";
@@ -702,9 +698,9 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
                 onClick={handleBackClick}
                 style={{
                   background: `linear-gradient(135deg, ${hexToRgbaString(
-                    KOREAN_COLORS.ACCENT_GOLD,
+                    theme.colors.ACCENT_GOLD,
                     0.8,
-                  )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
+                  )}, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6)})`,
                   border: `2px solid ${colors.borderGold}`,
                   borderRadius: "8px",
                   padding: "10px 20px",
@@ -717,7 +713,7 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "scale(1.05)";
                   e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
-                    KOREAN_COLORS.ACCENT_GOLD,
+                    theme.colors.ACCENT_GOLD,
                     0.6,
                   )}`;
                 }}
@@ -734,14 +730,14 @@ export const PhilosophyScreen3D: React.FC<PhilosophyScreen3DProps> = ({
               <div
                 style={{
                   background: hexToRgbaString(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                    theme.colors.UI_BACKGROUND_MEDIUM,
                     0.9,
                   ),
                   borderRadius: "6px",
                   padding: "8px 12px",
                   fontSize: isMobile ? "11px" : "12px",
                   fontWeight: "bold",
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                  color: `#${theme.colors.SECONDARY_MAGENTA.toString(
                     16,
                   ).padStart(6, "0")}`,
                   border: `1px solid ${colors.borderGold}`,
