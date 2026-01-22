@@ -11,6 +11,7 @@ import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
+import { BackButton } from "../../shared/ui/BackButton";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
 export interface ControlsScreen3DProps {
@@ -1365,37 +1366,13 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
             </div>
 
             {/* Back Button */}
-            <button
+            <BackButton
               onClick={handleBackClick}
-              style={{
-                background: `linear-gradient(135deg, ${hexToRgbaString(
-                  theme.colors.ACCENT_GOLD,
-                  0.8,
-                )}, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6)})`,
-                border: `2px solid ${colors.borderGold}`,
-                borderRadius: "8px",
-                padding: "10px 20px",
-                fontSize: isMobile ? "12px" : "14px",
-                fontWeight: "bold",
-                color: "#000",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)";
-                e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
-                  theme.colors.ACCENT_GOLD,
-                  0.6,
-                )}`;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-              data-testid="controls-back-button"
-            >
-              무도장 복귀 | Return to Dojang
-            </button>
+              korean="무도장 복귀"
+              english="Return to Dojang"
+              isMobile={isMobile}
+              testId="controls-back-button"
+            />
 
             {/* Keyboard Hint */}
             <div

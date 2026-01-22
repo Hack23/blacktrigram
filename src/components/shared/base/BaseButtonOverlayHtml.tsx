@@ -29,6 +29,7 @@ export interface BaseButtonOverlayHtmlProps {
   readonly className?: string;
   readonly style?: React.CSSProperties;
   readonly autoFocus?: boolean;
+  readonly ariaLabel?: string;
 }
 
 /**
@@ -67,6 +68,7 @@ export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
   className,
   style: customStyle,
   autoFocus = false,
+  ariaLabel,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -160,6 +162,7 @@ export const BaseButtonOverlayHtml = React.memo<BaseButtonOverlayHtmlProps>(
       className={className}
       data-testid={testId ?? "base-button-html"}
       autoFocus={autoFocus}
+      aria-label={ariaLabel ?? `${korean} | ${english}`}
     >
       <div style={{ 
         display: "flex", 

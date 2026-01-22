@@ -1,18 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GameMode } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexToRgbaString } from "../../../../utils/colorUtils";
-import { UIHaptics } from "../../../../utils/hapticFeedback";
 import {
-  getButtonVisualEffectsOnly,
   getEnhancedKoreanOverlayStyles,
 } from "../../../../utils/koreanThemeHelpers";
 import { getMobileKoreanFontSize } from "../../../../utils/mobileUIUtils";
 import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
 import {
-  getKoreanFontOptimization,
   getNeonTextShadow,
 } from "../../../../utils/visualEffects";
+import { MenuButtons } from "./MenuButtons";
 import "./MenuSection.css";
 
 export interface MenuSectionOverlayHtmlProps {
@@ -65,24 +62,9 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     [focused],
   );
 
-  // Memoize RGBA color calculations to avoid repeated bit-shift operations
-  const colors = useMemo(
-    () => ({
-      titleColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      // Button state colors
-      buttonSelectedBg: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.98),
-      buttonHoveredBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_LIGHT, 0.92),
-      buttonDefaultBg: hexToRgbaString(
-        KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-        0.92,
-      ),
-      buttonSelectedBorder: hexToRgbaString(
-        KOREAN_COLORS.UI_BACKGROUND_DARK,
-        1.0,
-      ),
-      buttonHoveredBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8),
-      buttonDefaultBorder: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7),
-    }),
+  // Memoize title color
+  const titleColor = useMemo(
+    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
     [],
   );
 
@@ -146,19 +128,10 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
   // Use device detection from prop, with width-based fallback for sizing adjustments
   const isSmallScreen = width < 768; // Mobile-sized screens
 
-  // Use 2x2 grid layout for compact display on larger screens
-  const useGridLayout = !isSmallScreen;
-
-  // Compact button sizing for 2x2 grid
-  const buttonHeight = isSmallScreen ? 44 : 40;
-  const buttonFontSize = isSmallScreen
-    ? getMobileKoreanFontSize("SMALL", width ?? 375) // 16px minimum for Korean
-    : 13;
   const containerPadding = isSmallScreen ? 16 : 12;
   const titleFontSize = isSmallScreen
     ? getMobileKoreanFontSize("SMALL", width ?? 375)
     : 14;
-  const buttonGap = isSmallScreen ? 6 : 8;
   const sectionGap = isSmallScreen ? 8 : 6;
 
   // Safe area support for notched devices (use isMobile for actual device detection)
@@ -166,26 +139,6 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
     () =>
       isMobile ? getSafeAreaPadding(["top", "bottom"], containerPadding) : {},
     [isMobile, containerPadding],
-  );
-
-  const handleButtonClick = useCallback(
-    (mode: GameMode) => {
-      UIHaptics.buttonTap(); // Add haptic feedback
-      onModeSelect(mode);
-      onPlaySFX?.("menu_select");
-    },
-    [onModeSelect, onPlaySFX],
-  );
-
-  const handleButtonHover = useCallback(
-    (index: number, isHovering: boolean) => {
-      setHoveredItem(isHovering ? index : null);
-      if (isHovering) {
-        UIHaptics.menuHover(); // Add haptic feedback
-        onPlaySFX?.("menu_hover");
-      }
-    },
-    [onPlaySFX],
   );
 
   return (
@@ -210,7 +163,7 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
       <div
         style={{
           fontSize: `${titleFontSize}px`,
-          color: colors.titleColor,
+          color: titleColor,
           fontWeight: "bold",
           fontFamily: FONT_FAMILY.KOREAN,
           textAlign: "center",
@@ -221,103 +174,17 @@ export const MenuSectionOverlayHtml = React.memo<MenuSectionOverlayHtmlProps>(
         메인 메뉴 | Main Menu
       </div>
 
-      {/* Menu Items - 2x2 grid on desktop, column on mobile */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: useGridLayout ? "1fr 1fr" : "1fr",
-          gap: `${buttonGap}px`,
-          width: "100%",
-        }}
-        data-testid="main-menu-buttons"
-      >
-        {menuItems.map((item, index) => {
-          const isSelected = selectedIndex === index;
-          const isHovered = hoveredItem === index;
-
-          // Get only visual effects (glow, transitions, transforms) from utility
-          // Color/background/border are menu-specific and applied directly below
-          // Using dedicated helper function to avoid fragile destructuring coupling
-          // Note: Glow intensity is balanced with background colors to maintain contrast:
-          // - Selected: medium glow + bright gold background = balanced
-          // - Hovered: medium glow + translucent background = clear feedback
-          // - Default: subtle glow + dark background = clean appearance
-          const visualEffects = getButtonVisualEffectsOnly({
-            variant: "primary",
-            isHovered,
-            isPressed: false,
-            isFocused: false,
-            glowIntensity: isSelected
-              ? "medium"
-              : isHovered
-                ? "medium"
-                : "subtle",
-            hoverAnimation: "combined",
-          });
-
-          return (
-            <button
-              key={item.mode}
-              onClick={() => handleButtonClick(item.mode)}
-              onMouseEnter={() => handleButtonHover(index, true)}
-              onMouseLeave={() => handleButtonHover(index, false)}
-              aria-label={`${item.korean} (${item.english})`}
-              aria-selected={isSelected}
-              role="menuitem"
-              className="menu-button"
-              style={{
-                ...visualEffects,
-                ...getKoreanFontOptimization(
-                  buttonFontSize,
-                  isSelected ? "bold" : "normal",
-                ),
-                fontFamily: FONT_FAMILY.KOREAN,
-                width: "100%",
-                height: `${buttonHeight}px`,
-                // Menu-specific color, background, and border (not overrides)
-                color: isSelected
-                  ? `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`
-                  : isHovered
-                    ? `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
-                        6,
-                        "0",
-                      )}`
-                    : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-                        6,
-                        "0",
-                      )}`,
-                background: isSelected
-                  ? colors.buttonSelectedBg
-                  : isHovered
-                    ? colors.buttonHoveredBg
-                    : colors.buttonDefaultBg,
-                border: isSelected
-                  ? `3px solid ${colors.buttonSelectedBorder}`
-                  : isHovered
-                    ? `2px solid ${colors.buttonHoveredBorder}`
-                    : `2px solid ${colors.buttonDefaultBorder}`,
-                cursor: "pointer",
-              }}
-              data-testid={`menu-item-${item.mode}`}
-            >
-              {/* Add test ID aliases for backward compatibility */}
-              {item.mode === GameMode.TRAINING && (
-                <span
-                  data-testid="training-button"
-                  style={{ display: "none" }}
-                />
-              )}
-              {item.mode === GameMode.VERSUS && (
-                <span data-testid="combat-button" style={{ display: "none" }} />
-              )}
-              {item.korean} ({item.english})
-            </button>
-          );
-        })}
-      </div>
+      {/* Menu Buttons - Extracted to MenuButtons component */}
+      <MenuButtons
+        menuItems={menuItems}
+        selectedIndex={selectedIndex}
+        hoveredIndex={hoveredItem}
+        onModeSelect={onModeSelect}
+        onHoverChange={setHoveredItem}
+        onPlaySFX={onPlaySFX}
+        width={width}
+        isMobile={isMobile}
+      />
 
       {/* Navigation Instructions */}
       <div
