@@ -12,6 +12,7 @@
 import React from "react";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { BaseButtonOverlayHtml } from "../../../../shared/base/BaseButtonOverlayHtml";
 
 export interface CombatReturnToMenuButtonProps {
   /** Callback when button is clicked */
@@ -26,9 +27,9 @@ export interface CombatReturnToMenuButtonProps {
  * CombatReturnToMenuButton Component
  * 
  * Bilingual button to return to main menu from combat screen.
- * Uses Korean theming with cyan accent (combat color) and responsive sizing.
+ * Uses BaseButtonOverlayHtml with custom container for combat-specific styling.
  * 
- * Reduces code duplication by 56 lines from CombatScreen3D (inline CSS + container)
+ * Refactored to use BaseButtonOverlayHtml for better consistency.
  * 
  * @example
  * ```tsx
@@ -54,43 +55,16 @@ export const CombatReturnToMenuButton: React.FC<
         padding: isMobile ? "6px 10px" : "8px 12px",
       }}
     >
-      <style>
-        {`
-          .combat-return-menu-btn {
-            background: ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.9)};
-            color: ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 1)};
-            border: none;
-            border-radius: 8px;
-            padding: ${isMobile ? "8px 12px" : "10px 16px"};
-            font-size: ${isMobile ? "12px" : "14px"};
-            font-family: ${theme.koreanTypography.fontFamily};
-            line-height: ${theme.koreanTypography.lineHeight};
-            letter-spacing: ${theme.koreanTypography.letterSpacing};
-            word-break: ${theme.koreanTypography.wordBreak};
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-height: 36px;
-            white-space: nowrap;
-          }
-          .combat-return-menu-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px ${hexToRgbaString(
-              theme.colors.PRIMARY_CYAN,
-              0.8,
-            )};
-          }
-        `}
-      </style>
-      <button
+      <BaseButtonOverlayHtml
+        korean={isMobile ? "메뉴" : "메뉴로"}
+        english={isMobile ? "Menu" : "Return to Menu"}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
-        className="combat-return-menu-btn"
-        data-testid="return-to-menu-button"
-        aria-label="Return to main menu"
-      >
-        {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
-      </button>
+        variant="primary"
+        size="md"
+        isMobile={isMobile}
+        testId="return-to-menu-button"
+      />
     </div>
   );
 };

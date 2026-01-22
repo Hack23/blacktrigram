@@ -2,7 +2,7 @@
  * BackButton - Shared back/return button for screens
  * 
  * Provides a consistent bilingual button for returning to menu or previous screen.
- * Uses Korean theming with gold accent and responsive sizing.
+ * Uses BaseButtonOverlayHtml for consistency and maintainability.
  * 
  * @module components/shared/ui
  * @category UI Components
@@ -10,8 +10,7 @@
  */
 
 import React from "react";
-import { hexToRgbaString } from "../../../utils/colorUtils";
-import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
+import { BaseButtonOverlayHtml } from "../../shared/base/BaseButtonOverlayHtml";
 
 export interface BackButtonProps {
   /** Callback when button is clicked */
@@ -29,10 +28,10 @@ export interface BackButtonProps {
 /**
  * BackButton Component
  * 
- * Reusable bilingual back/return button with Korean theming.
- * Features gradient gold background, hover effects, and responsive sizing.
+ * Reusable bilingual back/return button using BaseButtonOverlayHtml.
+ * Provides consistent Korean theming and responsive sizing.
  * 
- * Reduces code duplication by ~30 lines per usage (inline button styling)
+ * Refactored to use BaseButtonOverlayHtml for better consistency.
  * 
  * @example
  * ```tsx
@@ -51,42 +50,16 @@ export const BackButton: React.FC<BackButtonProps> = ({
   isMobile,
   testId = "back-button",
 }) => {
-  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
-
   return (
-    <button
+    <BaseButtonOverlayHtml
+      korean={korean}
+      english={english}
       onClick={onClick}
-      style={{
-        background: `linear-gradient(135deg, ${hexToRgbaString(
-          theme.colors.ACCENT_GOLD,
-          0.8,
-        )}, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6)})`,
-        border: `2px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.9)}`,
-        borderRadius: "8px",
-        padding: "10px 20px",
-        fontSize: isMobile ? "12px" : "14px",
-        fontWeight: "bold",
-        color: "#000",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        fontFamily: theme.koreanTypography.fontFamily,
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "scale(1.05)";
-        e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
-          theme.colors.ACCENT_GOLD,
-          0.6,
-        )}`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
-      data-testid={testId}
-      aria-label={`${korean} | ${english}`}
-    >
-      {korean} | {english}
-    </button>
+      variant="primary"
+      size="md"
+      isMobile={isMobile}
+      testId={testId}
+    />
   );
 };
 
@@ -108,17 +81,17 @@ export interface LinkButtonProps {
 /**
  * LinkButton Component
  * 
- * Transparent button with border, used for secondary actions like external links.
- * Features Korean theming with gold accent and hover effects.
+ * Secondary action button using BaseButtonOverlayHtml with secondary variant.
+ * Used for links and secondary actions like ISMS policy links.
  * 
- * Reduces code duplication by ~27 lines per usage (inline button styling)
+ * Refactored to use BaseButtonOverlayHtml for better consistency.
  * 
  * @example
  * ```tsx
  * <LinkButton
  *   onClick={() => window.open(url)}
- *   korean="공개 보안 정책"
- *   english="View Security Policies"
+ *   korean="보안 정책"
+ *   english="Security Policy"
  *   icon="🔐"
  *   isMobile={false}
  * />
@@ -132,40 +105,18 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
   isMobile,
   testId = "link-button",
 }) => {
-  const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
-
+  const labelKorean = icon ? `${icon} ${korean}` : korean;
+  
   return (
-    <button
+    <BaseButtonOverlayHtml
+      korean={labelKorean}
+      english={english}
       onClick={onClick}
-      style={{
-        background: "transparent",
-        border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.9)}`,
-        borderRadius: "6px",
-        padding: "8px 16px",
-        fontSize: isMobile ? "10px" : "12px",
-        fontWeight: "bold",
-        color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        fontFamily: theme.koreanTypography.fontFamily,
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = hexToRgbaString(
-          theme.colors.ACCENT_GOLD,
-          0.2,
-        );
-        e.currentTarget.style.transform = "scale(1.05)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = "transparent";
-        e.currentTarget.style.transform = "scale(1)";
-      }}
-      data-testid={testId}
-      aria-label={`${korean} | ${english}`}
-    >
-      {icon && `${icon} `}
-      {korean} | {english}
-    </button>
+      variant="secondary"
+      size="sm"
+      isMobile={isMobile}
+      testId={testId}
+    />
   );
 };
 

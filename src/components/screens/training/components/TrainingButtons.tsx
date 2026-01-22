@@ -13,6 +13,7 @@ import React, { useCallback } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../shared/base/useKoreanTheme";
+import { BaseButtonOverlayHtml } from "../../../shared/base/BaseButtonOverlayHtml";
 
 export interface ReturnToMenuButtonProps {
   /** Callback when button is clicked */
@@ -27,9 +28,9 @@ export interface ReturnToMenuButtonProps {
  * ReturnToMenuButton Component
  * 
  * Bilingual button to return to main menu from training screen.
- * Uses Korean theming with gold accent and responsive sizing.
+ * Uses BaseButtonOverlayHtml for consistent Korean theming.
  * 
- * Reduces code duplication by 38 lines from TrainingScreen3D (inline CSS + button)
+ * Refactored to use BaseButtonOverlayHtml for better consistency.
  * 
  * @example
  * ```tsx
@@ -45,49 +46,17 @@ export const ReturnToMenuButton: React.FC<ReturnToMenuButtonProps> = ({
   onMouseEnter,
   isMobile,
 }) => {
-  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
-
   return (
-    <>
-      <style>
-        {`
-          .training-return-menu-btn {
-            background: ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)};
-            border: none;
-            border-radius: 8px;
-            padding: ${isMobile ? "6px 10px" : "8px 12px"};
-            font-size: ${isMobile ? "12px" : "14px"};
-            font-weight: bold;
-            font-family: ${theme.koreanTypography.fontFamily};
-            color: ${hexToRgbaString(theme.colors.KOREAN_BLACK, 1)};
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 0 10px ${hexToRgbaString(
-              theme.colors.ACCENT_GOLD,
-              0.5,
-            )};
-            min-height: 36px;
-            white-space: nowrap;
-          }
-          .training-return-menu-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px ${hexToRgbaString(
-              theme.colors.ACCENT_GOLD,
-              0.8,
-            )};
-          }
-        `}
-      </style>
-      <button
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        className="training-return-menu-btn"
-        data-testid="return-to-menu-button"
-        aria-label="Return to main menu"
-      >
-        {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
-      </button>
-    </>
+    <BaseButtonOverlayHtml
+      korean={isMobile ? "메뉴" : "메뉴로"}
+      english={isMobile ? "Menu" : "Return to Menu"}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      variant="primary"
+      size="md"
+      isMobile={isMobile}
+      testId="return-to-menu-button"
+    />
   );
 };
 
