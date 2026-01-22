@@ -90,6 +90,10 @@ import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChang
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
 import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
+import {
+  ArchetypeSelectionButtons,
+  ReturnToMenuButton,
+} from "./components/TrainingButtons";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
@@ -1407,52 +1411,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             >
               원형 선택 | Archetype
             </div>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "4px",
-                justifyContent: "center",
-              }}
-            >
-              {Object.values(PlayerArchetype).map((arch) => (
-                <button
-                  key={arch}
-                  onClick={() => {
-                    setSelectedArchetype(arch);
-                    audio.playSFX("menu_select");
-                  }}
-                  style={{
-                    padding: isMobile ? "4px 8px" : "6px 10px",
-                    fontSize: isMobile ? "9px" : "11px",
-                    fontFamily: theme.koreanTypography.fontFamily,
-                    fontWeight: selectedArchetype === arch ? "bold" : "normal",
-                    background:
-                      selectedArchetype === arch
-                        ? hexToRgbaString(theme.colors.ACCENT_GOLD, 0.8)
-                        : hexToRgbaString(
-                            theme.colors.UI_BACKGROUND_MEDIUM,
-                            0.8,
-                          ),
-                    color:
-                      selectedArchetype === arch
-                        ? hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 1)
-                        : hexToRgbaString(theme.colors.TEXT_PRIMARY, 1),
-                    border: `1px solid ${hexToRgbaString(
-                      selectedArchetype === arch
-                        ? theme.colors.ACCENT_GOLD
-                        : theme.colors.UI_BORDER,
-                      0.6,
-                    )}`,
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  {arch.toUpperCase()}
-                </button>
-              ))}
-            </div>
+            <ArchetypeSelectionButtons
+              selectedArchetype={selectedArchetype}
+              onArchetypeSelect={setSelectedArchetype}
+              onPlaySFX={(sound) => audio.playSFX(sound)}
+              isMobile={isMobile}
+            />
           </div>
         </ResponsiveContainer>
 
@@ -1652,44 +1616,11 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             justifyContent: "flex-end",
           }}
         >
-          <style>
-            {`
-            .training-return-menu-btn {
-              background: ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)};
-              border: none;
-              border-radius: 8px;
-              padding: ${isMobile ? "6px 10px" : "8px 12px"};
-              font-size: ${isMobile ? "12px" : "14px"};
-              font-weight: bold;
-              font-family: ${theme.koreanTypography.fontFamily};
-              color: ${hexToRgbaString(theme.colors.KOREAN_BLACK, 1)};
-              cursor: pointer;
-              transition: all 0.2s ease;
-              box-shadow: 0 0 10px ${hexToRgbaString(
-                theme.colors.ACCENT_GOLD,
-                0.5,
-              )};
-              min-height: 36px;
-              white-space: nowrap;
-            }
-            .training-return-menu-btn:hover {
-              transform: scale(1.05);
-              box-shadow: 0 0 20px ${hexToRgbaString(
-                theme.colors.ACCENT_GOLD,
-                0.8,
-              )};
-            }
-          `}
-          </style>
-          <button
+          <ReturnToMenuButton
             onClick={onReturnToMenu}
             onMouseEnter={() => audio.playSFX("menu_hover")}
-            className="training-return-menu-btn"
-            data-testid="return-to-menu-button"
-            aria-label="Return to main menu"
-          >
-            {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
-          </button>
+            isMobile={isMobile}
+          />
         </ResponsiveContainer>
       </div>
 
