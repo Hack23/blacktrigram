@@ -41,19 +41,17 @@ export interface BalanceIndicatorProps {
 /**
  * Get color for balance state using theme colors
  */
-function getBalanceColor(theme: ReturnType<typeof useKoreanTheme>): (state: BalanceState) => number {
-  return (state: BalanceState): number => {
-    switch (state) {
-      case "READY":
-        return theme.colors.POSITIVE_GREEN; // 🟢 Green
-      case "SHAKEN":
-        return theme.colors.WARNING_YELLOW; // 🟡 Yellow
-      case "VULNERABLE":
-        return theme.colors.WARNING_ORANGE; // 🟠 Orange
-      case "HELPLESS":
-        return theme.colors.ACCENT_RED; // 🔴 Red
-    }
-  };
+function getBalanceColor(theme: ReturnType<typeof useKoreanTheme>, state: BalanceState): number {
+  switch (state) {
+    case "READY":
+      return theme.colors.POSITIVE_GREEN; // 🟢 Green
+    case "SHAKEN":
+      return theme.colors.WARNING_YELLOW; // 🟡 Yellow
+    case "VULNERABLE":
+      return theme.colors.WARNING_ORANGE; // 🟠 Orange
+    case "HELPLESS":
+      return theme.colors.ACCENT_RED; // 🔴 Red
+  }
 }
 
 /**
@@ -97,10 +95,9 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
   isMobile,
 }) => {
   const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
-  const getColor = useMemo(() => getBalanceColor(theme), [theme]);
   
   const indicatorStyle = useMemo(() => {
-    const color = getColor(balanceState);
+    const color = getBalanceColor(theme, balanceState);
     const colorHex = `#${color.toString(16).padStart(6, "0")}`;
 
     // Mobile uses thinner border
@@ -123,7 +120,7 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
       transition: "border-color 0.5s ease-out, box-shadow 0.5s ease-out",
       zIndex: 90, // Below HUD text but above game content
     };
-  }, [balanceState, position, isMobile, getColor]);
+  }, [balanceState, position, isMobile, theme]);
 
   const label = useMemo(() => getBalanceLabel(balanceState), [balanceState]);
 
