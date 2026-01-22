@@ -14,12 +14,12 @@ import { useWindowSize } from "../../../hooks/useWindowSize";
 import { PlayerState } from "../../../systems";
 import { MatchStatistics } from "../../../systems/combat";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import {
   detectPlatform,
   shouldUseMobileControls,
 } from "../../../utils/deviceDetection";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { NavigationButtons } from "./components/NavigationButtons";
@@ -127,6 +127,7 @@ const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
   isVictory,
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
+  const theme = useKoreanTheme({ variant: "primary", size: "md" });
 
   useFrame(() => {
     if (gridRef.current) {
@@ -135,13 +136,13 @@ const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
   });
 
   const primaryColor = isVictory
-    ? KOREAN_COLORS.ACCENT_GOLD
-    : KOREAN_COLORS.ACCENT_RED;
+    ? theme.colors.ACCENT_GOLD
+    : theme.colors.ACCENT_RED;
 
   return (
     <>
       {/* Ambient lighting */}
-      <ambientLight intensity={0.3} color={KOREAN_COLORS.PRIMARY_CYAN} />
+      <ambientLight intensity={0.3} color={theme.colors.PRIMARY_CYAN} />
 
       {/* Directional lights */}
       <directionalLight
@@ -152,7 +153,7 @@ const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
       <directionalLight
         position={[-10, 10, -5]}
         intensity={0.5}
-        color={KOREAN_COLORS.PRIMARY_CYAN}
+        color={theme.colors.PRIMARY_CYAN}
       />
 
       {/* Point light for dramatic effect */}
@@ -166,7 +167,7 @@ const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
       {/* Grid for cyberpunk aesthetic */}
       <gridHelper
         ref={gridRef}
-        args={[40, 40, primaryColor, KOREAN_COLORS.UI_BACKGROUND_MEDIUM]}
+        args={[40, 40, primaryColor, theme.colors.UI_BACKGROUND_MEDIUM]}
         position={[0, -5, 0]}
       />
 
@@ -245,6 +246,13 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
     [isMobile, isTablet, isLargeDesktop],
   );
 
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
   // Play victory/defeat audio on mount
   useEffect(() => {
     if (isVictory) {
@@ -311,7 +319,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           powerPreference: "high-performance",
         }}
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
         }}
         data-testid="end-screen-canvas"
       >
@@ -335,8 +343,8 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: FONT_FAMILY.KOREAN,
-          color: toCssColor(KOREAN_COLORS.TEXT_PRIMARY),
+          fontFamily: theme.koreanTypography.fontFamily,
+          color: toCssColor(theme.colors.TEXT_PRIMARY),
           padding: layoutConstants.padding,
           boxSizing: "border-box",
           overflowY: "auto",
@@ -374,18 +382,18 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
             onMouseEnter={() => audio.playSFX?.("menu_hover")}
             style={{
               background: hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                theme.colors.UI_BACKGROUND_MEDIUM,
                 0.8,
               ),
               border: `2px solid ${hexToRgbaString(
-                KOREAN_COLORS.PRIMARY_CYAN,
+                theme.colors.PRIMARY_CYAN,
                 0.8,
               )}`,
               borderRadius: "8px",
               padding: layoutConstants.buttonPadding,
               fontSize: layoutConstants.buttonFontSize,
-              color: toCssColor(KOREAN_COLORS.PRIMARY_CYAN),
-              fontFamily: FONT_FAMILY.KOREAN,
+              color: toCssColor(theme.colors.PRIMARY_CYAN),
+              fontFamily: theme.koreanTypography.fontFamily,
               fontWeight: "bold",
               cursor: "pointer",
               marginBottom: layoutConstants.spacing,
