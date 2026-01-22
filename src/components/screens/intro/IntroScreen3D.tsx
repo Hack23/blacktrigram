@@ -424,6 +424,8 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
                 fontWeight: "bold",
                 fontFamily: theme.koreanTypography.fontFamily,
                 lineHeight: theme.koreanTypography.lineHeight,
+                letterSpacing: theme.koreanTypography.letterSpacing,
+                wordBreak: theme.koreanTypography.wordBreak,
                 color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
                 textShadow: "0 0 10px rgba(255, 170, 0, 0.5)",
               }}

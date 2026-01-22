@@ -123,11 +123,15 @@ const BackgroundParticles3D: React.FC<{ color: number }> = ({ color }) => {
 /**
  * Main Three.js background scene
  */
-const EndScreenBackground3D: React.FC<{ isVictory: boolean }> = ({
+const EndScreenBackground3D: React.FC<{ 
+  isVictory: boolean;
+  isMobile: boolean;
+}> = ({
   isVictory,
+  isMobile,
 }) => {
   const gridRef = useRef<THREE.GridHelper>(null);
-  const theme = useKoreanTheme({ variant: "primary", size: "md" });
+  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
 
   useFrame(() => {
     if (gridRef.current) {
@@ -327,7 +331,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
         <PerspectiveCamera makeDefault position={[0, 5, 15]} fov={60} />
 
         {/* Background scene */}
-        <EndScreenBackground3D isVictory={isVictory} />
+        <EndScreenBackground3D isVictory={isVictory} isMobile={isMobile} />
       </Canvas>
 
       {/* UI Overlay - outside Canvas for proper layout and AudioProvider context */}
@@ -345,6 +349,8 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           justifyContent: "center",
           fontFamily: theme.koreanTypography.fontFamily,
           lineHeight: theme.koreanTypography.lineHeight,
+          letterSpacing: theme.koreanTypography.letterSpacing,
+          wordBreak: theme.koreanTypography.wordBreak,
           color: toCssColor(theme.colors.TEXT_PRIMARY),
           padding: layoutConstants.padding,
           boxSizing: "border-box",
@@ -421,6 +427,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
             onViewReplay={onViewReplay}
             isMobile={isMobile}
             isTablet={isTablet}
+            width={screenWidth}
             onPlaySelectSound={handlePlaySelectSound}
             onPlayHoverSound={handlePlayHoverSound}
           />

@@ -8,6 +8,7 @@ export interface NavigationButtonsProps {
   readonly onViewReplay?: () => void;
   readonly isMobile: boolean;
   readonly isTablet: boolean;
+  readonly width: number;
   /** Optional audio callback for click sounds - passed from parent to avoid Html portal context issues */
   readonly onPlaySelectSound?: () => void;
   /** Optional audio callback for hover sounds - passed from parent to avoid Html portal context issues */
@@ -33,13 +34,16 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onViewReplay,
   isMobile,
   isTablet,
+  width,
   onPlaySelectSound,
   onPlayHoverSound,
 }) => {
   const spacing = isMobile ? 10 : isTablet ? 12 : 15;
   
-  // Determine button size based on device
-  const buttonSize = isMobile ? "sm" : "md";
+  // Determine button size based on screen width (resolution-based, not device detection)
+  // Small screens (<768px): sm, Medium/Large (>=768px): md
+  const buttonSize = width < 768 ? "sm" : "md";
+  const buttonMinWidth = width < 768 ? "200px" : "150px";
 
   const handleReturnToMenu = useCallback(() => {
     onPlaySelectSound?.();
@@ -83,7 +87,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         size={buttonSize}
         testId="return-to-menu-button"
         isMobile={isMobile}
-        style={{ minWidth: isMobile ? "200px" : "150px" }}
+        style={{ minWidth: buttonMinWidth }}
       />
 
       {/* Rematch Button - Secondary Action */}
@@ -97,11 +101,11 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           size={buttonSize}
           testId="rematch-button"
           isMobile={isMobile}
-          style={{ minWidth: isMobile ? "200px" : "150px" }}
+          style={{ minWidth: buttonMinWidth }}
         />
       )}
 
-      {/* View Replay Button - Secondary Action */}
+      {/* View Replay Button - Tertiary Action */}
       {onViewReplay && (
         <BaseButtonOverlayHtml
           korean="리플레이"
@@ -112,7 +116,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           size={buttonSize}
           testId="view-replay-button"
           isMobile={isMobile}
-          style={{ minWidth: isMobile ? "200px" : "150px" }}
+          style={{ minWidth: buttonMinWidth }}
         />
       )}
 

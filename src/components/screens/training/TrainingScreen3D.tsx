@@ -1393,6 +1393,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               borderRadius: "8px",
               fontFamily: theme.koreanTypography.fontFamily,
               lineHeight: theme.koreanTypography.lineHeight,
+              letterSpacing: theme.koreanTypography.letterSpacing,
+              wordBreak: theme.koreanTypography.wordBreak,
             }}
           >
             <div
