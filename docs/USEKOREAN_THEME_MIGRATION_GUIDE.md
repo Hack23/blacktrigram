@@ -1,7 +1,7 @@
 # useKoreanTheme Migration Guide
 
 **Date:** 2026-01-22  
-**Status:** Phase 1 Complete (2/6 screens migrated)  
+**Status:** Phase 1 Complete (6/6 screens migrated)  
 **Target:** Eliminate manual KOREAN_COLORS/FONT_FAMILY imports across all screens
 
 ---
@@ -187,14 +187,14 @@ After migration, verify:
 |--------|--------|-------------|-------|--------|
 | Philosophy | ✅ Complete | 4 net (44 del, 40 ins) | 5/5 passing | 91ec216 |
 | Controls | ✅ Complete | 1 net (68 del, 67 ins) | 24/24 passing | d11cd66 |
-| Endscreen | 🔄 Next | Est. 30-50 | TBD | - |
-| Intro | ⏳ Pending | Est. 50-80 | TBD | - |
-| Training | ⏳ Pending | Est. 40-60 | TBD | - |
-| Combat | ⏳ Pending | Est. 80-120 | TBD | - |
+| Endscreen | ✅ Complete | 8 net (13 del, 21 ins) | 9/9 passing | 7bbac1c |
+| Intro | ✅ Complete | 2 net (14 del, 12 ins) | 5/5 passing | 1bb2520 |
+| Training | ✅ Complete | 2 net (30 del, 32 ins) | 20/20 passing | 2d08a33 |
+| Combat | ✅ Complete | 2 net (17 del, 19 ins) | 18/18 passing | 0ad72a7 |
 
-**Total Progress**: 2/6 screens (33%)  
-**Total Lines Saved**: 5 lines (112 deletions, 107 insertions)  
-**Patterns Eliminated**: 60+ manual color/font references
+**Total Progress**: 6/6 screens (100%)  
+**Total Lines Saved**: 5 net (186 deletions, 191 insertions)  
+**Patterns Eliminated**: 134+ manual color/font references
 
 ---
 
