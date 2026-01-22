@@ -54,7 +54,6 @@ import {
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
 import { getBackButtonTop } from "../../../types/constants/layout";
-import { hexToRgbaString } from "../../../utils/colorUtils";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
@@ -97,6 +96,7 @@ import {
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
+import { CombatReturnToMenuButton } from "./components/controls/CombatButtons";
 import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
@@ -2674,63 +2674,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             justifyContent: "flex-end",
           }}
         >
-          {/* Back button container */}
-          <div
-            style={{
-              textAlign: "center",
-              background: "rgba(10, 10, 15, 0.85)",
-              border: `2px solid ${hexToRgbaString(
-                theme.colors.PRIMARY_CYAN,
-                0.8,
-              )}`,
-              borderRadius: "8px",
-              padding: isMobile ? "6px 10px" : "8px 12px",
-            }}
-          >
-            <style>
-              {`
-                .combat-return-menu-btn {
-                  background: ${hexToRgbaString(
-                    theme.colors.PRIMARY_CYAN,
-                    0.9,
-                  )};
-                  color: ${hexToRgbaString(
-                    theme.colors.UI_BACKGROUND_DARK,
-                    1,
-                  )};
-                  border: none;
-                  border-radius: 8px;
-                  padding: ${isMobile ? "8px 12px" : "10px 16px"};
-                  font-size: ${isMobile ? "12px" : "14px"};
-                  font-family: ${theme.koreanTypography.fontFamily};
-                  line-height: ${theme.koreanTypography.lineHeight};
-                  letter-spacing: ${theme.koreanTypography.letterSpacing};
-                  word-break: ${theme.koreanTypography.wordBreak};
-                  font-weight: bold;
-                  cursor: pointer;
-                  transition: all 0.2s ease;
-                  min-height: 36px;
-                  white-space: nowrap;
-                }
-                .combat-return-menu-btn:hover {
-                  transform: scale(1.05);
-                  box-shadow: 0 0 20px ${hexToRgbaString(
-                    theme.colors.PRIMARY_CYAN,
-                    0.8,
-                  )};
-                }
-              `}
-            </style>
-            <button
-              onClick={onReturnToMenu}
-              onMouseEnter={() => audio.playSFX("menu_hover")}
-              className="combat-return-menu-btn"
-              data-testid="return-to-menu-button"
-              aria-label="Return to main menu"
-            >
-              {isMobile ? "메뉴 | Menu" : "메뉴로 | Return to Menu"}
-            </button>
-          </div>
+          <CombatReturnToMenuButton
+            onClick={onReturnToMenu}
+            onMouseEnter={() => audio.playSFX("menu_hover")}
+            isMobile={isMobile}
+          />
         </ResponsiveContainer>
 
         {/* Pause Menu Overlay */}
