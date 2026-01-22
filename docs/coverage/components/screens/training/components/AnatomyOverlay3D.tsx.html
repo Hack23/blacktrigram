@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.62% </span>
+                <span class="strong">20.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/74</span>
+                <span class='fraction'>16/79</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.53% </span>
+                <span class="strong">21.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/71</span>
+                <span class='fraction'>16/75</span>
             </div>
         
             
@@ -657,7 +657,18 @@
 <a name='L592'></a><a href='#L592'>592</a>
 <a name='L593'></a><a href='#L593'>593</a>
 <a name='L594'></a><a href='#L594'>594</a>
-<a name='L595'></a><a href='#L595'>595</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L595'></a><a href='#L595'>595</a>
+<a name='L596'></a><a href='#L596'>596</a>
+<a name='L597'></a><a href='#L597'>597</a>
+<a name='L598'></a><a href='#L598'>598</a>
+<a name='L599'></a><a href='#L599'>599</a>
+<a name='L600'></a><a href='#L600'>600</a>
+<a name='L601'></a><a href='#L601'>601</a>
+<a name='L602'></a><a href='#L602'>602</a>
+<a name='L603'></a><a href='#L603'>603</a>
+<a name='L604'></a><a href='#L604'>604</a>
+<a name='L605'></a><a href='#L605'>605</a>
+<a name='L606'></a><a href='#L606'>606</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -720,6 +731,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1259,7 +1281,7 @@
  */
 &nbsp;
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 &nbsp;
@@ -1315,6 +1337,17 @@ export interface AnatomyOverlay3DProps {
 const SkeletonLayer: React.FC&lt;{ opacity: number }&gt; = <span class="fstat-no" title="function not covered" >({</span> opacity }) =&gt; {
   const <span class="cstat-no" title="statement not covered" >groupRef = useRef&lt;THREE.Group&gt;(null);</span>
 &nbsp;
+  // Memoize skull geometry to prevent recreating on every render
+  // 두개골 기하학 메모화 | Skull geometry memoization
+  const <span class="cstat-no" title="statement not covered" >skullGeometry = useMemo(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >n</span>ew THREE.SphereGeometry(0.25, 16, 16), [</span>]);</span>
+&nbsp;
+  // 자원 정리 | Resource cleanup - Dispose skull geometry on unmount
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >      skullGeometry.dispose();</span>
+    };
+  }, [skullGeometry]);
+&nbsp;
   // Pulsing emissive animation for skeleton layer
 <span class="cstat-no" title="statement not covered" >  useFrame(<span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!groupRef.current) <span class="cstat-no" title="statement not covered" >return;</span></span>
@@ -1366,7 +1399,7 @@ const SkeletonLayer: React.FC&lt;{ opacity: number }&gt; = <span class="fstat-no
 &nbsp;
       {/* Skull - wireframe sphere */}
       &lt;lineSegments position={[0, 1.6, 0]}&gt;
-        &lt;edgesGeometry args={[new THREE.SphereGeometry(0.25, 16, 16)]} /&gt;
+        &lt;edgesGeometry args={[skullGeometry]} /&gt;
         &lt;lineBasicMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent
@@ -1852,7 +1885,7 @@ export default AnatomyOverlay3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-21T17:53:52.757Z
+                at 2026-01-22T07:34:55.029Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

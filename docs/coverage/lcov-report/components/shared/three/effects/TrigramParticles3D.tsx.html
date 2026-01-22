@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.76% </span>
+                <span class="strong">5.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/52</span>
+                <span class='fraction'>3/55</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">6.12% </span>
+                <span class="strong">5.76% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/49</span>
+                <span class='fraction'>3/52</span>
             </div>
         
             
@@ -318,7 +318,16 @@
 <a name='L253'></a><a href='#L253'>253</a>
 <a name='L254'></a><a href='#L254'>254</a>
 <a name='L255'></a><a href='#L255'>255</a>
-<a name='L256'></a><a href='#L256'>256</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -457,6 +466,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -464,8 +480,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -478,6 +492,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -600,6 +616,7 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { TrigramStance } from "../../../../types/common";
 import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 &nbsp;
 /**
  * Trigram symbol particle effect data
@@ -712,6 +729,7 @@ export const TrigramParticles3D: React.FC&lt;TrigramParticles3DProps&gt; = <span
   const <span class="cstat-no" title="statement not covered" >completedEffectsRef = useRef&lt;Set&lt;string&gt;&gt;(new Set());</span>
 &nbsp;
   // Initialize effect instances
+  // Performance: Uses ThreeObjectPools to reduce GC pressure during effect spawning
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (!enabled) <span class="cstat-no" title="statement not covered" >return;</span></span>
 &nbsp;
@@ -720,9 +738,13 @@ export const TrigramParticles3D: React.FC&lt;TrigramParticles3DProps&gt; = <span
       
 <span class="cstat-no" title="statement not covered" >      effects.forEach(<span class="fstat-no" title="function not covered" >(e</span>ffect) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (!newInstances.has(effect.id)) {</span>
+          // Acquire Vector3 from pool and set position
+          const position = <span class="cstat-no" title="statement not covered" >ThreeObjectPools.vector3.acquire();</span>
+<span class="cstat-no" title="statement not covered" >          position.set(...effect.position);</span>
+          
 <span class="cstat-no" title="statement not covered" >          newInstances.set(effect.id, {</span>
             id: effect.id,
-            position: new THREE.Vector3(...effect.position),
+            position,
             stance: effect.stance,
             age: 0,
             rotation: 0,
@@ -730,10 +752,12 @@ export const TrigramParticles3D: React.FC&lt;TrigramParticles3DProps&gt; = <span
         }
       });
 &nbsp;
-      // Clean up removed effects
+      // Clean up removed effects and release pooled objects
       const effectIds = <span class="cstat-no" title="statement not covered" >new Set(effects.map(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >e.id)</span>);</span>
-<span class="cstat-no" title="statement not covered" >      newInstances.forEach(<span class="fstat-no" title="function not covered" >(_</span>, id) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      newInstances.forEach(<span class="fstat-no" title="function not covered" >(i</span>nstance, id) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (!effectIds.has(id)) {</span>
+          // Release Vector3 back to pool
+<span class="cstat-no" title="statement not covered" >          ThreeObjectPools.vector3.release(instance.position);</span>
 <span class="cstat-no" title="statement not covered" >          newInstances.delete(id);</span>
 <span class="cstat-no" title="statement not covered" >          completedEffectsRef.current.delete(id);</span>
         }
@@ -835,7 +859,7 @@ export default TrigramParticles3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-21T17:53:53.140Z
+                at 2026-01-22T07:34:55.401Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
