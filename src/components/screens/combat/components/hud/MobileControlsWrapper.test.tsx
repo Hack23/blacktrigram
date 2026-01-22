@@ -13,13 +13,13 @@ interface MockComponentProps {
 
 vi.mock("../../../../shared/mobile", () => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  VirtualDPad: (__props: MockComponentProps) => <div data-testid="virtual-dpad">DPad</div>,
+  VirtualDPad: (_props: MockComponentProps) => <div data-testid="virtual-dpad">DPad</div>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ActionButtons: (__props: MockComponentProps) => <div data-testid="action-buttons">Buttons</div>,
+  ActionButtons: (_props: MockComponentProps) => <div data-testid="action-buttons">Buttons</div>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  StanceWheel: (__props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
+  StanceWheel: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  GestureRecognizer: (__props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
+  GestureRecognizer: (_props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
 }));
 
 describe("MobileControlsWrapper", () => {
