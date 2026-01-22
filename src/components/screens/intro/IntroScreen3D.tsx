@@ -193,7 +193,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
     // Event listeners with { once: true } are automatically removed after triggering
     window.addEventListener("keydown", startMusic, { once: true });
     window.addEventListener("mousedown", startMusic, { once: true });
-    window.addEventListener("touchstart", startMusic, { once: true });
+    window.addEventListener("touchstart", startMusic, { once: true, passive: true });
 
     return () => {
       // Safe cleanup - check if audio is initialized before stopping music
