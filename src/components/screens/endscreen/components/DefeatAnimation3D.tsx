@@ -1,0 +1,148 @@
+import { useFrame } from "@react-three/fiber";
+import React, { useRef, useState } from "react";
+import * as THREE from "three";
+import { KOREAN_COLORS } from "../../../../types/constants";
+
+/**
+ * Defeat Animation 3D Component
+ * Displays somber 3D particle effects for defeat screen
+ * Uses blue/cyan tones to contrast with gold victory effects
+ */
+export const DefeatAnimation3D: React.FC = () => {
+  const groupRef = useRef<THREE.Group>(null);
+  const particlesRef = useRef<THREE.Points>(null);
+  const spiralRef = useRef<THREE.Group>(null);
+
+  // Create defeat particles - use useState with lazy initializer
+  const [particlePositions] = useState(() => {
+    const count = 100; // Fewer particles than victory for subdued effect
+    const positions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      const radius = 2 + Math.random() * 3;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+
+      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i3 + 1] = radius * Math.cos(phi) - 1; // Lower starting position
+      positions[i3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+    }
+
+    return positions;
+  });
+
+  // Animate defeat effects with slower, descending motion
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+
+    // Slow rotation
+    if (groupRef.current) {
+      groupRef.current.rotation.y = time * 0.15; // Slower than victory
+    }
+
+    // Fade particles downward
+    if (particlesRef.current) {
+      const scale = 1 + Math.sin(time * 1.5) * 0.1; // Subtle pulsing
+      particlesRef.current.scale.setScalar(scale);
+      
+      // Slowly descend
+      particlesRef.current.position.y = Math.sin(time * 0.5) * 0.3 - 0.2;
+    }
+
+    // Spiral effect - slower, descending
+    if (spiralRef.current) {
+      spiralRef.current.rotation.y = -time * 0.2; // Counter-rotation
+      spiralRef.current.rotation.z = Math.sin(time * 0.3) * 0.2;
+    }
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      position={[0, 1, 0]}
+      data-testid="defeat-animation-3d"
+    >
+      {/* Defeat particles - blue/cyan theme */}
+      <points ref={particlesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={100}
+            itemSize={3}
+            args={[particlePositions, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.15}
+          color={new THREE.Color(KOREAN_COLORS.ACCENT_BLUE)}
+          transparent
+          opacity={0.6}
+          sizeAttenuation
+          depthWrite={false}
+        />
+      </points>
+
+      {/* Descending spiral rings */}
+      <group ref={spiralRef}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.5, 0.03, 12, 64]} />
+          <meshBasicMaterial
+            color={KOREAN_COLORS.PRIMARY_CYAN}
+            transparent
+            opacity={0.4}
+          />
+        </mesh>
+
+        <mesh rotation={[Math.PI / 2, Math.PI / 4, 0]} position={[0, -0.3, 0]}>
+          <torusGeometry args={[2, 0.03, 12, 64]} />
+          <meshBasicMaterial
+            color={KOREAN_COLORS.ACCENT_BLUE}
+            transparent
+            opacity={0.3}
+          />
+        </mesh>
+
+        <mesh rotation={[Math.PI / 2, Math.PI / 2, 0]} position={[0, -0.6, 0]}>
+          <torusGeometry args={[2.5, 0.03, 12, 64]} />
+          <meshBasicMaterial
+            color={KOREAN_COLORS.PRIMARY_CYAN}
+            transparent
+            opacity={0.2}
+          />
+        </mesh>
+      </group>
+
+      {/* Central dimmed sphere */}
+      <mesh>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <meshStandardMaterial
+          color={KOREAN_COLORS.ACCENT_BLUE}
+          emissive={KOREAN_COLORS.ACCENT_BLUE}
+          emissiveIntensity={0.8}
+          transparent
+          opacity={0.6}
+        />
+      </mesh>
+
+      {/* Outer faint glow */}
+      <mesh>
+        <sphereGeometry args={[0.7, 32, 32]} />
+        <meshBasicMaterial
+          color={KOREAN_COLORS.PRIMARY_CYAN}
+          transparent
+          opacity={0.15}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
+      {/* Point light for subdued glow effect */}
+      <pointLight
+        position={[0, 0, 0]}
+        intensity={1.5}
+        distance={8}
+        color={KOREAN_COLORS.ACCENT_BLUE}
+      />
+    </group>
+  );
+};
