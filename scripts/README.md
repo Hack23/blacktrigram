@@ -2,6 +2,68 @@
 
 This directory contains utility scripts for the Black Trigram (흑괘) project.
 
+## 🔍 Code Quality Audits
+
+### audit-threejs-disposal.ts (NEW)
+
+**Purpose:** Detect Three.js memory leaks by finding GPU resources (geometries, materials, textures) that are created without proper disposal.
+
+**Usage:**
+```bash
+# Quick summary
+npm run audit:threejs
+
+# Verbose output with file details
+npm run audit:threejs:verbose
+
+# Detailed fix report with recommendations
+npm run audit:threejs:fix-report
+```
+
+**Features:**
+- Scans all TypeScript files for Three.js GPU resource instantiations
+- Detects geometries, materials, and textures that need disposal
+- Filters out data structures (Vector3, Matrix4, Color) that don't need disposal
+- Provides risk assessment (HIGH, MEDIUM, LOW, SAFE)
+- Generates actionable fix recommendations with code examples
+- Bilingual output (Korean | English)
+
+**What it detects:**
+- ✅ `new THREE.BoxGeometry()`, `SphereGeometry()`, etc. - Need disposal
+- ✅ `new THREE.MeshStandardMaterial()`, `MeshBasicMaterial()`, etc. - Need disposal
+- ✅ `new THREE.Texture()`, `CanvasTexture()`, etc. - Need disposal
+- ⚠️ `new THREE.Vector3()`, `Matrix4()`, `Color()` - Don't need disposal (just data)
+
+**Exit Codes:**
+- `0` - No HIGH risk files found
+- `1` - HIGH risk memory leaks detected
+
+**Example Output:**
+```
+🔍 Three.js Resource Disposal Audit Report
+자원 정리 감사 보고서 | Resource Cleanup Audit Report
+================================================================================
+
+📊 Summary Statistics:
+   Total files scanned: 23
+   Files with Three.js objects: 23
+   Files with disposal: 18 (78.3%)
+   Files needing fixes: 5
+
+⚠️  Risk Distribution:
+   🔴 HIGH Risk:   0 files (5+ objects, no disposal)
+   🟡 MEDIUM Risk: 1 files (2-4 objects, no disposal)
+   🟢 LOW Risk:    4 files (1 object, no disposal)
+   ✅ SAFE:        18 files (has disposal)
+```
+
+**See also:**
+- `ARCHITECTURE.md` - Three.js Resource Disposal section
+- `src/utils/particlePool.ts` - Reference implementation
+- `src/components/screens/training/components/TrainingDummy3D.tsx` - Example component
+
+---
+
 ## Asset Management
 
 ### audit-assets.ts

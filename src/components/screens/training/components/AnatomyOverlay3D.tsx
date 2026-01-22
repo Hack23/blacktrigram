@@ -6,7 +6,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -62,6 +62,17 @@ export interface AnatomyOverlay3DProps {
 const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
   const groupRef = useRef<THREE.Group>(null);
 
+  // Memoize skull geometry to prevent recreating on every render
+  // 두개골 기하학 메모화 | Skull geometry memoization
+  const skullGeometry = useMemo(() => new THREE.SphereGeometry(0.25, 16, 16), []);
+
+  // 자원 정리 | Resource cleanup - Dispose skull geometry on unmount
+  useEffect(() => {
+    return () => {
+      skullGeometry.dispose();
+    };
+  }, [skullGeometry]);
+
   // Pulsing emissive animation for skeleton layer
   useFrame((state) => {
     if (!groupRef.current) return;
@@ -113,7 +124,7 @@ const SkeletonLayer: React.FC<{ opacity: number }> = ({ opacity }) => {
 
       {/* Skull - wireframe sphere */}
       <lineSegments position={[0, 1.6, 0]}>
-        <edgesGeometry args={[new THREE.SphereGeometry(0.25, 16, 16)]} />
+        <edgesGeometry args={[skullGeometry]} />
         <lineBasicMaterial
           color={KOREAN_COLORS.WHITE_SOLID}
           transparent

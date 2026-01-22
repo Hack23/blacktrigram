@@ -26,7 +26,7 @@
  * - 심장격 (Heart strike) - Chest strike (critical)
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ThreeObjectPools } from '../../../../../utils/threeObjectPool';
@@ -310,6 +310,37 @@ export const InternalDamage3D: React.FC<InternalDamage3DProps> = ({
       return updated;
     });
   }, [effects, enabled, createPulseParticles, createRippleParticles]);
+
+  // 자원 정리 | Resource cleanup - Dispose all particle systems on unmount
+  // Using a ref to track instances to avoid stale closure issues
+  const effectInstancesRef = useRef<Map<
+    string,
+    {
+      pulseParticles: THREE.Points;
+      rippleParticles: THREE.Points;
+      startTime: number;
+      effect: InternalDamageEffect;
+    }
+  >>(effectInstances);
+  useEffect(() => {
+    effectInstancesRef.current = effectInstances;
+  }, [effectInstances]);
+
+  useEffect(() => {
+    return () => {
+      effectInstancesRef.current.forEach((instance: {
+        pulseParticles: THREE.Points;
+        rippleParticles: THREE.Points;
+        startTime: number;
+        effect: InternalDamageEffect;
+      }) => {
+        instance.pulseParticles.geometry.dispose();
+        (instance.pulseParticles.material as THREE.Material).dispose();
+        instance.rippleParticles.geometry.dispose();
+        (instance.rippleParticles.material as THREE.Material).dispose();
+      });
+    };
+  }, []); // Empty deps - cleanup on unmount only
 
   // Animation loop
   useFrame(() => {
