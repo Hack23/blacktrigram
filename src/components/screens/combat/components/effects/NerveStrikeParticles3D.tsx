@@ -20,6 +20,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { ThreeObjectPools } from '../../../../../utils/threeObjectPool';
 
 /**
  * Nerve strike effect data structure
@@ -181,6 +182,7 @@ interface EffectInstance {
 
 /**
  * Create a new particle system for a nerve strike effect
+ * Uses object pooling to reduce GC pressure during particle generation
  */
 function createParticleSystem(
   effect: NerveStrikeEffect,
@@ -193,27 +195,37 @@ function createParticleSystem(
   const velocities = new Float32Array(particleCount * 3);
   const initialRadii = new Float32Array(particleCount);
   
-  for (let i = 0; i < particleCount; i++) {
-    // Random point on unit sphere
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    
-    const x = Math.sin(phi) * Math.cos(theta);
-    const y = Math.sin(phi) * Math.sin(theta);
-    const z = Math.cos(phi);
-    
-    // Start at impact point
-    positions[i * 3] = effect.position[0];
-    positions[i * 3 + 1] = effect.position[1];
-    positions[i * 3 + 2] = effect.position[2];
-    
-    // Store direction for expansion
-    velocities[i * 3] = x;
-    velocities[i * 3 + 1] = y;
-    velocities[i * 3 + 2] = z;
-    
-    // Store initial radius for arc pattern
-    initialRadii[i] = Math.random() * 0.3;
+  // Use pooled Vector3 for direction calculations
+  // Pool strategy: Acquire temp vector, use for calculations, release
+  const tempDir = ThreeObjectPools.vector3.acquire();
+  
+  try {
+    for (let i = 0; i < particleCount; i++) {
+      // Random point on unit sphere
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      
+      const x = Math.sin(phi) * Math.cos(theta);
+      const y = Math.sin(phi) * Math.sin(theta);
+      const z = Math.cos(phi);
+      
+      // Start at impact point
+      positions[i * 3] = effect.position[0];
+      positions[i * 3 + 1] = effect.position[1];
+      positions[i * 3 + 2] = effect.position[2];
+      
+      // Store direction for expansion (normalized)
+      tempDir.set(x, y, z).normalize();
+      velocities[i * 3] = tempDir.x;
+      velocities[i * 3 + 1] = tempDir.y;
+      velocities[i * 3 + 2] = tempDir.z;
+      
+      // Store initial radius for arc pattern
+      initialRadii[i] = Math.random() * 0.3;
+    }
+  } finally {
+    // Always release pooled vector
+    ThreeObjectPools.vector3.release(tempDir);
   }
   
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -243,6 +255,7 @@ function createParticleSystem(
 
 /**
  * Update particle animation based on elapsed time
+ * Uses object pooling for per-frame calculations to minimize GC pressure
  */
 function updateParticleAnimation(
   instance: EffectInstance,
@@ -266,20 +279,38 @@ function updateParticleAnimation(
   );
   const currentRadius = expansionProgress * NERVE_STRIKE_CONSTANTS.MAX_RADIUS;
   
-  // Update particle positions (electric arc expansion)
-  for (let i = 0; i < particleCount; i++) {
-    const i3 = i * 3;
+  // Use pooled vectors for target position calculations
+  // Pool strategy: Acquire temps once per update, reuse for all particles
+  const tempTarget = ThreeObjectPools.vector3.acquire();
+  const tempDelta = ThreeObjectPools.vector3.acquire();
+  const effectPos = ThreeObjectPools.vector3.acquire();
+  
+  try {
+    effectPos.set(effect.position[0], effect.position[1], effect.position[2]);
     
-    // Expand outward along velocity direction
-    const targetRadius = currentRadius + initialRadii[i];
-    const targetX = effect.position[0] + velocities[i3] * targetRadius;
-    const targetY = effect.position[1] + velocities[i3 + 1] * targetRadius;
-    const targetZ = effect.position[2] + velocities[i3 + 2] * targetRadius;
-    
-    // Smooth interpolation to target position
-    positions[i3] += (targetX - positions[i3]) * delta * 10;
-    positions[i3 + 1] += (targetY - positions[i3 + 1]) * delta * 10;
-    positions[i3 + 2] += (targetZ - positions[i3 + 2]) * delta * 10;
+    // Update particle positions (electric arc expansion)
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      
+      // Expand outward along velocity direction
+      const targetRadius = currentRadius + initialRadii[i];
+      tempTarget.set(velocities[i3], velocities[i3 + 1], velocities[i3 + 2]);
+      tempTarget.multiplyScalar(targetRadius);
+      tempTarget.add(effectPos);
+      
+      // Smooth interpolation to target position
+      tempDelta.set(positions[i3], positions[i3 + 1], positions[i3 + 2]);
+      tempDelta.sub(tempTarget).multiplyScalar(-delta * 10);
+      
+      positions[i3] += tempDelta.x;
+      positions[i3 + 1] += tempDelta.y;
+      positions[i3 + 2] += tempDelta.z;
+    }
+  } finally {
+    // Always release pooled objects
+    ThreeObjectPools.vector3.release(tempTarget);
+    ThreeObjectPools.vector3.release(tempDelta);
+    ThreeObjectPools.vector3.release(effectPos);
   }
   
   geometry.attributes.position.needsUpdate = true;

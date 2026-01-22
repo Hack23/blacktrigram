@@ -25,6 +25,7 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { TrigramStance } from "../../../../types/common";
 import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import { ThreeObjectPools } from "../../../../utils/threeObjectPool";
 
 /**
  * Trigram symbol particle effect data
@@ -137,6 +138,7 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
   const completedEffectsRef = useRef<Set<string>>(new Set());
 
   // Initialize effect instances
+  // Performance: Uses ThreeObjectPools to reduce GC pressure during effect spawning
   useEffect(() => {
     if (!enabled) return;
 
@@ -145,9 +147,13 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
       
       effects.forEach((effect) => {
         if (!newInstances.has(effect.id)) {
+          // Acquire Vector3 from pool and set position
+          const position = ThreeObjectPools.vector3.acquire();
+          position.set(...effect.position);
+          
           newInstances.set(effect.id, {
             id: effect.id,
-            position: new THREE.Vector3(...effect.position),
+            position,
             stance: effect.stance,
             age: 0,
             rotation: 0,
@@ -155,10 +161,12 @@ export const TrigramParticles3D: React.FC<TrigramParticles3DProps> = ({
         }
       });
 
-      // Clean up removed effects
+      // Clean up removed effects and release pooled objects
       const effectIds = new Set(effects.map((e) => e.id));
-      newInstances.forEach((_, id) => {
+      newInstances.forEach((instance, id) => {
         if (!effectIds.has(id)) {
+          // Release Vector3 back to pool
+          ThreeObjectPools.vector3.release(instance.position);
           newInstances.delete(id);
           completedEffectsRef.current.delete(id);
         }

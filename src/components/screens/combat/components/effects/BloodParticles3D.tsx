@@ -21,6 +21,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
+import { ThreeObjectPools } from "../../../../../utils/threeObjectPool";
 
 /**
  * Blood particle data structure for efficient simulation
@@ -106,6 +107,20 @@ const BLOOD_CONSTANTS = {
 
 /**
  * Generate initial particles for a blood splatter effect
+ * 
+ * Uses ThreeObjectPools for Vector3 allocations to reduce GC pressure.
+ * 
+ * Pooling Strategy:
+ * - Acquire temp vectors for calculations (baseDir, origin, axis vectors)
+ * - Clone final position/velocity for particle ownership
+ * - Release all temp vectors back to pool after loop completes
+ * 
+ * This reduces Vector3 allocations from ~600 per splatter (2 per particle × 300)
+ * to just 2 per particle (position and velocity owned by particle).
+ * 
+ * @param effect - Blood splatter effect configuration
+ * @param maxParticles - Maximum number of particles to generate
+ * @returns Array of blood particles with pooled temp vectors released
  */
 const generateBloodParticles = (
   effect: BloodSplatterEffect,
@@ -114,8 +129,19 @@ const generateBloodParticles = (
   const particles: BloodParticle[] = [];
   const particleCount = Math.floor(maxParticles * effect.intensity);
 
-  const baseDir = new THREE.Vector3(...effect.direction).normalize();
-  const origin = new THREE.Vector3(...effect.position);
+  // Acquire pooled temp vectors for reuse across all particles
+  // These will be released after the loop completes
+  const baseDir = ThreeObjectPools.vector3.acquire();
+  const origin = ThreeObjectPools.vector3.acquire();
+  const direction = ThreeObjectPools.vector3.acquire();
+  const yAxis = ThreeObjectPools.vector3.acquire();
+  const zAxis = ThreeObjectPools.vector3.acquire();
+
+  // Initialize reusable vectors
+  baseDir.set(...effect.direction).normalize();
+  origin.set(...effect.position);
+  yAxis.set(0, 1, 0);
+  zAxis.set(0, 0, 1);
 
   for (let i = 0; i < particleCount; i++) {
     // Random spread around impact direction
@@ -123,30 +149,33 @@ const generateBloodParticles = (
     const phi = (Math.random() - 0.5) * spreadAngle;
     const theta = Math.random() * Math.PI * 2;
 
-    // Rotate direction vector
-    const direction = baseDir.clone();
-    direction.applyAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      phi
-    );
-    direction.applyAxisAngle(
-      new THREE.Vector3(0, 0, 1),
-      theta
-    );
+    // Reuse direction vector: copy base direction and apply rotations
+    direction.copy(baseDir);
+    direction.applyAxisAngle(yAxis, phi);
+    direction.applyAxisAngle(zAxis, theta);
 
     // Random velocity magnitude
     const speed =
       BLOOD_CONSTANTS.VELOCITY_MIN +
       Math.random() * (BLOOD_CONSTANTS.VELOCITY_MAX - BLOOD_CONSTANTS.VELOCITY_MIN);
 
+    // Clone vectors for particle ownership - these are NOT pooled
+    // as the particle needs to own its position/velocity for its lifetime
     particles.push({
       position: origin.clone(),
-      velocity: direction.multiplyScalar(speed),
+      velocity: direction.clone().multiplyScalar(speed),
       lifetime: BLOOD_CONSTANTS.PARTICLE_LIFETIME,
       age: 0,
       settled: false,
     });
   }
+
+  // Release all temp vectors back to pool for reuse
+  ThreeObjectPools.vector3.release(baseDir);
+  ThreeObjectPools.vector3.release(origin);
+  ThreeObjectPools.vector3.release(direction);
+  ThreeObjectPools.vector3.release(yAxis);
+  ThreeObjectPools.vector3.release(zAxis);
 
   return particles;
 };

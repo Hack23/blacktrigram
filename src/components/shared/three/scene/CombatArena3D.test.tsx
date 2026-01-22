@@ -27,6 +27,10 @@ vi.mock("three", () => ({
   DoubleSide: 2,
   Color: class MockColor {
     constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
   },
   MeshPhysicalMaterial: class MockMeshPhysicalMaterial {
     dispose() {}
@@ -41,6 +45,50 @@ vi.mock("three", () => ({
   BufferAttribute: class MockBufferAttribute {},
   AdditiveBlending: 1,
 }));
+
+// Mock ThreeObjectPools to return mock Color and Vector3 objects
+vi.mock("../../../../utils/threeObjectPool", () => {
+  const MockColor = class {
+    constructor(public color?: number | string) {}
+    set(value: number | string) {
+      this.color = value;
+      return this;
+    }
+    clone() {
+      return new MockColor(this.color);
+    }
+  };
+
+  const MockVector3 = class {
+    constructor(
+      public x = 0,
+      public y = 0,
+      public z = 0,
+    ) {}
+    set(x: number, y: number, z: number) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      return this;
+    }
+    clone() {
+      return new MockVector3(this.x, this.y, this.z);
+    }
+  };
+
+  return {
+    ThreeObjectPools: {
+      color: {
+        acquire: () => new MockColor(),
+        release: vi.fn(),
+      },
+      vector3: {
+        acquire: () => new MockVector3(),
+        release: vi.fn(),
+      },
+    },
+  };
+});
 
 describe("CombatArena3D", () => {
   it("should render without crashing", () => {
