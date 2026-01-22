@@ -6,6 +6,8 @@
  * Shows round winner, current score, statistics, and countdown to next round.
  * Implements Korean cyberpunk aesthetic with bilingual text support.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/RoundAnnouncement
  * @category Combat UI
  */
@@ -18,7 +20,8 @@ import React, {
   useState,
 } from "react";
 import { PlayerState } from "../../../../../systems";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
  * Round statistics displayed between rounds
@@ -71,6 +74,7 @@ export interface RoundAnnouncementProps {
  * - Countdown to next round
  * - Skip button for quick play
  * - Match point indicator for final rounds
+ * - Uses useKoreanTheme for consistent styling
  *
  * Korean: 라운드 종료 발표 컴포넌트
  */
@@ -85,6 +89,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
   totalRounds = 3,
   countdownDuration = 3,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "large", isMobile });
   const [countdown, setCountdown] = useState(countdownDuration);
   const [isVisible, setIsVisible] = useState(false);
   const hasCompletedRef = useRef(false);
@@ -137,18 +142,22 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
     return maxScore === roundsToWin - 1;
   }, [currentScore, totalRounds]);
 
-  // Convert hex colors to CSS - memoized for performance
+  // Convert hex colors to CSS - memoized for performance using theme
   const goldColor = useMemo(
-    () => `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-    []
+    () => hexColorToCSS(theme.colors.ACCENT_GOLD),
+    [theme.colors.ACCENT_GOLD]
   );
   const cyanColor = useMemo(
-    () => `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
-    []
+    () => hexColorToCSS(theme.colors.PRIMARY_CYAN),
+    [theme.colors.PRIMARY_CYAN]
   );
   const darkBg = useMemo(
-    () => `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, "0")}`,
-    []
+    () => hexColorToCSS(theme.colors.UI_BACKGROUND_DARK),
+    [theme.colors.UI_BACKGROUND_DARK]
+  );
+  const textSecondary = useMemo(
+    () => hexColorToCSS(theme.colors.TEXT_SECONDARY),
+    [theme.colors.TEXT_SECONDARY]
   );
 
   // Memoize container style for performance
@@ -179,7 +188,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
           style={{
             fontSize: isMobile ? "20px" : "28px",
             color: goldColor,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.fontFamily.KOREAN,
             fontWeight: "bold",
             marginBottom: isMobile ? "10px" : "20px",
             textShadow: `0 0 20px ${goldColor}`,
@@ -196,7 +205,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
         style={{
           fontSize: isMobile ? "36px" : "56px",
           color: goldColor,
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontWeight: "bold",
           margin: `0 0 ${isMobile ? "20px" : "30px"} 0`,
           textShadow: `0 0 30px ${goldColor}`,
@@ -215,7 +224,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
           style={{
             fontSize: isMobile ? "24px" : "36px",
             color: cyanColor,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.fontFamily.KOREAN,
             margin: `0 0 ${isMobile ? "20px" : "30px"} 0`,
             textAlign: "center",
           }}
@@ -272,11 +281,8 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
             gap: isMobile ? "12px" : "24px",
             marginBottom: isMobile ? "20px" : "30px",
             fontSize: isMobile ? "14px" : "16px",
-            color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-              6,
-              "0"
-            )}`,
-            fontFamily: FONT_FAMILY.KOREAN,
+            color: textSecondary,
+            fontFamily: theme.fontFamily.KOREAN,
           }}
           data-testid="round-stats"
         >
@@ -316,7 +322,7 @@ export const RoundAnnouncement: React.FC<RoundAnnouncementProps> = ({
           color: darkBg,
           border: "none",
           borderRadius: "6px",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontWeight: "bold",
           cursor: "pointer",
         }}
