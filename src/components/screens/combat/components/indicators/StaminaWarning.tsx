@@ -7,13 +7,16 @@
  * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
  * It does NOT use Html from drei - it's a standard React component.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/StaminaWarning
  * @category Combat UI
  * @korean 체력경고
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface StaminaWarningProps {
   /**
@@ -35,6 +38,7 @@ export interface StaminaWarningProps {
  * Renders a fullscreen flashing yellow border when stamina drops below 20%.
  * Only visible when stamina is below 20. If stamina is 20 or higher, the component does not render.
  * Uses CSS keyframe animation for fast attention-grabbing flash at 60fps.
+ * Uses useKoreanTheme for consistent color scheme.
  *
  * @example
  * ```tsx
@@ -46,6 +50,8 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
   stamina,
   isMobile,
 }) => {
+  const theme = useKoreanTheme({ variant: "danger", size: "md", isMobile });
+  
   const warningStyle = useMemo(() => {
     // Only show when stamina is critically low
     const criticalThreshold = 20;
@@ -62,12 +68,8 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
     // Mobile uses thinner border
     const borderWidth = isMobile ? "4px" : "6px";
 
-    // Use KOREAN_COLORS.WARNING_YELLOW constant
-    const rgb = KOREAN_COLORS.WARNING_YELLOW;
-    const warningColor = `rgb(${(rgb >> 16) & 255}, ${(rgb >> 8) & 255}, ${
-      rgb & 255
-    })`;
-
+    // Use theme WARNING_YELLOW constant with proper conversion
+    const warningColor = hexToRgbaString(theme.colors.WARNING_YELLOW, 1);
     // Animation speed increases with urgency
     const animationDuration = Math.max(0.6, 1.2 - urgency * 0.6);
 

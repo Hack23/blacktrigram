@@ -7,13 +7,15 @@
  * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
  * It does NOT use Html from drei - it's a standard React component.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/BalanceIndicator
  * @category Combat UI
  * @korean 균형표시기
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import type { BalanceState } from "../../../../../types/player-visual";
 
 export interface BalanceIndicatorProps {
@@ -37,19 +39,21 @@ export interface BalanceIndicatorProps {
 }
 
 /**
- * Get color for balance state
+ * Get color for balance state using theme colors
  */
-function getBalanceColor(state: BalanceState): number {
-  switch (state) {
-    case "READY":
-      return KOREAN_COLORS.POSITIVE_GREEN; // 🟢 Green
-    case "SHAKEN":
-      return KOREAN_COLORS.WARNING_YELLOW; // 🟡 Yellow
-    case "VULNERABLE":
-      return KOREAN_COLORS.WARNING_ORANGE; // 🟠 Orange
-    case "HELPLESS":
-      return KOREAN_COLORS.ACCENT_RED; // 🔴 Red
-  }
+function getBalanceColor(theme: ReturnType<typeof useKoreanTheme>): (state: BalanceState) => number {
+  return (state: BalanceState): number => {
+    switch (state) {
+      case "READY":
+        return theme.colors.POSITIVE_GREEN; // 🟢 Green
+      case "SHAKEN":
+        return theme.colors.WARNING_YELLOW; // 🟡 Yellow
+      case "VULNERABLE":
+        return theme.colors.WARNING_ORANGE; // 🟠 Orange
+      case "HELPLESS":
+        return theme.colors.ACCENT_RED; // 🔴 Red
+    }
+  };
 }
 
 /**
@@ -76,6 +80,7 @@ function getBalanceLabel(state: BalanceState): {
  *
  * Renders a border around the player HUD area with color matching the
  * current balance state. Uses smooth transitions for state changes.
+ * Uses useKoreanTheme for consistent color scheme.
  *
  * @example
  * ```tsx
@@ -91,8 +96,11 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
   position,
   isMobile,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
+  const getColor = useMemo(() => getBalanceColor(theme), [theme]);
+  
   const indicatorStyle = useMemo(() => {
-    const color = getBalanceColor(balanceState);
+    const color = getColor(balanceState);
     const colorHex = `#${color.toString(16).padStart(6, "0")}`;
 
     // Mobile uses thinner border
@@ -115,7 +123,7 @@ export const BalanceIndicator: React.FC<BalanceIndicatorProps> = ({
       transition: "border-color 0.5s ease-out, box-shadow 0.5s ease-out",
       zIndex: 90, // Below HUD text but above game content
     };
-  }, [balanceState, position, isMobile]);
+  }, [balanceState, position, isMobile, getColor]);
 
   const label = useMemo(() => getBalanceLabel(balanceState), [balanceState]);
 
