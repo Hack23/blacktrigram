@@ -344,6 +344,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           alignItems: "center",
           justifyContent: "center",
           fontFamily: theme.koreanTypography.fontFamily,
+          lineHeight: theme.koreanTypography.lineHeight,
           color: toCssColor(theme.colors.TEXT_PRIMARY),
           padding: layoutConstants.padding,
           boxSizing: "border-box",

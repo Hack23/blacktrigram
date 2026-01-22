@@ -2389,6 +2389,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                     fontSize: "72px",
                     fontWeight: "bold",
                     fontFamily: theme.koreanTypography.fontFamily,
+                    lineHeight: theme.koreanTypography.lineHeight,
                     textAlign: "center",
                     color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
                       6,
@@ -2507,6 +2508,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               fontWeight: "bold",
               textAlign: "center",
               fontFamily: theme.koreanTypography.fontFamily,
+              lineHeight: theme.koreanTypography.lineHeight,
               color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
                 6,
                 "0",
@@ -2697,6 +2699,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                   padding: ${isMobile ? "8px 12px" : "10px 16px"};
                   font-size: ${isMobile ? "12px" : "14px"};
                   font-family: ${theme.koreanTypography.fontFamily};
+                  line-height: ${theme.koreanTypography.lineHeight};
                   font-weight: bold;
                   cursor: pointer;
                   transition: all 0.2s ease;
