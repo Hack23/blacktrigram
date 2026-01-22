@@ -145,8 +145,6 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   const mainFontSize = getMainFontSize();
   const subFontSize = getSubFontSize();
 
-  const hasPlayedFightSound = useRef(false);
-
   // Memoize colors for performance using theme
   const goldColor = useMemo(() => hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const cyanColor = useMemo(
