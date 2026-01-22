@@ -7,12 +7,17 @@ import { KOREAN_COLORS } from "../../../../types/constants";
  * Victory Animation 3D Component
  * Displays celebratory 3D particle effects for victory screen
  * Enhanced with additional Korean symbolism and dynamic effects
+ * Optimized for 60fps performance with object reuse
  */
 export const VictoryAnimation3D: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<THREE.Points>(null);
   const ringsRef = useRef<THREE.Group>(null);
   const symbolsRef = useRef<THREE.Group>(null);
+
+  // Reusable objects for animation calculations (avoid allocations)
+  const [reusableScale] = useState(() => new THREE.Vector3());
+  const [reusablePosition] = useState(() => new THREE.Vector3());
 
   // Create victory particles - use useState with lazy initializer
   const [particlePositions] = useState(() => {
@@ -51,8 +56,10 @@ export const VictoryAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Animate victory effects
-  useFrame((state) => {
+  // Animate victory effects - optimized for 60fps
+  useFrame((state, delta) => {
+    // Clamp delta to avoid large jumps
+    const safeDelta = Math.min(delta, 1 / 30);
     const time = state.clock.elapsedTime;
 
     // Rotate entire group
@@ -60,13 +67,15 @@ export const VictoryAnimation3D: React.FC = () => {
       groupRef.current.rotation.y = time * 0.3;
     }
 
-    // Pulse particles with wave effect
+    // Pulse particles with wave effect - use reusable objects
     if (particlesRef.current) {
       const scale = 1 + Math.sin(time * 2) * 0.2;
-      particlesRef.current.scale.setScalar(scale);
+      reusableScale.setScalar(scale);
+      particlesRef.current.scale.copy(reusableScale);
       
       // Rising motion
-      particlesRef.current.position.y = Math.sin(time * 0.8) * 0.5;
+      reusablePosition.set(0, Math.sin(time * 0.8) * 0.5, 0);
+      particlesRef.current.position.copy(reusablePosition);
     }
 
     // Rotate rings at different speeds

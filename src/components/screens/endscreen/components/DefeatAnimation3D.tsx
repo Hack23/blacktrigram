@@ -7,11 +7,16 @@ import { KOREAN_COLORS } from "../../../../types/constants";
  * Defeat Animation 3D Component
  * Displays somber 3D particle effects for defeat screen
  * Uses blue/cyan tones to contrast with gold victory effects
+ * Optimized for 60fps performance with object reuse
  */
 export const DefeatAnimation3D: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<THREE.Points>(null);
   const spiralRef = useRef<THREE.Group>(null);
+
+  // Reusable objects for animation calculations (avoid allocations in hot path)
+  const [reusableScale] = useState(() => new THREE.Vector3());
+  const [reusablePosition] = useState(() => new THREE.Vector3());
 
   // Create defeat particles - use useState with lazy initializer
   const [particlePositions] = useState(() => {
@@ -32,8 +37,10 @@ export const DefeatAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Animate defeat effects with slower, descending motion
-  useFrame((state) => {
+  // Animate defeat effects with slower, descending motion - optimized for 60fps
+  useFrame((state, delta) => {
+    // Clamp delta to avoid large jumps
+    const safeDelta = Math.min(delta, 1 / 30);
     const time = state.clock.elapsedTime;
 
     // Slow rotation
@@ -41,13 +48,16 @@ export const DefeatAnimation3D: React.FC = () => {
       groupRef.current.rotation.y = time * 0.15; // Slower than victory
     }
 
-    // Fade particles downward
+    // Fade particles downward - use reusable objects
     if (particlesRef.current) {
       const scale = 1 + Math.sin(time * 1.5) * 0.1; // Subtle pulsing
-      particlesRef.current.scale.setScalar(scale);
+      reusableScale.setScalar(scale);
+      particlesRef.current.scale.copy(reusableScale);
       
       // Slowly descend
-      particlesRef.current.position.y = Math.sin(time * 0.5) * 0.3 - 0.2;
+      const yPos = Math.sin(time * 0.5) * 0.3 - 0.2;
+      reusablePosition.set(0, yPos, 0);
+      particlesRef.current.position.copy(reusablePosition);
     }
 
     // Spiral effect - slower, descending
