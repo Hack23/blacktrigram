@@ -19,7 +19,7 @@ export default tseslint.config(
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     ignores: [
-      "**/shared/base/**",
+      "**/shared/base/useKoreanTheme.ts",
       "**/*.test.{ts,tsx}",
       "**/__tests__/**",
     ],

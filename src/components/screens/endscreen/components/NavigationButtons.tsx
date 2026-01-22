@@ -83,6 +83,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         size={buttonSize}
         testId="return-to-menu-button"
         isMobile={isMobile}
+        style={{ minWidth: isMobile ? "200px" : "150px" }}
       />
 
       {/* Rematch Button - Secondary Action */}
@@ -96,6 +97,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           size={buttonSize}
           testId="rematch-button"
           isMobile={isMobile}
+          style={{ minWidth: isMobile ? "200px" : "150px" }}
         />
       )}
 
@@ -110,6 +112,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           size={buttonSize}
           testId="view-replay-button"
           isMobile={isMobile}
+          style={{ minWidth: isMobile ? "200px" : "150px" }}
         />
       )}
 
