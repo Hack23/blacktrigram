@@ -18,6 +18,11 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
+    ignores: [
+      "**/shared/base/**",
+      "**/*.test.{ts,tsx}",
+      "**/__tests__/**",
+    ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -42,6 +47,33 @@ export default tseslint.config(
       ],
       // Allow setState in effects when syncing with external systems (props, audio, timers)
       "react-hooks/set-state-in-effect": "off",
+      // Prevent direct KOREAN_COLORS/FONT_FAMILY imports in screen components
+      // Use useKoreanTheme hook instead for centralized theming
+      "no-restricted-imports": [
+        "warn",
+        {
+          paths: [
+            {
+              name: "../../../types/constants",
+              importNames: ["KOREAN_COLORS", "FONT_FAMILY"],
+              message:
+                "Use useKoreanTheme hook instead of direct KOREAN_COLORS/FONT_FAMILY imports. See docs/USEKOREAN_THEME_MIGRATION_GUIDE.md",
+            },
+            {
+              name: "../../types/constants",
+              importNames: ["KOREAN_COLORS", "FONT_FAMILY"],
+              message:
+                "Use useKoreanTheme hook instead of direct KOREAN_COLORS/FONT_FAMILY imports. See docs/USEKOREAN_THEME_MIGRATION_GUIDE.md",
+            },
+            {
+              name: "../types/constants",
+              importNames: ["KOREAN_COLORS", "FONT_FAMILY"],
+              message:
+                "Use useKoreanTheme hook instead of direct KOREAN_COLORS/FONT_FAMILY imports. See docs/USEKOREAN_THEME_MIGRATION_GUIDE.md",
+            },
+          ],
+        },
+      ],
       // Relaxed rules for Korean martial arts game development
       "@typescript-eslint/no-unused-vars": [
         "warn",
