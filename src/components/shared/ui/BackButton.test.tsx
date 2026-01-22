@@ -65,7 +65,7 @@ describe("BackButton", () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
 
-    render(<BackButton onClick={vi.fn()} isMobile={false} />);
+    render(<BackButton onClick={onClick} isMobile={false} />);
 
     const button = screen.getByTestId("back-button");
 
