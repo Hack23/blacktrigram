@@ -23,8 +23,9 @@ import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import ConfirmDialog from "../../../../shared/ui/shared/ConfirmDialog";
 import ControlsGuide from "./ControlsGuide";
 import QuickSettings from "./QuickSettings";
-import { handleKeyboardNav, getFocusStyle } from "../../../../../utils/accessibility";
+import { handleKeyboardNav } from "../../../../../utils/accessibility";
 import { createBilingualLabel } from "../../../../../types/AccessibilityTypes";
+import { PauseMenuButton } from "./PauseMenuButton";
 
 export interface PauseMenuProps {
   readonly onResume: () => void;
@@ -215,77 +216,20 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({
           }}
         >
           {menuItems.map((item, index) => (
-            <button
+            <PauseMenuButton
               key={item.key}
               ref={(el) => { buttonRefs.current[index] = el; }}
+              labelKorean={item.labelKorean}
+              labelEnglish={item.labelEnglish}
+              icon={item.icon}
               onClick={item.onClick}
               onMouseEnter={() => audio.playSFX("menu_hover")}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onFocus={() => setFocusedIndex(index)}
-              data-testid={item.testId}
-              aria-label={createBilingualLabel(item.labelKorean, item.labelEnglish).label}
-              role="menuitem"
-              tabIndex={0}
-              style={{
-                padding: isMobile ? "12px 24px" : "16px 32px",
-                fontSize: isMobile ? "16px" : "20px",
-                backgroundColor: hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  0.9
-                ),
-                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
-                borderRadius: "8px",
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                textAlign: "center",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "12px",
-                boxShadow: "none",
-                ...getFocusStyle(focusedIndex === index, {
-                  outlineWidth: 3,
-                  boxShadow: `0 0 0 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
-                }),
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
-                  1
-                );
-                e.currentTarget.style.color = hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_DARK,
-                  1
-                );
-                e.currentTarget.style.transform = "scale(1.05)";
-                e.currentTarget.style.boxShadow = `0 0 20px ${hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
-                  0.5
-                )}`;
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                  0.9
-                );
-                e.currentTarget.style.color = hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
-                  1
-                );
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              {item.icon && (
-                <span style={{ fontSize: "24px" }}>{item.icon}</span>
-              )}
-              <span>
-                {item.labelKorean} | {item.labelEnglish}
-              </span>
-            </button>
+              isFocused={focusedIndex === index}
+              isMobile={isMobile}
+              testId={item.testId}
+            />
           ))}
         </div>
 
