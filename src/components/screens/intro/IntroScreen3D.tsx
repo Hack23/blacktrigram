@@ -15,8 +15,6 @@ import { PLAYER_ARCHETYPES_DATA } from "../../../systems/types";
 import { GameMode, PlayerArchetype } from "../../../types/common";
 import {
   ARCHETYPE_BACKGROUNDS,
-  FONT_FAMILY,
-  KOREAN_COLORS,
   getKoreanFontSize,
   getPerformanceSettings,
 } from "../../../types/constants";
@@ -24,6 +22,7 @@ import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getArchetypeAssets } from "../../../utils/playerUtils";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { ArchetypeDisplayOverlayHtml } from "./components/ArchetypeDisplayOverlayHtml";
@@ -113,19 +112,6 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   // Ensure minimum valid dimensions to prevent rendering issues
   const screenWidth = propWidth ?? (width || 1200);
   const screenHeight = propHeight ?? (height || 800);
-
-  // Memoize colors for performance
-  const colors = useMemo(
-    () => ({
-      trigramTextShadow: `0 0 10px ${hexToRgbaString(
-        KOREAN_COLORS.PRIMARY_CYAN,
-        0.8,
-      )}`,
-      footerBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
-      footerBorder: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3),
-    }),
-    [],
-  );
 
   // Create archetype data with texture keys from PLAYER_ARCHETYPES_DATA
   const archetypeData = useMemo(() => {
@@ -252,6 +238,26 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
   // Layout sizing should use screenWidth-based calculations
   const isMobile = useMemo(() => shouldUseMobileControls(), []);
 
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
+  // Memoize colors from theme for performance
+  const colors = useMemo(
+    () => ({
+      trigramTextShadow: `0 0 10px ${hexToRgbaString(
+        theme.colors.PRIMARY_CYAN,
+        0.8,
+      )}`,
+      footerBackground: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
+      footerBorder: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.3),
+    }),
+    [theme],
+  );
+
   // Performance settings based on device tier
   const performanceSettings = useMemo(() => {
     return getPerformanceSettings(screenWidth, isMobile);
@@ -365,7 +371,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
         dpr={performanceSettings.dpr}
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 0.95);
         }}
       >
         {/* 3D Background Scene */}
@@ -416,8 +422,11 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
               style={{
                 fontSize: screenWidth < 768 ? "14px" : "16px",
                 fontWeight: "bold",
-                fontFamily: FONT_FAMILY.KOREAN,
-                color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+                fontFamily: theme.koreanTypography.fontFamily,
+                lineHeight: theme.koreanTypography.lineHeight,
+                letterSpacing: theme.koreanTypography.letterSpacing,
+                wordBreak: theme.koreanTypography.wordBreak,
+                color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
                 textShadow: "0 0 10px rgba(255, 170, 0, 0.5)",
               }}
             >
@@ -426,8 +435,8 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
             <div
               style={{
                 fontSize: screenWidth < 768 ? "10px" : "11px",
-                fontFamily: FONT_FAMILY.KOREAN,
-                color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                fontFamily: theme.koreanTypography.fontFamily,
+                color: `#${theme.colors.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
               }}
             >
               한국 무술 시뮬레이터 | Korean Martial Arts Simulator
@@ -467,7 +476,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
             <div
               style={{
                 fontSize: screenWidth < 768 ? "16px" : "18px",
-                color: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
+                color: `#${theme.colors.PRIMARY_CYAN.toString(16).padStart(
                   6,
                   "0",
                 )}`,
@@ -598,8 +607,8 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
             <div
               style={{
                 fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 3, 10)}px`,
-                color: `#${KOREAN_COLORS.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
-                fontFamily: FONT_FAMILY.KOREAN,
+                color: `#${theme.colors.ACCENT_CYAN.toString(16).padStart(6, "0")}`,
+                fontFamily: theme.koreanTypography.fontFamily,
                 fontStyle: "italic",
                 textAlign: "center",
               }}
@@ -611,7 +620,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
             <div
               style={{
                 fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 4, 9)}px`,
-                color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
+                color: `#${theme.colors.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
                 textAlign: "center",
                 cursor: "pointer",
               }}
@@ -626,7 +635,7 @@ export const IntroScreen3D: React.FC<IntroScreen3DProps> = ({
             <div
               style={{
                 fontSize: `${Math.max(getKoreanFontSize("SMALL", screenWidth) - 5, 8)}px`,
-                color: `#${KOREAN_COLORS.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
+                color: `#${theme.colors.ACCENT_BLUE.toString(16).padStart(6, "0")}`,
                 textAlign: "center",
                 cursor: "pointer",
               }}

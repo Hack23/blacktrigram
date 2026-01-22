@@ -26,6 +26,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -42,6 +43,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -58,6 +60,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -79,6 +82,7 @@ describe("NavigationButtons", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onRematch={mockOnRematch}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -95,6 +99,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -113,6 +118,7 @@ describe("NavigationButtons", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onRematch={mockOnRematch}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -134,6 +140,7 @@ describe("NavigationButtons", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onViewReplay={mockOnViewReplay}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -150,6 +157,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -168,6 +176,7 @@ describe("NavigationButtons", () => {
           onReturnToMenu={mockOnReturnToMenu}
           onViewReplay={mockOnViewReplay}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -191,6 +200,7 @@ describe("NavigationButtons", () => {
           onRematch={mockOnRematch}
           onViewReplay={mockOnViewReplay}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -213,6 +223,7 @@ describe("NavigationButtons", () => {
           onRematch={mockOnRematch}
           onViewReplay={mockOnViewReplay}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>
@@ -238,6 +249,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={true}
+          width={600}
           isTablet={false}
         />
       </AudioProvider>
@@ -255,6 +267,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={true}
         />
       </AudioProvider>
@@ -272,6 +285,7 @@ describe("NavigationButtons", () => {
         <NavigationButtons
           onReturnToMenu={mockOnReturnToMenu}
           isMobile={false}
+          width={1200}
           isTablet={false}
         />
       </AudioProvider>

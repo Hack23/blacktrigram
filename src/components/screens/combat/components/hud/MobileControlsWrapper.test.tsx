@@ -12,9 +12,13 @@ interface MockComponentProps {
 }
 
 vi.mock("../../../../shared/mobile", () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   VirtualDPad: (_props: MockComponentProps) => <div data-testid="virtual-dpad">DPad</div>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ActionButtons: (_props: MockComponentProps) => <div data-testid="action-buttons">Buttons</div>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   StanceWheel: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   GestureRecognizer: (_props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
 }));
 

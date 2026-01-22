@@ -385,6 +385,7 @@ describe("PhysicalReachCalculator", () => {
         },
       ];
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       archetypes.forEach(({ name: _name, attrs, expectedMin, expectedMax }) => {
         const result = calculator.calculateReach(
           attrs,
@@ -416,6 +417,7 @@ describe("PhysicalReachCalculator", () => {
         },
       ];
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       archetypes.forEach(({ name: _name, attrs, expectedMin, expectedMax }) => {
         const result = calculator.calculateReach(
           attrs,

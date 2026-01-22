@@ -6,10 +6,10 @@ import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHa
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { COMBAT_CONTROLS } from "../../../systems";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 import { getLayoutConstants } from "../../../utils/responsiveLayoutHelpers";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 
@@ -60,6 +60,19 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     [isMobile, screenWidth],
   ); // 4K/2K displays
 
+  // Use centralized responsive layout helper for consistent scaling
+  const layoutConstants = useMemo(
+    () => getLayoutConstants(screenWidth),
+    [screenWidth],
+  );
+
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
   // Memoize scrollbar style to prevent re-creating style tag on every render
   const scrollbarStyle = useMemo(
     () => ({
@@ -69,52 +82,37 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
         display: block !important;
       }
       .korean-scrollbar::-webkit-scrollbar-track {
-        background: ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        background: ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8)};
         border-radius: 6px;
       }
       .korean-scrollbar::-webkit-scrollbar-thumb {
-        background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+        background: ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)};
         border-radius: 6px;
-        border: 2px solid ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8)};
+        border: 2px solid ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8)};
       }
       .korean-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)};
+        background: ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)};
       }
     `,
     }),
-    [],
-  ); // Empty deps - colors are constants
-
-  // Use centralized responsive layout helper for consistent scaling
-  const layoutConstants = useMemo(
-    () => getLayoutConstants(screenWidth),
-    [screenWidth],
+    [theme],
   );
 
-  // Memoize colors for performance
+  // Memoize colors from theme for performance
   const colors = useMemo(
     () => ({
-      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
-      headerBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9),
-      sectionBg: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-      borderGold: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6),
-      borderCyan: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5),
-      borderRed: hexToRgbaString(KOREAN_COLORS.KOREAN_RED, 0.8),
-      textPrimary: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(
-        6,
-        "0",
-      )}`,
-      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(
-        6,
-        "0",
-      )}`,
-      accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(
-        6,
-        "0",
-      )}`,
+      background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.95),
+      headerBg: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
+      sectionBg: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+      borderGold: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6),
+      borderCyan: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5),
+      borderRed: hexToRgbaString(theme.colors.KOREAN_RED, 0.8),
+      textPrimary: `#${theme.colors.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+      textSecondary: `#${theme.colors.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+      accentGold: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+      accentCyan: `#${theme.colors.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
     }),
-    [],
+    [theme],
   );
 
   // Enhanced keyboard handling for screen-level navigation
@@ -190,7 +188,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
         dpr={[1, 2]}
         camera={{ position: [0, 5, 10], fov: 75 }}
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
         }}
       >
         {/* 3D Background Scene */}
@@ -220,7 +218,8 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
             display: "flex",
             flexDirection: "column",
             color: colors.textPrimary,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.koreanTypography.fontFamily,
+            lineHeight: theme.koreanTypography.lineHeight,
             pointerEvents: "auto",
           }}
         >
@@ -245,7 +244,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 color: colors.accentGold,
                 margin: 0,
                 textShadow: `0 0 10px ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.5,
                 )}`,
               }}
@@ -326,10 +325,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                     key={key}
                     style={{
                       background: `linear-gradient(135deg, ${hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                        theme.colors.UI_BACKGROUND_MEDIUM,
                         0.9,
                       )}, ${hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                        theme.colors.UI_BACKGROUND_LIGHT,
                         0.9,
                       )})`,
                       borderRadius: "10px",
@@ -425,7 +424,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         style={{
                           fontSize: isMobile ? "8px" : "9px",
                           fontWeight: "bold",
-                          color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                          color: `#${theme.colors.SECONDARY_MAGENTA.toString(
                             16,
                           ).padStart(6, "0")}`,
                         }}
@@ -435,7 +434,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                       <div
                         style={{
                           fontSize: isMobile ? "7px" : "8px",
-                          color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                          color: `#${theme.colors.SECONDARY_MAGENTA.toString(
                             16,
                           ).padStart(6, "0")}`,
                           fontStyle: "italic",
@@ -451,7 +450,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         marginTop: "6px",
                         fontSize: isMobile ? "7px" : "8px",
                         fontWeight: "bold",
-                        color: `#${KOREAN_COLORS.NEGATIVE_RED.toString(
+                        color: `#${theme.colors.NEGATIVE_RED.toString(
                           16,
                         ).padStart(6, "0")}`,
                       }}
@@ -467,7 +466,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         right: "8px",
                         fontSize: isMobile ? "7px" : "8px",
                         fontWeight: "bold",
-                        color: `#${KOREAN_COLORS.KOREAN_RED.toString(
+                        color: `#${theme.colors.KOREAN_RED.toString(
                           16,
                         ).padStart(6, "0")}`,
                       }}
@@ -515,10 +514,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                     key={key}
                     style={{
                       background: `linear-gradient(90deg, ${hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                        theme.colors.UI_BACKGROUND_LIGHT,
                         0.9,
                       )}, ${hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                        theme.colors.UI_BACKGROUND_MEDIUM,
                         0.9,
                       )})`,
                       borderRadius: "8px",
@@ -534,7 +533,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                     <div
                       style={{
                         background: hexToRgbaString(
-                          KOREAN_COLORS.ACCENT_CYAN,
+                          theme.colors.ACCENT_CYAN,
                           0.3,
                         ),
                         borderRadius: "6px",
@@ -582,7 +581,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 background: colors.sectionBg,
                 borderRadius: "12px",
                 border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.SECONDARY_MAGENTA,
+                  theme.colors.SECONDARY_MAGENTA,
                   0.5,
                 )}`,
                 padding: "20px",
@@ -593,7 +592,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 style={{
                   fontSize: isMobile ? "18px" : "22px",
                   fontWeight: "bold",
-                  color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                  color: `#${theme.colors.SECONDARY_MAGENTA.toString(
                     16,
                   ).padStart(6, "0")}`,
                   margin: "0 0 20px 0",
@@ -633,7 +632,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                       key={move.key}
                       style={{
                         background: hexToRgbaString(
-                          KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                          theme.colors.UI_BACKGROUND_LIGHT,
                           0.8,
                         ),
                         borderRadius: "6px",
@@ -671,7 +670,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 background: colors.sectionBg,
                 borderRadius: "12px",
                 border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
+                  theme.colors.PRIMARY_CYAN,
                   0.5,
                 )}`,
                 padding: "20px",
@@ -778,7 +777,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                       key={step.key}
                       style={{
                         background: hexToRgbaString(
-                          KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                          theme.colors.UI_BACKGROUND_LIGHT,
                           0.8,
                         ),
                         borderRadius: "6px",
@@ -873,7 +872,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         style={{
                           flex: 1,
                           background: hexToRgbaString(
-                            KOREAN_COLORS.ACCENT_CYAN,
+                            theme.colors.ACCENT_CYAN,
                             0.2,
                           ),
                           borderRadius: "6px",
@@ -953,7 +952,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                         style={{
                           flex: 1,
                           background: hexToRgbaString(
-                            KOREAN_COLORS.ACCENT_CYAN,
+                            theme.colors.ACCENT_CYAN,
                             0.2,
                           ),
                           borderRadius: "6px",
@@ -998,7 +997,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                   style={{
                     marginTop: "15px",
                     padding: "10px",
-                    background: hexToRgbaString(KOREAN_COLORS.ACCENT_CYAN, 0.2),
+                    background: hexToRgbaString(theme.colors.ACCENT_CYAN, 0.2),
                     borderRadius: "6px",
                     border: `1px solid ${colors.borderCyan}`,
                   }}
@@ -1045,7 +1044,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 background: colors.sectionBg,
                 borderRadius: "12px",
                 border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.5,
                 )}`,
                 padding: "20px",
@@ -1075,7 +1074,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
 
               <div
                 style={{
-                  background: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2),
+                  background: hexToRgbaString(theme.colors.ACCENT_GOLD, 0.2),
                   borderRadius: "6px",
                   border: `1px solid ${colors.borderGold}`,
                   padding: "12px",
@@ -1130,7 +1129,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 background: colors.sectionBg,
                 borderRadius: "12px",
                 border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.6,
                 )}`,
                 padding: "20px",
@@ -1175,9 +1174,9 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                       key={key}
                       style={{
                         background: `linear-gradient(135deg, ${hexToRgbaString(
-                          KOREAN_COLORS.ACCENT_GOLD,
+                          theme.colors.ACCENT_GOLD,
                           0.3,
-                        )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.1)})`,
+                        )}, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.1)})`,
                         borderRadius: "6px",
                         border: `2px solid ${colors.borderGold}`,
                         padding: isMobile ? "8px 4px" : "10px 6px",
@@ -1213,7 +1212,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                   marginTop: "15px",
                   padding: "10px",
                   background: hexToRgbaString(
-                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    theme.colors.UI_BACKGROUND_DARK,
                     0.6,
                   ),
                   borderRadius: "6px",
@@ -1243,7 +1242,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 style={{
                   fontSize: isMobile ? "18px" : "22px",
                   fontWeight: "bold",
-                  color: `#${KOREAN_COLORS.KOREAN_RED.toString(16).padStart(
+                  color: `#${theme.colors.KOREAN_RED.toString(16).padStart(
                     6,
                     "0",
                   )}`,
@@ -1287,7 +1286,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                     key={special.key}
                     style={{
                       background: hexToRgbaString(
-                        KOREAN_COLORS.UI_BACKGROUND_LIGHT,
+                        theme.colors.UI_BACKGROUND_LIGHT,
                         0.8,
                       ),
                       borderRadius: "8px",
@@ -1301,7 +1300,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                     <div
                       style={{
                         background: hexToRgbaString(
-                          KOREAN_COLORS.KOREAN_RED,
+                          theme.colors.KOREAN_RED,
                           0.3,
                         ),
                         borderRadius: "6px",
@@ -1370,9 +1369,9 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               onClick={handleBackClick}
               style={{
                 background: `linear-gradient(135deg, ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.8,
-                )}, ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)})`,
+                )}, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.6)})`,
                 border: `2px solid ${colors.borderGold}`,
                 borderRadius: "8px",
                 padding: "10px 20px",
@@ -1385,7 +1384,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "scale(1.05)";
                 e.currentTarget.style.boxShadow = `0 0 15px ${hexToRgbaString(
-                  KOREAN_COLORS.ACCENT_GOLD,
+                  theme.colors.ACCENT_GOLD,
                   0.6,
                 )}`;
               }}
@@ -1402,14 +1401,14 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
             <div
               style={{
                 background: hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                  theme.colors.UI_BACKGROUND_MEDIUM,
                   0.9,
                 ),
                 borderRadius: "6px",
                 padding: "8px 12px",
                 fontSize: isMobile ? "11px" : "12px",
                 fontWeight: "bold",
-                color: `#${KOREAN_COLORS.SECONDARY_MAGENTA.toString(
+                color: `#${theme.colors.SECONDARY_MAGENTA.toString(
                   16,
                 ).padStart(6, "0")}`,
                 border: `1px solid ${colors.borderGold}`,
@@ -1429,7 +1428,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               color: colors.textSecondary,
               fontStyle: "italic",
               background: hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_DARK,
+                theme.colors.UI_BACKGROUND_DARK,
                 0.7,
               ),
             }}

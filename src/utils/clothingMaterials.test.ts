@@ -271,6 +271,7 @@ describe("clothingMaterials", () => {
 
   describe("Material preset consistency", () => {
     it("should have all presets with required properties", () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(CLOTHING_MATERIAL_PRESETS).forEach(([_name, preset]) => {
         expect(preset.metalness).toBeDefined();
         expect(preset.roughness).toBeDefined();

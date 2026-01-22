@@ -50,9 +50,7 @@ import {
 } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
-  FONT_FAMILY,
   getPerformanceSettings,
-  KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
 import { getBackButtonTop } from "../../../types/constants/layout";
@@ -61,6 +59,7 @@ import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { KeyboardHints } from "./components/controls/KeyboardHints";
 import { MatchCountdown } from "./components/feedback/MatchCountdown";
@@ -232,6 +231,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Layout calculations
   const { arenaBounds, isMobile, screenSize, layoutConstants } =
     useCombatLayout(width, height);
+
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
 
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
@@ -2192,7 +2198,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         dpr={renderConfig.dpr}
         shadows={false} // Temporarily disable shadows
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
         }}
       >
         {/* Lighting - CombatArena3D provides ambient, we add directional for shadows */}
@@ -2382,9 +2388,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                   style={{
                     fontSize: "72px",
                     fontWeight: "bold",
-                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontFamily: theme.koreanTypography.fontFamily,
+                    lineHeight: theme.koreanTypography.lineHeight,
+                    letterSpacing: theme.koreanTypography.letterSpacing,
+                    wordBreak: theme.koreanTypography.wordBreak,
                     textAlign: "center",
-                    color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+                    color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
                       6,
                       "0",
                     )}`,
@@ -2500,8 +2509,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               fontSize: isMobile ? "18px" : "24px",
               fontWeight: "bold",
               textAlign: "center",
-              fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(
+              fontFamily: theme.koreanTypography.fontFamily,
+              lineHeight: theme.koreanTypography.lineHeight,
+              letterSpacing: theme.koreanTypography.letterSpacing,
+              wordBreak: theme.koreanTypography.wordBreak,
+              color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
                 6,
                 "0",
               )}`,
@@ -2668,7 +2680,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               textAlign: "center",
               background: "rgba(10, 10, 15, 0.85)",
               border: `2px solid ${hexToRgbaString(
-                KOREAN_COLORS.PRIMARY_CYAN,
+                theme.colors.PRIMARY_CYAN,
                 0.8,
               )}`,
               borderRadius: "8px",
@@ -2679,18 +2691,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               {`
                 .combat-return-menu-btn {
                   background: ${hexToRgbaString(
-                    KOREAN_COLORS.PRIMARY_CYAN,
+                    theme.colors.PRIMARY_CYAN,
                     0.9,
                   )};
                   color: ${hexToRgbaString(
-                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    theme.colors.UI_BACKGROUND_DARK,
                     1,
                   )};
                   border: none;
                   border-radius: 8px;
                   padding: ${isMobile ? "8px 12px" : "10px 16px"};
                   font-size: ${isMobile ? "12px" : "14px"};
-                  font-family: ${FONT_FAMILY.KOREAN};
+                  font-family: ${theme.koreanTypography.fontFamily};
+                  line-height: ${theme.koreanTypography.lineHeight};
+                  letter-spacing: ${theme.koreanTypography.letterSpacing};
+                  word-break: ${theme.koreanTypography.wordBreak};
                   font-weight: bold;
                   cursor: pointer;
                   transition: all 0.2s ease;
@@ -2700,7 +2715,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 .combat-return-menu-btn:hover {
                   transform: scale(1.05);
                   box-shadow: 0 0 20px ${hexToRgbaString(
-                    KOREAN_COLORS.PRIMARY_CYAN,
+                    theme.colors.PRIMARY_CYAN,
                     0.8,
                   )};
                 }

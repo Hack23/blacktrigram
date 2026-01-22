@@ -54,9 +54,7 @@ import {
   Technique,
 } from "../../../types";
 import {
-  FONT_FAMILY,
   getPerformanceSettings,
-  KOREAN_COLORS,
 } from "../../../types/constants";
 import {
   getBackButtonTop,
@@ -72,6 +70,7 @@ import {
   convertPlayerStateToProps,
 } from "../../../utils/player3DHelpers";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import {
   ActionButtons,
   GestureRecognizer,
@@ -176,6 +175,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     width,
     height,
   );
+
+  // Use Korean theme hook for consistent theming
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
 
   // Screen size scaling for 4K and large displays
   // Uses SPACING_SCALE_MAP values: mobile=0.5, tablet=0.75, desktop=1.0, large=1.25, xlarge=1.5
@@ -1056,7 +1062,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         dpr={performanceSettings.dpr}
         shadows={false} // Temporarily disable shadows
         onCreated={({ gl }) => {
-          gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
+          gl.setClearColor(theme.colors.UI_BACKGROUND_DARK, 1);
           // Disable fog temporarily for debugging
         }}
         camera={cameraConfig}
@@ -1377,21 +1383,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               gap: "8px",
               padding: isMobile ? "8px 12px" : "10px 16px",
               background: hexToRgbaString(
-                KOREAN_COLORS.UI_BACKGROUND_DARK,
+                theme.colors.UI_BACKGROUND_DARK,
                 0.9,
               ),
               border: `2px solid ${hexToRgbaString(
-                KOREAN_COLORS.ACCENT_GOLD,
+                theme.colors.ACCENT_GOLD,
                 0.6,
               )}`,
               borderRadius: "8px",
-              fontFamily: FONT_FAMILY.KOREAN,
+              fontFamily: theme.koreanTypography.fontFamily,
+              lineHeight: theme.koreanTypography.lineHeight,
+              letterSpacing: theme.koreanTypography.letterSpacing,
+              wordBreak: theme.koreanTypography.wordBreak,
             }}
           >
             <div
               style={{
                 fontSize: isMobile ? "10px" : "12px",
-                color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
                 fontWeight: "bold",
                 textAlign: "center",
               }}
@@ -1416,23 +1425,23 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                   style={{
                     padding: isMobile ? "4px 8px" : "6px 10px",
                     fontSize: isMobile ? "9px" : "11px",
-                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontFamily: theme.koreanTypography.fontFamily,
                     fontWeight: selectedArchetype === arch ? "bold" : "normal",
                     background:
                       selectedArchetype === arch
-                        ? hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.8)
+                        ? hexToRgbaString(theme.colors.ACCENT_GOLD, 0.8)
                         : hexToRgbaString(
-                            KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+                            theme.colors.UI_BACKGROUND_MEDIUM,
                             0.8,
                           ),
                     color:
                       selectedArchetype === arch
-                        ? hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1)
-                        : hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, 1),
+                        ? hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 1)
+                        : hexToRgbaString(theme.colors.TEXT_PRIMARY, 1),
                     border: `1px solid ${hexToRgbaString(
                       selectedArchetype === arch
-                        ? KOREAN_COLORS.ACCENT_GOLD
-                        : KOREAN_COLORS.UI_BORDER,
+                        ? theme.colors.ACCENT_GOLD
+                        : theme.colors.UI_BORDER,
                       0.6,
                     )}`,
                     borderRadius: "4px",
@@ -1556,17 +1565,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               style={{
                 padding: isMobile ? "8px 12px" : "10px 16px",
                 background: hexToRgbaString(
-                  KOREAN_COLORS.UI_BACKGROUND_DARK,
+                  theme.colors.UI_BACKGROUND_DARK,
                   0.9,
                 ),
                 border: `2px solid ${hexToRgbaString(
-                  KOREAN_COLORS.PRIMARY_CYAN,
+                  theme.colors.PRIMARY_CYAN,
                   0.6,
                 )}`,
                 borderRadius: "8px",
                 fontSize: isMobile ? "12px" : "14px",
-                fontFamily: FONT_FAMILY.KOREAN,
-                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
+                fontFamily: theme.koreanTypography.fontFamily,
+                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
                 fontWeight: "bold",
                 textAlign: "center",
               }}
@@ -1575,7 +1584,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
                 💡 급소 오버레이 | Vital Point Overlay: Press{" "}
                 <span
                   style={{
-                    color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
+                    color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
                   }}
                 >
                   V
@@ -1646,18 +1655,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           <style>
             {`
             .training-return-menu-btn {
-              background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)};
+              background: ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)};
               border: none;
               border-radius: 8px;
               padding: ${isMobile ? "6px 10px" : "8px 12px"};
               font-size: ${isMobile ? "12px" : "14px"};
               font-weight: bold;
-              font-family: ${FONT_FAMILY.KOREAN};
-              color: ${hexToRgbaString(KOREAN_COLORS.KOREAN_BLACK, 1)};
+              font-family: ${theme.koreanTypography.fontFamily};
+              color: ${hexToRgbaString(theme.colors.KOREAN_BLACK, 1)};
               cursor: pointer;
               transition: all 0.2s ease;
               box-shadow: 0 0 10px ${hexToRgbaString(
-                KOREAN_COLORS.ACCENT_GOLD,
+                theme.colors.ACCENT_GOLD,
                 0.5,
               )};
               min-height: 36px;
@@ -1666,7 +1675,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             .training-return-menu-btn:hover {
               transform: scale(1.05);
               box-shadow: 0 0 20px ${hexToRgbaString(
-                KOREAN_COLORS.ACCENT_GOLD,
+                theme.colors.ACCENT_GOLD,
                 0.8,
               )};
             }

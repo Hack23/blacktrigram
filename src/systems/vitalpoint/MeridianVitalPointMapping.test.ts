@@ -20,6 +20,7 @@ describe("MeridianVitalPointMapping", () => {
 
     it("should map each vital point to at least one meridian", () => {
       Object.entries(VITAL_POINT_MERIDIAN_MAP).forEach(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_vitalPointId, meridians]) => {
           expect(Array.isArray(meridians)).toBe(true);
           expect(meridians.length).toBeGreaterThan(0);
@@ -198,6 +199,7 @@ describe("MeridianVitalPointMapping", () => {
       const stats = getMeridianMappingStatistics();
 
       // Each meridian should have at least a few vital points
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(stats.meridianCounts).forEach(([_meridianId, count]) => {
         expect(count).toBeGreaterThan(0);
         // All 12 primary meridians should have multiple points

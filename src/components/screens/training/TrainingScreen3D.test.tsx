@@ -161,7 +161,8 @@ vi.mock("three", () => ({
     toArray() {
       return [this.x, this.y, this.z, this.order];
     }
-    setFromQuaternion(_q: { x: number; y: number; z: number; w: number }) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setFromQuaternion(__q: { x: number; y: number; z: number; w: number }) {
       return this;
     }
   },
@@ -172,31 +173,40 @@ vi.mock("three", () => ({
       public z = 0,
       public w = 1,
     ) {}
-    setFromEuler(_e: { x: number; y: number; z: number; order?: string }) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setFromEuler(__e: { x: number; y: number; z: number; order?: string }) {
       return this;
     }
     slerpQuaternions(
-      _qa: { x: number; y: number; z: number; w: number },
-      _qb: { x: number; y: number; z: number; w: number },
-      _t: number,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __qa: { x: number; y: number; z: number; w: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __qb: { x: number; y: number; z: number; w: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __t: number,
     ) {
       return this;
     }
     setFromUnitVectors(
-      _vFrom: { x: number; y: number; z: number },
-      _vTo: { x: number; y: number; z: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __vFrom: { x: number; y: number; z: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __vTo: { x: number; y: number; z: number },
     ) {
       return this;
     }
   },
   Raycaster: class MockRaycaster {
     set(
-      _origin: { x: number; y: number; z: number },
-      _direction: { x: number; y: number; z: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __origin: { x: number; y: number; z: number },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      __direction: { x: number; y: number; z: number },
     ) {
       return this;
     }
-    intersectObject(_object: object) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    intersectObject(__object: object) {
       return [];
     }
     far = 1000;
