@@ -421,6 +421,9 @@ src/assets/visual/logo/black-trigram.png
 src/audio/AudioAssetLoader.test.ts
 src/audio/AudioAssetLoader.ts
 src/audio/AudioAssetRegistry.ts
+src/audio/AudioCache.integration.test.ts
+src/audio/AudioCache.test.ts
+src/audio/AudioCache.ts
 src/audio/AudioManager.test.ts
 src/audio/AudioManager.ts
 src/audio/AudioMonitor.test.ts
@@ -730,9 +733,11 @@ src/components/shared/three/ui/SpeedIndicatorHUD.test.tsx
 src/components/shared/three/ui/SpeedIndicatorHUD.tsx
 src/components/shared/three/ui/StaminaBar.test.tsx
 src/components/shared/three/ui/StaminaBar.tsx
+src/components/shared/three/ui/TechniqueBar.test.tsx
 src/components/shared/three/ui/TechniqueBar.tsx
 src/components/shared/three/ui/TechniqueBarContainer.test.tsx
 src/components/shared/three/ui/TechniqueBarContainer.tsx
+src/components/shared/three/ui/TechniqueCard.test.tsx
 src/components/shared/three/ui/TechniqueCard.tsx
 src/components/shared/three/ui/VitalPointOverlayControlsHtml.test.tsx
 src/components/shared/three/ui/VitalPointOverlayControlsHtml.tsx
@@ -1116,6 +1121,8 @@ src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
 src/types/vitest-axe.d.ts
+src/utils/EventManager.test.ts
+src/utils/EventManager.ts
 src/utils/__tests__/arenaCoordinateConversion.test.ts
 src/utils/__tests__/arenaWorldDimensions.test.ts
 src/utils/__tests__/highResMobile.test.ts
@@ -1142,6 +1149,7 @@ src/utils/controlMapping.ts
 src/utils/deviceDetection.test.ts
 src/utils/deviceDetection.ts
 src/utils/effectUtils.ts
+src/utils/eventConstants.ts
 src/utils/hapticFeedback.ts
 src/utils/haptics.test.ts
 src/utils/haptics.ts
