@@ -40,8 +40,7 @@ vi.mock("@react-three/fiber", () => ({
       if (onCreated) {
         onCreated({ gl: { setClearColor: () => {} } });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [onCreated]);
     return <div data-testid="three-canvas">{children}</div>;
   },
   useFrame: vi.fn(),

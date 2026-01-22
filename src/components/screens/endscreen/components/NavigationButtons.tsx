@@ -16,17 +16,16 @@ export interface NavigationButtonsProps {
 
 /**
  * Navigation Buttons Component
- * Provides action buttons for replay and menu navigation
- * 
- * Refactored to use BaseButtonOverlayHtml for:
- * - WCAG 2.1 AA accessibility compliance
- * - Consistent Korean theming via useKoreanTheme
- * - Keyboard navigation support
- * - Screen reader compatibility
- * - Reduced code duplication (97 lines saved: 237 → 140)
- * 
+ * Provides action buttons for replay and menu navigation.
+ *
+ * This component delegates visual styling and accessibility behavior to
+ * BaseButtonOverlayHtml, providing:
+ * - Consistent Korean / English bilingual theming
+ * - Centralized button behavior and standard browser keyboard support
+ * - Reduced code duplication (113 lines saved: 237 → 124)
+ *
  * Note: Audio callbacks are passed as props since this component is rendered
- * inside a Canvas Html portal which doesn't have access to AudioProvider context
+ * inside a Canvas Html portal which doesn't have access to AudioProvider context.
  */
 export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onReturnToMenu,

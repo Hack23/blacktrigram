@@ -363,6 +363,7 @@ describe("TIMING_PRESETS", () => {
   });
 
   it("should have consistent timing structure", () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Object.entries(TIMING_PRESETS).forEach(([_name, timing]) => {
       expect(timing.chamber).toBeGreaterThan(0);
       expect(timing.extend).toBeGreaterThan(0);

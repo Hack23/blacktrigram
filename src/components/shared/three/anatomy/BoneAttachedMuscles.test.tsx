@@ -37,7 +37,8 @@ describe("BONE_MUSCLE_MAP", () => {
   });
 
   it("should have valid muscle attachment definitions", () => {
-    Object.entries(BONE_MUSCLE_MAP).forEach(([_boneName, attachments]) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    Object.entries(BONE_MUSCLE_MAP).forEach(([__boneName, attachments]) => {
       attachments.forEach((attachment) => {
         expect(attachment.name).toBeDefined();
         expect(attachment.korean).toBeDefined();
