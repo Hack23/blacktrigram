@@ -89,7 +89,7 @@ const INJURY_COLORS = {
  * Korean anatomical labels for body regions
  * 신체 부위 한글 명칭
  * 
- * @internal Exported for use in trauma visualization components
+ * Exported for use in trauma visualization components
  */
 export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; english: string }> = {
   [BodyRegion.HEAD]: { korean: "두부", english: "Head" },

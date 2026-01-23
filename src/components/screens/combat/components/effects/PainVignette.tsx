@@ -80,27 +80,19 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
       boxShadow: `inset 0 0 ${vignetteSize} ${painColor}`,
       transition: "box-shadow 0.5s ease-out",
       zIndex: 50, // Below UI controls but above game content
-      clampedPain, // Return clamped value for accessibility
     };
   }, [pain, isMobile]);
-
-  // Determine accessibility attributes based on pain severity using clamped value
-  const isHighPain = vignetteStyle.clampedPain > 75;
-  const ariaRole = isHighPain ? "alert" : "status";
-  const ariaLive = isHighPain ? "assertive" : "polite";
 
   // Don't render if pain is very low (< 5%)
   if (pain < 5) {
     return null;
   }
 
+  // Purely visual overlay - no ARIA attributes needed
   return (
     <div 
       data-testid="pain-vignette" 
       style={vignetteStyle} 
-      role={ariaRole}
-      aria-live={ariaLive}
-      aria-label={`Pain level: ${Math.round(vignetteStyle.clampedPain)} percent`}
       aria-hidden="true"
     />
   );

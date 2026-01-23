@@ -81,27 +81,19 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
       transition:
         "backdrop-filter 0.5s ease-out, background-color 0.5s ease-out",
       zIndex: 60, // Above game content but below HUD
-      clampedConsciousness, // Return clamped value for accessibility
     };
   }, [consciousness, isMobile]);
-
-  // Determine alert severity for accessibility using clamped value
-  const clampedConsciousness = blurStyle?.clampedConsciousness ?? consciousness;
-  const alertSeverity = clampedConsciousness <= 30 ? "assertive" : "polite";
-  const isLowConsciousness = clampedConsciousness <= 30;
 
   // Don't render if consciousness is very high
   if (consciousness > 90 || !blurStyle) {
     return null;
   }
 
+  // Purely visual overlay - no ARIA attributes needed
   return (
     <div
       data-testid="consciousness-blur"
       style={blurStyle}
-      role={isLowConsciousness ? "alert" : "status"}
-      aria-live={alertSeverity}
-      aria-label={`Consciousness level: ${clampedConsciousness} percent`}
       aria-hidden="true"
     />
   );
