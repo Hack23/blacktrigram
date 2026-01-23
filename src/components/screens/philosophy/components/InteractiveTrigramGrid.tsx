@@ -131,7 +131,7 @@ export const InteractiveTrigramGrid: React.FC<
                     trigram.theme.primary,
                     0.2
                   )} 0%, transparent 70%)`,
-                  animation: "pulse 2s ease-in-out infinite",
+                  animation: "philosophyPulse 2s ease-in-out infinite",
                   pointerEvents: "none",
                 }}
               />
@@ -197,7 +197,7 @@ export const InteractiveTrigramGrid: React.FC<
       {/* Pulse animation for selected state */}
       <style>
         {`
-          @keyframes pulse {
+          @keyframes philosophyPulse {
             0%, 100% {
               opacity: 1;
             }

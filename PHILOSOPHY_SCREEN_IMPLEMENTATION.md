@@ -131,10 +131,10 @@ PhilosophyScreen3D.test.tsx           -  5 tests (existing)
    - Event handlers (onClick, onPointerOver, onPointerOut)
    - State updaters (selectTrigram, clearSelection, setTopic)
 
-3. **Memoized geometries and materials:**
-   - Three.js BoxGeometry reused
-   - Material properties calculated once
-   - Color strings pre-computed
+3. **Geometry and material lifecycle:**
+   - BoxGeometry and materials currently created per trigram symbol via JSX
+   - React Three Fiber handles resource disposal for per-instance geometries/materials
+   - Additional memoization/sharing of geometries and materials can be introduced in future optimizations
 
 ### Three.js Performance
 1. **60fps animations** with `useFrame`:
@@ -160,10 +160,10 @@ PhilosophyScreen3D.test.tsx           -  5 tests (existing)
 ### Features Implemented
 1. **ARIA attributes:**
    - `role="dialog"` on overlays
-   - `role="grid"` on trigram grid
+   - Native `<button>` elements for trigram grid (no custom `role="grid"`)
    - `role="navigation"` on nav component
-   - `aria-label` on all interactive elements
-   - `aria-pressed` for toggle states
+   - `aria-label` on trigram buttons and key interactive controls
+   - `aria-pressed` for trigram selection toggle states
    - `aria-current="page"` for active topic
 
 2. **Keyboard navigation:**
