@@ -43,26 +43,43 @@ export interface PhilosophyTextOverlayHtmlProps {
 export const PhilosophyTextOverlayHtml: React.FC<
   PhilosophyTextOverlayHtmlProps
 > = ({ selectedTrigram, onClose, isMobile = false }) => {
-  // Don't render if no trigram is selected
-  if (!selectedTrigram) return null;
+  // Get trigram data first (hooks must be called unconditionally)
+  const trigram = selectedTrigram ? TRIGRAM_DATA[selectedTrigram] : null;
 
-  const trigram = TRIGRAM_DATA[selectedTrigram];
-
-  // Memoize colors for performance
+  // Memoize colors for performance (must be called before early return)
   const colors = useMemo(
-    () => ({
-      background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
-      border: `#${trigram.theme.primary.toString(16).padStart(6, "0")}`,
-      boxShadow: `0 0 30px ${hexToRgbaString(trigram.theme.primary, 0.5)}`,
-      text: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
-      textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
-      textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
-      accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-      accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
-      symbolColor: `#${trigram.theme.primary.toString(16).padStart(6, "0")}`,
-    }),
-    [trigram.theme.primary]
+    () => {
+      if (!trigram) {
+        // Return default colors when no trigram is selected
+        return {
+          background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
+          border: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          boxShadow: `0 0 30px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)}`,
+          text: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+          textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+          textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+          accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+          symbolColor: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+        };
+      }
+      return {
+        background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
+        border: `#${trigram.theme.primary.toString(16).padStart(6, "0")}`,
+        boxShadow: `0 0 30px ${hexToRgbaString(trigram.theme.primary, 0.5)}`,
+        text: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+        textSecondary: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+        textTertiary: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+        accentGold: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+        accentCyan: `#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+        symbolColor: `#${trigram.theme.primary.toString(16).padStart(6, "0")}`,
+      };
+    },
+    [trigram]
   );
+
+  // Don't render if no trigram is selected (early return must be AFTER all hooks)
+  if (!selectedTrigram || !trigram) return null;
 
   return (
     <div
