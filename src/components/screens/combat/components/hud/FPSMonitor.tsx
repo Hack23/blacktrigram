@@ -13,7 +13,7 @@
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import React, { useRef, useState, useCallback, useEffect, useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 
 export interface FPSMonitorProps {
   /** Whether to show the FPS monitor */
@@ -57,6 +57,7 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
   top = 10,
   right = 10,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "small", isMobile: false });
   const [fps, setFps] = useState(60);
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(0);
@@ -109,16 +110,16 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
   const colorHex = useMemo(() => {
     let color: number;
     if (fps >= 60) {
-      color = KOREAN_COLORS.ACCENT_GOLD; // Excellent
+      color = theme.colors.ACCENT_GOLD; // Excellent
     } else if (fps >= warningThreshold) {
       color = 0xffff00; // Warning (yellow)
     } else if (fps >= criticalThreshold) {
       color = 0xff8800; // Poor (orange)
     } else {
-      color = KOREAN_COLORS.PRIMARY_RED; // Critical (red)
+      color = theme.colors.PRIMARY_RED; // Critical (red)
     }
     return `#${color.toString(16).padStart(6, "0")}`;
-  }, [fps, warningThreshold, criticalThreshold]);
+  }, [fps, warningThreshold, criticalThreshold, theme.colors.ACCENT_GOLD, theme.colors.PRIMARY_RED]);
 
   const getStatus = () => {
     if (fps >= 60) return "우수 | Excellent";
@@ -143,7 +144,7 @@ export const FPSMonitor: React.FC<FPSMonitorProps> = ({
           background: "rgba(0, 0, 0, 0.8)",
           border: `2px solid ${colorHex}`,
           borderRadius: "4px",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontSize: "12px",
           color: colorHex,
           pointerEvents: "none",
