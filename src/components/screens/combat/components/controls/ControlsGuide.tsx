@@ -4,13 +4,15 @@
  * Features:
  * - Complete combat controls listing
  * - Korean/English bilingual labels
- * - Cyberpunk Korean theming
+ * - Cyberpunk Korean theming via useKoreanTheme
  * - Organized by action type
+ * 
+ * Refactored to use useKoreanTheme for consistent theming.
  */
 
 import React from "react";
 import { useAudio } from "../../../../../audio/AudioProvider";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface ControlsGuideProps {
@@ -36,12 +38,14 @@ const CONTROL_MAPPINGS: ControlMapping[] = [
 
 /**
  * ControlsGuide - In-game controls reference overlay
+ * Uses useKoreanTheme for consistent styling.
  */
 export const ControlsGuide: React.FC<ControlsGuideProps> = ({
   onClose,
   isMobile,
 }) => {
   const audio = useAudio();
+  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
 
   return (
     <div
@@ -52,13 +56,13 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
         left: "50%",
         transform: "translate(-50%, -50%)",
         padding: isMobile ? "24px" : "32px",
-        backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.95),
-        border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
+        backgroundColor: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.95),
+        border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.8)}`,
         borderRadius: "12px",
         minWidth: isMobile ? "280px" : "400px",
         maxHeight: isMobile ? "70vh" : "80vh",
         overflow: "auto",
-        boxShadow: `0 0 30px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+        boxShadow: `0 0 30px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}`,
         zIndex: 1000,
       }}
     >
@@ -67,12 +71,12 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
         data-testid="controls-title"
         style={{
           fontSize: isMobile ? "20px" : "24px",
-          color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-          fontFamily: FONT_FAMILY.KOREAN,
+          color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+          fontFamily: theme.fontFamily.KOREAN,
           fontWeight: "bold",
           margin: "0 0 24px 0",
           textAlign: "center",
-          textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.4)}`,
+          textShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.4)}`,
         }}
       >
         조작법 | Controls
@@ -95,8 +99,8 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
               alignItems: "center",
               justifyContent: "space-between",
               padding: isMobile ? "10px" : "12px",
-              backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.5),
-              border: `1px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
+              backgroundColor: hexToRgbaString(theme.colors.UI_BACKGROUND_MEDIUM, 0.5),
+              border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}`,
               borderRadius: "6px",
             }}
           >
@@ -104,8 +108,8 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
               style={{
                 flex: 1,
                 fontSize: isMobile ? "12px" : "14px",
-                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-                fontFamily: FONT_FAMILY.KOREAN,
+                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+                fontFamily: theme.fontFamily.KOREAN,
                 fontWeight: "bold",
               }}
             >
@@ -114,7 +118,7 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
               <span
                 style={{
                   fontSize: isMobile ? "11px" : "13px",
-                  color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
+                  color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 1),
                   fontWeight: "normal",
                 }}
               >
@@ -125,9 +129,9 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
               style={{
                 padding: isMobile ? "6px 12px" : "8px 16px",
                 fontSize: isMobile ? "12px" : "14px",
-                color: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
-                backgroundColor: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-                fontFamily: FONT_FAMILY.MONO,
+                color: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 1),
+                backgroundColor: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                fontFamily: theme.fontFamily.MONO,
                 fontWeight: "bold",
                 borderRadius: "4px",
                 textAlign: "center",
@@ -146,16 +150,16 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
         style={{
           marginTop: isMobile ? "20px" : "24px",
           padding: isMobile ? "12px" : "16px",
-          backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 0.3),
-          border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.3)}`,
+          backgroundColor: hexToRgbaString(theme.colors.UI_BACKGROUND_MEDIUM, 0.3),
+          border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.3)}`,
           borderRadius: "6px",
         }}
       >
         <h3
           style={{
             fontSize: isMobile ? "14px" : "16px",
-            color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
-            fontFamily: FONT_FAMILY.KOREAN,
+            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+            fontFamily: theme.fontFamily.KOREAN,
             fontWeight: "bold",
             margin: "0 0 8px 0",
           }}
@@ -165,8 +169,8 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
         <p
           style={{
             fontSize: isMobile ? "12px" : "14px",
-            color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY, 1),
-            fontFamily: FONT_FAMILY.KOREAN,
+            color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 1),
+            fontFamily: theme.fontFamily.KOREAN,
             margin: 0,
             lineHeight: "1.6",
           }}
@@ -195,25 +199,25 @@ export const ControlsGuide: React.FC<ControlsGuideProps> = ({
           width: "100%",
           padding: isMobile ? "10px" : "12px",
           fontSize: isMobile ? "14px" : "16px",
-          backgroundColor: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          color: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
+          backgroundColor: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          color: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 1),
           border: "none",
           borderRadius: "6px",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontWeight: "bold",
           cursor: "pointer",
           transition: "all 0.2s ease",
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.backgroundColor = hexToRgbaString(
-            KOREAN_COLORS.ACCENT_GOLD,
+            theme.colors.ACCENT_GOLD,
             1
           );
           e.currentTarget.style.transform = "scale(1.05)";
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.backgroundColor = hexToRgbaString(
-            KOREAN_COLORS.PRIMARY_CYAN,
+            theme.colors.PRIMARY_CYAN,
             1
           );
           e.currentTarget.style.transform = "scale(1)";
