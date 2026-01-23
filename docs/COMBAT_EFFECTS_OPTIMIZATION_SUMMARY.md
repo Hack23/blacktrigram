@@ -51,11 +51,13 @@ export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; eng
 ```
 
 #### WCAG 2.1 AA Compliance
-All trauma overlay components enhanced with:
+Non-decorative trauma status elements (e.g., fracture warnings, HUD indicators) enhanced with:
 - ✅ ARIA roles (alert, status)
 - ✅ ARIA live regions (assertive, polite)
 - ✅ Screen reader announcements
 - ✅ Semantic HTML with proper attributes
+
+_Note: Purely visual trauma overlays (blood loss blur, pain vignettes, consciousness blur) remain `aria-hidden="true"` as decorative effects. Critical status information is conveyed through separate semantic HUD components._
 
 ### Test Coverage & Quality
 

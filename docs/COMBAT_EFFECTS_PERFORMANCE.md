@@ -168,20 +168,15 @@ Status information (blood loss, consciousness, pain) is conveyed through:
 The fracture warning within TraumaOverlay3D uses proper ARIA semantics:
 
 **Features**:
-- Dynamic role based on severity
-- Adaptive aria-live urgency
-- Consciousness level announcements
+- Constant `role="alert"` for all fracture warnings
+- Constant `aria-live="assertive"` for immediate fracture announcements
+- Does not announce consciousness levels (handled by separate HUD components)
 
 ---
 
-### PainVignette
-```typescript
-<div 
-  role={pain > 75 ? "alert" : "status"}
-  aria-live={pain > 75 ? "assertive" : "polite"}
-  aria-label={`Pain level: ${Math.round(pain)} percent`}
-/>
-```
+### Visual-Only Overlays (Decorative)
+
+Components like PainVignette, ConsciousnessBlur, and BloodLossOverlayHtml are purely visual effects marked with `aria-hidden="true"`. They do not use ARIA roles or live regions, as critical status information is communicated through separate semantic HUD components with proper ARIA support.
 
 **Features**:
 - High pain alerts (>75%)

@@ -86,29 +86,6 @@ const INJURY_COLORS = {
 } as const;
 
 /**
- * Korean anatomical labels for body regions
- * 신체 부위 한글 명칭
- * 
- * Exported for use in trauma visualization components
- * 
- * NOTE: These labels use formal anatomical Korean terminology.
- * For consistency with existing BodyPartHealthDisplay (좌팔/우팔/좌다리/우다리),
- * consider centralizing body part labels in a shared constants module.
- * 
- * Currently unused in this PR - exported for future trauma visualization enhancements.
- */
-export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; english: string }> = {
-  [BodyRegion.HEAD]: { korean: "두부", english: "Head" },
-  [BodyRegion.NECK]: { korean: "경부", english: "Neck" },
-  [BodyRegion.TORSO]: { korean: "흉부", english: "Torso" },
-  [BodyRegion.LEFT_ARM]: { korean: "좌완", english: "Left Arm" },
-  [BodyRegion.RIGHT_ARM]: { korean: "우완", english: "Right Arm" },
-  [BodyRegion.LEFT_LEG]: { korean: "좌각", english: "Left Leg" },
-  [BodyRegion.RIGHT_LEG]: { korean: "우각", english: "Right Leg" },
-  [BodyRegion.CORE]: { korean: "중심부", english: "Core" },
-} as const;
-
-/**
  * Get bruise color based on severity and hit count
  */
 const getBruiseColor = (severity: number, hitCount: number): number => {
