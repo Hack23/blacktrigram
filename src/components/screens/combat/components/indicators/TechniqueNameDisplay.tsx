@@ -5,15 +5,17 @@
  * Implements the technique-to-animation link by displaying technique names
  * when attacks are performed.
  * 
+ * Refactored to use useKoreanTheme for consistent theming.
+ * 
  * @module components/combat/components/TechniqueNameDisplay
  * @category Combat UI
  * @korean 기술이름표시
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Html } from "@react-three/drei";
-import { KOREAN_COLORS } from "../../../../../types/constants";
-import { toHexColor } from "../../../../../utils/colorHelpers";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
  * Props for TechniqueNameDisplay component
@@ -64,6 +66,7 @@ export interface TechniqueNameDisplayProps {
  * 
  * Displays Korean and English technique names during attack execution.
  * Uses Html overlay from @react-three/drei for 3D positioning.
+ * Uses useKoreanTheme for consistent color scheme.
  * 
  * Features:
  * - Bilingual Korean-English display
@@ -94,6 +97,7 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
   isCritical = false,
   visible = true,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile: false });
   const [opacity, setOpacity] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -125,13 +129,23 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
     };
   }, [visible, koreanName, englishName, duration]);
 
+  // Memoize colors to avoid recalculating on every render
+  const { textColor, glowColor } = useMemo(() => {
+    if (isCritical) {
+      return {
+        textColor: "#FF0055",
+        glowColor: "#FF0055",
+      };
+    }
+    return {
+      textColor: hexColorToCSS(theme.colors.ACCENT_GOLD),
+      glowColor: hexColorToCSS(theme.colors.PRIMARY_CYAN),
+    };
+  }, [isCritical, theme.colors.ACCENT_GOLD, theme.colors.PRIMARY_CYAN]);
+
   if (!isVisible || (!koreanName && !englishName)) {
     return null;
   }
-
-  // Color based on critical hit
-  const textColor = isCritical ? "#FF0055" : toHexColor(KOREAN_COLORS.ACCENT_GOLD);
-  const glowColor = isCritical ? "#FF0055" : toHexColor(KOREAN_COLORS.PRIMARY_CYAN);
 
   return (
     <Html
@@ -153,7 +167,7 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
           flexDirection: "column",
           alignItems: "center",
           gap: "4px",
-          fontFamily: "'Nanum Gothic', 'Noto Sans KR', sans-serif",
+          fontFamily: theme.fontFamily.KOREAN,
           textShadow: `0 0 10px ${glowColor}, 0 0 20px ${glowColor}`,
         }}
       >
@@ -178,7 +192,7 @@ export const TechniqueNameDisplay: React.FC<TechniqueNameDisplayProps> = ({
             style={{
               fontSize: isCritical ? "18px" : "16px",
               fontWeight: "normal",
-              color: toHexColor(KOREAN_COLORS.PRIMARY_CYAN),
+              color: hexColorToCSS(theme.colors.PRIMARY_CYAN),
               opacity: 0.8,
               letterSpacing: "1px",
             }}

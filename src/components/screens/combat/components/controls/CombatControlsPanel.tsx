@@ -4,13 +4,15 @@
  * Shows keyboard/touch controls on the left and scrolling combat log on the right.
  * Positioned at the bottom of the combat screen above the back button.
  *
+ * Refactored to use useKoreanTheme for consistent theming.
+ *
  * @module components/combat/components/CombatControlsPanel
  * @category Combat UI
  * @korean 전투컨트롤패널
  */
 
 import React from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface CombatControlsPanelProps {
@@ -22,6 +24,8 @@ export interface CombatControlsPanelProps {
 
 /**
  * CombatControlsPanel - Controls guide and combat log display
+ * 
+ * Uses useKoreanTheme for consistent styling.
  *
  * @example
  * ```tsx
@@ -35,6 +39,8 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
   combatMessages,
   isMobile,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
+  
   return (
     <div
       data-testid="combat-controls-panel"
@@ -55,11 +61,11 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
         style={{
           width: isMobile ? "45%" : "400px",
           background: "rgba(10, 10, 15, 0.8)",
-          border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
+          border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
-          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          fontFamily: FONT_FAMILY.KOREAN,
+          color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          fontFamily: theme.fontFamily.KOREAN,
         }}
       >
         <div style={{ fontSize: isMobile ? "10px" : "12px" }}>
@@ -73,11 +79,11 @@ export const CombatControlsPanel: React.FC<CombatControlsPanelProps> = ({
         style={{
           width: isMobile ? "45%" : "400px",
           background: "rgba(10, 10, 15, 0.8)",
-          border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
+          border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
-          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          fontFamily: FONT_FAMILY.KOREAN,
+          color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          fontFamily: theme.fontFamily.KOREAN,
           maxHeight: "140px",
           overflow: "auto",
         }}

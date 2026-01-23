@@ -6,6 +6,8 @@
  * Shows "Round X Begin!" for subsequent rounds (not the first round).
  * Implements Korean cyberpunk aesthetic with bilingual text support.
  *
+ * Refactored to use useKoreanTheme hook for consistent styling.
+ *
  * @module components/combat/RoundStartAnnouncement
  * @category Combat UI
  */
@@ -18,7 +20,7 @@ import React, {
   useState,
 } from "react";
 import { useAudio } from "../../../../../audio/AudioProvider";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
@@ -44,6 +46,7 @@ export interface RoundStartAnnouncementProps {
  * - Auto-dismiss after configured duration
  * - Audio cue for round start
  * - Responsive sizing for mobile/tablet/desktop
+ * - Uses useKoreanTheme for consistent styling
  *
  * Korean: 라운드 시작 발표 컴포넌트
  */
@@ -54,6 +57,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
   isMobile,
 }) => {
   const audio = useAudio();
+  const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
   const [isVisible, setIsVisible] = useState(false);
 
   // Use ref to stabilize onComplete callback - prevents timer reset on re-renders
@@ -104,11 +108,11 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
     };
   }, [duration, handleComplete]);
 
-  // Convert hex colors to CSS - memoized for performance
-  const goldColor = useMemo(() => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
+  // Convert hex colors to CSS - memoized for performance using theme
+  const goldColor = useMemo(() => hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const darkBg = useMemo(
-    () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
-    []
+    () => hexColorToCSS(theme.colors.UI_BACKGROUND_DARK),
+    [theme.colors.UI_BACKGROUND_DARK]
   );
 
   return (
@@ -139,7 +143,7 @@ export const RoundStartAnnouncement: React.FC<RoundStartAnnouncementProps> = ({
             fontSize: isMobile ? "56px" : "96px",
             fontWeight: "bold",
             color: goldColor,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.fontFamily.KOREAN,
             textShadow: `0 0 40px ${goldColor}`,
             animation: "roundStartFlash 0.5s ease-out",
             textAlign: "center",

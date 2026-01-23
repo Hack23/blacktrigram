@@ -7,6 +7,8 @@
  * Implements Korean cyberpunk aesthetic with bilingual text support.
  * Plays audio cues for countdown and fight announcement.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/MatchCountdown
  * @category Combat UI
  */
@@ -17,7 +19,7 @@ import {
   MatchCountdownState,
   useMatchCountdown,
 } from "../../../../../hooks/useMatchCountdown";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexColorToCSS } from "../../../../../utils/colorUtils";
 
 /**
@@ -86,6 +88,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   showSkip = false,
 }) => {
   const audio = useAudio();
+  const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
 
   // Use match countdown hook with stable config reference
   const { state, currentNumber, startCountdown, skipCountdown, isActive } =
@@ -142,15 +145,15 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
   const mainFontSize = getMainFontSize();
   const subFontSize = getSubFontSize();
 
-  // Convert hex colors to CSS - memoized for performance
-  const goldColor = useMemo(() => hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
+  // Memoize colors for performance using theme
+  const goldColor = useMemo(() => hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const cyanColor = useMemo(
-    () => hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
-    []
+    () => hexColorToCSS(theme.colors.PRIMARY_CYAN),
+    [theme.colors.PRIMARY_CYAN]
   );
   const darkBg = useMemo(
-    () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
-    []
+    () => hexColorToCSS(theme.colors.UI_BACKGROUND_DARK),
+    [theme.colors.UI_BACKGROUND_DARK]
   );
 
   // Don't render if countdown not active or complete
@@ -185,7 +188,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
             fontSize: mainFontSize,
             fontWeight: "bold",
             color: state === "fight" ? goldColor : cyanColor,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.fontFamily.KOREAN,
             textShadow: `0 0 ${state === "fight" ? "40px" : "30px"} ${
               state === "fight" ? goldColor : cyanColor
             }`,
@@ -228,7 +231,7 @@ export const MatchCountdown: React.FC<MatchCountdownProps> = ({
               color: darkBg,
               border: "none",
               borderRadius: "6px",
-              fontFamily: FONT_FAMILY.KOREAN,
+              fontFamily: theme.fontFamily.KOREAN,
               fontWeight: "bold",
               cursor: "pointer",
               transition: "all 0.2s ease",
