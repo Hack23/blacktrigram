@@ -75,7 +75,7 @@ describe("TrigramSymbol3D", () => {
     // Html component is mocked and returns a div - verify content renders
     expect(getByTestId("trigram-symbol-geon")).toBeInTheDocument();
     expect(getByText(mockTrigram.symbol)).toBeInTheDocument();
-    expect(getByText(mockTrigram.koreanName)).toBeInTheDocument();
+    expect(getByText(mockTrigram.name.korean)).toBeInTheDocument();
   });
 
   it("should display trigram symbol", () => {
@@ -105,7 +105,7 @@ describe("TrigramSymbol3D", () => {
     );
 
     // Verify Korean name is rendered in the mocked HTML overlay
-    expect(getByText(mockTrigram.koreanName)).toBeInTheDocument();
+    expect(getByText(mockTrigram.name.korean)).toBeInTheDocument();
   });
 
   it("should call onClick when clicked", () => {
