@@ -17,8 +17,8 @@ export { default as QuickSettings } from "./controls/QuickSettings";
 export { KeyboardHints } from "./controls/KeyboardHints";
 
 export { MatchCountdown } from "./feedback/MatchCountdown";
-export { RoundAnnouncement } from "./feedback/RoundAnnouncement";
-export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncement";
+export { RoundAnnouncement } from "./feedback/RoundAnnouncementOverlayHtml";
+export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncementOverlayHtml";
 
 export { CombatHUD3D } from "./hud/CombatHUD3D";
 export { DifficultyIndicator } from "./hud/DifficultyIndicator";
@@ -49,8 +49,8 @@ export type { QuickSettingsProps } from "./controls/QuickSettings";
 export type { KeyboardHintsProps } from "./controls/KeyboardHints";
 
 export type { MatchCountdownProps } from "./feedback/MatchCountdown";
-export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnouncement";
-export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncement";
+export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnouncementOverlayHtml";
+export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncementOverlayHtml";
 
 export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
 export type { DifficultyIndicatorProps } from "./hud/DifficultyIndicator";

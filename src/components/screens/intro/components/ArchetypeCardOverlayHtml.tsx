@@ -3,8 +3,8 @@ import { PlayerArchetype } from "../../../../types/common";
 import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 import { BaseButtonOverlayHtml } from "../../../shared/base/BaseButtonOverlayHtml";
-import { AbilityList } from "./AbilityList";
-import { StatBar } from "./StatBar";
+import { AbilityList } from "./AbilityListOverlayHtml";
+import { StatBar } from "./StatBarOverlayHtml";
 
 export interface ArchetypeCardData {
   readonly archetype: PlayerArchetype;

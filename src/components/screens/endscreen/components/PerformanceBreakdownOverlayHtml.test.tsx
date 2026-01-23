@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { PerformanceBreakdown } from "./PerformanceBreakdown";
+import { PerformanceBreakdown } from "./PerformanceBreakdownOverlayHtml";
 import { MatchStatistics } from "../../../../systems/combat";
 import { PlayerMatchStats } from "../../../../systems/player";
 

@@ -12,7 +12,7 @@ import { PlayerArchetype } from "../../../../types/common";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
-} from "./TrainingButtons";
+} from "./TrainingButtonsOverlayHtml";
 
 describe("ReturnToMenuButton", () => {
   it("should render with bilingual text", () => {

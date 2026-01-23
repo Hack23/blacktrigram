@@ -9,20 +9,20 @@ export { VictoryAnimation3D } from "./VictoryAnimation3D";
 export { DefeatAnimation3D } from "./DefeatAnimation3D";
 
 // UI Display Components
-export { WinnerDisplay } from "./WinnerDisplay";
-export type { WinnerDisplayProps } from "./WinnerDisplay";
+export { WinnerDisplay } from "./WinnerDisplayOverlayHtml";
+export type { WinnerDisplayProps } from "./WinnerDisplayOverlayHtml";
 
-export { MatchStatisticsDisplay } from "./MatchStatisticsDisplay";
-export type { MatchStatisticsDisplayProps } from "./MatchStatisticsDisplay";
+export { MatchStatisticsDisplay } from "./MatchStatisticsDisplayOverlayHtml";
+export type { MatchStatisticsDisplayProps } from "./MatchStatisticsDisplayOverlayHtml";
 
-export { PerformanceRating } from "./PerformanceRating";
-export type { PerformanceRatingProps } from "./PerformanceRating";
+export { PerformanceRating } from "./PerformanceRatingOverlayHtml";
+export type { PerformanceRatingProps } from "./PerformanceRatingOverlayHtml";
 
-export { PerformanceBreakdown } from "./PerformanceBreakdown";
-export type { PerformanceBreakdownProps } from "./PerformanceBreakdown";
+export { PerformanceBreakdown } from "./PerformanceBreakdownOverlayHtml";
+export type { PerformanceBreakdownProps } from "./PerformanceBreakdownOverlayHtml";
 
-export { NavigationButtons } from "./NavigationButtons";
-export type { NavigationButtonsProps } from "./NavigationButtons";
+export { NavigationButtons } from "./NavigationButtonsOverlayHtml";
+export type { NavigationButtonsProps } from "./NavigationButtonsOverlayHtml";
 
 // Animation utilities
 export * from "./animations";

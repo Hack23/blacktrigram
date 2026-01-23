@@ -12,7 +12,7 @@ import {
   PlayerArchetype,
   TrigramStance,
 } from "../../../../../types";
-import { RoundAnnouncement, RoundStats } from "./RoundAnnouncement";
+import { RoundAnnouncement, RoundStats } from "./RoundAnnouncementOverlayHtml";
 
 describe("RoundAnnouncement", () => {
   const mockPlayer1: PlayerState = {

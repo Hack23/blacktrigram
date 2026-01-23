@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { BaseButtonOverlayHtml } from "../../../shared/base/BaseButtonOverlayHtml";
-import { ArchetypeCardGrid } from "./ArchetypeCardGrid";
+import { ArchetypeCardGrid } from "./ArchetypeCardGridOverlayHtml";
 import {
   ArchetypeDataShape,
   ArchetypeDisplayOverlayHtml,

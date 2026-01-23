@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
-import { PhilosophyNavigation } from "./PhilosophyNavigation";
+import { PhilosophyNavigation } from "./PhilosophyNavigationOverlayHtml";
 import type { PhilosophyTopic } from "../hooks/usePhilosophyState";
 
 describe("PhilosophyNavigation", () => {

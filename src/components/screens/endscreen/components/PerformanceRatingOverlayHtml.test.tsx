@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../../systems/combat";
-import { PerformanceRating } from "./PerformanceRating";
+import { PerformanceRating } from "./PerformanceRatingOverlayHtml";
 
 // Mock AudioProvider
 vi.mock("../../../../audio/AudioProvider", () => ({

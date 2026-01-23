@@ -8,7 +8,7 @@ import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { GameMode } from "../../../../types/common";
-import { MenuButtons } from "./MenuButtons";
+import { MenuButtons } from "./MenuButtonsOverlayHtml";
 
 const MOCK_MENU_ITEMS = [
   { mode: GameMode.VERSUS, korean: "대전", english: "Combat" },

@@ -11,7 +11,7 @@ import {
   getNeonTextShadow,
   getSmoothTransition,
 } from "../../../../utils/visualEffects";
-import { StatBar } from "./StatBar";
+import { StatBar } from "./StatBarOverlayHtml";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
 export interface ArchetypeDataShape {

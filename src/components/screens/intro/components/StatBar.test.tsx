@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { StatBar } from "./StatBar";
+import { StatBar } from "./StatBarOverlayHtml";
 
 describe("StatBar", () => {
   it("should render with Korean and English label", () => {

@@ -9,7 +9,7 @@
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ControlCategoryTabs } from "./ControlCategoryTabs";
+import { ControlCategoryTabs } from "./ControlCategoryTabsOverlayHtml";
 
 // Cleanup after each test
 afterEach(() => {

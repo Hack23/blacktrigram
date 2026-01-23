@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
-import { InteractiveTrigramGrid } from "./InteractiveTrigramGrid";
+import { InteractiveTrigramGrid } from "./InteractiveTrigramGridOverlayHtml";
 import { TrigramStance } from "../../../../types";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 

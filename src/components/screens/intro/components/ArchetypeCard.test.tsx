@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
+import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCardOverlayHtml";
 
 const mockArchetypeData: ArchetypeCardData = {
   archetype: PlayerArchetype.MUSA,
