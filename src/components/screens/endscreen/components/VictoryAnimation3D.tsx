@@ -1,20 +1,28 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
 /**
  * Victory Animation 3D Component
  * Displays celebratory 3D particle effects for victory screen
+ * Enhanced with additional Korean symbolism and dynamic effects
+ * Optimized for 60fps performance with object reuse
  */
 export const VictoryAnimation3D: React.FC = () => {
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef<THREE.Points>(null);
   const ringsRef = useRef<THREE.Group>(null);
+  const symbolsRef = useRef<THREE.Group>(null);
+
+  // Reusable objects for animation calculations to avoid per-frame allocations
+  // These are reused across all animation frames for scale and position updates
+  const [reusableScale] = useState(() => new THREE.Vector3());
+  const [reusablePosition] = useState(() => new THREE.Vector3());
 
   // Create victory particles - use useState with lazy initializer
   const [particlePositions] = useState(() => {
-    const count = 150;
+    const count = 200; // Increased from 150 for more dramatic effect
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
@@ -31,7 +39,25 @@ export const VictoryAnimation3D: React.FC = () => {
     return positions;
   });
 
-  // Animate victory effects
+  // Create secondary particle layer for depth
+  const [secondaryParticles] = useState(() => {
+    const count = 50;
+    const positions = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      const radius = 5 + Math.random() * 3;
+      const theta = Math.random() * Math.PI * 2;
+
+      positions[i3] = radius * Math.cos(theta);
+      positions[i3 + 1] = Math.random() * 4 - 2;
+      positions[i3 + 2] = radius * Math.sin(theta);
+    }
+
+    return positions;
+  });
+
+  // Animate victory effects - optimized for 60fps
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
@@ -40,18 +66,89 @@ export const VictoryAnimation3D: React.FC = () => {
       groupRef.current.rotation.y = time * 0.3;
     }
 
-    // Pulse particles
+    // Pulse particles with wave effect - use reusable objects
     if (particlesRef.current) {
       const scale = 1 + Math.sin(time * 2) * 0.2;
-      particlesRef.current.scale.setScalar(scale);
+      reusableScale.setScalar(scale);
+      particlesRef.current.scale.copy(reusableScale);
+      
+      // Rising motion
+      reusablePosition.set(0, Math.sin(time * 0.8) * 0.5, 0);
+      particlesRef.current.position.copy(reusablePosition);
     }
 
-    // Rotate rings
+    // Rotate rings at different speeds
     if (ringsRef.current) {
       ringsRef.current.rotation.x = time * 0.5;
       ringsRef.current.rotation.z = time * 0.3;
     }
+
+    // Rotate Korean symbols
+    if (symbolsRef.current) {
+      symbolsRef.current.rotation.y = -time * 0.4;
+      symbolsRef.current.rotation.x = Math.sin(time * 0.5) * 0.1;
+    }
   });
+
+  // Cleanup Three.js resources on unmount
+  useEffect(() => {
+    return () => {
+      // Dispose geometries and materials to prevent memory leaks
+      // Clean up specific refs (these are children of groupRef but we handle them explicitly)
+      if (particlesRef.current) {
+        particlesRef.current.geometry?.dispose();
+        if (particlesRef.current.material) {
+          (particlesRef.current.material as THREE.Material).dispose();
+        }
+      }
+      if (ringsRef.current) {
+        ringsRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+      if (symbolsRef.current) {
+        symbolsRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+      // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
+      // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
+      if (groupRef.current) {
+        groupRef.current.children.forEach((child) => {
+          // Skip objects that are already handled via specific refs
+          if (
+            child === particlesRef.current ||
+            child === ringsRef.current ||
+            child === symbolsRef.current
+          ) {
+            return;
+          }
+
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          } else if (child instanceof THREE.Points) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+    };
+  }, []);
 
   return (
     <group
@@ -59,12 +156,12 @@ export const VictoryAnimation3D: React.FC = () => {
       position={[0, 2, 0]}
       data-testid="victory-animation-3d"
     >
-      {/* Victory particles */}
+      {/* Primary victory particles */}
       <points ref={particlesRef}>
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={150}
+            count={200}
             itemSize={3}
             args={[particlePositions, 3]}
           />
@@ -74,6 +171,26 @@ export const VictoryAnimation3D: React.FC = () => {
           color={new THREE.Color(KOREAN_COLORS.ACCENT_GOLD)}
           transparent
           opacity={0.8}
+          sizeAttenuation
+          depthWrite={false}
+        />
+      </points>
+
+      {/* Secondary particle layer */}
+      <points position={[0, 1, 0]}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={50}
+            itemSize={3}
+            args={[secondaryParticles, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.15}
+          color={new THREE.Color(KOREAN_COLORS.PRIMARY_CYAN)}
+          transparent
+          opacity={0.6}
           sizeAttenuation
           depthWrite={false}
         />
@@ -109,6 +226,34 @@ export const VictoryAnimation3D: React.FC = () => {
         </mesh>
       </group>
 
+      {/* Korean symbol elements - octagonal shape representing 팔괘 (eight trigrams) */}
+      <group ref={symbolsRef}>
+        {Array.from({ length: 8 }).map((_, i) => {
+          const angle = (i / 8) * Math.PI * 2;
+          const radius = 4;
+          return (
+            <mesh
+              key={i}
+              position={[
+                Math.cos(angle) * radius,
+                0,
+                Math.sin(angle) * radius,
+              ]}
+              rotation={[0, angle + Math.PI / 2, 0]}
+            >
+              <boxGeometry args={[0.8, 0.1, 0.1]} />
+              <meshStandardMaterial
+                color={KOREAN_COLORS.ACCENT_GOLD}
+                emissive={KOREAN_COLORS.ACCENT_GOLD}
+                emissiveIntensity={0.5}
+                transparent
+                opacity={0.7}
+              />
+            </mesh>
+          );
+        })}
+      </group>
+
       {/* Central glow sphere */}
       <mesh>
         <sphereGeometry args={[0.5, 32, 32]} />
@@ -132,12 +277,37 @@ export const VictoryAnimation3D: React.FC = () => {
         />
       </mesh>
 
+      {/* Additional inner glow layer */}
+      <mesh>
+        <sphereGeometry args={[0.6, 32, 32]} />
+        <meshBasicMaterial
+          color={KOREAN_COLORS.ACCENT_GOLD}
+          transparent
+          opacity={0.3}
+          side={THREE.BackSide}
+        />
+      </mesh>
+
       {/* Point light for glow effect */}
       <pointLight
         position={[0, 0, 0]}
         intensity={3}
         distance={10}
         color={KOREAN_COLORS.ACCENT_GOLD}
+      />
+
+      {/* Secondary accent lights */}
+      <pointLight
+        position={[2, 2, 0]}
+        intensity={1.5}
+        distance={6}
+        color={KOREAN_COLORS.PRIMARY_CYAN}
+      />
+      <pointLight
+        position={[-2, 2, 0]}
+        intensity={1.5}
+        distance={6}
+        color={KOREAN_COLORS.PRIMARY_CYAN}
       />
     </group>
   );

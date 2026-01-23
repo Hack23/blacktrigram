@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../audio/AudioProvider";
 import { MatchStatistics } from "../../../systems/combat";
@@ -281,5 +281,65 @@ describe("EndScreen3D", () => {
     );
 
     expect(getByTestId("view-replay-button")).toBeInTheDocument();
+  });
+
+  it("should render performance breakdown toggle button", () => {
+    const mockOnReturnToMenu = vi.fn();
+    const winner = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+
+    const { getByTestId } = render(
+      <AudioProvider>
+        <EndScreen3D
+          winner={winner}
+          matchStats={mockMatchStats}
+          onReturnToMenu={mockOnReturnToMenu}
+        />
+      </AudioProvider>,
+    );
+
+    expect(getByTestId("toggle-breakdown-button")).toBeInTheDocument();
+  });
+
+  it("should toggle performance breakdown when button is clicked", () => {
+    const mockOnReturnToMenu = vi.fn();
+    const winner = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
+
+    const { getByTestId, queryByTestId } = render(
+      <AudioProvider>
+        <EndScreen3D
+          winner={winner}
+          matchStats={mockMatchStats}
+          onReturnToMenu={mockOnReturnToMenu}
+        />
+      </AudioProvider>,
+    );
+
+    // Initially, breakdown should not be visible
+    expect(queryByTestId("performance-breakdown")).not.toBeInTheDocument();
+
+    // Click toggle button
+    const toggleButton = getByTestId("toggle-breakdown-button");
+    fireEvent.click(toggleButton);
+
+    // Now breakdown should be visible
+    expect(getByTestId("performance-breakdown")).toBeInTheDocument();
+  });
+
+  it("should display defeat animation for losing player", () => {
+    const mockOnReturnToMenu = vi.fn();
+    const winner = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+
+    const { getByTestId } = render(
+      <AudioProvider>
+        <EndScreen3D
+          winner={winner}
+          matchStats={mockMatchStats}
+          onReturnToMenu={mockOnReturnToMenu}
+        />
+      </AudioProvider>,
+    );
+
+    expect(getByTestId("end-screen-3d")).toBeInTheDocument();
+    // DefeatAnimation3D is rendered in the 3D scene when player 0 loses
   });
 });

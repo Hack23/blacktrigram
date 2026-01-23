@@ -19,10 +19,13 @@ import {
   detectPlatform,
   shouldUseMobileControls,
 } from "../../../utils/deviceDetection";
+import { BaseButtonOverlayHtml } from "../../shared/base/BaseButtonOverlayHtml";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
+import { DefeatAnimation3D } from "./components/DefeatAnimation3D";
 import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
 import { NavigationButtons } from "./components/NavigationButtons";
+import { PerformanceBreakdown } from "./components/PerformanceBreakdown";
 import { PerformanceRating } from "./components/PerformanceRating";
 import { VictoryAnimation3D } from "./components/VictoryAnimation3D";
 import { WinnerDisplay } from "./components/WinnerDisplay";
@@ -178,8 +181,8 @@ const EndScreenBackground3D: React.FC<{
       {/* Background particles */}
       <BackgroundParticles3D color={primaryColor} />
 
-      {/* Victory animation if winner */}
-      {isVictory && <VictoryAnimation3D />}
+      {/* Victory or Defeat animation */}
+      {isVictory ? <VictoryAnimation3D /> : <DefeatAnimation3D />}
     </>
   );
 };
@@ -207,6 +210,7 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
 
   const audio = useAudio();
   const [showStats, setShowStats] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   // Use window size for responsive layout with resize support
   const { width: windowWidth, height: windowHeight } = useWindowSize();
@@ -282,6 +286,11 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
   const toggleStats = useCallback(() => {
     audio.playSFX?.("menu_hover");
     setShowStats((prev) => !prev);
+  }, [audio]);
+
+  const toggleBreakdown = useCallback(() => {
+    audio.playSFX?.("menu_hover");
+    setShowBreakdown((prev) => !prev);
   }, [audio]);
 
   // Audio callbacks for NavigationButtons (inside Html portal which doesn't have AudioProvider context)
@@ -384,36 +393,49 @@ export const EndScreen3D: React.FC<EndScreen3DProps> = ({
           />
 
           {/* Match Statistics Toggle */}
-          <button
-            onClick={toggleStats}
-            onMouseEnter={() => audio.playSFX?.("menu_hover")}
-            style={{
-              background: hexToRgbaString(
-                theme.colors.UI_BACKGROUND_MEDIUM,
-                0.8,
-              ),
-              border: `2px solid ${hexToRgbaString(
-                theme.colors.PRIMARY_CYAN,
-                0.8,
-              )}`,
-              borderRadius: "8px",
-              padding: layoutConstants.buttonPadding,
-              fontSize: layoutConstants.buttonFontSize,
-              color: toCssColor(theme.colors.PRIMARY_CYAN),
-              fontFamily: theme.koreanTypography.fontFamily,
-              fontWeight: "bold",
-              cursor: "pointer",
-              marginBottom: layoutConstants.spacing,
-              transition: "all 0.2s ease",
-            }}
-            data-testid="toggle-stats-button"
-          >
-            {showStats ? "통계 숨기기 | Hide Stats" : "통계 보기 | View Stats"}
-          </button>
+          <div style={{ marginBottom: layoutConstants.spacing }}>
+            <BaseButtonOverlayHtml
+              korean={showStats ? "통계 숨기기" : "통계 보기"}
+              english={showStats ? "Hide Stats" : "View Stats"}
+              onClick={toggleStats}
+              onMouseEnter={() => audio.playSFX?.("menu_hover")}
+              variant="secondary"
+              size={isMobile ? "sm" : "md"}
+              fullWidth
+              testId="toggle-stats-button"
+              ariaLabel={showStats ? "Hide match statistics" : "View match statistics"}
+              isMobile={isMobile}
+            />
+          </div>
 
           {/* Match Statistics Display */}
           {showStats && (
             <MatchStatisticsDisplay
+              matchStats={matchStats}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
+          )}
+
+          {/* Performance Breakdown Toggle */}
+          <div style={{ marginBottom: layoutConstants.spacing }}>
+            <BaseButtonOverlayHtml
+              korean={showBreakdown ? "분석 숨기기" : "상세 분석"}
+              english={showBreakdown ? "Hide Breakdown" : "View Breakdown"}
+              onClick={toggleBreakdown}
+              onMouseEnter={() => audio.playSFX?.("menu_hover")}
+              variant="primary"
+              size={isMobile ? "sm" : "md"}
+              fullWidth
+              testId="toggle-breakdown-button"
+              ariaLabel={showBreakdown ? "Hide performance breakdown" : "View performance breakdown"}
+              isMobile={isMobile}
+            />
+          </div>
+
+          {/* Performance Breakdown Display */}
+          {showBreakdown && (
+            <PerformanceBreakdown
               matchStats={matchStats}
               isMobile={isMobile}
               isTablet={isTablet}
