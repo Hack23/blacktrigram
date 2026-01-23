@@ -25,7 +25,7 @@ describe("TrigramSymbol3D", () => {
     const { container } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -39,7 +39,7 @@ describe("TrigramSymbol3D", () => {
     const { container } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -55,7 +55,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -71,7 +71,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -87,7 +87,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -105,7 +105,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -124,7 +124,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={taeTrigram}
-        stance="tae"
+        stance={TrigramStance.TAE}
         position={[1, 1, 1]}
         isSelected={false}
         isHovered={false}
@@ -140,7 +140,7 @@ describe("TrigramSymbol3D", () => {
     const { container } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={true}
         isHovered={false}
@@ -154,7 +154,7 @@ describe("TrigramSymbol3D", () => {
     const { container } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={true}
@@ -168,7 +168,7 @@ describe("TrigramSymbol3D", () => {
     const { container } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}
@@ -186,7 +186,7 @@ describe("TrigramSymbol3D", () => {
     renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
-        stance="geon"
+        stance={TrigramStance.GEON}
         position={[0, 0, 0]}
         isSelected={false}
         isHovered={false}

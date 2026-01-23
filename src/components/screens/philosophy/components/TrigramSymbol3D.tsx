@@ -4,10 +4,11 @@ import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants/colors";
 import type { TrigramStanceData } from "../../../../systems/trigram/types";
+import { TrigramStance } from "../../../../types/common";
 
 export interface TrigramSymbol3DProps {
   readonly trigram: TrigramStanceData;
-  readonly stance: string; // The trigram stance key for test IDs
+  readonly stance: TrigramStance; // The trigram stance key for test IDs
   readonly position: [number, number, number];
   readonly isSelected: boolean;
   readonly isHovered: boolean;
