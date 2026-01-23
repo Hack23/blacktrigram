@@ -1298,6 +1298,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onStopTraining={handleStopTraining}
           selectedArchetype={selectedArchetype}
           onArchetypeSelect={setSelectedArchetype}
+          overlayVisible={overlayVisible}
           onReturnToMenu={onReturnToMenu}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
@@ -1328,7 +1329,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onAdvanceFootworkStep={trainingActions.advanceFootworkStep}
         />
 
-        {/* Bottom HUD - Technique Bar, Feedback Messages */}
+        {/* Bottom HUD - Technique Bar, Feedback Messages, Mobile Controls */}
         <TrainingBottomHUD
           width={width}
           height={height}
@@ -1341,6 +1342,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onTechniqueSelect={techniqueSelection.selectTechnique}
           showFeedback={trainingState.showFeedback}
           feedbackMessage={trainingState.feedback}
+          selectedArchetype={selectedArchetype}
+          onArchetypeSelect={setSelectedArchetype}
+          onPlaySFX={(sound) => audio.playSFX(sound)}
         />
       </div>
     </div>

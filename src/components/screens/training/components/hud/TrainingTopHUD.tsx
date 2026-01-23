@@ -3,17 +3,18 @@
  *
  * Gaming Best Practice - Minimal Top Bar:
  * - Training Active/Stop indicator (left)
- * - Archetype Selector - compact inline buttons (center)
+ * - Vital Point hint + Archetype Selector (center) - desktop only
  * - Return to Menu button (right) - Standard gaming pattern
+ *
+ * Mobile:
+ * - Only shows Training status (left) and Return button (right)
+ * - Other controls consolidated in BottomHUD
  *
  * Layout:
  * - Width: 100% of screen
- * - Height: Compact 60-70px (minimal obstruction)
- * - Single row horizontal layout
+ * - Height: Compact 50-70px (minimal obstruction)
  *
- * Note: Volume moved to BottomHUD, Vital Point hint removed (redundant)
- *
- * @korean 훈련화면 상단 바 - 훈련 상태, 원형 선택, 메뉴 복귀
+ * @korean 훈련화면 상단 바 - 훈련 상태, 급소 힌트, 원형 선택, 메뉴 복귀
  */
 
 import React from "react";
@@ -28,7 +29,7 @@ import TrainingControlsOverlayHtml from "../TrainingControlsOverlayHtml";
 
 /** Top HUD height constants - SLIM for minimal obstruction */
 const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 60;
+const TOP_HUD_HEIGHT_MOBILE = 50;
 
 export interface TrainingTopHUDProps {
   /** Screen width for layout calculations */
@@ -49,6 +50,8 @@ export interface TrainingTopHUDProps {
   readonly selectedArchetype: PlayerArchetype;
   /** Handler for archetype selection */
   readonly onArchetypeSelect: (archetype: PlayerArchetype) => void;
+  /** Whether vital point overlay is visible */
+  readonly overlayVisible: boolean;
   /** Handler for returning to menu */
   readonly onReturnToMenu: () => void;
   /** Handler for playing sound effects */
@@ -58,8 +61,8 @@ export interface TrainingTopHUDProps {
 /**
  * TrainingTopHUD Component
  *
- * Slim top bar containing training controls, archetype selector,
- * and return to menu button. Minimal height for maximum arena visibility.
+ * Slim top bar containing training controls, vital point hint, archetype selector,
+ * and return to menu button. On mobile, only essential controls shown.
  */
 export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   width,
@@ -70,6 +73,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   onStopTraining,
   selectedArchetype,
   onArchetypeSelect,
+  overlayVisible,
   onReturnToMenu,
   onPlaySFX,
 }) => {
@@ -138,41 +142,103 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
         />
       </div>
 
-      {/* Center Section - Compact Archetype Selector */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: `${layout.gap}px`,
-          padding: isMobile
-            ? "6px 10px"
-            : `${6 * positionScale}px ${12 * positionScale}px`,
-          background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
-          border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-          borderRadius: `${6 * positionScale}px`,
-          pointerEvents: "all",
-        }}
-        data-testid="training-top-hud-center-section"
-      >
-        <span
+      {/* Center Section - Vital Point Hint + Archetype Selector (desktop) */}
+      {!isMobile && (
+        <div
           style={{
-            fontSize: `${layout.fontSize}px`,
-            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-            fontWeight: "bold",
-            fontFamily: theme.koreanTypography.fontFamily,
-            whiteSpace: "nowrap",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: `${layout.gap * 2}px`,
           }}
+          data-testid="training-top-hud-center-section"
         >
-          원형 | Archetype:
-        </span>
-        <ArchetypeSelectionButtons
-          selectedArchetype={selectedArchetype}
-          onArchetypeSelect={onArchetypeSelect}
-          onPlaySFX={onPlaySFX}
-          isMobile={isMobile}
-        />
-      </div>
+          {/* Vital Point Hint */}
+          {!overlayVisible && (
+            <div
+              style={{
+                padding: `${4 * positionScale}px ${10 * positionScale}px`,
+                background: hexToRgbaString(
+                  theme.colors.UI_BACKGROUND_DARK,
+                  0.8,
+                ),
+                border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
+                borderRadius: `${4 * positionScale}px`,
+                fontSize: `${layout.fontSize}px`,
+                fontFamily: theme.koreanTypography.fontFamily,
+                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+                whiteSpace: "nowrap",
+              }}
+              data-testid="vital-point-hint"
+            >
+              💡 Press{" "}
+              <span
+                style={{
+                  color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                  fontWeight: "bold",
+                }}
+              >
+                V
+              </span>{" "}
+              for vital points
+            </div>
+          )}
+
+          {/* Archetype Selector */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: `${layout.gap}px`,
+              padding: `${6 * positionScale}px ${12 * positionScale}px`,
+              background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+              border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
+              borderRadius: `${6 * positionScale}px`,
+              pointerEvents: "all",
+            }}
+          >
+            <span
+              style={{
+                fontSize: `${layout.fontSize}px`,
+                color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                fontWeight: "bold",
+                fontFamily: theme.koreanTypography.fontFamily,
+                whiteSpace: "nowrap",
+              }}
+            >
+              원형 | Archetype:
+            </span>
+            <ArchetypeSelectionButtons
+              selectedArchetype={selectedArchetype}
+              onArchetypeSelect={onArchetypeSelect}
+              onPlaySFX={onPlaySFX}
+              isMobile={isMobile}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Center - Just vital point hint */}
+      {isMobile && !overlayVisible && (
+        <div
+          style={{
+            padding: "4px 8px",
+            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
+            borderRadius: "4px",
+            fontSize: "10px",
+            fontFamily: theme.koreanTypography.fontFamily,
+            color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          }}
+          data-testid="training-top-hud-center-section"
+        >
+          <span style={{ color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1) }}>
+            V
+          </span>{" "}
+          = 급소
+        </div>
+      )}
 
       {/* Right Section - Return to Menu */}
       <div

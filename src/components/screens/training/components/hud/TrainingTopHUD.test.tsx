@@ -97,6 +97,7 @@ describe("TrainingTopHUD", () => {
     onStopTraining: vi.fn(),
     selectedArchetype: PlayerArchetype.MUSA,
     onArchetypeSelect: vi.fn(),
+    overlayVisible: false,
     onReturnToMenu: vi.fn(),
     onPlaySFX: vi.fn(),
   };
@@ -147,6 +148,21 @@ describe("TrainingTopHUD", () => {
       render(<TrainingTopHUD {...defaultProps} />);
       expect(screen.getByTestId("mock-return-button")).toBeInTheDocument();
     });
+
+    it("should render vital point hint when overlay not visible", () => {
+      render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
+      expect(screen.getByTestId("vital-point-hint")).toBeInTheDocument();
+    });
+
+    it("should hide vital point hint when overlay is visible", () => {
+      render(<TrainingTopHUD {...defaultProps} overlayVisible={true} />);
+      expect(screen.queryByTestId("vital-point-hint")).not.toBeInTheDocument();
+    });
+
+    it("should show V key instruction", () => {
+      render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
+      expect(screen.getByText("V")).toBeInTheDocument();
+    });
   });
 
   describe("Props Handling", () => {
@@ -171,21 +187,26 @@ describe("TrainingTopHUD", () => {
       );
     });
 
-    it("should pass isMobile to all child components", () => {
+    it("should pass isMobile to child components (mobile hides archetype)", () => {
       render(<TrainingTopHUD {...defaultProps} isMobile={true} />);
 
       expect(screen.getByTestId("mock-training-controls")).toHaveAttribute(
         "data-mobile",
         "true",
       );
-      expect(screen.getByTestId("mock-archetype-buttons")).toHaveAttribute(
-        "data-mobile",
-        "true",
-      );
+      // Archetype buttons are hidden on mobile (moved to BottomHUD)
+      expect(
+        screen.queryByTestId("mock-archetype-buttons"),
+      ).not.toBeInTheDocument();
       expect(screen.getByTestId("mock-return-button")).toHaveAttribute(
         "data-mobile",
         "true",
       );
+    });
+
+    it("should show archetype buttons on desktop", () => {
+      render(<TrainingTopHUD {...defaultProps} isMobile={false} />);
+      expect(screen.getByTestId("mock-archetype-buttons")).toBeInTheDocument();
     });
   });
 

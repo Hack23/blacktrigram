@@ -74,6 +74,24 @@ vi.mock("../../../../shared/ui/VolumeControl", () => ({
   ),
 }));
 
+vi.mock("../TrainingButtonsOverlayHtml", () => ({
+  ArchetypeSelectionButtons: ({
+    selectedArchetype,
+    isMobile,
+  }: {
+    selectedArchetype: string;
+    isMobile: boolean;
+  }) => (
+    <div
+      data-testid="mock-archetype-buttons"
+      data-selected={selectedArchetype}
+      data-mobile={isMobile}
+    >
+      Archetype Buttons
+    </div>
+  ),
+}));
+
 describe("TrainingBottomHUD", () => {
   // Create a mock player state
   const mockPlayer = {

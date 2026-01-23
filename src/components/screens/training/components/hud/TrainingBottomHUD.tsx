@@ -5,28 +5,31 @@
  * - Technique Bar (centered)
  * - Volume Control (bottom-right, compact)
  * - Feedback Message (centered overlay)
+ * - Archetype Selector (mobile only - bottom-left)
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Compact ~80px for techniques only
- * - Volume tucked in corner (common gaming pattern)
+ * - Height: Compact ~80-100px
+ * - On mobile, consolidates controls from TopHUD
  *
- * @korean 훈련화면 하단 바 - 기술 바, 음량, 피드백
+ * @korean 훈련화면 하단 바 - 기술 바, 음량, 피드백, 모바일 원형선택
  */
 
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
+import { PlayerArchetype } from "../../../../../types/common";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBarContainer } from "../../../../shared/three/ui/TechniqueBarContainer";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
+import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
 import TrainingFeedbackOverlayHtml from "../TrainingFeedbackOverlayHtml";
 
-/** Bottom HUD height - COMPACT for minimal obstruction */
+/** Bottom HUD height - slightly taller on mobile to fit archetype */
 const BOTTOM_HUD_HEIGHT_DESKTOP = 90;
-const BOTTOM_HUD_HEIGHT_MOBILE = 80;
+const BOTTOM_HUD_HEIGHT_MOBILE = 100;
 
 export interface TrainingBottomHUDProps {
   /** Screen width for layout calculations */
@@ -51,12 +54,19 @@ export interface TrainingBottomHUDProps {
   readonly showFeedback: boolean;
   /** Feedback message to display */
   readonly feedbackMessage: string;
+  /** Currently selected archetype (for mobile) */
+  readonly selectedArchetype?: PlayerArchetype;
+  /** Handler for archetype selection (for mobile) */
+  readonly onArchetypeSelect?: (archetype: PlayerArchetype) => void;
+  /** Handler for playing sound effects (for mobile) */
+  readonly onPlaySFX?: (sound: string) => void;
 }
 
 /**
  * TrainingBottomHUD Component
  *
- * Compact bottom bar with centered technique bar and volume control.
+ * Compact bottom bar with centered technique bar, volume control,
+ * and archetype selector on mobile.
  */
 export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   width,
@@ -70,6 +80,9 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   onTechniqueSelect,
   showFeedback,
   feedbackMessage,
+  selectedArchetype,
+  onArchetypeSelect,
+  onPlaySFX,
 }) => {
   const theme = useKoreanTheme({
     variant: "primary",
@@ -163,6 +176,33 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
       >
         <VolumeControl position="bottom-right" compact={true} />
       </div>
+
+      {/* Mobile Archetype Selector - bottom left corner */}
+      {isMobile && onArchetypeSelect && selectedArchetype && (
+        <div
+          style={{
+            position: "absolute",
+            left: `${layout.padding * 1.5}px`,
+            bottom: `${layout.padding}px`,
+            pointerEvents: "all",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "4px 8px",
+            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
+            border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
+            borderRadius: "4px",
+          }}
+          data-testid="training-bottom-hud-archetype-section"
+        >
+          <ArchetypeSelectionButtons
+            selectedArchetype={selectedArchetype}
+            onArchetypeSelect={onArchetypeSelect}
+            onPlaySFX={onPlaySFX ?? (() => {})}
+            isMobile={isMobile}
+          />
+        </div>
+      )}
     </div>
   );
 };
