@@ -15,7 +15,8 @@ export const VictoryAnimation3D: React.FC = () => {
   const ringsRef = useRef<THREE.Group>(null);
   const symbolsRef = useRef<THREE.Group>(null);
 
-  // Reusable objects for animation calculations (avoid allocations)
+  // Reusable objects for animation calculations to avoid per-frame allocations
+  // These are reused across all animation frames for scale and position updates
   const [reusableScale] = useState(() => new THREE.Vector3());
   const [reusablePosition] = useState(() => new THREE.Vector3());
 
@@ -93,6 +94,7 @@ export const VictoryAnimation3D: React.FC = () => {
   useEffect(() => {
     return () => {
       // Dispose geometries and materials to prevent memory leaks
+      // Clean up specific refs (these are children of groupRef but we handle them explicitly)
       if (particlesRef.current) {
         particlesRef.current.geometry?.dispose();
         if (particlesRef.current.material) {
@@ -119,21 +121,8 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (groupRef.current) {
-        groupRef.current.children.forEach((child) => {
-          if (child instanceof THREE.Mesh) {
-            child.geometry?.dispose();
-            if (child.material) {
-              (child.material as THREE.Material).dispose();
-            }
-          } else if (child instanceof THREE.Points) {
-            child.geometry?.dispose();
-            if (child.material) {
-              (child.material as THREE.Material).dispose();
-            }
-          }
-        });
-      }
+      // Note: We don't need to iterate groupRef.current.children since all resources
+      // are already disposed via the specific refs above (particlesRef, ringsRef, symbolsRef)
     };
   }, []);
 

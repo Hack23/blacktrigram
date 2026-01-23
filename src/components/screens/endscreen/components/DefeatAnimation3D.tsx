@@ -14,7 +14,8 @@ export const DefeatAnimation3D: React.FC = () => {
   const particlesRef = useRef<THREE.Points>(null);
   const spiralRef = useRef<THREE.Group>(null);
 
-  // Reusable objects for animation calculations (avoid allocations in hot path)
+  // Reusable objects for animation calculations to avoid per-frame allocations
+  // These are reused across all animation frames for scale and position updates
   const [reusableScale] = useState(() => new THREE.Vector3());
   const [reusablePosition] = useState(() => new THREE.Vector3());
 
