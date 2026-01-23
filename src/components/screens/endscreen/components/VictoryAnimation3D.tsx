@@ -128,8 +128,8 @@ export const VictoryAnimation3D: React.FC = () => {
           // Skip objects that are already handled via specific refs
           if (
             child === particlesRef.current ||
-            (ringsRef.current && ringsRef.current.children.includes(child)) ||
-            (symbolsRef.current && symbolsRef.current.children.includes(child))
+            child === ringsRef.current ||
+            child === symbolsRef.current
           ) {
             return;
           }

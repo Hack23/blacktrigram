@@ -86,9 +86,20 @@ export const DefeatAnimation3D: React.FC = () => {
           }
         });
       }
+      // Additionally iterate over all group children to catch meshes/points without explicit refs
       if (groupRef.current) {
         groupRef.current.children.forEach((child) => {
+          // Skip already-handled refs
+          if (child === particlesRef.current || child === spiralRef.current) {
+            return;
+          }
+
           if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          } else if (child instanceof THREE.Points) {
             child.geometry?.dispose();
             if (child.material) {
               (child.material as THREE.Material).dispose();
