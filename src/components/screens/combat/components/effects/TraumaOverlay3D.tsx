@@ -90,6 +90,12 @@ const INJURY_COLORS = {
  * 신체 부위 한글 명칭
  * 
  * Exported for use in trauma visualization components
+ * 
+ * NOTE: These labels use formal anatomical Korean terminology.
+ * For consistency with existing BodyPartHealthDisplay (좌팔/우팔/좌다리/우다리),
+ * consider centralizing body part labels in a shared constants module.
+ * 
+ * Currently unused in this PR - exported for future trauma visualization enhancements.
  */
 export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; english: string }> = {
   [BodyRegion.HEAD]: { korean: "두부", english: "Head" },

@@ -36,10 +36,10 @@ export interface PainVignetteProps {
  * as pain increases. Only visible when pain is 5 or higher. Optimized
  * for 60fps with CSS transitions.
  * 
- * WCAG 2.1 AA Accessibility Features:
- * - ARIA role="status" for non-critical pain feedback
- * - ARIA role="alert" for high pain levels (>75)
- * - Screen reader announcement of pain level
+ * Accessibility:
+ * - Purely visual, decorative-only overlay
+ * - Hidden from assistive technologies via aria-hidden="true"
+ * - Does not announce pain levels; use a separate mechanism if announcements are required
  *
  * @example
  * ```tsx
@@ -88,7 +88,7 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     return null;
   }
 
-  // Purely visual overlay - no ARIA attributes needed
+  // Purely visual overlay - no ARIA roles or live regions; marked aria-hidden to stay decorative
   return (
     <div 
       data-testid="pain-vignette" 

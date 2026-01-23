@@ -36,10 +36,11 @@ export interface ConsciousnessBlurProps {
  * consciousness decreases. Only visible when consciousness is 90 or below.
  * Optimized for 60fps with CSS backdrop-filter.
  * 
- * WCAG 2.1 AA Accessibility Features:
- * - ARIA role="alert" for critical consciousness states
- * - ARIA live="polite" for gradual changes
- * - Screen reader announcement of consciousness level
+ * Accessibility behavior:
+ * - Purely decorative visual effect
+ * - Marked with aria-hidden="true" and excluded from the accessibility tree
+ * - Does not announce consciousness level to screen readers
+ *   (use a separate, dedicated announcement channel if needed)
  *
  * @example
  * ```tsx
@@ -89,7 +90,7 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
     return null;
   }
 
-  // Purely visual overlay - no ARIA attributes needed
+  // Decorative visual overlay; aria-hidden with no live region or additional ARIA roles needed
   return (
     <div
       data-testid="consciousness-blur"

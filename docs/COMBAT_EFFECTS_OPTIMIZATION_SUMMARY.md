@@ -101,23 +101,23 @@ All trauma overlay components enhanced with:
    - Exported labels for future use
    - Improved ARIA accessibility
 
-2. **BloodLossOverlayHtml.tsx**
-   - Added role="alert" for critical states
-   - Added aria-live="assertive" for urgency
-   - Added aria-label with blood loss percentage
-   - Enhanced screen reader support
+2. **BloodLossOverlayHtml.tsx** ⭐
+   - Overlay remains purely visual/decorative (no interactive elements)
+   - Marked with `aria-hidden="true"` so it is ignored by assistive technologies
+   - No role/aria-live/aria-label attributes are applied directly to this overlay
+   - Accessible blood-loss feedback is provided via existing HUD status text, not this effect layer
 
-3. **ConsciousnessBlur.tsx**
-   - Dynamic ARIA role (alert/status) based on severity
-   - Adaptive aria-live (assertive for ≤30%, polite for >30%)
-   - Consciousness level announcements
-   - Improved accessibility documentation
+3. **ConsciousnessBlur.tsx** ⭐
+   - Visual-only blur effect to indicate fading consciousness
+   - Marked `aria-hidden="true"` with no dynamic ARIA roles or live regions
+   - Does not directly announce consciousness level changes
+   - Relies on separate combat HUD components to convey accessible consciousness/state changes
 
-4. **PainVignette.tsx**
-   - High pain alerts (>75%) with role="alert"
-   - Moderate pain with role="status"
-   - Adaptive aria-live based on severity
-   - Pain level screen reader support
+4. **PainVignette.tsx** ⭐
+   - Decorative vignette effect that visually represents pain intensity
+   - Marked `aria-hidden="true"` so it is excluded from screen readers
+   - Does not apply role or aria-live attributes based on pain level
+   - Any pain-level announcements, if present, are handled by other accessible HUD/status elements
 
 ### Documentation Added
 5. **docs/COMBAT_EFFECTS_PERFORMANCE.md** (NEW)
@@ -139,11 +139,12 @@ All trauma overlay components enhanced with:
 - **Cultural Context**: Anatomical terms follow Korean medical terminology
 
 ### Accessibility Features
-All overlays now support:
-- **Screen Readers**: JAWS, NVDA, VoiceOver
-- **ARIA Roles**: Proper semantic roles (alert, status)
-- **Live Regions**: Dynamic content announcements
-- **Bilingual**: Korean and English labels throughout
+Combat overlays follow WCAG 2.1 AA guidelines:
+- **Interactive/Status Overlays**: JAWS, NVDA, VoiceOver support with proper ARIA roles
+- **Decorative Overlays**: Visual-only effects marked with `aria-hidden="true"` (no screen reader announcements)
+- **Semantic Roles**: Alert/status roles for informative overlays only
+- **Bilingual**: Korean and English labels for all user-facing text
+- **Separation of Concerns**: Visual effects stay decorative; critical info conveyed via separate accessible HUD components
 
 ---
 

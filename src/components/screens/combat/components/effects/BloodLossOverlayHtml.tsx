@@ -40,10 +40,10 @@ export interface BloodLossOverlayProps {
  * - Prevents re-renders when blood loss hasn't changed significantly
  * - Memoized style calculations
  * 
- * WCAG 2.1 AA Accessibility Features:
- * - ARIA role="alert" for critical status
- * - ARIA live region for screen reader announcements
- * - Visual indication with pulsing animation
+ * Accessibility notes:
+ * - Purely decorative visual effect; no ARIA role or aria-live region is defined here
+ * - Typically rendered within an aria-hidden container so it is ignored by screen readers
+ * - Critical status announcements should be provided by separate, semantic HUD components
  *
  * @example
  * ```tsx
@@ -101,7 +101,7 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
     return null;
   }
 
-  // Purely visual overlay - no ARIA attributes needed
+  // Purely visual effect overlay; intentionally hidden from assistive technology via aria-hidden and does not use ARIA roles or live regions
   return (
     <>
       {/* CSS keyframe animation for pulsing with CSS variables */}

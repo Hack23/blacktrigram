@@ -131,32 +131,41 @@ export const KOREAN_BODY_REGION_LABELS = {
 
 ---
 
-## ♿ Accessibility Improvements (WCAG 2.1 AA)
+## ♿ Accessibility Improvements
 
-### BloodLossOverlayHtml
+### Visual-Only Overlays
+
+The combat visual effects (BloodLossOverlayHtml, ConsciousnessBlur, PainVignette) are **decorative-only overlays** that enhance the visual experience but do not convey critical information on their own.
+
+**Implementation Approach**:
 ```typescript
+// These overlays are marked aria-hidden to stay decorative
 <div
-  role="alert"
-  aria-live="assertive"
-  aria-label={`Critical blood loss: ${Math.round(bloodLoss)} percent`}
+  data-testid="visual-effect"
+  style={effectStyle}
+  aria-hidden="true"
 />
 ```
 
-**Features**:
-- ARIA role="alert" for critical status
-- ARIA live region for screen reader announcements
-- Visual + auditory feedback
+**Design Rationale**:
+- Purely visual cinematic effects (vignettes, blur, color overlays)
+- Do not contain interactive elements or unique information
+- Critical status information is conveyed through separate HUD components
+- Prevents screen reader clutter from redundant announcements
+- Follows WCAG decorative content guidelines
+
+**Accessible Status Communication**:
+Status information (blood loss, consciousness, pain) is conveyed through:
+- Semantic HUD components with proper ARIA roles
+- Combat log entries with screen reader support
+- Dedicated status indicators with live regions
+- Audio feedback for critical state changes
 
 ---
 
-### ConsciousnessBlur
-```typescript
-<div
-  role={isLowConsciousness ? "alert" : "status"}
-  aria-live={consciousness <= 30 ? "assertive" : "polite"}
-  aria-label={`Consciousness level: ${consciousness} percent`}
-/>
-```
+### FractureWarning (Trauma Overlay)
+
+The fracture warning within TraumaOverlay3D uses proper ARIA semantics:
 
 **Features**:
 - Dynamic role based on severity
@@ -345,10 +354,10 @@ useEffect(() => {
 4. **Use semantic Korean terms** for martial arts concepts
 
 ### Accessibility Standards
-1. **ARIA roles** for all dynamic overlays (alert, status)
-2. **ARIA live regions** for screen reader support
-3. **Semantic HTML** with proper role attributes
-4. **Test with screen readers** (NVDA, JAWS, VoiceOver)
+1. **Use ARIA roles for interactive/status overlays only** (e.g., `role="alert"`, `role="status"`). **Do not add ARIA roles to purely decorative overlays** that are marked with `aria-hidden="true"`.
+2. **Use ARIA live regions only for overlays that convey time-sensitive information** (e.g., damage summaries, status changes). **Do not attach live regions to visual-only, decorative overlays**.
+3. **Prefer semantic HTML and native elements**; add ARIA attributes only when necessary for non-decorative overlays that need to be exposed to assistive technologies.
+4. **Test with screen readers** (NVDA, JAWS, VoiceOver) to verify that informative/interactive overlays are announced correctly, while decorative `aria-hidden="true"` overlays remain silent.
 
 ---
 
