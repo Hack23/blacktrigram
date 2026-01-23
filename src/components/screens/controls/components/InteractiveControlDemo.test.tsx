@@ -7,7 +7,7 @@
  * @module components/screens/controls/components/__tests__
  */
 
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { InteractiveControlDemo } from "./InteractiveControlDemo";
 
@@ -191,7 +191,7 @@ describe("InteractiveControlDemo", () => {
 
       const keysToPress = ["Space", "KeyW", "KeyA", "KeyS"];
 
-      keysToPress.forEach((key, index) => {
+      keysToPress.forEach((key) => {
         act(() => {
           rerender(
             <InteractiveControlDemo

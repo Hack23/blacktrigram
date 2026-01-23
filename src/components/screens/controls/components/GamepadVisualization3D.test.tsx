@@ -174,7 +174,6 @@ describe("GamepadVisualization3D", () => {
         </Canvas>
       );
 
-      const content = container.textContent || "";
       // Korean labels for buttons should be present
       expect(container).toBeTruthy();
     });
