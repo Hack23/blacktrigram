@@ -38,7 +38,8 @@ export interface TrigramSymbol3DProps {
  * @example
  * ```typescript
  * <TrigramSymbol3D
- *   trigram={TRIGRAM_DATA.geon}
+ *   trigram={TRIGRAM_DATA[TrigramStance.GEON]}
+ *   stance={TrigramStance.GEON}
  *   position={[0, 0, 0]}
  *   isSelected={false}
  *   isHovered={true}

@@ -30,8 +30,10 @@ export interface PhilosophyTextOverlayHtmlProps {
  * 
  * @example
  * ```typescript
+ * import { TrigramStance } from "../../../../types";
+ * 
  * <PhilosophyTextOverlayHtml
- *   selectedTrigram="geon"
+ *   selectedTrigram={TrigramStance.GEON}
  *   onClose={() => clearSelection()}
  *   isMobile={false}
  * />

@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import React from "react";
+import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types";
 import { KOREAN_COLORS } from "../../../../types/constants/colors";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
@@ -43,20 +43,8 @@ export interface InteractiveTrigramGridProps {
 export const InteractiveTrigramGrid: React.FC<
   InteractiveTrigramGridProps
 > = ({ selectedTrigram, onTrigramSelect, isMobile = false }) => {
-  // All eight trigrams in I Ching order
-  const trigrams = useMemo(
-    () => [
-      TrigramStance.GEON,
-      TrigramStance.TAE,
-      TrigramStance.LI,
-      TrigramStance.JIN,
-      TrigramStance.SON,
-      TrigramStance.GAM,
-      TrigramStance.GAN,
-      TrigramStance.GON,
-    ],
-    []
-  );
+  // Use canonical trigram ordering from shared constants
+  const trigrams = TRIGRAM_STANCES_ORDER;
 
   // Grid configuration based on device
   const columns = isMobile ? 2 : 4;

@@ -1,7 +1,8 @@
 import { OrbitControls } from "@react-three/drei";
 import React, { useState, useMemo } from "react";
-import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
+import { TRIGRAM_DATA, TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types";
+import { KOREAN_COLORS } from "../../../../types/constants/colors";
 import { TrigramSymbol3D } from "./TrigramSymbol3D";
 
 export interface TrigramVisualization3DProps {
@@ -54,19 +55,9 @@ export const TrigramVisualization3D: React.FC<
   // Memoize trigram positions in circular formation
   const trigramPositions = useMemo(() => {
     const radius = 4.5;
-    const trigrams = [
-      TrigramStance.GEON,
-      TrigramStance.TAE,
-      TrigramStance.LI,
-      TrigramStance.JIN,
-      TrigramStance.SON,
-      TrigramStance.GAM,
-      TrigramStance.GAN,
-      TrigramStance.GON,
-    ];
 
-    return trigrams.map((stance, index) => {
-      const angle = (index / trigrams.length) * Math.PI * 2;
+    return TRIGRAM_STANCES_ORDER.map((stance, index) => {
+      const angle = (index / TRIGRAM_STANCES_ORDER.length) * Math.PI * 2;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
       // Add vertical variation using double frequency for visual depth effect
@@ -95,8 +86,8 @@ export const TrigramVisualization3D: React.FC<
       />
 
       {/* Accent lights for cyberpunk feel */}
-      <pointLight position={[0, 5, 0]} intensity={0.8} color={0x00e6e6} />
-      <pointLight position={[0, -2, 0]} intensity={0.5} color={0xffc400} />
+      <pointLight position={[0, 5, 0]} intensity={0.8} color={KOREAN_COLORS.PRIMARY_CYAN} />
+      <pointLight position={[0, -2, 0]} intensity={0.5} color={KOREAN_COLORS.ACCENT_GOLD} />
 
       {/* Trigram symbols in circular formation */}
       {trigramPositions.map(({ stance, position }) => (

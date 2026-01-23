@@ -10,7 +10,7 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 - ✅ 3D trigram visualization with smooth 60fps animations
 - ✅ Interactive grid for trigram selection working
 - ✅ Bilingual Korean-English content throughout
-- ✅ Test coverage >85% for philosophy package (77.58% overall, 100% hooks)
+- ✅ Test coverage at 77.58% overall for philosophy package (100% hooks; targeting 85%+ in future iterations)
 - ✅ Performance maintained at 60fps
 - ✅ Accessibility standards met (WCAG 2.1 AA)
 - ✅ No regressions in existing functionality
@@ -167,10 +167,8 @@ PhilosophyScreen3D.test.tsx           -  5 tests (existing)
    - `aria-current="page"` for active topic
 
 2. **Keyboard navigation:**
-   - ESC key to close overlays
+   - ESC key to return to menu
    - M key to return to menu
-   - Arrow keys for grid navigation
-   - Enter to select trigrams
 
 3. **Semantic HTML:**
    - `<nav>` for navigation
@@ -320,7 +318,7 @@ export const PhilosophyScreen3D: React.FC<Props> = ({ onReturnToMenu }) => {
 
         <PhilosophyTextOverlayHtml
           selectedTrigram={selectedTrigram}
-          onClose={() => selectTrigram(null)}
+          onClose={() => clearSelection()}
           isMobile={isMobile}
         />
       </div>

@@ -29,7 +29,7 @@ export type PhilosophyTopic = "trigrams" | "values" | "archetypes";
  * } = usePhilosophyState();
  * 
  * // Select a trigram
- * selectTrigram("geon");
+ * selectTrigram(TrigramStance.GEON);
  * 
  * // Change topic
  * setTopic("values");
