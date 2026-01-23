@@ -11,7 +11,7 @@ import {
   getNeonTextShadow,
   getSmoothTransition,
 } from "../../../../utils/visualEffects";
-import "./MenuSection.css";
+import { StatBar } from "./StatBar";
 
 // Enhanced shape matching PLAYER_ARCHETYPES_DATA entries
 export interface ArchetypeDataShape {
@@ -80,7 +80,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
         : isLargeContainer
           ? 10
           : 12;
-      const statLabelFontSize = isSmallScreen ? 9 : isLargeContainer ? 9 : 11;
       const statBarHeight = isSmallScreen ? 10 : isLargeContainer ? 10 : 12;
 
       const handlePrevious = useCallback(() => {
@@ -255,7 +254,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
               <button
                 onClick={handlePrevious}
                 aria-label="Previous archetype"
-                className="archetype-nav-button"
                 style={{
                   flex: 1,
                   height: "30px",
@@ -273,6 +271,13 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   borderRadius: "4px",
                   cursor: "pointer",
                 }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = `3px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD)}`;
+                  e.currentTarget.style.outlineOffset = "2px";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = "none";
+                }}
                 data-testid="prev-archetype-button"
               >
                 ◀
@@ -280,7 +285,6 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
               <button
                 onClick={handleNext}
                 aria-label="Next archetype"
-                className="archetype-nav-button"
                 style={{
                   flex: 1,
                   height: "30px",
@@ -297,6 +301,13 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                   )}`,
                   borderRadius: "4px",
                   cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = `3px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD)}`;
+                  e.currentTarget.style.outlineOffset = "2px";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = "none";
                 }}
                 data-testid="next-archetype-button"
               >
@@ -406,70 +417,18 @@ export const ArchetypeDisplayOverlayHtml: React.FC<ArchetypeDisplayOverlayHtmlPr
                 전투 능력치 | Combat Stats
               </div>
 
-              {/* Individual stat bars */}
+              {/* Individual stat bars using refactored StatBar component */}
               {combatStats.map((stat) => (
-                <div
+                <StatBar
                   key={stat.korean}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: "12px",
-                  }}
-                >
-                  {/* Stat label */}
-                  <div
-                    style={{
-                      width: "80px",
-                      fontSize: `${statLabelFontSize}px`,
-                      fontFamily: FONT_FAMILY.KOREAN,
-                      color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(
-                        16,
-                      ).padStart(6, "0")}`,
-                      flexShrink: 0,
-                    }}
-                  >
-                    {stat.korean} | {stat.english}
-                  </div>
-
-                  {/* Stat bar container */}
-                  <div
-                    style={{
-                      flex: 1,
-                      height: `${statBarHeight}px`,
-                      background: colors.statBarBackground,
-                      borderRadius: "2px",
-                      position: "relative",
-                      border: `1px solid ${colors.archetypeColor}`,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${stat.value * 100}%`,
-                        height: "100%",
-                        background: colors.statBarFill,
-                        borderRadius: "2px",
-                        transition: "width 0.3s ease",
-                      }}
-                    />
-                  </div>
-
-                  {/* Stat value */}
-                  <div
-                    style={{
-                      width: "30px",
-                      fontSize: isSmallScreen ? "9px" : "11px",
-                      fontWeight: "bold",
-                      fontFamily: FONT_FAMILY.PRIMARY,
-                      color: colors.archetypeColor,
-                      textAlign: "right",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {stat.rawValue}
-                  </div>
-                </div>
+                  label={`${stat.korean} | ${stat.english}`}
+                  value={stat.rawValue}
+                  max={100}
+                  color={selectedArchetype.color}
+                  height={statBarHeight}
+                  showValue={true}
+                  isMobile={isSmallScreen}
+                />
               ))}
             </div>
           </div>

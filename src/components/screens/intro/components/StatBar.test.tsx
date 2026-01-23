@@ -70,7 +70,8 @@ describe("StatBar", () => {
     
     const label = screen.getByTestId("stat-label");
     expect(label).toBeInTheDocument();
-    expect(label).toHaveStyle({ fontSize: "9px" });
+    // calculateResponsiveSize applies 0.8 scale for mobile: 9 * 0.8 = 7.2 → 7px
+    expect(label).toHaveStyle({ fontSize: "7px" });
   });
 
   it("should have correct test id based on Korean label", () => {

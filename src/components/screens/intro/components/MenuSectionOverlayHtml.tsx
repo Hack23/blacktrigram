@@ -10,7 +10,6 @@ import {
   getNeonTextShadow,
 } from "../../../../utils/visualEffects";
 import { MenuButtons } from "./MenuButtons";
-import "./MenuSection.css";
 
 export interface MenuSectionOverlayHtmlProps {
   readonly menuItems: Array<{
