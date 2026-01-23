@@ -129,20 +129,7 @@ export const PhilosophyTextOverlayHtml: React.FC<
             justifyContent: "center",
             transition: "all 0.2s ease",
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(
-              KOREAN_COLORS.ACCENT_GOLD,
-              0.2
-            );
-            e.currentTarget.style.transform = "scale(1.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = hexToRgbaString(
-              KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-              0.8
-            );
-            e.currentTarget.style.transform = "scale(1)";
-          }}
+
           aria-label="Close overlay"
           data-testid="close-overlay"
         >
@@ -435,7 +422,7 @@ export const PhilosophyTextOverlayHtml: React.FC<
         </div>
       </div>
 
-      {/* Fade in animation */}
+      {/* Fade in animation and hover styles */}
       <style>
         {`
           @keyframes philosophyFadeIn {
@@ -447,6 +434,11 @@ export const PhilosophyTextOverlayHtml: React.FC<
               opacity: 1;
               transform: translate(-50%, -50%) scale(1);
             }
+          }
+          
+          .philosophy-close-button:hover {
+            background: ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.2)} !important;
+            transform: scale(1.1) !important;
           }
         `}
       </style>

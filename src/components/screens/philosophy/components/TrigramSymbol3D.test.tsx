@@ -5,6 +5,16 @@ import { TrigramSymbol3D } from "./TrigramSymbol3D";
 import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types";
 
+// Mock @react-three/fiber Canvas and useFrame to avoid R3F reconciler issues
+vi.mock("@react-three/fiber", async () => {
+  const actual = await vi.importActual("@react-three/fiber");
+  return {
+    ...actual,
+    Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="mock-canvas">{children}</div>,
+    useFrame: () => null,
+  };
+});
+
 // Mock @react-three/drei
 vi.mock("@react-three/drei", () => ({
   Html: ({ children, "data-testid": testId }: { children: React.ReactNode; "data-testid"?: string }) => (

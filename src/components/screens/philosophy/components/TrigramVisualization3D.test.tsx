@@ -4,7 +4,17 @@ import { describe, it, expect, vi } from "vitest";
 import { TrigramVisualization3D } from "./TrigramVisualization3D";
 import { TrigramStance } from "../../../../types";
 
-// Mock @react-three/drei
+// Mock @react-three/fiber Canvas and useFrame to avoid R3F reconciler issues
+vi.mock("@react-three/fiber", async () => {
+  const actual = await vi.importActual("@react-three/fiber");
+  return {
+    ...actual,
+    Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="mock-canvas">{children}</div>,
+    useFrame: () => null,
+  };
+});
+
+// Mock @react-three/drei, preserving real Html for R3F compatibility
 vi.mock("@react-three/drei", () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   OrbitControls: () => null,

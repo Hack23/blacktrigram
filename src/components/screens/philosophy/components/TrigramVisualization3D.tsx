@@ -75,13 +75,13 @@ export const TrigramVisualization3D: React.FC<
       {/* Lighting setup */}
       <ambientLight intensity={0.4} />
       
-      {/* Primary directional light */}
+      {/* Primary directional light with optional shadows */}
       <directionalLight
         position={[10, 10, 5]}
         intensity={1.2}
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
       />
 
       {/* Accent lights for cyberpunk feel */}

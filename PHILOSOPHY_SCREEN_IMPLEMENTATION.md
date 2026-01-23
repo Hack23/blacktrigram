@@ -22,7 +22,7 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 ### 1. Components (`src/components/screens/philosophy/components/`)
 
 #### 3D Visualization Components
-**TrigramSymbol3D.tsx** (207 lines)
+**TrigramSymbol3D.tsx**
 - Individual 3D trigram symbol with WebGL rendering
 - Smooth 60fps rotation using `useFrame` hook
 - Dynamic color changes based on selection/hover state
@@ -31,7 +31,7 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 - Html overlays for trigram symbols and Korean names
 - **Test coverage:** 11 tests
 
-**TrigramVisualization3D.tsx** (128 lines)
+**TrigramVisualization3D.tsx**
 - 3D scene manager with circular trigram formation
 - 8 trigrams arranged at 4.5 unit radius
 - Dynamic lighting: ambient + directional + 2 accent point lights
@@ -41,17 +41,17 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 - **Test coverage:** 11 tests
 
 #### UI Components
-**PhilosophyTextOverlayHtml.tsx** (437 lines)
+**PhilosophyTextOverlayHtml.tsx**
 - Detailed trigram information overlay
 - Bilingual content (Korean | English)
 - Glassmorphic design with Korean cyberpunk styling
 - Technique stats display with grid layout
 - Responsive mobile/desktop layouts
 - Accessible dialog with ARIA attributes
-- Close button with hover effects
+- Close button with CSS hover effects
 - **Test coverage:** 18 tests
 
-**InteractiveTrigramGrid.tsx** (228 lines)
+**InteractiveTrigramGrid.tsx**
 - Clickable 8-trigram selection grid
 - 2x4 or 4x2 responsive grid layout
 - Visual selection indicators with pulse animation
@@ -60,7 +60,7 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 - Full keyboard navigation support
 - **Test coverage:** 15 tests
 
-**PhilosophyNavigation.tsx** (257 lines)
+**PhilosophyNavigation.tsx**
 - Section navigation controls
 - Topic selection (Trigrams, Values, Archetypes)
 - Return to menu button
@@ -69,7 +69,7 @@ Complete and optimize the Philosophy Screen package for Black Trigram (흑괘) w
 - Responsive mobile/desktop layouts
 - **Test coverage:** 17 tests
 
-**PhilosophySection.tsx** (112 lines)
+**PhilosophySection.tsx**
 - Reusable section container
 - Bilingual titles (Korean | English)
 - Customizable border colors

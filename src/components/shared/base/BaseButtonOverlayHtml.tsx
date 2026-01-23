@@ -30,7 +30,7 @@ export interface BaseButtonOverlayHtmlProps {
   readonly style?: React.CSSProperties;
   readonly autoFocus?: boolean;
   readonly ariaLabel?: string;
-  readonly ariaCurrent?: "page" | "step" | "location" | "date" | "time" | "true" | "false";
+  readonly ariaCurrent?: React.AriaAttributes["aria-current"];
 }
 
 /**
