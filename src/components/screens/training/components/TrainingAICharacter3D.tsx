@@ -67,12 +67,12 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
 
   // Memoize geometries to prevent recreation on every render
   // Performance: Avoids WebGL context exhaustion and reduces memory allocations
+  // Note: Health ring geometry is not memoized as it requires dynamic args based on healthPercent
   const geometries = useMemo(
     () => ({
       body: new THREE.CapsuleGeometry(0.4, 1.2, 16, 32),
       head: new THREE.SphereGeometry(0.3, 16, 16),
       aura: new THREE.RingGeometry(0.6, 0.8, 32),
-      healthRing: new THREE.RingGeometry(0.4, 0.5, 32),
     }),
     []
   );
