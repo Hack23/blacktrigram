@@ -43,11 +43,11 @@ Successfully completed and optimized the EndScreen package with enhanced victory
 - Optimized for 60fps with object reuse
 
 **Performance Optimizations**:
-- Delta clamping to prevent large jumps
+- Elapsed time-based timing for frame-rate independent animations (uses absolute time to avoid delta spikes)
 - Reusable Vector3 objects for calculations
 - Minimal allocations in animation loop
 
-**Test Coverage**: 65.51% (7 tests)
+**Test Coverage**: 65.51% (8 tests)
 
 ### 2. PerformanceBreakdown
 **Purpose**: Detailed combat performance analysis by category
@@ -85,7 +85,7 @@ Successfully completed and optimized the EndScreen package with enhanced victory
 - Gold/cyan color harmony (traditional Korean aesthetics)
 - Rising motion symbolizes victory ascent
 
-**Performance**: Delta clamping and reusable Vector3 objects
+**Performance**: Elapsed time-based timing and reusable Vector3 objects
 
 ### 2. EndScreen3D
 **Enhancements**:
@@ -162,7 +162,7 @@ All text displays in format: `Korean | English`
 
 ### Expected Performance
 - **Target**: 60fps on mid-range hardware
-- **Optimizations**: Object pooling, delta clamping, minimal allocations
+- **Optimizations**: Object pooling, elapsed time-based timing, minimal allocations
 - **Recommendation**: Manual browser testing for validation
 
 ## 🧪 Test Suite Summary
