@@ -124,11 +124,9 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
 export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
   currentStance,
   isInGuard,
-  position,
+  position: _position, // Currently unused - indicator always positioned bottom-right
   isMobile = false,
 }) => {
-  const isLeft = position === "left";
-
   // Get guard configuration
   const config = useMemo(
     () => STANCE_GUARD_CONFIGS[currentStance],
@@ -163,19 +161,20 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       iconSize: isMobile ? 14 : 18,
       padding: isMobile ? "6px 10px" : "8px 12px",
       gap: isMobile ? "3px" : "4px",
-      bottom: isMobile ? "45px" : "60px",
-      horizontal: isMobile ? "8px" : "12px",
+      // Position above BottomHUD, in bottom-right corner of arena
+      bottom: isMobile ? "130px" : "150px",
+      // Right side, just inside the right HUD (14% from right edge + small offset)
+      right: isMobile ? "calc(15% + 8px)" : "calc(14% + 12px)",
     }),
     [isMobile],
   );
 
-  // Container style with responsive positioning
+  // Container style - bottom-right corner of arena (avoids left panel overlap)
   const containerStyle = useMemo(
     () => ({
       position: "absolute" as const,
       bottom: layout.bottom,
-      left: isLeft ? layout.horizontal : "auto",
-      right: isLeft ? "auto" : layout.horizontal,
+      right: layout.right,
       display: "flex",
       flexDirection: "column" as const,
       gap: layout.gap,
@@ -188,7 +187,7 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       minWidth: isMobile ? "140px" : "180px",
       boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
     }),
-    [layout, isLeft, isMobile],
+    [layout, isMobile],
   );
 
   // Don't render if not in guard state
