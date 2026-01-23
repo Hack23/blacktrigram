@@ -132,9 +132,16 @@ All text displays in format: `Korean | English`
 ## ⚡ Performance Optimizations
 
 ### Animation Loop Optimizations
-1. **Delta Clamping**: `const safeDelta = Math.min(delta, 1 / 30);`
-   - Prevents large animation jumps
-   - Ensures smooth animation during frame drops
+1. **Elapsed Time-Based Timing**:
+   ```typescript
+   useFrame((state) => {
+     const time = state.clock.elapsedTime;
+     // Use time for all time-based animations
+   });
+   ```
+   - Frame-rate independent animation timing
+   - Avoids delta accumulation errors and large jump artifacts
+   - Smooth animation even during frame drops
 
 2. **Object Reuse**: 
    ```typescript
