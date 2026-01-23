@@ -14,6 +14,7 @@
 | **[🏢 Container View](#-container-view)**                             | C4 Model         | Frontend-only architecture: UI Layer, Game Logic, Three.js Renderer, Animation System, State Management    |
 | **[🧩 Component View](#-component-view)**                             | C4 Model         | Detailed breakdown: Combat System, Trigram System (8 stances), Vital Point System (70 points), Skeletal Animation (28 bones) |
 | **[🎨 UI/UX Architecture](docs/UI_UX_ARCHITECTURE.md)**               | UI Components    | Component hierarchy, design patterns, Korean theming, Three.js UI integration                              |
+| **[📱 Screen Architecture Patterns](docs/SCREEN_ARCHITECTURE_PATTERNS.md)** | Screen Components | Standard patterns, performance baselines, quality standards for all screen packages (60fps target, >85% coverage) |
 | **[🔧 File Structure](#-file-structure-q1-2026)**                     | Organization     | Q1 2026 project structure with systems/, components/, data/, types/ layout                                 |
 | **[🔄 Combat Flow Sequence](#-combat-flow-sequence)**                 | Sequence Diagram | Input → Trigram → Vital Point → Damage → Three.js rendering with skeletal animation                        |
 | **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 7 hand poses, muscle tension visualization                                              |
