@@ -1,41 +1,34 @@
 /**
- * TrainingTopHUD - Top side HUD for training screen
+ * TrainingTopHUD - Slim top bar for training screen
  *
- * Contains:
- * - Training Active/Stop controls (left)
- * - Archetype Selector (left, below controls)
- * - Vital Point Overlay hint (center)
- * - Training Mode Selector (center)
+ * Gaming Best Practice - Minimal Top Bar:
+ * - Training Active/Stop indicator (left)
+ * - Archetype Selector - compact inline buttons (center)
  * - Return to Menu button (right) - Standard gaming pattern
- * - Volume Control (right)
  *
- * Gaming Layout Best Practice:
+ * Layout:
  * - Width: 100% of screen
- * - Height: Fixed height (~10-12% of screen, ~120-140px)
- * - Full width spans above left/right HUDs
- * - Back button in top-right for easy access
+ * - Height: Compact 60-70px (minimal obstruction)
+ * - Single row horizontal layout
  *
- * Responsible for sizing and positioning all top-side UI elements.
+ * Note: Volume moved to BottomHUD, Vital Point hint removed (redundant)
  *
- * @korean 훈련화면 상단 HUD - 훈련 제어, 원형 선택, 모드 선택, 메뉴 복귀
+ * @korean 훈련화면 상단 바 - 훈련 상태, 원형 선택, 메뉴 복귀
  */
 
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
-import { VolumeControl } from "../../../../shared/ui/VolumeControl";
-import type { TrainingMode } from "../../hooks/useTrainingState";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
 } from "../TrainingButtonsOverlayHtml";
 import TrainingControlsOverlayHtml from "../TrainingControlsOverlayHtml";
-import TrainingModeSelectorOverlayHtml from "../TrainingModeSelectorOverlayHtml";
 
-/** Top HUD height constants (gaming standard: ~10-12% of screen) */
-const TOP_HUD_HEIGHT_DESKTOP = 140;
-const TOP_HUD_HEIGHT_MOBILE = 120;
+/** Top HUD height constants - SLIM for minimal obstruction */
+const TOP_HUD_HEIGHT_DESKTOP = 70;
+const TOP_HUD_HEIGHT_MOBILE = 60;
 
 export interface TrainingTopHUDProps {
   /** Screen width for layout calculations */
@@ -56,12 +49,6 @@ export interface TrainingTopHUDProps {
   readonly selectedArchetype: PlayerArchetype;
   /** Handler for archetype selection */
   readonly onArchetypeSelect: (archetype: PlayerArchetype) => void;
-  /** Current training mode */
-  readonly currentMode: TrainingMode;
-  /** Handler for training mode change */
-  readonly onModeChange: (mode: TrainingMode) => void;
-  /** Whether vital point overlay is visible */
-  readonly overlayVisible: boolean;
   /** Handler for returning to menu */
   readonly onReturnToMenu: () => void;
   /** Handler for playing sound effects */
@@ -71,9 +58,8 @@ export interface TrainingTopHUDProps {
 /**
  * TrainingTopHUD Component
  *
- * Top side of the training screen containing training controls, archetype selector,
- * vital point hint, mode selector, and return to menu button.
- * Full width (100%), fixed height spans above left/right HUDs.
+ * Slim top bar containing training controls, archetype selector,
+ * and return to menu button. Minimal height for maximum arena visibility.
  */
 export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   width,
@@ -84,9 +70,6 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   onStopTraining,
   selectedArchetype,
   onArchetypeSelect,
-  currentMode,
-  onModeChange,
-  overlayVisible,
   onReturnToMenu,
   onPlaySFX,
 }) => {
@@ -96,31 +79,21 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
     isMobile,
   });
 
-  // Layout calculations for top HUD with proper gaming proportions
+  // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
-    // Fixed height for top HUD, scaled for 4K
     const hudHeight = isMobile
       ? TOP_HUD_HEIGHT_MOBILE
       : TOP_HUD_HEIGHT_DESKTOP * positionScale;
 
-    // Padding and spacing
-    const padding = isMobile ? 12 : 20 * positionScale;
+    const padding = isMobile ? 8 : 12 * positionScale;
     const gap = isMobile ? 8 : 12 * positionScale;
-
-    // Font sizes scaled for resolution
-    const labelFontSize = isMobile ? 10 : 12 * positionScale;
-    const hintFontSize = isMobile ? 12 : 14 * positionScale;
-
-    // Spacer width for right side balance (matches left content width)
-    const spacerWidth = isMobile ? 100 : 180 * positionScale;
+    const fontSize = isMobile ? 11 : 12 * positionScale;
 
     return {
       hudHeight,
       padding,
       gap,
-      labelFontSize,
-      hintFontSize,
-      spacerWidth,
+      fontSize,
       hudWidth: width,
     };
   }, [width, isMobile, positionScale]);
@@ -134,159 +107,88 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
         width: "100%",
         height: `${layout.hudHeight}px`,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: `${layout.padding}px ${layout.padding * 1.5}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
+        borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
+        background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        backdropFilter: "blur(8px)",
       }}
       data-testid="training-top-hud"
     >
-      {/* Top Row - Controls Left, Hint Center, Spacer Right */}
+      {/* Left Section - Training Controls (compact) */}
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          padding: `${layout.padding}px`,
-          width: "100%",
-          boxSizing: "border-box",
-          flex: 1,
+          flexDirection: "row",
+          gap: `${layout.gap}px`,
+          pointerEvents: "all",
+          alignItems: "center",
         }}
+        data-testid="training-top-hud-left-section"
       >
-        {/* Left Section - Training Controls & Archetype Selector */}
-        <div
+        <TrainingControlsOverlayHtml
+          isTraining={isTraining}
+          onStartTraining={onStartTraining}
+          onStopTraining={onStopTraining}
+          isMobile={isMobile}
+        />
+      </div>
+
+      {/* Center Section - Compact Archetype Selector */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: `${layout.gap}px`,
+          padding: isMobile
+            ? "6px 10px"
+            : `${6 * positionScale}px ${12 * positionScale}px`,
+          background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+          border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
+          borderRadius: `${6 * positionScale}px`,
+          pointerEvents: "all",
+        }}
+        data-testid="training-top-hud-center-section"
+      >
+        <span
           style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: `${layout.gap}px`,
-            pointerEvents: "all",
-            alignItems: "flex-start",
+            fontSize: `${layout.fontSize}px`,
+            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+            fontWeight: "bold",
+            fontFamily: theme.koreanTypography.fontFamily,
+            whiteSpace: "nowrap",
           }}
-          data-testid="training-top-hud-left-section"
         >
-          <TrainingControlsOverlayHtml
-            isTraining={isTraining}
-            onStartTraining={onStartTraining}
-            onStopTraining={onStopTraining}
-            isMobile={isMobile}
-          />
+          원형 | Archetype:
+        </span>
+        <ArchetypeSelectionButtons
+          selectedArchetype={selectedArchetype}
+          onArchetypeSelect={onArchetypeSelect}
+          onPlaySFX={onPlaySFX}
+          isMobile={isMobile}
+        />
+      </div>
 
-          {/* Archetype Selector */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: `${layout.gap}px`,
-              padding: isMobile
-                ? "8px 12px"
-                : `${10 * positionScale}px ${16 * positionScale}px`,
-              background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
-              border: `2px solid ${hexToRgbaString(
-                theme.colors.ACCENT_GOLD,
-                0.6,
-              )}`,
-              borderRadius: `${8 * positionScale}px`,
-              fontFamily: theme.koreanTypography.fontFamily,
-              lineHeight: theme.koreanTypography.lineHeight,
-              letterSpacing: theme.koreanTypography.letterSpacing,
-              wordBreak: theme.koreanTypography.wordBreak,
-            }}
-          >
-            <div
-              style={{
-                fontSize: `${layout.labelFontSize}px`,
-                color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              원형 선택 | Archetype
-            </div>
-            <ArchetypeSelectionButtons
-              selectedArchetype={selectedArchetype}
-              onArchetypeSelect={onArchetypeSelect}
-              onPlaySFX={onPlaySFX}
-              isMobile={isMobile}
-            />
-          </div>
-        </div>
-
-        {/* Center Section - Vital Point Hint & Mode Selector */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: `${layout.gap}px`,
-          }}
-          data-testid="training-top-hud-mode-section"
-        >
-          {/* Vital Point Hint */}
-          {!overlayVisible && (
-            <div
-              style={{
-                padding: isMobile
-                  ? "8px 12px"
-                  : `${10 * positionScale}px ${16 * positionScale}px`,
-                background: hexToRgbaString(
-                  theme.colors.UI_BACKGROUND_DARK,
-                  0.9,
-                ),
-                border: `2px solid ${hexToRgbaString(
-                  theme.colors.PRIMARY_CYAN,
-                  0.6,
-                )}`,
-                borderRadius: `${8 * positionScale}px`,
-                fontSize: `${layout.hintFontSize}px`,
-                fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
-                fontWeight: "bold",
-                textAlign: "center",
-                pointerEvents: "none",
-              }}
-            >
-              💡 급소 오버레이 | Vital Point Overlay: Press{" "}
-              <span
-                style={{
-                  color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-                }}
-              >
-                V
-              </span>
-            </div>
-          )}
-
-          {/* Mode Selector */}
-          <div style={{ pointerEvents: "all" }}>
-            <TrainingModeSelectorOverlayHtml
-              currentMode={currentMode}
-              onModeChange={onModeChange}
-              isMobile={isMobile}
-            />
-          </div>
-        </div>
-
-        {/* Right Section - Volume Control & Return to Menu */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: `${layout.gap}px`,
-            alignItems: "flex-start",
-            pointerEvents: "all",
-          }}
-          data-testid="training-top-hud-right-section"
-        >
-          {/* Volume Control */}
-          <VolumeControl position="top-right" compact={isMobile} />
-
-          {/* Return to Menu Button */}
-          <ReturnToMenuButton
-            onClick={onReturnToMenu}
-            onMouseEnter={() => onPlaySFX("menu_hover")}
-            isMobile={isMobile}
-          />
-        </div>
+      {/* Right Section - Return to Menu */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          pointerEvents: "all",
+        }}
+        data-testid="training-top-hud-right-section"
+      >
+        <ReturnToMenuButton
+          onClick={onReturnToMenu}
+          onMouseEnter={() => onPlaySFX("menu_hover")}
+          isMobile={isMobile}
+        />
       </div>
     </div>
   );

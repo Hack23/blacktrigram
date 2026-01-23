@@ -150,10 +150,13 @@ describe("TrainingLeftHUD", () => {
       });
     });
 
-    it("should align items to flex-start (left)", () => {
+    it("should use flex column layout", () => {
       render(<TrainingLeftHUD {...defaultProps} />);
       const container = screen.getByTestId("training-left-hud");
-      expect(container).toHaveStyle({ alignItems: "flex-start" });
+      expect(container).toHaveStyle({
+        display: "flex",
+        flexDirection: "column",
+      });
     });
 
     it("should have pointerEvents none on container", () => {

@@ -86,24 +86,6 @@ vi.mock("../TrainingModeSelectorOverlayHtml", () => ({
   ),
 }));
 
-vi.mock("../../../../shared/ui/VolumeControl", () => ({
-  VolumeControl: ({
-    position,
-    compact,
-  }: {
-    position: string;
-    compact: boolean;
-  }) => (
-    <div
-      data-testid="mock-volume-control"
-      data-position={position}
-      data-compact={compact}
-    >
-      Volume Control
-    </div>
-  ),
-}));
-
 describe("TrainingTopHUD", () => {
   const defaultProps = {
     width: 1200,
@@ -115,9 +97,6 @@ describe("TrainingTopHUD", () => {
     onStopTraining: vi.fn(),
     selectedArchetype: PlayerArchetype.MUSA,
     onArchetypeSelect: vi.fn(),
-    currentMode: "basics" as const,
-    onModeChange: vi.fn(),
-    overlayVisible: false,
     onReturnToMenu: vi.fn(),
     onPlaySFX: vi.fn(),
   };
@@ -140,10 +119,10 @@ describe("TrainingTopHUD", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render mode section with correct testid", () => {
+    it("should render center section with correct testid", () => {
       render(<TrainingTopHUD {...defaultProps} />);
       expect(
-        screen.getByTestId("training-top-hud-mode-section"),
+        screen.getByTestId("training-top-hud-center-section"),
       ).toBeInTheDocument();
     });
 
@@ -157,11 +136,6 @@ describe("TrainingTopHUD", () => {
       expect(screen.getByTestId("mock-archetype-buttons")).toBeInTheDocument();
     });
 
-    it("should render mode selector component", () => {
-      render(<TrainingTopHUD {...defaultProps} />);
-      expect(screen.getByTestId("mock-mode-selector")).toBeInTheDocument();
-    });
-
     it("should render right section with correct testid", () => {
       render(<TrainingTopHUD {...defaultProps} />);
       expect(
@@ -169,32 +143,9 @@ describe("TrainingTopHUD", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render volume control component", () => {
-      render(<TrainingTopHUD {...defaultProps} />);
-      expect(screen.getByTestId("mock-volume-control")).toBeInTheDocument();
-    });
-
     it("should render return to menu button", () => {
       render(<TrainingTopHUD {...defaultProps} />);
       expect(screen.getByTestId("mock-return-button")).toBeInTheDocument();
-    });
-  });
-
-  describe("Vital Point Hint", () => {
-    it("should show vital point hint when overlay is not visible", () => {
-      render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
-      expect(screen.getByText(/급소 오버레이/)).toBeInTheDocument();
-      expect(screen.getByText(/Vital Point Overlay/)).toBeInTheDocument();
-    });
-
-    it("should hide vital point hint when overlay is visible", () => {
-      render(<TrainingTopHUD {...defaultProps} overlayVisible={true} />);
-      expect(screen.queryByText(/급소 오버레이/)).not.toBeInTheDocument();
-    });
-
-    it("should show V key instruction", () => {
-      render(<TrainingTopHUD {...defaultProps} overlayVisible={false} />);
-      expect(screen.getByText("V")).toBeInTheDocument();
     });
   });
 
@@ -220,14 +171,6 @@ describe("TrainingTopHUD", () => {
       );
     });
 
-    it("should pass currentMode to mode selector", () => {
-      render(<TrainingTopHUD {...defaultProps} currentMode="vital_point" />);
-      expect(screen.getByTestId("mock-mode-selector")).toHaveAttribute(
-        "data-mode",
-        "vital_point",
-      );
-    });
-
     it("should pass isMobile to all child components", () => {
       render(<TrainingTopHUD {...defaultProps} isMobile={true} />);
 
@@ -239,16 +182,8 @@ describe("TrainingTopHUD", () => {
         "data-mobile",
         "true",
       );
-      expect(screen.getByTestId("mock-mode-selector")).toHaveAttribute(
-        "data-mobile",
-        "true",
-      );
       expect(screen.getByTestId("mock-return-button")).toHaveAttribute(
         "data-mobile",
-        "true",
-      );
-      expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
-        "data-compact",
         "true",
       );
     });
@@ -275,31 +210,13 @@ describe("TrainingTopHUD", () => {
     });
   });
 
-  describe("Volume Control", () => {
-    it("should render volume control in top-right position", () => {
-      render(<TrainingTopHUD {...defaultProps} />);
-      expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
-        "data-position",
-        "top-right",
-      );
-    });
-
-    it("should pass compact mode based on isMobile", () => {
-      render(<TrainingTopHUD {...defaultProps} isMobile={false} />);
-      expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
-        "data-compact",
-        "false",
-      );
-    });
-  });
-
   describe("Layout", () => {
-    it("should use flex column layout", () => {
+    it("should use flex row layout", () => {
       render(<TrainingTopHUD {...defaultProps} />);
       const container = screen.getByTestId("training-top-hud");
       expect(container).toHaveStyle({
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
       });
     });
 
@@ -319,7 +236,7 @@ describe("TrainingTopHUD", () => {
   describe("Bilingual Text", () => {
     it("should display Korean archetype label", () => {
       render(<TrainingTopHUD {...defaultProps} />);
-      expect(screen.getByText(/원형 선택/)).toBeInTheDocument();
+      expect(screen.getByText(/원형/)).toBeInTheDocument();
     });
 
     it("should display English archetype label", () => {

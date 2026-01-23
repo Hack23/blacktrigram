@@ -1287,7 +1287,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           isInGuard={playerAnimation.isInStanceGuard()}
         />
 
-        {/* Top HUD - Training Controls, Archetype Selector, Mode Selector, Return Button */}
+        {/* Top HUD - Training Controls, Archetype Selector, Return Button */}
         <TrainingTopHUD
           width={width}
           height={height}
@@ -1298,19 +1298,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onStopTraining={handleStopTraining}
           selectedArchetype={selectedArchetype}
           onArchetypeSelect={setSelectedArchetype}
-          currentMode={trainingState.trainingMode}
-          onModeChange={trainingActions.setTrainingMode}
-          overlayVisible={overlayVisible}
           onReturnToMenu={onReturnToMenu}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
 
-        {/* Right HUD - Stats, Vital Point Selection */}
+        {/* Right HUD - Mode Selector, Stats, Vital Point Selection */}
         <TrainingRightHUD
           width={width}
           height={height}
           isMobile={isMobile}
           positionScale={positionScale}
+          trainingMode={trainingState.trainingMode}
+          onModeChange={trainingActions.setTrainingMode}
           stats={{
             ...trainingState.stats,
             sessionDuration: trainingState.sessionDuration,
@@ -1319,7 +1318,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           }}
           distanceToDummy={distanceToDummy}
           effectiveReach={currentTechniqueReach}
-          trainingMode={trainingState.trainingMode}
           selectedVitalPoint={trainingState.selectedVitalPoint}
           onVitalPointSelect={trainingActions.setSelectedVitalPoint}
           footworkDrillType={trainingState.footworkDrillType}

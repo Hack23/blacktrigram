@@ -1,9 +1,9 @@
 /**
  * Unit tests for TrainingRightHUD component
- * Tests the right side HUD containing stats and vital point/footwork panels
+ * Tests the right side HUD containing mode selector, stats and vital point/footwork panels
  * Note: Volume Control and Return to Menu have been moved to TrainingTopHUD
  *
- * @korean TrainingRightHUD 단위 테스트 - 통계, 급소 선택 테스트
+ * @korean TrainingRightHUD 단위 테스트 - 모드 선택, 통계, 급소 선택 테스트
  */
 
 import "@testing-library/jest-dom";
@@ -17,6 +17,24 @@ afterEach(() => {
 });
 
 // Mock the child components
+vi.mock("../TrainingModeSelectorOverlayHtml", () => ({
+  default: ({
+    currentMode,
+    isMobile,
+  }: {
+    currentMode: string;
+    isMobile: boolean;
+  }) => (
+    <div
+      data-testid="mock-mode-selector"
+      data-mode={currentMode}
+      data-mobile={isMobile}
+    >
+      Mode Selector
+    </div>
+  ),
+}));
+
 vi.mock("../TrainingStatsOverlayHtml", () => ({
   default: ({
     isMobile,
@@ -86,6 +104,8 @@ describe("TrainingRightHUD", () => {
     height: 800,
     isMobile: false,
     positionScale: 1.0,
+    trainingMode: "basics" as const,
+    onModeChange: vi.fn(),
     stats: {
       score: 500,
       combo: 5,
@@ -98,7 +118,6 @@ describe("TrainingRightHUD", () => {
     },
     distanceToDummy: 1.5,
     effectiveReach: 0.8,
-    trainingMode: "basics" as const,
     selectedVitalPoint: null as string | null,
     onVitalPointSelect: vi.fn(),
     footworkDrillType: "circular_left" as const,
@@ -118,6 +137,18 @@ describe("TrainingRightHUD", () => {
     it("should render right HUD container with correct testid", () => {
       render(<TrainingRightHUD {...defaultProps} />);
       expect(screen.getByTestId("training-right-hud")).toBeInTheDocument();
+    });
+
+    it("should render mode section with correct testid", () => {
+      render(<TrainingRightHUD {...defaultProps} />);
+      expect(
+        screen.getByTestId("training-right-hud-mode-section"),
+      ).toBeInTheDocument();
+    });
+
+    it("should render mode selector component", () => {
+      render(<TrainingRightHUD {...defaultProps} />);
+      expect(screen.getByTestId("mock-mode-selector")).toBeInTheDocument();
     });
 
     it("should render stats section with correct testid", () => {
@@ -177,9 +208,7 @@ describe("TrainingRightHUD", () => {
       render(
         <TrainingRightHUD {...defaultProps} trainingMode="combo_practice" />,
       );
-      expect(
-        screen.getByTestId("mock-vital-point-overlay"),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("mock-footwork-drills")).toBeInTheDocument();
     });
   });
 
@@ -245,10 +274,13 @@ describe("TrainingRightHUD", () => {
       });
     });
 
-    it("should align items to flex-end (right)", () => {
+    it("should use flex column layout", () => {
       render(<TrainingRightHUD {...defaultProps} />);
       const container = screen.getByTestId("training-right-hud");
-      expect(container).toHaveStyle({ alignItems: "flex-end" });
+      expect(container).toHaveStyle({
+        display: "flex",
+        flexDirection: "column",
+      });
     });
 
     it("should have pointerEvents none on container", () => {
@@ -262,8 +294,8 @@ describe("TrainingRightHUD", () => {
       const container = screen.getByTestId("training-right-hud");
       expect(container).toHaveStyle({
         position: "absolute",
-        // top offset = 140px (TOP_HUD_HEIGHT_DESKTOP * positionScale)
-        top: "140px",
+        // top offset = 70px (TOP_HUD_HEIGHT_DESKTOP * positionScale)
+        top: "70px",
         right: "0px",
       });
     });

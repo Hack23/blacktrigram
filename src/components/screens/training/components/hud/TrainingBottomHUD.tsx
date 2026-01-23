@@ -1,30 +1,32 @@
 /**
- * TrainingBottomHUD - Bottom side HUD for training screen
+ * TrainingBottomHUD - Bottom bar for training screen
  *
  * Contains:
  * - Technique Bar (centered)
+ * - Volume Control (bottom-right, compact)
  * - Feedback Message (centered overlay)
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Fixed height (~10-12% of screen, ~100-120px)
- * - Full width spans below left/right HUDs
+ * - Height: Compact ~80px for techniques only
+ * - Volume tucked in corner (common gaming pattern)
  *
- * Responsible for sizing and positioning all bottom-side UI elements.
- *
- * @korean 훈련화면 하단 HUD - 기술 바 및 피드백 메시지
+ * @korean 훈련화면 하단 바 - 기술 바, 음량, 피드백
  */
 
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBarContainer } from "../../../../shared/three/ui/TechniqueBarContainer";
+import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import TrainingFeedbackOverlayHtml from "../TrainingFeedbackOverlayHtml";
 
-/** Bottom HUD height constants (gaming standard: ~10-12% of screen) */
-const BOTTOM_HUD_HEIGHT_DESKTOP = 120;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
+/** Bottom HUD height - COMPACT for minimal obstruction */
+const BOTTOM_HUD_HEIGHT_DESKTOP = 90;
+const BOTTOM_HUD_HEIGHT_MOBILE = 80;
 
 export interface TrainingBottomHUDProps {
   /** Screen width for layout calculations */
@@ -54,9 +56,7 @@ export interface TrainingBottomHUDProps {
 /**
  * TrainingBottomHUD Component
  *
- * Bottom side of the training screen containing the technique bar
- * and centered feedback messages.
- * Full width (100%), fixed height spans below left/right HUDs.
+ * Compact bottom bar with centered technique bar and volume control.
  */
 export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   width,
@@ -71,20 +71,19 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   showFeedback,
   feedbackMessage,
 }) => {
-  // Layout calculations for bottom HUD with proper gaming proportions
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
   const layout = React.useMemo(() => {
-    // Fixed height for bottom HUD, scaled for 4K
     const hudHeight = isMobile
       ? BOTTOM_HUD_HEIGHT_MOBILE
       : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
+    const padding = isMobile ? 8 : 12 * positionScale;
 
-    // Padding
-    const padding = isMobile ? 10 : 15 * positionScale;
-
-    return {
-      hudHeight,
-      padding,
-    };
+    return { hudHeight, padding };
   }, [isMobile, positionScale]);
 
   return (
@@ -96,12 +95,15 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         width: "100%",
         height: `${layout.hudHeight}px`,
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
+        borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
+        background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        backdropFilter: "blur(8px)",
       }}
       data-testid="training-bottom-hud"
     >
@@ -124,11 +126,14 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, constrained to not overlap side HUDs */}
+      {/* Technique Bar - centered */}
       <div
         style={{
           pointerEvents: "all",
-          maxWidth: "70%", // Leave space for side HUDs (15% each side)
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          maxWidth: "70%",
         }}
         data-testid="training-bottom-hud-technique-section"
       >
@@ -139,13 +144,24 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           selectedIndex={selectedIndex}
           cooldowns={cooldowns}
           onTechniqueSelect={onTechniqueSelect}
-          onTechniqueHover={(_tech) => {
-            // Could add additional hover effects here
-          }}
+          onTechniqueHover={(_tech) => {}}
           isMobile={isMobile}
           screenWidth={width}
           screenHeight={height}
         />
+      </div>
+
+      {/* Volume Control - bottom right corner */}
+      <div
+        style={{
+          position: "absolute",
+          right: `${layout.padding * 1.5}px`,
+          bottom: `${layout.padding}px`,
+          pointerEvents: "all",
+        }}
+        data-testid="training-bottom-hud-volume-section"
+      >
+        <VolumeControl position="bottom-right" compact={true} />
       </div>
     </div>
   );

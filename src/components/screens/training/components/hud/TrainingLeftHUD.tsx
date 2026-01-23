@@ -18,19 +18,21 @@
 import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
 
-/** HUD width percentage of screen (gaming standard: 15-20%) */
-const HUD_WIDTH_PERCENT_DESKTOP = 15;
-const HUD_WIDTH_PERCENT_MOBILE = 20;
+/** HUD width - slightly narrower for more arena space */
+const HUD_WIDTH_PERCENT_DESKTOP = 14;
+const HUD_WIDTH_PERCENT_MOBILE = 18;
 
-/** Top/Bottom HUD reserved heights */
-const TOP_HUD_HEIGHT_DESKTOP = 140;
-const TOP_HUD_HEIGHT_MOBILE = 120;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 120;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
+/** Top/Bottom bar heights (must match those components) */
+const TOP_HUD_HEIGHT_DESKTOP = 70;
+const TOP_HUD_HEIGHT_MOBILE = 60;
+const BOTTOM_HUD_HEIGHT_DESKTOP = 90;
+const BOTTOM_HUD_HEIGHT_MOBILE = 80;
 
 export interface TrainingLeftHUDProps {
   /** Screen width for layout calculations */
@@ -67,6 +69,12 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
+  const theme = useKoreanTheme({
+    variant: "primary",
+    size: "md",
+    isMobile,
+  });
+
   // Layout calculations for left HUD with proper gaming proportions
   const layout = React.useMemo(() => {
     // Width: 15-20% of screen
@@ -115,12 +123,16 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
         height: `${layout.availableHeight}px`,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "flex-end",
-        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
         gap: `${layout.gap}px`,
+        // Cyberpunk border - right edge only for left HUD
+        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
+        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+        backdropFilter: "blur(8px)",
       }}
       data-testid="training-left-hud"
     >

@@ -56,6 +56,24 @@ vi.mock("../TrainingFeedbackOverlayHtml", () => ({
   ),
 }));
 
+vi.mock("../../../../shared/ui/VolumeControl", () => ({
+  VolumeControl: ({
+    position,
+    compact,
+  }: {
+    position: string;
+    compact: boolean;
+  }) => (
+    <div
+      data-testid="mock-volume-control"
+      data-position={position}
+      data-compact={compact}
+    >
+      Volume Control
+    </div>
+  ),
+}));
+
 describe("TrainingBottomHUD", () => {
   // Create a mock player state
   const mockPlayer = {
@@ -225,19 +243,19 @@ describe("TrainingBottomHUD", () => {
   });
 
   describe("Layout", () => {
-    it("should use flex column layout", () => {
+    it("should use flex row layout", () => {
       render(<TrainingBottomHUD {...defaultProps} />);
       const container = screen.getByTestId("training-bottom-hud");
       expect(container).toHaveStyle({
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
       });
     });
 
     it("should center items horizontally", () => {
       render(<TrainingBottomHUD {...defaultProps} />);
       const container = screen.getByTestId("training-bottom-hud");
-      expect(container).toHaveStyle({ alignItems: "center" });
+      expect(container).toHaveStyle({ justifyContent: "center" });
     });
 
     it("should have pointerEvents none on container", () => {
@@ -256,6 +274,32 @@ describe("TrainingBottomHUD", () => {
       render(<TrainingBottomHUD {...defaultProps} />);
       const container = screen.getByTestId("training-bottom-hud");
       expect(container).toHaveStyle({ width: "100%" });
+    });
+  });
+
+  describe("Volume Control", () => {
+    it("should render volume control in bottom-right position", () => {
+      render(<TrainingBottomHUD {...defaultProps} />);
+      expect(screen.getByTestId("mock-volume-control")).toBeInTheDocument();
+      expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
+        "data-position",
+        "bottom-right",
+      );
+    });
+
+    it("should render volume control as compact", () => {
+      render(<TrainingBottomHUD {...defaultProps} />);
+      expect(screen.getByTestId("mock-volume-control")).toHaveAttribute(
+        "data-compact",
+        "true",
+      );
+    });
+
+    it("should render volume section with correct testid", () => {
+      render(<TrainingBottomHUD {...defaultProps} />);
+      expect(
+        screen.getByTestId("training-bottom-hud-volume-section"),
+      ).toBeInTheDocument();
     });
   });
 
