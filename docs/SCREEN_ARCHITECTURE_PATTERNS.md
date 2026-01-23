@@ -135,21 +135,6 @@ export const Screen3D: React.FC<ScreenProps> = ({
     </Canvas>
   );
 };
-``` 
-            layout={layout} 
-            state={screenState} 
-            onAction={handleAction} 
-          />
-        </div>
-      </Html>
-
-      {/* 9. Performance monitoring (development only) */}
-      {process.env.NODE_ENV === 'development' && (
-        <PerformanceMonitor targetFPS={perfSettings.targetFPS} />
-      )}
-    </Canvas>
-  );
-};
 ```
 
 ---
