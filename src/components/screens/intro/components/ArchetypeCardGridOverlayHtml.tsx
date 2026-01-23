@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
-import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCard";
+import { ArchetypeCard, ArchetypeCardData } from "./ArchetypeCardOverlayHtml";
 
 export interface ArchetypeCardGridProps {
   readonly archetypes: readonly ArchetypeCardData[];

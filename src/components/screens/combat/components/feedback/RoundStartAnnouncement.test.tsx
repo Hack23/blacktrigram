@@ -5,7 +5,7 @@
 import { render, screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { RoundStartAnnouncement } from "./RoundStartAnnouncement";
+import { RoundStartAnnouncement } from "./RoundStartAnnouncementOverlayHtml";
 
 // Mock Audio Provider
 vi.mock("../../../../../audio/AudioProvider", () => ({

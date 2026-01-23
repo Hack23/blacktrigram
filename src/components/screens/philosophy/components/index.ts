@@ -9,14 +9,14 @@
  * - Layout and navigation components
  */
 
-export { InteractiveTrigramGrid } from "./InteractiveTrigramGrid";
-export type { InteractiveTrigramGridProps } from "./InteractiveTrigramGrid";
+export { InteractiveTrigramGrid } from "./InteractiveTrigramGridOverlayHtml";
+export type { InteractiveTrigramGridProps } from "./InteractiveTrigramGridOverlayHtml";
 
-export { PhilosophyNavigation } from "./PhilosophyNavigation";
-export type { PhilosophyNavigationProps } from "./PhilosophyNavigation";
+export { PhilosophyNavigation } from "./PhilosophyNavigationOverlayHtml";
+export type { PhilosophyNavigationProps } from "./PhilosophyNavigationOverlayHtml";
 
-export { PhilosophySection } from "./PhilosophySection";
-export type { PhilosophySectionProps } from "./PhilosophySection";
+export { PhilosophySection } from "./PhilosophySectionOverlayHtml";
+export type { PhilosophySectionProps } from "./PhilosophySectionOverlayHtml";
 
 export { PhilosophyTextOverlayHtml } from "./PhilosophyTextOverlayHtml";
 export type { PhilosophyTextOverlayHtmlProps } from "./PhilosophyTextOverlayHtml";

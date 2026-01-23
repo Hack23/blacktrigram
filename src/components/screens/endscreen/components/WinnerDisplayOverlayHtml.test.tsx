@@ -4,7 +4,7 @@ import { AudioProvider } from "../../../../audio/AudioProvider";
 import { asMutable } from "../../../../test/test-utils";
 import { PlayerArchetype } from "../../../../types/common";
 import { createPlayerFromArchetype } from "../../../../utils/playerUtils";
-import { WinnerDisplay } from "./WinnerDisplay";
+import { WinnerDisplay } from "./WinnerDisplayOverlayHtml";
 
 // Mock AudioProvider
 vi.mock("../../../../audio/AudioProvider", () => ({

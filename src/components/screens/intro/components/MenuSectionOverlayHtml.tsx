@@ -9,7 +9,7 @@ import { getSafeAreaPadding } from "../../../../utils/safeAreaUtils";
 import {
   getNeonTextShadow,
 } from "../../../../utils/visualEffects";
-import { MenuButtons } from "./MenuButtons";
+import { MenuButtons } from "./MenuButtonsOverlayHtml";
 
 export interface MenuSectionOverlayHtmlProps {
   readonly menuItems: Array<{

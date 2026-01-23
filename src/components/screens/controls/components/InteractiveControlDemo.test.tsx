@@ -9,7 +9,7 @@
 
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { InteractiveControlDemo } from "./InteractiveControlDemo";
+import { InteractiveControlDemo } from "./InteractiveControlDemoOverlayHtml";
 
 // Cleanup after each test
 afterEach(() => {

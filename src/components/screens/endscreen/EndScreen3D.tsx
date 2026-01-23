@@ -23,12 +23,12 @@ import { BaseButtonOverlayHtml } from "../../shared/base/BaseButtonOverlayHtml";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { DefeatAnimation3D } from "./components/DefeatAnimation3D";
-import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplay";
-import { NavigationButtons } from "./components/NavigationButtons";
-import { PerformanceBreakdown } from "./components/PerformanceBreakdown";
-import { PerformanceRating } from "./components/PerformanceRating";
+import { MatchStatisticsDisplay } from "./components/MatchStatisticsDisplayOverlayHtml";
+import { NavigationButtons } from "./components/NavigationButtonsOverlayHtml";
+import { PerformanceBreakdown } from "./components/PerformanceBreakdownOverlayHtml";
+import { PerformanceRating } from "./components/PerformanceRatingOverlayHtml";
 import { VictoryAnimation3D } from "./components/VictoryAnimation3D";
-import { WinnerDisplay } from "./components/WinnerDisplay";
+import { WinnerDisplay } from "./components/WinnerDisplayOverlayHtml";
 
 export interface EndScreen3DProps {
   readonly winner: PlayerState;

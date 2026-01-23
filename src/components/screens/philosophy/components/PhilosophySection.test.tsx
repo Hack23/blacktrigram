@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { PhilosophySection } from "./PhilosophySection";
+import { PhilosophySection } from "./PhilosophySectionOverlayHtml";
 import { KOREAN_COLORS } from "../../../../types/constants/colors";
 
 describe("PhilosophySection", () => {

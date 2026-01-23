@@ -15,9 +15,9 @@ import { BackgroundScene3D } from "../../shared/three";
 import { BackButton } from "../../shared/ui/BackButton";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { ControlBindingsOverlayHtml } from "./components/ControlBindingsOverlayHtml";
-import { ControlCategoryTabs } from "./components/ControlCategoryTabs";
+import { ControlCategoryTabs } from "./components/ControlCategoryTabsOverlayHtml";
 import { GamepadVisualization3D } from "./components/GamepadVisualization3D";
-import { InteractiveControlDemo } from "./components/InteractiveControlDemo";
+import { InteractiveControlDemo } from "./components/InteractiveControlDemoOverlayHtml";
 import { VisualKeyboard3D } from "./components/VisualKeyboard3D";
 import { useControlsState } from "./hooks/useControlsState";
 

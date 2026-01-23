@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { PLAYER_ARCHETYPES_DATA } from "../../../../systems/types";
 import { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { ArchetypeCard } from "./ArchetypeCard";
+import { ArchetypeCard } from "./ArchetypeCardOverlayHtml";
 
 describe("ArchetypeCard", () => {
   it("should be defined and importable", () => {

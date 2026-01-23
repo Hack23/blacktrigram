@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { MatchStatisticsDisplay } from "./MatchStatisticsDisplay";
+import { MatchStatisticsDisplay } from "./MatchStatisticsDisplayOverlayHtml";
 import { MatchStatistics } from "../../../../systems/combat";
 import { PlayerMatchStats } from "../../../../systems/player";
 

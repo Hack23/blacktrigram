@@ -9,14 +9,14 @@
 export { ControlBindingsOverlayHtml } from "./ControlBindingsOverlayHtml";
 export type { ControlBindingsOverlayHtmlProps } from "./ControlBindingsOverlayHtml";
 
-export { ControlCategoryTabs } from "./ControlCategoryTabs";
-export type { ControlCategoryTabsProps } from "./ControlCategoryTabs";
+export { ControlCategoryTabs } from "./ControlCategoryTabsOverlayHtml";
+export type { ControlCategoryTabsProps } from "./ControlCategoryTabsOverlayHtml";
 
 export { GamepadVisualization3D } from "./GamepadVisualization3D";
 export type { GamepadVisualization3DProps } from "./GamepadVisualization3D";
 
-export { InteractiveControlDemo } from "./InteractiveControlDemo";
-export type { InteractiveControlDemoProps } from "./InteractiveControlDemo";
+export { InteractiveControlDemo } from "./InteractiveControlDemoOverlayHtml";
+export type { InteractiveControlDemoProps } from "./InteractiveControlDemoOverlayHtml";
 
 export { Key3D } from "./Key3D";
 export type { Key3DProps } from "./Key3D";

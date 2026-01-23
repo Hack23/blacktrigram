@@ -26,7 +26,7 @@ import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
 import { ArchetypeDisplayOverlayHtml } from "./components/ArchetypeDisplayOverlayHtml";
-import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplay";
+import { EnhancedArchetypeDisplay } from "./components/EnhancedArchetypeDisplayOverlayHtml";
 import { MenuSectionOverlayHtml } from "./components/MenuSectionOverlayHtml";
 
 const APP_VERSION = import.meta.env.APP_VERSION;

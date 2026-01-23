@@ -93,7 +93,7 @@ import { VolumeControl } from "../../shared/ui/VolumeControl";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
-} from "./components/TrainingButtons";
+} from "./components/TrainingButtonsOverlayHtml";
 import AnatomyControlsOverlayHtml from "./components/AnatomyControlsOverlayHtml";
 import AnatomyOverlay3D, {
   type AnatomyLayer,

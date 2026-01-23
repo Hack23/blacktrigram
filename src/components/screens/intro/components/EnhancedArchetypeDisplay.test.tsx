@@ -5,7 +5,7 @@ import { ArchetypeDataShape } from "./ArchetypeDisplayOverlayHtml";
 import {
   EnhancedArchetypeDisplay,
   EnhancedArchetypeDisplayProps,
-} from "./EnhancedArchetypeDisplay";
+} from "./EnhancedArchetypeDisplayOverlayHtml";
 
 const mockArchetypeData: ArchetypeDataShape[] = [
   {
