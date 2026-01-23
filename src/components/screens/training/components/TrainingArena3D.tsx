@@ -99,29 +99,54 @@ export const TrainingArena3D: React.FC<TrainingArena3DProps> = ({
 
 /**
  * Corner markers for Korean dojang aesthetic
+ * Optimized with memoized geometry and material to prevent recreation
  */
 const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
   const halfSize = size / 2 - 0.5;
 
-  const markerPositions: Array<[number, number, number]> = [
-    [-halfSize, 0.1, -halfSize], // Front-left
-    [halfSize, 0.1, -halfSize], // Front-right
-    [-halfSize, 0.1, halfSize], // Back-left
-    [halfSize, 0.1, halfSize], // Back-right
-  ];
+  const markerPositions: Array<[number, number, number]> = useMemo(
+    () => [
+      [-halfSize, 0.1, -halfSize], // Front-left
+      [halfSize, 0.1, -halfSize], // Front-right
+      [-halfSize, 0.1, halfSize], // Back-left
+      [halfSize, 0.1, halfSize], // Back-right
+    ],
+    [halfSize]
+  );
+
+  // Memoize shared geometry and material for all corner markers
+  // Performance: Prevents WebGL context exhaustion with multiple instances
+  const markerGeometry = useMemo(
+    () => new THREE.CylinderGeometry(0.2, 0.2, 0.05, 8),
+    []
+  );
+
+  const markerMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        emissive: KOREAN_COLORS.ACCENT_GOLD,
+        emissiveIntensity: 0.3,
+        metalness: 0.5,
+        roughness: 0.5,
+      }),
+    []
+  );
+
+  // Cleanup geometry and material on unmount
+  useEffect(() => {
+    return () => {
+      markerGeometry.dispose();
+      markerMaterial.dispose();
+    };
+  }, [markerGeometry, markerMaterial]);
 
   return (
     <>
       {markerPositions.map((position, index) => (
         <mesh key={index} position={position}>
-          <cylinderGeometry args={[0.2, 0.2, 0.05, 8]} />
-          <meshStandardMaterial
-            color={KOREAN_COLORS.ACCENT_GOLD}
-            emissive={KOREAN_COLORS.ACCENT_GOLD}
-            emissiveIntensity={0.3}
-            metalness={0.5}
-            roughness={0.5}
-          />
+          <primitive object={markerGeometry} attach="geometry" />
+          <primitive object={markerMaterial} attach="material" />
         </mesh>
       ))}
     </>

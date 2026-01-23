@@ -2,10 +2,15 @@
  * TrainingAICharacter3D - 3D character model for AI opponent in training
  *
  * Displays the AI opponent with stance-based materials and animations
+ *
+ * Performance optimizations:
+ * - Memoized geometries to prevent recreation on every render
+ * - Memoized materials for consistent shading
+ * - Minimal per-frame operations for 60fps target
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
@@ -60,6 +65,62 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
 
+  // Memoize geometries to prevent recreation on every render
+  // Performance: Avoids WebGL context exhaustion and reduces memory allocations
+  // Note: Health ring geometry is not memoized as it requires dynamic args based on healthPercent
+  const geometries = useMemo(
+    () => ({
+      body: new THREE.CapsuleGeometry(0.4, 1.2, 16, 32),
+      head: new THREE.SphereGeometry(0.3, 16, 16),
+      aura: new THREE.RingGeometry(0.6, 0.8, 32),
+    }),
+    []
+  );
+
+  // Memoize materials for consistent shading
+  // Materials are recreated when stance changes for proper color updates
+  const materials = useMemo(
+    () => ({
+      body: new THREE.MeshStandardMaterial({
+        color: stanceColor,
+        emissive: stanceColor,
+        emissiveIntensity: isAttacking ? 0.6 : 0.2,
+        metalness: 0.4,
+        roughness: 0.6,
+      }),
+      head: new THREE.MeshStandardMaterial({
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        metalness: 0.5,
+        roughness: 0.5,
+      }),
+      aura: new THREE.MeshBasicMaterial({
+        color: stanceColor,
+        transparent: true,
+        opacity: 0.4,
+        side: THREE.DoubleSide,
+      }),
+    }),
+    [stanceColor, isAttacking]
+  );
+
+  // Cleanup geometries on unmount only (geometries are stable)
+  // Dependencies intentionally omitted to prevent premature disposal
+  useEffect(() => {
+    return () => {
+      Object.values(geometries).forEach((geom) => geom.dispose());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Cleanup old materials when new ones are created
+  // This prevents memory leaks when stance or attacking state changes
+  useEffect(() => {
+    const currentMaterials = materials;
+    return () => {
+      Object.values(currentMaterials).forEach((mat) => mat.dispose());
+    };
+  }, [materials]);
+
   // Animation loop
   useFrame((state) => {
     if (!groupRef.current || !stanceAuraRef.current) return;
@@ -95,35 +156,20 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     >
       {/* Main body - capsule representing the AI fighter */}
       <mesh castShadow receiveShadow>
-        <capsuleGeometry args={[0.4, 1.2, 16, 32]} />
-        <meshStandardMaterial
-          color={stanceColor}
-          emissive={stanceColor}
-          emissiveIntensity={isAttacking ? 0.6 : 0.2}
-          metalness={0.4}
-          roughness={0.6}
-        />
+        <primitive object={geometries.body} attach="geometry" />
+        <primitive object={materials.body} attach="material" />
       </mesh>
 
       {/* Head marker */}
       <mesh position={[0, 1.2, 0]} castShadow>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial
-          color={KOREAN_COLORS.ACCENT_GOLD}
-          metalness={0.5}
-          roughness={0.5}
-        />
+        <primitive object={geometries.head} attach="geometry" />
+        <primitive object={materials.head} attach="material" />
       </mesh>
 
       {/* Stance aura effect */}
       <mesh ref={stanceAuraRef} position={[0, 0, 0]}>
-        <ringGeometry args={[0.6, 0.8, 32]} />
-        <meshBasicMaterial
-          color={stanceColor}
-          transparent
-          opacity={0.4}
-          side={THREE.DoubleSide}
-        />
+        <primitive object={geometries.aura} attach="geometry" />
+        <primitive object={materials.aura} attach="material" />
       </mesh>
 
       {/* Health indicator (rings around character) */}
