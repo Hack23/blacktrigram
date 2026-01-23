@@ -21,9 +21,12 @@ import React, {
   useState,
 } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
+import { useActionFeedback } from "../../../hooks/useActionFeedback";
+import { useCombatTimer } from "../../../hooks/useCombatTimer";
 import { useKeyboardControls } from "../../../hooks/useKeyboardControls";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useRoundTransition } from "../../../hooks/useRoundTransition";
+import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { HitEffect, PlayerState } from "../../../systems";
 import { CombatSystem } from "../../../systems/CombatSystem";
@@ -53,36 +56,29 @@ import {
   getPerformanceSettings,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
-import { getBackButtonTop } from "../../../types/constants/layout";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
 import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
-import { VolumeControl } from "../../shared/ui/VolumeControl";
+import {
+  ActionFeedback,
+  TechniqueName,
+} from "../../shared/three/effects/ActionFeedback";
+import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
+import HitEffects3D from "../../shared/three/effects/HitEffects3D";
+import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
+import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
+import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { ComboCounter } from "../../shared/three/ui/ComboCounter";
+import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
 import { KeyboardHints } from "./components/controls/KeyboardHints";
 import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncementOverlayHtml";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncementOverlayHtml";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
-import { GuardIndicator } from "../../shared/three/indicators/GuardIndicator";
-import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
-import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
-import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
-import { TechniqueBarContainer } from "../../shared/three/ui/TechniqueBarContainer";
-import { PlayerHUD } from "../../shared/three/ui/PlayerHUD";
-import { ComboCounter } from "../../shared/three/ui/ComboCounter";
-import { BodyPartHealthDisplay } from "../../shared/three/ui/BodyPartHealthDisplay";
-import { SpeedIndicatorHUD } from "../../shared/three/ui/SpeedIndicatorHUD";
-import { DamageNumbers } from "../../shared/three/effects/DamageNumbers";
-import { ActionFeedback, TechniqueName } from "../../shared/three/effects/ActionFeedback";
-import HitEffects3D from "../../shared/three/effects/HitEffects3D";
-import { CombatTimer } from "../../shared/ui/CombatTimer";
-import { useActionFeedback } from "../../../hooks/useActionFeedback";
-import { useCombatTimer } from "../../../hooks/useCombatTimer";
-import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
-import { GestureEvent } from "../../../hooks/useTouchControls";
+// GestureEvent import preserved for future gesture controls
+// import { GestureEvent } from "../../../hooks/useTouchControls";
 import {
   MovementType,
   SpeedModifierSystem,
@@ -93,16 +89,19 @@ import {
   convertPlayerStateToProps,
   getBalanceState,
 } from "../../../utils/player3DHelpers";
+import { MobileControlsOverlay } from "../../shared/mobile";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
-import { CombatReturnToMenuButton } from "./components/controls/CombatButtons";
-import { CombatControlsPanel } from "./components/controls/CombatControlsPanel";
 import { PauseMenu } from "./components/controls/PauseMenu";
-import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
-import { DifficultyIndicator } from "./components/hud/DifficultyIndicator";
+import {
+  CombatBottomHUD,
+  CombatLeftHUD,
+  CombatRightHUD,
+  CombatTopHUD,
+} from "./components/hud";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
-import { MobileControlsWrapper } from "./components/hud/MobileControlsWrapper";
+import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -307,7 +306,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     import("../../../types/common").VitalPointSeverity[]
   >([]);
   const [regionFilter, setRegionFilter] =
-    useState<import("../../shared/three/ui/VitalPointOverlayControlsHtml").BodyRegionFilter>("all");
+    useState<
+      import("../../shared/three/ui/VitalPointOverlayControlsHtml").BodyRegionFilter
+    >("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showLabels, setShowLabels] = useState(true);
   const [animated, setAnimated] = useState(true);
@@ -1597,8 +1598,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     currentAnimationState: player1Animation.currentState,
   });
 
-  // Mobile touch control state
-  const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+  // Mobile touch control state (kept for future stance wheel feature)
+  // const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
   const activeMobileKeyRef = useRef<string | null>(null);
 
   /**
@@ -1693,6 +1694,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [handleDefendWithFeedback],
   );
 
+  // Mobile stance wheel and gesture controls - preserved for future stance wheel feature
+  // Currently using simpler MobileControlsOverlay outside Canvas
+  /*
   const handleMobileStanceChange = useCallback(
     (stanceIndex: number) => {
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
@@ -1743,6 +1747,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     matchCountdownComplete &&
     !showRoundStart &&
     !combatState.isExecutingTechnique;
+  */
 
   // Note: Player 1 position is updated via the onPositionChange callback
   // in usePlayerMovement config above, not via useEffect
@@ -2424,22 +2429,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
 
-        {/* Mobile Touch Controls - Only shown on mobile devices */}
-        {isMobile && (
-          <MobileControlsWrapper
-            enabled={mobileControlsEnabled}
-            currentStanceIndex={currentStanceIndex}
-            stanceWheelExpanded={stanceWheelExpanded}
-            onMove={handleMobileMove}
-            onAttack={handleMobileAttack}
-            onBlock={handleMobileBlock}
-            onStanceChange={handleMobileStanceChange}
-            onStanceWheelToggle={() =>
-              setStanceWheelExpanded(!stanceWheelExpanded)
-            }
-            onGesture={handleMobileGesture}
-          />
-        )}
+        {/* Mobile Touch Controls moved outside Canvas - using MobileControlsOverlay for reliable touch events */}
 
         {/* Performance Monitoring - FPS display (dev mode, toggle with P key) */}
         {process.env.NODE_ENV === "development" && showPerformanceMonitor && (
@@ -2490,128 +2480,66 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           zIndex: Z_INDEX.HUD,
         }}
       >
-        {/* Combat Title - Top Center */}
-        <ResponsiveContainer
-          position={{ base: { x: 0, y: 10 * positionScale } }}
-          containerWidth={width}
-          useSafeArea
-          safeAreaEdge="top"
-          zIndex={Z_INDEX.HUD}
-          style={{
-            pointerEvents: "none",
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          <div
-            style={{
-              fontSize: isMobile ? "18px" : "24px",
-              fontWeight: "bold",
-              textAlign: "center",
-              fontFamily: theme.koreanTypography.fontFamily,
-              lineHeight: theme.koreanTypography.lineHeight,
-              letterSpacing: theme.koreanTypography.letterSpacing,
-              wordBreak: theme.koreanTypography.wordBreak,
-              color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
-                6,
-                "0",
-              )}`,
-              textShadow: "0 0 4px rgba(0,0,0,0.8)",
-            }}
-          >
-            전투 | Combat
-          </div>
-        </ResponsiveContainer>
+        {/* Top HUD - Round info, timer, return to menu */}
+        <CombatTopHUD
+          width={width}
+          isMobile={isMobile}
+          positionScale={positionScale}
+          currentRound={internalRound}
+          totalRounds={3}
+          timerState={timerState}
+          showTimer={
+            combatState.roundStarted &&
+            !combatState.roundEnded &&
+            matchCountdownComplete &&
+            !showRoundStart
+          }
+          onReturnToMenu={onReturnToMenu}
+          isPaused={isPaused || showPauseMenu}
+        />
 
-        {/* Combat Timer - Below Title */}
-        {combatState.roundStarted &&
-          !combatState.roundEnded &&
-          matchCountdownComplete &&
-          !showRoundStart && (
-            <CombatTimer
-              formattedTime={timerState.formattedTime}
-              warningLevel={timerState.warningLevel}
-              isTimeUp={timerState.isTimeUp}
-              isMobile={isMobile}
-              style={{ top: isMobile ? "45px" : "50px" }}
-            />
-          )}
-
-        {/* Volume Control - consistent with other screens */}
-        <VolumeControl position="bottom-right" compact={isMobile} />
-
-        {/* Player 1 HUD - Top Left */}
-        <PlayerHUD
+        {/* Left HUD - Player 1 stats */}
+        <CombatLeftHUD
+          width={width}
+          height={height}
+          isMobile={isMobile}
+          positionScale={positionScale}
           player={validPlayers[0]}
-          position="left"
-          isMobile={isMobile}
-          laterality={combatState.playerLaterality[0]}
-        />
-
-        {/* Player 1 Guard Indicator - Bottom Left */}
-        <GuardIndicator
-          currentStance={validPlayers[0].currentStance}
           isInGuard={player1Animation.isInStanceGuard()}
-          position="left"
-          isMobile={isMobile}
+          speedModifiers={player1SpeedModifiers}
         />
 
-        {/* Player 2 HUD - Top Right */}
-        <PlayerHUD
+        {/* Right HUD - Player 2/AI stats with difficulty indicator */}
+        <CombatRightHUD
+          width={width}
+          height={height}
+          isMobile={isMobile}
+          positionScale={positionScale}
           player={validPlayers[1]}
-          position="right"
-          isMobile={isMobile}
-          laterality={combatState.playerLaterality[1]}
-        />
-
-        {/* Player 2 Guard Indicator - Bottom Right */}
-        <GuardIndicator
-          currentStance={validPlayers[1].currentStance}
           isInGuard={player2Animation.isInStanceGuard()}
-          position="right"
-          isMobile={isMobile}
+          speedModifiers={player2SpeedModifiers}
+          difficultyTier={currentDifficultyTier}
         />
 
-        {/* Player 1 Speed Indicator - Shows movement speed percentage */}
-        <SpeedIndicatorHUD
-          finalSpeed={player1SpeedModifiers.finalSpeed}
-          baseSpeed={player1SpeedModifiers.baseSpeed}
-          position="left"
+        {/* Bottom HUD - Technique bar, volume, messages */}
+        <CombatBottomHUD
+          width={width}
+          height={height}
           isMobile={isMobile}
-          visible={true}
+          positionScale={positionScale}
+          visible={
+            combatState.roundStarted &&
+            !combatState.roundEnded &&
+            matchCountdownComplete &&
+            !showRoundStart
+          }
+          techniques={techniqueSelection.availableTechniques}
+          player={validPlayers[0]}
+          selectedIndex={techniqueSelection.selectedIndex}
+          cooldowns={cooldownsMap}
+          onTechniqueSelect={techniqueSelection.selectTechnique}
+          combatMessages={combatState.combatMessages}
         />
-
-        {/* Player 2 Speed Indicator - Shows movement speed percentage */}
-        <SpeedIndicatorHUD
-          finalSpeed={player2SpeedModifiers.finalSpeed}
-          baseSpeed={player2SpeedModifiers.baseSpeed}
-          position="right"
-          isMobile={isMobile}
-          visible={true}
-        />
-
-        {/* Body Part Health Displays - show individual body part health bars */}
-        {validPlayers[0].bodyPartHealth && (
-          <BodyPartHealthDisplay
-            bodyPartHealth={validPlayers[0].bodyPartHealth}
-            playerId={validPlayers[0].id}
-            position="left"
-            isMobile={isMobile}
-          />
-        )}
-
-        {validPlayers[1].bodyPartHealth && (
-          <BodyPartHealthDisplay
-            bodyPartHealth={validPlayers[1].bodyPartHealth}
-            playerId={validPlayers[1].id}
-            position="right"
-            isMobile={isMobile}
-          />
-        )}
-
-        {/* AI Difficulty Indicator - Shows current adaptive difficulty tier */}
-        <DifficultyIndicator tier={currentDifficultyTier} isMobile={isMobile} />
 
         {/* Player State Visual Indicators */}
         {/* Player 1 State Overlay - includes consciousness blur, pain vignette, etc. */}
@@ -2627,59 +2555,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
-
-        {/* Technique Bar - Bottom Center - Using centralized container component */}
-        <TechniqueBarContainer
-          visible={
-            combatState.roundStarted &&
-            !combatState.roundEnded &&
-            matchCountdownComplete &&
-            !showRoundStart
-          }
-          techniques={techniqueSelection.availableTechniques}
-          player={validPlayers[0]}
-          selectedIndex={techniqueSelection.selectedIndex}
-          cooldowns={cooldownsMap}
-          onTechniqueSelect={techniqueSelection.selectTechnique}
-          onTechniqueHover={(_tech) => {
-            // Could add additional hover effects here
-          }}
-          isMobile={isMobile}
-          screenWidth={width}
-          screenHeight={height}
-        />
-
-        {/* Combat Controls and Stats */}
-        <CombatControlsPanel
-          combatMessages={combatState.combatMessages}
-          isMobile={isMobile}
-        />
-
-        {/* Back Button - Positioned at top-right corner for visibility and gameplay priority */}
-        {/* Moved from bottom center to avoid any overlap with TechniqueBar and arena */}
-        <ResponsiveContainer
-          position={{
-            base: {
-              x: width - (isMobile ? 100 : 150),
-              y: getBackButtonTop(isMobile),
-            }, // Top-right corner
-          }}
-          containerWidth={width}
-          useSafeArea
-          safeAreaEdge="top"
-          zIndex={Z_INDEX.HUD} // Standard HUD layer
-          style={{
-            pointerEvents: "auto",
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <CombatReturnToMenuButton
-            onClick={onReturnToMenu}
-            onMouseEnter={() => audio.playSFX("menu_hover")}
-            isMobile={isMobile}
-          />
-        </ResponsiveContainer>
 
         {/* Pause Menu Overlay */}
         {(isPaused || showPauseMenu) && (
@@ -2761,6 +2636,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             startRound();
           }}
           isMobile={isMobile}
+        />
+      )}
+
+      {/* Mobile Controls - Pure DOM, rendered OUTSIDE Canvas for reliable touch events */}
+      {/* Uses pure DOM handlers instead of drei's Html which can block touch events on mobile */}
+      {isMobile && (
+        <MobileControlsOverlay
+          onMove={handleMobileMove}
+          onAttack={handleMobileAttack}
+          onBlock={handleMobileBlock}
         />
       )}
     </div>
