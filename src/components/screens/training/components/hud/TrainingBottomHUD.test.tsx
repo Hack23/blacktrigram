@@ -8,7 +8,11 @@
 import "@testing-library/jest-dom";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { PlayerArchetype } from "../../../../../types/common";
+import {
+  CombatState,
+  PlayerArchetype,
+  TrigramStance,
+} from "../../../../../types/common";
 import { TrainingBottomHUD } from "./TrainingBottomHUD";
 
 // Cleanup after each test
@@ -114,8 +118,8 @@ describe("TrainingBottomHUD", () => {
     consciousness: 100,
     balance: 100,
     momentum: 0,
-    currentStance: "geon" as const,
-    combatState: "idle" as const,
+    currentStance: TrigramStance.GEON,
+    combatState: CombatState.IDLE,
     position: { x: 0, y: 0 },
     isBlocking: false,
     isStunned: false,
@@ -143,7 +147,7 @@ describe("TrainingBottomHUD", () => {
     isMobile: false,
     positionScale: 1.0,
     techniques: [] as never[],
-    player: mockPlayer,
+    player: { ...mockPlayer, currentStance: TrigramStance.GEON },
     selectedIndex: 0,
     cooldowns: new Map<string, number>(),
     onTechniqueSelect: vi.fn(),
