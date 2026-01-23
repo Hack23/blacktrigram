@@ -38,9 +38,7 @@ export const DefeatAnimation3D: React.FC = () => {
   });
 
   // Animate defeat effects with slower, descending motion - optimized for 60fps
-  useFrame((state, delta) => {
-    // Clamp delta to avoid large jumps
-    const safeDelta = Math.min(delta, 1 / 30);
+  useFrame((state) => {
     const time = state.clock.elapsedTime;
 
     // Slow rotation

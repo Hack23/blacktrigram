@@ -15,6 +15,7 @@ const mockPlayerStats: PlayerMatchStats = {
   perfectStrikes: 5,
   vitalPointHits: 3,
   consecutiveWins: 1,
+  matchDuration: 90000,
   techniques: ["천둥벽력", "화염지창", "수류반격", "천둥벽력", "화염지창"],
 };
 
@@ -34,6 +35,7 @@ const mockMatchStats: MatchStatistics = {
     perfectStrikes: 1,
     vitalPointHits: 0,
     consecutiveWins: 0,
+    matchDuration: 90000,
     techniques: ["벽력일섬"],
   },
   finalScore: {
@@ -42,6 +44,16 @@ const mockMatchStats: MatchStatistics = {
   },
   criticalHits: 8,
   vitalPointHits: 3,
+  totalDamageDealt: 150,
+  totalDamageTaken: 100,
+  techniquesUsed: 8,
+  perfectStrikes: 1,
+  consecutiveWins: 1,
+  totalMatches: 1,
+  totalRounds: 2,
+  timeRemaining: 0,
+  combatEvents: [],
+  roundsWon: { player1: 2, player2: 0 },
 };
 
 describe("PerformanceBreakdown", () => {

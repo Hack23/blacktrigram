@@ -57,9 +57,7 @@ export const VictoryAnimation3D: React.FC = () => {
   });
 
   // Animate victory effects - optimized for 60fps
-  useFrame((state, delta) => {
-    // Clamp delta to avoid large jumps
-    const safeDelta = Math.min(delta, 1 / 30);
+  useFrame((state) => {
     const time = state.clock.elapsedTime;
 
     // Rotate entire group
