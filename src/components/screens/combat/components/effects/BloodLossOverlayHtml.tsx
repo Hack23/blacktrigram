@@ -39,6 +39,11 @@ export interface BloodLossOverlayProps {
  * Optimized with React.memo for 60fps performance:
  * - Prevents re-renders when blood loss hasn't changed significantly
  * - Memoized style calculations
+ * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - ARIA role="alert" for critical status
+ * - ARIA live region for screen reader announcements
+ * - Visual indication with pulsing animation
  *
  * @example
  * ```tsx
@@ -114,7 +119,9 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
       <div
         data-testid="bloodloss-overlay"
         style={overlayStyle}
-        aria-hidden="true"
+        role="alert"
+        aria-live="assertive"
+        aria-label={`Critical blood loss: ${Math.round(bloodLoss)} percent`}
       />
     </>
   );

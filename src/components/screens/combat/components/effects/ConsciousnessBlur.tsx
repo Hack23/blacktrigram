@@ -35,6 +35,11 @@ export interface ConsciousnessBlurProps {
  * Renders a fullscreen overlay with blur effect that intensifies as
  * consciousness decreases. Only visible when consciousness is 90 or below.
  * Optimized for 60fps with CSS backdrop-filter.
+ * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - ARIA role="alert" for critical consciousness states
+ * - ARIA live="polite" for gradual changes
+ * - Screen reader announcement of consciousness level
  *
  * @example
  * ```tsx
@@ -79,6 +84,10 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
     };
   }, [consciousness, isMobile]);
 
+  // Determine alert severity for accessibility
+  const alertSeverity = consciousness <= 30 ? "assertive" : "polite";
+  const isLowConsciousness = consciousness <= 30;
+
   // Don't render if consciousness is very high
   if (consciousness > 90 || !blurStyle) {
     return null;
@@ -88,7 +97,9 @@ export const ConsciousnessBlur: React.FC<ConsciousnessBlurProps> = ({
     <div
       data-testid="consciousness-blur"
       style={blurStyle}
-      aria-hidden="true"
+      role={isLowConsciousness ? "alert" : "status"}
+      aria-live={alertSeverity}
+      aria-label={`Consciousness level: ${consciousness} percent`}
     />
   );
 };

@@ -35,6 +35,11 @@ export interface PainVignetteProps {
  * Renders a fullscreen overlay with red vignette effect that intensifies
  * as pain increases. Only visible when pain is 5 or higher. Optimized
  * for 60fps with CSS transitions.
+ * 
+ * WCAG 2.1 AA Accessibility Features:
+ * - ARIA role="status" for non-critical pain feedback
+ * - ARIA role="alert" for high pain levels (>75)
+ * - Screen reader announcement of pain level
  *
  * @example
  * ```tsx
@@ -78,13 +83,24 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     };
   }, [pain, isMobile]);
 
+  // Determine accessibility attributes based on pain severity
+  const isHighPain = pain > 75;
+  const ariaRole = isHighPain ? "alert" : "status";
+  const ariaLive = isHighPain ? "assertive" : "polite";
+
   // Don't render if pain is very low (< 5%)
   if (pain < 5) {
     return null;
   }
 
   return (
-    <div data-testid="pain-vignette" style={vignetteStyle} aria-hidden="true" />
+    <div 
+      data-testid="pain-vignette" 
+      style={vignetteStyle} 
+      role={ariaRole}
+      aria-live={ariaLive}
+      aria-label={`Pain level: ${Math.round(pain)} percent`}
+    />
   );
 };
 

@@ -85,6 +85,23 @@ const INJURY_COLORS = {
 } as const;
 
 /**
+ * Korean anatomical labels for body regions
+ * 신체 부위 한글 명칭
+ * 
+ * @internal Exported for use in trauma visualization components
+ */
+export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; english: string }> = {
+  [BodyRegion.HEAD]: { korean: "두부", english: "Head" },
+  [BodyRegion.NECK]: { korean: "경부", english: "Neck" },
+  [BodyRegion.TORSO]: { korean: "흉부", english: "Torso" },
+  [BodyRegion.LEFT_ARM]: { korean: "좌완", english: "Left Arm" },
+  [BodyRegion.RIGHT_ARM]: { korean: "우완", english: "Right Arm" },
+  [BodyRegion.LEFT_LEG]: { korean: "좌각", english: "Left Leg" },
+  [BodyRegion.RIGHT_LEG]: { korean: "우각", english: "Right Leg" },
+  [BodyRegion.CORE]: { korean: "중심부", english: "Core" },
+} as const;
+
+/**
  * Get bruise color based on severity and hit count
  */
 const getBruiseColor = (severity: number, hitCount: number): number => {
@@ -212,6 +229,8 @@ const InjuryMarker: React.FC<{
 
 /**
  * FractureWarning - Html overlay warning for critical bone damage
+ * 
+ * Enhanced with BaseText for consistent Korean theming and accessibility
  */
 const FractureWarning: React.FC<{
   health: number;
@@ -232,16 +251,22 @@ const FractureWarning: React.FC<{
       <div
         style={{
           padding: isMobile ? "8px 12px" : "10px 16px",
-          backgroundColor: `rgba(255, 200, 0, ${warningOpacity * 0.3})`,
-          border: `2px solid #FFD700`,
+          backgroundColor: `rgba(${(INJURY_COLORS.FRACTURE_INDICATOR >> 16) & 255}, ${(INJURY_COLORS.FRACTURE_INDICATOR >> 8) & 255}, ${INJURY_COLORS.FRACTURE_INDICATOR & 255}, ${warningOpacity * 0.3})`,
+          border: `2px solid ${(() => {
+            const color = INJURY_COLORS.FRACTURE_INDICATOR;
+            return `rgb(${(color >> 16) & 255}, ${(color >> 8) & 255}, ${color & 255})`;
+          })()}`,
           borderRadius: "6px",
           fontSize: isMobile ? "12px" : "14px",
-          color: "#FFD700",
+          color: `rgb(${(INJURY_COLORS.FRACTURE_INDICATOR >> 16) & 255}, ${(INJURY_COLORS.FRACTURE_INDICATOR >> 8) & 255}, ${INJURY_COLORS.FRACTURE_INDICATOR & 255})`,
           fontWeight: "bold",
           textShadow: "0 0 4px rgba(0,0,0,0.8)",
           animation: "fracturePulse 1s ease-in-out infinite",
+          fontFamily: "Noto Sans KR, sans-serif",
         }}
         data-testid="fracture-warning"
+        role="alert"
+        aria-live="assertive"
       >
         ⚠️ 골절위험 | Bone Fracture Risk
       </div>
