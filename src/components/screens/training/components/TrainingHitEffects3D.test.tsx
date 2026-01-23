@@ -484,7 +484,7 @@ describe("TrainingHitEffects3D", () => {
   });
 
   describe("Particle Count by Type", () => {
-    it("should create 30 particles for perfect hits", () => {
+    it("should render with perfect hit type", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -493,11 +493,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Perfect: 30 particles
+      // Component renders with perfect hit particles
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should create 20 particles for success hits", () => {
+    it("should render with success hit type", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -506,11 +506,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Success: 20 particles
+      // Component renders with success hit particles
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should create 10 particles for miss hits", () => {
+    it("should render with miss hit type", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -519,13 +519,13 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Miss: 10 particles
+      // Component renders with miss particles
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
   describe("Particle Properties", () => {
-    it("should initialize particles with random directions", () => {
+    it("should render particle system for hit effects", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -534,11 +534,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Particles have random theta and phi angles
+      // Particle system renders in Canvas
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should scale particle speed based on type", () => {
+    it("should render different hit types", () => {
       const { container: perfectContainer } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -555,12 +555,12 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Perfect: speed=5, Success: speed=3, Miss: speed=2
+      // Both hit types render successfully
       expect(perfectContainer.querySelector("canvas")).toBeInTheDocument();
       expect(successContainer.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should vary particle size based on type", () => {
+    it("should render particle effects with different sizes", () => {
       const { container: perfectContainer } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -577,7 +577,7 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Perfect: size=0.15, Others: size=0.1
+      // Both particle effects render successfully
       expect(perfectContainer.querySelector("canvas")).toBeInTheDocument();
       expect(normalContainer.querySelector("canvas")).toBeInTheDocument();
     });

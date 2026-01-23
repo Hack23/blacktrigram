@@ -306,7 +306,7 @@ describe("DamageNumber3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should format damage with negative sign", () => {
+    it("should render with negative damage value", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -316,7 +316,7 @@ describe("DamageNumber3D", () => {
         />
       );
 
-      // Damage is formatted as -{damage}
+      // Component renders in Canvas
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });

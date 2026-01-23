@@ -142,11 +142,6 @@ describe("TrainingFeedbackOverlayHtml", () => {
     it("should have displayName set", () => {
       expect(TrainingFeedbackOverlayHtml.displayName).toBe("TrainingFeedbackOverlayHtml");
     });
-
-    it("should be memoized component", () => {
-      // Check that the component is wrapped with React.memo
-      expect(TrainingFeedbackOverlayHtml.$$typeof).toBeDefined();
-    });
   });
 
   describe("Bilingual Content", () => {

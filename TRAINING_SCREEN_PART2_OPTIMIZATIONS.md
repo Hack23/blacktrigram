@@ -12,36 +12,46 @@ This document summarizes the optimizations applied to Training Screen Package Pa
 
 ## Components Optimized
 
-### Phase 1: High-Impact 3D Optimizations ✅
+### Phase 1: High-Impact 3D Optimizations ⚠️
 
 #### 1. VitalPointMarker3D.tsx
-**Status**: ✅ COMPLETED
+**Status**: 🚧 PLANNED / NOT YET IMPLEMENTED
 
-**Changes**:
-- Added `VitalPointMarkers3D` component using `<Instances>` from @react-three/drei
-- Single draw call for all 70 vital point markers
-- Shared geometry and material across all instances
-- Maintained hover/selection states per marker
-- 70x memory reduction for geometry/material
-- ~5-10ms frame time improvement
+**Planned Changes** (design approved, code not yet refactored):
+- Introduce a `VitalPointMarkers3D` component using `<Instances>` from @react-three/drei
+- Move to a single draw call for all 70 vital point markers
+- Share geometry and material across all instances
+- Maintain hover/selection states per marker
+- Target ~70x reduction in geometry/material memory
+- Target ~5-10ms frame time improvement
 
-**Performance Impact**: HIGH
+**Current State**:
+- Uses 70 individual meshes (70 draw calls) for vital point markers
+
+**Expected Performance Impact After Refactor**: HIGH
 - Before: 70 individual meshes (70 draw calls)
-- After: 1 InstancedMesh (1 draw call)
+- After (planned): 1 InstancedMesh (1 draw call)
+
+**Architecture Blocker**: Requires VitalPoint 2D→3D position mapping. See STATUS_REPORT.md for solution options.
 
 #### 2. FootPlacementMarkers3D.tsx
-**Status**: ✅ COMPLETED
+**Status**: 🚧 PLANNED / NOT YET IMPLEMENTED
 
-**Changes**:
-- Converted to use `<Instances>` for all foot markers
-- Single draw call per footwork pattern
-- Shared circle geometry and material
-- Maintained animations and active state highlighting
-- ~2-3ms frame time improvement
+**Planned Changes** (design approved, code not yet refactored):
+- Convert to use `<Instances>` for all foot markers
+- Use a single draw call per footwork pattern
+- Share circle geometry and material
+- Maintain animations and active state highlighting
+- Target ~2-3ms frame time improvement
 
-**Performance Impact**: MEDIUM
+**Current State**:
+- Uses multiple individual meshes (4–5 draw calls per pattern) for foot placement markers
+
+**Expected Performance Impact After Refactor**: MEDIUM
 - Before: 4-5 draw calls per pattern
-- After: 1 draw call per pattern
+- After (planned): 1 draw call per pattern
+
+**Architecture Blocker**: Requires position mapping for foot placement coordinates.
 
 #### 3. AnatomyOverlay3D.tsx
 **Status**: ⏸️ DEFERRED (Already well-optimized)

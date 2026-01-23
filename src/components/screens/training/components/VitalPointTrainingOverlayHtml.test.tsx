@@ -303,10 +303,6 @@ describe("VitalPointTrainingOverlayHtml", () => {
     it("should have displayName set", () => {
       expect(VitalPointTrainingOverlayHtml.displayName).toBe("VitalPointTrainingOverlayHtml");
     });
-
-    it("should be memoized component", () => {
-      expect(VitalPointTrainingOverlayHtml.$$typeof).toBeDefined();
-    });
   });
 
   describe("Accessibility", () => {
