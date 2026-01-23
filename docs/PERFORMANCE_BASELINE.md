@@ -257,8 +257,9 @@ export const usePerformanceMonitor = (targetFPS: number = 60) => {
 
 **Usage**:
 ```typescript
-export const CombatScreen3D: React.FC<ScreenProps> = ({ width, height, isMobile }) => {
-  const perfSettings = getPerformanceSettings(width, isMobile);
+export const CombatScreen3D: React.FC<ScreenProps> = ({ width, height }) => {
+  const platform = useMemo(() => detectPlatform(), []);
+  const perfSettings = getPerformanceSettings(width, platform.isMobile);
   const metrics = usePerformanceMonitor(perfSettings.targetFPS);
 
   useEffect(() => {

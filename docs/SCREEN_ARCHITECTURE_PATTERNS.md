@@ -37,14 +37,13 @@ import { Html, PerspectiveCamera } from '@react-three/drei';
 import { useMemo, useCallback, useState } from 'react';
 import { KOREAN_COLORS, FONT_FAMILY } from '../../../types/constants';
 import { getPerformanceSettings } from '../../../types/constants/performance';
+import { detectPlatform, shouldUseMobileControls } from '../../../utils/deviceDetection';
 
 export interface ScreenProps {
   /** Screen width in pixels */
   readonly width: number;
   /** Screen height in pixels */
   readonly height: number;
-  /** Whether device is mobile (user-agent detection) */
-  readonly isMobile?: boolean;
   /** Action callback handler */
   readonly onAction?: (action: ScreenAction) => void;
 }
@@ -52,30 +51,33 @@ export interface ScreenProps {
 export const Screen3D: React.FC<ScreenProps> = ({ 
   width, 
   height, 
-  isMobile = false,
   onAction 
 }) => {
-  // 1. Performance settings based on device
+  // 1. Device detection (determines mobile controls and sizing)
+  const platform = useMemo(() => detectPlatform(), []);
+  const showMobileControls = useMemo(() => shouldUseMobileControls(), []);
+  
+  // 2. Performance settings based on device and screen size
   const perfSettings = useMemo(
-    () => getPerformanceSettings(width, isMobile),
-    [width, isMobile]
+    () => getPerformanceSettings(width, platform.isMobile),
+    [width, platform.isMobile]
   );
 
-  // 2. Responsive layout calculations
+  // 3. Responsive layout calculations based on screen size
   const layout = useMemo(() => ({
-    padding: isMobile ? 10 : 20,
-    fontSize: isMobile ? 14 : 18,
-    spacing: isMobile ? 8 : 15,
-    buttonSize: isMobile ? 40 : 60,
-  }), [isMobile]);
+    padding: width < 768 ? 10 : 20,
+    fontSize: width < 768 ? 14 : 18,
+    spacing: width < 768 ? 8 : 15,
+    buttonSize: width < 768 ? 40 : 60,
+  }), [width]);
 
-  // 3. State management with proper typing
+  // 4. State management with proper typing
   const [screenState, setScreenState] = useState<ScreenState>({
     isLoading: false,
     selectedItem: null,
   });
 
-  // 4. Event handlers with useCallback
+  // 5. Event handlers with useCallback
   const handleAction = useCallback((action: string) => {
     onAction?.({ type: action, timestamp: Date.now() });
   }, [onAction]);
@@ -92,7 +94,7 @@ export const Screen3D: React.FC<ScreenProps> = ({
       shadows={perfSettings.shadowMapSize > 1024}
       data-testid="screen-canvas"
     >
-      {/* 5. Korean-themed lighting */}
+      {/* 6. Korean-themed lighting */}
       <ambientLight intensity={0.4} color={KOREAN_COLORS.PRIMARY_CYAN} />
       <directionalLight
         position={[10, 10, 5]}
@@ -102,13 +104,13 @@ export const Screen3D: React.FC<ScreenProps> = ({
         color={KOREAN_COLORS.ACCENT_GOLD}
       />
 
-      {/* 6. Camera setup */}
+      {/* 7. Camera setup */}
       <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
 
-      {/* 7. 3D Scene content (game objects) */}
+      {/* 8. 3D Scene content (game objects) */}
       <SceneObjects state={screenState} />
 
-      {/* 8. Html UI overlays (HUD elements) */}
+      {/* 9. Html UI overlays (HUD elements) */}
       <Html fullscreen>
         <div 
           style={{ 
@@ -118,6 +120,22 @@ export const Screen3D: React.FC<ScreenProps> = ({
           data-testid="screen-ui-overlay"
         >
           <ScreenUI 
+            layout={layout} 
+            state={screenState} 
+            onAction={handleAction}
+            showMobileControls={showMobileControls}
+          />
+        </div>
+      </Html>
+
+      {/* 10. Performance monitoring (development only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <PerformanceMonitor targetFPS={perfSettings.targetFPS} />
+      )}
+    </Canvas>
+  );
+};
+``` 
             layout={layout} 
             state={screenState} 
             onAction={handleAction} 
@@ -132,6 +150,93 @@ export const Screen3D: React.FC<ScreenProps> = ({
     </Canvas>
   );
 };
+```
+
+---
+
+## 🔍 Device Detection & Responsive Design
+
+### Device Detection Pattern
+
+**ALWAYS use device detection utilities** instead of passing `isMobile` as a prop. Device detection should be performed inside components to determine:
+1. Whether to show mobile controls (based on user-agent + touch capability)
+2. Performance settings optimization
+3. Responsive layout adjustments
+
+```typescript
+import { detectPlatform, shouldUseMobileControls } from '../../../utils/deviceDetection';
+
+// Detect device type and capabilities
+const platform = detectPlatform();
+// Returns: { os, deviceType, hasTouch, isMobile, isTablet, isDesktop, screenWidth, screenHeight }
+
+// Determine if mobile controls should be shown
+const showMobileControls = shouldUseMobileControls();
+// Returns: true for phones, tablets, and touch devices
+```
+
+### Why Device Detection Over Props
+
+**❌ Don't pass `isMobile` as a prop**:
+```typescript
+// BAD: isMobile as prop
+<Screen3D width={width} height={height} isMobile={true} />
+```
+
+**✅ Use device detection inside component**:
+```typescript
+// GOOD: Detect device inside component
+const platform = useMemo(() => detectPlatform(), []);
+const showMobileControls = useMemo(() => shouldUseMobileControls(), []);
+```
+
+**Benefits**:
+- ✅ Correctly identifies high-resolution phones (2K/4K Android devices)
+- ✅ Handles tablets and touch-enabled devices properly
+- ✅ Single source of truth for device capabilities
+- ✅ Automatically adapts to device changes
+- ✅ User-agent detection takes priority over screen size
+
+### Responsive Sizing Pattern
+
+**All sizing should depend on screen resolution**, not device type:
+
+```typescript
+// ✅ GOOD: Size based on screen dimensions
+const layout = useMemo(() => ({
+  padding: width < 768 ? 10 : 20,
+  fontSize: width < 768 ? 14 : width < 1024 ? 18 : 22,
+  spacing: width < 768 ? 8 : 15,
+  buttonSize: width < 768 ? 40 : 60,
+}), [width]);
+
+// ✅ GOOD: Breakpoint-based sizing
+const BREAKPOINTS = {
+  MOBILE: 768,
+  TABLET: 1024,
+  DESKTOP: 1440,
+};
+
+const isMobileSize = width < BREAKPOINTS.MOBILE;
+const isTabletSize = width >= BREAKPOINTS.MOBILE && width < BREAKPOINTS.TABLET;
+const isDesktopSize = width >= BREAKPOINTS.TABLET;
+```
+
+### Mobile Controls Display
+
+```typescript
+// Show mobile controls based on device detection
+{showMobileControls && (
+  <>
+    <VirtualDPad />
+    <ActionButtons />
+  </>
+)}
+
+// Keyboard shortcuts for desktop
+{!showMobileControls && (
+  <KeyboardHints />
+)}
 ```
 
 ---
@@ -292,9 +397,11 @@ From `src/types/constants/performance.ts`:
 
 ```typescript
 import { getPerformanceSettings } from '../../../types/constants/performance';
+import { detectPlatform } from '../../../utils/deviceDetection';
 
-// Automatically optimizes based on device
-const settings = getPerformanceSettings(width, isMobile);
+// Automatically optimizes based on device and screen size
+const platform = detectPlatform();
+const settings = getPerformanceSettings(width, platform.isMobile);
 
 // Returns:
 // - maxParticles: 20 (low) to 100 (high)
@@ -379,11 +486,11 @@ describe('Screen3D', () => {
   });
 
   // 2. Responsive design tests
-  it('should adapt layout for mobile', () => {
+  it('should adapt layout for mobile screen size', () => {
     const { getByTestId } = render(
       <Canvas>
         <Suspense fallback={null}>
-          <Screen3D width={375} height={667} isMobile={true} />
+          <Screen3D width={375} height={667} />
         </Suspense>
       </Canvas>
     );
@@ -696,10 +803,10 @@ useEffect(() => {
 
 **4. Memoization**:
 ```typescript
-// ✅ GOOD: Memoize expensive calculations
+// ✅ GOOD: Memoize expensive calculations based on screen size
 const layout = useMemo(
-  () => calculateComplexLayout(width, height, isMobile),
-  [width, height, isMobile]
+  () => calculateComplexLayout(width, height),
+  [width, height]
 );
 
 const sharedGeometry = useMemo(
