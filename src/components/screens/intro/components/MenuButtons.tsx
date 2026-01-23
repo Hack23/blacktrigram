@@ -166,10 +166,16 @@ export const MenuButtons: React.FC<MenuButtonsProps> = ({
             onClick={() => handleButtonClick(item.mode)}
             onMouseEnter={() => handleButtonHover(index, true)}
             onMouseLeave={() => handleButtonHover(index, false)}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = `3px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD)}`;
+              e.currentTarget.style.outlineOffset = "2px";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = "none";
+            }}
             aria-label={`${item.korean} (${item.english})`}
             aria-selected={isSelected}
             role="menuitem"
-            className="menu-button"
             style={{
               ...visualEffects,
               ...getKoreanFontOptimization(

@@ -74,7 +74,9 @@ describe("EnhancedArchetypeDisplay", () => {
 
     const toggleButton = screen.getByTestId("view-toggle-button");
     expect(toggleButton).toBeInTheDocument();
-    expect(toggleButton.textContent).toBe("상세 보기 | Detailed View");
+    // BaseButtonOverlayHtml formats with Korean and English in separate spans
+    expect(toggleButton.textContent).toContain("상세 보기");
+    expect(toggleButton.textContent).toContain("Detailed View");
   });
 
   it("should not show view toggle button on mobile", () => {
@@ -127,7 +129,9 @@ describe("EnhancedArchetypeDisplay", () => {
     const toggleButton = screen.getByTestId("view-toggle-button");
     fireEvent.click(toggleButton);
 
-    expect(toggleButton.textContent).toBe("간단 보기 | Compact View");
+    // BaseButtonOverlayHtml formats with Korean and English in separate spans
+    expect(toggleButton.textContent).toContain("간단 보기");
+    expect(toggleButton.textContent).toContain("Compact View");
   });
 
   it("should toggle back to compact view when clicking button again", () => {
@@ -293,5 +297,30 @@ describe("EnhancedArchetypeDisplay", () => {
 
     // Should convert back to index
     expect(onArchetypeChange).toHaveBeenCalledWith(1);
+  });
+
+  it("should use BaseButtonOverlayHtml for toggle button", () => {
+    render(<EnhancedArchetypeDisplay {...defaultProps} />);
+
+    const toggleButton = screen.getByTestId("view-toggle-button");
+    // Verify it's using BaseButtonOverlayHtml component
+    expect(toggleButton.tagName).toBe("BUTTON");
+    expect(toggleButton).toHaveAttribute("aria-label");
+    expect(toggleButton.textContent).toContain("상세 보기");
+  });
+
+  it("should update toggle button text and aria-label when view changes", () => {
+    render(<EnhancedArchetypeDisplay {...defaultProps} />);
+
+    const toggleButton = screen.getByTestId("view-toggle-button");
+    
+    // Initial state - compact view
+    expect(toggleButton.textContent).toContain("상세 보기");
+    expect(toggleButton).toHaveAttribute("aria-label", "Toggle detailed view");
+
+    // Toggle to detailed view
+    fireEvent.click(toggleButton);
+    expect(toggleButton.textContent).toContain("간단 보기");
+    expect(toggleButton).toHaveAttribute("aria-label", "Toggle compact view");
   });
 });

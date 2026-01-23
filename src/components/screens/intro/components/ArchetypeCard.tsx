@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { PlayerArchetype } from "../../../../types/common";
 import { FALLBACK_ARCHETYPE_IMAGE, FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
+import { BaseButtonOverlayHtml } from "../../../shared/base/BaseButtonOverlayHtml";
 import { AbilityList } from "./AbilityList";
 import { StatBar } from "./StatBar";
 
@@ -95,13 +96,9 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
     }, [isSelected, onSelect]);
 
     // Handle confirm button click
-    const handleConfirmClick = useCallback(
-      (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent card click
-        onConfirm?.();
-      },
-      [onConfirm]
-    );
+    const handleConfirmClick = useCallback(() => {
+      onConfirm?.();
+    }, [onConfirm]);
 
     // Get archetype image path
     const imagePath = `/assets/visual/archetypes/${textureKey}.png`;
@@ -319,35 +316,25 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
 
         {/* Select Button */}
         {isSelected && showSelectButton && onConfirm && (
-          <button
-            onClick={handleConfirmClick}
-            style={{
-              width: "100%",
-              padding: isMobile ? "10px" : "14px",
-              marginTop: `${gap}px`,
-              fontSize: isMobile ? "14px" : "16px",
-              backgroundColor: colors.buttonBackground,
-              color: colors.buttonText,
-              border: "none",
-              borderRadius: "6px",
-              fontFamily: FONT_FAMILY.KOREAN,
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: `0 2px 8px ${colors.imageGlow}`,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = `0 4px 12px ${colors.imageGlow}`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = `0 2px 8px ${colors.imageGlow}`;
-            }}
-            data-testid={`select-button-${archetype}`}
+          // Note: Wrapper div with stopPropagation prevents card click when clicking button
+          // Future enhancement: Consider adding stopPropagation prop to BaseButtonOverlayHtml
+          // to eliminate this wrapper and make the component more self-contained
+          <div 
+            style={{ marginTop: `${gap}px` }}
+            onClick={(e) => e.stopPropagation()}
           >
-            선택 | Select
-          </button>
+            <BaseButtonOverlayHtml
+              korean="선택"
+              english="Select"
+              onClick={handleConfirmClick}
+              variant="primary"
+              size={isMobile ? "sm" : "md"}
+              fullWidth={true}
+              testId={`select-button-${archetype}`}
+              isMobile={isMobile}
+              ariaLabel={`Select ${korean} ${english} archetype`}
+            />
+          </div>
         )}
       </div>
     );

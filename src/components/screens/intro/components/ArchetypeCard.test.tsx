@@ -160,7 +160,9 @@ describe("ArchetypeCard", () => {
 
     const button = screen.getByTestId(`select-button-${PlayerArchetype.MUSA}`);
     expect(button).toBeInTheDocument();
-    expect(button.textContent).toBe("선택 | Select");
+    // BaseButtonOverlayHtml formats with Korean and English in separate spans
+    expect(button.textContent).toContain("선택");
+    expect(button.textContent).toContain("Select");
   });
 
   it("should not show select button when not selected", () => {
@@ -296,5 +298,44 @@ describe("ArchetypeCard", () => {
 
     const card = screen.getByTestId(`archetype-card-${PlayerArchetype.MUSA}`);
     expect(card).toHaveStyle({ width: "500px" });
+  });
+
+  it("should use BaseButtonOverlayHtml for select button", () => {
+    render(
+      <ArchetypeCard
+        data={mockArchetypeData}
+        isSelected={true}
+        onSelect={vi.fn()}
+        onConfirm={vi.fn()}
+        showSelectButton={true}
+      />
+    );
+
+    const button = screen.getByTestId(`select-button-${PlayerArchetype.MUSA}`);
+    // Verify it's using the new BaseButtonOverlayHtml component format
+    expect(button.tagName).toBe("BUTTON");
+    expect(button).toHaveAttribute("aria-label");
+  });
+
+  it("should call onConfirm when BaseButton is clicked", () => {
+    const onConfirm = vi.fn();
+    const onSelect = vi.fn();
+    
+    render(
+      <ArchetypeCard
+        data={mockArchetypeData}
+        isSelected={true}
+        onSelect={onSelect}
+        onConfirm={onConfirm}
+        showSelectButton={true}
+      />
+    );
+
+    const button = screen.getByTestId(`select-button-${PlayerArchetype.MUSA}`);
+    fireEvent.click(button);
+
+    // Should call onConfirm but not onSelect (button prevents card selection)
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onSelect).not.toHaveBeenCalled();
   });
 });
