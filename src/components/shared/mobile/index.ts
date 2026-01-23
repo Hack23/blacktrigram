@@ -1,60 +1,64 @@
 /**
  * Mobile Touch Controls
- * 
+ *
  * Comprehensive mobile touch control UI system for Black Trigram
  * Provides virtual controls, gesture recognition, and haptic feedback
- * 
+ *
  * @module components/mobile
  * @category Mobile Controls
  * @korean 모바일 컨트롤
  */
 
-export { VirtualDPad } from './VirtualDPad';
-export type { VirtualDPadProps, Direction, DPadEventType } from './VirtualDPad';
+export { VirtualDPad } from "./VirtualDPad";
+export type { DPadEventType, Direction, VirtualDPadProps } from "./VirtualDPad";
 
-export { ActionButtons } from './ActionButtons';
-export type { ActionButtonsProps, ButtonEventType } from './ActionButtons';
+export { ActionButtons } from "./ActionButtons";
+export type { ActionButtonsProps, ButtonEventType } from "./ActionButtons";
 
-export { StanceWheel } from './StanceWheel';
-export type { StanceWheelProps } from './StanceWheel';
+export { StanceWheel } from "./StanceWheel";
+export type { StanceWheelProps } from "./StanceWheel";
 
-export { GestureRecognizer } from './GestureRecognizer';
-export type { GestureRecognizerProps } from './GestureRecognizer';
+export { GestureRecognizer } from "./GestureRecognizer";
+export type { GestureRecognizerProps } from "./GestureRecognizer";
+
+// Pure DOM mobile controls (for use outside Three.js Canvas)
+export { MobileControlsOverlay } from "./MobileControlsPure";
+export type { MobileControlsOverlayProps } from "./MobileControlsPure";
 
 // Performance optimization modules
 export {
-  useTouchOptimizer,
   applyOptimizedUpdate,
-  createTransformStyle,
   createFilterStyle,
-} from './TouchOptimizer';
+  createTransformStyle,
+  useTouchOptimizer,
+} from "./TouchOptimizer";
 export type {
-  TouchPosition,
   TouchOptimizerOptions,
   TouchOptimizerReturn,
-} from './TouchOptimizer';
+  TouchPosition,
+} from "./TouchOptimizer";
 
 export {
   HapticController,
-  triggerOptimizedHaptic,
-  triggerCustomOptimizedHaptic,
-  stopOptimizedHaptic,
   OptimizedCombatHaptics,
-} from './HapticController';
+  stopOptimizedHaptic,
+  triggerCustomOptimizedHaptic,
+  triggerOptimizedHaptic,
+} from "./HapticController";
 export type {
-  HapticIntensity as OptimizedHapticIntensity,
   DevicePerformanceTier,
-} from './HapticController';
+  HapticIntensity as OptimizedHapticIntensity,
+} from "./HapticController";
 
 export {
   PerformanceMonitor,
+  canHandle60Fps,
   getPerformanceMonitor,
   getPerformanceTier,
-  canHandle60Fps,
   getQualityRecommendations,
-} from './PerformanceMonitor';
+} from "./PerformanceMonitor";
 export type {
-  PerformanceTier,
   PerformanceMetrics,
   PerformanceMonitorOptions,
-} from './PerformanceMonitor';
+  PerformanceTier,
+} from "./PerformanceMonitor";

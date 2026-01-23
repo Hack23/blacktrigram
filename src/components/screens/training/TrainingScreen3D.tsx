@@ -64,14 +64,13 @@ import {
   convertPlayerStateToProps,
 } from "../../../utils/player3DHelpers";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
+import { GestureRecognizer, StanceWheel } from "../../shared/mobile";
 import {
-  ActionButtons,
-  GestureRecognizer,
-  StanceWheel,
-  VirtualDPad,
-} from "../../shared/mobile";
-import { ButtonEventType } from "../../shared/mobile/ActionButtons";
-import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
+  MobileControlsOverlay,
+  type ButtonEventType,
+  type Direction,
+  type DPadEventType,
+} from "../../shared/mobile/MobileControlsPure";
 import {
   Player3DWithTransitions,
   VitalPointMarkers3D,
@@ -1197,42 +1196,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           isMobile={isMobile}
         />
 
-        {/* Mobile Touch Controls - Only shown on mobile devices */}
-        {/* Positioned above TechniqueBar and "Back to Menu" button to prevent overlap */}
-        {isMobile && (
-          <>
-            <VirtualDPad
-              onMove={handleMobileMove}
-              disabled={!mobileControlsEnabled}
-              opacity={0.8}
-              bottom={getMobileControlsBottom()} // Use centralized constant
-            />
-
-            <ActionButtons
-              onAttack={handleMobileAttack}
-              onBlock={handleMobileBlock}
-              disabled={!mobileControlsEnabled}
-              opacity={0.8}
-              bottom={getMobileControlsBottom()} // Use centralized constant
-            />
-
-            <StanceWheel
-              currentStance={trainingState.currentStanceIndex}
-              onStanceChange={handleMobileStanceChange}
-              expanded={trainingState.stanceWheelExpanded}
-              onToggle={trainingActions.toggleStanceWheel}
-              disabled={!mobileControlsEnabled}
-              opacity={0.8}
-            />
-
-            <GestureRecognizer
-              onGesture={handleMobileGesture}
-              enabled={mobileControlsEnabled}
-              showFeedback={true}
-              minSwipeDistance={50}
-            />
-          </>
-        )}
+        {/* NOTE: Mobile controls moved OUTSIDE Canvas for reliable touch events */}
+        {/* See MobileControlsPure component rendered after HUDs */}
 
         {/* Post-processing Effects - lightweight only */}
         {isMobile ? (
@@ -1346,6 +1311,36 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onArchetypeSelect={setSelectedArchetype}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
+
+        {/* Mobile Controls - Pure DOM overlay (outside Canvas for reliable touch) */}
+        {isMobile && (
+          <>
+            <MobileControlsOverlay
+              onMove={handleMobileMove}
+              onAttack={handleMobileAttack}
+              onBlock={handleMobileBlock}
+              disabled={!mobileControlsEnabled}
+              bottom={getMobileControlsBottom()}
+              opacity={0.85}
+            />
+
+            <StanceWheel
+              currentStance={trainingState.currentStanceIndex}
+              onStanceChange={handleMobileStanceChange}
+              expanded={trainingState.stanceWheelExpanded}
+              onToggle={trainingActions.toggleStanceWheel}
+              disabled={!mobileControlsEnabled}
+              opacity={0.8}
+            />
+
+            <GestureRecognizer
+              onGesture={handleMobileGesture}
+              enabled={mobileControlsEnabled}
+              showFeedback={true}
+              minSwipeDistance={50}
+            />
+          </>
+        )}
       </div>
     </div>
   );
