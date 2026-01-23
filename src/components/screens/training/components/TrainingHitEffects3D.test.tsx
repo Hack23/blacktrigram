@@ -116,7 +116,7 @@ describe("TrainingHitEffects3D", () => {
   });
 
   describe("Particle System", () => {
-    it("should use InstancedMesh for particles", () => {
+    it("should render with InstancedMesh for success type", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -125,11 +125,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // InstancedMesh is used for better performance
+      // Verifies canvas rendering (InstancedMesh implementation not directly testable)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should create different particle counts based on type", () => {
+    it("should render with different hit types", () => {
       const { container: successContainer } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -154,13 +154,13 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Success: 20 particles, Perfect: 30 particles, Miss: 10 particles
+      // Verifies canvas rendering for all hit types
       expect(successContainer.querySelector("canvas")).toBeInTheDocument();
       expect(perfectContainer.querySelector("canvas")).toBeInTheDocument();
       expect(missContainer.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should use object pooling for vectors", () => {
+    it("should render with object pooling support", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -169,13 +169,13 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Uses ThreeObjectPools for vector pooling
+      // Verifies canvas rendering (ThreeObjectPools usage not directly testable)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
   describe("Korean Theming", () => {
-    it("should use KOREAN_COLORS.PRIMARY_CYAN for success", () => {
+    it("should render with success hit type (PRIMARY_CYAN theme)", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -184,11 +184,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Success hits use PRIMARY_CYAN color
+      // Verifies canvas rendering (color theme not directly testable in unit test)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should use KOREAN_COLORS.ACCENT_GOLD for perfect", () => {
+    it("should render with perfect hit type (ACCENT_GOLD theme)", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -197,11 +197,11 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Perfect hits use ACCENT_GOLD color
+      // Verifies canvas rendering (color theme not directly testable in unit test)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should use KOREAN_COLORS.UI_GRAY for miss", () => {
+    it("should render with miss hit type (UI_GRAY theme)", () => {
       const { container } = render3D(
         <TrainingHitEffects3D
           position={[0, 0, 0]}
@@ -210,7 +210,7 @@ describe("TrainingHitEffects3D", () => {
         />
       );
 
-      // Miss hits use UI_GRAY color
+      // Verifies canvas rendering (color theme not directly testable in unit test)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });

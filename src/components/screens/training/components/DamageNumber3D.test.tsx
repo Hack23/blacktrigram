@@ -235,7 +235,7 @@ describe("DamageNumber3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should use default duration of 1.5s when not specified", () => {
+    it("should render with default duration support", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -248,7 +248,7 @@ describe("DamageNumber3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should use useFrame for animation", () => {
+    it("should render with useFrame animation hook", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -258,13 +258,13 @@ describe("DamageNumber3D", () => {
         />
       );
 
-      // useFrame hook is used for frame-by-frame animation
+      // Verifies canvas rendering (useFrame animation not directly testable)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
 
   describe("Callbacks", () => {
-    it("should accept onComplete callback", () => {
+    it("should render with onComplete callback", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -277,7 +277,7 @@ describe("DamageNumber3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should not crash without onComplete callback", () => {
+    it("should render without onComplete callback", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -292,7 +292,7 @@ describe("DamageNumber3D", () => {
   });
 
   describe("Accessibility", () => {
-    it("should include data-testid for testing", () => {
+    it("should render with data-testid attribute", () => {
       const { container } = render3D(
         <DamageNumber3D
           position={[0, 0, 0]}
@@ -302,7 +302,7 @@ describe("DamageNumber3D", () => {
         />
       );
 
-      // Component includes data-testid="damage-number-3d"
+      // Verifies canvas rendering (data-testid on Html overlay not queryable in this context)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 

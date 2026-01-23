@@ -245,7 +245,7 @@ describe("HitFeedbackEffect3D", () => {
   });
 
   describe("Damage Numbers", () => {
-    it("should display damage number for success hits", () => {
+    it("should render success hit with damage display", () => {
       const { container } = render3D(
         <HitFeedbackEffect3D
           position={[0, 0, 0]}
@@ -257,7 +257,7 @@ describe("HitFeedbackEffect3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should display damage number for perfect hits", () => {
+    it("should render perfect hit with damage display", () => {
       const { container } = render3D(
         <HitFeedbackEffect3D
           position={[0, 0, 0]}
@@ -269,7 +269,7 @@ describe("HitFeedbackEffect3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should display miss indicator for miss hits", () => {
+    it("should render miss hit with miss indicator", () => {
       const { container } = render3D(
         <HitFeedbackEffect3D
           position={[0, 0, 0]}
@@ -277,11 +277,11 @@ describe("HitFeedbackEffect3D", () => {
         />
       );
 
-      // Miss shows "빗나감 | MISS" (Korean: 빗나감 = miss/deflected)
+      // Verifies canvas rendering (miss indicator text not directly testable)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should not display damage number for miss hits", () => {
+    it("should render miss hit without damage number", () => {
       const { container } = render3D(
         <HitFeedbackEffect3D
           position={[0, 0, 0]}
@@ -290,7 +290,7 @@ describe("HitFeedbackEffect3D", () => {
         />
       );
 
-      // Miss type doesn't show damage value
+      // Verifies canvas rendering (damage suppression not directly testable)
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
