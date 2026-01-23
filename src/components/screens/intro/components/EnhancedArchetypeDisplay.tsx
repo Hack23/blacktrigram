@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { PlayerArchetype } from "../../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
+import { BaseButtonOverlayHtml } from "../../../shared/base/BaseButtonOverlayHtml";
 import { ArchetypeCardGrid } from "./ArchetypeCardGrid";
 import {
   ArchetypeDataShape,
@@ -85,17 +84,11 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
         [archetypes, onArchetypeChange],
       );
 
-      // Memoize colors
-      const colors = useMemo(
-        () => ({
-          toggleButton: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.9),
-          toggleText: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
-        }),
-        [],
+      // Memoize height calculation for detailed view (minimum 600px or 2x compact height)
+      const detailedHeight = useMemo(
+        () => Math.max(height * 2, 600),
+        [height],
       );
-
-      // Adjust height for detailed view
-      const detailedHeight = Math.max(height * 2, 600);
 
       return (
         <div
@@ -116,32 +109,15 @@ export const EnhancedArchetypeDisplay: React.FC<EnhancedArchetypeDisplayProps> =
                 width: "100%",
               }}
             >
-              <button
+              <BaseButtonOverlayHtml
+                korean={viewMode === "compact" ? "상세 보기" : "간단 보기"}
+                english={viewMode === "compact" ? "Detailed View" : "Compact View"}
                 onClick={handleToggleView}
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "12px",
-                  backgroundColor: colors.toggleButton,
-                  color: colors.toggleText,
-                  border: "none",
-                  borderRadius: "6px",
-                  fontFamily: FONT_FAMILY.KOREAN,
-                  fontWeight: "bold",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "scale(1.05)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
-                data-testid="view-toggle-button"
-              >
-                {viewMode === "compact"
-                  ? "상세 보기 | Detailed View"
-                  : "간단 보기 | Compact View"}
-              </button>
+                variant="secondary"
+                size="sm"
+                testId="view-toggle-button"
+                ariaLabel={`Toggle ${viewMode === "compact" ? "detailed" : "compact"} view`}
+              />
             </div>
           )}
 

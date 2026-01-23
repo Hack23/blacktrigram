@@ -1,5 +1,19 @@
+/**
+ * AbilityList - Enhanced ability list component with Korean theming
+ * 
+ * Refactored to use useKoreanTheme hook for consistent styling
+ * Displays a list of special abilities with bilingual support
+ * 
+ * Performance optimized with React.memo and useMemo
+ * 
+ * @module components/screens/intro
+ * @category Intro UI
+ * @korean 능력리스트
+ */
+
 import React, { useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { useKoreanTheme } from "../../../shared/base/useKoreanTheme";
+import { KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 
 export interface Ability {
@@ -20,10 +34,35 @@ export interface AbilityListProps {
 
 /**
  * AbilityList component - Displays a list of special abilities
+ * 
+ * Refactored to use useKoreanTheme for consistent Korean theming:
+ * - Uses Korean typography configuration
+ * - Applies Korean color palette
+ * - Responsive sizing based on device type
+ * - Memoized for optimal performance
+ * 
  * Used in archetype cards to show key techniques and skills
+ * 
+ * @example
+ * ```tsx
+ * <AbilityList
+ *   abilities={[
+ *     { korean: "급소격", english: "Vital Strike" },
+ *     { korean: "연격", english: "Chain Attack" }
+ *   ]}
+ *   color={KOREAN_COLORS.PRIMARY_CYAN}
+ *   isMobile={false}
+ * />
+ * ```
  */
 export const AbilityList: React.FC<AbilityListProps> = React.memo(
   ({ abilities, maxAbilities = 3, color = KOREAN_COLORS.ACCENT_GOLD, isMobile = false }) => {
+    // Use Korean theme hook for consistent styling
+    const { koreanTypography, calculateResponsiveSize, fontFamily } = useKoreanTheme({
+      size: "small",
+      isMobile,
+    });
+
     // Normalize abilities to consistent format
     const normalizedAbilities = useMemo(() => {
       return abilities.slice(0, maxAbilities).map((ability, index) => {
@@ -49,7 +88,7 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
       });
     }, [abilities, maxAbilities]);
 
-    // Memoize color calculations
+    // Memoize color calculations with Korean theme
     const colors = useMemo(
       () => ({
         abilityBorder: hexToRgbaString(color, 0.5),
@@ -63,10 +102,10 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
       [color]
     );
 
-    // Responsive sizing
-    const fontSize = isMobile ? 10 : 12;
-    const descFontSize = isMobile ? 8 : 10;
-    const padding = isMobile ? "6px 10px" : "8px 12px";
+    // Responsive sizing using Korean theme utilities
+    const fontSize = calculateResponsiveSize(isMobile ? 10 : 12);
+    const descFontSize = calculateResponsiveSize(isMobile ? 8 : 10);
+    const padding = isMobile ? `${calculateResponsiveSize(6)}px ${calculateResponsiveSize(10)}px` : `${calculateResponsiveSize(8)}px ${calculateResponsiveSize(12)}px`;
 
     if (normalizedAbilities.length === 0) {
       return null;
@@ -78,17 +117,20 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          gap: "8px",
+          gap: `${calculateResponsiveSize(8)}px`,
         }}
         data-testid="ability-list"
       >
-        {/* Header */}
+        {/* Header with Korean typography */}
         <div
           style={{
-            fontSize: isMobile ? "12px" : "14px",
+            fontSize: `${calculateResponsiveSize(isMobile ? 12 : 14)}px`,
             fontWeight: "bold",
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: fontFamily.KOREAN,
             color: colors.abilityText,
+            // Apply Korean typography optimization
+            lineHeight: koreanTypography.lineHeight,
+            letterSpacing: koreanTypography.letterSpacing,
           }}
           data-testid="ability-list-header"
         >
@@ -100,7 +142,7 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "6px",
+            gap: `${calculateResponsiveSize(6)}px`,
           }}
         >
           {normalizedAbilities.map((ability) => (
@@ -113,17 +155,21 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
                 borderRadius: "4px",
                 display: "flex",
                 flexDirection: "column",
-                gap: "4px",
+                gap: `${calculateResponsiveSize(4)}px`,
               }}
               data-testid={ability.id}
             >
-              {/* Ability name */}
+              {/* Ability name with Korean typography */}
               <div
                 style={{
                   fontSize: `${fontSize}px`,
                   fontWeight: "bold",
-                  fontFamily: FONT_FAMILY.KOREAN,
+                  fontFamily: fontFamily.KOREAN,
                   color: colors.abilityText,
+                  // Apply Korean typography optimization
+                  lineHeight: koreanTypography.lineHeight,
+                  letterSpacing: koreanTypography.letterSpacing,
+                  wordBreak: koreanTypography.wordBreak,
                 }}
                 data-testid={`${ability.id}-name`}
               >
@@ -136,9 +182,12 @@ export const AbilityList: React.FC<AbilityListProps> = React.memo(
                   style={{
                     fontSize: `${descFontSize}px`,
                     fontStyle: "italic",
-                    fontFamily: FONT_FAMILY.KOREAN,
+                    fontFamily: fontFamily.KOREAN,
                     color: colors.descriptionText,
-                    lineHeight: "1.3",
+                    // Apply Korean typography optimization
+                    lineHeight: koreanTypography.lineHeight,
+                    letterSpacing: koreanTypography.letterSpacing,
+                    wordBreak: koreanTypography.wordBreak,
                   }}
                   data-testid={`${ability.id}-description`}
                 >
