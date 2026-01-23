@@ -35,6 +35,11 @@ export interface PainVignetteProps {
  * Renders a fullscreen overlay with red vignette effect that intensifies
  * as pain increases. Only visible when pain is 5 or higher. Optimized
  * for 60fps with CSS transitions.
+ * 
+ * Accessibility:
+ * - Purely visual, decorative-only overlay
+ * - Hidden from assistive technologies via aria-hidden="true"
+ * - Does not announce pain levels; use a separate mechanism if announcements are required
  *
  * @example
  * ```tsx
@@ -83,8 +88,13 @@ export const PainVignette: React.FC<PainVignetteProps> = ({
     return null;
   }
 
+  // Purely visual overlay - no ARIA roles or live regions; marked aria-hidden to stay decorative
   return (
-    <div data-testid="pain-vignette" style={vignetteStyle} aria-hidden="true" />
+    <div 
+      data-testid="pain-vignette" 
+      style={vignetteStyle} 
+      aria-hidden="true"
+    />
   );
 };
 

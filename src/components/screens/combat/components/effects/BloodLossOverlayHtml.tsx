@@ -39,6 +39,11 @@ export interface BloodLossOverlayProps {
  * Optimized with React.memo for 60fps performance:
  * - Prevents re-renders when blood loss hasn't changed significantly
  * - Memoized style calculations
+ * 
+ * Accessibility notes:
+ * - Purely decorative visual effect; no ARIA role or aria-live region is defined here
+ * - Typically rendered within an aria-hidden container so it is ignored by screen readers
+ * - Critical status announcements should be provided by separate, semantic HUD components
  *
  * @example
  * ```tsx
@@ -96,6 +101,7 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
     return null;
   }
 
+  // Purely visual effect overlay; intentionally hidden from assistive technology via aria-hidden and does not use ARIA roles or live regions
   return (
     <>
       {/* CSS keyframe animation for pulsing with CSS variables */}
