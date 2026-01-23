@@ -4,13 +4,15 @@
  * Provides consistent styling for pause menu action buttons with Korean theming.
  * Extracted from PauseMenu to reduce code duplication.
  * 
+ * Refactored to use useKoreanTheme for consistent theming.
+ * 
  * @module components/screens/combat/controls
  * @category Combat UI
  * @korean 일시정지메뉴버튼
  */
 
 import React, { forwardRef } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { getFocusStyle } from "../../../../../utils/accessibility";
 
@@ -42,7 +44,7 @@ export interface PauseMenuButtonProps {
  * 
  * Styled button for pause menu with:
  * - Korean/English bilingual text with icon support
- * - Cyan themed styling matching combat screen
+ * - Cyan themed styling matching combat screen via useKoreanTheme
  * - Hover and focus effects with accessibility support
  * - Responsive sizing for mobile/desktop
  * 
@@ -81,6 +83,8 @@ export const PauseMenuButton = forwardRef<
     },
     ref,
   ) => {
+    const theme = useKoreanTheme({ variant: "primary", size: "lg", isMobile });
+    
     return (
       <button
         ref={ref}
@@ -96,13 +100,13 @@ export const PauseMenuButton = forwardRef<
           padding: isMobile ? "12px 24px" : "16px 32px",
           fontSize: isMobile ? "16px" : "20px",
           backgroundColor: hexToRgbaString(
-            KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+            theme.colors.UI_BACKGROUND_MEDIUM,
             0.9,
           ),
-          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.6)}`,
+          color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.6)}`,
           borderRadius: "8px",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontWeight: "bold",
           cursor: "pointer",
           transition: "all 0.2s ease",
@@ -114,31 +118,31 @@ export const PauseMenuButton = forwardRef<
           boxShadow: "none",
           ...getFocusStyle(isFocused, {
             outlineWidth: 3,
-            boxShadow: `0 0 0 4px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.5)}`,
+            boxShadow: `0 0 0 4px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}, 0 0 20px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
           }),
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.backgroundColor = hexToRgbaString(
-            KOREAN_COLORS.PRIMARY_CYAN,
+            theme.colors.PRIMARY_CYAN,
             1,
           );
           e.currentTarget.style.color = hexToRgbaString(
-            KOREAN_COLORS.UI_BACKGROUND_DARK,
+            theme.colors.UI_BACKGROUND_DARK,
             1,
           );
           e.currentTarget.style.transform = "scale(1.05)";
           e.currentTarget.style.boxShadow = `0 0 20px ${hexToRgbaString(
-            KOREAN_COLORS.PRIMARY_CYAN,
+            theme.colors.PRIMARY_CYAN,
             0.5,
           )}`;
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.backgroundColor = hexToRgbaString(
-            KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+            theme.colors.UI_BACKGROUND_MEDIUM,
             0.9,
           );
           e.currentTarget.style.color = hexToRgbaString(
-            KOREAN_COLORS.PRIMARY_CYAN,
+            theme.colors.PRIMARY_CYAN,
             1,
           );
           e.currentTarget.style.transform = "scale(1)";
