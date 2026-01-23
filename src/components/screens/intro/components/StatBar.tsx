@@ -1,5 +1,19 @@
+/**
+ * StatBar - Enhanced stat visualization component with Korean theming
+ * 
+ * Refactored to use useKoreanTheme hook for consistent styling
+ * Displays horizontal bar chart for combat statistics
+ * 
+ * Performance optimized with React.memo and useMemo
+ * 
+ * @module components/screens/intro
+ * @category Intro UI
+ * @korean 능력치바
+ */
+
 import React, { useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { useKoreanTheme } from "../../../shared/base/useKoreanTheme";
+import { KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../../utils/colorUtils";
 
 export interface StatBarProps {
@@ -14,7 +28,25 @@ export interface StatBarProps {
 
 /**
  * StatBar component - Displays a horizontal bar chart for stats
+ * 
+ * Refactored to use useKoreanTheme for consistent Korean theming:
+ * - Uses Korean typography configuration
+ * - Applies Korean color palette
+ * - Responsive sizing based on device type
+ * - Memoized for optimal performance
+ * 
  * Used in archetype cards to visualize combat statistics
+ * 
+ * @example
+ * ```tsx
+ * <StatBar
+ *   label="공격 | Attack"
+ *   value={85}
+ *   max={100}
+ *   color={KOREAN_COLORS.PRIMARY_CYAN}
+ *   isMobile={false}
+ * />
+ * ```
  */
 export const StatBar: React.FC<StatBarProps> = React.memo(
   ({
@@ -26,28 +58,34 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
     showValue = true,
     isMobile = false,
   }) => {
+    // Use Korean theme hook for consistent styling
+    const { koreanTypography, colors: themeColors, calculateResponsiveSize } = useKoreanTheme({
+      size: "small",
+      isMobile,
+    });
+
     // Calculate percentage for bar width
     const percentage = useMemo(
       () => Math.min(100, Math.max(0, (value / max) * 100)),
       [value, max]
     );
 
-    // Memoize color calculations
-    const colors = useMemo(
+    // Memoize color calculations with Korean theme
+    const statBarColors = useMemo(
       () => ({
-        barBackground: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_MEDIUM, 1),
+        barBackground: hexToRgbaString(themeColors.UI_BACKGROUND_MEDIUM, 1),
         barFill: hexToRgbaString(color, 0.9),
         barBorder: hexToRgbaString(color, 0.7),
-        labelColor: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
+        labelColor: hexColorToCSS(themeColors.TEXT_SECONDARY),
         valueColor: hexColorToCSS(color),
       }),
-      [color]
+      [color, themeColors]
     );
 
-    // Responsive sizing
-    const fontSize = isMobile ? 9 : 11;
-    const labelWidth = isMobile ? 70 : 80;
-    const valueWidth = isMobile ? 25 : 30;
+    // Responsive sizing using Korean theme utilities
+    const fontSize = calculateResponsiveSize(isMobile ? 9 : 11);
+    const labelWidth = calculateResponsiveSize(isMobile ? 70 : 80);
+    const valueWidth = calculateResponsiveSize(isMobile ? 25 : 30);
 
     return (
       <div
@@ -56,21 +94,25 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: "12px",
+          gap: `${calculateResponsiveSize(12)}px`,
         }}
         data-testid={`stat-bar-${label.split("|")[0].trim()}`}
       >
-        {/* Stat label */}
+        {/* Stat label with Korean typography */}
         <div
           style={{
             width: `${labelWidth}px`,
             fontSize: `${fontSize}px`,
-            fontFamily: FONT_FAMILY.KOREAN,
-            color: colors.labelColor,
+            fontFamily: koreanTypography.fontFamily,
+            color: statBarColors.labelColor,
             flexShrink: 0,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
+            // Apply Korean typography optimization
+            lineHeight: koreanTypography.lineHeight,
+            letterSpacing: koreanTypography.letterSpacing,
+            wordBreak: koreanTypography.wordBreak,
           }}
           data-testid="stat-label"
         >
@@ -82,20 +124,20 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
           style={{
             flex: 1,
             height: `${height}px`,
-            background: colors.barBackground,
+            background: statBarColors.barBackground,
             borderRadius: "2px",
             position: "relative",
-            border: `1px solid ${colors.barBorder}`,
+            border: `1px solid ${statBarColors.barBorder}`,
             overflow: "hidden",
           }}
           data-testid="stat-bar-container"
         >
-          {/* Stat bar fill */}
+          {/* Stat bar fill with smooth transition */}
           <div
             style={{
               width: `${percentage}%`,
               height: "100%",
-              background: colors.barFill,
+              background: statBarColors.barFill,
               borderRadius: "2px",
               transition: "width 0.3s ease",
               boxShadow: `0 0 8px ${hexToRgbaString(color, 0.5)}`,
@@ -111,8 +153,8 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
               width: `${valueWidth}px`,
               fontSize: `${fontSize}px`,
               fontWeight: "bold",
-              fontFamily: FONT_FAMILY.PRIMARY,
-              color: colors.valueColor,
+              fontFamily: koreanTypography.fontFamily,
+              color: statBarColors.valueColor,
               textAlign: "right",
               flexShrink: 0,
             }}

@@ -92,10 +92,12 @@ describe("AbilityList", () => {
     render(<AbilityList abilities={abilities} isMobile={true} />);
     
     const header = screen.getByTestId("ability-list-header");
-    expect(header).toHaveStyle({ fontSize: "12px" });
+    // calculateResponsiveSize applies 0.8 scale for mobile: 12 * 0.8 = 9.6 → 10px
+    expect(header).toHaveStyle({ fontSize: "10px" });
     
     const abilityName = screen.getByTestId("ability-0-name");
-    expect(abilityName).toHaveStyle({ fontSize: "10px" });
+    // calculateResponsiveSize applies 0.8 scale for mobile: 10 * 0.8 = 8px
+    expect(abilityName).toHaveStyle({ fontSize: "8px" });
   });
 
   it("should render nothing when abilities array is empty", () => {
