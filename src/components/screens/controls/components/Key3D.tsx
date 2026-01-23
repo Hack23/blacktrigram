@@ -71,27 +71,41 @@ export const Key3D: React.FC<Key3DProps> = ({ keyData, isPressed }) => {
     meshRef.current.scale.lerp(targetScale.current, 0.2);
   });
 
-  // Create material with emissive glow when pressed
-  const keyMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
+  // Create materials once (unpressed and pressed states)
+  const materials = useMemo(
+    () => ({
+      unpressed: new THREE.MeshStandardMaterial({
         color: categoryColor,
         emissive: categoryColor,
-        emissiveIntensity: isPressed ? 2.5 : 0.3,
+        emissiveIntensity: 0.3,
         metalness: 0.6,
         roughness: 0.4,
         transparent: true,
         opacity: 0.9,
       }),
-    [categoryColor, isPressed]
+      pressed: new THREE.MeshStandardMaterial({
+        color: categoryColor,
+        emissive: categoryColor,
+        emissiveIntensity: 2.5,
+        metalness: 0.6,
+        roughness: 0.4,
+        transparent: true,
+        opacity: 0.9,
+      }),
+    }),
+    [categoryColor]
   );
 
-  // Dispose material on unmount
+  // Select material based on pressed state
+  const keyMaterial = isPressed ? materials.pressed : materials.unpressed;
+
+  // Dispose materials on unmount
   useEffect(() => {
     return () => {
-      keyMaterial.dispose();
+      materials.unpressed.dispose();
+      materials.pressed.dispose();
     };
-  }, [keyMaterial]);
+  }, [materials]);
 
   // Label style for Html overlay
   const labelStyle = useMemo(() => ({

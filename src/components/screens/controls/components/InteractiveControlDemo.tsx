@@ -33,6 +33,102 @@ interface KeyPressEntry {
 }
 
 /**
+ * Props for KeyPressEntryDisplay component
+ */
+interface KeyPressEntryDisplayProps {
+  readonly entry: KeyPressEntry;
+  readonly opacity: number;
+  readonly categoryColor: number;
+  readonly isMobile: boolean;
+  readonly theme: ReturnType<typeof useKoreanTheme>;
+}
+
+/**
+ * Memoized KeyPressEntryDisplay Component
+ * 
+ * Displays a single key press entry with optimized inline styles.
+ */
+const KeyPressEntryDisplay = React.memo<KeyPressEntryDisplayProps>(({
+  entry,
+  opacity,
+  categoryColor,
+  isMobile,
+  theme,
+}) => {
+  // Memoize styles based on props
+  const containerStyle = useMemo(() => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: isMobile ? '8px' : '12px',
+    padding: isMobile ? '8px' : '10px',
+    background: hexToRgbaString(theme.colors.UI_BACKGROUND_MEDIUM, opacity * 0.9),
+    borderRadius: '8px',
+    border: `2px solid ${hexToRgbaString(categoryColor, opacity * 0.7)}`,
+    transition: 'opacity 0.3s ease',
+    opacity,
+  }), [isMobile, theme.colors.UI_BACKGROUND_MEDIUM, opacity, categoryColor]);
+
+  const keyLabelStyle = useMemo(() => ({
+    fontFamily: FONT_FAMILY.KOREAN,
+    fontSize: isMobile ? '16px' : '18px',
+    fontWeight: 'bold' as const,
+    color: hexToRgbaString(categoryColor),
+    padding: '6px 12px',
+    background: hexToRgbaString(categoryColor, 0.2),
+    borderRadius: '6px',
+    minWidth: isMobile ? '50px' : '60px',
+    textAlign: 'center' as const,
+    boxShadow: `0 0 10px ${hexToRgbaString(categoryColor, opacity * 0.5)}`,
+  }), [isMobile, categoryColor, opacity]);
+
+  const koreanLabelStyle = useMemo(() => ({
+    fontFamily: FONT_FAMILY.KOREAN,
+    fontSize: isMobile ? '13px' : '14px',
+    fontWeight: 'bold' as const,
+    color: hexToRgbaString(theme.colors.ACCENT_GOLD, opacity),
+    marginBottom: '2px',
+  }), [isMobile, theme.colors.ACCENT_GOLD, opacity]);
+
+  const descriptionStyle = useMemo(() => ({
+    fontFamily: FONT_FAMILY.KOREAN,
+    fontSize: isMobile ? '11px' : '12px',
+    color: hexToRgbaString(theme.colors.TEXT_SECONDARY, opacity),
+    lineHeight: 1.3,
+  }), [isMobile, theme.colors.TEXT_SECONDARY, opacity]);
+
+  return (
+    <div
+      style={containerStyle}
+      data-testid={`key-press-${entry.keyData.code}`}
+    >
+      {/* Key label */}
+      <div style={keyLabelStyle}>
+        {entry.keyData.label}
+      </div>
+
+      {/* Key description */}
+      <div style={{ flex: 1 }}>
+        {/* Korean label */}
+        {entry.keyData.labelKorean && (
+          <div style={koreanLabelStyle}>
+            {entry.keyData.labelKorean}
+          </div>
+        )}
+
+        {/* Description (Korean | English) */}
+        {entry.keyData.descriptionKorean && entry.keyData.description && (
+          <div style={descriptionStyle}>
+            {entry.keyData.descriptionKorean} | {entry.keyData.description}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+KeyPressEntryDisplay.displayName = 'KeyPressEntryDisplay';
+
+/**
  * InteractiveControlDemo Component
  * 
  * Displays recently pressed keys with their actions.
@@ -54,46 +150,64 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
   const [keyPresses, setKeyPresses] = useState<KeyPressEntry[]>([]);
   const [currentTime, setCurrentTime] = useState(() => Date.now());
 
-  // Update current time for opacity calculations
+  // Update current time for opacity calculations using requestAnimationFrame
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(Date.now());
-    }, 100);
+    let frameId: number;
 
-    return () => clearInterval(interval);
+    const updateTime = () => {
+      setCurrentTime(Date.now());
+      frameId = window.requestAnimationFrame(updateTime);
+    };
+
+    frameId = window.requestAnimationFrame(updateTime);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   // Track pressed keys and add to history
   useEffect(() => {
     // Find newly pressed keys
     const currentCodes = Array.from(pressedKeys);
+
+    if (currentCodes.length === 0) {
+      return;
+    }
+
     const now = Date.now();
-    
-    currentCodes.forEach((code) => {
-      // Check if key is not already in the recent list
-      const alreadyRecorded = keyPresses.some(
-        (entry) => entry.keyData.code === code && now - entry.timestamp < 100
-      );
-      
-      if (!alreadyRecorded) {
-        // Find key data
-        const keyData = KEYBOARD_LAYOUT.find((k) => k.code === code);
-        if (keyData) {
-          setKeyPresses((prev) => {
+
+    setKeyPresses((prev) => {
+      let updated = prev;
+
+      currentCodes.forEach((code) => {
+        // Check if key is not already in the recent list
+        const alreadyRecorded = updated.some(
+          (entry) => entry.keyData.code === code && now - entry.timestamp < 100
+        );
+
+        if (!alreadyRecorded) {
+          // Find key data
+          const keyData = KEYBOARD_LAYOUT.find((k) => k.code === code);
+          if (keyData) {
             const newEntry: KeyPressEntry = {
               keyData,
               timestamp: now,
               id: `${code}-${now}`,
             };
-            
-            // Add new entry and keep only last 5
-            const updated = [newEntry, ...prev].slice(0, 5);
-            return updated;
-          });
+            updated = [newEntry, ...updated];
+          }
         }
+      });
+
+      // Keep only last 5 entries
+      if (updated.length > 5) {
+        updated = updated.slice(0, 5);
       }
+
+      return updated === prev ? prev : updated;
     });
-  }, [pressedKeys]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pressedKeys]);
 
   // Auto-remove entries after 2 seconds
   useEffect(() => {
@@ -156,71 +270,14 @@ export const InteractiveControlDemo: React.FC<InteractiveControlDemoProps> = ({
         const categoryColor = getKeyCategoryColor(entry.keyData.category);
 
         return (
-          <div
+          <KeyPressEntryDisplay
             key={entry.id}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: isMobile ? '8px' : '12px',
-              padding: isMobile ? '8px' : '10px',
-              background: hexToRgbaString(theme.colors.UI_BACKGROUND_MEDIUM, opacity * 0.9),
-              borderRadius: '8px',
-              border: `2px solid ${hexToRgbaString(categoryColor, opacity * 0.7)}`,
-              transition: 'opacity 0.3s ease',
-              opacity,
-            }}
-            data-testid={`key-press-${entry.keyData.code}`}
-          >
-            {/* Key label */}
-            <div
-              style={{
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontSize: isMobile ? '16px' : '18px',
-                fontWeight: 'bold' as const,
-                color: hexToRgbaString(categoryColor),
-                padding: '6px 12px',
-                background: hexToRgbaString(categoryColor, 0.2),
-                borderRadius: '6px',
-                minWidth: isMobile ? '50px' : '60px',
-                textAlign: 'center' as const,
-                boxShadow: `0 0 10px ${hexToRgbaString(categoryColor, opacity * 0.5)}`,
-              }}
-            >
-              {entry.keyData.label}
-            </div>
-
-            {/* Key description */}
-            <div style={{ flex: 1 }}>
-              {/* Korean label */}
-              {entry.keyData.labelKorean && (
-                <div
-                  style={{
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontSize: isMobile ? '13px' : '14px',
-                    fontWeight: 'bold' as const,
-                    color: hexToRgbaString(theme.colors.ACCENT_GOLD, opacity),
-                    marginBottom: '2px',
-                  }}
-                >
-                  {entry.keyData.labelKorean}
-                </div>
-              )}
-
-              {/* Description (Korean | English) */}
-              {entry.keyData.descriptionKorean && entry.keyData.description && (
-                <div
-                  style={{
-                    fontFamily: FONT_FAMILY.KOREAN,
-                    fontSize: isMobile ? '11px' : '12px',
-                    color: hexToRgbaString(theme.colors.TEXT_SECONDARY, opacity),
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {entry.keyData.descriptionKorean} | {entry.keyData.description}
-                </div>
-              )}
-            </div>
-          </div>
+            entry={entry}
+            opacity={opacity}
+            categoryColor={categoryColor}
+            isMobile={isMobile}
+            theme={theme}
+          />
         );
       })}
 
