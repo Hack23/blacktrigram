@@ -13,10 +13,11 @@ Successfully refactored the Intro Screen package (`src/components/screens/intro`
 ### Key Achievements
 
 - ✅ **Removed 204 lines of CSS** (IntroScreen.css + MenuSection.css)
-- ✅ **Consolidated ~50 lines** of duplicate stat rendering code
+- ✅ **Consolidated ~110 lines** of duplicate code (stat rendering + button styling)
 - ✅ **100% test coverage** for StatBar and AbilityList
 - ✅ **Consistent Korean theming** using useKoreanTheme hook
-- ✅ **Zero regressions** - all 98 tests passing
+- ✅ **Zero regressions** - all 102 tests passing
+- ✅ **Coverage improved** from 77.77% baseline to 79.44%
 
 ---
 
@@ -277,7 +278,7 @@ it("should render in mobile mode with smaller dimensions", () => {
 |--------|--------|
 | TypeScript type checking | ✅ Pass |
 | ESLint | ✅ Pass (warnings only) |
-| All tests | ✅ 98/98 passing |
+| All tests | ✅ 102/102 passing |
 | Knip (unused code) | ✅ No issues |
 
 ### Test Coverage
@@ -286,13 +287,13 @@ it("should render in mobile mode with smaller dimensions", () => {
 |-----------|----------|--------|
 | **StatBar.tsx** | **100%** | ✅ |
 | **AbilityList.tsx** | **100%** | ✅ |
+| **EnhancedArchetypeDisplay.tsx** | **100%** | ✅ |
 | MenuButtons.tsx | 96.55% | ✅ |
 | ArchetypeCardGrid.tsx | 93.18% | ✅ |
-| EnhancedArchetypeDisplay.tsx | 92.59% | ✅ |
-| ArchetypeCard.tsx | 76.66% | ✅ |
+| ArchetypeCard.tsx | 88% | ✅ |
 | ArchetypeDisplayOverlayHtml.tsx | 65.21% | ⚠️ |
 | MenuSectionOverlayHtml.tsx | 49.12% | ⚠️ |
-| **Overall intro components** | **77.77%** | ✅ |
+| **Overall intro components** | **79.44%** | ✅ |
 
 ### Performance Optimizations
 

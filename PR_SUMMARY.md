@@ -32,21 +32,22 @@ Successfully refactored the Intro Screen package to eliminate CSS dependencies, 
 ### Code Quality
 - ✅ TypeScript type checking passes
 - ✅ ESLint passes (warnings only, no errors)
-- ✅ All 98 tests passing
+- ✅ All 102 tests passing
 - ✅ Zero regressions
 
 ### Test Coverage
 - **StatBar**: 100% ✅
 - **AbilityList**: 100% ✅
+- **EnhancedArchetypeDisplay**: 100% ✅
 - **MenuButtons**: 96.55% ✅
 - **ArchetypeCardGrid**: 93.18% ✅
-- **EnhancedArchetypeDisplay**: 92.59% ✅
-- **Overall intro components**: 77.77% ✅
+- **ArchetypeCard**: 88% ✅
+- **Overall intro components**: 79.44% ✅
 
 ### Line Reduction
 - CSS files: 204 lines removed
-- Duplicate code: ~50 lines consolidated
-- **Total**: ~254 lines reduced
+- Duplicate code: ~110 lines consolidated (stat rendering + button styling)
+- **Total**: ~314 lines reduced
 
 ## Impact
 
@@ -81,12 +82,12 @@ npm run lint
 
 ## Checklist
 
-- [x] All tests passing (98/98)
+- [x] All tests passing (102/102)
 - [x] TypeScript type checking passes
 - [x] ESLint passes
 - [x] CSS files removed
 - [x] Duplicate code consolidated
 - [x] Korean theming applied consistently
-- [x] Test coverage >85% for refactored components
+- [x] Test coverage 79.44% (improved from 77.77% baseline)
 - [x] Documentation updated
 - [x] Zero regressions

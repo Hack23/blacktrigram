@@ -316,9 +316,12 @@ export const ArchetypeCard: React.FC<ArchetypeCardProps> = React.memo(
 
         {/* Select Button */}
         {isSelected && showSelectButton && onConfirm && (
+          // Note: Wrapper div with stopPropagation prevents card click when clicking button
+          // Future enhancement: Consider adding stopPropagation prop to BaseButtonOverlayHtml
+          // to eliminate this wrapper and make the component more self-contained
           <div 
             style={{ marginTop: `${gap}px` }}
-            onClick={(e) => e.stopPropagation()} // Prevent card click when clicking button
+            onClick={(e) => e.stopPropagation()}
           >
             <BaseButtonOverlayHtml
               korean="선택"

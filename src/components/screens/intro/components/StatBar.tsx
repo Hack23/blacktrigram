@@ -71,7 +71,7 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
     );
 
     // Memoize color calculations with Korean theme
-    const colors = useMemo(
+    const statBarColors = useMemo(
       () => ({
         barBackground: hexToRgbaString(themeColors.UI_BACKGROUND_MEDIUM, 1),
         barFill: hexToRgbaString(color, 0.9),
@@ -104,7 +104,7 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
             width: `${labelWidth}px`,
             fontSize: `${fontSize}px`,
             fontFamily: koreanTypography.fontFamily,
-            color: colors.labelColor,
+            color: statBarColors.labelColor,
             flexShrink: 0,
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -124,10 +124,10 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
           style={{
             flex: 1,
             height: `${height}px`,
-            background: colors.barBackground,
+            background: statBarColors.barBackground,
             borderRadius: "2px",
             position: "relative",
-            border: `1px solid ${colors.barBorder}`,
+            border: `1px solid ${statBarColors.barBorder}`,
             overflow: "hidden",
           }}
           data-testid="stat-bar-container"
@@ -137,7 +137,7 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
             style={{
               width: `${percentage}%`,
               height: "100%",
-              background: colors.barFill,
+              background: statBarColors.barFill,
               borderRadius: "2px",
               transition: "width 0.3s ease",
               boxShadow: `0 0 8px ${hexToRgbaString(color, 0.5)}`,
@@ -154,7 +154,7 @@ export const StatBar: React.FC<StatBarProps> = React.memo(
               fontSize: `${fontSize}px`,
               fontWeight: "bold",
               fontFamily: koreanTypography.fontFamily,
-              color: colors.valueColor,
+              color: statBarColors.valueColor,
               textAlign: "right",
               flexShrink: 0,
             }}
