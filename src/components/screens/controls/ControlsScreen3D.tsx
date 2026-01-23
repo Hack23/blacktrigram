@@ -5,6 +5,7 @@ import { useAudio } from "../../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { COMBAT_CONTROLS } from "../../../systems";
+import { FONT_FAMILY } from "../../../types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
@@ -13,6 +14,12 @@ import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { BackgroundScene3D } from "../../shared/three";
 import { BackButton } from "../../shared/ui/BackButton";
 import { VolumeControl } from "../../shared/ui/VolumeControl";
+import { ControlBindingsOverlayHtml } from "./components/ControlBindingsOverlayHtml";
+import { ControlCategoryTabs } from "./components/ControlCategoryTabs";
+import { GamepadVisualization3D } from "./components/GamepadVisualization3D";
+import { InteractiveControlDemo } from "./components/InteractiveControlDemo";
+import { VisualKeyboard3D } from "./components/VisualKeyboard3D";
+import { useControlsState } from "./hooks/useControlsState";
 
 export interface ControlsScreen3DProps {
   readonly onReturnToMenu: () => void;
@@ -29,6 +36,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
   height: propHeight,
 }) => {
   // UI now renders outside Canvas - no mount state needed
+
+  // Use controls state hook for keyboard/gamepad tracking
+  const { pressedKeys, category, selectedTab, setCategory, setSelectedTab } =
+    useControlsState();
 
   // Handle WebGL context loss and restoration (for 3D background only)
   useWebGLContextLossHandler({
@@ -136,6 +147,39 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
     onReturnToMenu();
   }, [audio, onReturnToMenu]);
 
+  // Mode toggle button hover handlers (extracted for DRY)
+  const handleModeButtonEnter = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, isActive: boolean) => {
+      if (!isActive) {
+        e.currentTarget.style.background = hexToRgbaString(
+          theme.colors.PRIMARY_CYAN,
+          0.1,
+        );
+        e.currentTarget.style.borderColor = hexToRgbaString(
+          theme.colors.PRIMARY_CYAN,
+          0.8,
+        );
+      }
+    },
+    [theme],
+  );
+
+  const handleModeButtonLeave = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, isActive: boolean) => {
+      if (!isActive) {
+        e.currentTarget.style.background = hexToRgbaString(
+          theme.colors.UI_BACKGROUND_DARK,
+          0.8,
+        );
+        e.currentTarget.style.borderColor = hexToRgbaString(
+          theme.colors.ACCENT_GOLD,
+          0.6,
+        );
+      }
+    },
+    [theme],
+  );
+
   // Stance controls data
   const stanceControls = useMemo(
     () => Object.entries(COMBAT_CONTROLS.stanceControls),
@@ -171,7 +215,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
       {/* Volume Control - outside Canvas to maintain AudioProvider context */}
       <VolumeControl position="top-right" compact={isMobile} />
 
-      {/* Three.js Canvas for 3D background */}
+      {/* Three.js Canvas for 3D background and visualization */}
       <Canvas
         style={{
           position: "absolute",
@@ -194,6 +238,13 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
       >
         {/* 3D Background Scene */}
         <BackgroundScene3D theme="controls" />
+
+        {/* Conditional 3D Visualization based on category */}
+        {category === "keyboard" ? (
+          <VisualKeyboard3D pressedKeys={pressedKeys} selectedTab={selectedTab} />
+        ) : (
+          <GamepadVisualization3D isMobile={isMobile} />
+        )}
       </Canvas>
 
       {/* UI Overlay (positioned absolutely over Canvas) - matches CombatScreen pattern */}
@@ -265,6 +316,95 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
             </p>
           </div>
 
+          {/* Mode Toggle (Keyboard/Gamepad) */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: isMobile ? "10px" : "15px",
+              padding: `${layoutConstants.padding}px`,
+              background: colors.headerBg,
+              borderBottom: `2px solid ${colors.borderGold}`,
+            }}
+            data-testid="mode-toggle"
+          >
+            <button
+              onClick={() => {
+                audio.playSFX("menu_select");
+                setCategory("keyboard");
+              }}
+              style={{
+                padding: isMobile ? "10px 20px" : "12px 30px",
+                borderRadius: "8px",
+                border: `2px solid ${category === "keyboard" ? colors.accentCyan : colors.borderGold}`,
+                background:
+                  category === "keyboard"
+                    ? hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)
+                    : hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+                color:
+                  category === "keyboard"
+                    ? colors.accentCyan
+                    : colors.textSecondary,
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: isMobile ? "14px" : "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+              data-testid="keyboard-mode-button"
+              onMouseEnter={(e) => handleModeButtonEnter(e, category === "keyboard")}
+              onMouseLeave={(e) => handleModeButtonLeave(e, category === "keyboard")}
+            >
+              ⌨️ 키보드 | Keyboard
+            </button>
+            <button
+              onClick={() => {
+                audio.playSFX("menu_select");
+                setCategory("gamepad");
+              }}
+              style={{
+                padding: isMobile ? "10px 20px" : "12px 30px",
+                borderRadius: "8px",
+                border: `2px solid ${category === "gamepad" ? colors.accentCyan : colors.borderGold}`,
+                background:
+                  category === "gamepad"
+                    ? hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)
+                    : hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+                color:
+                  category === "gamepad"
+                    ? colors.accentCyan
+                    : colors.textSecondary,
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: isMobile ? "14px" : "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+              data-testid="gamepad-mode-button"
+              onMouseEnter={(e) => handleModeButtonEnter(e, category === "gamepad")}
+              onMouseLeave={(e) => handleModeButtonLeave(e, category === "gamepad")}
+            >
+              🎮 게임패드 | Gamepad
+            </button>
+          </div>
+
+          {/* Control Category Tabs */}
+          <div
+            style={{
+              background: colors.headerBg,
+              borderBottom: `2px solid ${colors.borderCyan}`,
+            }}
+          >
+            <ControlCategoryTabs
+              selectedTab={selectedTab}
+              onTabChange={(tab) => {
+                audio.playSFX("menu_select");
+                setSelectedTab(tab);
+              }}
+              isMobile={isMobile}
+            />
+          </div>
+
           {/* Content Area - Scrollable */}
           <div
             style={{
@@ -279,9 +419,17 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
             className="korean-scrollbar"
             data-testid="controls-content"
           >
-            {/* Trigram Stances Section */}
+            {/* Control Bindings Display */}
+            <ControlBindingsOverlayHtml
+              selectedTab={selectedTab}
+              isMobile={isMobile}
+            />
+
+            {/* Legacy Content - Keeping for backward compatibility and additional info */}
+            {/* Trigram Stances Section - Additional context beyond key bindings */}
             <div
               style={{
+                marginTop: `${layoutConstants.sectionSpacing}px`,
                 marginBottom: `${layoutConstants.sectionSpacing}px`,
                 background: colors.sectionBg,
                 borderRadius: "12px",
@@ -1340,6 +1488,12 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Interactive Control Demo - Shows recently pressed keys */}
+          <InteractiveControlDemo
+            pressedKeys={pressedKeys}
+            isMobile={isMobile}
+          />
 
           {/* Footer */}
           <div
