@@ -2,7 +2,7 @@
  * DamageNumber3D tests
  */
 
-import { render, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { DamageNumber3D } from "./DamageNumber3D";
