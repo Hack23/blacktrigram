@@ -46,6 +46,9 @@ export interface TechniqueBarProps {
 
   /** Screen height for positioning */
   readonly screenHeight: number;
+
+  /** Whether to use embedded mode (relative positioning, no absolute) */
+  readonly embedded?: boolean;
 }
 
 /**
@@ -67,6 +70,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
   isMobile,
   screenWidth,
   screenHeight,
+  embedded = false,
 }) => {
   // Calculate card sizing and spacing
   const layout = useMemo(() => {
@@ -75,7 +79,7 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     const gap = isMobile ? 8 : 12;
     const totalWidth = Math.max(
       0,
-      techniques.length * cardWidth + (techniques.length - 1) * gap
+      techniques.length * cardWidth + (techniques.length - 1) * gap,
     );
 
     return {
@@ -99,69 +103,89 @@ export const TechniqueBar: React.FC<TechniqueBarProps> = ({
     return hasResources(tech) && !onCooldown;
   };
 
-  // Calculate bottom position for proper placement
+  // Calculate bottom position for proper placement (only used in non-embedded mode)
   const bottomOffset = isMobile ? 100 : 120;
+
+  // Embedded mode: relative positioning inside parent container
+  // Non-embedded: absolute positioning for standalone use
+  const containerStyle: React.CSSProperties = embedded
+    ? {
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+        pointerEvents: "auto",
+      }
+    : {
+        position: "absolute",
+        left: "50%",
+        bottom: `${bottomOffset}px`,
+        transform: "translateX(-50%)",
+        width: `${layout.totalWidth}px`,
+        height: `${layout.cardHeight}px`,
+        display: "flex",
+        gap: `${layout.gap}px`,
+        pointerEvents: "auto",
+        zIndex: 100,
+      };
 
   return (
     <>
-      {/* Technique Bar Container - positioned at bottom center */}
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          bottom: `${bottomOffset}px`,
-          transform: "translateX(-50%)",
-          width: `${layout.totalWidth}px`,
-          height: `${layout.cardHeight}px`,
-          display: "flex",
-          gap: `${layout.gap}px`,
-          pointerEvents: "auto",
-          zIndex: 100,
-        }}
-        data-testid="technique-bar"
-      >
-        {techniques.map((technique, index) => {
-          const cardX = index * (layout.cardWidth + layout.gap);
-          const cooldownRemaining = cooldowns.get(technique.id) ?? 0;
-          const available = isAvailable(technique);
+      {/* Technique Bar Container */}
+      <div style={containerStyle} data-testid="technique-bar">
+        <div
+          style={{
+            display: "flex",
+            gap: `${layout.gap}px`,
+            justifyContent: "center",
+          }}
+        >
+          {techniques.map((technique, index) => {
+            const cardX = index * (layout.cardWidth + layout.gap);
+            const cooldownRemaining = cooldowns.get(technique.id) ?? 0;
+            const available = isAvailable(technique);
 
-          return (
-            <div key={technique.id} data-testid={`technique-slot-${index}`}>
-              <TechniqueCard
-                technique={technique}
-                isSelected={selectedIndex === index}
-                isAvailable={available}
-                staminaCost={technique.staminaCost}
-                kiCost={technique.kiCost}
-                remainingCooldown={cooldownRemaining}
-                keyboardShortcut={technique.keyboardShortcut}
-                onClick={() => onTechniqueSelect(index)}
-                onHover={onTechniqueHover}
-                isMobile={isMobile}
-                playerArchetype={player.archetype}
-                playerStance={player.currentStance}
-                position={{ x: cardX, y: 0 }}
-              />
-            </div>
-          );
-        })}
+            return (
+              <div key={technique.id} data-testid={`technique-slot-${index}`}>
+                <TechniqueCard
+                  technique={technique}
+                  isSelected={selectedIndex === index}
+                  isAvailable={available}
+                  staminaCost={technique.staminaCost}
+                  kiCost={technique.kiCost}
+                  remainingCooldown={cooldownRemaining}
+                  keyboardShortcut={technique.keyboardShortcut}
+                  onClick={() => onTechniqueSelect(index)}
+                  onHover={onTechniqueHover}
+                  isMobile={isMobile}
+                  playerArchetype={player.archetype}
+                  playerStance={player.currentStance}
+                  position={{ x: cardX, y: 0 }}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Keyboard Hints */}
+      {/* Keyboard Hints - only shown in embedded mode or non-mobile */}
       {!isMobile && (
         <div
           style={{
-            position: "absolute",
-            left: "50%",
-            bottom: `${bottomOffset - layout.cardHeight - 20}px`,
-            transform: "translateX(-50%)",
-            width: `${layout.totalWidth}px`,
+            position: embedded ? "relative" : "absolute",
+            left: embedded ? undefined : "50%",
+            bottom: embedded
+              ? undefined
+              : `${bottomOffset - layout.cardHeight - 20}px`,
+            transform: embedded ? undefined : "translateX(-50%)",
+            width: embedded ? "100%" : `${layout.totalWidth}px`,
             textAlign: "center",
             fontSize: "11px",
             color: "#aaa",
             fontFamily: "monospace",
             pointerEvents: "none",
             textShadow: "0 0 4px rgba(0,0,0,0.8)",
+            marginTop: embedded ? "8px" : undefined,
           }}
         >
           기술 실행: Q-E-R-T-Y-F-G-Z-X-C | Press technique keys to execute

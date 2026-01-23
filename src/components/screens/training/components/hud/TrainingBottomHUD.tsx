@@ -139,15 +139,17 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered, uses full available width */}
+      {/* Technique Bar - centered, embedded mode for proper containment */}
       <div
         style={{
           pointerEvents: "all",
           flex: 1,
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           overflow: "visible",
+          height: "100%",
         }}
         data-testid="training-bottom-hud-technique-section"
       >
@@ -161,6 +163,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           isMobile={isMobile}
           screenWidth={width}
           screenHeight={height}
+          embedded={true}
         />
       </div>
 

@@ -27,11 +27,13 @@ vi.mock("../../../../shared/three/ui/TechniqueBar", () => ({
     isMobile,
     screenWidth,
     screenHeight,
+    embedded,
   }: {
     selectedIndex: number;
     isMobile: boolean;
     screenWidth: number;
     screenHeight: number;
+    embedded?: boolean;
   }) => (
     <div
       data-testid="mock-technique-bar"
@@ -39,6 +41,7 @@ vi.mock("../../../../shared/three/ui/TechniqueBar", () => ({
       data-mobile={isMobile}
       data-screen-width={screenWidth}
       data-screen-height={screenHeight}
+      data-embedded={embedded}
     >
       Technique Bar
     </div>
