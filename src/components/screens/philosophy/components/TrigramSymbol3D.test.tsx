@@ -62,7 +62,7 @@ describe("TrigramSymbol3D", () => {
   });
 
   it("should render Html overlay with correct test ID", () => {
-    renderInCanvas(
+    const { getByTestId, getByText } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
         stance={TrigramStance.GEON}
@@ -72,13 +72,14 @@ describe("TrigramSymbol3D", () => {
       />
     );
 
-    // Html component is mocked and returns a div
-    // The component renders without error
-    expect(true).toBe(true);
+    // Html component is mocked and returns a div - verify content renders
+    expect(getByTestId("trigram-symbol-geon")).toBeInTheDocument();
+    expect(getByText(mockTrigram.symbol)).toBeInTheDocument();
+    expect(getByText(mockTrigram.koreanName)).toBeInTheDocument();
   });
 
   it("should display trigram symbol", () => {
-    renderInCanvas(
+    const { getByText } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
         stance={TrigramStance.GEON}
@@ -88,13 +89,12 @@ describe("TrigramSymbol3D", () => {
       />
     );
 
-    // Three.js renders to canvas, content not available in DOM
-    // Verify component renders without error
-    expect(true).toBe(true);
+    // Verify trigram symbol is rendered in the mocked HTML overlay
+    expect(getByText(mockTrigram.symbol)).toBeInTheDocument();
   });
 
   it("should display Korean name", () => {
-    renderInCanvas(
+    const { getByText } = renderInCanvas(
       <TrigramSymbol3D
         trigram={mockTrigram}
         stance={TrigramStance.GEON}
@@ -104,9 +104,8 @@ describe("TrigramSymbol3D", () => {
       />
     );
 
-    // Three.js renders to canvas, content not available in DOM
-    // Verify component renders without error
-    expect(true).toBe(true);
+    // Verify Korean name is rendered in the mocked HTML overlay
+    expect(getByText(mockTrigram.koreanName)).toBeInTheDocument();
   });
 
   it("should call onClick when clicked", () => {

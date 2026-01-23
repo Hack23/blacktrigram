@@ -3,6 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { describe, it, expect, vi } from "vitest";
 import { TrigramVisualization3D } from "./TrigramVisualization3D";
 import { TrigramStance } from "../../../../types";
+import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 
 // Mock @react-three/fiber Canvas and useFrame to avoid R3F reconciler issues
 vi.mock("@react-three/fiber", async () => {
@@ -17,7 +18,16 @@ vi.mock("@react-three/fiber", async () => {
 // Mock @react-three/drei, preserving real Html for R3F compatibility
 vi.mock("@react-three/drei", () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  OrbitControls: () => null,
+  OrbitControls: () => <div data-testid="orbit-controls">OrbitControls</div>,
+}));
+
+// Mock TrigramSymbol3D to render a simple testable element
+vi.mock("./TrigramSymbol3D", () => ({
+  TrigramSymbol3D: ({ stance, isSelected }: { stance: string; isSelected: boolean }) => (
+    <div data-testid={`trigram-symbol-${stance}`} data-selected={isSelected}>
+      TrigramSymbol-{stance}
+    </div>
+  ),
 }));
 
 // Helper to render Three.js components
@@ -38,16 +48,17 @@ describe("TrigramVisualization3D", () => {
   });
 
   it("should render all eight trigrams", () => {
-    renderInCanvas(
+    const { getByTestId } = renderInCanvas(
       <TrigramVisualization3D
         selectedTrigram={null}
         onTrigramSelect={vi.fn()}
       />
     );
 
-    // Three.js renders to canvas, elements not queryable in DOM
-    // Verify component renders without error (all 8 trigrams are in the JSX)
-    expect(true).toBe(true);
+    // Verify all 8 trigram symbols are rendered (using mocked TrigramSymbol3D)
+    TRIGRAM_STANCES_ORDER.forEach((stance) => {
+      expect(getByTestId(`trigram-symbol-${stance}`)).toBeInTheDocument();
+    });
   });
 
   it("should render ambient light", () => {
@@ -92,19 +103,24 @@ describe("TrigramVisualization3D", () => {
   });
 
   it("should show selected trigram correctly", () => {
-    const { container } = renderInCanvas(
+    const { getByTestId } = renderInCanvas(
       <TrigramVisualization3D
         selectedTrigram={TrigramStance.GEON}
         onTrigramSelect={vi.fn()}
       />
     );
 
-    expect(container).toBeTruthy();
-    // Selected state is handled internally by TrigramSymbol3D
+    // Verify the selected trigram has isSelected=true via data attribute
+    const geonSymbol = getByTestId("trigram-symbol-geon");
+    expect(geonSymbol).toHaveAttribute("data-selected", "true");
+    
+    // Verify other trigrams are not selected
+    const taeSymbol = getByTestId("trigram-symbol-tae");
+    expect(taeSymbol).toHaveAttribute("data-selected", "false");
   });
 
   it("should render OrbitControls when enabled", () => {
-    const { container } = renderInCanvas(
+    const { getByTestId } = renderInCanvas(
       <TrigramVisualization3D
         selectedTrigram={null}
         onTrigramSelect={vi.fn()}
@@ -112,12 +128,12 @@ describe("TrigramVisualization3D", () => {
       />
     );
 
-    expect(container).toBeTruthy();
-    // OrbitControls is mocked, so we just verify it renders without error
+    // OrbitControls is mocked to render a test element - verify it's present
+    expect(getByTestId("orbit-controls")).toBeInTheDocument();
   });
 
   it("should not render OrbitControls when disabled", () => {
-    const { container } = renderInCanvas(
+    const { queryByTestId } = renderInCanvas(
       <TrigramVisualization3D
         selectedTrigram={null}
         onTrigramSelect={vi.fn()}
@@ -125,7 +141,8 @@ describe("TrigramVisualization3D", () => {
       />
     );
 
-    expect(container).toBeTruthy();
+    // OrbitControls should not be rendered when disabled
+    expect(queryByTestId("orbit-controls")).not.toBeInTheDocument();
   });
 
   it("should handle different selected trigrams", () => {

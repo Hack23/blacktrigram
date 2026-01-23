@@ -111,6 +111,7 @@ export const PhilosophyTextOverlayHtml: React.FC<
       {onClose && (
         <button
           onClick={onClose}
+          className="philosophy-close-button"
           style={{
             position: "absolute",
             top: "10px",
@@ -129,7 +130,6 @@ export const PhilosophyTextOverlayHtml: React.FC<
             justifyContent: "center",
             transition: "all 0.2s ease",
           }}
-
           aria-label="Close overlay"
           data-testid="close-overlay"
         >
