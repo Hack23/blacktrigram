@@ -22,14 +22,14 @@ import { PlayerArchetype } from "../../../../../types/common";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
-import { TechniqueBarContainer } from "../../../../shared/three/ui/TechniqueBarContainer";
+import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
 import TrainingFeedbackOverlayHtml from "../TrainingFeedbackOverlayHtml";
 
-/** Bottom HUD height - slightly taller on mobile to fit archetype */
-const BOTTOM_HUD_HEIGHT_DESKTOP = 90;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
+/** Bottom HUD height - fits technique cards (100px desktop, 80px mobile) + padding */
+const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
+const BOTTOM_HUD_HEIGHT_MOBILE = 110;
 
 export interface TrainingBottomHUDProps {
   /** Screen width for layout calculations */
@@ -139,19 +139,19 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         </div>
       )}
 
-      {/* Technique Bar - centered */}
+      {/* Technique Bar - centered, uses full available width */}
       <div
         style={{
           pointerEvents: "all",
           flex: 1,
           display: "flex",
           justifyContent: "center",
-          maxWidth: "70%",
+          alignItems: "center",
+          overflow: "visible",
         }}
         data-testid="training-bottom-hud-technique-section"
       >
-        <TechniqueBarContainer
-          visible={true}
+        <TechniqueBar
           techniques={techniques as Technique[]}
           player={player}
           selectedIndex={selectedIndex}

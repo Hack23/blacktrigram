@@ -21,15 +21,13 @@ afterEach(() => {
 });
 
 // Mock the child components
-vi.mock("../../../../shared/three/ui/TechniqueBarContainer", () => ({
-  TechniqueBarContainer: ({
-    visible,
+vi.mock("../../../../shared/three/ui/TechniqueBar", () => ({
+  TechniqueBar: ({
     selectedIndex,
     isMobile,
     screenWidth,
     screenHeight,
   }: {
-    visible: boolean;
     selectedIndex: number;
     isMobile: boolean;
     screenWidth: number;
@@ -37,7 +35,6 @@ vi.mock("../../../../shared/three/ui/TechniqueBarContainer", () => ({
   }) => (
     <div
       data-testid="mock-technique-bar"
-      data-visible={visible}
       data-selected-index={selectedIndex}
       data-mobile={isMobile}
       data-screen-width={screenWidth}
@@ -255,12 +252,9 @@ describe("TrainingBottomHUD", () => {
       );
     });
 
-    it("should always show technique bar as visible", () => {
+    it("should always render technique bar", () => {
       render(<TrainingBottomHUD {...defaultProps} />);
-      expect(screen.getByTestId("mock-technique-bar")).toHaveAttribute(
-        "data-visible",
-        "true",
-      );
+      expect(screen.getByTestId("mock-technique-bar")).toBeInTheDocument();
     });
   });
 

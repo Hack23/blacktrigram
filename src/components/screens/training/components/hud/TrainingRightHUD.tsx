@@ -34,8 +34,8 @@ const HUD_WIDTH_PERCENT_MOBILE = 18;
 /** Top/Bottom bar heights (must match those components) */
 const TOP_HUD_HEIGHT_DESKTOP = 70;
 const TOP_HUD_HEIGHT_MOBILE = 50;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 90;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
+const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
+const BOTTOM_HUD_HEIGHT_MOBILE = 110;
 
 export interface TrainingRightHUDProps {
   /** Screen width for layout calculations */

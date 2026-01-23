@@ -85,11 +85,8 @@ export const TrainingStatsOverlayHtml =
       distanceToDummy,
       effectiveReach = 0.7, // Default punch reach
     }) => {
-      // Compact panel - fits in narrow side HUD
-      const panelWidth = Math.min(
-        isMobile ? 180 : 200,
-        width > 10 ? width - 10 : width,
-      );
+      // Use full width of container (passed from parent HUD)
+      const panelWidth = width > 10 ? width : isMobile ? 180 : 200;
       const padding = getResponsiveSpacing("sm", isMobile);
       const gap = getResponsiveSpacing("xs", isMobile);
 
