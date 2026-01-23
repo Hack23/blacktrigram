@@ -60,7 +60,6 @@ export const InteractiveTrigramGrid: React.FC<
         borderRadius: "12px",
         border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.6)}`,
       }}
-      role="grid"
       aria-label="Trigram selection grid"
       data-testid="trigram-grid"
     >

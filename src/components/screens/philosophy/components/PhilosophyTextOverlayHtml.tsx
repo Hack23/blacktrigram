@@ -100,7 +100,7 @@ export const PhilosophyTextOverlayHtml: React.FC<
         boxShadow: colors.boxShadow,
         padding: isMobile ? "20px" : "30px",
         zIndex: 1000,
-        animation: "fadeIn 0.3s ease",
+        animation: "philosophyFadeIn 0.3s ease",
       }}
       data-testid="philosophy-text-overlay"
       role="dialog"
@@ -438,7 +438,7 @@ export const PhilosophyTextOverlayHtml: React.FC<
       {/* Fade in animation */}
       <style>
         {`
-          @keyframes fadeIn {
+          @keyframes philosophyFadeIn {
             from {
               opacity: 0;
               transform: translate(-50%, -48%) scale(0.95);

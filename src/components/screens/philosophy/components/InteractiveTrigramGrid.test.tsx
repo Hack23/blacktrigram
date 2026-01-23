@@ -155,7 +155,6 @@ describe("InteractiveTrigramGrid", () => {
     );
 
     const grid = screen.getByTestId("trigram-grid");
-    expect(grid).toHaveAttribute("role", "grid");
     expect(grid).toHaveAttribute("aria-label", "Trigram selection grid");
   });
 

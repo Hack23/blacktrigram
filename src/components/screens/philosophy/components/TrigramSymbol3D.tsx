@@ -121,9 +121,12 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
     }
     meshRef.current.scale.lerp(targetScale, 0.1);
 
-    // Pulsing glow effect
+    // Pulsing glow effect, scaled relative to the main mesh
     const pulseFactor = Math.sin(state.clock.elapsedTime * 2) * 0.1 + 1;
-    glowRef.current.scale.set(1.3 * pulseFactor, 1.3 * pulseFactor, 1.3 * pulseFactor);
+    const baseScale = meshRef.current.scale.x;
+    const glowBaseScale = 1.3 * baseScale;
+    const glowScale = glowBaseScale * pulseFactor;
+    glowRef.current.scale.set(glowScale, glowScale, glowScale);
   });
 
   return (
