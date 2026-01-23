@@ -115,7 +115,6 @@ export const InteractiveTrigramGrid: React.FC<
                 e.currentTarget.style.boxShadow = "none";
               }
             }}
-            role="gridcell"
             aria-label={`${trigram.name.korean} ${trigram.name.english} trigram`}
             aria-pressed={isSelected}
             data-testid={`trigram-grid-button-${stance}`}

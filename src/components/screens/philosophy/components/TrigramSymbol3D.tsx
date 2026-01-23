@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants/colors";
+import { hexToRgbaString } from "../../../../utils/colorUtils";
 import type { TrigramStanceData } from "../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../types/common";
 
@@ -193,7 +194,7 @@ export const TrigramSymbol3D: React.FC<TrigramSymbol3DProps> = ({
             style={{
               fontSize: isSelected ? "16px" : "14px",
               color: "#ffffff",
-              textShadow: "0 0 10px rgba(0, 230, 230, 0.8)",
+              textShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.8)}`,
               fontWeight: "bold",
               whiteSpace: "nowrap",
               transition: "all 0.3s ease",

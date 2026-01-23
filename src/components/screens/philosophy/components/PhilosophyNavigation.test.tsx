@@ -69,7 +69,8 @@ describe("PhilosophyNavigation", () => {
     );
 
     const trigramsButton = screen.getByTestId("topic-button-trigrams");
-    expect(trigramsButton).toHaveAttribute("aria-current", "page");
+    // Check parent div for aria-current attribute
+    expect(trigramsButton.parentElement).toHaveAttribute("aria-current", "page");
   });
 
   it("should not show active state for other topics", () => {
@@ -254,7 +255,8 @@ describe("PhilosophyNavigation", () => {
       );
 
       const button = screen.getByTestId(`topic-button-${topic}`);
-      expect(button).toHaveAttribute("aria-current", "page");
+      // Check parent div for aria-current attribute
+      expect(button.parentElement).toHaveAttribute("aria-current", "page");
 
       rerender(<></>);
     });

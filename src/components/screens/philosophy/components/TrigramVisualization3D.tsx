@@ -21,7 +21,6 @@ export interface TrigramVisualization3DProps {
  * - Interactive selection with hover effects
  * - Smooth camera controls (optional)
  * - Lighting for dramatic effect
- * - Particle effects for mystical atmosphere
  * 
  * Layout:
  * - 8 trigrams arranged in a circle with 4.5 unit radius

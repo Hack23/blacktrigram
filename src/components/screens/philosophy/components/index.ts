@@ -7,7 +7,6 @@
  * - 3D visualization components
  * - Interactive UI components
  * - Layout and navigation components
- * - State management hooks
  */
 
 export { InteractiveTrigramGrid } from "./InteractiveTrigramGrid";
