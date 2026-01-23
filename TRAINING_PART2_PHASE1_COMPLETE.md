@@ -28,8 +28,10 @@ Successfully completed Phase 1 of Training Screen Part 2 optimization by creatin
 
 ### After Phase 1
 - **Test Files**: 17 (all components now have tests)
-- **Total Tests**: 281 (+115 new)
+- **Total Tests**: 281 (+115 new tests added in this PR)
 - **Coverage**: All 12 Part 2 components now have test files
+
+**Note**: The 115 new tests comprise basic rendering and integration tests for 3D Canvas components. Tests verify component rendering without crashes and prop handling, rather than internal Three.js behaviors (InstancedMesh, useFrame animations) which are not directly testable in unit tests.
 
 ### Coverage by Component
 

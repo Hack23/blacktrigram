@@ -1,5 +1,12 @@
 /**
  * DamageNumber3D tests
+ * 
+ * These tests validate Canvas rendering and integration for the 3D floating damage numbers.
+ * They verify that components render without crashing and handle props correctly.
+ * 
+ * Note: Internal Three.js behaviors (useFrame animations, Html overlay positioning,
+ * float-up animations) are not directly testable in unit tests and are validated through
+ * visual testing and integration testing in the actual game environment.
  */
 
 import { render } from "@testing-library/react";

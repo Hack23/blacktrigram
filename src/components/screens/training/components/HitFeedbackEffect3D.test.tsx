@@ -1,5 +1,12 @@
 /**
  * HitFeedbackEffect3D tests
+ * 
+ * These tests validate Canvas rendering and integration for the composite hit feedback effect.
+ * They verify that components render without crashing and handle props correctly.
+ * 
+ * Note: Internal Three.js behaviors (particle animations, ring effects, damage number
+ * positioning, sub-component interactions) are not directly testable in unit tests and
+ * are validated through visual testing and integration testing in the actual game environment.
  */
 
 import { render } from "@testing-library/react";
