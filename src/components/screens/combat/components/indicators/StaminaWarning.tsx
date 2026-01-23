@@ -83,7 +83,7 @@ export const StaminaWarning: React.FC<StaminaWarningProps> = ({
       transition: "border-color 0.3s ease-out",
       zIndex: 85, // Below balance indicator but above game content
     };
-  }, [stamina, isMobile]);
+  }, [stamina, isMobile, theme.colors.WARNING_YELLOW]);
 
   // Don't render if stamina is not critical
   if (stamina >= 20 || !warningStyle) {
