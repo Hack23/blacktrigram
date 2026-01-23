@@ -213,26 +213,28 @@ export const KOREAN_BODY_REGION_LABELS = {
 
 ### Component Tests
 ```
-✓ BloodParticles3D.test.tsx          (20 tests)
-✓ ImpactSparks3D.test.tsx            (18 tests)
-✓ DustClouds3D.test.tsx              (16 tests)
-✓ BloodDecals3D.test.tsx             (24 tests)
+✓ BloodParticles3D.test.tsx          (19 tests)
+✓ ImpactSparks3D.test.tsx            (20 tests)
+✓ DustClouds3D.test.tsx              (22 tests)
+✓ BloodDecals3D.test.tsx             (23 tests)
 ✓ TraumaOverlay3D.test.tsx           (24 tests)
 ✓ BloodLossOverlayHtml.test.tsx      (14 tests)
 ✓ ConsciousnessBlur.test.tsx         (12 tests)
 ✓ PainVignette.test.tsx              (17 tests)
 ✓ InternalDamage3D.test.tsx          (22 tests)
-✓ ArterialSpray3D.test.tsx           (26 tests)
-✓ BoneCrackParticles3D.test.tsx      (24 tests)
-✓ NerveStrikeParticles3D.test.tsx    (30 tests)
+✓ ArterialSpray3D.test.tsx           (37 tests)
+✓ BoneCrackParticles3D.test.tsx      (39 tests)
+✓ NerveStrikeParticles3D.test.tsx    (39 tests)
+✓ CombatFeedbackIntegration.test.tsx (17 tests)
 
-Total: 247 tests passed
+Total: 283 tests passed (includes integration tests)
 ```
 
 ### Coverage Metrics
 - **Statement Coverage**: 5.35% (useFrame loops not executed in tests)
-- **Test Files**: 12 comprehensive test suites
-- **Integration Tests**: CombatFeedbackIntegration.test.tsx (36 tests)
+- **Test Files**: 12 comprehensive test suites plus integration tests
+- **Integration Tests**: CombatFeedbackIntegration.test.tsx (17 tests)
+- **Total Tests**: 283 passing
 
 **Note**: Low statement coverage is expected for Three.js components with `useFrame` hooks, as these animation loops don't execute in test environments. Test suites focus on component rendering, prop handling, and lifecycle management.
 

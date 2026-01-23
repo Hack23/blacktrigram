@@ -1,7 +1,5 @@
 # Combat Screen Package Optimization Part 2 - Summary
 
-**Issue**: #[Issue Number]  
-**PR**: #[PR Number]  
 **Agent**: @hack23-performance-engineer  
 **Status**: ✅ **COMPLETE**  
 **Date**: 2026-01-23
@@ -39,15 +37,16 @@ All particle systems now use ThreeObjectPools for efficient memory management:
 
 #### Korean Anatomical Labels Added
 ```typescript
-export const KOREAN_BODY_REGION_LABELS = {
-  HEAD: { korean: "두부", english: "Head" },
-  NECK: { korean: "경부", english: "Neck" },
-  TORSO: { korean: "흉부", english: "Torso" },
-  LEFT_ARM: { korean: "좌완", english: "Left Arm" },
-  RIGHT_ARM: { korean: "우완", english: "Right Arm" },
-  LEFT_LEG: { korean: "좌각", english: "Left Leg" },
-  RIGHT_LEG: { korean: "우각", english: "Right Leg" },
-  CORE: { korean: "중심부", english: "Core" },
+// Keyed by BodyRegion enum values for type safety
+export const KOREAN_BODY_REGION_LABELS: Record<BodyRegion, { korean: string; english: string }> = {
+  [BodyRegion.HEAD]: { korean: "두부", english: "Head" },
+  [BodyRegion.NECK]: { korean: "경부", english: "Neck" },
+  [BodyRegion.TORSO]: { korean: "흉부", english: "Torso" },
+  [BodyRegion.LEFT_ARM]: { korean: "좌완", english: "Left Arm" },
+  [BodyRegion.RIGHT_ARM]: { korean: "우완", english: "Right Arm" },
+  [BodyRegion.LEFT_LEG]: { korean: "좌각", english: "Left Leg" },
+  [BodyRegion.RIGHT_LEG]: { korean: "우각", english: "Right Leg" },
+  [BodyRegion.CORE]: { korean: "중심부", english: "Core" },
 };
 ```
 

@@ -93,7 +93,8 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
       animation: "bloodLossPulse 1.5s ease-in-out infinite",
       transition: "opacity 0.5s ease-out",
       zIndex: 55, // Between pain vignette and consciousness blur
-    } as React.CSSProperties;
+      clampedBloodLoss, // Return clamped value for accessibility
+    } as React.CSSProperties & { clampedBloodLoss: number };
   }, [bloodLoss, isMobile]);
 
   // Don't render if blood loss is below threshold
@@ -121,7 +122,8 @@ export const BloodLossOverlayHtml = React.memo<BloodLossOverlayProps>(
         style={overlayStyle}
         role="alert"
         aria-live="assertive"
-        aria-label={`Critical blood loss: ${Math.round(bloodLoss)} percent`}
+        aria-label={`Critical blood loss: ${Math.round(overlayStyle.clampedBloodLoss)} percent`}
+        aria-hidden="true"
       />
     </>
   );

@@ -20,8 +20,9 @@
 import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
 import * as THREE from "three";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
 import { BodyRegion } from "../../../../../types/common";
+import { hexToRgbaString } from "../../../../../utils/colorUtils";
 
 /**
  * Injury type classification
@@ -230,7 +231,7 @@ const InjuryMarker: React.FC<{
 /**
  * FractureWarning - Html overlay warning for critical bone damage
  * 
- * Enhanced with BaseText for consistent Korean theming and accessibility
+ * Rendered as a styled Html overlay with Korean/English text and alert semantics.
  */
 const FractureWarning: React.FC<{
   health: number;
@@ -251,18 +252,15 @@ const FractureWarning: React.FC<{
       <div
         style={{
           padding: isMobile ? "8px 12px" : "10px 16px",
-          backgroundColor: `rgba(${(INJURY_COLORS.FRACTURE_INDICATOR >> 16) & 255}, ${(INJURY_COLORS.FRACTURE_INDICATOR >> 8) & 255}, ${INJURY_COLORS.FRACTURE_INDICATOR & 255}, ${warningOpacity * 0.3})`,
-          border: `2px solid ${(() => {
-            const color = INJURY_COLORS.FRACTURE_INDICATOR;
-            return `rgb(${(color >> 16) & 255}, ${(color >> 8) & 255}, ${color & 255})`;
-          })()}`,
+          backgroundColor: hexToRgbaString(INJURY_COLORS.FRACTURE_INDICATOR, warningOpacity * 0.3),
+          border: `2px solid ${hexToRgbaString(INJURY_COLORS.FRACTURE_INDICATOR, 1)}`,
           borderRadius: "6px",
           fontSize: isMobile ? "12px" : "14px",
-          color: `rgb(${(INJURY_COLORS.FRACTURE_INDICATOR >> 16) & 255}, ${(INJURY_COLORS.FRACTURE_INDICATOR >> 8) & 255}, ${INJURY_COLORS.FRACTURE_INDICATOR & 255})`,
+          color: hexToRgbaString(INJURY_COLORS.FRACTURE_INDICATOR, 1),
           fontWeight: "bold",
           textShadow: "0 0 4px rgba(0,0,0,0.8)",
           animation: "fracturePulse 1s ease-in-out infinite",
-          fontFamily: "Noto Sans KR, sans-serif",
+          fontFamily: FONT_FAMILY.KOREAN,
         }}
         data-testid="fracture-warning"
         role="alert"
