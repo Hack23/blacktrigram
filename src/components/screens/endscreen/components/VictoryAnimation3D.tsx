@@ -121,8 +121,32 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      // Note: We don't need to iterate groupRef.current.children since all resources
-      // are already disposed via the specific refs above (particlesRef, ringsRef, symbolsRef)
+      // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
+      // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
+      if (groupRef.current) {
+        groupRef.current.children.forEach((child) => {
+          // Skip objects that are already handled via specific refs
+          if (
+            child === particlesRef.current ||
+            (ringsRef.current && ringsRef.current.children.includes(child)) ||
+            (symbolsRef.current && symbolsRef.current.children.includes(child))
+          ) {
+            return;
+          }
+
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          } else if (child instanceof THREE.Points) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
     };
   }, []);
 
