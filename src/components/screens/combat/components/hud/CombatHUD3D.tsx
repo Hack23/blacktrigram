@@ -7,7 +7,7 @@
 import React, { useMemo } from "react";
 import { PlayerState } from "../../../../../systems";
 import { PLAYER_ARCHETYPES_DATA } from "../../../../../systems/types";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { ProgressBar, KoreanText as KoreanText3D } from "../../../../shared/three";
 import { calculateProgressBarSize } from "../../../../../utils/responsiveLayout";
 
@@ -54,6 +54,8 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
   position = [0, 0, 0],
   isMobile = false,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "medium", isMobile });
+  
   // Get archetype data
   const player1Archetype = useMemo(
     () => PLAYER_ARCHETYPES_DATA[player1.archetype],
@@ -102,9 +104,9 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
   const timerColor = useMemo(
     () =>
       timeRemaining < 10
-        ? KOREAN_COLORS.ACCENT_RED
-        : KOREAN_COLORS.TEXT_PRIMARY,
-    [timeRemaining]
+        ? theme.colors.ACCENT_RED
+        : theme.colors.TEXT_PRIMARY,
+    [timeRemaining, theme.colors.ACCENT_RED, theme.colors.TEXT_PRIMARY]
   );
 
   const player1ScoreText = useMemo(
@@ -132,7 +134,7 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
         size="medium"
         position={[position[0], position[1] + 1, position[2]]}
         weight="bold"
-        color={KOREAN_COLORS.ACCENT_GOLD}
+        color={theme.colors.ACCENT_GOLD}
         layer="hud"
         testId="round-display"
       />
@@ -209,7 +211,7 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
           english={player1ScoreText.english}
           size="small"
           position={[position[0] - 5, position[1] - 1.8, position[2]]}
-          color={KOREAN_COLORS.ACCENT_GOLD}
+          color={theme.colors.ACCENT_GOLD}
           layer="hud"
           testId="player1-score"
         />
@@ -277,7 +279,7 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
           english={player2ScoreText.english}
           size="small"
           position={[position[0] + 5, position[1] - 1.8, position[2]]}
-          color={KOREAN_COLORS.ACCENT_GOLD}
+          color={theme.colors.ACCENT_GOLD}
           layer="hud"
           testId="player2-score"
         />
@@ -290,7 +292,7 @@ const CombatHUD3DComponent: React.FC<CombatHUD3DProps> = ({
           english="PAUSED"
           size="xlarge"
           position={[position[0], position[1], position[2] + 1]}
-          color={KOREAN_COLORS.ACCENT_RED}
+          color={theme.colors.ACCENT_RED}
           weight="bold"
           layer="modal"
           testId="pause-indicator"

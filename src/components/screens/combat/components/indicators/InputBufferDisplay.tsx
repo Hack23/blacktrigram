@@ -2,6 +2,8 @@
  * InputBufferDisplay - Input queue visualization
  * Shows queued combat actions for player feedback
  * 
+ * Refactored to use useKoreanTheme for consistent theming.
+ * 
  * @module components/combat/components/InputBufferDisplay
  * @category Combat UI
  * @korean 입력버퍼표시
@@ -9,7 +11,7 @@
 
 import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { QueuedInput } from "../../../../../hooks/useKeyboardControls";
 
@@ -28,13 +30,14 @@ export interface InputBufferDisplayProps {
  * 
  * Displays a list of recently queued combat inputs in the top-right corner.
  * Useful for showing input confirmation and debugging input lag issues.
+ * Uses useKoreanTheme for consistent styling.
  * 
  * Features:
  * - Displays up to 3 recent inputs
  * - Fades older inputs with reduced opacity
  * - Shows action name and key pressed
  * - Responsive mobile layout
- * - Korean cyberpunk styling
+ * - Korean cyberpunk styling via theme
  * - Automatically clears after 2 seconds
  * 
  * @example
@@ -52,6 +55,8 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
   queuedInputs,
   isMobile = false,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
+  
   // Memoize animation styles to prevent redefinition on every render
   const animationStyles = useMemo(() => (
     <style>
@@ -88,22 +93,22 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
           position: "absolute",
           top,
           right,
-          background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-          border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.6)}`,
+          background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+          border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.6)}`,
           borderRadius: "4px",
           padding: isMobile ? "4px" : "8px",
           minWidth: isMobile ? "100px" : "150px",
           pointerEvents: "none",
           zIndex: 998,
-          boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2)}`,
+          boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.2)}`,
         }}
       >
         {/* Title */}
         <div
           style={{
             fontSize: `${labelFontSize}px`,
-            color: hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.9),
-            fontFamily: FONT_FAMILY.KOREAN,
+            color: hexToRgbaString(theme.colors.ACCENT_BLUE, 0.9),
+            fontFamily: theme.fontFamily.KOREAN,
             marginBottom: "4px",
             fontWeight: "bold",
             textTransform: "uppercase",
@@ -124,8 +129,8 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
                 data-testid={`queued-input-${index}`}
                 style={{
                   fontSize: `${fontSize}px`,
-                  color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, opacity),
-                  fontFamily: FONT_FAMILY.KOREAN,
+                  color: hexToRgbaString(theme.colors.TEXT_PRIMARY, opacity),
+                  fontFamily: theme.fontFamily.KOREAN,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -150,10 +155,10 @@ export const InputBufferDisplay: React.FC<InputBufferDisplayProps> = ({
                   style={{
                     padding: "2px 4px",
                     background: hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_BLUE,
+                      theme.colors.ACCENT_BLUE,
                       0.2 * opacity
                     ),
-                    border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.5 * opacity)}`,
+                    border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.5 * opacity)}`,
                     borderRadius: "2px",
                     fontSize: `${fontSize - 2}px`,
                     fontWeight: "bold",

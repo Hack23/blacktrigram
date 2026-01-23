@@ -9,9 +9,9 @@
  * helping them understand their skill progression.
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { DifficultyTier } from "../../../../../systems/ai";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexColorToCSS, hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface DifficultyIndicatorProps {
@@ -42,23 +42,23 @@ function getTierName(tier: DifficultyTier): { korean: string; english: string } 
 }
 
 /**
- * Get numeric color for difficulty tier using KOREAN_COLORS constants
+ * Get numeric color for difficulty tier using theme colors
  * Maps tiers to existing color scheme for consistency
  */
-function getTierColorValue(tier: DifficultyTier): number {
+function getTierColorValue(tier: DifficultyTier, theme: ReturnType<typeof useKoreanTheme>): number {
   switch (tier) {
     case DifficultyTier.BEGINNER:
-      return KOREAN_COLORS.POSITIVE_GREEN; // Green - Easy
+      return theme.colors.POSITIVE_GREEN; // Green - Easy
     case DifficultyTier.NOVICE:
-      return KOREAN_COLORS.ACCENT_GREEN; // Light Green
+      return theme.colors.ACCENT_GREEN; // Light Green
     case DifficultyTier.INTERMEDIATE:
-      return KOREAN_COLORS.ACCENT_GOLD; // Gold - Medium
+      return theme.colors.ACCENT_GOLD; // Gold - Medium
     case DifficultyTier.ADVANCED:
-      return KOREAN_COLORS.SECONDARY_ORANGE; // Orange
+      return theme.colors.SECONDARY_ORANGE; // Orange
     case DifficultyTier.EXPERT:
-      return KOREAN_COLORS.NEGATIVE_RED; // Red - Hard
+      return theme.colors.NEGATIVE_RED; // Red - Hard
     default:
-      return KOREAN_COLORS.ACCENT_GOLD; // Default to medium
+      return theme.colors.ACCENT_GOLD; // Default to medium
   }
 }
 
@@ -72,9 +72,14 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   tier,
   isMobile,
 }) => {
+  const theme = useKoreanTheme({ variant: "primary", size: "small", isMobile });
   const tierName = getTierName(tier);
-  const tierColorValue = getTierColorValue(tier);
-  const tierColor = hexColorToCSS(tierColorValue);
+  const tierColorValue = getTierColorValue(tier, theme);
+  
+  // Memoize color calculations
+  const tierColor = useMemo(() => hexColorToCSS(tierColorValue), [tierColorValue]);
+  const tierBackground = useMemo(() => hexToRgbaString(tierColorValue, 0.13), [tierColorValue]);
+  const tierBoxShadow = useMemo(() => hexToRgbaString(tierColorValue, 0.27), [tierColorValue]);
   
   // Responsive sizing
   const fontSize = isMobile ? 11 : 13;
@@ -95,10 +100,10 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         top: `${topOffset}px`,
         right: isMobile ? "8px" : "12px",
         padding,
-        background: hexToRgbaString(tierColorValue, 0.13), // 13% opacity background
+        background: tierBackground, // 13% opacity background
         border: `2px solid ${tierColor}`,
         borderRadius: "4px",
-        fontFamily: FONT_FAMILY.KOREAN,
+        fontFamily: theme.fontFamily.KOREAN,
         fontSize: `${fontSize}px`,
         color: tierColor,
         textShadow: "0 0 4px rgba(0,0,0,0.8)",
@@ -109,7 +114,7 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         alignItems: "center",
         gap: "2px",
         transition: "all 0.3s ease-in-out", // Smooth color/border transitions
-        boxShadow: `0 0 8px ${hexToRgbaString(tierColorValue, 0.27)}`, // Subtle glow effect (27% opacity)
+        boxShadow: `0 0 8px ${tierBoxShadow}`, // Subtle glow effect (27% opacity)
       }}
     >
       <div
