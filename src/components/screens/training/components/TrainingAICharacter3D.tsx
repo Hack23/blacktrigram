@@ -103,15 +103,23 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     [stanceColor, isAttacking]
   );
 
-  // Cleanup geometries and materials on unmount only
+  // Cleanup geometries on unmount only (geometries are stable)
   // Dependencies intentionally omitted to prevent premature disposal
   useEffect(() => {
     return () => {
       Object.values(geometries).forEach((geom) => geom.dispose());
-      Object.values(materials).forEach((mat) => mat.dispose());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Cleanup old materials when new ones are created
+  // This prevents memory leaks when stance or attacking state changes
+  useEffect(() => {
+    const currentMaterials = materials;
+    return () => {
+      Object.values(currentMaterials).forEach((mat) => mat.dispose());
+    };
+  }, [materials]);
 
   // Animation loop
   useFrame((state) => {
@@ -148,19 +156,19 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     >
       {/* Main body - capsule representing the AI fighter */}
       <mesh castShadow receiveShadow>
-        <primitive object={geometries.body} />
+        <primitive object={geometries.body} attach="geometry" />
         <primitive object={materials.body} attach="material" />
       </mesh>
 
       {/* Head marker */}
       <mesh position={[0, 1.2, 0]} castShadow>
-        <primitive object={geometries.head} />
+        <primitive object={geometries.head} attach="geometry" />
         <primitive object={materials.head} attach="material" />
       </mesh>
 
       {/* Stance aura effect */}
       <mesh ref={stanceAuraRef} position={[0, 0, 0]}>
-        <primitive object={geometries.aura} />
+        <primitive object={geometries.aura} attach="geometry" />
         <primitive object={materials.aura} attach="material" />
       </mesh>
 

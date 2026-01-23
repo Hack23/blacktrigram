@@ -147,7 +147,7 @@ const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
     <>
       {markerPositions.map((position, index) => (
         <mesh key={index} position={position}>
-          <primitive object={markerGeometry} />
+          <primitive object={markerGeometry} attach="geometry" />
           <primitive object={markerMaterial} attach="material" />
         </mesh>
       ))}

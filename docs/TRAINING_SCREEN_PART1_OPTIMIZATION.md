@@ -9,14 +9,15 @@ This document summarizes the optimizations made to the Training Screen Package P
 **File**: `src/components/screens/training/components/TrainingAICharacter3D.tsx`
 
 **Improvements**:
-- Added geometry memoization for body, head, aura, and health ring geometries
+- Added geometry memoization for body, head, and aura geometries
+- Kept health ring geometry dynamic (not memoized) so it can respond to `healthPercent` changes each frame
 - Added material memoization for body, head, and aura materials
 - Implemented proper cleanup with `useEffect` to dispose resources on unmount
 - Added comprehensive JSDoc documentation
 
 **Performance Impact**:
 - **Before**: New geometries and materials created on every render
-- **After**: Geometries created once and reused; materials recreated only when stance/attacking state changes
+- **After**: Body, head, and aura geometries created once and reused; health ring geometry remains dynamic to track `healthPercent`; materials recreated only when stance/attacking state changes
 - **Result**: Significant reduction in WebGL context allocations, preventing context exhaustion
 
 **Code Quality**:
