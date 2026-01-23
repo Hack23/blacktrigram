@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import { InteractiveTrigramGrid } from "./InteractiveTrigramGrid";
 import { TrigramStance } from "../../../../types";
+import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 
 describe("InteractiveTrigramGrid", () => {
   it("should render without crashing", () => {
@@ -24,8 +25,8 @@ describe("InteractiveTrigramGrid", () => {
       />
     );
 
-    const stances = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
-    stances.forEach((stance) => {
+    // Use TRIGRAM_STANCES_ORDER to stay aligned with source of truth
+    TRIGRAM_STANCES_ORDER.forEach((stance) => {
       expect(
         screen.getByTestId(`trigram-grid-button-${stance}`)
       ).toBeInTheDocument();

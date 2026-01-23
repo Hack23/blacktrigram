@@ -87,7 +87,6 @@ export const PhilosophyNavigation: React.FC<PhilosophyNavigationProps> = ({
               style={{
                 position: "relative",
               }}
-              aria-current={isActive ? "page" : undefined}
             >
               <BaseButtonOverlayHtml
                 korean={topic.korean}
@@ -98,6 +97,7 @@ export const PhilosophyNavigation: React.FC<PhilosophyNavigationProps> = ({
                 isMobile={isMobile}
                 testId={`topic-button-${topic.id}`}
                 ariaLabel={`View ${topic.korean} ${topic.english} section`}
+                ariaCurrent={isActive ? "page" : undefined}
                 style={{
                   minWidth: isMobile ? "80px" : "100px",
                   boxShadow: isActive

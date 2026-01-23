@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants/colors";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import type { TrigramStanceData } from "../../../../systems/trigram/types";
-import { TrigramStance } from "../../../../types/common";
+import { TrigramStance } from "../../../../types";
 
 export interface TrigramSymbol3DProps {
   readonly trigram: TrigramStanceData;
