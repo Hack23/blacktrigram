@@ -103,13 +103,15 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     [stanceColor, isAttacking]
   );
 
-  // Cleanup geometries and materials on unmount
+  // Cleanup geometries and materials on unmount only
+  // Dependencies intentionally omitted to prevent premature disposal
   useEffect(() => {
     return () => {
       Object.values(geometries).forEach((geom) => geom.dispose());
       Object.values(materials).forEach((mat) => mat.dispose());
     };
-  }, [geometries, materials]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Animation loop
   useFrame((state) => {

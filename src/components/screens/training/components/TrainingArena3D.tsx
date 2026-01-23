@@ -133,13 +133,15 @@ const CornerMarkers: React.FC<{ size: number }> = ({ size }) => {
     []
   );
 
-  // Cleanup geometry and material on unmount
+  // Cleanup geometry and material on unmount only
+  // Dependencies intentionally omitted to prevent premature disposal
   useEffect(() => {
     return () => {
       markerGeometry.dispose();
       markerMaterial.dispose();
     };
-  }, [markerGeometry, markerMaterial]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
