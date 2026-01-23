@@ -27,10 +27,13 @@ export interface QuickSettingsProps {
 /**
  * QuickSettings - In-game settings overlay for audio controls
  * 
- * Refactored to use shared components for consistency:
- * - BaseButton for all interactive elements
- * - useKoreanTheme for consistent theming
- * - Improved accessibility with ARIA labels
+ * Refactored to use useKoreanTheme for consistent theming:
+ * - useKoreanTheme hook for centralized color and font management
+ * - Improved accessibility with ARIA labels and dialog semantics
+ * - Enhanced form controls with proper ARIA attributes
+ * 
+ * Note: Uses standard HTML button elements rather than BaseButton
+ * since this is a 2D HTML overlay component, not a Three.js component.
  * 
  * @example
  * ```tsx
