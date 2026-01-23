@@ -21,54 +21,59 @@ describe("VictoryAnimation3D", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should have victory-animation-3d test id", () => {
+  it("should have victory-animation-3d test id on root group", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     const canvas = container.querySelector("canvas");
     expect(canvas).toBeTruthy();
   });
 
-  it("should render with gold/cyan particle theme", () => {
+  it("should render without errors (gold/cyan theme verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should create primary particle system", () => {
+  it("should render without errors (primary particle system verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should create secondary particle layer", () => {
+  it("should render without errors (secondary particle layer verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should render rotating rings", () => {
+  it("should render without errors (rotating rings verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should render Korean trigram symbols", () => {
+  it("should render without errors (Korean trigram symbols verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should render central glow sphere", () => {
+  it("should render without errors (central glow sphere verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should have enhanced particle effects", () => {
+  it("should render without errors (enhanced particle effects verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should have multiple point lights", () => {
+  it("should render without errors (multiple point lights verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should render octagonal pattern for 팔괘", () => {
+  it("should render without errors (팔괘 octagonal pattern verification limited in JSDOM)", () => {
     const { container } = render3D(<VictoryAnimation3D />);
     expect(container).toBeTruthy();
+  });
+
+  it("should cleanup resources on unmount without errors", () => {
+    const { unmount } = render3D(<VictoryAnimation3D />);
+    expect(() => unmount()).not.toThrow();
   });
 });

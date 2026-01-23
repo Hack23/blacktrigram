@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -64,6 +64,39 @@ export const DefeatAnimation3D: React.FC = () => {
       spiralRef.current.rotation.z = Math.sin(time * 0.3) * 0.2;
     }
   });
+
+  // Cleanup Three.js resources on unmount
+  useEffect(() => {
+    return () => {
+      // Dispose geometries and materials to prevent memory leaks
+      if (particlesRef.current) {
+        particlesRef.current.geometry?.dispose();
+        if (particlesRef.current.material) {
+          (particlesRef.current.material as THREE.Material).dispose();
+        }
+      }
+      if (spiralRef.current) {
+        spiralRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+      if (groupRef.current) {
+        groupRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+    };
+  }, []);
 
   return (
     <group

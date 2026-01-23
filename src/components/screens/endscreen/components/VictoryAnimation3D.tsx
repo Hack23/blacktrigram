@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -88,6 +88,54 @@ export const VictoryAnimation3D: React.FC = () => {
       symbolsRef.current.rotation.x = Math.sin(time * 0.5) * 0.1;
     }
   });
+
+  // Cleanup Three.js resources on unmount
+  useEffect(() => {
+    return () => {
+      // Dispose geometries and materials to prevent memory leaks
+      if (particlesRef.current) {
+        particlesRef.current.geometry?.dispose();
+        if (particlesRef.current.material) {
+          (particlesRef.current.material as THREE.Material).dispose();
+        }
+      }
+      if (ringsRef.current) {
+        ringsRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+      if (symbolsRef.current) {
+        symbolsRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+      if (groupRef.current) {
+        groupRef.current.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          } else if (child instanceof THREE.Points) {
+            child.geometry?.dispose();
+            if (child.material) {
+              (child.material as THREE.Material).dispose();
+            }
+          }
+        });
+      }
+    };
+  }, []);
 
   return (
     <group

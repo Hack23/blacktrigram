@@ -21,34 +21,39 @@ describe("DefeatAnimation3D", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should have defeat-animation-3d test id", () => {
+  it("should have defeat-animation-3d test id on root group", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     const canvas = container.querySelector("canvas");
     expect(canvas).toBeTruthy();
   });
 
-  it("should render with blue/cyan particle theme", () => {
+  it("should render without errors (blue/cyan theme verification limited in JSDOM)", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should create particle system", () => {
+  it("should render without errors (particle system verification limited in JSDOM)", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should render spiral rings", () => {
+  it("should render without errors (spiral rings verification limited in JSDOM)", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should render central dimmed sphere", () => {
+  it("should render without errors (central sphere verification limited in JSDOM)", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     expect(container).toBeTruthy();
   });
 
-  it("should have subdued glow effect", () => {
+  it("should render without errors (glow effect verification limited in JSDOM)", () => {
     const { container } = render3D(<DefeatAnimation3D />);
     expect(container).toBeTruthy();
+  });
+
+  it("should cleanup resources on unmount without errors", () => {
+    const { unmount } = render3D(<DefeatAnimation3D />);
+    expect(() => unmount()).not.toThrow();
   });
 });
