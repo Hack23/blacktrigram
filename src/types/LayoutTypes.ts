@@ -96,10 +96,16 @@ export interface ResponsivePosition {
  *
  * Ensures consistent stacking order across all screens
  *
+ * **Usage Guidelines:**
+ * - NEVER use arbitrary z-index values (e.g., 999)
+ * - Use these constants to maintain consistent layer ordering
+ * - Layer order: Scene → HUD → Overlay → Modal → Pause Menu
+ *
  * @category Layout Constants
  * @korean z인덱스계층
  */
 export const Z_INDEX = {
+  // 3D Scene layers (0-30)
   /** Background scenes and effects - 배경 */
   BACKGROUND: 0,
   /** Combat arena and training grounds - 경기장 */
@@ -108,18 +114,30 @@ export const Z_INDEX = {
   PLAYERS: 20,
   /** Visual effects and particles - 효과 */
   EFFECTS: 30,
-  /** HUD elements (health bars, timers) - HUD */
-  HUD: 40,
+
+  // HUD layers (40-99)
+  /** HUD background elements - HUD 배경 */
+  HUD_BACKGROUND: 40,
+  /** Main HUD elements (health bars, timers, stats) - 주 HUD */
+  HUD: 50,
   /** TechniqueBar for combat techniques - 기술바 */
-  TECHNIQUE_BAR: 45,
+  TECHNIQUE_BAR: 55,
+  /** HUD overlay elements (within HUD components) - HUD 오버레이 */
+  HUD_OVERLAY: 60,
+
+  // Top-level UI (100+)
   /** Mobile touch controls - 모바일제어 */
-  MOBILE_CONTROLS: 50,
+  MOBILE_CONTROLS: 100,
   /** Modal dialogs and overlays - 모달 */
-  MODAL: 60,
+  MODAL: 200,
   /** Tooltips and hints - 툴팁 */
-  TOOLTIP: 70,
+  TOOLTIP: 300,
+  /** Pause menu - 일시정지 메뉴 */
+  PAUSE_MENU: 1000,
+  /** Loading screens - 로딩 */
+  LOADING: 2000,
   /** Debug and performance overlays - 디버그 */
-  DEBUG: 80,
+  DEBUG: 9000,
 } as const;
 
 /**
@@ -195,4 +213,130 @@ export interface ContainerBounds {
   readonly height: number;
   /** Scale factor (1.0 = no scaling) */
   readonly scale?: number;
+}
+
+/**
+ * HUD Positioning Strategy Documentation
+ *
+ * This section defines the standardized approach for positioning HUD elements
+ * across all screens in the Black Trigram game.
+ *
+ * **Screen-Level HUDs (Left/Right/Top/Bottom)**:
+ * - Use `position: "absolute"` to anchor to screen edges
+ * - Anchor directly to edges: `left: 0`, `right: 0`, `top: 0`, `bottom: 0`
+ * - Size using percentage-based calculations: `width: ${width * 0.14}px`
+ * - Use Z_INDEX.HUD for consistent layering
+ * - Example: Combat Left/Right HUDs, Top/Bottom bars
+ *
+ * **HUD Internal Content**:
+ * - Use `position: "relative"` for natural document flow
+ * - Use Flexbox for vertical/horizontal layouts: `display: "flex"`, `flexDirection`, `gap`
+ * - Use CSS Grid for complex multi-dimensional layouts
+ * - Avoid absolute positioning within HUDs (except for special cases)
+ * - Example: Player stats, technique cards, control buttons
+ *
+ * **Special Cases (Overlays/Tooltips)**:
+ * - Use `position: "absolute"` for floating elements that must overlay content
+ * - Position relative to parent container
+ * - Use Z_INDEX.HUD_OVERLAY or Z_INDEX.TOOLTIP
+ * - Example: Combat messages, feedback overlays, tooltips
+ *
+ * **Responsive Design**:
+ * - All components must support `isMobile` prop
+ * - Use responsive calculations: `isMobile ? 18 : 14` for mobile scaling
+ * - Apply `positionScale` multiplier for 4K displays (1.0-1.5)
+ *
+ * @category Layout Guidelines
+ * @korean HUD위치전략
+ */
+
+/**
+ * HUD width percentages for screen-level HUDs
+ *
+ * These constants define the standard widths for left and right HUD panels.
+ * Values are decimals (0.14 = 14% of screen width).
+ *
+ * **Usage:**
+ * ```tsx
+ * const hudWidth = width * HUD_WIDTH_PERCENT.LEFT_DESKTOP;
+ * ```
+ *
+ * @category Layout Constants
+ * @korean HUD너비
+ */
+export const HUD_WIDTH_PERCENT = {
+  /** Left HUD width on desktop (14% = leaves 72% for arena) */
+  LEFT_DESKTOP: 0.14,
+  /** Left HUD width on mobile (18% for touch targets) */
+  LEFT_MOBILE: 0.18,
+  /** Right HUD width on desktop (14% = leaves 72% for arena) */
+  RIGHT_DESKTOP: 0.14,
+  /** Right HUD width on mobile (18% for touch targets) */
+  RIGHT_MOBILE: 0.18,
+  /** Top HUD width (full screen width) */
+  TOP: 1.0,
+  /** Bottom HUD width (full screen width) */
+  BOTTOM: 1.0,
+} as const;
+
+/**
+ * HUD height constants for top and bottom bars
+ *
+ * These constants define the standard heights for top and bottom HUD bars.
+ * Values are in pixels and should be scaled with `positionScale` for 4K displays.
+ *
+ * **Usage:**
+ * ```tsx
+ * const hudHeight = HUD_HEIGHT.TOP_DESKTOP * positionScale;
+ * ```
+ *
+ * @category Layout Constants
+ * @korean HUD높이
+ */
+export const HUD_HEIGHT = {
+  /** Top bar height on desktop (slim for minimal obstruction) */
+  TOP_DESKTOP: 70,
+  /** Top bar height on mobile (extra slim) */
+  TOP_MOBILE: 50,
+  /** Bottom bar height on desktop (fits technique cards) */
+  BOTTOM_DESKTOP: 120,
+  /** Bottom bar height on mobile (compact) */
+  BOTTOM_MOBILE: 100,
+  /** Combat-specific top bar height */
+  COMBAT_TOP_DESKTOP: 70,
+  /** Combat-specific top bar height on mobile */
+  COMBAT_TOP_MOBILE: 55,
+  /** Combat-specific bottom bar height */
+  COMBAT_BOTTOM_DESKTOP: 120,
+  /** Combat-specific bottom bar height on mobile */
+  COMBAT_BOTTOM_MOBILE: 100,
+  /** Training-specific top bar height */
+  TRAINING_TOP_DESKTOP: 70,
+  /** Training-specific top bar height on mobile */
+  TRAINING_TOP_MOBILE: 50,
+  /** Training-specific bottom bar height */
+  TRAINING_BOTTOM_DESKTOP: 130,
+  /** Training-specific bottom bar height on mobile */
+  TRAINING_BOTTOM_MOBILE: 110,
+} as const;
+
+/**
+ * HUD positioning configuration interface
+ *
+ * Defines the positioning strategy for a HUD component.
+ *
+ * @category Layout Types
+ * @korean HUD위치설정
+ */
+export interface HUDPositionConfig {
+  /** Positioning strategy */
+  readonly strategy: "absolute" | "relative" | "flex" | "grid";
+  /** Anchor point for absolute positioning */
+  readonly anchor?: "left" | "right" | "top" | "bottom" | "center";
+  /** Offset from anchor point */
+  readonly offset?: { x?: number; y?: number };
+  /** Size configuration */
+  readonly size?: { width?: string | number; height?: string | number };
+  /** Z-index layer */
+  readonly zIndex?: ZIndexValue;
 }

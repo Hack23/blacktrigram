@@ -43,8 +43,8 @@ describe("htmlOverlayHelpers", () => {
     it("should clamp z-index when offset exceeds valid range", () => {
       // Test that a large offset doesn't exceed the maximum z-index
       const result = getZIndexForLayer("debug", 50);
-      expect(result).toBe(Z_INDEX.DEBUG); // Should clamp to max (80)
-      expect(result).toBeLessThanOrEqual(80);
+      expect(result).toBe(Z_INDEX.DEBUG); // Should clamp to max (9000)
+      expect(result).toBeLessThanOrEqual(9000);
     });
 
     it("should clamp z-index when offset goes below minimum", () => {
