@@ -8,7 +8,7 @@
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Compact ~100-120px
+ * - Height: Resolution-based ~10% of screen height (40-120px range)
  *
  * @korean 전투화면 하단 바 - 기술 바, 음량, 전투 메시지
  */
@@ -16,11 +16,15 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
-import {
-  HUD_HEIGHT,
-  Z_INDEX,
-} from "../../../../../types/LayoutTypes";
+import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import {
+  BREAKPOINTS,
+  getHUDHeight,
+  getResponsiveFontSize,
+  getResponsivePadding,
+  shouldShowMobileControls,
+} from "../../../../../utils/responsiveLayout";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
@@ -30,8 +34,8 @@ export interface CombatBottomHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Whether technique bar should be visible */
@@ -54,12 +58,12 @@ export interface CombatBottomHUDProps {
  * CombatBottomHUD Component
  *
  * Compact bottom bar with centered technique bar, volume control,
- * and combat messages.
+ * and combat messages. Uses resolution-based sizing for all elements.
  */
 export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   visible,
   techniques,
@@ -69,20 +73,46 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   onTechniqueSelect,
   combatMessages = [],
 }) => {
+  // isMobile only used for mobile controls visibility
+  const showMobileControls = shouldShowMobileControls(width, isMobile);
+
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
-    isMobile,
+    isMobile: showMobileControls,
   });
 
   const layout = React.useMemo(() => {
-    const hudHeight = isMobile
-      ? HUD_HEIGHT.COMBAT_BOTTOM_MOBILE
-      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP * positionScale;
-    const padding = isMobile ? 8 : 12 * positionScale;
+    // Resolution-based HUD height (10% of screen height, 40-120px range)
+    const hudHeight = getHUDHeight(height, 0.1) * positionScale;
+    
+    // Resolution-based padding
+    const padding = getResponsivePadding(width) * positionScale;
+    
+    // Resolution-based font sizes
+    const baseFontSize = getResponsiveFontSize(width);
+    const titleFontSize = Math.max(8, baseFontSize * 0.6); // Smaller for title
+    const messageFontSize = Math.max(10, baseFontSize * 0.75); // Slightly smaller for messages
+    
+    // Resolution-based widths
+    const minMessageWidth = width < BREAKPOINTS.mobile ? 200 : 280;
+    const maxMessageWidth = width < BREAKPOINTS.mobile ? width * 0.9 : 500;
+    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile ? "100%" : "70%";
+    
+    // Resolution-based message padding
+    const messagePadding = width < BREAKPOINTS.mobile ? "6px 12px" : "8px 16px";
 
-    return { hudHeight, padding };
-  }, [isMobile, positionScale]);
+    return {
+      hudHeight,
+      padding,
+      titleFontSize,
+      messageFontSize,
+      minMessageWidth,
+      maxMessageWidth,
+      maxTechniqueBarWidth,
+      messagePadding,
+    };
+  }, [width, height, positionScale]);
 
   // Only show last 3 combat messages
   const recentMessages = combatMessages.slice(-3);
@@ -121,19 +151,21 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             alignItems: "center",
             gap: "3px",
             zIndex: Z_INDEX.HUD,
-            padding: isMobile ? "6px 12px" : "8px 16px",
+            padding: layout.messagePadding,
             background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
             border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
             borderRadius: "6px",
             boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.2)}`,
-            minWidth: isMobile ? "200px" : "280px",
-            maxWidth: isMobile ? "90%" : "500px",
+            minWidth: `${layout.minMessageWidth}px`,
+            maxWidth: typeof layout.maxMessageWidth === 'number' 
+              ? `${layout.maxMessageWidth}px` 
+              : layout.maxMessageWidth,
           }}
           data-testid="combat-bottom-hud-messages"
         >
           <div
             style={{
-              fontSize: isMobile ? "8px" : "9px",
+              fontSize: `${layout.titleFontSize}px`,
               fontFamily: theme.koreanTypography.fontFamily,
               color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.7),
               textTransform: "uppercase",
@@ -147,7 +179,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             <div
               key={index}
               style={{
-                fontSize: isMobile ? "10px" : "12px",
+                fontSize: `${layout.messageFontSize}px`,
                 fontFamily: theme.koreanTypography.fontFamily,
                 color: hexToRgbaString(theme.colors.TEXT_PRIMARY, 0.95),
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
@@ -170,7 +202,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            maxWidth: isMobile ? "100%" : "70%",
+            maxWidth: layout.maxTechniqueBarWidth,
           }}
           data-testid="combat-bottom-hud-technique-section"
         >
@@ -181,7 +213,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             cooldowns={cooldowns}
             onTechniqueSelect={onTechniqueSelect}
             onTechniqueHover={(_tech) => {}}
-            isMobile={isMobile}
+            isMobile={showMobileControls}
             screenWidth={width}
             screenHeight={height}
             embedded={true}

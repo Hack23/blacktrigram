@@ -289,13 +289,14 @@ describe("TrainingRightHUD", () => {
       expect(container).toHaveStyle({ pointerEvents: "none" });
     });
 
-    it("should position at right with top offset for top HUD", () => {
+    it("should position at right with resolution-based top offset", () => {
       render(<TrainingRightHUD {...defaultProps} />);
       const container = screen.getByTestId("training-right-hud");
       expect(container).toHaveStyle({
         position: "absolute",
-        // top offset = 70px (TOP_HUD_HEIGHT_DESKTOP * positionScale)
-        top: "70px",
+        // top offset uses getHUDHeight(800, 0.06) * 1.0 = 48px
+        // (6% of 800px height = 48px)
+        top: "48px",
         right: "0px",
       });
     });

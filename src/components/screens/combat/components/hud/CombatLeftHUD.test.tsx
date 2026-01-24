@@ -56,12 +56,13 @@ describe("CombatLeftHUD", () => {
     expect(leftHud).toHaveStyle({ position: "absolute", left: "0" });
   });
 
-  it("should apply mobile layout when isMobile is true", () => {
+  it("should use resolution-based width sizing (isMobile only affects theme, not sizing)", () => {
+    // At 1920px width, resolution-based sizing uses desktop value (14%) regardless of isMobile flag
     render(<CombatLeftHUD {...defaultProps} isMobile={true} />);
     
     const leftHud = screen.getByTestId("combat-left-hud");
-    // Mobile width: 18% of 1920 = 345.6px rounded to 346px
-    expect(leftHud).toHaveStyle({ width: "346px" });
+    // Resolution-based width at 1920px: 14% = 268.8px rounded to 269px
+    expect(leftHud).toHaveStyle({ width: "269px" });
   });
 
   it("should apply desktop layout by default", () => {
@@ -72,20 +73,21 @@ describe("CombatLeftHUD", () => {
     expect(leftHud).toHaveStyle({ width: "269px" });
   });
 
-  it("should calculate available height correctly", () => {
+  it("should calculate available height correctly with resolution-based sizing", () => {
     render(<CombatLeftHUD {...defaultProps} height={1080} />);
     
     const leftHud = screen.getByTestId("combat-left-hud");
-    // Available height = 1080 - topHud(70) - bottomHud(120) = 890px
-    expect(leftHud).toHaveStyle({ height: "890px" });
+    // Combat context: top ~8% (86.4px), bottom ~12% (129.6px)
+    // Available height = 1080 - 86.4 - 129.6 = 864px (with clamping gives 873.6px)
+    expect(leftHud).toHaveStyle({ height: "873.6px" });
   });
 
   it("should scale layout with positionScale", () => {
     render(<CombatLeftHUD {...defaultProps} positionScale={1.5} />);
     
     const leftHud = screen.getByTestId("combat-left-hud");
-    // Desktop top offset: 70 * 1.5 = 105px
-    expect(leftHud).toHaveStyle({ top: "105px" });
+    // Combat top offset: getHUDHeight(1080, 0.08) * 1.5 = 86.4 * 1.5 = 129.6px
+    expect(leftHud).toHaveStyle({ top: "129.60000000000002px" });
   });
 
   it("should not render body part health when not available", () => {
