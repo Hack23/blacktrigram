@@ -15,7 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-import { SPACING_ADJUSTMENTS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
+import { SPACING_NUMERIC, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
 import {
   getHUDHeight,
   getResponsiveFontSize,
@@ -108,7 +108,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: `${layout.padding}px ${SPACING_ADJUSTMENTS.horizontalEmphasis}`,
+        padding: `${layout.padding}px ${SPACING_NUMERIC.horizontalEmphasis}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
         borderBottom: BORDERS.default,

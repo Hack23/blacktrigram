@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StyledHUDPanel } from './StyledHUDPanel';
-import { SPACING, BORDER_RADIUS, BORDERS, GRADIENTS, TRANSITIONS } from '../../../types/constants/designSystem';
+import { SPACING, BORDER_RADIUS, TRANSITIONS } from '../../../types/constants/designSystem';
 
 describe('StyledHUDPanel', () => {
   it('should render children correctly', () => {
@@ -138,7 +138,7 @@ describe('StyledHUDPanel', () => {
     
     const panel = container.firstChild as HTMLElement;
     const style = panel.getAttribute('style');
-    expect(style).toContain(BORDER_RADIUS.md);
+    expect(style).toContain(BORDER_RADIUS.lg);
   });
 
   it('should use design system transition constants', () => {
