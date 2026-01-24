@@ -10,6 +10,7 @@
 
 import { useMemo } from 'react';
 import type { HUDPosition } from '../components/shared/ui/BaseHUDContainer';
+import { HUD_WIDTH_PERCENT, HUD_HEIGHT } from '../types/LayoutTypes';
 
 /**
  * HUD position type - left, right, top, or bottom
@@ -42,39 +43,6 @@ export interface HUDLayoutResult {
 }
 
 /**
- * HUD dimension constants for different positions and contexts
- */
-const HUD_DIMENSIONS = {
-  // Width percentages for left/right HUDs
-  WIDTH_DESKTOP: {
-    training: 0.14, // 14% for training
-    combat: 0.14,   // 14% for combat
-  },
-  WIDTH_MOBILE: {
-    training: 0.18, // 18% for training
-    combat: 0.18,   // 18% for combat
-  },
-  
-  // Height constants for top/bottom bars
-  TOP_HEIGHT_DESKTOP: {
-    training: 70,
-    combat: 70,
-  },
-  TOP_HEIGHT_MOBILE: {
-    training: 50,
-    combat: 55,
-  },
-  BOTTOM_HEIGHT_DESKTOP: {
-    training: 130,
-    combat: 120,
-  },
-  BOTTOM_HEIGHT_MOBILE: {
-    training: 110,
-    combat: 100,
-  },
-} as const;
-
-/**
  * Custom hook for calculating HUD layout dimensions
  * 
  * Provides consistent layout calculations across Training and Combat screens.
@@ -96,8 +64,8 @@ const HUD_DIMENSIONS = {
  * const layout = useHUDLayout(
  *   1920, 1080, 1.0, false, 'left', 'training'
  * );
- * // layout.hudWidth = 268.8 (14% of 1920)
- * // layout.availableHeight = 940 (1080 - 70 - 70)
+ * // layout.hudWidth = 269 (Math.round(14% of 1920))
+ * // layout.availableHeight = 880 (1080 - 70 - 130)
  * ```
  */
 export function useHUDLayout(
@@ -114,16 +82,23 @@ export function useHUDLayout(
 
     // Calculate width percentage based on position and screen size
     const hudWidthPercent = position === 'left' || position === 'right'
-      ? (isMobile 
-          ? HUD_DIMENSIONS.WIDTH_MOBILE[context] 
-          : HUD_DIMENSIONS.WIDTH_DESKTOP[context])
+      ? (isMobile ? HUD_WIDTH_PERCENT.LEFT_MOBILE : HUD_WIDTH_PERCENT.LEFT_DESKTOP)
       : 1.0; // Full width for top/bottom
 
-    // Calculate height based on position
-    const topHeightDesktop = HUD_DIMENSIONS.TOP_HEIGHT_DESKTOP[context];
-    const topHeightMobile = HUD_DIMENSIONS.TOP_HEIGHT_MOBILE[context];
-    const bottomHeightDesktop = HUD_DIMENSIONS.BOTTOM_HEIGHT_DESKTOP[context];
-    const bottomHeightMobile = HUD_DIMENSIONS.BOTTOM_HEIGHT_MOBILE[context];
+    // Calculate height based on position and context
+    // Use imported constants from LayoutTypes for single source of truth
+    const topHeightDesktop = context === 'training' 
+      ? HUD_HEIGHT.TRAINING_TOP_DESKTOP 
+      : HUD_HEIGHT.COMBAT_TOP_DESKTOP;
+    const topHeightMobile = context === 'training'
+      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
+      : HUD_HEIGHT.COMBAT_TOP_MOBILE;
+    const bottomHeightDesktop = context === 'training'
+      ? HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP
+      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP;
+    const bottomHeightMobile = context === 'training'
+      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
+      : HUD_HEIGHT.COMBAT_BOTTOM_MOBILE;
 
     const scaledTopHeight = isMobile
       ? topHeightMobile
@@ -145,8 +120,7 @@ export function useHUDLayout(
     const availableHeight = Math.max(0, height - topOffset - bottomOffset);
 
     // Responsive padding and gap - context-specific for training vs combat
-    // TrainingRightHUD uses smaller spacing: padding 8/10px, gap 6/8px (mobile/desktop)
-    // TrainingLeftHUD uses larger spacing: padding 10/15px, gap 12/18px (mobile/desktop)
+    // Default values apply unless overridden via paddingOverride/gapOverride parameters
     const defaultPadding = context === 'training'
       ? (isMobile ? 10 : 15 * positionScale)
       : (isMobile ? 8 : 12 * positionScale);
