@@ -9,7 +9,7 @@
  * This eliminates the need for Html overlays inside Three.js and ensures
  * HUDs appear immediately without waiting for Canvas initialization.
  *
- * Architecture (Consolidated in PR #1394 + Issue #xxxx):
+ * Architecture (Consolidated in PR #1394 + Issue #1398):
  * - TrainingLeftHUD: Anatomy controls, guard indicator
  * - TrainingRightHUD: Training stats, mode selector, vital point selection
  * - TrainingTopHUD: Training controls, archetype selector, return button

@@ -267,7 +267,7 @@ Test categories:
 
 ## 📝 Related Issues & PRs
 
-- **Issue**: #xxxx (TrainingScreen HUD Consolidation)
+- **Issue**: #1398 (TrainingScreen HUD Consolidation)
 - **Related PR**: #1394 (Initial HUD component creation)
 - **Future Issue**: CombatScreen HUD consolidation (recommended)
 
