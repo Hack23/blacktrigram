@@ -7,7 +7,7 @@
  * 3. Vital Point / Footwork Panel (bottom) - Contextual
  *
  * Gaming Layout Best Practice:
- * - Width: 15% of screen (mobile: 18%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: Between top/bottom bars
  * - Scrollable vital point section for long lists
  *
@@ -15,8 +15,12 @@
  */
 
 import React from "react";
-import { HUD_HEIGHT, HUD_WIDTH_PERCENT } from "../../../../../types/LayoutTypes";
-import { SPACING, SPACING_ADJUSTMENTS, BORDERS, HUD_STYLE, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { BORDERS, HUD_STYLE, GRADIENTS } from "../../../../../types/constants/designSystem";
+import {
+  getHUDHeight,
+  getResponsivePadding,
+  getResponsiveSize,
+} from "../../../../../utils/responsiveLayout";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -34,8 +38,8 @@ export interface TrainingRightHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Current training mode */
@@ -74,11 +78,12 @@ export interface TrainingRightHUDProps {
  * TrainingRightHUD Component
  *
  * Right panel with Stats (top), Mode selector (middle), Vital points (bottom).
+ * Uses resolution-based sizing for all dimensions.
  */
 export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   trainingMode,
   onModeChange,
@@ -95,26 +100,33 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onAdvanceFootworkStep,
 }) => {
   const layout = React.useMemo(() => {
-    const hudWidth = isMobile
-      ? width * HUD_WIDTH_PERCENT.RIGHT_MOBILE
-      : width * HUD_WIDTH_PERCENT.RIGHT_DESKTOP;
+    // Resolution-based width: 14-18% of screen
+    const hudWidthPercent = getResponsiveSize(width, {
+      mobile: 18,
+      tablet: 16,
+      desktop: 14,
+    });
+    const hudWidth = Math.round((width * hudWidthPercent) / 100);
 
-    const scaledTopHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
-      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
-    const scaledBottomHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
-      : HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP * positionScale;
+    // Top/bottom offsets using resolution-based height calculations
+    const scaledTopHeight = getHUDHeight(height, 0.06) * positionScale; // ~6% for top
+    const scaledBottomHeight = getHUDHeight(height, 0.11) * positionScale; // ~11% for bottom
 
     const topOffset = scaledTopHeight;
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.xs, 10) * positionScale;
-    const gap = isMobile ? parseInt(SPACING_ADJUSTMENTS.compact, 10) : parseInt(SPACING.xs, 10) * positionScale;
+    // Resolution-based padding and gap (using design system as reference for compact spacing)
+    const padding = getResponsivePadding(width) * positionScale;
+    const gap = getResponsiveSize(width, {
+      mobile: 6,
+      tablet: 7,
+      desktop: 8,
+    }) * positionScale;
+
 
     return { hudWidth, topOffset, bottomOffset, availableHeight, padding, gap };
-  }, [width, height, isMobile, positionScale]);
+  }, [width, height, positionScale]);
 
   return (
     <div

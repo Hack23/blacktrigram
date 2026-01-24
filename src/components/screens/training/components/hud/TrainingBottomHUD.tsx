@@ -9,7 +9,7 @@
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Compact ~80-100px
+ * - Height: Resolution-based ~11% of screen height (40-120px range)
  * - On mobile, consolidates controls from TopHUD
  *
  * @korean 훈련화면 하단 바 - 기술 바, 음량, 피드백, 모바일 원형선택
@@ -19,8 +19,13 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
-import { HUD_HEIGHT, Z_INDEX } from "../../../../../types/LayoutTypes";
+import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import {
+  getHUDHeight,
+  getResponsivePadding,
+  shouldShowMobileControls,
+} from "../../../../../utils/responsiveLayout";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
@@ -33,8 +38,8 @@ export interface TrainingBottomHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Available techniques for the technique bar */
@@ -63,12 +68,12 @@ export interface TrainingBottomHUDProps {
  * TrainingBottomHUD Component
  *
  * Compact bottom bar with centered technique bar, volume control,
- * and archetype selector on mobile.
+ * and archetype selector on mobile. Uses resolution-based sizing.
  */
 export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   techniques,
   player,
@@ -81,14 +86,19 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   onArchetypeSelect,
   onPlaySFX,
 }) => {
+  // isMobile only used for showing mobile controls
+  const showMobileControls = shouldShowMobileControls(width, isMobile);
+
   const layout = React.useMemo(() => {
-    const hudHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
-      : HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP * positionScale;
-    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    // Resolution-based HUD height (11% of screen height, 40-120px range)
+    const hudHeight = getHUDHeight(height, 0.11) * positionScale;
+    
+    // Resolution-based padding
+    const padding = getResponsivePadding(width) * positionScale;
+
 
     return { hudHeight, padding };
-  }, [isMobile, positionScale]);
+  }, [width, height, positionScale]);
 
   return (
     <div
@@ -125,7 +135,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         >
           <TrainingFeedbackOverlayHtml
             message={feedbackMessage}
-            isMobile={isMobile}
+            isMobile={showMobileControls}
           />
         </div>
       )}
@@ -151,7 +161,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
           cooldowns={cooldowns}
           onTechniqueSelect={onTechniqueSelect}
           onTechniqueHover={(_tech) => {}}
-          isMobile={isMobile}
+          isMobile={showMobileControls}
           screenWidth={width}
           screenHeight={height}
           embedded={true}
@@ -172,7 +182,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
       </div>
 
       {/* Mobile Archetype Selector - bottom left corner */}
-      {isMobile && onArchetypeSelect && selectedArchetype && (
+      {showMobileControls && onArchetypeSelect && selectedArchetype && (
         <div
           style={{
             position: "absolute",
@@ -193,7 +203,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
             selectedArchetype={selectedArchetype}
             onArchetypeSelect={onArchetypeSelect}
             onPlaySFX={onPlaySFX ?? (() => {})}
-            isMobile={isMobile}
+            isMobile={showMobileControls}
           />
         </div>
       )}

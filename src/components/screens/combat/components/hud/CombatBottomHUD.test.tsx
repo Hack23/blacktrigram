@@ -100,24 +100,24 @@ describe("CombatBottomHUD", () => {
     renderWithAudio(<CombatBottomHUD {...defaultProps} isMobile={true} />);
     
     const bottomHud = screen.getByTestId("combat-bottom-hud");
-    // Mobile height should be 100px
-    expect(bottomHud).toHaveStyle({ height: "100px" });
+    // Resolution-based height: getHUDHeight(1080, 0.1) = 108px
+    expect(bottomHud).toHaveStyle({ height: "108px" });
   });
 
   it("should apply desktop layout by default", () => {
     renderWithAudio(<CombatBottomHUD {...defaultProps} />);
     
     const bottomHud = screen.getByTestId("combat-bottom-hud");
-    // Desktop height should be 120px
-    expect(bottomHud).toHaveStyle({ height: "120px" });
+    // Resolution-based height: getHUDHeight(1080, 0.1) = 108px
+    expect(bottomHud).toHaveStyle({ height: "108px" });
   });
 
   it("should scale layout with positionScale", () => {
     renderWithAudio(<CombatBottomHUD {...defaultProps} positionScale={1.5} />);
     
     const bottomHud = screen.getByTestId("combat-bottom-hud");
-    // Desktop height * positionScale = 120 * 1.5 = 180px
-    expect(bottomHud).toHaveStyle({ height: "180px" });
+    // Resolution-based height * positionScale: 108 * 1.5 = 162px
+    expect(bottomHud).toHaveStyle({ height: "162px" });
   });
 
   it("should position correctly at the bottom", () => {

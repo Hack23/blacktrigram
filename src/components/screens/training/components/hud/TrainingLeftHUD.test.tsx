@@ -166,18 +166,28 @@ describe("TrainingLeftHUD", () => {
     });
   });
 
-  describe("Mobile Layout", () => {
-    it("should use smaller gap on mobile", () => {
-      render(<TrainingLeftHUD {...defaultProps} isMobile={true} />);
+  describe("Resolution-based Layout", () => {
+    it("should use resolution-based gap (width 1200px between tablet and mobile)", () => {
+      render(<TrainingLeftHUD {...defaultProps} />);
       const container = screen.getByTestId("training-left-hud");
-      expect(container).toHaveStyle({ gap: "12px" });
+      // Gap is calculated using getResponsiveSize for width=1200
+      // Between mobile (768) and tablet (1280), interpolates between 12 and 15
+      // Formula: 12 + (15 - 12) * ((1200 - 768) / (1280 - 768)) = 14.53125
+      expect(container).toHaveStyle({ gap: "14.53125px" });
     });
 
-    it("should use larger gap on desktop", () => {
-      render(<TrainingLeftHUD {...defaultProps} isMobile={false} />);
+    it("should use larger gap for wider screens (width 1920px)", () => {
+      render(<TrainingLeftHUD {...defaultProps} width={1920} />);
       const container = screen.getByTestId("training-left-hud");
-      // 24px = SPACING.lg (24px) * positionScale(1.0) for desktop
-      expect(container).toHaveStyle({ gap: "24px" });
+      // At desktop width (1920px), gap is 18px * positionScale(1.0) = 18px
+      expect(container).toHaveStyle({ gap: "18px" });
+    });
+
+    it("should use smaller gap for narrow screens (width 400px)", () => {
+      render(<TrainingLeftHUD {...defaultProps} width={400} />);
+      const container = screen.getByTestId("training-left-hud");
+      // Below mobile breakpoint (768px), gap is 12px * positionScale(1.0) = 12px
+      expect(container).toHaveStyle({ gap: "12px" });
     });
   });
 });
