@@ -8,24 +8,19 @@
  * Gaming Layout Best Practice:
  * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
- * - Leaves 70% center for arena
+ * - When combined with the right HUD, leaves roughly 64–72% center width for the arena depending on resolution
  *
  * Responsible for sizing and positioning all left-side UI elements.
+ * Now uses shared HUD utilities with resolution-based sizing.
  *
  * @korean 훈련화면 왼쪽 HUD - 해부학 표시 및 가드 표시기
  */
 
 import React from "react";
+import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
-// No longer using HUD_WIDTH_PERCENT or HUD_HEIGHT - using resolution-based sizing
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import {
-  getHUDHeight,
-  getResponsivePadding,
-  getResponsiveSize,
-} from "../../../../../utils/responsiveLayout";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
@@ -53,7 +48,8 @@ export interface TrainingLeftHUDProps {
  * TrainingLeftHUD Component
  *
  * Left side of the training screen containing anatomy controls and guard indicator.
- * Uses resolution-based sizing for width calculation.
+ * Uses resolution-based sizing for smooth scaling across all screen sizes.
+ * Uses shared HUD utilities for consistent layout and styling.
  */
 export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   width,
@@ -65,75 +61,27 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
-  // isMobile only used for theme selection (valid use case for UI styling)
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
-  // Layout calculations for left HUD with resolution-based sizing
-  const layout = React.useMemo(() => {
-    // Resolution-based width: 14-18% of screen
-    const hudWidthPercent = getResponsiveSize(width, {
-      mobile: 18,
-      tablet: 16,
-      desktop: 14,
-    });
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
-
-    // Top/bottom offsets using resolution-based height calculations
-    const scaledTopHeight = getHUDHeight(height, 0.06) * positionScale; // ~6% for top
-    const scaledBottomHeight = getHUDHeight(height, 0.11) * positionScale; // ~11% for bottom
-
-    // Calculate available height between top and bottom HUDs
-    const topOffset = scaledTopHeight;
-    const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
-
-    // Resolution-based padding and gap
-    const padding = getResponsivePadding(width) * positionScale;
-    const gap = getResponsiveSize(width, {
-      mobile: 12,
-      tablet: 15,
-      desktop: 18,
-    }) * positionScale;
-
-    return {
-      hudWidth,
-      topOffset,
-      bottomOffset,
-      availableHeight,
-      padding,
-      gap,
-    };
-  }, [width, height, positionScale]);
+  // Use shared HUD layout hook
+  const layout = useHUDLayout(
+    width,
+    height,
+    positionScale,
+    'left',
+    'training'
+  );
 
   const currentStance: TrigramStance =
     TRIGRAM_STANCES_ORDER[currentStanceIndex];
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: `${layout.topOffset}px`,
-        width: `${layout.hudWidth}px`,
-        height: `${layout.availableHeight}px`,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        pointerEvents: "none",
-        padding: `${layout.padding}px`,
-        boxSizing: "border-box",
-        gap: `${layout.gap}px`,
-        // Cyberpunk border - right edge only for left HUD
-        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
-        backdropFilter: "blur(8px)",
-      }}
-      data-testid="training-left-hud"
+    <BaseHUDContainer
+      position="left"
+      width={layout.hudWidth}
+      height={layout.availableHeight}
+      topOffset={layout.topOffset}
+      padding={layout.padding}
+      gap={layout.gap}
+      dataTestId="training-left-hud"
     >
       {/* Anatomy Controls */}
       <div
@@ -165,7 +113,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
           isMobile={isMobile}
         />
       </div>
-    </div>
+    </BaseHUDContainer>
   );
 };
 

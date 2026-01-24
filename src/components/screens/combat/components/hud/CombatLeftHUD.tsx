@@ -8,22 +8,20 @@
  * - GuardIndicator: Current stance guard status
  *
  * Gaming Layout Best Practice:
- * - Width: 14% of screen (mobile: 18%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
- * - Leaves 72% center for arena
+ * - Leaves approximately 64–72% center for arena depending on resolution (≈72% on desktop)
+ *
+ * Now uses shared HUD utilities with resolution-based sizing.
  *
  * @korean 전투화면 왼쪽 HUD - 플레이어 1 상태
  */
 
 import React from "react";
+import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
 import { PlayerState } from "../../../../../systems";
 import type { StanceLaterality } from "../../../../../systems/trigram/types";
-import {
-  HUD_WIDTH_PERCENT,
-  HUD_HEIGHT,
-} from "../../../../../types/LayoutTypes";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
@@ -55,8 +53,10 @@ export interface CombatLeftHUDProps {
  * CombatLeftHUD Component
  *
  * Left side of the combat screen containing Player 1's stats.
- * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * Occupies approximately 14–18% of screen width based on resolution breakpoints/interpolation,
+ * positioned between the top and bottom HUDs.
  * REUSES existing PlayerHUD, SpeedIndicatorHUD, BodyPartHealthDisplay components.
+ * Uses shared HUD utilities for consistent, resolution-based layout and styling.
  */
 export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   width,
@@ -68,70 +68,25 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   isInGuard,
   speedModifiers,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
-  // Layout calculations for left HUD with proper gaming proportions
-  const layout = React.useMemo(() => {
-    // Width: 14-18% of screen
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT.LEFT_MOBILE
-      : HUD_WIDTH_PERCENT.LEFT_DESKTOP;
-    const hudWidth = Math.round(width * hudWidthPercent);
-
-    // Scale factors for 4K (positionScale: 1.0-1.5)
-    const scaledTopHeight = isMobile
-      ? HUD_HEIGHT.COMBAT_TOP_MOBILE
-      : HUD_HEIGHT.COMBAT_TOP_DESKTOP * positionScale;
-    const scaledBottomHeight = isMobile
-      ? HUD_HEIGHT.COMBAT_BOTTOM_MOBILE
-      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP * positionScale;
-
-    // Calculate available height between top and bottom HUDs
-    const topOffset = scaledTopHeight;
-    const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
-
-    // Internal padding
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 10 : 14 * positionScale;
-
-    return {
-      hudWidth,
-      topOffset,
-      bottomOffset,
-      availableHeight,
-      padding,
-      gap,
-    };
-  }, [width, height, isMobile, positionScale]);
+  // Use shared HUD layout hook
+  const layout = useHUDLayout(
+    width,
+    height,
+    positionScale,
+    'left',
+    'combat'
+  );
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: `${layout.topOffset}px`,
-        width: `${layout.hudWidth}px`,
-        height: `${layout.availableHeight}px`,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        pointerEvents: "none",
-        padding: `${layout.padding}px`,
-        boxSizing: "border-box",
-        gap: `${layout.gap}px`,
-        // Cyberpunk border - right edge only for left HUD
-        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
-        backdropFilter: "blur(8px)",
-        overflow: "hidden",
-      }}
-      data-testid="combat-left-hud"
+    <BaseHUDContainer
+      position="left"
+      width={layout.hudWidth}
+      height={layout.availableHeight}
+      topOffset={layout.topOffset}
+      padding={layout.padding}
+      gap={layout.gap}
+      style={{ overflow: "hidden" }}
+      dataTestId="combat-left-hud"
     >
       {/* Player 1 Stats - REUSING PlayerHUD component with embedded positioning */}
       <div
@@ -200,7 +155,7 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
           isMobile={isMobile}
         />
       </div>
-    </div>
+    </BaseHUDContainer>
   );
 };
 
