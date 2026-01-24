@@ -113,9 +113,9 @@ describe("TechniqueBarContainer", () => {
       expect(zIndex).toBeGreaterThan(Z_INDEX.HUD);
     });
 
-    it("should have correct z-index value (45)", () => {
+    it("should have correct z-index value (55)", () => {
       // This test documents the expected z-index value
-      expect(Z_INDEX.TECHNIQUE_BAR).toBe(45);
+      expect(Z_INDEX.TECHNIQUE_BAR).toBe(55);
     });
   });
 

@@ -16,14 +16,10 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { Z_INDEX, HUD_HEIGHT } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
-
-/** Bottom HUD height - fits technique cards (100px desktop, 80px mobile) + padding */
-const BOTTOM_HUD_HEIGHT_DESKTOP = 120;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
 
 export interface CombatBottomHUDProps {
   /** Screen width for layout calculations */
@@ -71,8 +67,8 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
 }) => {
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.COMBAT_BOTTOM_MOBILE
+      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP * positionScale;
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
 
     return { hudHeight, padding };

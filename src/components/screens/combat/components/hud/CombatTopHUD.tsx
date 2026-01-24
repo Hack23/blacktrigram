@@ -15,13 +15,10 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
+import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 import { CombatReturnToMenuButton } from "../controls/CombatButtons";
-
-/** Top HUD height constants - SLIM for minimal obstruction */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 55;
 
 export interface CombatTopHUDProps {
   /** Screen width for layout calculations */
@@ -63,8 +60,8 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.COMBAT_TOP_MOBILE
+      : HUD_HEIGHT.COMBAT_TOP_DESKTOP * positionScale;
 
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
     const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;

@@ -18,21 +18,12 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import type { StanceLaterality } from "../../../../../systems/trigram/types";
+import { HUD_HEIGHT, HUD_WIDTH_PERCENT } from "../../../../../types/LayoutTypes";
 import { SPACING, SPACING_ADJUSTMENTS, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { BodyPartHealthDisplay } from "../../../../shared/three/ui/BodyPartHealthDisplay";
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
 import { DifficultyIndicator } from "./DifficultyIndicator";
-
-/** HUD width - slightly narrower for more arena space */
-const HUD_WIDTH_PERCENT_DESKTOP = 14;
-const HUD_WIDTH_PERCENT_MOBILE = 18;
-
-/** Top/Bottom bar heights (must match those components) */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 55;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 120;
-const BOTTOM_HUD_HEIGHT_MOBILE = 100;
 
 export interface CombatRightHUDProps {
   /** Screen width for layout calculations */
@@ -76,18 +67,17 @@ export const CombatRightHUD: React.FC<CombatRightHUDProps> = ({
   // Layout calculations for right HUD with proper gaming proportions
   const layout = React.useMemo(() => {
     // Width: 14-18% of screen
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT_MOBILE
-      : HUD_WIDTH_PERCENT_DESKTOP;
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
+    const hudWidth = Math.round(isMobile
+      ? width * HUD_WIDTH_PERCENT.RIGHT_MOBILE
+      : width * HUD_WIDTH_PERCENT.RIGHT_DESKTOP);
 
     // Scale factors for 4K (positionScale: 1.0-1.5)
     const scaledTopHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.COMBAT_TOP_MOBILE
+      : HUD_HEIGHT.COMBAT_TOP_DESKTOP * positionScale;
     const scaledBottomHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.COMBAT_BOTTOM_MOBILE
+      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP * positionScale;
 
     // Calculate available height between top and bottom HUDs
     const topOffset = scaledTopHeight;

@@ -19,16 +19,14 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { HUD_HEIGHT, Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
 import TrainingFeedbackOverlayHtml from "../TrainingFeedbackOverlayHtml";
 
-/** Bottom HUD height - fits technique cards (100px desktop, 80px mobile) + padding */
-const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
-const BOTTOM_HUD_HEIGHT_MOBILE = 110;
+
 
 export interface TrainingBottomHUDProps {
   /** Screen width for layout calculations */
@@ -85,8 +83,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
 }) => {
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
+      : HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP * positionScale;
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
 
     return { hudHeight, padding };

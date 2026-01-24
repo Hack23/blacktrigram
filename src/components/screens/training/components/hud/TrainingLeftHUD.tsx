@@ -18,20 +18,13 @@
 import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
+import { HUD_HEIGHT, HUD_WIDTH_PERCENT } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
 
-/** HUD width - slightly narrower for more arena space */
-const HUD_WIDTH_PERCENT_DESKTOP = 14;
-const HUD_WIDTH_PERCENT_MOBILE = 18;
 
-/** Top/Bottom bar heights (must match those components) */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 50;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
-const BOTTOM_HUD_HEIGHT_MOBILE = 110;
 
 export interface TrainingLeftHUDProps {
   /** Screen width for layout calculations */
@@ -71,18 +64,17 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   // Layout calculations for left HUD with proper gaming proportions
   const layout = React.useMemo(() => {
     // Width: 15-20% of screen
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT_MOBILE
-      : HUD_WIDTH_PERCENT_DESKTOP;
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
+    const hudWidth = isMobile
+      ? width * HUD_WIDTH_PERCENT.LEFT_MOBILE
+      : width * HUD_WIDTH_PERCENT.LEFT_DESKTOP;
 
     // Scale factors for 4K (positionScale: 1.0-1.5)
     const scaledTopHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
+      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
     const scaledBottomHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
+      : HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP * positionScale;
 
     // Calculate available height between top and bottom HUDs
     const topOffset = scaledTopHeight;
