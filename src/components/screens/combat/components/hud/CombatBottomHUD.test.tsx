@@ -6,6 +6,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AudioProvider } from "../../../../../audio/AudioProvider";
 import { createMockPlayerState } from "../../../../../test/test-utils";
+import { DamageType } from "../../../../../types/common";
 import { Technique } from "../../../../../types";
 import { CombatBottomHUD } from "./CombatBottomHUD";
 
@@ -15,21 +16,12 @@ const mockTechniques: Technique[] = [
     id: "jab",
     name: { korean: "잽", english: "Jab" },
     description: { korean: "빠른 펀치", english: "Quick punch" },
-    type: "strike",
-    stance: "geon",
-    damageType: "impact",
-    baseDamage: 10,
     staminaCost: 5,
     kiCost: 0,
-    cooldown: 0.5,
-    range: 1.5,
-    executionTime: 0.3,
-    recoveryTime: 0.2,
-    animation: "jab",
-    comboChain: [],
-    requiredKi: 0,
-    balanceImpact: 5,
-    counterable: true,
+    damage: { min: 8, max: 12 },
+    damageType: DamageType.BLUNT,
+    cooldown: 500,
+    keyboardShortcut: "Q",
   },
 ];
 

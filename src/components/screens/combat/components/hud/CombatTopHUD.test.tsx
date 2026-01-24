@@ -13,10 +13,6 @@ const mockTimerState: UseCombatTimerReturn = {
   formattedTime: "1:30",
   warningLevel: "none",
   isTimeUp: false,
-  startTimer: vi.fn(),
-  pauseTimer: vi.fn(),
-  resetTimer: vi.fn(),
-  addTime: vi.fn(),
 };
 
 describe("CombatTopHUD", () => {
