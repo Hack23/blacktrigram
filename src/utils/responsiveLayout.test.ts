@@ -403,7 +403,7 @@ describe('responsiveLayout utilities', () => {
     ];
 
     it('should scale smoothly across all resolutions', () => {
-      testResolutions.forEach(({ name, width, height }) => {
+      testResolutions.forEach(({ width, height }) => {
         const padding = getResponsivePadding(width);
         const fontSize = getResponsiveFontSize(width);
         const hudHeight = getHUDHeight(height, 0.08);
