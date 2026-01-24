@@ -232,9 +232,9 @@ describe('BaseHUDContainer', () => {
   });
 
   describe('responsive behavior', () => {
-    it('should use mobile theme when isMobile is true', () => {
+    it('should render correctly with different dimensions', () => {
       const { container } = render(
-        <BaseHUDContainer position="left" width={300} height={800} isMobile={true}>
+        <BaseHUDContainer position="left" width={300} height={800}>
           <div>Content</div>
         </BaseHUDContainer>
       );
@@ -242,9 +242,9 @@ describe('BaseHUDContainer', () => {
       expect(container.firstChild).toBeInTheDocument();
     });
 
-    it('should use desktop theme when isMobile is false', () => {
+    it('should render correctly with larger dimensions', () => {
       const { container } = render(
-        <BaseHUDContainer position="left" width={300} height={800} isMobile={false}>
+        <BaseHUDContainer position="left" width={600} height={1200}>
           <div>Content</div>
         </BaseHUDContainer>
       );

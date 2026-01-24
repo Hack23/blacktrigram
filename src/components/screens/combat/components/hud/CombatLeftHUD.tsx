@@ -85,7 +85,6 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
       topOffset={layout.topOffset}
       padding={layout.padding}
       gap={layout.gap}
-      isMobile={isMobile}
       style={{ overflow: "hidden" }}
       dataTestId="combat-left-hud"
     >

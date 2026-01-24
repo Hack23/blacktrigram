@@ -95,14 +95,20 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
-  // Use shared HUD layout hook
+  // Use shared HUD layout hook with TrainingRightHUD-specific spacing
+  // Original spacing: padding 8/10px, gap 6/8px (mobile/desktop)
+  const paddingOverride = isMobile ? 8 : 10 * positionScale;
+  const gapOverride = isMobile ? 6 : 8 * positionScale;
+  
   const layout = useHUDLayout(
     width,
     height,
     positionScale,
     isMobile,
     'right',
-    'training'
+    'training',
+    paddingOverride,
+    gapOverride
   );
 
   return (
@@ -113,7 +119,6 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
       topOffset={layout.topOffset}
       padding={layout.padding}
       gap={layout.gap}
-      isMobile={isMobile}
       style={{ overflow: "hidden" }}
       dataTestId="training-right-hud"
     >

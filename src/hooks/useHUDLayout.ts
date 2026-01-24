@@ -87,6 +87,8 @@ const HUD_DIMENSIONS = {
  * @param isMobile - Whether mobile layout is active
  * @param position - HUD position (left, right, top, bottom)
  * @param context - Context ('training' or 'combat') for context-specific dimensions
+ * @param paddingOverride - Optional padding override for per-position customization
+ * @param gapOverride - Optional gap override for per-position customization
  * @returns Calculated layout dimensions and offsets
  * 
  * @example
@@ -104,7 +106,9 @@ export function useHUDLayout(
   positionScale: number,
   isMobile: boolean,
   position: HUDPosition,
-  context: 'training' | 'combat' = 'training'
+  context: 'training' | 'combat' = 'training',
+  paddingOverride?: number,
+  gapOverride?: number
 ): HUDLayoutResult {
   return useMemo(() => {
 
@@ -141,13 +145,19 @@ export function useHUDLayout(
     const availableHeight = height - topOffset - bottomOffset;
 
     // Responsive padding and gap - context-specific for training vs combat
-    const padding = context === 'training'
+    // TrainingRightHUD uses smaller spacing: padding 8/10px, gap 6/8px (mobile/desktop)
+    // TrainingLeftHUD uses larger spacing: padding 10/15px, gap 12/18px (mobile/desktop)
+    const defaultPadding = context === 'training'
       ? (isMobile ? 10 : 15 * positionScale)
       : (isMobile ? 8 : 12 * positionScale);
     
-    const gap = context === 'training'
+    const defaultGap = context === 'training'
       ? (isMobile ? 12 : 18 * positionScale)
       : (isMobile ? 10 : 14 * positionScale);
+    
+    // Use overrides if provided, otherwise use defaults
+    const padding = paddingOverride !== undefined ? paddingOverride : defaultPadding;
+    const gap = gapOverride !== undefined ? gapOverride : defaultGap;
 
     return {
       hudWidthPercent,
@@ -160,5 +170,5 @@ export function useHUDLayout(
       padding,
       gap,
     };
-  }, [width, height, positionScale, isMobile, position, context]);
+  }, [width, height, positionScale, isMobile, position, context, paddingOverride, gapOverride]);
 }

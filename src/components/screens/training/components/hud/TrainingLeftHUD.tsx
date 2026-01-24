@@ -82,7 +82,6 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
       topOffset={layout.topOffset}
       padding={layout.padding}
       gap={layout.gap}
-      isMobile={isMobile}
       dataTestId="training-left-hud"
     >
       {/* Anatomy Controls */}

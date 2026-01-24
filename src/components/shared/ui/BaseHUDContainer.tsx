@@ -16,8 +16,8 @@
 
 import React from 'react';
 import { Z_INDEX } from '../../../types/LayoutTypes';
+import { KOREAN_COLORS } from '../../../types/constants';
 import { hexToRgbaString } from '../../../utils/colorUtils';
-import { useKoreanTheme } from '../base/useKoreanTheme';
 
 /**
  * HUD position type
@@ -48,8 +48,6 @@ export interface BaseHUDContainerProps {
   readonly children: React.ReactNode;
   /** Test ID for testing */
   readonly dataTestId?: string;
-  /** Whether mobile layout is active */
-  readonly isMobile?: boolean;
 }
 
 /**
@@ -86,15 +84,9 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
   style = {},
   children,
   dataTestId,
-  isMobile = false,
 }) => {
-  const theme = useKoreanTheme({
-    variant: 'primary',
-    size: 'md',
-    isMobile,
-  });
-
   // Calculate position-specific styles
+  // Using KOREAN_COLORS directly for stable memoization instead of useKoreanTheme
   const containerStyle = React.useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {
       position: 'absolute',
@@ -118,8 +110,8 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
           width: `${width}px`,
           height: `${height}px`,
           justifyContent: 'flex-start',
-          borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-          background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+          borderRight: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
+          background: `linear-gradient(90deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.4)} 100%)`,
         };
       
       case 'right':
@@ -130,8 +122,8 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
           width: `${width}px`,
           height: `${height}px`,
           justifyContent: 'flex-start',
-          borderLeft: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-          background: `linear-gradient(270deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+          borderLeft: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
+          background: `linear-gradient(270deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.4)} 100%)`,
         };
       
       case 'top':
@@ -144,8 +136,8 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-          background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+          borderBottom: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
+          background: `linear-gradient(180deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7)} 100%)`,
         };
       
       case 'bottom':
@@ -158,11 +150,11 @@ export const BaseHUDContainer: React.FC<BaseHUDContainerProps> = ({
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-          background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+          borderTop: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
+          background: `linear-gradient(0deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7)} 100%)`,
         };
     }
-  }, [position, width, height, topOffset, padding, gap, zIndex, theme]);
+  }, [position, width, height, topOffset, padding, gap, zIndex]);
 
   return (
     <div
