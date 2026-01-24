@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.08% </span>
+                <span class="strong">2.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/48</span>
+                <span class='fraction'>1/49</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.27% </span>
+                <span class="strong">2.22% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/44</span>
+                <span class='fraction'>1/45</span>
             </div>
         
             
@@ -227,7 +227,8 @@
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
 <a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -286,6 +287,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -406,7 +408,7 @@
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import React, { useRef, useState, useCallback, useEffect, useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 &nbsp;
 export interface FPSMonitorProps {
   /** Whether to show the FPS monitor */
@@ -450,6 +452,7 @@ export const FPSMonitor: React.FC&lt;FPSMonitorProps&gt; = <span class="fstat-no
   top = <span class="branch-0 cbranch-no" title="branch not covered" >10,</span>
   right = <span class="branch-0 cbranch-no" title="branch not covered" >10,</span>
 }) =&gt; {
+  const <span class="cstat-no" title="statement not covered" >theme = useKoreanTheme({ variant: "primary", size: "small", isMobile: false });</span>
   const [fps, setFps<span class="cstat-no" title="statement not covered" >] = useState(60);</span>
   const <span class="cstat-no" title="statement not covered" >frameCountRef = useRef(0);</span>
   const <span class="cstat-no" title="statement not covered" >lastTimeRef = useRef(0);</span>
@@ -502,16 +505,16 @@ export const FPSMonitor: React.FC&lt;FPSMonitorProps&gt; = <span class="fstat-no
   const <span class="cstat-no" title="statement not covered" >colorHex = useMemo(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
     let color: number;
 <span class="cstat-no" title="statement not covered" >    if (fps &gt;= 60) {</span>
-<span class="cstat-no" title="statement not covered" >      color = KOREAN_COLORS.ACCENT_GOLD; // Excellent</span>
+<span class="cstat-no" title="statement not covered" >      color = theme.colors.ACCENT_GOLD; // Excellent</span>
 <span class="cstat-no" title="statement not covered" >    } else if (fps &gt;= warningThreshold) {</span>
 <span class="cstat-no" title="statement not covered" >      color = 0xffff00; // Warning (yellow)</span>
 <span class="cstat-no" title="statement not covered" >    } else if (fps &gt;= criticalThreshold) {</span>
 <span class="cstat-no" title="statement not covered" >      color = 0xff8800; // Poor (orange)</span>
     } else {
-<span class="cstat-no" title="statement not covered" >      color = KOREAN_COLORS.PRIMARY_RED; // Critical (red)</span>
+<span class="cstat-no" title="statement not covered" >      color = theme.colors.PRIMARY_RED; // Critical (red)</span>
     }
 <span class="cstat-no" title="statement not covered" >    return `#${color.toString(16).padStart(6, "0")}`;</span>
-  }, [fps, warningThreshold, criticalThreshold]);
+  }, [fps, warningThreshold, criticalThreshold, theme.colors.ACCENT_GOLD, theme.colors.PRIMARY_RED]);
 &nbsp;
   const getStatus = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >    if (fps &gt;= 60) <span class="cstat-no" title="statement not covered" >return "우수 | Excellent";</span></span>
@@ -536,7 +539,7 @@ export const FPSMonitor: React.FC&lt;FPSMonitorProps&gt; = <span class="fstat-no
           background: "rgba(0, 0, 0, 0.8)",
           border: `2px solid ${colorHex}`,
           borderRadius: "4px",
-          fontFamily: FONT_FAMILY.KOREAN,
+          fontFamily: theme.fontFamily.KOREAN,
           fontSize: "12px",
           color: colorHex,
           pointerEvents: "none",
@@ -562,7 +565,7 @@ export default FPSMonitor;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.401Z
+                at 2026-01-24T01:41:14.780Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

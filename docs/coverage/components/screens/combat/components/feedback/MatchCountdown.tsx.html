@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.07% </span>
+                <span class="strong">74.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/54</span>
+                <span class='fraction'>41/55</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">75.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/52</span>
+                <span class='fraction'>40/53</span>
             </div>
         
             
@@ -385,7 +385,12 @@
 <a name='L320'></a><a href='#L320'>320</a>
 <a name='L321'></a><a href='#L321'>321</a>
 <a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -472,6 +477,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -716,6 +722,8 @@
  * Implements Korean cyberpunk aesthetic with bilingual text support.
  * Plays audio cues for countdown and fight announcement.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/MatchCountdown
  * @category Combat UI
  */
@@ -726,7 +734,7 @@ import {
   MatchCountdownState,
   useMatchCountdown,
 } from "../../../../../hooks/useMatchCountdown";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexColorToCSS } from "../../../../../utils/colorUtils";
 &nbsp;
 /**
@@ -795,6 +803,7 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
   showSkip = false,
 }) =&gt; {
   const audio = useAudio();
+  const theme = useKoreanTheme({ variant: "primary", size: "xlarge", isMobile });
 &nbsp;
   // Use match countdown hook with stable config reference
   const { state, currentNumber, startCountdown, skipCountdown, isActive } =
@@ -851,15 +860,15 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
   const mainFontSize = getMainFontSize();
   const subFontSize = getSubFontSize();
 &nbsp;
-  // Convert hex colors to CSS - memoized for performance
-  const goldColor = useMemo(() =&gt; hexColorToCSS(KOREAN_COLORS.ACCENT_GOLD), []);
+  // Memoize colors for performance using theme
+  const goldColor = useMemo(() =&gt; hexColorToCSS(theme.colors.ACCENT_GOLD), [theme.colors.ACCENT_GOLD]);
   const cyanColor = useMemo(
-    () =&gt; hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN),
-    []
+    () =&gt; hexColorToCSS(theme.colors.PRIMARY_CYAN),
+    [theme.colors.PRIMARY_CYAN]
   );
   const darkBg = useMemo(
-    () =&gt; hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
-    []
+    () =&gt; hexColorToCSS(theme.colors.UI_BACKGROUND_DARK),
+    [theme.colors.UI_BACKGROUND_DARK]
   );
 &nbsp;
   // Don't render if countdown not active or complete
@@ -894,7 +903,7 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
             fontSize: mainFontSize,
             fontWeight: "bold",
             color: state === "fight" ? goldColor : cyanColor,
-            fontFamily: FONT_FAMILY.KOREAN,
+            fontFamily: theme.fontFamily.KOREAN,
             textShadow: `0 0 ${state === "fight" ? "40px" : "30px"} ${
               state === "fight" ? goldColor : cyanColor
             }`,
@@ -937,7 +946,7 @@ export const MatchCountdown: React.FC&lt;MatchCountdownProps&gt; = ({
               color: darkBg,
               border: "none",
               borderRadius: "6px",
-              fontFamily: FONT_FAMILY.KOREAN,
+              fontFamily: theme.fontFamily.KOREAN,
               fontWeight: "bold",
               cursor: "pointer",
               transition: "all 0.2s ease",
@@ -1036,7 +1045,7 @@ export default MatchCountdown;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.029Z
+                at 2026-01-24T01:41:14.371Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

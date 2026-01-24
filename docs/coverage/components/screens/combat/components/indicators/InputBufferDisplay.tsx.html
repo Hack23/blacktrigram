@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -239,7 +239,15 @@
 <a name='L174'></a><a href='#L174'>174</a>
 <a name='L175'></a><a href='#L175'>175</a>
 <a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,6 +300,8 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">72x</span>
@@ -419,6 +429,8 @@
  * InputBufferDisplay - Input queue visualization
  * Shows queued combat actions for player feedback
  * 
+ * Refactored to use useKoreanTheme for consistent theming.
+ * 
  * @module components/combat/components/InputBufferDisplay
  * @category Combat UI
  * @korean 입력버퍼표시
@@ -426,7 +438,7 @@
 &nbsp;
 import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { QueuedInput } from "../../../../../hooks/useKeyboardControls";
 &nbsp;
@@ -445,13 +457,14 @@ export interface InputBufferDisplayProps {
  * 
  * Displays a list of recently queued combat inputs in the top-right corner.
  * Useful for showing input confirmation and debugging input lag issues.
+ * Uses useKoreanTheme for consistent styling.
  * 
  * Features:
  * - Displays up to 3 recent inputs
  * - Fades older inputs with reduced opacity
  * - Shows action name and key pressed
  * - Responsive mobile layout
- * - Korean cyberpunk styling
+ * - Korean cyberpunk styling via theme
  * - Automatically clears after 2 seconds
  * 
  * @example
@@ -469,6 +482,8 @@ export const InputBufferDisplay: React.FC&lt;InputBufferDisplayProps&gt; = ({
   queuedInputs,
   isMobile = false,
 }) =&gt; {
+  const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
+  
   // Memoize animation styles to prevent redefinition on every render
   const animationStyles = useMemo(() =&gt; (
     &lt;style&gt;
@@ -505,22 +520,22 @@ export const InputBufferDisplay: React.FC&lt;InputBufferDisplayProps&gt; = ({
           position: "absolute",
           top,
           right,
-          background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-          border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.6)}`,
+          background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+          border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.6)}`,
           borderRadius: "4px",
           padding: isMobile ? "4px" : "8px",
           minWidth: isMobile ? "100px" : "150px",
           pointerEvents: "none",
           zIndex: 998,
-          boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2)}`,
+          boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.2)}`,
         }}
       &gt;
         {/* Title */}
         &lt;div
           style={{
             fontSize: `${labelFontSize}px`,
-            color: hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.9),
-            fontFamily: FONT_FAMILY.KOREAN,
+            color: hexToRgbaString(theme.colors.ACCENT_BLUE, 0.9),
+            fontFamily: theme.fontFamily.KOREAN,
             marginBottom: "4px",
             fontWeight: "bold",
             textTransform: "uppercase",
@@ -541,8 +556,8 @@ export const InputBufferDisplay: React.FC&lt;InputBufferDisplayProps&gt; = ({
                 data-testid={`queued-input-${index}`}
                 style={{
                   fontSize: `${fontSize}px`,
-                  color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY, opacity),
-                  fontFamily: FONT_FAMILY.KOREAN,
+                  color: hexToRgbaString(theme.colors.TEXT_PRIMARY, opacity),
+                  fontFamily: theme.fontFamily.KOREAN,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -567,10 +582,10 @@ export const InputBufferDisplay: React.FC&lt;InputBufferDisplayProps&gt; = ({
                   style={{
                     padding: "2px 4px",
                     background: hexToRgbaString(
-                      KOREAN_COLORS.ACCENT_BLUE,
+                      theme.colors.ACCENT_BLUE,
                       0.2 * opacity
                     ),
-                    border: `1px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.5 * opacity)}`,
+                    border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_BLUE, 0.5 * opacity)}`,
                     borderRadius: "2px",
                     fontSize: `${fontSize - 2}px`,
                     fontWeight: "bold",
@@ -598,7 +613,7 @@ export const InputBufferDisplay: React.FC&lt;InputBufferDisplayProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.029Z
+                at 2026-01-24T01:41:14.371Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

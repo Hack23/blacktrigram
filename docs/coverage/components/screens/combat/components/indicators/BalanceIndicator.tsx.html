@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/21</span>
+                <span class='fraction'>16/22</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/20</span>
+                <span class='fraction'>15/21</span>
             </div>
         
             
@@ -196,7 +196,12 @@
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,6 +233,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -248,24 +274,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -288,6 +296,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-yes">30x</span>
@@ -338,13 +348,15 @@
  * NOTE: This component is rendered OUTSIDE the Canvas as part of the HTML overlay.
  * It does NOT use Html from drei - it's a standard React component.
  *
+ * Refactored to use useKoreanTheme for consistent styling.
+ *
  * @module components/combat/BalanceIndicator
  * @category Combat UI
  * @korean 균형표시기
  */
 &nbsp;
 import React, { useMemo } from "react";
-import { KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import type { BalanceState } from "../../../../../types/player-visual";
 &nbsp;
 export interface BalanceIndicatorProps {
@@ -368,18 +380,18 @@ export interface BalanceIndicatorProps {
 }
 &nbsp;
 /**
- * Get color for balance state
+ * Get color for balance state using theme colors
  */
-function getBalanceColor(state: BalanceState): number {
+function getBalanceColor(theme: ReturnType&lt;typeof useKoreanTheme&gt;, state: BalanceState): number {
   switch (state) {
     case "READY":
-      return KOREAN_COLORS.POSITIVE_GREEN; // 🟢 Green
+      return theme.colors.POSITIVE_GREEN; // 🟢 Green
 <span class="branch-1 cbranch-no" title="branch not covered" >    case "SHAKEN":</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.WARNING_YELLOW; // 🟡 Yellow</span>
+<span class="cstat-no" title="statement not covered" >      return theme.colors.WARNING_YELLOW; // 🟡 Yellow</span>
 <span class="branch-2 cbranch-no" title="branch not covered" >    case "VULNERABLE":</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.WARNING_ORANGE; // 🟠 Orange</span>
+<span class="cstat-no" title="statement not covered" >      return theme.colors.WARNING_ORANGE; // 🟠 Orange</span>
 <span class="branch-3 cbranch-no" title="branch not covered" >    case "HELPLESS":</span>
-<span class="cstat-no" title="statement not covered" >      return KOREAN_COLORS.ACCENT_RED; // 🔴 Red</span>
+<span class="cstat-no" title="statement not covered" >      return theme.colors.ACCENT_RED; // 🔴 Red</span>
   }
 }
 &nbsp;
@@ -407,6 +419,7 @@ function getBalanceLabel(state: BalanceState): {
  *
  * Renders a border around the player HUD area with color matching the
  * current balance state. Uses smooth transitions for state changes.
+ * Uses useKoreanTheme for consistent color scheme.
  *
  * @example
  * ```tsx
@@ -422,8 +435,10 @@ export const BalanceIndicator: React.FC&lt;BalanceIndicatorProps&gt; = ({
   position,
   isMobile,
 }) =&gt; {
+  const theme = useKoreanTheme({ variant: "primary", size: "md", isMobile });
+  
   const indicatorStyle = useMemo(() =&gt; {
-    const color = getBalanceColor(balanceState);
+    const color = getBalanceColor(theme, balanceState);
     const colorHex = `#${color.toString(16).padStart(6, "0")}`;
 &nbsp;
     // Mobile uses thinner border
@@ -446,7 +461,7 @@ export const BalanceIndicator: React.FC&lt;BalanceIndicatorProps&gt; = ({
       transition: "border-color 0.5s ease-out, box-shadow 0.5s ease-out",
       zIndex: 90, // Below HUD text but above game content
     };
-  }, [balanceState, position, isMobile]);
+  }, [balanceState, position, isMobile, theme]);
 &nbsp;
   const label = useMemo(() =&gt; getBalanceLabel(balanceState), [balanceState]);
 &nbsp;
@@ -469,7 +484,7 @@ BalanceIndicator.displayName = "BalanceIndicator";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.029Z
+                at 2026-01-24T01:41:14.371Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

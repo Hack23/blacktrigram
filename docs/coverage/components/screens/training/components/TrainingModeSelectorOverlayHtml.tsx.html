@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>27/27</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -317,7 +317,12 @@
 <a name='L252'></a><a href='#L252'>252</a>
 <a name='L253'></a><a href='#L253'>253</a>
 <a name='L254'></a><a href='#L254'>254</a>
-<a name='L255'></a><a href='#L255'>255</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -432,13 +437,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -455,10 +457,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -560,6 +566,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -573,20 +583,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * TrainingModeSelectorOverlayHtml - Html overlay for training mode selection
- * 
+ *
  * Allows switching between different training modes with consistent Korean theming.
  * Uses KOREAN_COLORS constants and bilingual formatting.
- * 
+ *
  * @module components/screens/training
  * @category Training UI
  * @korean 훈련모드선택오버레이
  */
 &nbsp;
 import React from "react";
-import {
-  FONT_FAMILY,
-  KOREAN_COLORS,
-} from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { SPACING } from "../../../../types/constants/ui";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import {
@@ -603,14 +610,14 @@ import "../training.css";
 /**
  * Training mode types
  */
-export type TrainingMode = 
-  | "basics"              // Basic Training - Simple striking practice
-  | "advanced"            // Advanced Training - Vital point precision
-  | "free"                // Free Practice - Open combat vs AI
-  | "stance_training"     // Stance Training - Practice 8 trigrams
-  | "vital_point"         // Vital Point Training - Precision targeting
-  | "combo_practice"      // Combo Practice - Multi-hit techniques
-  | "footwork";           // Footwork Training - Movement drills (보법 훈련)
+export type TrainingMode =
+  | "basics" // Basic Training - Simple striking practice
+  | "advanced" // Advanced Training - Vital point precision
+  | "free" // Free Practice - Open combat vs AI
+  | "stance_training" // Stance Training - Practice 8 trigrams
+  | "vital_point" // Vital Point Training - Precision targeting
+  | "combo_practice" // Combo Practice - Multi-hit techniques
+  | "footwork"; // Footwork Training - Movement drills (보법 훈련)
 &nbsp;
 /**
  * Props for TrainingModeSelectorOverlayHtml component
@@ -627,7 +634,10 @@ export interface TrainingModeSelectorOverlayHtmlProps {
 /**
  * Mode information
  */
-const MODE_INFO: Record&lt;TrainingMode, { korean: string; english: string; description: string }&gt; = {
+const MODE_INFO: Record&lt;
+  TrainingMode,
+  { korean: string; english: string; description: string }
+&gt; = {
   basics: {
     korean: "기본 훈련",
     english: "Basic Training",
@@ -667,14 +677,14 @@ const MODE_INFO: Record&lt;TrainingMode, { korean: string; english: string; desc
 &nbsp;
 /**
  * TrainingModeSelectorOverlayHtml Component
- * 
+ *
  * Html overlay for selecting training mode with Korean theming.
  * Compact horizontal grid layout optimized for desktop and mobile.
  *
  * Optimized with React.memo for 60fps performance:
  * - Prevents re-renders when currentMode hasn't changed
  * - Callback expected to be stable (parent should use useCallback)
- * 
+ *
  * @example
  * ```tsx
  * &lt;TrainingModeSelectorOverlayHtml
@@ -683,144 +693,149 @@ const MODE_INFO: Record&lt;TrainingMode, { korean: string; english: string; desc
  *   isMobile={false}
  * /&gt;
  * ```
- * 
+ *
  * @korean 훈련모드선택오버레이컴포넌트
  */
-export const TrainingModeSelectorOverlayHtml = React.memo&lt;TrainingModeSelectorOverlayHtmlProps&gt;(
-  ({
-    currentMode,
-    onModeChange,
-    isMobile,
-  }) =&gt; {
-  const panelWidth = isMobile ? 280 : 320;
-  const padding = getResponsiveSpacing("sm", isMobile);
-  const gap = getResponsiveSpacing("xs", isMobile);
+export const TrainingModeSelectorOverlayHtml =
+  React.memo&lt;TrainingModeSelectorOverlayHtmlProps&gt;(
+    ({ currentMode, onModeChange, isMobile }) =&gt; {
+      // Use 100% width to fill container instead of fixed width
+      const padding = getResponsiveSpacing("sm", isMobile);
+      const gap = getResponsiveSpacing("xs", isMobile);
 &nbsp;
-  // Enhanced panel styles with neon glow
-  const panelStyle: React.CSSProperties = {
-    ...getEnhancedKoreanOverlayStyles({
-      opacity: 0.9,
-      glowIntensity: "medium",
-      includeGradient: false,
-      includeBackdropBlur: true,
-      depthLayers: 3,
-    }),
-    width: `${panelWidth}px`,
-    padding: `${padding}px`,
-  };
+      // Enhanced panel styles with neon glow - now uses 100% width
+      const panelStyle: React.CSSProperties = {
+        ...getEnhancedKoreanOverlayStyles({
+          opacity: 0.9,
+          glowIntensity: "medium",
+          includeGradient: false,
+          includeBackdropBlur: true,
+          depthLayers: 3,
+        }),
+        width: "100%",
+        padding: `${padding}px`,
+        boxSizing: "border-box",
+      };
 &nbsp;
-  const titleFontSize = isMobile ? 13 : 15;
-  const descFontSize = isMobile ? 9 : 10;
+      const titleFontSize = isMobile ? 13 : 15;
+      const descFontSize = isMobile ? 9 : 10;
 &nbsp;
-  return (
-    &lt;div style={panelStyle} data-testid="training-mode-selector-html"&gt;
-      {/* Header with bilingual title */}
-      &lt;div style={{ marginBottom: `${SPACING.SM}px`, textAlign: "center" }}&gt;
-        &lt;div
-          style={{
-            fontSize: `${titleFontSize}px`,
-            fontWeight: "bold",
-            color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
-            fontFamily: FONT_FAMILY.KOREAN,
-            textShadow: getNeonTextShadow(KOREAN_COLORS.PRIMARY_CYAN, "medium"),
-            transition: getSmoothTransition("all", "normal"),
-          }}
-        &gt;
-          {formatBilingualText("훈련 모드", "Training Mode", "pipe")}
-        &lt;/div&gt;
-        &lt;div
-          style={{
-            fontSize: `${descFontSize}px`,
-            color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
-            fontStyle: "italic",
-            marginTop: "2px",
-            minHeight: "16px",
-            fontFamily: FONT_FAMILY.KOREAN,
-            transition: getSmoothTransition("all", "normal"),
-          }}
-        &gt;
-          {MODE_INFO[currentMode].description}
-        &lt;/div&gt;
-      &lt;/div&gt;
-&nbsp;
-      {/* Mode Buttons - Horizontal Grid with Korean theming */}
-      &lt;div 
-        style={{ 
-          display: "grid", 
-          gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(3, 1fr)",
-          gap: `${gap}px` 
-        }}
-      &gt;
-        {(Object.keys(MODE_INFO) as TrainingMode[]).map((mode) =&gt; {
-          const isSelected = mode === currentMode;
-          const info = MODE_INFO[mode];
-&nbsp;
-          return (
-            &lt;button
-              key={mode}
-              onClick={() =&gt; onModeChange(mode)}
-              className={`mode-button ${isSelected ? "selected" : ""}`}
+      return (
+        &lt;div style={panelStyle} data-testid="training-mode-selector-html"&gt;
+          {/* Header with bilingual title */}
+          &lt;div style={{ marginBottom: `${SPACING.SM}px`, textAlign: "center" }}&gt;
+            &lt;div
               style={{
-                padding: isMobile ? "6px 4px" : "8px 6px",
-                textAlign: "center",
-                fontSize: isMobile ? "10px" : "11px",
-                minHeight: isMobile ? "45px" : "50px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
+                fontSize: `${titleFontSize}px`,
+                fontWeight: "bold",
+                color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN),
                 fontFamily: FONT_FAMILY.KOREAN,
+                textShadow: getNeonTextShadow(
+                  KOREAN_COLORS.PRIMARY_CYAN,
+                  "medium",
+                ),
+                transition: getSmoothTransition("all", "normal"),
               }}
-              data-testid={`mode-${mode}`}
             &gt;
-              &lt;div
-                style={{
-                  fontWeight: "bold",
-                  color: hexToRgbaString(
-                    isSelected ? KOREAN_COLORS.PRIMARY_CYAN : KOREAN_COLORS.TEXT_PRIMARY
-                  ),
-                  fontSize: isMobile ? "11px" : "12px",
-                  marginBottom: "2px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "100%",
-                  minWidth: 0,
-                }}
-              &gt;
-                {info.korean}
-              &lt;/div&gt;
-              &lt;div
-                style={{
-                  fontSize: isMobile ? "8px" : "9px",
-                  color: hexToRgbaString(
-                    isSelected ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.TEXT_TERTIARY
-                  ),
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "100%",
-                  minWidth: 0,
-                }}
-              &gt;
-                {info.english}
-              &lt;/div&gt;
-            &lt;/button&gt;
-          );
-        })}
-      &lt;/div&gt;
-    &lt;/div&gt;
+              {formatBilingualText("훈련 모드", "Training Mode", "pipe")}
+            &lt;/div&gt;
+            &lt;div
+              style={{
+                fontSize: `${descFontSize}px`,
+                color: hexToRgbaString(KOREAN_COLORS.TEXT_TERTIARY),
+                fontStyle: "italic",
+                marginTop: "2px",
+                minHeight: "16px",
+                fontFamily: FONT_FAMILY.KOREAN,
+                transition: getSmoothTransition("all", "normal"),
+              }}
+            &gt;
+              {MODE_INFO[currentMode].description}
+            &lt;/div&gt;
+          &lt;/div&gt;
+&nbsp;
+          {/* Mode Buttons - Grid layout (2 columns to fit narrow side HUD) */}
+          &lt;div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: `${gap}px`,
+            }}
+          &gt;
+            {(Object.keys(MODE_INFO) as TrainingMode[]).map((mode) =&gt; {
+              const isSelected = mode === currentMode;
+              const info = MODE_INFO[mode];
+&nbsp;
+              return (
+                &lt;button
+                  key={mode}
+                  onClick={() =&gt; onModeChange(mode)}
+                  className={`mode-button ${isSelected ? "selected" : ""}`}
+                  style={{
+                    padding: isMobile ? "6px 4px" : "8px 6px",
+                    textAlign: "center",
+                    fontSize: isMobile ? "10px" : "11px",
+                    minHeight: isMobile ? "45px" : "50px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontFamily: FONT_FAMILY.KOREAN,
+                  }}
+                  data-testid={`mode-${mode}`}
+                &gt;
+                  &lt;div
+                    style={{
+                      fontWeight: "bold",
+                      color: hexToRgbaString(
+                        isSelected
+                          ? KOREAN_COLORS.PRIMARY_CYAN
+                          : KOREAN_COLORS.TEXT_PRIMARY,
+                      ),
+                      fontSize: isMobile ? "11px" : "12px",
+                      marginBottom: "2px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "100%",
+                      minWidth: 0,
+                    }}
+                  &gt;
+                    {info.korean}
+                  &lt;/div&gt;
+                  &lt;div
+                    style={{
+                      fontSize: isMobile ? "8px" : "9px",
+                      color: hexToRgbaString(
+                        isSelected
+                          ? KOREAN_COLORS.ACCENT_GOLD
+                          : KOREAN_COLORS.TEXT_TERTIARY,
+                      ),
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: "100%",
+                      minWidth: 0,
+                    }}
+                  &gt;
+                    {info.english}
+                  &lt;/div&gt;
+                &lt;/button&gt;
+              );
+            })}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      );
+    },
+    (prevProps, nextProps) =&gt; {
+      // Only re-render if current mode, mobile state, or mode change callback changes.
+      // Including onModeChange here prevents stale callback closures when the parent
+      // provides a new function that captures updated state.
+      return (
+        prevProps.currentMode === nextProps.currentMode &amp;&amp;
+        prevProps.isMobile === nextProps.isMobile &amp;&amp;
+        prevProps.onModeChange === nextProps.onModeChange
+      );
+    },
   );
-  },
-  (prevProps, nextProps) =&gt; {
-    // Only re-render if current mode, mobile state, or mode change callback changes.
-    // Including onModeChange here prevents stale callback closures when the parent
-    // provides a new function that captures updated state.
-    return (
-      prevProps.currentMode === nextProps.currentMode &amp;&amp;
-      prevProps.isMobile === nextProps.isMobile &amp;&amp;
-      prevProps.onModeChange === nextProps.onModeChange
-    );
-  },
-);
 &nbsp;
 TrainingModeSelectorOverlayHtml.displayName = "TrainingModeSelectorOverlayHtml";
 &nbsp;
@@ -832,7 +847,7 @@ export default TrainingModeSelectorOverlayHtml;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.029Z
+                at 2026-01-24T01:41:14.371Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

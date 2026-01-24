@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -161,7 +161,13 @@
 <a name='L96'></a><a href='#L96'>96</a>
 <a name='L97'></a><a href='#L97'>97</a>
 <a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -194,16 +200,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -246,7 +253,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">55x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,13 +277,15 @@
  * Shows keyboard/touch controls on the left and scrolling combat log on the right.
  * Positioned at the bottom of the combat screen above the back button.
  *
+ * Refactored to use useKoreanTheme for consistent theming.
+ *
  * @module components/combat/components/CombatControlsPanel
  * @category Combat UI
  * @korean 전투컨트롤패널
  */
 &nbsp;
 import React from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../../../types/constants";
+import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 &nbsp;
 export interface CombatControlsPanelProps {
@@ -283,6 +297,8 @@ export interface CombatControlsPanelProps {
 &nbsp;
 /**
  * CombatControlsPanel - Controls guide and combat log display
+ * 
+ * Uses useKoreanTheme for consistent styling.
  *
  * @example
  * ```tsx
@@ -296,6 +312,8 @@ export const CombatControlsPanel: React.FC&lt;CombatControlsPanelProps&gt; = ({
   combatMessages,
   isMobile,
 }) =&gt; {
+  const theme = useKoreanTheme({ variant: "primary", size: "sm", isMobile });
+  
   return (
     &lt;div
       data-testid="combat-controls-panel"
@@ -316,11 +334,11 @@ export const CombatControlsPanel: React.FC&lt;CombatControlsPanelProps&gt; = ({
         style={{
           width: isMobile ? "45%" : "400px",
           background: "rgba(10, 10, 15, 0.8)",
-          border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
+          border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
-          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          fontFamily: FONT_FAMILY.KOREAN,
+          color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          fontFamily: theme.fontFamily.KOREAN,
         }}
       &gt;
         &lt;div style={{ fontSize: isMobile ? "10px" : "12px" }}&gt;
@@ -334,11 +352,11 @@ export const CombatControlsPanel: React.FC&lt;CombatControlsPanelProps&gt; = ({
         style={{
           width: isMobile ? "45%" : "400px",
           background: "rgba(10, 10, 15, 0.8)",
-          border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
+          border: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)}`,
           borderRadius: "8px",
           padding: "10px",
-          color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
-          fontFamily: FONT_FAMILY.KOREAN,
+          color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+          fontFamily: theme.fontFamily.KOREAN,
           maxHeight: "140px",
           overflow: "auto",
         }}
@@ -364,7 +382,7 @@ export default CombatControlsPanel;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-22T07:34:55.401Z
+                at 2026-01-24T01:41:14.780Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
