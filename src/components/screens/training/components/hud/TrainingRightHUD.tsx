@@ -7,17 +7,18 @@
  * 3. Vital Point / Footwork Panel (bottom) - Contextual
  *
  * Gaming Layout Best Practice:
- * - Width: 14% of screen (mobile: 18%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: Between top/bottom bars
  * - Scrollable vital point section for long lists
  *
- * Now uses shared HUD utilities to reduce code duplication.
+ * Now uses shared HUD utilities with resolution-based sizing.
  *
  * @korean 훈련화면 오른쪽 패널 - 통계(상), 모드(중), 급소(하)
  */
 
 import React from "react";
 import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
+import { getResponsiveSize } from "../../../../../utils/responsiveLayout";
 import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import type {
   FootworkDrill,
@@ -96,9 +97,13 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onAdvanceFootworkStep,
 }) => {
   // Use shared HUD layout hook with TrainingRightHUD-specific spacing
-  // Original spacing: padding 8/10px, gap 6/8px (mobile/desktop)
-  const paddingOverride = isMobile ? 8 : 10 * positionScale;
-  const gapOverride = isMobile ? 6 : 8 * positionScale;
+  // TrainingRightHUD uses tighter spacing than TrainingLeftHUD for denser content
+  // Resolution-based gap: mobile 6px, tablet 7px, desktop 8px
+  const gapOverride = getResponsiveSize(width, {
+    mobile: 6,
+    tablet: 7,
+    desktop: 8,
+  }) * positionScale;
   
   const layout = useHUDLayout(
     width,
@@ -107,8 +112,8 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
     isMobile,
     'right',
     'training',
-    paddingOverride,
-    gapOverride
+    undefined,  // Use default padding from hook
+    gapOverride  // Override gap for tighter spacing
   );
 
   return (

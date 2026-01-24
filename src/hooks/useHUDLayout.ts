@@ -2,7 +2,7 @@
  * useHUDLayout - Centralized HUD layout calculations
  * 
  * Extracts common HUD layout patterns used across Training and Combat screens.
- * Provides responsive sizing, positioning, and spacing calculations.
+ * Provides resolution-based responsive sizing, positioning, and spacing calculations.
  * 
  * @module hooks
  * @korean HUD레이아웃훅 - 중앙화된 HUD 레이아웃 계산
@@ -10,7 +10,7 @@
 
 import { useMemo } from 'react';
 import type { HUDPosition } from '../components/shared/ui/BaseHUDContainer';
-import { HUD_WIDTH_PERCENT, HUD_HEIGHT } from '../types/LayoutTypes';
+import { getResponsiveSize, getHUDHeight, getResponsivePadding } from '../utils/responsiveLayout';
 
 /**
  * HUD position type - left, right, top, or bottom
@@ -46,13 +46,12 @@ export interface HUDLayoutResult {
  * Custom hook for calculating HUD layout dimensions
  * 
  * Provides consistent layout calculations across Training and Combat screens.
- * Handles responsive sizing, positioning, and spacing based on screen size
- * and HUD position.
+ * Uses resolution-based responsive sizing for smooth scaling across all screen sizes.
  * 
  * @param width - Screen width in pixels
  * @param height - Screen height in pixels
  * @param positionScale - Position scale multiplier for large displays (1.0-1.5)
- * @param isMobile - Whether mobile layout is active
+ * @param isMobile - Whether mobile layout is active (for UI styling, not sizing)
  * @param position - HUD position (left, right, top, bottom)
  * @param context - Context ('training' or 'combat') for context-specific dimensions
  * @param paddingOverride - Optional padding override for per-position customization
@@ -64,8 +63,9 @@ export interface HUDLayoutResult {
  * const layout = useHUDLayout(
  *   1920, 1080, 1.0, false, 'left', 'training'
  * );
- * // layout.hudWidth = 269 (Math.round(14% of 1920))
- * // layout.availableHeight = 880 (1080 - 70 - 130)
+ * // Resolution-based sizing interpolates smoothly between breakpoints
+ * // layout.hudWidth = 269 (14% of 1920 for desktop)
+ * // layout.availableHeight = 880 (1080 - topOffset - bottomOffset)
  * ```
  */
 export function useHUDLayout(
@@ -80,41 +80,25 @@ export function useHUDLayout(
 ): HUDLayoutResult {
   return useMemo(() => {
 
-    // Calculate width percentage based on position and screen size
-    // Use position-specific constants to maintain single source of truth
-    let hudWidthPercent: number;
-    if (position === 'left') {
-      hudWidthPercent = isMobile ? HUD_WIDTH_PERCENT.LEFT_MOBILE : HUD_WIDTH_PERCENT.LEFT_DESKTOP;
-    } else if (position === 'right') {
-      hudWidthPercent = isMobile ? HUD_WIDTH_PERCENT.RIGHT_MOBILE : HUD_WIDTH_PERCENT.RIGHT_DESKTOP;
-    } else if (position === 'top') {
-      hudWidthPercent = HUD_WIDTH_PERCENT.TOP;
-    } else {
-      hudWidthPercent = HUD_WIDTH_PERCENT.BOTTOM;
-    }
+    // Resolution-based width calculation: interpolates smoothly between breakpoints
+    // Left/Right HUDs: 14-18% of screen width (mobile: 18%, tablet: 16%, desktop: 14%)
+    // Top/Bottom HUDs: 100% width
+    const hudWidthPercent = (position === 'left' || position === 'right')
+      ? getResponsiveSize(width, {
+          mobile: 18,   // 18% for small screens
+          tablet: 16,   // 16% for medium screens
+          desktop: 14,  // 14% for large screens
+        }) / 100  // Convert to decimal for percentage calculation
+      : 1.0;  // Top and bottom HUDs use full width
 
-    // Calculate height based on position and context
-    // Use imported constants from LayoutTypes for single source of truth
-    const topHeightDesktop = context === 'training' 
-      ? HUD_HEIGHT.TRAINING_TOP_DESKTOP 
-      : HUD_HEIGHT.COMBAT_TOP_DESKTOP;
-    const topHeightMobile = context === 'training'
-      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
-      : HUD_HEIGHT.COMBAT_TOP_MOBILE;
-    const bottomHeightDesktop = context === 'training'
-      ? HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP
-      : HUD_HEIGHT.COMBAT_BOTTOM_DESKTOP;
-    const bottomHeightMobile = context === 'training'
-      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
-      : HUD_HEIGHT.COMBAT_BOTTOM_MOBILE;
-
-    const scaledTopHeight = isMobile
-      ? topHeightMobile
-      : topHeightDesktop * positionScale;
+    // Resolution-based height calculation for top/bottom bars
+    // Training: ~6% for top, ~11% for bottom
+    // Combat: ~8% for top, ~12% for bottom
+    const topHeightPercent = context === 'training' ? 0.06 : 0.08;
+    const bottomHeightPercent = context === 'training' ? 0.11 : 0.12;
     
-    const scaledBottomHeight = isMobile
-      ? bottomHeightMobile
-      : bottomHeightDesktop * positionScale;
+    const scaledTopHeight = getHUDHeight(height, topHeightPercent) * positionScale;
+    const scaledBottomHeight = getHUDHeight(height, bottomHeightPercent) * positionScale;
 
     // Calculate HUD dimensions in pixels
     const hudWidth = Math.round(width * hudWidthPercent);
@@ -127,17 +111,25 @@ export function useHUDLayout(
     const bottomOffset = scaledBottomHeight;
     const availableHeight = Math.max(0, height - topOffset - bottomOffset);
 
-    // Responsive padding and gap - context-specific for training vs combat
-    // Default values apply unless overridden via paddingOverride/gapOverride parameters
-    const defaultPadding = context === 'training'
-      ? (isMobile ? 10 : 15 * positionScale)
-      : (isMobile ? 8 : 12 * positionScale);
+    // Resolution-based padding using responsive utility
+    const defaultPadding = getResponsivePadding(width) * positionScale;
     
+    // Resolution-based gap: context-specific values
+    // Training uses slightly larger gaps than combat for better readability
     const defaultGap = context === 'training'
-      ? (isMobile ? 12 : 18 * positionScale)
-      : (isMobile ? 10 : 14 * positionScale);
+      ? getResponsiveSize(width, {
+          mobile: 12,
+          tablet: 15,
+          desktop: 18,
+        }) * positionScale
+      : getResponsiveSize(width, {
+          mobile: 10,
+          tablet: 12,
+          desktop: 14,
+        }) * positionScale;
     
     // Use overrides if provided, otherwise use defaults
+    // Overrides allow per-position customization (e.g., TrainingRightHUD uses tighter spacing)
     const padding = paddingOverride !== undefined ? paddingOverride : defaultPadding;
     const gap = gapOverride !== undefined ? gapOverride : defaultGap;
 

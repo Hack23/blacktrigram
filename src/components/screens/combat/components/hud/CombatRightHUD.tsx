@@ -8,11 +8,11 @@
  * - DifficultyIndicator: AI difficulty tier display
  *
  * Gaming Layout Best Practice:
- * - Width: 14% of screen (mobile: 18%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
  * - Leaves 72% center for arena
  *
- * Now uses shared HUD utilities to reduce code duplication.
+ * Now uses shared HUD utilities with resolution-based sizing.
  *
  * @korean 전투화면 오른쪽 HUD - 플레이어 2/AI 상태
  */

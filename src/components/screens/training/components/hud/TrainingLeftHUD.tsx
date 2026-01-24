@@ -6,12 +6,12 @@
  * - Guard Indicator
  *
  * Gaming Layout Best Practice:
- * - Width: 14% of screen (mobile: 18%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
  * - Leaves 72% center for arena
  *
  * Responsible for sizing and positioning all left-side UI elements.
- * Now uses shared HUD utilities to reduce code duplication.
+ * Now uses shared HUD utilities with resolution-based sizing.
  *
  * @korean 훈련화면 왼쪽 HUD - 해부학 표시 및 가드 표시기
  */
@@ -48,7 +48,7 @@ export interface TrainingLeftHUDProps {
  * TrainingLeftHUD Component
  *
  * Left side of the training screen containing anatomy controls and guard indicator.
- * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * Uses resolution-based sizing for smooth scaling across all screen sizes.
  * Uses shared HUD utilities for consistent layout and styling.
  */
 export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
