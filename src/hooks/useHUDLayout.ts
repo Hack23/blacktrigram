@@ -137,12 +137,12 @@ export function useHUDLayout(
     const hudWidth = Math.round(width * hudWidthPercent);
     const hudHeight = position === 'top' || position === 'bottom'
       ? (position === 'top' ? scaledTopHeight : scaledBottomHeight)
-      : height - scaledTopHeight - scaledBottomHeight;
+      : Math.max(0, height - scaledTopHeight - scaledBottomHeight);
 
     // Calculate offsets for left/right HUDs
     const topOffset = scaledTopHeight;
     const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
+    const availableHeight = Math.max(0, height - topOffset - bottomOffset);
 
     // Responsive padding and gap - context-specific for training vs combat
     // TrainingRightHUD uses smaller spacing: padding 8/10px, gap 6/8px (mobile/desktop)
@@ -159,9 +159,13 @@ export function useHUDLayout(
     const padding = paddingOverride !== undefined ? paddingOverride : defaultPadding;
     const gap = gapOverride !== undefined ? gapOverride : defaultGap;
 
+    // Guard against division by zero and ensure valid percentage
+    const safeHeight = Math.max(height, 1);
+    const hudHeightPercent = Math.max(0, Math.min(1, hudHeight / safeHeight));
+
     return {
       hudWidthPercent,
-      hudHeightPercent: hudHeight / height,
+      hudHeightPercent,
       hudWidth,
       hudHeight,
       topOffset,

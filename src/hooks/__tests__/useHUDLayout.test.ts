@@ -170,5 +170,37 @@ describe('useHUDLayout', () => {
       expect(result.current.topOffset).toBe(0);
       expect(result.current.padding).toBe(0);
     });
+
+    it('should guard against division by zero with zero height', () => {
+      const { result } = renderHook(() =>
+        useHUDLayout(1920, 0, 1.0, false, 'left', 'training')
+      );
+
+      // Should not return Infinity or NaN
+      expect(result.current.hudHeightPercent).toBe(0);
+      expect(Number.isFinite(result.current.hudHeightPercent)).toBe(true);
+      expect(result.current.availableHeight).toBe(0);
+    });
+
+    it('should handle negative availableHeight gracefully', () => {
+      // When top + bottom offsets exceed total height
+      const { result } = renderHook(() =>
+        useHUDLayout(1920, 100, 1.0, false, 'left', 'training')
+      );
+
+      // availableHeight should be clamped to 0, not negative
+      expect(result.current.availableHeight).toBeGreaterThanOrEqual(0);
+      expect(result.current.hudHeight).toBeGreaterThanOrEqual(0);
+    });
+
+    it('should clamp hudHeightPercent between 0 and 1', () => {
+      const { result } = renderHook(() =>
+        useHUDLayout(1920, 100, 1.0, false, 'top', 'training')
+      );
+
+      // Percentage should never exceed 1 or go below 0
+      expect(result.current.hudHeightPercent).toBeGreaterThanOrEqual(0);
+      expect(result.current.hudHeightPercent).toBeLessThanOrEqual(1);
+    });
   });
 });

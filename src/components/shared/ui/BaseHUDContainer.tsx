@@ -30,7 +30,7 @@ export type HUDPosition = 'left' | 'right' | 'top' | 'bottom';
 export interface BaseHUDContainerProps {
   /** Position of the HUD (left, right, top, bottom) */
   readonly position: HUDPosition;
-  /** Width in pixels */
+  /** Width in pixels (used for left/right positions; top/bottom use 100% width) */
   readonly width: number;
   /** Height in pixels */
   readonly height: number;
