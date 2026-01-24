@@ -6,33 +6,24 @@
  * - Guard Indicator
  *
  * Gaming Layout Best Practice:
- * - Width: 15% of screen (mobile: 20%)
+ * - Width: 14% of screen (mobile: 18%)
  * - Height: 100% minus top/bottom HUD heights
- * - Leaves 70% center for arena
+ * - Leaves 72% center for arena
  *
  * Responsible for sizing and positioning all left-side UI elements.
+ * Now uses shared HUD utilities to reduce code duplication.
  *
  * @korean 훈련화면 왼쪽 HUD - 해부학 표시 및 가드 표시기
  */
 
 import React from "react";
+import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
-
-/** HUD width - slightly narrower for more arena space */
-const HUD_WIDTH_PERCENT_DESKTOP = 14;
-const HUD_WIDTH_PERCENT_MOBILE = 18;
-
-/** Top/Bottom bar heights (must match those components) */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 50;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
-const BOTTOM_HUD_HEIGHT_MOBILE = 110;
 
 export interface TrainingLeftHUDProps {
   /** Screen width for layout calculations */
@@ -57,7 +48,8 @@ export interface TrainingLeftHUDProps {
  * TrainingLeftHUD Component
  *
  * Left side of the training screen containing anatomy controls and guard indicator.
- * Takes 15% of screen width (20% on mobile), positioned between top and bottom HUDs.
+ * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * Uses shared HUD utilities for consistent layout and styling.
  */
 export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   width,
@@ -69,72 +61,26 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
-  // Layout calculations for left HUD with proper gaming proportions
-  const layout = React.useMemo(() => {
-    // Width: 15-20% of screen
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT_MOBILE
-      : HUD_WIDTH_PERCENT_DESKTOP;
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
-
-    // Scale factors for 4K (positionScale: 1.0-1.5)
-    const scaledTopHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
-    const scaledBottomHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
-
-    // Calculate available height between top and bottom HUDs
-    const topOffset = scaledTopHeight;
-    const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
-
-    // Internal padding
-    const padding = isMobile ? 10 : 15 * positionScale;
-    const gap = isMobile ? 12 : 18 * positionScale;
-
-    return {
-      hudWidth,
-      topOffset,
-      bottomOffset,
-      availableHeight,
-      padding,
-      gap,
-    };
-  }, [width, height, isMobile, positionScale]);
+  // Use shared HUD layout hook
+  const layout = useHUDLayout(
+    { width, height, positionScale, isMobile },
+    'left',
+    'training'
+  );
 
   const currentStance: TrigramStance =
     TRIGRAM_STANCES_ORDER[currentStanceIndex];
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        left: 0,
-        top: `${layout.topOffset}px`,
-        width: `${layout.hudWidth}px`,
-        height: `${layout.availableHeight}px`,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        pointerEvents: "none",
-        padding: `${layout.padding}px`,
-        boxSizing: "border-box",
-        gap: `${layout.gap}px`,
-        // Cyberpunk border - right edge only for left HUD
-        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
-        backdropFilter: "blur(8px)",
-      }}
-      data-testid="training-left-hud"
+    <BaseHUDContainer
+      position="left"
+      width={layout.hudWidth}
+      height={layout.availableHeight}
+      topOffset={layout.topOffset}
+      padding={layout.padding}
+      gap={layout.gap}
+      isMobile={isMobile}
+      dataTestId="training-left-hud"
     >
       {/* Anatomy Controls */}
       <div
@@ -166,7 +112,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
           isMobile={isMobile}
         />
       </div>
-    </div>
+    </BaseHUDContainer>
   );
 };
 

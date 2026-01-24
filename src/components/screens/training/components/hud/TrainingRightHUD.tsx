@@ -7,16 +7,18 @@
  * 3. Vital Point / Footwork Panel (bottom) - Contextual
  *
  * Gaming Layout Best Practice:
- * - Width: 15% of screen (mobile: 18%)
+ * - Width: 14% of screen (mobile: 18%)
  * - Height: Between top/bottom bars
  * - Scrollable vital point section for long lists
+ *
+ * Now uses shared HUD utilities to reduce code duplication.
  *
  * @korean 훈련화면 오른쪽 패널 - 통계(상), 모드(중), 급소(하)
  */
 
 import React from "react";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
+import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -26,16 +28,6 @@ import FootworkDrillsOverlayHtml from "../FootworkDrillsOverlayHtml";
 import TrainingModeSelectorOverlayHtml from "../TrainingModeSelectorOverlayHtml";
 import TrainingStatsOverlayHtml from "../TrainingStatsOverlayHtml";
 import VitalPointTrainingOverlayHtml from "../VitalPointTrainingOverlayHtml";
-
-/** HUD width - slightly narrower for more arena space */
-const HUD_WIDTH_PERCENT_DESKTOP = 14;
-const HUD_WIDTH_PERCENT_MOBILE = 18;
-
-/** Top/Bottom bar heights (must match those components) */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 50;
-const BOTTOM_HUD_HEIGHT_DESKTOP = 130;
-const BOTTOM_HUD_HEIGHT_MOBILE = 110;
 
 export interface TrainingRightHUDProps {
   /** Screen width for layout calculations */
@@ -82,6 +74,7 @@ export interface TrainingRightHUDProps {
  * TrainingRightHUD Component
  *
  * Right panel with Stats (top), Mode selector (middle), Vital points (bottom).
+ * Uses shared HUD utilities for consistent layout and styling.
  */
 export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   width,
@@ -102,56 +95,24 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
-  const layout = React.useMemo(() => {
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT_MOBILE
-      : HUD_WIDTH_PERCENT_DESKTOP;
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
-
-    const scaledTopHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
-    const scaledBottomHeight = isMobile
-      ? BOTTOM_HUD_HEIGHT_MOBILE
-      : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
-
-    const topOffset = scaledTopHeight;
-    const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
-
-    const padding = isMobile ? 8 : 10 * positionScale;
-    const gap = isMobile ? 6 : 8 * positionScale;
-
-    return { hudWidth, topOffset, bottomOffset, availableHeight, padding, gap };
-  }, [width, height, isMobile, positionScale]);
+  // Use shared HUD layout hook
+  const layout = useHUDLayout(
+    { width, height, positionScale, isMobile },
+    'right',
+    'training'
+  );
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: `${layout.topOffset}px`,
-        right: 0,
-        width: `${layout.hudWidth}px`,
-        height: `${layout.availableHeight}px`,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        pointerEvents: "none",
-        padding: `${layout.padding}px`,
-        boxSizing: "border-box",
-        gap: `${layout.gap}px`,
-        borderLeft: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(270deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
-        backdropFilter: "blur(8px)",
-        overflow: "hidden",
-      }}
-      data-testid="training-right-hud"
+    <BaseHUDContainer
+      position="right"
+      width={layout.hudWidth}
+      height={layout.availableHeight}
+      topOffset={layout.topOffset}
+      padding={layout.padding}
+      gap={layout.gap}
+      isMobile={isMobile}
+      style={{ overflow: "hidden" }}
+      dataTestId="training-right-hud"
     >
       {/* TOP: Training Stats - most referenced, always visible */}
       <div
@@ -222,7 +183,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
           />
         )}
       </div>
-    </div>
+    </BaseHUDContainer>
   );
 };
 
