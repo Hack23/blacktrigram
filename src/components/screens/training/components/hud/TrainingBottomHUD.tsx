@@ -9,7 +9,7 @@
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Resolution-based ~10% of screen height (40-120px range)
+ * - Height: Resolution-based ~11% of screen height (40-120px range)
  * - On mobile, consolidates controls from TopHUD
  *
  * @korean 훈련화면 하단 바 - 기술 바, 음량, 피드백, 모바일 원형선택

@@ -64,6 +64,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
+  // isMobile only used for theme selection (valid use case for UI styling)
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",

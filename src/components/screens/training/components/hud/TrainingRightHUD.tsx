@@ -98,6 +98,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
+  // isMobile only used for theme selection (valid use case for UI styling)
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",

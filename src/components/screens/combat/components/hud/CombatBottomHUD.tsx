@@ -8,7 +8,7 @@
  *
  * Gaming Layout Best Practice:
  * - Width: 100% of screen
- * - Height: Resolution-based ~8% of screen height (40-120px range)
+ * - Height: Resolution-based ~10% of screen height (40-120px range)
  *
  * @korean 전투화면 하단 바 - 기술 바, 음량, 전투 메시지
  */
@@ -19,6 +19,7 @@ import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
+  BREAKPOINTS,
   getHUDHeight,
   getResponsiveFontSize,
   getResponsivePadding,
@@ -94,12 +95,12 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     const messageFontSize = Math.max(10, baseFontSize * 0.75); // Slightly smaller for messages
     
     // Resolution-based widths
-    const minMessageWidth = width < 768 ? 200 : 280;
-    const maxMessageWidth = width < 768 ? width * 0.9 : 500;
-    const maxTechniqueBarWidth = width < 768 ? "100%" : "70%";
+    const minMessageWidth = width < BREAKPOINTS.mobile ? 200 : 280;
+    const maxMessageWidth = width < BREAKPOINTS.mobile ? width * 0.9 : 500;
+    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile ? "100%" : "70%";
     
     // Resolution-based message padding
-    const messagePadding = width < 768 ? "6px 12px" : "8px 16px";
+    const messagePadding = width < BREAKPOINTS.mobile ? "6px 12px" : "8px 16px";
 
     return {
       hudHeight,
