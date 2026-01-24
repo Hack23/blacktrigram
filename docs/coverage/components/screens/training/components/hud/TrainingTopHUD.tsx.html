@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>8/9</span>
             </div>
         
             
@@ -313,20 +313,7 @@
 <a name='L248'></a><a href='#L248'>248</a>
 <a name='L249'></a><a href='#L249'>249</a>
 <a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a>
-<a name='L253'></a><a href='#L253'>253</a>
-<a name='L254'></a><a href='#L254'>254</a>
-<a name='L255'></a><a href='#L255'>255</a>
-<a name='L256'></a><a href='#L256'>256</a>
-<a name='L257'></a><a href='#L257'>257</a>
-<a name='L258'></a><a href='#L258'>258</a>
-<a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a>
-<a name='L261'></a><a href='#L261'>261</a>
-<a name='L262'></a><a href='#L262'>262</a>
-<a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L251'></a><a href='#L251'>251</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -354,10 +341,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -405,12 +388,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">94x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">94x</span>
 <span class="cline-any cline-yes">46x</span>
@@ -431,9 +408,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">94x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -610,17 +584,13 @@
 &nbsp;
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
+import { SPACING, SPACING_NUMERIC, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
 } from "../TrainingButtonsOverlayHtml";
 import TrainingControlsOverlayHtml from "../TrainingControlsOverlayHtml";
-&nbsp;
-/** Top HUD height constants - SLIM for minimal obstruction */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 50;
 &nbsp;
 export interface TrainingTopHUDProps {
   /** Screen width for layout calculations */
@@ -668,21 +638,15 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
   onReturnToMenu,
   onPlaySFX,
 }) =&gt; {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-&nbsp;
   // Layout calculations for slim top bar
   const layout = React.useMemo(() =&gt; {
     const hudHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
+      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
 &nbsp;
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 8 : 12 * positionScale;
-    const fontSize = isMobile ? 11 : 12 * positionScale;
+    const padding = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
+    const gap = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
+    const fontSize = isMobile ? TYPOGRAPHY_NUMERIC.bodySmall : TYPOGRAPHY_NUMERIC.bodySmall * positionScale;
 &nbsp;
     return {
       hudHeight,
@@ -705,12 +669,12 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: `${layout.padding}px ${layout.padding * 1.5}px`,
+        padding: `${layout.padding}px ${SPACING_ADJUSTMENTS.horizontalEmphasis}`,
         pointerEvents: "none",
         boxSizing: "border-box",
-        borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
-        backdropFilter: "blur(8px)",
+        borderBottom: BORDERS.default,
+        background: GRADIENTS.vertical(0.9),
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="training-top-hud"
     &gt;
@@ -748,16 +712,13 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
           {!overlayVisible &amp;&amp; (
             &lt;div
               style={{
-                padding: `${4 * positionScale}px ${10 * positionScale}px`,
-                background: hexToRgbaString(
-                  theme.colors.UI_BACKGROUND_DARK,
-                  0.8,
-                ),
-                border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-                borderRadius: `${4 * positionScale}px`,
+                padding: `${SPACING.xxs} ${SPACING_ADJUSTMENTS.xsPlus}`,
+                background: HUD_STYLE.background,
+                border: BORDERS.muted,
+                borderRadius: BORDER_RADIUS.sm,
                 fontSize: `${layout.fontSize}px`,
-                fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
+                color: HIERARCHY.accent.color,
                 whiteSpace: "nowrap",
               }}
               data-testid="vital-point-hint"
@@ -765,7 +726,7 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
               💡 Press{" "}
               &lt;span
                 style={{
-                  color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                  color: HIERARCHY.gold.color,
                   fontWeight: "bold",
                 }}
               &gt;
@@ -782,19 +743,19 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
               flexDirection: "row",
               alignItems: "center",
               gap: `${layout.gap}px`,
-              padding: `${6 * positionScale}px ${12 * positionScale}px`,
-              background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
-              border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-              borderRadius: `${6 * positionScale}px`,
+              padding: `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}`,
+              background: HUD_STYLE.background,
+              border: BORDERS.accent,
+              borderRadius: BORDER_RADIUS.md,
               pointerEvents: "all",
             }}
           &gt;
             &lt;span
               style={{
                 fontSize: `${layout.fontSize}px`,
-                color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                color: HIERARCHY.gold.color,
                 fontWeight: "bold",
-                fontFamily: theme.koreanTypography.fontFamily,
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 whiteSpace: "nowrap",
               }}
             &gt;
@@ -814,17 +775,17 @@ export const TrainingTopHUD: React.FC&lt;TrainingTopHUDProps&gt; = ({
       {isMobile &amp;&amp; !overlayVisible &amp;&amp; (
         &lt;div
           style={{
-            padding: "4px 8px",
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
-            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-            borderRadius: "4px",
-            fontSize: "10px",
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+            padding: `${SPACING.xxs} ${SPACING.xs}`,
+            background: HUD_STYLE.background,
+            border: BORDERS.muted,
+            borderRadius: SPACING.xxs,
+            fontSize: TYPOGRAPHY.caption.fontSize,
+            fontFamily: TYPOGRAPHY.caption.fontFamily,
+            color: HIERARCHY.accent.color,
           }}
           data-testid="training-top-hud-center-section"
         &gt;
-          &lt;span style={{ color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1) }}&gt;
+          &lt;span style={{ color: HIERARCHY.gold.color }}&gt;
             V
           &lt;/span&gt;{" "}
           = 급소
@@ -859,7 +820,7 @@ export default TrainingTopHUD;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T01:41:14.371Z
+                at 2026-01-24T23:32:41.845Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
