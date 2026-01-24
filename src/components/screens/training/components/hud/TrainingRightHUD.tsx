@@ -15,6 +15,10 @@
  */
 
 import React from "react";
+import {
+  HUD_WIDTH_PERCENT,
+  HUD_HEIGHT,
+} from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   getHUDHeight,

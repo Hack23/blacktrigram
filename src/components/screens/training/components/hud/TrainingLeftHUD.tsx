@@ -18,6 +18,10 @@
 import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
+import {
+  HUD_WIDTH_PERCENT,
+  HUD_HEIGHT,
+} from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   getHUDHeight,

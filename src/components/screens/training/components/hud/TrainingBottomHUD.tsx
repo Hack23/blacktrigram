@@ -19,7 +19,10 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
-import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import {
+  HUD_HEIGHT,
+  Z_INDEX,
+} from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   getHUDHeight,
