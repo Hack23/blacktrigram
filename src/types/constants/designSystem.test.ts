@@ -17,6 +17,9 @@ import {
   BORDERS,
   GRADIENTS,
   TRANSITIONS,
+  OPACITY,
+  COMBAT_UI_DIMENSIONS,
+  TEXT_EFFECTS,
   getResponsiveSpacing,
   getResponsiveFontSize,
 } from './designSystem';
@@ -103,11 +106,17 @@ describe('Design System - Spacing', () => {
     expect(SPACING_ADJUSTMENTS).toHaveProperty('smPlus');
     expect(SPACING_ADJUSTMENTS).toHaveProperty('mdPlus');
     expect(SPACING_ADJUSTMENTS).toHaveProperty('compact');
+    expect(SPACING_ADJUSTMENTS).toHaveProperty('horizontalEmphasis');
+    expect(SPACING_ADJUSTMENTS).toHaveProperty('micro');
+    expect(SPACING_ADJUSTMENTS).toHaveProperty('tiny');
 
     expect(SPACING_ADJUSTMENTS.xsPlus).toBe('10px');
     expect(SPACING_ADJUSTMENTS.smPlus).toBe('14px');
     expect(SPACING_ADJUSTMENTS.mdPlus).toBe('18px');
     expect(SPACING_ADJUSTMENTS.compact).toBe('6px');
+    expect(SPACING_ADJUSTMENTS.horizontalEmphasis).toBe('24px');
+    expect(SPACING_ADJUSTMENTS.micro).toBe('3px');
+    expect(SPACING_ADJUSTMENTS.tiny).toBe('2px');
   });
 });
 
@@ -304,5 +313,51 @@ describe('Design System - Integration with KOREAN_COLORS', () => {
     // RGB colors should be valid
     expect(HIERARCHY.accent.color).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
     expect(HIERARCHY.gold.color).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
+  });
+});
+
+describe('Design System - OPACITY Constants', () => {
+  it('should have all opacity values', () => {
+    expect(OPACITY).toHaveProperty('base');
+    expect(OPACITY).toHaveProperty('increment');
+    expect(OPACITY).toHaveProperty('light');
+    expect(OPACITY).toHaveProperty('medium');
+    expect(OPACITY).toHaveProperty('heavy');
+  });
+
+  it('should have correct numeric values', () => {
+    expect(OPACITY.base).toBe(0.7);
+    expect(OPACITY.increment).toBe(0.1);
+    expect(OPACITY.light).toBe(0.3);
+    expect(OPACITY.medium).toBe(0.5);
+    expect(OPACITY.heavy).toBe(0.8);
+  });
+});
+
+describe('Design System - COMBAT_UI_DIMENSIONS', () => {
+  it('should have combat log dimensions', () => {
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('combatLogMinMobile');
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('combatLogMinDesktop');
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('combatLogMaxMobile');
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('combatLogMaxDesktop');
+  });
+
+  it('should have correct dimension values', () => {
+    expect(COMBAT_UI_DIMENSIONS.combatLogMinMobile).toBe('200px');
+    expect(COMBAT_UI_DIMENSIONS.combatLogMinDesktop).toBe('280px');
+    expect(COMBAT_UI_DIMENSIONS.combatLogMaxMobile).toBe('90%');
+    expect(COMBAT_UI_DIMENSIONS.combatLogMaxDesktop).toBe('500px');
+  });
+});
+
+describe('Design System - TEXT_EFFECTS', () => {
+  it('should have text shadow effects', () => {
+    expect(TEXT_EFFECTS).toHaveProperty('darkShadow');
+    expect(TEXT_EFFECTS).toHaveProperty('lightGlow');
+  });
+
+  it('should have valid shadow syntax', () => {
+    expect(TEXT_EFFECTS.darkShadow).toContain('rgba');
+    expect(TEXT_EFFECTS.lightGlow).toContain('rgba');
   });
 });

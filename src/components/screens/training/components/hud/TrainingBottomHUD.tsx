@@ -20,7 +20,7 @@ import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
 import { HUD_HEIGHT, Z_INDEX } from "../../../../../types/LayoutTypes";
-import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
@@ -107,7 +107,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         boxSizing: "border-box",
         borderTop: BORDERS.default,
         background: GRADIENTS.verticalReverse(0.9),
-        backdropFilter: "blur(8px)",
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="training-bottom-hud"
     >

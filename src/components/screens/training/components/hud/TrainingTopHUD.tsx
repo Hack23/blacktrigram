@@ -109,7 +109,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
         boxSizing: "border-box",
         borderBottom: BORDERS.default,
         background: GRADIENTS.vertical(0.9),
-        backdropFilter: "blur(8px)",
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="training-top-hud"
     >

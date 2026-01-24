@@ -17,7 +17,11 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX, HUD_HEIGHT } from "../../../../../types/LayoutTypes";
-import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
+  OPACITY,
+  COMBAT_UI_DIMENSIONS,
+  TEXT_EFFECTS,
+} from "../../../../../types/constants/designSystem";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 
@@ -94,7 +98,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         boxSizing: "border-box",
         borderTop: BORDERS.default,
         background: GRADIENTS.verticalReverse(0.9),
-        backdropFilter: "blur(8px)",
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="combat-bottom-hud"
     >
@@ -109,15 +113,15 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "3px",
+            gap: SPACING_ADJUSTMENTS.micro,
             zIndex: Z_INDEX.HUD,
             padding: isMobile ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` : `${SPACING.xs} ${SPACING.md}`,
             background: HUD_STYLE.background,
             border: BORDERS.muted,
             borderRadius: BORDER_RADIUS.md,
             boxShadow: HUD_STYLE.shadow,
-            minWidth: isMobile ? "200px" : "280px",
-            maxWidth: isMobile ? "90%" : "500px",
+            minWidth: isMobile ? COMBAT_UI_DIMENSIONS.combatLogMinMobile : COMBAT_UI_DIMENSIONS.combatLogMinDesktop,
+            maxWidth: isMobile ? COMBAT_UI_DIMENSIONS.combatLogMaxMobile : COMBAT_UI_DIMENSIONS.combatLogMaxDesktop,
           }}
           data-testid="combat-bottom-hud-messages"
         >
@@ -128,7 +132,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
               color: HIERARCHY.accent70.color,
               textTransform: "uppercase",
               letterSpacing: "1px",
-              marginBottom: "2px",
+              marginBottom: SPACING_ADJUSTMENTS.tiny,
             }}
           >
             전투 기록 | Combat Log
@@ -140,8 +144,8 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
                 fontSize: isMobile ? TYPOGRAPHY.caption.fontSize : TYPOGRAPHY.bodySmall.fontSize,
                 fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 color: HIERARCHY.primary.color,
-                textShadow: "0 0 4px rgba(0,0,0,0.8)",
-                opacity: 0.7 + index * 0.1,
+                textShadow: TEXT_EFFECTS.darkShadow,
+                opacity: OPACITY.base + index * OPACITY.increment,
                 textAlign: "center",
               }}
             >

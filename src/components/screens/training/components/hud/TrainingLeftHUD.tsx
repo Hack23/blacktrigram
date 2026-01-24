@@ -19,7 +19,7 @@ import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
 import { HUD_HEIGHT, HUD_WIDTH_PERCENT } from "../../../../../types/LayoutTypes";
-import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
@@ -117,7 +117,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
         // Cyberpunk border - right edge only for left HUD
         borderRight: BORDERS.default,
         background: GRADIENTS.horizontal(0.85),
-        backdropFilter: "blur(8px)",
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="training-left-hud"
     >

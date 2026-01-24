@@ -16,7 +16,7 @@
 
 import React from "react";
 import { HUD_HEIGHT, HUD_WIDTH_PERCENT } from "../../../../../types/LayoutTypes";
-import { SPACING, SPACING_ADJUSTMENTS, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_ADJUSTMENTS, BORDERS, HUD_STYLE, GRADIENTS } from "../../../../../types/constants/designSystem";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -133,7 +133,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
         gap: `${layout.gap}px`,
         borderLeft: BORDERS.default,
         background: GRADIENTS.horizontalReverse(0.85),
-        backdropFilter: "blur(8px)",
+        backdropFilter: HUD_STYLE.backdropFilter,
         overflow: "hidden",
       }}
       data-testid="training-right-hud"

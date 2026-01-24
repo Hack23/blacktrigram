@@ -156,6 +156,10 @@ export const SPACING_ADJUSTMENTS = {
   compact: '6px',
   /** Horizontal emphasis - 24px (for wider horizontal padding, 1.5x md) */
   horizontalEmphasis: '24px',
+  /** Micro gap - 3px (for very tight layouts) */
+  micro: '3px',
+  /** Tiny margin - 2px (for subtle spacing) */
+  tiny: '2px',
 } as const;
 
 /**
@@ -321,6 +325,58 @@ export const TRANSITIONS = {
   normal: '250ms ease-in-out',
   /** Slow - Emphasis animations (400ms) */
   slow: '400ms ease-in-out',
+} as const;
+
+/**
+ * Opacity Constants
+ * 
+ * Standard opacity values for consistent transparency effects.
+ * 
+ * @korean 투명도 상수
+ */
+export const OPACITY = {
+  /** Base opacity for layered elements */
+  base: 0.7,
+  /** Opacity increment for stacking */
+  increment: 0.1,
+  /** High transparency */
+  light: 0.3,
+  /** Medium transparency */
+  medium: 0.5,
+  /** Low transparency */
+  heavy: 0.8,
+} as const;
+
+/**
+ * Combat UI Dimensions
+ * 
+ * Common width and size constraints for combat UI elements.
+ * 
+ * @korean 전투 UI 크기
+ */
+export const COMBAT_UI_DIMENSIONS = {
+  /** Combat log minimum width - mobile */
+  combatLogMinMobile: '200px',
+  /** Combat log minimum width - desktop */
+  combatLogMinDesktop: '280px',
+  /** Combat log maximum width - mobile (percentage) */
+  combatLogMaxMobile: '90%',
+  /** Combat log maximum width - desktop */
+  combatLogMaxDesktop: '500px',
+} as const;
+
+/**
+ * Text Effects
+ * 
+ * Reusable text shadow effects for emphasis and readability.
+ * 
+ * @korean 텍스트 효과
+ */
+export const TEXT_EFFECTS = {
+  /** Dark shadow for contrast on bright backgrounds */
+  darkShadow: '0 0 4px rgba(0,0,0,0.8)',
+  /** Light glow for emphasis */
+  lightGlow: '0 0 8px rgba(255,255,255,0.5)',
 } as const;
 
 /**
