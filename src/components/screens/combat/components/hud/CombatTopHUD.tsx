@@ -8,7 +8,7 @@
  *
  * Layout:
  * - Width: 100% of screen
- * - Height: Compact 60-80px (minimal obstruction)
+ * - Height: Resolution-based ~6% of screen height (40-80px)
  *
  * @korean 전투화면 상단 바 - 라운드, 타이머, 메뉴 복귀
  */
@@ -16,19 +16,23 @@
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import {
+  getHUDHeight,
+  getResponsiveFontSize,
+  getResponsivePadding,
+  shouldShowMobileControls,
+} from "../../../../../utils/responsiveLayout";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 import { CombatReturnToMenuButton } from "../controls/CombatButtons";
 
-/** Top HUD height constants - SLIM for minimal obstruction */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 55;
-
 export interface CombatTopHUDProps {
   /** Screen width for layout calculations */
   readonly width: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Screen height for layout calculations */
+  readonly height: number;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Current round number */
@@ -49,10 +53,12 @@ export interface CombatTopHUDProps {
  * CombatTopHUD Component
  *
  * Slim top bar containing round info, timer, and return to menu button.
+ * Uses resolution-based sizing for all dimensions.
  */
 export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   width,
-  isMobile,
+  height,
+  isMobile = false,
   positionScale,
   currentRound,
   totalRounds,
@@ -61,22 +67,30 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   onReturnToMenu,
   isPaused: _isPaused, // Reserved for future pause indicator
 }) => {
+  // isMobile only used for mobile controls visibility
+  const showMobileControls = shouldShowMobileControls(width, isMobile);
+
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
-    isMobile,
+    isMobile: showMobileControls,
   });
 
-  // Layout calculations for slim top bar
+  // Layout calculations for slim top bar with resolution-based sizing
   const layout = React.useMemo(() => {
-    const hudHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+    // Resolution-based HUD height (6% of screen height, 40-80px range)
+    const hudHeight = getHUDHeight(height, 0.06) * positionScale;
 
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 8 : 12 * positionScale;
-    const fontSize = isMobile ? 12 : 14 * positionScale;
-    const titleSize = isMobile ? 14 : 18 * positionScale;
+    // Resolution-based padding
+    const padding = getResponsivePadding(width) * positionScale;
+    
+    // Resolution-based gap (slightly larger than padding)
+    const gap = padding * 1.2;
+    
+    // Resolution-based font sizes
+    const baseFontSize = getResponsiveFontSize(width) * positionScale;
+    const fontSize = baseFontSize * 0.875; // Slightly smaller for body text
+    const titleSize = baseFontSize * 1.125; // Larger for titles
 
     return {
       hudHeight,
@@ -86,7 +100,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
       titleSize,
       hudWidth: width,
     };
-  }, [width, isMobile, positionScale]);
+  }, [width, height, positionScale]);
 
   return (
     <div
@@ -165,7 +179,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
             formattedTime={timerState.formattedTime}
             warningLevel={timerState.warningLevel}
             isTimeUp={timerState.isTimeUp}
-            isMobile={isMobile}
+            isMobile={showMobileControls}
             style={{ position: "relative", top: 0 }}
           />
         )}
@@ -183,7 +197,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
       >
         <CombatReturnToMenuButton
           onClick={onReturnToMenu}
-          isMobile={isMobile}
+          isMobile={showMobileControls}
         />
       </div>
     </div>

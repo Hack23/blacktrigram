@@ -2482,6 +2482,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* Top HUD - Round info, timer, return to menu */}
         <CombatTopHUD
           width={width}
+          height={height}
           isMobile={isMobile}
           positionScale={positionScale}
           currentRound={internalRound}
