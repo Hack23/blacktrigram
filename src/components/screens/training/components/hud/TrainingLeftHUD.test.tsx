@@ -176,8 +176,8 @@ describe("TrainingLeftHUD", () => {
     it("should use larger gap on desktop", () => {
       render(<TrainingLeftHUD {...defaultProps} isMobile={false} />);
       const container = screen.getByTestId("training-left-hud");
-      // 18px = 18 * positionScale(1.0) for desktop
-      expect(container).toHaveStyle({ gap: "18px" });
+      // 24px = SPACING.lg (24px) * positionScale(1.0) for desktop
+      expect(container).toHaveStyle({ gap: "24px" });
     });
   });
 });

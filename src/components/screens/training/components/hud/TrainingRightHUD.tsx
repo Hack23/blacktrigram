@@ -15,8 +15,7 @@
  */
 
 import React from "react";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -102,12 +101,6 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   const layout = React.useMemo(() => {
     const hudWidthPercent = isMobile
       ? HUD_WIDTH_PERCENT_MOBILE
@@ -125,8 +118,8 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    const padding = isMobile ? 8 : 10 * positionScale;
-    const gap = isMobile ? 6 : 8 * positionScale;
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.xs, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING.xxs, 10) + 2 : parseInt(SPACING.xs, 10) * positionScale;
 
     return { hudWidth, topOffset, bottomOffset, availableHeight, padding, gap };
   }, [width, height, isMobile, positionScale]);
@@ -146,8 +139,8 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
         gap: `${layout.gap}px`,
-        borderLeft: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(270deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+        borderLeft: BORDERS.default,
+        background: GRADIENTS.horizontalReverse(0.85),
         backdropFilter: "blur(8px)",
         overflow: "hidden",
       }}

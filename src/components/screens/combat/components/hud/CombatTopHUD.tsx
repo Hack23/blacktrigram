@@ -15,6 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
+import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
@@ -73,10 +74,10 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
       ? TOP_HUD_HEIGHT_MOBILE
       : TOP_HUD_HEIGHT_DESKTOP * positionScale;
 
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 8 : 12 * positionScale;
-    const fontSize = isMobile ? 12 : 14 * positionScale;
-    const titleSize = isMobile ? 14 : 18 * positionScale;
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    const fontSize = isMobile ? parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) : parseInt(TYPOGRAPHY.body.fontSize, 10) * positionScale;
+    const titleSize = isMobile ? parseInt(TYPOGRAPHY.body.fontSize, 10) : parseInt(TYPOGRAPHY.heading3.fontSize, 10) + 2 * positionScale;
 
     return {
       hudHeight,
@@ -103,8 +104,8 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         padding: `${layout.padding}px ${layout.padding * 1.5}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
-        borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        borderBottom: BORDERS.default,
+        background: GRADIENTS.vertical(0.9),
         backdropFilter: "blur(8px)",
       }}
       data-testid="combat-top-hud"
@@ -124,9 +125,9 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         <div
           style={{
             fontSize: `${layout.titleSize}px`,
-            fontWeight: "bold",
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+            fontWeight: 600,
+            fontFamily: TYPOGRAPHY.heading2.fontFamily,
+            color: HIERARCHY.gold.color,
             textShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
           }}
         >
@@ -140,8 +141,8 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
             gap: `${layout.gap}px`,
             alignItems: "center",
             fontSize: `${layout.fontSize}px`,
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+            fontFamily: TYPOGRAPHY.body.fontFamily,
+            color: HIERARCHY.accent.color,
           }}
         >
           <span>

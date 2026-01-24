@@ -20,6 +20,7 @@ import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
@@ -94,7 +95,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
     const hudHeight = isMobile
       ? BOTTOM_HUD_HEIGHT_MOBILE
       : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
-    const padding = isMobile ? 8 : 12 * positionScale;
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
 
     return { hudHeight, padding };
   }, [isMobile, positionScale]);
@@ -114,8 +115,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
-        borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        borderTop: BORDERS.default,
+        background: GRADIENTS.verticalReverse(0.9),
         backdropFilter: "blur(8px)",
       }}
       data-testid="training-bottom-hud"
@@ -190,11 +191,11 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
             pointerEvents: "all",
             display: "flex",
             alignItems: "center",
-            gap: "4px",
-            padding: "4px 8px",
+            gap: SPACING.xxs,
+            padding: `${parseInt(SPACING.xxs, 10)}px ${SPACING.xs}`,
             background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
-            border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-            borderRadius: "4px",
+            border: BORDERS.accent,
+            borderRadius: SPACING.xxs,
           }}
           data-testid="training-bottom-hud-archetype-section"
         >

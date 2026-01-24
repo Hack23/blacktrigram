@@ -18,8 +18,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import type { StanceLaterality } from "../../../../../systems/trigram/types";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
@@ -74,12 +73,6 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   isInGuard,
   speedModifiers,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   // Layout calculations for left HUD with proper gaming proportions
   const layout = React.useMemo(() => {
     // Width: 14-18% of screen
@@ -101,9 +94,9 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    // Internal padding
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 10 : 14 * positionScale;
+    // Internal padding from design system
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING.xs, 10) + 2 : parseInt(SPACING.md, 10) + 2 * positionScale;
 
     return {
       hudWidth,
@@ -132,8 +125,8 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
         boxSizing: "border-box",
         gap: `${layout.gap}px`,
         // Cyberpunk border - right edge only for left HUD
-        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+        borderRight: BORDERS.default,
+        background: GRADIENTS.horizontal(0.85),
         backdropFilter: "blur(8px)",
         overflow: "hidden",
       }}

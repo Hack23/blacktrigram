@@ -19,6 +19,7 @@
 
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
+import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import {
@@ -89,9 +90,9 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       ? TOP_HUD_HEIGHT_MOBILE
       : TOP_HUD_HEIGHT_DESKTOP * positionScale;
 
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 8 : 12 * positionScale;
-    const fontSize = isMobile ? 11 : 12 * positionScale;
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
+    const fontSize = isMobile ? parseInt(TYPOGRAPHY.caption.fontSize, 10) + 1 : parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) * positionScale;
 
     return {
       hudHeight,
@@ -117,8 +118,8 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
         padding: `${layout.padding}px ${layout.padding * 1.5}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
-        borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        borderBottom: BORDERS.default,
+        background: GRADIENTS.vertical(0.9),
         backdropFilter: "blur(8px)",
       }}
       data-testid="training-top-hud"
@@ -162,11 +163,11 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
                   theme.colors.UI_BACKGROUND_DARK,
                   0.8,
                 ),
-                border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-                borderRadius: `${4 * positionScale}px`,
+                border: BORDERS.muted,
+                borderRadius: parseInt(SPACING.xxs, 10) * positionScale + 'px',
                 fontSize: `${layout.fontSize}px`,
-                fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
+                color: HIERARCHY.accent.color,
                 whiteSpace: "nowrap",
               }}
               data-testid="vital-point-hint"
@@ -174,7 +175,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
               💡 Press{" "}
               <span
                 style={{
-                  color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                  color: HIERARCHY.gold.color,
                   fontWeight: "bold",
                 }}
               >
@@ -193,17 +194,17 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
               gap: `${layout.gap}px`,
               padding: `${6 * positionScale}px ${12 * positionScale}px`,
               background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
-              border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-              borderRadius: `${6 * positionScale}px`,
+              border: BORDERS.accent,
+              borderRadius: parseInt(SPACING.xxs, 10) * 1.5 * positionScale + 'px',
               pointerEvents: "all",
             }}
           >
             <span
               style={{
                 fontSize: `${layout.fontSize}px`,
-                color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
+                color: HIERARCHY.gold.color,
                 fontWeight: "bold",
-                fontFamily: theme.koreanTypography.fontFamily,
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 whiteSpace: "nowrap",
               }}
             >
@@ -223,17 +224,17 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       {isMobile && !overlayVisible && (
         <div
           style={{
-            padding: "4px 8px",
+            padding: parseInt(SPACING.xxs, 10) + 'px ' + SPACING.xs,
             background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
-            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-            borderRadius: "4px",
-            fontSize: "10px",
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+            border: BORDERS.muted,
+            borderRadius: SPACING.xxs,
+            fontSize: TYPOGRAPHY.caption.fontSize,
+            fontFamily: TYPOGRAPHY.caption.fontFamily,
+            color: HIERARCHY.accent.color,
           }}
           data-testid="training-top-hud-center-section"
         >
-          <span style={{ color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1) }}>
+          <span style={{ color: HIERARCHY.gold.color }}>
             V
           </span>{" "}
           = 급소

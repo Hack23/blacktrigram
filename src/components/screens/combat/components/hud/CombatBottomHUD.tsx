@@ -17,6 +17,7 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
+import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
@@ -80,7 +81,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     const hudHeight = isMobile
       ? BOTTOM_HUD_HEIGHT_MOBILE
       : BOTTOM_HUD_HEIGHT_DESKTOP * positionScale;
-    const padding = isMobile ? 8 : 12 * positionScale;
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
 
     return { hudHeight, padding };
   }, [isMobile, positionScale]);
@@ -103,8 +104,8 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
-        borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
+        borderTop: BORDERS.default,
+        background: GRADIENTS.verticalReverse(0.9),
         backdropFilter: "blur(8px)",
       }}
       data-testid="combat-bottom-hud"
@@ -122,10 +123,10 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             alignItems: "center",
             gap: "3px",
             zIndex: Z_INDEX.HUD,
-            padding: isMobile ? "6px 12px" : "8px 16px",
+            padding: isMobile ? `${parseInt(SPACING.xxs, 10) + 2}px ${SPACING.sm}` : `${SPACING.xs} ${SPACING.md}`,
             background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
-            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-            borderRadius: "6px",
+            border: BORDERS.muted,
+            borderRadius: parseInt(SPACING.xxs, 10) + 2 + 'px',
             boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.2)}`,
             minWidth: isMobile ? "200px" : "280px",
             maxWidth: isMobile ? "90%" : "500px",
@@ -134,9 +135,10 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         >
           <div
             style={{
-              fontSize: isMobile ? "8px" : "9px",
-              fontFamily: theme.koreanTypography.fontFamily,
-              color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.7),
+              fontSize: isMobile ? parseInt(TYPOGRAPHY.caption.fontSize, 10) - 2 + 'px' : parseInt(TYPOGRAPHY.caption.fontSize, 10) - 1 + 'px',
+              fontFamily: TYPOGRAPHY.caption.fontFamily,
+              color: HIERARCHY.accent.color,
+              opacity: 0.7,
               textTransform: "uppercase",
               letterSpacing: "1px",
               marginBottom: "2px",
@@ -148,9 +150,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             <div
               key={index}
               style={{
-                fontSize: isMobile ? "10px" : "12px",
-                fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.TEXT_PRIMARY, 0.95),
+                fontSize: isMobile ? TYPOGRAPHY.caption.fontSize : TYPOGRAPHY.bodySmall.fontSize,
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
+                color: HIERARCHY.primary.color,
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
                 opacity: 0.7 + index * 0.1,
                 textAlign: "center",

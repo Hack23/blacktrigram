@@ -18,8 +18,7 @@
 import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
 import type { AnatomyLayer } from "../AnatomyOverlay3D";
@@ -69,12 +68,6 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   currentStanceIndex,
   isInGuard,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   // Layout calculations for left HUD with proper gaming proportions
   const layout = React.useMemo(() => {
     // Width: 15-20% of screen
@@ -96,9 +89,9 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    // Internal padding
-    const padding = isMobile ? 10 : 15 * positionScale;
-    const gap = isMobile ? 12 : 18 * positionScale;
+    // Internal padding from design system
+    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.md, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING.sm, 10) : parseInt(SPACING.lg, 10) * positionScale;
 
     return {
       hudWidth,
@@ -130,8 +123,8 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
         boxSizing: "border-box",
         gap: `${layout.gap}px`,
         // Cyberpunk border - right edge only for left HUD
-        borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
+        borderRight: BORDERS.default,
+        background: GRADIENTS.horizontal(0.85),
         backdropFilter: "blur(8px)",
       }}
       data-testid="training-left-hud"
