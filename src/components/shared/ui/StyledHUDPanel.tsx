@@ -29,7 +29,7 @@ import {
  */
 export interface StyledHUDPanelProps {
   /** Panel content */
-  readonly children: React.ReactNode;
+  readonly children?: React.ReactNode;
   /** Visual variant of the panel */
   readonly variant?: 'default' | 'accent';
   /** Padding size from SPACING scale */
