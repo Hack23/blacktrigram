@@ -206,7 +206,7 @@ describe('Design System - Gradients', () => {
   });
 
   it('should generate gradients with specified opacity values', () => {
-    const gradient = GRADIENTS.vertical(0.85, 0.4);
+    const gradient = GRADIENTS.vertical(0.85);
     expect(gradient).toContain('0.85');
     // Note: end opacity may be adjusted for visual effect, just verify format
     expect(gradient).toContain('rgba');
