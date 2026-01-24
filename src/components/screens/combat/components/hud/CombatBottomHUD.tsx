@@ -21,6 +21,7 @@ import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BOR
   OPACITY,
   COMBAT_UI_DIMENSIONS,
   TEXT_EFFECTS,
+  FONT_SIZE_MULTIPLIERS,
 } from "../../../../../types/constants/designSystem";
 import {
   BREAKPOINTS,
@@ -88,17 +89,22 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     
     // Resolution-based font sizes (using design system as minimum)
     const baseFontSize = getResponsiveFontSize(width);
-    const titleFontSize = Math.max(parseInt(TYPOGRAPHY.nano.fontSize, 10), baseFontSize * 0.6);
-    const messageFontSize = Math.max(parseInt(TYPOGRAPHY.caption.fontSize, 10), baseFontSize * 0.75);
+    const titleFontSize = Math.max(parseInt(TYPOGRAPHY.nano.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
+    const messageFontSize = Math.max(parseInt(TYPOGRAPHY.caption.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
     
     // Resolution-based widths (using design system constants as reference)
     const minMessageWidth = width < BREAKPOINTS.mobile 
       ? parseInt(COMBAT_UI_DIMENSIONS.combatLogMinMobile, 10)
       : parseInt(COMBAT_UI_DIMENSIONS.combatLogMinDesktop, 10);
     const maxMessageWidth = width < BREAKPOINTS.mobile 
-      ? Math.min(width * 0.9, parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxMobile, 10))
+      ? Math.min(
+          width * COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile,
+          parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxMobile, 10)
+        )
       : parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxDesktop, 10);
-    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile ? "100%" : "70%";
+    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile 
+      ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 
+      : COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop;
     
     // Resolution-based message padding (using design system spacing)
     const messagePadding = width < BREAKPOINTS.mobile 

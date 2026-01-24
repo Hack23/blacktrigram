@@ -20,6 +20,8 @@ import {
   OPACITY,
   COMBAT_UI_DIMENSIONS,
   TEXT_EFFECTS,
+  FONT_SIZE_MULTIPLIERS,
+  LAYOUT_MULTIPLIERS,
   getResponsiveSpacing,
   getResponsiveFontSize,
 } from './designSystem';
@@ -298,6 +300,44 @@ describe('Design System - Helper Functions', () => {
         expect(fontSize).toMatch(/^\d+px$/);
       });
     });
+  });
+});
+
+describe('Design System - Font Size Multipliers', () => {
+  it('should have all required multipliers', () => {
+    expect(FONT_SIZE_MULTIPLIERS).toHaveProperty('titleSmall');
+    expect(FONT_SIZE_MULTIPLIERS).toHaveProperty('messageSmall');
+    expect(FONT_SIZE_MULTIPLIERS).toHaveProperty('bodySmall');
+    expect(FONT_SIZE_MULTIPLIERS).toHaveProperty('titleLarge');
+  });
+
+  it('should have correct multiplier values', () => {
+    expect(FONT_SIZE_MULTIPLIERS.titleSmall).toBe(0.6);
+    expect(FONT_SIZE_MULTIPLIERS.messageSmall).toBe(0.75);
+    expect(FONT_SIZE_MULTIPLIERS.bodySmall).toBe(0.875);
+    expect(FONT_SIZE_MULTIPLIERS.titleLarge).toBe(1.125);
+  });
+});
+
+describe('Design System - Layout Multipliers', () => {
+  it('should have gap to padding ratio', () => {
+    expect(LAYOUT_MULTIPLIERS).toHaveProperty('gapToPadding');
+    expect(LAYOUT_MULTIPLIERS.gapToPadding).toBe(1.2);
+  });
+});
+
+describe('Design System - Combat UI Dimensions (Extended)', () => {
+  it('should have technique bar width constants', () => {
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('techniqueBarWidthMobile');
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('techniqueBarWidthDesktop');
+    
+    expect(COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile).toBe('100%');
+    expect(COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop).toBe('70%');
+  });
+
+  it('should have combat log max width percentage', () => {
+    expect(COMBAT_UI_DIMENSIONS).toHaveProperty('combatLogMaxWidthPercentMobile');
+    expect(COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile).toBe(0.9);
   });
 });
 

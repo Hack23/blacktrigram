@@ -208,7 +208,7 @@ import { TYPOGRAPHY } from 'designSystem';
 
 // Gradient generators (computed from KOREAN_COLORS)
 import { GRADIENTS } from 'designSystem';
-background: GRADIENTS.horizontal(0.85, 0.4)
+background: GRADIENTS.horizontal(0.85)
 
 // Consistent borders
 import { BORDERS } from 'designSystem';

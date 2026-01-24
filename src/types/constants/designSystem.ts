@@ -154,12 +154,65 @@ export const SPACING_ADJUSTMENTS = {
   mdPlus: '18px',
   /** Small gap for compact layouts - 6px */
   compact: '6px',
-  /** Horizontal emphasis - 24px (for wider horizontal padding, 1.5x md) */
+  /** 
+   * Horizontal emphasis - 24px
+   * Aliases SPACING.lg for semantic use in wider horizontal padding
+   * Defined as 1.5x SPACING.md to emphasize horizontal breathing room
+   */
   horizontalEmphasis: '24px',
   /** Micro gap - 3px (for very tight layouts) */
   micro: '3px',
   /** Tiny margin - 2px (for subtle spacing) */
   tiny: '2px',
+} as const;
+
+/**
+ * Font Size Multipliers
+ * 
+ * Scaling factors for responsive font size calculations.
+ * Used to maintain consistent proportions across different screen sizes.
+ * 
+ * @korean 글꼴 크기 배율
+ */
+export const FONT_SIZE_MULTIPLIERS = {
+  /** Small title scaling - 60% of base */
+  titleSmall: 0.6,
+  /** Small message scaling - 75% of base */
+  messageSmall: 0.75,
+  /** Body small scaling - 87.5% of base */
+  bodySmall: 0.875,
+  /** Title large scaling - 112.5% of base */
+  titleLarge: 1.125,
+} as const;
+
+/**
+ * Layout Multipliers
+ * 
+ * Scaling factors for layout calculations.
+ * Used to maintain consistent spacing relationships.
+ * 
+ * @korean 레이아웃 배율
+ */
+export const LAYOUT_MULTIPLIERS = {
+  /** Gap to padding ratio - 120% */
+  gapToPadding: 1.2,
+} as const;
+
+/**
+ * Width Percentage Constants
+ * 
+ * Percentage-based width values for responsive layouts.
+ * Expressed as decimal multipliers for consistency.
+ * 
+ * @korean 너비 백분율 상수
+ */
+export const WIDTH_PERCENTAGES = {
+  /** 90% width for mobile layouts */
+  mobileMax: 0.9,
+  /** 70% width for technique bars on desktop */
+  techniqueBarDesktop: '70%',
+  /** 100% width for full-width elements */
+  full: '100%',
 } as const;
 
 /**
@@ -363,6 +416,12 @@ export const COMBAT_UI_DIMENSIONS = {
   combatLogMaxMobile: '90%',
   /** Combat log maximum width - desktop */
   combatLogMaxDesktop: '500px',
+  /** Combat log maximum width percentage (mobile) - 90% as decimal */
+  combatLogMaxWidthPercentMobile: 0.9,
+  /** Technique bar width - mobile (full width) */
+  techniqueBarWidthMobile: '100%',
+  /** Technique bar width - desktop (70% width) */
+  techniqueBarWidthDesktop: '70%',
 } as const;
 
 /**
