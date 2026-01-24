@@ -124,6 +124,29 @@ export const SPACING = {
 } as const;
 
 /**
+ * Border Radius Scale
+ * 
+ * Consistent border radius values for UI elements.
+ * Provides semantic naming for rounded corners.
+ * 
+ * @korean 테두리 반경 척도
+ */
+export const BORDER_RADIUS = {
+  /** None - 0px (sharp corners) */
+  none: '0px',
+  /** Small - 4px */
+  sm: '4px',
+  /** Medium - 6px */
+  md: '6px',
+  /** Large - 8px */
+  lg: '8px',
+  /** Extra Large - 12px */
+  xl: '12px',
+  /** Full - 9999px (pill shape) */
+  full: '9999px',
+} as const;
+
+/**
  * HUD Style Constants
  * 
  * Unified styling for all HUD panels with cyberpunk Korean aesthetic.
@@ -138,8 +161,8 @@ export const HUD_STYLE = {
   backgroundRgb: hexToRgbString(KOREAN_COLORS.UI_BACKGROUND_DARK),
   /** Border - 2px solid cyan */
   border: `2px solid ${hexToRgb(KOREAN_COLORS.PRIMARY_CYAN)}`,
-  /** Border radius - 8px for smooth corners */
-  borderRadius: '8px',
+  /** Border radius - 8px for smooth corners (from BORDER_RADIUS.lg) */
+  borderRadius: BORDER_RADIUS.lg,
   /** Box shadow - Subtle depth */
   shadow: `0 4px 12px rgba(${hexToRgbString(KOREAN_COLORS.UI_BACKGROUND_DARK)}, 0.6)`,
   /** Hover shadow - Increased depth on interaction */
@@ -331,4 +354,5 @@ export function getResponsiveFontSize(
  */
 export type TypographyLevel = keyof typeof TYPOGRAPHY;
 export type SpacingLevel = keyof typeof SPACING;
+export type BorderRadiusLevel = keyof typeof BORDER_RADIUS;
 export type HierarchyLevel = keyof typeof HIERARCHY;
