@@ -69,7 +69,10 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
 }) => {
   // Use shared HUD layout hook
   const layout = useHUDLayout(
-    { width, height, positionScale, isMobile },
+    width,
+    height,
+    positionScale,
+    isMobile,
     'left',
     'combat'
   );

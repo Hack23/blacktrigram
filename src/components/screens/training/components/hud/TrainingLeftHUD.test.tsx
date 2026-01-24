@@ -170,14 +170,14 @@ describe("TrainingLeftHUD", () => {
     it("should use smaller gap on mobile", () => {
       render(<TrainingLeftHUD {...defaultProps} isMobile={true} />);
       const container = screen.getByTestId("training-left-hud");
-      expect(container).toHaveStyle({ gap: "10px" }); // Shared hook uses 10px for mobile
+      expect(container).toHaveStyle({ gap: "12px" }); // Training mobile uses 12px
     });
 
     it("should use larger gap on desktop", () => {
       render(<TrainingLeftHUD {...defaultProps} isMobile={false} />);
       const container = screen.getByTestId("training-left-hud");
-      // 14px = 14 * positionScale(1.0) for desktop (shared hook uses 14px)
-      expect(container).toHaveStyle({ gap: "14px" });
+      // 18px = 18 * positionScale(1.0) for desktop training
+      expect(container).toHaveStyle({ gap: "18px" });
     });
   });
 });

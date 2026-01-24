@@ -63,7 +63,10 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
 }) => {
   // Use shared HUD layout hook
   const layout = useHUDLayout(
-    { width, height, positionScale, isMobile },
+    width,
+    height,
+    positionScale,
+    isMobile,
     'left',
     'training'
   );

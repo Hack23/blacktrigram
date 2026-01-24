@@ -10,11 +10,7 @@ describe('useHUDLayout', () => {
   describe('left position', () => {
     it('should calculate desktop layout for training context', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'left',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'left', 'training')
       );
 
       expect(result.current.hudWidthPercent).toBe(0.14);
@@ -22,17 +18,13 @@ describe('useHUDLayout', () => {
       expect(result.current.topOffset).toBe(70);
       expect(result.current.bottomOffset).toBe(130);
       expect(result.current.availableHeight).toBe(1080 - 70 - 130);
-      expect(result.current.padding).toBe(12);
-      expect(result.current.gap).toBe(14);
+      expect(result.current.padding).toBe(15);
+      expect(result.current.gap).toBe(18);
     });
 
     it('should calculate mobile layout for training context', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 375, height: 667, positionScale: 1.0, isMobile: true },
-          'left',
-          'training'
-        )
+        useHUDLayout(375, 667, 1.0, true, 'left', 'training')
       );
 
       expect(result.current.hudWidthPercent).toBe(0.18);
@@ -40,17 +32,13 @@ describe('useHUDLayout', () => {
       expect(result.current.topOffset).toBe(50);
       expect(result.current.bottomOffset).toBe(110);
       expect(result.current.availableHeight).toBe(667 - 50 - 110);
-      expect(result.current.padding).toBe(8);
-      expect(result.current.gap).toBe(10);
+      expect(result.current.padding).toBe(10);
+      expect(result.current.gap).toBe(12);
     });
 
     it('should calculate desktop layout for combat context', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'left',
-          'combat'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'left', 'combat')
       );
 
       expect(result.current.hudWidthPercent).toBe(0.14);
@@ -61,36 +49,24 @@ describe('useHUDLayout', () => {
 
     it('should scale dimensions with positionScale', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 3840, height: 2160, positionScale: 1.5, isMobile: false },
-          'left',
-          'training'
-        )
+        useHUDLayout(3840, 2160, 1.5, false, 'left', 'training')
       );
 
       expect(result.current.topOffset).toBe(70 * 1.5);
       expect(result.current.bottomOffset).toBe(130 * 1.5);
-      expect(result.current.padding).toBe(12 * 1.5);
-      expect(result.current.gap).toBe(14 * 1.5);
+      expect(result.current.padding).toBe(15 * 1.5);
+      expect(result.current.gap).toBe(18 * 1.5);
     });
   });
 
   describe('right position', () => {
     it('should calculate same dimensions as left', () => {
       const leftResult = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'left',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'left', 'training')
       ).result;
 
       const rightResult = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'right',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'right', 'training')
       ).result;
 
       expect(leftResult.current.hudWidth).toBe(rightResult.current.hudWidth);
@@ -101,11 +77,7 @@ describe('useHUDLayout', () => {
   describe('top position', () => {
     it('should calculate full width for top HUD', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'top',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'top', 'training')
       );
 
       expect(result.current.hudWidthPercent).toBe(1.0);
@@ -115,11 +87,7 @@ describe('useHUDLayout', () => {
 
     it('should use mobile dimensions on mobile', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 375, height: 667, positionScale: 1.0, isMobile: true },
-          'top',
-          'training'
-        )
+        useHUDLayout(375, 667, 1.0, true, 'top', 'training')
       );
 
       expect(result.current.hudHeight).toBe(50);
@@ -129,11 +97,7 @@ describe('useHUDLayout', () => {
   describe('bottom position', () => {
     it('should calculate full width for bottom HUD', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'bottom',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'bottom', 'training')
       );
 
       expect(result.current.hudWidthPercent).toBe(1.0);
@@ -143,11 +107,7 @@ describe('useHUDLayout', () => {
 
     it('should use combat dimensions in combat context', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
-          'bottom',
-          'combat'
-        )
+        useHUDLayout(1920, 1080, 1.0, false, 'bottom', 'combat')
       );
 
       expect(result.current.hudHeight).toBe(120);
@@ -156,10 +116,8 @@ describe('useHUDLayout', () => {
 
   describe('memoization', () => {
     it('should return same result for same inputs', () => {
-      const config = { width: 1920, height: 1080, positionScale: 1.0, isMobile: false };
-      
       const { result, rerender } = renderHook(() =>
-        useHUDLayout(config, 'left', 'training')
+        useHUDLayout(1920, 1080, 1.0, false, 'left', 'training')
       );
 
       const firstResult = result.current;
@@ -169,9 +127,9 @@ describe('useHUDLayout', () => {
       expect(firstResult).toBe(secondResult);
     });
 
-    it('should recalculate when config changes', () => {
+    it('should recalculate when inputs change', () => {
       const { result, rerender } = renderHook(
-        ({ width }) => useHUDLayout({ width, height: 1080, positionScale: 1.0, isMobile: false }, 'left', 'training'),
+        ({ width }) => useHUDLayout(width, 1080, 1.0, false, 'left', 'training'),
         { initialProps: { width: 1920 } }
       );
 
@@ -187,11 +145,7 @@ describe('useHUDLayout', () => {
   describe('edge cases', () => {
     it('should handle very small screens', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 320, height: 568, positionScale: 1.0, isMobile: true },
-          'left',
-          'training'
-        )
+        useHUDLayout(320, 568, 1.0, true, 'left', 'training')
       );
 
       expect(result.current.hudWidth).toBeGreaterThan(0);
@@ -200,11 +154,7 @@ describe('useHUDLayout', () => {
 
     it('should handle 4K displays', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 3840, height: 2160, positionScale: 1.5, isMobile: false },
-          'left',
-          'training'
-        )
+        useHUDLayout(3840, 2160, 1.5, false, 'left', 'training')
       );
 
       expect(result.current.hudWidth).toBeGreaterThan(0);
@@ -214,11 +164,7 @@ describe('useHUDLayout', () => {
 
     it('should handle zero positionScale gracefully', () => {
       const { result } = renderHook(() =>
-        useHUDLayout(
-          { width: 1920, height: 1080, positionScale: 0, isMobile: false },
-          'left',
-          'training'
-        )
+        useHUDLayout(1920, 1080, 0, false, 'left', 'training')
       );
 
       expect(result.current.topOffset).toBe(0);

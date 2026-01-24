@@ -9,25 +9,13 @@
  */
 
 import { useMemo } from 'react';
+import type { HUDPosition } from '../components/shared/ui/BaseHUDContainer';
 
 /**
  * HUD position type - left, right, top, or bottom
+ * Re-exported from BaseHUDContainer to maintain single source of truth
  */
-export type HUDPosition = 'left' | 'right' | 'top' | 'bottom';
-
-/**
- * Configuration for HUD layout calculations
- */
-export interface HUDLayoutConfig {
-  /** Screen width in pixels */
-  readonly width: number;
-  /** Screen height in pixels */
-  readonly height: number;
-  /** Position scale multiplier for large displays (1.0-1.5) */
-  readonly positionScale: number;
-  /** Whether mobile layout is active */
-  readonly isMobile?: boolean;
-}
+export type { HUDPosition };
 
 /**
  * Result of HUD layout calculations
@@ -51,10 +39,6 @@ export interface HUDLayoutResult {
   readonly padding: number;
   /** Gap between sections in pixels */
   readonly gap: number;
-  /** Scaled top height as percentage (for responsive layouts) */
-  readonly scaledTopHeight: number;
-  /** Scaled bottom height as percentage (for responsive layouts) */
-  readonly scaledBottomHeight: number;
 }
 
 /**
@@ -97,29 +81,32 @@ const HUD_DIMENSIONS = {
  * Handles responsive sizing, positioning, and spacing based on screen size
  * and HUD position.
  * 
- * @param config - Layout configuration (width, height, positionScale, isMobile)
+ * @param width - Screen width in pixels
+ * @param height - Screen height in pixels
+ * @param positionScale - Position scale multiplier for large displays (1.0-1.5)
+ * @param isMobile - Whether mobile layout is active
  * @param position - HUD position (left, right, top, bottom)
- * @param context - Optional context ('training' or 'combat') for context-specific dimensions
+ * @param context - Context ('training' or 'combat') for context-specific dimensions
  * @returns Calculated layout dimensions and offsets
  * 
  * @example
  * ```tsx
  * const layout = useHUDLayout(
- *   { width: 1920, height: 1080, positionScale: 1.0, isMobile: false },
- *   'left',
- *   'training'
+ *   1920, 1080, 1.0, false, 'left', 'training'
  * );
  * // layout.hudWidth = 268.8 (14% of 1920)
  * // layout.availableHeight = 940 (1080 - 70 - 70)
  * ```
  */
 export function useHUDLayout(
-  config: HUDLayoutConfig,
+  width: number,
+  height: number,
+  positionScale: number,
+  isMobile: boolean,
   position: HUDPosition,
   context: 'training' | 'combat' = 'training'
 ): HUDLayoutResult {
   return useMemo(() => {
-    const { width, height, positionScale, isMobile = false } = config;
 
     // Calculate width percentage based on position and screen size
     const hudWidthPercent = position === 'left' || position === 'right'
@@ -153,13 +140,14 @@ export function useHUDLayout(
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    // Responsive padding and gap
-    const padding = isMobile ? 8 : 12 * positionScale;
-    const gap = isMobile ? 10 : 14 * positionScale;
-
-    // Scaled heights as percentages (for legacy compatibility)
-    const scaledTopHeightPercent = isMobile ? 0.25 : 0.15;
-    const scaledBottomHeightPercent = 1.0 - scaledTopHeightPercent;
+    // Responsive padding and gap - context-specific for training vs combat
+    const padding = context === 'training'
+      ? (isMobile ? 10 : 15 * positionScale)
+      : (isMobile ? 8 : 12 * positionScale);
+    
+    const gap = context === 'training'
+      ? (isMobile ? 12 : 18 * positionScale)
+      : (isMobile ? 10 : 14 * positionScale);
 
     return {
       hudWidthPercent,
@@ -171,8 +159,6 @@ export function useHUDLayout(
       availableHeight,
       padding,
       gap,
-      scaledTopHeight: scaledTopHeightPercent,
-      scaledBottomHeight: scaledBottomHeightPercent,
     };
-  }, [config, position, context]);
+  }, [width, height, positionScale, isMobile, position, context]);
 }
