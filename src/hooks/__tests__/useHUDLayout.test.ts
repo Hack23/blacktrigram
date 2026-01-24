@@ -5,6 +5,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { useHUDLayout } from '../useHUDLayout';
+import { HUD_WIDTH_PERCENT } from '../../types/LayoutTypes';
 
 describe('useHUDLayout', () => {
   describe('left position', () => {
@@ -60,7 +61,27 @@ describe('useHUDLayout', () => {
   });
 
   describe('right position', () => {
-    it('should calculate same dimensions as left', () => {
+    it('should use RIGHT_DESKTOP constant for desktop', () => {
+      const { result } = renderHook(() =>
+        useHUDLayout(1920, 1080, 1.0, false, 'right', 'training')
+      );
+
+      // Should use HUD_WIDTH_PERCENT.RIGHT_DESKTOP (0.14)
+      expect(result.current.hudWidthPercent).toBe(HUD_WIDTH_PERCENT.RIGHT_DESKTOP);
+      expect(result.current.hudWidth).toBe(Math.round(1920 * HUD_WIDTH_PERCENT.RIGHT_DESKTOP));
+    });
+
+    it('should use RIGHT_MOBILE constant for mobile', () => {
+      const { result } = renderHook(() =>
+        useHUDLayout(768, 1024, 1.0, true, 'right', 'training')
+      );
+
+      // Should use HUD_WIDTH_PERCENT.RIGHT_MOBILE (0.18)
+      expect(result.current.hudWidthPercent).toBe(HUD_WIDTH_PERCENT.RIGHT_MOBILE);
+      expect(result.current.hudWidth).toBe(Math.round(768 * HUD_WIDTH_PERCENT.RIGHT_MOBILE));
+    });
+
+    it('should calculate same dimensions as left (since LEFT and RIGHT constants match)', () => {
       const leftResult = renderHook(() =>
         useHUDLayout(1920, 1080, 1.0, false, 'left', 'training')
       ).result;
@@ -69,18 +90,20 @@ describe('useHUDLayout', () => {
         useHUDLayout(1920, 1080, 1.0, false, 'right', 'training')
       ).result;
 
+      // Currently LEFT and RIGHT constants are equal, so dimensions match
       expect(leftResult.current.hudWidth).toBe(rightResult.current.hudWidth);
       expect(leftResult.current.availableHeight).toBe(rightResult.current.availableHeight);
     });
   });
 
   describe('top position', () => {
-    it('should calculate full width for top HUD', () => {
+    it('should use TOP constant for width', () => {
       const { result } = renderHook(() =>
         useHUDLayout(1920, 1080, 1.0, false, 'top', 'training')
       );
 
-      expect(result.current.hudWidthPercent).toBe(1.0);
+      // Should use HUD_WIDTH_PERCENT.TOP (1.0)
+      expect(result.current.hudWidthPercent).toBe(HUD_WIDTH_PERCENT.TOP);
       expect(result.current.hudWidth).toBe(1920);
       expect(result.current.hudHeight).toBe(70);
     });
@@ -95,12 +118,13 @@ describe('useHUDLayout', () => {
   });
 
   describe('bottom position', () => {
-    it('should calculate full width for bottom HUD', () => {
+    it('should use BOTTOM constant for width', () => {
       const { result } = renderHook(() =>
         useHUDLayout(1920, 1080, 1.0, false, 'bottom', 'training')
       );
 
-      expect(result.current.hudWidthPercent).toBe(1.0);
+      // Should use HUD_WIDTH_PERCENT.BOTTOM (1.0)
+      expect(result.current.hudWidthPercent).toBe(HUD_WIDTH_PERCENT.BOTTOM);
       expect(result.current.hudWidth).toBe(1920);
       expect(result.current.hudHeight).toBe(130);
     });

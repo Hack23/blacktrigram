@@ -81,9 +81,17 @@ export function useHUDLayout(
   return useMemo(() => {
 
     // Calculate width percentage based on position and screen size
-    const hudWidthPercent = position === 'left' || position === 'right'
-      ? (isMobile ? HUD_WIDTH_PERCENT.LEFT_MOBILE : HUD_WIDTH_PERCENT.LEFT_DESKTOP)
-      : 1.0; // Full width for top/bottom
+    // Use position-specific constants to maintain single source of truth
+    let hudWidthPercent: number;
+    if (position === 'left') {
+      hudWidthPercent = isMobile ? HUD_WIDTH_PERCENT.LEFT_MOBILE : HUD_WIDTH_PERCENT.LEFT_DESKTOP;
+    } else if (position === 'right') {
+      hudWidthPercent = isMobile ? HUD_WIDTH_PERCENT.RIGHT_MOBILE : HUD_WIDTH_PERCENT.RIGHT_DESKTOP;
+    } else if (position === 'top') {
+      hudWidthPercent = HUD_WIDTH_PERCENT.TOP;
+    } else {
+      hudWidthPercent = HUD_WIDTH_PERCENT.BOTTOM;
+    }
 
     // Calculate height based on position and context
     // Use imported constants from LayoutTypes for single source of truth
