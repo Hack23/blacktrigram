@@ -11,16 +11,15 @@
  * - Height: Between top/bottom bars
  * - Scrollable vital point section for long lists
  *
+ * Now uses shared HUD utilities with resolution-based sizing.
+ *
  * @korean 훈련화면 오른쪽 패널 - 통계(상), 모드(중), 급소(하)
  */
 
 import React from "react";
-import { BORDERS, HUD_STYLE, GRADIENTS } from "../../../../../types/constants/designSystem";
-import {
-  getHUDHeight,
-  getResponsivePadding,
-  getResponsiveSize,
-} from "../../../../../utils/responsiveLayout";
+import { useHUDLayout } from "../../../../../hooks/useHUDLayout";
+import { getResponsiveSize } from "../../../../../utils/responsiveLayout";
+import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -30,8 +29,6 @@ import FootworkDrillsOverlayHtml from "../FootworkDrillsOverlayHtml";
 import TrainingModeSelectorOverlayHtml from "../TrainingModeSelectorOverlayHtml";
 import TrainingStatsOverlayHtml from "../TrainingStatsOverlayHtml";
 import VitalPointTrainingOverlayHtml from "../VitalPointTrainingOverlayHtml";
-
-
 
 export interface TrainingRightHUDProps {
   /** Screen width for layout calculations */
@@ -78,7 +75,7 @@ export interface TrainingRightHUDProps {
  * TrainingRightHUD Component
  *
  * Right panel with Stats (top), Mode selector (middle), Vital points (bottom).
- * Uses resolution-based sizing for all dimensions.
+ * Uses shared HUD utilities for consistent layout and styling.
  */
 export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   width,
@@ -99,56 +96,35 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   onStopFootworkDrill,
   onAdvanceFootworkStep,
 }) => {
-  const layout = React.useMemo(() => {
-    // Resolution-based width: 14-18% of screen
-    const hudWidthPercent = getResponsiveSize(width, {
-      mobile: 18,
-      tablet: 16,
-      desktop: 14,
-    });
-    const hudWidth = Math.round((width * hudWidthPercent) / 100);
-
-    // Top/bottom offsets using resolution-based height calculations
-    const scaledTopHeight = getHUDHeight(height, 0.06) * positionScale; // ~6% for top
-    const scaledBottomHeight = getHUDHeight(height, 0.11) * positionScale; // ~11% for bottom
-
-    const topOffset = scaledTopHeight;
-    const bottomOffset = scaledBottomHeight;
-    const availableHeight = height - topOffset - bottomOffset;
-
-    // Resolution-based padding and gap (using design system as reference for compact spacing)
-    const padding = getResponsivePadding(width) * positionScale;
-    const gap = getResponsiveSize(width, {
-      mobile: 6,
-      tablet: 7,
-      desktop: 8,
-    }) * positionScale;
-
-
-    return { hudWidth, topOffset, bottomOffset, availableHeight, padding, gap };
-  }, [width, height, positionScale]);
+  // Use shared HUD layout hook with TrainingRightHUD-specific spacing
+  // TrainingRightHUD uses tighter spacing than TrainingLeftHUD for denser content
+  // Resolution-based gap: mobile 6px, tablet 7px, desktop 8px
+  const gapOverride = getResponsiveSize(width, {
+    mobile: 6,
+    tablet: 7,
+    desktop: 8,
+  }) * positionScale;
+  
+  const layout = useHUDLayout(
+    width,
+    height,
+    positionScale,
+    'right',
+    'training',
+    undefined,  // Use default padding from hook
+    gapOverride  // Override gap for tighter spacing
+  );
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: `${layout.topOffset}px`,
-        right: 0,
-        width: `${layout.hudWidth}px`,
-        height: `${layout.availableHeight}px`,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        pointerEvents: "none",
-        padding: `${layout.padding}px`,
-        boxSizing: "border-box",
-        gap: `${layout.gap}px`,
-        borderLeft: BORDERS.default,
-        background: GRADIENTS.horizontalReverse(0.85),
-        backdropFilter: HUD_STYLE.backdropFilter,
-        overflow: "hidden",
-      }}
-      data-testid="training-right-hud"
+    <BaseHUDContainer
+      position="right"
+      width={layout.hudWidth}
+      height={layout.availableHeight}
+      topOffset={layout.topOffset}
+      padding={layout.padding}
+      gap={layout.gap}
+      style={{ overflow: "hidden" }}
+      dataTestId="training-right-hud"
     >
       {/* TOP: Training Stats - most referenced, always visible */}
       <div
@@ -219,7 +195,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
           />
         )}
       </div>
-    </div>
+    </BaseHUDContainer>
   );
 };
 
