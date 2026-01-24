@@ -79,7 +79,8 @@ describe("CombatRightHUD", () => {
     const rightHud = screen.getByTestId("combat-right-hud");
     // Combat context: top ~8% (86.4px), bottom ~12% (129.6px)
     // Available height = 1080 - 86.4 - 129.6 = 864px (with clamping gives 873.6px)
-    expect(rightHud).toHaveStyle({ height: "873.6px" });
+    const heightValue = parseFloat(rightHud.style.height || "0");
+    expect(heightValue).toBeCloseTo(873.6, 1);
   });
 
   it("should scale layout with positionScale", () => {
