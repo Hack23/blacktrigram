@@ -16,6 +16,33 @@ export {
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS, UI_DIMENSIONS } from "./ui";
 
+// Design System exports
+export {
+  TYPOGRAPHY,
+  TYPOGRAPHY_NUMERIC,
+  SPACING,
+  SPACING_NUMERIC,
+  SPACING_ADJUSTMENTS,
+  BORDER_RADIUS,
+  HUD_STYLE,
+  HIERARCHY,
+  BORDERS,
+  GRADIENTS,
+  TRANSITIONS,
+  OPACITY,
+  COMBAT_UI_DIMENSIONS,
+  COMBAT_UI_DIMENSIONS_NUMERIC,
+  TEXT_EFFECTS,
+  FONT_SIZE_MULTIPLIERS,
+  LAYOUT_MULTIPLIERS,
+  getResponsiveSpacing,
+  getResponsiveFontSize,
+  type TypographyLevel,
+  type SpacingLevel,
+  type BorderRadiusLevel,
+  type HierarchyLevel,
+} from "./designSystem";
+
 // Performance constants
 export {
   PERFORMANCE_SETTINGS_BY_TIER,

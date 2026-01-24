@@ -20,17 +20,18 @@ import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { SPACING, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
   getHUDHeight,
   getResponsivePadding,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
 import TrainingFeedbackOverlayHtml from "../TrainingFeedbackOverlayHtml";
+
+
 
 export interface TrainingBottomHUDProps {
   /** Screen width for layout calculations */
@@ -88,18 +89,13 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   // isMobile only used for showing mobile controls
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile: showMobileControls,
-  });
-
   const layout = React.useMemo(() => {
     // Resolution-based HUD height (11% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.11) * positionScale;
     
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
+
 
     return { hudHeight, padding };
   }, [width, height, positionScale]);
@@ -119,9 +115,9 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
-        borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
-        backdropFilter: "blur(8px)",
+        borderTop: BORDERS.default,
+        background: GRADIENTS.verticalReverse(0.9),
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="training-bottom-hud"
     >
@@ -195,11 +191,11 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
             pointerEvents: "all",
             display: "flex",
             alignItems: "center",
-            gap: "4px",
-            padding: "4px 8px",
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
-            border: `1px solid ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-            borderRadius: "4px",
+            gap: SPACING.xxs,
+            padding: `${SPACING.xxs} ${SPACING.xs}`,
+            background: GRADIENTS.vertical(0.9),
+            border: BORDERS.accent,
+            borderRadius: SPACING.xxs,
           }}
           data-testid="training-bottom-hud-archetype-section"
         >

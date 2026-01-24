@@ -17,7 +17,13 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
+  OPACITY,
+  COMBAT_UI_DIMENSIONS,
+  COMBAT_UI_DIMENSIONS_NUMERIC,
+  TEXT_EFFECTS,
+  FONT_SIZE_MULTIPLIERS,
+} from "../../../../../types/constants/designSystem";
 import {
   BREAKPOINTS,
   getHUDHeight,
@@ -25,7 +31,6 @@ import {
   getResponsivePadding,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 
@@ -76,12 +81,6 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   // isMobile only used for mobile controls visibility
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile: showMobileControls,
-  });
-
   const layout = React.useMemo(() => {
     // Resolution-based HUD height (10% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.1) * positionScale;
@@ -89,18 +88,27 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     // Resolution-based padding
     const padding = getResponsivePadding(width) * positionScale;
     
-    // Resolution-based font sizes
+    // Resolution-based font sizes (using design system as minimum)
     const baseFontSize = getResponsiveFontSize(width);
-    const titleFontSize = Math.max(8, baseFontSize * 0.6); // Smaller for title
-    const messageFontSize = Math.max(10, baseFontSize * 0.75); // Slightly smaller for messages
+    const titleFontSize = Math.max(TYPOGRAPHY_NUMERIC.nano, baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
+    const messageFontSize = Math.max(TYPOGRAPHY_NUMERIC.caption, baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
     
-    // Resolution-based widths
-    const minMessageWidth = width < BREAKPOINTS.mobile ? 200 : 280;
-    const maxMessageWidth = width < BREAKPOINTS.mobile ? width * 0.9 : 500;
-    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile ? "100%" : "70%";
+    // Resolution-based widths (using design system constants as reference)
+    const minMessageWidth = width < BREAKPOINTS.mobile 
+      ? COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile
+      : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop;
+    const maxMessageWidth = width < BREAKPOINTS.mobile 
+      ? width * COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile
+      : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMaxDesktop;
+    const maxTechniqueBarWidth = width < BREAKPOINTS.mobile 
+      ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 
+      : COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop;
     
-    // Resolution-based message padding
-    const messagePadding = width < BREAKPOINTS.mobile ? "6px 12px" : "8px 16px";
+    // Resolution-based message padding (using design system spacing)
+    const messagePadding = width < BREAKPOINTS.mobile 
+      ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` 
+      : `${SPACING.xs} ${SPACING.md}`;
+
 
     return {
       hudHeight,
@@ -132,9 +140,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         pointerEvents: "none",
         padding: `${layout.padding}px`,
         boxSizing: "border-box",
-        borderTop: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(0deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
-        backdropFilter: "blur(8px)",
+        borderTop: BORDERS.default,
+        background: GRADIENTS.verticalReverse(0.9),
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="combat-bottom-hud"
     >
@@ -149,13 +157,13 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "3px",
+            gap: SPACING_ADJUSTMENTS.micro,
             zIndex: Z_INDEX.HUD,
             padding: layout.messagePadding,
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
-            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
-            borderRadius: "6px",
-            boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.2)}`,
+            background: HUD_STYLE.background,
+            border: BORDERS.muted,
+            borderRadius: BORDER_RADIUS.md,
+            boxShadow: HUD_STYLE.shadow,
             minWidth: `${layout.minMessageWidth}px`,
             maxWidth: typeof layout.maxMessageWidth === 'number' 
               ? `${layout.maxMessageWidth}px` 
@@ -166,11 +174,11 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
           <div
             style={{
               fontSize: `${layout.titleFontSize}px`,
-              fontFamily: theme.koreanTypography.fontFamily,
-              color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.7),
+              fontFamily: TYPOGRAPHY.caption.fontFamily,
+              color: HIERARCHY.accent70.color,
               textTransform: "uppercase",
               letterSpacing: "1px",
-              marginBottom: "2px",
+              marginBottom: SPACING_ADJUSTMENTS.tiny,
             }}
           >
             전투 기록 | Combat Log
@@ -180,10 +188,10 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
               key={index}
               style={{
                 fontSize: `${layout.messageFontSize}px`,
-                fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.TEXT_PRIMARY, 0.95),
-                textShadow: "0 0 4px rgba(0,0,0,0.8)",
-                opacity: 0.7 + index * 0.1,
+                fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
+                color: HIERARCHY.primary.color,
+                textShadow: TEXT_EFFECTS.darkShadow,
+                opacity: OPACITY.base + index * OPACITY.increment,
                 textAlign: "center",
               }}
             >

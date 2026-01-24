@@ -15,15 +15,13 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-// No longer using HUD_HEIGHT - using resolution-based sizing
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import { SPACING_NUMERIC, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
 import {
   getHUDHeight,
   getResponsiveFontSize,
   getResponsivePadding,
   shouldShowMobileControls,
 } from "../../../../../utils/responsiveLayout";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 import { CombatReturnToMenuButton } from "../controls/CombatButtons";
 
@@ -71,27 +69,22 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   // isMobile only used for mobile controls visibility
   const showMobileControls = shouldShowMobileControls(width, isMobile);
 
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile: showMobileControls,
-  });
-
   // Layout calculations for slim top bar with resolution-based sizing
   const layout = React.useMemo(() => {
     // Resolution-based HUD height (6% of screen height, 40-80px range)
     const hudHeight = getHUDHeight(height, 0.06) * positionScale;
 
-    // Resolution-based padding
+    // Resolution-based padding (using design system spacing)
     const padding = getResponsivePadding(width) * positionScale;
     
     // Resolution-based gap (slightly larger than padding)
-    const gap = padding * 1.2;
+    const gap = padding * LAYOUT_MULTIPLIERS.gapToPadding;
     
-    // Resolution-based font sizes
+    // Resolution-based font sizes (using design system as baseline)
     const baseFontSize = getResponsiveFontSize(width) * positionScale;
-    const fontSize = baseFontSize * 0.875; // Slightly smaller for body text
-    const titleSize = baseFontSize * 1.125; // Larger for titles
+    const fontSize = Math.max(TYPOGRAPHY_NUMERIC.bodySmall, baseFontSize * FONT_SIZE_MULTIPLIERS.bodySmall);
+    const titleSize = Math.max(TYPOGRAPHY_NUMERIC.body, baseFontSize * FONT_SIZE_MULTIPLIERS.titleLarge);
+
 
     return {
       hudHeight,
@@ -115,12 +108,12 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: `${layout.padding}px ${layout.padding * 1.5}px`,
+        padding: `${layout.padding}px ${SPACING_NUMERIC.horizontalEmphasis}px`,
         pointerEvents: "none",
         boxSizing: "border-box",
-        borderBottom: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-        background: `linear-gradient(180deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7)} 100%)`,
-        backdropFilter: "blur(8px)",
+        borderBottom: BORDERS.default,
+        background: GRADIENTS.vertical(0.9),
+        backdropFilter: HUD_STYLE.backdropFilter,
       }}
       data-testid="combat-top-hud"
     >
@@ -139,10 +132,10 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         <div
           style={{
             fontSize: `${layout.titleSize}px`,
-            fontWeight: "bold",
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-            textShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
+            fontWeight: 600,
+            fontFamily: TYPOGRAPHY.heading2.fontFamily,
+            color: HIERARCHY.gold.color,
+            textShadow: HUD_STYLE.accentGlow,
           }}
         >
           전투 | Combat
@@ -155,8 +148,8 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
             gap: `${layout.gap}px`,
             alignItems: "center",
             fontSize: `${layout.fontSize}px`,
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 1),
+            fontFamily: TYPOGRAPHY.body.fontFamily,
+            color: HIERARCHY.accent.color,
           }}
         >
           <span>
