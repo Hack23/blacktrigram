@@ -16,6 +16,25 @@ export {
 } from "./typography";
 export { HEALTH_COLORS, UI_CONSTANTS, UI_DIMENSIONS } from "./ui";
 
+// Design System exports
+export {
+  TYPOGRAPHY,
+  SPACING,
+  SPACING_ADJUSTMENTS,
+  BORDER_RADIUS,
+  HUD_STYLE,
+  HIERARCHY,
+  BORDERS,
+  GRADIENTS,
+  TRANSITIONS,
+  getResponsiveSpacing,
+  getResponsiveFontSize,
+  type TypographyLevel,
+  type SpacingLevel,
+  type BorderRadiusLevel,
+  type HierarchyLevel,
+} from "./designSystem";
+
 // Performance constants
 export {
   PERFORMANCE_SETTINGS_BY_TIER,

@@ -18,7 +18,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import type { StanceLaterality } from "../../../../../systems/trigram/types";
-import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_ADJUSTMENTS, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
@@ -96,7 +96,7 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
 
     // Internal padding from design system
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
-    const gap = isMobile ? parseInt(SPACING.xs, 10) + 2 : parseInt(SPACING.md, 10) + 2 * positionScale;
+    const gap = isMobile ? parseInt(SPACING_ADJUSTMENTS.xsPlus, 10) : parseInt(SPACING_ADJUSTMENTS.mdPlus, 10) * positionScale;
 
     return {
       hudWidth,

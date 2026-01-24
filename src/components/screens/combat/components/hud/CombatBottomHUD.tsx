@@ -135,10 +135,9 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
         >
           <div
             style={{
-              fontSize: isMobile ? parseInt(TYPOGRAPHY.caption.fontSize, 10) - 2 + 'px' : parseInt(TYPOGRAPHY.caption.fontSize, 10) - 1 + 'px',
+              fontSize: isMobile ? TYPOGRAPHY.nano.fontSize : TYPOGRAPHY.micro.fontSize,
               fontFamily: TYPOGRAPHY.caption.fontFamily,
-              color: HIERARCHY.accent.color,
-              opacity: 0.7,
+              color: HIERARCHY.accent70.color,
               textTransform: "uppercase",
               letterSpacing: "1px",
               marginBottom: "2px",

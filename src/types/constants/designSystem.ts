@@ -96,6 +96,20 @@ export const TYPOGRAPHY = {
     lineHeight: 1.4,
     fontFamily: FONT_FAMILY.KOREAN,
   },
+  /** Micro - Very small text (9px) - for dense information */
+  micro: {
+    fontSize: '9px',
+    fontWeight: 400,
+    lineHeight: 1.4,
+    fontFamily: FONT_FAMILY.KOREAN,
+  },
+  /** Nano - Smallest text (8px) - for status indicators */
+  nano: {
+    fontSize: '8px',
+    fontWeight: 400,
+    lineHeight: 1.3,
+    fontFamily: FONT_FAMILY.KOREAN,
+  },
 } as const;
 
 /**
@@ -121,6 +135,25 @@ export const SPACING = {
   xl: '32px',
   /** Extra Extra Large - 48px */
   xxl: '48px',
+} as const;
+
+/**
+ * Spacing Adjustments
+ * 
+ * Fine-tuned spacing values for specific layout requirements.
+ * Use when standard SPACING scale doesn't provide exact needed value.
+ * 
+ * @korean 간격 조정
+ */
+export const SPACING_ADJUSTMENTS = {
+  /** Extra small with minor adjustment - 10px (xs + 2px) */
+  xsPlus: '10px',
+  /** Small with minor adjustment - 14px (sm + 2px) */
+  smPlus: '14px',
+  /** Medium with minor adjustment - 18px (md + 2px) */
+  mdPlus: '18px',
+  /** Small gap for compact layouts - 6px */
+  compact: '6px',
 } as const;
 
 /**
@@ -213,6 +246,21 @@ export const HIERARCHY = {
   gold: {
     color: hexToRgb(KOREAN_COLORS.ACCENT_GOLD),
     hex: KOREAN_COLORS.ACCENT_GOLD,
+  },
+  /** Accent with 70% opacity - For subtle emphasis */
+  accent70: {
+    color: `rgba(${hexToRgbString(KOREAN_COLORS.PRIMARY_CYAN)}, 0.7)`,
+    hex: KOREAN_COLORS.PRIMARY_CYAN,
+  },
+  /** Accent with 50% opacity - For backgrounds */
+  accent50: {
+    color: `rgba(${hexToRgbString(KOREAN_COLORS.PRIMARY_CYAN)}, 0.5)`,
+    hex: KOREAN_COLORS.PRIMARY_CYAN,
+  },
+  /** Primary with 80% opacity - For hover states */
+  primary80: {
+    color: `rgba(${hexToRgbString(KOREAN_COLORS.TEXT_PRIMARY)}, 0.8)`,
+    hex: KOREAN_COLORS.TEXT_PRIMARY,
   },
 } as const;
 
