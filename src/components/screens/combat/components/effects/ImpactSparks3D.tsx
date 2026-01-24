@@ -272,9 +272,13 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
 
   // Cleanup on unmount - Release ALL pooled vectors
   useEffect(() => {
+    // Capture refs at the start of effect to avoid stale closures
+    const currentParticles = particlesRef.current;
+    const currentCompletedEffects = completedEffectsRef.current;
+    
     return () => {
       // Release all particle vectors
-      particlesRef.current.forEach((particles) => {
+      currentParticles.forEach((particles) => {
         particles.forEach((p) => {
           if (p.isPooled) {
             ThreeObjectPools.vector3.release(p.position);
@@ -285,8 +289,8 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
       });
       
       // Clear refs
-      particlesRef.current.clear();
-      completedEffectsRef.current.clear();
+      currentParticles.clear();
+      currentCompletedEffects.clear();
     };
   }, []);
 

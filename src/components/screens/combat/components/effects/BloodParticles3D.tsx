@@ -275,9 +275,14 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
 
   // Cleanup on unmount - Release ALL pooled vectors
   React.useEffect(() => {
+    // Capture refs at the start of effect to avoid stale closures
+    const currentParticles = particlesRef.current;
+    const currentPoolParticles = poolParticlesRef.current;
+    const currentCompletedEffects = completedEffectsRef.current;
+    
     return () => {
       // Release all active effect particles
-      particlesRef.current.forEach((particles) => {
+      currentParticles.forEach((particles) => {
         particles.forEach((p) => {
           if (p.isPooled) {
             ThreeObjectPools.vector3.release(p.position);
@@ -288,7 +293,7 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
       });
       
       // Release all pool particles
-      poolParticlesRef.current.forEach((p) => {
+      currentPoolParticles.forEach((p) => {
         if (p.isPooled) {
           ThreeObjectPools.vector3.release(p.position);
           ThreeObjectPools.vector3.release(p.velocity);
@@ -297,9 +302,8 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
       });
       
       // Clear refs
-      particlesRef.current.clear();
-      poolParticlesRef.current = [];
-      completedEffectsRef.current.clear();
+      currentParticles.clear();
+      currentCompletedEffects.clear();
     };
   }, []);
 

@@ -70,11 +70,22 @@ const HitEffectVisual: React.FC<{
     const progress = effectRef.current.progress;
     alphaRef.current = 1 - progress;
 
-    // Update all material opacities in the group hierarchy
+    // Update all material opacities and positions in the group hierarchy
+    let sparkIndex = 0;
     groupRef.current.traverse((object) => {
       if (object instanceof THREE.Mesh && object.material instanceof THREE.MeshBasicMaterial) {
         const baseOpacity = object.material.userData.baseOpacity ?? 1;
         object.material.opacity = alphaRef.current * baseOpacity;
+        
+        // For BLOCK effect, animate spark particle positions
+        if (effect.type === HitEffectType.BLOCK && object.geometry instanceof THREE.SphereGeometry) {
+          if (object.geometry.parameters?.radius === 0.05) { // Spark particles have radius 0.05
+            const i = sparkIndex++;
+            if (i < 3) { // Only update the 3 spark particles
+              object.position.y = Math.sin((1 - alphaRef.current) * Math.PI) * 0.3;
+            }
+          }
+        }
       }
     });
 
@@ -175,13 +186,13 @@ const HitEffectVisual: React.FC<{
               userData={{ baseOpacity: 1.0 }}
             />
           </mesh>
-          {/* Spark particles */}
+          {/* Spark particles - positions will be updated in useFrame */}
           {[0, 1, 2].map((i) => (
             <mesh
               key={i}
               position={[
                 (i - 1) * 0.2,
-                Math.sin((1 - alphaRef.current) * Math.PI) * 0.3,
+                0,
                 0,
               ]}
             >
