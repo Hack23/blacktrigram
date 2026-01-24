@@ -59,7 +59,6 @@ import {
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
-import { ResponsiveContainer } from "../../shared/base/ResponsiveContainer";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import {
   ActionFeedback,
@@ -75,6 +74,7 @@ import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointO
 import { KeyboardHints } from "./components/controls/KeyboardHints";
 import { MatchCountdown } from "./components/feedback/MatchCountdown";
 import { RoundAnnouncement } from "./components/feedback/RoundAnnouncementOverlayHtml";
+import { RoundDisplayStatus } from "./components/feedback/RoundDisplayStatus";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncementOverlayHtml";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
 // GestureEvent import preserved for future gesture controls
@@ -2369,50 +2369,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
         )}
 
-        {/* Round display status overlay - only show when content is ready */}
-        {contentReady &&
-          combatState.roundDisplayStatus &&
-          combatState.roundDisplayStatus !== null && (
-            <Html fullscreen>
-              <ResponsiveContainer
-                position={{ base: { x: 0, y: 0 } }}
-                containerWidth={width}
-                containerHeight={height}
-                zIndex={Z_INDEX.MODAL}
-                style={{
-                  pointerEvents: "none",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "72px",
-                    fontWeight: "bold",
-                    fontFamily: theme.koreanTypography.fontFamily,
-                    lineHeight: theme.koreanTypography.lineHeight,
-                    letterSpacing: theme.koreanTypography.letterSpacing,
-                    wordBreak: theme.koreanTypography.wordBreak,
-                    textAlign: "center",
-                    color: `#${theme.colors.ACCENT_GOLD.toString(16).padStart(
-                      6,
-                      "0",
-                    )}`,
-                    textShadow: "0 0 20px rgba(255, 215, 0, 0.8)",
-                  }}
-                >
-                  {combatState.roundDisplayStatus === "start" && "라운드 시작!"}
-                  {combatState.roundDisplayStatus === "fight" && "전투!"}
-                  {combatState.roundDisplayStatus === "end" && "라운드 종료"}
-                  {combatState.roundDisplayStatus === "ko" && "K.O.!"}
-                </div>
-              </ResponsiveContainer>
-            </Html>
-          )}
-
         {/* Visual Feedback Components for Keyboard Controls */}
         <StanceChangeIndicator
           currentStance={currentStanceIndex}
@@ -2635,6 +2591,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             // Start combat for this round
             startRound();
           }}
+          isMobile={isMobile}
+        />
+      )}
+
+      {/* Round Display Status - Brief status messages */}
+      {contentReady && combatState.roundDisplayStatus && (
+        <RoundDisplayStatus
+          status={combatState.roundDisplayStatus}
           isMobile={isMobile}
         />
       )}
