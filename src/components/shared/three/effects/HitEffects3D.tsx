@@ -43,8 +43,8 @@ const HitEffectVisual: React.FC<{
   arenaBounds?: { x: number; y: number; width: number; height: number };
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
-  // Use state for alpha to avoid accessing ref during render
-  const [alpha, setAlpha] = useState(1);
+  // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
+  const alphaRef = useRef(1);
 
   // Position in 3D space - convert 2D position to 3D
   const position3D: [number, number, number] = useMemo(() => {
@@ -62,13 +62,32 @@ const HitEffectVisual: React.FC<{
     return [x, y, z];
   }, [effect.position, arenaBounds]);
 
-  // Animate effect based on type
+  // Animate effect based on type - Update materials directly in the group
   useFrame(() => {
     if (!groupRef.current || !effectRef.current) return;
 
-    // Access fresh progress value from ref and update alpha state
+    // Access fresh progress value from ref and update alpha ref (no setState!)
     const progress = effectRef.current.progress;
-    setAlpha(1 - progress);
+    alphaRef.current = 1 - progress;
+
+    // Update all material opacities and positions in the group hierarchy
+    let sparkIndex = 0;
+    groupRef.current.traverse((object) => {
+      if (object instanceof THREE.Mesh && object.material instanceof THREE.MeshBasicMaterial) {
+        const baseOpacity = object.material.userData.baseOpacity ?? 1;
+        object.material.opacity = alphaRef.current * baseOpacity;
+        
+        // For BLOCK effect, animate spark particle positions
+        if (effect.type === HitEffectType.BLOCK && object.geometry instanceof THREE.SphereGeometry) {
+          if (object.geometry.parameters?.radius === 0.05) { // Spark particles have radius 0.05
+            const i = sparkIndex++;
+            if (i < 3) { // Only update the 3 spark particles
+              object.position.y = Math.sin((1 - alphaRef.current) * Math.PI) * 0.3;
+            }
+          }
+        }
+      }
+    });
 
     // Rotate for some effects
     if (
@@ -97,7 +116,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_RED}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
+              userData={{ baseOpacity: 0.5 }}
             />
           </mesh>
           {/* Expanding ring */}
@@ -108,8 +128,9 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_RED}
               transparent
-              opacity={alpha}
+              opacity={1}
               side={THREE.DoubleSide}
+              userData={{ baseOpacity: 1.0 }}
             />
           </mesh>
         </group>
@@ -124,7 +145,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_GOLD}
               transparent
-              opacity={alpha * 0.7}
+              opacity={0.7}
+              userData={{ baseOpacity: 0.7 }}
             />
           </mesh>
           {/* Star burst lines */}
@@ -140,7 +162,8 @@ const HitEffectVisual: React.FC<{
                 <meshBasicMaterial
                   color={KOREAN_COLORS.ACCENT_RED}
                   transparent
-                  opacity={alpha}
+                  opacity={1}
+                  userData={{ baseOpacity: 1.0 }}
                 />
               </mesh>
             );
@@ -159,16 +182,17 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_CYAN}
               transparent
-              opacity={alpha}
+              opacity={1}
+              userData={{ baseOpacity: 1.0 }}
             />
           </mesh>
-          {/* Spark particles */}
+          {/* Spark particles - positions will be updated in useFrame */}
           {[0, 1, 2].map((i) => (
             <mesh
               key={i}
               position={[
                 (i - 1) * 0.2,
-                Math.sin((1 - alpha) * Math.PI) * 0.3, // Use alpha (1 - progress)
+                0,
                 0,
               ]}
             >
@@ -176,7 +200,8 @@ const HitEffectVisual: React.FC<{
               <meshBasicMaterial
                 color={KOREAN_COLORS.ACCENT_CYAN}
                 transparent
-                opacity={alpha * 0.8}
+                opacity={0.8}
+                userData={{ baseOpacity: 0.8 }}
               />
             </mesh>
           ))}
@@ -197,7 +222,8 @@ const HitEffectVisual: React.FC<{
               <meshBasicMaterial
                 color={KOREAN_COLORS.TEXT_TERTIARY}
                 transparent
-                opacity={alpha}
+                opacity={1}
+                userData={{ baseOpacity: 1.0 }}
               />
             </mesh>
           ))}
@@ -213,7 +239,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
+              userData={{ baseOpacity: 0.5 }}
             />
           </mesh>
           {/* Concentric rings */}
@@ -223,8 +250,9 @@ const HitEffectVisual: React.FC<{
               <meshBasicMaterial
                 color={KOREAN_COLORS.SECONDARY_MAGENTA}
                 transparent
-                opacity={alpha}
+                opacity={1}
                 side={THREE.DoubleSide}
+                userData={{ baseOpacity: 1.0 }}
               />
             </mesh>
           ))}
@@ -234,7 +262,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.8}
+              opacity={0.8}
+              userData={{ baseOpacity: 0.8 }}
             />
           </mesh>
           <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
@@ -242,7 +271,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.8}
+              opacity={0.8}
+              userData={{ baseOpacity: 0.8 }}
             />
           </mesh>
         </group>
@@ -259,7 +289,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_GOLD}
               transparent
-              opacity={alpha}
+              opacity={1}
+              userData={{ baseOpacity: 1.0 }}
             />
           </mesh>
           {/* Sparks */}
@@ -274,7 +305,8 @@ const HitEffectVisual: React.FC<{
                 <meshBasicMaterial
                   color={KOREAN_COLORS.ACCENT_GOLD}
                   transparent
-                  opacity={alpha * 0.8}
+                  opacity={0.8}
+                  userData={{ baseOpacity: 0.8 }}
                 />
               </mesh>
             );
@@ -296,7 +328,8 @@ const HitEffectVisual: React.FC<{
               <meshBasicMaterial
                 color={KOREAN_COLORS.PRIMARY_CYAN}
                 transparent
-                opacity={alpha}
+                opacity={1}
+                userData={{ baseOpacity: 1.0 }}
               />
             </mesh>
           ))}
@@ -313,7 +346,8 @@ const HitEffectVisual: React.FC<{
             <meshBasicMaterial
               color={KOREAN_COLORS.ACCENT_GREEN}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
+              userData={{ baseOpacity: 0.5 }}
             />
           </mesh>
         </group>

@@ -18,9 +18,9 @@ export { KeyboardHints } from "./controls/KeyboardHints";
 
 export { MatchCountdown } from "./feedback/MatchCountdown";
 export { RoundAnnouncement } from "./feedback/RoundAnnouncementOverlayHtml";
+export { RoundDisplayStatus } from "./feedback/RoundDisplayStatus";
 export { RoundStartAnnouncement } from "./feedback/RoundStartAnnouncementOverlayHtml";
 
-export { CombatHUD3D } from "./hud/CombatHUD3D";
 export { DifficultyIndicator } from "./hud/DifficultyIndicator";
 export { FPSMonitor } from "./hud/FPSMonitor";
 export { MobileControlsWrapper } from "./hud/MobileControlsWrapper";
@@ -50,9 +50,9 @@ export type { KeyboardHintsProps } from "./controls/KeyboardHints";
 
 export type { MatchCountdownProps } from "./feedback/MatchCountdown";
 export type { RoundAnnouncementProps, RoundStats } from "./feedback/RoundAnnouncementOverlayHtml";
+export type { RoundDisplayStatusProps, RoundDisplayStatus as RoundDisplayStatusType } from "./feedback/RoundDisplayStatus";
 export type { RoundStartAnnouncementProps } from "./feedback/RoundStartAnnouncementOverlayHtml";
 
-export type { CombatHUD3DProps } from "./hud/CombatHUD3D";
 export type { DifficultyIndicatorProps } from "./hud/DifficultyIndicator";
 export type { FPSMonitorProps } from "./hud/FPSMonitor";
 export type { MobileControlsWrapperProps } from "./hud/MobileControlsWrapper";

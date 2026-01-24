@@ -19,6 +19,9 @@
 
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
+import {
+  HUD_HEIGHT,
+} from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import {
@@ -26,10 +29,6 @@ import {
   ReturnToMenuButton,
 } from "../TrainingButtonsOverlayHtml";
 import TrainingControlsOverlayHtml from "../TrainingControlsOverlayHtml";
-
-/** Top HUD height constants - SLIM for minimal obstruction */
-const TOP_HUD_HEIGHT_DESKTOP = 70;
-const TOP_HUD_HEIGHT_MOBILE = 50;
 
 export interface TrainingTopHUDProps {
   /** Screen width for layout calculations */
@@ -86,8 +85,8 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
-      ? TOP_HUD_HEIGHT_MOBILE
-      : TOP_HUD_HEIGHT_DESKTOP * positionScale;
+      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
+      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
 
     const padding = isMobile ? 8 : 12 * positionScale;
     const gap = isMobile ? 8 : 12 * positionScale;

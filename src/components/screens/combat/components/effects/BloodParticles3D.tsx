@@ -25,11 +25,14 @@ import { ThreeObjectPools } from "../../../../../utils/threeObjectPool";
 
 /**
  * Blood particle data structure for efficient simulation
+ * 
+ * PERFORMANCE: position and velocity now use pooled Vector3 objects
+ * that are acquired on particle creation and released on expiration
  */
 interface BloodParticle {
-  /** Current position [x, y, z] */
+  /** Current position [x, y, z] - POOLED Vector3 */
   position: THREE.Vector3;
-  /** Current velocity [x, y, z] */
+  /** Current velocity [x, y, z] - POOLED Vector3 */
   velocity: THREE.Vector3;
   /** Particle lifetime in seconds */
   lifetime: number;
@@ -37,6 +40,8 @@ interface BloodParticle {
   age: number;
   /** Whether particle has settled on floor */
   settled: boolean;
+  /** Flag to track if vectors are pooled and need release */
+  isPooled: boolean;
 }
 
 /**
@@ -108,19 +113,20 @@ const BLOOD_CONSTANTS = {
 /**
  * Generate initial particles for a blood splatter effect
  * 
- * Uses ThreeObjectPools for Vector3 allocations to reduce GC pressure.
+ * PERFORMANCE OPTIMIZATION: Uses ThreeObjectPools for ALL Vector3 allocations
  * 
- * Pooling Strategy:
- * - Acquire temp vectors for calculations (baseDir, origin, axis vectors)
- * - Clone final position/velocity for particle ownership
- * - Release all temp vectors back to pool after loop completes
+ * Pooling Strategy (UPDATED):
+ * - Acquire temp vectors for calculations (baseDir, origin, axis vectors) - RELEASED
+ * - Acquire position/velocity from pool for particle ownership - MUST BE RELEASED on expiration
  * 
- * This reduces Vector3 allocations from ~600 per splatter (2 per particle × 300)
- * to just 2 per particle (position and velocity owned by particle).
+ * Memory Impact:
+ * - Before: 600 Vector3 allocations per splatter (2 per particle × 300)
+ * - After: 5 temp vectors (reused) + particles use pooled vectors (released on expiration)
+ * - Reduction: ~99.2% fewer allocations (600 → 5 temp + pooled reuse)
  * 
  * @param effect - Blood splatter effect configuration
  * @param maxParticles - Maximum number of particles to generate
- * @returns Array of blood particles with pooled temp vectors released
+ * @returns Array of blood particles with ALL vectors from pool (must be released later)
  */
 const generateBloodParticles = (
   effect: BloodSplatterEffect,
@@ -159,14 +165,21 @@ const generateBloodParticles = (
       BLOOD_CONSTANTS.VELOCITY_MIN +
       Math.random() * (BLOOD_CONSTANTS.VELOCITY_MAX - BLOOD_CONSTANTS.VELOCITY_MIN);
 
-    // Clone vectors for particle ownership - these are NOT pooled
-    // as the particle needs to own its position/velocity for its lifetime
+    // CRITICAL CHANGE: Acquire pooled vectors for particle ownership
+    // These MUST be released when particle expires!
+    const particlePosition = ThreeObjectPools.vector3.acquire();
+    const particleVelocity = ThreeObjectPools.vector3.acquire();
+    
+    particlePosition.copy(origin);
+    particleVelocity.copy(direction).multiplyScalar(speed);
+
     particles.push({
-      position: origin.clone(),
-      velocity: direction.clone().multiplyScalar(speed),
+      position: particlePosition,
+      velocity: particleVelocity,
       lifetime: BLOOD_CONSTANTS.PARTICLE_LIFETIME,
       age: 0,
       settled: false,
+      isPooled: true, // Mark as pooled for cleanup
     });
   }
 
@@ -242,15 +255,60 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
       }
     });
 
-    // Clean up removed effects
+    // Clean up removed effects - IMPORTANT: Release pooled vectors!
     const effectIds = new Set(effects.map((e) => e.id));
-    particlesRef.current.forEach((_, id) => {
+    particlesRef.current.forEach((particles, id) => {
       if (!effectIds.has(id)) {
+        // Release all pooled vectors for this effect
+        particles.forEach((p) => {
+          if (p.isPooled) {
+            ThreeObjectPools.vector3.release(p.position);
+            ThreeObjectPools.vector3.release(p.velocity);
+            p.isPooled = false;
+          }
+        });
         particlesRef.current.delete(id);
         completedEffectsRef.current.delete(id);
       }
     });
   }, [effects, enabled, maxParticles]);
+
+  // Cleanup on unmount - Release ALL pooled vectors
+  React.useEffect(() => {
+    // Capture refs at the start of effect to avoid stale closures
+    const currentParticles = particlesRef.current;
+    const currentPoolParticles = poolParticlesRef.current;
+    const currentCompletedEffects = completedEffectsRef.current;
+    
+    return () => {
+      // Release all active effect particles
+      currentParticles.forEach((particles) => {
+        particles.forEach((p) => {
+          if (p.isPooled) {
+            ThreeObjectPools.vector3.release(p.position);
+            ThreeObjectPools.vector3.release(p.velocity);
+            p.isPooled = false;
+          }
+        });
+      });
+      
+      // Release all pool particles
+      currentPoolParticles.forEach((p) => {
+        if (p.isPooled) {
+          ThreeObjectPools.vector3.release(p.position);
+          ThreeObjectPools.vector3.release(p.velocity);
+          p.isPooled = false;
+        }
+      });
+      
+      // Clear the pool particles array for complete cleanup
+      poolParticlesRef.current = [];
+      
+      // Clear refs
+      currentParticles.clear();
+      currentCompletedEffects.clear();
+    };
+  }, []);
 
   // Initial particle positions for first render
   // Actual positions are updated in useFrame
@@ -332,7 +390,16 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
       // Buffer is full: continue aging and culling pool particles, but do not write positions.
       poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
         p.age += safeDelta;
-        return p.age < p.lifetime;
+        const isAlive = p.age < p.lifetime;
+        
+        // Release pooled vectors when particle dies
+        if (!isAlive && p.isPooled) {
+          ThreeObjectPools.vector3.release(p.position);
+          ThreeObjectPools.vector3.release(p.velocity);
+          p.isPooled = false; // Mark as released
+        }
+        
+        return isAlive;
       });
     } else {
       // There is still room in the buffer: write pool particle positions up to the cap.
@@ -345,6 +412,13 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
           posArray[totalParticleIndex * 3 + 1] = p.position.y;
           posArray[totalParticleIndex * 3 + 2] = p.position.z;
           totalParticleIndex++;
+        }
+
+        // Release pooled vectors when particle dies
+        if (!isAlive && p.isPooled) {
+          ThreeObjectPools.vector3.release(p.position);
+          ThreeObjectPools.vector3.release(p.velocity);
+          p.isPooled = false; // Mark as released
         }
 
         return isAlive;

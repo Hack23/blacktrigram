@@ -9,6 +9,17 @@
  * This eliminates the need for Html overlays inside Three.js and ensures
  * HUDs appear immediately without waiting for Canvas initialization.
  *
+ * Architecture (Consolidated in PR #1394 + Issue #1398):
+ * - TrainingLeftHUD: Anatomy controls, guard indicator
+ * - TrainingRightHUD: Training stats, mode selector, vital point selection
+ * - TrainingTopHUD: Training controls, archetype selector, return button
+ * - TrainingBottomHUD: Technique bar, feedback messages, mobile controls
+ * - VitalPointOverlayControlsPure: Vital point overlay controls (pure DOM)
+ *
+ * All UI components render as pure DOM in the HUD overlay div (lines 1230+).
+ * NO Html components from @react-three/drei are used inside the Canvas.
+ * This ensures clean separation of 3D rendering and UI layers.
+ *
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
@@ -74,11 +85,11 @@ import {
 import {
   Player3DWithTransitions,
   VitalPointMarkers3D,
-  VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
 } from "../../shared/three";
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { VitalPointOverlayControlsPure } from "../../shared/ui/VitalPointOverlayControlsPure";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
@@ -1007,6 +1018,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingActions, audio],
   );
 
+  const handleVitalPointClick = useCallback(
+    (pointId: string) => {
+      trainingActions.setSelectedVitalPoint(pointId);
+      audio.playSFX("menu_select");
+    },
+    [trainingActions, audio],
+  );
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 14: Camera Configuration
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1106,32 +1125,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             scale={scale}
             animated={animated}
             selectedPoint={trainingState.selectedVitalPoint}
-            onPointClick={(pointId) => {
-              trainingActions.setSelectedVitalPoint(pointId);
-              audio.playSFX("menu_select");
-            }}
-          />
-        )}
-
-        {/* VitalPointOverlayControlsHtml - fixed screen position */}
-        {overlayVisible && (
-          <VitalPointOverlayControlsHtml
-            visible={overlayVisible}
-            onVisibleChange={setOverlayVisible}
-            severityFilters={severityFilters}
-            onSeverityFiltersChange={setSeverityFilters}
-            regionFilter={regionFilter}
-            onRegionFilterChange={setRegionFilter}
-            searchQuery={searchQuery}
-            onSearchQueryChange={setSearchQuery}
-            showLabels={showLabels}
-            onShowLabelsChange={setShowLabels}
-            animated={animated}
-            onAnimatedChange={setAnimated}
-            scale={scale}
-            onScaleChange={setScale}
-            screenPosition={{ top: "180px", left: "20px" }}
-            isMobile={isMobile}
+            onPointClick={handleVitalPointClick}
           />
         )}
 
@@ -1311,6 +1305,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onArchetypeSelect={setSelectedArchetype}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
+
+        {/* Vital Point Overlay Controls - Pure DOM overlay (outside Canvas) */}
+        {overlayVisible && (
+          <VitalPointOverlayControlsPure
+            visible={overlayVisible}
+            onVisibleChange={setOverlayVisible}
+            severityFilters={severityFilters}
+            onSeverityFiltersChange={setSeverityFilters}
+            regionFilter={regionFilter}
+            onRegionFilterChange={setRegionFilter}
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            showLabels={showLabels}
+            onShowLabelsChange={setShowLabels}
+            animated={animated}
+            onAnimatedChange={setAnimated}
+            scale={scale}
+            onScaleChange={setScale}
+            screenPosition={{ top: "180px", left: "20px" }}
+            isMobile={isMobile}
+          />
+        )}
 
         {/* Mobile Controls - Pure DOM overlay (outside Canvas for reliable touch) */}
         {isMobile && (
