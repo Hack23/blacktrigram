@@ -10,7 +10,6 @@
 import React, { useMemo } from "react";
 import { STANCE_GUARD_CONFIGS } from "../../../../systems/animation";
 import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
-import { Z_INDEX } from "../../../../types/LayoutTypes";
 import { TrigramStance } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
@@ -161,20 +160,14 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       iconSize: isMobile ? 14 : 18,
       padding: isMobile ? "6px 10px" : "8px 12px",
       gap: isMobile ? "3px" : "4px",
-      // Position above BottomHUD, in bottom-right corner of arena
-      bottom: isMobile ? "130px" : "150px",
-      // Right side, just inside the right HUD (14% from right edge + small offset)
-      right: isMobile ? "calc(15% + 8px)" : "calc(14% + 12px)",
     }),
     [isMobile],
   );
 
-  // Container style - bottom-right corner of arena (avoids left panel overlap)
+  // Container style - uses relative positioning for embedding in container HUDs
   const containerStyle = useMemo(
     () => ({
-      position: "absolute" as const,
-      bottom: layout.bottom,
-      right: layout.right,
+      position: "relative" as const,
       display: "flex",
       flexDirection: "column" as const,
       gap: layout.gap,
@@ -183,11 +176,11 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       borderRadius: "6px",
       padding: layout.padding,
       pointerEvents: "none" as const,
-      zIndex: Z_INDEX.HUD,
-      minWidth: isMobile ? "140px" : "180px",
+      width: "100%",
+      boxSizing: "border-box" as const,
       boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
     }),
-    [layout, isMobile],
+    [layout],
   );
 
   // Don't render if not in guard state

@@ -3,9 +3,9 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
-import { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
+import { describe, expect, it } from "vitest";
 import { BodyPart, BodyPartHealth } from "../../../../systems/bodypart/types";
+import { BodyPartHealthDisplay } from "./BodyPartHealthDisplay";
 
 describe("BodyPartHealthDisplay", () => {
   const mockBodyPartHealth: BodyPartHealth = {
@@ -26,7 +26,7 @@ describe("BodyPartHealthDisplay", () => {
         playerId="player-1"
         position="left"
         isMobile={false}
-      />
+      />,
     );
 
     // Check that component renders
@@ -36,12 +36,24 @@ describe("BodyPartHealthDisplay", () => {
     // Check that all body parts are present
     expect(screen.getByTestId("body-part-player-1-head")).toBeInTheDocument();
     expect(screen.getByTestId("body-part-player-1-neck")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-torsoUpper")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-torsoLower")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-armLeft")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-armRight")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-legLeft")).toBeInTheDocument();
-    expect(screen.getByTestId("body-part-player-1-legRight")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-torsoUpper"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-torsoLower"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-armLeft"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-armRight"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-legLeft"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("body-part-player-1-legRight"),
+    ).toBeInTheDocument();
   });
 
   it("should display bilingual labels", () => {
@@ -51,7 +63,7 @@ describe("BodyPartHealthDisplay", () => {
         playerId="player-1"
         position="left"
         isMobile={false}
-      />
+      />,
     );
 
     // Check for Korean and English labels
@@ -68,58 +80,64 @@ describe("BodyPartHealthDisplay", () => {
         playerId="player-1"
         position="left"
         isMobile={false}
-      />
+      />,
     );
 
     // Check for percentage displays
     expect(screen.getByText("100%")).toBeInTheDocument(); // Head
-    expect(screen.getByText("90%")).toBeInTheDocument();  // Neck
-    expect(screen.getByText("80%")).toBeInTheDocument();  // Torso Upper
-    expect(screen.getByText("30%")).toBeInTheDocument();  // Leg Right
+    expect(screen.getByText("90%")).toBeInTheDocument(); // Neck
+    expect(screen.getByText("80%")).toBeInTheDocument(); // Torso Upper
+    expect(screen.getByText("30%")).toBeInTheDocument(); // Leg Right
   });
 
-  it("should position correctly for left player", () => {
+  it("should use relative positioning for container embedding", () => {
     const { container } = render(
       <BodyPartHealthDisplay
         bodyPartHealth={mockBodyPartHealth}
         playerId="player-1"
         position="left"
         isMobile={false}
-      />
+      />,
     );
 
-    const display = container.querySelector('[data-testid="body-part-health-player-1"]') as HTMLElement;
-    expect(display.style.left).toBe("12px");
-    expect(display.style.right).toBe("auto");
+    const display = container.querySelector(
+      '[data-testid="body-part-health-player-1"]',
+    ) as HTMLElement;
+    expect(display.style.position).toBe("relative");
+    expect(display.style.width).toBe("100%");
   });
 
-  it("should position correctly for right player", () => {
+  it("should use relative positioning for right player as well", () => {
     const { container } = render(
       <BodyPartHealthDisplay
         bodyPartHealth={mockBodyPartHealth}
         playerId="player-2"
         position="right"
         isMobile={false}
-      />
+      />,
     );
 
-    const display = container.querySelector('[data-testid="body-part-health-player-2"]') as HTMLElement;
-    expect(display.style.left).toBe("auto");
-    expect(display.style.right).toBe("12px");
+    const display = container.querySelector(
+      '[data-testid="body-part-health-player-2"]',
+    ) as HTMLElement;
+    expect(display.style.position).toBe("relative");
+    expect(display.style.width).toBe("100%");
   });
 
-  it("should use mobile sizing when isMobile is true", () => {
+  it("should use relative positioning on mobile", () => {
     const { container } = render(
       <BodyPartHealthDisplay
         bodyPartHealth={mockBodyPartHealth}
         playerId="player-1"
         position="left"
         isMobile={true}
-      />
+      />,
     );
 
-    const display = container.querySelector('[data-testid="body-part-health-player-1"]') as HTMLElement;
-    expect(display.style.left).toBe("8px"); // Mobile positioning
+    const display = container.querySelector(
+      '[data-testid="body-part-health-player-1"]',
+    ) as HTMLElement;
+    expect(display.style.position).toBe("relative");
   });
 
   it("should show critical health styling for low health", () => {
@@ -140,7 +158,7 @@ describe("BodyPartHealthDisplay", () => {
         playerId="player-1"
         position="left"
         isMobile={false}
-      />
+      />,
     );
 
     // Component should render with critical health values

@@ -4,8 +4,8 @@
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { TrainingStatsOverlayHtml } from "./TrainingStatsOverlayHtml";
 import { FONT_FAMILY } from "../../../../types/constants";
+import { TrainingStatsOverlayHtml } from "./TrainingStatsOverlayHtml";
 
 describe("TrainingStatsOverlayHtml", () => {
   const mockStats = {
@@ -17,35 +17,22 @@ describe("TrainingStatsOverlayHtml", () => {
   };
 
   it("should render without crashing", () => {
-    render(
-      <TrainingStatsOverlayHtml
-        stats={mockStats}
-        isMobile={false}
-      />
-    );
+    render(<TrainingStatsOverlayHtml stats={mockStats} isMobile={false} />);
 
     expect(screen.getByTestId("training-stats-html")).toBeInTheDocument();
   });
 
   it("should render bilingual header text", () => {
-    render(
-      <TrainingStatsOverlayHtml
-        stats={mockStats}
-        isMobile={false}
-      />
-    );
+    render(<TrainingStatsOverlayHtml stats={mockStats} isMobile={false} />);
 
     // Header uses formatBilingualText with pipe format
-    expect(screen.getByText("훈련 통계 | Training Statistics")).toBeInTheDocument();
+    expect(
+      screen.getByText("훈련 통계 | Training Statistics"),
+    ).toBeInTheDocument();
   });
 
   it("should display all stat labels in Korean and English", () => {
-    render(
-      <TrainingStatsOverlayHtml
-        stats={mockStats}
-        isMobile={false}
-      />
-    );
+    render(<TrainingStatsOverlayHtml stats={mockStats} isMobile={false} />);
 
     // Check for Korean labels
     expect(screen.getByText("점수")).toBeInTheDocument();
@@ -63,12 +50,7 @@ describe("TrainingStatsOverlayHtml", () => {
   });
 
   it("should display stat values correctly", () => {
-    render(
-      <TrainingStatsOverlayHtml
-        stats={mockStats}
-        isMobile={false}
-      />
-    );
+    render(<TrainingStatsOverlayHtml stats={mockStats} isMobile={false} />);
 
     expect(screen.getByText("1,500")).toBeInTheDocument(); // Score with formatting
     expect(screen.getByText("5x")).toBeInTheDocument(); // Combo
@@ -78,41 +60,39 @@ describe("TrainingStatsOverlayHtml", () => {
   });
 
   it("should apply Korean font family consistently throughout the component", () => {
-    render(
-      <TrainingStatsOverlayHtml
-        stats={mockStats}
-        isMobile={false}
-      />
-    );
+    render(<TrainingStatsOverlayHtml stats={mockStats} isMobile={false} />);
 
     // The main container should use Korean font
     const mainContainer = screen.getByTestId("training-stats-html");
     const computedStyle = window.getComputedStyle(mainContainer);
-    expect(computedStyle.fontFamily).toContain(FONT_FAMILY.KOREAN.split(",")[0].replace(/"/g, ""));
+    expect(computedStyle.fontFamily).toContain(
+      FONT_FAMILY.KOREAN.split(",")[0].replace(/"/g, ""),
+    );
   });
 
-  it("should use smaller width for mobile", () => {
+  it("should use provided width for mobile", () => {
     render(
       <TrainingStatsOverlayHtml
         stats={mockStats}
         isMobile={true}
-      />
+        width={180}
+      />,
     );
 
     const mainContainer = screen.getByTestId("training-stats-html");
-    expect(mainContainer).toHaveStyle({ width: "240px" }); // Responsive: default width 375px -> 240px panel
+    expect(mainContainer).toHaveStyle({ width: "180px" }); // Uses explicit width prop
   });
 
-  it("should use wider width for desktop", () => {
+  it("should use provided width for desktop", () => {
     render(
       <TrainingStatsOverlayHtml
         stats={mockStats}
         isMobile={false}
-      />
+        width={200}
+      />,
     );
 
     const mainContainer = screen.getByTestId("training-stats-html");
-    expect(mainContainer).toHaveStyle({ width: "280px" }); // Updated from 260px
+    expect(mainContainer).toHaveStyle({ width: "200px" }); // Uses explicit width prop
   });
 });
-

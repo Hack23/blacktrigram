@@ -52,73 +52,73 @@ describe("PlayerHUD", () => {
   describe("Rendering", () => {
     it("should render player HUD with correct test ID", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("player-hud-player-1")).toBeInTheDocument();
     });
 
     it("should display player name in Korean and English", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("player-name-player-1")).toHaveTextContent(
-        "테스트 | Test"
+        "테스트 | Test",
       );
     });
 
     it("should render health bar", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("health-bar-player-1")).toBeInTheDocument();
     });
 
     it("should render stamina bar", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("stamina-bar-player-1")).toBeInTheDocument();
     });
 
     it("should display current stance", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("stance-indicator-player-1")).toHaveTextContent(
-        `자세 | Stance: ${TrigramStance.GEON}`
+        `자세 | Stance: ${TrigramStance.GEON}`,
       );
     });
   });
 
   describe("Position Variants", () => {
-    it("should position HUD on the left when position is 'left'", () => {
+    it("should use relative positioning for container embedding", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       const hud = container.querySelector(
-        '[data-testid="player-hud-player-1"]'
+        '[data-testid="player-hud-player-1"]',
       ) as HTMLElement;
-      expect(hud.style.left).toBeTruthy();
-      expect(hud.style.right).toBe("auto");
+      expect(hud.style.position).toBe("relative");
+      expect(hud.style.width).toBe("100%");
     });
 
-    it("should position HUD on the right when position is 'right'", () => {
+    it("should use relative positioning for right player as well", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="right" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="right" isMobile={false} />,
       );
       const hud = container.querySelector(
-        '[data-testid="player-hud-player-1"]'
+        '[data-testid="player-hud-player-1"]',
       ) as HTMLElement;
-      expect(hud.style.left).toBe("auto");
-      expect(hud.style.right).toBeTruthy();
+      expect(hud.style.position).toBe("relative");
+      expect(hud.style.width).toBe("100%");
     });
 
     it("should align text left for left position", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       const nameElement = container.querySelector(
-        '[data-testid="player-name-player-1"]'
+        '[data-testid="player-name-player-1"]',
       ) as HTMLElement;
       // Left position uses row flex direction (icon then name)
       expect(nameElement.style.flexDirection).toBe("row");
@@ -126,10 +126,10 @@ describe("PlayerHUD", () => {
 
     it("should align text right for right position", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="right" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="right" isMobile={false} />,
       );
       const nameElement = container.querySelector(
-        '[data-testid="player-name-player-1"]'
+        '[data-testid="player-name-player-1"]',
       ) as HTMLElement;
       // Right position uses row-reverse flex direction (name then icon)
       expect(nameElement.style.flexDirection).toBe("row-reverse");
@@ -151,79 +151,79 @@ describe("PlayerHUD", () => {
       // StaminaBar component should handle mobile sizing internally
     });
 
-    it("should adjust positioning for mobile", () => {
+    it("should use relative positioning for mobile", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={true} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={true} />,
       );
       const hud = container.querySelector(
-        '[data-testid="player-hud-player-1"]'
+        '[data-testid="player-hud-player-1"]',
       ) as HTMLElement;
-      expect(hud.style.top).toBe("8px");
-      expect(hud.style.left).toBe("8px");
+      expect(hud.style.position).toBe("relative");
+      expect(hud.style.width).toBe("100%");
     });
 
-    it("should use larger spacing for desktop", () => {
+    it("should use relative positioning for desktop", () => {
       const { container } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       const hud = container.querySelector(
-        '[data-testid="player-hud-player-1"]'
+        '[data-testid="player-hud-player-1"]',
       ) as HTMLElement;
-      expect(hud.style.top).toBe("10px");
-      expect(hud.style.left).toBe("12px");
+      expect(hud.style.position).toBe("relative");
+      expect(hud.style.width).toBe("100%");
     });
   });
 
   describe("Health and Stamina Values", () => {
     it("should display correct health values", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("health-value-player-1")).toHaveTextContent(
-        "85/100"
+        "85/100",
       );
     });
 
     it("should display correct stamina values", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("stamina-value-player-1")).toHaveTextContent(
-        "40/50"
+        "40/50",
       );
     });
 
     it("should update when player health changes", () => {
       const { rerender } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("health-value-player-1")).toHaveTextContent(
-        "85/100"
+        "85/100",
       );
 
       const updatedPlayer = { ...mockPlayer, health: 50 };
       rerender(
-        <PlayerHUD player={updatedPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={updatedPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("health-value-player-1")).toHaveTextContent(
-        "50/100"
+        "50/100",
       );
     });
 
     it("should update when player stamina changes", () => {
       const { rerender } = render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("stamina-value-player-1")).toHaveTextContent(
-        "40/50"
+        "40/50",
       );
 
       const updatedPlayer = { ...mockPlayer, stamina: 20 };
       rerender(
-        <PlayerHUD player={updatedPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={updatedPlayer} position="left" isMobile={false} />,
       );
       expect(screen.getByTestId("stamina-value-player-1")).toHaveTextContent(
-        "20/50"
+        "20/50",
       );
     });
   });
@@ -241,14 +241,14 @@ describe("PlayerHUD", () => {
         <>
           <PlayerHUD player={player1} position="left" isMobile={false} />
           <PlayerHUD player={player2} position="right" isMobile={false} />
-        </>
+        </>,
       );
 
       expect(
-        container.querySelector('[data-testid="player-hud-player-1"]')
+        container.querySelector('[data-testid="player-hud-player-1"]'),
       ).toBeInTheDocument();
       expect(
-        container.querySelector('[data-testid="player-hud-player-2"]')
+        container.querySelector('[data-testid="player-hud-player-2"]'),
       ).toBeInTheDocument();
     });
   });
@@ -269,10 +269,10 @@ describe("PlayerHUD", () => {
             player={playerWithStance}
             position="left"
             isMobile={false}
-          />
+          />,
         );
         expect(
-          screen.getByTestId("stance-indicator-player-1")
+          screen.getByTestId("stance-indicator-player-1"),
         ).toHaveTextContent(`자세 | Stance: ${stance}`);
         unmount();
       });
@@ -287,17 +287,17 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="left"
-        />
+        />,
       );
       expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
     });
 
     it("should not render laterality indicator when laterality prop is undefined", () => {
       render(
-        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />
+        <PlayerHUD player={mockPlayer} position="left" isMobile={false} />,
       );
       expect(
-        screen.queryByTestId("laterality-indicator")
+        screen.queryByTestId("laterality-indicator"),
       ).not.toBeInTheDocument();
     });
 
@@ -308,7 +308,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="left"
-        />
+        />,
       );
 
       const badge = screen.getByTestId("laterality-badge");
@@ -325,7 +325,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="right"
-        />
+        />,
       );
 
       const badge = screen.getByTestId("laterality-badge");
@@ -342,7 +342,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="left"
-        />
+        />,
       );
 
       expect(screen.getByTestId("laterality-badge")).toHaveTextContent("L");
@@ -353,7 +353,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="right"
-        />
+        />,
       );
 
       expect(screen.getByTestId("laterality-badge")).toHaveTextContent("R");
@@ -366,7 +366,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={true}
           laterality="left"
-        />
+        />,
       );
 
       const indicator = screen.getByTestId("laterality-indicator");
@@ -381,7 +381,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="right"
-        />
+        />,
       );
 
       // All test IDs should be present
@@ -397,7 +397,7 @@ describe("PlayerHUD", () => {
           position="left"
           isMobile={false}
           laterality="left"
-        />
+        />,
       );
       expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
       unmount();
@@ -408,7 +408,7 @@ describe("PlayerHUD", () => {
           position="right"
           isMobile={false}
           laterality="right"
-        />
+        />,
       );
       expect(screen.getByTestId("laterality-indicator")).toBeInTheDocument();
     });
