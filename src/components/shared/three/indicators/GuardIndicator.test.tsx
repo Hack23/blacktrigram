@@ -1,14 +1,14 @@
 /**
  * GuardIndicator Component Tests
- * 
+ *
  * @module components/shared/three/indicators/GuardIndicator.test
  * @category Combat UI Tests
  */
 
-import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { GuardIndicator } from "./GuardIndicator";
+import { describe, expect, it } from "vitest";
 import { TrigramStance } from "../../../../types/common";
+import { GuardIndicator } from "./GuardIndicator";
 
 describe("GuardIndicator", () => {
   describe("Rendering", () => {
@@ -19,7 +19,7 @@ describe("GuardIndicator", () => {
           isInGuard={false}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.firstChild).toBeNull();
@@ -32,7 +32,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByTestId("guard-indicator")).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText(/☰ GUARD/)).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("앞서기")).toBeInTheDocument(); // Korean name
@@ -78,7 +78,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("앞굽이")).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("주춤")).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("뒤굽이")).toBeInTheDocument();
@@ -126,7 +126,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("범서기")).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("학다리")).toBeInTheDocument();
@@ -158,7 +158,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("모아서기")).toBeInTheDocument();
@@ -174,7 +174,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("중하")).toBeInTheDocument();
@@ -193,7 +193,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.textContent).toContain("▲"); // Forward icon
@@ -207,7 +207,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.textContent).toContain("▼"); // Back icon
@@ -221,7 +221,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.textContent).toContain("●"); // Neutral icon
@@ -237,7 +237,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("고위")).toBeInTheDocument(); // Korean high
@@ -251,7 +251,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("중위")).toBeInTheDocument(); // Korean mid
@@ -265,7 +265,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(screen.getByText("저위")).toBeInTheDocument(); // Korean low
@@ -274,34 +274,34 @@ describe("GuardIndicator", () => {
   });
 
   describe("Player Positioning", () => {
-    it("should position indicator on left for left player", () => {
+    it("should use relative positioning for container embedding", () => {
       const { container } = render(
         <GuardIndicator
           currentStance={TrigramStance.GEON}
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
-      expect(indicator.style.left).toBeTruthy();
-      expect(indicator.style.right).toBe("auto");
+      expect(indicator.style.position).toBe("relative");
+      expect(indicator.style.width).toBe("100%");
     });
 
-    it("should position indicator on right for right player", () => {
+    it("should use relative positioning for right player as well", () => {
       const { container } = render(
         <GuardIndicator
           currentStance={TrigramStance.GEON}
           isInGuard={true}
           position="right"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
-      expect(indicator.style.right).toBeTruthy();
-      expect(indicator.style.left).toBe("auto");
+      expect(indicator.style.position).toBe("relative");
+      expect(indicator.style.width).toBe("100%");
     });
   });
 
@@ -313,11 +313,13 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={true}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
-      expect(indicator.style.minWidth).toBe("140px");
+      // Component uses 100% width for container embedding, check padding for mobile
+      expect(indicator.style.width).toBe("100%");
+      expect(indicator.style.padding).toBe("6px 10px");
     });
 
     it("should use desktop sizing when isMobile is false", () => {
@@ -327,11 +329,13 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
-      expect(indicator.style.minWidth).toBe("180px");
+      // Component uses 100% width for container embedding, check padding for desktop
+      expect(indicator.style.width).toBe("100%");
+      expect(indicator.style.padding).toBe("8px 12px");
     });
   });
 
@@ -343,13 +347,13 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = screen.getByRole("status");
       expect(indicator).toHaveAttribute("aria-live", "polite");
       expect(indicator).toHaveAttribute("aria-label");
-      
+
       const label = indicator.getAttribute("aria-label");
       expect(label).toContain("Guard position");
       expect(label).toContain("Ap Seogi");
@@ -364,7 +368,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = screen.getByRole("status");
@@ -381,7 +385,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
@@ -397,7 +401,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       const indicator = container.firstChild as HTMLElement;
@@ -413,9 +417,17 @@ describe("GuardIndicator", () => {
         { stance: TrigramStance.LI, korean: "주춤", english: "Juchum Seogi" },
         { stance: TrigramStance.JIN, korean: "뒤굽이", english: "Dwi Koobi" },
         { stance: TrigramStance.SON, korean: "범서기", english: "Beom Seogi" },
-        { stance: TrigramStance.GAM, korean: "학다리", english: "Hak Dari Seogi" },
+        {
+          stance: TrigramStance.GAM,
+          korean: "학다리",
+          english: "Hak Dari Seogi",
+        },
         { stance: TrigramStance.GAN, korean: "모아서기", english: "Moa Seogi" },
-        { stance: TrigramStance.GON, korean: "중하", english: "Joong Ha Seogi" },
+        {
+          stance: TrigramStance.GON,
+          korean: "중하",
+          english: "Joong Ha Seogi",
+        },
       ];
 
       traditionalStances.forEach(({ stance, korean, english }) => {
@@ -425,12 +437,12 @@ describe("GuardIndicator", () => {
             isInGuard={true}
             position="left"
             isMobile={false}
-          />
+          />,
         );
 
         expect(screen.getByText(korean)).toBeInTheDocument();
         expect(screen.getByText(english)).toBeInTheDocument();
-        
+
         unmount();
       });
     });
@@ -442,7 +454,7 @@ describe("GuardIndicator", () => {
           isInGuard={true}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       // Korean height term
@@ -460,7 +472,7 @@ describe("GuardIndicator", () => {
           isInGuard={false}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.firstChild).toBeNull();
@@ -471,7 +483,7 @@ describe("GuardIndicator", () => {
           isInGuard={false}
           position="left"
           isMobile={false}
-        />
+        />,
       );
 
       expect(container.firstChild).toBeNull();

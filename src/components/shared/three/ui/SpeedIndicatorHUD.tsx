@@ -11,7 +11,7 @@
  */
 
 import React, { useMemo } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 
 export interface SpeedIndicatorHUDProps {
   /**
@@ -47,9 +47,9 @@ export interface SpeedIndicatorHUDProps {
 
 /**
  * Get color for speed percentage
- * 
+ *
  * **Korean**: 속도 색상 (Speed Color)
- * 
+ *
  * Color coding:
  * - Green: 100%+ (boosted speed)
  * - Cyan: 80-99% (good speed)
@@ -59,7 +59,7 @@ export interface SpeedIndicatorHUDProps {
  */
 function getSpeedColor(speedPercent: number): string {
   let colorValue: number;
-  
+
   if (speedPercent >= 100) {
     colorValue = KOREAN_COLORS.POSITIVE_GREEN;
   } else if (speedPercent >= 80) {
@@ -71,7 +71,7 @@ function getSpeedColor(speedPercent: number): string {
   } else {
     colorValue = KOREAN_COLORS.ACCENT_RED;
   }
-  
+
   // Convert number to properly formatted hex string with # prefix
   return `#${colorValue.toString(16).padStart(6, "0")}`;
 }
@@ -112,7 +112,7 @@ function getSpeedLabel(speedPercent: number): {
  *   isMobile={false}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 속도표시기
  */
@@ -137,17 +137,13 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
   }, [finalSpeed, baseSpeed]);
 
   const containerStyle = useMemo(() => {
-    const isLeft = position === "left";
-
     return {
-      position: "absolute" as const,
-      bottom: isMobile ? "120px" : "140px", // Above stamina/health bars
-      left: isLeft ? (isMobile ? "12px" : "20px") : "auto",
-      right: isLeft ? "auto" : isMobile ? "12px" : "20px",
+      position: "relative" as const,
       display: visible ? "flex" : "none",
       flexDirection: "column" as const,
       alignItems: "center" as const,
       gap: isMobile ? "4px" : "6px",
+      width: "100%",
       padding: isMobile ? "8px 12px" : "10px 16px",
       backgroundColor: `rgba(0, 0, 0, 0.7)`,
       border: `2px solid ${speedData.color}`,
@@ -155,9 +151,8 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       boxShadow: `0 0 10px ${speedData.color}`,
       pointerEvents: "none" as const,
       transition: "border-color 0.3s ease-out, box-shadow 0.3s ease-out",
-      zIndex: 100, // Above most UI elements
     };
-  }, [position, isMobile, visible, speedData.color]);
+  }, [isMobile, visible, speedData.color]);
 
   const percentStyle = useMemo(
     () => ({
@@ -169,7 +164,7 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       lineHeight: 1,
       margin: 0,
     }),
-    [isMobile, speedData.color]
+    [isMobile, speedData.color],
   );
 
   const labelStyle = useMemo(
@@ -183,7 +178,7 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       lineHeight: 1,
       margin: 0,
     }),
-    [isMobile, speedData.color]
+    [isMobile, speedData.color],
   );
 
   const koreanLabelStyle = useMemo(
@@ -197,7 +192,7 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       lineHeight: 1,
       margin: 0,
     }),
-    [isMobile, speedData.color]
+    [isMobile, speedData.color],
   );
 
   return (
@@ -209,19 +204,13 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       aria-live="polite"
     >
       {/* Speed percentage */}
-      <div style={percentStyle}>
-        {speedData.speedPercent}%
-      </div>
+      <div style={percentStyle}>{speedData.speedPercent}%</div>
 
       {/* Korean label */}
-      <div style={koreanLabelStyle}>
-        {speedData.label.korean}
-      </div>
+      <div style={koreanLabelStyle}>{speedData.label.korean}</div>
 
       {/* English label */}
-      <div style={labelStyle}>
-        {speedData.label.english}
-      </div>
+      <div style={labelStyle}>{speedData.label.english}</div>
 
       {/* Speed unit label */}
       <div

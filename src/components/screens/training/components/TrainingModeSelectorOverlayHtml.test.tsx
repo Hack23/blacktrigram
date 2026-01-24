@@ -2,10 +2,10 @@
  * Tests for TrainingModeSelectorOverlayHtml component
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { TrainingModeSelectorOverlayHtml } from "./TrainingModeSelectorOverlayHtml";
 import { FONT_FAMILY } from "../../../../types/constants";
+import { TrainingModeSelectorOverlayHtml } from "./TrainingModeSelectorOverlayHtml";
 
 describe("TrainingModeSelectorOverlayHtml", () => {
   it("should render without crashing", () => {
@@ -14,10 +14,12 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
-    expect(screen.getByTestId("training-mode-selector-html")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("training-mode-selector-html"),
+    ).toBeInTheDocument();
   });
 
   it("should render bilingual header text", () => {
@@ -26,7 +28,7 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
     // Header uses formatBilingualText with pipe format
@@ -39,7 +41,7 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
     // Check that Korean names are present (mode buttons display bilingual text)
@@ -55,7 +57,7 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={mockOnModeChange}
         isMobile={false}
-      />
+      />,
     );
 
     const advancedButton = screen.getByTestId("mode-advanced");
@@ -70,38 +72,40 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
     const mainContainer = screen.getByTestId("training-mode-selector-html");
     const computedStyle = window.getComputedStyle(mainContainer);
-    expect(computedStyle.fontFamily).toContain(FONT_FAMILY.KOREAN.split(",")[0].replace(/"/g, ""));
+    expect(computedStyle.fontFamily).toContain(
+      FONT_FAMILY.KOREAN.split(",")[0].replace(/"/g, ""),
+    );
   });
 
-  it("should use mobile-optimized layout when isMobile is true", () => {
+  it("should use 100% width for container embedding on mobile", () => {
     render(
       <TrainingModeSelectorOverlayHtml
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={true}
-      />
+      />,
     );
 
     const container = screen.getByTestId("training-mode-selector-html");
-    expect(container).toHaveStyle({ width: "280px" });
+    expect(container).toHaveStyle({ width: "100%" });
   });
 
-  it("should use desktop layout when isMobile is false", () => {
+  it("should use 100% width for container embedding on desktop", () => {
     render(
       <TrainingModeSelectorOverlayHtml
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
     const container = screen.getByTestId("training-mode-selector-html");
-    expect(container).toHaveStyle({ width: "320px" });
+    expect(container).toHaveStyle({ width: "100%" });
   });
 
   it("should render all mode buttons with proper test IDs", () => {
@@ -110,7 +114,7 @@ describe("TrainingModeSelectorOverlayHtml", () => {
         currentMode="basics"
         onModeChange={vi.fn()}
         isMobile={false}
-      />
+      />,
     );
 
     const modes = [
@@ -128,4 +132,3 @@ describe("TrainingModeSelectorOverlayHtml", () => {
     });
   });
 });
-

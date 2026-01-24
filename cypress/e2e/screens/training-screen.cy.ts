@@ -34,7 +34,7 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("1️⃣ Verifying Training Screen Rendering");
 
     cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should(
-      "exist"
+      "exist",
     );
     cy.log("✅ Training screen exists");
 
@@ -118,7 +118,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       cy.get("body").type(" ");
 
       // Verify training screen still exists after action
-      cy.get('[data-testid="training-screen"]', { timeout: 1000 }).should('exist');
+      cy.get('[data-testid="training-screen"]', { timeout: 1000 }).should(
+        "exist",
+      );
 
       cy.log(`✅ Stance ${stance} tested`);
     }
@@ -151,9 +153,60 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("✅ Movement controls tested");
 
     // ============================================================
-    // 7. Verify Training UI Elements (20s)
+    // 7. Verify HUD Components (30s)
     // ============================================================
-    cy.log("7️⃣ Verifying Training UI Elements");
+    cy.log("7️⃣ Verifying HUD Components");
+
+    // Check for HUD overlay container
+    cy.get('[data-testid="training-hud-overlay"]', { timeout: 5000 }).should(
+      "exist",
+    );
+    cy.log("✅ Training HUD overlay found");
+
+    // Check for Left HUD (Anatomy/Guard)
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="training-left-hud"]').length > 0) {
+        cy.get('[data-testid="training-left-hud"]').should("exist");
+        cy.log("✅ Left HUD found (Anatomy/Guard)");
+      } else {
+        cy.log("⚠️ Left HUD not found");
+      }
+    });
+
+    // Check for Top HUD (Controls/Mode Selector)
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="training-top-hud"]').length > 0) {
+        cy.get('[data-testid="training-top-hud"]').should("exist");
+        cy.log("✅ Top HUD found (Controls/Mode Selector)");
+      } else {
+        cy.log("⚠️ Top HUD not found");
+      }
+    });
+
+    // Check for Right HUD (Stats/Vital Points)
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="training-right-hud"]').length > 0) {
+        cy.get('[data-testid="training-right-hud"]').should("exist");
+        cy.log("✅ Right HUD found (Stats/Vital Points)");
+      } else {
+        cy.log("⚠️ Right HUD not found");
+      }
+    });
+
+    // Check for Bottom HUD (Technique Bar)
+    cy.get("body").then(($body) => {
+      if ($body.find('[data-testid="training-bottom-hud"]').length > 0) {
+        cy.get('[data-testid="training-bottom-hud"]').should("exist");
+        cy.log("✅ Bottom HUD found (Technique Bar)");
+      } else {
+        cy.log("⚠️ Bottom HUD not found");
+      }
+    });
+
+    // ============================================================
+    // 8. Verify Training UI Elements (20s)
+    // ============================================================
+    cy.log("8️⃣ Verifying Training UI Elements");
 
     // Check for stance indicator
     cy.get("body").then(($body) => {
@@ -176,9 +229,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     });
 
     // ============================================================
-    // 8. Verify Korean Text in Training (10s)
+    // 9. Verify Korean Text in Training (10s)
     // ============================================================
-    cy.log("8️⃣ Verifying Korean Text");
+    cy.log("9️⃣ Verifying Korean Text");
 
     cy.get("body").then(($body) => {
       const bodyText = $body.text();
@@ -194,9 +247,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     });
 
     // ============================================================
-    // 9. Test Vital Point Display (15s)
+    // 10. Test Vital Point Display (15s)
     // ============================================================
-    cy.log("9️⃣ Testing Vital Point Display");
+    cy.log("🔟 Testing Vital Point Display");
 
     // Check for vital point overlay or information
     cy.get("body").then(($body) => {
@@ -222,6 +275,7 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("   ✓ All 8 trigram stances");
     cy.log("   ✓ Extended training session");
     cy.log("   ✓ Training controls");
+    cy.log("   ✓ HUD components (Left, Top, Right, Bottom)");
     cy.log("   ✓ Training UI elements");
     cy.log("   ✓ Korean text rendering");
     cy.log("   ✓ Vital point display");

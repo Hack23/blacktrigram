@@ -10,7 +10,6 @@
 import React, { useMemo } from "react";
 import { STANCE_GUARD_CONFIGS } from "../../../../systems/animation";
 import { TRIGRAM_DATA } from "../../../../systems/trigram/types";
-import { Z_INDEX } from "../../../../types/LayoutTypes";
 import { TrigramStance } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
@@ -124,11 +123,9 @@ function getWeightIcon(weight: "forward" | "neutral" | "back"): string {
 export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
   currentStance,
   isInGuard,
-  position,
+  position: _position, // Currently unused - indicator always positioned bottom-right
   isMobile = false,
 }) => {
-  const isLeft = position === "left";
-
   // Get guard configuration
   const config = useMemo(
     () => STANCE_GUARD_CONFIGS[currentStance],
@@ -163,19 +160,14 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       iconSize: isMobile ? 14 : 18,
       padding: isMobile ? "6px 10px" : "8px 12px",
       gap: isMobile ? "3px" : "4px",
-      bottom: isMobile ? "45px" : "60px",
-      horizontal: isMobile ? "8px" : "12px",
     }),
     [isMobile],
   );
 
-  // Container style with responsive positioning
+  // Container style - uses relative positioning for embedding in container HUDs
   const containerStyle = useMemo(
     () => ({
-      position: "absolute" as const,
-      bottom: layout.bottom,
-      left: isLeft ? layout.horizontal : "auto",
-      right: isLeft ? "auto" : layout.horizontal,
+      position: "relative" as const,
       display: "flex",
       flexDirection: "column" as const,
       gap: layout.gap,
@@ -184,11 +176,11 @@ export const GuardIndicator: React.FC<GuardIndicatorProps> = ({
       borderRadius: "6px",
       padding: layout.padding,
       pointerEvents: "none" as const,
-      zIndex: Z_INDEX.HUD,
-      minWidth: isMobile ? "140px" : "180px",
+      width: "100%",
+      boxSizing: "border-box" as const,
       boxShadow: `0 0 15px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.3)}`,
     }),
-    [layout, isLeft, isMobile],
+    [layout],
   );
 
   // Don't render if not in guard state

@@ -9,11 +9,11 @@
  * - Stamina bar (segmented, cyan-themed)
  * - Current stance indicator
  * - Responsive positioning (top-left for player 1, top-right for player 2)
- * 
+ *
  * Performance optimized with React.memo for 60fps rendering.
  */
 
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { PlayerState } from "../../../../systems/player";
 import type { StanceLaterality } from "../../../../systems/trigram/types";
 import {
@@ -22,12 +22,11 @@ import {
   FONT_FAMILY,
   KOREAN_COLORS,
 } from "../../../../types/constants";
-import { Z_INDEX } from "../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
 import { BreathingIndicator } from "./BreathingIndicator";
+import { CombatReadinessBar } from "./CombatReadinessBar";
 import { HealthBar } from "./HealthBar";
 import { StaminaBar } from "./StaminaBar";
-import { CombatReadinessBar } from "./CombatReadinessBar";
 
 export interface PlayerHUDProps {
   /** Player state with health, stamina, and other data */
@@ -59,7 +58,7 @@ const LateralityIndicator: React.FC<{
       fontFamily: FONT_FAMILY.KOREAN,
       color: hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1),
     }),
-    [isMobile]
+    [isMobile],
   );
 
   const labelStyle = useMemo(
@@ -72,7 +71,7 @@ const LateralityIndicator: React.FC<{
       minWidth: isMobile ? "16px" : "18px",
       textAlign: "center" as const,
     }),
-    [isMobile]
+    [isMobile],
   );
 
   const textStyle = useMemo(
@@ -80,7 +79,7 @@ const LateralityIndicator: React.FC<{
       opacity: 0.8,
       whiteSpace: "nowrap" as const,
     }),
-    []
+    [],
   );
 
   return (
@@ -110,13 +109,16 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
   const isLeft = position === "left";
 
   // Memoize responsive sizing to avoid recalculation
-  const layout = useMemo(() => ({
-    fontSize: isMobile ? 11 : 13,
-    gap: isMobile ? "6px" : "8px",
-    iconSize: isMobile ? 40 : 50,
-    top: isMobile ? "8px" : "10px",
-    horizontal: isMobile ? "8px" : "12px",
-  }), [isMobile]);
+  const layout = useMemo(
+    () => ({
+      fontSize: isMobile ? 11 : 13,
+      gap: isMobile ? "6px" : "8px",
+      iconSize: isMobile ? 40 : 50,
+      top: isMobile ? "8px" : "10px",
+      horizontal: isMobile ? "8px" : "12px",
+    }),
+    [isMobile],
+  );
 
   // Get archetype image path (memoized)
   const archetypeImagePath = useMemo(() => {
@@ -127,18 +129,18 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
   }, [player.archetype]);
 
   // Memoize style objects to prevent recreating on every render
-  const containerStyle = useMemo(() => ({
-    position: "absolute" as const,
-    top: layout.top,
-    left: isLeft ? layout.horizontal : "auto",
-    right: isLeft ? "auto" : layout.horizontal,
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: layout.gap,
-    pointerEvents: "none" as const,
-    zIndex: Z_INDEX.HUD,
-    maxWidth: isMobile ? "220px" : "300px",
-  }), [layout, isLeft, isMobile]);
+  // Uses relative positioning for embedding in container HUDs
+  const containerStyle = useMemo(
+    () => ({
+      position: "relative" as const,
+      display: "flex",
+      flexDirection: "column" as const,
+      gap: layout.gap,
+      pointerEvents: "none" as const,
+      width: "100%",
+    }),
+    [layout],
+  );
 
   const iconContainerStyle = useMemo(() => {
     const direction = isLeft ? "row" : "row-reverse";
@@ -150,21 +152,18 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
     };
   }, [isLeft]);
 
-  const iconStyle = useMemo(() => ({
-    width: `${layout.iconSize}px`,
-    height: `${layout.iconSize}px`,
-    borderRadius: "8px",
-    overflow: "hidden",
-    border: `2px solid ${hexToRgbaString(
-      KOREAN_COLORS.ACCENT_GOLD,
-      1
-    )}`,
-    boxShadow: `0 0 10px ${hexToRgbaString(
-      KOREAN_COLORS.ACCENT_GOLD,
-      0.5
-    )}`,
-    flexShrink: 0,
-  }), [layout.iconSize]);
+  const iconStyle = useMemo(
+    () => ({
+      width: `${layout.iconSize}px`,
+      height: `${layout.iconSize}px`,
+      borderRadius: "8px",
+      overflow: "hidden",
+      border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 1)}`,
+      boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.ACCENT_GOLD, 0.5)}`,
+      flexShrink: 0,
+    }),
+    [layout.iconSize],
+  );
 
   const nameStyle = useMemo(() => {
     const textAlign = isLeft ? "left" : "right";
@@ -191,38 +190,29 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
       textAlign: textAlign as "left" | "right",
       textShadow: "0 0 4px rgba(0,0,0,0.8)",
       padding: "4px 8px",
-      backgroundColor: hexToRgbaString(
-        KOREAN_COLORS.UI_BACKGROUND_DARK,
-        0.8
-      ),
+      backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
       borderRadius: "4px",
       marginTop: "2px",
     };
   }, [isMobile, isLeft]);
 
   // Memoize error handler to prevent recreating on every render
-  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
-      target.src = FALLBACK_ARCHETYPE_IMAGE;
-    }
-  }, []);
+  const handleImageError = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      const target = e.target as HTMLImageElement;
+      if (!target.src.endsWith(FALLBACK_ARCHETYPE_IMAGE)) {
+        target.src = FALLBACK_ARCHETYPE_IMAGE;
+      }
+    },
+    [],
+  );
 
   return (
-    <div
-      data-testid={`player-hud-${playerId}`}
-      style={containerStyle}
-    >
+    <div data-testid={`player-hud-${playerId}`} style={containerStyle}>
       {/* Player Name with Archetype Icon */}
-      <div
-        data-testid={`player-name-${playerId}`}
-        style={iconContainerStyle}
-      >
+      <div data-testid={`player-name-${playerId}`} style={iconContainerStyle}>
         {/* Archetype Icon */}
-        <div
-          data-testid={`archetype-icon-${playerId}`}
-          style={iconStyle}
-        >
+        <div data-testid={`archetype-icon-${playerId}`} style={iconStyle}>
           <img
             src={archetypeImagePath}
             alt={`${player.name.english} archetype`}
@@ -235,9 +225,7 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
           />
         </div>
         {/* Player Name */}
-        <div
-          style={nameStyle}
-        >
+        <div style={nameStyle}>
           {player.name.korean} | {player.name.english}
         </div>
       </div>
@@ -274,10 +262,7 @@ const PlayerHUDComponent: React.FC<PlayerHUDProps> = ({
       )}
 
       {/* Current Stance Indicator */}
-      <div
-        data-testid={`stance-indicator-${playerId}`}
-        style={stanceStyle}
-      >
+      <div data-testid={`stance-indicator-${playerId}`} style={stanceStyle}>
         자세 | Stance: {player.currentStance}
       </div>
     </div>
@@ -293,30 +278,37 @@ export const PlayerHUD = React.memo(
   (prevProps, nextProps) => {
     // Compare player state
     const healthSame = prevProps.player.health === nextProps.player.health;
-    const maxHealthSame = prevProps.player.maxHealth === nextProps.player.maxHealth;
+    const maxHealthSame =
+      prevProps.player.maxHealth === nextProps.player.maxHealth;
     const staminaSame = prevProps.player.stamina === nextProps.player.stamina;
-    const maxStaminaSame = prevProps.player.maxStamina === nextProps.player.maxStamina;
-    const archetypeSame = prevProps.player.archetype === nextProps.player.archetype;
-    const stanceSame = prevProps.player.currentStance === nextProps.player.currentStance;
+    const maxStaminaSame =
+      prevProps.player.maxStamina === nextProps.player.maxStamina;
+    const archetypeSame =
+      prevProps.player.archetype === nextProps.player.archetype;
+    const stanceSame =
+      prevProps.player.currentStance === nextProps.player.currentStance;
     const idSame = prevProps.player.id === nextProps.player.id;
-    const nameSame = 
+    const nameSame =
       prevProps.player.name.korean === nextProps.player.name.korean &&
       prevProps.player.name.english === nextProps.player.name.english;
-    
+
     // Compare statusEffects for BreathingIndicator updates
-    const statusEffectsSame = 
-      prevProps.player.statusEffects.length === nextProps.player.statusEffects.length &&
-      prevProps.player.statusEffects.every((effect, index) => 
-        effect === nextProps.player.statusEffects[index]
+    const statusEffectsSame =
+      prevProps.player.statusEffects.length ===
+        nextProps.player.statusEffects.length &&
+      prevProps.player.statusEffects.every(
+        (effect, index) => effect === nextProps.player.statusEffects[index],
       );
-    
+
     // Compare combat readiness factors for CombatReadinessBar updates
     // These properties are used by calculateCombatReadiness()
-    const bodyPartHealthSame = prevProps.player.bodyPartHealth === nextProps.player.bodyPartHealth;
+    const bodyPartHealthSame =
+      prevProps.player.bodyPartHealth === nextProps.player.bodyPartHealth;
     const painSame = prevProps.player.pain === nextProps.player.pain;
-    const consciousnessSame = prevProps.player.consciousness === nextProps.player.consciousness;
+    const consciousnessSame =
+      prevProps.player.consciousness === nextProps.player.consciousness;
     const balanceSame = prevProps.player.balance === nextProps.player.balance;
-    
+
     // Compare other props
     const positionSame = prevProps.position === nextProps.position;
     const mobileSame = prevProps.isMobile === nextProps.isMobile;
@@ -341,7 +333,7 @@ export const PlayerHUD = React.memo(
       mobileSame &&
       lateralitySame
     );
-  }
+  },
 );
 
 export default PlayerHUD;
