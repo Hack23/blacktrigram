@@ -83,7 +83,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   });
 
   const layout = React.useMemo(() => {
-    // Resolution-based HUD height (8% of screen height, 40-120px range)
+    // Resolution-based HUD height (10% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.1) * positionScale;
     
     // Resolution-based padding

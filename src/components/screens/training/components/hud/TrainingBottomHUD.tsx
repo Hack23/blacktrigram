@@ -95,7 +95,7 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   });
 
   const layout = React.useMemo(() => {
-    // Resolution-based HUD height (10% of screen height, 40-120px range)
+    // Resolution-based HUD height (11% of screen height, 40-120px range)
     const hudHeight = getHUDHeight(height, 0.11) * positionScale;
     
     // Resolution-based padding
