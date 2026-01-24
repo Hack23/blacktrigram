@@ -66,7 +66,6 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
     width,
     height,
     positionScale,
-    isMobile,
     'left',
     'training'
   );

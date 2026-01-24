@@ -87,7 +87,8 @@ describe("CombatRightHUD", () => {
     
     const rightHud = screen.getByTestId("combat-right-hud");
     // Combat top offset: getHUDHeight(1080, 0.08) * 1.5 = 86.4 * 1.5 = 129.6px
-    expect(rightHud).toHaveStyle({ top: "129.60000000000002px" });
+    const topValue = parseFloat(rightHud.style.top || "0");
+    expect(topValue).toBeCloseTo(129.6, 1);
   });
 
   it("should not render body part health when not available", () => {

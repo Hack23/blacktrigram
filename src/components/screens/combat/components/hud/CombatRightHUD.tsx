@@ -72,7 +72,6 @@ export const CombatRightHUD: React.FC<CombatRightHUDProps> = ({
     width,
     height,
     positionScale,
-    isMobile,
     'right',
     'combat'
   );

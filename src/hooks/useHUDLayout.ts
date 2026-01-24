@@ -51,7 +51,6 @@ export interface HUDLayoutResult {
  * @param width - Screen width in pixels
  * @param height - Screen height in pixels
  * @param positionScale - Position scale multiplier for large displays (1.0-1.5)
- * @param isMobile - Whether mobile layout is active (for UI styling, not sizing)
  * @param position - HUD position (left, right, top, bottom)
  * @param context - Context ('training' or 'combat') for context-specific dimensions
  * @param paddingOverride - Optional padding override for per-position customization
@@ -61,18 +60,19 @@ export interface HUDLayoutResult {
  * @example
  * ```tsx
  * const layout = useHUDLayout(
- *   1920, 1080, 1.0, false, 'left', 'training'
+ *   1920, 1080, 1.0, 'left', 'training'
  * );
  * // Resolution-based sizing interpolates smoothly between breakpoints
  * // layout.hudWidth = 269 (14% of 1920 for desktop)
- * // layout.availableHeight = 880 (1080 - topOffset - bottomOffset)
+ * // layout.topOffset = 64.8 (getHUDHeight(1080, 0.06) = 64.8)
+ * // layout.bottomOffset = 118.8 (getHUDHeight(1080, 0.11) = 118.8)
+ * // layout.availableHeight = 896.4 (1080 - 64.8 - 118.8)
  * ```
  */
 export function useHUDLayout(
   width: number,
   height: number,
   positionScale: number,
-  isMobile: boolean,
   position: HUDPosition,
   context: 'training' | 'combat' = 'training',
   paddingOverride?: number,
@@ -148,5 +148,5 @@ export function useHUDLayout(
       padding,
       gap,
     };
-  }, [width, height, positionScale, isMobile, position, context, paddingOverride, gapOverride]);
+  }, [width, height, positionScale, position, context, paddingOverride, gapOverride]);
 }

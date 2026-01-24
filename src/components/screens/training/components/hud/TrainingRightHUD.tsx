@@ -109,7 +109,6 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
     width,
     height,
     positionScale,
-    isMobile,
     'right',
     'training',
     undefined,  // Use default padding from hook
