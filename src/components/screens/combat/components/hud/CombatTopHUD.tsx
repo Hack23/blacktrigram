@@ -16,7 +16,7 @@
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
 import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
-import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_ADJUSTMENTS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 import { CombatReturnToMenuButton } from "../controls/CombatButtons";
 
@@ -90,7 +90,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: `${layout.padding}px ${layout.padding * 1.5}px`,
+        padding: `${layout.padding}px ${SPACING_ADJUSTMENTS.horizontalEmphasis}`,
         pointerEvents: "none",
         boxSizing: "border-box",
         borderBottom: BORDERS.default,

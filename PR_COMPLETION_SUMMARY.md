@@ -18,8 +18,8 @@ Successfully completed merge with main branch and addressed all PR review commen
 3. ✅ `parseInt(TYPOGRAPHY.caption.fontSize, 10) + 1` → `TYPOGRAPHY.bodySmall`
    - Fixed in: TrainingTopHUD.tsx line 95
 
-4. ✅ `padding * 1.5` calculations → Direct string format with constants
-   - Fixed in: TrainingTopHUD.tsx line 227
+4. ✅ `padding * 1.5` calculations → `SPACING_ADJUSTMENTS.horizontalEmphasis`
+   - Fixed in: TrainingTopHUD.tsx line 107, CombatTopHUD.tsx line 93
 
 5. ✅ Typography arithmetic with positionScale → Proper typography constants
    - Fixed in: CombatTopHUD.tsx line 80

@@ -154,6 +154,8 @@ export const SPACING_ADJUSTMENTS = {
   mdPlus: '18px',
   /** Small gap for compact layouts - 6px */
   compact: '6px',
+  /** Horizontal emphasis - 24px (for wider horizontal padding, 1.5x md) */
+  horizontalEmphasis: '24px',
 } as const;
 
 /**
@@ -319,46 +321,6 @@ export const TRANSITIONS = {
   normal: '250ms ease-in-out',
   /** Slow - Emphasis animations (400ms) */
   slow: '400ms ease-in-out',
-} as const;
-
-/**
- * Z-Index Layers
- * 
- * Consistent layering for overlapping elements.
- * 
- * @korean Z-인덱스 레이어
- */
-export const Z_INDEX = {
-  /** Base - Default layer */
-  base: 1,
-  /** HUD - HUD elements */
-  hud: 10,
-  /** Overlay - Modal overlays */
-  overlay: 100,
-  /** Modal - Modal dialogs */
-  modal: 1000,
-  /** Tooltip - Tooltips and popovers */
-  tooltip: 10000,
-} as const;
-
-/**
- * Mobile Breakpoints
- * 
- * Responsive design breakpoints for layout adaptation.
- * 
- * @korean 모바일 중단점
- */
-export const BREAKPOINTS = {
-  /** Extra small devices (< 380px) */
-  xs: 380,
-  /** Small devices (< 450px) */
-  sm: 450,
-  /** Medium devices (< 768px) */
-  md: 768,
-  /** Large devices (< 1024px) */
-  lg: 1024,
-  /** Extra large devices (>= 1024px) */
-  xl: 1024,
 } as const;
 
 /**

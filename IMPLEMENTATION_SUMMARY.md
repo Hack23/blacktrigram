@@ -13,7 +13,7 @@ Successfully enhanced visual consistency and Korean theming across all HUD compo
   - `hexToRgbString()` - Returns "r, g, b" format
   - `hexToRgb()` - Returns "rgb(r, g, b)" format
 
-- **TYPOGRAPHY Scale** (7 levels):
+- **TYPOGRAPHY Scale** (9 levels):
   ```typescript
   - heading1: 24px, weight 700, lineHeight 1.2
   - heading2: 20px, weight 600, lineHeight 1.3
@@ -22,6 +22,8 @@ Successfully enhanced visual consistency and Korean theming across all HUD compo
   - bodySmall: 12px, weight 400, lineHeight 1.5
   - button: 14px, weight 600, lineHeight 1.4
   - caption: 10px, weight 400, lineHeight 1.4
+  - micro: 9px, weight 400, lineHeight 1.4
+  - nano: 8px, weight 400, lineHeight 1.4
   ```
 
 - **SPACING Scale** (7 levels, 4px rhythm):
@@ -75,9 +77,9 @@ Successfully enhanced visual consistency and Korean theming across all HUD compo
 
 - **TRANSITIONS** (3 presets):
   ```typescript
-  - fast: 0.15s ease
-  - normal: 0.3s ease-in-out
-  - slow: 0.5s ease-in-out
+  - fast: 150ms ease-in-out
+  - normal: 250ms ease-in-out
+  - slow: 400ms ease-in-out
   ```
 
 - **Helper Functions**:
