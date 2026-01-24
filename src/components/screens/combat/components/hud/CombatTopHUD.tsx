@@ -15,9 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, SPACING_ADJUSTMENTS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { CombatTimer } from "../../../../shared/ui/CombatTimer";
 import { CombatReturnToMenuButton } from "../controls/CombatButtons";
 
@@ -62,12 +60,6 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
   onReturnToMenu,
   isPaused: _isPaused, // Reserved for future pause indicator
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
@@ -77,7 +69,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
     const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
     const fontSize = isMobile ? parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) : parseInt(TYPOGRAPHY.body.fontSize, 10) * positionScale;
-    const titleSize = isMobile ? parseInt(TYPOGRAPHY.body.fontSize, 10) : parseInt(TYPOGRAPHY.heading3.fontSize, 10) + 2 * positionScale;
+    const titleSize = isMobile ? parseInt(TYPOGRAPHY.body.fontSize, 10) : parseInt(SPACING_ADJUSTMENTS.mdPlus, 10) * positionScale;
 
     return {
       hudHeight,
@@ -128,7 +120,7 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
             fontWeight: 600,
             fontFamily: TYPOGRAPHY.heading2.fontFamily,
             color: HIERARCHY.gold.color,
-            textShadow: `0 0 10px ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
+            textShadow: HUD_STYLE.accentGlow,
           }}
         >
           전투 | Combat

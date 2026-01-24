@@ -21,8 +21,6 @@ import { Technique } from "../../../../../types";
 import { PlayerArchetype } from "../../../../../types/common";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 import { ArchetypeSelectionButtons } from "../TrainingButtonsOverlayHtml";
@@ -85,12 +83,6 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
   onArchetypeSelect,
   onPlaySFX,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
       ? BOTTOM_HUD_HEIGHT_MOBILE
@@ -192,8 +184,8 @@ export const TrainingBottomHUD: React.FC<TrainingBottomHUDProps> = ({
             display: "flex",
             alignItems: "center",
             gap: SPACING.xxs,
-            padding: `${parseInt(SPACING.xxs, 10)}px ${SPACING.xs}`,
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.9),
+            padding: `${SPACING.xxs} ${SPACING.xs}`,
+            background: GRADIENTS.vertical(0.9),
             border: BORDERS.accent,
             borderRadius: SPACING.xxs,
           }}

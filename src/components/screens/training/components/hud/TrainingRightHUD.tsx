@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { SPACING, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_ADJUSTMENTS, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
 import type {
   FootworkDrill,
   TrainingMode,
@@ -119,7 +119,7 @@ export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
     const availableHeight = height - topOffset - bottomOffset;
 
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.xs, 10) * positionScale;
-    const gap = isMobile ? parseInt(SPACING.xxs, 10) + 2 : parseInt(SPACING.xs, 10) * positionScale;
+    const gap = isMobile ? parseInt(SPACING_ADJUSTMENTS.compact, 10) : parseInt(SPACING.xs, 10) * positionScale;
 
     return { hudWidth, topOffset, bottomOffset, availableHeight, padding, gap };
   }, [width, height, isMobile, positionScale]);

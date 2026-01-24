@@ -17,9 +17,7 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import { TechniqueBar } from "../../../../shared/three/ui/TechniqueBar";
 import { VolumeControl } from "../../../../shared/ui/VolumeControl";
 
@@ -71,12 +69,6 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
   onTechniqueSelect,
   combatMessages = [],
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
       ? BOTTOM_HUD_HEIGHT_MOBILE
@@ -123,11 +115,11 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             alignItems: "center",
             gap: "3px",
             zIndex: Z_INDEX.HUD,
-            padding: isMobile ? `${parseInt(SPACING.xxs, 10) + 2}px ${SPACING.sm}` : `${SPACING.xs} ${SPACING.md}`,
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
+            padding: isMobile ? `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}` : `${SPACING.xs} ${SPACING.md}`,
+            background: HUD_STYLE.background,
             border: BORDERS.muted,
-            borderRadius: parseInt(SPACING.xxs, 10) + 2 + 'px',
-            boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.2)}`,
+            borderRadius: BORDER_RADIUS.md,
+            boxShadow: HUD_STYLE.shadow,
             minWidth: isMobile ? "200px" : "280px",
             maxWidth: isMobile ? "90%" : "500px",
           }}

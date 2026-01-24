@@ -190,9 +190,9 @@ describe('Design System - Gradients', () => {
   });
 
   it('should generate valid CSS gradient strings', () => {
-    const verticalGrad = GRADIENTS.vertical(0.9, 0.3);
-    const horizontalGrad = GRADIENTS.horizontal(0.8, 0.4);
-    const radialGrad = GRADIENTS.radial(0.9, 0.2);
+    const verticalGrad = GRADIENTS.vertical(0.9);
+    const horizontalGrad = GRADIENTS.horizontal(0.8);
+    const radialGrad = GRADIENTS.radial(0.9);
 
     expect(verticalGrad).toContain('linear-gradient');
     expect(verticalGrad).toContain('180deg');

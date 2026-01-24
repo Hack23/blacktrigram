@@ -19,9 +19,7 @@
 
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
-import { SPACING, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS } from "../../../../../types/constants/designSystem";
-import { hexToRgbaString } from "../../../../../utils/colorUtils";
-import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
+import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
@@ -78,12 +76,6 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
   onReturnToMenu,
   onPlaySFX,
 }) => {
-  const theme = useKoreanTheme({
-    variant: "primary",
-    size: "md",
-    isMobile,
-  });
-
   // Layout calculations for slim top bar
   const layout = React.useMemo(() => {
     const hudHeight = isMobile
@@ -92,7 +84,7 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
 
     const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
     const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
-    const fontSize = isMobile ? parseInt(TYPOGRAPHY.caption.fontSize, 10) + 1 : parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) * positionScale;
+    const fontSize = isMobile ? parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) : parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) * positionScale;
 
     return {
       hudHeight,
@@ -158,13 +150,10 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
           {!overlayVisible && (
             <div
               style={{
-                padding: `${4 * positionScale}px ${10 * positionScale}px`,
-                background: hexToRgbaString(
-                  theme.colors.UI_BACKGROUND_DARK,
-                  0.8,
-                ),
+                padding: `${SPACING.xxs} ${SPACING_ADJUSTMENTS.xsPlus}`,
+                background: HUD_STYLE.background,
                 border: BORDERS.muted,
-                borderRadius: parseInt(SPACING.xxs, 10) * positionScale + 'px',
+                borderRadius: `${parseInt(SPACING.xxs, 10) * positionScale}px`,
                 fontSize: `${layout.fontSize}px`,
                 fontFamily: TYPOGRAPHY.bodySmall.fontFamily,
                 color: HIERARCHY.accent.color,
@@ -192,10 +181,10 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
               flexDirection: "row",
               alignItems: "center",
               gap: `${layout.gap}px`,
-              padding: `${6 * positionScale}px ${12 * positionScale}px`,
-              background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+              padding: `${SPACING_ADJUSTMENTS.compact} ${SPACING.sm}`,
+              background: HUD_STYLE.background,
               border: BORDERS.accent,
-              borderRadius: parseInt(SPACING.xxs, 10) * 1.5 * positionScale + 'px',
+              borderRadius: BORDER_RADIUS.md,
               pointerEvents: "all",
             }}
           >
@@ -224,8 +213,8 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       {isMobile && !overlayVisible && (
         <div
           style={{
-            padding: parseInt(SPACING.xxs, 10) + 'px ' + SPACING.xs,
-            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.8),
+            padding: `${SPACING.xxs} ${SPACING.xs}`,
+            background: HUD_STYLE.background,
             border: BORDERS.muted,
             borderRadius: SPACING.xxs,
             fontSize: TYPOGRAPHY.caption.fontSize,

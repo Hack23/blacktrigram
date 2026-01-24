@@ -43,14 +43,17 @@ Successfully enhanced visual consistency and Korean theming across all HUD compo
   - Shadows: Subtle depth with hover effects
   - Backdrop filter: Glassmorphism blur
 
-- **HIERARCHY** (6 levels):
+- **HIERARCHY** (9 levels):
   ```typescript
-  - primary: Cyan text (PRIMARY_CYAN)
-  - secondary: Gold text (ACCENT_GOLD)
-  - tertiary: White text (TEXT_PRIMARY)
-  - muted: Gray text (TEXT_SECONDARY)
-  - accent: Cyan variant
-  - gold: Gold variant
+  - primary: White text (TEXT_PRIMARY)
+  - secondary: Light gray text (TEXT_SECONDARY)
+  - tertiary: Medium gray text (TEXT_TERTIARY)
+  - muted: Dark gray text (UI_DISABLED_TEXT)
+  - accent: Cyan text (PRIMARY_CYAN)
+  - gold: Gold text (ACCENT_GOLD)
+  - accent70: Cyan with 70% opacity
+  - accent50: Cyan with 50% opacity
+  - primary80: White with 80% opacity
   ```
 
 - **BORDERS** (4 styles):
@@ -63,11 +66,11 @@ Successfully enhanced visual consistency and Korean theming across all HUD compo
 
 - **GRADIENTS** (5 generators):
   ```typescript
-  - vertical(start, end)
-  - verticalReverse(start, end)
-  - horizontal(start, end)
-  - horizontalReverse(start, end)
-  - radial(innerOpacity, outerOpacity)
+  - vertical(opacity)
+  - verticalReverse(opacity)
+  - horizontal(opacity)
+  - horizontalReverse(opacity)
+  - radial(opacity)
   ```
 
 - **TRANSITIONS** (3 presets):
