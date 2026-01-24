@@ -30,8 +30,8 @@ export interface TrainingLeftHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Currently visible anatomy layers */
@@ -54,7 +54,7 @@ export interface TrainingLeftHUDProps {
 export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   visibleAnatomyLayers,
   onAnatomyLayerToggle,

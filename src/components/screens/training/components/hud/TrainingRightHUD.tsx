@@ -35,8 +35,8 @@ export interface TrainingRightHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Current training mode */
@@ -80,7 +80,7 @@ export interface TrainingRightHUDProps {
 export const TrainingRightHUD: React.FC<TrainingRightHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   trainingMode,
   onModeChange,
