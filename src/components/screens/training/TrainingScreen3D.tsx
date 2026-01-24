@@ -74,11 +74,11 @@ import {
 import {
   Player3DWithTransitions,
   VitalPointMarkers3D,
-  VitalPointOverlayControlsHtml,
   type BodyRegionFilter,
 } from "../../shared/three";
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { VitalPointOverlayControlsPure } from "../../shared/ui/VitalPointOverlayControlsPure";
 import AnatomyOverlay3D, {
   type AnatomyLayer,
 } from "./components/AnatomyOverlay3D";
@@ -1007,6 +1007,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingActions, audio],
   );
 
+  const handleVitalPointClick = useCallback(
+    (pointId: string) => {
+      trainingActions.setSelectedVitalPoint(pointId);
+      audio.playSFX("menu_select");
+    },
+    [trainingActions, audio],
+  );
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 14: Camera Configuration
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1106,32 +1114,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             scale={scale}
             animated={animated}
             selectedPoint={trainingState.selectedVitalPoint}
-            onPointClick={(pointId) => {
-              trainingActions.setSelectedVitalPoint(pointId);
-              audio.playSFX("menu_select");
-            }}
-          />
-        )}
-
-        {/* VitalPointOverlayControlsHtml - fixed screen position */}
-        {overlayVisible && (
-          <VitalPointOverlayControlsHtml
-            visible={overlayVisible}
-            onVisibleChange={setOverlayVisible}
-            severityFilters={severityFilters}
-            onSeverityFiltersChange={setSeverityFilters}
-            regionFilter={regionFilter}
-            onRegionFilterChange={setRegionFilter}
-            searchQuery={searchQuery}
-            onSearchQueryChange={setSearchQuery}
-            showLabels={showLabels}
-            onShowLabelsChange={setShowLabels}
-            animated={animated}
-            onAnimatedChange={setAnimated}
-            scale={scale}
-            onScaleChange={setScale}
-            screenPosition={{ top: "180px", left: "20px" }}
-            isMobile={isMobile}
+            onPointClick={handleVitalPointClick}
           />
         )}
 
@@ -1311,6 +1294,28 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           onArchetypeSelect={setSelectedArchetype}
           onPlaySFX={(sound) => audio.playSFX(sound)}
         />
+
+        {/* Vital Point Overlay Controls - Pure DOM overlay (outside Canvas) */}
+        {overlayVisible && (
+          <VitalPointOverlayControlsPure
+            visible={overlayVisible}
+            onVisibleChange={setOverlayVisible}
+            severityFilters={severityFilters}
+            onSeverityFiltersChange={setSeverityFilters}
+            regionFilter={regionFilter}
+            onRegionFilterChange={setRegionFilter}
+            searchQuery={searchQuery}
+            onSearchQueryChange={setSearchQuery}
+            showLabels={showLabels}
+            onShowLabelsChange={setShowLabels}
+            animated={animated}
+            onAnimatedChange={setAnimated}
+            scale={scale}
+            onScaleChange={setScale}
+            screenPosition={{ top: "180px", left: "20px" }}
+            isMobile={isMobile}
+          />
+        )}
 
         {/* Mobile Controls - Pure DOM overlay (outside Canvas for reliable touch) */}
         {isMobile && (
