@@ -6,7 +6,7 @@
  * - Guard Indicator
  *
  * Gaming Layout Best Practice:
- * - Width: 15% of screen (mobile: 20%)
+ * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
  * - Leaves 70% center for arena
  *
@@ -18,11 +18,13 @@
 import React from "react";
 import { TRIGRAM_STANCES_ORDER } from "../../../../../systems/trigram/types";
 import { TrigramStance } from "../../../../../types/common";
-import {
-  HUD_WIDTH_PERCENT,
-  HUD_HEIGHT,
-} from "../../../../../types/LayoutTypes";
+// No longer using HUD_WIDTH_PERCENT or HUD_HEIGHT - using resolution-based sizing
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
+import {
+  getHUDHeight,
+  getResponsivePadding,
+  getResponsiveSize,
+} from "../../../../../utils/responsiveLayout";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
 import AnatomyControlsOverlayHtml from "../AnatomyControlsOverlayHtml";
@@ -33,8 +35,8 @@ export interface TrainingLeftHUDProps {
   readonly width: number;
   /** Screen height for layout calculations */
   readonly height: number;
-  /** Whether mobile layout is active */
-  readonly isMobile: boolean;
+  /** Whether mobile controls should be shown (NOT for sizing) */
+  readonly isMobile?: boolean;
   /** Position scale multiplier for large displays */
   readonly positionScale: number;
   /** Currently visible anatomy layers */
@@ -51,48 +53,51 @@ export interface TrainingLeftHUDProps {
  * TrainingLeftHUD Component
  *
  * Left side of the training screen containing anatomy controls and guard indicator.
- * Takes 15% of screen width (20% on mobile), positioned between top and bottom HUDs.
+ * Uses resolution-based sizing for width calculation.
  */
 export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
   width,
   height,
-  isMobile,
+  isMobile = false,
   positionScale,
   visibleAnatomyLayers,
   onAnatomyLayerToggle,
   currentStanceIndex,
   isInGuard,
 }) => {
+  // isMobile only used for theme selection (valid use case for UI styling)
   const theme = useKoreanTheme({
     variant: "primary",
     size: "md",
     isMobile,
   });
 
-  // Layout calculations for left HUD with proper gaming proportions
+  // Layout calculations for left HUD with resolution-based sizing
   const layout = React.useMemo(() => {
-    // Width: 15-20% of screen
-    const hudWidthPercent = isMobile
-      ? HUD_WIDTH_PERCENT.LEFT_MOBILE
-      : HUD_WIDTH_PERCENT.LEFT_DESKTOP;
-    const hudWidth = Math.round(width * hudWidthPercent);
+    // Resolution-based width: 14-18% of screen
+    const hudWidthPercent = getResponsiveSize(width, {
+      mobile: 18,
+      tablet: 16,
+      desktop: 14,
+    });
+    const hudWidth = Math.round((width * hudWidthPercent) / 100);
 
-    // Scale factors for 4K (positionScale: 1.0-1.5)
-    const scaledTopHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_TOP_MOBILE
-      : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
-    const scaledBottomHeight = isMobile
-      ? HUD_HEIGHT.TRAINING_BOTTOM_MOBILE
-      : HUD_HEIGHT.TRAINING_BOTTOM_DESKTOP * positionScale;
+    // Top/bottom offsets using resolution-based height calculations
+    const scaledTopHeight = getHUDHeight(height, 0.06) * positionScale; // ~6% for top
+    const scaledBottomHeight = getHUDHeight(height, 0.11) * positionScale; // ~11% for bottom
 
     // Calculate available height between top and bottom HUDs
     const topOffset = scaledTopHeight;
     const bottomOffset = scaledBottomHeight;
     const availableHeight = height - topOffset - bottomOffset;
 
-    // Internal padding
-    const padding = isMobile ? 10 : 15 * positionScale;
-    const gap = isMobile ? 12 : 18 * positionScale;
+    // Resolution-based padding and gap
+    const padding = getResponsivePadding(width) * positionScale;
+    const gap = getResponsiveSize(width, {
+      mobile: 12,
+      tablet: 15,
+      desktop: 18,
+    }) * positionScale;
 
     return {
       hudWidth,
@@ -102,7 +107,7 @@ export const TrainingLeftHUD: React.FC<TrainingLeftHUDProps> = ({
       padding,
       gap,
     };
-  }, [width, height, isMobile, positionScale]);
+  }, [width, height, positionScale]);
 
   const currentStance: TrigramStance =
     TRIGRAM_STANCES_ORDER[currentStanceIndex];

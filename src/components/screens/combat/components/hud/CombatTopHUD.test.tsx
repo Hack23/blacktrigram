@@ -18,6 +18,7 @@ const mockTimerState: UseCombatTimerReturn = {
 describe("CombatTopHUD", () => {
   const defaultProps = {
     width: 1920,
+    height: 1080,
     isMobile: false,
     positionScale: 1,
     currentRound: 1,
@@ -69,27 +70,27 @@ describe("CombatTopHUD", () => {
     expect(screen.getByText("라운드 3/3")).toBeInTheDocument();
   });
 
-  it("should apply mobile layout when isMobile is true", () => {
-    render(<CombatTopHUD {...defaultProps} isMobile={true} />);
+  it("should use resolution-based height (narrow screen)", () => {
+    render(<CombatTopHUD {...defaultProps} width={400} height={800} />);
     
     const topHud = screen.getByTestId("combat-top-hud");
-    // Mobile height should be 55px
-    expect(topHud).toHaveStyle({ height: "55px" });
+    // Height = getHUDHeight(800, 0.06) * 1.0 = 48px (6% of 800)
+    expect(topHud).toHaveStyle({ height: "48px" });
   });
 
-  it("should apply desktop layout by default", () => {
+  it("should use resolution-based height (desktop)", () => {
     render(<CombatTopHUD {...defaultProps} />);
     
     const topHud = screen.getByTestId("combat-top-hud");
-    // Desktop height should be 70px
-    expect(topHud).toHaveStyle({ height: "70px" });
+    // Height = getHUDHeight(1080, 0.06) * 1.0 = 64.8px (6% of 1080)
+    expect(topHud).toHaveStyle({ height: "64.8px" });
   });
 
   it("should scale layout with positionScale", () => {
     render(<CombatTopHUD {...defaultProps} positionScale={1.5} />);
     
     const topHud = screen.getByTestId("combat-top-hud");
-    // Desktop height * positionScale = 70 * 1.5 = 105px
-    expect(topHud).toHaveStyle({ height: "105px" });
+    // Height = getHUDHeight(1080, 0.06) * 1.5 = 97.19999999999999px
+    expect(topHud).toHaveStyle({ height: "97.19999999999999px" });
   });
 });
