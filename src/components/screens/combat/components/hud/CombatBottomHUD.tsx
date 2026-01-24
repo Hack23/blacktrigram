@@ -17,9 +17,10 @@ import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
 import { Z_INDEX } from "../../../../../types/LayoutTypes";
-import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
+import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE ,
   OPACITY,
   COMBAT_UI_DIMENSIONS,
+  COMBAT_UI_DIMENSIONS_NUMERIC,
   TEXT_EFFECTS,
   FONT_SIZE_MULTIPLIERS,
 } from "../../../../../types/constants/designSystem";
@@ -89,19 +90,19 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
     
     // Resolution-based font sizes (using design system as minimum)
     const baseFontSize = getResponsiveFontSize(width);
-    const titleFontSize = Math.max(parseInt(TYPOGRAPHY.nano.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
-    const messageFontSize = Math.max(parseInt(TYPOGRAPHY.caption.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
+    const titleFontSize = Math.max(TYPOGRAPHY_NUMERIC.nano, baseFontSize * FONT_SIZE_MULTIPLIERS.titleSmall);
+    const messageFontSize = Math.max(TYPOGRAPHY_NUMERIC.caption, baseFontSize * FONT_SIZE_MULTIPLIERS.messageSmall);
     
     // Resolution-based widths (using design system constants as reference)
     const minMessageWidth = width < BREAKPOINTS.mobile 
-      ? parseInt(COMBAT_UI_DIMENSIONS.combatLogMinMobile, 10)
-      : parseInt(COMBAT_UI_DIMENSIONS.combatLogMinDesktop, 10);
+      ? COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile
+      : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop;
     const maxMessageWidth = width < BREAKPOINTS.mobile 
       ? Math.min(
           width * COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile,
           parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxMobile, 10)
         )
-      : parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxDesktop, 10);
+      : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMaxDesktop;
     const maxTechniqueBarWidth = width < BREAKPOINTS.mobile 
       ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 
       : COMBAT_UI_DIMENSIONS.techniqueBarWidthDesktop;

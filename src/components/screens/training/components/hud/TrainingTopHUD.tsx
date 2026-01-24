@@ -20,7 +20,7 @@
 import React from "react";
 import { PlayerArchetype } from "../../../../../types/common";
 import { HUD_HEIGHT } from "../../../../../types/LayoutTypes";
-import { SPACING, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
+import { SPACING, SPACING_NUMERIC, SPACING_ADJUSTMENTS, BORDER_RADIUS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE } from "../../../../../types/constants/designSystem";
 import {
   ArchetypeSelectionButtons,
   ReturnToMenuButton,
@@ -79,9 +79,9 @@ export const TrainingTopHUD: React.FC<TrainingTopHUDProps> = ({
       ? HUD_HEIGHT.TRAINING_TOP_MOBILE
       : HUD_HEIGHT.TRAINING_TOP_DESKTOP * positionScale;
 
-    const padding = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
-    const gap = isMobile ? parseInt(SPACING.xs, 10) : parseInt(SPACING.sm, 10) * positionScale;
-    const fontSize = isMobile ? parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) : parseInt(TYPOGRAPHY.bodySmall.fontSize, 10) * positionScale;
+    const padding = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
+    const gap = isMobile ? SPACING_NUMERIC.xs : SPACING_NUMERIC.sm * positionScale;
+    const fontSize = isMobile ? TYPOGRAPHY_NUMERIC.bodySmall : TYPOGRAPHY_NUMERIC.bodySmall * positionScale;
 
     return {
       hudHeight,

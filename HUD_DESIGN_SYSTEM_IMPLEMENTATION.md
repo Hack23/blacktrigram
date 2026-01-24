@@ -8,10 +8,10 @@ Enhanced HUD visual consistency and Korean theming across all HUD components in 
 ### Phase 1: Design System (`src/types/constants/designSystem.ts`)
 Created a comprehensive design system with:
 - **Helper Functions**: `hexToRgbString()`, `hexToRgb()` for consistent color conversion
-- **TYPOGRAPHY**: 7-level scale (heading1-3, body, bodySmall, button, caption)
+- **TYPOGRAPHY**: 9-level scale (heading1-3, body, bodySmall, button, caption, micro, nano)
 - **SPACING**: 7-level scale from xxs (4px) to xxl (48px) in 4px increments
 - **HUD_STYLE**: Unified panel styling with cyberpunk Korean aesthetic (computed from KOREAN_COLORS)
-- **HIERARCHY**: 6-level color system (primary, secondary, tertiary, muted, accent, gold) with computed RGB values
+- **HIERARCHY**: 9-level color system (primary, primary80, secondary, tertiary, muted, accent, accent70, accent50, gold) with computed RGB values
 - **BORDERS**: 4 border styles (default, accent, muted, active) with computed colors
 - **GRADIENTS**: 5 gradient generators (vertical, verticalReverse, horizontal, horizontalReverse, radial)
 - **TRANSITIONS**: 3 timing presets (fast, normal, slow)

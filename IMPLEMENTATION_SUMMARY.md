@@ -236,12 +236,12 @@ border: BORDERS.default   // Computed from PRIMARY_CYAN
 
 ### From Issue #6:
 - ✅ All HUDs use KOREAN_COLORS constants consistently
-- ✅ Typography system with clear hierarchy (7 levels)
+- ✅ Typography system with clear hierarchy (9 levels)
 - ✅ Spacing system with consistent values (7 levels in 4px increments)
 - ✅ Border radius system with semantic values (6 levels)
 - ✅ Korean font (Noto Sans KR) applied correctly to all Korean text
 - ✅ Accessibility: WCAG AA contrast ratios (maintained from existing KOREAN_COLORS)
-- ✅ Visual hierarchy: 6 element styles defined (primary to gold)
+- ✅ Visual hierarchy: 9 element styles defined (primary to primary80, including opacity variants)
 - ✅ Korean theming enhanced with traditional patterns (gradient system)
 - ✅ Border styles, shadows, and effects consistent
 - ✅ Dark mode optimized for 60fps performance (static constants, no runtime overhead)
@@ -295,7 +295,7 @@ import {
 
 // Gradients
 <div style={{ 
-  background: GRADIENTS.horizontal(0.9, 0.3) 
+  background: GRADIENTS.horizontal(0.9) 
 }}>...</div>
 
 // Responsive Helpers

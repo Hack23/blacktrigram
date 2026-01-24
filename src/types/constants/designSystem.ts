@@ -113,6 +113,26 @@ export const TYPOGRAPHY = {
 } as const;
 
 /**
+ * Pre-parsed Numeric Typography Values
+ * 
+ * Performance optimization: Numeric font sizes parsed once at module load
+ * instead of repeated parseInt calls in component useMemo hooks.
+ * 
+ * @korean 사전 파싱된 타이포그래피 숫자 값
+ */
+export const TYPOGRAPHY_NUMERIC = {
+  heading1: 24,
+  heading2: 20,
+  heading3: 16,
+  body: 14,
+  bodySmall: 12,
+  button: 14,
+  caption: 10,
+  micro: 9,
+  nano: 8,
+} as const;
+
+/**
  * Spacing Scale (4px base)
  * 
  * Consistent spacing system for margins, padding, and gaps.
@@ -167,6 +187,32 @@ export const SPACING_ADJUSTMENTS = {
 } as const;
 
 /**
+ * Pre-parsed Numeric Spacing Values
+ * 
+ * Performance optimization: Numeric spacing values parsed once at module load.
+ * Eliminates repeated parseInt calls in component calculations.
+ * 
+ * @korean 사전 파싱된 간격 숫자 값
+ */
+export const SPACING_NUMERIC = {
+  xxs: 4,
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+  // Adjustments
+  xsPlus: 10,
+  smPlus: 14,
+  mdPlus: 18,
+  compact: 6,
+  horizontalEmphasis: 24,
+  micro: 3,
+  tiny: 2,
+} as const;
+
+/**
  * Font Size Multipliers
  * 
  * Scaling factors for responsive font size calculations.
@@ -198,22 +244,7 @@ export const LAYOUT_MULTIPLIERS = {
   gapToPadding: 1.2,
 } as const;
 
-/**
- * Width Percentage Constants
- * 
- * Percentage-based width values for responsive layouts.
- * Expressed as decimal multipliers for consistency.
- * 
- * @korean 너비 백분율 상수
- */
-export const WIDTH_PERCENTAGES = {
-  /** 90% width for mobile layouts */
-  mobileMax: 0.9,
-  /** 70% width for technique bars on desktop */
-  techniqueBarDesktop: '70%',
-  /** 100% width for full-width elements */
-  full: '100%',
-} as const;
+
 
 /**
  * Border Radius Scale
@@ -422,6 +453,20 @@ export const COMBAT_UI_DIMENSIONS = {
   techniqueBarWidthMobile: '100%',
   /** Technique bar width - desktop (70% width) */
   techniqueBarWidthDesktop: '70%',
+} as const;
+
+/**
+ * Pre-parsed Numeric Combat UI Dimensions
+ * 
+ * Performance optimization: Numeric dimension values parsed once at module load.
+ * Eliminates repeated parseInt calls for combat UI dimensions.
+ * 
+ * @korean 사전 파싱된 전투 UI 크기 숫자 값
+ */
+export const COMBAT_UI_DIMENSIONS_NUMERIC = {
+  combatLogMinMobile: 200,
+  combatLogMinDesktop: 280,
+  combatLogMaxDesktop: 500,
 } as const;
 
 /**

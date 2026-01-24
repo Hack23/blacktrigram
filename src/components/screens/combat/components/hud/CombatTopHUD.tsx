@@ -15,7 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-import { SPACING_ADJUSTMENTS, TYPOGRAPHY, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
+import { SPACING_ADJUSTMENTS, TYPOGRAPHY, TYPOGRAPHY_NUMERIC, HIERARCHY, BORDERS, GRADIENTS, HUD_STYLE, FONT_SIZE_MULTIPLIERS, LAYOUT_MULTIPLIERS } from "../../../../../types/constants/designSystem";
 import {
   getHUDHeight,
   getResponsiveFontSize,
@@ -82,8 +82,8 @@ export const CombatTopHUD: React.FC<CombatTopHUDProps> = ({
     
     // Resolution-based font sizes (using design system as baseline)
     const baseFontSize = getResponsiveFontSize(width) * positionScale;
-    const fontSize = Math.max(parseInt(TYPOGRAPHY.bodySmall.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.bodySmall);
-    const titleSize = Math.max(parseInt(TYPOGRAPHY.body.fontSize, 10), baseFontSize * FONT_SIZE_MULTIPLIERS.titleLarge);
+    const fontSize = Math.max(TYPOGRAPHY_NUMERIC.bodySmall, baseFontSize * FONT_SIZE_MULTIPLIERS.bodySmall);
+    const titleSize = Math.max(TYPOGRAPHY_NUMERIC.body, baseFontSize * FONT_SIZE_MULTIPLIERS.titleLarge);
 
 
     return {
