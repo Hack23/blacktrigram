@@ -130,8 +130,8 @@ export function useHUDLayout(
     
     // Use overrides if provided, otherwise use defaults
     // Overrides allow per-position customization (e.g., TrainingRightHUD uses tighter spacing)
-    const padding = paddingOverride !== undefined ? paddingOverride : defaultPadding;
-    const gap = gapOverride !== undefined ? gapOverride : defaultGap;
+    const padding = paddingOverride ?? defaultPadding;
+    const gap = gapOverride ?? defaultGap;
 
     // Guard against division by zero and ensure valid percentage
     const safeHeight = Math.max(height, 1);

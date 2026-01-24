@@ -116,7 +116,7 @@ export const HUDSection: React.FC<HUDSectionProps> = ({
       data-testid={dataTestId}
     >
       {/* Bilingual Title */}
-      {(title || titleKorean) && (
+      {(title ?? titleKorean) && (
         <div
           style={{
             fontSize: `${titleFontSize}px`,
