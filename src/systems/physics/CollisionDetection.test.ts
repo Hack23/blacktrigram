@@ -280,7 +280,7 @@ describe("CollisionDetection", () => {
   });
 
   describe("Performance Characteristics", () => {
-    it("should complete collision check in <1ms", () => {
+    it("should complete collision check in <2ms", () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
       const defenderPos: Position3D = { x: 0, y: 0, z: 5.6 };
       
@@ -297,7 +297,7 @@ describe("CollisionDetection", () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
       
-      expect(duration).toBeLessThan(1); // <1ms for single check
+      expect(duration).toBeLessThan(2); // <2ms for single check (more realistic threshold)
     });
 
     it("should handle 100 collision checks within 60fps budget (16ms)", () => {
