@@ -73,6 +73,8 @@ particles.push({
 ```
 
 #### Cleanup on Particle Expiration:
+
+**BloodParticles3D** (blood pool particles):
 ```typescript
 poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
   p.age += safeDelta;
@@ -87,6 +89,32 @@ poolParticlesRef.current = poolParticlesRef.current.filter((p) => {
   
   return isAlive;
 });
+```
+
+**ImpactSparks3D** (spark particles):
+```typescript
+// Filter expired particles and release their pooled vectors
+const aliveParticles: SparkParticle[] = [];
+
+for (let i = 0; i < particles.length; i++) {
+  const p = particles[i];
+  p.age += safeDelta;
+
+  if (p.age < p.lifetime) {
+    aliveParticles.push(p);
+    // ... update physics and render ...
+  } else {
+    // Release pooled vectors when particle expires
+    if (p.isPooled) {
+      ThreeObjectPools.vector3.release(p.position);
+      ThreeObjectPools.vector3.release(p.velocity);
+      p.isPooled = false;
+    }
+  }
+}
+
+// Update with only alive particles
+particlesRef.current.set(effectId, aliveParticles);
 ```
 
 #### Cleanup on Component Unmount:

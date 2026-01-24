@@ -315,12 +315,16 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
     particlesRef.current.forEach((particles, effectId) => {
       let hasActiveParticles = false;
 
+      // Filter expired particles and release their pooled vectors
+      const aliveParticles: SparkParticle[] = [];
+      
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         p.age += safeDelta;
 
         if (p.age < p.lifetime) {
           hasActiveParticles = true;
+          aliveParticles.push(p);
 
           // Apply gravity
           p.velocity.y += SPARK_CONSTANTS.GRAVITY * safeDelta;
@@ -338,8 +342,18 @@ export const ImpactSparks3D: React.FC<ImpactSparks3DProps> = ({
             posArray[totalParticleIndex * 3 + 2] = p.position.z;
             totalParticleIndex++;
           }
+        } else {
+          // Release pooled vectors when particle expires
+          if (p.isPooled) {
+            ThreeObjectPools.vector3.release(p.position);
+            ThreeObjectPools.vector3.release(p.velocity);
+            p.isPooled = false;
+          }
         }
       }
+      
+      // Update the particles array with only alive particles
+      particlesRef.current.set(effectId, aliveParticles);
 
       // Check if effect is complete
       if (!hasActiveParticles && !completedEffectsRef.current.has(effectId)) {

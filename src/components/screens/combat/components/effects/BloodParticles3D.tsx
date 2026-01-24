@@ -301,6 +301,9 @@ export const BloodParticles3D: React.FC<BloodParticles3DProps> = ({
         }
       });
       
+      // Clear the pool particles array for complete cleanup
+      poolParticlesRef.current = [];
+      
       // Clear refs
       currentParticles.clear();
       currentCompletedEffects.clear();
