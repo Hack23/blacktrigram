@@ -15,10 +15,7 @@
  */
 
 import React from "react";
-import {
-  HUD_WIDTH_PERCENT,
-  HUD_HEIGHT,
-} from "../../../../../types/LayoutTypes";
+// No longer using HUD_WIDTH_PERCENT or HUD_HEIGHT - using resolution-based sizing
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   getHUDHeight,

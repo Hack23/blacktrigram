@@ -15,9 +15,7 @@
 
 import React from "react";
 import { UseCombatTimerReturn } from "../../../../../hooks/useCombatTimer";
-import {
-  HUD_HEIGHT,
-} from "../../../../../types/LayoutTypes";
+// No longer using HUD_HEIGHT - using resolution-based sizing
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   getHUDHeight,

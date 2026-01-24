@@ -16,10 +16,7 @@
 import React from "react";
 import { PlayerState } from "../../../../../systems";
 import { Technique } from "../../../../../types";
-import {
-  HUD_HEIGHT,
-  Z_INDEX,
-} from "../../../../../types/LayoutTypes";
+import { Z_INDEX } from "../../../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import {
   BREAKPOINTS,
