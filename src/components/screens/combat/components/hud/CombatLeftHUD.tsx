@@ -1,12 +1,11 @@
 /**
  * CombatLeftHUD - Left side HUD for combat screen (Player 1)
  *
- * Contains:
- * - Player 1 health/ki/stamina bars
- * - Stance indicator
- * - Guard indicator
- * - Speed indicator
- * - Body part health (optional)
+ * REUSES existing components:
+ * - PlayerHUD: Archetype image, name, health/stamina bars
+ * - SpeedIndicatorHUD: Movement speed percentage
+ * - BodyPartHealthDisplay: Individual body part health bars
+ * - GuardIndicator: Current stance guard status
  *
  * Gaming Layout Best Practice:
  * - Width: 14% of screen (mobile: 18%)
@@ -18,9 +17,13 @@
 
 import React from "react";
 import { PlayerState } from "../../../../../systems";
+import type { StanceLaterality } from "../../../../../systems/trigram/types";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
 import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicator";
+import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
+import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
+import { BodyPartHealthDisplay } from "../../../../shared/three/ui/BodyPartHealthDisplay";
 
 /** HUD width - slightly narrower for more arena space */
 const HUD_WIDTH_PERCENT_DESKTOP = 14;
@@ -43,6 +46,8 @@ export interface CombatLeftHUDProps {
   readonly positionScale: number;
   /** Player 1 state */
   readonly player: PlayerState;
+  /** Player laterality (left/right foot forward) */
+  readonly laterality: StanceLaterality;
   /** Whether player is in guard stance */
   readonly isInGuard: boolean;
   /** Player speed modifiers */
@@ -57,6 +62,7 @@ export interface CombatLeftHUDProps {
  *
  * Left side of the combat screen containing Player 1's stats.
  * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * REUSES existing PlayerHUD, SpeedIndicatorHUD, BodyPartHealthDisplay components.
  */
 export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   width,
@@ -64,6 +70,7 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   isMobile,
   positionScale,
   player,
+  laterality,
   isInGuard,
   speedModifiers,
 }) => {
@@ -128,174 +135,67 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
         borderRight: `2px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
         background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.4)} 100%)`,
         backdropFilter: "blur(8px)",
+        overflow: "hidden",
       }}
       data-testid="combat-left-hud"
     >
-      {/* Player 1 Stats - using simple flex layout */}
+      {/* Player 1 Stats - REUSING PlayerHUD component with embedded positioning */}
       <div
         style={{
           pointerEvents: "none",
-          display: "flex",
-          flexDirection: "column",
-          gap: `${layout.gap}px`,
+          position: "relative",
         }}
         data-testid="combat-left-hud-player-section"
       >
-        {/* Player Name */}
-        <div
-          style={{
-            fontSize: isMobile ? "12px" : "14px",
-            fontWeight: "bold",
-            fontFamily: theme.koreanTypography.fontFamily,
-            color: hexToRgbaString(theme.colors.ACCENT_GOLD, 1),
-            textAlign: "center",
-            textShadow: `0 0 5px ${hexToRgbaString(theme.colors.ACCENT_GOLD, 0.5)}`,
-          }}
-        >
-          {player.name.korean} | {player.name.english}
-        </div>
-
-        {/* Health Bar */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          <div
-            style={{
-              fontSize: isMobile ? "9px" : "10px",
-              color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
-            }}
-          >
-            체력 | Health
-          </div>
-          <div
-            style={{
-              height: isMobile ? "8px" : "10px",
-              background: hexToRgbaString(
-                theme.colors.UI_BACKGROUND_MEDIUM,
-                0.8,
-              ),
-              borderRadius: "4px",
-              overflow: "hidden",
-              border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.4)}`,
-            }}
-          >
-            <div
-              style={{
-                width: `${(player.health / player.maxHealth) * 100}%`,
-                height: "100%",
-                background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.POSITIVE_GREEN, 1)} 0%, ${hexToRgbaString(theme.colors.ACCENT_GREEN, 1)} 100%)`,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Stamina Bar */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          <div
-            style={{
-              fontSize: isMobile ? "9px" : "10px",
-              color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
-            }}
-          >
-            기력 | Stamina
-          </div>
-          <div
-            style={{
-              height: isMobile ? "6px" : "8px",
-              background: hexToRgbaString(
-                theme.colors.UI_BACKGROUND_MEDIUM,
-                0.8,
-              ),
-              borderRadius: "3px",
-              overflow: "hidden",
-              border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}`,
-            }}
-          >
-            <div
-              style={{
-                width: `${(player.stamina / player.maxStamina) * 100}%`,
-                height: "100%",
-                background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.ACCENT_GOLD, 1)} 0%, ${hexToRgbaString(theme.colors.SECONDARY_YELLOW, 1)} 100%)`,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Ki Bar */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          <div
-            style={{
-              fontSize: isMobile ? "9px" : "10px",
-              color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
-            }}
-          >
-            기 | Ki
-          </div>
-          <div
-            style={{
-              height: isMobile ? "6px" : "8px",
-              background: hexToRgbaString(
-                theme.colors.UI_BACKGROUND_MEDIUM,
-                0.8,
-              ),
-              borderRadius: "3px",
-              overflow: "hidden",
-              border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}`,
-            }}
-          >
-            <div
-              style={{
-                width: `${(player.ki / player.maxKi) * 100}%`,
-                height: "100%",
-                background: `linear-gradient(90deg, ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 1)} 0%, ${hexToRgbaString(theme.colors.ACCENT_BLUE, 1)} 100%)`,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-        </div>
+        <PlayerHUD
+          player={player}
+          position="left"
+          isMobile={isMobile}
+          laterality={laterality}
+        />
       </div>
 
-      {/* Speed Indicator - simplified */}
+      {/* Speed Indicator - REUSING SpeedIndicatorHUD component */}
       <div
         style={{
           pointerEvents: "none",
-          padding: isMobile ? "4px 6px" : "6px 8px",
-          background: hexToRgbaString(theme.colors.UI_BACKGROUND_MEDIUM, 0.7),
-          borderRadius: "4px",
-          border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.3)}`,
+          position: "relative",
         }}
         data-testid="combat-left-hud-speed-section"
       >
-        <div
-          style={{
-            fontSize: isMobile ? "9px" : "10px",
-            color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.8),
-          }}
-        >
-          속도 | Speed
-        </div>
-        <div
-          style={{
-            fontSize: isMobile ? "11px" : "13px",
-            fontWeight: "bold",
-            color:
-              speedModifiers.finalSpeed >= speedModifiers.baseSpeed
-                ? hexToRgbaString(theme.colors.ACCENT_GREEN, 1)
-                : hexToRgbaString(theme.colors.PRIMARY_RED, 1),
-          }}
-        >
-          {Math.round(
-            (speedModifiers.finalSpeed / speedModifiers.baseSpeed) * 100,
-          )}
-          %
-        </div>
+        <SpeedIndicatorHUD
+          finalSpeed={speedModifiers.finalSpeed}
+          baseSpeed={speedModifiers.baseSpeed}
+          position="left"
+          isMobile={isMobile}
+          visible={true}
+        />
       </div>
+
+      {/* Body Part Health - REUSING BodyPartHealthDisplay component */}
+      {player.bodyPartHealth && (
+        <div
+          style={{
+            pointerEvents: "none",
+            position: "relative",
+          }}
+          data-testid="combat-left-hud-bodypart-section"
+        >
+          <BodyPartHealthDisplay
+            bodyPartHealth={player.bodyPartHealth}
+            playerId={player.id}
+            position="left"
+            isMobile={isMobile}
+          />
+        </div>
+      )}
 
       {/* Guard Indicator - at bottom of HUD */}
       <div
         style={{
           pointerEvents: "none",
           marginTop: "auto",
+          position: "relative",
         }}
         data-testid="combat-left-hud-guard-section"
       >

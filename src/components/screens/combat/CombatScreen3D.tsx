@@ -2279,7 +2279,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           arenaBounds={arenaBounds}
         />
 
-        {/* Vital Point Overlay - Show on both players */}
+        {/* Vital Point Overlay - Show on both players when V is pressed */}
         {overlayVisible && (
           <>
             {/* Player 1 Vital Points */}
@@ -2311,32 +2311,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 // Optional: Add point targeting in combat
               }}
             />
+
+            {/* Vital Point Overlay Controls - only visible when overlay is active */}
+            <VitalPointOverlayControlsHtml
+              screenPosition={{
+                top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+                left: `${layoutConstants.padding}px`,
+              }}
+              visible={overlayVisible}
+              onVisibleChange={setOverlayVisible}
+              severityFilters={severityFilters}
+              onSeverityFiltersChange={setSeverityFilters}
+              regionFilter={regionFilter}
+              onRegionFilterChange={setRegionFilter}
+              searchQuery={searchQuery}
+              onSearchQueryChange={setSearchQuery}
+              showLabels={showLabels}
+              onShowLabelsChange={setShowLabels}
+              animated={animated}
+              onAnimatedChange={setAnimated}
+              scale={scale}
+              onScaleChange={setScale}
+              isMobile={isMobile}
+            />
           </>
         )}
-
-        {/* Vital Point Overlay Controls - dynamic screen position, left side below player status */}
-        {/* Position uses layoutConstants for consistent responsive placement */}
-        <VitalPointOverlayControlsHtml
-          screenPosition={{
-            top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
-            left: `${layoutConstants.padding}px`,
-          }}
-          visible={overlayVisible}
-          onVisibleChange={setOverlayVisible}
-          severityFilters={severityFilters}
-          onSeverityFiltersChange={setSeverityFilters}
-          regionFilter={regionFilter}
-          onRegionFilterChange={setRegionFilter}
-          searchQuery={searchQuery}
-          onSearchQueryChange={setSearchQuery}
-          showLabels={showLabels}
-          onShowLabelsChange={setShowLabels}
-          animated={animated}
-          onAnimatedChange={setAnimated}
-          scale={scale}
-          onScaleChange={setScale}
-          isMobile={isMobile}
-        />
 
         {/* Action Feedback - Damage Numbers */}
         <DamageNumbers
@@ -2505,6 +2504,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
           positionScale={positionScale}
           player={validPlayers[0]}
+          laterality={combatState.playerLaterality[0]}
           isInGuard={player1Animation.isInStanceGuard()}
           speedModifiers={player1SpeedModifiers}
         />
@@ -2516,7 +2516,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           isMobile={isMobile}
           positionScale={positionScale}
           player={validPlayers[1]}
-          isInGuard={player2Animation.isInStanceGuard()}
+          laterality={combatState.playerLaterality[1]}
           speedModifiers={player2SpeedModifiers}
           difficultyTier={currentDifficultyTier}
         />
