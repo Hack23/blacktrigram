@@ -415,9 +415,6 @@ describe('responsiveLayout utilities', () => {
         expect(fontSize).toBeLessThanOrEqual(16);
         expect(hudHeight).toBeGreaterThanOrEqual(40);
         expect(hudHeight).toBeLessThanOrEqual(120);
-
-        // Log for manual verification
-        console.log(`${name}: padding=${padding.toFixed(1)}px, fontSize=${fontSize.toFixed(1)}px, hudHeight=${hudHeight.toFixed(1)}px`);
       });
     });
   });
