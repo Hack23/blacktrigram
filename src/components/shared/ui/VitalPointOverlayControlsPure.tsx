@@ -22,6 +22,7 @@ import {
   getVitalPointsStats,
 } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../types/common";
+import { Z_INDEX } from "../../../types/LayoutTypes";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
 import type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
 
@@ -262,7 +263,7 @@ export const VitalPointOverlayControlsPure: React.FC<
         )}80`,
         transition: "all 0.3s ease",
         pointerEvents: "all",
-        zIndex: 200,
+        zIndex: Z_INDEX.MODAL,
       }}
       data-testid="vital-point-overlay-controls"
     >
