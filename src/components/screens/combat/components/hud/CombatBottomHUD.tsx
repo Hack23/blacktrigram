@@ -109,7 +109,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       }}
       data-testid="combat-bottom-hud"
     >
-      {/* Combat Messages - above technique bar */}
+      {/* Combat Messages - styled box above technique bar */}
       {recentMessages.length > 0 && (
         <div
           style={{
@@ -120,20 +120,40 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "2px",
+            gap: "3px",
             zIndex: Z_INDEX.HUD,
+            padding: isMobile ? "6px 12px" : "8px 16px",
+            background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.85),
+            border: `1px solid ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.5)}`,
+            borderRadius: "6px",
+            boxShadow: `0 0 10px ${hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.2)}`,
+            minWidth: isMobile ? "200px" : "280px",
+            maxWidth: isMobile ? "90%" : "500px",
           }}
           data-testid="combat-bottom-hud-messages"
         >
+          <div
+            style={{
+              fontSize: isMobile ? "8px" : "9px",
+              fontFamily: theme.koreanTypography.fontFamily,
+              color: hexToRgbaString(theme.colors.PRIMARY_CYAN, 0.7),
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              marginBottom: "2px",
+            }}
+          >
+            전투 기록 | Combat Log
+          </div>
           {recentMessages.map((message, index) => (
             <div
               key={index}
               style={{
                 fontSize: isMobile ? "10px" : "12px",
                 fontFamily: theme.koreanTypography.fontFamily,
-                color: hexToRgbaString(theme.colors.TEXT_SECONDARY, 0.9),
+                color: hexToRgbaString(theme.colors.TEXT_PRIMARY, 0.95),
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
                 opacity: 0.7 + index * 0.1,
+                textAlign: "center",
               }}
             >
               {message}

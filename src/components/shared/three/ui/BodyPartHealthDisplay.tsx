@@ -99,19 +99,14 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
       { label: "팔 | Arms", parts: [BodyPart.ARM_LEFT, BodyPart.ARM_RIGHT] },
       { label: "다리 | Legs", parts: [BodyPart.LEG_LEFT, BodyPart.LEG_RIGHT] },
     ],
-    []
+    [],
   );
 
   return (
     <div
       data-testid={`body-part-health-${playerId}`}
       style={{
-        position: "absolute",
-        // Position below PlayerHUD (which is ~140px tall on desktop, ~100px on mobile)
-        // Account for VitalPoints controls which may be showing on left side
-        top: isMobile ? "180px" : "240px",
-        left: isLeft ? (isMobile ? "8px" : "12px") : "auto",
-        right: isLeft ? "auto" : isMobile ? "8px" : "12px",
+        position: "relative",
         display: "flex",
         flexDirection: "column",
         gap,
@@ -121,11 +116,11 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
         border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.7)}`,
         boxShadow: `0 0 12px ${hexToRgbaString(
           KOREAN_COLORS.PRIMARY_CYAN,
-          0.3
+          0.3,
         )}`,
         pointerEvents: "none",
-        zIndex: 100,
-        maxWidth: isMobile ? "130px" : "160px",
+        width: "100%",
+        boxSizing: "border-box" as const,
         fontSize: isMobile ? "9px" : "10px",
       }}
     >
@@ -211,7 +206,7 @@ export const BodyPartHealthDisplay: React.FC<BodyPartHealthDisplayProps> = ({
                     height: `${barHeight}px`,
                     backgroundColor: hexToRgbaString(
                       KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-                      1
+                      1,
                     ),
                     borderRadius: "2px",
                     overflow: "hidden",

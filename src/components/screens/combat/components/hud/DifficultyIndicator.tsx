@@ -11,8 +11,11 @@
 
 import React, { useMemo } from "react";
 import { DifficultyTier } from "../../../../../systems/ai";
+import {
+  hexColorToCSS,
+  hexToRgbaString,
+} from "../../../../../utils/colorUtils";
 import { useKoreanTheme } from "../../../../shared/base/useKoreanTheme";
-import { hexColorToCSS, hexToRgbaString } from "../../../../../utils/colorUtils";
 
 export interface DifficultyIndicatorProps {
   /** Current difficulty tier (1-5) */
@@ -24,7 +27,10 @@ export interface DifficultyIndicatorProps {
 /**
  * Get tier display name with Korean and English
  */
-function getTierName(tier: DifficultyTier): { korean: string; english: string } {
+function getTierName(tier: DifficultyTier): {
+  korean: string;
+  english: string;
+} {
   switch (tier) {
     case DifficultyTier.BEGINNER:
       return { korean: "초보", english: "Beginner" };
@@ -45,7 +51,10 @@ function getTierName(tier: DifficultyTier): { korean: string; english: string } 
  * Get numeric color for difficulty tier using theme colors
  * Maps tiers to existing color scheme for consistency
  */
-function getTierColorValue(tier: DifficultyTier, theme: ReturnType<typeof useKoreanTheme>): number {
+function getTierColorValue(
+  tier: DifficultyTier,
+  theme: ReturnType<typeof useKoreanTheme>,
+): number {
   switch (tier) {
     case DifficultyTier.BEGINNER:
       return theme.colors.POSITIVE_GREEN; // Green - Easy
@@ -64,9 +73,8 @@ function getTierColorValue(tier: DifficultyTier, theme: ReturnType<typeof useKor
 
 /**
  * DifficultyIndicator - Visual feedback for current AI difficulty tier
- * 
- * Positioned below Player 2 HUD to avoid overlap
- * Calculates vertical offset based on HUD height (name + health + stamina + stance)
+ *
+ * Uses relative positioning for embedding in container HUDs
  */
 export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   tier,
@@ -75,30 +83,30 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
   const theme = useKoreanTheme({ variant: "primary", size: "small", isMobile });
   const tierName = getTierName(tier);
   const tierColorValue = getTierColorValue(tier, theme);
-  
+
   // Memoize color calculations
-  const tierColor = useMemo(() => hexColorToCSS(tierColorValue), [tierColorValue]);
-  const tierBackground = useMemo(() => hexToRgbaString(tierColorValue, 0.13), [tierColorValue]);
-  const tierBoxShadow = useMemo(() => hexToRgbaString(tierColorValue, 0.27), [tierColorValue]);
-  
+  const tierColor = useMemo(
+    () => hexColorToCSS(tierColorValue),
+    [tierColorValue],
+  );
+  const tierBackground = useMemo(
+    () => hexToRgbaString(tierColorValue, 0.13),
+    [tierColorValue],
+  );
+  const tierBoxShadow = useMemo(
+    () => hexToRgbaString(tierColorValue, 0.27),
+    [tierColorValue],
+  );
+
   // Responsive sizing
   const fontSize = isMobile ? 11 : 13;
   const padding = isMobile ? "6px 10px" : "8px 12px";
-  
-  // Position below Player 2 HUD to avoid overlap
-  // NOTE: This uses a calculated offset based on typical HUD height.
-  // If Player HUD layout changes, this may need adjustment.
-  // Consider using CSS Grid or exported HUD constants for better maintainability.
-  // Current estimate: name (20px) + health bar (20px) + stamina bar (20px) + stance (15px) + gaps (18px) ≈ 93px
-  const topOffset = isMobile ? 100 : 110;
 
   return (
     <div
       data-testid="difficulty-indicator"
       style={{
-        position: "absolute",
-        top: `${topOffset}px`,
-        right: isMobile ? "8px" : "12px",
+        position: "relative",
         padding,
         background: tierBackground, // 13% opacity background
         border: `2px solid ${tierColor}`,
@@ -108,13 +116,14 @@ export const DifficultyIndicator: React.FC<DifficultyIndicatorProps> = ({
         color: tierColor,
         textShadow: "0 0 4px rgba(0,0,0,0.8)",
         pointerEvents: "none",
-        zIndex: 100,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: "2px",
         transition: "all 0.3s ease-in-out", // Smooth color/border transitions
         boxShadow: `0 0 8px ${tierBoxShadow}`, // Subtle glow effect (27% opacity)
+        width: "100%",
+        boxSizing: "border-box" as const,
       }}
     >
       <div
