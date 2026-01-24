@@ -98,10 +98,7 @@ export const CombatBottomHUD: React.FC<CombatBottomHUDProps> = ({
       ? COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile
       : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop;
     const maxMessageWidth = width < BREAKPOINTS.mobile 
-      ? Math.min(
-          width * COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile,
-          parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxMobile, 10)
-        )
+      ? width * COMBAT_UI_DIMENSIONS.combatLogMaxWidthPercentMobile
       : COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMaxDesktop;
     const maxTechniqueBarWidth = width < BREAKPOINTS.mobile 
       ? COMBAT_UI_DIMENSIONS.techniqueBarWidthMobile 

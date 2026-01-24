@@ -10,7 +10,9 @@
 import { describe, it, expect } from 'vitest';
 import {
   TYPOGRAPHY,
+  TYPOGRAPHY_NUMERIC,
   SPACING,
+  SPACING_NUMERIC,
   SPACING_ADJUSTMENTS,
   BORDER_RADIUS,
   HIERARCHY,
@@ -19,6 +21,7 @@ import {
   TRANSITIONS,
   OPACITY,
   COMBAT_UI_DIMENSIONS,
+  COMBAT_UI_DIMENSIONS_NUMERIC,
   TEXT_EFFECTS,
   FONT_SIZE_MULTIPLIERS,
   LAYOUT_MULTIPLIERS,
@@ -399,5 +402,74 @@ describe('Design System - TEXT_EFFECTS', () => {
   it('should have valid shadow syntax', () => {
     expect(TEXT_EFFECTS.darkShadow).toContain('rgba');
     expect(TEXT_EFFECTS.lightGlow).toContain('rgba');
+  });
+});
+
+describe('Design System - TYPOGRAPHY_NUMERIC', () => {
+  it('should have numeric values matching string TYPOGRAPHY', () => {
+    expect(TYPOGRAPHY_NUMERIC.heading1).toBe(24);
+    expect(TYPOGRAPHY_NUMERIC.heading2).toBe(20);
+    expect(TYPOGRAPHY_NUMERIC.heading3).toBe(16);
+    expect(TYPOGRAPHY_NUMERIC.body).toBe(14);
+    expect(TYPOGRAPHY_NUMERIC.bodySmall).toBe(12);
+    expect(TYPOGRAPHY_NUMERIC.button).toBe(14);
+    expect(TYPOGRAPHY_NUMERIC.caption).toBe(10);
+    expect(TYPOGRAPHY_NUMERIC.micro).toBe(9);
+    expect(TYPOGRAPHY_NUMERIC.nano).toBe(8);
+  });
+
+  it('should match parsed string values from TYPOGRAPHY', () => {
+    expect(TYPOGRAPHY_NUMERIC.heading1).toBe(parseInt(TYPOGRAPHY.heading1.fontSize, 10));
+    expect(TYPOGRAPHY_NUMERIC.body).toBe(parseInt(TYPOGRAPHY.body.fontSize, 10));
+    expect(TYPOGRAPHY_NUMERIC.caption).toBe(parseInt(TYPOGRAPHY.caption.fontSize, 10));
+    expect(TYPOGRAPHY_NUMERIC.nano).toBe(parseInt(TYPOGRAPHY.nano.fontSize, 10));
+  });
+});
+
+describe('Design System - SPACING_NUMERIC', () => {
+  it('should have numeric values matching string SPACING', () => {
+    expect(SPACING_NUMERIC.xxs).toBe(4);
+    expect(SPACING_NUMERIC.xs).toBe(8);
+    expect(SPACING_NUMERIC.sm).toBe(12);
+    expect(SPACING_NUMERIC.md).toBe(16);
+    expect(SPACING_NUMERIC.lg).toBe(24);
+    expect(SPACING_NUMERIC.xl).toBe(32);
+    expect(SPACING_NUMERIC.xxl).toBe(48);
+  });
+
+  it('should have numeric values matching SPACING_ADJUSTMENTS', () => {
+    expect(SPACING_NUMERIC.xsPlus).toBe(10);
+    expect(SPACING_NUMERIC.smPlus).toBe(14);
+    expect(SPACING_NUMERIC.mdPlus).toBe(18);
+    expect(SPACING_NUMERIC.compact).toBe(6);
+    expect(SPACING_NUMERIC.horizontalEmphasis).toBe(24);
+    expect(SPACING_NUMERIC.micro).toBe(3);
+    expect(SPACING_NUMERIC.tiny).toBe(2);
+  });
+
+  it('should match parsed string values from SPACING', () => {
+    expect(SPACING_NUMERIC.xs).toBe(parseInt(SPACING.xs, 10));
+    expect(SPACING_NUMERIC.md).toBe(parseInt(SPACING.md, 10));
+    expect(SPACING_NUMERIC.lg).toBe(parseInt(SPACING.lg, 10));
+  });
+
+  it('should match parsed string values from SPACING_ADJUSTMENTS', () => {
+    expect(SPACING_NUMERIC.xsPlus).toBe(parseInt(SPACING_ADJUSTMENTS.xsPlus, 10));
+    expect(SPACING_NUMERIC.compact).toBe(parseInt(SPACING_ADJUSTMENTS.compact, 10));
+    expect(SPACING_NUMERIC.micro).toBe(parseInt(SPACING_ADJUSTMENTS.micro, 10));
+  });
+});
+
+describe('Design System - COMBAT_UI_DIMENSIONS_NUMERIC', () => {
+  it('should have numeric values matching string COMBAT_UI_DIMENSIONS', () => {
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile).toBe(200);
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop).toBe(280);
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMaxDesktop).toBe(500);
+  });
+
+  it('should match parsed string values from COMBAT_UI_DIMENSIONS', () => {
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinMobile).toBe(parseInt(COMBAT_UI_DIMENSIONS.combatLogMinMobile, 10));
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMinDesktop).toBe(parseInt(COMBAT_UI_DIMENSIONS.combatLogMinDesktop, 10));
+    expect(COMBAT_UI_DIMENSIONS_NUMERIC.combatLogMaxDesktop).toBe(parseInt(COMBAT_UI_DIMENSIONS.combatLogMaxDesktop, 10));
   });
 });

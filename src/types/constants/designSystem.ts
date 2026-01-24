@@ -486,6 +486,10 @@ export const TEXT_EFFECTS = {
 /**
  * Get responsive spacing based on screen size
  * 
+ * Note: This helper function uses parseInt internally for flexibility
+ * in returning pixel-suffixed strings. For performance-critical useMemo
+ * calculations, prefer using SPACING_NUMERIC constants directly.
+ * 
  * @param baseSpacing - Base spacing value from SPACING scale
  * @param isMobile - Whether mobile layout is active
  * @param positionScale - Position scale multiplier (for 4K displays)
@@ -503,6 +507,10 @@ export function getResponsiveSpacing(
 
 /**
  * Get responsive font size based on typography scale
+ * 
+ * Note: This helper function uses parseInt internally for flexibility
+ * in returning pixel-suffixed strings. For performance-critical useMemo
+ * calculations, prefer using TYPOGRAPHY_NUMERIC constants directly.
  * 
  * @param typographyLevel - Typography level from TYPOGRAPHY
  * @param isMobile - Whether mobile layout is active
