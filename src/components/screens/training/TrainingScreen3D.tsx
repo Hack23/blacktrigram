@@ -9,6 +9,17 @@
  * This eliminates the need for Html overlays inside Three.js and ensures
  * HUDs appear immediately without waiting for Canvas initialization.
  *
+ * Architecture (Consolidated in PR #1394 + Issue #xxxx):
+ * - TrainingLeftHUD: Anatomy controls, guard indicator
+ * - TrainingRightHUD: Training stats, mode selector, vital point selection
+ * - TrainingTopHUD: Training controls, archetype selector, return button
+ * - TrainingBottomHUD: Technique bar, feedback messages, mobile controls
+ * - VitalPointOverlayControlsPure: Vital point overlay controls (pure DOM)
+ *
+ * All UI components render as pure DOM in the HUD overlay div (lines 1230+).
+ * NO Html components from @react-three/drei are used inside the Canvas.
+ * This ensures clean separation of 3D rendering and UI layers.
+ *
  * @korean 훈련화면3D - 훈련 상태 훅을 사용한 리팩토링된 3D 훈련 화면
  */
 
