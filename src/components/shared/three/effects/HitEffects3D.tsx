@@ -5,7 +5,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
@@ -43,8 +43,10 @@ const HitEffectVisual: React.FC<{
   arenaBounds?: { x: number; y: number; width: number; height: number };
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
-  // Use state for alpha to avoid accessing ref during render
-  const [alpha, setAlpha] = useState(1);
+  // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
+  const alphaRef = useRef(1);
+  // Store material refs for direct opacity updates
+  const materialRefsRef = useRef<THREE.Material[]>([]);
 
   // Position in 3D space - convert 2D position to 3D
   const position3D: [number, number, number] = useMemo(() => {
@@ -66,9 +68,16 @@ const HitEffectVisual: React.FC<{
   useFrame(() => {
     if (!groupRef.current || !effectRef.current) return;
 
-    // Access fresh progress value from ref and update alpha state
+    // Access fresh progress value from ref and update alpha ref (no setState!)
     const progress = effectRef.current.progress;
-    setAlpha(1 - progress);
+    alphaRef.current = 1 - progress;
+
+    // Update all material opacities directly for this effect
+    materialRefsRef.current.forEach((material) => {
+      if (material instanceof THREE.MeshBasicMaterial) {
+        material.opacity = alphaRef.current * (material.userData.baseOpacity ?? 1);
+      }
+    });
 
     // Rotate for some effects
     if (
@@ -86,6 +95,16 @@ const HitEffectVisual: React.FC<{
     }
   });
 
+  // Helper to register materials for opacity updates
+  const registerMaterial = useCallback((material: THREE.Material | null, baseOpacity: number = 1) => {
+    if (material) {
+      material.userData.baseOpacity = baseOpacity;
+      if (!materialRefsRef.current.includes(material)) {
+        materialRefsRef.current.push(material);
+      }
+    }
+  }, []);
+
   // Render based on effect type
   switch (effect.type) {
     case HitEffectType.HIT:
@@ -95,9 +114,10 @@ const HitEffectVisual: React.FC<{
           <mesh>
             <sphereGeometry args={[0.3 * effect.intensity, 16, 16]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.5)}
               color={KOREAN_COLORS.ACCENT_RED}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
             />
           </mesh>
           {/* Expanding ring */}
@@ -106,9 +126,10 @@ const HitEffectVisual: React.FC<{
               args={[0.3 * effect.intensity, 0.35 * effect.intensity, 32]}
             />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 1.0)}
               color={KOREAN_COLORS.ACCENT_RED}
               transparent
-              opacity={alpha}
+              opacity={1}
               side={THREE.DoubleSide}
             />
           </mesh>
@@ -122,9 +143,10 @@ const HitEffectVisual: React.FC<{
           <mesh>
             <sphereGeometry args={[0.5 * effect.intensity, 16, 16]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.7)}
               color={KOREAN_COLORS.ACCENT_GOLD}
               transparent
-              opacity={alpha * 0.7}
+              opacity={0.7}
             />
           </mesh>
           {/* Star burst lines */}
@@ -138,9 +160,10 @@ const HitEffectVisual: React.FC<{
               >
                 <boxGeometry args={[0.6, 0.05, 0.05]} />
                 <meshBasicMaterial
+                  ref={(mat) => registerMaterial(mat, 1.0)}
                   color={KOREAN_COLORS.ACCENT_RED}
                   transparent
-                  opacity={alpha}
+                  opacity={1}
                 />
               </mesh>
             );
@@ -157,9 +180,10 @@ const HitEffectVisual: React.FC<{
               args={[0.4 * effect.intensity, 0.05, 8, 16, Math.PI]}
             />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 1.0)}
               color={KOREAN_COLORS.ACCENT_CYAN}
               transparent
-              opacity={alpha}
+              opacity={1}
             />
           </mesh>
           {/* Spark particles */}
@@ -168,15 +192,16 @@ const HitEffectVisual: React.FC<{
               key={i}
               position={[
                 (i - 1) * 0.2,
-                Math.sin((1 - alpha) * Math.PI) * 0.3, // Use alpha (1 - progress)
+                Math.sin((1 - alphaRef.current) * Math.PI) * 0.3,
                 0,
               ]}
             >
               <sphereGeometry args={[0.05, 8, 8]} />
               <meshBasicMaterial
+                ref={(mat) => registerMaterial(mat, 0.8)}
                 color={KOREAN_COLORS.ACCENT_CYAN}
                 transparent
-                opacity={alpha * 0.8}
+                opacity={0.8}
               />
             </mesh>
           ))}
@@ -195,9 +220,10 @@ const HitEffectVisual: React.FC<{
             >
               <boxGeometry args={[0.6, 0.02, 0.02]} />
               <meshBasicMaterial
+                ref={(mat) => registerMaterial(mat, 1.0)}
                 color={KOREAN_COLORS.TEXT_TERTIARY}
                 transparent
-                opacity={alpha}
+                opacity={1}
               />
             </mesh>
           ))}
@@ -211,9 +237,10 @@ const HitEffectVisual: React.FC<{
           <mesh>
             <sphereGeometry args={[0.35 * effect.intensity, 16, 16]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.5)}
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
             />
           </mesh>
           {/* Concentric rings */}
@@ -221,9 +248,10 @@ const HitEffectVisual: React.FC<{
             <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
               <ringGeometry args={[radius, radius + 0.02, 32]} />
               <meshBasicMaterial
+                ref={(mat) => registerMaterial(mat, 1.0)}
                 color={KOREAN_COLORS.SECONDARY_MAGENTA}
                 transparent
-                opacity={alpha}
+                opacity={1}
                 side={THREE.DoubleSide}
               />
             </mesh>
@@ -232,17 +260,19 @@ const HitEffectVisual: React.FC<{
           <mesh position={[0, 0, 0]}>
             <boxGeometry args={[0.8, 0.02, 0.02]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.8)}
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.8}
+              opacity={0.8}
             />
           </mesh>
           <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
             <boxGeometry args={[0.8, 0.02, 0.02]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.8)}
               color={KOREAN_COLORS.SECONDARY_MAGENTA}
               transparent
-              opacity={alpha * 0.8}
+              opacity={0.8}
             />
           </mesh>
         </group>
@@ -257,9 +287,10 @@ const HitEffectVisual: React.FC<{
               args={[0.35 * effect.intensity, 0.05, 8, 16, Math.PI / 2]}
             />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 1.0)}
               color={KOREAN_COLORS.ACCENT_GOLD}
               transparent
-              opacity={alpha}
+              opacity={1}
             />
           </mesh>
           {/* Sparks */}
@@ -272,9 +303,10 @@ const HitEffectVisual: React.FC<{
               >
                 <sphereGeometry args={[0.04, 8, 8]} />
                 <meshBasicMaterial
+                  ref={(mat) => registerMaterial(mat, 0.8)}
                   color={KOREAN_COLORS.ACCENT_GOLD}
                   transparent
-                  opacity={alpha * 0.8}
+                  opacity={0.8}
                 />
               </mesh>
             );
@@ -294,9 +326,10 @@ const HitEffectVisual: React.FC<{
             >
               <boxGeometry args={[0.6, 0.05, 0.05]} />
               <meshBasicMaterial
+                ref={(mat) => registerMaterial(mat, 1.0)}
                 color={KOREAN_COLORS.PRIMARY_CYAN}
                 transparent
-                opacity={alpha}
+                opacity={1}
               />
             </mesh>
           ))}
@@ -311,9 +344,10 @@ const HitEffectVisual: React.FC<{
           <mesh>
             <sphereGeometry args={[0.3 * effect.intensity, 16, 16]} />
             <meshBasicMaterial
+              ref={(mat) => registerMaterial(mat, 0.5)}
               color={KOREAN_COLORS.ACCENT_GREEN}
               transparent
-              opacity={alpha * 0.5}
+              opacity={0.5}
             />
           </mesh>
         </group>
