@@ -53,9 +53,10 @@ export interface CombatLeftHUDProps {
  * CombatLeftHUD Component
  *
  * Left side of the combat screen containing Player 1's stats.
- * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * Occupies approximately 14–18% of screen width based on resolution breakpoints/interpolation,
+ * positioned between the top and bottom HUDs.
  * REUSES existing PlayerHUD, SpeedIndicatorHUD, BodyPartHealthDisplay components.
- * Uses shared HUD utilities for consistent layout and styling.
+ * Uses shared HUD utilities for consistent, resolution-based layout and styling.
  */
 export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
   width,

@@ -53,9 +53,10 @@ export interface CombatRightHUDProps {
  * CombatRightHUD Component
  *
  * Right side of the combat screen containing Player 2/AI stats.
- * Takes 14% of screen width (18% on mobile), positioned between top and bottom HUDs.
+ * Occupies approximately 14–18% of screen width based on resolution breakpoints/interpolation,
+ * positioned between top and bottom HUDs.
  * REUSES existing PlayerHUD, SpeedIndicatorHUD, BodyPartHealthDisplay, DifficultyIndicator.
- * Uses shared HUD utilities for consistent layout and styling.
+ * Uses shared HUD utilities for consistent, resolution-based layout and styling.
  */
 export const CombatRightHUD: React.FC<CombatRightHUDProps> = ({
   width,
