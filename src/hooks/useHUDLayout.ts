@@ -53,8 +53,8 @@ export interface HUDLayoutResult {
  * @param positionScale - Position scale multiplier for large displays (1.0-1.5)
  * @param position - HUD position (left, right, top, bottom)
  * @param context - Context ('training' or 'combat') for context-specific dimensions
- * @param paddingOverride - Optional padding override for per-position customization
- * @param gapOverride - Optional gap override for per-position customization
+ * @param paddingOverride - Optional padding override (final pixel value, already scaled). When provided, bypasses default padding calculation.
+ * @param gapOverride - Optional gap override (final pixel value, already scaled). When provided, bypasses default gap calculation.
  * @returns Calculated layout dimensions and offsets
  * 
  * @example

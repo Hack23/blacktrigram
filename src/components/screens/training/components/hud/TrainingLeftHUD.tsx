@@ -8,7 +8,7 @@
  * Gaming Layout Best Practice:
  * - Width: Resolution-based 14-18% of screen
  * - Height: 100% minus top/bottom HUD heights
- * - Leaves 72% center for arena
+ * - When combined with the right HUD, leaves roughly 64–72% center width for the arena depending on resolution
  *
  * Responsible for sizing and positioning all left-side UI elements.
  * Now uses shared HUD utilities with resolution-based sizing.
