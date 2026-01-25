@@ -305,8 +305,8 @@ C4Container
     System_Ext(frontend, "⚛️ React Frontend", "Current Black Trigram web application")
     
     Rel(player, frontend, "Plays game", "HTTPS")
-    Rel(frontend, cloudFront, "Accesses via", "HTTPS")
-    Rel(cloudFront, cognito, "Authenticates", "OAuth 2.0/OIDC")
+    Rel(frontend, cloudFront, "Loads SPA/static assets via CDN", "HTTPS")
+    Rel(frontend, cognito, "Authenticates via Hosted UI/OIDC", "OAuth 2.0/OIDC")
     Rel(cognito, social, "Federated login", "OAuth 2.0")
     Rel(frontend, apiGateway, "API calls", "HTTPS/WSS")
     Rel(waf, apiGateway, "Protects", "Rules")
@@ -323,6 +323,413 @@ C4Container
 
     UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
 ```
+
+##### Network Architecture: VPC & Private Subnets
+
+**Reference Implementation**: Based on [Hack23/lambda-in-private-vpc](https://github.com/Hack23/lambda-in-private-vpc) - enterprise-grade multi-region active/active architecture with comprehensive security controls.
+
+**VPC Configuration** (Multi-AZ deployment):
+
+```yaml
+VPC:
+  Name: blacktrigram-vpc-production
+  CIDR: 10.1.0.0/16
+  EnableDnsSupport: true
+  EnableDnsHostnames: true
+  
+  Subnets:
+    # Private subnets for Lambda functions (3 AZs for high availability)
+    - Name: blacktrigram-private-subnet-1a
+      CIDR: 10.1.1.0/24
+      AvailabilityZone: us-east-1a
+      Type: Private
+      
+    - Name: blacktrigram-private-subnet-1b
+      CIDR: 10.1.2.0/24
+      AvailabilityZone: us-east-1b
+      Type: Private
+      
+    - Name: blacktrigram-private-subnet-1c
+      CIDR: 10.1.3.0/24
+      AvailabilityZone: us-east-1c
+      Type: Private
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+    ManagedBy: terraform
+```
+
+**VPC Endpoints** (PrivateLink for AWS services - no internet gateway required):
+
+| Service | Endpoint Type | Purpose | Security Benefit |
+|---------|---------------|---------|------------------|
+| **DynamoDB** | Gateway | Database access from Lambda | Traffic stays within AWS network |
+| **S3** | Gateway | Save game storage access | No internet exposure, free data transfer |
+| **API Gateway (execute-api)** | Interface | Private API invocation | Enforce VPC-only access |
+| **Lambda** | Interface | Cross-account Lambda invocation | Private invocation without internet |
+| **CloudWatch Logs** | Interface | Logging from Lambda | Logs never traverse public internet |
+| **Secrets Manager** | Interface | Secure credential retrieval | Stripe keys, API tokens stay private |
+| **KMS** | Interface | Encryption key operations | Key material never leaves AWS network |
+| **STS** | Interface | IAM role assumption | Secure token exchange |
+| **ECR** | Interface | Container image pulls | Private Docker registry access |
+
+**Route 53 DNS Firewall** (Domain filtering and threat protection):
+
+```yaml
+Route53ResolverFirewallRuleGroup:
+  Name: blacktrigram-dns-firewall-production
+  
+  Rules:
+    # Block known malware/phishing domains
+    - Name: BlockMaliciousDomains
+      Priority: 100
+      Action: BLOCK
+      BlockResponse: NODATA
+      FirewallDomainList: 
+        - arn:aws:route53resolver:us-east-1:ACCOUNT_ID:firewall-domain-list/rslvr-fdl-malware
+    
+    # Block cryptocurrency mining domains
+    - Name: BlockCryptoMiners
+      Priority: 200
+      Action: BLOCK
+      BlockResponse: NXDOMAIN
+      FirewallDomainList:
+        - arn:aws:route53resolver:us-east-1:ACCOUNT_ID:firewall-domain-list/rslvr-fdl-cryptomining
+    
+    # Allow trusted AWS service domains
+    - Name: AllowAWSServices
+      Priority: 300
+      Action: ALLOW
+      FirewallDomainList:
+        - cognito-idp.*.amazonaws.com
+        - dynamodb.*.amazonaws.com
+        - s3.*.amazonaws.com
+        - lambda.*.amazonaws.com
+    
+    # Allow social login providers
+    - Name: AllowSocialProviders
+      Priority: 400
+      Action: ALLOW
+      FirewallDomainList:
+        - accounts.google.com
+        - www.facebook.com
+        - discord.com
+        - github.com
+        - twitter.com
+        - appleid.apple.com
+    
+    # Allow Stripe payment services
+    - Name: AllowStripe
+      Priority: 500
+      Action: ALLOW
+      FirewallDomainList:
+        - api.stripe.com
+        - js.stripe.com
+    
+    # Log all other queries for analysis
+    - Name: LogAllOther
+      Priority: 9999
+      Action: ALLOW  # Allow but log for monitoring
+      FirewallDomainList: []
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+```
+
+**VPC Flow Logs** (Network traffic monitoring):
+
+```yaml
+VPCFlowLog:
+  Name: blacktrigram-vpc-flow-logs
+  ResourceType: VPC
+  ResourceId: vpc-xxx
+  TrafficType: ALL  # Capture accepted, rejected, and all traffic
+  LogDestinationType: cloud-watch-logs
+  LogGroupName: /aws/vpc/blacktrigram-production
+  DeliverLogsPermissionArn: arn:aws:iam::ACCOUNT_ID:role/vpc-flow-logs-role
+  
+  LogFormat: |
+    ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} 
+    ${packets} ${bytes} ${start} ${end} ${action} ${log-status}
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+    Purpose: security-monitoring
+```
+
+**Security Group Configuration** (Least privilege network access):
+
+```yaml
+SecurityGroups:
+  # Lambda function security group
+  - Name: blacktrigram-lambda-sg
+    Description: Security group for Lambda functions in private VPC
+    VpcId: vpc-xxx
+    
+    Egress:
+      # Allow HTTPS to VPC endpoints (DynamoDB, S3, Secrets Manager, etc.)
+      - Description: HTTPS to VPC endpoints
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        DestinationSecurityGroupId: sg-vpc-endpoints
+      
+      # Allow HTTPS to internet (for Stripe webhooks, social login validation)
+      - Description: HTTPS to internet via NAT Gateway
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+    
+    Tags:
+      Environment: production
+      Project: blacktrigram
+  
+  # VPC endpoints security group
+  - Name: blacktrigram-vpc-endpoints-sg
+    Description: Security group for VPC endpoints
+    VpcId: vpc-xxx
+    
+    Ingress:
+      # Allow inbound HTTPS from Lambda security group
+      - Description: HTTPS from Lambda functions
+        IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        SourceSecurityGroupId: sg-lambda
+    
+    Tags:
+      Environment: production
+      Project: blacktrigram
+```
+
+**Network ACLs** (Subnet-level firewall rules):
+
+```yaml
+NetworkAcl:
+  Name: blacktrigram-private-subnet-nacl
+  VpcId: vpc-xxx
+  
+  InboundRules:
+    # Allow HTTPS from within VPC
+    - RuleNumber: 100
+      Protocol: 6  # TCP
+      RuleAction: allow
+      CidrBlock: 10.1.0.0/16
+      PortRange:
+        From: 443
+        To: 443
+    
+    # Allow return traffic (ephemeral ports)
+    - RuleNumber: 200
+      Protocol: 6  # TCP
+      RuleAction: allow
+      CidrBlock: 0.0.0.0/0
+      PortRange:
+        From: 1024
+        To: 65535
+  
+  OutboundRules:
+    # Allow HTTPS to anywhere
+    - RuleNumber: 100
+      Protocol: 6  # TCP
+      RuleAction: allow
+      CidrBlock: 0.0.0.0/0
+      PortRange:
+        From: 443
+        To: 443
+    
+    # Allow return traffic (ephemeral ports)
+    - RuleNumber: 200
+      Protocol: 6  # TCP
+      RuleAction: allow
+      CidrBlock: 10.1.0.0/16
+      PortRange:
+        From: 1024
+        To: 65535
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+```
+
+**CloudFront Distribution** (Global CDN with WAF integration):
+
+```yaml
+CloudFrontDistribution:
+  Origins:
+    # S3 origin for React SPA (frontend static assets)
+    - Id: S3-blacktrigram-frontend
+      DomainName: blacktrigram-frontend.s3.us-east-1.amazonaws.com
+      S3OriginConfig:
+        OriginAccessIdentity: origin-access-identity/cloudfront/ABCDEF
+    
+    # API Gateway origin for backend API
+    - Id: APIGateway-blacktrigram-api
+      DomainName: api.blacktrigram.com
+      CustomOriginConfig:
+        HTTPSPort: 443
+        OriginProtocolPolicy: https-only
+        OriginSSLProtocols:
+          - TLSv1.2
+          - TLSv1.3
+  
+  DefaultCacheBehavior:
+    TargetOriginId: S3-blacktrigram-frontend
+    ViewerProtocolPolicy: redirect-to-https
+    AllowedMethods:
+      - GET
+      - HEAD
+      - OPTIONS
+    CachedMethods:
+      - GET
+      - HEAD
+    Compress: true
+    MinTTL: 0
+    DefaultTTL: 86400  # 1 day
+    MaxTTL: 31536000   # 1 year
+  
+  CacheBehaviors:
+    # API calls should not be cached
+    - PathPattern: /api/*
+      TargetOriginId: APIGateway-blacktrigram-api
+      ViewerProtocolPolicy: https-only
+      AllowedMethods:
+        - GET
+        - HEAD
+        - OPTIONS
+        - PUT
+        - POST
+        - PATCH
+        - DELETE
+      CachedMethods:
+        - GET
+        - HEAD
+      MinTTL: 0
+      DefaultTTL: 0
+      MaxTTL: 0
+  
+  WebACLId: arn:aws:wafv2:us-east-1:ACCOUNT_ID:global/webacl/blacktrigram-waf/xxx
+  
+  ViewerCertificate:
+    AcmCertificateArn: arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/xxx
+    SslSupportMethod: sni-only
+    MinimumProtocolVersion: TLSv1.2_2021
+  
+  Logging:
+    Enabled: true
+    Bucket: blacktrigram-cloudfront-logs.s3.amazonaws.com
+    Prefix: cloudfront/
+    IncludeCookies: false
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+```
+
+**AWS WAF Web ACL** (OWASP protection and rate limiting):
+
+```yaml
+WebACL:
+  Name: blacktrigram-waf-production
+  Scope: CLOUDFRONT  # CloudFront distributions (global)
+  
+  Rules:
+    # AWS Managed Rules - Core Rule Set (OWASP Top 10)
+    - Name: AWS-AWSManagedRulesCommonRuleSet
+      Priority: 1
+      OverrideAction: None
+      ManagedRuleGroupStatement:
+        VendorName: AWS
+        Name: AWSManagedRulesCommonRuleSet
+    
+    # AWS Managed Rules - Known Bad Inputs
+    - Name: AWS-AWSManagedRulesKnownBadInputsRuleSet
+      Priority: 2
+      OverrideAction: None
+      ManagedRuleGroupStatement:
+        VendorName: AWS
+        Name: AWSManagedRulesKnownBadInputsRuleSet
+    
+    # AWS Managed Rules - SQL Injection
+    - Name: AWS-AWSManagedRulesSQLiRuleSet
+      Priority: 3
+      OverrideAction: None
+      ManagedRuleGroupStatement:
+        VendorName: AWS
+        Name: AWSManagedRulesSQLiRuleSet
+    
+    # Rate limiting - Global (100 requests per 5 minutes per IP)
+    - Name: RateLimitGlobal
+      Priority: 10
+      Action:
+        Block:
+          CustomResponse:
+            ResponseCode: 429
+      RateBasedStatement:
+        Limit: 100
+        AggregateKeyType: IP
+    
+    # Rate limiting - Auth endpoints (stricter - 10 attempts per 5 minutes)
+    - Name: RateLimitAuth
+      Priority: 11
+      Action:
+        Block:
+          CustomResponse:
+            ResponseCode: 429
+      RateBasedStatement:
+        Limit: 10
+        AggregateKeyType: IP
+        ScopeDownStatement:
+          ByteMatchStatement:
+            SearchString: /auth/
+            FieldToMatch:
+              UriPath: {}
+            TextTransformations:
+              - Priority: 0
+                Type: LOWERCASE
+    
+    # Geo-blocking (block high-risk countries)
+    - Name: GeoBlock
+      Priority: 20
+      Action:
+        Block: {}
+      GeoMatchStatement:
+        CountryCodes:
+          - KP  # North Korea
+          - IR  # Iran
+          - CU  # Cuba
+          - SY  # Syria
+    
+    # IP reputation list (AWS threat intelligence)
+    - Name: IPReputationList
+      Priority: 30
+      OverrideAction: None
+      ManagedRuleGroupStatement:
+        VendorName: AWS
+        Name: AWSManagedRulesAmazonIpReputationList
+  
+  VisibilityConfig:
+    SampledRequestsEnabled: true
+    CloudWatchMetricsEnabled: true
+    MetricName: blacktrigram-waf-metrics
+  
+  Tags:
+    Environment: production
+    Project: blacktrigram
+```
+
+**Network Security Benefits**:
+- **Zero Trust Architecture**: Lambda functions in private subnets with no internet gateway
+- **VPC Endpoints**: All AWS service traffic stays within AWS backbone (no internet exposure)
+- **DNS Firewall**: Blocks malicious domains, cryptomining, and unauthorized outbound connections
+- **Multi-Layer Defense**: WAF → CloudFront → API Gateway → Lambda (VPC) → DynamoDB/S3 (VPC endpoints)
+- **Traffic Isolation**: Separate security groups for Lambda, VPC endpoints, and API Gateway
+- **Comprehensive Logging**: VPC Flow Logs, CloudFront access logs, WAF logs, CloudTrail
+- **Compliance Ready**: Meets NIST 800-53, ISO 27001, PCI DSS network security requirements
 
 ##### DynamoDB Table Schemas
 
@@ -413,10 +820,12 @@ C4Container
 
 **REST API Endpoints** (`https://api.blacktrigram.com`)
 
+> **Auth Pattern Clarification**: Black Trigram uses AWS Cognito Hosted UI (including social login) as the primary end-user authentication flow for browser-based clients, as shown in the sequence diagrams below. The `/auth/*` endpoints listed are an optional backend facade around Cognito for non-Hosted-UI clients (e.g., first-party native apps, server-to-server flows) and for consistency in internal APIs. Browser-based Hosted UI flows do not call `/auth/signup` or `/auth/login` directly—they redirect to Cognito's hosted pages.
+
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
-| `POST` | `/auth/signup` | Create new user account via Cognito | ❌ |
-| `POST` | `/auth/login` | User login (returns JWT tokens) | ❌ |
+| `POST` | `/auth/signup` | Create new user account via Cognito (custom API facade for non-Hosted-UI clients) | ❌ |
+| `POST` | `/auth/login` | Authenticate user or exchange Cognito auth code for JWT tokens (custom clients) | ❌ |
 | `POST` | `/auth/refresh` | Refresh access token | ✅ (Refresh token) |
 | `POST` | `/auth/logout` | User logout (invalidate tokens) | ✅ |
 | `POST` | `/auth/forgot-password` | Initiate password reset | ❌ |
@@ -442,7 +851,7 @@ C4Container
 
 | Event | Direction | Description | Payload |
 |-------|-----------|-------------|---------|
-| `$connect` | Client → Server | WebSocket connection established | JWT token in query params |
+| `$connect` | Client → Server | WebSocket connection established | JWT token in `Authorization` header or `Sec-WebSocket-Protocol` subprotocol |
 | `$disconnect` | Client → Server | WebSocket connection closed | - |
 | `matchmaking.join` | Client → Server | Join matchmaking queue | `{ archetype, region }` |
 | `matchmaking.leave` | Client → Server | Leave matchmaking queue | - |
@@ -492,7 +901,7 @@ UserPool:
       Required: true
       Mutable: false
     - Name: preferred_username
-      Required: true
+      Required: false  # Optional for social login compatibility
       Mutable: true
     - Name: archetype
       AttributeDataType: String
@@ -880,7 +1289,7 @@ ResiliencePolicy:
 - [ ] Combat replay viewer (playback saved combat sessions)
 
 **Technical Implementation**:
-- **Database**: DynamoDB on-demand pricing, single-table design with GSIs
+- **Database**: DynamoDB on-demand pricing, multi-table design (5 tables: Players, GameStates, Achievements, Purchases, Leaderboards) with GSIs for secondary access patterns
 - **API**: API Gateway with Cognito authorizer, request/response validation
 - **Functions**: Node.js Lambda with TypeScript, AWS SDK v3
 - **Storage**: S3 with versioning, lifecycle policies for cost optimization
@@ -1046,7 +1455,7 @@ ResiliencePolicy:
 |-----------------|----------------|----------------------|
 | **Authentication** | AWS Cognito User Pools, MFA, social login federation | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
 | **Authorization** | Cognito Identity Pools, IAM policies, least privilege | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
-| **Encryption (Transit)** | TLS 1.3 only, CloudFront HTTPS, API Gateway HTTPS | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
+| **Encryption (Transit)** | TLS 1.2+ (TLS 1.3 preferred), CloudFront HTTPS, API Gateway HTTPS | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
 | **Encryption (Rest)** | DynamoDB encryption, S3 SSE-S3, KMS for sensitive data | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
 | **Network Security** | VPC for Lambda, security groups, AWS WAF, Shield Standard | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) |
 | **Threat Detection** | GuardDuty, Security Hub, CloudTrail logging | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
