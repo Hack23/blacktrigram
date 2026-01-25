@@ -328,6 +328,333 @@ function updatePlayerHealth(
 
 ---
 
+## 🦴 Skeletal Animation Data Model
+
+### **28-Bone Skeletal Hierarchy**
+
+Black Trigram implements a performance-optimized skeletal animation system with 28 core bones, expandable to 66 bones with full hand detail for close-up views.
+
+#### **Core Bone Structure (28 bones)**
+
+```mermaid
+graph TD
+    PELVIS[PELVIS - Root]
+    
+    PELVIS --> SPINE_LOWER[SPINE_LOWER]
+    SPINE_LOWER --> SPINE_MIDDLE[SPINE_MIDDLE]
+    SPINE_MIDDLE --> SPINE_UPPER[SPINE_UPPER]
+    
+    SPINE_UPPER --> NECK[NECK]
+    NECK --> HEAD[HEAD]
+    
+    SPINE_UPPER --> SHOULDER_L[SHOULDER_L]
+    SHOULDER_L --> UPPER_ARM_L[UPPER_ARM_L]
+    UPPER_ARM_L --> ELBOW_L[ELBOW_L]
+    ELBOW_L --> FOREARM_L[FOREARM_L]
+    FOREARM_L --> WRIST_L[WRIST_L]
+    WRIST_L --> HAND_L[HAND_L]
+    
+    SPINE_UPPER --> SHOULDER_R[SHOULDER_R]
+    SHOULDER_R --> UPPER_ARM_R[UPPER_ARM_R]
+    UPPER_ARM_R --> ELBOW_R[ELBOW_R]
+    ELBOW_R --> FOREARM_R[FOREARM_R]
+    FOREARM_R --> WRIST_R[WRIST_R]
+    WRIST_R --> HAND_R[HAND_R]
+    
+    PELVIS --> HIP_L[HIP_L]
+    HIP_L --> THIGH_L[THIGH_L]
+    THIGH_L --> KNEE_L[KNEE_L]
+    KNEE_L --> SHIN_L[SHIN_L]
+    SHIN_L --> FOOT_L[FOOT_L]
+    
+    PELVIS --> HIP_R[HIP_R]
+    HIP_R --> THIGH_R[THIGH_R]
+    THIGH_R --> KNEE_R[KNEE_R]
+    KNEE_R --> SHIN_R[SHIN_R]
+    SHIN_R --> FOOT_R[FOOT_R]
+```
+
+#### **Skeletal Rig TypeScript Interface**
+
+```typescript
+// src/types/skeletal.ts
+export interface Bone {
+  readonly name: string;
+  parent: Bone | null;
+  position: THREE.Vector3;
+  rotation: THREE.Euler;
+  scale: THREE.Vector3;
+  children: Bone[];
+  readonly length: number;
+  readonly restPosition: THREE.Vector3;
+  readonly restRotation: THREE.Euler;
+}
+
+export interface SkeletalRig {
+  readonly root: Bone;
+  readonly bones: Map<string, Bone>;
+  readonly boneCount: number;
+}
+
+export enum BoneName {
+  // Core (1)
+  PELVIS = "pelvis",
+  
+  // Spine (3)
+  SPINE_LOWER = "spine_lower",
+  SPINE_MIDDLE = "spine_middle",
+  SPINE_UPPER = "spine_upper",
+  
+  // Head (2)
+  NECK = "neck",
+  HEAD = "head",
+  
+  // Left Arm (6)
+  SHOULDER_L = "shoulder_L",
+  UPPER_ARM_L = "upper_arm_L",
+  ELBOW_L = "elbow_L",
+  FOREARM_L = "forearm_L",
+  WRIST_L = "wrist_L",
+  HAND_L = "hand_L",
+  
+  // Right Arm (6)
+  SHOULDER_R = "shoulder_R",
+  UPPER_ARM_R = "upper_arm_R",
+  ELBOW_R = "elbow_R",
+  FOREARM_R = "forearm_R",
+  WRIST_R = "wrist_R",
+  HAND_R = "hand_R",
+  
+  // Left Leg (5)
+  HIP_L = "hip_L",
+  THIGH_L = "thigh_L",
+  KNEE_L = "knee_L",
+  SHIN_L = "shin_L",
+  FOOT_L = "foot_L",
+  
+  // Right Leg (5)
+  HIP_R = "hip_R",
+  THIGH_R = "thigh_R",
+  KNEE_R = "knee_R",
+  SHIN_R = "shin_R",
+  FOOT_R = "foot_R",
+}
+```
+
+---
+
+## 👋 Hand Animation System (7 Hand Poses)
+
+### **Korean Martial Arts Hand Poses**
+
+```typescript
+// src/types/hand-animation.ts
+export enum HandPoseType {
+  FIST = "fist",           // 주먹 - Closed fist for punching
+  KNIFE_HAND = "knife_hand", // 수도 - Knife-hand strike
+  SPEAR_HAND = "spear_hand", // 관수 - Spear-hand thrust
+  PALM_HEEL = "palm_heel",   // 장력 - Palm-heel strike
+  GRAPPLING = "grappling",   // 잡기 - Grappling hand
+  OPEN = "open",            // 펴기 - Open hand neutral
+  RELAXED = "relaxed",      // 휴식 - Relaxed natural
+}
+
+export interface HandPose {
+  readonly type: HandPoseType;
+  readonly nameKorean: string;
+  readonly nameEnglish: string;
+  readonly romanized: string;
+  readonly fingerCurl: FingerCurl;
+  readonly fingerSpread: FingerSpread;
+  readonly wristRotation: THREE.Euler;
+  readonly description: {
+    readonly korean: string;
+    readonly english: string;
+  };
+  readonly martialArtOrigin: "taekwondo" | "hapkido" | "taekyon" | "traditional";
+  readonly strikingSurface: "knuckles" | "palm_heel" | "knife_edge" | "fingertips" | "whole_hand";
+}
+
+export interface FingerCurl {
+  readonly thumb: number;   // 0 = extended, 1 = curled
+  readonly index: number;
+  readonly middle: number;
+  readonly ring: number;
+  readonly pinky: number;
+}
+
+export interface FingerSpread {
+  readonly thumbIndex: number;    // 0 = together, 1 = spread
+  readonly indexMiddle: number;
+  readonly middleRing: number;
+  readonly ringPinky: number;
+}
+```
+
+---
+
+## 🎯 Vital Point System (70 Points)
+
+### **Complete Vital Points Database**
+
+Black Trigram implements 70 authentic Korean martial arts vital points (급소) based on traditional anatomical targeting knowledge.
+
+#### **Vital Point Distribution**
+
+- **Head**: 12 points (temple, jaw, nose, eye, ear, throat, back of head)
+- **Torso**: 24 points (heart, solar plexus, liver, spleen, kidneys, floating ribs)
+- **Arms**: 17 points (shoulders, elbows, wrists, nerve clusters)
+- **Legs**: 17 points (hips, knees, shins, ankles, pressure points)
+
+#### **Vital Point TypeScript Interface**
+
+```typescript
+// src/systems/vitalpoint/types.ts
+export interface VitalPoint {
+  readonly id: string;
+  readonly names: {
+    readonly korean: string;
+    readonly english: string;
+    readonly romanized: string;
+  };
+  readonly position: Position;
+  readonly category: VitalPointCategory;
+  readonly severity: VitalPointSeverity;
+  readonly baseDamage?: number;
+  readonly effects: readonly VitalPointEffect[];
+  readonly description: KoreanText;
+  readonly targetingDifficulty: number;  // 0.0-1.0
+  readonly effectiveStances: readonly TrigramStance[];
+}
+
+export enum VitalPointCategory {
+  NEUROLOGICAL = "neurological",  // 신경계 - Nerve strikes
+  SKELETAL = "skeletal",          // 골격계 - Bone targets
+  VASCULAR = "vascular",          // 혈관계 - Blood vessels
+  MUSCULAR = "muscular",          // 근육계 - Muscle groups
+  RESPIRATORY = "respiratory",    // 호흡계 - Breathing targets
+  INTERNAL = "internal",          // 내부 - Internal organs
+}
+
+export enum VitalPointSeverity {
+  CRITICAL = "critical",  // 치명적 - Lethal potential
+  MAJOR = "major",        // 중대 - Severe injury
+  MODERATE = "moderate",  // 보통 - Significant pain
+  MINOR = "minor",        // 경미 - Minor disruption
+}
+```
+
+---
+
+## ⚔️ Combat State Machine
+
+### **Combat State Transitions**
+
+```mermaid
+stateDiagram-v2
+    [*] --> IDLE
+    
+    IDLE --> ATTACKING: Execute Technique
+    IDLE --> DEFENDING: Block/Evade Input
+    IDLE --> TRANSITIONING: Change Stance
+    
+    ATTACKING --> RECOVERING: Attack Completes
+    ATTACKING --> STUNNED: Hit During Attack
+    ATTACKING --> COUNTERING: Counter Window Hit
+    
+    DEFENDING --> IDLE: Defense Ends
+    DEFENDING --> STUNNED: Guard Break
+    DEFENDING --> COUNTERING: Perfect Block
+    
+    RECOVERING --> IDLE: Recovery Complete
+    RECOVERING --> STUNNED: Hit During Recovery
+    
+    STUNNED --> RECOVERING: Stun Duration Ends
+    STUNNED --> [*]: Health Depleted
+    
+    COUNTERING --> ATTACKING: Counter Attack
+    COUNTERING --> IDLE: Counter Window Expires
+    
+    TRANSITIONING --> IDLE: Stance Change Complete
+    TRANSITIONING --> STUNNED: Hit During Transition
+```
+
+### **Combat State TypeScript Definitions**
+
+```typescript
+// src/types/common.ts
+export enum CombatState {
+  IDLE = "idle",                    // 대기 - Ready stance
+  ATTACKING = "attacking",           // 공격 - Executing technique
+  DEFENDING = "defending",           // 방어 - Blocking/evading
+  STUNNED = "stunned",              // 기절 - Unable to act
+  RECOVERING = "recovering",         // 회복 - Post-attack recovery
+  COUNTERING = "countering",         // 반격 - Counter window active
+  TRANSITIONING = "transitioning",   // 전환 - Changing stance
+}
+```
+
+---
+
+## 🌐 Korean Text and Localization
+
+### **Bilingual Text System**
+
+```typescript
+// src/types/common.ts
+export interface KoreanText {
+  readonly korean: string;      // 한글 텍스트
+  readonly english: string;      // English translation
+  readonly romanized?: string;   // Optional romanization (e.g., "geup-so-gyeok")
+}
+
+// Usage example
+const vitalPointName: KoreanText = {
+  korean: "태양혈",
+  english: "Temple",
+  romanized: "taeyang-hyeol",
+};
+```
+
+### **Text Encoding Standards**
+
+- **Korean Text**: UTF-8 encoding (한글)
+- **Romanization**: Revised Romanization of Korean (RR)
+- **Font Support**: Noto Sans CJK for Korean characters
+- **Accessibility**: Korean screen reader support with proper ARIA labels
+
+---
+
+## 🔒 Data Security Considerations
+
+### **Session-Only Storage Security**
+
+- **No Backend Persistence**: All game state stored in browser session (sessionStorage/memory)
+- **No PII Collection**: No personally identifiable information collected or stored
+- **Client-Side Only**: No data transmitted to external servers
+- **Memory Clearing**: Game state cleared on browser close
+- **No Cookies**: Authentication not required for core gameplay
+
+### **Future Cloud Persistence Security**
+
+When backend persistence is implemented (see [FUTURE_DATA_MODEL.md](FUTURE_DATA_MODEL.md)), security controls will include:
+
+- **Encryption at Rest**: DynamoDB encryption with AWS KMS
+- **Encryption in Transit**: TLS 1.3 for all API communications
+- **Access Control**: AWS IAM policies with least privilege
+- **Audit Logging**: CloudTrail logging of all data access
+- **Data Classification**: Per Hack23 ISMS Classification Framework
+- **GDPR Compliance**: Right to erasure, data portability, consent management
+
+### **ISMS Framework Alignment**
+
+This data model aligns with:
+- **[Secure Development Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)**: Immutable data structures, type safety
+- **[Data Classification](https://github.com/Hack23/ISMS-PUBLIC/blob/main/CLASSIFICATION.md)**: Player data classified as "Internal Use"
+- **[Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md)**: AES-256 encryption standards
+
+---
+
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram with Data Precision_
 
 This data model documentation ensures type-safe, performant, and culturally authentic representation of Korean martial arts combat mechanics through comprehensive TypeScript interfaces and immutable state management.
