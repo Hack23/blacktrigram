@@ -1,8 +1,0 @@
-Component               Particles  Before (per effect)  After (per effect)  Reduction  At 60 FPS (per sec)  Status
-ArterialSpray3D         120-250    480-1000 allocs      4 allocs            99%        15,000 → 240         ✅ Optimized
-NerveStrikeParticles3D  40-80      120-240 allocs       4 allocs            95%        4,800 → 240          ✅ Optimized
-BoneCrackParticles3D    15-60      0 allocs             0 allocs            N/A        0 → 0                ⚪ Already optimal
-HitFeedbackEffect3D     25-80      25-80 allocs         1 alloc             97%        3,000 → 60           ✅ Optimized
-TrainingHitEffects3D    10-30      20-60 allocs         1 alloc             95%        1,200 → 60           ✅ Optimized
-HitEffects3D            Various    0 allocs             0 allocs            N/A        0 → 0                ⚪ Already optimal
-TOTAL                   -          645-1380 allocs      10 allocs           ~98.5%     24,000 → 600         ✅ Success
