@@ -350,9 +350,9 @@ C4Container
 | **Secrets Manager** | Interface | Secure credential retrieval | Stripe keys, API tokens stay private |
 | **KMS** | Interface | Encryption key operations | Key material never leaves AWS network |
 | **STS** | Interface | IAM role assumption | Secure token exchange |
-| **ECR** | Interface | Container image pulls | Private Docker registry access |
 
-**Route 53 DNS Firewall** (Domain filtering and threat protection):
+
+**Route 53 Resolver DNS Firewall** (Domain filtering and threat protection):
 
 **Filtering Strategy**:
 - **Block Known Threats**: AWS-managed lists for malware, phishing, and botnet C2 domains
@@ -384,15 +384,15 @@ C4Container
 
 **Design Principles**: Default deny-all, explicit allow rules only, principle of least privilege
 
-**Network ACLs** (Subnet-level firewall rules):
+**Network ACLs** (Subnet-level firewall rules for **private subnets** hosting Lambda and VPC endpoints):
 
 **Inbound Rules**:
 - Allow HTTPS (443) from within VPC CIDR (10.1.0.0/16)
-- Allow ephemeral ports (1024-65535) for return traffic from internet
+- Allow ephemeral ports (1024-65535) from within VPC CIDR (e.g., NAT Gateway subnets 10.1.11.0/24, 10.1.12.0/24) for return traffic of internet-bound connections initiated by Lambda
 - Default deny all other inbound traffic
 
 **Outbound Rules**:
-- Allow HTTPS (443) to anywhere (for AWS services and external APIs)
+- Allow HTTPS (443) to anywhere via NAT Gateway (for AWS services and external APIs like Stripe)
 - Allow ephemeral ports (1024-65535) for return traffic to VPC
 - Default deny all other outbound traffic
 
@@ -426,8 +426,13 @@ C4Container
 - **IP Reputation**: AWS-managed threat intelligence blocking known bad actors
 
 **Custom Rate Limiting Rules**:
-- **Global Rate Limit**: 100 requests per 5 minutes per IP address (429 response on exceed)
+- **Global Rate Limit**: 100 requests per 5 minutes per IP address (~20 req/min, 429 response on exceed)
 - **Auth Endpoint Protection**: 10 requests per 5 minutes for /auth/* paths (brute force protection)
+
+**Note on Rate Limiting Interaction**:
+- **WAF Layer** (CloudFront): 100 req/5min per IP (~20 req/min) - first line of defense blocking malicious traffic
+- **API Gateway Layer**: 100 req/min per authenticated user (burst: 200) - protects backend from legitimate user abuse
+- **Interaction**: WAF rate limit applies to ALL requests from an IP (protecting infrastructure), while API Gateway limit applies per authenticated user (protecting application logic). Both limits work together - WAF blocks volumetric attacks, API Gateway prevents individual user abuse
 
 **Geo-Blocking**:
 - **Blocked Countries**: North Korea, Iran, Cuba, Syria (high-risk regions for regulatory compliance)
