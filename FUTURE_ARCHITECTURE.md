@@ -330,35 +330,11 @@ C4Container
 
 **VPC Configuration** (Multi-AZ deployment):
 
-```yaml
-VPC:
-  Name: blacktrigram-vpc-production
-  CIDR: 10.1.0.0/16
-  EnableDnsSupport: true
-  EnableDnsHostnames: true
-  
-  Subnets:
-    # Private subnets for Lambda functions (3 AZs for high availability)
-    - Name: blacktrigram-private-subnet-1a
-      CIDR: 10.1.1.0/24
-      AvailabilityZone: us-east-1a
-      Type: Private
-      
-    - Name: blacktrigram-private-subnet-1b
-      CIDR: 10.1.2.0/24
-      AvailabilityZone: us-east-1b
-      Type: Private
-      
-    - Name: blacktrigram-private-subnet-1c
-      CIDR: 10.1.3.0/24
-      AvailabilityZone: us-east-1c
-      Type: Private
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-    ManagedBy: terraform
-```
+- **VPC CIDR**: 10.1.0.0/16 with DNS support enabled
+- **Private Subnets**: 3 availability zones (us-east-1a/b/c) for high availability
+- **Subnet CIDRs**: 10.1.1.0/24, 10.1.2.0/24, 10.1.3.0/24
+- **No Internet Gateway**: Lambda functions access AWS services via VPC endpoints only
+- **NAT Gateways**: 2 NAT Gateways (one per AZ) for outbound Stripe API calls
 
 **VPC Endpoints** (PrivateLink for AWS services - no internet gateway required):
 
@@ -376,351 +352,85 @@ VPC:
 
 **Route 53 DNS Firewall** (Domain filtering and threat protection):
 
-```yaml
-Route53ResolverFirewallRuleGroup:
-  Name: blacktrigram-dns-firewall-production
-  
-  Rules:
-    # Block known malware/phishing domains
-    - Name: BlockMaliciousDomains
-      Priority: 100
-      Action: BLOCK
-      BlockResponse: NODATA
-      FirewallDomainList: 
-        - arn:aws:route53resolver:us-east-1:ACCOUNT_ID:firewall-domain-list/rslvr-fdl-malware
-    
-    # Block cryptocurrency mining domains
-    - Name: BlockCryptoMiners
-      Priority: 200
-      Action: BLOCK
-      BlockResponse: NXDOMAIN
-      FirewallDomainList:
-        - arn:aws:route53resolver:us-east-1:ACCOUNT_ID:firewall-domain-list/rslvr-fdl-cryptomining
-    
-    # Allow trusted AWS service domains
-    - Name: AllowAWSServices
-      Priority: 300
-      Action: ALLOW
-      FirewallDomainList:
-        - cognito-idp.*.amazonaws.com
-        - dynamodb.*.amazonaws.com
-        - s3.*.amazonaws.com
-        - lambda.*.amazonaws.com
-    
-    # Allow social login providers
-    - Name: AllowSocialProviders
-      Priority: 400
-      Action: ALLOW
-      FirewallDomainList:
-        - accounts.google.com
-        - www.facebook.com
-        - discord.com
-        - github.com
-        - twitter.com
-        - appleid.apple.com
-    
-    # Allow Stripe payment services
-    - Name: AllowStripe
-      Priority: 500
-      Action: ALLOW
-      FirewallDomainList:
-        - api.stripe.com
-        - js.stripe.com
-    
-    # Log all other queries for analysis
-    - Name: LogAllOther
-      Priority: 9999
-      Action: ALLOW  # Allow but log for monitoring
-      FirewallDomainList: []
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-```
+**Filtering Strategy**:
+- **Block Known Threats**: AWS-managed lists for malware, phishing, and botnet C2 domains
+- **Block Cryptomining**: Custom lists for cryptocurrency mining domains (alert mode to minimize false positives)
+- **Allow AWS Services**: Whitelist for cognito-idp, dynamodb, s3, lambda domains
+- **Allow Social Providers**: Google, Facebook, Discord, GitHub, Twitter/X, Apple authentication domains
+- **Allow Payment Services**: Stripe API and SDK domains (api.stripe.com, js.stripe.com)
+- **Log Everything**: All DNS queries logged for security analysis and threat intelligence
 
 **VPC Flow Logs** (Network traffic monitoring):
 
-```yaml
-VPCFlowLog:
-  Name: blacktrigram-vpc-flow-logs
-  ResourceType: VPC
-  ResourceId: vpc-xxx
-  TrafficType: ALL  # Capture accepted, rejected, and all traffic
-  LogDestinationType: cloud-watch-logs
-  LogGroupName: /aws/vpc/blacktrigram-production
-  DeliverLogsPermissionArn: arn:aws:iam::ACCOUNT_ID:role/vpc-flow-logs-role
-  
-  LogFormat: |
-    ${srcaddr} ${dstaddr} ${srcport} ${dstport} ${protocol} 
-    ${packets} ${bytes} ${start} ${end} ${action} ${log-status}
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-    Purpose: security-monitoring
-```
+- **Capture Scope**: All traffic (accepted, rejected, and all connections)
+- **Destination**: CloudWatch Logs for analysis and alerting
+- **Retention**: 90 days for security investigation and compliance
+- **Log Format**: Source/destination addresses, ports, protocols, packet counts, bytes transferred, connection status
+- **Use Cases**: Security forensics, anomaly detection, compliance auditing, traffic pattern analysis
 
 **Security Group Configuration** (Least privilege network access):
 
-```yaml
-SecurityGroups:
-  # Lambda function security group
-  - Name: blacktrigram-lambda-sg
-    Description: Security group for Lambda functions in private VPC
-    VpcId: vpc-xxx
-    
-    Egress:
-      # Allow HTTPS to VPC endpoints (DynamoDB, S3, Secrets Manager, etc.)
-      - Description: HTTPS to VPC endpoints
-        IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        DestinationSecurityGroupId: sg-vpc-endpoints
-      
-      # Allow HTTPS to internet (for Stripe webhooks, social login validation)
-      - Description: HTTPS to internet via NAT Gateway
-        IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        CidrIp: 0.0.0.0/0
-    
-    Tags:
-      Environment: production
-      Project: blacktrigram
-  
-  # VPC endpoints security group
-  - Name: blacktrigram-vpc-endpoints-sg
-    Description: Security group for VPC endpoints
-    VpcId: vpc-xxx
-    
-    Ingress:
-      # Allow inbound HTTPS from Lambda security group
-      - Description: HTTPS from Lambda functions
-        IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        SourceSecurityGroupId: sg-lambda
-    
-    Tags:
-      Environment: production
-      Project: blacktrigram
-```
+**Lambda Function Security Group**:
+- **Egress Rules**:
+  - HTTPS (443) to VPC endpoints for AWS service access (DynamoDB, S3, Secrets Manager, CloudWatch, X-Ray)
+  - HTTPS (443) to internet via NAT Gateway for Stripe API and social login validation
+- **Ingress Rules**: None (Lambda invoked by API Gateway, not directly accessible)
+
+**VPC Endpoints Security Group**:
+- **Ingress Rules**: HTTPS (443) from Lambda security group only
+- **Egress Rules**: None required (endpoints are AWS-managed)
+
+**Design Principles**: Default deny-all, explicit allow rules only, principle of least privilege
 
 **Network ACLs** (Subnet-level firewall rules):
 
-```yaml
-NetworkAcl:
-  Name: blacktrigram-private-subnet-nacl
-  VpcId: vpc-xxx
-  
-  InboundRules:
-    # Allow HTTPS from within VPC
-    - RuleNumber: 100
-      Protocol: 6  # TCP
-      RuleAction: allow
-      CidrBlock: 10.1.0.0/16
-      PortRange:
-        From: 443
-        To: 443
-    
-    # Allow return traffic (ephemeral ports)
-    - RuleNumber: 200
-      Protocol: 6  # TCP
-      RuleAction: allow
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: 1024
-        To: 65535
-  
-  OutboundRules:
-    # Allow HTTPS to anywhere
-    - RuleNumber: 100
-      Protocol: 6  # TCP
-      RuleAction: allow
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: 443
-        To: 443
-    
-    # Allow return traffic (ephemeral ports)
-    - RuleNumber: 200
-      Protocol: 6  # TCP
-      RuleAction: allow
-      CidrBlock: 10.1.0.0/16
-      PortRange:
-        From: 1024
-        To: 65535
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-```
+**Inbound Rules**:
+- Allow HTTPS (443) from within VPC CIDR (10.1.0.0/16)
+- Allow ephemeral ports (1024-65535) for return traffic from internet
+- Default deny all other inbound traffic
+
+**Outbound Rules**:
+- Allow HTTPS (443) to anywhere (for AWS services and external APIs)
+- Allow ephemeral ports (1024-65535) for return traffic to VPC
+- Default deny all other outbound traffic
+
+**Purpose**: Stateless subnet-level defense providing additional security layer beyond security groups
 
 **CloudFront Distribution** (Global CDN with WAF integration):
 
-```yaml
-CloudFrontDistribution:
-  Origins:
-    # S3 origin for React SPA (frontend static assets)
-    - Id: S3-blacktrigram-frontend
-      DomainName: blacktrigram-frontend.s3.us-east-1.amazonaws.com
-      S3OriginConfig:
-        OriginAccessIdentity: origin-access-identity/cloudfront/ABCDEF
-    
-    # API Gateway origin for backend API
-    - Id: APIGateway-blacktrigram-api
-      DomainName: api.blacktrigram.com
-      CustomOriginConfig:
-        HTTPSPort: 443
-        OriginProtocolPolicy: https-only
-        OriginSSLProtocols:
-          - TLSv1.2
-          - TLSv1.3
-  
-  DefaultCacheBehavior:
-    TargetOriginId: S3-blacktrigram-frontend
-    ViewerProtocolPolicy: redirect-to-https
-    AllowedMethods:
-      - GET
-      - HEAD
-      - OPTIONS
-    CachedMethods:
-      - GET
-      - HEAD
-    Compress: true
-    MinTTL: 0
-    DefaultTTL: 86400  # 1 day
-    MaxTTL: 31536000   # 1 year
-  
-  CacheBehaviors:
-    # API calls should not be cached
-    - PathPattern: /api/*
-      TargetOriginId: APIGateway-blacktrigram-api
-      ViewerProtocolPolicy: https-only
-      AllowedMethods:
-        - GET
-        - HEAD
-        - OPTIONS
-        - PUT
-        - POST
-        - PATCH
-        - DELETE
-      CachedMethods:
-        - GET
-        - HEAD
-      MinTTL: 0
-      DefaultTTL: 0
-      MaxTTL: 0
-  
-  WebACLId: arn:aws:wafv2:us-east-1:ACCOUNT_ID:global/webacl/blacktrigram-waf/xxx
-  
-  ViewerCertificate:
-    AcmCertificateArn: arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/xxx
-    SslSupportMethod: sni-only
-    MinimumProtocolVersion: TLSv1.2_2021
-  
-  Logging:
-    Enabled: true
-    Bucket: blacktrigram-cloudfront-logs.s3.amazonaws.com
-    Prefix: cloudfront/
-    IncludeCookies: false
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-```
+**Origin Configuration**:
+- **S3 Origin**: Static SPA assets (frontend) with Origin Access Identity for private bucket access
+- **API Gateway Origin**: Backend API with custom domain and origin path mapping
+
+**Caching Strategy**:
+- **Static Assets**: Aggressive caching (1 day default, 1 year max) with compression enabled
+- **API Calls**: No caching (cache policy: CachingDisabled) for dynamic content
+- **Viewer Protocol**: Redirect HTTP to HTTPS (security requirement)
+
+**Security Configuration**:
+- **TLS Version**: Minimum TLSv1.2_2021 security policy (TLS 1.3 preferred when supported)
+- **WAF Integration**: AWS WAF Web ACL attached for OWASP protection
+- **DDoS Protection**: AWS Shield Standard (automatic, no cost)
+- **Custom Domain**: blacktrigram.com with ACM certificate
+
+**Logging**: Access logs to S3 bucket for security analysis and compliance
 
 **AWS WAF Web ACL** (OWASP protection and rate limiting):
 
-```yaml
-WebACL:
-  Name: blacktrigram-waf-production
-  Scope: CLOUDFRONT  # CloudFront distributions (global)
-  
-  Rules:
-    # AWS Managed Rules - Core Rule Set (OWASP Top 10)
-    - Name: AWS-AWSManagedRulesCommonRuleSet
-      Priority: 1
-      OverrideAction: None
-      ManagedRuleGroupStatement:
-        VendorName: AWS
-        Name: AWSManagedRulesCommonRuleSet
-    
-    # AWS Managed Rules - Known Bad Inputs
-    - Name: AWS-AWSManagedRulesKnownBadInputsRuleSet
-      Priority: 2
-      OverrideAction: None
-      ManagedRuleGroupStatement:
-        VendorName: AWS
-        Name: AWSManagedRulesKnownBadInputsRuleSet
-    
-    # AWS Managed Rules - SQL Injection
-    - Name: AWS-AWSManagedRulesSQLiRuleSet
-      Priority: 3
-      OverrideAction: None
-      ManagedRuleGroupStatement:
-        VendorName: AWS
-        Name: AWSManagedRulesSQLiRuleSet
-    
-    # Rate limiting - Global (100 requests per 5 minutes per IP)
-    - Name: RateLimitGlobal
-      Priority: 10
-      Action:
-        Block:
-          CustomResponse:
-            ResponseCode: 429
-      RateBasedStatement:
-        Limit: 100
-        AggregateKeyType: IP
-    
-    # Rate limiting - Auth endpoints (stricter - 10 attempts per 5 minutes)
-    - Name: RateLimitAuth
-      Priority: 11
-      Action:
-        Block:
-          CustomResponse:
-            ResponseCode: 429
-      RateBasedStatement:
-        Limit: 10
-        AggregateKeyType: IP
-        ScopeDownStatement:
-          ByteMatchStatement:
-            SearchString: /auth/
-            FieldToMatch:
-              UriPath: {}
-            TextTransformations:
-              - Priority: 0
-                Type: LOWERCASE
-    
-    # Geo-blocking (block high-risk countries)
-    - Name: GeoBlock
-      Priority: 20
-      Action:
-        Block: {}
-      GeoMatchStatement:
-        CountryCodes:
-          - KP  # North Korea
-          - IR  # Iran
-          - CU  # Cuba
-          - SY  # Syria
-    
-    # IP reputation list (AWS threat intelligence)
-    - Name: IPReputationList
-      Priority: 30
-      OverrideAction: None
-      ManagedRuleGroupStatement:
-        VendorName: AWS
-        Name: AWSManagedRulesAmazonIpReputationList
-  
-  VisibilityConfig:
-    SampledRequestsEnabled: true
-    CloudWatchMetricsEnabled: true
-    MetricName: blacktrigram-waf-metrics
-  
-  Tags:
-    Environment: production
-    Project: blacktrigram
-```
+**Managed Rule Groups**:
+- **Core Rule Set**: OWASP Top 10 protection (XSS, SQL injection, LFI, RFI)
+- **Known Bad Inputs**: Protection against known malicious payloads
+- **SQL Injection**: Enhanced SQL injection attack protection
+- **IP Reputation**: AWS-managed threat intelligence blocking known bad actors
+
+**Custom Rate Limiting Rules**:
+- **Global Rate Limit**: 100 requests per 5 minutes per IP address (429 response on exceed)
+- **Auth Endpoint Protection**: 10 requests per 5 minutes for /auth/* paths (brute force protection)
+
+**Geo-Blocking**:
+- **Blocked Countries**: North Korea, Iran, Cuba, Syria (high-risk regions for regulatory compliance)
+
+**Monitoring**: CloudWatch metrics and sampled requests for security analysis
 
 **Network Security Benefits**:
 - **Zero Trust Architecture**: Lambda functions in private subnets with no internet gateway
@@ -873,45 +583,22 @@ WebACL:
 
 **User Pool Configuration**:
 
-```yaml
-UserPool:
-  Name: blacktrigram-users-production
-  Policies:
-    PasswordPolicy:
-      MinimumLength: 12
-      RequireUppercase: true
-      RequireLowercase: true
-      RequireNumbers: true
-      RequireSymbols: true
-      TemporaryPasswordValidityDays: 1
-  
-  MfaConfiguration: OPTIONAL
-  EnabledMfas:
-    - SOFTWARE_TOKEN_MFA
-    - SMS_MFA
-  
-  AutoVerifiedAttributes:
-    - email
-  
-  UsernameAttributes:
-    - email
-  
-  Schema:
-    - Name: email
-      Required: true
-      Mutable: false
-    - Name: preferred_username
-      Required: false  # Optional for social login compatibility
-      Mutable: true
-    - Name: archetype
-      AttributeDataType: String
-      Mutable: true
-  
-  UserPoolTags:
-    Environment: production
-    Project: blacktrigram
-    ManagedBy: terraform
-```
+**Password Policy**:
+- Minimum 12 characters with uppercase, lowercase, numbers, and symbols required
+- Temporary passwords valid for 1 day only
+- Password history enforcement (prevent reuse of last 5 passwords)
+
+**Multi-Factor Authentication (MFA)**:
+- Configuration: Optional (user choice)
+- Supported Methods: Software TOTP (authenticator apps), SMS MFA
+- Recommended for all users, enforced for admin accounts
+
+**User Attributes**:
+- **Email**: Required, used as username, auto-verified via confirmation email
+- **preferred_username**: Optional (supports social login providers without stable usernames)
+- **archetype**: Custom attribute for player archetype (무사, 암살자, 해커, 정보요원, 조직폭력배)
+
+**Account Recovery**: Email-based password reset with verification code
 
 **Social Login Providers Supported**:
 
@@ -962,51 +649,30 @@ sequenceDiagram
 
 **Identity Pool Configuration** (for AWS resource access):
 
-```yaml
-IdentityPool:
-  Name: blacktrigram-identity-pool-production
-  AllowUnauthenticatedIdentities: false
-  
-  CognitoIdentityProviders:
-    - ClientId: ${CognitoUserPoolClientId}
-      ProviderName: ${CognitoUserPoolProviderName}
-      ServerSideTokenCheck: true
-  
-  Roles:
-    authenticated: arn:aws:iam::ACCOUNT_ID:role/blacktrigram-authenticated-users
-    unauthenticated: null
-```
+**Configuration**:
+- Unauthenticated access: Disabled (no guest/anonymous access)
+- Authentication Provider: AWS Cognito User Pool
+- Token Validation: Server-side token verification enabled
+
+**IAM Role Assignment**:
+- **Authenticated Users**: Assumed role with least-privilege access to user-specific resources
+- **Unauthenticated Users**: No role (disabled)
 
 **Authenticated User IAM Policy** (least privilege):
 
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Resource": "arn:aws:s3:::blacktrigram-user-content/${cognito-identity.amazonaws.com:sub}/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:Query"
-      ],
-      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/blacktrigram-players",
-      "Condition": {
-        "ForAllValues:StringEquals": {
-          "dynamodb:LeadingKeys": ["PLAYER#${cognito-identity.amazonaws.com:sub}"]
-        }
-      }
-    }
-  ]
-}
+Users can only access their own resources through condition-based policies:
+
+**S3 Access**:
+- **Allowed Actions**: GetObject, PutObject, DeleteObject
+- **Resource Scope**: User-specific prefix only (`blacktrigram-user-content/${cognito-identity-id}/*`)
+- **Use Case**: Save games, replays, user-generated content
+
+**DynamoDB Access**:
+- **Allowed Actions**: GetItem, Query (read-only)
+- **Resource Scope**: User's own player data only (partition key filtering by user ID)
+- **Security**: Condition enforces users can only query their own records
+
+**Design Principles**: Zero-trust model, identity-based access control, no shared resource access
 ```
 
 ##### Stripe Payment Integration Architecture
@@ -1072,53 +738,23 @@ sequenceDiagram
 
 **Stripe Products** (configured in Stripe Dashboard):
 
-```typescript
-interface StripeProduct {
-  id: string;
-  name: string;
-  description: string;
-  price: number; // in cents
-  metadata: {
-    category: 'cosmetic' | 'battle-pass' | 'dlc' | 'technique';
-    itemId: string;
-    rarity?: 'common' | 'rare' | 'epic' | 'legendary';
-  };
-}
+**Product Structure**:
+- **Product ID**: Unique Stripe product identifier
+- **Name**: Bilingual (Korean + English) product name
+- **Description**: Clear description of what customer receives
+- **Price**: Amount in cents (USD)
+- **Metadata**: Custom fields for category, item ID, rarity (if applicable)
 
-const exampleProducts: StripeProduct[] = [
-  {
-    id: 'prod_BattlePassSpring2026',
-    name: 'Battle Pass - Spring 2026 (봄 2026 전투 패스)',
-    description: 'Exclusive seasonal content with 50 tiers of rewards',
-    price: 999, // $9.99
-    metadata: {
-      category: 'battle-pass',
-      itemId: 'battle-pass-spring-2026',
-    },
-  },
-  {
-    id: 'prod_SkinDarkPhoenix',
-    name: 'Dark Phoenix Skin (흑봉황 스킨)',
-    description: 'Legendary character skin with unique visual effects',
-    price: 1499, // $14.99
-    metadata: {
-      category: 'cosmetic',
-      itemId: 'skin-dark-phoenix',
-      rarity: 'legendary',
-    },
-  },
-  {
-    id: 'prod_DLCMartialArtsAcademy',
-    name: 'DLC: Martial Arts Academy (무도원 DLC)',
-    description: 'Story expansion with new training scenarios',
-    price: 1999, // $19.99
-    metadata: {
-      category: 'dlc',
-      itemId: 'dlc-martial-arts-academy',
-    },
-  },
-];
-```
+**Product Categories**:
+1. **Cosmetics** ($0.99 - $14.99): Character skins, visual effects, emotes
+2. **Battle Passes** ($9.99/season): Seasonal content with 50 tiers of rewards
+3. **DLC Expansions** ($19.99 - $29.99): Story expansions, new training scenarios, additional content
+4. **Techniques** ($4.99 - $14.99): Premium martial arts techniques and special moves
+
+**Example Products**:
+- **Battle Pass - Spring 2026** ($9.99): Exclusive seasonal content with 50 reward tiers
+- **Dark Phoenix Skin** ($14.99): Legendary character skin with unique visual effects
+- **DLC: Martial Arts Academy** ($19.99): Story expansion with new training scenarios and challenges
 
 **Revenue Projections** (based on industry benchmarks):
 
@@ -1133,34 +769,17 @@ const exampleProducts: StripeProduct[] = [
 
 **Backup Strategy**:
 
-```yaml
-BackupPlan:
-  Name: blacktrigram-daily-backup
-  Rules:
-    - RuleName: DailyBackup
-      TargetBackupVault: blacktrigram-backup-vault
-      ScheduleExpression: cron(0 5 * * ? *)  # Daily at 5 AM UTC
-      StartWindowMinutes: 60
-      CompletionWindowMinutes: 120
-      Lifecycle:
-        DeleteAfterDays: 35  # 35-day retention
-        MoveToColdStorageAfterDays: 7  # Move to cold storage after 7 days
-      
-      RecoveryPointTags:
-        Environment: production
-        Project: blacktrigram
-        BackupType: automated
+**Automated Daily Backups**:
+- **Schedule**: Daily at 5 AM UTC
+- **Backup Window**: 60-minute start window, 120-minute completion window
+- **Retention**: 35 days with lifecycle management
+- **Cold Storage Transition**: Move to cold storage after 7 days for cost optimization
 
-BackupSelection:
-  Name: blacktrigram-resources
-  IamRoleArn: arn:aws:iam::ACCOUNT_ID:role/blacktrigram-backup-role
-  Resources:
-    - arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/blacktrigram-players
-    - arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/blacktrigram-gamestates
-    - arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/blacktrigram-achievements
-    - arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/blacktrigram-purchases
-    - arn:aws:s3:::blacktrigram-user-content
-```
+**Backup Scope**:
+- All DynamoDB tables (Players, GameStates, Achievements, Purchases, Leaderboards)
+- S3 bucket (blacktrigram-user-content) with user-generated content
+
+**Backup Vault**: Dedicated backup vault with encryption at rest (AWS KMS)
 
 **DynamoDB Point-in-Time Recovery (PITR)**:
 - **Enabled**: Yes (all tables)
@@ -1170,58 +789,33 @@ BackupSelection:
 
 **S3 Versioning & Lifecycle**:
 
-```yaml
-S3Bucket:
-  Name: blacktrigram-user-content
-  Versioning:
-    Status: Enabled
-  
-  LifecycleConfiguration:
-    Rules:
-      - Id: ArchiveOldVersions
-        Status: Enabled
-        NoncurrentVersionTransitions:
-          - StorageClass: STANDARD_IA
-            TransitionInDays: 30
-          - StorageClass: GLACIER
-            TransitionInDays: 90
-          - StorageClass: DEEP_ARCHIVE
-            TransitionInDays: 365
-        NoncurrentVersionExpiration:
-          NoncurrentDays: 2555  # ~7 years retention
-      
-      - Id: DeleteIncompleteMultipartUploads
-        Status: Enabled
-        AbortIncompleteMultipartUpload:
-          DaysAfterInitiation: 7
-```
+**Versioning**: Enabled on all buckets for data protection and recovery
+
+**Lifecycle Policy**:
+- **30 days**: Transition non-current versions to Standard-IA (Infrequent Access)
+- **90 days**: Transition to Glacier for long-term archival
+- **365 days**: Transition to Glacier Deep Archive (lowest cost storage)
+- **7 years (2555 days)**: Expire non-current versions (regulatory retention met)
+
+**Multipart Upload Cleanup**: Abort incomplete multipart uploads after 7 days to reduce storage costs
+
+**Cost Optimization**: Automatic tiering based on access patterns reduces storage costs by 60-70%
 
 **AWS Resilience Hub Assessment**:
 
-```yaml
-ResiliencePolicy:
-  PolicyName: blacktrigram-gaming-standard
-  Tier: Standard
-  
-  ObjectiveMetrics:
-    RTO:
-      Value: 1
-      Unit: Hours
-      Description: "Maximum acceptable downtime for game services"
-    
-    RPO:
-      Value: 1
-      Unit: Minutes
-      Description: "Maximum acceptable data loss (via DynamoDB PITR)"
-  
-  AssessmentSchedule: Quarterly  # Every 3 months
-  
-  RecommendedArchitecture:
-    MultiAZ: true
-    MultiRegion: false  # Phase 2 (future)
-    BackupStrategy: Automated daily with PITR
-    DisasterRecovery: Hot standby in same region
-```
+**Resilience Policy**: Gaming Standard Tier
+
+**Objective Metrics**:
+- **RTO (Recovery Time Objective)**: 1 hour - Maximum acceptable downtime for game services
+- **RPO (Recovery Point Objective)**: 1 minute - Maximum acceptable data loss via DynamoDB PITR
+
+**Assessment Schedule**: Quarterly (every 3 months) for continuous compliance validation
+
+**Recommended Architecture**:
+- **Multi-AZ**: Yes (primary deployment strategy for high availability)
+- **Multi-Region**: No (planned for Phase 2 future expansion)
+- **Backup Strategy**: Automated daily backups with DynamoDB PITR
+- **Disaster Recovery**: Hot standby in same region with automatic failover
 
 **Resilience Hub Metrics & Monitoring**:
 
@@ -2644,43 +2238,21 @@ C4Component
 
 ### Implementation Architecture
 
-```typescript
-// Phase 1 - Core vital point system
-interface VitalPoint {
-  readonly id: string;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-    readonly romanization: string;
-  };
-  readonly location: {
-    readonly x: number;
-    readonly y: number;
-    readonly bodyRegion: BodyRegion;
-  };
-  readonly effectiveness: {
-    readonly difficulty: 1 | 2 | 3 | 4 | 5; // Precision required
-    readonly damage: number; // Base damage potential
-    readonly stunning: number; // Disorientation effect
-    readonly incapacitation: number; // Knockout potential
-  };
-  readonly techniques: readonly TrigramTechnique[];
-  readonly anatomicalInfo: {
-    readonly type: "nerve" | "vessel" | "joint" | "pressure";
-    readonly description: string;
-    readonly medicalWarning: string;
-  };
-}
+**Phase 1 - Core Vital Point System**:
 
-interface CombatCalculation {
-  readonly strikeAccuracy: number; // 0-1 based on targeting precision
-  readonly techniqueEffectiveness: number; // Trigram technique modifier
-  readonly vitalPointMultiplier: number; // Target-specific effectiveness
-  readonly finalDamage: number; // Calculated combat result
-  readonly audioIntensity: number; // Sound effect scaling
-  readonly visualEffect: CombatEffect; // Impact visualization
-}
-```
+**Vital Point Data Structure**:
+- **Identification**: Unique ID with Korean, English, and romanized names
+- **Location**: X/Y coordinates and body region classification
+- **Effectiveness Metrics**: Difficulty rating (1-5), damage potential, stunning effect, incapacitation chance
+- **Associated Techniques**: List of trigram techniques effective against this point
+- **Anatomical Information**: Type (nerve/vessel/joint/pressure), medical description, safety warnings
+
+**Combat Calculation System**:
+- **Strike Accuracy**: Precision-based modifier (0-1 scale)
+- **Technique Effectiveness**: Trigram stance modifier
+- **Vital Point Multiplier**: Target-specific damage amplification
+- **Final Damage**: Calculated combat result with all modifiers applied
+- **Audio/Visual Effects**: Dynamic feedback based on strike effectiveness
 
 ---
 
@@ -2734,36 +2306,21 @@ C4Component
 
 ### Traditional Korean Elements
 
-```typescript
-// Phase 2 - Korean cultural integration
-interface KoreanMartialArt {
-  readonly name: {
-    readonly korean: string;
-    readonly english: string;
-    readonly hanja?: string; // Chinese characters if applicable
-  };
-  readonly origin: {
-    readonly period: string;
-    readonly region: string;
-    readonly founder?: string;
-  };
-  readonly principles: readonly string[];
-  readonly techniques: readonly TraditionalTechnique[];
-  readonly philosophy: {
-    readonly trigramAlignment: TrigramType;
-    readonly mentalAspects: readonly string[];
-    readonly spiritualElements: readonly string[];
-  };
-}
+**Phase 2 - Korean Cultural Integration**:
 
-interface DojanEnvironment {
-  readonly layout: DojanLayout;
-  readonly decorations: readonly CulturalElement[];
-  readonly lighting: TraditionalLighting;
-  readonly sounds: readonly AmbientSound[];
-  readonly seasonalTheme: SeasonType;
-}
-```
+**Korean Martial Art Data Model**:
+- **Names**: Korean, English, and Hanja (Chinese characters) when applicable
+- **Historical Context**: Time period, geographical region, founder (if known)
+- **Core Principles**: Traditional martial arts philosophy and tenets
+- **Traditional Techniques**: Authentic historical techniques and forms
+- **Philosophy Integration**: Trigram alignment, mental aspects, spiritual elements
+
+**Dojang Environment System**:
+- **Layout**: Traditional Korean training hall design with proper spatial organization
+- **Cultural Decorations**: Authentic Korean symbols, scrolls, and traditional elements
+- **Lighting**: Traditional lighting styles with ambient occlusion for authenticity
+- **Ambient Sounds**: Traditional Korean music, nature sounds, ceremonial audio
+- **Seasonal Themes**: Korean seasonal aesthetics (Spring/Summer/Fall/Winter variations)
 
 ---
 
@@ -2820,38 +2377,25 @@ C4Component
 
 ### Archetype Specializations
 
-```typescript
-// Phase 3 - Player archetype system
-interface PlayerArchetype {
-  readonly id: ArchetypeId;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-    readonly description: string;
-  };
-  readonly combatPhilosophy: CombatPhilosophy;
-  readonly preferredTrigrams: readonly TrigramType[];
-  readonly specializations: {
-    readonly techniques: readonly SpecialTechnique[];
-    readonly bonuses: readonly CombatBonus[];
-    readonly abilities: readonly UniqueAbility[];
-  };
-  readonly progression: SkillTree;
-  readonly background: ArchetypeBackground;
-}
+**Phase 3 - Player Archetype System**:
 
-type ArchetypeId = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
+**Player Archetype Definition**:
+- **Archetype ID**: One of five martial philosophies (musa, amsalja, hacker, jeongbo, jojik)
+- **Names & Description**: Korean and English names with philosophical background
+- **Combat Philosophy**: Unique approach to combat based on archetype's values
+- **Preferred Trigrams**: Optimal stance alignments for each archetype
+- **Specializations**: Unique techniques, combat bonuses, and special abilities
+- **Progression System**: Skill tree with archetype-specific advancement paths
+- **Background Story**: Historical and philosophical context for each archetype
 
-interface RealisticInjury {
-  readonly location: BodyPart;
-  readonly severity: InjurySeverity;
-  readonly type: InjuryType;
-  readonly healingTime: number;
-  readonly functionalImpact: readonly FunctionalLimitation[];
-  readonly visualEffects: readonly VisualEffect[];
-  readonly audioFeedback: readonly AudioEffect[];
-}
-```
+**Realistic Injury System**:
+- **Location**: Specific body part affected
+- **Severity**: Graduated injury levels from minor to critical
+- **Injury Type**: Classification (blunt trauma, joint damage, nerve strike, etc.)
+- **Healing Time**: Recovery duration with progressive improvement
+- **Functional Impact**: Movement and ability limitations during recovery
+- **Visual Effects**: Bruising, swelling, and injury-appropriate visual feedback
+- **Audio Feedback**: Pain responses and movement restriction sounds
 
 ---
 
@@ -2908,36 +2452,28 @@ C4Component
 
 ### Educational Progression System
 
-```typescript
-// Phase 4 - Training and mastery system
-interface TrainingCurriculum {
-  readonly modules: readonly LearningModule[];
-  readonly prerequisites: readonly Prerequisite[];
-  readonly assessments: readonly SkillAssessment[];
-  readonly culturalComponents: readonly CulturalLesson[];
-}
+**Phase 4 - Training and Mastery System**:
 
-interface LearningModule {
-  readonly id: string;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-  };
-  readonly objectives: readonly LearningObjective[];
-  readonly content: readonly LessonContent[];
-  readonly practiceExercises: readonly TrainingExercise[];
-  readonly culturalContext: CulturalContext;
-  readonly masteryCriteria: MasteryCriteria;
-}
+**Training Curriculum Structure**:
+- **Learning Modules**: Structured lessons with progressive difficulty
+- **Prerequisites**: Required knowledge before advancing to next module
+- **Skill Assessments**: Competency tests validating mastery
+- **Cultural Components**: Historical and philosophical lessons
 
-interface AIInstructor {
-  readonly personality: InstructorPersonality;
-  readonly expertise: readonly ExpertiseArea[];
-  readonly teachingStyle: TeachingApproach;
-  readonly culturalAuthenticity: AuthenticityLevel;
-  readonly adaptiveCapabilities: readonly AdaptiveFeature[];
-}
-```
+**Learning Module Design**:
+- **Identification**: Unique module ID with Korean and English names
+- **Learning Objectives**: Clear goals for each training module
+- **Lesson Content**: Instructional material with demonstrations
+- **Practice Exercises**: Hands-on training scenarios and drills
+- **Cultural Context**: Historical and philosophical background
+- **Mastery Criteria**: Assessment standards for module completion
+
+**AI Instructor System**:
+- **Personality**: Distinct teaching persona with cultural authenticity
+- **Expertise Areas**: Specialized knowledge in specific martial arts domains
+- **Teaching Style**: Adaptive approach based on student learning patterns
+- **Cultural Authenticity**: Ensures traditional knowledge is properly conveyed
+- **Adaptive Capabilities**: Adjusts difficulty and pacing to student performance
 
 ---
 
@@ -2995,28 +2531,23 @@ gantt
 
 ### Technical Migration Strategy
 
-```typescript
-// Migration from current to future architecture
-interface ArchitectureMigration {
-  readonly currentState: {
-    readonly react: "19.x";
-    readonly threejs: "@react-three/fiber + @react-three/drei";
-    readonly typescript: "strict";
-    readonly audio: "howler.js";
-    readonly testing: "vitest + cypress";
-  };
+**Migration from Current to Future Architecture**:
 
-  readonly futureAdditions: {
-    readonly vitalPointEngine: "custom TypeScript";
-    readonly combatPhysics: "matter.js + custom";
-    readonly aiSystem: "tensorflow.js";
-    readonly culturalData: "JSON + i18n";
-    readonly communityBackend: "express + mongodb";
-  };
+**Current Technology Stack**:
+- React 19.x with modern hooks and concurrent features
+- Three.js via @react-three/fiber + @react-three/drei for 3D rendering
+- TypeScript with strict mode for type safety
+- Howler.js for audio management
+- Vitest + Cypress for comprehensive testing
 
-  readonly migrationSteps: readonly MigrationStep[];
-}
-```
+**Future Technology Additions**:
+- **Vital Point Engine**: Custom TypeScript engine for anatomical targeting
+- **Combat Physics**: Matter.js integration with custom physics calculations
+- **AI System**: TensorFlow.js for intelligent opponent behavior and training
+- **Cultural Data**: JSON-based i18n system for bilingual content management
+- **Community Backend**: Express + MongoDB for social features and leaderboards
+
+**Migration Approach**: Progressive enhancement with backward compatibility at each phase
 
 ---
 
