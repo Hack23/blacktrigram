@@ -331,9 +331,10 @@ C4Container
 **VPC Configuration** (Multi-AZ deployment):
 
 - **VPC CIDR**: 10.1.0.0/16 with DNS support enabled
-- **Private Subnets**: 3 availability zones (us-east-1a/b/c) for Lambda functions
-- **Public Subnets**: 2 availability zones for NAT Gateways only
-- **Subnet CIDRs**: Private (10.1.1.0/24, 10.1.2.0/24, 10.1.3.0/24), Public (10.1.11.0/24, 10.1.12.0/24)
+- **Private Subnets**: 2 availability zones (us-east-1a/b) for Lambda functions
+- **Public Subnets**: 2 availability zones for NAT Gateways (one per AZ for high availability)
+- **Subnet CIDRs**: Private (10.1.1.0/24, 10.1.2.0/24), Public (10.1.11.0/24, 10.1.12.0/24)
+- **AZ Alignment**: Each private subnet has dedicated NAT Gateway in same AZ (avoids cross-AZ data transfer charges)
 - **Internet Gateway**: Required for NAT Gateway operation in public subnets
 - **No Direct Internet Access from Lambda**: Lambda in private subnets with no IGW route, uses VPC endpoints for AWS services
 - **NAT Gateways**: 2 NAT Gateways in public subnets (one per AZ) for outbound Stripe API calls from Lambda
@@ -344,7 +345,7 @@ C4Container
 |---------|---------------|---------|------------------|
 | **DynamoDB** | Gateway | Database access from Lambda | Traffic stays within AWS network |
 | **S3** | Gateway | Save game storage access | No internet exposure, free data transfer |
-| **API Gateway (execute-api)** | Interface | Private connectivity from VPC to API Gateway | VPC-based workloads can call API Gateway privately; public game APIs remain internet-accessible via CloudFront/WAF |
+| **API Gateway (execute-api)** | Interface | **Optional**: Private connectivity from VPC to internal/admin API Gateway routes | Allows VPC-based workloads (e.g., admin tools, batch jobs, monitoring) to call selected APIs privately; public game APIs remain internet-accessible via CloudFront/WAF only |
 | **Lambda** | Interface | Cross-account Lambda invocation | Private invocation without internet |
 | **CloudWatch Logs** | Interface | Logging from Lambda | Logs never traverse public internet |
 | **Secrets Manager** | Interface | Secure credential retrieval | Stripe keys, API tokens stay private |
@@ -659,7 +660,8 @@ sequenceDiagram
 **Configuration**:
 - Unauthenticated access: Disabled for **primary Identity Pool** (no guest/anonymous access to player data or write-capable resources)
 - Authentication Provider: AWS Cognito User Pool
-- Token Validation: Server-side token verification enabled
+- Token handling (Identity Pool): Exchanges valid Cognito User Pool / social IdP tokens for temporary AWS STS credentials and applies IAM role mapping; the Identity Pool itself does **not** perform JWT signature validation
+- JWT validation (API layer): Performed by API Gateway (Cognito/JWT authorizer using Cognito JWKS) and/or Lambda before granting access to protected APIs
 - Future demo mode: Any **"Anonymous Access: Limited demo mode"** described in `FUTURE_SECURITY_ARCHITECTURE.md` will use a separate, locked-down **Demo Identity Pool** with read-only access to non-personal demo assets only (no access to player profiles, saves, or PII)
 
 **IAM Role Assignment**:
