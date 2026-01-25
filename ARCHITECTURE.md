@@ -232,7 +232,7 @@ C4Component
   - ⚠️ **Balance/Vulnerability**: 70% (refinement needed)
   - ⚠️ **Combat Readiness HUD**: 60% (integration ongoing)
   - ⚠️ **Injury-Based Movement**: 10% (planned, basic framework)
-  - ❌ **Bone Impact Audio**: 0% (not started)
+  - ⚠️ **Bone Impact Audio**: 60% (BoneImpactAudioMap + useCombatAudio integration complete; asset coverage/final mix & tuning pending)
 
 #### Vital Point System (9.5/10 - Excellent)
 - 70/70 vital points with Korean names (100% complete)
@@ -904,7 +904,7 @@ PELVIS (root)
 |----------|-----------|------------|--------------|-----------|--------|--------|
 | **Desktop** | 1200x800 | 60fps | 60fps | 1000+ | 180MB | ✅ Met |
 | **Tablet** | 1024x768 | 60fps | 30-45fps | 750+ | 150MB | ⚠️ Optimization Ongoing |
-| **Mobile** | 720p | 30fps | 30-45fps | 500+ | 150MB | ⚠️ Optimization Ongoing |
+| **Mobile** | 720p | 60fps | 30-45fps | 500+ | 150MB | ⚠️ Optimization Ongoing |
 
 **Overall Performance Rating**: 8.0/10 (60fps desktop maintained, mobile optimization in progress)
 
@@ -943,7 +943,7 @@ Static environment objects merged into single mesh for reduced draw calls.
 
 ### 🔬 Performance Monitoring
 
-- **Stats.js integration** for real-time FPS monitoring
+- **Custom performance overlays** (e.g., `PerformanceOverlay3D`) for real-time FPS and frame timing monitoring
 - **Custom performance metrics** tracked in state
 - **Performance tests** in Vitest suite validating animation timing
 
@@ -1048,16 +1048,20 @@ src/
 │   ├── bodypart/            # Body part health tracking (8 parts)
 │   ├── physics/             # Physics simulation
 │   ├── breathing/           # Breathing disruption system (75% complete)
-│   ├── pain/                # Pain response system (90% complete, 37 tests)
-│   ├── consciousness/       # Consciousness system (90% complete, 36 tests)
+│   ├── combat/              # Combat subsystems (pain, consciousness, balance, etc.)
+│   │   ├── PainResponseSystem.ts     # Pain response (90% complete, 37 tests)
+│   │   ├── ConsciousnessSystem.ts    # Consciousness (90% complete, 36 tests)
+│   │   └── BalanceSystem.ts          # Balance and fall mechanics
 │   └── ai/                  # AI combat logic
 ├── data/                    # Game data and constants
 │   ├── techniques.ts        # 20 techniques (4 per archetype)
 │   ├── archetypePhysicalAttributes.ts  # 5 player archetypes
 │   └── archetypeClothing.ts # Clothing system per archetype
 ├── audio/                   # Audio system (84% test coverage)
-│   ├── AudioAssetRegistry.ts # Sound library (1,054 lines)
-│   └── AudioManager.ts      # Audio playback (586 lines)
+│   ├── AudioProvider.tsx    # React context provider and useAudio hook
+│   ├── AudioAssetRegistry.ts # Sound library and metadata
+│   ├── AudioManager.ts      # Audio playback and routing
+│   └── BoneImpactAudioMap.ts # Bone impact audio system (60% complete)
 ├── types/                   # TypeScript type definitions
 │   ├── constants/           # Korean colors, fonts, animations
 │   ├── skeletal.ts          # 28-bone skeletal system (Q1 2026)
@@ -1083,9 +1087,9 @@ src/
 - `src/systems/CombatSystem.ts` (36,888 bytes ~36KB) - Core combat logic with 8/12 realism systems
 - `src/systems/VitalPointSystem.ts` (19,583 bytes ~20KB) - 70-point vital targeting (100% complete)
 - `src/systems/TrigramSystem.ts` (12,843 bytes ~13KB) - 8-stance management with I Ching philosophy
-- `src/systems/pain/` - Pain response system (90% complete, production-ready with 37 tests)
-- `src/systems/consciousness/` - Consciousness levels (90% complete, 4-level gradation, 36 tests)
-- `src/systems/breathing/` - Breathing disruption (75% complete, 528 lines)
+- `src/systems/combat/PainResponseSystem.ts` - Pain response system (90% complete, production-ready with 37 tests)
+- `src/systems/combat/ConsciousnessSystem.ts` - Consciousness levels (90% complete, 4-level gradation, 36 tests)
+- `src/systems/breathing/BreathingDisruptionSystem.ts` - Breathing disruption (75% complete)
 
 **Skeletal Animation (Q1 2026):**
 - `src/types/skeletal.ts` (857 lines) - 28-bone hierarchy definitions, BoneName enum, SkeletalRig interface
@@ -1104,8 +1108,10 @@ src/
 - `src/utils/player3DHelpers.ts` - PlayerState to Three.js conversion utilities
 
 **Audio System (84% Test Coverage):**
-- `src/audio/AudioAssetRegistry.ts` (1,054 lines) - Sound library with damage-scaled audio
-- `src/audio/AudioManager.ts` (586 lines) - Audio playback with Web Audio API
+- `src/audio/AudioProvider.tsx` - React context provider and useAudio hook
+- `src/audio/AudioAssetRegistry.ts` - Sound library with damage-scaled audio
+- `src/audio/AudioManager.ts` - Audio playback with Web Audio API
+- `src/audio/BoneImpactAudioMap.ts` - Bone impact audio system (60% complete, 207 lines, 388 test lines)
 - 84.29% test coverage across audio systems
 
 **Test Coverage (Q1 2026):**
@@ -1579,7 +1585,7 @@ mindmap
     id6(⚙️ Combat Realism Systems)
       id6.1[8/12 systems complete or near-complete - 67%]
       id6.2[4 systems remaining: trauma visualization, balance, HUD, movement]
-      id6.3[1 system not started: bone impact audio]
+      id6.3[1 system partially implemented: bone impact audio (mapping + selection complete; asset coverage/final mix pending)]
     id7(❌ Incomplete Features)
       id7.1[Techniques not yet stance-specific - 4 per archetype vs 3-5 per stance]
       id7.2[EndScreen not implemented yet]
@@ -2326,7 +2332,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 
 ### Areas for Q2 2026 Enhancement:
 
-- **Combat Realism Completion**: Complete remaining 4/12 systems (trauma visualization, balance/vulnerability, combat readiness HUD, injury-based movement) + bone impact audio (not started)
+- **Combat Realism Completion**: Complete remaining 4/12 systems (trauma visualization, balance/vulnerability, combat readiness HUD, injury-based movement) + finalize bone impact audio pipeline (BoneImpactAudioMap + useCombatAudio integrated; remaining work: asset coverage expansion and final mix/tuning)
 - **Mobile Performance**: Optimize to achieve 60fps target on mobile devices (currently 30-45fps)
 - **Technique Expansion**: Expand from 4 techniques/archetype to 3-5 techniques/stance (24-40 total)
 - **EndScreen Implementation**: Complete game flow (Intro → Combat → End)
