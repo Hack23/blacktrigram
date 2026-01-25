@@ -331,18 +331,20 @@ C4Container
 **VPC Configuration** (Multi-AZ deployment):
 
 - **VPC CIDR**: 10.1.0.0/16 with DNS support enabled
-- **Private Subnets**: 3 availability zones (us-east-1a/b/c) for high availability
-- **Subnet CIDRs**: 10.1.1.0/24, 10.1.2.0/24, 10.1.3.0/24
-- **No Internet Gateway**: Lambda functions access AWS services via VPC endpoints only
-- **NAT Gateways**: 2 NAT Gateways (one per AZ) for outbound Stripe API calls
+- **Private Subnets**: 3 availability zones (us-east-1a/b/c) for Lambda functions
+- **Public Subnets**: 2 availability zones for NAT Gateways only
+- **Subnet CIDRs**: Private (10.1.1.0/24, 10.1.2.0/24, 10.1.3.0/24), Public (10.1.11.0/24, 10.1.12.0/24)
+- **Internet Gateway**: Required for NAT Gateway operation in public subnets
+- **No Direct Internet Access from Lambda**: Lambda in private subnets with no IGW route, uses VPC endpoints for AWS services
+- **NAT Gateways**: 2 NAT Gateways in public subnets (one per AZ) for outbound Stripe API calls from Lambda
 
-**VPC Endpoints** (PrivateLink for AWS services - no internet gateway required):
+**VPC Endpoints** (PrivateLink for AWS services - Lambda to AWS traffic stays on AWS network):
 
 | Service | Endpoint Type | Purpose | Security Benefit |
 |---------|---------------|---------|------------------|
 | **DynamoDB** | Gateway | Database access from Lambda | Traffic stays within AWS network |
 | **S3** | Gateway | Save game storage access | No internet exposure, free data transfer |
-| **API Gateway (execute-api)** | Interface | Private API invocation | Enforce VPC-only access |
+| **API Gateway (execute-api)** | Interface | Private connectivity from VPC to API Gateway | VPC-based workloads can call API Gateway privately; public game APIs remain internet-accessible via CloudFront/WAF |
 | **Lambda** | Interface | Cross-account Lambda invocation | Private invocation without internet |
 | **CloudWatch Logs** | Interface | Logging from Lambda | Logs never traverse public internet |
 | **Secrets Manager** | Interface | Secure credential retrieval | Stripe keys, API tokens stay private |
@@ -399,7 +401,7 @@ C4Container
 **CloudFront Distribution** (Global CDN with WAF integration):
 
 **Origin Configuration**:
-- **S3 Origin**: Static SPA assets (frontend) with Origin Access Identity for private bucket access
+- **S3 Origin**: Static SPA assets (frontend) with Origin Access Control (OAC) for private bucket access
 - **API Gateway Origin**: Backend API with custom domain and origin path mapping
 
 **Caching Strategy**:
@@ -561,7 +563,7 @@ C4Container
 
 | Event | Direction | Description | Payload |
 |-------|-----------|-------------|---------|
-| `$connect` | Client → Server | WebSocket connection established | JWT token in `Authorization` header or `Sec-WebSocket-Protocol` subprotocol |
+| `$connect` | Client → Server | WebSocket connection established | JWT token via `Sec-WebSocket-Protocol` subprotocol (browser-compatible; `Authorization` header not supported by browser WebSocket API) |
 | `$disconnect` | Client → Server | WebSocket connection closed | - |
 | `matchmaking.join` | Client → Server | Join matchmaking queue | `{ archetype, region }` |
 | `matchmaking.leave` | Client → Server | Leave matchmaking queue | - |
@@ -673,7 +675,6 @@ Users can only access their own resources through condition-based policies:
 - **Security**: Condition enforces users can only query their own records
 
 **Design Principles**: Zero-trust model, identity-based access control, no shared resource access
-```
 
 ##### Stripe Payment Integration Architecture
 
@@ -971,18 +972,19 @@ sequenceDiagram
 | **Security Hub** | 1 account | $0.0010/check | **$5.00** | 5,000 security checks/month estimated |
 | **X-Ray** | 100k traces<br/>100k retrieved | $5.00/million<br/>$0.50/million | **$0.55** | Distributed tracing |
 | **Route 53** | 1 hosted zone<br/>10M queries | $0.50/zone<br/>$0.40/million | **$4.50** | DNS management |
-| | | **Total** | **~$140/month** | 10k users baseline |
+| **VPC Infrastructure** | - | - | **$150** | NAT Gateways ($45/mo each x 2), VPC endpoints (~$14/mo), VPC Flow Logs (~$32/mo) |
+| | | **Total** | **~$290/month** | 10k users with VPC infrastructure |
 
 **Scaling Estimates**:
 
 | User Base | API Requests/Month | Lambda Invocations | DynamoDB R/W | S3 Storage | **Estimated Monthly Cost** |
 |-----------|--------------------|--------------------|--------------|-----------|-----------------------------|
-| **1,000** | 50,000 | 200,000 | 1M/200k | 10 GB | **$35** |
-| **10,000** | 500,000 | 2M | 10M/2M | 100 GB | **$140** |
-| **50,000** | 2.5M | 10M | 50M/10M | 500 GB | **$650** |
-| **100,000** | 5M | 20M | 100M/20M | 1 TB | **$1,300** |
-| **500,000** | 25M | 100M | 500M/100M | 5 TB | **$6,500** |
-| **1,000,000** | 50M | 200M | 1B/200M | 10 TB | **$13,000** |
+| **1,000** | 50,000 | 200,000 | 1M/200k | 10 GB | **$185** (includes $150 VPC baseline) |
+| **10,000** | 500,000 | 2M | 10M/2M | 100 GB | **$290** (with VPC infrastructure) |
+| **50,000** | 2.5M | 10M | 50M/10M | 500 GB | **$800** (VPC costs amortized) |
+| **100,000** | 5M | 20M | 100M/20M | 1 TB | **$1,450** (includes VPC infrastructure) |
+| **500,000** | 25M | 100M | 500M/100M | 5 TB | **$6,650** (VPC fixed costs negligible) |
+| **1,000,000** | 50M | 200M | 1B/200M | 10 TB | **$13,150** (VPC ~1% of total cost) |
 
 **Cost Optimization Strategies**:
 - **Reserved Capacity**: For predictable workloads, purchase DynamoDB reserved capacity (save 50%+)
