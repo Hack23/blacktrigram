@@ -588,7 +588,7 @@ C4Container
 **Password Policy**:
 - Minimum 12 characters with uppercase, lowercase, numbers, and symbols required
 - Temporary passwords valid for 1 day only
-- Password history enforcement (prevent reuse of last 5 passwords)
+- Password history enforcement (prevent reuse of last 5 passwords) - implemented via custom control using Cognito Lambda triggers (PreAuthentication/PostAuthentication), not a native User Pool policy
 
 **Multi-Factor Authentication (MFA)**:
 - Configuration: Optional (user choice)
@@ -608,7 +608,7 @@ C4Container
 |-------------|----------------------------|-----------------------------|-----------------------------|-------------------------------------|
 | **Google**  | Native social IdP          | Authorization Code          | `openid`, `profile`, `email` | `email`, `name`, `picture`         |
 | **Facebook**| Native social IdP          | Authorization Code          | `public_profile`, `email`   | `email`, `name`, `picture`         |
-| **Apple**   | Native social IdP          | Authorization Code          | `name`, `email`             | `email`, `name` (optional)         |
+| **Apple**   | Native social IdP          | Authorization Code          | `openid`, `name`, `email`   | `email`, `name` (optional)         |
 | **Discord** | OIDC IdP (custom)          | Authorization Code          | `openid`, `email`, `identify` | `email`, `username`, `avatar`      |
 | **GitHub**  | OAuth 2.0 IdP (custom)     | Authorization Code          | `read:user`, `user:email`   | `email`, `name`, `avatar_url`      |
 | **Twitter/X** | OIDC IdP (custom)        | Authorization Code with PKCE | `openid`, `tweet.read`, `users.read` | `username`, `name`, `profile_image_url` |
@@ -652,13 +652,15 @@ sequenceDiagram
 **Identity Pool Configuration** (for AWS resource access):
 
 **Configuration**:
-- Unauthenticated access: Disabled (no guest/anonymous access)
+- Unauthenticated access: Disabled for **primary Identity Pool** (no guest/anonymous access to player data or write-capable resources)
 - Authentication Provider: AWS Cognito User Pool
 - Token Validation: Server-side token verification enabled
+- Future demo mode: Any **"Anonymous Access: Limited demo mode"** described in `FUTURE_SECURITY_ARCHITECTURE.md` will use a separate, locked-down **Demo Identity Pool** with read-only access to non-personal demo assets only (no access to player profiles, saves, or PII)
 
 **IAM Role Assignment**:
-- **Authenticated Users**: Assumed role with least-privilege access to user-specific resources
-- **Unauthenticated Users**: No role (disabled)
+- **Authenticated Users (Primary Identity Pool)**: Assumed role with least-privilege access to user-specific resources
+- **Unauthenticated Users (Primary Identity Pool)**: No role (disabled)
+- **Unauthenticated Demo Users (Demo Identity Pool, future/optional)**: Assumed role with strictly limited, read-only access to non-personal demo data; no access to player profiles, saves, or any personally identifiable information (PII)
 
 **Authenticated User IAM Policy** (least privilege):
 
@@ -989,7 +991,7 @@ sequenceDiagram
 **Cost Optimization Strategies**:
 - **Reserved Capacity**: For predictable workloads, purchase DynamoDB reserved capacity (save 50%+)
 - **S3 Intelligent-Tiering**: Automatically move infrequently accessed data to lower-cost storage (save 30-40%)
-- **Lambda SnapStart**: Reduce cold start latency and improve efficiency (Java/Python functions)
+- **Lambda SnapStart**: Reduce cold start latency and improve efficiency (supported Java runtimes)
 - **CloudFront Caching**: Aggressive caching reduces origin requests (save on API Gateway costs)
 - **DynamoDB Caching (DAX)**: For read-heavy workloads, add DAX cache layer (optional)
 - **Spot Instances**: For batch processing (analytics, ML training), use Spot to save 70%+
