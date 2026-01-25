@@ -186,7 +186,7 @@ C4Component
     }
 
     Container_Boundary(rendering, "🎨 Rendering Layer") {
-        Component(threeScene, "⚔️ ThreeScene", "Three.js", "3D combat scene with WebGL 2.0 rendering")
+        Component(threeScene, "⚔️ ThreeScene", "Three.js", "3D combat scene with WebGL 2.0 where available (WebGL 1 fallback)")
         Component(particleSystem, "✨ ParticleSystem", "Three.js Instances", "Ki energy, hit effects, impact particles (1000+)")
         Component(hudOverlay, "📊 HUDOverlay", "Html (drei)", "Health bars, stance indicators, damage numbers, combo counter")
         Component(skeletalRenderer, "🎭 SkeletalRenderer", "Three.js Skeleton", "28-bone character animation @ 60fps")
