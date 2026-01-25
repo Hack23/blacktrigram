@@ -84,139 +84,324 @@ stateDiagram-v2
 
 ## ⚔️ Combat State Machine
 
-### **Combat Round States**
+### **Combat Round States (70 Vital Points + 28-Bone Animation)**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 stateDiagram-v2
     [*] --> RoundStart: Initialize Round
     
-    RoundStart --> Ready: Setup Complete
+    RoundStart --> LoadAssets: Load 3D Assets
+    LoadAssets --> InitSkeleton: Initialize 28-Bone Skeleton
+    InitSkeleton --> Ready: Setup Complete
     
     Ready --> Countdown: Start Timer
     
-    Countdown --> Fighting: Count == 0
+    Countdown --> Fighting: Count == 0<br/>Recommended starting stance: 건 (Geon, Heaven)
     
     Fighting --> Idle: No Input
-    Fighting --> Attacking: Attack Input
-    Fighting --> Defending: Block Input
-    Fighting --> Transitioning: Stance Change
+    Fighting --> Attacking: Attack Input (Space)
+    Fighting --> Defending: Block Input (Shift)
+    Fighting --> Transitioning: Stance Change (1-8)
+    Fighting --> Moving: Movement (WASD)
     
     Idle --> Attacking: Attack Input
     Idle --> Defending: Block Input
     Idle --> Transitioning: Stance Change
+    Idle --> Moving: Movement Input
     
-    Attacking --> Hit: Attack Connects
-    Attacking --> Miss: Attack Misses
-    Attacking --> Countered: Counter-Attack
+    Attacking --> ExecutingTechnique: Validate Stance + Ki
+    ExecutingTechnique --> SkeletalAnimation: Play Attack Animation<br/>Update 28 Bones<br/>Apply Hand Pose
+    SkeletalAnimation --> HitDetection: Polygon-based Detection
     
-    Hit --> Stunned: VP Hit (Defender)
-    Hit --> Recovering: Regular Hit
+    HitDetection --> VPCheck: Check 70 Vital Points
+    VPCheck --> Hit: VP Hit Detected
+    VPCheck --> Miss: No VP Hit
+    VPCheck --> Countered: Counter-Attack
     
-    Miss --> Recovering: Recovery Period
+    Hit --> ApplyVPDamage: Calculate VP Damage<br/>5 Severity Levels<br/>7 Anatomical Categories
+    ApplyVPDamage --> UpdateBodyParts: Update 8 Body Parts<br/>Pain Response<br/>Consciousness
+    UpdateBodyParts --> Stunned: VP Stun Effect
     
-    Countered --> Stunned: Counter Success
+    Miss --> Recovering: Recovery Period<br/>Return to Idle
     
-    Defending --> Idle: Block Window Ends
-    Defending --> Countering: Perfect Block
+    Countered --> Stunned: Counter Success<br/>Defender Counterattacks
     
-    Countering --> Attacking: Counter Window Active
+    Defending --> BlockActive: Block State Active<br/>Guard Animation<br/>Stance-Specific
+    BlockActive --> Idle: Block Window Ends
+    BlockActive --> Countering: Perfect Block Timing
+    
+    Countering --> CounterAttack: Counter Window Active<br/>Bonus Damage<br/>Fast Technique
+    CounterAttack --> Idle: Counter Complete
     Countering --> Idle: Window Expires
     
-    Transitioning --> Idle: Stance Changed
+    Transitioning --> ConsumeResources: Consume Ki/Stamina<br/>Transition Cost
+    ConsumeResources --> UpdateStance: Update Trigram Stance<br/>New Techniques Available
+    UpdateStance --> Idle: Stance Changed
     
-    Stunned --> Recovering: Stun Duration Ends
+    Moving --> CheckLegInjury: Check Leg Damage<br/>Movement Penalties
+    CheckLegInjury --> SlowMovement: Injured: Reduced Speed
+    CheckLegInjury --> NormalMovement: Healthy: Normal Speed
+    SlowMovement --> Idle: Movement Complete
+    NormalMovement --> Idle: Movement Complete
     
-    Recovering --> Idle: Recovery Complete
+    Stunned --> MuscleTension: Update Muscle Tension<br/>Visual Feedback<br/>Skeletal System
+    MuscleTension --> Recovering: Stun Duration Ends
     
-    Idle --> RoundEnd: Time Up
-    Idle --> RoundEnd: KO Achieved
-    Stunned --> RoundEnd: KO while Stunned
+    Recovering --> Idle: Recovery Complete<br/>Ready to Fight
     
-    RoundEnd --> [*]: Match Complete
-    RoundEnd --> RoundStart: Next Round
+    Idle --> CheckKO: Check KO Conditions
+    CheckKO --> RoundEnd: Health ≤ 0
+    CheckKO --> RoundEnd: Consciousness ≤ 0
+    CheckKO --> RoundEnd: Time Up
+    CheckKO --> Idle: Fight Continues
+    Stunned --> CheckKO: While Stunned
     
-    note right of Attacking
-        Execute technique
-        Check precision
-        Apply damage
-        Trigger effects
+    RoundEnd --> SaveStats: Save Combat Statistics
+    SaveStats --> [*]: Match Complete
+    SaveStats --> RoundStart: Next Round
+    
+    note right of ExecutingTechnique
+        Validate stance compatibility
+        Check Ki/Stamina resources
+        Select appropriate technique
+        8 trigram stances available
     end note
     
-    note right of Stunned
-        Temporary paralysis
-        Cannot act
-        Duration varies by
-        vital point severity
+    note right of VPCheck
+        70 vital point targets
+        5 severity levels:
+        Lethal, Critical, Major,
+        Moderate, Minor
+        7 anatomical categories
+    end note
+    
+    note right of UpdateBodyParts
+        8 body parts tracked:
+        Head, Torso, Arms (2),
+        Legs (2), Hands (2)
+        Pain response system
+        Consciousness levels
+        Breathing disruption
+    end note
+    
+    note right of SkeletalAnimation
+        28-bone hierarchy
+        7 hand poses (HandPoseType enum):
+        FIST, KNIFE_HAND, SPEAR_HAND,
+        PALM_HEEL, GRAPPLING, OPEN, RELAXED
+        Muscle tension visualization (0.0-1.0)
     end note
     
     note right of Countering
-        Brief counter window
-        Extra damage bonus
-        Requires timing
-        Advanced technique
+        Brief counter window (0.2-0.5s)
+        Extra damage bonus (1.5x)
+        Requires precise timing
+        Advanced technique mastery
+        Stance-dependent options
     end note
 ```
 
-### **Player Combat States**
+### **Player Combat States (5 Archetypes + Skeletal System)**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#FF3D00','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 stateDiagram-v2
-    [*] --> Idle: Spawn
+    [*] --> Spawn: Enter Combat Arena
+    Spawn --> InitializeArchetype: Load Archetype
     
-    Idle --> Attacking: Press Attack
-    Idle --> Blocking: Hold Block
-    Idle --> Moving: Movement Input
+    state InitializeArchetype {
+        [*] --> SelectArchetype
+        SelectArchetype --> Musa: 무사 Warrior
+        SelectArchetype --> Amsalja: 암살자 Assassin
+        SelectArchetype --> Hacker: 해커 Hacker
+        SelectArchetype --> Intelligence: 정보요원 Agent
+        SelectArchetype --> Crime: 조직폭력배 Criminal
+        
+        Musa --> LoadSkills: Load Archetype Skills
+        Amsalja --> LoadSkills
+        Hacker --> LoadSkills
+        Intelligence --> LoadSkills
+        Crime --> LoadSkills
+        
+        LoadSkills --> [*]
+    }
+    
+    InitializeArchetype --> Idle: Ready to Fight
+    
+    Idle --> Attacking: Press Attack (Space)
+    Idle --> Blocking: Hold Block (Shift)
+    Idle --> Moving: Movement Input (WASD)
     Idle --> StanceChange: Press Stance Key (1-8)
     
-    Attacking --> AttackExecution: Valid Input
-    AttackExecution --> AttackRecovery: Attack Complete
+    Attacking --> ValidateInput: Check Input Validity
+    ValidateInput --> AttackExecution: Valid Input<br/>Sufficient Resources
+    ValidateInput --> Idle: Invalid Input
+    
+    AttackExecution --> SkeletalAnimation: Execute 28-Bone Animation
+    
+    state SkeletalAnimation {
+        [*] --> UpdatePelvis: Root Bone
+        UpdatePelvis --> UpdateSpine: 3 Spine Bones
+        UpdateSpine --> UpdateNeck: Neck + Head
+        UpdateNeck --> UpdateArms: L/R Arms (6 bones each)
+        UpdateArms --> UpdateLegs: L/R Legs (5 bones each)
+        UpdateLegs --> ApplyHandPose: Select Hand Pose (7 types)
+        ApplyHandPose --> UpdateMuscles: Muscle Tension (0.0-1.0)
+        UpdateMuscles --> [*]
+    }
+    
+    SkeletalAnimation --> HitboxActive: Hitbox Active
+    HitboxActive --> AttackRecovery: Attack Complete
     AttackRecovery --> Idle: Recovery Done
     
-    Blocking --> BlockActive: Block Animation
+    Blocking --> BlockAnimation: Guard Pose<br/>Stance-Specific
+    BlockAnimation --> BlockActive: Block Window Open
     BlockActive --> Idle: Release Block
-    BlockActive --> Countering: Perfect Timing
+    BlockActive --> PerfectBlock: Perfect Timing (±0.1s)
     
-    Countering --> CounterAttack: Execute Counter
+    PerfectBlock --> Countering: Counter Window<br/>0.5s Duration
+    
+    Countering --> CounterAttack: Execute Counter<br/>1.5x Damage
     CounterAttack --> Idle: Counter Complete
+    Countering --> Idle: Window Expired
     
-    Moving --> Idle: Stop Movement
+    Moving --> UpdatePosition: Calculate New Position
+    UpdatePosition --> CheckInjuries: Check Leg Damage
     
-    StanceChange --> Transitioning: Start Transition
-    Transitioning --> Idle: Transition Complete
+    state CheckInjuries {
+        [*] --> EvaluateLegHealth
+        EvaluateLegHealth --> HealthyLegs: Both Legs > 70%
+        EvaluateLegHealth --> InjuredLeg: One Leg < 70%
+        EvaluateLegHealth --> BothInjured: Both Legs < 70%
+        
+        HealthyLegs --> NormalSpeed: 100% Speed
+        InjuredLeg --> ReducedSpeed: 70% Speed
+        BothInjured --> SeverelySlowed: 40% Speed
+        
+        NormalSpeed --> [*]
+        ReducedSpeed --> [*]
+        SeverelySlowed --> [*]
+    }
     
-    Idle --> Stunned: Hit by VP
-    Attacking --> Stunned: Interrupted by VP
-    Moving --> Stunned: Hit by VP
+    CheckInjuries --> Idle: Movement Complete
     
-    Stunned --> Recovering: Stun Duration Ends
-    Recovering --> Idle: Recovery Complete
+    StanceChange --> ValidateStance: Check Ki/Stamina
+    ValidateStance --> Transitioning: Sufficient Resources
+    ValidateStance --> Idle: Insufficient Resources
     
-    Idle --> Knocked: Health <= 0
-    Stunned --> Knocked: Consciousness <= 0
+    Transitioning --> TransitionAnimation: Play Transition<br/>Skeletal Animation
+    TransitionAnimation --> UpdateStanceBonus: Update Stance<br/>8 Trigram Effects
+    UpdateStanceBonus --> Idle: Transition Complete
     
-    Knocked --> [*]: Round End
+    Idle --> TakeHit: Hit by Opponent
+    Attacking --> TakeHit: Interrupted
+    Moving --> TakeHit: Hit During Movement
+    
+    TakeHit --> EvaluateHit: Calculate Damage
+    
+    state EvaluateHit {
+        [*] --> CheckVPHit
+        CheckVPHit --> VPHit: Vital Point Struck<br/>70 Targets
+        CheckVPHit --> NormalHit: Regular Hit
+        
+        VPHit --> DetermineSeverity
+        DetermineSeverity --> LethalHit: Lethal (80-100 dmg)
+        DetermineSeverity --> CriticalHit: Critical (60-80 dmg)
+        DetermineSeverity --> MajorHit: Major (40-60 dmg)
+        DetermineSeverity --> ModerateHit: Moderate (20-40 dmg)
+        DetermineSeverity --> MinorHit: Minor (10-20 dmg)
+        
+        NormalHit --> ApplyBaseDamage
+        LethalHit --> ApplyVPDamage
+        CriticalHit --> ApplyVPDamage
+        MajorHit --> ApplyVPDamage
+        ModerateHit --> ApplyVPDamage
+        MinorHit --> ApplyVPDamage
+        
+        ApplyBaseDamage --> [*]
+        ApplyVPDamage --> [*]
+    }
+    
+    EvaluateHit --> UpdateBodyParts: Update 8 Body Parts
+    
+    state UpdateBodyParts {
+        [*] --> UpdateHead
+        UpdateHead --> UpdateTorso
+        UpdateTorso --> UpdateLeftArm
+        UpdateLeftArm --> UpdateRightArm
+        UpdateRightArm --> UpdateLeftLeg
+        UpdateLeftLeg --> UpdateRightLeg
+        UpdateRightLeg --> UpdateLeftHand
+        UpdateLeftHand --> UpdateRightHand
+        UpdateRightHand --> [*]
+    }
+    
+    UpdateBodyParts --> ApplyCombatEffects: Apply Effects
+    
+    state ApplyCombatEffects {
+        [*] --> PainResponse: Calculate Pain Level
+        PainResponse --> ConsciousnessCheck: Update Consciousness
+        ConsciousnessCheck --> BreathingCheck: Check Breathing
+        BreathingCheck --> StatusEffects: Apply Status Effects
+        StatusEffects --> [*]
+    }
+    
+    ApplyCombatEffects --> CheckStunned: Check Stun
+    CheckStunned --> Stunned: Stun Applied
+    CheckStunned --> Recovering: No Stun
+    
+    Stunned --> StunAnimation: Cannot Move<br/>Cannot Attack<br/>Skeletal Tremor
+    StunAnimation --> StunTimer: Duration Timer
+    StunTimer --> Recovering: Stun Duration Ends
+    
+    Recovering --> RecoveryAnimation: Play Recovery<br/>Breathing Animation
+    RecoveryAnimation --> Idle: Recovery Complete
+    
+    Idle --> CheckKnockout: Health Check
+    Stunned --> CheckKnockout: Consciousness Check
+    
+    CheckKnockout --> Knocked: Health ≤ 0<br/>OR Consciousness ≤ 0
+    CheckKnockout --> Idle: Fight Continues
+    
+    Knocked --> KOAnimation: Knockout Animation<br/>Collapse Sequence
+    KOAnimation --> [*]: Round End
     
     note right of Attacking
         Ki cost applied
         Stamina consumed
-        Animation plays
+        28-bone animation plays
         Hit detection active
+        7 hand pose options
+        Muscle tension updates
     end note
     
     note right of Stunned
         Cannot move
         Cannot attack
         Cannot block
+        Cannot change stance
         Vulnerable state
+        Duration: 0.5s - 8s
+        Based on VP severity
     end note
     
     note right of StanceChange
         Consume Ki energy
-        Brief vulnerability
-        Update bonuses
-        Change techniques
+        Brief vulnerability window
+        Update stance bonuses
+        Change available techniques
+        8 trigram stances:
+        건 태 리 진 손 감 간 곤
+    end note
+    
+    note right of EvaluateHit
+        70 vital point targets
+        5 severity levels
+        7 anatomical categories
+        Polygon-based detection
+        Stance effectiveness check
+        Precision roll calculation
     end note
 ```
 
