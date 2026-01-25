@@ -11,7 +11,7 @@
 **Latest Update**: 
 - **December 2024**: Added Dark Ops unit combat techniques (암흑작전부대 기술) for tactical assassination and silent incapacitation methods used by Korean special operations forces.
 - **December 2024**: Implemented Injury-Based Movement Penalty System (이동 패널티 시스템) for realistic leg damage affecting mobility, stance changes, and balance.
-- **December 2024**: Completed comprehensive documentation of all 70 vital points across 4 anatomical systems with damage calculation examples.
+- **Q1 2026**: Completed comprehensive documentation of all 70 vital points across 4 anatomical systems with damage calculation examples.
 
 ## 📚 Quick Navigation
 
@@ -28,12 +28,12 @@
   - [🦴 Musculoskeletal System (20 points)](#-musculoskeletal-system-targets-근골격계-급소---20-points) - Joint locks, bone strikes, mobility loss
 
 ### Combat Mechanics
-- [⚙️ Damage Calculation System](#%EF%B8%8F-damage-calculation-system-데미지-계산-시스템) - **NEW**: Complete damage formulas with 3 worked examples
+- [⚙️ Damage Calculation System](#️-damage-calculation-system-데미지-계산-시스템) - **NEW**: Complete damage formulas with 3 worked examples
 - [🦴 28-Bone Skeletal Animation](#-28-bone-skeletal-animation-system-28개-뼈-골격-애니메이션) - **NEW**: Skeletal rig with 7 hand poses
 - [💊 Status Effect System](#-status-effect-system-상태-효과-시스템) - **NEW**: 5 status effects (Stun, Bleed, Fatigue, Paralysis, Disorientation)
 - [🤖 Combat AI Behavior](#-combat-ai-behavior-system-전투-ai-행동-시스템) - **NEW**: AI decision trees and vital point selection logic
-- [⚡ Performance Optimization](#%EF%B8%8F-performance-optimization-for-60fps-60fps-성능-최적화) - **NEW**: 60fps optimization techniques
-- [⚖️ Balance Considerations](#%EF%B8%8F-balance-considerations-밸런스-고려사항) - **NEW**: Game balance philosophy and tuning guidelines
+- [⚡ Performance Optimization](#️-performance-optimization-for-60fps-60fps-성능-최적화) - **NEW**: 60fps optimization techniques
+- [⚖️ Balance Considerations](#️-balance-considerations-밸런스-고려사항) - **NEW**: Game balance philosophy and tuning guidelines
 
 ### Player Systems
 - [👤 Player Archetype Combat Specializations](#-player-archetype-combat-specializations-무사-유형별-전투-특화) - 5 fighter archetypes
@@ -2435,7 +2435,7 @@ Critical points targeting the neurological system for instant incapacitation, pa
 | 13 | 승산 | Seungsan | Mountain Support | Calf, belly of gastrocnemius | BL57 | 30 | Instant | Leg cramp, mobility loss |
 | 14 | 곤륜 | Gonnryun | Kunlun Mountain | Ankle, lateral malleolus-Achilles | BL60 | 26 | 1-2s | Ankle dysfunction, severe pain |
 | 15 | 용천 | Yongcheon | Bubbling Spring | Sole, ball of foot depression | KI1 | 32 | Instant | Shock, balance loss, unconsciousness |
-| 16 | 영도 | Yeongdo | Spirit Path | Wrist, ulnar side | HT7 | 24 | Instant | Hand numbness, nerve pain |
+| 16 | 영도 | Yeongdo | Spirit Path | Wrist, ulnar side | HT4 | 24 | Instant | Hand numbness, nerve pain |
 | 17 | 신문 | Sinmun | Spirit Gate | Wrist crease, ulnar side | HT7 | 26 | 1-2s | Wrist paralysis, cardiac shock |
 | 18 | 내관 | Naegwan | Inner Gate | Forearm, 2 cun above wrist | PC6 | 24 | 1-2s | Nausea, cardiac rhythm disruption |
 | 19 | 양릉천 | Yangnyeongcheon | Yang Mound Spring | Knee, fibula head depression | GB34 | 30 | 1-2s | Knee dysfunction, leg weakness |
@@ -2546,7 +2546,7 @@ Joint locks, bone strikes, and structural damage points targeting mobility and s
 
 **Implementation Status**: Q1 2026 - Fully operational with multi-factor calculation
 
-For complete TypeScript implementation details, damage formulas, and three worked examples (Musa vs Baekhoehyeol, Amsalja vs Carotid, Hacker disadvantage), see the [Damage Calculation Implementation Guide](./docs/combat/damage-calculation-guide.md).
+For an overview of the TypeScript implementation approach and damage formula reference, see the [Damage Calculation Guide](./docs/combat/damage-calculation-guide.md). Three worked examples are provided below.
 
 ### Quick Reference: Damage Formula
 
@@ -2629,11 +2629,11 @@ Status effects are applied based on vital point anatomical system and damage sev
 
 | Effect | Korean | Duration | Application | Stack Limit | Visual Indicator | Gameplay Impact |
 |--------|--------|----------|-------------|-------------|------------------|-----------------|
-| **기절 (Stun)** | Stun | 1-5s | Nervous system critical hits | None (refreshes) | ⚡ Lightning icon, wobble animation | Cannot act, vulnerable to followups |
-| **출혈 (Bleed)** | Bleeding | 5-15s | Circulatory hits ≥45 damage | 3 stacks | 🩸 Blood particles, red pulse | 3-8 HP/sec damage over time |
-| **피로 (Fatigue)** | Exhaustion | 10-30s | Stamina depletion, heavy hits | None (stacks additively) | 😓 Sweat particles, slow movement | -20% movement speed, +25% stamina cost |
-| **마비 (Paralysis)** | Paralysis | 3-10s | Nerve strikes, spine hits | None (refreshes) | ⚠️ Yellow icon, shaking limbs | Reduced attack speed (-40%), mobility loss |
-| **혼란 (Disorientation)** | Disorientation | 3-8s | Head trauma, vestibular damage | None (refreshes) | 🌀 Dizzy icon, screen blur | Accuracy -50%, vision impaired, controls inverted |
+| **기절 (Stun)** | 기절 | 1-5s | Nervous system critical hits | None (refreshes) | ⚡ Lightning icon, wobble animation | Cannot act, vulnerable to followups |
+| **출혈 (Bleed)** | 출혈 | 5-15s | Circulatory hits ≥45 damage | 3 stacks | 🩸 Blood particles, red pulse | 3-8 HP/sec damage over time |
+| **피로 (Fatigue)** | 피로 | 10-30s | Stamina depletion, heavy hits | None (stacks additively) | 😓 Sweat particles, slow movement | -20% movement speed, +25% stamina cost |
+| **마비 (Paralysis)** | 마비 | 3-10s | Nerve strikes, spine hits | None (refreshes) | ⚠️ Yellow icon, shaking limbs | Reduced attack speed (-40%), mobility loss |
+| **혼란 (Disorientation)** | 혼란 | 3-8s | Head trauma, vestibular damage | None (refreshes) | 🌀 Dizzy icon, screen blur | Accuracy -50%, vision impaired, controls inverted |
 
 ### Stacking Rules
 

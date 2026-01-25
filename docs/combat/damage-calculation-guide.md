@@ -1,8 +1,8 @@
 # Damage Calculation Implementation Guide
 
-**Black Trigram (흑괘) - Complete Damage System**
+**Black Trigram (흑괘) - Damage System Overview**
 
-This document provides complete TypeScript implementation for Black Trigram damage calculation.
+This document provides a quick-reference overview of the Black Trigram damage calculation for TypeScript implementations.
 
 ## Quick Reference
 
@@ -16,4 +16,4 @@ This document provides complete TypeScript implementation for Black Trigram dama
 
 See [COMBAT_ARCHITECTURE.md](../../COMBAT_ARCHITECTURE.md) for complete vital points system and worked examples.
 
-**Last Updated**: December 2024
+**Last Updated**: Q1 2026
