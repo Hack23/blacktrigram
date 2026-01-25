@@ -1,4 +1,4 @@
-# Damage Calculation Implementation Guide
+# Damage Calculation Quick Reference
 
 **Black Trigram (흑괘) - Damage System Overview**
 

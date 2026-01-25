@@ -58,7 +58,7 @@
 
 ### External References
 - **[docs/vital-points/VITAL_POINTS_REFERENCE.md](./docs/vital-points/VITAL_POINTS_REFERENCE.md)** - Complete anatomical documentation with TCM meridian associations
-- **[docs/combat/damage-calculation-guide.md](./docs/combat/damage-calculation-guide.md)** - Detailed damage calculation implementation
+- **[docs/combat/damage-calculation-guide.md](./docs/combat/damage-calculation-guide.md)** - Quick-reference damage calculation overview and formulas
 - **[game-design.md](./game-design.md)** - Overall game design document
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture overview
 - **[game-status.md](./game-status.md)** - Current implementation status
@@ -2429,9 +2429,9 @@ Critical points targeting the neurological system for instant incapacitation, pa
 | 7 | 천주 | Cheonju | Celestial Pillar | Upper neck, 1.3 cun lateral | BL10 | 34 | Instant | Severe pain, cervical nerve damage |
 | 8 | 태양혈 | Taeyanghyeol | Temple | Lateral to eye, temporal bone | ST8 | 42 | Instant | Concussion, unconsciousness, death risk |
 | 9 | 곡지 | Gokji | Pool at the Bend | Elbow crease, lateral end | LI11 | 26 | 1-2s | Arm paralysis, nerve shock |
-| 10 | 수삼리 | Susamnni | Arm Three Miles | 3 cun below elbow, forearm | LI10 | 24 | 1-2s | Forearm numbness, grip loss |
+| 10 | 수삼리 | Susamni | Arm Three Miles | 3 cun below elbow, forearm | LI10 | 24 | 1-2s | Forearm numbness, grip loss |
 | 11 | 합곡 | Hapgok | Joining Valley | Hand, between thumb-index | LI4 | 22 | Instant | Hand paralysis, severe pain |
-| 12 | 족삼리 | Joksamnni | Leg Three Miles | 3 cun below knee, tibia | ST36 | 28 | 1-3s | Leg weakness, balance loss |
+| 12 | 족삼리 | Joksamni | Leg Three Miles | 3 cun below knee, tibia | ST36 | 28 | 1-3s | Leg weakness, balance loss |
 | 13 | 승산 | Seungsan | Mountain Support | Calf, belly of gastrocnemius | BL57 | 30 | Instant | Leg cramp, mobility loss |
 | 14 | 곤륜 | Gonnryun | Kunlun Mountain | Ankle, lateral malleolus-Achilles | BL60 | 26 | 1-2s | Ankle dysfunction, severe pain |
 | 15 | 용천 | Yongcheon | Bubbling Spring | Sole, ball of foot depression | KI1 | 32 | Instant | Shock, balance loss, unconsciousness |
@@ -2630,7 +2630,7 @@ Status effects are applied based on vital point anatomical system and damage sev
 | Effect | Korean | Duration | Application | Stack Limit | Visual Indicator | Gameplay Impact |
 |--------|--------|----------|-------------|-------------|------------------|-----------------|
 | **기절 (Stun)** | 기절 | 1-5s | Nervous system critical hits | None (refreshes) | ⚡ Lightning icon, wobble animation | Cannot act, vulnerable to followups |
-| **출혈 (Bleed)** | 출혈 | 5-15s | Circulatory hits ≥45 damage | 3 stacks | 🩸 Blood particles, red pulse | 3-8 HP/sec damage over time |
+| **출혈 (Bleed)** | 출혈 | 5-15s | Circulatory hits ≥45 damage | 3 stacks | 🩸 Blood particles, red pulse | 5 HP/sec per stack (15 HP/sec max at 3 stacks) |
 | **피로 (Fatigue)** | 피로 | 10-30s | Stamina depletion, heavy hits | None (stacks additively) | 😓 Sweat particles, slow movement | -20% movement speed, +25% stamina cost |
 | **마비 (Paralysis)** | 마비 | 3-10s | Nerve strikes, spine hits | None (refreshes) | ⚠️ Yellow icon, shaking limbs | Reduced attack speed (-40%), mobility loss |
 | **혼란 (Disorientation)** | 혼란 | 3-8s | Head trauma, vestibular damage | None (refreshes) | 🌀 Dizzy icon, screen blur | Accuracy -50%, vision impaired, controls inverted |
