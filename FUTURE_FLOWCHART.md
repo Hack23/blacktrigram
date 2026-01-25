@@ -22,13 +22,15 @@ This document outlines planned workflow enhancements for Black Trigram (흑괘),
 
 ### **AWS Authentication & User Management Flow**
 
+> **🔒 Security Note**: This flow uses HttpOnly Secure cookies with SameSite=Strict for token storage instead of localStorage/sessionStorage. This prevents XSS attacks from accessing authentication tokens, as HttpOnly cookies are not accessible to JavaScript. The backend manages token refresh and validation through secure cookie-based sessions.
+
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    A[🚀 App Launch] --> B{User<br/>Token Exists?<br/>LocalStorage}
+    A[🚀 App Launch] --> B{User<br/>Session Exists?<br/>HttpOnly Cookie}
     
     B -->|No| C[Show Login<br/>Screen<br/>흑괘 Logo]
-    B -->|Yes| D[Validate JWT<br/>AWS Cognito]
+    B -->|Yes| D[Validate Session<br/>Backend Endpoint<br/>/api/auth/verify]
     
     D -->|Valid| LoadProfile[Load User Profile<br/>DynamoDB Query]
     D -->|Expired| C
@@ -56,11 +58,11 @@ flowchart TD
     M -->|Failed| O
     
     O --> C
-    N --> Q[Local Storage<br/>Only Mode<br/>No Cloud Sync]
+    N --> Q[Session Storage<br/>Only Mode<br/>No Cloud Sync<br/>Temporary State]
     
-    P --> R[Retrieve JWT<br/>Access Token<br/>Refresh Token<br/>ID Token]
+    P --> R[Set HttpOnly Cookie<br/>Secure Flag<br/>SameSite=Strict<br/>Session Token Only]
     
-    R --> S[API Gateway Request<br/>/api/user/profile<br/>Authorization: Bearer]
+    R --> S[API Gateway Request<br/>/api/user/profile<br/>Cookie: session_token]
     
     S --> Lambda1[Lambda Function<br/>getUserProfile<br/>Node.js 20]
     
@@ -220,7 +222,7 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🎮 Multiplayer Mode]) --> CheckAuth{User<br/>Authenticated?<br/>JWT Valid?}
+    Start([🎮 Multiplayer Mode]) --> CheckAuth{User<br/>Authenticated?<br/>Session Valid?}
     
     CheckAuth -->|No| RedirectAuth[Redirect to<br/>Login Screen<br/>OAuth Required]
     CheckAuth -->|Yes| MatchMenu[🏆 Matchmaking Menu<br/>Game Modes]
@@ -242,7 +244,7 @@ flowchart TD
     
     EstimateWait --> ConnectWS[WebSocket Connect<br/>wss://api.blacktrigram.com/ws<br/>API Gateway WebSocket]
     
-    ConnectWS --> WSHandshake[WebSocket Handshake<br/>Send JWT Token<br/>ConnectionId]
+    ConnectWS --> WSHandshake[WebSocket Handshake<br/>Cookie: session_token<br/>ConnectionId]
     
     WSHandshake --> EnterQueue[Send Queue Request<br/>{ action: 'join_queue'<br/> mode: 'ranked'<br/> elo: 1500<br/> region: 'asia-northeast-2' }]
     
