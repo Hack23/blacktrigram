@@ -116,13 +116,13 @@ mindmap
           LEG L plus R 5 Bones Each
             FOOT plus TOES
       Hand Poses 7
-        Fist Vertical
-        Fist Horizontal
-        Open Hand Knife
-        Palm Strike
-        Spear Hand
-        Grab Hold
-        Crane Beak
+        FIST 주먹
+        KNIFE_HAND 수도
+        SPEAR_HAND 관수
+        PALM_HEEL 장력
+        GRAPPLING 잡기
+        OPEN 펴기
+        RELAXED 휴식
       Muscle Tension
         Range 0.0 to 1.0
         Visual Bone Glow
@@ -442,7 +442,7 @@ mindmap
         Sound Pool Management
         Volume Controls
         Cached Playback
-        Format Support .mp3 .ogg
+        Format Support .mp3 .ogg .webm .aac auto-detection
     3D Rendering
       Three.js Scene
         Camera Setup

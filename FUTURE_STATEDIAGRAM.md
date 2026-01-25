@@ -140,12 +140,17 @@ stateDiagram-v2
     state InMatch {
         [*] --> MatchCountdown
         MatchCountdown --> ActiveCombat: 3...2...1...FIGHT!
-        ActiveCombat --> MonitorConnection: Heartbeat Every 1s
+        ActiveCombat --> MonitorConnection: Heartbeat 1s Keepalive<br/>Game State Sync ~60fps (Rollback)
         MonitorConnection --> ActiveCombat: Connection Stable
-        MonitorConnection --> ConnectionIssue: Ping > 200ms
-        ConnectionIssue --> Reconnecting: Attempt Reconnect
-        Reconnecting --> ActiveCombat: Reconnect Success
-        Reconnecting --> Disconnected: Reconnect Failed (30s)
+        MonitorConnection --> ConnectionIssue: Ping > 200ms<br/>Connection Lost
+        ConnectionIssue --> Reconnecting: Attempt Reconnect<br/>Disconnected Player
+        ConnectionIssue --> OpponentWaiting: Opponent View<br/>Show "Waiting for Opponent"<br/>Pause Match Timer
+        ConnectionIssue --> BothDisconnected: Both Players Disconnected<br/>Start Abort Timer (30s)
+        Reconnecting --> ActiveCombat: Reconnect Success<br/>Resume Match Timer
+        Reconnecting --> Disconnected: Reconnect Failed (30s)<br/>Forfeit Disconnected Player
+        OpponentWaiting --> ActiveCombat: Opponent Reconnected<br/>Resume Match Timer
+        OpponentWaiting --> MatchComplete: Opponent Forfeit<br/>Award Win
+        BothDisconnected --> MatchComplete: Abort Match<br/>No Contest
         ActiveCombat --> RoundComplete: Health ≤ 0<br/>OR Time Up
         RoundComplete --> [*]
     }

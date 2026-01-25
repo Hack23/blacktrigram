@@ -97,7 +97,7 @@ stateDiagram-v2
     
     Ready --> Countdown: Start Timer
     
-    Countdown --> Fighting: Count == 0<br/>Stance: 건 Heaven
+    Countdown --> Fighting: Count == 0<br/>Recommended starting stance: 건 (Geon, Heaven)
     
     Fighting --> Idle: No Input
     Fighting --> Attacking: Attack Input (Space)
@@ -187,11 +187,10 @@ stateDiagram-v2
     
     note right of SkeletalAnimation
         28-bone hierarchy
-        7 hand poses:
-        fist_vertical, fist_horizontal,
-        open_hand_knife, palm_strike,
-        grab_hold, spear_hand, crane_beak
-        Muscle tension visualization
+        7 hand poses (HandPoseType enum):
+        FIST, KNIFE_HAND, SPEAR_HAND,
+        PALM_HEEL, GRAPPLING, OPEN, RELAXED
+        Muscle tension visualization (0.0-1.0)
     end note
     
     note right of Countering

@@ -41,7 +41,8 @@ mindmap
           match_history table
           leaderboards table
           achievements table
-          GSI Indexes ELO Region Timestamp
+          GSI-1 ELOByRegion PK region SK elo_rating
+          GSI-2 MatchByTimestamp PK user_id SK match_timestamp
         DynamoDB Streams
           Real-time Updates
           Event Triggers
@@ -166,6 +167,10 @@ mindmap
           Hosted Payment Page
           Multiple Payment Methods
           Currency Support KRW USD
+            Base Pricing Currency KRW
+            USD Pricing Via Stripe FX
+            Exchange Rate From Stripe At Checkout
+            Amount Locked Per Session
           Tax Calculation
         Webhook Events
           checkout session completed

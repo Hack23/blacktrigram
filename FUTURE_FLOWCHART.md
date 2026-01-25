@@ -171,10 +171,17 @@ flowchart TD
     
     StripeWebhook --> VerifySignature[Verify Webhook<br/>Signature<br/>HMAC-SHA256]
     
-    VerifySignature --> ValidSignature{Signature<br/>Valid?}
+    VerifySignature --> CheckIdempotency[Check Event ID<br/>DynamoDB Query<br/>processed_events table]
+    
+    CheckIdempotency --> AlreadyProcessed{Event<br/>Already<br/>Processed?}
+    
+    AlreadyProcessed -->|Yes| SkipProcessing[Skip Processing<br/>Return 200 OK<br/>Idempotent Response]
+    AlreadyProcessed -->|No| ValidSignature{Signature<br/>Valid?}
     
     ValidSignature -->|No| RejectWebhook[❌ Reject Webhook<br/>Log Security Event<br/>CloudWatch Alert]
     ValidSignature -->|Yes| ParseEvent[Parse Event Data<br/>Extract customer_id<br/>line_items<br/>payment_status]
+    
+    SkipProcessing --> End([Process Complete])
     
     RejectWebhook --> End([Process Complete])
     
@@ -239,7 +246,7 @@ flowchart TD
     
     WSHandshake --> EnterQueue[Send Queue Request<br/>{ action: 'join_queue'<br/> mode: 'ranked'<br/> elo: 1500<br/> region: 'asia-northeast-2' }]
     
-    EnterQueue --> Lambda1[Lambda: handleQueue<br/>DynamoDB Query<br/>Find Opponents]
+    EnterQueue --> Lambda1[Lambda: handleMatchQueue<br/>DynamoDB Query<br/>Find Opponents]
     
     Lambda1 --> Matching{Matchmaking<br/>Algorithm<br/>ELO ±100}
     
