@@ -1,7 +1,7 @@
 # 📊 Black Trigram (흑괘) SWOT Analysis
 
 **Analysis Date**: January 25, 2026 (Q1 2026)  
-**Previous Analysis**: N/A (First Comprehensive SWOT)  
+**Previous Analysis**: Pre-Q1 2026 draft SWOT (legacy summary)  
 **Next Review**: Q3 2026 (Post v1.0 Release)
 
 This document provides a strategic analysis of the Black Trigram Korean martial arts combat simulator's **current Q1 2026 state**, with comprehensive evaluation of strengths, weaknesses, opportunities, and threats based on **actual measured metrics**, market research, and competitive positioning. This analysis informs v1.0 roadmap priorities and strategic decisions for the authentic Korean martial arts educational gaming platform.
@@ -618,9 +618,9 @@ mindmap
 | 1,000,000 | $13,150 | VPC negligible percentage of total |
 
 **Revenue vs. Cost** (10K users):
-- Monthly Revenue: $16,000 (8% conversion, $20 ARPPU)
+- Monthly Revenue: $16,000 (5% conversion, $3.20 ARPPU)
 - AWS Cost: $350
-- Gross Margin: **98.2%**
+- Gross Margin: **97.8%**
 
 **Implementation Timeline**: v2.0 (Q1 2028) - 6-9 months backend development
 
@@ -699,9 +699,9 @@ mindmap
 - **Optional Ads**: Respectful rewarded video ads for free players
 - **No Loot Boxes**: Transparent pricing, no gambling mechanics
 
-**Revenue Projections**:
-- 10,000 users: $16,000/mo (8% conversion, $20 ARPPU) = **$192K/year**
-- 100,000 users: $360,000/mo (12% conversion, $30 ARPPU) = **$4.32M/year**
+**Revenue Projections** (Baseline: 5% conversion, $3.20 ARPPU):
+- 10,000 users: $16,000/mo (5% conversion, $3.20 ARPPU) = **$192K/year**
+- 100,000 users: $160,000/mo (5% conversion, $3.20 ARPPU) = **$1.92M/year**
 
 **Timeline**: Post-v1.0 (2026-2027) once player base established
 
@@ -875,10 +875,10 @@ mindmap
 | 500,000 | $6,650 | $79,800 | Significant scale, VPC negligible |
 | 1,000,000 | $13,150 | $157,800 | Enterprise scale, cost optimization critical |
 
-**Revenue vs. Cost Analysis** (10K users):
-- **Monthly Revenue**: $16,000 (8% conversion, $20 ARPPU)
+**Revenue vs. Cost Analysis** (10K users, Baseline: 5% conversion, $3.20 ARPPU):
+- **Monthly Revenue**: $16,000 (5% conversion, $3.20 ARPPU)
 - **AWS Cost**: $350
-- **Gross Margin**: 98.2% ✅ **Sustainable**
+- **Gross Margin**: 97.8% ✅ **Sustainable**
 
 **Cost Optimization Strategies**:
 1. **Serverless Architecture**: Lambda auto-scales, pay-per-use (no idle servers)

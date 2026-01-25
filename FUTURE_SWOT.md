@@ -27,7 +27,7 @@ This document provides strategic SWOT (Strengths, Weaknesses, Opportunities, Thr
 - **Authentication**: AWS Cognito with 6+ OAuth providers (Google, GitHub, Facebook, Twitter, Amazon, Apple) + MFA + social login federation
 - **Persistence**: DynamoDB on-demand (5 tables: Players, GameStates, Achievements, Purchases, Leaderboards) + S3 for user-generated content
 - **API**: API Gateway REST + WebSocket for real-time multiplayer (1v1, 2v2 PvP)
-- **Compute**: Lambda serverless functions (Node.js TypeScript) with auto-scaling, SnapStart for reduced cold starts
+- **Compute**: Lambda serverless functions (Node.js TypeScript) with auto-scaling, provisioned concurrency for reduced cold starts
 - **CDN**: CloudFront global distribution for frontend assets
 - **Payments**: Stripe integration for ethical F2P monetization (cosmetics, battle pass, no pay-to-win)
 - **Security**: WAF (OWASP protection), GuardDuty (threat detection), Security Hub (compliance), CloudTrail (audit logging), encryption at rest/transit
@@ -290,14 +290,14 @@ quadrantChart
 - **Optional Rewarded Ads**: Watch ad for bonus XP/currency (respectful, player choice)
 - **No Loot Boxes**: Transparent pricing, no gambling mechanics, all items directly purchasable
 
-**Revenue Projections**:
+**Revenue Projections** (Baseline: 5% conversion, $3.20 ARPPU):
 | User Base | Monthly Revenue | Annual Revenue | AWS Cost | Gross Margin |
 |-----------|----------------|----------------|----------|--------------|
-| 10,000 | $16,000 (8% conversion, $20 ARPPU) | $192,000 | $350/mo = $4,200/yr | 97.8% |
-| 50,000 | $125,000 (10% conversion, $25 ARPPU) | $1,500,000 | $800/mo = $9,600/yr | 99.4% |
-| 100,000 | $360,000 (12% conversion, $30 ARPPU) | $4,320,000 | $1,450/mo = $17,400/yr | 99.6% |
-| 500,000 | $1,875,000 (15% conversion, $25 ARPPU) | $22,500,000 | $6,650/mo = $79,800/yr | 99.6% |
-| 1,000,000 | $4,500,000 (15% conversion, $30 ARPPU) | $54,000,000 | $13,150/mo = $157,800/yr | 99.7% |
+| 10,000 | $16,000 (5% conversion, $3.20 ARPPU) | $192,000 | $350/mo = $4,200/yr | 97.8% |
+| 50,000 | $80,000 (5% conversion, $3.20 ARPPU) | $960,000 | $800/mo = $9,600/yr | 99.0% |
+| 100,000 | $160,000 (5% conversion, $3.20 ARPPU) | $1,920,000 | $1,450/mo = $17,400/yr | 99.1% |
+| 500,000 | $800,000 (5% conversion, $3.20 ARPPU) | $9,600,000 | $6,650/mo = $79,800/yr | 99.2% |
+| 1,000,000 | $1,600,000 (5% conversion, $3.20 ARPPU) | $19,200,000 | $13,150/mo = $157,800/yr | 99.2% |
 
 **Stripe Features**:
 - **Stripe Checkout**: PCI-compliant hosted payment pages (Black Trigram never handles card data)
@@ -376,7 +376,7 @@ quadrantChart
 | **Localization Complexity (Multi-Language)**           | Low   | Medium | Start with Korean/English bilingual, community translations for other languages (Japanese, Chinese, Spanish), phased rollout, cultural consultant validation |
 | **AWS Service Outages & Downtime** | Medium | Low | Multi-AZ deployment (99.9% uptime SLA), DynamoDB PITR (1-minute RPO), AWS Backup (35-day retention), CloudFront CDN caching, graceful degradation |
 | **Stripe Payment Processor Issues** | Medium | Low | Backup payment processors (PayPal, cryptocurrency wallets), Stripe SLA 99.99% uptime, webhook retry logic, manual payment reconciliation procedures |
-| **Lambda Cold Start Latency** | Low | Medium | Lambda SnapStart (reduce cold starts), provisioned concurrency for critical functions, optimize function size (<5MB), minimize dependencies |
+| **Lambda Cold Start Latency** | Low | Medium | Provisioned concurrency for critical functions, optimize function size (<5MB), minimize dependencies, use AWS SDK v3 for smaller bundles |
 
 ### **Threat Response Strategy (Comprehensive)**
 
@@ -461,9 +461,8 @@ quadrantChart
   - **AWS Backup**: Automated daily backups with 35-day retention
   - **Graceful Degradation**: If DynamoDB unavailable, serve cached data from CloudFront, display maintenance message
 - **Performance**:
-  - **Lambda SnapStart**: Reduce cold start latency for Java/Python functions (not Node.js yet, planned AWS feature)
-  - **Provisioned Concurrency**: For critical Lambda functions (matchmaking, combat sync) to eliminate cold starts
-  - **Function Optimization**: Keep Lambda functions <5MB, minimize dependencies, use AWS SDK v3 (smaller bundle)
+  - **Provisioned Concurrency**: For critical Lambda functions (matchmaking, combat sync) to eliminate cold starts during peak traffic
+  - **Function Optimization**: Keep Lambda functions <5MB, minimize dependencies, use AWS SDK v3 (smaller bundle size)
   - **CloudFront Caching**: Aggressive caching (TTL 1 hour for static assets, 5 minutes for dynamic data) to reduce origin requests
 
 #### **5. Community Threats (Toxic Behavior, Moderation Challenges)**
