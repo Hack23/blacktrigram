@@ -99,69 +99,69 @@ The vital point system is the cornerstone of Black Trigram's combat realism, imp
 
 ```mermaid
 graph TB
-    subgraph "70 Vital Points (급소)"
-        VPS[VitalPointSystem]:::vital
-        VPS --> HEAD[머리 Head<br/>12 points]:::head
-        VPS --> TORSO[몸통 Torso<br/>24 points]:::torso
-        VPS --> ARMS[팔 Arms<br/>17 points]:::arms
-        VPS --> LEGS[다리 Legs<br/>17 points]:::legs
+    subgraph "🎯 70 Vital Points System (급소 체계)"
+        VPS["⚡ VitalPointSystem<br/>70 Targets"]:::vital
+        VPS --> HEAD["🧠 머리 Head<br/>12 points<br/>Critical Targets"]:::head
+        VPS --> TORSO["💓 몸통 Torso<br/>24 points<br/>Organ Zones"]:::torso
+        VPS --> ARMS["💪 팔 Arms<br/>17 points<br/>Joint Locks"]:::arms
+        VPS --> LEGS["🦵 다리 Legs<br/>17 points<br/>Mobility Disablers"]:::legs
     end
 
-    subgraph "Classification Systems"
-        SEV[Severity Levels<br/>5 categories]:::severity
-        CAT[Anatomical Categories<br/>7 types]:::category
-        MER[TCM Meridians<br/>14 channels]:::meridian
+    subgraph "📊 Classification Systems"
+        SEV["⚠️ Severity Levels<br/>5 categories<br/>Lethal→Minor"]:::severity
+        CAT["🔬 Anatomical Categories<br/>7 types<br/>System-Based"]:::category
+        MER["🌊 TCM Meridians<br/>14 channels<br/>Energy Flow"]:::meridian
     end
 
-    VPS --> SEV
-    VPS --> CAT
-    VPS --> MER
+    VPS -.->|"Categorized by"| SEV
+    VPS -.->|"Mapped to"| CAT
+    VPS -.->|"Aligned with"| MER
 
-    classDef vital fill:#ff6b6b,stroke:#333,color:#fff,stroke-width:2px
-    classDef head fill:#ff0000,stroke:#333,color:#fff
-    classDef torso fill:#ffa500,stroke:#333,color:#000
-    classDef arms fill:#90ee90,stroke:#333,color:#000
-    classDef legs fill:#87ceeb,stroke:#333,color:#000
-    classDef severity fill:#9370db,stroke:#333,color:#fff
-    classDef category fill:#4caf50,stroke:#333,color:#fff
-    classDef meridian fill:#ffd700,stroke:#333,color:#000
+    classDef vital fill:#ff4444,stroke:#990000,color:#fff,stroke-width:3px,rx:10
+    classDef head fill:#ff0000,stroke:#cc0000,color:#fff,stroke-width:2px,rx:8
+    classDef torso fill:#ff8800,stroke:#cc6600,color:#fff,stroke-width:2px,rx:8
+    classDef arms fill:#00cc66,stroke:#009944,color:#fff,stroke-width:2px,rx:8
+    classDef legs fill:#0099ff,stroke:#0066cc,color:#fff,stroke-width:2px,rx:8
+    classDef severity fill:#9933ff,stroke:#6600cc,color:#fff,stroke-width:2px,rx:8
+    classDef category fill:#00cc44,stroke:#009933,color:#fff,stroke-width:2px,rx:8
+    classDef meridian fill:#ffcc00,stroke:#cc9900,color:#000,stroke-width:2px,rx:8
 ```
 
 ### 1.2 Regional Distribution
 
-| Region | Korean | Count | Examples |
-|--------|--------|-------|----------|
-| **Head** | 머리 | 12 | 백회혈 (Baihui), 인영 (Renying), 태양혈 (Taiyang) |
-| **Torso** | 몸통 | 24 | 명문 (Mingmen), 삼초수 (Sanjiaoshu), 심장혈 (Heart Point) |
-| **Arms** | 팔 | 17 | 대추 (Dazhui), 건우 (Jianyu), 곡지 (Quchi) |
-| **Legs** | 다리 | 17 | 슬관절 (Knee Joint), 환도 (Huantiao), 족삼리 (Zusanli) |
-| **TOTAL** | | **70** | |
+| Region | Korean | Count | Icon | Examples |
+|--------|--------|-------|------|----------|
+| **Head** 🧠 | 머리 | **12** | 🎯 | 백회혈 (Baihui), 인영 (Renying), 태양혈 (Taiyang) |
+| **Torso** 💓 | 몸통 | **24** | ⚡ | 명문 (Mingmen), 삼초수 (Sanjiaoshu), 심장혈 (Heart Point) |
+| **Arms** 💪 | 팔 | **17** | 🔨 | 대추 (Dazhui), 건우 (Jianyu), 곡지 (Quchi) |
+| **Legs** 🦵 | 다리 | **17** | ⚔️ | 슬관절 (Knee Joint), 환도 (Huantiao), 족삼리 (Zusanli) |
+| **TOTAL** | | **70** | 🎯 | All anatomical targets mapped |
 
 ### 1.3 Severity Classification
 
 Vital points are classified into 5 severity levels based on potential combat effectiveness:
 
-| Level | Korean | Count | Damage Range | Duration | Combat Effect |
-|-------|--------|-------|--------------|----------|---------------|
-| **Lethal** | 치명적 | 4 | 80-100 | Permanent | Instant KO, life-threatening |
-| **Critical** | 극심 | 18 | 60-80 | 30-60s | Severe pain, loss of consciousness |
-| **Major** | 중대 | 28 | 40-60 | 20-40s | Intense pain, significant impairment |
-| **Moderate** | 중등 | 16 | 20-40 | 10-20s | Moderate pain, temporary weakness |
-| **Minor** | 경미 | 4 | 10-20 | 5-10s | Mild pain, brief distraction |
+| Level | Korean | Count | Icon | Damage Range | Duration | Combat Effect |
+|-------|--------|-------|------|--------------|----------|---------------|
+| **Lethal** ☠️ | 치명적 | **4** | 💀 | 80-100 | Permanent | Instant KO, life-threatening |
+| **Critical** ⚠️ | 극심 | **18** | 🔴 | 60-80 | 30-60s | Severe pain, loss of consciousness |
+| **Major** ⚡ | 중대 | **28** | 🟠 | 40-60 | 20-40s | Intense pain, significant impairment |
+| **Moderate** 🟡 | 중등 | **16** | 🟡 | 20-40 | 10-20s | Moderate pain, temporary weakness |
+| **Minor** 🟢 | 경미 | **4** | 🟢 | 10-20 | 5-10s | Mild pain, brief distraction |
 
 ### 1.4 Anatomical Categories
 
 Vital points are categorized by anatomical system affected:
 
-| Category | Korean | Count | Primary Effect | Examples |
-|----------|--------|-------|----------------|----------|
-| **Neurological** | 신경계 | 22 | Nerve damage, paralysis | Temples (太阳), Vagus nerve |
-| **Skeletal** | 골격계 | 15 | Bone fractures, structural damage | Ribs, Clavicle, Nasal bone |
-| **Joint** | 관절 | 12 | Dislocation, mobility loss | Elbow, Knee, Shoulder |
-| **Organ** | 장기 | 9 | Internal damage, organ trauma | Liver, Spleen, Kidneys |
-| **Muscular** | 근육 | 7 | Muscle tear, spasm | Biceps, Quadriceps |
-| **Vascular** | 혈관 | 3 | Blood flow disruption | Carotid, Femoral |
-| **Respiratory** | 호흡기 | 2 | Breathing disruption | Solar plexus, Throat |
+| Category | Korean | Count | Icon | Primary Effect | Examples |
+|----------|--------|-------|------|----------------|----------|
+| **Neurological** 🧠 | 신경계 | **22** | ⚡ | Nerve damage, paralysis | Temples (太阳), Vagus nerve |
+| **Skeletal** 🦴 | 골격계 | **15** | 💥 | Bone fractures, structural damage | Ribs, Clavicle, Nasal bone |
+| **Joint** 🔗 | 관절 | **12** | 🔨 | Dislocation, mobility loss | Elbow, Knee, Shoulder |
+| **Organ** 💓 | 장기 | **9** | 🎯 | Internal damage, organ trauma | Liver, Spleen, Kidneys |
+| **Muscular** 💪 | 근육 | **7** | 💢 | Muscle tear, spasm | Biceps, Quadriceps |
+| **Vascular** 🩸 | 혈관 | **3** | 🔴 | Blood flow disruption | Carotid, Femoral |
+| **Respiratory** 🫁 | 호흡기 | **2** | 💨 | Breathing disruption | Solar plexus, Throat |
 
 
 ### 1.5 Complete 70 Vital Points Database
@@ -396,45 +396,44 @@ The 8 Trigram Stance System (팔괘 자세) is the foundation of Black Trigram's
 
 ```mermaid
 graph TB
-    subgraph "Eight Trigram Stances (팔괘)"
-        G[☰ 건 Geon<br/>Heaven/Sky]:::geon
-        T[☱ 태 Tae<br/>Lake/Marsh]:::tae
-        L[☲ 리 Li<br/>Fire/Flame]:::li
-        J[☳ 진 Jin<br/>Thunder/Shake]:::jin
-        S[☴ 손 Son<br/>Wind/Wood]:::son
-        GA[☵ 감 Gam<br/>Water/Abyss]:::gam
-        GN[☶ 간 Gan<br/>Mountain/Keep]:::gan
-        GO[☷ 곤 Gon<br/>Earth/Field]:::gon
+    subgraph "☯️ Eight Trigram Stances (팔괘 자세)"
+        G["☰ 건 Geon<br/>⛅ Heaven/Sky<br/>💪 Power: +20%"]:::geon
+        T["☱ 태 Tae<br/>🌊 Lake/Marsh<br/>🤝 Throws: +20%"]:::tae
+        L["☲ 리 Li<br/>🔥 Fire/Flame<br/>🎯 Precision: +15%"]:::li
+        J["☳ 진 Jin<br/>⚡ Thunder/Shake<br/>💥 Shock: +15%"]:::jin
+        S["☴ 손 Son<br/>💨 Wind/Wood<br/>⚔️ Combo: +10%"]:::son
+        GA["☵ 감 Gam<br/>💧 Water/Abyss<br/>🔄 Counter: +10%"]:::gam
+        GN["☶ 간 Gan<br/>⛰️ Mountain/Keep<br/>🛡️ Defense: +50%"]:::gan
+        GO["☷ 곤 Gon<br/>🌍 Earth/Field<br/>🥋 Grapple: +40%"]:::gon
     end
 
-    subgraph "Rock-Paper-Scissors Balance"
-        RPS[Stance Counter System]:::balance
-        RPS --> POWER[Power Stances<br/>건/진/곤]:::power
-        RPS --> PRECISION[Precision Stances<br/>리/손/간]:::precision
-        RPS --> FLOW[Flow Stances<br/>태/감]:::flow
+    subgraph "⚖️ Rock-Paper-Scissors Balance System"
+        RPS["🎮 Stance Counter<br/>Triangle System"]:::balance
+        RPS -.->|"Dominates"| POWER["💪 Power Stances<br/>건/진/곤<br/>Bone Breaking"]:::power
+        RPS -.->|"Precision"| PRECISION["🎯 Technical Stances<br/>리/손/간<br/>Vital Points"]:::precision
+        RPS -.->|"Adapts"| FLOW["🌊 Flow Stances<br/>태/감<br/>Redirection"]:::flow
     end
 
-    G --> RPS
-    T --> RPS
-    L --> RPS
-    J --> RPS
-    S --> RPS
-    GA --> RPS
-    GN --> RPS
-    GO --> RPS
+    G & J & GO -.->|"Power"| POWER
+    L & S & GN -.->|"Technique"| PRECISION
+    T & GA -.->|"Flow"| FLOW
 
-    classDef geon fill:#ffd700,stroke:#333,color:#000,stroke-width:2px
-    classDef tae fill:#87ceeb,stroke:#333,color:#000,stroke-width:2px
-    classDef li fill:#ff4500,stroke:#333,color:#fff,stroke-width:2px
-    classDef jin fill:#9370db,stroke:#333,color:#fff,stroke-width:2px
-    classDef son fill:#98fb98,stroke:#333,color:#000,stroke-width:2px
-    classDef gam fill:#4169e1,stroke:#333,color:#fff,stroke-width:2px
-    classDef gan fill:#8b4513,stroke:#333,color:#fff,stroke-width:2px
-    classDef gon fill:#654321,stroke:#333,color:#fff,stroke-width:2px
-    classDef balance fill:#333,stroke:#ffd700,color:#ffd700,stroke-width:2px
-    classDef power fill:#ff6b6b,stroke:#333,color:#fff
-    classDef precision fill:#4caf50,stroke:#333,color:#fff
-    classDef flow fill:#2196f3,stroke:#333,color:#fff
+    POWER -->|"Overpowers"| FLOW
+    FLOW -->|"Redirects"| PRECISION
+    PRECISION -->|"Exploits"| POWER
+
+    classDef geon fill:#ffcc00,stroke:#cc9900,color:#000,stroke-width:3px,rx:10
+    classDef tae fill:#00ccff,stroke:#0099cc,color:#fff,stroke-width:3px,rx:10
+    classDef li fill:#ff4400,stroke:#cc3300,color:#fff,stroke-width:3px,rx:10
+    classDef jin fill:#9933ff,stroke:#6600cc,color:#fff,stroke-width:3px,rx:10
+    classDef son fill:#00ff66,stroke:#00cc44,color:#000,stroke-width:3px,rx:10
+    classDef gam fill:#0066ff,stroke:#0044cc,color:#fff,stroke-width:3px,rx:10
+    classDef gan fill:#996633,stroke:#663300,color:#fff,stroke-width:3px,rx:10
+    classDef gon fill:#553311,stroke:#332200,color:#fff,stroke-width:3px,rx:10
+    classDef balance fill:#222,stroke:#ffcc00,color:#ffcc00,stroke-width:3px,rx:10
+    classDef power fill:#ff4444,stroke:#cc0000,color:#fff,stroke-width:2px,rx:8
+    classDef precision fill:#00cc44,stroke:#009933,color:#fff,stroke-width:2px,rx:8
+    classDef flow fill:#0099ff,stroke:#0066cc,color:#fff,stroke-width:2px,rx:8
 ```
 
 
@@ -759,21 +758,21 @@ graph TB
 
 The 8 trigram stances follow a rock-paper-scissors balance system where each stance has natural advantages and disadvantages against others, encouraging tactical stance switching during combat.
 
-| Stance | Strong Against (1.3x damage) | Weak Against (0.7x damage) | Neutral Against |
-|--------|------------------------------|----------------------------|-----------------|
-| **☰ 건 (Geon)** | ☴ Son, ☵ Gam | ☷ Gon, ☶ Gan | ☱ Tae, ☲ Li, ☳ Jin |
-| **☱ 태 (Tae)** | ☰ Geon, ☲ Li | ☴ Son, ☵ Gam | ☳ Jin, ☶ Gan, ☷ Gon |
-| **☲ 리 (Li)** | ☳ Jin, ☰ Geon | ☴ Son, ☱ Tae | ☵ Gam, ☶ Gan, ☷ Gon |
-| **☳ 진 (Jin)** | ☷ Gon, ☶ Gan | ☱ Tae, ☵ Gam | ☰ Geon, ☲ Li, ☴ Son |
-| **☴ 손 (Son)** | ☰ Geon, ☲ Li | ☳ Jin, ☶ Gan | ☱ Tae, ☵ Gam, ☷ Gon |
-| **☵ 감 (Gam)** | ☰ Geon, ☳ Jin | ☴ Son, ☱ Tae | ☲ Li, ☶ Gan, ☷ Gon |
-| **☶ 간 (Gan)** | ☴ Son, ☳ Jin | ☱ Tae, ☵ Gam | ☰ Geon, ☲ Li, ☷ Gon |
-| **☷ 곤 (Gon)** | ☰ Geon, ☲ Li | ☴ Son, ☱ Tae | ☳ Jin, ☵ Gam, ☶ Gan |
+| Stance | Icon | Strong Against 💪 (1.3x damage) | Weak Against 🛡️ (0.7x damage) | Neutral Against ⚖️ |
+|--------|------|----------------------------------|--------------------------------|-------------------|
+| **☰ 건 (Geon)** | ⛅ | ☴ Son, ☵ Gam | ☷ Gon, ☶ Gan | ☱ Tae, ☲ Li, ☳ Jin |
+| **☱ 태 (Tae)** | 🌊 | ☰ Geon, ☲ Li | ☴ Son, ☵ Gam | ☳ Jin, ☶ Gan, ☷ Gon |
+| **☲ 리 (Li)** | 🔥 | ☳ Jin, ☰ Geon | ☴ Son, ☱ Tae | ☵ Gam, ☶ Gan, ☷ Gon |
+| **☳ 진 (Jin)** | ⚡ | ☷ Gon, ☶ Gan | ☱ Tae, ☵ Gam | ☰ Geon, ☲ Li, ☴ Son |
+| **☴ 손 (Son)** | 💨 | ☰ Geon, ☲ Li | ☳ Jin, ☶ Gan | ☱ Tae, ☵ Gam, ☷ Gon |
+| **☵ 감 (Gam)** | 💧 | ☰ Geon, ☳ Jin | ☴ Son, ☱ Tae | ☲ Li, ☶ Gan, ☷ Gon |
+| **☶ 간 (Gan)** | ⛰️ | ☴ Son, ☳ Jin | ☱ Tae, ☵ Gam | ☰ Geon, ☲ Li, ☷ Gon |
+| **☷ 곤 (Gon)** | 🌍 | ☰ Geon, ☲ Li | ☴ Son, ☱ Tae | ☳ Jin, ☵ Gam, ☶ Gan |
 
 **Balance Philosophy**: 
-- **Power Stances** (건, 진, 곤) counter **Precision Stances** (리, 손, 간)
-- **Flow Stances** (태, 감) counter **Power Stances** (건, 진, 곤)
-- **Precision Stances** (리, 손, 간) counter **Flow Stances** (태, 감)
+- **Power Stances** 💪 (건, 진, 곤) counter **Precision Stances** 🎯 (리, 손, 간)
+- **Flow Stances** 🌊 (태, 감) counter **Power Stances** 💪 (건, 진, 곤)
+- **Precision Stances** 🎯 (리, 손, 간) counter **Flow Stances** 🌊 (태, 감)
 
 ### 2.4 Stance Transition System
 
@@ -808,13 +807,13 @@ The 8 trigram stances follow a rock-paper-scissors balance system where each sta
 
 Each player archetype has preferred stances with -20% transition cost:
 
-| Archetype | Korean | Preferred Stances | Bonus |
-|-----------|--------|-------------------|-------|
-| **무사 (Musa)** | Traditional Warrior | ☰ Geon, ☳ Jin | Power stance mastery |
-| **암살자 (Amsalja)** | Shadow Assassin | ☴ Son, ☵ Gam | Flow stance mastery |
-| **해커 (Hacker)** | Cyber Warrior | ☲ Li, ☱ Tae | Precision stance mastery |
-| **정보요원 (Jeongbo)** | Intelligence Op | ☶ Gan, ☷ Gon | Defensive stance mastery |
-| **조직폭력배 (Jojik)** | Organized Crime | ☳ Jin, ☵ Gam | Brutal stance mastery |
+| Archetype | Korean | Icon | Preferred Stances | Bonus |
+|-----------|--------|------|-------------------|-------|
+| **무사 (Musa)** 🥋 | Traditional Warrior | 🛡️ | ☰ Geon ⛅, ☳ Jin ⚡ | Power stance mastery 💪 |
+| **암살자 (Amsalja)** 🗡️ | Shadow Assassin | 👤 | ☴ Son 💨, ☵ Gam 💧 | Flow stance mastery 🌊 |
+| **해커 (Hacker)** 💻 | Cyber Warrior | 🔮 | ☲ Li 🔥, ☱ Tae 🌊 | Precision stance mastery 🎯 |
+| **정보요원 (Jeongbo)** 🕵️ | Intelligence Op | 🧠 | ☶ Gan ⛰️, ☷ Gon 🌍 | Defensive stance mastery 🛡️ |
+| **조직폭력배 (Jojik)** 🦹 | Organized Crime | 💀 | ☳ Jin ⚡, ☵ Gam 💧 | Brutal stance mastery 💥 |
 
 ---
 
@@ -829,26 +828,26 @@ The 5 Player Archetypes (오대 무사) represent distinct combat philosophies, 
 
 ### 3.1 Archetype Overview
 
-| Archetype | Korean | Philosophy | Combat Focus | Preferred Stances |
-|-----------|--------|------------|--------------|-------------------|
-| **Musa** | 무사 | Honor & Discipline | Direct power, bone-breaking | ☰ Geon, ☳ Jin |
-| **Amsalja** | 암살자 | Efficiency & Stealth | Silent takedowns, one-hit KO | ☴ Son, ☵ Gam |
-| **Hacker** | 해커 | Data & Precision | Anatomical analysis, tech-enhanced | ☲ Li, ☱ Tae |
-| **Jeongbo** | 정보요원 | Psychology & Strategy | Pain compliance, interrogation | ☶ Gan, ☷ Gon |
-| **Jojik** | 조직폭력배 | Survival & Brutality | Dirty fighting, street tactics | ☳ Jin, ☵ Gam |
+| Archetype | Korean | Icon | Philosophy | Combat Focus | Preferred Stances |
+|-----------|--------|------|------------|--------------|-------------------|
+| **Musa** 🥋 | 무사 | 🛡️ | Honor & Discipline | Direct power, bone-breaking | ☰ Geon, ☳ Jin |
+| **Amsalja** 🗡️ | 암살자 | 👤 | Efficiency & Stealth | Silent takedowns, one-hit KO | ☴ Son, ☵ Gam |
+| **Hacker** 💻 | 해커 | 🔮 | Data & Precision | Anatomical analysis, tech-enhanced | ☲ Li, ☱ Tae |
+| **Jeongbo** 🕵️ | 정보요원 | 🧠 | Psychology & Strategy | Pain compliance, interrogation | ☶ Gan, ☷ Gon |
+| **Jojik** 🦹 | 조직폭력배 | 💀 | Survival & Brutality | Dirty fighting, street tactics | ☳ Jin, ☵ Gam |
 
 
 ### 3.3 Archetype Balance Metrics (Q1 2026)
 
-**Current Status**: Balanced within 48-52% win rate target
+**Current Status**: ✅ Balanced within 48-52% win rate target
 
-| Archetype | Win Rate | Pick Rate | Avg Damage/Round | Critical Hit % |
-|-----------|----------|-----------|-------------------|----------------|
-| 무사 (Musa) | 51% | 22% | 285 | 18% |
-| 암살자 (Amsalja) | 49% | 18% | 320 | 35% |
-| 해커 (Hacker) | 50% | 24% | 270 | 22% |
-| 정보요원 (Jeongbo) | 48% | 16% | 245 | 15% |
-| 조직폭력배 (Jojik) | 52% | 20% | 295 | 28% |
+| Archetype | Icon | Win Rate | Pick Rate | Avg Damage/Round | Critical Hit % |
+|-----------|------|----------|-----------|-------------------|----------------|
+| 무사 (Musa) 🥋 | 🛡️ | 51% ✅ | 22% | 285 💪 | 18% |
+| 암살자 (Amsalja) 🗡️ | 👤 | 49% ✅ | 18% | 320 ⚡ | 35% 🎯 |
+| 해커 (Hacker) 💻 | 🔮 | 50% ✅ | 24% | 270 💻 | 22% |
+| 정보요원 (Jeongbo) 🕵️ | 🧠 | 48% ✅ | 16% | 245 🧠 | 15% |
+| 조직폭력배 (Jojik) 🦹 | 💀 | 52% ✅ | 20% | 295 💥 | 28% |
 
 **Balance Philosophy**: All archetypes within 48-52% win rate ensures no single archetype dominates. Monthly patches adjust based on tournament meta and community feedback.
 
