@@ -18,7 +18,7 @@
 | **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 7 hand poses, muscle tension visualization                                              |
 | **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
 | **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q1 2026 status: Strengths (70/70 vital points), Weaknesses (67% combat realism), Opportunities, Threats    |
-| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (76% test coverage, 8/12 combat realism systems, 8/8 trigram stances)                 |
+| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (73.73% test coverage, 8/12 combat realism systems, 8/8 trigram stances)                 |
 | **[🔮 Future Architecture](FUTURE_ARCHITECTURE.md)**                  | Roadmap          | Q2 2026+ evolution: Combat realism completion, VR/AR integration, advanced features                        |
 | **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes (5), trigram system (8), resources & mechanics                                           |
 | **[🏗️ Architecture Concepts](#-architecture-concepts)**               | Technical Design | Mindmap of system architecture layers and components                                                       |
@@ -1108,7 +1108,7 @@ src/
 
 **Three.js Components:**
 - `src/components/shared/three/` - 3D rendering components (Player3DUnified, StanceAura, SkeletalRig)
-- `src/components/screens/combat/` - CombatScreen3D implementation (production-ready, 95% test coverage)
+- `src/components/screens/combat/` - CombatScreen3D implementation (production-ready, 42.52% line coverage per docs/coverage/coverage-summary.json)
 - `src/utils/player3DHelpers.ts` - PlayerState to Three.js conversion utilities
 
 **Audio System (84% Test Coverage):**
@@ -1119,7 +1119,7 @@ src/
 - 84.29% test coverage across audio systems
 
 **Test Coverage (Q1 2026):**
-- **Overall**: 76% test coverage (Vitest unit + Cypress E2E)
+- **Overall**: 73.73% line coverage (Vitest unit + Cypress E2E, from docs/coverage/coverage-summary.json)
 - **New Components**: 95% test coverage
 - **Core Systems**: >85% test coverage
 - **Audio System**: 84.29% test coverage
@@ -1551,7 +1551,7 @@ mindmap
       id8.2[Reusable React + Three.js components]
       id8.3[Zustand slices for isolated state]
     id9(🔑 Comprehensive Testing Framework)
-      id9.1[76% overall test coverage]
+      id9.1[73.73% overall test coverage]
       id9.2[95% coverage on new components]
       id9.3[Vitest unit + Cypress E2E tests]
       id9.4[73 production-ready pain/consciousness tests]
@@ -1599,7 +1599,7 @@ mindmap
       id8.2[Complex 3D rendering challenges]
       id8.3[Touch controls need refinement]
     id9(🛠️ Test Coverage Gaps)
-      id9.1[76% overall test coverage - target: 80%]
+      id9.1[73.73% overall test coverage - target: 80%]
       id9.2[Some legacy components <80% coverage]
       id9.3[Combat realism systems integration tests incomplete]
 ```
@@ -1670,7 +1670,7 @@ mindmap
       id4.1[Three.js object disposal complexity]
       id4.2[Combat realism systems 67% complete - 4 systems remaining]
       id4.3[State management complexity growing]
-      id4.4[76% test coverage below 80% target]
+      id4.4[73.73% test coverage below 80% target]
     id5(🔒 CDN Security Risks)
       id5.1[MITM attacks on Three.js CDN]
       id5.2[Compromised 3D model hosting]
@@ -2309,7 +2309,7 @@ graph TD
 
 ## 🏁 Conclusion (Q1 2026)
 
-Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging Three.js 3D rendering and React 19 while maintaining simplicity through its frontend-only design. The Q1 2026 implementation demonstrates the successful completion of the Three.js migration, with 70/70 vital points implemented (100% complete), a comprehensive 28-bone skeletal animation system, and 76% test coverage.
+Black Trigram's architecture represents a modern approach to browser-based gaming, leveraging Three.js 3D rendering and React 19 while maintaining simplicity through its frontend-only design. The Q1 2026 implementation demonstrates the successful completion of the Three.js migration, with 70/70 vital points implemented (100% complete), a comprehensive 28-bone skeletal animation system, and 73.73% test coverage.
 
 ### Key Architectural Strengths (Q1 2026):
 
@@ -2317,7 +2317,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 - **Authentic Korean Martial Arts**: 70/70 vital points (100% complete with 14 TCM meridians, 127 medical references), 8 trigram stances, 5 player archetypes with Korean names (무사, 암살자, 해커, 정보요원, 조직폭력배)
 - **Advanced Animation System**: 28-bone skeletal hierarchy, 7 hand poses with Korean terminology (주먹, 수도, 관수, 장력, 잡기, 펴기, 휴식), muscle tension visualization (0.0-1.0 intensity mapping)
 - **Combat Realism Foundation**: 8/12 systems complete (67%) including production-ready pain/consciousness (73 tests), body part health, vital point targeting, enhanced anatomy, visual feedback, breathing disruption (75%)
-- **High Test Coverage**: 76% overall, 95% on new components, >85% on core systems (Vitest unit + Cypress E2E)
+- **High Test Coverage**: 73.73% overall, >85% on core systems (Vitest unit + Cypress E2E)
 - **Zero Backend Complexity**: Pure frontend eliminates server management costs
 - **Modular Design**: Clear separation of systems/ (combat, trigram, vitalpoint, animation, pain, consciousness, breathing), components/, data/, types/
 - **Performance Optimized**: Three.js instancing (1000+ particles), object pooling, geometry/material reuse, automatic frustum culling, skeletal animation (28 bones vs thousands of vertices)
@@ -2328,7 +2328,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 - **Overall Rating**: 8.4/10 (Beta Stage - Combat Realism Production-Ready)
 - **Vital Points**: 70/70 implemented (100% complete) - up from 4.3% in 2024
 - **Skeletal Animation**: 28-bone system operational, 7 hand poses functional
-- **Test Coverage**: 76% overall, 95% new components, 84.29% audio system, 73 pain/consciousness tests
+- **Test Coverage**: 73.73% overall, 84.29% audio system, 73 pain/consciousness tests
 - **Performance**: 60fps desktop (✅ met), 30-45fps mobile (⚠️ optimization ongoing)
 - **Bundle Size**: ~240KB gzipped (Three.js vendor chunk)
 - **Memory**: 180MB desktop, 150MB mobile
@@ -2352,7 +2352,7 @@ The Q1 2026 architecture successfully demonstrates the feasibility of authentic 
 - ✅ 28-bone skeletal animation system operational
 - ✅ 8/12 combat realism systems complete (67%)
 - ✅ Production-ready pain/consciousness with 73 tests
-- ✅ 76% test coverage with 95% on new components
+- ✅ 73.73% test coverage (from docs/coverage/coverage-summary.json)
 - ✅ 60fps desktop performance maintained
 - ⚠️ Mobile optimization to 60fps (Q2 2026 priority)
 
