@@ -77,7 +77,7 @@ C4Container
         Container(audioEngine, "🎵 Audio Engine", "Web Audio API", "Damage-based sound feedback, Korean traditional + cyberpunk audio")
         Container(stateManager, "🗄️ State Manager", "Zustand + React Context", "Combat state, player archetypes (5), trigram stances")
         Container(animationSystem, "🎬 Animation System", "Skeletal Animation + Hand Poses", "28-bone system, muscle tension, 70 vital point mapping")
-        Container(perfMonitor, "📈 Performance Monitor", "Stats.js + Custom", "60fps tracking, memory usage, optimization")
+        Container(perfMonitor, "📈 Performance Monitor", "PerformanceOverlay3D", "60fps tracking, memory usage, optimization")
     }
 
     Rel(user, ui, "Interacts via input", "Touch/Mouse/Keyboard")
@@ -172,7 +172,7 @@ C4Component
         Component(effectsProcessor, "✨ EffectsProcessor", "TypeScript", "Visual and audio effect coordination")
         Component(animationSystem, "🎬 AnimationSystem", "TypeScript", "28-bone skeletal animation + hand poses")
         Component(bodyPartHealth, "🩹 BodyPartHealth", "TypeScript", "8-part health tracking system")
-        Component(painSystem, "🔥 PainSystem", "TypeScript", "Pain accumulation and response (90% complete)")
+        Component(painSystem, "🔥 PainResponseSystem", "TypeScript", "Pain accumulation and response (90% complete)")
         Component(consciousnessSystem, "💤 ConsciousnessSystem", "TypeScript", "4-level consciousness degradation (90% complete)")
     }
 
@@ -180,7 +180,7 @@ C4Component
         Component(koreanTerminology, "🇰🇷 KoreanTerminology", "JSON/TypeScript", "Bilingual Korean-English terms")
         Component(anatomyData, "🫀 AnatomyData", "JSON/TypeScript", "70 vital points (5 severity, 7 categories, 14 meridians)")
         Component(trigramData, "📊 TrigramData", "JSON/TypeScript", "8 I Ching trigrams + techniques")
-        Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Damage-scaled audio + Korean traditional (84% coverage)")
+        Component(audioAssets, "🎵 AudioAssets", "WebM/OGG", "Damage-scaled audio + Korean traditional")
         Component(archetypeData, "👤 ArchetypeData", "JSON/TypeScript", "5 player archetypes (무사, 암살자, 해커, 정보요원, 조직폭력배)")
         Component(skeletalData, "🦴 SkeletalData", "TypeScript", "28-bone hierarchy + 7 hand poses + muscle tension")
     }
@@ -220,7 +220,7 @@ C4Component
 ### 🧩 Component Implementation Status (Q1 2026)
 
 #### Combat System (8.3/10 - Production-Ready)
-- **Combat Realism**: 8/12 systems complete (67%)
+- **Combat Realism**: 8/12 systems complete or near-complete (67%)
   - ✅ **Body Part Health**: 100% (8 parts tracked with Korean/English labels)
   - ✅ **Vital Point Targeting**: 100% (70/70 points with TCM meridian mapping)
   - ✅ **Enhanced Anatomy**: 95% (polygon-based detection, 13 zones, <0.01ms)
@@ -943,9 +943,9 @@ Static environment objects merged into single mesh for reduced draw calls.
 
 ### 🔬 Performance Monitoring
 
-- **Custom performance overlays** (e.g., `PerformanceOverlay3D`) for real-time FPS and frame timing monitoring
-- **Custom performance metrics** tracked in state
-- **Performance tests** in Vitest suite validating animation timing
+- **Custom performance overlay component** (`PerformanceOverlay3D`) for real-time FPS and frame-timing monitoring (no `stats.js` dependency)
+- **Custom performance metrics** tracked in React/Three.js state and surfaced via `PerformanceOverlay3D`
+- **Performance tests** in the Vitest suite validating `PerformanceOverlay3D` frame timing, overlay stability, and animation timing
 
 ### 📱 Mobile Performance Optimization (Q2 2026 Planned)
 
@@ -1051,7 +1051,8 @@ src/
 │   ├── combat/              # Combat subsystems (pain, consciousness, balance, etc.)
 │   │   ├── PainResponseSystem.ts     # Pain response (90% complete, 37 tests)
 │   │   ├── ConsciousnessSystem.ts    # Consciousness (90% complete, 36 tests)
-│   │   └── BalanceSystem.ts          # Balance and fall mechanics
+│   │   ├── BalanceSystem.ts          # Balance and fall mechanics
+│   │   └── CombatStateSystem.ts      # Combat state management
 │   └── ai/                  # AI combat logic
 ├── data/                    # Game data and constants
 │   ├── techniques.ts        # 20 techniques (4 per archetype)
@@ -1588,7 +1589,7 @@ mindmap
       id6.3[1 system partially implemented: bone impact audio (mapping + selection complete; asset coverage/final mix pending)]
     id7(❌ Incomplete Features)
       id7.1[Techniques not yet stance-specific - 4 per archetype vs 3-5 per stance]
-      id7.2[EndScreen not implemented yet]
+      id7.2[EndScreen3D implemented but missing final UX polish (detailed stats, meta-progression hooks)]
       id7.3[Training mode limited scope]
     id8(📱 Mobile Performance)
       id8.1[30-45fps on mobile devices - below 60fps target]
@@ -2335,7 +2336,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 - **Combat Realism Completion**: Complete remaining 4/12 systems (trauma visualization, balance/vulnerability, combat readiness HUD, injury-based movement) + finalize bone impact audio pipeline (BoneImpactAudioMap + useCombatAudio integrated; remaining work: asset coverage expansion and final mix/tuning)
 - **Mobile Performance**: Optimize to achieve 60fps target on mobile devices (currently 30-45fps)
 - **Technique Expansion**: Expand from 4 techniques/archetype to 3-5 techniques/stance (24-40 total)
-- **EndScreen Implementation**: Complete game flow (Intro → Combat → End)
+- **EndScreen UX & Flow Enhancements**: Improve EndScreen3D UX (results presentation, bilingual Korean/English copy, audio/visual polish), add replay/rematch flow and analytics/telemetry hooks while keeping the existing Intro → Combat → End wiring
 - **Persistence Layer**: Optional IndexedDB/localStorage for vital point progress and training logs
 - **VR/AR Integration**: WebXR support for immersive vital point training with skeletal animation
 - **Advanced Analytics**: Vital point targeting heatmaps, combat effectiveness metrics, skeletal animation quality scoring
