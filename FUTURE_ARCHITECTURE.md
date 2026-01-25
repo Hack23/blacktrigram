@@ -602,16 +602,16 @@ C4Container
 
 **Account Recovery**: Email-based password reset with verification code
 
-**Social Login Providers Supported**:
+**Social & Federated Login Providers (via Cognito Hosted UI)**:
 
-| Provider | OAuth 2.0 Flow | Required Scopes | User Attributes Mapped |
-|----------|----------------|-----------------|------------------------|
-| **Google** | Authorization Code | `openid`, `profile`, `email` | `email`, `name`, `picture` |
-| **Facebook** | Authorization Code | `public_profile`, `email` | `email`, `name`, `picture` |
-| **Discord** | Authorization Code | `identify`, `email` | `email`, `username`, `avatar` |
-| **GitHub** | Authorization Code | `user:email`, `read:user` | `email`, `name`, `avatar_url` |
-| **Twitter/X** | Authorization Code with PKCE | `tweet.read`, `users.read` | `username`, `name`, `profile_image_url` |
-| **Apple** | Authorization Code | `name`, `email` | `email`, `name` (optional) |
+| Provider    | Cognito Integration        | Protocol / Flow             | Typical Scopes              | User Attributes Mapped              |
+|-------------|----------------------------|-----------------------------|-----------------------------|-------------------------------------|
+| **Google**  | Native social IdP          | Authorization Code          | `openid`, `profile`, `email` | `email`, `name`, `picture`         |
+| **Facebook**| Native social IdP          | Authorization Code          | `public_profile`, `email`   | `email`, `name`, `picture`         |
+| **Apple**   | Native social IdP          | Authorization Code          | `name`, `email`             | `email`, `name` (optional)         |
+| **Discord** | OIDC IdP (custom)          | Authorization Code          | `openid`, `email`, `identify` | `email`, `username`, `avatar`      |
+| **GitHub**  | OAuth 2.0 IdP (custom)     | Authorization Code          | `read:user`, `user:email`   | `email`, `name`, `avatar_url`      |
+| **Twitter/X** | OIDC IdP (custom)        | Authorization Code with PKCE | `openid`, `tweet.read`, `users.read` | `username`, `name`, `profile_image_url` |
 
 **Authentication Flow Diagram**:
 
@@ -958,9 +958,9 @@ sequenceDiagram
 
 | AWS Service | Usage | Unit Cost | Monthly Cost | Notes |
 |-------------|-------|-----------|--------------|-------|
-| **AWS Cognito** | 10,000 MAUs | $0.0055/MAU | **$55** | First 50k MAUs, then $0.0055 each |
+| **AWS Cognito** | 10,000 MAUs | $0.0055/MAU | **$55** | Estimate assumes all MAUs billed at $0.0055 (first 50k MAUs free tier ignored for simplicity) |
 | **API Gateway (REST)** | 500,000 requests | $3.50/million | **$1.75** | First 333M requests |
-| **API Gateway (WebSocket)** | 100,000 connections | $1.00/million | **$0.10** | Connection minutes charged separately |
+| **API Gateway (WebSocket)** | 100,000 messages<br/>300,000 connection-minutes | $1.00/million messages<br/>$0.25/million minutes | **$0.18** | Messages + connection-minutes pricing |
 | **Lambda** | 2M invocations<br/>200GB-seconds | $0.20/million<br/>$0.0000166667/GB-sec | **$3.73** | 400k GB-seconds free tier |
 | **DynamoDB (On-Demand)** | 10M read units<br/>2M write units | $0.25/million reads<br/>$1.25/million writes | **$5.00** | On-demand pricing, autoscaling |
 | **S3 (Standard)** | 100 GB storage<br/>10k PUT requests<br/>100k GET requests | $0.023/GB<br/>$0.005/1k PUT<br/>$0.0004/1k GET | **$2.38** | User-generated content storage |
@@ -2547,7 +2547,7 @@ gantt
 - **Combat Physics**: Matter.js integration with custom physics calculations
 - **AI System**: TensorFlow.js for intelligent opponent behavior and training
 - **Cultural Data**: JSON-based i18n system for bilingual content management
-- **Community Backend**: Express + MongoDB for social features and leaderboards
+- **Community Backend**: Express + MongoDB for community social features (profiles, messaging, forums)
 
 **Migration Approach**: Progressive enhancement with backward compatibility at each phase
 
