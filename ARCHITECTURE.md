@@ -18,7 +18,7 @@
 | **[🎬 Skeletal Animation](#-skeletal-animation-architecture)**        | Animation System | 28-bone hierarchy, 7 hand poses, muscle tension visualization                                              |
 | **[⚡ Performance Architecture](#-performance-architecture-q1-2026)** | Performance      | Three.js optimization, 60fps targets, instancing, LOD, benchmarks                                          |
 | **[📊 SWOT Analysis](#-swot-analysis)**                               | Strategy         | Q1 2026 status: Strengths (70/70 vital points), Weaknesses (67% combat realism), Opportunities, Threats    |
-| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (73.73% test coverage, 8/12 combat realism systems, 8/8 trigram stances)                 |
+| **[📈 Game Status Report](game-status.md)**                           | Current Progress | Comprehensive status (current test coverage and metrics from docs/coverage/coverage-summary.json, 8/12 combat realism systems, 8/8 trigram stances) |
 | **[🔮 Future Architecture](FUTURE_ARCHITECTURE.md)**                  | Roadmap          | Q2 2026+ evolution: Combat realism completion, VR/AR integration, advanced features                        |
 | **[🎯 Core Game Concepts](#-core-game-concepts)**                     | Game Design      | Player archetypes (5), trigram system (8), resources & mechanics                                           |
 | **[🏗️ Architecture Concepts](#-architecture-concepts)**               | Technical Design | Mindmap of system architecture layers and components                                                       |
@@ -1111,18 +1111,18 @@ src/
 - `src/components/screens/combat/` - CombatScreen3D implementation (production-ready, 42.52% line coverage per docs/coverage/coverage-summary.json)
 - `src/utils/player3DHelpers.ts` - PlayerState to Three.js conversion utilities
 
-**Audio System (84% Test Coverage):**
+**Audio System (87.38% Line Coverage):**
 - `src/audio/AudioProvider.tsx` - React context provider and useAudio hook
 - `src/audio/AudioAssetRegistry.ts` - Sound library with damage-scaled audio
 - `src/audio/AudioManager.ts` - Audio playback with Web Audio API
 - `src/audio/BoneImpactAudioMap.ts` - Bone impact audio system (60% complete)
-- 84.29% test coverage across audio systems
+- 87.38% line coverage across audio systems (790/904 lines, per docs/coverage/coverage-summary.json)
 
 **Test Coverage (Q1 2026):**
 - **Overall**: 73.73% line coverage (Vitest unit + Cypress E2E, from docs/coverage/coverage-summary.json)
 - **New Components**: 95% test coverage
 - **Core Systems**: >85% test coverage
-- **Audio System**: 84.29% test coverage
+- **Audio System**: 87.38% line coverage (audio folder, per docs/coverage/coverage-summary.json)
 - **Pain/Consciousness**: 73 comprehensive tests (production-ready)
 
 ---
@@ -2328,7 +2328,7 @@ Black Trigram's architecture represents a modern approach to browser-based gamin
 - **Overall Rating**: 8.4/10 (Beta Stage - Combat Realism Production-Ready)
 - **Vital Points**: 70/70 implemented (100% complete) - up from 4.3% in 2024
 - **Skeletal Animation**: 28-bone system operational, 7 hand poses functional
-- **Test Coverage**: 73.73% overall, 84.29% audio system, 73 pain/consciousness tests
+- **Test Coverage**: 73.73% overall, 87.38% audio system line coverage, 73 pain/consciousness tests
 - **Performance**: 60fps desktop (✅ met), 30-45fps mobile (⚠️ optimization ongoing)
 - **Bundle Size**: ~240KB gzipped (Three.js vendor chunk)
 - **Memory**: 180MB desktop, 150MB mobile
