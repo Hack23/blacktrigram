@@ -318,8 +318,8 @@ C4Container
     Rel(backup, dynamoDB, "Backs up", "AWS Backup")
     Rel(backup, s3, "Backs up", "AWS Backup")
     Rel(resilience, backup, "Monitors RTO/RPO", "Resilience Hub")
-    Rel(guardDuty, lambda, "Monitors threats", "CloudWatch")
-    Rel(securityHub, guardDuty, "Aggregates findings", "AWS Security")
+    Rel(guardDuty, lambda, "Analyzes activity for threats", "CloudTrail, VPC Flow Logs, DNS logs")
+    Rel(securityHub, guardDuty, "Ingests GuardDuty findings", "EventBridge / AWS Security Hub")
 
     UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
 ```
@@ -996,11 +996,11 @@ sequenceDiagram
 
 **Revenue vs. Infrastructure Cost** (based on projections):
 
-| User Base | Monthly Revenue (Estimated) | AWS Infrastructure Cost | Gross Margin |
-|-----------|-----------------------------|-------------------------|--------------|
-| 10,000 | $16,000 (8% conversion, $20 ARPPU) | $140 | **99.1%** |
-| 100,000 | $360,000 (12% conversion, $30 ARPPU) | $1,300 | **99.6%** |
-| 1,000,000 | $4,500,000 (15% conversion, $30 ARPPU) | $13,000 | **99.7%** |
+| User Base | Monthly Revenue (Estimated) | AWS Infrastructure Cost (with VPC) | Gross Margin |
+|-----------|-----------------------------|------------------------------------|--------------|
+| 10,000 | $16,000 (8% conversion, $20 ARPPU) | $290 | **98.2%** |
+| 100,000 | $360,000 (12% conversion, $30 ARPPU) | $1,450 | **99.6%** |
+| 1,000,000 | $4,500,000 (15% conversion, $30 ARPPU) | $13,150 | **99.7%** |
 
 **Cost Monitoring & Alerts**:
 - **AWS Budgets**: Set budget of $200/month with 80% and 100% threshold alerts
