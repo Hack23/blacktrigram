@@ -903,8 +903,8 @@ PELVIS (root)
 | Platform | Resolution | Target FPS | Achieved FPS | Particles | Memory | Status |
 |----------|-----------|------------|--------------|-----------|--------|--------|
 | **Desktop** | 1200x800 | 60fps | 60fps | 1000+ | 180MB | ✅ Met |
-| **Tablet** | 1024x768 | 60fps | 30-45fps | 750+ | 150MB | ⚠️ Optimization Ongoing |
-| **Mobile** | 720p | 60fps | 30-45fps | 500+ | 150MB | ⚠️ Optimization Ongoing |
+| **Tablet** | 1024x768 | 30fps | 30-45fps | 750+ | 150MB | ⚠️ Optimization Ongoing |
+| **Mobile** | 720p | 30fps | 30-45fps | 500+ | 150MB | ⚠️ Optimization Ongoing |
 
 **Overall Performance Rating**: 8.0/10 (60fps desktop maintained, mobile optimization in progress)
 
@@ -1037,21 +1037,22 @@ src/
 │   │   ├── VitalPointSystem.ts
 │   │   ├── EnhancedAnatomy.ts
 │   │   └── HitDetection.ts
-│   ├── combat/              # Combat mechanics, physics, and subsystems
-│   │   ├── CombatSystem.ts (36,888 bytes ~36KB - core combat logic)
-│   │   ├── EffectCalculator.ts
-│   │   ├── PlayerEffectManager.ts
+│   ├── CombatSystem.ts      # Main combat logic and orchestration (36,888 bytes ~36KB)
+│   ├── EffectCalculator.ts  # Combat effect calculations
+│   ├── PlayerEffectManager.ts # Player effect management
+│   ├── combat/              # Combat subsystems
 │   │   ├── PainResponseSystem.ts     # Pain response (90% complete, 37 tests)
 │   │   ├── ConsciousnessSystem.ts    # Consciousness (90% complete, 36 tests)
 │   │   ├── BalanceSystem.ts          # Balance and fall mechanics
 │   │   └── CombatStateSystem.ts      # Combat state management
 │   ├── animation/           # Skeletal animation system (Q1 2026)
 │   │   ├── core/            # Core animation logic
-│   │   │   ├── SkeletalAnimation.ts   # 28-bone animation system
-│   │   │   └── MuscleActivation.ts    # Muscle tension visualization
+│   │   │   ├── AnimationRegistry.ts      # Animation registration and lookup
+│   │   │   └── AnimationStateMachine.ts  # Animation state transitions
 │   │   ├── builders/        # Builders for animation data
 │   │   │   └── HandPoses.ts           # 7 hand pose definitions
 │   │   └── systems/         # Animation systems and orchestration
+│   │       └── MuscleActivation.ts    # Muscle tension visualization
 │   ├── bodypart/            # Body part health tracking (8 parts)
 │   ├── physics/             # Physics simulation
 │   ├── breathing/           # Breathing disruption system (75% complete)
