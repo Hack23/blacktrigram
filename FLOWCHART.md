@@ -96,57 +96,64 @@ flowchart TD
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FF3D00','primaryTextColor':'#fff','primaryBorderColor':'#BF360C','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    RoundStart([⏱️ Round Start]) --> Init[Initialize Round<br/>Reset Positions<br/>Reset Timers]
+    RoundStart([⏱️ Round Start]) --> Init[Initialize Round<br/>Reset Positions<br/>28-Bone Skeleton<br/>Reset Resources]
 
-    Init --> Ready[Ready State<br/>3...2...1...]
+    Init --> Ready[Ready State<br/>3...2...1...<br/>Stance: 건 Heaven]
     Ready --> Fight[🥊 FIGHT!]
 
     Fight --> Input{Player Input}
 
-    Input -->|Attack Key| ProcessAttack[Process Attack]
-    Input -->|Stance Change| ChangeStance[Change Stance]
-    Input -->|Block| Block[Enter Block State]
-    Input -->|Movement| Move[Update Position]
+    Input -->|Attack Space| ProcessAttack[Process Attack<br/>Check Stance]
+    Input -->|Stance 1-8| ChangeStance[Change Stance<br/>8 Trigrams]
+    Input -->|Block Shift| Block[Enter Block State<br/>Guard Animation]
+    Input -->|WASD| Move[Update Position<br/>Check Leg Damage]
 
-    ProcessAttack --> CheckStance{Valid Stance?}
+    ProcessAttack --> CheckStance{Valid Stance<br/>for Technique?}
     CheckStance -->|No| Input
-    CheckStance -->|Yes| CheckKi{Sufficient Ki?}
+    CheckStance -->|Yes| CheckKi{Sufficient Ki<br/>& Stamina?}
 
     CheckKi -->|No| Input
-    CheckKi -->|Yes| ExecuteAttack[Execute Attack]
+    CheckKi -->|Yes| ExecuteAttack[Execute Attack<br/>Skeletal Animation<br/>Hand Pose]
 
-    ExecuteAttack --> CalcDamage[Calculate Damage]
-    CalcDamage --> CheckVP{Target is<br/>Vital Point?}
+    ExecuteAttack --> HitDetection[Hit Detection<br/>Polygon-Based]
+    HitDetection --> CheckVP{Hit Vital Point?<br/>70 Targets}
 
-    CheckVP -->|No| BaseDmg[Base Damage<br/>Apply]
-    CheckVP -->|Yes| CheckPrecision{Precision<br/>Sufficient?}
+    CheckVP -->|No| BaseDmg[Base Damage<br/>Body Part Health]
+    CheckVP -->|Yes| CheckPrecision{Precision Roll<br/>≥ VP Threshold?}
 
-    CheckPrecision -->|No| BaseDmg
-    CheckPrecision -->|Yes| VPDmg[Vital Point Damage<br/>Multiplier Applied]
+    CheckPrecision -->|No| GlancingHit[Glancing Hit<br/>50% VP Effect]
+    CheckPrecision -->|Yes| PerfectVP[Perfect VP Strike!<br/>Full Multiplier]
 
-    VPDmg --> ApplyEffects[Apply VP Effects<br/>Stun/Pain/etc]
-    BaseDmg --> UpdateState[Update Player States]
-    ApplyEffects --> UpdateState
+    GlancingHit --> ApplyDamage[Apply Damage<br/>Update 8 Body Parts]
+    PerfectVP --> ApplyDamage
+    BaseDmg --> ApplyDamage
 
-    UpdateState --> CheckWin{Victory<br/>Condition?}
-    CheckWin -->|KO| RoundEnd([🏁 Round End])
-    CheckWin -->|Health 0| RoundEnd
-    CheckWin -->|Time Up| RoundEnd
-    CheckWin -->|Continue| Input
+    ApplyDamage --> ApplyEffects[Apply Status Effects<br/>Pain Response<br/>Consciousness Level<br/>Breathing Disruption]
+    
+    ApplyEffects --> UpdateAnimation[Update Skeletal Animation<br/>Muscle Tension<br/>Injury Feedback]
 
-    ChangeStance --> UpdateStance[Update Current Stance<br/>Consume Ki]
-    UpdateStance --> Input
+    UpdateAnimation --> CheckKO{Victory<br/>Condition?}
+    CheckKO -->|Health ≤ 0| RoundEnd([🏁 Round End])
+    CheckKO -->|Consciousness ≤ 0| RoundEnd
+    CheckKO -->|Time Up| RoundEnd
+    CheckKO -->|Continue| Input
 
-    Block --> BlockState[Block State Active<br/>Reduce Damage]
+    ChangeStance --> ConsumeResources[Consume Ki/Stamina<br/>Transition Animation]
+    ConsumeResources --> Input
+
+    Block --> BlockState[Block State Active<br/>Reduce Damage 50-80%<br/>Guard Animation]
     BlockState --> Input
 
-    Move --> UpdatePos[Update Position<br/>Check Bounds]
-    UpdatePos --> Input
+    Move --> CheckInjury{Leg Injury<br/>Movement Penalty?}
+    CheckInjury -->|Yes| SlowMovement[Reduced Speed<br/>Balance Loss Risk]
+    CheckInjury -->|No| NormalMovement[Normal Speed]
+    SlowMovement --> Input
+    NormalMovement --> Input
 
     style RoundStart fill:#2979FF,stroke:#0D47A1,color:#fff
     style Fight fill:#FF3D00,stroke:#BF360C,color:#fff
     style ExecuteAttack fill:#FFD600,stroke:#F57F17,color:#000
-    style VPDmg fill:#00C853,stroke:#00796B,color:#fff
+    style PerfectVP fill:#00C853,stroke:#00796B,color:#fff
     style RoundEnd fill:#9C27B0,stroke:#6A1B9A,color:#fff
 ```
 
@@ -206,51 +213,69 @@ flowchart LR
 
 ## 🎯 Vital Point Targeting Flow
 
-### **Vital Point Strike Resolution**
+### **Vital Point Strike Resolution (70 Targets)**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#FF3D00','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
 flowchart TD
-    Start([🎯 VP Strike Attempt]) --> CheckStance{Correct Stance<br/>for VP?}
+    Start([🎯 VP Strike Attempt<br/>70 Targets]) --> CheckStance{Correct Stance<br/>for VP Category?<br/>8 Trigrams}
 
-    CheckStance -->|No| Penalty[⚠️ Damage Penalty<br/>-50% effectiveness]
-    CheckStance -->|Yes| CheckTechnique{Technique<br/>≥ Required?}
+    CheckStance -->|No| Penalty[⚠️ Stance Penalty<br/>-30% effectiveness]
+    CheckStance -->|Yes| CheckTechnique{Archetype<br/>Skill Match?<br/>5 Archetypes}
 
     Penalty --> CheckTechnique
 
-    CheckTechnique -->|No| Miss[❌ Miss VP<br/>Regular hit only]
-    CheckTechnique -->|Yes| RollPrecision[🎲 Roll Precision<br/>Random(0-100)]
+    CheckTechnique -->|Poor Match| SkillPenalty[⚠️ Skill Penalty<br/>-20% precision]
+    CheckTechnique -->|Good Match| RollPrecision[🎲 Roll Precision<br/>Random(0-100)<br/>vs VP Threshold]
 
-    Miss --> End([Attack Complete])
+    SkillPenalty --> RollPrecision
 
-    RollPrecision --> ComparePrecision{Roll ≥<br/>VP.precision?}
+    RollPrecision --> ComparePrecision{Roll ≥<br/>VP Precision<br/>Requirement?}
 
-    ComparePrecision -->|No| Glance[⚡ Glancing VP<br/>50% effectiveness]
-    ComparePrecision -->|Yes| PerfectHit[✨ Perfect Strike<br/>Full VP effect]
+    ComparePrecision -->|No| Glance[⚡ Glancing VP<br/>50% effectiveness<br/>Partial damage]
+    ComparePrecision -->|Yes| PerfectHit[✨ Perfect Strike!<br/>Full VP effect<br/>Maximum damage]
 
-    Glance --> ApplyDamage[Apply Damage<br/>×VP multiplier]
+    Glance --> ApplyDamage[Apply Damage<br/>×VP multiplier<br/>Update Body Part]
     PerfectHit --> ApplyDamage
 
-    ApplyDamage --> DetermineSeverity{VP Severity<br/>Level}
+    ApplyDamage --> DetermineSeverity{VP Severity<br/>Level?<br/>5 Categories}
 
-    DetermineSeverity -->|Minor| MinorEffect[Minor Effect<br/>Light stun 0.5s]
-    DetermineSeverity -->|Moderate| ModEffect[Moderate Effect<br/>Stun 1-2s<br/>Pain increase]
-    DetermineSeverity -->|Major| MajorEffect[Major Effect<br/>Stun 3-5s<br/>Stat reduction]
-    DetermineSeverity -->|Critical| CritEffect[Critical Effect<br/>Stun 5-8s<br/>Severe debuff]
-    DetermineSeverity -->|Lethal| LethalEffect[⚠️ Lethal Effect<br/>Instant KO risk]
+    DetermineSeverity -->|Minor 🟢| MinorEffect[Minor Effect<br/>Dmg: 10-20<br/>Duration: 5-10s<br/>Light stun]
+    DetermineSeverity -->|Moderate 🟡| ModEffect[Moderate Effect<br/>Dmg: 20-40<br/>Duration: 10-20s<br/>Pain increase]
+    DetermineSeverity -->|Major ⚡| MajorEffect[Major Effect<br/>Dmg: 40-60<br/>Duration: 20-40s<br/>Stat reduction]
+    DetermineSeverity -->|Critical ⚠️| CritEffect[Critical Effect<br/>Dmg: 60-80<br/>Duration: 30-60s<br/>Severe debuff]
+    DetermineSeverity -->|Lethal ☠️| LethalEffect[Lethal Effect<br/>Dmg: 80-100<br/>Duration: Permanent<br/>Instant KO risk]
 
-    MinorEffect --> ApplyStatus[Apply Status Effects]
-    ModEffect --> ApplyStatus
-    MajorEffect --> ApplyStatus
-    CritEffect --> ApplyStatus
-    LethalEffect --> ApplyStatus
+    MinorEffect --> CategoryEffect{Anatomical<br/>Category?<br/>7 Types}
+    ModEffect --> CategoryEffect
+    MajorEffect --> CategoryEffect
+    CritEffect --> CategoryEffect
+    LethalEffect --> CategoryEffect
 
-    ApplyStatus --> CheckKO{Health ≤ 0<br/>or<br/>Consciousness ≤ 0?}
+    CategoryEffect -->|Neurological 🧠| NeuroEffect[Nerve damage<br/>Paralysis<br/>Pain response]
+    CategoryEffect -->|Skeletal 🦴| BoneEffect[Bone fracture<br/>Structure damage<br/>Movement loss]
+    CategoryEffect -->|Joint 🔗| JointEffect[Dislocation<br/>Mobility loss<br/>Range limited]
+    CategoryEffect -->|Organ 💓| OrganEffect[Internal damage<br/>Bleeding<br/>System failure]
+    CategoryEffect -->|Muscular 💪| MuscleEffect[Muscle tear<br/>Spasm<br/>Weakness]
+    CategoryEffect -->|Vascular 🩸| VascularEffect[Blood flow disruption<br/>Consciousness loss<br/>Bleeding]
+    CategoryEffect -->|Respiratory 🫁| RespEffect[Breathing disruption<br/>Stamina drain<br/>Panic]
 
-    CheckKO -->|Yes| KO[💀 Knockout<br/>Round End]
-    CheckKO -->|No| Continue[✅ Continue Fight]
+    NeuroEffect --> ApplyStatus[Apply Status Effects<br/>Update Combat State]
+    BoneEffect --> ApplyStatus
+    JointEffect --> ApplyStatus
+    OrganEffect --> ApplyStatus
+    MuscleEffect --> ApplyStatus
+    VascularEffect --> ApplyStatus
+    RespEffect --> ApplyStatus
 
-    KO --> End
+    ApplyStatus --> UpdateSystems[Update Systems<br/>Pain Response<br/>Consciousness<br/>Breathing]
+
+    UpdateSystems --> CheckKO{KO Condition?<br/>Health ≤ 0 OR<br/>Consciousness ≤ 0?}
+
+    CheckKO -->|Yes| KO[💀 Knockout<br/>Round End<br/>Victory]
+    CheckKO -->|No| Continue[✅ Continue Fight<br/>Combat Active]
+
+    KO --> End([Attack Complete])
     Continue --> End
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
@@ -444,51 +469,61 @@ flowchart TD
 
 ## 📊 Asset Loading Flow
 
-### **Game Initialization Flow**
+### **Game Initialization Flow (Three.js)**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#00C853','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([🚀 App Start]) --> CheckCache{Assets<br/>Cached?}
+    Start([🚀 App Start]) --> CheckCache{Assets<br/>Cached?<br/>Browser Storage}
 
-    CheckCache -->|Yes| LoadCached[Load from<br/>Browser Cache]
-    CheckCache -->|No| LoadRemote[Load from CDN]
+    CheckCache -->|Yes| LoadCached[Load from<br/>Browser Cache<br/>IndexedDB]
+    CheckCache -->|No| LoadRemote[Load from CDN<br/>Audio + 3D Models]
 
-    LoadCached --> VerifyCache{Cache<br/>Valid?}
+    LoadCached --> VerifyCache{Cache<br/>Valid?<br/>Version Check}
 
     VerifyCache -->|No| LoadRemote
-    VerifyCache -->|Yes| InitAudio[Initialize<br/>Audio System]
+    VerifyCache -->|Yes| InitAudio[Initialize<br/>Audio System<br/>Howler.js + Web Audio]
 
-    LoadRemote --> Progress[Show Loading<br/>Progress]
+    LoadRemote --> Progress[Show Loading<br/>Progress Bar<br/>Asset Counter]
     Progress --> DownloadAssets{Download<br/>Success?}
 
     DownloadAssets -->|No| Retry{Retry<br/>Count < 3?}
-    DownloadAssets -->|Yes| CacheAssets[Cache Assets<br/>Locally]
+    DownloadAssets -->|Yes| CacheAssets[Cache Assets<br/>IndexedDB<br/>Service Worker]
 
     Retry -->|Yes| LoadRemote
-    Retry -->|No| ErrorScreen[❌ Loading Error<br/>Offline Mode?]
+    Retry -->|No| ErrorScreen[❌ Loading Error<br/>Offline Mode?<br/>Error Details]
 
     ErrorScreen --> End([Exit/Retry])
 
     CacheAssets --> InitAudio
 
-    InitAudio --> InitThree[Initialize<br/>Three.js Renderer]
-    InitThree --> InitGame[Initialize<br/>Game Systems]
+    InitAudio --> LoadAudioFiles[Load Audio Files<br/>Korean Traditional<br/>Combat SFX<br/>Cyberpunk BGM]
+    LoadAudioFiles --> InitThree[Initialize Three.js<br/>@react-three/fiber<br/>WebGL Context]
+    
+    InitThree --> CreateScene[Create 3D Scene<br/>Camera Setup<br/>Lighting<br/>Environment]
+    
+    CreateScene --> LoadModels[Load 3D Models<br/>Character Meshes<br/>Skeletal Rigs<br/>28-Bone System]
+    
+    LoadModels --> InitGame[Initialize<br/>Game Systems]
 
-    InitGame --> Combat[Combat System]
-    InitGame --> Trigram[Trigram System]
-    InitGame --> VP[Vital Point System]
+    InitGame --> CombatSystem[Combat System<br/>CombatSystemController]
+    InitGame --> TrigramSystem[Trigram System<br/>8 Stances<br/>StanceManager]
+    InitGame --> VPSystem[Vital Point System<br/>70 Targets<br/>VitalPointSystem]
+    InitGame --> AnimationSystem[Animation System<br/>28 Bones<br/>7 Hand Poses<br/>Muscle Tension]
+    InitGame --> AISystem[AI System<br/>5 Archetypes<br/>Combat Behaviors]
 
-    Combat --> Ready{All Systems<br/>Ready?}
-    Trigram --> Ready
-    VP --> Ready
+    CombatSystem --> Ready{All Systems<br/>Ready?<br/>Health Check}
+    TrigramSystem --> Ready
+    VPSystem --> Ready
+    AnimationSystem --> Ready
+    AISystem --> Ready
 
-    Ready -->|No| Wait[Wait for<br/>Initialization]
-    Ready -->|Yes| Complete[✅ Ready to Play]
+    Ready -->|No| Wait[Wait for<br/>Initialization<br/>Loading Spinner]
+    Ready -->|Yes| Complete[✅ Ready to Play<br/>All Systems Online<br/>60fps Active]
 
     Wait --> Ready
-    Complete --> ShowIntro[Show Intro<br/>Screen]
-    ShowIntro --> GameLoop([⚡ Enter Game Loop])
+    Complete --> ShowIntro[Show Intro<br/>Screen<br/>흑괘 Logo]
+    ShowIntro --> GameLoop([⚡ Enter Game Loop<br/>60fps Target])
 
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
     style LoadRemote fill:#FFD600,stroke:#F57F17,color:#000

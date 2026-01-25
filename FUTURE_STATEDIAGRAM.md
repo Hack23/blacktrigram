@@ -17,68 +17,219 @@ This document outlines planned state machine enhancements for Black Trigram (흑
 
 ---
 
-## 🌐 Multiplayer Session States
+## 🌐 Multiplayer Session States (AWS WebSocket)
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 stateDiagram-v2
     [*] --> Disconnected: App Start
     
-    Disconnected --> Authenticating: Login Attempt
+    Disconnected --> Authenticating: Login Attempt<br/>Cognito OAuth
     
-    Authenticating --> Connected: Auth Success
+    state Authenticating {
+        [*] --> ValidateToken
+        ValidateToken --> CheckCognito: JWT Token
+        CheckCognito --> TokenValid: Valid Token
+        CheckCognito --> TokenInvalid: Invalid/Expired
+        
+        TokenValid --> RetrieveProfile: DynamoDB Query
+        TokenInvalid --> LoginFailed
+        
+        RetrieveProfile --> [*]
+        LoginFailed --> [*]
+    }
+    
+    Authenticating --> Connected: Auth Success<br/>WebSocket Open
     Authenticating --> Disconnected: Auth Failed
     
-    Connected --> Idle: Ready
+    Connected --> EstablishWebSocket: wss://api.blacktrigram.com/ws
     
-    Idle --> Matchmaking: Queue for Match
-    Idle --> CreatingLobby: Create Custom Lobby
-    Idle --> JoiningLobby: Join Friend
-    Idle --> Disconnected: Logout
+    state EstablishWebSocket {
+        [*] --> WSHandshake
+        WSHandshake --> SendConnectionInit
+        SendConnectionInit --> ReceiveConnectionAck
+        ReceiveConnectionAck --> StoreConnectionId
+        StoreConnectionId --> [*]
+    }
     
-    Matchmaking --> MatchFound: Opponent Found
-    Matchmaking --> Idle: Cancel Queue
+    EstablishWebSocket --> Idle: WebSocket Ready<br/>Connection ID Stored
     
-    MatchFound --> VerifyingMatch: Accept Match
-    MatchFound --> Idle: Decline Match
+    Idle --> Matchmaking: Queue for Match<br/>Send joinQueue
+    Idle --> CreatingLobby: Create Custom Lobby<br/>Lambda: createLobby
+    Idle --> JoiningLobby: Join Friend<br/>Room Code Entry
+    Idle --> Disconnected: Logout<br/>Cognito SignOut
+    
+    state Matchmaking {
+        [*] --> EnterQueue
+        EnterQueue --> WaitingForMatch: Queue Position: {n}
+        WaitingForMatch --> CheckMatches: Lambda: findMatch<br/>Every 5s
+        CheckMatches --> MatchFound: Opponent Found<br/>ELO Match
+        CheckMatches --> ExpandSearch: Timeout 3min<br/>Widen ELO Range
+        ExpandSearch --> CheckMatches
+        MatchFound --> [*]
+    }
+    
+    Matchmaking --> MatchFound: Opponent Located
+    Matchmaking --> Idle: Cancel Queue<br/>User Cancelled
+    
+    MatchFound --> VerifyingMatch: Accept Match Prompt<br/>10s Countdown
+    
+    state VerifyingMatch {
+        [*] --> ShowMatchInfo
+        ShowMatchInfo --> WaitForAccept: Opponent: {name}<br/>ELO: {rating}<br/>Ping: {ms}ms
+        WaitForAccept --> PlayerAccepted: User Accepted
+        WaitForAccept --> PlayerDeclined: User Declined
+        WaitForAccept --> Timeout: No Response (10s)
+        
+        PlayerAccepted --> CheckAllPlayers
+        CheckAllPlayers --> AllAccepted: All Players Ready
+        CheckAllPlayers --> SomeoneDeclined: Someone Declined
+        
+        PlayerDeclined --> [*]
+        Timeout --> [*]
+        AllAccepted --> [*]
+        SomeoneDeclined --> [*]
+    }
     
     VerifyingMatch --> PreparingMatch: All Players Accept
-    VerifyingMatch --> Matchmaking: Someone Declined
+    VerifyingMatch --> Matchmaking: Someone Declined<br/>Return to Queue
     
-    CreatingLobby --> WaitingForPlayers: Lobby Created
-    JoiningLobby --> WaitingForPlayers: Join Success
-    JoiningLobby --> Idle: Join Failed
+    CreatingLobby --> CustomLobby: Lobby Created<br/>Room Code: {code}
+    JoiningLobby --> CustomLobby: Join Success<br/>DynamoDB Query
+    JoiningLobby --> Idle: Join Failed<br/>Invalid Code
     
-    WaitingForPlayers --> PreparingMatch: All Ready
-    WaitingForPlayers --> Idle: Lobby Disbanded
+    state CustomLobby {
+        [*] --> WaitingForPlayers
+        WaitingForPlayers --> ShowLobbyInfo: Room Code: {code}<br/>Players: {n}/2<br/>Settings: {config}
+        ShowLobbyInfo --> CheckReady: Check Ready Status
+        CheckReady --> AllReady: All Players Ready
+        CheckReady --> WaitingForPlayers: Not All Ready
+        AllReady --> [*]
+    }
     
-    PreparingMatch --> SyncingGameState: Load Assets
+    CustomLobby --> PreparingMatch: All Ready<br/>Start Match
+    CustomLobby --> Idle: Lobby Disbanded<br/>Host Left
     
-    SyncingGameState --> InMatch: Sync Complete
-    SyncingGameState --> Idle: Sync Failed
+    state PreparingMatch {
+        [*] --> LoadMatchData
+        LoadMatchData --> AllocateRoom: Lambda: allocateRoom<br/>Generate room_id
+        AllocateRoom --> SyncPlayerData: WebSocket Broadcast<br/>Player States
+        SyncPlayerData --> LoadGameAssets: 3D Models<br/>Stage Data<br/>Audio Files
+        LoadGameAssets --> EstablishP2P: WebRTC Setup<br/>STUN/TURN Servers
+        EstablishP2P --> [*]
+    }
     
-    InMatch --> MatchPaused: Pause Request
+    PreparingMatch --> SyncingGameState: Assets Loaded
+    PreparingMatch --> Idle: Sync Failed<br/>Connection Error
+    
+    state SyncingGameState {
+        [*] --> InitializeP2P
+        InitializeP2P --> ExchangeICE: ICE Candidates
+        ExchangeICE --> EstablishConnection: WebRTC Connected
+        EstablishConnection --> SyncInitialState: Send Game State<br/>{ players, stage, rules }
+        SyncInitialState --> VerifySync: Hash Verification
+        VerifySync --> SyncComplete: States Match
+        VerifySync --> Resync: Hash Mismatch
+        Resync --> SyncInitialState
+        SyncComplete --> [*]
+    }
+    
+    SyncingGameState --> InMatch: Sync Complete<br/>Ready to Fight
+    SyncingGameState --> Idle: Sync Failed<br/>Retry Limit
+    
+    state InMatch {
+        [*] --> MatchCountdown
+        MatchCountdown --> ActiveCombat: 3...2...1...FIGHT!
+        ActiveCombat --> MonitorConnection: Heartbeat 1s Keepalive<br/>Game State Sync ~60fps (Rollback)
+        MonitorConnection --> ActiveCombat: Connection Stable
+        MonitorConnection --> ConnectionIssue: Ping > 200ms<br/>Connection Lost
+        ConnectionIssue --> Reconnecting: Attempt Reconnect<br/>Disconnected Player
+        ConnectionIssue --> OpponentWaiting: Opponent View<br/>Show "Waiting for Opponent"<br/>Pause Match Timer
+        ConnectionIssue --> BothDisconnected: Both Players Disconnected<br/>Start Abort Timer (30s)
+        Reconnecting --> ActiveCombat: Reconnect Success<br/>Resume Match Timer
+        Reconnecting --> Disconnected: Reconnect Failed (30s)<br/>Forfeit Disconnected Player
+        OpponentWaiting --> ActiveCombat: Opponent Reconnected<br/>Resume Match Timer
+        OpponentWaiting --> MatchComplete: Opponent Forfeit<br/>Award Win
+        BothDisconnected --> MatchComplete: Abort Match<br/>No Contest
+        ActiveCombat --> RoundComplete: Health ≤ 0<br/>OR Time Up
+        RoundComplete --> [*]
+    }
+    
+    InMatch --> MatchPaused: Pause Request<br/>ESC Key
     InMatch --> MatchComplete: Round End
-    InMatch --> Disconnected: Connection Lost
+    InMatch --> Disconnected: Connection Lost<br/>Forfeit Match
     
-    MatchPaused --> InMatch: Resume
-    MatchPaused --> Idle: Forfeit
+    state MatchPaused {
+        [*] --> ShowPauseMenu
+        ShowPauseMenu --> WaitForResume: Resume Option<br/>Forfeit Option
+        WaitForResume --> UserResume: User Resumes
+        WaitForResume --> UserForfeit: User Forfeits
+        UserResume --> [*]
+        UserForfeit --> [*]
+    }
     
-    MatchComplete --> SavingResults: Update Stats
-    SavingResults --> Idle: Save Complete
+    MatchPaused --> InMatch: Resume<br/>Continue Fight
+    MatchPaused --> Idle: Forfeit<br/>Match Lost
+    
+    state MatchComplete {
+        [*] --> DetermineWinner
+        DetermineWinner --> CalculateELO: Apply ELO Algorithm<br/>K-factor: 32
+        CalculateELO --> UpdateRatings: Lambda: updateRatings<br/>DynamoDB Update
+        UpdateRatings --> SaveMatchHistory: Lambda: saveMatch<br/>S3 Backup
+        SaveMatchHistory --> UpdateLeaderboards: DynamoDB GSI<br/>Global Rankings
+        UpdateLeaderboards --> [*]
+    }
+    
+    MatchComplete --> SavingResults: Calculate Results
+    
+    state SavingResults {
+        [*] --> SavePlayerStats
+        SavePlayerStats --> SaveMatchData: DynamoDB PutItem<br/>match_history table
+        SaveMatchData --> UpdateAchievements: Check Achievement Progress
+        UpdateAchievements --> GenerateReplay: Save Replay Data<br/>S3 Storage
+        GenerateReplay --> SendNotifications: SNS<br/>Email/Push
+        SendNotifications --> [*]
+    }
+    
+    SavingResults --> PostMatch: Save Complete
+    
+    state PostMatch {
+        [*] --> DisplayStats
+        DisplayStats --> ShowDamageDealt
+        ShowDamageDealt --> ShowVPStrikes: 70 VP Breakdown
+        ShowVPStrikes --> ShowTechniquesUsed: Technique Stats
+        ShowTechniquesUsed --> ShowELOChange: Rating Change
+        ShowELOChange --> ShowReplayOption: Watch Replay
+        ShowReplayOption --> [*]
+    }
+    
+    PostMatch --> Idle: Return to Menu<br/>WebSocket Active
     
     note right of Matchmaking
         ELO-based matching
-        Skill tiers
-        Region filtering
-        Latency check
+        ±100 initial range
+        Expand to ±200 after 3min
+        Region filtering (Asia, NA, EU)
+        Latency optimization
+        Queue position tracking
     end note
     
     note right of SyncingGameState
-        WebRTC/WebSocket
-        State synchronization
-        Input prediction
-        Lag compensation
+        WebRTC P2P connection
+        Input prediction (rollback netcode)
+        Lag compensation (up to 100ms)
+        State hash verification
+        Automatic desync detection
+        Reconnect on packet loss
+    end note
+    
+    note right of InMatch
+        60fps target
+        Real-time state updates
+        Input buffering (3 frames)
+        Heartbeat monitoring
+        Automatic reconnect (30s grace)
+        Frame-perfect rollback
     end note
 ```
 
