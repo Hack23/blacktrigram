@@ -71,7 +71,7 @@ Black Trigram has achieved **exceptional advancement in combat realism systems**
 - **Test Files**: 372 test files (excellent test-to-code ratio of 0.95:1)
 - **Vital Points**: 70/70 implemented and verified in VitalPointsData.ts (100% complete)
 - **Skeletal System**: 28-bone humanoid rig verified in SkeletonRig.ts
-- **Hand Poses**: 7 poses implemented (FIST, OPEN, STRIKE, GRAB, BLOCK, POINT, RELAXED)
+- **Hand Poses**: 7 poses implemented (FIST, KNIFE_HAND, SPEAR_HAND, PALM_HEEL, GRAPPLING, OPEN, RELAXED)
 - **Open Issues**: 21 tracked via GitHub API
 - **Open PRs**: 7 tracked via GitHub API
 - **Technical Debt**: 27 TODO/FIXME comments, 2 low-severity vulnerabilities
@@ -704,7 +704,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### IntroScreen – **8.4/10** ✅ Production Ready
 
-**File**: `src/components/intro/IntroScreen3D.tsx` (414 lines)
+**File**: `src/components/screens/intro/IntroScreen3D.tsx` (414 lines)
 
 **What Works:**
 - ✅ Three.js implementation with Html overlays
@@ -738,7 +738,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### CombatScreen3D – **7.8/10** ✅ Production-Ready with Combat Realism
 
-**File**: `src/components/combat/CombatScreen3D.tsx` (2228 lines, down from 2336)
+**File**: `src/components/screens/combat/CombatScreen3D.tsx` (2228 lines, down from 2336)
 
 **What Works:**
 - ✅ Three.js arena with 3D characters
@@ -774,7 +774,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 **Components:**
 - `CombatArena3D.tsx` - 3D arena environment
-- `Player3DModel.tsx` - Character 3D models
+- `SkeletalPlayer3D.tsx` - Character 3D models with skeletal animation
 - `BodyPartHealthDisplay.tsx` (NEW - 228 lines) - 8-part health tracking
 - `FPSMonitor.tsx` (NEW - 144 lines) - Performance monitoring
 - `MobileControlsWrapper.tsx` (NEW - 130 lines) - Mobile control unification
@@ -833,7 +833,7 @@ All 5 archetypes from game-design.md fully implemented with complete data:
 
 #### TrainingScreen3D – **6.0/10** ⚠️ Functional But Limited
 
-**File**: `src/components/training/TrainingScreen3D.tsx` (431 lines)
+**File**: `src/components/screens/training/TrainingScreen3D.tsx` (431 lines)
 
 **What Works:**
 - ✅ Training arena with dummy target
@@ -971,36 +971,43 @@ The skeletal animation system is a **28-bone humanoid rig** implementing authent
    - Closed fist for punching
    - Tightly curled fingers
    - Aligned knuckles for impact
+   - Traditional Taekwondo fist formation
 
-2. **바닥손 (Open Hand/Badakseon)** - HandPoseType.OPEN
-   - Open palm for strikes
-   - Extended fingers together
-   - Rigid wrist for power
+2. **수도 (Knife-Hand/Sudo)** - HandPoseType.KNIFE_HAND
+   - Rigid hand edge for chopping strikes
+   - Fingers fully extended and together
+   - Thumb tucked against palm
+   - Used for strikes to neck/collar (Hapkido/Taekwondo)
 
-3. **손날 (Knife Hand/Sonnal)** - HandPoseType.STRIKE
-   - Blade hand for precise strikes
-   - Extended fingers together
-   - Edge of hand striking surface
+3. **관수 (Spear-Hand/Gwansu)** - HandPoseType.SPEAR_HAND
+   - Pointed finger thrust for precise strikes
+   - All fingers extended and pressed together
+   - Fingertips form a point
+   - Targets soft tissue (throat, eyes, solar plexus)
 
-4. **움켜쥐기 (Grab/Umkyeojugi)** - HandPoseType.GRAB
-   - Grasping hand for joint locks
-   - Partially curled fingers
-   - Thumb wrapped for grip
+4. **장력 (Palm-Heel/Jangryeok)** - HandPoseType.PALM_HEEL
+   - Palm-heel strike position
+   - Fingers curled back (not tightly)
+   - Wrist extended back
+   - Powerful upward strikes to chin/jaw (Taekwondo)
 
-5. **막기손 (Block/Makgison)** - HandPoseType.BLOCK
-   - Defensive hand position
-   - Firm structure
-   - Absorbs/redirects force
+5. **잡기 (Grappling/Japgi)** - HandPoseType.GRAPPLING
+   - Grasping hand for joint locks and throws
+   - Fingers curved for gripping
+   - Thumb opposed for control
+   - Natural spread for maximum grip (Hapkido)
 
-6. **가리키기 (Point/Garikigi)** - HandPoseType.POINT
-   - Pointing hand for precision
-   - Extended index finger
-   - Other fingers curled
+6. **펴기 (Open/Pyeogi)** - HandPoseType.OPEN
+   - Neutral open hand position
+   - Fingers slightly curled (natural relaxation)
+   - Natural spread
+   - Default/idle position
 
-7. **이완손 (Relaxed/Iwanson)** - HandPoseType.RELAXED
-   - Natural resting position
-   - Slightly curled fingers
-   - Minimal tension
+7. **휴식 (Relaxed/Hyusik)** - HandPoseType.RELAXED
+   - Natural relaxed hand for walking/idle
+   - Fingers slightly more curled than open
+   - Slightly angled wrist
+   - Used during walking and natural movements
 
 ### Technical Implementation
 
@@ -1213,7 +1220,7 @@ export interface SkeletalRig {
 - ✅ `VitalPointSystem.test.ts`
 - ✅ `AudioManager.test.ts`
 - ✅ `CombatArena3D.test.tsx`
-- ✅ `Player3DModel.test.tsx`
+- ✅ `SkeletalPlayer3D.guard-visual.test.tsx`
 - ✅ `HitEffects3D.test.tsx`
 - ✅ `IntroScreen3D.test.tsx`
 - ✅ `TrainingScreen3D.test.tsx`
@@ -2130,7 +2137,7 @@ All 10 acceptance criteria met with production-ready implementation:
 
 ### Components Implemented
 
-**Visual Feedback Components** (`src/components/combat/components/`):
+**Visual Feedback Components** (`src/components/screens/combat/components/`):
 - `DamageNumbers.tsx` (89% coverage), `HitEffects3D.tsx` (70% coverage)
 - `ComboCounter.tsx` (86% coverage), `ActionFeedback.tsx` (72% coverage)
 - `useActionFeedback.ts` (100% coverage)
@@ -2484,7 +2491,7 @@ All 10 acceptance criteria from Issue #884 have been met:
 
 #### A.2 Component Details
 
-**Visual Feedback Components** (in `src/components/combat/components/`):
+**Visual Feedback Components** (in `src/components/screens/combat/components/`):
 
 1. **DamageNumbers.tsx** (89% coverage)
    - Floating damage display with color-coding
