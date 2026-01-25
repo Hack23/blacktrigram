@@ -16,39 +16,117 @@
 
 ```mermaid
 mindmap
-  root((흑괘 Black Trigram))
-    Korean Philosophy
-      I Ching Principles
-        8 Trigrams
-        Traditional Wisdom
-        Combat Application
-      Martial Arts Heritage
-        태권도 Taekwondo
-        합기도 Hapkido
-        택견 Taekkyeon
-        유술 Yusul
-      Cultural Values
-        Honor
-        Discipline
-        Precision
-        Respect
-    Combat Principles
-      정격자 Precision Striker
-        Anatomical Targeting
-        70 Vital Points
-        One-Strike Effectiveness
-      비수 Lethal Technique
-        Traditional Applications
-        Modern Combat
-        Realistic Physics
-      암살자 Shadow Methods
-        Silent Takedowns
-        Stealth Techniques
-        Instant Incapacitation
-      급소격 Vital Point Strike
-        Pressure Points
-        Nerve Disruption
-        Blood Flow Control
+  root((흑괘 Black Trigram<br/>Korean Combat System))
+    🎯 70 Vital Points
+      Regional Distribution
+        머리 Head 12
+          백회혈 Baihui
+          인영 Renying
+          태양혈 Taiyang
+          경동맥 Carotid LETHAL
+        몸통 Torso 24
+          명문 Mingmen LETHAL
+          심장혈 Heart Point
+          중완 Zhongwan
+          간유 Liver Strike
+        팔 Arms 17
+          대추 Dazhui
+          곡지 Elbow
+          합곡 Hegu
+        다리 Legs 17
+          슬관절 Knee
+          족삼리 Zusanli
+          태충 Taichong
+      Severity Levels 5
+        Lethal 4 points
+        Critical 18 points
+        Major 28 points
+        Moderate 16 points
+        Minor 4 points
+      Categories 7
+        Neurological 22
+        Skeletal 15
+        Joint 12
+        Organ 9
+        Muscular 7
+        Vascular 3
+        Respiratory 2
+    ☯️ 8 Trigram Stances
+      건 Heaven
+        Direct Force
+        Plus 20 Attack Power
+        Taekwondo Ap Seogi
+      태 Lake
+        Fluid Adaptation
+        Plus 15 Speed
+        Yusul Flowing
+      리 Fire
+        Precision Strike
+        Plus 25 Crit Chance
+        Hapkido Targeting
+      진 Thunder
+        Explosive Power
+        Plus 30 Stun Duration
+        Taekwondo Power
+      손 Wind
+        Continuous Pressure
+        Plus 20 Combo Damage
+        Taekyon Flow
+      감 Water
+        Adaptive Counter
+        Plus 25 Counter Damage
+        Counter Arts
+      간 Mountain
+        Immovable Defense
+        Plus 30 Defense
+        Defensive Stance
+      곤 Earth
+        Grounded Control
+        Plus 20 Grapple
+        Submission Arts
+    👤 5 Archetypes
+      무사 Warrior
+        Honor Code
+        Balanced Stats
+        Joint Control
+      암살자 Assassin
+        Silent Methods
+        High Precision
+        Nerve Strike
+      해커 Hacker
+        Tech Enhanced
+        VP Knowledge
+        Bio Analysis
+      정보요원 Agent
+        Psychological
+        Adaptability
+        Pain Compliance
+      조직폭력배 Crime
+        Survival
+        Brutal Force
+        Environmental
+    🎬 28 Bone Skeleton
+      Root PELVIS
+        SPINE 3 Bones
+          NECK plus HEAD
+          SHOULDER L plus R
+            ARM L plus R 6 Bones Each
+              HAND 7 Poses
+        HIP L plus R
+          LEG L plus R 5 Bones Each
+            FOOT plus TOES
+      Hand Poses 7
+        Fist Vertical
+        Fist Horizontal
+        Open Hand Knife
+        Palm Strike
+        Spear Hand
+        Grab Hold
+        Crane Beak
+      Muscle Tension
+        Range 0.0 to 1.0
+        Visual Bone Glow
+        Combat State Based
 ```
 
 ## Player Archetypes & Combat Styles
@@ -294,59 +372,110 @@ mindmap
 
 ```mermaid
 mindmap
-  root((Technical Stack))
+  root((Technical Stack<br/>Three.js + React 19))
     Frontend Framework
       React 19
         Component Architecture
         Korean UI Components
-        State Management
-      PixiJS 8
+        Bilingual Support Korean English
+        State Management Zustand
+      Three.js + @react-three/fiber
         WebGL Acceleration
         60fps Physics
-        Combat Rendering
-      TypeScript
-        Strict Typing
+        3D Combat Rendering
+        Skeletal Animation
+      TypeScript Strict Mode
+        Type Safety
         Combat Calculations
         Korean Interfaces
-    Game Engine
+        Error Prevention
+    Game Engine Systems
       Combat System
+        CombatSystemController
         Damage Calculations
-        Vital Point Logic
+        Vital Point Logic 70
         Physics Simulation
+        Polygon Hit Detection
+      Trigram System
+        StanceManager 8 Stances
+        TrigramCalculator
+        TransitionCalculator
+        KoreanCulture
+        KoreanTechniques
+      Vital Point System
+        VitalPointSystem 70 Targets
+        KoreanAnatomy
+        AnatomicalRegions 7 Categories
+        Severity Classification 5 Levels
+        HitDetection Polygon Based
+      Animation System
+        Skeletal System 28 Bones
+        Hand Pose Manager 7 Poses
+        Muscle Tension Visualization
+        Technique Animation Keyframes
+        Breathing Animation
       Player System
-        Archetype Management
-        Trigram Techniques
-        Health Tracking
-      AI System
-        Combat Behavior
-        Stance Responses
-        Difficulty Scaling
-    Audio Engine
-      Damage-Based Audio
-        Impact Scaling
-        Technique Feedback
+        Archetype Management 5 Types
+        Resource Tracking Ki Stamina
+        Body Part Health 8 Parts
         Pain Response
-      Korean Themes
-        Traditional Music
-        Cultural Sounds
-        Authentic Audio
-      Spatial Audio
-        3D Positioning
-        Dojang Immersion
-        Environmental Audio
-    Training System
-      Educational Content
-        70 Vital Points
-        Korean Terminology
-        Cultural Context
-      Practice Modes
-        Trigram Training
-        Technique Library
-        Progress Tracking
-      AI Guidance
-        Form Correction
-        Adaptive Difficulty
-        Master Feedback
+        Consciousness Levels
+      AI System
+        Combat Behaviors
+        Archetype Specific AI
+        Difficulty Scaling
+        Pattern Recognition
+    Audio Engine
+      Web Audio API
+        Spatial Audio 3D
+        Damage Based Feedback
+        Korean Traditional Instruments
+        Cyberpunk SFX
+      Audio Categories
+        Combat Impact Sounds
+        Bone Crack Effects
+        Vital Point Strikes
+        Stance Transitions
+        Breathing Sounds
+        Ambient Dojang
+      Howler.js Integration
+        Sound Pool Management
+        Volume Controls
+        Cached Playback
+        Format Support .mp3 .ogg
+    3D Rendering
+      Three.js Scene
+        Camera Setup
+        Lighting System
+        Environment Dojang
+        Post Processing
+      Character Rendering
+        Skeletal Mesh 28 Bones
+        Material Shaders
+        Muscle Visualization
+        Damage Visualization
+      Visual Effects
+        Particle Systems
+        Hit Effects
+        VP Strike Glow
+        Motion Blur
+        Screen Shake
+    Performance Optimization
+      60fps Target
+        Frame Budget 16.67ms
+        Draw Call Optimization
+        Instancing
+        LOD System
+      Memory Management
+        Asset Pooling
+        Texture Atlasing
+        Geometry Sharing
+        Garbage Collection
+      Loading Strategy
+        Progressive Loading
+        Asset Caching IndexedDB
+        Lazy Loading
+        Code Splitting
 ```
 
 ## Game Modes & Learning Path
@@ -504,3 +633,9 @@ mindmap
 ```
 
 This mindmap provides a comprehensive overview of the Black Trigram project, covering Korean martial arts philosophy, combat mechanics, player archetypes, technical architecture, and cultural authenticity requirements. It serves as a visual guide for understanding the interconnected concepts that make up this authentic Korean martial arts combat simulator.
+
+---
+
+**흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram through Conceptual Understanding_
+
+This mindmap provides a comprehensive visual guide to Black Trigram's Korean martial arts combat system, covering 70 vital points (급소), 8 trigram stances (팔괘), 5 player archetypes (오대 무사), 28-bone skeletal animation system, and Three.js + React 19 technical architecture. It serves as an authoritative reference for understanding the interconnected concepts that make up this authentic Korean martial arts combat simulator.

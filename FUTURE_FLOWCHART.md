@@ -14,381 +14,321 @@
 
 ## 🎯 Overview
 
-This document outlines planned workflow enhancements for Black Trigram (흑괘), documenting future user flows, multiplayer interactions, backend integration, and advanced features that will evolve the educational Korean martial arts combat simulator.
-
----
-
-## 🌐 Future Multiplayer Flow
-
-### **Online Matchmaking Flow**
-
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
-flowchart TD
-    Start([🎮 Multiplayer Mode]) --> Login{User<br/>Logged In?}
-    
-    Login -->|No| Auth[🔐 Authentication<br/>OAuth2/OIDC]
-    Login -->|Yes| MatchMenu[🏆 Matchmaking Menu]
-    
-    Auth -->|Success| MatchMenu
-    Auth -->|Failed| Error[❌ Auth Error<br/>Retry]
-    Error --> Auth
-    
-    MatchMenu --> Ranked[⭐ Ranked Match]
-    MatchMenu --> Casual[🎲 Casual Match]
-    MatchMenu --> Custom[⚙️ Custom Lobby]
-    MatchMenu --> Friends[👥 Friends List]
-    
-    Ranked --> Queue[Enter Queue<br/>Find Opponents]
-    Casual --> Queue
-    
-    Queue --> Matching{Matchmaking<br/>Engine}
-    Matching -->|Found| VerifyMatch[Verify Match<br/>Accept/Decline]
-    Matching -->|Timeout| Queue
-    
-    VerifyMatch -->|Accept| LoadMatch[Load Match<br/>Sync Players]
-    VerifyMatch -->|Decline| Queue
-    
-    Custom --> CreateLobby[Create Lobby<br/>Room Code]
-    Friends --> InviteFriend[Send Invite<br/>Direct Match]
-    
-    CreateLobby --> WaitPlayers[Wait for<br/>Players to Join]
-    InviteFriend --> WaitAccept[Wait for<br/>Accept]
-    
-    WaitPlayers --> LobbyReady{All Ready?}
-    WaitAccept --> LobbyReady
-    
-    LobbyReady -->|No| WaitPlayers
-    LobbyReady -->|Yes| LoadMatch
-    
-    LoadMatch --> SyncState[Sync Game State<br/>WebRTC/WebSocket]
-    SyncState --> StartMatch[🥊 Begin Match]
-    
-    StartMatch --> PlayMatch[Active Multiplayer<br/>Combat]
-    PlayMatch --> MatchEnd{Match<br/>Complete?}
-    
-    MatchEnd -->|Continue| PlayMatch
-    MatchEnd -->|Victory| Victory[🏆 Victory<br/>Update Ranking]
-    MatchEnd -->|Defeat| Defeat[💀 Defeat<br/>Update Ranking]
-    MatchEnd -->|Disconnect| Disconnect[⚠️ Connection Lost]
-    
-    Victory --> SaveStats[Save Match Data<br/>to Backend]
-    Defeat --> SaveStats
-    Disconnect --> SaveStats
-    
-    SaveStats --> PostMatch[📊 Post-Match<br/>Statistics]
-    PostMatch --> MatchMenu
-    
-    style Start fill:#2979FF,stroke:#0D47A1,color:#fff
-    style Queue fill:#FFD600,stroke:#F57F17,color:#000
-    style StartMatch fill:#FF3D00,stroke:#BF360C,color:#fff
-    style Victory fill:#00C853,stroke:#00796B,color:#fff
-    style Disconnect fill:#9E9E9E,stroke:#616161,color:#fff
-```
+This document outlines planned workflow enhancements for Black Trigram (흑괘), documenting future user flows, multiplayer interactions, AWS backend integration, and advanced features that will evolve the educational Korean martial arts combat simulator.
 
 ---
 
 ## 💾 Backend Integration Flow
 
-### **User Account & Progression Flow**
+### **AWS Authentication & User Management Flow**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#2979FF','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    A[🚀 App Launch] --> B{User<br/>Logged In?}
+    A[🚀 App Launch] --> B{User<br/>Token Exists?<br/>LocalStorage}
     
-    B -->|No| C[Show Login<br/>Screen]
-    B -->|Yes| D[Load User<br/>Profile]
+    B -->|No| C[Show Login<br/>Screen<br/>흑괘 Logo]
+    B -->|Yes| D[Validate JWT<br/>AWS Cognito]
     
-    C --> E{Login Method}
+    D -->|Valid| LoadProfile[Load User Profile<br/>DynamoDB Query]
+    D -->|Expired| C
     
-    E -->|Email/Password| F[Email Login]
-    E -->|Google| G[Google OAuth]
-    E -->|GitHub| H[GitHub OAuth]
-    E -->|Guest| I[Guest Mode<br/>Limited Features]
+    C --> E{Login Method<br/>Choice}
     
-    F --> J{Credentials<br/>Valid?}
-    G --> K[OAuth Flow]
-    H --> K
-    I --> L[Generate Guest ID]
+    E -->|Email/Password| F[Email Login<br/>Cognito User Pool]
+    E -->|Google| G[Google OAuth<br/>Cognito Identity]
+    E -->|Facebook| H[Facebook OAuth<br/>Social Provider]
+    E -->|Discord| I[Discord OAuth<br/>Gaming Platform]
+    E -->|GitHub| J[GitHub OAuth<br/>Developer Auth]
+    E -->|Guest| K[Guest Mode<br/>Anonymous ID<br/>Limited Features]
     
-    J -->|No| M[❌ Login Failed<br/>Show Error]
-    J -->|Yes| N[Authenticate<br/>with Backend]
+    F --> L{Credentials<br/>Valid?<br/>Cognito Check}
+    G --> M[OAuth Flow<br/>Redirect URI<br/>Authorization Code]
+    H --> M
+    I --> M
+    J --> M
+    K --> N[Generate Guest ID<br/>UUID v4]
     
-    K -->|Success| N
-    K -->|Failed| M
+    L -->|No| O[❌ Login Failed<br/>Show Error<br/>Retry Option]
+    L -->|Yes| P[Authenticate<br/>with Cognito<br/>Get Access Token]
     
-    M --> C
-    L --> O[Local Storage<br/>Only]
+    M -->|Success| P
+    M -->|Failed| O
     
-    N --> P[Retrieve JWT<br/>Token]
-    P --> Q[Fetch User Data<br/>from API]
+    O --> C
+    N --> Q[Local Storage<br/>Only Mode<br/>No Cloud Sync]
     
-    Q --> R{Data<br/>Retrieved?}
+    P --> R[Retrieve JWT<br/>Access Token<br/>Refresh Token<br/>ID Token]
     
-    R -->|No| S[Create New<br/>User Profile]
-    R -->|Yes| T[Sync Local<br/>with Cloud]
+    R --> S[API Gateway Request<br/>/api/user/profile<br/>Authorization: Bearer]
     
-    S --> U[Initialize<br/>Default Data]
-    U --> V[Save to<br/>Database]
+    S --> Lambda1[Lambda Function<br/>getUserProfile<br/>Node.js 20]
     
-    T --> W{Conflict<br/>Detected?}
+    Lambda1 --> T{User Exists?<br/>DynamoDB Query}
     
-    W -->|Yes| X[Merge Strategy<br/>Latest Wins]
-    W -->|No| Y[Load Profile]
+    T -->|No| U[Create New User<br/>POST /api/user<br/>Lambda: createUser]
+    T -->|Yes| V[Fetch User Data<br/>DynamoDB GetItem<br/>GSI Queries]
     
-    X --> Y
-    V --> Y
+    U --> W[Initialize Profile<br/>Default Archetype: 무사<br/>Stance: 건 Heaven<br/>VP Progress: 0/70]
     
-    Y --> Z[Update UI<br/>with Profile]
-    Z --> AA[Load Progress<br/>Training Stats]
-    AA --> AB[Load Unlocks<br/>Characters/Techniques]
-    AB --> AC[📊 Main Menu<br/>Ready]
+    W --> X[Save to DynamoDB<br/>PutItem<br/>users table]
     
-    AC --> AD{User Action}
+    V --> Y{Conflict<br/>Detected?<br/>Version Check}
     
-    AD -->|Play Match| AE[Save Progress<br/>Before Match]
-    AD -->|Training| AF[Track Training<br/>Stats]
-    AD -->|Settings| AG[Update<br/>Preferences]
-    AD -->|Logout| AH[Clear Session<br/>Logout]
+    Y -->|Yes| Z[Merge Strategy<br/>Latest Timestamp Wins<br/>Conflict Resolution]
+    Y -->|No| AA[Load Profile Data<br/>Parse JSON]
     
-    AE --> AI[Play Game]
-    AF --> AI
-    AG --> AJ[Save Settings<br/>to Cloud]
+    Z --> AA
+    X --> AA
     
-    AI --> AK[Auto-Save<br/>Periodic Sync]
-    AK --> AL{Session<br/>Active?}
+    AA --> AB[Update Local State<br/>Zustand Store<br/>React Context]
     
-    AL -->|Yes| AI
-    AL -->|No| AM[Final Save<br/>to Backend]
+    AB --> AC[Load Progress<br/>Training Stats<br/>Match History<br/>Achievements]
     
-    AJ --> AC
-    AH --> AN[Clear Local<br/>Storage]
-    AN --> A
+    AC --> AD[Load Unlocks<br/>Characters<br/>Techniques<br/>Cosmetics]
     
-    AM --> AO[✅ Data Synced<br/>Exit]
-    O --> AP[⚠️ No Cloud Sync<br/>Local Only]
+    AD --> AE[S3 Asset Check<br/>Custom Skins<br/>Profile Images]
     
+    AE --> AF[📊 Main Menu<br/>Ready to Play<br/>Online Status: 🟢]
+    
+    Q --> AG[⚠️ Offline Mode<br/>Local Only<br/>No Leaderboards]
+    
+    AG --> AF
+    
+    AF --> AH{User Action}
+    
+    AH -->|Play Match| AI[Auto-Save State<br/>API Gateway<br/>Lambda: saveProgress]
+    AH -->|Training| AJ[Track Stats<br/>Local + Cloud<br/>WebSocket Updates]
+    AH -->|Settings| AK[Update Preferences<br/>PUT /api/user/settings]
+    AH -->|Logout| AL[Clear Session<br/>Revoke Tokens<br/>Cognito SignOut]
+    
+    AI --> AM[Play Game<br/>Combat Active]
+    AJ --> AM
+    AK --> AN[Save Settings<br/>DynamoDB Update<br/>S3 Backup]
+    
+    AM --> AO[Periodic Auto-Save<br/>Every 30s<br/>Lambda: syncProgress]
+    
+    AO --> AP{Session<br/>Active?}
+    
+    AP -->|Yes| AM
+    AP -->|No| AQ[Final Save<br/>Lambda: finalizeSession<br/>DynamoDB BatchWrite]
+    
+    AN --> AF
+    AL --> AR[Clear Local<br/>Storage<br/>IndexedDB]
+    AR --> A
+    
+    AQ --> AS[CloudWatch Logs<br/>Session Metrics<br/>Performance Data]
+    
+    AS --> AT[✅ Data Synced<br/>Session Complete<br/>Exit Safe]
+
     style A fill:#2979FF,stroke:#0D47A1,color:#fff
-    style N fill:#00C853,stroke:#00796B,color:#fff
-    style Y fill:#FFD600,stroke:#F57F17,color:#000
-    style AM fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    style P fill:#00C853,stroke:#00796B,color:#fff
+    style AA fill:#FFD600,stroke:#F57F17,color:#000
+    style AQ fill:#9C27B0,stroke:#6A1B9A,color:#fff
 ```
 
 ---
 
-## 🎓 Advanced Tutorial Flow
+## 💳 Payment Processing Flow
 
-### **Interactive Tutorial System**
+### **Stripe Integration for Cosmetics & Content**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#FFD600','primaryTextColor':'#000','primaryBorderColor':'#F57F17','lineColor':'#00C853','secondaryColor':'#2979FF','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Start([📚 Tutorial Mode]) --> CheckProgress{Previous<br/>Progress?}
+    Start([🛒 User Browsing Shop]) --> Browse[Browse Items<br/>Cosmetics<br/>Battle Pass<br/>DLC Packs]
     
-    CheckProgress -->|Yes| Resume[Resume from<br/>Last Checkpoint]
-    CheckProgress -->|No| Intro[Introduction<br/>Korean Martial Arts]
+    Browse --> Select{Item<br/>Selected}
     
-    Resume --> SelectLesson[Select Lesson]
-    Intro --> SelectLesson
+    Select -->|Cosmetic Skin| Cosmetic[Character Skin<br/>₩5,000-₩15,000]
+    Select -->|Battle Pass| BattlePass[Season Pass<br/>₩9,900 / 90 days]
+    Select -->|DLC Pack| DLC[Content Pack<br/>₩19,900-₩49,900]
+    Select -->|Back| Browse
     
-    SelectLesson --> L1{Lesson<br/>Choice}
+    Cosmetic --> CheckOwnership{Already<br/>Owned?<br/>DynamoDB Check}
+    BattlePass --> CheckOwnership
+    DLC --> CheckOwnership
     
-    L1 -->|1| Basics[Lesson 1:<br/>🥋 Basic Controls]
-    L1 -->|2| Trigrams[Lesson 2:<br/>☯️ Eight Trigrams]
-    L1 -->|3| VitalPoints[Lesson 3:<br/>🎯 Vital Points]
-    L1 -->|4| Combat[Lesson 4:<br/>⚔️ Combat Fundamentals]
-    L1 -->|5| Advanced[Lesson 5:<br/>🏆 Advanced Techniques]
-    L1 -->|Exit| End([Exit Tutorial])
+    CheckOwnership -->|Yes| AlreadyOwned[⚠️ Already Owned<br/>Cannot Purchase]
+    CheckOwnership -->|No| ShowPrice[Show Price<br/>KRW / USD<br/>Payment Options]
     
-    Basics --> B1[Show Controls<br/>Overlay]
-    B1 --> B2[Practice Movement<br/>WASD/Arrows]
-    B2 --> B3{Movement<br/>Correct?}
-    B3 -->|No| B2
-    B3 -->|Yes| B4[Practice Attack<br/>Space Key]
-    B4 --> B5{Attack<br/>Executed?}
-    B5 -->|No| B4
-    B5 -->|Yes| B6[✅ Lesson Complete]
+    AlreadyOwned --> Browse
     
-    Trigrams --> T1[Show Trigram<br/>System]
-    T1 --> T2[Explain 8 Stances<br/>I Ching Philosophy]
-    T2 --> T3[Practice Stance<br/>Changes 1-8]
-    T3 --> T4{All Stances<br/>Practiced?}
-    T4 -->|No| T3
-    T4 -->|Yes| T5[Timed Challenge<br/>Quick Transitions]
-    T5 --> T6{Challenge<br/>Passed?}
-    T6 -->|No| T5
-    T6 -->|Yes| B6
+    ShowPrice --> Checkout[Proceed to<br/>Checkout]
     
-    VitalPoints --> V1[Anatomy Overview<br/>70 Vital Points]
-    V1 --> V2[Category Explanation<br/>Neurological/Vascular/etc]
-    V2 --> V3[Practice on Dummy<br/>Target Highlighting]
-    V3 --> V4{10 Accurate<br/>Strikes?}
-    V4 -->|No| V3
-    V4 -->|Yes| V5[Precision Challenge<br/>Perfect Strikes]
-    V5 --> V6{5 Perfect<br/>Strikes?}
-    V6 -->|No| V5
-    V6 -->|Yes| B6
+    Checkout --> CreateSession[API Gateway<br/>POST /api/payment/create<br/>Lambda: createCheckout]
     
-    Combat --> C1[Opponent AI<br/>Level 1]
-    C1 --> C2[Practice Defense<br/>Blocking]
-    C2 --> C3{Block<br/>5 Attacks?}
-    C3 -->|No| C2
-    C3 -->|Yes| C4[Practice Offense<br/>Land Hits]
-    C4 --> C5{Land<br/>5 Hits?}
-    C5 -->|No| C4
-    C5 -->|Yes| C6[Combined Combat<br/>Win Match]
-    C6 --> C7{Match<br/>Won?}
-    C7 -->|No| C6
-    C7 -->|Yes| B6
+    CreateSession --> StripeSession[Stripe API<br/>Create Checkout Session<br/>Payment Intent]
     
-    Advanced --> A1[Counter Techniques]
-    A1 --> A2[Combo Sequences]
-    A2 --> A3[Advanced AI<br/>Level 3]
-    A3 --> A4{Defeat<br/>Advanced AI?}
-    A4 -->|No| A3
-    A4 -->|Yes| A5[🎓 Master Certification]
-    A5 --> B6
+    StripeSession --> StripeURL[Redirect to Stripe<br/>Secure Payment Page<br/>stripe.com/pay/...]
     
-    B6 --> SaveCheckpoint[Save Checkpoint]
-    SaveCheckpoint --> Award[🏅 Award Badge<br/>Update Progress]
-    Award --> SelectLesson
+    StripeURL --> CustomerPays{Customer<br/>Completes<br/>Payment?}
+    
+    CustomerPays -->|Cancel| Cancelled[❌ Payment Cancelled<br/>Return to Shop]
+    CustomerPays -->|Success| StripeWebhook[Stripe Webhook<br/>POST /api/webhook/stripe<br/>Event: checkout.session.completed]
+    
+    Cancelled --> Browse
+    
+    StripeWebhook --> VerifySignature[Verify Webhook<br/>Signature<br/>HMAC-SHA256]
+    
+    VerifySignature --> ValidSignature{Signature<br/>Valid?}
+    
+    ValidSignature -->|No| RejectWebhook[❌ Reject Webhook<br/>Log Security Event<br/>CloudWatch Alert]
+    ValidSignature -->|Yes| ParseEvent[Parse Event Data<br/>Extract customer_id<br/>line_items<br/>payment_status]
+    
+    RejectWebhook --> End([Process Complete])
+    
+    ParseEvent --> CheckPaymentStatus{Payment<br/>Status?}
+    
+    CheckPaymentStatus -->|Succeeded| ProcessPurchase[Lambda: processPurchase<br/>Grant Items<br/>Update DynamoDB]
+    CheckPaymentStatus -->|Failed| LogFailure[Log Payment Failure<br/>SNS Notification<br/>Customer Support]
+    CheckPaymentStatus -->|Pending| WaitConfirmation[Wait for<br/>Confirmation<br/>Async Processing]
+    
+    ProcessPurchase --> UpdateInventory[DynamoDB Update<br/>users/{userId}/inventory<br/>Add purchased items]
+    
+    UpdateInventory --> BackupS3[S3 Backup<br/>Purchase Receipt<br/>JSON + Metadata]
+    
+    BackupS3 --> NotifyUser[SNS Notification<br/>Email: Purchase Confirmed<br/>In-game notification]
+    
+    NotifyUser --> WebSocketUpdate[WebSocket Broadcast<br/>Real-time inventory update<br/>Client receives new items]
+    
+    WebSocketUpdate --> Success[✅ Purchase Complete<br/>Items Granted<br/>Receipt Sent]
+    
+    Success --> End
+    LogFailure --> End
+    WaitConfirmation --> End
     
     style Start fill:#2979FF,stroke:#0D47A1,color:#fff
-    style VitalPoints fill:#FF3D00,stroke:#BF360C,color:#fff
-    style B6 fill:#00C853,stroke:#00796B,color:#fff
-    style A5 fill:#FFD600,stroke:#F57F17,color:#000
+    style StripeWebhook fill:#FF3D00,stroke:#BF360C,color:#fff
+    style Success fill:#00C853,stroke:#00796B,color:#fff
     style End fill:#9C27B0,stroke:#6A1B9A,color:#fff
 ```
 
 ---
 
-## 📱 Mobile Optimization Flow
+## 🎮 Multiplayer Matchmaking Flow
 
-### **Responsive Mobile UX Flow**
+### **WebSocket-Based PvP Matchmaking**
 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#2979FF','primaryTextColor':'#fff','primaryBorderColor':'#0D47A1','lineColor':'#00C853','secondaryColor':'#FFD600','tertiaryColor':'#FF3D00'}}}%%
 flowchart TD
-    Launch([📱 Mobile Launch]) --> Detect{Device<br/>Detection}
+    Start([🎮 Multiplayer Mode]) --> CheckAuth{User<br/>Authenticated?<br/>JWT Valid?}
     
-    Detect -->|Phone| PhoneUI[Optimized Phone UI<br/>Portrait Mode]
-    Detect -->|Tablet| TabletUI[Tablet UI<br/>Landscape Preferred]
-    Detect -->|Desktop| DesktopUI[Full Desktop UI]
+    CheckAuth -->|No| RedirectAuth[Redirect to<br/>Login Screen<br/>OAuth Required]
+    CheckAuth -->|Yes| MatchMenu[🏆 Matchmaking Menu<br/>Game Modes]
     
-    PhoneUI --> TouchControls[Touch Controls<br/>Virtual Joystick]
-    TabletUI --> HybridControls[Hybrid Controls<br/>Touch + Keyboard]
-    DesktopUI --> KeyboardControls[Keyboard/Mouse<br/>Controls]
+    RedirectAuth --> Login[Authentication Flow]
+    Login --> MatchMenu
     
-    TouchControls --> Orient{Screen<br/>Orientation}
+    MatchMenu --> SelectMode{Select<br/>Mode}
     
-    Orient -->|Portrait| PortraitLayout[Vertical Layout<br/>Simplified HUD]
-    Orient -->|Landscape| LandscapeLayout[Horizontal Layout<br/>Full Features]
+    SelectMode -->|Ranked 1v1| Ranked[⭐ Ranked Match<br/>ELO-based<br/>Competitive]
+    SelectMode -->|Casual 1v1| Casual[🎲 Casual Match<br/>Quick Play<br/>No Rank Impact]
+    SelectMode -->|2v2 Teams| Teams[👥 Team Match<br/>Coordinated Combat]
+    SelectMode -->|Custom| Custom[⚙️ Custom Lobby<br/>Room Code<br/>Settings]
+    SelectMode -->|Back| Exit([Return to Main Menu])
     
-    PortraitLayout --> AssetsOptim{Asset<br/>Quality}
-    LandscapeLayout --> AssetsOptim
-    HybridControls --> AssetsOptim
-    KeyboardControls --> AssetsOptim
+    Ranked --> EstimateWait[Show Wait Time<br/>Queue Position<br/>Estimated: 1-3min]
+    Casual --> EstimateWait
+    Teams --> EstimateWait
     
-    AssetsOptim -->|Low Bandwidth| LowQuality[Load Low-Res<br/>Assets]
-    AssetsOptim -->|Good Connection| HighQuality[Load High-Res<br/>Assets]
+    EstimateWait --> ConnectWS[WebSocket Connect<br/>wss://api.blacktrigram.com/ws<br/>API Gateway WebSocket]
     
-    LowQuality --> AdaptiveRender[Adaptive Rendering<br/>30fps Target]
-    HighQuality --> AdaptiveRender
+    ConnectWS --> WSHandshake[WebSocket Handshake<br/>Send JWT Token<br/>ConnectionId]
     
-    AdaptiveRender --> GamePlay[Start Gameplay]
+    WSHandshake --> EnterQueue[Send Queue Request<br/>{ action: 'join_queue'<br/> mode: 'ranked'<br/> elo: 1500<br/> region: 'asia-northeast-2' }]
     
-    GamePlay --> Monitor{Performance<br/>Monitoring}
+    EnterQueue --> Lambda1[Lambda: handleQueue<br/>DynamoDB Query<br/>Find Opponents]
     
-    Monitor -->|FPS < 20| Reduce[Reduce Quality<br/>Disable Effects]
-    Monitor -->|FPS Good| Continue[Continue<br/>Current Quality]
+    Lambda1 --> Matching{Matchmaking<br/>Algorithm<br/>ELO ±100}
     
-    Reduce --> GamePlay
-    Continue --> GamePlay
+    Matching -->|No Match| QueueWait[Wait in Queue<br/>Update Position<br/>30s timeout]
+    Matching -->|Match Found!| VerifyMatch[🎯 Match Found!<br/>Opponent: {username}<br/>ELO: {rating}<br/>Ping: {ms}ms]
     
-    GamePlay --> NetworkCheck{Network<br/>Status}
+    QueueWait --> CheckTimeout{Timeout?<br/>3min}
+    CheckTimeout -->|No| Matching
+    CheckTimeout -->|Yes| ExpandSearch[Expand Search<br/>ELO ±200<br/>Wider Region]
+    ExpandSearch --> Matching
     
-    NetworkCheck -->|Offline| OfflineMode[Offline Mode<br/>Local Only]
-    NetworkCheck -->|Online| OnlineMode[Online Features<br/>Cloud Sync]
+    VerifyMatch --> AcceptPrompt[Accept Match?<br/>10s Countdown<br/>Accept/Decline]
     
-    OfflineMode --> LocalSave[Save Locally<br/>Sync When Online]
-    OnlineMode --> CloudSync[Real-time<br/>Cloud Sync]
+    AcceptPrompt --> UserResponse{User<br/>Response}
     
-    LocalSave --> Complete([Session End])
-    CloudSync --> Complete
+    UserResponse -->|Decline| ReturnQueue[Return to Queue<br/>Penalty: -5 LP]
+    UserResponse -->|Timeout| ReturnQueue
+    UserResponse -->|Accept| PlayerAccepted[Player Accepted<br/>Wait for Opponent]
     
-    style Launch fill:#2979FF,stroke:#0D47A1,color:#fff
-    style PhoneUI fill:#00C853,stroke:#00796B,color:#fff
-    style Reduce fill:#FF3D00,stroke:#BF360C,color:#fff
-    style Complete fill:#9C27B0,stroke:#6A1B9A,color:#fff
+    ReturnQueue --> EnterQueue
+    
+    PlayerAccepted --> CheckAllAccept{All Players<br/>Accepted?}
+    
+    CheckAllAccept -->|No| SomeoneDeclined[❌ Match Declined<br/>Someone declined<br/>Return to Queue]
+    CheckAllAccept -->|Yes| CreateMatch[Lambda: createMatch<br/>DynamoDB PutItem<br/>matches table]
+    
+    SomeoneDeclined --> EnterQueue
+    
+    CreateMatch --> AllocateRoom[Allocate Game Room<br/>Generate room_id<br/>WebRTC Setup]
+    
+    AllocateRoom --> SyncPlayers[Sync Player Data<br/>{ player1: {}<br/> player2: {}<br/> room_id: '' }]
+    
+    SyncPlayers --> LoadMatch[Load Match Assets<br/>Stage Selection<br/>Character Models]
+    
+    LoadMatch --> EstablishP2P[WebRTC P2P<br/>Establish Connection<br/>STUN/TURN Servers]
+    
+    EstablishP2P --> SyncGameState[Sync Game State<br/>Input Prediction<br/>Lag Compensation<br/>Rollback Netcode]
+    
+    SyncGameState --> Countdown[Match Countdown<br/>3... 2... 1...<br/>FIGHT!]
+    
+    Countdown --> InMatch[🥊 Match Active<br/>Real-time Combat<br/>60fps Target]
+    
+    InMatch --> MonitorConnection{Connection<br/>Stable?}
+    
+    MonitorConnection -->|Disconnect| Disconnect[⚠️ Connection Lost<br/>Reconnect Attempt<br/>30s Grace Period]
+    MonitorConnection -->|Stable| CombatLoop[Combat Loop<br/>State Updates<br/>WebSocket Sync]
+    
+    Disconnect --> Reconnect{Reconnect<br/>Success?}
+    Reconnect -->|No| Forfeit[❌ Match Forfeit<br/>Opponent Wins<br/>-LP Penalty]
+    Reconnect -->|Yes| InMatch
+    
+    CombatLoop --> CheckMatchEnd{Match<br/>Complete?}
+    
+    CheckMatchEnd -->|No| CombatLoop
+    CheckMatchEnd -->|Victory| Victory[🏆 Victory!<br/>Calculate ELO<br/>+LP Reward]
+    CheckMatchEnd -->|Defeat| Defeat[💀 Defeat<br/>Calculate ELO<br/>-LP Penalty]
+    
+    Victory --> SaveResults[Lambda: saveMatchResults<br/>DynamoDB Update<br/>match_history]
+    Defeat --> SaveResults
+    Forfeit --> SaveResults
+    
+    SaveResults --> UpdateRankings[Update Rankings<br/>Leaderboard<br/>DynamoDB GSI Query]
+    
+    UpdateRankings --> PostMatch[📊 Post-Match Stats<br/>Damage Dealt<br/>VP Strikes<br/>Techniques Used<br/>Replay Available]
+    
+    PostMatch --> MatchMenu
+    
+    Custom --> CreateLobby[Create Custom Lobby<br/>Generate Room Code<br/>6-digit PIN]
+    
+    CreateLobby --> LobbySettings[Configure Settings<br/>Time Limit<br/>Stage Selection<br/>Rules]
+    
+    LobbySettings --> ShareCode[Share Room Code<br/>Copy/Discord/Twitter<br/>QR Code]
+    
+    ShareCode --> WaitPlayers[Wait for Players<br/>Show Lobby<br/>Ready Status]
+    
+    WaitPlayers --> LobbyReady{All Players<br/>Ready?}
+    
+    LobbyReady -->|No| WaitPlayers
+    LobbyReady -->|Yes| CreateMatch
+
+    style Start fill:#2979FF,stroke:#0D47A1,color:#fff
+    style VerifyMatch fill:#FFD600,stroke:#F57F17,color:#000
+    style InMatch fill:#FF3D00,stroke:#BF360C,color:#fff
+    style Victory fill:#00C853,stroke:#00796B,color:#fff
 ```
 
----
-
-## 🤖 AI Training Partner Flow
-
-### **Adaptive AI Opponent System**
-
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#00C853','primaryTextColor':'#fff','primaryBorderColor':'#00796B','lineColor':'#FF3D00','secondaryColor':'#FFD600','tertiaryColor':'#2979FF'}}}%%
-flowchart LR
-    A[🤖 AI Opponent] --> B{Difficulty<br/>Level}
-    
-    B -->|Easy| C[Beginner AI<br/>Slow Reactions]
-    B -->|Medium| D[Intermediate AI<br/>Balanced]
-    B -->|Hard| E[Advanced AI<br/>Fast & Precise]
-    B -->|Adaptive| F[Learning AI<br/>Skill Matching]
-    
-    C --> G[Simple Patterns<br/>Predictable]
-    D --> H[Mixed Patterns<br/>Some Variation]
-    E --> I[Complex Patterns<br/>Unpredictable]
-    F --> J[Analyze Player<br/>Skill Level]
-    
-    J --> K{Player<br/>Performance}
-    
-    K -->|Winning Easily| L[Increase<br/>Difficulty]
-    K -->|Balanced Match| M[Maintain<br/>Level]
-    K -->|Losing Often| N[Decrease<br/>Difficulty]
-    
-    L --> O[Adjust AI<br/>Parameters]
-    M --> O
-    N --> O
-    
-    G --> P[Execute<br/>AI Actions]
-    H --> P
-    I --> P
-    O --> P
-    
-    P --> Q{Combat<br/>Round}
-    
-    Q -->|Attack| R[Select<br/>Technique]
-    Q -->|Defend| S[Block/Dodge<br/>Decision]
-    Q -->|Stance| T[Optimal<br/>Stance]
-    
-    R --> U[Calculate<br/>Precision]
-    S --> V[Timing<br/>Perfect Block?]
-    T --> W[Transition<br/>Speed]
-    
-    U --> X[Execute<br/>Action]
-    V --> X
-    W --> X
-    
-    X --> Y[Learn from<br/>Outcome]
-    
-    Y --> Z{Store<br/>Patterns}
-    
-    Z --> AA[Update AI<br/>Model]
-    AA --> AB[Improve<br/>Strategies]
-    AB --> F
-    
-    style A fill:#2979FF,stroke:#0D47A1,color:#fff
-    style F fill:#00C853,stroke:#00796B,color:#fff
-    style AA fill:#FFD600,stroke:#F57F17,color:#000
-    style AB fill:#9C27B0,stroke:#6A1B9A,color:#fff
-```
 
 ---
 
 **흑괘의 길을 걸어라** - _Walk the Path of the Black Trigram into the Future_
 
-These future flowcharts document planned enhancements to Black Trigram, including multiplayer matchmaking, backend integration, advanced tutorials, mobile optimization, and adaptive AI opponents, evolving the authentic Korean martial arts combat simulator for global accessibility and continuous learning.
+These future flowcharts document planned enhancements to Black Trigram, including AWS backend integration with Cognito authentication, DynamoDB databases, Lambda functions, Stripe payment processing, WebSocket-based multiplayer matchmaking with WebRTC P2P connections, and comprehensive game state management for global accessibility and continuous learning.

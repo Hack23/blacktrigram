@@ -21,129 +21,207 @@ This mindmap documents the technology evolution roadmap for Black Trigram (흑�
 
 ```mermaid
 mindmap
-  root((🔮 흑괘<br/>Future Evolution))
+  root((🔮 흑괘<br/>Future Evolution<br/>AWS Backend))
     Backend Infrastructure
-      User Authentication
-        OAuth2/OIDC
-        Multi-factor Auth
-        Social Login
+      AWS Authentication
+        Amazon Cognito
+          User Pools
+          Identity Pools
+          OAuth2 OIDC
+          Social Login Google Facebook Discord GitHub
+          MFA Support
         JWT Tokens
-      Database Layer
-        PostgreSQL
-        User Profiles
-        Match History
-        Training Stats
-        Leaderboards
-      API Gateway
-        RESTful APIs
-        GraphQL
-        WebSocket Real-time
-        Rate Limiting
-      Cloud Hosting
-        AWS/Azure/GCP
-        CDN Global Edge
-        Auto-scaling
-        Load Balancing
+          Access Token
+          Refresh Token
+          ID Token
+          Token Rotation
+      AWS Database Layer
+        DynamoDB
+          users table
+          match_history table
+          leaderboards table
+          achievements table
+          GSI Indexes ELO Region Timestamp
+        DynamoDB Streams
+          Real-time Updates
+          Event Triggers
+          Lambda Integration
+        S3 Storage
+          Replays Bucket
+          Assets Bucket
+          Backups Bucket
+          Profile Images
+        AWS Backup
+          Automated Backups
+          Point-in-Time Recovery
+          Cross-Region Replication
+      AWS API Layer
+        API Gateway REST
+          GET api user profile
+          POST api user create
+          PUT api user update
+          POST api match save
+          GET api leaderboard
+        API Gateway WebSocket
+          wss api blacktrigram com ws
+          Connection Management
+          Real-time Messaging
+          Heartbeat Monitoring
+        Lambda Functions Node.js 20
+          getUserProfile
+          createUser
+          saveMatchResults
+          handleQueue Matchmaking
+          createCheckout Stripe
+          processWebhook
+        Lambda Layers
+          Shared Dependencies
+          Utility Functions
+          Database Clients
+          Authentication Helpers
+      AWS Networking
+        CloudFront CDN
+          Global Edge Locations
+          Asset Delivery
+          Cache Optimization
+          HTTPS Everywhere
+        Route 53 DNS
+          Domain Management
+          Health Checks
+          Failover Routing
+          Geo-location Routing
+        AWS WAF
+          DDoS Protection
+          Rate Limiting
+          IP Filtering
+          SQL Injection Prevention
+      AWS Monitoring
+        CloudWatch
+          Logs Centralized
+          Metrics Custom
+          Alarms Automated
+          Dashboards Real-time
+        X-Ray
+          Distributed Tracing
+          Performance Analysis
+          Bottleneck Detection
+          Error Tracking
+        SNS Notifications
+          Email Alerts
+          SMS Alerts
+          Push Notifications
+          Webhook Integration
     Multiplayer Features
       Online Matchmaking
         ELO Rating System
-        Skill-based Matching
-        Region Filtering
-        Latency Optimization
+          Initial Rating 1500
+          K-factor 32
+          Rating Adjustments
+          Leaderboard Ranking
+        Matchmaking Algorithm
+          ELO Range Plus Minus 100
+          Expand After 3min Plus Minus 200
+          Region Priority Asia NA EU
+          Latency Check Under 100ms
+        Queue Management
+          DynamoDB Queue Table
+          Lambda Polling Every 5s
+          Position Tracking
+          Timeout Handling
       Real-time Combat
         WebRTC P2P
+          Peer Connection
+          ICE Candidates
+          STUN TURN Servers
+          NAT Traversal
         WebSocket Sync
-        Input Prediction
-        Lag Compensation
+          State Updates 60fps
+          Input Buffering 3 Frames
+          Lag Compensation 100ms
+          Rollback Netcode
+        Connection Monitoring
+          Heartbeat Every 1s
+          Ping Latency Tracking
+          Disconnect Detection
+          Auto-reconnect 30s Grace
       Social Features
-        Friends List
-        Private Lobbies
-        Spectator Mode
+        Friends System
+          Friend Requests
+          Online Status
+          Invite to Match
+          Recent Players
+        Custom Lobbies
+          Room Code 6 Digits
+          Host Settings
+          Player Ready Status
+          Lobby Chat
         Replay System
-      Tournaments
-        Bracket System
-        Prize Pools
-        Live Streaming
-        Global Rankings
-    Advanced AI
+          Match Recording S3
+          Replay Playback
+          Share Replay URL
+          Highlight Reel
+    Payment Processing
+      Stripe Integration
+        Checkout Sessions
+          Hosted Payment Page
+          Multiple Payment Methods
+          Currency Support KRW USD
+          Tax Calculation
+        Webhook Events
+          checkout session completed
+          payment intent succeeded
+          customer subscription updated
+          Signature Verification HMAC-SHA256
+        Product Catalog
+          Cosmetic Skins 5000-15000 KRW
+          Battle Pass 9900 KRW
+          DLC Packs 19900-49900 KRW
+          Premium Currency
+      Inventory Management
+        DynamoDB Inventory
+          Owned Items
+          Purchase History
+          Transaction Receipts
+          Expiration Tracking
+        Item Granting
+          Immediate Unlock
+          WebSocket Broadcast
+          Client Cache Update
+          Receipt Generation S3
+    Advanced AI Future
       Machine Learning
-        Neural Networks
-        Pattern Recognition
-        Reinforcement Learning
-        Skill Adaptation
+        TensorFlow.js Client-Side
+          Pattern Recognition
+          Player Behavior Analysis
+          Skill Assessment
+          Adaptive Difficulty
+        AWS SageMaker Backend
+          Model Training
+          Hyperparameter Tuning
+          Batch Inference
+          A B Testing
       Behavior Trees
         Complex Decision Making
+          Conditional Nodes
+          Sequence Nodes
+          Parallel Nodes
+          Decorator Nodes
         Emergent Strategies
-        Dynamic Difficulty
-        Personality Traits
-      Training Partner
-        Personalized Coaching
-        Weakness Analysis
-        Progress Tracking
-        Skill Recommendations
-    Mobile Optimization
-      Progressive Web App
-        Offline Support
-        Push Notifications
-        App Install
-        Background Sync
-      Native Apps
-        iOS App
-        Android App
-        Cross-platform
-        React Native
-      Performance
-        Asset Compression
-        Lazy Loading
-        Code Splitting
-        Service Workers
-      Touch Controls
-        Virtual Joystick
-        Gesture Recognition
-        Haptic Feedback
-        Adaptive UI
-    Content Expansion
-      Additional Archetypes
-        Traditional Masters
-        Modern Fighters
-        Hybrid Styles
-        Custom Builds
-      New Techniques
-        Advanced Combos
-        Weapon Combat
-        Team Techniques
-        Special Moves
-      More Vital Points
-        Detailed Anatomy
-        Regional Variations
-        Historical Accuracy
-        Medical Validation
-      Story Mode
-        Campaign Missions
-        Character Stories
-        Cinematics
-        Voice Acting
-    Analytics & Insights
-      Player Analytics
-        Session Tracking
-        Behavior Analysis
-        Engagement Metrics
-        Retention Stats
-      Combat Analytics
-        Technique Usage
-        Success Rates
-        Pattern Detection
-        Meta Analysis
-      Training Insights
-        Progress Visualization
-        Skill Gaps
-        Improvement Trends
-        Personalized Tips
-      Business Intelligence
-        User Demographics
-        Revenue Tracking
-        Growth Metrics
-        A/B Testing
+          Combo Discovery
+          Counter Patterns
+          Stance Transitions
+          VP Targeting
+      Personalized Training
+        Player Profiling
+          Skill Gaps Analysis
+          Learning Rate
+          Preferred Techniques
+          Weakness Patterns
+        Custom Drills
+          Targeted Exercises
+          Progressive Difficulty
+          Real-time Feedback
+          Achievement Tracking
 ```
 
 ---
