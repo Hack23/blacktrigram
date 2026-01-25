@@ -278,6 +278,8 @@ graph TD
 
 **Note**: The backend implementation is 90% complete in the private commercial repository [Hack23/black-trigram-business](https://github.com/Hack23/black-trigram-business) with comprehensive security and architecture documentation. The backend is commercial and not open source. This section documents the planned architecture for reference.
 
+**Architecture Note**: The EC2/RDS/Express backend described in "Technology Stack Updates" above is an **alternative architecture** for reference. The **primary target architecture** for Black Trigram v2.0 (2028) is the AWS serverless backend documented below, which provides superior scalability, cost efficiency, and operational simplicity.
+
 ##### C4 Container Diagram: AWS Serverless Architecture
 
 ```mermaid
@@ -309,8 +311,9 @@ C4Container
     Rel(frontend, cognito, "Authenticates via Hosted UI/OIDC", "OAuth 2.0/OIDC")
     Rel(cognito, social, "Federated login", "OAuth 2.0")
     Rel(frontend, apiGateway, "API calls", "HTTPS/WSS")
-    Rel(waf, apiGateway, "Protects", "Rules")
-    Rel(apiGateway, lambda, "Invokes", "AWS SDK")
+    Rel(cloudFront, apiGateway, "Forwards API calls to", "HTTPS/WSS")
+    Rel(waf, cloudFront, "Protects", "Web ACL")
+    Rel(apiGateway, lambda, "Invokes", "AWS service integration (Lambda proxy)")
     Rel(lambda, dynamoDB, "Reads/writes data", "AWS SDK")
     Rel(lambda, s3, "Stores files", "AWS SDK")
     Rel(frontend, stripe, "Processes payments", "Stripe.js SDK")
@@ -640,7 +643,9 @@ sequenceDiagram
     Cognito->>SocialProvider: Exchange code for tokens
     SocialProvider->>Cognito: Access token + user info
     Cognito->>Cognito: Create/update user in User Pool
-    Cognito->>Frontend: Redirect with JWT tokens (ID, Access, Refresh)
+    Cognito->>Frontend: Redirect with authorization code
+    Frontend->>Cognito: Exchange authorization code (+ PKCE verifier) at token endpoint
+    Cognito->>Frontend: Return JWT tokens (ID, Access, Refresh)
     Frontend->>Frontend: Store tokens in memory/secure storage
     
     Note over Frontend,API: Authenticated API Request
@@ -981,15 +986,15 @@ sequenceDiagram
 | **Security Hub** | 1 account | $0.0010/check | **$5.00** | 5,000 security checks/month estimated |
 | **X-Ray** | 100k traces<br/>100k retrieved | $5.00/million<br/>$0.50/million | **$0.55** | Distributed tracing |
 | **Route 53** | 1 hosted zone<br/>10M queries | $0.50/zone<br/>$0.40/million | **$4.50** | DNS management |
-| **VPC Infrastructure** | - | - | **$150** | NAT Gateways ($45/mo each x 2), VPC endpoints (~$14/mo), VPC Flow Logs (~$32/mo) |
-| | | **Total** | **~$290/month** | 10k users with VPC infrastructure |
+| **VPC Infrastructure** | - | - | **$210** | NAT Gateways ($45/mo each x 2 = $90), VPC interface endpoints (~$90/mo, 6 endpoints across 2 AZs @ ~$0.01/AZ-hr), VPC Flow Logs (~$32/mo) |
+| | | **Total** | **~$350/month** | 10k users with VPC infrastructure (including interface endpoints across 2 AZs) |
 
 **Scaling Estimates**:
 
 | User Base | API Requests/Month | Lambda Invocations | DynamoDB R/W | S3 Storage | **Estimated Monthly Cost** |
 |-----------|--------------------|--------------------|--------------|-----------|-----------------------------|
-| **1,000** | 50,000 | 200,000 | 1M/200k | 10 GB | **$185** (includes $150 VPC baseline) |
-| **10,000** | 500,000 | 2M | 10M/2M | 100 GB | **$290** (with VPC infrastructure) |
+| **1,000** | 50,000 | 200,000 | 1M/200k | 10 GB | **$245** (includes $210 VPC baseline) |
+| **10,000** | 500,000 | 2M | 10M/2M | 100 GB | **$350** (with VPC infrastructure including interface endpoints across 2 AZs) |
 | **50,000** | 2.5M | 10M | 50M/10M | 500 GB | **$800** (VPC costs amortized) |
 | **100,000** | 5M | 20M | 100M/20M | 1 TB | **$1,450** (includes VPC infrastructure) |
 | **500,000** | 25M | 100M | 500M/100M | 5 TB | **$6,650** (VPC fixed costs negligible) |
