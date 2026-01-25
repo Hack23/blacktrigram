@@ -2551,7 +2551,7 @@ For an overview of the TypeScript implementation approach and damage formula ref
 ### Quick Reference: Damage Formula
 
 ```
-Final Damage = (Base * Archetype * Stance * Anatomy * Critical) - Defense
+Final Damage = max(1, (Base * Archetype * Stance * Anatomy * Critical) * (1 - DefenseReduction))
 ```
 
 **Multipliers**:
@@ -2559,6 +2559,11 @@ Final Damage = (Base * Archetype * Stance * Anatomy * Critical) - Defense
 - **Stance**: 0.8x-1.5x (I Ching synergy)
 - **Anatomy**: 1.0x-2.0x (precision targeting)
 - **Critical**: 1.0x or 2.0x (random with skill influence)
+- **Defense Reduction**: 0-0.8x (max 80% reduction, based on defender defense stat / 200)
+
+**Minimum Damage**: Always deals at least 1 HP damage
+
+> **Implementation Note**: The canonical damage calculation including defense reduction logic and minimum damage floor is in `src/systems/vitalpoint/DamageCalculator.ts` (lines 172-177).
 
 **Example**: Musa striking Baekhoehyeol (Crown) with Geon stance:
 - Base: 45 HP
@@ -2567,8 +2572,8 @@ Final Damage = (Base * Archetype * Stance * Anatomy * Critical) - Defense
 - Anatomy: 1.5x (75% accuracy)
 - Critical: 2.0x (successful roll)
 - Raw: 45 × 1.2 × 1.2 × 1.5 × 2.0 = **194 HP**
-- Defense: 41 HP reduction
-- **Final: 153 HP damage** + Stun (3s) + Disorientation (5s)
+- Defense Reduction: 0.21x (41 defense / 200 = 21% reduction)
+- **Final: max(1, 194 × (1 - 0.21)) = 153 HP damage** + Stun (3s) + Disorientation (5s)
 
 ---
 
