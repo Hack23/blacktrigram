@@ -42,8 +42,8 @@ C4Context
     System_Ext(artCDN, "🖼️ Visual Assets CDN", "3D models, textures, particle effects, UI assets, Korean fonts")
     System_Ext(culturalDB, "🏛️ Korean Cultural Database", "Authentic martial arts terminology, I Ching philosophy, TCM meridians")
 
-    Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/WebGL 2.0")
-    Rel(instructor, blackTrigram, "Demonstrates vital points & anatomy", "HTTPS/WebGL 2.0")
+    Rel(player, blackTrigram, "Practices combat techniques", "HTTPS/WebGL (2.0 where available)")
+    Rel(instructor, blackTrigram, "Demonstrates vital points & anatomy", "HTTPS/WebGL (2.0 where available)")
     
     Rel(blackTrigram, audioCDN, "Streams traditional Korean audio", "HTTPS")
     Rel(blackTrigram, artCDN, "Loads 3D visual assets", "HTTPS")
@@ -961,9 +961,9 @@ Static environment objects merged into single mesh for reduced draw calls.
 ### 📚 Documentation & Resources
 
 #### Project Documentation
-- **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** - Complete PixiJS to Three.js migration guide
-- **[docs/three-js-patterns.md](./docs/three-js-patterns.md)** - Common patterns and examples
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - This document (architecture overview)
+- **[FUTURE_ARCHITECTURE.md](./FUTURE_ARCHITECTURE.md)** - Roadmap and evolution planning
+- **[game-status.md](./game-status.md)** - Current implementation status and metrics
 
 #### External Resources
 - **[Three.js Documentation](https://threejs.org/docs/)** - Official Three.js docs
@@ -1037,22 +1037,24 @@ src/
 │   │   ├── VitalPointSystem.ts
 │   │   ├── EnhancedAnatomy.ts
 │   │   └── HitDetection.ts
-│   ├── combat/              # Combat mechanics, physics
+│   ├── combat/              # Combat mechanics, physics, and subsystems
 │   │   ├── CombatSystem.ts (36,888 bytes ~36KB - core combat logic)
 │   │   ├── EffectCalculator.ts
-│   │   └── PlayerEffectManager.ts
-│   ├── animation/           # Skeletal animation, hand poses (Q1 2026)
-│   │   ├── SkeletalAnimation.ts   # 28-bone animation system
-│   │   ├── HandPoses.ts           # 7 hand pose definitions
-│   │   └── MuscleActivation.ts    # Muscle tension visualization
-│   ├── bodypart/            # Body part health tracking (8 parts)
-│   ├── physics/             # Physics simulation
-│   ├── breathing/           # Breathing disruption system (75% complete)
-│   ├── combat/              # Combat subsystems (pain, consciousness, balance, etc.)
+│   │   ├── PlayerEffectManager.ts
 │   │   ├── PainResponseSystem.ts     # Pain response (90% complete, 37 tests)
 │   │   ├── ConsciousnessSystem.ts    # Consciousness (90% complete, 36 tests)
 │   │   ├── BalanceSystem.ts          # Balance and fall mechanics
 │   │   └── CombatStateSystem.ts      # Combat state management
+│   ├── animation/           # Skeletal animation system (Q1 2026)
+│   │   ├── core/            # Core animation logic
+│   │   │   ├── SkeletalAnimation.ts   # 28-bone animation system
+│   │   │   └── MuscleActivation.ts    # Muscle tension visualization
+│   │   ├── builders/        # Builders for animation data
+│   │   │   └── HandPoses.ts           # 7 hand pose definitions
+│   │   └── systems/         # Animation systems and orchestration
+│   ├── bodypart/            # Body part health tracking (8 parts)
+│   ├── physics/             # Physics simulation
+│   ├── breathing/           # Breathing disruption system (75% complete)
 │   └── ai/                  # AI combat logic
 ├── data/                    # Game data and constants
 │   ├── techniques.ts        # 20 techniques (4 per archetype)
@@ -1112,7 +1114,7 @@ src/
 - `src/audio/AudioProvider.tsx` - React context provider and useAudio hook
 - `src/audio/AudioAssetRegistry.ts` - Sound library with damage-scaled audio
 - `src/audio/AudioManager.ts` - Audio playback with Web Audio API
-- `src/audio/BoneImpactAudioMap.ts` - Bone impact audio system (60% complete, 207 lines, 388 test lines)
+- `src/audio/BoneImpactAudioMap.ts` - Bone impact audio system (60% complete)
 - 84.29% test coverage across audio systems
 
 **Test Coverage (Q1 2026):**
@@ -1187,7 +1189,7 @@ sequenceDiagram
 graph TD
     subgraph PM["🔍 Performance Monitoring (Q1 2026)"]
       PerfMon[📈 Performance Monitor]
-      FPS[📊 FPS Tracking - Stats.js + Custom]
+      FPS[📊 FPS Tracking - PerformanceOverlay3D]
       Memory[💾 Memory Usage - Chrome DevTools]
       GC[🗑️ GC Observations - Three.js Object Disposal]
       AssetTiming[⏱️ Asset Load Times - Three.js Models & Textures]
@@ -1252,7 +1254,7 @@ graph TD
 
 ### **Performance Monitoring (Q1 2026)**
 
-- **📈 FPS Tracking**: Stats.js integrated with custom FPS monitor component (`src/utils/performance/PerformanceMonitor.ts`)
+- **📈 FPS Tracking**: PerformanceOverlay3D custom monitor component (`src/utils/performance/PerformanceOverlay3D.tsx`)
 - **💾 Memory Usage**: Chrome DevTools memory profiling + custom Three.js object tracking
 - **🗑️ GC Observations**: Monitor Three.js object disposal (geometries, materials, textures) to prevent memory leaks
 - **⏱️ Asset Timing**: Three.js loading manager for 3D models, textures, and audio asset timing
