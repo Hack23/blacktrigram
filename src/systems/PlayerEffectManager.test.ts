@@ -379,7 +379,7 @@ describe("PlayerEffectManager", () => {
       expect(modifiers.technique).toBe(0.7);
     });
 
-    it("should apply breathlessness effect (stamina focus)", () => {
+    it("should apply breathlessness effect (movement speed focus)", () => {
       const player = createMockPlayer();
       const currentTime = Date.now();
       asMutable(player).statusEffects = [
@@ -392,8 +392,10 @@ describe("PlayerEffectManager", () => {
 
       const modifiers = getEffectModifiers(player);
 
-      expect(modifiers.staminaRegen).toBe(0.3);
-      expect(modifiers.speed).toBe(0.7);
+      // NOTE: staminaRegen is NOT modified here - it's handled by BreathingDisruptionSystem
+      // to apply severity-specific multipliers (25%-75%) without compounding
+      expect(modifiers.staminaRegen).toBe(1.0); // No modifier from getEffectModifiers
+      expect(modifiers.speed).toBe(0.7); // Reduced movement speed
     });
 
     it("should apply nerve disruption effect (ki focus)", () => {
