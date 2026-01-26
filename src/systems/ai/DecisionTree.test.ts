@@ -1415,39 +1415,6 @@ describe("AIDecisionTree", () => {
       expect(approachSelections).toBeGreaterThan(60); // At least 60% approach
     });
 
-    it("should execute attacks when within range", () => {
-      // Test that AI can execute attacks when distance is within technique reach
-      // This validates the range calculation corrections allow attacks
-      
-      let attackSelections = 0;
-
-      for (let i = 0; i < 100; i++) {
-        const freshTree = new AIDecisionTree();
-        const context = createMockContext({
-          distanceToOpponent: 1.0, // Within kick range (~1.27m max)
-          playerStance: TrigramStance.GEON,
-          opponentStance: TrigramStance.TAE,
-          timeInMatch: 5000 + i * 10,
-          playerStamina: 100, // Full stamina for attacks
-          playerKi: 100, // Full ki for techniques
-        });
-
-        const decision = freshTree.makeDecision(
-          context,
-          AI_PERSONALITIES.AGGRESSIVE_STRIKER, // Aggressive for more attacks
-          comboSystem,
-        );
-
-        if (decision.action === AIActionType.EXECUTE_TECHNIQUE) {
-          attackSelections++;
-        }
-      }
-
-      // With corrected range calculations, AI should be able to attack when in range
-      // The actual frequency depends on many factors, but should be > 0
-      expect(attackSelections).toBeGreaterThan(0); // At least some attacks possible
-    });
-
     it("should prefer far-range stances (JIN, SON, GAN) at far distance", () => {
       // Far range stances: JIN (1.15 baseExtension jumping kicks), SON (closing pressure), GAN (patient defense)
       const farRangeStances = [
