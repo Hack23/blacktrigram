@@ -10,9 +10,9 @@
  * 
  * Features:
  * - 5 body region categories (head, torso, arms, legs, soft tissue)
- * - Impact intensity scaling (light 20dB → heavy 80dB)
+ * - Impact intensity scaling (light 70% → fracture 130% volume)
  * - Fracture detection when health < 30%
- * - Spatial audio positioning
+ * - Spatial audio positioning (planned feature, not yet implemented in AudioManager)
  * - Korean-English bilingual audio cues
  */
 
@@ -40,20 +40,26 @@ export interface Vector3 {
 
 /**
  * Audio manager interface (minimal subset needed)
+ * 
+ * Note: Spatial audio parameters (position) are not currently supported by the
+ * actual IAudioManager interface. This interface documents the intended API
+ * for future spatial audio integration with Howler.js.
  */
 export interface AudioManagerInterface {
-  playSFX(
-    soundId: string,
-    volume?: number,
-    options?: { position?: readonly [number, number, number] }
-  ): Promise<void>;
+  playSFX(soundId: string, volume?: number): Promise<void>;
 }
 
 /**
  * Configuration for BoneImpactAudioSystem
  */
 export interface BoneImpactAudioConfig {
-  /** Enable spatial audio positioning (default: true) */
+  /**
+   * Enable spatial audio positioning (default: true).
+   * 
+   * NOTE: Spatial/positional audio is a planned future feature. The current
+   * AudioManager implementation does not support 3D positions, so this flag
+   * is effectively a no-op until the core audio layer is extended.
+   */
   readonly enableSpatialAudio?: boolean;
   
   /** Master volume multiplier for bone impacts (default: 1.0) */
@@ -140,7 +146,7 @@ export class BoneImpactAudioSystem {
    * **Korean**: 골절음 재생
    * 
    * @param event - Bone impact event with region, intensity, and health info
-   * @param position - Optional 3D position for spatial audio
+   * @param _position - Optional 3D position for spatial audio (future feature, not yet implemented)
    * @returns Promise that resolves when sound starts playing
    * 
    * @example
@@ -153,7 +159,7 @@ export class BoneImpactAudioSystem {
    */
   async playBoneImpact(
     event: BoneImpactEvent,
-    position?: Vector3
+    _position?: Vector3 // Prefixed with _ to indicate unused (spatial audio not yet implemented)
   ): Promise<void> {
     // Rate limiting check
     const now = Date.now();
@@ -173,14 +179,13 @@ export class BoneImpactAudioSystem {
       0.8 * volumeMultiplier * this.config.masterVolume
     );
 
-    // Prepare spatial audio options
-    const audioOptions = this.config.enableSpatialAudio && position
-      ? { position: [position.x, position.y, position.z] as const }
-      : undefined;
+    // NOTE: Spatial audio (position) is not yet implemented in the actual AudioManager.
+    // The position parameter is accepted for API compatibility but not currently used.
+    // Future implementation will pass position to Howler.js for 3D audio positioning.
 
     try {
-      // Play the sound
-      await this.audioManager.playSFX(soundId, finalVolume, audioOptions);
+      // Play the sound (without spatial audio for now)
+      await this.audioManager.playSFX(soundId, finalVolume);
 
       // Play Korean-English audio cue if enabled (future feature)
       if (this.config.enableBilingualCues && intensity === "fracture") {
