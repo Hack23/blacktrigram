@@ -10,7 +10,7 @@ import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
 import CombatSystem from "./CombatSystem";
 import { CombatResult } from "./combat/types";
-import { combatInjuryIntegration } from "./bodypart";
+import { playerInjuryManager } from "./bodypart";
 
 describe("CombatSystem Integration with Pain & Consciousness", () => {
   let combatSystem: CombatSystem;
@@ -21,6 +21,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     combatSystem = new CombatSystem();
     player1 = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+    // Clear all player injuries between tests to prevent leakage
+    playerInjuryManager.clearAll();
   });
 
   describe("Pain Integration", () => {
@@ -422,8 +424,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
 
   describe("Injury Tracking Integration (외상 시각화)", () => {
     it("should record injuries when damage is applied with technique", () => {
-      // Clear any existing injuries
-      combatInjuryIntegration.clearInjuries();
+      // Clear any existing injuries for the defender
+      playerInjuryManager.clearPlayerInjuries(player2.id);
       
       const mockResult: CombatResult = {
         hit: true,
@@ -446,17 +448,21 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
 
       combatSystem.applyCombatResult(mockResult, player1, player2);
 
-      // Verify injury was recorded
-      const injuries = combatInjuryIntegration.getInjuries();
+      // Verify injury was recorded for the defender
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
       expect(injuries.length).toBeGreaterThan(0);
       expect(injuries[0].severity).toBe(35);
       
       // Verify blood effect would be triggered
-      expect(combatInjuryIntegration.shouldShowBloodEffect(35)).toBe(true);
+      expect(defenderIntegration.shouldShowBloodEffect(35)).toBe(true);
     });
 
     it("should accumulate injuries on repeated hits", () => {
-      combatInjuryIntegration.clearInjuries();
+      playerInjuryManager.clearPlayerInjuries(player2.id);
+      
+      // Mock Math.random to ensure injuries at the same location merge
+      const mockRandom = vi.spyOn(Math, 'random').mockReturnValue(0.5);
 
       const mockResult: CombatResult = {
         hit: true,
@@ -482,7 +488,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         combatSystem.applyCombatResult(mockResult, player1, player2);
       }
 
-      const injuries = combatInjuryIntegration.getInjuries();
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
       
       // Should have cumulative injuries recorded
       expect(injuries.length).toBeGreaterThan(0);
@@ -491,10 +498,13 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       const firstInjury = injuries[0];
       expect(firstInjury.severity).toBeGreaterThan(25);
       expect(firstInjury.hitCount).toBeGreaterThan(1);
+      
+      // Clean up mock
+      mockRandom.mockRestore();
     });
 
     it("should not record injuries when attack misses", () => {
-      combatInjuryIntegration.clearInjuries();
+      playerInjuryManager.clearPlayerInjuries(player2.id);
 
       const mockResult: CombatResult = {
         hit: false, // Miss
@@ -518,7 +528,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       combatSystem.applyCombatResult(mockResult, player1, player2);
 
       // Should not record any injury for a miss
-      const injuries = combatInjuryIntegration.getInjuries();
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
       expect(injuries.length).toBe(0);
     });
   });

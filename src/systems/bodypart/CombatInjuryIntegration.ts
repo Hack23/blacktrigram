@@ -13,7 +13,7 @@
 
 import * as THREE from "three";
 import { BodyRegion, DamageType } from "../../types/common";
-import { InjuryTracker, injuryTracker } from "./InjuryTracker";
+import { InjuryTracker } from "./InjuryTracker";
 import {
   getInjuryPositionWithOffset,
   mapBodyRegionToBodyPart,
@@ -98,7 +98,16 @@ export class CombatInjuryIntegration {
 
   constructor(config: CombatInjuryConfig = DEFAULT_COMBAT_INJURY_CONFIG) {
     this.config = config;
-    this.tracker = config.tracker ?? injuryTracker;
+    // Require explicit tracker - do not fall back to deprecated singleton
+    // Use PlayerInjuryTrackingManager to get per-character trackers instead
+    if (!config.tracker) {
+      throw new Error(
+        'CombatInjuryIntegration requires an explicit InjuryTracker. ' +
+        'Use PlayerInjuryTrackingManager.getIntegrationForPlayer(playerId) instead of ' +
+        'creating instances directly, or pass { tracker: new InjuryTracker() } for testing.'
+      );
+    }
+    this.tracker = config.tracker;
   }
 
   /**
@@ -244,10 +253,24 @@ export class CombatInjuryIntegration {
 }
 
 /**
- * Singleton instance of Combat Injury Integration.
+ * @deprecated Use {@link PlayerInjuryTrackingManager} instead to get per-player instances.
  * 
- * **Korean**: 전투 부상 통합 싱글톤
+ * Creating a singleton is no longer supported because it mixes injuries between
+ * multiple characters. Use `playerInjuryManager.getIntegrationForPlayer(playerId)`
+ * to get a properly scoped integration instance.
+ * 
+ * **Korean**: PlayerInjuryTrackingManager를 사용하여 플레이어별 인스턴스를 가져오세요
+ * 
+ * @example
+ * ```typescript
+ * // OLD (deprecated):
+ * // import { combatInjuryIntegration } from '@/systems/bodypart';
+ * 
+ * // NEW (correct):
+ * import { playerInjuryManager } from '@/systems/bodypart';
+ * const integration = playerInjuryManager.getIntegrationForPlayer(playerId);
+ * ```
  * 
  * @public
  */
-export const combatInjuryIntegration = new CombatInjuryIntegration();
+// Singleton export removed - use PlayerInjuryTrackingManager instead

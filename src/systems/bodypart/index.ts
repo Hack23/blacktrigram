@@ -19,3 +19,4 @@ export * from "./InjuryTracker";
 export * from "./BodyPartPositionMapping";
 export * from "./InjuryIntegration";
 export * from "./CombatInjuryIntegration";
+export * from "./PlayerInjuryTrackingManager";
