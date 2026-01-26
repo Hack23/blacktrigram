@@ -3,6 +3,7 @@ import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttribu
 import { getTechniqueById } from "../data/techniques";
 import { BodyRegion, DamageType } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
+import { BASE_STAMINA_REGEN_RATE } from "../types/physicsConstants";
 import { Technique } from "../types/technique";
 import { calculateDistance3D } from "../utils/math";
 import { calculateBodyRadius } from "../utils/skeletonScaling";
@@ -1005,11 +1006,11 @@ export class CombatSystem implements CombatSystemInterface {
     }
 
     // Stamina regeneration - affected by effects and breathing disruption
-    // Increased from 3 to 15 stamina/second (5x faster) for better gameplay
+    // Uses BASE_STAMINA_REGEN_RATE constant for better gameplay
     // Allows players to move around and attack frequently without running out
-    // 체력 재생 속도 5배 증가 - 더 활발한 전투를 위해
+    // 체력 재생 속도 - 더 활발한 전투를 위해
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
-      const baseStaminaRegen = regenRate * 15 * effectModifiers.staminaRegen;
+      const baseStaminaRegen = regenRate * BASE_STAMINA_REGEN_RATE * effectModifiers.staminaRegen;
       // Apply breathing disruption system's stamina regen modifier
       const modifiedStaminaRegen =
         BreathingDisruptionSystem.calculateStaminaRegen(

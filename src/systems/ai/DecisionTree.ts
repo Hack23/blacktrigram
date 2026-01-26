@@ -39,9 +39,10 @@ export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; 
  * - Hip rotation and torso lean for kicks
  * - Shoulder offset and torso rotation for punches
  * 
- * Matches PhysicalReachCalculator.ts calculations for consistency
+ * Heuristically aligned with PhysicalReachCalculator.ts but intentionally
+ * simplified for AI decision-making (e.g., omits stance/animation modifiers).
  * 
- * @korean 신체 회전 도달 거리 증가
+ * @korean 신체 회전 도달 거리 증가 (AI 의사결정을 위한 근사치)
  */
 const BODY_PIVOT_METERS = {
   /** Hip rotation + torso lean for kicks (meters) */
@@ -257,7 +258,15 @@ export class AIDecisionTree {
    * **Physics-First**: Returns reach in METERS based on leg length.
    * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
    *
-   * Formula: (legLength / 100) + 0.25 (body pivot) = max reach in meters
+   * Includes realistic kick reach calculation for AI decision-making:
+   * - Leg length converted from cm to meters
+   * - Body pivot contribution (hip rotation + torso lean)
+   * - Average baseExtension for kicks (1.05x multiplier)
+   *
+   * Formula: (legLength/100 + BODY_PIVOT_METERS.KICK) × TECHNIQUE_EXTENSION.KICK
+   *
+   * Note: This is a heuristic approximation. Actual reach also depends on
+   * stance modifiers and animation timing not included in AI range calculations.
    *
    * @param archetype - Player archetype to calculate reach for
    * @returns Maximum combat reach in meters

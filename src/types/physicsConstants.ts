@@ -21,6 +21,35 @@
  */
 
 /**
+ * Base stamina regeneration rate (stamina per second).
+ *
+ * **Korean**: 기본 체력 재생 속도
+ *
+ * This is the base rate at which stamina regenerates when not affected by
+ * combat state penalties, breathing disruption, or other modifiers.
+ *
+ * - Increased from 3 to 15 stamina/second (5x faster) for fluid combat
+ * - Allows players to move around and attack frequently without exhaustion
+ * - Subject to penalties from breathing disruption (25%-75% reduction)
+ * - Subject to combat state penalties (20%-100% reduction when attacking/stunned)
+ *
+ * @example
+ * ```typescript
+ * // Calculate stamina regen with breathing disruption
+ * const baseRegen = regenRate * BASE_STAMINA_REGEN_RATE;
+ * const modifiedRegen = BreathingDisruptionSystem.calculateStaminaRegen(
+ *   player,
+ *   baseRegen
+ * );
+ * ```
+ *
+ * @public
+ * @category Combat Constants
+ * @korean 기본체력재생속도
+ */
+export const BASE_STAMINA_REGEN_RATE = 15.0 as const;
+
+/**
  * Reference pixels-per-meter ratio for scale calculations.
  *
  * **Korean**: 참조 미터-픽셀 변환

@@ -20,6 +20,7 @@ import { BreathingDisruptionSystem, BreathingDisruptionLevel } from "../breathin
 import { applyBreathingDisruptionFromVitalPoint } from "../breathing/integration";
 import { createMockPlayerState } from "../../test/test-utils";
 import { PlayerArchetype, TrigramStance, VitalPointCategory, VitalPointSeverity } from "../../types";
+import { BASE_STAMINA_REGEN_RATE } from "../../types/physicsConstants";
 import type { KoreanTechnique } from "../vitalpoint/types";
 import { AnimationType } from "../animation";
 
@@ -153,7 +154,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       // Base stamina regen rate (from CombatSystem.updatePlayerState)
       const deltaTime = 1000; // 1 second
       const regenRate = deltaTime / 1000; // Convert to seconds
-      const baseStaminaRegen = regenRate * 3; // Base rate: 3 stamina/second
+      const baseStaminaRegen = regenRate * BASE_STAMINA_REGEN_RATE;
 
       // Calculate modified regen with breathing disruption
       const modifiedRegen = BreathingDisruptionSystem.calculateStaminaRegen(
@@ -163,7 +164,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
       // Verify 75% penalty (only 25% of base regen)
       expect(modifiedRegen).toBe(baseStaminaRegen * 0.25);
-      expect(modifiedRegen).toBe(0.75); // 3 * 0.25 = 0.75 stamina/second
+      expect(modifiedRegen).toBe(3.75); // BASE_STAMINA_REGEN_RATE * 0.25 = 3.75 stamina/second
     });
   });
 
@@ -354,13 +355,13 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       );
 
       // Calculate expected stamina gain
-      // Base regen: 15 stamina/second * effectModifiers.staminaRegen (default 1.0)
-      // With 50% breathing penalty: 15 * 0.50 = 7.5 stamina/second
-      // Expected: 50 + (15 * 1.0 * 0.50) = 57.5
+      // Base regen: BASE_STAMINA_REGEN_RATE stamina/second * effectModifiers.staminaRegen (default 1.0)
+      // With 50% breathing penalty: BASE_STAMINA_REGEN_RATE * 0.50 = 7.5 stamina/second
+      // Expected: 50 + (BASE_STAMINA_REGEN_RATE * 1.0 * 0.50) = 57.5
 
       // Verify stamina increased with penalty applied
       expect(updatedDefender.stamina).toBeGreaterThan(50);
-      expect(updatedDefender.stamina).toBeLessThan(60); // Should be around 57-58
+      expect(updatedDefender.stamina).toBeCloseTo(57.5, 1); // Within 0.1 of expected
     });
 
     it("should update breathing disruption effects each frame", () => {
@@ -504,10 +505,10 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       const updated = combatSystem.updatePlayerState(defenderWithZeroStamina, 1000);
 
       // Should still regenerate stamina, just slower
-      // Base regen: 15 stamina/second
-      // With 75% penalty (SEVERELY_WINDED): 15 * 0.25 = 3.75 stamina/second
+      // Base regen: BASE_STAMINA_REGEN_RATE stamina/second
+      // With 75% penalty (SEVERELY_WINDED): BASE_STAMINA_REGEN_RATE * 0.25 = 3.75 stamina/second
       expect(updated.stamina).toBeGreaterThan(0);
-      expect(updated.stamina).toBeLessThan(5); // Should be around 3.75
+      expect(updated.stamina).toBeCloseTo(3.75, 1); // Within 0.1 of expected
     });
 
     it("should not apply breathing disruption from non-torso strikes", () => {

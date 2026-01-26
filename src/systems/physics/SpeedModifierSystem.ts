@@ -164,7 +164,8 @@ export class SpeedModifierSystem {
 
   /**
    * Base acceleration rate (m/s²)
-   * Instant-response acceleration for combat movement - reaches max speed in 0.2s
+   * Instant-response acceleration for combat movement
+   * (e.g., reaches 6 m/s walking speed in 0.2s; 10 m/s sprint speed in 0.33s)
    * Increased from 12.0 to 30.0 for responsive, arcade-style combat feel
    *
    * **Korean**: 기본 가속도 (Base Acceleration)

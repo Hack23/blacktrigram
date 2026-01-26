@@ -1380,55 +1380,71 @@ describe("AIDecisionTree", () => {
       expect(stanceChangeDecisions).toBeGreaterThanOrEqual(1);
     });
 
-    it.skip("should prefer mid-range stances (GEON, LI, SON) at mid distance", () => {
-      // SKIPPED: Test needs to be redesigned after range calculation fixes
-      // The AI now correctly prioritizes approaching when beyond attack range
-      // rather than switching stance. This is correct behavior.
-      // TODO: Redesign test to validate mid-range stance selection when
-      // distance is within attack range but not optimal for current stance
+    it("should choose APPROACH when beyond attack range", () => {
+      // Test that AI correctly prioritizes approaching when too far to attack
+      // This validates that the range calculation fixes enable proper behavior
       
-      // Mid-range stances for striking: GEON, LI, SON
-      // Based on updated range calculations:
+      // Updated range calculations:
       // - Close range (punches): ~0.87m
       // - Medium range (kicks): ~1.27m
-      // Test at slightly beyond medium range to trigger stance change
-      const midRangeStances = [
-        TrigramStance.GEON,
-        TrigramStance.LI,
-        TrigramStance.SON,
-      ];
-
-      let midRangeSelections = 0;
-
-      // Use a test personality with higher switch frequency to test stance selection logic
-      const testPersonality = {
-        ...AI_PERSONALITIES.BALANCED_FIGHTER,
-        stanceSwitchFrequency: 0.9, // Very high for testing
-        aggressionLevel: 0.1, // Very low to prioritize stance changes over attacks
-      };
+      
+      let approachSelections = 0;
 
       for (let i = 0; i < 100; i++) {
         const freshTree = new AIDecisionTree();
         const context = createMockContext({
-          distanceToOpponent: 1.4, // Beyond medium range to trigger stance change
-          playerStance: TrigramStance.TAE, // Currently in close-range stance
-          timeInMatch: 15000 + i * 10,
+          distanceToOpponent: 2.0, // Beyond kick range, should approach
+          playerStance: TrigramStance.GEON,
+          opponentStance: TrigramStance.TAE,
+          timeInMatch: 5000 + i * 10,
         });
 
         const decision = freshTree.makeDecision(
           context,
-          testPersonality,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
           comboSystem,
         );
 
-        if (
-          decision.action === AIActionType.STANCE_CHANGE &&
-          decision.targetStance &&
-          midRangeStances.includes(decision.targetStance)
-        ) {
-          midRangeSelections++;
+        if (decision.action === AIActionType.APPROACH) {
+          approachSelections++;
         }
       }
+
+      // AI should consistently choose APPROACH when beyond range
+      // Allow for some randomization but expect majority to approach
+      expect(approachSelections).toBeGreaterThan(60); // At least 60% approach
+    });
+
+    it("should execute attacks when within range", () => {
+      // Test that AI executes attacks when distance is within technique reach
+      // This validates the range calculation corrections
+      
+      let attackSelections = 0;
+
+      for (let i = 0; i < 100; i++) {
+        const freshTree = new AIDecisionTree();
+        const context = createMockContext({
+          distanceToOpponent: 1.0, // Within kick range
+          playerStance: TrigramStance.GEON,
+          opponentStance: TrigramStance.TAE,
+          timeInMatch: 5000 + i * 10,
+          playerStamina: 80, // High stamina for attacks
+        });
+
+        const decision = freshTree.makeDecision(
+          context,
+          AI_PERSONALITIES.AGGRESSIVE_FIGHTER, // Aggressive for more attacks
+          comboSystem,
+        );
+
+        if (decision.action === AIActionType.EXECUTE_TECHNIQUE) {
+          attackSelections++;
+        }
+      }
+
+      // Aggressive AI should attack frequently when in range
+      expect(attackSelections).toBeGreaterThan(40); // At least 40% attacks
+    });
 
       // At far from close range with very high switch frequency and low aggression,
       // should see mid-range stance selections
