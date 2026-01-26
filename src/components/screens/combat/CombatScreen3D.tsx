@@ -58,6 +58,7 @@ import {
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
+import { useAdaptiveQuality } from "../../shared/three/optimization";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import {
   ActionFeedback,
@@ -165,6 +166,14 @@ export interface CombatScreen3DProps {
    * Canvas height in pixels. Defaults to 800.
    */
   readonly height?: number;
+  /**
+   * Enable adaptive quality adjustment (default: true on mobile)
+   */
+  readonly enableAdaptiveQuality?: boolean;
+  /**
+   * Show performance overlay in dev mode (default: import.meta.env.DEV)
+   */
+  readonly showPerformanceOverlay?: boolean;
 }
 
 /**
@@ -181,6 +190,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   onGameEnd,
   width = 1200,
   height = 800,
+  enableAdaptiveQuality,
+  showPerformanceOverlay = import.meta.env.DEV,
 }) => {
   // Track when content is ready to render (prevents flash of empty content)
   const [contentReady, setContentReady] = useState(false);
@@ -290,7 +301,49 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     };
   }, [isMobile, width]);
 
-  // SSAO removed - was causing WebGL context loss without NormalPass
+  // Adaptive quality - default to enabled on mobile, optional on desktop
+  const shouldEnableAdaptiveQuality =
+    enableAdaptiveQuality ?? isMobile;
+
+  /**
+   * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
+   * Must be inside Canvas to use useFrame from @react-three/fiber
+   * 
+   * Memoized with useMemo so the component type is stable across renders.
+   * Note: renderConfig is intentionally NOT in dependencies to prevent
+   * component recreation when performance settings change, which would
+   * reset the internal state of useAdaptiveQuality hook.
+   */
+  const AdaptiveQualityWrapper = useMemo<
+    React.FC<{ children: React.ReactNode }>
+  >(
+    () => {
+      const Component: React.FC<{ children: React.ReactNode }> = ({
+        children,
+      }) => {
+        // Monitor FPS and adjust quality dynamically
+        // Quality settings are logged but not currently applied to rendering
+        // Future: Pass quality settings to child components for dynamic adjustments
+        useAdaptiveQuality(
+          shouldEnableAdaptiveQuality,
+          isMobile,
+          (newQuality) => {
+            if (import.meta.env.DEV) {
+              console.log(
+                `[CombatScreen3D] Quality adjusted to: ${newQuality}`
+              );
+            }
+          }
+        );
+
+        // Quality monitoring is active - quality changes logged in dev mode
+        return <>{children}</>;
+      };
+
+      return Component;
+    },
+    [shouldEnableAdaptiveQuality, isMobile]
+  );
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -2209,8 +2262,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 10, 5]} intensity={1.2} />
 
-        {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
-        <CombatArena3D
+        {/* Adaptive Quality Wrapper monitors FPS and adjusts quality */}
+        <AdaptiveQualityWrapper>
+          {/* Performance overlay (dev mode) - controlled by showPerformanceOverlay prop */}
+          {showPerformanceOverlay && !showPerformanceMonitor && (
+            <PerformanceOverlay3D />
+          )}
+
+          {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
+          <CombatArena3D
           lighting="cyberpunk"
           scale={arenaBounds.scale}
           worldWidthMeters={arenaBounds.worldWidthMeters}
@@ -2393,6 +2453,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             criticalThreshold={30}
           />
         )}
+        </AdaptiveQualityWrapper>
 
         {/* Post-processing Effects - lightweight only */}
         {isMobile ? (
