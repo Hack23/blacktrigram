@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.12% </span>
+                <span class="strong">5.19% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>4/78</span>
+                <span class='fraction'>4/77</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.47% </span>
+                <span class="strong">5.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/73</span>
+                <span class='fraction'>4/72</span>
             </div>
         
             
@@ -456,7 +456,17 @@
 <a name='L391'></a><a href='#L391'>391</a>
 <a name='L392'></a><a href='#L392'>392</a>
 <a name='L393'></a><a href='#L393'>393</a>
-<a name='L394'></a><a href='#L394'>394</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L394'></a><a href='#L394'>394</a>
+<a name='L395'></a><a href='#L395'>395</a>
+<a name='L396'></a><a href='#L396'>396</a>
+<a name='L397'></a><a href='#L397'>397</a>
+<a name='L398'></a><a href='#L398'>398</a>
+<a name='L399'></a><a href='#L399'>399</a>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a>
+<a name='L402'></a><a href='#L402'>402</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -526,8 +536,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -879,6 +895,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, clampToArenaBounds, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 &nbsp;
 /**
  * Props for the HitEffects3DInstanced component
@@ -888,13 +905,8 @@ export interface HitEffects3DInstancedProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) =&gt; void;
-  /** Arena bounds for accurate coordinate conversion */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 &nbsp;
 /**
@@ -909,21 +921,33 @@ interface ActiveEffectInstance {
 }
 &nbsp;
 /**
- * Convert 2D screen position to 3D world position
+ * Convert meter-based position to 3D world position.
+ *
+ * Positions from the combat system are in meters relative to the arena center.
+ * This function clamps the meter-based position to the arena bounds and then
+ * uses those clamped meter coordinates directly as 3D world coordinates
+ * (with a fixed mid-height for visual hit effects). No 0–1 normalization or
+ * additional remapping is performed.
  */
 const positionTo3D = <span class="fstat-no" title="function not covered" >(</span>
   effect: HitEffect,
-  arenaBounds: { x: number; y: number; width: number; height: number }
+  arenaBounds: PhysicsArenaBounds
 ): THREE.Vector3 =&gt; {
 <span class="cstat-no" title="statement not covered" >  if (!effect.position) {</span>
 <span class="cstat-no" title="statement not covered" >    return new THREE.Vector3(0, 1, 0);</span>
   }
 &nbsp;
-  const <span class="cstat-no" title="statement not covered" >relX = (effect.position.x - arenaBounds.x) / arenaBounds.width;</span>
-  const <span class="cstat-no" title="statement not covered" >relZ = (effect.position.y - arenaBounds.y) / arenaBounds.height;</span>
-  const x = <span class="cstat-no" title="statement not covered" >relX * 16 - 8; // Map 0-1 to -8 to 8</span>
+  // Position is in meters relative to arena center (0, 0)
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
+  
+  // Clamp position to arena boundaries using shared helper
+  const <span class="cstat-no" title="statement not covered" >clamped = clampToArenaBounds(effect.position, arenaBounds);</span>
+  
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = <span class="cstat-no" title="statement not covered" >clamped.x; // Meter position X</span>
   const y = <span class="cstat-no" title="statement not covered" >1.5; // Mid-height for effects</span>
-  const z = <span class="cstat-no" title="statement not covered" >relZ * 8 - 4; // Map 0-1 to -4 to 4</span>
+  const z = <span class="cstat-no" title="statement not covered" >clamped.y; // Meter position Z (depth)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return new THREE.Vector3(x, y, z);</span>
 };
@@ -1040,7 +1064,7 @@ const EffectInstanceGroup: React.FC&lt;{
 export const HitEffects3DInstanced: React.FC&lt;HitEffects3DInstancedProps&gt; = <span class="fstat-no" title="function not covered" >({</span>
   effects,
   onEffectComplete,
-  arenaBounds = <span class="branch-0 cbranch-no" title="branch not covered" >{ x: 0, y: 0, width: 1200, height: 800 },</span>
+  arenaBounds = <span class="branch-0 cbranch-no" title="branch not covered" >DEFAULT_PHYSICS_ARENA_BOUNDS,</span>
 }) =&gt; {
   const <span class="cstat-no" title="statement not covered" >effectRefsMap = useRef&lt;</span>
     Map&lt;string, React.MutableRefObject&lt;ActiveEffectInstance&gt;&gt;
@@ -1249,7 +1273,7 @@ export default HitEffects3DInstanced;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-26T13:08:53.149Z
+                at 2026-01-26T20:54:40.707Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

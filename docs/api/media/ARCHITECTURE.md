@@ -1025,6 +1025,9 @@ src/
 │   │   ├── three/           # Three.js 3D components
 │   │   │   ├── anatomy/     # BoneAttachedMuscles, SkeletalRig
 │   │   │   └── effects/     # ParticleEffects, StanceAura
+│   │   ├── mobile/          # Mobile touch controls
+│   │   │   ├── *Pure.tsx    # Pure DOM components (outside Canvas)
+│   │   │   └── *.tsx        # Three.js Html components (inside Canvas)
 │   │   └── ui/              # UI components with Korean theming
 │   └── dev/                 # Development and testing components
 ├── systems/                 # Core game logic systems
@@ -1124,6 +1127,20 @@ src/
 - **Core Systems**: >85% test coverage
 - **Audio System**: 87.38% line coverage (audio folder, per docs/coverage/coverage-summary.json)
 - **Pain/Consciousness**: 73 comprehensive tests (production-ready)
+
+### Component Naming Conventions
+
+**Mobile Component Pattern:**
+- Components with `Pure` suffix are pure DOM components without Three.js dependencies
+- Used for rendering outside Canvas context (e.g., `StanceWheelPure`, `GestureRecognizerPure`, `MobileControlsPure`)
+- Components without `Pure` suffix use `Html` from `@react-three/drei` and must be inside Canvas
+- Example: `StanceWheelPure.tsx` (position: fixed, z-index layering) vs `StanceWheel.tsx` (Html wrapper, Canvas-only)
+
+**Rationale:**
+- Mobile touch controls must work outside Canvas for reliable event handling
+- Pure DOM components have no Three.js overhead and lighter bundle size
+- Clear naming prevents R3F hook errors ("R3F hooks can only be used inside canvas component")
+
 
 ---
 

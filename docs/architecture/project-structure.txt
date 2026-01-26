@@ -663,6 +663,7 @@ src/components/screens/training/components/hud/TrainingTopHUD.test.tsx
 src/components/screens/training/components/hud/TrainingTopHUD.tsx
 src/components/screens/training/components/hud/index.ts
 src/components/screens/training/components/index.ts
+src/components/screens/training/hooks/useTrainingActions.test.ts
 src/components/screens/training/hooks/useTrainingActions.ts
 src/components/screens/training/hooks/useTrainingLayout.test.ts
 src/components/screens/training/hooks/useTrainingLayout.ts
@@ -693,7 +694,7 @@ src/components/shared/debug/PerformanceDebugOverlayHtml.tsx
 src/components/shared/mobile/ActionButtons.test.tsx
 src/components/shared/mobile/ActionButtons.tsx
 src/components/shared/mobile/GestureRecognizer.test.tsx
-src/components/shared/mobile/GestureRecognizer.tsx
+src/components/shared/mobile/GestureRecognizerPure.tsx
 src/components/shared/mobile/HapticController.test.ts
 src/components/shared/mobile/HapticController.ts
 src/components/shared/mobile/MobileControlsPure.tsx
@@ -701,7 +702,7 @@ src/components/shared/mobile/PERFORMANCE_OPTIMIZATION.md
 src/components/shared/mobile/PerformanceMonitor.test.ts
 src/components/shared/mobile/PerformanceMonitor.ts
 src/components/shared/mobile/StanceWheel.test.tsx
-src/components/shared/mobile/StanceWheel.tsx
+src/components/shared/mobile/StanceWheelPure.tsx
 src/components/shared/mobile/TouchOptimizer.test.ts
 src/components/shared/mobile/TouchOptimizer.ts
 src/components/shared/mobile/VirtualDPad.integration.test.tsx
@@ -1148,6 +1149,7 @@ src/systems/physics/CollisionDetection.test.ts
 src/systems/physics/CollisionDetection.ts
 src/systems/physics/CoordinateMapper.test.ts
 src/systems/physics/CoordinateMapper.ts
+src/systems/physics/KnockbackArenaBounds.test.ts
 src/systems/physics/KnockbackPhysics.test.ts
 src/systems/physics/KnockbackPhysics.ts
 src/systems/physics/MovementPhysics.test.ts

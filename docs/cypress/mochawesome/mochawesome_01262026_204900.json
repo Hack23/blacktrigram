@@ -1,0 +1,111 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 1,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-01-26T20:48:47.821Z",
+    "end": "2026-01-26T20:49:00.519Z",
+    "duration": 12698,
+    "testsRegistered": 1,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "95ef8f15-96f2-41f6-a2ae-21ae853755aa",
+      "title": "",
+      "fullFile": "cypress/e2e/screens/intro-screen-fix-verification.cy.ts",
+      "file": "cypress/e2e/screens/intro-screen-fix-verification.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "fc94e8dd-24d7-4e90-9605-fd05444ff6c5",
+          "title": "IntroScreen Fix Verification",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should render UI overlay immediately on initial load",
+              "fullTitle": "IntroScreen Fix Verification should render UI overlay immediately on initial load",
+              "timedOut": null,
+              "duration": 12624,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\n// Wait for IntroScreen to mount\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should('be.visible');\n// Verify Canvas is present\ncy.get('canvas').should('exist');\n// Verify main UI elements are visible immediately (no delay needed)\ncy.get('[data-testid=\"main-title-container\"]').should('be.visible');\ncy.get('[data-testid=\"logo-section\"]').should('be.visible');\ncy.get('[data-testid=\"main-logo\"]').should('be.visible');\ncy.get('[data-testid=\"trigram-symbols\"]').should('be.visible');\ncy.get('[data-testid=\"menu-section-container\"]').should('be.visible');\ncy.get('[data-testid=\"archetype-section-container\"]').should('be.visible');\ncy.get('[data-testid=\"intro-footer\"]').should('be.visible');\n// Take screenshot for verification\ncy.screenshot('intro-screen-fix-verified', {\n    capture: 'viewport',\n    overwrite: true\n});",
+              "err": {},
+              "uuid": "afd5602a-7c6f-4b67-a42c-d9107111ae35",
+              "parentUUID": "fc94e8dd-24d7-4e90-9605-fd05444ff6c5",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "afd5602a-7c6f-4b67-a42c-d9107111ae35"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 12624,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "build/cypress/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "code": true,
+        "timestamp": "mmddyyyy_HHMMss",
+        "charts": true,
+        "showHooks": "failed",
+        "embeddedScreenshots": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

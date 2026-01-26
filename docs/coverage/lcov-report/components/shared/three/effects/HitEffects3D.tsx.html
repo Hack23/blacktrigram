@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.44% </span>
+                <span class="strong">62.35% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/83</span>
+                <span class='fraction'>53/85</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.02% </span>
+                <span class="strong">62.96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>49/79</span>
+                <span class='fraction'>51/81</span>
             </div>
         
             
@@ -527,11 +527,12 @@
 <a name='L462'></a><a href='#L462'>462</a>
 <a name='L463'></a><a href='#L463'>463</a>
 <a name='L464'></a><a href='#L464'>464</a>
-<a name='L465'></a><a href='#L465'>465</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -580,10 +581,19 @@
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">60x</span>
@@ -1003,6 +1013,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 &nbsp;
 /**
  * Props for the HitEffects3D component.
@@ -1013,13 +1024,8 @@ export interface HitEffects3DProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) =&gt; void;
-  /** Arena bounds for accurate coordinate conversion */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 &nbsp;
 interface ActiveEffect extends HitEffect {
@@ -1033,24 +1039,33 @@ interface ActiveEffect extends HitEffect {
 const HitEffectVisual: React.FC&lt;{
   effect: HitEffect;
   effectRef: React.MutableRefObject&lt;ActiveEffect | null&gt;;
-  arenaBounds?: { x: number; y: number; width: number; height: number };
+  arenaBounds?: PhysicsArenaBounds;
 }&gt; = ({ effect, effectRef, arenaBounds }) =&gt; {
   const groupRef = useRef&lt;THREE.Group&gt;(null);
   // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
   const alphaRef = useRef(1);
 &nbsp;
-  // Position in 3D space - convert 2D position to 3D
+  // Position in 3D space - use meter coordinates directly
   const position3D: [number, number, number] = useMemo(() =&gt; {
     if (!effect.position) return [0, 1, 0];
 &nbsp;
-    // Convert from screen coordinates to 3D world coordinates
-    // Use arena bounds if available, otherwise use default normalization
-    const bounds = arenaBounds ?? { x: 0, y: 0, width: 1200, height: 800 };
-    const relX = (effect.position.x - bounds.x) / bounds.width;
-    const relZ = (effect.position.y - bounds.y) / bounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    // Use arena bounds if available, otherwise use default values for 10m arena
+    const bounds = arenaBounds ?? DEFAULT_PHYSICS_ARENA_BOUNDS;
+    
+    // Position is in meters relative to arena center (0, 0)
+    // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+    // So we use meter coordinates directly too for alignment
+    const halfWidth = bounds.worldWidthMeters / 2;
+    const halfDepth = bounds.worldDepthMeters / 2;
+    
+    // Clamp position to arena boundaries in meters
+    const clampedX = Math.min(halfWidth, Math.max(-halfWidth, effect.position.x));
+    const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, effect.position.y));
+    
+    // Use clamped meter coordinates directly in 3D space (no remapping)
+    const x = clampedX; // Meter position X
     const y = 1.5; // Mid-height for effects
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    const z = clampedZ; // Meter position Z (depth)
 &nbsp;
     return [x, y, z];
   }, [effect.position, arenaBounds]);
@@ -1462,7 +1477,7 @@ export default HitEffects3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-26T13:08:53.149Z
+                at 2026-01-26T20:54:40.707Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

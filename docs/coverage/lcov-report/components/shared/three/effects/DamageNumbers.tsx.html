@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.24% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/53</span>
+                <span class='fraction'>44/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.73% </span>
+                <span class="strong">67.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>29/41</span>
+                <span class='fraction'>29/43</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.16% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>38/48</span>
+                <span class='fraction'>40/50</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -309,11 +309,14 @@
 <a name='L244'></a><a href='#L244'>244</a>
 <a name='L245'></a><a href='#L245'>245</a>
 <a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -401,8 +404,17 @@
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
@@ -467,6 +479,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -574,6 +588,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { withGPUAcceleration } from "../../../../utils/performanceOptimization";
 &nbsp;
@@ -585,13 +600,8 @@ export interface DamageNumbersProps {
   readonly damages: readonly DamageNumber[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for 3D positioning (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
   /** Duration of animation in ms (default: 1500) */
   readonly animationDuration?: number;
 }
@@ -633,7 +643,7 @@ function getGlowColor(type: DamageType): string {
 interface SingleDamageNumberProps {
   readonly damage: DamageNumber;
   readonly isMobile: boolean;
-  readonly arenaBounds: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly animationDuration: number;
 }
 &nbsp;
@@ -646,12 +656,21 @@ const SingleDamageNumber = React.memo&lt;SingleDamageNumberProps&gt;(({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(damage.timestamp);
 &nbsp;
-  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
-  const relX = (damage.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (damage.position.y - arenaBounds.y) / arenaBounds.height;
-  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  // Calculate 3D position from meter-based coordinates (physics-first architecture)
+  // Position is in meters relative to arena center (0, 0)
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
+  const halfWidth = arenaBounds.worldWidthMeters / 2;
+  const halfDepth = arenaBounds.worldDepthMeters / 2;
+  
+  // Clamp position to arena boundaries in meters
+  const clampedX = Math.min(halfWidth, Math.max(-halfWidth, damage.position.x));
+  const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, damage.position.y));
+  
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = clampedX; // Meter position X
   const y = 2 + progress * 2; // Float upward
-  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 &nbsp;
   // Update progress using useFrame
@@ -715,7 +734,9 @@ const SingleDamageNumber = React.memo&lt;SingleDamageNumberProps&gt;(({
 <span class="cstat-no" title="statement not covered" >    prevArena?.x === nextArena?.x &amp;&amp;</span>
     prevArena?.y === nextArena?.y &amp;&amp;
     prevArena?.width === nextArena?.width &amp;&amp;
-    prevArena?.height === nextArena?.height;
+    prevArena?.height === nextArena?.height &amp;&amp;
+    prevArena?.worldWidthMeters === nextArena?.worldWidthMeters &amp;&amp;
+    prevArena?.worldDepthMeters === nextArena?.worldDepthMeters;
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     prevProps.damage.id === nextProps.damage.id &amp;&amp;
@@ -746,7 +767,7 @@ SingleDamageNumber.displayName = "SingleDamageNumber";
 const DamageNumbersComponent: React.FC&lt;DamageNumbersProps&gt; = ({
   damages,
   isMobile = false,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1500,
 }) =&gt; {
   // Derive visible damages from props - no need for state sync
@@ -808,7 +829,7 @@ export default DamageNumbers;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-26T13:08:53.149Z
+                at 2026-01-26T20:54:40.707Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

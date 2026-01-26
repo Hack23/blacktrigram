@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.36% </span>
+                <span class="strong">56.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>160/289</span>
+                <span class='fraction'>160/282</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.96% </span>
+                <span class="strong">56.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>155/282</span>
+                <span class='fraction'>155/275</span>
             </div>
         
             
@@ -1320,13 +1320,8 @@
 <a name='L1255'></a><a href='#L1255'>1255</a>
 <a name='L1256'></a><a href='#L1256'>1256</a>
 <a name='L1257'></a><a href='#L1257'>1257</a>
-<a name='L1258'></a><a href='#L1258'>1258</a>
-<a name='L1259'></a><a href='#L1259'>1259</a>
-<a name='L1260'></a><a href='#L1260'>1260</a>
-<a name='L1261'></a><a href='#L1261'>1261</a>
-<a name='L1262'></a><a href='#L1262'>1262</a>
-<a name='L1263'></a><a href='#L1263'>1263</a>
-<a name='L1264'></a><a href='#L1264'>1264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1258'></a><a href='#L1258'>1258</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1445,6 +1440,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1452,26 +1454,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2635,6 +2623,7 @@ import {
   type AnimationState,
 } from "@/systems/animation";
 import { movementPenaltySystem } from "@/systems/bodypart";
+import { clampToArenaBounds, type PhysicsArenaBounds } from "@/types/PhysicsTypes";
 import {
   checkForFall,
   getFallTypeName,
@@ -2682,51 +2671,52 @@ function <span class="fstat-no" title="function not covered" >calculateHitPositi
  * The knockback displacement is applied in the direction of the attack vector
  * (attacker → defender), respecting arena boundaries.
  *
- * @param result - Combat result containing knockback data
- * @param defenderPos - Current defender position
- * @param arenaBounds - Arena boundary limits
- * @returns Updated defender position after knockback
+ * **Physics-First Architecture**: Both positions and knockback displacement
+ * are in meters. Arena bounds are centered at origin (0, 0) with extent
+ * ±worldWidthMeters/2 in X and ±worldDepthMeters/2 in Z.
+ *
+ * @param result - Combat result containing knockback data (in meters)
+ * @param defenderPos - Current defender position (in meters)
+ * @param arenaBounds - Arena boundary limits with meter dimensions
+ * @returns Updated defender position after knockback (in meters)
  *
  * @example
  * ```typescript
+ * // 10m × 7.5m arena, player at x=2m knocked back 2.5m to right
  * const newPosition = applyKnockbackDisplacement(
- *   result,
- *   playerPositions[1],
- *   arenaBounds
+ *   result, // knockback.displacement.x = 2.5m
+ *   { x: 2, y: 0 }, // Current position: 2m from center
+ *   { worldWidthMeters: 10, worldDepthMeters: 7.5, ... }
  * );
- * // Returns: { x: 5.5, y: 0 } (displaced 2.5m from x=3)
+ * // Returns: { x: 4.5, y: 0 } (2m + 2.5m = 4.5m, within ±5m boundary)
+ *
+ * // Same knockback but would exceed boundary
+ * const clampedPosition = applyKnockbackDisplacement(
+ *   result, // knockback.displacement.x = 2.5m
+ *   { x: 4, y: 0 }, // Current position: 4m from center
+ *   { worldWidthMeters: 10, worldDepthMeters: 7.5, ... }
+ * );
+ * // Returns: { x: 5, y: 0 } (4m + 2.5m = 6.5m, clamped to +5m boundary)
  * ```
  */
 function <span class="fstat-no" title="function not covered" >applyKnockbackDisplacement(</span>
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    scale?: number;
-  },
+  arenaBounds: PhysicsArenaBounds,
 ): Position {
 <span class="cstat-no" title="statement not covered" >  if (!result.knockback) {</span>
 <span class="cstat-no" title="statement not covered" >    return defenderPos;</span>
   }
 &nbsp;
-  // Apply knockback displacement
+  // Apply knockback displacement (both in meters)
   // Note: knockback.displacement.z maps to position.y in 2D arena
-  let newX = <span class="cstat-no" title="statement not covered" >defenderPos.x + result.knockback.displacement.x;</span>
-  let newY = <span class="cstat-no" title="statement not covered" >defenderPos.y + result.knockback.displacement.z;</span>
+  const newPos = <span class="cstat-no" title="statement not covered" >{</span>
+    x: defenderPos.x + result.knockback.displacement.x,
+    y: defenderPos.y + result.knockback.displacement.z,
+  };
 &nbsp;
-  // Clamp to arena boundaries
-  const minX = <span class="cstat-no" title="statement not covered" >arenaBounds.x;</span>
-  const maxX = <span class="cstat-no" title="statement not covered" >arenaBounds.x + arenaBounds.width;</span>
-  const minY = <span class="cstat-no" title="statement not covered" >arenaBounds.y;</span>
-  const maxY = <span class="cstat-no" title="statement not covered" >arenaBounds.y + arenaBounds.height;</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >  newX = Math.max(minX, Math.min(maxX, newX));</span>
-<span class="cstat-no" title="statement not covered" >  newY = Math.max(minY, Math.min(maxY, newY));</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >  return { x: newX, y: newY };</span>
+  // Clamp to arena boundaries using shared physics helper
+<span class="cstat-no" title="statement not covered" >  return clampToArenaBounds(newPos, arenaBounds);</span>
 }
 &nbsp;
 export interface UseCombatActionsConfig {
@@ -2753,15 +2743,7 @@ export interface UseCombatActionsConfig {
     position: Position,
     intensity?: number,
   ) =&gt; void;
-  readonly arenaBounds: {
-    readonly x: number;
-    readonly y: number;
-    readonly width: number;
-    readonly height: number;
-    readonly scale?: number;
-    readonly worldWidthMeters: number;
-    readonly worldDepthMeters: number;
-  };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) =&gt; Promise&lt;void&gt;;
     readonly playHitSound: (damage: number) =&gt; Promise&lt;void&gt;;
@@ -3859,7 +3841,7 @@ export function useCombatActions(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-26T13:08:53.149Z
+                at 2026-01-26T20:54:40.707Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
