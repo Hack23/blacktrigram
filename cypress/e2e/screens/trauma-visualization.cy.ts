@@ -3,7 +3,7 @@
  * 
  * Tests the complete trauma visualization system including:
  * - Progressive bruising with repeated hits
- * - Bruise color darkening (yellow → purple → dark red)
+ * - Bruise color darkening (dark red → indigo → black as per TraumaOverlay3D)
  * - Blood effects for damage > 30
  * - Injury location tracking
  * - Performance validation

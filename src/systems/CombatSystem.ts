@@ -782,12 +782,12 @@ export class CombatSystem implements CombatSystemInterface {
 
       // Record injury for trauma visualization (외상 시각화)
       // Automatically tracks bruising, cuts, and blood effects based on damage type
-      const damageType = result.technique?.damageType as DamageType | undefined;
-      if (damageType && result.damage > 0) {
+      // Records injury even without specific technique (defaults to BRUISE)
+      if (result.damage > 0) {
         combatInjuryIntegration.recordCombatDamage({
           damage: result.damage,
           bodyRegion,
-          damageType,
+          damageType: (result.technique?.damageType as DamageType) || undefined,
         });
       }
 

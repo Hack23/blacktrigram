@@ -396,11 +396,11 @@ describe("InjuryTracker", () => {
   });
 
   describe("removeExpiredInjuries", () => {
-    it("should remove injuries older than fade start time", () => {
+    it("should remove injuries older than expiration time", () => {
       vi.useFakeTimers();
       const config = {
         ...DEFAULT_INJURY_TRACKER_CONFIG,
-        injuryFadeStartTime: 100, // 100ms for testing
+        injuryExpirationTimeMs: 100, // 100ms for testing
       };
       const trackerWithFade = new InjuryTracker(config);
 

@@ -11,7 +11,8 @@
  * 
  * - Track injuries by body part and 3D position
  * - Progressive bruising: Multiple hits to same location darken existing bruises
- * - Color-coded severity: Dark red (fresh), Indigo (moderate), Black (severe)
+ * - Color-coded severity (getBruiseColor): Yellow (fresh), Purple (moderate), Dark red (severe)
+ * - Note: TraumaOverlay3D uses different progression: Dark red → Indigo → Black
  * - Blood effects triggered when damage > 30 in single hit
  * - Injury persistence across combat rounds
  * - Nearby injury lookup using linear scan over tracked injuries (O(n))
@@ -73,7 +74,7 @@ export interface InjuryTrackerConfig {
   /** Damage threshold for blood effects */
   readonly bloodEffectThreshold: number;
   /** Time before injuries are removed/expired (milliseconds) */
-  readonly injuryFadeStartTime: number;
+  readonly injuryExpirationTimeMs: number;
 }
 
 /**
@@ -86,7 +87,7 @@ export const DEFAULT_INJURY_TRACKER_CONFIG: InjuryTrackerConfig = {
   sameLocationThreshold: 0.5, // 0.5 units distance
   minDamageForInjury: 5, // Minimum 5 damage to show injury
   bloodEffectThreshold: 30, // Blood effects when damage > 30
-  injuryFadeStartTime: 30000, // Injuries are removed after 30 seconds
+  injuryExpirationTimeMs: 30000, // Injuries are removed after 30 seconds
 } as const;
 
 /**
@@ -358,7 +359,7 @@ export class InjuryTracker {
     const expiredIds: string[] = [];
 
     for (const [id, injury] of this.injuries.entries()) {
-      if (now - injury.timestamp > this.config.injuryFadeStartTime) {
+      if (now - injury.timestamp > this.config.injuryExpirationTimeMs) {
         expiredIds.push(id);
       }
     }
@@ -384,6 +385,19 @@ export class InjuryTracker {
  * Singleton instance of Injury Tracker.
  * 
  * **Korean**: 부상 추적 시스템 싱글톤
+ * 
+ * **Note**: This singleton tracks injuries across all characters. For multiplayer
+ * scenarios where you need to distinguish injuries by player, use the `playerId`
+ * parameter in `convertInjuriesForVisualization()` or create separate tracker
+ * instances per player:
+ * 
+ * ```typescript
+ * const player1Tracker = new InjuryTracker();
+ * const player2Tracker = new InjuryTracker();
+ * ```
+ * 
+ * For single-player or 1v1 scenarios, the singleton pattern works well as injuries
+ * can be differentiated by the defender in combat results.
  * 
  * @public
  */

@@ -101,34 +101,44 @@ export function getBodyPartPosition(bodyPart: BodyPart): THREE.Vector3 {
  * @public
  */
 export function getBodyRegionPosition(bodyRegion: BodyRegion): THREE.Vector3 {
+  // Calculate positions based on CHARACTER_DIMENSIONS for single source of truth
+  const { HEIGHT, LEG_LENGTH, SHOULDER_WIDTH } = CHARACTER_DIMENSIONS;
+  
+  const headY = HEIGHT * 0.9; // 1.8 for HEIGHT 2.0
+  const neckY = HEIGHT * 0.8; // 1.6 for HEIGHT 2.0
+  const torsoY = HEIGHT * 0.6; // 1.2 for HEIGHT 2.0
+  const coreY = HEIGHT * 0.45; // 0.9 for HEIGHT 2.0
+  const armY = torsoY; // Arms at torso level
+  const legY = LEG_LENGTH * 0.4; // 0.4 for LEG_LENGTH 1.0
+
   switch (bodyRegion) {
     case BodyRegion.HEAD:
-      return new THREE.Vector3(0, 1.8, 0);
+      return new THREE.Vector3(0, headY, 0);
 
     case BodyRegion.NECK:
-      return new THREE.Vector3(0, 1.6, 0);
+      return new THREE.Vector3(0, neckY, 0);
 
     case BodyRegion.TORSO:
-      return new THREE.Vector3(0, 1.2, 0);
+      return new THREE.Vector3(0, torsoY, 0);
 
     case BodyRegion.CORE:
-      return new THREE.Vector3(0, 0.9, 0);
+      return new THREE.Vector3(0, coreY, 0);
 
     case BodyRegion.LEFT_ARM:
-      return new THREE.Vector3(-0.4, 1.2, 0);
+      return new THREE.Vector3(-SHOULDER_WIDTH / 2, armY, 0);
 
     case BodyRegion.RIGHT_ARM:
-      return new THREE.Vector3(0.4, 1.2, 0);
+      return new THREE.Vector3(SHOULDER_WIDTH / 2, armY, 0);
 
     case BodyRegion.LEFT_LEG:
-      return new THREE.Vector3(-0.15, 0.4, 0);
+      return new THREE.Vector3(-SHOULDER_WIDTH * 0.25, legY, 0);
 
     case BodyRegion.RIGHT_LEG:
-      return new THREE.Vector3(0.15, 0.4, 0);
+      return new THREE.Vector3(SHOULDER_WIDTH * 0.25, legY, 0);
 
     default:
       // Default to torso center
-      return new THREE.Vector3(0, 1.0, 0);
+      return new THREE.Vector3(0, torsoY, 0);
   }
 }
 

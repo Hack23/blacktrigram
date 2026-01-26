@@ -5,7 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import { PlayerArchetype } from "@/types";
+import { PlayerArchetype, DamageType } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
 import CombatSystem from "./CombatSystem";
@@ -435,8 +435,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         technique: {
           id: "test_technique",
           name: { korean: "타격", english: "Strike", romanized: "Tagyeok" },
-          damageType: "blunt", // Will be cast to DamageType.BLUNT
-        } as any,
+          damageType: DamageType.BLUNT,
+        } as any as CombatResult["technique"],
         attacker: player1,
         defender: player2,
         success: true,
@@ -468,8 +468,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         technique: {
           id: "test_punch",
           name: { korean: "펀치", english: "Punch", romanized: "Peonchi" },
-          damageType: "impact",
-        } as any,
+          damageType: DamageType.IMPACT,
+        } as any as CombatResult["technique"],
         attacker: player1,
         defender: player2,
         success: true,
