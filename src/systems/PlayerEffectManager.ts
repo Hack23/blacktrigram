@@ -282,9 +282,11 @@ export function getEffectModifiers(player: PlayerState): {
         break;
 
       case VitalPointEffectType.BREATHLESSNESS:
-        // Stamina issues
-        staminaRegen *= 0.3;
-        speed *= 0.7;
+        // NOTE: Stamina regen is handled by BreathingDisruptionSystem.calculateStaminaRegen()
+        // which applies severity-specific multipliers (25%-75% depending on disruption level).
+        // DO NOT apply a flat multiplier here as it would compound with the breathing system.
+        // Only apply secondary effects here.
+        speed *= 0.7; // Reduced movement speed due to breathing difficulty
         break;
 
       case VitalPointEffectType.DISORIENTATION:
