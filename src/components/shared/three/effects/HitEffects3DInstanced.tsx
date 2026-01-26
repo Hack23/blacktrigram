@@ -28,7 +28,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
+import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3DInstanced component
@@ -74,10 +74,14 @@ const positionTo3D = (
   const relX = (effect.position.x + halfWidth) / arenaBounds.worldWidthMeters;
   const relZ = (effect.position.y + halfDepth) / arenaBounds.worldDepthMeters;
   
+  // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
+  const clampedRelX = Math.min(1, Math.max(0, relX));
+  const clampedRelZ = Math.min(1, Math.max(0, relZ));
+  
   // Map normalized 0-1 range to 3D world coordinates
-  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
   const y = 1.5; // Mid-height for effects
-  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
 
   return new THREE.Vector3(x, y, z);
 };
@@ -194,15 +198,7 @@ const EffectInstanceGroup: React.FC<{
 export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
   effects,
   onEffectComplete,
-  arenaBounds = {
-    x: 0,
-    y: 0,
-    width: 1200,
-    height: 800,
-    scale: 1.0,
-    worldWidthMeters: 10,
-    worldDepthMeters: 7.5,
-  },
+  arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
 }) => {
   const effectRefsMap = useRef<
     Map<string, React.MutableRefObject<ActiveEffectInstance>>

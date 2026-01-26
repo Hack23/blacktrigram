@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { KnockbackPhysics } from './KnockbackPhysics';
 import { TrigramStance } from '@/types/common';
 import type { KnockbackConfig } from './KnockbackPhysics';
-import { clampToArenaBounds, PhysicsArenaBounds } from '@/types/PhysicsTypes';
+import { clampToArenaBounds, type PhysicsArenaBounds } from '@/types/PhysicsTypes';
 
 describe('Knockback Arena Boundary Clamping', () => {
   it('should clamp knockback to meter-based arena boundaries', () => {

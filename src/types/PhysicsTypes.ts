@@ -60,6 +60,27 @@ export interface PhysicsArenaBounds {
 }
 
 /**
+ * Default arena bounds used across visual effect components.
+ * 
+ * Represents a standard 10m × 7.5m arena at desktop resolution (1200×800px).
+ * Components should use this as their default to ensure consistency.
+ * 
+ * **Korean**: 기본경기장경계 (Default Arena Bounds)
+ * 
+ * @public
+ * @category Physics Types
+ */
+export const DEFAULT_PHYSICS_ARENA_BOUNDS: PhysicsArenaBounds = {
+  x: 0,
+  y: 0,
+  width: 1200,
+  height: 800,
+  scale: 1.0,
+  worldWidthMeters: 10,
+  worldDepthMeters: 7.5,
+} as const;
+
+/**
  * Validates if a value is a valid Position3D or THREE.Vector3.
  * 
  * @param pos - Value to check
@@ -246,23 +267,25 @@ export function calculateDistanceMeters(
 /**
  * Clamp a 2D position to stay within arena boundaries in meters.
  * 
+ * This function works in a projected 2D arena space where:
+ * - `position.x` corresponds to world **X** (horizontal)
+ * - `position.y` corresponds to world **Z** (depth)
+ * 
  * Arena coordinates are centered at origin (0, 0) and extend from
- * -worldWidthMeters/2 to +worldWidthMeters/2 in X,
- * -worldDepthMeters/2 to +worldDepthMeters/2 in Z.
+ * -worldWidthMeters/2 to +worldWidthMeters/2 in X (position.x),
+ * -worldDepthMeters/2 to +worldDepthMeters/2 in Z/depth (position.y).
  * 
  * This is used for physics calculations like knockback to ensure
  * players stay within the playable area.
  * 
- * **Korean**: 경기장경계제한 (Arena Boundary Clamping)
- * 
- * @param position - Position in meters (can exceed arena bounds)
+ * @param position - 2D projected position in meters (X, depth-as-Y), which may exceed arena bounds
  * @param bounds - Arena bounds with meter dimensions
- * @returns Position clamped to arena boundaries
+ * @returns Position clamped to arena boundaries in the same 2D projection
  * 
  * @example
  * ```typescript
  * const bounds = { worldWidthMeters: 10, worldDepthMeters: 7.5, ... };
- * const position = { x: 6, y: 4 }; // Outside arena
+ * const position = { x: 6, y: 4 }; // Outside arena in X/Z-projected space
  * const clamped = clampToArenaBounds(position, bounds);
  * // Result: { x: 5, y: 3.75 } - clamped to boundaries
  * ```

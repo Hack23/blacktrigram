@@ -17,7 +17,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
+import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { withGPUAcceleration } from "../../../../utils/performanceOptimization";
 
@@ -95,10 +95,14 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
   const relX = (damage.position.x + halfWidth) / arenaBounds.worldWidthMeters;
   const relZ = (damage.position.y + halfDepth) / arenaBounds.worldDepthMeters;
   
+  // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
+  const clampedRelX = Math.min(1, Math.max(0, relX));
+  const clampedRelZ = Math.min(1, Math.max(0, relZ));
+  
   // Map normalized 0-1 range to 3D world coordinates
-  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
   const y = 2 + progress * 2; // Float upward
-  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
   const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame
@@ -193,15 +197,7 @@ SingleDamageNumber.displayName = "SingleDamageNumber";
 const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
   damages,
   isMobile = false,
-  arenaBounds = {
-    x: 0,
-    y: 0,
-    width: 1200,
-    height: 800,
-    scale: 1.0,
-    worldWidthMeters: 10,
-    worldDepthMeters: 7.5,
-  },
+  arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1500,
 }) => {
   // Derive visible damages from props - no need for state sync

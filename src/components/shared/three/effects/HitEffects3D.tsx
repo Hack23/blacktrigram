@@ -10,7 +10,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
+import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3D component.
@@ -48,15 +48,7 @@ const HitEffectVisual: React.FC<{
 
     // Convert from meter coordinates to 3D world coordinates (physics-first)
     // Use arena bounds if available, otherwise use default values for 10m arena
-    const bounds = arenaBounds ?? {
-      x: 0,
-      y: 0,
-      width: 1200,
-      height: 800,
-      scale: 1.0,
-      worldWidthMeters: 10,
-      worldDepthMeters: 7.5,
-    };
+    const bounds = arenaBounds ?? DEFAULT_PHYSICS_ARENA_BOUNDS;
     
     // Convert meter position (centered at origin) to 0-1 normalized range
     const halfWidth = bounds.worldWidthMeters / 2;
@@ -65,10 +57,14 @@ const HitEffectVisual: React.FC<{
     const relX = (effect.position.x + halfWidth) / bounds.worldWidthMeters;
     const relZ = (effect.position.y + halfDepth) / bounds.worldDepthMeters;
     
+    // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
+    const clampedRelX = Math.min(1, Math.max(0, relX));
+    const clampedRelZ = Math.min(1, Math.max(0, relZ));
+    
     // Map normalized 0-1 range to 3D world coordinates
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
     const y = 1.5; // Mid-height for effects
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
 
     return [x, y, z];
   }, [effect.position, arenaBounds]);
