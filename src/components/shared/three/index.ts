@@ -106,3 +106,40 @@ export { DebugCollision } from "./scene/DebugCollision";
 export type { DebugCollisionProps } from "./scene/DebugCollision";
 export { default as CombatArena3D } from "./scene/CombatArena3D";
 export type { CombatArena3DProps } from "./scene/CombatArena3D";
+
+// Optimization utilities
+export {
+  AdaptiveQualitySystem,
+  useAdaptiveQuality,
+  getQualityFromPerformanceSettings,
+  QUALITY_PRESETS,
+  type QualityLevel,
+  type QualitySettings,
+  type AdaptiveQualityThresholds,
+} from "./optimization/AdaptiveQuality";
+
+export {
+  LODCharacter,
+  LODEffect,
+  calculateLODDistances,
+  getLODParticleCount,
+  getLODShadowQuality,
+  DEFAULT_LOD_DISTANCES,
+  MOBILE_LOD_DISTANCES,
+  type LODDistances,
+  type LODCharacterProps,
+  type LODEffectProps,
+} from "./optimization/LODSystem";
+
+export {
+  InstancableSpheres,
+  InstancableBoxes,
+  InstancableParticles,
+  getOptimalInstanceLimit,
+  batchInstances,
+  createInstancesFromPositions,
+  type InstanceData,
+  type InstancableSpheresProps,
+  type InstancableBoxesProps,
+  type InstancableParticlesProps,
+} from "./optimization/InstancedGeometry";
