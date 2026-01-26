@@ -25,6 +25,12 @@ export type { GestureRecognizerProps } from "./GestureRecognizer";
 export { MobileControlsOverlay } from "./MobileControlsPure";
 export type { MobileControlsOverlayProps } from "./MobileControlsPure";
 
+export { StanceWheelPure } from "./StanceWheelPure";
+export type { StanceWheelPureProps } from "./StanceWheelPure";
+
+export { GestureRecognizerPure } from "./GestureRecognizerPure";
+export type { GestureRecognizerPureProps } from "./GestureRecognizerPure";
+
 // Performance optimization modules
 export {
   applyOptimizedUpdate,
