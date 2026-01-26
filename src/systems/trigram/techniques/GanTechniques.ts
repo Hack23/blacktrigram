@@ -12,7 +12,7 @@
  * @module GanTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard defense)
  * - Powerful counter: 0.9-1.0 (deliberate strikes)
  */
-export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gan_rock_defense",
@@ -71,6 +71,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Solid blocking stance
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.2,
+    category: "light",
+    range: "short",
+    speed: 1.2,
   },
 
   // ============= Defensive Stance Techniques =============
@@ -108,6 +111,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rooted defensive stance
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gan_iron_block",
@@ -128,21 +134,24 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.BLUNT,
     damage: 20,
     kiCost: 12,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.94,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 400,
     recoveryTime: 650,
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
-    // Animation: Powerful blocking motion
-    animationType: AnimationType.BLOCK,
-    animationSpeed: 1.1,
+    // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)
+    animationType: AnimationType.IRON_BLOCK,
+    animationSpeed: 0.85,
+    category: "light",
+    range: "medium",
+    speed: 0.85,
   },
 
   // ============= Counter-Attack Techniques =============
@@ -166,20 +175,23 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     damage: 30,
     kiCost: 16,
     staminaCost: 20,
-    accuracy: 0.88,
+    accuracy: 0.92,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 600,
     recoveryTime: 950,
-    critChance: 0.2,
-    critMultiplier: 1.9,
+    critChance: 0.26,
+    critMultiplier: 2.2,
     effects: [],
     // Animation: Powerful counter attack
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.0,
+    category: "special",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "gan_reversal_technique",
@@ -215,6 +227,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Reversal motion
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 
   // ============= Grappling Control =============
@@ -252,6 +267,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Standing control position
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 ] as const;
 
@@ -263,7 +281,7 @@ export const GAN_TECHNIQUE_COUNT = GAN_TECHNIQUES.length;
 /**
  * Get GAN technique by ID
  */
-export function getGanTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGanTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GAN_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -272,6 +290,6 @@ export function getGanTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGanTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GAN_TECHNIQUES.filter((t) => t.type === type);
 }

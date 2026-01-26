@@ -10,7 +10,7 @@
  * @korean 진괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 진괘 - 우레: 폭발적인 힘 (태권도 점프 공격)
  */
-export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
+export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "jin_lightning_flash",
     name: {
@@ -45,9 +45,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.JIN,
     type: CombatAttackType.STRIKE,
     damageType: DamageType.BLUNT,
-    damage: 28,
+    damage: 24,
     kiCost: 10,
-    staminaCost: 25,
+    staminaCost: 14,
     accuracy: 0.75,
     reachConfig: {
       bodyPart: "arm",
@@ -59,8 +59,11 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.LIGHTNING_STRIKE,
     animationSpeed: 1.4,
+    category: "light",
+    range: "short",
+    speed: 1.4,
   },
   {
     id: "jin_jumping_front_kick",
@@ -88,13 +91,16 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    executionTime: 950,
+    executionTime: 1050,
     recoveryTime: 1350,
     critChance: 0.22,
     critMultiplier: 2.1,
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_tornado_kick",
@@ -129,6 +135,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.TORNADO_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_flying_sidekick",
@@ -163,6 +172,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.1,
+    category: "heavy",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "jin_back_kick",
@@ -180,7 +192,7 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
-    damageType: DamageType.IMPACT,
+    damageType: DamageType.BLUNT,
     damage: 37,
     kiCost: 22,
     staminaCost: 30,
@@ -192,11 +204,14 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 850,
     recoveryTime: 1250,
-    critChance: 0.2,
-    critMultiplier: 2.0,
+    critChance: 0.28,
+    critMultiplier: 2.3,
     effects: [],
     animationType: AnimationType.BACK_KICK,
     animationSpeed: 1.0,
+    category: "special",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_knee_strike",
@@ -231,5 +246,8 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.KNEE_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];

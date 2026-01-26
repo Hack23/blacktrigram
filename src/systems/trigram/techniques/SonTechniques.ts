@@ -11,7 +11,7 @@
  * @module SonTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -34,7 +34,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard techniques)
  * - Sustained: 0.9-1.0 (continuous pressure)
  */
-export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "son_whirlwind_barrage",
@@ -68,8 +68,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     critMultiplier: 1.2,
     effects: [],
     // Animation: Continuous striking pattern
-    animationType: AnimationType.JAB,
-    animationSpeed: 1.3,
+    animationType: AnimationType.RAPID_BARRAGE,
+    animationSpeed: 1.5,
+    category: "medium",
+    range: "short",
+    speed: 1.5,
   },
 
   // ============= Taekyon Footwork Techniques =============
@@ -107,6 +110,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low sweeping kick
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "son_rapid_footwork",
@@ -127,7 +133,7 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.BLUNT,
     damage: 28,
     kiCost: 16,
-    staminaCost: 32,
+    staminaCost: 24,
     accuracy: 0.74,
     reachConfig: {
       bodyPart: "leg",
@@ -142,6 +148,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rapid footwork sequence
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.2,
+    category: "medium",
+    range: "medium",
+    speed: 1.2,
   },
 
   // ============= Rhythmic Striking Techniques =============
@@ -161,11 +170,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.SON,
     type: CombatAttackType.STRIKE,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.PRESSURE,
     damage: 24,
     kiCost: 12,
     staminaCost: 28,
-    accuracy: 0.78,
+    accuracy: 0.85,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -173,12 +182,15 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 450,
     recoveryTime: 700,
-    critChance: 0.08,
-    critMultiplier: 1.3,
+    critChance: 0.22,
+    critMultiplier: 2.0,
     effects: [],
     // Animation: Rhythmic hand combination
     animationType: AnimationType.JAB,
     animationSpeed: 1.2,
+    category: "special",
+    range: "short",
+    speed: 1.2,
   },
   {
     id: "son_flowing_push",
@@ -197,7 +209,7 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.SON,
     type: CombatAttackType.STRIKE,
     damageType: DamageType.PRESSURE,
-    damage: 18,
+    damage: 20,
     kiCost: 8,
     staminaCost: 20,
     accuracy: 0.85,
@@ -214,6 +226,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Flowing push movement
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 
   // ============= Spinning Techniques =============
@@ -251,6 +266,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Spinning elbow attack
     animationType: AnimationType.ELBOW_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ] as const;
 
@@ -262,7 +280,7 @@ export const SON_TECHNIQUE_COUNT = SON_TECHNIQUES.length;
 /**
  * Get SON technique by ID
  */
-export function getSonTechniqueById(id: string): KoreanTechnique | undefined {
+export function getSonTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return SON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -271,6 +289,6 @@ export function getSonTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getSonTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return SON_TECHNIQUES.filter((t) => t.type === type);
 }

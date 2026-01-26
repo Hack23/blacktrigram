@@ -12,7 +12,7 @@
  * @module GamTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard redirects)
  * - Controlled: 0.9 (throwing techniques)
  */
-export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gam_water_counter",
@@ -61,16 +61,19 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 600,
     recoveryTime: 900,
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
-    // Animation: Flowing counter-attack
-    animationType: AnimationType.COUNTER_STRIKE,
-    animationSpeed: 1.1,
+    // Animation: Flowing counter-attack (matches TechniqueAnimationMapping)
+    animationType: AnimationType.WATER_COUNTER,
+    animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
 
   // ============= Throwing Techniques =============
@@ -108,6 +111,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Redirect throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gam_hip_throw",
@@ -143,6 +149,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Hip throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.85,
+    category: "medium",
+    range: "short",
+    speed: 0.85,
   },
 
   // ============= Blocking & Parry Techniques =============
@@ -163,9 +172,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.GAM,
     type: CombatAttackType.BLOCK,
     damageType: DamageType.BLUNT,
-    damage: 18,
+    damage: 20,
     kiCost: 10,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.92,
     reachConfig: {
       bodyPart: "arm",
@@ -180,6 +189,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Soft blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gam_circular_parry",
@@ -205,7 +217,7 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 550,
     recoveryTime: 850,
@@ -215,6 +227,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Circular parry motion
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
 
   // ============= Joint Control Counter =============
@@ -238,7 +253,7 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     damage: 28,
     kiCost: 16,
     staminaCost: 20,
-    accuracy: 0.86,
+    accuracy: 0.90,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -246,12 +261,15 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 700,
     recoveryTime: 1000,
-    critChance: 0.16,
-    critMultiplier: 1.7,
+    critChance: 0.25,
+    critMultiplier: 2.2,
     effects: [],
     // Animation: Wrist control transition
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 1.0,
+    category: "special",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 
@@ -263,7 +281,7 @@ export const GAM_TECHNIQUE_COUNT = GAM_TECHNIQUES.length;
 /**
  * Get GAM technique by ID
  */
-export function getGamTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGamTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GAM_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -272,6 +290,6 @@ export function getGamTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGamTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GAM_TECHNIQUES.filter((t) => t.type === type);
 }

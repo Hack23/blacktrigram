@@ -107,7 +107,95 @@ export interface KoreanTechnique {
    * 애니메이션 속도 조절 (기본: 1.0)
    */
   animationSpeed?: number;
+
+  /**
+   * Technique category for gameplay balance
+   * 기술 분류 (경량/중형/중량/특수)
+   *
+   * - light: Fast, low damage, low stamina cost
+   * - medium: Balanced speed/damage/cost
+   * - heavy: Slow, high damage, high stamina cost
+   * - special: Unique effects, vital point targeting
+   *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Tests validate presence and correctness.
+   *
+   * @korean 기술분류
+   */
+  category?: TechniqueBalanceCategory;
+
+  /**
+   * Effective range category
+   * 유효 거리 분류
+   *
+   * - short: Close combat (0-1m)
+   * - medium: Mid range (1-2m)
+   * - long: Extended reach (2-3m)
+   *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Tests validate presence and distribution.
+   *
+   * @korean 거리분류
+   */
+  range?: TechniqueRange;
+
+  /**
+   * Speed rating for technique execution
+   * 기술 실행 속도 등급
+   *
+   * Higher values = faster execution
+   * Typical range: 0.6 (slow) to 1.4 (very fast)
+   *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Should align with animationSpeed.
+   *
+   * @korean 속도등급
+   */
+  speed?: number;
 }
+
+/**
+ * Balance category for techniques (gameplay categorization)
+ * 기술 밸런스 카테고리 타입
+ *
+ * Used for combat balance and AI selection logic. Not to be confused
+ * with TechniqueCategory in AI module (which categorizes by martial arts type).
+ *
+ * @korean 기술밸런스분류타입
+ */
+export type TechniqueBalanceCategory = "light" | "medium" | "heavy" | "special";
+
+/**
+ * Technique range type (shared across systems)
+ * 기술 거리 타입
+ *
+ * @korean 기술거리타입
+ */
+export type TechniqueRange = "short" | "medium" | "long";
+
+/**
+ * Stricter type for Trigram Stance Techniques
+ * 팔괘 자세 기술 정의 타입
+ *
+ * Extends KoreanTechnique with required categorization fields for
+ * all trigram stance techniques. Use this type for technique arrays
+ * in stance files to enforce compile-time validation.
+ *
+ * This type is named TrigramStanceTechnique (not TrigramTechnique) to
+ * avoid confusion with TrigramTechniqueSummary in trigram/types.ts.
+ *
+ * Example usage:
+ * ```typescript
+ * export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [...]
+ * ```
+ *
+ * @korean 팔괘자세기술정의타입
+ */
+export type TrigramStanceTechnique = KoreanTechnique & {
+  readonly category: TechniqueBalanceCategory;
+  readonly range: TechniqueRange;
+  readonly speed: number;
+};
 
 /**
  * Korean text with romanization for vital point names

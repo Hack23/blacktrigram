@@ -12,7 +12,7 @@
  * @module GonTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard grappling)
  * - Impact: 1.1 (explosive finish)
  */
-export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gon_earth_embrace",
@@ -71,6 +71,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Clinch grapple position
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 
   // ============= Leg Techniques =============
@@ -108,6 +111,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Reaping leg sweep
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "gon_ankle_pick",
@@ -143,6 +149,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 
   // ============= Ssireum Throwing Techniques =============
@@ -162,11 +171,11 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GON,
     type: CombatAttackType.THROW,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.IMPACT,
     damage: 32,
     kiCost: 20,
     staminaCost: 28,
-    accuracy: 0.76,
+    accuracy: 0.82,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -174,12 +183,15 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 850,
     recoveryTime: 1250,
-    critChance: 0.16,
-    critMultiplier: 1.7,
+    critChance: 0.24,
+    critMultiplier: 2.1,
     effects: [],
     // Animation: Traditional belt throw
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "special",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_ground_pound",
@@ -207,7 +219,7 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 1000,
+    executionTime: 1050,
     recoveryTime: 1400,
     critChance: 0.2,
     critMultiplier: 2.0,
@@ -215,6 +227,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Slam throw
     animationType: AnimationType.SLAM,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gon_body_lock_takedown",
@@ -250,6 +265,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Body lock clinch
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_sacrifice_throw",
@@ -285,6 +303,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Sacrifice throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 
@@ -296,7 +317,7 @@ export const GON_TECHNIQUE_COUNT = GON_TECHNIQUES.length;
 /**
  * Get GON technique by ID
  */
-export function getGonTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGonTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -305,6 +326,6 @@ export function getGonTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGonTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GON_TECHNIQUES.filter((t) => t.type === type);
 }

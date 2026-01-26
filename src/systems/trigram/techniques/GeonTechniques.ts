@@ -10,7 +10,7 @@
  * @korean 건괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 건괘 - 하늘: 직접적인 힘의 기술 (태권도 타격)
  */
-export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "geon_heaven_strike",
     name: {
@@ -61,6 +61,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.HEAVEN_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_heavenly_fist",
@@ -95,6 +98,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JAB,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
   {
     id: "geon_frontal_kick",
@@ -129,6 +135,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_roundhouse_kick",
@@ -163,6 +172,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.GEON_ROUNDHOUSE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_axe_kick",
@@ -190,13 +202,16 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.0,
     },
-    executionTime: 900,
+    executionTime: 1050,
     recoveryTime: 1200,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.AXE_KICK,
     animationSpeed: 0.9,
+    category: "heavy",
+    range: "medium",
+    speed: 0.9,
   },
   {
     id: "geon_palm_strike",
@@ -214,7 +229,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GEON,
     type: CombatAttackType.STRIKE,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.PRESSURE,
     damage: 30,
     kiCost: 14,
     staminaCost: 18,
@@ -226,11 +241,14 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 650,
     recoveryTime: 950,
-    critChance: 0.14,
-    critMultiplier: 1.6,
+    critChance: 0.25,
+    critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "special",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_elbow_smash",
@@ -265,5 +283,8 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.CRUSHING_ELBOW,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];

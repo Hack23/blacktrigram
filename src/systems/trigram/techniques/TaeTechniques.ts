@@ -10,7 +10,7 @@
  * @korean 태괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 태괘 - 연못: 유동적인 관절기 기술 (합기도)
  */
-export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
+export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "tae_flowing_strikes",
     name: {
@@ -52,7 +52,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.95,
+      baseExtension: 1.05,
     },
     executionTime: 600,
     recoveryTime: 1000,
@@ -61,6 +61,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FLOWING_CROSS,
     animationSpeed: 1.2,
+    category: "medium",
+    range: "medium",
+    speed: 1.2,
   },
   {
     id: "tae_wrist_lock",
@@ -81,20 +84,23 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.JOINT,
     damage: 22,
     kiCost: 10,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.88,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 700,
+    executionTime: 650,
     recoveryTime: 1000,
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 0.85,
+    category: "light",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_small_circle",
@@ -124,11 +130,14 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 750,
     recoveryTime: 1100,
-    critChance: 0.14,
-    critMultiplier: 1.6,
+    critChance: 0.22,
+    critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
     animationSpeed: 0.85,
+    category: "special",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_finger_lock",
@@ -163,6 +172,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.9,
+    category: "light",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "tae_elbow_lock",
@@ -197,6 +209,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ELBOW_LOCK,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_shoulder_lock",
@@ -231,6 +246,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SHOULDER_MANIPULATION,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_arm_bar",
@@ -265,5 +283,8 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ARM_BAR,
     animationSpeed: 0.75,
+    category: "medium",
+    range: "short",
+    speed: 0.75,
   },
 ];
