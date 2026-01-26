@@ -14,7 +14,6 @@
 import * as THREE from "three";
 import { BodyRegion, DamageType } from "../../types/common";
 import { InjuryTracker, injuryTracker } from "./InjuryTracker";
-import { BodyPart } from "./types";
 import {
   getInjuryPositionWithOffset,
   mapBodyRegionToBodyPart,
