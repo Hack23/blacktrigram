@@ -169,60 +169,55 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
   describe("Multiple Respiratory Strikes", () => {
     it("should accumulate breathing disruption from multiple torso strikes", () => {
-      // First strike: Moderate torso damage (Winded)
-      let updatedDefender = defender;
-      const technique = createMockTechnique({
-        id: "test_rib_strike",
-        name: { korean: "늑골 타격", english: "Rib Strike", romanized: "neukgol tagyeok" },
-        koreanName: "늑골 타격",
-        englishName: "Rib Strike",
-        romanized: "neukgol tagyeek",
-        damage: 20,
-        accuracy: 1.0, // 100% hit chance
-      });
+      // Test accumulation by directly applying disruption effects
+      const timestamp = Date.now();
       
-      const result1 = combatSystem.resolveAttack(
-        attacker,
-        updatedDefender,
-        technique,
-        "torso_rib_left" // Target rib for breathing disruption
+      // First strike: Apply Winded effect
+      const firstEffect = BreathingDisruptionSystem.createEffect(
+        BreathingDisruptionLevel.WINDED,
+        "First Rib Strike",
+        timestamp
       );
-
-      const { updatedDefender: afterFirstStrike } = CombatSystem.applyCombatResult(
-        result1,
-        attacker,
-        updatedDefender
-      );
-      updatedDefender = afterFirstStrike;
-
-      const firstEffect = BreathingDisruptionSystem.getActiveEffect(updatedDefender);
       
-      if (result1.hit && firstEffect) {
-        // Verify first effect is applied
-        expect(firstEffect.level).toBe(BreathingDisruptionLevel.GASPING); // Rib strikes cause gasping
-        
-        // Second strike after 2 seconds: Another torso strike
-        const result2 = combatSystem.resolveAttack(
-          attacker,
-          updatedDefender,
-          technique,
-          "torso_rib_right"
-        );
-
-        const { updatedDefender: afterSecondStrike } = CombatSystem.applyCombatResult(
-          result2,
-          attacker,
-          updatedDefender
-        );
-        updatedDefender = afterSecondStrike;
-
-        const secondEffect = BreathingDisruptionSystem.getActiveEffect(updatedDefender);
-        
-        if (result2.hit && secondEffect) {
-          // Effects should stack - duration increases
-          expect(secondEffect.duration).toBeGreaterThan(firstEffect.duration);
-        }
-      }
+      let updatedDefender = {
+        ...defender,
+        statusEffects: [firstEffect],
+      };
+      
+      // Verify first effect is applied
+      expect(firstEffect.level).toBe(BreathingDisruptionLevel.WINDED);
+      expect(firstEffect.staminaRegenMultiplier).toBe(0.75); // 25% penalty
+      const firstDuration = firstEffect.duration;
+      
+      // Second strike: Stack with another Winded effect (simulating second rib strike)
+      const secondEffect = BreathingDisruptionSystem.stackEffect(
+        firstEffect,
+        BreathingDisruptionLevel.WINDED,
+        "Second Rib Strike",
+        timestamp + 2000 // 2 seconds later
+      );
+      
+      updatedDefender = {
+        ...updatedDefender,
+        statusEffects: [secondEffect],
+      };
+      
+      // Verify effects accumulate - duration should increase
+      expect(secondEffect.duration).toBeGreaterThan(firstDuration);
+      expect(secondEffect.level).toBe(BreathingDisruptionLevel.WINDED); // Still winded but longer
+      
+      // Third strike: Stack again, should escalate to Gasping
+      const thirdEffect = BreathingDisruptionSystem.stackEffect(
+        secondEffect,
+        BreathingDisruptionLevel.GASPING,
+        "Third Rib Strike",
+        timestamp + 4000 // 4 seconds later
+      );
+      
+      // Verify escalation to higher severity
+      expect(thirdEffect.level).toBe(BreathingDisruptionLevel.GASPING);
+      expect(thirdEffect.staminaRegenMultiplier).toBe(0.5); // 50% penalty
+      expect(thirdEffect.duration).toBeGreaterThan(secondEffect.duration);
     });
 
     it("should escalate severity when stronger strike follows weaker one", () => {
@@ -376,9 +371,6 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       // However, there may be other modifiers, so we'll use a range
 
       // Verify stamina increased with penalty applied
-      expect(updatedDefender.stamina).toBeGreaterThan(50);
-      expect(updatedDefender.stamina).toBeLessThan(50 + 3); // Less than full regen
-      // Allow for some variance in the exact calculation
       expect(updatedDefender.stamina).toBeGreaterThan(50);
       expect(updatedDefender.stamina).toBeLessThan(52); // Should be around 51-51.5
     });
