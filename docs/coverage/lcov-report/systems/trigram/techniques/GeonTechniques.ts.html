@@ -332,7 +332,28 @@
 <a name='L267'></a><a href='#L267'>267</a>
 <a name='L268'></a><a href='#L268'>268</a>
 <a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -361,7 +382,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -613,7 +655,7 @@
  * @korean 건괘기술
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -630,7 +672,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 건괘 - 하늘: 직접적인 힘의 기술 (태권도 타격)
  */
-export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "geon_heaven_strike",
     name: {
@@ -664,6 +706,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.HEAVEN_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_heavenly_fist",
@@ -698,6 +743,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JAB,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
   {
     id: "geon_frontal_kick",
@@ -732,6 +780,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_roundhouse_kick",
@@ -766,6 +817,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.GEON_ROUNDHOUSE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_axe_kick",
@@ -793,13 +847,16 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.0,
     },
-    executionTime: 900,
+    executionTime: 1050,
     recoveryTime: 1200,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.AXE_KICK,
     animationSpeed: 0.9,
+    category: "heavy",
+    range: "medium",
+    speed: 0.9,
   },
   {
     id: "geon_palm_strike",
@@ -817,7 +874,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GEON,
     type: CombatAttackType.STRIKE,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.PRESSURE,
     damage: 30,
     kiCost: 14,
     staminaCost: 18,
@@ -829,11 +886,14 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 650,
     recoveryTime: 950,
-    critChance: 0.14,
-    critMultiplier: 1.6,
+    critChance: 0.25,
+    critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "special",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_elbow_smash",
@@ -868,6 +928,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.CRUSHING_ELBOW,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];
 &nbsp;</pre></td></tr></table></pre>
@@ -877,7 +940,7 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:42.246Z
+                at 2026-01-26T13:08:53.149Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -339,7 +339,25 @@
 <a name='L274'></a><a href='#L274'>274</a>
 <a name='L275'></a><a href='#L275'>275</a>
 <a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -375,7 +393,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -598,7 +616,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -628,7 +664,7 @@
  * @module SonTechniques
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -651,7 +687,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard techniques)
  * - Sustained: 0.9-1.0 (continuous pressure)
  */
-export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "son_whirlwind_barrage",
@@ -685,8 +721,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     critMultiplier: 1.2,
     effects: [],
     // Animation: Continuous striking pattern
-    animationType: AnimationType.JAB,
-    animationSpeed: 1.3,
+    animationType: AnimationType.RAPID_BARRAGE,
+    animationSpeed: 1.5,
+    category: "medium",
+    range: "short",
+    speed: 1.5,
   },
 &nbsp;
   // ============= Taekyon Footwork Techniques =============
@@ -724,6 +763,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low sweeping kick
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "son_rapid_footwork",
@@ -744,7 +786,7 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.BLUNT,
     damage: 28,
     kiCost: 16,
-    staminaCost: 32,
+    staminaCost: 24,
     accuracy: 0.74,
     reachConfig: {
       bodyPart: "leg",
@@ -759,6 +801,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rapid footwork sequence
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.2,
+    category: "medium",
+    range: "medium",
+    speed: 1.2,
   },
 &nbsp;
   // ============= Rhythmic Striking Techniques =============
@@ -778,11 +823,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.SON,
     type: CombatAttackType.STRIKE,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.PRESSURE,
     damage: 24,
     kiCost: 12,
     staminaCost: 28,
-    accuracy: 0.78,
+    accuracy: 0.85,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -790,12 +835,15 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 450,
     recoveryTime: 700,
-    critChance: 0.08,
-    critMultiplier: 1.3,
+    critChance: 0.22,
+    critMultiplier: 2.0,
     effects: [],
     // Animation: Rhythmic hand combination
     animationType: AnimationType.JAB,
     animationSpeed: 1.2,
+    category: "special",
+    range: "short",
+    speed: 1.2,
   },
   {
     id: "son_flowing_push",
@@ -814,7 +862,7 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.SON,
     type: CombatAttackType.STRIKE,
     damageType: DamageType.PRESSURE,
-    damage: 18,
+    damage: 20,
     kiCost: 8,
     staminaCost: 20,
     accuracy: 0.85,
@@ -831,6 +879,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Flowing push movement
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 &nbsp;
   // ============= Spinning Techniques =============
@@ -868,6 +919,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Spinning elbow attack
     animationType: AnimationType.ELBOW_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ] as const;
 &nbsp;
@@ -879,7 +933,7 @@ export const SON_TECHNIQUE_COUNT = SON_TECHNIQUES.length;
 /**
  * Get SON technique by ID
  */
-export function <span class="fstat-no" title="function not covered" >getSonTechniqueById(i</span>d: string): KoreanTechnique | undefined {
+export function <span class="fstat-no" title="function not covered" >getSonTechniqueById(i</span>d: string): TrigramStanceTechnique | undefined {
 <span class="cstat-no" title="statement not covered" >  return SON_TECHNIQUES.find(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id === id)</span>;</span>
 }
 &nbsp;
@@ -888,7 +942,7 @@ export function <span class="fstat-no" title="function not covered" >getSonTechn
  */
 export function <span class="fstat-no" title="function not covered" >getSonTechniquesByType(</span>
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
 <span class="cstat-no" title="statement not covered" >  return SON_TECHNIQUES.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.type === type)</span>;</span>
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -898,7 +952,7 @@ export function <span class="fstat-no" title="function not covered" >getSonTechn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:42.246Z
+                at 2026-01-26T13:08:53.149Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

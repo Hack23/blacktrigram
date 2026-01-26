@@ -332,7 +332,28 @@
 <a name='L267'></a><a href='#L267'>267</a>
 <a name='L268'></a><a href='#L268'>268</a>
 <a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -361,7 +382,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -613,7 +655,7 @@
  * @korean 태괘기술
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -630,7 +672,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 태괘 - 연못: 유동적인 관절기 기술 (합기도)
  */
-export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
+export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "tae_flowing_strikes",
     name: {
@@ -655,7 +697,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.95,
+      baseExtension: 1.05,
     },
     executionTime: 600,
     recoveryTime: 1000,
@@ -664,6 +706,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FLOWING_CROSS,
     animationSpeed: 1.2,
+    category: "medium",
+    range: "medium",
+    speed: 1.2,
   },
   {
     id: "tae_wrist_lock",
@@ -684,20 +729,23 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.JOINT,
     damage: 22,
     kiCost: 10,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.88,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 700,
+    executionTime: 650,
     recoveryTime: 1000,
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 0.85,
+    category: "light",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_small_circle",
@@ -727,11 +775,14 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 750,
     recoveryTime: 1100,
-    critChance: 0.14,
-    critMultiplier: 1.6,
+    critChance: 0.22,
+    critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
     animationSpeed: 0.85,
+    category: "special",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_finger_lock",
@@ -766,6 +817,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.9,
+    category: "light",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "tae_elbow_lock",
@@ -800,6 +854,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ELBOW_LOCK,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_shoulder_lock",
@@ -834,6 +891,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SHOULDER_MANIPULATION,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_arm_bar",
@@ -868,6 +928,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ARM_BAR,
     animationSpeed: 0.75,
+    category: "medium",
+    range: "short",
+    speed: 0.75,
   },
 ];
 &nbsp;</pre></td></tr></table></pre>
@@ -877,7 +940,7 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:41.845Z
+                at 2026-01-26T13:08:52.739Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -340,7 +340,25 @@
 <a name='L275'></a><a href='#L275'>275</a>
 <a name='L276'></a><a href='#L276'>276</a>
 <a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -377,7 +395,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -600,7 +618,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -631,7 +667,7 @@
  * @module GamTechniques
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -654,7 +690,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard redirects)
  * - Controlled: 0.9 (throwing techniques)
  */
-export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gam_water_counter",
@@ -680,16 +716,19 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 600,
     recoveryTime: 900,
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
-    // Animation: Flowing counter-attack
-    animationType: AnimationType.COUNTER_STRIKE,
-    animationSpeed: 1.1,
+    // Animation: Flowing counter-attack (matches TechniqueAnimationMapping)
+    animationType: AnimationType.WATER_COUNTER,
+    animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
 &nbsp;
   // ============= Throwing Techniques =============
@@ -727,6 +766,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Redirect throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gam_hip_throw",
@@ -762,6 +804,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Hip throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.85,
+    category: "medium",
+    range: "short",
+    speed: 0.85,
   },
 &nbsp;
   // ============= Blocking &amp; Parry Techniques =============
@@ -782,9 +827,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.GAM,
     type: CombatAttackType.BLOCK,
     damageType: DamageType.BLUNT,
-    damage: 18,
+    damage: 20,
     kiCost: 10,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.92,
     reachConfig: {
       bodyPart: "arm",
@@ -799,6 +844,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Soft blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gam_circular_parry",
@@ -824,7 +872,7 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
-      baseExtension: 0.9,
+      baseExtension: 1.05,
     },
     executionTime: 550,
     recoveryTime: 850,
@@ -834,6 +882,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Circular parry motion
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
 &nbsp;
   // ============= Joint Control Counter =============
@@ -857,7 +908,7 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     damage: 28,
     kiCost: 16,
     staminaCost: 20,
-    accuracy: 0.86,
+    accuracy: 0.90,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -865,12 +916,15 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 700,
     recoveryTime: 1000,
-    critChance: 0.16,
-    critMultiplier: 1.7,
+    critChance: 0.25,
+    critMultiplier: 2.2,
     effects: [],
     // Animation: Wrist control transition
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 1.0,
+    category: "special",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 &nbsp;
@@ -882,7 +936,7 @@ export const GAM_TECHNIQUE_COUNT = GAM_TECHNIQUES.length;
 /**
  * Get GAM technique by ID
  */
-export function <span class="fstat-no" title="function not covered" >getGamTechniqueById(i</span>d: string): KoreanTechnique | undefined {
+export function <span class="fstat-no" title="function not covered" >getGamTechniqueById(i</span>d: string): TrigramStanceTechnique | undefined {
 <span class="cstat-no" title="statement not covered" >  return GAM_TECHNIQUES.find(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id === id)</span>;</span>
 }
 &nbsp;
@@ -891,7 +945,7 @@ export function <span class="fstat-no" title="function not covered" >getGamTechn
  */
 export function <span class="fstat-no" title="function not covered" >getGamTechniquesByType(</span>
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
 <span class="cstat-no" title="statement not covered" >  return GAM_TECHNIQUES.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.type === type)</span>;</span>
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -901,7 +955,7 @@ export function <span class="fstat-no" title="function not covered" >getGamTechn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:41.845Z
+                at 2026-01-26T13:08:52.739Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

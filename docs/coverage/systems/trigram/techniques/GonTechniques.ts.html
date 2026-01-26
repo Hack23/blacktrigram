@@ -373,7 +373,28 @@
 <a name='L308'></a><a href='#L308'>308</a>
 <a name='L309'></a><a href='#L309'>309</a>
 <a name='L310'></a><a href='#L310'>310</a>
-<a name='L311'></a><a href='#L311'>311</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -410,7 +431,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -666,7 +687,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -697,7 +739,7 @@
  * @module GonTechniques
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -720,7 +762,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard grappling)
  * - Impact: 1.1 (explosive finish)
  */
-export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gon_earth_embrace",
@@ -756,6 +798,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Clinch grapple position
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 &nbsp;
   // ============= Leg Techniques =============
@@ -793,6 +838,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Reaping leg sweep
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "gon_ankle_pick",
@@ -828,6 +876,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 &nbsp;
   // ============= Ssireum Throwing Techniques =============
@@ -847,11 +898,11 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GON,
     type: CombatAttackType.THROW,
-    damageType: DamageType.BLUNT,
+    damageType: DamageType.IMPACT,
     damage: 32,
     kiCost: 20,
     staminaCost: 28,
-    accuracy: 0.76,
+    accuracy: 0.82,
     reachConfig: {
       bodyPart: "arm",
       techniqueType: "punch",
@@ -859,12 +910,15 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 850,
     recoveryTime: 1250,
-    critChance: 0.16,
-    critMultiplier: 1.7,
+    critChance: 0.24,
+    critMultiplier: 2.1,
     effects: [],
     // Animation: Traditional belt throw
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "special",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_ground_pound",
@@ -892,7 +946,7 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 1000,
+    executionTime: 1050,
     recoveryTime: 1400,
     critChance: 0.2,
     critMultiplier: 2.0,
@@ -900,6 +954,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Slam throw
     animationType: AnimationType.SLAM,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gon_body_lock_takedown",
@@ -935,6 +992,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Body lock clinch
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_sacrifice_throw",
@@ -970,6 +1030,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Sacrifice throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 &nbsp;
@@ -981,7 +1044,7 @@ export const GON_TECHNIQUE_COUNT = GON_TECHNIQUES.length;
 /**
  * Get GON technique by ID
  */
-export function <span class="fstat-no" title="function not covered" >getGonTechniqueById(i</span>d: string): KoreanTechnique | undefined {
+export function <span class="fstat-no" title="function not covered" >getGonTechniqueById(i</span>d: string): TrigramStanceTechnique | undefined {
 <span class="cstat-no" title="statement not covered" >  return GON_TECHNIQUES.find(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.id === id)</span>;</span>
 }
 &nbsp;
@@ -990,7 +1053,7 @@ export function <span class="fstat-no" title="function not covered" >getGonTechn
  */
 export function <span class="fstat-no" title="function not covered" >getGonTechniquesByType(</span>
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
 <span class="cstat-no" title="statement not covered" >  return GON_TECHNIQUES.filter(<span class="fstat-no" title="function not covered" >(t</span>) =&gt; <span class="cstat-no" title="statement not covered" >t.type === type)</span>;</span>
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -1000,7 +1063,7 @@ export function <span class="fstat-no" title="function not covered" >getGonTechn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:41.845Z
+                at 2026-01-26T13:08:52.739Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

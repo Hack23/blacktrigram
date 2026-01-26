@@ -298,7 +298,25 @@
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
 <a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -327,7 +345,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -545,7 +581,7 @@
  * @korean 진괘기술
  */
 &nbsp;
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -562,7 +598,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 진괘 - 우레: 폭발적인 힘 (태권도 점프 공격)
  */
-export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
+export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "jin_lightning_flash",
     name: {
@@ -580,9 +616,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     stance: TrigramStance.JIN,
     type: CombatAttackType.STRIKE,
     damageType: DamageType.BLUNT,
-    damage: 28,
+    damage: 24,
     kiCost: 10,
-    staminaCost: 25,
+    staminaCost: 14,
     accuracy: 0.75,
     reachConfig: {
       bodyPart: "arm",
@@ -594,8 +630,11 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.LIGHTNING_STRIKE,
     animationSpeed: 1.4,
+    category: "light",
+    range: "short",
+    speed: 1.4,
   },
   {
     id: "jin_jumping_front_kick",
@@ -623,13 +662,16 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    executionTime: 950,
+    executionTime: 1050,
     recoveryTime: 1350,
     critChance: 0.22,
     critMultiplier: 2.1,
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_tornado_kick",
@@ -664,6 +706,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.TORNADO_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_flying_sidekick",
@@ -698,6 +743,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.1,
+    category: "heavy",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "jin_back_kick",
@@ -715,7 +763,7 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
-    damageType: DamageType.IMPACT,
+    damageType: DamageType.BLUNT,
     damage: 37,
     kiCost: 22,
     staminaCost: 30,
@@ -727,11 +775,14 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     executionTime: 850,
     recoveryTime: 1250,
-    critChance: 0.2,
-    critMultiplier: 2.0,
+    critChance: 0.28,
+    critMultiplier: 2.3,
     effects: [],
     animationType: AnimationType.BACK_KICK,
     animationSpeed: 1.0,
+    category: "special",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_knee_strike",
@@ -766,6 +817,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.KNEE_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];
 &nbsp;</pre></td></tr></table></pre>
@@ -775,7 +829,7 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-24T23:32:41.845Z
+                at 2026-01-26T13:08:52.739Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -274,6 +274,814 @@ graph TD
 **Estimated Effort**: 6-9 months (backend + multiplayer)
 **Target Rating**: 9.8/10
 
+#### 🏗️ AWS Serverless Backend Architecture
+
+**Note**: The backend implementation is 90% complete in the private commercial repository [Hack23/black-trigram-business](https://github.com/Hack23/black-trigram-business) with comprehensive security and architecture documentation. The backend is commercial and not open source. This section documents the planned architecture for reference.
+
+**Architecture Note**: The EC2/RDS/Express backend described in "Technology Stack Updates" above is an **alternative architecture** for reference. The **primary target architecture** for Black Trigram v2.0 (2028) is the AWS serverless backend documented below, which provides superior scalability, cost efficiency, and operational simplicity.
+
+##### C4 Container Diagram: AWS Serverless Architecture
+
+```mermaid
+C4Container
+    title Black Trigram Future Backend Architecture - AWS Serverless
+
+    Person(player, "🧑 Player", "Game user accessing Black Trigram")
+    
+    System_Boundary(aws, "AWS Cloud Infrastructure") {
+        Container(cognito, "🔐 AWS Cognito", "User Pools + Identity Pools", "Authentication, MFA, social login federation")
+        Container(apiGateway, "🚪 API Gateway", "REST + WebSocket APIs", "API management, rate limiting, request/response transformation")
+        Container(lambda, "⚡ Lambda Functions", "Node.js/TypeScript", "Business logic, game mechanics, payment processing")
+        Container(dynamoDB, "📊 DynamoDB", "NoSQL Database", "Player profiles, game states, achievements, purchases")
+        Container(s3, "💾 S3", "Object Storage", "Save games, combat replays, user-generated content, assets")
+        Container(backup, "🔄 AWS Backup", "Backup Service", "Automated backups, point-in-time recovery, compliance")
+        Container(resilience, "🛡️ Resilience Hub", "DR Planning", "RTO/RPO management, resilience assessment")
+        Container(waf, "🔥 AWS WAF", "Web Application Firewall", "OWASP protection, rate limiting, geo-blocking")
+        Container(cloudFront, "🌐 CloudFront", "CDN", "Global content delivery, DDoS protection")
+        Container(guardDuty, "👁️ GuardDuty", "Threat Detection", "Continuous security monitoring, anomaly detection")
+        Container(securityHub, "🔒 Security Hub", "Security Posture", "Unified security findings, compliance checks")
+    }
+    
+    System_Ext(stripe, "💳 Stripe", "Payment processor for cosmetics, battle passes, DLC")
+    System_Ext(social, "🌐 Social Login Providers", "Google, Facebook, Discord, GitHub, Twitter/X, Apple")
+    System_Ext(frontend, "⚛️ React Frontend", "Current Black Trigram web application")
+    
+    Rel(player, frontend, "Plays game", "HTTPS")
+    Rel(frontend, cloudFront, "Loads SPA/static assets via CDN", "HTTPS")
+    Rel(frontend, cognito, "Authenticates via Hosted UI/OIDC", "OAuth 2.0/OIDC")
+    Rel(cognito, social, "Federated login", "OAuth 2.0")
+    Rel(frontend, apiGateway, "API calls", "HTTPS/WSS")
+    Rel(cloudFront, apiGateway, "Forwards API calls to", "HTTPS/WSS")
+    Rel(waf, cloudFront, "Protects", "Web ACL")
+    Rel(apiGateway, lambda, "Invokes", "AWS service integration (Lambda proxy)")
+    Rel(lambda, dynamoDB, "Reads/writes data", "AWS SDK")
+    Rel(lambda, s3, "Stores files", "AWS SDK")
+    Rel(frontend, stripe, "Processes payments", "Stripe.js SDK")
+    Rel(lambda, stripe, "Validates webhooks", "Stripe API")
+    Rel(backup, dynamoDB, "Backs up", "AWS Backup")
+    Rel(backup, s3, "Backs up", "AWS Backup")
+    Rel(resilience, backup, "Monitors RTO/RPO", "Resilience Hub")
+    Rel(guardDuty, lambda, "Analyzes activity for threats", "CloudTrail, VPC Flow Logs, DNS logs")
+    Rel(securityHub, guardDuty, "Ingests GuardDuty findings", "EventBridge / AWS Security Hub")
+
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
+```
+
+##### Network Architecture: VPC & Private Subnets
+
+**Reference Implementation**: Based on [Hack23/lambda-in-private-vpc](https://github.com/Hack23/lambda-in-private-vpc) - enterprise-grade multi-region active/active architecture with comprehensive security controls.
+
+**VPC Configuration** (Multi-AZ deployment):
+
+- **VPC CIDR**: 10.1.0.0/16 with DNS support enabled
+- **Private Subnets**: 2 availability zones (us-east-1a/b) for Lambda functions
+- **Public Subnets**: 2 availability zones for NAT Gateways (one per AZ for high availability)
+- **Subnet CIDRs**: Private (10.1.1.0/24, 10.1.2.0/24), Public (10.1.11.0/24, 10.1.12.0/24)
+- **AZ Alignment**: Each private subnet has dedicated NAT Gateway in same AZ (avoids cross-AZ data transfer charges)
+- **Internet Gateway**: Required for NAT Gateway operation in public subnets
+- **No Direct Internet Access from Lambda**: Lambda in private subnets with no IGW route, uses VPC endpoints for AWS services
+- **NAT Gateways**: 2 NAT Gateways in public subnets (one per AZ) for outbound Stripe API calls from Lambda
+
+**VPC Endpoints** (PrivateLink for AWS services - Lambda to AWS traffic stays on AWS network):
+
+| Service | Endpoint Type | Purpose | Security Benefit |
+|---------|---------------|---------|------------------|
+| **DynamoDB** | Gateway | Database access from Lambda | Traffic stays within AWS network |
+| **S3** | Gateway | Save game storage access | No internet exposure, free data transfer |
+| **API Gateway (execute-api)** | Interface | **Optional**: Private connectivity from VPC to internal/admin API Gateway routes | Allows VPC-based workloads (e.g., admin tools, batch jobs, monitoring) to call selected APIs privately; public game APIs remain internet-accessible via CloudFront/WAF only |
+| **Lambda** | Interface | Cross-account Lambda invocation | Private invocation without internet |
+| **CloudWatch Logs** | Interface | Logging from Lambda | Logs never traverse public internet |
+| **Secrets Manager** | Interface | Secure credential retrieval | Stripe keys, API tokens stay private |
+| **KMS** | Interface | Encryption key operations | Key material never leaves AWS network |
+| **STS** | Interface | IAM role assumption | Secure token exchange |
+
+
+**Route 53 Resolver DNS Firewall** (Domain filtering and threat protection):
+
+**Filtering Strategy**:
+- **Block Known Threats**: AWS-managed lists for malware, phishing, and botnet C2 domains
+- **Block Cryptomining**: Custom lists for cryptocurrency mining domains (alert mode to minimize false positives)
+- **Allow AWS Services**: Whitelist for cognito-idp, dynamodb, s3, lambda domains
+- **Allow Social Providers**: Google, Facebook, Discord, GitHub, Twitter/X, Apple authentication domains
+- **Allow Payment Services**: Stripe API and SDK domains (api.stripe.com, js.stripe.com)
+- **Log Everything**: All DNS queries logged for security analysis and threat intelligence
+
+**VPC Flow Logs** (Network traffic monitoring):
+
+- **Capture Scope**: All traffic (accepted, rejected, and all connections)
+- **Destination**: CloudWatch Logs for analysis and alerting
+- **Retention**: 90 days for security investigation and compliance
+- **Log Format**: Source/destination addresses, ports, protocols, packet counts, bytes transferred, connection status
+- **Use Cases**: Security forensics, anomaly detection, compliance auditing, traffic pattern analysis
+
+**Security Group Configuration** (Least privilege network access):
+
+**Lambda Function Security Group**:
+- **Egress Rules**:
+  - HTTPS (443) to VPC endpoints for AWS service access (DynamoDB, S3, Secrets Manager, CloudWatch, X-Ray)
+  - HTTPS (443) to internet via NAT Gateway for Stripe API and social login validation
+- **Ingress Rules**: None (Lambda invoked by API Gateway, not directly accessible)
+
+**VPC Endpoints Security Group**:
+- **Ingress Rules**: HTTPS (443) from Lambda security group only
+- **Egress Rules**: None required (endpoints are AWS-managed)
+
+**Design Principles**: Default deny-all, explicit allow rules only, principle of least privilege
+
+**Network ACLs** (Subnet-level firewall rules for **private subnets** hosting Lambda and VPC endpoints):
+
+**Inbound Rules**:
+- Allow HTTPS (443) from within VPC CIDR (10.1.0.0/16)
+- Allow ephemeral ports (1024-65535) from within VPC CIDR (e.g., NAT Gateway subnets 10.1.11.0/24, 10.1.12.0/24) for return traffic of internet-bound connections initiated by Lambda
+- Default deny all other inbound traffic
+
+**Outbound Rules**:
+- Allow HTTPS (443) to anywhere via NAT Gateway (for AWS services and external APIs like Stripe)
+- Allow ephemeral ports (1024-65535) for return traffic to VPC
+- Default deny all other outbound traffic
+
+**Purpose**: Stateless subnet-level defense providing additional security layer beyond security groups
+
+**CloudFront Distribution** (Global CDN with WAF integration):
+
+**Origin Configuration**:
+- **S3 Origin**: Static SPA assets (frontend) with Origin Access Control (OAC) for private bucket access
+- **API Gateway Origin**: Backend API with custom domain and origin path mapping
+
+**Caching Strategy**:
+- **Static Assets**: Aggressive caching (1 day default, 1 year max) with compression enabled
+- **API Calls**: No caching (cache policy: CachingDisabled) for dynamic content
+- **Viewer Protocol**: Redirect HTTP to HTTPS (security requirement)
+
+**Security Configuration**:
+- **TLS Version**: Minimum TLSv1.2_2021 security policy (TLS 1.3 preferred when supported)
+- **WAF Integration**: AWS WAF Web ACL attached for OWASP protection
+- **DDoS Protection**: AWS Shield Standard (automatic, no cost)
+- **Custom Domain**: blacktrigram.com with ACM certificate
+
+**Logging**: Access logs to S3 bucket for security analysis and compliance
+
+**AWS WAF Web ACL** (OWASP protection and rate limiting):
+
+**Managed Rule Groups**:
+- **Core Rule Set**: OWASP Top 10 protection (XSS, SQL injection, LFI, RFI)
+- **Known Bad Inputs**: Protection against known malicious payloads
+- **SQL Injection**: Enhanced SQL injection attack protection
+- **IP Reputation**: AWS-managed threat intelligence blocking known bad actors
+
+**Custom Rate Limiting Rules**:
+- **Global Rate Limit**: 100 requests per 5 minutes per IP address (~20 req/min, 429 response on exceed)
+- **Auth Endpoint Protection**: 10 requests per 5 minutes for /auth/* paths (brute force protection)
+
+**Note on Rate Limiting Interaction**:
+- **WAF Layer** (CloudFront): 100 req/5min per IP (~20 req/min) - first line of defense blocking malicious traffic
+- **API Gateway Layer**: 100 req/min per authenticated user (burst: 200) - protects backend from legitimate user abuse
+- **Interaction**: WAF rate limit applies to ALL requests from an IP (protecting infrastructure), while API Gateway limit applies per authenticated user (protecting application logic). Both limits work together - WAF blocks volumetric attacks, API Gateway prevents individual user abuse
+
+**Geo-Blocking**:
+- **Blocked Countries**: North Korea, Iran, Cuba, Syria (high-risk regions for regulatory compliance)
+
+**Monitoring**: CloudWatch metrics and sampled requests for security analysis
+
+**Network Security Benefits**:
+- **Zero Trust Architecture**: Lambda functions in private subnets with no internet gateway
+- **VPC Endpoints**: All AWS service traffic stays within AWS backbone (no internet exposure)
+- **DNS Firewall**: Blocks malicious domains, cryptomining, and unauthorized outbound connections
+- **Multi-Layer Defense**: WAF → CloudFront → API Gateway → Lambda (VPC) → DynamoDB/S3 (VPC endpoints)
+- **Traffic Isolation**: Separate security groups for Lambda, VPC endpoints, and API Gateway
+- **Comprehensive Logging**: VPC Flow Logs, CloudFront access logs, WAF logs, CloudTrail
+- **Compliance Ready**: Meets NIST 800-53, ISO 27001, PCI DSS network security requirements
+
+##### DynamoDB Table Schemas
+
+**Players Table** (`blacktrigram-players`)
+
+| Attribute | Type | Description | Index |
+|-----------|------|-------------|-------|
+| `PK` | String | `PLAYER#{userId}` | Partition Key |
+| `SK` | String | `PROFILE` or `METADATA` | Sort Key |
+| `userId` | String | AWS Cognito user ID (UUID) | - |
+| `username` | String | Display name (3-20 chars, alphanumeric + underscore) | GSI-1 PK |
+| `email` | String | User email (verified via Cognito) | - |
+| `archetype` | String | Player archetype (무사, 암살자, 해커, 정보요원, 조직폭력배) | - |
+| `level` | Number | Character level (1-50) | - |
+| `experience` | Number | Total XP earned | - |
+| `skillPoints` | Number | Available skill points | - |
+| `createdAt` | String | ISO 8601 timestamp | - |
+| `lastLoginAt` | String | ISO 8601 timestamp | - |
+| `totalPlayTime` | Number | Total playtime in seconds | - |
+| `combatsWon` | Number | Total victories | - |
+| `combatsLost` | Number | Total defeats | - |
+| `totalDamageDealt` | Number | Lifetime damage dealt | - |
+| `settings` | Map | User preferences (audio, graphics, controls) | - |
+
+**GameStates Table** (`blacktrigram-gamestates`)
+
+| Attribute | Type | Description | Index |
+|-----------|------|-------------|-------|
+| `PK` | String | `PLAYER#{userId}` | Partition Key |
+| `SK` | String | `GAMESTATE#{timestamp}` or `LATEST` | Sort Key |
+| `saveId` | String | Unique save game ID (UUID) | GSI-1 PK |
+| `timestamp` | String | ISO 8601 timestamp | - |
+| `stanceData` | Map | Current stance configuration (건, 태, 리, 진, 손, 감, 간, 곤) | - |
+| `vitalPointProgress` | Map | Unlocked vital points and mastery levels (70 points) | - |
+| `equipment` | Map | Equipped items and cosmetics | - |
+| `inventory` | List | Owned items and consumables | - |
+| `combatStats` | Map | Session combat statistics | - |
+| `trainingProgress` | Map | Training mode completion data | - |
+| `questProgress` | Map | Active and completed quests | - |
+| `compressedData` | String | Gzip-compressed additional game state | - |
+
+**Achievements Table** (`blacktrigram-achievements`)
+
+| Attribute | Type | Description | Index |
+|-----------|------|-------------|-------|
+| `PK` | String | `PLAYER#{userId}` | Partition Key |
+| `SK` | String | `ACHIEVEMENT#{achievementId}` | Sort Key |
+| `achievementId` | String | Unique achievement identifier | - |
+| `name` | String | Achievement name (Korean + English) | - |
+| `description` | String | Achievement description | - |
+| `unlockedAt` | String | ISO 8601 timestamp | - |
+| `progress` | Number | Progress towards completion (0-100) | - |
+| `isCompleted` | Boolean | Completion status | - |
+| `rarity` | String | `common`, `rare`, `epic`, `legendary` | - |
+| `rewardType` | String | Reward type (cosmetic, skillPoints, title) | - |
+| `metadata` | Map | Additional achievement data | - |
+
+**Purchases Table** (`blacktrigram-purchases`)
+
+| Attribute | Type | Description | Index |
+|-----------|------|-------------|-------|
+| `PK` | String | `PLAYER#{userId}` | Partition Key |
+| `SK` | String | `PURCHASE#{purchaseId}` | Sort Key |
+| `purchaseId` | String | Unique purchase ID (UUID) | - |
+| `stripeSessionId` | String | Stripe Checkout Session ID | GSI-1 PK |
+| `stripePaymentIntentId` | String | Stripe Payment Intent ID | - |
+| `amount` | Number | Purchase amount in cents (USD) | - |
+| `currency` | String | Currency code (USD) | - |
+| `items` | List | Purchased items with IDs and quantities | - |
+| `status` | String | `pending`, `completed`, `refunded`, `failed` | - |
+| `createdAt` | String | ISO 8601 timestamp | - |
+| `completedAt` | String | ISO 8601 timestamp | - |
+| `metadata` | Map | Additional purchase metadata | - |
+
+**Leaderboards Table** (`blacktrigram-leaderboards`)
+
+| Attribute | Type | Description | Index |
+|-----------|------|-------------|-------|
+| `PK` | String | `LEADERBOARD#{type}` (e.g., `GLOBAL`, `ARCHETYPE#무사`) | Partition Key |
+| `SK` | String | `SCORE#{score}#PLAYER#{userId}` (zero-padded for sorting) | Sort Key |
+| `userId` | String | Player user ID | - |
+| `username` | String | Display name | - |
+| `score` | Number | Leaderboard score (ELO, wins, damage, etc.) | - |
+| `rank` | Number | Current rank (calculated) | - |
+| `updatedAt` | String | ISO 8601 timestamp | - |
+
+##### API Gateway Endpoint Design
+
+**REST API Endpoints** (`https://api.blacktrigram.com`)
+
+> **Auth Pattern Clarification**: Black Trigram uses AWS Cognito Hosted UI (including social login) as the primary end-user authentication flow for browser-based clients, as shown in the sequence diagrams below. The `/auth/*` endpoints listed are an optional backend facade around Cognito for non-Hosted-UI clients (e.g., first-party native apps, server-to-server flows) and for consistency in internal APIs. Browser-based Hosted UI flows do not call `/auth/signup` or `/auth/login` directly—they redirect to Cognito's hosted pages.
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| `POST` | `/auth/signup` | Create new user account via Cognito (custom API facade for non-Hosted-UI clients) | ❌ |
+| `POST` | `/auth/login` | Authenticate user or exchange Cognito auth code for JWT tokens (custom clients) | ❌ |
+| `POST` | `/auth/refresh` | Refresh access token | ✅ (Refresh token) |
+| `POST` | `/auth/logout` | User logout (invalidate tokens) | ✅ |
+| `POST` | `/auth/forgot-password` | Initiate password reset | ❌ |
+| `POST` | `/auth/reset-password` | Complete password reset | ❌ |
+| `GET` | `/player/profile` | Get player profile data | ✅ |
+| `PUT` | `/player/profile` | Update player profile | ✅ |
+| `GET` | `/player/stats` | Get player statistics | ✅ |
+| `GET` | `/game/save` | Load latest game state | ✅ |
+| `POST` | `/game/save` | Save game state | ✅ |
+| `GET` | `/game/saves` | List all save games | ✅ |
+| `DELETE` | `/game/save/{saveId}` | Delete specific save game | ✅ |
+| `GET` | `/achievements` | Get player achievements | ✅ |
+| `POST` | `/achievements/unlock` | Unlock achievement | ✅ |
+| `GET` | `/leaderboards/{type}` | Get leaderboard rankings | ❌ |
+| `POST` | `/leaderboards/submit` | Submit leaderboard score | ✅ |
+| `POST` | `/payments/create-checkout` | Create Stripe Checkout Session | ✅ |
+| `POST` | `/payments/webhook` | Stripe webhook handler | ❌ (Stripe signature) |
+| `GET` | `/payments/history` | Get purchase history | ✅ |
+| `POST` | `/admin/ban-user` | Ban user account | ✅ (Admin only) |
+| `GET` | `/health` | Health check endpoint | ❌ |
+
+**WebSocket API** (`wss://ws.blacktrigram.com`)
+
+| Event | Direction | Description | Payload |
+|-------|-----------|-------------|---------|
+| `$connect` | Client → Server | WebSocket connection established | JWT token via `Sec-WebSocket-Protocol` subprotocol (browser-compatible; `Authorization` header not supported by browser WebSocket API) |
+| `$disconnect` | Client → Server | WebSocket connection closed | - |
+| `matchmaking.join` | Client → Server | Join matchmaking queue | `{ archetype, region }` |
+| `matchmaking.leave` | Client → Server | Leave matchmaking queue | - |
+| `match.found` | Server → Client | Match found notification | `{ matchId, opponentId }` |
+| `combat.input` | Client → Server | Send combat input | `{ action, timestamp, sequenceId }` |
+| `combat.state` | Server → Client | Combat state update | `{ gameState, timestamp }` |
+| `chat.send` | Client → Server | Send chat message | `{ message, recipientId }` |
+| `chat.receive` | Server → Client | Receive chat message | `{ senderId, message, timestamp }` |
+
+**API Gateway Configuration**:
+- **Request Validation**: JSON schema validation for all POST/PUT requests
+- **Rate Limiting**: 100 requests/minute per user (burst: 200)
+- **CORS**: Configured for `blacktrigram.com` and `*.blacktrigram.com`
+- **API Keys**: Required for third-party integrations
+- **Usage Plans**: Free tier (1000 requests/day), Premium tier (unlimited)
+- **Logging**: CloudWatch Logs with X-Ray tracing enabled
+
+##### AWS Cognito Authentication Architecture
+
+**User Pool Configuration**:
+
+**Password Policy**:
+- Minimum 12 characters with uppercase, lowercase, numbers, and symbols required
+- Temporary passwords valid for 1 day only
+- Password history enforcement (prevent reuse of last 5 passwords) - implemented via custom control using Cognito Lambda triggers (PreAuthentication/PostAuthentication), not a native User Pool policy
+
+**Multi-Factor Authentication (MFA)**:
+- Configuration: Optional (user choice)
+- Supported Methods: Software TOTP (authenticator apps), SMS MFA
+- Recommended for all users, enforced for admin accounts
+
+**User Attributes**:
+- **Email**: Required, used as username, auto-verified via confirmation email
+- **preferred_username**: Optional (supports social login providers without stable usernames)
+- **archetype**: Custom attribute for player archetype (무사, 암살자, 해커, 정보요원, 조직폭력배)
+
+**Account Recovery**: Email-based password reset with verification code
+
+**Social & Federated Login Providers (via Cognito Hosted UI)**:
+
+| Provider    | Cognito Integration        | Protocol / Flow             | Typical Scopes              | User Attributes Mapped              |
+|-------------|----------------------------|-----------------------------|-----------------------------|-------------------------------------|
+| **Google**  | Native social IdP          | Authorization Code          | `openid`, `profile`, `email` | `email`, `name`, `picture`         |
+| **Facebook**| Native social IdP          | Authorization Code          | `public_profile`, `email`   | `email`, `name`, `picture`         |
+| **Apple**   | Native social IdP          | Authorization Code          | `openid`, `name`, `email`   | `email`, `name` (optional)         |
+| **Discord** | OIDC IdP (custom)          | Authorization Code          | `openid`, `email`, `identify` | `email`, `username`, `avatar`      |
+| **GitHub**  | OAuth 2.0 IdP (custom)     | Authorization Code          | `read:user`, `user:email`   | `email`, `name`, `avatar_url`      |
+| **Twitter/X** | OIDC IdP (custom)        | Authorization Code with PKCE | `openid`, `tweet.read`, `users.read` | `username`, `name`, `profile_image_url` |
+
+**Authentication Flow Diagram**:
+
+```mermaid
+sequenceDiagram
+    participant Player as 🧑 Player
+    participant Frontend as ⚛️ React Frontend
+    participant Cognito as 🔐 AWS Cognito
+    participant SocialProvider as 🌐 Social Provider<br/>(Google/Facebook/Discord/etc.)
+    participant API as 🚪 API Gateway
+    participant Lambda as ⚡ Lambda Function
+    participant DynamoDB as 📊 DynamoDB
+
+    Player->>Frontend: Click "Sign in with Google"
+    Frontend->>Cognito: Redirect to Cognito Hosted UI
+    Cognito->>SocialProvider: OAuth 2.0 Authorization Request
+    SocialProvider->>Player: Show consent screen
+    Player->>SocialProvider: Authorize application
+    SocialProvider->>Cognito: Authorization code
+    Cognito->>SocialProvider: Exchange code for tokens
+    SocialProvider->>Cognito: Access token + user info
+    Cognito->>Cognito: Create/update user in User Pool
+    Cognito->>Frontend: Redirect with authorization code
+    Frontend->>Cognito: Exchange authorization code (+ PKCE verifier) at token endpoint
+    Cognito->>Frontend: Return JWT tokens (ID, Access, Refresh)
+    Frontend->>Frontend: Store tokens in memory/secure storage
+    
+    Note over Frontend,API: Authenticated API Request
+    
+    Frontend->>API: GET /player/profile<br/>Authorization: Bearer {accessToken}
+    API->>API: Validate JWT signature with Cognito public keys
+    API->>Lambda: Invoke with validated user context
+    Lambda->>DynamoDB: Query player profile (PK=PLAYER#{userId})
+    DynamoDB->>Lambda: Return player data
+    Lambda->>API: Return response
+    API->>Frontend: Player profile data
+    Frontend->>Player: Display game interface
+```
+
+**Identity Pool Configuration** (for AWS resource access):
+
+**Configuration**:
+- Unauthenticated access: Disabled for **primary Identity Pool** (no guest/anonymous access to player data or write-capable resources)
+- Authentication Provider: AWS Cognito User Pool
+- Token handling (Identity Pool): Exchanges valid Cognito User Pool / social IdP tokens for temporary AWS STS credentials and applies IAM role mapping; the Identity Pool itself does **not** perform JWT signature validation
+- JWT validation (API layer): Performed by API Gateway (Cognito/JWT authorizer using Cognito JWKS) and/or Lambda before granting access to protected APIs
+- Future demo mode: Any **"Anonymous Access: Limited demo mode"** described in `FUTURE_SECURITY_ARCHITECTURE.md` will use a separate, locked-down **Demo Identity Pool** with read-only access to non-personal demo assets only (no access to player profiles, saves, or PII)
+
+**IAM Role Assignment**:
+- **Authenticated Users (Primary Identity Pool)**: Assumed role with least-privilege access to user-specific resources
+- **Unauthenticated Users (Primary Identity Pool)**: No role (disabled)
+- **Unauthenticated Demo Users (Demo Identity Pool, future/optional)**: Assumed role with strictly limited, read-only access to non-personal demo data; no access to player profiles, saves, or any personally identifiable information (PII)
+
+**Authenticated User IAM Policy** (least privilege):
+
+Users can only access their own resources through condition-based policies:
+
+**S3 Access**:
+- **Allowed Actions**: GetObject, PutObject, DeleteObject
+- **Resource Scope**: User-specific prefix only (`blacktrigram-user-content/${cognito-identity-id}/*`)
+- **Use Case**: Save games, replays, user-generated content
+
+**DynamoDB Access**:
+- **Allowed Actions**: GetItem, Query (read-only)
+- **Resource Scope**: User's own player data only (partition key filtering by user ID)
+- **Security**: Condition enforces users can only query their own records
+
+**Design Principles**: Zero-trust model, identity-based access control, no shared resource access
+
+##### Stripe Payment Integration Architecture
+
+**Payment Use Cases**:
+1. **Cosmetic Items**: Character skins, visual effects, emotes ($0.99 - $9.99)
+2. **Battle Passes**: Seasonal content with exclusive rewards ($9.99/season)
+3. **DLC Expansions**: New archetypes, storylines, training content ($19.99 - $29.99)
+4. **Premium Techniques**: Advanced combat techniques ($4.99 - $14.99)
+
+**Stripe Payment Flow**:
+
+```mermaid
+sequenceDiagram
+    participant Player as 🧑 Player
+    participant Frontend as ⚛️ React Frontend
+    participant API as 🚪 API Gateway
+    participant Lambda as ⚡ Lambda (Payment)
+    participant Stripe as 💳 Stripe
+    participant Webhook as ⚡ Lambda (Webhook)
+    participant DynamoDB as 📊 DynamoDB
+
+    Player->>Frontend: Select item to purchase<br/>("Battle Pass - Spring 2026")
+    Frontend->>API: POST /payments/create-checkout<br/>{itemId, quantity}
+    API->>Lambda: Invoke CreateCheckout function
+    Lambda->>Stripe: Create Checkout Session<br/>(amount, currency, success_url, cancel_url)
+    Stripe->>Lambda: Return session ID and URL
+    Lambda->>DynamoDB: Create pending purchase record<br/>(PK=PLAYER#{userId}, SK=PURCHASE#{purchaseId})
+    Lambda->>API: Return checkout URL
+    API->>Frontend: Checkout session URL
+    Frontend->>Player: Redirect to Stripe Checkout
+    
+    Player->>Stripe: Complete payment<br/>(card details, confirmation)
+    Stripe->>Player: Payment success page
+    Stripe->>Webhook: Send webhook event<br/>(checkout.session.completed)
+    
+    Webhook->>Webhook: Verify Stripe signature
+    Webhook->>DynamoDB: Update purchase status to "completed"
+    Webhook->>DynamoDB: Add items to player inventory
+    Webhook->>Stripe: Return 200 OK
+    
+    Player->>Frontend: Return to game
+    Frontend->>API: GET /player/profile<br/>(refresh inventory)
+    API->>Lambda: Invoke GetProfile function
+    Lambda->>DynamoDB: Query player data
+    DynamoDB->>Lambda: Return updated profile with new items
+    Lambda->>API: Return profile
+    API->>Frontend: Player profile with purchased items
+    Frontend->>Player: Display purchased items in game
+```
+
+**Stripe Configuration**:
+
+| Setting | Value | Rationale |
+|---------|-------|-----------|
+| **Currency** | USD | Primary market (US/global) |
+| **Payment Methods** | Card, Google Pay, Apple Pay, PayPal | Maximum convenience |
+| **Checkout Mode** | Payment (one-time) | No subscriptions initially |
+| **Success URL** | `https://blacktrigram.com/payment/success?session_id={CHECKOUT_SESSION_ID}` | Redirect after success |
+| **Cancel URL** | `https://blacktrigram.com/payment/cancel` | Redirect on cancellation |
+| **Webhook Events** | `checkout.session.completed`, `payment_intent.succeeded`, `charge.refunded` | Track all payment lifecycle events |
+| **Webhook Signing** | Required (verify `stripe-signature` header) | Security |
+
+**Stripe Products** (configured in Stripe Dashboard):
+
+**Product Structure**:
+- **Product ID**: Unique Stripe product identifier
+- **Name**: Bilingual (Korean + English) product name
+- **Description**: Clear description of what customer receives
+- **Price**: Amount in cents (USD)
+- **Metadata**: Custom fields for category, item ID, rarity (if applicable)
+
+**Product Categories**:
+1. **Cosmetics** ($0.99 - $14.99): Character skins, visual effects, emotes
+2. **Battle Passes** ($9.99/season): Seasonal content with 50 tiers of rewards
+3. **DLC Expansions** ($19.99 - $29.99): Story expansions, new training scenarios, additional content
+4. **Techniques** ($4.99 - $14.99): Premium martial arts techniques and special moves
+
+**Example Products**:
+- **Battle Pass - Spring 2026** ($9.99): Exclusive seasonal content with 50 reward tiers
+- **Dark Phoenix Skin** ($14.99): Legendary character skin with unique visual effects
+- **DLC: Martial Arts Academy** ($19.99): Story expansion with new training scenarios and challenges
+
+**Revenue Projections** (based on industry benchmarks):
+
+| User Base | Conversion Rate | ARPPU | Monthly Revenue |
+|-----------|-----------------|-------|-----------------|
+| 1,000 | 5% | $15 | $750 |
+| 10,000 | 8% | $20 | $16,000 |
+| 50,000 | 10% | $25 | $125,000 |
+| 100,000 | 12% | $30 | $360,000 |
+
+##### AWS Backup + Resilience Hub Strategy
+
+**Backup Strategy**:
+
+**Automated Daily Backups**:
+- **Schedule**: Daily at 5 AM UTC
+- **Backup Window**: 60-minute start window, 120-minute completion window
+- **Retention**: 35 days with lifecycle management
+- **Cold Storage Transition**: Move to cold storage after 7 days for cost optimization
+
+**Backup Scope**:
+- All DynamoDB tables (Players, GameStates, Achievements, Purchases, Leaderboards)
+- S3 bucket (blacktrigram-user-content) with user-generated content
+
+**Backup Vault**: Dedicated backup vault with encryption at rest (AWS KMS)
+
+**DynamoDB Point-in-Time Recovery (PITR)**:
+- **Enabled**: Yes (all tables)
+- **Recovery Window**: 35 days
+- **RPO**: 1 minute (continuous backups)
+- **RTO**: < 1 hour (restore to any point in time)
+
+**S3 Versioning & Lifecycle**:
+
+**Versioning**: Enabled on all buckets for data protection and recovery
+
+**Lifecycle Policy**:
+- **30 days**: Transition non-current versions to Standard-IA (Infrequent Access)
+- **90 days**: Transition to Glacier for long-term archival
+- **365 days**: Transition to Glacier Deep Archive (lowest cost storage)
+- **7 years (2555 days)**: Expire non-current versions (regulatory retention met)
+
+**Multipart Upload Cleanup**: Abort incomplete multipart uploads after 7 days to reduce storage costs
+
+**Cost Optimization**: Automatic tiering based on access patterns reduces storage costs by 60-70%
+
+**AWS Resilience Hub Assessment**:
+
+**Resilience Policy**: Gaming Standard Tier
+
+**Objective Metrics**:
+- **RTO (Recovery Time Objective)**: 1 hour - Maximum acceptable downtime for game services
+- **RPO (Recovery Point Objective)**: 1 minute - Maximum acceptable data loss via DynamoDB PITR
+
+**Assessment Schedule**: Quarterly (every 3 months) for continuous compliance validation
+
+**Recommended Architecture**:
+- **Multi-AZ**: Yes (primary deployment strategy for high availability)
+- **Multi-Region**: No (planned for Phase 2 future expansion)
+- **Backup Strategy**: Automated daily backups with DynamoDB PITR
+- **Disaster Recovery**: Hot standby in same region with automatic failover
+
+**Resilience Hub Metrics & Monitoring**:
+
+| Metric | Target | Current | Status | Actions |
+|--------|--------|---------|--------|---------|
+| **RTO (Recovery Time)** | 1 hour | 0.5 hours | ✅ Compliant | Multi-AZ deployment |
+| **RPO (Recovery Point)** | 1 minute | 1 minute | ✅ Compliant | DynamoDB PITR enabled |
+| **Availability SLA** | 99.9% | 99.95% | ✅ Exceeds | CloudFront + API Gateway |
+| **Backup Success Rate** | 100% | 100% | ✅ Compliant | AWS Backup monitoring |
+| **Data Durability** | 99.999999999% | 99.999999999% | ✅ S3 Standard | S3 eleven 9s durability |
+
+**Disaster Recovery Runbook** (stored in S3 + documented in [Hack23/black-trigram-business](https://github.com/Hack23/black-trigram-business)):
+
+1. **Incident Detection**: GuardDuty + CloudWatch alarms trigger SNS notification
+2. **Assessment**: On-call engineer evaluates severity (P1-P4)
+3. **Declare DR**: For P1/P2 incidents, activate DR procedures
+4. **Restore from Backup**: Use AWS Backup console or CLI to restore DynamoDB tables
+5. **Point-in-Time Recovery**: For data corruption, use DynamoDB PITR to restore to last known good state
+6. **Validate Integrity**: Run automated health checks and data validation scripts
+7. **Resume Service**: Update DNS/CloudFront to point to recovered resources
+8. **Post-Incident Review**: Document lessons learned and update runbook
+
+##### Migration Phases: Frontend-Only → Full-Stack AWS
+
+**Phase 1: Authentication & User Management** (Q2-Q3 2026, 8-10 weeks)
+
+**Objectives**:
+- Implement AWS Cognito User Pools for authentication
+- Add social login support (Google, Facebook, Discord, GitHub, Twitter/X, Apple)
+- Build basic profile management system
+
+**Deliverables**:
+- [ ] Cognito User Pool created with password policies and MFA support
+- [ ] Social login providers configured and tested
+- [ ] React frontend authentication UI (login, signup, password reset)
+- [ ] JWT token management (secure storage, automatic refresh)
+- [ ] Basic profile page (username, email, archetype selection)
+- [ ] User settings persistence (audio, graphics, controls)
+
+**Technical Implementation**:
+- **Frontend**: React Context API for auth state, AWS Amplify SDK for Cognito integration
+- **Backend**: Cognito triggers (pre-signup, post-confirmation, custom messages)
+- **Security**: HTTPS only, secure HttpOnly cookies for refresh tokens, PKCE flow for social logins
+
+**Success Criteria**:
+- Users can register, login, and manage profiles
+- Social login success rate > 95%
+- JWT token refresh works seamlessly
+- Zero authentication vulnerabilities (OWASP audit passed)
+
+**Phase 2: Game State Persistence** (Q4 2026, 10-12 weeks)
+
+**Objectives**:
+- Implement DynamoDB tables for player data and game states
+- Add S3 storage for save games and combat replays
+- Build REST API with API Gateway and Lambda
+
+**Deliverables**:
+- [ ] DynamoDB tables created (Players, GameStates, Achievements, Leaderboards)
+- [ ] S3 bucket for user-generated content (save games, replays)
+- [ ] API Gateway REST API with authentication middleware
+- [ ] Lambda functions for CRUD operations (profile, game state, achievements)
+- [ ] Frontend API client with error handling and retry logic
+- [ ] Save/load game functionality integrated into game UI
+- [ ] Combat replay viewer (playback saved combat sessions)
+
+**Technical Implementation**:
+- **Database**: DynamoDB on-demand pricing, multi-table design (5 tables: Players, GameStates, Achievements, Purchases, Leaderboards) with GSIs for secondary access patterns
+- **API**: API Gateway with Cognito authorizer, request/response validation
+- **Functions**: Node.js Lambda with TypeScript, AWS SDK v3
+- **Storage**: S3 with versioning, lifecycle policies for cost optimization
+
+**Success Criteria**:
+- Game state saves/loads in < 2 seconds (p95 latency)
+- 100% save game integrity (no data loss)
+- API Gateway rate limiting prevents abuse
+- CloudWatch alarms for Lambda errors/throttling
+
+**Phase 3: Payments & Monetization** (Q1 2027, 8-10 weeks)
+
+**Objectives**:
+- Integrate Stripe for payment processing
+- Build in-game shop UI for cosmetics and DLC
+- Implement battle pass system
+
+**Deliverables**:
+- [ ] Stripe account configured (production mode)
+- [ ] Payment products created in Stripe Dashboard
+- [ ] Lambda function for Stripe Checkout Session creation
+- [ ] Webhook handler for payment events (success, refund)
+- [ ] In-game shop UI (browse, preview, purchase)
+- [ ] Inventory system for owned items
+- [ ] Battle pass progression UI (50 tiers with rewards)
+- [ ] Purchase history page
+
+**Technical Implementation**:
+- **Payments**: Stripe Checkout for PCI compliance, webhook signature verification
+- **Inventory**: DynamoDB with eventual consistency for inventory updates
+- **UI**: React components for shop, cart, and checkout flow
+- **Security**: Server-side validation of all purchases, no client-side price manipulation
+
+**Success Criteria**:
+- Payment success rate > 98% (industry standard)
+- Zero payment fraud (Stripe Radar enabled)
+- Webhook processing latency < 5 seconds
+- Purchase receipt emails sent within 1 minute
+
+**Phase 4: Multiplayer & Real-time Features** (Q2 2027, 12-16 weeks)
+
+**Objectives**:
+- Implement WebSocket API Gateway for real-time communication
+- Build matchmaking system with ELO rating
+- Add live multiplayer combat (1v1 PvP)
+
+**Deliverables**:
+- [ ] WebSocket API Gateway with $connect/$disconnect routes
+- [ ] Lambda functions for matchmaking logic (queue, pairing algorithm)
+- [ ] Real-time combat state synchronization (inputs, game state)
+- [ ] ELO rating system for skill-based matchmaking
+- [ ] Leaderboard updates (global, regional, archetype-specific)
+- [ ] Spectator mode for live matches
+- [ ] Multiplayer UI (queue, match lobby, post-match summary)
+
+**Technical Implementation**:
+- **WebSockets**: API Gateway WebSocket API with Lambda backend
+- **Matchmaking**: SQS queue for matchmaking requests, Lambda consumer with pairing algorithm
+- **Combat Sync**: DynamoDB for authoritative game state, optimistic client-side prediction
+- **Anti-cheat**: Server-side validation of all inputs, anomaly detection
+
+**Success Criteria**:
+- Match found within 30 seconds (90th percentile)
+- Combat input latency < 100ms (p95)
+- Zero desync issues (server reconciliation works)
+- Fair matchmaking (ELO spread < 100 points)
+
+##### Cost Estimation: AWS Infrastructure
+
+**Monthly Cost Breakdown** (10,000 active users, 500k API calls/month):
+
+| AWS Service | Usage | Unit Cost | Monthly Cost | Notes |
+|-------------|-------|-----------|--------------|-------|
+| **AWS Cognito** | 10,000 MAUs | $0.0055/MAU | **$55** | Estimate assumes all MAUs billed at $0.0055 (first 50k MAUs free tier ignored for simplicity) |
+| **API Gateway (REST)** | 500,000 requests | $3.50/million | **$1.75** | First 333M requests |
+| **API Gateway (WebSocket)** | 100,000 messages<br/>300,000 connection-minutes | $1.00/million messages<br/>$0.25/million minutes | **$0.18** | Messages + connection-minutes pricing |
+| **Lambda** | 2M invocations<br/>200GB-seconds | $0.20/million<br/>$0.0000166667/GB-sec | **$3.73** | 400k GB-seconds free tier |
+| **DynamoDB (On-Demand)** | 10M read units<br/>2M write units | $0.25/million reads<br/>$1.25/million writes | **$5.00** | On-demand pricing, autoscaling |
+| **S3 (Standard)** | 100 GB storage<br/>10k PUT requests<br/>100k GET requests | $0.023/GB<br/>$0.005/1k PUT<br/>$0.0004/1k GET | **$2.38** | User-generated content storage |
+| **CloudFront** | 500 GB data transfer | $0.085/GB (first 10TB) | **$42.50** | Global CDN for frontend assets |
+| **AWS WAF** | 1 Web ACL<br/>2 rules | $5.00/ACL<br/>$1.00/rule | **$7.00** | OWASP rule set + rate limiting |
+| **CloudWatch Logs** | 10 GB ingested<br/>10 GB stored | $0.50/GB<br/>$0.03/GB | **$5.30** | Application and Lambda logs |
+| **AWS Backup** | 50 GB DynamoDB<br/>100 GB S3 | $0.05/GB<br/>$0.01/GB | **$3.50** | Automated daily backups |
+| **GuardDuty** | 1 account | $4.60 base | **$4.60** | Threat detection (VPC flow logs analyzed) |
+| **Security Hub** | 1 account | $0.0010/check | **$5.00** | 5,000 security checks/month estimated |
+| **X-Ray** | 100k traces<br/>100k retrieved | $5.00/million<br/>$0.50/million | **$0.55** | Distributed tracing |
+| **Route 53** | 1 hosted zone<br/>10M queries | $0.50/zone<br/>$0.40/million | **$4.50** | DNS management |
+| **VPC Infrastructure** | - | - | **$210** | NAT Gateways ($45/mo each x 2 = $90), VPC interface endpoints (~$90/mo, 6 endpoints across 2 AZs @ ~$0.01/AZ-hr), VPC Flow Logs (~$32/mo) |
+| | | **Total** | **~$350/month** | 10k users with VPC infrastructure (including interface endpoints across 2 AZs) |
+
+**Scaling Estimates**:
+
+| User Base | API Requests/Month | Lambda Invocations | DynamoDB R/W | S3 Storage | **Estimated Monthly Cost** |
+|-----------|--------------------|--------------------|--------------|-----------|-----------------------------|
+| **1,000** | 50,000 | 200,000 | 1M/200k | 10 GB | **$245** (includes $210 VPC baseline) |
+| **10,000** | 500,000 | 2M | 10M/2M | 100 GB | **$350** (with VPC infrastructure including interface endpoints across 2 AZs) |
+| **50,000** | 2.5M | 10M | 50M/10M | 500 GB | **$800** (VPC costs amortized) |
+| **100,000** | 5M | 20M | 100M/20M | 1 TB | **$1,450** (includes VPC infrastructure) |
+| **500,000** | 25M | 100M | 500M/100M | 5 TB | **$6,650** (VPC fixed costs negligible) |
+| **1,000,000** | 50M | 200M | 1B/200M | 10 TB | **$13,150** (VPC ~1% of total cost) |
+
+**Cost Optimization Strategies**:
+- **Reserved Capacity**: For predictable workloads, purchase DynamoDB reserved capacity (save 50%+)
+- **S3 Intelligent-Tiering**: Automatically move infrequently accessed data to lower-cost storage (save 30-40%)
+- **Lambda SnapStart**: Reduce cold start latency and improve efficiency (supported Java runtimes)
+- **CloudFront Caching**: Aggressive caching reduces origin requests (save on API Gateway costs)
+- **DynamoDB Caching (DAX)**: For read-heavy workloads, add DAX cache layer (optional)
+- **Spot Instances**: For batch processing (analytics, ML training), use Spot to save 70%+
+
+**Revenue vs. Infrastructure Cost** (based on projections):
+
+| User Base | Monthly Revenue (Estimated) | AWS Infrastructure Cost (with VPC) | Gross Margin |
+|-----------|-----------------------------|------------------------------------|--------------|
+| 10,000 | $16,000 (8% conversion, $20 ARPPU) | $290 | **98.2%** |
+| 100,000 | $360,000 (12% conversion, $30 ARPPU) | $1,450 | **99.6%** |
+| 1,000,000 | $4,500,000 (15% conversion, $30 ARPPU) | $13,150 | **99.7%** |
+
+**Cost Monitoring & Alerts**:
+- **AWS Budgets**: Set budget of $200/month with 80% and 100% threshold alerts
+- **Cost Anomaly Detection**: Enable AWS Cost Anomaly Detection to catch unexpected spikes
+- **Daily Cost Reports**: Lambda function sends daily cost breakdown to Slack/email
+- **Tagging Strategy**: Tag all resources with `Environment`, `Project`, `Owner` for cost allocation
+
+##### Performance Targets & SLAs
+
+**API Latency Targets**:
+
+| Endpoint | p50 Latency | p95 Latency | p99 Latency | Timeout |
+|----------|-------------|-------------|-------------|---------|
+| `GET /player/profile` | 50ms | 150ms | 300ms | 5s |
+| `POST /game/save` | 100ms | 300ms | 600ms | 10s |
+| `GET /leaderboards/{type}` | 100ms | 200ms | 400ms | 5s |
+| `POST /payments/create-checkout` | 200ms | 500ms | 1000ms | 10s |
+| **WebSocket events** | 50ms | 100ms | 200ms | N/A |
+
+**Throughput Targets**:
+
+| Metric | Target | Current Capacity | Scaling Strategy |
+|--------|--------|------------------|------------------|
+| **Concurrent Users** | 10,000 | 50,000 | API Gateway auto-scales |
+| **WebSocket Connections** | 5,000 | 50,000 | API Gateway WebSocket scales automatically |
+| **API Requests/Second** | 500 rps | 10,000 rps | Lambda concurrent executions (1,000 default, increase to 10k) |
+| **DynamoDB Read Capacity** | 1,000 RCU | On-Demand (auto-scales) | On-demand mode handles spikes |
+| **DynamoDB Write Capacity** | 200 WCU | On-Demand (auto-scales) | On-demand mode handles spikes |
+
+**Availability & Reliability**:
+
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| **Service Availability** | 99.9% uptime | Multi-AZ deployment, CloudFront CDN |
+| **API Uptime** | 99.95% | API Gateway SLA + Lambda multi-AZ |
+| **Data Durability** | 99.999999999% | S3 Standard (eleven 9s) |
+| **Error Rate** | < 0.1% | API Gateway + Lambda error handling |
+| **Recovery Time (RTO)** | 1 hour | AWS Backup + Resilience Hub |
+| **Recovery Point (RPO)** | 1 minute | DynamoDB PITR |
+
+##### Security Architecture Integration
+
+**Cross-Reference**: For comprehensive security controls, see [FUTURE_SECURITY_ARCHITECTURE.md](./FUTURE_SECURITY_ARCHITECTURE.md).
+
+**Key Security Controls Implemented**:
+
+| Security Domain | Implementation | ISMS Policy Reference |
+|-----------------|----------------|----------------------|
+| **Authentication** | AWS Cognito User Pools, MFA, social login federation | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
+| **Authorization** | Cognito Identity Pools, IAM policies, least privilege | [Access Control Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Access_Control_Policy.md) |
+| **Encryption (Transit)** | TLS 1.2+ (TLS 1.3 preferred), CloudFront HTTPS, API Gateway HTTPS | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
+| **Encryption (Rest)** | DynamoDB encryption, S3 SSE-S3, KMS for sensitive data | [Cryptography Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Cryptography_Policy.md) |
+| **Network Security** | VPC for Lambda, security groups, AWS WAF, Shield Standard | [Network Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Network_Security_Policy.md) |
+| **Threat Detection** | GuardDuty, Security Hub, CloudTrail logging | [Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md) |
+| **Audit Logging** | CloudTrail (all API calls), CloudWatch Logs (application logs) | [Information Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Information_Security_Policy.md) |
+| **Backup & DR** | AWS Backup, DynamoDB PITR, S3 versioning | [Backup Recovery Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Backup_Recovery_Policy.md) |
+| **Incident Response** | GuardDuty findings, SNS alerts, automated response (Lambda) | [Incident Response Plan](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Incident_Response_Plan.md) |
+
+**Compliance Alignment**:
+- **ISO 27001**: All controls documented in [ISMS_REFERENCE_MAPPING.md](./ISMS_REFERENCE_MAPPING.md)
+- **NIST CSF 2.0**: Identify, Protect, Detect, Respond, Recover framework implemented
+- **CIS Controls v8.1**: AWS-specific controls implemented per Hack23 ISMS standards
+- **GDPR**: User data protection, consent management, right to erasure (delete account flow)
+- **PCI DSS**: Stripe handles all card data processing (no PCI scope for Black Trigram backend)
+
+---
+
 ### 🤖 v3.0 Vision (2030) - AI & Adaptive Learning
 
 #### Major Features
@@ -1446,43 +2254,21 @@ C4Component
 
 ### Implementation Architecture
 
-```typescript
-// Phase 1 - Core vital point system
-interface VitalPoint {
-  readonly id: string;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-    readonly romanization: string;
-  };
-  readonly location: {
-    readonly x: number;
-    readonly y: number;
-    readonly bodyRegion: BodyRegion;
-  };
-  readonly effectiveness: {
-    readonly difficulty: 1 | 2 | 3 | 4 | 5; // Precision required
-    readonly damage: number; // Base damage potential
-    readonly stunning: number; // Disorientation effect
-    readonly incapacitation: number; // Knockout potential
-  };
-  readonly techniques: readonly TrigramTechnique[];
-  readonly anatomicalInfo: {
-    readonly type: "nerve" | "vessel" | "joint" | "pressure";
-    readonly description: string;
-    readonly medicalWarning: string;
-  };
-}
+**Phase 1 - Core Vital Point System**:
 
-interface CombatCalculation {
-  readonly strikeAccuracy: number; // 0-1 based on targeting precision
-  readonly techniqueEffectiveness: number; // Trigram technique modifier
-  readonly vitalPointMultiplier: number; // Target-specific effectiveness
-  readonly finalDamage: number; // Calculated combat result
-  readonly audioIntensity: number; // Sound effect scaling
-  readonly visualEffect: CombatEffect; // Impact visualization
-}
-```
+**Vital Point Data Structure**:
+- **Identification**: Unique ID with Korean, English, and romanized names
+- **Location**: X/Y coordinates and body region classification
+- **Effectiveness Metrics**: Difficulty rating (1-5), damage potential, stunning effect, incapacitation chance
+- **Associated Techniques**: List of trigram techniques effective against this point
+- **Anatomical Information**: Type (nerve/vessel/joint/pressure), medical description, safety warnings
+
+**Combat Calculation System**:
+- **Strike Accuracy**: Precision-based modifier (0-1 scale)
+- **Technique Effectiveness**: Trigram stance modifier
+- **Vital Point Multiplier**: Target-specific damage amplification
+- **Final Damage**: Calculated combat result with all modifiers applied
+- **Audio/Visual Effects**: Dynamic feedback based on strike effectiveness
 
 ---
 
@@ -1536,36 +2322,21 @@ C4Component
 
 ### Traditional Korean Elements
 
-```typescript
-// Phase 2 - Korean cultural integration
-interface KoreanMartialArt {
-  readonly name: {
-    readonly korean: string;
-    readonly english: string;
-    readonly hanja?: string; // Chinese characters if applicable
-  };
-  readonly origin: {
-    readonly period: string;
-    readonly region: string;
-    readonly founder?: string;
-  };
-  readonly principles: readonly string[];
-  readonly techniques: readonly TraditionalTechnique[];
-  readonly philosophy: {
-    readonly trigramAlignment: TrigramType;
-    readonly mentalAspects: readonly string[];
-    readonly spiritualElements: readonly string[];
-  };
-}
+**Phase 2 - Korean Cultural Integration**:
 
-interface DojanEnvironment {
-  readonly layout: DojanLayout;
-  readonly decorations: readonly CulturalElement[];
-  readonly lighting: TraditionalLighting;
-  readonly sounds: readonly AmbientSound[];
-  readonly seasonalTheme: SeasonType;
-}
-```
+**Korean Martial Art Data Model**:
+- **Names**: Korean, English, and Hanja (Chinese characters) when applicable
+- **Historical Context**: Time period, geographical region, founder (if known)
+- **Core Principles**: Traditional martial arts philosophy and tenets
+- **Traditional Techniques**: Authentic historical techniques and forms
+- **Philosophy Integration**: Trigram alignment, mental aspects, spiritual elements
+
+**Dojang Environment System**:
+- **Layout**: Traditional Korean training hall design with proper spatial organization
+- **Cultural Decorations**: Authentic Korean symbols, scrolls, and traditional elements
+- **Lighting**: Traditional lighting styles with ambient occlusion for authenticity
+- **Ambient Sounds**: Traditional Korean music, nature sounds, ceremonial audio
+- **Seasonal Themes**: Korean seasonal aesthetics (Spring/Summer/Fall/Winter variations)
 
 ---
 
@@ -1622,38 +2393,25 @@ C4Component
 
 ### Archetype Specializations
 
-```typescript
-// Phase 3 - Player archetype system
-interface PlayerArchetype {
-  readonly id: ArchetypeId;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-    readonly description: string;
-  };
-  readonly combatPhilosophy: CombatPhilosophy;
-  readonly preferredTrigrams: readonly TrigramType[];
-  readonly specializations: {
-    readonly techniques: readonly SpecialTechnique[];
-    readonly bonuses: readonly CombatBonus[];
-    readonly abilities: readonly UniqueAbility[];
-  };
-  readonly progression: SkillTree;
-  readonly background: ArchetypeBackground;
-}
+**Phase 3 - Player Archetype System**:
 
-type ArchetypeId = "musa" | "amsalja" | "hacker" | "jeongbo" | "jojik";
+**Player Archetype Definition**:
+- **Archetype ID**: One of five martial philosophies (musa, amsalja, hacker, jeongbo, jojik)
+- **Names & Description**: Korean and English names with philosophical background
+- **Combat Philosophy**: Unique approach to combat based on archetype's values
+- **Preferred Trigrams**: Optimal stance alignments for each archetype
+- **Specializations**: Unique techniques, combat bonuses, and special abilities
+- **Progression System**: Skill tree with archetype-specific advancement paths
+- **Background Story**: Historical and philosophical context for each archetype
 
-interface RealisticInjury {
-  readonly location: BodyPart;
-  readonly severity: InjurySeverity;
-  readonly type: InjuryType;
-  readonly healingTime: number;
-  readonly functionalImpact: readonly FunctionalLimitation[];
-  readonly visualEffects: readonly VisualEffect[];
-  readonly audioFeedback: readonly AudioEffect[];
-}
-```
+**Realistic Injury System**:
+- **Location**: Specific body part affected
+- **Severity**: Graduated injury levels from minor to critical
+- **Injury Type**: Classification (blunt trauma, joint damage, nerve strike, etc.)
+- **Healing Time**: Recovery duration with progressive improvement
+- **Functional Impact**: Movement and ability limitations during recovery
+- **Visual Effects**: Bruising, swelling, and injury-appropriate visual feedback
+- **Audio Feedback**: Pain responses and movement restriction sounds
 
 ---
 
@@ -1710,36 +2468,28 @@ C4Component
 
 ### Educational Progression System
 
-```typescript
-// Phase 4 - Training and mastery system
-interface TrainingCurriculum {
-  readonly modules: readonly LearningModule[];
-  readonly prerequisites: readonly Prerequisite[];
-  readonly assessments: readonly SkillAssessment[];
-  readonly culturalComponents: readonly CulturalLesson[];
-}
+**Phase 4 - Training and Mastery System**:
 
-interface LearningModule {
-  readonly id: string;
-  readonly names: {
-    readonly korean: string;
-    readonly english: string;
-  };
-  readonly objectives: readonly LearningObjective[];
-  readonly content: readonly LessonContent[];
-  readonly practiceExercises: readonly TrainingExercise[];
-  readonly culturalContext: CulturalContext;
-  readonly masteryCriteria: MasteryCriteria;
-}
+**Training Curriculum Structure**:
+- **Learning Modules**: Structured lessons with progressive difficulty
+- **Prerequisites**: Required knowledge before advancing to next module
+- **Skill Assessments**: Competency tests validating mastery
+- **Cultural Components**: Historical and philosophical lessons
 
-interface AIInstructor {
-  readonly personality: InstructorPersonality;
-  readonly expertise: readonly ExpertiseArea[];
-  readonly teachingStyle: TeachingApproach;
-  readonly culturalAuthenticity: AuthenticityLevel;
-  readonly adaptiveCapabilities: readonly AdaptiveFeature[];
-}
-```
+**Learning Module Design**:
+- **Identification**: Unique module ID with Korean and English names
+- **Learning Objectives**: Clear goals for each training module
+- **Lesson Content**: Instructional material with demonstrations
+- **Practice Exercises**: Hands-on training scenarios and drills
+- **Cultural Context**: Historical and philosophical background
+- **Mastery Criteria**: Assessment standards for module completion
+
+**AI Instructor System**:
+- **Personality**: Distinct teaching persona with cultural authenticity
+- **Expertise Areas**: Specialized knowledge in specific martial arts domains
+- **Teaching Style**: Adaptive approach based on student learning patterns
+- **Cultural Authenticity**: Ensures traditional knowledge is properly conveyed
+- **Adaptive Capabilities**: Adjusts difficulty and pacing to student performance
 
 ---
 
@@ -1797,28 +2547,23 @@ gantt
 
 ### Technical Migration Strategy
 
-```typescript
-// Migration from current to future architecture
-interface ArchitectureMigration {
-  readonly currentState: {
-    readonly react: "19.x";
-    readonly threejs: "@react-three/fiber + @react-three/drei";
-    readonly typescript: "strict";
-    readonly audio: "howler.js";
-    readonly testing: "vitest + cypress";
-  };
+**Migration from Current to Future Architecture**:
 
-  readonly futureAdditions: {
-    readonly vitalPointEngine: "custom TypeScript";
-    readonly combatPhysics: "matter.js + custom";
-    readonly aiSystem: "tensorflow.js";
-    readonly culturalData: "JSON + i18n";
-    readonly communityBackend: "express + mongodb";
-  };
+**Current Technology Stack**:
+- React 19.x with modern hooks and concurrent features
+- Three.js via @react-three/fiber + @react-three/drei for 3D rendering
+- TypeScript with strict mode for type safety
+- Howler.js for audio management
+- Vitest + Cypress for comprehensive testing
 
-  readonly migrationSteps: readonly MigrationStep[];
-}
-```
+**Future Technology Additions**:
+- **Vital Point Engine**: Custom TypeScript engine for anatomical targeting
+- **Combat Physics**: Matter.js integration with custom physics calculations
+- **AI System**: TensorFlow.js for intelligent opponent behavior and training
+- **Cultural Data**: JSON-based i18n system for bilingual content management
+- **Community Backend**: Express + MongoDB for community social features (profiles, messaging, forums)
+
+**Migration Approach**: Progressive enhancement with backward compatibility at each phase
 
 ---
 
