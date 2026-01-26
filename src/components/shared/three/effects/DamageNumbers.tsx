@@ -17,7 +17,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { withGPUAcceleration } from "../../../../utils/performanceOptimization";
 

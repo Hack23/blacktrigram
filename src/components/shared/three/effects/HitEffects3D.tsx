@@ -10,7 +10,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3D component.

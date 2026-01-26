@@ -28,7 +28,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
-import { PhysicsArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../../../../types/PhysicsTypes";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, clampToArenaBounds, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3DInstanced component
@@ -54,10 +54,13 @@ interface ActiveEffectInstance {
 }
 
 /**
- * Convert meter-based position to 3D world position
- * 
- * Positions from combat system are in meters relative to arena center.
- * This function normalizes to 0-1 range then maps to 3D world coordinates.
+ * Convert meter-based position to 3D world position.
+ *
+ * Positions from the combat system are in meters relative to the arena center.
+ * This function clamps the meter-based position to the arena bounds and then
+ * uses those clamped meter coordinates directly as 3D world coordinates
+ * (with a fixed mid-height for visual hit effects). No 0–1 normalization or
+ * additional remapping is performed.
  */
 const positionTo3D = (
   effect: HitEffect,
@@ -70,17 +73,14 @@ const positionTo3D = (
   // Position is in meters relative to arena center (0, 0)
   // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
   // So we use meter coordinates directly too for alignment
-  const halfWidth = arenaBounds.worldWidthMeters / 2;
-  const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Clamp position to arena boundaries in meters
-  const clampedX = Math.min(halfWidth, Math.max(-halfWidth, effect.position.x));
-  const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, effect.position.y));
+  // Clamp position to arena boundaries using shared helper
+  const clamped = clampToArenaBounds(effect.position, arenaBounds);
   
   // Use clamped meter coordinates directly in 3D space (no remapping)
-  const x = clampedX; // Meter position X
+  const x = clamped.x; // Meter position X
   const y = 1.5; // Mid-height for effects
-  const z = clampedZ; // Meter position Z (depth)
+  const z = clamped.y; // Meter position Z (depth)
 
   return new THREE.Vector3(x, y, z);
 };
