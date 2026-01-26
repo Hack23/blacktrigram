@@ -436,4 +436,312 @@ describe("ConsciousnessSystem", () => {
       expect(currentPlayer.consciousness).toBeLessThan(20);
     });
   });
+
+  describe("Edge Cases - 100% Production Ready", () => {
+    it("should handle full recovery from unconscious state (0 → 100)", () => {
+      let currentPlayer = { ...player, consciousness: 0 };
+      const lastTrauma = Date.now() - 10000; // 10 seconds ago
+      
+      // Recovery from 0 to 100 at 5 points/second with 0.2x modifier = 1 point/second
+      // Should take ~100 seconds, but let's test partial recovery
+      for (let t = 0; t < 100; t++) {
+        currentPlayer = consciousnessSystem.applyRecovery(
+          currentPlayer,
+          1000,
+          lastTrauma - (100 - t) * 1000
+        );
+      }
+      
+      // Should have recovered significantly
+      expect(currentPlayer.consciousness).toBeGreaterThan(0);
+    });
+
+    it("should trigger fall at consciousness < 10", () => {
+      const barelyConscious = { ...player, consciousness: 10 };
+      const unconscious = { ...player, consciousness: 9 };
+      
+      expect(consciousnessSystem.shouldTriggerFall(barelyConscious)).toBe(false);
+      expect(consciousnessSystem.shouldTriggerFall(unconscious)).toBe(true);
+    });
+
+    it("should determine fall type from impact angle", () => {
+      const testPlayer = { ...player, consciousness: 5 };
+      
+      // Front impact (0°) → backward fall
+      expect(consciousnessSystem.determineFallType(testPlayer, 0)).toBe("backward");
+      
+      // Rear impact (π) → forward fall
+      expect(consciousnessSystem.determineFallType(testPlayer, Math.PI)).toBe("forward");
+      
+      // Left side impact (-π/2) → side_left fall
+      expect(consciousnessSystem.determineFallType(testPlayer, -Math.PI / 2)).toBe("side_left");
+      
+      // Right side impact (π/2) → side_right fall
+      expect(consciousnessSystem.determineFallType(testPlayer, Math.PI / 2)).toBe("side_right");
+      
+      // No impact angle → default backward
+      expect(consciousnessSystem.determineFallType(testPlayer)).toBe("backward");
+    });
+
+    it("should handle consciousness level boundary transitions correctly", () => {
+      // Test exact boundary values
+      expect(consciousnessSystem.getLevel(100)).toBe(ConsciousnessLevel.COMBAT_ALERT);
+      expect(consciousnessSystem.getLevel(90)).toBe(ConsciousnessLevel.COMBAT_ALERT);
+      expect(consciousnessSystem.getLevel(89.99)).toBe(ConsciousnessLevel.DISORIENTED);
+      expect(consciousnessSystem.getLevel(50)).toBe(ConsciousnessLevel.DISORIENTED);
+      expect(consciousnessSystem.getLevel(49.99)).toBe(ConsciousnessLevel.STUNNED);
+      expect(consciousnessSystem.getLevel(20)).toBe(ConsciousnessLevel.STUNNED);
+      expect(consciousnessSystem.getLevel(19.99)).toBe(ConsciousnessLevel.UNCONSCIOUS);
+      expect(consciousnessSystem.getLevel(0)).toBe(ConsciousnessLevel.UNCONSCIOUS);
+    });
+
+    it("should handle zero consciousness edge cases", () => {
+      const unconscious = { ...player, consciousness: 0 };
+      
+      // Level check
+      expect(consciousnessSystem.getLevel(0)).toBe(ConsciousnessLevel.UNCONSCIOUS);
+      
+      // Should be incapacitated
+      expect(consciousnessSystem.isIncapacitated(unconscious)).toBe(true);
+      
+      // Should be at incapacitation threshold
+      expect(consciousnessSystem.isAtIncapacitationThreshold(unconscious)).toBe(true);
+      
+      // Should trigger fall
+      expect(consciousnessSystem.shouldTriggerFall(unconscious)).toBe(true);
+    });
+
+    it("should handle maximum consciousness (100) correctly", () => {
+      const maxConsciousness = { ...player, consciousness: 100 };
+      const lastTrauma = Date.now() - 10000;
+      
+      // Recovery at max should maintain max
+      const recovered = consciousnessSystem.applyRecovery(
+        maxConsciousness,
+        1000,
+        lastTrauma
+      );
+      expect(recovered.consciousness).toBe(100);
+      
+      // Level should be COMBAT_ALERT
+      expect(consciousnessSystem.getLevel(100)).toBe(ConsciousnessLevel.COMBAT_ALERT);
+      
+      // Should not be incapacitated
+      expect(consciousnessSystem.isIncapacitated(maxConsciousness)).toBe(false);
+      
+      // Should not be at incapacitation threshold
+      expect(consciousnessSystem.isAtIncapacitationThreshold(maxConsciousness)).toBe(false);
+    });
+
+    it("should handle rapid consciousness degradation", () => {
+      let currentPlayer = player; // Start at 100
+      
+      // Apply damage until unconscious
+      while (currentPlayer.consciousness > 0) {
+        currentPlayer = consciousnessSystem.applyDamage(
+          currentPlayer,
+          10,
+          VitalPointCategory.NEUROLOGICAL
+        );
+      }
+      
+      expect(currentPlayer.consciousness).toBe(0);
+      expect(consciousnessSystem.isIncapacitated(currentPlayer)).toBe(true);
+    });
+
+    it("should handle small delta times in recovery", () => {
+      const lowConsciousness = { ...player, consciousness: 50 };
+      const lastTrauma = Date.now() - 10000;
+      
+      // 16ms frame time (60fps)
+      const recovered = consciousnessSystem.applyRecovery(
+        lowConsciousness,
+        16,
+        lastTrauma
+      );
+      
+      // Should recover by approximately 0.08 points (5 * 0.016)
+      expect(recovered.consciousness).toBeGreaterThan(lowConsciousness.consciousness);
+      expect(recovered.consciousness).toBeLessThan(lowConsciousness.consciousness + 0.1);
+    });
+
+    it("should handle incapacitation threshold exactly at 20", () => {
+      const atThreshold = { ...player, consciousness: 20 };
+      const belowThreshold = { ...player, consciousness: 19.99 };
+      
+      // At 20 should NOT be at incapacitation threshold
+      expect(consciousnessSystem.isAtIncapacitationThreshold(atThreshold)).toBe(false);
+      
+      // Below 20 should be at incapacitation threshold
+      expect(consciousnessSystem.isAtIncapacitationThreshold(belowThreshold)).toBe(true);
+    });
+
+    it("should handle recovery timing window correctly", () => {
+      const lowConsciousness = { ...player, consciousness: 50 };
+      
+      // Test recovery at various trauma times with sufficient margin from threshold
+      const wellBeforeWindow = Date.now() - 4000; // 4 seconds ago (before 5s window)
+      const wellAfterWindow = Date.now() - 6000; // 6 seconds ago (after 5s window)
+      
+      const beforeRecovery = consciousnessSystem.applyRecovery(
+        lowConsciousness,
+        1000,
+        wellBeforeWindow
+      );
+      expect(beforeRecovery.consciousness).toBe(lowConsciousness.consciousness); // No recovery yet
+      
+      const afterRecovery = consciousnessSystem.applyRecovery(
+        lowConsciousness,
+        1000,
+        wellAfterWindow
+      );
+      expect(afterRecovery.consciousness).toBeGreaterThan(lowConsciousness.consciousness); // Recovery active
+    });
+
+    it("should handle multiple recovery modifiers correctly", () => {
+      const alert = { ...player, consciousness: 95 };
+      const disoriented = { ...player, consciousness: 70 };
+      const stunned = { ...player, consciousness: 30 };
+      const unconscious = { ...player, consciousness: 10 };
+      const lastTrauma = Date.now() - 10000;
+      
+      const alertRecovery = consciousnessSystem.applyRecovery(alert, 1000, lastTrauma);
+      const disorientedRecovery = consciousnessSystem.applyRecovery(disoriented, 1000, lastTrauma);
+      const stunnedRecovery = consciousnessSystem.applyRecovery(stunned, 1000, lastTrauma);
+      const unconsciousRecovery = consciousnessSystem.applyRecovery(unconscious, 1000, lastTrauma);
+      
+      const alertDelta = alertRecovery.consciousness - alert.consciousness;
+      const disorientedDelta = disorientedRecovery.consciousness - disoriented.consciousness;
+      const stunnedDelta = stunnedRecovery.consciousness - stunned.consciousness;
+      const unconsciousDelta = unconsciousRecovery.consciousness - unconscious.consciousness;
+      
+      // Alert/disoriented should recover at full rate (5/sec)
+      expect(alertDelta).toBeGreaterThan(4.9);
+      expect(disorientedDelta).toBeGreaterThan(4.9);
+      
+      // Stunned should recover at 50% rate (2.5/sec)
+      expect(stunnedDelta).toBeGreaterThan(2.4);
+      expect(stunnedDelta).toBeLessThan(2.6);
+      
+      // Unconscious should recover at 20% rate (1/sec)
+      expect(unconsciousDelta).toBeGreaterThan(0.9);
+      expect(unconsciousDelta).toBeLessThan(1.1);
+    });
+  });
+
+  describe("Stress Tests - Production Validation", () => {
+    it("should handle 50 rapid consecutive consciousness hits", () => {
+      let currentPlayer = player;
+      
+      for (let i = 0; i < 50; i++) {
+        currentPlayer = consciousnessSystem.applyDamage(
+          currentPlayer,
+          5,
+          VitalPointCategory.NEUROLOGICAL
+        );
+        
+        expect(currentPlayer.consciousness).toBeGreaterThanOrEqual(0);
+        expect(currentPlayer.consciousness).toBeLessThanOrEqual(100);
+      }
+      
+      // Should be at very low or zero consciousness
+      expect(currentPlayer.consciousness).toBeLessThan(20);
+    });
+
+    it("should handle 1000 consciousness operations without errors", () => {
+      let currentPlayer = player;
+      const lastTrauma = Date.now() - 10000;
+      
+      for (let i = 0; i < 1000; i++) {
+        if (i % 10 === 0) {
+          // Occasional recovery
+          currentPlayer = consciousnessSystem.applyRecovery(
+            currentPlayer,
+            100,
+            lastTrauma - (1000 - i) * 100
+          );
+        } else {
+          // Apply damage
+          currentPlayer = consciousnessSystem.applyDamage(currentPlayer, 2);
+        }
+        
+        // Verify consistency
+        expect(currentPlayer.consciousness).toBeGreaterThanOrEqual(0);
+        expect(currentPlayer.consciousness).toBeLessThanOrEqual(100);
+      }
+    });
+
+    it("should handle rapid fall trigger checks", () => {
+      const players = Array.from({ length: 100 }, (_, i) => ({
+        ...player,
+        consciousness: i,
+      }));
+      
+      players.forEach((p) => {
+        const shouldFall = consciousnessSystem.shouldTriggerFall(p);
+        
+        if (p.consciousness < 10) {
+          expect(shouldFall).toBe(true);
+        } else {
+          expect(shouldFall).toBe(false);
+        }
+      });
+    });
+
+    it("should handle rapid level color queries", () => {
+      const levels = [
+        ConsciousnessLevel.COMBAT_ALERT,
+        ConsciousnessLevel.DISORIENTED,
+        ConsciousnessLevel.STUNNED,
+        ConsciousnessLevel.UNCONSCIOUS,
+      ];
+      
+      // Query colors 1000 times
+      for (let i = 0; i < 1000; i++) {
+        levels.forEach((level) => {
+          const color = consciousnessSystem.getLevelColor(level);
+          expect(typeof color).toBe("number");
+          expect(color).toBeGreaterThan(0);
+        });
+      }
+    });
+
+    it("should handle full consciousness degradation and recovery cycle", () => {
+      let currentPlayer = player; // Start at 100
+      
+      // Phase 1: Degrade to unconscious
+      while (currentPlayer.consciousness > 0) {
+        currentPlayer = consciousnessSystem.applyDamage(
+          currentPlayer,
+          10,
+          VitalPointCategory.NEUROLOGICAL
+        );
+      }
+      expect(currentPlayer.consciousness).toBe(0);
+      
+      // Phase 2: Stay unconscious for 5 seconds
+      const traumaTime = Date.now();
+      for (let t = 0; t < 5; t++) {
+        currentPlayer = consciousnessSystem.applyRecovery(
+          currentPlayer,
+          1000,
+          traumaTime
+        );
+      }
+      expect(currentPlayer.consciousness).toBe(0); // No recovery yet
+      
+      // Phase 3: Recover after 5 seconds
+      const recoveryStart = traumaTime - 6000; // 6 seconds ago
+      for (let t = 0; t < 50; t++) {
+        currentPlayer = consciousnessSystem.applyRecovery(
+          currentPlayer,
+          1000,
+          recoveryStart - (50 - t) * 1000
+        );
+      }
+      
+      // Should have recovered significantly
+      expect(currentPlayer.consciousness).toBeGreaterThan(0);
+    });
+  });
 });

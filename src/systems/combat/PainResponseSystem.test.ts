@@ -420,4 +420,227 @@ describe("PainResponseSystem", () => {
       expect(combinedHit.pain).toBeGreaterThan(basicHit.pain * 2);
     });
   });
+
+  describe("Edge Cases - 100% Production Ready", () => {
+    it("should handle rapid 100+ hit accumulation without overflow", () => {
+      let currentPlayer = player;
+      
+      // Apply 100 rapid hits
+      for (let i = 0; i < 100; i++) {
+        const { player: updated } = painSystem.applyPain(currentPlayer, 10);
+        currentPlayer = updated;
+      }
+      
+      // Pain should be capped at 100
+      expect(currentPlayer.pain).toBeLessThanOrEqual(100);
+      // Pain should be in overload territory
+      expect(currentPlayer.pain).toBeGreaterThan(80);
+      // Should be at max (100)
+      expect(currentPlayer.pain).toBe(100);
+    });
+
+    it("should decay pain correctly over 60 seconds", () => {
+      const painfulPlayer = { ...player, pain: 100 };
+      let currentPlayer = painfulPlayer;
+      
+      // Simulate 60 seconds at -5 pain per second
+      // 100 pain should fully decay in 20 seconds (100 / 5)
+      for (let t = 0; t < 60; t++) {
+        currentPlayer = painSystem.applyDissipation(currentPlayer, 1000);
+      }
+      
+      // Should be fully recovered after 60 seconds
+      expect(currentPlayer.pain).toBe(0);
+    });
+
+    it("should handle zero pain edge cases", () => {
+      const zeroPainPlayer = { ...player, pain: 0 };
+      
+      // Recovery at zero should maintain zero
+      const recovered = painSystem.applyDissipation(zeroPainPlayer, 1000);
+      expect(recovered.pain).toBe(0);
+      
+      // Level check at zero
+      expect(painSystem.getPainLevel(0)).toBe(PainLevel.MINIMAL);
+      
+      // Not in overload at zero
+      expect(painSystem.isInPainOverload(zeroPainPlayer)).toBe(false);
+      
+      // Not incapacitated at zero
+      expect(painSystem.isIncapacitated(zeroPainPlayer)).toBe(false);
+    });
+
+    it("should handle maximum pain boundary (100) correctly", () => {
+      const maxPainPlayer = { ...player, pain: 100 };
+      
+      // Adding more pain should not exceed 100
+      const { player: overMaxPlayer } = painSystem.applyPain(maxPainPlayer, 50);
+      expect(overMaxPlayer.pain).toBe(100);
+      
+      // Level should be OVERLOAD
+      expect(painSystem.getPainLevel(100)).toBe(PainLevel.OVERLOAD);
+      
+      // Should be in overload
+      expect(painSystem.isInPainOverload(maxPainPlayer)).toBe(true);
+      
+      // Should be incapacitated
+      expect(painSystem.isIncapacitated(maxPainPlayer)).toBe(true);
+    });
+
+    it("should handle pain level boundary transitions correctly", () => {
+      // Test exact boundary values
+      expect(painSystem.getPainLevel(19.99)).toBe(PainLevel.MINIMAL);
+      expect(painSystem.getPainLevel(20)).toBe(PainLevel.MODERATE);
+      expect(painSystem.getPainLevel(39.99)).toBe(PainLevel.MODERATE);
+      expect(painSystem.getPainLevel(40)).toBe(PainLevel.SIGNIFICANT);
+      expect(painSystem.getPainLevel(59.99)).toBe(PainLevel.SIGNIFICANT);
+      expect(painSystem.getPainLevel(60)).toBe(PainLevel.SEVERE);
+      expect(painSystem.getPainLevel(79.99)).toBe(PainLevel.SEVERE);
+      expect(painSystem.getPainLevel(80)).toBe(PainLevel.OVERLOAD);
+    });
+
+    it("should handle multiple rapid recovery cycles", () => {
+      let currentPlayer = { ...player, pain: 100 };
+      
+      // Cycle 1: Full recovery
+      for (let t = 0; t < 20; t++) {
+        currentPlayer = painSystem.applyDissipation(currentPlayer, 1000);
+      }
+      expect(currentPlayer.pain).toBe(0);
+      
+      // Cycle 2: Build up again
+      const { player: damagedAgain } = painSystem.applyPain(currentPlayer, 50);
+      currentPlayer = damagedAgain;
+      expect(currentPlayer.pain).toBeGreaterThan(0);
+      
+      // Cycle 3: Partial recovery
+      for (let t = 0; t < 5; t++) {
+        currentPlayer = painSystem.applyDissipation(currentPlayer, 1000);
+      }
+      expect(currentPlayer.pain).toBeGreaterThanOrEqual(0);
+      expect(currentPlayer.pain).toBeLessThan(damagedAgain.pain);
+    });
+
+    it("should handle shock pain expiration correctly", () => {
+      const { player: damaged, shockEffect } = painSystem.applyPain(player, 20);
+      
+      expect(shockEffect).toBeDefined();
+      
+      // Immediately apply effects - shock should be active
+      const immediateEffect = painSystem.applyEffects(damaged, shockEffect);
+      expect(immediateEffect.attackPower).toBeLessThan(damaged.attackPower);
+      
+      // Simulate shock expiration (wait 3+ seconds)
+      const expiredShock: ShockPainEffect = {
+        ...shockEffect!,
+        startTime: Date.now() - 4000, // 4 seconds ago
+      };
+      
+      // Apply effects with expired shock - should only use base pain penalty
+      const expiredEffect = painSystem.applyEffects(damaged, expiredShock);
+      // Effect should be less severe than with active shock
+      expect(expiredEffect.attackPower).toBeGreaterThanOrEqual(immediateEffect.attackPower);
+    });
+
+    it("should handle small delta times correctly", () => {
+      const painfulPlayer = { ...player, pain: 50 };
+      
+      // 16ms frame time (60fps)
+      const recovered = painSystem.applyDissipation(painfulPlayer, 16);
+      
+      // Should reduce by approximately 0.08 pain (5 * 0.016)
+      expect(recovered.pain).toBeLessThan(painfulPlayer.pain);
+      expect(recovered.pain).toBeGreaterThan(49.9);
+    });
+
+    it("should maintain constant dissipation regardless of current pain", () => {
+      const lowPain = { ...player, pain: 10 };
+      const midPain = { ...player, pain: 50 };
+      const highPain = { ...player, pain: 90 };
+      
+      const lowRecovered = painSystem.applyDissipation(lowPain, 1000);
+      const midRecovered = painSystem.applyDissipation(midPain, 1000);
+      const highRecovered = painSystem.applyDissipation(highPain, 1000);
+      
+      // All should reduce by same amount (5 pain/second)
+      const lowDelta = lowPain.pain - lowRecovered.pain;
+      const midDelta = midPain.pain - midRecovered.pain;
+      const highDelta = highPain.pain - highRecovered.pain;
+      
+      expect(Math.abs(lowDelta - 5)).toBeLessThan(0.01);
+      expect(Math.abs(midDelta - 5)).toBeLessThan(0.01);
+      expect(Math.abs(highDelta - 5)).toBeLessThan(0.01);
+    });
+
+    it("should trigger shock on damage exactly at threshold", () => {
+      const { shockEffect } = painSystem.applyPain(player, 10);
+      expect(shockEffect).toBeDefined(); // Threshold is >=10
+    });
+
+    it("should not trigger shock just below threshold", () => {
+      const { shockEffect } = painSystem.applyPain(player, 9.99);
+      expect(shockEffect).toBeUndefined();
+    });
+  });
+
+  describe("Stress Tests - Production Validation", () => {
+    it("should handle 50 rapid consecutive hits without errors", () => {
+      let currentPlayer = player;
+      
+      for (let i = 0; i < 50; i++) {
+        const result = painSystem.applyPain(currentPlayer, 15);
+        expect(result.player).toBeDefined();
+        expect(result.player.pain).toBeGreaterThanOrEqual(0);
+        expect(result.player.pain).toBeLessThanOrEqual(100);
+        currentPlayer = result.player;
+      }
+      
+      // Should be at max pain
+      expect(currentPlayer.pain).toBe(100);
+    });
+
+    it("should handle 1000 pain application operations", () => {
+      let currentPlayer = player;
+      
+      // Apply damage 1000 times with occasional recovery
+      for (let i = 0; i < 1000; i++) {
+        if (i % 10 === 0) {
+          // Occasional recovery
+          currentPlayer = painSystem.applyDissipation(currentPlayer, 100);
+        } else {
+          // Apply damage
+          const { player: updated } = painSystem.applyPain(currentPlayer, 5);
+          currentPlayer = updated;
+        }
+        
+        // Verify consistency
+        expect(currentPlayer.pain).toBeGreaterThanOrEqual(0);
+        expect(currentPlayer.pain).toBeLessThanOrEqual(100);
+      }
+    });
+
+    it("should handle rapid shock pain generation", () => {
+      let currentPlayer = player;
+      const shockEffects: (ShockPainEffect | undefined)[] = [];
+      
+      // Generate 100 shock pain effects
+      for (let i = 0; i < 100; i++) {
+        const { player: updated, shockEffect } = painSystem.applyPain(currentPlayer, 15);
+        currentPlayer = updated;
+        shockEffects.push(shockEffect);
+      }
+      
+      // All should have generated shock
+      const definedShocks = shockEffects.filter((s) => s !== undefined);
+      expect(definedShocks.length).toBe(100);
+      
+      // All shocks should be valid
+      definedShocks.forEach((shock) => {
+        expect(shock!.intensity).toBeGreaterThanOrEqual(0.1);
+        expect(shock!.intensity).toBeLessThanOrEqual(0.3);
+        expect(shock!.duration).toBeGreaterThanOrEqual(2000);
+        expect(shock!.duration).toBeLessThanOrEqual(3000);
+      });
+    });
+  });
 });
