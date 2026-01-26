@@ -1380,50 +1380,45 @@ describe("AIDecisionTree", () => {
       expect(stanceChangeDecisions).toBeGreaterThanOrEqual(1);
     });
 
-    it("should prefer mid-range stances (GEON, LI, SON) at mid distance", () => {
-      // Mid-range stances for striking: GEON, LI, SON
-      // Based on technique reach: 0.92-1.05 baseExtension (strikes)
-      const midRangeStances = [
-        TrigramStance.GEON,
-        TrigramStance.LI,
-        TrigramStance.SON,
-      ];
-
-      let midRangeSelections = 0;
-
-      // Use a test personality with higher switch frequency to test stance selection logic
-      const testPersonality = {
-        ...AI_PERSONALITIES.BALANCED_FIGHTER,
-        stanceSwitchFrequency: 0.8, // Higher for testing
-        aggressionLevel: 0.2, // Lower to allow stance changes
-      };
+    it("should choose APPROACH when beyond attack range", () => {
+      // Test that AI correctly prioritizes approaching when too far to attack
+      // This validates that the range calculation fixes enable proper behavior
+      
+      // NOTE: This test is intentionally probabilistic (not deterministic) to validate
+      // AI decision-making under realistic conditions with inherent randomness.
+      // The 60% threshold allows for some randomization while still catching
+      // regressions in range calculation logic. A fully deterministic test would
+      // require intrusive mocking and reduce test value.
+      
+      // Updated range calculations:
+      // - Close range (punches): ~0.87m
+      // - Medium range (kicks): ~1.27m
+      
+      let approachSelections = 0;
 
       for (let i = 0; i < 100; i++) {
         const freshTree = new AIDecisionTree();
         const context = createMockContext({
-          distanceToOpponent: 0.8, // Mid-range for striking (0.6-1.0m)
-          playerStance: TrigramStance.TAE, // Currently in close-range stance
-          timeInMatch: 15000 + i * 10,
+          distanceToOpponent: 2.0, // Beyond kick range, should approach
+          playerStance: TrigramStance.GEON,
+          opponentStance: TrigramStance.TAE,
+          timeInMatch: 5000 + i * 10,
         });
 
         const decision = freshTree.makeDecision(
           context,
-          testPersonality,
+          AI_PERSONALITIES.BALANCED_FIGHTER,
           comboSystem,
         );
 
-        if (
-          decision.action === AIActionType.STANCE_CHANGE &&
-          decision.targetStance &&
-          midRangeStances.includes(decision.targetStance)
-        ) {
-          midRangeSelections++;
+        if (decision.action === AIActionType.APPROACH) {
+          approachSelections++;
         }
       }
 
-      // At mid range with high switch frequency, should see mid-range stance selections
-      // Reduced threshold since attack priority is now higher
-      expect(midRangeSelections).toBeGreaterThan(5);
+      // AI should consistently choose APPROACH when beyond range
+      // Allow for some randomization but expect majority to approach
+      expect(approachSelections).toBeGreaterThan(60); // At least 60% approach
     });
 
     it("should prefer far-range stances (JIN, SON, GAN) at far distance", () => {

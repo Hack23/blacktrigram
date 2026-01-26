@@ -41,6 +41,7 @@ import type {
 } from "@/systems/bodypart/types";
 import type { PlayerState } from "@/systems/player";
 import { CombatState, TrigramStance } from "@/types/common";
+import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
 import { STANCE_SPEED_MODIFIERS } from "./MovementPhysics";
 
 /**
@@ -164,11 +165,15 @@ export class SpeedModifierSystem {
 
   /**
    * Base acceleration rate (m/s²)
-   * Responsive acceleration for combat movement - reaches max speed in 0.5s
+   * Instant-response acceleration for combat movement
+   * (e.g., reaches 6 m/s walking speed in 0.2s; 10 m/s sprint speed in 0.33s)
+   * Increased from 12.0 to 30.0 for responsive, arcade-style combat feel
+   *
+   * Imported from physicsConstants.ts to maintain consistency across systems.
    *
    * **Korean**: 기본 가속도 (Base Acceleration)
    */
-  private readonly BASE_ACCELERATION = 12.0;
+  private readonly BASE_ACCELERATION = BASE_MOVEMENT_ACCELERATION;
 
   /**
    * Combat state speed penalty multipliers
