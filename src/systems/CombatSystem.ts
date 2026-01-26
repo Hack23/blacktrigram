@@ -1005,8 +1005,11 @@ export class CombatSystem implements CombatSystemInterface {
     }
 
     // Stamina regeneration - affected by effects and breathing disruption
+    // Increased from 3 to 15 stamina/second (5x faster) for better gameplay
+    // Allows players to move around and attack frequently without running out
+    // 체력 재생 속도 5배 증가 - 더 활발한 전투를 위해
     if (updatedPlayer.stamina < updatedPlayer.maxStamina) {
-      const baseStaminaRegen = regenRate * 3 * effectModifiers.staminaRegen;
+      const baseStaminaRegen = regenRate * 15 * effectModifiers.staminaRegen;
       // Apply breathing disruption system's stamina regen modifier
       const modifiedStaminaRegen =
         BreathingDisruptionSystem.calculateStaminaRegen(

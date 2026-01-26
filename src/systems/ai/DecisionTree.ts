@@ -227,13 +227,18 @@ export class AIDecisionTree {
    */
   private getArchetypeMaxReach(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot contribution (0.25m)
-    return physical.legLength / 100 + 0.25;
+    // Leg length in cm -> meters + body pivot (0.25m) * average kick baseExtension (1.05)
+    return (physical.legLength / 100 + 0.25) * 1.05;
   }
 
   /**
    * Get close range threshold for an archetype (punching/elbow distance).
    * Based on arm length from physical attributes.
+   * 
+   * Includes realistic punch reach calculation:
+   * - Arm length converted from cm to meters
+   * - Body pivot (shoulder offset + torso rotation): ~0.15m
+   * - Average baseExtension for punches: 0.95x
    *
    * @param archetype - Player archetype
    * @returns Close range threshold in meters
@@ -241,13 +246,21 @@ export class AIDecisionTree {
    */
   private getArchetypeCloseRange(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Arm length in cm -> meters (punching range)
-    return physical.armLength / 100;
+    // Arm length in cm -> meters + body pivot (~0.15m) * average punch baseExtension (0.95)
+    const shoulderOffset = physical.shoulderWidth / 2 / 100; // Convert cm to meters
+    const torsoRotation = 0.1; // meters
+    const bodyPivot = shoulderOffset + torsoRotation;
+    return (physical.armLength / 100 + bodyPivot) * 0.95;
   }
 
   /**
    * Get medium range threshold for an archetype (kicking distance).
    * Based on leg length from physical attributes.
+   * 
+   * Includes realistic kick reach calculation:
+   * - Leg length converted from cm to meters  
+   * - Body pivot contribution (hip rotation + torso lean): 0.25m
+   * - Average baseExtension for kicks: 1.05x
    *
    * @param archetype - Player archetype
    * @returns Medium range threshold in meters
@@ -255,8 +268,8 @@ export class AIDecisionTree {
    */
   private getArchetypeMediumRange(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters (kicking range without full body pivot)
-    return physical.legLength / 100;
+    // Leg length in cm -> meters + body pivot (0.25m) * average kick baseExtension (1.05)
+    return (physical.legLength / 100 + 0.25) * 1.05;
   }
 
   /**
