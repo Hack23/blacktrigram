@@ -123,21 +123,19 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
 
   // Calculate 3D position from meter-based coordinates (physics-first architecture)
   // Position is in meters relative to arena center (0, 0)
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
   const halfWidth = arenaBounds.worldWidthMeters / 2;
   const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Convert meter position (centered at origin) to 0-1 normalized range
-  const relX = (feedback.position.x + halfWidth) / arenaBounds.worldWidthMeters;
-  const relZ = (feedback.position.y + halfDepth) / arenaBounds.worldDepthMeters;
+  // Clamp position to arena boundaries in meters
+  const clampedX = Math.min(halfWidth, Math.max(-halfWidth, feedback.position.x));
+  const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, feedback.position.y));
   
-  // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
-  const clampedRelX = Math.min(1, Math.max(0, relX));
-  const clampedRelZ = Math.min(1, Math.max(0, relZ));
-  
-  // Map normalized 0-1 range to 3D world coordinates
-  const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = clampedX; // Meter position X
   const y = 2.5 + progress * 1.5; // Float upward
-  const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame

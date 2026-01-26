@@ -87,22 +87,19 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
 
   // Calculate 3D position from meter-based coordinates (physics-first architecture)
   // Position is in meters relative to arena center (0, 0)
-  // Arena extends from -worldWidthMeters/2 to +worldWidthMeters/2
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
   const halfWidth = arenaBounds.worldWidthMeters / 2;
   const halfDepth = arenaBounds.worldDepthMeters / 2;
   
-  // Convert meter position (centered at origin) to 0-1 normalized range
-  const relX = (damage.position.x + halfWidth) / arenaBounds.worldWidthMeters;
-  const relZ = (damage.position.y + halfDepth) / arenaBounds.worldDepthMeters;
+  // Clamp position to arena boundaries in meters
+  const clampedX = Math.min(halfWidth, Math.max(-halfWidth, damage.position.x));
+  const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, damage.position.y));
   
-  // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
-  const clampedRelX = Math.min(1, Math.max(0, relX));
-  const clampedRelZ = Math.min(1, Math.max(0, relZ));
-  
-  // Map normalized 0-1 range to 3D world coordinates
-  const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = clampedX; // Meter position X
   const y = 2 + progress * 2; // Float upward
-  const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame
@@ -166,7 +163,9 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
     prevArena?.x === nextArena?.x &&
     prevArena?.y === nextArena?.y &&
     prevArena?.width === nextArena?.width &&
-    prevArena?.height === nextArena?.height;
+    prevArena?.height === nextArena?.height &&
+    prevArena?.worldWidthMeters === nextArena?.worldWidthMeters &&
+    prevArena?.worldDepthMeters === nextArena?.worldDepthMeters;
 
   return (
     prevProps.damage.id === nextProps.damage.id &&

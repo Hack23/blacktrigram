@@ -42,29 +42,27 @@ const HitEffectVisual: React.FC<{
   // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
   const alphaRef = useRef(1);
 
-  // Position in 3D space - convert meter-based position to 3D
+  // Position in 3D space - use meter coordinates directly
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
 
-    // Convert from meter coordinates to 3D world coordinates (physics-first)
     // Use arena bounds if available, otherwise use default values for 10m arena
     const bounds = arenaBounds ?? DEFAULT_PHYSICS_ARENA_BOUNDS;
     
-    // Convert meter position (centered at origin) to 0-1 normalized range
+    // Position is in meters relative to arena center (0, 0)
+    // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+    // So we use meter coordinates directly too for alignment
     const halfWidth = bounds.worldWidthMeters / 2;
     const halfDepth = bounds.worldDepthMeters / 2;
     
-    const relX = (effect.position.x + halfWidth) / bounds.worldWidthMeters;
-    const relZ = (effect.position.y + halfDepth) / bounds.worldDepthMeters;
+    // Clamp position to arena boundaries in meters
+    const clampedX = Math.min(halfWidth, Math.max(-halfWidth, effect.position.x));
+    const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, effect.position.y));
     
-    // Clamp normalized coordinates to [0, 1] to keep effects within expected scene volume
-    const clampedRelX = Math.min(1, Math.max(0, relX));
-    const clampedRelZ = Math.min(1, Math.max(0, relZ));
-    
-    // Map normalized 0-1 range to 3D world coordinates
-    const x = clampedRelX * 16 - 8; // Map 0-1 to -8 to 8
+    // Use clamped meter coordinates directly in 3D space (no remapping)
+    const x = clampedX; // Meter position X
     const y = 1.5; // Mid-height for effects
-    const z = clampedRelZ * 8 - 4; // Map 0-1 to -4 to 4
+    const z = clampedZ; // Meter position Z (depth)
 
     return [x, y, z];
   }, [effect.position, arenaBounds]);
