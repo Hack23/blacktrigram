@@ -51,7 +51,7 @@ function createMockVitalPoint(
       english: "Test Vital Point",
       romanized: "test",
     },
-    position: { x: 0, y: 1.2, z: 0 },
+    position: { x: 0, y: 1.2 },
     category: category as any,
     severity: "high" as any,
     effects: [],
