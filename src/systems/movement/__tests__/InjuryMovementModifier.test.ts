@@ -518,11 +518,12 @@ describe("InjuryMovementModifier", () => {
     });
 
     it("getInjuryDescription should return current injury state", () => {
-      const health = createHealth(40, 40);
+      // Use 39% health which clearly yields >30% penalty (not boundary case)
+      // This unambiguously triggers both legs injured without relying on FP artifacts
+      const health = createHealth(39, 39);
       const description = modifier.getInjuryDescription(health);
 
-      // At 40% both legs are at limping threshold with ~30% penalty each
-      // Due to floating point, this triggers bothLegsInjured flag
+      // At 39% health both legs are clearly in the limping range
       expect(description.korean).toBe("절름거림 | 양 다리");
       expect(description.english).toBe("Limping | Both Legs");
     });

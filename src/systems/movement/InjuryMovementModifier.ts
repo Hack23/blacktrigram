@@ -252,7 +252,9 @@ export class InjuryMovementModifier {
     let speedMultiplier = 1.0 - baseLegPenalty;
 
     // Check if both legs are significantly injured (>30% penalty each)
-    const bothLegsInjured = leftLegPenalty > 0.3 && rightLegPenalty > 0.3;
+    // Use small epsilon to avoid floating-point rounding issues at boundary
+    const BOTH_LEGS_THRESHOLD = 0.3 + 1e-10;
+    const bothLegsInjured = leftLegPenalty >= BOTH_LEGS_THRESHOLD && rightLegPenalty >= BOTH_LEGS_THRESHOLD;
     if (bothLegsInjured) {
       // Additional 20% penalty when both legs injured
       speedMultiplier *= this.config.bothLegsInjuredMultiplier;
@@ -283,6 +285,8 @@ export class InjuryMovementModifier {
 
     // Determine injury state for status text based on worst leg health
     // This ensures status matches the actual movement penalty (which uses worst leg)
+    // Note: isLimping = true when leg health is in range [30-70) (limping range with 0-40% penalty)
+    //       isSevereLimp = true when leg health is < 30 (severe/critical with 40-100% penalty)
     const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
     const isLimping =
       worstLegHealth < this.config.legThresholds.normal &&
