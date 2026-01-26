@@ -105,16 +105,16 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         />
       )}
 
-      {/* View Replay Button - Tertiary Action */}
+      {/* Training Mode Button - Tertiary Action */}
       {onViewReplay && (
         <BaseButtonOverlayHtml
-          korean="리플레이"
-          english="View Replay"
+          korean="훈련"
+          english="Training"
           onClick={handleViewReplay}
           onMouseEnter={onPlayHoverSound}
           variant="secondary"
           size={buttonSize}
-          testId="view-replay-button"
+          testId="view-training-button"
           isMobile={isMobile}
           style={{ minWidth: buttonMinWidth }}
         />
