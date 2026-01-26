@@ -12,7 +12,7 @@
  * @module GamTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard redirects)
  * - Controlled: 0.9 (throwing techniques)
  */
-export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gam_water_counter",
@@ -281,7 +281,7 @@ export const GAM_TECHNIQUE_COUNT = GAM_TECHNIQUES.length;
 /**
  * Get GAM technique by ID
  */
-export function getGamTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGamTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GAM_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -290,6 +290,6 @@ export function getGamTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGamTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GAM_TECHNIQUES.filter((t) => t.type === type);
 }

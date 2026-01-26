@@ -10,7 +10,7 @@
  * @korean 리괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 리괘 - 불: 정밀한 신경 타격 (태권도 정확성)
  */
-export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
+export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "li_flame_spear",
     name: {

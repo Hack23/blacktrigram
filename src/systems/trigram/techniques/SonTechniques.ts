@@ -11,7 +11,7 @@
  * @module SonTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -34,7 +34,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard techniques)
  * - Sustained: 0.9-1.0 (continuous pressure)
  */
-export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "son_whirlwind_barrage",
@@ -280,7 +280,7 @@ export const SON_TECHNIQUE_COUNT = SON_TECHNIQUES.length;
 /**
  * Get SON technique by ID
  */
-export function getSonTechniqueById(id: string): KoreanTechnique | undefined {
+export function getSonTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return SON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -289,6 +289,6 @@ export function getSonTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getSonTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return SON_TECHNIQUES.filter((t) => t.type === type);
 }

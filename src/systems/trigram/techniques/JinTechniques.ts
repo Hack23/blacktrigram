@@ -10,7 +10,7 @@
  * @korean 진괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 진괘 - 우레: 폭발적인 힘 (태권도 점프 공격)
  */
-export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
+export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "jin_lightning_flash",
     name: {

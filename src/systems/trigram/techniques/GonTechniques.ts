@@ -12,7 +12,7 @@
  * @module GonTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard grappling)
  * - Impact: 1.1 (explosive finish)
  */
-export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gon_earth_embrace",
@@ -317,7 +317,7 @@ export const GON_TECHNIQUE_COUNT = GON_TECHNIQUES.length;
 /**
  * Get GON technique by ID
  */
-export function getGonTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGonTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -326,6 +326,6 @@ export function getGonTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGonTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GON_TECHNIQUES.filter((t) => t.type === type);
 }

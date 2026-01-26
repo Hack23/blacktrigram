@@ -10,7 +10,7 @@
  * @korean 태괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 태괘 - 연못: 유동적인 관절기 기술 (합기도)
  */
-export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
+export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "tae_flowing_strikes",
     name: {

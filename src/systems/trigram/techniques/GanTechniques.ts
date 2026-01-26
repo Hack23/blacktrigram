@@ -12,7 +12,7 @@
  * @module GanTechniques
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -35,7 +35,7 @@ import { AnimationType } from "../../animation";
  * - Normal: 1.0 (standard defense)
  * - Powerful counter: 0.9-1.0 (deliberate strikes)
  */
-export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gan_rock_defense",
@@ -281,7 +281,7 @@ export const GAN_TECHNIQUE_COUNT = GAN_TECHNIQUES.length;
 /**
  * Get GAN technique by ID
  */
-export function getGanTechniqueById(id: string): KoreanTechnique | undefined {
+export function getGanTechniqueById(id: string): TrigramStanceTechnique | undefined {
   return GAN_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -290,6 +290,6 @@ export function getGanTechniqueById(id: string): KoreanTechnique | undefined {
  */
 export function getGanTechniquesByType(
   type: CombatAttackType
-): readonly KoreanTechnique[] {
+): readonly TrigramStanceTechnique[] {
   return GAN_TECHNIQUES.filter((t) => t.type === type);
 }

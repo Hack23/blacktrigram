@@ -10,7 +10,7 @@
  * @korean 건괘기술
  */
 
-import type { KoreanTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
 import {
   CombatAttackType,
   DamageType,
@@ -27,7 +27,7 @@ import { AnimationType } from "../../animation";
  *
  * @korean 건괘 - 하늘: 직접적인 힘의 기술 (태권도 타격)
  */
-export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
+export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "geon_heaven_strike",
     name: {
