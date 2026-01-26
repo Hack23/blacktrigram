@@ -12,6 +12,7 @@ import {
   AudioBodyRegion,
   ImpactIntensity,
 } from "../../../../audio/types";
+import type { AttackIntensity } from "../../../screens/combat/hooks/useCombatAudio";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import {
   AnimationState,
@@ -20,6 +21,7 @@ import {
 } from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
 import { getTechniquesByStance } from "../../../../systems/trigram/techniques";
+import { KoreanTechniquesSystem } from "../../../../systems/trigram/KoreanTechniques";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import type { KoreanTechnique } from "../../../../systems/vitalpoint/types";
 import {
@@ -51,6 +53,8 @@ export interface UseTrainingActionsConfig {
   readonly audio: {
     readonly playSFX: (sound: string, volume?: number) => Promise<void>;
   };
+  /** Attack sound function from useCombatAudio for playing attack whoosh sounds */
+  readonly playAttackSound?: (intensity: AttackIntensity) => Promise<void>;
   /** Bone impact audio function from useCombatAudio or similar hook */
   readonly playBoneImpactSound?: (options: {
     region?: AudioBodyRegion;
@@ -275,6 +279,7 @@ export function useTrainingActions(
     currentTechniqueAnimationTypeRef,
     audio,
     playBoneImpactSound,
+    playAttackSound,
     onPlayerUpdate,
     playerAnimation,
     pendingAttackRef,
@@ -483,8 +488,29 @@ export function useTrainingActions(
     // Trigger attack animation - this will fire onFrame event at frame 6
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
-    // Play attack sound
-    audio.playSFX("whoosh");
+    // Play attack sound based on technique damage/intensity
+    // Resolve technique data if we only have an ID (from TechniqueBar selection)
+    if (!techniqueToUse && selectedTechniqueId) {
+      // Technique selected from TechniqueBar but not yet resolved
+      techniqueToUse = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
+    }
+
+    if (playAttackSound) {
+      // Prefer explicit technique damage when available
+      const damage = techniqueToUse?.damage ?? 10;
+      const intensity: AttackIntensity =
+        damage >= 40
+          ? "critical"
+          : damage >= 25
+            ? "heavy"
+            : damage >= 10
+              ? "medium"
+              : "light";
+      void playAttackSound(intensity);
+    } else {
+      // Fallback to generic whoosh if playAttackSound not available
+      audio.playSFX("whoosh");
+    }
   }, [
     state.selectedVitalPoint,
     player3DPosition,
@@ -494,6 +520,7 @@ export function useTrainingActions(
     currentTechniqueAnimationTypeRef,
     playerAnimation,
     audio,
+    playAttackSound,
     pendingAttackRef,
     selectedTechniqueId,
     setAttackAnimation,
