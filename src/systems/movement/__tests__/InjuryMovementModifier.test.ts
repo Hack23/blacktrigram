@@ -12,7 +12,6 @@ import {
   InjuryMovementModifier,
   DEFAULT_INJURY_MOVEMENT_CONFIG,
   STANCE_SPEED_MODIFIERS,
-  type InjuryMovementResult,
 } from "../InjuryMovementModifier";
 import { TrigramStance } from "@/types/common";
 import type { BodyPartHealth } from "../../bodypart/types";
