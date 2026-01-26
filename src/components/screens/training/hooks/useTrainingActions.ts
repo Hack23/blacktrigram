@@ -12,6 +12,7 @@ import {
   AudioBodyRegion,
   ImpactIntensity,
 } from "../../../../audio/types";
+import { AttackIntensity } from "../../../screens/combat/hooks/useCombatAudio";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import {
   AnimationState,
@@ -20,6 +21,7 @@ import {
 } from "../../../../systems/animation";
 import { physicalReachCalculator } from "../../../../systems/physics";
 import { getTechniquesByStance } from "../../../../systems/trigram/techniques";
+import { KoreanTechniquesSystem } from "../../../../systems/trigram/KoreanTechniques";
 import { TRIGRAM_STANCES_ORDER } from "../../../../systems/trigram/types";
 import type { KoreanTechnique } from "../../../../systems/vitalpoint/types";
 import {
@@ -52,9 +54,7 @@ export interface UseTrainingActionsConfig {
     readonly playSFX: (sound: string, volume?: number) => Promise<void>;
   };
   /** Attack sound function from useCombatAudio for playing attack whoosh sounds */
-  readonly playAttackSound?: (
-    intensity: "light" | "medium" | "heavy" | "critical",
-  ) => Promise<void>;
+  readonly playAttackSound?: (intensity: AttackIntensity) => Promise<void>;
   /** Bone impact audio function from useCombatAudio or similar hook */
   readonly playBoneImpactSound?: (options: {
     region?: AudioBodyRegion;
@@ -489,15 +489,16 @@ export function useTrainingActions(
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
     // Play attack sound based on technique damage/intensity
-    // If we have the technique, determine intensity from its damage value
-    // Otherwise, default to light attack for basic attacks
-    if (playAttackSound && techniqueToUse) {
-      const damage = techniqueToUse.damage ?? 10;
-      const intensity:
-        | "light"
-        | "medium"
-        | "heavy"
-        | "critical" =
+    // Resolve technique data if we only have an ID (from TechniqueBar selection)
+    if (!techniqueToUse && selectedTechniqueId) {
+      // Technique selected from TechniqueBar but not yet resolved
+      techniqueToUse = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
+    }
+
+    if (playAttackSound) {
+      // Prefer explicit technique damage when available
+      const damage = techniqueToUse?.damage ?? 10;
+      const intensity: AttackIntensity =
         damage >= 40
           ? "critical"
           : damage >= 25
@@ -506,9 +507,6 @@ export function useTrainingActions(
               ? "medium"
               : "light";
       void playAttackSound(intensity);
-    } else if (playAttackSound) {
-      // No technique selected - play light attack sound
-      void playAttackSound("light");
     } else {
       // Fallback to generic whoosh if playAttackSound not available
       audio.playSFX("whoosh");

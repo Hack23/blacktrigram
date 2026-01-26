@@ -397,6 +397,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Combat audio
   const combatAudio = useCombatAudio();
+  const { playStanceChangeSound } = combatAudio;
 
   // Match score tracking - use ref for internal updates, state for rendering
   const [matchScore, setMatchScore] = useState({ player1: 0, player2: 0 });
@@ -1392,10 +1393,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleStanceSwitch(newStance);
 
         // Play stance change sound
-        combatAudio.playStanceChangeSound();
+        playStanceChangeSound();
       }
     },
-    [validPlayers, player1Animation, handleStanceSwitch, combatAudio],
+    [validPlayers, player1Animation, handleStanceSwitch, playStanceChangeSound],
   );
 
   // Extract player health values for dependency arrays
