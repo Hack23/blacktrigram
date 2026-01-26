@@ -157,6 +157,14 @@ export class InjuryMovementModifier {
   private readonly config: InjuryMovementConfig;
 
   /**
+   * Threshold for determining if both legs are significantly injured.
+   * Uses epsilon to avoid floating-point rounding issues at boundary.
+   * 
+   * @private
+   */
+  private static readonly BOTH_LEGS_THRESHOLD = 0.3 + 1e-10;
+
+  /**
    * Creates a new InjuryMovementModifier with optional configuration.
    * 
    * @param config - Optional configuration overrides (supports partial threshold overrides)
@@ -251,10 +259,8 @@ export class InjuryMovementModifier {
     const baseLegPenalty = Math.max(leftLegPenalty, rightLegPenalty);
     let speedMultiplier = 1.0 - baseLegPenalty;
 
-    // Check if both legs are significantly injured (>30% penalty each)
-    // Use small epsilon to avoid floating-point rounding issues at boundary
-    const BOTH_LEGS_THRESHOLD = 0.3 + 1e-10;
-    const bothLegsInjured = leftLegPenalty >= BOTH_LEGS_THRESHOLD && rightLegPenalty >= BOTH_LEGS_THRESHOLD;
+    // Check if both legs are significantly injured using centralized method
+    const bothLegsInjured = this.areBothLegsInjured(leftLegPenalty, rightLegPenalty);
     if (bothLegsInjured) {
       // Additional 20% penalty when both legs injured
       speedMultiplier *= this.config.bothLegsInjuredMultiplier;
@@ -358,6 +364,35 @@ export class InjuryMovementModifier {
       penalty = 0.4 + (healthFactor * 0.4);
     } else {
       // 0-10%: 80-100% penalty (critical)
+      // Guard against division by zero if critical is 0
+      const healthFactor = critical > 0 
+        ? (critical - clampedHealth) / critical 
+        : 1;
+      penalty = 0.8 + (healthFactor * 0.2);
+    }
+
+    // Ensure returned penalty is always within [0, 1]
+    return Math.min(Math.max(penalty, 0), 1);
+  }
+
+  /**
+   * Checks if both legs are significantly injured (>30% penalty each).
+   * Uses epsilon-based comparison for floating-point robustness.
+   * 
+   * @param leftLegPenalty - Penalty for left leg (0-1)
+   * @param rightLegPenalty - Penalty for right leg (0-1)
+   * @returns True if both legs are significantly injured
+   * @private
+   */
+  private areBothLegsInjured(leftLegPenalty: number, rightLegPenalty: number): boolean {
+    return leftLegPenalty >= InjuryMovementModifier.BOTH_LEGS_THRESHOLD && 
+           rightLegPenalty >= InjuryMovementModifier.BOTH_LEGS_THRESHOLD;
+  }
+
+  /**
+      penalty = 0.4 + (healthFactor * 0.4);
+    } else {
+      // 0-10%: 80-100% penalty (critical)
       // Guard against division by zero if critical threshold is 0
       const healthFactor = critical > 0 
         ? (critical - clampedHealth) / critical 
@@ -384,7 +419,12 @@ export class InjuryMovementModifier {
 
     // Defensive fallback for unknown stances (e.g., test/invalid values)
     if (modifier == null) {
-      if (process.env.NODE_ENV === "development") {
+      // Runtime-safe environment check (works in both Node and browser/Vite environments)
+      if (
+        typeof process !== "undefined" &&
+        process.env &&
+        process.env.NODE_ENV === "development"
+      ) {
         console.warn(
           `[InjuryMovementModifier] Unknown stance "${String(
             stance
@@ -518,7 +558,7 @@ export class InjuryMovementModifier {
     const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
     const leftLegPenalty = this.calculateLegPenalty(bodyPartHealth.legLeft);
     const rightLegPenalty = this.calculateLegPenalty(bodyPartHealth.legRight);
-    const bothLegsInjured = leftLegPenalty > 0.3 && rightLegPenalty > 0.3;
+    const bothLegsInjured = this.areBothLegsInjured(leftLegPenalty, rightLegPenalty);
 
     return this.generateStatusText(worstLegHealth, bothLegsInjured, false);
   }
