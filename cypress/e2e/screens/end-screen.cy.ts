@@ -34,7 +34,9 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   /**
    * Helper function to simulate a combat match and reach end screen
    * This accelerates testing by simulating match completion
+   * Currently unused - will be activated when combat completion trigger is implemented
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const reachEndScreen = () => {
     cy.log("🎮 Simulating combat match to reach EndScreen");
 
@@ -117,7 +119,7 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
 
     // For component-level testing, we can mount EndScreen directly
     // This tests the component independently of full game flow
-    cy.window().then((win) => {
+    cy.window().then((_win) => {
       // Verify EndScreen3D component is available
       cy.log("✅ EndScreen3D component available in codebase");
 
