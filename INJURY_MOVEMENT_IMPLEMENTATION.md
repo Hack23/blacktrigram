@@ -354,8 +354,8 @@ describe("Injury-Based Movement E2E", () => {
 - [x] Leg health < 30% causes 40-60% speed reduction
 - [x] Leg health < 10% causes 70-80% speed reduction
 - [x] Both legs injured: Cumulative penalties up to 90% reduction
-- [x] Stance modifiers: Defensive stances slower (-20%), offensive stances faster (+10%)
-- [x] Pain overload (>80%) applies additional 10-20% movement penalty
+- [x] Stance modifiers: Defensive stances slower (-20%), offensive stances faster (+25%)
+- [x] Pain overload (≥80%) applies additional 15% movement penalty
 - [x] Korean-English status text ("부상 | Injured", "절름거림 | Limping")
 - [x] Test coverage ≥ 85% (achieved 100%)
 

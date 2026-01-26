@@ -13,8 +13,8 @@
  * - **Leg Injuries**: 0-100% penalty based on health
  * - **Torso Injuries**: 0-30% minor penalty
  * - **Both Legs Injured**: Additional 20% cumulative penalty
- * - **Stance Modifiers**: -20% (defensive) to +10% (offensive)
- * - **Pain Overload**: -15% when pain > 80
+ * - **Stance Modifiers**: -20% (defensive) to +25% (offensive)
+ * - **Pain Overload**: -15% when pain ≥ 80
  * 
  * ## Injury Severity Thresholds
  * 
