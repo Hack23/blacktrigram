@@ -8,6 +8,9 @@ import {
   getOptimalInstanceLimit,
   batchInstances,
   createInstancesFromPositions,
+  InstancableSpheres,
+  InstancableBoxes,
+  InstancableParticles,
 } from "./InstancedGeometry";
 
 describe("InstancedGeometry", () => {
@@ -223,6 +226,30 @@ describe("InstancedGeometry", () => {
         expect(instance.color).toBeDefined();
         expect(instance.scale).toBeDefined();
       });
+    });
+  });
+
+  describe("Instanced Component rendering", () => {
+    it("InstancableSpheres should be defined and exportable", () => {
+      // Basic smoke test - ensures components can be imported
+      expect(InstancableSpheres).toBeDefined();
+      expect(typeof InstancableSpheres).toBe("function");
+    });
+
+    it("InstancableBoxes should be defined and exportable", () => {
+      expect(InstancableBoxes).toBeDefined();
+      expect(typeof InstancableBoxes).toBe("function");
+    });
+
+    it("InstancableParticles should be defined and exportable", () => {
+      expect(InstancableParticles).toBeDefined();
+      expect(typeof InstancableParticles).toBe("function");
+    });
+
+    it("Instanced utilities should be properly exported", () => {
+      expect(getOptimalInstanceLimit).toBeDefined();
+      expect(batchInstances).toBeDefined();
+      expect(createInstancesFromPositions).toBeDefined();
     });
   });
 });

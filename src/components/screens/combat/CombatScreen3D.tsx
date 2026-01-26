@@ -305,7 +305,60 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const shouldEnableAdaptiveQuality =
     enableAdaptiveQuality ?? isMobile;
 
-  // SSAO removed - was causing WebGL context loss without NormalPass
+  // Quality settings state - updated by adaptive quality system
+  // Currently monitored but not actively applied to rendering
+  // Future: Could dynamically adjust particle counts, shadow quality, etc.
+  const [_adaptiveQualitySettings, setAdaptiveQualitySettings] = useState(
+    renderConfig
+  );
+
+  /**
+   * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
+   * Must be inside Canvas to use useFrame from @react-three/fiber
+   * 
+   * Memoized with useMemo so the component type is stable across renders.
+   */
+  const AdaptiveQualityWrapper = useMemo<
+    React.FC<{ children: React.ReactNode }>
+  >(
+    () => {
+      const Component: React.FC<{ children: React.ReactNode }> = ({
+        children,
+      }) => {
+        // Monitor FPS and adjust quality dynamically
+        const qualitySettings = useAdaptiveQuality(
+          shouldEnableAdaptiveQuality,
+          isMobile,
+          (newQuality) => {
+            if (import.meta.env.DEV) {
+              console.log(
+                `[CombatScreen3D] Quality adjusted to: ${newQuality}`
+              );
+            }
+          }
+        );
+
+        // Update parent state with quality settings when they change
+        useEffect(() => {
+          if (shouldEnableAdaptiveQuality) {
+            setAdaptiveQualitySettings({
+              shadowMapSize: qualitySettings.shadowMapSize,
+              dpr: renderConfig.dpr,
+              antialias: renderConfig.antialias,
+              maxParticles: qualitySettings.maxParticles,
+              postProcessing: qualitySettings.postProcessing,
+            });
+          }
+        }, [qualitySettings, shouldEnableAdaptiveQuality]);
+
+        // Quality monitoring is active - quality changes logged in dev mode
+        return <>{children}</>;
+      };
+
+      return Component;
+    },
+    [shouldEnableAdaptiveQuality, isMobile, renderConfig]
+  );
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -2189,28 +2242,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleResume,
   ]);
 
-  /**
-   * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
-   * Must be inside Canvas to use useFrame from @react-three/fiber
-   */
-  const AdaptiveQualityWrapper: React.FC<{ children: React.ReactNode }> = ({
-    children,
-  }) => {
-    // Monitor FPS and adjust quality dynamically
-    useAdaptiveQuality(
-      shouldEnableAdaptiveQuality,
-      isMobile,
-      (newQuality) => {
-        if (import.meta.env.DEV) {
-          console.log(`[CombatScreen3D] Quality adjusted to: ${newQuality}`);
-        }
-      }
-    );
-
-    // Quality monitoring is active - quality changes logged in dev mode
-    return <>{children}</>;
-  };
-
   return (
     <div
       style={{
@@ -2248,8 +2279,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Adaptive Quality Wrapper monitors FPS and adjusts quality */}
         <AdaptiveQualityWrapper>
-          {/* Performance overlay (dev mode) */}
-          {showPerformanceOverlay && <PerformanceOverlay3D />}
+          {/* Performance overlay (dev mode) - controlled by showPerformanceOverlay prop */}
+          {showPerformanceOverlay && !showPerformanceMonitor && (
+            <PerformanceOverlay3D />
+          )}
 
           {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
           <CombatArena3D

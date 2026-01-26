@@ -2,7 +2,7 @@
  * Tests for AdaptiveQuality system
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   AdaptiveQualitySystem,
   QUALITY_PRESETS,

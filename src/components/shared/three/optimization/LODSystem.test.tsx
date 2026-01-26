@@ -9,6 +9,8 @@ import {
   calculateLODDistances,
   getLODParticleCount,
   getLODShadowQuality,
+  LODCharacter,
+  LODEffect,
 } from "./LODSystem";
 
 describe("LODSystem", () => {
@@ -160,6 +162,27 @@ describe("LODSystem", () => {
       const reduction = (highMemory - lowMemory) / highMemory;
 
       expect(reduction).toBeGreaterThan(0.9); // >90% memory reduction
+    });
+  });
+
+  describe("LOD Component rendering", () => {
+    it("LODCharacter should be defined and exportable", () => {
+      // Basic smoke test - ensures components can be imported
+      expect(LODCharacter).toBeDefined();
+      expect(typeof LODCharacter).toBe("function");
+    });
+
+    it("LODEffect should be defined and exportable", () => {
+      expect(LODEffect).toBeDefined();
+      expect(typeof LODEffect).toBe("function");
+    });
+
+    it("LOD utilities should be properly exported", () => {
+      expect(DEFAULT_LOD_DISTANCES).toBeDefined();
+      expect(MOBILE_LOD_DISTANCES).toBeDefined();
+      expect(calculateLODDistances).toBeDefined();
+      expect(getLODParticleCount).toBeDefined();
+      expect(getLODShadowQuality).toBeDefined();
     });
   });
 });
