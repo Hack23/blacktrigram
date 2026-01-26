@@ -15,3 +15,8 @@ export * from "./types";
 export * from "./BodyPartHealthSystem";
 export * from "./BodyPartDamageIntegration";
 export * from "./MovementPenaltySystem";
+export * from "./InjuryTracker";
+export * from "./BodyPartPositionMapping";
+export * from "./InjuryIntegration";
+export * from "./CombatInjuryIntegration";
+export * from "./PlayerInjuryTrackingManager";

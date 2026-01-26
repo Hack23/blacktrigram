@@ -21,40 +21,8 @@ import { Html } from "@react-three/drei";
 import React, { useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../../../types/constants";
-import { BodyRegion } from "../../../../../types/common";
 import { hexToRgbaString } from "../../../../../utils/colorUtils";
-
-/**
- * Injury type classification
- */
-export enum InjuryType {
-  BRUISE = "bruise",          // Blunt force trauma
-  CUT = "cut",                // Sharp weapon/strike
-  LACERATION = "laceration",  // Deep cut with blood trail
-  FRACTURE = "fracture",      // Bone damage indicator
-}
-
-/**
- * Individual injury data
- */
-export interface Injury {
-  /** Unique identifier */
-  readonly id: string;
-  /** Body region affected */
-  readonly region: BodyRegion;
-  /** Type of injury */
-  readonly type: InjuryType;
-  /** Position on body [x, y, z] relative to character center */
-  readonly position: [number, number, number];
-  /** Severity (0.0 to 1.0) */
-  readonly severity: number;
-  /** Number of hits to same location (for progressive bruising) */
-  readonly hitCount: number;
-  /** Timestamp when injury was created */
-  readonly timestamp: number;
-  /** Optional player ID for multi-player scenarios */
-  readonly playerId?: string | number;
-}
+import { InjuryType, Injury } from "../../../../../types/injury";
 
 /**
  * Props for TraumaOverlay3D component
@@ -73,6 +41,10 @@ export interface TraumaOverlay3DProps {
   /** Whether to show fracture indicators */
   readonly showFractures?: boolean;
 }
+
+// Re-export for backward compatibility
+export { InjuryType };
+export type { Injury };
 
 /**
  * Color constants for injury visualization

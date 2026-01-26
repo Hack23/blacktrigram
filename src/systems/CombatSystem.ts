@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
 import { getTechniqueById } from "../data/techniques";
-import { BodyRegion } from "../types";
+import { BodyRegion, DamageType } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { Technique } from "../types/technique";
 import { calculateDistance3D } from "../utils/math";
@@ -16,6 +16,7 @@ import {
   isWithinHitWindow,
 } from "./animation";
 import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
+import { playerInjuryManager } from "./bodypart";
 import {
   applyBreathingDisruptionFromVitalPoint,
   BreathingDisruptionSystem,
@@ -778,6 +779,19 @@ export class CombatSystem implements CombatSystemInterface {
         result.damage,
         bodyRegion,
       );
+
+      // Record injury for trauma visualization (외상 시각화)
+      // Use per-player injury tracking to prevent mixing injuries between characters
+      // Automatically tracks bruising, cuts, and blood effects based on damage type
+      // Records injury even without specific technique (defaults to BRUISE)
+      if (result.damage > 0) {
+        const defenderInjuryIntegration = playerInjuryManager.getIntegrationForPlayer(defender.id);
+        defenderInjuryIntegration.recordCombatDamage({
+          damage: result.damage,
+          bodyRegion,
+          damageType: (result.technique?.damageType as DamageType) || undefined,
+        });
+      }
 
       // Update tracking stats (applyDamageToBodyParts already sets health)
       updatedDefender = {

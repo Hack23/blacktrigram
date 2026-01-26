@@ -4,12 +4,13 @@
  * Tests the integration of pain and consciousness systems with the combat system.
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
-import { PlayerArchetype } from "@/types";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { PlayerArchetype, DamageType } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
 import CombatSystem from "./CombatSystem";
 import { CombatResult } from "./combat/types";
+import { playerInjuryManager } from "./bodypart";
 
 describe("CombatSystem Integration with Pain & Consciousness", () => {
   let combatSystem: CombatSystem;
@@ -20,6 +21,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
     combatSystem = new CombatSystem();
     player1 = createPlayerFromArchetype(PlayerArchetype.MUSA, 0);
     player2 = createPlayerFromArchetype(PlayerArchetype.AMSALJA, 1);
+    // Clear all player injuries between tests to prevent leakage
+    playerInjuryManager.clearAll();
   });
 
   describe("Pain Integration", () => {
@@ -416,6 +419,118 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
       // No changes to pain or consciousness
       expect(updatedDefender.pain).toBe(player2.pain);
       expect(updatedDefender.consciousness).toBe(player2.consciousness);
+    });
+  });
+
+  describe("Injury Tracking Integration (외상 시각화)", () => {
+    it("should record injuries when damage is applied with technique", () => {
+      // Clear any existing injuries for the defender
+      playerInjuryManager.clearPlayerInjuries(player2.id);
+      
+      const mockResult: CombatResult = {
+        hit: true,
+        damage: 35, // Above threshold for blood effects
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "test_technique",
+          name: { korean: "타격", english: "Strike", romanized: "Tagyeok" },
+          damageType: DamageType.BLUNT,
+        } as any as CombatResult["technique"],
+        attacker: player1,
+        defender: player2,
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      };
+
+      combatSystem.applyCombatResult(mockResult, player1, player2);
+
+      // Verify injury was recorded for the defender
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
+      expect(injuries.length).toBeGreaterThan(0);
+      expect(injuries[0].severity).toBe(35);
+      
+      // Verify blood effect would be triggered
+      expect(defenderIntegration.shouldShowBloodEffect(35)).toBe(true);
+    });
+
+    it("should accumulate injuries on repeated hits", () => {
+      playerInjuryManager.clearPlayerInjuries(player2.id);
+      
+      // Mock Math.random to ensure injuries at the same location merge
+      const mockRandom = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+
+      const mockResult: CombatResult = {
+        hit: true,
+        damage: 25,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "test_punch",
+          name: { korean: "펀치", english: "Punch", romanized: "Peonchi" },
+          damageType: DamageType.IMPACT,
+        } as any as CombatResult["technique"],
+        attacker: player1,
+        defender: player2,
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      };
+
+      // Apply same attack 3 times
+      for (let i = 0; i < 3; i++) {
+        combatSystem.applyCombatResult(mockResult, player1, player2);
+      }
+
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
+      
+      // Should have cumulative injuries recorded
+      expect(injuries.length).toBeGreaterThan(0);
+      
+      // First injury should have increased severity from multiple hits
+      const firstInjury = injuries[0];
+      expect(firstInjury.severity).toBeGreaterThan(25);
+      expect(firstInjury.hitCount).toBeGreaterThan(1);
+      
+      // Clean up mock
+      mockRandom.mockRestore();
+    });
+
+    it("should not record injuries when attack misses", () => {
+      playerInjuryManager.clearPlayerInjuries(player2.id);
+
+      const mockResult: CombatResult = {
+        hit: false, // Miss
+        damage: 0,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "test_kick",
+          name: { korean: "킥", english: "Kick", romanized: "Kik" },
+          damageType: DamageType.BLUNT,
+        } as any as CombatResult["technique"],
+        attacker: player1,
+        defender: player2,
+        success: false,
+        isCritical: false,
+        isBlocked: false,
+      };
+
+      combatSystem.applyCombatResult(mockResult, player1, player2);
+
+      // Should not record any injury for a miss
+      const defenderIntegration = playerInjuryManager.getIntegrationForPlayer(player2.id);
+      const injuries = defenderIntegration.getInjuries();
+      expect(injuries.length).toBe(0);
     });
   });
 });
