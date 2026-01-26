@@ -8,6 +8,10 @@
  */
 
 import { useCallback, useRef } from "react";
+import {
+  AudioBodyRegion,
+  ImpactIntensity,
+} from "../../../../audio/types";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import {
   AnimationState,
@@ -45,8 +49,17 @@ export interface UseTrainingActionsConfig {
   /** Ref to current selected technique's animation type for distance-based hit detection */
   readonly currentTechniqueAnimationTypeRef: React.MutableRefObject<AnimationType>;
   readonly audio: {
-    readonly playSFX: (sound: string) => void;
+    readonly playSFX: (sound: string, volume?: number) => Promise<void>;
   };
+  /** Bone impact audio function from useCombatAudio or similar hook */
+  readonly playBoneImpactSound?: (options: {
+    region?: AudioBodyRegion;
+    intensity?: ImpactIntensity;
+    damage?: number;
+    remainingHealth?: number;
+    vitalPoint?: boolean;
+    hitPosition?: { x: number; y: number; z?: number };
+  }) => Promise<void>;
   readonly onPlayerUpdate: (updates: {
     currentStance?: TrigramStance;
     lastActionTime?: number;
@@ -261,6 +274,7 @@ export function useTrainingActions(
     playerStance,
     currentTechniqueAnimationTypeRef,
     audio,
+    playBoneImpactSound,
     onPlayerUpdate,
     playerAnimation,
     pendingAttackRef,
@@ -331,6 +345,16 @@ export function useTrainingActions(
           actions.registerHit(points, damage, isPerfect);
         }
 
+        // Play bone impact audio with anatomical feedback using proper audio system
+        if (playBoneImpactSound) {
+          void playBoneImpactSound({
+            damage,
+            remainingHealth: 100, // Dummy has 100 health
+            vitalPoint: false,
+            hitPosition: { x: hitPosition[0], y: hitPosition[1], z: hitPosition[2] },
+          });
+        }
+
         // Determine feedback and sound
         let effectType: "success" | "perfect";
         if (isPerfect) {
@@ -383,6 +407,7 @@ export function useTrainingActions(
       actions,
       audio,
       pendingAttackRef,
+      playBoneImpactSound,
     ],
   );
 

@@ -39,6 +39,7 @@ import React, {
   useState,
 } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
+import { useCombatAudio } from "../../screens/combat/hooks/useCombatAudio";
 import { getArchetypePhysicalAttributes } from "../../../data/archetypePhysicalAttributes";
 import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
@@ -169,6 +170,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Audio context
   const audio = useAudio();
+  
+  // Combat audio for bone impact sounds
+  const { playBoneImpactSound } = useCombatAudio();
 
   // Responsive detection and layout (using dedicated training layout hook)
   const { trainingAreaBounds, isMobile, screenSize } = useTrainingLayout(
@@ -485,6 +489,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     playerStance: currentStance,
     currentTechniqueAnimationTypeRef, // Ref for technique's animation type
     audio,
+    playBoneImpactSound, // Pass bone impact audio function from useCombatAudio
     onPlayerUpdate: (updates) => {
       onPlayerUpdate(updates);
     },
