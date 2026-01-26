@@ -369,7 +369,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(12.0);
+      expect(modifiers.finalAcceleration).toBe(30.0);
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -382,7 +382,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.0);
-      expect(modifiers.finalAcceleration).toBe(12.0);
+      expect(modifiers.finalAcceleration).toBe(30.0);
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -395,7 +395,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.2);
-      expect(modifiers.finalAcceleration).toBeCloseTo(9.6, 5); // 12.0 * (1 - 0.20)
+      expect(modifiers.finalAcceleration).toBeCloseTo(24.0, 5); // 30.0 * (1 - 0.20)
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -408,7 +408,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.5);
-      expect(modifiers.finalAcceleration).toBe(6.0); // 12.0 * (1 - 0.50)
+      expect(modifiers.finalAcceleration).toBe(15.0); // 30.0 * (1 - 0.50)
       expect(modifiers.canRun).toBe(true);
     });
 
@@ -421,7 +421,7 @@ describe("SpeedModifierSystem", () => {
       );
 
       expect(modifiers.staminaPenalty).toBe(0.75);
-      expect(modifiers.finalAcceleration).toBe(3.0); // 12.0 * (1 - 0.75)
+      expect(modifiers.finalAcceleration).toBe(7.5); // 30.0 * (1 - 0.75)
       expect(modifiers.canRun).toBe(false); // Cannot run below 10%
     });
 
@@ -568,7 +568,7 @@ describe("SpeedModifierSystem", () => {
 
       // Acceleration should have stamina penalty
       expect(modifiers.staminaPenalty).toBe(0.5);
-      expect(modifiers.finalAcceleration).toBe(6.0); // 12.0 * (1 - 0.50)
+      expect(modifiers.finalAcceleration).toBe(15.0); // 30.0 * (1 - 0.50)
     });
 
     it("should result in minimal speed with all negative factors", () => {
