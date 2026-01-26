@@ -475,73 +475,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     AnimationType.JAB,
   );
 
-  // Training actions hook (matches useCombatActions pattern)
-  const {
-    handleStartTraining,
-    handleStopTraining,
-    handleDummyHit,
-    handleDummyDefeated,
-    handleStanceChange,
-    handleAttack,
-  } = useTrainingActions({
-    state: trainingState,
-    actions: trainingActions,
-    playerPosition,
-    player3DPosition,
-    dummyPosition,
-    playerArchetype: selectedArchetype,
-    playerStance: currentStance,
-    currentTechniqueAnimationTypeRef, // Ref for technique's animation type
-    audio,
-    playBoneImpactSound, // Pass bone impact audio function from useCombatAudio
-    playAttackSound, // Pass attack sound function from useCombatAudio
-    onPlayerUpdate: (updates) => {
-      onPlayerUpdate(updates);
-    },
-    playerAnimation: {
-      transitionTo: playerAnimation.transitionTo,
-      transitionToStanceGuard: playerAnimation.transitionToStanceGuard,
-      currentState: playerAnimation.currentState,
-    },
-    pendingAttackRef, // Share the ref with animation events
-  });
-
-  // Update the ref so animation events can call handleDummyHit
-  useEffect(() => {
-    handleDummyHitRef.current = handleDummyHit;
-  }, [handleDummyHit]);
-
-  // Wrapped stance change handler with visual feedback tracking
-  // 시각적 피드백 추적을 포함한 자세 변경 핸들러 래퍼
-  const handleStanceChangeWithVisualFeedback = useCallback(
-    (stanceIndex: number) => {
-      // Capture previous stance before the change for visual indicator
-      setPreviousStanceIndex(trainingState.currentStanceIndex);
-      // Execute the actual stance change
-      handleStanceChange(stanceIndex);
-    },
-    [handleStanceChange, trainingState.currentStanceIndex],
-  );
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 6: Movement-Animation Synchronization
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  // Sync movement with animation (matches CombatScreen pattern)
-  const prevIsMovingRef = useRef<boolean>(isMoving);
-  useEffect(() => {
-    if (prevIsMovingRef.current !== isMoving) {
-      if (isMoving) {
-        playerAnimation.transitionTo(AnimationState.WALK);
-      } else if (playerAnimation.currentState === AnimationState.WALK) {
-        // When stopping movement, transition to stance-specific guard animation
-        // 이동 중지 시 자세별 가드 애니메이션으로 전환
-        playerAnimation.transitionToStanceGuard(currentStance);
-      }
-      prevIsMovingRef.current = isMoving;
-    }
-  }, [isMoving, playerAnimation, currentStance]);
-
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7: Training Player State (Visual Display)
   // ═══════════════════════════════════════════════════════════════════════════
@@ -619,11 +552,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trainingPlayerState]); // speedModifierSystem is memoized and never changes
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // SECTION 7B: Technique Selection System
-  // ═══════════════════════════════════════════════════════════════════════════
+  // Ref to store handleAttack for use in useTechniqueSelection callback
+  // This breaks circular dependency between useTechniqueSelection and useTrainingActions
+  const handleAttackRef = useRef<(() => void) | null>(null);
 
   // Technique selection and execution for training
+  // Moved before useTrainingActions to provide selectedTechniqueId
   const techniqueSelection = useTechniqueSelection({
     player: trainingPlayerState,
     enabled: trainingState.isTraining,
@@ -645,11 +579,99 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         // Resources are displayed for educational purposes only
 
         // Execute attack with technique (visual feedback)
-        handleAttack();
+        // Use ref to avoid circular dependency
+        handleAttackRef.current?.();
       },
-      [handleAttack, trainingActions],
+      [trainingActions],
     ),
   });
+
+  // Derive selected technique ID for intensity-based attack sounds
+  const selectedTechniqueId = useMemo(() => {
+    const techniques = techniqueSelection.availableTechniques;
+    const selectedIdx = techniqueSelection.selectedIndex;
+    if (techniques.length === 0 || selectedIdx < 0 || selectedIdx >= techniques.length) {
+      return undefined;
+    }
+    return techniques[selectedIdx]?.id;
+  }, [techniqueSelection.availableTechniques, techniqueSelection.selectedIndex]);
+
+  // Training actions hook (matches useCombatActions pattern)
+  const {
+    handleStartTraining,
+    handleStopTraining,
+    handleDummyHit,
+    handleDummyDefeated,
+    handleStanceChange,
+    handleAttack,
+  } = useTrainingActions({
+    state: trainingState,
+    actions: trainingActions,
+    playerPosition,
+    player3DPosition,
+    dummyPosition,
+    playerArchetype: selectedArchetype,
+    playerStance: currentStance,
+    currentTechniqueAnimationTypeRef, // Ref for technique's animation type
+    audio,
+    playBoneImpactSound, // Pass bone impact audio function from useCombatAudio
+    playAttackSound, // Pass attack sound function from useCombatAudio
+    selectedTechniqueId, // Pass selected technique ID for intensity-based attack sounds
+    onPlayerUpdate: (updates) => {
+      onPlayerUpdate(updates);
+    },
+    playerAnimation: {
+      transitionTo: playerAnimation.transitionTo,
+      transitionToStanceGuard: playerAnimation.transitionToStanceGuard,
+      currentState: playerAnimation.currentState,
+    },
+    pendingAttackRef, // Share the ref with animation events
+  });
+
+  // Update handleAttack ref for useTechniqueSelection callback
+  useEffect(() => {
+    handleAttackRef.current = handleAttack;
+  }, [handleAttack]);
+
+  // Update the ref so animation events can call handleDummyHit
+  useEffect(() => {
+    handleDummyHitRef.current = handleDummyHit;
+  }, [handleDummyHit]);
+
+  // Wrapped stance change handler with visual feedback tracking
+  // 시각적 피드백 추적을 포함한 자세 변경 핸들러 래퍼
+  const handleStanceChangeWithVisualFeedback = useCallback(
+    (stanceIndex: number) => {
+      // Capture previous stance before the change for visual indicator
+      setPreviousStanceIndex(trainingState.currentStanceIndex);
+      // Execute the actual stance change
+      handleStanceChange(stanceIndex);
+    },
+    [handleStanceChange, trainingState.currentStanceIndex],
+  );
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 6: Movement-Animation Synchronization
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Sync movement with animation (matches CombatScreen pattern)
+  const prevIsMovingRef = useRef<boolean>(isMoving);
+  useEffect(() => {
+    if (prevIsMovingRef.current !== isMoving) {
+      if (isMoving) {
+        playerAnimation.transitionTo(AnimationState.WALK);
+      } else if (playerAnimation.currentState === AnimationState.WALK) {
+        // When stopping movement, transition to stance-specific guard animation
+        // 이동 중지 시 자세별 가드 애니메이션으로 전환
+        playerAnimation.transitionToStanceGuard(currentStance);
+      }
+      prevIsMovingRef.current = isMoving;
+    }
+  }, [isMoving, playerAnimation, currentStance]);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 7B: Technique Selection System (Moved earlier - see before useTrainingActions)
+  // ═══════════════════════════════════════════════════════════════════════════
 
   // Convert cooldowns to Map for TechniqueBar
   const cooldownsMap = useMemo(() => {
