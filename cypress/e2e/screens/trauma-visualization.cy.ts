@@ -64,6 +64,9 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
 
     // Check for trauma overlay in Three.js scene
     // Note: TraumaOverlay3D renders as Three.js group, not in DOM
+    // This test verifies pixel changes on canvas, indicating rendering is happening.
+    // For more deterministic tests, consider adding test hooks to expose injury count
+    // or using Html overlays with data-testid attributes.
     cy.get("canvas").should("be.visible");
     
     // Verify rendering changes (injuries should be visible in 3D scene)
@@ -90,6 +93,12 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("5️⃣ Testing blood effects trigger (damage > 30)");
 
+    // Note: This test verifies pixel changes but doesn't deterministically
+    // verify blood effects were triggered. For better test coverage, consider:
+    // - Adding a test hook to expose blood effect state
+    // - Using mocked combat damage events with known values
+    // - Adding Html overlay with data-testid for blood effect indicators
+    
     // Perform multiple heavy attacks
     for (let i = 1; i <= 3; i++) {
       cy.get("body").type(" ");
@@ -151,8 +160,14 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     cy.log("✅ Stress test completed - system remains stable");
   });
 
-  it("should clear injuries on new round", () => {
-    cy.annotate("Testing Injury Persistence Across Rounds");
+  it.skip("should clear injuries on new round", () => {
+    // TODO: Implement once round system exists
+    // This test requires:
+    // 1. A deterministic way to end a round
+    // 2. Observable state to verify injuries are cleared
+    // 3. Test hooks or UI elements to trigger and verify round reset
+    
+    cy.annotate("Testing Injury Persistence Across Rounds (SKIPPED - Not Implemented)");
 
     cy.log("Creating injuries in round 1");
 
@@ -170,7 +185,7 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     // Note: This test assumes round restart clears injuries
     // Implementation may vary based on game logic
 
-    cy.log("Round persistence test noted (implementation-dependent)");
+    cy.log("Round persistence test skipped (requires implementation)");
   });
 });
 

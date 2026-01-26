@@ -43,6 +43,7 @@ export const CHARACTER_DIMENSIONS = {
  * 
  * Returns center position of the body part relative to character origin.
  * Character is centered at [0, 0, 0] standing upright.
+ * Positions are calculated from CHARACTER_DIMENSIONS for consistency.
  * 
  * @param bodyPart - Body part to get position for
  * @returns 3D position vector
@@ -50,34 +51,42 @@ export const CHARACTER_DIMENSIONS = {
  * @public
  */
 export function getBodyPartPosition(bodyPart: BodyPart): THREE.Vector3 {
+  // Calculate positions from CHARACTER_DIMENSIONS
+  const headY = CHARACTER_DIMENSIONS.HEIGHT - CHARACTER_DIMENSIONS.HEAD_HEIGHT / 2;
+  const neckY = CHARACTER_DIMENSIONS.HEIGHT - CHARACTER_DIMENSIONS.HEAD_HEIGHT;
+  const torsoTop = neckY - CHARACTER_DIMENSIONS.TORSO_HEIGHT / 3;
+  const torsoBottom = neckY - (2 * CHARACTER_DIMENSIONS.TORSO_HEIGHT) / 3;
+  const armY = neckY - CHARACTER_DIMENSIONS.TORSO_HEIGHT / 3;
+  const legY = CHARACTER_DIMENSIONS.LEG_LENGTH / 2;
+  
   switch (bodyPart) {
     case BodyPart.HEAD:
-      return new THREE.Vector3(0, 1.8, 0);
+      return new THREE.Vector3(0, headY, 0);
 
     case BodyPart.NECK:
-      return new THREE.Vector3(0, 1.6, 0);
+      return new THREE.Vector3(0, neckY, 0);
 
     case BodyPart.TORSO_UPPER:
-      return new THREE.Vector3(0, 1.3, 0);
+      return new THREE.Vector3(0, torsoTop, 0);
 
     case BodyPart.TORSO_LOWER:
-      return new THREE.Vector3(0, 0.9, 0);
+      return new THREE.Vector3(0, torsoBottom, 0);
 
     case BodyPart.ARM_LEFT:
-      return new THREE.Vector3(-0.4, 1.2, 0);
+      return new THREE.Vector3(-CHARACTER_DIMENSIONS.SHOULDER_WIDTH / 2, armY, 0);
 
     case BodyPart.ARM_RIGHT:
-      return new THREE.Vector3(0.4, 1.2, 0);
+      return new THREE.Vector3(CHARACTER_DIMENSIONS.SHOULDER_WIDTH / 2, armY, 0);
 
     case BodyPart.LEG_LEFT:
-      return new THREE.Vector3(-0.15, 0.4, 0);
+      return new THREE.Vector3(-CHARACTER_DIMENSIONS.SHOULDER_WIDTH / 4, legY, 0);
 
     case BodyPart.LEG_RIGHT:
-      return new THREE.Vector3(0.15, 0.4, 0);
+      return new THREE.Vector3(CHARACTER_DIMENSIONS.SHOULDER_WIDTH / 4, legY, 0);
 
     default:
       // Default to torso center
-      return new THREE.Vector3(0, 1.0, 0);
+      return new THREE.Vector3(0, CHARACTER_DIMENSIONS.HEIGHT / 2, 0);
   }
 }
 

@@ -134,7 +134,7 @@ export class CombatInjuryIntegration {
     const bodyPart = mapBodyRegionToBodyPart(event.bodyRegion);
 
     // Record injury
-    this.tracker.recordInjury(
+    const recordedInjury = this.tracker.recordInjury(
       bodyPart,
       event.bodyRegion,
       position,
@@ -142,7 +142,8 @@ export class CombatInjuryIntegration {
       injuryType
     );
 
-    return true;
+    // Return true only if the injury was actually recorded
+    return recordedInjury !== null;
   }
 
   /**

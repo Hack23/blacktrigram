@@ -72,7 +72,7 @@ export interface InjuryTrackerConfig {
   readonly minDamageForInjury: number;
   /** Damage threshold for blood effects */
   readonly bloodEffectThreshold: number;
-  /** Time before injuries start fading (milliseconds) */
+  /** Time before injuries are removed/expired (milliseconds) */
   readonly injuryFadeStartTime: number;
 }
 
@@ -86,7 +86,7 @@ export const DEFAULT_INJURY_TRACKER_CONFIG: InjuryTrackerConfig = {
   sameLocationThreshold: 0.5, // 0.5 units distance
   minDamageForInjury: 5, // Minimum 5 damage to show injury
   bloodEffectThreshold: 30, // Blood effects when damage > 30
-  injuryFadeStartTime: 30000, // Start fading after 30 seconds
+  injuryFadeStartTime: 30000, // Injuries are removed after 30 seconds
 } as const;
 
 /**
@@ -158,10 +158,17 @@ export class InjuryTracker {
       return null;
     }
 
-    // Find nearby injury at similar location
+    // Find nearby injury at similar location (same body part)
     const existing = this.findNearbyInjury(bodyPart, position, this.config.sameLocationThreshold);
 
-    if (existing) {
+    // Only merge injuries that also match type and body region to avoid
+    // incorrectly combining different injury types at the same spot
+    const shouldMerge =
+      !!existing &&
+      existing.type === type &&
+      existing.bodyRegion === bodyRegion;
+
+    if (shouldMerge && existing) {
       // Progressive bruising - update existing injury
       const newSeverity = Math.min(100, existing.severity + damage / 2);
       const newHitCount = existing.hitCount + 1;
