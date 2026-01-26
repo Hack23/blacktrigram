@@ -4,14 +4,14 @@
  * and statistics tracking
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import {
   BoneImpactAudioSystem,
   AudioManagerInterface,
   BoneImpactAudioConfig,
   Vector3,
 } from "../BoneImpactAudioSystem";
-import { BoneImpactEvent, AudioBodyRegion } from "../../../audio/types";
+import { BoneImpactEvent } from "../../../audio/types";
 import { VitalPoint } from "../../vitalpoint/types";
 
 /**
