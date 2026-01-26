@@ -24,6 +24,9 @@ import { TrigramStance } from "@/types/common";
  * that MovementPhysics.MovementState expects. This allows gradual
  * migration from the old simple system to the new detailed system.
  * 
+ * Uses the **worst** (minimum) leg health to match the main injury system's behavior,
+ * ensuring asymmetric injuries (e.g., one leg at 0%, other at 100%) are properly represented.
+ * 
  * @param bodyPartHealth - Current body part health
  * @returns Leg injury factor (0 = healthy, 1 = fully injured), clamped to 0-1 range
  * 
@@ -39,11 +42,12 @@ import { TrigramStance } from "@/types/common";
 export function calculateLegInjuryFactor(
   bodyPartHealth: BodyPartHealth
 ): number {
-  // Calculate average leg health percentage
-  const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
+  // Use worst (minimum) leg health to match main injury system behavior
+  // This ensures asymmetric injuries are properly represented
+  const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
   
-  // Clamp average leg health to valid 0-100 range to avoid invalid injury factors
-  const clampedLegHealth = Math.min(100, Math.max(0, avgLegHealth));
+  // Clamp worst leg health to valid 0-100 range to avoid invalid injury factors
+  const clampedLegHealth = Math.min(100, Math.max(0, worstLegHealth));
 
   // Normalize to 0-1 health ratio (1 = fully healthy, 0 = no health)
   const healthRatio = clampedLegHealth / 100;

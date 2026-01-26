@@ -390,21 +390,6 @@ export class InjuryMovementModifier {
   }
 
   /**
-      penalty = 0.4 + (healthFactor * 0.4);
-    } else {
-      // 0-10%: 80-100% penalty (critical)
-      // Guard against division by zero if critical threshold is 0
-      const healthFactor = critical > 0 
-        ? (critical - clampedHealth) / critical 
-        : 1.0;
-      penalty = 0.8 + (healthFactor * 0.2);
-    }
-
-    // Ensure returned penalty is always within [0, 1]
-    return Math.min(Math.max(penalty, 0), 1);
-  }
-
-  /**
    * Get stance-based speed modifier.
    * 
    * **Korean**: 자세 속도 배수 가져오기

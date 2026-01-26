@@ -56,11 +56,11 @@ describe("Integration with MovementPhysics", () => {
       expect(factor).toBe(1.0); // Fully injured
     });
 
-    it("should average left and right leg health", () => {
-      const health = createHealth(80, 60); // avg 70%
+    it("should use worst leg health (not average)", () => {
+      const health = createHealth(80, 60); // worst leg 60%
       const factor = calculateLegInjuryFactor(health);
       
-      expect(factor).toBeCloseTo(0.3, 2); // 30% injured
+      expect(factor).toBeCloseTo(0.4, 2); // 40% injured (based on worst leg at 60%)
     });
   });
 
