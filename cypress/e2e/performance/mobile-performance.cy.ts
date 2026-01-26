@@ -1,11 +1,15 @@
 /**
  * Mobile Performance E2E Test
  * 
- * Validates mobile performance optimization targets:
- * - 55fps+ sustained during combat
- * - <100 draw calls per frame
- * - <200MB memory usage
- * - Adaptive quality system working
+ * Validates mobile performance optimization integration:
+ * - Adaptive quality system is integrated and accessible
+ * - Combat gameplay works correctly on mobile viewport (375x667)
+ * - UI elements render correctly during mobile combat
+ * - Keyboard controls function during combat session
+ * 
+ * Note: This test validates integration, not actual FPS/memory/draw call metrics.
+ * Actual performance metrics (55fps+, <100 draw calls, <200MB memory) should be
+ * measured using browser performance tools or specialized performance testing.
  * 
  * Target execution: 45 seconds
  */
@@ -22,8 +26,8 @@ describe("Mobile Performance Optimization (Target: 45s)", () => {
     cy.returnToIntro();
   });
 
-  it("should maintain acceptable FPS during 30-second mobile combat session", () => {
-    cy.annotate("Testing Mobile Performance - FPS Monitoring");
+  it("should integrate adaptive quality system during 30-second mobile combat session", () => {
+    cy.annotate("Testing Mobile Performance Integration");
 
     // ============================================================
     // 1. Enter Combat (Mobile Viewport)
@@ -67,7 +71,7 @@ describe("Mobile Performance Optimization (Target: 45s)", () => {
     cy.wait(1000);
 
     cy.log("✅ 30-second combat session complete");
-    cy.log("ℹ️ Performance monitoring active during session");
+    cy.log("ℹ️ Adaptive quality system integrated and active");
   });
 
   it("should verify adaptive quality system is integrated", () => {

@@ -305,18 +305,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const shouldEnableAdaptiveQuality =
     enableAdaptiveQuality ?? isMobile;
 
-  // Quality settings state - updated by adaptive quality system
-  // Currently monitored but not actively applied to rendering
-  // Future: Could dynamically adjust particle counts, shadow quality, etc.
-  const [_adaptiveQualitySettings, setAdaptiveQualitySettings] = useState(
-    renderConfig
-  );
-
   /**
    * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
    * Must be inside Canvas to use useFrame from @react-three/fiber
    * 
    * Memoized with useMemo so the component type is stable across renders.
+   * Note: renderConfig is intentionally NOT in dependencies to prevent
+   * component recreation when performance settings change, which would
+   * reset the internal state of useAdaptiveQuality hook.
    */
   const AdaptiveQualityWrapper = useMemo<
     React.FC<{ children: React.ReactNode }>
@@ -326,7 +322,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         children,
       }) => {
         // Monitor FPS and adjust quality dynamically
-        const qualitySettings = useAdaptiveQuality(
+        // Quality settings are logged but not currently applied to rendering
+        // Future: Pass quality settings to child components for dynamic adjustments
+        useAdaptiveQuality(
           shouldEnableAdaptiveQuality,
           isMobile,
           (newQuality) => {
@@ -338,26 +336,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
         );
 
-        // Update parent state with quality settings when they change
-        useEffect(() => {
-          if (shouldEnableAdaptiveQuality) {
-            setAdaptiveQualitySettings({
-              shadowMapSize: qualitySettings.shadowMapSize,
-              dpr: renderConfig.dpr,
-              antialias: renderConfig.antialias,
-              maxParticles: qualitySettings.maxParticles,
-              postProcessing: qualitySettings.postProcessing,
-            });
-          }
-        }, [qualitySettings, shouldEnableAdaptiveQuality]);
-
         // Quality monitoring is active - quality changes logged in dev mode
         return <>{children}</>;
       };
 
       return Component;
     },
-    [shouldEnableAdaptiveQuality, isMobile, renderConfig]
+    [shouldEnableAdaptiveQuality, isMobile]
   );
 
   // Combat state management

@@ -56,6 +56,11 @@ export interface InstancableSpheresProps {
  *
  * Renders multiple spheres with a single draw call.
  * Ideal for particles, projectiles, effects.
+ * 
+ * **Important**: The instances array should be stable (use useMemo).
+ * Array indices are used as React keys, so adding/removing/reordering
+ * instances during component lifecycle may cause incorrect rendering.
+ * If instances need to be dynamic, consider using unique identifiers as keys.
  *
  * @example
  * ```tsx
@@ -117,6 +122,11 @@ export interface InstancableBoxesProps {
  *
  * Renders multiple boxes with a single draw call.
  * Useful for environment objects, obstacles, UI elements.
+ * 
+ * **Important**: The instances array should be stable (use useMemo).
+ * Array indices are used as React keys, so adding/removing/reordering
+ * instances during component lifecycle may cause incorrect rendering.
+ * If instances need to be dynamic, consider using unique identifiers as keys.
  *
  * @example
  * ```tsx
@@ -174,6 +184,11 @@ export interface InstancableParticlesProps {
  *
  * High-performance particle system using instancing.
  * Quality parameter adjusts geometry complexity.
+ * 
+ * **Important**: The positions array should be stable (use useMemo).
+ * Array indices are used as React keys, so adding/removing/reordering
+ * particles during component lifecycle may cause incorrect rendering.
+ * If particles need to be dynamic, consider using unique identifiers as keys.
  *
  * @example
  * ```tsx
