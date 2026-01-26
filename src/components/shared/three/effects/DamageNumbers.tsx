@@ -17,6 +17,7 @@ import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState } from "react";
 import { DamageNumber, DamageType } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 import { withGPUAcceleration } from "../../../../utils/performanceOptimization";
 
@@ -28,15 +29,8 @@ export interface DamageNumbersProps {
   readonly damages: readonly DamageNumber[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning (includes meter dimensions for physics-first) */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  /** Arena bounds for 3D positioning (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
   /** Duration of animation in ms (default: 1500) */
   readonly animationDuration?: number;
 }
@@ -78,14 +72,7 @@ function getGlowColor(type: DamageType): string {
 interface SingleDamageNumberProps {
   readonly damage: DamageNumber;
   readonly isMobile: boolean;
-  readonly arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly animationDuration: number;
 }
 
@@ -211,6 +198,7 @@ const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
     worldWidthMeters: 10,
     worldDepthMeters: 7.5,
   },

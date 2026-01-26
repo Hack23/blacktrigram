@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3D component.
@@ -20,15 +21,8 @@ export interface HitEffects3DProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion (includes meter dimensions) */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 
 interface ActiveEffect extends HitEffect {
@@ -42,14 +36,7 @@ interface ActiveEffect extends HitEffect {
 const HitEffectVisual: React.FC<{
   effect: HitEffect;
   effectRef: React.MutableRefObject<ActiveEffect | null>;
-  arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  arenaBounds?: PhysicsArenaBounds;
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
   // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
@@ -66,6 +53,7 @@ const HitEffectVisual: React.FC<{
       y: 0,
       width: 1200,
       height: 800,
+      scale: 1.0,
       worldWidthMeters: 10,
       worldDepthMeters: 7.5,
     };

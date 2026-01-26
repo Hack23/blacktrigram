@@ -28,6 +28,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3DInstanced component
@@ -37,15 +38,8 @@ export interface HitEffects3DInstancedProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion (includes meter dimensions) */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 
 /**
@@ -67,14 +61,7 @@ interface ActiveEffectInstance {
  */
 const positionTo3D = (
   effect: HitEffect,
-  arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  }
+  arenaBounds: PhysicsArenaBounds
 ): THREE.Vector3 => {
   if (!effect.position) {
     return new THREE.Vector3(0, 1, 0);
@@ -212,6 +199,7 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
     worldWidthMeters: 10,
     worldDepthMeters: 7.5,
   },

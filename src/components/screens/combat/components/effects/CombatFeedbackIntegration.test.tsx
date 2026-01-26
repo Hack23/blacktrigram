@@ -39,6 +39,7 @@ describe("Combat Feedback Integration", () => {
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
     worldWidthMeters: 10,
     worldDepthMeters: 7.5,
   };
@@ -47,6 +48,7 @@ describe("Combat Feedback Integration", () => {
     y: 0,
     width: 375,
     height: 667,
+    scale: 0.6,
     worldWidthMeters: 6,
     worldDepthMeters: 4.5,
   };

@@ -28,6 +28,7 @@ describe("DamageNumbers", () => {
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
     worldWidthMeters: 10,
     worldDepthMeters: 7.5,
   };

@@ -19,6 +19,7 @@ import {
   ActionFeedbackType,
 } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 
 // Animation phase thresholds (as percentage of total duration)
@@ -35,15 +36,8 @@ export interface ActionFeedbackProps {
   readonly feedbacks: readonly ActionFeedbackData[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning (includes meter dimensions for physics-first) */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  /** Arena bounds for 3D positioning (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
   /** Duration of animation in ms (default: 1200) */
   readonly animationDuration?: number;
 }
@@ -114,14 +108,7 @@ function getGlowColor(type: ActionFeedbackType): string {
 interface SingleFeedbackProps {
   readonly feedback: ActionFeedbackData;
   readonly isMobile: boolean;
-  readonly arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly animationDuration: number;
 }
 
@@ -220,6 +207,7 @@ export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
     y: 0,
     width: 1200,
     height: 800,
+    scale: 1.0,
     worldWidthMeters: 10,
     worldDepthMeters: 7.5,
   },
