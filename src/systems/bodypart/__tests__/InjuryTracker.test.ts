@@ -4,7 +4,7 @@
  * Tests for injury tracking, progressive bruising, and trauma visualization.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import * as THREE from "three";
 import {
   InjuryTracker,
@@ -12,7 +12,7 @@ import {
   DEFAULT_INJURY_TRACKER_CONFIG,
 } from "../InjuryTracker";
 import { BodyPart } from "../types";
-import { InjuryType } from "../../../components/screens/combat/components/effects/TraumaOverlay3D";
+import { InjuryType } from "../../../types/injury";
 import { BodyRegion } from "../../../types/common";
 
 describe("InjuryTracker", () => {
@@ -33,18 +33,18 @@ describe("InjuryTracker", () => {
         InjuryType.BRUISE
       );
 
-      expect(injury).toBeDefined();
-      expect(injury.bodyPart).toBe(BodyPart.TORSO_UPPER);
-      expect(injury.bodyRegion).toBe(BodyRegion.TORSO);
-      expect(injury.severity).toBe(25);
-      expect(injury.hitCount).toBe(1);
-      expect(injury.type).toBe(InjuryType.BRUISE);
-      expect(injury.position).toEqual(position);
+      expect(injury).not.toBeNull();
+      expect(injury!.bodyPart).toBe(BodyPart.TORSO_UPPER);
+      expect(injury!.bodyRegion).toBe(BodyRegion.TORSO);
+      expect(injury!.severity).toBe(25);
+      expect(injury!.hitCount).toBe(1);
+      expect(injury!.type).toBe(InjuryType.BRUISE);
+      expect(injury!.position).toEqual(position);
     });
 
     it("should not track injuries below minimum damage threshold", () => {
       const position = new THREE.Vector3(0, 1.5, 0);
-      tracker.recordInjury(
+      const result = tracker.recordInjury(
         BodyPart.TORSO_UPPER,
         BodyRegion.TORSO,
         position,
@@ -52,6 +52,7 @@ describe("InjuryTracker", () => {
         InjuryType.BRUISE
       );
 
+      expect(result).toBeNull();
       const injuries = tracker.getInjuries();
       expect(injuries).toHaveLength(0);
     });
@@ -68,8 +69,9 @@ describe("InjuryTracker", () => {
         InjuryType.BRUISE
       );
 
-      expect(injury1.hitCount).toBe(1);
-      expect(injury1.severity).toBe(20);
+      expect(injury1).not.toBeNull();
+      expect(injury1!.hitCount).toBe(1);
+      expect(injury1!.severity).toBe(20);
 
       // Second hit to same location (within threshold)
       const nearbyPosition = new THREE.Vector3(0.1, 1.5, 0);
@@ -82,10 +84,11 @@ describe("InjuryTracker", () => {
       );
 
       // Should update existing injury
-      expect(injury2.id).toBe(injury1.id);
-      expect(injury2.hitCount).toBe(2);
-      expect(injury2.severity).toBeGreaterThan(20);
-      expect(injury2.severity).toBeLessThanOrEqual(30); // 20 + 20/2 = 30
+      expect(injury2).not.toBeNull();
+      expect(injury2!.id).toBe(injury1!.id);
+      expect(injury2!.hitCount).toBe(2);
+      expect(injury2!.severity).toBeGreaterThan(20);
+      expect(injury2!.severity).toBeLessThanOrEqual(30); // 20 + 20/2 = 30
     });
 
     it("should create separate injuries for hits to different locations", () => {
@@ -387,12 +390,14 @@ describe("InjuryTracker", () => {
         InjuryType.CUT
       );
 
-      expect(injury.id).toBe("injury-0");
+      expect(injury).not.toBeNull();
+      expect(injury!.id).toBe("injury-0");
     });
   });
 
   describe("removeExpiredInjuries", () => {
     it("should remove injuries older than fade start time", () => {
+      vi.useFakeTimers();
       const config = {
         ...DEFAULT_INJURY_TRACKER_CONFIG,
         injuryFadeStartTime: 100, // 100ms for testing
@@ -407,15 +412,14 @@ describe("InjuryTracker", () => {
         InjuryType.BRUISE
       );
 
-      // Wait for expiration
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          trackerWithFade.removeExpiredInjuries();
-          const injuries = trackerWithFade.getInjuries();
-          expect(injuries).toHaveLength(0);
-          resolve();
-        }, 150);
-      });
+      // Fast-forward time past expiration
+      vi.advanceTimersByTime(150);
+      
+      trackerWithFade.removeExpiredInjuries();
+      const injuries = trackerWithFade.getInjuries();
+      expect(injuries).toHaveLength(0);
+      
+      vi.useRealTimers();
     });
 
     it("should keep recent injuries", () => {
@@ -474,7 +478,9 @@ describe("InjuryTracker", () => {
           15,
           InjuryType.BRUISE
         );
-        strikes.push(injury);
+        if (injury) {
+          strikes.push(injury);
+        }
       }
 
       // Should have only one injury (cumulative)

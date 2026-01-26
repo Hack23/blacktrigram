@@ -11,10 +11,10 @@
  * 
  * - Track injuries by body part and 3D position
  * - Progressive bruising: Multiple hits to same location darken existing bruises
- * - Color-coded severity: Yellow (light), Purple (moderate), Dark red (severe)
+ * - Color-coded severity: Dark red (fresh), Indigo (moderate), Black (severe)
  * - Blood effects triggered when damage > 30 in single hit
  * - Injury persistence across combat rounds
- * - Performance optimized: Spatial indexing for fast nearby injury lookup
+ * - Nearby injury lookup using linear scan over tracked injuries (O(n))
  * 
  * @module systems/bodypart/InjuryTracker
  * @category Body Part System
@@ -23,7 +23,7 @@
 
 import * as THREE from "three";
 import { BodyPart } from "./types";
-import { InjuryType } from "../../components/screens/combat/components/effects/TraumaOverlay3D";
+import { InjuryType } from "../../types/injury";
 import { BodyRegion } from "../../types/common";
 
 /**
@@ -142,7 +142,7 @@ export class InjuryTracker {
    * @param position - 3D position relative to character center
    * @param damage - Damage amount (0-100)
    * @param type - Type of injury
-   * @returns The created or updated injury
+   * @returns The created or updated injury, or null if damage is below threshold
    * 
    * @public
    */
@@ -152,20 +152,10 @@ export class InjuryTracker {
     position: THREE.Vector3,
     damage: number,
     type: InjuryType
-  ): InjuryLocation {
+  ): InjuryLocation | null {
     // Check if damage is significant enough to track
     if (damage < this.config.minDamageForInjury) {
-      // Return minimal injury without tracking
-      return {
-        id: `temp-${Date.now()}`,
-        bodyPart,
-        bodyRegion,
-        position: position.clone(),
-        severity: damage,
-        hitCount: 1,
-        timestamp: Date.now(),
-        type,
-      };
+      return null;
     }
 
     // Find nearby injury at similar location
@@ -275,10 +265,13 @@ export class InjuryTracker {
    * 
    * **Korean**: 타박상 색상 가져오기
    * 
-   * Progressive color scheme:
+   * Progressive color scheme (for reference - TraumaOverlay3D uses its own colors):
    * - Light bruising (severity < 20): Yellow (#ffeb3b)
    * - Moderate bruising (severity < 50): Purple (#9c27b0)
    * - Severe bruising (severity >= 50): Dark red (#b71c1c)
+   * 
+   * Note: TraumaOverlay3D uses Dark red → Indigo → Black progression.
+   * Consider using TraumaOverlay3D's getBruiseColor for consistent visualization.
    * 
    * @param severity - Injury severity (0-100)
    * @param hitCount - Number of hits to same location

@@ -18,7 +18,7 @@ import {
   getInjuryPositionWithOffset,
   mapBodyRegionToBodyPart,
 } from "./BodyPartPositionMapping";
-import { InjuryType } from "../../components/screens/combat/components/effects/TraumaOverlay3D";
+import { InjuryType } from "../../types/injury";
 
 /**
  * Combat damage event data.

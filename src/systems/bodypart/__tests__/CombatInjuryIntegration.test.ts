@@ -11,7 +11,7 @@ import {
 } from "../CombatInjuryIntegration";
 import { InjuryTracker } from "../InjuryTracker";
 import { BodyRegion, DamageType } from "../../../types/common";
-import { InjuryType } from "../../../components/screens/combat/components/effects/TraumaOverlay3D";
+import { InjuryType } from "../../../types/injury";
 
 describe("CombatInjuryIntegration", () => {
   let integration: CombatInjuryIntegration;

@@ -12,7 +12,7 @@
  */
 
 import { InjuryLocation } from "./InjuryTracker";
-import { Injury } from "../../components/screens/combat/components/effects/TraumaOverlay3D";
+import { Injury } from "../../types/injury";
 
 /**
  * Convert InjuryLocation to TraumaOverlay3D Injury format.
