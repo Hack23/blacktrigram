@@ -146,10 +146,38 @@ export class InjuryMovementModifier {
    * @param config - Optional configuration overrides
    */
   constructor(config?: Partial<InjuryMovementConfig>) {
-    this.config = {
+    // Deep merge leg thresholds to prevent partial overrides from breaking the config
+    const mergedLegThresholds = {
+      ...DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds,
+      ...(config?.legThresholds ?? {}),
+    };
+
+    const mergedConfig: InjuryMovementConfig = {
       ...DEFAULT_INJURY_MOVEMENT_CONFIG,
       ...config,
+      legThresholds: mergedLegThresholds,
     };
+
+    // Development-mode sanity check: ensure thresholds are finite and ordered
+    if (process.env.NODE_ENV !== "production") {
+      const { normal, limping, critical } = mergedConfig.legThresholds;
+      const allFinite =
+        Number.isFinite(normal) &&
+        Number.isFinite(limping) &&
+        Number.isFinite(critical);
+      const ordered = normal >= limping && limping >= critical;
+
+      if (!allFinite || !ordered) {
+        // Non-throwing warning to avoid breaking existing behavior
+         
+        console.warn(
+          "[InjuryMovementModifier] Invalid legThresholds configuration detected:",
+          mergedConfig.legThresholds
+        );
+      }
+    }
+
+    this.config = mergedConfig;
   }
 
   /**
@@ -196,7 +224,9 @@ export class InjuryMovementModifier {
 
     // Calculate torso penalty (minor effect, 0-30% max)
     const avgTorsoHealth = (bodyPartHealth.torsoUpper + bodyPartHealth.torsoLower) / 2;
-    const torsoPenalty = ((100 - avgTorsoHealth) / 100) * this.config.maxTorsoPenalty;
+    // Clamp torso health to prevent negative penalties or exceeding max penalty
+    const clampedAvgTorsoHealth = Math.min(100, Math.max(0, avgTorsoHealth));
+    const torsoPenalty = ((100 - clampedAvgTorsoHealth) / 100) * this.config.maxTorsoPenalty;
     speedMultiplier *= (1 - torsoPenalty);
 
     // Apply stance modifier
@@ -215,13 +245,16 @@ export class InjuryMovementModifier {
     // Calculate final speed
     const finalSpeed = baseSpeed * speedMultiplier;
 
-    // Determine injury state for status text
-    const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
-    const isLimping = avgLegHealth < this.config.legThresholds.normal && avgLegHealth >= this.config.legThresholds.limping;
-    const isSevereLimp = avgLegHealth < this.config.legThresholds.limping;
+    // Determine injury state for status text based on worst leg health
+    // This ensures status matches the actual movement penalty (which uses worst leg)
+    const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
+    const isLimping =
+      worstLegHealth < this.config.legThresholds.normal &&
+      worstLegHealth >= this.config.legThresholds.limping;
+    const isSevereLimp = worstLegHealth < this.config.legThresholds.limping;
 
     // Generate status text
-    const statusText = this.generateStatusText(avgLegHealth, bothLegsInjured, painOverload);
+    const statusText = this.generateStatusText(worstLegHealth, bothLegsInjured, painOverload);
 
     return {
       finalSpeed,
@@ -252,31 +285,39 @@ export class InjuryMovementModifier {
    * - 10-0%: Critical scaling (80-100%)
    * 
    * @param legHealth - Leg health (0-100)
-   * @returns Penalty factor (0.0-1.0)
+   * @returns Penalty factor (0.0-1.0), clamped to valid range
    * 
    * @private
    */
   private calculateLegPenalty(legHealth: number): number {
     const { normal, limping, critical } = this.config.legThresholds;
 
-    if (legHealth >= normal) {
+    // Clamp input health to valid range to prevent runaway penalties
+    const clampedHealth = Math.min(Math.max(legHealth, 0), 100);
+
+    let penalty: number;
+
+    if (clampedHealth >= normal) {
       // 70-100%: No penalty
-      return 0;
-    } else if (legHealth >= limping) {
+      penalty = 0;
+    } else if (clampedHealth >= limping) {
       // 30-70%: 0-40% penalty (linear)
       const healthRange = normal - limping;
-      const healthFactor = (normal - legHealth) / healthRange;
-      return healthFactor * 0.4;
-    } else if (legHealth >= critical) {
+      const healthFactor = (normal - clampedHealth) / healthRange;
+      penalty = healthFactor * 0.4;
+    } else if (clampedHealth >= critical) {
       // 10-30%: 40-80% penalty (accelerated)
       const healthRange = limping - critical;
-      const healthFactor = (limping - legHealth) / healthRange;
-      return 0.4 + (healthFactor * 0.4);
+      const healthFactor = (limping - clampedHealth) / healthRange;
+      penalty = 0.4 + (healthFactor * 0.4);
     } else {
       // 0-10%: 80-100% penalty (critical)
-      const healthFactor = (critical - legHealth) / critical;
-      return 0.8 + (healthFactor * 0.2);
+      const healthFactor = (critical - clampedHealth) / critical;
+      penalty = 0.8 + (healthFactor * 0.2);
     }
+
+    // Ensure returned penalty is always within [0, 1]
+    return Math.min(Math.max(penalty, 0), 1);
   }
 
   /**
@@ -347,14 +388,16 @@ export class InjuryMovementModifier {
    * 
    * **Korean**: 절름거림 확인
    * 
+   * Uses worst leg health to match movement penalty behavior.
+   * 
    * @param bodyPartHealth - Current body part health
    * @returns True if limping animation should play
    * 
    * @public
    */
   public shouldLimp(bodyPartHealth: BodyPartHealth): boolean {
-    const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
-    return avgLegHealth < this.config.legThresholds.normal;
+    const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
+    return worstLegHealth < this.config.legThresholds.normal;
   }
 
   /**
@@ -362,20 +405,24 @@ export class InjuryMovementModifier {
    * 
    * **Korean**: 중증 절름거림 확인
    * 
+   * Uses worst leg health to match movement penalty behavior.
+   * 
    * @param bodyPartHealth - Current body part health
    * @returns True if severe limp (leg health < 30%)
    * 
    * @public
    */
   public hasSevereLimp(bodyPartHealth: BodyPartHealth): boolean {
-    const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
-    return avgLegHealth < this.config.legThresholds.limping;
+    const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
+    return worstLegHealth < this.config.legThresholds.limping;
   }
 
   /**
    * Get current injury state description.
    * 
    * **Korean**: 부상 상태 설명
+   * 
+   * Uses worst leg health to match movement penalty behavior.
    * 
    * @param bodyPartHealth - Current body part health
    * @returns Bilingual injury description
@@ -386,12 +433,12 @@ export class InjuryMovementModifier {
     korean: string;
     english: string;
   } {
-    const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
+    const worstLegHealth = Math.min(bodyPartHealth.legLeft, bodyPartHealth.legRight);
     const leftLegPenalty = this.calculateLegPenalty(bodyPartHealth.legLeft);
     const rightLegPenalty = this.calculateLegPenalty(bodyPartHealth.legRight);
     const bothLegsInjured = leftLegPenalty > 0.3 && rightLegPenalty > 0.3;
 
-    return this.generateStatusText(avgLegHealth, bothLegsInjured, false);
+    return this.generateStatusText(worstLegHealth, bothLegsInjured, false);
   }
 }
 
