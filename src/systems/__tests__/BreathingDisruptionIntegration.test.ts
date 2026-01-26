@@ -179,11 +179,6 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
         timestamp
       );
       
-      let updatedDefender = {
-        ...defender,
-        statusEffects: [firstEffect],
-      };
-      
       // Verify first effect is applied
       expect(firstEffect.level).toBe(BreathingDisruptionLevel.WINDED);
       expect(firstEffect.staminaRegenMultiplier).toBe(0.75); // 25% penalty
@@ -196,11 +191,6 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
         "Second Rib Strike",
         timestamp + 2000 // 2 seconds later
       );
-      
-      updatedDefender = {
-        ...updatedDefender,
-        statusEffects: [secondEffect],
-      };
       
       // Verify effects accumulate - duration should increase
       expect(secondEffect.duration).toBeGreaterThan(firstDuration);
