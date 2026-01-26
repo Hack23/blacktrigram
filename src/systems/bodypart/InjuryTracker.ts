@@ -84,7 +84,7 @@ export interface InjuryTrackerConfig {
  */
 export const DEFAULT_INJURY_TRACKER_CONFIG: InjuryTrackerConfig = {
   maxInjuries: 50, // Reasonable limit for performance
-  sameLocationThreshold: 0.5, // 0.5 units distance
+  sameLocationThreshold: 0.6, // 0.6 units distance (accommodates ±0.15 randomization)
   minDamageForInjury: 5, // Minimum 5 damage to show injury
   bloodEffectThreshold: 30, // Blood effects when damage > 30
   injuryExpirationTimeMs: 30000, // Injuries are removed after 30 seconds
