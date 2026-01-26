@@ -548,8 +548,10 @@ describe("AC6: Balance - No Category Dominates >60%", () => {
     const distribution = getCategoryDistribution(allTechniques);
     const total = allTechniques.length;
 
-    console.log("\n=== CATEGORY BALANCE ANALYSIS ===");
-    console.log("Total Techniques: " + total);
+    if (VERBOSE_LOGGING) {
+      console.log("\n=== CATEGORY BALANCE ANALYSIS ===");
+      console.log("Total Techniques: " + total);
+    }
 
     const percentages = {
       light: (distribution.light / total) * 100,
@@ -560,7 +562,9 @@ describe("AC6: Balance - No Category Dominates >60%", () => {
 
     Object.entries(percentages).forEach(([category, percentage]) => {
       const count = distribution[category as keyof typeof distribution];
-      console.log(category + ": " + count + " (" + percentage.toFixed(1) + "%)");
+      if (VERBOSE_LOGGING) {
+        console.log(category + ": " + count + " (" + percentage.toFixed(1) + "%)");
+      }
       expect(percentage).toBeLessThanOrEqual(60);
     });
   });
