@@ -57,6 +57,10 @@ const BODY_PIVOT_METERS = {
  * - Punches: 0.9-0.95 (average 0.95)
  * - Kicks: 1.0-1.05 (average 1.05)
  * 
+ * TODO: Consider implementing technique-specific lookup based on actual
+ * technique data for more precise range calculations. Current averages
+ * are sufficient for AI decision-making but may need refinement.
+ * 
  * @korean 기술 연장 배수
  */
 const TECHNIQUE_EXTENSION = {
@@ -273,6 +277,10 @@ export class AIDecisionTree {
    * - Arm length converted from cm to meters
    * - Body pivot (shoulder offset + torso rotation)
    * - Average baseExtension for punches
+   * 
+   * TODO: Extract to shared utility function with PhysicalReachCalculator.ts
+   * to maintain consistency between AI range calculations and actual hit detection.
+   * Consider handling elbow techniques separately with different body pivot values.
    *
    * @param archetype - Player archetype
    * @returns Close range threshold in meters
