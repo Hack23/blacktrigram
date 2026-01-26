@@ -58,7 +58,7 @@ describe("MovementPhysics", () => {
       expect(speed).toBeLessThanOrEqual(6.6);
     });
 
-    it("should have correct acceleration rate (12.0 m/s²)", () => {
+    it("should have correct acceleration rate (30.0 m/s²)", () => {
       const input: MovementInput = {
         forward: 1.0,
         lateral: 0,
@@ -69,7 +69,7 @@ describe("MovementPhysics", () => {
 
       physics.updateMovement(state, input, 0.1);
 
-      expect(state.acceleration).toBe(12.0);
+      expect(state.acceleration).toBe(30.0);
     });
   });
 
@@ -377,9 +377,9 @@ describe("MovementPhysics", () => {
 
   describe("Physics Calculations", () => {
     it("should calculate acceleration time correctly", () => {
-      // Time to go from 0 to 6m/s at 12.0 m/s²
+      // Time to go from 0 to 6m/s at 30.0 m/s²
       const time = physics.getAccelerationTime(0, 6.0);
-      expect(time).toBe(0.5);
+      expect(time).toBe(0.2);
     });
 
     it("should calculate stopping distance correctly", () => {
