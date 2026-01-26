@@ -31,6 +31,11 @@ const TrainingScreen = lazy(() =>
   })),
 );
 
+// 150ms delay to allow WebGL context cleanup between full-screen 3D scene transitions
+const SCREEN_TRANSITION_DELAY_MS = 150;
+// 100ms delay for lighter menu/UI transitions where WebGL teardown/re-init cost is lower
+const MENU_TRANSITION_DELAY_MS = 100;
+
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
@@ -224,7 +229,7 @@ function App() {
 
         setIsTransitioning(false);
         pendingModeRef.current = null;
-      }, 150); // Increased delay for WebGL cleanup (was 100ms)
+      }, SCREEN_TRANSITION_DELAY_MS); // Delay for WebGL cleanup
     },
     [],
   );
@@ -300,7 +305,44 @@ function App() {
     setMatchStats(null);
     // Reset combat players so they reinitialize next combat
     setCombatPlayers([]);
-    setTimeout(() => setIsTransitioning(false), 100);
+    setTimeout(() => setIsTransitioning(false), MENU_TRANSITION_DELAY_MS);
+  }, []);
+
+  const handleRematch = useCallback(() => {
+    // Restart combat with same settings
+    if (!gameMode) {
+      console.error(
+        "Cannot rematch: gameMode is not set. This should not happen - EndScreen only renders when gameMode is set.",
+        { gameMode, isGameActive, gameWinner, matchStats }
+      );
+      return;
+    }
+    
+    setIsTransitioning(true);
+    setGameWinner(null);
+    setMatchStats(null);
+    // Reset combat players so they reinitialize for rematch
+    setCombatPlayers([]);
+    
+    setTimeout(() => {
+      setIsGameActive(true);
+      setIsTransitioning(false);
+    }, SCREEN_TRANSITION_DELAY_MS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- isGameActive, gameWinner, matchStats only used in error logging, not function logic
+  }, [gameMode]);
+
+  const handleViewTraining = useCallback(() => {
+    // Navigate to training mode
+    setIsTransitioning(true);
+    setGameWinner(null);
+    setMatchStats(null);
+    setCombatPlayers([]);
+    
+    setTimeout(() => {
+      setGameMode(GameMode.TRAINING);
+      setIsGameActive(true);
+      setIsTransitioning(false);
+    }, SCREEN_TRANSITION_DELAY_MS);
   }, []);
 
   const renderCurrentScreen = () => {
@@ -322,6 +364,8 @@ function App() {
           winner={gameWinner}
           matchStats={matchStats}
           onReturnToMenu={handleReturnToMenu}
+          onRematch={handleRematch}
+          onViewReplay={handleViewTraining}
           width={screenSize.width}
           height={screenSize.height}
         />

@@ -130,7 +130,7 @@ describe("NavigationButtons", () => {
     expect(mockOnRematch).toHaveBeenCalledTimes(1);
   });
 
-  it("should render view replay button when onViewReplay is provided", () => {
+  it("should render view training button when onViewReplay is provided", () => {
     const mockOnReturnToMenu = vi.fn();
     const mockOnViewReplay = vi.fn();
 
@@ -146,10 +146,10 @@ describe("NavigationButtons", () => {
       </AudioProvider>
     );
 
-    expect(getByTestId("view-replay-button")).toBeInTheDocument();
+    expect(getByTestId("view-training-button")).toBeInTheDocument();
   });
 
-  it("should not render view replay button when onViewReplay is not provided", () => {
+  it("should not render view training button when onViewReplay is not provided", () => {
     const mockOnReturnToMenu = vi.fn();
 
     const { queryByTestId } = render(
@@ -163,10 +163,10 @@ describe("NavigationButtons", () => {
       </AudioProvider>
     );
 
-    expect(queryByTestId("view-replay-button")).not.toBeInTheDocument();
+    expect(queryByTestId("view-training-button")).not.toBeInTheDocument();
   });
 
-  it("should call onViewReplay when view replay button is clicked", () => {
+  it("should call onViewReplay when training button is clicked", () => {
     const mockOnReturnToMenu = vi.fn();
     const mockOnViewReplay = vi.fn();
 
@@ -182,7 +182,7 @@ describe("NavigationButtons", () => {
       </AudioProvider>
     );
 
-    const viewReplayButton = getByTestId("view-replay-button");
+    const viewReplayButton = getByTestId("view-training-button");
     fireEvent.click(viewReplayButton);
 
     expect(mockOnViewReplay).toHaveBeenCalledTimes(1);
@@ -208,7 +208,7 @@ describe("NavigationButtons", () => {
 
     expect(getByTestId("return-to-menu-button")).toBeInTheDocument();
     expect(getByTestId("rematch-button")).toBeInTheDocument();
-    expect(getByTestId("view-replay-button")).toBeInTheDocument();
+    expect(getByTestId("view-training-button")).toBeInTheDocument();
   });
 
   it("should display bilingual text on all buttons", () => {
@@ -231,14 +231,14 @@ describe("NavigationButtons", () => {
 
     const returnButton = getByTestId("return-to-menu-button");
     const rematchButton = getByTestId("rematch-button");
-    const replayButton = getByTestId("view-replay-button");
+    const replayButton = getByTestId("view-training-button");
 
     expect(returnButton).toHaveTextContent("메뉴로");
     expect(returnButton).toHaveTextContent("Return to Menu");
     expect(rematchButton).toHaveTextContent("재대결");
     expect(rematchButton).toHaveTextContent("Rematch");
-    expect(replayButton).toHaveTextContent("리플레이");
-    expect(replayButton).toHaveTextContent("View Replay");
+    expect(replayButton).toHaveTextContent("훈련");
+    expect(replayButton).toHaveTextContent("Training");
   });
 
   it("should adapt layout for mobile (column direction)", () => {
