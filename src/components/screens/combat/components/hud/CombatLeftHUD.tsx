@@ -26,6 +26,7 @@ import { GuardIndicator } from "../../../../shared/three/indicators/GuardIndicat
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
 import { BodyPartHealthDisplay } from "../../../../shared/three/ui/BodyPartHealthDisplay";
+import { BreathingIndicator } from "../../../../shared/three/ui/BreathingIndicator";
 
 export interface CombatLeftHUDProps {
   /** Screen width for layout calculations */
@@ -138,6 +139,20 @@ export const CombatLeftHUD: React.FC<CombatLeftHUDProps> = ({
           />
         </div>
       )}
+
+      {/* Breathing Disruption Indicator - Shows breathing difficulty status */}
+      <div
+        style={{
+          pointerEvents: "none",
+          position: "relative",
+        }}
+        data-testid="combat-left-hud-breathing-section"
+      >
+        <BreathingIndicator
+          player={player}
+          isMobile={isMobile}
+        />
+      </div>
 
       {/* Guard Indicator - at bottom of HUD */}
       <div
