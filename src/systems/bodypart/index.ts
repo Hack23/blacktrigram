@@ -18,3 +18,4 @@ export * from "./MovementPenaltySystem";
 export * from "./InjuryTracker";
 export * from "./BodyPartPositionMapping";
 export * from "./InjuryIntegration";
+export * from "./CombatInjuryIntegration";
