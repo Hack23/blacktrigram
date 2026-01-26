@@ -71,6 +71,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Solid blocking stance
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.2,
+    category: "light",
+    range: "short",
+    speed: 1.2,
   },
 
   // ============= Defensive Stance Techniques =============
@@ -108,6 +111,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rooted defensive stance
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gan_iron_block",
@@ -143,6 +149,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Powerful blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.1,
+    category: "light",
+    range: "short",
+    speed: 1.1,
   },
 
   // ============= Counter-Attack Techniques =============
@@ -180,6 +189,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Powerful counter attack
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gan_reversal_technique",
@@ -215,6 +227,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Reversal motion
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 
   // ============= Grappling Control =============
@@ -252,6 +267,9 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Standing control position
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "light",
+    range: "short",
+    speed: 0.9,
   },
 ] as const;
 

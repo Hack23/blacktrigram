@@ -61,6 +61,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JAB,
     animationSpeed: 1.4,
+    category: "medium",
+    range: "short",
+    speed: 1.4,
   },
   {
     id: "jin_jumping_front_kick",
@@ -95,6 +98,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_tornado_kick",
@@ -129,6 +135,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.TORNADO_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_flying_sidekick",
@@ -163,6 +172,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JUMPING_KICK,
     animationSpeed: 1.1,
+    category: "heavy",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "jin_back_kick",
@@ -197,6 +209,9 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.BACK_KICK,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "jin_knee_strike",
@@ -231,5 +246,8 @@ export const JIN_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.KNEE_STRIKE,
     animationSpeed: 1.1,
+    category: "heavy",
+    range: "short",
+    speed: 1.1,
   },
 ];

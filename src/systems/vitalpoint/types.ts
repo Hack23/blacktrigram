@@ -107,6 +107,42 @@ export interface KoreanTechnique {
    * 애니메이션 속도 조절 (기본: 1.0)
    */
   animationSpeed?: number;
+
+  /**
+   * Technique category for gameplay balance
+   * 기술 분류 (경량/중형/중량/특수)
+   *
+   * - light: Fast, low damage, low stamina cost
+   * - medium: Balanced speed/damage/cost
+   * - heavy: Slow, high damage, high stamina cost
+   * - special: Unique effects, vital point targeting
+   *
+   * @korean 기술분류
+   */
+  category?: "light" | "medium" | "heavy" | "special";
+
+  /**
+   * Effective range category
+   * 유효 거리 분류
+   *
+   * - short: Close combat (0-1m)
+   * - medium: Mid range (1-2m)
+   * - long: Extended reach (2-3m)
+   *
+   * @korean 거리분류
+   */
+  range?: "short" | "medium" | "long";
+
+  /**
+   * Speed rating for technique execution
+   * 기술 실행 속도 등급
+   *
+   * Higher values = faster execution
+   * Typical range: 0.6 (slow) to 1.4 (very fast)
+   *
+   * @korean 속도등급
+   */
+  speed?: number;
 }
 
 /**

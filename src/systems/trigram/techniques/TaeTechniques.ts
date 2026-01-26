@@ -61,6 +61,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FLOWING_CROSS,
     animationSpeed: 1.2,
+    category: "light",
+    range: "short",
+    speed: 1.2,
   },
   {
     id: "tae_wrist_lock",
@@ -95,6 +98,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 0.85,
+    category: "light",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_small_circle",
@@ -129,6 +135,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
     animationSpeed: 0.85,
+    category: "light",
+    range: "short",
+    speed: 0.85,
   },
   {
     id: "tae_finger_lock",
@@ -163,6 +172,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.9,
+    category: "light",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "tae_elbow_lock",
@@ -197,6 +209,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ELBOW_LOCK,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_shoulder_lock",
@@ -231,6 +246,9 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SHOULDER_MANIPULATION,
     animationSpeed: 0.8,
+    category: "medium",
+    range: "short",
+    speed: 0.8,
   },
   {
     id: "tae_arm_bar",
@@ -265,5 +283,8 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.ARM_BAR,
     animationSpeed: 0.75,
+    category: "medium",
+    range: "short",
+    speed: 0.75,
   },
 ];

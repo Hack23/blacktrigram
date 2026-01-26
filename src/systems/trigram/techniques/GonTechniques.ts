@@ -71,6 +71,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Clinch grapple position
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
 
   // ============= Leg Techniques =============
@@ -108,6 +111,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Reaping leg sweep
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "gon_ankle_pick",
@@ -143,6 +149,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 1.1,
+    category: "light",
+    range: "short",
+    speed: 1.1,
   },
 
   // ============= Ssireum Throwing Techniques =============
@@ -180,6 +189,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Traditional belt throw
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "heavy",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_ground_pound",
@@ -215,6 +227,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Slam throw
     animationType: AnimationType.SLAM,
     animationSpeed: 1.0,
+    category: "heavy",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gon_body_lock_takedown",
@@ -250,6 +265,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Body lock clinch
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gon_sacrifice_throw",
@@ -285,6 +303,9 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Sacrifice throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 

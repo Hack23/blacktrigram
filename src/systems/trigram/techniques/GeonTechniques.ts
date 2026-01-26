@@ -61,6 +61,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.HEAVEN_STRIKE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_heavenly_fist",
@@ -95,6 +98,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JAB,
     animationSpeed: 1.1,
+    category: "light",
+    range: "short",
+    speed: 1.1,
   },
   {
     id: "geon_frontal_kick",
@@ -129,6 +135,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_roundhouse_kick",
@@ -163,6 +172,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.GEON_ROUNDHOUSE,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "geon_axe_kick",
@@ -197,6 +209,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.AXE_KICK,
     animationSpeed: 0.9,
+    category: "heavy",
+    range: "medium",
+    speed: 0.9,
   },
   {
     id: "geon_palm_strike",
@@ -231,6 +246,9 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "geon_elbow_smash",
@@ -265,5 +283,8 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.CRUSHING_ELBOW,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];

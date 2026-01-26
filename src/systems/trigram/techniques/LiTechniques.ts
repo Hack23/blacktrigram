@@ -61,6 +61,9 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SPEAR_HAND_STRIKE,
     animationSpeed: 1.3,
+    category: "medium",
+    range: "short",
+    speed: 1.3,
   },
   {
     id: "li_temple_strike",
@@ -95,6 +98,9 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.TEMPLE_ELBOW,
     animationSpeed: 1.1,
+    category: "special",
+    range: "short",
+    speed: 1.1,
   },
   {
     id: "li_nerve_strike",
@@ -129,6 +135,9 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.NERVE_STRIKE,
     animationSpeed: 1.2,
+    category: "special",
+    range: "short",
+    speed: 1.2,
   },
   {
     id: "li_sidekick",
@@ -163,6 +172,9 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SIDE_KICK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "medium",
+    speed: 1.0,
   },
   {
     id: "li_pressure_point",
@@ -197,6 +209,9 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.JAB,
     animationSpeed: 1.0,
+    category: "special",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "li_solar_plexus_strike",
@@ -231,5 +246,8 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     animationType: AnimationType.SOLAR_PLEXUS_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ];

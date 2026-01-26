@@ -71,6 +71,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Flowing counter-attack
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 
   // ============= Throwing Techniques =============
@@ -108,6 +111,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Redirect throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
+    category: "medium",
+    range: "short",
+    speed: 0.9,
   },
   {
     id: "gam_hip_throw",
@@ -143,6 +149,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Hip throw motion
     animationType: AnimationType.THROW,
     animationSpeed: 0.85,
+    category: "medium",
+    range: "short",
+    speed: 0.85,
   },
 
   // ============= Blocking & Parry Techniques =============
@@ -180,6 +189,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Soft blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
   {
     id: "gam_circular_parry",
@@ -215,6 +227,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Circular parry motion
     animationType: AnimationType.COUNTER_STRIKE,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
 
   // ============= Joint Control Counter =============
@@ -252,6 +267,9 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Wrist control transition
     animationType: AnimationType.WRIST_LOCK,
     animationSpeed: 1.0,
+    category: "medium",
+    range: "short",
+    speed: 1.0,
   },
 ] as const;
 

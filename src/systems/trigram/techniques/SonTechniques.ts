@@ -70,6 +70,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Continuous striking pattern
     animationType: AnimationType.JAB,
     animationSpeed: 1.3,
+    category: "light",
+    range: "short",
+    speed: 1.3,
   },
 
   // ============= Taekyon Footwork Techniques =============
@@ -107,6 +110,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low sweeping kick
     animationType: AnimationType.LOW_KICK,
     animationSpeed: 1.1,
+    category: "light",
+    range: "medium",
+    speed: 1.1,
   },
   {
     id: "son_rapid_footwork",
@@ -142,6 +148,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rapid footwork sequence
     animationType: AnimationType.FRONT_KICK,
     animationSpeed: 1.2,
+    category: "medium",
+    range: "medium",
+    speed: 1.2,
   },
 
   // ============= Rhythmic Striking Techniques =============
@@ -179,6 +188,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Rhythmic hand combination
     animationType: AnimationType.JAB,
     animationSpeed: 1.2,
+    category: "light",
+    range: "short",
+    speed: 1.2,
   },
   {
     id: "son_flowing_push",
@@ -214,6 +226,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Flowing push movement
     animationType: AnimationType.PALM_STRIKE,
     animationSpeed: 1.0,
+    category: "light",
+    range: "short",
+    speed: 1.0,
   },
 
   // ============= Spinning Techniques =============
@@ -251,6 +266,9 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Spinning elbow attack
     animationType: AnimationType.ELBOW_STRIKE,
     animationSpeed: 1.1,
+    category: "medium",
+    range: "short",
+    speed: 1.1,
   },
 ] as const;
 
