@@ -17,13 +17,47 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { CombatSystem } from "../CombatSystem";
 import { BreathingDisruptionSystem, BreathingDisruptionLevel } from "../breathing/BreathingDisruptionSystem";
+import { applyBreathingDisruptionFromVitalPoint } from "../breathing/integration";
 import { createMockPlayerState } from "../../test/test-utils";
-import { PlayerArchetype, TrigramStance } from "../../types";
+import { PlayerArchetype, TrigramStance, VitalPointCategory, VitalPointSeverity } from "../../types";
+import type { KoreanTechnique } from "../vitalpoint/types";
+import { AnimationType } from "../animation";
 
 describe("Breathing Disruption System Integration with CombatSystem", () => {
   let combatSystem: CombatSystem;
   let attacker: ReturnType<typeof createMockPlayerState>;
   let defender: ReturnType<typeof createMockPlayerState>;
+
+  // Helper to create a properly typed mock technique
+  const createMockTechnique = (overrides: Partial<KoreanTechnique> = {}): KoreanTechnique => {
+    const defaults: KoreanTechnique = {
+      id: "test_technique",
+      name: { korean: "테스트", english: "Test", romanized: "teseuteu" },
+      koreanName: "테스트",
+      englishName: "Test",
+      romanized: "teseuteu",
+      description: { korean: "테스트 기술", english: "Test technique" },
+      stance: TrigramStance.GEON,
+      type: "strike",
+      damageType: "strike",
+      damage: 20,
+      kiCost: 5,
+      staminaCost: 10,
+      accuracy: 0.9,
+      reachConfig: {
+        bodyPart: "arm",
+        techniqueType: "punch",
+        baseExtension: 0.9,
+      },
+      executionTime: 500,
+      recoveryTime: 300,
+      critChance: 0.1,
+      critMultiplier: 1.5,
+      effects: [],
+      animationType: AnimationType.JAB,
+    };
+    return { ...defaults, ...overrides };
+  };
 
   beforeEach(() => {
     combatSystem = new CombatSystem();
@@ -64,43 +98,41 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
   describe("Solar Plexus Strike Flow", () => {
     it("should trigger severe breathing disruption on solar plexus vital point hit", () => {
-      // Use a generic technique since specific technique IDs may not exist
-      const technique = {
-        id: "test_torso_strike",
-        name: { korean: "명치 타격", english: "Solar Plexus Strike" },
-        koreanName: "명치 타격",
-        englishName: "Solar Plexus Strike",
-        damage: 25,
-        accuracy: 0.9,
-        damageType: "strike" as const,
-        staminaCost: 10,
-        kiCost: 5,
+      // Create a mock vital point for solar plexus
+      const solarPlexusVitalPoint = {
+        id: "torso_solar_plexus",
+        names: {
+          korean: "명치",
+          english: "Solar Plexus",
+          romanized: "myeongchi",
+        },
+        position: { x: 102, y: 140 },
+        category: VitalPointCategory.NEUROLOGICAL,
+        severity: VitalPointSeverity.CRITICAL,
+        baseDamage: 40,
+        effects: [],
+        description: {
+          korean: "신경총 타격, 호흡 곤란",
+          english: "Nerve plexus strike, breathing difficulty",
+        },
+        targetingDifficulty: 0.6,
+        effectiveStances: [TrigramStance.JIN, TrigramStance.GEON],
       };
 
-      // Execute attack targeting solar plexus vital point
-      const result = combatSystem.resolveAttack(
-        attacker,
+      // Directly apply breathing disruption from vital point
+      const timestamp = Date.now();
+      const updatedDefender = applyBreathingDisruptionFromVitalPoint(
         defender,
-        technique,
-        "torso_solar_plexus" // Target solar plexus vital point
-      );
-
-      // Apply the combat result
-      const { updatedDefender } = CombatSystem.applyCombatResult(
-        result,
-        attacker,
-        defender
+        solarPlexusVitalPoint,
+        timestamp
       );
 
       // Verify breathing disruption was applied
       const breathingEffect = BreathingDisruptionSystem.getActiveEffect(updatedDefender);
-      
-      if (result.hit) {
-        expect(breathingEffect).toBeDefined();
-        expect(breathingEffect?.level).toBe(BreathingDisruptionLevel.SEVERELY_WINDED);
-        expect(breathingEffect?.staminaRegenMultiplier).toBe(0.25); // 75% penalty
-        expect(breathingEffect?.duration).toBe(15000); // 15 seconds
-      }
+      expect(breathingEffect).toBeDefined();
+      expect(breathingEffect?.level).toBe(BreathingDisruptionLevel.SEVERELY_WINDED);
+      expect(breathingEffect?.staminaRegenMultiplier).toBe(0.25); // 75% penalty
+      expect(breathingEffect?.duration).toBe(15000); // 15 seconds
     });
 
     it("should reduce stamina regeneration by 75% with severe breathing disruption", () => {
@@ -141,17 +173,15 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
       // First strike: Moderate torso damage (Winded)
       let updatedDefender = defender;
-      const technique = {
+      const technique = createMockTechnique({
         id: "test_rib_strike",
-        name: { korean: "늑골 타격", english: "Rib Strike" },
+        name: { korean: "늑골 타격", english: "Rib Strike", romanized: "neukgol tagyeok" },
         koreanName: "늑골 타격",
         englishName: "Rib Strike",
+        romanized: "neukgol tagyeek",
         damage: 20,
-        accuracy: 0.9,
-        damageType: "strike" as const,
-        staminaCost: 10,
-        kiCost: 5,
-      };
+        accuracy: 1.0, // 100% hit chance
+      });
       
       const result1 = combatSystem.resolveAttack(
         attacker,
@@ -497,17 +527,15 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
     });
 
     it("should not apply breathing disruption from non-torso strikes", () => {
-      const technique = {
+      const technique = createMockTechnique({
         id: "test_head_strike",
-        name: { korean: "머리 타격", english: "Head Strike" },
+        name: { korean: "머리 타격", english: "Head Strike", romanized: "meori tagyeok" },
         koreanName: "머리 타격",
         englishName: "Head Strike",
+        romanized: "meori tagyeok",
         damage: 25,
-        accuracy: 0.9,
-        damageType: "strike" as const,
-        staminaCost: 10,
-        kiCost: 5,
-      };
+        accuracy: 1.0, // 100% hit chance
+      });
       
       // Target head instead of torso
       const result = combatSystem.resolveAttack(
