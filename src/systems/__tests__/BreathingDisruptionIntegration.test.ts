@@ -169,8 +169,6 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
   describe("Multiple Respiratory Strikes", () => {
     it("should accumulate breathing disruption from multiple torso strikes", () => {
-      const timestamp = Date.now();
-
       // First strike: Moderate torso damage (Winded)
       let updatedDefender = defender;
       const technique = createMockTechnique({
@@ -237,7 +235,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
         timestamp
       );
 
-      let defenderWithEffect = {
+      const defenderWithEffect = {
         ...defender,
         statusEffects: [windedEffect],
       };
@@ -253,6 +251,10 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       // Verify escalation to higher severity
       expect(stackedEffect.level).toBe(BreathingDisruptionLevel.SEVERELY_WINDED);
       expect(stackedEffect.staminaRegenMultiplier).toBe(0.25); // Severe penalty
+      
+      // Verify defenderWithEffect would have the winded effect
+      expect(defenderWithEffect.statusEffects).toHaveLength(1);
+      expect(defenderWithEffect.statusEffects[0]).toBe(windedEffect);
     });
   });
 
