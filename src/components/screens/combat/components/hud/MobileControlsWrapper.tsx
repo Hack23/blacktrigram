@@ -28,8 +28,8 @@
 import React from "react";
 import {
   ActionButtons,
-  GestureRecognizer,
-  StanceWheel,
+  GestureRecognizerPure,
+  StanceWheelPure,
   VirtualDPad,
 } from "../../../../shared/mobile";
 import { ButtonEventType } from "../../../../shared/mobile/ActionButtons";
@@ -120,7 +120,7 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
       />
 
       {/* Stance Wheel - Right-center for trigram stance selection */}
-      <StanceWheel
+      <StanceWheelPure
         currentStance={currentStanceIndex}
         onStanceChange={onStanceChange}
         expanded={stanceWheelExpanded}
@@ -130,7 +130,7 @@ export const MobileControlsWrapper: React.FC<MobileControlsWrapperProps> = ({
       />
 
       {/* Gesture Recognizer - Full-screen swipe detection */}
-      <GestureRecognizer
+      <GestureRecognizerPure
         onGesture={onGesture}
         enabled={enabled}
         showFeedback={true}
