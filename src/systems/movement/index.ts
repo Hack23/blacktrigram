@@ -15,6 +15,7 @@ export {
   InjuryMovementModifier,
   DEFAULT_INJURY_MOVEMENT_CONFIG,
   type InjuryMovementConfig,
+  type PartialInjuryMovementConfig,
   type InjuryMovementResult,
   injuryMovementModifier,
 } from "./InjuryMovementModifier";

@@ -62,6 +62,22 @@ export interface InjuryMovementConfig {
 }
 
 /**
+ * Deep partial type for InjuryMovementConfig to support partial overrides.
+ * Allows callers to override individual threshold values without providing all.
+ * 
+ * @public
+ * @category Movement System
+ */
+export type PartialInjuryMovementConfig = {
+  readonly legThresholds?: Partial<InjuryMovementConfig["legThresholds"]>;
+  readonly maxTorsoPenalty?: number;
+  readonly bothLegsInjuredMultiplier?: number;
+  readonly painOverloadThreshold?: number;
+  readonly painOverloadMultiplier?: number;
+  readonly minSpeedMultiplier?: number;
+};
+
+/**
  * Default configuration matching acceptance criteria.
  */
 export const DEFAULT_INJURY_MOVEMENT_CONFIG: InjuryMovementConfig = {
@@ -143,9 +159,9 @@ export class InjuryMovementModifier {
   /**
    * Creates a new InjuryMovementModifier with optional configuration.
    * 
-   * @param config - Optional configuration overrides
+   * @param config - Optional configuration overrides (supports partial threshold overrides)
    */
-  constructor(config?: Partial<InjuryMovementConfig>) {
+  constructor(config?: PartialInjuryMovementConfig) {
     // Deep merge leg thresholds to prevent partial overrides from breaking the config
     const mergedLegThresholds = {
       ...DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds,
@@ -334,12 +350,26 @@ export class InjuryMovementModifier {
    * **Korean**: 자세 속도 배수 가져오기
    * 
    * @param stance - Current trigram stance
-   * @returns Speed multiplier (0.8-1.25)
+   * @returns Speed multiplier (0.8-1.25), defaults to 1.0 for unknown stances
    * 
    * @public
    */
   public getStanceSpeedModifier(stance: TrigramStance): number {
-    return STANCE_SPEED_MODIFIERS[stance];
+    const modifier = STANCE_SPEED_MODIFIERS[stance];
+
+    // Defensive fallback for unknown stances (e.g., test/invalid values)
+    if (modifier == null) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          `[InjuryMovementModifier] Unknown stance "${String(
+            stance
+          )}" received in getStanceSpeedModifier; defaulting to 1.0.`
+        );
+      }
+      return 1.0;
+    }
+
+    return modifier;
   }
 
   /**
