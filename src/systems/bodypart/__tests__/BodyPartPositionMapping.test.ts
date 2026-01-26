@@ -174,17 +174,27 @@ describe("BodyPartPositionMapping", () => {
 
     it("should create different positions on multiple calls", () => {
       const basePosition = new THREE.Vector3(0, 1.5, 0);
+      
+      // Mock Math.random to return deterministic values for testing
+      const randomValues = [0.3, 0.7, 0.2, 0.8, 0.5, 0.1];
+      let callIndex = 0;
+      const mathRandomSpy = vi.spyOn(Math, 'random').mockImplementation(() => {
+        return randomValues[callIndex++ % randomValues.length];
+      });
+      
       const positions: THREE.Vector3[] = [];
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 3; i++) {
         positions.push(addRandomOffset(basePosition, 0.1));
       }
 
-      // Check that at least some positions are different
+      // With deterministic random values, positions should be different
       const allSame = positions.every((pos) =>
         pos.equals(positions[0])
       );
       expect(allSame).toBe(false);
+      
+      mathRandomSpy.mockRestore();
     });
   });
 

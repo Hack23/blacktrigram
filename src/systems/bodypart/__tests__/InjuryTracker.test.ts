@@ -402,9 +402,9 @@ describe("InjuryTracker", () => {
         ...DEFAULT_INJURY_TRACKER_CONFIG,
         injuryExpirationTimeMs: 100, // 100ms for testing
       };
-      const trackerWithFade = new InjuryTracker(config);
+      const trackerWithExpiration = new InjuryTracker(config);
 
-      trackerWithFade.recordInjury(
+      trackerWithExpiration.recordInjury(
         BodyPart.TORSO_UPPER,
         BodyRegion.TORSO,
         new THREE.Vector3(0, 1.5, 0),
@@ -415,8 +415,8 @@ describe("InjuryTracker", () => {
       // Fast-forward time past expiration
       vi.advanceTimersByTime(150);
       
-      trackerWithFade.removeExpiredInjuries();
-      const injuries = trackerWithFade.getInjuries();
+      trackerWithExpiration.removeExpiredInjuries();
+      const injuries = trackerWithExpiration.getInjuries();
       expect(injuries).toHaveLength(0);
       
       vi.useRealTimers();

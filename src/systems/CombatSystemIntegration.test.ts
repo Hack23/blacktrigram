@@ -506,8 +506,8 @@ describe("CombatSystem Integration with Pain & Consciousness", () => {
         technique: {
           id: "test_kick",
           name: { korean: "킥", english: "Kick", romanized: "Kik" },
-          damageType: "blunt",
-        } as any,
+          damageType: DamageType.BLUNT,
+        } as any as CombatResult["technique"],
         attacker: player1,
         defender: player2,
         success: false,

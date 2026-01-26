@@ -348,9 +348,9 @@ export class InjuryTracker {
   }
 
   /**
-   * Remove injuries older than fade start time.
+   * Remove injuries older than expiration time.
    * 
-   * **Korean**: 오래된 부상 제거
+   * **Korean**: 만료된 부상 제거
    * 
    * @public
    */
@@ -386,19 +386,24 @@ export class InjuryTracker {
  * 
  * **Korean**: 부상 추적 시스템 싱글톤
  * 
- * **Note**: This singleton tracks injuries across all characters. For multiplayer
- * scenarios where you need to distinguish injuries by player, use the `playerId`
- * parameter in `convertInjuriesForVisualization()` or create separate tracker
- * instances per player:
+ * **Warning**: This singleton does **not** track any playerId/character identifier
+ * on injuries. All recorded injuries are stored together in a single collection.
+ * 
+ * For any scenario with more than one character (including 1v1 combat), you
+ * **must** create a separate {@link InjuryTracker} instance per character to avoid
+ * mixing injuries between characters:
  * 
  * ```typescript
  * const player1Tracker = new InjuryTracker();
  * const player2Tracker = new InjuryTracker();
  * ```
  * 
- * For single-player or 1v1 scenarios, the singleton pattern works well as injuries
- * can be differentiated by the defender in combat results.
+ * This singleton is intended only for simple, single-character use cases
+ * (e.g., local visualization tools, single dummy target, or non-combat demos)
+ * where all injuries belong to one entity.
  * 
  * @public
+ * @deprecated Use per-character {@link InjuryTracker} instances instead to avoid
+ * mixing injuries from multiple characters.
  */
 export const injuryTracker = new InjuryTracker();
