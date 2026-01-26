@@ -1,6 +1,7 @@
 /**
  * Test for knockback boundary clamping in meters
- * Validates that players stay within meter-based arena bounds
+ * Validates that players stay within meter-based arena bounds using the
+ * shared clampToArenaBounds helper from PhysicsTypes
  */
 
 import { describe, it, expect } from 'vitest';
@@ -8,13 +9,14 @@ import * as THREE from 'three';
 import { KnockbackPhysics } from './KnockbackPhysics';
 import { TrigramStance } from '@/types/common';
 import type { KnockbackConfig } from './KnockbackPhysics';
+import { clampToArenaBounds, PhysicsArenaBounds } from '@/types/PhysicsTypes';
 
 describe('Knockback Arena Boundary Clamping', () => {
   it('should clamp knockback to meter-based arena boundaries', () => {
     const physics = new KnockbackPhysics();
     
     // 10m × 7.5m arena (extends from -5 to +5 in X, -3.75 to +3.75 in Z)
-    const arenaBounds = {
+    const arenaBounds: PhysicsArenaBounds = {
       x: 0,
       y: 0,
       width: 1000,
@@ -47,12 +49,11 @@ describe('Knockback Arena Boundary Clamping', () => {
       y: defenderPos.y + result.displacement.z,
     };
 
-    // Check that clamping logic would work
-    const halfWidth = arenaBounds.worldWidthMeters / 2;
-    const clampedX = Math.max(-halfWidth, Math.min(halfWidth, newPos.x));
+    // Use the shared physics helper to clamp (same as production code)
+    const clamped = clampToArenaBounds(newPos, arenaBounds);
     
     // Should be clamped to +5m (right boundary)
-    expect(clampedX).toBeCloseTo(5.0, 1);
+    expect(clamped.x).toBeCloseTo(5.0, 1);
   });
 
   it('should handle different arena sizes correctly', () => {
@@ -65,19 +66,34 @@ describe('Knockback Arena Boundary Clamping', () => {
     ];
 
     testCases.forEach(({ size, halfSize }) => {
+      const arenaBounds: PhysicsArenaBounds = {
+        x: 0,
+        y: 0,
+        width: size * 100,
+        height: size * 75,
+        scale: 1.0,
+        worldWidthMeters: size,
+        worldDepthMeters: size * 0.75,
+      };
+
       // Player at center with 4m knockback to right
       const defenderPos = { x: 0, y: 0 };
       const knockbackDistance = 4;
       
-      const newX = defenderPos.x + knockbackDistance;
-      const clampedX = Math.max(-halfSize, Math.min(halfSize, newX));
+      const newPos = {
+        x: defenderPos.x + knockbackDistance,
+        y: defenderPos.y,
+      };
+      
+      // Use the shared physics helper
+      const clamped = clampToArenaBounds(newPos, arenaBounds);
       
       // Should stay within boundary
-      expect(Math.abs(clampedX)).toBeLessThanOrEqual(halfSize);
+      expect(Math.abs(clamped.x)).toBeLessThanOrEqual(halfSize);
       
       // For arenas > 4m, should not be clamped
       if (size > 8) {
-        expect(clampedX).toBe(knockbackDistance);
+        expect(clamped.x).toBe(knockbackDistance);
       }
     });
   });
@@ -86,7 +102,12 @@ describe('Knockback Arena Boundary Clamping', () => {
     const physics = new KnockbackPhysics();
     
     // 10m × 7.5m arena
-    const arenaBounds = {
+    const arenaBounds: PhysicsArenaBounds = {
+      x: 0,
+      y: 0,
+      width: 1000,
+      height: 750,
+      scale: 1.0,
       worldWidthMeters: 10,
       worldDepthMeters: 7.5,
     };
@@ -106,22 +127,29 @@ describe('Knockback Arena Boundary Clamping', () => {
     const result = physics.calculateKnockback(config, 80);
     
     // Apply displacement: -3m + (-2.5m) = -5.5m (exceeds -3.75m boundary)
-    const newY = defenderPos.y + result.displacement.z;
+    const newPos = {
+      x: defenderPos.x,
+      y: defenderPos.y + result.displacement.z,
+    };
 
-    // Clamp to arena depth boundary
-    const halfDepth = arenaBounds.worldDepthMeters / 2;
-    const clampedY = Math.max(-halfDepth, Math.min(halfDepth, newY));
+    // Use the shared physics helper
+    const clamped = clampToArenaBounds(newPos, arenaBounds);
     
     // Should be clamped to -3.75m (bottom boundary)
-    expect(clampedY).toBeCloseTo(-3.75, 2);
-    expect(Math.abs(clampedY)).toBeLessThanOrEqual(halfDepth);
+    expect(clamped.y).toBeCloseTo(-3.75, 2);
+    expect(Math.abs(clamped.y)).toBeLessThanOrEqual(arenaBounds.worldDepthMeters / 2);
   });
 
   it('should handle extreme knockback at arena edge', () => {
     const physics = new KnockbackPhysics();
     
     // Small 6m × 4.5m arena
-    const arenaBounds = {
+    const arenaBounds: PhysicsArenaBounds = {
+      x: 0,
+      y: 0,
+      width: 600,
+      height: 450,
+      scale: 0.6,
       worldWidthMeters: 6,
       worldDepthMeters: 4.5,
     };
@@ -145,21 +173,28 @@ describe('Knockback Arena Boundary Clamping', () => {
     expect(result.displacement.length()).toBeCloseTo(expectedDistance, 1);
 
     // After knockback: 2.9m + 7.8m = 10.7m (way outside 3m boundary)
-    const newX = defenderPos.x + result.displacement.x;
+    const newPos = {
+      x: defenderPos.x + result.displacement.x,
+      y: defenderPos.y,
+    };
     
-    // Clamp to boundary
-    const halfWidth = arenaBounds.worldWidthMeters / 2;
-    const clampedX = Math.max(-halfWidth, Math.min(halfWidth, newX));
+    // Use the shared physics helper
+    const clamped = clampToArenaBounds(newPos, arenaBounds);
     
     // Should be clamped to +3m (right edge of 6m arena)
-    expect(clampedX).toBeCloseTo(3.0, 1);
-    expect(Math.abs(clampedX)).toBeLessThanOrEqual(halfWidth);
+    expect(clamped.x).toBeCloseTo(3.0, 1);
+    expect(Math.abs(clamped.x)).toBeLessThanOrEqual(arenaBounds.worldWidthMeters / 2);
   });
 
   it('should handle knockback toward center (no clamping needed)', () => {
     const physics = new KnockbackPhysics();
     
-    const arenaBounds = {
+    const arenaBounds: PhysicsArenaBounds = {
+      x: 0,
+      y: 0,
+      width: 1000,
+      height: 750,
+      scale: 1.0,
       worldWidthMeters: 10,
       worldDepthMeters: 7.5,
     };
@@ -182,13 +217,16 @@ describe('Knockback Arena Boundary Clamping', () => {
     expect(result.displacement.x).toBeCloseTo(-1.2, 1);
 
     // After knockback: 4.5m - 1.2m = 3.3m (well within ±5m boundary)
-    const newX = defenderPos.x + result.displacement.x;
+    const newPos = {
+      x: defenderPos.x + result.displacement.x,
+      y: defenderPos.y,
+    };
     
-    const halfWidth = arenaBounds.worldWidthMeters / 2;
-    const clampedX = Math.max(-halfWidth, Math.min(halfWidth, newX));
+    // Use the shared physics helper
+    const clamped = clampToArenaBounds(newPos, arenaBounds);
     
     // Should not be clamped
-    expect(clampedX).toBeCloseTo(3.3, 1);
-    expect(clampedX).toBe(newX);
+    expect(clamped.x).toBeCloseTo(3.3, 1);
+    expect(clamped.x).toBe(newPos.x);
   });
 });

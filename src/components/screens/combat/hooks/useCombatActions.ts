@@ -44,6 +44,7 @@ import {
   type AnimationState,
 } from "@/systems/animation";
 import { movementPenaltySystem } from "@/systems/bodypart";
+import { clampToArenaBounds, type PhysicsArenaBounds } from "@/types/PhysicsTypes";
 import {
   checkForFall,
   getFallTypeName,
@@ -122,15 +123,7 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
 function applyKnockbackDisplacement(
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    scale?: number;
-    worldWidthMeters: number;
-    worldDepthMeters: number;
-  },
+  arenaBounds: PhysicsArenaBounds,
 ): Position {
   if (!result.knockback) {
     return defenderPos;
@@ -138,23 +131,13 @@ function applyKnockbackDisplacement(
 
   // Apply knockback displacement (both in meters)
   // Note: knockback.displacement.z maps to position.y in 2D arena
-  let newX = defenderPos.x + result.knockback.displacement.x;
-  let newY = defenderPos.y + result.knockback.displacement.z;
+  const newPos = {
+    x: defenderPos.x + result.knockback.displacement.x,
+    y: defenderPos.y + result.knockback.displacement.z,
+  };
 
-  // Clamp to arena boundaries in METERS (centered at origin)
-  // Arena extends from -worldWidthMeters/2 to +worldWidthMeters/2
-  const halfWidth = arenaBounds.worldWidthMeters / 2;
-  const halfDepth = arenaBounds.worldDepthMeters / 2;
-
-  const minX = -halfWidth;
-  const maxX = halfWidth;
-  const minY = -halfDepth;
-  const maxY = halfDepth;
-
-  newX = Math.max(minX, Math.min(maxX, newX));
-  newY = Math.max(minY, Math.min(maxY, newY));
-
-  return { x: newX, y: newY };
+  // Clamp to arena boundaries using shared physics helper
+  return clampToArenaBounds(newPos, arenaBounds);
 }
 
 export interface UseCombatActionsConfig {
@@ -181,15 +164,7 @@ export interface UseCombatActionsConfig {
     position: Position,
     intensity?: number,
   ) => void;
-  readonly arenaBounds: {
-    readonly x: number;
-    readonly y: number;
-    readonly width: number;
-    readonly height: number;
-    readonly scale?: number;
-    readonly worldWidthMeters: number;
-    readonly worldDepthMeters: number;
-  };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;

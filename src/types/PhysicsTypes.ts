@@ -242,3 +242,43 @@ export function calculateDistanceMeters(
   
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
+
+/**
+ * Clamp a 2D position to stay within arena boundaries in meters.
+ * 
+ * Arena coordinates are centered at origin (0, 0) and extend from
+ * -worldWidthMeters/2 to +worldWidthMeters/2 in X,
+ * -worldDepthMeters/2 to +worldDepthMeters/2 in Z.
+ * 
+ * This is used for physics calculations like knockback to ensure
+ * players stay within the playable area.
+ * 
+ * **Korean**: 경기장경계제한 (Arena Boundary Clamping)
+ * 
+ * @param position - Position in meters (can exceed arena bounds)
+ * @param bounds - Arena bounds with meter dimensions
+ * @returns Position clamped to arena boundaries
+ * 
+ * @example
+ * ```typescript
+ * const bounds = { worldWidthMeters: 10, worldDepthMeters: 7.5, ... };
+ * const position = { x: 6, y: 4 }; // Outside arena
+ * const clamped = clampToArenaBounds(position, bounds);
+ * // Result: { x: 5, y: 3.75 } - clamped to boundaries
+ * ```
+ * 
+ * @public
+ * @category Physics Types
+ */
+export function clampToArenaBounds(
+  position: { x: number; y: number },
+  bounds: PhysicsArenaBounds
+): { x: number; y: number } {
+  const halfWidth = bounds.worldWidthMeters / 2;
+  const halfDepth = bounds.worldDepthMeters / 2;
+  
+  return {
+    x: Math.max(-halfWidth, Math.min(halfWidth, position.x)),
+    y: Math.max(-halfDepth, Math.min(halfDepth, position.y)),
+  };
+}
