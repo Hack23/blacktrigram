@@ -52,16 +52,22 @@ export interface CombatInjuryConfig {
   readonly minDamage: number;
   /** Damage threshold for blood effects */
   readonly bloodThreshold: number;
-  /** Use InjuryTracker singleton */
-  readonly tracker?: InjuryTracker;
+  /** 
+   * InjuryTracker instance to use for this integration.
+   * Must be explicitly provided per character; singleton usage is no longer supported.
+   */
+  readonly tracker: InjuryTracker;
 }
 
 /**
  * Default combat injury configuration.
  * 
+ * Note: A valid `tracker` must still be supplied by the caller.
+ * This provides defaults for other configuration values only.
+ * 
  * @public
  */
-export const DEFAULT_COMBAT_INJURY_CONFIG: CombatInjuryConfig = {
+export const DEFAULT_COMBAT_INJURY_CONFIG: Omit<CombatInjuryConfig, 'tracker'> = {
   enabled: true,
   minDamage: 5,
   bloodThreshold: 30,
@@ -77,9 +83,17 @@ export const DEFAULT_COMBAT_INJURY_CONFIG: CombatInjuryConfig = {
  * 
  * @example
  * ```typescript
- * const handler = new CombatInjuryIntegration();
+ * // Recommended: Use PlayerInjuryTrackingManager for per-player tracking
+ * import { playerInjuryManager } from '@/systems/bodypart';
+ * const integration = playerInjuryManager.getIntegrationForPlayer('player-1');
  * 
- * // On combat hit
+ * // Or create with explicit tracker for testing/custom scenarios
+ * const handler = new CombatInjuryIntegration({
+ *   ...DEFAULT_COMBAT_INJURY_CONFIG,
+ *   tracker: new InjuryTracker(),
+ * });
+ * 
+ * // Record combat damage
  * handler.recordCombatDamage({
  *   damage: 35,
  *   bodyRegion: BodyRegion.TORSO,
@@ -96,17 +110,9 @@ export class CombatInjuryIntegration {
   private tracker: InjuryTracker;
   private config: CombatInjuryConfig;
 
-  constructor(config: CombatInjuryConfig = DEFAULT_COMBAT_INJURY_CONFIG) {
+  constructor(config: CombatInjuryConfig) {
     this.config = config;
-    // Require explicit tracker - do not fall back to deprecated singleton
-    // Use PlayerInjuryTrackingManager to get per-character trackers instead
-    if (!config.tracker) {
-      throw new Error(
-        'CombatInjuryIntegration requires an explicit InjuryTracker. ' +
-        'Use PlayerInjuryTrackingManager.getIntegrationForPlayer(playerId) instead of ' +
-        'creating instances directly, or pass { tracker: new InjuryTracker() } for testing.'
-      );
-    }
+    // Tracker is now required in CombatInjuryConfig interface
     this.tracker = config.tracker;
   }
 

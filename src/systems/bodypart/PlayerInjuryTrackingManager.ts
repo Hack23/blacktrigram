@@ -53,16 +53,17 @@ export class PlayerInjuryTrackingManager {
    * 
    * **Korean**: 특정 플레이어의 InjuryTracker 가져오기 (필요시 생성)
    * 
-   * @param playerId - Unique player identifier
+   * @param playerId - Unique player identifier (string or number)
    * @returns InjuryTracker instance for the player
    * 
    * @public
    */
-  getTrackerForPlayer(playerId: string): InjuryTracker {
-    let tracker = this.trackers.get(playerId);
+  getTrackerForPlayer(playerId: string | number): InjuryTracker {
+    const key = String(playerId);
+    let tracker = this.trackers.get(key);
     if (!tracker) {
       tracker = new InjuryTracker();
-      this.trackers.set(playerId, tracker);
+      this.trackers.set(key, tracker);
     }
     return tracker;
   }
@@ -72,13 +73,14 @@ export class PlayerInjuryTrackingManager {
    * 
    * **Korean**: 특정 플레이어의 CombatInjuryIntegration 가져오기 (필요시 생성)
    * 
-   * @param playerId - Unique player identifier
+   * @param playerId - Unique player identifier (string or number)
    * @returns CombatInjuryIntegration instance for the player
    * 
    * @public
    */
-  getIntegrationForPlayer(playerId: string): CombatInjuryIntegration {
-    let integration = this.integrations.get(playerId);
+  getIntegrationForPlayer(playerId: string | number): CombatInjuryIntegration {
+    const key = String(playerId);
+    let integration = this.integrations.get(key);
     if (!integration) {
       const tracker = this.getTrackerForPlayer(playerId);
       // Pass complete config with tracker override
@@ -88,7 +90,7 @@ export class PlayerInjuryTrackingManager {
         bloodThreshold: 30,
         tracker,
       });
-      this.integrations.set(playerId, integration);
+      this.integrations.set(key, integration);
     }
     return integration;
   }
@@ -100,12 +102,13 @@ export class PlayerInjuryTrackingManager {
    * 
    * Useful for round resets or when a player is defeated.
    * 
-   * @param playerId - Unique player identifier
+   * @param playerId - Unique player identifier (string or number)
    * 
    * @public
    */
-  clearPlayerInjuries(playerId: string): void {
-    const tracker = this.trackers.get(playerId);
+  clearPlayerInjuries(playerId: string | number): void {
+    const key = String(playerId);
+    const tracker = this.trackers.get(key);
     if (tracker) {
       tracker.clearInjuries();
     }
@@ -116,13 +119,14 @@ export class PlayerInjuryTrackingManager {
    * 
    * **Korean**: 플레이어 추적 데이터 제거
    * 
-   * @param playerId - Unique player identifier
+   * @param playerId - Unique player identifier (string or number)
    * 
    * @public
    */
-  removePlayer(playerId: string): void {
-    this.trackers.delete(playerId);
-    this.integrations.delete(playerId);
+  removePlayer(playerId: string | number): void {
+    const key = String(playerId);
+    this.trackers.delete(key);
+    this.integrations.delete(key);
   }
 
   /**

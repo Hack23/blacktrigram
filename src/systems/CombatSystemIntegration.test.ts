@@ -4,7 +4,7 @@
  * Tests the integration of pain and consciousness systems with the combat system.
  */
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PlayerArchetype, DamageType } from "@/types";
 import { createPlayerFromArchetype } from "@/utils/playerUtils";
 import type { PlayerState } from "./player";
