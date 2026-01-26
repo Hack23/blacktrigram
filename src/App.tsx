@@ -31,6 +31,10 @@ const TrainingScreen = lazy(() =>
   })),
 );
 
+// Transition delay for WebGL context cleanup between screens
+const SCREEN_TRANSITION_DELAY_MS = 150;
+const MENU_TRANSITION_DELAY_MS = 100;
+
 function App() {
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [selectedArchetype, setSelectedArchetype] = useState<PlayerArchetype>(
@@ -224,7 +228,7 @@ function App() {
 
         setIsTransitioning(false);
         pendingModeRef.current = null;
-      }, 150); // Increased delay for WebGL cleanup (was 100ms)
+      }, SCREEN_TRANSITION_DELAY_MS); // Delay for WebGL cleanup
     },
     [],
   );
@@ -300,7 +304,7 @@ function App() {
     setMatchStats(null);
     // Reset combat players so they reinitialize next combat
     setCombatPlayers([]);
-    setTimeout(() => setIsTransitioning(false), 100);
+    setTimeout(() => setIsTransitioning(false), MENU_TRANSITION_DELAY_MS);
   }, []);
 
   const handleRematch = useCallback(() => {
@@ -316,7 +320,7 @@ function App() {
     setTimeout(() => {
       setIsGameActive(true);
       setIsTransitioning(false);
-    }, 150);
+    }, SCREEN_TRANSITION_DELAY_MS);
   }, [gameMode]);
 
   const handleViewTraining = useCallback(() => {
@@ -330,7 +334,7 @@ function App() {
       setGameMode(GameMode.TRAINING);
       setIsGameActive(true);
       setIsTransitioning(false);
-    }, 150);
+    }, SCREEN_TRANSITION_DELAY_MS);
   }, []);
 
   const renderCurrentScreen = () => {

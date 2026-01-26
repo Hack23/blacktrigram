@@ -105,7 +105,7 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         />
       )}
 
-      {/* View Replay Button - Tertiary Action */}
+      {/* Training Mode Button - Tertiary Action */}
       {onViewReplay && (
         <BaseButtonOverlayHtml
           korean="훈련"
