@@ -71,7 +71,7 @@ describe("CombatInjuryIntegration", () => {
     it("should map PIERCING damage to CUT injury", () => {
       const event: CombatDamageEvent = {
         damage: 20,
-        bodyRegion: BodyRegion.ARM_LEFT,
+        bodyRegion: BodyRegion.LEFT_ARM,
         damageType: DamageType.PIERCING,
       };
 
@@ -83,7 +83,7 @@ describe("CombatInjuryIntegration", () => {
     it("should map SLASHING damage to LACERATION injury", () => {
       const event: CombatDamageEvent = {
         damage: 20,
-        bodyRegion: BodyRegion.ARM_RIGHT,
+        bodyRegion: BodyRegion.RIGHT_ARM,
         damageType: DamageType.SLASHING,
       };
 
@@ -95,7 +95,7 @@ describe("CombatInjuryIntegration", () => {
     it("should map JOINT damage to FRACTURE injury", () => {
       const event: CombatDamageEvent = {
         damage: 20,
-        bodyRegion: BodyRegion.LEG_LEFT,
+        bodyRegion: BodyRegion.LEFT_LEG,
         damageType: DamageType.JOINT,
       };
 
@@ -158,7 +158,7 @@ describe("CombatInjuryIntegration", () => {
         },
         { 
           damage: 10, 
-          bodyRegion: BodyRegion.LEG_LEFT, 
+          bodyRegion: BodyRegion.LEFT_LEG, 
           damageType: DamageType.CRUSHING,
           position: new THREE.Vector3(-0.15, 0.4, 0),
         },
@@ -280,7 +280,7 @@ describe("CombatInjuryIntegration", () => {
       // Medium hits - still no blood (far enough from torso)
       integration.recordCombatDamage({
         damage: 25,
-        bodyRegion: BodyRegion.ARM_LEFT,
+        bodyRegion: BodyRegion.LEFT_ARM,
         damageType: DamageType.IMPACT,
         position: new THREE.Vector3(-0.8, 1.2, 0), // Further from torso
       });

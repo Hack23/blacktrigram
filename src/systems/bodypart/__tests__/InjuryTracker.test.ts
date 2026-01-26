@@ -462,7 +462,6 @@ describe("InjuryTracker", () => {
 
   describe("E2E: Progressive bruising scenario", () => {
     it("should demonstrate progressive bruising over 5 strikes to same location", () => {
-      const position = new THREE.Vector3(0, 1.5, 0);
       const strikes: InjuryLocation[] = [];
 
       // Strike torso 5 times at same location

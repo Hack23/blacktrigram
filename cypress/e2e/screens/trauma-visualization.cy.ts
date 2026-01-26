@@ -183,10 +183,7 @@ describe("Trauma Visualization - Integration Tests", () => {
   it("should verify InjuryTracker exports are available", () => {
     // This is a smoke test to ensure modules are exported correctly
     cy.visit("/");
-    cy.window().then((win) => {
-      // Check if modules loaded without errors
-      expect(win).to.exist;
-      cy.log("✅ Window loaded successfully");
-    });
+    cy.window().should("exist");
+    cy.log("✅ Window loaded successfully");
   });
 });
