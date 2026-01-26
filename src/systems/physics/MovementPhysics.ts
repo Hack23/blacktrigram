@@ -21,6 +21,7 @@
  */
 
 import { TrigramStance } from "@/types/common";
+import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
 import * as THREE from "three";
 
 /**
@@ -161,9 +162,11 @@ export class MovementPhysics {
    * Achieves 0 to 6m/s in 0.2 seconds (instant-response combat movement)
    * Increased from 12.0 to 30.0 for arcade-style responsiveness
    *
+   * Imported from physicsConstants.ts to maintain consistency across systems.
+   *
    * **Korean**: 기본 가속도 (Base Acceleration)
    */
-  private readonly BASE_ACCELERATION = 30.0;
+  private readonly BASE_ACCELERATION = BASE_MOVEMENT_ACCELERATION;
 
   /**
    * Base deceleration rate (m/s²)

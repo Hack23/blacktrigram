@@ -50,6 +50,33 @@
 export const BASE_STAMINA_REGEN_RATE = 15.0 as const;
 
 /**
+ * Base movement acceleration rate (m/s²).
+ *
+ * **Korean**: 기본 이동 가속도
+ *
+ * This is the base rate at which characters accelerate during movement.
+ * Used by both MovementPhysics and SpeedModifierSystem for consistency.
+ *
+ * - Increased from 12.0 to 30.0 m/s² (2.5x faster) for instant-response combat
+ * - Reaches 6 m/s walking speed in 0.2 seconds
+ * - Reaches 10 m/s sprint speed in 0.33 seconds
+ * - Provides arcade-style responsiveness suitable for Korean martial arts combat
+ * - Subject to combat state penalties (20%-100% reduction when attacking/stunned)
+ *
+ * @example
+ * ```typescript
+ * // Calculate acceleration with combat state penalty
+ * const effectiveAcceleration = BASE_MOVEMENT_ACCELERATION * (1 - statePenalty);
+ * const velocityChange = effectiveAcceleration * deltaTime;
+ * ```
+ *
+ * @public
+ * @category Physics Constants
+ * @korean 기본이동가속도
+ */
+export const BASE_MOVEMENT_ACCELERATION = 30.0 as const;
+
+/**
  * Reference pixels-per-meter ratio for scale calculations.
  *
  * **Korean**: 참조 미터-픽셀 변환

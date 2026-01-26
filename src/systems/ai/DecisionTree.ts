@@ -274,6 +274,29 @@ export class AIDecisionTree {
   }
 
   /**
+   * Calculate punch reach for an archetype based on physical attributes.
+   * 
+   * **Physics-First**: Returns reach in METERS based on arm length.
+   * Includes realistic punch reach calculation:
+   * - Arm length converted from cm to meters
+   * - Body pivot (shoulder offset + torso rotation)
+   * - Average baseExtension for punches (0.95x multiplier)
+   *
+   * Formula: (armLength/100 + shoulderOffset + torsoRotation) × TECHNIQUE_EXTENSION.PUNCH
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Punch reach in meters
+   * @korean 주먹 도달 거리 (미터)
+   */
+  private getPunchReachMeters(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Arm length in cm -> meters + body pivot * average punch baseExtension
+    const shoulderOffset = physical.shoulderWidth / 2 / 100; // Convert cm to meters
+    const bodyPivot = shoulderOffset + BODY_PIVOT_METERS.TORSO_ROTATION;
+    return (physical.armLength / 100 + bodyPivot) * TECHNIQUE_EXTENSION.PUNCH;
+  }
+
+  /**
    * Calculate maximum combat reach for an archetype based on physical attributes.
    *
    * **Physics-First**: Returns reach in METERS based on leg length.
@@ -294,10 +317,7 @@ export class AIDecisionTree {
    * Get close range threshold for an archetype (punching/elbow distance).
    * Based on arm length from physical attributes.
    * 
-   * Includes realistic punch reach calculation:
-   * - Arm length converted from cm to meters
-   * - Body pivot (shoulder offset + torso rotation)
-   * - Average baseExtension for punches
+   * Uses the shared punch reach calculation helper for consistency.
    * 
    * TODO: Extract to shared utility function with PhysicalReachCalculator.ts
    * to maintain consistency between AI range calculations and actual hit detection.
@@ -308,11 +328,7 @@ export class AIDecisionTree {
    * @korean 근접 범위 (미터)
    */
   private getArchetypeCloseRange(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Arm length in cm -> meters + body pivot * average punch baseExtension
-    const shoulderOffset = physical.shoulderWidth / 2 / 100; // Convert cm to meters
-    const bodyPivot = shoulderOffset + BODY_PIVOT_METERS.TORSO_ROTATION;
-    return (physical.armLength / 100 + bodyPivot) * TECHNIQUE_EXTENSION.PUNCH;
+    return this.getPunchReachMeters(archetype);
   }
 
   /**
