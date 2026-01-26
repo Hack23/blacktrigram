@@ -33,6 +33,45 @@ export { AIActionType } from "./types"; // Enum (value + type)
 export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; // Type-only
 
 /**
+ * Body pivot contributions for reach calculations (meters)
+ * 
+ * These values represent additional reach gained from body mechanics:
+ * - Hip rotation and torso lean for kicks
+ * - Shoulder offset and torso rotation for punches
+ * 
+ * Heuristically aligned with PhysicalReachCalculator.ts but intentionally
+ * simplified for AI decision-making (e.g., omits stance/animation modifiers).
+ * 
+ * @korean 신체 회전 도달 거리 증가 (AI 의사결정을 위한 근사치)
+ */
+const BODY_PIVOT_METERS = {
+  /** Hip rotation + torso lean for kicks (meters) */
+  KICK: 0.25,
+  /** Torso rotation for punches (meters) */
+  TORSO_ROTATION: 0.1,
+} as const;
+
+/**
+ * Average technique extension multipliers
+ * 
+ * Based on analysis of technique baseExtension values:
+ * - Punches: 0.9-0.95 (average 0.95)
+ * - Kicks: 1.0-1.05 (average 1.05)
+ * 
+ * TODO: Consider implementing technique-specific lookup based on actual
+ * technique data for more precise range calculations. Current averages
+ * are sufficient for AI decision-making but may need refinement.
+ * 
+ * @korean 기술 연장 배수
+ */
+const TECHNIQUE_EXTENSION = {
+  /** Average punch baseExtension multiplier */
+  PUNCH: 0.95,
+  /** Average kick baseExtension multiplier */
+  KICK: 1.05,
+} as const;
+
+/**
  * Distance-based stance preferences for tactical positioning
  *
  * Stances are categorized by optimal combat range based on actual technique
@@ -214,49 +253,99 @@ export class AIDecisionTree {
   }
 
   /**
+   * Calculate kick reach for an archetype based on physical attributes.
+   * 
+   * **Physics-First**: Returns reach in METERS based on leg length.
+   * Includes realistic kick reach calculation:
+   * - Leg length converted from cm to meters
+   * - Body pivot contribution (hip rotation + torso lean)
+   * - Average baseExtension for kicks (1.05x multiplier)
+   *
+   * Formula: (legLength/100 + BODY_PIVOT_METERS.KICK) × TECHNIQUE_EXTENSION.KICK
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Kick reach in meters
+   * @korean 발차기 도달 거리 (미터)
+   */
+  private getKickReachMeters(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters + body pivot * average kick baseExtension
+    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
+  }
+
+  /**
+   * Calculate punch reach for an archetype based on physical attributes.
+   * 
+   * **Physics-First**: Returns reach in METERS based on arm length.
+   * Includes realistic punch reach calculation:
+   * - Arm length converted from cm to meters
+   * - Body pivot (shoulder offset + torso rotation)
+   * - Average baseExtension for punches (0.95x multiplier)
+   *
+   * Formula: (armLength/100 + shoulderOffset + torsoRotation) × TECHNIQUE_EXTENSION.PUNCH
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Punch reach in meters
+   * @korean 주먹 도달 거리 (미터)
+   */
+  private getPunchReachMeters(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Arm length in cm -> meters + body pivot * average punch baseExtension
+    const shoulderOffset = physical.shoulderWidth / 2 / 100; // Convert cm to meters
+    const bodyPivot = shoulderOffset + BODY_PIVOT_METERS.TORSO_ROTATION;
+    return (physical.armLength / 100 + bodyPivot) * TECHNIQUE_EXTENSION.PUNCH;
+  }
+
+  /**
    * Calculate maximum combat reach for an archetype based on physical attributes.
    *
    * **Physics-First**: Returns reach in METERS based on leg length.
    * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
    *
-   * Formula: (legLength / 100) + 0.25 (body pivot) = max reach in meters
+   * Note: This is a heuristic approximation. Actual reach also depends on
+   * stance modifiers and animation timing not included in AI range calculations.
    *
    * @param archetype - Player archetype to calculate reach for
    * @returns Maximum combat reach in meters
    * @korean 원형별 최대 도달 거리 (미터)
    */
   private getArchetypeMaxReach(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot contribution (0.25m)
-    return physical.legLength / 100 + 0.25;
+    return this.getKickReachMeters(archetype);
   }
 
   /**
    * Get close range threshold for an archetype (punching/elbow distance).
    * Based on arm length from physical attributes.
+   * 
+   * Uses the shared punch reach calculation helper for consistency.
+   * 
+   * TODO: Extract to shared utility function with PhysicalReachCalculator.ts
+   * to maintain consistency between AI range calculations and actual hit detection.
+   * Consider handling elbow techniques separately with different body pivot values.
    *
    * @param archetype - Player archetype
    * @returns Close range threshold in meters
    * @korean 근접 범위 (미터)
    */
   private getArchetypeCloseRange(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Arm length in cm -> meters (punching range)
-    return physical.armLength / 100;
+    return this.getPunchReachMeters(archetype);
   }
 
   /**
    * Get medium range threshold for an archetype (kicking distance).
    * Based on leg length from physical attributes.
+   * 
+   * Includes realistic kick reach calculation:
+   * - Leg length converted from cm to meters  
+   * - Body pivot contribution (hip rotation + torso lean)
+   * - Average baseExtension for kicks
    *
    * @param archetype - Player archetype
    * @returns Medium range threshold in meters
    * @korean 중거리 범위 (미터)
    */
   private getArchetypeMediumRange(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters (kicking range without full body pivot)
-    return physical.legLength / 100;
+    return this.getKickReachMeters(archetype);
   }
 
   /**
