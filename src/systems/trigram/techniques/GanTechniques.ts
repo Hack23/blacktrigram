@@ -146,12 +146,12 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
-    // Animation: Powerful blocking motion
-    animationType: AnimationType.BLOCK,
-    animationSpeed: 1.1,
+    // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)
+    animationType: AnimationType.IRON_BLOCK,
+    animationSpeed: 0.85,
     category: "light",
     range: "medium",
-    speed: 1.1,
+    speed: 0.85,
   },
 
   // ============= Counter-Attack Techniques =============

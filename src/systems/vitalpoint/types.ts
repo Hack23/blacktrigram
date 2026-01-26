@@ -155,6 +155,27 @@ export interface KoreanTechnique {
 }
 
 /**
+ * Stricter type for Trigram Stance Techniques
+ * 팔괘 자세 기술 엄격 타입
+ *
+ * Extends KoreanTechnique with required categorization fields for
+ * all trigram stance techniques. Use this type for technique arrays
+ * in stance files to enforce compile-time validation.
+ *
+ * Example usage:
+ * ```typescript
+ * export const GEON_TECHNIQUES: readonly TrigramTechnique[] = [...]
+ * ```
+ *
+ * @korean 팔괘기술엄격타입
+ */
+export type TrigramTechnique = KoreanTechnique & {
+  readonly category: "light" | "medium" | "heavy" | "special";
+  readonly range: "short" | "medium" | "long";
+  readonly speed: number;
+};
+
+/**
  * Korean text with romanization for vital point names
  */
 export interface VitalPointNames {

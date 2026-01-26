@@ -68,11 +68,11 @@ export const SON_TECHNIQUES: readonly KoreanTechnique[] = [
     critMultiplier: 1.2,
     effects: [],
     // Animation: Continuous striking pattern
-    animationType: AnimationType.JAB,
-    animationSpeed: 1.3,
+    animationType: AnimationType.RAPID_BARRAGE,
+    animationSpeed: 1.5,
     category: "medium",
     range: "short",
-    speed: 1.3,
+    speed: 1.5,
   },
 
   // ============= Taekyon Footwork Techniques =============

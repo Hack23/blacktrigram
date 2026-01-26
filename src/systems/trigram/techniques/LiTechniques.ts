@@ -207,7 +207,7 @@ export const LI_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.PRESSURE_POINT_STRIKE,
     animationSpeed: 1.0,
     category: "special",
     range: "short",

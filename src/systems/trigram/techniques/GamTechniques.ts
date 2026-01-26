@@ -68,12 +68,12 @@ export const GAM_TECHNIQUES: readonly KoreanTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
-    // Animation: Flowing counter-attack
-    animationType: AnimationType.COUNTER_STRIKE,
-    animationSpeed: 1.1,
+    // Animation: Flowing counter-attack (matches TechniqueAnimationMapping)
+    animationType: AnimationType.WATER_COUNTER,
+    animationSpeed: 1.0,
     category: "medium",
     range: "medium",
-    speed: 1.1,
+    speed: 1.0,
   },
 
   // ============= Throwing Techniques =============
