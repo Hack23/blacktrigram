@@ -309,7 +309,10 @@ function App() {
 
   const handleRematch = useCallback(() => {
     // Restart combat with same settings
-    if (!gameMode) return;
+    if (!gameMode) {
+      console.warn("Cannot rematch: gameMode is not set");
+      return;
+    }
     
     setIsTransitioning(true);
     setGameWinner(null);
