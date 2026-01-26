@@ -208,10 +208,10 @@ export const GEON_TECHNIQUES: readonly KoreanTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     animationType: AnimationType.AXE_KICK,
-    animationSpeed: 0.75,
+    animationSpeed: 0.9,
     category: "heavy",
     range: "medium",
-    speed: 0.75,
+    speed: 0.9,
   },
   {
     id: "geon_palm_strike",

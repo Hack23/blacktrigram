@@ -97,10 +97,10 @@ export const TAE_TECHNIQUES: readonly KoreanTechnique[] = [
     critMultiplier: 1.5,
     effects: [],
     animationType: AnimationType.WRIST_LOCK,
-    animationSpeed: 0.9,
+    animationSpeed: 0.85,
     category: "light",
     range: "short",
-    speed: 0.9,
+    speed: 0.85,
   },
   {
     id: "tae_small_circle",

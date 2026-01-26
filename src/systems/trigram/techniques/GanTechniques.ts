@@ -171,7 +171,7 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GAN,
     type: CombatAttackType.COUNTER_ATTACK,
-    damageType: DamageType.PRESSURE,
+    damageType: DamageType.BLUNT,
     damage: 30,
     kiCost: 16,
     staminaCost: 20,

@@ -13,7 +13,7 @@
  * **AC7**: Animation hooks - animationType and animationSpeed for all techniques
  *
  * @module systems/trigram/__tests__/TechniqueVariety
- * @see {@link https://github.com/Hack23/blacktrigram/issues/XXX} for original issue
+ * @see {@link https://github.com/Hack23/blacktrigram/issues/1434} for original issue
  *
  * ## Test Structure
  *
@@ -256,6 +256,14 @@ describe("AC2: Distinct Properties (Damage, Stamina, Speed, Range)", () => {
         expect(uniqueExecutionTimes.size).toBeGreaterThanOrEqual(2);
       }
 
+      // Validate that speed field is present and matches animation speed concept
+      techniques.forEach((tech) => {
+        expect(tech.speed).toBeDefined();
+        expect(typeof tech.speed).toBe("number");
+        expect(tech.speed).toBeGreaterThan(0);
+        expect(tech.speed).toBeLessThanOrEqual(2.0);
+      });
+
       console.log(stance + " execution time range: " + Math.min(...executionTimes) + "-" + Math.max(...executionTimes) + "ms");
     });
   });
@@ -392,9 +400,8 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
       if (!validation.valid) {
         console.error("❌ " + tech.id + ":", validation.issues);
       }
-      if (!validation.valid) {
-        console.warn("⚠️  " + tech.id + ":", validation.issues);
-      }
+      // Assert that medium techniques meet balance criteria
+      expect(validation.valid).toBe(true);
     });
   });
 

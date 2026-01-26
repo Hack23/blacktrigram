@@ -171,7 +171,7 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     },
     stance: TrigramStance.GON,
     type: CombatAttackType.THROW,
-    damageType: DamageType.PRESSURE,
+    damageType: DamageType.IMPACT,
     damage: 32,
     kiCost: 20,
     staminaCost: 28,
@@ -226,10 +226,10 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     effects: [],
     // Animation: Slam throw
     animationType: AnimationType.SLAM,
-    animationSpeed: 0.95,
+    animationSpeed: 1.0,
     category: "heavy",
     range: "short",
-    speed: 0.95,
+    speed: 1.0,
   },
   {
     id: "gon_body_lock_takedown",

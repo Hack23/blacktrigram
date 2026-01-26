@@ -117,6 +117,9 @@ export interface KoreanTechnique {
    * - heavy: Slow, high damage, high stamina cost
    * - special: Unique effects, vital point targeting
    *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Tests validate presence and correctness.
+   *
    * @korean 기술분류
    */
   category?: "light" | "medium" | "heavy" | "special";
@@ -129,6 +132,9 @@ export interface KoreanTechnique {
    * - medium: Mid range (1-2m)
    * - long: Extended reach (2-3m)
    *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Tests validate presence and distribution.
+   *
    * @korean 거리분류
    */
   range?: "short" | "medium" | "long";
@@ -139,6 +145,9 @@ export interface KoreanTechnique {
    *
    * Higher values = faster execution
    * Typical range: 0.6 (slow) to 1.4 (very fast)
+   *
+   * Note: Optional for backward compatibility, but required for all
+   * trigram stance techniques. Should align with animationSpeed.
    *
    * @korean 속도등급
    */
