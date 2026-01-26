@@ -199,3 +199,59 @@ export const FRAME_TIME_BUDGET = {
   /** 30fps = 33.33ms per frame (minimum acceptable) */
   FPS_30: 33.33,
 } as const;
+
+/**
+ * Performance optimization thresholds for mobile
+ * 
+ * Target values for mobile performance optimization:
+ * - FPS: 55+ sustained during combat
+ * - Draw calls: <100 per frame
+ * - Memory: <200MB heap usage
+ * - Particle count: 50% of desktop
+ * 
+ * Note: shadowMapSize (512) represents the baseline/minimum for mobile.
+ * The adaptive quality system can dynamically adjust above this baseline
+ * (512 → 1024 → 1536) when performance allows, providing better visuals
+ * on higher-end mobile devices while maintaining the 512 minimum for
+ * low-end devices.
+ * 
+ * @constant
+ * @category Performance
+ * @korean 모바일성능임계값
+ */
+export const MOBILE_PERFORMANCE_THRESHOLDS = {
+  /** Target FPS for mobile devices */
+  targetFPS: 55,
+  /** Minimum acceptable FPS before quality downgrade */
+  minAcceptableFPS: 45,
+  /** Maximum draw calls per frame */
+  maxDrawCalls: 100,
+  /** Maximum memory usage in MB */
+  maxMemoryMB: 200,
+  /** Particle count reduction factor (0.5 = 50% of desktop) */
+  particleReduction: 0.5,
+  /** Shadow map size for mobile (baseline - adaptive quality can increase) */
+  shadowMapSize: 512,
+} as const;
+
+/**
+ * Desktop performance thresholds
+ * 
+ * @constant
+ * @category Performance
+ * @korean 데스크톱성능임계값
+ */
+export const DESKTOP_PERFORMANCE_THRESHOLDS = {
+  /** Target FPS for desktop */
+  targetFPS: 60,
+  /** Minimum acceptable FPS before quality downgrade */
+  minAcceptableFPS: 55,
+  /** Maximum draw calls per frame */
+  maxDrawCalls: 150,
+  /** Maximum memory usage in MB */
+  maxMemoryMB: 300,
+  /** Particle count reduction factor (1.0 = full desktop quality) */
+  particleReduction: 1.0,
+  /** Shadow map size for desktop */
+  shadowMapSize: 2048,
+} as const;
