@@ -572,7 +572,7 @@ describe("PainResponseSystem", () => {
       expect(Math.abs(highDelta - 5)).toBeLessThan(0.01);
     });
 
-    it("should not trigger shock on damage exactly at threshold", () => {
+    it("should trigger shock on damage exactly at threshold", () => {
       const { shockEffect } = painSystem.applyPain(player, 10);
       expect(shockEffect).toBeDefined(); // Threshold is >=10
     });
