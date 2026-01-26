@@ -12,13 +12,30 @@
 /**
  * Represents a position in 2D space.
  *
+ * **Unit Handling**: The coordinate units depend on the system using this type:
+ * - **Combat System**: Coordinates are in **meters** (physics-first architecture)
+ * - **Rendering System**: Coordinates are in **pixels** (screen rendering)
+ * - **Legacy Systems**: May use pixels or other units
+ *
+ * When working with combat/physics, positions are in meters relative to arena center (0, 0).
+ * Arena boundaries extend from ±worldWidthMeters/2 in X and ±worldDepthMeters/2 in Z (mapped to y).
+ *
+ * @example
+ * ```typescript
+ * // Combat position (meters, centered at origin)
+ * const playerPos: Position = { x: 2.5, y: -1.0 }; // 2.5m right, 1m back from center
+ *
+ * // Rendering position (pixels, top-left origin)
+ * const screenPos: Position = { x: 640, y: 480 }; // 640px right, 480px down
+ * ```
+ *
  * @public
  * @category Core Types
  */
 export interface Position {
-  /** X coordinate in pixels */
+  /** X coordinate (meters in combat, pixels in rendering) */
   x: number;
-  /** Y coordinate in pixels */
+  /** Y coordinate (meters in combat, pixels in rendering) */
   y: number;
 }
 

@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3D component.
@@ -20,13 +21,8 @@ export interface HitEffects3DProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 
 interface ActiveEffect extends HitEffect {
@@ -40,24 +36,33 @@ interface ActiveEffect extends HitEffect {
 const HitEffectVisual: React.FC<{
   effect: HitEffect;
   effectRef: React.MutableRefObject<ActiveEffect | null>;
-  arenaBounds?: { x: number; y: number; width: number; height: number };
+  arenaBounds?: PhysicsArenaBounds;
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
   // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
   const alphaRef = useRef(1);
 
-  // Position in 3D space - convert 2D position to 3D
+  // Position in 3D space - use meter coordinates directly
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
 
-    // Convert from screen coordinates to 3D world coordinates
-    // Use arena bounds if available, otherwise use default normalization
-    const bounds = arenaBounds ?? { x: 0, y: 0, width: 1200, height: 800 };
-    const relX = (effect.position.x - bounds.x) / bounds.width;
-    const relZ = (effect.position.y - bounds.y) / bounds.height;
-    const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+    // Use arena bounds if available, otherwise use default values for 10m arena
+    const bounds = arenaBounds ?? DEFAULT_PHYSICS_ARENA_BOUNDS;
+    
+    // Position is in meters relative to arena center (0, 0)
+    // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+    // So we use meter coordinates directly too for alignment
+    const halfWidth = bounds.worldWidthMeters / 2;
+    const halfDepth = bounds.worldDepthMeters / 2;
+    
+    // Clamp position to arena boundaries in meters
+    const clampedX = Math.min(halfWidth, Math.max(-halfWidth, effect.position.x));
+    const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, effect.position.y));
+    
+    // Use clamped meter coordinates directly in 3D space (no remapping)
+    const x = clampedX; // Meter position X
     const y = 1.5; // Mid-height for effects
-    const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+    const z = clampedZ; // Meter position Z (depth)
 
     return [x, y, z];
   }, [effect.position, arenaBounds]);

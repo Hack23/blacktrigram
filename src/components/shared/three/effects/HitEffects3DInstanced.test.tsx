@@ -263,6 +263,9 @@ describe("HitEffects3DInstanced", () => {
         y: 100,
         width: 800,
         height: 600,
+        scale: 0.8,
+        worldWidthMeters: 8,
+        worldDepthMeters: 6,
       };
 
       const { container } = render3D(

@@ -28,6 +28,7 @@ import * as THREE from "three";
 import { HitEffect } from "../../../../systems";
 import { HitEffectType } from "../../../../systems/effects";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, clampToArenaBounds, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 
 /**
  * Props for the HitEffects3DInstanced component
@@ -37,13 +38,8 @@ export interface HitEffects3DInstancedProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for accurate coordinate conversion (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
 }
 
 /**
@@ -58,21 +54,33 @@ interface ActiveEffectInstance {
 }
 
 /**
- * Convert 2D screen position to 3D world position
+ * Convert meter-based position to 3D world position.
+ *
+ * Positions from the combat system are in meters relative to the arena center.
+ * This function clamps the meter-based position to the arena bounds and then
+ * uses those clamped meter coordinates directly as 3D world coordinates
+ * (with a fixed mid-height for visual hit effects). No 0–1 normalization or
+ * additional remapping is performed.
  */
 const positionTo3D = (
   effect: HitEffect,
-  arenaBounds: { x: number; y: number; width: number; height: number }
+  arenaBounds: PhysicsArenaBounds
 ): THREE.Vector3 => {
   if (!effect.position) {
     return new THREE.Vector3(0, 1, 0);
   }
 
-  const relX = (effect.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (effect.position.y - arenaBounds.y) / arenaBounds.height;
-  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  // Position is in meters relative to arena center (0, 0)
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
+  
+  // Clamp position to arena boundaries using shared helper
+  const clamped = clampToArenaBounds(effect.position, arenaBounds);
+  
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = clamped.x; // Meter position X
   const y = 1.5; // Mid-height for effects
-  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clamped.y; // Meter position Z (depth)
 
   return new THREE.Vector3(x, y, z);
 };
@@ -189,7 +197,7 @@ const EffectInstanceGroup: React.FC<{
 export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
   effects,
   onEffectComplete,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
 }) => {
   const effectRefsMap = useRef<
     Map<string, React.MutableRefObject<ActiveEffectInstance>>

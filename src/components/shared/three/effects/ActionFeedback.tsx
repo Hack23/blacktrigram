@@ -19,6 +19,7 @@ import {
   ActionFeedbackType,
 } from "../../../../hooks/useActionFeedback";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import { DEFAULT_PHYSICS_ARENA_BOUNDS, type PhysicsArenaBounds } from "../../../../types/PhysicsTypes";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
 
 // Animation phase thresholds (as percentage of total duration)
@@ -35,13 +36,8 @@ export interface ActionFeedbackProps {
   readonly feedbacks: readonly ActionFeedbackData[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning */
-  readonly arenaBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+  /** Arena bounds for 3D positioning (physics-first with meter dimensions) */
+  readonly arenaBounds?: PhysicsArenaBounds;
   /** Duration of animation in ms (default: 1200) */
   readonly animationDuration?: number;
 }
@@ -112,7 +108,7 @@ function getGlowColor(type: ActionFeedbackType): string {
 interface SingleFeedbackProps {
   readonly feedback: ActionFeedbackData;
   readonly isMobile: boolean;
-  readonly arenaBounds: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly animationDuration: number;
 }
 
@@ -125,12 +121,21 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(feedback.timestamp);
 
-  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
-  const relX = (feedback.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (feedback.position.y - arenaBounds.y) / arenaBounds.height;
-  const x = relX * 16 - 8; // Map 0-1 to -8 to 8
+  // Calculate 3D position from meter-based coordinates (physics-first architecture)
+  // Position is in meters relative to arena center (0, 0)
+  // Player models use meter coordinates directly: position={[playerPos.x, 0, playerPos.y]}
+  // So we use meter coordinates directly too for alignment
+  const halfWidth = arenaBounds.worldWidthMeters / 2;
+  const halfDepth = arenaBounds.worldDepthMeters / 2;
+  
+  // Clamp position to arena boundaries in meters
+  const clampedX = Math.min(halfWidth, Math.max(-halfWidth, feedback.position.x));
+  const clampedZ = Math.min(halfDepth, Math.max(-halfDepth, feedback.position.y));
+  
+  // Use clamped meter coordinates directly in 3D space (no remapping)
+  const x = clampedX; // Meter position X
   const y = 2.5 + progress * 1.5; // Float upward
-  const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
+  const z = clampedZ; // Meter position Z (depth)
   const position3D: [number, number, number] = [x, y, z];
 
   // Update progress using useFrame
@@ -199,7 +204,7 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
 export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
   feedbacks,
   isMobile = false,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = DEFAULT_PHYSICS_ARENA_BOUNDS,
   animationDuration = 1200,
 }) => {
   // Derive visible feedbacks from props - no need for state sync

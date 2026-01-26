@@ -44,6 +44,7 @@ import {
   type AnimationState,
 } from "@/systems/animation";
 import { movementPenaltySystem } from "@/systems/bodypart";
+import { clampToArenaBounds, type PhysicsArenaBounds } from "@/types/PhysicsTypes";
 import {
   checkForFall,
   getFallTypeName,
@@ -91,51 +92,52 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
  * The knockback displacement is applied in the direction of the attack vector
  * (attacker → defender), respecting arena boundaries.
  *
- * @param result - Combat result containing knockback data
- * @param defenderPos - Current defender position
- * @param arenaBounds - Arena boundary limits
- * @returns Updated defender position after knockback
+ * **Physics-First Architecture**: Both positions and knockback displacement
+ * are in meters. Arena bounds are centered at origin (0, 0) with extent
+ * ±worldWidthMeters/2 in X and ±worldDepthMeters/2 in Z.
+ *
+ * @param result - Combat result containing knockback data (in meters)
+ * @param defenderPos - Current defender position (in meters)
+ * @param arenaBounds - Arena boundary limits with meter dimensions
+ * @returns Updated defender position after knockback (in meters)
  *
  * @example
  * ```typescript
+ * // 10m × 7.5m arena, player at x=2m knocked back 2.5m to right
  * const newPosition = applyKnockbackDisplacement(
- *   result,
- *   playerPositions[1],
- *   arenaBounds
+ *   result, // knockback.displacement.x = 2.5m
+ *   { x: 2, y: 0 }, // Current position: 2m from center
+ *   { worldWidthMeters: 10, worldDepthMeters: 7.5, ... }
  * );
- * // Returns: { x: 5.5, y: 0 } (displaced 2.5m from x=3)
+ * // Returns: { x: 4.5, y: 0 } (2m + 2.5m = 4.5m, within ±5m boundary)
+ *
+ * // Same knockback but would exceed boundary
+ * const clampedPosition = applyKnockbackDisplacement(
+ *   result, // knockback.displacement.x = 2.5m
+ *   { x: 4, y: 0 }, // Current position: 4m from center
+ *   { worldWidthMeters: 10, worldDepthMeters: 7.5, ... }
+ * );
+ * // Returns: { x: 5, y: 0 } (4m + 2.5m = 6.5m, clamped to +5m boundary)
  * ```
  */
 function applyKnockbackDisplacement(
   result: CombatResult,
   defenderPos: Position,
-  arenaBounds: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    scale?: number;
-  },
+  arenaBounds: PhysicsArenaBounds,
 ): Position {
   if (!result.knockback) {
     return defenderPos;
   }
 
-  // Apply knockback displacement
+  // Apply knockback displacement (both in meters)
   // Note: knockback.displacement.z maps to position.y in 2D arena
-  let newX = defenderPos.x + result.knockback.displacement.x;
-  let newY = defenderPos.y + result.knockback.displacement.z;
+  const newPos = {
+    x: defenderPos.x + result.knockback.displacement.x,
+    y: defenderPos.y + result.knockback.displacement.z,
+  };
 
-  // Clamp to arena boundaries
-  const minX = arenaBounds.x;
-  const maxX = arenaBounds.x + arenaBounds.width;
-  const minY = arenaBounds.y;
-  const maxY = arenaBounds.y + arenaBounds.height;
-
-  newX = Math.max(minX, Math.min(maxX, newX));
-  newY = Math.max(minY, Math.min(maxY, newY));
-
-  return { x: newX, y: newY };
+  // Clamp to arena boundaries using shared physics helper
+  return clampToArenaBounds(newPos, arenaBounds);
 }
 
 export interface UseCombatActionsConfig {
@@ -162,15 +164,7 @@ export interface UseCombatActionsConfig {
     position: Position,
     intensity?: number,
   ) => void;
-  readonly arenaBounds: {
-    readonly x: number;
-    readonly y: number;
-    readonly width: number;
-    readonly height: number;
-    readonly scale?: number;
-    readonly worldWidthMeters: number;
-    readonly worldDepthMeters: number;
-  };
+  readonly arenaBounds: PhysicsArenaBounds;
   readonly combatAudio?: {
     readonly playAttackSound: (intensity?: AttackIntensity) => Promise<void>;
     readonly playHitSound: (damage: number) => Promise<void>;
