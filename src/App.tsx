@@ -328,7 +328,8 @@ function App() {
       setIsGameActive(true);
       setIsTransitioning(false);
     }, SCREEN_TRANSITION_DELAY_MS);
-  }, [gameMode, isGameActive, gameWinner, matchStats]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- isGameActive, gameWinner, matchStats only used in error logging, not function logic
+  }, [gameMode]);
 
   const handleViewTraining = useCallback(() => {
     // Navigate to training mode
