@@ -162,16 +162,37 @@ export class InjuryMovementModifier {
    * @param config - Optional configuration overrides (supports partial threshold overrides)
    */
   constructor(config?: PartialInjuryMovementConfig) {
-    // Deep merge leg thresholds to prevent partial overrides from breaking the config
+    // Deep merge leg thresholds to prevent partial overrides from breaking the config.
+    // Use ?? to avoid undefined values overwriting defaults when exactOptionalPropertyTypes is disabled.
     const mergedLegThresholds = {
-      ...DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds,
-      ...(config?.legThresholds ?? {}),
+      normal:
+        config?.legThresholds?.normal ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds.normal,
+      limping:
+        config?.legThresholds?.limping ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds.limping,
+      critical:
+        config?.legThresholds?.critical ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.legThresholds.critical,
     };
 
     const mergedConfig: InjuryMovementConfig = {
-      ...DEFAULT_INJURY_MOVEMENT_CONFIG,
-      ...config,
       legThresholds: mergedLegThresholds,
+      maxTorsoPenalty:
+        config?.maxTorsoPenalty ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.maxTorsoPenalty,
+      bothLegsInjuredMultiplier:
+        config?.bothLegsInjuredMultiplier ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.bothLegsInjuredMultiplier,
+      painOverloadThreshold:
+        config?.painOverloadThreshold ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.painOverloadThreshold,
+      painOverloadMultiplier:
+        config?.painOverloadMultiplier ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.painOverloadMultiplier,
+      minSpeedMultiplier:
+        config?.minSpeedMultiplier ??
+        DEFAULT_INJURY_MOVEMENT_CONFIG.minSpeedMultiplier,
     };
 
     // Development-mode sanity check: ensure thresholds are finite and ordered
