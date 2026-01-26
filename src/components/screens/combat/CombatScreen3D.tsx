@@ -77,8 +77,7 @@ import { RoundAnnouncement } from "./components/feedback/RoundAnnouncementOverla
 import { RoundDisplayStatus } from "./components/feedback/RoundDisplayStatus";
 import { RoundStartAnnouncement } from "./components/feedback/RoundStartAnnouncementOverlayHtml";
 import { InputBufferDisplay } from "./components/indicators/InputBufferDisplay";
-// GestureEvent import preserved for future gesture controls
-// import { GestureEvent } from "../../../hooks/useTouchControls";
+import { GestureEvent } from "../../../hooks/useTouchControls";
 import {
   MovementType,
   SpeedModifierSystem,
@@ -89,7 +88,11 @@ import {
   convertPlayerStateToProps,
   getBalanceState,
 } from "../../../utils/player3DHelpers";
-import { MobileControlsOverlay } from "../../shared/mobile";
+import {
+  GestureRecognizerPure,
+  MobileControlsOverlay,
+  StanceWheelPure,
+} from "../../shared/mobile";
 import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
@@ -1650,8 +1653,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     currentAnimationState: player1Animation.currentState,
   });
 
-  // Mobile touch control state (kept for future stance wheel feature)
-  // const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
+  // Mobile touch control state - stance wheel for mobile stance changes
+  const [stanceWheelExpanded, setStanceWheelExpanded] = useState(false);
   const activeMobileKeyRef = useRef<string | null>(null);
 
   /**
@@ -1746,9 +1749,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [handleDefendWithFeedback],
   );
 
-  // Mobile stance wheel and gesture controls - preserved for future stance wheel feature
-  // Currently using simpler MobileControlsOverlay outside Canvas
-  /*
+  // Mobile stance wheel and gesture controls
   const handleMobileStanceChange = useCallback(
     (stanceIndex: number) => {
       const stance = TRIGRAM_STANCES_ORDER[stanceIndex];
@@ -1764,12 +1765,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (gesture: GestureEvent) => {
       switch (gesture.type) {
         case "swipe-right":
-          // Advance toward opponent
+          // Advance toward opponent - dispatch keydown then keyup to prevent stuck movement
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }));
+          setTimeout(() => {
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: "d" }));
+          }, 100);
           break;
         case "swipe-left":
-          // Retreat from opponent
+          // Retreat from opponent - dispatch keydown then keyup to prevent stuck movement
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+          setTimeout(() => {
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: "a" }));
+          }, 100);
           break;
         case "swipe-up":
           // High attack mode - execute selected technique
@@ -1789,6 +1796,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [techniqueSelection, audio],
   );
 
+  const toggleStanceWheel = useCallback(() => {
+    setStanceWheelExpanded((prev) => !prev);
+  }, []);
+
   // Check if mobile controls should be enabled
   const mobileControlsEnabled =
     isMobile &&
@@ -1799,7 +1810,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     matchCountdownComplete &&
     !showRoundStart &&
     !combatState.isExecutingTechnique;
-  */
 
   // Note: Player 1 position is updated via the onPositionChange callback
   // in usePlayerMovement config above, not via useEffect
@@ -2667,11 +2677,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       {/* Mobile Controls - Pure DOM, rendered OUTSIDE Canvas for reliable touch events */}
       {/* Uses pure DOM handlers instead of drei's Html which can block touch events on mobile */}
       {isMobile && (
-        <MobileControlsOverlay
-          onMove={handleMobileMove}
-          onAttack={handleMobileAttack}
-          onBlock={handleMobileBlock}
-        />
+        <>
+          <MobileControlsOverlay
+            onMove={handleMobileMove}
+            onAttack={handleMobileAttack}
+            onBlock={handleMobileBlock}
+          />
+
+          <StanceWheelPure
+            currentStance={currentStanceIndex}
+            onStanceChange={handleMobileStanceChange}
+            expanded={stanceWheelExpanded}
+            onToggle={toggleStanceWheel}
+            disabled={!mobileControlsEnabled}
+            opacity={0.8}
+          />
+
+          <GestureRecognizerPure
+            onGesture={handleMobileGesture}
+            enabled={mobileControlsEnabled}
+            showFeedback={true}
+            minSwipeDistance={50}
+          />
+        </>
       )}
     </div>
   );

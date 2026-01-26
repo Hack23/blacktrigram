@@ -1,24 +1,27 @@
 /**
- * GestureRecognizer Component
+ * GestureRecognizerPure Component - Pure DOM version (no Three.js/drei dependency)
  * 
  * Visual overlay for gesture detection feedback
  * Displays swipe trails and multi-touch indicators
  * 
- * @module components/mobile/GestureRecognizer
+ * This is a pure DOM version that renders OUTSIDE the Three.js Canvas.
+ * It does NOT use Html from @react-three/drei, making it compatible with
+ * rendering outside Canvas contexts.
+ * 
+ * @module components/mobile/GestureRecognizerPure
  * @category Mobile Controls
- * @korean 제스처 인식기
+ * @korean 제스처 인식기 (순수 DOM)
  */
 
-import { Html } from '@react-three/drei';
 import React, { useCallback, useEffect, useState } from 'react';
 import { KOREAN_COLORS } from '../../../types/constants';
 import { GestureEvent, useTouchControls } from '../../../hooks/useTouchControls';
 import { getColorRGB } from '../../../utils/colorHelpers';
 
 /**
- * Props for GestureRecognizer component
+ * Props for GestureRecognizerPure component
  */
-export interface GestureRecognizerProps {
+export interface GestureRecognizerPureProps {
   /** Callback when gesture is detected */
   readonly onGesture: (gesture: GestureEvent) => void;
   /** Whether gesture recognition is enabled */
@@ -42,9 +45,9 @@ interface GestureFeedback {
 }
 
 /**
- * GestureRecognizer Component
+ * GestureRecognizerPure Component
  * 
- * Provides gesture detection and visual feedback for mobile controls
+ * Pure DOM gesture detection and visual feedback for mobile controls
  * Features:
  * - Swipe detection (4 directions)
  * - Two-finger tap detection
@@ -61,7 +64,7 @@ interface GestureFeedback {
  * 
  * @example
  * ```tsx
- * <GestureRecognizer
+ * <GestureRecognizerPure
  *   onGesture={(gesture) => {
  *     console.log('Detected:', gesture.type);
  *     handleGesture(gesture);
@@ -72,9 +75,9 @@ interface GestureFeedback {
  * ```
  * 
  * @public
- * @korean 제스처인식기
+ * @korean 제스처인식기순수
  */
-export const GestureRecognizer: React.FC<GestureRecognizerProps> = ({
+export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
   onGesture,
   enabled = true,
   showFeedback = true,
@@ -159,100 +162,98 @@ export const GestureRecognizer: React.FC<GestureRecognizerProps> = ({
   };
 
   return (
-    <Html fullscreen>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          zIndex: 1000,
-        }}
-        data-testid="gesture-recognizer"
-      >
-        {/* Gesture feedback indicators */}
-        {feedbacks.map((feedback) => {
-          const age = feedback.age ?? 0;
-          const opacity = Math.max(0, 1 - age / 1000);
-          const scale = 1 + age / 500;
-          const display = getGestureDisplay(feedback.type);
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 1000,
+      }}
+      data-testid="gesture-recognizer-pure"
+    >
+      {/* Gesture feedback indicators */}
+      {feedbacks.map((feedback) => {
+        const age = feedback.age ?? 0;
+        const opacity = Math.max(0, 1 - age / 1000);
+        const scale = 1 + age / 500;
+        const display = getGestureDisplay(feedback.type);
 
-          return (
-            <div
-              key={feedback.id}
-              style={{
-                position: 'absolute',
-                left: `${feedback.x}px`,
-                top: `${feedback.y}px`,
-                transform: `translate(-50%, -50%) scale(${scale})`,
-                opacity,
-                transition: 'all 0.1s ease-out',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-              data-testid={`gesture-feedback-${feedback.id}`}
-            >
-              {/* Icon */}
-              <div
-                style={{
-                  fontSize: '32px',
-                  color: `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity})`,
-                  textShadow: `0 0 10px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity * 0.8})`,
-                }}
-              >
-                {display.icon}
-              </div>
-
-              {/* Label */}
-              <div
-                style={{
-                  background: `rgba(0, 0, 0, ${opacity * 0.8})`,
-                  border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                  borderRadius: '8px',
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap',
-                  textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
-                }}
-              >
-                {display.korean} | {display.english}
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Gesture instructions overlay (optional) */}
-        {enabled && (
+        return (
           <div
+            key={feedback.id}
             style={{
               position: 'absolute',
-              top: '10px',
-              right: '10px',
-              background: 'rgba(0, 0, 0, 0.7)',
-              border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.6)`,
-              borderRadius: '8px',
-              padding: '8px 12px',
-              fontSize: '10px',
-              color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
-              maxWidth: '150px',
-              opacity: 0.7,
+              left: `${feedback.x}px`,
+              top: `${feedback.y}px`,
+              transform: `translate(-50%, -50%) scale(${scale})`,
+              opacity,
+              transition: 'all 0.1s ease-out',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '4px',
             }}
-            data-testid="gesture-instructions"
+            data-testid={`gesture-feedback-pure-${feedback.id}`}
           >
-            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>제스처 | Gestures</div>
-            <div>← → 이동 | Move</div>
-            <div>↑ ↓ 공격 | Attack</div>
-            <div>🤞 급소 | Vital</div>
+            {/* Icon */}
+            <div
+              style={{
+                fontSize: '32px',
+                color: `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity})`,
+                textShadow: `0 0 10px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity * 0.8})`,
+              }}
+            >
+              {display.icon}
+            </div>
+
+            {/* Label */}
+            <div
+              style={{
+                background: `rgba(0, 0, 0, ${opacity * 0.8})`,
+                border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
+                borderRadius: '8px',
+                padding: '4px 8px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              {display.korean} | {display.english}
+            </div>
           </div>
-        )}
-      </div>
-    </Html>
+        );
+      })}
+
+      {/* Gesture instructions overlay (optional) */}
+      {enabled && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'rgba(0, 0, 0, 0.7)',
+            border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.6)`,
+            borderRadius: '8px',
+            padding: '8px 12px',
+            fontSize: '10px',
+            color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
+            maxWidth: '150px',
+            opacity: 0.7,
+          }}
+          data-testid="gesture-instructions-pure"
+        >
+          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>제스처 | Gestures</div>
+          <div>← → 이동 | Move</div>
+          <div>↑ ↓ 공격 | Attack</div>
+          <div>🤞 급소 | Vital</div>
+        </div>
+      )}
+    </div>
   );
 };

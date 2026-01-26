@@ -19,7 +19,11 @@ vi.mock("../../../../shared/mobile", () => ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   StanceWheel: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  StanceWheelPure: (_props: MockComponentProps) => <div data-testid="stance-wheel">Wheel</div>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   GestureRecognizer: (_props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  GestureRecognizerPure: (_props: MockComponentProps) => <div data-testid="gesture-recognizer">Gestures</div>,
 }));
 
 describe("MobileControlsWrapper", () => {

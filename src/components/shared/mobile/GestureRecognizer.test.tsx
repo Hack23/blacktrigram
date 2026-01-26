@@ -7,7 +7,7 @@
 
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
 import { GestureEvent } from "../../../hooks/useTouchControls";
-import type { GestureRecognizerProps } from "./GestureRecognizer";
+import type { GestureRecognizerProps } from "./index";
 
 // Note: Testing Three.js Html components requires special async handling
 // These tests focus on component logic and props validation
