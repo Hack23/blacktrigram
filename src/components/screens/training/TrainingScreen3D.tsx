@@ -76,7 +76,10 @@ import {
   convertPlayerStateToProps,
 } from "../../../utils/player3DHelpers";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
-import { GestureRecognizer, StanceWheel } from "../../shared/mobile";
+import {
+  GestureRecognizerPure,
+  StanceWheelPure,
+} from "../../shared/mobile";
 import {
   MobileControlsOverlay,
   type ButtonEventType,
@@ -1345,7 +1348,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               opacity={0.85}
             />
 
-            <StanceWheel
+            <StanceWheelPure
               currentStance={trainingState.currentStanceIndex}
               onStanceChange={handleMobileStanceChange}
               expanded={trainingState.stanceWheelExpanded}
@@ -1354,7 +1357,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
               opacity={0.8}
             />
 
-            <GestureRecognizer
+            <GestureRecognizerPure
               onGesture={handleMobileGesture}
               enabled={mobileControlsEnabled}
               showFeedback={true}
