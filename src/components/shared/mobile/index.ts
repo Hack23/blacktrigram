@@ -9,6 +9,7 @@
  * @korean 모바일 컨트롤
  */
 
+// Virtual controls (Html-based, for use inside Three.js Canvas)
 export { VirtualDPad } from "./VirtualDPad";
 export type { DPadEventType, Direction, VirtualDPadProps } from "./VirtualDPad";
 
@@ -16,6 +17,7 @@ export { ActionButtons } from "./ActionButtons";
 export type { ActionButtonsProps, ButtonEventType } from "./ActionButtons";
 
 // Pure DOM mobile controls (for use outside Three.js Canvas)
+// These components use position:fixed and do not depend on @react-three/drei
 export { MobileControlsOverlay } from "./MobileControlsPure";
 export type { MobileControlsOverlayProps } from "./MobileControlsPure";
 
