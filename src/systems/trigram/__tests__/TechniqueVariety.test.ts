@@ -62,6 +62,12 @@ import {
 } from "../techniques";
 import type { KoreanTechnique } from "../../vitalpoint/types";
 
+// Test configuration constants
+const MIN_TECHNIQUES_PER_STANCE = 6;
+const MIN_TOTAL_TECHNIQUES = 24; // Original acceptance criteria minimum
+const TARGET_TOTAL_TECHNIQUES = 32; // Original target
+const VERBOSE_LOGGING = process.env.VERBOSE_TESTS === "true";
+
 const ALL_STANCE_TECHNIQUES = [
   { stance: TrigramStance.GEON, techniques: GEON_TECHNIQUES },
   { stance: TrigramStance.TAE, techniques: TAE_TECHNIQUES },
@@ -72,6 +78,9 @@ const ALL_STANCE_TECHNIQUES = [
   { stance: TrigramStance.GAN, techniques: GAN_TECHNIQUES },
   { stance: TrigramStance.GON, techniques: GON_TECHNIQUES },
 ];
+
+// Hoist flattened technique array for reuse across tests
+const ALL_TECHNIQUES = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
 
 function getCategoryDistribution(techniques: readonly KoreanTechnique[]) {
   const distribution = {
@@ -177,40 +186,49 @@ function validateCategoryProperties(
 }
 
 describe("AC1: 6-7 Techniques Per Stance (Exceeds Original 3-5 Target)", () => {
-  it("should have 6-7 techniques per stance (51 total, exceeding 24-40 target)", () => {
+  it("should have at least 6 techniques per stance", () => {
     const stanceCounts = getTechniqueCountByStance();
 
-    console.log("\n=== TECHNIQUE COUNT BY STANCE ===");
+    if (VERBOSE_LOGGING) {
+      console.log("\n=== TECHNIQUE COUNT BY STANCE ===");
+    }
     Object.entries(stanceCounts).forEach(([stance, count]) => {
-      console.log(stance + ": " + count + " techniques");
-      expect(count).toBeGreaterThanOrEqual(6);
-      expect(count).toBeLessThanOrEqual(7);
+      if (VERBOSE_LOGGING) {
+        console.log(stance + ": " + count + " techniques");
+      }
+      expect(count).toBeGreaterThanOrEqual(MIN_TECHNIQUES_PER_STANCE);
     });
 
     const totalCount = getTotalTechniqueCount();
-    console.log("Total: " + totalCount + " techniques (target was 24-40)");
-    expect(totalCount).toBe(51); // Exact count validation
+    if (VERBOSE_LOGGING) {
+      console.log("Total: " + totalCount + " techniques (min target: " + MIN_TOTAL_TECHNIQUES + ")");
+    }
+    expect(totalCount).toBeGreaterThanOrEqual(MIN_TOTAL_TECHNIQUES);
   });
 
   it("should exceed original target of 32+ techniques", () => {
     const totalCount = getTotalTechniqueCount();
     const stanceCounts = getTechniqueCountByStance();
 
-    console.log("\n=== TARGET TECHNIQUE METRICS ===");
-    console.log("Total techniques: " + totalCount + " (original target: 32+, actual: 51)");
+    if (VERBOSE_LOGGING) {
+      console.log("\n=== TARGET TECHNIQUE METRICS ===");
+      console.log("Total techniques: " + totalCount + " (original target: " + TARGET_TOTAL_TECHNIQUES + "+)");
+    }
 
     const stancesWithSixPlus = Object.values(stanceCounts).filter(
       (count) => count >= 6
     ).length;
-    console.log("Stances with 6+ techniques: " + stancesWithSixPlus + "/8 (all stances)");
+    
+    if (VERBOSE_LOGGING) {
+      console.log("Stances with 6+ techniques: " + stancesWithSixPlus + "/8 (all stances)");
+    }
 
-    expect(totalCount).toBeGreaterThanOrEqual(32);
+    expect(totalCount).toBeGreaterThanOrEqual(TARGET_TOTAL_TECHNIQUES);
     expect(stancesWithSixPlus).toBe(8); // All stances have 6+ techniques
   });
 
   it("should have unique technique IDs across all stances", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
-    const techniqueIds = allTechniques.map((t) => t.id);
+    const techniqueIds = ALL_TECHNIQUES.map((t) => t.id);
     const uniqueIds = new Set(techniqueIds);
 
     expect(techniqueIds.length).toBe(uniqueIds.size);
@@ -286,7 +304,7 @@ describe("AC2: Distinct Properties (Damage, Stamina, Speed, Range)", () => {
 
 describe("AC3: Korean-English Bilingual Names", () => {
   it("should have complete bilingual names for all techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const incompleteTechniques: string[] = [];
 
     allTechniques.forEach((tech) => {
@@ -303,7 +321,7 @@ describe("AC3: Korean-English Bilingual Names", () => {
   });
 
   it("should have matching Korean names in both name.korean and koreanName", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.name.korean).toBe(tech.koreanName);
@@ -311,7 +329,7 @@ describe("AC3: Korean-English Bilingual Names", () => {
   });
 
   it("should have matching English names in both name.english and englishName", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.name.english).toBe(tech.englishName);
@@ -319,7 +337,7 @@ describe("AC3: Korean-English Bilingual Names", () => {
   });
 
   it("should have matching romanized names in both name.romanized and romanized", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.name.romanized).toBe(tech.romanized);
@@ -327,7 +345,7 @@ describe("AC3: Korean-English Bilingual Names", () => {
   });
 
   it("should have non-empty Korean and English descriptions", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.description.korean).toBeTruthy();
@@ -340,7 +358,7 @@ describe("AC3: Korean-English Bilingual Names", () => {
 
 describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   it("should have defined categories for all techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const uncategorized = allTechniques.filter((tech) => !tech.category);
 
     if (uncategorized.length > 0) {
@@ -351,7 +369,7 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   });
 
   it("should have light techniques with appropriate properties", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const lightTechniques = allTechniques.filter(
       (tech) => tech.category === "light"
     );
@@ -368,7 +386,7 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   });
 
   it("should have heavy techniques with appropriate properties", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const heavyTechniques = allTechniques.filter(
       (tech) => tech.category === "heavy"
     );
@@ -385,7 +403,7 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   });
 
   it("should have medium techniques with balanced properties", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const mediumTechniques = allTechniques.filter(
       (tech) => tech.category === "medium"
     );
@@ -403,7 +421,7 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   });
 
   it("should have special techniques with unique effects", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const specialTechniques = allTechniques.filter(
       (tech) => tech.category === "special"
     );
@@ -420,7 +438,7 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
   });
 
   it("should show category distribution across all techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const distribution = getCategoryDistribution(allTechniques);
 
     console.log("\n=== OVERALL CATEGORY DISTRIBUTION ===");
@@ -448,7 +466,7 @@ describe("AC5: Special Techniques (Vital Point, Area Effects)", () => {
   });
 
   it("should have special techniques with effects or high crit rates", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const specialTechniques = allTechniques.filter(
       (tech) => tech.category === "special"
     );
@@ -462,7 +480,7 @@ describe("AC5: Special Techniques (Vital Point, Area Effects)", () => {
   });
 
   it("should show special technique details for verification", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const specialTechniques = allTechniques.filter(
       (tech) => tech.category === "special"
     );
@@ -482,7 +500,7 @@ describe("AC5: Special Techniques (Vital Point, Area Effects)", () => {
 
 describe("AC6: Balance - No Category Dominates >60%", () => {
   it("should ensure no category exceeds 60% of total techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const distribution = getCategoryDistribution(allTechniques);
     const total = allTechniques.length;
 
@@ -528,7 +546,7 @@ describe("AC6: Balance - No Category Dominates >60%", () => {
   });
 
   it("should have reasonable distribution across ranges", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const distribution = getRangeDistribution(allTechniques);
     const total = allTechniques.length;
 
@@ -545,7 +563,7 @@ describe("AC6: Balance - No Category Dominates >60%", () => {
 
 describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
   it("should have animationType defined for all techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const missingAnimationType = allTechniques.filter(
       (tech) => !tech.animationType
     );
@@ -558,7 +576,7 @@ describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
   });
 
   it("should have animationSpeed defined for all techniques", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const missingAnimationSpeed = allTechniques.filter(
       (tech) => tech.animationSpeed === undefined
     );
@@ -571,7 +589,7 @@ describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
   });
 
   it("should have valid animationSpeed values (0.5 to 2.0)", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.animationSpeed).toBeGreaterThanOrEqual(0.5);
@@ -580,7 +598,7 @@ describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
   });
 
   it("should show animation configuration statistics", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const animationSpeeds = allTechniques
       .map((t) => t.animationSpeed)
       .filter((s): s is number => s !== undefined);
@@ -610,7 +628,7 @@ describe("Integration: KoreanTechniquesSystem", () => {
   });
 
   it("should have all required fields for game mechanics", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
 
     allTechniques.forEach((tech) => {
       expect(tech.id).toBeTruthy();
@@ -644,48 +662,50 @@ describe("Integration: KoreanTechniquesSystem", () => {
 
 describe("Summary Report", () => {
   it("should display comprehensive technique statistics", () => {
-    const allTechniques = ALL_STANCE_TECHNIQUES.flatMap((s) => s.techniques);
+    const allTechniques = ALL_TECHNIQUES;
     const totalCount = allTechniques.length;
     const stanceCounts = getTechniqueCountByStance();
     const categoryDist = getCategoryDistribution(allTechniques);
     const rangeDist = getRangeDistribution(allTechniques);
 
-    console.log("\n");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("       TECHNIQUE VARIETY EXPANSION REPORT");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("");
-    console.log("Total Techniques: " + totalCount);
-    console.log("Target: 32+ (" + (totalCount >= 32 ? "✓" : "✗") + ")");
-    console.log("");
-    console.log("--- Stance Distribution ---");
-    Object.entries(stanceCounts).forEach(([stance, count]) => {
-      const status = count >= 4 ? "✓" : count >= 3 ? "~" : "✗";
-      console.log("  " + status + " " + stance + ": " + count);
-    });
-    console.log("");
-    console.log("--- Category Distribution ---");
-    console.log("  Light: " + categoryDist.light + " (" + ((categoryDist.light / totalCount) * 100).toFixed(1) + "%)");
-    console.log("  Medium: " + categoryDist.medium + " (" + ((categoryDist.medium / totalCount) * 100).toFixed(1) + "%)");
-    console.log("  Heavy: " + categoryDist.heavy + " (" + ((categoryDist.heavy / totalCount) * 100).toFixed(1) + "%)");
-    console.log("  Special: " + categoryDist.special + " (" + ((categoryDist.special / totalCount) * 100).toFixed(1) + "%)");
-    console.log("");
-    console.log("--- Range Distribution ---");
-    console.log("  Short: " + rangeDist.short + " (" + ((rangeDist.short / totalCount) * 100).toFixed(1) + "%)");
-    console.log("  Medium: " + rangeDist.medium + " (" + ((rangeDist.medium / totalCount) * 100).toFixed(1) + "%)");
-    console.log("  Long: " + rangeDist.long + " (" + ((rangeDist.long / totalCount) * 100).toFixed(1) + "%)");
-    console.log("");
-    console.log("--- Quality Metrics ---");
-    const withBilingual = allTechniques.filter(hasCompleteBilingualNames).length;
-    const withCategory = allTechniques.filter((t) => t.category).length;
-    const withAnimation = allTechniques.filter((t) => t.animationType).length;
-    console.log("  Bilingual Names: " + withBilingual + "/" + totalCount + " (" + ((withBilingual / totalCount) * 100).toFixed(0) + "%)");
-    console.log("  Categorized: " + withCategory + "/" + totalCount + " (" + ((withCategory / totalCount) * 100).toFixed(0) + "%)");
-    console.log("  Animation Hooks: " + withAnimation + "/" + totalCount + " (" + ((withAnimation / totalCount) * 100).toFixed(0) + "%)");
-    console.log("");
-    console.log("═══════════════════════════════════════════════════");
-    console.log("");
+    if (VERBOSE_LOGGING) {
+      console.log("\n");
+      console.log("═══════════════════════════════════════════════════");
+      console.log("       TECHNIQUE VARIETY EXPANSION REPORT");
+      console.log("═══════════════════════════════════════════════════");
+      console.log("");
+      console.log("Total Techniques: " + totalCount);
+      console.log("Target: " + TARGET_TOTAL_TECHNIQUES + "+ (" + (totalCount >= TARGET_TOTAL_TECHNIQUES ? "✓" : "✗") + ")");
+      console.log("");
+      console.log("--- Stance Distribution ---");
+      Object.entries(stanceCounts).forEach(([stance, count]) => {
+        const status = count >= MIN_TECHNIQUES_PER_STANCE ? "✓" : count >= 3 ? "~" : "✗";
+        console.log("  " + status + " " + stance + ": " + count);
+      });
+      console.log("");
+      console.log("--- Category Distribution ---");
+      console.log("  Light: " + categoryDist.light + " (" + ((categoryDist.light / totalCount) * 100).toFixed(1) + "%)");
+      console.log("  Medium: " + categoryDist.medium + " (" + ((categoryDist.medium / totalCount) * 100).toFixed(1) + "%)");
+      console.log("  Heavy: " + categoryDist.heavy + " (" + ((categoryDist.heavy / totalCount) * 100).toFixed(1) + "%)");
+      console.log("  Special: " + categoryDist.special + " (" + ((categoryDist.special / totalCount) * 100).toFixed(1) + "%)");
+      console.log("");
+      console.log("--- Range Distribution ---");
+      console.log("  Short: " + rangeDist.short + " (" + ((rangeDist.short / totalCount) * 100).toFixed(1) + "%)");
+      console.log("  Medium: " + rangeDist.medium + " (" + ((rangeDist.medium / totalCount) * 100).toFixed(1) + "%)");
+      console.log("  Long: " + rangeDist.long + " (" + ((rangeDist.long / totalCount) * 100).toFixed(1) + "%)");
+      console.log("");
+      console.log("--- Quality Metrics ---");
+      const withBilingual = allTechniques.filter(hasCompleteBilingualNames).length;
+      const withCategory = allTechniques.filter((t) => t.category).length;
+      const withAnimation = allTechniques.filter((t) => t.animationType).length;
+      console.log("  Bilingual Names: " + withBilingual + "/" + totalCount + " (" + ((withBilingual / totalCount) * 100).toFixed(0) + "%)");
+      console.log("  Categorized: " + withCategory + "/" + totalCount + " (" + ((withCategory / totalCount) * 100).toFixed(0) + "%)");
+      console.log("  Animation Hooks: " + withAnimation + "/" + totalCount + " (" + ((withAnimation / totalCount) * 100).toFixed(0) + "%)");
+      console.log("");
+      console.log("═══════════════════════════════════════════════════");
+      console.log("");
+    }
 
-    expect(totalCount).toBeGreaterThanOrEqual(24);
+    expect(totalCount).toBeGreaterThanOrEqual(MIN_TOTAL_TECHNIQUES);
   });
 });

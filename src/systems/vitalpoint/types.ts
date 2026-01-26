@@ -122,7 +122,7 @@ export interface KoreanTechnique {
    *
    * @korean 기술분류
    */
-  category?: "light" | "medium" | "heavy" | "special";
+  category?: TechniqueBalanceCategory;
 
   /**
    * Effective range category
@@ -137,7 +137,7 @@ export interface KoreanTechnique {
    *
    * @korean 거리분류
    */
-  range?: "short" | "medium" | "long";
+  range?: TechniqueRange;
 
   /**
    * Speed rating for technique execution
@@ -153,6 +153,25 @@ export interface KoreanTechnique {
    */
   speed?: number;
 }
+
+/**
+ * Balance category for techniques (gameplay categorization)
+ * 기술 밸런스 카테고리 타입
+ *
+ * Used for combat balance and AI selection logic. Not to be confused
+ * with TechniqueCategory in AI module (which categorizes by martial arts type).
+ *
+ * @korean 기술밸런스분류타입
+ */
+export type TechniqueBalanceCategory = "light" | "medium" | "heavy" | "special";
+
+/**
+ * Technique range type (shared across systems)
+ * 기술 거리 타입
+ *
+ * @korean 기술거리타입
+ */
+export type TechniqueRange = "short" | "medium" | "long";
 
 /**
  * Stricter type for Trigram Stance Techniques
@@ -173,8 +192,8 @@ export interface KoreanTechnique {
  * @korean 팔괘자세기술정의타입
  */
 export type TrigramStanceTechnique = KoreanTechnique & {
-  readonly category: "light" | "medium" | "heavy" | "special";
-  readonly range: "short" | "medium" | "long";
+  readonly category: TechniqueBalanceCategory;
+  readonly range: TechniqueRange;
   readonly speed: number;
 };
 
