@@ -149,7 +149,7 @@ export const GON_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 1.1,
-    category: "light",
+    category: "medium",
     range: "short",
     speed: 1.1,
   },

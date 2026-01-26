@@ -134,7 +134,7 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     damageType: DamageType.BLUNT,
     damage: 20,
     kiCost: 12,
-    staminaCost: 15,
+    staminaCost: 14,
     accuracy: 0.94,
     reachConfig: {
       bodyPart: "arm",
@@ -149,7 +149,7 @@ export const GAN_TECHNIQUES: readonly KoreanTechnique[] = [
     // Animation: Powerful blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.1,
-    category: "medium",
+    category: "light",
     range: "medium",
     speed: 1.1,
   },
