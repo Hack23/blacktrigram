@@ -354,15 +354,13 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       );
 
       // Calculate expected stamina gain
-      // Base regen: 3 stamina/second * effectModifiers.staminaRegen (default 1.0)
-      // With 50% breathing penalty: 3 * 0.50 = 1.5 stamina/second
-      // But also need to account for effectModifiers which defaults to 1.0
-      // So expected: 50 + (3 * 1.0 * 0.50) = 51.5
-      // However, there may be other modifiers, so we'll use a range
+      // Base regen: 15 stamina/second * effectModifiers.staminaRegen (default 1.0)
+      // With 50% breathing penalty: 15 * 0.50 = 7.5 stamina/second
+      // Expected: 50 + (15 * 1.0 * 0.50) = 57.5
 
       // Verify stamina increased with penalty applied
       expect(updatedDefender.stamina).toBeGreaterThan(50);
-      expect(updatedDefender.stamina).toBeLessThan(52); // Should be around 51-51.5
+      expect(updatedDefender.stamina).toBeLessThan(60); // Should be around 57-58
     });
 
     it("should update breathing disruption effects each frame", () => {
@@ -506,8 +504,10 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       const updated = combatSystem.updatePlayerState(defenderWithZeroStamina, 1000);
 
       // Should still regenerate stamina, just slower
+      // Base regen: 15 stamina/second
+      // With 75% penalty (SEVERELY_WINDED): 15 * 0.25 = 3.75 stamina/second
       expect(updated.stamina).toBeGreaterThan(0);
-      expect(updated.stamina).toBeLessThan(1); // Very slow with 75% penalty
+      expect(updated.stamina).toBeLessThan(5); // Should be around 3.75
     });
 
     it("should not apply breathing disruption from non-torso strikes", () => {
