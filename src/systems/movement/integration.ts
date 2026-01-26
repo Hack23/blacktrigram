@@ -12,7 +12,7 @@
  */
 
 import { injuryMovementModifier } from "./InjuryMovementModifier";
-import { BodyPartHealth } from "../bodypart/types";
+import type { BodyPartHealth } from "../bodypart/types";
 import { TrigramStance } from "@/types/common";
 
 /**

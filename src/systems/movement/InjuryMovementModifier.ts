@@ -30,8 +30,8 @@
  * @korean 손상기반이동
  */
 
-import { TrigramStance } from "@/types/common";
-import { BodyPartHealth } from "../bodypart/types";
+import type { TrigramStance } from "@/types/common";
+import type { BodyPartHealth } from "../bodypart/types";
 import { STANCE_SPEED_MODIFIERS } from "../physics/MovementPhysics";
 
 /**
@@ -303,16 +303,25 @@ export class InjuryMovementModifier {
     } else if (clampedHealth >= limping) {
       // 30-70%: 0-40% penalty (linear)
       const healthRange = normal - limping;
-      const healthFactor = (normal - clampedHealth) / healthRange;
+      // Guard against division by zero if thresholds are misconfigured
+      const healthFactor = healthRange > 0 
+        ? (normal - clampedHealth) / healthRange 
+        : 0;
       penalty = healthFactor * 0.4;
     } else if (clampedHealth >= critical) {
       // 10-30%: 40-80% penalty (accelerated)
       const healthRange = limping - critical;
-      const healthFactor = (limping - clampedHealth) / healthRange;
+      // Guard against division by zero if thresholds are misconfigured
+      const healthFactor = healthRange > 0 
+        ? (limping - clampedHealth) / healthRange 
+        : 0;
       penalty = 0.4 + (healthFactor * 0.4);
     } else {
       // 0-10%: 80-100% penalty (critical)
-      const healthFactor = (critical - clampedHealth) / critical;
+      // Guard against division by zero if critical threshold is 0
+      const healthFactor = critical > 0 
+        ? (critical - clampedHealth) / critical 
+        : 1.0;
       penalty = 0.8 + (healthFactor * 0.2);
     }
 
@@ -339,7 +348,7 @@ export class InjuryMovementModifier {
    * 
    * **Korean**: 상태 텍스트 생성
    * 
-   * @param avgLegHealth - Average leg health percentage
+   * @param legHealthForStatus - Leg health percentage used for status determination (typically worst leg)
    * @param bothLegsInjured - Whether both legs are significantly injured
    * @param painOverload - Whether pain is over threshold
    * @returns Bilingual status text
@@ -347,23 +356,23 @@ export class InjuryMovementModifier {
    * @private
    */
   private generateStatusText(
-    avgLegHealth: number,
+    legHealthForStatus: number,
     bothLegsInjured: boolean,
     painOverload: boolean
   ): { korean: string; english: string } {
     const { normal, limping, critical } = this.config.legThresholds;
 
-    if (avgLegHealth < critical) {
+    if (legHealthForStatus < critical) {
       return {
         korean: bothLegsInjured ? "심각한 부상 | 양 다리" : "심각한 부상",
         english: bothLegsInjured ? "Critical Injury | Both Legs" : "Critical Injury",
       };
-    } else if (avgLegHealth < limping) {
+    } else if (legHealthForStatus < limping) {
       return {
         korean: bothLegsInjured ? "중증 절름거림 | 양 다리" : "중증 절름거림",
         english: bothLegsInjured ? "Severe Limping | Both Legs" : "Severe Limping",
       };
-    } else if (avgLegHealth < normal) {
+    } else if (legHealthForStatus < normal) {
       const painText = painOverload ? " | 고통 과부하" : "";
       const painTextEn = painOverload ? " | Pain Overload" : "";
       return {
