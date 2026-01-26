@@ -31,8 +31,9 @@ const TrainingScreen = lazy(() =>
   })),
 );
 
-// Transition delay for WebGL context cleanup between screens
+// 150ms delay to allow WebGL context cleanup between full-screen 3D scene transitions
 const SCREEN_TRANSITION_DELAY_MS = 150;
+// 100ms delay for lighter menu/UI transitions where WebGL teardown/re-init cost is lower
 const MENU_TRANSITION_DELAY_MS = 100;
 
 function App() {
@@ -310,7 +311,10 @@ function App() {
   const handleRematch = useCallback(() => {
     // Restart combat with same settings
     if (!gameMode) {
-      console.warn("Cannot rematch: gameMode is not set");
+      console.error(
+        "Cannot rematch: gameMode is not set. This should not happen - EndScreen only renders when gameMode is set.",
+        { gameMode, isGameActive, gameWinner, matchStats }
+      );
       return;
     }
     
@@ -324,7 +328,7 @@ function App() {
       setIsGameActive(true);
       setIsTransitioning(false);
     }, SCREEN_TRANSITION_DELAY_MS);
-  }, [gameMode]);
+  }, [gameMode, isGameActive, gameWinner, matchStats]);
 
   const handleViewTraining = useCallback(() => {
     // Navigate to training mode
