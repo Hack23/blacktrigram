@@ -303,6 +303,36 @@ function App() {
     setTimeout(() => setIsTransitioning(false), 100);
   }, []);
 
+  const handleRematch = useCallback(() => {
+    // Restart combat with same settings
+    if (!gameMode) return;
+    
+    setIsTransitioning(true);
+    setGameWinner(null);
+    setMatchStats(null);
+    // Reset combat players so they reinitialize for rematch
+    setCombatPlayers([]);
+    
+    setTimeout(() => {
+      setIsGameActive(true);
+      setIsTransitioning(false);
+    }, 150);
+  }, [gameMode]);
+
+  const handleViewTraining = useCallback(() => {
+    // Navigate to training mode
+    setIsTransitioning(true);
+    setGameWinner(null);
+    setMatchStats(null);
+    setCombatPlayers([]);
+    
+    setTimeout(() => {
+      setGameMode(GameMode.TRAINING);
+      setIsGameActive(true);
+      setIsTransitioning(false);
+    }, 150);
+  }, []);
+
   const renderCurrentScreen = () => {
     // Show loading during screen transitions
     if (isTransitioning) {
@@ -322,6 +352,8 @@ function App() {
           winner={gameWinner}
           matchStats={matchStats}
           onReturnToMenu={handleReturnToMenu}
+          onRematch={handleRematch}
+          onViewReplay={handleViewTraining}
           width={screenSize.width}
           height={screenSize.height}
         />

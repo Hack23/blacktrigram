@@ -280,7 +280,7 @@ describe("EndScreen3D", () => {
       </AudioProvider>,
     );
 
-    expect(getByTestId("view-replay-button")).toBeInTheDocument();
+    expect(getByTestId("view-training-button")).toBeInTheDocument();
   });
 
   it("should render performance breakdown toggle button", () => {
