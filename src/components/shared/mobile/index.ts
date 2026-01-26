@@ -15,12 +15,6 @@ export type { DPadEventType, Direction, VirtualDPadProps } from "./VirtualDPad";
 export { ActionButtons } from "./ActionButtons";
 export type { ActionButtonsProps, ButtonEventType } from "./ActionButtons";
 
-export { StanceWheel } from "./StanceWheel";
-export type { StanceWheelProps } from "./StanceWheel";
-
-export { GestureRecognizer } from "./GestureRecognizer";
-export type { GestureRecognizerProps } from "./GestureRecognizer";
-
 // Pure DOM mobile controls (for use outside Three.js Canvas)
 export { MobileControlsOverlay } from "./MobileControlsPure";
 export type { MobileControlsOverlayProps } from "./MobileControlsPure";
