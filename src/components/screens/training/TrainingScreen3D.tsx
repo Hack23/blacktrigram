@@ -172,7 +172,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const audio = useAudio();
   
   // Combat audio for bone impact sounds
-  const { playBoneImpactSound } = useCombatAudio();
+  const { playBoneImpactSound, playAttackSound, playStanceChangeSound } =
+    useCombatAudio();
 
   // Responsive detection and layout (using dedicated training layout hook)
   const { trainingAreaBounds, isMobile, screenSize } = useTrainingLayout(
@@ -428,7 +429,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         if (state === "stance_change") {
           // Stance change animation completed - transition to stance guard
           // 자세 변경 완료 - 자세 가드로 전환
-          audio.playSFX("menu_select");
+          playStanceChangeSound();
           const currentStance =
             TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex];
           if (currentStance && playerAnimationRef.current) {
@@ -437,7 +438,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         }
       },
     }),
-    [audio, trainingState.currentStanceIndex],
+    [playStanceChangeSound, trainingState.currentStanceIndex],
   );
 
   const playerAnimation = usePlayerAnimation({
@@ -490,6 +491,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentTechniqueAnimationTypeRef, // Ref for technique's animation type
     audio,
     playBoneImpactSound, // Pass bone impact audio function from useCombatAudio
+    playAttackSound, // Pass attack sound function from useCombatAudio
     onPlayerUpdate: (updates) => {
       onPlayerUpdate(updates);
     },

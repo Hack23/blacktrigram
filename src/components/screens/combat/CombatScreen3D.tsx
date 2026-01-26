@@ -1392,10 +1392,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         handleStanceSwitch(newStance);
 
         // Play stance change sound
-        audio.playSFX("menu_select");
+        combatAudio.playStanceChangeSound();
       }
     },
-    [validPlayers, player1Animation, handleStanceSwitch, audio],
+    [validPlayers, player1Animation, handleStanceSwitch, combatAudio],
   );
 
   // Extract player health values for dependency arrays

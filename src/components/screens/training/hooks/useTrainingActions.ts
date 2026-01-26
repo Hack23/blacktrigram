@@ -51,6 +51,10 @@ export interface UseTrainingActionsConfig {
   readonly audio: {
     readonly playSFX: (sound: string, volume?: number) => Promise<void>;
   };
+  /** Attack sound function from useCombatAudio for playing attack whoosh sounds */
+  readonly playAttackSound?: (
+    intensity: "light" | "medium" | "heavy" | "critical",
+  ) => Promise<void>;
   /** Bone impact audio function from useCombatAudio or similar hook */
   readonly playBoneImpactSound?: (options: {
     region?: AudioBodyRegion;
@@ -275,6 +279,7 @@ export function useTrainingActions(
     currentTechniqueAnimationTypeRef,
     audio,
     playBoneImpactSound,
+    playAttackSound,
     onPlayerUpdate,
     playerAnimation,
     pendingAttackRef,
@@ -483,8 +488,31 @@ export function useTrainingActions(
     // Trigger attack animation - this will fire onFrame event at frame 6
     playerAnimation.transitionTo(AnimationState.ATTACK);
 
-    // Play attack sound
-    audio.playSFX("whoosh");
+    // Play attack sound based on technique damage/intensity
+    // If we have the technique, determine intensity from its damage value
+    // Otherwise, default to light attack for basic attacks
+    if (playAttackSound && techniqueToUse) {
+      const damage = techniqueToUse.damage ?? 10;
+      const intensity:
+        | "light"
+        | "medium"
+        | "heavy"
+        | "critical" =
+        damage >= 40
+          ? "critical"
+          : damage >= 25
+            ? "heavy"
+            : damage >= 10
+              ? "medium"
+              : "light";
+      void playAttackSound(intensity);
+    } else if (playAttackSound) {
+      // No technique selected - play light attack sound
+      void playAttackSound("light");
+    } else {
+      // Fallback to generic whoosh if playAttackSound not available
+      audio.playSFX("whoosh");
+    }
   }, [
     state.selectedVitalPoint,
     player3DPosition,
@@ -494,6 +522,7 @@ export function useTrainingActions(
     currentTechniqueAnimationTypeRef,
     playerAnimation,
     audio,
+    playAttackSound,
     pendingAttackRef,
     selectedTechniqueId,
     setAttackAnimation,
