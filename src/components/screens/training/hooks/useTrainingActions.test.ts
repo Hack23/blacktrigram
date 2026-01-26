@@ -104,10 +104,10 @@ describe("useTrainingActions", () => {
         current: AnimationType.JAB,
       },
       audio: {
-        playSFX: mockAudioPlaySFX as (sound: string, volume?: number) => Promise<void>,
+        playSFX: mockAudioPlaySFX as UseTrainingActionsConfig['audio']['playSFX'],
       },
-      playAttackSound: mockPlayAttackSound as ((intensity: "light" | "medium" | "heavy" | "critical") => Promise<void>) | undefined,
-      playBoneImpactSound: vi.fn().mockResolvedValue(undefined) as any,
+      playAttackSound: mockPlayAttackSound as UseTrainingActionsConfig['playAttackSound'],
+      playBoneImpactSound: vi.fn().mockResolvedValue(undefined) as UseTrainingActionsConfig['playBoneImpactSound'],
       onPlayerUpdate: vi.fn(),
       playerAnimation: mockPlayerAnimation,
       pendingAttackRef: {
