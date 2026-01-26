@@ -253,17 +253,31 @@ export class AIDecisionTree {
   }
 
   /**
-   * Calculate maximum combat reach for an archetype based on physical attributes.
-   *
+   * Calculate kick reach for an archetype based on physical attributes.
+   * 
    * **Physics-First**: Returns reach in METERS based on leg length.
-   * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
-   *
-   * Includes realistic kick reach calculation for AI decision-making:
+   * Includes realistic kick reach calculation:
    * - Leg length converted from cm to meters
    * - Body pivot contribution (hip rotation + torso lean)
    * - Average baseExtension for kicks (1.05x multiplier)
    *
    * Formula: (legLength/100 + BODY_PIVOT_METERS.KICK) × TECHNIQUE_EXTENSION.KICK
+   *
+   * @param archetype - Player archetype to calculate reach for
+   * @returns Kick reach in meters
+   * @korean 발차기 도달 거리 (미터)
+   */
+  private getKickReachMeters(archetype: PlayerArchetype): number {
+    const physical = getArchetypePhysicalAttributes(archetype);
+    // Leg length in cm -> meters + body pivot * average kick baseExtension
+    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
+  }
+
+  /**
+   * Calculate maximum combat reach for an archetype based on physical attributes.
+   *
+   * **Physics-First**: Returns reach in METERS based on leg length.
+   * Kicks have the longest reach (~1.0-1.3m with body pivot contribution).
    *
    * Note: This is a heuristic approximation. Actual reach also depends on
    * stance modifiers and animation timing not included in AI range calculations.
@@ -273,9 +287,7 @@ export class AIDecisionTree {
    * @korean 원형별 최대 도달 거리 (미터)
    */
   private getArchetypeMaxReach(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot * average kick baseExtension
-    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
+    return this.getKickReachMeters(archetype);
   }
 
   /**
@@ -317,9 +329,7 @@ export class AIDecisionTree {
    * @korean 중거리 범위 (미터)
    */
   private getArchetypeMediumRange(archetype: PlayerArchetype): number {
-    const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot * average kick baseExtension
-    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
+    return this.getKickReachMeters(archetype);
   }
 
   /**

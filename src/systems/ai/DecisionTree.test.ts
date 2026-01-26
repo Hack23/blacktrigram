@@ -1384,6 +1384,12 @@ describe("AIDecisionTree", () => {
       // Test that AI correctly prioritizes approaching when too far to attack
       // This validates that the range calculation fixes enable proper behavior
       
+      // NOTE: This test is intentionally probabilistic (not deterministic) to validate
+      // AI decision-making under realistic conditions with inherent randomness.
+      // The 60% threshold allows for some randomization while still catching
+      // regressions in range calculation logic. A fully deterministic test would
+      // require intrusive mocking and reduce test value.
+      
       // Updated range calculations:
       // - Close range (punches): ~0.87m
       // - Medium range (kicks): ~1.27m

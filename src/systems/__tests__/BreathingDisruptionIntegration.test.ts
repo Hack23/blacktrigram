@@ -164,7 +164,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
       // Verify 75% penalty (only 25% of base regen)
       expect(modifiedRegen).toBe(baseStaminaRegen * 0.25);
-      expect(modifiedRegen).toBe(3.75); // BASE_STAMINA_REGEN_RATE * 0.25 = 3.75 stamina/second
+      expect(modifiedRegen).toBeCloseTo(3.75, 2); // BASE_STAMINA_REGEN_RATE * 0.25 = 3.75 stamina/second
     });
   });
 
@@ -361,7 +361,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
 
       // Verify stamina increased with penalty applied
       expect(updatedDefender.stamina).toBeGreaterThan(50);
-      expect(updatedDefender.stamina).toBeCloseTo(57.5, 1); // Within 0.1 of expected
+      expect(updatedDefender.stamina).toBeCloseTo(57.5, 1); // 1 decimal place precision (~0.05 tolerance)
     });
 
     it("should update breathing disruption effects each frame", () => {
@@ -508,7 +508,7 @@ describe("Breathing Disruption System Integration with CombatSystem", () => {
       // Base regen: BASE_STAMINA_REGEN_RATE stamina/second
       // With 75% penalty (SEVERELY_WINDED): BASE_STAMINA_REGEN_RATE * 0.25 = 3.75 stamina/second
       expect(updated.stamina).toBeGreaterThan(0);
-      expect(updated.stamina).toBeCloseTo(3.75, 1); // Within 0.1 of expected
+      expect(updated.stamina).toBeCloseTo(3.75, 1); // 1 decimal place precision (~0.05 tolerance)
     });
 
     it("should not apply breathing disruption from non-torso strikes", () => {
