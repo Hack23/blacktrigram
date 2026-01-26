@@ -12,7 +12,7 @@ import {
   AudioBodyRegion,
   ImpactIntensity,
 } from "../../../../audio/types";
-import { AttackIntensity } from "../../../screens/combat/hooks/useCombatAudio";
+import type { AttackIntensity } from "../../../screens/combat/hooks/useCombatAudio";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import {
   AnimationState,

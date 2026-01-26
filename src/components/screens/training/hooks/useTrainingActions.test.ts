@@ -12,7 +12,6 @@ import { useTrainingActions, UseTrainingActionsConfig } from "./useTrainingActio
 import { AnimationState, AnimationType } from "../../../../systems/animation";
 import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { KoreanTechniquesSystem } from "../../../../systems/trigram/KoreanTechniques";
-import { AttackIntensity } from "../../../screens/combat/hooks/useCombatAudio";
 
 // Mock dependencies
 vi.mock("../../../../systems/trigram/KoreanTechniques", () => ({
@@ -29,7 +28,7 @@ describe("useTrainingActions", () => {
   let mockConfig: UseTrainingActionsConfig;
   let mockPlayAttackSound: ReturnType<typeof vi.fn>;
   let mockAudioPlaySFX: ReturnType<typeof vi.fn>;
-  let mockPlayerAnimation: ReturnType<typeof vi.fn>;
+  let mockPlayerAnimation: UseTrainingActionsConfig['playerAnimation'];
 
   beforeEach(() => {
     // Reset all mocks
@@ -41,7 +40,7 @@ describe("useTrainingActions", () => {
       transitionTo: vi.fn().mockReturnValue(true),
       transitionToStanceGuard: vi.fn().mockReturnValue(true),
       currentState: "idle",
-    } as any;
+    };
 
     mockConfig = {
       state: {
@@ -105,12 +104,12 @@ describe("useTrainingActions", () => {
         current: AnimationType.JAB,
       },
       audio: {
-        playSFX: mockAudioPlaySFX as any,
+        playSFX: mockAudioPlaySFX as (sound: string, volume?: number) => Promise<void>,
       },
-      playAttackSound: mockPlayAttackSound as any,
+      playAttackSound: mockPlayAttackSound as ((intensity: "light" | "medium" | "heavy" | "critical") => Promise<void>) | undefined,
       playBoneImpactSound: vi.fn().mockResolvedValue(undefined) as any,
       onPlayerUpdate: vi.fn(),
-      playerAnimation: mockPlayerAnimation as any,
+      playerAnimation: mockPlayerAnimation,
       pendingAttackRef: {
         current: null,
       },
@@ -376,7 +375,7 @@ describe("useTrainingActions", () => {
       });
 
       // Animation should always be triggered
-      expect((mockPlayerAnimation as any).transitionTo).toHaveBeenCalledWith(AnimationState.ATTACK);
+      expect(mockPlayerAnimation.transitionTo).toHaveBeenCalledWith(AnimationState.ATTACK);
     });
   });
 
