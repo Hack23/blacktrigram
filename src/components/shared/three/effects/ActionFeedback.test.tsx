@@ -23,7 +23,14 @@ vi.mock("three", () => ({
 }));
 
 describe("ActionFeedback", () => {
-  const mockArenaBounds = { x: 0, y: 0, width: 1200, height: 800 };
+  const mockArenaBounds = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    worldWidthMeters: 10,
+    worldDepthMeters: 7.5,
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();

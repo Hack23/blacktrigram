@@ -34,8 +34,22 @@ vi.mock("@react-three/drei", () => ({
 }));
 
 describe("Combat Feedback Integration", () => {
-  const mockArenaBounds = { x: 0, y: 0, width: 1200, height: 800 };
-  const mobileArenaBounds = { x: 0, y: 0, width: 375, height: 667 };
+  const mockArenaBounds = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    worldWidthMeters: 10,
+    worldDepthMeters: 7.5,
+  };
+  const mobileArenaBounds = {
+    x: 0,
+    y: 0,
+    width: 375,
+    height: 667,
+    worldWidthMeters: 6,
+    worldDepthMeters: 4.5,
+  };
 
   describe("Acceptance Criteria Validation", () => {
     it("✓ AC1: Floating damage numbers appear at hit location with 2s duration", () => {
