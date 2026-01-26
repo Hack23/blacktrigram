@@ -1765,12 +1765,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     (gesture: GestureEvent) => {
       switch (gesture.type) {
         case "swipe-right":
-          // Advance toward opponent
+          // Advance toward opponent - dispatch keydown then keyup to prevent stuck movement
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "d" }));
+          setTimeout(() => {
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: "d" }));
+          }, 100);
           break;
         case "swipe-left":
-          // Retreat from opponent
+          // Retreat from opponent - dispatch keydown then keyup to prevent stuck movement
           window.dispatchEvent(new KeyboardEvent("keydown", { key: "a" }));
+          setTimeout(() => {
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: "a" }));
+          }, 100);
           break;
         case "swipe-up":
           // High attack mode - execute selected technique

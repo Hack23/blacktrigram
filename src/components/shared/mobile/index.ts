@@ -27,6 +27,14 @@ export type { StanceWheelPureProps } from "./StanceWheelPure";
 export { GestureRecognizerPure } from "./GestureRecognizerPure";
 export type { GestureRecognizerPureProps } from "./GestureRecognizerPure";
 
+// Backwards-compatible exports for tests that reference the non-Pure component names
+// These alias the Pure implementations so existing tests can compile
+export { StanceWheelPure as StanceWheel } from "./StanceWheelPure";
+export type { StanceWheelPureProps as StanceWheelProps } from "./StanceWheelPure";
+
+export { GestureRecognizerPure as GestureRecognizer } from "./GestureRecognizerPure";
+export type { GestureRecognizerPureProps as GestureRecognizerProps } from "./GestureRecognizerPure";
+
 // Performance optimization modules
 export {
   applyOptimizedUpdate,
