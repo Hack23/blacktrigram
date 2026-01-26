@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import type { StanceWheelProps } from "./StanceWheel";
+import type { StanceWheelProps } from "./index";
 
 // Note: Testing Three.js Html components requires special async handling
 // These tests focus on component logic and props validation
