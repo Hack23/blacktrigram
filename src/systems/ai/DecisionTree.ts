@@ -33,6 +33,40 @@ export { AIActionType } from "./types"; // Enum (value + type)
 export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; // Type-only
 
 /**
+ * Body pivot contributions for reach calculations (meters)
+ * 
+ * These values represent additional reach gained from body mechanics:
+ * - Hip rotation and torso lean for kicks
+ * - Shoulder offset and torso rotation for punches
+ * 
+ * Matches PhysicalReachCalculator.ts calculations for consistency
+ * 
+ * @korean 신체 회전 도달 거리 증가
+ */
+const BODY_PIVOT_METERS = {
+  /** Hip rotation + torso lean for kicks (meters) */
+  KICK: 0.25,
+  /** Torso rotation for punches (meters) */
+  TORSO_ROTATION: 0.1,
+} as const;
+
+/**
+ * Average technique extension multipliers
+ * 
+ * Based on analysis of technique baseExtension values:
+ * - Punches: 0.9-0.95 (average 0.95)
+ * - Kicks: 1.0-1.05 (average 1.05)
+ * 
+ * @korean 기술 연장 배수
+ */
+const TECHNIQUE_EXTENSION = {
+  /** Average punch baseExtension multiplier */
+  PUNCH: 0.95,
+  /** Average kick baseExtension multiplier */
+  KICK: 1.05,
+} as const;
+
+/**
  * Distance-based stance preferences for tactical positioning
  *
  * Stances are categorized by optimal combat range based on actual technique
@@ -227,8 +261,8 @@ export class AIDecisionTree {
    */
   private getArchetypeMaxReach(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot (0.25m) * average kick baseExtension (1.05)
-    return (physical.legLength / 100 + 0.25) * 1.05;
+    // Leg length in cm -> meters + body pivot * average kick baseExtension
+    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
   }
 
   /**
@@ -237,8 +271,8 @@ export class AIDecisionTree {
    * 
    * Includes realistic punch reach calculation:
    * - Arm length converted from cm to meters
-   * - Body pivot (shoulder offset + torso rotation): ~0.15m
-   * - Average baseExtension for punches: 0.95x
+   * - Body pivot (shoulder offset + torso rotation)
+   * - Average baseExtension for punches
    *
    * @param archetype - Player archetype
    * @returns Close range threshold in meters
@@ -246,11 +280,10 @@ export class AIDecisionTree {
    */
   private getArchetypeCloseRange(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Arm length in cm -> meters + body pivot (~0.15m) * average punch baseExtension (0.95)
+    // Arm length in cm -> meters + body pivot * average punch baseExtension
     const shoulderOffset = physical.shoulderWidth / 2 / 100; // Convert cm to meters
-    const torsoRotation = 0.1; // meters
-    const bodyPivot = shoulderOffset + torsoRotation;
-    return (physical.armLength / 100 + bodyPivot) * 0.95;
+    const bodyPivot = shoulderOffset + BODY_PIVOT_METERS.TORSO_ROTATION;
+    return (physical.armLength / 100 + bodyPivot) * TECHNIQUE_EXTENSION.PUNCH;
   }
 
   /**
@@ -259,8 +292,8 @@ export class AIDecisionTree {
    * 
    * Includes realistic kick reach calculation:
    * - Leg length converted from cm to meters  
-   * - Body pivot contribution (hip rotation + torso lean): 0.25m
-   * - Average baseExtension for kicks: 1.05x
+   * - Body pivot contribution (hip rotation + torso lean)
+   * - Average baseExtension for kicks
    *
    * @param archetype - Player archetype
    * @returns Medium range threshold in meters
@@ -268,8 +301,8 @@ export class AIDecisionTree {
    */
   private getArchetypeMediumRange(archetype: PlayerArchetype): number {
     const physical = getArchetypePhysicalAttributes(archetype);
-    // Leg length in cm -> meters + body pivot (0.25m) * average kick baseExtension (1.05)
-    return (physical.legLength / 100 + 0.25) * 1.05;
+    // Leg length in cm -> meters + body pivot * average kick baseExtension
+    return (physical.legLength / 100 + BODY_PIVOT_METERS.KICK) * TECHNIQUE_EXTENSION.KICK;
   }
 
   /**
