@@ -11,7 +11,7 @@
  * @korean 손상이동통합
  */
 
-import { InjuryMovementModifier } from "./InjuryMovementModifier";
+import { injuryMovementModifier } from "./InjuryMovementModifier";
 import { BodyPartHealth } from "../bodypart/types";
 import { TrigramStance } from "@/types/common";
 
@@ -25,8 +25,7 @@ import { TrigramStance } from "@/types/common";
  * migration from the old simple system to the new detailed system.
  * 
  * @param bodyPartHealth - Current body part health
- * @param modifier - InjuryMovementModifier instance (optional)
- * @returns Leg injury factor (0 = healthy, 1 = fully injured)
+ * @returns Leg injury factor (0 = healthy, 1 = fully injured), clamped to 0-1 range
  * 
  * @example
  * ```typescript
@@ -38,15 +37,21 @@ import { TrigramStance } from "@/types/common";
  * @korean 다리손상요소계산
  */
 export function calculateLegInjuryFactor(
-  bodyPartHealth: BodyPartHealth,
-  _modifier?: InjuryMovementModifier
+  bodyPartHealth: BodyPartHealth
 ): number {
   // Calculate average leg health percentage
   const avgLegHealth = (bodyPartHealth.legLeft + bodyPartHealth.legRight) / 2;
   
+  // Clamp average leg health to valid 0-100 range to avoid invalid injury factors
+  const clampedLegHealth = Math.min(100, Math.max(0, avgLegHealth));
+
+  // Normalize to 0-1 health ratio (1 = fully healthy, 0 = no health)
+  const healthRatio = clampedLegHealth / 100;
+
   // Convert to 0-1 injury factor (0 = healthy, 1 = fully injured)
-  // Use inverse of health percentage
-  return 1.0 - (avgLegHealth / 100);
+  // Use inverse of health ratio and clamp defensively to 0-1
+  const injuryFactor = 1.0 - healthRatio;
+  return Math.min(1, Math.max(0, injuryFactor));
 }
 
 /**
@@ -58,11 +63,12 @@ export function calculateLegInjuryFactor(
  * injury system. It applies all modifiers including leg injuries,
  * torso damage, stance bonuses, and pain penalties.
  * 
+ * Uses the shared singleton instance to avoid allocations in per-frame loops.
+ * 
  * @param baseSpeed - Base movement speed (m/s)
  * @param bodyPartHealth - Current body part health
  * @param stance - Current trigram stance
  * @param painLevel - Current pain level (0-100)
- * @param modifier - InjuryMovementModifier instance (optional)
  * @returns Final calculated speed in m/s
  * 
  * @example
@@ -85,12 +91,9 @@ export function calculateMovementSpeed(
   baseSpeed: number,
   bodyPartHealth: BodyPartHealth,
   stance: TrigramStance,
-  painLevel: number,
-  modifier?: InjuryMovementModifier
+  painLevel: number
 ): number {
-  const injuryModifier = modifier ?? new InjuryMovementModifier();
-  
-  const result = injuryModifier.calculateMovementSpeed(
+  const result = injuryMovementModifier.calculateMovementSpeed(
     baseSpeed,
     bodyPartHealth,
     stance,
@@ -108,21 +111,19 @@ export function calculateMovementSpeed(
  * Useful when you want to apply injury penalties separately from
  * stance and pain modifiers.
  * 
+ * Uses the shared singleton instance to avoid allocations in per-frame loops.
+ * 
  * @param bodyPartHealth - Current body part health
- * @param modifier - InjuryMovementModifier instance (optional)
  * @returns Speed multiplier (0.1-1.0)
  * 
  * @public
  * @korean 손상속도배수계산
  */
 export function calculateInjuryMultiplier(
-  bodyPartHealth: BodyPartHealth,
-  modifier?: InjuryMovementModifier
+  bodyPartHealth: BodyPartHealth
 ): number {
-  const injuryModifier = modifier ?? new InjuryMovementModifier();
-  
   // Calculate without stance or pain modifiers
-  const result = injuryModifier.calculateMovementSpeed(
+  const result = injuryMovementModifier.calculateMovementSpeed(
     1.0, // Base speed of 1.0 to get pure multiplier
     bodyPartHealth,
     TrigramStance.GEON, // Neutral stance (1.0x)

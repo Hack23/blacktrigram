@@ -11,8 +11,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   InjuryMovementModifier,
   DEFAULT_INJURY_MOVEMENT_CONFIG,
-  STANCE_SPEED_MODIFIERS,
 } from "../InjuryMovementModifier";
+import { STANCE_SPEED_MODIFIERS } from "../../physics/MovementPhysics";
 import { TrigramStance } from "@/types/common";
 import type { BodyPartHealth } from "../../bodypart/types";
 

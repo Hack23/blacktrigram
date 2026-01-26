@@ -14,7 +14,6 @@
 export {
   InjuryMovementModifier,
   DEFAULT_INJURY_MOVEMENT_CONFIG,
-  STANCE_SPEED_MODIFIERS,
   type InjuryMovementConfig,
   type InjuryMovementResult,
   injuryMovementModifier,
@@ -25,3 +24,6 @@ export {
   calculateMovementSpeed,
   calculateInjuryMultiplier,
 } from "./integration";
+
+// Re-export STANCE_SPEED_MODIFIERS from MovementPhysics for convenience
+export { STANCE_SPEED_MODIFIERS } from "../physics/MovementPhysics";

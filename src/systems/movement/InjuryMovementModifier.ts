@@ -32,6 +32,7 @@
 
 import { TrigramStance } from "@/types/common";
 import { BodyPartHealth } from "../bodypart/types";
+import { STANCE_SPEED_MODIFIERS } from "../physics/MovementPhysics";
 
 /**
  * Configuration for injury-based movement calculations.
@@ -75,30 +76,6 @@ export const DEFAULT_INJURY_MOVEMENT_CONFIG: InjuryMovementConfig = {
   painOverloadMultiplier: 0.85,
   minSpeedMultiplier: 0.1,
 } as const;
-
-/**
- * Stance speed modifiers for eight trigram stances.
- * 
- * **Korean**: 자세 속도 배수
- * 
- * Based on Korean martial arts philosophy:
- * - Defensive stances (Gan, Gon) are slower (-20%)
- * - Offensive stances (Li, Jin, Son) are faster (+10-25%)
- * - Balanced stances (Geon, Tae, Gam) are neutral to slightly faster
- * 
- * @public
- * @category Movement System
- */
-export const STANCE_SPEED_MODIFIERS: Record<TrigramStance, number> = {
-  [TrigramStance.GEON]: 1.0,   // Heaven: balanced
-  [TrigramStance.TAE]: 1.1,    // Lake: fluid (+10%)
-  [TrigramStance.LI]: 1.2,     // Fire: aggressive (+20%)
-  [TrigramStance.JIN]: 1.15,   // Thunder: explosive (+15%)
-  [TrigramStance.SON]: 1.25,   // Wind: fastest (+25%)
-  [TrigramStance.GAM]: 1.05,   // Water: adaptive (+5%)
-  [TrigramStance.GAN]: 0.8,    // Mountain: defensive (-20%)
-  [TrigramStance.GON]: 0.85,   // Earth: grounded (-15%)
-};
 
 /**
  * Result of injury-based movement calculation.
