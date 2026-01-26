@@ -169,7 +169,6 @@ export class InjuryMovementModifier {
 
       if (!allFinite || !ordered) {
         // Non-throwing warning to avoid breaking existing behavior
-         
         console.warn(
           "[InjuryMovementModifier] Invalid legThresholds configuration detected:",
           mergedConfig.legThresholds
@@ -363,21 +362,40 @@ export class InjuryMovementModifier {
     const { normal, limping, critical } = this.config.legThresholds;
 
     if (legHealthForStatus < critical) {
-      return {
-        korean: bothLegsInjured ? "심각한 부상 | 양 다리" : "심각한 부상",
-        english: bothLegsInjured ? "Critical Injury | Both Legs" : "Critical Injury",
-      };
-    } else if (legHealthForStatus < limping) {
-      return {
-        korean: bothLegsInjured ? "중증 절름거림 | 양 다리" : "중증 절름거림",
-        english: bothLegsInjured ? "Severe Limping | Both Legs" : "Severe Limping",
-      };
-    } else if (legHealthForStatus < normal) {
       const painText = painOverload ? " | 고통 과부하" : "";
       const painTextEn = painOverload ? " | Pain Overload" : "";
+      const baseKorean = bothLegsInjured ? "심각한 부상 | 양 다리" : "심각한 부상";
+      const baseEnglish = bothLegsInjured ? "Critical Injury | Both Legs" : "Critical Injury";
       return {
-        korean: `절름거림${painText}`,
-        english: `Limping${painTextEn}`,
+        korean: `${baseKorean}${painText}`,
+        english: `${baseEnglish}${painTextEn}`,
+      };
+    } else if (legHealthForStatus < limping) {
+      const painText = painOverload ? " | 고통 과부하" : "";
+      const painTextEn = painOverload ? " | Pain Overload" : "";
+      const baseKorean = bothLegsInjured ? "중증 절름거림 | 양 다리" : "중증 절름거림";
+      const baseEnglish = bothLegsInjured ? "Severe Limping | Both Legs" : "Severe Limping";
+      return {
+        korean: `${baseKorean}${painText}`,
+        english: `${baseEnglish}${painTextEn}`,
+      };
+    } else if (legHealthForStatus < normal) {
+      const statusKrParts = ["절름거림"];
+      const statusEnParts = ["Limping"];
+
+      if (bothLegsInjured) {
+        statusKrParts.push("양 다리");
+        statusEnParts.push("Both Legs");
+      }
+
+      if (painOverload) {
+        statusKrParts.push("고통 과부하");
+        statusEnParts.push("Pain Overload");
+      }
+
+      return {
+        korean: statusKrParts.join(" | "),
+        english: statusEnParts.join(" | "),
       };
     } else if (painOverload) {
       return {
