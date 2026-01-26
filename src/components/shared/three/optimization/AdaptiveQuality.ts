@@ -261,15 +261,24 @@ export function useAdaptiveQuality(
     systemRef.current.setQuality(initialQuality);
   }, [isMobile, initialQuality]);
 
-  // FPS tracking
-  const lastTimeRef = useRef(performance.now());
+  // FPS tracking - Initialize with 0, will be set on first frame
+  const lastTimeRef = useRef(0);
   const frameCountRef = useRef(0);
+  const initializedRef = useRef(false);
 
   useFrame(() => {
     if (!enabled || !systemRef.current) return;
 
     // Calculate FPS
     const now = performance.now();
+    
+    // Initialize on first frame
+    if (!initializedRef.current) {
+      lastTimeRef.current = now;
+      initializedRef.current = true;
+      return;
+    }
+    
     const delta = now - lastTimeRef.current;
 
     if (delta > 0) {

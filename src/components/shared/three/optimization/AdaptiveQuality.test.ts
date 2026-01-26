@@ -6,7 +6,6 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   AdaptiveQualitySystem,
   QUALITY_PRESETS,
-  type QualityLevel,
 } from "./AdaptiveQuality";
 
 describe("AdaptiveQualitySystem", () => {

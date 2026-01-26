@@ -8,7 +8,6 @@ import {
   getOptimalInstanceLimit,
   batchInstances,
   createInstancesFromPositions,
-  type InstanceData,
 } from "./InstancedGeometry";
 
 describe("InstancedGeometry", () => {
@@ -205,7 +204,7 @@ describe("InstancedGeometry", () => {
     it("should handle particle systems efficiently", () => {
       // Mobile particle system scenario
       const particleCount = 50; // Mobile limit
-      const positions = Array.from({ length: particleCount }, (_, i) => [
+      const positions = Array.from({ length: particleCount }, () => [
         Math.random() * 10,
         Math.random() * 10,
         Math.random() * 10,
