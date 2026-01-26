@@ -41,7 +41,7 @@ describe("useTrainingActions", () => {
       transitionTo: vi.fn().mockReturnValue(true),
       transitionToStanceGuard: vi.fn().mockReturnValue(true),
       currentState: "idle",
-    };
+    } as any;
 
     mockConfig = {
       state: {
@@ -59,7 +59,6 @@ describe("useTrainingActions", () => {
           accuracy: 0,
         },
         perfectStrikes: 0,
-        comboMultiplier: 1.0,
         sessionStartTime: null,
         feedback: "",
         showFeedback: false,
@@ -71,13 +70,24 @@ describe("useTrainingActions", () => {
         stopTraining: vi.fn(),
         registerHit: vi.fn(),
         registerMiss: vi.fn(),
-        resetDummyHealth: vi.fn(),
+        setDummyHealth: vi.fn(),
+        resetDummy: vi.fn(),
         setTrainingMode: vi.fn(),
         setFeedback: vi.fn(),
+        hideFeedback: vi.fn(),
         addHitEffect: vi.fn(),
         removeHitEffect: vi.fn(),
-        addDamageNumber: vi.fn(),
-        removeDamageNumber: vi.fn(),
+        setSelectedVitalPoint: vi.fn(),
+        updateSessionDuration: vi.fn(),
+        setStanceIndex: vi.fn(),
+        toggleStanceWheel: vi.fn(),
+        updateBestCombo: vi.fn(),
+        toggleAnatomyLayer: vi.fn(),
+        setAnatomyLayers: vi.fn(),
+        startFootworkDrill: vi.fn(),
+        stopFootworkDrill: vi.fn(),
+        advanceFootworkStep: vi.fn(),
+        resetFootworkDrill: vi.fn(),
       },
       playerPosition: { x: 0, y: 0 },
       player3DPosition: [0, 0, 0] as [number, number, number],
@@ -88,12 +98,12 @@ describe("useTrainingActions", () => {
         current: AnimationType.JAB,
       },
       audio: {
-        playSFX: mockAudioPlaySFX,
+        playSFX: mockAudioPlaySFX as any,
       },
-      playAttackSound: mockPlayAttackSound,
-      playBoneImpactSound: vi.fn().mockResolvedValue(undefined),
+      playAttackSound: mockPlayAttackSound as any,
+      playBoneImpactSound: vi.fn().mockResolvedValue(undefined) as any,
       onPlayerUpdate: vi.fn(),
-      playerAnimation: mockPlayerAnimation,
+      playerAnimation: mockPlayerAnimation as any,
       pendingAttackRef: {
         current: null,
       },
@@ -140,7 +150,7 @@ describe("useTrainingActions", () => {
         damage: 15,
         staminaCost: 10,
         kiCost: 5,
-        animationType: AnimationType.STRAIGHT,
+        animationType: AnimationType.CROSS,
       });
 
       const { result } = renderHook(() => useTrainingActions(configWithSelection));
@@ -359,7 +369,7 @@ describe("useTrainingActions", () => {
       });
 
       // Animation should always be triggered
-      expect(mockPlayerAnimation.transitionTo).toHaveBeenCalledWith(AnimationState.ATTACK);
+      expect((mockPlayerAnimation as any).transitionTo).toHaveBeenCalledWith(AnimationState.ATTACK);
     });
   });
 
