@@ -25,6 +25,7 @@ import { BaseHUDContainer } from "../../../../shared/ui/BaseHUDContainer";
 import { BodyPartHealthDisplay } from "../../../../shared/three/ui/BodyPartHealthDisplay";
 import { PlayerHUD } from "../../../../shared/three/ui/PlayerHUD";
 import { SpeedIndicatorHUD } from "../../../../shared/three/ui/SpeedIndicatorHUD";
+import { BreathingIndicator } from "../../../../shared/three/ui/BreathingIndicator";
 import { DifficultyIndicator } from "./DifficultyIndicator";
 
 export interface CombatRightHUDProps {
@@ -150,6 +151,20 @@ export const CombatRightHUD: React.FC<CombatRightHUDProps> = ({
           />
         </div>
       )}
+
+      {/* Breathing Disruption Indicator - Shows breathing difficulty status */}
+      <div
+        style={{
+          pointerEvents: "none",
+          position: "relative",
+        }}
+        data-testid="combat-right-hud-breathing-section"
+      >
+        <BreathingIndicator
+          player={player}
+          isMobile={isMobile}
+        />
+      </div>
     </BaseHUDContainer>
   );
 };
