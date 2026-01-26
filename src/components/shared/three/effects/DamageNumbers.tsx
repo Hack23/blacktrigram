@@ -28,12 +28,14 @@ export interface DamageNumbersProps {
   readonly damages: readonly DamageNumber[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning */
+  /** Arena bounds for 3D positioning (includes meter dimensions for physics-first) */
   readonly arenaBounds?: {
     x: number;
     y: number;
     width: number;
     height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
   };
   /** Duration of animation in ms (default: 1500) */
   readonly animationDuration?: number;
@@ -76,7 +78,14 @@ function getGlowColor(type: DamageType): string {
 interface SingleDamageNumberProps {
   readonly damage: DamageNumber;
   readonly isMobile: boolean;
-  readonly arenaBounds: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
+  };
   readonly animationDuration: number;
 }
 
@@ -89,9 +98,17 @@ const SingleDamageNumber = React.memo<SingleDamageNumberProps>(({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(damage.timestamp);
 
-  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
-  const relX = (damage.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (damage.position.y - arenaBounds.y) / arenaBounds.height;
+  // Calculate 3D position from meter-based coordinates (physics-first architecture)
+  // Position is in meters relative to arena center (0, 0)
+  // Arena extends from -worldWidthMeters/2 to +worldWidthMeters/2
+  const halfWidth = arenaBounds.worldWidthMeters / 2;
+  const halfDepth = arenaBounds.worldDepthMeters / 2;
+  
+  // Convert meter position (centered at origin) to 0-1 normalized range
+  const relX = (damage.position.x + halfWidth) / arenaBounds.worldWidthMeters;
+  const relZ = (damage.position.y + halfDepth) / arenaBounds.worldDepthMeters;
+  
+  // Map normalized 0-1 range to 3D world coordinates
   const x = relX * 16 - 8; // Map 0-1 to -8 to 8
   const y = 2 + progress * 2; // Float upward
   const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
@@ -189,7 +206,14 @@ SingleDamageNumber.displayName = "SingleDamageNumber";
 const DamageNumbersComponent: React.FC<DamageNumbersProps> = ({
   damages,
   isMobile = false,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    worldWidthMeters: 10,
+    worldDepthMeters: 7.5,
+  },
   animationDuration = 1500,
 }) => {
   // Derive visible damages from props - no need for state sync

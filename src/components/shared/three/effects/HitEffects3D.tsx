@@ -20,12 +20,14 @@ export interface HitEffects3DProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion */
+  /** Arena bounds for accurate coordinate conversion (includes meter dimensions) */
   readonly arenaBounds?: {
     x: number;
     y: number;
     width: number;
     height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
   };
 }
 
@@ -40,21 +42,42 @@ interface ActiveEffect extends HitEffect {
 const HitEffectVisual: React.FC<{
   effect: HitEffect;
   effectRef: React.MutableRefObject<ActiveEffect | null>;
-  arenaBounds?: { x: number; y: number; width: number; height: number };
+  arenaBounds?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
+  };
 }> = ({ effect, effectRef, arenaBounds }) => {
   const groupRef = useRef<THREE.Group>(null);
   // Use ref for alpha to avoid setState in useFrame (eliminates 60 rerenders/sec)
   const alphaRef = useRef(1);
 
-  // Position in 3D space - convert 2D position to 3D
+  // Position in 3D space - convert meter-based position to 3D
   const position3D: [number, number, number] = useMemo(() => {
     if (!effect.position) return [0, 1, 0];
 
-    // Convert from screen coordinates to 3D world coordinates
-    // Use arena bounds if available, otherwise use default normalization
-    const bounds = arenaBounds ?? { x: 0, y: 0, width: 1200, height: 800 };
-    const relX = (effect.position.x - bounds.x) / bounds.width;
-    const relZ = (effect.position.y - bounds.y) / bounds.height;
+    // Convert from meter coordinates to 3D world coordinates (physics-first)
+    // Use arena bounds if available, otherwise use default values for 10m arena
+    const bounds = arenaBounds ?? {
+      x: 0,
+      y: 0,
+      width: 1200,
+      height: 800,
+      worldWidthMeters: 10,
+      worldDepthMeters: 7.5,
+    };
+    
+    // Convert meter position (centered at origin) to 0-1 normalized range
+    const halfWidth = bounds.worldWidthMeters / 2;
+    const halfDepth = bounds.worldDepthMeters / 2;
+    
+    const relX = (effect.position.x + halfWidth) / bounds.worldWidthMeters;
+    const relZ = (effect.position.y + halfDepth) / bounds.worldDepthMeters;
+    
+    // Map normalized 0-1 range to 3D world coordinates
     const x = relX * 16 - 8; // Map 0-1 to -8 to 8
     const y = 1.5; // Mid-height for effects
     const z = relZ * 8 - 4; // Map 0-1 to -4 to 4

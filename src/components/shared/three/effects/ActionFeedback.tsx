@@ -35,12 +35,14 @@ export interface ActionFeedbackProps {
   readonly feedbacks: readonly ActionFeedbackData[];
   /** Whether to use mobile-optimized sizing */
   readonly isMobile?: boolean;
-  /** Arena bounds for 3D positioning */
+  /** Arena bounds for 3D positioning (includes meter dimensions for physics-first) */
   readonly arenaBounds?: {
     x: number;
     y: number;
     width: number;
     height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
   };
   /** Duration of animation in ms (default: 1200) */
   readonly animationDuration?: number;
@@ -112,7 +114,14 @@ function getGlowColor(type: ActionFeedbackType): string {
 interface SingleFeedbackProps {
   readonly feedback: ActionFeedbackData;
   readonly isMobile: boolean;
-  readonly arenaBounds: { x: number; y: number; width: number; height: number };
+  readonly arenaBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
+  };
   readonly animationDuration: number;
 }
 
@@ -125,9 +134,16 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
   const [progress, setProgress] = useState(0);
   const startTimeRef = useRef(feedback.timestamp);
 
-  // Calculate 3D position from 2D screen coordinates (direct calculation, not memoized)
-  const relX = (feedback.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (feedback.position.y - arenaBounds.y) / arenaBounds.height;
+  // Calculate 3D position from meter-based coordinates (physics-first architecture)
+  // Position is in meters relative to arena center (0, 0)
+  const halfWidth = arenaBounds.worldWidthMeters / 2;
+  const halfDepth = arenaBounds.worldDepthMeters / 2;
+  
+  // Convert meter position (centered at origin) to 0-1 normalized range
+  const relX = (feedback.position.x + halfWidth) / arenaBounds.worldWidthMeters;
+  const relZ = (feedback.position.y + halfDepth) / arenaBounds.worldDepthMeters;
+  
+  // Map normalized 0-1 range to 3D world coordinates
   const x = relX * 16 - 8; // Map 0-1 to -8 to 8
   const y = 2.5 + progress * 1.5; // Float upward
   const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
@@ -199,7 +215,14 @@ const SingleFeedback: React.FC<SingleFeedbackProps> = ({
 export const ActionFeedback: React.FC<ActionFeedbackProps> = ({
   feedbacks,
   isMobile = false,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    worldWidthMeters: 10,
+    worldDepthMeters: 7.5,
+  },
   animationDuration = 1200,
 }) => {
   // Derive visible feedbacks from props - no need for state sync

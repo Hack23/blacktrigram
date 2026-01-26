@@ -37,12 +37,14 @@ export interface HitEffects3DInstancedProps {
   readonly effects: HitEffect[];
   /** Callback invoked when an effect completes its duration */
   readonly onEffectComplete?: (effectId: string) => void;
-  /** Arena bounds for accurate coordinate conversion */
+  /** Arena bounds for accurate coordinate conversion (includes meter dimensions) */
   readonly arenaBounds?: {
     x: number;
     y: number;
     width: number;
     height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
   };
 }
 
@@ -58,18 +60,34 @@ interface ActiveEffectInstance {
 }
 
 /**
- * Convert 2D screen position to 3D world position
+ * Convert meter-based position to 3D world position
+ * 
+ * Positions from combat system are in meters relative to arena center.
+ * This function normalizes to 0-1 range then maps to 3D world coordinates.
  */
 const positionTo3D = (
   effect: HitEffect,
-  arenaBounds: { x: number; y: number; width: number; height: number }
+  arenaBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    worldWidthMeters: number;
+    worldDepthMeters: number;
+  }
 ): THREE.Vector3 => {
   if (!effect.position) {
     return new THREE.Vector3(0, 1, 0);
   }
 
-  const relX = (effect.position.x - arenaBounds.x) / arenaBounds.width;
-  const relZ = (effect.position.y - arenaBounds.y) / arenaBounds.height;
+  // Convert meter position (centered at origin) to 0-1 normalized range
+  const halfWidth = arenaBounds.worldWidthMeters / 2;
+  const halfDepth = arenaBounds.worldDepthMeters / 2;
+  
+  const relX = (effect.position.x + halfWidth) / arenaBounds.worldWidthMeters;
+  const relZ = (effect.position.y + halfDepth) / arenaBounds.worldDepthMeters;
+  
+  // Map normalized 0-1 range to 3D world coordinates
   const x = relX * 16 - 8; // Map 0-1 to -8 to 8
   const y = 1.5; // Mid-height for effects
   const z = relZ * 8 - 4; // Map 0-1 to -4 to 4
@@ -189,7 +207,14 @@ const EffectInstanceGroup: React.FC<{
 export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
   effects,
   onEffectComplete,
-  arenaBounds = { x: 0, y: 0, width: 1200, height: 800 },
+  arenaBounds = {
+    x: 0,
+    y: 0,
+    width: 1200,
+    height: 800,
+    worldWidthMeters: 10,
+    worldDepthMeters: 7.5,
+  },
 }) => {
   const effectRefsMap = useRef<
     Map<string, React.MutableRefObject<ActiveEffectInstance>>
