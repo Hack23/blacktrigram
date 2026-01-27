@@ -362,6 +362,7 @@ export class SpeedModifierSystem {
    *
    * @param bodyPartHealth - Current body part health
    * @param bodyPartMaxHealth - Maximum body part health
+   * @param _stance - Current stance (unused - stance applied separately in final calculation)
    * @param painLevel - Current pain level (0-100)
    * @returns Speed penalty as percentage (0.0 to 0.9 max)
    *

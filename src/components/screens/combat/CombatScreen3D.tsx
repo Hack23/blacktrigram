@@ -59,6 +59,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
@@ -2245,11 +2246,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Extract player properties for useMemo dependencies to avoid complex expressions
   const player1BodyPartHealth = validPlayers[0]?.bodyPartHealth;
-  const player1CurrentStance = validPlayers[0]?.currentStance;
-  const player1Pain = validPlayers[0]?.pain;
+  const player1CurrentStance = validPlayers[0]?.currentStance ?? TrigramStance.GEON;
+  const player1Pain = validPlayers[0]?.pain ?? 0;
   const player2BodyPartHealth = validPlayers[1]?.bodyPartHealth;
-  const player2CurrentStance = validPlayers[1]?.currentStance;
-  const player2Pain = validPlayers[1]?.pain;
+  const player2CurrentStance = validPlayers[1]?.currentStance ?? TrigramStance.GEON;
+  const player2Pain = validPlayers[1]?.pain ?? 0;
 
   // Calculate movement state for visual feedback using InjuryMovementModifier
   // This provides bilingual status text and injury severity information
@@ -2300,11 +2301,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       speedMultiplier: result.speedMultiplier,
     };
   }, [player2BodyPartHealth, player2CurrentStance, player2Pain]);
-
-  // Helper function to convert numeric hex color to CSS hex string
-  const hexToCSS = (hex: number): string => {
-    return `#${hex.toString(16).padStart(6, '0')}`;
-  };
 
   return (
     <div
@@ -2422,8 +2418,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 fontSize: isMobile ? "12px" : "14px",
                 color: player1MovementState.isSevereLimp 
-                  ? hexToCSS(KOREAN_COLORS.TEXT_ERROR) 
-                  : hexToCSS(KOREAN_COLORS.ACCENT_GOLD),
+                  ? toHexColor(KOREAN_COLORS.TEXT_ERROR) 
+                  : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
@@ -2449,8 +2445,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               style={{
                 fontSize: isMobile ? "12px" : "14px",
                 color: player2MovementState.isSevereLimp 
-                  ? hexToCSS(KOREAN_COLORS.TEXT_ERROR) 
-                  : hexToCSS(KOREAN_COLORS.ACCENT_GOLD),
+                  ? toHexColor(KOREAN_COLORS.TEXT_ERROR) 
+                  : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
                 fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
