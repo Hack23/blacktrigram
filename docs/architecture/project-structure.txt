@@ -857,6 +857,7 @@ src/components/shared/ui/shared/ConfirmDialog.test.tsx
 src/components/shared/ui/shared/ConfirmDialog.tsx
 src/components/test/Hello3D.test.tsx
 src/components/test/Hello3D.tsx
+src/components/ui/combat/BalanceIndicatorOverlayHtml.tsx
 src/data/archetypeClothing.test.ts
 src/data/archetypeClothing.ts
 src/data/archetypePhysicalAttributes.test.ts
@@ -1130,6 +1131,7 @@ src/systems/combat/FallIntegration.ts
 src/systems/combat/PainResponseSystem.test.ts
 src/systems/combat/PainResponseSystem.ts
 src/systems/combat/TrainingCombatSystem.ts
+src/systems/combat/__tests__/BalanceSystem.comprehensive.test.ts
 src/systems/combat/__tests__/PainConsciousnessIntegration.test.ts
 src/systems/combat/index.ts
 src/systems/combat/painConsciousnessUtils.test.ts
