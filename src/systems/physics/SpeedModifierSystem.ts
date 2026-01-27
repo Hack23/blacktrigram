@@ -250,11 +250,12 @@ export class SpeedModifierSystem {
       playerState.maxStamina,
     );
 
-    // Calculate final speed using injury modifier (includes stance) and combat state penalty
-    // Note: InjuryMovementModifier already includes stance, so we don't multiply by stanceModifier again
-    // Formula: Base × (InjuryMovementSpeed / Base) × (1 - CombatState)
+    // Calculate final speed with all modifiers applied multiplicatively
+    // Formula: Base × Stance × (1 - Injury) × (1 - CombatState)
+    // Note: Injury penalty now excludes stance (calculated with GEON), so we apply stance here
     const finalSpeed =
       baseSpeed *
+      stanceModifier *
       (1.0 - injuryPenalty) *
       (1.0 - combatStatePenalty);
 
@@ -345,17 +346,18 @@ export class SpeedModifierSystem {
    * **Korean**: 부상 속도 패널티 계산 (Calculate Injury Penalty)
    *
    * Uses NEW InjuryMovementModifier to determine speed reduction based on
-   * leg damage severity, torso damage, stance, and pain levels.
+   * leg damage severity, torso damage, and pain levels.
+   * NOTE: Stance modifier is calculated separately to maintain compatibility
+   * with existing SpeedModifierState interface.
+   * 
    * Penalties are progressive and realistic:
    * - Leg injuries: 0-100% penalty based on health
    * - Torso injuries: 0-30% minor penalty
    * - Both legs injured: Additional 20% cumulative penalty
-   * - Stance modifiers: -20% (defensive) to +25% (offensive)
    * - Pain overload: -15% when pain ≥ 80
    *
    * @param bodyPartHealth - Current body part health
    * @param bodyPartMaxHealth - Maximum body part health
-   * @param stance - Current trigram stance
    * @param painLevel - Current pain level (0-100)
    * @returns Speed penalty as percentage (0.0 to 0.9 max)
    *
@@ -372,11 +374,12 @@ export class SpeedModifierSystem {
     }
 
     // Use NEW InjuryMovementModifier system for comprehensive injury calculation
-    // This includes leg injuries, torso damage, both-legs penalty, stance, and pain
+    // Use NEUTRAL stance (GEON = 1.0x) to get pure injury penalty without stance influence
+    // Stance is applied separately in calculateSpeedModifiers for compatibility
     const result = injuryMovementModifier.calculateMovementSpeed(
       1.0, // Base speed of 1.0 to get pure multiplier
       bodyPartHealth,
-      stance,
+      TrigramStance.GEON, // Neutral stance to isolate injury penalty
       painLevel,
     );
 
