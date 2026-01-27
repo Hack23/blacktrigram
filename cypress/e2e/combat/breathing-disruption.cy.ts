@@ -236,10 +236,22 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
           const breathingLabel = $body.find('[data-testid="breathing-label"]');
           if (breathingLabel.length > 0) {
             const labelText = breathingLabel.text();
-            if (labelText.includes("바람맞음") || labelText.includes("헐떡임") || labelText.includes("호흡곤란")) {
+            // Check for any Korean breathing disruption term
+            const hasKoreanLabel = 
+              labelText.includes("바람맞음") || // Winded
+              labelText.includes("헐떡임") ||   // Gasping
+              labelText.includes("호흡곤란");   // Severely Winded
+            
+            // Check for any English breathing disruption term
+            const hasEnglishLabel = 
+              labelText.includes("Winded") || 
+              labelText.includes("Gasping") || 
+              labelText.includes("Severely Winded");
+            
+            if (hasKoreanLabel) {
               cy.log("✅ Korean breathing disruption label found");
             }
-            if (labelText.includes("Winded") || labelText.includes("Gasping") || labelText.includes("Severely Winded")) {
+            if (hasEnglishLabel) {
               cy.log("✅ English breathing disruption label found");
             }
           }
