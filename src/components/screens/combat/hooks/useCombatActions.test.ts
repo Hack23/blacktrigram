@@ -36,6 +36,7 @@ describe("useCombatActions", () => {
       combatState: "idle" as any,
       hitsTaken: 0,
       hitsLanded: 0,
+      statusEffects: [],
     };
 
     const mockPlayer2 = {
@@ -55,6 +56,7 @@ describe("useCombatActions", () => {
       combatState: "idle" as any,
       hitsTaken: 0,
       hitsLanded: 0,
+      statusEffects: [],
     };
 
     const { result: stateResult } = renderHook(() => useCombatState());
@@ -961,6 +963,15 @@ describe("useCombatActions", () => {
         success: true,
         isCritical: false,
         isBlocked: false,
+      });
+
+      // Mock applyCombatResult to prevent actual combat system execution
+      vi.spyOn(mockCombatSystem, "applyCombatResult").mockReturnValue({
+        updatedAttacker: mockConfig.validPlayers[0],
+        updatedDefender: {
+          ...mockConfig.validPlayers[1],
+          health: mockConfig.validPlayers[1].health - 20,
+        },
       });
 
       act(() => {
