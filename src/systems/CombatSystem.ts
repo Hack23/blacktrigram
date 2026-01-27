@@ -20,6 +20,7 @@ import { applyDamageToBodyParts } from "./bodypart/BodyPartDamageIntegration";
 import { playerInjuryManager } from "./bodypart";
 import {
   applyBreathingDisruptionFromVitalPoint,
+  applyBreathingDisruptionFromTorsoDamage,
   BreathingDisruptionSystem,
   causesBreathingDisruption,
   updateBreathingDisruption,
@@ -588,8 +589,9 @@ export class CombatSystem implements CombatSystemInterface {
         bodyRegion,
       );
 
-      // Apply breathing disruption for torso vital point strikes
+      // Apply breathing disruption for torso strikes
       if (result.vitalPointHit && result.targetedVitalPointId) {
+        // Vital point strike to torso
         const vitalPoint = this.vitalPointSystem.getVitalPointById(
           result.targetedVitalPointId,
         );
@@ -600,6 +602,16 @@ export class CombatSystem implements CombatSystemInterface {
             Date.now(),
           );
         }
+      } else if (bodyRegion === BodyRegion.TORSO && result.damage >= 10) {
+        // General torso damage (non-vital point hits)
+        // Apply breathing disruption if damage is significant enough
+        const isSolarPlexusArea = result.technique?.id.includes("solar_plexus") ?? false;
+        updatedDefender = applyBreathingDisruptionFromTorsoDamage(
+          updatedDefender,
+          result.damage,
+          isSolarPlexusArea,
+          Date.now(),
+        );
       }
     }
 
