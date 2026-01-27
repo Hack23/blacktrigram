@@ -850,7 +850,7 @@ export class BalanceSystem {
       toStance: newStance,
     };
 
-    const history = player.stanceChangeHistory || [];
+    const history = player.stanceChangeHistory ?? [];
     const newHistory = [...history, historyEntry].slice(-this.stanceChangeHistoryLimit);
 
     // Check for rapid stance changes (inclusive boundary)

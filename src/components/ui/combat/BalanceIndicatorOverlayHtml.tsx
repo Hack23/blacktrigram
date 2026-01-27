@@ -103,7 +103,7 @@ export const BalanceIndicatorOverlayHtml: React.FC<
     const hasPenalty =
       player.rapidChangePenaltyEnd !== undefined &&
       currentTime < player.rapidChangePenaltyEnd;
-    return isTransitioning || isLowBalance || hasPenalty;
+    return isTransitioning ?? isLowBalance ?? hasPenalty;
   }, [player.balance, player.transitionState, player.rapidChangePenaltyEnd, currentTime]);
 
   const balanceColor = useMemo(

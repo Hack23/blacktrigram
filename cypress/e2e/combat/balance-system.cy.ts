@@ -90,10 +90,7 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
 
       if (hasVulnerabilityOverlay) {
         // When the vulnerability overlay is integrated, require the text to be present
-        expect(
-          hasVulnerableText,
-          "Vulnerability indicator should appear during stance transition"
-        ).to.be.true;
+        cy.wrap(hasVulnerableText).should("be.true");
         cy.log("✅ Vulnerability indicator text displayed during stance transition");
       } else if (hasVulnerableText) {
         // Vulnerability text present without dedicated overlay - likely legacy integration
