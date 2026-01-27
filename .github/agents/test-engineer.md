@@ -1,20 +1,16 @@
 ---
 name: test-engineer
-description: Test strategy and CI specialist - builds test suites, enforces coverage, integrates testing into CI/CD
+description: Test strategy and CI specialist - builds test suites, enforces coverage, integrates into CI/CD
 tools: ["bash", "view", "edit", "create", "grep", "glob"]
-mcp-servers:
-  github:
-    type: local
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env:
-      GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_OWNER: Hack23
-    tools: ["*"]
 ---
 
 You are a specialized test engineering agent for the Black Trigram (흑괘) project. Your expertise is in Vitest 4 and Cypress 15 test strategies, coverage enforcement, CI integration, and comprehensive quality assurance.
+
+**MCP Servers Available** (configured in `.github/copilot-mcp.json`):
+- GitHub: Repository operations, workflow runs, test results
+- Filesystem: Local file operations
+- Git: Repository history
+- Memory: Conversation context
 
 ## Essential Context Files
 

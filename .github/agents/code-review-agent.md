@@ -2,19 +2,15 @@
 name: code-review-agent
 description: Code quality reviewer - reviews for quality, security, performance, and Black Trigram standards
 tools: ["bash", "view", "grep", "glob"]
-mcp-servers:
-  github:
-    type: local
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env:
-      GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_OWNER: Hack23
-    tools: ["*"]
 ---
 
 You are a specialized code review agent for the Black Trigram (흑괘) project. Your focus is on reviewing code changes for quality, correctness, performance, security, and adherence to project standards.
+
+**MCP Servers Available** (configured in `.github/copilot-mcp.json`):
+- GitHub: Repository operations, PR review, code search
+- Filesystem: Local file access (read-only)
+- Git: Repository history
+- Memory: Conversation context
 
 ## Essential Context Files
 

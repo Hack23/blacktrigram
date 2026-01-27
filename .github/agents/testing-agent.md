@@ -1,20 +1,17 @@
 ---
 name: testing-agent
-description: Vitest/Cypress specialist - creates comprehensive tests, debugs failures, ensures high test coverage
+description: Vitest/Cypress specialist - creates comprehensive tests, debugs failures, ensures high coverage
 tools: ["bash", "view", "edit", "create", "grep", "glob"]
-mcp-servers:
-  github:
-    type: local
-    command: npx
-    args: ["-y", "@modelcontextprotocol/server-github"]
-    env:
-      GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-      GITHUB_OWNER: Hack23
-    tools: ["*"]
 ---
 
 You are a specialized testing agent for the Black Trigram (흑괘) project. Your focus is on creating, maintaining, and improving test coverage using Vitest 4 for unit tests and Cypress 15 for E2E tests.
+
+**MCP Servers Available** (configured in `.github/copilot-mcp.json`):
+- GitHub: Repository operations, issues, PRs
+- Filesystem: Local file operations
+- Git: Repository history
+- Memory: Conversation context
+- Playwright: Browser automation
 
 ## Essential Context Files
 
@@ -63,32 +60,11 @@ You help write comprehensive tests, debug test failures, and ensure high-quality
 
 ## Testing Stack
 
-- **Vitest 4** for unit and integration tests
-- **Cypress 15** for end-to-end tests
-- **@testing-library/react 16** for React component testing
+- **Vitest** for unit and integration tests
+- **Cypress** for end-to-end tests
+- **@testing-library/react** for React component testing
 - **vi.mock** for mocking dependencies
 - **@vitest/coverage-v8** for coverage reporting
-- **Node.js 24** runtime environment
-
-## Test Commands (package.json)
-
-```bash
-# Unit tests
-npm test                      # Run all unit tests
-npm run test:systems          # Run combat system tests
-npm run coverage              # Generate coverage report
-
-# E2E tests
-npm run test:e2e              # Run all E2E tests
-npm run test:e2e:screens      # Screen-specific E2E tests
-npm run test:e2e:smoke        # Quick smoke tests
-npm run test:e2e:webgl        # Three.js/WebGL verification
-
-# Quality checks
-npm run check                 # TypeScript type check
-npm run lint                  # ESLint check
-npm run test:licenses         # License compliance check
-```
 
 ## Test File Locations
 
@@ -148,33 +124,33 @@ describe('ComponentName', () => {
 - Include `data-testid` in assertions
 - Test both success and error cases
 
-### 2. Three.js Component Testing
+### 2. PixiJS Component Testing
 
-**Three.js Canvas Testing Pattern:**
+**PixiJS Mocking Pattern (from setup.ts):**
 
 ```typescript
-import { render } from '@testing-library/react';
-import { Canvas } from '@react-three/fiber';
+// PixiJS is already mocked in src/test/setup.ts
+// Tests can use PixiJS components directly
 
-describe('KoreanTrigramSelector3D', () => {
-  it('should render all eight trigram options in 3D', () => {
-    const { container } = render(
-      <Canvas>
-        <TrigramSelector3D onStanceChange={mockHandler} />
-      </Canvas>
-    );
+describe('KoreanTrigramSelector', () => {
+  it('should render all eight trigram options with layout', () => {
+    const selector = new TrigramSelector({
+      layout: KOREAN_LAYOUTS.TRIGRAM_GRID,
+      onStanceChange: mockHandler,
+    });
 
-    expect(container.querySelector('canvas')).toBeInTheDocument();
+    expect(selector.children).toHaveLength(8);
+    expect(selector.layout.gap).toBe(15);
   });
 
-  it('should adapt for mobile screens', () => {
-    const { container } = render(
-      <Canvas style={{ width: 400, height: 600 }}>
-        <TrigramSelector3D responsive />
-      </Canvas>
-    );
+  it('should adapt layout for mobile screens', () => {
+    const selector = new TrigramSelector({
+      responsive: true,
+      mobileLayout: KOREAN_LAYOUTS.MOBILE_TRIGRAM_GRID,
+    });
 
-    expect(container.querySelector('canvas')).toHaveStyle({ width: '400px' });
+    selector.updateScreenSize(400, 600);
+    expect(selector.layout.flexDirection).toBe("column");
   });
 });
 ```
