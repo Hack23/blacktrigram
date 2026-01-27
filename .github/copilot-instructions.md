@@ -907,6 +907,80 @@ describe("KoreanTrigramSelector3D", () => {
 - Korean text rendering tests: 100% accuracy validation
 - Accessibility tests: >85% coverage
 
+## 🔐 ISMS Compliance Framework (2026)
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies** - Reference: https://github.com/Hack23/ISMS-PUBLIC
+
+### Required Compliance Standards
+
+Black Trigram adheres to comprehensive Information Security Management System (ISMS) policies updated quarterly:
+
+**Core Security Policies:**
+- **Information Security Policy**: Data classification, access control, encryption standards
+- **Secure Development Policy**: Code reviews, security testing, vulnerability management, secure SDLC
+- **Vulnerability Management Policy**: Dependency scanning, OSSF Scorecard compliance, patch management
+- **Open Source Policy**: License compliance, dependency audits, supply chain security
+- **AI Policy**: Responsible AI usage, transparency, ethical guidelines, LLM security (OWASP)
+- **Cryptography Policy**: Encryption standards, key management, secure protocols
+- **Incident Response Plan**: Security incident handling, breach notification, recovery procedures
+- **Business Continuity Plan**: Disaster recovery, backup procedures, resilience planning
+
+**Development Standards:**
+- **npm audit**: Zero high/critical vulnerabilities before production
+- **License compliance**: Approved licenses only (MIT, ISC, Apache-2.0, BSD variants)
+- **Dependency scanning**: Automated vulnerability checks in CI/CD
+- **OSSF Scorecard**: Maintain high security score (target: 7.5+/10)
+- **SLSA Level 3**: Supply chain integrity through provenance attestation
+- **SBOM generation**: Software Bill of Materials for transparency
+- **Security testing**: CodeQL, dependency review, container scanning
+
+**Quality Assurance:**
+- **Test coverage**: >90% for critical code paths
+- **Code review**: Mandatory peer review before merge
+- **Static analysis**: ESLint, TypeScript strict mode
+- **Performance testing**: Lighthouse CI, bundle size monitoring
+- **Accessibility**: WCAG 2.1 AA compliance
+
+**Operational Security:**
+- **Access control**: Principle of least privilege
+- **Secrets management**: No hardcoded credentials, use GitHub Secrets
+- **Logging**: Security event logging and monitoring
+- **Third-party management**: Vendor security assessments
+
+### Package.json Security Commands
+
+```bash
+# Security and Compliance Checks
+npm run test:licenses         # Verify dependency licenses
+npm run validate:mcp          # Validate MCP configuration
+npm audit                     # Check for vulnerabilities
+npm run find:unused           # Find unused dependencies (Knip)
+
+# Code Quality
+npm run lint                  # ESLint checks
+npm run check                 # TypeScript type checks
+npm test                      # Unit tests with Vitest
+npm run coverage              # Test coverage reports
+
+# Build and Deploy
+npm run build                 # Production build
+npm run build:analyze         # Bundle size analysis
+```
+
+### ISMS Alignment Checklist
+
+When implementing features:
+- [ ] Follow Secure Development Policy guidelines
+- [ ] No hardcoded secrets or credentials
+- [ ] Dependencies pass license compliance (`npm run test:licenses`)
+- [ ] No high/critical vulnerabilities (`npm audit`)
+- [ ] Code reviewed for security issues
+- [ ] Test coverage meets standards (>90%)
+- [ ] Proper error handling and logging
+- [ ] Data classification applied appropriately
+- [ ] Privacy considerations addressed
+- [ ] Documentation updated
+
 ## 🎮 Korean Martial Arts Integration
 
 ### Eight Trigram System (팔괘 체계)
@@ -941,6 +1015,8 @@ When following these guidelines, code should:
 - ✅ Achieve 60fps performance for all 3D rendering and interactions
 - ✅ Provide comprehensive test coverage for all components
 - ✅ Use proper Three.js optimization techniques (instancing, LOD, etc.)
+- ✅ Comply with ISMS-PUBLIC 2026 policies (security, privacy, quality)
+- ✅ Pass all security checks (npm audit, license compliance)
 
 ## 🎯 Philosophy Integration
 

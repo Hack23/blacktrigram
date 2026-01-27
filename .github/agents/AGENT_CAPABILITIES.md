@@ -24,17 +24,17 @@ All agents should reference these key files to understand the project environmen
 
 ## 📊 Quick Reference Matrix
 
-| Agent | Primary Role | Key Capabilities | MCP Servers | Best For |
+| Agent | Primary Role | Key Capabilities | Tools & MCP | Best For |
 |-------|-------------|------------------|-------------|----------|
-| 🎯 **Task Agent** | Product Orchestrator | Issue creation, quality analysis, ISMS compliance, agent delegation | GitHub, Playwright, AWS | Product management, quality oversight, issue tracking |
-| 🛠️ **Coding Agent** | Full-Stack Developer | Feature implementation, bug fixes, Korean theming, PixiJS integration | Standard | General development tasks, new features |
-| ⚛️ **Frontend Specialist** | React Expert | Type-safe components, React 19 features, state management | Standard | Complex React components, UI architecture |
-| 🎮 **Game Developer** | PixiJS Specialist | Game loops, rendering optimization, audio integration, 60fps performance | Standard | Game mechanics, PixiJS systems, performance |
-| 🧪 **Testing Agent** | Test Writer | Unit tests, E2E tests, test debugging, mocking | Standard | Writing tests, debugging test failures |
-| 🔬 **Test Engineer** | Test Strategist | Test architecture, coverage enforcement, CI integration | Standard | Test strategy, coverage improvement, CI/CD |
-| 📝 **Documentation Writer** | Documentation Expert | JSDoc/TSDoc, user guides, security policies, bilingual content | Standard | API docs, user guides, SECURITY.md |
-| 🔍 **Code Review Agent** | Quality Reviewer | Code quality assessment, standards verification, performance review | Standard (read-only) | Code reviews, quality checks, PR feedback |
-| 🛡️ **Security Specialist** | Security Expert | OSSF Scorecard, SBOM, vulnerability management, license compliance | Standard | Security issues, dependency updates, ISMS |
+| 🎯 **Task Agent** | Product Orchestrator | Issue creation, quality analysis, ISMS compliance | GitHub MCP, minimal tools | Product management, quality oversight |
+| 🛠️ **Coding Agent** | Full-Stack Developer | Feature implementation, bug fixes, Korean theming, Three.js | GitHub MCP, dev tools | General development, new features |
+| ⚛️ **Frontend Specialist** | React Expert | Type-safe components, React 19, Three.js rendering | GitHub MCP, dev tools | Complex React/Three.js UI |
+| 🎮 **Game Developer** | Three.js Specialist | Game loops, 3D rendering, audio, 60fps performance | GitHub MCP, dev tools | Game mechanics, performance |
+| 🧪 **Testing Agent** | Test Writer | Unit tests, E2E tests, test debugging, mocking | GitHub MCP, dev tools | Writing Vitest/Cypress tests |
+| 🔬 **Test Engineer** | Test Strategist | Test architecture, coverage enforcement, CI integration | GitHub MCP, dev tools | Test strategy, CI/CD |
+| 📝 **Documentation Writer** | Documentation Expert | JSDoc/TSDoc, user guides, ISMS policies, bilingual content | GitHub MCP, dev tools | API docs, security policies |
+| 🔍 **Code Review Agent** | Quality Reviewer | Code quality, standards verification, performance review | GitHub MCP, read-only tools | Code reviews, PR feedback |
+| 🛡️ **Security Specialist** | Security Expert | OSSF Scorecard, SBOM, vulnerability mgmt, license compliance | GitHub MCP, read-only tools | Security, dependencies |
 
 ## 🎯 Task Agent - Product Quality Orchestrator
 
@@ -64,12 +64,14 @@ The Task Agent is your **first point of contact** for product-wide concerns. It 
 - ✅ Bilingual text completeness
 - ✅ 60fps performance monitoring
 
-#### 4. Security & ISMS Compliance
-- ✅ ISMS policy alignment verification
-- ✅ OSSF Scorecard improvement tracking
-- ✅ Vulnerability assessment
-- ✅ License compliance checking
-- ✅ SBOM completeness validation
+#### 4. Security & ISMS Compliance (2026)
+- ✅ ISMS-PUBLIC policy alignment (https://github.com/Hack23/ISMS-PUBLIC)
+- ✅ Secure Development Policy compliance
+- ✅ OSSF Scorecard improvement (target: >7.5/10)
+- ✅ Vulnerability assessment (npm audit, CodeQL)
+- ✅ License compliance (MIT, ISC, Apache-2.0, BSD)
+- ✅ SBOM validation (CycloneDX)
+- ✅ Supply chain security (SLSA Level 3)
 
 #### 5. Performance Analysis
 - ✅ Bundle size monitoring
@@ -80,21 +82,35 @@ The Task Agent is your **first point of contact** for product-wide concerns. It 
 
 ### MCP Server Access
 
-**GitHub MCP:**
-- `github-create_issue`, `github-update_issue`, `github-add_issue_comment`
-- `github-list_issues`, `github-search_issues`
-- `github-get_file_contents`, `github-search_code`
-- `github-list_commits`, `github-list_pull_requests`
+**All agents configured with GitHub MCP** for organization-standard GitHub operations:
 
-**Playwright MCP:**
-- `playwright-browser_navigate`, `playwright-browser_screenshot`
-- `playwright-browser_snapshot`, `playwright-browser_click`
-- `playwright-browser_type`, `playwright-browser_evaluate`
+```yaml
+github:
+  type: local
+  command: npx
+  args: ["-y", "@modelcontextprotocol/server-github"]
+  env:
+    GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
+    GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
+    GITHUB_OWNER: Hack23
+  tools: ["*"]
+```
 
-**AWS MCP (when enabled):**
-- Infrastructure monitoring
-- Deployment validation
-- Cost analysis
+**GitHub MCP Capabilities:**
+- Repository operations: `get_file_contents`, `search_code`, `search_repositories`
+- Issue management: `create_issue`, `update_issue`, `add_issue_comment`, `list_issues`, `search_issues`
+- PR operations: `list_pull_requests`, `search_pull_requests`, `pull_request_read`
+- Commit history: `list_commits`, `get_commit`
+- Security: `list_code_scanning_alerts`, `list_secret_scanning_alerts`
+- Workflows: `list_workflows`, `list_workflow_runs`, `get_job_logs`
+
+**Additional MCP Servers (configured in copilot-mcp.json):**
+- **Filesystem**: Local file operations for workspace
+- **Git**: Repository history and operations
+- **Memory**: Conversation history and context
+- **Sequential-thinking**: Complex problem-solving chains
+- **Playwright**: Browser automation (disabled by default)
+- **AWS**: Infrastructure operations (disabled by default)
 
 ### When to Use Task Agent
 
@@ -139,16 +155,17 @@ for missing ISMS policy references. Create issues for gaps."
 
 | Aspect | Coding Agent | Frontend Specialist | Game Developer |
 |--------|-------------|-------------------|----------------|
-| **Primary Focus** | General features | React components | PixiJS systems |
-| **Best For** | New features, bug fixes | Component architecture | Game mechanics |
-| **Technologies** | TypeScript, React, PixiJS | React 19, strict TS | PixiJS 8.x, audio |
-| **Complexity** | General | Advanced React | Game-specific |
-| **When to Use** | Most dev tasks | Complex UI patterns | Performance-critical game code |
+| **Primary Focus** | General features | React components | Three.js systems |
+| **Best For** | New features, bug fixes | Component architecture | Game mechanics, 3D |
+| **Technologies** | TypeScript, React, Three.js | React 19, strict TS, Three.js | Three.js 0.182, audio |
+| **Complexity** | General | Advanced React | Game-specific, performance |
+| **MCP Access** | GitHub MCP | GitHub MCP | GitHub MCP |
+| **When to Use** | Most dev tasks | Complex UI patterns | 3D rendering, 60fps targets |
 
 **Decision Tree:**
 ```
 Development Task
-├─ Is it PixiJS game mechanics? → Game Developer
+├─ Is it Three.js 3D game mechanics? → Game Developer
 ├─ Is it complex React patterns? → Frontend Specialist  
 └─ Is it general feature/bug? → Coding Agent
 ```
