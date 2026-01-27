@@ -945,17 +945,22 @@ export class BalanceSystem {
     }
 
     // Map BodyRegion to BodyPart enum values
-    const leftLegHealth =
+    const leftLegHealthRaw =
       (player.bodyPartHealth.legLeft ?? 0) /
       (player.bodyPartMaxHealth.legLeft ?? 1);
-    const rightLegHealth =
+    const rightLegHealthRaw =
       (player.bodyPartHealth.legRight ?? 0) /
       (player.bodyPartMaxHealth.legRight ?? 1);
     
     // Use torsoLower for core balance (lower body)
-    const torsoHealth =
+    const torsoHealthRaw =
       (player.bodyPartHealth.torsoLower ?? 0) /
       (player.bodyPartMaxHealth.torsoLower ?? 1);
+
+    // Clamp health ratios to [0, 1] to prevent out-of-range values
+    const leftLegHealth = Math.max(0, Math.min(1, leftLegHealthRaw));
+    const rightLegHealth = Math.max(0, Math.min(1, rightLegHealthRaw));
+    const torsoHealth = Math.max(0, Math.min(1, torsoHealthRaw));
 
     // Average leg health (both legs affect balance)
     const avgLegHealth = (leftLegHealth + rightLegHealth) / 2;
@@ -969,8 +974,8 @@ export class BalanceSystem {
     // Combine modifiers (multiplicative)
     const combinedModifier = legModifier * torsoModifier;
 
-    // Clamp to minimum 0.5 (50% balance)
-    return Math.max(0.5, combinedModifier);
+    // Clamp to [0.5, 1.0] range as documented
+    return Math.max(0.5, Math.min(1.0, combinedModifier));
   }
 
   /**
@@ -1016,6 +1021,7 @@ export class BalanceSystem {
    *
    * Penalty applies when player changes stances >2 times in 3 seconds.
    * Lasts for 2 seconds after the last rapid change.
+   * The penalty increases balance loss by 20% in `disruptBalance()`.
    *
    * @param player - Current player state
    * @param currentTime - Current game time in milliseconds
@@ -1023,9 +1029,10 @@ export class BalanceSystem {
    *
    * @example
    * ```typescript
+   * // The penalty is applied automatically in disruptBalance()
    * if (balanceSystem.isRapidChangePenaltyActive(player, Date.now())) {
-   *   // Apply 20% balance reduction
-   *   effectiveBalance *= 0.8;
+   *   // Penalty active: balance loss will be increased by 20%
+   *   cy.log("Rapid change penalty active");
    * }
    * ```
    *

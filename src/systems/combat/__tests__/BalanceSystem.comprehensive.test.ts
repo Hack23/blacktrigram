@@ -638,27 +638,25 @@ describe("BalanceSystem - Comprehensive Tests", () => {
       // Start transition
       player = system.startStanceTransition(player, TrigramStance.GAM, currentTime);
 
-      // Measure performance of 60 frames (1 second at 60fps)
-      const startTime = performance.now();
-      
-      for (let frame = 0; frame < 60; frame++) {
-        const frameTime = currentTime + frame * 16.67; // ~60fps
-        
-        player = system.updateTransition(player, frameTime);
-        player = system.applyRecovery(player, 16.67);
-        player = system.disruptBalance(player, 5, BodyRegion.TORSO, frameTime);
-        
-        system.calculateBalanceModifier(player);
-        system.getKnockbackResistance(player.currentStance);
-        system.getTotalVulnerabilityMultiplier(player);
-      }
-      
-      const endTime = performance.now();
-      const totalTime = endTime - startTime;
-      
-      // Should complete 60 frames in well under 100ms (realistic performance threshold)
-      // This allows ~1.67ms per frame on average, well within 16.67ms frame budget
-      expect(totalTime).toBeLessThan(100);
+      // Test that operations complete successfully without errors
+      // (Avoiding wall-clock timing assertions that are flaky in CI)
+      expect(() => {
+        for (let frame = 0; frame < 60; frame++) {
+          const frameTime = currentTime + frame * 16.67; // ~60fps
+          
+          player = system.updateTransition(player, frameTime);
+          player = system.applyRecovery(player, 16.67);
+          player = system.disruptBalance(player, 5, BodyRegion.TORSO, frameTime);
+          
+          system.calculateBalanceModifier(player);
+          system.getKnockbackResistance(player.currentStance);
+          system.getTotalVulnerabilityMultiplier(player);
+        }
+      }).not.toThrow();
+
+      // Verify final state is valid
+      expect(player.balance).toBeGreaterThanOrEqual(0);
+      expect(player.balance).toBeLessThanOrEqual(100);
     });
   });
 

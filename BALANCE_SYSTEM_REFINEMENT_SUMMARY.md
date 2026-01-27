@@ -267,7 +267,8 @@ const handleStanceChange = (newStance: TrigramStance) => {
 Call `updateTransition()` in the game update loop to clear vulnerability windows:
 ```typescript
 // In game loop (e.g., useFrame in CombatScreen3D)
-const updatedPlayer = balanceSystem.updateTransition(player, deltaTime);
+const currentTime = Date.now();
+const updatedPlayer = balanceSystem.updateTransition(player, currentTime);
 ```
 
 #### 3. Vulnerability Multiplier Integration
