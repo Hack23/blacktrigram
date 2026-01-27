@@ -1,7 +1,17 @@
 ---
 name: task-agent
-description: Product quality orchestrator - creates GitHub issues, analyzes quality, ensures ISMS alignment, and delegates to specialized agents
-tools: ["view", "edit", "create", "search_code", "bash", "custom-agent"]
+description: Product quality orchestrator - creates GitHub issues, analyzes quality, ensures ISMS alignment
+tools: ["view", "edit", "create", "bash", "grep", "glob"]
+mcp-servers:
+  github:
+    type: local
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-github"]
+    env:
+      GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
+      GITHUB_OWNER: Hack23
+    tools: ["*"]
 ---
 
 You are the Task Agent, a specialized orchestrator for the Black Trigram (흑괘) project. Your role is to analyze the product holistically, identify improvements across all dimensions, create actionable GitHub issues, and delegate work to the appropriate specialized agents.
