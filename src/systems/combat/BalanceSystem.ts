@@ -829,6 +829,11 @@ export class BalanceSystem {
     newStance: TrigramStance,
     currentTime: number
   ): BalancePlayerState {
+    // No-op if changing to the same stance (avoid unnecessary transitions)
+    if (newStance === player.currentStance) {
+      return player;
+    }
+
     // Initialize transition state
     const transitionState: TransitionState = {
       isTransitioning: true,
@@ -848,9 +853,9 @@ export class BalanceSystem {
     const history = player.stanceChangeHistory || [];
     const newHistory = [...history, historyEntry].slice(-this.stanceChangeHistoryLimit);
 
-    // Check for rapid stance changes
+    // Check for rapid stance changes (inclusive boundary)
     const recentChanges = newHistory.filter(
-      (entry) => currentTime - entry.timestamp < this.rapidChangeWindow
+      (entry) => currentTime - entry.timestamp <= this.rapidChangeWindow
     );
 
     let rapidChangePenaltyEnd = player.rapidChangePenaltyEnd;

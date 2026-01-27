@@ -98,7 +98,6 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
 
     // Verify vulnerability indicator was present during transition
     cy.log("✅ Transition vulnerability window validated");
-    });
 
     cy.wait(600); // Wait for vulnerability window to close (>500ms)
     cy.log("✅ Vulnerability window closed");

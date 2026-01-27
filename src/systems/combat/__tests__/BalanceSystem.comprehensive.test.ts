@@ -151,6 +151,24 @@ describe("BalanceSystem - Comprehensive Tests", () => {
       expect(player.stanceChangeHistory?.[1].toStance).toBe(TrigramStance.LI);
     });
 
+    it("should no-op when changing to the same stance", () => {
+      const player = createBalancePlayerState({
+        currentStance: TrigramStance.GEON,
+        stanceChangeHistory: [],
+      });
+
+      const result = system.startStanceTransition(
+        player,
+        TrigramStance.GEON, // Same stance
+        currentTime
+      );
+
+      // Should return unchanged player (no transition)
+      expect(result).toBe(player);
+      expect(result.transitionState?.isTransitioning).toBeUndefined();
+      expect(result.stanceChangeHistory?.length).toBe(0);
+    });
+
     it("should limit stance change history to last 5 changes", () => {
       let player = createBalancePlayerState({
         currentStance: TrigramStance.GEON,
