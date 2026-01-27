@@ -54,7 +54,9 @@ import {
 } from "../../../types";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
+  FONT_FAMILY,
   getPerformanceSettings,
+  KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -2291,6 +2293,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     };
   }, [validPlayers]);
 
+  // Helper function to convert numeric hex color to CSS hex string
+  const hexToCSS = (hex: number): string => {
+    return `#${hex.toString(16).padStart(6, '0')}`;
+  };
+
   return (
     <div
       style={{
@@ -2406,8 +2413,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             <div
               style={{
                 fontSize: isMobile ? "12px" : "14px",
-                color: player1MovementState.isSevereLimp ? "#ff4444" : "#ffaa00",
-                fontFamily: "Korean Font, sans-serif",
+                color: player1MovementState.isSevereLimp 
+                  ? hexToCSS(KOREAN_COLORS.TEXT_ERROR) 
+                  : hexToCSS(KOREAN_COLORS.ACCENT_GOLD),
+                fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
                 background: "rgba(0, 0, 0, 0.6)",
@@ -2431,8 +2440,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             <div
               style={{
                 fontSize: isMobile ? "12px" : "14px",
-                color: player2MovementState.isSevereLimp ? "#ff4444" : "#ffaa00",
-                fontFamily: "Korean Font, sans-serif",
+                color: player2MovementState.isSevereLimp 
+                  ? hexToCSS(KOREAN_COLORS.TEXT_ERROR) 
+                  : hexToCSS(KOREAN_COLORS.ACCENT_GOLD),
+                fontFamily: FONT_FAMILY.KOREAN,
                 fontWeight: "bold",
                 textShadow: "0 0 4px rgba(0,0,0,0.8)",
                 background: "rgba(0, 0, 0, 0.6)",

@@ -21,7 +21,8 @@
  *
  * ```
  * Final Speed = Base Speed
- *               × (1 - Injury Penalty with Stance & Pain)
+ *               × Stance Modifier
+ *               × (1 - Injury Penalty from Legs, Torso & Pain)
  *               × (1 - Combat State Penalty)
  *
  * Final Acceleration = Base Acceleration
@@ -228,7 +229,7 @@ export class SpeedModifierSystem {
       playerState.pain,
     );
 
-    // Calculate stance modifier (already handled by InjuryMovementModifier)
+    // Calculate stance modifier separately (injury penalty uses neutral GEON stance)
     const stanceModifier = this.getStanceSpeedModifier(
       playerState.currentStance,
     );
