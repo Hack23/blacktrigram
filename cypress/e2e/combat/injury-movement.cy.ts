@@ -98,36 +98,37 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
     cy.wait(1000);
 
     // Check for movement status indicator (should appear above injured player)
+    // Note: Damage distribution may vary, so we check if ANY player shows movement impairment
     cy.get("body").then(($body) => {
       const player1StatusExists = $body.find('[data-testid="player1-movement-status"]').is(":visible");
       const player2StatusExists = $body.find('[data-testid="player2-movement-status"]').is(":visible");
       
-      if (player1StatusExists || player2StatusExists) {
+      // At least one player should show movement impairment after extensive damage
+      const anyPlayerImpaired = player1StatusExists || player2StatusExists;
+      
+      if (anyPlayerImpaired) {
         cy.log("✅ Movement status indicator visible (player injured)");
         
-        // Verify bilingual text is present
+        // Verify bilingual text is present on whichever player is injured
         if (player2StatusExists) {
-          cy.get('[data-testid="player2-movement-status"]').should("be.visible");
-          cy.log("✅ Player 2 movement status indicator found");
+          cy.get('[data-testid="player2-movement-status"]')
+            .should("be.visible")
+            .and("contain.text", "|"); // Verify bilingual "Korean | English" format
           
-          // Note: The exact text depends on injury severity
-          // Could be "절뚝거림 | Limping" or "심한 절뚝거림 | Severe Limp"
-          cy.get('[data-testid="player2-movement-status"]').then(($el) => {
-            const text = $el.text();
+          cy.get('[data-testid="player2-movement-status"]').invoke("text").then((text) => {
             cy.log(`Movement status text: "${text}"`);
-            
-            // Verify bilingual format (Korean | English)
-            expect(text).to.match(/\|/);
-            cy.log("✅ Bilingual status text verified");
           });
         }
         
         if (player1StatusExists) {
-          cy.get('[data-testid="player1-movement-status"]').should("be.visible");
-          cy.log("✅ Player 1 movement status indicator found");
+          cy.get('[data-testid="player1-movement-status"]')
+            .should("be.visible")
+            .and("contain.text", "|"); // Verify bilingual format
         }
       } else {
-        cy.log("⚠️ No movement status visible - may need more damage or leg-specific targeting");
+        // If no impairment visible, log for debugging but don't fail test
+        // Combat system may distribute damage across body parts differently
+        cy.log("⚠️ No movement status visible after attacks - damage may not have targeted legs sufficiently");
       }
     });
 
@@ -152,28 +153,35 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
     cy.log("7️⃣ Verifying Severe Movement Impairment");
 
     cy.get("body").then(($body) => {
+      const player1StatusExists = $body.find('[data-testid="player1-movement-status"]').is(":visible");
       const player2StatusExists = $body.find('[data-testid="player2-movement-status"]').is(":visible");
       
-      if (player2StatusExists) {
-        cy.get('[data-testid="player2-movement-status"]').then(($el) => {
-          const text = $el.text();
-          cy.log(`Severe state text: "${text}"`);
-          
-          // In severe state, text should contain "심한" (severe in Korean)
-          // or show red color instead of orange
-          const style = $el.attr("style");
-          cy.log(`Element style: ${style}`);
-          
-          // Verify either severe text or red color
-          const isSevere = text.includes("심한") || text.includes("Severe");
-          const hasRedColor = style?.includes("rgb(255, 68, 68)") || style?.includes("#ff4444");
-          
-          if (isSevere || hasRedColor) {
-            cy.log("✅ Severe movement impairment state confirmed");
-          } else {
-            cy.log("⚠️ May be in limping state, not yet severe");
-          }
-        });
+      // At least one player should show movement impairment after extensive damage
+      if (player1StatusExists || player2StatusExists) {
+        cy.log("✅ Movement status visible with extensive damage");
+        
+        // Check the injured player's status
+        if (player2StatusExists) {
+          cy.get('[data-testid="player2-movement-status"]')
+            .invoke("text")
+            .then((text) => {
+              cy.log(`Severe state text: "${text}"`);
+              
+              // Verify bilingual format is maintained
+              expect(text).to.match(/\|/);
+              cy.log("✅ Bilingual format confirmed in severe state");
+            });
+        }
+        
+        if (player1StatusExists) {
+          cy.get('[data-testid="player1-movement-status"]')
+            .invoke("text")
+            .then((text) => {
+              cy.log(`Player 1 movement state: "${text}"`);
+            });
+        }
+      } else {
+        cy.log("⚠️ Movement status not visible - combat may have ended or damage insufficient");
       }
     });
 

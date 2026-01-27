@@ -2244,18 +2244,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleResume,
   ]);
 
-  // Extract player properties for useMemo dependencies to avoid complex expressions
-  const player1BodyPartHealth = validPlayers[0]?.bodyPartHealth;
-  const player1CurrentStance = validPlayers[0]?.currentStance ?? TrigramStance.GEON;
-  const player1Pain = validPlayers[0]?.pain ?? 0;
-  const player2BodyPartHealth = validPlayers[1]?.bodyPartHealth;
-  const player2CurrentStance = validPlayers[1]?.currentStance ?? TrigramStance.GEON;
-  const player2Pain = validPlayers[1]?.pain ?? 0;
-
   // Calculate movement state for visual feedback using InjuryMovementModifier
   // This provides bilingual status text and injury severity information
   const player1MovementState = useMemo(() => {
-    if (!player1BodyPartHealth) {
+    if (!validPlayers[0]?.bodyPartHealth) {
       return {
         statusText: { korean: "정상", english: "Normal" },
         isLimping: false,
@@ -2265,9 +2257,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const result = injuryMovementModifier.calculateMovementSpeed(
       1.0,
-      player1BodyPartHealth,
-      player1CurrentStance,
-      player1Pain
+      validPlayers[0].bodyPartHealth,
+      validPlayers[0].currentStance ?? TrigramStance.GEON,
+      validPlayers[0].pain ?? 0
     );
 
     return {
@@ -2276,10 +2268,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [player1BodyPartHealth, player1CurrentStance, player1Pain]);
+  }, [validPlayers[0]?.bodyPartHealth, validPlayers[0]?.currentStance, validPlayers[0]?.pain]);
 
   const player2MovementState = useMemo(() => {
-    if (!player2BodyPartHealth) {
+    if (!validPlayers[1]?.bodyPartHealth) {
       return {
         statusText: { korean: "정상", english: "Normal" },
         isLimping: false,
@@ -2289,9 +2281,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const result = injuryMovementModifier.calculateMovementSpeed(
       1.0,
-      player2BodyPartHealth,
-      player2CurrentStance,
-      player2Pain
+      validPlayers[1].bodyPartHealth,
+      validPlayers[1].currentStance ?? TrigramStance.GEON,
+      validPlayers[1].pain ?? 0
     );
 
     return {
@@ -2300,7 +2292,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [player2BodyPartHealth, player2CurrentStance, player2Pain]);
+  }, [validPlayers[1]?.bodyPartHealth, validPlayers[1]?.currentStance, validPlayers[1]?.pain]);
 
   return (
     <div
