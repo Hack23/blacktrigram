@@ -97,6 +97,7 @@ import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import { PauseMenu } from "./components/controls/PauseMenu";
+import { TraumaOverlay3D } from "./components/effects/TraumaOverlay3D";
 import {
   CombatBottomHUD,
   CombatLeftHUD,
@@ -768,6 +769,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // Track injuries for trauma visualization (TraumaOverlay3D)
+  // 외상 시각화를 위한 부상 추적
+  const [player1Injuries, setPlayer1Injuries] = useState<
+    readonly import("../../../types/injury").Injury[]
+  >([]);
+  const [player2Injuries, setPlayer2Injuries] = useState<
+    readonly import("../../../types/injury").Injury[]
+  >([]);
+
   // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
   // Without this, a new function is created every render, causing animation frame cancellation
   const handlePlayer1PositionChange = useCallback(
@@ -1260,6 +1270,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [onPlayerUpdate, setPlayer1Position],
   );
 
+  // Callback for creating injuries from combat damage
+  // 전투 피해로부터 부상 생성 콜백
+  const handleInjuryCreated = useCallback(
+    (injury: import("../../../types/injury").Injury, targetPlayerIndex: number) => {
+      if (targetPlayerIndex === 0) {
+        setPlayer1Injuries((prev) => [...prev, injury]);
+      } else if (targetPlayerIndex === 1) {
+        setPlayer2Injuries((prev) => [...prev, injury]);
+      }
+    },
+    [],
+  );
+
   // Combat action handlers
   const {
     handleAttack,
@@ -1281,6 +1304,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onLateralityUpdate: (playerIndex, laterality) => {
       combatActions.setPlayerLateralityIndex(playerIndex as 0 | 1, laterality);
     },
+    onInjuryCreated: handleInjuryCreated,
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -2340,6 +2364,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}
+        />
+
+        {/* Trauma Overlays - Injury Visualization (외상 오버레이 - 부상 시각화) */}
+        {/* Player 1 Injuries */}
+        <TraumaOverlay3D
+          playerId="player"
+          health={validPlayers[0].health}
+          injuries={player1Injuries}
+          characterPosition={player1Position3D}
+          isMobile={isMobile}
+          showFractures={true}
+        />
+
+        {/* Player 2 Injuries */}
+        <TraumaOverlay3D
+          playerId="enemy"
+          health={validPlayers[1].health}
+          injuries={player2Injuries}
+          characterPosition={player2Position3D}
+          isMobile={isMobile}
+          showFractures={true}
         />
 
         {/* Hit Effects */}
