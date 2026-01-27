@@ -71,6 +71,7 @@ import HitEffects3D from "../../shared/three/effects/HitEffects3D";
 import { VitalPointMarkers3D } from "../../shared/three/effects/VitalPointMarkers3D";
 import { StanceChangeIndicator } from "../../shared/three/indicators/StanceChangeIndicator";
 import { CombatArena3D } from "../../shared/three/scene/CombatArena3D";
+import { BreathingIndicator } from "../../shared/three/ui/BreathingIndicator";
 import { ComboCounter } from "../../shared/three/ui/ComboCounter";
 import { VitalPointOverlayControlsHtml } from "../../shared/three/ui/VitalPointOverlayControlsHtml";
 import { KeyboardHints } from "./components/controls/KeyboardHints";
@@ -2686,6 +2687,35 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Note: Player 2 (AI) does not get fullscreen state overlays like consciousness blur */}
         {/* as those effects would incorrectly affect the player's view */}
+
+        {/* Breathing Disruption Indicators */}
+        {/* Player 1 Breathing Indicator - positioned near left HUD */}
+        <div
+          style={{
+            position: "absolute",
+            left: isMobile ? "10px" : "20px",
+            top: isMobile ? "120px" : "160px",
+            zIndex: Z_INDEX.HUD + 1,
+            pointerEvents: "none",
+          }}
+          data-testid="player1-breathing-indicator-container"
+        >
+          <BreathingIndicator player={validPlayers[0]} isMobile={isMobile} />
+        </div>
+
+        {/* Player 2 Breathing Indicator - positioned near right HUD */}
+        <div
+          style={{
+            position: "absolute",
+            right: isMobile ? "10px" : "20px",
+            top: isMobile ? "120px" : "160px",
+            zIndex: Z_INDEX.HUD + 1,
+            pointerEvents: "none",
+          }}
+          data-testid="player2-breathing-indicator-container"
+        >
+          <BreathingIndicator player={validPlayers[1]} isMobile={isMobile} />
+        </div>
 
         {/* Pause Menu Overlay */}
         {(isPaused || showPauseMenu) && (
