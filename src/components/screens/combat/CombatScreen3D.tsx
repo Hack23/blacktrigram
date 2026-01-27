@@ -2243,10 +2243,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleResume,
   ]);
 
+  // Extract player properties for useMemo dependencies to avoid complex expressions
+  const player1BodyPartHealth = validPlayers[0]?.bodyPartHealth;
+  const player1CurrentStance = validPlayers[0]?.currentStance;
+  const player1Pain = validPlayers[0]?.pain;
+  const player2BodyPartHealth = validPlayers[1]?.bodyPartHealth;
+  const player2CurrentStance = validPlayers[1]?.currentStance;
+  const player2Pain = validPlayers[1]?.pain;
+
   // Calculate movement state for visual feedback using InjuryMovementModifier
   // This provides bilingual status text and injury severity information
   const player1MovementState = useMemo(() => {
-    if (!validPlayers[0].bodyPartHealth) {
+    if (!player1BodyPartHealth) {
       return {
         statusText: { korean: "정상", english: "Normal" },
         isLimping: false,
@@ -2256,9 +2264,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const result = injuryMovementModifier.calculateMovementSpeed(
       1.0,
-      validPlayers[0].bodyPartHealth,
-      validPlayers[0].currentStance,
-      validPlayers[0].pain
+      player1BodyPartHealth,
+      player1CurrentStance,
+      player1Pain
     );
 
     return {
@@ -2267,10 +2275,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [validPlayers]);
+  }, [player1BodyPartHealth, player1CurrentStance, player1Pain]);
 
   const player2MovementState = useMemo(() => {
-    if (!validPlayers[1].bodyPartHealth) {
+    if (!player2BodyPartHealth) {
       return {
         statusText: { korean: "정상", english: "Normal" },
         isLimping: false,
@@ -2280,9 +2288,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
     const result = injuryMovementModifier.calculateMovementSpeed(
       1.0,
-      validPlayers[1].bodyPartHealth,
-      validPlayers[1].currentStance,
-      validPlayers[1].pain
+      player2BodyPartHealth,
+      player2CurrentStance,
+      player2Pain
     );
 
     return {
@@ -2291,7 +2299,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [validPlayers]);
+  }, [player2BodyPartHealth, player2CurrentStance, player2Pain]);
 
   // Helper function to convert numeric hex color to CSS hex string
   const hexToCSS = (hex: number): string => {

@@ -229,7 +229,10 @@ export class SpeedModifierSystem {
       playerState.pain,
     );
 
-    // Calculate stance modifier separately (injury penalty uses neutral GEON stance)
+    // Calculate stance modifier separately.
+    // NOTE: InjuryMovementModifier is called with neutral GEON stance inside
+    // calculateInjuryPenalty() so that injury effects are isolated from stance.
+    // The actual current stance effect must be applied here via stanceModifier.
     const stanceModifier = this.getStanceSpeedModifier(
       playerState.currentStance,
     );
