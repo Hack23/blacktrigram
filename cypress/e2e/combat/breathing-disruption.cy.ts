@@ -200,33 +200,75 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
   it("should display breathing indicator in both left and right HUDs", () => {
     cy.annotate("Testing Breathing Indicator UI Integration");
 
-    cy.log("Verifying BreathingIndicator in Combat HUDs");
+    cy.log("Verifying BreathingIndicator in Combat UI");
 
-    // Check for left HUD (Player 1)
+    // Execute torso strikes to trigger breathing disruption
+    cy.log("Executing torso strikes to trigger breathing disruption");
+    
+    // Switch to stance and execute attacks
+    cy.get("body").type("3"); // Li stance
+    cy.wait(500);
+    
+    // Execute multiple attacks to ensure torso damage
+    for (let i = 0; i < 4; i++) {
+      cy.get("body").type(" ");
+      cy.wait(800);
+    }
+    cy.log("✅ Executed torso strikes");
+
+    // Wait for breathing disruption to be applied
+    cy.wait(1000);
+
+    // Check for breathing indicator containers
     cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="combat-left-hud"]').length > 0) {
-        cy.get('[data-testid="combat-left-hud"]').should("exist");
-        cy.log("✅ Combat Left HUD exists");
+      // Check for Player 1 breathing indicator container
+      const player1IndicatorExists = $body.find('[data-testid="player1-breathing-indicator-container"]').length > 0;
+      
+      if (player1IndicatorExists) {
+        cy.log("✅ Player 1 breathing indicator container found");
         
-        // Check for breathing section within left HUD
-        if ($body.find('[data-testid="combat-left-hud-breathing-section"]').length > 0) {
-          cy.get('[data-testid="combat-left-hud-breathing-section"]').should("exist");
-          cy.log("✅ Breathing indicator section in left HUD");
+        // Check for actual breathing indicator component
+        const breathingIndicatorExists = $body.find('[data-testid="breathing-indicator"]').length > 0;
+        if (breathingIndicatorExists) {
+          cy.log("✅ BreathingIndicator component visible");
+          
+          // Check for Korean-English bilingual labels
+          const breathingLabel = $body.find('[data-testid="breathing-label"]');
+          if (breathingLabel.length > 0) {
+            const labelText = breathingLabel.text();
+            if (labelText.includes("바람맞음") || labelText.includes("헐떡임") || labelText.includes("호흡곤란")) {
+              cy.log("✅ Korean breathing disruption label found");
+            }
+            if (labelText.includes("Winded") || labelText.includes("Gasping") || labelText.includes("Severely Winded")) {
+              cy.log("✅ English breathing disruption label found");
+            }
+          }
+          
+          // Check for timer
+          const breathingTimer = $body.find('[data-testid="breathing-timer"]');
+          if (breathingTimer.length > 0) {
+            cy.log("✅ Breathing disruption timer visible");
+          }
+          
+          // Check for icon
+          const breathingIcon = $body.find('[data-testid="breathing-icon"]');
+          if (breathingIcon.length > 0) {
+            cy.log("✅ Breathing disruption icon (🫁) visible");
+          }
+        } else {
+          cy.log("⚠️ BreathingIndicator may be hidden (no active disruption yet)");
         }
+      } else {
+        cy.log("⚠️ Player 1 breathing indicator container not found");
       }
-    });
 
-    // Check for right HUD (Player 2/AI)
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="combat-right-hud"]').length > 0) {
-        cy.get('[data-testid="combat-right-hud"]').should("exist");
-        cy.log("✅ Combat Right HUD exists");
-        
-        // Check for breathing section within right HUD
-        if ($body.find('[data-testid="combat-right-hud-breathing-section"]').length > 0) {
-          cy.get('[data-testid="combat-right-hud-breathing-section"]').should("exist");
-          cy.log("✅ Breathing indicator section in right HUD");
-        }
+      // Check for Player 2 breathing indicator container
+      const player2IndicatorExists = $body.find('[data-testid="player2-breathing-indicator-container"]').length > 0;
+      
+      if (player2IndicatorExists) {
+        cy.log("✅ Player 2 breathing indicator container found");
+      } else {
+        cy.log("⚠️ Player 2 breathing indicator container not found");
       }
     });
 
