@@ -2356,7 +2356,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [validPlayers[0]?.bodyPartHealth, validPlayers[0]?.currentStance, validPlayers[0]?.pain]);
+  }, [validPlayers]);
 
   const player2MovementState = useMemo(() => {
     if (!validPlayers[1]?.bodyPartHealth) {
@@ -2380,7 +2380,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       isSevereLimp: result.isSevereLimp,
       speedMultiplier: result.speedMultiplier,
     };
-  }, [validPlayers[1]?.bodyPartHealth, validPlayers[1]?.currentStance, validPlayers[1]?.pain]);
+  }, [validPlayers]);
 
   return (
     <div
