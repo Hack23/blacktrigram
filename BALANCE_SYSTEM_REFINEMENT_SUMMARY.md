@@ -2,7 +2,9 @@
 
 ## ✅ Completion Status: 90%
 
-All 8 acceptance criteria have been successfully implemented and tested.
+All 8 acceptance criteria have been implemented with comprehensive testing.
+
+**Integration Status Note:** The new transition vulnerability and rapid change penalty mechanics are fully implemented and tested. Integration with the game's stance change system requires wiring these APIs into the stance management flow (e.g., calling `startStanceTransition()` when player changes stance and `updateTransition()` in the game loop). The `getTotalVulnerabilityMultiplier()` method should replace `getVulnerabilityMultiplier()` in damage calculations to include transition vulnerability.
 
 ---
 
@@ -240,12 +242,64 @@ All 8 acceptance criteria have been successfully implemented and tested.
 
 ---
 
+## 🚀 Integration Steps
+
+### Required Wiring for Full Functionality
+
+The balance system enhancements are fully implemented but require integration into the game's stance change and damage calculation flows:
+
+#### 1. Stance Transition Integration
+Call `startStanceTransition()` when the player changes stance:
+```typescript
+// In stance change handler (e.g., CombatScreen3D or stance management system)
+const handleStanceChange = (newStance: TrigramStance) => {
+  const currentTime = Date.now();
+  const updatedPlayer = balanceSystem.startStanceTransition(
+    player,
+    newStance,
+    currentTime
+  );
+  setPlayer(updatedPlayer);
+};
+```
+
+#### 2. Transition Update in Game Loop
+Call `updateTransition()` in the game update loop to clear vulnerability windows:
+```typescript
+// In game loop (e.g., useFrame in CombatScreen3D)
+const updatedPlayer = balanceSystem.updateTransition(player, deltaTime);
+```
+
+#### 3. Vulnerability Multiplier Integration
+Replace `getVulnerabilityMultiplier()` calls with `getTotalVulnerabilityMultiplier()` in damage calculations:
+```typescript
+// In CombatSystem damage calculation
+const vulnerabilityMultiplier = this.balanceSystem.getTotalVulnerabilityMultiplier(defender);
+const finalDamage = baseDamage * vulnerabilityMultiplier;
+```
+
+#### 4. Current Time for Rapid Change Penalty
+Pass `currentTime` to `disruptBalance()` to enable rapid change penalties:
+```typescript
+// In CombatSystem when applying balance disruption
+const currentTime = Date.now();
+updatedDefender = this.balanceSystem.disruptBalance(
+  updatedDefender,
+  result.damage,
+  bodyRegion,
+  currentTime
+);
+```
+
+---
+
 ## 🚀 Next Steps
 
 ### Recommended Enhancements
-1. Integrate BalanceIndicatorOverlayHtml into CombatScreen3D
-2. Add sound effects for vulnerability windows
-3. Create stance transition animations
+1. Complete integration steps above to activate all features in gameplay
+2. Add BalanceIndicatorOverlayHtml to CombatScreen3D
+3. Add sound effects for vulnerability windows
+4. Create stance transition animations
 4. Add visual effects for rapid change penalty
 5. Implement stance-specific knockback animations
 

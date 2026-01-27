@@ -17,7 +17,6 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { createMockPlayerState } from "../../../test/test-utils";
 import { TrigramStance, BodyRegion } from "../../../types";
-import type { PlayerState } from "../../player";
 import BalanceSystem, { type BalancePlayerState } from "../BalanceSystem";
 
 // Helper to create test player state with balance features

@@ -301,34 +301,41 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="combat-screen"]').should("exist");
     cy.wait(1000);
 
-    // Measure FPS during intensive balance updates
-    cy.window().then((win) => {
-      let frameCount = 0;
-      let lastTime = performance.now();
-      const targetDuration = 3000; // 3 seconds
+    // Measure FPS during intensive balance updates and assert threshold
+    cy.window()
+      .then((win) => {
+        return new Cypress.Promise<number>((resolve) => {
+          let frameCount = 0;
+          const startTime = win.performance.now();
+          const targetDuration = 3000; // 3 seconds
 
-      const measureFPS = () => {
-        frameCount++;
-        const currentTime = performance.now();
-        const elapsed = currentTime - lastTime;
+          const measureFPS = () => {
+            frameCount++;
+            const elapsed = win.performance.now() - startTime;
 
-        if (elapsed >= targetDuration) {
-          const fps = (frameCount / elapsed) * 1000;
-          cy.log(`📊 Average FPS: ${fps.toFixed(2)}`);
-          
-          if (fps >= 55) {
-            cy.log("✅ Performance target achieved (>55fps)");
-          } else {
-            cy.log("⚠️ Performance below target");
-          }
-          return;
+            if (elapsed >= targetDuration) {
+              const fps = (frameCount / elapsed) * 1000;
+              cy.log(`📊 Average FPS: ${fps.toFixed(2)}`);
+              resolve(fps);
+              return;
+            }
+
+            win.requestAnimationFrame(measureFPS);
+          };
+
+          win.requestAnimationFrame(measureFPS);
+        });
+      })
+      .then((fps) => {
+        // Assert that performance meets the target threshold
+        expect(fps, "Average FPS during balance updates").to.be.greaterThan(55);
+
+        if (fps >= 55) {
+          cy.log("✅ Performance target achieved (>55fps)");
+        } else {
+          cy.log("⚠️ Performance below target");
         }
-
-        requestAnimationFrame(measureFPS);
-      };
-
-      requestAnimationFrame(measureFPS);
-    });
+      });
 
     // Perform rapid stance changes during FPS measurement
     for (let i = 0; i < 10; i++) {

@@ -16,7 +16,7 @@
 
 import React, { useMemo } from "react";
 import { Html } from "@react-three/drei";
-import { KOREAN_COLORS } from "@/types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
 import type { BalancePlayerState } from "@/systems/combat/BalanceSystem";
 
 export interface BalanceIndicatorOverlayHtmlProps {
@@ -130,7 +130,7 @@ export const BalanceIndicatorOverlayHtml: React.FC<
         ? `0 0 16px ${vulnerableColorHex}`
         : `0 0 12px ${balanceColor}`,
       transition: "all 0.3s ease-out",
-      fontFamily: "'Noto Sans KR', sans-serif",
+      fontFamily: FONT_FAMILY.KOREAN,
       fontSize: isMobile ? "12px" : "14px",
       minWidth: isMobile ? "140px" : "180px",
       textAlign: "center" as const,
@@ -161,7 +161,7 @@ export const BalanceIndicatorOverlayHtml: React.FC<
             }
           `}
         </style>
-        <div style={containerStyle}>
+        <div style={containerStyle} data-testid="balance-indicator-overlay">
           {/* Balance percentage and label */}
           <div
             style={{

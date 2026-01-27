@@ -292,8 +292,8 @@ export class BalanceSystem {
     const bodyModifier = this.calculateBalanceModifier(player);
     balanceLoss *= 1.0 / bodyModifier; // More damage = more balance loss
 
-    // Apply rapid stance change penalty
-    if (currentTime && this.isRapidChangePenaltyActive(player, currentTime)) {
+    // Apply rapid stance change penalty if time is provided
+    if (currentTime !== undefined && this.isRapidChangePenaltyActive(player, currentTime)) {
       balanceLoss *= 1.0 + this.rapidChangePenalty; // +20% balance loss
     }
 
@@ -916,13 +916,16 @@ export class BalanceSystem {
   /**
    * Calculate balance modifier based on body part damage.
    *
-   * Leg damage significantly reduces balance:
-   * - 100% leg health: 1.0x balance (no modifier)
-   * - 70% leg health: 0.9x balance (10% reduction)
-   * - 30% leg health: 0.7x balance (30% reduction)
-   * - 0% leg health: 0.5x balance (50% reduction)
+   * Leg damage significantly reduces balance. The leg-specific modifier
+   * scales linearly from 0.7x at 0% leg health to 1.0x at 100% leg health:
+   * - 100% leg health: 1.0x balance (no reduction from legs)
+   * - 70% leg health: ≈0.91x balance (≈9% reduction from legs)
+   * - 30% leg health: ≈0.79x balance (≈21% reduction from legs)
+   * - 0% leg health: 0.7x balance (30% reduction from legs)
    *
-   * Torso damage also affects balance but to a lesser degree.
+   * Torso damage also affects balance but to a lesser degree, and the
+   * combined leg/torso modifier is clamped so the final balance modifier
+   * stays within the range 0.5x to 1.0x.
    *
    * @param player - Current player state with body part health
    * @returns Balance modifier (0.5 to 1.0)
