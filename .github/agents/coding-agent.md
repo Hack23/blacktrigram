@@ -92,6 +92,72 @@ npm run validate:mcp     # Validate MCP config
 npm audit                # Check vulnerabilities
 ```
 
+## ISMS 2026 Compliance - Secure Development Policy
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies**: https://github.com/Hack23/ISMS-PUBLIC
+
+### Required Policy Compliance
+
+**[Secure Development Policy v2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** (Effective: 2026-01-25):
+
+#### 🔐 Core Development Requirements
+- **Security by Design**: Security considerations from initial design through deployment
+- **No Hardcoded Secrets**: Use GitHub Secrets, never commit credentials
+- **Code Review**: All security-relevant changes require peer review
+- **Automated Security Testing**: SAST, SCA, secret scanning must pass before merge
+- **Input Validation**: Server-side validation with sanitization and encoding
+- **Output Encoding**: Context-aware encoding preventing injection attacks
+
+#### 🤖 AI-Augmented Development Controls
+- **AI as Proposal Generator**: All AI outputs require human review and approval
+- **No Autonomous Deployment**: AI cannot bypass CI/CD pipelines or security gates
+- **Human Accountability**: Responsibility for all changes remains with human developers
+- **PR Review Required**: All AI-assisted changes must pass through standard workflows
+- **Change Attribution**: Document AI assistance in PR descriptions
+
+#### 🧪 Security Testing Requirements
+- **SAST**: SonarCloud on every commit with quality gates
+- **SCA**: Dependency vulnerability scanning with SBOM generation
+- **Secret Scanning**: Continuous monitoring for exposed credentials
+- **Unit Test Coverage**: Minimum 80% line coverage, 70% branch coverage
+- **E2E Testing**: Critical user flows with automated reporting
+
+#### 🚀 Deployment & Operations
+- **Security Gates**: Automated gates preventing vulnerable code promotion
+- **Vulnerability Management**: Classification-based remediation with SLAs
+- **Performance Monitoring**: Security metrics integration
+- **Incident Response**: Integration with incident response procedures
+
+#### 📋 Architecture Documentation Requirements
+- **SECURITY_ARCHITECTURE.md**: Must be updated for security-relevant changes
+- **Mermaid Diagrams**: Include updated architectural diagrams
+- **Security Controls Mapping**: Map controls to implementation details
+- **Risk Documentation**: Update risk register when applicable
+
+### Additional ISMS Policies to Reference
+
+**When Applicable:**
+- **[Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)**: License compliance, dependency audits
+- **[Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)**: Remediation SLAs, OSSF Scorecard >7.5
+- **[Data Classification Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Data_Classification_Policy.md)**: Asset classification
+- **[AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md)**: Responsible AI usage guidelines
+- **[OWASP LLM Security Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/OWASP_LLM_Security_Policy.md)**: LLM-specific security controls
+
+### Security Checklist for Every Change
+
+Before committing code:
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation and output encoding implemented
+- [ ] Dependencies pass `npm audit` (zero high/critical)
+- [ ] License compliance verified (`npm run test:licenses`)
+- [ ] Unit tests written (>80% coverage target)
+- [ ] Security architecture updated if applicable
+- [ ] AI assistance documented in PR if used
+- [ ] Code review completed for security-relevant changes
+npm run validate:mcp     # Validate MCP config
+npm audit                # Check vulnerabilities
+```
+
 ## Primary Responsibilities
 
 ### 1. Component Development
@@ -303,8 +369,9 @@ src/
 3. Apply Korean theming and Html overlays for UI
 4. Add bilingual text support
 5. Include `data-testid` attributes
-6. Create corresponding test file
-7. Export from index files
+6. Create corresponding test file with >80% coverage
+7. Run security checks (`npm audit`, `npm run test:licenses`)
+8. Export from index files
 
 ### Fixing a Bug
 
@@ -312,6 +379,8 @@ src/
 2. Identify root cause (check types, null handling, Three.js disposal)
 3. Apply minimal fix following existing patterns
 4. Ensure fix doesn't break other functionality
+5. Verify test coverage includes the fix
+6. Run security validation before committing
 5. Verify test coverage includes the fix
 
 ### Refactoring Code
@@ -336,7 +405,8 @@ Your code changes should:
 ✅ Dispose Three.js resources on unmount
 ✅ Maintain test coverage >90%
 ✅ Respect traditional Korean martial arts context
-✅ Follow ISMS-PUBLIC 2026 security standards (https://github.com/Hack23/ISMS-PUBLIC)
+✅ Follow ISMS Secure Development Policy v2.1 (https://github.com/Hack23/ISMS-PUBLIC)
+✅ Zero hardcoded secrets, proper input validation, security testing passed
 
 ## Reference
 

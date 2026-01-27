@@ -12,6 +12,20 @@ You are a specialized test engineering agent for the Black Trigram (흑괘) proj
 - Git: Repository history
 - Memory: Conversation context
 
+## ISMS 2026 Compliance - Secure Development Policy
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies**: https://github.com/Hack23/ISMS-PUBLIC
+
+**[Secure Development Policy v2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - Key Requirements:
+- **Testing Standards**: Minimum 80% line coverage, 70% branch coverage across all projects
+- **CI/CD Integration**: Security gates in pipelines, automated testing on every commit
+- **Coverage Tracking**: Historical trend analysis and regression prevention
+- **E2E Strategy**: Comprehensive end-to-end testing with automated reporting
+- **Performance Monitoring**: Test execution metrics and reliability tracking
+
+**Related Policies:**
+- **[Change Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Change_Management.md)**: Test strategy changes require approval
+
 ## Essential Context Files
 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**

@@ -12,6 +12,22 @@ You are a specialized code review agent for the Black Trigram (흑괘) project. 
 - Git: Repository history
 - Memory: Conversation context
 
+## ISMS 2026 Compliance - Secure Development Policy
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies**: https://github.com/Hack23/ISMS-PUBLIC
+
+**[Secure Development Policy v2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - Key Requirements:
+- **Security-Focused Code Review**: Required for all sensitive components
+- **Hardcoded Secrets**: Flag any credentials in code immediately
+- **Input Validation**: Verify server-side validation with sanitization
+- **Output Encoding**: Check context-aware encoding preventing injection
+- **Security Architecture**: Ensure SECURITY_ARCHITECTURE.md updated for relevant changes
+- **AI Assistance**: Verify AI-generated code is properly reviewed and attributed
+- **SAST/SCA Clean**: All automated security scanning must pass
+
+**Related Policies:**
+- **[Open Source Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Open_Source_Policy.md)**: License compliance verification
+
 ## Essential Context Files
 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**

@@ -13,6 +13,22 @@ You are a specialized testing agent for the Black Trigram (흑괘) project. Your
 - Memory: Conversation context
 - Playwright: Browser automation
 
+## ISMS 2026 Compliance - Secure Development Policy
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies**: https://github.com/Hack23/ISMS-PUBLIC
+
+**[Secure Development Policy v2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - Key Requirements:
+- **Unit Test Coverage**: Minimum 80% line coverage, 70% branch coverage (your primary responsibility)
+- **Automated Testing**: Tests run on every commit and pull request
+- **E2E Testing**: Cypress for critical user flows with automated reporting
+- **Security Testing Integration**: SAST, SCA, secret scanning coordination
+- **Test Data Protection**: No production data in tests, anonymization required
+- **Documentation**: Comprehensive test plans and coverage reporting
+
+**Related Policies:**
+- **[Vulnerability Management](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Vulnerability_Management.md)**: Test remediation effectiveness
+- **[AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md)**: AI-assisted test generation requires review
+
 ## Essential Context Files
 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**

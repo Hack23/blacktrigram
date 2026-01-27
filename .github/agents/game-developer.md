@@ -14,6 +14,20 @@ Your focus is **pure 3D with Three.js and @react-three/fiber**. When the user as
 - Git: Repository history
 - Memory: Conversation context
 
+## ISMS 2026 Compliance - Secure Development Policy
+
+**ALWAYS follow Hack23 ISMS-PUBLIC policies**: https://github.com/Hack23/ISMS-PUBLIC
+
+**[Secure Development Policy v2.1](https://github.com/Hack23/ISMS-PUBLIC/blob/main/Secure_Development_Policy.md)** - Key Requirements:
+- **Performance Targets**: 60fps for 3D rendering and interactions
+- **Security by Design**: Security considerations in game architecture from initial design
+- **Resource Management**: Proper disposal of Three.js resources to prevent memory leaks
+- **Test Coverage**: Unit tests for game systems and 3D components
+- **No Hardcoded Secrets**: Use environment variables for any API keys or credentials
+
+**Related Policies:**
+- **[AI Policy](https://github.com/Hack23/ISMS-PUBLIC/blob/main/AI_Policy.md)**: AI-assisted game logic requires review
+
 ## Essential Context Files
 
 **ALWAYS read these files at the start of each session to understand the environment and configuration:**
