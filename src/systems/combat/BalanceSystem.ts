@@ -10,6 +10,9 @@
  * - Throws and sweeps
  * - Heavy impacts
  * - Fatigue (low stamina)
+ * - Stance transitions (0.5s vulnerability window)
+ * - Body part damage (legs reduce balance)
+ * - Rapid stance changes (penalty system)
  *
  * ## Balance States
  *
@@ -23,13 +26,18 @@
  * When balance falls below 20%, the system can trigger fall animations (낙법).
  * Fall direction is determined by attack vector and player stance.
  *
+ * ## Stance Transition Vulnerability
+ *
+ * Changing stances creates a 0.5s vulnerability window with 1.5x damage multiplier.
+ * Rapid stance changes (>2 in 3s) apply additional 20% balance penalty for 2s.
+ *
  * @module systems/combat/BalanceSystem
  * @category Combat System
  * @korean 균형시스템
  */
 
 import { BodyRegion } from "@/types";
-import type { TrigramStance } from "@/types/common";
+import { TrigramStance } from "@/types/common";
 import {
   determineFallDirection,
   determineFallFromStance,
@@ -42,6 +50,55 @@ import type {
   RecoveryAnimationType,
 } from "../animation/core/types";
 import { PlayerState } from "../player";
+
+/**
+ * Stance transition state tracking.
+ *
+ * **Korean**: 자세 전환 상태 (Stance Transition State)
+ *
+ * Tracks when a player is transitioning between stances, creating a
+ * 0.5s vulnerability window with increased damage multiplier.
+ */
+export interface TransitionState {
+  /** Whether player is currently transitioning */
+  readonly isTransitioning: boolean;
+  /** Timestamp when transition started (ms) */
+  readonly transitionStartTime: number;
+  /** Damage multiplier during transition (1.5x) */
+  readonly vulnerabilityMultiplier: number;
+  /** Stance transitioning from */
+  readonly fromStance: TrigramStance | null;
+  /** Stance transitioning to */
+  readonly toStance: TrigramStance | null;
+}
+
+/**
+ * Stance change history entry.
+ *
+ * **Korean**: 자세 변경 기록 (Stance Change Record)
+ */
+interface StanceChangeRecord {
+  /** Timestamp of stance change */
+  readonly timestamp: number;
+  /** Stance changed from */
+  readonly fromStance: TrigramStance;
+  /** Stance changed to */
+  readonly toStance: TrigramStance;
+}
+
+/**
+ * Extended player state with balance system data.
+ *
+ * Extends PlayerState with additional balance-specific tracking.
+ */
+export interface BalancePlayerState extends PlayerState {
+  /** Stance transition state */
+  readonly transitionState?: TransitionState;
+  /** Stance change history (last 5 changes) */
+  readonly stanceChangeHistory?: readonly StanceChangeRecord[];
+  /** Rapid change penalty end timestamp */
+  readonly rapidChangePenaltyEnd?: number;
+}
 
 /**
  * Balance levels representing physical stability.
@@ -162,7 +219,7 @@ export class BalanceSystem {
     default: 0.5,
   };
 
-  /**
+   /**
    * Base balance recovery rate per second.
    */
   private readonly baseRecoveryRate = 8.0; // 8 points per second
@@ -173,14 +230,34 @@ export class BalanceSystem {
   private readonly maxBalance = 100;
 
   /**
+   * Stance transition constants.
+   */
+  private readonly transitionDuration = 500; // 0.5s in milliseconds
+  private readonly transitionVulnerabilityMultiplier = 1.5; // 1.5x damage during transition
+
+  /**
+   * Rapid stance change penalty constants.
+   */
+  private readonly rapidChangeWindow = 3000; // 3 seconds in milliseconds
+  private readonly rapidChangeThreshold = 2; // >2 changes trigger penalty
+  private readonly rapidChangePenalty = 0.2; // 20% balance reduction
+  private readonly rapidChangePenaltyDuration = 2000; // 2 seconds penalty
+  private readonly stanceChangeHistoryLimit = 5; // Keep last 5 changes
+
+  /**
    * Disrupts balance from combat impact.
    *
    * Calculates balance loss based on damage amount and body region hit.
    * Leg strikes cause maximum balance disruption.
    *
+   * Now also considers:
+   * - Body part damage modifier (damaged legs reduce balance more)
+   * - Rapid stance change penalty (20% additional reduction)
+   *
    * @param player - Current player state
    * @param impact - Impact force amount
    * @param region - Body region affected
+   * @param currentTime - Current game time for penalty checks (optional)
    * @returns Updated player state with reduced balance
    *
    * @example
@@ -189,7 +266,8 @@ export class BalanceSystem {
    * player = system.disruptBalance(
    *   player,
    *   20,
-   *   BodyRegion.RIGHT_LEG
+   *   BodyRegion.RIGHT_LEG,
+   *   Date.now()
    * );
    * ```
    *
@@ -197,17 +275,27 @@ export class BalanceSystem {
    * @korean 균형파괴
    */
   disruptBalance(
-    player: PlayerState,
+    player: BalancePlayerState,
     impact: number,
-    region?: BodyRegion
-  ): PlayerState {
+    region?: BodyRegion,
+    currentTime?: number
+  ): BalancePlayerState {
     // Get multiplier based on region
     const multiplier = region
       ? this.regionMultipliers[region] ?? this.regionMultipliers.default
       : this.regionMultipliers.default;
 
-    // Calculate balance loss
-    const balanceLoss = impact * multiplier * 0.6; // 0.6 = balance sensitivity
+    // Calculate base balance loss
+    let balanceLoss = impact * multiplier * 0.6; // 0.6 = balance sensitivity
+
+    // Apply body part damage modifier
+    const bodyModifier = this.calculateBalanceModifier(player);
+    balanceLoss *= 1.0 / bodyModifier; // More damage = more balance loss
+
+    // Apply rapid stance change penalty
+    if (currentTime && this.isRapidChangePenaltyActive(player, currentTime)) {
+      balanceLoss *= 1.0 + this.rapidChangePenalty; // +20% balance loss
+    }
 
     // Apply balance loss, clamped to 0
     const newBalance = Math.max(0, player.balance - balanceLoss);
@@ -224,6 +312,11 @@ export class BalanceSystem {
    * Balance recovers quickly when not being disrupted, allowing
    * fighters to regain stable footing between exchanges.
    *
+   * Recovery is affected by:
+   * - Balance level (harder to recover when off-balance)
+   * - Stamina (low stamina = slow recovery)
+   * - Body part damage (leg damage reduces recovery rate)
+   *
    * @param player - Current player state
    * @param deltaTime - Time elapsed in milliseconds
    * @returns Updated player state with recovered balance
@@ -237,7 +330,7 @@ export class BalanceSystem {
    * @public
    * @korean 균형회복
    */
-  applyRecovery(player: PlayerState, deltaTime: number): PlayerState {
+  applyRecovery(player: BalancePlayerState, deltaTime: number): BalancePlayerState {
     // Already at maximum balance
     if (player.balance >= this.maxBalance) {
       return player;
@@ -256,7 +349,11 @@ export class BalanceSystem {
 
     // Stamina affects recovery rate
     const staminaFactor = player.stamina / player.maxStamina;
-    const finalModifier = recoveryModifier * (0.5 + staminaFactor * 0.5);
+    
+    // Body part damage affects recovery rate
+    const bodyModifier = this.calculateBalanceModifier(player);
+    
+    const finalModifier = recoveryModifier * (0.5 + staminaFactor * 0.5) * bodyModifier;
 
     const recovery = this.baseRecoveryRate * deltaSeconds * finalModifier;
     const newBalance = Math.min(this.maxBalance, player.balance + recovery);
@@ -699,6 +796,280 @@ export class BalanceSystem {
     // Apply damage reduction
     // damageReduction of 0.5 means 50% reduction, so multiplier is 0.5
     return 1.0 - config.damageReduction;
+  }
+
+  /**
+   * Start a stance transition, creating vulnerability window.
+   *
+   * When a player changes stance, they become vulnerable for 0.5s with
+   * a 1.5x damage multiplier. This creates tactical depth around stance changes.
+   *
+   * @param player - Current player state
+   * @param newStance - Target stance to transition to
+   * @param currentTime - Current game time in milliseconds
+   * @returns Updated player state with transition tracking
+   *
+   * @example
+   * ```typescript
+   * // Player switches from Heaven to Water stance
+   * const transitioning = balanceSystem.startStanceTransition(
+   *   player,
+   *   TrigramStance.GAM,
+   *   Date.now()
+   * );
+   * // transitioning.transitionState.isTransitioning = true
+   * // transitioning.transitionState.vulnerabilityMultiplier = 1.5
+   * ```
+   *
+   * @public
+   * @korean 자세전환시작
+   */
+  startStanceTransition(
+    player: BalancePlayerState,
+    newStance: TrigramStance,
+    currentTime: number
+  ): BalancePlayerState {
+    // Initialize transition state
+    const transitionState: TransitionState = {
+      isTransitioning: true,
+      transitionStartTime: currentTime,
+      vulnerabilityMultiplier: this.transitionVulnerabilityMultiplier,
+      fromStance: player.currentStance,
+      toStance: newStance,
+    };
+
+    // Add to stance change history
+    const historyEntry: StanceChangeRecord = {
+      timestamp: currentTime,
+      fromStance: player.currentStance,
+      toStance: newStance,
+    };
+
+    const history = player.stanceChangeHistory || [];
+    const newHistory = [...history, historyEntry].slice(-this.stanceChangeHistoryLimit);
+
+    // Check for rapid stance changes
+    const recentChanges = newHistory.filter(
+      (entry) => currentTime - entry.timestamp < this.rapidChangeWindow
+    );
+
+    let rapidChangePenaltyEnd = player.rapidChangePenaltyEnd;
+
+    if (recentChanges.length > this.rapidChangeThreshold) {
+      // Apply rapid change penalty
+      rapidChangePenaltyEnd = currentTime + this.rapidChangePenaltyDuration;
+    }
+
+    return {
+      ...player,
+      currentStance: newStance,
+      transitionState,
+      stanceChangeHistory: newHistory,
+      rapidChangePenaltyEnd,
+    };
+  }
+
+  /**
+   * Update stance transition state based on time elapsed.
+   *
+   * Transitions last 0.5s. After that, vulnerability window closes.
+   * Called each frame to manage transition timing.
+   *
+   * @param player - Current player state
+   * @param currentTime - Current game time in milliseconds
+   * @returns Updated player state
+   *
+   * @example
+   * ```typescript
+   * // In game loop
+   * player = balanceSystem.updateTransition(player, Date.now());
+   * ```
+   *
+   * @public
+   * @korean 전환상태갱신
+   */
+  updateTransition(
+    player: BalancePlayerState,
+    currentTime: number
+  ): BalancePlayerState {
+    if (!player.transitionState?.isTransitioning) {
+      return player;
+    }
+
+    const elapsed = currentTime - player.transitionState.transitionStartTime;
+
+    // Check if transition window has ended
+    if (elapsed >= this.transitionDuration) {
+      return {
+        ...player,
+        transitionState: {
+          ...player.transitionState,
+          isTransitioning: false,
+          vulnerabilityMultiplier: 1.0,
+        },
+      };
+    }
+
+    return player;
+  }
+
+  /**
+   * Calculate balance modifier based on body part damage.
+   *
+   * Leg damage significantly reduces balance:
+   * - 100% leg health: 1.0x balance (no modifier)
+   * - 70% leg health: 0.9x balance (10% reduction)
+   * - 30% leg health: 0.7x balance (30% reduction)
+   * - 0% leg health: 0.5x balance (50% reduction)
+   *
+   * Torso damage also affects balance but to a lesser degree.
+   *
+   * @param player - Current player state with body part health
+   * @returns Balance modifier (0.5 to 1.0)
+   *
+   * @example
+   * ```typescript
+   * const modifier = balanceSystem.calculateBalanceModifier(player);
+   * const effectiveBalance = player.balance * modifier;
+   * ```
+   *
+   * @public
+   * @korean 균형조정계수계산
+   */
+  calculateBalanceModifier(player: BalancePlayerState): number {
+    if (!player.bodyPartHealth || !player.bodyPartMaxHealth) {
+      return 1.0; // No body part tracking, no modifier
+    }
+
+    // Map BodyRegion to BodyPart enum values
+    const leftLegHealth =
+      (player.bodyPartHealth.legLeft ?? 0) /
+      (player.bodyPartMaxHealth.legLeft ?? 1);
+    const rightLegHealth =
+      (player.bodyPartHealth.legRight ?? 0) /
+      (player.bodyPartMaxHealth.legRight ?? 1);
+    
+    // Use torsoLower for core balance (lower body)
+    const torsoHealth =
+      (player.bodyPartHealth.torsoLower ?? 0) /
+      (player.bodyPartMaxHealth.torsoLower ?? 1);
+
+    // Average leg health (both legs affect balance)
+    const avgLegHealth = (leftLegHealth + rightLegHealth) / 2;
+
+    // Leg damage: 0-30% reduction based on damage
+    const legModifier = 0.7 + avgLegHealth * 0.3; // Range: 0.7 to 1.0
+
+    // Torso damage: 0-10% reduction based on damage
+    const torsoModifier = 0.9 + torsoHealth * 0.1; // Range: 0.9 to 1.0
+
+    // Combine modifiers (multiplicative)
+    const combinedModifier = legModifier * torsoModifier;
+
+    // Clamp to minimum 0.5 (50% balance)
+    return Math.max(0.5, combinedModifier);
+  }
+
+  /**
+   * Calculate knockback resistance based on current stance.
+   *
+   * Different stances provide varying levels of knockback resistance:
+   * - Defensive stances (Mountain, Earth): +50% resistance
+   * - Balanced stances (Water, Wind): normal resistance
+   * - Offensive stances (Heaven, Fire, Thunder): -30% resistance
+   * - Fluid stance (Lake): normal resistance
+   *
+   * @param stance - Current trigram stance
+   * @returns Knockback resistance multiplier (0.7 to 1.5)
+   *
+   * @example
+   * ```typescript
+   * const resistance = balanceSystem.getKnockbackResistance(TrigramStance.GAN);
+   * const effectiveKnockback = baseKnockback * (1.0 / resistance);
+   * ```
+   *
+   * @public
+   * @korean 넉백저항계산
+   */
+  getKnockbackResistance(stance: TrigramStance): number {
+    // Defensive stances: +50% resistance
+    if (stance === TrigramStance.GAN || stance === TrigramStance.GON) {
+      // Mountain, Earth
+      return 1.5;
+    }
+
+    // Offensive stances: -30% resistance
+    if (stance === TrigramStance.GEON || stance === TrigramStance.LI || stance === TrigramStance.JIN) {
+      // Heaven, Fire, Thunder
+      return 0.7;
+    }
+
+    // Balanced/adaptive stances: normal resistance
+    return 1.0; // Water, Wind, Lake
+  }
+
+  /**
+   * Check if rapid stance change penalty is active.
+   *
+   * Penalty applies when player changes stances >2 times in 3 seconds.
+   * Lasts for 2 seconds after the last rapid change.
+   *
+   * @param player - Current player state
+   * @param currentTime - Current game time in milliseconds
+   * @returns True if penalty is active
+   *
+   * @example
+   * ```typescript
+   * if (balanceSystem.isRapidChangePenaltyActive(player, Date.now())) {
+   *   // Apply 20% balance reduction
+   *   effectiveBalance *= 0.8;
+   * }
+   * ```
+   *
+   * @public
+   * @korean 급속변경벌칙확인
+   */
+  isRapidChangePenaltyActive(
+    player: BalancePlayerState,
+    currentTime: number
+  ): boolean {
+    if (!player.rapidChangePenaltyEnd) {
+      return false;
+    }
+    return currentTime < player.rapidChangePenaltyEnd;
+  }
+
+  /**
+   * Get total vulnerability multiplier considering all factors.
+   *
+   * Combines:
+   * - Base balance state vulnerability (1.0 to 2.0)
+   * - Stance transition vulnerability (1.5x during 0.5s window)
+   *
+   * @param player - Current player state
+   * @returns Combined vulnerability multiplier
+   *
+   * @example
+   * ```typescript
+   * const multiplier = balanceSystem.getTotalVulnerabilityMultiplier(player);
+   * const finalDamage = baseDamage * multiplier;
+   * ```
+   *
+   * @public
+   * @korean 총취약성배율
+   */
+  getTotalVulnerabilityMultiplier(player: BalancePlayerState): number {
+    // Get base balance vulnerability
+    const level = this.getBalanceLevel(player.balance);
+    const effects = this.getEffects(level);
+    let multiplier = effects.vulnerabilityMultiplier;
+
+    // Apply transition vulnerability if active
+    if (player.transitionState?.isTransitioning) {
+      multiplier *= player.transitionState.vulnerabilityMultiplier;
+    }
+
+    return multiplier;
   }
 }
 
