@@ -57,7 +57,7 @@ import { StanceManager } from "@/systems/trigram";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
-import { Position, Technique, TrigramStance, DamageType, BodyRegion } from "@/types";
+import { Position, Technique, TrigramStance, BodyRegion } from "@/types";
 import { Injury, InjuryType } from "@/types/injury";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
@@ -96,8 +96,8 @@ function determineInjuryType(
   result: CombatResult,
   technique: KoreanTechnique,
 ): InjuryType {
-  // Slashing damage creates cuts
-  if (technique.damageType === DamageType.SLASHING) {
+  // Slashing damage creates cuts (damageType is a string, not enum)
+  if (technique.damageType === "slashing") {
     return result.damage > 20 ? InjuryType.LACERATION : InjuryType.CUT;
   }
 
@@ -152,24 +152,33 @@ function getBodyRegionPosition(region: BodyRegion): [number, number, number] {
  *
  * @param result - Combat result with damage details
  * @param technique - Technique that caused the damage
- * @param _defenderHealth - Current defender health after damage (reserved for future use)
+ * @param defenderHealth - Current defender health after damage (0-100 scale)
  * @param targetPlayerIndex - Index of the player who was hit (0 or 1)
  * @returns Injury object for visualization
  */
 function createInjuryFromDamage(
   result: CombatResult,
   technique: KoreanTechnique,
-  _defenderHealth: number,
+  defenderHealth: number,
   targetPlayerIndex: number,
 ): Injury {
   // Determine body region - use torso as default if not specified
   const bodyRegion = BodyRegion.TORSO; // TODO: Extract from result when available
 
   // Determine injury type based on damage and technique
-  const injuryType = determineInjuryType(result, technique);
+  let injuryType = determineInjuryType(result, technique);
+
+  // Promote to fracture when health is critically low and damage is severe
+  // to align with TraumaOverlay3D fracture behavior
+  const isLowHealth = defenderHealth <= 30; // 30% health threshold
+  const isSevereDamage = result.damage >= 25; // Severe damage threshold
+  if (isLowHealth && isSevereDamage && injuryType !== InjuryType.FRACTURE) {
+    injuryType = InjuryType.FRACTURE;
+  }
 
   // Calculate severity (0.0 to 1.0) based on damage
-  const severity = Math.min(1.0, result.damage / 50);
+  // Normalized so that a ~30-damage hit is treated as near-max severity
+  const severity = Math.min(1.0, result.damage / 30);
 
   // Get position on character model for this body region
   const basePosition = getBodyRegionPosition(bodyRegion);
@@ -188,7 +197,7 @@ function createInjuryFromDamage(
   ];
 
   return {
-    id: `injury_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    id: `injury_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
     region: bodyRegion,
     type: injuryType,
     position,
@@ -275,7 +284,7 @@ export interface UseCombatActionsConfig {
     laterality: "left" | "right",
   ) => void;
   readonly onInjuryCreated?: (
-    injury: import("@/types/injury").Injury,
+    injury: Injury,
     targetPlayerIndex: number,
   ) => void;
   readonly addCombatMessage: (korean: string, english: string) => void;
@@ -657,6 +666,7 @@ export function useCombatActions(
       combatActions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       combatAudio,
@@ -1119,6 +1129,7 @@ export function useCombatActions(
       playerPositions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       combatAudio,
@@ -1326,6 +1337,7 @@ export function useCombatActions(
       playerPositions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       handleAIAttack,

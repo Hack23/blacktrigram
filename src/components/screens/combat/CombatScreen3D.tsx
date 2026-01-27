@@ -1291,8 +1291,9 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           const newHitCount = recentHit.hitCount + 1;
           const escalatedSeverity = Math.min(1.0, recentHit.severity + 0.15);
           
-          // Update the existing injury with increased severity
-          const updatedInjuries = prev.map((existing) =>
+          // Update the existing injury with increased severity and hit count
+          // Only update existing injury, do not add a duplicate
+          return prev.map((existing) =>
             existing.id === recentHit.id
               ? {
                   ...existing,
@@ -1302,9 +1303,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
                 }
               : existing,
           );
-
-          // Add the new injury as well (shows multiple impacts)
-          return [...updatedInjuries, { ...injury, hitCount: newHitCount }];
         }
 
         // No recent hit to same region - add as new injury

@@ -932,4 +932,232 @@ describe("useCombatActions", () => {
       expect(hasCooldownMessage || calls.length === 1).toBe(true);
     });
   });
+
+  describe("injury creation functions", () => {
+    it("should create injuries when damage is dealt with onInjuryCreated callback", () => {
+      const onInjuryCreated = vi.fn();
+      const config = {
+        ...mockConfig,
+        onInjuryCreated,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      // Mock successful hit
+      vi.spyOn(mockCombatSystem, "resolveAttack").mockReturnValue({
+        hit: true,
+        damage: 20,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "test",
+          name: { korean: "테스트", english: "Test", romanized: "test" },
+          damageType: "blunt",
+        } as any,
+        attacker: mockConfig.validPlayers[0],
+        defender: mockConfig.validPlayers[1],
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      });
+
+      act(() => {
+        result.current.handleAttack();
+      });
+
+      // Verify injury was created for player 2 (enemy)
+      expect(onInjuryCreated).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: expect.stringMatching(/^injury_/),
+          type: expect.any(String),
+          region: expect.any(String),
+          position: expect.any(Array),
+          severity: expect.any(Number),
+          hitCount: 1,
+          timestamp: expect.any(Number),
+          playerId: "enemy",
+        }),
+        1, // Target player index
+      );
+    });
+
+    it("should create fracture injuries when health is critically low", () => {
+      const onInjuryCreated = vi.fn();
+      const lowHealthPlayer = {
+        ...mockConfig.validPlayers[1],
+        health: 25, // Below 30% threshold
+      };
+      const config = {
+        ...mockConfig,
+        validPlayers: [mockConfig.validPlayers[0], lowHealthPlayer] as const,
+        onInjuryCreated,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      // Mock severe damage hit
+      vi.spyOn(mockCombatSystem, "resolveAttack").mockReturnValue({
+        hit: true,
+        damage: 30, // Severe damage
+        criticalHit: true,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "test",
+          name: { korean: "테스트", english: "Test", romanized: "test" },
+          damageType: "blunt",
+        } as any,
+        attacker: mockConfig.validPlayers[0],
+        defender: lowHealthPlayer,
+        success: true,
+        isCritical: true,
+        isBlocked: false,
+      });
+
+      vi.spyOn(mockCombatSystem, "applyCombatResult").mockReturnValue({
+        updatedAttacker: mockConfig.validPlayers[0],
+        updatedDefender: { ...lowHealthPlayer, health: 20 }, // After damage
+      });
+
+      act(() => {
+        result.current.handleAttack();
+      });
+
+      // Verify fracture injury was created
+      expect(onInjuryCreated).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "fracture",
+          severity: expect.any(Number),
+        }),
+        1,
+      );
+    });
+
+    it("should create cut injuries for slashing damage", () => {
+      const onInjuryCreated = vi.fn();
+      const config = {
+        ...mockConfig,
+        onInjuryCreated,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      const slashingTechnique = {
+        id: "slash",
+        name: { korean: "베기", english: "Slash", romanized: "slash" },
+        description: { korean: "베기", english: "Slash" },
+        damageType: DamageType.SLASHING,
+        damage: { min: 10, max: 20 },
+        kiCost: 10,
+        staminaCost: 15,
+        requiredStance: TrigramStance.GEON,
+      } as any;
+
+      // Mock slashing attack
+      vi.spyOn(mockCombatSystem, "resolveAttack").mockReturnValue({
+        hit: true,
+        damage: 15,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "slash",
+          name: { korean: "베기", english: "Slash", romanized: "slash" },
+          damageType: "slashing",
+        } as any,
+        attacker: mockConfig.validPlayers[0],
+        defender: mockConfig.validPlayers[1],
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      });
+
+      // Mock applyCombatResult to ensure damage is applied
+      vi.spyOn(mockCombatSystem, "applyCombatResult").mockReturnValue({
+        updatedAttacker: mockConfig.validPlayers[0],
+        updatedDefender: {
+          ...mockConfig.validPlayers[1],
+          health: mockConfig.validPlayers[1].health - 15,
+        },
+      });
+
+      act(() => {
+        result.current.handleAttack(slashingTechnique);
+      });
+
+      // Verify cut injury was created
+      expect(onInjuryCreated).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "cut",
+        }),
+        1,
+      );
+    });
+
+    it("should create laceration injuries for heavy slashing damage", () => {
+      const onInjuryCreated = vi.fn();
+      const config = {
+        ...mockConfig,
+        onInjuryCreated,
+      };
+
+      const { result } = renderHook(() => useCombatActions(config));
+
+      const heavySlashingTechnique = {
+        id: "heavy-slash",
+        name: { korean: "강베기", english: "Heavy Slash", romanized: "slash" },
+        description: { korean: "강베기", english: "Heavy Slash" },
+        damageType: DamageType.SLASHING,
+        damage: { min: 20, max: 30 },
+        kiCost: 15,
+        staminaCost: 20,
+        requiredStance: TrigramStance.GEON,
+      } as any;
+
+      // Mock heavy slashing attack
+      vi.spyOn(mockCombatSystem, "resolveAttack").mockReturnValue({
+        hit: true,
+        damage: 25, // Over 20 damage threshold
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp: Date.now(),
+        technique: {
+          id: "heavy-slash",
+          name: { korean: "강베기", english: "Heavy Slash", romanized: "slash" },
+          damageType: "slashing",
+        } as any,
+        attacker: mockConfig.validPlayers[0],
+        defender: mockConfig.validPlayers[1],
+        success: true,
+        isCritical: false,
+        isBlocked: false,
+      });
+
+      // Mock applyCombatResult to ensure damage is applied
+      vi.spyOn(mockCombatSystem, "applyCombatResult").mockReturnValue({
+        updatedAttacker: mockConfig.validPlayers[0],
+        updatedDefender: {
+          ...mockConfig.validPlayers[1],
+          health: mockConfig.validPlayers[1].health - 25,
+        },
+      });
+
+      act(() => {
+        result.current.handleAttack(heavySlashingTechnique);
+      });
+
+      // Verify laceration injury was created
+      expect(onInjuryCreated).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "laceration",
+        }),
+        1,
+      );
+    });
+  });
 });
