@@ -50,6 +50,7 @@ import {
   Position,
   TrigramStance,
 } from "../../../types";
+import { Injury, InjuryType } from "../../../types/injury";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   getPerformanceSettings,
@@ -771,12 +772,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Track injuries for trauma visualization (TraumaOverlay3D)
   // 외상 시각화를 위한 부상 추적
-  const [player1Injuries, setPlayer1Injuries] = useState<
-    readonly import("../../../types/injury").Injury[]
-  >([]);
-  const [player2Injuries, setPlayer2Injuries] = useState<
-    readonly import("../../../types/injury").Injury[]
-  >([]);
+  const [player1Injuries, setPlayer1Injuries] = useState<readonly Injury[]>([]);
+  const [player2Injuries, setPlayer2Injuries] = useState<readonly Injury[]>([]);
 
   // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
   // Without this, a new function is created every render, causing animation frame cancellation
@@ -1270,14 +1267,54 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [onPlayerUpdate, setPlayer1Position],
   );
 
-  // Callback for creating injuries from combat damage
-  // 전투 피해로부터 부상 생성 콜백
+  // Callback for creating injuries from combat damage with progressive bruising
+  // 전투 피해로부터 부상 생성 콜백 (점진적 타박상 포함)
   const handleInjuryCreated = useCallback(
-    (injury: import("../../../types/injury").Injury, targetPlayerIndex: number) => {
+    (injury: Injury, targetPlayerIndex: number) => {
+      const updateInjuries = (
+        prev: readonly Injury[],
+      ): readonly Injury[] => {
+        // Check for recent hits to the same body region (within 5 seconds)
+        const recentHitTime = 5000; // 5 seconds
+        const now = Date.now();
+        
+        const recentHit = prev.find(
+          (existing) =>
+            existing.region === injury.region &&
+            now - existing.timestamp < recentHitTime &&
+            existing.type === InjuryType.BRUISE &&
+            injury.type === InjuryType.BRUISE,
+        );
+
+        if (recentHit) {
+          // Progressive bruising: increase hit count and severity
+          const newHitCount = recentHit.hitCount + 1;
+          const escalatedSeverity = Math.min(1.0, recentHit.severity + 0.15);
+          
+          // Update the existing injury with increased severity
+          const updatedInjuries = prev.map((existing) =>
+            existing.id === recentHit.id
+              ? {
+                  ...existing,
+                  hitCount: newHitCount,
+                  severity: escalatedSeverity,
+                  timestamp: now, // Update timestamp for progressive tracking
+                }
+              : existing,
+          );
+
+          // Add the new injury as well (shows multiple impacts)
+          return [...updatedInjuries, { ...injury, hitCount: newHitCount }];
+        }
+
+        // No recent hit to same region - add as new injury
+        return [...prev, injury];
+      };
+
       if (targetPlayerIndex === 0) {
-        setPlayer1Injuries((prev) => [...prev, injury]);
+        setPlayer1Injuries(updateInjuries);
       } else if (targetPlayerIndex === 1) {
-        setPlayer2Injuries((prev) => [...prev, injury]);
+        setPlayer2Injuries(updateInjuries);
       }
     },
     [],
