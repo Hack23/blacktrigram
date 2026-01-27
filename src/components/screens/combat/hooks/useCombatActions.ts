@@ -57,7 +57,8 @@ import { StanceManager } from "@/systems/trigram";
 import { KoreanTechniquesSystem } from "@/systems/trigram/KoreanTechniques";
 import { getVitalPointById } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { KoreanTechnique } from "@/systems/vitalpoint/types";
-import { Position, Technique, TrigramStance } from "@/types";
+import { Position, Technique, TrigramStance, BodyRegion } from "@/types";
+import { Injury, InjuryType } from "@/types/injury";
 import { useCallback, useEffect, useRef } from "react";
 import { AttackIntensity } from "./useCombatAudio";
 import { CombatActions, CombatScreenState } from "./useCombatState";
@@ -80,6 +81,130 @@ function calculateHitPosition(defenderPos: Position): { x: number; y: number } {
   return {
     x: defenderPos.x,
     y: Math.max(0.3, Math.min(1.8, defenderPos.y + hitYVariation)),
+  };
+}
+
+/**
+ * Determine injury type from combat result and technique damage type
+ * 전투 결과와 기술 피해 유형으로 부상 유형 결정
+ *
+ * @param result - Combat result with damage information
+ * @param technique - Technique that was executed
+ * @returns InjuryType to create
+ */
+function determineInjuryType(
+  result: CombatResult,
+  technique: KoreanTechnique,
+): InjuryType {
+  // Slashing damage creates cuts (damageType is a string, not enum)
+  if (technique.damageType === "slashing") {
+    return result.damage > 20 ? InjuryType.LACERATION : InjuryType.CUT;
+  }
+
+  // Heavy damage creates severe bruising
+  if (result.damage > 25) {
+    return InjuryType.BRUISE;
+  }
+
+  // Medium damage creates moderate bruising
+  if (result.damage > 15) {
+    return InjuryType.BRUISE;
+  }
+
+  // Light damage creates light bruising
+  return InjuryType.BRUISE;
+}
+
+/**
+ * Map body region to 3D position offset on character model
+ * 신체 부위를 캐릭터 모델의 3D 위치 오프셋으로 매핑
+ *
+ * @param region - Body region that was hit
+ * @returns Position offset [x, y, z] relative to character center
+ */
+function getBodyRegionPosition(region: BodyRegion): [number, number, number] {
+  // Map body regions to approximate positions on character model
+  // Character is ~2 units tall, centered at [0, 0, 0]
+  switch (region) {
+    case BodyRegion.HEAD:
+      return [0, 1.6, 0];
+    case BodyRegion.NECK:
+      return [0, 1.3, 0];
+    case BodyRegion.TORSO:
+    case BodyRegion.CORE:
+      return [0, 0.8, 0];
+    case BodyRegion.LEFT_ARM:
+      return [-0.4, 1.0, 0];
+    case BodyRegion.RIGHT_ARM:
+      return [0.4, 1.0, 0];
+    case BodyRegion.LEFT_LEG:
+      return [-0.2, 0.2, 0];
+    case BodyRegion.RIGHT_LEG:
+      return [0.2, 0.2, 0];
+    default:
+      return [0, 0.8, 0]; // Default to torso
+  }
+}
+
+/**
+ * Create injury from combat damage result
+ * 전투 피해 결과로부터 부상 생성
+ *
+ * @param result - Combat result with damage details
+ * @param technique - Technique that caused the damage
+ * @param defenderHealth - Current defender health after damage (0-100 scale)
+ * @param targetPlayerIndex - Index of the player who was hit (0 or 1)
+ * @returns Injury object for visualization
+ */
+function createInjuryFromDamage(
+  result: CombatResult,
+  technique: KoreanTechnique,
+  defenderHealth: number,
+  targetPlayerIndex: number,
+): Injury {
+  // Determine body region - use torso as default if not specified
+  const bodyRegion = BodyRegion.TORSO; // TODO: Extract from result when available
+
+  // Determine injury type based on damage and technique
+  let injuryType = determineInjuryType(result, technique);
+
+  // Promote to fracture when health is critically low and damage is severe
+  // to align with TraumaOverlay3D fracture behavior
+  const isLowHealth = defenderHealth <= 30; // 30% health threshold
+  const isSevereDamage = result.damage >= 25; // Severe damage threshold
+  if (isLowHealth && isSevereDamage && injuryType !== InjuryType.FRACTURE) {
+    injuryType = InjuryType.FRACTURE;
+  }
+
+  // Calculate severity (0.0 to 1.0) based on damage
+  // Normalized so that a ~30-damage hit is treated as near-max severity
+  const severity = Math.min(1.0, result.damage / 30);
+
+  // Get position on character model for this body region
+  const basePosition = getBodyRegionPosition(bodyRegion);
+
+  // Add small random offset for variety
+  const randomOffset: [number, number, number] = [
+    (Math.random() - 0.5) * 0.1,
+    (Math.random() - 0.5) * 0.1,
+    (Math.random() - 0.5) * 0.1,
+  ];
+
+  const position: [number, number, number] = [
+    basePosition[0] + randomOffset[0],
+    basePosition[1] + randomOffset[1],
+    basePosition[2] + randomOffset[2],
+  ];
+
+  return {
+    id: `injury_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+    region: bodyRegion,
+    type: injuryType,
+    position,
+    severity,
+    hitCount: 1,
+    timestamp: Date.now(),
+    playerId: targetPlayerIndex === 0 ? "player" : "enemy",
   };
 }
 
@@ -157,6 +282,10 @@ export interface UseCombatActionsConfig {
   readonly onLateralityUpdate?: (
     playerIndex: number,
     laterality: "left" | "right",
+  ) => void;
+  readonly onInjuryCreated?: (
+    injury: Injury,
+    targetPlayerIndex: number,
   ) => void;
   readonly addCombatMessage: (korean: string, english: string) => void;
   readonly addHitEffect: (
@@ -267,6 +396,7 @@ export function useCombatActions(
     combatSystem,
     onPlayerUpdate,
     onLateralityUpdate,
+    onInjuryCreated,
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -414,6 +544,17 @@ export function useCombatActions(
         onPlayerUpdate(0, updatedAttacker);
         onPlayerUpdate(1, updatedDefender);
 
+        // Create injury for trauma visualization
+        if (onInjuryCreated) {
+          const injury = createInjuryFromDamage(
+            result,
+            attackTechnique,
+            updatedDefender.health,
+            1, // Player 2 (enemy) was hit
+          );
+          onInjuryCreated(injury, 1);
+        }
+
         // Apply knockback displacement (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
@@ -525,6 +666,7 @@ export function useCombatActions(
       combatActions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       combatAudio,
@@ -878,6 +1020,17 @@ export function useCombatActions(
         onPlayerUpdate(1, updatedAttacker);
         onPlayerUpdate(0, updatedDefender);
 
+        // Create injury for trauma visualization (AI hit player)
+        if (onInjuryCreated) {
+          const injury = createInjuryFromDamage(
+            result,
+            attackTechnique,
+            updatedDefender.health,
+            0, // Player 1 (player) was hit by AI
+          );
+          onInjuryCreated(injury, 0);
+        }
+
         // Apply knockback displacement for AI attacks (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
@@ -976,6 +1129,7 @@ export function useCombatActions(
       playerPositions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       combatAudio,
@@ -1076,6 +1230,17 @@ export function useCombatActions(
         onPlayerUpdate(1, updatedAttacker);
         onPlayerUpdate(0, updatedDefender);
 
+        // Create injury for trauma visualization (AI technique hit player)
+        if (onInjuryCreated) {
+          const injury = createInjuryFromDamage(
+            result,
+            specialTechnique,
+            updatedDefender.health,
+            0, // Player 1 (player) was hit by AI technique
+          );
+          onInjuryCreated(injury, 0);
+        }
+
         // Apply knockback displacement for AI special techniques (밀침 적용)
         if (result.knockback && config.onPlayerPositionUpdate) {
           const newDefenderPosition = applyKnockbackDisplacement(
@@ -1172,6 +1337,7 @@ export function useCombatActions(
       playerPositions,
       combatSystem,
       onPlayerUpdate,
+      onInjuryCreated,
       addCombatMessage,
       addHitEffect,
       handleAIAttack,

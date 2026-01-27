@@ -52,6 +52,7 @@ import {
   Position,
   TrigramStance,
 } from "../../../types";
+import { Injury, InjuryType } from "../../../types/injury";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import {
   FONT_FAMILY,
@@ -103,6 +104,7 @@ import { ButtonEventType } from "../../shared/mobile/ActionButtons";
 import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import { PauseMenu } from "./components/controls/PauseMenu";
+import { TraumaOverlay3D } from "./components/effects/TraumaOverlay3D";
 import {
   CombatBottomHUD,
   CombatLeftHUD,
@@ -774,6 +776,40 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // Track injuries for trauma visualization (TraumaOverlay3D)
+  // 외상 시각화를 위한 부상 추적
+  const [player1Injuries, setPlayer1Injuries] = useState<readonly Injury[]>([]);
+  const [player2Injuries, setPlayer2Injuries] = useState<readonly Injury[]>([]);
+
+  // Clear injuries when component unmounts or when a new match starts
+  // 컴포넌트 언마운트 시 또는 새 매치 시작 시 부상 초기화
+  useEffect(() => {
+    return () => {
+      // Clear injury state on unmount to avoid leaking injuries across screens
+      setPlayer1Injuries([]);
+      setPlayer2Injuries([]);
+    };
+  }, []);
+
+  // Clear injuries when a new match starts (both players at full health)
+  // 새 매치 시작 시 부상 초기화 (양 플레이어 모두 최대 체력)
+  useEffect(() => {
+    // Only clear if we have valid players with health data
+    if (players.length >= 2) {
+      const player1 = players[0];
+      const player2 = players[1];
+      
+      // Check if both players are at max health (indicates new match start)
+      if (
+        player1?.health === player1?.maxHealth &&
+        player2?.health === player2?.maxHealth
+      ) {
+        setPlayer1Injuries([]);
+        setPlayer2Injuries([]);
+      }
+    }
+  }, [players]);
+
   // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
   // Without this, a new function is created every render, causing animation frame cancellation
   const handlePlayer1PositionChange = useCallback(
@@ -1266,6 +1302,57 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [onPlayerUpdate, setPlayer1Position],
   );
 
+  // Callback for creating injuries from combat damage with progressive bruising
+  // 전투 피해로부터 부상 생성 콜백 (점진적 타박상 포함)
+  const handleInjuryCreated = useCallback(
+    (injury: Injury, targetPlayerIndex: number) => {
+      const updateInjuries = (
+        prev: readonly Injury[],
+      ): readonly Injury[] => {
+        // Check for recent hits to the same body region (within 5 seconds)
+        const recentHitTime = 5000; // 5 seconds
+        const now = Date.now();
+        
+        const recentHit = prev.find(
+          (existing) =>
+            existing.region === injury.region &&
+            now - existing.timestamp < recentHitTime &&
+            existing.type === InjuryType.BRUISE &&
+            injury.type === InjuryType.BRUISE,
+        );
+
+        if (recentHit) {
+          // Progressive bruising: increase hit count and severity
+          const newHitCount = recentHit.hitCount + 1;
+          const escalatedSeverity = Math.min(1.0, recentHit.severity + 0.15);
+          
+          // Update the existing injury with increased severity and hit count
+          // Only update existing injury, do not add a duplicate
+          return prev.map((existing) =>
+            existing.id === recentHit.id
+              ? {
+                  ...existing,
+                  hitCount: newHitCount,
+                  severity: escalatedSeverity,
+                  timestamp: now, // Update timestamp for progressive tracking
+                }
+              : existing,
+          );
+        }
+
+        // No recent hit to same region - add as new injury
+        return [...prev, injury];
+      };
+
+      if (targetPlayerIndex === 0) {
+        setPlayer1Injuries(updateInjuries);
+      } else if (targetPlayerIndex === 1) {
+        setPlayer2Injuries(updateInjuries);
+      }
+    },
+    [],
+  );
+
   // Combat action handlers
   const {
     handleAttack,
@@ -1287,6 +1374,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     onLateralityUpdate: (playerIndex, laterality) => {
       combatActions.setPlayerLateralityIndex(playerIndex as 0 | 1, laterality);
     },
+    onInjuryCreated: handleInjuryCreated,
     addCombatMessage,
     addHitEffect,
     arenaBounds,
@@ -2452,6 +2540,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             </div>
           </Html>
         )}
+
+        {/* Trauma Overlays - Injury Visualization (외상 오버레이 - 부상 시각화) */}
+        {/* Player 1 Injuries */}
+        <TraumaOverlay3D
+          playerId="player"
+          health={validPlayers[0].health}
+          injuries={player1Injuries}
+          characterPosition={player1Position3D}
+          isMobile={isMobile}
+          showFractures={true}
+        />
+
+        {/* Player 2 Injuries */}
+        <TraumaOverlay3D
+          playerId="enemy"
+          health={validPlayers[1].health}
+          injuries={player2Injuries}
+          characterPosition={player2Position3D}
+          isMobile={isMobile}
+          showFractures={true}
+        />
 
         {/* Hit Effects */}
         <HitEffects3D
