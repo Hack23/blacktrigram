@@ -607,7 +607,7 @@ describe("BalanceSystem - Comprehensive Tests", () => {
       expect(player.stanceChangeHistory?.length).toBeLessThanOrEqual(5);
     });
 
-    it("should maintain 60fps performance with all features active", () => {
+    it("should execute balance calculations without errors", () => {
       let player = createBalancePlayerState({
         balance: 65,
         stamina: 70,

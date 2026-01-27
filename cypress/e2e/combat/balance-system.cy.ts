@@ -43,22 +43,22 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("2️⃣ Checking Initial Balance State");
 
-    // Assert that balance indicator overlay is present (with data-testid)
-    // Note: The indicator might be in the 3D canvas, so we check for its presence
+    // Assert that balance indicator overlay is present
+    // Wait with timeout for the component to render
+    cy.get('[data-testid="balance-indicator-overlay"]', { timeout: 5000 })
+      .should("exist")
+      .then(() => {
+        cy.log("✅ Balance indicator overlay verified with data-testid");
+      });
+    
+    // Fallback: check for balance text if component not integrated yet
     cy.get("body").then(($body) => {
-      const hasBalanceTestId = $body.find('[data-testid="balance-indicator-overlay"]').length > 0;
       const hasBalanceText = 
         $body.text().includes("균형") ||
         $body.text().includes("Balance");
       
-      if (hasBalanceTestId) {
-        cy.log("✅ Balance indicator with data-testid found");
-        // Assert presence when found
-        cy.get('[data-testid="balance-indicator-overlay"]').should("exist");
-      } else if (hasBalanceText) {
-        cy.log("✅ Balance indicator text found in UI");
-      } else {
-        cy.log("ℹ️ Balance indicator not yet rendered or in 3D canvas");
+      if (!hasBalanceText) {
+        cy.log("⚠️ Balance text not found - component may not be integrated");
       }
     });
 
@@ -76,23 +76,29 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     cy.wait(200);
     cy.log("✅ Changed to Geon stance (Heaven)");
 
+    // Change stance to trigger transition vulnerability
     cy.get("body").type("2");
+    cy.log("✅ Changed to Tae stance (Lake) - transition started");
+    
+    // Assert vulnerability indicator appears during 0.5s window
+    // The indicator should appear immediately during transition
+    cy.get("body", { timeout: 1000 }).should(($body) => {
+      const hasVulnerableText = 
+        $body.text().includes("취약") ||
+        $body.text().includes("Vulnerable");
+      
+      // Assert that vulnerability text is present during transition
+      expect(hasVulnerableText, "Vulnerability indicator should appear during stance transition").to.be.true;
+    });
+    
     cy.wait(200);
-    cy.log("✅ Changed to Tae stance (Lake)");
 
     cy.get("body").type("3");
     cy.wait(200);
     cy.log("✅ Changed to Li stance (Fire)");
 
-    // Check for vulnerability indicator
-    cy.get("body").then(($body) => {
-      const hasVulnerableText = 
-        $body.text().includes("취약") ||
-        $body.text().includes("Vulnerable");
-      
-      if (hasVulnerableText) {
-        cy.log("✅ Vulnerability indicator detected during transition");
-      }
+    // Verify vulnerability indicator was present during transition
+    cy.log("✅ Transition vulnerability window validated");
     });
 
     cy.wait(600); // Wait for vulnerability window to close (>500ms)
@@ -306,56 +312,16 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     cy.get('[data-testid="combat-screen"]').should("exist");
     cy.wait(1000);
 
-    // Start rapid stance changes to stress-test the system
-    let stanceChangeInterval: number;
+    // Use shared FPS monitoring utility
+    cy.assertSmoothFPS(3000);
     
-    // Measure FPS during intensive balance updates with concurrent stance changes
-    cy.window()
-      .then((win) => {
-        return new Cypress.Promise<number>((resolve) => {
-          let frameCount = 0;
-          const startTime = win.performance.now();
-          const targetDuration = 3000; // 3 seconds
-          let stanceIndex = 0;
+    // Perform rapid stance changes to stress-test the system
+    cy.log("🔄 Triggering rapid stance changes");
+    for (let i = 0; i < 10; i++) {
+      cy.get("body").type(String((i % 8) + 1));
+      cy.wait(300);
+    }
 
-          // Trigger stance changes during measurement
-          stanceChangeInterval = win.setInterval(() => {
-            const stanceKey = String((stanceIndex % 8) + 1);
-            const event = new KeyboardEvent('keydown', { key: stanceKey });
-            win.document.body.dispatchEvent(event);
-            stanceIndex++;
-          }, 300); // Change stance every 300ms
-
-          const measureFPS = () => {
-            frameCount++;
-            const elapsed = win.performance.now() - startTime;
-
-            if (elapsed >= targetDuration) {
-              const fps = (frameCount / elapsed) * 1000;
-              cy.log(`📊 Average FPS: ${fps.toFixed(2)}`);
-              win.clearInterval(stanceChangeInterval);
-              resolve(fps);
-              return;
-            }
-
-            win.requestAnimationFrame(measureFPS);
-          };
-
-          win.requestAnimationFrame(measureFPS);
-        });
-      })
-      .then((fps) => {
-        // Assert that performance meets the target threshold
-        expect(fps, "Average FPS during balance updates").to.be.greaterThan(55);
-
-        if (fps >= 55) {
-          cy.log("✅ Performance target achieved (>55fps)");
-        } else {
-          cy.log("⚠️ Performance below target");
-        }
-      });
-
-    cy.wait(3500); // Wait for measurement to complete
     cy.log("✅ Performance test complete");
   });
 

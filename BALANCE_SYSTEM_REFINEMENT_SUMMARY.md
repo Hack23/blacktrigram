@@ -4,7 +4,14 @@
 
 All 8 acceptance criteria have been implemented with comprehensive testing.
 
-**Integration Status Note:** The new transition vulnerability and rapid change penalty mechanics are fully implemented and tested. Integration with the game's stance change system requires wiring these APIs into the stance management flow (e.g., calling `startStanceTransition()` when player changes stance and `updateTransition()` in the game loop). The `getTotalVulnerabilityMultiplier()` method should replace `getVulnerabilityMultiplier()` in damage calculations to include transition vulnerability.
+**Integration Status:** The balance system enhancements are fully implemented and tested but **require integration into the game's runtime**. The following components need to be wired:
+
+- `startStanceTransition()` - Call when player changes stance
+- `updateTransition()` - Call in game loop to update transition state
+- `getTotalVulnerabilityMultiplier()` - Use in damage calculations
+- `BalanceIndicatorOverlayHtml` - Add to CombatScreen3D to display balance state
+
+See "Integration Steps" section below for complete wiring instructions.
 
 ---
 
