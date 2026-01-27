@@ -776,6 +776,35 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const [player1Injuries, setPlayer1Injuries] = useState<readonly Injury[]>([]);
   const [player2Injuries, setPlayer2Injuries] = useState<readonly Injury[]>([]);
 
+  // Clear injuries when component unmounts or when a new match starts
+  // 컴포넌트 언마운트 시 또는 새 매치 시작 시 부상 초기화
+  useEffect(() => {
+    return () => {
+      // Clear injury state on unmount to avoid leaking injuries across screens
+      setPlayer1Injuries([]);
+      setPlayer2Injuries([]);
+    };
+  }, []);
+
+  // Clear injuries when a new match starts (both players at full health)
+  // 새 매치 시작 시 부상 초기화 (양 플레이어 모두 최대 체력)
+  useEffect(() => {
+    // Only clear if we have valid players with health data
+    if (players.length >= 2) {
+      const player1 = players[0];
+      const player2 = players[1];
+      
+      // Check if both players are at max health (indicates new match start)
+      if (
+        player1?.health === player1?.maxHealth &&
+        player2?.health === player2?.maxHealth
+      ) {
+        setPlayer1Injuries([]);
+        setPlayer2Injuries([]);
+      }
+    }
+  }, [players]);
+
   // CRITICAL FIX: Memoize onPositionChange to prevent usePlayerMovement callback recreation
   // Without this, a new function is created every render, causing animation frame cancellation
   const handlePlayer1PositionChange = useCallback(
