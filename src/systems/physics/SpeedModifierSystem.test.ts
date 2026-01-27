@@ -310,7 +310,7 @@ describe("SpeedModifierSystem", () => {
         ...basePlayerState,
         bodyPartHealth: {
           ...basePlayerState.bodyPartHealth!,
-          legLeft: 5, // 95% damage -> 5% health (HOBBLED state)
+          legLeft: 5, // 95% damage -> 5% health (CRITICAL state)
           legRight: 5,
         },
       };
@@ -320,17 +320,19 @@ describe("SpeedModifierSystem", () => {
         MovementType.WALKING,
       );
 
-      // 5% health triggers HOBBLED state (0.4 multiplier = 0.6 penalty, clamped to 0.6)
-      expect(modifiers.injuryPenalty).toBeCloseTo(0.6, 2);
+      // NEW InjuryMovementModifier: 5% health triggers CRITICAL state
+      // With worst-leg calculation + both-legs penalty + potential min speed clamp
+      // Expect near-maximum penalty (0.9 = 90% penalty, 10% min speed)
+      expect(modifiers.injuryPenalty).toBeCloseTo(0.9, 2);
     });
 
-    it("should use average leg damage (both legs considered)", () => {
+    it("should use worst leg damage (worst leg determines penalty)", () => {
       const asymmetricInjury = {
         ...basePlayerState,
         bodyPartHealth: {
           ...basePlayerState.bodyPartHealth!,
           legLeft: 100, // Healthy (100%)
-          legRight: 20, // 20% health
+          legRight: 20, // 20% health (SEVERE state)
         },
       };
 
@@ -339,9 +341,10 @@ describe("SpeedModifierSystem", () => {
         MovementType.WALKING,
       );
 
-      // MovementPenaltySystem uses average: (100 + 20) / 2 = 60% -> LIMPING state
-      // LIMPING = 0.8 multiplier = 0.2 penalty
-      expect(modifiers.injuryPenalty).toBeCloseTo(0.2, 2);
+      // NEW InjuryMovementModifier uses WORST leg health (20%)
+      // 20% health is in SEVERE range (10-30%) -> ~60% penalty
+      // More realistic: if one leg is severely injured, you can't walk normally
+      expect(modifiers.injuryPenalty).toBeCloseTo(0.6, 1);
     });
 
     it("should handle missing body part health gracefully", () => {

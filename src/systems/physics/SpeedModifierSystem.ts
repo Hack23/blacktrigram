@@ -12,7 +12,7 @@
  *
  * - Base movement speeds for walking, running, backward, lateral, and crouching
  * - Eight Trigram stance-based speed modifiers (80% to 125%)
- * - Injury-based speed reduction from leg damage (0% to 75% penalty)
+ * - Injury-based speed reduction from leg damage (0% to 100% penalty)
  * - Stamina-based acceleration penalty (0% to 75% penalty)
  * - Combat state speed adjustments (0% to 100% penalty)
  * - Multiplicative and additive modifier stacking
@@ -22,7 +22,7 @@
  * ```
  * Final Speed = Base Speed
  *               × Stance Modifier
- *               × (1 - Injury Penalty)
+ *               × (1 - Injury Penalty from Legs, Torso & Pain)
  *               × (1 - Combat State Penalty)
  *
  * Final Acceleration = Base Acceleration
@@ -34,7 +34,6 @@
  * @korean 속도변경시스템
  */
 
-import { MovementPenaltySystem } from "@/systems/bodypart/MovementPenaltySystem";
 import type {
   BodyPartHealth,
   BodyPartMaxHealth,
@@ -43,6 +42,7 @@ import type { PlayerState } from "@/systems/player";
 import { CombatState, TrigramStance } from "@/types/common";
 import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
 import { STANCE_SPEED_MODIFIERS } from "./MovementPhysics";
+import { injuryMovementModifier } from "@/systems/movement/InjuryMovementModifier";
 
 /**
  * Complete speed modifier state for physics calculations.
@@ -190,11 +190,8 @@ export class SpeedModifierSystem {
     [CombatState.TRANSITIONING]: 0.15, // -15% during stance transitions
   };
 
-  private readonly movementPenaltySystem: MovementPenaltySystem;
-
-  constructor() {
-    this.movementPenaltySystem = new MovementPenaltySystem();
-  }
+  // Constructor removed - no longer need MovementPenaltySystem instance
+  // Using injuryMovementModifier singleton instead
 
   /**
    * Calculate comprehensive speed modifiers for player movement.
@@ -223,15 +220,20 @@ export class SpeedModifierSystem {
       playerState.physicalAttributes,
     );
 
-    // Calculate stance modifier
-    const stanceModifier = this.getStanceSpeedModifier(
-      playerState.currentStance,
-    );
-
-    // Calculate injury penalty from leg damage
+    // Calculate injury penalty from leg damage using NEW InjuryMovementModifier system
+    // This replaces the old MovementPenaltySystem with comprehensive injury calculations
     const injuryPenalty = this.calculateInjuryPenalty(
       playerState.bodyPartHealth,
       playerState.bodyPartMaxHealth,
+      playerState.pain,
+    );
+
+    // Calculate stance modifier separately.
+    // NOTE: InjuryMovementModifier is called with neutral GEON stance inside
+    // calculateInjuryPenalty() so that injury effects are isolated from stance.
+    // The actual current stance effect must be applied here via stanceModifier.
+    const stanceModifier = this.getStanceSpeedModifier(
+      playerState.currentStance,
     );
 
     // Calculate combat state penalty
@@ -251,8 +253,9 @@ export class SpeedModifierSystem {
       playerState.maxStamina,
     );
 
-    // Calculate final speed using multiplicative stance and additive penalties
+    // Calculate final speed with all modifiers applied multiplicatively
     // Formula: Base × Stance × (1 - Injury) × (1 - CombatState)
+    // Note: Injury penalty now excludes stance (calculated with GEON), so we apply stance here
     const finalSpeed =
       baseSpeed *
       stanceModifier *
@@ -345,41 +348,51 @@ export class SpeedModifierSystem {
    *
    * **Korean**: 부상 속도 패널티 계산 (Calculate Injury Penalty)
    *
-   * Uses MovementPenaltySystem to determine speed reduction based on
-   * leg damage severity. Penalties are progressive:
-   * - Light damage (10-30%): -10% speed
-   * - Moderate damage (30-60%): -25% speed
-   * - Heavy damage (60-90%): -50% speed
-   * - Critical damage (90-100%): -75% speed (limping)
+   * Uses NEW InjuryMovementModifier to determine speed reduction based on
+   * leg damage severity, torso damage, and pain levels.
+   * NOTE: Stance modifier is calculated separately to maintain compatibility
+   * with existing SpeedModifierState interface.
+   * 
+   * Penalties are progressive and realistic:
+   * - Leg injuries: 0-100% penalty based on health
+   * - Torso injuries: 0-30% minor penalty
+   * - Both legs injured: Additional 20% cumulative penalty
+   * - Pain overload: -15% when pain ≥ 80
    *
    * @param bodyPartHealth - Current body part health
    * @param bodyPartMaxHealth - Maximum body part health
-   * @returns Speed penalty as percentage (0.0 to 0.75)
+   * @param painLevel - Current pain level (0-100)
+   * @returns Speed penalty as percentage (0.0 to 0.9 max)
    *
    * @private
    */
   private calculateInjuryPenalty(
     bodyPartHealth: BodyPartHealth | undefined,
     bodyPartMaxHealth: BodyPartMaxHealth | undefined,
+    painLevel: number,
   ): number {
     if (!bodyPartHealth || !bodyPartMaxHealth) {
       return 0.0; // No penalty if body part health not tracked
     }
 
-    // Use MovementPenaltySystem to calculate comprehensive penalty
-    const movementPenalty = this.movementPenaltySystem.calculateMovementPenalty(
+    // Use NEW InjuryMovementModifier system for comprehensive injury calculation
+    // Use NEUTRAL stance (GEON = 1.0x) to get pure injury penalty without stance influence
+    // Stance is applied separately in calculateSpeedModifiers for compatibility
+    const result = injuryMovementModifier.calculateMovementSpeed(
+      1.0, // Base speed of 1.0 to get pure multiplier
       bodyPartHealth,
-      bodyPartMaxHealth,
+      TrigramStance.GEON, // Neutral stance to isolate injury penalty
+      painLevel,
     );
 
     // Convert speedMultiplier to penalty percentage
     // speedMultiplier of 1.0 = no penalty (0.0)
     // speedMultiplier of 0.5 = 50% penalty (0.5)
-    // speedMultiplier of 0.25 = 75% penalty (0.75)
-    const penalty = 1.0 - movementPenalty.speedMultiplier;
+    // speedMultiplier of 0.1 = 90% penalty (0.9)
+    const penalty = 1.0 - result.speedMultiplier;
 
-    // Clamp to maximum 75% penalty (minimum 25% speed)
-    return Math.min(penalty, 0.75);
+    // Return penalty (already clamped by InjuryMovementModifier to min 0.1 speed)
+    return Math.min(penalty, 0.9);
   }
 
   /**
