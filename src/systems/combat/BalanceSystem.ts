@@ -944,7 +944,7 @@ export class BalanceSystem {
       return 1.0; // No body part tracking, no modifier
     }
 
-    // Map BodyRegion to BodyPart enum values
+    // Read leg and torso health ratios from body part health tracking
     const leftLegHealthRaw =
       (player.bodyPartHealth.legLeft ?? 0) /
       (player.bodyPartMaxHealth.legLeft ?? 1);
