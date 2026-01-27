@@ -868,6 +868,7 @@ export class BalanceSystem {
     return {
       ...player,
       currentStance: newStance,
+      lastStanceChangeTime: currentTime,
       transitionState,
       stanceChangeHistory: newHistory,
       rapidChangePenaltyEnd,

@@ -169,6 +169,23 @@ describe("BalanceSystem - Comprehensive Tests", () => {
       expect(result.stanceChangeHistory?.length).toBe(0);
     });
 
+    it("should update lastStanceChangeTime when changing stance", () => {
+      const player = createBalancePlayerState({
+        currentStance: TrigramStance.GEON,
+        lastStanceChangeTime: 0,
+      });
+
+      const result = system.startStanceTransition(
+        player,
+        TrigramStance.GAM,
+        currentTime
+      );
+
+      // Should update lastStanceChangeTime to match currentTime
+      expect(result.lastStanceChangeTime).toBe(currentTime);
+      expect(result.currentStance).toBe(TrigramStance.GAM);
+    });
+
     it("should limit stance change history to last 5 changes", () => {
       let player = createBalancePlayerState({
         currentStance: TrigramStance.GEON,

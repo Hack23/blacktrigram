@@ -101,7 +101,8 @@ export const BalanceIndicatorOverlayHtml: React.FC<
     const isTransitioning = player.transitionState?.isTransitioning ?? false;
     const isLowBalance = player.balance < 50; // Off-balance or worse
     const hasPenalty =
-      player.rapidChangePenaltyEnd && currentTime < player.rapidChangePenaltyEnd;
+      player.rapidChangePenaltyEnd !== undefined &&
+      currentTime < player.rapidChangePenaltyEnd;
     return isTransitioning || isLowBalance || hasPenalty;
   }, [player.balance, player.transitionState, player.rapidChangePenaltyEnd, currentTime]);
 
