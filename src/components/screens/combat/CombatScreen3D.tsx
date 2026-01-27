@@ -6,6 +6,7 @@
  */
 
 import { Canvas } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
 import {
   Bloom,
   EffectComposer,
@@ -42,6 +43,7 @@ import {
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
+import { injuryMovementModifier } from "../../../systems/movement/InjuryMovementModifier";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
 import {
   CombatState,
@@ -2238,6 +2240,56 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     handleResume,
   ]);
 
+  // Calculate movement state for visual feedback using InjuryMovementModifier
+  // This provides bilingual status text and injury severity information
+  const player1MovementState = useMemo(() => {
+    if (!validPlayers[0].bodyPartHealth) {
+      return {
+        statusText: { korean: "정상", english: "Normal" },
+        isLimping: false,
+        isSevereLimp: false,
+      };
+    }
+
+    const result = injuryMovementModifier.calculateMovementSpeed(
+      1.0,
+      validPlayers[0].bodyPartHealth,
+      validPlayers[0].currentStance,
+      validPlayers[0].pain
+    );
+
+    return {
+      statusText: result.statusText,
+      isLimping: result.isLimping,
+      isSevereLimp: result.isSevereLimp,
+      speedMultiplier: result.speedMultiplier,
+    };
+  }, [validPlayers]);
+
+  const player2MovementState = useMemo(() => {
+    if (!validPlayers[1].bodyPartHealth) {
+      return {
+        statusText: { korean: "정상", english: "Normal" },
+        isLimping: false,
+        isSevereLimp: false,
+      };
+    }
+
+    const result = injuryMovementModifier.calculateMovementSpeed(
+      1.0,
+      validPlayers[1].bodyPartHealth,
+      validPlayers[1].currentStance,
+      validPlayers[1].pain
+    );
+
+    return {
+      statusText: result.statusText,
+      isLimping: result.isLimping,
+      isSevereLimp: result.isSevereLimp,
+      speedMultiplier: result.speedMultiplier,
+    };
+  }, [validPlayers]);
+
   return (
     <div
       style={{
@@ -2341,6 +2393,57 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           enableStanceSymbol={!isMobile}
           enableStanceAudio={true}
         />
+
+        {/* Movement Status Indicators - Korean/English Bilingual */}
+        {/* Player 1 Movement Status */}
+        {(player1MovementState.isLimping || player1MovementState.isSevereLimp) && (
+          <Html
+            position={[player1Position3D[0], player1Position3D[1] + 2.5, player1Position3D[2]]}
+            center
+            data-testid="player1-movement-status"
+          >
+            <div
+              style={{
+                fontSize: isMobile ? "12px" : "14px",
+                color: player1MovementState.isSevereLimp ? "#ff4444" : "#ffaa00",
+                fontFamily: "Korean Font, sans-serif",
+                fontWeight: "bold",
+                textShadow: "0 0 4px rgba(0,0,0,0.8)",
+                background: "rgba(0, 0, 0, 0.6)",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {player1MovementState.statusText.korean} | {player1MovementState.statusText.english}
+            </div>
+          </Html>
+        )}
+
+        {/* Player 2 Movement Status */}
+        {(player2MovementState.isLimping || player2MovementState.isSevereLimp) && (
+          <Html
+            position={[player2Position3D[0], player2Position3D[1] + 2.5, player2Position3D[2]]}
+            center
+            data-testid="player2-movement-status"
+          >
+            <div
+              style={{
+                fontSize: isMobile ? "12px" : "14px",
+                color: player2MovementState.isSevereLimp ? "#ff4444" : "#ffaa00",
+                fontFamily: "Korean Font, sans-serif",
+                fontWeight: "bold",
+                textShadow: "0 0 4px rgba(0,0,0,0.8)",
+                background: "rgba(0, 0, 0, 0.6)",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {player2MovementState.statusText.korean} | {player2MovementState.statusText.english}
+            </div>
+          </Html>
+        )}
 
         {/* Hit Effects */}
         <HitEffects3D

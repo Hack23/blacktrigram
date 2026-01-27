@@ -366,7 +366,7 @@ export class SpeedModifierSystem {
   private calculateInjuryPenalty(
     bodyPartHealth: BodyPartHealth | undefined,
     bodyPartMaxHealth: BodyPartMaxHealth | undefined,
-    stance: TrigramStance,
+    _stance: TrigramStance, // Unused - stance applied separately in final calculation
     painLevel: number,
   ): number {
     if (!bodyPartHealth || !bodyPartMaxHealth) {
