@@ -89,7 +89,13 @@ export interface UseTrainingActionsConfig {
 export interface UseTrainingActionsReturn {
   readonly handleStartTraining: () => void;
   readonly handleStopTraining: () => void;
-  readonly handleDummyHit: (vitalPointId: string) => boolean;
+  readonly handleDummyHit: (
+    vitalPointId: string,
+    attackContext?: {
+      animationType?: AnimationType;
+      techniqueId?: string;
+    },
+  ) => boolean;
   readonly handleDummyDefeated: () => void;
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
@@ -325,18 +331,25 @@ export function useTrainingActions(
   }, [actions, audio]);
 
   const handleDummyHit = useCallback(
-    (_vitalPointId: string): boolean => {
-      // Get animation context from pending attack if available
-      const animationType = pendingAttackRef.current?.animationType;
+    (
+      _vitalPointId: string,
+      attackContext?: {
+        animationType?: AnimationType;
+        techniqueId?: string;
+      },
+    ): boolean => {
+      // Get animation context from the passed attackContext parameter
+      // (TrainingScreen3D.tsx should pass the attackData before clearing the ref)
+      const animationType = attackContext?.animationType;
 
       // Get technique's reachConfig for accurate reach calculation
-      // Use techniqueId from pendingAttackRef (resolved in handleAttack) or selectedTechniqueId
+      // Priority: attackContext.techniqueId (resolved in handleAttack) > selectedTechniqueId
       // This ensures default techniques (chosen when no explicit selection) also get their reachConfig
       let reachConfig: import("../../../../types/physics").PhysicalReachConfig | undefined;
-      const pendingTechniqueId =
-        pendingAttackRef.current?.techniqueId ?? selectedTechniqueId;
-      if (pendingTechniqueId) {
-        const technique = KoreanTechniquesSystem.getTechniqueById(pendingTechniqueId);
+      const resolvedTechniqueId =
+        attackContext?.techniqueId ?? selectedTechniqueId;
+      if (resolvedTechniqueId) {
+        const technique = KoreanTechniquesSystem.getTechniqueById(resolvedTechniqueId);
         reachConfig = technique?.reachConfig;
       }
 
