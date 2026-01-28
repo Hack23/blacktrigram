@@ -8,7 +8,7 @@
  * - Continuous skin layer covering neck, torso, shoulders, arms, and legs
  * - Archetype-specific skin tones for visual variety
  * - Proper body thickness scaling based on muscle and fat mass
- * - Double-sided rendering for complete 360° coverage
+ * - Double-sided rendering (THREE.DoubleSide) for complete 360° coverage and gap prevention
  * - Smooth tapering for realistic proportions
  * - Enhanced material with subsurface scattering and clearcoat
  * - High-quality geometry with increased segment counts
@@ -420,7 +420,7 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
       // Reflectivity for realistic appearance
       reflectivity: 0.1,
       
-      side: THREE.FrontSide, // Use front faces for performance; DoubleSide only needed when camera clips through model
+      side: THREE.DoubleSide, // Render both sides for complete body coverage and gap prevention
       flatShading: false, // Smooth shading for organic look
     });
   }, [skinTone]);
