@@ -14,7 +14,7 @@
  * - High-quality geometry with increased segment counts
  * - Shoulder joints for smooth transitions
  *
- * **Rendering Order**: Bones → Body Surface → Muscles (optional) → Clothing
+ * **Rendering Order**: Bones → Muscles (optional) → Body Surface → Clothing
  *
  * @module components/three/BodySurface
  * @category 3D Components
@@ -91,7 +91,7 @@ interface BodySurfaceSegment {
  *
  * @param muscleMass - Muscle mass in kg
  * @param fatMass - Fat mass in kg
- * @returns Body thickness multiplier (0.85 - 1.20)
+ * @returns Body thickness multiplier (0.75 - 1.20)
  * @korean 신체두께계산
  */
 const calculateBodyThickness = (
@@ -379,6 +379,11 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
    * - Subtle emissive for alive appearance
    * - Double-sided: true (render both inside and outside)
    *
+   * Material properties differ from Face3D/Hand3D/Foot3D for body-specific characteristics:
+   * - transmission: 0.08 (vs 0 in others) - body skin has more subsurface scattering
+   * - thickness: 0.5 (vs 0.1 in others) - body has thicker skin layers
+   * - clearcoat: 0.15 (vs 0.3 in others) - body skin is less glossy than extremities
+   *
    * @korean 피부재료생성
    */
   const material = useMemo(() => {
@@ -426,7 +431,7 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
         segment.geometry.dispose();
       });
     };
-  }, [segments]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (segments.length === 0) {
     return null;

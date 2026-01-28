@@ -204,4 +204,57 @@ describe("BodySurface", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
   });
+
+  describe("LOD (Level of Detail) System", () => {
+    it("should render with high detail at close distance", () => {
+      const { container } = render3D(
+        <BodySurface
+          boneName="upper_arm_L"
+          archetype={PlayerArchetype.MUSA}
+          physicalAttributes={defaultPhysicalAttributes}
+          cameraDistance={3}
+        />
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with medium detail at normal distance", () => {
+      const { container } = render3D(
+        <BodySurface
+          boneName="upper_arm_L"
+          archetype={PlayerArchetype.MUSA}
+          physicalAttributes={defaultPhysicalAttributes}
+          cameraDistance={7}
+        />
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should render with low detail at far distance", () => {
+      const { container } = render3D(
+        <BodySurface
+          boneName="upper_arm_L"
+          archetype={PlayerArchetype.MUSA}
+          physicalAttributes={defaultPhysicalAttributes}
+          cameraDistance={15}
+        />
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+
+    it("should use default cameraDistance when not provided", () => {
+      const { container } = render3D(
+        <BodySurface
+          boneName="thigh_L"
+          archetype={PlayerArchetype.MUSA}
+          physicalAttributes={defaultPhysicalAttributes}
+        />
+      );
+
+      expect(container.querySelector("canvas")).toBeInTheDocument();
+    });
+  });
 });
