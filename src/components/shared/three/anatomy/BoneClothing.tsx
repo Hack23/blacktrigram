@@ -456,12 +456,20 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
       const materialType = clothingItem?.material ?? "fabric";
       const textureSet = fabricTextures.get(materialType);
 
+      // Create normal scale safely (Vector2 may not be available in test environments)
+      let normalScale: THREE.Vector2 | undefined;
+      try {
+        normalScale = new THREE.Vector2(0.3, 0.3);
+      } catch {
+        normalScale = undefined;
+      }
+
       const mat = new THREE.MeshPhysicalMaterial({
         color: attachment.color,
         // Apply fabric texture maps for realistic dobok appearance
         map: textureSet?.colorMap ?? null,
         normalMap: textureSet?.normalMap ?? null,
-        normalScale: new THREE.Vector2(0.3, 0.3), // Subtle normal effect
+        normalScale, // Subtle normal effect
         roughnessMap: textureSet?.roughnessMap ?? null,
         emissive: attachment.emissiveColor ?? 0x000000,
         emissiveIntensity: attachment.emissiveIntensity ?? 0,

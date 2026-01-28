@@ -126,15 +126,31 @@ const canCreateCanvas = (): boolean => {
 };
 
 /**
- * Create a fallback 1x1 texture for test environments
+ * Create a fallback texture for test environments
+ * Uses a minimal texture that works in all environments
  */
 const createFallbackTexture = (): THREE.CanvasTexture => {
-  // Create a minimal data texture that works in test environments
-  const data = new Uint8Array([128, 128, 128, 255]);
-  const dataTexture = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat);
-  dataTexture.needsUpdate = true;
-  // Return as CanvasTexture for type compatibility (they share the same interface)
-  return dataTexture as unknown as THREE.CanvasTexture;
+  // In test environments, THREE mocks may not have all features
+  // Create a minimal mock that satisfies the interface
+  try {
+    const data = new Uint8Array([128, 128, 128, 255]);
+    const dataTexture = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat);
+    dataTexture.needsUpdate = true;
+    return dataTexture as unknown as THREE.CanvasTexture;
+  } catch {
+    // Ultimate fallback - create a minimal mock texture object
+    // Use numeric constants instead of THREE constants for test compatibility
+    const mockTexture = {
+      dispose: () => {},
+      needsUpdate: true,
+      wrapS: 1000, // THREE.RepeatWrapping value
+      wrapT: 1000,
+      repeat: { set: () => {} },
+      uuid: "mock-fabric-texture",
+      isTexture: true,
+    };
+    return mockTexture as unknown as THREE.CanvasTexture;
+  }
 };
 
 /**
