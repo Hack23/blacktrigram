@@ -424,7 +424,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, 0.3)).toThrow(
-        'worldWidthMeters must be a positive finite number'
+        "worldWidthMeters must be a positive finite number"
       );
     });
 
@@ -435,7 +435,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, 0.3)).toThrow(
-        'worldDepthMeters must be a positive finite number'
+        "worldDepthMeters must be a positive finite number"
       );
     });
 
@@ -446,7 +446,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, 0.3)).toThrow(
-        'worldWidthMeters must be a positive finite number'
+        "worldWidthMeters must be a positive finite number"
       );
     });
 
@@ -457,7 +457,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, -0.5)).toThrow(
-        'margin must be a non-negative finite number'
+        "margin must be a non-negative finite number"
       );
     });
 
@@ -468,7 +468,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, 6)).toThrow(
-        'margin (6m) must be less than half the arena width (5m)'
+        "margin (6m) must be less than half the arena width (5m)"
       );
     });
 
@@ -479,7 +479,7 @@ describe("Arena Bounds Validation", () => {
       };
 
       expect(() => calculateArenaBounds(config, 4)).toThrow(
-        'margin (4m) must be less than half the arena depth (3.75m)'
+        "margin (4m) must be less than half the arena depth (3.75m)"
       );
     });
   });
