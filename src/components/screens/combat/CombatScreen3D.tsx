@@ -2389,11 +2389,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         height: `${height}px`,
         position: "relative",
         backgroundColor: "#0a0a0a",
+        overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="combat-screen"
     >
       {/* Three.js Canvas for 3D rendering */}
       <Canvas
+        style={{ width: `${width}px`, height: `${height}px` }}
         camera={{
           position: cameraConfig.position,
           fov: cameraConfig.fov,
@@ -2724,6 +2726,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
+          overflow: "hidden", // Ensure HUD elements don't extend beyond container
         }}
       >
         {/* Top HUD - Round info, timer, return to menu */}

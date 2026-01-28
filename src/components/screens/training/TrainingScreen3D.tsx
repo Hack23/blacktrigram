@@ -1087,11 +1087,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         width: `${width}px`,
         height: `${height}px`,
         position: "relative",
+        overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="training-screen-3d"
     >
       <Canvas
-        style={{ width, height }}
+        style={{ width: `${width}px`, height: `${height}px` }}
         gl={{
           antialias: performanceSettings.antialias,
           alpha: false,
@@ -1263,6 +1264,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
+          overflow: "hidden", // Ensure HUD elements don't extend beyond container
         }}
         data-testid="training-hud-overlay"
       >
