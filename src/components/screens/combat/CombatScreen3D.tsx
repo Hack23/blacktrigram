@@ -45,7 +45,7 @@ import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { injuryMovementModifier } from "../../../systems/movement/InjuryMovementModifier";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
-import { KoreanTechnique } from "../../../systems/vitalpoint/types";
+import type { KoreanTechnique } from "../../../systems/vitalpoint/types";
 import {
   CombatState,
   GameMode,
