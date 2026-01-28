@@ -64,6 +64,12 @@ export interface BodySurfaceProps {
     readonly armLength: number;
     readonly legLength: number;
   };
+
+  /**
+   * Distance from camera for LOD optimization
+   * @korean 카메라거리
+   */
+  readonly cameraDistance?: number;
 }
 
 /**
@@ -111,12 +117,31 @@ const calculateBodyThickness = (
 };
 
 /**
+ * Determine segment count based on camera distance for LOD
+ *
+ * @param cameraDistance - Distance from camera
+ * @returns Segment count for geometry
+ * @korean LOD세그먼트수
+ */
+const getLODSegmentCount = (cameraDistance: number): number => {
+  if (cameraDistance < 5) {
+    return 20; // High detail for close-ups
+  } else if (cameraDistance < 10) {
+    return 16; // Medium detail for normal distance
+  } else {
+    return 12; // Low detail for far distance
+  }
+};
+
+/**
  * Get body surface segments for a specific bone
  *
  * Creates continuous skin geometry appropriate for each body part.
+ * Implements LOD (Level of Detail) based on camera distance for performance.
  *
  * @param boneName - Name of the bone
  * @param physicalAttributes - Physical attributes for scaling
+ * @param cameraDistance - Distance from camera for LOD
  * @returns Array of body surface segments
  * @korean 신체표면세그먼트가져오기
  */
@@ -130,6 +155,7 @@ const getBodySurfaceForBone = (
     armLength: number;
     legLength: number;
   },
+  cameraDistance: number = 10,
 ): BodySurfaceSegment[] => {
   const segments: BodySurfaceSegment[] = [];
 
@@ -138,6 +164,9 @@ const getBodySurfaceForBone = (
     physicalAttributes.fatMass,
   );
 
+  // Get appropriate segment count based on distance
+  const segmentCount = getLODSegmentCount(cameraDistance);
+
   // Scaling factors for different body parts
   const torsoScale = physicalAttributes.torsoLength / 59; // Reference: 59cm torso
   const armScale = physicalAttributes.armLength / 77; // Reference: 77cm arms
@@ -145,7 +174,7 @@ const getBodySurfaceForBone = (
 
   switch (boneName) {
     case "neck": {
-      // Neck cylinder - smooth connection between head and torso with higher segment count
+      // Neck cylinder - smooth connection between head and torso with LOD
       const neckRadius = 0.06 * bodyThickness;
       const neckLength = 0.11 * bodyThickness;
       segments.push({
@@ -153,7 +182,7 @@ const getBodySurfaceForBone = (
           neckRadius,
           neckRadius * 1.1, // Slightly wider at base
           neckLength,
-          20, // Increased from 16 for smoother appearance
+          segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -neckLength * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -192,11 +221,11 @@ const getBodySurfaceForBone = (
 
     case "shoulder_L":
     case "shoulder_R": {
-      // Shoulder joint - spherical cap for smooth shoulder transition
+      // Shoulder joint - spherical cap for smooth shoulder transition with LOD
       const shoulderRadius = BICEP_RADIUS * bodyThickness * 1.3;
 
       segments.push({
-        geometry: new THREE.SphereGeometry(shoulderRadius, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+        geometry: new THREE.SphereGeometry(shoulderRadius, segmentCount, Math.floor(segmentCount * 0.75), 0, Math.PI * 2, 0, Math.PI / 2),
         localOffset: new THREE.Vector3(0, 0, 0),
         localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
       });
@@ -205,7 +234,7 @@ const getBodySurfaceForBone = (
 
     case "upper_arm_L":
     case "upper_arm_R": {
-      // Upper arm - tapered cylinder (bicep area) with higher segment count
+      // Upper arm - tapered cylinder (bicep area) with LOD
       const radiusTop = BICEP_RADIUS * bodyThickness * 1.1; // Wider at shoulder
       const radiusBottom = BICEP_RADIUS * bodyThickness * 0.9; // Narrower at elbow
       const length = (physicalAttributes.armLength / 100) * armScale * 0.45;
@@ -215,7 +244,7 @@ const getBodySurfaceForBone = (
           radiusTop,
           radiusBottom,
           length,
-          20, // Increased from 16 for smoother appearance
+          segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -length * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -225,7 +254,7 @@ const getBodySurfaceForBone = (
 
     case "forearm_L":
     case "forearm_R": {
-      // Forearm - tapered cylinder with higher segment count
+      // Forearm - tapered cylinder with LOD
       const radiusTop = FOREARM_RADIUS * bodyThickness * 1.0; // Wider at elbow
       const radiusBottom = FOREARM_RADIUS * bodyThickness * 0.7; // Narrower at wrist
       const length = (physicalAttributes.armLength / 100) * armScale * 0.4;
@@ -235,7 +264,7 @@ const getBodySurfaceForBone = (
           radiusTop,
           radiusBottom,
           length,
-          20, // Increased from 16 for smoother appearance
+          segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -length * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -245,7 +274,7 @@ const getBodySurfaceForBone = (
 
     case "thigh_L":
     case "thigh_R": {
-      // Thigh - tapered cylinder (quad area) with higher segment count
+      // Thigh - tapered cylinder (quad area) with LOD
       const radiusTop = QUAD_RADIUS * bodyThickness * 1.2; // Wider at hip
       const radiusBottom = QUAD_RADIUS * bodyThickness * 0.95; // Narrower at knee
       const length = (physicalAttributes.legLength / 100) * legScale * 0.45;
@@ -255,7 +284,7 @@ const getBodySurfaceForBone = (
           radiusTop,
           radiusBottom,
           length,
-          20, // Increased from 16 for smoother appearance
+          segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -length * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -265,7 +294,7 @@ const getBodySurfaceForBone = (
 
     case "shin_L":
     case "shin_R": {
-      // Shin/calf - tapered cylinder with higher segment count
+      // Shin/calf - tapered cylinder with LOD
       const radiusTop = CALF_RADIUS * bodyThickness * 1.0; // Wider at knee
       const radiusBottom = CALF_RADIUS * bodyThickness * 0.65; // Narrower at ankle
       const length = (physicalAttributes.legLength / 100) * legScale * 0.42;
@@ -275,7 +304,7 @@ const getBodySurfaceForBone = (
           radiusTop,
           radiusBottom,
           length,
-          20, // Increased from 16 for smoother appearance
+          segmentCount, // LOD-based segment count
         ),
         localOffset: new THREE.Vector3(0, -length * 0.4, 0),
         localRotation: new THREE.Euler(0, 0, 0),
@@ -312,6 +341,7 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
   boneName,
   archetype,
   physicalAttributes,
+  cameraDistance = 10,
 }) => {
   // Default physical attributes if not provided
   const attrs = useMemo(
@@ -327,10 +357,10 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
     [physicalAttributes],
   );
 
-  // Get body surface segments for this bone
+  // Get body surface segments for this bone with LOD
   const segments = useMemo(
-    () => getBodySurfaceForBone(boneName, attrs),
-    [boneName, attrs],
+    () => getBodySurfaceForBone(boneName, attrs, cameraDistance),
+    [boneName, attrs, cameraDistance],
   );
 
   // Get archetype-specific skin tone
@@ -341,10 +371,12 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
    *
    * Uses MeshPhysicalMaterial for enhanced realism:
    * - Skin tone color from archetype
-   * - Subsurface scattering for light transmission through skin
+   * - Subsurface scattering with subtle transmission for realistic skin translucency
    * - Roughness: 0.65 (slightly rough skin texture)
    * - Metalness: 0.0 (skin is not metallic)
    * - Clearcoat for natural skin sheen
+   * - Sheen for skin surface properties
+   * - Subtle emissive for alive appearance
    * - Double-sided: true (render both inside and outside)
    *
    * @korean 피부재료생성
@@ -356,13 +388,21 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
       metalness: 0.0, // Skin is not metallic
       
       // Subsurface scattering for realistic skin translucency
-      transmission: 0.0, // No full transmission (skin is opaque)
+      transmission: 0.08, // Small non-zero transmission for subtle skin translucency
       thickness: 0.5, // Moderate thickness for subsurface scattering
       ior: 1.4, // Index of refraction for human skin
       
       // Clearcoat for natural skin sheen (subtle)
       clearcoat: 0.15,
       clearcoatRoughness: 0.8,
+      
+      // Sheen for skin surface properties (consistent with Hand3D, Foot3D)
+      sheen: 0.1,
+      sheenRoughness: 0.8,
+      
+      // Subtle emissive for alive appearance (consistent with other skin components)
+      emissive: new THREE.Color(skinTone),
+      emissiveIntensity: 0.02,
       
       // Reflectivity for realistic appearance
       reflectivity: 0.1,

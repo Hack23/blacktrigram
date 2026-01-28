@@ -371,6 +371,7 @@ const SingleBone: React.FC<{
         <BodySurface
           boneName={bone.name}
           archetype={archetype}
+          cameraDistance={cameraDistance}
           physicalAttributes={{
             muscleMass: physicalAttributes.muscleMass,
             fatMass: physicalAttributes.fatMass,
@@ -392,7 +393,7 @@ const SingleBone: React.FC<{
             fatMass: physicalAttributes.fatMass,
             shoulderWidth: physicalAttributes.shoulderWidth ?? 45,
             torsoLength: physicalAttributes.torsoLength ?? 59,
-            armLength: physicalAttributes.armLength ?? 62,
+            armLength: physicalAttributes.armLength ?? 77,
             legLength: physicalAttributes.legLength ?? 96,
           }}
         />
