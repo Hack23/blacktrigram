@@ -36,8 +36,7 @@ import {
   METERS_TO_TRAINING_UNITS,
 } from "../../../../types/physicsConstants";
 import { calculateDistance3D } from "../../../../utils/math";
-// Note: calculateBodyRadius is available for PvP combat where targets have archetypes
-// import { calculateBodyRadius } from "../../../../utils/skeletonScaling";
+import { calculateBodyRadius } from "../../../../utils/skeletonScaling";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 
 export interface UseTrainingActionsConfig {
@@ -208,17 +207,21 @@ function calculateHitAccuracy(
   // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
 
+  // Calculate player's body radius based on their physical attributes
+  const playerPhysicalAttributes = getArchetypePhysicalAttributes(archetype);
+  const playerBodyRadius = calculateBodyRadius(playerPhysicalAttributes);
+
   // Training dummy uses default body radius since it has no archetype
   // For combat between players, we would use calculateBodyRadius(targetPhysicalAttributes)
   // 훈련 더미는 원형이 없으므로 기본 몸체 반경 사용
   const targetBodyRadius = DEFAULT_BODY_RADIUS_METERS;
 
-  // Adjust distance to account for target body radius
-  // Attacks hit the body surface, not the center point
-  // 타격은 중심점이 아닌 몸체 표면에 적중
+  // Effective distance = center-to-center minus both body radii
+  // The attack originates from the player's body surface and lands on the dummy's body surface
+  // 유효 거리 = 중심간 거리 - 플레이어 몸체 반경 - 더미 몸체 반경
   const effectiveDistance = Math.max(
     0,
-    centerToCenterDistance - targetBodyRadius,
+    centerToCenterDistance - playerBodyRadius - targetBodyRadius,
   );
 
   // If animation type is available, use physics-based reach calculation
@@ -229,9 +232,8 @@ function calculateHitAccuracy(
   // 4. This matches intuitive behavior - if you're close enough to be hit by the kick, it hits
   // 훈련 타격 감지는 최대 도달 거리 사용 (애니메이션 타이밍과 기술 타이밍 불일치 보정)
   if (animationType !== undefined) {
-    const physicalAttributes = getArchetypePhysicalAttributes(archetype);
     const maxReachMeters = physicalReachCalculator.calculateMaxReach(
-      physicalAttributes,
+      playerPhysicalAttributes,
       animationType,
       stance,
     );
