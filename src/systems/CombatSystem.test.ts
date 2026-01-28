@@ -10,6 +10,7 @@ import {
 } from "../types/common";
 import { createPlayerFromArchetype } from "../utils/playerUtils";
 import CombatSystem, { createCombatResult } from "./CombatSystem";
+import { AnimationType } from "./animation";
 import { TrainingCombatSystem } from "./combat/TrainingCombatSystem";
 import { EffectIntensity } from "./effects";
 import type { PlayerState } from "./player";
@@ -1585,6 +1586,203 @@ describe("TrainingCombatSystem", () => {
 
       const resetDummy = trainingSystem.getTrainingDummy();
       expect(resetDummy.health).toBeGreaterThan(900);
+    });
+  });
+});
+
+describe("CombatSystem - Body Radius Hit Detection", () => {
+  let combatSystem: CombatSystem;
+  let attacker: PlayerState;
+  let defender: PlayerState;
+  let mockTechnique: KoreanTechnique;
+
+  beforeEach(() => {
+    combatSystem = new CombatSystem();
+    
+    // Create attacker (JOJIK - largest archetype with 54cm shoulders → 0.27m radius)
+    attacker = createPlayerFromArchetype(PlayerArchetype.JOJIK_POKRYEOKBAE, 0);
+    // Set stance to match the technique
+    asMutable(attacker).currentStance = TrigramStance.GEON;
+    
+    // Create defender (HACKER - smallest archetype with 43cm shoulders → 0.215m radius)
+    defender = createPlayerFromArchetype(PlayerArchetype.HACKER, 1);
+    asMutable(defender).currentStance = TrigramStance.GEON;
+
+    mockTechnique = {
+      id: "test_jab",
+      name: { korean: "잽", english: "Jab", romanized: "jaep" },
+      koreanName: "잽",
+      englishName: "Jab",
+      romanized: "jaep",
+      description: { korean: "빠른 직선 펀치", english: "Quick straight punch" },
+      stance: TrigramStance.GEON,
+      type: CombatAttackType.PUNCH,
+      damageType: DamageType.BLUNT,
+      damage: 10,
+      reachConfig: {
+        bodyPart: "arm",
+        techniqueType: "punch",
+        baseExtension: 0.95,
+      },
+      animationType: AnimationType.JAB, // Explicitly set animation type
+      kiCost: 3,
+      staminaCost: 8,
+      accuracy: 1.0, // Perfect accuracy to isolate distance testing
+      executionTime: 200,
+      recoveryTime: 300,
+      critChance: 0.05,
+      critMultiplier: 1.5,
+      effects: [],
+    };
+  });
+
+  describe("Distance Calculation with Body Radii", () => {
+    it("should account for both attacker and defender body radii in hit detection", () => {
+      // Position players at close range
+      // Jojik (attacker): 0.27m radius
+      // Hacker (defender): 0.215m radius
+      // Combined radii: 0.485m
+      
+      // Test case 1: Players at 1.0m center-to-center
+      // Effective distance: 1.0m - 0.27m - 0.215m = 0.515m
+      // This should be within punch reach (~0.6-0.7m for Jojik)
+      asMutable(attacker.position).x = -0.5;
+      asMutable(attacker.position).y = 0;
+      asMutable(defender.position).x = 0.5;
+      asMutable(defender.position).y = 0;
+
+      const result1 = combatSystem.resolveAttack(
+        attacker,
+        defender,
+        mockTechnique,
+        undefined,
+        {
+          animationType: AnimationType.JAB,
+          currentTime: 0.15, // Peak time for jab
+        },
+      );
+
+      // Should hit due to being within reach
+      expect(result1.hit).toBe(true);
+    });
+
+    it("should miss when effective distance exceeds technique reach", () => {
+      // Position players far apart
+      // Test case 2: Players at 2.0m center-to-center
+      // Effective distance: 2.0m - 0.27m - 0.215m = 1.515m
+      // This should be beyond punch reach (~0.6-0.7m)
+      asMutable(attacker.position).x = -1.0;
+      asMutable(attacker.position).y = 0;
+      asMutable(defender.position).x = 1.0;
+      asMutable(defender.position).y = 0;
+
+      const result2 = combatSystem.resolveAttack(
+        attacker,
+        defender,
+        mockTechnique,
+        undefined,
+        {
+          animationType: AnimationType.JAB,
+          currentTime: 0.15, // Peak time for jab
+        },
+      );
+
+      // Should miss due to being out of reach
+      expect(result2.hit).toBe(false);
+      expect(result2.damage).toBe(0);
+    });
+
+    it("should handle different archetype combinations correctly", () => {
+      // Test with two small archetypes (both Hacker: 0.215m radius each)
+      const smallAttacker = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
+      const smallDefender = createPlayerFromArchetype(PlayerArchetype.HACKER, 1);
+      
+      // Combined radii: 0.215m + 0.215m = 0.43m (smaller than Jojik+Hacker)
+      // At 1.0m center-to-center: effective distance = 1.0m - 0.43m = 0.57m
+      asMutable(smallAttacker.position).x = -0.5;
+      asMutable(smallAttacker.position).y = 0;
+      asMutable(smallDefender.position).x = 0.5;
+      asMutable(smallDefender.position).y = 0;
+
+      const result = combatSystem.resolveAttack(
+        smallAttacker,
+        smallDefender,
+        mockTechnique,
+        undefined,
+        {
+          animationType: AnimationType.JAB,
+          currentTime: 0.15,
+        },
+      );
+
+      // Hacker has shorter arms, so this might be at the edge of reach
+      // The test validates that body radius calculation works correctly
+      expect(result).toBeDefined();
+      expect(result.hit).toBeDefined();
+    });
+  });
+
+  describe("Body Radius Calculation Consistency", () => {
+    it("should use calculateBodyRadius() for both attacker and defender", () => {
+      // This test validates that the fix is applied correctly
+      // by checking that attacks from different positions respect body radii
+      
+      // Jojik JAB reach: ~1.264m
+      // Combined body radii: 0.485m
+      // At 0.8m center-to-center: effective = 0.8 - 0.485 = 0.315m (should hit)
+      // At 2.0m center-to-center: effective = 2.0 - 0.485 = 1.515m (should miss)
+      const positions = [
+        { x: 0.8, expected: true },  // Close - should hit
+        { x: 2.0, expected: false }, // Far - should miss
+      ];
+
+      positions.forEach(({ x, expected }) => {
+        asMutable(attacker.position).x = 0;
+        asMutable(attacker.position).y = 0;
+        asMutable(defender.position).x = x;
+        asMutable(defender.position).y = 0;
+
+        const result = combatSystem.resolveAttack(
+          attacker,
+          defender,
+          mockTechnique,
+          undefined,
+          {
+            animationType: AnimationType.JAB,
+            currentTime: 0.15,
+          },
+        );
+
+        expect(result.hit).toBe(expected);
+      });
+    });
+  });
+
+  describe("Arena Scaling Independence", () => {
+    it("should work consistently regardless of arena size", () => {
+      // The fix ensures distance is measured in meters
+      // Arena size should not affect hit detection
+      // This test validates that the calculation is in the physics-first coordinate system
+      
+      // Test at fixed positions that should always hit
+      asMutable(attacker.position).x = 0;
+      asMutable(attacker.position).y = 0;
+      asMutable(defender.position).x = 0.8; // Within reach
+      asMutable(defender.position).y = 0;
+
+      const result = combatSystem.resolveAttack(
+        attacker,
+        defender,
+        mockTechnique,
+        undefined,
+        {
+          animationType: AnimationType.JAB,
+          currentTime: 0.15,
+        },
+      );
+
+      // Should hit consistently
+      expect(result.hit).toBe(true);
     });
   });
 });

@@ -317,17 +317,20 @@ export class CombatSystem implements CombatSystemInterface {
         [defender.position.x, defender.position.y, 0],
       );
 
-      // Calculate defender body radius based on their physical attributes
+      // Calculate body radii for both attacker and defender
       // Attacks hit the body surface, not the center point
       // 타격은 중심점이 아닌 몸체 표면에 적중
+      const attackerBodyRadius = calculateBodyRadius(attackerPhysical);
+      
       const defenderPhysical = getArchetypePhysicalAttributes(
         defender.archetype,
       );
       const defenderBodyRadius = calculateBodyRadius(defenderPhysical);
 
-      // Effective distance = center-to-center minus target body radius
-      // 유효 거리 = 중심간 거리 - 목표 몸체 반경
-      const distance = Math.max(0, centerToCenterDistance - defenderBodyRadius);
+      // Effective distance = center-to-center minus both body radii
+      // The attack originates from the attacker's body surface and lands on the defender's body surface
+      // 유효 거리 = 중심간 거리 - 공격자 몸체 반경 - 수비자 몸체 반경
+      const distance = Math.max(0, centerToCenterDistance - attackerBodyRadius - defenderBodyRadius);
 
       // If out of reach, miss
       if (distance > reachResult.effectiveReach) {
