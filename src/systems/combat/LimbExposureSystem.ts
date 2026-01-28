@@ -293,7 +293,7 @@ export function mapLimbToBreakingTarget(
  * @korean 파쇄기술효과계산
  */
 export function calculateBreakingResult(
-  breakingTechnique: KoreanTechnique,
+  _breakingTechnique: KoreanTechnique,
   counterOpportunity: CounterOpportunity,
   force: number
 ): BreakingResult {
