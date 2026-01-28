@@ -7,13 +7,16 @@
  * - Memoized geometries to prevent recreation on every render
  * - Memoized materials for consistent shading
  * - Minimal per-frame operations for 60fps target
+ * - Physics-based attack movement for realistic forward momentum
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { TrigramStance } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
+import { AttackMovementPhysics } from "../../../../systems/physics";
+import { AnimationType } from "../../../../systems/animation";
 
 /**
  * Props for TrainingAICharacter3D
@@ -25,6 +28,8 @@ export interface TrainingAICharacter3DProps {
   readonly stance: TrigramStance;
   /** Whether AI is currently attacking */
   readonly isAttacking?: boolean;
+  /** Animation type for current attack (used for forward movement) */
+  readonly attackAnimationType?: AnimationType;
   /** Health percentage (0-1) */
   readonly healthPercent?: number;
 }
@@ -49,18 +54,72 @@ function getStanceColor(stance: TrigramStance): number {
 
 /**
  * TrainingAICharacter3D Component
- * Renders the AI opponent with stance-based visual effects
+ * Renders the AI opponent with stance-based visual effects and attack movement
  */
 export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   position,
   stance,
   isAttacking = false,
+  attackAnimationType,
   healthPercent = 1.0,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
   const stanceAuraRef = useRef<THREE.Mesh>(null);
-  // Use state for attack offset since it's used in render
-  const [attackOffset, setAttackOffset] = useState(0);
+
+  // Attack movement physics
+  const attackPhysics = useMemo(() => new AttackMovementPhysics(), []);
+  const attackStartTimeRef = useRef<number | null>(null);
+  const originalPositionRef = useRef<THREE.Vector3 | null>(null);
+  const attackMovementResultRef = useRef<ReturnType<
+    typeof attackPhysics.calculateAttackMovement
+  > | null>(null);
+
+  // Track attack state changes
+  const wasAttackingRef = useRef(false);
+
+  // Initialize original position ref
+  useEffect(() => {
+    if (!originalPositionRef.current) {
+      originalPositionRef.current = new THREE.Vector3(...position);
+    }
+  }, []);
+
+  // Keep original position synced with external position while not attacking
+  useEffect(() => {
+    if (!isAttacking && originalPositionRef.current) {
+      originalPositionRef.current.set(...position);
+    }
+  }, [position, isAttacking]);
+
+  // Reset attack movement when attack starts
+  useEffect(() => {
+    if (isAttacking && !wasAttackingRef.current) {
+      // Attack just started - initialize movement
+      attackStartTimeRef.current = performance.now() / 1000;
+      if (originalPositionRef.current) {
+        originalPositionRef.current.set(...position);
+      }
+
+      // Calculate attack movement if we have animation type
+      if (attackAnimationType) {
+        const direction = new THREE.Vector3(0, 0, -1); // Forward toward player
+        attackMovementResultRef.current = attackPhysics.calculateAttackMovement(
+          {
+            animationType: attackAnimationType,
+            currentStance: stance,
+            direction,
+            animationDuration: 0.4, // Default 400ms animation
+          }
+        );
+      }
+    } else if (!isAttacking && wasAttackingRef.current) {
+      // Attack ended - clean up
+      attackStartTimeRef.current = null;
+      attackMovementResultRef.current = null;
+    }
+
+    wasAttackingRef.current = isAttacking;
+  }, [isAttacking, attackAnimationType, stance]);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -140,18 +199,47 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     const auraPulse = Math.sin(time * 3) * 0.1 + 0.9;
     stanceAuraRef.current.scale.setScalar(auraPulse);
 
-    // Attack animation with offset
-    if (isAttacking) {
-      setAttackOffset(Math.sin(time * 10) * 0.1);
-    } else {
-      setAttackOffset(0);
+    // Physics-based attack movement
+    if (
+      isAttacking &&
+      attackStartTimeRef.current !== null &&
+      attackMovementResultRef.current &&
+      originalPositionRef.current
+    ) {
+      const currentTime = performance.now() / 1000;
+      const elapsedTime = currentTime - attackStartTimeRef.current;
+      const result = attackMovementResultRef.current;
+
+      // Determine if in lunge or recovery phase
+      const isRecoveryPhase =
+        elapsedTime >= result.lungeDuration &&
+        elapsedTime < result.totalDuration;
+      const isInAttackMovement = elapsedTime < result.totalDuration;
+
+      if (isInAttackMovement) {
+        // Apply attack movement physics
+        const newPosition = attackPhysics.applyAttackMovement(
+          originalPositionRef.current,
+          result,
+          elapsedTime,
+          isRecoveryPhase
+        );
+
+        // Update group position
+        groupRef.current.position.copy(newPosition);
+      } else {
+        // Attack movement complete - return to original position
+        groupRef.current.position.copy(originalPositionRef.current);
+      }
+    } else if (!isAttacking && originalPositionRef.current) {
+      // Not attacking - stay at base position
+      groupRef.current.position.copy(originalPositionRef.current);
     }
   });
 
   return (
     <group
       ref={groupRef}
-      position={[position[0], position[1], position[2] + attackOffset]}
       name="training-ai-character-3d"
     >
       {/* Main body - capsule representing the AI fighter */}
