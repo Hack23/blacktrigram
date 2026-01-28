@@ -78,6 +78,7 @@ export interface UseTrainingActionsConfig {
     vitalPoint: string;
     animationType?: AnimationType;
     startTime?: number;
+    techniqueId?: string;
   } | null>;
   /** Currently selected technique ID (from technique bar) */
   readonly selectedTechniqueId?: string;
@@ -329,9 +330,13 @@ export function useTrainingActions(
       const animationType = pendingAttackRef.current?.animationType;
 
       // Get technique's reachConfig for accurate reach calculation
+      // Use techniqueId from pendingAttackRef (resolved in handleAttack) or selectedTechniqueId
+      // This ensures default techniques (chosen when no explicit selection) also get their reachConfig
       let reachConfig: import("../../../../types/physics").PhysicalReachConfig | undefined;
-      if (selectedTechniqueId) {
-        const technique = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
+      const pendingTechniqueId =
+        pendingAttackRef.current?.techniqueId ?? selectedTechniqueId;
+      if (pendingTechniqueId) {
+        const technique = KoreanTechniquesSystem.getTechniqueById(pendingTechniqueId);
         reachConfig = technique?.reachConfig;
       }
 
@@ -488,6 +493,7 @@ export function useTrainingActions(
       vitalPoint: state.selectedVitalPoint ?? "generic",
       animationType,
       startTime,
+      techniqueId, // Store resolved technique ID for handleDummyHit
     };
 
     // Set visual attack animation based on technique (AnimationRegistry lookup)
