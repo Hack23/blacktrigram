@@ -324,11 +324,11 @@ const SingleBone: React.FC<{
       const positionLength = Math.sqrt(x * x + y * y + z * z);
       if (positionLength > 0.001) {
         // Manually normalize to get a stable direction vector
-        const target = new THREE.Vector3(
-          x / positionLength,
-          y / positionLength,
-          z / positionLength,
-        );
+        const targetX = x / positionLength;
+        const targetY = y / positionLength;
+        const targetZ = z / positionLength;
+        const target = new THREE.Vector3(targetX, targetY, targetZ);
+
         // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
@@ -338,7 +338,11 @@ const SingleBone: React.FC<{
 
         // Calculate offset in the direction toward parent (negative of bone direction)
         // This positions the capsule to connect parent → this bone
-        offset = target.clone().multiplyScalar(-length / 2);
+        offset = new THREE.Vector3(
+          (-targetX * length) / 2,
+          (-targetY * length) / 2,
+          (-targetZ * length) / 2,
+        );
       }
     }
 
