@@ -1,6 +1,6 @@
 import { COMBAT_CONTROLS } from "@/systems/types";
 import type { Position } from "@/types/common";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
@@ -192,26 +192,33 @@ export function usePlayerMovement(
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Track arena bounds changes and compute ArenaBounds once
-  const arenaBoundsRef = useRef<ArenaBounds | undefined>(undefined);
-  useEffect(() => {
-    // Compute arena bounds once when bounds dimensions change
-    if (bounds?.worldWidthMeters && bounds?.worldDepthMeters) {
-      arenaBoundsRef.current = calculateArenaBounds(
-        {
-          worldWidthMeters: bounds.worldWidthMeters,
-          worldDepthMeters: bounds.worldDepthMeters,
-        },
-        0.3 // 0.3m character radius
-      );
-    } else {
-      arenaBoundsRef.current = undefined;
+  // Compute arena bounds synchronously when bounds dimensions change
+  // Uses useMemo to ensure bounds are available immediately (not after effect runs)
+  const arenaBounds = useMemo<ArenaBounds | undefined>(() => {
+    if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
+      try {
+        return calculateArenaBounds(
+          {
+            worldWidthMeters: bounds.worldWidthMeters,
+            worldDepthMeters: bounds.worldDepthMeters,
+          },
+          0.3 // 0.3m character radius
+        );
+      } catch (error) {
+        // If validation fails, log error and return undefined (no bounds)
+        console.warn('Failed to calculate arena bounds:', error);
+        return undefined;
+      }
     }
-    // Legacy: Update physics engine arena width (deprecated method)
-    if (physicsEngineRef.current && bounds?.worldWidthMeters) {
+    return undefined;
+  }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+
+  // Update physics engine arena width when bounds change (legacy)
+  useEffect(() => {
+    if (physicsEngineRef.current && bounds?.worldWidthMeters != null) {
       physicsEngineRef.current.setArenaWidth(bounds.worldWidthMeters);
     }
-  }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+  }, [bounds?.worldWidthMeters]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -403,12 +410,12 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
-      // Use pre-computed arena bounds from ref (calculated once per bounds change)
+      // Use arena bounds computed via useMemo (available synchronously)
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
-        arenaBoundsRef.current, // Use cached bounds
+        arenaBounds, // Use memoized bounds
       );
 
       // Position in meters (x = lateral, y = forward/backward)

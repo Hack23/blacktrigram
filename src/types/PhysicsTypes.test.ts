@@ -8,12 +8,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import * as THREE from 'three';
 import {
-  ArenaBounds,
-  PhysicsArenaBounds,
   calculateArenaBounds,
   clampPositionToBounds,
   isPositionInBounds,
   clampToArenaBounds,
+} from './PhysicsTypes';
+import type {
+  ArenaBounds,
+  PhysicsArenaBounds,
 } from './PhysicsTypes';
 
 describe('PhysicsTypes - Arena Bounds', () => {
@@ -309,6 +311,17 @@ describe('PhysicsTypes - Arena Bounds', () => {
       
       const outsidePosition = { x: 6, y: 0 }; // Outside X boundary
       expect(isPositionInBounds(outsidePosition, bounds)).toBe(false);
+    });
+
+    it('should work with Position3D object {x, y, z}', () => {
+      const position = { x: 2, y: 1.8, z: 1 }; // Plain object with x, y, z
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+      
+      const outsidePosition = { x: 6, y: 0, z: 0 }; // Outside X boundary
+      expect(isPositionInBounds(outsidePosition, bounds)).toBe(false);
+      
+      const outsideDepth = { x: 0, y: 1.8, z: 5 }; // Outside Z boundary
+      expect(isPositionInBounds(outsideDepth, bounds)).toBe(false);
     });
 
     it('should ignore Y axis (height)', () => {

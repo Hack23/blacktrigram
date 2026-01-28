@@ -493,20 +493,22 @@ function createBenchmarkPlayerState(): PlayerState {
 }
 
 describe("Arena Bounds Performance", () => {
+  // Setup shared objects outside bench to avoid measuring allocation overhead
+  const physics = new MovementPhysics();
+  const bounds = {
+    minX: -4.7,
+    maxX: 4.7,
+    minZ: -3.45,
+    maxZ: 3.45,
+    centerX: 0,
+    centerZ: 0,
+    widthMeters: 10,
+    depthMeters: 7.5,
+  };
+
   bench(
     "Movement with arena bounds validation",
     () => {
-      const physics = new MovementPhysics();
-      const bounds = {
-        minX: -4.7,
-        maxX: 4.7,
-        minZ: -3.45,
-        maxZ: 3.45,
-        centerX: 0,
-        centerZ: 0,
-        widthMeters: 10,
-        depthMeters: 7.5,
-      };
       const state: MovementState = {
         position: new THREE.Vector3(0, 0, 0),
         velocity: new THREE.Vector3(0, 0, 0),
@@ -531,17 +533,6 @@ describe("Arena Bounds Performance", () => {
   bench(
     "Boundary collision handling",
     () => {
-      const physics = new MovementPhysics();
-      const bounds = {
-        minX: -4.7,
-        maxX: 4.7,
-        minZ: -3.45,
-        maxZ: 3.45,
-        centerX: 0,
-        centerZ: 0,
-        widthMeters: 10,
-        depthMeters: 7.5,
-      };
       const state: MovementState = {
         position: new THREE.Vector3(4.5, 0, 0), // Near boundary
         velocity: new THREE.Vector3(2, 0, 0), // Moving toward boundary
@@ -566,17 +557,6 @@ describe("Arena Bounds Performance", () => {
   bench(
     "Corner collision handling",
     () => {
-      const physics = new MovementPhysics();
-      const bounds = {
-        minX: -4.7,
-        maxX: 4.7,
-        minZ: -3.45,
-        maxZ: 3.45,
-        centerX: 0,
-        centerZ: 0,
-        widthMeters: 10,
-        depthMeters: 7.5,
-      };
       const state: MovementState = {
         position: new THREE.Vector3(4.5, 0, 3.2), // Near corner
         velocity: new THREE.Vector3(2, 0, 2), // Moving toward corner
