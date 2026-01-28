@@ -209,6 +209,7 @@ vi.mock("three", () => ({
   MeshBasicMaterial: class MockMeshBasicMaterial {
     dispose() {}
   },
+  FrontSide: 0,
   DoubleSide: 2,
   Color: class MockColor {
     constructor(public color?: number | string) {}
