@@ -134,7 +134,7 @@ export const Foot3D: React.FC<Foot3DProps> = ({
         emissive: new THREE.Color(footColor),
         emissiveIntensity: isHighlighted ? 0.3 : 0.02,
       }),
-    [footColor, isHighlighted]
+    [footColor, isHighlighted],
   );
 
   // Dispose skin material on unmount to prevent memory leaks
@@ -146,9 +146,13 @@ export const Foot3D: React.FC<Foot3DProps> = ({
 
   return (
     <group name={`foot-3d-${side}`}>
-      {/* Main heel/midfoot body */}
+      {/* Main heel/midfoot body - positioned below ankle (Y=0 at ankle) */}
       <mesh
-        position={[0, -footDimensions.footHeight / 2, 0]}
+        position={[
+          0,
+          -footDimensions.footHeight * 0.4,
+          footDimensions.heelLength * 0.2,
+        ]}
         castShadow
         receiveShadow
         name={`foot-heel-${side}`}
@@ -167,8 +171,8 @@ export const Foot3D: React.FC<Foot3DProps> = ({
       <mesh
         position={[
           0,
-          -footDimensions.footHeight / 2 + footDimensions.toeHeight * 0.2,
-          footDimensions.heelLength / 2 + footDimensions.toeLength / 2,
+          -footDimensions.footHeight * 0.35 + footDimensions.toeHeight * 0.2,
+          footDimensions.heelLength * 0.7 + footDimensions.toeLength / 2,
         ]}
         castShadow
         receiveShadow
@@ -185,12 +189,8 @@ export const Foot3D: React.FC<Foot3DProps> = ({
       </mesh>
 
       {/* Ankle connection point indicator (small sphere for visual continuity) */}
-      <mesh
-        position={[0, 0, -footDimensions.heelLength * 0.3]}
-        castShadow
-        name={`foot-ankle-${side}`}
-      >
-        <sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} />
+      <mesh position={[0, 0, 0]} castShadow name={`foot-ankle-${side}`}>
+        <sphereGeometry args={[footDimensions.footHeight * 0.5, 8, 8]} />
         <primitive object={skinMaterial} attach="material" />
       </mesh>
     </group>

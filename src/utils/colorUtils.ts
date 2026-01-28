@@ -29,7 +29,7 @@ export function darkenColor(color: number, amount: number = 0.1): number {
   return rgbToHex(
     Math.floor(r * factor),
     Math.floor(g * factor),
-    Math.floor(b * factor)
+    Math.floor(b * factor),
   );
 }
 
@@ -43,7 +43,7 @@ export function lightenColor(color: number, amount: number = 0.1): number {
   return rgbToHex(
     Math.min(255, Math.floor(r + (255 - r) * factor)),
     Math.min(255, Math.floor(g + (255 - g) * factor)),
-    Math.min(255, Math.floor(b + (255 - b) * factor))
+    Math.min(255, Math.floor(b + (255 - b) * factor)),
   );
 }
 
@@ -63,16 +63,16 @@ export function getArchetypeColors(archetype: PlayerArchetype): {
       secondary: KOREAN_COLORS.SECONDARY_BROWN_DARK, // Fix: Use SECONDARY_BROWN_DARK
     },
     amsalja: {
-      primary: KOREAN_COLORS.PRIMARY_RED, // Fix: Use PRIMARY_RED instead of PRIMARY_PURPLE
-      secondary: KOREAN_COLORS.UI_STEEL_GRAY,
+      primary: KOREAN_COLORS.PRIMARY_CYAN, // Stealth assassin - cyan theme
+      secondary: KOREAN_COLORS.KOREAN_BLACK,
     },
     hacker: {
-      primary: KOREAN_COLORS.PRIMARY_CYAN,
-      secondary: KOREAN_COLORS.ACCENT_BLUE,
+      primary: KOREAN_COLORS.SECONDARY_PURPLE, // Cyber hacker - purple theme
+      secondary: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
     },
     jeongbo_yowon: {
-      primary: KOREAN_COLORS.POSITIVE_GREEN,
-      secondary: KOREAN_COLORS.UI_STEEL_GRAY_DARK,
+      primary: KOREAN_COLORS.ACCENT_BLUE, // Intelligence operative - blue tactical theme
+      secondary: KOREAN_COLORS.UI_BACKGROUND_DARK,
     },
     jojik_pokryeokbae: {
       primary: KOREAN_COLORS.ACCENT_RED,
@@ -94,7 +94,7 @@ export function getArchetypeColors(archetype: PlayerArchetype): {
 export function interpolateColor(
   color1: number,
   color2: number,
-  factor: number
+  factor: number,
 ): number {
   const rgb1 = hexToRgb(color1);
   const rgb2 = hexToRgb(color2);
@@ -157,7 +157,7 @@ export function hexToRgbaString(hex: number, alpha: number = 1): string {
  * toHex(KOREAN_COLORS.PRIMARY_CYAN) // "00ffff"
  */
 export function toHex(color: number): string {
-  return color.toString(16).padStart(6, '0');
+  return color.toString(16).padStart(6, "0");
 }
 
 /**
@@ -169,7 +169,105 @@ export function toHex(color: number): string {
  * hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN) // "#00ffff"
  */
 export function hexColorToCSS(color: number): string {
-  return `#${color.toString(16).padStart(6, '0')}`;
+  return `#${color.toString(16).padStart(6, "0")}`;
+}
+
+/**
+ * Skin tone definitions for archetype visual differentiation
+ *
+ * **Korean**: 원형별 피부색 (Archetype Skin Tones)
+ *
+ * Each archetype has a unique skin tone that reflects their
+ * background and lifestyle:
+ * - MUSA: Healthy tan from outdoor training
+ * - AMSALJA: Pale from stealth operations in darkness
+ * - HACKER: Slightly pale from indoor tech work
+ * - JEONGBO_YOWON: Natural healthy tone
+ * - JOJIK_POKRYEOKBAE: Weathered from street life
+ *
+ * @korean 원형피부색
+ */
+const ARCHETYPE_SKIN_TONES: Record<PlayerArchetype, number> = {
+  musa: 0xdbb896, // Healthy tan - outdoor military training
+  amsalja: 0xe8d4c4, // Pale complexion - stealth operative
+  hacker: 0xf0d8c8, // Light skin - indoor tech work
+  jeongbo_yowon: 0xe0c4a8, // Natural healthy tone - government operative
+  jojik_pokryeokbae: 0xc8a882, // Weathered tan - street fighter
+};
+
+/**
+ * Get skin tone color for archetype
+ *
+ * **Korean**: 원형 피부색 가져오기 (Get Archetype Skin Tone)
+ *
+ * Returns the skin tone color appropriate for the character's
+ * background and lifestyle. Used for body, face, and exposed skin.
+ *
+ * @param archetype - Player archetype
+ * @returns Skin tone color as hex number
+ *
+ * @example
+ * ```typescript
+ * const skinColor = getArchetypeSkinTone(PlayerArchetype.MUSA);
+ * // Returns: 0xdbb896 (healthy tan)
+ * ```
+ *
+ * @korean 원형피부색가져오기
+ */
+export function getArchetypeSkinTone(archetype: PlayerArchetype): number {
+  return ARCHETYPE_SKIN_TONES[archetype] ?? KOREAN_COLORS.SKIN_TONE;
+}
+
+/**
+ * Get extended archetype visual properties
+ *
+ * **Korean**: 원형 시각 속성 (Archetype Visual Properties)
+ *
+ * Returns comprehensive visual properties for an archetype including:
+ * - Primary and secondary colors (from clothing theme)
+ * - Skin tone color
+ * - Emissive accent color for glow effects
+ * - Material properties (metalness, roughness)
+ *
+ * @param archetype - Player archetype
+ * @returns Extended visual properties object
+ *
+ * @korean 원형시각속성
+ */
+export function getArchetypeVisualProperties(archetype: PlayerArchetype): {
+  readonly primary: number;
+  readonly secondary: number;
+  readonly skinTone: number;
+  readonly emissive: number;
+  readonly emissiveIntensity: number;
+} {
+  const colors = getArchetypeColors(archetype);
+  const skinTone = getArchetypeSkinTone(archetype);
+
+  // Emissive colors based on archetype theme
+  const emissiveMap: Record<
+    PlayerArchetype,
+    { color: number; intensity: number }
+  > = {
+    musa: { color: KOREAN_COLORS.ACCENT_GOLD, intensity: 0.1 },
+    amsalja: { color: KOREAN_COLORS.PRIMARY_CYAN, intensity: 0.3 },
+    hacker: { color: KOREAN_COLORS.SECONDARY_PURPLE, intensity: 0.25 },
+    jeongbo_yowon: { color: KOREAN_COLORS.ACCENT_BLUE, intensity: 0.15 },
+    jojik_pokryeokbae: { color: KOREAN_COLORS.ACCENT_RED, intensity: 0.2 },
+  };
+
+  const emissiveProps = emissiveMap[archetype] ?? {
+    color: 0x000000,
+    intensity: 0,
+  };
+
+  return {
+    primary: colors.primary,
+    secondary: colors.secondary,
+    skinTone,
+    emissive: emissiveProps.color,
+    emissiveIntensity: emissiveProps.intensity,
+  };
 }
 
 // DO NOT ADD ANY MORE FUNCTIONS BELOW THIS LINE

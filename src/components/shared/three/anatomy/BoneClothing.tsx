@@ -30,9 +30,27 @@
 
 import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
+import {
+  BICEP_RADIUS,
+  CALF_RADIUS,
+  CLOTHING_THICKNESS_FITTED,
+  CORE_RADIUS,
+  FOREARM_RADIUS,
+  PECTORALS_RADIUS,
+  QUAD_RADIUS,
+  calculateClothingRadius,
+} from "../../../../constants/bodyDimensions";
 import { getArchetypeClothing } from "../../../../data/archetypeClothing";
-import type { ClothingItem } from "../../../../types/clothing";
+import type {
+  ClothingItem,
+  ClothingMaterial,
+} from "../../../../types/clothing";
 import type { PlayerArchetype } from "../../../../types/common";
+import {
+  FABRIC_PRESETS,
+  generateFabricTextureSet,
+  type FabricTextureSet,
+} from "../../../../utils/fabricTextures";
 
 /**
  * Clothing attachment configuration for a bone
@@ -96,6 +114,35 @@ const calculateBodyThickness = (
   const fatRatio = fatMass / referenceFat;
   const fatContribution = Math.sqrt(fatRatio) * 0.3;
   return muscleContribution + fatContribution;
+};
+
+/**
+ * Get fabric preset based on clothing material type
+ */
+const getFabricPreset = (
+  material: ClothingMaterial,
+): keyof typeof FABRIC_PRESETS => {
+  switch (material) {
+    case "fabric":
+      return "dobok";
+    case "tactical":
+    case "synthetic":
+      return "tactical";
+    case "leather":
+    case "armored":
+      return "leather";
+    case "cybernetic":
+      return "silk"; // Shiny synthetic look
+    default:
+      return "dobok";
+  }
+};
+
+/**
+ * Convert number color to hex string
+ */
+const numberToHex = (color: number): string => {
+  return `#${color.toString(16).padStart(6, "0")}`;
 };
 
 /**
@@ -171,11 +218,15 @@ const getAttachmentsForItem = (
         const width =
           (physicalAttributes.shoulderWidth / 100) * fitScale * bodyThickness;
         const height = (59 / 100) * torsoScale * 1.2; // Using base torsoLength
-        const depth = 0.22 * fitScale * bodyThickness;
+        const depth = 0.08 * fitScale * bodyThickness; // Thin clothing layer
 
+        // Clothing offset = body radius + clothing half-depth (places clothing OUTSIDE body)
+        // Uses centralized PECTORALS_RADIUS from bodyDimensions
+        const bodyRadius = PECTORALS_RADIUS * bodyThickness;
+        const clothingOffset = bodyRadius + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, 0.04 * bodyThickness),
+          localOffset: new THREE.Vector3(0, 0, clothingOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -188,12 +239,19 @@ const getAttachmentsForItem = (
 
       // Sleeves
       if (boneName === "upper_arm_L" || boneName === "upper_arm_R") {
-        const armThickness = 0.08 * fitScale * bodyThickness;
+        // Uses centralized BICEP_RADIUS from bodyDimensions
+        // Clothing wraps around muscle, so offset outward
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
+        const clothingRadius = calculateClothingRadius(
+          BICEP_RADIUS,
+          bodyThickness,
+          clothingThickness,
+        );
         const upperArmLength = (physicalAttributes.armLength / 100) * 0.45;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            armThickness * 1.1,
-            armThickness * 0.95,
+            clothingRadius * 1.05, // Slightly larger at top
+            clothingRadius * 0.95, // Tapers slightly
             upperArmLength,
             12,
           ),
@@ -209,12 +267,19 @@ const getAttachmentsForItem = (
       }
 
       if (boneName === "forearm_L" || boneName === "forearm_R") {
-        const armThickness = 0.08 * fitScale * bodyThickness;
+        // Uses centralized FOREARM_RADIUS from bodyDimensions
+        // Clothing must be OUTSIDE, so use larger radius
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale * 0.8;
+        const clothingRadius = calculateClothingRadius(
+          FOREARM_RADIUS,
+          bodyThickness,
+          clothingThickness,
+        );
         const forearmLength = (physicalAttributes.armLength / 100) * 0.4;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            armThickness * 0.95,
-            armThickness * 0.85,
+            clothingRadius * 0.98, // Slightly smaller at top
+            clothingRadius * 0.85, // Tapers toward wrist
             forearmLength,
             12,
           ),
@@ -233,13 +298,20 @@ const getAttachmentsForItem = (
     case "pants":
       // Thigh segments
       if (boneName === "thigh_L" || boneName === "thigh_R") {
-        const legThickness = 0.1 * fitScale * bodyThickness;
+        // Uses centralized QUAD_RADIUS from bodyDimensions
+        // Clothing wraps around muscle, so offset outward
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale * 1.3;
+        const clothingRadius = calculateClothingRadius(
+          QUAD_RADIUS,
+          bodyThickness,
+          clothingThickness,
+        );
         const thighLength =
           (physicalAttributes.legLength / 100) * legScale * 0.45;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            legThickness * 1.15,
-            legThickness * 0.95,
+            clothingRadius * 1.08, // Larger at hip
+            clothingRadius * 0.92, // Tapers toward knee
             thighLength,
             16,
           ),
@@ -256,13 +328,20 @@ const getAttachmentsForItem = (
 
       // Shin segments
       if (boneName === "shin_L" || boneName === "shin_R") {
-        const legThickness = 0.1 * fitScale * bodyThickness;
+        // Uses centralized CALF_RADIUS from bodyDimensions
+        // Clothing must be OUTSIDE, so use larger radius
+        const clothingThickness = CLOTHING_THICKNESS_FITTED * fitScale;
+        const clothingRadius = calculateClothingRadius(
+          CALF_RADIUS,
+          bodyThickness,
+          clothingThickness,
+        );
         const shinLength =
           (physicalAttributes.legLength / 100) * legScale * 0.42;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            legThickness * 0.95,
-            legThickness * 0.8,
+            clothingRadius * 0.95, // Larger at knee
+            clothingRadius * 0.75, // Tapers toward ankle
             shinLength,
             16,
           ),
@@ -282,10 +361,14 @@ const getAttachmentsForItem = (
       if (boneName === "pelvis") {
         const beltWidth =
           (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
-        const beltDepth = 0.18 * bodyThickness;
+        const beltDepth = 0.04 * bodyThickness; // Thin belt
+
+        // Belt offset = core radius (from bodyDimensions) + belt half-depth
+        const waistRadius = CORE_RADIUS * bodyThickness;
+        const beltOffset = waistRadius + beltDepth * 0.5;
         attachments.push({
-          geometry: new THREE.BoxGeometry(beltWidth, 0.1, beltDepth),
-          localOffset: new THREE.Vector3(0, 0, 0.04 * bodyThickness),
+          geometry: new THREE.BoxGeometry(beltWidth, 0.06, beltDepth),
+          localOffset: new THREE.Vector3(0, 0, beltOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -305,10 +388,15 @@ const getAttachmentsForItem = (
           fitScale *
           bodyThickness;
         const height = (59 / 100) * 0.75 * torsoScale;
-        const depth = 0.2 * fitScale * bodyThickness;
+        const depth = 0.06 * fitScale * bodyThickness; // Thin vest layer
+
+        // Vest offset = pectorals radius (from bodyDimensions) + vest half-depth
+        // Slightly larger for layered look
+        const bodyRadius = (PECTORALS_RADIUS + 0.01) * bodyThickness;
+        const vestOffset = bodyRadius + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, 0.06 * bodyThickness),
+          localOffset: new THREE.Vector3(0, 0, vestOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -357,10 +445,52 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     [boneName, archetype, attrs],
   );
 
+  // Get clothing set for fabric texture generation
+  const clothingSet = useMemo(
+    () => getArchetypeClothing(archetype),
+    [archetype],
+  );
+
+  /**
+   * Generate fabric textures for realistic dobok (도복) rendering
+   *
+   * Creates procedural weave patterns, normal maps, and roughness maps
+   * for enhanced cloth realism without external image assets.
+   *
+   * @korean 직물텍스처생성
+   */
+  const fabricTextures = useMemo(() => {
+    // Generate textures for each unique clothing item
+    const textureMap = new Map<string, FabricTextureSet>();
+
+    for (const item of clothingSet.items) {
+      if (!textureMap.has(item.material)) {
+        const preset = getFabricPreset(item.material);
+        const colorHex = numberToHex(item.colorPrimary);
+        textureMap.set(
+          item.material,
+          generateFabricTextureSet(colorHex, preset),
+        );
+      }
+    }
+
+    return textureMap;
+  }, [clothingSet]);
+
+  // Cleanup fabric textures on unmount
+  useEffect(() => {
+    return () => {
+      fabricTextures.forEach((textureSet) => textureSet.dispose());
+    };
+  }, [fabricTextures]);
+
   /**
    * Create materials with advanced physical properties for realistic cloth rendering
    *
    * Enhanced with:
+   * - **Fabric textures**: Procedural weave patterns for dobok authenticity
+   * - **Normal maps**: Surface detail for thread texture visibility
+   * - **Roughness maps**: Realistic light scattering on fabric surface
    * - Subsurface scattering: Light transmission through fabric for realism
    * - Clearcoat: Surface depth and sheen for material quality
    * - Double-sided rendering: Proper display when cloth folds
@@ -370,28 +500,50 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
    */
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
+      // Find the clothing item for this attachment to get its material type
+      const clothingItem = clothingSet.items.find((item) =>
+        attachment.itemId.startsWith(item.id),
+      );
+      const materialType = clothingItem?.material ?? "fabric";
+      const textureSet = fabricTextures.get(materialType);
+
+      // Create normal scale safely (Vector2 may not be available in test environments)
+      let normalScale: THREE.Vector2 | undefined;
+      try {
+        normalScale = new THREE.Vector2(0.3, 0.3);
+      } catch {
+        normalScale = undefined;
+      }
+
       const mat = new THREE.MeshPhysicalMaterial({
         color: attachment.color,
+        // Apply fabric texture maps for realistic dobok appearance
+        map: textureSet?.colorMap ?? null,
+        normalMap: textureSet?.normalMap ?? null,
+        normalScale, // Subtle normal effect
+        roughnessMap: textureSet?.roughnessMap ?? null,
         emissive: attachment.emissiveColor ?? 0x000000,
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
-        metalness: attachment.metalness ?? 0.3,
-        roughness: attachment.roughness ?? 0.7,
+        metalness: attachment.metalness ?? 0.1, // Lower metalness for fabric
+        roughness: attachment.roughness ?? 0.8, // Higher roughness for cloth
         // Enhanced cloth realism with clearcoat for depth
-        clearcoat: 0.3,
-        clearcoatRoughness: 0.5,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.6,
         // Subsurface scattering for realistic fabric translucency
         // Subtle effect for cloth materials (not skin)
-        transmission: 0.05, // Minimal light transmission through fabric
-        thickness: 0.2, // Thin fabric thickness
+        transmission: 0.03, // Minimal light transmission through fabric
+        thickness: 0.15, // Thin fabric thickness
         ior: 1.4, // Index of refraction for fabric (lower than glass)
         // Enable proper reflections
-        reflectivity: 0.3,
+        reflectivity: 0.2,
         // Double-sided rendering for cloth that may fold
         side: THREE.DoubleSide,
+        // Improved shading for folds
+        flatShading: false,
       });
       return mat;
     });
-  }, [attachments]);
+  }, [attachments, clothingSet, fabricTextures]);
 
   // Cleanup materials on unmount
   useEffect(() => {

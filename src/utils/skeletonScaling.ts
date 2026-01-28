@@ -45,6 +45,10 @@
 
 import { PhysicalAttributes } from "@/types";
 import { BoneName } from "@/types/skeletal";
+import {
+  amplifyScaling,
+  REFERENCE_ATTRIBUTES as BODY_REFERENCE_ATTRIBUTES,
+} from "../constants/bodyRenderingConstants";
 
 /**
  * Bone scaling factors for each body region.
@@ -79,42 +83,50 @@ export interface BoneScalingFactors {
 }
 
 /**
- * Base bone dimensions in centimeters (from SkeletonRig.ts).
+ * Anatomically correct bone dimensions in centimeters.
  *
- * **Korean**: 기본 뼈 치수 (Base Bone Dimensions)
+ * **Korean**: 해부학적 뼈 치수 (Anatomical Bone Dimensions)
  *
- * These are the default bone lengths used in createHumanoidRig().
- * Scaling factors are applied to these baseline values.
+ * These are anatomically accurate bone lengths based on human proportions.
+ * For a 178cm reference height, these values create a realistic skeleton.
+ *
+ * Reference: Human body proportions (8-head canon)
+ * - Head: ~12.5% of height (22cm)
+ * - Neck: ~5.5% of height (10cm)
+ * - Torso: ~33% of height (59cm / 3 segments = 20cm each)
+ * - Legs: ~48% of height (85cm total)
+ * - Thigh: ~55% of leg length (47cm)
+ * - Shin: ~45% of leg length (38cm)
  *
  * @internal
  * @korean 기본뼈치수
  */
 const BASE_BONE_DIMENSIONS = {
   // Head region
-  head: 20, // Head bone length in cm
-  neck: 10, // Neck bone length in cm
+  head: 22, // Head bone length in cm (12.5% of 178cm)
+  neck: 10, // Neck bone length in cm (5.5% of 178cm)
 
-  // Torso region
-  spineLower: 20, // Lower spine segment
-  spineMiddle: 20, // Middle spine segment
-  spineUpper: 20, // Upper spine segment
-  pelvis: 15, // Pelvis/root bone
+  // Torso region - Total torso ~59cm for 178cm person (33%)
+  spineLower: 20, // Lower spine segment (lumbar)
+  spineMiddle: 20, // Middle spine segment (thoracic)
+  spineUpper: 19, // Upper spine segment (upper thoracic)
+  pelvis: 8, // Pelvis/root bone height (~4.5% of height)
 
-  // Arm region (one side)
-  shoulder: 10, // Shoulder bone
-  upperArm: 25, // Upper arm (shoulder to elbow)
-  forearm: 25, // Forearm (elbow to wrist)
-  hand: 8, // Hand length
+  // Arm region (one side) - Total arm ~75cm for 178cm (42% of height)
+  shoulder: 12, // Shoulder/clavicle bone (~6.5% of height)
+  upperArm: 32, // Upper arm (shoulder to elbow) - ~55% of arm
+  forearm: 27, // Forearm (elbow to wrist) - ~45% of arm (including wrist)
+  hand: 19, // Hand length (~10.5% of height)
 
-  // Leg region (one side)
-  hip: 10, // Hip joint
-  thigh: 30, // Thigh (hip to knee)
-  shin: 30, // Shin (knee to ankle)
-  foot: 15, // Foot length
+  // Leg region (one side) - Total leg ~95cm for 178cm (53% of height)
+  hip: 10, // Hip joint height
+  thigh: 48, // Thigh (hip to knee) - ~55% of leg length
+  shin: 40, // Shin (knee to ankle) - ~45% of leg length
+  foot: 5, // Foot/ankle height (ground to ankle)
 
   // Width measurements
-  shoulderWidth: 30, // Distance between shoulders (total span / 2)
-  hipWidth: 20, // Distance between hips
+  shoulderWidth: 43, // Total shoulder width (half = 21.5cm offset)
+  hipWidth: 30, // Total hip width (half = 15cm offset)
 } as const;
 
 /**
@@ -126,64 +138,16 @@ const BASE_BONE_DIMENSIONS = {
  * skeleton rig is designed for. Scaling is calculated relative to
  * these reference values.
  *
+ * Uses centralized REFERENCE_ATTRIBUTES from bodyRenderingConstants.
+ *
  * @internal
  * @korean 기준신체속성
  */
 const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
-  weight: 75,
-  legLength: 95,
-  armLength: 75,
-  muscleMass: 35,
-  fatMass: 12,
-  age: 30,
-  totalHeight: 178,
-  torsoLength: 58,
-  headSize: 22,
-  neckLength: 10,
-  shoulderWidth: 43,
-  walkSpeed: 6.0,
-  runSpeed: 9.5,
-  acceleration: 12.0,
+  ...BODY_REFERENCE_ATTRIBUTES,
 };
 
-/**
- * Visual amplification factor for more noticeable archetype differences.
- *
- * **Korean**: 시각적 증폭 계수 (Visual Amplification Factor)
- *
- * Raw physical attribute differences are subtle (2-12%). This factor
- * amplifies the visual scaling to make archetype body differences more
- * apparent while keeping proportions realistic.
- *
- * Increased from 2.0 to 2.5 for more distinct visual silhouettes:
- * - Limb/torso scaling: 5% raw difference → 12.5% visual difference
- * - Combined with shoulder amplification (1.15x), creates noticeable silhouettes
- * - Absolute differences amplified while maintaining proportional relationships
- *
- * Note: Percentage differences remain constant, but absolute differences
- * are amplified (e.g., Jojik 54cm vs Hacker 43cm = 11cm gap → 12.6cm visual gap)
- *
- * @internal
- * @korean 시각적증폭계수
- */
-const VISUAL_AMPLIFICATION_FACTOR = 2.5;
-
-/**
- * Apply visual amplification to a scaling factor.
- *
- * Amplifies deviations from 1.0 to make differences more visible.
- * For example, with 2x amplification:
- * - 1.05 becomes 1.10 (5% → 10%)
- * - 0.95 becomes 0.90 (5% → 10%)
- *
- * @param rawFactor - Raw scaling factor (1.0 = reference)
- * @returns Amplified scaling factor
- * @korean 시각적증폭적용
- */
-function amplifyScaling(rawFactor: number): number {
-  const deviation = rawFactor - 1.0;
-  return 1.0 + deviation * VISUAL_AMPLIFICATION_FACTOR;
-}
+// VISUAL_AMPLIFICATION_FACTOR and amplifyScaling imported from bodyRenderingConstants
 
 /**
  * Calculate bone scaling factors from physical attributes.

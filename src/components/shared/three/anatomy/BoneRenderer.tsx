@@ -12,6 +12,10 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
+import {
+  BASE_BONE_RADIUS_RATIO,
+  calculateBoneThickness,
+} from "../../../../constants/bodyRenderingConstants";
 import type { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
@@ -26,67 +30,6 @@ import { BoneClothing } from "./BoneClothing";
 import Face3D from "./Face3D";
 import Foot3D from "./Foot3D";
 import Hand3D from "./Hand3D";
-
-/**
- * Visual amplification factor for bone thickness.
- *
- * Amplifies the visual difference between lean and muscular archetypes
- * for more noticeable body type distinction.
- *
- * @korean 뼈두께시각적증폭계수
- */
-const THICKNESS_AMPLIFICATION_FACTOR = 2.0;
-
-/**
- * Calculate bone thickness multiplier based on physical attributes
- *
- * Maps muscle mass and fat mass to bone thickness scaling for visual appearance.
- * Higher muscle mass = thicker bones (more muscular skeleton).
- * Higher fat mass = slightly thicker bones (more padding).
- * Differences are amplified for more noticeable archetype distinction.
- *
- * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
- * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
- * @returns Thickness multiplier for bone radius (amplified range: ~0.86-1.28)
- *
- * @korean 뼈두께계산
- */
-const calculateBoneThicknessMultiplier = (
-  muscleMass: number,
-  fatMass: number
-): number => {
-  // Reference: 35kg muscle mass, 12kg fat mass → 1.0x thickness
-  const referenceMuscle = 35;
-  const referenceFat = 12;
-
-  // Muscle contribution (70% of thickness variation)
-  // Example calculations:
-  // - 32kg muscle (Amsalja) → sqrt(32/35) * 0.7 ≈ 0.67 contribution
-  // - 35kg muscle (reference) → sqrt(35/35) * 0.7 = 0.70 contribution
-  // - 42kg muscle (Jojik) → sqrt(42/35) * 0.7 ≈ 0.77 contribution
-  const muscleRatio = muscleMass / referenceMuscle;
-  const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
-
-  // Fat contribution (30% of thickness variation)
-  // Example calculations:
-  // - 9kg fat (Amsalja) → sqrt(9/12) * 0.3 ≈ 0.26 contribution
-  // - 12kg fat (reference) → sqrt(12/12) * 0.3 = 0.30 contribution
-  // - 18kg fat (Jojik) → sqrt(18/12) * 0.3 ≈ 0.37 contribution
-  const fatRatio = fatMass / referenceFat;
-  const fatContribution = Math.sqrt(fatRatio) * 0.3;
-
-  // Combined raw thickness multiplier
-  // For archetype defaults:
-  // - Amsalja (32kg muscle, 9kg fat): 0.67 + 0.26 ≈ 0.93x raw thickness
-  // - Musa (38kg muscle, 12kg fat): 0.73 + 0.30 ≈ 1.03x raw thickness
-  // - Jojik (42kg muscle, 18kg fat): 0.77 + 0.37 ≈ 1.14x raw thickness
-  const rawMultiplier = muscleContribution + fatContribution;
-
-  // Apply visual amplification for more noticeable differences
-  // Amplified range: ~0.86x (lean Amsalja) to ~1.28x (bulky Jojik)
-  const deviation = rawMultiplier - 1.0;
-  return 1.0 + deviation * THICKNESS_AMPLIFICATION_FACTOR;
-};
 
 /**
  * Props for BoneRenderer component
@@ -269,12 +212,12 @@ const SingleBone: React.FC<{
       groupRef.current.rotation.set(
         bone.rotation.x,
         bone.rotation.y,
-        bone.rotation.z
+        bone.rotation.z,
       );
       groupRef.current.position.set(
         bone.position.x,
         bone.position.y,
-        bone.position.z
+        bone.position.z,
       );
     }
   });
@@ -287,6 +230,10 @@ const SingleBone: React.FC<{
 
     // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
+    // Offset to position capsule between parent and this bone's position
+    // Capsules extend equally in both directions, so we offset by half length toward parent
+    let offset = new THREE.Vector3(0, -length / 2, 0);
+
     if (bone.parent) {
       // Use this bone's local position (parent → child vector) and normalize to get the direction
       // Extract coordinates and manually normalize to avoid issues with Vector3 method availability
@@ -297,22 +244,34 @@ const SingleBone: React.FC<{
       const positionLength = Math.sqrt(x * x + y * y + z * z);
       if (positionLength > 0.001) {
         // Manually normalize to get a stable direction vector
-        const target = new THREE.Vector3(
-          x / positionLength,
-          y / positionLength,
-          z / positionLength
-        );
+        const targetX = x / positionLength;
+        const targetY = y / positionLength;
+        const targetZ = z / positionLength;
+        const target = new THREE.Vector3(targetX, targetY, targetZ);
+
         // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
-          target
+          target,
         );
         rotation = new THREE.Euler().setFromQuaternion(quaternion);
+
+        // Calculate offset in the direction toward parent (negative of bone direction)
+        // This positions the capsule to connect parent → this bone
+        offset = new THREE.Vector3(
+          (-targetX * length) / 2,
+          (-targetY * length) / 2,
+          (-targetZ * length) / 2,
+        );
       }
     }
 
-    return { length, rotation };
+    return { length, rotation, offset };
   }, [bone]);
+
+  // Determine if muscles are being rendered - if so, hide bone geometry
+  // to prevent layer stacking that causes "bubble man" appearance
+  const hasMuscles = muscleStates !== undefined && muscleStates.size > 0;
 
   return (
     <group
@@ -320,9 +279,10 @@ const SingleBone: React.FC<{
       scale={bone.scale.toArray()}
       name={`bone-${bone.name}`}
     >
-      {/* Bone capsule connecting to parent */}
-      {renderMode === "solid" ? (
+      {/* Bone capsule connecting to parent - ONLY render if no muscles (muscles provide body shape) */}
+      {renderMode === "solid" && !hasMuscles ? (
         <mesh
+          position={boneTransform.offset.toArray()}
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
@@ -333,7 +293,9 @@ const SingleBone: React.FC<{
         >
           <capsuleGeometry
             args={[
-              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
               4,
               8,
@@ -348,8 +310,9 @@ const SingleBone: React.FC<{
             envMapIntensity={1.0}
           />
         </mesh>
-      ) : (
+      ) : renderMode === "debug" ? (
         <mesh
+          position={boneTransform.offset.toArray()}
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
@@ -358,7 +321,9 @@ const SingleBone: React.FC<{
         >
           <capsuleGeometry
             args={[
-              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
               4,
               8,
@@ -371,13 +336,20 @@ const SingleBone: React.FC<{
             opacity={0.5}
           />
         </mesh>
-      )}
+      ) : null}
 
       {/* Joint sphere at bone position */}
       {renderMode === "debug" && (
         <mesh>
           <sphereGeometry
-            args={[boneTransform.length * 0.15 * boneThicknessMultiplier, 8, 8]}
+            args={[
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                1.2 *
+                boneThicknessMultiplier,
+              8,
+              8,
+            ]}
           />
           <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
         </mesh>
@@ -529,9 +501,9 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   // Calculate bone thickness multiplier from physical attributes
   const boneThicknessMultiplier = useMemo(() => {
     if (!physicalAttributes) return 1.0;
-    return calculateBoneThicknessMultiplier(
+    return calculateBoneThickness(
       physicalAttributes.muscleMass,
-      physicalAttributes.fatMass
+      physicalAttributes.fatMass,
     );
   }, [physicalAttributes]);
 
