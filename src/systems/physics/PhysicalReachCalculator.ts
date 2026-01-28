@@ -220,12 +220,27 @@ export class PhysicalReachCalculator {
 
     // Retrieve peak (max) reach multiplier for this animation's hit window
     const hitTiming = getAnimationHitTiming(animationType);
-    const peakMultiplier = hitTiming?.hitWindow.maxReachMultiplier ?? animationReachMultiplier;
+    const rawPeakMultiplier = hitTiming?.hitWindow.maxReachMultiplier;
+
+    // Determine whether we have valid timing data. When timing is missing or
+    // the configured peak multiplier is non-positive, fall back to a neutral
+    // curve so reach/damage checks remain possible for those techniques.
+    const hasValidTiming =
+      rawPeakMultiplier !== undefined && rawPeakMultiplier > 0;
+
+    const fallbackBase =
+      baseExtension !== undefined ? baseExtension : 1;
+
+    const peakMultiplier = hasValidTiming ? rawPeakMultiplier : fallbackBase;
+
+    const effectiveAnimationReachMultiplier = hasValidTiming
+      ? animationReachMultiplier
+      : fallbackBase;
 
     // Normalized curve factor in [0, 1] that represents where we are on
     // the reach curve. When peakMultiplier is 0, we treat reach as 0.
     const curveFactor =
-      peakMultiplier > 0 ? animationReachMultiplier / peakMultiplier : 0;
+      peakMultiplier > 0 ? effectiveAnimationReachMultiplier / peakMultiplier : 0;
 
     // Apply the hybrid "max" at the peak level, then reapply the curve
     const peakExtension =

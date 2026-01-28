@@ -1807,7 +1807,8 @@ const centerDistance = Math.sqrt(
 // Note: Reach calculation already includes attacker's body pivot/offset
 // (shoulder offset for punches, hip rotation for kicks), so we only
 // subtract defender radius to avoid double-counting the attacker dimension.
-const effectiveDistance = centerDistance - defenderRadius;
+// Clamped to non-negative when centers overlap.
+const effectiveDistance = Math.max(0, centerDistance - defenderRadius);
 
 // Hit detection
 const inRange = effectiveDistance <= techniqueMaxReach;
