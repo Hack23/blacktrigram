@@ -165,6 +165,8 @@ describe("BodySurface", () => {
       "neck",
       "spine_middle",
       "pelvis",
+      "shoulder_L",
+      "shoulder_R",
       "upper_arm_L",
       "upper_arm_R",
       "forearm_L",
