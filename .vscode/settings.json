@@ -5,17 +5,17 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.suggestionActions.enabled": true,
   "typescript.preferences.preferTypeOnlyAutoImports": true,
-  "typescript.inlayHints.parameterNames.enabled": "literals",
+  "typescript.inlayHints.parameterNames.enabled": "none",
   "typescript.preferences.quoteStyle": "single",
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
   "typescript.preferences.useAliasesForRenames": false,
   "typescript.suggest.completeJSDocs": true,
-  "typescript.inlayHints.variableTypes.enabled": true,
-  "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
-  "typescript.inlayHints.parameterTypes.enabled": true,
-  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "typescript.inlayHints.variableTypes.enabled": false,
+  "typescript.inlayHints.propertyDeclarationTypes.enabled": false,
+  "typescript.inlayHints.parameterTypes.enabled": false,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": false,
   "typescript.preferences.renameMatchingJsxTags": true,
-  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.tsserver.maxTsServerMemory": 2048,
   "typescript.tsserver.log": "off",
 
   // NEW: File watching optimization
@@ -50,11 +50,11 @@
 
   // Editor settings for better completion
   "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
+  "editor.formatOnPaste": false,
   "editor.formatOnType": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
+    "source.fixAll.eslint": "never",
+    "source.organizeImports": "never"
   },
   "editor.suggest.insertMode": "replace",
   "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -121,7 +121,6 @@
   "eslint.lintTask.options": "--ext .js,.jsx,.ts,.tsx .",
   "eslint.workingDirectories": [{ "mode": "auto" }],
   "eslint.options": {
-    "overrideConfigFile": "/workspaces/blacktrigram/.eslintrc.cjs",
     "reportUnusedDisableDirectives": true,
     "extensions": [".js", ".jsx", ".ts", ".tsx"]
   },
