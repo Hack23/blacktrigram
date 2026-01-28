@@ -27,6 +27,7 @@ import type {
   LimbExposureWindow,
   PhysicalReachConfig,
 } from "../../types/physics";
+import { BREAKING_STATUS_EFFECT_IDS } from "./BreakingStatusEffects";
 
 /**
  * Breaking technique constants
@@ -370,34 +371,37 @@ export function calculateBreakingResult(
   }
 
   // Successful break - apply appropriate effects
-  // Note: Status effect IDs must match those defined in the StatusEffect system
-  // See src/systems/types.ts for available status effects
-  const statusEffects: string[] = ["pain"];
+  // Status effect IDs from BREAKING_STATUS_EFFECT_IDS constants
+  // See src/systems/combat/BreakingStatusEffects.ts for all available IDs
+  const statusEffects: string[] = [BREAKING_STATUS_EFFECT_IDS.PAIN];
   let mobilityReduction: number;
 
   // Severity-based effects
   if (severity > 0.8) {
     // Severe break - dislocation or fracture
-    statusEffects.push("severe_injury", "disabled_limb");
+    statusEffects.push(
+      BREAKING_STATUS_EFFECT_IDS.SEVERE_INJURY,
+      BREAKING_STATUS_EFFECT_IDS.DISABLED_LIMB
+    );
     mobilityReduction = 0.6;
 
     if (target === "ankle" || target === "knee") {
-      statusEffects.push("impaired_mobility");
+      statusEffects.push(BREAKING_STATUS_EFFECT_IDS.IMPAIRED_MOBILITY);
       mobilityReduction = 0.8; // Leg breaks severely impact movement
     }
   } else if (severity > 0.5) {
     // Moderate break
-    statusEffects.push("injured_limb");
+    statusEffects.push(BREAKING_STATUS_EFFECT_IDS.INJURED_LIMB);
     mobilityReduction = 0.4;
   } else {
     // Minor break - sprain or strain
-    statusEffects.push("sprained_joint");
+    statusEffects.push(BREAKING_STATUS_EFFECT_IDS.SPRAINED_JOINT);
     mobilityReduction = 0.2;
   }
 
   // Bleeding for bone breaks
   if (severity > 0.6) {
-    statusEffects.push("bleeding");
+    statusEffects.push(BREAKING_STATUS_EFFECT_IDS.BLEEDING);
   }
 
   return {

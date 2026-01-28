@@ -48,17 +48,30 @@ Breaking techniques are counter-attacks that target exposed limbs during an oppo
 
 ## Implementation Requirements
 
-### Status Effects Required
+### Status Effects
 
-The following status effect IDs are used by the breaking technique system and must be defined in `src/systems/types.ts`:
+The breaking technique system uses status effect IDs defined in `src/systems/combat/BreakingStatusEffects.ts`:
 
-- `"pain"` - General pain effect applied on all breaks
-- `"severe_injury"` - High severity injuries (severity > 0.8)
-- `"disabled_limb"` - Limb cannot be used effectively
-- `"injured_limb"` - Moderate limb damage (severity 0.5-0.8)
-- `"sprained_joint"` - Minor joint damage (severity < 0.5)
-- `"impaired_mobility"` - Movement speed reduction (leg breaks)
-- `"bleeding"` - Bleeding from bone breaks (severity > 0.6)
+```typescript
+import { BREAKING_STATUS_EFFECT_IDS } from '@/systems/combat/BreakingStatusEffects';
+
+// Available status effect IDs:
+BREAKING_STATUS_EFFECT_IDS.PAIN              // "pain" - General pain effect
+BREAKING_STATUS_EFFECT_IDS.SEVERE_INJURY     // "severe_injury" - High severity (>0.8)
+BREAKING_STATUS_EFFECT_IDS.DISABLED_LIMB     // "disabled_limb" - Limb cannot be used
+BREAKING_STATUS_EFFECT_IDS.INJURED_LIMB      // "injured_limb" - Moderate damage (0.5-0.8)
+BREAKING_STATUS_EFFECT_IDS.SPRAINED_JOINT    // "sprained_joint" - Minor damage (<0.5)
+BREAKING_STATUS_EFFECT_IDS.IMPAIRED_MOBILITY // "impaired_mobility" - Movement reduction
+BREAKING_STATUS_EFFECT_IDS.BLEEDING          // "bleeding" - Bleeding from breaks (>0.6)
+```
+
+These constants provide:
+- Type-safe status effect ID references
+- Validation helper: `isBreakingStatusEffectId(id)`
+- Complete list access: `getAllBreakingStatusEffectIds()`
+
+**Note**: These IDs are defined as constants but do not yet have full StatusEffect implementations.
+Integration with the game's effect system requires creating corresponding effect handlers.
 
 ## Integration with LimbExposureSystem
 
