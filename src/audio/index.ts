@@ -8,8 +8,6 @@ export * from "./AudioAssetRegistry";
 export * from "./AudioManager";
 export * from "./AudioProvider";
 export * from "./AudioUtils";
-export * from "./DefaultSoundGenerator";
-export * from "./placeholder-sounds";
 export * from "./types";
 export * from "./VariantSelector";
 export * from "./AudioCache";

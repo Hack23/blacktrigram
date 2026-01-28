@@ -763,4 +763,164 @@ describe("AudioManager", () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe("On-Demand Music Loading", () => {
+    it("should successfully load and play an unloaded music track", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Use underground_theme which is NOT preloaded (only intro, combat, training are preloaded)
+      const testMusicId = "underground_theme";
+
+      // Verify music is not preloaded
+      const loadedAssets = audioManager.getLoadedAssets();
+      expect(loadedAssets.has(testMusicId)).toBe(false);
+
+      // Play music - should trigger on-demand loading
+      await audioManager.playMusic(testMusicId as MusicTrackId);
+
+      // Verify music was loaded and is now in cache
+      const loadedAssetsAfter = audioManager.getLoadedAssets();
+      expect(loadedAssetsAfter.has(testMusicId)).toBe(true);
+
+      // Verify music is playing
+      expect(audioManager.currentMusicTrack).toBe(testMusicId);
+    });
+
+    it("should handle error when unloaded music track fails to load", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Use a valid music ID from the registry that's not preloaded
+      const testMusicId = "underground_theme" as MusicTrackId;
+      
+      // Verify music is not already loaded
+      expect(audioManager.getLoadedAssets().has(testMusicId)).toBe(false);
+
+      // Mock loadAsset to fail for this specific track
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        if (asset.id === testMusicId) {
+          throw new Error("Network error");
+        }
+        return originalLoadAsset(asset);
+      });
+
+      // Should not throw, but should handle error gracefully
+      await expect(
+        audioManager.playMusic(testMusicId)
+      ).resolves.not.toThrow();
+
+      // Music should not be playing
+      expect(audioManager.currentMusicTrack).toBeNull();
+    });
+
+    it("should handle music not found in registry", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Try to play music that doesn't exist in registry
+      await expect(
+        audioManager.playMusic("nonexistent_music" as MusicTrackId)
+      ).resolves.not.toThrow();
+
+      // Music should not be playing
+      expect(audioManager.currentMusicTrack).toBeNull();
+    });
+
+    it("should prevent race condition when same music requested multiple times", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Track how many times loadAsset is called
+      let loadAssetCallCount = 0;
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        loadAssetCallCount++;
+        // Add artificial delay to simulate network
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return originalLoadAsset(asset);
+      });
+
+      // Request same music multiple times simultaneously
+      const promises = [
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+      ];
+
+      await Promise.all(promises);
+
+      // loadAsset should only be called once due to race condition prevention
+      expect(loadAssetCallCount).toBe(1);
+      
+      // Music should be playing
+      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+    });
+
+    it("should wait for ongoing load when music is already being loaded", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      let firstLoadStarted = false;
+      let firstLoadFinished = false;
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        if (asset.id === "combat_theme" && !firstLoadStarted) {
+          firstLoadStarted = true;
+          // Simulate slow network
+          await new Promise(resolve => setTimeout(resolve, 200));
+          firstLoadFinished = true;
+        }
+        return originalLoadAsset(asset);
+      });
+
+      // Start first load
+      const firstLoad = audioManager.playMusic("combat_theme" as MusicTrackId);
+      
+      // Wait a bit to ensure first load has started
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // Start second load - should wait for first
+      const secondLoad = audioManager.playMusic("combat_theme" as MusicTrackId);
+
+      await Promise.all([firstLoad, secondLoad]);
+
+      // Both should complete successfully
+      expect(firstLoadFinished).toBe(true);
+      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+    });
+
+    it("should log timeout warning when wait exceeds maxWaitMs", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Spy on console.warn to verify timeout warning format
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      // Manually test the timeout path by directly manipulating the loading set
+      // This simulates a scenario where a load gets stuck
+      const testMusicId = "test_timeout_music";
+      
+      // Add to loading set to simulate an ongoing load
+      (audioManager as any).loadingMusic.add(testMusicId);
+
+      // Call the private waitForMusicLoad method with a very short timeout
+      try {
+        await (audioManager as any).waitForMusicLoad(testMusicId, 100);
+      } catch {
+        // Method doesn't throw, just logs
+      }
+
+      // Verify that timeout warning was logged with correct format
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        `[AudioManager] Timeout waiting for music "${testMusicId}" to load`
+      );
+
+      // Cleanup
+      (audioManager as any).loadingMusic.delete(testMusicId);
+      consoleWarnSpy.mockRestore();
+    });
+  });
 });
