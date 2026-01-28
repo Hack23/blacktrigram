@@ -835,13 +835,13 @@ export class AIDecisionTree {
       decisions.push(
         this.evaluateCloseRange(context, personality, killModeActive),
       );
-    } else if (distance > optimalRange * 1.8) {
+    } else if (distance > optimalRange * 2.5) {
       // Too far - need to approach
       decisions.push(
         this.evaluateApproach(context, personality, killModeActive),
       );
     } else {
-      // Mid-range - good tactical position
+      // Mid-range (2.0x-2.5x optimal range) - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
