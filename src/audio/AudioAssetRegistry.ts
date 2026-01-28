@@ -507,6 +507,121 @@ export class AudioAssetRegistry {
       volume: 0.7,
     });
 
+    // Combo System Sounds - 콤보 시스템 (Combo System)
+    // Combo buildup sounds (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`combo_buildup_${i}`, {
+        id: `combo_buildup_${i}`,
+        type: "sound",
+        name: `Combo Buildup ${i} (콤보 축적)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/combo_buildup_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Combo finish sounds (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`combo_finish_${i}`, {
+        id: `combo_finish_${i}`,
+        type: "sound",
+        name: `Combo Finish ${i} (콤보 완성)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/combo_finish_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.8,
+      });
+    }
+
+    // Match Countdown Sounds - 카운트다운 (Countdown)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`countdown_${i}`, {
+        id: `countdown_${i}`,
+        type: "sound",
+        name: `Countdown ${i} (카운트다운)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/countdown_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Status Warning Sounds - 상태 경고 (Status Warnings)
+    // Health low warnings (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`health_low_${i}`, {
+        id: `health_low_${i}`,
+        type: "sound",
+        name: `Health Low ${i} (체력 부족)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/health_low_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Stamina depleted warnings (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`stamina_depleted_${i}`, {
+        id: `stamina_depleted_${i}`,
+        type: "sound",
+        name: `Stamina Depleted ${i} (스태미나 고갈)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/stamina_depleted_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.6,
+      });
+    }
+
+    // Victory sounds (4 variations) - 승리 (Victory)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`victory_${i}`, {
+        id: `victory_${i}`,
+        type: "sound",
+        name: `Victory ${i} (승리)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/victory_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.8,
+      });
+    }
+
+    // Defeat sounds (4 variations) - 패배 (Defeat)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`defeat_${i}`, {
+        id: `defeat_${i}`,
+        type: "sound",
+        name: `Defeat ${i} (패배)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/defeat_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.7,
+      });
+    }
+
+    // Movement Sounds - 이동 소리 (Movement Sounds)
+    // Footstep sounds (4 variations)
+    for (let i = 1; i <= 4; i++) {
+      this.registerSFX(`footstep_${i}`, {
+        id: `footstep_${i}`,
+        type: "sound",
+        name: `Footstep ${i} (발소리)`,
+        category: "sfx",
+        url: `/assets/audio/sfx/misc/footstep_${i}.webm`,
+        formats: ["audio/mp3", "audio/webm"],
+        loaded: false,
+        volume: 0.5, // Lower volume for footsteps
+      });
+    }
+
     // Block Sounds - Success (4 variations) - 막기 (Makgi)
     for (let i = 1; i <= 4; i++) {
       this.registerSFX(`block_success_${i}`, {

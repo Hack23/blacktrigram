@@ -140,7 +140,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       );
 
       // NOTE: Non-critical assets are loaded on-demand:
-      // - Archetype themes: Loaded when character selection screen is shown or when combat starts
+      // - Archetype themes: Loaded on-demand when first requested (예: 캐릭터 선택 화면 또는 전투 화면에서 필요할 때)
       // - Other combat sounds: Loaded when first used in combat
       // - Placeholder assets: Loaded as fallbacks when needed
       // - Philosophy screen music: Loaded on-demand when philosophy screen opens

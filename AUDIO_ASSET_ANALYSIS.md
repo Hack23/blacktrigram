@@ -2,9 +2,9 @@
 
 ## Executive Summary
 
-**Problem:** Sound generation code exists when 185+ real MP3 files are already available, and only ~40 assets (22%) are being used.
+**Problem:** Sound generation code exists when 203 real audio files are already available, and only 78 assets (38% of 203 total) are being used.
 
-**Solution:** Removed unused synthetic sound generation code (-670 lines) and identified 145+ unused real audio assets that can be registered.
+**Solution:** Removed unused synthetic sound generation code (-670 lines) and identified 125 unused real audio assets that can be registered.
 
 ---
 
@@ -48,7 +48,7 @@
 ```
 misc/combo_buildup.mp3     + 4 variations (5 files)
 misc/combo_finish.mp3      + 4 variations (5 files)
-misc/combo_buildup_1.mp3
+misc/combo_buildup_1.mp3   (example variation already counted above)
 ```
 **Benefit:** Players get audio feedback during combo sequences
 
