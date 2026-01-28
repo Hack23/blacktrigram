@@ -12,6 +12,7 @@
 
 import React, { useMemo } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
+import "./HUDAnimations.css";
 
 export interface SpeedIndicatorHUDProps {
   /**
@@ -137,6 +138,7 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
   }, [finalSpeed, baseSpeed]);
 
   const containerStyle = useMemo(() => {
+    const shouldGlow = speedData.speedPercent >= 100;
     return {
       position: "relative" as const,
       display: visible ? "flex" : "none",
@@ -148,11 +150,14 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
       backgroundColor: `rgba(0, 0, 0, 0.7)`,
       border: `2px solid ${speedData.color}`,
       borderRadius: "6px",
-      boxShadow: `0 0 10px ${speedData.color}`,
+      boxShadow: shouldGlow 
+        ? `0 0 15px ${speedData.color}, 0 0 25px ${speedData.color}40`
+        : `0 0 10px ${speedData.color}`,
       pointerEvents: "none" as const,
-      transition: "border-color 0.3s ease-out, box-shadow 0.3s ease-out",
+      transition: "all 0.3s ease-out",
+      animation: shouldGlow ? "speedGlow 1.5s ease-in-out infinite" : "none",
     };
-  }, [isMobile, visible, speedData.color]);
+  }, [isMobile, visible, speedData.color, speedData.speedPercent]);
 
   const percentStyle = useMemo(
     () => ({
@@ -198,6 +203,7 @@ export const SpeedIndicatorHUD: React.FC<SpeedIndicatorHUDProps> = ({
   return (
     <div
       data-testid={`speed-indicator-${position}`}
+      className="hud-animated"
       style={containerStyle}
       aria-label={`${speedData.label.korean} | ${speedData.label.english}: ${speedData.speedPercent}%`}
       role="status"
