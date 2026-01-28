@@ -1184,6 +1184,10 @@ export enum CombatState {
   COUNTERING = "countering",
   /** Transitioning between stances */
   TRANSITIONING = "transitioning",
+  /** Grappling/controlling opponent */
+  GRAPPLING = "grappling",
+  /** Being grappled/controlled */
+  GRAPPLED = "grappled",
 }
 
 /**
@@ -1213,6 +1217,95 @@ export enum BodyRegion {
   RIGHT_LEG = "right_leg",
   /** Core/center region - contains balance and power centers */
   CORE = "core",
+}
+
+/**
+ * Grappling state representing control and hold status.
+ *
+ * **Korean**: 잡기 상태 (Grapple State)
+ *
+ * Tracks the current phase of a grappling exchange based on Hapkido
+ * and Ssireum techniques. State transitions follow realistic grappling
+ * flow where control must be established before manipulation.
+ *
+ * @public
+ * @category Combat System
+ * @korean 잡기상태
+ */
+export enum GrappleState {
+  /** Not in grapple - normal combat */
+  NONE = "none",
+  /** Initiating grab attempt */
+  GRABBING = "grabbing",
+  /** Successfully controlling opponent */
+  CONTROLLING = "controlling",
+  /** Attempting to escape control */
+  ESCAPING = "escaping",
+  /** Transitioning to throw or takedown */
+  THROWING = "throwing",
+  /** Applying joint lock technique */
+  LOCKING = "locking",
+}
+
+/**
+ * Target for grappling techniques.
+ *
+ * **Korean**: 잡기 목표 (Grapple Target)
+ *
+ * Specifies which body part is being controlled in a grapple.
+ * Different targets allow different follow-up techniques and
+ * have different escape difficulties.
+ *
+ * @public
+ * @category Combat System
+ * @korean 잡기목표
+ */
+export enum GrappleTarget {
+  /** Hand/wrist control - 손목잡기 */
+  HAND = "hand",
+  /** Arm control - 팔잡기 */
+  ARM = "arm",
+  /** Leg control - 다리잡기 */
+  LEG = "leg",
+  /** Torso/body control - 몸통잡기 */
+  TORSO = "torso",
+  /** Neck control - 목잡기 */
+  NECK = "neck",
+  /** Both arms control - 양팔잡기 */
+  BOTH_ARMS = "both_arms",
+}
+
+/**
+ * Grappling control information.
+ *
+ * **Korean**: 잡기 제어 (Grapple Control)
+ *
+ * Tracks active grappling state between combatants, including
+ * control duration, grip strength, and target limb.
+ *
+ * @public
+ * @category Combat System
+ * @korean 잡기제어
+ */
+export interface GrappleControl {
+  /** Current grapple state */
+  readonly state: GrappleState;
+  /** Body part being controlled */
+  readonly target: GrappleTarget;
+  /** ID of controlling player */
+  readonly controllerId: string;
+  /** ID of controlled player */
+  readonly targetId: string;
+  /** Grip strength (0-100) affecting escape difficulty */
+  readonly gripStrength: number;
+  /** Duration of control in milliseconds */
+  readonly duration: number;
+  /** Timestamp when grapple was initiated */
+  readonly startTime: number;
+  /** Whether control can be broken this frame */
+  readonly canEscape: boolean;
+  /** Stamina cost per second to maintain control */
+  readonly staminaCostPerSecond: number;
 }
 
 export default {};

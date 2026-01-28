@@ -11,3 +11,4 @@ export * from "./ConsciousnessSystem";
 export * from "./PainResponseSystem";
 export * from "./BalanceSystem";
 export * from "./painConsciousnessUtils";
+export * from "./GrappleSystem";
