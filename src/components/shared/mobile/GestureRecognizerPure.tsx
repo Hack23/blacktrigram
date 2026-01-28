@@ -164,7 +164,7 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute', // Changed from fixed to position relative to container
         top: 0,
         left: 0,
         width: '100%',

@@ -2383,11 +2383,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         height: `${height}px`,
         position: "relative",
         backgroundColor: "#0a0a0a",
+        overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="combat-screen"
     >
       {/* Three.js Canvas for 3D rendering */}
       <Canvas
+        style={{ width: `${width}px`, height: `${height}px` }}
         camera={{
           position: cameraConfig.position,
           fov: cameraConfig.fov,
@@ -2718,6 +2720,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
+          // Use 'clip' for pure clipping without creating a scroll container
+          // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
+          // any required shadow space is handled via padding on parent containers
+          overflow: "clip",
         }}
       >
         {/* Top HUD - Round info, timer, return to menu */}
