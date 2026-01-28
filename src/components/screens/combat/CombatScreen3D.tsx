@@ -1037,6 +1037,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
 
+  // Helper function to map attack animation names to AnimationType enum
+  // 공격 애니메이션 이름을 AnimationType 열거형으로 매핑하는 헬퍼 함수
+  const mapAttackAnimationToType = useCallback((attackAnimation: string | undefined): AnimationType | undefined => {
+    if (!attackAnimation) return undefined;
+    
+    // Map common attack animation names to AnimationType
+    // Most attacks use similar movement patterns, so we use reasonable defaults
+    if (attackAnimation.includes("kick")) return AnimationType.ROUNDHOUSE_KICK;
+    if (attackAnimation.includes("jab")) return AnimationType.JAB;
+    if (attackAnimation.includes("cross")) return AnimationType.CROSS;
+    
+    // Default to jab for unmapped animations
+    return AnimationType.JAB;
+  }, []);
+
   // Attack movement integration - track attack states for physics-based forward movement
   // 공격 이동 통합 - 물리 기반 전방 이동을 위한 공격 상태 추적
   // Note: Must be called after validPlayers, player animations, and 3D positions are defined
@@ -1045,29 +1060,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     player2Position: player2PositionWithAttackMovement,
   } = useCombatAttackMovement({
     player1Attacking: player1Animation.currentState === AnimationState.ATTACK,
-    player1AnimationType: player1AttackAnimation 
-      ? // Map common attack animation names to AnimationType
-        // Most attacks use similar movement patterns, so we use reasonable defaults
-        (player1AttackAnimation.includes("kick") 
-          ? AnimationType.ROUNDHOUSE_KICK 
-          : player1AttackAnimation.includes("jab")
-          ? AnimationType.JAB
-          : player1AttackAnimation.includes("cross")
-          ? AnimationType.CROSS
-          : AnimationType.JAB) // Default to jab for unmapped animations
-      : undefined,
+    player1AnimationType: mapAttackAnimationToType(player1AttackAnimation),
     player1Stance: player1Data.currentStance,
     player1BasePosition: player1Position3D,
     player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
-    player2AnimationType: player2AttackAnimation
-      ? (player2AttackAnimation.includes("kick")
-          ? AnimationType.ROUNDHOUSE_KICK
-          : player2AttackAnimation.includes("jab")
-          ? AnimationType.JAB
-          : player2AttackAnimation.includes("cross")
-          ? AnimationType.CROSS
-          : AnimationType.JAB)
-      : undefined,
+    player2AnimationType: mapAttackAnimationToType(player2AttackAnimation),
     player2Stance: validPlayers[1].currentStance,
     player2BasePosition: player2Position3D,
   });

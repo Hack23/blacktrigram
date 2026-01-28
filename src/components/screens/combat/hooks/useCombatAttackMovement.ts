@@ -14,6 +14,26 @@ import { AttackMovementPhysics } from "@/systems/physics";
 import { TrigramStance } from "@/types/common";
 
 /**
+ * Calculate attack direction from attacker to defender
+ * 공격자에서 방어자로의 공격 방향 계산
+ * 
+ * @param attackerPos - Attacker position
+ * @param defenderPos - Defender position
+ * @returns Normalized direction vector
+ */
+function calculateAttackDirection(
+  attackerPos: [number, number, number],
+  defenderPos: [number, number, number]
+): THREE.Vector3 {
+  const direction = new THREE.Vector3(
+    defenderPos[0] - attackerPos[0],
+    0, // Keep movement horizontal
+    defenderPos[2] - attackerPos[2]
+  );
+  return direction.normalize();
+}
+
+/**
  * Configuration for combat attack movement
  */
 export interface CombatAttackMovementConfig {
@@ -101,19 +121,20 @@ export function useCombatAttackMovement(
     animationDuration = 0.4,
   } = config;
 
-  // Attack movement physics engines (one per player)
-  const physicsRef = useRef(new AttackMovementPhysics());
+  // Attack movement physics engines (separate instances for each player to avoid race conditions)
+  const player1PhysicsRef = useRef(new AttackMovementPhysics());
+  const player2PhysicsRef = useRef(new AttackMovementPhysics());
 
   // Player 1 attack timing
   const player1AttackStartTimeRef = useRef<number | null>(null);
   const player1MovementResultRef = useRef<ReturnType<
-    typeof physicsRef.current.calculateAttackMovement
+    typeof player1PhysicsRef.current.calculateAttackMovement
   > | null>(null);
 
   // Player 2 attack timing
   const player2AttackStartTimeRef = useRef<number | null>(null);
   const player2MovementResultRef = useRef<ReturnType<
-    typeof physicsRef.current.calculateAttackMovement
+    typeof player2PhysicsRef.current.calculateAttackMovement
   > | null>(null);
 
   // Current positions
@@ -128,19 +149,6 @@ export function useCombatAttackMovement(
   const [player1IsLunging, setPlayer1IsLunging] = useState(false);
   const [player2IsLunging, setPlayer2IsLunging] = useState(false);
 
-  // Calculate attack direction from attacker to defender
-  const calculateAttackDirection = (
-    attackerPos: [number, number, number],
-    defenderPos: [number, number, number]
-  ): THREE.Vector3 => {
-    const direction = new THREE.Vector3(
-      defenderPos[0] - attackerPos[0],
-      0, // Keep movement horizontal
-      defenderPos[2] - attackerPos[2]
-    );
-    return direction.normalize();
-  };
-
   // Player 1 attack movement effect
   useEffect(() => {
     if (player1Attacking && player1AnimationType) {
@@ -153,7 +161,7 @@ export function useCombatAttackMovement(
       );
 
       player1MovementResultRef.current =
-        physicsRef.current.calculateAttackMovement({
+        player1PhysicsRef.current.calculateAttackMovement({
           animationType: player1AnimationType,
           currentStance: player1Stance,
           direction,
@@ -190,7 +198,7 @@ export function useCombatAttackMovement(
         const basePos = new THREE.Vector3(...player1BasePosition);
         const recovering = elapsed >= (movementResult.lungeDuration * 1000);
         
-        const newPos = physicsRef.current.applyAttackMovement(
+        const newPos = player1PhysicsRef.current.applyAttackMovement(
           basePos,
           movementResult,
           elapsedSeconds,
@@ -246,7 +254,7 @@ export function useCombatAttackMovement(
       );
 
       player2MovementResultRef.current =
-        physicsRef.current.calculateAttackMovement({
+        player2PhysicsRef.current.calculateAttackMovement({
           animationType: player2AnimationType,
           currentStance: player2Stance,
           direction,
@@ -280,7 +288,7 @@ export function useCombatAttackMovement(
         const basePos = new THREE.Vector3(...player2BasePosition);
         const recovering = elapsed >= (movementResult.lungeDuration * 1000);
         
-        const newPos = physicsRef.current.applyAttackMovement(
+        const newPos = player2PhysicsRef.current.applyAttackMovement(
           basePos,
           movementResult,
           elapsedSeconds,
