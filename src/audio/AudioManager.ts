@@ -354,7 +354,9 @@ export class AudioManager implements IAudioManager {
     // 온디맨드 로딩: 음악이 캐시에 없으면 먼저 로드
     if (!audio) {
       // Check if this music is already being loaded to prevent race conditions
+      // JavaScript's single-threaded nature ensures atomic check-and-add operations
       // 레이스 컨디션 방지를 위해 이미 로드 중인지 확인
+      // JavaScript의 싱글 스레드 특성으로 원자적 check-and-add 작업 보장
       if (this.loadingMusic.has(id)) {
         if (import.meta.env.DEV) {
           console.log(`[AudioManager] Music "${id}" is already being loaded, waiting...`);
@@ -364,8 +366,8 @@ export class AudioManager implements IAudioManager {
         await this.waitForMusicLoad(id);
         audio = this.soundCache.get(id);
       } else {
-        // Mark as loading before starting the load
-        // 로드 시작 전에 로딩 중으로 표시
+        // Mark as loading before starting the load (atomic operation in single-threaded JS)
+        // 로드 시작 전에 로딩 중으로 표시 (싱글 스레드 JS에서 원자적 작업)
         this.loadingMusic.add(id);
         
         if (import.meta.env.DEV) {

@@ -769,19 +769,22 @@ describe("AudioManager", () => {
       const audioManager = new AudioManager();
       await audioManager.initialize(mockAudioConfig);
 
+      // Use underground_theme which is NOT preloaded (only intro, combat, training are preloaded)
+      const testMusicId = "underground_theme";
+
       // Verify music is not preloaded
       const loadedAssets = audioManager.getLoadedAssets();
-      expect(loadedAssets.has("combat_theme")).toBe(false);
+      expect(loadedAssets.has(testMusicId)).toBe(false);
 
       // Play music - should trigger on-demand loading
-      await audioManager.playMusic("combat_theme" as MusicTrackId);
+      await audioManager.playMusic(testMusicId as MusicTrackId);
 
       // Verify music was loaded and is now in cache
       const loadedAssetsAfter = audioManager.getLoadedAssets();
-      expect(loadedAssetsAfter.has("combat_theme")).toBe(true);
+      expect(loadedAssetsAfter.has(testMusicId)).toBe(true);
 
       // Verify music is playing
-      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+      expect(audioManager.currentMusicTrack).toBe(testMusicId);
     });
 
     it("should handle error when unloaded music track fails to load", async () => {
