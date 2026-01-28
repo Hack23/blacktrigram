@@ -1,10 +1,10 @@
 # ReachConfig Analysis: baseExtension Implementation
 
-## ✅ IMPLEMENTED: Hybrid Reach System
+## ✅ IMPLEMENTED: Hybrid Reach System with Curve Factor
 
-**Status**: ✅ **COMPLETE** - Commit 9b0616a
+**Status**: ✅ **COMPLETE**
 
-The hybrid reach system using `max(baseExtension, maxReachMultiplier)` has been successfully implemented.
+The hybrid reach system using curve-factored `max(baseExtension, peakMultiplier)` has been successfully implemented to prevent phantom hits while maintaining designed reach.
 
 ---
 
@@ -12,28 +12,45 @@ The hybrid reach system using `max(baseExtension, maxReachMultiplier)` has been 
 
 ### What Was Done
 
-Implemented **Option 1 Enhanced** - a hybrid approach that uses the **maximum** of both values:
-- `reachConfig.baseExtension` (designer-specified reach)
-- `maxReachMultiplier` (animation-driven reach)
+Implemented **Option 1 Enhanced with Curve Factor** - a hybrid approach that:
+- Uses the **maximum** of `reachConfig.baseExtension` and animation `peakMultiplier` at the peak time
+- Applies animation **curve factor** to maintain proper reach ramp-up/down
+- Prevents phantom hits at hit window edges while achieving designed reach at peak
 
-This ensures techniques get at least their designed reach while allowing animations to enhance reach if needed.
+**Formula**:
+```typescript
+const peakExtension = max(baseExtension, peakMultiplier);
+const curveFactor = animationReachMultiplier / peakMultiplier;
+const finalExtension = curveFactor * peakExtension;
+```
+
+This ensures:
+- Techniques get at least designed reach **at peak time**
+- Reach properly ramps to zero at hit window edges (no phantom hits)
+- Animation timing curve is preserved
 
 ### Code Changes
 
 1. **PhysicalReachCalculator.ts**
    - Added optional `reachConfig?: PhysicalReachConfig` parameter
-   - Implemented: `finalExtension = max(baseExtension, animationMultiplier)`
+   - Implemented curve-factored hybrid: `curveFactor * max(baseExtension, peakMultiplier)`
    - Added `baseExtension` and `finalExtensionMultiplier` to result
    - Updated both `calculateReach()` and `calculateMaxReach()`
 
 2. **CombatSystem.ts**
    - Updated to pass `technique.reachConfig` to calculator
+   - Fixed distance calculation: only subtracts defender radius (no double-counting)
    - Ensures all combat uses accurate designed ranges
 
-3. **Tests**
-   - Added 7 comprehensive tests for hybrid reach system
-   - All 27 PhysicalReachCalculator tests passing ✅
+3. **Training System**
+   - Threads `technique.reachConfig` to calculator for consistency
+   - Fixed distance calculation to match combat system
+
+4. **Tests**
+   - Added 8 comprehensive tests for hybrid reach system including curve validation
+   - All 28 PhysicalReachCalculator tests passing ✅
    - All 68 CombatSystem tests passing ✅
+   - All 11 training tests passing ✅
 
 ---
 
@@ -50,34 +67,45 @@ Musa Front Kick (GEON stance):
 - Reach: (0.95 + 0.25) * 1.0 * 1.1 = 1.32m
 ```
 
-**After Implementation:**
+**After Implementation (at peak time):**
 ```
 Musa Front Kick (GEON stance):
 - Leg: 0.95m, Pivot: 0.25m
-- Extension: max(1.05, 1.0) = 1.05 ✅
+- Peak extension: max(1.05, 1.0) = 1.05
+- Curve factor: 1.0 (at peak)
+- Final extension: 1.0 * 1.05 = 1.05 ✅
 - Stance: 1.1
 - Reach: (0.95 + 0.25) * 1.05 * 1.1 = 1.386m
 ```
 
-**Improvement: +6.6cm (5% increase) - Now matches designed reach!**
+**At hit window edges:**
+```
+- Curve factor: ~0.0 (ramps to zero)
+- Final extension: 0.0 * 1.05 = 0.0
+- Reach: Near zero (no phantom hits) ✅
+```
+
+**Improvement: +6.6cm (5% increase) at peak - Now matches designed reach with proper animation curve!**
 
 ### All Techniques Benefit
 
-| Technique | baseExtension | animationMultiplier | finalExtension | Winner |
-|-----------|---------------|---------------------|----------------|--------|
-| Front Kick | 1.05 | 1.0 | 1.05 | baseExtension ✅ |
+| Technique | baseExtension | peakMultiplier | Peak Extension | Result |
+|-----------|---------------|----------------|----------------|--------|
+| Front Kick | 1.05 | 1.0 | 1.05 | baseExtension wins ✅ |
 | Roundhouse | 1.05 | 1.05 | 1.05 | Equal ✅ |
-| Jumping Kick | 1.15 | 1.1 | 1.15 | baseExtension ✅ |
+| Jumping Kick | 1.15 | 1.1 | 1.15 | baseExtension wins ✅ |
 | Jab | 0.95 | 0.95 | 0.95 | Equal ✅ |
+
+*Note: All values are scaled by curve factor based on animation timing*
 
 ---
 
 ## 💡 Why This Solution Works
 
-### Advantages of Hybrid Approach
+### Advantages of Curve-Factored Hybrid Approach
 
 1. **Best of Both Worlds**
-   - Respects designer intent (baseExtension)
+   - Respects designer intent (baseExtension) at peak time
    - Allows animation enhancement (maxReachMultiplier)
    - Neither system is obsolete
 

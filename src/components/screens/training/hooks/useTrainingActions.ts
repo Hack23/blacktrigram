@@ -36,7 +36,6 @@ import {
   METERS_TO_TRAINING_UNITS,
 } from "../../../../types/physicsConstants";
 import { calculateDistance3D } from "../../../../utils/math";
-import { calculateBodyRadius } from "../../../../utils/skeletonScaling";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 
 export interface UseTrainingActionsConfig {

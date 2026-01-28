@@ -86,7 +86,10 @@ export interface PhysicalReachResult {
   readonly baseExtension?: number;
 
   /**
-   * Final extension multiplier used (max of baseExtension and animationReachMultiplier).
+   * Final extension multiplier used in reach calculation.
+   * When reachConfig is provided, applies curve factor to hybrid peak:
+   * `(animationReachMultiplier / peakMultiplier) * max(baseExtension, peakMultiplier)`
+   * Otherwise uses time-varying animationReachMultiplier directly.
    * @korean 최종확장배수
    */
   readonly finalExtensionMultiplier: number;
@@ -99,7 +102,7 @@ export interface PhysicalReachResult {
 
   /**
    * Final effective reach in meters.
-   * (baseLimbLength + bodyPivotContribution) × animationReachMultiplier × stanceModifier
+   * (baseLimbLength + bodyPivotContribution) × finalExtensionMultiplier × stanceModifier
    * @korean 최종유효도달
    */
   readonly effectiveReach: number;

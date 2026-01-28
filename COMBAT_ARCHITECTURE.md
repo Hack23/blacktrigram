@@ -1780,7 +1780,7 @@ Age:    36 years | Battle-hardened
 
 #### Hit Detection & Range Calculation (타격 판정 및 거리 계산)
 
-**Physics-First Coordinate System**: All combat positions and distances use meters (m) as the base unit. Hit detection accounts for both attacker and defender body radii to ensure attacks land accurately based on physical attributes.
+**Physics-First Coordinate System**: All combat positions and distances use meters (m) as the base unit. Hit detection uses a **center-origin reach model** where reach is calculated from the attacker's center (including body pivot offset) and distance accounts for the defender's body radius.
 
 **Body Radius Calculation**:
 ```typescript
@@ -1788,7 +1788,6 @@ import { calculateBodyRadius } from "@/utils/skeletonScaling";
 
 // Calculate body radius from shoulder width
 // Formula: bodyRadius = (shoulderWidth * 0.5) / 100 meters
-const attackerRadius = calculateBodyRadius(attackerPhysicalAttributes);
 const defenderRadius = calculateBodyRadius(defenderPhysicalAttributes);
 
 // Archetype body radii (examples):
@@ -1805,8 +1804,9 @@ const centerDistance = Math.sqrt(
 );
 
 // Effective striking distance (center to defender surface)
-// Note: Reach calculation already includes attacker's body pivot/offset,
-// so we only subtract defender radius to avoid double-counting
+// Note: Reach calculation already includes attacker's body pivot/offset
+// (shoulder offset for punches, hip rotation for kicks), so we only
+// subtract defender radius to avoid double-counting the attacker dimension.
 const effectiveDistance = centerDistance - defenderRadius;
 
 // Hit detection
@@ -1819,7 +1819,7 @@ Jojik (attacker) vs Hacker (defender) at 1.0m apart:
 - Center-to-center: 1.0m
 - Defender radius: 0.215m
 - Effective distance: 1.0 - 0.215 = 0.785m
-- Jojik jab reach: ~1.265m (includes attacker body pivot)
+- Jojik jab reach: ~1.265m (calculated from attacker center, includes body pivot)
   - Arm: 0.84m
   - Body pivot (shoulder offset + torso): 0.37m
   - Peak multiplier: 0.95
