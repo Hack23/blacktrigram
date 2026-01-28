@@ -208,6 +208,117 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
     },
   ],
 
+  // Pelvis - central hip/waist muscles for less boxy appearance
+  pelvis: [
+    {
+      name: "HIP_FLEXOR_L",
+      korean: "왼쪽고관절굴근",
+      english: "Left Hip Flexor",
+      localOffset: new THREE.Vector3(-0.12, 0.06, 0.06),
+      localRotation: new THREE.Euler(0.2, 0, 0.15),
+      baseScale: new THREE.Vector3(0.32, 0.28, 0.28),
+      maxFlexScale: new THREE.Vector3(0.4, 0.34, 0.34),
+      radius: 0.2,
+      length: 0.26,
+    },
+    {
+      name: "HIP_FLEXOR_R",
+      korean: "오른쪽고관절굴근",
+      english: "Right Hip Flexor",
+      localOffset: new THREE.Vector3(0.12, 0.06, 0.06),
+      localRotation: new THREE.Euler(0.2, 0, -0.15),
+      baseScale: new THREE.Vector3(0.32, 0.28, 0.28),
+      maxFlexScale: new THREE.Vector3(0.4, 0.34, 0.34),
+      radius: 0.2,
+      length: 0.26,
+    },
+    {
+      name: "LOWER_ABS",
+      korean: "하복근",
+      english: "Lower Abdominals",
+      localOffset: new THREE.Vector3(0, 0.04, 0.1),
+      localRotation: new THREE.Euler(0, 0, 0),
+      baseScale: new THREE.Vector3(0.42, 0.32, 0.26),
+      maxFlexScale: new THREE.Vector3(0.52, 0.38, 0.32),
+      radius: 0.22,
+      length: 0.28,
+    },
+  ],
+
+  // Spine lower - lower back muscles for fuller torso appearance
+  spine_lower: [
+    {
+      name: "ERECTOR_SPINAE_L",
+      korean: "왼쪽척추기립근",
+      english: "Left Erector Spinae",
+      localOffset: new THREE.Vector3(-0.08, 0.08, -0.08),
+      localRotation: new THREE.Euler(0, 0, 0),
+      baseScale: new THREE.Vector3(0.24, 0.36, 0.22),
+      maxFlexScale: new THREE.Vector3(0.3, 0.42, 0.28),
+      radius: 0.16,
+      length: 0.34,
+    },
+    {
+      name: "ERECTOR_SPINAE_R",
+      korean: "오른쪽척추기립근",
+      english: "Right Erector Spinae",
+      localOffset: new THREE.Vector3(0.08, 0.08, -0.08),
+      localRotation: new THREE.Euler(0, 0, 0),
+      baseScale: new THREE.Vector3(0.24, 0.36, 0.22),
+      maxFlexScale: new THREE.Vector3(0.3, 0.42, 0.28),
+      radius: 0.16,
+      length: 0.34,
+    },
+  ],
+
+  // Spine upper - lats and traps for broader upper back appearance
+  spine_upper: [
+    {
+      name: "LAT_L",
+      korean: "왼쪽광배근",
+      english: "Left Latissimus",
+      localOffset: new THREE.Vector3(-0.16, -0.04, -0.06),
+      localRotation: new THREE.Euler(0, 0.2, 0.4),
+      baseScale: new THREE.Vector3(0.36, 0.48, 0.26),
+      maxFlexScale: new THREE.Vector3(0.46, 0.56, 0.34),
+      radius: 0.24,
+      length: 0.44,
+    },
+    {
+      name: "LAT_R",
+      korean: "오른쪽광배근",
+      english: "Right Latissimus",
+      localOffset: new THREE.Vector3(0.16, -0.04, -0.06),
+      localRotation: new THREE.Euler(0, -0.2, -0.4),
+      baseScale: new THREE.Vector3(0.36, 0.48, 0.26),
+      maxFlexScale: new THREE.Vector3(0.46, 0.56, 0.34),
+      radius: 0.24,
+      length: 0.44,
+    },
+    {
+      name: "TRAPEZIUS",
+      korean: "승모근",
+      english: "Trapezius",
+      localOffset: new THREE.Vector3(0, 0.12, -0.08),
+      localRotation: new THREE.Euler(-0.3, 0, 0),
+      baseScale: new THREE.Vector3(0.52, 0.32, 0.24),
+      maxFlexScale: new THREE.Vector3(0.64, 0.4, 0.32),
+      radius: 0.22,
+      length: 0.28,
+    },
+    {
+      name: "RHOMBOID",
+      korean: "능형근",
+      english: "Rhomboid",
+      localOffset: new THREE.Vector3(0, 0.04, -0.1),
+      localRotation: new THREE.Euler(0, 0, 0),
+      baseScale: new THREE.Vector3(0.38, 0.3, 0.2),
+      maxFlexScale: new THREE.Vector3(0.48, 0.38, 0.26),
+      radius: 0.18,
+      length: 0.28,
+    },
+  ],
+
   // Hips - glutes attach here (SIGNIFICANTLY increased for Jojik visibility - 3x larger)
   hip_L: [
     {
@@ -315,37 +426,14 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
   ],
 };
 
-/**
- * Visual amplification factor for muscle mass differences.
- *
- * UPDATED: Now uses exponential curve to amplify differences:
- * - Skinny fighters (28-30kg) appear MUCH smaller than average
- * - Large fighters (48kg) appear MUCH larger than average
- *
- * Previous: Linear 2.5x amplification (insufficient)
- * New: Exponential curve with 1.5 exponent and 4.0 base
- *
- * Archetype muscle mass ranges from 28kg (Hacker) to 48kg (Jojik).
- * This significant difference needs amplification to be visually distinct.
- *
- * @korean 근육시각적증폭계수
- */
-const MUSCLE_AMPLIFICATION_BASE = 4.0;
-const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
-
-/**
- * Muscle geometry normalization factor.
- *
- * The BONE_MUSCLE_MAP uses legacy values (0.22-0.34 for radius) that were
- * scaled for visibility. This factor converts them to anatomically correct
- * meter-scale values while maintaining visible muscle definition.
- *
- * Original values (e.g., radius: 0.28) → Normalized (0.28 * 0.5 = 0.14m = 14cm)
- * This produces visible muscle sizes that complement the bone structure.
- *
- * @korean 근육기하정규화계수
- */
-const MUSCLE_GEOMETRY_NORMALIZATION = 0.5;
+// Import centralized constants
+import {
+  MIN_MUSCLE_SCALE,
+  MUSCLE_AMPLIFICATION_BASE,
+  MUSCLE_AMPLIFICATION_EXPONENT,
+  MUSCLE_GEOMETRY_NORMALIZATION,
+  REFERENCE_MUSCLE_MASS,
+} from "../../../../constants/bodyRenderingConstants";
 
 /**
  * Calculate muscle scale factor based on muscle mass with non-linear amplification.
@@ -366,9 +454,7 @@ const MUSCLE_GEOMETRY_NORMALIZATION = 0.5;
  * @korean 근육크기계산
  */
 export const calculateMuscleScaleFactor = (muscleMass: number): number => {
-  // Reference: 35kg average muscle mass → 1.0 scale (Musa baseline)
-  const referenceMass = 35;
-  const massRatio = muscleMass / referenceMass;
+  const massRatio = muscleMass / REFERENCE_MUSCLE_MASS;
   const deviation = massRatio - 1.0;
 
   // Exponential curve for dramatic differences
@@ -376,7 +462,10 @@ export const calculateMuscleScaleFactor = (muscleMass: number): number => {
     Math.sign(deviation) *
     Math.pow(Math.abs(deviation), MUSCLE_AMPLIFICATION_EXPONENT);
 
-  return Math.max(0.5, 1.0 + exponentialDeviation * MUSCLE_AMPLIFICATION_BASE);
+  return Math.max(
+    MIN_MUSCLE_SCALE,
+    1.0 + exponentialDeviation * MUSCLE_AMPLIFICATION_BASE,
+  );
 };
 
 /**

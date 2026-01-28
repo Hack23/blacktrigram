@@ -45,6 +45,10 @@
 
 import { PhysicalAttributes } from "@/types";
 import { BoneName } from "@/types/skeletal";
+import {
+  amplifyScaling,
+  REFERENCE_ATTRIBUTES as BODY_REFERENCE_ATTRIBUTES,
+} from "../constants/bodyRenderingConstants";
 
 /**
  * Bone scaling factors for each body region.
@@ -134,63 +138,16 @@ const BASE_BONE_DIMENSIONS = {
  * skeleton rig is designed for. Scaling is calculated relative to
  * these reference values.
  *
+ * Uses centralized REFERENCE_ATTRIBUTES from bodyRenderingConstants.
+ *
  * @internal
  * @korean 기준신체속성
  */
 const REFERENCE_ATTRIBUTES: PhysicalAttributes = {
-  weight: 75,
-  legLength: 95,
-  armLength: 75,
-  muscleMass: 35,
-  fatMass: 12,
-  age: 30,
-  totalHeight: 178,
-  torsoLength: 58,
-  headSize: 22,
-  neckLength: 10,
-  shoulderWidth: 43,
-  walkSpeed: 6.0,
-  runSpeed: 9.5,
-  acceleration: 12.0,
+  ...BODY_REFERENCE_ATTRIBUTES,
 };
 
-/**
- * Visual amplification factor for archetype differences.
- *
- * **Korean**: 시각적 증폭 계수 (Visual Amplification Factor)
- *
- * Raw physical attribute differences between archetypes are subtle (2-12%).
- * This factor provides modest amplification to make differences more visible
- * while maintaining realistic proportions.
- *
- * Reduced from 2.5 to 1.2 for realistic body proportions:
- * - 5% raw difference → 6% visual difference
- * - Keeps proportions anatomically correct
- * - Prevents distorted body appearance
- *
- * Higher values (2.0+) cause unrealistic body distortion.
- *
- * @internal
- * @korean 시각적증폭계수
- */
-const VISUAL_AMPLIFICATION_FACTOR = 1.2;
-
-/**
- * Apply visual amplification to a scaling factor.
- *
- * Amplifies deviations from 1.0 to make differences more visible.
- * For example, with 2x amplification:
- * - 1.05 becomes 1.10 (5% → 10%)
- * - 0.95 becomes 0.90 (5% → 10%)
- *
- * @param rawFactor - Raw scaling factor (1.0 = reference)
- * @returns Amplified scaling factor
- * @korean 시각적증폭적용
- */
-function amplifyScaling(rawFactor: number): number {
-  const deviation = rawFactor - 1.0;
-  return 1.0 + deviation * VISUAL_AMPLIFICATION_FACTOR;
-}
+// VISUAL_AMPLIFICATION_FACTOR and amplifyScaling imported from bodyRenderingConstants
 
 /**
  * Calculate bone scaling factors from physical attributes.

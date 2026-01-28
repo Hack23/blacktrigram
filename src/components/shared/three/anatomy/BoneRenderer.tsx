@@ -12,6 +12,10 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
+import {
+  BASE_BONE_RADIUS_RATIO,
+  calculateBoneThickness,
+} from "../../../../constants/bodyRenderingConstants";
 import type { PlayerArchetype } from "../../../../types/common";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type {
@@ -26,90 +30,6 @@ import { BoneClothing } from "./BoneClothing";
 import Face3D from "./Face3D";
 import Foot3D from "./Foot3D";
 import Hand3D from "./Hand3D";
-
-/**
- * Visual amplification factor for bone thickness.
- *
- * Amplifies the visual difference between lean and muscular archetypes
- * for more noticeable body type distinction.
- *
- * @korean 뼈두께시각적증폭계수
- */
-const THICKNESS_AMPLIFICATION_FACTOR = 1.5;
-
-/**
- * Minimum bone thickness multiplier.
- *
- * Ensures even lean archetypes (like HACKER) maintain visible body mass.
- * Without this floor, low muscle mass creates stick-figure appearance.
- *
- * @korean 최소뼈두께배수
- */
-const MIN_BONE_THICKNESS = 0.85;
-
-/**
- * Base bone radius as fraction of bone length.
- *
- * Higher value = thicker bones. Anatomically, limb bones have diameter
- * roughly 8-12% of their length. Using 0.15 for more visible body mass.
- *
- * @korean 기본뼈반지름비율
- */
-const BASE_BONE_RADIUS_RATIO = 0.15;
-
-/**
- * Calculate bone thickness multiplier based on physical attributes
- *
- * Maps muscle mass and fat mass to bone thickness scaling for visual appearance.
- * Higher muscle mass = thicker bones (more muscular skeleton).
- * Higher fat mass = slightly thicker bones (more padding).
- * Differences are amplified for more noticeable archetype distinction.
- *
- * @param muscleMass - Muscle mass in kilograms (typical: 32-42kg)
- * @param fatMass - Fat mass in kilograms (typical: 9-20kg)
- * @returns Thickness multiplier for bone radius (amplified range: ~0.86-1.28)
- *
- * @korean 뼈두께계산
- */
-const calculateBoneThicknessMultiplier = (
-  muscleMass: number,
-  fatMass: number,
-): number => {
-  // Reference: 35kg muscle mass, 12kg fat mass → 1.0x thickness
-  const referenceMuscle = 35;
-  const referenceFat = 12;
-
-  // Muscle contribution (70% of thickness variation)
-  // Example calculations:
-  // - 32kg muscle (Amsalja) → sqrt(32/35) * 0.7 ≈ 0.67 contribution
-  // - 35kg muscle (reference) → sqrt(35/35) * 0.7 = 0.70 contribution
-  // - 42kg muscle (Jojik) → sqrt(42/35) * 0.7 ≈ 0.77 contribution
-  const muscleRatio = muscleMass / referenceMuscle;
-  const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
-
-  // Fat contribution (30% of thickness variation)
-  // Example calculations:
-  // - 9kg fat (Amsalja) → sqrt(9/12) * 0.3 ≈ 0.26 contribution
-  // - 12kg fat (reference) → sqrt(12/12) * 0.3 = 0.30 contribution
-  // - 18kg fat (Jojik) → sqrt(18/12) * 0.3 ≈ 0.37 contribution
-  const fatRatio = fatMass / referenceFat;
-  const fatContribution = Math.sqrt(fatRatio) * 0.3;
-
-  // Combined raw thickness multiplier
-  // For archetype defaults:
-  // - Amsalja (32kg muscle, 9kg fat): 0.67 + 0.26 ≈ 0.93x raw thickness
-  // - Musa (38kg muscle, 12kg fat): 0.73 + 0.30 ≈ 1.03x raw thickness
-  // - Jojik (42kg muscle, 18kg fat): 0.77 + 0.37 ≈ 1.14x raw thickness
-  const rawMultiplier = muscleContribution + fatContribution;
-
-  // Apply visual amplification for more noticeable differences
-  // Amplified range: ~0.88x (lean Amsalja) to ~1.21x (bulky Jojik)
-  const deviation = rawMultiplier - 1.0;
-  const amplified = 1.0 + deviation * THICKNESS_AMPLIFICATION_FACTOR;
-
-  // Apply minimum floor to prevent stick-figure appearance
-  return Math.max(MIN_BONE_THICKNESS, amplified);
-};
 
 /**
  * Props for BoneRenderer component
@@ -577,7 +497,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
   // Calculate bone thickness multiplier from physical attributes
   const boneThicknessMultiplier = useMemo(() => {
     if (!physicalAttributes) return 1.0;
-    return calculateBoneThicknessMultiplier(
+    return calculateBoneThickness(
       physicalAttributes.muscleMass,
       physicalAttributes.fatMass,
     );

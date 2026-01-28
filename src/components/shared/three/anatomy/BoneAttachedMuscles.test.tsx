@@ -27,13 +27,16 @@ function render3D(component: React.ReactElement) {
   return render(
     <Canvas>
       <Suspense fallback={null}>{component}</Suspense>
-    </Canvas>
+    </Canvas>,
   );
 }
 
 describe("BONE_MUSCLE_MAP", () => {
-  it("should define muscle attachments for 13 bones", () => {
-    expect(Object.keys(BONE_MUSCLE_MAP).length).toBe(13);
+  it("should define muscle attachments for 16 bones (13 limbs + 3 torso)", () => {
+    // 13 original: shoulders (2), upper arms (2), forearms (2), spine_middle (1),
+    // hips (2), thighs (2), shins (2)
+    // + 3 new: pelvis (1), spine_lower (1), spine_upper (1)
+    expect(Object.keys(BONE_MUSCLE_MAP).length).toBe(16);
   });
 
   it("should have valid muscle attachment definitions", () => {
@@ -57,13 +60,13 @@ describe("BONE_MUSCLE_MAP", () => {
     Object.values(BONE_MUSCLE_MAP).forEach((attachments) => {
       attachments.forEach((attachment) => {
         expect(attachment.maxFlexScale.x).toBeGreaterThan(
-          attachment.baseScale.x
+          attachment.baseScale.x,
         );
         expect(attachment.maxFlexScale.y).toBeGreaterThanOrEqual(
-          attachment.baseScale.y
+          attachment.baseScale.y,
         );
         expect(attachment.maxFlexScale.z).toBeGreaterThan(
-          attachment.baseScale.z
+          attachment.baseScale.z,
         );
       });
     });
@@ -101,7 +104,7 @@ describe("BONE_MUSCLE_MAP", () => {
 
     it("should have visually significant arm muscle scale", () => {
       const bicepL = BONE_MUSCLE_MAP.upper_arm_L.find((m) =>
-        m.name.includes("BICEP")
+        m.name.includes("BICEP"),
       );
       expect(bicepL).toBeDefined();
       // Biceps should be prominent - base scale X >= 0.35
@@ -151,7 +154,7 @@ describe("BONE_MUSCLE_MAP", () => {
 
     it("should have visually significant pectoral scale", () => {
       const pectorals = BONE_MUSCLE_MAP.spine_middle.find(
-        (m) => m.name === "PECTORALS"
+        (m) => m.name === "PECTORALS",
       );
       expect(pectorals).toBeDefined();
       // Pectorals should be prominent - base scale X >= 0.7
@@ -173,7 +176,7 @@ describe("BONE_MUSCLE_MAP", () => {
 
     it("should have visually significant quad scale", () => {
       const quadL = BONE_MUSCLE_MAP.thigh_L.find((m) =>
-        m.name.includes("QUAD")
+        m.name.includes("QUAD"),
       );
       expect(quadL).toBeDefined();
       // Quads should be prominent - base scale X >= 0.4
@@ -192,12 +195,12 @@ describe("BONE_MUSCLE_MAP", () => {
 
     it("should have correct Korean translations", () => {
       const bicepR = BONE_MUSCLE_MAP.upper_arm_R.find((m) =>
-        m.name.includes("BICEP")
+        m.name.includes("BICEP"),
       );
       expect(bicepR?.korean).toBe("오른쪽이두근");
 
       const quadL = BONE_MUSCLE_MAP.thigh_L.find((m) =>
-        m.name.includes("QUAD")
+        m.name.includes("QUAD"),
       );
       expect(quadL?.korean).toBe("왼쪽대퇴사두근");
 
@@ -259,7 +262,8 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
 
     // Verify minimum 10% difference between adjacent archetypes
     for (let i = 1; i < scales.length; i++) {
-      const diff = (scales[i].scale - scales[i - 1].scale) / scales[i - 1].scale;
+      const diff =
+        (scales[i].scale - scales[i - 1].scale) / scales[i - 1].scale;
       expect(diff).toBeGreaterThan(0.1);
     }
   });
@@ -363,7 +367,7 @@ describe("BoneAttachedMuscle", () => {
         muscleScaleFactor={1.0}
         fatLayerOpacity={0}
         fatLayerThickness={0}
-      />
+      />,
     );
 
     expect(container.querySelector("canvas")).toBeTruthy();
@@ -380,7 +384,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={1.0}
           fatLayerOpacity={0}
           fatLayerThickness={0}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -396,7 +400,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={1.0}
           fatLayerOpacity={0}
           fatLayerThickness={0}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -412,7 +416,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={1.0}
           fatLayerOpacity={0}
           fatLayerThickness={0}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -432,7 +436,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={jojikFactor}
           fatLayerOpacity={0.72}
           fatLayerThickness={0.45}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -450,7 +454,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={hackerFactor}
           fatLayerOpacity={0.38}
           fatLayerThickness={0.12}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -468,7 +472,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={amsaljaFactor}
           fatLayerOpacity={0.05}
           fatLayerThickness={0.02}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -486,7 +490,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={1.2}
           fatLayerOpacity={0.4}
           fatLayerThickness={0.25}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -504,7 +508,7 @@ describe("BoneAttachedMuscle", () => {
           muscleScaleFactor={1.0}
           fatLayerOpacity={0}
           fatLayerThickness={0}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -520,7 +524,7 @@ describe("BoneMuscles", () => {
         boneName="upper_arm_R"
         muscleStates={muscleStates}
         isExhausted={false}
-      />
+      />,
     );
 
     expect(container.querySelector("canvas")).toBeTruthy();
@@ -533,7 +537,7 @@ describe("BoneMuscles", () => {
         boneName="hand_R"
         muscleStates={muscleStates}
         isExhausted={false}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -550,7 +554,7 @@ describe("BoneMuscles", () => {
         boneName="upper_arm_R"
         muscleStates={muscleStates}
         isExhausted={false}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -565,7 +569,7 @@ describe("BoneMuscles", () => {
         muscleStates={muscleStates}
         isExhausted={false}
         physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -579,7 +583,7 @@ describe("BoneMuscles", () => {
         boneName="upper_arm_R"
         muscleStates={muscleStates}
         isExhausted={true}
-      />
+      />,
     );
 
     expect(container).toBeTruthy();
@@ -607,7 +611,7 @@ describe("BoneMuscles", () => {
             isExhausted={false}
             physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
           />
-        </>
+        </>,
       );
 
       expect(container).toBeTruthy();
@@ -626,7 +630,7 @@ describe("BoneMuscles", () => {
           muscleStates={muscleStates}
           isExhausted={false}
           physicalAttributes={{ muscleMass: 28, fatMass: 15 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -645,7 +649,7 @@ describe("BoneMuscles", () => {
           muscleStates={muscleStates}
           isExhausted={false}
           physicalAttributes={{ muscleMass: 30, fatMass: 10 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -665,7 +669,7 @@ describe("BoneMuscles", () => {
           muscleStates={muscleStates}
           isExhausted={false}
           physicalAttributes={{ muscleMass: 35, fatMass: 13 }}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -681,7 +685,7 @@ describe("BoneMuscles", () => {
           boneName="upper_arm_R"
           muscleStates={muscleStates}
           isExhausted={false}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -695,7 +699,7 @@ describe("BoneMuscles", () => {
           boneName="upper_arm_R"
           muscleStates={muscleStates}
           isExhausted={false}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -709,7 +713,7 @@ describe("BoneMuscles", () => {
           boneName="upper_arm_R"
           muscleStates={muscleStates}
           isExhausted={false}
-        />
+        />,
       );
 
       expect(container).toBeTruthy();
@@ -744,7 +748,7 @@ describe("Integration scenarios", () => {
           muscleStates={muscleStates}
           isExhausted={false}
         />
-      </>
+      </>,
     );
 
     expect(container).toBeTruthy();
@@ -781,7 +785,7 @@ describe("Integration scenarios", () => {
           muscleStates={muscleStates}
           isExhausted={false}
         />
-      </>
+      </>,
     );
 
     expect(container).toBeTruthy();
@@ -828,7 +832,7 @@ describe("Integration scenarios", () => {
           isExhausted={true}
           physicalAttributes={{ muscleMass: 48, fatMass: 20 }}
         />
-      </>
+      </>,
     );
 
     expect(container).toBeTruthy();
@@ -858,7 +862,7 @@ describe("Performance", () => {
             physicalAttributes={{ muscleMass: 35, fatMass: 13 }}
           />
         ))}
-      </>
+      </>,
     );
 
     const endTime = performance.now();
