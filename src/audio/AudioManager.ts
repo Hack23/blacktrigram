@@ -344,7 +344,29 @@ export class AudioManager implements IAudioManager {
     // LRU 추적을 위한 캐시 액세스 시간 업데이트
     this.audioCache.get(id);
 
-    const audio = this.soundCache.get(id);
+    let audio = this.soundCache.get(id);
+    
+    // On-demand loading: If music not in cache, load it first
+    // 온디맨드 로딩: 음악이 캐시에 없으면 먼저 로드
+    if (!audio) {
+      const { audioAssetRegistry } = await import("./AudioAssetRegistry");
+      const musicAsset = audioAssetRegistry.getMusic(id);
+      
+      if (musicAsset) {
+        try {
+          console.log(`[AudioManager] Loading music on-demand: ${id}`);
+          await this.loadAsset(musicAsset);
+          audio = this.soundCache.get(id);
+        } catch (error) {
+          console.warn(`Failed to load music asset ${id} on-demand:`, error);
+          return;
+        }
+      } else {
+        console.warn(`Music asset not found in registry: ${id}`);
+        return;
+      }
+    }
+
     if (audio) {
       try {
         audio.currentTime = 0;

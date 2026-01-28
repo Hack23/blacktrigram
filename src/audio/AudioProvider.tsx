@@ -115,10 +115,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
         (asset) => asset !== undefined
       ) as AudioAsset[];
 
-      // 3. Preload intro music (needed for intro screen)
-      // 인트로 음악 사전 로드 (인트로 화면에 필요)
+      // 3. Preload essential music tracks (intro, combat, training)
+      // 필수 음악 트랙 사전 로드 (인트로, 전투, 훈련)
       const introMusic = audioAssetRegistry.getMusic("intro_theme");
-      const musicAssets = introMusic ? [introMusic as AudioAsset] : [];
+      const combatMusic = audioAssetRegistry.getMusic("combat_theme");
+      const trainingMusic = audioAssetRegistry.getMusic("cyberpunk_fusion");
+      
+      const musicAssets = [introMusic, combatMusic, trainingMusic].filter(
+        (asset) => asset !== undefined
+      ) as AudioAsset[];
 
       // Combine critical assets for parallel loading
       // 병렬 로드를 위한 중요 자산 결합
@@ -135,10 +140,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       );
 
       // NOTE: Non-critical assets are loaded on-demand:
-      // - Archetype themes: Loaded when character selection screen is shown
+      // - Archetype themes: Loaded when character selection screen is shown or when combat starts
       // - Other combat sounds: Loaded when first used in combat
       // - Placeholder assets: Loaded as fallbacks when needed
-      // This reduces initial memory footprint from 50-150MB to ~15-20MB
+      // - Philosophy screen music: Loaded on-demand when philosophy screen opens
+      // This reduces initial memory footprint while ensuring core gameplay music is ready
 
       setIsAudioReady(true);
     } catch (error) {
