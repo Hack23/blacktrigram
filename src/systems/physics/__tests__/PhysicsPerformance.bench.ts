@@ -491,3 +491,110 @@ function createBenchmarkPlayerState(): PlayerState {
     vitalPointHits: 0,
   };
 }
+
+describe("Arena Bounds Performance", () => {
+  bench(
+    "Movement with arena bounds validation",
+    () => {
+      const physics = new MovementPhysics();
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+      const state: MovementState = {
+        position: new THREE.Vector3(0, 0, 0),
+        velocity: new THREE.Vector3(0, 0, 0),
+        acceleration: 0,
+        maxSpeed: 6.0,
+        currentStance: TrigramStance.GEON,
+        legInjuryFactor: 0,
+      };
+      const input: MovementInput = {
+        forward: 1.0,
+        lateral: 1.0,
+        isRunning: true,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      physics.updateMovement(state, input, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+
+  bench(
+    "Boundary collision handling",
+    () => {
+      const physics = new MovementPhysics();
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+      const state: MovementState = {
+        position: new THREE.Vector3(4.5, 0, 0), // Near boundary
+        velocity: new THREE.Vector3(2, 0, 0), // Moving toward boundary
+        acceleration: 0,
+        maxSpeed: 6.0,
+        currentStance: TrigramStance.GEON,
+        legInjuryFactor: 0,
+      };
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0,
+        isRunning: true,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      physics.updateMovement(state, input, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+
+  bench(
+    "Corner collision handling",
+    () => {
+      const physics = new MovementPhysics();
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+      const state: MovementState = {
+        position: new THREE.Vector3(4.5, 0, 3.2), // Near corner
+        velocity: new THREE.Vector3(2, 0, 2), // Moving toward corner
+        acceleration: 0,
+        maxSpeed: 6.0,
+        currentStance: TrigramStance.GEON,
+        legInjuryFactor: 0,
+      };
+      const input: MovementInput = {
+        forward: 1.0,
+        lateral: 1.0,
+        isRunning: true,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      physics.updateMovement(state, input, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+});

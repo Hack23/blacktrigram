@@ -5,7 +5,7 @@
  * arena bounds validation in Black Trigram combat system.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import * as THREE from 'three';
 import {
   ArenaBounds,
@@ -237,11 +237,11 @@ describe('PhysicsTypes - Arena Bounds', () => {
       expect(isPositionInBounds(position, bounds)).toBe(false);
     });
 
-    it('should work with 2D position object', () => {
-      const position = { x: 2, z: 1 };
+    it('should work with 2D position object (y maps to Z/depth)', () => {
+      const position = { x: 2, y: 1 }; // y=1 maps to z=1 (depth)
       expect(isPositionInBounds(position, bounds)).toBe(true);
       
-      const outsidePosition = { x: 6, z: 0 };
+      const outsidePosition = { x: 6, y: 0 }; // Outside X boundary
       expect(isPositionInBounds(outsidePosition, bounds)).toBe(false);
     });
 

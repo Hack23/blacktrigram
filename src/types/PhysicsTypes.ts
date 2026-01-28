@@ -302,13 +302,13 @@ export interface ArenaBounds {
  * 
  * **Korean**: 경기장 경계 계산 (Calculate Arena Bounds)
  * 
- * @param bounds - Arena configuration with meter dimensions
+ * @param bounds - Arena configuration with meter dimensions (can be partial with just worldWidthMeters/worldDepthMeters)
  * @param margin - Character radius/margin in meters (default: 0.3m - half character width)
  * @returns Arena bounds for physics calculations
  * 
  * @example
  * ```typescript
- * const config = { worldWidthMeters: 10, worldDepthMeters: 7.5, ... };
+ * const config = { worldWidthMeters: 10, worldDepthMeters: 7.5 };
  * const arenaBounds = calculateArenaBounds(config, 0.3);
  * // Result: { minX: -4.7, maxX: 4.7, minZ: -3.45, maxZ: 3.45, ... }
  * ```
@@ -317,7 +317,7 @@ export interface ArenaBounds {
  * @category Physics Types
  */
 export function calculateArenaBounds(
-  bounds: PhysicsArenaBounds,
+  bounds: Pick<PhysicsArenaBounds, 'worldWidthMeters' | 'worldDepthMeters'>,
   margin: number = 0.3
 ): ArenaBounds {
   const halfWidth = bounds.worldWidthMeters / 2;
@@ -374,29 +374,38 @@ export function clampPositionToBounds(
  * 
  * Only checks X and Z axes (horizontal plane). Y axis (height) is ignored.
  * 
+ * For 2D positions, accepts `{ x, y }` where `y` maps to world Z (depth),
+ * consistent with `clampToArenaBounds` and other 2D arena position APIs.
+ * 
  * **Korean**: 경기장 경계 내 위치 확인 (Check Position In Bounds)
  * 
- * @param position - Position to check (2D {x,z} or 3D Vector3/Position3D)
+ * @param position - Position to check (2D {x,y} where y=depth, or 3D Vector3/Position3D)
  * @param bounds - Arena bounds
  * @returns True if position is within bounds
  * 
  * @example
  * ```typescript
- * const position = { x: 5, z: 2 };
+ * // 2D position (y maps to Z/depth)
+ * const position = { x: 5, y: 2 };
  * const bounds = calculateArenaBounds(config);
  * const inBounds = isPositionInBounds(position, bounds);
- * // Result: true if within bounds, false otherwise
+ * 
+ * // 3D position (uses z directly)
+ * const position3D = new THREE.Vector3(5, 1.8, 2);
+ * const inBounds3D = isPositionInBounds(position3D, bounds);
  * ```
  * 
  * @public
  * @category Physics Types
  */
 export function isPositionInBounds(
-  position: { x: number; z: number } | THREE.Vector3 | Position3D,
+  position: { x: number; y: number } | THREE.Vector3 | Position3D,
   bounds: ArenaBounds
 ): boolean {
   const x = position.x;
-  const z = 'z' in position ? position.z : 0;
+  // For 2D positions {x,y}, y maps to world Z (depth)
+  // For 3D positions, use z directly
+  const z = 'z' in position ? position.z : position.y;
   
   return (
     x >= bounds.minX &&

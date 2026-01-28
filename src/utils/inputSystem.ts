@@ -5,7 +5,7 @@ import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
-import { ArenaBounds } from "../types/PhysicsTypes";
+import { ArenaBounds, calculateArenaBounds } from "../types/PhysicsTypes";
 
 /**
  * Configuration interface for the input system and player movement.
@@ -191,12 +191,20 @@ export function usePlayerMovement(
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update physics engine arena width when bounds change
+  // Track arena bounds changes and compute ArenaBounds once
+  const arenaBoundsRef = useRef<ArenaBounds | undefined>(undefined);
   useEffect(() => {
+    // Compute arena bounds once when bounds prop changes
+    if (bounds) {
+      arenaBoundsRef.current = calculateArenaBounds(bounds, 0.3); // 0.3m character radius
+    } else {
+      arenaBoundsRef.current = undefined;
+    }
+    // Legacy: Update physics engine arena width (deprecated method)
     if (physicsEngineRef.current && bounds?.worldWidthMeters) {
       physicsEngineRef.current.setArenaWidth(bounds.worldWidthMeters);
     }
-  }, [bounds?.worldWidthMeters]);
+  }, [bounds]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -388,30 +396,12 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
-      // Create arena bounds if available
-      let arenaBounds: ArenaBounds | undefined;
-      if (bounds) {
-        const halfWidth = bounds.worldWidthMeters / 2;
-        const halfDepth = bounds.worldDepthMeters / 2;
-        const margin = 0.3; // Character radius margin
-        
-        arenaBounds = {
-          minX: -halfWidth + margin,
-          maxX: halfWidth - margin,
-          minZ: -halfDepth + margin,
-          maxZ: halfDepth - margin,
-          centerX: 0,
-          centerZ: 0,
-          widthMeters: bounds.worldWidthMeters,
-          depthMeters: bounds.worldDepthMeters,
-        };
-      }
-
+      // Use pre-computed arena bounds from ref (calculated once per bounds change)
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
-        arenaBounds, // Pass bounds to physics engine
+        arenaBoundsRef.current, // Use cached bounds
       );
 
       // Position in meters (x = lateral, y = forward/backward)
