@@ -62,6 +62,83 @@ export type BoundingBoxType = "sphere" | "box" | "capsule";
 export type ReachBodyPart = "arm" | "leg" | "torso";
 
 /**
+ * Specific limb types for exposure tracking.
+ *
+ * **Korean**: 노출된 사지 부위
+ *
+ * Granular limb identification for counter-attack and breaking techniques.
+ * Each limb can be targeted during its extension phase.
+ *
+ * @public
+ * @category Combat Types
+ * @korean 사지부위
+ */
+export type ExposedLimbType =
+  | "left_arm" // 왼팔 (Oenpal)
+  | "right_arm" // 오른팔 (Oreunpal)
+  | "left_leg" // 왼다리 (Oendari)
+  | "right_leg" // 오른다리 (Oreundari)
+  | "left_ankle" // 왼발목 (Oenbalmok)
+  | "right_ankle" // 오른발목 (Oreunbalmok)
+  | "left_knee" // 왼무릎 (Oenmureup)
+  | "right_knee" // 오른무릎 (Oreunmureup)
+  | "left_elbow" // 왼팔꿈치 (Oenpalkkumchi)
+  | "right_elbow" // 오른팔꿈치 (Oreunpalkkumchi)
+  | "left_wrist" // 왼손목 (Oensomok)
+  | "right_wrist"; // 오른손목 (Oreunsomok)
+
+/**
+ * Limb exposure window during technique execution.
+ *
+ * **Korean**: 사지 노출 시간
+ *
+ * Defines when and how a limb becomes vulnerable during attack execution.
+ * Used for counter-attacks, breaking techniques, and defensive opportunities.
+ *
+ * @public
+ * @category Combat Types
+ * @korean 사지노출시간
+ */
+export interface LimbExposureWindow {
+  /**
+   * Which limb is exposed during the technique.
+   * @korean 노출된사지
+   */
+  readonly exposedLimb: ExposedLimbType;
+
+  /**
+   * Start time of exposure as fraction of execution time (0.0-1.0).
+   * Example: 0.3 means exposure starts at 30% into the animation.
+   * @korean 노출시작시간
+   */
+  readonly startTime: number;
+
+  /**
+   * Duration of exposure window in milliseconds.
+   * This is the vulnerable period where counter-attacks can target the limb.
+   * @korean 노출지속시간
+   */
+  readonly duration: number;
+
+  /**
+   * Vulnerability multiplier for damage to this limb (1.0-3.0).
+   * Higher values indicate greater vulnerability:
+   * - 1.0-1.3: Minor exposure (quick jabs)
+   * - 1.4-1.8: Moderate exposure (standard strikes)
+   * - 1.9-3.0: Critical exposure (overextended kicks, spinning techniques)
+   * @korean 취약성배수
+   */
+  readonly vulnerabilityMultiplier: number;
+
+  /**
+   * Whether this exposure allows breaking techniques.
+   * True for fully extended limbs (kicks, lunging punches).
+   * @korean 파쇄기술가능
+   */
+  readonly allowsBreaking: boolean;
+}
+
+/**
  * Physical reach configuration for techniques.
  *
  * **Korean**: 물리적 도달 설정
@@ -72,29 +149,38 @@ export type ReachBodyPart = "arm" | "leg" | "torso";
  * - Animation extension multiplier from hit timing
  * - Stance modifiers from Eight Trigrams
  *
+ * **NEW**: Now includes limb exposure tracking for counter-attack opportunities.
+ *
  * Formula: `effectiveReach = (limbLength/100) × extensionMultiplier × stanceModifier`
  *
  * @example
  * ```typescript
- * // Punch technique using arm length
+ * // Punch technique using arm length with exposure
  * const punchReach: PhysicalReachConfig = {
  *   bodyPart: "arm",
  *   techniqueType: "punch",
  *   baseExtension: 0.95, // 95% arm extension at peak
+ *   exposureWindow: {
+ *     exposedLimb: "right_arm",
+ *     startTime: 0.4,
+ *     duration: 300,
+ *     vulnerabilityMultiplier: 1.3,
+ *     allowsBreaking: false
+ *   }
  * };
  *
- * // Elbow strike - close range
- * const elbowReach: PhysicalReachConfig = {
- *   bodyPart: "arm",
- *   techniqueType: "elbow",
- *   baseExtension: 0.5, // 50% arm extension (close range)
- * };
- *
- * // Kick using leg length
+ * // Kick using leg length - high vulnerability
  * const kickReach: PhysicalReachConfig = {
  *   bodyPart: "leg",
  *   techniqueType: "kick",
  *   baseExtension: 1.1, // 110% leg extension (high reach)
+ *   exposureWindow: {
+ *     exposedLimb: "right_leg",
+ *     startTime: 0.5,
+ *     duration: 400,
+ *     vulnerabilityMultiplier: 2.2,
+ *     allowsBreaking: true
+ *   }
  * };
  * ```
  *
@@ -124,6 +210,13 @@ export interface PhysicalReachConfig {
    * @korean 기본확장배수
    */
   readonly baseExtension: number;
+
+  /**
+   * Optional limb exposure window for counter-attack opportunities.
+   * Defines when and how the attacking limb becomes vulnerable.
+   * @korean 사지노출설정
+   */
+  readonly exposureWindow?: LimbExposureWindow;
 }
 
 /**
@@ -341,6 +434,140 @@ export interface CollisionVitalPoint {
   readonly position: Position;
   readonly category: VitalPointCategory;
   readonly severity: VitalPointSeverity;
+}
+
+/**
+ * Counter-attack opportunity during opponent's technique execution.
+ *
+ * **Korean**: 반격 기회
+ *
+ * Represents a window of opportunity to counter-attack when the opponent
+ * has exposed a limb during their technique execution.
+ *
+ * @example
+ * ```typescript
+ * const counterOpportunity: CounterOpportunity = {
+ *   exposedLimb: "right_leg",
+ *   windowStart: 450, // ms into opponent's kick
+ *   windowDuration: 300, // 300ms counter window
+ *   vulnerabilityMultiplier: 2.0,
+ *   allowsBreaking: true,
+ *   recommendedCounters: ["ankle_break", "knee_strike", "leg_sweep"]
+ * };
+ * ```
+ *
+ * @public
+ * @category Combat Types
+ * @korean 반격기회
+ */
+export interface CounterOpportunity {
+  /**
+   * The exposed limb that can be targeted.
+   * @korean 노출된사지
+   */
+  readonly exposedLimb: ExposedLimbType;
+
+  /**
+   * Start time of counter window in milliseconds (from technique start).
+   * @korean 반격시작시간
+   */
+  readonly windowStart: number;
+
+  /**
+   * Duration of counter window in milliseconds.
+   * @korean 반격지속시간
+   */
+  readonly windowDuration: number;
+
+  /**
+   * Vulnerability multiplier for damage during this window.
+   * @korean 취약성배수
+   */
+  readonly vulnerabilityMultiplier: number;
+
+  /**
+   * Whether limb breaking techniques are effective during this window.
+   * @korean 파쇄기술가능
+   */
+  readonly allowsBreaking: boolean;
+
+  /**
+   * Recommended counter-technique IDs for this opportunity.
+   * @korean 추천반격기술
+   */
+  readonly recommendedCounters?: readonly string[];
+}
+
+/**
+ * Breaking technique target types.
+ *
+ * **Korean**: 파쇄 기술 목표
+ *
+ * Specific joint and bone targets for breaking techniques.
+ * Used for limb-breaking counter-attacks.
+ *
+ * @public
+ * @category Combat Types
+ * @korean 파쇄목표
+ */
+export type BreakingTarget =
+  | "ankle" // 발목 (Balmok)
+  | "knee" // 무릎 (Mureup)
+  | "elbow" // 팔꿈치 (Palkkumchi)
+  | "wrist" // 손목 (Sonmok)
+  | "shoulder" // 어깨 (Eokkae)
+  | "hip"; // 엉덩이/골반 (Eongdeongi)
+
+/**
+ * Breaking technique result.
+ *
+ * **Korean**: 파쇄 결과
+ *
+ * Result of a breaking technique attempt, including injury severity
+ * and status effects applied to the broken limb.
+ *
+ * @public
+ * @category Combat Types
+ * @korean 파쇄결과
+ */
+export interface BreakingResult {
+  /**
+   * Whether the breaking technique succeeded.
+   * @korean 파쇄성공
+   */
+  readonly success: boolean;
+
+  /**
+   * Target limb/joint that was broken.
+   * @korean 파쇄목표
+   */
+  readonly target: BreakingTarget;
+
+  /**
+   * Severity of the break (fracture, dislocation, etc.).
+   * Range: 0.0 (failed) to 1.0 (complete break).
+   * @korean 파쇄심각도
+   */
+  readonly severity: number;
+
+  /**
+   * Damage dealt to the limb.
+   * @korean 피해량
+   */
+  readonly damage: number;
+
+  /**
+   * Mobility reduction percentage (0.0-1.0).
+   * Affects movement speed and technique execution.
+   * @korean 이동력감소
+   */
+  readonly mobilityReduction: number;
+
+  /**
+   * IDs of status effects applied (pain, bleeding, disabled_limb, etc.).
+   * @korean 상태효과
+   */
+  readonly statusEffects: readonly string[];
 }
 
 /**

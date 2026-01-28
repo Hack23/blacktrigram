@@ -181,7 +181,7 @@ export const MobileControlsOverlay: React.FC<MobileControlsOverlayProps> =
       return (
         <div
           style={{
-            position: "fixed",
+            position: "absolute", // Changed from fixed to position relative to container
             bottom: `${bottom}px`,
             left: 0,
             right: 0,

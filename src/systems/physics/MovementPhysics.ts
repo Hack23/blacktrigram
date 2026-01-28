@@ -22,6 +22,7 @@
 
 import { TrigramStance } from "@/types/common";
 import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
+import type { MovementArenaBounds } from "@/types/PhysicsTypes";
 import * as THREE from "three";
 
 /**
@@ -200,6 +201,21 @@ export class MovementPhysics {
    */
   private readonly BASE_RUN_SPEED = 10.0;
 
+  /**
+   * Reference arena size for speed calibration (meters).
+   * All speeds are calibrated for a 10m arena.
+   *
+   * **Korean**: 기준 경기장 크기 (Reference Arena Size)
+   */
+  private readonly REFERENCE_ARENA_SIZE = 10.0;
+
+  /**
+   * Current arena width in meters for arena-aware speed scaling.
+   *
+   * **Korean**: 현재 경기장 너비 (Current Arena Width)
+   */
+  private _arenaWidthMeters: number = 10.0;
+
   // LATERAL_SPEED removed - now using state.maxSpeed for all directions
   // This ensures speed override applies to lateral movement too
 
@@ -217,11 +233,77 @@ export class MovementPhysics {
    */
   private _overrideAcceleration: number | null = null;
 
+  /**
+   * Cached arena speed scale to avoid repeated calculations.
+   *
+   * **Korean**: 캐시된 경기장 속도 배수 (Cached Arena Speed Scale)
+   */
+  private _cachedArenaSpeedScale: number = 1.0;
+
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
   private readonly tempMovement = new THREE.Vector3();
   private readonly tempDirection = new THREE.Vector3();
   private readonly tempTargetDirection = new THREE.Vector3();
+
+  /**
+   * Create a new MovementPhysics instance.
+   *
+   * **Korean**: 이동 물리 생성 (Create Movement Physics)
+   *
+   * @param arenaWidthMeters - Width of the arena in meters (default: 10m, min: 1m)
+   * @throws {Error} If arenaWidthMeters is not a positive number
+   *
+   * @example
+   * ```typescript
+   * // Default 10m arena (1.0x speed scale)
+   * const physics = new MovementPhysics();
+   *
+   * // Small 6m arena (0.7x speed scale)
+   * const smallPhysics = new MovementPhysics(6.0);
+   *
+   * // Large 14m arena (1.3x speed scale)
+   * const largePhysics = new MovementPhysics(14.0);
+   * ```
+   *
+   * @public
+   */
+  constructor(arenaWidthMeters: number = 10.0) {
+    if (arenaWidthMeters <= 0 || !Number.isFinite(arenaWidthMeters)) {
+      throw new Error(
+        `Arena width must be a positive finite number, got: ${arenaWidthMeters}`,
+      );
+    }
+    this._arenaWidthMeters = arenaWidthMeters;
+    this._cachedArenaSpeedScale = this.calculateArenaSpeedScale();
+  }
+
+  /**
+   * Calculate arena-aware speed scaling factor.
+   *
+   * **Korean**: 경기장 크기 기반 속도 배수 (Arena-Based Speed Multiplier)
+   *
+   * Scales movement speed proportionally to arena size to maintain consistent
+   * gameplay feel across different screen resolutions. Smaller arenas get
+   * slightly slower speeds, larger arenas get slightly faster speeds.
+   *
+   * Formula: scaleFactor = arenaWidth / referenceArenaSize
+   * Clamped to [0.7, 1.3] range for balanced gameplay
+   *
+   * Examples:
+   * - 6m arena: 0.7x speed (70% of base)
+   * - 10m arena: 1.0x speed (baseline)
+   * - 14m arena: 1.3x speed (130% of base)
+   *
+   * @returns Speed multiplier (0.7 to 1.3)
+   *
+   * @korean 경기장속도배수
+   */
+  private calculateArenaSpeedScale(): number {
+    const rawScale = this._arenaWidthMeters / this.REFERENCE_ARENA_SIZE;
+    // Clamp to reasonable range to maintain gameplay balance
+    return Math.max(0.7, Math.min(1.3, rawScale));
+  }
 
   /**
    * Update player movement based on input and physics.
@@ -235,6 +317,7 @@ export class MovementPhysics {
    * @param state - Current movement state (modified in-place)
    * @param input - Current movement input from controls
    * @param deltaTime - Time since last update (seconds)
+   * @param bounds - Optional arena bounds for clamping position (meters)
    *
    * @korean 이동업데이트
    */
@@ -242,7 +325,11 @@ export class MovementPhysics {
     state: MovementState,
     input: MovementInput,
     deltaTime: number,
+    bounds?: MovementArenaBounds,
   ): void {
+    // Use cached arena-aware speed scaling
+    const arenaSpeedScale = this._cachedArenaSpeedScale;
+
     // Calculate stance speed modifier
     const stanceModifier = this.getStanceSpeedModifier(state.currentStance);
 
@@ -254,9 +341,10 @@ export class MovementPhysics {
       ? this.BASE_RUN_SPEED
       : this.BASE_WALK_SPEED;
 
-    // Apply all modifiers to get final max speed (or use override)
+    // Apply all modifiers including arena scaling to get final max speed (or use override)
     state.maxSpeed =
-      this._overrideMaxSpeed ?? baseSpeed * stanceModifier * injuryPenalty;
+      this._overrideMaxSpeed ??
+      baseSpeed * arenaSpeedScale * stanceModifier * injuryPenalty;
 
     // Use override acceleration if set, otherwise use base
     const currentAcceleration =
@@ -268,10 +356,10 @@ export class MovementPhysics {
     // ✅ REMOVED backward multiplier: All directions use full speed for responsive gameplay
     // The backward penalty should be applied contextually by the combat system
     // based on player facing direction vs movement direction
-    // ✅ FIX: Both lateral and forward now use state.maxSpeed (which includes override)
-    // This ensures consistent speed in all movement directions
+    // ✅ FIX: Both lateral and forward now use state.maxSpeed (which includes all modifiers)
+    // This ensures consistent speed in all movement directions and includes arena scaling
     this.tempTargetVelocity.set(
-      input.lateral * state.maxSpeed * stanceModifier * injuryPenalty,
+      input.lateral * state.maxSpeed,
       0,
       input.forward * state.maxSpeed,
     );
@@ -366,6 +454,27 @@ export class MovementPhysics {
 
     // Update position
     state.position.add(this.tempMovement);
+
+    // Apply arena bounds clamping if bounds provided
+    if (bounds) {
+      // Check if position exceeded boundaries
+      const exceededMinX = state.position.x < bounds.minX;
+      const exceededMaxX = state.position.x > bounds.maxX;
+      const exceededMinZ = state.position.z < bounds.minZ;
+      const exceededMaxZ = state.position.z > bounds.maxZ;
+
+      // Clamp position to arena boundaries
+      state.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, state.position.x));
+      state.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, state.position.z));
+
+      // Zero velocity component if exceeded boundary (smooth stopping)
+      if (exceededMinX || exceededMaxX) {
+        state.velocity.x = 0;
+      }
+      if (exceededMinZ || exceededMaxZ) {
+        state.velocity.z = 0;
+      }
+    }
   }
 
   /**
@@ -409,7 +518,7 @@ export class MovementPhysics {
    * @param isRunning - Whether running (vs walking)
    * @param stance - Current trigram stance
    * @param legInjuryFactor - Leg injury severity (0-1)
-   * @returns Maximum speed in m/s
+   * @returns Maximum speed in m/s (includes arena scaling)
    *
    * @korean 최대속도
    */
@@ -418,10 +527,11 @@ export class MovementPhysics {
     stance: TrigramStance,
     legInjuryFactor: number,
   ): number {
+    const arenaSpeedScale = this._cachedArenaSpeedScale;
     const baseSpeed = isRunning ? this.BASE_RUN_SPEED : this.BASE_WALK_SPEED;
     const stanceModifier = this.getStanceSpeedModifier(stance);
     const injuryPenalty = 1.0 - legInjuryFactor * 0.5;
-    return baseSpeed * stanceModifier * injuryPenalty;
+    return baseSpeed * arenaSpeedScale * stanceModifier * injuryPenalty;
   }
 
   /**
@@ -518,5 +628,57 @@ export class MovementPhysics {
   public clearOverrides(): void {
     this._overrideMaxSpeed = null;
     this._overrideAcceleration = null;
+  }
+
+  /**
+   * Set arena width for arena-aware speed scaling.
+   *
+   * **Korean**: 경기장 너비 설정 (Set Arena Width)
+   *
+   * Updates the arena width used for speed scaling calculations.
+   * Call this when the arena size changes (e.g., screen resize).
+   * Recalculates and caches the arena speed scale.
+   *
+   * @param widthMeters - Arena width in meters (must be positive)
+   * @throws {Error} If widthMeters is not a positive number
+   *
+   * @public
+   */
+  public setArenaWidth(widthMeters: number): void {
+    if (widthMeters <= 0 || !Number.isFinite(widthMeters)) {
+      throw new Error(
+        `Arena width must be a positive finite number, got: ${widthMeters}`,
+      );
+    }
+    this._arenaWidthMeters = widthMeters;
+    this._cachedArenaSpeedScale = this.calculateArenaSpeedScale();
+  }
+
+  /**
+   * Get current arena width.
+   *
+   * **Korean**: 경기장 너비 가져오기 (Get Arena Width)
+   *
+   * @returns Arena width in meters
+   *
+   * @public
+   */
+  public getArenaWidth(): number {
+    return this._arenaWidthMeters;
+  }
+
+  /**
+   * Get current arena speed scale factor.
+   *
+   * **Korean**: 경기장 속도 배수 가져오기 (Get Arena Speed Scale)
+   *
+   * Returns the cached arena speed scale value.
+   *
+   * @returns Arena-based speed multiplier (0.7 to 1.3)
+   *
+   * @public
+   */
+  public getArenaSpeedScale(): number {
+    return this._cachedArenaSpeedScale;
   }
 }

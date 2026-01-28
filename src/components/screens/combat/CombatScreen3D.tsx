@@ -45,6 +45,7 @@ import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { injuryMovementModifier } from "../../../systems/movement/InjuryMovementModifier";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
+import type { KoreanTechnique } from "../../../systems/vitalpoint/types";
 import {
   CombatState,
   GameMode,
@@ -64,6 +65,7 @@ import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
+import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import { useAdaptiveQuality } from "../../shared/three/optimization";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import {
@@ -279,24 +281,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [screenSize]);
 
   // Camera and rendering configuration based on device
-  const cameraConfig = useMemo(() => {
-    // Mobile: Tighter FOV and closer camera for better framing of smaller arena
-    // Desktop: Wider FOV and further camera for full arena view
-    if (isMobile) {
-      return {
-        fov: 55, // Tighter FOV for smaller mobile arena
-        position: [0, 6, 10] as [number, number, number], // Closer camera
-        near: 0.1,
-        far: 1000,
-      };
-    }
-    return {
-      fov: 60, // Standard FOV for desktop
-      position: [0, 8, 12] as [number, number, number], // Further back for full view
-      near: 0.1,
-      far: 1000,
-    };
-  }, [isMobile]);
+  // Use shared physics config for consistent camera setup across screens
+  const cameraConfig = useMemo(() => createCameraConfig(isMobile), [isMobile]);
 
   // Rendering quality based on device (optimize for 60fps on mobile)
   // Uses performance tier system for extra-small, mobile, and desktop devices
@@ -1952,11 +1938,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Create a ref for the callback to avoid circular dependency
   const executeAIActionCallbackRef = useRef<
-    ((action: string, targetPos?: Position) => void) | undefined
+    ((
+      action: string,
+      targetPos?: Position,
+      selectedTechnique?: KoreanTechnique,
+      targetVitalPoint?: string,
+    ) => void) | undefined
   >(undefined);
 
-  // AI Combat System - must be before executeAIActionCallback to provide aiState
-  const { aiState, updateDifficultyTarget } = useAICombat({
+  // AI Combat System - connects AI decisions to executeAIActionCallbackRef via onExecuteAction (action/technique/vital point params)
+  const { updateDifficultyTarget } = useAICombat({
     player: validPlayers[1],
     opponent: validPlayers[0],
     personality: aiPersonality,
@@ -1965,8 +1956,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     roundStarted: combatState.roundStarted,
     roundEnded: combatState.roundEnded,
     arenaBounds,
-    onExecuteAction: (action, targetPos) =>
-      executeAIActionCallbackRef.current?.(action, targetPos),
+    onExecuteAction: (action, targetPos, selectedTechnique, targetVitalPoint) =>
+      executeAIActionCallbackRef.current?.(action, targetPos, selectedTechnique, targetVitalPoint),
     onStanceChange: handleAIStanceChange,
     onLateralityChange: () => handleStanceSideSwitch(1), // AI player (index 1)
     playerLaterality: combatState.playerLaterality[1], // AI's own laterality
@@ -2030,27 +2021,32 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     updateDifficultyTarget,
   ]);
 
-  // AI action execution - uses aiState from useAICombat
+  // AI action execution - receives technique and vital point directly
   const executeAIActionCallback = useCallback(
-    (action: string, targetPos?: Position) => {
+    (
+      action: string,
+      targetPos?: Position,
+      selectedTechnique?: KoreanTechnique,
+      targetVitalPoint?: string,
+    ) => {
       switch (action) {
         case "attack":
           // Set AI attack animation based on technique
           // AI 공격 애니메이션 설정
           if (
-            aiState.selectedTechnique?.name?.english ||
-            aiState.selectedTechnique?.englishName
+            selectedTechnique?.name?.english ||
+            selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ??
-              aiState.selectedTechnique.englishName ??
+              selectedTechnique.name?.english ??
+              selectedTechnique.englishName ??
               "jab";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
             setPlayer2AttackAnimation("jab");
           }
           player2Animation.transitionTo(AnimationState.ATTACK);
-          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
+          handleAIAttack(selectedTechnique, targetVitalPoint);
           break;
         case "defend":
           player2Animation.transitionTo(AnimationState.DEFEND);
@@ -2061,12 +2057,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Set AI attack animation based on technique
           // AI 기술 애니메이션 설정
           if (
-            aiState.selectedTechnique?.name?.english ||
-            aiState.selectedTechnique?.englishName
+            selectedTechnique?.name?.english ||
+            selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ??
-              aiState.selectedTechnique.englishName ??
+              selectedTechnique.name?.english ??
+              selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
@@ -2074,8 +2070,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           }
           player2Animation.transitionTo(AnimationState.ATTACK);
           handleAITechnique(
-            aiState.selectedTechnique,
-            aiState.targetVitalPoint,
+            selectedTechnique,
+            targetVitalPoint,
           );
           break;
         case "approach":
@@ -2138,19 +2134,19 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Set AI attack animation for counter attack
           // AI 반격 애니메이션 설정
           if (
-            aiState.selectedTechnique?.name?.english ||
-            aiState.selectedTechnique?.englishName
+            selectedTechnique?.name?.english ||
+            selectedTechnique?.englishName
           ) {
             const techName =
-              aiState.selectedTechnique.name?.english ??
-              aiState.selectedTechnique.englishName ??
+              selectedTechnique.name?.english ??
+              selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
           } else {
             setPlayer2AttackAnimation("cross");
           }
           player2Animation.transitionTo(AnimationState.ATTACK);
-          handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
+          handleAIAttack(selectedTechnique, targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;
       }
@@ -2165,8 +2161,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       arenaBounds,
       combatState.roundEnded,
       combatState.roundStarted,
-      aiState.selectedTechnique,
-      aiState.targetVitalPoint,
       player2Animation,
     ],
   );
@@ -2389,11 +2383,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         height: `${height}px`,
         position: "relative",
         backgroundColor: "#0a0a0a",
+        overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="combat-screen"
     >
       {/* Three.js Canvas for 3D rendering */}
       <Canvas
+        style={{ width: `${width}px`, height: `${height}px` }}
         camera={{
           position: cameraConfig.position,
           fov: cameraConfig.fov,
@@ -2724,6 +2720,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
+          // Use 'clip' for pure clipping without creating a scroll container
+          // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
+          // any required shadow space is handled via padding on parent containers
+          overflow: "clip",
         }}
       >
         {/* Top HUD - Round info, timer, return to menu */}

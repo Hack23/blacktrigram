@@ -1,10 +1,12 @@
 import { COMBAT_CONTROLS } from "@/systems/types";
 import type { Position } from "@/types/common";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
+import { calculateArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../types/PhysicsTypes";
+import type { MovementArenaBounds } from "../types/PhysicsTypes";
 
 /**
  * Configuration interface for the input system and player movement.
@@ -38,9 +40,10 @@ import { TrigramStance } from "../types/common";
  *
  * ### Fallback Behavior
  *
- * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
- * function and movement will be disabled. Callers MUST provide these values
- * from their layout hooks (useCombatLayout, useTrainingLayout).
+ * If worldWidthMeters/worldDepthMeters are not provided, the system falls back
+ * to DEFAULT_PHYSICS_ARENA_BOUNDS (10m × 7.5m) to ensure movement stays bounded.
+ * Callers SHOULD provide these values from their layout hooks (useCombatLayout, 
+ * useTrainingLayout) for proper arena sizing.
  */
 export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
@@ -171,7 +174,14 @@ export function usePlayerMovement(
   // All positions are in METERS - no pixel conversion needed
   useEffect(() => {
     if (!physicsEngineRef.current) {
-      physicsEngineRef.current = new MovementPhysics();
+      // Use arena width for physics-aware speed scaling
+      // Validate and fall back to default if invalid
+      const width = bounds?.worldWidthMeters;
+      const arenaWidth =
+        width != null && Number.isFinite(width) && width > 0
+          ? width
+          : DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters;
+      physicsEngineRef.current = new MovementPhysics(arenaWidth);
       // Initial position in meters (x = lateral, z = forward/backward)
       physicsStateRef.current = {
         position: new THREE.Vector3(
@@ -187,6 +197,103 @@ export function usePlayerMovement(
       };
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Compute arena bounds synchronously when bounds dimensions change
+  // Uses useMemo to ensure bounds are available immediately (not after effect runs)
+  // Falls back to default arena bounds if invalid or missing
+  const arenaBoundsResult = useMemo<{
+    bounds: MovementArenaBounds | undefined;
+    error?: Error;
+  }>(() => {
+    if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
+      try {
+        return {
+          bounds: calculateArenaBounds(
+            {
+              worldWidthMeters: bounds.worldWidthMeters,
+              worldDepthMeters: bounds.worldDepthMeters,
+            },
+            0.3 // 0.3m character radius
+          ),
+        };
+      } catch (error) {
+        // If validation fails, fall back to default bounds
+        // Error will be logged in useEffect to keep render pure
+        return {
+          bounds: undefined,
+          error: error instanceof Error ? error : new Error(String(error)),
+        };
+      }
+    }
+
+    // Fallback: use default arena bounds to ensure movement stays bounded
+    try {
+      return {
+        bounds: calculateArenaBounds(
+          {
+            worldWidthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters,
+            worldDepthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldDepthMeters,
+          },
+          0.3 // 0.3m character radius
+        ),
+      };
+    } catch (error) {
+      // Should never happen with default bounds, but handle gracefully
+      // Error will be logged in useEffect to keep render pure
+      return {
+        bounds: undefined,
+        error: error instanceof Error ? error : new Error(String(error)),
+      };
+    }
+  }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+
+  const arenaBounds = arenaBoundsResult.bounds;
+
+  // Log arena bounds calculation errors in an effect (not during render)
+  useEffect(() => {
+    if (arenaBoundsResult.error) {
+      if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
+        // Custom bounds failed validation
+        console.warn(
+          "Failed to calculate arena bounds, using defaults:",
+          arenaBoundsResult.error
+        );
+      } else {
+        // Should never happen with default bounds
+        console.error(
+          "Failed to calculate default arena bounds:",
+          arenaBoundsResult.error
+        );
+      }
+    }
+  }, [arenaBoundsResult.error, bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+
+  // Update physics engine arena width when bounds change (legacy)
+  useEffect(() => {
+    if (!physicsEngineRef.current) {
+      return;
+    }
+
+    const width = bounds?.worldWidthMeters;
+    if (width == null) {
+      return;
+    }
+
+    // Validate width before applying to physics engine to avoid runtime errors
+    if (!Number.isFinite(width) || width <= 0) {
+      console.warn(
+        "Ignoring invalid worldWidthMeters when updating arena width:",
+        width,
+      );
+      return;
+    }
+
+    try {
+      physicsEngineRef.current.setArenaWidth(width);
+    } catch (error) {
+      console.warn("Failed to update physics arena width:", error);
+    }
+  }, [bounds?.worldWidthMeters]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
@@ -378,27 +485,12 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
+      // Use arena bounds computed via useMemo (available synchronously)
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
-      );
-
-      // Clamp position to arena bounds (in meters, centered at origin)
-      // Position range: -halfWidth to +halfWidth, -halfDepth to +halfDepth
-      const worldWidth = bounds?.worldWidthMeters ?? 14;
-      const worldDepth = bounds?.worldDepthMeters ?? 10.5;
-      const halfWidth = worldWidth / 2;
-      const halfDepth = worldDepth / 2;
-
-      // Clamp position to centered arena bounds
-      state.position.x = Math.max(
-        -halfWidth,
-        Math.min(halfWidth, state.position.x),
-      );
-      state.position.z = Math.max(
-        -halfDepth,
-        Math.min(halfDepth, state.position.z),
+        arenaBounds, // Use memoized bounds
       );
 
       // Position in meters (x = lateral, y = forward/backward)
@@ -452,11 +544,14 @@ export function usePlayerMovement(
     // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
     // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
+    // arenaBounds is computed from bounds and automatically updates when bounds changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref
     // keyState - excluded, using keyStateRef
     // isMoving - excluded, using keyStateRef for movement check
+    // arenaBounds - excluded, derived from bounds (below)
     bounds,
     onPositionChange,
     currentStance,

@@ -36,8 +36,6 @@ import {
   METERS_TO_TRAINING_UNITS,
 } from "../../../../types/physicsConstants";
 import { calculateDistance3D } from "../../../../utils/math";
-// Note: calculateBodyRadius is available for PvP combat where targets have archetypes
-// import { calculateBodyRadius } from "../../../../utils/skeletonScaling";
 import { TrainingActions, TrainingScreenState } from "./useTrainingState";
 
 export interface UseTrainingActionsConfig {
@@ -80,6 +78,7 @@ export interface UseTrainingActionsConfig {
     vitalPoint: string;
     animationType?: AnimationType;
     startTime?: number;
+    techniqueId?: string;
   } | null>;
   /** Currently selected technique ID (from technique bar) */
   readonly selectedTechniqueId?: string;
@@ -90,7 +89,13 @@ export interface UseTrainingActionsConfig {
 export interface UseTrainingActionsReturn {
   readonly handleStartTraining: () => void;
   readonly handleStopTraining: () => void;
-  readonly handleDummyHit: (vitalPointId: string) => boolean;
+  readonly handleDummyHit: (
+    vitalPointId: string,
+    attackContext?: {
+      animationType?: AnimationType;
+      techniqueId?: string;
+    },
+  ) => boolean;
   readonly handleDummyDefeated: () => void;
   readonly handleStanceChange: (stanceIndex: number) => void;
   readonly handleAttack: () => void;
@@ -204,18 +209,23 @@ function calculateHitAccuracy(
   archetype: import("../../../../types/common").PlayerArchetype,
   stance: TrigramStance,
   animationType?: AnimationType,
+  reachConfig?: import("../../../../types/physics").PhysicalReachConfig,
 ): number {
   // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
+
+  // Get player's physical attributes for reach calculation
+  const playerPhysicalAttributes = getArchetypePhysicalAttributes(archetype);
 
   // Training dummy uses default body radius since it has no archetype
   // For combat between players, we would use calculateBodyRadius(targetPhysicalAttributes)
   // 훈련 더미는 원형이 없으므로 기본 몸체 반경 사용
   const targetBodyRadius = DEFAULT_BODY_RADIUS_METERS;
 
-  // Adjust distance to account for target body radius
-  // Attacks hit the body surface, not the center point
-  // 타격은 중심점이 아닌 몸체 표면에 적중
+  // Effective distance = center-to-center minus target body radius only
+  // Note: PhysicalReachCalculator already includes player body pivot/offset in reach calculation,
+  // so we only subtract the target radius to avoid double-counting.
+  // 유효 거리 = 중심간 거리 - 더미 몸체 반경 (플레이어 몸체 오프셋은 도달 거리에 포함됨)
   const effectiveDistance = Math.max(
     0,
     centerToCenterDistance - targetBodyRadius,
@@ -229,11 +239,11 @@ function calculateHitAccuracy(
   // 4. This matches intuitive behavior - if you're close enough to be hit by the kick, it hits
   // 훈련 타격 감지는 최대 도달 거리 사용 (애니메이션 타이밍과 기술 타이밍 불일치 보정)
   if (animationType !== undefined) {
-    const physicalAttributes = getArchetypePhysicalAttributes(archetype);
     const maxReachMeters = physicalReachCalculator.calculateMaxReach(
-      physicalAttributes,
+      playerPhysicalAttributes,
       animationType,
       stance,
+      reachConfig, // Use technique's designed reach if provided
     );
 
     // Convert reach from meters to training scene units.
@@ -321,9 +331,27 @@ export function useTrainingActions(
   }, [actions, audio]);
 
   const handleDummyHit = useCallback(
-    (_vitalPointId: string): boolean => {
-      // Get animation context from pending attack if available
-      const animationType = pendingAttackRef.current?.animationType;
+    (
+      _vitalPointId: string,
+      attackContext?: {
+        animationType?: AnimationType;
+        techniqueId?: string;
+      },
+    ): boolean => {
+      // Get animation context from the passed attackContext parameter
+      // (TrainingScreen3D.tsx should pass the attackData before clearing the ref)
+      const animationType = attackContext?.animationType;
+
+      // Get technique's reachConfig for accurate reach calculation
+      // Priority: attackContext.techniqueId (resolved in handleAttack) > selectedTechniqueId
+      // This ensures default techniques (chosen when no explicit selection) also get their reachConfig
+      let reachConfig: import("../../../../types/physics").PhysicalReachConfig | undefined;
+      const resolvedTechniqueId =
+        attackContext?.techniqueId ?? selectedTechniqueId;
+      if (resolvedTechniqueId) {
+        const technique = KoreanTechniquesSystem.getTechniqueById(resolvedTechniqueId);
+        reachConfig = technique?.reachConfig;
+      }
 
       const accuracy = calculateHitAccuracy(
         player3DPosition,
@@ -331,6 +359,7 @@ export function useTrainingActions(
         playerArchetype,
         playerStance,
         animationType,
+        reachConfig,
       );
 
       // Determine hit position (dummy center)
@@ -411,8 +440,8 @@ export function useTrainingActions(
       playerStance,
       actions,
       audio,
-      pendingAttackRef,
       playBoneImpactSound,
+      selectedTechniqueId,
     ],
   );
 
@@ -468,6 +497,7 @@ export function useTrainingActions(
       playerArchetype,
       playerStance,
       animationType,
+      techniqueToUse?.reachConfig, // Pass technique's reachConfig for accurate reach
     );
 
     pendingAttackRef.current = {
@@ -475,6 +505,7 @@ export function useTrainingActions(
       vitalPoint: state.selectedVitalPoint ?? "generic",
       animationType,
       startTime,
+      techniqueId, // Store resolved technique ID for handleDummyHit
     };
 
     // Set visual attack animation based on technique (AnimationRegistry lookup)

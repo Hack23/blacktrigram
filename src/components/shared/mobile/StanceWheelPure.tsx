@@ -266,7 +266,7 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
     return (
       <div
         style={{
-          position: 'fixed',
+          position: 'absolute', // Changed from fixed to position relative to container
           bottom: `${dynamicBottom}px`,
           left: '50%',
           transform: 'translateX(-50%)',
@@ -391,7 +391,7 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
   return (
     <div
       style={{
-        position: 'fixed',
+        position: 'absolute', // Changed from fixed to position relative to container
         bottom: `${dynamicBottom}px`,
         left: '50%',
         transform: 'translateX(-50%)',

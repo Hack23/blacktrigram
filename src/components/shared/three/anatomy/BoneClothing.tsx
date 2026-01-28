@@ -102,18 +102,31 @@ export interface BoneClothingProps {
 
 /**
  * Calculate body thickness multiplier based on muscle mass and fat mass
+ *
+ * Uses linear scaling with reasonable limits to prevent "michelin man" effect.
+ * This matches the BodySurface calculation for consistency.
+ *
+ * @param muscleMass - Muscle mass in kg
+ * @param fatMass - Fat mass in kg
+ * @returns Body thickness multiplier (0.75 - 1.20)
  */
 const calculateBodyThickness = (
   muscleMass: number,
   fatMass: number,
 ): number => {
-  const referenceMuscle = 35;
-  const referenceFat = 12;
+  const referenceMuscle = 35; // Reference: athletic build
+  const referenceFat = 12; // Reference: low body fat
+
+  // Linear scaling with limits (not square root which causes excessive inflation)
   const muscleRatio = muscleMass / referenceMuscle;
-  const muscleContribution = Math.sqrt(muscleRatio) * 0.7;
   const fatRatio = fatMass / referenceFat;
-  const fatContribution = Math.sqrt(fatRatio) * 0.3;
-  return muscleContribution + fatContribution;
+
+  // Base 0.85, muscle adds up to +0.15, fat adds up to +0.20
+  const muscleContribution = (muscleRatio - 1.0) * 0.15;
+  const fatContribution = (fatRatio - 1.0) * 0.20;
+
+  // Cap at 1.20x maximum to prevent "michelin man" effect
+  return Math.max(0.75, Math.min(1.20, 0.85 + muscleContribution + fatContribution));
 };
 
 /**
@@ -220,10 +233,11 @@ const getAttachmentsForItem = (
         const height = (59 / 100) * torsoScale * 1.2; // Using base torsoLength
         const depth = 0.08 * fitScale * bodyThickness; // Thin clothing layer
 
-        // Clothing offset = body radius + clothing half-depth (places clothing OUTSIDE body)
+        // Clothing offset = body radius + small gap + clothing half-depth (places clothing OUTSIDE body)
+        // Small gap (0.015) prevents Z-fighting with body surface
         // Uses centralized PECTORALS_RADIUS from bodyDimensions
         const bodyRadius = PECTORALS_RADIUS * bodyThickness;
-        const clothingOffset = bodyRadius + depth * 0.5;
+        const clothingOffset = bodyRadius + 0.015 + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
           localOffset: new THREE.Vector3(0, 0, clothingOffset),
@@ -363,9 +377,10 @@ const getAttachmentsForItem = (
           (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
         const beltDepth = 0.04 * bodyThickness; // Thin belt
 
-        // Belt offset = core radius (from bodyDimensions) + belt half-depth
+        // Belt offset = core radius + small gap + belt half-depth
+        // Small gap prevents Z-fighting with body surface
         const waistRadius = CORE_RADIUS * bodyThickness;
-        const beltOffset = waistRadius + beltDepth * 0.5;
+        const beltOffset = waistRadius + 0.015 + beltDepth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(beltWidth, 0.06, beltDepth),
           localOffset: new THREE.Vector3(0, 0, beltOffset),
@@ -390,10 +405,10 @@ const getAttachmentsForItem = (
         const height = (59 / 100) * 0.75 * torsoScale;
         const depth = 0.06 * fitScale * bodyThickness; // Thin vest layer
 
-        // Vest offset = pectorals radius (from bodyDimensions) + vest half-depth
-        // Slightly larger for layered look
+        // Vest offset = pectorals radius + small gap + vest half-depth
+        // Slightly larger for layered look, with gap to prevent Z-fighting
         const bodyRadius = (PECTORALS_RADIUS + 0.01) * bodyThickness;
-        const vestOffset = bodyRadius + depth * 0.5;
+        const vestOffset = bodyRadius + 0.015 + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
           localOffset: new THREE.Vector3(0, 0, vestOffset),

@@ -31,6 +31,7 @@ import {
   Noise,
   Vignette,
 } from "@react-three/postprocessing";
+import * as THREE from "three";
 import React, {
   useCallback,
   useEffect,
@@ -71,6 +72,7 @@ import { Z_INDEX } from "../../../types/LayoutTypes";
 import { DEFAULT_BODY_RADIUS_METERS } from "../../../types/physicsConstants";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { calculateDistance3D } from "../../../utils/math";
+import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
@@ -108,6 +110,8 @@ import {
   TrainingRightHUD,
   TrainingTopHUD,
 } from "./components/hud";
+// Attack movement hook for player forward momentum
+import { useAttackMovement } from "./hooks/useAttackMovement";
 import useTrainingActions from "./hooks/useTrainingActions";
 import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
@@ -230,7 +234,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [showLabels, setShowLabels] = React.useState(true);
   const [animated, setAnimated] = React.useState(true);
-  const [scale, setScale] = React.useState(1.0);
+  // Use combat-consistent scale (1.2) for better visibility across screens
+  const [scale, setScale] = React.useState(1.2);
 
   // Track current attack animation for technique-specific animations
   // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
@@ -404,12 +409,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     vitalPoint: string;
     animationType?: AnimationType;
     startTime?: number;
+    techniqueId?: string;
   } | null>(null);
 
   // Forward ref for handleDummyHit (defined in actions hook)
-  const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
-    () => false,
-  );
+  const handleDummyHitRef = useRef<
+    (
+      vitalPointId: string,
+      attackContext?: {
+        animationType?: AnimationType;
+        techniqueId?: string;
+      },
+    ) => boolean
+  >(() => false);
 
   // Ref for playerAnimation to avoid circular dependencies in animation events
   const playerAnimationRef = useRef<ReturnType<
@@ -423,9 +435,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         // Execute attack at midpoint of animation (frame 6 of 12)
         if (state === "attack" && frame === 6 && pendingAttackRef.current) {
           const attackData = pendingAttackRef.current;
+          // Pass attack context to handleDummyHit before clearing the ref
+          // This ensures animationType and techniqueId are available for reach calculation
+          handleDummyHitRef.current(attackData.vitalPoint, {
+            animationType: attackData.animationType,
+            techniqueId: attackData.techniqueId,
+          });
           pendingAttackRef.current = null;
-          // Execute dummy hit with stored vital point
-          handleDummyHitRef.current(attackData.vitalPoint);
         }
       },
       onAnimationComplete: (state) => {
@@ -551,6 +567,53 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trainingPlayerState]); // speedModifierSystem is memoized and never changes
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 5: Player Attack Movement (Forward Momentum)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Determine if player is currently attacking based on animation state
+  const isPlayerAttacking = useMemo(
+    () => playerAnimation?.currentState === "attack",
+    [playerAnimation],
+  );
+
+  // Calculate attack direction (toward dummy)
+  // Note: Direction is calculated on every position change to ensure attacks
+  // always target the current dummy position, even if the player is moving.
+  // This is intentional for responsive gameplay where attacks can be initiated mid-movement.
+  const attackDirection = useMemo(() => {
+    // Only calculate if attacking to avoid unnecessary work
+    if (!isPlayerAttacking) {
+      return new THREE.Vector3(0, 0, 1); // Default forward direction
+    }
+    const dx = dummyPosition[0] - player3DPosition[0];
+    const dz = dummyPosition[2] - player3DPosition[2];
+    return new THREE.Vector3(dx, 0, dz).normalize();
+  }, [dummyPosition, player3DPosition, isPlayerAttacking]);
+
+  // Apply attack movement physics to player position
+  // Note: currentTechniqueAnimationTypeRef.current is intentionally a ref to avoid
+  // unnecessary re-renders. The animation type is read at attack start (in useAttackMovement's
+  // internal effect) and doesn't need to be reactive. It's always set before isPlayerAttacking
+  // becomes true via the handleAttack action.
+  const {
+    currentPosition: player3DPositionWithAttackMovement,
+  } = useAttackMovement({
+    isAttacking: isPlayerAttacking,
+    animationType: currentTechniqueAnimationTypeRef.current,
+    currentStance: trainingPlayerState.currentStance,
+    basePosition: player3DPosition,
+    attackDirection,
+    animationDuration: 0.4,
+  });
+
+  // Use position with attack movement for rendering
+  const finalPlayer3DPosition = isPlayerAttacking
+    ? player3DPositionWithAttackMovement
+    : player3DPosition;
+
+  // ═══════════════════════════════════════════════════════════════════════════
 
   // Ref to store handleAttack for use in useTechniqueSelection callback
   // This breaks circular dependency between useTechniqueSelection and useTrainingActions
@@ -1062,12 +1125,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 14: Camera Configuration
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Use shared physics config for consistent camera setup across screens
+  // Mobile: tighter FOV and closer camera for better framing
+  // Desktop: wider FOV and further camera for full view
   const cameraConfig = useMemo(
-    () => ({
-      position: [0, 8, 12] as [number, number, number],
-      fov: 60,
-    }),
-    [],
+    () => createCameraConfig(isMobile),
+    [isMobile],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1087,11 +1150,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         width: `${width}px`,
         height: `${height}px`,
         position: "relative",
+        overflow: "hidden", // Prevent content from extending beyond container
       }}
       data-testid="training-screen-3d"
     >
       <Canvas
-        style={{ width, height }}
+        style={{ width: `${width}px`, height: `${height}px` }}
         gl={{
           antialias: performanceSettings.antialias,
           alpha: false,
@@ -1165,7 +1229,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             trainingPlayerState,
-            player3DPosition,
+            finalPlayer3DPosition,
             playerRotation,
             {
               isMobile,
@@ -1263,6 +1327,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
+          // Use 'clip' for pure clipping without creating a scroll container
+          // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
+          // any required shadow space is handled via padding on parent containers
+          overflow: "clip",
         }}
         data-testid="training-hud-overlay"
       >

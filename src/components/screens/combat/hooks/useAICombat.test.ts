@@ -490,7 +490,7 @@ describe("useAICombat", () => {
         result.current.executeAIAction("attack");
       });
 
-      expect(mockOnExecuteAction).toHaveBeenCalledWith("attack", undefined);
+      expect(mockOnExecuteAction).toHaveBeenCalledWith("attack", undefined, undefined, undefined);
     });
 
     it("should pass target position to callback", () => {
@@ -527,6 +527,8 @@ describe("useAICombat", () => {
       expect(mockOnExecuteAction).toHaveBeenCalledWith(
         "approach",
         targetPosition,
+        undefined,
+        undefined,
       );
     });
   });

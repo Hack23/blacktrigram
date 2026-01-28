@@ -42,6 +42,17 @@ export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; 
  * Heuristically aligned with PhysicalReachCalculator.ts but intentionally
  * simplified for AI decision-making (e.g., omits stance/animation modifiers).
  * 
+ * **NOTE ON BODY RADIUS**: The body pivot values approximate the body radius
+ * effect for AI range calculations. For precise hit detection in CombatSystem,
+ * use calculateBodyRadius() which accounts for individual archetype differences.
+ * 
+ * AI decision-making trade-off:
+ * - Punch body pivot (shoulder offset + torso rotation): ~0.3-0.35m
+ * - Actual body radius (shoulder width * 0.5 / 100): ~0.215-0.27m
+ * - Difference: AI slightly overestimates close-range effectiveness
+ * - Impact: AI may attempt attacks at marginally longer range than optimal
+ * - Benefit: Simplified calculations, acceptable gameplay behavior
+ * 
  * @korean 신체 회전 도달 거리 증가 (AI 의사결정을 위한 근사치)
  */
 const BODY_PIVOT_METERS = {
@@ -827,18 +838,21 @@ export class AIDecisionTree {
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
-    if (distance < optimalRange * 1.2) {
+    // Increased multiplier from 1.2 to 2.0 to allow attacks at greater distances
+    // Players start at ~1.6m apart, so this ensures AI can attack immediately
+    // Using <= to include exact boundary cases (e.g., Jeongbo at 1.6m = 0.8m * 2.0)
+    if (distance <= optimalRange * 2.0) {
       // Close to optimal range - use close-range tactics including vital point targeting
       decisions.push(
         this.evaluateCloseRange(context, personality, killModeActive),
       );
-    } else if (distance > optimalRange * 1.8) {
+    } else if (distance > optimalRange * 2.5) {
       // Too far - need to approach
       decisions.push(
         this.evaluateApproach(context, personality, killModeActive),
       );
     } else {
-      // Mid-range - good tactical position
+      // Mid-range (>2.0x && <=2.5x optimal range) - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
