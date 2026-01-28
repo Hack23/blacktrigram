@@ -65,6 +65,7 @@ import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
 import { createPlayerFromArchetype } from "../../../utils/playerUtils";
+import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import { useAdaptiveQuality } from "../../shared/three/optimization";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import {
@@ -280,24 +281,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [screenSize]);
 
   // Camera and rendering configuration based on device
-  const cameraConfig = useMemo(() => {
-    // Mobile: Tighter FOV and closer camera for better framing of smaller arena
-    // Desktop: Wider FOV and further camera for full arena view
-    if (isMobile) {
-      return {
-        fov: 55, // Tighter FOV for smaller mobile arena
-        position: [0, 6, 10] as [number, number, number], // Closer camera
-        near: 0.1,
-        far: 1000,
-      };
-    }
-    return {
-      fov: 60, // Standard FOV for desktop
-      position: [0, 8, 12] as [number, number, number], // Further back for full view
-      near: 0.1,
-      far: 1000,
-    };
-  }, [isMobile]);
+  // Use shared physics config for consistent camera setup across screens
+  const cameraConfig = useMemo(() => createCameraConfig(isMobile), [isMobile]);
 
   // Rendering quality based on device (optimize for 60fps on mobile)
   // Uses performance tier system for extra-small, mobile, and desktop devices
