@@ -409,12 +409,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     vitalPoint: string;
     animationType?: AnimationType;
     startTime?: number;
+    techniqueId?: string;
   } | null>(null);
 
   // Forward ref for handleDummyHit (defined in actions hook)
-  const handleDummyHitRef = useRef<(vitalPointId: string) => boolean>(
-    () => false,
-  );
+  const handleDummyHitRef = useRef<
+    (
+      vitalPointId: string,
+      attackContext?: {
+        animationType?: AnimationType;
+        techniqueId?: string;
+      },
+    ) => boolean
+  >(() => false);
 
   // Ref for playerAnimation to avoid circular dependencies in animation events
   const playerAnimationRef = useRef<ReturnType<
@@ -428,9 +435,13 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         // Execute attack at midpoint of animation (frame 6 of 12)
         if (state === "attack" && frame === 6 && pendingAttackRef.current) {
           const attackData = pendingAttackRef.current;
+          // Pass attack context to handleDummyHit before clearing the ref
+          // This ensures animationType and techniqueId are available for reach calculation
+          handleDummyHitRef.current(attackData.vitalPoint, {
+            animationType: attackData.animationType,
+            techniqueId: attackData.techniqueId,
+          });
           pendingAttackRef.current = null;
-          // Execute dummy hit with stored vital point
-          handleDummyHitRef.current(attackData.vitalPoint);
         }
       },
       onAnimationComplete: (state) => {

@@ -42,6 +42,17 @@ export type { AIDecision, CombatContext, VulnerabilityContext } from "./types"; 
  * Heuristically aligned with PhysicalReachCalculator.ts but intentionally
  * simplified for AI decision-making (e.g., omits stance/animation modifiers).
  * 
+ * **NOTE ON BODY RADIUS**: The body pivot values approximate the body radius
+ * effect for AI range calculations. For precise hit detection in CombatSystem,
+ * use calculateBodyRadius() which accounts for individual archetype differences.
+ * 
+ * AI decision-making trade-off:
+ * - Punch body pivot (shoulder offset + torso rotation): ~0.3-0.35m
+ * - Actual body radius (shoulder width * 0.5 / 100): ~0.215-0.27m
+ * - Difference: AI slightly overestimates close-range effectiveness
+ * - Impact: AI may attempt attacks at marginally longer range than optimal
+ * - Benefit: Simplified calculations, acceptable gameplay behavior
+ * 
  * @korean 신체 회전 도달 거리 증가 (AI 의사결정을 위한 근사치)
  */
 const BODY_PIVOT_METERS = {

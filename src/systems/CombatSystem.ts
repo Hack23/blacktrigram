@@ -328,6 +328,7 @@ export class CombatSystem implements CombatSystemInterface {
         animationType,
         currentTime,
         attacker.currentStance,
+        technique.reachConfig, // Pass reachConfig for hybrid reach calculation
       );
 
       // Check distance to defender using 3D Euclidean distance
@@ -338,16 +339,20 @@ export class CombatSystem implements CombatSystemInterface {
         [defender.position.x, defender.position.y, 0],
       );
 
-      // Calculate defender body radius based on their physical attributes
-      // Attacks hit the body surface, not the center point
-      // 타격은 중심점이 아닌 몸체 표면에 적중
+      // Calculate body radii
+      // Note: PhysicalReachCalculator already includes attacker body pivot/offset in reach calculation
+      // (shoulder offset for punches, hip rotation for kicks), so we only subtract defender radius
+      // to avoid double-counting the attacker's body dimension.
+      // 타격 거리 계산: 수비자 몸체 반경만 제외 (공격자 몸체 오프셋은 이미 도달 거리에 포함됨)
       const defenderPhysical = getArchetypePhysicalAttributes(
         defender.archetype,
       );
       const defenderBodyRadius = calculateBodyRadius(defenderPhysical);
 
-      // Effective distance = center-to-center minus target body radius
-      // 유효 거리 = 중심간 거리 - 목표 몸체 반경
+      // Effective distance = center-to-center minus defender body radius only
+      // Reach is calculated from attacker center to striking limb surface (includes body pivot),
+      // so we measure from attacker center to defender surface (subtracting defender radius only).
+      // 유효 거리 = 중심간 거리 - 수비자 몸체 반경
       const distance = Math.max(0, centerToCenterDistance - defenderBodyRadius);
 
       // If out of reach, miss
