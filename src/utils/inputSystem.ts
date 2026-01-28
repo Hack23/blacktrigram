@@ -5,7 +5,7 @@ import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
-import { calculateArenaBounds } from "../types/PhysicsTypes";
+import { calculateArenaBounds, DEFAULT_PHYSICS_ARENA_BOUNDS } from "../types/PhysicsTypes";
 import type { MovementArenaBounds } from "../types/PhysicsTypes";
 
 /**
@@ -194,6 +194,7 @@ export function usePlayerMovement(
 
   // Compute arena bounds synchronously when bounds dimensions change
   // Uses useMemo to ensure bounds are available immediately (not after effect runs)
+  // Falls back to default arena bounds if invalid or missing
   const arenaBounds = useMemo<MovementArenaBounds | undefined>(() => {
     if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
       try {
@@ -205,12 +206,25 @@ export function usePlayerMovement(
           0.3 // 0.3m character radius
         );
       } catch (error) {
-        // If validation fails, log error and return undefined (no bounds)
-        console.warn('Failed to calculate arena bounds:', error);
-        return undefined;
+        // If validation fails, log error and fall back to default bounds
+        console.warn("Failed to calculate arena bounds:", error);
       }
     }
-    return undefined;
+    
+    // Fallback: use default arena bounds to ensure movement stays bounded
+    try {
+      return calculateArenaBounds(
+        {
+          worldWidthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters,
+          worldDepthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldDepthMeters,
+        },
+        0.3 // 0.3m character radius
+      );
+    } catch (error) {
+      // Should never happen with default bounds, but handle gracefully
+      console.error("Failed to calculate default arena bounds:", error);
+      return undefined;
+    }
   }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
 
   // Update physics engine arena width when bounds change (legacy)
@@ -489,11 +503,14 @@ export function usePlayerMovement(
     // NOTE: playerPosition, velocity, speed, keyState, isMoving intentionally excluded from deps
     // Using refs (lastReportedPositionRef, lastReportedVelocityRef, lastReportedSpeedRef, keyStateRef)
     // for comparison to prevent animation frame cancellation on every state update.
+    // arenaBounds is computed from bounds and automatically updates when bounds changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     enabled,
     // playerPosition - excluded, using ref
     // keyState - excluded, using keyStateRef
     // isMoving - excluded, using keyStateRef for movement check
+    // arenaBounds - excluded, derived from bounds (below)
     bounds,
     onPositionChange,
     currentStance,
