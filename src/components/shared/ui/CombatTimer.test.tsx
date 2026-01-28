@@ -108,10 +108,10 @@ describe("CombatTimer", () => {
 
     const timer = screen.getByTestId("combat-timer");
     const style = timer.style.animation;
-    expect(style).toContain("pulse");
+    expect(style).toContain("timerFlash");
   });
 
-  it("should have pulse animation when time is up", () => {
+  it("should have timerFlash animation when time is up", () => {
     render(
       <CombatTimer
         formattedTime="00:00"
@@ -123,7 +123,7 @@ describe("CombatTimer", () => {
 
     const timer = screen.getByTestId("combat-timer");
     const style = timer.style.animation;
-    expect(style).toContain("pulse");
+    expect(style).toContain("timerFlash");
   });
 
   it("should not have pulse animation when warning level is none or warning", () => {
