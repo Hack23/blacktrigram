@@ -633,38 +633,75 @@ export class CombatSystem implements CombatSystemInterface {
   private getGrappleTargetFromTechnique(
     technique: KoreanTechnique
   ): GrappleTarget {
-    // Check technique name/ID for hints
+    // Check technique name/ID for hints (both English and Korean)
     const techName = (
       technique.name?.english ||
       technique.englishName ||
       ""
     ).toLowerCase();
+    const techNameKorean = (
+      technique.name?.korean ||
+      technique.koreanName ||
+      ""
+    );
     const techId = technique.id.toLowerCase();
 
-    if (techName.includes("wrist") || techId.includes("wrist")) {
+    // Check for wrist/hand - 손목 (sonmok)
+    if (
+      techName.includes("wrist") ||
+      techId.includes("wrist") ||
+      techNameKorean.includes("손목")
+    ) {
       return GrappleTarget.HAND;
     }
-    if (techName.includes("arm") || techId.includes("arm")) {
+
+    // Check for arm - 팔 (pal)
+    if (
+      techName.includes("arm") ||
+      techId.includes("arm") ||
+      techNameKorean.includes("팔")
+    ) {
       return GrappleTarget.ARM;
     }
-    if (techName.includes("leg") || techId.includes("leg")) {
+
+    // Check for leg - 다리 (dari)
+    if (
+      techName.includes("leg") ||
+      techId.includes("leg") ||
+      techNameKorean.includes("다리")
+    ) {
       return GrappleTarget.LEG;
     }
-    if (techName.includes("neck") || techId.includes("neck")) {
+
+    // Check for neck - 목 (mok)
+    if (
+      techName.includes("neck") ||
+      techId.includes("neck") ||
+      techNameKorean.includes("목")
+    ) {
       return GrappleTarget.NECK;
     }
+
+    // Check for both arms - 양팔 (yangpal)
     if (
       techName.includes("both") ||
       techName.includes("double") ||
-      techId.includes("both")
+      techId.includes("both") ||
+      techNameKorean.includes("양팔") ||
+      techNameKorean.includes("쌍")
     ) {
       return GrappleTarget.BOTH_ARMS;
     }
+
+    // Check for torso/body/hip - 몸통 (momtong), 허리 (heori), 몸 (mom)
     if (
       techName.includes("torso") ||
       techName.includes("body") ||
       techName.includes("hip") ||
-      techId.includes("torso")
+      techId.includes("torso") ||
+      techNameKorean.includes("몸통") ||
+      techNameKorean.includes("허리") ||
+      techNameKorean.includes("몸")
     ) {
       return GrappleTarget.TORSO;
     }
@@ -698,6 +735,26 @@ export class CombatSystem implements CombatSystemInterface {
       return {
         updatedController: controller,
         updatedTarget: target,
+      };
+    }
+
+    // Validate grapple control consistency
+    if (
+      controller.grappleControl.controllerId !== controller.id ||
+      controller.grappleControl.targetId !== target.id
+    ) {
+      // Inconsistent state - break grapple
+      return {
+        updatedController: {
+          ...controller,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
+        updatedTarget: {
+          ...target,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
       };
     }
 

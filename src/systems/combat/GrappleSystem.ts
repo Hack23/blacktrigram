@@ -135,6 +135,15 @@ export class GrappleSystem {
       };
     }
 
+    // Check if attacker is already grappling someone else
+    if (attacker.combatState === CombatState.GRAPPLING) {
+      return {
+        success: false,
+        reason: "Attacker is already grappling another opponent",
+        staminaCost: 0,
+      };
+    }
+
     if (attacker.stamina < this.config.escapeStaminaCost) {
       return {
         success: false,
@@ -166,9 +175,9 @@ export class GrappleSystem {
     const success = roll < successChance;
 
     if (success) {
-      // Create grapple control
+      // Create grapple control - start with GRABBING state during initiation
       const grappleControl: GrappleControl = {
-        state: GrappleState.CONTROLLING,
+        state: GrappleState.GRABBING,
         target,
         controllerId: attacker.id,
         targetId: defender.id,
@@ -224,6 +233,12 @@ export class GrappleSystem {
     // Update duration
     const newDuration = currentTime - grappleControl.startTime;
 
+    // Transition from GRABBING to CONTROLLING after initial establishment
+    let newState = grappleControl.state;
+    if (grappleControl.state === GrappleState.GRABBING && newDuration > 0) {
+      newState = GrappleState.CONTROLLING;
+    }
+
     // Decay grip strength slightly over time
     const gripDecayRate = 2; // points per second
     const rawGripStrength = grappleControl.gripStrength - gripDecayRate * deltaTime;
@@ -240,6 +255,7 @@ export class GrappleSystem {
 
     return {
       ...grappleControl,
+      state: newState,
       gripStrength: newGripStrength,
       duration: newDuration,
       canEscape,
@@ -438,6 +454,14 @@ export class GrappleSystem {
 
     // Technique helps find weaknesses in grip
     baseChance += target.technique * 0.005;
+
+    // Stance modifiers - certain stances are better at escaping grapples
+    // **Korean**: 곤(坤) 자세는 탈출에 유리 (+30%), 간(艮) 자세는 방어적인 탈출 (+15%)
+    if (target.currentStance === TrigramStance.GON) {
+      baseChance += 0.3; // GON stance excels at grounding and escape
+    } else if (target.currentStance === TrigramStance.GAN) {
+      baseChance += 0.15; // GAN stance has defensive escape advantage
+    }
 
     // Time factor - longer control makes escape harder
     const durationSeconds = grappleControl.duration / 1000;

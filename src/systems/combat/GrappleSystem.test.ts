@@ -70,7 +70,7 @@ describe("GrappleSystem", () => {
 
       if (result.success) {
         expect(result.grappleControl).toBeDefined();
-        expect(result.grappleControl?.state).toBe(GrappleState.CONTROLLING);
+        expect(result.grappleControl?.state).toBe(GrappleState.GRABBING);
         expect(result.grappleControl?.controllerId).toBe(attacker.id);
         expect(result.grappleControl?.targetId).toBe(defender.id);
         expect(result.grappleControl?.target).toBe(GrappleTarget.ARM);

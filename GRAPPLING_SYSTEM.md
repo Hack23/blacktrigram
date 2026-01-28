@@ -22,8 +22,8 @@ The system automatically determines grapple target from technique characteristic
 - `both`, `double` → Both arms (hardest, 180% stamina cost)
 
 ### 🌏 Korean Martial Arts Integration
-- **GON Stance (곤괘)**: Earth stance gets 30% grappling success bonus
-- **GAN Stance (간괘)**: Mountain stance gets 15% control bonus
+- **GON Stance (곤괘)**: Earth stance gets +15% grappling success chance and 30% grip strength (1.3× multiplier), +30% escape chance
+- **GAN Stance (간괘)**: Mountain stance gets +15% grip strength (1.15× multiplier), +15% escape chance
 - Authentic Hapkido joint lock principles
 - Traditional Ssireum grip and control mechanics
 
@@ -125,20 +125,31 @@ Escape chance is calculated based on:
 - **Strength difference**: +(target power - controller power) × 2%
 - **Speed advantage**: +(target speed - controller speed) × 1.5%
 - **Technique skill**: +target technique × 0.5%
+- **GON stance escape bonus**: +30%
+- **GAN stance escape bonus**: +15%
 - **Time penalty**: -min(20%, duration × 2%)
 
 ## State Diagram
 
 ```
 IDLE ─────┬─→ GRAPPLING ─────┬─→ IDLE
-          │   (controlling)  │   (stamina depleted)
-          │                  │
-          │   GRAPPLED ──────┴─→ IDLE
-          │   (controlled)       (escaped or released)
+          │   (GRABBING)     │   (stamina depleted)
+          │   ↓               │
+          │   (CONTROLLING)──┴─→ IDLE
+          │                       (escaped or released)
+          │   GRAPPLED ──────────→ IDLE
+          │   (being controlled)  (escaped or released)
           │
           └─→ ATTACKING
               (normal attacks blocked if grappled)
 ```
+
+**State Transitions:**
+- `GRABBING`: Initial grapple attempt, transitions to CONTROLLING on first frame
+- `CONTROLLING`: Active control state with grip decay and stamina cost
+- `ESCAPING`: Player attempting to break free (future enhancement)
+- `THROWING`: Transitioning to throw technique (future enhancement)
+- `LOCKING`: Applying joint lock (future enhancement)
 
 ## Integration Points
 
