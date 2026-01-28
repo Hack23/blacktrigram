@@ -450,3 +450,373 @@ describe("MovementPhysics", () => {
     });
   });
 });
+
+describe("MovementPhysics - Arena Bounds", () => {
+  let physics: MovementPhysics;
+  let state: MovementState;
+
+  beforeEach(() => {
+    physics = new MovementPhysics();
+    state = {
+      position: new THREE.Vector3(0, 0, 0),
+      velocity: new THREE.Vector3(0, 0, 0),
+      acceleration: 0,
+      maxSpeed: 6.0,
+      currentStance: TrigramStance.GEON,
+      legInjuryFactor: 0,
+    };
+  });
+
+  describe("Horizontal Bounds (X-axis)", () => {
+    it("should clamp position to right boundary (maxX)", () => {
+      // 10m × 7.5m arena with 0.3m margin
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      // Start near right edge
+      state.position.set(4.5, 0, 0);
+      state.velocity.set(2, 0, 0); // Moving right
+
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0, // Right
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      // Move for several frames
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Should be clamped to maxX
+      expect(state.position.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(state.position.x).toBeCloseTo(bounds.maxX, 1);
+      // Velocity X should be zeroed when hitting boundary
+      expect(state.velocity.x).toBe(0);
+    });
+
+    it("should clamp position to left boundary (minX)", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      // Start near left edge
+      state.position.set(-4.5, 0, 0);
+      state.velocity.set(-2, 0, 0); // Moving left
+
+      const input: MovementInput = {
+        forward: 0,
+        lateral: -1.0, // Left
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Should be clamped to minX
+      expect(state.position.x).toBeGreaterThanOrEqual(bounds.minX);
+      expect(state.position.x).toBeCloseTo(bounds.minX, 1);
+      expect(state.velocity.x).toBe(0);
+    });
+  });
+
+  describe("Vertical Bounds (Z-axis)", () => {
+    it("should clamp position to front boundary (maxZ)", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      // Start near front edge
+      state.position.set(0, 0, 3.2);
+      state.velocity.set(0, 0, 2); // Moving forward
+
+      const input: MovementInput = {
+        forward: 1.0, // Forward
+        lateral: 0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Should be clamped to maxZ
+      expect(state.position.z).toBeLessThanOrEqual(bounds.maxZ);
+      expect(state.position.z).toBeCloseTo(bounds.maxZ, 1);
+      expect(state.velocity.z).toBe(0);
+    });
+
+    it("should clamp position to back boundary (minZ)", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      // Start near back edge
+      state.position.set(0, 0, -3.2);
+      state.velocity.set(0, 0, -2); // Moving backward
+
+      const input: MovementInput = {
+        forward: -1.0, // Backward
+        lateral: 0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Should be clamped to minZ
+      expect(state.position.z).toBeGreaterThanOrEqual(bounds.minZ);
+      expect(state.position.z).toBeCloseTo(bounds.minZ, 1);
+      expect(state.velocity.z).toBe(0);
+    });
+  });
+
+  describe("Corner Bounds", () => {
+    it("should clamp position to corner boundaries", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      // Start near top-right corner
+      state.position.set(4.5, 0, 3.2);
+      state.velocity.set(2, 0, 2); // Moving diagonally
+
+      const input: MovementInput = {
+        forward: 1.0,
+        lateral: 1.0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Both axes should be clamped
+      expect(state.position.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(state.position.x).toBeCloseTo(bounds.maxX, 1);
+      expect(state.position.z).toBeLessThanOrEqual(bounds.maxZ);
+      expect(state.position.z).toBeCloseTo(bounds.maxZ, 1);
+      // Both velocity components should be zeroed
+      expect(state.velocity.x).toBe(0);
+      expect(state.velocity.z).toBe(0);
+    });
+  });
+
+  describe("Arena Size Scaling", () => {
+    it("should work with small 6m × 4.5m arena", () => {
+      const bounds = {
+        minX: -2.7,
+        maxX: 2.7,
+        minZ: -1.95,
+        maxZ: 1.95,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 6,
+        depthMeters: 4.5,
+      };
+
+      state.position.set(2.5, 0, 0);
+      state.velocity.set(2, 0, 0);
+
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 20; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      expect(state.position.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(state.position.x).toBeCloseTo(bounds.maxX, 1);
+    });
+
+    it("should work with large 14m × 10.5m arena", () => {
+      const bounds = {
+        minX: -6.7,
+        maxX: 6.7,
+        minZ: -4.95,
+        maxZ: 4.95,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 14,
+        depthMeters: 10.5,
+      };
+
+      state.position.set(6.5, 0, 0);
+      state.velocity.set(2, 0, 0);
+
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 20; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      expect(state.position.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(state.position.x).toBeCloseTo(bounds.maxX, 1);
+    });
+  });
+
+  describe("Smooth Boundary Stopping", () => {
+    it("should smoothly stop at boundary without jarring", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      state.position.set(4.5, 0, 0);
+      
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0,
+        isRunning: false,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      let hitBoundary = false;
+      
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+        
+        // Check if we've hit the boundary
+        if (state.position.x >= bounds.maxX) {
+          hitBoundary = true;
+          // Velocity should be immediately zeroed for smooth stop
+          expect(state.velocity.x).toBe(0);
+        }
+      }
+
+      expect(hitBoundary).toBe(true);
+      expect(state.position.x).toBeCloseTo(bounds.maxX, 1);
+    });
+  });
+
+  describe("Movement Without Bounds", () => {
+    it("should allow unrestricted movement when bounds not provided", () => {
+      // No bounds parameter
+      state.position.set(0, 0, 0);
+      
+      const input: MovementInput = {
+        forward: 1.0,
+        lateral: 1.0,
+        isRunning: true,
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 60; i++) {
+        physics.updateMovement(state, input, deltaTime); // No bounds
+      }
+
+      // Should move far beyond typical arena boundaries
+      expect(state.position.length()).toBeGreaterThan(5);
+    });
+  });
+
+  describe("Sprint and Bounds", () => {
+    it("should respect bounds when sprinting toward edge", () => {
+      const bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+
+      state.position.set(4.0, 0, 0);
+      
+      const input: MovementInput = {
+        forward: 0,
+        lateral: 1.0,
+        isRunning: true, // Sprint speed
+        isMoving: true,
+        useTacticalSteps: false,
+      };
+
+      const deltaTime = 1 / 60;
+      for (let i = 0; i < 30; i++) {
+        physics.updateMovement(state, input, deltaTime, bounds);
+      }
+
+      // Even at sprint speed, should be clamped
+      expect(state.position.x).toBeLessThanOrEqual(bounds.maxX);
+      expect(state.velocity.x).toBe(0);
+    });
+  });
+});
