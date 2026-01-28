@@ -1540,17 +1540,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         }
       }
 
-      // Execute action (technique and vital point are stored in aiState)
-      // DEV: Log action execution
-      if (import.meta.env.DEV) {
-        console.log('🎯 AI Executing Action:', {
-          actionType,
-          targetPosition: newTargetPosition,
-          technique: selectedTechnique?.name?.korean || selectedTechnique?.koreanName || 'none',
-          vitalPoint: targetVitalPoint || 'none',
-        });
+      // Update AI state with selected technique and vital point BEFORE executing action
+      // This ensures the callback has access to the correct technique and vital point
+      let updatedRecentTechniques = [...aiState.recentTechniques];
+      if (selectedTechnique) {
+        updatedRecentTechniques.push(selectedTechnique.id);
+        // Keep only last 5 techniques
+        if (updatedRecentTechniques.length > 5) {
+          updatedRecentTechniques = updatedRecentTechniques.slice(-5);
+        }
       }
-      executeAIAction(actionType, newTargetPosition);
 
       // Calculate next action cooldown - expert fighters attack rapidly
       // Attack/technique: 200-350ms for fast-paced combat (was 600-800ms)
@@ -1563,17 +1562,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Update next action time using ref (prevents stale closure)
       nextActionRef.current = now + actionCooldown;
 
-      // Track recent techniques for variation (keep last 5)
-      let updatedRecentTechniques = [...aiState.recentTechniques];
-      if (selectedTechnique) {
-        updatedRecentTechniques.push(selectedTechnique.id);
-        // Keep only last 5 techniques
-        if (updatedRecentTechniques.length > 5) {
-          updatedRecentTechniques = updatedRecentTechniques.slice(-5);
-        }
-      }
-
-      // Update AI state with selected technique and vital point
       setAiState({
         nextAction: nextActionRef.current,
         targetPosition: newTargetPosition,
@@ -1585,6 +1573,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         targetVitalPoint,
         recentTechniques: updatedRecentTechniques,
       });
+
+      // Execute action (technique and vital point are now stored in aiState)
+      // DEV: Log action execution
+      if (import.meta.env.DEV) {
+        console.log('🎯 AI Executing Action:', {
+          actionType,
+          targetPosition: newTargetPosition,
+          technique: selectedTechnique?.name?.korean || selectedTechnique?.koreanName || 'none',
+          vitalPoint: targetVitalPoint || 'none',
+        });
+      }
+      executeAIAction(actionType, newTargetPosition);
     }, 50); // 50ms loop for responsive AI
 
     return () => clearInterval(aiInterval);
