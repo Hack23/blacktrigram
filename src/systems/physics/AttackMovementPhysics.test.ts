@@ -27,15 +27,15 @@ describe("AttackMovementPhysics", () => {
     it("should calculate forward movement for kick attacks", () => {
       const config = {
         animationType: AnimationType.ROUNDHOUSE_KICK,
-        currentStance: TrigramStance.GEON, // Heaven stance (+10%)
+        currentStance: TrigramStance.GEON, // Heaven stance (+30%)
         direction: new THREE.Vector3(1, 0, 0).normalize(),
         animationDuration: 0.48,
       };
 
       const result = physics.calculateAttackMovement(config);
 
-      // Base: 1.0m, Geon modifier: 1.1x = 1.1m
-      expect(result.displacement.x).toBeCloseTo(1.1, 1);
+      // Base: 1.0m, Geon modifier: 1.3x = 1.3m
+      expect(result.displacement.x).toBeCloseTo(1.3, 1);
       expect(result.displacement.y).toBe(0);
       expect(result.displacement.z).toBe(0);
       expect(result.lungeDuration).toBe(0.24); // 50% of animation
@@ -46,15 +46,15 @@ describe("AttackMovementPhysics", () => {
     it("should calculate forward movement for punch attacks", () => {
       const config = {
         animationType: AnimationType.CROSS,
-        currentStance: TrigramStance.LI, // Fire stance (+30%)
+        currentStance: TrigramStance.LI, // Fire stance (+10%)
         direction: new THREE.Vector3(0, 0, 1).normalize(),
         animationDuration: 0.3,
       };
 
       const result = physics.calculateAttackMovement(config);
 
-      // Base: 0.5m, Li modifier: 1.3x = 0.65m
-      expect(result.displacement.z).toBeCloseTo(0.65, 2);
+      // Base: 0.5m, Li modifier: 1.1x = 0.55m
+      expect(result.displacement.z).toBeCloseTo(0.55, 2);
       expect(result.displacement.x).toBe(0);
       expect(result.displacement.y).toBe(0);
     });
@@ -67,16 +67,16 @@ describe("AttackMovementPhysics", () => {
         currentStance: TrigramStance.GEON,
       };
 
-      // Fire stance (most aggressive)
-      const fireResult = physics.calculateAttackMovement({
-        ...baseConfig,
-        currentStance: TrigramStance.LI,
-      });
-
-      // Heaven stance (balanced)
+      // Heaven stance (most aggressive - pure yang drives forward)
       const heavenResult = physics.calculateAttackMovement({
         ...baseConfig,
         currentStance: TrigramStance.GEON,
+      });
+
+      // Fire stance (precision with controlled forward movement)
+      const fireResult = physics.calculateAttackMovement({
+        ...baseConfig,
+        currentStance: TrigramStance.LI,
       });
 
       // Mountain stance (defensive)
@@ -85,20 +85,20 @@ describe("AttackMovementPhysics", () => {
         currentStance: TrigramStance.GAN,
       });
 
-      // Fire should move furthest
-      expect(fireResult.displacement.x).toBeGreaterThan(
-        heavenResult.displacement.x
+      // Heaven should move furthest
+      expect(heavenResult.displacement.x).toBeGreaterThan(
+        fireResult.displacement.x
       );
 
-      // Heaven should move more than Mountain
-      expect(heavenResult.displacement.x).toBeGreaterThan(
+      // Fire should move more than Mountain
+      expect(fireResult.displacement.x).toBeGreaterThan(
         mountainResult.displacement.x
       );
 
       // Verify actual values
       // Base: 0.8m
-      expect(fireResult.displacement.x).toBeCloseTo(0.8 * 1.3, 2); // 1.04m
-      expect(heavenResult.displacement.x).toBeCloseTo(0.8 * 1.1, 2); // 0.88m
+      expect(heavenResult.displacement.x).toBeCloseTo(0.8 * 1.3, 2); // 1.04m
+      expect(fireResult.displacement.x).toBeCloseTo(0.8 * 1.1, 2); // 0.88m
       expect(mountainResult.displacement.x).toBeCloseTo(0.8 * 0.8, 2); // 0.64m
     });
 
@@ -150,8 +150,8 @@ describe("AttackMovementPhysics", () => {
 
       const result = physics.calculateAttackMovement(config);
 
-      // Base: 0.3m, Geon: 1.1x = 0.33m
-      expect(result.displacement.length()).toBeCloseTo(0.33, 2);
+      // Base: 0.3m, Geon: 1.3x = 0.39m
+      expect(result.displacement.length()).toBeCloseTo(0.39, 2);
     });
   });
 
@@ -319,10 +319,10 @@ describe("AttackMovementPhysics", () => {
       };
 
       const stances = [
-        { stance: TrigramStance.LI, expectedMultiplier: 1.3 },
+        { stance: TrigramStance.GEON, expectedMultiplier: 1.3 }, // Heaven: most aggressive
         { stance: TrigramStance.JIN, expectedMultiplier: 1.2 },
         { stance: TrigramStance.SON, expectedMultiplier: 1.15 },
-        { stance: TrigramStance.GEON, expectedMultiplier: 1.1 },
+        { stance: TrigramStance.LI, expectedMultiplier: 1.1 }, // Fire: controlled precision
         { stance: TrigramStance.TAE, expectedMultiplier: 1.0 },
         { stance: TrigramStance.GAM, expectedMultiplier: 1.0 },
         { stance: TrigramStance.GON, expectedMultiplier: 0.9 },
@@ -369,8 +369,8 @@ describe("AttackMovementPhysics", () => {
 
       const result = physics.calculateAttackMovement(config);
 
-      // Base: 1.0m, Geon: 1.1x = 1.1m total
-      expect(result.displacement.length()).toBeCloseTo(1.1, 2);
+      // Base: 1.0m, Geon: 1.3x = 1.3m total
+      expect(result.displacement.length()).toBeCloseTo(1.3, 2);
 
       // Should maintain diagonal direction
       const normalizedResult = result.displacement.clone().normalize();

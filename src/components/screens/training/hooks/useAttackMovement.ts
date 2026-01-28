@@ -102,10 +102,17 @@ export function useAttackMovement(
   // Track previous attack state
   const wasAttackingRef = useRef(false);
 
-  // Initialize attack movement when attack starts
+  // Keep position synced with basePosition when not attacking
+  useEffect(() => {
+    if (!isAttacking) {
+      setCurrentPosition(basePosition);
+    }
+  }, [isAttacking, basePosition]);
+
+  // Initialize attack movement and manage animation loop
   useEffect(() => {
     if (isAttacking && !wasAttackingRef.current) {
-      // Attack just started
+      // Attack just started - initialize movement
       attackStartTimeRef.current = performance.now() / 1000;
 
       // Calculate attack movement if we have animation type
@@ -122,24 +129,14 @@ export function useAttackMovement(
       // Attack ended - clean up
       attackStartTimeRef.current = null;
       attackMovementResultRef.current = null;
-      setCurrentPosition(basePosition);
       setIsLunging(false);
       setIsRecovering(false);
       setProgress(0);
     }
 
     wasAttackingRef.current = isAttacking;
-  }, [
-    isAttacking,
-    animationType,
-    currentStance,
-    attackDirection,
-    animationDuration,
-    basePosition,
-  ]);
 
-  // Update position every frame during attack
-  useEffect(() => {
+    // Only start animation loop if attacking
     if (!isAttacking || !attackStartTimeRef.current || !attackMovementResultRef.current) {
       return;
     }
@@ -201,14 +198,14 @@ export function useAttackMovement(
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [isAttacking, basePosition]);
-
-  // Reset to base position when not attacking
-  useEffect(() => {
-    if (!isAttacking) {
-      setCurrentPosition(basePosition);
-    }
-  }, [isAttacking, basePosition]);
+  }, [
+    isAttacking,
+    animationType,
+    currentStance,
+    attackDirection,
+    animationDuration,
+    basePosition,
+  ]);
 
   return {
     currentPosition,

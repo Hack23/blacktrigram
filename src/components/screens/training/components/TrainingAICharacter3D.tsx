@@ -69,9 +69,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   // Attack movement physics
   const attackPhysics = useMemo(() => new AttackMovementPhysics(), []);
   const attackStartTimeRef = useRef<number | null>(null);
-  const originalPositionRef = useRef<THREE.Vector3>(
-    new THREE.Vector3(...position)
-  );
+  const originalPositionRef = useRef<THREE.Vector3 | null>(null);
   const attackMovementResultRef = useRef<ReturnType<
     typeof attackPhysics.calculateAttackMovement
   > | null>(null);
@@ -79,12 +77,28 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
   // Track attack state changes
   const wasAttackingRef = useRef(false);
 
+  // Initialize original position ref
+  useEffect(() => {
+    if (!originalPositionRef.current) {
+      originalPositionRef.current = new THREE.Vector3(...position);
+    }
+  }, []);
+
+  // Keep original position synced with external position while not attacking
+  useEffect(() => {
+    if (!isAttacking && originalPositionRef.current) {
+      originalPositionRef.current.set(...position);
+    }
+  }, [position, isAttacking]);
+
   // Reset attack movement when attack starts
   useEffect(() => {
     if (isAttacking && !wasAttackingRef.current) {
       // Attack just started - initialize movement
       attackStartTimeRef.current = performance.now() / 1000;
-      originalPositionRef.current.set(...position);
+      if (originalPositionRef.current) {
+        originalPositionRef.current.set(...position);
+      }
 
       // Calculate attack movement if we have animation type
       if (attackAnimationType) {
@@ -105,7 +119,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     }
 
     wasAttackingRef.current = isAttacking;
-  }, [isAttacking, attackAnimationType, stance, position, attackPhysics]);
+  }, [isAttacking, attackAnimationType, stance]);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -189,7 +203,8 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     if (
       isAttacking &&
       attackStartTimeRef.current !== null &&
-      attackMovementResultRef.current
+      attackMovementResultRef.current &&
+      originalPositionRef.current
     ) {
       const currentTime = performance.now() / 1000;
       const elapsedTime = currentTime - attackStartTimeRef.current;
@@ -210,22 +225,21 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
           isRecoveryPhase
         );
 
-        // Update group position (not the prop position, just visual offset)
+        // Update group position
         groupRef.current.position.copy(newPosition);
       } else {
         // Attack movement complete - return to original position
         groupRef.current.position.copy(originalPositionRef.current);
       }
-    } else if (!isAttacking) {
+    } else if (!isAttacking && originalPositionRef.current) {
       // Not attacking - stay at base position
-      groupRef.current.position.set(...position);
+      groupRef.current.position.copy(originalPositionRef.current);
     }
   });
 
   return (
     <group
       ref={groupRef}
-      position={position}
       name="training-ai-character-3d"
     >
       {/* Main body - capsule representing the AI fighter */}

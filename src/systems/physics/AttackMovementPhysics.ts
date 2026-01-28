@@ -254,12 +254,83 @@ export class AttackMovementPhysics {
     // Elbow/Knee - minimal movement (close range)
     if (
       animationType === AnimationType.ELBOW_STRIKE ||
-      animationType === AnimationType.KNEE_STRIKE
+      animationType === AnimationType.KNEE_STRIKE ||
+      animationType === AnimationType.KNEE_KICK ||
+      animationType === AnimationType.ELBOW_UPPERCUT ||
+      animationType === AnimationType.FLYING_KNEE ||
+      animationType === AnimationType.CLINCH_KNEE ||
+      animationType === AnimationType.SPINNING_ELBOW ||
+      animationType === AnimationType.TEMPLE_ELBOW ||
+      animationType === AnimationType.SPINNING_BACK_ELBOW ||
+      animationType === AnimationType.SPINAL_ELBOW ||
+      animationType === AnimationType.BRACHIAL_ELBOW ||
+      animationType === AnimationType.KIDNEY_KNEE ||
+      animationType === AnimationType.FEMORAL_KNEE
     ) {
       return 0.2; // 0.2m forward lunge
     }
 
-    // Default - minimal movement for unknown types
+    // Specialized jab variants - similar to jab (quick extension)
+    if (
+      animationType === AnimationType.SPEAR_HAND_STRIKE ||
+      animationType === AnimationType.NERVE_STRIKE ||
+      animationType === AnimationType.PRESSURE_POINT_STRIKE ||
+      animationType === AnimationType.LIGHTNING_STRIKE ||
+      animationType === AnimationType.RAPID_BARRAGE ||
+      animationType === AnimationType.RHYTHMIC_STRIKES ||
+      animationType === AnimationType.NERVE_PARALYSIS ||
+      animationType === AnimationType.THROAT_STRIKE ||
+      animationType === AnimationType.EYE_GOUGE
+    ) {
+      return 0.3; // 0.3m forward lunge (jab-like)
+    }
+
+    // Specialized cross variants - similar to cross (body weight transfer)
+    if (
+      animationType === AnimationType.HEAVEN_STRIKE ||
+      animationType === AnimationType.FLOWING_CROSS
+    ) {
+      return 0.5; // 0.5m forward lunge (cross-like)
+    }
+
+    // Specialized palm strikes - similar to palm strike
+    if (
+      animationType === AnimationType.SOLAR_PLEXUS_STRIKE ||
+      animationType === AnimationType.FLOWING_PUSH ||
+      animationType === AnimationType.LIVER_DISRUPTION ||
+      animationType === AnimationType.EAR_STRIKE
+    ) {
+      return 0.4; // 0.4m forward lunge (palm-like)
+    }
+
+    // Grappling - minimal forward movement (rotation/off-balancing in place)
+    if (
+      animationType === AnimationType.THROW ||
+      animationType === AnimationType.JOINT_LOCK ||
+      animationType === AnimationType.TAKEDOWN ||
+      animationType === AnimationType.SWEEP ||
+      animationType === AnimationType.CLINCH ||
+      animationType === AnimationType.GRAPPLE ||
+      animationType === AnimationType.SLAM ||
+      animationType === AnimationType.WRIST_LOCK ||
+      animationType === AnimationType.ARM_BAR ||
+      animationType === AnimationType.SHOULDER_LOCK ||
+      animationType === AnimationType.HIP_THROW ||
+      animationType === AnimationType.LEG_REAP ||
+      animationType === AnimationType.SMALL_CIRCLE_LOCK ||
+      animationType === AnimationType.FINGER_LOCK ||
+      animationType === AnimationType.ELBOW_LOCK ||
+      animationType === AnimationType.SHOULDER_MANIPULATION ||
+      animationType === AnimationType.MOUNTAIN_LOCK ||
+      animationType === AnimationType.EARTH_EMBRACE ||
+      animationType === AnimationType.CAROTID_CHOKE
+    ) {
+      return 0.05; // 0.05m forward movement for grappling entries
+    }
+
+    // Default - conservative minimal movement for any unmapped types
+    // Additional AnimationType values can be grouped with the closest category above
+    // to fine-tune their forward displacement without changing overall behavior
     return 0.2;
   }
 
@@ -268,15 +339,15 @@ export class AttackMovementPhysics {
    *
    * **Korean**: 자세 이동 배율 (Stance Movement Modifier)
    *
-   * Trigram stance movement modifiers:
-   * - ☲ 리 (Li/Fire): +30% movement (aggressive, forward pressure)
-   * - ☳ 진 (Jin/Thunder): +20% movement (explosive power)
-   * - ☴ 손 (Son/Wind): +15% movement (continuous flow)
-   * - ☰ 건 (Geon/Heaven): +10% movement (balanced force)
-   * - ☱ 태 (Tae/Lake): 0% (neutral, adaptive)
-   * - ☵ 감 (Gam/Water): 0% (neutral, flowing)
-   * - ☷ 곤 (Gon/Earth): -10% movement (grounded, stable)
-   * - ☶ 간 (Gan/Mountain): -20% movement (defensive, minimal advance)
+   * Trigram stance movement modifiers based on combat philosophy:
+   * - ☰ 건 (Geon/Heaven): +30% movement (aggressive, drives forward with pure yang)
+   * - ☳ 진 (Jin/Thunder): +20% movement (explosive power, shocking force)
+   * - ☴ 손 (Son/Wind): +15% movement (continuous flow, mobile)
+   * - ☲ 리 (Li/Fire): +10% movement (precision strikes, controlled aggression)
+   * - ☱ 태 (Tae/Lake): 0% (neutral, fluid and adaptive)
+   * - ☵ 감 (Gam/Water): 0% (neutral, flowing and flexible)
+   * - ☷ 곤 (Gon/Earth): -10% movement (grounded, stable techniques)
+   * - ☶ 간 (Gan/Mountain): -20% movement (defensive mastery, minimal advance)
    *
    * @param stance - Current trigram stance
    * @returns Movement multiplier (0.8 to 1.3)
@@ -286,10 +357,10 @@ export class AttackMovementPhysics {
    */
   private getStanceMovementModifier(stance: TrigramStance): number {
     const modifiers: Record<TrigramStance, number> = {
-      [TrigramStance.LI]: 1.3, // Fire: +30% aggressive forward movement
+      [TrigramStance.GEON]: 1.3, // Heaven: +30% aggressive forward pressure (pure yang drives forward)
       [TrigramStance.JIN]: 1.2, // Thunder: +20% explosive movement
       [TrigramStance.SON]: 1.15, // Wind: +15% flowing movement
-      [TrigramStance.GEON]: 1.1, // Heaven: +10% balanced movement
+      [TrigramStance.LI]: 1.1, // Fire: +10% precision strikes with controlled forward movement
       [TrigramStance.TAE]: 1.0, // Lake: neutral movement
       [TrigramStance.GAM]: 1.0, // Water: neutral movement
       [TrigramStance.GON]: 0.9, // Earth: -10% grounded movement
@@ -308,30 +379,29 @@ export class AttackMovementPhysics {
    * - Gradual deceleration at peak extension
    * - Smooth return during recovery phase
    *
-   * @param attackerPosition - Current attacker position
+   * @param basePosition - Original stance position (does not change during attack)
    * @param result - Attack movement result with displacement
    * @param elapsedTime - Time elapsed since attack started
    * @param isRecoveryPhase - Whether in recovery (return) phase
-   * @returns New attacker position
+   * @returns New position with attack displacement applied
    *
    * @example
    * ```typescript
    * // In animation update loop (60fps)
+   * const basePos = new THREE.Vector3(0, 0, 0); // Original stance position
+   * 
    * if (elapsedTime < result.lungeDuration) {
    *   // Lunge forward phase
-   *   const progress = elapsedTime / result.lungeDuration;
    *   const newPosition = physics.applyAttackMovement(
-   *     attackerPosition,
+   *     basePos,
    *     result,
    *     elapsedTime,
    *     false
    *   );
    * } else if (elapsedTime < result.totalDuration) {
    *   // Recovery return phase
-   *   const recoveryProgress =
-   *     (elapsedTime - result.lungeDuration) / result.recoveryDuration;
    *   const newPosition = physics.applyAttackMovement(
-   *     attackerPosition,
+   *     basePos,
    *     result,
    *     elapsedTime,
    *     true
@@ -343,7 +413,7 @@ export class AttackMovementPhysics {
    * @korean 공격이동적용
    */
   applyAttackMovement(
-    attackerPosition: THREE.Vector3,
+    basePosition: THREE.Vector3,
     result: AttackMovementResult,
     elapsedTime: number,
     isRecoveryPhase: boolean
@@ -363,7 +433,7 @@ export class AttackMovementPhysics {
         .clone()
         .multiplyScalar(easedProgress);
 
-      return attackerPosition.clone().add(currentDisplacement);
+      return basePosition.clone().add(currentDisplacement);
     } else {
       // Recovery return phase
       const recoveryTime = elapsedTime - result.lungeDuration;
@@ -378,7 +448,7 @@ export class AttackMovementPhysics {
         .clone()
         .multiplyScalar(1.0 - easedProgress);
 
-      return attackerPosition.clone().add(returnDisplacement);
+      return basePosition.clone().add(returnDisplacement);
     }
   }
 

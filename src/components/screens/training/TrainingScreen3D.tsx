@@ -568,13 +568,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   );
 
   // Calculate attack direction (toward dummy)
+  // Note: Direction is calculated on every position change to ensure attacks
+  // always target the current dummy position, even if the player is moving.
+  // This is intentional for responsive gameplay where attacks can be initiated mid-movement.
   const attackDirection = useMemo(() => {
+    // Only calculate if attacking to avoid unnecessary work
+    if (!isPlayerAttacking) {
+      return new THREE.Vector3(0, 0, 1); // Default forward direction
+    }
     const dx = dummyPosition[0] - player3DPosition[0];
     const dz = dummyPosition[2] - player3DPosition[2];
     return new THREE.Vector3(dx, 0, dz).normalize();
-  }, [dummyPosition, player3DPosition]);
+  }, [dummyPosition, player3DPosition, isPlayerAttacking]);
 
   // Apply attack movement physics to player position
+  // Note: currentTechniqueAnimationTypeRef.current is intentionally a ref to avoid
+  // unnecessary re-renders. The animation type is read at attack start (in useAttackMovement's
+  // internal effect) and doesn't need to be reactive. It's always set before isPlayerAttacking
+  // becomes true via the handleAttack action.
   const {
     currentPosition: player3DPositionWithAttackMovement,
   } = useAttackMovement({
