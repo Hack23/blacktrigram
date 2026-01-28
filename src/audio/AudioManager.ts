@@ -349,14 +349,21 @@ export class AudioManager implements IAudioManager {
     // On-demand loading: If music not in cache, load it first
     // 온디맨드 로딩: 음악이 캐시에 없으면 먼저 로드
     if (!audio) {
+      if (import.meta.env.DEV) {
+        console.log(`[AudioManager] Music "${id}" not in cache, loading on-demand...`);
+      }
+      
       const { audioAssetRegistry } = await import("./AudioAssetRegistry");
       const musicAsset = audioAssetRegistry.getMusic(id);
       
       if (musicAsset) {
         try {
-          console.log(`[AudioManager] Loading music on-demand: ${id}`);
           await this.loadAsset(musicAsset);
           audio = this.soundCache.get(id);
+          
+          if (import.meta.env.DEV && audio) {
+            console.log(`[AudioManager] Successfully loaded music "${id}" on-demand`);
+          }
         } catch (error) {
           console.warn(`Failed to load music asset ${id} on-demand:`, error);
           return;
@@ -375,6 +382,10 @@ export class AudioManager implements IAudioManager {
         this.currentMusic = audio;
         this._currentMusicTrack = id;
         await audio.play();
+        
+        if (import.meta.env.DEV) {
+          console.log(`[AudioManager] Playing music: ${id} (volume: ${audio.volume.toFixed(2)})`);
+        }
       } catch (error) {
         console.warn(`Failed to play music ${id}:`, error);
       }
