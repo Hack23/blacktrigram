@@ -54,18 +54,18 @@ export interface MuscleAttachment {
  * @korean 뼈근육매핑
  */
 export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
-  // Shoulders - muscles attach to shoulder bones (increased 2.5x for visibility)
+  // Shoulders - deltoid muscles (INCREASED for visible shoulder mass)
   shoulder_L: [
     {
       name: "SHOULDER_L",
       korean: "왼쪽어깨",
       english: "Left Shoulder",
-      localOffset: new THREE.Vector3(-0.1, 0, 0),
+      localOffset: new THREE.Vector3(-0.08, 0, 0),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.55, 0.38, 0.38),
-      maxFlexScale: new THREE.Vector3(0.7, 0.48, 0.48),
-      radius: 0.28,
-      length: 0.24,
+      baseScale: new THREE.Vector3(0.7, 0.5, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.9, 0.65, 0.65),
+      radius: 0.38, // INCREASED
+      length: 0.35, // INCREASED
     },
   ],
   shoulder_R: [
@@ -73,38 +73,38 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "SHOULDER_R",
       korean: "오른쪽어깨",
       english: "Right Shoulder",
-      localOffset: new THREE.Vector3(0.1, 0, 0),
+      localOffset: new THREE.Vector3(0.08, 0, 0),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.55, 0.38, 0.38),
-      maxFlexScale: new THREE.Vector3(0.7, 0.48, 0.48),
-      radius: 0.28,
-      length: 0.24,
+      baseScale: new THREE.Vector3(0.7, 0.5, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.9, 0.65, 0.65),
+      radius: 0.38, // INCREASED
+      length: 0.35, // INCREASED
     },
   ],
 
-  // Upper arms - biceps and triceps attach here (increased 2x for visibility)
+  // Upper arms - biceps and triceps (INCREASED for visible arm mass)
   upper_arm_L: [
     {
       name: "BICEP_L",
       korean: "왼쪽이두근",
       english: "Left Bicep",
-      localOffset: new THREE.Vector3(-0.15, 0, 0.06),
+      localOffset: new THREE.Vector3(-0.12, 0, 0.05),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.36, 0.5, 0.36),
-      maxFlexScale: new THREE.Vector3(0.48, 0.5, 0.48),
-      radius: 0.26,
-      length: 0.45,
+      baseScale: new THREE.Vector3(0.5, 0.6, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.65, 0.65, 0.65),
+      radius: 0.35, // INCREASED
+      length: 0.55, // INCREASED
     },
     {
       name: "TRICEP_L",
       korean: "왼쪽삼두근",
       english: "Left Tricep",
-      localOffset: new THREE.Vector3(-0.15, 0, -0.06),
+      localOffset: new THREE.Vector3(-0.12, 0, -0.05),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.3, 0.45, 0.3),
-      maxFlexScale: new THREE.Vector3(0.4, 0.45, 0.4),
-      radius: 0.22,
-      length: 0.42,
+      baseScale: new THREE.Vector3(0.42, 0.55, 0.42), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.55, 0.6, 0.55),
+      radius: 0.3, // INCREASED
+      length: 0.5, // INCREASED
     },
   ],
   upper_arm_R: [
@@ -112,38 +112,38 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "BICEP_R",
       korean: "오른쪽이두근",
       english: "Right Bicep",
-      localOffset: new THREE.Vector3(0.15, 0, 0.06),
+      localOffset: new THREE.Vector3(0.12, 0, 0.05),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.36, 0.5, 0.36),
-      maxFlexScale: new THREE.Vector3(0.48, 0.5, 0.48),
-      radius: 0.26,
-      length: 0.45,
+      baseScale: new THREE.Vector3(0.5, 0.6, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.65, 0.65, 0.65),
+      radius: 0.35, // INCREASED
+      length: 0.55, // INCREASED
     },
     {
       name: "TRICEP_R",
       korean: "오른쪽삼두근",
       english: "Right Tricep",
-      localOffset: new THREE.Vector3(0.15, 0, -0.06),
+      localOffset: new THREE.Vector3(0.12, 0, -0.05),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.3, 0.45, 0.3),
-      maxFlexScale: new THREE.Vector3(0.4, 0.45, 0.4),
-      radius: 0.22,
-      length: 0.42,
+      baseScale: new THREE.Vector3(0.42, 0.55, 0.42), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.55, 0.6, 0.55),
+      radius: 0.3, // INCREASED
+      length: 0.5, // INCREASED
     },
   ],
 
-  // Forearms (increased 1.8x for visibility)
+  // Forearms (INCREASED for visible lower arm mass)
   forearm_L: [
     {
       name: "FOREARM_L",
       korean: "왼쪽전완근",
       english: "Left Forearm",
-      localOffset: new THREE.Vector3(-0.14, 0, 0),
+      localOffset: new THREE.Vector3(-0.11, 0, 0),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.28, 0.42, 0.28),
-      maxFlexScale: new THREE.Vector3(0.36, 0.42, 0.36),
-      radius: 0.2,
-      length: 0.4,
+      baseScale: new THREE.Vector3(0.38, 0.5, 0.38), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.48, 0.55, 0.48),
+      radius: 0.26, // INCREASED
+      length: 0.48, // INCREASED
     },
   ],
   forearm_R: [
@@ -151,186 +151,186 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "FOREARM_R",
       korean: "오른쪽전완근",
       english: "Right Forearm",
-      localOffset: new THREE.Vector3(0.14, 0, 0),
+      localOffset: new THREE.Vector3(0.11, 0, 0),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.28, 0.42, 0.28),
-      maxFlexScale: new THREE.Vector3(0.36, 0.42, 0.36),
-      radius: 0.2,
-      length: 0.4,
+      baseScale: new THREE.Vector3(0.38, 0.5, 0.38), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.48, 0.55, 0.48),
+      radius: 0.26, // INCREASED
+      length: 0.48, // INCREASED
     },
   ],
 
-  // Spine - chest/core muscles attach to spine_middle (increased 2x for visibility)
+  // Spine - chest/core muscles attach to spine_middle (INCREASED for human-like body shape)
   spine_middle: [
     {
       name: "PECTORALS",
       korean: "대흉근",
       english: "Pectorals",
-      localOffset: new THREE.Vector3(0, 0.12, 0.16),
+      localOffset: new THREE.Vector3(0, 0.08, 0.14),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.75, 0.42, 0.34),
-      maxFlexScale: new THREE.Vector3(0.9, 0.52, 0.42),
-      radius: 0.34,
-      length: 0.38,
+      baseScale: new THREE.Vector3(1.1, 0.6, 0.5), // INCREASED for visible chest
+      maxFlexScale: new THREE.Vector3(1.3, 0.75, 0.6),
+      radius: 0.45, // INCREASED
+      length: 0.5, // INCREASED
     },
     {
       name: "CORE",
       korean: "코어",
       english: "Core",
-      localOffset: new THREE.Vector3(0, -0.06, 0.08),
+      localOffset: new THREE.Vector3(0, -0.04, 0.06),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.58, 0.56, 0.36),
-      maxFlexScale: new THREE.Vector3(0.68, 0.64, 0.42),
-      radius: 0.28,
-      length: 0.52,
+      baseScale: new THREE.Vector3(0.85, 0.75, 0.55), // INCREASED for body mass
+      maxFlexScale: new THREE.Vector3(1.0, 0.85, 0.65),
+      radius: 0.4, // INCREASED
+      length: 0.7, // INCREASED
     },
     {
       name: "ABS",
       korean: "복근",
       english: "Abdominals",
-      localOffset: new THREE.Vector3(0, -0.22, 0.14),
+      localOffset: new THREE.Vector3(0, -0.18, 0.12),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.48, 0.5, 0.3),
-      maxFlexScale: new THREE.Vector3(0.58, 0.56, 0.36),
-      radius: 0.26,
-      length: 0.48,
+      baseScale: new THREE.Vector3(0.7, 0.65, 0.45), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.85, 0.75, 0.55),
+      radius: 0.35, // INCREASED
+      length: 0.6, // INCREASED
     },
     {
       name: "OBLIQUES",
       korean: "복사근",
       english: "Obliques",
-      localOffset: new THREE.Vector3(0, -0.14, 0.18),
+      localOffset: new THREE.Vector3(0, -0.1, 0.16),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.42, 0.48, 0.24),
-      maxFlexScale: new THREE.Vector3(0.52, 0.54, 0.3),
-      radius: 0.22,
-      length: 0.46,
+      baseScale: new THREE.Vector3(0.6, 0.6, 0.35), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.75, 0.7, 0.45),
+      radius: 0.3, // INCREASED
+      length: 0.55, // INCREASED
     },
   ],
 
-  // Pelvis - central hip/waist muscles for less boxy appearance
+  // Pelvis - central hip/waist muscles for human-like body shape (INCREASED)
   pelvis: [
     {
       name: "HIP_FLEXOR_L",
       korean: "왼쪽고관절굴근",
       english: "Left Hip Flexor",
-      localOffset: new THREE.Vector3(-0.12, 0.06, 0.06),
+      localOffset: new THREE.Vector3(-0.1, 0.04, 0.05),
       localRotation: new THREE.Euler(0.2, 0, 0.15),
-      baseScale: new THREE.Vector3(0.32, 0.28, 0.28),
-      maxFlexScale: new THREE.Vector3(0.4, 0.34, 0.34),
-      radius: 0.2,
-      length: 0.26,
+      baseScale: new THREE.Vector3(0.5, 0.4, 0.4), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.6, 0.5, 0.5),
+      radius: 0.3, // INCREASED
+      length: 0.35, // INCREASED
     },
     {
       name: "HIP_FLEXOR_R",
       korean: "오른쪽고관절굴근",
       english: "Right Hip Flexor",
-      localOffset: new THREE.Vector3(0.12, 0.06, 0.06),
+      localOffset: new THREE.Vector3(0.1, 0.04, 0.05),
       localRotation: new THREE.Euler(0.2, 0, -0.15),
-      baseScale: new THREE.Vector3(0.32, 0.28, 0.28),
-      maxFlexScale: new THREE.Vector3(0.4, 0.34, 0.34),
-      radius: 0.2,
-      length: 0.26,
+      baseScale: new THREE.Vector3(0.5, 0.4, 0.4), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.6, 0.5, 0.5),
+      radius: 0.3, // INCREASED
+      length: 0.35, // INCREASED
     },
     {
       name: "LOWER_ABS",
       korean: "하복근",
       english: "Lower Abdominals",
-      localOffset: new THREE.Vector3(0, 0.04, 0.1),
+      localOffset: new THREE.Vector3(0, 0.02, 0.08),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.42, 0.32, 0.26),
-      maxFlexScale: new THREE.Vector3(0.52, 0.38, 0.32),
-      radius: 0.22,
-      length: 0.28,
+      baseScale: new THREE.Vector3(0.65, 0.5, 0.4), // INCREASED for visible waist
+      maxFlexScale: new THREE.Vector3(0.8, 0.6, 0.5),
+      radius: 0.35, // INCREASED
+      length: 0.45, // INCREASED
     },
   ],
 
-  // Spine lower - lower back muscles for fuller torso appearance
+  // Spine lower - lower back muscles for fuller torso appearance (INCREASED)
   spine_lower: [
     {
       name: "ERECTOR_SPINAE_L",
       korean: "왼쪽척추기립근",
       english: "Left Erector Spinae",
-      localOffset: new THREE.Vector3(-0.08, 0.08, -0.08),
+      localOffset: new THREE.Vector3(-0.06, 0.06, -0.06),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.24, 0.36, 0.22),
-      maxFlexScale: new THREE.Vector3(0.3, 0.42, 0.28),
-      radius: 0.16,
-      length: 0.34,
+      baseScale: new THREE.Vector3(0.4, 0.5, 0.35), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.5, 0.6, 0.45),
+      radius: 0.25, // INCREASED
+      length: 0.5, // INCREASED
     },
     {
       name: "ERECTOR_SPINAE_R",
       korean: "오른쪽척추기립근",
       english: "Right Erector Spinae",
-      localOffset: new THREE.Vector3(0.08, 0.08, -0.08),
+      localOffset: new THREE.Vector3(0.06, 0.06, -0.06),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.24, 0.36, 0.22),
-      maxFlexScale: new THREE.Vector3(0.3, 0.42, 0.28),
-      radius: 0.16,
-      length: 0.34,
+      baseScale: new THREE.Vector3(0.4, 0.5, 0.35), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.5, 0.6, 0.45),
+      radius: 0.25, // INCREASED
+      length: 0.5, // INCREASED
     },
   ],
 
-  // Spine upper - lats and traps for broader upper back appearance
+  // Spine upper - lats and traps for broader V-shaped back (INCREASED for human silhouette)
   spine_upper: [
     {
       name: "LAT_L",
       korean: "왼쪽광배근",
       english: "Left Latissimus",
-      localOffset: new THREE.Vector3(-0.16, -0.04, -0.06),
-      localRotation: new THREE.Euler(0, 0.2, 0.4),
-      baseScale: new THREE.Vector3(0.36, 0.48, 0.26),
-      maxFlexScale: new THREE.Vector3(0.46, 0.56, 0.34),
-      radius: 0.24,
-      length: 0.44,
+      localOffset: new THREE.Vector3(-0.14, -0.02, -0.05),
+      localRotation: new THREE.Euler(0, 0.2, 0.3),
+      baseScale: new THREE.Vector3(0.55, 0.65, 0.4), // INCREASED for V-taper
+      maxFlexScale: new THREE.Vector3(0.7, 0.8, 0.5),
+      radius: 0.35, // INCREASED
+      length: 0.6, // INCREASED
     },
     {
       name: "LAT_R",
       korean: "오른쪽광배근",
       english: "Right Latissimus",
-      localOffset: new THREE.Vector3(0.16, -0.04, -0.06),
-      localRotation: new THREE.Euler(0, -0.2, -0.4),
-      baseScale: new THREE.Vector3(0.36, 0.48, 0.26),
-      maxFlexScale: new THREE.Vector3(0.46, 0.56, 0.34),
-      radius: 0.24,
-      length: 0.44,
+      localOffset: new THREE.Vector3(0.14, -0.02, -0.05),
+      localRotation: new THREE.Euler(0, -0.2, -0.3),
+      baseScale: new THREE.Vector3(0.55, 0.65, 0.4), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.7, 0.8, 0.5),
+      radius: 0.35, // INCREASED
+      length: 0.6, // INCREASED
     },
     {
       name: "TRAPEZIUS",
       korean: "승모근",
       english: "Trapezius",
-      localOffset: new THREE.Vector3(0, 0.12, -0.08),
-      localRotation: new THREE.Euler(-0.3, 0, 0),
-      baseScale: new THREE.Vector3(0.52, 0.32, 0.24),
-      maxFlexScale: new THREE.Vector3(0.64, 0.4, 0.32),
-      radius: 0.22,
-      length: 0.28,
+      localOffset: new THREE.Vector3(0, 0.1, -0.06),
+      localRotation: new THREE.Euler(-0.25, 0, 0),
+      baseScale: new THREE.Vector3(0.8, 0.45, 0.35), // INCREASED for visible upper back
+      maxFlexScale: new THREE.Vector3(1.0, 0.55, 0.45),
+      radius: 0.32, // INCREASED
+      length: 0.4, // INCREASED
     },
     {
       name: "RHOMBOID",
       korean: "능형근",
       english: "Rhomboid",
-      localOffset: new THREE.Vector3(0, 0.04, -0.1),
+      localOffset: new THREE.Vector3(0, 0.02, -0.08),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.38, 0.3, 0.2),
-      maxFlexScale: new THREE.Vector3(0.48, 0.38, 0.26),
-      radius: 0.18,
-      length: 0.28,
+      baseScale: new THREE.Vector3(0.6, 0.45, 0.3), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.75, 0.55, 0.4),
+      radius: 0.28, // INCREASED
+      length: 0.4, // INCREASED
     },
   ],
 
-  // Hips - glutes attach here (SIGNIFICANTLY increased for Jojik visibility - 3x larger)
+  // Hips - glutes attach here (INCREASED for visible hip/buttock area)
   hip_L: [
     {
       name: "GLUTE_L",
       korean: "왼쪽둔근",
       english: "Left Glute",
-      localOffset: new THREE.Vector3(-0.08, -0.05, -0.12),
+      localOffset: new THREE.Vector3(-0.06, -0.03, -0.1),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.48, 0.42, 0.38),
-      maxFlexScale: new THREE.Vector3(0.6, 0.52, 0.48),
-      radius: 0.34,
-      length: 0.36,
+      baseScale: new THREE.Vector3(0.6, 0.55, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.75, 0.7, 0.6),
+      radius: 0.4, // INCREASED
+      length: 0.45, // INCREASED
     },
   ],
   hip_R: [
@@ -338,38 +338,38 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "GLUTE_R",
       korean: "오른쪽둔근",
       english: "Right Glute",
-      localOffset: new THREE.Vector3(0.08, -0.05, -0.12),
+      localOffset: new THREE.Vector3(0.06, -0.03, -0.1),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.48, 0.42, 0.38),
-      maxFlexScale: new THREE.Vector3(0.6, 0.52, 0.48),
-      radius: 0.34,
-      length: 0.36,
+      baseScale: new THREE.Vector3(0.6, 0.55, 0.5), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.75, 0.7, 0.6),
+      radius: 0.4, // INCREASED
+      length: 0.45, // INCREASED
     },
   ],
 
-  // Thighs - quads and hamstrings attach here (increased 2x for visibility)
+  // Thighs - quads and hamstrings (INCREASED for visible leg mass)
   thigh_L: [
     {
       name: "QUAD_L",
       korean: "왼쪽대퇴사두근",
       english: "Left Quadriceps",
-      localOffset: new THREE.Vector3(0, -0.18, 0.06),
+      localOffset: new THREE.Vector3(0, -0.15, 0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.42, 0.68, 0.42),
-      maxFlexScale: new THREE.Vector3(0.54, 0.68, 0.54),
-      radius: 0.34,
-      length: 0.64,
+      baseScale: new THREE.Vector3(0.55, 0.8, 0.55), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.7, 0.85, 0.7),
+      radius: 0.42, // INCREASED
+      length: 0.75, // INCREASED
     },
     {
       name: "HAMSTRING_L",
       korean: "왼쪽햄스트링",
       english: "Left Hamstring",
-      localOffset: new THREE.Vector3(0, -0.18, -0.06),
+      localOffset: new THREE.Vector3(0, -0.15, -0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.36, 0.62, 0.36),
-      maxFlexScale: new THREE.Vector3(0.46, 0.62, 0.46),
-      radius: 0.28,
-      length: 0.58,
+      baseScale: new THREE.Vector3(0.48, 0.75, 0.48), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.6, 0.8, 0.6),
+      radius: 0.36, // INCREASED
+      length: 0.7, // INCREASED
     },
   ],
   thigh_R: [
@@ -377,38 +377,38 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "QUAD_R",
       korean: "오른쪽대퇴사두근",
       english: "Right Quadriceps",
-      localOffset: new THREE.Vector3(0, -0.18, 0.06),
+      localOffset: new THREE.Vector3(0, -0.15, 0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.42, 0.68, 0.42),
-      maxFlexScale: new THREE.Vector3(0.54, 0.68, 0.54),
-      radius: 0.34,
-      length: 0.64,
+      baseScale: new THREE.Vector3(0.55, 0.8, 0.55), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.7, 0.85, 0.7),
+      radius: 0.42, // INCREASED
+      length: 0.75, // INCREASED
     },
     {
       name: "HAMSTRING_R",
       korean: "오른쪽햄스트링",
       english: "Right Hamstring",
-      localOffset: new THREE.Vector3(0, -0.18, -0.06),
+      localOffset: new THREE.Vector3(0, -0.15, -0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.36, 0.62, 0.36),
-      maxFlexScale: new THREE.Vector3(0.46, 0.62, 0.46),
-      radius: 0.28,
-      length: 0.58,
+      baseScale: new THREE.Vector3(0.48, 0.75, 0.48), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.6, 0.8, 0.6),
+      radius: 0.36, // INCREASED
+      length: 0.7, // INCREASED
     },
   ],
 
-  // Shins - calves attach here (increased 1.7x for visibility)
+  // Shins - calves (INCREASED for visible lower leg)
   shin_L: [
     {
       name: "CALF_L",
       korean: "왼쪽종아리",
       english: "Left Calf",
-      localOffset: new THREE.Vector3(0, -0.1, -0.03),
+      localOffset: new THREE.Vector3(0, -0.08, -0.02),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.3, 0.52, 0.3),
-      maxFlexScale: new THREE.Vector3(0.38, 0.52, 0.38),
-      radius: 0.24,
-      length: 0.5,
+      baseScale: new THREE.Vector3(0.4, 0.6, 0.4), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.5, 0.65, 0.5),
+      radius: 0.3, // INCREASED
+      length: 0.55, // INCREASED
     },
   ],
   shin_R: [
@@ -416,12 +416,12 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       name: "CALF_R",
       korean: "오른쪽종아리",
       english: "Right Calf",
-      localOffset: new THREE.Vector3(0, -0.1, -0.03),
+      localOffset: new THREE.Vector3(0, -0.08, -0.02),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.3, 0.52, 0.3),
-      maxFlexScale: new THREE.Vector3(0.38, 0.52, 0.38),
-      radius: 0.24,
-      length: 0.5,
+      baseScale: new THREE.Vector3(0.4, 0.6, 0.4), // INCREASED
+      maxFlexScale: new THREE.Vector3(0.5, 0.65, 0.5),
+      radius: 0.3, // INCREASED
+      length: 0.55, // INCREASED
     },
   ],
 };
