@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
 import { getTechniqueById } from "../data/techniques";
-import { BodyRegion, CombatAttackType, CombatState, DamageType } from "../types";
+import { BodyRegion, CombatAttackType, CombatState, DamageType, GrappleTarget } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { BASE_STAMINA_REGEN_RATE } from "../types/physicsConstants";
 import { Technique } from "../types/technique";
@@ -632,9 +632,7 @@ export class CombatSystem implements CombatSystemInterface {
    */
   private getGrappleTargetFromTechnique(
     technique: KoreanTechnique
-  ): import("@/types").GrappleTarget {
-    const { GrappleTarget } = require("@/types");
-    
+  ): GrappleTarget {
     // Check technique name/ID for hints
     const techName = (
       technique.name?.english ||
