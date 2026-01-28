@@ -307,6 +307,7 @@ export class CombatSystem implements CombatSystemInterface {
         animationType,
         currentTime,
         attacker.currentStance,
+        technique.reachConfig, // Pass reachConfig for hybrid reach calculation
       );
 
       // Check distance to defender using 3D Euclidean distance
