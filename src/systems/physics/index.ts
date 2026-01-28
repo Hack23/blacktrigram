@@ -14,6 +14,11 @@ export type {
   KnockbackResult,
   BalanceState,
 } from './KnockbackPhysics';
+export { AttackMovementPhysics } from './AttackMovementPhysics';
+export type {
+  AttackMovementConfig,
+  AttackMovementResult,
+} from './AttackMovementPhysics';
 export { CollisionDetection } from './CollisionDetection';
 
 export { SpeedModifierSystem, MovementType } from './SpeedModifierSystem';
