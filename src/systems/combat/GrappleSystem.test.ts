@@ -11,8 +11,6 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   GrappleSystem,
   DEFAULT_GRAPPLE_CONFIG,
-  type GrappleAttemptResult,
-  type EscapeAttemptResult,
 } from "./GrappleSystem";
 import type { PlayerState } from "@/systems/player";
 import {

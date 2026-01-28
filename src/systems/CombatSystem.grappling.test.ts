@@ -53,7 +53,7 @@ describe("CombatSystem Grappling Integration", () => {
     // Create a grapple technique
     grappleTechnique = {
       id: "test-grapple",
-      name: { korean: "팔꺾기", english: "Arm Lock" },
+      name: { korean: "팔꺾기", english: "Arm Lock", romanized: "pal-kkeok-gi" },
       koreanName: "팔꺾기",
       englishName: "Arm Lock",
       romanized: "pal-kkeok-gi",
@@ -94,12 +94,12 @@ describe("CombatSystem Grappling Integration", () => {
       }
 
       expect(result).toBeDefined();
-      if (result!.success) {
-        expect(result!.hit).toBe(true);
-        expect(result!.attacker.combatState).toBe(CombatState.GRAPPLING);
-        expect(result!.defender.combatState).toBe(CombatState.GRAPPLED);
-        expect(result!.attacker.grappleControl).toBeDefined();
-        expect(result!.defender.grappleControl).toBeDefined();
+      if (result && result.success && result.attacker && result.defender) {
+        expect(result.hit).toBe(true);
+        expect(result.attacker.combatState).toBe(CombatState.GRAPPLING);
+        expect(result.defender.combatState).toBe(CombatState.GRAPPLED);
+        expect(result.attacker.grappleControl).toBeDefined();
+        expect(result.defender.grappleControl).toBeDefined();
       }
     });
 
@@ -174,7 +174,7 @@ describe("CombatSystem Grappling Integration", () => {
       );
 
       // Stamina should be consumed regardless of success
-      if (result.attacker.stamina !== initialStamina) {
+      if (result.attacker && result.attacker.stamina !== initialStamina) {
         expect(result.attacker.stamina).toBeLessThan(initialStamina);
       }
     });
@@ -197,15 +197,15 @@ describe("CombatSystem Grappling Integration", () => {
       }
 
       if (successfulResult) {
-        const { attacker: updatedAttacker, defender: updatedDefender } =
-          successfulResult;
+        const updatedAttacker = successfulResult.attacker;
+        const updatedDefender = successfulResult.defender;
 
-        expect(updatedAttacker.grappleControl).toBeDefined();
-        expect(updatedDefender.grappleControl).toBeDefined();
-        expect(updatedAttacker.grappleControl?.controllerId).toBe(attacker.id);
-        expect(updatedAttacker.grappleControl?.targetId).toBe(defender.id);
-        expect(updatedDefender.grappleControl?.controllerId).toBe(attacker.id);
-        expect(updatedDefender.grappleControl?.targetId).toBe(defender.id);
+        expect(updatedAttacker?.grappleControl).toBeDefined();
+        expect(updatedDefender?.grappleControl).toBeDefined();
+        expect(updatedAttacker?.grappleControl?.controllerId).toBe(attacker.id);
+        expect(updatedAttacker?.grappleControl?.targetId).toBe(defender.id);
+        expect(updatedDefender?.grappleControl?.controllerId).toBe(attacker.id);
+        expect(updatedDefender?.grappleControl?.targetId).toBe(defender.id);
       }
     });
 
@@ -214,19 +214,19 @@ describe("CombatSystem Grappling Integration", () => {
       const armTechnique = {
         ...grappleTechnique,
         id: "arm-lock",
-        name: { korean: "팔꺾기", english: "Arm Lock" },
+        name: { korean: "팔꺾기", english: "Arm Lock", romanized: "pal-kkeok-gi" },
       };
 
       const wristTechnique = {
         ...grappleTechnique,
         id: "wrist-lock",
-        name: { korean: "손목꺾기", english: "Wrist Lock" },
+        name: { korean: "손목꺾기", english: "Wrist Lock", romanized: "sonmok-kkeok-gi" },
       };
 
       const hipTechnique = {
         ...grappleTechnique,
         id: "hip-throw",
-        name: { korean: "허리후리기", english: "Hip Throw" },
+        name: { korean: "허리후리기", english: "Hip Throw", romanized: "heori-hu-ri-gi" },
       };
 
       // Execute and verify targets (indirectly through success)
@@ -359,9 +359,9 @@ describe("CombatSystem Grappling Integration", () => {
 
       expect(result).not.toBeNull();
 
-      if (result!.success) {
-        const { attacker: grapplingAttacker, defender: grappledDefender } =
-          result;
+      if (result && result.success && result.attacker && result.defender) {
+        const grapplingAttacker = result.attacker;
+        const grappledDefender = result.defender;
 
         // Step 2: Verify control state
         expect(grapplingAttacker.combatState).toBe(CombatState.GRAPPLING);
