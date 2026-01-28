@@ -232,6 +232,13 @@ export class MovementPhysics {
    */
   private _overrideAcceleration: number | null = null;
 
+  /**
+   * Cached arena speed scale to avoid repeated calculations.
+   *
+   * **Korean**: 캐시된 경기장 속도 배수 (Cached Arena Speed Scale)
+   */
+  private _cachedArenaSpeedScale: number = 1.0;
+
   // Temporary vectors to avoid allocations in update loop
   private readonly tempTargetVelocity = new THREE.Vector3();
   private readonly tempMovement = new THREE.Vector3();
@@ -243,12 +250,31 @@ export class MovementPhysics {
    *
    * **Korean**: 이동 물리 생성 (Create Movement Physics)
    *
-   * @param arenaWidthMeters - Width of the arena in meters (default: 10m)
+   * @param arenaWidthMeters - Width of the arena in meters (default: 10m, min: 1m)
+   * @throws {Error} If arenaWidthMeters is not a positive number
+   *
+   * @example
+   * ```typescript
+   * // Default 10m arena (1.0x speed scale)
+   * const physics = new MovementPhysics();
+   *
+   * // Small 6m arena (0.7x speed scale)
+   * const smallPhysics = new MovementPhysics(6.0);
+   *
+   * // Large 14m arena (1.3x speed scale)
+   * const largePhysics = new MovementPhysics(14.0);
+   * ```
    *
    * @public
    */
   constructor(arenaWidthMeters: number = 10.0) {
+    if (arenaWidthMeters <= 0 || !Number.isFinite(arenaWidthMeters)) {
+      throw new Error(
+        `Arena width must be a positive finite number, got: ${arenaWidthMeters}`,
+      );
+    }
     this._arenaWidthMeters = arenaWidthMeters;
+    this._cachedArenaSpeedScale = this.calculateArenaSpeedScale();
   }
 
   /**
@@ -298,8 +324,8 @@ export class MovementPhysics {
     input: MovementInput,
     deltaTime: number,
   ): void {
-    // Calculate arena-aware speed scaling
-    const arenaSpeedScale = this.calculateArenaSpeedScale();
+    // Use cached arena-aware speed scaling
+    const arenaSpeedScale = this._cachedArenaSpeedScale;
 
     // Calculate stance speed modifier
     const stanceModifier = this.getStanceSpeedModifier(state.currentStance);
@@ -477,7 +503,7 @@ export class MovementPhysics {
     stance: TrigramStance,
     legInjuryFactor: number,
   ): number {
-    const arenaSpeedScale = this.calculateArenaSpeedScale();
+    const arenaSpeedScale = this._cachedArenaSpeedScale;
     const baseSpeed = isRunning ? this.BASE_RUN_SPEED : this.BASE_WALK_SPEED;
     const stanceModifier = this.getStanceSpeedModifier(stance);
     const injuryPenalty = 1.0 - legInjuryFactor * 0.5;
@@ -587,13 +613,21 @@ export class MovementPhysics {
    *
    * Updates the arena width used for speed scaling calculations.
    * Call this when the arena size changes (e.g., screen resize).
+   * Recalculates and caches the arena speed scale.
    *
-   * @param widthMeters - Arena width in meters
+   * @param widthMeters - Arena width in meters (must be positive)
+   * @throws {Error} If widthMeters is not a positive number
    *
    * @public
    */
   public setArenaWidth(widthMeters: number): void {
+    if (widthMeters <= 0 || !Number.isFinite(widthMeters)) {
+      throw new Error(
+        `Arena width must be a positive finite number, got: ${widthMeters}`,
+      );
+    }
     this._arenaWidthMeters = widthMeters;
+    this._cachedArenaSpeedScale = this.calculateArenaSpeedScale();
   }
 
   /**
@@ -614,11 +648,13 @@ export class MovementPhysics {
    *
    * **Korean**: 경기장 속도 배수 가져오기 (Get Arena Speed Scale)
    *
+   * Returns the cached arena speed scale value.
+   *
    * @returns Arena-based speed multiplier (0.7 to 1.3)
    *
    * @public
    */
   public getArenaSpeedScale(): number {
-    return this.calculateArenaSpeedScale();
+    return this._cachedArenaSpeedScale;
   }
 }

@@ -595,5 +595,91 @@ describe("MovementPhysics", () => {
       const traversalTime14m = 14.0 / walkSpeed14m;
       expect(traversalTime14m).toBeCloseTo(1.79, 1);
     });
+
+    describe("Edge Cases and Validation", () => {
+      it("should throw error for negative arena width in constructor", () => {
+        expect(() => new MovementPhysics(-5.0)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should throw error for zero arena width in constructor", () => {
+        expect(() => new MovementPhysics(0)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should throw error for NaN arena width in constructor", () => {
+        expect(() => new MovementPhysics(NaN)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should throw error for Infinity arena width in constructor", () => {
+        expect(() => new MovementPhysics(Infinity)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should throw error for negative arena width in setArenaWidth", () => {
+        const physics = new MovementPhysics(10.0);
+        expect(() => physics.setArenaWidth(-5.0)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should throw error for zero arena width in setArenaWidth", () => {
+        const physics = new MovementPhysics(10.0);
+        expect(() => physics.setArenaWidth(0)).toThrow(
+          "Arena width must be a positive finite number"
+        );
+      });
+
+      it("should clamp very small arena width to 0.7x scale", () => {
+        // 0.1m arena: rawScale = 0.01, clamped to 0.7
+        const physics = new MovementPhysics(0.1);
+        expect(physics.getArenaSpeedScale()).toBe(0.7);
+      });
+
+      it("should clamp very large arena width to 1.3x scale", () => {
+        // 1000m arena: rawScale = 100, clamped to 1.3
+        const physics = new MovementPhysics(1000.0);
+        expect(physics.getArenaSpeedScale()).toBe(1.3);
+      });
+
+      it("should handle very small positive arena width", () => {
+        const physics = new MovementPhysics(1.0);
+        // 1m arena: rawScale = 0.1, clamped to 0.7
+        expect(physics.getArenaSpeedScale()).toBe(0.7);
+        expect(physics.getArenaWidth()).toBe(1.0);
+      });
+
+      it("should handle very large arena width", () => {
+        const physics = new MovementPhysics(100.0);
+        // 100m arena: rawScale = 10, clamped to 1.3
+        expect(physics.getArenaSpeedScale()).toBe(1.3);
+        expect(physics.getArenaWidth()).toBe(100.0);
+      });
+
+      it("should cache arena speed scale for performance", () => {
+        const physics = new MovementPhysics(12.0);
+        const scale1 = physics.getArenaSpeedScale();
+        const scale2 = physics.getArenaSpeedScale();
+        // Both calls should return the same cached value
+        expect(scale1).toBe(scale2);
+        expect(scale1).toBe(1.2);
+      });
+
+      it("should update cached scale when setArenaWidth is called", () => {
+        const physics = new MovementPhysics(10.0);
+        expect(physics.getArenaSpeedScale()).toBe(1.0);
+
+        physics.setArenaWidth(14.0);
+        expect(physics.getArenaSpeedScale()).toBe(1.3);
+
+        physics.setArenaWidth(6.0);
+        expect(physics.getArenaSpeedScale()).toBe(0.7);
+      });
+    });
   });
 });
