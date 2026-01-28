@@ -744,6 +744,18 @@ function selectTechniqueForAction(
     rotationQueue.used, // Pass recent techniques for penalty
   );
 
+  // DEV: Log technique selection process
+  if (import.meta.env.DEV) {
+    console.log('🔍 AI Technique Selection:', {
+      distance: context.distanceToOpponent.toFixed(2) + 'm',
+      stance: player.currentStance,
+      stamina: player.stamina.toFixed(0),
+      archetype: player.archetype,
+      viableTechniques: viableTechniques.length,
+      viableTechniqueNames: viableTechniques.map(t => t.name?.korean || t.koreanName).slice(0, 5),
+    });
+  }
+
   // Filter by cooldown availability
   const readyTechniques = filterByCooldown(viableTechniques, cooldownMap);
 
@@ -1259,6 +1271,16 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
    * AI decision loop (fixed memory leak - issue #2529466989)
    */
   useEffect(() => {
+    // DEV: Log AI interval setup
+    if (import.meta.env.DEV) {
+      console.log('🔧 AI Interval Setup:', {
+        isPaused,
+        roundStarted,
+        roundEnded,
+        willRun: !isPaused && roundStarted && !roundEnded,
+      });
+    }
+
     if (isPaused || !roundStarted || roundEnded) {
       return;
     }
