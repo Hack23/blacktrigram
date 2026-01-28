@@ -10,7 +10,7 @@ The **Grappling System** (잡기 시스템) implements realistic grappling and t
 - **Grip Strength**: Decays at 2 points/second, affects escape difficulty
 - **Control Duration**: Minimum 0.5s before escape attempts allowed
 - **Stamina Costs**: 5 base stamina/sec, varies by body part targeted
-- **Movement Penalties**: GRAPPLING 80%, GRAPPLED 100% (cannot move)
+- **Movement Penalties**: GRAPPLING -80% (20% speed), GRAPPLED -100% (cannot move)
 
 ### 🎯 Intelligent Target Detection
 The system automatically determines grapple target from technique characteristics:
