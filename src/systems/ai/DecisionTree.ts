@@ -827,7 +827,9 @@ export class AIDecisionTree {
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
-    if (distance < optimalRange * 1.2) {
+    // Increased multiplier from 1.2 to 2.0 to allow attacks at greater distances
+    // Players start at ~1.6m apart, so this ensures AI can attack immediately
+    if (distance < optimalRange * 2.0) {
       // Close to optimal range - use close-range tactics including vital point targeting
       decisions.push(
         this.evaluateCloseRange(context, personality, killModeActive),
