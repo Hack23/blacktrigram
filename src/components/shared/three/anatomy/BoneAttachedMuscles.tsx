@@ -334,6 +334,20 @@ const MUSCLE_AMPLIFICATION_BASE = 4.0;
 const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
 
 /**
+ * Muscle geometry normalization factor.
+ *
+ * The BONE_MUSCLE_MAP uses legacy values (0.22-0.34 for radius) that were
+ * scaled for visibility. This factor converts them to anatomically correct
+ * meter-scale values while maintaining visible muscle definition.
+ *
+ * Original values (e.g., radius: 0.28) → Normalized (0.28 * 0.5 = 0.14m = 14cm)
+ * This produces visible muscle sizes that complement the bone structure.
+ *
+ * @korean 근육기하정규화계수
+ */
+const MUSCLE_GEOMETRY_NORMALIZATION = 0.5;
+
+/**
  * Calculate muscle scale factor based on muscle mass with non-linear amplification.
  *
  * Uses exponential curve to create dramatic visual differences:
@@ -461,7 +475,7 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
       lerp(attachment.baseScale.y, attachment.maxFlexScale.y, t) *
         muscleScaleFactor,
       lerp(attachment.baseScale.z, attachment.maxFlexScale.z, t) *
-        muscleScaleFactor
+        muscleScaleFactor,
     );
   }, [attachment, roundedTension, muscleScaleFactor]);
 
@@ -470,7 +484,7 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
     return new THREE.Vector3(
       currentScale.x * (1 + fatLayerThickness),
       currentScale.y * (1 + fatLayerThickness),
-      currentScale.z * (1 + fatLayerThickness)
+      currentScale.z * (1 + fatLayerThickness),
     );
   }, [currentScale, fatLayerThickness]);
 
@@ -503,7 +517,15 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
 
   return (
     <group
-      position={attachment.localOffset.toArray()}
+      position={
+        attachment.localOffset
+          .toArray()
+          .map((v) => v * MUSCLE_GEOMETRY_NORMALIZATION) as [
+          number,
+          number,
+          number,
+        ]
+      }
       rotation={[attachment.localRotation.x, attachment.localRotation.y, 0]}
     >
       {/* Main muscle mesh */}
@@ -515,7 +537,14 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
         receiveShadow
         name={`muscle-${attachment.name}`}
       >
-        <capsuleGeometry args={[attachment.radius, attachment.length, 8, 16]} />
+        <capsuleGeometry
+          args={[
+            attachment.radius * MUSCLE_GEOMETRY_NORMALIZATION,
+            attachment.length * MUSCLE_GEOMETRY_NORMALIZATION,
+            8,
+            16,
+          ]}
+        />
         <meshPhysicalMaterial
           color={muscleColor}
           metalness={0.3}
@@ -537,7 +566,12 @@ export const BoneAttachedMuscle: React.FC<BoneAttachedMuscleProps> = ({
           name={`fat-layer-${attachment.name}`}
         >
           <capsuleGeometry
-            args={[attachment.radius, attachment.length, 8, 16]}
+            args={[
+              attachment.radius * MUSCLE_GEOMETRY_NORMALIZATION,
+              attachment.length * MUSCLE_GEOMETRY_NORMALIZATION,
+              8,
+              16,
+            ]}
           />
           <meshStandardMaterial
             color={KOREAN_COLORS.SKIN_TONE}

@@ -165,7 +165,7 @@ const FingerSegment: React.FC<FingerSegmentProps> = ({
         emissive: new THREE.Color(color),
         emissiveIntensity: 0.02,
       }),
-    [color]
+    [color],
   );
 
   // Dispose material on unmount to prevent memory leaks
@@ -205,20 +205,27 @@ const Finger: React.FC<FingerProps> = ({
   isHighlighted,
   skinColor,
 }) => {
-  // Finger dimensions based on anatomical proportions (realistic for 185cm person)
-  // Scaled 1.6x from original for anatomically correct finger size (reduced from 2.0)
+  // Finger dimensions based on anatomical proportions
+  // For ~180cm person: index ~7cm, middle ~8cm, ring ~7.5cm, pinky ~6cm, thumb ~5cm
+  // These dimensions are in METERS for Three.js
   const dimensions = useMemo(() => {
-    const fingerScaleFactor = 1.6;
-    // Finger lengths: index ~7cm, middle ~8cm, ring ~7.5cm, pinky ~6cm, thumb ~5cm
+    // Finger segment lengths based on anatomical proportions (in meters)
+    // Total finger length: proximal + intermediate + distal
+    // Index: ~7cm total = 0.03 + 0.022 + 0.018
     const baseLength =
       fingerName === "thumb"
-        ? 0.05 * fingerScaleFactor
-        : 0.07 * fingerScaleFactor;
-    // Finger thickness: ~1.5-2cm diameter
+        ? 0.025 // Thumb proximal is shorter
+        : fingerName === "pinky"
+          ? 0.022 // Pinky is shorter
+          : 0.03; // Other fingers
+
+    // Finger thickness: ~1.5-1.8cm diameter (0.75-0.9cm radius)
     const baseRadius =
       fingerName === "pinky"
-        ? 0.007 * fingerScaleFactor
-        : 0.008 * fingerScaleFactor;
+        ? 0.006 // Pinky is thinner
+        : fingerName === "thumb"
+          ? 0.009 // Thumb is thicker
+          : 0.007;
 
     return {
       proximalLength: baseLength,
@@ -329,18 +336,19 @@ export const Hand3D: React.FC<Hand3DProps> = ({
   // Determine LOD based on distance
   const lodConfig = useMemo(
     () => getLODConfig(distanceFromCamera),
-    [distanceFromCamera]
+    [distanceFromCamera],
   );
 
   // Hand orientation
   const sideMultiplier = side === "left" ? -1 : 1;
 
-  // Palm dimensions (realistic: ~9cm wide, ~19cm long for 185cm person)
-  // Scale 1.6x from original for anatomically correct size (reduced from 2.0)
-  const handScaleFactor = 1.6;
-  const palmWidth = 0.09 * scale * handScaleFactor; // ~7.2cm palm width
-  const palmLength = 0.19 * scale * handScaleFactor; // ~15cm total hand length
-  const palmThickness = 0.025 * scale * handScaleFactor; // ~2cm palm thickness
+  // Palm dimensions (realistic for ~180cm person)
+  // Palm width: ~8-9cm, Palm length (metacarpal area): ~9-10cm
+  // Total hand length including palm and fingers: ~18-19cm
+  // These dimensions are in METERS for Three.js
+  const palmWidth = 0.085 * scale; // 8.5cm palm width
+  const palmLength = 0.095 * scale; // 9.5cm palm/metacarpal length
+  const palmThickness = 0.025 * scale; // 2.5cm palm thickness
 
   // Determine which parts to highlight
   const highlightKnuckles = highlightMode === "knuckles";

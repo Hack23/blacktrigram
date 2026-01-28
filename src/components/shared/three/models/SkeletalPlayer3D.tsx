@@ -32,7 +32,7 @@ import { FacialExpression } from "../../../../types/facial";
 import type { Player3DUnifiedProps } from "../../../../types/player-visual";
 import type { SkeletalRig } from "../../../../types/skeletal";
 import { toHexColor } from "../../../../utils/colorHelpers";
-import { getArchetypeColors } from "../../../../utils/colorUtils";
+import { getArchetypeSkinTone } from "../../../../utils/colorUtils";
 import BoneRenderer from "../anatomy/BoneRenderer";
 import PlayerStateIndicators from "../effects/PlayerStateIndicators";
 
@@ -150,13 +150,13 @@ export const SkeletalPlayer3D: React.FC<
   // Get physical attributes for the archetype
   const physicalAttributes = useMemo(
     () => getArchetypePhysicalAttributes(archetype),
-    [archetype]
+    [archetype],
   );
 
   // Create skeletal rig with scaled dimensions based on archetype
   const rig = useMemo<SkeletalRig>(
     () => createScaledHumanoidRig(physicalAttributes),
-    [physicalAttributes]
+    [physicalAttributes],
   );
 
   // ========================================
@@ -200,19 +200,16 @@ export const SkeletalPlayer3D: React.FC<
     stamina,
   });
 
-  // Get archetype colors
-  const archetypeColors = useMemo(
-    () => getArchetypeColors(archetype),
-    [archetype]
-  );
+  // Get archetype-specific skin tone
+  const skinTone = useMemo(() => getArchetypeSkinTone(archetype), [archetype]);
 
-  // Body color based on state
+  // Body color - use skin tone for normal, override for special states
   const bodyColor = useMemo(() => {
     if (isStunned) return KOREAN_COLORS.WARNING_YELLOW;
     if (health / maxHealth < 0.3) return KOREAN_COLORS.ACCENT_RED;
     if (ki / 100 > 0.8) return KOREAN_COLORS.PRIMARY_CYAN;
-    return archetypeColors.primary;
-  }, [isStunned, health, maxHealth, ki, archetypeColors.primary]);
+    return skinTone; // Use archetype skin tone instead of primary color
+  }, [isStunned, health, maxHealth, ki, skinTone]);
 
   // Stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
@@ -274,7 +271,7 @@ export const SkeletalPlayer3D: React.FC<
       pain,
       consciousness,
       justHit,
-      justLanded
+      justLanded,
     );
   }, [
     enableFacialExpressions,
@@ -358,7 +355,7 @@ export const SkeletalPlayer3D: React.FC<
           playerPos,
           opponentPos,
           delta,
-          Date.now()
+          Date.now(),
         );
       }
 

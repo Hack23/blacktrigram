@@ -123,15 +123,15 @@ describe("Skeleton Scaling System", () => {
       const neckLength = getScaledBoneLength(BoneName.NECK, MUSA_PHYSICAL);
       const thighLength = getScaledBoneLength(BoneName.THIGH_L, MUSA_PHYSICAL);
 
-      // With visual amplification applied, expect values near base but scaled
-      // MUSA neckLength=10 (same as reference), so neck ~10
-      // MUSA legLength=96 vs ref 95, so slightly longer
-      expect(headLength).toBeGreaterThan(15);
-      expect(headLength).toBeLessThan(25);
+      // With anatomically correct proportions (thigh ~55% of leg length)
+      // MUSA legLength=96cm, so thigh ~53cm (96 * 0.55)
+      // Updated BASE_BONE_DIMENSIONS use proper anatomical proportions
+      expect(headLength).toBeGreaterThan(20);
+      expect(headLength).toBeLessThan(30);
       expect(neckLength).toBeGreaterThan(8);
       expect(neckLength).toBeLessThan(15);
-      expect(thighLength).toBeGreaterThan(25);
-      expect(thighLength).toBeLessThan(40);
+      expect(thighLength).toBeGreaterThan(40); // Realistic thigh ~48cm
+      expect(thighLength).toBeLessThan(60);
     });
 
     it("should return larger head for Jojik", () => {

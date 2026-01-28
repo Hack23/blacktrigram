@@ -35,7 +35,27 @@ import Hand3D from "./Hand3D";
  *
  * @korean 뼈두께시각적증폭계수
  */
-const THICKNESS_AMPLIFICATION_FACTOR = 2.0;
+const THICKNESS_AMPLIFICATION_FACTOR = 1.5;
+
+/**
+ * Minimum bone thickness multiplier.
+ *
+ * Ensures even lean archetypes (like HACKER) maintain visible body mass.
+ * Without this floor, low muscle mass creates stick-figure appearance.
+ *
+ * @korean 최소뼈두께배수
+ */
+const MIN_BONE_THICKNESS = 0.85;
+
+/**
+ * Base bone radius as fraction of bone length.
+ *
+ * Higher value = thicker bones. Anatomically, limb bones have diameter
+ * roughly 8-12% of their length. Using 0.15 for more visible body mass.
+ *
+ * @korean 기본뼈반지름비율
+ */
+const BASE_BONE_RADIUS_RATIO = 0.15;
 
 /**
  * Calculate bone thickness multiplier based on physical attributes
@@ -53,7 +73,7 @@ const THICKNESS_AMPLIFICATION_FACTOR = 2.0;
  */
 const calculateBoneThicknessMultiplier = (
   muscleMass: number,
-  fatMass: number
+  fatMass: number,
 ): number => {
   // Reference: 35kg muscle mass, 12kg fat mass → 1.0x thickness
   const referenceMuscle = 35;
@@ -83,9 +103,12 @@ const calculateBoneThicknessMultiplier = (
   const rawMultiplier = muscleContribution + fatContribution;
 
   // Apply visual amplification for more noticeable differences
-  // Amplified range: ~0.86x (lean Amsalja) to ~1.28x (bulky Jojik)
+  // Amplified range: ~0.88x (lean Amsalja) to ~1.21x (bulky Jojik)
   const deviation = rawMultiplier - 1.0;
-  return 1.0 + deviation * THICKNESS_AMPLIFICATION_FACTOR;
+  const amplified = 1.0 + deviation * THICKNESS_AMPLIFICATION_FACTOR;
+
+  // Apply minimum floor to prevent stick-figure appearance
+  return Math.max(MIN_BONE_THICKNESS, amplified);
 };
 
 /**
@@ -269,12 +292,12 @@ const SingleBone: React.FC<{
       groupRef.current.rotation.set(
         bone.rotation.x,
         bone.rotation.y,
-        bone.rotation.z
+        bone.rotation.z,
       );
       groupRef.current.position.set(
         bone.position.x,
         bone.position.y,
-        bone.position.z
+        bone.position.z,
       );
     }
   });
@@ -287,6 +310,10 @@ const SingleBone: React.FC<{
 
     // Calculate rotation to align with bone direction if parent exists
     let rotation = new THREE.Euler(0, 0, 0);
+    // Offset to position capsule between parent and this bone's position
+    // Capsules extend equally in both directions, so we offset by half length toward parent
+    let offset = new THREE.Vector3(0, -length / 2, 0);
+
     if (bone.parent) {
       // Use this bone's local position (parent → child vector) and normalize to get the direction
       // Extract coordinates and manually normalize to avoid issues with Vector3 method availability
@@ -300,18 +327,22 @@ const SingleBone: React.FC<{
         const target = new THREE.Vector3(
           x / positionLength,
           y / positionLength,
-          z / positionLength
+          z / positionLength,
         );
         // Calculate quaternion rotation from capsule's default Y-axis to target direction
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
           capsuleDefaultDirection,
-          target
+          target,
         );
         rotation = new THREE.Euler().setFromQuaternion(quaternion);
+
+        // Calculate offset in the direction toward parent (negative of bone direction)
+        // This positions the capsule to connect parent → this bone
+        offset = target.clone().multiplyScalar(-length / 2);
       }
     }
 
-    return { length, rotation };
+    return { length, rotation, offset };
   }, [bone]);
 
   return (
@@ -323,6 +354,7 @@ const SingleBone: React.FC<{
       {/* Bone capsule connecting to parent */}
       {renderMode === "solid" ? (
         <mesh
+          position={boneTransform.offset.toArray()}
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
@@ -333,7 +365,9 @@ const SingleBone: React.FC<{
         >
           <capsuleGeometry
             args={[
-              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
               4,
               8,
@@ -350,6 +384,7 @@ const SingleBone: React.FC<{
         </mesh>
       ) : (
         <mesh
+          position={boneTransform.offset.toArray()}
           rotation={[
             boneTransform.rotation.x,
             boneTransform.rotation.y,
@@ -358,7 +393,9 @@ const SingleBone: React.FC<{
         >
           <capsuleGeometry
             args={[
-              boneTransform.length * 0.1 * boneThicknessMultiplier, // Radius scaled by thickness
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                boneThicknessMultiplier, // Radius scaled by thickness
               boneTransform.length, // Length unchanged
               4,
               8,
@@ -377,7 +414,14 @@ const SingleBone: React.FC<{
       {renderMode === "debug" && (
         <mesh>
           <sphereGeometry
-            args={[boneTransform.length * 0.15 * boneThicknessMultiplier, 8, 8]}
+            args={[
+              boneTransform.length *
+                BASE_BONE_RADIUS_RATIO *
+                1.2 *
+                boneThicknessMultiplier,
+              8,
+              8,
+            ]}
           />
           <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
         </mesh>
@@ -531,7 +575,7 @@ export const BoneRenderer: React.FC<BoneRendererProps> = ({
     if (!physicalAttributes) return 1.0;
     return calculateBoneThicknessMultiplier(
       physicalAttributes.muscleMass,
-      physicalAttributes.fatMass
+      physicalAttributes.fatMass,
     );
   }, [physicalAttributes]);
 

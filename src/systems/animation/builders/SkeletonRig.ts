@@ -13,7 +13,6 @@
  * @korean 골격시스템
  */
 
-import * as THREE from "three";
 import { PhysicalAttributes } from "@/types/common";
 import type {
   Bone,
@@ -23,9 +22,10 @@ import type {
 } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 import {
-  calculateBoneScalingFactors,
-  calculateShoulderOffset,
-} from "@/utils/skeletonScaling";
+  calculateSkeletonDimensions,
+  cmToMeters,
+} from "@/utils/characterScaling";
+import * as THREE from "three";
 
 /**
  * Create a bone with default rest pose
@@ -45,7 +45,7 @@ export const createBone = (
   name: string,
   parent: Bone | null,
   position: [number, number, number],
-  length = 0.1
+  length = 0.1,
 ): Bone => {
   const pos = new THREE.Vector3(position[0], position[1], position[2]);
   const rot = new THREE.Euler(0, 0, 0);
@@ -114,31 +114,31 @@ export const createHumanoidRig = (): SkeletalRig => {
     BoneName.SHOULDER_L,
     spine3,
     [-0.15, 0.1, 0],
-    0.1
+    0.1,
   );
   const leftUpperArm = createBone(
     BoneName.UPPER_ARM_L,
     leftShoulder,
     [-0.15, 0, 0],
-    0.25
+    0.25,
   );
   const leftElbow = createBone(
     BoneName.ELBOW_L,
     leftUpperArm,
     [-0.25, 0, 0],
-    0.05
+    0.05,
   );
   const leftForearm = createBone(
     BoneName.FOREARM_L,
     leftElbow,
     [-0.25, 0, 0],
-    0.25
+    0.25,
   );
   const leftWrist = createBone(
     BoneName.WRIST_L,
     leftForearm,
     [-0.15, 0, 0],
-    0.05
+    0.05,
   );
   const leftHand = createBone(BoneName.HAND_L, leftWrist, [-0.08, 0, 0], 0.08);
 
@@ -147,31 +147,31 @@ export const createHumanoidRig = (): SkeletalRig => {
     BoneName.SHOULDER_R,
     spine3,
     [0.15, 0.1, 0],
-    0.1
+    0.1,
   );
   const rightUpperArm = createBone(
     BoneName.UPPER_ARM_R,
     rightShoulder,
     [0.15, 0, 0],
-    0.25
+    0.25,
   );
   const rightElbow = createBone(
     BoneName.ELBOW_R,
     rightUpperArm,
     [0.25, 0, 0],
-    0.05
+    0.05,
   );
   const rightForearm = createBone(
     BoneName.FOREARM_R,
     rightElbow,
     [0.25, 0, 0],
-    0.25
+    0.25,
   );
   const rightWrist = createBone(
     BoneName.WRIST_R,
     rightForearm,
     [0.15, 0, 0],
-    0.05
+    0.05,
   );
   const rightHand = createBone(BoneName.HAND_R, rightWrist, [0.08, 0, 0], 0.08);
 
@@ -191,7 +191,7 @@ export const createHumanoidRig = (): SkeletalRig => {
     BoneName.FOOT_R,
     rightShin,
     [0, -0.1, 0.1],
-    0.15
+    0.15,
   );
 
   // Create bone map for fast lookup
@@ -292,204 +292,196 @@ export const createHumanoidRig = (): SkeletalRig => {
  * @korean 크기조정된인간형골격생성
  */
 export const createScaledHumanoidRig = (
-  attributes: PhysicalAttributes
+  attributes: PhysicalAttributes,
 ): SkeletalRig => {
-  // Calculate scaling factors from physical attributes
-  const factors = calculateBoneScalingFactors(attributes);
-  const shoulderOffset = calculateShoulderOffset(attributes);
+  // Calculate anatomically correct bone dimensions in meters
+  const dims = calculateSkeletonDimensions(attributes);
 
-  // Convert shoulder offset from cm to meters for Three.js
-  const shoulderOffsetMeters = shoulderOffset / 100;
+  // Calculate shoulder offset (half of shoulder width) in meters
+  const shoulderOffsetMeters = cmToMeters(attributes.shoulderWidth) / 2;
+  const hipOffsetMeters = cmToMeters(attributes.shoulderWidth) * 0.35; // Hips are ~70% of shoulder width
 
-  // Root (pelvis) - center of mass at hip height
-  // Pelvis height must account for total leg length to keep feet at Y=0
-  // Base leg drop = 0.1 (hip) + 0.3 (thigh) + 0.3 (knee) + 0.3 (shin) + 0.1 (foot) = 1.1
-  // Scale by leg factors: hip/foot by overall, thigh/knee by thigh, shin by shin
-  const baseLegDrop =
-    0.1 * factors.overall + // hip
-    0.3 * factors.thigh + // thigh
-    0.3 * factors.thigh + // knee (same as thigh)
-    0.3 * factors.shin + // shin
-    0.1 * factors.overall; // foot
+  // Root (pelvis) - position at pelvis height (ground + leg length + foot)
+  // This ensures feet are at Y=0
   const root = createBone(
     BoneName.PELVIS,
     null,
-    [0, baseLegDrop, 0],
-    0.15 * factors.overall
+    [0, dims.pelvisHeight, 0],
+    dims.hip,
   );
 
-  // Spine chain (3 bones) - scaled by torso length
+  // Spine chain (3 bones) - using actual torso segment lengths
   const spine1 = createBone(
     BoneName.SPINE_LOWER,
     root,
-    [0, 0.15 * factors.spine, 0],
-    0.2 * factors.spine
+    [0, dims.spineLower * 0.5, 0], // Start half a segment up from pelvis
+    dims.spineLower,
   );
   const spine2 = createBone(
     BoneName.SPINE_MIDDLE,
     spine1,
-    [0, 0.2 * factors.spine, 0],
-    0.2 * factors.spine
+    [0, dims.spineMiddle, 0],
+    dims.spineMiddle,
   );
   const spine3 = createBone(
     BoneName.SPINE_UPPER,
     spine2,
-    [0, 0.2 * factors.spine, 0],
-    0.2 * factors.spine
+    [0, dims.spineUpper, 0],
+    dims.spineUpper,
   );
 
-  // Head chain (2 bones) - scaled by neck/head dimensions
+  // Head chain (2 bones) - using actual neck and head sizes
   const neck = createBone(
     BoneName.NECK,
     spine3,
-    [0, 0.15 * factors.neck, 0],
-    0.1 * factors.neck
+    [0, dims.neck * 0.5, 0], // Start from top of spine
+    dims.neck,
   );
   const head = createBone(
     BoneName.HEAD,
     neck,
-    [0, 0.2 * factors.head, 0],
-    0.2 * factors.head
+    [0, dims.head * 0.75, 0], // Head center offset
+    dims.head,
   );
 
-  // Left arm chain (6 bones) - scaled by arm length and shoulder width
+  // Left arm chain (6 bones) - using actual arm segment lengths
   const leftShoulder = createBone(
     BoneName.SHOULDER_L,
     spine3,
-    [-shoulderOffsetMeters, 0.1 * factors.spine, 0],
-    0.1 * factors.shoulder
+    [-shoulderOffsetMeters * 0.7, dims.neck * 0.3, 0], // Shoulder starts inward from edge
+    dims.shoulder,
   );
   const leftUpperArm = createBone(
     BoneName.UPPER_ARM_L,
     leftShoulder,
-    [-0.15 * factors.shoulder, 0, 0],
-    0.25 * factors.upperArm
+    [-dims.shoulder, 0, 0], // Extend outward by shoulder length
+    dims.upperArm,
   );
   const leftElbow = createBone(
     BoneName.ELBOW_L,
     leftUpperArm,
-    [-0.25 * factors.upperArm, 0, 0],
-    0.05 * factors.upperArm
+    [-dims.upperArm, 0, 0], // End of upper arm
+    dims.elbow,
   );
   const leftForearm = createBone(
     BoneName.FOREARM_L,
     leftElbow,
-    [-0.25 * factors.forearm, 0, 0],
-    0.25 * factors.forearm
+    [-dims.elbow, 0, 0], // Past elbow joint
+    dims.forearm,
   );
   const leftWrist = createBone(
     BoneName.WRIST_L,
     leftForearm,
-    [-0.15 * factors.forearm, 0, 0],
-    0.05 * factors.forearm
+    [-dims.forearm, 0, 0], // End of forearm
+    dims.wrist,
   );
   const leftHand = createBone(
     BoneName.HAND_L,
     leftWrist,
-    [-0.08 * factors.overall, 0, 0],
-    0.08 * factors.overall
+    [-dims.wrist, 0, 0], // Past wrist
+    dims.hand,
   );
 
   // Right arm chain (6 bones - mirror of left)
   const rightShoulder = createBone(
     BoneName.SHOULDER_R,
     spine3,
-    [shoulderOffsetMeters, 0.1 * factors.spine, 0],
-    0.1 * factors.shoulder
+    [shoulderOffsetMeters * 0.7, dims.neck * 0.3, 0],
+    dims.shoulder,
   );
   const rightUpperArm = createBone(
     BoneName.UPPER_ARM_R,
     rightShoulder,
-    [0.15 * factors.shoulder, 0, 0],
-    0.25 * factors.upperArm
+    [dims.shoulder, 0, 0],
+    dims.upperArm,
   );
   const rightElbow = createBone(
     BoneName.ELBOW_R,
     rightUpperArm,
-    [0.25 * factors.upperArm, 0, 0],
-    0.05 * factors.upperArm
+    [dims.upperArm, 0, 0],
+    dims.elbow,
   );
   const rightForearm = createBone(
     BoneName.FOREARM_R,
     rightElbow,
-    [0.25 * factors.forearm, 0, 0],
-    0.25 * factors.forearm
+    [dims.elbow, 0, 0],
+    dims.forearm,
   );
   const rightWrist = createBone(
     BoneName.WRIST_R,
     rightForearm,
-    [0.15 * factors.forearm, 0, 0],
-    0.05 * factors.forearm
+    [dims.forearm, 0, 0],
+    dims.wrist,
   );
   const rightHand = createBone(
     BoneName.HAND_R,
     rightWrist,
-    [0.08 * factors.overall, 0, 0],
-    0.08 * factors.overall
+    [dims.wrist, 0, 0],
+    dims.hand,
   );
 
-  // Left leg chain (5 bones) - scaled by leg length
+  // Left leg chain (5 bones) - using actual leg segment lengths
   const leftHip = createBone(
     BoneName.HIP_L,
     root,
-    [-0.1 * factors.overall, -0.1 * factors.overall, 0],
-    0.1 * factors.overall
+    [-hipOffsetMeters, -dims.hip * 0.5, 0],
+    dims.hip,
   );
   const leftThigh = createBone(
     BoneName.THIGH_L,
     leftHip,
-    [0, -0.3 * factors.thigh, 0],
-    0.3 * factors.thigh
+    [0, -dims.hip, 0], // Drop down from hip
+    dims.thigh,
   );
   const leftKnee = createBone(
     BoneName.KNEE_L,
     leftThigh,
-    [0, -0.3 * factors.thigh, 0],
-    0.05 * factors.thigh
+    [0, -dims.thigh, 0], // End of thigh
+    dims.knee,
   );
   const leftShin = createBone(
     BoneName.SHIN_L,
     leftKnee,
-    [0, -0.3 * factors.shin, 0],
-    0.3 * factors.shin
+    [0, -dims.knee, 0], // Past knee
+    dims.shin,
   );
   const leftFoot = createBone(
     BoneName.FOOT_L,
     leftShin,
-    [0, -0.1 * factors.overall, 0.1 * factors.overall],
-    0.15 * factors.overall
+    [0, -dims.shin, dims.foot * 0.5], // End of shin, slight forward for foot
+    dims.foot,
   );
 
   // Right leg chain (5 bones - mirror of left)
   const rightHip = createBone(
     BoneName.HIP_R,
     root,
-    [0.1 * factors.overall, -0.1 * factors.overall, 0],
-    0.1 * factors.overall
+    [hipOffsetMeters, -dims.hip * 0.5, 0],
+    dims.hip,
   );
   const rightThigh = createBone(
     BoneName.THIGH_R,
     rightHip,
-    [0, -0.3 * factors.thigh, 0],
-    0.3 * factors.thigh
+    [0, -dims.hip, 0],
+    dims.thigh,
   );
   const rightKnee = createBone(
     BoneName.KNEE_R,
     rightThigh,
-    [0, -0.3 * factors.thigh, 0],
-    0.05 * factors.thigh
+    [0, -dims.thigh, 0],
+    dims.knee,
   );
   const rightShin = createBone(
     BoneName.SHIN_R,
     rightKnee,
-    [0, -0.3 * factors.shin, 0],
-    0.3 * factors.shin
+    [0, -dims.knee, 0],
+    dims.shin,
   );
   const rightFoot = createBone(
     BoneName.FOOT_R,
     rightShin,
-    [0, -0.1 * factors.overall, 0.1 * factors.overall],
-    0.15 * factors.overall
+    [0, -dims.shin, dims.foot * 0.5],
+    dims.foot,
   );
 
   // Create bone map for fast lookup
@@ -721,24 +713,24 @@ export const BONE_CHAINS: BoneChain[] = [
  */
 export const applyJointConstraint = (
   bone: Bone,
-  constraint: JointConstraint
+  constraint: JointConstraint,
 ): void => {
   // Clamp X rotation
   bone.rotation.x = Math.max(
     constraint.minRotation.x,
-    Math.min(constraint.maxRotation.x, bone.rotation.x)
+    Math.min(constraint.maxRotation.x, bone.rotation.x),
   );
 
   // Clamp Y rotation
   bone.rotation.y = Math.max(
     constraint.minRotation.y,
-    Math.min(constraint.maxRotation.y, bone.rotation.y)
+    Math.min(constraint.maxRotation.y, bone.rotation.y),
   );
 
   // Clamp Z rotation
   bone.rotation.z = Math.max(
     constraint.minRotation.z,
-    Math.min(constraint.maxRotation.z, bone.rotation.z)
+    Math.min(constraint.maxRotation.z, bone.rotation.z),
   );
 };
 
@@ -775,7 +767,7 @@ export const getBoneWorldPosition = (bone: Bone): THREE.Vector3 => {
     tempMatrix.compose(
       b.position,
       tempQuaternion.setFromEuler(b.rotation),
-      b.scale
+      b.scale,
     );
     worldMatrix.multiply(tempMatrix);
   }
@@ -874,7 +866,7 @@ export const resetRigToRestPose = (rig: SkeletalRig): void => {
  */
 export const createHandBones = (
   handBone: Bone,
-  side: "left" | "right"
+  side: "left" | "right",
 ): Map<string, Bone> => {
   const fingerBones = new Map<string, Bone>();
 
@@ -888,7 +880,7 @@ export const createHandBones = (
     }`,
     handBone,
     [0.015 * sideMultiplier, 0.02, 0.01],
-    0.025
+    0.025,
   );
   const thumbProx = createBone(
     `${
@@ -896,7 +888,7 @@ export const createHandBones = (
     }`,
     thumbMeta,
     [0.015 * sideMultiplier, 0.015, 0.01],
-    0.02
+    0.02,
   );
   const thumbDist = createBone(
     `${
@@ -904,7 +896,7 @@ export const createHandBones = (
     }`,
     thumbProx,
     [0.01 * sideMultiplier, 0.01, 0],
-    0.015
+    0.015,
   );
 
   fingerBones.set(thumbMeta.name, thumbMeta);
@@ -918,7 +910,7 @@ export const createHandBones = (
     }`,
     handBone,
     [0.015 * sideMultiplier, 0.06, 0],
-    0.03
+    0.03,
   );
   const indexProx = createBone(
     `${
@@ -926,7 +918,7 @@ export const createHandBones = (
     }`,
     indexMeta,
     [0, 0.025, 0],
-    0.025
+    0.025,
   );
   const indexInter = createBone(
     `${
@@ -934,7 +926,7 @@ export const createHandBones = (
     }`,
     indexProx,
     [0, 0.02, 0],
-    0.02
+    0.02,
   );
   const indexDist = createBone(
     `${
@@ -942,7 +934,7 @@ export const createHandBones = (
     }`,
     indexInter,
     [0, 0.015, 0],
-    0.015
+    0.015,
   );
 
   fingerBones.set(indexMeta.name, indexMeta);
@@ -957,7 +949,7 @@ export const createHandBones = (
     }`,
     handBone,
     [0.005 * sideMultiplier, 0.065, 0],
-    0.035
+    0.035,
   );
   const middleProx = createBone(
     `${
@@ -965,7 +957,7 @@ export const createHandBones = (
     }`,
     middleMeta,
     [0, 0.03, 0],
-    0.03
+    0.03,
   );
   const middleInter = createBone(
     `${
@@ -973,7 +965,7 @@ export const createHandBones = (
     }`,
     middleProx,
     [0, 0.025, 0],
-    0.025
+    0.025,
   );
   const middleDist = createBone(
     `${
@@ -981,7 +973,7 @@ export const createHandBones = (
     }`,
     middleInter,
     [0, 0.02, 0],
-    0.02
+    0.02,
   );
 
   fingerBones.set(middleMeta.name, middleMeta);
@@ -996,7 +988,7 @@ export const createHandBones = (
     }`,
     handBone,
     [-0.005 * sideMultiplier, 0.06, 0],
-    0.03
+    0.03,
   );
   const ringProx = createBone(
     `${
@@ -1004,7 +996,7 @@ export const createHandBones = (
     }`,
     ringMeta,
     [0, 0.025, 0],
-    0.025
+    0.025,
   );
   const ringInter = createBone(
     `${
@@ -1012,7 +1004,7 @@ export const createHandBones = (
     }`,
     ringProx,
     [0, 0.02, 0],
-    0.02
+    0.02,
   );
   const ringDist = createBone(
     `${
@@ -1020,7 +1012,7 @@ export const createHandBones = (
     }`,
     ringInter,
     [0, 0.015, 0],
-    0.015
+    0.015,
   );
 
   fingerBones.set(ringMeta.name, ringMeta);
@@ -1035,7 +1027,7 @@ export const createHandBones = (
     }`,
     handBone,
     [-0.015 * sideMultiplier, 0.05, 0],
-    0.025
+    0.025,
   );
   const pinkyProx = createBone(
     `${
@@ -1043,7 +1035,7 @@ export const createHandBones = (
     }`,
     pinkyMeta,
     [0, 0.02, 0],
-    0.02
+    0.02,
   );
   const pinkyInter = createBone(
     `${
@@ -1051,7 +1043,7 @@ export const createHandBones = (
     }`,
     pinkyProx,
     [0, 0.015, 0],
-    0.015
+    0.015,
   );
   const pinkyDist = createBone(
     `${
@@ -1059,7 +1051,7 @@ export const createHandBones = (
     }`,
     pinkyInter,
     [0, 0.01, 0],
-    0.01
+    0.01,
   );
 
   fingerBones.set(pinkyMeta.name, pinkyMeta);
@@ -1082,7 +1074,7 @@ export const createHandBones = (
  * @korean 손뼈포함골격생성
  */
 export const createHumanoidRigWithHands = (
-  includeHandBones: boolean = false
+  includeHandBones: boolean = false,
 ): SkeletalRig => {
   // Create base rig
   const baseRig = createHumanoidRig();
@@ -1197,7 +1189,7 @@ export function calculateTorsoRotation(
   currentPosition: THREE.Vector3,
   opponentPosition: THREE.Vector3,
   _movementDirection: THREE.Vector3,
-  hipRotation: number
+  hipRotation: number,
 ): number {
   // Calculate angle to opponent
   const directionToOpponent = opponentPosition
@@ -1207,7 +1199,7 @@ export function calculateTorsoRotation(
   // Use atan2(x, z) - X is horizontal, Z is forward/back in Three.js
   const angleToOpponent = Math.atan2(
     directionToOpponent.x,
-    directionToOpponent.z
+    directionToOpponent.z,
   );
 
   // Calculate torso rotation relative to hips
@@ -1220,7 +1212,7 @@ export function calculateTorsoRotation(
   // Apply anatomical constraints (±90°)
   torsoRotation = Math.max(
     TORSO_CONSTRAINTS.MIN_ROTATION,
-    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, torsoRotation)
+    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, torsoRotation),
   );
 
   return torsoRotation;
@@ -1253,13 +1245,13 @@ export function calculateTorsoRotation(
  */
 export function calculateHipRotationPowerModifier(
   hipRotationAngle: number,
-  techniqueType: "strike" | "throw" | "joint"
+  techniqueType: "strike" | "throw" | "joint",
 ): number {
   // Normalize rotation to 0-1 range (0 = no rotation, 1 = max rotation)
   // Clamp to max rotation first to handle any values exceeding ±90°
   const clampedAngle = Math.max(
     -TORSO_CONSTRAINTS.MAX_ROTATION,
-    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, Math.abs(hipRotationAngle))
+    Math.min(TORSO_CONSTRAINTS.MAX_ROTATION, Math.abs(hipRotationAngle)),
   );
   const normalizedRotation = clampedAngle / TORSO_CONSTRAINTS.MAX_ROTATION;
 
