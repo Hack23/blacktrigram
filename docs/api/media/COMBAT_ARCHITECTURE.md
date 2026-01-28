@@ -1778,6 +1778,64 @@ Age:    36 years | Battle-hardened
 
 ### Combat Physics Integration
 
+#### Hit Detection & Range Calculation (타격 판정 및 거리 계산)
+
+**Physics-First Coordinate System**: All combat positions and distances use meters (m) as the base unit. Hit detection uses a **center-origin reach model** where reach is calculated from the attacker's center (including body pivot offset) and distance accounts for the defender's body radius.
+
+**Body Radius Calculation**:
+```typescript
+import { calculateBodyRadius } from "@/utils/skeletonScaling";
+
+// Calculate body radius from shoulder width
+// Formula: bodyRadius = (shoulderWidth * 0.5) / 100 meters
+const defenderRadius = calculateBodyRadius(defenderPhysicalAttributes);
+
+// Archetype body radii (examples):
+// - Jojik (54cm shoulders): 0.270m radius
+// - Musa (46cm shoulders): 0.230m radius  
+// - Hacker (43cm shoulders): 0.215m radius
+```
+
+**Effective Distance Formula**:
+```typescript
+// Center-to-center distance (Euclidean)
+const centerDistance = Math.sqrt(
+  (attacker.x - defender.x) ** 2 + (attacker.y - defender.y) ** 2
+);
+
+// Effective striking distance (center to defender surface)
+// Note: Reach calculation already includes attacker's body pivot/offset
+// (shoulder offset for punches, hip rotation for kicks), so we only
+// subtract defender radius to avoid double-counting the attacker dimension.
+// Clamped to non-negative when centers overlap.
+const effectiveDistance = Math.max(0, centerDistance - defenderRadius);
+
+// Hit detection
+const inRange = effectiveDistance <= techniqueMaxReach;
+```
+
+**Example Distance Calculation**:
+```
+Jojik (attacker) vs Hacker (defender) at 1.0m apart:
+- Center-to-center: 1.0m
+- Defender radius: 0.215m
+- Effective distance: 1.0 - 0.215 = 0.785m
+- Jojik jab reach: ~1.265m (calculated from attacker center, includes body pivot)
+  - Arm: 0.84m
+  - Body pivot (shoulder offset + torso): 0.37m
+  - Peak multiplier: 0.95
+  - Stance: 1.1 (GEON)
+  - Reach = (0.84 + 0.37) * 0.95 * 1.1 = 1.265m
+- Result: HIT (0.785m < 1.265m)
+```
+
+**Implementation Locations**:
+- **Combat**: `src/systems/CombatSystem.ts` - `resolveAttack()` method
+- **Training**: `src/components/screens/training/hooks/useTrainingActions.ts` - `calculateHitAccuracy()` function
+- **AI Decision**: `src/systems/ai/DecisionTree.ts` - Range approximations with body pivot values
+
+**Performance**: Hit detection with body radius calculation is designed to run within the <1ms per check budget on target hardware; actual performance may vary by platform and configuration.
+
 #### Reach Calculation (거리 계산)
 
 Different attack types use different limbs with varying extensions:
