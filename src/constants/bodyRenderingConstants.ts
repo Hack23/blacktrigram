@@ -26,22 +26,22 @@
  * Base bone radius as fraction of bone length.
  *
  * Anatomically, limb bones have diameter roughly 8-12% of their length.
- * Using 0.22 for more visible body mass and human-like appearance.
- * Increased from 0.15 to make characters less skeletal/robotic.
+ * Using 0.10 for realistic slim proportions - athletic fighter build.
+ * Reduced from 0.16 which was too puffy/bubble-like.
  *
  * @korean 기본뼈반지름비율
  */
-export const BASE_BONE_RADIUS_RATIO = 0.22;
+export const BASE_BONE_RADIUS_RATIO = 0.1;
 
 /**
  * Minimum bone thickness multiplier.
  *
  * Ensures even lean archetypes maintain visible body mass.
- * Increased from 0.85 to 0.95 for consistently human-like proportions.
+ * Using 0.75 for lean athletic appearance.
  *
  * @korean 최소뼈두께배수
  */
-export const MIN_BONE_THICKNESS_MULTIPLIER = 0.95;
+export const MIN_BONE_THICKNESS_MULTIPLIER = 0.75;
 
 /**
  * Maximum bone thickness multiplier.
@@ -98,12 +98,12 @@ export const FAT_THICKNESS_CONTRIBUTION = 0.3;
  * Muscle geometry normalization factor.
  *
  * Converts legacy large muscle values to anatomically correct meter scale.
- * Using 0.85 for visible muscle mass that creates human-like body shape.
- * Increased from 0.5 to reduce robotic/skeletal appearance.
+ * Using 0.35 for realistic athletic proportions - not inflated.
+ * Reduced from 0.55 which was still too puffy.
  *
  * @korean 근육정규화계수
  */
-export const MUSCLE_GEOMETRY_NORMALIZATION = 0.85;
+export const MUSCLE_GEOMETRY_NORMALIZATION = 0.35;
 
 /**
  * Base muscle amplification factor for visual differences.
@@ -128,11 +128,11 @@ export const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
  * Minimum muscle scale factor.
  *
  * Prevents muscles from becoming invisible on lean archetypes.
- * Increased from 0.5 to 0.75 for visible body mass even on lean fighters.
+ * Using 0.45 for lean athletic fighters like kickboxers.
  *
  * @korean 최소근육크기
  */
-export const MIN_MUSCLE_SCALE = 0.75;
+export const MIN_MUSCLE_SCALE = 0.45;
 
 /**
  * Muscle contraction intensity during combat.

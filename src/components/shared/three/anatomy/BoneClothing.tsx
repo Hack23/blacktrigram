@@ -208,11 +208,14 @@ const getAttachmentsForItem = (
         const width =
           (physicalAttributes.shoulderWidth / 100) * fitScale * bodyThickness;
         const height = (59 / 100) * torsoScale * 1.2; // Using base torsoLength
-        const depth = 0.22 * fitScale * bodyThickness;
+        const depth = 0.08 * fitScale * bodyThickness; // Thin clothing layer
 
+        // Clothing offset = body radius + clothing half-depth (places clothing OUTSIDE body)
+        const bodyRadius = 0.12 * bodyThickness; // Approximate body depth at chest
+        const clothingOffset = bodyRadius + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, 0.04 * bodyThickness),
+          localOffset: new THREE.Vector3(0, 0, clothingOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -225,12 +228,16 @@ const getAttachmentsForItem = (
 
       // Sleeves
       if (boneName === "upper_arm_L" || boneName === "upper_arm_R") {
-        const armThickness = 0.08 * fitScale * bodyThickness;
+        // Body muscle radius at upper arm: ~0.05 (slim athletic arm)
+        // Clothing must be OUTSIDE, so use larger radius
+        const muscleRadius = 0.05 * bodyThickness; // Slim bicep radius
+        const clothingThickness = 0.015 * fitScale; // Thin fabric layer
+        const clothingRadius = muscleRadius + clothingThickness;
         const upperArmLength = (physicalAttributes.armLength / 100) * 0.45;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            armThickness * 1.1,
-            armThickness * 0.95,
+            clothingRadius * 1.05, // Slightly larger at top
+            clothingRadius * 0.95, // Tapers slightly
             upperArmLength,
             12,
           ),
@@ -246,12 +253,16 @@ const getAttachmentsForItem = (
       }
 
       if (boneName === "forearm_L" || boneName === "forearm_R") {
-        const armThickness = 0.08 * fitScale * bodyThickness;
+        // Body muscle radius at forearm: ~0.035 (slim forearm)
+        // Clothing must be OUTSIDE, so use larger radius
+        const muscleRadius = 0.035 * bodyThickness; // Slim forearm radius
+        const clothingThickness = 0.012 * fitScale; // Thin fabric layer
+        const clothingRadius = muscleRadius + clothingThickness;
         const forearmLength = (physicalAttributes.armLength / 100) * 0.4;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            armThickness * 0.95,
-            armThickness * 0.85,
+            clothingRadius * 0.98, // Slightly smaller at top
+            clothingRadius * 0.85, // Tapers toward wrist
             forearmLength,
             12,
           ),
@@ -270,13 +281,17 @@ const getAttachmentsForItem = (
     case "pants":
       // Thigh segments
       if (boneName === "thigh_L" || boneName === "thigh_R") {
-        const legThickness = 0.1 * fitScale * bodyThickness;
+        // Body muscle radius at thigh: ~0.07 (slim athletic thigh)
+        // Clothing must be OUTSIDE, so use larger radius
+        const muscleRadius = 0.07 * bodyThickness; // Slim quad radius
+        const clothingThickness = 0.02 * fitScale; // Fabric thickness
+        const clothingRadius = muscleRadius + clothingThickness;
         const thighLength =
           (physicalAttributes.legLength / 100) * legScale * 0.45;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            legThickness * 1.15,
-            legThickness * 0.95,
+            clothingRadius * 1.08, // Larger at hip
+            clothingRadius * 0.92, // Tapers toward knee
             thighLength,
             16,
           ),
@@ -293,13 +308,17 @@ const getAttachmentsForItem = (
 
       // Shin segments
       if (boneName === "shin_L" || boneName === "shin_R") {
-        const legThickness = 0.1 * fitScale * bodyThickness;
+        // Body muscle radius at shin: ~0.04 (slim calf)
+        // Clothing must be OUTSIDE, so use larger radius
+        const muscleRadius = 0.04 * bodyThickness; // Slim calf radius
+        const clothingThickness = 0.015 * fitScale; // Fabric thickness
+        const clothingRadius = muscleRadius + clothingThickness;
         const shinLength =
           (physicalAttributes.legLength / 100) * legScale * 0.42;
         attachments.push({
           geometry: new THREE.CylinderGeometry(
-            legThickness * 0.95,
-            legThickness * 0.8,
+            clothingRadius * 0.95, // Larger at knee
+            clothingRadius * 0.75, // Tapers toward ankle
             shinLength,
             16,
           ),
@@ -319,10 +338,14 @@ const getAttachmentsForItem = (
       if (boneName === "pelvis") {
         const beltWidth =
           (physicalAttributes.shoulderWidth / 100) * 0.85 * bodyThickness;
-        const beltDepth = 0.18 * bodyThickness;
+        const beltDepth = 0.04 * bodyThickness; // Thin belt
+
+        // Belt offset = body radius + belt half-depth (places belt OUTSIDE waist)
+        const waistRadius = 0.1 * bodyThickness;
+        const beltOffset = waistRadius + beltDepth * 0.5;
         attachments.push({
-          geometry: new THREE.BoxGeometry(beltWidth, 0.1, beltDepth),
-          localOffset: new THREE.Vector3(0, 0, 0.04 * bodyThickness),
+          geometry: new THREE.BoxGeometry(beltWidth, 0.06, beltDepth),
+          localOffset: new THREE.Vector3(0, 0, beltOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,
@@ -342,10 +365,14 @@ const getAttachmentsForItem = (
           fitScale *
           bodyThickness;
         const height = (59 / 100) * 0.75 * torsoScale;
-        const depth = 0.2 * fitScale * bodyThickness;
+        const depth = 0.06 * fitScale * bodyThickness; // Thin vest layer
+
+        // Vest offset = body radius + vest half-depth (places vest OUTSIDE body)
+        const bodyRadius = 0.13 * bodyThickness; // Slightly larger for layered look
+        const vestOffset = bodyRadius + depth * 0.5;
         attachments.push({
           geometry: new THREE.BoxGeometry(width, height, depth),
-          localOffset: new THREE.Vector3(0, 0, 0.06 * bodyThickness),
+          localOffset: new THREE.Vector3(0, 0, vestOffset),
           localRotation: new THREE.Euler(0, 0, 0),
           color: item.colorPrimary,
           emissiveColor: item.colorEmissive,

@@ -84,9 +84,9 @@ describe("BONE_MUSCLE_MAP", () => {
       const leftShoulder = BONE_MUSCLE_MAP.shoulder_L[0];
       const rightShoulder = BONE_MUSCLE_MAP.shoulder_R[0];
 
-      // Shoulders should be prominent - base scale X >= 0.5
-      expect(leftShoulder.baseScale.x).toBeGreaterThanOrEqual(0.5);
-      expect(rightShoulder.baseScale.x).toBeGreaterThanOrEqual(0.5);
+      // Shoulders should be visible - base scale X >= 0.25 (slim athletic)
+      expect(leftShoulder.baseScale.x).toBeGreaterThanOrEqual(0.25);
+      expect(rightShoulder.baseScale.x).toBeGreaterThanOrEqual(0.25);
     });
   });
 
@@ -107,8 +107,8 @@ describe("BONE_MUSCLE_MAP", () => {
         m.name.includes("BICEP"),
       );
       expect(bicepL).toBeDefined();
-      // Biceps should be prominent - base scale X >= 0.35
-      expect(bicepL!.baseScale.x).toBeGreaterThanOrEqual(0.35);
+      // Biceps should be visible - base scale X >= 0.2 (slim athletic)
+      expect(bicepL!.baseScale.x).toBeGreaterThanOrEqual(0.2);
     });
   });
 
@@ -124,19 +124,19 @@ describe("BONE_MUSCLE_MAP", () => {
       const gluteL = BONE_MUSCLE_MAP.hip_L[0];
       const gluteR = BONE_MUSCLE_MAP.hip_R[0];
 
-      // Glutes should be very prominent for Jojik - base scale X >= 0.45
-      expect(gluteL.baseScale.x).toBeGreaterThanOrEqual(0.45);
-      expect(gluteR.baseScale.x).toBeGreaterThanOrEqual(0.45);
+      // Glutes should be visible - base scale X >= 0.22 (slim athletic)
+      expect(gluteL.baseScale.x).toBeGreaterThanOrEqual(0.22);
+      expect(gluteR.baseScale.x).toBeGreaterThanOrEqual(0.22);
 
-      // Max flex scale should be even larger
-      expect(gluteL.maxFlexScale.x).toBeGreaterThanOrEqual(0.55);
-      expect(gluteR.maxFlexScale.x).toBeGreaterThanOrEqual(0.55);
+      // Max flex scale should be larger
+      expect(gluteL.maxFlexScale.x).toBeGreaterThanOrEqual(0.3);
+      expect(gluteR.maxFlexScale.x).toBeGreaterThanOrEqual(0.3);
     });
 
     it("should have appropriate hip radius for visibility", () => {
       const gluteL = BONE_MUSCLE_MAP.hip_L[0];
-      // Hip radius should be large enough to be visible - >= 0.3
-      expect(gluteL.radius).toBeGreaterThanOrEqual(0.3);
+      // Hip radius should be visible - >= 0.12 (slim athletic proportions)
+      expect(gluteL.radius).toBeGreaterThanOrEqual(0.12);
     });
   });
 
@@ -157,8 +157,8 @@ describe("BONE_MUSCLE_MAP", () => {
         (m) => m.name === "PECTORALS",
       );
       expect(pectorals).toBeDefined();
-      // Pectorals should be prominent - base scale X >= 0.7
-      expect(pectorals!.baseScale.x).toBeGreaterThanOrEqual(0.7);
+      // Pectorals should be visible - base scale X >= 0.4 (slim athletic)
+      expect(pectorals!.baseScale.x).toBeGreaterThanOrEqual(0.4);
     });
   });
 
@@ -179,8 +179,8 @@ describe("BONE_MUSCLE_MAP", () => {
         m.name.includes("QUAD"),
       );
       expect(quadL).toBeDefined();
-      // Quads should be prominent - base scale X >= 0.4
-      expect(quadL!.baseScale.x).toBeGreaterThanOrEqual(0.4);
+      // Quads should be visible - base scale X >= 0.22 (slim athletic)
+      expect(quadL!.baseScale.x).toBeGreaterThanOrEqual(0.22);
     });
   });
 
@@ -220,19 +220,19 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const hackerScale = calculateMuscleScaleFactor(28); // Hacker
     const musaScale = calculateMuscleScaleFactor(35); // Musa
 
-    // Hacker should be around 0.75 scale (clamped minimum for human-like appearance)
-    expect(hackerScale).toBeGreaterThanOrEqual(0.75);
-    expect(hackerScale).toBeLessThan(0.8);
-    // Difference should be at least 30% for visual distinction
-    expect(musaScale / hackerScale).toBeGreaterThan(1.25);
+    // Hacker should be around 0.45-0.70 scale (clamped minimum for slim fighter)
+    expect(hackerScale).toBeGreaterThanOrEqual(0.45);
+    expect(hackerScale).toBeLessThan(0.7);
+    // Difference should be significant for visual distinction
+    expect(musaScale / hackerScale).toBeGreaterThan(1.4);
   });
 
-  it("should make Amsalja lean athlete (near 0.80 scale)", () => {
+  it("should make Amsalja lean athlete (near 0.65 scale)", () => {
     const amsaljaScale = calculateMuscleScaleFactor(30); // Amsalja
 
-    // Amsalja should be around 0.78-0.85 scale (lean but athletic)
-    expect(amsaljaScale).toBeGreaterThan(0.75);
-    expect(amsaljaScale).toBeLessThan(0.9);
+    // Amsalja should be around 0.55-0.75 scale (lean but athletic)
+    expect(amsaljaScale).toBeGreaterThan(0.5);
+    expect(amsaljaScale).toBeLessThan(0.8);
   });
 
   it("should make Jojik dramatically larger than Musa", () => {
