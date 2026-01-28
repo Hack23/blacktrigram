@@ -1,10 +1,156 @@
-# ReachConfig Analysis: baseExtension vs maxReachMultiplier
+# ReachConfig Analysis: baseExtension Implementation
+
+## ✅ IMPLEMENTED: Hybrid Reach System
+
+**Status**: ✅ **COMPLETE** - Commit 9b0616a
+
+The hybrid reach system using `max(baseExtension, maxReachMultiplier)` has been successfully implemented.
+
+---
+
+## 🎯 Implementation Summary
+
+### What Was Done
+
+Implemented **Option 1 Enhanced** - a hybrid approach that uses the **maximum** of both values:
+- `reachConfig.baseExtension` (designer-specified reach)
+- `maxReachMultiplier` (animation-driven reach)
+
+This ensures techniques get at least their designed reach while allowing animations to enhance reach if needed.
+
+### Code Changes
+
+1. **PhysicalReachCalculator.ts**
+   - Added optional `reachConfig?: PhysicalReachConfig` parameter
+   - Implemented: `finalExtension = max(baseExtension, animationMultiplier)`
+   - Added `baseExtension` and `finalExtensionMultiplier` to result
+   - Updated both `calculateReach()` and `calculateMaxReach()`
+
+2. **CombatSystem.ts**
+   - Updated to pass `technique.reachConfig` to calculator
+   - Ensures all combat uses accurate designed ranges
+
+3. **Tests**
+   - Added 7 comprehensive tests for hybrid reach system
+   - All 27 PhysicalReachCalculator tests passing ✅
+   - All 68 CombatSystem tests passing ✅
+
+---
+
+## 📊 Results
+
+### Front Kick Fix (Primary Issue)
+
+**Before Implementation:**
+```
+Musa Front Kick (GEON stance):
+- Leg: 0.95m, Pivot: 0.25m
+- Extension: 1.0 (animation only)
+- Stance: 1.1
+- Reach: (0.95 + 0.25) * 1.0 * 1.1 = 1.32m
+```
+
+**After Implementation:**
+```
+Musa Front Kick (GEON stance):
+- Leg: 0.95m, Pivot: 0.25m
+- Extension: max(1.05, 1.0) = 1.05 ✅
+- Stance: 1.1
+- Reach: (0.95 + 0.25) * 1.05 * 1.1 = 1.386m
+```
+
+**Improvement: +6.6cm (5% increase) - Now matches designed reach!**
+
+### All Techniques Benefit
+
+| Technique | baseExtension | animationMultiplier | finalExtension | Winner |
+|-----------|---------------|---------------------|----------------|--------|
+| Front Kick | 1.05 | 1.0 | 1.05 | baseExtension ✅ |
+| Roundhouse | 1.05 | 1.05 | 1.05 | Equal ✅ |
+| Jumping Kick | 1.15 | 1.1 | 1.15 | baseExtension ✅ |
+| Jab | 0.95 | 0.95 | 0.95 | Equal ✅ |
+
+---
+
+## 💡 Why This Solution Works
+
+### Advantages of Hybrid Approach
+
+1. **Best of Both Worlds**
+   - Respects designer intent (baseExtension)
+   - Allows animation enhancement (maxReachMultiplier)
+   - Neither system is obsolete
+
+2. **Backward Compatible**
+   - Works without reachConfig (legacy support)
+   - Training system continues to function
+   - No breaking changes
+
+3. **Future-Proof**
+   - Designers can specify either or both
+   - Animations can override if needed
+   - Flexible for balancing
+
+4. **Safety Net**
+   - Techniques never shorter than designed
+   - Animations can only increase reach
+   - Prevents accidental range reduction
+
+---
+
+## 🔧 Usage Examples
+
+### With reachConfig (Recommended)
+```typescript
+const result = calculator.calculateReach(
+  physicalAttributes,
+  AnimationType.FRONT_KICK,
+  0.27, // Peak time
+  TrigramStance.GEON,
+  { 
+    bodyPart: "leg", 
+    techniqueType: "kick", 
+    baseExtension: 1.05  // Designer-specified
+  }
+);
+
+// Uses max(1.05, 1.0) = 1.05
+console.log(result.finalExtensionMultiplier); // 1.05
+console.log(result.baseExtension); // 1.05
+console.log(result.animationReachMultiplier); // 1.0
+```
+
+### Without reachConfig (Backward Compatible)
+```typescript
+const result = calculator.calculateReach(
+  physicalAttributes,
+  AnimationType.FRONT_KICK,
+  0.27,
+  TrigramStance.GEON
+  // No reachConfig
+);
+
+// Uses animation multiplier only
+console.log(result.finalExtensionMultiplier); // 1.0
+console.log(result.baseExtension); // undefined
+console.log(result.animationReachMultiplier); // 1.0
+```
+
+---
+
+## 📋 Original Analysis (For Reference)
+
+Below is the original analysis that led to this implementation.
+
+---
+
+# Original Analysis: baseExtension vs maxReachMultiplier
 
 ## 🔍 Issue Identified
 
 The `reachConfig.baseExtension` field in technique definitions is **NOT being used** by `PhysicalReachCalculator`. Instead, the calculator uses `maxReachMultiplier` from `AnimationHitTiming`, causing a mismatch between intended and actual ranges.
 
-## 📊 Current State
+## 📊 Current State (Before Fix)
 
 ### Technique Definition (GeonTechniques.ts)
 ```typescript
