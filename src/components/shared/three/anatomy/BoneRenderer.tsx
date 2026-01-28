@@ -27,6 +27,7 @@ import type { HandAnimationState } from "../../../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../../../types/skeletal";
 import { BoneMuscles } from "./BoneAttachedMuscles";
 import { BoneClothing } from "./BoneClothing";
+import { BodySurface } from "./BodySurface";
 import Face3D from "./Face3D";
 import Foot3D from "./Foot3D";
 import Hand3D from "./Hand3D";
@@ -365,6 +366,23 @@ const SingleBone: React.FC<{
         />
       )}
 
+      {/* Render body surface (skin/flesh layer) - provides continuous humanoid appearance */}
+      {renderMode === "solid" && archetype && physicalAttributes && (
+        <BodySurface
+          boneName={bone.name}
+          archetype={archetype}
+          cameraDistance={cameraDistance}
+          physicalAttributes={{
+            muscleMass: physicalAttributes.muscleMass,
+            fatMass: physicalAttributes.fatMass,
+            shoulderWidth: physicalAttributes.shoulderWidth ?? 45,
+            torsoLength: physicalAttributes.torsoLength ?? 59,
+            armLength: physicalAttributes.armLength ?? 77,
+            legLength: physicalAttributes.legLength ?? 96,
+          }}
+        />
+      )}
+
       {/* Render bone-attached clothing */}
       {renderMode === "solid" && archetype && physicalAttributes && (
         <BoneClothing
@@ -375,7 +393,7 @@ const SingleBone: React.FC<{
             fatMass: physicalAttributes.fatMass,
             shoulderWidth: physicalAttributes.shoulderWidth ?? 45,
             torsoLength: physicalAttributes.torsoLength ?? 59,
-            armLength: physicalAttributes.armLength ?? 62,
+            armLength: physicalAttributes.armLength ?? 77,
             legLength: physicalAttributes.legLength ?? 96,
           }}
         />
