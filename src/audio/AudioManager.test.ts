@@ -882,5 +882,36 @@ describe("AudioManager", () => {
       expect(firstLoadFinished).toBe(true);
       expect(audioManager.currentMusicTrack).toBe("combat_theme");
     });
+
+    it("should log timeout warning when wait exceeds maxWaitMs", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Spy on console.warn to verify timeout warning format
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      // Manually test the timeout path by directly manipulating the loading set
+      // This simulates a scenario where a load gets stuck
+      const testMusicId = "test_timeout_music";
+      
+      // Add to loading set to simulate an ongoing load
+      (audioManager as any).loadingMusic.add(testMusicId);
+
+      // Call the private waitForMusicLoad method with a very short timeout
+      try {
+        await (audioManager as any).waitForMusicLoad(testMusicId, 100);
+      } catch (error) {
+        // Method doesn't throw, just logs
+      }
+
+      // Verify that timeout warning was logged with correct format
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        `[AudioManager] Timeout waiting for music "${testMusicId}" to load`
+      );
+
+      // Cleanup
+      (audioManager as any).loadingMusic.delete(testMusicId);
+      consoleWarnSpy.mockRestore();
+    });
   });
 });
