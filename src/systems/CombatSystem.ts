@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { getArchetypePhysicalAttributes } from "../data/archetypePhysicalAttributes";
 import { getTechniqueById } from "../data/techniques";
-import { BodyRegion, DamageType } from "../types";
+import { BodyRegion, CombatAttackType, CombatState, DamageType, GrappleTarget } from "../types";
 import { VitalPointCategory, VitalPointSeverity } from "../types/common";
 import { BASE_STAMINA_REGEN_RATE } from "../types/physicsConstants";
 import { Technique } from "../types/technique";
@@ -52,6 +52,7 @@ import { TrigramSystem } from "./TrigramSystem";
 import { StatusEffect } from "./types";
 import { KoreanTechnique, VitalPointHitResult } from "./vitalpoint/types";
 import { VitalPointSystem } from "./VitalPointSystem";
+import { GrappleSystem } from "./combat/GrappleSystem";
 
 /**
  * Enhanced Combat System with Pain Response and Consciousness integration.
@@ -67,6 +68,7 @@ export class CombatSystem implements CombatSystemInterface {
   private balanceSystem: BalanceSystem;
   private knockbackPhysics: KnockbackPhysics;
   private collisionDetection: CollisionDetection;
+  private grappleSystem: GrappleSystem;
 
   // Track shock pain effects per player
   private shockPainEffects: Map<string, ShockPainEffect>;
@@ -85,6 +87,7 @@ export class CombatSystem implements CombatSystemInterface {
     this.balanceSystem = new BalanceSystem();
     this.knockbackPhysics = new KnockbackPhysics();
     this.collisionDetection = new CollisionDetection();
+    this.grappleSystem = new GrappleSystem();
     this.shockPainEffects = new Map();
     this.lastHeadTraumaTime = new Map();
   }
@@ -275,6 +278,24 @@ export class CombatSystem implements CombatSystemInterface {
       };
     }
 
+    // Check if attacker is being grappled - cannot attack while controlled
+    if (attacker.combatState === CombatState.GRAPPLED) {
+      return {
+        hit: false,
+        damage: 0,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp,
+        technique,
+        attacker,
+        defender,
+        success: false,
+        isCritical: false,
+        isBlocked: false,
+      };
+    }
+
     // === ANIMATION-AWARE HIT DETECTION ===
     // If animation context provided, validate timing and reach
     if (animationContext) {
@@ -378,6 +399,38 @@ export class CombatSystem implements CombatSystemInterface {
         success: false,
         isCritical: false,
         isBlocked: false,
+      };
+    }
+
+    // Special handling for grapple techniques
+    if (technique.type === CombatAttackType.GRAPPLE) {
+      const grappleResult = this.handleGrappleTechnique(
+        attacker,
+        defender,
+        technique,
+        timestamp
+      );
+
+      // Grapples don't deal immediate damage, they establish control
+      // Small damage on successful grapple to represent the initial impact
+      const grappleDamage = grappleResult.grappleSuccess
+        ? technique.damage * 0.3
+        : 0;
+
+      return {
+        hit: grappleResult.grappleSuccess,
+        damage: grappleDamage,
+        criticalHit: false,
+        vitalPointHit: false,
+        effects: [],
+        timestamp,
+        technique,
+        attacker: grappleResult.updatedAttacker,
+        defender: grappleResult.updatedDefender,
+        success: grappleResult.grappleSuccess,
+        isCritical: false,
+        isBlocked: false,
+        animation: this.getAnimationInfoForTechnique(technique),
       };
     }
 
@@ -510,6 +563,245 @@ export class CombatSystem implements CombatSystemInterface {
    */
   private getTechniqueData(technique: KoreanTechnique): Technique | null {
     return getTechniqueById(technique.id) ?? null;
+  }
+
+  /**
+   * Handle grapple technique execution.
+   *
+   * **Korean**: 잡기 기술 처리 (Handle Grapple Technique)
+   *
+   * Initiates or transitions grapple control based on technique.
+   *
+   * @param attacker - Player executing grapple
+   * @param defender - Target player
+   * @param technique - Grapple technique being used
+   * @param currentTime - Current game time in milliseconds
+   * @returns Updated player states with grapple control
+   */
+  handleGrappleTechnique(
+    attacker: PlayerState,
+    defender: PlayerState,
+    technique: KoreanTechnique,
+    currentTime: number
+  ): {
+    updatedAttacker: PlayerState;
+    updatedDefender: PlayerState;
+    grappleSuccess: boolean;
+  } {
+    // Determine grapple target from technique
+    const target = this.getGrappleTargetFromTechnique(technique);
+
+    // Attempt grapple
+    const result = this.grappleSystem.attemptGrapple(
+      attacker,
+      defender,
+      target,
+      currentTime
+    );
+
+    if (result.success && result.grappleControl) {
+      // Grapple succeeded - update both players
+      return {
+        updatedAttacker: {
+          ...attacker,
+          combatState: CombatState.GRAPPLING,
+          grappleControl: result.grappleControl,
+          stamina: Math.max(0, attacker.stamina - result.staminaCost),
+        },
+        updatedDefender: {
+          ...defender,
+          combatState: CombatState.GRAPPLED,
+          grappleControl: result.grappleControl,
+        },
+        grappleSuccess: true,
+      };
+    }
+
+    // Grapple failed
+    return {
+      updatedAttacker: {
+        ...attacker,
+        stamina: Math.max(0, attacker.stamina - result.staminaCost),
+      },
+      updatedDefender: defender,
+      grappleSuccess: false,
+    };
+  }
+
+  /**
+   * Determine grapple target from technique characteristics.
+   *
+   * **Korean**: 기술에서 잡기 목표 결정 (Determine Grapple Target from Technique)
+   *
+   * @private
+   */
+  private getGrappleTargetFromTechnique(
+    technique: KoreanTechnique
+  ): GrappleTarget {
+    // Check technique name/ID for hints (both English and Korean)
+    const techName = (
+      technique.name?.english ||
+      technique.englishName ||
+      ""
+    ).toLowerCase();
+    const techNameKorean = (
+      technique.name?.korean ||
+      technique.koreanName ||
+      ""
+    );
+    const techId = technique.id.toLowerCase();
+
+    // Check for wrist/hand - 손목 (sonmok)
+    if (
+      techName.includes("wrist") ||
+      techId.includes("wrist") ||
+      techNameKorean.includes("손목")
+    ) {
+      return GrappleTarget.HAND;
+    }
+
+    // Check for arm - 팔 (pal)
+    if (
+      techName.includes("arm") ||
+      techId.includes("arm") ||
+      techNameKorean.includes("팔")
+    ) {
+      return GrappleTarget.ARM;
+    }
+
+    // Check for leg - 다리 (dari)
+    if (
+      techName.includes("leg") ||
+      techId.includes("leg") ||
+      techNameKorean.includes("다리")
+    ) {
+      return GrappleTarget.LEG;
+    }
+
+    // Check for neck - 목 (mok)
+    if (
+      techName.includes("neck") ||
+      techId.includes("neck") ||
+      techNameKorean.includes("목")
+    ) {
+      return GrappleTarget.NECK;
+    }
+
+    // Check for both arms - 양팔 (yangpal)
+    if (
+      techName.includes("both") ||
+      techName.includes("double") ||
+      techId.includes("both") ||
+      techNameKorean.includes("양팔") ||
+      techNameKorean.includes("쌍")
+    ) {
+      return GrappleTarget.BOTH_ARMS;
+    }
+
+    // Check for torso/body/hip - 몸통 (momtong), 허리 (heori), 몸 (mom)
+    if (
+      techName.includes("torso") ||
+      techName.includes("body") ||
+      techName.includes("hip") ||
+      techId.includes("torso") ||
+      techNameKorean.includes("몸통") ||
+      techNameKorean.includes("허리") ||
+      techNameKorean.includes("몸")
+    ) {
+      return GrappleTarget.TORSO;
+    }
+
+    // Default to arm for unspecified grapples
+    return GrappleTarget.ARM;
+  }
+
+  /**
+   * Update grapple state for players over time.
+   *
+   * **Korean**: 잡기 상태 업데이트 (Update Grapple State)
+   *
+   * @param controller - Player maintaining control
+   * @param target - Player being controlled
+   * @param deltaTime - Time elapsed in seconds
+   * @param currentTime - Current game time in milliseconds
+   * @returns Updated player states
+   */
+  updateGrappleState(
+    controller: PlayerState,
+    target: PlayerState,
+    deltaTime: number,
+    currentTime: number
+  ): {
+    updatedController: PlayerState;
+    updatedTarget: PlayerState;
+  } {
+    if (!controller.grappleControl) {
+      // No active grapple
+      return {
+        updatedController: controller,
+        updatedTarget: target,
+      };
+    }
+
+    // Validate grapple control consistency
+    if (
+      controller.grappleControl.controllerId !== controller.id ||
+      controller.grappleControl.targetId !== target.id
+    ) {
+      // Inconsistent state - break grapple
+      return {
+        updatedController: {
+          ...controller,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
+        updatedTarget: {
+          ...target,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
+      };
+    }
+
+    // Update grapple control
+    const updatedControl = this.grappleSystem.updateGrapple(
+      controller.grappleControl,
+      controller,
+      target,
+      deltaTime,
+      currentTime
+    );
+
+    if (!updatedControl) {
+      // Grapple broken - reset both players
+      return {
+        updatedController: {
+          ...controller,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
+        updatedTarget: {
+          ...target,
+          combatState: CombatState.IDLE,
+          grappleControl: null,
+        },
+      };
+    }
+
+    // Deduct stamina from controller
+    const staminaCost = updatedControl.staminaCostPerSecond * deltaTime;
+
+    return {
+      updatedController: {
+        ...controller,
+        grappleControl: updatedControl,
+        stamina: Math.max(0, controller.stamina - staminaCost),
+      },
+      updatedTarget: {
+        ...target,
+        grappleControl: updatedControl,
+      },
+    };
   }
 
   /**

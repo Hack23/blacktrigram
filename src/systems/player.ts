@@ -188,6 +188,8 @@ export interface PlayerState {
   readonly recentHitTimestamps?: readonly number[];
   /** Timestamp when player last entered HELPLESS state */
   readonly lastHelplessStateTime?: number;
+  /** Active grapple control state (잡기 제어) */
+  readonly grappleControl?: import("@/types").GrappleControl | null;
 
   // Status and effects
   /** Active status effects (poison, stun, etc.) */

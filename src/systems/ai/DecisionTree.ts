@@ -838,18 +838,21 @@ export class AIDecisionTree {
     }
 
     // 6. Distance-based tactics (archetype-aware ranges)
-    if (distance < optimalRange * 1.2) {
+    // Increased multiplier from 1.2 to 2.0 to allow attacks at greater distances
+    // Players start at ~1.6m apart, so this ensures AI can attack immediately
+    // Using <= to include exact boundary cases (e.g., Jeongbo at 1.6m = 0.8m * 2.0)
+    if (distance <= optimalRange * 2.0) {
       // Close to optimal range - use close-range tactics including vital point targeting
       decisions.push(
         this.evaluateCloseRange(context, personality, killModeActive),
       );
-    } else if (distance > optimalRange * 1.8) {
+    } else if (distance > optimalRange * 2.5) {
       // Too far - need to approach
       decisions.push(
         this.evaluateApproach(context, personality, killModeActive),
       );
     } else {
-      // Mid-range - good tactical position
+      // Mid-range (>2.0x && <=2.5x optimal range) - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
