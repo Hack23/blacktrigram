@@ -27,6 +27,7 @@ import type { HandAnimationState } from "../../../../types/hand-animation";
 import type { Bone, SkeletalRig } from "../../../../types/skeletal";
 import { BoneMuscles } from "./BoneAttachedMuscles";
 import { BoneClothing } from "./BoneClothing";
+import { BodySurface } from "./BodySurface";
 import Face3D from "./Face3D";
 import Foot3D from "./Foot3D";
 import Hand3D from "./Hand3D";
@@ -362,6 +363,22 @@ const SingleBone: React.FC<{
           muscleStates={muscleStates}
           isExhausted={isExhausted}
           physicalAttributes={physicalAttributes}
+        />
+      )}
+
+      {/* Render body surface (skin/flesh layer) - provides continuous humanoid appearance */}
+      {renderMode === "solid" && archetype && physicalAttributes && (
+        <BodySurface
+          boneName={bone.name}
+          archetype={archetype}
+          physicalAttributes={{
+            muscleMass: physicalAttributes.muscleMass,
+            fatMass: physicalAttributes.fatMass,
+            shoulderWidth: physicalAttributes.shoulderWidth ?? 45,
+            torsoLength: physicalAttributes.torsoLength ?? 59,
+            armLength: physicalAttributes.armLength ?? 77,
+            legLength: physicalAttributes.legLength ?? 96,
+          }}
         />
       )}
 
