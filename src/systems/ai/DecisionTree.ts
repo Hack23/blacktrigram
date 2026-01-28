@@ -841,7 +841,7 @@ export class AIDecisionTree {
         this.evaluateApproach(context, personality, killModeActive),
       );
     } else {
-      // Mid-range (2.0x-2.5x optimal range) - good tactical position
+      // Mid-range (>2.0x && <=2.5x optimal range) - good tactical position
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
