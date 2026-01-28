@@ -1961,7 +1961,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     ) => void) | undefined
   >(undefined);
 
-  // AI Combat System - must be before executeAIActionCallback to provide aiState
+  // AI Combat System - connects AI decisions to executeAIActionCallbackRef via onExecuteAction (action/technique/vital point params)
   const { updateDifficultyTarget } = useAICombat({
     player: validPlayers[1],
     opponent: validPlayers[0],
