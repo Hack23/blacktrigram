@@ -5,6 +5,7 @@ import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
+import { ArenaBounds } from "../types/PhysicsTypes";
 
 /**
  * Configuration interface for the input system and player movement.
@@ -378,27 +379,30 @@ export function usePlayerMovement(
       // Clamp delta time to 1/30s (≈33.33ms) to match usePlayerMovement and prevent instability
       const clampedDeltaTimeMs = Math.min(deltaTime, 1000 / 30);
 
+      // Create arena bounds if available
+      let arenaBounds: ArenaBounds | undefined;
+      if (bounds) {
+        const halfWidth = bounds.worldWidthMeters / 2;
+        const halfDepth = bounds.worldDepthMeters / 2;
+        const margin = 0.3; // Character radius margin
+        
+        arenaBounds = {
+          minX: -halfWidth + margin,
+          maxX: halfWidth - margin,
+          minZ: -halfDepth + margin,
+          maxZ: halfDepth - margin,
+          centerX: 0,
+          centerZ: 0,
+          widthMeters: bounds.worldWidthMeters,
+          depthMeters: bounds.worldDepthMeters,
+        };
+      }
+
       physicsEngineRef.current.updateMovement(
         state,
         physicsInput,
         clampedDeltaTimeMs / 1000,
-      );
-
-      // Clamp position to arena bounds (in meters, centered at origin)
-      // Position range: -halfWidth to +halfWidth, -halfDepth to +halfDepth
-      const worldWidth = bounds?.worldWidthMeters ?? 14;
-      const worldDepth = bounds?.worldDepthMeters ?? 10.5;
-      const halfWidth = worldWidth / 2;
-      const halfDepth = worldDepth / 2;
-
-      // Clamp position to centered arena bounds
-      state.position.x = Math.max(
-        -halfWidth,
-        Math.min(halfWidth, state.position.x),
-      );
-      state.position.z = Math.max(
-        -halfDepth,
-        Math.min(halfDepth, state.position.z),
+        arenaBounds, // Pass bounds to physics engine
       );
 
       // Position in meters (x = lateral, y = forward/backward)
