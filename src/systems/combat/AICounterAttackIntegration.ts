@@ -62,10 +62,20 @@ export interface CounterAwareCombatContext {
  * Evaluates the current combat situation to detect if the opponent
  * has exposed limbs that can be exploited for counter-attacks.
  *
+ * **TEMPLATE/EXAMPLE IMPLEMENTATION**: This function demonstrates the
+ * integration pattern but requires PlayerState to track currentTechnique
+ * and techniqueElapsedTime fields before it can be fully functional.
+ *
  * @param player - The AI-controlled player
  * @param opponent - The opponent player
  * @param distance - Distance between combatants
  * @returns Enhanced combat context with counter-attack data
+ *
+ * @remarks
+ * TODO: PlayerState needs to be extended with:
+ * - currentTechnique?: KoreanTechnique
+ * - techniqueElapsedTime?: number
+ * Once these fields exist, remove the undefined assignments and use actual data.
  *
  * @example
  * ```typescript
@@ -85,8 +95,8 @@ export function analyzeCounterOpportunity(
   let counterOpportunity: CounterOpportunity | undefined;
   let opponentVulnerability = 1.0;
 
-  // Check if opponent is currently executing a technique
-  // TODO: PlayerState needs to track currentTechnique and techniqueElapsedTime
+  // TODO: Replace with actual PlayerState properties once available
+  // PlayerState needs: currentTechnique?: KoreanTechnique, techniqueElapsedTime?: number
   const opponentTechnique = undefined as KoreanTechnique | undefined;
   const opponentTechniqueTime = undefined as number | undefined;
 

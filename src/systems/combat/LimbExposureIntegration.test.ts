@@ -418,7 +418,6 @@ describe("LimbExposureSystem Integration", () => {
     });
 
     it("should reject breaking when allowsBreaking is false", () => {
-      const technique = createKickTechnique();
       const counterTechnique = createCounterTechnique();
 
       // Modify opportunity to disallow breaking

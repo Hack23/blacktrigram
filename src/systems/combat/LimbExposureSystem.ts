@@ -29,6 +29,33 @@ import type {
 } from "../../types/physics";
 
 /**
+ * Breaking technique constants
+ * **Korean**: 파쇄기술 상수
+ */
+
+/**
+ * Minimum effective force required to successfully execute a breaking technique.
+ * Force below this threshold will not break joints/bones.
+ * Typical damage values range from 20-80, with 40 being the minimum for effective breaks.
+ * @korean 파쇄최소힘
+ */
+const BREAKING_FORCE_THRESHOLD = 40;
+
+/**
+ * Maximum effective force for calculating break severity on 0-1 scale.
+ * Force values above 80 are clamped to 1.0 severity (complete break).
+ * @korean 파쇄최대힘
+ */
+const BREAKING_MAX_FORCE = 80;
+
+/**
+ * Maximum range in meters for executing counter-attacks.
+ * Counter-attacks are close-range defensive techniques requiring proximity.
+ * @korean 반격최대거리
+ */
+const MAX_COUNTER_RANGE_METERS = 1.0;
+
+/**
  * Calculate counter-attack opportunities from a technique's reach configuration.
  *
  * **Korean**: 반격 기회 계산
@@ -87,10 +114,17 @@ export function calculateCounterOpportunity(
  *
  * **Korean**: 추천 반격 기술 조회
  *
+ * Returns technique IDs that would be effective against the exposed limb.
+ * These IDs are string-based and should match techniques in the game's
+ * technique library. When implementing, validate these IDs exist.
+ *
+ * **Note**: These are example/placeholder IDs. Actual implementation should
+ * reference real technique definitions or use a typed enum of technique IDs.
+ *
  * @param exposedLimb - The limb that is exposed
  * @param reachConfig - Reach configuration of the attacking technique
  * @param allowsBreaking - Whether breaking techniques are viable
- * @returns Array of recommended counter-technique IDs
+ * @returns Array of recommended counter-technique IDs (unvalidated strings)
  *
  * @internal
  * @korean 추천반격기술조회
@@ -284,19 +318,27 @@ export function mapLimbToBreakingTarget(
  * Determines the result of a breaking technique applied to an exposed limb,
  * considering the vulnerability window, force applied, and target joint.
  *
- * @param breakingTechnique - The breaking technique being applied
+ * @param breakingTechnique - The breaking technique being applied (reserved for future use)
  * @param counterOpportunity - The counter opportunity being exploited
- * @param force - Force/damage of the breaking technique
+ * @param force - Force/damage of the breaking technique (typically 20-80 range)
  * @returns Result of the breaking attempt
+ *
+ * @remarks
+ * The breakingTechnique parameter is currently unused but reserved for future
+ * extensibility. It may be used to apply technique-specific modifiers or
+ * validate technique compatibility with the breaking target.
  *
  * @public
  * @korean 파쇄기술효과계산
  */
 export function calculateBreakingResult(
-  _breakingTechnique: KoreanTechnique,
+  breakingTechnique: KoreanTechnique,
   counterOpportunity: CounterOpportunity,
   force: number
 ): BreakingResult {
+  // Note: breakingTechnique parameter reserved for future use
+  // (e.g., technique-specific breaking modifiers)
+  void breakingTechnique;
   const target = mapLimbToBreakingTarget(counterOpportunity.exposedLimb);
 
   // Breaking only works during valid windows
@@ -313,8 +355,8 @@ export function calculateBreakingResult(
 
   // Calculate breaking severity based on force and vulnerability
   const effectiveForce = force * counterOpportunity.vulnerabilityMultiplier;
-  const baseSuccess = effectiveForce > 40; // Threshold for breaking
-  const severity = Math.min(effectiveForce / 80, 1.0); // 0-1 scale
+  const baseSuccess = effectiveForce > BREAKING_FORCE_THRESHOLD;
+  const severity = Math.min(effectiveForce / BREAKING_MAX_FORCE, 1.0);
 
   if (!baseSuccess) {
     return {
@@ -328,8 +370,10 @@ export function calculateBreakingResult(
   }
 
   // Successful break - apply appropriate effects
+  // Note: Status effect IDs must match those defined in the StatusEffect system
+  // See src/systems/types.ts for available status effects
   const statusEffects: string[] = ["pain"];
-  let mobilityReduction = 0.2; // Base mobility reduction
+  let mobilityReduction: number;
 
   // Severity-based effects
   if (severity > 0.8) {
@@ -393,9 +437,7 @@ export function canExecuteCounter(
   }
 
   // Counter must be executable at current distance
-  // Counters are typically close-range (< 1.0m)
-  const maxCounterRange = 1.0;
-  if (distance > maxCounterRange) {
+  if (distance > MAX_COUNTER_RANGE_METERS) {
     return false;
   }
 
@@ -428,8 +470,8 @@ export function generateLimbExposureWindow(
   const isMediumExtension = reachConfig.baseExtension > 0.8;
 
   // Determine vulnerability based on extension
-  let vulnerabilityMultiplier = 1.3; // Default
-  let allowsBreaking = false;
+  let vulnerabilityMultiplier: number;
+  let allowsBreaking: boolean;
 
   if (isHighExtension) {
     vulnerabilityMultiplier = 2.2; // Very vulnerable
