@@ -22,7 +22,7 @@
 
 import { TrigramStance } from "@/types/common";
 import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
-import type { ArenaBounds } from "@/types/PhysicsTypes";
+import type { MovementArenaBounds } from "@/types/PhysicsTypes";
 import * as THREE from "three";
 
 /**
@@ -325,7 +325,7 @@ export class MovementPhysics {
     state: MovementState,
     input: MovementInput,
     deltaTime: number,
-    bounds?: ArenaBounds,
+    bounds?: MovementArenaBounds,
   ): void {
     // Use cached arena-aware speed scaling
     const arenaSpeedScale = this._cachedArenaSpeedScale;

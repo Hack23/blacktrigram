@@ -265,17 +265,22 @@ export function calculateDistanceMeters(
 }
 
 /**
- * Arena bounds for physics calculations in meters.
+ * Movement-specific arena bounds in world coordinates (meters).
  * 
  * Defines the playable area boundaries for player/AI movement.
  * All arenas are centered at origin (0, 0) and extend symmetrically.
  * 
- * **Korean**: 경기장 경계 (Arena Bounds)
+ * **Korean**: 이동 경기장 경계 (Movement Arena Bounds)
+ * 
+ * @remarks
+ * This is distinct from `ArenaBounds` interfaces in layout/test code
+ * which include pixel-based screen coordinates. MovementArenaBounds
+ * only contains world-space meter coordinates for physics calculations.
  * 
  * @public
  * @category Physics Types
  */
-export interface ArenaBounds {
+export interface MovementArenaBounds {
   /** Minimum X position in meters (left edge) */
   readonly minX: number;
   /** Maximum X position in meters (right edge) */
@@ -320,7 +325,7 @@ export interface ArenaBounds {
 export function calculateArenaBounds(
   bounds: Pick<PhysicsArenaBounds, 'worldWidthMeters' | 'worldDepthMeters'>,
   margin: number = 0.3
-): ArenaBounds {
+): MovementArenaBounds {
   // Validate arena dimensions
   if (!Number.isFinite(bounds.worldWidthMeters) || bounds.worldWidthMeters <= 0) {
     throw new Error(
@@ -392,7 +397,7 @@ export function calculateArenaBounds(
  */
 export function clampPositionToBounds(
   position: THREE.Vector3 | Position3D,
-  bounds: ArenaBounds
+  bounds: MovementArenaBounds
 ): THREE.Vector3 {
   return new THREE.Vector3(
     Math.max(bounds.minX, Math.min(bounds.maxX, position.x)),
@@ -432,7 +437,7 @@ export function clampPositionToBounds(
  */
 export function isPositionInBounds(
   position: { x: number; y: number } | THREE.Vector3 | Position3D,
-  bounds: ArenaBounds
+  bounds: MovementArenaBounds
 ): boolean {
   const x = position.x;
   // For 2D positions {x,y}, y maps to world Z (depth)

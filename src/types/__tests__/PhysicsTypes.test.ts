@@ -3,15 +3,20 @@
  * Tests physics-first coordinate system conversion functions
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 import * as THREE from "three";
 import type { Position3D } from "../physics";
 import {
   type PhysicsArenaBounds,
+  type MovementArenaBounds,
   getPixelsPerMeter,
   metersToPixels,
   pixelsToMeters,
   calculateDistanceMeters,
+  calculateArenaBounds,
+  clampPositionToBounds,
+  isPositionInBounds,
+  clampToArenaBounds,
 } from "../PhysicsTypes";
 
 describe("PhysicsTypes", () => {
@@ -346,6 +351,296 @@ describe("PhysicsTypes", () => {
       expect(() => calculateDistanceMeters(pos1, pos2)).toThrow(
         "Invalid positions for distance calculation"
       );
+    });
+  });
+});
+
+describe('Arena Bounds Validation', () => {
+  describe('calculateArenaBounds', () => {
+    it('should calculate bounds for 10m × 7.5m arena with default margin', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      const bounds = calculateArenaBounds(config);
+
+      // With 0.3m default margin
+      expect(bounds.minX).toBeCloseTo(-4.7, 1);
+      expect(bounds.maxX).toBeCloseTo(4.7, 1);
+      expect(bounds.minZ).toBeCloseTo(-3.45, 1);
+      expect(bounds.maxZ).toBeCloseTo(3.45, 1);
+      expect(bounds.centerX).toBe(0);
+      expect(bounds.centerZ).toBe(0);
+      expect(bounds.widthMeters).toBe(10);
+      expect(bounds.depthMeters).toBe(7.5);
+    });
+
+    it('should calculate bounds for 6m × 4.5m small arena', () => {
+      const config = {
+        worldWidthMeters: 6,
+        worldDepthMeters: 4.5,
+      };
+
+      const bounds = calculateArenaBounds(config, 0.3);
+
+      expect(bounds.minX).toBeCloseTo(-2.7, 1);
+      expect(bounds.maxX).toBeCloseTo(2.7, 1);
+      expect(bounds.minZ).toBeCloseTo(-1.95, 1);
+      expect(bounds.maxZ).toBeCloseTo(1.95, 1);
+    });
+
+    it('should calculate bounds for 14m × 10.5m ultra arena', () => {
+      const config = {
+        worldWidthMeters: 14,
+        worldDepthMeters: 10.5,
+      };
+
+      const bounds = calculateArenaBounds(config, 0.5);
+
+      expect(bounds.minX).toBeCloseTo(-6.5, 1);
+      expect(bounds.maxX).toBeCloseTo(6.5, 1);
+      expect(bounds.minZ).toBeCloseTo(-4.75, 1);
+      expect(bounds.maxZ).toBeCloseTo(4.75, 1);
+    });
+
+    it('should handle custom margin', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      const bounds = calculateArenaBounds(config, 0.5);
+
+      expect(bounds.minX).toBeCloseTo(-4.5, 1);
+      expect(bounds.maxX).toBeCloseTo(4.5, 1);
+      expect(bounds.minZ).toBeCloseTo(-3.25, 1);
+      expect(bounds.maxZ).toBeCloseTo(3.25, 1);
+    });
+
+    it('should throw error for non-positive width', () => {
+      const config = {
+        worldWidthMeters: 0,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldWidthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for negative depth', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: -5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldDepthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for NaN dimensions', () => {
+      const config = {
+        worldWidthMeters: NaN,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldWidthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for negative margin', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, -0.5)).toThrow(
+        'margin must be a non-negative finite number'
+      );
+    });
+
+    it('should throw error for margin larger than half width', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 6)).toThrow(
+        'margin (6m) must be less than half the arena width (5m)'
+      );
+    });
+
+    it('should throw error for margin larger than half depth', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 4)).toThrow(
+        'margin (4m) must be less than half the arena depth (3.75m)'
+      );
+    });
+  });
+
+  describe('clampPositionToBounds', () => {
+    let bounds: MovementArenaBounds;
+
+    beforeEach(() => {
+      bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+    });
+
+    it('should clamp position outside left boundary', () => {
+      const position = new THREE.Vector3(-6, 0, 0);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBeCloseTo(-4.7, 1);
+      expect(clamped.y).toBe(0);
+      expect(clamped.z).toBe(0);
+    });
+
+    it('should clamp position outside right boundary', () => {
+      const position = new THREE.Vector3(6, 0, 0);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBeCloseTo(4.7, 1);
+      expect(clamped.y).toBe(0);
+      expect(clamped.z).toBe(0);
+    });
+
+    it('should clamp position outside front boundary', () => {
+      const position = new THREE.Vector3(0, 0, 5);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBe(0);
+      expect(clamped.y).toBe(0);
+      expect(clamped.z).toBeCloseTo(3.45, 1);
+    });
+
+    it('should clamp position outside back boundary', () => {
+      const position = new THREE.Vector3(0, 0, -5);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBe(0);
+      expect(clamped.y).toBe(0);
+      expect(clamped.z).toBeCloseTo(-3.45, 1);
+    });
+
+    it('should not modify position within bounds', () => {
+      const position = new THREE.Vector3(2, 1.8, 1);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBe(2);
+      expect(clamped.y).toBe(1.8);
+      expect(clamped.z).toBe(1);
+    });
+
+    it('should preserve Y coordinate (height)', () => {
+      const position = new THREE.Vector3(6, 5.5, 0);
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.y).toBe(5.5); // Height unchanged
+    });
+
+    it('should work with Position3D interface', () => {
+      const position = { x: 6, y: 1.8, z: 5 };
+      const clamped = clampPositionToBounds(position, bounds);
+
+      expect(clamped.x).toBeCloseTo(4.7, 1);
+      expect(clamped.y).toBe(1.8);
+      expect(clamped.z).toBeCloseTo(3.45, 1);
+    });
+  });
+
+  describe('isPositionInBounds', () => {
+    let bounds: MovementArenaBounds;
+
+    beforeEach(() => {
+      bounds = {
+        minX: -4.7,
+        maxX: 4.7,
+        minZ: -3.45,
+        maxZ: 3.45,
+        centerX: 0,
+        centerZ: 0,
+        widthMeters: 10,
+        depthMeters: 7.5,
+      };
+    });
+
+    it('should return true for position inside bounds', () => {
+      const position = new THREE.Vector3(2, 0, 1);
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+    });
+
+    it('should return false for position outside left boundary', () => {
+      const position = new THREE.Vector3(-5, 0, 0);
+      expect(isPositionInBounds(position, bounds)).toBe(false);
+    });
+
+    it('should return false for position outside right boundary', () => {
+      const position = new THREE.Vector3(5, 0, 0);
+      expect(isPositionInBounds(position, bounds)).toBe(false);
+    });
+
+    it('should return false for position outside front boundary', () => {
+      const position = new THREE.Vector3(0, 0, 4);
+      expect(isPositionInBounds(position, bounds)).toBe(false);
+    });
+
+    it('should return false for position outside back boundary', () => {
+      const position = new THREE.Vector3(0, 0, -4);
+      expect(isPositionInBounds(position, bounds)).toBe(false);
+    });
+
+    it('should return true for position at center', () => {
+      const position = new THREE.Vector3(0, 0, 0);
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+    });
+
+    it('should return true for position at boundary', () => {
+      const position = new THREE.Vector3(4.7, 0, 3.45);
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+    });
+
+    it('should return false for position in corner outside bounds', () => {
+      const position = new THREE.Vector3(5, 0, 4);
+      expect(isPositionInBounds(position, bounds)).toBe(false);
+    });
+
+    it('should work with 2D position object (y maps to Z/depth)', () => {
+      const position = { x: 2, y: 1 }; // y=1 maps to z=1 (depth)
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+      
+      const outsidePosition = { x: 6, y: 0 }; // Outside X boundary
+      expect(isPositionInBounds(outsidePosition, bounds)).toBe(false);
+    });
+
+    it('should work with Position3D object {x, y, z}', () => {
+      const position = { x: 2, y: 1.8, z: 1 }; // Plain object with x, y, z
+      expect(isPositionInBounds(position, bounds)).toBe(true);
+      
+      const outsidePosition = { x: 6, y: 0, z: 0 }; // Outside X boundary
+      expect(isPositionInBounds(outsidePosition, bounds)).toBe(false);
+      
+      const outsideDepth = { x: 0, y: 1.8, z: 5 }; // Outside Z boundary
+      expect(isPositionInBounds(outsideDepth, bounds)).toBe(false);
+    });
+
+    it('should ignore Y axis (height)', () => {
+      const position = new THREE.Vector3(2, 100, 1); // Very high Y
+      expect(isPositionInBounds(position, bounds)).toBe(true);
     });
   });
 });

@@ -6,7 +6,7 @@ import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
 import { calculateArenaBounds } from "../types/PhysicsTypes";
-import type { ArenaBounds } from "../types/PhysicsTypes";
+import type { MovementArenaBounds } from "../types/PhysicsTypes";
 
 /**
  * Configuration interface for the input system and player movement.
@@ -194,7 +194,7 @@ export function usePlayerMovement(
 
   // Compute arena bounds synchronously when bounds dimensions change
   // Uses useMemo to ensure bounds are available immediately (not after effect runs)
-  const arenaBounds = useMemo<ArenaBounds | undefined>(() => {
+  const arenaBounds = useMemo<MovementArenaBounds | undefined>(() => {
     if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
       try {
         return calculateArenaBounds(
@@ -215,8 +215,28 @@ export function usePlayerMovement(
 
   // Update physics engine arena width when bounds change (legacy)
   useEffect(() => {
-    if (physicsEngineRef.current && bounds?.worldWidthMeters != null) {
-      physicsEngineRef.current.setArenaWidth(bounds.worldWidthMeters);
+    if (!physicsEngineRef.current) {
+      return;
+    }
+
+    const width = bounds?.worldWidthMeters;
+    if (width == null) {
+      return;
+    }
+
+    // Validate width before applying to physics engine to avoid runtime errors
+    if (!Number.isFinite(width) || width <= 0) {
+      console.warn(
+        "Ignoring invalid worldWidthMeters when updating arena width:",
+        width,
+      );
+      return;
+    }
+
+    try {
+      physicsEngineRef.current.setArenaWidth(width);
+    } catch (error) {
+      console.warn("Failed to update physics arena width:", error);
     }
   }, [bounds?.worldWidthMeters]);
 
