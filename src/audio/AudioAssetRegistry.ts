@@ -608,7 +608,7 @@ export class AudioAssetRegistry {
     }
 
     // Movement Sounds - 이동 소리 (Movement Sounds)
-    // Footstep sounds (4 variations)
+    // Footstep sounds (3 standard variations with both mp3/webm)
     for (let i = 1; i <= 3; i++) {
       this.registerSFX(`footstep_${i}`, {
         id: `footstep_${i}`,

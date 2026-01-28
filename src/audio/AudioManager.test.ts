@@ -791,10 +791,16 @@ describe("AudioManager", () => {
       const audioManager = new AudioManager();
       await audioManager.initialize(mockAudioConfig);
 
-      // Mock loadAsset to fail for a specific track
+      // Use a valid music ID from the registry that's not preloaded
+      const testMusicId = "underground_theme" as MusicTrackId;
+      
+      // Verify music is not already loaded
+      expect(audioManager.getLoadedAssets().has(testMusicId)).toBe(false);
+
+      // Mock loadAsset to fail for this specific track
       const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
       audioManager.loadAsset = vi.fn(async (asset) => {
-        if (asset.id === "failing_music") {
+        if (asset.id === testMusicId) {
           throw new Error("Network error");
         }
         return originalLoadAsset(asset);
@@ -802,7 +808,7 @@ describe("AudioManager", () => {
 
       // Should not throw, but should handle error gracefully
       await expect(
-        audioManager.playMusic("failing_music" as MusicTrackId)
+        audioManager.playMusic(testMusicId)
       ).resolves.not.toThrow();
 
       // Music should not be playing
