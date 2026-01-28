@@ -9,8 +9,6 @@ import { describe, it, expect } from "vitest";
 import {
   createCameraConfig,
   createPhysicsConfig,
-  type CameraConfiguration,
-  type PhysicsConfiguration,
 } from "../sharedPhysicsConfig";
 import {
   BASE_STAMINA_REGEN_RATE,

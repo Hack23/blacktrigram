@@ -8,10 +8,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import {
-  createPhysicsConfig,
-  type PhysicsConfiguration,
-} from "../sharedPhysicsConfig";
+import { createPhysicsConfig } from "../sharedPhysicsConfig";
 import {
   BASE_STAMINA_REGEN_RATE,
   BASE_MOVEMENT_ACCELERATION,
