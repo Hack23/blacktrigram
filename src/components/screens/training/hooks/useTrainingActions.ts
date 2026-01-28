@@ -203,6 +203,7 @@ function calculateHitAccuracy(
   archetype: import("../../../../types/common").PlayerArchetype,
   stance: TrigramStance,
   animationType?: AnimationType,
+  reachConfig?: import("../../../../types/physics").PhysicalReachConfig,
 ): number {
   // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
@@ -236,6 +237,7 @@ function calculateHitAccuracy(
       playerPhysicalAttributes,
       animationType,
       stance,
+      reachConfig, // Use technique's designed reach if provided
     );
 
     // Convert reach from meters to training scene units.
@@ -327,12 +329,20 @@ export function useTrainingActions(
       // Get animation context from pending attack if available
       const animationType = pendingAttackRef.current?.animationType;
 
+      // Get technique's reachConfig for accurate reach calculation
+      let reachConfig: import("../../../../types/physics").PhysicalReachConfig | undefined;
+      if (selectedTechniqueId) {
+        const technique = KoreanTechniquesSystem.getTechniqueById(selectedTechniqueId);
+        reachConfig = technique?.reachConfig;
+      }
+
       const accuracy = calculateHitAccuracy(
         player3DPosition,
         dummyPosition,
         playerArchetype,
         playerStance,
         animationType,
+        reachConfig,
       );
 
       // Determine hit position (dummy center)
@@ -470,6 +480,7 @@ export function useTrainingActions(
       playerArchetype,
       playerStance,
       animationType,
+      techniqueToUse?.reachConfig, // Pass technique's reachConfig for accurate reach
     );
 
     pendingAttackRef.current = {
