@@ -440,7 +440,6 @@ export function useTrainingActions(
       playerStance,
       actions,
       audio,
-      pendingAttackRef,
       playBoneImpactSound,
       selectedTechniqueId,
     ],
