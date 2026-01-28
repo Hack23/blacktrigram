@@ -244,7 +244,6 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         userSelect: "none", // Prevent text selection on touch
         animation: isSelected && isAvailable ? "techniqueSelected 1.5s ease-in-out infinite" : 
                    isAvailable ? "techniqueGlow 2s ease-in-out infinite" : "none",
-        transform: isSelected ? "scale(1.05)" : "scale(1)",
       }}
       onClick={isAvailable ? onClick : undefined}
       onTouchEnd={handleTouch}

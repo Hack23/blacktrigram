@@ -215,7 +215,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
           alignItems: "center",
           transform: `scale(${scale})`,
           transition: "transform 0.15s ease-out",
-          animation: combo >= 5 ? "comboFlash 0.8s ease-in-out" : "none",
+          animation: combo >= 5 ? "comboFlash 0.8s ease-in-out infinite" : "none",
         }}
       >
         {/* Main combo number */}

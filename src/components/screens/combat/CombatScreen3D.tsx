@@ -2726,7 +2726,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
-          overflow: "hidden", // Ensure HUD elements don't extend beyond container
+          // Prevent HUD elements from extending beyond game container bounds
+          // Note: Using 'hidden' instead of 'clip' for better browser compatibility
+          // Box-shadows and text-shadows remain visible within reasonable bounds
+          overflow: "hidden",
         }}
       >
         {/* Top HUD - Round info, timer, return to menu */}

@@ -10,7 +10,11 @@
  * - Responsive sizing for mobile/tablet/desktop
  * - Smooth transitions and glow effects
  * 
- * Performance: Uses React.memo and useMemo for 60fps optimization
+ * Performance: Uses React.memo with shallow comparison for 60fps optimization.
+ * Note: React.memo uses shallow comparison by default, which works correctly
+ * for this component since all props are primitives (number, string, boolean).
+ * If object or function props are added in the future, consider adding a
+ * custom comparison function or using useCallback/useMemo for prop stability.
  */
 
 import React, { useMemo } from "react";

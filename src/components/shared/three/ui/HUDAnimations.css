@@ -239,7 +239,8 @@
 /* Performance Optimizations */
 /* Use will-change for animated properties */
 .hud-animated {
-  will-change: transform, opacity, filter;
+  /* Include all properties commonly animated by HUD keyframes */
+  will-change: transform, opacity, filter, box-shadow, text-shadow, color;
 }
 
 /* Hardware acceleration hints */
@@ -249,10 +250,15 @@
 }
 
 /* Reduce motion for accessibility */
+/* Following WCAG 2.1 - Success Criterion 2.3.3: reduce motion, not eliminate it */
 @media (prefers-reduced-motion: reduce) {
+  .hud-animated {
+    animation: none !important;
+    transition-duration: 0.1s !important;
+  }
+  /* Allow instant transitions for essential UI feedback */
   * {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.1s !important;
   }
 }
