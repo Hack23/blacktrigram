@@ -843,7 +843,7 @@ describe("AudioManager", () => {
       await Promise.all(promises);
 
       // loadAsset should only be called once due to race condition prevention
-      expect(loadAssetCallCount).toBeLessThanOrEqual(2); // Allow for one stopMusic clearing
+      expect(loadAssetCallCount).toBe(1);
       
       // Music should be playing
       expect(audioManager.currentMusicTrack).toBe("combat_theme");

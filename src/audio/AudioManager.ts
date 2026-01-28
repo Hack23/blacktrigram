@@ -386,12 +386,10 @@ export class AudioManager implements IAudioManager {
               }
             } catch (error) {
               console.warn(`Failed to load music asset ${id} on-demand:`, error);
-              this.loadingMusic.delete(id);
               return;
             }
           } else {
             console.warn(`Music asset not found in registry: ${id}`);
-            this.loadingMusic.delete(id);
             return;
           }
         } finally {
