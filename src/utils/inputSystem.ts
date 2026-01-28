@@ -40,9 +40,10 @@ import type { MovementArenaBounds } from "../types/PhysicsTypes";
  *
  * ### Fallback Behavior
  *
- * If worldWidthMeters/worldDepthMeters are not provided, the system cannot
- * function and movement will be disabled. Callers MUST provide these values
- * from their layout hooks (useCombatLayout, useTrainingLayout).
+ * If worldWidthMeters/worldDepthMeters are not provided, the system falls back
+ * to DEFAULT_PHYSICS_ARENA_BOUNDS (10m × 7.5m) to ensure movement stays bounded.
+ * Callers SHOULD provide these values from their layout hooks (useCombatLayout, 
+ * useTrainingLayout) for proper arena sizing.
  */
 export interface InputSystemConfig {
   /** Whether the input system is enabled and processing input */
