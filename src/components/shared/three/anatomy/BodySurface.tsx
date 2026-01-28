@@ -196,12 +196,23 @@ const getBodySurfaceForBone = (
       const height = (physicalAttributes.torsoLength / 100) * torsoScale;
       const depth = (PECTORALS_RADIUS * 2) * bodyThickness; // Front to back depth
 
-      // Use a higher fixed segment count here than pelvis to keep torso shading smooth:
+      // Use LOD-aware segment counts (slightly higher than other regions) to keep torso shading smooth:
       // - Torso is frequently closest to the camera and used for breathing / impact motion.
       // - Vital point overlays and skin highlights rely on smoother curvature in this region.
-      // - Pelvis is typically less visible and more often covered by clothing, so it can use fewer segments.
+      // - We still respect the global LOD segmentCount so distant torsos reduce complexity consistently.
+      const torsoSegmentsX = Math.max(2, Math.round(segmentCount * 0.2));
+      const torsoSegmentsY = Math.max(3, Math.round(segmentCount * 0.3));
+      const torsoSegmentsZ = Math.max(2, Math.round(segmentCount * 0.2));
+
       segments.push({
-        geometry: new THREE.BoxGeometry(width, height, depth, 4, 6, 4),
+        geometry: new THREE.BoxGeometry(
+          width,
+          height,
+          depth,
+          torsoSegmentsX,
+          torsoSegmentsY,
+          torsoSegmentsZ
+        ),
         localOffset: new THREE.Vector3(0, 0, 0),
         localRotation: new THREE.Euler(0, 0, 0),
       });
