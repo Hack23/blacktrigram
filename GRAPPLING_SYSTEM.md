@@ -22,8 +22,8 @@ The system automatically determines grapple target from technique characteristic
 - `both`, `double` → Both arms (hardest, 180% stamina cost)
 
 ### 🌏 Korean Martial Arts Integration
-- **GON Stance (곤괘)**: Earth stance gets +15% grappling success chance and 30% grip strength (1.3× multiplier), +30% escape chance
-- **GAN Stance (간괘)**: Mountain stance gets +15% grip strength (1.15× multiplier), +15% escape chance
+- **GON Stance (곤괘)**: Earth stance gets +15% grappling success chance and +30% grip strength bonus (1.3× multiplier), +30% escape chance
+- **GAN Stance (간괘)**: Mountain stance gets +15% grip strength bonus (1.15× multiplier), +15% escape chance
 - Authentic Hapkido joint lock principles
 - Traditional Ssireum grip and control mechanics
 

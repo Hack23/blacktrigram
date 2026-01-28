@@ -130,6 +130,35 @@ describe("GrappleSystem", () => {
       expect(result.staminaCost).toBe(0);
     });
 
+    it("should fail if attacker is already grappling another opponent", () => {
+      const grapplingAttacker = {
+        ...attacker,
+        combatState: CombatState.GRAPPLING,
+        grappleControl: {
+          state: GrappleState.CONTROLLING,
+          target: GrappleTarget.ARM,
+          controllerId: attacker.id,
+          targetId: "other-opponent",
+          gripStrength: 70,
+          duration: 1000,
+          startTime: currentTime - 1000,
+          canEscape: true,
+          staminaCostPerSecond: 5,
+        },
+      };
+
+      const result = grappleSystem.attemptGrapple(
+        grapplingAttacker,
+        defender,
+        GrappleTarget.ARM,
+        currentTime
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.reason).toContain("already grappling another opponent");
+      expect(result.staminaCost).toBe(0);
+    });
+
     it("should have higher success rate with GON stance", () => {
       const gonAttacker = {
         ...attacker,
