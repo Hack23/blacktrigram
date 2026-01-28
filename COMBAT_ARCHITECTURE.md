@@ -1828,7 +1828,7 @@ Jojik (attacker) vs Hacker (defender) at 1.0m apart:
 - **Training**: `src/components/screens/training/hooks/useTrainingActions.ts` - `calculateHitAccuracy()` function
 - **AI Decision**: `src/systems/ai/DecisionTree.ts` - Range approximations with body pivot values
 
-**Performance**: Hit detection with body radius calculation runs in <0.5ms per check, well within the <1ms target.
+**Performance**: Hit detection with body radius calculation is designed to run within the <1ms per check budget on target hardware; actual performance may vary by platform and configuration.
 
 #### Reach Calculation (거리 계산)
 

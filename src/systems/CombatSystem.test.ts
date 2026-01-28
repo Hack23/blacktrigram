@@ -1697,8 +1697,14 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
       const smallAttacker = createPlayerFromArchetype(PlayerArchetype.HACKER, 0);
       const smallDefender = createPlayerFromArchetype(PlayerArchetype.HACKER, 1);
       
-      // Combined radii: 0.215m + 0.215m = 0.43m (smaller than Jojik+Hacker)
+      // Set proper stance for technique execution
+      asMutable(smallAttacker).currentStance = TrigramStance.GEON;
+      asMutable(smallDefender).currentStance = TrigramStance.GEON;
+      
+      // Combined radii: 0.215m + 0.215m = 0.43m (smaller than Jojik+Hacker: 0.485m)
       // At 1.0m center-to-center: effective distance = 1.0m - 0.43m = 0.57m
+      // Hacker JAB reach: ~1.16m (shorter arms than Jojik's 1.26m)
+      // Result: Should HIT (0.57m < 1.16m)
       asMutable(smallAttacker.position).x = -0.5;
       asMutable(smallAttacker.position).y = 0;
       asMutable(smallDefender.position).x = 0.5;
@@ -1715,10 +1721,9 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
         },
       );
 
-      // Hacker has shorter arms, so this might be at the edge of reach
-      // The test validates that body radius calculation works correctly
-      expect(result).toBeDefined();
-      expect(result.hit).toBeDefined();
+      // Should hit: smaller combined radii means less distance penalty
+      expect(result.hit).toBe(true);
+      expect(result.damage).toBeGreaterThan(0);
     });
   });
 
@@ -1758,16 +1763,15 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
     });
   });
 
-  describe("Arena Scaling Independence", () => {
-    it("should work consistently regardless of arena size", () => {
-      // The fix ensures distance is measured in meters
-      // Arena size should not affect hit detection
-      // This test validates that the calculation is in the physics-first coordinate system
+  describe("Physics-First Coordinate System Validation", () => {
+    it("should use meter-based distances consistently", () => {
+      // This test validates that distance calculations use meters (physics-first)
+      // not pixels, ensuring consistency across the physics system
       
       // Test at fixed positions that should always hit
       asMutable(attacker.position).x = 0;
       asMutable(attacker.position).y = 0;
-      asMutable(defender.position).x = 0.8; // Within reach
+      asMutable(defender.position).x = 0.8; // Within reach (meters)
       asMutable(defender.position).y = 0;
 
       const result = combatSystem.resolveAttack(
@@ -1781,7 +1785,7 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
         },
       );
 
-      // Should hit consistently
+      // Should hit: 0.8m center-to-center - 0.485m radii = 0.315m effective (< 1.26m reach)
       expect(result.hit).toBe(true);
     });
   });
