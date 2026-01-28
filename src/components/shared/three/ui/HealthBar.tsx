@@ -8,11 +8,15 @@
  * - Korean/English bilingual labels
  * - Numeric value display (e.g., "85/100")
  * - Responsive sizing for mobile/tablet/desktop
+ * - Smooth transitions and glow effects
+ * 
+ * Performance: Uses React.memo and useMemo for 60fps optimization
  */
 
 import React, { useMemo } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import "./HUDAnimations.css";
 
 export interface HealthBarProps {
   /** Current health value */
@@ -36,8 +40,9 @@ const getHealthColor = (percentage: number): number => {
 
 /**
  * HealthBar - Segmented health display with Korean theming
+ * Performance optimized with React.memo
  */
-export const HealthBar: React.FC<HealthBarProps> = ({
+export const HealthBar: React.FC<HealthBarProps> = React.memo(({
   current,
   max,
   playerId,
@@ -54,11 +59,13 @@ export const HealthBar: React.FC<HealthBarProps> = ({
   const healthColor = getHealthColor(healthPercent);
   const shouldPulse = healthPercent < 20;
 
-  // Responsive sizing
-  const barWidth = isMobile ? 180 : 250;
-  const barHeight = isMobile ? 16 : 20;
-  const fontSize = isMobile ? 11 : 13;
-  const padding = isMobile ? "8px 12px" : "12px 16px";
+  // Responsive sizing with memoization
+  const layout = useMemo(() => ({
+    barWidth: isMobile ? 180 : 250,
+    barHeight: isMobile ? 16 : 20,
+    fontSize: isMobile ? 11 : 13,
+    padding: isMobile ? "8px 12px" : "12px 16px",
+  }), [isMobile]);
 
   return (
     <div
@@ -69,25 +76,28 @@ export const HealthBar: React.FC<HealthBarProps> = ({
       aria-valuemin={0}
       aria-valuemax={max}
       aria-valuetext={`${Math.ceil(current)} out of ${max}`}
+      className="hud-animated"
       style={{
-        width: `${barWidth}px`,
-        padding,
+        width: `${layout.barWidth}px`,
+        padding: layout.padding,
         backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
         borderRadius: "8px",
         border: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1)}`,
         boxShadow: `0 0 10px ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.2)}`,
+        transition: "box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out",
       }}
     >
       {/* Label and numeric display */}
       <div
         style={{
-          fontSize: `${fontSize}px`,
+          fontSize: `${layout.fontSize}px`,
           color: hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 1),
           fontFamily: FONT_FAMILY.KOREAN,
           marginBottom: "4px",
           display: "flex",
           justifyContent: "space-between",
           fontWeight: "bold",
+          transition: "color 0.2s ease-in-out",
         }}
       >
         <span>체력 | Health</span>
@@ -101,8 +111,8 @@ export const HealthBar: React.FC<HealthBarProps> = ({
         style={{
           display: "flex",
           gap: "3px",
-          height: `${barHeight}px`,
-          animation: shouldPulse ? "healthPulse 0.8s infinite" : "none",
+          height: `${layout.barHeight}px`,
+          animation: shouldPulse ? "healthPulse 0.8s ease-in-out infinite" : "none",
         }}
       >
         {Array.from({ length: segments }).map((_, index) => (
@@ -127,6 +137,8 @@ export const HealthBar: React.FC<HealthBarProps> = ({
       </div>
     </div>
   );
-};
+});
+
+HealthBar.displayName = "HealthBar";
 
 export default HealthBar;

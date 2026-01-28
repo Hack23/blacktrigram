@@ -8,11 +8,15 @@
  * - Korean/English bilingual labels
  * - Numeric value display (e.g., "45/50")
  * - Responsive sizing for mobile/tablet/desktop
+ * - Smooth transitions and glow effects
+ * 
+ * Performance: Uses React.memo and useMemo for 60fps optimization
  */
 
 import React, { useMemo } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
+import "./HUDAnimations.css";
 
 export interface StaminaBarProps {
   /** Current stamina value */
@@ -27,8 +31,9 @@ export interface StaminaBarProps {
 
 /**
  * StaminaBar - Segmented stamina display with Korean theming
+ * Performance optimized with React.memo
  */
-export const StaminaBar: React.FC<StaminaBarProps> = ({
+export const StaminaBar: React.FC<StaminaBarProps> = React.memo(({
   current,
   max,
   playerId,
@@ -44,11 +49,13 @@ export const StaminaBar: React.FC<StaminaBarProps> = ({
   const filledSegments = Math.ceil((staminaPercent / 100) * segments);
   const shouldPulse = staminaPercent < 20;
 
-  // Responsive sizing
-  const barWidth = isMobile ? 180 : 250;
-  const barHeight = isMobile ? 10 : 12;
-  const fontSize = isMobile ? 10 : 11;
-  const padding = isMobile ? "6px 8px" : "8px 12px";
+  // Responsive sizing with memoization
+  const layout = useMemo(() => ({
+    barWidth: isMobile ? 180 : 250,
+    barHeight: isMobile ? 10 : 12,
+    fontSize: isMobile ? 10 : 11,
+    padding: isMobile ? "6px 8px" : "8px 12px",
+  }), [isMobile]);
 
   return (
     <div
@@ -59,25 +66,28 @@ export const StaminaBar: React.FC<StaminaBarProps> = ({
       aria-valuemin={0}
       aria-valuemax={max}
       aria-valuetext={`${Math.ceil(current)} out of ${max}`}
+      className="hud-animated"
       style={{
-        width: `${barWidth}px`,
-        padding,
+        width: `${layout.barWidth}px`,
+        padding: layout.padding,
         backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 1),
         borderRadius: "8px",
         border: `2px solid ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 1)}`,
         boxShadow: `0 0 8px ${hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 0.2)}`,
+        transition: "box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out",
       }}
     >
       {/* Label and numeric display */}
       <div
         style={{
-          fontSize: `${fontSize}px`,
+          fontSize: `${layout.fontSize}px`,
           color: hexToRgbaString(KOREAN_COLORS.ACCENT_BLUE, 1),
           fontFamily: FONT_FAMILY.KOREAN,
           marginBottom: "3px",
           display: "flex",
           justifyContent: "space-between",
           fontWeight: "bold",
+          transition: "color 0.2s ease-in-out",
         }}
       >
         <span>기력 | Stamina</span>
@@ -91,8 +101,8 @@ export const StaminaBar: React.FC<StaminaBarProps> = ({
         style={{
           display: "flex",
           gap: "4px",
-          height: `${barHeight}px`,
-          animation: shouldPulse ? "staminaPulse 0.8s infinite" : "none",
+          height: `${layout.barHeight}px`,
+          animation: shouldPulse ? "staminaPulse 0.8s ease-in-out infinite" : "none",
         }}
       >
         {Array.from({ length: segments }).map((_, index) => (
@@ -117,6 +127,8 @@ export const StaminaBar: React.FC<StaminaBarProps> = ({
       </div>
     </div>
   );
-};
+});
+
+StaminaBar.displayName = "StaminaBar";
 
 export default StaminaBar;

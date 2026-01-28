@@ -17,6 +17,7 @@ import React, { useMemo, useEffect } from "react";
 import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
 import { TimerWarningLevel } from "../../../hooks/useCombatTimer";
+import "../three/ui/HUDAnimations.css";
 
 // Define CSS animation once at module level to avoid re-insertion
 const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";
@@ -142,6 +143,7 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
 
   // Should pulse when urgent or time is up
   const shouldPulse = warningLevel === "urgent" || isTimeUp;
+  const shouldFlash = warningLevel === "urgent" || isTimeUp;
 
   // Font sizes based on screen size
   const fontSize = isMobile ? "32px" : "48px";
@@ -157,6 +159,7 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
       aria-live="polite"
       aria-atomic="true"
       aria-label={`Time remaining: ${formattedTime}`}
+      className="hud-animated"
       style={{
         position: "absolute",
         top: isMobile ? "8px" : "12px",
@@ -173,13 +176,14 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
         backgroundColor: `${bgColor}dd`,
         border: `2px solid ${borderColor}`,
         borderRadius: isMobile ? "6px" : "8px",
-        animation: shouldPulse ? "pulse 0.5s infinite" : "none",
+        animation: shouldFlash ? "timerFlash 1s ease-in-out infinite" : shouldPulse ? "pulse 0.5s ease-in-out infinite" : "none",
         zIndex: 100,
         pointerEvents: "none",
         userSelect: "none",
         minWidth: isMobile ? "120px" : "160px",
         textAlign: "center",
         boxShadow: `0 0 ${isMobile ? "12px" : "20px"} ${borderColor}40`,
+        transition: "all 0.3s ease-in-out",
         ...style,
       }}
     >
