@@ -1637,15 +1637,21 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
   });
 
   describe("Distance Calculation with Body Radii", () => {
-    it("should account for both attacker and defender body radii in hit detection", () => {
+    it("should account for defender body radius in hit detection", () => {
       // Position players at close range
-      // Jojik (attacker): 0.27m radius
-      // Hacker (defender): 0.215m radius
-      // Combined radii: 0.485m
+      // Note: PhysicalReachCalculator includes attacker body pivot in reach,
+      // so we only subtract defender radius to avoid double-counting
+      
+      // Jojik JAB reach calculation:
+      // - Arm: 0.84m, Body pivot (shoulder + torso): 0.37m
+      // - Peak multiplier: 0.95, Stance (GEON): 1.1
+      // - Reach: (0.84 + 0.37) * 0.95 * 1.1 = ~1.265m from attacker center
+      
+      // Hacker defender radius: 0.215m
       
       // Test case 1: Players at 1.0m center-to-center
-      // Effective distance: 1.0m - 0.27m - 0.215m = 0.515m
-      // This should be within punch reach (~0.6-0.7m for Jojik)
+      // Effective distance: 1.0m - 0.215m (defender) = 0.785m
+      // This should be within Jojik punch reach (1.265m)
       asMutable(attacker.position).x = -0.5;
       asMutable(attacker.position).y = 0;
       asMutable(defender.position).x = 0.5;
@@ -1669,8 +1675,8 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
     it("should miss when effective distance exceeds technique reach", () => {
       // Position players far apart
       // Test case 2: Players at 2.0m center-to-center
-      // Effective distance: 2.0m - 0.27m - 0.215m = 1.515m
-      // This should be beyond punch reach (~0.6-0.7m)
+      // Effective distance: 2.0m - 0.215m (defender) = 1.785m
+      // This should be beyond Jojik punch reach (~1.265m)
       asMutable(attacker.position).x = -1.0;
       asMutable(attacker.position).y = 0;
       asMutable(defender.position).x = 1.0;
@@ -1701,10 +1707,13 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
       asMutable(smallAttacker).currentStance = TrigramStance.GEON;
       asMutable(smallDefender).currentStance = TrigramStance.GEON;
       
-      // Combined radii: 0.215m + 0.215m = 0.43m (smaller than Jojik+Hacker: 0.485m)
-      // At 1.0m center-to-center: effective distance = 1.0m - 0.43m = 0.57m
-      // Hacker JAB reach: ~1.16m (shorter arms than Jojik's 1.26m)
-      // Result: Should HIT (0.57m < 1.16m)
+      // Hacker JAB reach calculation:
+      // - Arm: 0.73m, Body pivot (shoulder + torso): ~0.315m
+      // - Peak multiplier: 0.95, Stance (GEON): 1.1
+      // - Reach: (0.73 + 0.315) * 0.95 * 1.1 = ~1.09m from attacker center
+      
+      // At 1.0m center-to-center: effective distance = 1.0m - 0.215m (defender) = 0.785m
+      // Result: Should HIT (0.785m < 1.09m)
       asMutable(smallAttacker.position).x = -0.5;
       asMutable(smallAttacker.position).y = 0;
       asMutable(smallDefender.position).x = 0.5;
@@ -1721,21 +1730,21 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
         },
       );
 
-      // Should hit: smaller combined radii means less distance penalty
+      // Should hit: effective distance within Hacker reach
       expect(result.hit).toBe(true);
       expect(result.damage).toBeGreaterThan(0);
     });
   });
 
   describe("Body Radius Calculation Consistency", () => {
-    it("should use calculateBodyRadius() for both attacker and defender", () => {
-      // This test validates that the fix is applied correctly
-      // by checking that attacks from different positions respect body radii
+    it("should properly calculate reach and distance", () => {
+      // This test validates reach calculation and distance measurement
       
-      // Jojik JAB reach: ~1.264m
-      // Combined body radii: 0.485m
-      // At 0.8m center-to-center: effective = 0.8 - 0.485 = 0.315m (should hit)
-      // At 2.0m center-to-center: effective = 2.0 - 0.485 = 1.515m (should miss)
+      // Jojik JAB reach: (0.84 + 0.37) * 0.95 * 1.1 = ~1.265m from attacker center
+      // Defender radius: 0.215m
+      
+      // At 0.8m center-to-center: effective = 0.8 - 0.215 = 0.585m (should hit: 0.585 < 1.265)
+      // At 2.0m center-to-center: effective = 2.0 - 0.215 = 1.785m (should miss: 1.785 > 1.265)
       const positions = [
         { x: 0.8, expected: true },  // Close - should hit
         { x: 2.0, expected: false }, // Far - should miss
@@ -1785,7 +1794,7 @@ describe("CombatSystem - Body Radius Hit Detection", () => {
         },
       );
 
-      // Should hit: 0.8m center-to-center - 0.485m radii = 0.315m effective (< 1.26m reach)
+      // Should hit: 0.8m center-to-center - 0.215m defender radius = 0.585m effective (< 1.265m reach)
       expect(result.hit).toBe(true);
     });
   });

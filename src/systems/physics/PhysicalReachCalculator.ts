@@ -209,13 +209,28 @@ export class PhysicalReachCalculator {
       animationTime,
     );
 
-    // **Hybrid Reach System**: Use max of baseExtension and animation multiplier
-    // This ensures techniques get at least their designed reach while allowing
-    // animations to enhance reach if needed
+    // **Hybrid Reach System with Curve Factor**:
+    // Apply baseExtension at the peak reach level, then scale by the time-varying
+    // curve factor so reach still ramps up and down with the animation.
+    // This prevents phantom hits at the start/end of the hit window.
     const baseExtension = reachConfig?.baseExtension;
-    const finalExtensionMultiplier = baseExtension !== undefined
-      ? Math.max(baseExtension, animationReachMultiplier)
-      : animationReachMultiplier;
+
+    // Retrieve peak (max) reach multiplier for this animation's hit window
+    const hitTiming = getAnimationHitTiming(animationType);
+    const peakMultiplier = hitTiming?.hitWindow.maxReachMultiplier ?? animationReachMultiplier;
+
+    // Normalized curve factor in [0, 1] that represents where we are on
+    // the reach curve. When peakMultiplier is 0, we treat reach as 0.
+    const curveFactor =
+      peakMultiplier > 0 ? animationReachMultiplier / peakMultiplier : 0;
+
+    // Apply the hybrid "max" at the peak level, then reapply the curve
+    const peakExtension =
+      baseExtension !== undefined
+        ? Math.max(baseExtension, peakMultiplier)
+        : peakMultiplier;
+
+    const finalExtensionMultiplier = curveFactor * peakExtension;
 
     // Get stance modifier
     const stanceModifier = STANCE_REACH_MODIFIERS[stance];

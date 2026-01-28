@@ -207,21 +207,21 @@ function calculateHitAccuracy(
   // Calculate 3D distance between player and dummy centers (in meters)
   const centerToCenterDistance = calculateDistance3D(playerPos, dummyPos);
 
-  // Calculate player's body radius based on their physical attributes
+  // Get player's physical attributes for reach calculation
   const playerPhysicalAttributes = getArchetypePhysicalAttributes(archetype);
-  const playerBodyRadius = calculateBodyRadius(playerPhysicalAttributes);
 
   // Training dummy uses default body radius since it has no archetype
   // For combat between players, we would use calculateBodyRadius(targetPhysicalAttributes)
   // 훈련 더미는 원형이 없으므로 기본 몸체 반경 사용
   const targetBodyRadius = DEFAULT_BODY_RADIUS_METERS;
 
-  // Effective distance = center-to-center minus both body radii
-  // The attack originates from the player's body surface and lands on the dummy's body surface
-  // 유효 거리 = 중심간 거리 - 플레이어 몸체 반경 - 더미 몸체 반경
+  // Effective distance = center-to-center minus target body radius only
+  // Note: PhysicalReachCalculator already includes player body pivot/offset in reach calculation,
+  // so we only subtract the target radius to avoid double-counting.
+  // 유효 거리 = 중심간 거리 - 더미 몸체 반경 (플레이어 몸체 오프셋은 도달 거리에 포함됨)
   const effectiveDistance = Math.max(
     0,
-    centerToCenterDistance - playerBodyRadius - targetBodyRadius,
+    centerToCenterDistance - targetBodyRadius,
   );
 
   // If animation type is available, use physics-based reach calculation

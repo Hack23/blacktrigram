@@ -318,20 +318,21 @@ export class CombatSystem implements CombatSystemInterface {
         [defender.position.x, defender.position.y, 0],
       );
 
-      // Calculate body radii for both attacker and defender
-      // Attacks hit the body surface, not the center point
-      // 타격은 중심점이 아닌 몸체 표면에 적중
-      const attackerBodyRadius = calculateBodyRadius(attackerPhysical);
-      
+      // Calculate body radii
+      // Note: PhysicalReachCalculator already includes attacker body pivot/offset in reach calculation
+      // (shoulder offset for punches, hip rotation for kicks), so we only subtract defender radius
+      // to avoid double-counting the attacker's body dimension.
+      // 타격 거리 계산: 수비자 몸체 반경만 제외 (공격자 몸체 오프셋은 이미 도달 거리에 포함됨)
       const defenderPhysical = getArchetypePhysicalAttributes(
         defender.archetype,
       );
       const defenderBodyRadius = calculateBodyRadius(defenderPhysical);
 
-      // Effective distance = center-to-center minus both body radii
-      // The attack originates from the attacker's body surface and lands on the defender's body surface
-      // 유효 거리 = 중심간 거리 - 공격자 몸체 반경 - 수비자 몸체 반경
-      const distance = Math.max(0, centerToCenterDistance - attackerBodyRadius - defenderBodyRadius);
+      // Effective distance = center-to-center minus defender body radius only
+      // Reach is calculated from attacker center to striking limb surface (includes body pivot),
+      // so we measure from attacker center to defender surface (subtracting defender radius only).
+      // 유효 거리 = 중심간 거리 - 수비자 몸체 반경
+      const distance = Math.max(0, centerToCenterDistance - defenderBodyRadius);
 
       // If out of reach, miss
       if (distance > reachResult.effectiveReach) {

@@ -1804,9 +1804,10 @@ const centerDistance = Math.sqrt(
   (attacker.x - defender.x) ** 2 + (attacker.y - defender.y) ** 2
 );
 
-// Effective striking distance (surface-to-surface)
-// Attacks originate from attacker's body surface, not center
-const effectiveDistance = centerDistance - attackerRadius - defenderRadius;
+// Effective striking distance (center to defender surface)
+// Note: Reach calculation already includes attacker's body pivot/offset,
+// so we only subtract defender radius to avoid double-counting
+const effectiveDistance = centerDistance - defenderRadius;
 
 // Hit detection
 const inRange = effectiveDistance <= techniqueMaxReach;
@@ -1816,11 +1817,15 @@ const inRange = effectiveDistance <= techniqueMaxReach;
 ```
 Jojik (attacker) vs Hacker (defender) at 1.0m apart:
 - Center-to-center: 1.0m
-- Attacker radius: 0.27m
 - Defender radius: 0.215m
-- Effective distance: 1.0 - 0.27 - 0.215 = 0.515m
-- Jojik jab reach: ~1.26m
-- Result: HIT (0.515m < 1.26m)
+- Effective distance: 1.0 - 0.215 = 0.785m
+- Jojik jab reach: ~1.265m (includes attacker body pivot)
+  - Arm: 0.84m
+  - Body pivot (shoulder offset + torso): 0.37m
+  - Peak multiplier: 0.95
+  - Stance: 1.1 (GEON)
+  - Reach = (0.84 + 0.37) * 0.95 * 1.1 = 1.265m
+- Result: HIT (0.785m < 1.265m)
 ```
 
 **Implementation Locations**:

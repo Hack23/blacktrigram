@@ -486,26 +486,29 @@ describe("PhysicalReachCalculator", () => {
     });
 
     it("should use max of both values for optimal reach", () => {
-      // Test with various configurations
+      // Test with various configurations using correct peak times
       const testCases = [
         { 
           baseExt: 1.15, 
-          animation: AnimationType.ROUNDHOUSE_KICK, // 1.05 at peak
+          animation: AnimationType.ROUNDHOUSE_KICK,
+          peakTime: 0.32, // ROUNDHOUSE peak
           expected: 1.15, // baseExtension wins
         },
         { 
           baseExt: 1.0, 
-          animation: AnimationType.ROUNDHOUSE_KICK, // 1.05 at peak
-          expected: 1.05, // animation wins
+          animation: AnimationType.ROUNDHOUSE_KICK,
+          peakTime: 0.32, // ROUNDHOUSE peak
+          expected: 1.05, // animation wins (1.05 max multiplier)
         },
         { 
           baseExt: 1.05, 
-          animation: AnimationType.FRONT_KICK, // 1.0 at peak
-          expected: 1.05, // baseExtension wins
+          animation: AnimationType.FRONT_KICK,
+          peakTime: 0.27, // FRONT_KICK peak
+          expected: 1.05, // baseExtension wins (animation is 1.0)
         },
       ];
 
-      testCases.forEach(({ baseExt, animation, expected }) => {
+      testCases.forEach(({ baseExt, animation, peakTime, expected }) => {
         const reachConfig = {
           bodyPart: "leg" as const,
           techniqueType: "kick" as const,
@@ -515,7 +518,7 @@ describe("PhysicalReachCalculator", () => {
         const result = calculator.calculateReach(
           HACKER_PHYSICAL,
           animation,
-          0.32, // Peak time
+          peakTime,
           TrigramStance.GEON,
           reachConfig,
         );
@@ -622,6 +625,57 @@ describe("PhysicalReachCalculator", () => {
       const difference = withConfig - withoutConfig;
       const expectedDifference = 0.066; // 5% of 1.32m
       expect(difference).toBeCloseTo(expectedDifference, 2);
+    });
+
+    it("should maintain reach curve with baseExtension (no phantom hits)", () => {
+      // This test verifies that baseExtension doesn't force full reach at the
+      // start/end of hit window - reach should still ramp up/down with animation
+      const reachConfig = {
+        bodyPart: "leg" as const,
+        techniqueType: "kick" as const,
+        baseExtension: 1.05,
+      };
+
+      // FRONT_KICK timing: start=0.15, peak=0.27, end=0.4, maxReachMultiplier=1.0
+      // With baseExtension 1.05, peak extension becomes max(1.05, 1.0) = 1.05
+
+      // At start of hit window (0.15s) - reach should be near zero
+      const startResult = calculator.calculateReach(
+        AMSALJA_PHYSICAL,
+        AnimationType.FRONT_KICK,
+        0.15, // Start time
+        TrigramStance.GEON,
+        reachConfig,
+      );
+
+      // At peak (0.27s) - reach should be maximum
+      const peakResult = calculator.calculateReach(
+        AMSALJA_PHYSICAL,
+        AnimationType.FRONT_KICK,
+        0.27, // Peak time
+        TrigramStance.GEON,
+        reachConfig,
+      );
+
+      // At end of hit window (0.4s) - reach should be near zero again
+      const endResult = calculator.calculateReach(
+        AMSALJA_PHYSICAL,
+        AnimationType.FRONT_KICK,
+        0.4, // End time
+        TrigramStance.GEON,
+        reachConfig,
+      );
+
+      // Verify reach curve: start and end should be much less than peak
+      expect(startResult.effectiveReach).toBeLessThan(peakResult.effectiveReach * 0.5);
+      expect(endResult.effectiveReach).toBeLessThan(peakResult.effectiveReach * 0.5);
+      
+      // Peak should use the designed baseExtension
+      expect(peakResult.finalExtensionMultiplier).toBeCloseTo(1.05, 2);
+      
+      // Start and end should have reduced extension due to curve factor
+      expect(startResult.finalExtensionMultiplier).toBeLessThan(1.05);
+      expect(endResult.finalExtensionMultiplier).toBeLessThan(1.05);
     });
   });
 });
