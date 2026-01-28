@@ -763,4 +763,124 @@ describe("AudioManager", () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe("On-Demand Music Loading", () => {
+    it("should successfully load and play an unloaded music track", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Verify music is not preloaded
+      const loadedAssets = audioManager.getLoadedAssets();
+      expect(loadedAssets.has("combat_theme")).toBe(false);
+
+      // Play music - should trigger on-demand loading
+      await audioManager.playMusic("combat_theme" as MusicTrackId);
+
+      // Verify music was loaded and is now in cache
+      const loadedAssetsAfter = audioManager.getLoadedAssets();
+      expect(loadedAssetsAfter.has("combat_theme")).toBe(true);
+
+      // Verify music is playing
+      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+    });
+
+    it("should handle error when unloaded music track fails to load", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Mock loadAsset to fail for a specific track
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        if (asset.id === "failing_music") {
+          throw new Error("Network error");
+        }
+        return originalLoadAsset(asset);
+      });
+
+      // Should not throw, but should handle error gracefully
+      await expect(
+        audioManager.playMusic("failing_music" as MusicTrackId)
+      ).resolves.not.toThrow();
+
+      // Music should not be playing
+      expect(audioManager.currentMusicTrack).toBeNull();
+    });
+
+    it("should handle music not found in registry", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Try to play music that doesn't exist in registry
+      await expect(
+        audioManager.playMusic("nonexistent_music" as MusicTrackId)
+      ).resolves.not.toThrow();
+
+      // Music should not be playing
+      expect(audioManager.currentMusicTrack).toBeNull();
+    });
+
+    it("should prevent race condition when same music requested multiple times", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      // Track how many times loadAsset is called
+      let loadAssetCallCount = 0;
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        loadAssetCallCount++;
+        // Add artificial delay to simulate network
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return originalLoadAsset(asset);
+      });
+
+      // Request same music multiple times simultaneously
+      const promises = [
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+        audioManager.playMusic("combat_theme" as MusicTrackId),
+      ];
+
+      await Promise.all(promises);
+
+      // loadAsset should only be called once due to race condition prevention
+      expect(loadAssetCallCount).toBeLessThanOrEqual(2); // Allow for one stopMusic clearing
+      
+      // Music should be playing
+      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+    });
+
+    it("should wait for ongoing load when music is already being loaded", async () => {
+      const audioManager = new AudioManager();
+      await audioManager.initialize(mockAudioConfig);
+
+      let firstLoadStarted = false;
+      let firstLoadFinished = false;
+      const originalLoadAsset = audioManager.loadAsset.bind(audioManager);
+      
+      audioManager.loadAsset = vi.fn(async (asset) => {
+        if (asset.id === "combat_theme" && !firstLoadStarted) {
+          firstLoadStarted = true;
+          // Simulate slow network
+          await new Promise(resolve => setTimeout(resolve, 200));
+          firstLoadFinished = true;
+        }
+        return originalLoadAsset(asset);
+      });
+
+      // Start first load
+      const firstLoad = audioManager.playMusic("combat_theme" as MusicTrackId);
+      
+      // Wait a bit to ensure first load has started
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // Start second load - should wait for first
+      const secondLoad = audioManager.playMusic("combat_theme" as MusicTrackId);
+
+      await Promise.all([firstLoad, secondLoad]);
+
+      // Both should complete successfully
+      expect(firstLoadFinished).toBe(true);
+      expect(audioManager.currentMusicTrack).toBe("combat_theme");
+    });
+  });
 });

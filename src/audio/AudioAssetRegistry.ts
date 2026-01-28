@@ -609,7 +609,7 @@ export class AudioAssetRegistry {
 
     // Movement Sounds - 이동 소리 (Movement Sounds)
     // Footstep sounds (4 variations)
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 3; i++) {
       this.registerSFX(`footstep_${i}`, {
         id: `footstep_${i}`,
         type: "sound",
@@ -621,6 +621,18 @@ export class AudioAssetRegistry {
         volume: 0.5, // Lower volume for footsteps
       });
     }
+
+    // Footstep 4 only has webm format
+    this.registerSFX("footstep_4", {
+      id: "footstep_4",
+      type: "sound",
+      name: "Footstep 4 (발소리)",
+      category: "sfx",
+      url: "/assets/audio/sfx/misc/footstep_4.webm",
+      formats: ["audio/webm"],
+      loaded: false,
+      volume: 0.5,
+    });
 
     // Block Sounds - Success (4 variations) - 막기 (Makgi)
     for (let i = 1; i <= 4; i++) {

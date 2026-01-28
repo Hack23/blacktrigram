@@ -52,6 +52,10 @@ export class AudioManager implements IAudioManager {
   private soundCache: Map<string, HTMLAudioElement> = new Map();
   private _isInitialized: boolean = false;
 
+  // Track music assets currently being loaded to prevent race conditions
+  // 레이스 컨디션 방지를 위해 현재 로드 중인 음악 자산 추적
+  private loadingMusic: Set<string> = new Set();
+
   // New optimized components
   private assetLoader: AudioAssetLoader;
   private audioPool: AudioElementPool;
@@ -349,28 +353,52 @@ export class AudioManager implements IAudioManager {
     // On-demand loading: If music not in cache, load it first
     // 온디맨드 로딩: 음악이 캐시에 없으면 먼저 로드
     if (!audio) {
-      if (import.meta.env.DEV) {
-        console.log(`[AudioManager] Music "${id}" not in cache, loading on-demand...`);
-      }
-      
-      const { audioAssetRegistry } = await import("./AudioAssetRegistry");
-      const musicAsset = audioAssetRegistry.getMusic(id);
-      
-      if (musicAsset) {
-        try {
-          await this.loadAsset(musicAsset);
-          audio = this.soundCache.get(id);
-          
-          if (import.meta.env.DEV && audio) {
-            console.log(`[AudioManager] Successfully loaded music "${id}" on-demand`);
-          }
-        } catch (error) {
-          console.warn(`Failed to load music asset ${id} on-demand:`, error);
-          return;
+      // Check if this music is already being loaded to prevent race conditions
+      // 레이스 컨디션 방지를 위해 이미 로드 중인지 확인
+      if (this.loadingMusic.has(id)) {
+        if (import.meta.env.DEV) {
+          console.log(`[AudioManager] Music "${id}" is already being loaded, waiting...`);
         }
+        // Wait for the ongoing load to complete
+        // 진행 중인 로드가 완료될 때까지 대기
+        await this.waitForMusicLoad(id);
+        audio = this.soundCache.get(id);
       } else {
-        console.warn(`Music asset not found in registry: ${id}`);
-        return;
+        // Mark as loading before starting the load
+        // 로드 시작 전에 로딩 중으로 표시
+        this.loadingMusic.add(id);
+        
+        if (import.meta.env.DEV) {
+          console.log(`[AudioManager] Music "${id}" not in cache, loading on-demand...`);
+        }
+        
+        try {
+          const { audioAssetRegistry } = await import("./AudioAssetRegistry");
+          const musicAsset = audioAssetRegistry.getMusic(id);
+          
+          if (musicAsset) {
+            try {
+              await this.loadAsset(musicAsset);
+              audio = this.soundCache.get(id);
+              
+              if (import.meta.env.DEV && audio) {
+                console.log(`[AudioManager] Successfully loaded music "${id}" on-demand`);
+              }
+            } catch (error) {
+              console.warn(`Failed to load music asset ${id} on-demand:`, error);
+              this.loadingMusic.delete(id);
+              return;
+            }
+          } else {
+            console.warn(`Music asset not found in registry: ${id}`);
+            this.loadingMusic.delete(id);
+            return;
+          }
+        } finally {
+          // Always remove from loading set when done
+          // 완료 시 항상 로딩 세트에서 제거
+          this.loadingMusic.delete(id);
+        }
       }
     }
 
@@ -389,6 +417,25 @@ export class AudioManager implements IAudioManager {
       } catch (error) {
         console.warn(`Failed to play music ${id}:`, error);
       }
+    }
+  }
+
+  /**
+   * Wait for a music asset to finish loading
+   * 음악 자산 로드가 완료될 때까지 대기
+   * @param id - Music track ID
+   * @param maxWaitMs - Maximum time to wait in milliseconds
+   */
+  private async waitForMusicLoad(id: string, maxWaitMs: number = 5000): Promise<void> {
+    const startTime = Date.now();
+    const checkInterval = 100; // Check every 100ms
+    
+    while (this.loadingMusic.has(id)) {
+      if (Date.now() - startTime > maxWaitMs) {
+        console.warn(`[AudioManager] Timeout waiting for music "${id}" to load`);
+        return;
+      }
+      await new Promise(resolve => setTimeout(resolve, checkInterval));
     }
   }
 
