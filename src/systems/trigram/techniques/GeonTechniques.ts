@@ -164,6 +164,13 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       bodyPart: "leg",
       techniqueType: "kick",
       baseExtension: 1.05,
+      exposureWindow: {
+        exposedLimb: "right_leg",
+        startTime: 0.5,
+        duration: 320,
+        vulnerabilityMultiplier: 1.9,
+        allowsBreaking: true,
+      },
     },
     executionTime: 800,
     recoveryTime: 1100,
