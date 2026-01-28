@@ -174,8 +174,13 @@ export function usePlayerMovement(
   // All positions are in METERS - no pixel conversion needed
   useEffect(() => {
     if (!physicsEngineRef.current) {
-      // Use arena width for physics-aware speed scaling, default to 10m if not provided
-      const arenaWidth = bounds?.worldWidthMeters ?? 10.0;
+      // Use arena width for physics-aware speed scaling
+      // Validate and fall back to default if invalid
+      const width = bounds?.worldWidthMeters;
+      const arenaWidth =
+        width != null && Number.isFinite(width) && width > 0
+          ? width
+          : DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters;
       physicsEngineRef.current = new MovementPhysics(arenaWidth);
       // Initial position in meters (x = lateral, z = forward/backward)
       physicsStateRef.current = {
@@ -196,37 +201,72 @@ export function usePlayerMovement(
   // Compute arena bounds synchronously when bounds dimensions change
   // Uses useMemo to ensure bounds are available immediately (not after effect runs)
   // Falls back to default arena bounds if invalid or missing
-  const arenaBounds = useMemo<MovementArenaBounds | undefined>(() => {
+  const arenaBoundsResult = useMemo<{
+    bounds: MovementArenaBounds | undefined;
+    error?: Error;
+  }>(() => {
     if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
       try {
-        return calculateArenaBounds(
-          {
-            worldWidthMeters: bounds.worldWidthMeters,
-            worldDepthMeters: bounds.worldDepthMeters,
-          },
-          0.3 // 0.3m character radius
-        );
+        return {
+          bounds: calculateArenaBounds(
+            {
+              worldWidthMeters: bounds.worldWidthMeters,
+              worldDepthMeters: bounds.worldDepthMeters,
+            },
+            0.3 // 0.3m character radius
+          ),
+        };
       } catch (error) {
-        // If validation fails, log error and fall back to default bounds
-        console.warn("Failed to calculate arena bounds:", error);
+        // If validation fails, fall back to default bounds
+        // Error will be logged in useEffect to keep render pure
+        return {
+          bounds: undefined,
+          error: error instanceof Error ? error : new Error(String(error)),
+        };
       }
     }
-    
+
     // Fallback: use default arena bounds to ensure movement stays bounded
     try {
-      return calculateArenaBounds(
-        {
-          worldWidthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters,
-          worldDepthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldDepthMeters,
-        },
-        0.3 // 0.3m character radius
-      );
+      return {
+        bounds: calculateArenaBounds(
+          {
+            worldWidthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldWidthMeters,
+            worldDepthMeters: DEFAULT_PHYSICS_ARENA_BOUNDS.worldDepthMeters,
+          },
+          0.3 // 0.3m character radius
+        ),
+      };
     } catch (error) {
       // Should never happen with default bounds, but handle gracefully
-      console.error("Failed to calculate default arena bounds:", error);
-      return undefined;
+      // Error will be logged in useEffect to keep render pure
+      return {
+        bounds: undefined,
+        error: error instanceof Error ? error : new Error(String(error)),
+      };
     }
   }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
+
+  const arenaBounds = arenaBoundsResult.bounds;
+
+  // Log arena bounds calculation errors in an effect (not during render)
+  useEffect(() => {
+    if (arenaBoundsResult.error) {
+      if (bounds?.worldWidthMeters != null && bounds?.worldDepthMeters != null) {
+        // Custom bounds failed validation
+        console.warn(
+          "Failed to calculate arena bounds, using defaults:",
+          arenaBoundsResult.error
+        );
+      } else {
+        // Should never happen with default bounds
+        console.error(
+          "Failed to calculate default arena bounds:",
+          arenaBoundsResult.error
+        );
+      }
+    }
+  }, [arenaBoundsResult.error, bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
 
   // Update physics engine arena width when bounds change (legacy)
   useEffect(() => {
