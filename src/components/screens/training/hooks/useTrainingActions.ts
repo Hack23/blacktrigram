@@ -424,6 +424,7 @@ export function useTrainingActions(
       audio,
       pendingAttackRef,
       playBoneImpactSound,
+      selectedTechniqueId,
     ],
   );
 
