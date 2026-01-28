@@ -355,10 +355,26 @@ export class PhysicalReachCalculator {
     reachConfig?: PhysicalReachConfig,
   ): number {
     const hitTiming = getAnimationHitTiming(animationType);
+    
+    // Handle missing AnimationHitTiming entries
+    // When timing data is unavailable, use baseExtension if provided,
+    // otherwise use a neutral 1.0 multiplier to keep reach calculations functional.
+    // This ensures techniques like GEON_ROUNDHOUSE, WATER_COUNTER, IRON_BLOCK
+    // (which have technique definitions but missing animation timing entries)
+    // can still perform reach/damage checks.
     if (!hitTiming) {
-      // Not a combat animation, return zero reach
-      return 0;
+      // Use fallback approach: calculate reach with neutral timing
+      const fallbackTime = 0.5; // Midpoint of typical animation
+      const result = this.calculateReach(
+        physicalAttributes,
+        animationType,
+        fallbackTime,
+        stance,
+        reachConfig,
+      );
+      return result.effectiveReach;
     }
+    
     const peakTime = hitTiming.hitWindow.peakTime;
 
     const result = this.calculateReach(
