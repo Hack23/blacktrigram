@@ -22,7 +22,7 @@ import {
 } from "./AICounterAttackIntegration";
 import type { KoreanTechnique } from "../vitalpoint/types";
 import type { PlayerState } from "../player";
-import { TrigramStance } from "../../types/common";
+import { TrigramStance, PlayerArchetype } from "../../types/common";
 
 /**
  * Create a test technique with full exposure configuration
@@ -223,8 +223,8 @@ describe("LimbExposureSystem Integration", () => {
 
   describe("AI Integration Flow", () => {
     it("should analyze combat context and detect counter opportunity", () => {
-      const attacker = createTestPlayer({ archetype: "musa" });
-      const defender = createTestPlayer({ archetype: "amsalja", stamina: 80 });
+      const attacker = createTestPlayer({ archetype: PlayerArchetype.MUSA });
+      const defender = createTestPlayer({ archetype: PlayerArchetype.AMSALJA, stamina: 80 });
 
       const context = analyzeCounterOpportunity(attacker, defender, 0.8);
 
@@ -239,7 +239,7 @@ describe("LimbExposureSystem Integration", () => {
       const opportunity = calculateCounterOpportunity(kickTechnique, 500);
 
       const attacker = createTestPlayer();
-      const defender = createTestPlayer({ archetype: "amsalja" });
+      const defender = createTestPlayer({ archetype: PlayerArchetype.AMSALJA });
 
       const context = {
         player: defender,
@@ -263,7 +263,7 @@ describe("LimbExposureSystem Integration", () => {
       const opportunity = calculateCounterOpportunity(kickTechnique, 500);
 
       const attacker = createTestPlayer();
-      const defender = createTestPlayer({ archetype: "musa" });
+      const defender = createTestPlayer({ archetype: PlayerArchetype.MUSA });
 
       const context = {
         player: defender,
