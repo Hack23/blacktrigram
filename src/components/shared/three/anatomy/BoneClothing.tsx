@@ -31,8 +31,16 @@
 import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { getArchetypeClothing } from "../../../../data/archetypeClothing";
-import type { ClothingItem } from "../../../../types/clothing";
+import type {
+  ClothingItem,
+  ClothingMaterial,
+} from "../../../../types/clothing";
 import type { PlayerArchetype } from "../../../../types/common";
+import {
+  FABRIC_PRESETS,
+  generateFabricTextureSet,
+  type FabricTextureSet,
+} from "../../../../utils/fabricTextures";
 
 /**
  * Clothing attachment configuration for a bone
@@ -96,6 +104,35 @@ const calculateBodyThickness = (
   const fatRatio = fatMass / referenceFat;
   const fatContribution = Math.sqrt(fatRatio) * 0.3;
   return muscleContribution + fatContribution;
+};
+
+/**
+ * Get fabric preset based on clothing material type
+ */
+const getFabricPreset = (
+  material: ClothingMaterial,
+): keyof typeof FABRIC_PRESETS => {
+  switch (material) {
+    case "fabric":
+      return "dobok";
+    case "tactical":
+    case "synthetic":
+      return "tactical";
+    case "leather":
+    case "armored":
+      return "leather";
+    case "cybernetic":
+      return "silk"; // Shiny synthetic look
+    default:
+      return "dobok";
+  }
+};
+
+/**
+ * Convert number color to hex string
+ */
+const numberToHex = (color: number): string => {
+  return `#${color.toString(16).padStart(6, "0")}`;
 };
 
 /**
@@ -357,10 +394,52 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
     [boneName, archetype, attrs],
   );
 
+  // Get clothing set for fabric texture generation
+  const clothingSet = useMemo(
+    () => getArchetypeClothing(archetype),
+    [archetype],
+  );
+
+  /**
+   * Generate fabric textures for realistic dobok (도복) rendering
+   *
+   * Creates procedural weave patterns, normal maps, and roughness maps
+   * for enhanced cloth realism without external image assets.
+   *
+   * @korean 직물텍스처생성
+   */
+  const fabricTextures = useMemo(() => {
+    // Generate textures for each unique clothing item
+    const textureMap = new Map<string, FabricTextureSet>();
+
+    for (const item of clothingSet.items) {
+      if (!textureMap.has(item.material)) {
+        const preset = getFabricPreset(item.material);
+        const colorHex = numberToHex(item.colorPrimary);
+        textureMap.set(
+          item.material,
+          generateFabricTextureSet(colorHex, preset),
+        );
+      }
+    }
+
+    return textureMap;
+  }, [clothingSet]);
+
+  // Cleanup fabric textures on unmount
+  useEffect(() => {
+    return () => {
+      fabricTextures.forEach((textureSet) => textureSet.dispose());
+    };
+  }, [fabricTextures]);
+
   /**
    * Create materials with advanced physical properties for realistic cloth rendering
    *
    * Enhanced with:
+   * - **Fabric textures**: Procedural weave patterns for dobok authenticity
+   * - **Normal maps**: Surface detail for thread texture visibility
+   * - **Roughness maps**: Realistic light scattering on fabric surface
    * - Subsurface scattering: Light transmission through fabric for realism
    * - Clearcoat: Surface depth and sheen for material quality
    * - Double-sided rendering: Proper display when cloth folds
@@ -370,28 +449,42 @@ export const BoneClothing: React.FC<BoneClothingProps> = ({
    */
   const materials = useMemo(() => {
     return attachments.map((attachment) => {
+      // Find the clothing item for this attachment to get its material type
+      const clothingItem = clothingSet.items.find((item) =>
+        attachment.itemId.startsWith(item.id),
+      );
+      const materialType = clothingItem?.material ?? "fabric";
+      const textureSet = fabricTextures.get(materialType);
+
       const mat = new THREE.MeshPhysicalMaterial({
         color: attachment.color,
+        // Apply fabric texture maps for realistic dobok appearance
+        map: textureSet?.colorMap ?? null,
+        normalMap: textureSet?.normalMap ?? null,
+        normalScale: new THREE.Vector2(0.3, 0.3), // Subtle normal effect
+        roughnessMap: textureSet?.roughnessMap ?? null,
         emissive: attachment.emissiveColor ?? 0x000000,
         emissiveIntensity: attachment.emissiveIntensity ?? 0,
-        metalness: attachment.metalness ?? 0.3,
-        roughness: attachment.roughness ?? 0.7,
+        metalness: attachment.metalness ?? 0.1, // Lower metalness for fabric
+        roughness: attachment.roughness ?? 0.8, // Higher roughness for cloth
         // Enhanced cloth realism with clearcoat for depth
-        clearcoat: 0.3,
-        clearcoatRoughness: 0.5,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.6,
         // Subsurface scattering for realistic fabric translucency
         // Subtle effect for cloth materials (not skin)
-        transmission: 0.05, // Minimal light transmission through fabric
-        thickness: 0.2, // Thin fabric thickness
+        transmission: 0.03, // Minimal light transmission through fabric
+        thickness: 0.15, // Thin fabric thickness
         ior: 1.4, // Index of refraction for fabric (lower than glass)
         // Enable proper reflections
-        reflectivity: 0.3,
+        reflectivity: 0.2,
         // Double-sided rendering for cloth that may fold
         side: THREE.DoubleSide,
+        // Improved shading for folds
+        flatShading: false,
       });
       return mat;
     });
-  }, [attachments]);
+  }, [attachments, clothingSet, fabricTextures]);
 
   // Cleanup materials on unmount
   useEffect(() => {

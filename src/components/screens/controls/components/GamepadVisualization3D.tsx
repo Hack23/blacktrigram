@@ -1,14 +1,14 @@
 /**
  * GamepadVisualization3D - 3D gamepad visualization with button labels
- * 
+ *
  * Renders a simplified 3D gamepad shape with colored buttons and
  * bilingual Korean-English labels for each button.
- * 
+ *
  * @module components/screens/controls/components
  */
 
 import { Html } from "@react-three/drei";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexToRgbaString } from "../../../../utils/colorUtils";
@@ -24,10 +24,10 @@ export interface GamepadVisualization3DProps {
 
 /**
  * GamepadVisualization3D Component
- * 
+ *
  * 3D visualization of a gamepad with labeled buttons.
  * Displays simplified gamepad shape with colored circles for buttons.
- * 
+ *
  * @example
  * ```tsx
  * <Canvas>
@@ -35,7 +35,9 @@ export interface GamepadVisualization3DProps {
  * </Canvas>
  * ```
  */
-export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({ isMobile }) => {
+export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({
+  isMobile,
+}) => {
   // Gamepad body material
   const bodyMaterial = useMemo(
     () =>
@@ -46,28 +48,38 @@ export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({ 
         transparent: true,
         opacity: 0.95,
       }),
-    []
+    [],
   );
 
+  // Cleanup material on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      bodyMaterial.dispose();
+    };
+  }, [bodyMaterial]);
+
   // Button positions (simplified layout)
-  const buttonPositions = useMemo(() => ({
-    // Face buttons (right side)
-    0: { x: 1.5, y: 0.5, z: 0.15 },   // A
-    1: { x: 2.0, y: 0.0, z: 0.15 },   // B
-    2: { x: 1.0, y: 0.0, z: 0.15 },   // X
-    3: { x: 1.5, y: -0.5, z: 0.15 },  // Y
-    // Shoulder buttons (top)
-    4: { x: -2.0, y: 1.0, z: 0.2 },   // LB
-    5: { x: 2.0, y: 1.0, z: 0.2 },    // RB
-    6: { x: -2.0, y: 1.4, z: 0.2 },   // LT
-    7: { x: 2.0, y: 1.4, z: 0.2 },    // RT
-    // Menu buttons (center)
-    8: { x: -0.6, y: 0.0, z: 0.15 },  // Back
-    9: { x: 0.6, y: 0.0, z: 0.15 },   // Start
-    // Stick buttons (lower)
-    10: { x: -1.5, y: -0.8, z: 0.15 }, // L3
-    11: { x: 1.5, y: -0.8, z: 0.15 },  // R3
-  }), []);
+  const buttonPositions = useMemo(
+    () => ({
+      // Face buttons (right side)
+      0: { x: 1.5, y: 0.5, z: 0.15 }, // A
+      1: { x: 2.0, y: 0.0, z: 0.15 }, // B
+      2: { x: 1.0, y: 0.0, z: 0.15 }, // X
+      3: { x: 1.5, y: -0.5, z: 0.15 }, // Y
+      // Shoulder buttons (top)
+      4: { x: -2.0, y: 1.0, z: 0.2 }, // LB
+      5: { x: 2.0, y: 1.0, z: 0.2 }, // RB
+      6: { x: -2.0, y: 1.4, z: 0.2 }, // LT
+      7: { x: 2.0, y: 1.4, z: 0.2 }, // RT
+      // Menu buttons (center)
+      8: { x: -0.6, y: 0.0, z: 0.15 }, // Back
+      9: { x: 0.6, y: 0.0, z: 0.15 }, // Start
+      // Stick buttons (lower)
+      10: { x: -1.5, y: -0.8, z: 0.15 }, // L3
+      11: { x: 1.5, y: -0.8, z: 0.15 }, // R3
+    }),
+    [],
+  );
 
   return (
     <group position={[0, 0, 0]} data-testid="gamepad-visualization">
@@ -98,7 +110,8 @@ export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({ 
 
       {/* Render all buttons */}
       {GAMEPAD_BUTTONS.map((button) => {
-        const pos = buttonPositions[button.index as keyof typeof buttonPositions];
+        const pos =
+          buttonPositions[button.index as keyof typeof buttonPositions];
         if (!pos) return null;
 
         return (
@@ -120,35 +133,42 @@ export const GamepadVisualization3D: React.FC<GamepadVisualization3DProps> = ({ 
               position={[0, 0.3, 0]}
               center
               distanceFactor={isMobile ? 3 : 2.5}
-              style={{ pointerEvents: 'none' }}
+              style={{ pointerEvents: "none" }}
             >
               <div
                 style={{
                   fontFamily: FONT_FAMILY.KOREAN,
-                  fontSize: isMobile ? '10px' : '11px',
-                  fontWeight: 'bold',
+                  fontSize: isMobile ? "10px" : "11px",
+                  fontWeight: "bold",
                   color: hexToRgbaString(KOREAN_COLORS.TEXT_PRIMARY),
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap',
-                  background: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.8),
-                  padding: '4px 6px',
-                  borderRadius: '4px',
+                  textAlign: "center",
+                  whiteSpace: "nowrap",
+                  background: hexToRgbaString(
+                    KOREAN_COLORS.UI_BACKGROUND_DARK,
+                    0.8,
+                  ),
+                  padding: "4px 6px",
+                  borderRadius: "4px",
                   border: `1px solid ${hexToRgbaString(button.color, 0.6)}`,
                   boxShadow: `0 0 8px ${hexToRgbaString(button.color, 0.4)}`,
                 }}
               >
                 {/* Button name */}
-                <div style={{ 
-                  color: hexToRgbaString(button.color),
-                  marginBottom: '2px',
-                }}>
+                <div
+                  style={{
+                    color: hexToRgbaString(button.color),
+                    marginBottom: "2px",
+                  }}
+                >
                   {button.korean} | {button.english}
                 </div>
                 {/* Action */}
-                <div style={{ 
-                  fontSize: isMobile ? '9px' : '10px',
-                  color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY),
-                }}>
+                <div
+                  style={{
+                    fontSize: isMobile ? "9px" : "10px",
+                    color: hexToRgbaString(KOREAN_COLORS.TEXT_SECONDARY),
+                  }}
+                >
                   {button.actionKorean} | {button.action}
                 </div>
               </div>
