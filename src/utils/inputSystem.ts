@@ -5,7 +5,8 @@ import * as THREE from "three";
 import type { MovementInput } from "../systems/physics/MovementPhysics";
 import { MovementPhysics } from "../systems/physics/MovementPhysics";
 import { TrigramStance } from "../types/common";
-import { ArenaBounds, calculateArenaBounds } from "../types/PhysicsTypes";
+import { calculateArenaBounds } from "../types/PhysicsTypes";
+import type { ArenaBounds } from "../types/PhysicsTypes";
 
 /**
  * Configuration interface for the input system and player movement.
@@ -194,9 +195,15 @@ export function usePlayerMovement(
   // Track arena bounds changes and compute ArenaBounds once
   const arenaBoundsRef = useRef<ArenaBounds | undefined>(undefined);
   useEffect(() => {
-    // Compute arena bounds once when bounds prop changes
-    if (bounds) {
-      arenaBoundsRef.current = calculateArenaBounds(bounds, 0.3); // 0.3m character radius
+    // Compute arena bounds once when bounds dimensions change
+    if (bounds?.worldWidthMeters && bounds?.worldDepthMeters) {
+      arenaBoundsRef.current = calculateArenaBounds(
+        {
+          worldWidthMeters: bounds.worldWidthMeters,
+          worldDepthMeters: bounds.worldDepthMeters,
+        },
+        0.3 // 0.3m character radius
+      );
     } else {
       arenaBoundsRef.current = undefined;
     }
@@ -204,7 +211,7 @@ export function usePlayerMovement(
     if (physicsEngineRef.current && bounds?.worldWidthMeters) {
       physicsEngineRef.current.setArenaWidth(bounds.worldWidthMeters);
     }
-  }, [bounds]);
+  }, [bounds?.worldWidthMeters, bounds?.worldDepthMeters]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());

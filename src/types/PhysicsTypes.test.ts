@@ -98,6 +98,72 @@ describe('PhysicsTypes - Arena Bounds', () => {
       expect(bounds.minZ).toBeCloseTo(-3.25, 1);
       expect(bounds.maxZ).toBeCloseTo(3.25, 1);
     });
+
+    it('should throw error for non-positive width', () => {
+      const config = {
+        worldWidthMeters: 0,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldWidthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for negative depth', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: -5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldDepthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for NaN dimensions', () => {
+      const config = {
+        worldWidthMeters: NaN,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 0.3)).toThrow(
+        'worldWidthMeters must be a positive finite number'
+      );
+    });
+
+    it('should throw error for negative margin', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, -0.5)).toThrow(
+        'margin must be a non-negative finite number'
+      );
+    });
+
+    it('should throw error for margin larger than half width', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 6)).toThrow(
+        'margin (6m) must be less than half the arena width (5m)'
+      );
+    });
+
+    it('should throw error for margin larger than half depth', () => {
+      const config = {
+        worldWidthMeters: 10,
+        worldDepthMeters: 7.5,
+      };
+
+      expect(() => calculateArenaBounds(config, 4)).toThrow(
+        'margin (4m) must be less than half the arena depth (3.75m)'
+      );
+    });
   });
 
   describe('clampPositionToBounds', () => {

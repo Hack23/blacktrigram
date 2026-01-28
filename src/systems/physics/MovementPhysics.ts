@@ -22,7 +22,7 @@
 
 import { TrigramStance } from "@/types/common";
 import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
-import { ArenaBounds } from "@/types/PhysicsTypes";
+import type { ArenaBounds } from "@/types/PhysicsTypes";
 import * as THREE from "three";
 
 /**

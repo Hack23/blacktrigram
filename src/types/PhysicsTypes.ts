@@ -305,6 +305,7 @@ export interface ArenaBounds {
  * @param bounds - Arena configuration with meter dimensions (can be partial with just worldWidthMeters/worldDepthMeters)
  * @param margin - Character radius/margin in meters (default: 0.3m - half character width)
  * @returns Arena bounds for physics calculations
+ * @throws Error if dimensions are invalid (non-positive or non-finite) or margin is invalid
  * 
  * @example
  * ```typescript
@@ -320,8 +321,39 @@ export function calculateArenaBounds(
   bounds: Pick<PhysicsArenaBounds, 'worldWidthMeters' | 'worldDepthMeters'>,
   margin: number = 0.3
 ): ArenaBounds {
+  // Validate arena dimensions
+  if (!Number.isFinite(bounds.worldWidthMeters) || bounds.worldWidthMeters <= 0) {
+    throw new Error(
+      `worldWidthMeters must be a positive finite number, got: ${bounds.worldWidthMeters}`
+    );
+  }
+  if (!Number.isFinite(bounds.worldDepthMeters) || bounds.worldDepthMeters <= 0) {
+    throw new Error(
+      `worldDepthMeters must be a positive finite number, got: ${bounds.worldDepthMeters}`
+    );
+  }
+  
+  // Validate margin
+  if (!Number.isFinite(margin) || margin < 0) {
+    throw new Error(
+      `margin must be a non-negative finite number, got: ${margin}`
+    );
+  }
+  
   const halfWidth = bounds.worldWidthMeters / 2;
   const halfDepth = bounds.worldDepthMeters / 2;
+  
+  // Validate margin is not larger than arena dimensions
+  if (margin >= halfWidth) {
+    throw new Error(
+      `margin (${margin}m) must be less than half the arena width (${halfWidth}m)`
+    );
+  }
+  if (margin >= halfDepth) {
+    throw new Error(
+      `margin (${margin}m) must be less than half the arena depth (${halfDepth}m)`
+    );
+  }
   
   return {
     minX: -halfWidth + margin,
