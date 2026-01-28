@@ -28,6 +28,7 @@ import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useRoundTransition } from "../../../hooks/useRoundTransition";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useCombatAttackMovement } from "./hooks/useCombatAttackMovement";
 import { HitEffect, PlayerState } from "../../../systems";
 import { CombatSystem } from "../../../systems/CombatSystem";
 import {
@@ -37,6 +38,7 @@ import {
 import {
   AnimationEvents,
   AnimationState,
+  AnimationType,
   determineRecoveryType,
   getAnimationForTechnique,
   getRecoveryAnimationState,
@@ -1034,6 +1036,41 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRef.current = validPlayers;
     validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
+
+  // Attack movement integration - track attack states for physics-based forward movement
+  // 공격 이동 통합 - 물리 기반 전방 이동을 위한 공격 상태 추적
+  // Note: Must be called after validPlayers, player animations, and 3D positions are defined
+  const {
+    player1Position: player1PositionWithAttackMovement,
+    player2Position: player2PositionWithAttackMovement,
+  } = useCombatAttackMovement({
+    player1Attacking: player1Animation.currentState === AnimationState.ATTACK,
+    player1AnimationType: player1AttackAnimation 
+      ? // Map common attack animation names to AnimationType
+        // Most attacks use similar movement patterns, so we use reasonable defaults
+        (player1AttackAnimation.includes("kick") 
+          ? AnimationType.ROUNDHOUSE_KICK 
+          : player1AttackAnimation.includes("jab")
+          ? AnimationType.JAB
+          : player1AttackAnimation.includes("cross")
+          ? AnimationType.CROSS
+          : AnimationType.JAB) // Default to jab for unmapped animations
+      : undefined,
+    player1Stance: player1Data.currentStance,
+    player1BasePosition: player1Position3D,
+    player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
+    player2AnimationType: player2AttackAnimation
+      ? (player2AttackAnimation.includes("kick")
+          ? AnimationType.ROUNDHOUSE_KICK
+          : player2AttackAnimation.includes("jab")
+          ? AnimationType.JAB
+          : player2AttackAnimation.includes("cross")
+          ? AnimationType.CROSS
+          : AnimationType.JAB)
+      : undefined,
+    player2Stance: validPlayers[1].currentStance,
+    player2BasePosition: player2Position3D,
+  });
 
   // ═══════════════════════════════════════════════════════════════════════════
   // Local stance state for Player 1 - Enables immediate technique bar updates
@@ -2438,14 +2475,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[0],
-            player1Position3D,
+            player1PositionWithAttackMovement,
             player1Rotation,
             {
               isMobile,
               facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
-              opponentPosition: player2Position3D,
+              opponentPosition: player2PositionWithAttackMovement,
             },
           )}
           currentAnimation={animationStateToPlayerAnimation(
@@ -2462,14 +2499,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[1],
-            player2Position3D,
+            player2PositionWithAttackMovement,
             player2Rotation,
             {
               isMobile,
               facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
-              opponentPosition: player1Position3D,
+              opponentPosition: player1PositionWithAttackMovement,
             },
           )}
           currentAnimation={animationStateToPlayerAnimation(
