@@ -413,7 +413,8 @@ describe("CombatPhysicsIntegration", () => {
     let collision: CollisionDetection;
 
     beforeEach(() => {
-      movement = new MovementPhysics();
+      // Use default 10m arena for integration tests
+      movement = new MovementPhysics(10.0);
       speedModifier = new SpeedModifierSystem();
       knockback = new KnockbackPhysics();
       collision = new CollisionDetection();
