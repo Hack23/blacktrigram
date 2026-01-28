@@ -171,7 +171,9 @@ export function usePlayerMovement(
   // All positions are in METERS - no pixel conversion needed
   useEffect(() => {
     if (!physicsEngineRef.current) {
-      physicsEngineRef.current = new MovementPhysics();
+      // Use arena width for physics-aware speed scaling, default to 10m if not provided
+      const arenaWidth = bounds?.worldWidthMeters ?? 10.0;
+      physicsEngineRef.current = new MovementPhysics(arenaWidth);
       // Initial position in meters (x = lateral, z = forward/backward)
       physicsStateRef.current = {
         position: new THREE.Vector3(
@@ -187,6 +189,13 @@ export function usePlayerMovement(
       };
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update physics engine arena width when bounds change
+  useEffect(() => {
+    if (physicsEngineRef.current && bounds?.worldWidthMeters) {
+      physicsEngineRef.current.setArenaWidth(bounds.worldWidthMeters);
+    }
+  }, [bounds?.worldWidthMeters]);
 
   // Track pressed keys for combat system
   const pressedKeys = useRef<Set<string>>(new Set());
