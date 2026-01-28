@@ -21,6 +21,7 @@ import { PlayerArchetype, TrigramStance } from "../../../../types/common";
 import { getArchetypePhysicalAttributes } from "../../../../data/archetypePhysicalAttributes";
 import { physicalReachCalculator } from "../../../../systems/physics";
 import { AnimationType } from "../../../../systems/animation";
+import "./HUDAnimations.css";
 
 /**
  * Props for TechniqueCard component.
@@ -190,8 +191,17 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     if (isSelected && isAvailable) {
       return `0 0 15px rgba(0, 255, 255, 0.8), 0 0 25px rgba(0, 255, 255, 0.5)`;
     }
+    if (isAvailable) {
+      return `0 0 10px rgba(255, 170, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5)`;
+    }
     return "0 2px 8px rgba(0, 0, 0, 0.5)";
   }, [isSelected, isAvailable]);
+
+  // Animation class based on availability state
+  const animationClass = useMemo(
+    () => (isAvailable ? "hud-animated" : ""),
+    [isAvailable]
+  );
 
   // Touch handler for mobile - provides immediate response without 300ms delay
   const handleTouch = useCallback(
@@ -211,6 +221,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
       aria-label={`${technique.name.korean} (${technique.name.english}). Stamina: ${staminaCost}, Ki: ${kiCost}`}
       aria-disabled={!isAvailable}
       aria-describedby={showTooltip && isAvailable ? `tooltip-${technique.id}` : undefined}
+      className={animationClass}
       style={{
         position: "relative",
         width: `${cardSize.width}px`,
@@ -220,7 +231,7 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         borderRadius: "8px",
         boxShadow,
         cursor: isAvailable ? "pointer" : "not-allowed",
-        transition: "all 0.2s ease",
+        transition: "all 0.2s ease-in-out, transform 0.15s ease-out",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -230,6 +241,8 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
         opacity: isAvailable ? 1 : 0.5,
         touchAction: "manipulation", // Disable double-tap zoom
         userSelect: "none", // Prevent text selection on touch
+        animation: isSelected && isAvailable ? "techniqueSelected 1.5s ease-in-out infinite" : 
+                   isAvailable ? "techniqueGlow 2s ease-in-out infinite" : "none",
       }}
       onClick={isAvailable ? onClick : undefined}
       onTouchEnd={handleTouch}

@@ -15,6 +15,7 @@ import { Html } from "@react-three/drei";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FONT_FAMILY, KOREAN_COLORS } from "../../../../types/constants";
 import { hexColorToCSS, hexToRgbaString } from "../../../../utils/colorUtils";
+import "./HUDAnimations.css";
 
 /**
  * Props for the ComboCounter component
@@ -207,12 +208,14 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
     >
       <div
         data-testid="combo-counter"
+        className="hud-animated"
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           transform: `scale(${scale})`,
           transition: "transform 0.15s ease-out",
+          animation: combo >= 5 ? "comboFlash 0.8s ease-in-out infinite" : "none",
         }}
       >
         {/* Main combo number */}
@@ -263,13 +266,14 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         {/* Milestone indicator */}
         {showMilestone && milestone && (
           <div
+            className="hud-animated"
             style={{
               marginTop: "8px",
               padding: "4px 16px",
               background: getMilestoneBackground(combo),
               borderRadius: "4px",
               border: `2px solid ${comboColor}`,
-              animation: "pulse 0.5s ease-in-out infinite",
+              animation: "comboFlash 1s ease-in-out infinite",
             }}
           >
             <div
@@ -297,7 +301,7 @@ export const ComboCounter: React.FC<ComboCounterProps> = ({
         )}
       </div>
 
-      {/* CSS Animation */}
+      {/* CSS Animation - kept for backwards compatibility */}
       <style>{`
         @keyframes pulse {
           0%, 100% { transform: scale(1); }
