@@ -197,12 +197,11 @@ export const TechniqueCard: React.FC<TechniqueCardProps> = ({
     return "0 2px 8px rgba(0, 0, 0, 0.5)";
   }, [isSelected, isAvailable]);
 
-  // Animation class based on state
-  const animationClass = useMemo(() => {
-    if (isSelected && isAvailable) return "hud-animated";
-    if (isAvailable) return "hud-animated";
-    return "";
-  }, [isSelected, isAvailable]);
+  // Animation class based on availability state
+  const animationClass = useMemo(
+    () => (isAvailable ? "hud-animated" : ""),
+    [isAvailable]
+  );
 
   // Touch handler for mobile - provides immediate response without 300ms delay
   const handleTouch = useCallback(

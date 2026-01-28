@@ -1264,10 +1264,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           height: "100%",
           pointerEvents: "none",
           zIndex: Z_INDEX.HUD,
-          // Prevent HUD elements from extending beyond game container bounds
-          // Note: Using 'hidden' instead of 'clip' for better browser compatibility
-          // Box-shadows and text-shadows remain visible within reasonable bounds
-          overflow: "hidden",
+          // Use 'clip' for pure clipping without creating a scroll container
+          // Note: Both 'clip' and 'hidden' will clip box/text shadows; ensure
+          // any required shadow space is handled via padding on parent containers
+          overflow: "clip",
         }}
         data-testid="training-hud-overlay"
       >

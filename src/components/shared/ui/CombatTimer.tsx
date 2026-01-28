@@ -141,8 +141,7 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
     return hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN);
   }, [warningLevel, isTimeUp]);
 
-  // Should pulse when urgent or time is up
-  const shouldPulse = warningLevel === "urgent" || isTimeUp;
+  // Should flash when urgent or time is up
   const shouldFlash = warningLevel === "urgent" || isTimeUp;
 
   // Font sizes based on screen size
@@ -176,7 +175,7 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
         backgroundColor: `${bgColor}dd`,
         border: `2px solid ${borderColor}`,
         borderRadius: isMobile ? "6px" : "8px",
-        animation: shouldFlash ? "timerFlash 1s ease-in-out infinite" : shouldPulse ? "pulse 0.5s ease-in-out infinite" : "none",
+        animation: shouldFlash ? "timerFlash 1s ease-in-out infinite" : "none",
         zIndex: 100,
         pointerEvents: "none",
         userSelect: "none",

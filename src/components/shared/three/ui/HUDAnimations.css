@@ -237,10 +237,11 @@
 }
 
 /* Performance Optimizations */
-/* Use will-change for animated properties */
+/* Use will-change sparingly for GPU-friendly properties */
 .hud-animated {
-  /* Include all properties commonly animated by HUD keyframes */
-  will-change: transform, opacity, filter, box-shadow, text-shadow, color;
+  /* Limit will-change to widely used, GPU-accelerated properties */
+  /* Overuse of will-change can degrade performance */
+  will-change: transform, opacity;
 }
 
 /* Hardware acceleration hints */
@@ -252,13 +253,9 @@
 /* Reduce motion for accessibility */
 /* Following WCAG 2.1 - Success Criterion 2.3.3: reduce motion, not eliminate it */
 @media (prefers-reduced-motion: reduce) {
+  /* Target HUD animations specifically - most specific rule wins */
   .hud-animated {
     animation: none !important;
-    transition-duration: 0.1s !important;
-  }
-  /* Allow instant transitions for essential UI feedback */
-  * {
-    animation-duration: 0.01ms !important;
     transition-duration: 0.1s !important;
   }
 }
