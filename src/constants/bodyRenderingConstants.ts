@@ -97,13 +97,16 @@ export const FAT_THICKNESS_CONTRIBUTION = 0.3;
 /**
  * Muscle geometry normalization factor.
  *
- * Converts legacy large muscle values to anatomically correct meter scale.
- * Using 0.35 for realistic athletic proportions - not inflated.
- * Reduced from 0.55 which was still too puffy.
+ * When muscles are the primary body shape (bones hidden), this should be 1.0
+ * to use radius values directly. The muscle radii (0.10-0.16) are already
+ * sized appropriately for athletic martial artist proportions.
+ *
+ * Previous values (0.35, 0.55) caused double-scaling issues when combined
+ * with mesh scale transforms, resulting in skeleton showing through muscles.
  *
  * @korean 근육정규화계수
  */
-export const MUSCLE_GEOMETRY_NORMALIZATION = 0.35;
+export const MUSCLE_GEOMETRY_NORMALIZATION = 1.0;
 
 /**
  * Base muscle amplification factor for visual differences.
@@ -127,12 +130,12 @@ export const MUSCLE_AMPLIFICATION_EXPONENT = 1.5;
 /**
  * Minimum muscle scale factor.
  *
- * Prevents muscles from becoming invisible on lean archetypes.
- * Using 0.45 for lean athletic fighters like kickboxers.
+ * With new 1.0 base scale system, this prevents muscles from becoming
+ * too small on lean archetypes. Using 0.8 for lean athletic fighters.
  *
  * @korean 최소근육크기
  */
-export const MIN_MUSCLE_SCALE = 0.45;
+export const MIN_MUSCLE_SCALE = 0.8;
 
 /**
  * Muscle contraction intensity during combat.

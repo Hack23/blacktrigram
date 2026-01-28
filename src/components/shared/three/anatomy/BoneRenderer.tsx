@@ -269,14 +269,18 @@ const SingleBone: React.FC<{
     return { length, rotation, offset };
   }, [bone]);
 
+  // Determine if muscles are being rendered - if so, hide bone geometry
+  // to prevent layer stacking that causes "bubble man" appearance
+  const hasMuscles = muscleStates !== undefined && muscleStates.size > 0;
+
   return (
     <group
       ref={groupRef}
       scale={bone.scale.toArray()}
       name={`bone-${bone.name}`}
     >
-      {/* Bone capsule connecting to parent */}
-      {renderMode === "solid" ? (
+      {/* Bone capsule connecting to parent - ONLY render if no muscles (muscles provide body shape) */}
+      {renderMode === "solid" && !hasMuscles ? (
         <mesh
           position={boneTransform.offset.toArray()}
           rotation={[
@@ -306,7 +310,7 @@ const SingleBone: React.FC<{
             envMapIntensity={1.0}
           />
         </mesh>
-      ) : (
+      ) : renderMode === "debug" ? (
         <mesh
           position={boneTransform.offset.toArray()}
           rotation={[
@@ -332,7 +336,7 @@ const SingleBone: React.FC<{
             opacity={0.5}
           />
         </mesh>
-      )}
+      ) : null}
 
       {/* Joint sphere at bone position */}
       {renderMode === "debug" && (

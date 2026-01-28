@@ -84,9 +84,9 @@ describe("BONE_MUSCLE_MAP", () => {
       const leftShoulder = BONE_MUSCLE_MAP.shoulder_L[0];
       const rightShoulder = BONE_MUSCLE_MAP.shoulder_R[0];
 
-      // Shoulders should be visible - base scale X >= 0.25 (slim athletic)
-      expect(leftShoulder.baseScale.x).toBeGreaterThanOrEqual(0.25);
-      expect(rightShoulder.baseScale.x).toBeGreaterThanOrEqual(0.25);
+      // Shoulders should have 1.0 base scale (athletic proportions)
+      expect(leftShoulder.baseScale.x).toBeGreaterThanOrEqual(1.0);
+      expect(rightShoulder.baseScale.x).toBeGreaterThanOrEqual(1.0);
     });
   });
 
@@ -107,8 +107,8 @@ describe("BONE_MUSCLE_MAP", () => {
         m.name.includes("BICEP"),
       );
       expect(bicepL).toBeDefined();
-      // Biceps should be visible - base scale X >= 0.2 (slim athletic)
-      expect(bicepL!.baseScale.x).toBeGreaterThanOrEqual(0.2);
+      // Biceps should have 1.0 base scale (athletic proportions)
+      expect(bicepL!.baseScale.x).toBeGreaterThanOrEqual(1.0);
     });
   });
 
@@ -124,19 +124,19 @@ describe("BONE_MUSCLE_MAP", () => {
       const gluteL = BONE_MUSCLE_MAP.hip_L[0];
       const gluteR = BONE_MUSCLE_MAP.hip_R[0];
 
-      // Glutes should be visible - base scale X >= 0.22 (slim athletic)
-      expect(gluteL.baseScale.x).toBeGreaterThanOrEqual(0.22);
-      expect(gluteR.baseScale.x).toBeGreaterThanOrEqual(0.22);
+      // Glutes should have 1.0 base scale (athletic proportions)
+      expect(gluteL.baseScale.x).toBeGreaterThanOrEqual(1.0);
+      expect(gluteR.baseScale.x).toBeGreaterThanOrEqual(1.0);
 
-      // Max flex scale should be larger
-      expect(gluteL.maxFlexScale.x).toBeGreaterThanOrEqual(0.3);
-      expect(gluteR.maxFlexScale.x).toBeGreaterThanOrEqual(0.3);
+      // Max flex scale should be larger than base
+      expect(gluteL.maxFlexScale.x).toBeGreaterThan(gluteL.baseScale.x);
+      expect(gluteR.maxFlexScale.x).toBeGreaterThan(gluteR.baseScale.x);
     });
 
     it("should have appropriate hip radius for visibility", () => {
       const gluteL = BONE_MUSCLE_MAP.hip_L[0];
-      // Hip radius should be visible - >= 0.12 (slim athletic proportions)
-      expect(gluteL.radius).toBeGreaterThanOrEqual(0.12);
+      // Hip radius should be visible - >= 0.05 (athletic proportions with 1.0 base scale)
+      expect(gluteL.radius).toBeGreaterThanOrEqual(0.05);
     });
   });
 
@@ -179,8 +179,8 @@ describe("BONE_MUSCLE_MAP", () => {
         m.name.includes("QUAD"),
       );
       expect(quadL).toBeDefined();
-      // Quads should be visible - base scale X >= 0.22 (slim athletic)
-      expect(quadL!.baseScale.x).toBeGreaterThanOrEqual(0.22);
+      // Quads should have 1.0 base scale (athletic proportions)
+      expect(quadL!.baseScale.x).toBeGreaterThanOrEqual(1.0);
     });
   });
 
@@ -220,19 +220,19 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const hackerScale = calculateMuscleScaleFactor(28); // Hacker
     const musaScale = calculateMuscleScaleFactor(35); // Musa
 
-    // Hacker should be around 0.45-0.70 scale (clamped minimum for slim fighter)
-    expect(hackerScale).toBeGreaterThanOrEqual(0.45);
-    expect(hackerScale).toBeLessThan(0.7);
+    // Hacker should be around 0.8 scale (clamped by MIN_MUSCLE_SCALE)
+    expect(hackerScale).toBeGreaterThanOrEqual(0.8);
+    expect(hackerScale).toBeLessThanOrEqual(0.82);
     // Difference should be significant for visual distinction
-    expect(musaScale / hackerScale).toBeGreaterThan(1.4);
+    expect(musaScale / hackerScale).toBeGreaterThan(1.2);
   });
 
-  it("should make Amsalja lean athlete (near 0.65 scale)", () => {
+  it("should make Amsalja lean athlete (near 0.85 scale)", () => {
     const amsaljaScale = calculateMuscleScaleFactor(30); // Amsalja
 
-    // Amsalja should be around 0.55-0.75 scale (lean but athletic)
-    expect(amsaljaScale).toBeGreaterThan(0.5);
-    expect(amsaljaScale).toBeLessThan(0.8);
+    // Amsalja should be around 0.80-0.88 scale (lean but athletic, above MIN_MUSCLE_SCALE)
+    expect(amsaljaScale).toBeGreaterThanOrEqual(0.8);
+    expect(amsaljaScale).toBeLessThan(0.88);
   });
 
   it("should make Jojik dramatically larger than Musa", () => {
@@ -255,18 +255,16 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
       { name: "Jojik", scale: calculateMuscleScaleFactor(48) },
     ];
 
-    // Verify ascending order
+    // Verify ascending order (Hacker/Amsalja may be clamped to MIN_MUSCLE_SCALE)
     for (let i = 1; i < scales.length; i++) {
-      expect(scales[i].scale).toBeGreaterThan(scales[i - 1].scale);
+      expect(scales[i].scale).toBeGreaterThanOrEqual(scales[i - 1].scale);
     }
 
-    // Verify minimum 4% difference between adjacent archetypes
-    // (Reduced from 10% due to MIN_MUSCLE_SCALE clamping for human-like appearance)
-    for (let i = 1; i < scales.length; i++) {
-      const diff =
-        (scales[i].scale - scales[i - 1].scale) / scales[i - 1].scale;
-      expect(diff).toBeGreaterThan(0.04);
-    }
+    // Verify minimum difference between Musa and Jojik (not clamped)
+    const musaScale = scales[3].scale;
+    const jojikScale = scales[4].scale;
+    const diff = (jojikScale - musaScale) / musaScale;
+    expect(diff).toBeGreaterThan(0.8); // Jojik should be 80%+ larger than Musa
   });
 
   it("should return < 1.0 for low muscle mass (Jeongbo - 32kg)", () => {
@@ -279,9 +277,9 @@ describe("calculateMuscleScaleFactor (non-linear)", () => {
     const hackerFactor = calculateMuscleScaleFactor(28); // Hacker
     const jojikFactor = calculateMuscleScaleFactor(48); // Jojik
 
-    // Jojik should be about 2.5x larger than Hacker
-    // (Reduced from 3x due to MIN_MUSCLE_SCALE increase from 0.5 to 0.75)
-    expect(jojikFactor / hackerFactor).toBeGreaterThan(2.4);
+    // Jojik should be about 2.3x larger than Hacker
+    // (Reduced from 2.4x due to MIN_MUSCLE_SCALE increase from 0.45 to 0.8)
+    expect(jojikFactor / hackerFactor).toBeGreaterThan(2.3);
   });
 });
 

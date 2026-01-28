@@ -12,6 +12,40 @@
 import { useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
+import {
+  ABS_LENGTH,
+  ABS_RADIUS,
+  BICEP_LENGTH,
+  BICEP_RADIUS,
+  CALF_LENGTH,
+  CALF_RADIUS,
+  CORE_LENGTH,
+  CORE_RADIUS,
+  ERECTOR_SPINAE_LENGTH,
+  ERECTOR_SPINAE_RADIUS,
+  FOREARM_LENGTH,
+  FOREARM_RADIUS,
+  GLUTE_LENGTH,
+  GLUTE_RADIUS,
+  HAMSTRING_LENGTH,
+  HAMSTRING_RADIUS,
+  HIP_FLEXOR_LENGTH,
+  HIP_FLEXOR_RADIUS,
+  LAT_LENGTH,
+  LAT_RADIUS,
+  OBLIQUES_LENGTH,
+  OBLIQUES_RADIUS,
+  PECTORALS_LENGTH,
+  PECTORALS_RADIUS,
+  QUAD_LENGTH,
+  QUAD_RADIUS,
+  SHOULDER_LENGTH,
+  SHOULDER_RADIUS,
+  TRAPEZIUS_LENGTH,
+  TRAPEZIUS_RADIUS,
+  TRICEP_LENGTH,
+  TRICEP_RADIUS,
+} from "../../../../constants/bodyDimensions";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type { MuscleGroupName } from "../../../../types/muscle";
 import { DEFAULT_MUSCLE_CONFIG } from "../../../../types/muscle";
@@ -62,10 +96,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Shoulder",
       localOffset: new THREE.Vector3(-0.04, 0, 0),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.3, 0.25, 0.25),
-      maxFlexScale: new THREE.Vector3(0.4, 0.32, 0.32),
-      radius: 0.14, // Slim athletic proportions
-      length: 0.15,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.2, 1.15, 1.15),
+      radius: SHOULDER_RADIUS,
+      length: SHOULDER_LENGTH,
     },
   ],
   shoulder_R: [
@@ -75,10 +109,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Shoulder",
       localOffset: new THREE.Vector3(0.04, 0, 0),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.3, 0.25, 0.25),
-      maxFlexScale: new THREE.Vector3(0.4, 0.32, 0.32),
-      radius: 0.14, // Slim athletic proportions
-      length: 0.15,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.2, 1.15, 1.15),
+      radius: SHOULDER_RADIUS,
+      length: SHOULDER_LENGTH,
     },
   ],
 
@@ -90,10 +124,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Bicep",
       localOffset: new THREE.Vector3(-0.06, 0, 0.03),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.25, 0.3, 0.25),
-      maxFlexScale: new THREE.Vector3(0.32, 0.35, 0.32),
-      radius: 0.12, // Slim athletic arm
-      length: 0.25,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.2, 1.1, 1.2),
+      radius: BICEP_RADIUS,
+      length: BICEP_LENGTH,
     },
     {
       name: "TRICEP_L",
@@ -101,10 +135,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Tricep",
       localOffset: new THREE.Vector3(-0.06, 0, -0.03),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.2, 0.28, 0.2),
-      maxFlexScale: new THREE.Vector3(0.28, 0.32, 0.28),
-      radius: 0.1, // Slim athletic arm
-      length: 0.22,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.1, 1.15),
+      radius: TRICEP_RADIUS,
+      length: TRICEP_LENGTH,
     },
   ],
   upper_arm_R: [
@@ -114,10 +148,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Bicep",
       localOffset: new THREE.Vector3(0.06, 0, 0.03),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.25, 0.3, 0.25),
-      maxFlexScale: new THREE.Vector3(0.32, 0.35, 0.32),
-      radius: 0.12, // Slim athletic arm
-      length: 0.25,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.2, 1.1, 1.2),
+      radius: BICEP_RADIUS,
+      length: BICEP_LENGTH,
     },
     {
       name: "TRICEP_R",
@@ -125,10 +159,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Tricep",
       localOffset: new THREE.Vector3(0.06, 0, -0.03),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.2, 0.28, 0.2),
-      maxFlexScale: new THREE.Vector3(0.28, 0.32, 0.28),
-      radius: 0.1, // Slim athletic arm
-      length: 0.22,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.1, 1.15),
+      radius: TRICEP_RADIUS,
+      length: TRICEP_LENGTH,
     },
   ],
 
@@ -140,10 +174,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Forearm",
       localOffset: new THREE.Vector3(-0.05, 0, 0),
       localRotation: new THREE.Euler(0, 0, Math.PI / 2),
-      baseScale: new THREE.Vector3(0.18, 0.25, 0.18),
-      maxFlexScale: new THREE.Vector3(0.24, 0.28, 0.24),
-      radius: 0.08, // Slim forearm
-      length: 0.2,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.05, 1.1),
+      radius: FOREARM_RADIUS,
+      length: FOREARM_LENGTH,
     },
   ],
   forearm_R: [
@@ -153,10 +187,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Forearm",
       localOffset: new THREE.Vector3(0.05, 0, 0),
       localRotation: new THREE.Euler(0, 0, -Math.PI / 2),
-      baseScale: new THREE.Vector3(0.18, 0.25, 0.18),
-      maxFlexScale: new THREE.Vector3(0.24, 0.28, 0.24),
-      radius: 0.08, // Slim forearm
-      length: 0.2,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.05, 1.1),
+      radius: FOREARM_RADIUS,
+      length: FOREARM_LENGTH,
     },
   ],
 
@@ -168,10 +202,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Pectorals",
       localOffset: new THREE.Vector3(0, 0.08, 0.14),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.9, 0.5, 0.4),
-      maxFlexScale: new THREE.Vector3(1.1, 0.65, 0.5),
-      radius: 0.34, // Balanced for human chest
-      length: 0.38,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.2, 1.15),
+      radius: PECTORALS_RADIUS,
+      length: PECTORALS_LENGTH,
     },
     {
       name: "CORE",
@@ -179,10 +213,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Core",
       localOffset: new THREE.Vector3(0, -0.04, 0.06),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.7, 0.65, 0.45),
-      maxFlexScale: new THREE.Vector3(0.85, 0.75, 0.55),
-      radius: 0.28, // Balanced for human core
-      length: 0.5,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: CORE_RADIUS,
+      length: CORE_LENGTH,
     },
     {
       name: "ABS",
@@ -190,10 +224,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Abdominals",
       localOffset: new THREE.Vector3(0, -0.18, 0.12),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.55, 0.55, 0.35),
-      maxFlexScale: new THREE.Vector3(0.7, 0.65, 0.45),
-      radius: 0.24, // Balanced for human abs
-      length: 0.45,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: ABS_RADIUS,
+      length: ABS_LENGTH,
     },
     {
       name: "OBLIQUES",
@@ -201,10 +235,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Obliques",
       localOffset: new THREE.Vector3(0, -0.1, 0.16),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.5, 0.5, 0.28),
-      maxFlexScale: new THREE.Vector3(0.65, 0.6, 0.38),
-      radius: 0.2, // Balanced
-      length: 0.4,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: OBLIQUES_RADIUS,
+      length: OBLIQUES_LENGTH,
     },
   ],
 
@@ -216,10 +250,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Hip Flexor",
       localOffset: new THREE.Vector3(-0.05, 0.02, 0.03),
       localRotation: new THREE.Euler(0.2, 0, 0.15),
-      baseScale: new THREE.Vector3(0.22, 0.2, 0.2),
-      maxFlexScale: new THREE.Vector3(0.28, 0.25, 0.25),
-      radius: 0.1, // Slim hip
-      length: 0.15,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: HIP_FLEXOR_RADIUS,
+      length: HIP_FLEXOR_LENGTH,
     },
     {
       name: "HIP_FLEXOR_R",
@@ -227,10 +261,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Hip Flexor",
       localOffset: new THREE.Vector3(0.05, 0.02, 0.03),
       localRotation: new THREE.Euler(0.2, 0, -0.15),
-      baseScale: new THREE.Vector3(0.22, 0.2, 0.2),
-      maxFlexScale: new THREE.Vector3(0.28, 0.25, 0.25),
-      radius: 0.1, // Slim hip
-      length: 0.15,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: HIP_FLEXOR_RADIUS,
+      length: HIP_FLEXOR_LENGTH,
     },
     {
       name: "LOWER_ABS",
@@ -238,10 +272,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Lower Abdominals",
       localOffset: new THREE.Vector3(0, 0.01, 0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.3, 0.24, 0.18),
-      maxFlexScale: new THREE.Vector3(0.38, 0.28, 0.22),
-      radius: 0.12, // Slim lower abs
-      length: 0.18,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: 0.05, // Lower abs - slightly larger than hip flexor
+      length: 0.14,
     },
   ],
 
@@ -253,10 +287,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Erector Spinae",
       localOffset: new THREE.Vector3(-0.03, 0.03, -0.04),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.18, 0.24, 0.16),
-      maxFlexScale: new THREE.Vector3(0.24, 0.28, 0.2),
-      radius: 0.08, // Slim back
-      length: 0.22,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: ERECTOR_SPINAE_RADIUS,
+      length: ERECTOR_SPINAE_LENGTH,
     },
     {
       name: "ERECTOR_SPINAE_R",
@@ -264,10 +298,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Erector Spinae",
       localOffset: new THREE.Vector3(0.03, 0.03, -0.04),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.18, 0.24, 0.16),
-      maxFlexScale: new THREE.Vector3(0.24, 0.28, 0.2),
-      radius: 0.08, // Slim back
-      length: 0.22,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.1, 1.1),
+      radius: ERECTOR_SPINAE_RADIUS,
+      length: ERECTOR_SPINAE_LENGTH,
     },
   ],
 
@@ -279,10 +313,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Latissimus",
       localOffset: new THREE.Vector3(-0.07, -0.01, -0.03),
       localRotation: new THREE.Euler(0, 0.2, 0.3),
-      baseScale: new THREE.Vector3(0.25, 0.3, 0.18),
-      maxFlexScale: new THREE.Vector3(0.32, 0.38, 0.22),
-      radius: 0.12, // Slim back
-      length: 0.25,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.2, 1.1),
+      radius: LAT_RADIUS,
+      length: LAT_LENGTH,
     },
     {
       name: "LAT_R",
@@ -290,10 +324,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Latissimus",
       localOffset: new THREE.Vector3(0.07, -0.01, -0.03),
       localRotation: new THREE.Euler(0, -0.2, -0.3),
-      baseScale: new THREE.Vector3(0.25, 0.3, 0.18),
-      maxFlexScale: new THREE.Vector3(0.32, 0.38, 0.22),
-      radius: 0.12, // Slim back
-      length: 0.25,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.2, 1.1),
+      radius: LAT_RADIUS,
+      length: LAT_LENGTH,
     },
     {
       name: "TRAPEZIUS",
@@ -301,10 +335,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Trapezius",
       localOffset: new THREE.Vector3(0, 0.05, -0.04),
       localRotation: new THREE.Euler(-0.25, 0, 0),
-      baseScale: new THREE.Vector3(0.35, 0.22, 0.16),
-      maxFlexScale: new THREE.Vector3(0.45, 0.28, 0.2),
-      radius: 0.11, // Slim traps
-      length: 0.18,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.15, 1.1),
+      radius: TRAPEZIUS_RADIUS,
+      length: TRAPEZIUS_LENGTH,
     },
     {
       name: "RHOMBOID",
@@ -312,10 +346,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Rhomboid",
       localOffset: new THREE.Vector3(0, 0.01, -0.05),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.26, 0.22, 0.14),
-      maxFlexScale: new THREE.Vector3(0.34, 0.26, 0.18),
-      radius: 0.1, // Slim rhomboid
-      length: 0.18,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.1, 1.1),
+      radius: 0.04, // Rhomboid - slightly smaller than trapezius
+      length: 0.14,
     },
   ],
 
@@ -327,10 +361,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Glute",
       localOffset: new THREE.Vector3(-0.03, -0.02, -0.05),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.26, 0.25, 0.22),
-      maxFlexScale: new THREE.Vector3(0.34, 0.32, 0.28),
-      radius: 0.14, // Slim athletic glute
-      length: 0.18,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.15, 1.15),
+      radius: GLUTE_RADIUS,
+      length: GLUTE_LENGTH,
     },
   ],
   hip_R: [
@@ -340,10 +374,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Glute",
       localOffset: new THREE.Vector3(0.03, -0.02, -0.05),
       localRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-      baseScale: new THREE.Vector3(0.26, 0.25, 0.22),
-      maxFlexScale: new THREE.Vector3(0.34, 0.32, 0.28),
-      radius: 0.14, // Slim athletic glute
-      length: 0.18,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.15, 1.15),
+      radius: GLUTE_RADIUS,
+      length: GLUTE_LENGTH,
     },
   ],
 
@@ -355,10 +389,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Quadriceps",
       localOffset: new THREE.Vector3(0, -0.08, 0.03),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.25, 0.38, 0.25),
-      maxFlexScale: new THREE.Vector3(0.32, 0.42, 0.32),
-      radius: 0.16, // Slim athletic thigh
-      length: 0.3,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.1, 1.15),
+      radius: QUAD_RADIUS,
+      length: QUAD_LENGTH,
     },
     {
       name: "HAMSTRING_L",
@@ -366,10 +400,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Hamstring",
       localOffset: new THREE.Vector3(0, -0.08, -0.03),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.22, 0.35, 0.22),
-      maxFlexScale: new THREE.Vector3(0.28, 0.4, 0.28),
-      radius: 0.14, // Slim hamstring
-      length: 0.28,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.12, 1.1, 1.12),
+      radius: HAMSTRING_RADIUS,
+      length: HAMSTRING_LENGTH,
     },
   ],
   thigh_R: [
@@ -379,10 +413,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Quadriceps",
       localOffset: new THREE.Vector3(0, -0.08, 0.03),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.25, 0.38, 0.25),
-      maxFlexScale: new THREE.Vector3(0.32, 0.42, 0.32),
-      radius: 0.16, // Slim athletic thigh
-      length: 0.3,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.15, 1.1, 1.15),
+      radius: QUAD_RADIUS,
+      length: QUAD_LENGTH,
     },
     {
       name: "HAMSTRING_R",
@@ -390,10 +424,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Hamstring",
       localOffset: new THREE.Vector3(0, -0.08, -0.03),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.22, 0.35, 0.22),
-      maxFlexScale: new THREE.Vector3(0.28, 0.4, 0.28),
-      radius: 0.14, // Slim hamstring
-      length: 0.28,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.12, 1.1, 1.12),
+      radius: HAMSTRING_RADIUS,
+      length: HAMSTRING_LENGTH,
     },
   ],
 
@@ -405,10 +439,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Left Calf",
       localOffset: new THREE.Vector3(0, -0.04, -0.01),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.18, 0.28, 0.18),
-      maxFlexScale: new THREE.Vector3(0.24, 0.32, 0.24),
-      radius: 0.1, // Slim calf
-      length: 0.24,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.08, 1.1),
+      radius: CALF_RADIUS,
+      length: CALF_LENGTH,
     },
   ],
   shin_R: [
@@ -418,10 +452,10 @@ export const BONE_MUSCLE_MAP: Record<string, MuscleAttachment[]> = {
       english: "Right Calf",
       localOffset: new THREE.Vector3(0, -0.04, -0.01),
       localRotation: new THREE.Euler(0, 0, 0),
-      baseScale: new THREE.Vector3(0.18, 0.28, 0.18),
-      maxFlexScale: new THREE.Vector3(0.24, 0.32, 0.24),
-      radius: 0.1, // Slim calf
-      length: 0.24,
+      baseScale: new THREE.Vector3(1.0, 1.0, 1.0),
+      maxFlexScale: new THREE.Vector3(1.1, 1.08, 1.1),
+      radius: CALF_RADIUS,
+      length: CALF_LENGTH,
     },
   ],
 };
