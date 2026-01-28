@@ -424,14 +424,15 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
     };
   }, [material]);
 
-  // Cleanup geometries on unmount
+  // Cleanup geometries when segments change or on unmount
   useEffect(() => {
+    const currentSegments = segments;
     return () => {
-      segments.forEach((segment) => {
+      currentSegments.forEach((segment) => {
         segment.geometry.dispose();
       });
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [segments]);
 
   if (segments.length === 0) {
     return null;
