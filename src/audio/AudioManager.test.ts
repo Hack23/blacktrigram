@@ -900,7 +900,7 @@ describe("AudioManager", () => {
       // Call the private waitForMusicLoad method with a very short timeout
       try {
         await (audioManager as any).waitForMusicLoad(testMusicId, 100);
-      } catch (error) {
+      } catch {
         // Method doesn't throw, just logs
       }
 
