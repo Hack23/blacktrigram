@@ -491,3 +491,105 @@ function createBenchmarkPlayerState(): PlayerState {
     vitalPointHits: 0,
   };
 }
+
+describe("Arena Bounds Performance", () => {
+  // Setup shared objects outside bench to avoid measuring allocation overhead
+  const physics = new MovementPhysics();
+  const bounds = {
+    minX: -4.7,
+    maxX: 4.7,
+    minZ: -3.45,
+    maxZ: 3.45,
+    centerX: 0,
+    centerZ: 0,
+    widthMeters: 10,
+    depthMeters: 7.5,
+  };
+
+  // Reused state and input for movement with arena bounds validation
+  const movementState: MovementState = {
+    position: new THREE.Vector3(0, 0, 0),
+    velocity: new THREE.Vector3(0, 0, 0),
+    acceleration: 0,
+    maxSpeed: 6.0,
+    currentStance: TrigramStance.GEON,
+    legInjuryFactor: 0,
+  };
+  const movementInput: MovementInput = {
+    forward: 1.0,
+    lateral: 1.0,
+    isRunning: true,
+    isMoving: true,
+    useTacticalSteps: false,
+  };
+
+  bench(
+    "Movement with arena bounds validation",
+    () => {
+      // Reset mutable state to initial values without reallocating
+      movementState.position.set(0, 0, 0);
+      movementState.velocity.set(0, 0, 0);
+
+      physics.updateMovement(movementState, movementInput, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+
+  // Reused state and input for boundary collision handling
+  const boundaryState: MovementState = {
+    position: new THREE.Vector3(4.5, 0, 0), // Near boundary
+    velocity: new THREE.Vector3(2, 0, 0), // Moving toward boundary
+    acceleration: 0,
+    maxSpeed: 6.0,
+    currentStance: TrigramStance.GEON,
+    legInjuryFactor: 0,
+  };
+  const boundaryInput: MovementInput = {
+    forward: 0,
+    lateral: 1.0,
+    isRunning: true,
+    isMoving: true,
+    useTacticalSteps: false,
+  };
+
+  bench(
+    "Boundary collision handling",
+    () => {
+      // Reset mutable state to initial boundary position
+      boundaryState.position.set(4.5, 0, 0);
+      boundaryState.velocity.set(2, 0, 0);
+
+      physics.updateMovement(boundaryState, boundaryInput, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+
+  // Reused state and input for corner collision handling
+  const cornerState: MovementState = {
+    position: new THREE.Vector3(4.5, 0, 3.2), // Near corner
+    velocity: new THREE.Vector3(2, 0, 2), // Moving toward corner
+    acceleration: 0,
+    maxSpeed: 6.0,
+    currentStance: TrigramStance.GEON,
+    legInjuryFactor: 0,
+  };
+  const cornerInput: MovementInput = {
+    forward: 1.0,
+    lateral: 1.0,
+    isRunning: true,
+    isMoving: true,
+    useTacticalSteps: false,
+  };
+
+  bench(
+    "Corner collision handling",
+    () => {
+      // Reset mutable state to initial corner position
+      cornerState.position.set(4.5, 0, 3.2);
+      cornerState.velocity.set(2, 0, 2);
+
+      physics.updateMovement(cornerState, cornerInput, 1 / 60, bounds);
+    },
+    { time: 1000, iterations: 10000 },
+  );
+});

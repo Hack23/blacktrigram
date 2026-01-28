@@ -22,6 +22,7 @@
 
 import { TrigramStance } from "@/types/common";
 import { BASE_MOVEMENT_ACCELERATION } from "@/types/physicsConstants";
+import type { MovementArenaBounds } from "@/types/PhysicsTypes";
 import * as THREE from "three";
 
 /**
@@ -316,6 +317,7 @@ export class MovementPhysics {
    * @param state - Current movement state (modified in-place)
    * @param input - Current movement input from controls
    * @param deltaTime - Time since last update (seconds)
+   * @param bounds - Optional arena bounds for clamping position (meters)
    *
    * @korean 이동업데이트
    */
@@ -323,6 +325,7 @@ export class MovementPhysics {
     state: MovementState,
     input: MovementInput,
     deltaTime: number,
+    bounds?: MovementArenaBounds,
   ): void {
     // Use cached arena-aware speed scaling
     const arenaSpeedScale = this._cachedArenaSpeedScale;
@@ -451,6 +454,27 @@ export class MovementPhysics {
 
     // Update position
     state.position.add(this.tempMovement);
+
+    // Apply arena bounds clamping if bounds provided
+    if (bounds) {
+      // Check if position exceeded boundaries
+      const exceededMinX = state.position.x < bounds.minX;
+      const exceededMaxX = state.position.x > bounds.maxX;
+      const exceededMinZ = state.position.z < bounds.minZ;
+      const exceededMaxZ = state.position.z > bounds.maxZ;
+
+      // Clamp position to arena boundaries
+      state.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, state.position.x));
+      state.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, state.position.z));
+
+      // Zero velocity component if exceeded boundary (smooth stopping)
+      if (exceededMinX || exceededMaxX) {
+        state.velocity.x = 0;
+      }
+      if (exceededMinZ || exceededMaxZ) {
+        state.velocity.z = 0;
+      }
+    }
   }
 
   /**
