@@ -72,6 +72,7 @@ import { Z_INDEX } from "../../../types/LayoutTypes";
 import { DEFAULT_BODY_RADIUS_METERS } from "../../../types/physicsConstants";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { calculateDistance3D } from "../../../utils/math";
+import { createCameraConfig } from "../../../utils/sharedPhysicsConfig";
 import {
   animationStateToPlayerAnimation,
   convertPlayerStateToProps,
@@ -233,7 +234,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [showLabels, setShowLabels] = React.useState(true);
   const [animated, setAnimated] = React.useState(true);
-  const [scale, setScale] = React.useState(1.0);
+  // Use combat-consistent scale (1.2) for better visibility across screens
+  const [scale, setScale] = React.useState(1.2);
 
   // Track current attack animation for technique-specific animations
   // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
@@ -1101,12 +1103,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // SECTION 14: Camera Configuration
   // ═══════════════════════════════════════════════════════════════════════════
 
+  // Use shared physics config for consistent camera setup across screens
+  // Mobile: tighter FOV and closer camera for better framing
+  // Desktop: wider FOV and further camera for full view
   const cameraConfig = useMemo(
-    () => ({
-      position: [0, 8, 12] as [number, number, number],
-      fov: 60,
-    }),
-    [],
+    () => createCameraConfig(isMobile),
+    [isMobile],
   );
 
   // ═══════════════════════════════════════════════════════════════════════════
