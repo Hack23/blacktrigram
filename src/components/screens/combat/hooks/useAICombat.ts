@@ -952,7 +952,12 @@ interface UseAICombatConfig {
     readonly worldWidthMeters: number; // Arena width in meters for physics calculations
     readonly worldDepthMeters: number; // Arena depth in meters for physics calculations
   };
-  readonly onExecuteAction: (action: string, targetPosition?: Position) => void;
+  readonly onExecuteAction: (
+    action: string,
+    targetPosition?: Position,
+    selectedTechnique?: KoreanTechnique,
+    targetVitalPoint?: string,
+  ) => void;
   readonly onStanceChange?: (stance: TrigramStance) => void;
   readonly onLateralityChange?: () => void;
   readonly playerLaterality?: "left" | "right";
@@ -967,7 +972,12 @@ interface UseAICombatReturn {
   readonly comboSystem: AIComboSystem;
   readonly decisionTree: AIDecisionTree;
   readonly adjustedPersonality: AIPersonality;
-  readonly executeAIAction: (action: string, targetPosition?: Position) => void;
+  readonly executeAIAction: (
+    action: string,
+    targetPosition?: Position,
+    selectedTechnique?: KoreanTechnique,
+    targetVitalPoint?: string,
+  ) => void;
   readonly currentDifficultyParams: DifficultyParameters;
   readonly updateDifficultyTarget: (newParams: DifficultyParameters) => void;
 }
@@ -1172,14 +1182,18 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
   /**
    * Execute AI action callback
    *
-   * Triggers the onExecuteAction callback which will then retrieve
-   * the selected technique and vital point from aiState
+   * Passes technique and vital point directly to avoid React state async issues
    *
    * @korean AI 행동 실행 콜백
    */
   const executeAIAction = useCallback(
-    (action: string, targetPosition?: Position) => {
-      onExecuteAction(action, targetPosition);
+    (
+      action: string,
+      targetPosition?: Position,
+      selectedTechnique?: KoreanTechnique,
+      targetVitalPoint?: string,
+    ) => {
+      onExecuteAction(action, targetPosition, selectedTechnique, targetVitalPoint);
     },
     [onExecuteAction],
   );
@@ -1491,17 +1505,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         }
       }
 
-      // Update AI state with selected technique and vital point BEFORE executing action
-      // This ensures the callback has access to the correct technique and vital point
-      let updatedRecentTechniques = [...aiState.recentTechniques];
-      if (selectedTechnique) {
-        updatedRecentTechniques.push(selectedTechnique.id);
-        // Keep only last 5 techniques
-        if (updatedRecentTechniques.length > 5) {
-          updatedRecentTechniques = updatedRecentTechniques.slice(-5);
-        }
-      }
-
       // Calculate next action cooldown - expert fighters attack rapidly
       // Attack/technique: 200-350ms for fast-paced combat (was 600-800ms)
       // Other actions: 150-300ms for quick repositioning (was 400-600ms)
@@ -1513,20 +1516,33 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       // Update next action time using ref (prevents stale closure)
       nextActionRef.current = now + actionCooldown;
 
-      setAiState({
-        nextAction: nextActionRef.current,
-        targetPosition: newTargetPosition,
-        lastActionType: actionType,
-        consecutiveAttacks: newConsecutiveAttacks,
-        actionCooldown,
-        aggressionLevel: adjustedPersonality.aggressionLevel,
-        selectedTechnique,
-        targetVitalPoint,
-        recentTechniques: updatedRecentTechniques,
+      // Use functional state update to avoid stale closure issues with recentTechniques
+      setAiState((prevState) => {
+        // Update recent techniques tracking with functional update
+        let updatedRecentTechniques = [...prevState.recentTechniques];
+        if (selectedTechnique) {
+          updatedRecentTechniques.push(selectedTechnique.id);
+          // Keep only last 5 techniques
+          if (updatedRecentTechniques.length > 5) {
+            updatedRecentTechniques = updatedRecentTechniques.slice(-5);
+          }
+        }
+
+        return {
+          nextAction: nextActionRef.current,
+          targetPosition: newTargetPosition,
+          lastActionType: actionType,
+          consecutiveAttacks: newConsecutiveAttacks,
+          actionCooldown,
+          aggressionLevel: adjustedPersonality.aggressionLevel,
+          selectedTechnique,
+          targetVitalPoint,
+          recentTechniques: updatedRecentTechniques,
+        };
       });
 
-      // Execute action (technique and vital point are now stored in aiState)
-      executeAIAction(actionType, newTargetPosition);
+      // Execute action - pass technique and vital point directly to avoid async state issues
+      executeAIAction(actionType, newTargetPosition, selectedTechnique, targetVitalPoint);
     }, 50); // 50ms loop for responsive AI
 
     return () => clearInterval(aiInterval);
