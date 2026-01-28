@@ -2033,17 +2033,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // AI action execution - uses aiState from useAICombat
   const executeAIActionCallback = useCallback(
     (action: string, targetPos?: Position) => {
-      // DEV: Log callback invocation
-      if (import.meta.env.DEV) {
-        console.log('🔄 AI Action Callback Invoked:', {
-          action,
-          targetPos,
-          hasAIState: !!aiState,
-          technique: aiState.selectedTechnique?.name?.korean || aiState.selectedTechnique?.koreanName || 'none',
-          vitalPoint: aiState.targetVitalPoint || 'none',
-        });
-      }
-
       switch (action) {
         case "attack":
           // Set AI attack animation based on technique
@@ -2061,11 +2050,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             setPlayer2AttackAnimation("jab");
           }
           player2Animation.transitionTo(AnimationState.ATTACK);
-          
-          // DEV: Log attack execution
-          if (import.meta.env.DEV) {
-            console.log('⚔️ Executing handleAIAttack');
-          }
           handleAIAttack(aiState.selectedTechnique, aiState.targetVitalPoint);
           break;
         case "defend":
@@ -2089,11 +2073,6 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             setPlayer2AttackAnimation("cross");
           }
           player2Animation.transitionTo(AnimationState.ATTACK);
-          
-          // DEV: Log technique execution
-          if (import.meta.env.DEV) {
-            console.log('🌟 Executing handleAITechnique');
-          }
           handleAITechnique(
             aiState.selectedTechnique,
             aiState.targetVitalPoint,

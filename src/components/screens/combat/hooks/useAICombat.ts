@@ -744,18 +744,6 @@ function selectTechniqueForAction(
     rotationQueue.used, // Pass recent techniques for penalty
   );
 
-  // DEV: Log technique selection process
-  if (import.meta.env.DEV) {
-    console.log('🔍 AI Technique Selection:', {
-      distance: context.distanceToOpponent.toFixed(2) + 'm',
-      stance: player.currentStance,
-      stamina: player.stamina.toFixed(0),
-      archetype: player.archetype,
-      viableTechniques: viableTechniques.length,
-      viableTechniqueNames: viableTechniques.map(t => t.name?.korean || t.koreanName).slice(0, 5),
-    });
-  }
-
   // Filter by cooldown availability
   const readyTechniques = filterByCooldown(viableTechniques, cooldownMap);
 
@@ -1271,16 +1259,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
    * AI decision loop (fixed memory leak - issue #2529466989)
    */
   useEffect(() => {
-    // DEV: Log AI interval setup
-    if (import.meta.env.DEV) {
-      console.log('🔧 AI Interval Setup:', {
-        isPaused,
-        roundStarted,
-        roundEnded,
-        willRun: !isPaused && roundStarted && !roundEnded,
-      });
-    }
-
     if (isPaused || !roundStarted || roundEnded) {
       return;
     }
@@ -1305,18 +1283,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
         adjustedPersonality,
         comboSystem,
       );
-
-      // DEV: Log AI decisions for debugging
-      if (import.meta.env.DEV) {
-        console.log('🤖 AI Decision:', {
-          action: decision.action,
-          priority: decision.priority,
-          distance: context.distanceToOpponent.toFixed(2) + 'm',
-          playerHealth: context.playerHealth,
-          opponentHealth: context.opponentHealth,
-          playerStamina: context.playerStamina,
-        });
-      }
 
       // Performance: warn if decision took too long with time-based throttle (issue #2529466997, #2529728019)
       const decisionTime = performance.now() - decisionStart;
@@ -1357,16 +1323,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
             // Update rotation queue and cooldown tracking if technique selected
             // Note: Cross-stance damage modifier already applied in selectTechniqueForAction()
             if (selectedTechnique) {
-              // DEV: Log selected technique
-              if (import.meta.env.DEV) {
-                console.log('⚔️ AI Attack Technique:', {
-                  name: selectedTechnique.name?.korean || selectedTechnique.koreanName,
-                  damage: selectedTechnique.damage,
-                  vitalPoint: targetVitalPoint,
-                  actionType,
-                });
-              }
-
               updateTechniqueRotation(
                 selectedTechnique.id,
                 techniqueRotationQueueRef.current,
@@ -1390,11 +1346,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
                 // Store combo hint for next decision (combo system can use this)
                 // The decision tree will naturally consider this in the next cycle
                 comboSystem.startCombo(player, opponent, adjustedPersonality);
-              }
-            } else {
-              // DEV: Log when no technique is selected
-              if (import.meta.env.DEV) {
-                console.warn('⚠️ AI Attack: No technique selected!');
               }
             }
 
@@ -1575,15 +1526,6 @@ export function useAICombat(config: UseAICombatConfig): UseAICombatReturn {
       });
 
       // Execute action (technique and vital point are now stored in aiState)
-      // DEV: Log action execution
-      if (import.meta.env.DEV) {
-        console.log('🎯 AI Executing Action:', {
-          actionType,
-          targetPosition: newTargetPosition,
-          technique: selectedTechnique?.name?.korean || selectedTechnique?.koreanName || 'none',
-          vitalPoint: targetVitalPoint || 'none',
-        });
-      }
       executeAIAction(actionType, newTargetPosition);
     }, 50); // 50ms loop for responsive AI
 
