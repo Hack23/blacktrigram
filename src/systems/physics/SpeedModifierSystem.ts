@@ -188,6 +188,8 @@ export class SpeedModifierSystem {
     [CombatState.RECOVERING]: 0.4, // -40% during recovery frames
     [CombatState.COUNTERING]: 0.25, // -25% during counter execution
     [CombatState.TRANSITIONING]: 0.15, // -15% during stance transitions
+    [CombatState.GRAPPLING]: 0.8, // -80% while controlling opponent
+    [CombatState.GRAPPLED]: 1.0, // Cannot move while being controlled
   };
 
   // Constructor removed - no longer need MovementPenaltySystem instance
