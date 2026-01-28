@@ -7,7 +7,7 @@
  * @korean 공격이동훅 - 공격 이동 추적
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { AnimationType } from "@/systems/animation";
 import { AttackMovementPhysics } from "@/systems/physics";

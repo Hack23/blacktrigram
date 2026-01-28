@@ -31,6 +31,7 @@ import {
   Noise,
   Vignette,
 } from "@react-three/postprocessing";
+import * as THREE from "three";
 import React, {
   useCallback,
   useEffect,
@@ -108,6 +109,8 @@ import {
   TrainingRightHUD,
   TrainingTopHUD,
 } from "./components/hud";
+// Attack movement hook for player forward momentum
+import { useAttackMovement } from "./hooks/useAttackMovement";
 import useTrainingActions from "./hooks/useTrainingActions";
 import { useTrainingLayout } from "./hooks/useTrainingLayout";
 import useTrainingState from "./hooks/useTrainingState";
@@ -551,6 +554,42 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trainingPlayerState]); // speedModifierSystem is memoized and never changes
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 5: Player Attack Movement (Forward Momentum)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Determine if player is currently attacking based on animation state
+  const isPlayerAttacking = useMemo(
+    () => playerAnimation?.currentState === "attack",
+    [playerAnimation],
+  );
+
+  // Calculate attack direction (toward dummy)
+  const attackDirection = useMemo(() => {
+    const dx = dummyPosition[0] - player3DPosition[0];
+    const dz = dummyPosition[2] - player3DPosition[2];
+    return new THREE.Vector3(dx, 0, dz).normalize();
+  }, [dummyPosition, player3DPosition]);
+
+  // Apply attack movement physics to player position
+  const {
+    currentPosition: player3DPositionWithAttackMovement,
+  } = useAttackMovement({
+    isAttacking: isPlayerAttacking,
+    animationType: currentTechniqueAnimationTypeRef.current,
+    currentStance: trainingPlayerState.currentStance,
+    basePosition: player3DPosition,
+    attackDirection,
+    animationDuration: 0.4,
+  });
+
+  // Use position with attack movement for rendering
+  const finalPlayer3DPosition = isPlayerAttacking
+    ? player3DPositionWithAttackMovement
+    : player3DPosition;
+
+  // ═══════════════════════════════════════════════════════════════════════════
 
   // Ref to store handleAttack for use in useTechniqueSelection callback
   // This breaks circular dependency between useTechniqueSelection and useTrainingActions
@@ -1165,7 +1204,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             trainingPlayerState,
-            player3DPosition,
+            finalPlayer3DPosition,
             playerRotation,
             {
               isMobile,
