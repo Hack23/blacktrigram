@@ -106,9 +106,9 @@ const calculateBodyThickness = (
   const fatRatio = fatMass / referenceFat;
 
   // Base 0.85, muscle adds up to +0.15, fat adds up to +0.20
-  // Thin character (28kg muscle, 10kg fat): 0.85 + (-0.06) + (-0.03) = 0.76
+  // Thin character (28kg muscle, 10kg fat): 0.85 + (-0.030) + (-0.033) ≈ 0.787
   // Average (35kg muscle, 12kg fat): 0.85 + 0 + 0 = 0.85
-  // Heavy (48kg muscle, 20kg fat): 0.85 + 0.11 + 0.13 = 1.09
+  // Heavy (48kg muscle, 20kg fat): 0.85 + 0.056 + 0.133 ≈ 1.039
   const muscleContribution = (muscleRatio - 1.0) * 0.15;
   const fatContribution = (fatRatio - 1.0) * 0.20;
 
@@ -196,7 +196,10 @@ const getBodySurfaceForBone = (
       const height = (physicalAttributes.torsoLength / 100) * torsoScale;
       const depth = (PECTORALS_RADIUS * 2) * bodyThickness; // Front to back depth
 
-      // Use higher segment count for smoother appearance
+      // Use a higher fixed segment count here than pelvis to keep torso shading smooth:
+      // - Torso is frequently closest to the camera and used for breathing / impact motion.
+      // - Vital point overlays and skin highlights rely on smoother curvature in this region.
+      // - Pelvis is typically less visible and more often covered by clothing, so it can use fewer segments.
       segments.push({
         geometry: new THREE.BoxGeometry(width, height, depth, 4, 6, 4),
         localOffset: new THREE.Vector3(0, 0, 0),
@@ -379,10 +382,15 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
    * - Subtle emissive for alive appearance
    * - Double-sided: true (render both inside and outside)
    *
-   * Material properties differ from Face3D/Hand3D/Foot3D for body-specific characteristics:
-   * - transmission: 0.08 (vs 0 in others) - body skin has more subsurface scattering
-   * - thickness: 0.5 (vs 0.1 in others) - body has thicker skin layers
-   * - clearcoat: 0.15 (vs 0.3 in others) - body skin is less glossy than extremities
+   * Material properties are intentionally different from Face3D/Hand3D/Foot3D to capture
+   * body-specific skin characteristics:
+   * - transmission: 0.08 (extremities use 0) – BodySurface is the only skin material with
+   *   non-zero transmission, to model subsurface scattering on larger, less directly lit
+   *   body areas.
+   * - thickness: 0.5 (extremities use 0.1) – torso/limb skin is treated as thicker than
+   *   hands, feet, and face, which appear optically thinner.
+   * - clearcoat: 0.15 (extremities use 0.3) – extremities are rendered slightly glossier
+   *   due to being more exposed to direct light, while the main body surface is softer.
    *
    * @korean 피부재료생성
    */
@@ -412,7 +420,7 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
       // Reflectivity for realistic appearance
       reflectivity: 0.1,
       
-      side: THREE.DoubleSide, // Render both sides for complete coverage
+      side: THREE.FrontSide, // Use front faces for performance; DoubleSide only needed when camera clips through model
       flatShading: false, // Smooth shading for organic look
     });
   }, [skinTone]);
@@ -426,9 +434,8 @@ export const BodySurface: React.FC<BodySurfaceProps> = ({
 
   // Cleanup geometries when segments change or on unmount
   useEffect(() => {
-    const currentSegments = segments;
     return () => {
-      currentSegments.forEach((segment) => {
+      segments.forEach((segment) => {
         segment.geometry.dispose();
       });
     };
