@@ -236,13 +236,13 @@ export const LimbExposureIndicator3D: React.FC<
   const [animatedIntensity, setAnimatedIntensity] = useState(0);
   const intensityRef = useRef(0);
 
-  // Calculate limb position offset (memoized, changes only when limb or facing changes)
+  // Calculate limb position offset (memoized, changes only when opportunity or facing changes)
   const limbOffset = useMemo(
     () =>
       opportunity
         ? getLimbPositionOffset(opportunity.exposedLimb, facingLeft)
         : [0, 0, 0],
-    [opportunity?.exposedLimb, facingLeft]
+    [opportunity, facingLeft]
   );
 
   // Calculate final 3D position

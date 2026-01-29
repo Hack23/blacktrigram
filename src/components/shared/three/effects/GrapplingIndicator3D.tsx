@@ -23,7 +23,7 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 import type { Position3D } from "../../../../types/physics";
@@ -159,8 +159,16 @@ const StruggleParticles: React.FC<{
 }> = ({ particleCount, color, intensity, position }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // Generate initial particle positions and velocities
-  const { positions, velocities } = useMemo(() => {
+  // Positions for initial geometry (useState to allow access during render)
+  const [positions, setPositions] = useState<Float32Array>(
+    () => new Float32Array(particleCount * 3)
+  );
+  
+  // Velocities are mutable and only accessed in useFrame (useRef is fine)
+  const velocitiesRef = useRef<Float32Array>(new Float32Array(particleCount * 3));
+
+  // Initialize particle positions and velocities when count or intensity changes
+  useEffect(() => {
     const pos = new Float32Array(particleCount * 3);
     const vel = new Float32Array(particleCount * 3);
 
@@ -181,7 +189,15 @@ const StruggleParticles: React.FC<{
       vel[i3 + 2] = (Math.random() - 0.5) * intensity * 2;
     }
 
-    return { positions: pos, velocities: vel };
+    setPositions(pos);
+    velocitiesRef.current = vel;
+
+    // Update geometry if it exists
+    if (pointsRef.current) {
+      const attr = pointsRef.current.geometry.attributes.position;
+      (attr.array as Float32Array).set(pos);
+      attr.needsUpdate = true;
+    }
   }, [particleCount, intensity]);
 
   // Animate particles
@@ -190,6 +206,7 @@ const StruggleParticles: React.FC<{
 
     const attr = pointsRef.current.geometry.attributes.position;
     const array = attr.array as Float32Array;
+    const velocities = velocitiesRef.current;
 
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;

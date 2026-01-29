@@ -305,7 +305,10 @@ export const HitEffects3DInstanced: React.FC<HitEffects3DInstancedProps> = ({
       if (!groups.has(type)) {
         groups.set(type, []);
       }
-      groups.get(type)!.push(instance);
+      const group = groups.get(type);
+      if (group) {
+        group.push(instance);
+      }
     });
     return groups;
   }, [activeInstances]);
