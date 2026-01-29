@@ -717,28 +717,22 @@ export const GAM_FLOWING_BLOCK_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gam Circular Parry - 감원막기
+ * Gam Circular Parry - 감원막기 (Water's Circular Deflection)
  *
- * Water's circular parrying motion.
- * Redirecting attacks in circles.
+ * Water's circular parrying motion that flows in continuous arcs.
+ * Redirects attacks in smooth circular patterns like water swirling.
+ *
+ * Duration: 500ms (Slower, more circular than basic parry)
  *
  * @korean 감원막기애니메이션
  */
 export const GAM_CIRCULAR_PARRY_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_circular_parry", "감원막기")
-    .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend * 0.5,
-    )
-    .counterParry(
-      TECHNIQUE_TIMING.FAST.extend * 0.5 +
-        TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .asDefense(0.5)
+    .counterParry(0.18, "ease-out") // First circular arc
+    .parry(0.14, "linear") // Second arc of the circle
+    .shift(0.08, "ease-in") // Body adjusts with flow
+    .recover(0.1)
     .build();
 
 /**
@@ -758,20 +752,23 @@ export const GAM_HIP_THROW_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gam Wrist Twist Counter - 감손목비틀기
+ * Gam Wrist Twist Counter - 감손목비틀기 (Water's Wrist Manipulation Counter)
  *
- * Water's wrist twist counter.
- * Flowing into joint control.
+ * Water's wrist twist counter that flows into joint manipulation.
+ * Catching and spiraling the wrist in a water-like continuous motion.
+ *
+ * Duration: 520ms (Precise joint manipulation timing)
  *
  * @korean 감손목비틀기애니메이션
  */
 export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_wrist_twist_counter", "감손목비틀기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .parry(0.1)
-    .wristGrab(0.12)
-    .wristTwist(0.15)
-    .recover(0.18)
+    .asAttack(0.52)
+    .parry(0.08, "ease-out") // Quick catch
+    .wristGrab(0.1, "linear") // Secure grip
+    .shift(0.09, "ease-in") // Position for counter
+    .wristTwist(0.13, "linear") // Apply spiral pressure
+    .recover(0.12)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -860,26 +857,22 @@ export const GAN_IMMOVABLE_STANCE_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gan Iron Block - 간철방어
+ * Gan Iron Block - 간철방어 (Mountain's Iron-Hard Block)
  *
- * Mountain's iron-like blocking technique.
- * Hard blocking against attacks.
+ * Mountain's iron-like blocking technique with minimal movement.
+ * Rigid, immovable defense that absorbs impact through solid structure.
+ *
+ * Duration: 400ms (Solid, deliberate block timing)
  *
  * @korean 간철방어애니메이션
  */
 export const GAN_IRON_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_iron_block", "간철방어")
-    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .asDefense(0.4)
     .withHighGuard()
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.peak +
-        TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .parry(0.15, "ease-out") // Minimal, rigid movement
+    .parry(0.15, "linear") // Hold solid like iron
+    .recover(0.1, "ease-in")
     .build();
 
 /**
@@ -915,20 +908,22 @@ export const GAN_MOUNTAIN_STANCE_LOCK_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gan Reversal Technique - 간역전기
+ * Gan Reversal Technique - 간역전기 (Mountain's Counter-Reversal)
  *
- * Mountain's reversal technique.
- * Turning defense into offense.
+ * Mountain's reversal technique that turns defense into powerful offense.
+ * Absorbs attack solidly, then delivers devastating counter with accumulated force.
+ *
+ * Duration: 650ms (Deliberate absorption then explosive counter)
  *
  * @korean 간역전기애니메이션
  */
 export const GAN_REVERSAL_TECHNIQUE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_reversal_technique", "간역전기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .parry(0.12)
-    .counterParry(0.1)
-    .counterStrike(0.15)
-    .recover(0.18)
+    .asAttack(0.65)
+    .parry(0.15, "ease-out") // Solid block
+    .chamber(0.15, "linear") // Mountain gathers power
+    .counterStrike(0.18, "ease-out") // Explosive reversal
+    .recover(0.17)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

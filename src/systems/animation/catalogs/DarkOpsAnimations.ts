@@ -244,19 +244,28 @@ export const DARKOPS_LARYNX_CRUSH_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Temple Strike - 관자놀이타격
+ * Temple Strike - 관자놀이타격 (Dark Ops Precision Temple Elbow)
  *
- * Strike to temple bone.
- * Causes concussion and disorientation.
+ * Surgical precision elbow strike to temple bone.
+ * Assassin's technique for instant concussion and disorientation.
+ *
+ * Phases:
+ * 1. Setup (준비): 90ms - Careful positioning at perfect angle
+ * 2. Temple Strike (관자놀이): 140ms - Angled horizontal elbow to temple
+ * 3. Impact Hold (압박): 70ms - Brief hold at vital point
+ * 4. Withdraw (철수): 180ms - Smooth extraction
+ *
+ * Duration: 480ms (Precise, controlled assassination strike)
  *
  * @korean 관자놀이타격애니메이션
  */
 export const DARKOPS_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_temple_strike", "관자놀이타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .templeElbow(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Horizontal elbow to temple
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.48)
+    .elbowChamber(0.09) // 준비 - Careful angle setup
+    .templeElbow(0.14) // 관자놀이 - Precise angled elbow to temple
+    .templeElbow(0.07) // 압박 - Hold on vital point
+    .recover(0.18) // 철수 - Controlled withdrawal
     .build();
 
 /**

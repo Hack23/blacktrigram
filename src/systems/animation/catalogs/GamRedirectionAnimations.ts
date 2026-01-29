@@ -87,15 +87,20 @@ export const GAM_WHIRLPOOL_COUNTER: SkeletalAnimation =
     .build();
 
 /**
- * Flowing Block - 유수막기
+ * Flowing Block - 유수막기 (Gam Water-Style Flowing Deflection)
  *
- * Soft blocking technique that absorbs and redirects force rather than meeting it.
+ * Soft blocking technique that absorbs and redirects force like water flowing around a rock.
+ * Circular, continuous motion that yields rather than resists.
+ *
+ * Duration: 450ms (Slower, flowing defensive motion)
  *
  * @korean 유수막기애니메이션
  */
 export const GAM_FLOWING_BLOCK: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("flowing_block", "유수막기")
-    .asDefense(0.5)
-    .parry(0.25) // Long, fluid parry motion
-    .recover(0.25)
+  MartialArtsAnimationBuilder.create("gam_flowing_block", "유수막기")
+    .asDefense(0.45)
+    .shift(0.1, "ease-out") // Initial yielding motion
+    .parry(0.15, "linear") // Continuous flowing deflection
+    .shift(0.1, "linear") // Body flows with the deflection
+    .recover(0.1)
     .build();
