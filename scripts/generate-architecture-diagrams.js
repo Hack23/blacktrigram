@@ -27,12 +27,12 @@ try {
   process.exit(0);
 }
 
-// Generate component dependency diagram using madge
+// Generate component dependency diagram using dependency-cruiser
 console.log("Generating component dependency diagram...");
 try {
   execSync(
-    `npx madge --image docs/architecture/component-dependencies.svg --extensions ts,tsx --exclude 'node_modules|.*\\.test\\.tsx?$' src/components`,
-    { stdio: "inherit" }
+    `npx depcruise --config .dependency-cruiser.cjs --output-type dot src/components | dot -T svg > docs/architecture/component-dependencies.svg`,
+    { shell: true, stdio: 'pipe' }
   );
 } catch (error) {
   console.error("Error generating component dependencies:", error);
@@ -42,8 +42,8 @@ try {
 console.log("Generating module dependency diagram...");
 try {
   execSync(
-    `npx madge --image docs/architecture/module-dependencies.svg --extensions ts,tsx --exclude 'node_modules|.*\\.test\\.tsx?$' src`,
-    { stdio: "inherit" }
+    `npx depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > docs/architecture/module-dependencies.svg`,
+    { shell: true, stdio: 'pipe' }
   );
 } catch (error) {
   console.error("Error generating module dependencies:", error);
