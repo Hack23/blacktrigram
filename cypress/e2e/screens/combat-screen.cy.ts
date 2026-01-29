@@ -1,3 +1,15 @@
+import {
+  setupScreen,
+  teardownScreen,
+  verifyCombatScreenReady,
+  verifyCombatHUD,
+  verifyActiveWebGLRendering,
+  testAllTrigramStances,
+  changeStance,
+  executeCombatAttacks,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * CombatScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
@@ -12,17 +24,16 @@
  *
  * ✅ Three.js Compatible - Tests CombatScreen3D with 3D models and Html overlays
  * ⏱️ Optimized for 3-4 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    teardownScreen();
   });
 
   it("should render CombatScreen with all combat mechanics and UI", () => {
@@ -32,26 +43,15 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // 1. Verify Combat Screen Rendering (20s)
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen Rendering");
-
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.log("✅ Combat screen exists");
+    verifyCombatScreenReady();
 
     // Check for HUD
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="combat-hud"]').length > 0) {
-        cy.get('[data-testid="combat-hud"]').should("exist");
-        cy.log("✅ Combat HUD found");
-      } else {
-        cy.log("⚠️ Combat HUD not found, may be embedded in canvas");
-      }
-    });
+    verifyCombatHUD();
 
-    // ✅ IMPROVED: Verify Three.js Canvas is actively rendering (not frozen/blank)
-    cy.get("canvas").should("be.visible");
-    cy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });
-    cy.log("✅ Three.js rendering verified");
+    // Verify Three.js Canvas is actively rendering (not frozen/blank)
+    verifyActiveWebGLRendering();
 
-    // ✅ IMPROVED: Verify health bars exist and have valid data
+    // Verify health bars exist and have valid data
     cy.verifyHealthBar("player1-health", 0, 100).then((health) => {
       cy.log(`Player 1 health verified: ${health}`);
     });
@@ -64,20 +64,19 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // ============================================================
     cy.log("2️⃣ Testing Trigram Stance System (8 stances)");
 
-    // ✅ IMPROVED: Verify stance changes are reflected in UI
     // Test all 8 trigram stances with verification
-    const stanceNames = [
-      "geon",
-      "tae",
-      "li",
-      "jin",
-      "son",
-      "gam",
-      "gan",
-      "gon",
-    ];
-
-    for (let stance = 1; stance <= 8; stance++) {
+    testAllTrigramStances((stanceNum, stanceName) => {
+      // Verify stance change is reflected in UI
+      cy.get("body").then(($body) => {
+        const stanceIndicatorVisible = 
+          $body.find('[data-testid="stance-indicator"]').length > 0 ||
+          $body.find('[data-testid*="stance"]').length > 0;
+        
+        if (stanceIndicatorVisible) {
+          cy.log(`✅ Stance ${stanceNum} indicator visible`);
+        }
+      });
+    });
       cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);
       cy.get("body").type(stance.toString());
 

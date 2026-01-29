@@ -1,3 +1,13 @@
+import {
+  setupScreen,
+  teardownScreen,
+  verifyTrainingScreenReady,
+  practiceStanceWithVerification,
+  verifyCanvasVisible,
+  waitForTransition,
+  verifyElementConditional
+} from "../../support/test-helpers";
+
 /**
  * TrainingScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
@@ -12,17 +22,16 @@
  *
  * ✅ Three.js Compatible - Tests TrainingScreen3D with TrainingDummy3D
  * ⏱️ Optimized for 3-4 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterTrainingMode();
+    setupScreen('training');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    teardownScreen();
   });
 
   it("should render TrainingScreen with training mechanics and vital points", () => {
@@ -32,25 +41,10 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     // 1. Verify Training Screen Rendering (20s)
     // ============================================================
     cy.log("1️⃣ Verifying Training Screen Rendering");
-
-    cy.get('[data-testid="training-screen"]', { timeout: 10000 }).should(
-      "exist",
-    );
-    cy.log("✅ Training screen exists");
-
-    // Verify canvas is visible
-    cy.get("canvas").should("be.visible");
-    cy.log("✅ Canvas rendering verified");
+    verifyTrainingScreenReady();
 
     // Check for training header
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="training-header"]').length > 0) {
-        cy.get('[data-testid="training-header"]').should("exist");
-        cy.log("✅ Training header found");
-      } else {
-        cy.log("⚠️ Training header not found");
-      }
-    });
+    verifyElementConditional('training-header', 'Training header not found or embedded in canvas');
 
     // ============================================================
     // 2. Test Stance Practice (60s)
@@ -59,18 +53,15 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
 
     // Practice stance 1 (Geon) twice
     cy.log("Practicing Stance 1 (Geon)...");
-    cy.practiceStance(1, 2);
-    cy.log("✅ Stance 1 practiced");
+    practiceStanceWithVerification(1, 2);
 
     // Practice stance 3 (Li) twice
     cy.log("Practicing Stance 3 (Li)...");
-    cy.practiceStance(3, 2);
-    cy.log("✅ Stance 3 practiced");
+    practiceStanceWithVerification(3, 2);
 
     // Practice stance 5 (Son) twice
     cy.log("Practicing Stance 5 (Son)...");
-    cy.practiceStance(5, 2);
-    cy.log("✅ Stance 5 practiced");
+    practiceStanceWithVerification(5, 2);
 
     // ============================================================
     // 3. Test Training Dummy Interaction (40s)
