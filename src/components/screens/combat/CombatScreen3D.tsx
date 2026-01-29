@@ -63,6 +63,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -764,6 +765,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // Track current technique ID for enum-based animation lookup
+  // 열거형 기반 애니메이션 조회를 위한 현재 기술 ID 추적
+  const [player1TechniqueId, setPlayer1TechniqueId] = useState<
+    string | undefined
+  >(undefined);
+  const [player2TechniqueId, setPlayer2TechniqueId] = useState<
+    string | undefined
+  >(undefined);
+
   // Track injuries for trauma visualization (TraumaOverlay3D)
   // 외상 시각화를 위한 부상 추적
   const [player1Injuries, setPlayer1Injuries] = useState<readonly Injury[]>([]);
@@ -882,9 +892,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
     setPlayer1AttackAnimation(undefined);
+    setPlayer1TechniqueId(undefined);
   });
   const clearPlayer2AttackAnimation = useRef<() => void>(() => {
     setPlayer2AttackAnimation(undefined);
+    setPlayer2TechniqueId(undefined);
   });
 
   // Player animation state machines - manages animation transitions at 60fps
@@ -1037,45 +1049,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
 
-  // Helper function to map attack animation names to AnimationType enum
-  // 공격 애니메이션 이름을 AnimationType 열거형으로 매핑하는 헬퍼 함수
-  const mapAttackAnimationToType = useCallback((attackAnimation: string | undefined): AnimationType | undefined => {
-    if (!attackAnimation) return undefined;
+  // Helper function to get AnimationType from technique ID
+  // Uses enum-based mapping for type safety and proper technique support
+  // 기술 ID에서 AnimationType을 가져오는 헬퍼 함수
+  // 타입 안전성과 적절한 기술 지원을 위해 열거형 기반 매핑 사용
+  const getTechniqueAnimationType = useCallback((techniqueId: string | undefined): AnimationType | undefined => {
+    if (!techniqueId) return undefined;
     
-    // Map attack animation names to AnimationType with specific patterns first
-    // 이름 패턴을 기반으로 구체적인 기술 타입을 우선 매핑하고,
-    // 알 수 없는 애니메이션은 undefined를 반환하여 상위에서 우아하게 처리할 수 있게 함
-    const normalized = attackAnimation.toLowerCase();
-    
-    // Kicks - match specific types first to avoid misclassification
-    // 차기 - 구체적인 타입부터 매칭하여 오분류 방지
-    if (normalized.includes("front_kick") || normalized.includes("front kick")) {
-      return AnimationType.FRONT_KICK;
-    }
-    if (normalized.includes("side_kick") || normalized.includes("side kick")) {
-      return AnimationType.SIDE_KICK;
-    }
-    if (normalized.includes("axe_kick") || normalized.includes("axe kick")) {
-      return AnimationType.AXE_KICK;
-    }
-    if (normalized.includes("roundhouse_kick") || normalized.includes("roundhouse kick") || normalized.includes("roundhouse")) {
-      return AnimationType.ROUNDHOUSE_KICK;
-    }
-    // Generic kick fallback (only if no specific kick type matched)
-    if (normalized.includes("kick")) {
-      return AnimationType.ROUNDHOUSE_KICK; // Default to most common kick type
-    }
-    
-    // Punches
-    if (normalized.includes("cross")) {
-      return AnimationType.CROSS;
-    }
-    if (normalized.includes("jab") || normalized.includes("straight")) {
-      return AnimationType.JAB;
-    }
-    
-    // Return undefined for unmapped animations (fallback handled by caller)
-    return undefined;
+    // Use enum-based lookup for all techniques
+    // This properly handles stance-specific techniques like "geon_heaven_strike"
+    // 모든 기술에 대해 열거형 기반 조회 사용
+    // "geon_heaven_strike"와 같은 자세별 기술을 올바르게 처리
+    return getAnimationTypeForTechnique(techniqueId);
   }, []);
 
   // Attack movement integration - track attack states for physics-based forward movement
@@ -1086,11 +1071,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     player2Position: player2PositionWithAttackMovement,
   } = useCombatAttackMovement({
     player1Attacking: player1Animation.currentState === AnimationState.ATTACK,
-    player1AnimationType: mapAttackAnimationToType(player1AttackAnimation),
+    player1AnimationType: getTechniqueAnimationType(player1TechniqueId),
     player1Stance: player1Data.currentStance,
     player1BasePosition: player1Position3D,
     player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
-    player2AnimationType: mapAttackAnimationToType(player2AttackAnimation),
+    player2AnimationType: getTechniqueAnimationType(player2TechniqueId),
     player2Stance: validPlayers[1].currentStance,
     player2BasePosition: player2Position3D,
   });
@@ -1461,6 +1446,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           technique.name.english || technique.id,
         );
         setPlayer1AttackAnimation(animationName);
+        
+        // Store technique ID for enum-based AnimationType lookup
+        // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+        setPlayer1TechniqueId(technique.id);
 
         // Trigger attack animation transition
         // 공격 애니메이션 전환 트리거
@@ -2102,6 +2091,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "jab";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("jab");
           }
@@ -2125,6 +2120,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("cross");
           }
@@ -2202,6 +2203,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("cross");
           }
