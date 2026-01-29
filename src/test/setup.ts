@@ -6,6 +6,30 @@ import { afterEach, beforeAll, expect, vi } from "vitest";
 expect.extend(matchers);
 
 beforeAll(() => {
+  // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
+  // jsdom writes these warnings directly to stderr, bypassing console mocks
+  const originalStderrWrite = process.stderr.write.bind(process.stderr);
+  process.stderr.write = ((chunk: any, encoding?: any, callback?: any): boolean => {
+    const message = chunk?.toString?.() ?? "";
+    
+    // Suppress HTMLCanvasElement warnings from jsdom
+    if (
+      message.includes("Not implemented: HTMLCanvasElement") ||
+      message.includes("without installing the canvas npm package")
+    ) {
+      // Call callback if provided to avoid breaking the stream
+      if (typeof encoding === "function") {
+        encoding();
+      } else if (typeof callback === "function") {
+        callback();
+      }
+      return true;
+    }
+    
+    // Pass through all other messages
+    return originalStderrWrite(chunk, encoding, callback);
+  }) as typeof process.stderr.write;
+
   // Mock APP_VERSION for tests
   // APP_VERSION is declared as a const in vite-env.d.ts but we need to set it in test environment
   // Using type assertion is necessary here to override the const declaration
@@ -240,12 +264,22 @@ beforeAll(() => {
     );
   };
 
+  const suppressJsdomCanvasMessage = (input: unknown): boolean => {
+    if (typeof input !== "string") return false;
+    return (
+      input.includes("Not implemented: HTMLCanvasElement") ||
+      input.includes("HTMLCanvasElement's getContext() method") ||
+      input.includes("without installing the canvas npm package")
+    );
+  };
+
   console.warn = (...args) => {
     const message = args[0];
     if (
       (typeof message === "string" &&
         (message.includes("WebGL") || message.includes("AudioContext"))) ||
-      suppressReactThreeMessage(message)
+      suppressReactThreeMessage(message) ||
+      suppressJsdomCanvasMessage(message)
     ) {
       return;
     }
@@ -253,7 +287,7 @@ beforeAll(() => {
   };
 
   console.error = (...args) => {
-    if (suppressReactThreeMessage(args[0])) {
+    if (suppressReactThreeMessage(args[0]) || suppressJsdomCanvasMessage(args[0])) {
       return;
     }
     originalError(...args);
