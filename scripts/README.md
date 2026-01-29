@@ -105,7 +105,7 @@ npm run audit:physical
 ```
 
 **Features:**
-- Validates all 5 player archetypes (Musa, Amsalja, Hacker, Jeongbo Yowon, Jojik Pokryeokbae)
+- Validates all 5 player archetypes (MUSA, AMSALJA, HACKER, JEONGBO, JOJIK)
 - Checks arm length, leg length, torso length, shoulder width
 - Verifies muscle mass and fat mass ratios
 - Compares against anatomical reference formulas
@@ -221,57 +221,46 @@ npm run audit:threejs:v2:json
 
 **Usage:**
 ```bash
-# Quick summary
-npm run audit:threejs
+# Run audit (exits with error if missing assets found)
+npm run audit:assets
 
-# Verbose output with file details
-npm run audit:threejs:verbose
-
-# Detailed fix report with recommendations
-npm run audit:threejs:fix-report
+# Run with verbose output (shows all valid references)
+npm run audit:assets:verbose
 ```
 
 **Features:**
-- Scans all TypeScript files for Three.js GPU resource instantiations
-- Detects geometries, materials, and textures that need disposal
-- Filters out data structures (Vector3, Matrix4, Color) that don't need disposal
-- Provides risk assessment (HIGH, MEDIUM, LOW, SAFE)
-- Generates actionable fix recommendations with code examples
-- Bilingual output (Korean | English)
-
-**What it detects:**
-- ✅ `new THREE.BoxGeometry()`, `SphereGeometry()`, etc. - Need disposal
-- ✅ `new THREE.MeshStandardMaterial()`, `MeshBasicMaterial()`, etc. - Need disposal
-- ✅ `new THREE.Texture()`, `CanvasTexture()`, etc. - Need disposal
-- ⚠️ `new THREE.Vector3()`, `Matrix4()`, `Color()` - Don't need disposal (just data)
+- Scans all TypeScript/JavaScript source files
+- Finds asset references in `/assets/` paths
+- Verifies files exist in `public/assets/`
+- Skips template strings (e.g., `${variable}`)
+- Skips test fixtures in test files
+- Generates detailed report with:
+  - Total asset count
+  - Valid vs missing references
+  - Breakdown by type (visual, audio, other)
+  - Grouped missing assets with file locations
 
 **Exit Codes:**
-- `0` - No HIGH risk files found
-- `1` - HIGH risk memory leaks detected
+- `0` - All assets valid
+- `1` - Missing asset references found
 
 **Example Output:**
 ```
-🔍 Three.js Resource Disposal Audit Report
-자원 정리 감사 보고서 | Resource Cleanup Audit Report
+🎮 BLACK TRIGRAM ASSET AUDIT REPORT (흑괘 에셋 감사 보고서)
 ================================================================================
 
-📊 Summary Statistics:
-   Total files scanned: 23
-   Files with Three.js objects: 23
-   Files with disposal: 18 (78.3%)
-   Files needing fixes: 5
+📊 Summary:
+  Total asset references: 129
+  Valid references: 129 ✅
+  Missing references: 0 ❌
 
-⚠️  Risk Distribution:
-   🔴 HIGH Risk:   0 files (5+ objects, no disposal)
-   🟡 MEDIUM Risk: 1 files (2-4 objects, no disposal)
-   🟢 LOW Risk:    4 files (1 object, no disposal)
-   ✅ SAFE:        18 files (has disposal)
+📦 Asset Types:
+  Visual assets: 16
+  Audio assets: 113
+  Other assets: 0
+
+✅ All asset references are valid!
 ```
-
-**See also:**
-- `ARCHITECTURE.md` - Three.js Resource Disposal section
-- `src/utils/particlePool.ts` - Reference implementation
-- `src/components/screens/training/components/TrainingDummy3D.tsx` - Example component
 
 ---
 
