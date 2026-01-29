@@ -62,7 +62,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^attack_medium_[1-4]$/),
+        "attack_medium",  // Base ID, not variant
         expect.any(Number)
       );
     });
@@ -145,7 +145,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^hit_medium_[1-4]$/),
+        "hit_medium",  // Base ID, not variant
         expect.any(Number)
       );
     });
@@ -175,7 +175,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^attack_light_[1-4]$/),
+        "attack_light",  // Base ID, not variant
         expect.any(Number)
       );
     });
@@ -191,7 +191,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^hit_critical_[1-4]$/),
+        "hit_critical",  // Base ID, not variant
         expect.any(Number)
       );
     });
@@ -221,7 +221,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^attack_critical_[1-4]$/),
+        "attack_critical",  // Base ID, not variant
         expect.any(Number)
       );
     });
@@ -237,7 +237,7 @@ describe("useGrapplingAudio", () => {
 
       expect(mockPlaySFX).toHaveBeenCalledOnce();
       expect(mockPlaySFX).toHaveBeenCalledWith(
-        expect.stringMatching(/^energy_pulse_[1-4]$/),
+        "energy_pulse",  // Base ID, not variant
         expect.any(Number)
       );
     });

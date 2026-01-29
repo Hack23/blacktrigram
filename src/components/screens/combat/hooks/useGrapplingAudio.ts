@@ -61,12 +61,10 @@ const GRAPPLING_AUDIO_PLACEHOLDERS: Record<string, string> = {
 };
 
 /**
- * Get random variant of a sound
+ * Note: Audio system automatically selects from registered variations
+ * based on the base ID. No need to manually construct variant IDs.
+ * The AudioManager.playSFX() method handles variation selection internally.
  */
-function getRandomVariant(baseId: string, variantCount: number): string {
-  const variant = Math.floor(Math.random() * variantCount) + 1;
-  return `${baseId}_${variant}`;
-}
 
 /**
  * Get audio intensity modifier for grapple target
@@ -145,10 +143,10 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.CONNECT)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.CONNECT];
-      const variantId = getRandomVariant(placeholderId, 4);
       const volumeModifier = getTargetVolumeModifier(target);
 
-      audio.playSFX(variantId, volume * volumeModifier * 0.8);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, volume * volumeModifier * 0.8);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.CONNECT] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.CONNECT, 300);
@@ -170,9 +168,9 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.STRUGGLE)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.STRUGGLE];
-      const variantId = getRandomVariant(placeholderId, 4);
 
-      audio.playSFX(variantId, intensity * 0.7);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, intensity * 0.7);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.STRUGGLE] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.STRUGGLE, 250);
@@ -194,9 +192,9 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.ESCAPE)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.ESCAPE];
-      const variantId = getRandomVariant(placeholderId, 4);
 
-      audio.playSFX(variantId, volume * 0.9);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.ESCAPE] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.ESCAPE, 400);
@@ -220,9 +218,9 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.BONE_CRACK)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.BONE_CRACK];
-      const variantId = getRandomVariant(placeholderId, 4);
 
-      audio.playSFX(variantId, severity * 0.85);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, severity * 0.85);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.BONE_CRACK] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.BONE_CRACK, 300);
@@ -244,9 +242,9 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.COUNTER_ATTACK)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK];
-      const variantId = getRandomVariant(placeholderId, 4);
 
-      audio.playSFX(variantId, volume * 0.9);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.COUNTER_ATTACK, 350);
@@ -268,9 +266,9 @@ export const useGrapplingAudio = () => {
       if (!canPlaySound(GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING)) return;
 
       const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING];
-      const variantId = getRandomVariant(placeholderId, 4);
 
-      audio.playSFX(variantId, volume * 0.5);
+      // AudioManager automatically selects from registered variations
+      audio.playSFX(placeholderId, volume * 0.5);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING] = Date.now();
       registerActiveSound(GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING, 150);

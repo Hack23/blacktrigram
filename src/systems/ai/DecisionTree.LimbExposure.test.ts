@@ -598,12 +598,6 @@ describe("AIDecisionTree - Limb Exposure Integration", () => {
 
       // At 2% health, survival instinct should override counter opportunities
       // The AI should prioritize staying alive over exploiting vulnerabilities
-      if (decision.action !== AIActionType.RETREAT) {
-        // If counter is still chosen, document why (for gameplay design review)
-        console.log(
-          `AI chose ${decision.action} with priority ${decision.priority} instead of retreat at 2% health`
-        );
-      }
       
       // Accept either retreat OR counter, but counter priority should be lower than survival would be
       expect([AIActionType.RETREAT, AIActionType.COUNTER]).toContain(

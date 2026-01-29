@@ -149,9 +149,17 @@ export function useCombatAttackMovement(
   const [player1IsLunging, setPlayer1IsLunging] = useState(false);
   const [player2IsLunging, setPlayer2IsLunging] = useState(false);
 
+  // Track previous attacking state for rising-edge detection
+  const player1WasAttackingRef = useRef(false);
+  const player2WasAttackingRef = useRef(false);
+
   // Player 1 attack movement effect
   useEffect(() => {
-    if (player1Attacking && player1AnimationType) {
+    const wasAttacking = player1WasAttackingRef.current;
+    player1WasAttackingRef.current = player1Attacking;
+
+    // Only initialize on transition from not-attacking → attacking (rising edge)
+    if (player1Attacking && player1AnimationType && !wasAttacking) {
       // Start attack - calculate movement result
       player1AttackStartTimeRef.current = Date.now();
 
@@ -245,7 +253,11 @@ export function useCombatAttackMovement(
 
   // Player 2 attack movement effect (same logic as player 1)
   useEffect(() => {
-    if (player2Attacking && player2AnimationType) {
+    const wasAttacking = player2WasAttackingRef.current;
+    player2WasAttackingRef.current = player2Attacking;
+
+    // Only initialize on transition from not-attacking → attacking (rising edge)
+    if (player2Attacking && player2AnimationType && !wasAttacking) {
       player2AttackStartTimeRef.current = Date.now();
 
       const direction = calculateAttackDirection(

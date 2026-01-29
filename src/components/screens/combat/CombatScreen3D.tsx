@@ -1043,13 +1043,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     if (!attackAnimation) return undefined;
     
     // Map common attack animation names to AnimationType
-    // Most attacks use similar movement patterns, so we use reasonable defaults
-    if (attackAnimation.includes("kick")) return AnimationType.ROUNDHOUSE_KICK;
-    if (attackAnimation.includes("jab")) return AnimationType.JAB;
-    if (attackAnimation.includes("cross")) return AnimationType.CROSS;
+    // Return undefined for unknown animations to allow graceful fallback
+    const normalized = attackAnimation.toLowerCase();
     
-    // Default to jab for unmapped animations
-    return AnimationType.JAB;
+    if (normalized.includes("roundhouse") || normalized.includes("kick")) {
+      return AnimationType.ROUNDHOUSE_KICK;
+    }
+    if (normalized.includes("cross")) {
+      return AnimationType.CROSS;
+    }
+    if (normalized.includes("jab") || normalized.includes("straight")) {
+      return AnimationType.JAB;
+    }
+    
+    // Return undefined for unmapped animations (fallback handled by caller)
+    return undefined;
   }, []);
 
   // Attack movement integration - track attack states for physics-based forward movement

@@ -193,9 +193,6 @@ describe("useCombatAttackMovement", () => {
       })
     );
 
-    // Advance time slightly
-    vi.advanceTimersByTime(100);
-
     await waitFor(() => {
       // Heaven stance should move further forward than Mountain stance
       const heavenDisplacement = 5 - heavenResult.result.current.player1Position[0];
