@@ -341,17 +341,18 @@ export const TAE_ARM_BAR_ANIMATION: SkeletalAnimation =
  * Fire's penetrating spear-hand strike.
  * Precision targeting vital points with fingertip thrust.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 460ms (Fast spear-hand thrust)
  *
  * @korean 리화창애니메이션
  */
 export const LI_FLAME_SPEAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_flame_spear", "리화창")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Spear-like extension
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.46)
+    .elbowChamber(0.07) // Compact spear setup
+    .throatStrike(0.13) // Spear-hand to throat
+    .punchPeak(0.05)
+    .recover(0.21)
+    .withSpearHand("right")
     .build();
 
 /**
@@ -376,19 +377,17 @@ export const LI_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
  * Fire's nerve targeting strike.
  * Precise pressure point attack.
  *
+ * Duration: 620ms (Deliberate precision strike)
+ *
  * @korean 리신경타격애니메이션
  */
 export const LI_NERVE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_nerve_strike", "리신경타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .asAttack(0.62)
+    .punchWindup(0.12) // Careful positioning
+    .nerveStrike(0.16) // Precise nerve cluster targeting
+    .punchPeak(0.06) // Hold for accuracy
+    .recover(0.28)
     .build();
 
 /**
@@ -415,17 +414,18 @@ export const LI_SIDEKICK_ANIMATION: SkeletalAnimation =
  * Fire's pressure point strike.
  * Single finger or knuckle attack with precision targeting.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 470ms (Fast finger strike with hold)
  *
  * @korean 리급소애니메이션
  */
 export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_pressure_point", "리급소")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend)
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.47)
+    .punchWindup(0.08) // Setup
+    .punchExtend(0.13) // Finger strike
+    .punchPeak(0.05) // Hold on pressure point
+    .recover(0.21)
+    .withSpearHand("right") // Single finger extension
     .build();
 
 /**
@@ -454,17 +454,17 @@ export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
  * Thunder's lightning-fast straight punch.
  * Explosive acceleration with proper technique phases.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 520ms (Explosive fast punch)
  *
  * @korean 진전광애니메이션
  */
 export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_lightning_flash", "진전광")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber) // Lightning prep
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Lightning speed
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak) // Impact clarity
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.52)
+    .punchWindup(0.1) // Lightning prep
+    .punchExtend(0.14) // Explosive speed
+    .punchPeak(0.05) // Thunder impact
+    .recover(0.23)
     .build();
 
 /**
@@ -565,12 +565,15 @@ export const JIN_KNEE_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const SON_WHIRLWIND_BARRAGE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_whirlwind_barrage", "손선풍연격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(0.05)
-    .punchExtend(0.08) // First jab
-    .punchExtend(0.08) // Second jab
-    .hookPunch(0.1) // Hook follow-up
-    .recover(0.24)
+    .asAttack(0.68)
+    .punchWindup(0.09) // Setup
+    .punchExtend(0.1) // First jab
+    .punchWindup(0.05) // Quick reset
+    .punchExtend(0.1) // Second jab
+    .punchPeak(0.04) // Hold
+    .hookWindup(0.1) // Hook chamber
+    .hookPunch(0.14) // Hook follow-up
+    .recover(0.06)
     .build();
 
 /**
@@ -800,14 +803,60 @@ export const GAN_ROCK_DEFENSE_ANIMATION_LEGACY: SkeletalAnimation =
  * Gan Immovable Stance - 간부동자세
  *
  * Mountain's immovable fighting stance.
- * Rooted and unshakeable.
+ * Rooted and unshakeable defensive posture.
+ *
+ * Characteristics:
+ * - Deep rooted stance with minimal movement
+ * - High solid guard protecting head/torso
+ * - Weight evenly distributed for maximum stability
+ * - Slight breathing cycle for realism
  *
  * @korean 간부동자세애니메이션
  */
 export const GAN_IMMOVABLE_STANCE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_immovable_stance", "간부동자세")
-    .asIdle(0.5)
-    .withGuard()
+    .asIdle(2.0, true)
+    // Keyframe 0: Immovable rooted position
+    .at(0)
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral, grounded
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Stable core
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Solid upper body
+    .rotate(BoneName.KNEE_L, -0.314, 0, 0) // -18° deep bend for stability
+    .rotate(BoneName.KNEE_R, -0.314, 0, 0) // -18° deep bend for stability
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // -20°, 0°, -25° (high guard)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44) // -20°, 0°, 25° (high guard)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (reinforced)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (reinforced)
+    .rotate(BoneName.WRIST_L, 0, 0, 0) // Neutral
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Focused forward
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 1.0s: Slight breath (mountain stillness)
+    .at(1.0)
+    .rotate(BoneName.SPINE_UPPER, -0.026, 0, 0) // -1.5° tiny chest expansion
+    .rotate(BoneName.SHOULDER_L, -0.366, 0, -0.453) // Slight shoulder adjust
+    .rotate(BoneName.SHOULDER_R, -0.366, 0, 0.453)
+    .rotate(BoneName.KNEE_L, -0.331, 0, 0) // -19° slightly deeper
+    .rotate(BoneName.KNEE_R, -0.331, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0) // No movement
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 2.0s: Return to start
+    .at(2.0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.314, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.314, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92)
+    .rotate(BoneName.WRIST_L, 0, 0, 0)
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 /**
