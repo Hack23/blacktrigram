@@ -11,18 +11,29 @@ import * as AudioProviderModule from "../../../../audio/AudioProvider";
 // Mock the useAudio hook
 const mockPlaySFX = vi.fn();
 const mockUseAudio = vi.fn(() => ({
+  // IAudioManager interface methods
   playSFX: mockPlaySFX,
-  playMusicTrack: vi.fn(),
+  initialize: vi.fn(),
+  loadAsset: vi.fn(),
+  setVolume: vi.fn(),
+  playMusic: vi.fn(),
+  playSoundEffect: vi.fn(),
   stopMusic: vi.fn(),
-  setMasterVolume: vi.fn(),
-  setSFXVolume: vi.fn(),
-  setMusicVolume: vi.fn(),
-  toggleMute: vi.fn(),
+  mute: vi.fn(),
+  unmute: vi.fn(),
+  fadeIn: vi.fn(),
+  fadeOut: vi.fn(),
+  playKoreanTechniqueSound: vi.fn(),
+  playTrigramStanceSound: vi.fn(),
+  playVitalPointHitSound: vi.fn(),
+  playDojiangAmbience: vi.fn(),
+  // IAudioManager readonly properties
+  isInitialized: true,
   masterVolume: 1,
   sfxVolume: 1,
   musicVolume: 1,
   muted: false,
-  isInitialized: true,
+  // AudioContextValue specific methods and properties
   initializeAudio: vi.fn(),
   isAudioReady: true,
 }));
@@ -268,13 +279,13 @@ describe("useGrapplingAudio", () => {
       }).not.toThrow();
     });
 
-    it("should handle transition to BREAKING state", () => {
+    it("should handle transition to THROWING state", () => {
       const { result } = renderHook(() => useGrapplingAudio());
 
       expect(() => {
         act(() => {
           result.current.playStateTransition(
-            GrappleState.BREAKING,
+            GrappleState.THROWING,
             GrappleState.CONTROLLING,
             GrappleTarget.ARM
           );
@@ -282,14 +293,14 @@ describe("useGrapplingAudio", () => {
       }).not.toThrow();
     });
 
-    it("should handle BREAKING -> BROKEN transition", () => {
+    it("should handle ESCAPING -> THROWING transition", () => {
       const { result } = renderHook(() => useGrapplingAudio());
 
       expect(() => {
         act(() => {
           result.current.playStateTransition(
-            GrappleState.BROKEN,
-            GrappleState.BREAKING,
+            GrappleState.ESCAPING,
+            GrappleState.THROWING,
             GrappleTarget.ARM
           );
         });
