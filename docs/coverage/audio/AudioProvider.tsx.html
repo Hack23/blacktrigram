@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">85.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>44/52</span>
+                <span class='fraction'>47/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/9</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>17/20</span>
+                <span class='fraction'>18/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86% </span>
+                <span class="strong">86.79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/50</span>
+                <span class='fraction'>46/53</span>
             </div>
         
             
@@ -298,7 +298,13 @@
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
 <a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -419,6 +425,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">111x</span>
 <span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-yes">333x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -428,8 +439,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">111x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">777x</span>
+<span class="cline-any cline-yes">999x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -650,10 +662,15 @@ export const AudioProvider: React.FC&lt;AudioProviderProps&gt; = ({
         (asset) =&gt; asset !== undefined
       ) as AudioAsset[];
 &nbsp;
-      // 3. Preload intro music (needed for intro screen)
-      // 인트로 음악 사전 로드 (인트로 화면에 필요)
+      // 3. Preload essential music tracks (intro, combat, training)
+      // 필수 음악 트랙 사전 로드 (인트로, 전투, 훈련)
       const introMusic = audioAssetRegistry.getMusic("intro_theme");
-      const musicAssets = introMusic ? [introMusic as AudioAsset] : <span class="branch-1 cbranch-no" title="branch not covered" >[];</span>
+      const combatMusic = audioAssetRegistry.getMusic("combat_theme");
+      const trainingMusic = audioAssetRegistry.getMusic("cyberpunk_fusion");
+      
+      const musicAssets = [introMusic, combatMusic, trainingMusic].filter(
+        (asset) =&gt; asset !== undefined
+      ) as AudioAsset[];
 &nbsp;
       // Combine critical assets for parallel loading
       // 병렬 로드를 위한 중요 자산 결합
@@ -670,10 +687,11 @@ export const AudioProvider: React.FC&lt;AudioProviderProps&gt; = ({
       );
 &nbsp;
       // NOTE: Non-critical assets are loaded on-demand:
-      // - Archetype themes: Loaded when character selection screen is shown
+      // - Archetype themes: Loaded on-demand when first requested (예: 캐릭터 선택 화면 또는 전투 화면에서 필요할 때)
       // - Other combat sounds: Loaded when first used in combat
       // - Placeholder assets: Loaded as fallbacks when needed
-      // This reduces initial memory footprint from 50-150MB to ~15-20MB
+      // - Philosophy screen music: Loaded on-demand when philosophy screen opens
+      // This reduces initial memory footprint while ensuring core gameplay music is ready
 &nbsp;
       setIsAudioReady(true);
     } catch (error) {
@@ -775,7 +793,7 @@ export const AudioProvider: React.FC&lt;AudioProviderProps&gt; = ({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-27T13:32:57.436Z
+                at 2026-01-28T23:23:47.678Z
             </div>
         <script src="../prettify.js"></script>
         <script>

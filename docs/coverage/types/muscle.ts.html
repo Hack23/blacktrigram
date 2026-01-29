@@ -274,7 +274,22 @@
 <a name='L209'></a><a href='#L209'>209</a>
 <a name='L210'></a><a href='#L210'>210</a>
 <a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -454,7 +469,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -487,10 +517,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Muscle system type definitions for realistic body tension and physiology
- * 
+ *
  * Implements dynamic muscle flex and tension visualization during combat techniques.
  * Muscles expand (up to +30%) during technique execution and relax gradually afterward.
- * 
+ *
  * @module types/muscle
  * @category Combat Systems
  * @korean 근육시스템타입정의
@@ -500,22 +530,37 @@ import type * as THREE from "three";
 &nbsp;
 /**
  * Muscle group names for anatomical targeting
- * 
+ *
  * @korean 근육그룹이름
  */
 export type MuscleGroupName =
+  // Shoulders
   | "SHOULDER_L"
   | "SHOULDER_R"
+  // Arms
   | "BICEP_L"
   | "BICEP_R"
   | "TRICEP_L"
   | "TRICEP_R"
   | "FOREARM_L"
   | "FOREARM_R"
+  // Torso front
   | "PECTORALS"
   | "CORE"
   | "ABS"
   | "OBLIQUES"
+  | "LOWER_ABS"
+  // Torso back (new - for less boxy appearance)
+  | "LAT_L"
+  | "LAT_R"
+  | "TRAPEZIUS"
+  | "RHOMBOID"
+  | "ERECTOR_SPINAE_L"
+  | "ERECTOR_SPINAE_R"
+  // Hips/Pelvis (new - for hip definition)
+  | "HIP_FLEXOR_L"
+  | "HIP_FLEXOR_R"
+  // Legs
   | "QUAD_L"
   | "QUAD_R"
   | "HAMSTRING_L"
@@ -527,22 +572,22 @@ export type MuscleGroupName =
 &nbsp;
 /**
  * Muscle group definition with anatomical positioning and flex properties
- * 
+ *
  * @korean 근육그룹정의
  */
 export interface MuscleGroup {
   /** Unique muscle group name */
   readonly name: MuscleGroupName;
-  
+&nbsp;
   /** Base scale when relaxed (normal size) */
   readonly baseScale: THREE.Vector3;
-  
+&nbsp;
   /** Maximum scale when fully flexed (+30% size) */
   readonly maxFlexScale: THREE.Vector3;
-  
+&nbsp;
   /** Position relative to character center */
   readonly position: THREE.Vector3;
-  
+&nbsp;
   /** Geometry parameters for creating instances */
   readonly geometryParams: {
     readonly radius: number;
@@ -550,40 +595,40 @@ export interface MuscleGroup {
     readonly capSegments: number;
     readonly radialSegments: number;
   };
-  
+&nbsp;
   /** Korean name for bilingual support */
   readonly korean: string;
-  
+&nbsp;
   /** English name for bilingual support */
   readonly english: string;
 }
 &nbsp;
 /**
  * Real-time muscle activation state for a single muscle group
- * 
+ *
  * Updated at 60fps during combat animations.
- * 
+ *
  * @korean 근육활성화상태
  */
 export interface MuscleActivationState {
   /** Muscle group identifier */
   readonly muscleGroup: MuscleGroupName;
-  
+&nbsp;
   /** Current tension level (0.0 = relaxed, 1.0 = maximum flex) */
   tension: number;
-  
+&nbsp;
   /** Target tension level for smooth transitions (mutable for performance) */
   targetTension: number;
-  
+&nbsp;
   /** Whether this muscle is currently shaking due to exhaustion */
   isShaking: boolean;
 }
 &nbsp;
 /**
  * Muscle activation mapping for techniques
- * 
+ *
  * Maps muscle groups to their target tension levels (0-1) for a specific technique.
- * 
+ *
  * @example
  * ```typescript
  * const jabActivation: MuscleActivationMap = new Map([
@@ -593,76 +638,76 @@ export interface MuscleActivationState {
  *   ["CORE", 0.5]
  * ]);
  * ```
- * 
+ *
  * @korean 근육활성화매핑
  */
 export type MuscleActivationMap = Map&lt;MuscleGroupName, number&gt;;
 &nbsp;
 /**
  * Props for MuscleMesh component rendering individual muscles
- * 
+ *
  * @korean 근육메시속성
  */
 export interface MuscleMeshProps {
   /** Muscle group definition with geometry and positioning */
   readonly muscleGroup: MuscleGroup;
-  
+&nbsp;
   /** Current tension level (0.0 to 1.0) */
   readonly tension: number;
-  
+&nbsp;
   /** Whether muscle should shake (exhaustion effect) */
   readonly isShaking: boolean;
-  
+&nbsp;
   /** Base color for muscle rendering */
   readonly color?: number;
-  
+&nbsp;
   /** Metalness for material (default: 0.1) */
   readonly metalness?: number;
-  
+&nbsp;
   /** Roughness for material (default: 0.9) */
   readonly roughness?: number;
 }
 &nbsp;
 /**
  * Configuration for muscle system performance
- * 
+ *
  * @korean 근육시스템성능설정
  */
 export interface MuscleSystemConfig {
   /** Target frame time budget in milliseconds (default: 3ms) */
   readonly maxFrameTime: number;
-  
+&nbsp;
   /** Number of muscle groups to render (default: 20) */
   readonly muscleCount: number;
-  
+&nbsp;
   /** Whether to use instancing for optimization (default: false for now) */
   readonly useInstancing: boolean;
-  
+&nbsp;
   /** Relaxation time after technique in seconds (default: 0.3s) */
   readonly relaxationDelay: number;
-  
+&nbsp;
   /** Stamina threshold for exhaustion effects (default: 20%) */
   readonly exhaustionThreshold: number;
-  
+&nbsp;
   /** Shake frequency in Hz when exhausted (default: 20Hz) */
   readonly shakeFrequency: number;
-  
+&nbsp;
   /** Shake amplitude when exhausted (default: 0.02 radians) */
   readonly shakeAmplitude: number;
-  
+&nbsp;
   /** Speed of muscle activation transitions (default: 5.0) */
   readonly activationSpeed: number;
-  
+&nbsp;
   /** Speed of muscle relaxation transitions (default: 3.0) */
   readonly relaxationSpeed: number;
-  
+&nbsp;
   /** Tension threshold for shaking effect (default: 0.3) */
   readonly shakingTensionThreshold: number;
 }
 &nbsp;
 /**
  * Default muscle system configuration
- * 
+ *
  * @korean 기본근육시스템설정
  */
 export const DEFAULT_MUSCLE_CONFIG: MuscleSystemConfig = {
@@ -680,19 +725,19 @@ export const DEFAULT_MUSCLE_CONFIG: MuscleSystemConfig = {
 &nbsp;
 /**
  * Performance metrics for muscle system monitoring
- * 
+ *
  * @korean 근육시스템성능지표
  */
 export interface MuscleSystemMetrics {
   /** Current frame time in milliseconds */
   readonly frameTime: number;
-  
+&nbsp;
   /** Number of active muscle groups being updated */
   readonly activeMuscles: number;
-  
+&nbsp;
   /** Number of muscles currently shaking */
   readonly shakingMuscles: number;
-  
+&nbsp;
   /** Whether system is within performance budget */
   readonly withinBudget: boolean;
 }
@@ -703,7 +748,7 @@ export interface MuscleSystemMetrics {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-27T13:32:57.436Z
+                at 2026-01-28T23:23:47.678Z
             </div>
         <script src="../prettify.js"></script>
         <script>

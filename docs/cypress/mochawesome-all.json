@@ -12,13 +12,13 @@
     "hasOther": false,
     "skipped": 0,
     "hasSkipped": false,
-    "start": "2026-01-27T13:18:52.926Z",
-    "end": "2026-01-27T13:28:38.039Z",
-    "duration": 585113
+    "start": "2026-01-28T23:09:28.408Z",
+    "end": "2026-01-28T23:19:14.994Z",
+    "duration": 586586
   },
   "results": [
     {
-      "uuid": "18f71d53-6ae0-4058-98f1-0a69fb48fcab",
+      "uuid": "a025c0ad-c1f9-4b22-888e-bb92b201477f",
       "title": "",
       "fullFile": "cypress/e2e/character-models.cy.ts",
       "file": "cypress/e2e/character-models.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "ffcbb65b-8d07-40a6-a445-575eec4a190c",
+          "uuid": "5f659a58-8e12-47b7-a30a-d4ed260c1857",
           "title": "Character Models - Visual Regression Tests",
           "fullFile": "",
           "file": "",
@@ -36,7 +36,7 @@
           "tests": [],
           "suites": [
             {
-              "uuid": "e21d790d-70cc-4013-a246-29667694c2fc",
+              "uuid": "b668d67a-0571-459f-aa84-3e43b4cf7868",
               "title": "8 Trigram Stance Visual Regression",
               "fullFile": "",
               "file": "",
@@ -47,7 +47,7 @@
                   "title": "should match 건 (☰) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 건 (☰) stance screenshot",
                   "timedOut": null,
-                  "duration": 9242,
+                  "duration": 9064,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -56,8 +56,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "be460506-3869-4659-91bf-3ed548213889",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "5cc13a7c-f30b-4429-9fab-bbf5cb999537",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -65,7 +65,7 @@
                   "title": "should match 태 (☱) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 태 (☱) stance screenshot",
                   "timedOut": null,
-                  "duration": 7294,
+                  "duration": 7050,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -74,8 +74,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "9c5e34a3-e051-4a60-8478-5143e0ea6806",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "de4ddc7e-e95b-4ac6-aa59-50f1c3b1a319",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -83,7 +83,7 @@
                   "title": "should match 리 (☲) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 리 (☲) stance screenshot",
                   "timedOut": null,
-                  "duration": 7032,
+                  "duration": 6984,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -92,8 +92,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "f190afd1-6228-4fa2-a427-63079e756a30",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "8df55295-a6d9-4909-b5ca-cf6dfa9afe39",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -101,7 +101,7 @@
                   "title": "should match 진 (☳) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 진 (☳) stance screenshot",
                   "timedOut": null,
-                  "duration": 6891,
+                  "duration": 6821,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -110,8 +110,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "81e5a94a-93c4-4368-bb57-12d406b209a9",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "2dae7098-c40f-419f-bf22-33651dad940e",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -119,7 +119,7 @@
                   "title": "should match 손 (☴) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 손 (☴) stance screenshot",
                   "timedOut": null,
-                  "duration": 6932,
+                  "duration": 6893,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -128,8 +128,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "0ff0a558-8c78-4c7d-8d25-5499bd7b64fc",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "5c1fb05a-5ee4-4535-87ea-03bd8cc3376c",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -137,7 +137,7 @@
                   "title": "should match 감 (☵) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 감 (☵) stance screenshot",
                   "timedOut": null,
-                  "duration": 6985,
+                  "duration": 6868,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -146,8 +146,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "ee95ea5e-c327-451a-97ab-2f1a926e6504",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "12fd51f0-67b1-4d09-a333-95160d38471e",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -155,7 +155,7 @@
                   "title": "should match 간 (☶) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 간 (☶) stance screenshot",
                   "timedOut": null,
-                  "duration": 6970,
+                  "duration": 6906,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -164,8 +164,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "d29e0df5-37a1-48a2-b294-8498f5348fdf",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "827bd662-ecf6-4675-92d2-da621b8c358a",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -173,7 +173,7 @@
                   "title": "should match 곤 (☷) stance screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should match 곤 (☷) stance screenshot",
                   "timedOut": null,
-                  "duration": 6910,
+                  "duration": 6875,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -182,8 +182,8 @@
                   "context": null,
                   "code": "cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);\n// Change to stance\ncy.get(\"body\").type(stance.key);\n// Wait for stance transition to complete\ncy.wait(500);\n// Verify stance indicator updated\ncy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n    .should(\"exist\")\n    .invoke(\"text\")\n    .should(\"include\", stance.name);\n// Wait for Three.js rendering to stabilize\ncy.wait(500);\n// Take screenshot for visual comparison\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(`stance-${stance.name}-visual`, {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(`✅ ${stance.korean} stance screenshot captured`);",
                   "err": {},
-                  "uuid": "21fc5f21-9c2c-4f0b-a769-7f75b7b7872d",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "98d473c4-d119-4f58-bce8-e18d399984da",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 },
@@ -191,7 +191,7 @@
                   "title": "should verify all stance colors are distinct",
                   "fullTitle": "Character Models - Visual Regression Tests 8 Trigram Stance Visual Regression should verify all stance colors are distinct",
                   "timedOut": null,
-                  "duration": 9741,
+                  "duration": 9623,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -200,34 +200,34 @@
                   "context": null,
                   "code": "cy.annotate(\"Verifying stance color distinctiveness\");\nstances.forEach((stance, index) => {\n    // Change to stance\n    cy.get(\"body\").type(stance.key);\n    cy.wait(300);\n    // Verify stance indicator exists and has color\n    cy.get('[data-testid=\"player1-stance-indicator\"]').should(\"exist\");\n    // In a real implementation, you'd extract color values here\n    // For now, we verify visual distinctiveness through screenshots\n    cy.log(`✅ Stance ${index + 1} color verified`);\n});\ncy.log(\"✅ All stance colors verified as distinct\");",
                   "err": {},
-                  "uuid": "b1f58ec8-6893-4108-9230-f369ea01e2ff",
-                  "parentUUID": "e21d790d-70cc-4013-a246-29667694c2fc",
+                  "uuid": "7e964e2b-5692-49f9-a2aa-464c46655f66",
+                  "parentUUID": "b668d67a-0571-459f-aa84-3e43b4cf7868",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "be460506-3869-4659-91bf-3ed548213889",
-                "9c5e34a3-e051-4a60-8478-5143e0ea6806",
-                "f190afd1-6228-4fa2-a427-63079e756a30",
-                "81e5a94a-93c4-4368-bb57-12d406b209a9",
-                "0ff0a558-8c78-4c7d-8d25-5499bd7b64fc",
-                "ee95ea5e-c327-451a-97ab-2f1a926e6504",
-                "d29e0df5-37a1-48a2-b294-8498f5348fdf",
-                "21fc5f21-9c2c-4f0b-a769-7f75b7b7872d",
-                "b1f58ec8-6893-4108-9230-f369ea01e2ff"
+                "5cc13a7c-f30b-4429-9fab-bbf5cb999537",
+                "de4ddc7e-e95b-4ac6-aa59-50f1c3b1a319",
+                "8df55295-a6d9-4909-b5ca-cf6dfa9afe39",
+                "2dae7098-c40f-419f-bf22-33651dad940e",
+                "5c1fb05a-5ee4-4535-87ea-03bd8cc3376c",
+                "12fd51f0-67b1-4d09-a333-95160d38471e",
+                "827bd662-ecf6-4675-92d2-da621b8c358a",
+                "98d473c4-d119-4f58-bce8-e18d399984da",
+                "7e964e2b-5692-49f9-a2aa-464c46655f66"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 67997,
+              "duration": 67084,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "a19d4cb3-b3a0-4039-8be9-67c19eb6434b",
+              "uuid": "6aa1bcb4-3b4e-419c-a0be-8e604995a6c2",
               "title": "Guard Pose Visual Validation",
               "fullFile": "",
               "file": "",
@@ -238,7 +238,7 @@
                   "title": "should match guard pose screenshot",
                   "fullTitle": "Character Models - Visual Regression Tests Guard Pose Visual Validation should match guard pose screenshot",
                   "timedOut": null,
-                  "duration": 10218,
+                  "duration": 10230,
                   "state": "passed",
                   "speed": "slow",
                   "pass": true,
@@ -247,8 +247,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing Guard Pose Visuals\");\n// Change to defensive stance (Mountain - 간)\ncy.get(\"body\").type(\"7\");\ncy.wait(500);\n// Activate guard with Shift key\ncy.get(\"body\").type(\"{shift}\", { release: false });\ncy.wait(300);\n// Take screenshot of guard pose\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"guard-pose-gan-visual\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Guard pose screenshot captured\");\n// Release guard\ncy.get(\"body\").type(\"{shift}\", { release: true });\ncy.wait(200);",
                   "err": {},
-                  "uuid": "535ce3f8-dad7-41fc-9e26-a05db722d8e9",
-                  "parentUUID": "a19d4cb3-b3a0-4039-8be9-67c19eb6434b",
+                  "uuid": "4b9534c4-ec55-44a7-9e4d-7e9c126c700e",
+                  "parentUUID": "6aa1bcb4-3b4e-419c-a0be-8e604995a6c2",
                   "isHook": false,
                   "skipped": false
                 },
@@ -256,36 +256,36 @@
                   "title": "should show guard indicator visual effects",
                   "fullTitle": "Character Models - Visual Regression Tests Guard Pose Visual Validation should show guard indicator visual effects",
                   "timedOut": null,
-                  "duration": 10053,
+                  "duration": 9995,
                   "state": "passed",
-                  "speed": "slow",
+                  "speed": "medium",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
                   "code": "cy.annotate(\"Verifying guard indicator visual effects\");\n// Test guard in multiple stances\nconst defensiveStances = [\n    { key: \"6\", name: \"gam\", korean: \"감 (Water)\" },\n    { key: \"7\", name: \"gan\", korean: \"간 (Mountain)\" },\n    { key: \"8\", name: \"gon\", korean: \"곤 (Earth)\" },\n];\ndefensiveStances.forEach((stance) => {\n    cy.get(\"body\").type(stance.key);\n    cy.wait(300);\n    // Activate guard\n    cy.get(\"body\").type(\"{shift}\", { release: false });\n    cy.wait(300);\n    // Screenshot guard pose for each stance\n    cy.get('[data-testid=\"combat-screen\"]')\n        .screenshot(`guard-${stance.name}-visual`, {\n        capture: \"viewport\",\n        overwrite: true,\n    });\n    cy.log(`✅ Guard ${stance.korean} screenshot captured`);\n    // Release guard\n    cy.get(\"body\").type(\"{shift}\", { release: true });\n    cy.wait(200);\n});",
                   "err": {},
-                  "uuid": "c03dae04-516c-4cfc-9dfa-122a18bd8c7f",
-                  "parentUUID": "a19d4cb3-b3a0-4039-8be9-67c19eb6434b",
+                  "uuid": "2a638745-a385-4e3f-b3df-06e69541bb01",
+                  "parentUUID": "6aa1bcb4-3b4e-419c-a0be-8e604995a6c2",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "535ce3f8-dad7-41fc-9e26-a05db722d8e9",
-                "c03dae04-516c-4cfc-9dfa-122a18bd8c7f"
+                "4b9534c4-ec55-44a7-9e4d-7e9c126c700e",
+                "2a638745-a385-4e3f-b3df-06e69541bb01"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 20271,
+              "duration": 20225,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "1c049000-560e-464b-a1c9-315017190884",
+              "uuid": "8253a82e-dd52-4a62-bff6-b2a92d564886",
               "title": "Attack Animation Sequences",
               "fullFile": "",
               "file": "",
@@ -296,17 +296,17 @@
                   "title": "should capture jab attack animation sequence",
                   "fullTitle": "Character Models - Visual Regression Tests Attack Animation Sequences should capture jab attack animation sequence",
                   "timedOut": null,
-                  "duration": 10012,
+                  "duration": 9963,
                   "state": "passed",
-                  "speed": "slow",
+                  "speed": "medium",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
                   "code": "cy.annotate(\"Testing Jab Attack Animation Sequence\");\n// Change to Thunder stance (진 - best for strikes)\ncy.get(\"body\").type(\"4\");\ncy.wait(500);\n// Execute attack\ncy.get(\"body\").type(\" \");\n// Capture multiple frames of the animation\nconst frames = [0, 100, 200, 300];\nframes.forEach((delay, index) => {\n    cy.wait(delay);\n    cy.get('[data-testid=\"combat-screen\"]')\n        .screenshot(`attack-jab-frame-${index}`, {\n        capture: \"viewport\",\n        overwrite: true,\n    });\n});\ncy.log(\"✅ Jab animation sequence captured (4 frames)\");",
                   "err": {},
-                  "uuid": "38e662bf-e1db-4c4c-8092-a7f8d2f78df4",
-                  "parentUUID": "1c049000-560e-464b-a1c9-315017190884",
+                  "uuid": "563cf6a4-c6dd-4fd2-8914-dd51e8f75f9d",
+                  "parentUUID": "8253a82e-dd52-4a62-bff6-b2a92d564886",
                   "isHook": false,
                   "skipped": false
                 },
@@ -314,7 +314,7 @@
                   "title": "should verify attack animation timing",
                   "fullTitle": "Character Models - Visual Regression Tests Attack Animation Sequences should verify attack animation timing",
                   "timedOut": null,
-                  "duration": 7493,
+                  "duration": 7446,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -323,8 +323,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Verifying attack animation timing\");\n// Thunder stance\ncy.get(\"body\").type(\"4\");\ncy.wait(500);\n// Execute attack and verify animation completes\ncy.get(\"body\").type(\" \");\n// Wait for animation completion (typical attack duration: 300-500ms)\ncy.wait(500);\n// Verify character returned to idle state\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Attack animation timing validated\");",
                   "err": {},
-                  "uuid": "a65c7602-34ed-4430-b0ac-1b7f362ec3d2",
-                  "parentUUID": "1c049000-560e-464b-a1c9-315017190884",
+                  "uuid": "8b8485e5-9f3f-4ece-ab00-8fa40c800f3b",
+                  "parentUUID": "8253a82e-dd52-4a62-bff6-b2a92d564886",
                   "isHook": false,
                   "skipped": false
                 },
@@ -332,37 +332,37 @@
                   "title": "should capture kick attack animation",
                   "fullTitle": "Character Models - Visual Regression Tests Attack Animation Sequences should capture kick attack animation",
                   "timedOut": null,
-                  "duration": 10082,
+                  "duration": 9995,
                   "state": "passed",
-                  "speed": "slow",
+                  "speed": "medium",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
                   "code": "cy.annotate(\"Testing Kick Attack Animation\");\n// Thunder stance for kicks\ncy.get(\"body\").type(\"4\");\ncy.wait(500);\n// Note: Kick key binding to be determined by game controls\n// For now, test basic attack animation\ncy.get(\"body\").type(\" \");\ncy.wait(100);\n// Capture kick animation frames\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"attack-kick-start\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.wait(200);\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"attack-kick-peak\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Attack animation captured\");",
                   "err": {},
-                  "uuid": "d798bb8c-641a-4e44-bcb8-fdcede27fefc",
-                  "parentUUID": "1c049000-560e-464b-a1c9-315017190884",
+                  "uuid": "4b9c66e8-c364-4cd1-b601-7ea0bcb08cd0",
+                  "parentUUID": "8253a82e-dd52-4a62-bff6-b2a92d564886",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "38e662bf-e1db-4c4c-8092-a7f8d2f78df4",
-                "a65c7602-34ed-4430-b0ac-1b7f362ec3d2",
-                "d798bb8c-641a-4e44-bcb8-fdcede27fefc"
+                "563cf6a4-c6dd-4fd2-8914-dd51e8f75f9d",
+                "8b8485e5-9f3f-4ece-ab00-8fa40c800f3b",
+                "4b9c66e8-c364-4cd1-b601-7ea0bcb08cd0"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 27587,
+              "duration": 27404,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "b86e79bd-e847-4c00-8f0a-6d96ddbb4d47",
+              "uuid": "783b6fa2-9594-457f-9d9c-37f0ea740ff5",
               "title": "Archetype Visual Differences",
               "fullFile": "",
               "file": "",
@@ -373,7 +373,7 @@
                   "title": "should verify archetype visual distinctions exist",
                   "fullTitle": "Character Models - Visual Regression Tests Archetype Visual Differences should verify archetype visual distinctions exist",
                   "timedOut": null,
-                  "duration": 9430,
+                  "duration": 9271,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -382,8 +382,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Verifying archetype visual differences\");\n// Test assumes player 1 and player 2 have different archetypes\n// Capture screenshots showing visual differences\n// Focus on player 1\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"archetype-player1-visual\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Archetype visual differences documented\");",
                   "err": {},
-                  "uuid": "481f995a-c40a-45e9-8fff-ba09e8c6ad23",
-                  "parentUUID": "b86e79bd-e847-4c00-8f0a-6d96ddbb4d47",
+                  "uuid": "38d78d25-95e4-4765-8ca9-c8e2dfe1317e",
+                  "parentUUID": "783b6fa2-9594-457f-9d9c-37f0ea740ff5",
                   "isHook": false,
                   "skipped": false
                 },
@@ -391,7 +391,7 @@
                   "title": "should show different clothing styles per archetype",
                   "fullTitle": "Character Models - Visual Regression Tests Archetype Visual Differences should show different clothing styles per archetype",
                   "timedOut": null,
-                  "duration": 9915,
+                  "duration": 9842,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -400,27 +400,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Verifying archetype clothing differences\");\n// Change stance to show full body\ncy.get(\"body\").type(\"1\"); // Heaven stance (upright)\ncy.wait(500);\n// Capture full body screenshot\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"archetype-clothing-fullbody\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Archetype clothing documented\");",
                   "err": {},
-                  "uuid": "77306e91-f3fc-4440-b073-ba426c2b3c94",
-                  "parentUUID": "b86e79bd-e847-4c00-8f0a-6d96ddbb4d47",
+                  "uuid": "6acd862f-adbf-4f13-9e8b-bd3f4beca061",
+                  "parentUUID": "783b6fa2-9594-457f-9d9c-37f0ea740ff5",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "481f995a-c40a-45e9-8fff-ba09e8c6ad23",
-                "77306e91-f3fc-4440-b073-ba426c2b3c94"
+                "38d78d25-95e4-4765-8ca9-c8e2dfe1317e",
+                "6acd862f-adbf-4f13-9e8b-bd3f4beca061"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 19345,
+              "duration": 19113,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "e6325a0a-0532-4467-ab30-c28d40a013ca",
+              "uuid": "1f2658ac-7562-4aee-8aac-656184f37b22",
               "title": "Stance Transition Animations",
               "fullFile": "",
               "file": "",
@@ -431,7 +431,7 @@
                   "title": "should capture smooth transitions between stances",
                   "fullTitle": "Character Models - Visual Regression Tests Stance Transition Animations should capture smooth transitions between stances",
                   "timedOut": null,
-                  "duration": 9939,
+                  "duration": 9931,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -440,8 +440,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing stance transition smoothness\");\n// Start with Heaven stance\ncy.get(\"body\").type(\"1\");\ncy.wait(500);\n// Capture starting stance\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"transition-start-geon\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\n// Transition to Water stance\ncy.get(\"body\").type(\"6\");\ncy.wait(250); // Mid-transition\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"transition-mid-geon-to-gam\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.wait(250); // Complete transition\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"transition-end-gam\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Stance transition captured (3 frames)\");",
                   "err": {},
-                  "uuid": "d5288712-7fbb-4298-82e2-8b61abae5971",
-                  "parentUUID": "e6325a0a-0532-4467-ab30-c28d40a013ca",
+                  "uuid": "5ba3623a-886b-4c35-b7de-ca325c6b2255",
+                  "parentUUID": "1f2658ac-7562-4aee-8aac-656184f37b22",
                   "isHook": false,
                   "skipped": false
                 },
@@ -449,7 +449,7 @@
                   "title": "should verify rapid stance changes render correctly",
                   "fullTitle": "Character Models - Visual Regression Tests Stance Transition Animations should verify rapid stance changes render correctly",
                   "timedOut": null,
-                  "duration": 9599,
+                  "duration": 9528,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -458,27 +458,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing rapid stance transitions\");\n// Rapidly cycle through stances\nconst rapidSequence = [\"1\", \"3\", \"5\", \"7\"];\nrapidSequence.forEach((key, index) => {\n    cy.get(\"body\").type(key);\n    cy.wait(200); // Minimal delay\n    cy.get('[data-testid=\"combat-screen\"]')\n        .screenshot(`rapid-transition-${index}`, {\n        capture: \"viewport\",\n        overwrite: true,\n    });\n});\n// Wait for final render\ncy.wait(500);\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Rapid transitions validated\");",
                   "err": {},
-                  "uuid": "0506b80c-7ba2-4b4d-986f-6dccc71247b2",
-                  "parentUUID": "e6325a0a-0532-4467-ab30-c28d40a013ca",
+                  "uuid": "cd4502bd-9747-4772-ab66-222d5cd945a8",
+                  "parentUUID": "1f2658ac-7562-4aee-8aac-656184f37b22",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "d5288712-7fbb-4298-82e2-8b61abae5971",
-                "0506b80c-7ba2-4b4d-986f-6dccc71247b2"
+                "5ba3623a-886b-4c35-b7de-ca325c6b2255",
+                "cd4502bd-9747-4772-ab66-222d5cd945a8"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 19538,
+              "duration": 19459,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "a336e822-c5a4-49c5-9539-7f1056d100dc",
+              "uuid": "e1fe6a10-33bc-4d17-ba2a-8735fcd1d938",
               "title": "Performance Visual Verification",
               "fullFile": "",
               "file": "",
@@ -489,7 +489,7 @@
                   "title": "should verify rendering with multiple characters",
                   "fullTitle": "Character Models - Visual Regression Tests Performance Visual Verification should verify rendering with multiple characters",
                   "timedOut": null,
-                  "duration": 9297,
+                  "duration": 9329,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -498,8 +498,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing multiple character rendering\");\n// Both players should be visible\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Verify both health bars (indicating both characters rendered)\ncy.get('[data-testid=\"player1-health\"]').should(\"exist\");\ncy.get('[data-testid=\"player2-health\"]').should(\"exist\");\n// Capture screenshot showing both characters\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"multiple-characters-visual\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\n// Verify Three.js is actively rendering\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });\ncy.log(\"✅ Multiple character rendering verified\");",
                   "err": {},
-                  "uuid": "7111a38d-c16f-4e89-bc49-edf2a9165b0d",
-                  "parentUUID": "a336e822-c5a4-49c5-9539-7f1056d100dc",
+                  "uuid": "63cc6023-ab9e-4481-92b8-18921600f075",
+                  "parentUUID": "e1fe6a10-33bc-4d17-ba2a-8735fcd1d938",
                   "isHook": false,
                   "skipped": false
                 },
@@ -507,7 +507,7 @@
                   "title": "should verify smooth animations during combat",
                   "fullTitle": "Character Models - Visual Regression Tests Performance Visual Verification should verify smooth animations during combat",
                   "timedOut": null,
-                  "duration": 7992,
+                  "duration": 7962,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -516,27 +516,27 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing combat animation smoothness\");\n// Execute several actions in sequence\ncy.get(\"body\").type(\"1\"); // Stance change\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(500);\ncy.get(\"body\").type(\"2\"); // Another stance\ncy.wait(300);\ncy.get(\"body\").type(\"{shift}\", { release: false }); // Guard\ncy.wait(300);\n// Verify rendering remained smooth\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 30 });\ncy.log(\"✅ Animation smoothness verified\");\n// Release guard\ncy.get(\"body\").type(\"{shift}\", { release: true });",
                   "err": {},
-                  "uuid": "16c3034e-c0ee-4e11-adbd-891708610efa",
-                  "parentUUID": "a336e822-c5a4-49c5-9539-7f1056d100dc",
+                  "uuid": "4755c5dc-c980-4ec8-9416-cf6b1974368a",
+                  "parentUUID": "e1fe6a10-33bc-4d17-ba2a-8735fcd1d938",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "7111a38d-c16f-4e89-bc49-edf2a9165b0d",
-                "16c3034e-c0ee-4e11-adbd-891708610efa"
+                "63cc6023-ab9e-4481-92b8-18921600f075",
+                "4755c5dc-c980-4ec8-9416-cf6b1974368a"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 17289,
+              "duration": 17291,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "e9227997-6bf3-4ce5-b7e6-54b5be9a0c30",
+              "uuid": "ce6a04ae-3822-4f07-99d0-77c5591d8ba6",
               "title": "Korean Martial Arts Authenticity Visual Validation",
               "fullFile": "",
               "file": "",
@@ -547,17 +547,17 @@
                   "title": "should verify Heaven stance (건) matches traditional upright posture",
                   "fullTitle": "Character Models - Visual Regression Tests Korean Martial Arts Authenticity Visual Validation should verify Heaven stance (건) matches traditional upright posture",
                   "timedOut": null,
-                  "duration": 10041,
+                  "duration": 9809,
                   "state": "passed",
-                  "speed": "slow",
+                  "speed": "medium",
                   "pass": true,
                   "fail": false,
                   "pending": false,
                   "context": null,
                   "code": "cy.annotate(\"Validating Heaven stance authenticity\");\ncy.get(\"body\").type(\"1\");\ncy.wait(500);\n// Capture for manual validation by martial arts expert\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"authenticity-heaven-stance\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Heaven stance captured for authenticity review\");",
                   "err": {},
-                  "uuid": "21942d4d-6641-4a5f-87a0-074b2413f851",
-                  "parentUUID": "e9227997-6bf3-4ce5-b7e6-54b5be9a0c30",
+                  "uuid": "91c87c26-c028-41f2-936a-6cbe7db0b0c9",
+                  "parentUUID": "ce6a04ae-3822-4f07-99d0-77c5591d8ba6",
                   "isHook": false,
                   "skipped": false
                 },
@@ -565,7 +565,7 @@
                   "title": "should verify Water stance (감) matches defensive crouch posture",
                   "fullTitle": "Character Models - Visual Regression Tests Korean Martial Arts Authenticity Visual Validation should verify Water stance (감) matches defensive crouch posture",
                   "timedOut": null,
-                  "duration": 9941,
+                  "duration": 9868,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -574,8 +574,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Validating Water stance authenticity\");\ncy.get(\"body\").type(\"6\");\ncy.wait(500);\n// Capture for manual validation\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"authenticity-water-stance\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Water stance captured for authenticity review\");",
                   "err": {},
-                  "uuid": "4ccf4989-51ea-4f5f-9a4d-024990ba4f37",
-                  "parentUUID": "e9227997-6bf3-4ce5-b7e6-54b5be9a0c30",
+                  "uuid": "ebc253dc-3e4a-4fdf-a215-3b99f9bc16fd",
+                  "parentUUID": "ce6a04ae-3822-4f07-99d0-77c5591d8ba6",
                   "isHook": false,
                   "skipped": false
                 },
@@ -583,7 +583,7 @@
                   "title": "should verify stance symbols match Korean trigrams",
                   "fullTitle": "Character Models - Visual Regression Tests Korean Martial Arts Authenticity Visual Validation should verify stance symbols match Korean trigrams",
                   "timedOut": null,
-                  "duration": 9788,
+                  "duration": 9608,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -592,28 +592,28 @@
                   "context": null,
                   "code": "cy.annotate(\"Validating trigram symbol accuracy\");\n// Test a few key stances with clear symbols\nconst symbolStances = [\n    { key: \"1\", name: \"geon\", symbol: \"☰\" },\n    { key: \"6\", name: \"gam\", symbol: \"☵\" },\n    { key: \"7\", name: \"gan\", symbol: \"☶\" },\n];\nsymbolStances.forEach((stance) => {\n    cy.get(\"body\").type(stance.key);\n    cy.wait(300);\n    // Verify stance indicator shows correct symbol (if visible)\n    cy.get('[data-testid=\"player1-stance-indicator\"]')\n        .should(\"exist\")\n        .invoke(\"text\")\n        .then((text) => {\n        cy.log(`Stance ${stance.name} indicator: ${text}`);\n        // Visual verification of symbol through screenshot\n    });\n    cy.get('[data-testid=\"combat-screen\"]')\n        .screenshot(`trigram-symbol-${stance.name}`, {\n        capture: \"viewport\",\n        overwrite: true,\n    });\n});\ncy.log(\"✅ Trigram symbols captured for validation\");",
                   "err": {},
-                  "uuid": "22ed25ec-6c84-4f29-95d6-6b1bb417a8f3",
-                  "parentUUID": "e9227997-6bf3-4ce5-b7e6-54b5be9a0c30",
+                  "uuid": "8927589a-c378-44d5-903c-814487027694",
+                  "parentUUID": "ce6a04ae-3822-4f07-99d0-77c5591d8ba6",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "21942d4d-6641-4a5f-87a0-074b2413f851",
-                "4ccf4989-51ea-4f5f-9a4d-024990ba4f37",
-                "22ed25ec-6c84-4f29-95d6-6b1bb417a8f3"
+                "91c87c26-c028-41f2-936a-6cbe7db0b0c9",
+                "ebc253dc-3e4a-4fdf-a215-3b99f9bc16fd",
+                "8927589a-c378-44d5-903c-814487027694"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 29770,
+              "duration": 29285,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
             },
             {
-              "uuid": "44fadb2a-2950-4079-82fb-c8710f9714bb",
+              "uuid": "2cac7028-09f8-4e5d-8ca3-a1c86ca22d18",
               "title": "Accessibility Visual Indicators",
               "fullFile": "",
               "file": "",
@@ -624,7 +624,7 @@
                   "title": "should verify stance indicators are clearly visible",
                   "fullTitle": "Character Models - Visual Regression Tests Accessibility Visual Indicators should verify stance indicators are clearly visible",
                   "timedOut": null,
-                  "duration": 9687,
+                  "duration": 9595,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -633,8 +633,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing stance indicator visibility\");\n// Test stance indicators across different stances\nfor (let i = 1; i <= 8; i++) {\n    cy.get(\"body\").type(i.toString());\n    cy.wait(200);\n    // Verify indicator is visible\n    cy.get('[data-testid=\"player1-stance-indicator\"]')\n        .should(\"be.visible\");\n}\ncy.log(\"✅ Stance indicators visibility verified\");",
                   "err": {},
-                  "uuid": "d12df8bd-1c40-4ede-9043-935538fa0405",
-                  "parentUUID": "44fadb2a-2950-4079-82fb-c8710f9714bb",
+                  "uuid": "e432458c-c68c-484d-9deb-77bc7e105562",
+                  "parentUUID": "2cac7028-09f8-4e5d-8ca3-a1c86ca22d18",
                   "isHook": false,
                   "skipped": false
                 },
@@ -642,7 +642,7 @@
                   "title": "should verify health bars have sufficient contrast",
                   "fullTitle": "Character Models - Visual Regression Tests Accessibility Visual Indicators should verify health bars have sufficient contrast",
                   "timedOut": null,
-                  "duration": 9408,
+                  "duration": 9276,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -651,8 +651,8 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing health bar contrast\");\n// Verify health bars are visible\ncy.get('[data-testid=\"player1-health\"]')\n    .should(\"be.visible\");\ncy.get('[data-testid=\"player2-health\"]')\n    .should(\"be.visible\");\n// Capture for contrast analysis\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"accessibility-health-bars\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Health bar contrast captured for analysis\");",
                   "err": {},
-                  "uuid": "25c6e210-cfc7-4f73-b3f7-0515a1acabd3",
-                  "parentUUID": "44fadb2a-2950-4079-82fb-c8710f9714bb",
+                  "uuid": "b22db9f1-ca4d-4740-99cc-92a4a284437c",
+                  "parentUUID": "2cac7028-09f8-4e5d-8ca3-a1c86ca22d18",
                   "isHook": false,
                   "skipped": false
                 },
@@ -660,7 +660,7 @@
                   "title": "should verify character outlines are distinguishable",
                   "fullTitle": "Character Models - Visual Regression Tests Accessibility Visual Indicators should verify character outlines are distinguishable",
                   "timedOut": null,
-                  "duration": 9859,
+                  "duration": 9857,
                   "state": "passed",
                   "speed": "medium",
                   "pass": true,
@@ -669,22 +669,22 @@
                   "context": null,
                   "code": "cy.annotate(\"Testing character outline visibility\");\n// Change to stance with clear body positioning\ncy.get(\"body\").type(\"1\");\ncy.wait(500);\n// Capture for outline analysis\ncy.get('[data-testid=\"combat-screen\"]')\n    .screenshot(\"accessibility-character-outlines\", {\n    capture: \"viewport\",\n    overwrite: true,\n});\ncy.log(\"✅ Character outlines captured for accessibility review\");",
                   "err": {},
-                  "uuid": "0eaf6046-d9ab-452c-ab95-0f5002171625",
-                  "parentUUID": "44fadb2a-2950-4079-82fb-c8710f9714bb",
+                  "uuid": "9017b0b0-671b-4298-b3db-7c1936a674a2",
+                  "parentUUID": "2cac7028-09f8-4e5d-8ca3-a1c86ca22d18",
                   "isHook": false,
                   "skipped": false
                 }
               ],
               "suites": [],
               "passes": [
-                "d12df8bd-1c40-4ede-9043-935538fa0405",
-                "25c6e210-cfc7-4f73-b3f7-0515a1acabd3",
-                "0eaf6046-d9ab-452c-ab95-0f5002171625"
+                "e432458c-c68c-484d-9deb-77bc7e105562",
+                "b22db9f1-ca4d-4740-99cc-92a4a284437c",
+                "9017b0b0-671b-4298-b3db-7c1936a674a2"
               ],
               "failures": [],
               "pending": [],
               "skipped": [],
-              "duration": 28954,
+              "duration": 28728,
               "root": false,
               "rootEmpty": false,
               "_timeout": 2000
@@ -710,7 +710,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "6f2c6d6c-f2f6-4b16-bddd-d4488c777db7",
+      "uuid": "76600984-add3-433c-8272-99f8b473ec1c",
       "title": "",
       "fullFile": "cypress/e2e/combat/balance-system.cy.ts",
       "file": "cypress/e2e/combat/balance-system.cy.ts",
@@ -719,7 +719,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "8ad6a06f-41ce-4284-8cca-f607596bc8d3",
+          "uuid": "13b99582-b258-4599-bb97-57349b684363",
           "title": "Balance/Vulnerability System - E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -730,7 +730,7 @@
               "title": "should display balance indicator and react to stance transitions",
               "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should display balance indicator and react to stance transitions",
               "timedOut": null,
-              "duration": 11035,
+              "duration": 11049,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -739,8 +739,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Balance System - Stance Transitions\");\n// ============================================================\n// 1. Verify Combat Screen is Ready (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen is Ready\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen loaded\");\ncy.wait(1000);\n// ============================================================\n// 2. Check Initial Balance State (10s)\n// ============================================================\ncy.log(\"2️⃣ Checking Initial Balance State\");\n// Assert that balance indicator overlay is present (when integrated)\n// This is optional since the component requires integration into CombatScreen3D\ncy.get(\"body\").then(($body) => {\n    const hasBalanceOverlay = $body.find('[data-testid=\"balance-indicator-overlay\"]').length > 0;\n    const hasBalanceText = $body.text().includes(\"균형\") ||\n        $body.text().includes(\"Balance\");\n    if (hasBalanceOverlay) {\n        cy.log(\"✅ Balance indicator overlay found (component integrated)\");\n        cy.get('[data-testid=\"balance-indicator-overlay\"]').should(\"exist\");\n    }\n    else if (hasBalanceText) {\n        cy.log(\"✅ Balance text found in UI\");\n    }\n    else {\n        cy.log(\"ℹ️ Balance indicator not integrated yet - skipping assertion\");\n    }\n});\n// ============================================================\n// 3. Test Stance Transition Vulnerability (30s)\n// ============================================================\ncy.log(\"3️⃣ Testing Stance Transition Vulnerability\");\n// Record initial state\ncy.log(\"📊 Initial state recorded\");\n// Perform rapid stance changes to trigger vulnerability\n// 1 = Geon (Heaven), 2 = Tae (Lake), 3 = Li (Fire), 4 = Jin (Thunder)\ncy.get(\"body\").type(\"1\");\ncy.wait(200);\ncy.log(\"✅ Changed to Geon stance (Heaven)\");\n// Change stance to trigger transition vulnerability\ncy.get(\"body\").type(\"2\");\ncy.log(\"✅ Changed to Tae stance (Lake) - transition started\");\n// Assert vulnerability indicator appears during 0.5s window (conditional on integration)\n// The indicator should appear immediately during transition when integrated\ncy.get(\"body\", { timeout: 1000 }).then(($body) => {\n    const hasVulnerabilityOverlay = $body.find('[data-testid=\"vulnerability-indicator-overlay\"]').length > 0;\n    const hasVulnerableText = $body.text().includes(\"취약\") ||\n        $body.text().includes(\"Vulnerable\");\n    if (hasVulnerabilityOverlay) {\n        // When the vulnerability overlay is integrated, require the text to be present\n        cy.wrap(hasVulnerableText).should(\"be.true\");\n        cy.log(\"✅ Vulnerability indicator text displayed during stance transition\");\n    }\n    else if (hasVulnerableText) {\n        // Vulnerability text present without dedicated overlay - likely legacy integration\n        cy.log(\"ℹ️ Vulnerability text present during stance transition (no dedicated overlay found)\");\n    }\n    else {\n        // Overlay/text not integrated yet - keep test non-blocking until runtime integration lands\n        cy.log(\"ℹ️ Vulnerability indicator overlay not integrated yet - skipping assertion\");\n    }\n});\ncy.wait(200);\ncy.get(\"body\").type(\"3\");\ncy.wait(200);\ncy.log(\"✅ Changed to Li stance (Fire)\");\n// Verify vulnerability indicator was present during transition\ncy.log(\"✅ Transition vulnerability window validated\");\ncy.wait(600); // Wait for vulnerability window to close (>500ms)\ncy.log(\"✅ Vulnerability window closed\");\n// ============================================================\n// 4. Test Rapid Stance Change Penalty (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Rapid Stance Change Penalty\");\n// Perform >2 stance changes within 3 seconds\ncy.get(\"body\").type(\"4\"); // Jin\ncy.wait(500);\ncy.get(\"body\").type(\"5\"); // Son (Wind)\ncy.wait(500);\ncy.get(\"body\").type(\"6\"); // Gam (Water)\ncy.wait(500);\ncy.log(\"✅ Executed 3 rapid stance changes\");\n// Check for penalty indicator\ncy.get(\"body\").then(($body) => {\n    const hasPenaltyText = $body.text().includes(\"급속변경\") ||\n        $body.text().includes(\"Rapid Change\") ||\n        $body.text().includes(\"벌칙\") ||\n        $body.text().includes(\"Penalty\");\n    if (hasPenaltyText) {\n        cy.log(\"✅ Rapid change penalty indicator detected\");\n    }\n    else {\n        cy.log(\"⚠️ Penalty indicator may be internal or not visible\");\n    }\n});\ncy.wait(2500); // Wait for penalty to expire (2s duration + buffer)\ncy.log(\"✅ Penalty duration expired\");\n// ============================================================\n// 5. Test Leg Damage Affects Balance (40s)\n// ============================================================\ncy.log(\"5️⃣ Testing Leg Damage Balance Modifier\");\n// Target opponent's legs with low attacks\n// Switch to Earth stance (Gon) for sweep techniques\ncy.get(\"body\").type(\"8\"); // Gon (Earth)\ncy.wait(500);\ncy.log(\"✅ Switched to Gon stance (Earth) for leg sweeps\");\n// Execute low attacks targeting legs\nfor (let i = 0; i < 4; i++) {\n    cy.get(\"body\").type(\" \"); // Spacebar for attack\n    cy.wait(800);\n}\ncy.log(\"✅ Executed 4 leg sweep attacks\");\n// Check balance state change\ncy.get(\"body\").then(($body) => {\n    const hasBalanceWarning = $body.text().includes(\"불안정\") ||\n        $body.text().includes(\"Unsteady\") ||\n        $body.text().includes(\"균형상실\") ||\n        $body.text().includes(\"Off-Balance\");\n    if (hasBalanceWarning) {\n        cy.log(\"✅ Balance state deteriorated after leg damage\");\n    }\n});\n// ============================================================\n// 6. Test Knockback Resistance by Stance (30s)\n// ============================================================\ncy.log(\"6️⃣ Testing Knockback Resistance (Stance-based)\");\n// Test defensive stance (Mountain = Gan, stance 7)\ncy.get(\"body\").type(\"7\"); // Gan (Mountain)\ncy.wait(500);\ncy.log(\"✅ Switched to Gan stance (Mountain) - High knockback resistance\");\n// Receive attack in defensive stance\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"📊 Received attack in defensive stance\");\n// Switch to offensive stance (Heaven = Geon, stance 1)\ncy.get(\"body\").type(\"1\"); // Geon (Heaven)\ncy.wait(500);\ncy.log(\"✅ Switched to Geon stance (Heaven) - Low knockback resistance\");\n// Receive attack in offensive stance\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"📊 Received attack in offensive stance\");\n// Note: Actual knockback difference would need combat log analysis\ncy.log(\"ℹ️ Knockback resistance varies by stance (internal mechanic)\");\n// ============================================================\n// 7. Test Balance Recovery Over Time (20s)\n// ============================================================\ncy.log(\"7️⃣ Testing Balance Recovery Mechanics\");\n// Stop attacking and wait for balance to recover\ncy.wait(3000);\ncy.log(\"⏳ Waiting for balance recovery...\");\ncy.get(\"body\").then(($body) => {\n    const hasRecoveredBalance = $body.text().includes(\"안정\") ||\n        $body.text().includes(\"Stable\");\n    if (hasRecoveredBalance) {\n        cy.log(\"✅ Balance recovered to stable state\");\n    }\n    else {\n        cy.log(\"ℹ️ Balance recovery in progress\");\n    }\n});\n// ============================================================\n// 8. Verify Visual Feedback (20s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Visual Feedback\");\n// Check for bilingual Korean-English text\ncy.get(\"body\").then(($body) => {\n    const hasKoreanText = $body.text().includes(\"균형\");\n    const hasEnglishText = $body.text().includes(\"Balance\");\n    if (hasKoreanText && hasEnglishText) {\n        cy.log(\"✅ Bilingual balance indicators present\");\n    }\n});\n// Check for color-coded indicators\ncy.log(\"✅ Checking color-coded balance states\");\n// Green (Stable), Yellow (Unsteady), Orange (Off-Balance), Red (Falling)\n// ============================================================\n// 9. Test Vulnerability During Transition (20s)\n// ============================================================\ncy.log(\"9️⃣ Testing Vulnerability During Active Transition\");\n// Start a stance change and immediately check for vulnerability\ncy.get(\"body\").type(\"2\"); // Start transition to Tae\ncy.wait(100); // Mid-transition (~100ms into 500ms window)\ncy.get(\"body\").then(($body) => {\n    const isVulnerable = $body.text().includes(\"취약\") ||\n        $body.text().includes(\"Vulnerable\");\n    if (isVulnerable) {\n        cy.log(\"✅ Vulnerability detected mid-transition\");\n    }\n});\ncy.wait(500); // Complete transition\ncy.log(\"✅ Transition completed\");\n// ============================================================\n// 10. Test Combined Vulnerabilities (20s)\n// ============================================================\ncy.log(\"🔟 Testing Combined Vulnerability Multipliers\");\n// Create scenario with multiple vulnerability factors:\n// 1. Low balance state\n// 2. Stance transition\n// 3. Rapid change penalty\n// Reduce balance with leg attacks\ncy.get(\"body\").type(\"8\"); // Earth stance\ncy.wait(300);\ncy.get(\"body\").type(\" \");\ncy.wait(800);\ncy.get(\"body\").type(\" \");\ncy.wait(800);\n// Trigger rapid changes\ncy.get(\"body\").type(\"1\");\ncy.wait(200);\ncy.get(\"body\").type(\"3\");\ncy.wait(200);\ncy.get(\"body\").type(\"5\");\ncy.wait(200);\ncy.log(\"✅ Created combined vulnerability scenario\");\n// Check for multiple vulnerability indicators\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    const vulnerabilityCount = (bodyText.includes(\"취약\") || bodyText.includes(\"Vulnerable\") ? 1 : 0) +\n        (bodyText.includes(\"급속변경\") || bodyText.includes(\"Rapid Change\") ? 1 : 0) +\n        (bodyText.includes(\"균형상실\") || bodyText.includes(\"Off-Balance\") ? 1 : 0);\n    cy.log(`📊 Vulnerability indicators detected: ${vulnerabilityCount}`);\n});\n// ============================================================\n// Test Complete\n// ============================================================\ncy.log(\"✅ Balance/Vulnerability System E2E Test Complete\");",
               "err": {},
-              "uuid": "9dce72a7-6198-4778-84e8-af5310d29f8c",
-              "parentUUID": "8ad6a06f-41ce-4284-8cca-f607596bc8d3",
+              "uuid": "ecc42284-aee8-40d0-9250-a6d18b887ae3",
+              "parentUUID": "13b99582-b258-4599-bb97-57349b684363",
               "isHook": false,
               "skipped": false
             },
@@ -748,7 +748,7 @@
               "title": "should maintain 60fps performance during balance updates",
               "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should maintain 60fps performance during balance updates",
               "timedOut": null,
-              "duration": 9416,
+              "duration": 9393,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -757,8 +757,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Balance System - Performance\");\n// ============================================================\n// Performance Test (30s)\n// ============================================================\ncy.log(\"⚡ Testing 60fps Performance with Active Balance System\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.wait(1000);\n// Perform rapid stance changes to stress-test the system\ncy.log(\"🔄 Triggering rapid stance changes\");\nfor (let i = 0; i < 10; i++) {\n    cy.get(\"body\").type(String((i % 8) + 1));\n    cy.wait(300);\n}\n// Measure FPS during the stance changes and balance updates\ncy.assertSmoothFPS(3000);\ncy.log(\"✅ Performance test complete\");",
               "err": {},
-              "uuid": "42c9bce2-99cf-4c01-81e1-765dc1b5dd1c",
-              "parentUUID": "8ad6a06f-41ce-4284-8cca-f607596bc8d3",
+              "uuid": "5c771c90-116e-4080-bfde-208ffc47719d",
+              "parentUUID": "13b99582-b258-4599-bb97-57349b684363",
               "isHook": false,
               "skipped": false
             },
@@ -766,7 +766,7 @@
               "title": "should handle edge cases gracefully",
               "fullTitle": "Balance/Vulnerability System - E2E Test (Target: 3-4 min) should handle edge cases gracefully",
               "timedOut": null,
-              "duration": 9353,
+              "duration": 9301,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -775,22 +775,22 @@
               "context": null,
               "code": "cy.annotate(\"Testing Balance System - Edge Cases\");\n// ============================================================\n// Edge Case Tests (40s)\n// ============================================================\ncy.log(\"🔧 Testing Edge Cases\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.wait(1000);\n// Test 1: Rapid successive transitions\ncy.log(\"Test 1: Rapid successive stance changes\");\nfor (let i = 0; i < 8; i++) {\n    cy.get(\"body\").type(String((i % 8) + 1));\n    cy.wait(100); // Very rapid\n}\ncy.wait(1000);\ncy.log(\"✅ Handled rapid transitions\");\n// Test 2: Transition during attack\ncy.log(\"Test 2: Stance change during attack animation\");\ncy.get(\"body\").type(\" \"); // Start attack\ncy.wait(100);\ncy.get(\"body\").type(\"2\"); // Change stance mid-attack\ncy.wait(1000);\ncy.log(\"✅ Handled transition during attack\");\n// Test 3: Multiple simultaneous systems\ncy.log(\"Test 3: Balance + Stamina + Breathing systems active\");\n// Execute attacks to trigger multiple systems\nfor (let i = 0; i < 5; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(500);\n}\ncy.wait(1000);\ncy.log(\"✅ Multiple systems handled simultaneously\");\ncy.log(\"✅ Edge case tests complete\");",
               "err": {},
-              "uuid": "613b7473-b0f6-43e9-8a5b-3bd10d66111f",
-              "parentUUID": "8ad6a06f-41ce-4284-8cca-f607596bc8d3",
+              "uuid": "febaf81b-2129-4d83-893b-83efd8213491",
+              "parentUUID": "13b99582-b258-4599-bb97-57349b684363",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "9dce72a7-6198-4778-84e8-af5310d29f8c",
-            "42c9bce2-99cf-4c01-81e1-765dc1b5dd1c",
-            "613b7473-b0f6-43e9-8a5b-3bd10d66111f"
+            "ecc42284-aee8-40d0-9250-a6d18b887ae3",
+            "5c771c90-116e-4080-bfde-208ffc47719d",
+            "febaf81b-2129-4d83-893b-83efd8213491"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 29804,
+          "duration": 29743,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -806,7 +806,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "efa0c158-c2dc-4444-8f85-6014b5a5d6a4",
+      "uuid": "12bd81de-4a04-4650-a018-02ce280ccfac",
       "title": "",
       "fullFile": "cypress/e2e/combat/breathing-disruption.cy.ts",
       "file": "cypress/e2e/combat/breathing-disruption.cy.ts",
@@ -815,7 +815,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "0a668051-befe-493d-b154-9eeae0520d8f",
+          "uuid": "26ad0a54-80cc-4853-ae47-8de7f494fb27",
           "title": "Breathing Disruption System - E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -826,7 +826,7 @@
               "title": "should trigger breathing disruption on solar plexus strike and apply stamina regeneration penalty",
               "fullTitle": "Breathing Disruption System - E2E Test (Target: 2-3 min) should trigger breathing disruption on solar plexus strike and apply stamina regeneration penalty",
               "timedOut": null,
-              "duration": 10798,
+              "duration": 10914,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -835,8 +835,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Breathing Disruption System - Solar Plexus Strike\");\n// ============================================================\n// 1. Verify Combat Screen is Ready (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen is Ready\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen loaded\");\n// Wait for combat to initialize\ncy.wait(1000);\n// ============================================================\n// 2. Check Initial State - No Breathing Disruption (10s)\n// ============================================================\ncy.log(\"2️⃣ Checking Initial State - No Breathing Disruption\");\n// Check that breathing indicator is not visible initially (or shows no disruption)\ncy.get(\"body\").then(($body) => {\n    // Look for breathing indicator in either HUD\n    const breathingIndicatorExists = $body.find('[data-testid=\"combat-left-hud-breathing-section\"]').length > 0 ||\n        $body.find('[data-testid=\"combat-right-hud-breathing-section\"]').length > 0;\n    if (breathingIndicatorExists) {\n        cy.log(\"✅ Breathing indicator component found in HUD\");\n    }\n    else {\n        cy.log(\"⚠️ Breathing indicator may be embedded in canvas or not visible when no disruption\");\n    }\n});\n// ============================================================\n// 3. Execute Solar Plexus Strike (20s)\n// ============================================================\ncy.log(\"3️⃣ Executing Solar Plexus Strike\");\n// Switch to Li stance (Fire stance - known for precise strikes)\n// Li stance is typically key \"3\" in the trigram system\ncy.get(\"body\").type(\"3\");\ncy.wait(500);\ncy.log(\"✅ Switched to Li stance (Fire)\");\n// Execute attack (spacebar)\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"✅ Executed attack\");\n// Execute multiple attacks to ensure we hit solar plexus area\nfor (let i = 0; i < 3; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(800);\n}\ncy.log(\"✅ Executed multiple strikes to target torso/solar plexus\");\n// ============================================================\n// 4. Verify Breathing Disruption UI Feedback (20s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Breathing Disruption UI Feedback\");\n// Check for breathing indicator visibility\n// The indicator should show breathing difficulty with Korean-English text\ncy.get(\"body\").then(($body) => {\n    // Look for breathing indicator or breathing-related text\n    const hasBreathingIndicator = $body.find('[data-testid*=\"breathing\"]').length > 0 ||\n        $body.text().includes(\"호흡곤란\") ||\n        $body.text().includes(\"Breathing Difficulty\");\n    if (hasBreathingIndicator) {\n        cy.log(\"✅ Breathing disruption indicator visible\");\n        // Check for Korean text\n        if ($body.text().includes(\"호흡곤란\")) {\n            cy.log(\"✅ Korean text (호흡곤란) displayed\");\n        }\n        // Check for English text\n        if ($body.text().includes(\"Breathing Difficulty\")) {\n            cy.log(\"✅ English text (Breathing Difficulty) displayed\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Breathing disruption may not be triggered or indicator is in canvas\");\n    }\n});\n// Wait to observe the effect\ncy.wait(2000);\n// ============================================================\n// 5. Verify Stamina Regeneration Penalty (30s)\n// ============================================================\ncy.log(\"5️⃣ Verifying Stamina Regeneration Penalty\");\n// Monitor stamina over time to verify reduced regeneration\n// In a real scenario, we would check that stamina regenerates slower\n// For E2E, we verify the system is active by checking UI indicators\ncy.log(\"⏱️ Monitoring stamina regeneration with breathing disruption active\");\ncy.wait(3000); // Wait 3 seconds to observe regeneration\n// Check that player state indicators are updating\ncy.get(\"body\").then(($body) => {\n    // Look for stamina bar or stamina indicators\n    const hasStaminaIndicator = $body.find('[data-testid*=\"stamina\"]').length > 0 ||\n        $body.find('[data-testid*=\"player-hud\"]').length > 0;\n    if (hasStaminaIndicator) {\n        cy.log(\"✅ Player stamina indicators visible\");\n    }\n});\n// ============================================================\n// 6. Verify Recovery Mechanics (20s)\n// ============================================================\ncy.log(\"6️⃣ Verifying Recovery Mechanics\");\n// Wait for potential recovery (breathing disruption should fade over time)\ncy.log(\"⏱️ Waiting for breathing disruption recovery\");\ncy.wait(5000); // Wait 5 seconds\n// Check if disruption indicator shows recovery or reduced severity\ncy.get(\"body\").then(($body) => {\n    if ($body.text().includes(\"Recovery\") || $body.text().includes(\"회복중\")) {\n        cy.log(\"✅ Recovery indicator visible\");\n    }\n    else {\n        cy.log(\"⏱️ Disruption may still be active or recovered\");\n    }\n});\n// ============================================================\n// 7. Test Multiple Respiratory Strikes Accumulation (20s)\n// ============================================================\ncy.log(\"7️⃣ Testing Multiple Respiratory Strikes Accumulation\");\n// Execute more torso strikes to test accumulation\nfor (let i = 0; i < 2; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(1000);\n}\ncy.log(\"✅ Executed additional torso strikes\");\n// Verify that effects accumulate (indicator should still be visible or intensified)\ncy.wait(2000);\n// ============================================================\n// 8. Performance Check (5s)\n// ============================================================\ncy.log(\"8️⃣ Verifying System Performance\");\n// Check that the game is still responsive and rendering at good FPS\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas still rendering\");\n// Check that combat screen is still functional\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen still responsive\");\n// ============================================================\n// Final Summary\n// ============================================================\ncy.log(\"✅ BREATHING DISRUPTION E2E TEST COMPLETE\");\ncy.log(\"Summary:\");\ncy.log(\"- Solar plexus strikes executed\");\ncy.log(\"- Breathing disruption system active\");\ncy.log(\"- UI feedback verified (Korean-English bilingual)\");\ncy.log(\"- Stamina regeneration penalty active\");\ncy.log(\"- Recovery mechanics observed\");\ncy.log(\"- Performance maintained\");",
               "err": {},
-              "uuid": "dc7a0916-0573-4d1c-bba8-cab845b3dac5",
-              "parentUUID": "0a668051-befe-493d-b154-9eeae0520d8f",
+              "uuid": "7587812d-198a-4297-a823-29f989a1516f",
+              "parentUUID": "26ad0a54-80cc-4853-ae47-8de7f494fb27",
               "isHook": false,
               "skipped": false
             },
@@ -844,7 +844,7 @@
               "title": "should display breathing indicator in both left and right HUDs",
               "fullTitle": "Breathing Disruption System - E2E Test (Target: 2-3 min) should display breathing indicator in both left and right HUDs",
               "timedOut": null,
-              "duration": 9223,
+              "duration": 9336,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -853,21 +853,21 @@
               "context": null,
               "code": "cy.annotate(\"Testing Breathing Indicator UI Integration\");\ncy.log(\"Verifying BreathingIndicator in Combat UI\");\n// Execute torso strikes to trigger breathing disruption\ncy.log(\"Executing torso strikes to trigger breathing disruption\");\n// Switch to stance and execute attacks\ncy.get(\"body\").type(\"3\"); // Li stance\ncy.wait(500);\n// Execute multiple attacks to ensure torso damage\nfor (let i = 0; i < 4; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(800);\n}\ncy.log(\"✅ Executed torso strikes\");\n// Wait for breathing disruption to be applied\ncy.wait(1000);\n// Check for breathing indicator containers\ncy.get(\"body\").then(($body) => {\n    // Check for Player 1 breathing indicator container\n    const player1IndicatorExists = $body.find('[data-testid=\"player1-breathing-indicator-container\"]').length > 0;\n    if (player1IndicatorExists) {\n        cy.log(\"✅ Player 1 breathing indicator container found\");\n        // Check for actual breathing indicator component\n        const breathingIndicatorExists = $body.find('[data-testid=\"breathing-indicator\"]').length > 0;\n        if (breathingIndicatorExists) {\n            cy.log(\"✅ BreathingIndicator component visible\");\n            // Check for Korean-English bilingual labels\n            const breathingLabel = $body.find('[data-testid=\"breathing-label\"]');\n            if (breathingLabel.length > 0) {\n                const labelText = breathingLabel.text();\n                // Check for any Korean breathing disruption term\n                const hasKoreanLabel = labelText.includes(\"바람맞음\") || // Winded\n                    labelText.includes(\"헐떡임\") || // Gasping\n                    labelText.includes(\"호흡곤란\"); // Severely Winded\n                // Check for any English breathing disruption term\n                const hasEnglishLabel = labelText.includes(\"Winded\") ||\n                    labelText.includes(\"Gasping\") ||\n                    labelText.includes(\"Severely Winded\");\n                if (hasKoreanLabel) {\n                    cy.log(\"✅ Korean breathing disruption label found\");\n                }\n                if (hasEnglishLabel) {\n                    cy.log(\"✅ English breathing disruption label found\");\n                }\n            }\n            // Check for timer\n            const breathingTimer = $body.find('[data-testid=\"breathing-timer\"]');\n            if (breathingTimer.length > 0) {\n                cy.log(\"✅ Breathing disruption timer visible\");\n            }\n            // Check for icon\n            const breathingIcon = $body.find('[data-testid=\"breathing-icon\"]');\n            if (breathingIcon.length > 0) {\n                cy.log(\"✅ Breathing disruption icon (🫁) visible\");\n            }\n        }\n        else {\n            cy.log(\"⚠️ BreathingIndicator may be hidden (no active disruption yet)\");\n        }\n    }\n    else {\n        cy.log(\"⚠️ Player 1 breathing indicator container not found\");\n    }\n    // Check for Player 2 breathing indicator container\n    const player2IndicatorExists = $body.find('[data-testid=\"player2-breathing-indicator-container\"]').length > 0;\n    if (player2IndicatorExists) {\n        cy.log(\"✅ Player 2 breathing indicator container found\");\n    }\n    else {\n        cy.log(\"⚠️ Player 2 breathing indicator container not found\");\n    }\n});\ncy.log(\"✅ HUD INTEGRATION TEST COMPLETE\");",
               "err": {},
-              "uuid": "d3225d78-446d-45b1-ae1b-99b419d7d6ac",
-              "parentUUID": "0a668051-befe-493d-b154-9eeae0520d8f",
+              "uuid": "d8ca083e-1768-4cd4-bf23-761ef570adc6",
+              "parentUUID": "26ad0a54-80cc-4853-ae47-8de7f494fb27",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "dc7a0916-0573-4d1c-bba8-cab845b3dac5",
-            "d3225d78-446d-45b1-ae1b-99b419d7d6ac"
+            "7587812d-198a-4297-a823-29f989a1516f",
+            "d8ca083e-1768-4cd4-bf23-761ef570adc6"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 20021,
+          "duration": 20250,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -883,7 +883,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "38535d04-8372-4d09-8c64-317263eb311a",
+      "uuid": "01195128-db25-467f-87b8-408b66c27fbb",
       "title": "",
       "fullFile": "cypress/e2e/combat/injury-movement.cy.ts",
       "file": "cypress/e2e/combat/injury-movement.cy.ts",
@@ -892,7 +892,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "62df45a7-b5b2-401c-bd69-aea21bac5031",
+          "uuid": "d25bad54-9c07-40e0-971a-e331e53abfb6",
           "title": "Injury Movement System - E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -903,7 +903,7 @@
               "title": "should reduce movement speed after leg injury and display bilingual status",
               "fullTitle": "Injury Movement System - E2E Test (Target: 2-3 min) should reduce movement speed after leg injury and display bilingual status",
               "timedOut": null,
-              "duration": 10816,
+              "duration": 10783,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -912,8 +912,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Injury Movement Integration - Leg Damage\");\n// ============================================================\n// 1. Verify Combat Screen is Ready (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen is Ready\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Combat screen loaded\");\n// Wait for combat to initialize\ncy.wait(1000);\n// ============================================================\n// 2. Verify Initial State - No Movement Indicators (5s)\n// ============================================================\ncy.log(\"2️⃣ Checking Initial State - No Movement Status\");\n// Movement status indicators should not be visible when players are healthy\ncy.get(\"body\").then(($body) => {\n    const player1StatusExists = $body.find('[data-testid=\"player1-movement-status\"]').length > 0;\n    const player2StatusExists = $body.find('[data-testid=\"player2-movement-status\"]').length > 0;\n    if (player1StatusExists || player2StatusExists) {\n        cy.log(\"⚠️ Movement status visible at start (players may already be injured)\");\n    }\n    else {\n        cy.log(\"✅ No movement status indicators - players healthy\");\n    }\n});\n// ============================================================\n// 3. Switch to Offensive Stance for Leg Targeting (5s)\n// ============================================================\ncy.log(\"3️⃣ Switching to Jin Stance for Explosive Power\");\n// Jin stance (Thunder) - key \"4\" - explosive power techniques\ncy.get(\"body\").type(\"4\");\ncy.wait(500);\ncy.log(\"✅ Switched to Jin stance (Thunder)\");\n// ============================================================\n// 4. Execute Multiple Leg Strikes to Cause Damage (30s)\n// ============================================================\ncy.log(\"4️⃣ Executing Multiple Leg Strikes\");\n// Execute 8-10 attacks to significantly damage opponent's legs\n// This should reduce leg health below 70% threshold\nfor (let i = 1; i <= 10; i++) {\n    cy.log(`Strike ${i}/10 - Attacking opponent`);\n    // Execute attack (spacebar)\n    cy.get(\"body\").type(\" \");\n    cy.wait(600);\n    // Verify rendering continues\n    if (i % 3 === 0) {\n        cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });\n    }\n}\ncy.log(\"✅ All 10 strikes completed\");\n// ============================================================\n// 5. Verify Movement Status Indicator Appears (15s)\n// ============================================================\ncy.log(\"5️⃣ Verifying Movement Status Indicator\");\n// Wait for injury system to update\ncy.wait(1000);\n// Check for movement status indicator (should appear above injured player)\n// Note: Damage distribution may vary, so we check if ANY player shows movement impairment\ncy.get(\"body\").then(($body) => {\n    const player1StatusExists = $body.find('[data-testid=\"player1-movement-status\"]').is(\":visible\");\n    const player2StatusExists = $body.find('[data-testid=\"player2-movement-status\"]').is(\":visible\");\n    // At least one player should show movement impairment after extensive damage\n    const anyPlayerImpaired = player1StatusExists || player2StatusExists;\n    if (anyPlayerImpaired) {\n        cy.log(\"✅ Movement status indicator visible (player injured)\");\n        // Verify bilingual text is present on whichever player is injured\n        if (player2StatusExists) {\n            cy.get('[data-testid=\"player2-movement-status\"]')\n                .should(\"be.visible\")\n                .and(\"contain.text\", \"|\"); // Verify bilingual \"Korean | English\" format\n            cy.get('[data-testid=\"player2-movement-status\"]').invoke(\"text\").then((text) => {\n                cy.log(`Movement status text: \"${text}\"`);\n            });\n        }\n        if (player1StatusExists) {\n            cy.get('[data-testid=\"player1-movement-status\"]')\n                .should(\"be.visible\")\n                .and(\"contain.text\", \"|\"); // Verify bilingual format\n        }\n    }\n    else {\n        // If no impairment visible, log for debugging but don't fail test\n        // Combat system may distribute damage across body parts differently\n        cy.log(\"⚠️ No movement status visible after attacks - damage may not have targeted legs sufficiently\");\n    }\n});\n// ============================================================\n// 6. Continue Attacking to Test Severe Limp State (20s)\n// ============================================================\ncy.log(\"6️⃣ Testing Severe Limp State with Additional Damage\");\n// Execute more attacks to push injury to severe threshold (< 30% health)\nfor (let i = 1; i <= 8; i++) {\n    cy.log(`Additional strike ${i}/8`);\n    cy.get(\"body\").type(\" \");\n    cy.wait(500);\n}\ncy.log(\"✅ Additional strikes completed\");\ncy.wait(1000);\n// ============================================================\n// 7. Verify Severe Movement Impairment Indicator (10s)\n// ============================================================\ncy.log(\"7️⃣ Verifying Severe Movement Impairment\");\ncy.get(\"body\").then(($body) => {\n    const player1StatusExists = $body.find('[data-testid=\"player1-movement-status\"]').is(\":visible\");\n    const player2StatusExists = $body.find('[data-testid=\"player2-movement-status\"]').is(\":visible\");\n    // At least one player should show movement impairment after extensive damage\n    if (player1StatusExists || player2StatusExists) {\n        cy.log(\"✅ Movement status visible with extensive damage\");\n        // Check the injured player's status\n        if (player2StatusExists) {\n            cy.get('[data-testid=\"player2-movement-status\"]')\n                .invoke(\"text\")\n                .then((text) => {\n                cy.log(`Severe state text: \"${text}\"`);\n                // Verify bilingual format is maintained\n                expect(text).to.match(/\\|/);\n                cy.log(\"✅ Bilingual format confirmed in severe state\");\n            });\n        }\n        if (player1StatusExists) {\n            cy.get('[data-testid=\"player1-movement-status\"]')\n                .invoke(\"text\")\n                .then((text) => {\n                cy.log(`Player 1 movement state: \"${text}\"`);\n            });\n        }\n    }\n    else {\n        cy.log(\"⚠️ Movement status not visible - combat may have ended or damage insufficient\");\n    }\n});\n// ============================================================\n// 8. Verify Performance Maintained (10s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Performance with Injury System Active\");\n// Execute more actions to test performance\ncy.get(\"body\").type(\" \");\ncy.wait(300);\ncy.get(\"body\").type(\" \");\ncy.wait(300);\n// Verify Three.js is still rendering smoothly\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Performance maintained with injury movement system\");\n// ============================================================\n// 9. Final Validation (5s)\n// ============================================================\ncy.log(\"9️⃣ Final Validation\");\n// Verify combat screen is still functional\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Injury movement integration test completed successfully\");",
               "err": {},
-              "uuid": "efb62723-47be-47f5-9888-68f17941371a",
-              "parentUUID": "62df45a7-b5b2-401c-bd69-aea21bac5031",
+              "uuid": "47ececf1-e8c7-4995-a1dd-d91101330e9e",
+              "parentUUID": "d25bad54-9c07-40e0-971a-e331e53abfb6",
               "isHook": false,
               "skipped": false
             },
@@ -921,7 +921,7 @@
               "title": "should show cumulative penalty with both legs injured",
               "fullTitle": "Injury Movement System - E2E Test (Target: 2-3 min) should show cumulative penalty with both legs injured",
               "timedOut": null,
-              "duration": 9235,
+              "duration": 9342,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -930,21 +930,21 @@
               "context": null,
               "code": "cy.annotate(\"Testing Both Legs Injured - Cumulative Penalty\");\n// ============================================================\n// Setup\n// ============================================================\ncy.log(\"1️⃣ Setting up combat\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.wait(1000);\n// ============================================================\n// Execute many attacks to damage both legs\n// ============================================================\ncy.log(\"2️⃣ Executing extensive attacks to damage both legs\");\n// Switch to aggressive stance\ncy.get(\"body\").type(\"4\"); // Jin stance\ncy.wait(500);\n// Execute 15 attacks to ensure both legs are damaged\nfor (let i = 1; i <= 15; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(500);\n}\ncy.log(\"✅ Extensive damage applied\");\ncy.wait(1500);\n// ============================================================\n// Verify severe movement impairment\n// ============================================================\ncy.log(\"3️⃣ Verifying severe movement impairment from both legs\");\ncy.get(\"body\").then(($body) => {\n    const statusExists = $body.find('[data-testid=\"player2-movement-status\"]').is(\":visible\");\n    if (statusExists) {\n        cy.get('[data-testid=\"player2-movement-status\"]').should(\"be.visible\");\n        cy.log(\"✅ Movement status visible with extensive leg damage\");\n        // With both legs damaged, player should show severe impairment\n        cy.get('[data-testid=\"player2-movement-status\"]').then(($el) => {\n            const text = $el.text();\n            cy.log(`Movement state with both legs damaged: \"${text}\"`);\n        });\n    }\n    else {\n        cy.log(\"⚠️ Movement status not visible - combat may have ended\");\n    }\n});\ncy.log(\"✅ Both legs injured test completed\");",
               "err": {},
-              "uuid": "c70a2624-4e55-49c7-bde1-ac255ab77d72",
-              "parentUUID": "62df45a7-b5b2-401c-bd69-aea21bac5031",
+              "uuid": "a1c415ce-7267-4145-9cb7-58e0d22d3925",
+              "parentUUID": "d25bad54-9c07-40e0-971a-e331e53abfb6",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "efb62723-47be-47f5-9888-68f17941371a",
-            "c70a2624-4e55-49c7-bde1-ac255ab77d72"
+            "47ececf1-e8c7-4995-a1dd-d91101330e9e",
+            "a1c415ce-7267-4145-9cb7-58e0d22d3925"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 20051,
+          "duration": 20125,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -960,7 +960,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "ffa74519-9197-4a42-b90b-7c9c9e643056",
+      "uuid": "7c7f56d5-2e92-4f6b-94ed-5575d0c4eb2b",
       "title": "",
       "fullFile": "cypress/e2e/performance/mobile-performance.cy.ts",
       "file": "cypress/e2e/performance/mobile-performance.cy.ts",
@@ -969,7 +969,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "5aa0f195-f345-4554-b325-d383d86bfc2b",
+          "uuid": "3ef44645-8569-45e1-a43c-04d01fb66606",
           "title": "Mobile Performance Optimization (Target: 45s)",
           "fullFile": "",
           "file": "",
@@ -980,7 +980,7 @@
               "title": "should integrate adaptive quality system during 30-second mobile combat session",
               "fullTitle": "Mobile Performance Optimization (Target: 45s) should integrate adaptive quality system during 30-second mobile combat session",
               "timedOut": null,
-              "duration": 7770,
+              "duration": 7825,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -989,8 +989,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Mobile Performance Integration\");\n// ============================================================\n// 1. Enter Combat (Mobile Viewport)\n// ============================================================\ncy.log(\"1️⃣ Entering combat on mobile viewport (375x667)\");\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.get(\"canvas\").should(\"be.visible\");\n// ============================================================\n// 2. 30-Second Combat Session with Actions\n// ============================================================\ncy.log(\"2️⃣ Starting 30-second combat session with active gameplay\");\n// Cycle through stances\ncy.wait(500);\ncy.get(\"body\").type(\"1\"); // Switch to Geon stance\ncy.wait(500);\ncy.get(\"body\").type(\"3\"); // Switch to Li stance\ncy.wait(500);\n// Attack sequence\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\n// Movement and more stances\ncy.get(\"body\").type(\"w\"); // Move forward\ncy.wait(500);\ncy.get(\"body\").type(\"2\"); // Switch stance\ncy.wait(500);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\n// Final combat sequence\ncy.get(\"body\").type(\"6\"); // Switch stance\ncy.wait(500);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\ncy.log(\"✅ 30-second combat session complete\");\ncy.log(\"ℹ️ Adaptive quality system integrated and active\");",
               "err": {},
-              "uuid": "56c1d506-6792-49eb-8782-07e39a6918c4",
-              "parentUUID": "5aa0f195-f345-4554-b325-d383d86bfc2b",
+              "uuid": "455a61cf-e896-46bd-8ffc-a2f6b0a15ca2",
+              "parentUUID": "3ef44645-8569-45e1-a43c-04d01fb66606",
               "isHook": false,
               "skipped": false
             },
@@ -998,7 +998,7 @@
               "title": "should verify adaptive quality system is integrated",
               "fullTitle": "Mobile Performance Optimization (Target: 45s) should verify adaptive quality system is integrated",
               "timedOut": null,
-              "duration": 6234,
+              "duration": 6408,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1007,21 +1007,21 @@
               "context": null,
               "code": "cy.annotate(\"Testing Adaptive Quality System Integration\");\n// Enter combat\ncy.log(\"1️⃣ Entering combat to verify adaptive quality\");\ncy.enterCombatMode();\n// Verify combat screen rendered\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\n// Wait for system to be active\ncy.wait(2000);\n// Perform actions\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(1000);\ncy.get(\"body\").type(\" \");\ncy.wait(1000);\ncy.log(\"✅ Adaptive quality system integration verified\");\ncy.log(\"ℹ️ System monitors FPS and adjusts quality automatically\");",
               "err": {},
-              "uuid": "aefeb2d4-645a-4918-ac57-fdd163ed6f29",
-              "parentUUID": "5aa0f195-f345-4554-b325-d383d86bfc2b",
+              "uuid": "98cc4dde-b819-4e48-98e7-6c4ae4653388",
+              "parentUUID": "3ef44645-8569-45e1-a43c-04d01fb66606",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "56c1d506-6792-49eb-8782-07e39a6918c4",
-            "aefeb2d4-645a-4918-ac57-fdd163ed6f29"
+            "455a61cf-e896-46bd-8ffc-a2f6b0a15ca2",
+            "98cc4dde-b819-4e48-98e7-6c4ae4653388"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 14004,
+          "duration": 14233,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1037,7 +1037,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "befe7d6a-2591-466b-9c94-5d66135b2d43",
+      "uuid": "ca005512-4401-4d2f-acd2-3336f198fee2",
       "title": "",
       "fullFile": "cypress/e2e/screens/combat-screen.cy.ts",
       "file": "cypress/e2e/screens/combat-screen.cy.ts",
@@ -1046,7 +1046,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "c5f02bc5-fddb-47df-b84f-49b1d4c059fd",
+          "uuid": "0638658f-4631-4c2d-85af-0015718b77d7",
           "title": "CombatScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1057,7 +1057,7 @@
               "title": "should render CombatScreen with all combat mechanics and UI",
               "fullTitle": "CombatScreen - Comprehensive E2E Test (Target: 3-4 min) should render CombatScreen with all combat mechanics and UI",
               "timedOut": null,
-              "duration": 10811,
+              "duration": 10836,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1066,20 +1066,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing CombatScreen - Full Combat Journey\");\n// ============================================================\n// 1. Verify Combat Screen Rendering (20s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen Rendering\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.log(\"✅ Combat screen exists\");\n// Check for HUD\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-hud\"]').length > 0) {\n        cy.get('[data-testid=\"combat-hud\"]').should(\"exist\");\n        cy.log(\"✅ Combat HUD found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat HUD not found, may be embedded in canvas\");\n    }\n});\n// ✅ IMPROVED: Verify Three.js Canvas is actively rendering (not frozen/blank)\ncy.get(\"canvas\").should(\"be.visible\");\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });\ncy.log(\"✅ Three.js rendering verified\");\n// ✅ IMPROVED: Verify health bars exist and have valid data\ncy.verifyHealthBar(\"player1-health\", 0, 100).then((health) => {\n    cy.log(`Player 1 health verified: ${health}`);\n});\ncy.verifyHealthBar(\"player2-health\", 0, 100).then((health) => {\n    cy.log(`Player 2 health verified: ${health}`);\n});\n// ============================================================\n// 2. Test Trigram Stance System with Verification (40s)\n// ============================================================\ncy.log(\"2️⃣ Testing Trigram Stance System (8 stances)\");\n// ✅ IMPROVED: Verify stance changes are reflected in UI\n// Test all 8 trigram stances with verification\nconst stanceNames = [\n    \"geon\",\n    \"tae\",\n    \"li\",\n    \"jin\",\n    \"son\",\n    \"gam\",\n    \"gan\",\n    \"gon\",\n];\nfor (let stance = 1; stance <= 8; stance++) {\n    cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);\n    cy.get(\"body\").type(stance.toString());\n    // Wait for stance indicator to update using assertion instead of fixed wait\n    cy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 2000 })\n        .should(\"exist\")\n        .invoke(\"text\")\n        .should(\"include\", stanceNames[stance - 1]);\n    cy.log(`✅ Stance ${stance} input processed`);\n}\ncy.log(\"✅ All 8 trigram stances tested\");\n// ============================================================\n// 3. Test Combat Actions with Health Verification (60s)\n// ============================================================\ncy.log(\"3️⃣ Testing Combat Actions with Health Verification\");\n// ✅ IMPROVED: Verify health changes when attacking\ncy.log(\"Testing attack action with health tracking...\");\n// Capture initial health of player 2 (opponent)\ncy.get('[data-testid=\"player2-health\"]', { timeout: 5000 })\n    .should(\"exist\")\n    .invoke(\"attr\", \"data-current\")\n    .then((health) => {\n    const initialHealth = parseFloat(health);\n    cy.log(`Player 2 initial health: ${initialHealth}`);\n    // Execute attack\n    cy.get(\"body\").type(\" \");\n    // Wait for health to update using assertion instead of fixed wait\n    cy.get('[data-testid=\"player2-health\"]', { timeout: 1500 })\n        .invoke(\"attr\", \"data-current\")\n        .should((updatedHealth) => {\n        const updatedHealthValue = parseFloat(updatedHealth);\n        expect(updatedHealthValue, \"Opponent health should decrease after attack\").to.be.lessThan(initialHealth);\n    })\n        .then((newHealth) => {\n        const currentHealth = parseFloat(newHealth);\n        cy.log(`Player 2 current health: ${currentHealth}`);\n        cy.log(`✅ Damage verified: ${initialHealth - currentHealth} HP lost`);\n    });\n});\n// Second attack with verification\ncy.get('[data-testid=\"player2-health\"]')\n    .invoke(\"attr\", \"data-current\")\n    .then((health) => {\n    const beforeAttack = parseFloat(health);\n    cy.get(\"body\").type(\" \");\n    // Wait for health to update using assertion\n    cy.get('[data-testid=\"player2-health\"]', { timeout: 1500 })\n        .invoke(\"attr\", \"data-current\")\n        .should((updatedHealth) => {\n        const updatedHealthValue = parseFloat(updatedHealth);\n        expect(updatedHealthValue, \"Second attack should deal damage\").to.be.lessThan(beforeAttack);\n    })\n        .then((newHealth) => {\n        const afterAttack = parseFloat(newHealth);\n        cy.log(`✅ Second attack executed (Health: ${beforeAttack} → ${afterAttack})`);\n    });\n});\n// Try using attack button if it exists with health verification\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"attack-button\"]').length > 0) {\n        cy.get('[data-testid=\"player2-health\"]')\n            .invoke(\"attr\", \"data-current\")\n            .then((health) => {\n            const before = parseFloat(health);\n            cy.get('[data-testid=\"attack-button\"]').click({ force: true });\n            // Wait for health to update using assertion\n            cy.get('[data-testid=\"player2-health\"]', { timeout: 1500 })\n                .invoke(\"attr\", \"data-current\")\n                .should((updatedHealth) => {\n                const updatedHealthValue = parseFloat(updatedHealth);\n                expect(updatedHealthValue, \"Attack button should deal damage\").to.be.lessThan(before);\n            })\n                .then((after) => {\n                const afterValue = parseFloat(after);\n                cy.log(`✅ Attack button verified (Health: ${before} → ${afterValue})`);\n            });\n        });\n    }\n    else {\n        cy.log(\"⚠️ Attack button not found, using keyboard only\");\n    }\n});\n// ============================================================\n// 4. Test Movement (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Movement System\");\n// Test WASD movement\ncy.gameActions([\"w\", \"a\", \"s\", \"d\"]);\ncy.log(\"✅ WASD movement tested\");\n// Test arrow key movement\ncy.get(\"body\").type(\"{uparrow}\");\ncy.get(\"body\").type(\"{leftarrow}\");\ncy.get(\"body\").type(\"{downarrow}\");\ncy.get(\"body\").type(\"{rightarrow}\");\ncy.log(\"✅ Arrow key movement tested\");\n// ============================================================\n// 5. Test Defense (20s)\n// ============================================================\ncy.log(\"5️⃣ Testing Defense Mechanics\");\n// Test guard/block with Shift key\ncy.get(\"body\").type(\"{shift}\", { release: false });\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 1000 }).should(\"exist\");\ncy.get(\"body\").type(\"{shift}\", { release: true });\ncy.log(\"✅ Guard/block tested\");\n// Test defend button if it exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"defend-button\"]').length > 0) {\n        cy.get('[data-testid=\"defend-button\"]').click({ force: true });\n        cy.get('[data-testid=\"combat-screen\"]', { timeout: 1000 }).should(\"exist\");\n        cy.log(\"✅ Defend button clicked\");\n    }\n    else {\n        cy.log(\"⚠️ Defend button not found\");\n    }\n});\n// ============================================================\n// 6. Verify Combat HUD Elements (20s)\n// ============================================================\ncy.log(\"6️⃣ Verifying Combat HUD Elements\");\n// Check for player stance indicators\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"player1-stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"player1-stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Player 1 stance indicator found\");\n    }\n    if ($body.find('[data-testid=\"player2-stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"player2-stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Player 2 stance indicator found\");\n    }\n});\n// Check for combat stats\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-stats\"]').length > 0) {\n        cy.get('[data-testid=\"combat-stats\"]').should(\"exist\");\n        cy.log(\"✅ Combat stats found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat stats not found, may be in canvas\");\n    }\n});\n// ============================================================\n// 7. Test Extended Combat Session (40s)\n// ============================================================\ncy.log(\"7️⃣ Testing Extended Combat Session\");\n// Perform a series of combat actions\nfor (let i = 0; i < 5; i++) {\n    cy.log(`Combat sequence ${i + 1}/5`);\n    // Change stance and verify\n    cy.get(\"body\").type(\"1\");\n    cy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 1000 })\n        .invoke(\"text\")\n        .should(\"include\", \"geon\");\n    // Attack\n    cy.get(\"body\").type(\" \");\n    // Change stance again and verify\n    cy.get(\"body\").type(\"3\");\n    cy.get('[data-testid=\"player1-stance-indicator\"]', { timeout: 1000 })\n        .invoke(\"text\")\n        .should(\"include\", \"li\");\n    // Attack\n    cy.get(\"body\").type(\" \");\n}\ncy.log(\"✅ Extended combat session completed\");\n// ============================================================\n// 8. Test Combat Controls Panel (15s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Combat Controls Panel\");\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-controls\"]').length > 0) {\n        cy.get('[data-testid=\"combat-controls\"]').should(\"exist\");\n        cy.log(\"✅ Combat controls panel found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat controls panel not found\");\n    }\n    // Check for technique button\n    if ($body.find('[data-testid=\"technique-button\"]').length > 0) {\n        cy.get('[data-testid=\"technique-button\"]').should(\"exist\");\n        cy.log(\"✅ Technique button found\");\n    }\n    // Check for stance button\n    if ($body.find('[data-testid=\"stance-button\"]').length > 0) {\n        cy.get('[data-testid=\"stance-button\"]').should(\"exist\");\n        cy.log(\"✅ Stance button found\");\n    }\n});\n// ============================================================\n// 9. Verify Korean Text in Combat (10s)\n// ============================================================\ncy.log(\"9️⃣ Verifying Korean Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"전투\") ||\n        bodyText.includes(\"공격\") ||\n        bodyText.includes(\"방어\")) {\n        cy.log(\"✅ Korean text found in combat UI\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n});\n// ============================================================\n// 10. Test Mouse/Canvas Interaction (15s)\n// ============================================================\ncy.log(\"🔟 Testing Mouse/Canvas Interaction\");\n// Test canvas click interactions\ncy.get(\"canvas\").click(400, 300);\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 1000 }).should(\"exist\");\ncy.log(\"✅ Canvas mouse interaction tested\");\n// ============================================================\n// 11. Test AI Movement and State (20s)\n// ============================================================\ncy.log(\"1️⃣1️⃣ Testing AI Movement and State Management\");\n// Move toward then away to test AI response\ncy.gameActions([\"d\", \"d\", \"a\", \"a\"]);\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 1000 }).should(\"exist\");\ncy.log(\"✅ AI movement and state management tested\");\n// ============================================================\n// 12. Test Combat Performance Under Load (20s)\n// ============================================================\ncy.log(\"1️⃣2️⃣ Testing Combat Performance\");\nconst startTime = Date.now();\n// Execute rapid combat sequence\ncy.gameActions([\"1\", \"2\", \"3\", \"4\", \" \", \" \"]);\ncy.wrap(null).then(() => {\n    const duration = Date.now() - startTime;\n    cy.task(\"logPerformance\", { name: \"Combat Performance\", duration });\n    expect(duration).to.be.lessThan(5000);\n    cy.log(`✅ Performance maintained: ${duration}ms`);\n});\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ CombatScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Combat screen rendering\");\ncy.log(\"   ✓ Trigram stance system (8 stances)\");\ncy.log(\"   ✓ Combat actions (attack)\");\ncy.log(\"   ✓ Movement system (WASD + arrows)\");\ncy.log(\"   ✓ Defense mechanics\");\ncy.log(\"   ✓ Combat HUD elements\");\ncy.log(\"   ✓ Extended combat session\");\ncy.log(\"   ✓ Combat controls panel\");\ncy.log(\"   ✓ Korean text rendering\");\ncy.log(\"   ✓ Mouse/canvas interaction\");\ncy.log(\"   ✓ AI movement and state\");\ncy.log(\"   ✓ Combat performance under load\");",
               "err": {},
-              "uuid": "f772d4a8-9b2f-4265-a306-89b4e3bb84c9",
-              "parentUUID": "c5f02bc5-fddb-47df-b84f-49b1d4c059fd",
+              "uuid": "4462e14d-7ad8-4951-88a2-559befeabb04",
+              "parentUUID": "0638658f-4631-4c2d-85af-0015718b77d7",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "f772d4a8-9b2f-4265-a306-89b4e3bb84c9"
+            "4462e14d-7ad8-4951-88a2-559befeabb04"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 10811,
+          "duration": 10836,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1095,7 +1095,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "e7e347ba-3554-4e93-a977-c24aecd89477",
+      "uuid": "db7d3f96-abed-4ddc-9e87-36beb3ee9d57",
       "title": "",
       "fullFile": "cypress/e2e/screens/controls-screen.cy.ts",
       "file": "cypress/e2e/screens/controls-screen.cy.ts",
@@ -1104,7 +1104,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "96593633-6b3b-4a6d-8d11-c0d199e92e77",
+          "uuid": "abc688b4-8edf-4098-8119-0bf2c093fa60",
           "title": "ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1115,7 +1115,7 @@
               "title": "should render ControlsScreen with all control information",
               "fullTitle": "ControlsScreen - Comprehensive E2E Test (Target: 2-3 min) should render ControlsScreen with all control information",
               "timedOut": null,
-              "duration": 10653,
+              "duration": 10848,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1124,20 +1124,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing ControlsScreen - Full Controls Guide\");\n// ============================================================\n// 1. Verify Controls Screen Rendering (15s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Controls Screen Rendering\");\ncy.get('[data-testid=\"controls-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Controls screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\n// ============================================================\n// 2. Verify Control Categories (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Control Categories\");\n// Check for Movement controls\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"Movement\") || bodyText.includes(\"이동\")) {\n        cy.log(\"✅ Movement controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Movement controls may be in canvas\");\n    }\n    if (bodyText.includes(\"Combat\") || bodyText.includes(\"전투\")) {\n        cy.log(\"✅ Combat controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat controls may be in canvas\");\n    }\n    if (bodyText.includes(\"Stance\") ||\n        bodyText.includes(\"자세\") ||\n        bodyText.includes(\"팔괘\")) {\n        cy.log(\"✅ Stance controls section found\");\n    }\n    else {\n        cy.log(\"⚠️ Stance controls may be in canvas\");\n    }\n});\n// ============================================================\n// 3. Verify Specific Control Bindings (20s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Specific Control Bindings\");\n// Check for common control bindings\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // WASD movement\n    if (bodyText.includes(\"WASD\") ||\n        bodyText.includes(\"W\") ||\n        bodyText.includes(\"A\")) {\n        cy.log(\"✅ WASD movement controls displayed\");\n    }\n    // Space for attack\n    if (bodyText.includes(\"Space\") || bodyText.includes(\"스페이스\")) {\n        cy.log(\"✅ Attack control (Space) displayed\");\n    }\n    // Number keys for stances\n    if (bodyText.includes(\"1-8\") ||\n        bodyText.includes(\"1\") ||\n        bodyText.includes(\"숫자\")) {\n        cy.log(\"✅ Stance number keys displayed\");\n    }\n    // ESC for menu\n    if (bodyText.includes(\"ESC\") || bodyText.includes(\"Esc\")) {\n        cy.log(\"✅ ESC key control displayed\");\n    }\n});\n// ============================================================\n// 4. Verify Korean/English Text (20s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Korean/English Bilingual Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Korean text\n    if (bodyText.includes(\"조작\") ||\n        bodyText.includes(\"이동\") ||\n        bodyText.includes(\"전투\")) {\n        cy.log(\"✅ Korean text found in controls screen\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n    // Check for English text\n    if (bodyText.includes(\"Controls\") ||\n        bodyText.includes(\"Movement\") ||\n        bodyText.includes(\"Combat\")) {\n        cy.log(\"✅ English text found in controls screen\");\n    }\n});\n// ============================================================\n// 5. Test Controls Screen UI Elements (15s)\n// ============================================================\ncy.log(\"5️⃣ Testing Controls Screen UI Elements\");\n// Check for controls header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-header\"]').length > 0) {\n        cy.get('[data-testid=\"controls-header\"]').should(\"exist\");\n        cy.log(\"✅ Controls header found\");\n    }\n});\n// Check for controls content\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-content\"]').length > 0) {\n        cy.get('[data-testid=\"controls-content\"]').should(\"exist\");\n        cy.log(\"✅ Controls content found\");\n    }\n});\n// Check for back button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"back-button\"]').length > 0) {\n        cy.get('[data-testid=\"back-button\"]').should(\"exist\");\n        cy.log(\"✅ Back button found\");\n    }\n});\n// ============================================================\n// 6. Test Scrolling or Navigation (10s)\n// ============================================================\ncy.log(\"6️⃣ Testing Scrolling/Navigation\");\n// Test scrolling if content is scrollable\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-content\"]').length > 0) {\n        cy.get('[data-testid=\"controls-content\"]').scrollTo(\"bottom\");\n        cy.get('[data-testid=\"controls-content\"]').scrollTo(\"top\");\n        cy.log(\"✅ Scrolling tested\");\n    }\n    else {\n        cy.log(\"⚠️ No scrollable content found\");\n    }\n});\n// ============================================================\n// 7. Test Navigation Back (10s)\n// ============================================================\ncy.log(\"7️⃣ Testing Navigation Back to Intro\");\n// Try ESC key first\ncy.get(\"body\").type(\"{esc}\");\n// Verify we're back at intro screen\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"intro-screen\"]').length > 0) {\n        cy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n        cy.log(\"✅ ESC key navigation works\");\n    }\n    else {\n        cy.log(\"⚠️ May still be on controls screen or transition in progress\");\n    }\n});\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ ControlsScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Controls screen rendering\");\ncy.log(\"   ✓ Control categories display\");\ncy.log(\"   ✓ Specific control bindings\");\ncy.log(\"   ✓ Korean/English bilingual text\");\ncy.log(\"   ✓ UI elements\");\ncy.log(\"   ✓ Scrolling/navigation\");\ncy.log(\"   ✓ Return to intro\");",
               "err": {},
-              "uuid": "cdc4016b-558a-4afd-be8b-8633ac7a1acf",
-              "parentUUID": "96593633-6b3b-4a6d-8d11-c0d199e92e77",
+              "uuid": "b1a9c903-5568-4392-b2a2-371954e3014e",
+              "parentUUID": "abc688b4-8edf-4098-8119-0bf2c093fa60",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "cdc4016b-558a-4afd-be8b-8633ac7a1acf"
+            "b1a9c903-5568-4392-b2a2-371954e3014e"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 10653,
+          "duration": 10848,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1153,7 +1153,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "3ee8e4c3-8817-4c22-b2a5-0531fdf7cfe1",
+      "uuid": "0fe47e4c-2bff-410c-b5d5-23b578d345e4",
       "title": "",
       "fullFile": "cypress/e2e/screens/end-screen.cy.ts",
       "file": "cypress/e2e/screens/end-screen.cy.ts",
@@ -1162,7 +1162,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+          "uuid": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
           "title": "EndScreen - Comprehensive E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1173,7 +1173,7 @@
               "title": "should display victory screen with statistics after combat win",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should display victory screen with statistics after combat win",
               "timedOut": null,
-              "duration": 15555,
+              "duration": 15912,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1182,8 +1182,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Victory Flow with Statistics\");\n// ============================================================\n// 1. Verify EndScreen component structure exists in codebase\n// ============================================================\ncy.log(\"1️⃣ Verifying EndScreen component availability\");\n// Verify the app starts correctly\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ App loaded with intro screen\");\n// Note: Full combat-to-EndScreen flow requires match completion trigger\n// This test verifies the component structure is in place\ncy.log(\"⚠️ Full combat simulation not implemented - testing component availability\");\n// Verify EndScreen component files exist via webpack bundle\ncy.window().then((win) => {\n    // EndScreen should be bundled in the app - verify document exists\n    assert.isNotNull(win.document.querySelector(\"html\"), \"HTML element should exist\");\n    cy.log(\"✅ Victory flow test structure prepared\");\n});",
               "err": {},
-              "uuid": "0ac766ce-744a-4c42-9bee-5ed24e4e5ce8",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "a832037d-7260-40cd-b1c4-b6847e59dd29",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1191,7 +1191,7 @@
               "title": "should render EndScreen components correctly",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should render EndScreen components correctly",
               "timedOut": null,
-              "duration": 14189,
+              "duration": 14245,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1200,8 +1200,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Component Rendering\");\n// ============================================================\n// Test EndScreen Component Structure (Direct Mount)\n// ============================================================\ncy.log(\"1️⃣ Testing EndScreen component rendering\");\n// Verify the intro screen exists as baseline\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\n// Verify canvas is present (Three.js renders to canvas)\ncy.get(\"canvas\").should(\"exist\").and(\"be.visible\");\ncy.log(\"✅ Three.js canvas rendering verified\");\n// For component-level testing, we can mount EndScreen directly\n// This tests the component independently of full game flow\ncy.window().then((_win) => {\n    // Verify EndScreen3D component is available in the bundle\n    cy.log(\"✅ EndScreen3D component available in codebase\");\n    // Component tests are covered by unit tests (103 tests)\n    // E2E tests will verify integration once combat flow is complete\n    cy.log(\"✅ EndScreen component structure verified\");\n});",
               "err": {},
-              "uuid": "9274b88b-f030-495d-a5e7-85c8ec9e925f",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "73964aa5-89b7-4dc8-8a37-e05aa8daec84",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1209,7 +1209,7 @@
               "title": "should display bilingual Korean-English content",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should display bilingual Korean-English content",
               "timedOut": null,
-              "duration": 14190,
+              "duration": 14367,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1218,8 +1218,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Bilingual Content\");\n// ============================================================\n// Verify Korean-English Bilingual Support (10s)\n// ============================================================\ncy.log(\"1️⃣ Verifying bilingual content support\");\n// Verify intro screen has bilingual content as baseline\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\n// Check for Korean characters in the app (demonstrates bilingual support is working)\ncy.get(\"body\").should(\"contain.text\", \"|\"); // Bilingual format: \"한글 | English\"\ncy.log(\"✅ Bilingual format verified in application\");\n// EndScreen should display Korean and English labels\n// Example format: \"승리 | Victory\", \"패배 | Defeat\"\n// This is tested in unit tests (103 tests with 100% coverage)\ncy.log(\"✅ Bilingual content patterns verified in component structure\");",
               "err": {},
-              "uuid": "691240e9-7102-4034-bfb0-7f5fe16d10e2",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "cb655080-c5c2-456c-b59b-7ee0447f1a95",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1227,7 +1227,7 @@
               "title": "should provide navigation options (menu, rematch, training)",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should provide navigation options (menu, rematch, training)",
               "timedOut": null,
-              "duration": 14160,
+              "duration": 14326,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1236,8 +1236,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Navigation Buttons\");\n// ============================================================\n// Test Navigation Buttons Functionality (20s)\n// ============================================================\ncy.log(\"1️⃣ Testing EndScreen navigation options\");\n// Verify intro screen exists as baseline for navigation testing\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Navigation baseline verified\");\n// EndScreen should provide three navigation options:\n// 1. Return to Menu (메뉴로 | Return to Menu)\n// 2. Rematch (재대결 | Rematch)\n// 3. Training (훈련 | Training) - via onViewReplay callback\n// Navigation callbacks are tested when EndScreen is rendered\n// Component has proper callbacks: onReturnToMenu, onRematch, onViewReplay\n// Unit tests verify these handlers are called correctly (103 tests)\ncy.log(\"✅ Navigation button structure verified in unit tests\");",
               "err": {},
-              "uuid": "fb5b399b-0726-4382-9485-705c622621fa",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "971cc1d2-1736-4338-b86d-b69ff2d3a441",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1245,7 +1245,7 @@
               "title": "should be responsive on mobile and desktop layouts",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should be responsive on mobile and desktop layouts",
               "timedOut": null,
-              "duration": 5744,
+              "duration": 5795,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1254,8 +1254,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Responsive Layout\");\n// ============================================================\n// Test Responsive Design (30s)\n// ============================================================\ncy.log(\"1️⃣ Testing responsive layout\");\n// Test mobile viewport (375x667)\ncy.viewport(375, 667);\ncy.wait(500);\ncy.log(\"✅ Mobile viewport (375x667) set\");\n// Test tablet viewport (768x1024)\ncy.viewport(768, 1024);\ncy.wait(500);\ncy.log(\"✅ Tablet viewport (768x1024) set\");\n// Test desktop viewport (1920x1080)\ncy.viewport(1920, 1080);\ncy.wait(500);\ncy.log(\"✅ Desktop viewport (1920x1080) set\");\n// Reset to default\ncy.viewport(1200, 800);\ncy.log(\"✅ Responsive layout testing complete\");",
               "err": {},
-              "uuid": "ed60c1df-51eb-4bde-95a4-f6b878877e40",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "9e4d53d4-2055-48c5-9d67-349800977223",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1263,7 +1263,7 @@
               "title": "should display performance metrics and combat statistics",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should display performance metrics and combat statistics",
               "timedOut": null,
-              "duration": 4229,
+              "duration": 4236,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -1272,8 +1272,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Statistics Display\");\n// ============================================================\n// Verify Statistics Components (15s)\n// ============================================================\ncy.log(\"1️⃣ Verifying statistics components\");\n// EndScreen should display:\n// - Match statistics (hits landed, vital points, combos)\n// - Performance metrics (accuracy, reaction time)\n// - Performance rating (S/A/B/C/D/F grades)\n// Component structure includes:\n// - MatchStatisticsDisplayOverlayHtml\n// - PerformanceBreakdownOverlayHtml\n// - PerformanceRatingOverlayHtml\ncy.log(\"✅ Statistics display components verified\");",
               "err": {},
-              "uuid": "10b38e27-ac1b-44a3-b7d3-157f7a3ad90c",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "dddf1b1e-fa79-467b-85da-0c64e216db52",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1290,8 +1290,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Full Integration Flow\");\n// ============================================================\n// Full Game Flow: Intro → Combat → EndScreen (120s)\n// ============================================================\ncy.log(\"1️⃣ Starting full game flow integration test\");\n// 1. Start from intro screen\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Intro screen loaded\");\n// 2. Enter combat mode\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Combat screen loaded\");\n// 3. Complete combat match (simulated or real)\ncy.wait(5000); // Wait for combat initialization\n// Simulate match completion or wait for natural completion\ncy.log(\"⚡ Simulating match completion...\");\n// 4. Verify EndScreen appears\ncy.get('[data-testid=\"end-screen-3d\"]', { timeout: 15000 }).should(\"exist\");\ncy.log(\"✅ EndScreen appeared after match completion\");\n// 5. Verify winner display\ncy.get('[data-testid=\"winner-display\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Winner display shown\");\n// 6. Toggle statistics display\ncy.get('[data-testid=\"toggle-stats-button\"]', { timeout: 5000 }).should(\"exist\");\ncy.get('[data-testid=\"toggle-stats-button\"]').click({ force: true });\ncy.wait(500);\ncy.log(\"✅ Statistics toggled\");\n// 7. Toggle performance breakdown\ncy.get('[data-testid=\"toggle-breakdown-button\"]', { timeout: 5000 }).should(\"exist\");\ncy.get('[data-testid=\"toggle-breakdown-button\"]').click({ force: true });\ncy.wait(500);\ncy.log(\"✅ Performance breakdown toggled\");\n// 8. Test navigation: Return to menu\ncy.get('[data-testid=\"return-to-menu-button\"]', { timeout: 5000 }).should(\"exist\");\ncy.get('[data-testid=\"return-to-menu-button\"]').click({ force: true });\ncy.wait(1000);\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Returned to intro screen successfully\");\n// 9. Test rematch flow\ncy.enterCombatMode();\ncy.wait(5000); // Wait for combat\n// Complete match again\ncy.get('[data-testid=\"end-screen-3d\"]', { timeout: 15000 }).should(\"exist\");\ncy.get('[data-testid=\"rematch-button\"]', { timeout: 5000 }).then(($rematch) => {\n    if ($rematch.length > 0) {\n        cy.wrap($rematch).click({ force: true });\n        cy.wait(1000);\n        cy.get('[data-testid=\"combat-screen\"]', { timeout: 10000 }).should(\"exist\");\n        cy.log(\"✅ Rematch flow successful\");\n    }\n    else {\n        cy.log(\"⚠️ Rematch button not found\");\n    }\n});\ncy.log(\"✅ Full integration test complete\");",
               "err": {},
-              "uuid": "23918518-2157-4289-b8f3-fa817e90a11e",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "0a4906a6-da17-4218-8716-5a38bf05d1e3",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             },
@@ -1299,7 +1299,7 @@
               "title": "should maintain 60fps performance during victory/defeat animations",
               "fullTitle": "EndScreen - Comprehensive E2E Test (Target: 2-3 min) should maintain 60fps performance during victory/defeat animations",
               "timedOut": null,
-              "duration": 4130,
+              "duration": 4178,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -1308,28 +1308,28 @@
               "context": null,
               "code": "cy.annotate(\"Testing EndScreen - Performance (60fps)\");\n// ============================================================\n// Performance Verification (30s)\n// ============================================================\ncy.log(\"1️⃣ Testing EndScreen animation performance\");\n// EndScreen uses:\n// - VictoryAnimation3D (particle effects, 200 particles)\n// - DefeatAnimation3D (particle effects)\n// - BackgroundParticles3D (100 particles)\n// All optimized for 60fps with object reuse\n// Performance is measured via:\n// - FPS monitoring in development\n// - GPU profiling\n// - Memory allocation tracking\ncy.log(\"✅ Performance optimizations verified in component implementation\");\ncy.log(\"✅ 60fps target confirmed through object pooling and reuse\");",
               "err": {},
-              "uuid": "10555bff-660b-4729-9d66-e86399c8d2bb",
-              "parentUUID": "e4e90814-c11d-4175-a8d7-b693f471c3e1",
+              "uuid": "99cb943b-a278-4b5e-a01e-eccce9ef8e1b",
+              "parentUUID": "ceea8da7-86e1-4a06-94a1-bd7cab605d4e",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "0ac766ce-744a-4c42-9bee-5ed24e4e5ce8",
-            "9274b88b-f030-495d-a5e7-85c8ec9e925f",
-            "691240e9-7102-4034-bfb0-7f5fe16d10e2",
-            "fb5b399b-0726-4382-9485-705c622621fa",
-            "ed60c1df-51eb-4bde-95a4-f6b878877e40",
-            "10b38e27-ac1b-44a3-b7d3-157f7a3ad90c",
-            "10555bff-660b-4729-9d66-e86399c8d2bb"
+            "a832037d-7260-40cd-b1c4-b6847e59dd29",
+            "73964aa5-89b7-4dc8-8a37-e05aa8daec84",
+            "cb655080-c5c2-456c-b59b-7ee0447f1a95",
+            "971cc1d2-1736-4338-b86d-b69ff2d3a441",
+            "9e4d53d4-2055-48c5-9d67-349800977223",
+            "dddf1b1e-fa79-467b-85da-0c64e216db52",
+            "99cb943b-a278-4b5e-a01e-eccce9ef8e1b"
           ],
           "failures": [],
           "pending": [
-            "23918518-2157-4289-b8f3-fa817e90a11e"
+            "0a4906a6-da17-4218-8716-5a38bf05d1e3"
           ],
           "skipped": [],
-          "duration": 72197,
+          "duration": 73059,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1345,7 +1345,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "483c1a70-fee6-4053-baec-07f3cd9a5037",
+      "uuid": "8cc44d2e-a3f2-4d82-bfe1-68bf848c2394",
       "title": "",
       "fullFile": "cypress/e2e/screens/intro-screen-fix-verification.cy.ts",
       "file": "cypress/e2e/screens/intro-screen-fix-verification.cy.ts",
@@ -1354,7 +1354,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "0cc32758-42ed-4dfd-8008-fa6fd067b11d",
+          "uuid": "88e52e49-ce0d-4f8d-a094-6b4f2e22ee72",
           "title": "IntroScreen Fix Verification",
           "fullFile": "",
           "file": "",
@@ -1365,7 +1365,7 @@
               "title": "should render UI overlay immediately on initial load",
               "fullTitle": "IntroScreen Fix Verification should render UI overlay immediately on initial load",
               "timedOut": null,
-              "duration": 12586,
+              "duration": 12653,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1374,20 +1374,20 @@
               "context": null,
               "code": "cy.visit('/');\n// Wait for IntroScreen to mount\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 10000 }).should('be.visible');\n// Verify Canvas is present\ncy.get('canvas').should('exist');\n// Verify main UI elements are visible immediately (no delay needed)\ncy.get('[data-testid=\"main-title-container\"]').should('be.visible');\ncy.get('[data-testid=\"logo-section\"]').should('be.visible');\ncy.get('[data-testid=\"main-logo\"]').should('be.visible');\ncy.get('[data-testid=\"trigram-symbols\"]').should('be.visible');\ncy.get('[data-testid=\"menu-section-container\"]').should('be.visible');\ncy.get('[data-testid=\"archetype-section-container\"]').should('be.visible');\ncy.get('[data-testid=\"intro-footer\"]').should('be.visible');\n// Take screenshot for verification\ncy.screenshot('intro-screen-fix-verified', {\n    capture: 'viewport',\n    overwrite: true\n});",
               "err": {},
-              "uuid": "bc8d76d5-7284-473b-a5da-3b23db628ac2",
-              "parentUUID": "0cc32758-42ed-4dfd-8008-fa6fd067b11d",
+              "uuid": "f5936042-7909-43ed-accb-76ac12e4cbc8",
+              "parentUUID": "88e52e49-ce0d-4f8d-a094-6b4f2e22ee72",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "bc8d76d5-7284-473b-a5da-3b23db628ac2"
+            "f5936042-7909-43ed-accb-76ac12e4cbc8"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 12586,
+          "duration": 12653,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1403,7 +1403,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "dff21610-fa01-4864-940b-6bc5ed8dee49",
+      "uuid": "2a0569d3-5eb1-44a2-9d2e-b178ec48f28d",
       "title": "",
       "fullFile": "cypress/e2e/screens/intro-screen.cy.ts",
       "file": "cypress/e2e/screens/intro-screen.cy.ts",
@@ -1412,7 +1412,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "8f99536d-58a9-4375-a999-8f5e5bed8bbc",
+          "uuid": "b4c502e9-1ac7-4055-8e25-8ffbf8233ca7",
           "title": "IntroScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1423,7 +1423,7 @@
               "title": "should render IntroScreen with all UI elements and navigation",
               "fullTitle": "IntroScreen - Comprehensive E2E Test (Target: 3-4 min) should render IntroScreen with all UI elements and navigation",
               "timedOut": null,
-              "duration": 10766,
+              "duration": 10804,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1432,20 +1432,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing IntroScreen - Full User Journey\");\n// ============================================================\n// 1. Verify Canvas Rendering (30s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Canvas Rendering\");\ncy.get(\"canvas\").should(\"exist\").and(\"be.visible\");\ncy.get('[data-testid=\"intro-screen\"]').should(\"exist\");\n// Verify canvas dimensions are reasonable\ncy.get(\"canvas\").should(($canvas) => {\n    const canvas = $canvas[0];\n    const rect = canvas.getBoundingClientRect();\n    expect(rect.width).to.be.greaterThan(100);\n    expect(rect.height).to.be.greaterThan(100);\n});\n// ============================================================\n// 2. Verify Menu Buttons (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Menu Buttons\");\n// Check for combat button (using multiple possible test IDs)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-button\"]').length > 0) {\n        cy.get('[data-testid=\"combat-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Combat button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-combat\"]').length > 0) {\n        cy.get('[data-testid=\"menu-combat\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu combat found\");\n    }\n    else {\n        cy.log(\"⚠️ Combat button not found with standard test IDs\");\n    }\n});\n// Check for training button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-button\"]').length > 0) {\n        cy.get('[data-testid=\"training-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Training button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-training\"]').length > 0) {\n        cy.get('[data-testid=\"menu-training\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu training found\");\n    }\n    else {\n        cy.log(\"⚠️ Training button not found with standard test IDs\");\n    }\n});\n// Check for controls button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"controls-button\"]').length > 0) {\n        cy.get('[data-testid=\"controls-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Controls button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-controls\"]').length > 0) {\n        cy.get('[data-testid=\"menu-controls\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu controls found\");\n    }\n    else {\n        cy.log(\"⚠️ Controls button not found with standard test IDs\");\n    }\n});\n// Check for philosophy button\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-button\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-button\"]').should(\"be.visible\");\n        cy.log(\"✅ Philosophy button found\");\n    }\n    else if ($body.find('[data-testid=\"menu-philosophy\"]').length > 0) {\n        cy.get('[data-testid=\"menu-philosophy\"]').should(\"be.visible\");\n        cy.log(\"✅ Menu philosophy found\");\n    }\n    else {\n        cy.log(\"⚠️ Philosophy button not found with standard test IDs\");\n    }\n});\n// ============================================================\n// 3. Verify Korean/English Bilingual Text (20s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Bilingual Text\");\n// Check for Korean text\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"전투\") || bodyText.includes(\"훈련\")) {\n        cy.log(\"✅ Korean text found in page\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text not found, may be in canvas\");\n    }\n});\n// Check for English text\ncy.contains(/Combat|Training/i).should(\"exist\");\ncy.log(\"✅ English text verified\");\n// ============================================================\n// 4. Test Navigation to Combat (30s)\n// ============================================================\ncy.log(\"4️⃣ Testing Navigation to Combat\");\ncy.enterCombatMode();\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Successfully navigated to Combat\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Combat\");\n// ============================================================\n// 5. Test Navigation to Training (30s)\n// ============================================================\ncy.log(\"5️⃣ Testing Navigation to Training\");\ncy.enterTrainingMode();\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Successfully navigated to Training\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Training\");\n// ============================================================\n// 6. Test Navigation to Controls (25s)\n// ============================================================\ncy.log(\"6️⃣ Testing Navigation to Controls\");\n// Navigate to controls screen using reusable command\ncy.navigateToScreen(\"controls\", \"controls-button\", \"menu-controls\", \"3\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Controls\");\n// ============================================================\n// 7. Test Navigation to Philosophy (25s)\n// ============================================================\ncy.log(\"7️⃣ Testing Navigation to Philosophy\");\n// Navigate to philosophy screen using reusable command\ncy.navigateToScreen(\"philosophy\", \"philosophy-button\", \"menu-philosophy\", \"4\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Returned to Intro from Philosophy\");\n// ============================================================\n// 8. Test Keyboard Controls (25s)\n// ============================================================\ncy.log(\"8️⃣ Testing Keyboard Controls\");\n// Test keyboard shortcut '1' for combat\ncy.get(\"body\").type(\"1\");\ncy.get('[data-testid=\"combat-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Keyboard shortcut '1' navigates to Combat\");\ncy.returnToIntro();\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Keyboard controls verified\");\n// ============================================================\n// 9. Test Responsive Design (25s)\n// ============================================================\ncy.log(\"9️⃣ Testing Responsive Design\");\n// Test tablet viewport only (removed mobile to save time)\ncy.viewport(768, 1024);\n// Wait for canvas to be visible after viewport change\ncy.get(\"canvas\", { timeout: 2000 }).should(\"exist\").and(\"be.visible\");\ncy.log(\"✅ Canvas visible on tablet viewport\");\n// Check menu buttons still accessible\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"combat-button\"]').length > 0 ||\n        $body.find('[data-testid=\"menu-combat\"]').length > 0) {\n        cy.log(\"✅ Menu buttons accessible on tablet\");\n    }\n});\n// Reset to desktop viewport\ncy.viewport(1280, 720);\ncy.get(\"canvas\", { timeout: 2000 }).should(\"be.visible\");\ncy.log(\"✅ Responsive design validated\");\n// ============================================================\n// 10. Test Error Resilience (15s)\n// ============================================================\ncy.log(\"🔟 Testing Error Resilience\");\n// Test non-existent feature navigation\ncy.get(\"body\").type(\"9\"); // Non-existent option\n// Should still be at intro or handle gracefully\ncy.get(\"body\").then(($body) => {\n    const hasIntro = $body.find('[data-testid=\"intro-screen\"]').length > 0 ||\n        $body.find('[data-testid=\"app-container\"]').length > 0;\n    if (hasIntro) {\n        cy.log(\"✅ Error resilience verified - gracefully handled invalid input\");\n    }\n});\n// ============================================================\n// 11. Verify Audio System (10s)\n// ============================================================\ncy.log(\"1️⃣1️⃣ Verifying Audio System\");\n// Audio system is verified through app initialization\n// No explicit audio test needed here to save time\ncy.log(\"✅ Audio system loaded with app (implicit verification)\");\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ IntroScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Canvas rendering\");\ncy.log(\"   ✓ Menu buttons\");\ncy.log(\"   ✓ Bilingual text\");\ncy.log(\"   ✓ Navigation to Combat\");\ncy.log(\"   ✓ Navigation to Training\");\ncy.log(\"   ✓ Navigation to Controls\");\ncy.log(\"   ✓ Navigation to Philosophy\");\ncy.log(\"   ✓ Keyboard controls (shortcut '1')\");\ncy.log(\"   ✓ Responsive design (desktop/tablet)\");\ncy.log(\"   ✓ Error resilience\");\ncy.log(\"   ✓ Audio system\");",
               "err": {},
-              "uuid": "1d5dfe83-ae18-4344-82ac-0089b1b6d028",
-              "parentUUID": "8f99536d-58a9-4375-a999-8f5e5bed8bbc",
+              "uuid": "599611f0-da38-4ff4-8bb7-e996cb06b20e",
+              "parentUUID": "b4c502e9-1ac7-4055-8e25-8ffbf8233ca7",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "1d5dfe83-ae18-4344-82ac-0089b1b6d028"
+            "599611f0-da38-4ff4-8bb7-e996cb06b20e"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 10766,
+          "duration": 10804,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1461,7 +1461,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "602e3e52-660e-41cf-bcb2-58957cb744a1",
+      "uuid": "7db105ac-e9dc-4c7c-b797-11bc39d63f64",
       "title": "",
       "fullFile": "cypress/e2e/screens/philosophy-screen.cy.ts",
       "file": "cypress/e2e/screens/philosophy-screen.cy.ts",
@@ -1470,7 +1470,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "810c08fb-6704-4c9c-a984-a3905b357b1d",
+          "uuid": "d03cb775-8b7e-4d30-8901-a853463ce8c7",
           "title": "PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1481,7 +1481,7 @@
               "title": "should render PhilosophyScreen with Korean martial arts philosophy",
               "fullTitle": "PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min) should render PhilosophyScreen with Korean martial arts philosophy",
               "timedOut": null,
-              "duration": 10672,
+              "duration": 10826,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1490,20 +1490,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing PhilosophyScreen - Full Philosophy Content\");\n// ============================================================\n// 1. Verify Philosophy Screen Rendering (15s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Philosophy Screen Rendering\");\ncy.get('[data-testid=\"philosophy-screen\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Philosophy screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\n// ============================================================\n// 2. Verify Philosophy Content (30s)\n// ============================================================\ncy.log(\"2️⃣ Verifying Philosophy Content\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Eight Trigrams reference\n    if (bodyText.includes(\"팔괘\") || bodyText.includes(\"八卦\")) {\n        cy.log(\"✅ Eight Trigrams (팔괘) reference found\");\n    }\n    else {\n        cy.log(\"⚠️ Eight Trigrams content may be in canvas\");\n    }\n    // Check for Black Trigram reference\n    if (bodyText.includes(\"Black Trigram\") || bodyText.includes(\"흑괘\")) {\n        cy.log(\"✅ Black Trigram title found\");\n    }\n    else {\n        cy.log(\"⚠️ Black Trigram title may be in canvas\");\n    }\n    // Check for martial arts philosophy\n    if (bodyText.includes(\"martial arts\") ||\n        bodyText.includes(\"무술\") ||\n        bodyText.includes(\"무예\")) {\n        cy.log(\"✅ Martial arts philosophy content found\");\n    }\n    else {\n        cy.log(\"⚠️ Philosophy content may be in canvas\");\n    }\n});\n// ============================================================\n// 3. Verify Trigram Information (30s)\n// ============================================================\ncy.log(\"3️⃣ Verifying Trigram Information\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Geon (Heaven - 건)\n    if (bodyText.includes(\"건\") ||\n        bodyText.includes(\"Geon\") ||\n        bodyText.includes(\"Heaven\")) {\n        cy.log(\"✅ Geon (건) trigram information found\");\n    }\n    // Check for Gon (Earth - 곤)\n    if (bodyText.includes(\"곤\") ||\n        bodyText.includes(\"Gon\") ||\n        bodyText.includes(\"Earth\")) {\n        cy.log(\"✅ Gon (곤) trigram information found\");\n    }\n    // Check for Tae (Lake - 태)\n    if (bodyText.includes(\"태\") ||\n        bodyText.includes(\"Tae\") ||\n        bodyText.includes(\"Lake\")) {\n        cy.log(\"✅ Tae (태) trigram information found\");\n    }\n    // Check for Li (Fire - 리)\n    if (bodyText.includes(\"리\") ||\n        bodyText.includes(\"Li\") ||\n        bodyText.includes(\"Fire\")) {\n        cy.log(\"✅ Li (리) trigram information found\");\n    }\n    // General check for any trigram names\n    const hasTrigramContent = bodyText.includes(\"건\") ||\n        bodyText.includes(\"곤\") ||\n        bodyText.includes(\"태\") ||\n        bodyText.includes(\"리\") ||\n        bodyText.includes(\"Heaven\") ||\n        bodyText.includes(\"Earth\");\n    if (hasTrigramContent) {\n        cy.log(\"✅ Trigram information present\");\n    }\n    else {\n        cy.log(\"⚠️ Trigram information may be in canvas\");\n    }\n});\n// ============================================================\n// 4. Verify Korean/English Text (15s)\n// ============================================================\ncy.log(\"4️⃣ Verifying Korean/English Bilingual Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for Korean text\n    if (bodyText.includes(\"철학\") ||\n        bodyText.includes(\"팔괘\") ||\n        bodyText.includes(\"무술\")) {\n        cy.log(\"✅ Korean text found in philosophy screen\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n    // Check for English text\n    if (bodyText.includes(\"Philosophy\") ||\n        bodyText.includes(\"Trigram\") ||\n        bodyText.includes(\"martial\")) {\n        cy.log(\"✅ English text found in philosophy screen\");\n    }\n});\n// ============================================================\n// 5. Test Philosophy Screen UI Elements (15s)\n// ============================================================\ncy.log(\"5️⃣ Testing Philosophy Screen UI Elements\");\n// Check for philosophy header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-header\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-header\"]').should(\"exist\");\n        cy.log(\"✅ Philosophy header found\");\n    }\n});\n// Check for philosophy content\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-content\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-content\"]').should(\"exist\");\n        cy.log(\"✅ Philosophy content found\");\n    }\n});\n// Check for trigram display\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"trigram-display\"]').length > 0) {\n        cy.get('[data-testid=\"trigram-display\"]').should(\"exist\");\n        cy.log(\"✅ Trigram display found\");\n    }\n});\n// ============================================================\n// 6. Test Scrolling or Content Navigation (10s)\n// ============================================================\ncy.log(\"6️⃣ Testing Scrolling/Content Navigation\");\n// Test scrolling if content is scrollable\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"philosophy-content\"]').length > 0) {\n        cy.get('[data-testid=\"philosophy-content\"]').scrollTo(\"bottom\");\n        cy.get('[data-testid=\"philosophy-content\"]').scrollTo(\"top\");\n        cy.log(\"✅ Scrolling tested\");\n    }\n    else {\n        cy.log(\"⚠️ No scrollable content found\");\n    }\n});\n// ============================================================\n// 7. Verify Cultural Context (15s)\n// ============================================================\ncy.log(\"7️⃣ Verifying Cultural Context\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    // Check for I Ching / Yi Jing reference\n    if (bodyText.includes(\"I Ching\") ||\n        bodyText.includes(\"Yi Jing\") ||\n        bodyText.includes(\"역경\")) {\n        cy.log(\"✅ I Ching reference found\");\n    }\n    // Check for balance/harmony concepts\n    if (bodyText.includes(\"balance\") ||\n        bodyText.includes(\"harmony\") ||\n        bodyText.includes(\"균형\") ||\n        bodyText.includes(\"조화\")) {\n        cy.log(\"✅ Balance/harmony concepts found\");\n    }\n    // Check for yin-yang concepts\n    if (bodyText.includes(\"yin\") ||\n        bodyText.includes(\"yang\") ||\n        bodyText.includes(\"음\") ||\n        bodyText.includes(\"양\")) {\n        cy.log(\"✅ Yin-yang concepts found\");\n    }\n});\n// ============================================================\n// 8. Test Navigation Back (10s)\n// ============================================================\ncy.log(\"8️⃣ Testing Navigation Back to Intro\");\n// Try ESC key first\ncy.get(\"body\").type(\"{esc}\");\n// Verify we're back at intro screen with assertion-based wait\ncy.get('[data-testid=\"intro-screen\"]', { timeout: 3000 }).should('exist');\ncy.log(\"✅ ESC key navigation works\");\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ PhilosophyScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Philosophy screen rendering\");\ncy.log(\"   ✓ Philosophy content display\");\ncy.log(\"   ✓ Trigram information\");\ncy.log(\"   ✓ Korean/English bilingual text\");\ncy.log(\"   ✓ UI elements\");\ncy.log(\"   ✓ Scrolling/content navigation\");\ncy.log(\"   ✓ Cultural context\");\ncy.log(\"   ✓ Return to intro\");",
               "err": {},
-              "uuid": "a7bd3e01-061a-4609-814f-21de492667cb",
-              "parentUUID": "810c08fb-6704-4c9c-a984-a3905b357b1d",
+              "uuid": "6c2723ae-1c68-4741-9e68-a7a520bd4431",
+              "parentUUID": "d03cb775-8b7e-4d30-8901-a853463ce8c7",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "a7bd3e01-061a-4609-814f-21de492667cb"
+            "6c2723ae-1c68-4741-9e68-a7a520bd4431"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 10672,
+          "duration": 10826,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1519,7 +1519,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "d7386dee-2c1c-4b89-bb19-7545d04f9c54",
+      "uuid": "cac29f6c-5765-4fc6-b67b-6cb8b179c6cd",
       "title": "",
       "fullFile": "cypress/e2e/screens/training-screen.cy.ts",
       "file": "cypress/e2e/screens/training-screen.cy.ts",
@@ -1528,7 +1528,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "a3b4ef50-a4a5-4221-b531-b6d445416f3a",
+          "uuid": "dc8ebf13-d776-4e94-bf35-2b2293e021b0",
           "title": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)",
           "fullFile": "",
           "file": "",
@@ -1539,7 +1539,7 @@
               "title": "should render TrainingScreen with training mechanics and vital points",
               "fullTitle": "TrainingScreen - Comprehensive E2E Test (Target: 3-4 min) should render TrainingScreen with training mechanics and vital points",
               "timedOut": null,
-              "duration": 15686,
+              "duration": 15872,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1548,20 +1548,20 @@
               "context": null,
               "code": "cy.annotate(\"Testing TrainingScreen - Full Training Journey\");\n// ============================================================\n// 1. Verify Training Screen Rendering (20s)\n// ============================================================\ncy.log(\"1️⃣ Verifying Training Screen Rendering\");\ncy.get('[data-testid=\"training-screen\"]', { timeout: 10000 }).should(\"exist\");\ncy.log(\"✅ Training screen exists\");\n// Verify canvas is visible\ncy.get(\"canvas\").should(\"be.visible\");\ncy.log(\"✅ Canvas rendering verified\");\n// Check for training header\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-header\"]').length > 0) {\n        cy.get('[data-testid=\"training-header\"]').should(\"exist\");\n        cy.log(\"✅ Training header found\");\n    }\n    else {\n        cy.log(\"⚠️ Training header not found\");\n    }\n});\n// ============================================================\n// 2. Test Stance Practice (60s)\n// ============================================================\ncy.log(\"2️⃣ Testing Stance Practice System\");\n// Practice stance 1 (Geon) twice\ncy.log(\"Practicing Stance 1 (Geon)...\");\ncy.practiceStance(1, 2);\ncy.log(\"✅ Stance 1 practiced\");\n// Practice stance 3 (Li) twice\ncy.log(\"Practicing Stance 3 (Li)...\");\ncy.practiceStance(3, 2);\ncy.log(\"✅ Stance 3 practiced\");\n// Practice stance 5 (Son) twice\ncy.log(\"Practicing Stance 5 (Son)...\");\ncy.practiceStance(5, 2);\ncy.log(\"✅ Stance 5 practiced\");\n// ============================================================\n// 3. Test Training Dummy Interaction (40s)\n// ============================================================\ncy.log(\"3️⃣ Testing Training Dummy Interaction\");\n// Verify training dummy container exists\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-dummy-container\"]').length > 0) {\n        cy.get('[data-testid=\"training-dummy-container\"]').should(\"exist\");\n        cy.log(\"✅ Training dummy container found\");\n    }\n    else {\n        cy.log(\"⚠️ Training dummy container not found, may be in 3D scene\");\n    }\n});\n// Check for training area\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-area\"]').length > 0) {\n        cy.get('[data-testid=\"training-area\"]').should(\"exist\");\n        cy.log(\"✅ Training area found\");\n    }\n});\n// Check for training player\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-player\"]').length > 0) {\n        cy.get('[data-testid=\"training-player\"]').should(\"exist\");\n        cy.log(\"✅ Training player found\");\n    }\n});\n// ============================================================\n// 4. Test All 8 Stances (60s)\n// ============================================================\ncy.log(\"4️⃣ Testing All 8 Trigram Stances\");\nfor (let stance = 1; stance <= 8; stance++) {\n    cy.log(`Testing stance ${stance}/8...`);\n    // Change to stance\n    cy.get(\"body\").type(stance.toString());\n    // Execute technique with space bar\n    cy.get(\"body\").type(\" \");\n    // Verify training screen still exists after action\n    cy.get('[data-testid=\"training-screen\"]', { timeout: 1000 }).should(\"exist\");\n    cy.log(`✅ Stance ${stance} tested`);\n}\ncy.log(\"✅ All 8 stances tested in training\");\n// ============================================================\n// 5. Test Extended Training Session (30s)\n// ============================================================\ncy.log(\"5️⃣ Testing Extended Training Session\");\n// Practice multiple repetitions of stance 2\nfor (let i = 0; i < 3; i++) {\n    cy.log(`Training repetition ${i + 1}/3`);\n    cy.practiceStance(2, 2);\n}\ncy.log(\"✅ Extended training session completed\");\n// ============================================================\n// 6. Test Training Controls (20s)\n// ============================================================\ncy.log(\"6️⃣ Testing Training Controls\");\n// Test movement in training mode\ncy.get(\"body\").type(\"w\");\ncy.get(\"body\").type(\"a\");\ncy.get(\"body\").type(\"s\");\ncy.get(\"body\").type(\"d\");\ncy.log(\"✅ Movement controls tested\");\n// ============================================================\n// 7. Verify HUD Components (30s)\n// ============================================================\ncy.log(\"7️⃣ Verifying HUD Components\");\n// Check for HUD overlay container\ncy.get('[data-testid=\"training-hud-overlay\"]', { timeout: 5000 }).should(\"exist\");\ncy.log(\"✅ Training HUD overlay found\");\n// Check for Left HUD (Anatomy/Guard)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-left-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-left-hud\"]').should(\"exist\");\n        cy.log(\"✅ Left HUD found (Anatomy/Guard)\");\n    }\n    else {\n        cy.log(\"⚠️ Left HUD not found\");\n    }\n});\n// Check for Top HUD (Controls/Mode Selector)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-top-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-top-hud\"]').should(\"exist\");\n        cy.log(\"✅ Top HUD found (Controls/Mode Selector)\");\n    }\n    else {\n        cy.log(\"⚠️ Top HUD not found\");\n    }\n});\n// Check for Right HUD (Stats/Vital Points)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-right-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-right-hud\"]').should(\"exist\");\n        cy.log(\"✅ Right HUD found (Stats/Vital Points)\");\n    }\n    else {\n        cy.log(\"⚠️ Right HUD not found\");\n    }\n});\n// Check for Bottom HUD (Technique Bar)\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-bottom-hud\"]').length > 0) {\n        cy.get('[data-testid=\"training-bottom-hud\"]').should(\"exist\");\n        cy.log(\"✅ Bottom HUD found (Technique Bar)\");\n    }\n    else {\n        cy.log(\"⚠️ Bottom HUD not found\");\n    }\n});\n// ============================================================\n// 8. Verify Training UI Elements (20s)\n// ============================================================\ncy.log(\"8️⃣ Verifying Training UI Elements\");\n// Check for stance indicator\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"stance-indicator\"]').length > 0) {\n        cy.get('[data-testid=\"stance-indicator\"]').should(\"exist\");\n        cy.log(\"✅ Stance indicator found\");\n    }\n    else {\n        cy.log(\"⚠️ Stance indicator not found\");\n    }\n});\n// Check for training stats\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"training-stats\"]').length > 0) {\n        cy.get('[data-testid=\"training-stats\"]').should(\"exist\");\n        cy.log(\"✅ Training stats found\");\n    }\n    else {\n        cy.log(\"⚠️ Training stats not found\");\n    }\n});\n// ============================================================\n// 9. Verify Korean Text in Training (10s)\n// ============================================================\ncy.log(\"9️⃣ Verifying Korean Text\");\ncy.get(\"body\").then(($body) => {\n    const bodyText = $body.text();\n    if (bodyText.includes(\"훈련\") ||\n        bodyText.includes(\"연습\") ||\n        bodyText.includes(\"팔괘\")) {\n        cy.log(\"✅ Korean text found in training UI\");\n    }\n    else {\n        cy.log(\"⚠️ Korean text may be rendered in canvas\");\n    }\n});\n// ============================================================\n// 10. Test Vital Point Display (15s)\n// ============================================================\ncy.log(\"🔟 Testing Vital Point Display\");\n// Check for vital point overlay or information\ncy.get(\"body\").then(($body) => {\n    if ($body.find('[data-testid=\"vital-points\"]').length > 0) {\n        cy.get('[data-testid=\"vital-points\"]').should(\"exist\");\n        cy.log(\"✅ Vital points display found\");\n    }\n    else if ($body.find('[data-testid=\"training-info\"]').length > 0) {\n        cy.get('[data-testid=\"training-info\"]').should(\"exist\");\n        cy.log(\"✅ Training info panel found\");\n    }\n    else {\n        cy.log(\"⚠️ Vital points display not found\");\n    }\n});\n// ============================================================\n// FINAL: Test Summary\n// ============================================================\ncy.log(\"✅ TrainingScreen comprehensive test completed\");\ncy.log(\"📊 All critical functionality verified:\");\ncy.log(\"   ✓ Training screen rendering\");\ncy.log(\"   ✓ Stance practice system\");\ncy.log(\"   ✓ Training dummy interaction\");\ncy.log(\"   ✓ All 8 trigram stances\");\ncy.log(\"   ✓ Extended training session\");\ncy.log(\"   ✓ Training controls\");\ncy.log(\"   ✓ HUD components (Left, Top, Right, Bottom)\");\ncy.log(\"   ✓ Training UI elements\");\ncy.log(\"   ✓ Korean text rendering\");\ncy.log(\"   ✓ Vital point display\");",
               "err": {},
-              "uuid": "ea0f1a25-61dc-4b9f-96b1-f509c849b861",
-              "parentUUID": "a3b4ef50-a4a5-4221-b531-b6d445416f3a",
+              "uuid": "5993def9-e45a-46f4-8ffd-38ecff0d7a83",
+              "parentUUID": "dc8ebf13-d776-4e94-bf35-2b2293e021b0",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "ea0f1a25-61dc-4b9f-96b1-f509c849b861"
+            "5993def9-e45a-46f4-8ffd-38ecff0d7a83"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 15686,
+          "duration": 15872,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
@@ -1577,7 +1577,7 @@
       "_timeout": 2000
     },
     {
-      "uuid": "2a23b67f-2bf6-420e-b267-c3f53d998668",
+      "uuid": "3cdb2b8c-4759-47db-81b9-27dbfc0e707b",
       "title": "",
       "fullFile": "cypress/e2e/screens/trauma-visualization.cy.ts",
       "file": "cypress/e2e/screens/trauma-visualization.cy.ts",
@@ -1586,7 +1586,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "be4f8f60-f2ce-4e85-aa90-2706253cd97d",
+          "uuid": "5361d2a7-3b97-48da-94ea-53ccdf475853",
           "title": "Trauma Visualization System - E2E Test (Target: 2-3 min)",
           "fullFile": "",
           "file": "",
@@ -1597,7 +1597,7 @@
               "title": "should demonstrate progressive bruising with 5 strikes to same location",
               "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should demonstrate progressive bruising with 5 strikes to same location",
               "timedOut": null,
-              "duration": 10660,
+              "duration": 10791,
               "state": "passed",
               "speed": "slow",
               "pass": true,
@@ -1606,8 +1606,8 @@
               "context": null,
               "code": "cy.annotate(\"Testing Progressive Bruising System\");\n// ============================================================\n// 1. Verify Combat Screen Rendering\n// ============================================================\ncy.log(\"1️⃣ Verifying Combat Screen Rendering\");\ncy.get('[data-testid=\"combat-screen\"]').should(\"exist\");\ncy.get(\"canvas\").should(\"be.visible\");\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });\ncy.log(\"✅ Combat screen and Three.js rendering verified\");\n// ============================================================\n// 2. Strike torso location 5 times\n// ============================================================\ncy.log(\"2️⃣ Striking torso 5 times to test progressive bruising\");\n// Perform 5 attacks to same body region\nfor (let i = 1; i <= 5; i++) {\n    cy.log(`Strike ${i}/5 - Hitting torso`);\n    // Press attack button (space or click attack button)\n    cy.get(\"body\").type(\" \");\n    // Wait for attack animation\n    cy.wait(400);\n    // Verify combat state updated\n    cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });\n    cy.log(`✅ Strike ${i} completed`);\n}\ncy.log(\"✅ All 5 strikes completed\");\n// ============================================================\n// 3. Verify trauma visualization exists\n// ============================================================\ncy.log(\"3️⃣ Verifying trauma visualization\");\n// Check for trauma overlay in Three.js scene\n// Note: TraumaOverlay3D renders as Three.js group, not in DOM\n// This test verifies pixel changes on canvas, indicating rendering is happening.\n// For more deterministic tests, consider adding test hooks to expose injury count\n// or using Html overlays with data-testid attributes.\ncy.get(\"canvas\").should(\"be.visible\");\n// Verify rendering changes (injuries should be visible in 3D scene)\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Trauma visualization rendering verified\");\n// ============================================================\n// 4. Verify performance (should maintain 60fps)\n// ============================================================\ncy.log(\"4️⃣ Verifying performance after trauma effects\");\n// Perform additional actions to test performance\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\n// Verify Three.js is still rendering smoothly\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 30 });\ncy.log(\"✅ Performance maintained with multiple injuries\");\n// ============================================================\n// 5. Test blood effects with heavy damage\n// ============================================================\ncy.log(\"5️⃣ Testing blood effects trigger (damage > 30)\");\n// Note: This test verifies pixel changes but doesn't deterministically\n// verify blood effects were triggered. For better test coverage, consider:\n// - Adding a test hook to expose blood effect state\n// - Using mocked combat damage events with known values\n// - Adding Html overlay with data-testid for blood effect indicators\n// Perform multiple heavy attacks\nfor (let i = 1; i <= 3; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(300);\n}\n// Verify visual effects are still rendering\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 40 });\ncy.log(\"✅ Blood effects rendered (if triggered by damage > 30)\");\n// ============================================================\n// 6. Verify different body parts can be injured\n// ============================================================\ncy.log(\"6️⃣ Testing injuries to multiple body parts\");\n// Switch stance to target different body regions\ncy.get(\"body\").type(\"2\"); // Switch to Tae stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\ncy.get(\"body\").type(\"3\"); // Switch to Li stance\ncy.wait(300);\ncy.get(\"body\").type(\" \"); // Attack\ncy.wait(300);\n// Verify multiple injuries rendered\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 50 });\ncy.log(\"✅ Multiple body part injuries verified\");\ncy.log(\"✅✅✅ Progressive Bruising E2E Test Complete\");",
               "err": {},
-              "uuid": "9301ac24-993b-4f24-9e59-d830d4ec3d41",
-              "parentUUID": "be4f8f60-f2ce-4e85-aa90-2706253cd97d",
+              "uuid": "e81c6239-91c9-412f-949f-60d78997c444",
+              "parentUUID": "5361d2a7-3b97-48da-94ea-53ccdf475853",
               "isHook": false,
               "skipped": false
             },
@@ -1615,7 +1615,7 @@
               "title": "should handle rapid combat with multiple injuries (stress test)",
               "fullTitle": "Trauma Visualization System - E2E Test (Target: 2-3 min) should handle rapid combat with multiple injuries (stress test)",
               "timedOut": null,
-              "duration": 9895,
+              "duration": 9938,
               "state": "passed",
               "speed": "medium",
               "pass": true,
@@ -1624,8 +1624,8 @@
               "context": null,
               "code": "cy.annotate(\"Trauma Visualization - Stress Test\");\ncy.log(\"Performing rapid combat sequence\");\n// Rapid combat sequence\nfor (let i = 1; i <= 10; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(200); // Faster pace\n}\n// Verify performance hasn't degraded\ncy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 30 });\n// Verify health bars still update\ncy.verifyHealthBar(\"player1-health\", 0, 100).then((health) => {\n    cy.log(`Player 1 health after stress test: ${health}`);\n});\ncy.verifyHealthBar(\"player2-health\", 0, 100).then((health) => {\n    cy.log(`Player 2 health after stress test: ${health}`);\n    // Opponent should have taken damage\n    expect(health).to.be.lessThan(100);\n});\ncy.log(\"✅ Stress test completed - system remains stable\");",
               "err": {},
-              "uuid": "74147579-f7f3-454a-befd-e55ad21514af",
-              "parentUUID": "be4f8f60-f2ce-4e85-aa90-2706253cd97d",
+              "uuid": "267386f7-122d-4628-a5df-a07c5d3acbb9",
+              "parentUUID": "5361d2a7-3b97-48da-94ea-53ccdf475853",
               "isHook": false,
               "skipped": false
             },
@@ -1642,29 +1642,29 @@
               "context": null,
               "code": "// TODO: Implement once round system exists\n// This test requires:\n// 1. A deterministic way to end a round\n// 2. Observable state to verify injuries are cleared\n// 3. Test hooks or UI elements to trigger and verify round reset\ncy.annotate(\"Testing Injury Persistence Across Rounds (SKIPPED - Not Implemented)\");\ncy.log(\"Creating injuries in round 1\");\n// Create some injuries\nfor (let i = 1; i <= 3; i++) {\n    cy.get(\"body\").type(\" \");\n    cy.wait(300);\n}\n// Verify injuries exist\ncy.verifyThreeJSRendering({ timeout: 2000, minPixelChange: 20 });\ncy.log(\"✅ Injuries created in round 1\");\n// End round (if round system exists)\n// Note: This test assumes round restart clears injuries\n// Implementation may vary based on game logic\ncy.log(\"Round persistence test skipped (requires implementation)\");",
               "err": {},
-              "uuid": "ca7b67ac-a77c-47b6-8ff8-2cf2e39e3c37",
-              "parentUUID": "be4f8f60-f2ce-4e85-aa90-2706253cd97d",
+              "uuid": "a54a7a67-3f5a-43aa-9db3-de2f5fd07990",
+              "parentUUID": "5361d2a7-3b97-48da-94ea-53ccdf475853",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "9301ac24-993b-4f24-9e59-d830d4ec3d41",
-            "74147579-f7f3-454a-befd-e55ad21514af"
+            "e81c6239-91c9-412f-949f-60d78997c444",
+            "267386f7-122d-4628-a5df-a07c5d3acbb9"
           ],
           "failures": [],
           "pending": [
-            "ca7b67ac-a77c-47b6-8ff8-2cf2e39e3c37"
+            "a54a7a67-3f5a-43aa-9db3-de2f5fd07990"
           ],
           "skipped": [],
-          "duration": 20555,
+          "duration": 20729,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
         },
         {
-          "uuid": "c0ca8c18-bacb-474f-b047-a3123caef638",
+          "uuid": "5e7310b1-94a9-4894-b5af-ddb7c34ec1f3",
           "title": "Trauma Visualization - Integration Tests",
           "fullFile": "",
           "file": "",
@@ -1675,7 +1675,7 @@
               "title": "should verify InjuryTracker exports are available",
               "fullTitle": "Trauma Visualization - Integration Tests should verify InjuryTracker exports are available",
               "timedOut": null,
-              "duration": 1165,
+              "duration": 1249,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -1684,20 +1684,20 @@
               "context": null,
               "code": "// This is a smoke test to ensure modules are exported correctly\ncy.visit(\"/\");\ncy.window().should(\"exist\");\ncy.log(\"✅ Window loaded successfully\");",
               "err": {},
-              "uuid": "2e808c37-2d1b-4302-b2c4-496e88232002",
-              "parentUUID": "c0ca8c18-bacb-474f-b047-a3123caef638",
+              "uuid": "2ab16ade-3fcc-4408-8547-3c015355e88b",
+              "parentUUID": "5e7310b1-94a9-4894-b5af-ddb7c34ec1f3",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "2e808c37-2d1b-4302-b2c4-496e88232002"
+            "2ab16ade-3fcc-4408-8547-3c015355e88b"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 1165,
+          "duration": 1249,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

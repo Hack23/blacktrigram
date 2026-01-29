@@ -339,7 +339,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -347,23 +347,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">384x</span>
+<span class="cline-any cline-yes">528x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-yes">168x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -373,21 +371,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">384x</span>
-<span class="cline-any cline-yes">168x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">528x</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">384x</span>
+<span class="cline-any cline-yes">528x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -403,13 +399,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">384x</span>
-<span class="cline-any cline-yes">168x</span>
-<span class="cline-any cline-yes">168x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">384x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">528x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-yes">216x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">528x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -599,7 +599,7 @@ export const Foot3D: React.FC&lt;Foot3DProps&gt; = ({
         emissive: new THREE.Color(footColor),
         emissiveIntensity: isHighlighted ? <span class="branch-0 cbranch-no" title="branch not covered" >0.3 : 0</span>.02,
       }),
-    [footColor, isHighlighted]
+    [footColor, isHighlighted],
   );
 &nbsp;
   // Dispose skin material on unmount to prevent memory leaks
@@ -611,9 +611,13 @@ export const Foot3D: React.FC&lt;Foot3DProps&gt; = ({
 &nbsp;
   return (
     &lt;group name={`foot-3d-${side}`}&gt;
-      {/* Main heel/midfoot body */}
+      {/* Main heel/midfoot body - positioned below ankle (Y=0 at ankle) */}
       &lt;mesh
-        position={[0, -footDimensions.footHeight / 2, 0]}
+        position={[
+          0,
+          -footDimensions.footHeight * 0.4,
+          footDimensions.heelLength * 0.2,
+        ]}
         castShadow
         receiveShadow
         name={`foot-heel-${side}`}
@@ -632,8 +636,8 @@ export const Foot3D: React.FC&lt;Foot3DProps&gt; = ({
       &lt;mesh
         position={[
           0,
-          -footDimensions.footHeight / 2 + footDimensions.toeHeight * 0.2,
-          footDimensions.heelLength / 2 + footDimensions.toeLength / 2,
+          -footDimensions.footHeight * 0.35 + footDimensions.toeHeight * 0.2,
+          footDimensions.heelLength * 0.7 + footDimensions.toeLength / 2,
         ]}
         castShadow
         receiveShadow
@@ -650,12 +654,8 @@ export const Foot3D: React.FC&lt;Foot3DProps&gt; = ({
       &lt;/mesh&gt;
 &nbsp;
       {/* Ankle connection point indicator (small sphere for visual continuity) */}
-      &lt;mesh
-        position={[0, 0, -footDimensions.heelLength * 0.3]}
-        castShadow
-        name={`foot-ankle-${side}`}
-      &gt;
-        &lt;sphereGeometry args={[footDimensions.footHeight * 0.4, 8, 8]} /&gt;
+      &lt;mesh position={[0, 0, 0]} castShadow name={`foot-ankle-${side}`}&gt;
+        &lt;sphereGeometry args={[footDimensions.footHeight * 0.5, 8, 8]} /&gt;
         &lt;primitive object={skinMaterial} attach="material" /&gt;
       &lt;/mesh&gt;
     &lt;/group&gt;
@@ -670,7 +670,7 @@ export default Foot3D;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-27T13:32:57.436Z
+                at 2026-01-28T23:23:47.678Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
