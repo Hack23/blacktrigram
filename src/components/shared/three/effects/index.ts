@@ -49,3 +49,5 @@ export type { StanceSymbol3DProps } from "./StanceSymbol3D";
 export { default as ActionFeedback } from "./ActionFeedback";
 export type { ActionFeedbackProps } from "./ActionFeedback";
 export { default as PlayerStateIndicators } from "./PlayerStateIndicators";
+export { default as LimbExposureIndicator3D } from "./LimbExposureIndicator3D";
+export type { LimbExposureIndicator3DProps } from "./LimbExposureIndicator3D";

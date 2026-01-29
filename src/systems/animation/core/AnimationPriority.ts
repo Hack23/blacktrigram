@@ -89,6 +89,11 @@ export const ANIMATION_PRIORITY_MAP: Record<AnimationState, AnimationPriority> =
   recovery_supine_standup: AnimationPriority.RECOVERY,
   recovery_roll: AnimationPriority.RECOVERY,
   recovery_defensive: AnimationPriority.RECOVERY,
+  // Grappling animations (잡기 애니메이션) - high priority like attacks/hits
+  grapple_entry: AnimationPriority.ATTACK, // Priority 5 - same as attack
+  grapple_control: AnimationPriority.ATTACK, // Priority 5 - maintain control
+  grapple_struggle: AnimationPriority.HIT, // Priority 6 - struggling escape
+  grapple_escape: AnimationPriority.HIT, // Priority 6 - successful escape
 };
 
 /**

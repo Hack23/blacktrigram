@@ -11,6 +11,7 @@
 
 import { Position, TrigramStance } from "@/types";
 import { BalanceState } from "@/types/player-visual";
+import type { CounterOpportunity } from "@/types/physics";
 
 /**
  * AI action types
@@ -105,4 +106,10 @@ export interface CombatContext {
     readonly worldWidthMeters: number; // Arena width in meters for physics calculations
     readonly worldDepthMeters: number; // Arena depth in meters for physics calculations
   };
+  /**
+   * Detected counter-attack opportunity from opponent's limb exposure.
+   * Includes exposed limb, timing window, vulnerability multiplier, and recommended counters.
+   * **Korean**: 반격 기회 (Counter Opportunity)
+   */
+  readonly counterOpportunity?: CounterOpportunity;
 }
