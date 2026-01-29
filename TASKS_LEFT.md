@@ -268,9 +268,7 @@ pressure_point: {
 - **Trigram System**: 51 techniques (traditional Korean martial arts)
 - **Total**: 72 unique techniques with ZERO overlap
 
-**Options:**
-
-### Option A: Merge Systems (Recommended)
+### Merge Systems
 **Benefits:**
 - 72+ total techniques available
 - Cultural authenticity + gameplay variety
@@ -285,34 +283,6 @@ pressure_point: {
 5. Test all combinations
 
 **Effort**: 2-3 weeks
-
-### Option B: Keep Separate (Current)
-**Benefits:**
-- No integration work needed
-- Clear separation of concerns
-- Both systems remain functional
-
-**Requirements:**
-1. Document system boundaries clearly
-2. Ensure both have proper animation mappings
-3. Clarify when each system is used
-
-**Effort**: 1 week (documentation only)
-
-### Option C: Animation Variants Only
-**Benefits:**
-- Address duplicate issue without full merge
-- Simpler implementation
-- Maintains current architecture
-
-**Requirements:**
-1. Create 18+ new animation variants
-2. Update archetype technique definitions
-3. No system merge needed
-
-**Effort**: 2 weeks
-
-**Recommendation**: Option A - Full integration provides best long-term value.
 
 ---
 
