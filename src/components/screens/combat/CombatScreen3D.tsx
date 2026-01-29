@@ -2738,27 +2738,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
 
-        {/* 3D Balance Indicators - Float above players in 3D space */}
-        {/* Player 1 Balance Indicator - Left side, positioned above player */}
+        {/* 3D Balance Indicators - Positioned below top HUD, to the right of side HUDs */}
+        {/* Player 1 Balance Indicator - Upper left area, below top HUD */}
         <BalanceIndicatorOverlayHtml
           player={validPlayers[0] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
           currentTime={Date.now()}
           position={[
-            player1Position3D[0] - (isMobile ? 0.3 : 0.5), // Slightly left of player
-            3.0, // Float 3m above arena
-            player1Position3D[2] + (isMobile ? 0.3 : 0.5) // Slightly forward
+            -2.5, // Left side of arena (to the right of left HUD in 3D space)
+            2.5, // Upper area (below top HUD)
+            -1.0 // Slightly forward toward camera
           ]}
           isMobile={isMobile}
         />
 
-        {/* Player 2 Balance Indicator - Right side, positioned above player */}
+        {/* Player 2 Balance Indicator - Upper right area, below top HUD */}
         <BalanceIndicatorOverlayHtml
           player={validPlayers[1] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
           currentTime={Date.now()}
           position={[
-            player2Position3D[0] + (isMobile ? 0.3 : 0.5), // Slightly right of player
-            3.0, // Float 3m above arena
-            player2Position3D[2] + (isMobile ? 0.3 : 0.5) // Slightly forward
+            2.5, // Right side of arena (to the left of right HUD in 3D space)
+            2.5, // Upper area (below top HUD)
+            -1.0 // Slightly forward toward camera
           ]}
           isMobile={isMobile}
         />
