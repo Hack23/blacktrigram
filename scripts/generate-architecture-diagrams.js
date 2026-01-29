@@ -32,7 +32,7 @@ console.log("Generating component dependency diagram...");
 try {
   execSync(
     `npx depcruise --config .dependency-cruiser.cjs --output-type dot src/components | dot -T svg > docs/architecture/component-dependencies.svg`,
-    { shell: true }
+    { shell: true, stdio: 'pipe' }
   );
 } catch (error) {
   console.error("Error generating component dependencies:", error);
@@ -43,7 +43,7 @@ console.log("Generating module dependency diagram...");
 try {
   execSync(
     `npx depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > docs/architecture/module-dependencies.svg`,
-    { shell: true }
+    { shell: true, stdio: 'pipe' }
   );
 } catch (error) {
   console.error("Error generating module dependencies:", error);
