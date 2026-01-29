@@ -88,6 +88,11 @@ const ANIMATION_STATE_MAP: Record<AnimationState, PlayerAnimation> = {
   recovery_supine_standup: "idle",
   recovery_roll: "walk", // Rolling motion approximated by walk
   recovery_defensive: "defend", // Guarded getup approximated by defend
+  // Grappling animations (잡기 애니메이션) - map to attack/defend based on action
+  grapple_entry: "attack", // Initiating grab uses attack animation
+  grapple_control: "defend", // Maintaining control uses defensive stance
+  grapple_struggle: "hit", // Struggling escape uses hit reaction
+  grapple_escape: "attack", // Successful escape uses attack burst
 };
 
 /**

@@ -409,6 +409,51 @@ export enum AnimationState {
    * Duration: 42 frames (700ms), Damage reduction: 50%
    */
   RECOVERY_DEFENSIVE = "recovery_defensive",
+  
+  // ===== Grappling Animations (잡기 애니메이션) =====
+  
+  /** 
+   * Grapple Entry - Establish grip connection
+   * Korean: 잡기 연결 (japgi yeongyeol) - Grab connection
+   * Duration: 8 frames (133ms)
+   * 
+   * Initiates the grappling sequence when attacker successfully grabs defender.
+   * Transition from IDLE/ATTACK state to establishing physical control.
+   */
+  GRAPPLE_ENTRY = "grapple_entry",
+  
+  /** 
+   * Grapple Control - Maintain grip control
+   * Korean: 잡기 유지 (japgi yuji) - Maintaining grip
+   * Duration: Loop (breathing animation ~4 frames)
+   * 
+   * Active control state where attacker maintains grip on defender.
+   * Looping animation with subtle struggle movements.
+   * Stamina cost: 5/second (default)
+   */
+  GRAPPLE_CONTROL = "grapple_control",
+  
+  /** 
+   * Grapple Struggle - Escape attempt animation
+   * Korean: 탈출 시도 (talchul sido) - Escape attempts
+   * Duration: 12 frames (200ms)
+   * 
+   * Defender animation when attempting to break free from grapple.
+   * Shows strain and resistance movements.
+   * Stamina cost: 15 per attempt
+   */
+  GRAPPLE_STRUGGLE = "grapple_struggle",
+  
+  /** 
+   * Grapple Escape - Successful escape from grapple
+   * Korean: 탈출 성공 (talchul seonggong) - Successful escape
+   * Duration: 15 frames (250ms)
+   * 
+   * Defender breaks free and creates distance from attacker.
+   * Returns to IDLE state upon completion.
+   * Provides invulnerability frames during escape animation.
+   */
+  GRAPPLE_ESCAPE = "grapple_escape",
 }
 
 /**

@@ -17,6 +17,11 @@ import {
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { PlayerArchetype, Position, TrigramStance } from "@/types";
 import { AI_MOVEMENT_METERS } from "@/types/physicsConstants";
+import {
+  calculateCounterOpportunity,
+  calculateVulnerabilityMultiplier,
+} from "@/systems/combat/LimbExposureSystem";
+import type { CounterOpportunity } from "@/types/physics";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { enforceArchetypeBehavior } from "./ArchetypeEnforcer";
@@ -726,6 +731,63 @@ export class AIDecisionTree {
   }
 
   /**
+   * Analyze counter-attack opportunity from opponent's limb exposure.
+   *
+   * **Korean**: 반격 기회 분석 (Counter Opportunity Analysis)
+   *
+   * Detects when the opponent has exposed limbs during technique execution,
+   * enabling defensive counter-attacks and breaking techniques.
+   *
+   * This integrates the LimbExposureSystem with AI decision-making by:
+   * 1. Detecting exposed limbs from opponent's current technique
+   * 2. Calculating vulnerability windows and multipliers
+   * 3. Providing counter opportunity data for decision prioritization
+   *
+   * @param context - Combat context with opponent technique data
+   * @returns Enhanced context with counter opportunity analysis, or undefined if no opportunity
+   *
+   * @remarks
+   * Returns undefined if:
+   * - Opponent is not executing a technique
+   * - Technique has no exposure window defined
+   * - Current time is outside the exposure window
+   *
+   * @korean 반격기회분석
+   */
+  private analyzeCounterOpportunity(
+    context: CombatContext,
+  ): {
+    readonly counterOpportunity?: CounterOpportunity;
+    readonly opponentVulnerability: number;
+  } {
+    let counterOpportunity: CounterOpportunity | undefined;
+    let opponentVulnerability = 1.0;
+
+    // Check if opponent is executing a technique
+    if (
+      context.opponentTechnique &&
+      context.opponentTechniqueTime !== undefined
+    ) {
+      // Calculate counter opportunity from limb exposure
+      counterOpportunity = calculateCounterOpportunity(
+        context.opponentTechnique,
+        context.opponentTechniqueTime,
+      );
+
+      // Calculate vulnerability multiplier for damage calculation
+      opponentVulnerability = calculateVulnerabilityMultiplier(
+        context.opponentTechnique,
+        context.opponentTechniqueTime,
+      );
+    }
+
+    return {
+      counterOpportunity,
+      opponentVulnerability,
+    };
+  }
+
+  /**
    * Make strategic decision based on combat context
    *
    * Applies difficulty-based reaction time delays if difficulty parameters are set
@@ -800,6 +862,10 @@ export class AIDecisionTree {
     // Assess opponent vulnerability for exploitation (Issue #enhance-intelligence-operative-ai)
     const vulnerability = assessVulnerability(context);
 
+    // Analyze counter-attack opportunities from limb exposure (Limb Exposure System Integration)
+    // This detects when opponent's technique execution exposes vulnerable limbs
+    const counterAnalysis = this.analyzeCounterOpportunity(context);
+
     // Check for active combo first
     if (comboSystem.isComboActive()) {
       return this.decideComboAction(context, personality);
@@ -815,29 +881,42 @@ export class AIDecisionTree {
     // 1. Critical health - survival priority
     decisions.push(this.evaluateSurvival(context, personality));
 
-    // 2. Counter-attack opportunity
+    // 2. Limb exposure counter-attack opportunity (highest tactical priority after survival)
+    // Evaluates opportunities to exploit opponent's exposed limbs during technique execution
+    if (counterAnalysis.counterOpportunity) {
+      decisions.push(
+        this.evaluateLimbExposureCounter(
+          context,
+          personality,
+          counterAnalysis.counterOpportunity,
+          counterAnalysis.opponentVulnerability,
+        ),
+      );
+    }
+
+    // 3. Standard counter-attack opportunity (opponent attacking)
     if (context.isOpponentAttacking) {
       decisions.push(
         this.evaluateCounter(context, personality, killModeActive),
       );
     }
 
-    // 3. Combo initiation (only if at reasonable distance)
+    // 4. Combo initiation (only if at reasonable distance)
     if (distance < optimalRange * 1.5) {
       decisions.push(
         this.evaluateComboStart(context, personality, comboSystem),
       );
     }
 
-    // 4. Stance transition
+    // 5. Stance transition
     decisions.push(this.evaluateStanceChange(context, personality, now));
 
-    // 5. Feint attack (only at mid-close range) - reduced priority in kill mode
+    // 6. Feint attack (only at mid-close range) - reduced priority in kill mode
     if (distance < optimalRange * 1.8 && !killModeActive) {
       decisions.push(this.evaluateFeint(context, personality));
     }
 
-    // 6. Distance-based tactics (archetype-aware ranges)
+    // 7. Distance-based tactics (archetype-aware ranges)
     // Increased multiplier from 1.2 to 2.0 to allow attacks at greater distances
     // Players start at ~1.6m apart, so this ensures AI can attack immediately
     // Using <= to include exact boundary cases (e.g., Jeongbo at 1.6m = 0.8m * 2.0)
@@ -856,7 +935,7 @@ export class AIDecisionTree {
       decisions.push(this.evaluateMidRange(context, personality));
     }
 
-    // 7. Defensive positioning (reduced in kill mode)
+    // 8. Defensive positioning (reduced in kill mode)
     if (!killModeActive || personality.archetype !== PlayerArchetype.MUSA) {
       decisions.push(this.evaluateDefense(context, personality));
     }
@@ -1212,6 +1291,124 @@ export class AIDecisionTree {
       priority: 6,
       reason: "Opponent attacking - defensive stance",
     };
+  }
+
+  /**
+   * Evaluate counter-attack opportunity from limb exposure.
+   *
+   * **Korean**: 사지 노출 반격 평가 (Limb Exposure Counter Evaluation)
+   *
+   * Analyzes opportunities to exploit opponent's exposed limbs during technique
+   * execution. This is higher priority than standard counters because it targets
+   * specific anatomical vulnerabilities.
+   *
+   * **Defensive Archetype Priority**:
+   * Defensive archetypes (high defensiveness) strongly favor counter-attacks:
+   * - **Musa**: Honorable defense with precise counters (defensiveness ~0.7)
+   * - **Amsalja**: Patient assassin waiting for openings (defensiveness ~0.6)
+   * - **Jeongbo Yowon**: Analytical exploitation of weaknesses (defensiveness ~0.5)
+   *
+   * **Breaking Techniques**:
+   * When allowsBreaking is true, AI can execute joint locks and limb breaks
+   * for severe damage and mobility reduction.
+   *
+   * @param context - Combat context with positioning
+   * @param personality - AI personality with archetype and defensiveness
+   * @param counterOpportunity - Detected limb exposure opportunity
+   * @param opponentVulnerability - Opponent's vulnerability multiplier
+   * @returns Counter-attack decision with priority based on archetype
+   *
+   * @korean 사지노출반격평가
+   */
+  private evaluateLimbExposureCounter(
+    context: CombatContext,
+    personality: AIPersonality,
+    counterOpportunity: CounterOpportunity,
+    opponentVulnerability: number,
+  ): AIDecision {
+    // Base counter priority starts high (limb exposure is a prime opportunity)
+    let counterPriority = 9;
+
+    // Defensive archetypes prioritize counter-attacks significantly
+    // Musa (defensiveness ~0.7): +2.1 bonus → priority 11+
+    // Amsalja (defensiveness ~0.6): +1.8 bonus → priority 10+
+    // Jeongbo (defensiveness ~0.5): +1.5 bonus → priority 10+
+    const defensivenessBonus = personality.defensePreference * 3;
+    counterPriority += defensivenessBonus;
+
+    // Breaking opportunities are extremely high value
+    if (counterOpportunity.allowsBreaking) {
+      counterPriority += 2;
+    }
+
+    // High vulnerability multipliers increase priority
+    if (opponentVulnerability > 2.0) {
+      counterPriority += 1; // Severely overextended
+    } else if (opponentVulnerability > 1.5) {
+      counterPriority += 0.5; // Moderately vulnerable
+    }
+
+    // Check if AI has sufficient resources to execute counter
+    const hasStamina = context.playerStamina > context.playerMaxStamina * 0.2;
+    if (!hasStamina) {
+      // Low stamina reduces priority but doesn't eliminate opportunity
+      counterPriority -= 3;
+    }
+
+    // Distance check - counter must be executable at current range
+    const maxCounterRange = 1.0; // 1 meter max for counter-attacks
+    if (context.distanceToOpponent > maxCounterRange) {
+      // Too far to execute counter
+      return {
+        action: AIActionType.WAIT,
+        priority: 0,
+        reason: `Limb exposed but too far: ${context.distanceToOpponent.toFixed(2)}m > ${maxCounterRange}m`,
+      };
+    }
+
+    // Build descriptive reason with Korean translation
+    const exposedLimbKorean = this.translateExposedLimb(
+      counterOpportunity.exposedLimb,
+    );
+    const breakingNote = counterOpportunity.allowsBreaking
+      ? " - 파쇄 가능 (breaking possible)"
+      : "";
+    const vulnerabilityNote = ` (취약성: ${opponentVulnerability.toFixed(1)}x)`;
+
+    return {
+      action: AIActionType.COUNTER,
+      priority: counterPriority,
+      reason: `Exposed limb counter: ${counterOpportunity.exposedLimb} (${exposedLimbKorean})${breakingNote}${vulnerabilityNote}`,
+    };
+  }
+
+  /**
+   * Translate exposed limb type to Korean.
+   *
+   * **Korean**: 노출 사지 번역 (Exposed Limb Translation)
+   *
+   * @param exposedLimb - English limb type identifier
+   * @returns Korean translation
+   *
+   * @korean 노출사지번역
+   */
+  private translateExposedLimb(exposedLimb: string): string {
+    const translations: Record<string, string> = {
+      left_arm: "왼팔",
+      right_arm: "오른팔",
+      left_elbow: "왼팔꿈치",
+      right_elbow: "오른팔꿈치",
+      left_wrist: "왼손목",
+      right_wrist: "오른손목",
+      left_leg: "왼다리",
+      right_leg: "오른다리",
+      left_knee: "왼무릎",
+      right_knee: "오른무릎",
+      left_ankle: "왼발목",
+      right_ankle: "오른발목",
+    };
+
+    return translations[exposedLimb] ?? exposedLimb;
   }
 
   /**
