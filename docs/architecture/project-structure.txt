@@ -527,6 +527,8 @@ src/components/screens/combat/hooks/useAICombat.test.ts
 src/components/screens/combat/hooks/useAICombat.ts
 src/components/screens/combat/hooks/useCombatActions.test.ts
 src/components/screens/combat/hooks/useCombatActions.ts
+src/components/screens/combat/hooks/useCombatAttackMovement.test.ts
+src/components/screens/combat/hooks/useCombatAttackMovement.ts
 src/components/screens/combat/hooks/useCombatAudio.boneimpact.test.tsx
 src/components/screens/combat/hooks/useCombatAudio.test.tsx
 src/components/screens/combat/hooks/useCombatAudio.ts
@@ -534,6 +536,8 @@ src/components/screens/combat/hooks/useCombatLayout.test.ts
 src/components/screens/combat/hooks/useCombatLayout.ts
 src/components/screens/combat/hooks/useCombatState.test.ts
 src/components/screens/combat/hooks/useCombatState.ts
+src/components/screens/combat/hooks/useGrapplingAudio.test.tsx
+src/components/screens/combat/hooks/useGrapplingAudio.ts
 src/components/screens/combat/hooks/usePreloadCombatAudio.test.tsx
 src/components/screens/combat/hooks/usePreloadCombatAudio.ts
 src/components/screens/combat/index.ts
@@ -733,10 +737,14 @@ src/components/shared/three/effects/DamageNumbers.test.tsx
 src/components/shared/three/effects/DamageNumbers.tsx
 src/components/shared/three/effects/EffectsComposer.test.tsx
 src/components/shared/three/effects/EffectsComposer.tsx
+src/components/shared/three/effects/GrapplingIndicator3D.test.tsx
+src/components/shared/three/effects/GrapplingIndicator3D.tsx
 src/components/shared/three/effects/HitEffects3D.test.tsx
 src/components/shared/three/effects/HitEffects3D.tsx
 src/components/shared/three/effects/HitEffects3DInstanced.test.tsx
 src/components/shared/three/effects/HitEffects3DInstanced.tsx
+src/components/shared/three/effects/LimbExposureIndicator3D.test.tsx
+src/components/shared/three/effects/LimbExposureIndicator3D.tsx
 src/components/shared/three/effects/OPTIMIZATION_GUIDE.md
 src/components/shared/three/effects/ParticlePool.test.ts
 src/components/shared/three/effects/ParticlePool.ts
@@ -829,6 +837,9 @@ src/components/shared/three/ui/TechniqueCard.test.tsx
 src/components/shared/three/ui/TechniqueCard.tsx
 src/components/shared/three/ui/VitalPointOverlayControlsHtml.test.tsx
 src/components/shared/three/ui/VitalPointOverlayControlsHtml.tsx
+src/components/shared/three/ui/VulnerabilityWindowHUD.test.tsx
+src/components/shared/three/ui/VulnerabilityWindowHUD.tsx
+src/components/shared/three/ui/index.ts
 src/components/shared/ui/BackButton.test.tsx
 src/components/shared/ui/BackButton.tsx
 src/components/shared/ui/BaseHUDContainer.test.tsx
@@ -867,6 +878,7 @@ src/data/archetypeClothing.test.ts
 src/data/archetypeClothing.ts
 src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
+src/data/techniqueMappings.ts
 src/data/techniques.ts
 src/hooks/__tests__/useBalanceAnimations.test.ts
 src/hooks/__tests__/useHUDLayout.test.ts
@@ -934,6 +946,7 @@ src/systems/VitalPointSystem.test.ts
 src/systems/VitalPointSystem.ts
 src/systems/__tests__/BreathingDisruptionIntegration.test.ts
 src/systems/__tests__/ResponsiveScaling.test.ts
+src/systems/__tests__/TechniqueSynchronization.test.ts
 src/systems/ai/AIMovement.test.ts
 src/systems/ai/AIPersonality.test.ts
 src/systems/ai/AIPersonality.ts
@@ -943,6 +956,7 @@ src/systems/ai/ArchetypeEnforcer.test.ts
 src/systems/ai/ArchetypeEnforcer.ts
 src/systems/ai/ComboSystem.test.ts
 src/systems/ai/ComboSystem.ts
+src/systems/ai/DecisionTree.LimbExposure.test.ts
 src/systems/ai/DecisionTree.test.ts
 src/systems/ai/DecisionTree.ts
 src/systems/ai/TrainingAI.test.ts
@@ -1258,6 +1272,7 @@ src/types/physicsConstants.ts
 src/types/player-visual.ts
 src/types/skeletal.ts
 src/types/technique.ts
+src/types/techniqueId.ts
 src/types/vitest-axe.d.ts
 src/utils/EventManager.test.ts
 src/utils/EventManager.ts

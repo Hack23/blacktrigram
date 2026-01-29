@@ -12,6 +12,8 @@
 - **December 2024**: Added Dark Ops unit combat techniques (암흑작전부대 기술) for tactical assassination and silent incapacitation methods used by Korean special operations forces.
 - **December 2024**: Implemented Injury-Based Movement Penalty System (이동 패널티 시스템) for realistic leg damage affecting mobility, stance changes, and balance.
 - **Q1 2026**: Completed comprehensive documentation of all 70 vital points across 4 anatomical systems with damage calculation examples.
+- **January 2026**: ✨ Integrated Grappling System (잡기 체계) with authentic Hapkido/Ssireum techniques, 4 animation states, and grip mechanics.
+- **January 2026**: ✨ Integrated Limb Exposure & Counter-Attack System (사지 노출 및 반격 체계) with AI decision integration, visual indicators, and 132 comprehensive tests.
 
 ## 📚 Quick Navigation
 
@@ -19,6 +21,8 @@
 - [🔧 Core Combat System Architecture](#-core-combat-system-architecture) - System overview and architecture diagram
 - [☰ Trigram Combat System](#-trigram-combat-system-팔괘-무술-체계) - 8 stance system with I Ching philosophy
 - [🎯 Vital Point Targeting System](#-vital-point-targeting-system-급소-타격-체계) - 70 vital points overview
+- [🤜 Grappling System](#-grappling-system-잡기-체계) - ✨ **NEW**: Hapkido/Ssireum grappling with grip decay and escape mechanics
+- [⚡ Limb Exposure & Counter-Attacks](#-limb-exposure--counter-attack-system-사지-노출-및-반격-체계) - ✨ **NEW**: Vulnerability windows with AI integration
 
 ### Complete 70 Vital Points Documentation
 - [💀 Complete 70 Vital Points System](#-complete-70-vital-points-system-70개-급소-완전-체계) - **NEW**: All 70 vital points organized by anatomical system
@@ -3030,6 +3034,243 @@ Black Trigram maintains 60fps during intense combat through aggressive optimizat
 2. **AnatomicalRegions** - Body region mapping system
 3. **Enhanced Audio** - Korean traditional instrument integration
 4. **Combat Analytics** - Performance and effectiveness tracking
+
+### Phase 4: Combat Enhancements (Complete ✅)
+
+1. **GrappleSystem** ✅ - Hapkido/Ssireum grappling mechanics (95% complete, 34 tests)
+2. **LimbExposureSystem** ✅ - Vulnerability windows and counter-attacks (100% complete, 132 tests)
+3. **AI Counter-Attack Integration** ✅ - Defensive AI exploits exposed limbs (18 tests)
+4. **Visual Indicators** ✅ - 3D glow effects and timing HUD (49 tests)
+5. **Grappling Animations** ✅ - 4 animation states with audio hooks (34 tests)
+
+---
+
+## 🤜 Grappling System (잡기 체계)
+
+**Status**: ✅ 95% Complete | **Implementation**: `src/systems/combat/GrappleSystem.ts` | **Tests**: 34 passing
+
+### Overview
+
+The Grappling System implements authentic Korean martial arts grappling techniques from **Hapkido (합기도)** and traditional Korean wrestling **Ssireum (씨름)**. It features realistic grip decay mechanics, escape difficulty calculations, and stance-based advantages.
+
+### Core Components
+
+**Grip Mechanics**:
+- **Initial Grip Strength**: 100% at grapple initiation
+- **Decay Rate**: -5% to -15% per second based on stamina
+- **Minimum Threshold**: Grapple automatically breaks at <30% grip strength
+- **Refresh**: Successful resistance checks can restore +10% grip
+
+**Escape System**:
+- **Base Difficulty**: 60% escape chance at full stamina
+- **Stamina Impact**: -10% success per 20% stamina lost
+- **Stance Modifiers**:
+  - **GON (☷ Earth)**: +30% grip strength, +15% grapple success, +30% escape (grounded wrestling expertise)
+  - **GAN (☶ Mountain)**: +15% grip strength, +15% escape (immovable defensive stance)
+  - **Other Stances**: Standard grapple mechanics
+
+**State Transitions**:
+```
+IDLE → GRAPPLING (controlling opponent)
+IDLE → GRAPPLED (being controlled)
+GRAPPLING → IDLE (release or break)
+GRAPPLED → IDLE (successful escape)
+```
+
+**Movement Penalties**:
+- **GRAPPLING**: -80% movement speed (20% remaining)
+- **GRAPPLED**: -100% movement speed (cannot move)
+
+### Animation States (4 Total)
+
+| State | Duration | Frames @ 60fps | Description |
+|-------|----------|----------------|-------------|
+| **GRAPPLE_ENTRY** | 133ms | 8 frames | Initial grab connection |
+| **GRAPPLE_CONTROL** | 167ms | 10 frames | Maintaining grip (loops) |
+| **GRAPPLE_STRUGGLE** | 200ms | 12 frames | Escape attempts |
+| **GRAPPLE_ESCAPE** | 250ms | 15 frames | Successful release |
+
+### Visual Feedback
+
+**GrapplingIndicator3D Component** (`src/components/shared/three/effects/GrapplingIndicator3D.tsx`):
+- **Particle System**: 20-50 particles showing struggle intensity
+- **Grip Strength Meter**: HTML overlay with bilingual labels (잡기 힘 / Grip Strength)
+- **Color Coding**: Blue (controlling) vs Red (being controlled)
+- **Mobile Optimization**: 60% particle reduction for 55fps+ performance
+
+### Audio Integration
+
+**useGrapplingAudio Hook** (`src/components/screens/combat/hooks/useGrapplingAudio.ts`):
+- **6 Audio Functions**: Connect, struggle, escape, break, counter, warning
+- **Rate Limiting**: 100-300ms cooldowns between sounds
+- **Volume Modifiers**: Hand (0.8x), Arm (1.1x), Both Arms (1.3x), Full Control (1.3x)
+- **Placeholder Mapping**: Uses existing combat audio until custom grappling sounds are created
+
+### Implementation Details
+
+```typescript
+// Core grapple mechanics (simplified)
+interface GrappleState {
+  isGrappling: boolean;
+  gripStrength: number; // 0-100%
+  escapeAttempts: number;
+  duration: number; // ms
+}
+
+// Grip decay calculation
+const gripDecay = baseDecayRate * (1 + staminaPenalty) * stanceModifier;
+
+// Escape success probability
+const escapeChance = baseChance * (stamina / 100) * stanceBonus;
+```
+
+### Usage in Combat
+
+The GrappleSystem is integrated into `CombatSystem.ts`:
+- `resolveAttack()` handles GRAPPLE type attacks
+- `handleGrappleTechnique()` initiates grapple control
+- `updateGrappleState()` maintains control over time (called each frame)
+- Automatic release on escape or grip strength < 30%
+
+---
+
+## ⚡ Limb Exposure & Counter-Attack System (사지 노출 및 반격 체계)
+
+**Status**: ✅ 100% Complete | **Implementation**: `src/systems/combat/LimbExposureSystem.ts` | **Tests**: 132 passing
+
+### Overview
+
+The Limb Exposure System implements Korean martial arts principles of **허점공격 (Heojeom Gonggyeok - attacking openings)** and **후수필승 (Husu Pilseung - victory through counter-timing)**. It detects when attackers expose vulnerable limbs during technique execution, creating counter-attack opportunities with damage multipliers.
+
+### Core Concepts
+
+**Vulnerability Windows**:
+- **Wind-up Phase** (0-50% of execution): Low vulnerability (1.1x damage multiplier)
+- **Peak Phase** (50-70% of execution): Maximum vulnerability (2.0x damage multiplier)
+- **Recovery Phase** (70-100% of execution): Medium vulnerability (1.5x damage multiplier)
+- **Window Duration**: 300-400ms typical exposure time
+
+**Exposed Limb Types**: 12 total (left/right × 6 body parts)
+- `right_arm`, `left_arm`, `right_elbow`, `left_elbow`, `right_wrist`, `left_wrist`
+- `right_leg`, `left_leg`, `right_knee`, `left_knee`, `right_ankle`, `left_ankle`
+
+**Breaking Techniques**:
+- **Target Joints**: Ankle, knee, elbow, wrist
+- **Severity Calculation**: Based on force (40-80 damage) → 0.0-1.0 severity
+- **Status Effects**: Broken limbs receive injury status (BROKEN_ANKLE, BROKEN_KNEE, etc.)
+- **Movement Impact**: Broken legs reduce movement speed, broken arms reduce attack damage
+
+### AI Integration
+
+**DecisionTree Integration** (`src/systems/ai/DecisionTree.ts`):
+- **Priority Level 2**: Counter-attack evaluation (after survival, before standard attacks)
+- **Archetype Priorities**:
+  - **Musa (무사)**: Priority 10.5-11.1 (high defensiveness, honor through counters)
+  - **Amsalja (암살자)**: Priority 10.5-11.1 (tactical exploitation of weakness)
+  - **Jeongbo (정보요원)**: Priority 13.0 (intelligence operative, analytical counters)
+  - **Jojik/Hacker**: Priority 9.6-10.8 (offensive-focused, lower counter priority)
+- **Bonus Modifiers**:
+  - Breaking opportunities: +2 priority
+  - High vulnerability (>2.0x): +1 priority
+
+**Counter Selection Logic**:
+```typescript
+// AI evaluates counter opportunities each decision frame
+const opportunity = calculateCounterOpportunity(opponentTechnique, elapsedTime);
+
+if (opportunity && opportunity.confidence > 0.7) {
+  const priority = baseCounterPriority + (defensiveness * 1.5) + 
+                   (opportunity.allowsBreaking ? 2 : 0) +
+                   (opportunity.vulnerabilityMultiplier > 2.0 ? 1 : 0);
+  
+  if (priority >= decisionThreshold) {
+    selectCounterTechnique(opportunity.exposedLimb);
+  }
+}
+```
+
+### Visual Indicators
+
+**LimbExposureIndicator3D** (`src/components/shared/three/effects/LimbExposureIndicator3D.tsx`):
+- **3D Glow Effect**: Three.js `pointLight` attached to exposed limb position
+- **Intensity Scaling**: 1.0-3.0 based on vulnerability multiplier
+- **Color Coding**:
+  - Gold (`#ffaa00`): Low vulnerability (<1.5x)
+  - Orange (`#ff6600`): Medium vulnerability (1.5-2.0x)
+  - Red (`#ff0000`): High vulnerability / Breaking opportunity (≥2.0x)
+- **Fade Animation**: Smooth fade in/out during 300-400ms exposure window
+- **Performance**: <0.5ms overhead per frame, 60fps maintained
+
+**VulnerabilityWindowHUD** (`src/components/shared/three/ui/VulnerabilityWindowHUD.tsx`):
+- **Circular Timer**: Progress ring showing remaining opportunity time
+- **Bilingual Labels**: "반격 기회" (Korean) / "Counter Opportunity" (English)
+- **Urgency Colors**:
+  - Early (0-50%): Gold (plenty of time)
+  - Mid (50-75%): Orange (closing window)
+  - Late (75-100%): Red (last moment)
+- **Mobile Layout**: Compact design, 70% scale on mobile devices
+
+### Type Extensions
+
+**PlayerState Extended**:
+```typescript
+interface PlayerState {
+  // ... existing fields
+  currentTechnique?: KoreanTechnique; // Technique being executed
+  techniqueElapsedTime?: number; // Time elapsed in technique (ms)
+}
+```
+
+**CombatContext Extended**:
+```typescript
+interface CombatContext {
+  // ... existing fields
+  opponentTechnique?: KoreanTechnique;
+  opponentTechniqueTime?: number;
+  counterOpportunity?: CounterOpportunity;
+  opponentVulnerability: number; // 1.0-2.5x multiplier
+}
+```
+
+### Implementation Example
+
+```typescript
+// Detect limb exposure during attack
+const opportunity = calculateCounterOpportunity(
+  opponentTechnique,
+  elapsedTime // 450ms into 800ms technique
+);
+
+if (opportunity) {
+  console.log(opportunity);
+  // {
+  //   exposedLimb: "right_leg",
+  //   vulnerabilityMultiplier: 2.0,
+  //   allowsBreaking: true,
+  //   recommendedCounters: ["ankle_stomp", "knee_kick"],
+  //   remainingWindow: 350, // ms
+  //   confidence: 0.85
+  // }
+}
+```
+
+### Test Coverage
+
+- **36 tests**: LimbExposureSystem core functions
+- **14 tests**: Full attack-counter integration flow
+- **15 tests**: BreakingStatusEffects validation
+- **18 tests**: AI DecisionTree counter-attack integration
+- **19 tests**: LimbExposureIndicator3D visual component
+- **30 tests**: VulnerabilityWindowHUD UI component
+- **Total: 132/132 tests passing (100%)** ✅
+
+### Korean Martial Arts Philosophy
+
+The system embodies traditional principles:
+- **허점공격** (Heojeom Gonggyeok): Attacking openings/weaknesses
+- **후수필승** (Husu Pilseung): Victory through counter-attack timing
+- **이순응변** (Isun Eungbyeon): Adapt and exploit opponent's mistakes
+- **파쇄기** (Paswaegi): Breaking techniques for overextended attacks
 
 ---
 

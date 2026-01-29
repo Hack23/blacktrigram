@@ -14,6 +14,87 @@ The following assets are currently using placeholder files and should be created
 - `/assets/audio/music/victory_theme.mp3` (currently using cyberpunk_fusion.mp3)
 - `/assets/audio/music/defeat_theme.mp3` (currently using underground_theme.mp3)
 
+### Grappling System Audio Assets (New - TODO)
+
+**Korean**: 잡기 시스템 오디오 (Grapple System Audio)
+
+The following grappling audio assets need to be created for the GrappleSystem:
+
+#### Combat/Grappling SFX (`public/assets/audio/sfx/combat/grappling/`)
+
+1. **grapple_connect** - Grab success sound
+   - Korean: 잡기 성공 (japgi seonggong)
+   - Format: WebM + MP3
+   - Duration: ~200-300ms
+   - Description: Firm grip establishment, fabric rustle + impact
+   - Variations: grapple_connect_1.webm, grapple_connect_2.webm, grapple_connect_3.webm, grapple_connect_4.webm
+   - Placeholder: Use `attack_medium.webm` until created
+
+2. **grapple_struggle** - Escape attempt sounds
+   - Korean: 탈출 시도 (talchul sido)
+   - Format: WebM + MP3
+   - Duration: ~150-250ms
+   - Description: Strain, resistance movement, breathing effort
+   - Variations: grapple_struggle_1.webm, grapple_struggle_2.webm, grapple_struggle_3.webm, grapple_struggle_4.webm
+   - Placeholder: Use `hit_medium.webm` until created
+
+3. **grapple_escape** - Successful escape sound
+   - Korean: 탈출 성공 (talchul seonggong)
+   - Format: WebM + MP3
+   - Duration: ~300-400ms
+   - Description: Breaking free, release whoosh, relief exhale
+   - Variations: grapple_escape_1.webm, grapple_escape_2.webm, grapple_escape_3.webm, grapple_escape_4.webm
+   - Placeholder: Use `attack_light.webm` until created
+
+4. **bone_crack** - Breaking technique sounds (joint locks, throws)
+   - Korean: 뼈 부러짐 (ppyeo bureojim)
+   - Format: WebM + MP3
+   - Duration: ~100-200ms
+   - Description: Sharp crack, bone/joint stress sound
+   - Variations: bone_crack_1.webm, bone_crack_2.webm, bone_crack_3.webm, bone_crack_4.webm
+   - Placeholder: Use `hit_critical.webm` until created
+   - **Warning**: Use sparingly, high-impact sound
+
+5. **counter_attack** - Counter-attack success from grapple
+   - Korean: 반격 성공 (bangyeok seonggong)
+   - Format: WebM + MP3
+   - Duration: ~250-350ms
+   - Description: Reversal whoosh, impact, position change
+   - Variations: counter_attack_1.webm, counter_attack_2.webm, counter_attack_3.webm, counter_attack_4.webm
+   - Placeholder: Use `attack_critical.webm` until created
+
+6. **limb_exposure_warning** - Vulnerability window indicator
+   - Korean: 사지 노출 경고 (saji nochul gyeonggo)
+   - Format: WebM + MP3
+   - Duration: ~100-150ms
+   - Description: Subtle alert chime, opportunity cue
+   - Variations: limb_exposure_warning_1.webm, limb_exposure_warning_2.webm
+   - Placeholder: Use `energy_pulse.webm` until created
+   - **Usage**: Plays when limb becomes exposed during grapple
+
+#### Audio Integration Points
+
+- **GRAPPLING state entry**: Play `grapple_connect`
+- **Escape attempts**: Play `grapple_struggle` 
+- **Successful escape**: Play `grapple_escape`
+- **Joint lock/throw techniques**: Play `bone_crack`
+- **Counter from grapple**: Play `counter_attack`
+- **Limb exposure window opens**: Play `limb_exposure_warning`
+
+#### Placeholder Mappings (Until Assets Created)
+
+```typescript
+// Temporary placeholder mapping in AudioAssetRegistry
+const GRAPPLING_PLACEHOLDER_MAP = {
+  'grapple_connect': 'attack_medium',
+  'grapple_struggle': 'hit_medium', 
+  'grapple_escape': 'attack_light',
+  'bone_crack': 'hit_critical',
+  'counter_attack': 'attack_critical',
+  'limb_exposure_warning': 'energy_pulse'
+};
+```
+
 ### CURRENT AUDIO ASSETS
 
 **Note:** Asset paths below show `src/assets` but actual files are located in `public/assets`
