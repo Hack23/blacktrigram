@@ -173,6 +173,7 @@ describe("Technique System Synchronization", () => {
       // All trigram techniques should have animations
       expect(trigramTechniques.length).toBeGreaterThan(0);
       expect(withAnimations.length).toBe(trigramTechniques.length);
+      expect(withoutAnimations.length).toBe(0);
     });
   });
 
