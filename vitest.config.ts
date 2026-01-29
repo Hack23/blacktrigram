@@ -33,6 +33,18 @@ export default defineConfig({
     css: true,
     // Korean martial arts specific test configuration
     testTimeout: 10000, // Allow longer tests for complex combat calculations
+    
+    // Memory optimization: Limit concurrent test workers to reduce memory pressure
+    // Each worker process can use significant memory, especially for Three.js/AI tests
+    // Vitest 4.0: pool options are now top-level (not nested in poolOptions)
+    pool: "forks",
+    poolMatchGlobs: [
+      // Use forks pool for all test files (better memory isolation)
+      ["**/*.{test,spec}.{js,ts,tsx}", "forks"],
+    ],
+    maxConcurrency: 4, // Limit concurrent test execution to reduce memory pressure
+    // Note: In Vitest 4.0, fork-specific options like maxForks are set at top level
+    // The default fork behavior will be used (single fork per test file)
 
     // Test result reporters - output to build/test-results
     reporters: [

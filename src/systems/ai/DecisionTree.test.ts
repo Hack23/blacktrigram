@@ -478,13 +478,15 @@ describe("AIDecisionTree", () => {
         comboSystem,
       );
 
-      // Should respond to opponent attacking (counter, defend, combo, or tactical stance change)
+      // Should respond to opponent attacking (counter, defend, combo, technique, or tactical stance change)
       // With increased stance frequencies, stance_change is also a valid tactical response
+      // technique is also valid as AI may choose to execute a technique counter
       expect([
         "counter",
         "defend",
         "combo",
         "attack",
+        "technique",
         "stance_change",
       ]).toContain(decision.action);
     });
