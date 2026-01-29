@@ -338,11 +338,12 @@ export function useCombatAttackMovement(
       player2AttackStartTimeRef.current = null;
       player2MovementResultRef.current = null;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- base positions stored in refs to prevent attack cancellation on position updates
   }, [
     player2Attacking,
     player2AnimationType,
     player2Stance,
+    player1BasePosition,
+    player2BasePosition,
     animationDuration,
   ]);
 
