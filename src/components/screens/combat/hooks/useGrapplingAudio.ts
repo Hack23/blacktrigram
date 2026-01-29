@@ -33,17 +33,31 @@ const MIN_AUDIO_INTERVAL = 100;
 const MAX_SIMULTANEOUS_SOUNDS = 3;
 
 /**
+ * Grappling sound type identifiers
+ * 
+ * **Korean**: 잡기 소리 유형 (japgi sori yuhyeong)
+ */
+const GRAPPLING_SOUND_TYPES = {
+  CONNECT: "grapple_connect",
+  STRUGGLE: "grapple_struggle",
+  ESCAPE: "grapple_escape",
+  BONE_CRACK: "bone_crack",
+  COUNTER_ATTACK: "counter_attack",
+  LIMB_EXPOSURE_WARNING: "limb_exposure_warning",
+} as const;
+
+/**
  * Placeholder audio mapping until grappling assets are created
  * 
  * Maps grappling sound IDs to existing combat audio assets
  */
 const GRAPPLING_AUDIO_PLACEHOLDERS: Record<string, string> = {
-  grapple_connect: "attack_medium",
-  grapple_struggle: "hit_medium",
-  grapple_escape: "attack_light",
-  bone_crack: "hit_critical",
-  counter_attack: "attack_critical",
-  limb_exposure_warning: "energy_pulse",
+  [GRAPPLING_SOUND_TYPES.CONNECT]: "attack_medium",
+  [GRAPPLING_SOUND_TYPES.STRUGGLE]: "hit_medium",
+  [GRAPPLING_SOUND_TYPES.ESCAPE]: "attack_light",
+  [GRAPPLING_SOUND_TYPES.BONE_CRACK]: "hit_critical",
+  [GRAPPLING_SOUND_TYPES.COUNTER_ATTACK]: "attack_critical",
+  [GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING]: "energy_pulse",
 };
 
 /**
@@ -128,16 +142,16 @@ export const useGrapplingAudio = () => {
    */
   const playGrappleConnect = useCallback(
     (target: GrappleTarget, volume = 1.0) => {
-      if (!canPlaySound("grapple_connect")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.CONNECT)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.grapple_connect;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.CONNECT];
       const variantId = getRandomVariant(placeholderId, 4);
       const volumeModifier = getTargetVolumeModifier(target);
 
       audio.playSFX(variantId, volume * volumeModifier * 0.8);
 
-      lastPlayTime.current.grapple_connect = Date.now();
-      registerActiveSound("grapple_connect", 300);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.CONNECT] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.CONNECT, 300);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -153,15 +167,15 @@ export const useGrapplingAudio = () => {
    */
   const playGrappleStruggle = useCallback(
     (intensity = 0.8) => {
-      if (!canPlaySound("grapple_struggle")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.STRUGGLE)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.grapple_struggle;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.STRUGGLE];
       const variantId = getRandomVariant(placeholderId, 4);
 
       audio.playSFX(variantId, intensity * 0.7);
 
-      lastPlayTime.current.grapple_struggle = Date.now();
-      registerActiveSound("grapple_struggle", 250);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.STRUGGLE] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.STRUGGLE, 250);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -177,15 +191,15 @@ export const useGrapplingAudio = () => {
    */
   const playGrappleEscape = useCallback(
     (volume = 1.0) => {
-      if (!canPlaySound("grapple_escape")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.ESCAPE)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.grapple_escape;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.ESCAPE];
       const variantId = getRandomVariant(placeholderId, 4);
 
       audio.playSFX(variantId, volume * 0.9);
 
-      lastPlayTime.current.grapple_escape = Date.now();
-      registerActiveSound("grapple_escape", 400);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.ESCAPE] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.ESCAPE, 400);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -203,15 +217,15 @@ export const useGrapplingAudio = () => {
    */
   const playBoneCrack = useCallback(
     (severity = 0.8) => {
-      if (!canPlaySound("bone_crack")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.BONE_CRACK)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.bone_crack;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.BONE_CRACK];
       const variantId = getRandomVariant(placeholderId, 4);
 
       audio.playSFX(variantId, severity * 0.85);
 
-      lastPlayTime.current.bone_crack = Date.now();
-      registerActiveSound("bone_crack", 300);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.BONE_CRACK] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.BONE_CRACK, 300);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -227,15 +241,15 @@ export const useGrapplingAudio = () => {
    */
   const playCounterAttack = useCallback(
     (volume = 1.0) => {
-      if (!canPlaySound("counter_attack")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.COUNTER_ATTACK)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.counter_attack;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK];
       const variantId = getRandomVariant(placeholderId, 4);
 
       audio.playSFX(variantId, volume * 0.9);
 
-      lastPlayTime.current.counter_attack = Date.now();
-      registerActiveSound("counter_attack", 350);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.COUNTER_ATTACK, 350);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -251,15 +265,15 @@ export const useGrapplingAudio = () => {
    */
   const playLimbExposureWarning = useCallback(
     (volume = 0.6) => {
-      if (!canPlaySound("limb_exposure_warning")) return;
+      if (!canPlaySound(GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING)) return;
 
-      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS.limb_exposure_warning;
+      const placeholderId = GRAPPLING_AUDIO_PLACEHOLDERS[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING];
       const variantId = getRandomVariant(placeholderId, 4);
 
       audio.playSFX(variantId, volume * 0.5);
 
-      lastPlayTime.current.limb_exposure_warning = Date.now();
-      registerActiveSound("limb_exposure_warning", 150);
+      lastPlayTime.current[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING] = Date.now();
+      registerActiveSound(GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING, 150);
     },
     [audio, canPlaySound, registerActiveSound]
   );
