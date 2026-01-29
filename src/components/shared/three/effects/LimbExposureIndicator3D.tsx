@@ -140,6 +140,9 @@ function calculateFadeFactor(
   windowStart: number,
   windowDuration: number
 ): number {
+  // Guard against invalid window duration
+  if (windowDuration <= 0) return 0;
+
   const elapsed = currentTime - windowStart;
 
   // Before window starts

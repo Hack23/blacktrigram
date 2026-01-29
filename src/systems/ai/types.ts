@@ -106,27 +106,9 @@ export interface CombatContext {
     readonly worldDepthMeters: number; // Arena depth in meters for physics calculations
   };
   /**
-   * Opponent's currently executing technique (if any).
-   * Used for limb exposure detection and counter-attack opportunities.
-   * **Korean**: 상대 현재 기술 (Opponent Current Technique)
-   */
-  readonly opponentTechnique?: import("@/systems/vitalpoint/types").KoreanTechnique;
-  /**
-   * Time elapsed in opponent's technique execution (milliseconds).
-   * Used to determine limb exposure windows and vulnerability timing.
-   * **Korean**: 상대 기술 경과 시간 (Opponent Technique Elapsed Time)
-   */
-  readonly opponentTechniqueTime?: number;
-  /**
    * Detected counter-attack opportunity from opponent's limb exposure.
    * Includes exposed limb, timing window, vulnerability multiplier, and recommended counters.
    * **Korean**: 반격 기회 (Counter Opportunity)
    */
   readonly counterOpportunity?: import("@/types/physics").CounterOpportunity;
-  /**
-   * Opponent's current vulnerability multiplier based on technique execution.
-   * 1.0 = normal vulnerability, >1.0 = more vulnerable to counter-attacks.
-   * **Korean**: 상대 취약성 배수 (Opponent Vulnerability Multiplier)
-   */
-  readonly opponentVulnerability?: number;
 }

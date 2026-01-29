@@ -20,6 +20,7 @@ import type { CombatContext } from "./types";
 import { TrigramStance, PlayerArchetype } from "@/types";
 import type { KoreanTechnique } from "@/systems/vitalpoint/types";
 import type { CounterOpportunity } from "@/types/physics";
+import { calculateCounterOpportunity } from "@/systems/combat/LimbExposureSystem";
 
 /**
  * Custom defensive counter personality for testing limb exposure integration.
@@ -97,10 +98,29 @@ function createTestTechnique(
 
 /**
  * Create mock combat context for testing.
+ * Now calculates counterOpportunity from opponentTechnique if provided.
  *
  * **Korean**: 테스트용 모의 전투 상황 생성
  */
-function createMockContext(overrides?: Partial<CombatContext>): CombatContext {
+function createMockContext(
+  overrides?: Partial<CombatContext> & {
+    opponentTechnique?: KoreanTechnique;
+    opponentTechniqueTime?: number;
+  }
+): CombatContext {
+  // Calculate counterOpportunity if technique and time are provided
+  let counterOpportunity: CounterOpportunity | undefined;
+  if (overrides?.opponentTechnique && overrides.opponentTechniqueTime !== undefined) {
+    counterOpportunity = calculateCounterOpportunity(
+      overrides.opponentTechnique,
+      overrides.opponentTechniqueTime
+    );
+  }
+
+  // Remove opponentTechnique and opponentTechniqueTime from overrides
+  // as they're not part of CombatContext anymore
+  const { opponentTechnique, opponentTechniqueTime, ...contextOverrides } = overrides || {};
+
   return {
     playerPosition: { x: -1.0, y: 0 },
     opponentPosition: { x: 1.0, y: 0 },
@@ -127,7 +147,8 @@ function createMockContext(overrides?: Partial<CombatContext>): CombatContext {
       worldWidthMeters: 10,
       worldDepthMeters: 7.5,
     },
-    ...overrides,
+    counterOpportunity, // Add calculated counterOpportunity
+    ...contextOverrides,
   };
 }
 

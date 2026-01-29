@@ -159,15 +159,15 @@ describe("GrapplingIndicator3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle BREAKING state", () => {
-      const breakingControl: GrappleControl = {
+    it("should handle ESCAPING state", () => {
+      const escapingControl: GrappleControl = {
         ...mockGrappleControl,
-        state: GrappleState.BREAKING,
+        state: GrappleState.ESCAPING,
       };
 
       const { container } = renderInCanvas(
         <GrapplingIndicator3D
-          grappleControl={breakingControl}
+          grappleControl={escapingControl}
           characterPosition={mockCharacterPosition}
           isController={true}
         />
@@ -176,15 +176,16 @@ describe("GrapplingIndicator3D", () => {
       expect(container.querySelector("canvas")).toBeInTheDocument();
     });
 
-    it("should handle BROKEN state", () => {
-      const brokenControl: GrappleControl = {
+    it("should handle ESCAPING state with visual feedback", () => {
+      const escapingControl2: GrappleControl = {
         ...mockGrappleControl,
-        state: GrappleState.BROKEN,
+        state: GrappleState.ESCAPING,
+        gripStrength: 45, // Different grip for variety
       };
 
       const { container } = renderInCanvas(
         <GrapplingIndicator3D
-          grappleControl={brokenControl}
+          grappleControl={escapingControl2}
           characterPosition={mockCharacterPosition}
           isController={true}
         />

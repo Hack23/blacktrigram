@@ -17,10 +17,6 @@ import {
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { PlayerArchetype, Position, TrigramStance } from "@/types";
 import { AI_MOVEMENT_METERS } from "@/types/physicsConstants";
-import {
-  calculateCounterOpportunity,
-  calculateVulnerabilityMultiplier,
-} from "@/systems/combat/LimbExposureSystem";
 import type { CounterOpportunity } from "@/types/physics";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
@@ -760,26 +756,12 @@ export class AIDecisionTree {
     readonly counterOpportunity?: CounterOpportunity;
     readonly opponentVulnerability: number;
   } {
-    let counterOpportunity: CounterOpportunity | undefined;
-    let opponentVulnerability = 1.0;
-
-    // Check if opponent is executing a technique
-    if (
-      context.opponentTechnique &&
-      context.opponentTechniqueTime !== undefined
-    ) {
-      // Calculate counter opportunity from limb exposure
-      counterOpportunity = calculateCounterOpportunity(
-        context.opponentTechnique,
-        context.opponentTechniqueTime,
-      );
-
-      // Calculate vulnerability multiplier for damage calculation
-      opponentVulnerability = calculateVulnerabilityMultiplier(
-        context.opponentTechnique,
-        context.opponentTechniqueTime,
-      );
-    }
+    // Use pre-calculated counter opportunity from context
+    // (CombatSystem calculates this based on opponent's technique state)
+    const counterOpportunity = context.counterOpportunity;
+    
+    // Calculate vulnerability multiplier from opportunity if present
+    const opponentVulnerability = counterOpportunity?.vulnerabilityMultiplier ?? 1.0;
 
     return {
       counterOpportunity,

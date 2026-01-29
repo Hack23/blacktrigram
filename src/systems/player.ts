@@ -190,18 +190,6 @@ export interface PlayerState {
   readonly lastHelplessStateTime?: number;
   /** Active grapple control state (잡기 제어) */
   readonly grappleControl?: import("@/types").GrappleControl | null;
-  /**
-   * Currently executing technique (if any).
-   * Used for limb exposure detection and counter-attack opportunities.
-   * **Korean**: 현재 기술 (Current Technique)
-   */
-  readonly currentTechnique?: import("@/systems/vitalpoint/types").KoreanTechnique;
-  /**
-   * Time elapsed in current technique execution (milliseconds).
-   * Used to determine limb exposure windows and vulnerability timing.
-   * **Korean**: 기술 경과 시간 (Technique Elapsed Time)
-   */
-  readonly techniqueElapsedTime?: number;
 
   // Status and effects
   /** Active status effects (poison, stun, etc.) */

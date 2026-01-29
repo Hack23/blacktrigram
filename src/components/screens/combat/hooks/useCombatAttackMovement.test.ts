@@ -10,12 +10,11 @@ import { useCombatAttackMovement } from "./useCombatAttackMovement";
 
 describe("useCombatAttackMovement", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    vi.restoreAllMocks();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
   });
 
   it("should return base positions when neither player is attacking", () => {
