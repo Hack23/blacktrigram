@@ -253,9 +253,6 @@ describe("useCombatAttackMovement", () => {
       expect(result.current.player1IsLunging).toBe(true);
     });
 
-    // Capture position mid-attack
-    const positionDuringAttack = [...result.current.player1Position];
-
     // Simulate knockback: change base position while attack is still active
     rerender({ basePos: [6, 0, 0] as [number, number, number] });
 
