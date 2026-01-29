@@ -97,13 +97,23 @@ export const TECHNIQUE_TO_ANIMATION_TYPE: Record<TechniqueId, AnimationType> = {
 /**
  * Get AnimationType for a given technique ID
  *
+ * Looks up the AnimationType from the TECHNIQUE_TO_ANIMATION_TYPE mapping.
+ * Currently only supports archetype techniques (TechniqueId enum).
+ * Returns undefined for unknown techniques or trigram techniques.
+ *
  * @param techniqueId - The technique ID
  * @returns The AnimationType for movement physics, or undefined if not found
  * @korean 기술ID로애니메이션타입가져오기
  */
 export function getAnimationTypeForTechnique(
-  techniqueId: string
+  techniqueId: string | undefined
 ): AnimationType | undefined {
+  if (!techniqueId) {
+    return undefined;
+  }
+  
+  // Check if techniqueId is in our mapping
+  // Note: Only archetype techniques (TechniqueId enum) are currently mapped
   return TECHNIQUE_TO_ANIMATION_TYPE[techniqueId as TechniqueId];
 }
 

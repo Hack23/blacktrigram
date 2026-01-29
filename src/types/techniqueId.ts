@@ -14,12 +14,12 @@
 /**
  * All technique IDs in the game system
  *
- * Each archetype has 4 unique techniques:
- * - 무사 (Musa): musa_thunder_strike, musa_iron_defense, musa_dragon_fist, musa_mountain_breaker
- * - 암살자 (Amsalja): amsalja_shadow_strike, amsalja_nerve_strike, amsalja_deadly_precision, amsalja_silent_death
- * - 해커 (Hacker): hacker_electric_shock, hacker_data_strike, hacker_cyber_overdrive, hacker_system_crash
- * - 정보요원 (Jeongbo): jeongbo_tactical_strike, jeongbo_counter_intelligence, jeongbo_psychological_warfare, jeongbo_precision_takedown
- * - 조직폭력배 (Jojik): jojik_street_brawl, jojik_improvised_weapon, jojik_ruthless_assault, jojik_brutal_takedown
+ * Each archetype has unique techniques:
+ * - 무사 (Musa) - 4 techniques: musa_thunder_strike, musa_iron_defense, musa_dragon_fist, musa_mountain_breaker
+ * - 암살자 (Amsalja) - 4 techniques: amsalja_shadow_strike, amsalja_nerve_strike, amsalja_deadly_precision, amsalja_silent_death
+ * - 해커 (Hacker) - 4 techniques: hacker_electric_shock, hacker_data_strike, hacker_cyber_overdrive, hacker_system_crash
+ * - 정보요원 (Jeongbo) - 5 techniques: jeongbo_tactical_strike, jeongbo_counter_intelligence, jeongbo_psychological_warfare, jeongbo_precision_takedown, jeongbo_intelligence_strike
+ * - 조직폭력배 (Jojik) - 4 techniques: jojik_street_brawl, jojik_improvised_weapon, jojik_ruthless_assault, jojik_brutal_takedown
  *
  * @public
  * @category Combat System

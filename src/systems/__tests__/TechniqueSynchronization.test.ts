@@ -18,7 +18,6 @@ import {
   HACKER_TECHNIQUES,
   JEONGBO_YOWON_TECHNIQUES,
   JOJIK_POKRYEOKBAE_TECHNIQUES,
-  getTechniqueById as getArchetypeTechniqueById,
 } from "../../data/techniques";
 import { TECHNIQUE_TO_ANIMATION_TYPE } from "../../data/techniqueMappings";
 
@@ -91,18 +90,14 @@ describe("Technique System Synchronization", () => {
 
       const allUniqueIds = new Set([...trigramIds, ...archetypeIds]);
 
-      // Document the state
-      console.log("\n📊 Technique System Status:");
-      console.log(`  Archetype Techniques: ${archetypeIds.size}`);
-      console.log(`  Trigram Techniques: ${trigramIds.size}`);
-      console.log(`  Total Unique: ${allUniqueIds.size}`);
-
       // Calculate overlap
       const overlap = [...archetypeIds].filter((id) => trigramIds.has(id));
-      console.log(`  Overlap: ${overlap.length} techniques`);
 
-      // This test documents current state - no assertion needed
-      expect(allUniqueIds.size).toBeGreaterThan(0);
+      // Assert the documented state
+      expect(archetypeIds.size).toBe(21); // 21 archetype techniques
+      expect(trigramIds.size).toBe(51); // 51 trigram techniques
+      expect(allUniqueIds.size).toBe(72); // 72 total unique techniques
+      expect(overlap.length).toBe(0); // Zero overlap between systems
     });
   });
 
@@ -117,12 +112,7 @@ describe("Technique System Synchronization", () => {
         }
       });
 
-      if (missingMappings.length > 0) {
-        console.warn("\n⚠️  Missing animation mappings:");
-        missingMappings.forEach((id) => console.warn(`   - ${id}`));
-      }
-
-      expect(missingMappings.length).toBe(0);
+      expect(missingMappings).toEqual([]);
     });
 
     it("should have unique animations for archetype techniques", () => {
@@ -146,16 +136,15 @@ describe("Technique System Synchronization", () => {
         }
       });
 
-      if (duplicates.length > 0) {
-        console.warn("\n⚠️  Duplicate animation usage:");
-        duplicates.forEach(({ animation, techniques }) => {
-          console.warn(`   ${animation}: ${techniques.join(", ")}`);
-        });
-      }
-
-      // This is informational - some duplicates may be intentional
-      // But we want to know about them
-      expect(duplicates.length).toBeLessThan(ARCHETYPE_TECHNIQUES.length / 2);
+      // Some duplicates are expected (e.g., pressure_point for multiple techniques)
+      // Document known duplicates for reference
+      const knownDuplicates = ["pressure_point", "punch_mid", "punch_high"];
+      const unexpectedDuplicates = duplicates.filter(
+        (d) => !knownDuplicates.includes(d.animation)
+      );
+      
+      // Fail if we find new unexpected duplicates
+      expect(unexpectedDuplicates).toEqual([]);
     });
 
     it("should have animation types defined for archetype techniques", () => {
@@ -167,12 +156,7 @@ describe("Technique System Synchronization", () => {
         }
       });
 
-      if (missingAnimations.length > 0) {
-        console.warn("\n⚠️  Missing animation types:");
-        missingAnimations.forEach((id) => console.warn(`   - ${id}`));
-      }
-
-      expect(missingAnimations.length).toBe(0);
+      expect(missingAnimations).toEqual([]);
     });
   });
 
@@ -186,22 +170,9 @@ describe("Technique System Synchronization", () => {
         (t: any) => !t.animation && !t.animationType
       );
 
-      console.log("\n📊 Trigram Animation Coverage:");
-      console.log(`  With animations: ${withAnimations.length}`);
-      console.log(`  Without animations: ${withoutAnimations.length}`);
-
-      if (withoutAnimations.length > 0) {
-        console.warn("\n⚠️  Trigram techniques without animations:");
-        withoutAnimations.slice(0, 10).forEach((t: any) => {
-          console.warn(`   - ${t.id}: ${t.nameKorean || t.name?.korean || "?"}`);
-        });
-        if (withoutAnimations.length > 10) {
-          console.warn(`   ... and ${withoutAnimations.length - 10} more`);
-        }
-      }
-
-      // Document current state
+      // All trigram techniques should have animations
       expect(trigramTechniques.length).toBeGreaterThan(0);
+      expect(withAnimations.length).toBe(trigramTechniques.length);
     });
   });
 
@@ -210,11 +181,11 @@ describe("Technique System Synchronization", () => {
       const trigramTechniques = getAllTechniques();
       const archetypeTechniques = ARCHETYPE_TECHNIQUES;
 
-      console.log("\n🎯 Integration Analysis:");
-      console.log(`  Total techniques available: ${trigramTechniques.length + archetypeTechniques.length}`);
-      console.log(`  Archetype-based: ${archetypeTechniques.length}`);
-      console.log(`  Trigram-based: ${trigramTechniques.length}`);
-      console.log("\n  Recommendation: Merge systems for full 87+ technique library");
+      // Integration analysis - assert expected totals
+      const totalTechniques = trigramTechniques.length + archetypeTechniques.length;
+      expect(archetypeTechniques.length).toBe(21);
+      expect(trigramTechniques.length).toBe(51);
+      expect(totalTechniques).toBe(72);
 
       // Success if both systems have techniques
       expect(archetypeTechniques.length).toBeGreaterThan(0);
