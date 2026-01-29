@@ -118,6 +118,7 @@ import {
 } from "./components/hud";
 import { FPSMonitor } from "./components/hud/FPSMonitor";
 import { PlayerStateOverlayHtml } from "./components/hud/PlayerStateOverlayHtml";
+import { BalanceIndicatorOverlayHtml } from "../../ui/combat/BalanceIndicatorOverlayHtml";
 import {
   ANNOUNCEMENT_FADE_OUT_DELAY,
   calculateAccuracy,
@@ -2736,6 +2737,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         />
 
         <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
+
+        {/* 3D Balance Indicators - Float above players in 3D space */}
+        {/* Player 1 Balance Indicator - Left side, positioned above player */}
+        <BalanceIndicatorOverlayHtml
+          player={validPlayers[0] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
+          currentTime={Date.now()}
+          position={[
+            player1Position3D[0] - (isMobile ? 0.3 : 0.5), // Slightly left of player
+            3.0, // Float 3m above arena
+            player1Position3D[2] + (isMobile ? 0.3 : 0.5) // Slightly forward
+          ]}
+          isMobile={isMobile}
+        />
+
+        {/* Player 2 Balance Indicator - Right side, positioned above player */}
+        <BalanceIndicatorOverlayHtml
+          player={validPlayers[1] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
+          currentTime={Date.now()}
+          position={[
+            player2Position3D[0] + (isMobile ? 0.3 : 0.5), // Slightly right of player
+            3.0, // Float 3m above arena
+            player2Position3D[2] + (isMobile ? 0.3 : 0.5) // Slightly forward
+          ]}
+          isMobile={isMobile}
+        />
 
         {/* Mobile Touch Controls moved outside Canvas - using MobileControlsOverlay for reliable touch events */}
 
