@@ -28,6 +28,7 @@ import { usePlayerAnimation } from "../../../hooks/usePlayerAnimation";
 import { useRoundTransition } from "../../../hooks/useRoundTransition";
 import { useTechniqueSelection } from "../../../hooks/useTechniqueSelection";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
+import { useCombatAttackMovement } from "./hooks/useCombatAttackMovement";
 import { HitEffect, PlayerState } from "../../../systems";
 import { CombatSystem } from "../../../systems/CombatSystem";
 import {
@@ -37,6 +38,7 @@ import {
 import {
   AnimationEvents,
   AnimationState,
+  AnimationType,
   determineRecoveryType,
   getAnimationForTechnique,
   getRecoveryAnimationState,
@@ -61,6 +63,7 @@ import {
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
 } from "../../../types/constants";
+import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
 import { PerformanceOverlay3D } from "../../../utils/performance";
@@ -762,6 +765,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     string | undefined
   >(undefined);
 
+  // Track current technique ID for enum-based animation lookup
+  // 열거형 기반 애니메이션 조회를 위한 현재 기술 ID 추적
+  const [player1TechniqueId, setPlayer1TechniqueId] = useState<
+    string | undefined
+  >(undefined);
+  const [player2TechniqueId, setPlayer2TechniqueId] = useState<
+    string | undefined
+  >(undefined);
+
   // Track injuries for trauma visualization (TraumaOverlay3D)
   // 외상 시각화를 위한 부상 추적
   const [player1Injuries, setPlayer1Injuries] = useState<readonly Injury[]>([]);
@@ -880,9 +892,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
     setPlayer1AttackAnimation(undefined);
+    setPlayer1TechniqueId(undefined);
   });
   const clearPlayer2AttackAnimation = useRef<() => void>(() => {
     setPlayer2AttackAnimation(undefined);
+    setPlayer2TechniqueId(undefined);
   });
 
   // Player animation state machines - manages animation transitions at 60fps
@@ -1034,6 +1048,37 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     validPlayersRef.current = validPlayers;
     validPlayersRefForAnimation.current = validPlayers;
   }, [validPlayers]);
+
+  // Helper function to get AnimationType from technique ID
+  // Uses enum-based mapping for type safety and proper technique support
+  // 기술 ID에서 AnimationType을 가져오는 헬퍼 함수
+  // 타입 안전성과 적절한 기술 지원을 위해 열거형 기반 매핑 사용
+  const getTechniqueAnimationType = useCallback((techniqueId: string | undefined): AnimationType | undefined => {
+    if (!techniqueId) return undefined;
+    
+    // Use enum-based lookup for all techniques
+    // This properly handles stance-specific techniques like "geon_heaven_strike"
+    // 모든 기술에 대해 열거형 기반 조회 사용
+    // "geon_heaven_strike"와 같은 자세별 기술을 올바르게 처리
+    return getAnimationTypeForTechnique(techniqueId);
+  }, []);
+
+  // Attack movement integration - track attack states for physics-based forward movement
+  // 공격 이동 통합 - 물리 기반 전방 이동을 위한 공격 상태 추적
+  // Note: Must be called after validPlayers, player animations, and 3D positions are defined
+  const {
+    player1Position: player1PositionWithAttackMovement,
+    player2Position: player2PositionWithAttackMovement,
+  } = useCombatAttackMovement({
+    player1Attacking: player1Animation.currentState === AnimationState.ATTACK,
+    player1AnimationType: getTechniqueAnimationType(player1TechniqueId),
+    player1Stance: player1Data.currentStance,
+    player1BasePosition: player1Position3D,
+    player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
+    player2AnimationType: getTechniqueAnimationType(player2TechniqueId),
+    player2Stance: validPlayers[1].currentStance,
+    player2BasePosition: player2Position3D,
+  });
 
   // ═══════════════════════════════════════════════════════════════════════════
   // Local stance state for Player 1 - Enables immediate technique bar updates
@@ -1401,6 +1446,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           technique.name.english || technique.id,
         );
         setPlayer1AttackAnimation(animationName);
+        
+        // Store technique ID for enum-based AnimationType lookup
+        // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+        setPlayer1TechniqueId(technique.id);
 
         // Trigger attack animation transition
         // 공격 애니메이션 전환 트리거
@@ -2042,6 +2091,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "jab";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("jab");
           }
@@ -2065,6 +2120,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("cross");
           }
@@ -2142,6 +2203,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.englishName ??
               "cross";
             setPlayer2AttackAnimation(getAnimationForTechnique(techName));
+            
+            // Store technique ID for enum-based AnimationType lookup
+            // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
+            if (selectedTechnique?.id) {
+              setPlayer2TechniqueId(selectedTechnique.id);
+            }
           } else {
             setPlayer2AttackAnimation("cross");
           }
@@ -2438,14 +2505,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[0],
-            player1Position3D,
+            player1PositionWithAttackMovement,
             player1Rotation,
             {
               isMobile,
               facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
-              opponentPosition: player2Position3D,
+              opponentPosition: player2PositionWithAttackMovement,
             },
           )}
           currentAnimation={animationStateToPlayerAnimation(
@@ -2462,14 +2529,14 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <Player3DWithTransitions
           {...convertPlayerStateToProps(
             validPlayers[1],
-            player2Position3D,
+            player2PositionWithAttackMovement,
             player2Rotation,
             {
               isMobile,
               facing: "right",
               enableFacialExpressions: true,
               enableEyeTracking: true,
-              opponentPosition: player1Position3D,
+              opponentPosition: player1PositionWithAttackMovement,
             },
           )}
           currentAnimation={animationStateToPlayerAnimation(

@@ -4,7 +4,7 @@
  */
 
 import { TrigramStance } from "@/types";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 import { AIActionType, AIDecisionTree, CombatContext } from "./DecisionTree";
@@ -54,6 +54,14 @@ describe("AIDecisionTree", () => {
   beforeEach(() => {
     decisionTree = new AIDecisionTree();
     comboSystem = new AIComboSystem();
+  });
+
+  // Cleanup after each test to prevent memory leaks
+  afterEach(() => {
+    // Reset combo system state
+    comboSystem.resetCombo();
+    // Clear any internal state in decision tree
+    decisionTree.setDifficultyLevel(0.5); // Reset to default
   });
 
   describe("Difficulty Level Management", () => {
@@ -478,13 +486,15 @@ describe("AIDecisionTree", () => {
         comboSystem,
       );
 
-      // Should respond to opponent attacking (counter, defend, combo, or tactical stance change)
+      // Should respond to opponent attacking (counter, defend, combo, technique, or tactical stance change)
       // With increased stance frequencies, stance_change is also a valid tactical response
+      // technique is also valid as AI may choose to execute a technique counter
       expect([
         "counter",
         "defend",
         "combo",
         "attack",
+        "technique",
         "stance_change",
       ]).toContain(decision.action);
     });

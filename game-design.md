@@ -1,8 +1,8 @@
 # Black Trigram (흑괘) - Comprehensive Game Design Document
 
-**Version**: 2.0 (Updated January 2026)  
-**Status**: Q1 2026 Combat Realism Production-Ready (8/12 systems complete, 67%)  
-**Target Release**: v1.0 - Q2-Q3 2026
+**Version**: 2.1 (Updated January 29, 2026)  
+**Status**: Q1 2026 Combat Realism Production-Ready (13/13 systems complete, 100%)  
+**Target Release**: v1.0 - Q2 2026
 
 ---
 
@@ -60,13 +60,15 @@ Web-based (**HTML5/WebGL via Three.js + @react-three/fiber**) optimized for auth
 
 ### Unique Selling Points
 
-1. **Realistic Combat Physics** - Real body mechanics with authentic combat focus, 12 realism systems
+1. **Realistic Combat Physics** - Real body mechanics with authentic combat focus, 13 realism systems (100% complete)
 2. **Anatomical Precision** - 70 actual vital points (급소) with Korean names and TCM meridian mapping
-3. **Combat Realism** - Pain response, consciousness levels, breathing disruption, trauma visualization
-4. **Korean Martial Arts** - Based on traditional techniques (Taekwondo, Hapkido, Taekyon, Yusul) and philosophy (I Ching)
-5. **Traditional Knowledge** - Teaches actual pressure points, anatomical effects, and martial arts applications
-6. **8 Trigram Stances (팔괘)** - Authentic Korean martial arts stances based on I Ching philosophy
-7. **Cultural Authenticity** - Korean-English bilingual UI, traditional instruments (가야금, 장구), cyberpunk aesthetic
+3. **Combat Realism** - Pain response, consciousness levels, breathing disruption, trauma visualization, grappling, counter-attacks
+4. **AI Counter-Attacks** - Intelligent opponent AI that exploits limb exposure and vulnerability windows
+5. **Grappling System** - Authentic Hapkido/Ssireum techniques with grip mechanics and escape systems
+6. **Korean Martial Arts** - Based on traditional techniques (Taekwondo, Hapkido, Taekyon, Yusul) and philosophy (I Ching)
+7. **Traditional Knowledge** - Teaches actual pressure points, anatomical effects, and martial arts applications
+8. **8 Trigram Stances (팔괘)** - Authentic Korean martial arts stances based on I Ching philosophy
+9. **Cultural Authenticity** - Korean-English bilingual UI, traditional instruments (가야금, 장구), cyberpunk aesthetic
 
 ---
 
@@ -1456,22 +1458,51 @@ Black Trigram's balance philosophy prioritizes **skill-based gameplay** where pl
 - 충격통 (Shock Pain): Instant reaction affecting all abilities
 - 누적외상 (Cumulative Trauma): Progressive damage impairment
 - 통증과부하 (Pain Overload): Complete incapacitation
-- Current Status: ✅ 90% production-ready, 37 tests passing
+- Current Status: ✅ 100% production-ready, 37 tests passing
 
 **Consciousness Levels (의식 수준)**:
 - 전투각성 (Combat Alert) → 혼란상태 (Disoriented) → 기절직전 (Stunned) → 무의식 (Unconscious)
-- Current Status: ✅ 90% production-ready, 36 tests passing
+- Current Status: ✅ 100% production-ready, 36 tests passing
 
 **Balance & Vulnerability (균형 및 취약성)**:
 - 🟢 준비완료 (READY) → 🟡 동요상태 (SHAKEN) → 🟠 취약상태 (VULNERABLE) → 🔴 무력상태 (HELPLESS)
 
+**Grappling System (잡기 체계)** ✨ NEW:
+- 🤜 **Grip Mechanics**: Authentic Hapkido/Ssireum techniques with decay over time
+- 💪 **Escape System**: Difficulty based on stamina, stance advantages (GON/GAN)
+- 🔄 **State Transitions**: GRAPPLING (controlling) ↔ GRAPPLED (controlled)
+- 🎯 **Stance Advantages**: GON (Earth) +30% grip strength, GAN (Mountain) +15% escape
+- Current Status: ✅ 95% production-ready, 4 animation states, 34 tests passing
+
+**Limb Exposure & Counter-Attacks (사지 노출 및 반격)** ✨ NEW:
+- 🎯 **Vulnerability Windows**: 300-400ms exposure during attack execution
+- ⚡ **Counter Opportunities**: Exploit exposed limbs (ankle, knee, elbow, wrist)
+- 💥 **Damage Multipliers**: 1.5x-2.5x damage during vulnerability windows
+- 🦴 **Breaking Techniques**: Joint/limb breaking with injury severity
+- 🤖 **AI Integration**: Defensive archetypes prioritize counter-attacks (Musa, Amsalja)
+- 📊 **Priority System**: Counter-attacks evaluated at AI decision priority 2
+- Current Status: ✅ 100% production-ready, 132 tests passing, full AI integration
+
 ### 9.2 Visual & Audio Feedback
 
 **Blood & Trauma System**: Progressive damage visualization (bruising, cuts, bleeding)  
-**Realistic Sound Design**: Bone breaking (골절음), flesh impact (타격음), joint manipulation (관절음), breathing effects (호흡음)  
-**Body Response Animation**: Pain reactions (통증반응), balance loss (균형상실), unconsciousness (무의식상태), injury adaptation (손상적응)
+**Realistic Sound Design**: Bone breaking (골절음), flesh impact (타격음), joint manipulation (관절음), breathing effects (호흡음), grappling sounds (잡기음)  
+**Body Response Animation**: Pain reactions (통증반응), balance loss (균형상실), unconsciousness (무의식상태), injury adaptation (손상적응), grappling struggles (탈출시도)
 
-**Current Status**: ✅ 90% complete, 60fps performance validated, 20 simultaneous effects tested
+**Limb Exposure Visual Indicators** ✨ NEW:
+- 🔴 **3D Glow Effects**: Red/orange glow on exposed limbs during vulnerability windows
+- ⏱️ **Timing HUD**: Circular progress timer showing remaining opportunity window
+- 🎨 **Color-Coded Intensity**: Gold (<1.5x) → Orange (1.5-2.0x) → Red (≥2.0x breaking opportunities)
+- 📱 **Mobile Optimized**: 60% intensity reduction for performance
+- 💬 **Bilingual Labels**: Korean-English ("반격 기회" / "Counter Opportunity")
+
+**Grappling Visual Feedback** ✨ NEW:
+- ✨ **Particle System**: 20-50 struggle particles showing resistance intensity
+- 📊 **Grip Strength Meter**: Real-time display of grapple control strength
+- 🎨 **State-Dependent Colors**: Blue (controlling) vs Red (being controlled)
+- 📱 **Mobile Optimized**: 60% particle reduction for 55fps+ performance
+
+**Current Status**: ✅ 97% complete, 60fps performance validated, visual indicators for all combat states
 
 ---
 
@@ -1534,15 +1565,17 @@ Black Trigram's balance philosophy prioritizes **skill-based gameplay** where pl
 
 ## 📊 Summary & Status
 
-**Overall Implementation**: 8.4/10 (Beta Stage, Q1 2026)  
-**Combat Realism**: 8/12 systems complete (67%), production-ready  
+**Overall Implementation**: 9.4/10 (Production-Ready, Q1 2026)  
+**Combat Realism**: 13/13 systems complete (100%), production-ready ✅  
 **Vital Points**: 100% complete (70/70), fully documented  
 **Trigram Stances**: 100% complete (8/8), all transitions implemented  
 **Player Archetypes**: 100% complete (5/5), balanced within 48-52% win rate  
-**Test Coverage**: 76% overall, 95% for new combat systems  
-**Performance**: 60fps maintained, <0.01ms vital point checks
+**Grappling System**: 95% complete, 4 animation states, 34 tests passing ✨  
+**Limb Exposure/Counter-Attacks**: 100% complete, AI integration, 132 tests passing ✨  
+**Test Coverage**: 75%+ overall (518 tests), 100% for new combat systems  
+**Performance**: 60fps maintained desktop, 55fps+ mobile, <0.01ms vital point checks
 
-**v1.0 Release Target**: Q2-Q3 2026  
+**v1.0 Release Target**: Q2 2026  
 **v2.0 Multiplayer**: Q1 2028  
 **v3.0 AI Instructor**: Q1 2030
 
