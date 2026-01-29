@@ -119,6 +119,7 @@ function createMockContext(
 
   // Remove opponentTechnique and opponentTechniqueTime from overrides
   // as they're not part of CombatContext anymore
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { opponentTechnique, opponentTechniqueTime, ...contextOverrides } = overrides || {};
 
   return {
