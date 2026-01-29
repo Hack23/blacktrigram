@@ -11,6 +11,7 @@
 
 import { Position, TrigramStance } from "@/types";
 import { BalanceState } from "@/types/player-visual";
+import type { CounterOpportunity } from "@/types/physics";
 
 /**
  * AI action types
@@ -110,5 +111,5 @@ export interface CombatContext {
    * Includes exposed limb, timing window, vulnerability multiplier, and recommended counters.
    * **Korean**: 반격 기회 (Counter Opportunity)
    */
-  readonly counterOpportunity?: import("@/types/physics").CounterOpportunity;
+  readonly counterOpportunity?: CounterOpportunity;
 }

@@ -17,7 +17,7 @@ import {
 } from "@/systems/vitalpoint/KoreanVitalPoints";
 import { PlayerArchetype, Position, TrigramStance } from "@/types";
 import { AI_MOVEMENT_METERS } from "@/types/physicsConstants";
-import type { CounterOpportunity } from "@/types/physics";
+import type { CounterOpportunity, ExposedLimbType } from "@/types/physics";
 import { DifficultyParameters } from "./AdaptiveDifficulty";
 import { AIPersonality, getArchetypeBehavior } from "./AIPersonality";
 import { enforceArchetypeBehavior } from "./ArchetypeEnforcer";
@@ -1374,8 +1374,8 @@ export class AIDecisionTree {
    *
    * @korean 노출사지번역
    */
-  private translateExposedLimb(exposedLimb: string): string {
-    const translations: Record<string, string> = {
+  private translateExposedLimb(exposedLimb: ExposedLimbType): string {
+    const translations: Record<ExposedLimbType, string> = {
       left_arm: "왼팔",
       right_arm: "오른팔",
       left_elbow: "왼팔꿈치",
@@ -1390,7 +1390,7 @@ export class AIDecisionTree {
       right_ankle: "오른발목",
     };
 
-    return translations[exposedLimb] ?? exposedLimb;
+    return translations[exposedLimb];
   }
 
   /**

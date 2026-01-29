@@ -1042,13 +1042,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const mapAttackAnimationToType = useCallback((attackAnimation: string | undefined): AnimationType | undefined => {
     if (!attackAnimation) return undefined;
     
-    // Map common attack animation names to AnimationType
-    // Return undefined for unknown animations to allow graceful fallback
+    // Map attack animation names to AnimationType with specific patterns first
+    // 이름 패턴을 기반으로 구체적인 기술 타입을 우선 매핑하고,
+    // 알 수 없는 애니메이션은 undefined를 반환하여 상위에서 우아하게 처리할 수 있게 함
     const normalized = attackAnimation.toLowerCase();
     
-    if (normalized.includes("roundhouse") || normalized.includes("kick")) {
+    // Kicks - match specific types first to avoid misclassification
+    // 차기 - 구체적인 타입부터 매칭하여 오분류 방지
+    if (normalized.includes("front_kick") || normalized.includes("front kick")) {
+      return AnimationType.FRONT_KICK;
+    }
+    if (normalized.includes("side_kick") || normalized.includes("side kick")) {
+      return AnimationType.SIDE_KICK;
+    }
+    if (normalized.includes("axe_kick") || normalized.includes("axe kick")) {
+      return AnimationType.AXE_KICK;
+    }
+    if (normalized.includes("roundhouse_kick") || normalized.includes("roundhouse kick") || normalized.includes("roundhouse")) {
       return AnimationType.ROUNDHOUSE_KICK;
     }
+    // Generic kick fallback (only if no specific kick type matched)
+    if (normalized.includes("kick")) {
+      return AnimationType.ROUNDHOUSE_KICK; // Default to most common kick type
+    }
+    
+    // Punches
     if (normalized.includes("cross")) {
       return AnimationType.CROSS;
     }

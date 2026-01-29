@@ -229,4 +229,50 @@ describe("useCombatAttackMovement", () => {
       expect(result.current.player1IsLunging).toBe(false);
     });
   });
+
+  it("should continue attack smoothly when base position changes during attack", async () => {
+    // Test that attack movement continues without reset when base position shifts
+    // (e.g., from knockback or displacement) while attack is in progress
+    const { result, rerender } = renderHook(
+      ({ basePos }) =>
+        useCombatAttackMovement({
+          player1Attacking: true,
+          player1AnimationType: AnimationType.ROUNDHOUSE_KICK,
+          player1Stance: TrigramStance.GEON,
+          player1BasePosition: basePos,
+          player2Attacking: false,
+          player2AnimationType: undefined,
+          player2Stance: TrigramStance.GON,
+          player2BasePosition: [-5, 0, 0],
+        }),
+      { initialProps: { basePos: [5, 0, 0] as [number, number, number] } }
+    );
+
+    // Wait for attack movement to begin
+    await waitFor(() => {
+      expect(result.current.player1IsLunging).toBe(true);
+    });
+
+    // Capture position mid-attack
+    const positionDuringAttack = [...result.current.player1Position];
+
+    // Simulate knockback: change base position while attack is still active
+    rerender({ basePos: [6, 0, 0] as [number, number, number] });
+
+    // Wait a brief moment for position update
+    await waitFor(() => {
+      // Position should have changed (not equal to captured position)
+      // but attack should continue (isLunging should still be true initially)
+      expect(result.current.player1Position).not.toEqual([5, 0, 0]);
+    });
+
+    // Attack should eventually complete and return to NEW base position
+    await waitFor(
+      () => {
+        expect(result.current.player1Position).toEqual([6, 0, 0]);
+        expect(result.current.player1IsLunging).toBe(false);
+      },
+      { timeout: 1000 }
+    );
+  });
 });

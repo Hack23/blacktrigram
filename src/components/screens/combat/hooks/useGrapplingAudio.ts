@@ -96,7 +96,7 @@ function getTargetVolumeModifier(target: GrappleTarget): number {
 export const useGrapplingAudio = () => {
   const audio = useAudio();
   const lastPlayTime = useRef<Record<string, number>>({});
-  const activeSounds = useRef(new Set<string>());
+  const activeSoundCount = useRef(0); // Track concurrent sound instances
 
   /**
    * Check if we can play a sound (rate limiting)
@@ -110,8 +110,8 @@ export const useGrapplingAudio = () => {
       return false;
     }
 
-    // Check simultaneous sounds limit
-    if (activeSounds.current.size >= MAX_SIMULTANEOUS_SOUNDS) {
+    // Check simultaneous sounds limit (track actual concurrent plays)
+    if (activeSoundCount.current >= MAX_SIMULTANEOUS_SOUNDS) {
       return false;
     }
 
@@ -121,10 +121,10 @@ export const useGrapplingAudio = () => {
   /**
    * Register a sound as active and auto-remove after duration
    */
-  const registerActiveSound = useCallback((soundId: string, duration = 500) => {
-    activeSounds.current.add(soundId);
+  const registerActiveSound = useCallback((duration = 500) => {
+    activeSoundCount.current++;
     setTimeout(() => {
-      activeSounds.current.delete(soundId);
+      activeSoundCount.current = Math.max(0, activeSoundCount.current - 1);
     }, duration);
   }, []);
 
@@ -149,7 +149,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, volume * volumeModifier * 0.8);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.CONNECT] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.CONNECT, 300);
+      registerActiveSound(300);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -173,7 +173,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, intensity * 0.7);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.STRUGGLE] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.STRUGGLE, 250);
+      registerActiveSound(250);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -197,7 +197,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.ESCAPE] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.ESCAPE, 400);
+      registerActiveSound(400);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -223,7 +223,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, severity * 0.85);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.BONE_CRACK] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.BONE_CRACK, 300);
+      registerActiveSound(300);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -247,7 +247,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, volume * 0.9);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.COUNTER_ATTACK] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.COUNTER_ATTACK, 350);
+      registerActiveSound(350);
     },
     [audio, canPlaySound, registerActiveSound]
   );
@@ -271,7 +271,7 @@ export const useGrapplingAudio = () => {
       audio.playSFX(placeholderId, volume * 0.5);
 
       lastPlayTime.current[GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING] = Date.now();
-      registerActiveSound(GRAPPLING_SOUND_TYPES.LIMB_EXPOSURE_WARNING, 150);
+      registerActiveSound(150);
     },
     [audio, canPlaySound, registerActiveSound]
   );

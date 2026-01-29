@@ -125,6 +125,10 @@ export function useCombatAttackMovement(
   const player1PhysicsRef = useRef(new AttackMovementPhysics());
   const player2PhysicsRef = useRef(new AttackMovementPhysics());
 
+  // Reusable Vector3 objects to avoid GC pressure (60fps allocation)
+  const player1BasePosVectorRef = useRef(new THREE.Vector3());
+  const player2BasePosVectorRef = useRef(new THREE.Vector3());
+
   // Player 1 attack timing
   const player1AttackStartTimeRef = useRef<number | null>(null);
   const player1MovementResultRef = useRef<ReturnType<
@@ -203,7 +207,7 @@ export function useCombatAttackMovement(
 
         // Calculate current position with attack movement
         const elapsedSeconds = elapsed / 1000;
-        const basePos = new THREE.Vector3(...player1BasePosition);
+        const basePos = player1BasePosVectorRef.current.set(...player1BasePosition);
         const recovering = elapsed >= (movementResult.lungeDuration * 1000);
         
         const newPos = player1PhysicsRef.current.applyAttackMovement(
@@ -297,7 +301,7 @@ export function useCombatAttackMovement(
         }
 
         const elapsedSeconds = elapsed / 1000;
-        const basePos = new THREE.Vector3(...player2BasePosition);
+        const basePos = player2BasePosVectorRef.current.set(...player2BasePosition);
         const recovering = elapsed >= (movementResult.lungeDuration * 1000);
         
         const newPos = player2PhysicsRef.current.applyAttackMovement(
