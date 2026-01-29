@@ -200,6 +200,20 @@ const StruggleParticles: React.FC<{
     }
   }, [particleCount, intensity]);
 
+  // Cleanup geometry and material on unmount
+  useEffect(() => {
+    return () => {
+      if (pointsRef.current) {
+        // Dispose geometry
+        pointsRef.current.geometry.dispose();
+        // Dispose material
+        if (pointsRef.current.material instanceof THREE.Material) {
+          pointsRef.current.material.dispose();
+        }
+      }
+    };
+  }, []);
+
   // Animate particles
   useFrame((_state, delta) => {
     if (!pointsRef.current) return;

@@ -12,7 +12,7 @@
  * @module systems/ai/__tests__/DecisionTree.LimbExposure.test
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { AIDecisionTree, AIActionType } from "./DecisionTree";
 import { AIComboSystem } from "./ComboSystem";
 import { AI_PERSONALITIES, type AIPersonality } from "./AIPersonality";
@@ -160,6 +160,12 @@ describe("AIDecisionTree - Limb Exposure Integration", () => {
   beforeEach(() => {
     decisionTree = new AIDecisionTree();
     comboSystem = new AIComboSystem();
+  });
+
+  // Cleanup after each test to prevent memory leaks
+  afterEach(() => {
+    comboSystem.resetCombo();
+    decisionTree.setDifficultyLevel(0.5); // Reset to default
   });
 
   describe("Counter Opportunity Detection", () => {

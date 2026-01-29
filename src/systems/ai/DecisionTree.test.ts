@@ -4,7 +4,7 @@
  */
 
 import { TrigramStance } from "@/types";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./AIPersonality";
 import { AIComboSystem } from "./ComboSystem";
 import { AIActionType, AIDecisionTree, CombatContext } from "./DecisionTree";
@@ -54,6 +54,14 @@ describe("AIDecisionTree", () => {
   beforeEach(() => {
     decisionTree = new AIDecisionTree();
     comboSystem = new AIComboSystem();
+  });
+
+  // Cleanup after each test to prevent memory leaks
+  afterEach(() => {
+    // Reset combo system state
+    comboSystem.resetCombo();
+    // Clear any internal state in decision tree
+    decisionTree.setDifficultyLevel(0.5); // Reset to default
   });
 
   describe("Difficulty Level Management", () => {

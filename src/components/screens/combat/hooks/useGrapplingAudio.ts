@@ -18,7 +18,7 @@
  * @korean 잡기오디오훅
  */
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAudio } from "../../../../audio/AudioProvider";
 import { GrappleState, GrappleTarget } from "../../../../types/common";
 
@@ -97,6 +97,15 @@ export const useGrapplingAudio = () => {
   const audio = useAudio();
   const lastPlayTime = useRef<Record<string, number>>({});
   const activeSoundCount = useRef(0); // Track concurrent sound instances
+  const activeTimers = useRef<Set<NodeJS.Timeout>>(new Set()); // Track active timers for cleanup
+
+  // Cleanup all active timers on unmount
+  useEffect(() => {
+    return () => {
+      activeTimers.current.forEach((timer) => clearTimeout(timer));
+      activeTimers.current.clear();
+    };
+  }, []);
 
   /**
    * Check if we can play a sound (rate limiting)
@@ -123,9 +132,11 @@ export const useGrapplingAudio = () => {
    */
   const registerActiveSound = useCallback((duration = 500) => {
     activeSoundCount.current++;
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       activeSoundCount.current = Math.max(0, activeSoundCount.current - 1);
+      activeTimers.current.delete(timer);
     }, duration);
+    activeTimers.current.add(timer);
   }, []);
 
   /**

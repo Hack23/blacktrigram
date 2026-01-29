@@ -173,29 +173,36 @@ function calculateFadeFactor(
  *
  * @param vulnerabilityMultiplier - Damage multiplier
  * @param allowsBreaking - Whether breaking techniques are allowed
- * @returns THREE.Color instance
+ * @returns THREE.Color instance (reused, not recreated)
  */
+const colorCache = {
+  breakingRed: new THREE.Color(KOREAN_COLORS.NEGATIVE_RED),
+  highRed: new THREE.Color(KOREAN_COLORS.ACCENT_RED),
+  mediumOrange: new THREE.Color(KOREAN_COLORS.SECONDARY_ORANGE),
+  lowGold: new THREE.Color(KOREAN_COLORS.ACCENT_GOLD),
+};
+
 function getGlowColor(
   vulnerabilityMultiplier: number,
   allowsBreaking: boolean
 ): THREE.Color {
   // Breaking opportunities: bright red (NEGATIVE_RED for high danger)
   if (allowsBreaking) {
-    return new THREE.Color(KOREAN_COLORS.NEGATIVE_RED);
+    return colorCache.breakingRed;
   }
 
   // High vulnerability (>2.0): red
   if (vulnerabilityMultiplier >= 2.0) {
-    return new THREE.Color(KOREAN_COLORS.ACCENT_RED);
+    return colorCache.highRed;
   }
 
   // Medium vulnerability (1.5-2.0): orange
   if (vulnerabilityMultiplier >= 1.5) {
-    return new THREE.Color(KOREAN_COLORS.SECONDARY_ORANGE);
+    return colorCache.mediumOrange;
   }
 
   // Low vulnerability (<1.5): yellow
-  return new THREE.Color(KOREAN_COLORS.ACCENT_GOLD);
+  return colorCache.lowGold;
 }
 
 /**
@@ -275,7 +282,7 @@ export const LimbExposureIndicator3D: React.FC<
     return baseIntensity * fadeFactor;
   }, [opportunity, currentTime, isMobile]);
 
-  // Get glow color
+  // Get glow color (returns cached color instance, not a new one)
   const glowColor = useMemo(
     () =>
       opportunity
@@ -283,7 +290,7 @@ export const LimbExposureIndicator3D: React.FC<
             opportunity.vulnerabilityMultiplier,
             opportunity.allowsBreaking
           )
-        : new THREE.Color(KOREAN_COLORS.ACCENT_RED),
+        : colorCache.highRed,
     [opportunity]
   );
 
