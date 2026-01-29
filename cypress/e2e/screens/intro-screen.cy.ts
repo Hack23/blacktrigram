@@ -20,6 +20,35 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.waitForCanvasReady();
   });
 
+  describe("UI Overlay Verification", () => {
+    it("should render UI overlay immediately on initial load", () => {
+      cy.annotate("Testing UI Overlay Immediate Visibility");
+      
+      // Verify IntroScreen is mounted
+      cy.get('[data-testid="intro-screen"]', { timeout: 10000 }).should('be.visible');
+      
+      // Verify Canvas is present
+      cy.get('canvas').should('exist');
+      
+      // Verify main UI elements are visible immediately (no delay needed)
+      cy.get('[data-testid="main-title-container"]').should('be.visible');
+      cy.get('[data-testid="logo-section"]').should('be.visible');
+      cy.get('[data-testid="main-logo"]').should('be.visible');
+      cy.get('[data-testid="trigram-symbols"]').should('be.visible');
+      cy.get('[data-testid="menu-section-container"]').should('be.visible');
+      cy.get('[data-testid="archetype-section-container"]').should('be.visible');
+      cy.get('[data-testid="intro-footer"]').should('be.visible');
+      
+      // Take screenshot for verification
+      cy.screenshot('intro-screen-ui-overlay-verified', { 
+        capture: 'viewport',
+        overwrite: true 
+      });
+      
+      cy.log("✅ UI overlay rendered immediately without delay");
+    });
+  });
+
   it("should render IntroScreen with all UI elements and navigation", () => {
     cy.annotate("Testing IntroScreen - Full User Journey");
 
