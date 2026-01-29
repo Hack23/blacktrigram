@@ -27,26 +27,40 @@ try {
   process.exit(0);
 }
 
-// Generate component dependency diagram using madge
+// Generate component dependency diagram using dependency-cruiser
 console.log("Generating component dependency diagram...");
 try {
   execSync(
-    `npx madge --image docs/architecture/component-dependencies.svg --extensions ts,tsx --exclude 'node_modules|.*\\.test\\.tsx?$' src/components`,
-    { stdio: "inherit" }
+    `npx depcruise --config .dependency-cruiser.cjs --output-type dot src/components | dot -T svg > docs/architecture/component-dependencies.svg`,
+    { stdio: "inherit", shell: true }
   );
 } catch (error) {
   console.error("Error generating component dependencies:", error);
+  // Create a fallback SVG
+  const fallbackSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300">
+    <text x="50" y="50" font-family="Arial" font-size="16">Component dependency diagram generation failed.</text>
+    <text x="50" y="80" font-family="Arial" font-size="14">Please ensure GraphViz is installed.</text>
+    <text x="50" y="110" font-family="Arial" font-size="14">Install with: sudo apt-get install graphviz</text>
+  </svg>`;
+  fs.writeFileSync(path.join(DOCS_DIR, "component-dependencies.svg"), fallbackSvg);
 }
 
 // Generate module dependency diagram
 console.log("Generating module dependency diagram...");
 try {
   execSync(
-    `npx madge --image docs/architecture/module-dependencies.svg --extensions ts,tsx --exclude 'node_modules|.*\\.test\\.tsx?$' src`,
-    { stdio: "inherit" }
+    `npx depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > docs/architecture/module-dependencies.svg`,
+    { stdio: "inherit", shell: true }
   );
 } catch (error) {
   console.error("Error generating module dependencies:", error);
+  // Create a fallback SVG
+  const fallbackSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300">
+    <text x="50" y="50" font-family="Arial" font-size="16">Module dependency diagram generation failed.</text>
+    <text x="50" y="80" font-family="Arial" font-size="14">Please ensure GraphViz is installed.</text>
+    <text x="50" y="110" font-family="Arial" font-size="14">Install with: sudo apt-get install graphviz</text>
+  </svg>`;
+  fs.writeFileSync(path.join(DOCS_DIR, "module-dependencies.svg"), fallbackSvg);
 }
 
 // Generate trie visualization of project structure
