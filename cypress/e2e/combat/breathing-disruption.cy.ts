@@ -1,3 +1,15 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyCombatScreenReady,
+  changeStance,
+  executeCombatAttacks,
+  verifyElementConditional,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * Breathing Disruption System E2E Test
  * Target Execution Time: 2-3 minutes
@@ -11,17 +23,19 @@
  *
  * ✅ Three.js Compatible - Tests breathing disruption in CombatScreen3D
  * ⏱️ Optimized for 2-3 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should trigger breathing disruption on solar plexus strike and apply stamina regeneration penalty", () => {
@@ -31,12 +45,8 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
     // 1. Verify Combat Screen is Ready (10s)
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen is Ready");
-
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.log("✅ Combat screen loaded");
-
-    // Wait for combat to initialize
-    cy.wait(1000);
+    verifyCombatScreenReady();
+    waitForTransition(1000);
 
     // ============================================================
     // 2. Check Initial State - No Breathing Disruption (10s)
@@ -44,18 +54,14 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
     cy.log("2️⃣ Checking Initial State - No Breathing Disruption");
 
     // Check that breathing indicator is not visible initially (or shows no disruption)
-    cy.get("body").then(($body) => {
-      // Look for breathing indicator in either HUD
-      const breathingIndicatorExists = 
-        $body.find('[data-testid="combat-left-hud-breathing-section"]').length > 0 ||
-        $body.find('[data-testid="combat-right-hud-breathing-section"]').length > 0;
-      
-      if (breathingIndicatorExists) {
-        cy.log("✅ Breathing indicator component found in HUD");
-      } else {
-        cy.log("⚠️ Breathing indicator may be embedded in canvas or not visible when no disruption");
-      }
-    });
+    verifyElementConditional(
+      'combat-left-hud-breathing-section',
+      'Breathing indicator may be embedded in canvas or not visible when no disruption'
+    );
+    verifyElementConditional(
+      'combat-right-hud-breathing-section',
+      'Right HUD breathing indicator may not be visible'
+    );
 
     // ============================================================
     // 3. Execute Solar Plexus Strike (20s)
@@ -63,21 +69,15 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
     cy.log("3️⃣ Executing Solar Plexus Strike");
 
     // Switch to Li stance (Fire stance - known for precise strikes)
-    // Li stance is typically key "3" in the trigram system
-    cy.get("body").type("3");
-    cy.wait(500);
-    cy.log("✅ Switched to Li stance (Fire)");
+    changeStance(3, "Li (Fire) - precise strikes");
 
-    // Execute attack (spacebar)
+    // Execute initial attack
     cy.get("body").type(" ");
-    cy.wait(1000);
-    cy.log("✅ Executed attack");
+    waitForTransition(1000);
+    cy.log("✅ Executed initial attack");
 
     // Execute multiple attacks to ensure we hit solar plexus area
-    for (let i = 0; i < 3; i++) {
-      cy.get("body").type(" ");
-      cy.wait(800);
-    }
+    executeCombatAttacks(3, 800);
     cy.log("✅ Executed multiple strikes to target torso/solar plexus");
 
     // ============================================================
@@ -86,9 +86,7 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
     cy.log("4️⃣ Verifying Breathing Disruption UI Feedback");
 
     // Check for breathing indicator visibility
-    // The indicator should show breathing difficulty with Korean-English text
     cy.get("body").then(($body) => {
-      // Look for breathing indicator or breathing-related text
       const hasBreathingIndicator = 
         $body.find('[data-testid*="breathing"]').length > 0 ||
         $body.text().includes("호흡곤란") ||
@@ -96,8 +94,6 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
 
       if (hasBreathingIndicator) {
         cy.log("✅ Breathing disruption indicator visible");
-        
-        // Check for Korean text
         if ($body.text().includes("호흡곤란")) {
           cy.log("✅ Korean text (호흡곤란) displayed");
         }
