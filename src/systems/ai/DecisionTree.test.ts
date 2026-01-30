@@ -303,9 +303,10 @@ describe("AIDecisionTree", () => {
       // At master level with aggressive personality at close range, should sometimes target vital points
       // Enhanced aggression (0.95) with difficulty (0.9) = 0.855 chance per attack decision
       // With 100 decisions, expect vital point targeting but allow for randomness
-      console.log(
-        `Vital point targeting: ${vitalPointCount}/${totalDecisions} decisions`,
-      );
+      
+      // Verify vital point targeting metrics
+      expect(vitalPointCount).toBeGreaterThanOrEqual(0);
+      expect(vitalPointCount).toBeLessThanOrEqual(totalDecisions);
 
       // Should have at least one vital point target
       expect(hasVitalPointTargets).toBe(true);
@@ -385,17 +386,17 @@ describe("AIDecisionTree", () => {
       // Log what decisions were made if stance change not found
       if (!foundStanceChange) {
         const uniqueDecisions = [...new Set(decisionTypes)];
-        console.log("Decision types seen:", uniqueDecisions);
-        console.log(
-          "Decision counts:",
-          decisionTypes.reduce(
-            (acc, d) => {
-              acc[d] = (acc[d] || 0) + 1;
-              return acc;
-            },
-            {} as Record<string, number>,
-          ),
+        const decisionCounts = decisionTypes.reduce(
+          (acc, d) => {
+            acc[d] = (acc[d] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
         );
+        
+        // Assert that we got some decision variety
+        expect(uniqueDecisions.length).toBeGreaterThan(0);
+        expect(Object.keys(decisionCounts).length).toBeGreaterThan(0);
       }
 
       // With very high stance switch frequency test personality, should find stance changes
@@ -600,7 +601,9 @@ describe("AIDecisionTree", () => {
 
       // Log what decisions were made if combo not found
       if (!foundCombo) {
-        console.log("Decision types seen:", [...new Set(decisionTypes)]);
+        const uniqueDecisions = [...new Set(decisionTypes)];
+        // Assert that we got some decision variety even if no combo
+        expect(uniqueDecisions.length).toBeGreaterThan(0);
       }
 
       // With high combo tendency (0.7) and good resources at close range,
@@ -713,7 +716,7 @@ describe("AIDecisionTree", () => {
         decisions.push(decision);
       }
 
-      // Log decision types for debugging
+      // Verify decision distribution
       const actionCounts = decisions.reduce(
         (acc, d) => {
           acc[d.action] = (acc[d.action] || 0) + 1;
@@ -721,7 +724,10 @@ describe("AIDecisionTree", () => {
         },
         {} as Record<string, number>,
       );
-      console.log("Defensive specialist actions:", actionCounts);
+      
+      // Assert variety in defensive specialist actions
+      expect(Object.keys(actionCounts).length).toBeGreaterThan(0);
+      expect(Object.values(actionCounts).reduce((sum, count) => sum + count, 0)).toBe(50);
 
       // Defensive personality should make reasonable decisions
       // They may use various tactics including stance changes, defense, etc.

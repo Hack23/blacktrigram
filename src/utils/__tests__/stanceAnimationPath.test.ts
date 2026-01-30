@@ -77,21 +77,13 @@ describe("Stance Animation Path Integration", () => {
       expect(Math.abs(hipR!.x)).toBeGreaterThan(0.1);
       expect(Math.abs(kneeR!.x)).toBeGreaterThan(0.5); // Deep front knee bend
 
-      console.log(
-        "GEON stance leg rotations:\n" +
-          `  HIP_L: x=${hipL!.x.toFixed(3)}, y=${hipL!.y.toFixed(
-            3
-          )}, z=${hipL!.z.toFixed(3)}\n` +
-          `  HIP_R: x=${hipR!.x.toFixed(3)}, y=${hipR!.y.toFixed(
-            3
-          )}, z=${hipR!.z.toFixed(3)}\n` +
-          `  KNEE_L: x=${kneeL!.x.toFixed(3)}, y=${kneeL!.y.toFixed(
-            3
-          )}, z=${kneeL!.z.toFixed(3)}\n` +
-          `  KNEE_R: x=${kneeR!.x.toFixed(3)}, y=${kneeR!.y.toFixed(
-            3
-          )}, z=${kneeR!.z.toFixed(3)}`
-      );
+      // Verify specific bone rotations are within expected ranges
+      expect(hipL!.x).toBeGreaterThan(-1.0);
+      expect(hipL!.x).toBeLessThan(1.0);
+      expect(hipR!.x).toBeGreaterThan(-1.0);
+      expect(hipR!.x).toBeLessThan(1.0);
+      expect(kneeL!.x).toBeGreaterThan(-0.5);
+      expect(kneeR!.x).toBeGreaterThan(0.5); // Front knee should have significant bend
     });
   });
 
@@ -127,11 +119,11 @@ describe("Stance Animation Path Integration", () => {
           `${expectedName} should have KNEE_R rotation`
         ).toBeDefined();
 
-        console.log(
-          `${expectedName}: HIP_L.x=${hipL!.x.toFixed(
-            3
-          )}, KNEE_R.x=${kneeR!.x.toFixed(3)}`
-        );
+        // Verify rotation values are within valid ranges
+        expect(hipL!.x).toBeGreaterThan(-Math.PI);
+        expect(hipL!.x).toBeLessThan(Math.PI);
+        expect(kneeR!.x).toBeGreaterThan(-Math.PI);
+        expect(kneeR!.x).toBeLessThan(Math.PI);
       }
     });
   });

@@ -83,7 +83,6 @@ describe("Front Kick Direction Validation", () => {
 
       // Hip flexion should be positive (forward) - around 90-110 degrees
       const hipFlexDeg = toDegrees(hipRot!.x);
-      console.log(`Front kick peak hip flexion: ${hipFlexDeg.toFixed(1)}°`);
 
       expect(hipRot!.x).toBeGreaterThan(0);
       expect(hipFlexDeg).toBeGreaterThan(85); // At least 85°
@@ -99,7 +98,6 @@ describe("Front Kick Direction Validation", () => {
 
       // Knee should be extended (near 0 to slight flex)
       const kneeFlexDeg = toDegrees(kneeRot!.x);
-      console.log(`Front kick peak knee angle: ${kneeFlexDeg.toFixed(1)}°`);
 
       // Knee extension: small positive or negative values mean extended
       expect(Math.abs(kneeFlexDeg)).toBeLessThan(15); // Within 15° of straight
@@ -114,22 +112,17 @@ describe("Front Kick Direction Validation", () => {
 
       // Front kick should not have significant Y rotation (that's for roundhouse)
       const yRotDeg = toDegrees(hipRot!.y);
-      console.log(`Front kick hip Y rotation: ${yRotDeg.toFixed(1)}°`);
 
       expect(Math.abs(yRotDeg)).toBeLessThan(15); // Minimal lateral rotation
     });
 
     it("should have sufficient keyframes (minimum 5 for smooth motion)", () => {
       expect(FRONT_KICK_ANIMATION.keyframes.length).toBeGreaterThanOrEqual(5);
-      console.log(
-        `Front kick keyframes: ${FRONT_KICK_ANIMATION.keyframes.length}`,
-      );
     });
 
     it("should have proper duration (500-800ms range)", () => {
       expect(FRONT_KICK_ANIMATION.duration).toBeGreaterThanOrEqual(0.5);
       expect(FRONT_KICK_ANIMATION.duration).toBeLessThanOrEqual(0.9);
-      console.log(`Front kick duration: ${FRONT_KICK_ANIMATION.duration}s`);
     });
   });
 
@@ -142,12 +135,10 @@ describe("Front Kick Direction Validation", () => {
       expect(hipRot).toBeDefined();
 
       const hipFlexDeg = toDegrees(hipRot!.x);
-      console.log(
-        `Attack front kick peak hip flexion: ${hipFlexDeg.toFixed(1)}°`,
-      );
 
       expect(hipRot!.x).toBeGreaterThan(0);
       expect(hipFlexDeg).toBeGreaterThan(85);
+      expect(hipFlexDeg).toBeLessThan(120);
     });
 
     it("should have sufficient keyframes", () => {
@@ -177,25 +168,6 @@ function findRoundhousePeakFrame(
 
 describe("Roundhouse Kick Direction Validation", () => {
   it("should have hip rotation for circular path (positive Z rotation)", () => {
-    // Debug: print all keyframes
-    console.log("Roundhouse keyframes detail:");
-    ROUNDHOUSE_KICK_ANIMATION.keyframes.forEach(
-      (kf: AnimationKeyframe, i: number) => {
-        const hipRot = getBoneRotation(kf, BoneName.HIP_R);
-        const pelvisRot = getBoneRotation(kf, BoneName.PELVIS);
-        if (hipRot) {
-          console.log(
-            `  Frame ${i + 1} t=${kf.time.toFixed(3)}s: HIP_R X=${toDegrees(hipRot.x).toFixed(1)}° Y=${toDegrees(hipRot.y).toFixed(1)}° Z=${toDegrees(hipRot.z).toFixed(1)}°`,
-          );
-        }
-        if (pelvisRot) {
-          console.log(
-            `  Frame ${i + 1} t=${kf.time.toFixed(3)}s: PELVIS Y=${toDegrees(pelvisRot.y).toFixed(1)}°`,
-          );
-        }
-      },
-    );
-
     // Use roundhouse-specific peak finder (max Z rotation)
     const peakFrame = findRoundhousePeakFrame(ROUNDHOUSE_KICK_ANIMATION);
     expect(peakFrame).toBeDefined();
@@ -205,7 +177,6 @@ describe("Roundhouse Kick Direction Validation", () => {
 
     // Roundhouse should have significant Z rotation (external rotation)
     const zRotDeg = toDegrees(hipRot!.z);
-    console.log(`Roundhouse kick peak hip Z rotation: ${zRotDeg.toFixed(1)}°`);
 
     expect(hipRot!.z).toBeGreaterThan(0); // External rotation
     expect(zRotDeg).toBeGreaterThan(30); // At least 30°
@@ -220,8 +191,9 @@ describe("Roundhouse Kick Direction Validation", () => {
 
     // Pelvis should rotate (negative Y for right leg roundhouse)
     const yRotDeg = toDegrees(pelvisRot!.y);
-    console.log(`Roundhouse pelvis Y rotation at peak: ${yRotDeg.toFixed(1)}°`);
     expect(pelvisRot!.y).toBeLessThan(0); // Negative = rotating left for right kick
+    expect(yRotDeg).toBeGreaterThan(-90); // Not more than 90° rotation
+    expect(yRotDeg).toBeLessThan(0); // Should be negative
   });
 
   it("should have sufficient keyframes", () => {
@@ -252,25 +224,6 @@ function findSideKickPeakFrame(
 
 describe("Side Kick Direction Validation", () => {
   it("should have lateral hip rotation (perpendicular stance)", () => {
-    // Debug: print all keyframes
-    console.log("Side kick keyframes detail:");
-    SIDE_KICK_ANIMATION.keyframes.forEach(
-      (kf: AnimationKeyframe, i: number) => {
-        const hipRot = getBoneRotation(kf, BoneName.HIP_R);
-        const pelvisRot = getBoneRotation(kf, BoneName.PELVIS);
-        if (hipRot) {
-          console.log(
-            `  Frame ${i + 1} t=${kf.time.toFixed(3)}s: HIP_R X=${toDegrees(hipRot.x).toFixed(1)}° Z=${toDegrees(hipRot.z).toFixed(1)}°`,
-          );
-        }
-        if (pelvisRot) {
-          console.log(
-            `  Frame ${i + 1} t=${kf.time.toFixed(3)}s: PELVIS Y=${toDegrees(pelvisRot.y).toFixed(1)}°`,
-          );
-        }
-      },
-    );
-
     const peakFrame = findSideKickPeakFrame(SIDE_KICK_ANIMATION);
     expect(peakFrame).toBeDefined();
 
@@ -279,8 +232,8 @@ describe("Side Kick Direction Validation", () => {
 
     // Side kick: pelvis turns ~90° (-1.57 rad = -90°)
     const yRotDeg = toDegrees(pelvisRot!.y);
-    console.log(`Side kick pelvis Y rotation at peak: ${yRotDeg.toFixed(1)}°`);
     expect(Math.abs(yRotDeg)).toBeGreaterThan(60); // Significant turn
+    expect(Math.abs(yRotDeg)).toBeLessThan(120); // But not too much
   });
 });
 
@@ -308,7 +261,6 @@ describe("Stance Start and End Validation", () => {
         const hipRot = getBoneRotation(lastFrame, BoneName.HIP_R);
         if (hipRot) {
           const hipDeg = toDegrees(hipRot.x);
-          console.log(`${name} end hip angle: ${hipDeg.toFixed(1)}°`);
           expect(Math.abs(hipDeg)).toBeLessThan(20); // Near neutral
         }
 
@@ -319,9 +271,6 @@ describe("Stance Start and End Validation", () => {
         if (shoulderLRot && shoulderRRot) {
           // Guard position: shoulders should be pulled back/rotated
           // Negative X on shoulders = arms raised
-          console.log(
-            `${name} end L shoulder X: ${toDegrees(shoulderLRot.x).toFixed(1)}°`,
-          );
           expect(shoulderLRot.x).toBeLessThan(0); // Arms raised in guard
           expect(shoulderRRot.x).toBeLessThan(0); // Arms raised in guard
         }
@@ -333,11 +282,10 @@ describe("Stance Start and End Validation", () => {
 
         // Last keyframe should be at or near duration
         expect(times[times.length - 1]).toBeLessThanOrEqual(duration);
-
-        // Check for reasonable distribution
-        console.log(
-          `${name} keyframe times: ${times.map((t) => t.toFixed(3)).join(", ")}`,
-        );
+        
+        // First keyframe should start at or near 0
+        expect(times[0]).toBeGreaterThanOrEqual(0);
+        expect(times[0]).toBeLessThanOrEqual(0.15);
       });
     });
   });
@@ -368,10 +316,11 @@ describe("Keyframe Count Sufficiency", () => {
       describe(type, () => {
         examples.forEach((anim: SkeletalAnimation) => {
           it(`${anim.name} should have at least ${min} keyframes for smooth motion`, () => {
-            console.log(
-              `${anim.name}: ${anim.keyframes.length} keyframes, ${anim.duration}s`,
-            );
             expect(anim.keyframes.length).toBeGreaterThanOrEqual(min);
+            
+            // Verify duration is reasonable for animation type
+            expect(anim.duration).toBeGreaterThan(0);
+            expect(anim.duration).toBeLessThan(2); // No animation should be longer than 2s
           });
         });
       });
@@ -390,10 +339,11 @@ describe("Animation Frame Rate Analysis", () => {
   animations.forEach((anim) => {
     it(`${anim.name} should have adequate frame density (>5 fps equivalent)`, () => {
       const fps = anim.keyframes.length / anim.duration;
-      console.log(`${anim.name}: ${fps.toFixed(1)} keyframes/second`);
 
       // At minimum 5 keyframes per second for interpolation
       expect(fps).toBeGreaterThan(5);
+      // But not excessive (max 30 keyframes/second)
+      expect(fps).toBeLessThan(30);
     });
   });
 });
