@@ -109,7 +109,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.8,
     effects: [],
     // Animation: Redirect throw motion
-    animationType: AnimationType.THROW,
+    animationType: AnimationType.GAM_REDIRECT_THROW,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -147,7 +147,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.9,
     effects: [],
     // Animation: Hip throw motion
-    animationType: AnimationType.THROW,
+    animationType: AnimationType.GAM_HIP_THROW,
     animationSpeed: 0.85,
     category: "medium",
     range: "short",
@@ -225,7 +225,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.5,
     effects: [],
     // Animation: Circular parry motion
-    animationType: AnimationType.COUNTER_STRIKE,
+    animationType: AnimationType.GAM_CIRCULAR_PARRY,
     animationSpeed: 1.0,
     category: "medium",
     range: "medium",
@@ -265,7 +265,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.2,
     effects: [],
     // Animation: Wrist control transition
-    animationType: AnimationType.WRIST_LOCK,
+    animationType: AnimationType.GAM_WRIST_TWIST_COUNTER,
     animationSpeed: 1.0,
     category: "special",
     range: "short",

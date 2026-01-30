@@ -96,7 +96,7 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
-    animationType: AnimationType.WRIST_LOCK,
+    animationType: AnimationType.TAE_WRIST_LOCK,
     animationSpeed: 0.85,
     category: "light",
     range: "short",

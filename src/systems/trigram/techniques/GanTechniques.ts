@@ -69,7 +69,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.0,
     effects: [],
     // Animation: Solid blocking stance
-    animationType: AnimationType.BLOCK,
+    animationType: AnimationType.GAN_ROCK_DEFENSE_BLOCK,
     animationSpeed: 1.2,
     category: "light",
     range: "short",
@@ -109,7 +109,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.1,
     effects: [],
     // Animation: Rooted defensive stance
-    animationType: AnimationType.BLOCK,
+    animationType: AnimationType.GAN_IMMOVABLE_STANCE,
     animationSpeed: 1.0,
     category: "light",
     range: "short",
@@ -187,7 +187,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.2,
     effects: [],
     // Animation: Powerful counter attack
-    animationType: AnimationType.COUNTER_STRIKE,
+    animationType: AnimationType.GAN_COUNTER_STRIKE,
     animationSpeed: 1.0,
     category: "special",
     range: "medium",
@@ -225,7 +225,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.8,
     effects: [],
     // Animation: Reversal motion
-    animationType: AnimationType.COUNTER_STRIKE,
+    animationType: AnimationType.GAN_REVERSAL_TECHNIQUE,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -265,7 +265,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.6,
     effects: [],
     // Animation: Standing control position
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.GAN_MOUNTAIN_STANCE_LOCK,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",

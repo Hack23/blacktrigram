@@ -108,7 +108,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.4,
     effects: [],
     // Animation: Low sweeping kick
-    animationType: AnimationType.LOW_KICK,
+    animationType: AnimationType.SON_SWEEPING_LOW_KICK,
     animationSpeed: 1.1,
     category: "medium",
     range: "medium",
@@ -146,7 +146,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.6,
     effects: [],
     // Animation: Rapid footwork sequence
-    animationType: AnimationType.FRONT_KICK,
+    animationType: AnimationType.SON_RAPID_FOOTWORK,
     animationSpeed: 1.2,
     category: "medium",
     range: "medium",
@@ -186,7 +186,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // Animation: Rhythmic hand combination
-    animationType: AnimationType.JAB,
+    animationType: AnimationType.SON_RHYTHMIC_STRIKES,
     animationSpeed: 1.2,
     category: "special",
     range: "short",
@@ -224,7 +224,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.3,
     effects: [],
     // Animation: Flowing push movement
-    animationType: AnimationType.PALM_STRIKE,
+    animationType: AnimationType.SON_FLOWING_PUSH,
     animationSpeed: 1.0,
     category: "medium",
     range: "short",

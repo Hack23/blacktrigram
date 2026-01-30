@@ -69,7 +69,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.4,
     effects: [],
     // Animation: Clinch grapple position
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.GON_EARTH_EMBRACE,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -109,7 +109,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.5,
     effects: [],
     // Animation: Reaping leg sweep
-    animationType: AnimationType.LOW_KICK,
+    animationType: AnimationType.GON_LEG_SWEEP,
     animationSpeed: 1.0,
     category: "medium",
     range: "medium",
@@ -225,7 +225,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // Animation: Slam throw
-    animationType: AnimationType.SLAM,
+    animationType: AnimationType.GON_BODY_LOCK_TAKEDOWN,
     animationSpeed: 1.0,
     category: "heavy",
     range: "short",
@@ -263,7 +263,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.7,
     effects: [],
     // Animation: Body lock clinch
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.GON_ANKLE_PICK,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -301,7 +301,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.9,
     effects: [],
     // Animation: Sacrifice throw motion
-    animationType: AnimationType.THROW,
+    animationType: AnimationType.GON_SACRIFICE_THROW,
     animationSpeed: 1.0,
     category: "medium",
     range: "short",
