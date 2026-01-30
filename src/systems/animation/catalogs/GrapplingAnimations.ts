@@ -99,22 +99,31 @@ export const COUNTER_ATTACK_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Block - 막기
+ * Block - 막기 (Rigid High Block - Traditional Taekwondo Style)
  *
- * Defensive blocking technique.
- * High or mid-level block against incoming attacks.
+ * Defensive blocking technique with rigid, forceful blocking motion.
+ * Strong high block (상단막기) with chambered arm position.
+ * Contrasts with flowing/yielding styles - this is direct force against force.
+ *
+ * Korean Martial Arts: 막기 (Mak-gi) - "to block/prevent"
+ * - Strong chambering from hip (허리에서)
+ * - Explosive upward motion (폭발적 상향)
+ * - Solid contact intercept (강한 차단)
+ * - Firm guard position maintained (견고한 방어 자세)
  *
  * @korean 막기애니메이션
  */
 export const BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("block", "막기")
     .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend) // 막기 - Block
+    .withHighGuard() // Start from high guard position
+    .parry(TECHNIQUE_TIMING.FAST.chamber, "ease-out") // Explosive upward block
+    .parry(TECHNIQUE_TIMING.FAST.extend, "linear") // Hold firm blocking position
     .recover(
       TECHNIQUE_TIMING.FAST.peak +
         TECHNIQUE_TIMING.FAST.retract +
         TECHNIQUE_TIMING.FAST.recover,
-    ) // 복귀
+    ) // 복귀 - Return to guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -334,25 +343,35 @@ export const REDIRECT_THROW_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Arm Bar - 팔꺾기
+ * Arm Bar - 팔꺾기 (Direct Force Hapkido Arm Bar)
  *
- * Standing arm bar technique.
- * Hyperextends elbow joint for control or submission.
+ * Straight arm hyperextension lock with direct downward force.
+ * Traditional Hapkido style: immediate control, explosive entry, strong pressure.
+ * 
+ * Contrasts with Tae (Lake) flowing circular technique:
+ * - Tae: Circular, flowing, uses momentum
+ * - This: Linear, forceful, direct pressure
+ *
+ * Korean Martial Arts: 팔꺾기 (Pal-kkeok-gi) - "arm breaking/bending"
+ * - 빠른진입 (Quick Entry): Explosive arm capture
+ * - 직선압박 (Linear Pressure): Straight downward force
+ * - 즉각제압 (Immediate Control): No circular motion, direct submission
  *
  * Phases:
- * 1. Entry (진입): Catch arm
- * 2. Position: Hip under elbow
- * 3. Drop (내려가기): Drop to secure arm
- * 4. Extension: Hyperextend elbow
+ * 1. Entry (진입): Quick arm catch with strong grip
+ * 2. Position: Direct downward body drop (not circular)
+ * 3. Drop (내려가기): Explosive fall to secure arm
+ * 4. Extension: Immediate hyperextension with hip pressure
  *
  * @korean 팔꺾기애니메이션
  */
 export const ARM_BAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("arm_bar", "팔꺾기")
     .asAttack(0.7)
-    .armBarEntry(0.18) // 진입 - Catch arm
-    .armBarDrop(0.22) // 내려가기 - Drop and extend
-    .recover(0.3) // 복귀
+    .armBarEntry(0.15) // 진입 - Quick explosive catch (faster than Tae)
+    .armBarDrop(0.25) // 내려가기 - Direct downward drop (linear, not circular)
+    .jointLock(0.15) // Additional lock pressure phase (immediate submission)
+    .recover(0.15) // 복귀 - Quick recovery
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════

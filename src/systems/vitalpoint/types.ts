@@ -95,7 +95,31 @@ export interface KoreanTechnique {
   effects: readonly StatusEffect[];
 
   /**
-   * Animation type for direct mapping to skeletal animation
+   * Animation category for this technique
+   * Represents the TYPE/CATEGORY of animation (e.g., "punch", "kick", "throw")
+   * Multiple techniques can share the same category.
+   * 
+   * 애니메이션 카테고리 (타입)
+   * 
+   * @example AnimationCategory.PUNCH, AnimationCategory.KICK
+   * @korean 애니메이션카테고리
+   */
+  animationCategory?: string; // Will be AnimationCategory enum
+  
+  /**
+   * Unique animation identifier for 1-1 mapping with technique
+   * Should match the technique ID for direct animation lookup.
+   * 
+   * 고유 애니메이션 식별자 (1-1 매핑)
+   * 
+   * @example "geon_heavenly_fist", "son_rhythmic_strikes"
+   * @korean 애니메이션ID
+   */
+  animationId?: string;
+
+  /**
+   * Legacy: Animation type field (being migrated to animationCategory + animationId)
+   * @deprecated Use animationCategory and animationId instead
    * 스켈레탈 애니메이션에 직접 매핑하기 위한 애니메이션 타입
    *
    * @korean 애니메이션타입

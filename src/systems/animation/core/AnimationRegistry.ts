@@ -42,6 +42,7 @@ import { BASIC_ANIMATIONS } from "../catalogs/BasicAnimations";
 import { COMBO_ANIMATIONS } from "../catalogs/ComboAnimations";
 import { DARKOPS_ANIMATIONS } from "../catalogs/DarkOpsAnimations";
 import {
+  GAM_FLOW_DEFENSE,
   GAN_COUNTER_FORTRESS,
   GAN_IMMOVABLE_BLOCK,
   GEON_COUNTER_STRIKE,
@@ -140,6 +141,8 @@ import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimation
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
 
 // Trigram-specific stance and technique animation maps
+import { GAM_WATER_FLOW_COUNTER_ANIMATION } from "../catalogs/GamTechniqueAnimations";
+import { GAN_ROCK_DEFENSE_ANIMATION } from "../catalogs/GanTechniqueAnimations";
 import { GAN_STANCE_ANIMATIONS } from "../catalogs/GanStanceAnimations";
 import { GAN_TECHNIQUE_ANIMATIONS } from "../catalogs/GanTechniqueAnimations";
 import { GEON_ANIMATIONS } from "../catalogs/GeonStanceAnimations";
@@ -522,6 +525,110 @@ export const ALL_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
 ]);
 
 // ═══════════════════════════════════════════════════════════════════════════
+// ANIMATION ID-BASED REGISTRY (animationId → SkeletalAnimation)
+// Direct 1-1 mapping for technique animations using new architecture
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Animation ID Registry - Direct mapping from technique animationId to SkeletalAnimation
+ *
+ * This provides 1-1 mapping between technique IDs and animations, using the new
+ * animationId field instead of the legacy AnimationType enum.
+ *
+ * 기술 ID에서 애니메이션으로의 직접 매핑 (1-1 관계)
+ *
+ * @see TechniqueAnimationMapping.ts for legacy technique → AnimationType mappings
+ * @korean 애니메이션ID레지스트리
+ */
+export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
+  new Map([
+    // Complete mapping for all 57 techniques using existing animations
+    ["amsalja_silent_death", SPEAR_HAND_ANIMATION],
+    ["darkops_ear_strike", EAR_STRIKE_ANIMATION],
+    ["darkops_eye_gouge", EYE_GOUGE_ANIMATION],
+    ["darkops_finger_break", FINGER_LOCK_ANIMATION],
+    ["darkops_kidney_strike", KIDNEY_KNEE_ANIMATION],
+    ["darkops_larynx_crush", THROAT_STRIKE_ANIMATION],
+    ["darkops_sleeper_hold", REAR_NAKED_CHOKE_ANIMATION],
+    ["darkops_spinal_strike", SPINAL_ELBOW_ANIMATION],
+    ["gam_circular_parry", STANCE_ANIMATIONS.get("gam_circular_parry")!], // Use dedicated circular parry animation
+    ["gam_flow_defense", GAM_FLOW_DEFENSE],
+    ["gam_flowing_block", GAM_FLOWING_BLOCK],
+    ["gam_hip_throw", HIP_THROW_ANIMATION],
+    ["gam_redirect_throw", REDIRECT_THROW_ANIMATION],
+    ["gam_water_counter", GAM_WATER_FLOW_COUNTER_ANIMATION],
+    ["gan_counter_strike", GAN_COUNTER_FORTRESS],
+    ["gan_immovable_stance", STANCE_ANIMATIONS.get("gan_immovable_stance")!], // Use dedicated immovable stance animation
+    ["gan_iron_block", GAN_IMMOVABLE_BLOCK],
+    ["gan_rock_defense", GAN_ROCK_DEFENSE_ANIMATION],
+    ["geon_axe_kick", AXE_KICK_ANIMATION],
+    ["geon_counter_strike", GEON_COUNTER_STRIKE],
+    ["geon_crushing_elbow", ELBOW_STRIKE_ANIMATION_ENHANCED],
+    ["geon_elbow_smash", ELBOW_STRIKE_ANIMATION_ENHANCED],
+    ["geon_frontal_kick", FRONT_KICK_ANIMATION_ENHANCED],
+    ["geon_heaven_strike", HEAVEN_STRIKE_ANIMATION],
+    ["geon_heavenly_fist", JAB_ANIMATION_ENHANCED],
+    ["geon_high_block", GEON_HIGH_BLOCK],
+    ["geon_palm_strike", PALM_STRIKE_ANIMATION],
+    ["gon_ankle_pick", SWEEP_ANIMATION],
+    ["gon_earth_embrace", EARTH_EMBRACE_ANIMATION],
+    ["gon_ground_pound", SLAM_ANIMATION],
+    ["gon_leg_sweep", SWEEP_ANIMATION],
+    ["gon_ssireum_throw", HIP_THROW_ANIMATION],
+    ["hacker_data_strike", PALM_STRIKE_ANIMATION],
+    ["hacker_system_crash", HAMMER_FIST_ANIMATION],
+    ["jin_back_kick", BACK_KICK_ANIMATION],
+    ["jin_explosive_knee", KNEE_STRIKE_ANIMATION_ENHANCED],
+    ["jin_flying_sidekick", FLYING_KICK_ANIMATION],
+    ["jin_knee_strike", KNEE_STRIKE_ANIMATION_ENHANCED],
+    ["jin_tornado_kick", TORNADO_KICK_ANIMATION],
+    ["jojik_street_brawl", HOOK_ANIMATION],
+    ["li_flame_spear", SPEAR_HAND_ANIMATION],
+    ["li_nerve_strike", NERVE_STRIKE_ANIMATION],
+    ["li_precision_parry", LI_PRECISION_PARRY],
+    ["li_sidekick", SIDE_KICK_ANIMATION],
+    ["li_temple_strike", TEMPLE_ELBOW_ANIMATION],
+    ["musa_dragon_fist", CROSS_ANIMATION_ENHANCED],
+    ["musa_iron_defense", HIGH_BLOCK_ANIMATION],
+    ["musa_thunder_strike", UPPERCUT_ANIMATION],
+    ["son_flowing_push", FLOWING_PUSH_ANIMATION],
+    ["son_rapid_footwork", SIDE_STEP_ANIMATION],
+    ["son_sweeping_low_kick", LOW_KICK_ANIMATION],
+    ["tae_arm_bar", ARM_BAR_ANIMATION],
+    ["tae_elbow_lock", ELBOW_LOCK_ANIMATION],
+    ["tae_finger_lock", FINGER_LOCK_ANIMATION],
+    ["tae_flowing_strikes", FLOWING_CROSS_ANIMATION],
+    ["tae_sweep_defense", SWEEP_DEFENSE_ANIMATION],
+    ["tae_wrist_lock", WRIST_LOCK_ANIMATION],
+  ]);
+
+/**
+ * Category-based default animations for fallback
+ *
+ * When an animationId is not found, fallback to category default.
+ *
+ * 카테고리별 기본 애니메이션 (fallback용)
+ */
+export const CATEGORY_DEFAULT_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
+  new Map([
+    ["punch", JAB_ANIMATION_ENHANCED],
+    ["kick", FRONT_KICK_ANIMATION_ENHANCED],
+    ["strike", PALM_STRIKE_ANIMATION],
+    ["joint_lock", WRIST_LOCK_ANIMATION],
+    ["throw", HIP_THROW_ANIMATION],
+    ["defensive", BLOCK_ANIMATION],
+    ["elbow_strike", ELBOW_STRIKE_ANIMATION_ENHANCED],
+    ["counter", COUNTER_STRIKE_ANIMATION],
+    ["jumping_kick", JUMPING_KICK_ANIMATION],
+    ["grapple", GRAPPLE_ANIMATION],
+    ["sweep", SWEEP_ANIMATION],
+    ["knee_strike", KNEE_STRIKE_ANIMATION_ENHANCED],
+    ["footwork", SIDE_STEP_ANIMATION],
+    ["stance", IDLE_STANCE_ANIMATION],
+    ["takedown", SLAM_ANIMATION],
+  ]);
+
+// ═══════════════════════════════════════════════════════════════════════════
 // ANIMATION LOOKUP FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -604,6 +711,91 @@ export function getAnimationForTechniqueIdWithConfig(
     );
   }
   return { animation, speed: config.speed };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW ARCHITECTURE: ID-Based Animation Lookup Functions
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Get animation by animationId (new architecture)
+ *
+ * Direct 1-1 lookup using the new animationId field from technique.
+ * This is the preferred method for the new animation architecture.
+ *
+ * @param animationId - Technique's animationId (e.g., "geon_heaven_strike")
+ * @returns SkeletalAnimation or undefined if not found
+ *
+ * @korean 애니메이션ID로조회
+ */
+export function getAnimationById(
+  animationId: string,
+): SkeletalAnimation | undefined {
+  return ANIMATION_ID_REGISTRY.get(animationId);
+}
+
+/**
+ * Get animation by ID with category-based fallback
+ *
+ * Implements a 3-tier fallback system:
+ * 1. Try direct ID lookup in ANIMATION_ID_REGISTRY
+ * 2. If not found, use category default from CATEGORY_DEFAULT_ANIMATIONS
+ * 3. If no category, use IDLE_STANCE as ultimate fallback
+ *
+ * This function never returns undefined, making it safe for use in game logic.
+ *
+ * @param animationId - Technique's animationId
+ * @param animationCategory - Technique's animationCategory for fallback
+ * @returns SkeletalAnimation (never undefined)
+ *
+ * @korean 애니메이션ID로조회_카테고리대체
+ */
+export function getAnimationByIdWithFallback(
+  animationId: string | undefined,
+  animationCategory?: string,
+): SkeletalAnimation {
+  // Try direct ID lookup
+  if (animationId) {
+    const animation = ANIMATION_ID_REGISTRY.get(animationId);
+    if (animation) return animation;
+  }
+
+  // Fallback to category default
+  if (animationCategory) {
+    const categoryDefault = CATEGORY_DEFAULT_ANIMATIONS.get(animationCategory);
+    if (categoryDefault) return categoryDefault;
+  }
+
+  // Ultimate fallback
+  return IDLE_STANCE_ANIMATION;
+}
+
+/**
+ * Check if animation ID exists in registry
+ *
+ * @param animationId - Animation ID to check
+ * @returns true if animation exists in ANIMATION_ID_REGISTRY
+ *
+ * @korean 애니메이션ID존재확인
+ */
+export function hasAnimationId(animationId: string): boolean {
+  return ANIMATION_ID_REGISTRY.has(animationId);
+}
+
+/**
+ * Get category default animation
+ *
+ * Returns the default animation for a given category, useful for fallback logic.
+ *
+ * @param category - Animation category (e.g., "punch", "kick")
+ * @returns SkeletalAnimation or undefined if category not found
+ *
+ * @korean 카테고리기본애니메이션조회
+ */
+export function getCategoryDefaultAnimation(
+  category: string,
+): SkeletalAnimation | undefined {
+  return CATEGORY_DEFAULT_ANIMATIONS.get(category);
 }
 
 /**

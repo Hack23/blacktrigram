@@ -59,6 +59,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.15,
     critMultiplier: 1.8,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "strike", // Type: shared category
+    animationId: "li_flame_spear", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.SPEAR_HAND_STRIKE,
     animationSpeed: 1.3,
     category: "medium",
@@ -96,6 +100,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "elbow_strike", // Type: shared category
+    animationId: "li_temple_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.TEMPLE_ELBOW,
     animationSpeed: 1.1,
     category: "special",
@@ -133,6 +141,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "strike", // Type: shared category
+    animationId: "li_nerve_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.NERVE_STRIKE,
     animationSpeed: 1.2,
     category: "special",
@@ -170,6 +182,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "kick", // Type: shared category
+    animationId: "li_sidekick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.SIDE_KICK,
     animationSpeed: 1.0,
     category: "medium",
@@ -207,6 +223,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "strike", // Type: shared category
+    animationId: "li_pressure_point", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.PRESSURE_POINT_STRIKE,
     animationSpeed: 1.0,
     category: "special",
@@ -244,6 +264,10 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "strike", // Type: shared category
+    animationId: "li_solar_plexus_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.SOLAR_PLEXUS_STRIKE,
     animationSpeed: 1.1,
     category: "medium",

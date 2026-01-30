@@ -341,17 +341,18 @@ export const TAE_ARM_BAR_ANIMATION: SkeletalAnimation =
  * Fire's penetrating spear-hand strike.
  * Precision targeting vital points with fingertip thrust.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 460ms (Fast spear-hand thrust)
  *
  * @korean 리화창애니메이션
  */
 export const LI_FLAME_SPEAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_flame_spear", "리화창")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Spear-like extension
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.46)
+    .elbowChamber(0.07) // Compact spear setup
+    .throatStrike(0.13) // Spear-hand to throat
+    .punchPeak(0.05)
+    .recover(0.21)
+    .withSpearHand("right")
     .build();
 
 /**
@@ -376,19 +377,17 @@ export const LI_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
  * Fire's nerve targeting strike.
  * Precise pressure point attack.
  *
+ * Duration: 620ms (Deliberate precision strike)
+ *
  * @korean 리신경타격애니메이션
  */
 export const LI_NERVE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_nerve_strike", "리신경타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .asAttack(0.62)
+    .punchWindup(0.12) // Careful positioning
+    .nerveStrike(0.16) // Precise nerve cluster targeting
+    .punchPeak(0.06) // Hold for accuracy
+    .recover(0.28)
     .build();
 
 /**
@@ -415,17 +414,18 @@ export const LI_SIDEKICK_ANIMATION: SkeletalAnimation =
  * Fire's pressure point strike.
  * Single finger or knuckle attack with precision targeting.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 470ms (Fast finger strike with hold)
  *
  * @korean 리급소애니메이션
  */
 export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_pressure_point", "리급소")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend)
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak)
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.47)
+    .punchWindup(0.08) // Setup
+    .punchExtend(0.13) // Finger strike
+    .punchPeak(0.05) // Hold on pressure point
+    .recover(0.21)
+    .withSpearHand("right") // Single finger extension
     .build();
 
 /**
@@ -436,11 +436,32 @@ export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
  *
  * @korean 리명치애니메이션
  */
+/**
+ * Li Solar Plexus - 리명치 (Fire's Precision Spear-Hand Strike)
+ *
+ * Precise spear-hand thrust directly to solar plexus (명치/myeongchi).
+ * Li (Fire) element: Linear, direct, penetrating precision strike.
+ * Uses targeted strike technique for deep diaphragm disruption.
+ *
+ * Korean Martial Arts: 관수명치지르기 (Gwansu Myeongchi Jireugi)
+ * - 정밀타격 (Precise Strike): Pinpoint accuracy to diaphragm
+ * - 직선관통 (Linear Penetration): Straight thrust, no arc
+ * - 창수형 (Spear-Hand Form): Extended fingers, focused energy
+ * - 호흡차단 (Breath Disruption): Diaphragm paralysis technique
+ *
+ * Contrasts with Son (Wind) flowing push:
+ * - Li: Targeted strike, linear thrust, single point
+ * - Son: Palm push, flowing wave, broad surface
+ *
+ * Diaphragm disruption technique.
+ *
+ * @korean 리명치애니메이션
+ */
 export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_solar_plexus", "리명치")
-    .asAttack(0.4)
-    .punchWindup(0.08)
-    .palmStrike(0.12)
+    .asAttack(0.38) // Faster, more direct than Son
+    .punchWindup(0.05) // Quick chamber (faster, precise)
+    .solarPlexusStrike(0.13) // Precise solar plexus strike
     .recover(0.2)
     .build();
 
@@ -454,17 +475,17 @@ export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
  * Thunder's lightning-fast straight punch.
  * Explosive acceleration with proper technique phases.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 520ms (Explosive fast punch)
  *
  * @korean 진전광애니메이션
  */
 export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_lightning_flash", "진전광")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber) // Lightning prep
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend) // Lightning speed
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak) // Impact clarity
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.52)
+    .punchWindup(0.1) // Lightning prep
+    .punchExtend(0.14) // Explosive speed
+    .punchPeak(0.05) // Thunder impact
+    .recover(0.23)
     .build();
 
 /**
@@ -565,12 +586,15 @@ export const JIN_KNEE_STRIKE_ANIMATION: SkeletalAnimation =
  */
 export const SON_WHIRLWIND_BARRAGE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_whirlwind_barrage", "손선풍연격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(0.05)
-    .punchExtend(0.08) // First jab
-    .punchExtend(0.08) // Second jab
-    .hookPunch(0.1) // Hook follow-up
-    .recover(0.24)
+    .asAttack(0.68)
+    .punchWindup(0.09) // Setup
+    .punchExtend(0.1) // First jab
+    .punchWindup(0.05) // Quick reset
+    .punchExtend(0.1) // Second jab
+    .punchPeak(0.04) // Hold
+    .hookWindup(0.1) // Hook chamber
+    .hookPunch(0.14) // Hook follow-up
+    .recover(0.06)
     .build();
 
 /**
@@ -608,19 +632,34 @@ export const SON_RHYTHMIC_STRIKES_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Son Flowing Push - 손유수
+ * Son Flowing Push - 손유수 (Wind's Continuous Wave Push)
  *
- * Wind's flowing push technique.
- * Continuous forward pressure.
+ * Wind's flowing push technique with continuous forward pressure.
+ * Son (Wind) element: Circular, flowing, unrelenting pressure like wind gusts.
+ * Uses double-palm (쌍장/ssangjang) wave motion for sustained force.
+ *
+ * Korean Martial Arts: 쌍장밀기 (Ssangjang Milgi) - "Double Palm Push"
+ * - 연속압박 (Continuous Pressure): Wave-like forward momentum
+ * - 원형흐름 (Circular Flow): Not straight, flowing like wind
+ * - 쌍장법 (Double Palm Method): Both palms working in harmony
+ * - 밀어치기 (Push-Strike): Pushing force, not penetrating
+ *
+ * Contrasts with Li (Fire) precision strike:
+ * - Son: Double palm, flowing wave, broad pressure
+ * - Li: Spear-hand, linear thrust, single point
+ *
+ * Continuous forward pressure technique.
  *
  * @korean 손유수애니메이션
  */
 export const SON_FLOWING_PUSH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_flowing_push", "손유수")
-    .asAttack(0.4)
-    .punchWindup(0.08)
-    .palmStrike(0.12)
-    .recover(0.2)
+    .asAttack(0.45) // Slightly longer for flowing motion
+    .shift(0.08, "ease-out") // Body flows forward (Wind characteristic)
+    .punchWindup(0.07) // Quick windup
+    .palmStrike(0.15, "linear") // Extended palm push (longer contact)
+    .shift(0.05, "ease-in") // Continue forward pressure
+    .recover(0.1) // Quick recovery (Wind agility)
     .build();
 
 /**
@@ -714,28 +753,22 @@ export const GAM_FLOWING_BLOCK_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gam Circular Parry - 감원막기
+ * Gam Circular Parry - 감원막기 (Water's Circular Deflection)
  *
- * Water's circular parrying motion.
- * Redirecting attacks in circles.
+ * Water's circular parrying motion that flows in continuous arcs.
+ * Redirects attacks in smooth circular patterns like water swirling.
+ *
+ * Duration: 500ms (Slower, more circular than basic parry)
  *
  * @korean 감원막기애니메이션
  */
 export const GAM_CIRCULAR_PARRY_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_circular_parry", "감원막기")
-    .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend * 0.5,
-    )
-    .counterParry(
-      TECHNIQUE_TIMING.FAST.extend * 0.5 +
-        TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .asDefense(0.5)
+    .counterParry(0.18, "ease-out") // First circular arc
+    .parry(0.14, "linear") // Second arc of the circle
+    .shift(0.08, "ease-in") // Body adjusts with flow
+    .recover(0.1)
     .build();
 
 /**
@@ -755,20 +788,23 @@ export const GAM_HIP_THROW_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gam Wrist Twist Counter - 감손목비틀기
+ * Gam Wrist Twist Counter - 감손목비틀기 (Water's Wrist Manipulation Counter)
  *
- * Water's wrist twist counter.
- * Flowing into joint control.
+ * Water's wrist twist counter that flows into joint manipulation.
+ * Catching and spiraling the wrist in a water-like continuous motion.
+ *
+ * Duration: 520ms (Precise joint manipulation timing)
  *
  * @korean 감손목비틀기애니메이션
  */
 export const GAM_WRIST_TWIST_COUNTER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_wrist_twist_counter", "감손목비틀기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .parry(0.1)
-    .wristGrab(0.12)
-    .wristTwist(0.15)
-    .recover(0.18)
+    .asAttack(0.52)
+    .parry(0.08, "ease-out") // Quick catch
+    .wristGrab(0.1, "linear") // Secure grip
+    .shift(0.09, "ease-in") // Position for counter
+    .wristTwist(0.13, "linear") // Apply spiral pressure
+    .recover(0.12)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -800,37 +836,79 @@ export const GAN_ROCK_DEFENSE_ANIMATION_LEGACY: SkeletalAnimation =
  * Gan Immovable Stance - 간부동자세
  *
  * Mountain's immovable fighting stance.
- * Rooted and unshakeable.
+ * Rooted and unshakeable defensive posture.
+ *
+ * Characteristics:
+ * - Deep rooted stance with minimal movement
+ * - High solid guard protecting head/torso
+ * - Weight evenly distributed for maximum stability
+ * - Slight breathing cycle for realism
  *
  * @korean 간부동자세애니메이션
  */
 export const GAN_IMMOVABLE_STANCE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_immovable_stance", "간부동자세")
-    .asIdle(0.5)
-    .withGuard()
+    .asIdle(2.0, true)
+    // Keyframe 0: Immovable rooted position
+    .at(0)
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral, grounded
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Stable core
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Solid upper body
+    .rotate(BoneName.KNEE_L, -0.314, 0, 0) // -18° deep bend for stability
+    .rotate(BoneName.KNEE_R, -0.314, 0, 0) // -18° deep bend for stability
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44) // -20°, 0°, -25° (high guard)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44) // -20°, 0°, 25° (high guard)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92) // -110° (reinforced)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92) // 110° (reinforced)
+    .rotate(BoneName.WRIST_L, 0, 0, 0) // Neutral
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0) // Focused forward
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 1.0s: Slight breath (mountain stillness)
+    .at(1.0)
+    .rotate(BoneName.SPINE_UPPER, -0.026, 0, 0) // -1.5° tiny chest expansion
+    .rotate(BoneName.SHOULDER_L, -0.366, 0, -0.453) // Slight shoulder adjust
+    .rotate(BoneName.SHOULDER_R, -0.366, 0, 0.453)
+    .rotate(BoneName.KNEE_L, -0.331, 0, 0) // -19° slightly deeper
+    .rotate(BoneName.KNEE_R, -0.331, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0) // No movement
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 2.0s: Return to start
+    .at(2.0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.314, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.314, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.35, 0, -0.44)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.44)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.92)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.92)
+    .rotate(BoneName.WRIST_L, 0, 0, 0)
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.HEAD, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 /**
- * Gan Iron Block - 간철방어
+ * Gan Iron Block - 간철방어 (Mountain's Iron-Hard Block)
  *
- * Mountain's iron-like blocking technique.
- * Hard blocking against attacks.
+ * Mountain's iron-like blocking technique with minimal movement.
+ * Rigid, immovable defense that absorbs impact through solid structure.
+ *
+ * Duration: 400ms (Solid, deliberate block timing)
  *
  * @korean 간철방어애니메이션
  */
 export const GAN_IRON_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_iron_block", "간철방어")
-    .asDefense(TECHNIQUE_TIMING.FAST.total)
+    .asDefense(0.4)
     .withHighGuard()
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.peak +
-        TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .parry(0.15, "ease-out") // Minimal, rigid movement
+    .parry(0.15, "linear") // Hold solid like iron
+    .recover(0.1, "ease-in")
     .build();
 
 /**
@@ -866,20 +944,22 @@ export const GAN_MOUNTAIN_STANCE_LOCK_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gan Reversal Technique - 간역전기
+ * Gan Reversal Technique - 간역전기 (Mountain's Counter-Reversal)
  *
- * Mountain's reversal technique.
- * Turning defense into offense.
+ * Mountain's reversal technique that turns defense into powerful offense.
+ * Absorbs attack solidly, then delivers devastating counter with accumulated force.
+ *
+ * Duration: 650ms (Deliberate absorption then explosive counter)
  *
  * @korean 간역전기애니메이션
  */
 export const GAN_REVERSAL_TECHNIQUE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_reversal_technique", "간역전기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .parry(0.12)
-    .counterParry(0.1)
-    .counterStrike(0.15)
-    .recover(0.18)
+    .asAttack(0.65)
+    .parry(0.15, "ease-out") // Solid block
+    .chamber(0.15, "linear") // Mountain gathers power
+    .counterStrike(0.18, "ease-out") // Explosive reversal
+    .recover(0.17)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -952,18 +1032,33 @@ export const GON_GROUND_POUND_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gon Ankle Pick - 곤발목잡기
+ * Gon Ankle Pick - 곤발목잡기 (Earth's Grabbing Ankle Takedown)
  *
- * Earth's ankle pick takedown.
- * Low level attack on base.
+ * Earth's ankle pick takedown using grabbing and pulling technique.
+ * Gon (Earth) element: Grounding, control, downward force.
+ * Grabs ankle and pulls to unbalance opponent onto the ground.
+ *
+ * Korean Martial Arts: 발목잡아당기기 (Balmok Jaba-danggigi) - "Ankle Grab-Pull"
+ * - 낮은자세 (Low Stance): Drop to ground level
+ * - 발목잡기 (Ankle Grip): Secure hold on ankle
+ * - 당기기 (Pulling): Pull opponent's base out
+ * - 접지시키기 (Grounding): Force opponent to earth
+ *
+ * Contrasts with DarkOps achilles strike:
+ * - Gon: Grabbing, pulling, takedown (control/submission)
+ * - DarkOps: Striking, severing, disable (combat destruction)
+ *
+ * Low level attack on base for takedown.
  *
  * @korean 곤발목잡기애니메이션
  */
 export const GON_ANKLE_PICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_ankle_pick", "곤발목잡기")
-    .asAttack(0.5)
-    .sweep(0.18)
-    .recover(0.32)
+    .asAttack(0.55) // Slightly longer for grabbing motion
+    .duck(0.12) // Drop to low level (different from sweep)
+    .wristGrab(0.15) // Ankle grab motion (using wrist grab mechanic)
+    .shift(0.12, "ease-in") // Pull opponent off balance
+    .recover(0.16)
     .build();
 
 /**

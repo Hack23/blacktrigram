@@ -44,16 +44,17 @@ export const DARKOPS_SILENT_CAROTID_ANIMATION: SkeletalAnimation =
  * Precise strike to the jugular vein.
  * Causes immediate disorientation.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 580ms (Knife-hand to neck)
  *
  * @korean 경정맥타격애니메이션
  */
 export const DARKOPS_JUGULAR_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_jugular_strike", "경정맥타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .jugularStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Knife-hand to jugular
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.58)
+    .punchWindup(0.11) // Angle setup
+    .jugularStrike(0.17) // Knife-hand to jugular
+    .punchPeak(0.04)
+    .recover(0.26)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -66,16 +67,17 @@ export const DARKOPS_JUGULAR_STRIKE_ANIMATION: SkeletalAnimation =
  * Precision strike to motor nerve clusters.
  * Causes temporary limb paralysis.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 680ms (Deliberate nerve strike)
  *
  * @korean 신경마비애니메이션
  */
 export const DARKOPS_NERVE_PARALYSIS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_nerve_paralysis", "신경마비")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .nerveStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Precision nerve cluster strike
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.68)
+    .elbowChamber(0.14) // Careful positioning
+    .nerveStrike(0.21) // Precision nerve cluster strike
+    .punchPeak(0.05) // Hold for accuracy
+    .recover(0.28)
     .build();
 
 /**
@@ -207,14 +209,17 @@ export const DARKOPS_SOLAR_PLEXUS_PARALYZE_ANIMATION: SkeletalAnimation =
  * Strike to throat/trachea.
  * Causes airway obstruction.
  *
+ * Duration: 440ms (Fast throat strike)
+ *
  * @korean 인후타격애니메이션
  */
 export const DARKOPS_THROAT_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_throat_strike", "인후타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .throatStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Spear hand to trachea
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.44)
+    .elbowChamber(0.07) // Compact setup
+    .throatStrike(0.13) // Spear hand to trachea
+    .recover(0.24)
+    .withSpearHand("right")
     .build();
 
 /**
@@ -239,19 +244,28 @@ export const DARKOPS_LARYNX_CRUSH_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Temple Strike - 관자놀이타격
+ * Temple Strike - 관자놀이타격 (Dark Ops Precision Temple Elbow)
  *
- * Strike to temple bone.
- * Causes concussion and disorientation.
+ * Surgical precision elbow strike to temple bone.
+ * Assassin's technique for instant concussion and disorientation.
+ *
+ * Phases:
+ * 1. Setup (준비): 90ms - Careful positioning at perfect angle
+ * 2. Temple Strike (관자놀이): 140ms - Angled horizontal elbow to temple
+ * 3. Impact Hold (압박): 70ms - Brief hold at vital point
+ * 4. Withdraw (철수): 180ms - Smooth extraction
+ *
+ * Duration: 480ms (Precise, controlled assassination strike)
  *
  * @korean 관자놀이타격애니메이션
  */
 export const DARKOPS_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_temple_strike", "관자놀이타격")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .templeElbow(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Horizontal elbow to temple
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.48)
+    .elbowChamber(0.09) // 준비 - Careful angle setup
+    .templeElbow(0.14) // 관자놀이 - Precise angled elbow to temple
+    .templeElbow(0.07) // 압박 - Hold on vital point
+    .recover(0.18) // 철수 - Controlled withdrawal
     .build();
 
 /**
@@ -292,14 +306,17 @@ export const DARKOPS_EAR_STRIKE_ANIMATION: SkeletalAnimation =
  * Finger strike to eyes.
  * Causes temporary or permanent blindness.
  *
+ * Duration: 420ms (Very fast gouge)
+ *
  * @korean 안구압박애니메이션
  */
 export const DARKOPS_EYE_GOUGE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_eye_gouge", "안구압박")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .eyeGouge(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak) // Two-finger strike to eyes
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.42)
+    .punchWindup(0.07) // Minimal chamber
+    .eyeGouge(0.12) // Two-finger strike to eyes
+    .recover(0.23)
+    .withSpearHand("right") // Two-finger extension
     .build();
 
 /**
@@ -413,7 +430,21 @@ export const DARKOPS_TRIANGLE_CHOKE_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Achilles Sever - 아킬레스건절단
+ * Achilles Sever - 아킬레스건절단 (DarkOps Achilles Tendon Strike)
+ *
+ * Precise striking attack to achilles tendon.
+ * DarkOps: Combat disabling technique, permanent damage objective.
+ * Uses heel stomp or blade of foot to sever/rupture achilles.
+ *
+ * Korean Special Operations: 아킬레스건타격 (Achilles Tendon Strike)
+ * - 정밀조준 (Precise Targeting): Specific anatomical point
+ * - 하향강타 (Downward Strike): Stomping force to tendon
+ * - 절단의도 (Severing Intent): Rupture, not just pain
+ * - 보행불가 (Mobility Denial): Immediate walking disability
+ *
+ * Contrasts with Gon ankle pick:
+ * - DarkOps: Striking, severing, disable (combat destruction)
+ * - Gon: Grabbing, pulling, takedown (control/submission)
  *
  * Attack to Achilles tendon.
  * Causes inability to walk.
@@ -423,8 +454,9 @@ export const DARKOPS_TRIANGLE_CHOKE_ANIMATION: SkeletalAnimation =
 export const DARKOPS_ACHILLES_SEVER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_achilles_sever", "아킬레스건절단")
     .asAttack(0.5)
-    .sweep(0.18) // Low sweeping attack
-    .recover(0.32)
+    .axeKickRise(0.12) // Raise leg for downward strike (different from sweep)
+    .axeKickChop(0.15) // Precise downward heel strike to achilles
+    .recover(0.23)
     .build();
 
 /**
