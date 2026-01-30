@@ -358,7 +358,31 @@
 <a name='L293'></a><a href='#L293'>293</a>
 <a name='L294'></a><a href='#L294'>294</a>
 <a name='L295'></a><a href='#L295'>295</a>
-<a name='L296'></a><a href='#L296'>296</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -395,7 +419,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -636,7 +660,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -723,8 +771,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.02,
     critMultiplier: 1.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "defensive", // Type: shared category
+    animationId: "gan_rock_defense", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Solid blocking stance
-    animationType: AnimationType.BLOCK,
+    animationType: AnimationType.GAN_ROCK_DEFENSE_BLOCK,
     animationSpeed: 1.2,
     category: "light",
     range: "short",
@@ -763,8 +815,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.04,
     critMultiplier: 1.1,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "stance", // Type: shared category
+    animationId: "gan_immovable_stance", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Rooted defensive stance
-    animationType: AnimationType.BLOCK,
+    animationType: AnimationType.GAN_IMMOVABLE_STANCE,
     animationSpeed: 1.0,
     category: "light",
     range: "short",
@@ -801,6 +857,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "defensive", // Type: shared category
+    animationId: "gan_iron_block", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)
     animationType: AnimationType.IRON_BLOCK,
     animationSpeed: 0.85,
@@ -841,8 +901,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.26,
     critMultiplier: 2.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "counter", // Type: shared category
+    animationId: "gan_counter_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Powerful counter attack
-    animationType: AnimationType.COUNTER_STRIKE,
+    animationType: AnimationType.GAN_COUNTER_STRIKE,
     animationSpeed: 1.0,
     category: "special",
     range: "medium",
@@ -879,8 +943,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "counter", // Type: shared category
+    animationId: "gan_reversal_technique", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Reversal motion
-    animationType: AnimationType.COUNTER_STRIKE,
+    animationType: AnimationType.GAN_REVERSAL_TECHNIQUE,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -919,8 +987,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "grapple", // Type: shared category
+    animationId: "gan_mountain_stance_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Standing control position
-    animationType: AnimationType.GRAPPLE,
+    animationType: AnimationType.GAN_MOUNTAIN_STANCE_LOCK,
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
@@ -955,7 +1027,7 @@ export function <span class="fstat-no" title="function not covered" >getGanTechn
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-29T22:25:14.707Z
+                at 2026-01-30T14:53:27.922Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
