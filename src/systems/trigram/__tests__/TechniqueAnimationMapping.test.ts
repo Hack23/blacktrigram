@@ -27,13 +27,7 @@ describe('Technique-Animation Mapping Architecture', () => {
     const duplicates = Array.from(animationIdMap.entries())
       .filter(([, techIds]) => techIds.length > 1);
 
-    if (duplicates.length > 0) {
-      console.error('Duplicate AnimationIds found:');
-      duplicates.forEach(([animId, techIds]) => {
-        console.error(`  ${animId}: used by ${techIds.join(', ')}`);
-      });
-    }
-
+    // If duplicates exist, include details in assertion message
     expect(duplicates).toHaveLength(0);
   });
 
@@ -47,11 +41,7 @@ describe('Technique-Animation Mapping Architecture', () => {
       }
     });
 
-    if (mismatches.length > 0) {
-      console.error('AnimationId/TechniqueId mismatches:');
-      mismatches.forEach(msg => console.error(`  ${msg}`));
-    }
-
+    // If mismatches exist, include details in assertion message
     expect(mismatches).toHaveLength(0);
   });
 
@@ -75,27 +65,12 @@ describe('Technique-Animation Mapping Architecture', () => {
     // At least 50% of categories should be shared by multiple techniques
     const sharedPercentage = (categoriesWithMultipleTechniques / totalCategories) * 100;
 
-    console.log(`Animation categories: ${totalCategories}`);
-    console.log(`Categories shared by multiple techniques: ${categoriesWithMultipleTechniques} (${sharedPercentage.toFixed(1)}%)`);
-    console.log('\nCategory distribution:');
-    Array.from(categoryCounts.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .forEach(([cat, count]) => {
-        console.log(`  ${cat}: ${count} techniques`);
-      });
-
     // Should have reasonable category sharing (at least 30%)
     expect(sharedPercentage).toBeGreaterThanOrEqual(30);
   });
 
   it('should have all techniques with animationId defined', () => {
     const missing = techniques.filter(t => !t.animationId);
-    
-    if (missing.length > 0) {
-      console.error(`${missing.length} techniques missing animationId:`);
-      missing.slice(0, 10).forEach(t => console.error(`  - ${t.id}`));
-    }
 
     // Eventually all should have animationId, but allow migration period
     expect(missing.length).toBeLessThan(techniques.length * 0.5); // <50% missing
@@ -103,11 +78,6 @@ describe('Technique-Animation Mapping Architecture', () => {
 
   it('should have all techniques with animationCategory defined', () => {
     const missing = techniques.filter(t => !t.animationCategory);
-    
-    if (missing.length > 0) {
-      console.error(`${missing.length} techniques missing animationCategory:`);
-      missing.slice(0, 10).forEach(t => console.error(`  - ${t.id}`));
-    }
 
     // Eventually all should have category, but allow migration period
     expect(missing.length).toBeLessThan(techniques.length * 0.5); // <50% missing
@@ -127,11 +97,6 @@ describe('Technique-Animation Mapping Architecture', () => {
       }
     });
 
-    if (mismatches.length > 0) {
-      console.warn('AnimationCategory mismatches (may need review):');
-      mismatches.slice(0, 10).forEach(msg => console.warn(`  ${msg}`));
-    }
-
     // Allow some mismatches during migration, but flag for review
     expect(mismatches.length).toBeLessThan(techniques.length * 0.3); // <30% mismatch
   });
@@ -145,11 +110,6 @@ describe('Technique-Animation Mapping Architecture', () => {
         invalidCategories.push(`${tech.id}: invalid category "${tech.animationCategory}"`);
       }
     });
-
-    if (invalidCategories.length > 0) {
-      console.error('Techniques with invalid AnimationCategory:');
-      invalidCategories.forEach(msg => console.error(`  ${msg}`));
-    }
 
     expect(invalidCategories).toHaveLength(0);
   });

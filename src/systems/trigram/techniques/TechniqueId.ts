@@ -42,7 +42,7 @@ export enum TechniqueId {
   LI_FLAME_SPEAR = "li_flame_spear",
   LI_TEMPLE_STRIKE = "li_temple_strike",
   LI_NERVE_STRIKE = "li_nerve_strike",
-  LI_SIDE_KICK = "li_side_kick",
+  LI_SIDE_KICK = "li_sidekick",
   LI_PRESSURE_POINT = "li_pressure_point",
   LI_SOLAR_PLEXUS_STRIKE = "li_solar_plexus_strike",
 
