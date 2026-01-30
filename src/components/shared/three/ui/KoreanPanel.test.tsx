@@ -1,125 +1,154 @@
 /**
  * Tests for KoreanPanel component
+ * Tests the wrapper's delegation to BasePanel and default testId behavior
  */
 
-import { describe, expect, it } from "vitest";
-import { KOREAN_COLORS } from "../../../../types/constants";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { KoreanPanel } from "./KoreanPanel";
 
+// Mock @react-three/drei Html component
+vi.mock("@react-three/drei", () => ({
+  Html: ({ children, ...props }: { children: React.ReactNode }) => (
+    <div data-testid="html-overlay" {...props}>{children}</div>
+  ),
+}));
+
 describe("KoreanPanel", () => {
-  it("should be defined and importable", () => {
-    expect(KoreanPanel).toBeDefined();
-    expect(typeof KoreanPanel).toBe("function");
-  });
+  describe("Component Definition", () => {
+    it("should be defined and importable", () => {
+      expect(KoreanPanel).toBeDefined();
+      expect(typeof KoreanPanel).toBe("function");
+    });
 
-  it("should have proper display name", () => {
-    expect(KoreanPanel.displayName).toBe("KoreanPanel");
-  });
-
-  it("should accept TypeScript props correctly", () => {
-    // TypeScript compilation test
-    const validProps = {
-      children: "Test content",
-      position: [0, 0, 0] as [number, number, number],
-      width: 300,
-      height: 200,
-      padding: 16,
-      variant: "default" as const,
-    };
-
-    expect(validProps.width).toBe(300);
-    expect(validProps.height).toBe(200);
-    expect(validProps.padding).toBe(16);
-    expect(validProps.variant).toBe("default");
-  });
-
-  it("should support all panel variants", () => {
-    const variants: Array<"default" | "bordered" | "elevated"> = [
-      "default",
-      "bordered",
-      "elevated",
-    ];
-
-    variants.forEach((variant) => {
-      const props = {
-        children: "Test",
-        variant,
-      };
-
-      expect(props.variant).toBe(variant);
+    it("should have proper display name", () => {
+      expect(KoreanPanel.displayName).toBe("KoreanPanel");
     });
   });
 
-  it("should accept various children types", () => {
-    const childrenTypes = [
-      "Simple text",
-      { type: "div", props: { children: "Element" } },
-      ["Multiple", "children"],
-    ];
+  describe("Wrapper Behavior", () => {
+    it("should delegate to BasePanel with default testId", () => {
+      render(<KoreanPanel>Test content</KoreanPanel>);
 
-    childrenTypes.forEach((children) => {
-      const props = {
-        children,
-      };
+      // Verify default testId is applied
+      expect(screen.getByTestId("korean-panel")).toBeInTheDocument();
+      
+      // Verify BasePanel functionality works
+      expect(screen.getByText("Test content")).toBeInTheDocument();
+    });
 
-      expect(props.children).toBeDefined();
+    it("should use custom testId when provided", () => {
+      render(<KoreanPanel testId="custom-panel">Content</KoreanPanel>);
+
+      expect(screen.getByTestId("custom-panel")).toBeInTheDocument();
+      expect(screen.queryByTestId("korean-panel")).not.toBeInTheDocument();
+    });
+
+    it("should pass all props through to BasePanel", () => {
+      render(
+        <KoreanPanel
+          variant="bordered"
+          width={300}
+          height={200}
+          padding={20}
+        >
+          Styled content
+        </KoreanPanel>
+      );
+
+      expect(screen.getByTestId("korean-panel")).toBeInTheDocument();
+      expect(screen.getByText("Styled content")).toBeInTheDocument();
+    });
+
+    it("should support all BasePanel variants", () => {
+      const variants: Array<"default" | "bordered" | "elevated"> = [
+        "default",
+        "bordered",
+        "elevated",
+      ];
+
+      variants.forEach((variant) => {
+        const { unmount } = render(
+          <KoreanPanel variant={variant} testId={`panel-${variant}`}>
+            {variant} content
+          </KoreanPanel>
+        );
+
+        expect(screen.getByTestId(`panel-${variant}`)).toBeInTheDocument();
+        expect(screen.getByText(`${variant} content`)).toBeInTheDocument();
+        unmount();
+      });
     });
   });
 
-  it("should support custom dimensions", () => {
-    const props = {
-      children: "Test",
-      width: "100%",
-      height: "auto",
-    };
+  describe("Children Handling", () => {
+    it("should render simple text children", () => {
+      render(<KoreanPanel>Simple text</KoreanPanel>);
 
-    expect(props.width).toBe("100%");
-    expect(props.height).toBe("auto");
-  });
+      expect(screen.getByText("Simple text")).toBeInTheDocument();
+    });
 
-  it("should support custom padding", () => {
-    const props = {
-      children: "Test",
-      padding: 24,
-    };
+    it("should render JSX element children", () => {
+      render(
+        <KoreanPanel>
+          <div>JSX element</div>
+        </KoreanPanel>
+      );
 
-    expect(props.padding).toBe(24);
-  });
+      expect(screen.getByText("JSX element")).toBeInTheDocument();
+    });
 
-  it("should use Korean colors for theming", () => {
-    const colors = [
-      KOREAN_COLORS.UI_BACKGROUND_DARK,
-      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-      KOREAN_COLORS.PRIMARY_CYAN,
-      KOREAN_COLORS.ACCENT_GOLD,
-    ];
+    it("should render multiple children", () => {
+      render(
+        <KoreanPanel>
+          <div>First</div>
+          <div>Second</div>
+        </KoreanPanel>
+      );
 
-    colors.forEach((color) => {
-      expect(typeof color).toBe("number");
+      expect(screen.getByText("First")).toBeInTheDocument();
+      expect(screen.getByText("Second")).toBeInTheDocument();
+    });
+
+    it("should support nested KoreanPanels", () => {
+      render(
+        <KoreanPanel testId="outer">
+          <h1>Outer</h1>
+          <KoreanPanel testId="inner">
+            <h2>Inner</h2>
+          </KoreanPanel>
+        </KoreanPanel>
+      );
+
+      expect(screen.getByTestId("outer")).toBeInTheDocument();
+      expect(screen.getByTestId("inner")).toBeInTheDocument();
+      expect(screen.getByText("Outer")).toBeInTheDocument();
+      expect(screen.getByText("Inner")).toBeInTheDocument();
     });
   });
 
-  it("should support custom position", () => {
-    const position: [number, number, number] = [5, 10, 15];
-    const props = {
-      children: "Test",
-      position,
-    };
+  describe("Korean Theming Compatibility", () => {
+    it("should work with Korean content", () => {
+      render(
+        <KoreanPanel>
+          <h1>한글 제목</h1>
+          <p>한글 설명</p>
+        </KoreanPanel>
+      );
 
-    expect(props.position).toEqual([5, 10, 15]);
-  });
+      expect(screen.getByText("한글 제목")).toBeInTheDocument();
+      expect(screen.getByText("한글 설명")).toBeInTheDocument();
+    });
 
-  it("should support custom test ID", () => {
-    const props = {
-      children: "Test",
-      testId: "custom-panel-id",
-    };
+    it("should work with bilingual content", () => {
+      render(
+        <KoreanPanel>
+          <span>한글 | English</span>
+        </KoreanPanel>
+      );
 
-    expect(props.testId).toBe("custom-panel-id");
-  });
-
-  it("should verify @react-three/drei Html is available", async () => {
-    const drei = await import("@react-three/drei");
-    expect(drei.Html).toBeDefined();
+      expect(screen.getByText("한글 | English")).toBeInTheDocument();
+    });
   });
 });
+
