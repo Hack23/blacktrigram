@@ -67,7 +67,7 @@ describe("Character Models - Visual Regression Tests", () => {
         cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
           .should("exist")
           .invoke("text")
-          .should("include", stance.name)
+          .should("include", stance.name);
         
         // Take screenshot for visual comparison
         cy.get('[data-testid="combat-screen"]')
