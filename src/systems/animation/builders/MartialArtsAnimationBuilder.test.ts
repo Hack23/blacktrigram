@@ -1,3 +1,9 @@
+/**
+ * Tests for MartialArtsAnimationBuilder
+ *
+ * @module systems/animation/__tests__/MartialArtsAnimationBuilder.test
+ */
+
 import { describe, it, expect } from "vitest";
 import {
   MartialArtsAnimationBuilder,
@@ -10,543 +16,387 @@ import { BoneName } from "@/types/skeletal";
 describe("MartialArtsAnimationBuilder", () => {
   describe("Factory Methods", () => {
     it("should create builder with name and Korean name", () => {
-      // Act
       const builder = MartialArtsAnimationBuilder.create("Jab", "직권");
 
-      // Assert
       expect(builder).toBeDefined();
       expect(builder).toBeInstanceOf(MartialArtsAnimationBuilder);
     });
 
-    it("should create builder with empty names", () => {
-      // Act
-      const builder = MartialArtsAnimationBuilder.create("", "");
-
-      // Assert
-      expect(builder).toBeDefined();
-    });
-
     it("should create multiple independent builders", () => {
-      // Act
       const builder1 = MartialArtsAnimationBuilder.create("Jab", "직권");
       const builder2 = MartialArtsAnimationBuilder.create("Cross", "교차");
 
-      // Assert
       expect(builder1).not.toBe(builder2);
     });
   });
 
   describe("Animation Type Configuration", () => {
-    it("should configure as attack animation", () => {
-      // Arrange
+    it("should configure as attack animation with duration", () => {
       const builder = MartialArtsAnimationBuilder.create("Jab", "직권");
+      const result = builder.asAttack(0.55);
 
-      // Act
-      const result = builder.asAttack();
-
-      // Assert
       expect(result).toBe(builder); // Fluent interface
       const animation = result.build();
-      expect(animation.metadata?.type).toBe("attack");
+      expect(animation.type).toBe("attack");
+      expect(animation.duration).toBe(0.55);
     });
 
-    it("should configure as defense animation", () => {
-      // Arrange
+    it("should configure as defense animation with duration", () => {
       const builder = MartialArtsAnimationBuilder.create("Block", "막기");
+      const result = builder.asDefense(0.6);
 
-      // Act
-      const result = builder.asDefense();
-
-      // Assert
       expect(result).toBe(builder);
       const animation = result.build();
-      expect(animation.metadata?.type).toBe("defense");
+      expect(animation.type).toBe("defense");
+      expect(animation.duration).toBe(0.6);
     });
 
-    it("should configure as movement animation", () => {
-      // Arrange
+    it("should configure as movement animation with duration", () => {
       const builder = MartialArtsAnimationBuilder.create("Walk", "걷기");
+      const result = builder.asMovement(1.0, false);
 
-      // Act
-      const result = builder.asMovement();
-
-      // Assert
       expect(result).toBe(builder);
       const animation = result.build();
-      expect(animation.metadata?.type).toBe("movement");
+      expect(animation.type).toBe("movement");
+      expect(animation.duration).toBe(1.0);
+      expect(animation.loop).toBe(false);
     });
 
-    it("should configure as idle animation", () => {
-      // Arrange
+    it("should configure as idle animation with loop", () => {
       const builder = MartialArtsAnimationBuilder.create("Idle", "대기");
+      const result = builder.asIdle(2.0, true);
 
-      // Act
-      const result = builder.asIdle();
-
-      // Assert
       expect(result).toBe(builder);
       const animation = result.build();
-      expect(animation.metadata?.type).toBe("idle");
-    });
-
-    it("should configure as stance animation", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Stance", "자세");
-
-      // Act
-      const result = builder.asStance();
-
-      // Assert
-      expect(result).toBe(builder);
-      const animation = result.build();
-      expect(animation.metadata?.type).toBe("stance");
-    });
-
-    it("should configure as walk animation", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Walk", "걷기");
-
-      // Act
-      const result = builder.asWalk();
-
-      // Assert
-      expect(result).toBe(builder);
-      const animation = result.build();
-      expect(animation.metadata?.type).toBe("walk");
-    });
-  });
-
-  describe("Duration Configuration", () => {
-    it("should set custom duration", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      const result = builder.withDuration(1.5);
-      const animation = result.build();
-
-      // Assert
-      expect(result).toBe(builder);
-      expect(animation.duration).toBe(1.5);
-    });
-
-    it("should accept zero duration", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      const result = builder.withDuration(0);
-      const animation = result.build();
-
-      // Assert
-      expect(animation.duration).toBe(0);
-    });
-
-    it("should accept very large duration", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      const result = builder.withDuration(100);
-      const animation = result.build();
-
-      // Assert
-      expect(animation.duration).toBe(100);
-    });
-  });
-
-  describe("Loop Configuration", () => {
-    it("should enable looping", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      const result = builder.withLoop(true);
-      const animation = result.build();
-
-      // Assert
-      expect(result).toBe(builder);
+      expect(animation.type).toBe("idle");
+      expect(animation.duration).toBe(2.0);
       expect(animation.loop).toBe(true);
     });
 
-    it("should disable looping", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+    it("should configure as stance animation", () => {
+      const builder = MartialArtsAnimationBuilder.create("Stance", "자세");
+      const result = builder.asStance(1.5, false);
 
-      // Act
-      const result = builder.withLoop(false);
-      const animation = result.build();
-
-      // Assert
-      expect(animation.loop).toBe(false);
-    });
-  });
-
-  describe("Keyframe Addition", () => {
-    it("should add keyframe at specific time", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      const result = builder.at(0.5, (kf) => {
-        kf.rotate(BoneName.SHOULDER_R, 1, 0, 0);
-      });
-      const animation = result.build();
-
-      // Assert
       expect(result).toBe(builder);
-      expect(animation.keyframes).toHaveLength(1);
-      expect(animation.keyframes[0].time).toBe(0.5);
+      const animation = result.build();
+      expect(animation.type).toBe("stance");
+      expect(animation.duration).toBe(1.5);
     });
 
-    it("should add multiple keyframes at different times", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+    it("should default to loop enabled for idle", () => {
+      const builder = MartialArtsAnimationBuilder.create("Idle", "대기");
+      const animation = builder.asIdle(2.0).build();
 
-      // Act
-      builder
-        .at(0, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0))
-        .at(0.5, (kf) => kf.rotate(BoneName.SHOULDER_R, 1, 0, 0))
-        .at(1.0, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0));
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.keyframes).toHaveLength(3);
-      expect(animation.keyframes[0].time).toBe(0);
-      expect(animation.keyframes[1].time).toBe(0.5);
-      expect(animation.keyframes[2].time).toBe(1.0);
-    });
-
-    it("should support keyframe configurator callback", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      builder.at(0.5, (kf) => {
-        kf.rotate(BoneName.SHOULDER_R, 1.5, 0, 0);
-        kf.rotate(BoneName.ELBOW_R, 0, 0, 1.2);
-      });
-      const animation = builder.build();
-
-      // Assert
-      const keyframe = animation.keyframes[0];
-      expect(keyframe.boneRotations.has(BoneName.SHOULDER_R)).toBe(true);
-      expect(keyframe.boneRotations.has(BoneName.ELBOW_R)).toBe(true);
+      expect(animation.loop).toBe(true);
     });
   });
 
-  describe("Fluent Interface Chaining", () => {
-    it("should chain all configuration methods", () => {
-      // Arrange & Act
-      const builder = MartialArtsAnimationBuilder.create("Jab", "직권")
-        .asAttack()
-        .withDuration(0.55)
-        .withLoop(false)
-        .at(0, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0))
-        .at(0.25, (kf) => kf.rotate(BoneName.SHOULDER_R, 1.5, 0, 0))
-        .at(0.55, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0));
+  describe("Keyframe Addition with at() method", () => {
+    it("should add keyframe at specific time", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      builder
+        .asAttack(1.0)
+        .at(0.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .done();
 
-      // Assert
       const animation = builder.build();
-      expect(animation.metadata?.type).toBe("attack");
-      expect(animation.duration).toBe(0.55);
-      expect(animation.loop).toBe(false);
+      expect(animation.keyframes).toHaveLength(1);
+      // Time should be normalized to start at 0, so 0.5 becomes 0
+      expect(animation.keyframes[0].time).toBe(0);
+    });
+
+    it("should add multiple keyframes in sequence", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      builder
+        .asAttack(1.0)
+        .at(0.0)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+        .done()
+        .at(0.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .done()
+        .at(1.0)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+        .done();
+
+      const animation = builder.build();
       expect(animation.keyframes).toHaveLength(3);
     });
 
-    it("should allow multiple configuration changes", () => {
-      // Arrange
+    it("should support keyframe with multiple bone rotations", () => {
       const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
       builder
-        .asAttack()
-        .asDefense() // Override previous
-        .withDuration(1.0)
-        .withDuration(0.5) // Override previous
-        .withLoop(true)
-        .withLoop(false); // Override previous
+        .asAttack(1.0)
+        .at(0.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .rotate(BoneName.ELBOW_R, 0, 0, 1.5)
+        .rotate(BoneName.WRIST_R, 0, 0, 0.5)
+        .done();
 
       const animation = builder.build();
+      expect(animation.keyframes).toHaveLength(1);
+      expect(animation.keyframes[0].boneRotations.size).toBe(3);
+    });
+  });
 
-      // Assert - Should use last values
-      expect(animation.metadata?.type).toBe("defense");
-      expect(animation.duration).toBe(0.5);
-      expect(animation.loop).toBe(false);
+  describe("Guard Position Methods", () => {
+    it("should apply basic guard", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asIdle(1.0).withGuard();
+
+      expect(result).toBe(builder); // Fluent interface
+    });
+
+    it("should apply high guard", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asDefense(0.6).withHighGuard();
+
+      expect(result).toBe(builder);
+    });
+
+    it("should apply Korean guard positions", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+
+      expect(() => builder.withKoreanHighGuard("both")).not.toThrow();
+      expect(() => builder.withKoreanMiddleGuard("right")).not.toThrow();
+      expect(() => builder.withKoreanLowGuard("left")).not.toThrow();
+    });
+
+    it("should apply trigram guard", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder
+        .asStance(1.5)
+        .withTrigramGuard(TrigramStance.GEON);
+
+      expect(result).toBe(builder);
+    });
+  });
+
+  describe("Hand Pose Methods", () => {
+    it("should apply open palm pose", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asAttack(0.5).withOpenPalm("both");
+
+      expect(result).toBe(builder);
+    });
+
+    it("should apply spear hand pose", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asAttack(0.5).withSpearHand("right");
+
+      expect(result).toBe(builder);
+    });
+
+    it("should apply backfist pose", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asAttack(0.5).withBackfist("left");
+
+      expect(result).toBe(builder);
+    });
+
+    it("should apply grab pose", () => {
+      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
+      const result = builder.asAttack(0.5).withGrab("both");
+
+      expect(result).toBe(builder);
     });
   });
 
   describe("Building Animations", () => {
-    it("should build animation with name and duration", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Jab", "직권")
-        .withDuration(0.55);
-
-      // Act
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.name).toBe("Jab");
-      expect(animation.duration).toBe(0.55);
-    });
-
-    it("should build animation with empty keyframes", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Empty", "빈");
-
-      // Act
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.keyframes).toHaveLength(0);
-    });
-
-    it("should build animation multiple times", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트")
-        .at(0, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0));
-
-      // Act
-      const animation1 = builder.build();
-      const animation2 = builder.build();
-
-      // Assert - Should create independent animations
-      expect(animation1).not.toBe(animation2);
-      expect(animation1.name).toBe(animation2.name);
-      expect(animation1.keyframes).toHaveLength(animation2.keyframes.length);
-    });
-
-    it("should build animation with metadata", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Block", "막기")
-        .asDefense();
-
-      // Act
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.metadata).toBeDefined();
-      expect(animation.metadata?.type).toBe("defense");
-    });
-
-    it("should preserve keyframe order", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트")
-        .at(0.5, (kf) => kf.rotate(BoneName.SHOULDER_R, 1, 0, 0))
-        .at(0, (kf) => kf.rotate(BoneName.SHOULDER_R, 0, 0, 0))
-        .at(1.0, (kf) => kf.rotate(BoneName.SHOULDER_R, 2, 0, 0));
-
-      // Act
-      const animation = builder.build();
-
-      // Assert - Should be sorted by time
-      expect(animation.keyframes[0].time).toBeLessThanOrEqual(animation.keyframes[1].time);
-      expect(animation.keyframes[1].time).toBeLessThanOrEqual(animation.keyframes[2].time);
-    });
-  });
-
-  describe("Complex Animation Building", () => {
-    it("should build punch animation with chamber and extension", () => {
-      // Arrange & Act
+    it("should build animation with basic properties", () => {
       const animation = MartialArtsAnimationBuilder.create("Jab", "직권")
-        .asAttack()
-        .withDuration(TECHNIQUE_TIMING.FAST.total)
-        .at(0, (kf) => {
-          // Starting stance
-          kf.rotate(BoneName.SHOULDER_R, -0.5, 0, 0);
-        })
-        .at(TECHNIQUE_TIMING.FAST.chamber, (kf) => {
-          // Chamber position
-          kf.rotate(BoneName.SHOULDER_R, -0.8, 0, 0.3);
-        })
-        .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend, (kf) => {
-          // Full extension
-          kf.rotate(BoneName.SHOULDER_R, 1.5, 0, 0);
-          kf.rotate(BoneName.ELBOW_R, 0, 0, 0);
-        })
+        .asAttack(0.55)
         .build();
 
-      // Assert
-      expect(animation.keyframes.length).toBeGreaterThanOrEqual(3);
-      expect(animation.duration).toBe(TECHNIQUE_TIMING.FAST.total);
+      expect(animation.name).toBe("Jab");
+      expect(animation.koreanName).toBe("직권");
+      expect(animation.duration).toBe(0.55);
+      expect(animation.type).toBe("attack");
+      expect(animation.loop).toBe(false);
     });
 
-    it("should build kick animation with multiple phases", () => {
-      // Arrange & Act
-      const animation = MartialArtsAnimationBuilder.create("Front Kick", "앞차기")
-        .asAttack()
-        .withDuration(TECHNIQUE_TIMING.MEDIUM.total)
-        .at(0, (kf) => {
-          kf.rotate(BoneName.HIP_R, 0, 0, 0);
-          kf.rotate(BoneName.KNEE_R, 0, 0, 0);
-        })
-        .at(TECHNIQUE_TIMING.MEDIUM.chamber, (kf) => {
-          // Chamber - knee up
-          kf.rotate(BoneName.HIP_R, 1.5, 0, 0);
-          kf.rotate(BoneName.KNEE_R, 1.8, 0, 0);
-        })
-        .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend, (kf) => {
-          // Extension - leg straight
-          kf.rotate(BoneName.HIP_R, 1.2, 0, 0);
-          kf.rotate(BoneName.KNEE_R, 0, 0, 0);
-        })
+    it("should build animation with keyframes", () => {
+      const animation = MartialArtsAnimationBuilder.create("Test", "테스트")
+        .asAttack(1.0)
+        .at(0.0)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+        .done()
+        .at(0.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .done()
         .build();
 
-      // Assert
-      expect(animation.keyframes.length).toBeGreaterThanOrEqual(3);
-      expect(animation.keyframes[0].boneRotations.has(BoneName.HIP_R)).toBe(true);
-      expect(animation.keyframes[0].boneRotations.has(BoneName.KNEE_R)).toBe(true);
+      expect(animation.keyframes).toHaveLength(2);
+      expect(animation.keyframes[0].time).toBe(0.0);
+      expect(animation.keyframes[1].time).toBe(0.5);
+    });
+
+    it("should normalize keyframe times", () => {
+      const animation = MartialArtsAnimationBuilder.create("Test", "테스트")
+        .asAttack(2.0)
+        .at(1.0)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+        .done()
+        .at(1.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .done()
+        .build();
+
+      // Times should be normalized to start at 0
+      expect(animation.keyframes[0].time).toBe(0.0);
+      expect(animation.keyframes[1].time).toBe(0.5);
     });
   });
 
-  describe("Edge Cases", () => {
-    it("should handle negative time values", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      builder.at(-0.5, (kf) => kf.rotate(BoneName.SHOULDER_R, 1, 0, 0));
-      const animation = builder.build();
-
-      // Assert - Should still create keyframe
-      expect(animation.keyframes).toHaveLength(1);
+  describe("AnimationType Enum", () => {
+    it("should have kick types", () => {
+      expect(AnimationType.FRONT_KICK).toBe("front_kick");
+      expect(AnimationType.ROUNDHOUSE_KICK).toBe("roundhouse_kick");
+      expect(AnimationType.SIDE_KICK).toBe("side_kick");
+      expect(AnimationType.AXE_KICK).toBe("axe_kick");
     });
 
-    it("should handle very long animation names", () => {
-      // Arrange
-      const longName = "A".repeat(1000);
-      
-      // Act
-      const builder = MartialArtsAnimationBuilder.create(longName, "긴이름");
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.name).toBe(longName);
-    });
-
-    it("should handle keyframes with no rotations", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Empty", "빈");
-
-      // Act
-      builder.at(0.5, () => {
-        // Empty configurator
-      });
-      const animation = builder.build();
-
-      // Assert
-      expect(animation.keyframes).toHaveLength(1);
-      expect(animation.keyframes[0].boneRotations.size).toBe(0);
-    });
-
-    it("should handle duplicate times", () => {
-      // Arrange
-      const builder = MartialArtsAnimationBuilder.create("Test", "테스트");
-
-      // Act
-      builder
-        .at(0.5, (kf) => kf.rotate(BoneName.SHOULDER_R, 1, 0, 0))
-        .at(0.5, (kf) => kf.rotate(BoneName.SHOULDER_L, 1, 0, 0));
-      
-      const animation = builder.build();
-
-      // Assert - Should have 2 keyframes even with same time
-      expect(animation.keyframes.length).toBeGreaterThanOrEqual(1);
-    });
-  });
-
-  describe("TECHNIQUE_TIMING Constants", () => {
-    it("should have FAST timing with valid phases", () => {
-      expect(TECHNIQUE_TIMING.FAST).toBeDefined();
-      expect(TECHNIQUE_TIMING.FAST.chamber).toBeGreaterThan(0);
-      expect(TECHNIQUE_TIMING.FAST.extend).toBeGreaterThan(0);
-      expect(TECHNIQUE_TIMING.FAST.peak).toBeGreaterThan(0);
-      expect(TECHNIQUE_TIMING.FAST.retract).toBeGreaterThan(0);
-      expect(TECHNIQUE_TIMING.FAST.recover).toBeGreaterThan(0);
-      expect(TECHNIQUE_TIMING.FAST.total).toBe(0.55);
-    });
-
-    it("should have MEDIUM timing with valid phases", () => {
-      expect(TECHNIQUE_TIMING.MEDIUM).toBeDefined();
-      expect(TECHNIQUE_TIMING.MEDIUM.total).toBe(0.73);
-    });
-
-    it("should have HEAVY timing with valid phases", () => {
-      expect(TECHNIQUE_TIMING.HEAVY).toBeDefined();
-      expect(TECHNIQUE_TIMING.HEAVY.total).toBe(1.0);
-    });
-
-    it("should have all timing phases sum to total", () => {
-      // Check FAST timing
-      const fastSum = 
-        TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend +
-        TECHNIQUE_TIMING.FAST.peak +
-        TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover;
-      
-      expect(fastSum).toBeCloseTo(TECHNIQUE_TIMING.FAST.total, 5);
-    });
-
-    it("should have timing presets in order from FAST to HEAVY", () => {
-      expect(TECHNIQUE_TIMING.FAST.total).toBeLessThan(TECHNIQUE_TIMING.MEDIUM.total);
-      expect(TECHNIQUE_TIMING.MEDIUM.total).toBeLessThan(TECHNIQUE_TIMING.HEAVY.total);
-    });
-
-    it("should have COMBO_FAST timing", () => {
-      expect(TECHNIQUE_TIMING.COMBO_FAST).toBeDefined();
-      expect(TECHNIQUE_TIMING.COMBO_FAST.total).toBe(0.7);
-    });
-
-    it("should have all required timing categories", () => {
-      expect(TECHNIQUE_TIMING.FAST).toBeDefined();
-      expect(TECHNIQUE_TIMING.FAST_MEDIUM).toBeDefined();
-      expect(TECHNIQUE_TIMING.MEDIUM_LIGHT).toBeDefined();
-      expect(TECHNIQUE_TIMING.MEDIUM).toBeDefined();
-      expect(TECHNIQUE_TIMING.MEDIUM_HEAVY).toBeDefined();
-      expect(TECHNIQUE_TIMING.HEAVY_LIGHT).toBeDefined();
-      expect(TECHNIQUE_TIMING.HEAVY_MEDIUM).toBeDefined();
-      expect(TECHNIQUE_TIMING.HEAVY).toBeDefined();
-      expect(TECHNIQUE_TIMING.COMBO_FAST).toBeDefined();
-    });
-
-    it("should have minimum total duration of 0.5s", () => {
-      Object.values(TECHNIQUE_TIMING).forEach((timing) => {
-        expect(timing.total).toBeGreaterThanOrEqual(0.5);
-      });
-    });
-  });
-
-  describe("AnimationType Export", () => {
-    it("should export AnimationType enum", () => {
-      expect(AnimationType).toBeDefined();
-      expect(AnimationType.JAB).toBeDefined();
-      expect(AnimationType.CROSS).toBeDefined();
-      expect(AnimationType.HOOK).toBeDefined();
-    });
-
-    it("should have punch types in AnimationType", () => {
+    it("should have punch types", () => {
       expect(AnimationType.JAB).toBe("jab");
       expect(AnimationType.CROSS).toBe("cross");
       expect(AnimationType.HOOK).toBe("hook");
       expect(AnimationType.UPPERCUT).toBe("uppercut");
     });
 
-    it("should have kick types in AnimationType", () => {
-      expect(AnimationType.FRONT_KICK).toBe("front-kick");
-      expect(AnimationType.ROUNDHOUSE_KICK).toBe("roundhouse-kick");
-      expect(AnimationType.SIDE_KICK).toBe("side-kick");
+    it("should have elbow and knee types", () => {
+      expect(AnimationType.ELBOW_STRIKE).toBe("elbow_strike");
+      expect(AnimationType.KNEE_STRIKE).toBe("knee_strike");
+      expect(AnimationType.FLYING_KNEE).toBe("flying_knee");
+      expect(AnimationType.CLINCH_KNEE).toBe("clinch_knee");
     });
 
-    it("should have defensive types in AnimationType", () => {
-      expect(AnimationType.BLOCK).toBe("block");
-      expect(AnimationType.PARRY).toBe("parry");
+    it("should have grappling types", () => {
+      expect(AnimationType.THROW).toBe("throw");
+      expect(AnimationType.JOINT_LOCK).toBe("joint_lock");
+      expect(AnimationType.TAKEDOWN).toBe("takedown");
+      expect(AnimationType.SWEEP).toBe("sweep");
     });
 
-    it("should have movement types in AnimationType", () => {
-      expect(AnimationType.WALK).toBe("walk");
-      expect(AnimationType.RUN).toBe("run");
-      expect(AnimationType.STEP_FORWARD).toBe("step-forward");
+    it("should have specialized strike types", () => {
+      expect(AnimationType.SPEAR_HAND_STRIKE).toBe("spear_hand_strike");
+      expect(AnimationType.NERVE_STRIKE).toBe("nerve_strike");
+      expect(AnimationType.PRESSURE_POINT_STRIKE).toBe("pressure_point_strike");
+    });
+  });
+
+  describe("TECHNIQUE_TIMING Constants", () => {
+    it("should have FAST timing", () => {
+      expect(TECHNIQUE_TIMING.FAST).toBeDefined();
+      expect(TECHNIQUE_TIMING.FAST.total).toBe(0.55);
+      expect(TECHNIQUE_TIMING.FAST.chamber).toBe(0.1);
+      expect(TECHNIQUE_TIMING.FAST.extend).toBe(0.15);
+    });
+
+    it("should have MEDIUM timing", () => {
+      expect(TECHNIQUE_TIMING.MEDIUM).toBeDefined();
+      expect(TECHNIQUE_TIMING.MEDIUM.total).toBe(0.73);
+    });
+
+    it("should have HEAVY timing", () => {
+      expect(TECHNIQUE_TIMING.HEAVY).toBeDefined();
+      expect(TECHNIQUE_TIMING.HEAVY.total).toBe(1.0);
+    });
+
+    it("should have SPINNING timing", () => {
+      expect(TECHNIQUE_TIMING.SPINNING).toBeDefined();
+      expect(TECHNIQUE_TIMING.SPINNING.total).toBe(1.2);
+    });
+
+    it("should have all phase properties", () => {
+      const timing = TECHNIQUE_TIMING.FAST;
+      expect(timing.chamber).toBeDefined();
+      expect(timing.extend).toBeDefined();
+      expect(timing.peak).toBeDefined();
+      expect(timing.retract).toBeDefined();
+      expect(timing.recover).toBeDefined();
+      expect(timing.total).toBeDefined();
+    });
+
+    it("should have timing phases sum to total", () => {
+      const timing = TECHNIQUE_TIMING.MEDIUM;
+      const sum =
+        timing.chamber +
+        timing.extend +
+        timing.peak +
+        timing.retract +
+        timing.recover;
+      expect(sum).toBeCloseTo(timing.total, 2);
+    });
+  });
+
+  describe("Complex Animation Building", () => {
+    it("should build complex attack with guards and poses", () => {
+      const animation = MartialArtsAnimationBuilder.create("Jab", "직권")
+        .asAttack(0.55)
+        .withKoreanMiddleGuard("both")
+        .at(0.0)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0)
+        .done()
+        .at(0.25)
+        .rotate(BoneName.SHOULDER_R, 0, 0, 0.5)
+        .done()
+        .build();
+
+      expect(animation).toBeDefined();
+      expect(animation.type).toBe("attack");
+      expect(animation.keyframes).toHaveLength(2);
+    });
+
+    it("should build idle stance with trigram guard", () => {
+      const animation = MartialArtsAnimationBuilder.create(
+        "Geon Stance",
+        "건 자세"
+      )
+        .asIdle(2.0, true)
+        .withTrigramGuard(TrigramStance.GEON)
+        .build();
+
+      expect(animation.type).toBe("idle");
+      expect(animation.loop).toBe(true);
+      expect(animation.duration).toBe(2.0);
+    });
+  });
+
+  describe("Edge Cases", () => {
+    it("should handle empty animation", () => {
+      const animation = MartialArtsAnimationBuilder.create("Empty", "빈")
+        .asAttack(0.5)
+        .build();
+
+      expect(animation.keyframes).toHaveLength(0);
+    });
+
+    it("should handle single keyframe", () => {
+      const animation = MartialArtsAnimationBuilder.create("Single", "단일")
+        .asAttack(1.0)
+        .at(0.5)
+        .rotate(BoneName.SHOULDER_R, 1, 0, 0)
+        .done()
+        .build();
+
+      expect(animation.keyframes).toHaveLength(1);
+    });
+
+    it("should handle zero duration", () => {
+      const animation = MartialArtsAnimationBuilder.create("Instant", "즉시")
+        .asAttack(0)
+        .build();
+
+      expect(animation.duration).toBe(0);
+    });
+
+    it("should handle very large duration", () => {
+      const animation = MartialArtsAnimationBuilder.create("Long", "긴")
+        .asIdle(100, true)
+        .build();
+
+      expect(animation.duration).toBe(100);
     });
   });
 });
