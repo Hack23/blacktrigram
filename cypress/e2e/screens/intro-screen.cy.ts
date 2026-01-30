@@ -1,5 +1,8 @@
 import {
   setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyScreenElement,
   verifyCanvasVisible,
   verifyCanvasWithDimensions,
@@ -28,6 +31,13 @@ import {
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
     setupScreen();
+  });
+
+  afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   describe("UI Overlay Verification", () => {

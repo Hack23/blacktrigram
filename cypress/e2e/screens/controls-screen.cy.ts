@@ -1,6 +1,8 @@
 import {
   setupScreen,
   teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyScreenElement,
   verifyCanvasVisible,
   verifyElementConditional,
@@ -29,6 +31,9 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
     teardownScreen();
   });
 

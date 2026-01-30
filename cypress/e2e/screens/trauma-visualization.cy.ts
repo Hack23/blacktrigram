@@ -1,6 +1,8 @@
 import {
   setupScreen,
   teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyCombatScreenReady,
   verifyActiveWebGLRendering,
   executeCombatAttacks,
@@ -27,6 +29,9 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
     teardownScreen();
   });
 

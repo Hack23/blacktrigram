@@ -1,6 +1,8 @@
 import {
   setupScreen,
   teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyCombatScreenReady,
   verifyCanvasVisible,
   changeStance,
@@ -32,6 +34,9 @@ describe("Mobile Performance Optimization (Target: 45s)", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
     teardownScreen();
   });
 

@@ -1,6 +1,8 @@
 import {
   setupScreen,
   teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyCanvasVisible,
   verifyElementConditional,
   waitForTransition
@@ -29,6 +31,10 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    
     // Clean up by returning to intro
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="return-to-menu-button"]').length > 0) {

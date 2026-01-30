@@ -1,6 +1,8 @@
 import {
   setupScreen,
   teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
   verifyTrainingScreenReady,
   practiceStanceWithVerification,
   verifyCanvasVisible,
@@ -31,6 +33,9 @@ describe("TrainingScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
     teardownScreen();
   });
 
