@@ -245,7 +245,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "gon_ground_pound", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Slam throw
-    animationType: AnimationType.GON_BODY_LOCK_TAKEDOWN,
+    animationType: AnimationType.SLAM, // Fixed: was wrongly set to GON_BODY_LOCK_TAKEDOWN
     animationSpeed: 1.0,
     category: "heavy",
     range: "short",
@@ -287,7 +287,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "gon_body_lock_takedown", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Body lock clinch
-    animationType: AnimationType.GON_ANKLE_PICK,
+    animationType: AnimationType.GRAPPLE, // Fixed: was wrongly set to GON_ANKLE_PICK
     animationSpeed: 0.9,
     category: "medium",
     range: "short",
