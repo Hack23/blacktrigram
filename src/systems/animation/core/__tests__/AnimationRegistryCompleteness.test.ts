@@ -787,6 +787,9 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
 
     // At least 90% of techniques should have animation types
     expect(withAnimation / techniques.length).toBeGreaterThan(0.9);
+    
+    // Less than 10% should be without animations
+    expect(withoutAnimation / techniques.length).toBeLessThan(0.1);
   });
 
   it("all techniques should have unique IDs", () => {
