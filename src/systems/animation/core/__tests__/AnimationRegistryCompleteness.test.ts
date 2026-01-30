@@ -21,7 +21,6 @@ import {
   getAnimation,
   getAnimationByName,
   getAnimationByType,
-  getAnimationById,
 } from "../AnimationRegistry";
 
 // ═══════════════════════════════════════════════════════════════════════════
