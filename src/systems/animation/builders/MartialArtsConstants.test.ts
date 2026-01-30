@@ -1,17 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   HAND_POSES,
-  type HandPoseType,
-  type HandPoseName,
   MARTIAL_POSES,
-  type MartialPoseType,
-  type MartialPoseName,
   KICK_PHASES,
-  type KickPhaseType,
-  type KickPhaseName,
   PUNCH_PHASES,
-  type PunchPhaseType,
-  type PunchPhaseName,
   KOREAN_STANCE_BIOMECHANICS,
   AnimationType,
   calculateStanceWidth,
