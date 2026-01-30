@@ -40,8 +40,6 @@
 import { PlayerState } from "@/systems";
 import {
   AnimationType,
-  getAnimationById,
-  getAnimationByIdWithFallback,
   getAnimationHitTiming,
   type AnimationState,
 } from "@/systems/animation";

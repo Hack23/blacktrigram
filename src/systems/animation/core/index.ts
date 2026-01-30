@@ -40,6 +40,13 @@ export {
   GRAPPLING_ANIMATIONS,
   KICK_ANIMATIONS,
   PUNCH_ANIMATIONS,
+  // New ID-based animation lookups (Option A Step 1)
+  ANIMATION_ID_REGISTRY,
+  CATEGORY_DEFAULT_ANIMATIONS,
+  getAnimationById,
+  getAnimationByIdWithFallback,
+  hasAnimationId,
+  getCategoryDefaultAnimation,
 } from "./AnimationRegistry";
 
 export {
