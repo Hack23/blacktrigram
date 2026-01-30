@@ -68,6 +68,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.02,
     critMultiplier: 1.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "block", // Type: shared category
+    animationId: "gan_rock_defense", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Solid blocking stance
     animationType: AnimationType.GAN_ROCK_DEFENSE_BLOCK,
     animationSpeed: 1.2,
@@ -108,6 +112,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.04,
     critMultiplier: 1.1,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "stance", // Type: shared category
+    animationId: "gan_immovable_stance", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Rooted defensive stance
     animationType: AnimationType.GAN_IMMOVABLE_STANCE,
     animationSpeed: 1.0,
@@ -146,6 +154,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "block_high", // Type: shared category
+    animationId: "gan_iron_block", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)
     animationType: AnimationType.IRON_BLOCK,
     animationSpeed: 0.85,
@@ -186,6 +198,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.26,
     critMultiplier: 2.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "counter", // Type: shared category
+    animationId: "gan_counter_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Powerful counter attack
     animationType: AnimationType.GAN_COUNTER_STRIKE,
     animationSpeed: 1.0,
@@ -224,6 +240,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "counter", // Type: shared category
+    animationId: "gan_reversal_technique", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Reversal motion
     animationType: AnimationType.GAN_REVERSAL_TECHNIQUE,
     animationSpeed: 0.9,
@@ -264,6 +284,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "grapple", // Type: shared category
+    animationId: "gan_mountain_stance_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Standing control position
     animationType: AnimationType.GAN_MOUNTAIN_STANCE_LOCK,
     animationSpeed: 0.9,

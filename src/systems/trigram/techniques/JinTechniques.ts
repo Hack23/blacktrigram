@@ -59,6 +59,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "punch", // Type: shared category
+    animationId: "jin_lightning_flash", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.LIGHTNING_STRIKE,
     animationSpeed: 1.4,
     category: "light",
@@ -96,6 +100,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.22,
     critMultiplier: 2.1,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "jumping_kick", // Type: shared category
+    animationId: "jin_jumping_front_kick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.JIN_JUMPING_FRONT_KICK,
     animationSpeed: 1.0,
     category: "heavy",
@@ -133,6 +141,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.25,
     critMultiplier: 2.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "tornado_kick", // Type: shared category
+    animationId: "jin_tornado_kick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.TORNADO_KICK,
     animationSpeed: 1.0,
     category: "heavy",
@@ -170,6 +182,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.24,
     critMultiplier: 2.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "jumping_kick", // Type: shared category
+    animationId: "jin_flying_sidekick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.JIN_FLYING_SIDEKICK,
     animationSpeed: 1.1,
     category: "heavy",
@@ -207,6 +223,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "back_kick", // Type: shared category
+    animationId: "jin_back_kick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.BACK_KICK,
     animationSpeed: 1.0,
     category: "special",
@@ -244,6 +264,10 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "knee_strike", // Type: shared category
+    animationId: "jin_knee_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.KNEE_STRIKE,
     animationSpeed: 1.1,
     category: "medium",

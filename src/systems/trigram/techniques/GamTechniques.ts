@@ -68,6 +68,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "counter", // Type: shared category
+    animationId: "gam_water_counter", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Flowing counter-attack (matches TechniqueAnimationMapping)
     animationType: AnimationType.WATER_COUNTER,
     animationSpeed: 1.0,
@@ -108,6 +112,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "throw", // Type: shared category
+    animationId: "gam_redirect_throw", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Redirect throw motion
     animationType: AnimationType.GAM_REDIRECT_THROW,
     animationSpeed: 0.9,
@@ -146,6 +154,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "throw", // Type: shared category
+    animationId: "gam_hip_throw", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Hip throw motion
     animationType: AnimationType.GAM_HIP_THROW,
     animationSpeed: 0.85,
@@ -186,6 +198,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "block", // Type: shared category
+    animationId: "gam_flowing_block", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Soft blocking motion
     animationType: AnimationType.BLOCK,
     animationSpeed: 1.0,
@@ -224,6 +240,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "parry", // Type: shared category
+    animationId: "gam_circular_parry", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Circular parry motion
     animationType: AnimationType.GAM_CIRCULAR_PARRY,
     animationSpeed: 1.0,
@@ -264,6 +284,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "gam_wrist_twist_counter", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Wrist control transition
     animationType: AnimationType.GAM_WRIST_TWIST_COUNTER,
     animationSpeed: 1.0,

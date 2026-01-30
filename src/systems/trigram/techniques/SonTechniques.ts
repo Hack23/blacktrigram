@@ -67,6 +67,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "punch", // Type: shared category
+    animationId: "son_whirlwind_barrage", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Continuous striking pattern
     animationType: AnimationType.RAPID_BARRAGE,
     animationSpeed: 1.5,
@@ -107,6 +111,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.4,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "low_kick", // Type: shared category
+    animationId: "son_sweeping_low_kick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Low sweeping kick
     animationType: AnimationType.SON_SWEEPING_LOW_KICK,
     animationSpeed: 1.1,
@@ -145,6 +153,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.6,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "footwork", // Type: shared category
+    animationId: "son_rapid_footwork", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Rapid footwork sequence
     animationType: AnimationType.SON_RAPID_FOOTWORK,
     animationSpeed: 1.2,
@@ -185,6 +197,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "punch", // Type: shared category
+    animationId: "son_rhythmic_strikes", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Rhythmic hand combination
     animationType: AnimationType.SON_RHYTHMIC_STRIKES,
     animationSpeed: 1.2,
@@ -223,6 +239,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.1,
     critMultiplier: 1.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "palm_strike", // Type: shared category
+    animationId: "son_flowing_push", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Flowing push movement
     animationType: AnimationType.SON_FLOWING_PUSH,
     animationSpeed: 1.0,
@@ -263,6 +283,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.5,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "spinning_elbow", // Type: shared category
+    animationId: "son_spinning_elbow", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Spinning elbow attack
     animationType: AnimationType.ELBOW_STRIKE,
     animationSpeed: 1.1,

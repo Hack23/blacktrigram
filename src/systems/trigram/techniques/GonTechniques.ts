@@ -68,6 +68,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.4,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "grapple", // Type: shared category
+    animationId: "gon_earth_embrace", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Clinch grapple position
     animationType: AnimationType.GON_EARTH_EMBRACE,
     animationSpeed: 0.9,
@@ -108,6 +112,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "sweep", // Type: shared category
+    animationId: "gon_leg_sweep", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Reaping leg sweep
     animationType: AnimationType.GON_LEG_SWEEP,
     animationSpeed: 1.0,
@@ -146,6 +154,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "sweep", // Type: shared category
+    animationId: "gon_ankle_pick", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
     animationSpeed: 1.1,
@@ -186,6 +198,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.24,
     critMultiplier: 2.1,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "throw", // Type: shared category
+    animationId: "gon_ssireum_throw", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Traditional belt throw
     animationType: AnimationType.THROW,
     animationSpeed: 0.9,
@@ -224,6 +240,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "slam", // Type: shared category
+    animationId: "gon_ground_pound", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Slam throw
     animationType: AnimationType.GON_BODY_LOCK_TAKEDOWN,
     animationSpeed: 1.0,
@@ -262,6 +282,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "takedown", // Type: shared category
+    animationId: "gon_body_lock_takedown", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Body lock clinch
     animationType: AnimationType.GON_ANKLE_PICK,
     animationSpeed: 0.9,
@@ -300,6 +324,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "throw", // Type: shared category
+    animationId: "gon_sacrifice_throw", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     // Animation: Sacrifice throw motion
     animationType: AnimationType.GON_SACRIFICE_THROW,
     animationSpeed: 1.0,
