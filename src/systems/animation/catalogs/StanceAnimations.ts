@@ -436,11 +436,32 @@ export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
  *
  * @korean 리명치애니메이션
  */
+/**
+ * Li Solar Plexus - 리명치 (Fire's Precision Spear-Hand Strike)
+ *
+ * Precise spear-hand thrust directly to solar plexus (명치/myeongchi).
+ * Li (Fire) element: Linear, direct, penetrating precision strike.
+ * Uses targeted strike technique for deep diaphragm disruption.
+ *
+ * Korean Martial Arts: 관수명치지르기 (Gwansu Myeongchi Jireugi)
+ * - 정밀타격 (Precise Strike): Pinpoint accuracy to diaphragm
+ * - 직선관통 (Linear Penetration): Straight thrust, no arc
+ * - 창수형 (Spear-Hand Form): Extended fingers, focused energy
+ * - 호흡차단 (Breath Disruption): Diaphragm paralysis technique
+ *
+ * Contrasts with Son (Wind) flowing push:
+ * - Li: Targeted strike, linear thrust, single point
+ * - Son: Palm push, flowing wave, broad surface
+ *
+ * Diaphragm disruption technique.
+ *
+ * @korean 리명치애니메이션
+ */
 export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_solar_plexus", "리명치")
-    .asAttack(0.4)
-    .punchWindup(0.08)
-    .palmStrike(0.12)
+    .asAttack(0.38) // Faster, more direct than Son
+    .punchWindup(0.05) // Quick chamber (faster, precise)
+    .solarPlexusStrike(0.13) // Precise solar plexus strike
     .recover(0.2)
     .build();
 
@@ -611,19 +632,34 @@ export const SON_RHYTHMIC_STRIKES_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Son Flowing Push - 손유수
+ * Son Flowing Push - 손유수 (Wind's Continuous Wave Push)
  *
- * Wind's flowing push technique.
- * Continuous forward pressure.
+ * Wind's flowing push technique with continuous forward pressure.
+ * Son (Wind) element: Circular, flowing, unrelenting pressure like wind gusts.
+ * Uses double-palm (쌍장/ssangjang) wave motion for sustained force.
+ *
+ * Korean Martial Arts: 쌍장밀기 (Ssangjang Milgi) - "Double Palm Push"
+ * - 연속압박 (Continuous Pressure): Wave-like forward momentum
+ * - 원형흐름 (Circular Flow): Not straight, flowing like wind
+ * - 쌍장법 (Double Palm Method): Both palms working in harmony
+ * - 밀어치기 (Push-Strike): Pushing force, not penetrating
+ *
+ * Contrasts with Li (Fire) precision strike:
+ * - Son: Double palm, flowing wave, broad pressure
+ * - Li: Spear-hand, linear thrust, single point
+ *
+ * Continuous forward pressure technique.
  *
  * @korean 손유수애니메이션
  */
 export const SON_FLOWING_PUSH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_flowing_push", "손유수")
-    .asAttack(0.4)
-    .punchWindup(0.08)
-    .palmStrike(0.12)
-    .recover(0.2)
+    .asAttack(0.45) // Slightly longer for flowing motion
+    .shift(0.08, "ease-out") // Body flows forward (Wind characteristic)
+    .punchWindup(0.07) // Quick windup
+    .palmStrike(0.15, "linear") // Extended palm push (longer contact)
+    .shift(0.05, "ease-in") // Continue forward pressure
+    .recover(0.1) // Quick recovery (Wind agility)
     .build();
 
 /**
@@ -996,18 +1032,33 @@ export const GON_GROUND_POUND_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gon Ankle Pick - 곤발목잡기
+ * Gon Ankle Pick - 곤발목잡기 (Earth's Grabbing Ankle Takedown)
  *
- * Earth's ankle pick takedown.
- * Low level attack on base.
+ * Earth's ankle pick takedown using grabbing and pulling technique.
+ * Gon (Earth) element: Grounding, control, downward force.
+ * Grabs ankle and pulls to unbalance opponent onto the ground.
+ *
+ * Korean Martial Arts: 발목잡아당기기 (Balmok Jaba-danggigi) - "Ankle Grab-Pull"
+ * - 낮은자세 (Low Stance): Drop to ground level
+ * - 발목잡기 (Ankle Grip): Secure hold on ankle
+ * - 당기기 (Pulling): Pull opponent's base out
+ * - 접지시키기 (Grounding): Force opponent to earth
+ *
+ * Contrasts with DarkOps achilles strike:
+ * - Gon: Grabbing, pulling, takedown (control/submission)
+ * - DarkOps: Striking, severing, disable (combat destruction)
+ *
+ * Low level attack on base for takedown.
  *
  * @korean 곤발목잡기애니메이션
  */
 export const GON_ANKLE_PICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_ankle_pick", "곤발목잡기")
-    .asAttack(0.5)
-    .sweep(0.18)
-    .recover(0.32)
+    .asAttack(0.55) // Slightly longer for grabbing motion
+    .duck(0.12) // Drop to low level (different from sweep)
+    .wristGrab(0.15) // Ankle grab motion (using wrist grab mechanic)
+    .shift(0.12, "ease-in") // Pull opponent off balance
+    .recover(0.16)
     .build();
 
 /**

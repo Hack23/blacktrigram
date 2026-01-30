@@ -430,7 +430,21 @@ export const DARKOPS_TRIANGLE_CHOKE_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Achilles Sever - 아킬레스건절단
+ * Achilles Sever - 아킬레스건절단 (DarkOps Achilles Tendon Strike)
+ *
+ * Precise striking attack to achilles tendon.
+ * DarkOps: Combat disabling technique, permanent damage objective.
+ * Uses heel stomp or blade of foot to sever/rupture achilles.
+ *
+ * Korean Special Operations: 아킬레스건타격 (Achilles Tendon Strike)
+ * - 정밀조준 (Precise Targeting): Specific anatomical point
+ * - 하향강타 (Downward Strike): Stomping force to tendon
+ * - 절단의도 (Severing Intent): Rupture, not just pain
+ * - 보행불가 (Mobility Denial): Immediate walking disability
+ *
+ * Contrasts with Gon ankle pick:
+ * - DarkOps: Striking, severing, disable (combat destruction)
+ * - Gon: Grabbing, pulling, takedown (control/submission)
  *
  * Attack to Achilles tendon.
  * Causes inability to walk.
@@ -440,8 +454,9 @@ export const DARKOPS_TRIANGLE_CHOKE_ANIMATION: SkeletalAnimation =
 export const DARKOPS_ACHILLES_SEVER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_achilles_sever", "아킬레스건절단")
     .asAttack(0.5)
-    .sweep(0.18) // Low sweeping attack
-    .recover(0.32)
+    .axeKickRise(0.12) // Raise leg for downward strike (different from sweep)
+    .axeKickChop(0.15) // Precise downward heel strike to achilles
+    .recover(0.23)
     .build();
 
 /**
