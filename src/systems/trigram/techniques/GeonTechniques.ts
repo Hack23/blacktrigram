@@ -59,6 +59,10 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.1,
     critMultiplier: 1.5,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "punch", // Type: shared category
+    animationId: "geon_heaven_strike", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.HEAVEN_STRIKE,
     animationSpeed: 1.0,
     category: "medium",
