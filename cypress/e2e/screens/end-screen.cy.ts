@@ -1,5 +1,6 @@
 import {
   setupScreen,
+  teardownScreen,
   cleanupThreeJSResources,
   forceMemoryCleanup,
   waitForTransition
@@ -32,12 +33,15 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cleanupThreeJSResources();
     forceMemoryCleanup();
     
-    // Clean up by returning to intro
+    // Clean up by returning to intro (with custom navigation for end screen)
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="return-to-menu-button"]').length > 0) {
         cy.get('[data-testid="return-to-menu-button"]')
           .click({ force: true });
         waitForTransition(500);
+      } else {
+        // Fallback to standard teardown if button not found
+        teardownScreen();
       }
     });
   });

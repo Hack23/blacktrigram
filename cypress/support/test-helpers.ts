@@ -40,11 +40,10 @@ export function setupScreen(screenType?: 'combat' | 'training' | 'controls' | 'p
 }
 
 /**
- * Standard teardown for screen tests
- * Now includes memory cleanup and Three.js resource disposal
+ * Standard teardown helper that returns to intro screen
+ * Note: Three.js cleanup should be called separately in afterEach hooks
  */
 export function teardownScreen(): void {
-  cleanupThreeJSResources();
   cy.returnToIntro();
 }
 
@@ -88,12 +87,9 @@ export function cleanupThreeJSResources(): void {
         }
       }
       
-      // Remove all canvas event listeners
-      const canvases = win.document.querySelectorAll('canvas');
-      canvases.forEach((canvas) => {
-        const newCanvas = canvas.cloneNode(true);
-        canvas.parentNode?.replaceChild(newCanvas, canvas);
-      });
+      // NOTE: We intentionally avoid cloning/replacing canvas elements.
+      // Replacing canvas nodes can invalidate references held by Three.js
+      // and Cypress, causing rendering or test instability.
       
       cy.log("✅ Three.js resources cleaned up");
     } catch (error) {
@@ -119,8 +115,7 @@ export function forceMemoryCleanup(): void {
         cy.log("✅ Forced garbage collection");
       }
       
-      // Wait for cleanup to complete
-      cy.wait(100);
+      // Note: Cleanup happens asynchronously; no wait needed
     } catch (error) {
       cy.log(`⚠️ Memory cleanup error (non-critical): ${error}`);
     }

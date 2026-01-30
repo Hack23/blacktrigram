@@ -139,17 +139,19 @@ Cypress.Commands.add('generateMemoryReport', () => {
   monitor.reset();
 });
 
-// Auto-log memory at test end
-afterEach(function () {
-  if (this.currentTest) {
-    cy.logMemorySnapshot(`After: ${this.currentTest.title}`);
-  }
-});
+// Auto-log memory at test end (opt-in via Cypress env flag)
+if (Cypress.env('ENABLE_MEMORY_MONITOR')) {
+  afterEach(function () {
+    if (this.currentTest) {
+      cy.logMemorySnapshot(`After: ${this.currentTest.title}`);
+    }
+  });
 
-// Generate report after all tests
-after(() => {
-  cy.generateMemoryReport();
-});
+  // Generate report after all tests
+  after(() => {
+    cy.generateMemoryReport();
+  });
+}
 
 // Type declarations
 declare global {

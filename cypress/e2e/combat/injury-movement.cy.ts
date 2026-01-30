@@ -6,7 +6,8 @@ import {
   verifyCombatScreenReady,
   changeStance,
   executeCombatAttacks,
-  waitForTransition
+  waitForTransition,
+  verifyElementConditional
 } from "../../support/test-helpers";
 
 /**
