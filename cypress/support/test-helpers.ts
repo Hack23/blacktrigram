@@ -247,29 +247,44 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
   const stanceNames = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
   const koreanNames = ["건", "태", "리", "진", "손", "감", "간", "곤"];
   
-  for (let i = 1; i <= 8; i++) {
-    cy.get("body").type(i.toString());
-    
+  // Use Cypress-aware iteration to respect the command queue
+  Cypress._.times(8, (index: number) => {
+    const stanceNumber = index + 1;
+
+    cy.get("body").type(stanceNumber.toString());
+
     // Wait for stance indicator to update (more reliable than fixed delay)
     cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
-      .should('contain', stanceNames[i-1]);
-    
-    cy.log(`✅ Stance ${i}: ${stanceNames[i-1]} (${koreanNames[i-1]})`);
-    
+      .should("contain", stanceNames[index]);
+
+    cy.log(`✅ Stance ${stanceNumber}: ${stanceNames[index]} (${koreanNames[index]})`);
+
     if (verifyCallback) {
-      verifyCallback(i, stanceNames[i-1]);
+      // Ensure callback runs in the Cypress command chain and in order
+      cy.then(() => {
+        verifyCallback(stanceNumber, stanceNames[index]);
+      });
     }
-  }
+  });
   
   cy.log("✅ All 8 trigram stances tested");
 }
 
 /**
  * Change to specific stance
+ * Waits for stance indicator to update for reliability
  */
 export function changeStance(stanceNumber: number, stanceName?: string): void {
+  const stanceNames = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
+  
   cy.get("body").type(stanceNumber.toString());
-  cy.wait(300);
+  
+  // Wait for stance indicator to update (more reliable than fixed delay)
+  if (stanceNumber >= 1 && stanceNumber <= 8) {
+    cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+      .should('contain', stanceNames[stanceNumber - 1]);
+  }
+  
   if (stanceName) {
     cy.log(`✅ Changed to stance ${stanceNumber}: ${stanceName}`);
   } else {
@@ -380,18 +395,25 @@ export function verifyElementConditional(
 }
 
 /**
- * Wait for animation/transition to complete
- * 
- * Uses Cypress' built-in retry mechanism instead of a hardcoded delay.
- * The durationMs parameter is treated as the maximum time to wait for
- * the page body to remain visible, which is a reasonable proxy for
- * transition completion when no more specific selector is available.
- * 
- * @param durationMs Maximum time to wait in milliseconds (default: 500)
+ * Wait for animation/transition to complete.
+ *
+ * This helper first ensures the page body is visible, then performs a
+ * time-based wait using Cypress' `cy.wait`. This provides a predictable
+ * window for CSS transitions or animations to finish without relying on
+ * arbitrary assertions that may resolve immediately.
+ *
+ * @param durationMs Time to wait in milliseconds after the body is visible
+ *                   (default: 500). Use 0 to skip the delay.
  */
 export function waitForTransition(durationMs = 500): void {
-  cy.get("body", { timeout: durationMs }).should("be.visible");
-  cy.log(`⏱️ Waited up to ${durationMs}ms for transition to complete`);
+  // Ensure the page has rendered before starting the delay
+  cy.get("body").should("be.visible");
+
+  if (durationMs > 0) {
+    cy.wait(durationMs);
+  }
+
+  cy.log(`⏱️ Waited ${durationMs}ms for transition to complete`);
 }
 
 /**

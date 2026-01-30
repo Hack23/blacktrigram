@@ -67,11 +67,11 @@
 Added three new helper functions:
 
 #### `cleanupThreeJSResources()`
-Cleans up Three.js resources to prevent leaks:
-- Disposes geometries, materials, textures
-- Removes canvas event listeners
-- Triggers application cleanup functions
-- Attempts garbage collection
+Provides a best-effort hint to the JavaScript engine to reclaim memory between tests:
+- Requests garbage collection if the environment supports it (for example, `window.gc` in instrumented runs)
+- Does not directly dispose Three.js geometries, materials, or textures
+- Does not add or remove canvas or DOM event listeners
+- Relies on application code and Cypress test teardown to perform actual Three.js and DOM resource cleanup
 
 #### `forceMemoryCleanup()`
 Forces memory cleanup and garbage collection:

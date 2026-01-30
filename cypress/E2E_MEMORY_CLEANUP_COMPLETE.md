@@ -58,8 +58,8 @@ afterEach(() => {
 // After:
 afterEach(() => {
   // Enhanced cleanup to prevent memory leaks
-  cleanupThreeJSResources();  // Dispose geometries, materials, textures
-  forceMemoryCleanup();        // Hint garbage collection
+  cleanupThreeJSResources();  // Request garbage collection hint
+  forceMemoryCleanup();        // Force memory cleanup attempt
   teardownScreen();            // Standard cleanup
 });
 ```
@@ -163,10 +163,10 @@ Coverage: 100%
 ## 🎯 Benefits Delivered
 
 ### 1. Memory Leak Prevention
-- ✅ Three.js geometries, materials, and textures properly disposed
-- ✅ WebGL contexts cleaned up between tests
-- ✅ Event listeners removed to prevent accumulation
-- ✅ Canvas elements cleared from memory
+- ✅ Centralized, best-effort garbage collection hints after each test
+- ✅ Standard hooks where Three.js geometries, materials, and textures **can be** disposed by test-specific logic
+- ✅ Clear pattern for integrating WebGL context teardown and event listener removal within E2E tests
+- ✅ Consistent place to plug in canvas and DOM cleanup so resources can be released by the application
 
 ### 2. Test Reliability
 - ✅ Prevents memory exhaustion in CI/CD

@@ -2,7 +2,6 @@ import {
   setupScreen,
   teardownScreen,
   changeStance,
-  waitForTransition,
   cleanupThreeJSResources,
   forceMemoryCleanup,
   logMemoryUsage
@@ -64,17 +63,11 @@ describe("Character Models - Visual Regression Tests", () => {
         // Change to stance using helper
         changeStance(parseInt(stance.key), `${stance.korean} (${stance.symbol})`);
         
-        // Reduced wait time for stance transition
-        waitForTransition(300);  // Reduced from 500ms
-        
-        // Verify stance indicator updated
+        // Verify stance indicator updated (changeStance already waits for this)
         cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
           .should("exist")
           .invoke("text")
-          .should("include", stance.name);
-        
-        // Reduced wait time for rendering
-        waitForTransition(300);  // Reduced from 500ms
+          .should("include", stance.name)
         
         // Take screenshot for visual comparison
         cy.get('[data-testid="combat-screen"]')
