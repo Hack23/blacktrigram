@@ -44,6 +44,7 @@ import {
   getRecoveryAnimationState,
 } from "../../../systems/animation";
 import { BalanceSystem } from "../../../systems/combat/BalanceSystem";
+import type { BalancePlayerState } from "../../../systems/combat/BalanceSystem";
 import { HitEffectType } from "../../../systems/effects";
 import { injuryMovementModifier } from "../../../systems/movement/InjuryMovementModifier";
 import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
@@ -424,6 +425,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Internal round tracking (since parent may always pass currentRound=1)
   const [internalRound, setInternalRound] = useState(currentRound);
 
+  // Current time for balance indicators and other time-dependent UI
+  // Updated every 200ms to avoid calling Date.now() on every render (60fps)
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
   // Match countdown state - DISABLED: skip countdown and start combat immediately
   // Using state for hasShownMatchCountdown to avoid ref access during render
   const [hasShownMatchCountdown, setHasShownMatchCountdown] = useState(true); // Already shown (skipped)
@@ -728,6 +733,20 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]); // speedModifierSystem is memoized and never changes
+
+  // Update current time for balance indicators at 5Hz (200ms)
+  // This avoids calling Date.now() on every render (60fps = 60 times/second)
+  // Instead, we update 5 times/second, which is sufficient for UI feedback
+  useEffect(() => {
+    const updateTime = () => {
+      setCurrentTime(Date.now());
+    };
+
+    // Update every 200ms (5Hz) - same rate as speed modifiers
+    const intervalId = setInterval(updateTime, 200);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   // Calculate leg injury factor for physics-based movement
   // Averages left and right leg health to determine speed penalty
@@ -2741,8 +2760,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         {/* 3D Balance Indicators - Positioned below top HUD, to the right of side HUDs */}
         {/* Player 1 Balance Indicator - Upper left area, below top HUD */}
         <BalanceIndicatorOverlayHtml
-          player={validPlayers[0] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
-          currentTime={Date.now()}
+          player={validPlayers[0] as BalancePlayerState}
+          currentTime={currentTime}
           position={[
             -2.5, // Left side of arena (to the right of left HUD in 3D space)
             2.5, // Upper area (below top HUD)
@@ -2753,8 +2772,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
         {/* Player 2 Balance Indicator - Upper right area, below top HUD */}
         <BalanceIndicatorOverlayHtml
-          player={validPlayers[1] as import("../../../systems/combat/BalanceSystem").BalancePlayerState}
-          currentTime={Date.now()}
+          player={validPlayers[1] as BalancePlayerState}
+          currentTime={currentTime}
           position={[
             2.5, // Right side of arena (to the left of right HUD in 3D space)
             2.5, // Upper area (below top HUD)
