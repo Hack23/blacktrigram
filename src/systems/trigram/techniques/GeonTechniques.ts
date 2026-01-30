@@ -102,7 +102,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
-    animationId: "geon_heaven_strike", // ID: unique 1-1 mapping
+    animationId: "geon_heavenly_fist", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_HEAVENLY_FIST,
     animationSpeed: 1.1,
@@ -142,8 +142,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.7,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "punch", // Type: shared category
-    animationId: "geon_heavenly_fist", // ID: unique 1-1 mapping
+    animationCategory: "kick", // Type: shared category
+    animationId: "geon_frontal_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_FRONTAL_KICK,
     animationSpeed: 1.0,
@@ -190,8 +190,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.8,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "front_kick", // Type: shared category
-    animationId: "geon_frontal_kick", // ID: unique 1-1 mapping
+    animationCategory: "kick", // Type: shared category
+    animationId: "geon_roundhouse_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_ROUNDHOUSE,
     animationSpeed: 1.0,
@@ -231,8 +231,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "roundhouse_kick", // Type: shared category
-    animationId: "geon_roundhouse_kick", // ID: unique 1-1 mapping
+    animationCategory: "kick", // Type: shared category
+    animationId: "geon_axe_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.AXE_KICK,
     animationSpeed: 0.9,
@@ -272,8 +272,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "axe_kick", // Type: shared category
-    animationId: "geon_axe_kick", // ID: unique 1-1 mapping
+    animationCategory: "strike", // Type: shared category
+    animationId: "geon_palm_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_PALM_STRIKE,
     animationSpeed: 1.0,
@@ -313,8 +313,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.8,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "palm_strike", // Type: shared category
-    animationId: "geon_palm_strike", // ID: unique 1-1 mapping
+    animationCategory: "elbow_strike", // Type: shared category
+    animationId: "geon_elbow_smash", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.CRUSHING_ELBOW,
     animationSpeed: 1.1,

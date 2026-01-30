@@ -69,7 +69,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.0,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "block", // Type: shared category
+    animationCategory: "defensive", // Type: shared category
     animationId: "gan_rock_defense", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Solid blocking stance
@@ -155,7 +155,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.2,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "block_high", // Type: shared category
+    animationCategory: "defensive", // Type: shared category
     animationId: "gan_iron_block", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)

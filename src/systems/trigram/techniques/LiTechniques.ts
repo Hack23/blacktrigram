@@ -60,7 +60,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.8,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "palm_strike", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "li_flame_spear", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SPEAR_HAND_STRIKE,
@@ -142,7 +142,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.2,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "nerve_strike", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "li_nerve_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.NERVE_STRIKE,
@@ -183,7 +183,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.9,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "side_kick", // Type: shared category
+    animationCategory: "kick", // Type: shared category
     animationId: "li_sidekick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SIDE_KICK,
@@ -224,7 +224,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.3,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "pressure_point", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "li_pressure_point", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.PRESSURE_POINT_STRIKE,
@@ -265,7 +265,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "palm_strike", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "li_solar_plexus_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SOLAR_PLEXUS_STRIKE,

@@ -112,7 +112,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.4,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "low_kick", // Type: shared category
+    animationCategory: "kick", // Type: shared category
     animationId: "son_sweeping_low_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Low sweeping kick
@@ -240,7 +240,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.3,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "palm_strike", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "son_flowing_push", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Flowing push movement
@@ -284,7 +284,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.5,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "spinning_elbow", // Type: shared category
+    animationCategory: "elbow_strike", // Type: shared category
     animationId: "son_spinning_elbow", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Spinning elbow attack

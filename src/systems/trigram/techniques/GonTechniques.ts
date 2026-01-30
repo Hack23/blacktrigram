@@ -241,7 +241,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 2.0,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "slam", // Type: shared category
+    animationCategory: "strike", // Type: shared category
     animationId: "gon_ground_pound", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Slam throw

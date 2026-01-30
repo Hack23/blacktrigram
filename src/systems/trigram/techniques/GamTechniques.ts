@@ -199,7 +199,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.3,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "block", // Type: shared category
+    animationCategory: "defensive", // Type: shared category
     animationId: "gam_flowing_block", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Soft blocking motion
@@ -241,7 +241,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critMultiplier: 1.5,
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
-    animationCategory: "parry", // Type: shared category
+    animationCategory: "defensive", // Type: shared category
     animationId: "gam_circular_parry", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     // Animation: Circular parry motion
