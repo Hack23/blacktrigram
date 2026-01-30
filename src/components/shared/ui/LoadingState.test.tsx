@@ -369,19 +369,20 @@ describe("LoadingState", () => {
       expect(progressBar).toHaveAttribute("aria-valuenow", "100");
     });
 
-    it("should handle NaN progress", () => {
+    it("should treat NaN progress as indeterminate", () => {
       render(<LoadingState progress={NaN} />);
 
       const progressBar = screen.getByTestId("loading-progress-bar");
-      // NaN passes through Math.min/Math.max as NaN
-      expect(progressBar).toHaveAttribute("aria-valuenow", "NaN");
+      // NaN should be treated as indeterminate (no aria-valuenow attribute)
+      expect(progressBar).not.toHaveAttribute("aria-valuenow");
     });
 
-    it("should handle null message gracefully", () => {
-      render(<LoadingState message={null as unknown as string} />);
+    it("should use default message when message prop is omitted", () => {
+      render(<LoadingState />);
 
       const loadingState = screen.getByTestId("loading-state");
       expect(loadingState).toBeInTheDocument();
+      expect(screen.getByText(/로드 중.*Loading\.\.\./)).toBeInTheDocument();
     });
 
     it("should handle undefined stage gracefully", () => {

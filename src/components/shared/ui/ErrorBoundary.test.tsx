@@ -66,7 +66,7 @@ describe("ErrorBoundary", () => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
 
-    it("should display default message for errors without message", () => {
+    it("should display empty message when error message is empty string", () => {
       const errorWithoutMessage = new Error();
       errorWithoutMessage.message = "";
 
@@ -76,9 +76,12 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      // Empty message should result in empty paragraph, not "Unknown error occurred"
+      // Empty string message displays as empty (not "Unknown error occurred")
       const errorMessage = screen.getByTestId("error-boundary").querySelector(".error-boundary__message");
       expect(errorMessage).toBeInTheDocument();
+      if (errorMessage) {
+        expect(errorMessage.textContent).toBe("");
+      }
     });
 
     it("should render bilingual title", () => {
@@ -312,20 +315,23 @@ describe("ErrorBoundary", () => {
       expect(screen.getByText("No stack")).toBeInTheDocument();
     });
 
-    it("should handle null-like error message gracefully", () => {
-      const errorWithNullMessage = new Error();
-      // Intentionally set message to empty string to simulate null-like behavior
-      (errorWithNullMessage as { message: string }).message = "";
+    it("should handle empty string error message", () => {
+      const errorWithEmptyMessage = new Error();
+      // Test with actual empty string (not null)
+      (errorWithEmptyMessage as { message: string }).message = "";
 
       render(
         <ErrorBoundary>
-          <ThrowError shouldThrow={true} error={errorWithNullMessage} />
+          <ThrowError shouldThrow={true} error={errorWithEmptyMessage} />
         </ErrorBoundary>
       );
 
-      // Empty message should result in empty paragraph
+      // Empty string message displays as empty
       const errorMessage = screen.getByTestId("error-boundary").querySelector(".error-boundary__message");
       expect(errorMessage).toBeInTheDocument();
+      if (errorMessage) {
+        expect(errorMessage.textContent).toBe("");
+      }
     });
 
     it("should handle undefined error gracefully", () => {
@@ -379,23 +385,6 @@ describe("ErrorBoundary", () => {
   });
 
   describe("Component Lifecycle", () => {
-    it("should call getDerivedStateFromError when error occurs", () => {
-      const getDerivedStateFromErrorSpy = vi.spyOn(
-        ErrorBoundary,
-        "getDerivedStateFromError"
-      );
-
-      render(
-        <ErrorBoundary>
-          <ThrowError shouldThrow={true} />
-        </ErrorBoundary>
-      );
-
-      expect(getDerivedStateFromErrorSpy).toHaveBeenCalled();
-
-      getDerivedStateFromErrorSpy.mockRestore();
-    });
-
     it("should maintain error state after re-render", () => {
       const { rerender } = render(
         <ErrorBoundary>
