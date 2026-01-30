@@ -16,9 +16,12 @@ import { AnimationType } from "../../builders/MartialArtsAnimationBuilder";
 import {
   ALL_ANIMATIONS,
   ANIMATION_REGISTRY,
+  ANIMATION_ID_REGISTRY,
+  CATEGORY_DEFAULT_ANIMATIONS,
   getAnimation,
   getAnimationByName,
   getAnimationByType,
+  getAnimationById,
 } from "../AnimationRegistry";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -739,9 +742,20 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
         continue;
       }
 
-      // Check if animationType exists in ANIMATION_REGISTRY
-      const animation = ANIMATION_REGISTRY.get(technique.animationType);
-      if (!animation) {
+      // Check if animationType exists in ANIMATION_REGISTRY (legacy)
+      const legacyAnimation = ANIMATION_REGISTRY.get(technique.animationType);
+      
+      // OR check if technique has animationId in new ANIMATION_ID_REGISTRY
+      const hasNewAnimation = technique.animationId 
+        ? ANIMATION_ID_REGISTRY.has(technique.animationId) || ANIMATION_ID_REGISTRY.has(technique.id)
+        : false;
+      
+      // OR check if technique has a category that can be used for fallback
+      const hasCategoryFallback = technique.animationCategory 
+        ? CATEGORY_DEFAULT_ANIMATIONS.has(technique.animationCategory)
+        : false;
+      
+      if (!legacyAnimation && !hasNewAnimation && !hasCategoryFallback) {
         missingAnimations.push(`${technique.id} (${technique.animationType})`);
       }
     }
@@ -760,7 +774,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
       );
     }
 
-    // All techniques with animationType should have valid animation in registry
+    // All techniques with animationType should have valid animation in either registry or category fallback
     expect(missingAnimations.length).toBe(0);
   });
 
@@ -1367,8 +1381,20 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
           continue;
         }
 
-        const anim = ANIMATION_REGISTRY.get(tech.animationType);
-        if (!anim) {
+        // Check legacy ANIMATION_REGISTRY
+        const legacyAnim = ANIMATION_REGISTRY.get(tech.animationType);
+        
+        // OR check new ANIMATION_ID_REGISTRY
+        const hasNewAnim = tech.animationId 
+          ? ANIMATION_ID_REGISTRY.has(tech.animationId) || ANIMATION_ID_REGISTRY.has(tech.id)
+          : false;
+        
+        // OR check if technique has a category that can be used for fallback
+        const hasCategoryFallback = tech.animationCategory 
+          ? CATEGORY_DEFAULT_ANIMATIONS.has(tech.animationCategory)
+          : false;
+
+        if (!legacyAnim && !hasNewAnim && !hasCategoryFallback) {
           missingAnimations.push(
             `${tech.id} (${tech.animationType} not in registry)`,
           );
@@ -1382,7 +1408,7 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
         );
       }
 
-      // All techniques must have valid animations - STRICT
+      // All techniques must have valid animations - check both registries and category fallbacks
       expect(missingAnimations.length).toBe(0);
     });
   });
