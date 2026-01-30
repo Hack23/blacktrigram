@@ -245,7 +245,6 @@ export function verifyCombatHUD(): void {
  */
 export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanceName: string) => void): void {
   const stanceNames = ["geon", "tae", "li", "jin", "son", "gam", "gan", "gon"];
-  const koreanNames = ["건", "태", "리", "진", "손", "감", "간", "곤"];
   
   // Use Cypress-aware iteration to respect the command queue
   Cypress._.times(8, (index: number) => {
@@ -257,7 +256,7 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
     cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
       .should("contain", stanceNames[index]);
 
-    cy.log(`✅ Stance ${stanceNumber}: ${stanceNames[index]} (${koreanNames[index]})`);
+    cy.log(`✅ Stance ${stanceNumber}: ${stanceNames[index]}`);
 
     if (verifyCallback) {
       // Ensure callback runs in the Cypress command chain and in order
@@ -298,7 +297,12 @@ export function changeStance(stanceNumber: number, stanceName?: string): void {
 export function executeRapidStanceChanges(stances: number[], delayMs = 200): void {
   stances.forEach((stance, index) => {
     cy.get("body").type(stance.toString());
-    cy.wait(delayMs);
+    
+    // Only wait between stance changes, not after the final one
+    if (index < stances.length - 1) {
+      cy.wait(delayMs);
+    }
+    
     cy.log(`Rapid stance change ${index + 1}: Stance ${stance}`);
   });
   cy.log("✅ Rapid stance changes executed");
@@ -410,10 +414,10 @@ export function waitForTransition(durationMs = 500): void {
   cy.get("body").should("be.visible");
 
   if (durationMs > 0) {
+    cy.log(`⏱️ Waiting ${durationMs}ms for transition to complete`);
     cy.wait(durationMs);
+    cy.log(`✅ Completed ${durationMs}ms transition wait`);
   }
-
-  cy.log(`⏱️ Waited ${durationMs}ms for transition to complete`);
 }
 
 /**

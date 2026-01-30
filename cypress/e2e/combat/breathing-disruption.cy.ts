@@ -32,7 +32,7 @@ describe("Breathing Disruption System - E2E Test (Target: 2-3 min)", () => {
   });
 
   afterEach(() => {
-    // Enhanced cleanup to prevent memory leaks
+    // Request garbage collection to assist memory cleanup
     cleanupThreeJSResources();
     forceMemoryCleanup();
     teardownScreen();

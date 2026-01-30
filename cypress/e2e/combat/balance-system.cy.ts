@@ -31,7 +31,7 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
   });
 
   afterEach(() => {
-    // Enhanced cleanup to prevent memory leaks
+    // Request garbage collection to assist memory cleanup
     cleanupThreeJSResources();
     forceMemoryCleanup();
     teardownScreen();

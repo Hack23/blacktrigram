@@ -33,7 +33,7 @@ describe("Character Models - Visual Regression Tests", () => {
   });
 
   afterEach(() => {
-    // Enhanced cleanup to prevent memory leaks
+    // Request garbage collection to assist memory cleanup
     cleanupThreeJSResources();
     forceMemoryCleanup();
     teardownScreen();

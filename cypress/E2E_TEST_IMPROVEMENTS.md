@@ -74,10 +74,11 @@ Provides a best-effort hint to the JavaScript engine to reclaim memory between t
 - Relies on application code and Cypress test teardown to perform actual Three.js and DOM resource cleanup
 
 #### `forceMemoryCleanup()`
-Forces memory cleanup and garbage collection:
-- Clears large data structures
-- Requests browser garbage collection
-- Waits for cleanup to complete
+Provides a stronger best-effort GC hint and memory logging:
+- Invokes the same browser garbage collection hooks as `cleanupThreeJSResources()` (if available)
+- Can be combined with application-level hooks to clear large data structures before requesting GC
+- Does not itself dispose Three.js geometries, materials, textures, WebGL contexts, canvases, or DOM/event resources
+- Does not guarantee that memory will be reclaimed; leaks may still occur without proper application-level cleanup
 
 #### `logMemoryUsage(testName: string)`
 Monitors and logs memory usage:
@@ -205,6 +206,9 @@ afterEach(() => {
 - Peak memory: <100MB per test
 - Test duration: 5-8 seconds per test
 - Suite duration: 25-30 minutes (40% faster)
+
+> **Note**: The memory improvements described above (including any percentage reductions or specific memory targets) assume that the application code correctly disposes of Three.js resources (geometries, materials, textures, render targets, etc.) between tests.  
+> The Cypress helpers (`cleanupThreeJSResources`, `forceMemoryCleanup`) primarily coordinate cleanup and provide garbage collection hints; on their own they cannot guarantee large reductions in peak memory usage if scene resources are never disposed by the application.
 
 ## 🔍 Monitoring
 
