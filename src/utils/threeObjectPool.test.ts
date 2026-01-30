@@ -496,7 +496,6 @@ describe("ThreeObjectPools", () => {
       // Validate performance metrics are positive numbers
       expect(poolTime).toBeGreaterThan(0);
       expect(nonPoolTime).toBeGreaterThan(0);
-      expect(poolTime / nonPoolTime).toBeGreaterThan(0);
     });
   });
 });
