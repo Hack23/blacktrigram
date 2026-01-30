@@ -1,3 +1,13 @@
+import {
+  setupScreen,
+  verifyScreenElement,
+  verifyCanvasVisible,
+  verifyCanvasWithDimensions,
+  verifyMultipleElements,
+  testNavigationRoundTrip,
+  verifyResponsiveViewport
+} from "../../support/test-helpers";
+
 /**
  * IntroScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
@@ -12,12 +22,12 @@
  *
  * ✅ Three.js Compatible - Tests IntroScreenThreeJS with Canvas and Html overlays
  * ⏱️ Optimized for 3-4 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    setupScreen();
   });
 
   describe("UI Overlay Verification", () => {
@@ -25,19 +35,21 @@ describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
       cy.annotate("Testing UI Overlay Immediate Visibility");
       
       // Verify IntroScreen is mounted
-      cy.get('[data-testid="intro-screen"]', { timeout: 10000 }).should('be.visible');
+      verifyScreenElement('intro-screen', true);
       
       // Verify Canvas is present
       cy.get('canvas').should('exist');
       
       // Verify main UI elements are visible immediately (no delay needed)
-      cy.get('[data-testid="main-title-container"]').should('be.visible');
-      cy.get('[data-testid="logo-section"]').should('be.visible');
-      cy.get('[data-testid="main-logo"]').should('be.visible');
-      cy.get('[data-testid="trigram-symbols"]').should('be.visible');
-      cy.get('[data-testid="menu-section-container"]').should('be.visible');
-      cy.get('[data-testid="archetype-section-container"]').should('be.visible');
-      cy.get('[data-testid="intro-footer"]').should('be.visible');
+      verifyMultipleElements([
+        'main-title-container',
+        'logo-section',
+        'main-logo',
+        'trigram-symbols',
+        'menu-section-container',
+        'archetype-section-container',
+        'intro-footer'
+      ]);
       
       // Take screenshot for verification
       cy.screenshot('intro-screen-ui-overlay-verified', { 

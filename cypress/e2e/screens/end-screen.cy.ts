@@ -1,3 +1,11 @@
+import {
+  setupScreen,
+  teardownScreen,
+  verifyCanvasVisible,
+  verifyElementConditional,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * EndScreen Comprehensive E2E Test
  * Target Execution Time: 2-3 minutes
@@ -12,12 +20,12 @@
  *
  * ✅ Three.js Compatible - Tests EndScreen3D with 3D animations and Html overlays
  * ⏱️ Optimized for 2-3 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    setupScreen();
   });
 
   afterEach(() => {
@@ -25,8 +33,8 @@ describe("EndScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     cy.get("body").then(($body) => {
       if ($body.find('[data-testid="return-to-menu-button"]').length > 0) {
         cy.get('[data-testid="return-to-menu-button"]')
-          .click({ force: true })
-          .wait(500);
+          .click({ force: true });
+        waitForTransition(500);
       }
     });
   });

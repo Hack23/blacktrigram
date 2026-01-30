@@ -1,3 +1,10 @@
+import {
+  setupScreen,
+  teardownScreen,
+  changeStance,
+  waitForTransition
+} from "../support/test-helpers";
+
 /**
  * Character Models Visual Regression Tests
  * 
@@ -10,6 +17,7 @@
  * 
  * ✅ Three.js Compatible - Tests SkeletalPlayer3D and Player3DWithTransitions
  * ⏱️ Target execution time: 5-7 minutes
+ * ♻️ Refactored with shared test helpers
  * 
  * @module cypress/e2e/character-models
  * @category E2E Tests
@@ -18,13 +26,11 @@
 
 describe("Character Models - Visual Regression Tests", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    teardownScreen();
   });
 
   describe("8 Trigram Stance Visual Regression", () => {
@@ -43,11 +49,11 @@ describe("Character Models - Visual Regression Tests", () => {
       it(`should match ${stance.korean} (${stance.symbol}) stance screenshot`, () => {
         cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);
         
-        // Change to stance
-        cy.get("body").type(stance.key);
+        // Change to stance using helper
+        changeStance(parseInt(stance.key), `${stance.korean} (${stance.symbol})`);
         
         // Wait for stance transition to complete
-        cy.wait(500);
+        waitForTransition(500);
         
         // Verify stance indicator updated
         cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
@@ -56,7 +62,7 @@ describe("Character Models - Visual Regression Tests", () => {
           .should("include", stance.name);
         
         // Wait for Three.js rendering to stabilize
-        cy.wait(500);
+        waitForTransition(500);
         
         // Take screenshot for visual comparison
         cy.get('[data-testid="combat-screen"]')
