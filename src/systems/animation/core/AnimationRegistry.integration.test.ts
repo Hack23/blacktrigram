@@ -290,7 +290,6 @@ describe("Enhanced Animation Registry Integration", () => {
 
       // Verify bone presence and count
       expect(boneNames.length).toBeGreaterThan(5);
-      expect(boneNames.length).toBeGreaterThan(0);
 
       // Verify key bones are present with valid rotations
       const shoulderL = firstKeyframe.boneRotations.get("shoulder_L");
@@ -330,9 +329,6 @@ describe("Enhanced Animation Registry Integration", () => {
         expect(footRPos.y).toBeDefined();
         expect(footRPos.z).toBeDefined();
       }
-
-      // Bones should include arm and leg bones with dramatic rotations
-      expect(boneNames.length).toBeGreaterThan(5);
     });
 
     it("should have all 8 stance animations in ALL_ANIMATIONS", () => {
