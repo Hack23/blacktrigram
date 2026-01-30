@@ -168,7 +168,6 @@ console.log("foot_R position:", footRPos?.x, footRPos?.y, footRPos?.z);
 ```typescript
 // Verify bone presence and count
 expect(boneNames.length).toBeGreaterThan(5);
-expect(boneNames.length).toBeGreaterThan(0);
 
 // Verify key bones are present with valid rotations
 if (shoulderL) {

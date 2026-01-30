@@ -193,7 +193,6 @@ describe("Roundhouse Kick Direction Validation", () => {
     const yRotDeg = toDegrees(pelvisRot!.y);
     expect(pelvisRot!.y).toBeLessThan(0); // Negative = rotating left for right kick
     expect(yRotDeg).toBeGreaterThan(-90); // Not more than 90° rotation
-    expect(yRotDeg).toBeLessThan(0); // Should be negative
   });
 
   it("should have sufficient keyframes", () => {
