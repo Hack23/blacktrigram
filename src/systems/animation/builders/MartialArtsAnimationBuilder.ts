@@ -3811,15 +3811,34 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Build the complete animation
+   * 
+   * Automatically normalizes timing to ensure animations start at time 0.
+   * This is important for animation system consistency and performance.
    */
   build(): SkeletalAnimation {
+    // Normalize keyframe timing to start at 0
+    // This ensures all animations begin at the same reference point
+    let normalizedKeyframes = this.keyframes;
+    
+    if (this.keyframes.length > 0) {
+      const firstTime = this.keyframes[0].time;
+      
+      // If animation doesn't start at 0, normalize all keyframe times
+      if (firstTime !== 0) {
+        normalizedKeyframes = this.keyframes.map((kf) => ({
+          ...kf,
+          time: kf.time - firstTime,
+        }));
+      }
+    }
+    
     return {
       name: this.name,
       koreanName: this.koreanName,
       duration: this.duration,
       loop: this.loop,
       type: this.type,
-      keyframes: this.keyframes,
+      keyframes: normalizedKeyframes,
     };
   }
 }
