@@ -66,32 +66,34 @@ function getScreenShortcutKey(screen: string): string {
 // ============================================================
 
 /**
- * Clean up Three.js resources to prevent memory leaks
- * Disposes geometries, materials, textures, and removes event listeners
+ * Attempts to cleanup Three.js resources and hint at garbage collection.
+ * 
+ * NOTE: This function provides best-effort cleanup by requesting the browser's
+ * garbage collector to run (if exposed). It does NOT directly dispose Three.js
+ * resources as that requires application-specific cleanup logic that should be
+ * implemented within the application itself.
+ * 
+ * For comprehensive cleanup, the application should implement its own cleanup
+ * function that properly disposes geometries, materials, textures, and removes
+ * event listeners. This helper simply provides a GC hint to help free memory.
  */
 export function cleanupThreeJSResources(): void {
   cy.window().then((win) => {
     try {
-      // Access Three.js scene if available
-      if (win && (win as any).__THREE_DEVTOOLS__) {
-        cy.log("🧹 Cleaning up Three.js resources...");
-        
-        // Trigger any cleanup functions in the app
-        if ((win as any).cleanupThreeJS) {
-          (win as any).cleanupThreeJS();
-        }
-        
-        // Force garbage collection hint
-        if ((win as any).gc) {
-          (win as any).gc();
-        }
+      cy.log("🧹 Requesting memory cleanup...");
+      
+      // Hint at garbage collection (only works if browser exposes gc)
+      if ((win as any).gc) {
+        (win as any).gc();
+        cy.log("✅ Garbage collection requested");
+      } else {
+        cy.log("ℹ️ Garbage collection not available (this is normal)");
       }
       
       // NOTE: We intentionally avoid cloning/replacing canvas elements.
       // Replacing canvas nodes can invalidate references held by Three.js
-      // and Cypress, causing rendering or test instability.
-      
-      cy.log("✅ Three.js resources cleaned up");
+      // and Cypress, causing rendering or test instability. Application-specific
+      // cleanup should be handled by the application's own cleanup logic.
     } catch (error) {
       cy.log(`⚠️ Cleanup error (non-critical): ${error}`);
     }
@@ -194,15 +196,27 @@ export function verifyCombatScreenReady(): void {
 
 /**
  * Execute combat attack sequence
+ * Uses Cypress command chaining for better reliability
  * @param count Number of attacks to execute
- * @param delayMs Delay between attacks in milliseconds
+ * @param delayMs Delay between attacks in milliseconds (default: 800)
  */
 export function executeCombatAttacks(count: number, delayMs = 800): void {
-  for (let i = 1; i <= count; i++) {
-    cy.log(`Strike ${i}/${count}`);
-    cy.get("body").type(" "); // Spacebar for attack
-    cy.wait(delayMs);
+  if (count <= 0) {
+    cy.log("⚠️ No attacks to execute");
+    return;
   }
+
+  Cypress._.times(count, (index: number) => {
+    const strikeNumber = index + 1;
+    cy.log(`Strike ${strikeNumber}/${count}`);
+    cy.get("body").type(" "); // Spacebar for attack
+
+    // Only wait between attacks, not after the final one
+    if (delayMs > 0 && strikeNumber < count) {
+      cy.wait(delayMs);
+    }
+  });
+  
   cy.log(`✅ Executed ${count} attacks`);
 }
 
@@ -226,6 +240,7 @@ export function verifyCombatHUD(): void {
 
 /**
  * Test all 8 trigram stances
+ * Waits for stance indicator to update after each change for reliability
  * @param verifyCallback Optional callback to run after each stance change
  */
 export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanceName: string) => void): void {
@@ -234,7 +249,11 @@ export function testAllTrigramStances(verifyCallback?: (stanceNum: number, stanc
   
   for (let i = 1; i <= 8; i++) {
     cy.get("body").type(i.toString());
-    cy.wait(300);
+    
+    // Wait for stance indicator to update (more reliable than fixed delay)
+    cy.get('[data-testid="player1-stance-indicator"]', { timeout: 1000 })
+      .should('contain', stanceNames[i-1]);
+    
     cy.log(`✅ Stance ${i}: ${stanceNames[i-1]} (${koreanNames[i-1]})`);
     
     if (verifyCallback) {
@@ -362,10 +381,17 @@ export function verifyElementConditional(
 
 /**
  * Wait for animation/transition to complete
+ * 
+ * Uses Cypress' built-in retry mechanism instead of a hardcoded delay.
+ * The durationMs parameter is treated as the maximum time to wait for
+ * the page body to remain visible, which is a reasonable proxy for
+ * transition completion when no more specific selector is available.
+ * 
+ * @param durationMs Maximum time to wait in milliseconds (default: 500)
  */
 export function waitForTransition(durationMs = 500): void {
-  cy.wait(durationMs);
-  cy.log(`⏱️ Waited ${durationMs}ms for transition`);
+  cy.get("body", { timeout: durationMs }).should("be.visible");
+  cy.log(`⏱️ Waited up to ${durationMs}ms for transition to complete`);
 }
 
 /**
