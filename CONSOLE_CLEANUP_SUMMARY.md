@@ -200,8 +200,8 @@ console.log(`Roundhouse kick peak hip Z rotation: ${zRotDeg.toFixed(1)}°`);
 ```typescript
 expect(hipFlexDeg).toBeGreaterThan(85);
 expect(hipFlexDeg).toBeLessThan(120);
-expect(kneeFlexDeg).toBeGreaterThan(90);
-expect(zRotDeg).toBeGreaterThan(45);
+expect(Math.abs(kneeFlexDeg)).toBeLessThan(15);
+expect(zRotDeg).toBeGreaterThan(30);
 ```
 
 ### 8. TechniqueVariety.test.ts (8 unwrapped, 79 VERBOSE preserved)
