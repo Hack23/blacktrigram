@@ -25,7 +25,7 @@ describe('Technique-Animation Mapping Architecture', () => {
 
     // Check for duplicates
     const duplicates = Array.from(animationIdMap.entries())
-      .filter(([_, techIds]) => techIds.length > 1);
+      .filter(([, techIds]) => techIds.length > 1);
 
     if (duplicates.length > 0) {
       console.error('Duplicate AnimationIds found:');
