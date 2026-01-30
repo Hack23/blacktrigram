@@ -278,7 +278,7 @@ describe("KoreanPanel", () => {
 
   describe("Edge Cases", () => {
     it("should handle empty children", () => {
-      render(<KoreanPanel></KoreanPanel>);
+      render(<KoreanPanel>{""}</KoreanPanel>);
 
       const panel = screen.getByTestId("korean-panel");
       expect(panel).toBeInTheDocument();

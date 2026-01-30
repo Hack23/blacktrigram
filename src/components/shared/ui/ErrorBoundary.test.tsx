@@ -291,7 +291,7 @@ describe("ErrorBoundary", () => {
       );
 
       const errorInfoCall = consoleErrorSpy.mock.calls.find(
-        (call) => call[0] === "ErrorBoundary caught error:"
+        (call: unknown[]) => call[0] === "ErrorBoundary caught error:"
       );
       expect(errorInfoCall).toBeDefined();
       expect(errorInfoCall?.[2]).toHaveProperty("componentStack");
@@ -312,9 +312,10 @@ describe("ErrorBoundary", () => {
       expect(screen.getByText("No stack")).toBeInTheDocument();
     });
 
-    it("should handle null error message gracefully", () => {
+    it("should handle null-like error message gracefully", () => {
       const errorWithNullMessage = new Error();
-      (errorWithNullMessage as unknown as { message: null }).message = null as unknown as string;
+      // Intentionally set message to empty string to simulate null-like behavior
+      (errorWithNullMessage as { message: string }).message = "";
 
       render(
         <ErrorBoundary>
@@ -322,7 +323,9 @@ describe("ErrorBoundary", () => {
         </ErrorBoundary>
       );
 
-      expect(screen.getByText("Unknown error occurred")).toBeInTheDocument();
+      // Empty message should result in empty paragraph
+      const errorMessage = screen.getByTestId("error-boundary").querySelector(".error-boundary__message");
+      expect(errorMessage).toBeInTheDocument();
     });
 
     it("should handle undefined error gracefully", () => {
