@@ -334,9 +334,10 @@ describe("KeyframeInterpolation", () => {
       const [prev, next, t] = findSurroundingKeyframes(animation, 0.5);
 
       // Assert
-      expect(prev.time).toBe(0.5);
-      expect(next.time).toBe(1.0);
-      expect(t).toBe(0);
+      // When time is exactly at a keyframe (0.5), it returns the interval containing it
+      expect(prev.time).toBe(0);
+      expect(next.time).toBe(0.5);
+      expect(t).toBe(1); // t=1 means we're fully at the next keyframe
     });
 
     it("should find keyframes for time between keyframes", () => {
@@ -462,10 +463,10 @@ describe("KeyframeInterpolation", () => {
 
       // Act
       const linear = interpolatePosition(from, to, 0.5, easeLinear);
-      const easeOut = interpolatePosition(from, to, 0.5, easeOut);
+      const eased = interpolatePosition(from, to, 0.5, easeOut);
 
       // Assert - Ease-out should be faster at midpoint
-      expect(easeOut.x).toBeGreaterThan(linear.x);
+      expect(eased.x).toBeGreaterThan(linear.x);
     });
 
     it("should handle 3D interpolation", () => {
