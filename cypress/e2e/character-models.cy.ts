@@ -1,3 +1,12 @@
+import {
+  setupScreen,
+  teardownScreen,
+  changeStance,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  logMemoryUsage
+} from "../support/test-helpers";
+
 /**
  * Character Models Visual Regression Tests
  * 
@@ -10,6 +19,8 @@
  * 
  * ✅ Three.js Compatible - Tests SkeletalPlayer3D and Player3DWithTransitions
  * ⏱️ Target execution time: 5-7 minutes
+ * ♻️ Refactored with shared test helpers
+ * 🧹 Memory leak prevention with cleanup utilities
  * 
  * @module cypress/e2e/character-models
  * @category E2E Tests
@@ -18,13 +29,14 @@
 
 describe("Character Models - Visual Regression Tests", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   describe("8 Trigram Stance Visual Regression", () => {
@@ -39,24 +51,23 @@ describe("Character Models - Visual Regression Tests", () => {
       { key: "8", name: "gon", korean: "곤", symbol: "☷", description: "Earth - Grounding techniques" },
     ];
 
-    stances.forEach((stance) => {
+    stances.forEach((stance, index) => {
       it(`should match ${stance.korean} (${stance.symbol}) stance screenshot`, () => {
         cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);
         
-        // Change to stance
-        cy.get("body").type(stance.key);
+        // Log memory usage before test
+        if (index === 0) {
+          logMemoryUsage(`Stance Test Start`);
+        }
         
-        // Wait for stance transition to complete
-        cy.wait(500);
+        // Change to stance using helper
+        changeStance(parseInt(stance.key), `${stance.korean} (${stance.symbol})`);
         
-        // Verify stance indicator updated
+        // Verify stance indicator updated (changeStance already waits for this)
         cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
           .should("exist")
           .invoke("text")
           .should("include", stance.name);
-        
-        // Wait for Three.js rendering to stabilize
-        cy.wait(500);
         
         // Take screenshot for visual comparison
         cy.get('[data-testid="combat-screen"]')

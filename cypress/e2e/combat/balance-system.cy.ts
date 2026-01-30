@@ -1,3 +1,13 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyCombatScreenReady,
+  changeStance,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * Balance/Vulnerability System E2E Test
  * Target Execution Time: 3-4 minutes
@@ -12,17 +22,19 @@
  *
  * ✅ Three.js Compatible - Tests balance system in CombatScreen3D
  * ⏱️ Optimized for 3-4 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should display balance indicator and react to stance transitions", () => {
@@ -32,11 +44,8 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     // 1. Verify Combat Screen is Ready (10s)
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen is Ready");
-
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.log("✅ Combat screen loaded");
-
-    cy.wait(1000);
+    verifyCombatScreenReady();
+    waitForTransition(1000);
 
     // ============================================================
     // 2. Check Initial Balance State (10s)
@@ -44,7 +53,6 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     cy.log("2️⃣ Checking Initial Balance State");
 
     // Assert that balance indicator overlay is present (when integrated)
-    // This is optional since the component requires integration into CombatScreen3D
     cy.get("body").then(($body) => {
       const hasBalanceOverlay = $body.find('[data-testid="balance-indicator-overlay"]').length > 0;
       const hasBalanceText = 
@@ -65,19 +73,13 @@ describe("Balance/Vulnerability System - E2E Test (Target: 3-4 min)", () => {
     // 3. Test Stance Transition Vulnerability (30s)
     // ============================================================
     cy.log("3️⃣ Testing Stance Transition Vulnerability");
-
-    // Record initial state
     cy.log("📊 Initial state recorded");
 
     // Perform rapid stance changes to trigger vulnerability
-    // 1 = Geon (Heaven), 2 = Tae (Lake), 3 = Li (Fire), 4 = Jin (Thunder)
-    cy.get("body").type("1");
-    cy.wait(200);
-    cy.log("✅ Changed to Geon stance (Heaven)");
-
-    // Change stance to trigger transition vulnerability
-    cy.get("body").type("2");
-    cy.log("✅ Changed to Tae stance (Lake) - transition started");
+    changeStance(1, "Geon (Heaven)");
+    waitForTransition(200);
+    
+    changeStance(2, "Tae (Lake) - transition started");
     
     // Assert vulnerability indicator appears during 0.5s window (conditional on integration)
     // The indicator should appear immediately during transition when integrated

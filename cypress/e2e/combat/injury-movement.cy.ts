@@ -1,3 +1,15 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyCombatScreenReady,
+  changeStance,
+  executeCombatAttacks,
+  waitForTransition,
+  verifyElementConditional
+} from "../../support/test-helpers";
+
 /**
  * Injury Movement System E2E Test
  * Target Execution Time: 2-3 minutes
@@ -12,17 +24,19 @@
  *
  * ✅ Three.js Compatible - Tests injury-movement in CombatScreen3D
  * ⏱️ Optimized for 2-3 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should reduce movement speed after leg injury and display bilingual status", () => {
@@ -32,13 +46,8 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
     // 1. Verify Combat Screen is Ready (10s)
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen is Ready");
-
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.get("canvas").should("be.visible");
-    cy.log("✅ Combat screen loaded");
-
-    // Wait for combat to initialize
-    cy.wait(1000);
+    verifyCombatScreenReady();
+    waitForTransition(1000);
 
     // ============================================================
     // 2. Verify Initial State - No Movement Indicators (5s)
@@ -46,48 +55,30 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
     cy.log("2️⃣ Checking Initial State - No Movement Status");
 
     // Movement status indicators should not be visible when players are healthy
-    cy.get("body").then(($body) => {
-      const player1StatusExists = $body.find('[data-testid="player1-movement-status"]').length > 0;
-      const player2StatusExists = $body.find('[data-testid="player2-movement-status"]').length > 0;
-      
-      if (player1StatusExists || player2StatusExists) {
-        cy.log("⚠️ Movement status visible at start (players may already be injured)");
-      } else {
-        cy.log("✅ No movement status indicators - players healthy");
-      }
-    });
+    verifyElementConditional(
+      'player1-movement-status',
+      'Movement status may be embedded or not visible when players are healthy'
+    );
+    verifyElementConditional(
+      'player2-movement-status',
+      'Player 2 movement status may not be visible'
+    );
 
     // ============================================================
     // 3. Switch to Offensive Stance for Leg Targeting (5s)
     // ============================================================
     cy.log("3️⃣ Switching to Jin Stance for Explosive Power");
-
-    // Jin stance (Thunder) - key "4" - explosive power techniques
-    cy.get("body").type("4");
-    cy.wait(500);
-    cy.log("✅ Switched to Jin stance (Thunder)");
+    changeStance(4, "Jin (Thunder) - explosive power techniques");
 
     // ============================================================
     // 4. Execute Multiple Leg Strikes to Cause Damage (30s)
     // ============================================================
     cy.log("4️⃣ Executing Multiple Leg Strikes");
+    
+    // Execute 10 attacks to significantly damage opponent's legs
+    executeCombatAttacks(10, 800);
 
-    // Execute 8-10 attacks to significantly damage opponent's legs
-    // This should reduce leg health below 70% threshold
-    for (let i = 1; i <= 10; i++) {
-      cy.log(`Strike ${i}/10 - Attacking opponent`);
-      
-      // Execute attack (spacebar)
-      cy.get("body").type(" ");
-      cy.wait(600);
-      
-      // Verify rendering continues
-      if (i % 3 === 0) {
-        cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });
-      }
-    }
-
-    cy.log("✅ All 10 strikes completed");
+    cy.log("All 10 strikes completed");
 
     // ============================================================
     // 5. Verify Movement Status Indicator Appears (15s)
