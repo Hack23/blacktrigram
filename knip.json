@@ -10,6 +10,17 @@
   "ignore": ["src/systems/animation/**/*.test.ts", "typedoc.json"],
   "ignoreBinaries": ["dot"],
   "ignoreUnresolved": [],
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  },
+  "ignoreDependencies": [
+    "cypress-junit-reporter",
+    "mocha-junit-reporter",
+    "mochawesome",
+    "vite-bundle-analyzer",
+    "typedoc-plugin-mermaid"
+  ],
   "rules": {
     "duplicates": "warn"
   },
