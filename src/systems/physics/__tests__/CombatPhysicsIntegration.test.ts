@@ -552,10 +552,12 @@ describe("CombatPhysicsIntegration", () => {
       // Ideal target: ~16.67ms per frame (~60fps), but allow up to ~33.34ms (~30fps) for slower environments
       expect(duration).toBeLessThan(2000);
 
-      // Verify performance metrics
+      // Log performance metrics
       const avgFrameTime = duration / frames;
+      console.log(
+        `Average frame time: ${avgFrameTime.toFixed(2)}ms (target: <33.34ms)`,
+      );
       expect(avgFrameTime).toBeLessThan(33.34); // 30fps minimum performance target
-      expect(avgFrameTime).toBeGreaterThan(0); // Ensure calculation is valid
     });
 
     it("should handle simultaneous player movements without conflicts", () => {

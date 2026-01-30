@@ -30,7 +30,7 @@ describe('Service Worker Version Management', () => {
       
       // Skip test if dist doesn't exist (e.g., tests run before build)
       if (!existsSync(distSwPath)) {
-        // Test skipped - dist/sw.js not found, build required
+        console.log('Skipping test: dist/sw.js not found - run build first');
         return;
       }
 

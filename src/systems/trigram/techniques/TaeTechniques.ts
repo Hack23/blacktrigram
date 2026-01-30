@@ -59,6 +59,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "punch", // Type: shared category
+    animationId: "tae_flowing_strikes", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.FLOWING_CROSS,
     animationSpeed: 1.2,
     category: "medium",
@@ -96,7 +100,11 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
-    animationType: AnimationType.WRIST_LOCK,
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_wrist_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
+    animationType: AnimationType.TAE_WRIST_LOCK,
     animationSpeed: 0.85,
     category: "light",
     range: "short",
@@ -133,6 +141,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_small_circle", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
     animationSpeed: 0.85,
     category: "special",
@@ -170,6 +182,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.1,
     critMultiplier: 1.4,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_finger_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.9,
     category: "light",
@@ -207,6 +223,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_elbow_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.ELBOW_LOCK,
     animationSpeed: 0.8,
     category: "medium",
@@ -244,6 +264,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_shoulder_lock", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.SHOULDER_MANIPULATION,
     animationSpeed: 0.8,
     category: "medium",
@@ -281,6 +305,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
+    // NEW ARCHITECTURE: Separate type (category) from ID (unique)
+    animationCategory: "joint_lock", // Type: shared category
+    animationId: "tae_arm_bar", // ID: unique 1-1 mapping
+    // Legacy field for backward compatibility
     animationType: AnimationType.ARM_BAR,
     animationSpeed: 0.75,
     category: "medium",

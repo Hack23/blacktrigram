@@ -343,6 +343,10 @@ describe("AC3: Korean-English Bilingual Names", () => {
       }
     });
 
+    if (incompleteTechniques.length > 0) {
+      console.error("❌ Techniques with incomplete bilingual names:", incompleteTechniques);
+    }
+
     expect(incompleteTechniques).toHaveLength(0);
   });
 
@@ -387,6 +391,10 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
     const allTechniques = ALL_TECHNIQUES;
     const uncategorized = allTechniques.filter((tech) => !tech.category);
 
+    if (uncategorized.length > 0) {
+      console.error("❌ Uncategorized techniques:", uncategorized.map((t) => t.id));
+    }
+
     expect(uncategorized).toHaveLength(0);
   });
 
@@ -402,6 +410,9 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
 
     lightTechniques.forEach((tech) => {
       const validation = validateCategoryProperties(tech);
+      if (!validation.valid) {
+        console.error("❌ " + tech.id + ":", validation.issues);
+      }
       expect(validation.valid).toBe(true);
     });
   });
@@ -418,6 +429,9 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
 
     heavyTechniques.forEach((tech) => {
       const validation = validateCategoryProperties(tech);
+      if (!validation.valid) {
+        console.error("❌ " + tech.id + ":", validation.issues);
+      }
       expect(validation.valid).toBe(true);
     });
   });
@@ -434,6 +448,9 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
 
     mediumTechniques.forEach((tech) => {
       const validation = validateCategoryProperties(tech);
+      if (!validation.valid) {
+        console.error("❌ " + tech.id + ":", validation.issues);
+      }
       // Assert that medium techniques meet balance criteria
       expect(validation.valid).toBe(true);
     });
@@ -451,6 +468,9 @@ describe("AC4: Categorization (Light/Medium/Heavy/Special)", () => {
 
     specialTechniques.forEach((tech) => {
       const validation = validateCategoryProperties(tech);
+      if (!validation.valid) {
+        console.error("❌ " + tech.id + ":", validation.issues);
+      }
       expect(validation.valid).toBe(true);
     });
   });
@@ -602,6 +622,10 @@ describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
       (tech) => !tech.animationType
     );
 
+    if (missingAnimationType.length > 0) {
+      console.error("❌ Techniques missing animationType:", missingAnimationType.map((t) => t.id));
+    }
+
     expect(missingAnimationType).toHaveLength(0);
   });
 
@@ -610,6 +634,10 @@ describe("AC7: Animation Hooks (animationType, animationSpeed)", () => {
     const missingAnimationSpeed = allTechniques.filter(
       (tech) => tech.animationSpeed === undefined
     );
+
+    if (missingAnimationSpeed.length > 0) {
+      console.error("❌ Techniques missing animationSpeed:", missingAnimationSpeed.map((t) => t.id));
+    }
 
     expect(missingAnimationSpeed).toHaveLength(0);
   });
