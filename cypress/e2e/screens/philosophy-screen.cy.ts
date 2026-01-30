@@ -1,3 +1,12 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyScreenElement,
+  verifyCanvasVisible
+} from "../../support/test-helpers";
+
 /**
  * PhilosophyScreen Comprehensive E2E Test
  * Target Execution Time: 2-3 minutes
@@ -11,29 +20,19 @@
  *
  * ✅ Three.js Compatible - Tests PhilosophyScreen with Canvas and Html overlays
  * ⏱️ Optimized for 2-3 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-
-    // Navigate to philosophy screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="philosophy-button"]').length > 0) {
-        cy.get('[data-testid="philosophy-button"]').click({ force: true });
-      } else if ($body.find('[data-testid="menu-philosophy"]').length > 0) {
-        cy.get('[data-testid="menu-philosophy"]').click({ force: true });
-      } else {
-        // Use keyboard shortcut as fallback
-        cy.log("Using keyboard shortcut '4' for philosophy");
-        cy.get("body").type("4");
-      }
-    });
+    setupScreen('philosophy');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should render PhilosophyScreen with Korean martial arts philosophy", () => {
@@ -44,14 +43,8 @@ describe("PhilosophyScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Philosophy Screen Rendering");
 
-    cy.get('[data-testid="philosophy-screen"]', { timeout: 5000 }).should(
-      "exist"
-    );
-    cy.log("✅ Philosophy screen exists");
-
-    // Verify canvas is visible
-    cy.get("canvas").should("be.visible");
-    cy.log("✅ Canvas rendering verified");
+    verifyScreenElement('philosophy-screen', true);
+    verifyCanvasVisible();
 
     // ============================================================
     // 2. Verify Philosophy Content (30s)
