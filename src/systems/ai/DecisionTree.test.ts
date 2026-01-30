@@ -396,7 +396,13 @@ describe("AIDecisionTree", () => {
         
         // Assert that we got some decision variety
         expect(uniqueDecisions.length).toBeGreaterThan(0);
-        expect(Object.keys(decisionCounts).length).toBeGreaterThan(0);
+        
+        // Sanity check: counts should cover every recorded decision
+        const totalCount = Object.values(decisionCounts).reduce(
+          (sum, count) => sum + count,
+          0,
+        );
+        expect(totalCount).toBe(decisionTypes.length);
       }
 
       // With very high stance switch frequency test personality, should find stance changes

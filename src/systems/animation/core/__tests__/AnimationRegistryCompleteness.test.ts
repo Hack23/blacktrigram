@@ -210,9 +210,7 @@ describe("AnimationRegistry - Structure Validation", () => {
       // At least the key animations should exist
       expect(total).toBeGreaterThan(200);
       
-      // Report timing characteristics
-      const ratio = startingAtZero / total;
-      expect(ratio).toBeGreaterThan(0); // Some animations should start at time 0
+      // Some animations should start at time 0
       expect(startingAtZero).toBeGreaterThan(0);
     });
 
