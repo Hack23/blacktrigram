@@ -2,7 +2,10 @@ import {
   setupScreen,
   teardownScreen,
   changeStance,
-  waitForTransition
+  waitForTransition,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  logMemoryUsage
 } from "../support/test-helpers";
 
 /**
@@ -18,6 +21,7 @@ import {
  * ✅ Three.js Compatible - Tests SkeletalPlayer3D and Player3DWithTransitions
  * ⏱️ Target execution time: 5-7 minutes
  * ♻️ Refactored with shared test helpers
+ * 🧹 Memory leak prevention with cleanup utilities
  * 
  * @module cypress/e2e/character-models
  * @category E2E Tests
@@ -30,6 +34,9 @@ describe("Character Models - Visual Regression Tests", () => {
   });
 
   afterEach(() => {
+    // Enhanced cleanup to prevent memory leaks
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
     teardownScreen();
   });
 
@@ -45,15 +52,20 @@ describe("Character Models - Visual Regression Tests", () => {
       { key: "8", name: "gon", korean: "곤", symbol: "☷", description: "Earth - Grounding techniques" },
     ];
 
-    stances.forEach((stance) => {
+    stances.forEach((stance, index) => {
       it(`should match ${stance.korean} (${stance.symbol}) stance screenshot`, () => {
         cy.annotate(`Testing ${stance.korean} ${stance.symbol} - ${stance.description}`);
+        
+        // Log memory usage before test
+        if (index === 0) {
+          logMemoryUsage(`Stance Test Start`);
+        }
         
         // Change to stance using helper
         changeStance(parseInt(stance.key), `${stance.korean} (${stance.symbol})`);
         
-        // Wait for stance transition to complete
-        waitForTransition(500);
+        // Reduced wait time for stance transition
+        waitForTransition(300);  // Reduced from 500ms
         
         // Verify stance indicator updated
         cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
@@ -61,8 +73,8 @@ describe("Character Models - Visual Regression Tests", () => {
           .invoke("text")
           .should("include", stance.name);
         
-        // Wait for Three.js rendering to stabilize
-        waitForTransition(500);
+        // Reduced wait time for rendering
+        waitForTransition(300);  // Reduced from 500ms
         
         // Take screenshot for visual comparison
         cy.get('[data-testid="combat-screen"]')

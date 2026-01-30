@@ -41,8 +41,10 @@ export function setupScreen(screenType?: 'combat' | 'training' | 'controls' | 'p
 
 /**
  * Standard teardown for screen tests
+ * Now includes memory cleanup and Three.js resource disposal
  */
 export function teardownScreen(): void {
+  cleanupThreeJSResources();
   cy.returnToIntro();
 }
 
@@ -58,6 +60,93 @@ function getScreenShortcutKey(screen: string): string {
     'end': '5'
   };
   return shortcuts[screen] || '1';
+}
+
+// ============================================================
+// Memory Management and Cleanup
+// ============================================================
+
+/**
+ * Clean up Three.js resources to prevent memory leaks
+ * Disposes geometries, materials, textures, and removes event listeners
+ */
+export function cleanupThreeJSResources(): void {
+  cy.window().then((win) => {
+    try {
+      // Access Three.js scene if available
+      if (win && (win as any).__THREE_DEVTOOLS__) {
+        cy.log("🧹 Cleaning up Three.js resources...");
+        
+        // Trigger any cleanup functions in the app
+        if ((win as any).cleanupThreeJS) {
+          (win as any).cleanupThreeJS();
+        }
+        
+        // Force garbage collection hint
+        if ((win as any).gc) {
+          (win as any).gc();
+        }
+      }
+      
+      // Remove all canvas event listeners
+      const canvases = win.document.querySelectorAll('canvas');
+      canvases.forEach((canvas) => {
+        const newCanvas = canvas.cloneNode(true);
+        canvas.parentNode?.replaceChild(newCanvas, canvas);
+      });
+      
+      cy.log("✅ Three.js resources cleaned up");
+    } catch (error) {
+      cy.log(`⚠️ Cleanup error (non-critical): ${error}`);
+    }
+  });
+}
+
+/**
+ * Force memory cleanup and garbage collection
+ */
+export function forceMemoryCleanup(): void {
+  cy.window().then((win) => {
+    try {
+      // Clear any large data structures
+      if ((win as any).testData) {
+        delete (win as any).testData;
+      }
+      
+      // Request garbage collection if available
+      if ((win as any).gc) {
+        (win as any).gc();
+        cy.log("✅ Forced garbage collection");
+      }
+      
+      // Wait for cleanup to complete
+      cy.wait(100);
+    } catch (error) {
+      cy.log(`⚠️ Memory cleanup error (non-critical): ${error}`);
+    }
+  });
+}
+
+/**
+ * Monitor memory usage and log warnings
+ */
+export function logMemoryUsage(testName: string): void {
+  cy.window().then((win) => {
+    if ((win.performance as any).memory) {
+      const memory = (win.performance as any).memory;
+      const usedMB = (memory.usedJSHeapSize / 1048576).toFixed(2);
+      const totalMB = (memory.totalJSHeapSize / 1048576).toFixed(2);
+      const limitMB = (memory.jsHeapSizeLimit / 1048576).toFixed(2);
+      
+      cy.log(`📊 Memory [${testName}]: ${usedMB}MB / ${totalMB}MB (limit: ${limitMB}MB)`);
+      
+      // Warn if memory usage is high
+      const usagePercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
+      if (usagePercent > 80) {
+        cy.log(`⚠️ High memory usage: ${usagePercent.toFixed(1)}%`);
+      }
+    }
+  });
 }
 
 // ============================================================

@@ -18,6 +18,7 @@ import "./commands";
 import "./performance"; // Import performance monitoring
 import "./test-isolation"; // Import test isolation utilities
 import "./resource-monitoring"; // Import resource monitoring utilities
+import "./memory-monitor"; // Import memory monitoring for leak detection
 
 // Import cypress-wait-until for waitUntil command
 import "cypress-wait-until";
