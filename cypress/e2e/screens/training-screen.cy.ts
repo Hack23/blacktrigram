@@ -5,8 +5,6 @@ import {
   forceMemoryCleanup,
   verifyTrainingScreenReady,
   practiceStanceWithVerification,
-  verifyCanvasVisible,
-  waitForTransition,
   verifyElementConditional
 } from "../../support/test-helpers";
 

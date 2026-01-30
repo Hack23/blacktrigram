@@ -6,10 +6,7 @@ import {
   verifyCombatScreenReady,
   verifyCombatHUD,
   verifyActiveWebGLRendering,
-  testAllTrigramStances,
-  changeStance,
-  executeCombatAttacks,
-  waitForTransition
+  testAllTrigramStances
 } from "../../support/test-helpers";
 
 /**
@@ -70,7 +67,7 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
     cy.log("2️⃣ Testing Trigram Stance System (8 stances)");
 
     // Test all 8 trigram stances with verification
-    testAllTrigramStances((stanceNum, stanceName) => {
+    testAllTrigramStances((stanceNum, _stanceName) => {
       // Verify stance change is reflected in UI
       cy.get("body").then(($body) => {
         const stanceIndicatorVisible = 
@@ -82,19 +79,8 @@ describe("CombatScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
         }
       });
     });
-      cy.log(`Testing stance ${stance} (${stanceNames[stance - 1]})...`);
-      cy.get("body").type(stance.toString());
 
-      // Wait for stance indicator to update using assertion instead of fixed wait
-      cy.get('[data-testid="player1-stance-indicator"]', { timeout: 2000 })
-        .should("exist")
-        .invoke("text")
-        .should("include", stanceNames[stance - 1]);
-
-      cy.log(`✅ Stance ${stance} input processed`);
-    }
-
-    cy.log("✅ All 8 trigram stances tested");
+    cy.log("All 8 trigram stances tested");
 
     // ============================================================
     // 3. Test Combat Actions with Health Verification (60s)

@@ -1,10 +1,7 @@
 import {
   setupScreen,
-  teardownScreen,
   cleanupThreeJSResources,
   forceMemoryCleanup,
-  verifyCanvasVisible,
-  verifyElementConditional,
   waitForTransition
 } from "../../support/test-helpers";
 

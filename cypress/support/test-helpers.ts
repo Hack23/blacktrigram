@@ -416,7 +416,7 @@ export function practiceStanceWithVerification(
  * Verify FPS is within acceptable range
  */
 export function verifyFPSRange(minFPS = 30, maxFPS = 60): void {
-  cy.window().then(win => {
+  cy.window().then(_win => {
     // FPS verification logic (if implemented in app)
     cy.log(`✅ FPS verification (${minFPS}-${maxFPS} target)`);
   });

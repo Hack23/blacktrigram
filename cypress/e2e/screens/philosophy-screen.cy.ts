@@ -4,11 +4,7 @@ import {
   cleanupThreeJSResources,
   forceMemoryCleanup,
   verifyScreenElement,
-  verifyCanvasVisible,
-  verifyKoreanTextPresent,
-  verifyEnglishTextPresent,
-  verifyElementConditional,
-  waitForTransition
+  verifyCanvasVisible
 } from "../../support/test-helpers";
 
 /**

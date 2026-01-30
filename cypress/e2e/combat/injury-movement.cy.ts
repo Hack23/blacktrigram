@@ -6,7 +6,6 @@ import {
   verifyCombatScreenReady,
   changeStance,
   executeCombatAttacks,
-  verifyElementConditional,
   waitForTransition
 } from "../../support/test-helpers";
 
@@ -77,16 +76,8 @@ describe("Injury Movement System - E2E Test (Target: 2-3 min)", () => {
     
     // Execute 10 attacks to significantly damage opponent's legs
     executeCombatAttacks(10, 800);
-      cy.get("body").type(" ");
-      cy.wait(600);
-      
-      // Verify rendering continues
-      if (i % 3 === 0) {
-        cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });
-      }
-    }
 
-    cy.log("✅ All 10 strikes completed");
+    cy.log("All 10 strikes completed");
 
     // ============================================================
     // 5. Verify Movement Status Indicator Appears (15s)

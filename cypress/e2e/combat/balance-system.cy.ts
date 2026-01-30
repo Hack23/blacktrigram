@@ -5,11 +5,7 @@ import {
   forceMemoryCleanup,
   verifyCombatScreenReady,
   changeStance,
-  executeRapidStanceChanges,
-  executeCombatAttacks,
-  verifyElementConditional,
-  waitForTransition,
-  verifyBilingualText
+  waitForTransition
 } from "../../support/test-helpers";
 
 /**

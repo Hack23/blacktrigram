@@ -5,7 +5,6 @@ import {
   forceMemoryCleanup,
   verifyCombatScreenReady,
   verifyActiveWebGLRendering,
-  executeCombatAttacks,
   waitForTransition
 } from "../../support/test-helpers";
 
