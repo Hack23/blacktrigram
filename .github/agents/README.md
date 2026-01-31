@@ -2,6 +2,35 @@
 
 This directory contains specialized GitHub Copilot custom agent profiles for Black Trigram development. Each agent is an expert in a specific domain, providing focused assistance for particular development tasks.
 
+## 🆕 Agent Skills System
+
+**New in 2026:** Black Trigram now includes **[GitHub Copilot Agent Skills](../skills/README.md)** - strategic, high-level principles that are automatically enforced across all development work.
+
+### Skills vs Agents
+
+| **Skills** ([📚 View All](../skills/README.md)) | **Agents** (This Directory) |
+|-----------|-----------|
+| Strategic principles and rules | Task-specific implementers |
+| Automatically activated by context | Explicitly invoked |
+| Enforce standards and patterns | Execute specific workflows |
+| High-level, declarative | Detailed, procedural |
+
+**Example:**
+- **Skill**: "All security changes must update SECURITY_ARCHITECTURE.md" ✅ Automatic
+- **Agent**: "I will implement JWT authentication in `src/auth/jwt.ts`" 🤖 On-demand
+
+### Available Skills (7 Total)
+
+1. **[security-architecture-validation](../skills/security-architecture-validation/SKILL.md)** - ISMS security-by-design enforcement
+2. **[c4-architecture-documentation](../skills/c4-architecture-documentation/SKILL.md)** - C4 Model architecture standards
+3. **[korean-theming-standards](../skills/korean-theming-standards/SKILL.md)** - Korean cyberpunk aesthetic rules
+4. **[testing-strategy-enforcement](../skills/testing-strategy-enforcement/SKILL.md)** - >90% test coverage requirements
+5. **[performance-optimization](../skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
+6. **[isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
+7. **[threejs-best-practices](../skills/threejs-best-practices/SKILL.md)** - Three.js/React best practices
+
+All agents leverage these skills for automatic quality enforcement. **[Learn more →](../skills/README.md)**
+
 ## 🔑 Essential Context Files
 
 All agents reference these key files to understand the project environment and configuration:
