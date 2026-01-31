@@ -991,13 +991,13 @@ This agent leverages the following GitHub Copilot Agent Skills for automatic enf
 
 | Skill | When Applied | Enforcement |
 |-------|-------------|-------------|
-| [security-architecture-validation](../.github/skills/security-architecture-validation/SKILL.md) | All security-related code | ISMS compliance, security-by-design |
-| [c4-architecture-documentation](../.github/skills/c4-architecture-documentation/SKILL.md) | Architecture changes | C4 Model, 12 architecture docs |
-| [korean-theming-standards](../.github/skills/korean-theming-standards/SKILL.md) | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
-| [testing-strategy-enforcement](../.github/skills/testing-strategy-enforcement/SKILL.md) | All code changes | >90% coverage, Vitest/Cypress |
-| [performance-optimization](../.github/skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
-| [isms-compliance-checking](../.github/skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
-| [threejs-best-practices](../.github/skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+| [security-architecture-validation](../skills/security-architecture-validation/SKILL.md) | All security-related code | ISMS compliance, security-by-design |
+| [c4-architecture-documentation](../skills/c4-architecture-documentation/SKILL.md) | Architecture changes | C4 Model, 12 architecture docs |
+| [korean-theming-standards](../skills/korean-theming-standards/SKILL.md) | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
+| [testing-strategy-enforcement](../skills/testing-strategy-enforcement/SKILL.md) | All code changes | >90% coverage, Vitest/Cypress |
+| [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
+| [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
+| [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
 
 **Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
 

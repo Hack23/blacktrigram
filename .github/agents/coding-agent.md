@@ -17,23 +17,29 @@ You are a specialized coding agent for the Black Trigram (흑괘) project - a re
 
 2. **MCP Configuration**: `.github/copilot-mcp.json` (2026 Standard)
    ```json
-   mcp-servers:
-     github:
-       type: local
-       command: npx
-       args:
-         - "-y"
-         - "@modelcontextprotocol/server-github"
-         - "--toolsets"
-         - "all"
-         - "--tools"
-         - "*"
-       env:
-         GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-         GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
-         GITHUB_OWNER: Hack23
-         GITHUB_API_URL: "https://api.githubcopilot.com/mcp/insiders"  // Insiders endpoint
-       tools: ["*"]
+   {
+     "mcpServers": {
+       "github": {
+         "type": "local",
+         "command": "npx",
+         "args": [
+           "-y",
+           "@modelcontextprotocol/server-github",
+           "--toolsets",
+           "all",
+           "--tools",
+           "*"
+         ],
+         "env": {
+           "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+           "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+           "GITHUB_OWNER": "Hack23",
+           "GITHUB_API_URL": "https://api.githubcopilot.com/mcp/insiders"
+         },
+         "tools": ["*"]
+       }
+     }
+   }
    ```
    - Available MCP servers (GitHub, Filesystem, Git, Memory, Playwright, AWS)
    - Server capabilities and configurations
@@ -309,13 +315,13 @@ This agent leverages the following GitHub Copilot Agent Skills for automatic enf
 
 | Skill | When Applied | Enforcement |
 |-------|-------------|-------------|
-| [security-architecture-validation](../.github/skills/security-architecture-validation/SKILL.md) | All security-related code | ISMS compliance, security-by-design |
-| [c4-architecture-documentation](../.github/skills/c4-architecture-documentation/SKILL.md) | Architecture changes | C4 Model, 12 architecture docs |
-| [korean-theming-standards](../.github/skills/korean-theming-standards/SKILL.md) | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
-| [testing-strategy-enforcement](../.github/skills/testing-strategy-enforcement/SKILL.md) | All code changes | >90% coverage, Vitest/Cypress |
-| [performance-optimization](../.github/skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
-| [isms-compliance-checking](../.github/skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
-| [threejs-best-practices](../.github/skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+| [security-architecture-validation](../skills/security-architecture-validation/SKILL.md) | All security-related code | ISMS compliance, security-by-design |
+| [c4-architecture-documentation](../skills/c4-architecture-documentation/SKILL.md) | Architecture changes | C4 Model, 12 architecture docs |
+| [korean-theming-standards](../skills/korean-theming-standards/SKILL.md) | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
+| [testing-strategy-enforcement](../skills/testing-strategy-enforcement/SKILL.md) | All code changes | >90% coverage, Vitest/Cypress |
+| [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
+| [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
+| [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
 
 **Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
 

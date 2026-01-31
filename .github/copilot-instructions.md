@@ -56,32 +56,32 @@ ELSE (optimize - refer to performance-optimization skill)
 
 GitHub Copilot automatically loads relevant skills based on code context:
 
-1. **[security-architecture-validation](.github/skills/security-architecture-validation/SKILL.md)** - ISMS security-by-design enforcement
-2. **[c4-architecture-documentation](.github/skills/c4-architecture-documentation/SKILL.md)** - C4 Model architecture standards
-3. **[korean-theming-standards](.github/skills/korean-theming-standards/SKILL.md)** - Korean cyberpunk aesthetic rules
-4. **[testing-strategy-enforcement](.github/skills/testing-strategy-enforcement/SKILL.md)** - >90% test coverage requirements
-5. **[performance-optimization](.github/skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
-6. **[isms-compliance-checking](.github/skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
-7. **[threejs-best-practices](.github/skills/threejs-best-practices/SKILL.md)** - Three.js/React optimization patterns
+1. **[security-architecture-validation](./skills/security-architecture-validation/SKILL.md)** - ISMS security-by-design enforcement
+2. **[c4-architecture-documentation](./skills/c4-architecture-documentation/SKILL.md)** - C4 Model architecture standards
+3. **[korean-theming-standards](./skills/korean-theming-standards/SKILL.md)** - Korean cyberpunk aesthetic rules
+4. **[testing-strategy-enforcement](./skills/testing-strategy-enforcement/SKILL.md)** - >90% test coverage requirements
+5. **[performance-optimization](./skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
+6. **[isms-compliance-checking](./skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
+7. **[threejs-best-practices](./skills/threejs-best-practices/SKILL.md)** - Three.js/React optimization patterns
 
-**📖 [Complete Skills Documentation](.github/skills/README.md)**
+**📖 [Complete Skills Documentation](./skills/README.md)**
 
 ### Available Custom Agents (On-Demand)
 
 Explicitly invoke agents for specialized tasks:
 
-1. **[@task-agent](.github/agents/task-agent.md)** - Product quality orchestrator, creates issues
-2. **[@coding-agent](.github/agents/coding-agent.md)** - TypeScript/React/Three.js implementation
-3. **[@frontend-specialist](.github/agents/frontend-specialist.md)** - React 19 and strict TypeScript expert
-4. **[@game-developer](.github/agents/game-developer.md)** - Three.js game systems and 60fps optimization
-5. **[@korean-martial-arts-expert](.github/agents/korean-martial-arts-expert.md)** - Martial arts authenticity and vital point systems
-6. **[@testing-agent](.github/agents/testing-agent.md)** - Vitest and Cypress test implementation
-7. **[@test-engineer](.github/agents/test-engineer.md)** - Test strategy and CI integration
-8. **[@documentation-writer](.github/agents/documentation-writer.md)** - Technical docs and bilingual content
-9. **[@code-review-agent](.github/agents/code-review-agent.md)** - Code quality and standards review
-10. **[@security-specialist](.github/agents/security-specialist.md)** - Supply chain security and OSSF Scorecard
+1. **[@task-agent](./agents/task-agent.md)** - Product quality orchestrator, creates issues
+2. **[@coding-agent](./agents/coding-agent.md)** - TypeScript/React/Three.js implementation
+3. **[@frontend-specialist](./agents/frontend-specialist.md)** - React 19 and strict TypeScript expert
+4. **[@game-developer](./agents/game-developer.md)** - Three.js game systems and 60fps optimization
+5. **[@korean-martial-arts-expert](./agents/korean-martial-arts-expert.md)** - Martial arts authenticity and vital point systems
+6. **[@testing-agent](./agents/testing-agent.md)** - Vitest and Cypress test implementation
+7. **[@test-engineer](./agents/test-engineer.md)** - Test strategy and CI integration
+8. **[@documentation-writer](./agents/documentation-writer.md)** - Technical docs and bilingual content
+9. **[@code-review-agent](./agents/code-review-agent.md)** - Code quality and standards review
+10. **[@security-specialist](./agents/security-specialist.md)** - Supply chain security and OSSF Scorecard
 
-**📖 [Complete Agents Documentation](.github/agents/README.md)**
+**📖 [Complete Agents Documentation](./agents/README.md)**
 
 ### When to Use Skills vs Agents
 

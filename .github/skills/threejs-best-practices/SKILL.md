@@ -207,7 +207,7 @@ export const UnoptimizedLighting: React.FC = () => {
 ✅ **Korean-Themed Materials**
 ```typescript
 // GOOD: Korean cyberpunk materials with emissive effects
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { KOREAN_COLORS } from '@/types/constants';
 
@@ -269,12 +269,12 @@ export const PlayerNametag: React.FC<{ name: string; health: number }> = ({ name
   return (
     <Html position={[0, 2.5, 0]} center distanceFactor={10}>
       <div style={{
-        background: `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16)}dd`,
-        border: `2px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16)}`,
+        background: `#${KOREAN_COLORS.UI_BACKGROUND_DARK.toString(16).padStart(6, '0')}dd`,
+        border: `2px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`,
         borderRadius: '8px',
         padding: '8px 12px',
         fontFamily: FONT_FAMILY.KOREAN,
-        color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16)}`,
+        color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, '0')}`,
         pointerEvents: 'none',
       }}>
         <div>{name}</div>
