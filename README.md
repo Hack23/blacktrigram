@@ -645,6 +645,17 @@ Game/frontend will be open source with commercial backend supporting multiplayer
 - **🕷️ ZAP Security Scanning** - OWASP ZAP dynamic application security testing
 - **⚡ Lighthouse Performance** - [Automated performance and accessibility audits](./performance-testing.md)
 
+🤖 **GitHub Copilot Custom Agents & Skills**
+
+- [🎯 **Custom Agents Guide**](.github/agents/README.md)
+  _10 specialized agents for development, testing, security, documentation, and Korean martial arts expertise._
+- [⚡ **Agent Skills Catalog**](.github/skills/README.md)
+  _7 automatic enforcement skills for security, architecture, Korean theming, testing, performance, and Three.js best practices._
+- [📋 **Agent Capabilities Matrix**](.github/agents/AGENT_CAPABILITIES.md)
+  _Comprehensive coordination guide for all agents and their specialized capabilities._
+- [📊 **Agent Skills Implementation Report**](.github/AGENT_SKILLS_IMPLEMENTATION.md)
+  _Complete implementation details of the agent skills system with compliance frameworks._
+
 
 ---
 
