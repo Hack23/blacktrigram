@@ -9,7 +9,7 @@
  * @korean 키프레임설정
  */
 
-import type { AnimationKeyframe } from "@/types/skeletal";
+import type { AnimationKeyframe, SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 import * as THREE from "three";
 import type { GuardPositionType } from "./KoreanGuardPositions";
@@ -27,7 +27,7 @@ export type HandHighlightMode =
 interface AnimationBuilderLike {
   _addKeyframe(kf: AnimationKeyframe): void;
   at(time: number, easing?: string): KeyframeConfig;
-  build(): any;
+  build(): SkeletalAnimation;
 }
 
 /**
