@@ -1,7 +1,7 @@
 {
   "name": "game-app",
   "private": true,
-  "version": "0.6.34",
+  "version": "0.6.35",
   "type": "module",
   "scripts": {
     "dev": "vite --host --open",
@@ -59,9 +59,18 @@
     "gen:sprites:archetype": "npx tsx scripts/generate_archetype_sprites.ts",
     "audit:assets": "npx tsx scripts/audit-assets.ts",
     "audit:assets:verbose": "npx tsx scripts/audit-assets.ts --verbose",
+    "audit:events": "npx tsx scripts/audit-event-listeners.ts",
+    "audit:events:verbose": "npx tsx scripts/audit-event-listeners.ts --verbose",
+    "audit:memory": "npx tsx scripts/audit-memory-efficiency.ts",
+    "audit:memory:verbose": "npx tsx scripts/audit-memory-efficiency.ts --verbose",
+    "audit:memory:fix-report": "npx tsx scripts/audit-memory-efficiency.ts --fix-report",
+    "audit:physical": "npx tsx scripts/validate-physical-attributes.ts",
     "audit:threejs": "npx tsx scripts/audit-threejs-disposal.ts",
     "audit:threejs:verbose": "npx tsx scripts/audit-threejs-disposal.ts --verbose",
     "audit:threejs:fix-report": "npx tsx scripts/audit-threejs-disposal.ts --fix-report",
+    "audit:threejs:v2": "npx tsx scripts/audit-threejs-disposal-v2.ts",
+    "audit:threejs:v2:verbose": "npx tsx scripts/audit-threejs-disposal-v2.ts --verbose",
+    "audit:threejs:v2:json": "npx tsx scripts/audit-threejs-disposal-v2.ts --json",
     "screenshots:capture": "start-server-and-test dev http://localhost:5173 'npx tsx scripts/capture-screenshots.ts'",
     "screenshots:post": "npx tsx scripts/post-screenshots-to-pr.ts",
     "screenshots:all": "npm run screenshots:capture && npm run screenshots:post"
@@ -76,7 +85,7 @@
     "three": "0.182.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.978.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.980.0",
     "@eslint/js": "^9.39.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -111,7 +120,7 @@
     "mochawesome-merge": "5.1.0",
     "mochawesome-report-generator": "6.3.2",
     "openai": "^6.17.0",
-    "playwright": "1.58.0",
+    "playwright": "1.58.1",
     "start-server-and-test": "^2.1.3",
     "ts-morph": "^27.0.2",
     "ts-node": "^10.9.2",

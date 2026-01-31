@@ -1,3 +1,14 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyCombatScreenReady,
+  verifyCanvasVisible,
+  changeStance,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * Mobile Performance E2E Test
  * 
@@ -12,31 +23,32 @@
  * measured using browser performance tools or specialized performance testing.
  * 
  * Target execution: 45 seconds
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("Mobile Performance Optimization (Target: 45s)", () => {
   beforeEach(() => {
     // Set mobile viewport
     cy.viewport(375, 667); // iPhone SE size
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should integrate adaptive quality system during 30-second mobile combat session", () => {
     cy.annotate("Testing Mobile Performance Integration");
 
     // ============================================================
-    // 1. Enter Combat (Mobile Viewport)
+    // 1. Verify Combat on Mobile Viewport
     // ============================================================
-    cy.log("1️⃣ Entering combat on mobile viewport (375x667)");
-    cy.enterCombatMode();
-
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.get("canvas").should("be.visible");
+    cy.log("1️⃣ Verifying combat on mobile viewport (375x667)");
+    verifyCombatScreenReady();
+    verifyCanvasVisible();
 
     // ============================================================
     // 2. 30-Second Combat Session with Actions
@@ -44,17 +56,17 @@ describe("Mobile Performance Optimization (Target: 45s)", () => {
     cy.log("2️⃣ Starting 30-second combat session with active gameplay");
 
     // Cycle through stances
-    cy.wait(500);
-    cy.get("body").type("1"); // Switch to Geon stance
-    cy.wait(500);
-    cy.get("body").type("3"); // Switch to Li stance
-    cy.wait(500);
+    waitForTransition(500);
+    changeStance(1, "Geon");
+    waitForTransition(500);
+    changeStance(3, "Li");
+    waitForTransition(500);
 
     // Attack sequence
     cy.get("body").type(" "); // Attack
-    cy.wait(1000);
+    waitForTransition(1000);
     cy.get("body").type(" "); // Attack
-    cy.wait(1000);
+    waitForTransition(1000);
 
     // Movement and more stances
     cy.get("body").type("w"); // Move forward

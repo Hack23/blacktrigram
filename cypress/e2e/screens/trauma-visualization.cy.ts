@@ -1,3 +1,13 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyCombatScreenReady,
+  verifyActiveWebGLRendering,
+  waitForTransition
+} from "../../support/test-helpers";
+
 /**
  * Trauma Visualization System E2E Test
  * 
@@ -9,17 +19,19 @@
  * - Performance validation
  * 
  * Target Execution Time: 2-3 minutes
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-    cy.enterCombatMode();
+    setupScreen('combat');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should demonstrate progressive bruising with 5 strikes to same location", () => {
@@ -29,9 +41,8 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
     // 1. Verify Combat Screen Rendering
     // ============================================================
     cy.log("1️⃣ Verifying Combat Screen Rendering");
-    cy.get('[data-testid="combat-screen"]').should("exist");
-    cy.get("canvas").should("be.visible");
-    cy.verifyThreeJSRendering({ timeout: 3000, minPixelChange: 50 });
+    verifyCombatScreenReady();
+    verifyActiveWebGLRendering();
     cy.log("✅ Combat screen and Three.js rendering verified");
 
     // ============================================================
@@ -47,7 +58,7 @@ describe("Trauma Visualization System - E2E Test (Target: 2-3 min)", () => {
       cy.get("body").type(" ");
       
       // Wait for attack animation
-      cy.wait(400);
+      waitForTransition(400);
       
       // Verify combat state updated
       cy.verifyThreeJSRendering({ timeout: 1000, minPixelChange: 10 });

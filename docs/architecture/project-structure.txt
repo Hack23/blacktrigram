@@ -879,6 +879,7 @@ src/data/archetypeClothing.ts
 src/data/archetypePhysicalAttributes.test.ts
 src/data/archetypePhysicalAttributes.ts
 src/data/techniqueMappings.ts
+src/data/techniques.test.ts
 src/data/techniques.ts
 src/hooks/__tests__/useBalanceAnimations.test.ts
 src/hooks/__tests__/useHUDLayout.test.ts
@@ -965,6 +966,7 @@ src/systems/ai/__tests__/AI-Combat-Integration.test.ts
 src/systems/ai/__tests__/AI-Performance.bench.ts
 src/systems/ai/index.ts
 src/systems/ai/types.ts
+src/systems/animation/AnimationCategory.ts
 src/systems/animation/README.md
 src/systems/animation/builders/AnimationBuilder.test.ts
 src/systems/animation/builders/AnimationBuilder.ts
@@ -1208,6 +1210,7 @@ src/systems/trigram/TransitionCalculator.test.ts
 src/systems/trigram/TransitionCalculator.ts
 src/systems/trigram/TrigramCalculator.test.ts
 src/systems/trigram/TrigramCalculator.ts
+src/systems/trigram/__tests__/TechniqueAnimationMapping.test.ts
 src/systems/trigram/__tests__/TechniqueVariety.test.ts
 src/systems/trigram/index.ts
 src/systems/trigram/techniques/DarkOpsTechniques.ts
@@ -1220,6 +1223,7 @@ src/systems/trigram/techniques/LiTechniques.ts
 src/systems/trigram/techniques/SonTechniques.ts
 src/systems/trigram/techniques/TaeTechniques.ts
 src/systems/trigram/techniques/TechniqueConfig.ts
+src/systems/trigram/techniques/TechniqueId.ts
 src/systems/trigram/techniques/index.ts
 src/systems/trigram/types.test.ts
 src/systems/trigram/types.ts
@@ -1252,6 +1256,7 @@ src/types/__tests__/PhysicsTypes.test.ts
 src/types/__tests__/skeletal.mirrorGuardPose.test.ts
 src/types/clothing.ts
 src/types/common.ts
+src/types/constants/animations.test.ts
 src/types/constants/animations.ts
 src/types/constants/colors.ts
 src/types/constants/designSystem.test.ts

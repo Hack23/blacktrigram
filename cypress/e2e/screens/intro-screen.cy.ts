@@ -1,3 +1,12 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyScreenElement,
+  verifyMultipleElements
+} from "../../support/test-helpers";
+
 /**
  * IntroScreen Comprehensive E2E Test
  * Target Execution Time: 3-4 minutes
@@ -12,12 +21,50 @@
  *
  * ✅ Three.js Compatible - Tests IntroScreenThreeJS with Canvas and Html overlays
  * ⏱️ Optimized for 3-4 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("IntroScreen - Comprehensive E2E Test (Target: 3-4 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
+    setupScreen();
+  });
+
+  afterEach(() => {
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
+  });
+
+  describe("UI Overlay Verification", () => {
+    it("should render UI overlay immediately on initial load", () => {
+      cy.annotate("Testing UI Overlay Immediate Visibility");
+      
+      // Verify IntroScreen is mounted
+      verifyScreenElement('intro-screen', true);
+      
+      // Verify Canvas is present
+      cy.get('canvas').should('exist');
+      
+      // Verify main UI elements are visible immediately (no delay needed)
+      verifyMultipleElements([
+        'main-title-container',
+        'logo-section',
+        'main-logo',
+        'trigram-symbols',
+        'menu-section-container',
+        'archetype-section-container',
+        'intro-footer'
+      ]);
+      
+      // Take screenshot for verification
+      cy.screenshot('intro-screen-ui-overlay-verified', { 
+        capture: 'viewport',
+        overwrite: true 
+      });
+      
+      cy.log("✅ UI overlay rendered immediately without delay");
+    });
   });
 
   it("should render IntroScreen with all UI elements and navigation", () => {

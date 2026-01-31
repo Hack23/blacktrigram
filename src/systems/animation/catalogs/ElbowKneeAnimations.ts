@@ -23,26 +23,26 @@ import {
 /**
  * Elbow Strike - 팔꿈치치기
  *
- * Horizontal elbow strike to temple or jaw.
- * Devastating close-range technique from Muay Thai influence.
+ * Fast horizontal elbow strike to temple or jaw.
+ * Devastating close-range technique with compact chamber.
  *
  * Phases:
- * 1. Chamber (준비): Arm crosses body
- * 2. Strike (치기): Elbow drives through target
- * 3. Peak (정점): Hold at impact
- * 4. Recovery (복귀): Return to guard
+ * 1. Chamber (준비): 80ms - Arm crosses body quickly
+ * 2. Strike (치기): 120ms - Elbow drives through target
+ * 3. Peak (정점): 60ms - Hold at impact
+ * 4. Recovery (복귀): 160ms - Return to guard
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Duration: 420ms (FAST horizontal elbow)
  *
  * @korean 팔꿈치치기애니메이션
  */
 export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_strike", "팔꿈치치기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber) // 준비 - Arm crosses body
-    .elbowStrike(TECHNIQUE_TIMING.FAST.extend) // 치기 - Elbow drives through
-    .elbowStrike(TECHNIQUE_TIMING.FAST.peak) // 정점 - Hold at impact
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀
+    .asAttack(0.42)
+    .elbowChamber(0.08) // 준비 - Fast arm crosses body
+    .elbowStrike(0.12) // 치기 - Quick elbow drives through
+    .elbowStrike(0.06) // 정점 - Brief hold at impact
+    .recover(0.16) // 복귀 - Quick recovery
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -53,19 +53,25 @@ export const ELBOW_STRIKE_ANIMATION: SkeletalAnimation =
  * Elbow Uppercut - 팔꿈치올려치기
  *
  * Rising elbow strike targeting chin from below.
- * Explosive vertical strike for close-range combat.
+ * Explosive vertical strike for close-range knockout power.
  *
- * Duration: 550ms (TECHNIQUE_TIMING.FAST)
+ * Phases:
+ * 1. Chamber (준비): 100ms - Drop and load for upward drive
+ * 2. Rise (올리기): 150ms - Explosive upward elbow
+ * 3. Peak (정점): 80ms - Maximum extension at chin level
+ * 4. Recovery (복귀): 150ms - Return to guard
+ *
+ * Duration: 480ms (Standard rising strike)
  *
  * @korean 팔꿈치올려치기애니메이션
  */
 export const ELBOW_UPPERCUT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_uppercut", "팔꿈치올려치기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber) // 준비
-    .elbowUppercut(TECHNIQUE_TIMING.FAST.extend) // 올려치기 - Rising elbow
-    .elbowUppercut(TECHNIQUE_TIMING.FAST.peak) // 정점 - Hold at peak
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀
+    .asAttack(0.48)
+    .elbowChamber(0.10) // 준비 - Drop and load
+    .elbowUppercut(0.15) // 올리기 - Rising elbow
+    .elbowUppercut(0.08) // 정점 - Hold at peak
+    .recover(0.15) // 복귀 - Return to stance
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -273,19 +279,28 @@ export const STEP_KNEE_ANIMATION: SkeletalAnimation =
 /**
  * Elbow-Knee Combo - 팔꿈치무릎콤보
  *
- * Elbow strike followed by knee.
- * Clinch range combination.
+ * Elbow strike followed immediately by knee.
+ * Clinch range combination for overwhelming offense.
+ *
+ * Phases:
+ * 1. Elbow Prep (준비): 70ms - Quick chamber
+ * 2. Elbow Strike (팔꿈치): 120ms - Horizontal elbow lands
+ * 3. Clinch Grab (잡기): 90ms - Grab opponent's head/shoulders
+ * 4. Knee Strike (무릎치기): 140ms - Knee drives up
+ * 5. Recovery (복귀): 150ms - Release and reset
+ *
+ * Duration: 670ms (Deliberate two-strike combo)
  *
  * @korean 팔꿈치무릎콤보애니메이션
  */
 export const ELBOW_KNEE_COMBO_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_knee_combo", "팔꿈치무릎콤보")
-    .asAttack(0.55)
-    .elbowChamber(0.06) // Elbow prep
-    .elbowStrike(0.1) // Elbow lands
-    .withClinch() // Grab
-    .kneeStrike(0.17) // Knee follows
-    .recover(0.22) // Release
+    .asAttack(0.67)
+    .elbowChamber(0.07) // 준비 - Elbow prep
+    .elbowStrike(0.12) // 팔꿈치 - Elbow lands
+    .clinchGrab(0.09) // 잡기 - Grab opponent  
+    .kneeStrike(0.14) // 무릎치기 - Knee follows
+    .recover(0.25) // 복귀 - Release
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -388,15 +403,27 @@ export const SPINAL_ELBOW_ANIMATION: SkeletalAnimation =
 
 /**
  * Brachial Elbow - 상박치기
- * Elbow to brachial nerve with unique targeting.
+ *
+ * Elbow to brachial nerve with downward angle.
+ * Precise nerve strike causing arm numbness and weakness.
+ *
+ * Phases:
+ * 1. Chamber (준비): 120ms - Position for downward strike
+ * 2. Brachial Strike (상박치기): 180ms - Angled downward elbow to shoulder/upper arm
+ * 3. Peak (정점): 80ms - Hold pressure on nerve
+ * 4. Recovery (복귀): 170ms - Return to guard
+ *
+ * Duration: 550ms (Deliberate nerve targeting)
+ *
  * @korean 상박치기애니메이션
  */
 export const BRACHIAL_ELBOW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("brachial_elbow", "상박치기")
-    .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .brachialElbow(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak)
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
+    .asAttack(0.55)
+    .elbowChamber(0.12) // 준비 - Position high for downward strike
+    .brachialElbow(0.18) // 상박치기 - Downward angled elbow to brachial nerve
+    .brachialElbow(0.08) // 정점 - Hold on nerve cluster
+    .recover(0.17) // 복귀 - Return to guard
     .build();
 
 /**

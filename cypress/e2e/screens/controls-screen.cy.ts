@@ -1,3 +1,12 @@
+import {
+  setupScreen,
+  teardownScreen,
+  cleanupThreeJSResources,
+  forceMemoryCleanup,
+  verifyScreenElement,
+  verifyCanvasVisible
+} from "../../support/test-helpers";
+
 /**
  * ControlsScreen Comprehensive E2E Test
  * Target Execution Time: 2-3 minutes
@@ -10,29 +19,19 @@
  *
  * ✅ Three.js Compatible - Tests ControlsScreen with Canvas and Html overlays
  * ⏱️ Optimized for 2-3 minute execution time
+ * ♻️ Refactored with shared test helpers
  */
 
 describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
   beforeEach(() => {
-    cy.visitWithWebGLMock("/", { timeout: 12000 });
-    cy.waitForCanvasReady();
-
-    // Navigate to controls screen
-    cy.get("body").then(($body) => {
-      if ($body.find('[data-testid="controls-button"]').length > 0) {
-        cy.get('[data-testid="controls-button"]').click({ force: true });
-      } else if ($body.find('[data-testid="menu-controls"]').length > 0) {
-        cy.get('[data-testid="menu-controls"]').click({ force: true });
-      } else {
-        // Use keyboard shortcut as fallback
-        cy.log("Using keyboard shortcut '3' for controls");
-        cy.get("body").type("3");
-      }
-    });
+    setupScreen('controls');
   });
 
   afterEach(() => {
-    cy.returnToIntro();
+    // Request garbage collection to assist memory cleanup
+    cleanupThreeJSResources();
+    forceMemoryCleanup();
+    teardownScreen();
   });
 
   it("should render ControlsScreen with all control information", () => {
@@ -43,14 +42,8 @@ describe("ControlsScreen - Comprehensive E2E Test (Target: 2-3 min)", () => {
     // ============================================================
     cy.log("1️⃣ Verifying Controls Screen Rendering");
 
-    cy.get('[data-testid="controls-screen"]', { timeout: 5000 }).should(
-      "exist"
-    );
-    cy.log("✅ Controls screen exists");
-
-    // Verify canvas is visible
-    cy.get("canvas").should("be.visible");
-    cy.log("✅ Canvas rendering verified");
+    verifyScreenElement('controls-screen', true);
+    verifyCanvasVisible();
 
     // ============================================================
     // 2. Verify Control Categories (30s)
