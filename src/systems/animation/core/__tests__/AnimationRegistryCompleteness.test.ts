@@ -192,16 +192,11 @@ describe("AnimationRegistry - Structure Validation", () => {
         }
       }
 
-      // Report any empty animations found (for debugging/fixing)
-      if (emptyAnimations.length > 0) {
-        console.warn(
-          `Found ${emptyAnimations.length} animations with 0 keyframes:`,
-          emptyAnimations.slice(0, 5),
-        );
-      }
-
       // Allow up to 5 empty animations (placeholder animations)
-      expect(emptyAnimations.length).toBeLessThan(6);
+      expect(
+        emptyAnimations.length,
+        `Found ${emptyAnimations.length} animations with 0 keyframes (showing first 5): ${emptyAnimations.slice(0, 5).join(", ")}`
+      ).toBeLessThan(6);
     });
 
     it("most animations should start at time 0 or have normalized timing", () => {
@@ -217,16 +212,12 @@ describe("AnimationRegistry - Structure Validation", () => {
         }
       }
 
-      // Report timing characteristics
-      const ratio = startingAtZero / total;
-      console.log(
-        `Animations starting at time 0: ${startingAtZero}/${total} (${(
-          ratio * 100
-        ).toFixed(1)}%)`,
-      );
-
       // At least the key animations should exist
-      expect(total).toBeGreaterThan(200);
+      const ratio = startingAtZero / total;
+      expect(
+        total,
+        `Should have many animations. Found ${startingAtZero}/${total} (${(ratio * 100).toFixed(1)}%) starting at time 0`
+      ).toBeGreaterThan(200);
     });
 
     it("keyframes should be in chronological order", () => {
@@ -646,9 +637,7 @@ describe("AnimationRegistry - Uniqueness Validation", () => {
     }
 
     const uniqueTechniques = new Set(techniqueAnimations);
-    expect(uniqueTechniques.size).toBe(techniqueAnimations.length);
-
-    console.log(`Total unique technique animations: ${uniqueTechniques.size}`);
+    expect(uniqueTechniques.size, `Found ${uniqueTechniques.size} unique technique animations`).toBe(techniqueAnimations.length);
   });
 });
 
@@ -666,11 +655,6 @@ describe("AnimationRegistry - Coverage Statistics", () => {
   });
 
   it("should report animation counts", () => {
-    console.log(`Total animations in ALL_ANIMATIONS: ${ALL_ANIMATIONS.size}`);
-    console.log(
-      `Total animations in ANIMATION_REGISTRY: ${ANIMATION_REGISTRY.size}`,
-    );
-
     // Count by category
     let stanceCount = 0;
     let attackCount = 0;
@@ -697,13 +681,11 @@ describe("AnimationRegistry - Coverage Statistics", () => {
       }
     }
 
-    console.log(`Stance animations: ${stanceCount}`);
-    console.log(`Attack animations: ${attackCount}`);
-    console.log(`Movement animations: ${movementCount}`);
-
-    expect(stanceCount).toBeGreaterThanOrEqual(8);
-    expect(attackCount).toBeGreaterThanOrEqual(15);
-    expect(movementCount).toBeGreaterThanOrEqual(5);
+    expect(ALL_ANIMATIONS.size, `Total animations in ALL_ANIMATIONS`).toBeGreaterThanOrEqual(50);
+    expect(ANIMATION_REGISTRY.size, `Total animations in ANIMATION_REGISTRY`).toBeGreaterThanOrEqual(30);
+    expect(stanceCount, `Stance animations`).toBeGreaterThanOrEqual(8);
+    expect(attackCount, `Attack animations`).toBeGreaterThanOrEqual(15);
+    expect(movementCount, `Movement animations`).toBeGreaterThanOrEqual(5);
   });
 });
 
@@ -723,11 +705,7 @@ describe("AnimationRegistry - Technique Animation Coverage", () => {
       }
     }
 
-    if (missingAnimations.length > 0) {
-      console.error("Missing or invalid animations:", missingAnimations);
-    }
-
-    expect(missingAnimations.length).toBe(0);
+    expect(missingAnimations, `Missing or invalid animations: ${missingAnimations.join(", ")}`).toHaveLength(0);
   });
 
   it("all techniques should have valid animationType that exists in registry or has fallback", () => {
