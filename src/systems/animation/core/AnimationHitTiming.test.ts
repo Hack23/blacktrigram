@@ -4,8 +4,6 @@ import {
   getAnimationHitTiming,
   isWithinHitWindow,
   getCurrentReachMultiplier,
-  type AnimationHitWindow,
-  type TechniqueHitTiming,
 } from "./AnimationHitTiming";
 import { AnimationType } from "../builders/MartialArtsAnimationBuilder";
 
@@ -392,7 +390,7 @@ describe("AnimationHitTiming", () => {
 
   describe("Hit Window Timing Validation", () => {
     it("should have startTime before peakTime for all techniques", () => {
-      Object.entries(ANIMATION_HIT_TIMING).forEach(([type, timing]) => {
+      Object.entries(ANIMATION_HIT_TIMING).forEach(([_type, timing]) => {
         if (timing) {
           expect(timing.hitWindow.startTime).toBeLessThan(timing.hitWindow.peakTime);
         }
@@ -400,7 +398,7 @@ describe("AnimationHitTiming", () => {
     });
 
     it("should have peakTime before endTime for all techniques", () => {
-      Object.entries(ANIMATION_HIT_TIMING).forEach(([type, timing]) => {
+      Object.entries(ANIMATION_HIT_TIMING).forEach(([_type, timing]) => {
         if (timing) {
           expect(timing.hitWindow.peakTime).toBeLessThan(timing.hitWindow.endTime);
         }
@@ -538,7 +536,7 @@ describe("AnimationHitTiming", () => {
       };
 
       // Act & Assert
-      Object.entries(categories).forEach(([category, types]) => {
+      Object.entries(categories).forEach(([_category, types]) => {
         types.forEach((type) => {
           expect(ANIMATION_HIT_TIMING[type]).toBeDefined();
         });

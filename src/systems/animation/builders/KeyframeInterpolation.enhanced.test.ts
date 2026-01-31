@@ -29,7 +29,6 @@ import {
 import type {
   AnimationKeyframe,
   SkeletalAnimation,
-  SkeletalRig,
 } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 
