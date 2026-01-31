@@ -318,6 +318,8 @@ describe("KeyframeInterpolation", () => {
     beforeEach(() => {
       animation = {
         name: "Test",
+        koreanName: "테스트",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [
@@ -502,6 +504,8 @@ describe("KeyframeInterpolation", () => {
 
       animation = {
         name: "Test",
+        koreanName: "테스트",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [kf1, kf2],
@@ -621,6 +625,8 @@ describe("KeyframeInterpolation", () => {
     beforeEach(() => {
       animation = {
         name: "Test",
+        koreanName: "테스트",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [
@@ -665,13 +671,16 @@ describe("KeyframeInterpolation", () => {
 
     it("should loop animation when loop is true", () => {
       // Arrange
-      animation.loop = true;
+      const loopingAnimation: SkeletalAnimation = {
+        ...animation,
+        loop: true,
+      };
 
       // Act
-      const result = updateAnimation(animation, 0.9, 0.2);
+      const result = updateAnimation(loopingAnimation, 0.9, 0.2);
 
       // Assert
-      expect(result.time).toBeLessThan(animation.duration);
+      expect(result.time).toBeLessThan(loopingAnimation.duration);
       expect(result.completed).toBe(false);
     });
 
@@ -692,6 +701,8 @@ describe("KeyframeInterpolation", () => {
     beforeEach(() => {
       anim1 = {
         name: "Anim1",
+        koreanName: "애니메이션1",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [
@@ -701,6 +712,8 @@ describe("KeyframeInterpolation", () => {
       };
       anim2 = {
         name: "Anim2",
+        koreanName: "애니메이션2",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [
@@ -861,6 +874,8 @@ describe("KeyframeInterpolation", () => {
       // Arrange
       const animation: SkeletalAnimation = {
         name: "Single",
+        koreanName: "단일",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [
@@ -893,6 +908,8 @@ describe("KeyframeInterpolation", () => {
       // Arrange
       const animation: SkeletalAnimation = {
         name: "Test",
+        koreanName: "테스트",
+        type: "idle",
         duration: 1.0,
         loop: false,
         keyframes: [

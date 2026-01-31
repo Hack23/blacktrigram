@@ -10,6 +10,7 @@ import {
   applyMartialPoseToConfig,
   applyMartialPoseToKeyframe,
   getMartialPose,
+  type MartialPose,
 } from './MartialPoseApplicator';
 import { KeyframeConfig } from './KeyframeConfig';
 import type { AnimationKeyframe } from '@/types/skeletal';
@@ -71,7 +72,7 @@ describe('MartialPoseApplicator', () => {
         leftElbow: [0.4, 0.5, 0.6] as const,
         rightShoulder: [0.7, 0.8, 0.9] as const,
         rightElbow: [1.0, 1.1, 1.2] as const,
-      };
+      } as unknown as MartialPose;
 
       applyMartialPoseToConfig(config, minimalPose);
 
@@ -244,7 +245,7 @@ describe('MartialPoseApplicator', () => {
         rightElbow: [0, 0, 0] as const,
         leftWrist: undefined,
         rightWrist: undefined,
-      };
+      } as unknown as MartialPose;
 
       expect(() => {
         applyMartialPoseToConfig(config, poseWithOptionals);

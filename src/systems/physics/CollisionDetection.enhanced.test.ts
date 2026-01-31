@@ -178,13 +178,12 @@ describe("CollisionDetection - Enhanced Coverage", () => {
       const attackerPos: Position3D = { x: 0, y: 0, z: 5 };
       const defenderPos: Position3D = { x: 0, y: 0, z: 5.5 };
       
-      // @ts-expect-error Testing invalid region input
       const result = collision.checkAttackHit(
         attackerPos,
         defenderPos,
         { type: "punch" },
         TrigramStance.GEON,
-        "invalid_region"
+        "invalid_region" as any
       );
 
       // Should fail gracefully without crashing

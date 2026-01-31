@@ -8,6 +8,11 @@ import {
   AnimationType,
   calculateStanceWidth,
   calculateFootPositions,
+  type HandPoseName,
+  type HandPoseType,
+  type MartialPoseType,
+  type KickPhaseType,
+  type PunchPhaseType,
 } from "./MartialArtsConstants";
 
 describe("MartialArtsConstants", () => {
@@ -58,7 +63,7 @@ describe("MartialArtsConstants", () => {
         Object.values(pose).forEach((joint) => {
           expect(Array.isArray(joint)).toBe(true);
           expect(joint).toHaveLength(3);
-          joint.forEach((value) => {
+          joint.forEach((value: number) => {
             expect(typeof value).toBe("number");
             expect(isNaN(value)).toBe(false);
           });

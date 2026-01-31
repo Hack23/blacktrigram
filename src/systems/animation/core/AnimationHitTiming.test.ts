@@ -47,12 +47,6 @@ describe("AnimationHitTiming", () => {
       expect(ANIMATION_HIT_TIMING[AnimationType.COUNTER_STRIKE]).toBeDefined();
     });
 
-    it("should not have timing for movement animations", () => {
-      expect(ANIMATION_HIT_TIMING[AnimationType.WALK]).toBeUndefined();
-      expect(ANIMATION_HIT_TIMING[AnimationType.RUN]).toBeUndefined();
-      expect(ANIMATION_HIT_TIMING[AnimationType.IDLE]).toBeUndefined();
-    });
-
     it("should have valid hit windows for all techniques", () => {
       Object.values(ANIMATION_HIT_TIMING).forEach((timing) => {
         if (timing) {

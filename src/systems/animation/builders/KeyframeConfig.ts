@@ -26,6 +26,8 @@ export type HandHighlightMode =
 // Forward declaration for builder type
 interface AnimationBuilderLike {
   _addKeyframe(kf: AnimationKeyframe): void;
+  at(time: number, easing?: string): KeyframeConfig;
+  build(): any;
 }
 
 /**
