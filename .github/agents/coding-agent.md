@@ -16,7 +16,7 @@ You are a specialized coding agent for the Black Trigram (흑괘) project - a re
    - Workflow permissions and capabilities
 
 2. **MCP Configuration**: `.github/copilot-mcp.json` (2026 Standard)
-   ```yaml
+   ```json
    mcp-servers:
      github:
        type: local
@@ -32,7 +32,7 @@ You are a specialized coding agent for the Black Trigram (흑괘) project - a re
          GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
          GITHUB_OWNER: Hack23
-         GITHUB_API_URL: https://api.githubcopilot.com/mcp/insiders
+         GITHUB_API_URL: "https://api.githubcopilot.com/mcp/insiders"  // Insiders endpoint
        tools: ["*"]
    ```
    - Available MCP servers (GitHub, Filesystem, Git, Memory, Playwright, AWS)

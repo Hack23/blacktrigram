@@ -97,7 +97,7 @@ npm audit --audit-level=high
 ```
 
 **Automated Dependency Updates:**
-```yaml
+```json
 # .github/dependabot.yml
 version: 2
 updates:
@@ -137,7 +137,7 @@ updates:
 ```
 
 **Lock File Verification:**
-```yaml
+```json
 # .github/workflows/lock-file-check.yml
 name: Lock File Verification
 
@@ -268,7 +268,7 @@ Security updates are released as patch versions and clearly marked in release no
 ```
 
 **OSSF Scorecard Configuration:**
-```yaml
+```json
 # .github/workflows/scorecard.yml
 name: OSSF Scorecard
 
@@ -366,7 +366,7 @@ cyclonedx-npm --output-file sbom.xml --output-format xml
 ```
 
 **Automated SBOM in CI:**
-```yaml
+```json
 # .github/workflows/sbom.yml
 name: Generate SBOM
 
@@ -481,7 +481,7 @@ npx license-compliance --direct --format json > licenses.json
 ```
 
 **Automated License Validation:**
-```yaml
+```json
 # .github/workflows/license-check.yml
 name: License Compliance
 
@@ -586,7 +586,7 @@ console.log('✅ Attribution file generated');
 ### 5. Vulnerability Management
 
 **Automated Vulnerability Scanning:**
-```yaml
+```json
 # .github/workflows/security-scan.yml
 name: Security Scan
 

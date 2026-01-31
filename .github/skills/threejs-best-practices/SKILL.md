@@ -23,6 +23,9 @@ This skill ensures that all Three.js implementations in Black Trigram follow Rea
 - Working with cameras, lights, or materials
 - Creating UI overlays with `<Html>` components
 - Implementing animations with `useFrame`
+- Debugging performance issues in 3D rendering
+- Implementing camera controls or orbital navigation
+- Optimizing rendering performance (instancing, LOD, culling)
 - Adding textures, geometries, or Three.js objects
 - Optimizing 3D rendering performance
 - Reviewing pull requests with Three.js changes

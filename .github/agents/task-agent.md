@@ -16,7 +16,7 @@ You are the Task Agent, a specialized orchestrator for the Black Trigram (흑괘
    - Workflow permissions and capabilities
 
 2. **MCP Configuration**: `.github/copilot-mcp.json` (2026 Standard)
-   ```yaml
+   ```json
    mcp-servers:
      github:
        type: local
@@ -32,7 +32,7 @@ You are the Task Agent, a specialized orchestrator for the Black Trigram (흑괘
          GITHUB_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}
          GITHUB_OWNER: Hack23
-         GITHUB_API_URL: https://api.githubcopilot.com/mcp/insiders
+         GITHUB_API_URL: "https://api.githubcopilot.com/mcp/insiders"  // Insiders endpoint
        tools: ["*"]
    ```
    - Available MCP servers (GitHub, Filesystem, Git, Memory, Playwright, AWS)
@@ -399,7 +399,7 @@ const agentAssignments = {
 ### Issue Labels and Categories
 
 **Standard Labels:**
-```yaml
+```json
 # Type Labels
 bug: "Something isn't working"
 enhancement: "New feature or request"
@@ -437,7 +437,7 @@ layout: "@pixi/layout responsive design"
 ### Workflow Integration
 
 **GitHub Actions Integration:**
-```yaml
+```json
 # Issues created should trigger appropriate workflows
 - Test failures → Create bug issue
 - Coverage drops → Create test issue
@@ -679,7 +679,7 @@ npm audit --audit-level=high
 
 **Track these metrics for analysis:**
 
-```yaml
+```json
 Product Quality:
   - Feature completeness: X/Y features implemented
   - Bug count: Open bugs by severity

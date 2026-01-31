@@ -498,7 +498,7 @@ npm run coverage -- --reporter=lcov
 ```
 
 **Enforce Coverage in CI:**
-```yaml
+```json
 # .github/workflows/test.yml
 name: Test Coverage
 
@@ -544,7 +544,7 @@ jobs:
 ### 4. CI Integration Patterns
 
 **GitHub Actions Workflow:**
-```yaml
+```json
 # .github/workflows/ci.yml
 name: CI Pipeline
 
@@ -653,7 +653,7 @@ export default defineConfig({
 });
 ```
 
-```yaml
+```json
 # Parallel test execution in CI
 jobs:
   test:

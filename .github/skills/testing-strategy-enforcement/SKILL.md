@@ -34,7 +34,9 @@ This skill ensures that all code changes in Black Trigram maintain exceptional t
 
 ✅ **Overall Coverage Targets**
 ```typescript
-// vitest.config.ts - Coverage configuration
+// Partial excerpt from vitest.config.ts - Coverage configuration
+import { defineConfig } from 'vitest/config';
+
 export default defineConfig({
   test: {
     coverage: {
