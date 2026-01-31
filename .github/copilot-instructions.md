@@ -4,6 +4,95 @@ PRIO 1: Follow existing React + Three.js patterns for 3D rendering and UI overla
 PRIO 2: Use established component structure and Korean martial arts theming
 PRIO 3: Maintain type safety and proper error handling throughout
 
+## 🎯 Core Operating Principles
+
+### Rule-Based Decision Making
+
+**YOU MUST BE DECISIVE AND AUTONOMOUS:**
+
+1. **DO NOT ask questions when the rules are clear** - Apply the rules and implement solutions
+2. **DO NOT create new .md documentation files** unless explicitly requested by the user
+3. **DO run comprehensive checks** before committing any code changes:
+   - Type checking: `npm run check`
+   - Linting: `npm run lint`
+   - Unit tests: `npm test`
+   - Build verification: `npm run build`
+
+### Enforcement Rules
+
+```
+Rule 1: Korean Theming
+IF (creating UI component OR modifying styles)
+THEN (use KOREAN_COLORS constants AND bilingual text format)
+ELSE (reject component - refer to korean-theming-standards skill)
+
+Rule 2: Test Coverage
+IF (adding new feature OR modifying logic)
+THEN (add/update tests to maintain >90% coverage)
+ELSE (implementation incomplete - refer to testing-strategy-enforcement skill)
+
+Rule 3: Security Changes
+IF (modifying authentication OR handling user data OR external APIs)
+THEN (update SECURITY_ARCHITECTURE.md AND add security tests)
+ELSE (reject change - refer to security-architecture-validation skill)
+
+Rule 4: Architecture Changes
+IF (modifying component structure OR data models OR system design)
+THEN (update relevant C4 architecture documents)
+ELSE (documentation incomplete - refer to c4-architecture-documentation skill)
+
+Rule 5: Performance Requirements
+IF (adding Three.js rendering OR heavy computations)
+THEN (ensure 60fps target AND bundle size <500KB initial)
+ELSE (optimize - refer to performance-optimization skill)
+```
+
+## 📚 Agent and Skills Catalog
+
+**Agent Skills** provide strategic, automatic enforcement of quality standards.
+**Custom Agents** provide tactical, on-demand implementation assistance.
+
+### Available Skills (Automatically Loaded)
+
+GitHub Copilot automatically loads relevant skills based on code context:
+
+1. **[security-architecture-validation](.github/skills/security-architecture-validation/SKILL.md)** - ISMS security-by-design enforcement
+2. **[c4-architecture-documentation](.github/skills/c4-architecture-documentation/SKILL.md)** - C4 Model architecture standards
+3. **[korean-theming-standards](.github/skills/korean-theming-standards/SKILL.md)** - Korean cyberpunk aesthetic rules
+4. **[testing-strategy-enforcement](.github/skills/testing-strategy-enforcement/SKILL.md)** - >90% test coverage requirements
+5. **[performance-optimization](.github/skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
+6. **[isms-compliance-checking](.github/skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
+7. **[threejs-best-practices](.github/skills/threejs-best-practices/SKILL.md)** - Three.js/React optimization patterns
+
+**📖 [Complete Skills Documentation](.github/skills/README.md)**
+
+### Available Custom Agents (On-Demand)
+
+Explicitly invoke agents for specialized tasks:
+
+1. **[@task-agent](.github/agents/task-agent.md)** - Product quality orchestrator, creates issues
+2. **[@coding-agent](.github/agents/coding-agent.md)** - TypeScript/React/Three.js implementation
+3. **[@frontend-specialist](.github/agents/frontend-specialist.md)** - React 19 and strict TypeScript expert
+4. **[@game-developer](.github/agents/game-developer.md)** - Three.js game systems and 60fps optimization
+5. **[@korean-martial-arts-expert](.github/agents/korean-martial-arts-expert.md)** - Martial arts authenticity and vital point systems
+6. **[@testing-agent](.github/agents/testing-agent.md)** - Vitest and Cypress test implementation
+7. **[@test-engineer](.github/agents/test-engineer.md)** - Test strategy and CI integration
+8. **[@documentation-writer](.github/agents/documentation-writer.md)** - Technical docs and bilingual content
+9. **[@code-review-agent](.github/agents/code-review-agent.md)** - Code quality and standards review
+10. **[@security-specialist](.github/agents/security-specialist.md)** - Supply chain security and OSSF Scorecard
+
+**📖 [Complete Agents Documentation](.github/agents/README.md)**
+
+### When to Use Skills vs Agents
+
+| Situation | Use Skills | Use Agents |
+|-----------|-----------|------------|
+| Writing code | ✅ Automatic enforcement | ❌ Not needed |
+| Complex feature | ✅ Quality validation | ✅ Invoke specialist agent |
+| Bug fix | ✅ Standards enforcement | ✅ If complex, invoke agent |
+| Documentation | ✅ Standards enforcement | ✅ Invoke @documentation-writer |
+| Security review | ✅ Automatic validation | ✅ Invoke @security-specialist |
+
 ## 🔧 Current Code Patterns & Architecture
 
 ### React + Three.js Integration Pattern
