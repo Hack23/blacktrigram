@@ -17,7 +17,6 @@ import {
   interpolateRotation,
   interpolatePosition,
   getInterpolatedKeyframe,
-  applyKeyframeToRig,
   blendKeyframes,
   updateAnimation,
   crossFadeAnimations,
@@ -361,7 +360,7 @@ describe("KeyframeInterpolation", () => {
 
     it("should handle time at start", () => {
       // Act
-      const [prev, next, t] = findSurroundingKeyframes(animation, 0);
+      const [prev, , t] = findSurroundingKeyframes(animation, 0);
 
       // Assert
       expect(prev.time).toBe(0);
@@ -370,7 +369,7 @@ describe("KeyframeInterpolation", () => {
 
     it("should handle time at end", () => {
       // Act
-      const [prev, next] = findSurroundingKeyframes(animation, 1.0);
+      const [, next] = findSurroundingKeyframes(animation, 1.0);
 
       // Assert
       expect(next.time).toBe(1.0);

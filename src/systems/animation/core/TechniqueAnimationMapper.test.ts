@@ -488,7 +488,6 @@ describe("TechniqueAnimationMapper", () => {
       });
 
       it("should match validation result", () => {
-        const validation = mapper.validateCompleteness();
         const mappedCount = mapper.getMappedCount();
         
         // Note: getMappedCount returns animationMap.size which may include duplicates,

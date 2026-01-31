@@ -478,10 +478,7 @@ describe("AnimationHitTiming", () => {
       const elbowTiming = ANIMATION_HIT_TIMING[AnimationType.ELBOW_STRIKE]!;
       const spinningElbowTiming = ANIMATION_HIT_TIMING[AnimationType.SPINNING_ELBOW]!;
 
-      const elbowDuration = elbowTiming.hitWindow.endTime - elbowTiming.hitWindow.startTime;
-      const spinDuration = spinningElbowTiming.hitWindow.endTime - spinningElbowTiming.hitWindow.startTime;
-
-      // Act & Assert - Spinning should take longer
+      // Act & Assert - Spinning should take longer and be more telegraphed
       expect(spinningElbowTiming.hitWindow.startTime).toBeGreaterThan(elbowTiming.hitWindow.startTime);
     });
   });

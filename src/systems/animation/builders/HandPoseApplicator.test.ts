@@ -246,13 +246,6 @@ describe('HandPoseApplicator', () => {
     });
 
     it('should handle all hand selection types', () => {
-      const keyframe: AnimationKeyframe = {
-        time: 0,
-        easing: 'linear',
-        boneRotations: new Map(),
-        bonePositions: new Map(),
-      };
-
       const selections: HandSelection[] = ['left', 'right', 'both'];
 
       selections.forEach((selection) => {

@@ -252,8 +252,6 @@ describe('MartialPoseApplicator', () => {
     });
 
     it('should apply all available MARTIAL_POSES without errors', () => {
-      const config = new KeyframeConfig();
-
       Object.keys(MARTIAL_POSES).forEach((poseKey) => {
         const testConfig = new KeyframeConfig();
         expect(() => {

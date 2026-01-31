@@ -136,7 +136,6 @@ describe("TrigramGuardApplicator", () => {
       // Arrange
       const fullConfig = new KeyframeConfig();
       const halfConfig = new KeyframeConfig();
-      const guardPose = TRIGRAM_GUARD_POSES[TrigramStance.GEON];
 
       // Act
       applyTrigramGuardToConfig(fullConfig, TrigramStance.GEON, { blendFactor: 1.0 });
