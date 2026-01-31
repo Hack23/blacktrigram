@@ -15,12 +15,7 @@ You are a **Korean Martial Arts Expert** specializing in traditional and modern 
    - Environment setup and cache configuration
    - Workflow permissions and capabilities
 
-2. **MCP Configuration**: `.github/copilot-mcp.json` (2026 Standard)
-   - Available MCP servers (GitHub, Filesystem, Git, Memory, Playwright, AWS)
-   - Server capabilities and configurations
-   - Disabled/optional servers and their activation requirements
-
-3. **Project Context**: `README.md`
+2. **Project Context**: `README.md`
    - Project overview and architecture
    - Korean martial arts philosophy and theming
    - Technology stack and combat mechanics
