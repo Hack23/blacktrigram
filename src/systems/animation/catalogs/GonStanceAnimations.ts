@@ -30,15 +30,21 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Gon Idle Ssireum Stance Animation
+ * Gon Idle Ssireum Stance Animation - OVERHAULED
  *
  * **Korean**: 곤괘 씨름 자세 (Gon-gwae Ssireum Jase)
- * **Philosophy**: Earth's grounding power through low center of gravity
+ * **Philosophy**: Earth's grounding power through HEAVY low center of gravity
  *
  * Specialized Ssireum wrestling idle stance that differs from the general
  * Gon idle animation (`stance_gon` in StanceIdleAnimations.ts). This animation
- * emphasizes deeper grounding, lower center of gravity, and wrestling-specific
+ * emphasizes DEEPER grounding, HEAVIER weight sensation, and wrestling-specific
  * hand positioning for grappling readiness.
+ *
+ * **IMPROVED Features:**
+ * - **Deeper Stance**: -55° knee angle (was -50°) for more grounded feel
+ * - **Weight Emphasis**: Exaggerated foot dorsiflexion showing heavy loading
+ * - **Breathing Cycles**: Settling motion emphasizes sinking into earth
+ * - **Micro-Adjustments**: Subtle weight shifts showing active balance
  *
  * **When to use**:
  * - Use `GON_IDLE_SSIREUM_STANCE` for active combat scenarios requiring
@@ -46,19 +52,21 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Use `stance_gon` idle for general Gon stance with standard posture
  *
  * Characteristics:
- * - Very low center of gravity with wide stance
- * - Hands positioned low for grappling readiness
- * - Hips back, knees deeply bent
- * - Weight feels heavy and earthbound
- * - Breathing emphasizes settling deeper
+ * - VERY low center of gravity with wide stable base
+ * - Hands positioned low for immediate grappling engagement
+ * - Hips back, knees deeply bent (HEAVY squat feel)
+ * - Weight feels ROOTED and earthbound
+ * - Breathing emphasizes settling DEEPER into ground
  *
  * Animation Cycle:
  * - 0ms: Low grounded neutral position
- * - 1700ms: Deep breath settling (sink deeper)
- * - 3400ms: Return to neutral (complete cycle)
+ * - 1200ms: Sink deeper with exhale (settling)
+ * - 2000ms: Subtle weight shift left (micro-adjustment)
+ * - 2800ms: Subtle weight shift right (active balance)
+ * - 3600ms: Return to neutral (complete cycle)
  *
  * @korean 곤괘씨름자세
- * @duration 3400ms (3.4 second cycle)
+ * @duration 3600ms (3.6 second cycle)
  * @category Idle Animation
  */
 export const GON_IDLE_SSIREUM_STANCE: SkeletalAnimation =
@@ -66,44 +74,73 @@ export const GON_IDLE_SSIREUM_STANCE: SkeletalAnimation =
     "gon_idle_ssireum_stance",
     "곤괘 씨름 자세"
   )
-    .asIdle(3.4, true)
-    // Keyframe 0ms: Low grounded neutral
+    .asIdle(3.6, true) // Slightly longer cycle for weight shifts
+    
+    // Keyframe 0ms: Low grounded neutral - HEAVY stance
     .at(0)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20° (hips back and low)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (hips back MORE - lower!)
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral lower spine
-    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (torso forward for balance)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0, 0) // 17° (torso forward for balance)
     .rotate(BoneName.HIP_L, 0, 0, 0) // Hips neutral
     .rotate(BoneName.HIP_R, 0, 0, 0)
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (deep knee bend)
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50° (deep knee bend)
-    .rotate(BoneName.FOOT_L, 0.35, 0, 0) // 20° (weight on full foot)
-    .rotate(BoneName.FOOT_R, 0.35, 0, 0) // 20° (weight on full foot)
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.26, -0.35) // 30°, 15°, -20° (hands low)
-    .rotate(BoneName.SHOULDER_R, 0.52, -0.26, 0.35) // 30°, -15°, 20°
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.4) // -80° (arms bent ready to grab)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.4) // 80°
-    .rotate(BoneName.HEAD, 0, 0, 0) // Head neutral, aware
-    .position(BoneName.PELVIS, 0, -0.1, 0) // Lowered pelvis position
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (DEEPER knee bend)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (DEEPER knee bend)
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25° (HEAVY weight on full foot)
+    .rotate(BoneName.FOOT_R, 0.44, 0, 0) // 25° (HEAVY weight on full foot)
+    .rotate(BoneName.SHOULDER_L, 0.57, 0.30, -0.38) // 33°, 17°, -22° (hands low)
+    .rotate(BoneName.SHOULDER_R, 0.57, -0.30, 0.38) // 33°, -17°, 22°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.48) // -85° (arms bent ready to grab)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.48) // 85°
+    .rotate(BoneName.HEAD, 0.05, 0, 0) // 3° (slight upward gaze - awareness)
+    .position(BoneName.PELVIS, 0, -0.14, 0) // LOWER pelvis position
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 1700ms: Deep breath settling (sink deeper)
-    .at(1.7)
-    .rotate(BoneName.PELVIS, -0.38, 0, 0) // -22° (settle deeper)
-    .rotate(BoneName.SPINE_UPPER, 0.28, 0, 0) // 16° (lean forward slightly more)
-    .rotate(BoneName.KNEE_L, -0.91, 0, 0) // -52° (sink lower)
-    .rotate(BoneName.KNEE_R, -0.91, 0, 0) // -52°
-    .rotate(BoneName.SHOULDER_L, 0.56, 0.30, -0.38) // 32°, 17°, -22° (hands settle)
-    .rotate(BoneName.SHOULDER_R, 0.56, -0.30, 0.38) // 32°, -17°, 22°
-    .position(BoneName.PELVIS, 0, -0.12, 0) // Lower pelvis slightly
+    
+    // Keyframe 1200ms: Deep breath settling - sink DEEPER
+    .at(1.2)
+    .rotate(BoneName.PELVIS, -0.48, 0, 0) // -27.5° (settle deeper into ground)
+    .rotate(BoneName.SPINE_UPPER, 0.33, 0, 0) // 19° (lean forward slightly more)
+    .rotate(BoneName.KNEE_L, -1.00, 0, 0) // -57° (sink lower)
+    .rotate(BoneName.KNEE_R, -1.00, 0, 0) // -57° (HEAVY)
+    .rotate(BoneName.FOOT_L, 0.48, 0, 0) // 27.5° (MORE weight)
+    .rotate(BoneName.FOOT_R, 0.48, 0, 0) // 27.5° (feet LOADED)
+    .rotate(BoneName.SHOULDER_L, 0.61, 0.33, -0.40) // 35°, 19°, -23° (hands settle)
+    .rotate(BoneName.SHOULDER_R, 0.61, -0.33, 0.40) // 35°, -19°, 23°
+    .position(BoneName.PELVIS, 0, -0.16, 0) // Lower pelvis MORE
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 3400ms: Return to start
-    .at(3.4)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20°
-    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15°
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50°
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50°
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.26, -0.35) // Return to start
-    .rotate(BoneName.SHOULDER_R, 0.52, -0.26, 0.35)
-    .position(BoneName.PELVIS, 0, -0.1, 0)
+    
+    // Keyframe 2000ms: Subtle weight shift LEFT - active balance
+    .at(2.0)
+    .rotate(BoneName.PELVIS, -0.44, -0.05, 0) // -25°, -3° (micro shift left)
+    .rotate(BoneName.SPINE_UPPER, 0.30, -0.05, 0) // 17°, -3° (torso follows)
+    .rotate(BoneName.KNEE_L, -1.00, 0, 0) // -57° (left leg loads MORE)
+    .rotate(BoneName.KNEE_R, -0.92, 0, 0) // -53° (right slightly less)
+    .rotate(BoneName.FOOT_L, 0.52, 0, 0) // 30° (left foot HEAVY)
+    .rotate(BoneName.FOOT_R, 0.42, 0, 0) // 24° (right lighter)
+    .position(BoneName.PELVIS, -0.02, -0.15, 0) // Shift left slightly
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Keyframe 2800ms: Subtle weight shift RIGHT - balancing
+    .at(2.8)
+    .rotate(BoneName.PELVIS, -0.44, 0.05, 0) // -25°, 3° (micro shift right)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0.05, 0) // 17°, 3° (torso follows)
+    .rotate(BoneName.KNEE_L, -0.92, 0, 0) // -53° (left slightly less)
+    .rotate(BoneName.KNEE_R, -1.00, 0, 0) // -57° (right leg loads MORE)
+    .rotate(BoneName.FOOT_L, 0.42, 0, 0) // 24° (left lighter)
+    .rotate(BoneName.FOOT_R, 0.52, 0, 0) // 30° (right foot HEAVY)
+    .position(BoneName.PELVIS, 0.02, -0.15, 0) // Shift right slightly
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Keyframe 3600ms: Return to start - complete cycle
+    .at(3.6)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (back to neutral)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0, 0) // 17°
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55°
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55°
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25°
+    .rotate(BoneName.FOOT_R, 0.44, 0, 0) // 25°
+    .rotate(BoneName.SHOULDER_L, 0.57, 0.30, -0.38) // Return to start
+    .rotate(BoneName.SHOULDER_R, 0.57, -0.30, 0.38)
+    .position(BoneName.PELVIS, 0, -0.14, 0)
     .done<MartialArtsAnimationBuilder>()
     .build();
 
@@ -112,25 +149,34 @@ export const GON_IDLE_SSIREUM_STANCE: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Gon Heavy Grounding Step Animation
+ * Gon Heavy Grounding Step Animation - OVERHAULED
  *
  * **Korean**: 땅 밟기 (Ttang Bapgi)
- * **Philosophy**: Each step plants firmly with earthbound power
+ * **Philosophy**: Each step plants firmly with CRUSHING earthbound power
+ *
+ * **IMPROVED Features:**
+ * - **Exaggerated Weight Transfer**: Clear weight shift with body lean
+ * - **Foot Plant Emphasis**: Heavy dorsiflexion on landing shows impact
+ * - **Lower Center**: Maintains -55° knee throughout for grounded feel
+ * - **Slow Deliberate**: 350ms duration (was 267ms) for HEAVY impression
+ * - **Ground Connection**: Foot never fully lifts - sliding/scraping feel
  *
  * Characteristics:
- * - Forward movement with heavy grounded feel
- * - Each step plants firmly before lifting
- * - Center of gravity stays low throughout
+ * - Forward movement with CRUSHING heavy grounded feel
+ * - Each step plants FIRMLY with visible weight impact
+ * - Center of gravity stays VERY low throughout
  * - Arms ready for grappling engagement
+ * - Pelvis sinks on weight transfer creating gravity sensation
  *
- * Animation Keyframes (4 keyframes spanning 267ms; ~16 interpolated frames when rendered at 60fps):
- * - 0ms: Start position (low stance)
- * - 90ms: Weight shift to left leg
- * - 180ms: Right foot lifts and steps forward
- * - 267ms: Right foot plants firmly
+ * Animation Keyframes (5 keyframes spanning 350ms):
+ * - 0ms: Start position (low heavy stance)
+ * - 100ms: Weight shift LEFT + sink lower
+ * - 210ms: Right foot lifts (barely) and slides forward
+ * - 290ms: Right foot contacts ground - preparing for impact
+ * - 350ms: Right foot PLANTS firmly with full weight
  *
  * @korean 땅밟기
- * @duration 267ms
+ * @duration 350ms (slower for HEAVY feel)
  * @category Movement Animation
  */
 export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
@@ -138,43 +184,67 @@ export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
     "gon_heavy_grounding_step",
     "땅 밟기"
   )
-    .asMovement(0.267, false)
-    // Keyframe 0ms: Start position (low stance)
+    .asMovement(0.35, false) // Slower for HEAVY impression
+    
+    // Keyframe 0ms: Start position (low HEAVY stance)
     .at(0)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20° (hips back)
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (deep bend)
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50°
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.26, -0.35) // Arms ready
-    .rotate(BoneName.SHOULDER_R, 0.52, -0.26, 0.35)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
-    .position(BoneName.PELVIS, 0, -0.1, 0)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (hips back MORE)
+    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (forward lean)
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (DEEP bend)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (DEEP)
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25° (HEAVY weight)
+    .rotate(BoneName.FOOT_R, 0.44, 0, 0) // 25° (HEAVY weight)
+    .rotate(BoneName.SHOULDER_L, 0.57, 0.30, -0.38) // Arms ready
+    .rotate(BoneName.SHOULDER_R, 0.57, -0.30, 0.38)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.48) // -85°
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.48)
+    .position(BoneName.PELVIS, 0, -0.14, 0) // Low position
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 90ms: Weight shift to left leg
-    .at(0.09)
-    .rotate(BoneName.PELVIS, -0.35, -0.09, 0) // Slight rotation to left
-    .rotate(BoneName.KNEE_L, -1.05, 0, 0) // -60° (left leg bends more)
-    .rotate(BoneName.KNEE_R, -0.7, 0, 0) // -40° (right prepares to lift)
-    .position(BoneName.PELVIS, -0.02, -0.1, 0) // Shift weight left
+    
+    // Keyframe 100ms: Weight shift LEFT + sink LOWER
+    .at(0.1)
+    .rotate(BoneName.PELVIS, -0.48, -0.12, 0) // -27.5°, -7° (sink + rotate left)
+    .rotate(BoneName.SPINE_UPPER, 0.26, -0.09, 0) // 15°, -5° (lean left)
+    .rotate(BoneName.KNEE_L, -1.13, 0, 0) // -65° (left leg LOADS - DEEP)
+    .rotate(BoneName.KNEE_R, -0.79, 0, 0) // -45° (right prepares to lift)
+    .rotate(BoneName.FOOT_L, 0.52, 0, 0) // 30° (LEFT HEAVY!)
+    .rotate(BoneName.FOOT_R, 0.35, 0, 0) // 20° (right lightens)
+    .position(BoneName.PELVIS, -0.04, -0.17, 0) // Shift left + sink
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 180ms: Right foot lifts and steps forward
-    .at(0.18)
-    .rotate(BoneName.HIP_R, 0.35, 0, 0) // 20° (lift leg)
-    .rotate(BoneName.KNEE_R, -0.52, 0, 0) // -30° (knee up)
-    .rotate(BoneName.FOOT_R, 0, 0, 0) // Foot neutral for step
-    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (support leg)
-    .rotate(BoneName.SPINE_UPPER, 0.17, 0, 0) // 10° (lean forward into step)
-    .position(BoneName.PELVIS, -0.02, -0.08, 0.1) // Move forward
+    
+    // Keyframe 210ms: Right foot lifts (barely) and slides forward
+    .at(0.21)
+    .rotate(BoneName.PELVIS, -0.48, -0.09, 0) // -27.5°, -5° (maintain low)
+    .rotate(BoneName.SPINE_UPPER, 0.30, -0.05, 0) // 17°, -3° (forward into step)
+    .rotate(BoneName.HIP_R, 0.26, 0, 0) // 15° (lift leg - minimal!)
+    .rotate(BoneName.KNEE_R, -0.61, 0, 0) // -35° (knee forward)
+    .rotate(BoneName.FOOT_R, 0.09, 0, 0) // 5° (barely off ground - sliding)
+    .rotate(BoneName.KNEE_L, -1.05, 0, 0) // -60° (support leg stable)
+    .rotate(BoneName.FOOT_L, 0.52, 0, 0) // 30° (left LOADED)
+    .position(BoneName.PELVIS, -0.04, -0.16, 0.12) // Forward movement
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 267ms: Right foot plants firmly
-    .at(0.267)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // Return to neutral
-    .rotate(BoneName.HIP_R, 0, 0, 0) // Leg down
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50° (plant firmly)
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (equalize)
-    .rotate(BoneName.FOOT_R, 0.35, 0, 0) // 20° (full weight on foot)
+    
+    // Keyframe 290ms: Right foot contacts ground - preparing for PLANT
+    .at(0.29)
+    .rotate(BoneName.PELVIS, -0.44, -0.05, 0) // -25°, -3° (slight rise)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0, 0) // 17°, 0° (centered)
+    .rotate(BoneName.HIP_R, 0.09, 0, 0) // 5° (leg lowering)
+    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50° (preparing to plant)
+    .rotate(BoneName.FOOT_R, 0.26, 0, 0) // 15° (ground contact)
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (support)
+    .position(BoneName.PELVIS, -0.02, -0.15, 0.18) // Forward
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Keyframe 350ms: Right foot PLANTS firmly with CRUSHING weight
+    .at(0.35)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (neutral rotation)
     .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (return to forward lean)
-    .position(BoneName.PELVIS, 0, -0.1, 0.2) // Forward position
+    .rotate(BoneName.HIP_R, 0, 0, 0) // 0° (leg down)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (PLANT firmly!)
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (equalize)
+    .rotate(BoneName.FOOT_R, 0.52, 0, 0) // 30° (HEAVY PLANT - impact!)
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25° (both feet loaded)
+    .position(BoneName.PELVIS, 0, -0.14, 0.24) // Forward position
     .done<MartialArtsAnimationBuilder>()
     .build();
 
@@ -183,25 +253,34 @@ export const GON_HEAVY_GROUNDING_STEP: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Gon Sweep Positioning Step Animation
+ * Gon Sweep Positioning Step Animation - OVERHAULED
  *
  * **Korean**: 쓸기 준비 (Sseulgi Junbi)
- * **Philosophy**: Lateral movement setting up sweep techniques
+ * **Philosophy**: Lateral movement with HEAVY weight shift setting up sweep techniques
+ *
+ * **IMPROVED Features:**
+ * - **Exaggerated Weight Shift**: Deep sink on supporting leg
+ * - **Sliding Motion**: Sweeping leg slides/scrapes along ground
+ * - **Reaching Arms**: Hands actively reach for grappling control
+ * - **Lower Stance**: Maintains -60° knee on support leg
+ * - **Coiled Power**: Final position shows loaded spring ready to sweep
  *
  * Characteristics:
- * - Lateral movement to side
- * - Lead leg positioned for foot sweep
- * - Hands reaching for grappling control
- * - Weight shifts for throw setup
+ * - Lateral movement to side with HEAVY grounded feel
+ * - Lead leg positioned for foot sweep with ground contact
+ * - Hands reaching aggressively for grappling control
+ * - Weight shifts create visible loading/unloading
+ * - Body stays LOW - no rising during movement
  *
- * Animation Keyframes (4 keyframes spanning 300ms; ~18 interpolated frames when rendered at 60fps):
- * - 0ms: Start position (low stance)
- * - 100ms: Weight shift to right leg
- * - 200ms: Left foot slides laterally
- * - 300ms: Positioned for sweep
+ * Animation Keyframes (5 keyframes spanning 360ms):
+ * - 0ms: Start position (low heavy stance)
+ * - 110ms: Weight shift RIGHT + sink lower
+ * - 220ms: Left foot begins sliding laterally (ground contact)
+ * - 300ms: Mid-slide with arms reaching
+ * - 360ms: Positioned for sweep - coiled and ready
  *
  * @korean 쓸기준비
- * @duration 300ms
+ * @duration 360ms (longer for HEAVY lateral movement)
  * @category Movement Animation
  */
 export const GON_SWEEP_POSITIONING_STEP: SkeletalAnimation =
@@ -209,45 +288,75 @@ export const GON_SWEEP_POSITIONING_STEP: SkeletalAnimation =
     "gon_sweep_positioning_step",
     "쓸기 준비"
   )
-    .asMovement(0.3, false)
-    // Keyframe 0ms: Start position (low stance)
+    .asMovement(0.36, false) // Longer for deliberate weight shift
+    
+    // Keyframe 0ms: Start position (low HEAVY stance)
     .at(0)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20°
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50°
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50°
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.26, -0.35)
-    .rotate(BoneName.SHOULDER_R, 0.52, -0.26, 0.35)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.4)
-    .position(BoneName.PELVIS, 0, -0.1, 0)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (hips back)
+    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (forward lean)
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (deep)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (deep)
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25° (weight)
+    .rotate(BoneName.FOOT_R, 0.44, 0, 0) // 25° (weight)
+    .rotate(BoneName.SHOULDER_L, 0.57, 0.30, -0.38) // Ready
+    .rotate(BoneName.SHOULDER_R, 0.57, -0.30, 0.38)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.48)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.48)
+    .position(BoneName.PELVIS, 0, -0.14, 0)
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 100ms: Weight shift to right leg
-    .at(0.1)
-    .rotate(BoneName.PELVIS, -0.35, 0.09, 0) // Rotate right for shift
-    .rotate(BoneName.KNEE_R, -1.05, 0, 0) // -60° (right leg loads)
-    .rotate(BoneName.KNEE_L, -0.7, 0, 0) // -40° (left prepares to move)
-    .rotate(BoneName.SPINE_UPPER, 0.26, 0.09, 0) // Slight rotation
-    .position(BoneName.PELVIS, 0.02, -0.1, 0) // Shift weight right
+    
+    // Keyframe 110ms: Weight shift RIGHT + sink LOWER
+    .at(0.11)
+    .rotate(BoneName.PELVIS, -0.48, 0.12, 0) // -27.5°, 7° (sink + rotate right)
+    .rotate(BoneName.SPINE_UPPER, 0.26, 0.09, 0) // 15°, 5° (lean right)
+    .rotate(BoneName.KNEE_R, -1.13, 0, 0) // -65° (right leg LOADS - DEEP!)
+    .rotate(BoneName.KNEE_L, -0.79, 0, 0) // -45° (left prepares to slide)
+    .rotate(BoneName.FOOT_R, 0.52, 0, 0) // 30° (RIGHT HEAVY!)
+    .rotate(BoneName.FOOT_L, 0.35, 0, 0) // 20° (left lightens)
+    .position(BoneName.PELVIS, 0.04, -0.17, 0) // Shift right + sink
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 200ms: Left foot slides laterally
-    .at(0.2)
-    .rotate(BoneName.HIP_L, 0, 0, -0.17) // -10° (abduct slightly)
-    .rotate(BoneName.KNEE_L, -0.52, 0, 0) // -30° (slide with bent knee)
-    .rotate(BoneName.FOOT_L, 0, 0, 0) // Neutral for slide
-    .rotate(BoneName.SHOULDER_L, 0.70, 0.44, -0.26) // 40°, 25°, -15° (reach)
-    .rotate(BoneName.SHOULDER_R, 0.70, -0.44, 0.26) // Reach forward for grab
-    .position(BoneName.PELVIS, 0.02, -0.08, -0.15) // Move left
+    
+    // Keyframe 220ms: Left foot begins sliding laterally (ground contact maintained)
+    .at(0.22)
+    .rotate(BoneName.PELVIS, -0.48, 0.09, 0) // -27.5°, 5° (maintain low)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0.09, 0) // 17°, 5° (slight lean)
+    .rotate(BoneName.HIP_L, 0, 0, -0.22) // 0°, 0°, -12.5° (abduct for slide)
+    .rotate(BoneName.KNEE_L, -0.70, 0, 0) // -40° (slide with bent knee)
+    .rotate(BoneName.FOOT_L, 0.17, 0, 0) // 10° (sliding/scraping ground)
+    .rotate(BoneName.KNEE_R, -1.05, 0, 0) // -60° (support stable)
+    .rotate(BoneName.SHOULDER_L, 0.79, 0.52, -0.26) // 45°, 30°, -15° (begin reach)
+    .rotate(BoneName.SHOULDER_R, 0.79, -0.52, 0.26)
+    .position(BoneName.PELVIS, 0.04, -0.16, -0.12) // Moving left
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 300ms: Positioned for sweep
+    
+    // Keyframe 300ms: Mid-slide with arms REACHING for control
     .at(0.3)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // Return to neutral rotation
-    .rotate(BoneName.HIP_L, 0, 0, -0.09) // -5° (slight abduction maintained)
-    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (plant firmly)
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50° (equalize)
-    .rotate(BoneName.FOOT_L, 0.35, 0, 0) // 20° (ready for sweep)
-    .rotate(BoneName.SHOULDER_L, 0.70, 0.44, -0.26) // Arms extended for grab
-    .rotate(BoneName.SHOULDER_R, 0.70, -0.44, 0.26)
-    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // Forward lean maintained
-    .position(BoneName.PELVIS, 0, -0.1, -0.2) // Lateral position
+    .rotate(BoneName.PELVIS, -0.44, 0.05, 0) // -25°, 3° (settling)
+    .rotate(BoneName.SPINE_UPPER, 0.30, 0.05, 0) // 17°, 3° (forward into opponent)
+    .rotate(BoneName.HIP_L, 0, 0, -0.26) // 0°, 0°, -15° (wider stance)
+    .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (planting)
+    .rotate(BoneName.FOOT_L, 0.35, 0, 0) // 20° (weight transferring)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (support)
+    .rotate(BoneName.SHOULDER_L, 0.87, 0.61, -0.17) // 50°, 35°, -10° (REACH!)
+    .rotate(BoneName.SHOULDER_R, 0.87, -0.61, 0.17)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.22) // -70° (reaching forward)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.22)
+    .position(BoneName.PELVIS, 0.02, -0.14, -0.20) // Lateral position
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Keyframe 360ms: Positioned for sweep - COILED and ready
+    .at(0.36)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (neutral rotation - ready)
+    .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (forward lean maintained)
+    .rotate(BoneName.HIP_L, 0, 0, -0.17) // 0°, 0°, -10° (slight abduction)
+    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (PLANT firmly - sweep leg ready)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (support stable)
+    .rotate(BoneName.FOOT_L, 0.44, 0, 0) // 25° (ready to sweep)
+    .rotate(BoneName.FOOT_R, 0.44, 0, 0) // 25° (stable base)
+    .rotate(BoneName.SHOULDER_L, 0.87, 0.61, -0.17) // 50°, 35°, -10° (extended for grab)
+    .rotate(BoneName.SHOULDER_R, 0.87, -0.61, 0.17)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.13) // -65° (ready to grab)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.13)
+    .position(BoneName.PELVIS, 0, -0.14, -0.24) // Final lateral position
     .done<MartialArtsAnimationBuilder>()
     .build();
