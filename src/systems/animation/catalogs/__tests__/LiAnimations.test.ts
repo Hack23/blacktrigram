@@ -307,9 +307,10 @@ describe("Li Fire Spear Animation (화염지창)", () => {
       expect(wristRotation).toBeDefined();
       
       if (wristRotation) {
-        // Wrist should have positive X rotation (dorsiflexion for penetration)
-        expect(wristRotation.x).toBeGreaterThan(0);
-        expect(wristRotation.x).toBeLessThan(0.15); // Realistic wrist snap angle
+        // PHASE 3 FIX: Spear-hand requires NEGATIVE X rotation (dorsiflexion)
+        // Correct biomechanics: -0.3 rad (-17°) for finger rigidity
+        expect(wristRotation.x).toBeLessThan(0); // Negative for dorsiflexion
+        expect(wristRotation.x).toBeGreaterThan(-0.35); // Within realistic range
       }
     }
   });

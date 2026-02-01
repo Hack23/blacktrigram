@@ -112,10 +112,11 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .withSpearHand("right")
     
     // === Keyframe 280ms: Maximum wind-up - Spear-hand at ear ===
+    // PHASE 3 FIX (Issue #10): Add INHALE breathing coordination
     .at(0.28, "ease-out")
-    // Torso: Maximum coil rotation
-    .rotate(BoneName.SPINE_UPPER, 0, -0.15, 0) // Fully coiled
-    .rotate(BoneName.SPINE_MIDDLE, 0, -0.1, 0)
+    // Torso: Maximum coil rotation + CHEST EXPANSION (inhale)
+    .rotate(BoneName.SPINE_UPPER, -0.08, -0.15, 0) // Fully coiled + chest expands back (inhale)
+    .rotate(BoneName.SPINE_MIDDLE, -0.05, -0.1, 0) // Mid-spine expands
     .rotate(BoneName.SPINE_LOWER, 0, -0.06, 0)
     .rotate(BoneName.PELVIS, 0, -0.12, 0)
     
@@ -183,17 +184,22 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .withSpearHand("right")
     
     // === Keyframe 720ms: IMPACT - Full extension with wrist snap ===
+    // PHASE 3 FIXES:
+    // - Issue #7: Correct spear-hand wrist formation (dorsiflexion -0.3 rad / -17°)
+    // - Issue #9: Add scapular protraction via spine rotation (+0.3 rad forward)
+    // - Issue #10: Add EXPLOSIVE EXHALE (기합 - Kihap) with torso contraction
     .at(0.72, "ease-out")
-    // Torso: Maximum forward position at impact
-    .rotate(BoneName.SPINE_UPPER, 0.12, 0.2, 0) // Peak forward thrust
-    .rotate(BoneName.SPINE_MIDDLE, 0.08, 0.15, 0)
+    // Torso: Maximum forward position + EXHALE CONTRACTION + SCAPULAR PROTRACTION
+    .rotate(BoneName.SPINE_UPPER, 0.17, 0.2, 0) // Peak thrust + exhale + scapular protraction adds 0.05 rad
+    .rotate(BoneName.SPINE_MIDDLE, 0.10, 0.15, 0) // Exhale contracts mid-spine
     .rotate(BoneName.SPINE_LOWER, 0.05, 0.1, 0)
     .rotate(BoneName.PELVIS, 0.03, 0.15, 0)
     
-    // Right arm: FULL EXTENSION with wrist snap
+    // Right arm: FULL EXTENSION with CORRECT spear-hand wrist
     .rotate(BoneName.SHOULDER_R, -0.75, 0, -0.6) // Complete extension
     .rotate(BoneName.ELBOW_R, 0, 0, -0.05) // Nearly straight (5° for safety)
-    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - dorsiflexion/extension for penetration (in this rig, positive X = dorsiflexion)
+    // PHASE 3 FIX (Issue #7): Spear-hand requires dorsiflexion -0.3 rad (-17°) for rigidity
+    .rotate(BoneName.WRIST_R, -0.3, 0, 0) // CORRECTED: -0.3 rad dorsiflexion (was 0.09)
     
     // NOTE: Finger rigidity expressed through hand pose (spear-hand)
     // Individual finger bones not available in current skeletal system
