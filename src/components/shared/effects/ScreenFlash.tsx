@@ -84,7 +84,7 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
       }
 
       // Apply fade curve
-      let fadeProgress = progress;
+      let fadeProgress: number;
       switch (config.fadeCurve) {
         case "ease-out":
           fadeProgress = 1 - Math.pow(1 - progress, 3);

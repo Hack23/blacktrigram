@@ -47,8 +47,8 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create zigzag lightning path
-  const geometry = useMemo(() => {
+  // Create zigzag lightning path and material
+  const { geometry, material } = useMemo(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
     const displacement = 0.2 * intensity;
@@ -67,14 +67,21 @@ const LightningArc: React.FC<{
       points.push(point);
     }
 
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [start, end, intensity]);
+    const geom = new THREE.BufferGeometry().setFromPoints(points);
+    const mat = new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: intensity,
+      linewidth: 2,
+    });
+
+    return { geometry: geom, material: mat };
+  }, [start, end, intensity, color]);
 
   useFrame(() => {
     if (lineRef.current) {
       // Flicker effect
       const flicker = 0.8 + Math.random() * 0.2;
-      const material = lineRef.current.material as THREE.LineBasicMaterial;
       material.opacity = flicker * intensity;
     }
   });
@@ -82,17 +89,11 @@ const LightningArc: React.FC<{
   useEffect(() => {
     return () => {
       geometry.dispose();
+      material.dispose();
     };
-  }, [geometry]);
+  }, [geometry, material]);
 
-  return (
-    <primitive object={new THREE.Line(geometry, new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity: intensity,
-      linewidth: 2,
-    }))} ref={lineRef} />
-  );
+  return <primitive object={new THREE.Line(geometry, material)} ref={lineRef} />;
 };
 
 /**
@@ -332,12 +333,14 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
   onComplete,
   active = true,
 }) => {
-  const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
   const startTimeRef = useRef(Date.now());
+  const completedRef = useRef(false);
 
   useEffect(() => {
     startTimeRef.current = Date.now();
-    setProgress(0);
+    progressRef.current = 0;
+    completedRef.current = false;
   }, [active, effectType]);
 
   useFrame(() => {
@@ -345,9 +348,10 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
 
     const elapsed = Date.now() - startTimeRef.current;
     const newProgress = Math.min(elapsed / duration, 1);
-    setProgress(newProgress);
+    progressRef.current = newProgress;
 
-    if (newProgress >= 1 && onComplete) {
+    if (newProgress >= 1 && !completedRef.current && onComplete) {
+      completedRef.current = true;
       onComplete();
     }
   });
@@ -363,7 +367,7 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
         <ThunderReleaseEffect
           position={position}
           intensity={intensity}
-          progress={progress}
+          progress={progressRef.current}
         />
       )}
     </group>

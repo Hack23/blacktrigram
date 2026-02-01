@@ -14,7 +14,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -59,12 +59,18 @@ const ParticleBurst: React.FC<{
 }> = ({ position, particles, color }) => {
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef(particles);
+  
+  // Create mesh refs array once
+  const meshRefsArray = useMemo(
+    () => particles.map(() => ({ current: null as THREE.Mesh | null })),
+    [particles]
+  );
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
     // Update each particle
-    particlesRef.current.forEach((particle) => {
+    particlesRef.current.forEach((particle, i) => {
       // Apply physics
       particle.velocity.y -= 9.8 * delta; // Gravity
       particle.velocity.multiplyScalar(0.98); // Air resistance
@@ -72,6 +78,15 @@ const ParticleBurst: React.FC<{
 
       // Update life
       particle.life -= delta;
+
+      // Update mesh position and opacity via refs
+      const mesh = meshRefsArray[i]?.current;
+      if (mesh) {
+        mesh.position.copy(particle.position);
+        const alpha = Math.max(0, particle.life / particle.maxLife);
+        const material = mesh.material as THREE.MeshBasicMaterial;
+        material.opacity = alpha;
+      }
     });
   });
 
@@ -80,7 +95,7 @@ const ParticleBurst: React.FC<{
       {particlesRef.current.map((particle, i) => {
         const alpha = Math.max(0, particle.life / particle.maxLife);
         return (
-          <mesh key={i} position={particle.position}>
+          <mesh key={i} ref={meshRefsArray[i]} position={particle.position}>
             <sphereGeometry args={[particle.size, 8, 8]} />
             <meshBasicMaterial
               color={color}
@@ -172,7 +187,7 @@ const DebrisParticles: React.FC<{
 }> = ({ position, intensity, color }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate random debris
+  // Generate random debris - recreate refs when debris changes
   const debris = useMemo(() => {
     const debrisData: Array<{
       position: THREE.Vector3;
@@ -216,11 +231,15 @@ const DebrisParticles: React.FC<{
     return debrisData;
   }, [position, intensity]);
 
-  const debrisRefs = useRef(debris.map(() => React.createRef<THREE.Mesh>()));
+  // Recreate refs when debris changes
+  const debrisRefs = useMemo(
+    () => debris.map(() => React.createRef<THREE.Mesh>()),
+    [debris]
+  );
 
   useFrame((_, delta) => {
     debris.forEach((piece, i) => {
-      const mesh = debrisRefs.current[i].current;
+      const mesh = debrisRefs[i].current;
       if (!mesh) return;
 
       // Apply physics
@@ -246,7 +265,7 @@ const DebrisParticles: React.FC<{
   return (
     <group ref={groupRef}>
       {debris.map((piece, i) => (
-        <mesh key={i} ref={debrisRefs.current[i]} position={piece.position}>
+        <mesh key={i} ref={debrisRefs[i]} position={piece.position}>
           <boxGeometry args={[piece.size, piece.size, piece.size]} />
           <meshBasicMaterial color={color} transparent opacity={1} />
         </mesh>
@@ -268,15 +287,19 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
   active = true,
   color = KOREAN_COLORS.ACCENT_GOLD,
 }) => {
-  const [progress, setProgress] = useState(0);
+  // Cap particle count for performance
+  const cappedParticleCount = Math.min(particleCount, 50);
+  
+  const progressRef = useRef(0);
   const startTimeRef = useRef(Date.now());
+  const completedRef = useRef(false);
 
   // Generate particles on mount
   const particles = useMemo(() => {
     const particleData: ParticleData[] = [];
     const center = new THREE.Vector3(...position);
 
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < cappedParticleCount; i++) {
       const angle = Math.random() * Math.PI * 2;
       const elevation = (Math.random() - 0.3) * Math.PI;
       const speed = 3 + Math.random() * 4;
@@ -299,11 +322,12 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
     }
 
     return particleData;
-  }, [position, particleCount]);
+  }, [position, cappedParticleCount]);
 
   useEffect(() => {
     startTimeRef.current = Date.now();
-    setProgress(0);
+    progressRef.current = 0;
+    completedRef.current = false;
   }, [active]);
 
   useFrame(() => {
@@ -311,9 +335,10 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
 
     const elapsed = Date.now() - startTimeRef.current;
     const newProgress = Math.min(elapsed / duration, 1);
-    setProgress(newProgress);
+    progressRef.current = newProgress;
 
-    if (newProgress >= 1 && onComplete) {
+    if (newProgress >= 1 && !completedRef.current && onComplete) {
+      completedRef.current = true;
       onComplete();
     }
   });
@@ -325,7 +350,7 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       {/* Explosion flash */}
       <ExplosionFlash
         position={position}
-        progress={progress}
+        progress={progressRef.current}
         intensity={intensity}
         color={color}
       />
@@ -333,13 +358,13 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       {/* Shockwave rings */}
       <ShockwaveRing
         position={position}
-        progress={progress}
+        progress={progressRef.current}
         intensity={intensity}
         color={KOREAN_COLORS.PRIMARY_CYAN}
       />
       <ShockwaveRing
         position={[position[0], position[1] + 0.05, position[2]]}
-        progress={progress * 0.8}
+        progress={progressRef.current * 0.8}
         intensity={intensity * 0.8}
         color={KOREAN_COLORS.ACCENT_RED}
       />
@@ -358,7 +383,7 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       <pointLight
         position={position}
         color={color}
-        intensity={intensity * 8 * (1 - progress)}
+        intensity={intensity * 8 * (1 - progressRef.current)}
         distance={6}
         decay={2}
       />

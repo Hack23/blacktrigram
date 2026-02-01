@@ -13,6 +13,7 @@
  * @korean 카메라진동
  */
 
+import { useRef, useCallback } from "react";
 import * as THREE from "three";
 
 /**
@@ -49,6 +50,7 @@ interface CameraShakeState {
 export class CameraShakeManager {
   private shakeState: CameraShakeState | null = null;
   private camera: THREE.Camera | null = null;
+  private tempVector: THREE.Vector3 | null = null;
 
   /**
    * Attach the shake manager to a camera
@@ -113,8 +115,10 @@ export class CameraShakeManager {
       return;
     }
 
-    // Calculate decay factor (exponential decay)
-    const decayFactor = Math.pow(1 - progress, 2);
+    // Calculate decay factor with configured decay rate
+    const configuredDecay = this.shakeState.decay;
+    const decayFactor =
+      Math.pow(1 - progress, 2) * Math.exp(-configuredDecay * progress);
 
     // Calculate shake offset with oscillation
     const time = elapsed / 1000; // Convert to seconds
@@ -129,10 +133,12 @@ export class CameraShakeManager {
     this.shakeState.offset.z =
       Math.sin(time * frequency * 2.3 * Math.PI) * amplitude * 0.05;
 
-    // Apply offset to camera
-    this.camera.position.copy(
-      this.shakeState.originalPosition.clone().add(this.shakeState.offset)
-    );
+    // Apply offset to camera - reuse temp vector to avoid GC pressure
+    if (!this.tempVector) {
+      this.tempVector = new THREE.Vector3();
+    }
+    this.tempVector.copy(this.shakeState.originalPosition).add(this.shakeState.offset);
+    this.camera.position.copy(this.tempVector);
   }
 
   /**
@@ -191,25 +197,42 @@ export const JIN_SHAKE_PROFILES = {
  * React hook for camera shake in @react-three/fiber
  */
 export const useCameraShake = () => {
-  const manager = new CameraShakeManager();
+  const managerRef = useRef<CameraShakeManager | null>(null);
+
+  if (!managerRef.current) {
+    managerRef.current = new CameraShakeManager();
+  }
+
+  const manager = managerRef.current;
+
+  const shake = useCallback(
+    (config: CameraShakeConfig) => manager.shake(config),
+    [manager]
+  );
+
+  const shakeProfile = useCallback(
+    (profile: keyof typeof JIN_SHAKE_PROFILES) =>
+      manager.shake(JIN_SHAKE_PROFILES[profile]),
+    [manager]
+  );
+
+  const getManager = useCallback(() => manager, [manager]);
 
   return {
     /**
      * Trigger camera shake with configuration
      */
-    shake: (config: CameraShakeConfig) => manager.shake(config),
+    shake,
 
     /**
      * Trigger camera shake using predefined profile
      */
-    shakeProfile: (
-      profile: keyof typeof JIN_SHAKE_PROFILES
-    ) => manager.shake(JIN_SHAKE_PROFILES[profile]),
+    shakeProfile,
 
     /**
      * Get the shake manager instance
      */
-    getManager: () => manager,
+    getManager,
   };
 };
 

@@ -2,7 +2,7 @@
  * Tests for ScreenFlash component
  */
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import {
   ScreenFlash,
@@ -13,7 +13,7 @@ import { KOREAN_COLORS } from "../../../types/constants";
 
 describe("ScreenFlash", () => {
   it("should not render when not active", () => {
-    const { container } = render(
+    render(
       <ScreenFlash
         active={false}
         config={{
