@@ -22,6 +22,12 @@ import type { SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Li Fire precision techniques (리괘 정밀 타격)
+import {
+  LI_FIRE_SPEAR_ANIMATION,
+  LI_NERVE_STRIKE_COMBO,
+} from "./LiTechniqueAnimations";
+
 /**
  * Li Idle Targeting Animation (리괘 조준 자세)
  *
@@ -457,3 +463,25 @@ export const LI_FORWARD_TARGETING_GUARD: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("both") // Both hands in spear-hand formation
     .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Map of all Li stance-specific animations for easy access
+ * @korean 리괘자세애니메이션맵
+ */
+export const LI_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
+  // Idle & Movement
+  ["li_idle_targeting", LI_IDLE_TARGETING],
+  ["li_diagonal_dart_step", LI_DIAGONAL_DART_STEP],
+  ["li_linear_pierce_step", LI_LINEAR_PIERCE_STEP],
+  
+  // Stance Transitions
+  ["li_forward_targeting_guard", LI_FORWARD_TARGETING_GUARD],
+  
+  // Fire Precision Strike Techniques (리괘 정밀 타격)
+  ["li_fire_spear_animation", LI_FIRE_SPEAR_ANIMATION],
+  ["li_nerve_strike_combo", LI_NERVE_STRIKE_COMBO],
+]);
