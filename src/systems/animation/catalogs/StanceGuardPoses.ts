@@ -33,15 +33,15 @@ import type { StanceLaterality } from "../../trigram/types";
  * ☰ 건 (Geon) - Heaven: High guard with strong forward presence
  *
  * Traditional Taekwondo Ap Seogi (앞서기) - Walking Stance
- * - Both hands raised high (shoulder level or above)
- * - Ready to deliver powerful overhead strikes
+ * - Hands at solar plexus level protecting ribs and vital organs
+ * - Elbows tight to body for defensive integrity
  * - Weight slightly forward for aggressive positioning
  * - Breathing emphasizes chest expansion for power generation
  *
  * **Leg Position (Ap Seogi)**:
- * - Feet shoulder-width apart (0.5m)
- * - Front leg slightly bent, ready to step
- * - Back leg providing power base
+ * - Front leg hip flexion 45°, knee flexion 30° (knee over toes)
+ * - Back leg slight extension, knee never locked (10° flexion)
+ * - Proper weight distribution prevents falling backward
  * - Natural, mobile stance for quick movement
  *
  * Combat Application:
@@ -49,39 +49,41 @@ import type { StanceLaterality } from "../../trigram/types";
  * - High mobility (+15% movement speed from game-design.md)
  * - Bone-break attacks (+10% startup time)
  *
- * ENHANCED: Proper boxing-style guard - elbows tight to protect ribs, hands at chin
+ * CORRECTED: Authentic Korean guard - hands at solar plexus (-0.7 rad shoulder),
+ * elbows tight to protect ribs (2.0 rad), proper forward stance biomechanics
  *
  * @korean 건괘방어포즈
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.0, 0.2, 0.5), // Hands at chin level - not above head
-    elbow: new THREE.Euler(0, 0, -2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, 0.2, 0), // Fists at chin level
+    shoulder: new THREE.Euler(-0.7, 0.15, 0.35), // Solar plexus level - protects liver/ribs
+    elbow: new THREE.Euler(0, 0, -2.0), // Tight to ribs (115° flexion) - rib protection
+    wrist: new THREE.Euler(0, 0.1, 0), // Neutral ready position - fists ready to strike
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Mirror - both hands at chin
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, -0.2, 0), // Fists at chin level
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Mirror - balanced guard at solar plexus
+    elbow: new THREE.Euler(0, 0, 2.0), // Tight to ribs - protects floating ribs
+    wrist: new THREE.Euler(0, -0.1, 0), // Neutral ready position
   },
   torso: new THREE.Euler(0.1, -0.3, 0), // Slight forward lean - aggressive but balanced
 
-  // Ap Seogi (Forward Stance) - DRAMATIC power stance for direct force
-  // Based on GEON_HEAVEN biomechanics: 70° front knee, 160° back leg
+  // Ap Seogi (Forward Stance) - CORRECTED biomechanics
+  // Front leg: 45° hip flexion, 30° knee flexion (knee over toes)
+  // Back leg: -10° hip extension, 10° knee flexion (never locked)
   leftLeg: {
-    hip: new THREE.Euler(-0.35, 0.15, 0), // Back leg extended (160° = -0.35 rad hip rotation)
-    knee: new THREE.Euler(0.35, 0, 0), // Slight back knee bend for stability
-    ankle: new THREE.Euler(-0.1, 0, 0), // Heel planted firmly
+    hip: new THREE.Euler(-0.17, 0.15, 0), // Back leg slight extension (-10°) - power push
+    knee: new THREE.Euler(0.17, 0, 0), // Back knee 10° flexion - never locked straight
+    ankle: new THREE.Euler(-0.26, 0, 0), // Plantarflexion -15° - heel down, toes push
   },
   rightLeg: {
-    hip: new THREE.Euler(0.6, -0.15, 0), // Front leg forward (70° flexion = 0.6 rad)
-    knee: new THREE.Euler(1.2, 0, 0), // Deep front knee bend ~70° flexion
-    ankle: new THREE.Euler(-0.15, 0, 0), // Dorsiflexion for power base
+    hip: new THREE.Euler(0.78, -0.15, 0), // Front leg 45° hip flexion - thigh forward
+    knee: new THREE.Euler(0.52, 0, 0), // Front knee 30° flexion - knee over toes
+    ankle: new THREE.Euler(-0.35, 0, 0), // Dorsiflexion -20° - shin angled forward
   },
   pelvis: new THREE.Euler(0.15, -0.5, 0), // Forward tilt + side stance for power
   stanceWidth: 0.6, // 1.35x shoulder width (40cm standard * 1.35)
   stanceDepth: 0.6, // Deep forward/back split
-  pelvisHeight: -0.15, // Lowered for stability (hipHeight 0.85)
+  pelvisHeight: -0.10, // Corrected hip height (0.90m) - prevents backward fall
 
   weight: "forward",
   breathingRange: {
@@ -93,37 +95,38 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
 /**
  * ☱ 태 (Tae) - Lake: Fluid mid-guard with adaptive positioning
  *
- * Traditional Taekwondo Ap Koobi Seogi (앞굽이) - Front Stance
- * - Hands at mid-level (chest height)
- * - Ready for joint manipulation and throws
- * - Weight forward for reach (+15% reach from game-design.md)
+ * Traditional Taekwondo Cat Stance (Beom Seogi - 범서기)
+ * - Lead hand at mid-chest, rear hand protects chin
+ * - Elbows tight to body protecting ribs
+ * - Weight on back leg for adaptability (+15% reach from game-design.md)
  * - Breathing flows smoothly for continuous adaptation
  *
- * **Leg Position (Ap Koobi Seogi)**:
- * - Deep front lunge, front knee over toes
- * - Back leg straight, heel down
- * - 70% weight forward, powerful reach
- * - Wide stance (0.9m) for stability
+ * **Leg Position (Beom Seogi - Cat Stance)**:
+ * - Front leg light (30% weight), nearly straight (170°)
+ * - Back leg loaded (70% weight), bent deeply (120°)
+ * - Spring-loaded for quick movements
+ * - Narrow stance for mobility
  *
  * Combat Application:
  * - Joint locks and throwing techniques
  * - +15% reach for throws/sweeps
  * - +10% takedown damage
  *
- * ENHANCED: Lead hand parries with rear hand protecting chin - elbows guard ribs
+ * CORRECTED: Proper Korean bladed guard - lead hand forward but bent elbow,
+ * rear hand protecting chin, both elbows tight to ribs (2.0-2.2 rad)
  *
  * @korean 태괘방어포즈
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.6, 0.3), // Lead arm extended but elbows still protect
-    elbow: new THREE.Euler(0, 0, -1.8), // Elbow close to body - rib protection
+    shoulder: new THREE.Euler(-0.7, 0.5, 0.25), // Lead hand mid-chest - controlled extension
+    elbow: new THREE.Euler(0, 0, -1.9), // Elbow bent for rib protection (110° flexion)
     wrist: new THREE.Euler(0.1, 0.3, 0.2), // Open palm for grappling
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand at chin level
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.2, -0.2, 0), // Fist protecting chin
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Rear hand at solar plexus
+    elbow: new THREE.Euler(0, 0, 2.1), // Tight elbow - protects ribs (120° flexion)
+    wrist: new THREE.Euler(0, -0.1, 0), // Fist ready to counter
   },
   torso: new THREE.Euler(0.2, -0.5, 0.1), // Forward lean + rotation for reach
 
@@ -154,39 +157,40 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
 /**
  * ☲ 리 (Li) - Fire: Aggressive forward guard
  *
- * Traditional Taekwondo Juchum Seogi (주춤) - Horse Stance
- * - Hands forward in striking position
- * - Ready for precise nerve strikes
+ * Traditional Taekwondo Fighting Stance (Gyeorugi Junbi - 겨루기 준비)
+ * - Korean bladed guard: lead hand forward, rear hand protecting chin
+ * - Elbows tight to body protecting ribs (NOT peekaboo style)
  * - Weight neutral but low center of gravity
  * - Breathing controlled for precision (+5% crit hit chance)
  *
- * **Leg Position (Juchum Seogi)**:
- * - WIDE stance (1.2m) - parallel feet
- * - Both knees bent deeply (horse riding position)
- * - Low center of gravity for stability
- * - Equal weight distribution
+ * **Leg Position (Gyeorugi Junbi)**:
+ * - Balanced fighting stance - both knees bent 135°
+ * - Feet shoulder-width apart, slight stagger
+ * - 50/50 weight distribution for mobility
+ * - Ready for explosive strikes
  *
  * Combat Application:
  * - Precise vital point strikes
  * - +15% stability vs. vital strikes
  * - +10% knockdown resistance
  *
- * ENHANCED: Peekaboo guard - both hands high protecting face, aggressive stance
+ * CORRECTED: Korean bladed guard replaces boxing peekaboo - lead hand extends
+ * at chest level, rear hand protects chin, elbows tight (NOT flared out)
  *
  * @korean 리괘방어포즈
  */
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.6, 0.2, 0.9), // VERY HIGH - elbows out wide like wings
-    elbow: new THREE.Euler(0, 0, -2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, 0.15, 0), // Fists glued to cheekbones
+    shoulder: new THREE.Euler(-0.65, 0.4, 0.2), // Lead hand extended at chest level - parry position
+    elbow: new THREE.Euler(0, 0, -1.7), // Elbow bent 100° - maintains rib protection
+    wrist: new THREE.Euler(0.1, 0.2, 0), // Fist ready to strike or parry
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.6, -0.2, -0.9), // Mirror - dramatic peekaboo
-    elbow: new THREE.Euler(0, 0, 2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, -0.15, 0), // Fists glued to cheekbones
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Rear hand at chin/solar plexus - protection
+    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs (115° flexion)
+    wrist: new THREE.Euler(0, -0.1, 0), // Fist guarding chin
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Chin tucked, facing SQUARE forward
+  torso: new THREE.Euler(0.1, -0.4, 0), // Bladed stance - torso rotated 25°
 
   // Fighting Stance (Gyeorugi Junbi) - Balanced precision combat stance
   // Based on LI_FIRE biomechanics: 135° both knees (moderate bend), 50/50 weight
@@ -215,56 +219,58 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
 /**
  * ☳ 진 (Jin) - Thunder: Explosive ready stance
  *
- * Traditional Taekwondo Dwi Koobi Seogi (뒤굽이) - Back Stance
- * - Hands chambered for explosive release
- * - Ready for shocking nerve strikes
- * - Weight back but explosive forward (+15% shock damage)
+ * Traditional Taekwondo Horse Stance (Juchum Seogi - 주춤서기)
+ * - Hands at mid-chest level, chambered for explosive release
+ * - Elbows tight to protect ribs
+ * - Deep horse stance with knees tracking over toes (NO valgus collapse)
  * - Breathing deep for power generation
  *
- * **Leg Position (Dwi Koobi Seogi)**:
- * - 70% weight on back leg
- * - Front leg light, ready to kick or step
- * - Back knee bent deeply, coiled spring
- * - Moderate width (0.7m) for mobility
+ * **Leg Position (Juchum Seogi - Horse Stance)**:
+ * - Very wide stance (2.0x shoulder width)
+ * - Both knees bent 80° (NOT full 90° - maintains power reserve)
+ * - Knees MUST track over toes - no inward collapse
+ * - 50/50 weight distribution, very low
  *
  * Combat Application:
  * - Nerve strike warfare
  * - +15% shock damage on nerve strikes
  * - -30 consciousness on head hits
  *
- * ENHANCED: Chambered guard with chin protection - rear hand guards chin, elbows tight
+ * CORRECTED: Proper horse stance biomechanics - 80° knee flexion (not 90°),
+ * hip external rotation ensures knees track over toes (prevents valgus collapse),
+ * hands raised to mid-chest for rib protection
  *
  * @korean 진괘방어포즈
  */
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.6, 0.2, 0.6), // Lead arm low but elbows guard body
-    elbow: new THREE.Euler(0, 0, -2.2), // TIGHT elbow - protects left ribs
-    wrist: new THREE.Euler(0.4, 0.1, 0), // Chambered fist at ribs
+    shoulder: new THREE.Euler(-0.7, 0.15, 0.4), // Hands at mid-chest - not too low
+    elbow: new THREE.Euler(0, 0, -2.1), // Tight elbow - protects left ribs (120° flexion)
+    wrist: new THREE.Euler(0.2, 0.1, 0), // Chambered fist ready to explode
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand at chin level - protects head
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(0.3, -0.1, 0), // Fist protecting chin
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.4), // Mirror - balanced mid-chest guard
+    elbow: new THREE.Euler(0, 0, 2.1), // Tight elbow - protects right ribs (120° flexion)
+    wrist: new THREE.Euler(0.2, -0.1, 0), // Chambered fist ready to strike
   },
-  torso: new THREE.Euler(-0.1, -0.4, 0.05), // Slight back lean + rotation - coiled
+  torso: new THREE.Euler(0.1, 0, 0), // Square facing forward - horse stance posture
 
-  // Horse Stance (Juchum Seogi) - WIDE, DEEP, POWERFUL
-  // Based on JIN_THUNDER biomechanics: 90° both knees, 50/50 weight, 2.0x width
+  // Horse Stance (Juchum Seogi) - CORRECTED biomechanics
+  // 80° knee flexion (not 90°), proper hip rotation for knee tracking
   leftLeg: {
-    hip: new THREE.Euler(0.3, 0.5, 0.3), // Wide spread, toes out
-    knee: new THREE.Euler(1.57, 0, 0), // 90° FULL bend - deep horse stance
-    ankle: new THREE.Euler(-0.25, 0.2, 0), // Toes pointed outward
+    hip: new THREE.Euler(0.3, 0.7, 0.15), // Hip external rotation 0.7 rad (40°), abduction 0.15
+    knee: new THREE.Euler(1.4, 0, 0), // 80° knee flexion (1.4 rad) - NOT full 90°
+    ankle: new THREE.Euler(-0.35, 0.3, 0), // Dorsiflexion + 30° external rotation (toes 45° out)
   },
   rightLeg: {
-    hip: new THREE.Euler(0.3, -0.5, -0.3), // Mirror - wide spread
-    knee: new THREE.Euler(1.57, 0, 0), // 90° FULL bend - deep horse stance
-    ankle: new THREE.Euler(-0.25, -0.2, 0), // Toes pointed outward
+    hip: new THREE.Euler(0.3, -0.7, -0.15), // Mirror - external rotation ensures knee tracks toes
+    knee: new THREE.Euler(1.4, 0, 0), // 80° knee flexion - maintains power reserve
+    ankle: new THREE.Euler(-0.35, -0.3, 0), // Dorsiflexion + 30° external rotation (toes 45° out)
   },
   pelvis: new THREE.Euler(0.1, 0, 0), // Slight forward tilt, facing square
   stanceWidth: 0.9, // VERY WIDE (2.0x shoulder width)
   stanceDepth: 0, // Parallel feet - horse stance
-  pelvisHeight: -0.25, // VERY LOW for explosive power (hipHeight 0.75)
+  pelvisHeight: -0.21, // VERY LOW but thighs near parallel (not below) - hipHeight 0.79
 
   weight: "back",
   breathingRange: {
@@ -276,56 +282,57 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
 /**
  * ☴ 손 (Son) - Wind: Continuous motion guard
  *
- * Traditional Taekwondo Niunja Seogi (니은자) - L-Stance
- * - Hands in flowing circular pattern
- * - Ready for continuous pressure attacks
- * - Weight neutral for lateral movement (+10% lateral)
+ * Traditional Taekwondo Crane Stance (Hakdari Seogi - 학다리서기)
+ * - Lead hand forward at chest level, rear hand protects
+ * - Elbows remain tight even with extended lead hand
+ * - One leg raised for continuous kicking (+10% lateral movement)
  * - Breathing rhythmic for sustained combos
  *
- * **Leg Position (Niunja Seogi)**:
- * - L-shaped narrow stance (0.4m)
- * - Front foot turned inward (L-shape)
- * - Back foot pointing forward
- * - Weight 50/50 for quick lateral shifts
+ * **Leg Position (Hakdari Seogi - Crane Stance)**:
+ * - One leg raised with knee at waist level (NOT too high)
+ * - Standing leg nearly straight (170°) for balance
+ * - 100% weight on standing leg
+ * - Pelvis height adjusted for stability
  *
  * Combat Application:
  * - Pressure point sequences
  * - +10% chaining speed on pressure sequences
  * - +10% lateral movement
  *
- * ENHANCED: Staggered guard - lead hand forward but elbow guards, rear protects chin
+ * CORRECTED: Guard height lowered to chest level (not too high), pelvis raised
+ * for proper crane stance balance, raised leg at appropriate height
  *
  * @korean 손괘방어포즈
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.5, 0.3), // Lead arm forward but controlled
-    elbow: new THREE.Euler(0, 0, -1.8), // Elbow guards left ribs
+    shoulder: new THREE.Euler(-0.7, 0.4, 0.25), // Lead hand at chest level - controlled extension
+    elbow: new THREE.Euler(0, 0, -1.8), // Elbow maintains rib protection (105° flexion)
     wrist: new THREE.Euler(0, 0.3, 0.2), // Knife hand extended
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear arm at chin level
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(0.2, -0.2, 0), // Fist protecting chin
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Rear hand at solar plexus
+    elbow: new THREE.Euler(0, 0, 2.1), // Tight elbow - protects right ribs (120° flexion)
+    wrist: new THREE.Euler(0, -0.1, 0), // Fist protecting body
   },
   torso: new THREE.Euler(0.1, -0.5, 0.1), // Rotation for bladed stance
 
-  // Crane Stance (Hakdari Seogi) - ONE LEG RAISED for continuous kicks
-  // Based on SON_WIND biomechanics: 170° standing leg, 45° raised leg, 100% on standing
+  // Crane Stance (Hakdari Seogi) - CORRECTED balance and height
+  // Raised leg at proper waist level, standing leg 170°, higher pelvis for stability
   leftLeg: {
-    hip: new THREE.Euler(1.2, 0.3, 0.2), // Left leg RAISED HIGH - knee at waist level
-    knee: new THREE.Euler(2.0, 0, 0), // Raised leg deeply bent (45° = knee folded)
-    ankle: new THREE.Euler(-0.4, 0.3, 0), // Foot hanging, toes pointed
+    hip: new THREE.Euler(1.1, 0.25, 0.15), // Left leg raised to waist level (not too high)
+    knee: new THREE.Euler(1.8, 0, 0), // Raised leg bent 105° (knee folded naturally)
+    ankle: new THREE.Euler(-0.3, 0.2, 0), // Foot hanging naturally, toes pointed
   },
   rightLeg: {
-    hip: new THREE.Euler(0.1, -0.15, 0), // Standing leg nearly straight
-    knee: new THREE.Euler(0.18, 0, 0), // Standing knee slightly bent (170°)
+    hip: new THREE.Euler(0.1, -0.15, 0), // Standing leg nearly straight for balance
+    knee: new THREE.Euler(0.18, 0, 0), // Standing knee slightly bent 170° (10° flexion)
     ankle: new THREE.Euler(-0.1, 0, 0), // Foot flat on ground
   },
   pelvis: new THREE.Euler(0.05, -0.6, 0.05), // Slight lean toward standing leg for balance
   stanceWidth: 0, // Zero - single leg stance
   stanceDepth: 0.2, // Standing leg slightly forward
-  pelvisHeight: -0.08, // Higher for mobility (hipHeight 0.92)
+  pelvisHeight: -0.05, // Raised for crane stance stability - hipHeight 0.95m
 
   weight: "neutral",
   breathingRange: {
@@ -337,36 +344,37 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
 /**
  * ☵ 감 (Gam) - Water: Flowing defensive guard
  *
- * Traditional Taekwondo Narani Seogi (나란이) - Parallel Stance
- * - Hands at mid-level for counters
- * - Ready for counter-grappling and sweeps
- * - Weight centered for adaptability (+10% counter speed)
+ * Traditional Taekwondo Back Stance (Dwit Seogi - 뒷서기)
+ * - Hands at chest level for flowing counters
+ * - Elbows tight protecting ribs
+ * - Weight on back leg for defensive adaptability (+10% counter speed)
  * - Breathing deep and flowing
  *
- * **Leg Position (Narani Seogi)**:
- * - Feet parallel, shoulder-width (0.5m)
- * - Natural standing position
- * - Slight knee bend for readiness
- * - Balanced, adaptive stance
+ * **Leg Position (Dwit Seogi - Back Stance)**:
+ * - Front leg light (30% weight), nearly straight (160°)
+ * - Back leg loaded (70% weight), deeply bent (100°)
+ * - Moderate stance width for stability
+ * - Back-weighted for defensive flow
  *
  * Combat Application:
  * - Flow-into counters
  * - +10% adaptability/counter speed
  * - +15 bleed on rib shots
  *
- * ENHANCED: Mid-level guard with tight elbows - hands at solar plexus, elbows protect ribs
+ * CORRECTED: Guard raised to chest level (not hip level), elbows tight to
+ * protect ribs, proper back stance with correct weight distribution
  *
  * @korean 감괘방어포즈
  */
 export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.8, 0.3, 0.4), // Hands at chest level - ready to parry
-    elbow: new THREE.Euler(0, 0, -2.0), // Tight elbow - protects left ribs
-    wrist: new THREE.Euler(-0.1, 0.3, 0.3), // Palm ready to redirect
+    shoulder: new THREE.Euler(-0.7, 0.25, 0.35), // Hands at chest level - ready to flow/redirect
+    elbow: new THREE.Euler(0, 0, -2.0), // Tight elbow - protects left ribs (115° flexion)
+    wrist: new THREE.Euler(-0.1, 0.3, 0.3), // Palm ready to redirect attacks
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.8, -0.3, -0.4), // Mirror - balanced guard
-    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs
+    shoulder: new THREE.Euler(-0.7, -0.25, -0.35), // Mirror - balanced flowing guard
+    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs (115° flexion)
     wrist: new THREE.Euler(-0.1, -0.3, -0.3), // Palm ready to redirect
   },
   torso: new THREE.Euler(0.1, -0.3, 0.1), // Slight lean + flowing motion
@@ -398,16 +406,16 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
 /**
  * ☶ 간 (Gan) - Mountain: Solid defensive posture
  *
- * Traditional Taekwondo Gibo Seogi (기본) - Basic Stance
- * - Arms in tight defensive position
- * - Immovable blocking stance
- * - Weight balanced for maximum stability (+15% block strength)
+ * Traditional Taekwondo Closed Stance (Moa Seogi - 모아서기)
+ * - X-block arms lowered to protect body (not head)
+ * - Forearms crossed at chest level protecting vital organs
+ * - Feet close together for immovable stance (+15% block strength)
  * - Breathing steady and controlled
  *
- * **Leg Position (Gibo Seogi)**:
- * - Feet close together (0.3m) - NARROW
- * - Mountain-solid, immovable
- * - Knees slightly bent for shock absorption
+ * **Leg Position (Moa Seogi - Closed Stance)**:
+ * - Feet very close together (0.6x shoulder width)
+ * - Both knees moderately bent (145°) for shock absorption
+ * - 50/50 weight distribution, rooted like mountain
  * - Maximum stability for blocking
  *
  * Combat Application:
@@ -415,22 +423,23 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
  * - +15% block strength
  * - +10% counter-strike speed
  *
- * ENHANCED: High cover guard - forearms cross in front of face for maximum protection
+ * CORRECTED: X-block lowered to chest/body level (not face), forearms protect
+ * ribs and vital organs, proper mountain-solid stability
  *
  * @korean 간괘방어포즈
  */
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.8, 0.1, 1.0), // Arms CROSSED in front of face
-    elbow: new THREE.Euler(0, 0, -2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, 0.4, 0.3), // Fists at opposite shoulders
+    shoulder: new THREE.Euler(-0.8, 0.1, 0.7), // Arms crossed at CHEST level (not face)
+    elbow: new THREE.Euler(0, 0, -2.2), // Forearms crossed - body X-block (126° flexion)
+    wrist: new THREE.Euler(0.3, 0.3, 0.2), // Fists crossed protecting chest/ribs
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.8, -0.1, -1.0), // Arms CROSSED - right over left
-    elbow: new THREE.Euler(0, 0, 2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, -0.4, -0.3), // Fists at opposite shoulders
+    shoulder: new THREE.Euler(-0.8, -0.1, -0.7), // Arms crossed - right over left at chest
+    elbow: new THREE.Euler(0, 0, 2.2), // Forearms crossed - body X-block (126° flexion)
+    wrist: new THREE.Euler(0.3, -0.3, -0.2), // Fists crossed protecting chest/ribs
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Chin DOWN, facing square - immovable
+  torso: new THREE.Euler(0.1, 0, 0), // Square forward - immovable mountain posture
 
   // Closed Stance (Moa Seogi) - Feet TOGETHER, rooted like mountain
   // Based on GAN_MOUNTAIN biomechanics: 145° both knees, 50/50 weight, 0.6x width
@@ -459,55 +468,58 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
 /**
  * ☷ 곤 (Gon) - Earth: Grounded low guard
  *
- * Traditional Taekwondo Joong Ha Seogi (중하) - Deep Stance
- * - Hands low for ground control
- * - Ready for throws and takedowns
+ * Traditional Taekwondo Deep Squat Stance (Joong Ha Seogi - 중하서기)
+ * - Hands at hip level for underhooks and ground control
+ * - Elbows tight to body protecting ribs even in low guard
+ * - Hands closer to centerline for grappling control
  * - Weight low and stable (+20% ground-control)
  * - Breathing deep from diaphragm
  *
- * **Leg Position (Joong Ha Seogi)**:
- * - VERY DEEP squat position
- * - Wide stance (0.8m) for grounding
- * - Knees bent 100° - DEEP
- * - Low center of gravity - earth connection
+ * **Leg Position (Joong Ha Seogi - Deep Squat)**:
+ * - VERY WIDE stance (sumo-style)
+ * - Knees bent ~80° (deep but not below parallel)
+ * - Toes pointed outward 45°
+ * - Very low center of gravity for ground control
  *
  * Combat Application:
  * - Ground clinches and throws
  * - +20% ground-control advantage
  * - +20 bleed on takedowns
  *
- * ENHANCED: Low underhook guard - hands at hip/groin level, elbows tight to protect ribs
+ * CORRECTED: Hands brought closer to centerline (not too wide), pelvis raised
+ * 5cm (thighs parallel, not below), proper underhook positioning
  *
- * @korean 곴괘방어포즈
+ * @korean 곤괘방어포즈
  */
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.4, 0.3, 0.5), // Arms low but elbows guard body
-    elbow: new THREE.Euler(0, 0, -2.0), // TIGHT elbow - protects left ribs
-    wrist: new THREE.Euler(-0.1, 0.2, 0.3), // Hands ready for underhooks
+    shoulder: new THREE.Euler(-0.4, 0.2, 0.4), // Arms low but hands at centerline
+    elbow: new THREE.Euler(0, 0, -2.0), // Tight elbow - protects left ribs (115° flexion)
+    wrist: new THREE.Euler(-0.1, 0.15, 0.2), // Hands ready for underhooks, closer together
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.4, -0.3, -0.5), // Mirror - both protecting
-    elbow: new THREE.Euler(0, 0, 2.0), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(-0.1, -0.2, -0.3), // Hands ready for underhooks
+    shoulder: new THREE.Euler(-0.4, -0.2, -0.4), // Mirror - centerline control
+    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs (115° flexion)
+    wrist: new THREE.Euler(-0.1, -0.15, -0.2), // Hands ready for underhooks
   },
   torso: new THREE.Euler(0.3, 0, 0), // Forward lean - ready to grapple
 
-  // Joong Ha Seogi (Deep Squat) - SUMO wrestler position
+  // Joong Ha Seogi (Deep Squat) - CORRECTED height
+  // Thighs parallel to ground (not below), proper 80° knee flexion
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.5, 0.4), // Legs WIDE, toes out
-    knee: new THREE.Euler(1.4, 0, 0), // ~80° MAXIMUM bend - deep squat
+    hip: new THREE.Euler(0.1, 0.5, 0.4), // Legs WIDE, toes out 45°
+    knee: new THREE.Euler(1.4, 0, 0), // 80° knee bend - deep but not maximum
     ankle: new THREE.Euler(-0.3, 0.2, 0), // Deep flex, toes out
   },
   rightLeg: {
-    hip: new THREE.Euler(0.1, -0.5, -0.4), // Mirror - wide sumo
-    knee: new THREE.Euler(1.4, 0, 0), // ~80° MAXIMUM bend - deep squat
+    hip: new THREE.Euler(0.1, -0.5, -0.4), // Mirror - wide sumo stance
+    knee: new THREE.Euler(1.4, 0, 0), // 80° knee bend - thighs parallel to ground
     ankle: new THREE.Euler(-0.3, -0.2, 0), // Deep flex, toes out
   },
   pelvis: new THREE.Euler(0.2, 0, 0), // Forward tilt - low and square
   stanceWidth: 1.3, // VERY WIDE - sumo squat
   stanceDepth: 0, // Parallel feet - sumo stance
-  pelvisHeight: -0.45, // EXTREMELY LOW - deep squat position
+  pelvisHeight: -0.40, // VERY LOW but raised 5cm - thighs parallel (hipHeight ~0.60m)
 
   weight: "neutral",
   breathingRange: {
