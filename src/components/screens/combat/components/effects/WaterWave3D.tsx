@@ -82,6 +82,8 @@ interface WaterParticle {
   curveT: number;
   /** Curve tangent vector */
   curveTangent: THREE.Vector3;
+  /** Flag indicating if vectors are from object pool */
+  isPooled: boolean;
 }
 
 /**
@@ -214,14 +216,24 @@ const generateWaveParticles = (
           : WAVE_CONSTANTS.SIZE_MIN +
             Math.random() * (WAVE_CONSTANTS.SIZE_MAX - WAVE_CONSTANTS.SIZE_MIN);
 
+        // CRITICAL: Acquire pooled vectors for particle ownership (PERFORMANCE)
+        const particlePosition = ThreeObjectPools.vector3.acquire();
+        const particleVelocity = ThreeObjectPools.vector3.acquire();
+        const particleTangent = ThreeObjectPools.vector3.acquire();
+
+        particlePosition.copy(tempOrigin);
+        particleVelocity.copy(tempVelocity);
+        particleTangent.copy(tempTangent);
+
         particles.push({
-          position: tempOrigin.clone(),
-          velocity: tempVelocity.clone(),
+          position: particlePosition,
+          velocity: particleVelocity,
           age: 0,
           lifetime: WAVE_CONSTANTS.LIFETIME[effect.flowType],
           size,
           curveT: 0,
-          curveTangent: tempTangent.clone(),
+          curveTangent: particleTangent,
+          isPooled: true, // Mark for cleanup
         });
       }
     } finally {
@@ -306,6 +318,11 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
 
           // Update position
           particle.position.addScaledVector(particle.velocity, safeDelta);
+        } else if (particle.isPooled) {
+          // Release pooled vectors when particle expires
+          ThreeObjectPools.vector3.release(particle.position);
+          ThreeObjectPools.vector3.release(particle.velocity);
+          ThreeObjectPools.vector3.release(particle.curveTangent);
         }
       });
 

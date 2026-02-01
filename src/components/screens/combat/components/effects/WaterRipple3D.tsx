@@ -6,8 +6,8 @@
  * fade over time, following the philosophy: "물처럼 흘러 적의 힘을 이용하라"
  * (Flow like water and use the enemy's force).
  *
- * PERFORMANCE OPTIMIZATION (Object Pooling):
- * - Uses ThreeObjectPools to minimize Vector3 allocations
+ * PERFORMANCE OPTIMIZATION (Minimal Allocations):
+ * - Uses primitive numeric types instead of Vector3 objects to minimize allocations
  * - Ring-based geometry with instancing for efficient rendering
  * - Target: 60fps with up to 10 simultaneous ripple effects
  *
