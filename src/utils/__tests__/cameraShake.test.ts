@@ -30,7 +30,6 @@ describe("CameraShakeManager", () => {
 
   it("should trigger shake effect", () => {
     manager.attachCamera(camera);
-    const originalPosition = camera.position.clone();
 
     manager.shake({
       intensity: 0.5,

@@ -41,6 +41,15 @@ const ANATOMICAL_LIMITS = {
  * **Technique**: Explosive upward punch with stunning force
  * **Target Points**: 턱 (Teok/Jaw), 관자놀이 (Gwanjanori/Temple), 명치 (Myeongchi/Solar Plexus)
  *
+ * **Explosive Two-Phase System:**
+ * - **Charge Phase (0-200ms)**: Power buildup with energy gathering
+ *   - Thunder effects: Electric arcs converging to fist
+ *   - Visual feedback: Body tension, coiled spring posture
+ * - **Release Phase (200-700ms)**: Explosive upward punch with lightning burst
+ *   - Thunder effects: Lightning flash and explosive burst on impact
+ *   - Camera shake: 0.3 intensity for light explosive impact
+ *   - Screen flash: 0.4 intensity with cyan-gold Korean colors
+ *
  * Characteristics:
  * - Deep coil phase with maximum body tension
  * - Explosive upward drive with full leg extension
@@ -49,16 +58,17 @@ const ANATOMICAL_LIMITS = {
  * - Rapid recovery to guarded position
  *
  * Animation Phases (20 frames total):
- * - 0-360ms: Coil phase (6 frames) - Deep crouch with body tension
- * - 360-960ms: Explosion phase (10 frames) - Upward drive with punch
- * - 960-1200ms: Recovery phase (4 frames) - Return to guard position
+ * - 0-200ms: Charge phase (3 frames) - Deep crouch with energy gathering
+ * - 200-700ms: Release phase (9 frames) - Explosive upward drive with punch
+ * - 700-1000ms: Recovery phase (5 frames) - Return to guard position
  *
  * **Performance**: Targets 60fps (16.67ms per frame)
  * **Damage Type**: Stunning blunt force with neurological shock
+ * **Explosive Power**: 1.3x damage multiplier on perfect timing
  *
  * @korean 벽력일섬
- * @frames 20 total (6 coil, 10 explosion, 4 recovery)
- * @duration 1200ms
+ * @frames 20 total (3 charge, 9 release, 5 recovery)
+ * @duration 1000ms (adjusted for explosive timing)
  * @category Attack Animation
  */
 export const JIN_THUNDER_FLASH_ANIMATION: SkeletalAnimation =
@@ -167,21 +177,28 @@ export const JIN_THUNDER_FLASH_ANIMATION: SkeletalAnimation =
  * **Technique**: Airborne knee attack with explosive momentum
  * **Target Points**: 명치 (Solar Plexus), 턱 (Jaw), 얼굴 (Face)
  *
+ * **Explosive Two-Phase System:**
+ * Note: This animation predates the two-phase system but naturally aligns with it:
+ * - Crouch phase (0-300ms) serves as charge phase
+ * - Jump+Strike phases (300-1000ms) serve as release phase
+ * - Total execution: ~1000ms aligns with explosive timing requirements
+ *
  * Characteristics:
- * - Deep crouch for explosive launch
- * - Jump with lead knee driving upward
- * - Strike at apex with maximum momentum
+ * - Deep crouch for explosive launch (charge phase)
+ * - Jump with lead knee driving upward (release begins)
+ * - Strike at apex with maximum momentum (explosive impact)
  * - Land with balance maintained
  * - Arms pull opponent into strike (clinch)
  *
  * Animation Phases (26 frames total):
- * - 0-300ms: Crouch phase (5 frames) - Spring load
- * - 300-650ms: Jump phase (6 frames) - Explosive upward drive
- * - 650-1000ms: Strike phase (8 frames) - Knee impact at apex
+ * - 0-300ms: Crouch phase (5 frames) - Spring load / CHARGE PHASE
+ * - 300-650ms: Jump phase (6 frames) - Explosive upward drive / RELEASE BEGINS
+ * - 650-1000ms: Strike phase (8 frames) - Knee impact at apex / EXPLOSIVE IMPACT
  * - 1000-1433ms: Landing phase (7 frames) - Controlled descent
  *
  * **Performance**: Targets 60fps (16.67ms per frame)
  * **Damage Type**: Blunt force trauma with momentum
+ * **Explosive Power**: High momentum-based damage multiplier
  *
  * @korean 번개무릎격
  * @frames 26 total (5 crouch, 6 jump, 8 strike, 7 land)
