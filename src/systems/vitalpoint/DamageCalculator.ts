@@ -635,6 +635,8 @@ export class DamageCalculator {
     }
 
     // Extract ground impact multiplier from Gon technique
+    // Type assertion is safe because isExtendedGonTechnique validates structure
+    // Double assertion needed due to type hierarchy (KoreanTechnique vs ExtendedGonTechnique)
     const gonTechnique = technique as unknown as ExtendedGonTechnique;
     const groundMultiplier = gonTechnique.groundImpactMultiplier;
 

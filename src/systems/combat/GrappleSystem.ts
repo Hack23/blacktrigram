@@ -641,6 +641,7 @@ export class GrappleSystem {
     }
 
     // Extract control duration from Gon technique
+    // Double assertion needed due to type hierarchy (KoreanTechnique vs ExtendedGonTechnique)
     const gonTechnique = technique as unknown as ExtendedGonTechnique;
     return gonTechnique.controlDuration;
   }

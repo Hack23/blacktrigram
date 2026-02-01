@@ -322,10 +322,8 @@ export function usePlayerAnimation(
       reset,
     }),
     [
-       
-      prevStateRef.current,
-       
-      prevFrameRef.current,
+      // Note: prevStateRef and prevFrameRef are excluded from deps as they're mutable refs
+      // that don't trigger re-renders. Including them would cause unnecessary re-executions.
       update,
       transitionTo,
       transitionToStanceGuard,
