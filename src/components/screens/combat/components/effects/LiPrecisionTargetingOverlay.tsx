@@ -17,7 +17,7 @@
  * @korean 리괘정밀조준오버레이
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { KOREAN_VITAL_POINTS } from "../../../../../systems/vitalpoint/KoreanVitalPoints";
 import { KOREAN_COLORS, SPACING } from "../../../../../types/constants";
 import { FONT_SIZES } from "../../../../../types/constants/typography";
@@ -89,6 +89,37 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
       onVitalPointSelect,
       isMobile,
     }) => {
+      // Inject keyframe animation once on mount
+      useEffect(() => {
+        const styleId = "li-precision-targeting-keyframes";
+        
+        // Check if already injected
+        if (document.getElementById(styleId)) return;
+        
+        const style = document.createElement("style");
+        style.id = styleId;
+        style.textContent = `
+          @keyframes pulse-reticle {
+            0%, 100% {
+              transform: scale(1);
+              opacity: 0.8;
+            }
+            50% {
+              transform: scale(1.05);
+              opacity: 1.0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        return () => {
+          const existingStyle = document.getElementById(styleId);
+          if (existingStyle) {
+            document.head.removeChild(existingStyle);
+          }
+        };
+      }, []);
+      
       // Filter vital points in range (hooks must be called unconditionally)
       const vitalPointsInRange = useMemo(() => {
         if (!isLiStance) return [];
@@ -313,14 +344,17 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
                   <div
                     key={vp.id}
                     style={vitalPointItemStyle}
-                    onClick={() => onVitalPointSelect?.(vp.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        onVitalPointSelect?.(vp.id);
-                      }
-                    }}
-                    role={onVitalPointSelect ? "button" : undefined}
-                    tabIndex={onVitalPointSelect ? 0 : undefined}
+                    {...(onVitalPointSelect && {
+                      onClick: () => onVitalPointSelect(vp.id),
+                      onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onVitalPointSelect(vp.id);
+                        }
+                      },
+                      role: "button" as const,
+                      tabIndex: 0,
+                    })}
                   >
                     <span>
                       {formatBilingualText(vp.names.korean, vp.names.english)}
@@ -331,22 +365,6 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
               })}
             </div>
           )}
-
-          {/* CSS Animations */}
-          <style>
-            {`
-              @keyframes pulse-reticle {
-                0%, 100% {
-                  transform: scale(1);
-                  opacity: 0.8;
-                }
-                50% {
-                  transform: scale(1.05);
-                  opacity: 1.0;
-                }
-              }
-            `}
-          </style>
         </div>
       );
     }

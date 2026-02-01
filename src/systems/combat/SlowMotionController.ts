@@ -76,6 +76,7 @@ export class SlowMotionController {
   private duration: number = 0;
   private timeDilation: number = 1.0;
   private currentTimeDilation: number = 1.0;
+  private cameraZoom: number = 1.0;
   private focusPoint: THREE.Vector3 = new THREE.Vector3();
   private originalCameraPosition: THREE.Vector3 | null = null;
 
@@ -95,7 +96,7 @@ export class SlowMotionController {
     this.duration = config.duration;
     this.timeDilation = Math.max(0.1, Math.min(1.0, config.timeDilation));
     this.currentTimeDilation = 1.0; // Will ease into slow-motion
-    // cameraZoom is stored in config but used in updateCamera
+    this.cameraZoom = Math.max(1.0, config.cameraZoom); // Store zoom multiplier
     this.focusPoint.set(
       config.focusPoint[0],
       config.focusPoint[1],
@@ -146,6 +147,7 @@ export class SlowMotionController {
     if (progress >= 1.0) {
       this.active = false;
       this.currentTimeDilation = 1.0;
+      this.cameraZoom = 1.0;
       this.originalCameraPosition = null;
     }
 
@@ -162,27 +164,51 @@ export class SlowMotionController {
    * @param delta - Frame time delta (seconds)
    */
   public updateCamera(camera: THREE.Camera, delta: number): void {
-    if (!this.active) return;
+    if (!this.active) {
+      // Restore original camera position if we have it
+      if (this.originalCameraPosition && !this.active) {
+        camera.position.lerp(this.originalCameraPosition, delta * 5);
+        // Check if we're close enough to the original position
+        if (camera.position.distanceTo(this.originalCameraPosition) < 0.01) {
+          camera.position.copy(this.originalCameraPosition);
+          this.originalCameraPosition = null;
+        }
+      }
+      return;
+    }
 
     // Store original camera position on first frame
-    if (!this.originalCameraPosition) {
-      this.originalCameraPosition = camera.position.clone();
-    }
+    this.originalCameraPosition ??= camera.position.clone();
 
     // Calculate zoom progress
     const progress = Math.min(this.elapsed / this.duration, 1.0);
-    const zoomProgress = easeInQuad(Math.min(progress * 2, 1.0)); // Zoom faster than time dilation
+    
+    // During ramp-out phase, start returning to original position
+    if (progress > 0.8) {
+      // Last 20% of duration - return to original
+      const returnProgress = (progress - 0.8) / 0.2;
+      const easedReturn = easeInOutCubic(returnProgress);
+      camera.position.lerp(this.originalCameraPosition, easedReturn * delta * 5);
+    } else {
+      // Normal zoom behavior
+      const zoomProgress = easeInQuad(Math.min(progress * 2, 1.0)); // Zoom faster than time dilation
+      
+      // Calculate zoom amount based on cameraZoom multiplier
+      // cameraZoom = 1.5 means move 33% closer (1 - 1/1.5)
+      // cameraZoom = 2.0 means move 50% closer (1 - 1/2.0)
+      const zoomAmount = 1 - 1 / this.cameraZoom;
+      
+      // Calculate target camera position (closer to focus point)
+      const targetPosition = new THREE.Vector3();
+      targetPosition.lerpVectors(
+        this.originalCameraPosition,
+        this.focusPoint,
+        zoomProgress * zoomAmount
+      );
 
-    // Calculate target camera position (closer to focus point)
-    const targetPosition = new THREE.Vector3();
-    targetPosition.lerpVectors(
-      this.originalCameraPosition,
-      this.focusPoint,
-      zoomProgress * 0.3 // Move 30% closer
-    );
-
-    // Smoothly interpolate camera position
-    camera.position.lerp(targetPosition, delta * 5);
+      // Smoothly interpolate camera position
+      camera.position.lerp(targetPosition, delta * 5);
+    }
 
     // Update camera to look at focus point
     if (camera instanceof THREE.PerspectiveCamera) {

@@ -95,7 +95,7 @@ const CONSTANTS = {
  * Get color for nerve disruption type with fallback
  */
 function getEffectColor(effect: NerveDisruptionEffect): number {
-  if (effect.color) return effect.color;
+  if (typeof effect.color === 'number') return effect.color;
   
   // Fallback colors based on type
   switch (effect.type) {

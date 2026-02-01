@@ -216,11 +216,11 @@ describe("LiPrecisionTargetingOverlay", () => {
 
     it("should include pulse animation", () => {
       const props = createTestProps();
-      const { container } = render(<LiPrecisionTargetingOverlay {...props} />);
+      render(<LiPrecisionTargetingOverlay {...props} />);
 
-      // Check for style tag with animation
-      const styleTag = container.querySelector("style");
-      expect(styleTag).toBeInTheDocument();
+      // Check for style tag in document head with animation
+      const styleTag = document.getElementById("li-precision-targeting-keyframes");
+      expect(styleTag).toBeTruthy();
       if (styleTag) {
         expect(styleTag.textContent).toContain("pulse-reticle");
       }
