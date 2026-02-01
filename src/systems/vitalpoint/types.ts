@@ -176,6 +176,62 @@ export interface KoreanTechnique {
    * @korean 속도등급
    */
   speed?: number;
+
+  /**
+   * Counter-attack timing window in milliseconds
+   * 반격 타이밍 윈도우 (밀리초)
+   *
+   * Duration window for successful counter-attack input.
+   * Standard window: 200ms
+   *
+   * Used for counter-attack techniques to determine the reactive
+   * timing window where a counter can be triggered.
+   *
+   * @korean 반격윈도우
+   */
+  counterWindow?: number;
+
+  /**
+   * Perfect counter timing window in milliseconds
+   * 완벽한 반격 타이밍 윈도우 (밀리초)
+   *
+   * Narrow window for perfect counter timing bonus.
+   * Standard perfect window: 50ms
+   *
+   * Perfect timing provides maximum counter multiplier bonus.
+   *
+   * @korean 완벽반격윈도우
+   */
+  perfectWindow?: number;
+
+  /**
+   * Counter damage multiplier
+   * 반격 데미지 배수
+   *
+   * Damage bonus applied when technique is used as a counter.
+   * Typical range: 1.5x to 2.0x
+   *
+   * Higher multipliers reward skilled counter timing.
+   *
+   * @korean 반격배수
+   */
+  counterMultiplier?: number;
+
+  /**
+   * Flow type for water-based techniques
+   * 흐름 유형
+   *
+   * Defines the motion flow pattern for technique execution:
+   * - "adaptive": Reactive to opponent's force (적응형)
+   * - "flowing": Smooth continuous motion (흐름형)
+   * - "reactive": Instant response counter (반응형)
+   *
+   * Used primarily for Gam (Water) trigram techniques to
+   * determine animation and timing characteristics.
+   *
+   * @korean 흐름유형
+   */
+  flowType?: "adaptive" | "flowing" | "reactive";
 }
 
 /**

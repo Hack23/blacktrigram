@@ -34,6 +34,16 @@ import { AnimationType } from "../../animation";
  * - Reactive: 1.1-1.2 (quick counters)
  * - Normal: 1.0 (standard redirects)
  * - Controlled: 0.9 (throwing techniques)
+ *
+ * Counter Timing Windows (반격 타이밍):
+ * - counterWindow: 200ms standard (perfect reactive timing)
+ * - perfectWindow: 50ms (완벽한 타이밍)
+ * - counterMultiplier: 1.5-2.0x damage bonus
+ *
+ * Flow Types (흐름 유형):
+ * - adaptive: Reactive to opponent's force (적응형)
+ * - flowing: Smooth continuous motion (흐름형)
+ * - reactive: Instant response counter (반응형)
  */
 export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
@@ -48,8 +58,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Water Counter",
     romanized: "suryu_bangyeok",
     description: {
-      korean: "물의 흐름으로 적의 공격을 받아넘기는 반격",
-      english: "Counter-attack that flows like water",
+      korean: "물의 흐름으로 적의 공격을 받아넘기는 반격 - 적응형 흐름으로 최적의 반격 타이밍을 잡는다",
+      english: "Counter-attack that flows like water - Adaptive flow captures optimal counter timing",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -63,10 +73,16 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 600,
+    // Counter timing optimized for reactive flow (300-600ms range)
+    executionTime: 400, // Optimized for quick reactive flow (was 600)
     recoveryTime: 900,
     critChance: 0.18,
     critMultiplier: 1.7,
+    // Counter-attack timing windows (반격 타이밍 윈도우)
+    counterWindow: 200, // Standard reactive window in milliseconds
+    perfectWindow: 50, // Perfect counter timing window (완벽한 타이밍)
+    counterMultiplier: 1.8, // Counter damage bonus multiplier
+    flowType: "adaptive", // Adaptive flow type (적응형 흐름)
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
@@ -220,8 +236,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Circular Parry",
     romanized: "wonhyeong-batgi",
     description: {
-      korean: "합기도 원형 움직임으로 공격을 무력화",
-      english: "Hapkido circular motion neutralizing attack",
+      korean: "합기도 원형 움직임으로 공격을 무력화 - 흐르는 원형 동작으로 반격의 기회를 만든다",
+      english: "Hapkido circular motion neutralizing attack - Flowing circular motion creates counter opportunity",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -235,10 +251,16 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 550,
+    // Counter timing optimized for circular flow
+    executionTime: 500, // Optimized for flowing circular motion (was 550)
     recoveryTime: 850,
     critChance: 0.12,
     critMultiplier: 1.5,
+    // Counter-attack timing windows (반격 타이밍 윈도우)
+    counterWindow: 200, // Standard reactive window
+    perfectWindow: 50, // Perfect counter timing
+    counterMultiplier: 1.6, // Counter damage bonus
+    flowType: "flowing", // Flowing circular motion (흐름형)
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
@@ -264,8 +286,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Wrist Twist Counter",
     romanized: "sonmok-biteulgi-bangyeok",
     description: {
-      korean: "공격을 받아 손목을 비틀어 반격",
-      english: "Counter by catching and twisting wrist",
+      korean: "공격을 받아 손목을 비틀어 반격 - 반응형 포착으로 관절을 즉시 제압한다",
+      english: "Counter by catching and twisting wrist - Reactive capture controls joint instantly",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -279,10 +301,16 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.65,
     },
-    executionTime: 700,
+    // Counter timing optimized for reactive wrist capture
+    executionTime: 550, // Optimized for reactive joint lock (was 700)
     recoveryTime: 1000,
     critChance: 0.25,
     critMultiplier: 2.2,
+    // Counter-attack timing windows (반격 타이밍 윈도우)
+    counterWindow: 200, // Standard reactive window
+    perfectWindow: 50, // Perfect counter timing for joint lock
+    counterMultiplier: 2.0, // High counter bonus for joint lock
+    flowType: "reactive", // Reactive instant capture (반응형)
     effects: [],
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
