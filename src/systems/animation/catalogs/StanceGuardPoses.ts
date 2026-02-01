@@ -30,489 +30,570 @@ import * as THREE from "three";
 import type { StanceLaterality } from "../../trigram/types";
 
 /**
- * ☰ 건 (Geon) - Heaven: High guard with strong forward presence
+ * ☰ 건 (Geon) - Heaven: Taekwondo Power Striking Stance
  *
- * Traditional Taekwondo Ap Seogi (앞서기) - Walking Stance
- * - Both hands raised high (shoulder level or above)
- * - Ready to deliver powerful overhead strikes
- * - Weight slightly forward for aggressive positioning
- * - Breathing emphasizes chest expansion for power generation
+ * **Korean Name**: 건괘 - 하늘 (Geon-gwae - Haneul)
+ * **Martial Art**: Taekwondo (태권도) Ap Seogi (앞서기) - Forward Walking Stance
+ * **Philosophy**: Direct yang force, overwhelming power, heaven's authority descending
  *
- * **Leg Position (Ap Seogi)**:
- * - Feet shoulder-width apart (0.5m)
- * - Front leg slightly bent, ready to step
- * - Back leg providing power base
- * - Natural, mobile stance for quick movement
+ * **Authentic Taekwondo Ap Seogi Characteristics**:
+ * - 앞서기 (Ap Seogi): Classic forward stance for aggressive advance
+ * - Front leg bent ~70°, back leg extended ~160° for explosive forward power
+ * - 70/30 weight distribution forward for constant pressure
+ * - High chamber position (높은 준비) ready for 돌려차기 (Dollyo Chagi - roundhouse kick)
+ * - Hands at chin level in Juchum Seogi guard (주춤서기 방어)
+ * - Tight elbows protect floating ribs (늑골 보호)
  *
- * Combat Application:
- * - Direct frontal bone-breaking strikes
- * - High mobility (+15% movement speed from game-design.md)
- * - Bone-break attacks (+10% startup time)
+ * **Biomechanical Analysis**:
+ * - Front knee over toes creates spring-loaded power platform
+ * - Back leg straight provides driving force for forward strikes
+ * - Shoulder alignment allows maximum power transfer to fists
+ * - Hip rotation ~30° creates torque for bone-breaking punches (골절타격)
  *
- * ENHANCED: Proper boxing-style guard - elbows tight to protect ribs, hands at chin
+ * **Combat Applications**:
+ * - 정권지르기 (Jeongwon Jireugi): Straight punch to solar plexus
+ * - 앞차기 (Ap Chagi): Front snap kick to abdomen/chin
+ * - 돌려차기 (Dollyo Chagi): Roundhouse kick from high chamber
+ * - Direct frontal bone-breaking strikes (+10% damage to skeletal targets)
+ * - High mobility (+15% movement speed for aggressive advance)
  *
  * @korean 건괘방어포즈
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.0, 0.2, 0.5), // Hands at chin level - not above head
-    elbow: new THREE.Euler(0, 0, -2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, 0.2, 0), // Fists at chin level
+    // Lead arm (왼팔) - Jab position with tight defense
+    shoulder: new THREE.Euler(-0.9, 0.3, 0.6), // Shoulder raised to chin level, slight forward
+    elbow: new THREE.Euler(0, 0, -2.3), // TIGHT elbow ~135° protects ribs (늑골 방어)
+    wrist: new THREE.Euler(0.2, 0.15, 0), // Fist at chin height (턱높이), vertical fist
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Mirror - both hands at chin
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, -0.2, 0), // Fists at chin level
+    // Rear power hand (오른팔) - Chambered for devastating strike
+    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand protecting jaw line
+    elbow: new THREE.Euler(0, 0, 2.4), // VERY TIGHT elbow ~130° maximum rib protection
+    wrist: new THREE.Euler(0.3, -0.1, 0), // Rear fist at cheekbone (광대뼈)
   },
-  torso: new THREE.Euler(0.1, -0.3, 0), // Slight forward lean - aggressive but balanced
+  torso: new THREE.Euler(0.12, -0.35, 0.05), // Forward lean 12° + 20° rotation for bladed profile
 
-  // Ap Seogi (Forward Stance) - DRAMATIC power stance for direct force
-  // Based on GEON_HEAVEN biomechanics: 70° front knee, 160° back leg
+  // Ap Seogi (앞서기) - Forward Walking Stance
+  // Authentic Taekwondo power stance: 70° front knee, 160° back leg
   leftLeg: {
-    hip: new THREE.Euler(-0.35, 0.15, 0), // Back leg extended (160° = -0.35 rad hip rotation)
-    knee: new THREE.Euler(0.35, 0, 0), // Slight back knee bend for stability
-    ankle: new THREE.Euler(-0.1, 0, 0), // Heel planted firmly
+    // Back leg (뒷다리) - Extended for driving power
+    hip: new THREE.Euler(-0.15, 0.2, 0.08), // Back hip extended, slight external rotation
+    knee: new THREE.Euler(0.35, 0, 0), // 160° extension = 0.35 rad flexion (약간 굽힘)
+    ankle: new THREE.Euler(-0.08, 0.05, 0), // Heel firmly planted (발뒤꿈치 고정)
   },
   rightLeg: {
-    hip: new THREE.Euler(0.6, -0.15, 0), // Front leg forward (70° flexion = 0.6 rad)
-    knee: new THREE.Euler(1.2, 0, 0), // Deep front knee bend ~70° flexion
-    ankle: new THREE.Euler(-0.15, 0, 0), // Dorsiflexion for power base
+    // Front leg (앞다리) - Bent for spring-loaded power
+    hip: new THREE.Euler(0.55, -0.18, -0.05), // Front hip flexed 70° forward
+    knee: new THREE.Euler(1.22, 0, 0), // 70° flexion = 1.22 rad (깊은 굽힘)
+    ankle: new THREE.Euler(-0.12, -0.05, 0), // Dorsiflexion for stable power base
   },
-  pelvis: new THREE.Euler(0.15, -0.5, 0), // Forward tilt + side stance for power
-  stanceWidth: 0.6, // 1.35x shoulder width (40cm standard * 1.35)
-  stanceDepth: 0.6, // Deep forward/back split
-  pelvisHeight: -0.15, // Lowered for stability (hipHeight 0.85)
+  pelvis: new THREE.Euler(0.18, -0.45, 0.03), // Forward tilt 18° + 25° rotation toward opponent
+  stanceWidth: 0.55, // 1.3x shoulder width (~55cm) for stable power base
+  stanceDepth: 0.65, // Deep forward/back split for maximum reach
+  pelvisHeight: -0.14, // Lowered center of gravity (hipHeight ~0.86m)
 
-  weight: "forward",
+  weight: "forward", // 70/30 weight distribution (70% front)
   breathingRange: {
-    min: 0.98, // Slight chest expansion
-    max: 1.02, // Exhale contraction
+    min: 0.98, // Deep chest expansion (가슴 확장) for power generation
+    max: 1.025, // Explosive exhale (내쉬기) with strike
   },
 };
 
 /**
- * ☱ 태 (Tae) - Lake: Fluid mid-guard with adaptive positioning
+ * ☱ 태 (Tae) - Lake: Hapkido Fluid Grappling Stance
  *
- * Traditional Taekwondo Ap Koobi Seogi (앞굽이) - Front Stance
- * - Hands at mid-level (chest height)
- * - Ready for joint manipulation and throws
- * - Weight forward for reach (+15% reach from game-design.md)
- * - Breathing flows smoothly for continuous adaptation
+ * **Korean Name**: 태괘 - 호수 (Tae-gwae - Hosu)
+ * **Martial Art**: Hapkido (합기도) Beom Seogi (범서기) - Tiger Stance / Cat Stance
+ * **Philosophy**: Yin softness, adaptive water, circular redirection, lake's receptive surface
  *
- * **Leg Position (Ap Koobi Seogi)**:
- * - Deep front lunge, front knee over toes
- * - Back leg straight, heel down
- * - 70% weight forward, powerful reach
- * - Wide stance (0.9m) for stability
+ * **Authentic Hapkido Beom Seogi Characteristics**:
+ * - 범서기 (Beom Seogi): Cat stance with 90% weight on back leg
+ * - Front leg light (170° nearly straight) ready to sweep or evade
+ * - Back leg deeply bent (120°) like coiled spring for explosive throws
+ * - 팔목잡기 (Palmok Japgi): Wrist grab readiness with open palms
+ * - Lead hand extended for 원형막기 (Wonhyeong Makgi - circular block)
+ * - Rear hand chambered at solar plexus for 관절기 (Gwanjeolgi - joint locks)
  *
- * Combat Application:
- * - Joint locks and throwing techniques
- * - +15% reach for throws/sweeps
- * - +10% takedown damage
+ * **Biomechanical Analysis**:
+ * - Back-weighted allows front leg to lift instantly for sweeps (발걸기)
+ * - Open palms enable rapid grip transitions for joint manipulation
+ * - Low center of gravity provides stability for throws (던지기)
+ * - Hip mobility allows 360° rotation for redirection techniques
  *
- * ENHANCED: Lead hand parries with rear hand protecting chin - elbows guard ribs
+ * **Combat Applications**:
+ * - 손목꺾기 (Sonmok-kkeokgi): Wrist twist throw (Kote Gaeshi)
+ * - 팔굽관절기 (Palgup Gwanjeolgi): Elbow joint lock
+ * - 발등걸기 (Baldeung Geolgi): Foot sweep with ankle hook
+ * - Joint locks and circular throws (+15% throw range)
+ * - Small circle joint manipulation (+10% joint lock damage)
  *
  * @korean 태괘방어포즈
  */
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.6, 0.3), // Lead arm extended but elbows still protect
-    elbow: new THREE.Euler(0, 0, -1.8), // Elbow close to body - rib protection
-    wrist: new THREE.Euler(0.1, 0.3, 0.2), // Open palm for grappling
+    // Lead hand (왼손) - Extended for circular deflection and wrist grabs
+    shoulder: new THREE.Euler(-0.65, 0.5, 0.4), // Lead arm extended mid-level, palm open
+    elbow: new THREE.Euler(0, 0, -1.9), // Soft elbow ~110° for circular redirection
+    wrist: new THREE.Euler(-0.15, 0.35, 0.25), // Open palm (손바닥) facing opponent, relaxed
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand at chin level
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.2, -0.2, 0), // Fist protecting chin
+    // Rear hand (오른손) - Chambered at solar plexus for joint attacks
+    shoulder: new THREE.Euler(-0.8, -0.15, -0.3), // Rear hand mid-level ready to shoot forward
+    elbow: new THREE.Euler(0, 0, 2.1), // Chambered elbow ~120° at ribs
+    wrist: new THREE.Euler(0.1, -0.25, 0.15), // Open palm ready for 관절기 (joint lock)
   },
-  torso: new THREE.Euler(0.2, -0.5, 0.1), // Forward lean + rotation for reach
+  torso: new THREE.Euler(0.08, -0.55, 0.08), // Slight forward lean + strong bladed profile (~35°)
 
-  // Cat Stance (Beom Seogi) - Back-weighted fluid position
-  // Based on TAE_LAKE biomechanics: 170° front leg (light), 120° back knee (loaded)
+  // Beom Seogi (범서기) - Cat/Tiger Stance
+  // Authentic Hapkido cat stance: 170° front leg (light), 120° back knee (loaded)
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.2, 0), // Front leg light, nearly straight
-    knee: new THREE.Euler(0.18, 0, 0), // Front knee almost straight (170° ≈ 0.18 rad flex)
-    ankle: new THREE.Euler(-0.08, 0, 0), // Light touch on ground
+    // Front leg (앞다리) - Light, ready to lift for sweep
+    hip: new THREE.Euler(0.12, 0.25, 0.05), // Front hip slightly flexed, externally rotated
+    knee: new THREE.Euler(0.18, 0, 0), // Nearly straight 170° = 0.18 rad (가볍게)
+    ankle: new THREE.Euler(-0.06, 0.08, 0), // Ball of foot touching (발볼 접촉)
   },
   rightLeg: {
-    hip: new THREE.Euler(-0.3, -0.25, 0), // Back leg loaded, bent back
-    knee: new THREE.Euler(1.05, 0, 0), // Deep back knee bend (120° = 1.05 rad flex)
-    ankle: new THREE.Euler(-0.2, 0, 0), // Deep flexion, spring loaded
+    // Back leg (뒷다리) - Deeply bent, bearing all weight
+    hip: new THREE.Euler(-0.22, -0.3, 0.05), // Back hip flexed and loaded
+    knee: new THREE.Euler(1.05, 0, 0), // Deep bend 120° = 1.05 rad (깊은 굽힘)
+    ankle: new THREE.Euler(-0.18, 0.02, 0), // Deep dorsiflexion, weight on back leg
   },
-  pelvis: new THREE.Euler(0.1, -0.7, 0), // Slight forward tilt + strong side stance
-  stanceWidth: 0.4, // 0.9x narrow stance for mobility
-  stanceDepth: 0.4, // Moderate front/back split
-  pelvisHeight: -0.1, // Slightly lowered (hipHeight 0.90)
+  pelvis: new THREE.Euler(0.08, -0.65, 0.04), // Slight forward tilt + strong rotation (40°)
+  stanceWidth: 0.38, // Narrow 0.9x shoulder width for mobility (~38cm)
+  stanceDepth: 0.42, // Moderate depth for balance and quick shifts
+  pelvisHeight: -0.11, // Medium-low for stability (hipHeight ~0.89m)
 
-  weight: "forward",
+  weight: "back", // 90/10 weight distribution (90% back leg)
   breathingRange: {
-    min: 0.97, // Smooth inhale
-    max: 1.03, // Full exhale for fluid motion
+    min: 0.975, // Deep, smooth inhale (들이마시기)
+    max: 1.025, // Flowing exhale for circular technique (내쉬기)
   },
 };
 
 /**
- * ☲ 리 (Li) - Fire: Aggressive forward guard
+ * ☲ 리 (Li) - Fire: Kuk Sool Won Precision Strike Stance
  *
- * Traditional Taekwondo Juchum Seogi (주춤) - Horse Stance
- * - Hands forward in striking position
- * - Ready for precise nerve strikes
- * - Weight neutral but low center of gravity
- * - Breathing controlled for precision (+5% crit hit chance)
+ * **Korean Name**: 리괘 - 불 (Li-gwae - Bul)
+ * **Martial Art**: Kuk Sool Won (국술원) / Taekwondo Gyeorugi Junbi (겨루기 준비) - Fighting Ready Stance
+ * **Philosophy**: Yang penetration, laser focus, burning precision, fire's consuming accuracy
  *
- * **Leg Position (Juchum Seogi)**:
- * - WIDE stance (1.2m) - parallel feet
- * - Both knees bent deeply (horse riding position)
- * - Low center of gravity for stability
- * - Equal weight distribution
+ * **Authentic Gyeorugi Junbi Characteristics**:
+ * - 겨루기 준비 (Gyeorugi Junbi): Olympic sparring ready position
+ * - Balanced 50/50 weight distribution for rapid direction changes
+ * - Both knees bent ~135° for explosive spring in any direction
+ * - 피카부 가드 (Peekaboo Guard): High tight hands protecting face
+ * - Elbows flared wide like wings (날개) for maximum head protection
+ * - Fists literally glued to temples/cheekbones (관자놀이)
  *
- * Combat Application:
- * - Precise vital point strikes
- * - +15% stability vs. vital strikes
- * - +10% knockdown resistance
+ * **Biomechanical Analysis**:
+ * - Square stance allows equal power generation both sides
+ * - High guard creates narrow target profile (minimal exposure)
+ * - Deep knee bend provides explosive movement in 8 directions
+ * - Tight fists to temples allow instant peek-and-strike
  *
- * ENHANCED: Peekaboo guard - both hands high protecting face, aggressive stance
+ * **Combat Applications**:
+ * - 혈도공격 (Hyeoldo Gonggyeok): Precise vital point strikes
+ * - 급소타격 (Geupso Tagyeok): Pressure point penetration
+ * - 관자놀이 타격 (Gwanjari Tagyeok): Temple strike from peek
+ * - Precision nerve strikes (+15% critical hit chance)
+ * - Vital point targeting accuracy (+10% vital point damage)
  *
  * @korean 리괘방어포즈
  */
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.6, 0.2, 0.9), // VERY HIGH - elbows out wide like wings
-    elbow: new THREE.Euler(0, 0, -2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, 0.15, 0), // Fists glued to cheekbones
+    // Left fist (왼주먹) - Peekaboo high guard glued to left temple
+    shoulder: new THREE.Euler(-1.65, 0.25, 1.0), // VERY HIGH shoulder, elbow flared wide
+    elbow: new THREE.Euler(0, 0, -2.5), // MAXIMUM flexion ~145° (극한 굽힘) - fist to temple
+    wrist: new THREE.Euler(0.45, 0.2, 0.05), // Vertical fist pressed to left temple (관자놀이)
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.6, -0.2, -0.9), // Mirror - dramatic peekaboo
-    elbow: new THREE.Euler(0, 0, 2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, -0.15, 0), // Fists glued to cheekbones
+    // Right fist (오른주먹) - Mirror peekaboo protecting right temple
+    shoulder: new THREE.Euler(-1.65, -0.25, -1.0), // VERY HIGH shoulder, elbow flared wide
+    elbow: new THREE.Euler(0, 0, 2.5), // MAXIMUM flexion ~145° (극한 굽힘) - fist to temple
+    wrist: new THREE.Euler(0.45, -0.2, -0.05), // Vertical fist pressed to right temple (관자놀이)
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Chin tucked, facing SQUARE forward
+  torso: new THREE.Euler(0.18, 0, 0), // Forward lean 18°, SQUARE facing (정면) - no rotation
 
-  // Fighting Stance (Gyeorugi Junbi) - Balanced precision combat stance
-  // Based on LI_FIRE biomechanics: 135° both knees (moderate bend), 50/50 weight
+  // Gyeorugi Junbi (겨루기 준비) - Fighting Ready Stance
+  // Authentic Taekwondo sparring stance: 135° both knees, 50/50 weight, square
   leftLeg: {
-    hip: new THREE.Euler(0.2, 0.3, 0.15), // Left leg forward and out
-    knee: new THREE.Euler(0.8, 0, 0), // 135° knee bend (0.8 rad flex)
-    ankle: new THREE.Euler(-0.15, 0.1, 0), // Slight toe-out
+    // Left leg (왼다리) - Balanced, ready to kick or pivot
+    hip: new THREE.Euler(0.22, 0.32, 0.18), // Hip flexed and externally rotated
+    knee: new THREE.Euler(0.79, 0, 0), // 135° flexion = 0.79 rad (중간 굽힘)
+    ankle: new THREE.Euler(-0.14, 0.12, 0), // Slight toe-out for stability
   },
   rightLeg: {
-    hip: new THREE.Euler(0.2, -0.3, -0.15), // Right leg back and out
-    knee: new THREE.Euler(0.8, 0, 0), // 135° knee bend (0.8 rad flex)
-    ankle: new THREE.Euler(-0.15, -0.1, 0), // Slight toe-out
+    // Right leg (오른다리) - Mirror balance, equal spring potential
+    hip: new THREE.Euler(0.22, -0.32, -0.18), // Mirror external rotation
+    knee: new THREE.Euler(0.79, 0, 0), // 135° flexion = 0.79 rad (중간 굽힘)
+    ankle: new THREE.Euler(-0.14, -0.12, 0), // Slight toe-out for stability
   },
-  pelvis: new THREE.Euler(0.1, 0, 0), // Slight forward tilt, SQUARE facing
-  stanceWidth: 0.5, // 1.1x shoulder width (balanced)
-  stanceDepth: 0.3, // Slight stagger for mobility
-  pelvisHeight: -0.12, // Medium low (hipHeight 0.88)
+  pelvis: new THREE.Euler(0.12, 0, 0), // Forward tilt 12°, PERFECTLY SQUARE (완전 정면)
+  stanceWidth: 0.48, // 1.1x shoulder width for balanced mobility (~48cm)
+  stanceDepth: 0.28, // Slight stagger for forward/backward mobility
+  pelvisHeight: -0.13, // Medium-low for explosive power (hipHeight ~0.87m)
 
-  weight: "neutral",
+  weight: "neutral", // Perfect 50/50 balance
   breathingRange: {
-    min: 0.99, // Shallow, controlled breathing
-    max: 1.01, // Precision focus
+    min: 0.99, // Shallow, controlled breathing (얕은 호흡)
+    max: 1.01, // Minimal movement - precision focus (정밀 집중)
   },
 };
 
 /**
- * ☳ 진 (Jin) - Thunder: Explosive ready stance
+ * ☳ 진 (Jin) - Thunder: Taekwondo Explosive Power Stance
  *
- * Traditional Taekwondo Dwi Koobi Seogi (뒤굽이) - Back Stance
- * - Hands chambered for explosive release
- * - Ready for shocking nerve strikes
- * - Weight back but explosive forward (+15% shock damage)
- * - Breathing deep for power generation
+ * **Korean Name**: 진괘 - 천둥 (Jin-gwae - Cheondeung)
+ * **Martial Art**: Taekwondo (태권도) Juchum Seogi (주춤서기) - Horse Riding Stance
+ * **Philosophy**: Extreme yang, shocking power, thunder's instant discharge, explosive release
  *
- * **Leg Position (Dwi Koobi Seogi)**:
- * - 70% weight on back leg
- * - Front leg light, ready to kick or step
- * - Back knee bent deeply, coiled spring
- * - Moderate width (0.7m) for mobility
+ * **Authentic Juchum Seogi Characteristics**:
+ * - 주춤서기 (Juchum Seogi): Classic horse stance - VERY WIDE and VERY LOW
+ * - 2.0x shoulder width stance (~80-90cm) with parallel feet
+ * - Both knees bent to 90° (수평 허벅지) - thighs parallel to ground
+ * - 50/50 perfect weight distribution for explosive power either direction
+ * - Arms chambered low (낮은 준비) - coiled spring ready to explode
+ * - Lead arm extended but tight, rear fist at ribs ready to thunder strike
  *
- * Combat Application:
- * - Nerve strike warfare
- * - +15% shock damage on nerve strikes
- * - -30 consciousness on head hits
+ * **Biomechanical Analysis**:
+ * - Ultra-wide stance creates maximum stability platform
+ * - 90° knee bend stores enormous elastic energy in quadriceps
+ * - Low center of gravity allows explosive upward/lateral movement
+ * - Parallel feet enable instant pivot and rotation
  *
- * ENHANCED: Chambered guard with chin protection - rear hand guards chin, elbows tight
+ * **Combat Applications**:
+ * - 뇌성타격 (Noeseong Tagyeok): Thunder strike to nerve clusters
+ * - 신경충격파 (Singyeong Chunggyeokpa): Shocking nerve disruption
+ * - 폭발적 주먹지르기 (Pokbaljeok Jumeok Jireugi): Explosive power punch
+ * - Nerve strike warfare (+15% shock damage on nerve points)
+ * - Stunning power (-30 consciousness on head impacts)
  *
  * @korean 진괘방어포즈
  */
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.6, 0.2, 0.6), // Lead arm low but elbows guard body
-    elbow: new THREE.Euler(0, 0, -2.2), // TIGHT elbow - protects left ribs
-    wrist: new THREE.Euler(0.4, 0.1, 0), // Chambered fist at ribs
+    // Lead arm (왼팔) - Extended but chambered, ready to strike
+    shoulder: new THREE.Euler(-0.55, 0.25, 0.65), // Lead shoulder raised, tight to body
+    elbow: new THREE.Euler(0, 0, -2.3), // TIGHT elbow ~135° guarding left ribs
+    wrist: new THREE.Euler(0.35, 0.12, 0), // Chambered fist at mid-level (중단)
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear hand at chin level - protects head
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(0.3, -0.1, 0), // Fist protecting chin
+    // Rear power fist (오른주먹) - Chambered at ribs for devastating strike
+    shoulder: new THREE.Euler(-0.65, -0.18, -0.4), // Rear shoulder coiled at ribs
+    elbow: new THREE.Euler(0, 0, 2.45), // VERY TIGHT ~140° maximum chamber (극한 준비)
+    wrist: new THREE.Euler(0.4, -0.08, 0), // Rear fist touching ribs (갈비뼈) - explosive potential
   },
-  torso: new THREE.Euler(-0.1, -0.4, 0.05), // Slight back lean + rotation - coiled
+  torso: new THREE.Euler(-0.05, -0.38, 0.06), // Slight back lean (coiled) + rotation
 
-  // Horse Stance (Juchum Seogi) - WIDE, DEEP, POWERFUL
-  // Based on JIN_THUNDER biomechanics: 90° both knees, 50/50 weight, 2.0x width
+  // Juchum Seogi (주춤서기) - Horse Riding Stance
+  // Authentic Taekwondo horse stance: 90° both knees, 50/50 weight, VERY WIDE
   leftLeg: {
-    hip: new THREE.Euler(0.3, 0.5, 0.3), // Wide spread, toes out
-    knee: new THREE.Euler(1.57, 0, 0), // 90° FULL bend - deep horse stance
-    ankle: new THREE.Euler(-0.25, 0.2, 0), // Toes pointed outward
+    // Left leg (왼다리) - Wide spread, deep bend, explosive coil
+    hip: new THREE.Euler(0.32, 0.52, 0.35), // Wide external rotation, abducted
+    knee: new THREE.Euler(1.57, 0, 0), // FULL 90° bend = 1.57 rad (π/2) - thigh horizontal
+    ankle: new THREE.Euler(-0.28, 0.22, 0), // Deep dorsiflexion, toes out for stability
   },
   rightLeg: {
-    hip: new THREE.Euler(0.3, -0.5, -0.3), // Mirror - wide spread
-    knee: new THREE.Euler(1.57, 0, 0), // 90° FULL bend - deep horse stance
-    ankle: new THREE.Euler(-0.25, -0.2, 0), // Toes pointed outward
+    // Right leg (오른다리) - Mirror wide horse stance
+    hip: new THREE.Euler(0.32, -0.52, -0.35), // Mirror external rotation
+    knee: new THREE.Euler(1.57, 0, 0), // FULL 90° bend = 1.57 rad - thigh horizontal
+    ankle: new THREE.Euler(-0.28, -0.22, 0), // Deep dorsiflexion, toes out
   },
-  pelvis: new THREE.Euler(0.1, 0, 0), // Slight forward tilt, facing square
-  stanceWidth: 0.9, // VERY WIDE (2.0x shoulder width)
-  stanceDepth: 0, // Parallel feet - horse stance
-  pelvisHeight: -0.25, // VERY LOW for explosive power (hipHeight 0.75)
+  pelvis: new THREE.Euler(0.08, 0, 0), // Minimal forward tilt, SQUARE facing (정면)
+  stanceWidth: 0.95, // VERY WIDE 2.2x shoulder width (~95cm) for maximum power
+  stanceDepth: 0, // Zero - perfectly parallel feet (평행 발)
+  pelvisHeight: -0.28, // VERY LOW - deep squat (hipHeight ~0.72m)
 
-  weight: "back",
+  weight: "neutral", // Perfect 50/50 balance
   breathingRange: {
-    min: 0.96, // Deep inhale for power
-    max: 1.04, // Explosive exhale
+    min: 0.96, // Deep inhale (깊은 들이마시기) - charging power
+    max: 1.045, // Explosive exhale (폭발적 내쉬기) - thunder discharge
   },
 };
 
 /**
- * ☴ 손 (Son) - Wind: Continuous motion guard
+ * ☴ 손 (Son) - Wind: Taekyon Continuous Flow Stance
  *
- * Traditional Taekwondo Niunja Seogi (니은자) - L-Stance
- * - Hands in flowing circular pattern
- * - Ready for continuous pressure attacks
- * - Weight neutral for lateral movement (+10% lateral)
- * - Breathing rhythmic for sustained combos
+ * **Korean Name**: 손괘 - 바람 (Son-gwae - Baram)
+ * **Martial Art**: Taekyon (택견) Hakdari Seogi (학다리서기) - Crane Stance
+ * **Philosophy**: Gentle yin, persistent wind, flowing rhythm, continuous pressure
  *
- * **Leg Position (Niunja Seogi)**:
- * - L-shaped narrow stance (0.4m)
- * - Front foot turned inward (L-shape)
- * - Back foot pointing forward
- * - Weight 50/50 for quick lateral shifts
+ * **Authentic Hakdari Seogi Characteristics**:
+ * - 학다리서기 (Hakdari Seogi): Traditional Korean crane stance - ONE LEG RAISED
+ * - Standing leg nearly straight (170°) with perfect balance
+ * - Raised leg bent deeply (knee at waist level, 45° thigh angle)
+ * - 100% weight on standing leg - ready to kick with raised leg instantly
+ * - Arms in flowing 품밟기 (Pumbalbgi) motion - continuous circular movement
+ * - Lead knife hand extended for 손날막기 (Sonnal Makgi - knife hand block)
  *
- * Combat Application:
- * - Pressure point sequences
- * - +10% chaining speed on pressure sequences
- * - +10% lateral movement
+ * **Biomechanical Analysis**:
+ * - Single leg stance enables instant kick without telegraphing
+ * - High knee chamber provides explosive kick power
+ * - Flowing arm position creates deceptive continuous motion
+ * - Perfect balance allows rapid direction changes
  *
- * ENHANCED: Staggered guard - lead hand forward but elbow guards, rear protects chin
+ * **Combat Applications**:
+ * - 연속발차기 (Yeonsok Balchagi): Continuous kicking combinations
+ * - 품밟기 리듬 (Pumbalbgi Rhythm): Rhythmic pressure sequences
+ * - 발걸이 (Balgeori): Sweeping techniques from raised leg
+ * - Continuous pressure strikes (+10% chaining speed)
+ * - Lateral movement advantage (+10% lateral mobility)
  *
  * @korean 손괘방어포즈
  */
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.7, 0.5, 0.3), // Lead arm forward but controlled
-    elbow: new THREE.Euler(0, 0, -1.8), // Elbow guards left ribs
-    wrist: new THREE.Euler(0, 0.3, 0.2), // Knife hand extended
+    // Lead knife hand (왼손날) - Extended in flowing circular motion
+    shoulder: new THREE.Euler(-0.68, 0.48, 0.35), // Lead shoulder mid-level, flowing
+    elbow: new THREE.Euler(0, 0, -1.85), // Soft elbow ~105° for circular flow
+    wrist: new THREE.Euler(-0.08, 0.32, 0.25), // Knife hand (손날) extended, palm vertical
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Rear arm at chin level
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(0.2, -0.2, 0), // Fist protecting chin
+    // Rear guard hand (오른손) - Protecting center, ready to flow
+    shoulder: new THREE.Euler(-0.95, -0.18, -0.45), // Rear hand at solar plexus level
+    elbow: new THREE.Euler(0, 0, 2.15), // Chambered elbow ~125° guarding ribs
+    wrist: new THREE.Euler(0.18, -0.22, 0.08), // Open palm ready for circular deflection
   },
-  torso: new THREE.Euler(0.1, -0.5, 0.1), // Rotation for bladed stance
+  torso: new THREE.Euler(0.06, -0.52, 0.12), // Slight forward + strong bladed rotation (30°)
 
-  // Crane Stance (Hakdari Seogi) - ONE LEG RAISED for continuous kicks
-  // Based on SON_WIND biomechanics: 170° standing leg, 45° raised leg, 100% on standing
+  // Hakdari Seogi (학다리서기) - Crane Stance
+  // Authentic Taekyon crane stance: 170° standing leg, 45° raised thigh, 100% weight
   leftLeg: {
-    hip: new THREE.Euler(1.2, 0.3, 0.2), // Left leg RAISED HIGH - knee at waist level
-    knee: new THREE.Euler(2.0, 0, 0), // Raised leg deeply bent (45° = knee folded)
-    ankle: new THREE.Euler(-0.4, 0.3, 0), // Foot hanging, toes pointed
+    // Raised leg (든 다리) - LEFT knee at waist level, ready to kick
+    hip: new THREE.Euler(1.3, 0.35, 0.25), // Thigh raised to 45° (high chamber)
+    knee: new THREE.Euler(2.1, 0, 0), // Knee deeply bent ~120° flexion (발 접힘)
+    ankle: new THREE.Euler(-0.45, 0.28, 0), // Foot hanging naturally, toes pointed down
   },
   rightLeg: {
-    hip: new THREE.Euler(0.1, -0.15, 0), // Standing leg nearly straight
-    knee: new THREE.Euler(0.18, 0, 0), // Standing knee slightly bent (170°)
-    ankle: new THREE.Euler(-0.1, 0, 0), // Foot flat on ground
+    // Standing leg (딛는 다리) - RIGHT leg bearing all weight
+    hip: new THREE.Euler(0.08, -0.18, 0), // Standing hip nearly straight, slight stability bend
+    knee: new THREE.Euler(0.18, 0, 0), // Nearly straight 170° = 0.18 rad (거의 곧게)
+    ankle: new THREE.Euler(-0.09, 0, 0), // Foot flat, stable base (평평한 발바닥)
   },
-  pelvis: new THREE.Euler(0.05, -0.6, 0.05), // Slight lean toward standing leg for balance
-  stanceWidth: 0, // Zero - single leg stance
-  stanceDepth: 0.2, // Standing leg slightly forward
-  pelvisHeight: -0.08, // Higher for mobility (hipHeight 0.92)
+  pelvis: new THREE.Euler(0.04, -0.58, 0.08), // Minimal tilt, strong rotation toward standing leg
+  stanceWidth: 0, // Zero - single leg stance (한 발 서기)
+  stanceDepth: 0.18, // Standing leg slightly forward for balance
+  pelvisHeight: -0.06, // Higher position for mobility (hipHeight ~0.94m)
 
-  weight: "neutral",
+  weight: "neutral", // 100% on standing leg (technically neutral in definition)
   breathingRange: {
-    min: 0.985, // Rhythmic breathing
-    max: 1.015, // Sustained cycles
+    min: 0.985, // Rhythmic breathing (리듬 호흡) - flowing cycles
+    max: 1.018, // Sustained inhale/exhale for continuous motion
   },
 };
 
 /**
- * ☵ 감 (Gam) - Water: Flowing defensive guard
+ * ☵ 감 (Gam) - Water: Hapkido Defensive Counter Stance
  *
- * Traditional Taekwondo Narani Seogi (나란이) - Parallel Stance
- * - Hands at mid-level for counters
- * - Ready for counter-grappling and sweeps
- * - Weight centered for adaptability (+10% counter speed)
- * - Breathing deep and flowing
+ * **Korean Name**: 감괘 - 물 (Gam-gwae - Mul)
+ * **Martial Art**: Hapkido (합기도) Dwitbal Seogi (뒷발서기) - Back Weighted Stance
+ * **Philosophy**: Yin reception, adaptive flow, water's yielding redirection, counter force
  *
- * **Leg Position (Narani Seogi)**:
- * - Feet parallel, shoulder-width (0.5m)
- * - Natural standing position
- * - Slight knee bend for readiness
- * - Balanced, adaptive stance
+ * **Authentic Dwitbal Seogi Characteristics**:
+ * - 뒷발서기 (Dwitbal Seogi): Defensive back stance with 70% weight on rear leg
+ * - Front leg extended nearly straight (160°) for defensive distance
+ * - Back leg deeply bent (100°) coiled for explosive counter
+ * - Both palms open (손바닥) mid-level for 막기 (Makgi - blocking/deflection)
+ * - Tight elbows protect ribs while ready to redirect force
+ * - Bladed profile (칼날 자세) minimizes target area
  *
- * Combat Application:
- * - Flow-into counters
- * - +10% adaptability/counter speed
- * - +15 bleed on rib shots
+ * **Biomechanical Analysis**:
+ * - Back-weighted provides safety distance from opponent
+ * - Extended front leg acts as range-finder and tripwire
+ * - Deep rear leg stores elastic energy for counter explosion
+ * - Open palms enable instant grip and redirection
  *
- * ENHANCED: Mid-level guard with tight elbows - hands at solar plexus, elbows protect ribs
+ * **Combat Applications**:
+ * - 막고반격 (Makgo Bangyeok): Block-and-counter sequences
+ * - 원형막기 (Wonhyeong Makgi): Circular deflection techniques
+ * - 흘려치기 (Heullyeo Chigi): Flow-redirect strikes
+ * - Adaptive counters (+10% counter speed)
+ * - Rib damage amplification (+15 bleed on rib shots from counters)
  *
  * @korean 감괘방어포즈
  */
 export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.8, 0.3, 0.4), // Hands at chest level - ready to parry
-    elbow: new THREE.Euler(0, 0, -2.0), // Tight elbow - protects left ribs
-    wrist: new THREE.Euler(-0.1, 0.3, 0.3), // Palm ready to redirect
+    // Lead deflection hand (왼손) - Open palm mid-level for circular blocks
+    shoulder: new THREE.Euler(-0.75, 0.32, 0.42), // Lead shoulder chest-high, ready to redirect
+    elbow: new THREE.Euler(0, 0, -2.05), // Tight elbow ~115° guarding left ribs
+    wrist: new THREE.Euler(-0.12, 0.35, 0.32), // Open palm (손바닥) vertical, fingers relaxed
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.8, -0.3, -0.4), // Mirror - balanced guard
-    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs
-    wrist: new THREE.Euler(-0.1, -0.3, -0.3), // Palm ready to redirect
+    // Rear counter hand (오른손) - Open palm ready for grab or strike
+    shoulder: new THREE.Euler(-0.78, -0.28, -0.38), // Rear shoulder mirror position
+    elbow: new THREE.Euler(0, 0, 2.08), // Tight elbow ~118° guarding right ribs
+    wrist: new THREE.Euler(-0.09, -0.32, -0.28), // Open palm ready for counter technique
   },
-  torso: new THREE.Euler(0.1, -0.3, 0.1), // Slight lean + flowing motion
+  torso: new THREE.Euler(0.09, -0.42, 0.11), // Slight forward lean + bladed rotation (24°)
 
-  // Back Stance (Dwit Seogi) - Defensive with weight on back leg
-  // Based on GAM_WATER biomechanics: 160° front leg, 100° back knee, 30/70 weight
+  // Dwitbal Seogi (뒷발서기) - Back Weighted Stance
+  // Authentic Hapkido defensive stance: 160° front leg, 100° back knee, 30/70 weight
   leftLeg: {
-    hip: new THREE.Euler(0.15, 0.2, 0), // Front leg light, almost straight
-    knee: new THREE.Euler(0.35, 0, 0), // Front knee slight bend (160° = 0.35 rad flex)
-    ankle: new THREE.Euler(-0.08, 0, 0), // Light on toes
+    // Front leg (앞다리) - Extended, light contact for range and sensing
+    hip: new THREE.Euler(0.16, 0.22, 0.04), // Front hip slightly flexed
+    knee: new THREE.Euler(0.35, 0, 0), // Nearly straight 160° = 0.35 rad (거의 곧게)
+    ankle: new THREE.Euler(-0.07, 0.03, 0), // Light toe contact, ready to lift
   },
   rightLeg: {
-    hip: new THREE.Euler(-0.25, -0.2, 0), // Back leg loaded and bent
-    knee: new THREE.Euler(1.4, 0, 0), // Deep back knee bend (100° = 1.4 rad flex)
-    ankle: new THREE.Euler(-0.2, 0, 0), // Rooted for stability
+    // Back leg (뒷다리) - Deeply bent, bearing most weight, coiled spring
+    hip: new THREE.Euler(-0.28, -0.25, 0.03), // Back hip flexed and loaded
+    knee: new THREE.Euler(1.4, 0, 0), // Deep bend 100° = 1.4 rad (깊은 굽힘)
+    ankle: new THREE.Euler(-0.22, 0.02, 0), // Rooted dorsiflexion for stability
   },
-  pelvis: new THREE.Euler(0.05, -0.4, 0.05), // Slight rotation for flow
-  stanceWidth: 0.5, // 1.15x shoulder width (medium)
-  stanceDepth: 0.45, // Moderate forward/back offset
-  pelvisHeight: -0.12, // Medium low (hipHeight 0.82)
+  pelvis: new THREE.Euler(0.06, -0.45, 0.06), // Slight forward tilt + rotation for defense
+  stanceWidth: 0.52, // 1.2x shoulder width for stable base (~52cm)
+  stanceDepth: 0.48, // Moderate front/back separation for mobility
+  pelvisHeight: -0.13, // Medium-low for balance (hipHeight ~0.87m)
 
-  weight: "neutral",
+  weight: "back", // 70/30 weight distribution (70% back)
   breathingRange: {
-    min: 0.97, // Deep, flowing inhale
-    max: 1.03, // Full exhale for counter
+    min: 0.975, // Deep, flowing inhale (흐르는 들이마시기)
+    max: 1.028, // Full exhale for explosive counter (반격 내쉬기)
   },
 };
 
 /**
- * ☶ 간 (Gan) - Mountain: Solid defensive posture
+ * ☶ 간 (Gan) - Mountain: Taekwondo Immovable Defense Stance
  *
- * Traditional Taekwondo Gibo Seogi (기본) - Basic Stance
- * - Arms in tight defensive position
- * - Immovable blocking stance
- * - Weight balanced for maximum stability (+15% block strength)
- * - Breathing steady and controlled
+ * **Korean Name**: 간괘 - 산 (Gan-gwae - San)
+ * **Martial Art**: Taekwondo (태권도) Moa Seogi (모아서기) - Closed Feet Stance
+ * **Philosophy**: Mountain's stillness, immovable yang, absolute defense, rooted earth
  *
- * **Leg Position (Gibo Seogi)**:
- * - Feet close together (0.3m) - NARROW
- * - Mountain-solid, immovable
- * - Knees slightly bent for shock absorption
- * - Maximum stability for blocking
+ * **Authentic Moa Seogi Characteristics**:
+ * - 모아서기 (Moa Seogi): Feet together or nearly touching - NARROW stance
+ * - 0.6x shoulder width (~24cm) for mountain-solid rooting
+ * - Both knees bent ~145° as shock absorbers (충격 흡수)
+ * - 50/50 perfect weight distribution for balanced defense
+ * - 상단막기 (Sangdan Makgi): High X-block with forearms crossed
+ * - Fists at opposite shoulders creating impenetrable face shield
  *
- * Combat Application:
- * - Impenetrable defense
- * - +15% block strength
- * - +10% counter-strike speed
+ * **Biomechanical Analysis**:
+ * - Narrow stance creates ultra-stable base (low moment arm)
+ * - Knees bent absorb impact force like suspension system
+ * - Crossed forearms provide maximum frontal protection
+ * - Square facing presents minimal target profile
  *
- * ENHANCED: High cover guard - forearms cross in front of face for maximum protection
+ * **Combat Applications**:
+ * - 산막기 (San Makgi): Mountain block - immovable defense
+ * - 가위막기 (Gawi Makgi): Scissor block with crossed arms
+ * - 반격준비 (Bangyeok Junbi): Counter-strike preparation from solid base
+ * - Impenetrable blocking (+15% block strength)
+ * - Instant counter strikes (+10% counter-strike speed)
  *
  * @korean 간괘방어포즈
  */
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.8, 0.1, 1.0), // Arms CROSSED in front of face
-    elbow: new THREE.Euler(0, 0, -2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, 0.4, 0.3), // Fists at opposite shoulders
+    // Left forearm (왼팔뚝) - Crossed in front of face for X-block
+    shoulder: new THREE.Euler(-1.85, 0.12, 1.05), // Very high shoulder, arm crossed
+    elbow: new THREE.Euler(0, 0, -2.5), // MAXIMUM flexion ~145° (극한 굽힘)
+    wrist: new THREE.Euler(0.52, 0.42, 0.35), // Left fist at RIGHT shoulder (교차)
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.8, -0.1, -1.0), // Arms CROSSED - right over left
-    elbow: new THREE.Euler(0, 0, 2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, -0.4, -0.3), // Fists at opposite shoulders
+    // Right forearm (오른팔뚝) - Crossed over left creating X-shield
+    shoulder: new THREE.Euler(-1.85, -0.12, -1.05), // Mirror high position
+    elbow: new THREE.Euler(0, 0, 2.5), // MAXIMUM flexion ~145° (극한 굽힘)
+    wrist: new THREE.Euler(0.52, -0.42, -0.35), // Right fist at LEFT shoulder (교차)
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Chin DOWN, facing square - immovable
+  torso: new THREE.Euler(0.16, 0, 0), // Forward lean 16° chin down, SQUARE facing (정면)
 
-  // Closed Stance (Moa Seogi) - Feet TOGETHER, rooted like mountain
-  // Based on GAN_MOUNTAIN biomechanics: 145° both knees, 50/50 weight, 0.6x width
+  // Moa Seogi (모아서기) - Closed Feet Stance
+  // Authentic Taekwondo mountain stance: 145° both knees, 50/50 weight, feet together
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.08, 0), // Feet very close together
-    knee: new THREE.Euler(0.6, 0, 0), // Moderate bend (145° = 0.6 rad flex) - shock absorber
-    ankle: new THREE.Euler(-0.1, 0, 0), // Flat planted firmly
+    // Left leg (왼다리) - Feet nearly touching, shock absorber position
+    hip: new THREE.Euler(0.12, 0.09, 0.02), // Minimal hip flexion, feet close
+    knee: new THREE.Euler(0.61, 0, 0), // Moderate bend 145° = 0.61 rad (중간 굽힘)
+    ankle: new THREE.Euler(-0.11, 0.02, 0), // Flat planted, weight distributed
   },
   rightLeg: {
-    hip: new THREE.Euler(0.1, -0.08, 0), // Mirror - feet nearly touching
-    knee: new THREE.Euler(0.6, 0, 0), // Moderate bend - shock absorber
-    ankle: new THREE.Euler(-0.1, 0, 0), // Flat planted firmly
+    // Right leg (오른다리) - Mirror stability, mountain rooted
+    hip: new THREE.Euler(0.12, -0.09, -0.02), // Mirror minimal flexion
+    knee: new THREE.Euler(0.61, 0, 0), // Moderate bend 145° = 0.61 rad (중간 굽힘)
+    ankle: new THREE.Euler(-0.11, -0.02, 0), // Flat planted firmly
   },
-  pelvis: new THREE.Euler(0.1, 0, 0), // Square forward - no rotation, mountain solid
-  stanceWidth: 0.15, // FEET NEARLY TOGETHER - mountain solid (0.6x narrow)
-  stanceDepth: 0, // Parallel - rooted
-  pelvisHeight: -0.06, // Slightly lowered for stability (hipHeight 0.92)
+  pelvis: new THREE.Euler(0.11, 0, 0), // Slight forward tilt, NO rotation - square (정면)
+  stanceWidth: 0.12, // VERY NARROW 0.3x shoulder width - feet nearly together (~12cm)
+  stanceDepth: 0, // Zero - perfectly parallel, mountain solid (평행)
+  pelvisHeight: -0.07, // Slightly lowered for shock absorption (hipHeight ~0.93m)
 
-  weight: "neutral",
+  weight: "neutral", // Perfect 50/50 mountain balance
   breathingRange: {
-    min: 0.99, // Minimal movement
-    max: 1.01, // Steady control
+    min: 0.992, // Minimal chest movement (최소 움직임)
+    max: 1.008, // Steady, controlled breathing (안정된 호흡)
   },
 };
 
 /**
- * ☷ 곤 (Gon) - Earth: Grounded low guard
+ * ☷ 곤 (Gon) - Earth: Ssireum Grappling Ground Stance
  *
- * Traditional Taekwondo Joong Ha Seogi (중하) - Deep Stance
- * - Hands low for ground control
- * - Ready for throws and takedowns
- * - Weight low and stable (+20% ground-control)
- * - Breathing deep from diaphragm
+ * **Korean Name**: 곤괘 - 땅 (Gon-gwae - Ttang)
+ * **Martial Art**: Ssireum (씨름) / Yusul (유술) Deep Squat Grappling Stance
+ * **Philosophy**: Ultimate yin, earth's receptive power, grounding force, takedown dominance
  *
- * **Leg Position (Joong Ha Seogi)**:
- * - VERY DEEP squat position
- * - Wide stance (0.8m) for grounding
- * - Knees bent 100° - DEEP
- * - Low center of gravity - earth connection
+ * **Authentic Ssireum Deep Stance Characteristics**:
+ * - 씨름 자세 (Ssireum Jase): Traditional Korean wrestling deep squat
+ * - ULTRA WIDE stance 2.8x shoulder width (~1.1m+) for maximum stability
+ * - Both knees bent to ~80° (극한 굽힘) - DEEP sumo-like squat
+ * - 50/50 weight distribution with VERY LOW center of gravity
+ * - Arms low ready for 샅바잡기 (Satbajapgi - belt/thigh grabs)
+ * - Hands at hip level for 허리후리기 (Heori Hurigi - hip throw preparation)
  *
- * Combat Application:
- * - Ground clinches and throws
- * - +20% ground-control advantage
- * - +20 bleed on takedowns
+ * **Biomechanical Analysis**:
+ * - Ultra-wide stance lowers center of gravity below opponent's
+ * - Deep squat provides explosive upward throwing power
+ * - Low hand position enables immediate grip on legs/hips
+ * - Forward torso lean establishes grappling pressure
  *
- * ENHANCED: Low underhook guard - hands at hip/groin level, elbows tight to protect ribs
+ * **Combat Applications**:
+ * - 다리후리기 (Dari Hurigi): Leg sweep and trip techniques
+ * - 허리후리기 (Heori Hurigi): Hip throw from deep position
+ * - 배지기 (Baejigi): Belly-to-belly suplex throws
+ * - Ground clinches and throws (+20% ground control)
+ * - Takedown damage amplification (+20 bleed on successful throws)
  *
- * @korean 곴괘방어포즈
+ * @korean 곤괘방어포즈
  */
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-0.4, 0.3, 0.5), // Arms low but elbows guard body
-    elbow: new THREE.Euler(0, 0, -2.0), // TIGHT elbow - protects left ribs
-    wrist: new THREE.Euler(-0.1, 0.2, 0.3), // Hands ready for underhooks
+    // Left grappling hand (왼손) - Low position for belt/thigh grabs
+    shoulder: new THREE.Euler(-0.38, 0.32, 0.55), // Shoulder lowered, arm extended down
+    elbow: new THREE.Euler(0, 0, -2.05), // Tight elbow ~115° protecting ribs
+    wrist: new THREE.Euler(-0.08, 0.22, 0.35), // Open palm (손바닥) ready for 샅바 (Satba grab)
   },
   rightArm: {
-    shoulder: new THREE.Euler(-0.4, -0.3, -0.5), // Mirror - both protecting
-    elbow: new THREE.Euler(0, 0, 2.0), // TIGHT elbow - protects right ribs
-    wrist: new THREE.Euler(-0.1, -0.2, -0.3), // Hands ready for underhooks
+    // Right grappling hand (오른손) - Mirror low position for underhooks
+    shoulder: new THREE.Euler(-0.38, -0.32, -0.55), // Mirror low shoulder position
+    elbow: new THREE.Euler(0, 0, 2.05), // Tight elbow ~115° protecting ribs
+    wrist: new THREE.Euler(-0.08, -0.22, -0.35), // Open palm ready for belt/thigh control
   },
-  torso: new THREE.Euler(0.3, 0, 0), // Forward lean - ready to grapple
+  torso: new THREE.Euler(0.32, 0, 0), // Forward lean 32° - grappling pressure (그래플링 압박)
 
-  // Joong Ha Seogi (Deep Squat) - SUMO wrestler position
+  // Ssireum Deep Squat (씨름 쪼그리기) - Ultra-Wide Sumo Position
+  // Authentic Korean wrestling stance: ~80° both knees, 50/50 weight, ULTRA WIDE
   leftLeg: {
-    hip: new THREE.Euler(0.1, 0.5, 0.4), // Legs WIDE, toes out
-    knee: new THREE.Euler(1.4, 0, 0), // ~80° MAXIMUM bend - deep squat
-    ankle: new THREE.Euler(-0.3, 0.2, 0), // Deep flex, toes out
+    // Left leg (왼다리) - Ultra-wide spread, maximum squat depth
+    hip: new THREE.Euler(0.15, 0.58, 0.45), // Wide external rotation and abduction
+    knee: new THREE.Euler(1.48, 0, 0), // EXTREME bend ~80° = 1.48 rad (극한 쪼그림)
+    ankle: new THREE.Euler(-0.32, 0.25, 0), // Deep dorsiflexion, toes out wide
   },
   rightLeg: {
-    hip: new THREE.Euler(0.1, -0.5, -0.4), // Mirror - wide sumo
-    knee: new THREE.Euler(1.4, 0, 0), // ~80° MAXIMUM bend - deep squat
-    ankle: new THREE.Euler(-0.3, -0.2, 0), // Deep flex, toes out
+    // Right leg (오른다리) - Mirror ultra-wide sumo squat
+    hip: new THREE.Euler(0.15, -0.58, -0.45), // Mirror external rotation and abduction
+    knee: new THREE.Euler(1.48, 0, 0), // EXTREME bend ~80° = 1.48 rad (극한 쪼그림)
+    ankle: new THREE.Euler(-0.32, -0.25, 0), // Deep dorsiflexion, toes out wide
   },
-  pelvis: new THREE.Euler(0.2, 0, 0), // Forward tilt - low and square
-  stanceWidth: 1.3, // VERY WIDE - sumo squat
-  stanceDepth: 0, // Parallel feet - sumo stance
-  pelvisHeight: -0.45, // EXTREMELY LOW - deep squat position
+  pelvis: new THREE.Euler(0.22, 0, 0), // Forward tilt 22°, SQUARE facing (정면)
+  stanceWidth: 1.35, // ULTRA WIDE 3.0x+ shoulder width - sumo squat (~135cm+)
+  stanceDepth: 0, // Zero - perfectly parallel feet for maximum stability (평행)
+  pelvisHeight: -0.48, // EXTREMELY LOW - deep squat (hipHeight ~0.52m)
 
-  weight: "neutral",
+  weight: "neutral", // Perfect 50/50 sumo balance
   breathingRange: {
-    min: 0.96, // Deep diaphragm breathing
-    max: 1.04, // Full power exhale
+    min: 0.965, // Deep diaphragm breathing (깊은 복식호흡)
+    max: 1.042, // Explosive power exhale for throws (던지기 내쉬기)
   },
 };
 

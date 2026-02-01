@@ -74,8 +74,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have forward weight for reach advantage", () => {
-        expect(TAE_FLUID_GUARD_POSE.weight).toBe("forward");
+      it("should have back weight for defensive cat stance (Beom Seogi)", () => {
+        // Authentic Hapkido cat stance has 90% weight on back leg
+        expect(TAE_FLUID_GUARD_POSE.weight).toBe("back");
       });
 
       it("should have smooth breathing for fluid motion", () => {
@@ -126,8 +127,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for explosive forward", () => {
-        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
+      it("should have neutral weight for balanced explosive power (Juchum Seogi)", () => {
+        // Authentic Taekwondo horse stance has perfect 50/50 weight distribution
+        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral");
       });
 
       it("should have deep breathing for power generation", () => {
@@ -185,8 +187,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have neutral weight for adaptability", () => {
-        expect(GAM_WATER_GUARD_POSE.weight).toBe("neutral");
+      it("should have back weight for defensive counter positioning (Dwitbal Seogi)", () => {
+        // Authentic Hapkido back weighted stance has 70% weight on back leg
+        expect(GAM_WATER_GUARD_POSE.weight).toBe("back");
       });
 
       it("should have deep flowing breathing", () => {
@@ -568,19 +571,19 @@ describe("StanceGuardPoses", () => {
     });
 
     it("should have correct weight distributions per Korean martial arts stance types", () => {
-      // Forward stances (Ap Seogi, Ap Koobi Seogi)
+      // Forward stances (Ap Seogi) - aggressive power
       expect(GEON_HIGH_GUARD_POSE.weight).toBe("forward");
-      expect(TAE_FLUID_GUARD_POSE.weight).toBe("forward");
 
-      // Back stance (Dwi Koobi Seogi)
-      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
+      // Back-weighted defensive stances (Beom Seogi, Dwitbal Seogi)
+      expect(TAE_FLUID_GUARD_POSE.weight).toBe("back"); // Hapkido cat stance 90/10 back
+      expect(GAM_WATER_GUARD_POSE.weight).toBe("back"); // Hapkido back stance 70/30 back
 
-      // Neutral stances (Juchum Seogi, Narani Seogi, etc.)
-      expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral");
-      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral");
-      expect(GAM_WATER_GUARD_POSE.weight).toBe("neutral");
-      expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral");
-      expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral");
+      // Neutral/balanced stances (Juchum Seogi, Gyeorugi Junbi, Moa Seogi, Ssireum)
+      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral"); // Horse stance 50/50
+      expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // Fighting ready 50/50
+      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral"); // Crane stance (100% on one leg)
+      expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral"); // Closed feet 50/50
+      expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral"); // Sumo squat 50/50
     });
 
     it("should have breathing patterns matching combat philosophy", () => {
