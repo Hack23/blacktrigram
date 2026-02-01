@@ -9,6 +9,20 @@
  * Philosophy: "산처럼 굳건히 서서 때를 기다려라"
  *             Stand firm like a mountain and wait for the moment
  *
+ * **ENHANCED DEFENSIVE MECHANICS:**
+ * - Block timing windows (blockWindow): 200-350ms for precise defense
+ * - Perfect block windows (perfectBlockWindow): 60-100ms for optimal timing
+ * - Damage reduction (damageReduction): 50-75% absorption on successful blocks
+ * - Stability bonuses (stabilityBonus): 120-180% fortitude increase
+ * - Rooting effects (rootingEffect): Ground connection for immovable stance
+ * - Optimized execution times: 250-800ms for defensive reactions
+ *
+ * All 7 techniques now include defensive properties for:
+ * - Immovable defense visualization
+ * - Block timing indicators
+ * - Damage absorption feedback
+ * - Mountain/earth-themed effects
+ *
  * @module GanTechniques
  */
 
@@ -78,6 +92,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "light",
     range: "short",
     speed: 1.2,
+    // Defensive mechanics for immovable defense
+    blockWindow: 300, // 300ms block timing window
+    perfectBlockWindow: 80, // 80ms perfect block window
+    damageReduction: 0.65, // 65% damage reduction
+    stabilityBonus: 1.3, // 130% stability increase
+    rootingEffect: true, // Creates rooting ground connection
   },
 
   // ============= Defensive Stance Techniques =============
@@ -122,6 +142,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "light",
     range: "short",
     speed: 1.0,
+    // Defensive mechanics for maximum stability
+    blockWindow: 350, // 350ms block timing window (longer for stance)
+    perfectBlockWindow: 100, // 100ms perfect block window
+    damageReduction: 0.75, // 75% damage reduction (highest)
+    stabilityBonus: 1.8, // 180% stability increase (maximum)
+    rootingEffect: true, // Deep rooting ground connection
   },
   {
     id: "gan_iron_block",
@@ -164,6 +190,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "light",
     range: "medium",
     speed: 0.85,
+    // Defensive mechanics for powerful block
+    blockWindow: 280, // 280ms block timing window
+    perfectBlockWindow: 70, // 70ms perfect block window (tight)
+    damageReduction: 0.7, // 70% damage reduction
+    stabilityBonus: 1.5, // 150% stability increase
+    rootingEffect: true, // Strong rooting effect
   },
 
   // ============= Counter-Attack Techniques =============
@@ -208,6 +240,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "special",
     range: "medium",
     speed: 1.0,
+    // Defensive mechanics for counter timing
+    blockWindow: 200, // 200ms block window (tight for counter)
+    perfectBlockWindow: 60, // 60ms perfect block window (very tight)
+    damageReduction: 0.5, // 50% damage reduction (counter-focused)
+    stabilityBonus: 1.2, // 120% stability during counter setup
+    rootingEffect: false, // No rooting for counter mobility
   },
   {
     id: "gan_reversal_technique",
@@ -250,6 +288,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 0.9,
+    // Defensive mechanics for reversal
+    blockWindow: 250, // 250ms block window for reversal setup
+    perfectBlockWindow: 75, // 75ms perfect reversal window
+    damageReduction: 0.55, // 55% damage reduction during reversal
+    stabilityBonus: 1.4, // 140% stability for control
+    rootingEffect: true, // Rooting for reversal control
   },
 
   // ============= Grappling Control =============
@@ -294,6 +338,12 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 0.9,
+    // Defensive mechanics for grapple control
+    blockWindow: 220, // 220ms block window during grapple setup
+    perfectBlockWindow: 65, // 65ms perfect grapple window
+    damageReduction: 0.6, // 60% damage reduction (grappling focus)
+    stabilityBonus: 1.6, // 160% stability for grapple control
+    rootingEffect: true, // Strong rooting for grapple lock
   },
 ] as const;
 
