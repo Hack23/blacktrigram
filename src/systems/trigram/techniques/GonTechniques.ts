@@ -63,8 +63,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 900,
-    recoveryTime: 1300,
+    executionTime: 1260,
+    recoveryTime: 1819,
     critChance: 0.08,
     critMultiplier: 1.4,
     effects: [],
@@ -74,7 +74,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Clinch grapple position
     animationType: AnimationType.GON_EARTH_EMBRACE,
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 0.9,
@@ -107,8 +107,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 0.95,
     },
-    executionTime: 650,
-    recoveryTime: 950,
+    executionTime: 909,
+    recoveryTime: 1330,
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
@@ -118,7 +118,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Reaping leg sweep
     animationType: AnimationType.GON_LEG_SWEEP,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -149,8 +149,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 700,
-    recoveryTime: 1000,
+    executionTime: 979,
+    recoveryTime: 1400,
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
@@ -160,7 +160,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Low shooting motion
     animationType: AnimationType.GRAPPLE,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,
@@ -193,8 +193,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.7,
     },
-    executionTime: 850,
-    recoveryTime: 1250,
+    executionTime: 1190,
+    recoveryTime: 1750,
     critChance: 0.24,
     critMultiplier: 2.1,
     effects: [],
@@ -204,7 +204,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Traditional belt throw
     animationType: AnimationType.THROW,
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "special",
     range: "short",
     speed: 0.9,
@@ -235,8 +235,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 1050,
-    recoveryTime: 1400,
+    executionTime: 1470,
+    recoveryTime: 1959,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
@@ -246,7 +246,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Slam throw
     animationType: AnimationType.SLAM, // Fixed: was wrongly set to GON_BODY_LOCK_TAKEDOWN
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "heavy",
     range: "short",
     speed: 1.0,
@@ -277,8 +277,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 800,
-    recoveryTime: 1150,
+    executionTime: 1120,
+    recoveryTime: 1610,
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
@@ -288,7 +288,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Body lock clinch
     animationType: AnimationType.GRAPPLE, // Fixed: was wrongly set to GON_ANKLE_PICK
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 0.9,
@@ -319,8 +319,8 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.7,
     },
-    executionTime: 950,
-    recoveryTime: 1350,
+    executionTime: 1330,
+    recoveryTime: 1889,
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
@@ -330,7 +330,7 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Sacrifice throw motion
     animationType: AnimationType.GON_SACRIFICE_THROW,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.0,

@@ -63,8 +63,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 300,
-    recoveryTime: 500,
+    executionTime: 420,
+    recoveryTime: 700,
     critChance: 0.02,
     critMultiplier: 1.0,
     effects: [],
@@ -74,7 +74,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Solid blocking stance
     animationType: AnimationType.GAN_ROCK_DEFENSE_BLOCK,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "light",
     range: "short",
     speed: 1.2,
@@ -107,8 +107,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 250,
-    recoveryTime: 450,
+    executionTime: 350,
+    recoveryTime: 630,
     critChance: 0.04,
     critMultiplier: 1.1,
     effects: [],
@@ -118,7 +118,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Rooted defensive stance
     animationType: AnimationType.GAN_IMMOVABLE_STANCE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "light",
     range: "short",
     speed: 1.0,
@@ -149,8 +149,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 400,
-    recoveryTime: 650,
+    executionTime: 560,
+    recoveryTime: 909,
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
@@ -160,7 +160,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Powerful blocking motion (matches TechniqueAnimationMapping)
     animationType: AnimationType.IRON_BLOCK,
-    animationSpeed: 0.85,
+    animationSpeed: 0.65,
     category: "light",
     range: "medium",
     speed: 0.85,
@@ -193,8 +193,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 600,
-    recoveryTime: 950,
+    executionTime: 840,
+    recoveryTime: 1330,
     critChance: 0.26,
     critMultiplier: 2.2,
     effects: [],
@@ -204,7 +204,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Powerful counter attack
     animationType: AnimationType.GAN_COUNTER_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "special",
     range: "medium",
     speed: 1.0,
@@ -235,8 +235,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 800,
-    recoveryTime: 1200,
+    executionTime: 1120,
+    recoveryTime: 1680,
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
@@ -246,7 +246,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Reversal motion
     animationType: AnimationType.GAN_REVERSAL_TECHNIQUE,
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 0.9,
@@ -279,8 +279,8 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 750,
-    recoveryTime: 1100,
+    executionTime: 1050,
+    recoveryTime: 1540,
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
@@ -290,7 +290,7 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Standing control position
     animationType: AnimationType.GAN_MOUNTAIN_STANCE_LOCK,
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 0.9,

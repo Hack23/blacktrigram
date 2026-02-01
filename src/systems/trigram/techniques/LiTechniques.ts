@@ -54,8 +54,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 700,
-    recoveryTime: 1100,
+    executionTime: 979,
+    recoveryTime: 1540,
     critChance: 0.15,
     critMultiplier: 1.8,
     effects: [],
@@ -64,7 +64,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_flame_spear", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SPEAR_HAND_STRIKE,
-    animationSpeed: 1.3,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.3,
@@ -95,8 +95,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "elbow",
       baseExtension: 0.5,
     },
-    executionTime: 650,
-    recoveryTime: 950,
+    executionTime: 909,
+    recoveryTime: 1330,
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
@@ -105,7 +105,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_temple_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.TEMPLE_ELBOW,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.1,
@@ -136,8 +136,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 600,
-    recoveryTime: 900,
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
@@ -146,7 +146,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_nerve_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.NERVE_STRIKE,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.2,
@@ -177,8 +177,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.1,
     },
-    executionTime: 750,
-    recoveryTime: 1050,
+    executionTime: 1050,
+    recoveryTime: 1470,
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
@@ -187,7 +187,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_sidekick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SIDE_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -218,8 +218,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 550,
-    recoveryTime: 850,
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
@@ -228,7 +228,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_pressure_point", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.PRESSURE_POINT_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.0,
@@ -259,8 +259,8 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 680,
-    recoveryTime: 980,
+    executionTime: 951,
+    recoveryTime: 1372,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
@@ -269,7 +269,7 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "li_solar_plexus_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SOLAR_PLEXUS_STRIKE,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,

@@ -409,17 +409,17 @@ describe("Dark Ops Techniques", () => {
       expect(avgDamage).toBeLessThanOrEqual(34);
     });
 
-    it("should have balanced execution times (500-800ms)", () => {
+    it("should have balanced execution times (700-1260ms with 40% increase)", () => {
       DARK_OPS_TECHNIQUES.forEach((technique) => {
-        expect(technique.executionTime).toBeGreaterThanOrEqual(500);
-        expect(technique.executionTime).toBeLessThanOrEqual(900);
+        expect(technique.executionTime).toBeGreaterThanOrEqual(700);
+        expect(technique.executionTime).toBeLessThanOrEqual(1260);
       });
     });
 
-    it("should have balanced recovery times (900-1200ms)", () => {
+    it("should have balanced recovery times (1260-1890ms with 40% increase)", () => {
       DARK_OPS_TECHNIQUES.forEach((technique) => {
-        expect(technique.recoveryTime).toBeGreaterThanOrEqual(850);
-        expect(technique.recoveryTime).toBeLessThanOrEqual(1350);
+        expect(technique.recoveryTime).toBeGreaterThanOrEqual(1190);
+        expect(technique.recoveryTime).toBeLessThanOrEqual(1890);
       });
     });
   });

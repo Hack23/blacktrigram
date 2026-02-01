@@ -62,8 +62,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 400,
-    recoveryTime: 600,
+    executionTime: 560,
+    recoveryTime: 840,
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
@@ -73,7 +73,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Continuous striking pattern
     animationType: AnimationType.RAPID_BARRAGE,
-    animationSpeed: 1.5,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.5,
@@ -106,8 +106,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 0.95,
     },
-    executionTime: 550,
-    recoveryTime: 850,
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.12,
     critMultiplier: 1.4,
     effects: [],
@@ -117,7 +117,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Low sweeping kick
     animationType: AnimationType.SON_SWEEPING_LOW_KICK,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.1,
@@ -148,8 +148,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.05,
     },
-    executionTime: 600,
-    recoveryTime: 900,
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.16,
     critMultiplier: 1.6,
     effects: [],
@@ -159,7 +159,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Rapid footwork sequence
     animationType: AnimationType.SON_RAPID_FOOTWORK,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.2,
@@ -192,8 +192,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 450,
-    recoveryTime: 700,
+    executionTime: 630,
+    recoveryTime: 979,
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
@@ -203,7 +203,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Rhythmic hand combination
     animationType: AnimationType.SON_RHYTHMIC_STRIKES,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.2,
@@ -234,8 +234,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 500,
-    recoveryTime: 750,
+    executionTime: 700,
+    recoveryTime: 1050,
     critChance: 0.1,
     critMultiplier: 1.3,
     effects: [],
@@ -245,7 +245,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Flowing push movement
     animationType: AnimationType.SON_FLOWING_PUSH,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.0,
@@ -278,8 +278,8 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "elbow",
       baseExtension: 0.5,
     },
-    executionTime: 550,
-    recoveryTime: 850,
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.14,
     critMultiplier: 1.5,
     effects: [],
@@ -289,7 +289,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Spinning elbow attack
     animationType: AnimationType.ELBOW_STRIKE,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,

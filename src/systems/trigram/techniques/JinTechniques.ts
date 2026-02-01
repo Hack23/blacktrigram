@@ -54,8 +54,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 500,
-    recoveryTime: 800,
+    executionTime: 700,
+    recoveryTime: 1120,
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
@@ -64,7 +64,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_lightning_flash", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.LIGHTNING_STRIKE,
-    animationSpeed: 1.4,
+    animationSpeed: 0.75,
     category: "light",
     range: "short",
     speed: 1.4,
@@ -95,8 +95,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    executionTime: 1050,
-    recoveryTime: 1350,
+    executionTime: 1470,
+    recoveryTime: 1889,
     critChance: 0.22,
     critMultiplier: 2.1,
     effects: [],
@@ -105,7 +105,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_jumping_front_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.JIN_JUMPING_FRONT_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "heavy",
     range: "medium",
     speed: 1.0,
@@ -136,8 +136,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    executionTime: 1100,
-    recoveryTime: 1500,
+    executionTime: 1540,
+    recoveryTime: 2100,
     critChance: 0.25,
     critMultiplier: 2.3,
     effects: [],
@@ -146,7 +146,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_tornado_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.TORNADO_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "heavy",
     range: "medium",
     speed: 1.0,
@@ -177,8 +177,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    executionTime: 1050,
-    recoveryTime: 1450,
+    executionTime: 1470,
+    recoveryTime: 2029,
     critChance: 0.24,
     critMultiplier: 2.2,
     effects: [],
@@ -187,7 +187,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_flying_sidekick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.JIN_FLYING_SIDEKICK,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "heavy",
     range: "medium",
     speed: 1.1,
@@ -218,8 +218,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.1,
     },
-    executionTime: 850,
-    recoveryTime: 1250,
+    executionTime: 1190,
+    recoveryTime: 1750,
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
@@ -228,7 +228,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_back_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.BACK_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "special",
     range: "medium",
     speed: 1.0,
@@ -259,8 +259,8 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "knee",
       baseExtension: 0.4,
     },
-    executionTime: 600,
-    recoveryTime: 1000,
+    executionTime: 840,
+    recoveryTime: 1400,
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
@@ -269,7 +269,7 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "jin_knee_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.KNEE_STRIKE,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,
