@@ -131,25 +131,73 @@ export const BLOCK_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Wrist Lock - 손목꺾기
+ * Wrist Lock - 손목꺾기 (Sonmok-kkeokgi) - Hapkido Joint Lock
  *
- * Hapkido wrist joint manipulation technique.
- * Controls opponent through pain compliance.
+ * **Authentic Hapkido Wrist Joint Manipulation Technique**
+ *
+ * Fundamental Hapkido joint lock controlling opponent through rotational pressure
+ * on the wrist joint. The small joints of the wrist are manipulated through circular
+ * motion (원 - Won) to create pain compliance and control. One of the signature
+ * techniques that defines Hapkido's approach to joint manipulation.
+ *
+ * **Korean Martial Arts Biomechanics**:
+ * - **Secure Grip (확실한 잡기)**: Two-handed control of opponent's wrist
+ * - **Circular Motion (원형 움직임)**: Small circle technique (소원법)
+ * - **Wrist Rotation (손목 회전)**: Twist wrist beyond natural range of motion
+ * - **Hip Power (골반 힘)**: Hip rotation amplifies wrist twist
+ * - **Body Drop (몸 낮춤)**: Lower body position adds downward pressure
+ * - **Hyperextension (과신전)**: Wrist bent backward to anatomical limit (70°)
+ *
+ * **Hapkido Principles Applied**:
+ * - **원 (Won - Circle)**: Circular wrist manipulation, not linear force
+ * - **유 (Yu - Flow)**: Flowing control without jerky motions
+ * - **화 (Hwa - Harmony)**: Blending with opponent's resistance
+ *
+ * **Anatomical Targets**:
+ * - Wrist joint (radiocarpal joint)
+ * - Forearm tendons and ligaments
+ * - Median nerve compression
+ * - Elbow joint (secondary control)
+ *
+ * **Pain Compliance Mechanism**:
+ * - Hyperextension beyond 70° causes acute pain
+ * - Continued pressure risks ligament damage
+ * - Opponent must comply or risk wrist injury
+ * - Can escalate to arm bar if opponent resists
+ *
+ * **Combat Applications**:
+ * - Grab defense (opponent grabs your wrist, you counter)
+ * - Control technique for restraining without striking
+ * - Transitioning to throw or takedown
+ * - Police/security restraint technique
+ * - Self-defense against larger opponents (uses leverage, not strength)
+ *
+ * **Technical Keys**:
+ * - Two hands control one wrist (2-on-1 principle)
+ * - Circular motion is key (not straight twist)
+ * - Hip rotation provides power, not arm strength
+ * - Opponent's elbow must be straight for maximum effect
+ * - Maintain control throughout - no gaps
  *
  * Phases:
- * 1. Grab (잡기): Secure wrist grip
- * 2. Twist (꺾기): Apply rotational pressure
- * 3. Control: Maintain lock pressure
- * 4. Release (복귀): Release opponent
+ * 1. Grab (잡기): 150ms - Secure firm grip on opponent's wrist with both hands
+ * 2. Position (위치): 100ms - Position opponent's arm for control
+ * 3. Twist (꺾기): 200ms - Apply circular rotational pressure to wrist
+ * 4. Control (제어): 120ms - Hold pressure, opponent's wrist hyperextended
+ * 5. Release (복귀): 180ms - Controlled release or transition to next technique
+ *
+ * Duration: 750ms (Controlled joint manipulation takes time)
  *
  * @korean 손목꺾기애니메이션
  */
 export const WRIST_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("wrist_lock", "손목꺾기")
-    .asAttack(0.6)
-    .wristGrab(0.15) // 잡기 - Grab wrist
-    .wristTwist(0.2) // 꺾기 - Apply rotation
-    .recover(0.25) // 복귀 - Release
+    .asAttack(0.75)
+    .wristGrab(0.15) // 잡기 - Secure two-handed grip on wrist
+    .wristGrab(0.10) // 위치 - Position arm for control
+    .wristTwist(0.20) // 꺾기 - Apply circular rotational pressure
+    .wristTwist(0.12) // 제어 - Hold at hyperextension
+    .recover(0.18) // 복귀 - Controlled release
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -343,35 +391,80 @@ export const REDIRECT_THROW_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Arm Bar - 팔꺾기 (Direct Force Hapkido Arm Bar)
+ * Arm Bar - 팔꺾기 (Pal-kkeok-gi) - Direct Force Hapkido Arm Bar
  *
- * Straight arm hyperextension lock with direct downward force.
- * Traditional Hapkido style: immediate control, explosive entry, strong pressure.
+ * **Authentic Hapkido Straight Arm Hyperextension Lock**
+ *
+ * Straight arm hyperextension lock with direct downward force. Traditional Hapkido
+ * style emphasizing immediate control, explosive entry, and strong submission pressure.
+ * The arm bar (Juji-Gatame in Judo, Pal-kkeok-gi in Hapkido) is one of the most
+ * effective joint locks, attacking the elbow joint's natural range of motion.
  * 
- * Contrasts with Tae (Lake) flowing circular technique:
- * - Tae: Circular, flowing, uses momentum
- * - This: Linear, forceful, direct pressure
+ * Contrasts with Tae (Lake) Trigram flowing circular technique:
+ * - **Tae Style**: Circular, flowing, uses momentum and small circles
+ * - **This Style**: Linear, forceful, direct pressure and immediate submission
  *
- * Korean Martial Arts: 팔꺾기 (Pal-kkeok-gi) - "arm breaking/bending"
- * - 빠른진입 (Quick Entry): Explosive arm capture
- * - 직선압박 (Linear Pressure): Straight downward force
- * - 즉각제압 (Immediate Control): No circular motion, direct submission
+ * **Korean Martial Arts Biomechanics**:
+ * - **Quick Entry (빠른진입)**: Explosive arm capture with strong grip
+ * - **Linear Pressure (직선압박)**: Straight downward force on elbow
+ * - **Immediate Control (즉각제압)**: No circular motion, direct submission
+ * - **Hip Pressure (골반 압박)**: Hips thrust upward against elbow joint
+ * - **Two-on-One Control (2대1 제어)**: Both hands control one arm
+ * - **Body Weight (체중 이용)**: Full body weight applied to hyperextension
+ *
+ * **Anatomical Mechanics**:
+ * - Elbow joint bends ~145° naturally (flexion)
+ * - Hyperextension beyond 0° (straight) causes pain
+ * - 10-15° hyperextension forces tap or break
+ * - Ligaments (UCL, RCL) stressed beyond limits
+ * - Can cause permanent elbow damage if held too long
+ *
+ * **Hapkido Principles Applied**:
+ * - **강 (Gang - Strength)**: Direct force application (not flowing)
+ * - **속 (Sok - Speed)**: Explosive entry prevents escape
+ * - **제 (Je - Control)**: Complete arm control throughout
+ *
+ * **Submission Mechanism**:
+ * - Opponent's arm extended and isolated
+ * - Elbow joint hyperextended beyond natural range
+ * - Extreme pain forces tap or risks elbow break
+ * - No escape once position secured
+ *
+ * **Combat Applications**:
+ * - Ground fighting dominant position
+ * - Standing arm bar from wrist control
+ * - Counter to opponent's punch (catch and arm bar)
+ * - Submission finish after throw
+ * - Police/security restraint and arrest technique
+ *
+ * **Technical Requirements**:
+ * - Opponent's arm must be straight (can't bend elbow to escape)
+ * - Thumb points up (prevents rotation escape)
+ * - Hips positioned tight against elbow joint
+ * - Legs pinch opponent's body for control
+ * - Body leans back to add pressure
  *
  * Phases:
- * 1. Entry (진입): Quick arm catch with strong grip
- * 2. Position: Direct downward body drop (not circular)
- * 3. Drop (내려가기): Explosive fall to secure arm
- * 4. Extension: Immediate hyperextension with hip pressure
+ * 1. Entry (진입): 150ms - Quick explosive catch of opponent's arm
+ * 2. Position (위치 설정): 180ms - Direct downward drop, secure arm
+ * 3. Drop (내려가기): 250ms - Body drops to ground, arm isolated
+ * 4. Extension (확장): 150ms - Immediate hyperextension with hip pressure
+ * 5. Submission (굴복): 100ms - Maximum pressure, opponent must tap
+ * 6. Release (복귀): 150ms - Controlled release after submission
+ *
+ * Duration: 980ms (Full arm bar sequence with control)
  *
  * @korean 팔꺾기애니메이션
  */
 export const ARM_BAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("arm_bar", "팔꺾기")
-    .asAttack(0.7)
-    .armBarEntry(0.15) // 진입 - Quick explosive catch (faster than Tae)
+    .asAttack(0.98)
+    .armBarEntry(0.15) // 진입 - Quick explosive catch (faster than Tae flowing style)
+    .armBarEntry(0.18) // 위치 설정 - Position for downward drop
     .armBarDrop(0.25) // 내려가기 - Direct downward drop (linear, not circular)
-    .jointLock(0.15) // Additional lock pressure phase (immediate submission)
-    .recover(0.15) // 복귀 - Quick recovery
+    .jointLock(0.15) // 확장 - Hyperextension with hip pressure
+    .jointLock(0.10) // 굴복 - Maximum submission pressure
+    .recover(0.15) // 복귀 - Quick controlled release
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -405,19 +498,66 @@ export const SLAM_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Hip Throw - 허리치기
+ * Hip Throw - 허리치기 (Heori Chigi) / 배대되치기 (Baedae-doechigi)
  *
- * Classic hip throw from Hapkido and Judo.
- * Hip as fulcrum to throw opponent.
+ * **Authentic Hapkido / Judo Hip Throw (O-Goshi / Koshi-Guruma)**
+ *
+ * Classic hip throw from Hapkido and Judo using hip as fulcrum to project opponent.
+ * One of the first throws taught in Hapkido (합기도) and Judo (유도) due to its
+ * fundamental mechanics and effectiveness. The hip becomes the pivot point that
+ * multiplies force, allowing smaller practitioners to throw larger opponents.
+ *
+ * **Korean Martial Arts Biomechanics**:
+ * - **Deep Entry (깊은 진입)**: Step in front of opponent, hip lower than theirs
+ * - **Arm Control (팔 제어)**: One arm controls opponent's arm, other wraps body
+ * - **Hip Position (골반 위치)**: Hip positioned under opponent's center of mass
+ * - **Hip Rotation (골반 회전)**: Explosive hip rotation lifts and throws
+ * - **Forward Lean (앞으로 숙임)**: Upper body leans forward for leverage
+ * - **Leg Drive (다리 힘)**: Legs extend to add upward lift force
+ *
+ * **Hapkido Principles Applied**:
+ * - **원 (Won - Circle)**: Circular motion redirects opponent's force
+ * - **유 (Yu - Flow)**: Blend with opponent's movement
+ * - **화 (Hwa - Harmony)**: Use opponent's energy against them
+ *
+ * **Target Application**:
+ * - Opponent pushed to ground on back/side (hard impact)
+ * - Sets up ground control or follow-up strikes
+ * - Can be done with or without gi/jacket grip
+ *
+ * **Combat Applications**:
+ * - Close-range when opponent pushes forward
+ * - Counter to straight punches (step in and throw)
+ * - Setting up ground and pound position
+ * - Creating distance by throwing opponent away
+ * - Self-defense against larger/stronger attackers
+ *
+ * **Variations**:
+ * - O-Goshi (Major Hip Throw): Arm under opponent's armpit
+ * - Koshi-Guruma (Hip Wheel): Arm around opponent's neck
+ * - Harai-Goshi (Sweeping Hip): Leg sweeps during throw
+ *
+ * Phases:
+ * 1. Entry (진입): 200ms - Step deep in front of opponent, lower hips
+ * 2. Grip & Position (잡기 및 위치): 150ms - Secure control, hip under center mass
+ * 3. Rotation (회전): 220ms - Explosive hip rotation lifts opponent
+ * 4. Projection (던지기): 120ms - Opponent leaves feet, airborne
+ * 5. Follow-Through (완료): 100ms - Complete rotation and release
+ * 6. Recovery (복귀): 180ms - Return to standing or ground position
+ *
+ * Duration: 970ms (Long duration for full throw sequence)
  *
  * @korean 허리치기애니메이션
  */
 export const HIP_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hip_throw", "허리치기")
-    .asAttack(0.65)
-    .throwEntry(0.2) // Entry and grab
-    .hipThrow(0.22) // Hip rotation throw
-    .recover(0.23) // Recovery
+    .asAttack(0.97)
+    .throwEntry(0.20) // 진입 - Deep entry, lower hips
+    .throwEntry(0.15) // 잡기 및 위치 - Secure control and positioning
+    .hipThrow(0.22) // 회전 - Explosive hip rotation lifts opponent
+    .hipThrow(0.12) // 던지기 - Opponent airborne
+    .throwExecute(0.10) // 완료 - Complete rotation
+    .recover(0.18) // 복귀 - Return to standing or ground
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
