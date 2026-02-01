@@ -55,10 +55,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 800,
-    recoveryTime: 1200,
+    recoveryTime: 1000,
     critChance: 0.1,
     critMultiplier: 1.5,
     effects: [],
+    // Combo metadata - Direct force power amplification
+    comboWindow: 250,
+    comboPriority: 1, // Starter - establishes dominance
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "geon_heaven_strike", // ID: unique 1-1 mapping
@@ -96,10 +100,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 600,
-    recoveryTime: 900,
+    recoveryTime: 700,
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
+    // Combo metadata - Fast striking
+    comboWindow: 250,
+    comboPriority: 2, // Mid-chain - maintains momentum
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "geon_heavenly_fist", // ID: unique 1-1 mapping
@@ -137,10 +145,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.05,
     },
     executionTime: 700,
-    recoveryTime: 1000,
+    recoveryTime: 800,
     critChance: 0.15,
     critMultiplier: 1.7,
     effects: [],
+    // Combo metadata - Power kick
+    comboWindow: 250,
+    comboPriority: 2, // Mid-chain - building pressure
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_frontal_kick", // ID: unique 1-1 mapping
@@ -185,10 +197,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       },
     },
     executionTime: 800,
-    recoveryTime: 1100,
+    recoveryTime: 900,
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Heavy rotation
+    comboWindow: 250,
+    comboPriority: 3, // Finisher - devastating blow
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_roundhouse_kick", // ID: unique 1-1 mapping
@@ -226,10 +242,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.0,
     },
     executionTime: 1050,
-    recoveryTime: 1200,
+    recoveryTime: 1000,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
+    // Combo metadata - Crushing finisher
+    comboWindow: 250,
+    comboPriority: 3, // Finisher - overwhelming power
+    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_axe_kick", // ID: unique 1-1 mapping
@@ -267,10 +287,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.9,
     },
     executionTime: 650,
-    recoveryTime: 950,
+    recoveryTime: 750,
     critChance: 0.25,
     critMultiplier: 2.0,
     effects: [],
+    // Combo metadata - Precise strike
+    comboWindow: 250,
+    comboPriority: 2, // Mid-chain - precise damage
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "geon_palm_strike", // ID: unique 1-1 mapping
@@ -308,10 +332,14 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.5,
     },
     executionTime: 550,
-    recoveryTime: 850,
+    recoveryTime: 650,
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Close-range devastation
+    comboWindow: 250,
+    comboPriority: 3, // Finisher - close-quarters knockout
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "elbow_strike", // Type: shared category
     animationId: "geon_elbow_smash", // ID: unique 1-1 mapping
