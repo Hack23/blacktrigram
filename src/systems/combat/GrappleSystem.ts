@@ -16,6 +16,13 @@
  * 4. **Escape Mechanics**: Based on strength, technique, and stamina
  * 5. **Follow-up Techniques**: Throws, takedowns, joint locks from control
  *
+ * ## Phase 2 Enhancement
+ *
+ * Enhanced with Gon (Earth) trigram metadata integration:
+ * - Uses `controlDuration` from ExtendedGonTechnique
+ * - Supports authentic Ssireum/Hapkido control durations
+ * - Maintains backward compatibility with non-Gon techniques
+ *
  * @module systems/combat/GrappleSystem
  * @category Combat System
  * @korean 잡기시스템
@@ -29,6 +36,8 @@ import {
   GrappleTarget,
   TrigramStance,
 } from "@/types";
+import { isExtendedGonTechnique, type ExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
+import type { KoreanTechnique, TrigramStanceTechnique } from "../vitalpoint/types";
 
 /**
  * Configuration for grappling mechanics.
@@ -583,6 +592,115 @@ export class GrappleSystem {
     ];
 
     return lockTargets.includes(grappleControl.target);
+  }
+
+  /**
+   * Get technique-specific control duration from Gon metadata.
+   *
+   * **Korean**: 기술별 제어 시간 조회 (Get Technique Control Duration)
+   *
+   * Retrieves the post-throw positional advantage duration from
+   * ExtendedGonTechnique metadata. Falls back to default duration
+   * if technique doesn't have Gon-specific enhancements.
+   *
+   * **Control Duration Philosophy**:
+   * - Traditional Ssireum techniques (800-2000ms) provide longer control
+   * - Aggressive slam techniques (800-1200ms) provide brief control
+   * - Sacrifice throws (1500-2000ms) provide extended ground control
+   *
+   * **Use Cases**:
+   * - Determining follow-up attack windows after throws
+   * - Calculating defender recovery time before counterattack
+   * - Applying post-throw positional advantage in game state
+   *
+   * @param technique - Korean martial arts technique (checks for ExtendedGonTechnique)
+   * @param defaultDuration - Fallback duration if technique has no metadata (default: 1000ms)
+   * @returns Control duration in milliseconds
+   *
+   * @example
+   * ```typescript
+   * const controlTime = grappleSystem.getTechniqueControlDuration(
+   *   ssireumThrowTechnique, // controlDuration: 1800
+   *   1000 // default fallback
+   * );
+   * // Result: 1800ms (uses technique metadata)
+   * ```
+   *
+   * @public
+   * @korean 기술별제어시간조회
+   */
+  getTechniqueControlDuration(
+    technique: KoreanTechnique,
+    defaultDuration: number = 1000,
+  ): number {
+    // Check if technique has Gon-specific control duration metadata
+    // Type assertion is safe here because isExtendedGonTechnique validates all required fields
+    if (!isExtendedGonTechnique(technique as TrigramStanceTechnique)) {
+      // Non-Gon technique: use default duration
+      return defaultDuration;
+    }
+
+    // Extract control duration from Gon technique
+    const gonTechnique = technique as unknown as ExtendedGonTechnique;
+    return gonTechnique.controlDuration;
+  }
+
+  /**
+   * Apply post-throw control advantage window.
+   *
+   * **Korean**: 던지기 후 우세 적용 (Apply Post-Throw Advantage)
+   *
+   * Creates a control advantage state after a successful throw,
+   * using the technique's `controlDuration` to determine how long
+   * the attacker maintains positional dominance.
+   *
+   * **Advantage Effects**:
+   * - Attacker gains priority for follow-up attacks
+   * - Defender must wait for control duration to expire
+   * - Applies to throw transitions from grapple control
+   *
+   * @param technique - Throw technique executed
+   * @param attackerId - Player who executed throw
+   * @param defenderId - Player who was thrown
+   * @param currentTime - Current game time in milliseconds
+   * @returns Control advantage state with duration from technique metadata
+   *
+   * @example
+   * ```typescript
+   * const advantage = grappleSystem.applyPostThrowAdvantage(
+   *   ssireumThrowTechnique,
+   *   "player1",
+   *   "player2",
+   *   Date.now()
+   * );
+   * // advantage.duration = 1800ms (from technique metadata)
+   * ```
+   *
+   * @public
+   * @korean 던지기후우세적용
+   */
+  applyPostThrowAdvantage(
+    technique: KoreanTechnique,
+    attackerId: string,
+    defenderId: string,
+    currentTime: number,
+  ): {
+    controllerId: string;
+    targetId: string;
+    duration: number;
+    startTime: number;
+    endTime: number;
+  } {
+    // Get technique-specific control duration with 1200ms fallback
+    const controlDuration = this.getTechniqueControlDuration(technique, 1200);
+
+    return {
+      controllerId: attackerId,
+      targetId: defenderId,
+      duration: controlDuration,
+      startTime: currentTime,
+      endTime: currentTime + controlDuration,
+    };
   }
 }
 
