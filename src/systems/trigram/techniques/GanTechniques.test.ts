@@ -67,7 +67,8 @@ describe("GanTechniques", () => {
       const defensiveTechniques = GAN_TECHNIQUES.filter(
         (t) =>
           t.type === CombatAttackType.BLOCK ||
-          t.type === CombatAttackType.COUNTER_ATTACK
+          t.type === CombatAttackType.COUNTER_ATTACK ||
+          t.type === CombatAttackType.GRAPPLE
       );
 
       defensiveTechniques.forEach((technique) => {

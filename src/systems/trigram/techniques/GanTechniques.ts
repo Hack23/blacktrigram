@@ -17,7 +17,7 @@
  * - Rooting effects (rootingEffect): Ground connection for immovable stance
  * - Optimized execution times: 250-800ms for defensive reactions
  *
- * All 7 techniques now include defensive properties for:
+ * All 6 techniques now include defensive properties for:
  * - Immovable defense visualization
  * - Block timing indicators
  * - Damage absorption feedback
