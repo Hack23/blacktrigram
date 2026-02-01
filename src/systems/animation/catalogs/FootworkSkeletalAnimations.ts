@@ -31,11 +31,107 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 import { toRadians } from "@/utils/math";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// SLIDE STEP ANIMATIONS (슬라이드 스텝) - Lead foot moves, rear follows
+// CIRCULAR STEP ANIMATIONS (원형보) - Lateral circular footwork
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * SLIDE STEP FORWARD Animation (슬라이드 스텝 전)
+ * CIRCULAR STEP LEFT Animation (원형보 좌)
+ *
+ * **Korean Martial Arts Principle**: 원형 측면 이동 (Circular lateral movement)
+ *
+ * Creates angle by moving laterally in an arc:
+ * 1. Both feet move in synchronized circular pattern
+ * 2. Maintains guard and balance throughout
+ * 3. Creates angle advantage for counter-striking
+ * 4. Common in Taekyon and Hapkido for off-line positioning
+ *
+ * **Tactical Use**: Circle to opponent's weak side
+ *
+ * @korean 원형보좌애니메이션
+ */
+export const FOOTWORK_CIRCULAR_LEFT_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("footwork_circular_left", "원형보 좌")
+    .asMovement(0.3)
+    .at(0, "linear")
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
+    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Begin circular arc left (원호 시작)
+    .at(0.1, "ease-out")
+    .position(BoneName.PELVIS, -0.08, -0.01, 0.05) // Arc pattern
+    .rotate(BoneName.PELVIS, 0, toRadians(5), toRadians(3))
+    .rotate(BoneName.KNEE_L, toRadians(-10), 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Mid-arc (원호 중간)
+    .at(0.2, "linear")
+    .position(BoneName.PELVIS, -0.2, 0, 0.08) // Peak of arc
+    .rotate(BoneName.PELVIS, 0, toRadians(8), toRadians(5))
+    .rotate(BoneName.SPINE_LOWER, 0, toRadians(-4), 0) // Counter-rotate upper body
+    .done<MartialArtsAnimationBuilder>()
+    // Complete circle (원 완성)
+    .at(0.3, "ease-in")
+    .position(BoneName.PELVIS, -0.25, 0, 0.1) // Final position
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Reset rotation
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
+    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3) // Guard maintained
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+/**
+ * CIRCULAR STEP RIGHT Animation (원형보 우)
+ *
+ * **Korean Martial Arts Principle**: 원형 측면 이동 (Circular lateral movement)
+ *
+ * Mirror of left circular step for right lateral arc movement.
+ *
+ * @korean 원형보우애니메이션
+ */
+export const FOOTWORK_CIRCULAR_RIGHT_ANIMATION: SkeletalAnimation =
+  MartialArtsAnimationBuilder.create("footwork_circular_right", "원형보 우")
+    .asMovement(0.3)
+    .at(0, "linear")
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
+    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Begin circular arc right (원호 시작)
+    .at(0.1, "ease-out")
+    .position(BoneName.PELVIS, 0.08, -0.01, 0.05) // Arc pattern
+    .rotate(BoneName.PELVIS, 0, toRadians(-5), toRadians(-3))
+    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Mid-arc (원호 중간)
+    .at(0.2, "linear")
+    .position(BoneName.PELVIS, 0.2, 0, 0.08) // Peak of arc
+    .rotate(BoneName.PELVIS, 0, toRadians(-8), toRadians(-5))
+    .rotate(BoneName.SPINE_LOWER, 0, toRadians(4), 0) // Counter-rotate upper body
+    .done<MartialArtsAnimationBuilder>()
+    // Complete circle (원 완성)
+    .at(0.3, "ease-in")
+    .position(BoneName.PELVIS, 0.25, 0, 0.1) // Final position
+    .rotate(BoneName.PELVIS, 0, 0, 0) // Reset rotation
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
+    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3) // Guard maintained
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
+    .done<MartialArtsAnimationBuilder>()
+    .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SLIDE STEP ANIMATIONS (미끄럼보) - Lead foot moves, rear follows
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * SLIDE STEP FORWARD Animation (미끄럼보 전)
  *
  * **Korean Martial Arts Principle**: 디딤발 선행 이동 (Lead foot advances first)
  *
@@ -46,19 +142,19 @@ import { toRadians } from "@/utils/math";
  * 4. Guard maintained throughout - no telegraphing
  *
  * **Weight Transfer Mechanics** (체중이동 원리):
- * - Phase 1 (0-0.1s): Weight shifts to rear foot, lead foot lifts (준비)
- * - Phase 2 (0.1-0.2s): Lead foot extends forward, heel-first landing (이동)
- * - Phase 3 (0.2-0.3s): Weight transfers to lead, rear foot slides (착지)
- * - Phase 4 (0.3-0.35s): Stance width restored, balanced (안정)
+ * - Phase 1 (0-0.05s): Weight shifts to rear foot, lead foot lifts (준비)
+ * - Phase 2 (0.05-0.12s): Lead foot extends forward, heel-first landing (이동)
+ * - Phase 3 (0.12-0.18s): Weight transfers to lead, rear foot slides (착지)
+ * - Phase 4 (0.18-0.2s): Stance width restored, balanced (안정)
  *
- * **Distance**: 30cm forward | **Duration**: 350ms
+ * **Distance**: 30cm forward | **Duration**: 200ms (12 frames @ 60fps)
  * **Maintains**: Stance width, guard position, forward-facing orientation
  *
- * @korean 슬라이드스텝전애니메이션
+ * @korean 미끄럼보전애니메이션
  */
 export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("footwork_slide_forward", "슬라이드 스텝 전")
-    .asMovement(0.35)
+  MartialArtsAnimationBuilder.create("footwork_slide_forward", "미끄럼보 전")
+    .asMovement(0.2)
     // Initial stance - balanced position
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
@@ -66,35 +162,28 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0) // Back knee more bent
     .done<MartialArtsAnimationBuilder>()
     // Phase 1: Weight shift to rear, lead foot lightens (준비)
-    .at(0.05, "ease-out")
+    .at(0.03, "ease-out")
     .position(BoneName.PELVIS, 0.03, 0, 0.02) // Weight back
     .rotate(BoneName.KNEE_R, toRadians(-15), 0, 0) // Rear knee bends more
     .rotate(BoneName.KNEE_L, toRadians(-5), 0, 0) // Lead knee straightens
     .done<MartialArtsAnimationBuilder>()
     // Phase 2: Lead foot lifts and extends (이동 - 디딤발)
-    .at(0.12, "linear")
+    .at(0.08, "linear")
     .position(BoneName.PELVIS, 0.02, -0.01, 0.08) // Forward, slight drop
     .rotate(BoneName.HIP_L, toRadians(-20), 0, 0) // Lead hip lifts
     .rotate(BoneName.KNEE_L, toRadians(-25), 0, 0) // Lead knee lifts
     .rotate(BoneName.FOOT_L, toRadians(20), 0, 0) // Toe up, heel ready
     .done<MartialArtsAnimationBuilder>()
     // Phase 3: Lead foot lands, weight begins transfer (착지)
-    .at(0.2, "ease-in")
+    .at(0.14, "ease-in")
     .position(BoneName.PELVIS, 0, -0.015, 0.2) // Forward on lead foot
     .rotate(BoneName.HIP_L, toRadians(-10), 0, 0) 
     .rotate(BoneName.KNEE_L, toRadians(-12), 0, 0) // Lead accepts weight
     .rotate(BoneName.FOOT_L, toRadians(5), 0, 0) // Foot rolling flat
     .rotate(BoneName.KNEE_R, toRadians(-8), 0, 0) // Rear lightens
     .done<MartialArtsAnimationBuilder>()
-    // Phase 4: Rear foot slides forward to restore stance width (안정)
-    .at(0.3, "ease-in")
-    .position(BoneName.PELVIS, -0.02, 0, 0.3) // Centered over feet
-    .rotate(BoneName.KNEE_L, toRadians(-10), 0, 0) // Lead stable
-    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0) // Rear catches up
-    .rotate(BoneName.FOOT_L, 0, 0, 0) // Lead foot flat
-    .done<MartialArtsAnimationBuilder>()
     // Final: Balanced stance restored
-    .at(0.35, "ease-in")
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, 0, 0, 0.3) // Final forward position
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0) // Balanced
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0) // Balanced
@@ -106,7 +195,7 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * SLIDE STEP BACKWARD Animation (슬라이드 스텝 후)
+ * SLIDE STEP BACKWARD Animation (미끄럼보 후)
  *
  * **Korean Martial Arts Principle**: 후퇴 시 선행 이동 (Rear foot retreats first)
  *
@@ -119,45 +208,39 @@ export const FOOTWORK_SLIDE_FORWARD_ANIMATION: SkeletalAnimation =
  * **Weight Transfer**: Lead foot → Rear foot → Balanced
  * **Landing**: Ball-of-foot first (unlike forward heel-first)
  *
- * @korean 슬라이드스텝후애니메이션
+ * @korean 미끄럼보후애니메이션
  */
 export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("footwork_slide_back", "슬라이드 스텝 후")
-    .asMovement(0.35)
+  MartialArtsAnimationBuilder.create("footwork_slide_back", "미끄럼보 후")
+    .asMovement(0.2)
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Weight shift to lead foot (준비)
-    .at(0.05, "ease-out")
+    .at(0.03, "ease-out")
     .position(BoneName.PELVIS, -0.03, 0, -0.02) // Weight forward
     .rotate(BoneName.KNEE_L, toRadians(-15), 0, 0) // Lead accepts weight
     .rotate(BoneName.KNEE_R, toRadians(-5), 0, 0) // Rear lightens
     .done<MartialArtsAnimationBuilder>()
     // Rear foot lifts and extends back (이동)
-    .at(0.12, "linear")
+    .at(0.08, "linear")
     .position(BoneName.PELVIS, -0.02, -0.01, -0.08) // Backward
     .rotate(BoneName.HIP_R, toRadians(18), 0, 0) // Rear hip extends
     .rotate(BoneName.KNEE_R, toRadians(-20), 0, 0) // Rear knee lifts slightly
     .rotate(BoneName.FOOT_R, toRadians(-15), 0, 0) // Ball of foot ready
     .done<MartialArtsAnimationBuilder>()
     // Rear foot lands on ball, weight transfers (착지)
-    .at(0.2, "ease-in")
+    .at(0.14, "ease-in")
     .position(BoneName.PELVIS, 0, -0.015, -0.2) // Backward on rear foot
     .rotate(BoneName.HIP_R, toRadians(8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-12), 0, 0) // Rear accepts weight
     .rotate(BoneName.FOOT_R, toRadians(-8), 0, 0) // Heel settling
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0) // Lead lightens
     .done<MartialArtsAnimationBuilder>()
-    // Lead foot slides back to restore stance (안정)
-    .at(0.3, "ease-in")
-    .position(BoneName.PELVIS, 0.02, 0, -0.3) // Centered
-    .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
-    .rotate(BoneName.KNEE_L, toRadians(-10), 0, 0)
-    .rotate(BoneName.FOOT_R, 0, 0, 0)
-    .done<MartialArtsAnimationBuilder>()
-    .at(0.35, "ease-in")
+    // Final position
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, 0, 0, -0.3) // Final rear position
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
@@ -169,11 +252,11 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// SLIDE STEP ANIMATIONS (슬라이드 스텝) - Lateral Movement
+// SLIDE STEP ANIMATIONS (미끄럼보) - Lateral Movement
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * SLIDE STEP LEFT Animation (슬라이드 스텝 좌)
+ * SLIDE STEP LEFT Animation (미끄럼보 좌)
  *
  * **Korean Martial Arts Principle**: 측면 선행 이동 (Lateral lead foot movement)
  *
@@ -185,37 +268,37 @@ export const FOOTWORK_SLIDE_BACK_ANIMATION: SkeletalAnimation =
  *
  * **Tactical Advantage**: Off-line positioning, angle creation
  *
- * @korean 슬라이드스텝좌애니메이션
+ * @korean 미끄럼보좌애니메이션
  */
 export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("footwork_slide_left", "슬라이드 스텝 좌")
-    .asMovement(0.3)
+  MartialArtsAnimationBuilder.create("footwork_slide_left", "미끄럼보 좌")
+    .asMovement(0.2)
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Weight shifts right (준비)
-    .at(0.08, "ease-out")
+    .at(0.05, "ease-out")
     .position(BoneName.PELVIS, 0.04, 0, 0)
     .rotate(BoneName.PELVIS, 0, 0, toRadians(3)) // Tilt right
     .rotate(BoneName.KNEE_R, toRadians(-12), 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-5), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Left foot slides lateral (이동)
-    .at(0.15, "linear")
+    .at(0.1, "linear")
     .position(BoneName.PELVIS, -0.08, -0.01, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(5), toRadians(5)) // Hip engages
     .rotate(BoneName.SPINE_LOWER, 0, toRadians(-3), 0) // Counter-rotate
     .done<MartialArtsAnimationBuilder>()
     // Weight transfers to left (착지)
-    .at(0.22, "ease-in")
+    .at(0.15, "ease-in")
     .position(BoneName.PELVIS, -0.2, 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-10), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-8), 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    // Right foot follows, stance restored (안정)
-    .at(0.3, "ease-in")
+    // Final position (안정)
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, -0.25, 0, 0)
     .rotate(BoneName.PELVIS, 0, 0, 0) // Return neutral
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
@@ -229,43 +312,43 @@ export const FOOTWORK_SLIDE_LEFT_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * SLIDE STEP RIGHT Animation (슬라이드 스텝 우)
+ * SLIDE STEP RIGHT Animation (미끄럼보 우)
  *
  * **Korean Martial Arts Principle**: 측면 선행 이동 (Lateral lead foot movement)
  *
  * Mirror of left slide step for right lateral movement.
  *
- * @korean 슬라이드스텝우애니메이션
+ * @korean 미끄럼보우애니메이션
  */
 export const FOOTWORK_SLIDE_RIGHT_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("footwork_slide_right", "슬라이드 스텝 우")
-    .asMovement(0.3)
+  MartialArtsAnimationBuilder.create("footwork_slide_right", "미끄럼보 우")
+    .asMovement(0.2)
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Weight shifts left (준비)
-    .at(0.08, "ease-out")
+    .at(0.05, "ease-out")
     .position(BoneName.PELVIS, -0.04, 0, 0)
     .rotate(BoneName.PELVIS, 0, 0, toRadians(-3))
     .rotate(BoneName.KNEE_L, toRadians(-12), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-5), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Right foot slides lateral (이동)
-    .at(0.15, "linear")
+    .at(0.1, "linear")
     .position(BoneName.PELVIS, 0.08, -0.01, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(-5), toRadians(-5))
     .rotate(BoneName.SPINE_LOWER, 0, toRadians(3), 0)
     .done<MartialArtsAnimationBuilder>()
     // Weight transfers to right (착지)
-    .at(0.22, "ease-in")
+    .at(0.15, "ease-in")
     .position(BoneName.PELVIS, 0.2, 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    // Left foot follows, stance restored (안정)
-    .at(0.3, "ease-in")
+    // Final position (안정)
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, 0.25, 0, 0)
     .rotate(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
@@ -533,7 +616,7 @@ export const FOOTWORK_TRIANGLE_ANIMATION: SkeletalAnimation =
  */
 export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("footwork_pivot_left", "축족회전 좌")
-    .asMovement(0.28)
+    .asMovement(0.25)
     // Initial stance
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
@@ -565,7 +648,7 @@ export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.FOOT_L, toRadians(-10), 0, 0) // Still on ball
     .done<MartialArtsAnimationBuilder>()
     // Complete pivot - rear foot plants (회전 완료)
-    .at(0.24, "ease-in")
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, 0, -0.015, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(-45), 0) // 45° rotation complete
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Body aligned
@@ -573,7 +656,7 @@ export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.FOOT_L, toRadians(-5), 0, 0) // Pivot foot settling
     .done<MartialArtsAnimationBuilder>()
     // Stabilize in new angle (안정화)
-    .at(0.28, "ease-in")
+    .at(0.25, "ease-in")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(-45), 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
@@ -598,7 +681,7 @@ export const FOOTWORK_PIVOT_LEFT_ANIMATION: SkeletalAnimation =
  */
 export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("footwork_pivot_right", "축족회전 우")
-    .asMovement(0.28)
+    .asMovement(0.25)
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.PELVIS, 0, 0, 0)
@@ -629,7 +712,7 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.FOOT_L, toRadians(-10), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Complete pivot (회전 완료)
-    .at(0.24, "ease-in")
+    .at(0.2, "ease-in")
     .position(BoneName.PELVIS, 0, -0.015, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(45), 0)
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
@@ -637,7 +720,7 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.FOOT_L, toRadians(-5), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Stabilize (안정화)
-    .at(0.28, "ease-in")
+    .at(0.25, "ease-in")
     .position(BoneName.PELVIS, 0, 0, 0)
     .rotate(BoneName.PELVIS, 0, toRadians(45), 0)
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
@@ -659,15 +742,15 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation =
  *
  * **Korean Martial Arts Principle**: 미세 조정 (Micro-position adjustment)
  *
- * Quick 12cm micro-adjustment for positional fine-tuning:
+ * Quick 10cm micro-adjustment for positional fine-tuning:
  * 1. Both feet move together in small shuffle
  * 2. Minimal vertical displacement (stay low)
- * 3. Ultra-fast 120ms duration
+ * 3. Ultra-fast 100ms duration
  * 4. Used for range management and timing adjustments
  *
  * **Characteristics**:
- * - Distance: 12cm (half a foot width)
- * - Duration: 120ms (ultra-fast)
+ * - Distance: 10cm (half a foot width)
+ * - Duration: 100ms (ultra-fast, 6 frames @ 60fps)
  * - Weight: Remains balanced throughout
  * - Height: Minimal bob (1cm max)
  *
@@ -681,7 +764,7 @@ export const FOOTWORK_PIVOT_RIGHT_ANIMATION: SkeletalAnimation =
  */
 export const FOOTWORK_SHUFFLE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("footwork_shuffle", "섞음보")
-    .asMovement(0.12)
+    .asMovement(0.1)
     // Initial - balanced on both feet
     .at(0, "linear")
     .position(BoneName.PELVIS, 0, 0, 0)
@@ -695,14 +778,14 @@ export const FOOTWORK_SHUFFLE_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_R, toRadians(-12), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Execute shuffle forward (실행)
-    .at(0.08, "linear")
-    .position(BoneName.PELVIS, 0, -0.01, 0.12) // 12cm forward
+    .at(0.07, "linear")
+    .position(BoneName.PELVIS, 0, -0.01, 0.1) // 10cm forward
     .rotate(BoneName.KNEE_L, toRadians(-9), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-11), 0, 0)
     .done<MartialArtsAnimationBuilder>()
     // Return to normal height (복귀)
-    .at(0.12, "ease-in")
-    .position(BoneName.PELVIS, 0, 0, 0.12) // Final position
+    .at(0.1, "ease-in")
+    .position(BoneName.PELVIS, 0, 0, 0.1) // Final position
     .rotate(BoneName.KNEE_L, toRadians(-8), 0, 0)
     .rotate(BoneName.KNEE_R, toRadians(-10), 0, 0)
     .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3) // Guard maintained
@@ -730,16 +813,15 @@ export const FOOTWORK_SHUFFLE_ANIMATION: SkeletalAnimation =
  * @korean 보법애니메이션맵
  */
 export const FOOTWORK_ANIMATIONS = new Map<string, SkeletalAnimation>([
-  // Slide Steps (슬라이드 스텝) - Lead foot moves first
+  // Circular Steps (원형보) - Lateral circular movement
+  ["footwork_circular_left", FOOTWORK_CIRCULAR_LEFT_ANIMATION],
+  ["footwork_circular_right", FOOTWORK_CIRCULAR_RIGHT_ANIMATION],
+  
+  // Slide Steps (미끄럼보) - Lead foot moves first
   ["footwork_slide_forward", FOOTWORK_SLIDE_FORWARD_ANIMATION],
   ["footwork_slide_back", FOOTWORK_SLIDE_BACK_ANIMATION],
   ["footwork_slide_left", FOOTWORK_SLIDE_LEFT_ANIMATION],
   ["footwork_slide_right", FOOTWORK_SLIDE_RIGHT_ANIMATION],
-  
-  // Advanced Footwork Patterns
-  ["footwork_switch_step", FOOTWORK_SWITCH_STEP_ANIMATION], // NEW: Stance reversal
-  ["footwork_bounce_step", FOOTWORK_BOUNCE_STEP_ANIMATION], // NEW: Rhythmic movement
-  ["footwork_triangle", FOOTWORK_TRIANGLE_ANIMATION], // NEW: Tactical angles
   
   // Pivot Steps (축족회전) - Ball-of-foot rotation
   ["footwork_pivot_left", FOOTWORK_PIVOT_LEFT_ANIMATION],
