@@ -54,8 +54,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 800,
-    recoveryTime: 1200,
+    executionTime: 1120,
+    recoveryTime: 1680,
     critChance: 0.1,
     critMultiplier: 1.5,
     effects: [],
@@ -64,7 +64,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_heaven_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.HEAVEN_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 1.0,
@@ -95,8 +95,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 600,
-    recoveryTime: 900,
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
@@ -105,7 +105,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_heavenly_fist", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_HEAVENLY_FIST,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,
@@ -136,8 +136,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.05,
     },
-    executionTime: 700,
-    recoveryTime: 1000,
+    executionTime: 980,
+    recoveryTime: 1400,
     critChance: 0.15,
     critMultiplier: 1.7,
     effects: [],
@@ -146,7 +146,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_frontal_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_FRONTAL_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -184,8 +184,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
         allowsBreaking: true,
       },
     },
-    executionTime: 800,
-    recoveryTime: 1100,
+    executionTime: 1120,
+    recoveryTime: 1540,
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
@@ -194,7 +194,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_roundhouse_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_ROUNDHOUSE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -225,8 +225,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.0,
     },
-    executionTime: 1050,
-    recoveryTime: 1200,
+    executionTime: 1470,
+    recoveryTime: 1680,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
@@ -235,7 +235,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_axe_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.AXE_KICK,
-    animationSpeed: 0.9,
+    animationSpeed: 0.65,
     category: "heavy",
     range: "medium",
     speed: 0.9,
@@ -266,8 +266,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 950,
+    executionTime: 910,
+    recoveryTime: 1330,
     critChance: 0.25,
     critMultiplier: 2.0,
     effects: [],
@@ -276,7 +276,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_palm_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_PALM_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "special",
     range: "short",
     speed: 1.0,
@@ -307,8 +307,8 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "elbow",
       baseExtension: 0.5,
     },
-    executionTime: 550,
-    recoveryTime: 850,
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
@@ -317,7 +317,7 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "geon_elbow_smash", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.CRUSHING_ELBOW,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,
