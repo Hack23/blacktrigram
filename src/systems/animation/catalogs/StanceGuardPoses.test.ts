@@ -74,8 +74,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have forward weight for reach advantage", () => {
-        expect(TAE_FLUID_GUARD_POSE.weight).toBe("forward");
+      it("should have back weight for cat stance (90/10 distribution)", () => {
+        // Cat stance: 10% front, 90% back (authentic Hapkido!)
+        expect(TAE_FLUID_GUARD_POSE.weight).toBe("back");
       });
 
       it("should have smooth breathing for fluid motion", () => {
@@ -138,13 +139,15 @@ describe("StanceGuardPoses", () => {
       });
 
       it("should have chambered arms (high elbow bend)", () => {
-        // Using Z rotation for tight bend (1.9 rad = ~109 degrees)
+        // FIXED: Using Y-axis for anatomically correct elbow flexion (not Z!)
+        // Right elbow at 90° flexion (1.57 rad) on Y-axis (chambered at hip)
         expect(
-          Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.z),
-        ).toBeGreaterThan(1.5);
+          Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.y),
+        ).toBeGreaterThan(1.3);
+        // Left elbow semi-extended at 130° flexion (2.27 rad) on Y-axis
         expect(
-          Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.z),
-        ).toBeGreaterThan(1.5);
+          Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.y),
+        ).toBeGreaterThan(1.8);
       });
     });
 
@@ -158,8 +161,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have neutral weight for lateral movement", () => {
-        expect(SON_WIND_GUARD_POSE.weight).toBe("neutral");
+      it("should have back weight for crane stance balance", () => {
+        // Crane stance: 100% weight on standing (back/right) leg
+        expect(SON_WIND_GUARD_POSE.weight).toBe("back");
       });
 
       it("should have rhythmic breathing", () => {
@@ -185,8 +189,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have neutral weight for adaptability", () => {
-        expect(GAM_WATER_GUARD_POSE.weight).toBe("neutral");
+      it("should have back weight for defensive counter stance", () => {
+        // Back stance: 30% front, 70% back (defensive ready)
+        expect(GAM_WATER_GUARD_POSE.weight).toBe("back");
       });
 
       it("should have deep flowing breathing", () => {
@@ -231,13 +236,14 @@ describe("StanceGuardPoses", () => {
       });
 
       it("should have tight defensive arms (high elbow bend)", () => {
-        // Using Z rotation for tight bend (1.8 rad = ~103 degrees)
+        // FIXED: Using Y-axis for anatomically correct elbow flexion (not Z!)
+        // Maximum flexion ~150° (2.62 rad) on Y-axis
         expect(
-          Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.z),
-        ).toBeGreaterThan(1.5);
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.y),
+        ).toBeGreaterThan(2.0);
         expect(
-          Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.z),
-        ).toBeGreaterThan(1.5);
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.y),
+        ).toBeGreaterThan(2.0);
       });
 
       it("should have forward lean with square stance for X-block defense", () => {
@@ -271,12 +277,12 @@ describe("StanceGuardPoses", () => {
       });
 
       it("should have LOW grappling guard (hands ready for underhooks)", () => {
-        // Grappling stance: arms low but elbows still guard ribs
-        // Shoulder X around -0.4 (negative = arms forward/up, but low position)
-        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(-0.8);
-        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(-0.8);
-        // Elbows bent but relaxed
-        expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.z)).toBeGreaterThan(
+        // FIXED: Grappling stance has arms LOW and DOWN (positive X = extension)
+        // Shoulders at +20° extension (positive X)
+        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(0);
+        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(0);
+        // FIXED: Elbows bent on Y-axis (not Z!)
+        expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.y)).toBeGreaterThan(
           1.0,
         );
       });
@@ -568,17 +574,19 @@ describe("StanceGuardPoses", () => {
     });
 
     it("should have correct weight distributions per Korean martial arts stance types", () => {
-      // Forward stances (Ap Seogi, Ap Koobi Seogi)
+      // Forward stance (Ap Seogi)
       expect(GEON_HIGH_GUARD_POSE.weight).toBe("forward");
-      expect(TAE_FLUID_GUARD_POSE.weight).toBe("forward");
 
-      // Back stance (Dwi Koobi Seogi)
+      // Cat stance (Beomseogi) - BACK WEIGHTED (90/10)!
+      expect(TAE_FLUID_GUARD_POSE.weight).toBe("back");
+
+      // Back stances (Dwi Koobi Seogi, Dwit Seogi)
       expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
+      expect(GAM_WATER_GUARD_POSE.weight).toBe("back");
 
-      // Neutral stances (Juchum Seogi, Narani Seogi, etc.)
+      // Neutral stances (Juchum Seogi, Hakdari Seogi, Moa Seogi, Ssireum)
       expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral");
-      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral");
-      expect(GAM_WATER_GUARD_POSE.weight).toBe("neutral");
+      expect(SON_WIND_GUARD_POSE.weight).toBe("back"); // Crane stance - 100% on standing leg (coded as "back")
       expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral");
       expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral");
     });
