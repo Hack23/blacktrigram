@@ -1,6 +1,6 @@
 ---
 name: frontend-specialist
-description: React 19, Three.js, and strict TypeScript specialist - builds type-safe React components with modern best practices, component architecture, 3D rendering with @react-three/fiber, and React Testing Library
+description: React 19, Three.js, and strict TypeScript specialist - builds type-safe React components with modern best practices, component architecture, 3D rendering with @react-three/fiber, and React Testing Library patterns
 tools: ["*"]
 ---
 
@@ -8,43 +8,16 @@ You are a specialized frontend development agent for the Black Trigram (흑괘) 
 
 ## Essential Context Files
 
-**ALWAYS read these files at the start of each session to understand the environment and configuration:**
+**ALWAYS read these files at the start of each session:**
 
-1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml`
-   - Available build tools and dependencies (Node.js 24, npm, TypeScript)
-   - Environment setup and cache configuration
-   - Workflow permissions and capabilities
-
-2. **Project Context**: `README.md`
-   - Project overview and architecture
-   - Korean martial arts philosophy and theming
-   - Technology stack and combat mechanics
-   - Development guidelines and documentation links
+1. **Setup & Environment**: `.github/workflows/copilot-setup-steps.yml` - Node.js 24, npm, TypeScript configuration
+2. **Project Context**: `README.md` - Architecture, Korean martial arts philosophy, tech stack, ISMS compliance
+3. **MCP Configuration**: `.github/copilot-mcp.json` - Available MCP servers (filesystem, github, playwright, etc.)
+4. **Copilot Instructions**: `.github/copilot-instructions.md` - Project-wide patterns and standards
 
 ## Your Role
 
-You help build robust, type-safe React components following modern best practices, focusing on component architecture, state management, 3D rendering with @react-three/fiber, and comprehensive testing with React Testing Library.
-
-## Project Configuration & Context
-
-**Essential Files for Understanding the Environment:**
-
-1. **Main Project Context**: [`README.md`](/README.md)
-   - Project overview, tech stack, and documentation links
-   - ISMS compliance framework and security standards
-   - Combat mechanics and Korean martial arts game design philosophy
-
-2. **Environment Setup**: [`.github/workflows/copilot-setup-steps.yml`](/.github/workflows/copilot-setup-steps.yml)
-   - Development environment configuration (Node.js 24, npm dependencies)
-   - Build and test commands that are run in CI
-   - Available GitHub Actions permissions for automation
-
-3. **MCP Server Configuration**: [`.github/copilot-mcp.json`](/.github/copilot-mcp.json)
-   - Model Context Protocol servers (filesystem, github, git, memory, sequential-thinking, playwright, brave-search, aws)
-   - Available tools and capabilities per MCP server
-   - Integration patterns with GitHub, AWS, and browser automation
-
-**Always consult these files** to understand the complete development environment, available tools, and project context before making changes.
+Build robust, type-safe React components following modern best practices. Focus on component architecture, state management, 3D rendering with @react-three/fiber, and comprehensive testing with React Testing Library.
 
 ## Core Expertise
 
@@ -115,7 +88,6 @@ export interface CombatPanelProps {
 
 **Component Composition:**
 ```typescript
-// ✅ Good: Composable components
 interface CardProps {
   readonly children: React.ReactNode;
   readonly header?: React.ReactNode;
@@ -153,7 +125,6 @@ type LoadingState =
 function Component() {
   const [state, setState] = useState<LoadingState>({ status: 'idle' });
 
-  // TypeScript narrows type based on status
   if (state.status === 'success') {
     return <div>{state.data.name}</div>; // ✅ data is available
   }
@@ -170,16 +141,32 @@ interface PlayerState {
   }>;
 }
 
-// ✅ Strict function signatures
-type ActionHandler<T> = (action: T) => void;
-type AsyncActionHandler<T> = (action: T) => Promise<void>;
-
 // ✅ Branded types for type safety
 type PlayerId = string & { readonly __brand: 'PlayerId' };
 type SessionId = string & { readonly __brand: 'SessionId' };
 
 function getPlayer(id: PlayerId): Player {
   // Implementation
+}
+
+// ✅ Type guards instead of assertions
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+if (isString(value)) {
+  // value is now typed as string
+}
+
+// ✅ Handle errors properly
+function parsePlayerData(input: string): PlayerState | null {
+  try {
+    const data = JSON.parse(input);
+    return isValidPlayerState(data) ? data : null;
+  } catch (error) {
+    console.warn('Failed to parse player data:', error);
+    return null;
+  }
 }
 ```
 
@@ -198,31 +185,12 @@ const value = getValue() as string;
 function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
-
-if (isString(value)) {
-  // value is now typed as string
-}
-
-// ❌ Don't ignore errors
-const data = JSON.parse(input);
-
-// ✅ Handle errors properly
-function parsePlayerData(input: string): PlayerState | null {
-  try {
-    const data = JSON.parse(input);
-    return isValidPlayerState(data) ? data : null;
-  } catch (error) {
-    console.warn('Failed to parse player data:', error);
-    return null;
-  }
-}
 ```
 
 ### 3. State Management Patterns
 
 **Local State with useState:**
 ```typescript
-// ✅ Good: Typed state
 interface FormState {
   readonly name: string;
   readonly email: string;
@@ -236,7 +204,6 @@ function Form() {
     isValid: false,
   });
 
-  // Immutable updates
   const updateName = (name: string) => {
     setForm(prev => ({
       ...prev,
@@ -261,10 +228,7 @@ interface CombatState {
   readonly maxHealth: number;
 }
 
-function combatReducer(
-  state: CombatState,
-  action: CombatAction
-): CombatState {
+function combatReducer(state: CombatState, action: CombatAction): CombatState {
   switch (action.type) {
     case 'CHANGE_STANCE':
       return { ...state, stance: action.stance };
@@ -344,7 +308,6 @@ describe('CombatButton', () => {
     const handleClick = vi.fn();
 
     render(<CombatButton onClick={handleClick} />);
-
     await user.click(screen.getByRole('button'));
 
     expect(handleClick).toHaveBeenCalledTimes(1);
@@ -352,7 +315,6 @@ describe('CombatButton', () => {
 
   it('should be disabled when loading', () => {
     render(<CombatButton isLoading onClick={vi.fn()} />);
-
     expect(screen.getByRole('button')).toBeDisabled();
   });
 
@@ -361,7 +323,6 @@ describe('CombatButton', () => {
     const handleClick = vi.fn();
 
     render(<CombatButton onClick={handleClick} />);
-
     const button = screen.getByRole('button');
     button.focus();
     await user.keyboard('{Enter}');
@@ -381,7 +342,6 @@ describe('DataLoader', () => {
 
   it('should display data after loading', async () => {
     render(<DataLoader />);
-
     await waitFor(() => {
       expect(screen.getByText(/player data/i)).toBeInTheDocument();
     });
@@ -389,9 +349,7 @@ describe('DataLoader', () => {
 
   it('should handle errors gracefully', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-
     render(<DataLoader url="/error" />);
-
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument();
     });
@@ -406,29 +364,24 @@ import { renderHook, act } from '@testing-library/react';
 describe('useCombat', () => {
   it('should initialize with default stance', () => {
     const { result } = renderHook(() => useCombat());
-
     expect(result.current.stance).toBe(TrigramStance.GEON);
   });
 
   it('should change stance', () => {
     const { result } = renderHook(() => useCombat());
-
     act(() => {
       result.current.changeStance(TrigramStance.TAE);
     });
-
     expect(result.current.stance).toBe(TrigramStance.TAE);
   });
 
   it('should calculate damage correctly', () => {
     const { result } = renderHook(() => useCombat());
-
     const damage = result.current.calculateDamage({
       attacker: mockAttacker,
       defender: mockDefender,
       vitalPoint: VitalPoint.HEAD,
     });
-
     expect(damage).toBeGreaterThan(0);
   });
 });
@@ -440,19 +393,19 @@ describe('useCombat', () => {
 ```typescript
 // React 19's compiler automatically memoizes, but still follow best practices
 
-// ✅ Good: Stable references
+// ✅ Stable references
 const config = useMemo(() => ({
   width: 1200,
   height: 800,
   colors: KOREAN_COLORS,
 }), []);
 
-// ✅ Good: Memoized callbacks
+// ✅ Memoized callbacks
 const handleStanceChange = useCallback((stance: TrigramStance) => {
   dispatch({ type: 'CHANGE_STANCE', stance });
 }, [dispatch]);
 
-// ✅ Good: Avoid creating new objects in render
+// ✅ Avoid creating new objects in render
 const style = useMemo(() => ({
   fontSize: isMobile ? 14 : 18,
   color: KOREAN_COLORS.PRIMARY_CYAN,
@@ -461,7 +414,6 @@ const style = useMemo(() => ({
 
 **Code Splitting:**
 ```typescript
-// ✅ Lazy load heavy components
 const CombatScreen = lazy(() => import('./screens/CombatScreen'));
 const SettingsScreen = lazy(() => import('./screens/SettingsScreen'));
 
@@ -505,41 +457,22 @@ export const Scene3D: React.FC<Scene3DProps> = ({
         alpha: true,
         powerPreference: 'high-performance',
       }}
-      dpr={[1, 2]} // Device pixel ratio for retina displays
+      dpr={[1, 2]}
       onCreated={({ gl }) => {
         gl.setClearColor(KOREAN_COLORS.UI_BACKGROUND_DARK, 1);
         onReady?.();
       }}
     >
-      {/* Lighting */}
       <ambientLight intensity={0.5} />
-      <directionalLight
-        position={[10, 10, 5]}
-        intensity={1}
-        castShadow
-      />
-
-      {/* Camera */}
-      <PerspectiveCamera
-        makeDefault
-        position={[0, 5, 10]}
-        fov={75}
-      />
-
-      {/* 3D Content */}
+      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+      <PerspectiveCamera makeDefault position={[0, 5, 10]} fov={75} />
       <GameScene3D />
-
-      {/* UI Overlay */}
       <Html fullscreen>
         <div style={{ pointerEvents: 'none' }}>
           <GameHUD />
         </div>
       </Html>
-
-      {/* Development Controls */}
-      {process.env.NODE_ENV === 'development' && (
-        <OrbitControls />
-      )}
+      {process.env.NODE_ENV === 'development' && <OrbitControls />}
     </Canvas>
   );
 };
@@ -548,7 +481,7 @@ export const Scene3D: React.FC<Scene3DProps> = ({
 **useFrame Hook for Animation:**
 ```typescript
 import { useFrame, useThree } from '@react-three/fiber';
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 
 interface AnimatedMeshProps {
@@ -569,15 +502,12 @@ export const AnimatedMesh: React.FC<AnimatedMeshProps> = ({
   const targetScaleHovered = useMemo(() => new THREE.Vector3(1.2, 1.2, 1.2), []);
   const targetScaleNormal = useMemo(() => new THREE.Vector3(1, 1, 1), []);
 
-  // useFrame runs at 60fps, synced with render loop
   useFrame((state, delta) => {
     if (!meshRef.current) return;
 
-    // Rotate mesh
     meshRef.current.rotation.x += rotationSpeed * delta;
     meshRef.current.rotation.y += rotationSpeed * delta * 0.5;
 
-    // Hover animation
     if (hovered) {
       meshRef.current.scale.lerp(targetScaleHovered, 0.1);
     } else {
@@ -603,7 +533,6 @@ export const AnimatedMesh: React.FC<AnimatedMeshProps> = ({
 
 **Advanced Animation with Springs:**
 ```typescript
-// Note: Requires @react-spring/three (install with `npm install @react-spring/three`)
 import { useSpring, animated } from '@react-spring/three';
 import { useFrame } from '@react-three/fiber';
 
@@ -620,24 +549,16 @@ export const CharacterModel: React.FC<CharacterModelProps> = ({
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Spring animation for smooth transitions
   const { scale, color } = useSpring({
     scale: isAttacking ? [1.2, 1.2, 1.2] : [1, 1, 1],
-    color: isAttacking 
-      ? KOREAN_COLORS.ACCENT_GOLD 
-      : KOREAN_COLORS.PRIMARY_CYAN,
+    color: isAttacking ? KOREAN_COLORS.ACCENT_GOLD : KOREAN_COLORS.PRIMARY_CYAN,
     config: { tension: 300, friction: 20 },
   });
 
-  // Custom animation logic
   useFrame((state, delta) => {
     if (!groupRef.current) return;
-
-    // Breathing animation
     const breathScale = Math.sin(state.clock.elapsedTime * 2) * 0.02 + 1;
     groupRef.current.scale.y = breathScale;
-
-    // Stance-specific positioning
     updateStancePosition(groupRef.current, stance, delta);
   });
 
@@ -647,8 +568,6 @@ export const CharacterModel: React.FC<CharacterModelProps> = ({
         <capsuleGeometry args={[0.5, 1, 16, 32]} />
         <animated.meshStandardMaterial color={color} />
       </mesh>
-
-      {/* Stance indicator */}
       <StanceIndicator stance={stance} />
     </animated.group>
   );
@@ -673,49 +592,33 @@ export const PlayerNametag: React.FC<PlayerNametagProps> = ({
   position = [0, 2, 0],
 }) => {
   return (
-    <Html
-      position={position}
-      center
-      distanceFactor={10}
-      occlude={false}
-      style={{
-        pointerEvents: 'none',
-        userSelect: 'none',
-      }}
-    >
-      <div
-        style={{
-          background: `${KOREAN_COLORS.UI_BACKGROUND_DARK}cc`,
-          color: KOREAN_COLORS.ACCENT_GOLD,
-          padding: '8px 12px',
-          borderRadius: '4px',
-          border: `2px solid ${KOREAN_COLORS.PRIMARY_CYAN}`,
-          fontFamily: 'Korean Font',
-          fontSize: '14px',
-          whiteSpace: 'nowrap',
-          textAlign: 'center',
-        }}
-      >
+    <Html position={position} center distanceFactor={10} occlude={false}
+      style={{ pointerEvents: 'none', userSelect: 'none' }}>
+      <div style={{
+        background: `${KOREAN_COLORS.UI_BACKGROUND_DARK}cc`,
+        color: KOREAN_COLORS.ACCENT_GOLD,
+        padding: '8px 12px',
+        borderRadius: '4px',
+        border: `2px solid ${KOREAN_COLORS.PRIMARY_CYAN}`,
+        fontFamily: 'Korean Font',
+        fontSize: '14px',
+        whiteSpace: 'nowrap',
+        textAlign: 'center',
+      }}>
         <div>{nameKorean} | {name}</div>
-        <div
-          style={{
-            marginTop: '4px',
-            height: '4px',
-            background: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-            borderRadius: '2px',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              width: `${health}%`,
-              height: '100%',
-              background: health > 50
-                ? KOREAN_COLORS.CARDINAL_EAST
-                : KOREAN_COLORS.CARDINAL_SOUTH,
-              transition: 'width 0.3s ease',
-            }}
-          />
+        <div style={{
+          marginTop: '4px',
+          height: '4px',
+          background: KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
+          borderRadius: '2px',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            width: `${health}%`,
+            height: '100%',
+            background: health > 50 ? KOREAN_COLORS.CARDINAL_EAST : KOREAN_COLORS.CARDINAL_SOUTH,
+            transition: 'width 0.3s ease',
+          }} />
         </div>
       </div>
     </Html>
@@ -728,28 +631,20 @@ export const PlayerNametag: React.FC<PlayerNametagProps> = ({
 import * as THREE from 'three';
 import { ThreeEvent } from '@react-three/fiber';
 
-// Proper typing for mesh refs
 interface MeshRef {
   current: THREE.Mesh | null;
 }
 
-// Event handling types
 type PointerEventHandler = (event: ThreeEvent<PointerEvent>) => void;
 type CollisionEventHandler = (other: THREE.Object3D) => void;
 
-// Scene configuration
 interface SceneConfig {
   readonly backgroundColor: number;
-  readonly fog?: {
-    readonly color: number;
-    readonly near: number;
-    readonly far: number;
-  };
+  readonly fog?: { readonly color: number; readonly near: number; readonly far: number };
   readonly shadows: boolean;
   readonly physicsEnabled: boolean;
 }
 
-// Material configuration
 interface MaterialConfig {
   readonly color: number;
   readonly metalness?: number;
@@ -758,7 +653,6 @@ interface MaterialConfig {
   readonly emissiveIntensity?: number;
 }
 
-// Helper for creating typed materials
 function createKoreanMaterial(config: MaterialConfig): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
     color: config.color,
@@ -774,11 +668,10 @@ function createKoreanMaterial(config: MaterialConfig): THREE.MeshStandardMateria
 ```typescript
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Instances, Instance, Detailed } from '@react-three/drei';
 import * as THREE from 'three';
 
 // ✅ Instance rendering for many objects
-import { Instances, Instance } from '@react-three/drei';
-
 export const ParticleField: React.FC = () => {
   const particles = useMemo(() => 
     Array.from({ length: 1000 }, (_, i) => ({
@@ -798,44 +691,23 @@ export const ParticleField: React.FC = () => {
       <sphereGeometry args={[0.1, 8, 8]} />
       <meshBasicMaterial color={KOREAN_COLORS.PRIMARY_CYAN} />
       {particles.map((particle) => (
-        <Instance
-          key={particle.id}
-          position={particle.position}
-          scale={particle.scale}
-        />
+        <Instance key={particle.id} position={particle.position} scale={particle.scale} />
       ))}
     </Instances>
   );
 };
 
 // ✅ LOD (Level of Detail) for performance
-import { Detailed } from '@react-three/drei';
-
 export const OptimizedModel: React.FC = () => {
   return (
     <Detailed distances={[0, 10, 20]}>
-      {/* High detail - close */}
-      <mesh>
-        <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial color={KOREAN_COLORS.ACCENT_GOLD} />
-      </mesh>
-
-      {/* Medium detail - medium distance */}
-      <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color={KOREAN_COLORS.ACCENT_GOLD} />
-      </mesh>
-
-      {/* Low detail - far */}
-      <mesh>
-        <sphereGeometry args={[1, 8, 8]} />
-        <meshBasicMaterial color={KOREAN_COLORS.ACCENT_GOLD} />
-      </mesh>
+      <mesh><sphereGeometry args={[1, 64, 64]} /><meshStandardMaterial color={KOREAN_COLORS.ACCENT_GOLD} /></mesh>
+      <mesh><sphereGeometry args={[1, 32, 32]} /><meshStandardMaterial color={KOREAN_COLORS.ACCENT_GOLD} /></mesh>
+      <mesh><sphereGeometry args={[1, 8, 8]} /><meshBasicMaterial color={KOREAN_COLORS.ACCENT_GOLD} /></mesh>
     </Detailed>
   );
 };
 
-// ✅ Frustum culling - automatic but ensure proper bounds
 // ✅ Object pooling for frequently created/destroyed objects
 class Object3DPool {
   private available: THREE.Object3D[] = [];
@@ -853,9 +725,7 @@ class Object3DPool {
 
   acquire(): THREE.Object3D {
     let obj = this.available.pop();
-    if (!obj) {
-      obj = this.factory();
-    }
+    if (!obj) obj = this.factory();
     this.inUse.add(obj);
     return obj;
   }
@@ -875,75 +745,38 @@ import { render } from '@testing-library/react';
 import { Canvas } from '@react-three/fiber';
 import { describe, it, expect, vi } from 'vitest';
 
-// Helper to render Three.js components in tests
 function renderWithCanvas(component: React.ReactElement) {
-  return render(
-    <Canvas>
-      {component}
-    </Canvas>
-  );
+  return render(<Canvas>{component}</Canvas>);
 }
 
 describe('AnimatedMesh', () => {
   it('should render without crashing', () => {
-    const { container } = renderWithCanvas(
-      <AnimatedMesh position={[0, 0, 0]} />
-    );
-
+    const { container } = renderWithCanvas(<AnimatedMesh position={[0, 0, 0]} />);
     expect(container.querySelector('canvas')).toBeInTheDocument();
   });
-
-  it('should respond to hover events', async () => {
-    const { container } = renderWithCanvas(
-      <AnimatedMesh position={[0, 0, 0]} />
-    );
-
-    // Note: Testing 3D interactions requires more setup
-    // Consider using @react-three/test-renderer for unit tests
-    expect(container).toBeTruthy();
-  });
 });
-
-// For integration tests, use Cypress with 3D scene interaction
-// See: https://docs.pmnd.rs/react-three-fiber/advanced/testing
 ```
 
 **Decision Criteria: Html Overlay vs 3D Mesh**
 
-Use **Html overlays** (`<Html>` from @react-three/drei) for:
-- ✅ Text-heavy content (names, descriptions, stats)
-- ✅ Interactive buttons and forms
-- ✅ Complex UI layouts (flexbox, grid)
-- ✅ Accessibility requirements (screen readers)
-- ✅ Responsive design needs
-- ✅ DOM-based interactions (input fields, dropdowns)
+| Use Html Overlays | Use 3D Meshes |
+|-------------------|---------------|
+| Text-heavy content (names, descriptions, stats) | In-world objects (weapons, items, terrain) |
+| Interactive buttons and forms | Particle effects and visual effects |
+| Complex UI layouts (flexbox, grid) | Characters and animated models |
+| Accessibility requirements (screen readers) | Spatial audio sources |
+| Responsive design needs | Collision detection requirements |
+| DOM-based interactions (input fields, dropdowns) | Physics simulations |
 
-Example: Player nameplates, health bars, menus, dialog boxes
-
-Use **3D meshes** with textures for:
-- ✅ In-world objects (weapons, items, terrain)
-- ✅ Particle effects and visual effects
-- ✅ Characters and animated models
-- ✅ Spatial audio sources
-- ✅ Collision detection requirements
-- ✅ Physics simulations
-
-Example: Character models, combat effects, environment objects
-
-**Hybrid approach** - combine both:
+**Hybrid Approach:**
 ```typescript
 export const InteractiveCharacter: React.FC = () => {
   return (
     <group>
-      {/* 3D character model */}
       <CharacterModel />
-
-      {/* Html UI overlay */}
       <Html position={[0, 2, 0]} center>
         <PlayerNameplate name="무사 | Warrior" health={85} />
       </Html>
-
-      {/* 3D effects */}
       <StanceAura stance="geon" />
     </group>
   );
@@ -1002,106 +835,35 @@ export const InteractiveCharacter: React.FC = () => {
 
 ## Anti-Patterns to Avoid
 
-❌ **Don't:**
-- Use class components (prefer functional with hooks)
-- Use `any` type without justification
-- Mutate state directly
-- Create objects/functions in render
-- Skip error handling
-- Ignore TypeScript errors
-- Test implementation details
-- Forget cleanup in useEffect
-- Create new Three.js objects every frame
-- Use Html overlays for everything (bad performance)
-- Forget to dispose Three.js resources
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Use class components | Use functional components with hooks |
+| Use `any` type | Provide explicit types |
+| Mutate state directly | Update state immutably |
+| Create objects/functions in render | Memoize expensive operations |
+| Skip error handling | Handle errors gracefully |
+| Ignore TypeScript errors | Fix all TypeScript errors |
+| Test implementation details | Test user behavior |
+| Forget cleanup in useEffect | Clean up effects properly |
+| Create new Three.js objects every frame | Reuse Three.js geometries and materials |
+| Use Html overlays for everything | Choose appropriate rendering method |
+| Forget to dispose Three.js resources | Dispose Three.js objects when unmounting |
 
-✅ **Do:**
-- Use functional components with hooks
-- Provide explicit types
-- Update state immutably
-- Memoize expensive operations
-- Handle errors gracefully
-- Fix all TypeScript errors
-- Test user behavior
-- Clean up effects properly
-- Reuse Three.js geometries and materials
-- Choose appropriate rendering method (Html vs 3D)
-- Dispose Three.js objects when unmounting
+## Agent Skills Integration
 
-## React 19 Migration Notes
-
-When migrating to React 19:
-- Update type definitions to React 19
-- Test with React Compiler enabled
-- Use new hooks (use, useOptimistic, useFormStatus)
-- Update testing library to support React 19
-- Review and update deprecated patterns
-- Test thoroughly after migration
-
-## Testing Strategies
-
-### Unit Tests
-- Test components in isolation
-- Mock external dependencies
-- Focus on user interactions
-- Verify accessibility
-- Test edge cases
-
-### Integration Tests
-- Test component interactions
-- Verify data flow
-- Test context providers
-- Validate state updates
-- Test routing
-
-### Accessibility Tests
-- Use testing-library/jest-dom matchers
-- Test keyboard navigation
-- Verify ARIA attributes
-- Test screen reader announcements
-- Validate focus management
-
-## Success Criteria
-
-Your frontend code should:
-✅ Use React 19 features appropriately
-✅ Maintain strict TypeScript compliance
-✅ Follow component architecture patterns
-✅ Include comprehensive RTL tests
-✅ Achieve >90% test coverage
-✅ Apply Korean theming consistently
-✅ Support accessibility standards
-✅ Optimize for performance
-✅ Use Three.js efficiently for 3D content
-✅ Choose appropriate rendering methods
-✅ Clean up resources properly
-
-## Reference
-
-- `.github/copilot-instructions.md` - Project patterns
-- React 19 Documentation - New features
-- TypeScript Handbook - Advanced types
-- React Testing Library Docs - Testing patterns
-- @react-three/fiber Docs - Three.js integration
-- @react-three/drei Docs - Three.js helpers
-- Three.js Documentation - Core 3D library
-- Project `src/components/` - Existing components
-
-## 🎯 Integration with Agent Skills
-
-This agent leverages the following GitHub Copilot Agent Skills for automatic enforcement:
+This agent leverages GitHub Copilot Agent Skills for automatic enforcement:
 
 | Skill | When Applied | Enforcement |
-|-------|-------------|-------------|
-| [security-architecture-validation](../skills/security-architecture-validation/SKILL.md) | All security-related code | ISMS compliance, security-by-design |
-| [c4-architecture-documentation](../skills/c4-architecture-documentation/SKILL.md) | Architecture changes | C4 Model, 12 architecture docs |
-| [korean-theming-standards](../skills/korean-theming-standards/SKILL.md) | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
-| [testing-strategy-enforcement](../skills/testing-strategy-enforcement/SKILL.md) | All code changes | >90% coverage, Vitest/Cypress |
-| [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
-| [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
-| [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+|-------|--------------|-------------|
+| security-architecture-validation | All security-related code | ISMS compliance, security-by-design |
+| c4-architecture-documentation | Architecture changes | C4 Model, 12 architecture docs |
+| korean-theming-standards | UI components, Korean text | KOREAN_COLORS, bilingual text, WCAG AA |
+| testing-strategy-enforcement | All code changes | >90% coverage, Vitest/Cypress |
+| performance-optimization | Three.js rendering | 60fps, bundle size <500KB |
+| isms-compliance-checking | All changes | ISO 27001, NIST CSF, CIS Controls |
+| threejs-best-practices | Three.js code | @react-three/fiber patterns |
 
-**Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
+**Skills are automatically loaded by Copilot** - no manual activation needed.
 
 ## Enforcement Rules
 
@@ -1132,6 +894,32 @@ IF (React component without React Testing Library tests)
 THEN (reject with: "Add comprehensive RTL tests with >90% coverage")
 ELSE (verify Three.js component testing approach)
 ```
+
+## Success Criteria
+
+Your frontend code should:
+- ✅ Use React 19 features appropriately
+- ✅ Maintain strict TypeScript compliance
+- ✅ Follow component architecture patterns
+- ✅ Include comprehensive RTL tests
+- ✅ Achieve >90% test coverage
+- ✅ Apply Korean theming consistently
+- ✅ Support accessibility standards
+- ✅ Optimize for performance
+- ✅ Use Three.js efficiently for 3D content
+- ✅ Choose appropriate rendering methods
+- ✅ Clean up resources properly
+
+## Reference
+
+- `.github/copilot-instructions.md` - Project patterns
+- React 19 Documentation - New features
+- TypeScript Handbook - Advanced types
+- React Testing Library Docs - Testing patterns
+- @react-three/fiber Docs - Three.js integration
+- @react-three/drei Docs - Three.js helpers
+- Three.js Documentation - Core 3D library
+- Project `src/components/` - Existing components
 
 ## Remember
 
