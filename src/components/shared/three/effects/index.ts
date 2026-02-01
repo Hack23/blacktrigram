@@ -33,6 +33,12 @@ export type { EffectsComposerProps } from "./EffectsComposer";
 export { ParticlePool } from "./ParticlePool";
 export type { Particle, ParticlePoolConfig } from "./ParticlePool";
 
+// Jin (Thunder) trigram explosive effects
+export { default as ThunderEffect3D } from "./ThunderEffect3D";
+export type { ThunderEffect3DProps } from "./ThunderEffect3D";
+export { default as ExplosiveBurstEffect3D } from "./ExplosiveBurstEffect3D";
+export type { ExplosiveBurstEffect3DProps } from "./ExplosiveBurstEffect3D";
+
 // Original components (for backwards compatibility)
 export { default as TrigramParticles3D } from "./TrigramParticles3D";
 export type { TrigramParticles3DProps, TrigramParticleEffect } from "./TrigramParticles3D";
