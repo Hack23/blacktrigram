@@ -54,8 +54,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 600,
-    recoveryTime: 1000,
+    executionTime: 750, // Increased from 600ms (+25%) for flowing motion visibility
+    recoveryTime: 1100, // Adjusted proportionally from 1000ms
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
@@ -64,10 +64,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_flowing_strikes", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.FLOWING_CROSS,
-    animationSpeed: 1.2,
-    category: "medium",
+    animationSpeed: 0.75, // Reduced from 1.2x to 0.75x for flowing, visible motion
+    category: "medium", // Balanced technique with moderate damage/stamina
     range: "medium",
-    speed: 1.2,
+    speed: 0.75, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_wrist_lock",
@@ -95,8 +95,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 1000,
+    executionTime: 1100, // Increased from 650ms (+69%) for detailed joint manipulation
+    recoveryTime: 1400, // Adjusted proportionally from 1000ms
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
@@ -105,10 +105,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_wrist_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.TAE_WRIST_LOCK,
-    animationSpeed: 0.85,
-    category: "light",
+    animationSpeed: 0.55, // Reduced from 0.85x to 0.55x for circular motion clarity
+    category: "medium", // Changed from "light" - joint locks require deliberate control
     range: "short",
-    speed: 0.85,
+    speed: 0.55, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_small_circle",
@@ -136,8 +136,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 750,
-    recoveryTime: 1100,
+    executionTime: 1200, // Increased from 750ms (+60%) for circular technique visibility
+    recoveryTime: 1500, // Adjusted proportionally from 1100ms
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
@@ -146,10 +146,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_small_circle", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
-    animationSpeed: 0.85,
+    animationSpeed: 0.55, // Reduced from 0.85x to 0.55x for small circle detail
     category: "special",
     range: "short",
-    speed: 0.85,
+    speed: 0.55, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_finger_lock",
@@ -177,8 +177,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 900,
+    executionTime: 690, // Increased from 650ms (+6%) - small joint, faster application
+    recoveryTime: 1000, // Adjusted from 900ms
     critChance: 0.1,
     critMultiplier: 1.4,
     effects: [],
@@ -187,10 +187,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_finger_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.FINGER_LOCK,
-    animationSpeed: 0.9,
-    category: "light",
+    animationSpeed: 0.6, // Reduced from 0.9x to 0.6x for small joint precision
+    category: "light", // Small joint manipulation - remains light category
     range: "short",
-    speed: 0.9,
+    speed: 0.6, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_elbow_lock",
@@ -218,8 +218,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 800,
-    recoveryTime: 1150,
+    executionTime: 1280, // Increased from 800ms (+60%) for leverage and control phases
+    recoveryTime: 1600, // Adjusted proportionally from 1150ms
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
@@ -228,10 +228,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_elbow_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.ELBOW_LOCK,
-    animationSpeed: 0.8,
+    animationSpeed: 0.5, // Reduced from 0.8x to 0.5x for hyperextension detail
     category: "medium",
     range: "short",
-    speed: 0.8,
+    speed: 0.5, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_shoulder_lock",
@@ -259,8 +259,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 850,
-    recoveryTime: 1200,
+    executionTime: 1360, // Increased from 850ms (+60%) for shoulder rotation detail
+    recoveryTime: 1700, // Adjusted proportionally from 1200ms
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
@@ -269,10 +269,10 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_shoulder_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SHOULDER_MANIPULATION,
-    animationSpeed: 0.8,
+    animationSpeed: 0.5, // Reduced from 0.8x to 0.5x for shoulder manipulation clarity
     category: "medium",
     range: "short",
-    speed: 0.8,
+    speed: 0.5, // Reduced to match animationSpeed for consistency
   },
   {
     id: "tae_arm_bar",
@@ -300,8 +300,8 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 900,
-    recoveryTime: 1300,
+    executionTime: 1440, // Increased from 900ms (+60%) for full submission sequence
+    recoveryTime: 1800, // Adjusted proportionally from 1300ms
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
@@ -310,9 +310,9 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     animationId: "tae_arm_bar", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.ARM_BAR,
-    animationSpeed: 0.75,
+    animationSpeed: 0.5, // Reduced from 0.75x to 0.5x for complete arm bar technique
     category: "medium",
     range: "short",
-    speed: 0.75,
+    speed: 0.5, // Reduced to match animationSpeed for consistency
   },
 ];
