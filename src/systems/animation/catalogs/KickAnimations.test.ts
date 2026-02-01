@@ -54,6 +54,16 @@ function assertBoneRotationInRange(
 
 describe("Korean Martial Arts Kick Phases", () => {
   describe("Front Kick (앞차기) - Apchagi", () => {
+    it("should have 7+ keyframes for detailed biomechanics", () => {
+      const count = FRONT_KICK_ANIMATION.keyframes.length;
+      // Log keyframe details
+      console.log(`\n  Front Kick has ${count} keyframes:`);
+      FRONT_KICK_ANIMATION.keyframes.forEach((kf, i) => {
+        console.log(`    ${i}: ${(kf.time * 1000).toFixed(0)}ms`);
+      });
+      expect(count).toBeGreaterThanOrEqual(7);
+    });
+
     it("should have at least 5 keyframes (stance, chamber, extension, retract, recover)", () => {
       expect(FRONT_KICK_ANIMATION.keyframes.length).toBeGreaterThanOrEqual(5);
     });
@@ -139,6 +149,16 @@ describe("Korean Martial Arts Kick Phases", () => {
   });
 
   describe("Roundhouse Kick (돌려차기) - Dollyeochagi", () => {
+    it("should have 7+ keyframes for detailed biomechanics", () => {
+      const count = ROUNDHOUSE_KICK_ANIMATION.keyframes.length;
+      // Log keyframe details
+      console.log(`\n  Roundhouse Kick has ${count} keyframes:`);
+      ROUNDHOUSE_KICK_ANIMATION.keyframes.forEach((kf, i) => {
+        console.log(`    ${i}: ${(kf.time * 1000).toFixed(0)}ms`);
+      });
+      expect(count).toBeGreaterThanOrEqual(7);
+    });
+
     it("should have hip rotation in chamber phase", () => {
       const chamberFrame = ROUNDHOUSE_KICK_ANIMATION.keyframes[1];
 

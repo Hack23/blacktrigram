@@ -11,6 +11,7 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import {
   MartialArtsAnimationBuilder,
   TECHNIQUE_TIMING,
@@ -23,35 +24,160 @@ import {
 /**
  * Front Kick - 앞차기
  *
- * Basic Taekwondo front kick targeting solar plexus.
- * Ball of foot strikes forward in a snapping motion.
+ * Biomechanically accurate Taekwondo front kick with proper chamber mechanics.
+ * Ball of foot strikes forward with explosive hip drive and snap.
  *
- * Phases:
- * 0. Stance (기본자세): Initial fighting stance - 0ms
- * 1. Chamber (준비): Knee lifts to torso height - 120ms
- * 2. Extension (차기): Leg snaps forward with hip thrust - 180ms
- * 3. Peak (정점): Hold at full extension - 80ms
- * 4. Retraction (회수): Leg returns through chamber - 100ms
- * 5. Recovery (복귀): Return to fighting stance - 220ms
+ * **Biomechanical Phases (생체역학 단계):**
+ *
+ * 0. **Stance (기본자세)** - 0ms
+ *    - Fighting stance with weight centered
+ *    - Arms in middle guard position
+ *
+ * 1. **Chamber Lift (들어올리기)** - 120ms
+ *    - Hip flexed to 90° (1.57 rad) - knee at waist height
+ *    - Knee bent tight to 120° (-2.0 rad) for coiled power
+ *    - Foot plantarflexed (toes pointed down initially)
+ *    - Supporting leg slight bend (-0.25 rad) for stability
+ *    - Pelvis tilts back (-0.1 rad) for balance
+ *    - Arms maintain guard
+ *
+ * 2. **Pre-Extension (준비확장)** - 180ms
+ *    - Hip begins forward drive (1.7 rad)
+ *    - Knee starts extension (-1.0 rad) - halfway point
+ *    - Foot dorsiflexes (0.3 rad) - toes begin pointing up
+ *    - Support leg deepens bend (-0.3 rad) for power transfer
+ *    - Pelvis starts forward tilt (0.05 rad)
+ *
+ * 3. **Full Extension (완전확장)** - 300ms
+ *    - Hip fully extended with forward drive (1.7 rad)
+ *    - Knee nearly straight (0.1 rad) - maximum reach
+ *    - Foot fully dorsiflexed (0.5 rad) - ball-of-foot strike
+ *    - Pelvis tilted forward (0.15 rad) - hip thrust complete
+ *    - Support leg in power position (-0.35 rad)
+ *    - Spine slight forward lean (0.05 rad)
+ *
+ * 4. **Impact Peak (충격정점)** - 380ms
+ *    - Maximum extension held briefly
+ *    - All joints locked for power transfer
+ *    - Full body alignment maintained
+ *
+ * 5. **Early Retraction (초기회수)** - 430ms
+ *    - Knee begins to bend (-1.2 rad)
+ *    - Hip maintains height (1.6 rad)
+ *    - Foot returns to neutral (0.2 rad)
+ *    - Controlled pull-back begins
+ *
+ * 6. **Chamber Return (준비복귀)** - 480ms
+ *    - Returns through full chamber position
+ *    - Hip at 90° (1.57 rad), knee tight (-2.0 rad)
+ *    - Critical for proper technique and defense
+ *
+ * 7. **Recovery (복귀)** - 700ms
+ *    - Leg lowers to stance
+ *    - Weight redistributes
+ *    - Return to fighting stance
  *
  * Total duration: 700ms (MEDIUM_LIGHT technique)
+ *
+ * **Korean Martial Arts Principles:**
+ * - 준비 (Chamber): Essential coiling phase, not optional
+ * - 차기 (Kick): Explosive snap from chamber
+ * - 회수 (Retraction): Must return through chamber for defense
+ * - 복귀 (Recovery): Controlled return to guard
  *
  * @korean 앞차기애니메이션
  */
 export const FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("front_kick", "앞차기")
     .asAttack(TECHNIQUE_TIMING.MEDIUM_LIGHT.total)
-    .stance() // 기본자세 - Initial stance at t=0
-    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
-    .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts to torso
-    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
-    .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // 차기 - 180ms leg snaps forward
-    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during kick
-    .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // 정점 - 80ms hold at extension
-    .withKoreanMiddleGuard() // 중단막기 - Maintain guard at peak
-    .retract(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract) // 회수 - 100ms return through chamber
-    .recover(TECHNIQUE_TIMING.MEDIUM_LIGHT.recover) // 복귀 - 220ms return to stance
-    .withKoreanMiddleGuard() // 중단막기 - Return to guard
+    // Phase 0: Stance (기본자세) - 0ms
+    .at(0.0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 1: Chamber Lift (들어올리기) - 120ms
+    .at(0.12)
+    .rotate(BoneName.HIP_R, 1.57, 0, 0) // 90° hip flexion - knee at waist
+    .rotate(BoneName.KNEE_R, -2.0, 0, 0) // Tight chamber - 120° knee bend
+    .rotate(BoneName.FOOT_R, 0, 0, 0) // Foot neutral initially
+    .rotate(BoneName.HIP_L, -0.05, 0, 0) // Support hip stable
+    .rotate(BoneName.KNEE_L, -0.25, 0, 0) // Support leg slightly bent
+    .rotate(BoneName.PELVIS, -0.1, 0, 0) // Pelvis tilts back for balance
+    .rotate(BoneName.SPINE_LOWER, -0.05, 0, 0) // Slight back lean
+    .rotate(BoneName.SPINE_UPPER, -0.03, 0, 0) // Upper body stable
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 2: Pre-Extension (준비확장) - 180ms
+    .at(0.18)
+    .rotate(BoneName.HIP_R, 1.65, 0, 0) // Hip driving forward
+    .rotate(BoneName.KNEE_R, -1.0, 0, 0) // Knee extending halfway
+    .rotate(BoneName.FOOT_R, 0.3, 0, 0) // Foot starting dorsiflexion
+    .rotate(BoneName.HIP_L, -0.1, 0, 0) // Support hip engages
+    .rotate(BoneName.KNEE_L, -0.3, 0, 0) // Deeper bend for power
+    .rotate(BoneName.PELVIS, 0.05, 0, 0) // Forward tilt starts
+    .rotate(BoneName.SPINE_LOWER, 0.02, 0, 0) // Hip thrust beginning
+    .rotate(BoneName.SPINE_UPPER, 0.01, 0, 0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 3: Full Extension (완전확장) - 300ms
+    .at(0.3)
+    .rotate(BoneName.HIP_R, 1.7, 0, 0) // Hip fully extended
+    .rotate(BoneName.KNEE_R, 0.1, 0, 0) // Knee nearly straight
+    .rotate(BoneName.FOOT_R, 0.5, 0, 0) // Full dorsiflexion - ball of foot
+    .rotate(BoneName.HIP_L, -0.1, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // Support in power position
+    .rotate(BoneName.PELVIS, 0.15, 0, 0) // Hip thrust complete
+    .rotate(BoneName.SPINE_LOWER, 0.05, 0, 0) // Forward lean for power
+    .rotate(BoneName.SPINE_UPPER, 0.03, 0, 0)
+    .position(BoneName.FOOT_R, 0.6, 0, 0) // Foot forward for impact
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 4: Impact Peak (충격정점) - 380ms
+    .at(0.38)
+    .rotate(BoneName.HIP_R, 1.7, 0, 0) // Hold extension
+    .rotate(BoneName.KNEE_R, 0.1, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.5, 0, 0)
+    .rotate(BoneName.PELVIS, 0.15, 0, 0)
+    .position(BoneName.FOOT_R, 0.6, 0, 0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 5: Early Retraction (초기회수) - 430ms
+    .at(0.43)
+    .rotate(BoneName.HIP_R, 1.6, 0, 0) // Hip still high
+    .rotate(BoneName.KNEE_R, -1.2, 0, 0) // Knee bending back
+    .rotate(BoneName.FOOT_R, 0.2, 0, 0) // Foot returns to neutral
+    .rotate(BoneName.HIP_L, -0.05, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.28, 0, 0)
+    .rotate(BoneName.PELVIS, 0.05, 0, 0) // Pelvis returning
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .position(BoneName.FOOT_R, 0.3, 0, 0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 6: Chamber Return (준비복귀) - 480ms
+    .at(0.48)
+    .rotate(BoneName.HIP_R, 1.57, 0, 0) // Return to chamber
+    .rotate(BoneName.KNEE_R, -2.0, 0, 0) // Tight chamber again
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.HIP_L, -0.05, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.25, 0, 0)
+    .rotate(BoneName.PELVIS, -0.05, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, -0.03, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, -0.02, 0, 0)
+    .position(BoneName.FOOT_R, 0, 0, 0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 7: Recovery (복귀) - 700ms
+    .at(0.7)
+    .withGuard("MIDDLE_GUARD")
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Return to stance
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.HIP_L, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -61,35 +187,174 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
 /**
  * Roundhouse Kick - 돌려차기
  *
- * Signature Taekwondo kick with hip rotation.
- * Instep or shin strikes target in circular arc.
+ * Biomechanically accurate Taekwondo signature kick with explosive hip rotation.
+ * Instep or shin strikes target in circular whipping arc.
  *
- * Phases:
- * 0. Stance (기본자세): Initial fighting stance - 0ms
- * 1. Chamber (준비): Hip rotates out, knee lifts - 150ms
- * 2. Extension (차기): Leg whips through target - 200ms
- * 3. Follow-through: Hip continues rotation - 100ms
- * 4. Retraction (회수): Leg withdraws toward chamber - 150ms
- * 5. Recovery (복귀): Return to fighting stance - 200ms
+ * **Biomechanical Phases (생체역학 단계):**
+ *
+ * 0. **Stance (기본자세)** - 0ms
+ *    - Fighting stance, ready position
+ *    - Arms in middle guard
+ *
+ * 1. **Chamber with Hip Rotation (회전준비)** - 150ms
+ *    - Hip flexed (1.2 rad) and rotated out (0.8 rad Z-axis)
+ *    - Knee bent tight (-1.5 rad) for snap power
+ *    - Supporting foot begins pivot (~-0.3 rad heel turn)
+ *    - Pelvis rotates away (-0.5 rad Y-axis)
+ *    - Torso counters with rotation (0.3 rad Y-axis)
+ *    - Arms transition to high guard
+ *
+ * 2. **Early Extension (초기확장)** - 250ms
+ *    - Hip continues rotation (1.3 rad flex, 1.2 rad rotation)
+ *    - Knee begins snap extension (-0.8 rad)
+ *    - Support foot pivots more (-0.6 rad)
+ *    - Pelvis accelerates rotation (-0.9 rad Y)
+ *    - Torso rotation builds (0.5 rad Y)
+ *
+ * 3. **Full Extension Whip (완전채찍)** - 350ms
+ *    - Hip maximally rotated (1.2 rad flex, 1.6 rad rotation)
+ *    - Knee snaps nearly straight (-0.1 rad)
+ *    - Foot aligned with shin, slightly rotated
+ *    - Support foot fully pivoted (90-180°, -1.4 rad)
+ *    - Pelvis fully rotated (-1.2 rad Y)
+ *    - Torso follows through (0.8 rad Y)
+ *    - Foot extends laterally (0.8m forward)
+ *
+ * 4. **Impact Peak (충격정점)** - 450ms
+ *    - Maximum hip rotation maintained
+ *    - Full body coil unleashed
+ *    - Instep/shin contact point
+ *
+ * 5. **Early Retraction (초기회수)** - 550ms
+ *    - Knee begins to bend back (-0.8 rad)
+ *    - Hip maintains rotation (1.4 rad rotation)
+ *    - Support foot holds pivot
+ *    - Controlled withdrawal begins
+ *
+ * 6. **Chamber Return (준비복귀)** - 600ms
+ *    - Returns through chamber position
+ *    - Hip rotated and flexed (1.2 rad flex, 0.8 rad rotation)
+ *    - Knee tight (-1.5 rad)
+ *    - Essential for defense
+ *
+ * 7. **Recovery (복귀)** - 800ms
+ *    - Support foot counter-pivots back to stance
+ *    - Hip closes and lowers
+ *    - Return to fighting stance
+ *    - Arms return to middle guard
  *
  * Total duration: 800ms (HEAVY_LIGHT technique)
+ *
+ * **Korean Martial Arts Principles:**
+ * - 회전 (Rotation): Hip rotation is primary power source
+ * - 채찍 (Whip): Knee snap creates whipping action
+ * - 발바닥 축 (Pivot): Supporting foot pivot is essential
+ * - 회수 (Retraction): Must return through chamber
  *
  * @korean 돌려차기애니메이션
  */
 export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("roundhouse_kick", "돌려차기")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
-    .stance() // 기본자세 - Initial stance at t=0
-    .withKoreanMiddleGuard() // 중단막기 - Hands protect face
-    .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms hip rotates out
-    .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
-    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 차기 - 200ms leg whips through
-    .withKoreanHighGuard() // 상단막기 - High guard during spinning kick
-    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
-    .withKoreanHighGuard() // 상단막기 - Maintain high guard at peak
-    .retract(TECHNIQUE_TIMING.HEAVY_LIGHT.retract) // 회수 - 150ms
-    .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 200ms
-    .withKoreanMiddleGuard() // 중단막기 - Return to guard
+    // Phase 0: Stance (기본자세) - 0ms
+    .at(0.0)
+    .withGuard("MIDDLE_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 1: Chamber with Hip Rotation (회전준비) - 150ms
+    .at(0.15)
+    .rotate(BoneName.HIP_R, 1.2, 0, 0.8) // Hip flexed and rotated out
+    .rotate(BoneName.KNEE_R, -1.5, 0, 0) // Tight chamber for power
+    .rotate(BoneName.FOOT_R, 0.2, 0, 0.1) // Foot positioned for strike
+    .rotate(BoneName.HIP_L, 0.1, 0, 0) // Support hip engages
+    .rotate(BoneName.KNEE_L, -0.3, 0, 0) // Support knee bends
+    .rotate(BoneName.FOOT_L, 0, -0.3, 0) // Support foot begins pivot
+    .rotate(BoneName.PELVIS, 0, -0.5, 0) // Pelvis rotates away
+    .rotate(BoneName.SPINE_LOWER, 0, 0.2, 0) // Spine counter-rotates
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.3, 0) // Torso rotation
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 2: Early Extension (초기확장) - 250ms
+    .at(0.25)
+    .rotate(BoneName.HIP_R, 1.3, 0, 1.2) // Hip rotation accelerating
+    .rotate(BoneName.KNEE_R, -0.8, 0, 0) // Knee begins snap
+    .rotate(BoneName.FOOT_R, 0.3, 0, 0.2) // Foot alignment
+    .rotate(BoneName.HIP_L, 0.15, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, -0.6, 0) // More pivot
+    .rotate(BoneName.PELVIS, 0, -0.9, 0) // Pelvis rotation builds
+    .rotate(BoneName.SPINE_LOWER, 0, 0.35, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.5, 0)
+    .position(BoneName.FOOT_R, 0.4, 0, 0) // Foot begins arc
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 3: Full Extension Whip (완전채찍) - 350ms
+    .at(0.35)
+    .rotate(BoneName.HIP_R, 1.2, 0, 1.6) // Maximum hip rotation
+    .rotate(BoneName.KNEE_R, -0.1, 0, 0) // Snap extension
+    .rotate(BoneName.FOOT_R, 0.4, 0, 0.3) // Foot aligned for contact
+    .rotate(BoneName.HIP_L, 0.2, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.4, 0, 0) // Support in power position
+    .rotate(BoneName.FOOT_L, 0, -1.4, 0) // Full pivot (90-180°)
+    .rotate(BoneName.PELVIS, 0, -1.2, 0) // Full pelvis rotation
+    .rotate(BoneName.SPINE_LOWER, 0, 0.5, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.6, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.8, 0) // Full torso follow-through
+    .position(BoneName.FOOT_R, 0.8, 0, 0) // Maximum lateral extension
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 4: Impact Peak (충격정점) - 450ms
+    .at(0.45)
+    .rotate(BoneName.HIP_R, 1.2, 0, 1.6) // Hold maximum rotation
+    .rotate(BoneName.KNEE_R, -0.1, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.4, 0, 0.3)
+    .rotate(BoneName.PELVIS, 0, -1.2, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.8, 0)
+    .position(BoneName.FOOT_R, 0.8, 0, 0)
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 5: Early Retraction (초기회수) - 550ms
+    .at(0.55)
+    .rotate(BoneName.HIP_R, 1.25, 0, 1.4) // Begin withdrawal
+    .rotate(BoneName.KNEE_R, -0.8, 0, 0) // Knee bends back
+    .rotate(BoneName.FOOT_R, 0.2, 0, 0.2)
+    .rotate(BoneName.HIP_L, 0.15, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, -1.2, 0) // Hold pivot
+    .rotate(BoneName.PELVIS, 0, -1.0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0)
+    .position(BoneName.FOOT_R, 0.5, 0, 0)
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 6: Chamber Return (준비복귀) - 600ms
+    .at(0.6)
+    .rotate(BoneName.HIP_R, 1.2, 0, 0.8) // Back to chamber
+    .rotate(BoneName.KNEE_R, -1.5, 0, 0) // Tight chamber again
+    .rotate(BoneName.FOOT_R, 0.2, 0, 0.1)
+    .rotate(BoneName.HIP_L, 0.1, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.3, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, -0.8, 0)
+    .rotate(BoneName.PELVIS, 0, -0.6, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.3, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.4, 0)
+    .position(BoneName.FOOT_R, 0, 0, 0)
+    .withGuard("HIGH_GUARD")
+    .done<MartialArtsAnimationBuilder>()
+    // Phase 7: Recovery (복귀) - 800ms
+    .at(0.8)
+    .withGuard("MIDDLE_GUARD")
+    .rotate(BoneName.HIP_R, 0, 0, 0) // Return to stance
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.HIP_L, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+    .rotate(BoneName.FOOT_L, 0, 0, 0) // Counter-pivot back
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
