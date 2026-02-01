@@ -11,6 +11,7 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import {
   MartialArtsAnimationBuilder,
   TECHNIQUE_TIMING,
@@ -25,6 +26,11 @@ import {
  *
  * Basic Taekwondo front kick targeting solar plexus.
  * Ball of foot strikes forward in a snapping motion.
+ *
+ * ENHANCED Phase 2 - Issue #4 Fix:
+ * - Added forward hip drive: pelvis moves forward 0.08m during extension
+ * - Added hip thrust rotation: 0.15 rad (8.6°) forward for power
+ * - Torso follows through with hip for additional reach
  *
  * Phases:
  * 0. Stance (기본자세): Initial fighting stance - 0ms
@@ -45,8 +51,26 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
     .withKoreanMiddleGuard() // 중단막기 - Hands protect face
     .chamber(TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber) // 준비 - 120ms knee lifts to torso
     .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
+    // ✅ Phase 2 Enhancement: Add forward hip drive for front kick power
+    .at(
+      TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber +
+        TECHNIQUE_TIMING.MEDIUM_LIGHT.extend * 0.6,
+    )
+    .position(BoneName.PELVIS, 0, 0, 0.05) // Forward hip drive progressing
+    .rotate(BoneName.PELVIS, 0.1, 0, 0) // Hip thrust forward progressing
+    .done<MartialArtsAnimationBuilder>()
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.extend) // 차기 - 180ms leg snaps forward
     .withKoreanMiddleGuard() // 중단막기 - Maintain guard during kick
+    // ✅ Phase 2 Enhancement: Peak with full hip thrust
+    .at(
+      TECHNIQUE_TIMING.MEDIUM_LIGHT.chamber +
+        TECHNIQUE_TIMING.MEDIUM_LIGHT.extend +
+        TECHNIQUE_TIMING.MEDIUM_LIGHT.peak * 0.5,
+    )
+    .position(BoneName.PELVIS, 0, 0, 0.08) // Full forward drive (Issue #4)
+    .rotate(BoneName.PELVIS, 0.15, 0, 0) // Hip thrust 8.6° (Issue #4)
+    .rotate(BoneName.SPINE_UPPER, 0.1, 0, 0) // Torso follows through
+    .done<MartialArtsAnimationBuilder>()
     .extend(TECHNIQUE_TIMING.MEDIUM_LIGHT.peak) // 정점 - 80ms hold at extension
     .withKoreanMiddleGuard() // 중단막기 - Maintain guard at peak
     .retract(TECHNIQUE_TIMING.MEDIUM_LIGHT.retract) // 회수 - 100ms return through chamber
@@ -61,14 +85,24 @@ export const FRONT_KICK_ANIMATION: SkeletalAnimation =
 /**
  * Roundhouse Kick - 돌려차기
  *
- * Signature Taekwondo kick with hip rotation.
+ * Signature Taekwondo kick with explosive hip rotation.
  * Instep or shin strikes target in circular arc.
+ *
+ * VERIFIED Phase 2 - Issue #4:
+ * ✅ Hip rotation PRESENT in roundhouseChamber(): -0.79 rad (-45°)
+ * ✅ Hip rotation PRESENT in roundhouseExtend(): -1.5 rad (-86°)
+ * ✅ Total hip rotation: 131° through full technique
+ * ✅ Standing foot pivot: 90° on ball of foot
+ * ✅ Torso counter-rotation: 0.8 rad for torque
+ *
+ * The explosive hip snap is implemented in MartialArtsAnimationBuilder
+ * helper methods with proper biomechanical sequencing.
  *
  * Phases:
  * 0. Stance (기본자세): Initial fighting stance - 0ms
- * 1. Chamber (준비): Hip rotates out, knee lifts - 150ms
- * 2. Extension (차기): Leg whips through target - 200ms
- * 3. Follow-through: Hip continues rotation - 100ms
+ * 1. Chamber (준비): Hip rotates out 45°, knee lifts - 150ms
+ * 2. Extension (차기): Leg whips through with full 86° hip snap - 200ms
+ * 3. Follow-through: Hip continues rotation, foot pivots 90° - 100ms
  * 4. Retraction (회수): Leg withdraws toward chamber - 150ms
  * 5. Recovery (복귀): Return to fighting stance - 200ms
  *
@@ -81,9 +115,9 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
     .stance() // 기본자세 - Initial stance at t=0
     .withKoreanMiddleGuard() // 중단막기 - Hands protect face
-    .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms hip rotates out
+    .roundhouseChamber(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms hip rotates out (-45°)
     .withKoreanMiddleGuard() // 중단막기 - Maintain guard during chamber
-    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 차기 - 200ms leg whips through
+    .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 차기 - 200ms leg whips through (-86° hip)
     .withKoreanHighGuard() // 상단막기 - High guard during spinning kick
     .roundhouseExtend(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
     .withKoreanHighGuard() // 상단막기 - Maintain high guard at peak
@@ -102,10 +136,19 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
  * Powerful lateral kick with heel striking target.
  * Body turns sideways for maximum reach.
  *
+ * VERIFIED Phase 2 - Issue #4:
+ * ✅ Hip rotation PRESENT in sideKickChamber(): body turns 90° sideways
+ * ✅ Hip rotation PRESENT in sideKickExtend(): -1.57 rad (-90°) maintained
+ * ✅ Lateral hip thrust for heel drive
+ * ✅ Support leg alignment and power generation
+ *
+ * The perpendicular hip rotation is implemented in MartialArtsAnimationBuilder
+ * helper methods for authentic Taekwondo side kick mechanics.
+ *
  * Phases:
  * 0. Stance (기본자세): Initial fighting stance - 0ms
- * 1. Chamber (준비): Turn sideways, knee lifts - 120ms
- * 2. Extension (차기): Heel drives through target - 200ms
+ * 1. Chamber (준비): Turn sideways 90°, knee lifts - 120ms
+ * 2. Extension (차기): Heel drives through target laterally - 200ms
  * 3. Peak (정점): Hold at extension - 80ms
  * 4. Retraction (회수): Leg returns - 150ms
  * 5. Recovery (복귀): Return to stance - 200ms
@@ -119,9 +162,9 @@ export const SIDE_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.MEDIUM_HEAVY.total)
     .stance() // 기본자세 - Initial stance at t=0
     .withKoreanMiddleGuard() // 중단막기 - Hands protect face
-    .sideKickChamber(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // 준비 - 120ms turn sideways
+    .sideKickChamber(TECHNIQUE_TIMING.MEDIUM_HEAVY.chamber) // 준비 - 120ms turn sideways 90°
     .withKoreanHighGuard() // 상단막기 - High guard when turned sideways
-    .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // 차기 - 200ms heel drives
+    .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.extend) // 차기 - 200ms heel drives laterally
     .withKoreanHighGuard() // 상단막기 - Maintain high guard during thrust
     .sideKickExtend(TECHNIQUE_TIMING.MEDIUM_HEAVY.peak) // 정점 - 80ms hold at extension
     .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
@@ -172,10 +215,20 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
  * Powerful spinning kick with heel thrust backward.
  * Body rotates 180° for surprise attack.
  *
+ * VERIFIED Phase 2 - Issue #4:
+ * ✅ Full 180° hip rotation in backKickSpin(): -1.5 rad (-86°) initial
+ * ✅ Complete 180° rotation in backKickThrust(): -3.14 rad (π radians = 180°)
+ * ✅ Support foot pivots 90° for full rotation
+ * ✅ Head looks over shoulder to track target
+ * ✅ Maximum power from glutes/hamstrings driving backward
+ *
+ * The 180° rotation is implemented in MartialArtsAnimationBuilder
+ * helper methods for authentic Taekwondo back kick mechanics.
+ *
  * Phases:
  * 0. Stance (기본자세): Initial fighting stance - 0ms
  * 1. Spin & chamber (회전+준비): Body rotates 180° and leg loads - 200ms
- * 2. Thrust (차기): Heel drives backward - 300ms
+ * 2. Thrust (차기): Heel drives backward at full rotation - 300ms
  * 3. Peak (정점): Hold at extension - 120ms
  * 4. Recovery (복귀): Complete rotation, return to stance - 380ms
  *
@@ -188,9 +241,9 @@ export const BACK_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.HEAVY.total)
     .stance() // 기본자세 - Initial stance at t=0
     .withKoreanMiddleGuard() // 중단막기 - Hands protect face
-    .backKickSpin(TECHNIQUE_TIMING.HEAVY.chamber) // 회전+준비 - 200ms body rotates and chambers
+    .backKickSpin(TECHNIQUE_TIMING.HEAVY.chamber) // 회전+준비 - 200ms body rotates 180°
     .withKoreanHighGuard() // 상단막기 - High guard during spin (exposed)
-    .backKickThrust(TECHNIQUE_TIMING.HEAVY.extend) // 차기 - 300ms heel thrusts
+    .backKickThrust(TECHNIQUE_TIMING.HEAVY.extend) // 차기 - 300ms heel thrusts at π rad
     .withKoreanHighGuard() // 상단막기 - Maintain guard during thrust
     .backKickThrust(TECHNIQUE_TIMING.HEAVY.peak) // 정점 - 120ms hold at extension
     .withKoreanHighGuard() // 상단막기 - Maintain guard at peak
