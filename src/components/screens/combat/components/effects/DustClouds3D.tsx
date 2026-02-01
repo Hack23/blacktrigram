@@ -49,7 +49,7 @@ export interface DustCloudEffect {
   /** Timestamp when effect was created */
   readonly startTime: number;
   /** Type of dust event */
-  readonly type: "footfall" | "impact" | "block" | "slide";
+  readonly type: "footfall" | "impact" | "block" | "slide" | "throw_impact";
 }
 
 /**
@@ -91,12 +91,14 @@ const DUST_CONSTANTS = {
     impact: 60,
     block: 40,
     slide: 50,
+    throw_impact: 80, // Larger dust cloud for ground slam throws (Gon techniques)
   },
   PARTICLES_MOBILE: {
     footfall: 15,
     impact: 30,
     block: 20,
     slide: 25,
+    throw_impact: 40, // Reduced for mobile
   },
   /** Particle lifetime in seconds */
   LIFETIME: 3.0,
@@ -230,7 +232,9 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     return Math.max(...Object.values(maxCounts));
   }, [isMobile]);
 
-  // Dust color - Korean earth tones
+  // Dust color - Korean earth tones (황토색 for throw impacts)
+  // Note: Individual particles could use getDustColor(type) for type-specific colors
+  // Currently using unified color for simplicity, but can be extended per-particle
   const dustColor = useMemo(() => KOREAN_COLORS.UI_STEEL_GRAY, []);
 
   // Initialize particles for new effects
