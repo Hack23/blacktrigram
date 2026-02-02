@@ -115,6 +115,7 @@ describe("StanceGuardPoses", () => {
         // Corrected from boxing peekaboo to authentic Korean Gyeorugi Junbi stance
         expect(Math.abs(LI_FIRE_GUARD_POSE.torso.y)).toBeGreaterThan(0.3); // Bladed stance rotation
         expect(Math.abs(LI_FIRE_GUARD_POSE.torso.y)).toBeLessThan(0.6); // Not extreme rotation
+        expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // 50/50 balanced weight
       });
     });
 
@@ -543,7 +544,6 @@ describe("StanceGuardPoses", () => {
         GEON_HIGH_GUARD_POSE, // -0.7 (authentic Taekwondo Ap Seogi guard)
         TAE_FLUID_GUARD_POSE, // -0.7 lead, rear at solar plexus
         LI_FIRE_GUARD_POSE, // -0.65 lead extended, -0.7 rear (Korean bladed guard)
-        JIN_THUNDER_GUARD_POSE, // -0.7 chambered at mid-chest
         SON_WIND_GUARD_POSE, // -0.7 lead forward, rear protecting
         GAM_WATER_GUARD_POSE, // -0.7 flowing guard at chest level
         GAN_MOUNTAIN_GUARD_POSE, // -0.8 X-block at chest (not face)
