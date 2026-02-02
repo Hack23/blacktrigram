@@ -77,7 +77,10 @@ beforeAll(() => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
-          this.eventListeners.get(event)!.add(handler);
+          const handlers = this.eventListeners.get(event);
+          if (handlers) {
+            handlers.add(handler);
+          }
 
           // Automatically trigger canplaythrough event after a microtask
           if (
