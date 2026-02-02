@@ -118,12 +118,12 @@ describe('Gon Technique Integration', () => {
       const result = DamageCalculator.calculateThrowImpactDamage(
         mockSsireumThrow,
         baseDamage,
-        attackerStrength
+        attackerStrength,
+        { applyVariance: false } // Disable variance for deterministic testing
       );
 
-      // Expected: 50 × 1.7 × 1.0 (strength modifier) = 85 (±5% variance)
-      expect(result.damage).toBeGreaterThan(80);
-      expect(result.damage).toBeLessThan(90);
+      // Expected: 50 × 1.7 × 1.0 (strength modifier) = 85 (no variance)
+      expect(result.damage).toBe(85);
       expect(result.isCritical).toBe(true); // High impact = critical
       expect(result.isVitalPoint).toBe(false);
       expect(result.effects).toEqual([]);
