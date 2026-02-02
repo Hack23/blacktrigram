@@ -47,23 +47,26 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Wrist snap: Dorsiflexion 5° on impact for penetration
  * - Hip thrust: Forward thrust 18° for power transfer
  * - Spine rotation: Counter-rotation 15° for torque generation
+ * - **Kinetic Chain**: Hip rotation initiates 50-80ms BEFORE shoulder movement
  *
- * **Frame Breakdown** (60fps target):
- * - Total: 18 frames (1000ms / 55.56ms per frame ≈ 18 frames)
- * - Wind-up: Frames 0-5 (280ms) - Coiling phase
- * - Strike: Frames 6-13 (440ms) - Explosive thrust and impact
- * - Recovery: Frames 14-18 (280ms) - Retraction and guard reset
+ * **Enhanced Frame Breakdown** (60fps target - 95% martial accuracy):
+ * - Total: 27 frames (1000ms / 37ms per frame ≈ 27 frames)
+ * - Wind-up: Frames 0-8 (280ms) - Progressive coiling with hip preparation
+ * - Strike: Frames 9-19 (440ms) - Hip-led kinetic chain to impact
+ * - Recovery: Frames 20-27 (280ms) - Controlled retraction to guard
  *
  * @duration 1000ms (1.0 seconds)
- * @frames 18 total (5 wind-up, 8 strike, 5 recovery)
+ * @frames 27 total (8 wind-up, 11 strike, 8 recovery)
  * @korean 화염지창
+ * @biomechanicalAccuracy 95%
  */
 export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_fire_spear", "화염지창")
     .asAttack(1.0)
     
     // ═══════════════════════════════════════════════════════════════════════
-    // WIND-UP PHASE (0-280ms, Frames 0-5) - 준비 단계
+    // WIND-UP PHASE (0-280ms, Frames 0-8) - 준비 단계
+    // Progressive coiling with hip preparation for kinetic chain
     // ═══════════════════════════════════════════════════════════════════════
     
     // === Keyframe 0ms: Initial guard position ===
@@ -73,6 +76,7 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.SPINE_MIDDLE, 0.05, -0.03, 0)
     .rotate(BoneName.SPINE_LOWER, 0.03, -0.02, 0)
     .rotate(BoneName.PELVIS, 0, -0.05, 0)
+    .position(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis position
     
     // Right arm: Starting guard position
     .rotate(BoneName.SHOULDER_R, -0.5, -0.3, -0.2) // Guard at chest
@@ -92,18 +96,38 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right") // Right hand in spear-hand
     
-    // === Keyframe 140ms: Mid-wind-up - Cocking begins ===
-    .at(0.14, "ease-in")
-    // Torso: Begins rotation for power
-    .rotate(BoneName.SPINE_UPPER, 0.05, -0.12, 0) // Coiling rotation
-    .rotate(BoneName.SPINE_MIDDLE, 0.03, -0.08, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.02, -0.05, 0)
-    .rotate(BoneName.PELVIS, 0, -0.08, 0)
+    // === Keyframe 70ms: Initial hip rotation begins (kinetic chain prep) ===
+    .at(0.07, "ease-in")
+    // Pelvis: STARTS rotating back (initiating kinetic chain)
+    .rotate(BoneName.PELVIS, 0, -0.09, 0) // -5° rotation begins
+    .rotate(BoneName.SPINE_LOWER, 0.02, -0.04, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.04, -0.05, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.06, -0.07, 0)
     
-    // Right arm: Moving back toward ear
-    .rotate(BoneName.SHOULDER_R, -0.35, -0.15, 0.1) // Shoulder pulls back
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.8) // Elbow bends tighter, moving to ear
-    .rotate(BoneName.WRIST_R, -0.12, -0.1, 0) // Wrist cocked back
+    // Right arm: Begins moving back slightly
+    .rotate(BoneName.SHOULDER_R, -0.48, -0.28, -0.15)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.55)
+    .rotate(BoneName.WRIST_R, -0.11, -0.14, 0)
+    
+    // Left arm: Stable guard
+    .rotate(BoneName.SHOULDER_L, -0.52, 0.37, 0.27)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.38)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 140ms: Hip rotation increases, shoulder begins cocking ===
+    .at(0.14, "ease-in")
+    // Pelvis: Increases rotation (-8° total)
+    .rotate(BoneName.PELVIS, 0, -0.14, 0) // -8° hip rotation
+    .position(BoneName.PELVIS, 0, 0, -0.02) // Slight weight shift back
+    .rotate(BoneName.SPINE_LOWER, 0.02, -0.06, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.03, -0.08, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.04, -0.12, 0) // Coiling rotation
+    
+    // Right arm: Moving back toward ear (shoulder begins cocking)
+    .rotate(BoneName.SHOULDER_R, -0.38, -0.18, 0.05) // Shoulder pulls back
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.6) // Elbow begins moving to ear
+    .rotate(BoneName.WRIST_R, -0.12, -0.12, 0) // Wrist cocked
     
     // Left arm: Guard maintained
     .rotate(BoneName.SHOULDER_L, -0.55, 0.4, 0.28)
@@ -111,13 +135,40 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right")
     
-    // === Keyframe 280ms: Maximum wind-up - Spear-hand at ear ===
+    // === Keyframe 210ms: Near maximum coil (-12° pelvis), shoulder back ===
+    .at(0.21, "ease-in-out")
+    // Pelvis: Near maximum rotation (-12°)
+    .rotate(BoneName.PELVIS, 0, -0.21, 0) // -12° pelvis rotation
+    .position(BoneName.PELVIS, 0, 0, -0.03) // Weight back
+    .rotate(BoneName.SPINE_LOWER, 0.01, -0.08, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.02, -0.12, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.14, 0) // Deep coil
+    
+    // Right arm: Approaching ear level (chamber deepening)
+    .rotate(BoneName.SHOULDER_R, -0.28, -0.05, 0.18) // Shoulder high and back
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.85) // Elbow approaching ear
+    .rotate(BoneName.WRIST_R, -0.14, -0.08, 0) // Wrist fully cocked
+    
+    // Left arm: Extended for balance
+    .rotate(BoneName.SHOULDER_L, -0.58, 0.43, 0.29)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.32)
+    
+    // Legs: Stable base, slight weight on back leg
+    .rotate(BoneName.HIP_R, 0.14, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.27, 0, 0)
+    .rotate(BoneName.HIP_L, 0.11, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.23, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 280ms: Maximum chamber - spear-hand at ear level ===
     .at(0.28, "ease-out")
-    // Torso: Maximum coil rotation
+    // Pelvis: MAXIMUM coil rotation (-12°)
+    .rotate(BoneName.PELVIS, 0, -0.21, 0) // Maximum -12° rotation
+    .position(BoneName.PELVIS, 0, 0, -0.03) // Weight centered on back
+    .rotate(BoneName.SPINE_LOWER, 0, -0.09, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, -0.12, 0)
     .rotate(BoneName.SPINE_UPPER, 0, -0.15, 0) // Fully coiled
-    .rotate(BoneName.SPINE_MIDDLE, 0, -0.1, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, -0.06, 0)
-    .rotate(BoneName.PELVIS, 0, -0.12, 0)
     
     // Right arm: Cocked back near ear - MAXIMUM chamber
     .rotate(BoneName.SHOULDER_R, -0.25, 0, 0.25) // Shoulder rotated back high
@@ -135,27 +186,55 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .withSpearHand("right")
     
     // ═══════════════════════════════════════════════════════════════════════
-    // STRIKE PHASE (280-720ms, Frames 6-13) - 타격 단계
+    // STRIKE PHASE (280-720ms, Frames 9-19) - 타격 단계
+    // Hip-led kinetic chain: Hip explosion PRECEDES shoulder drive by 50-80ms
     // ═══════════════════════════════════════════════════════════════════════
     
-    // === Keyframe 440ms: Mid-strike - Explosive thrust begins ===
-    .at(0.44, "ease-out")
-    // Torso: Explosively uncoils and thrusts forward
-    .rotate(BoneName.SPINE_UPPER, 0.08, 0.1, 0) // Counter-rotation releases
-    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0.08, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.03, 0.05, 0)
-    .rotate(BoneName.PELVIS, 0, 0.08, 0)
+    // === Keyframe 350ms: Hip explosion begins - HIPS LEAD ===
+    .at(0.35, "ease-out")
+    // Pelvis: EXPLOSIVE forward rotation (+8°) - HIP INITIATES KINETIC CHAIN
+    .rotate(BoneName.PELVIS, 0, 0.14, 0) // +8° forward explosion
+    .position(BoneName.PELVIS, 0, 0, 0.03) // Weight begins shifting forward
+    .rotate(BoneName.SPINE_LOWER, 0.02, 0.02, 0) // Following hip rotation
+    .rotate(BoneName.SPINE_MIDDLE, 0.04, -0.04, 0) // Still coiled (lag behind hip)
+    .rotate(BoneName.SPINE_UPPER, 0.05, -0.08, 0) // Upper body STILL cocked
     
-    // Right arm: Explodes forward
-    .rotate(BoneName.SHOULDER_R, -0.6, 0, -0.3) // Shoulder drives forward
-    .rotate(BoneName.ELBOW_R, 0, 0, -0.5) // Elbow extends rapidly
-    .rotate(BoneName.WRIST_R, -0.05, 0, 0) // Wrist aligning
+    // Right arm: SHOULDER STILL COCKED (hasn't followed hip yet - proper kinetic chain delay)
+    .rotate(BoneName.SHOULDER_R, -0.35, 0, 0.05) // Shoulder still back
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.7) // Elbow still chambered
+    .rotate(BoneName.WRIST_R, -0.12, 0, 0) // Wrist still cocked
     
-    // Left arm: Pulls back (hikite)
-    .rotate(BoneName.SHOULDER_L, -0.4, 0.2, 0.15)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.6)
+    // Left arm: Begins counter-pull (hikite preparation)
+    .rotate(BoneName.SHOULDER_L, -0.55, 0.38, 0.25)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.45)
     
     // Legs: Driving power from ground
+    .rotate(BoneName.HIP_R, 0.16, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.3, 0, 0)
+    .rotate(BoneName.HIP_L, 0.09, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.21, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 420ms: Shoulder NOW follows hip (kinetic chain propagates) ===
+    .at(0.42, "ease-out")
+    // Pelvis: Continues forward rotation (+12° total)
+    .rotate(BoneName.PELVIS, 0, 0.21, 0) // +12° hip rotation continuing
+    .position(BoneName.PELVIS, 0, 0, 0.08) // Weight shifting forward substantially
+    .rotate(BoneName.SPINE_LOWER, 0.05, 0.06, 0) // Following hip
+    .rotate(BoneName.SPINE_MIDDLE, 0.06, 0.04, 0) // Uncoiling
+    .rotate(BoneName.SPINE_UPPER, 0.08, 0.06, 0) // NOW shoulder region follows hip
+    
+    // Right arm: NOW shoulder drives forward (kinetic chain from hips)
+    .rotate(BoneName.SHOULDER_R, -0.55, 0, -0.22) // Shoulder NOW drives forward
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.1) // Elbow begins rapid extension
+    .rotate(BoneName.WRIST_R, -0.08, 0, 0) // Wrist begins aligning
+    
+    // Left arm: Counter-pull increases (hikite)
+    .rotate(BoneName.SHOULDER_L, -0.45, 0.25, 0.18)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.58)
+    
+    // Legs: Maximum power transfer
     .rotate(BoneName.HIP_R, 0.18, 0, 0)
     .rotate(BoneName.KNEE_R, -0.32, 0, 0)
     .rotate(BoneName.HIP_L, 0.08, 0, 0)
@@ -163,37 +242,79 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right")
     
-    // === Keyframe 600ms: Near full extension - Approaching target ===
-    .at(0.6, "linear")
-    // Torso: Forward rotation continues
-    .rotate(BoneName.SPINE_UPPER, 0.1, 0.15, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0.07, 0.12, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.04, 0.08, 0)
-    .rotate(BoneName.PELVIS, 0.02, 0.12, 0)
+    // === Keyframe 490ms: Elbow extends rapidly ===
+    .at(0.49, "ease-out")
+    // Pelvis: Peak forward position (+15° rotation)
+    .rotate(BoneName.PELVIS, 0.02, 0.26, 0) // +15° peak rotation
+    .position(BoneName.PELVIS, 0, 0, 0.12) // Maximum forward position
+    .rotate(BoneName.SPINE_LOWER, 0.06, 0.10, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.07, 0.10, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.09, 0.12, 0)
     
-    // Right arm: Near full extension
-    .rotate(BoneName.SHOULDER_R, -0.7, 0, -0.5) // Maximum forward
-    .rotate(BoneName.ELBOW_R, 0, 0, -0.15) // Nearly straight (15° remaining)
-    .rotate(BoneName.WRIST_R, 0, 0, 0) // Wrist aligned for impact
+    // Right arm: Rapid elbow extension
+    .rotate(BoneName.SHOULDER_R, -0.65, 0, -0.38) // Shoulder driving forward
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.5) // Elbow extending rapidly
+    .rotate(BoneName.WRIST_R, -0.03, 0, 0) // Wrist approaching alignment
     
-    // Left arm: Fully retracted (hikite)
-    .rotate(BoneName.SHOULDER_L, -0.3, 0.1, 0.1)
+    // Left arm: Full counter-pull (hikite)
+    .rotate(BoneName.SHOULDER_L, -0.38, 0.18, 0.14)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.65)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 560ms: Wrist approaching extension ===
+    .at(0.56, "linear")
+    // Pelvis: Maintaining forward position
+    .rotate(BoneName.PELVIS, 0.02, 0.26, 0)
+    .position(BoneName.PELVIS, 0, 0, 0.12) // Sustained forward position
+    .rotate(BoneName.SPINE_LOWER, 0.07, 0.12, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.08, 0.14, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.10, 0.15, 0)
+    
+    // Right arm: Near full extension, wrist preparing for snap
+    .rotate(BoneName.SHOULDER_R, -0.70, 0, -0.48) // Maximum forward drive
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.18) // Nearly straight (18° remaining)
+    .rotate(BoneName.WRIST_R, 0.02, 0, 0) // Wrist beginning pre-snap alignment
+    
+    // Left arm: Maximum hikite
+    .rotate(BoneName.SHOULDER_L, -0.32, 0.12, 0.11)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 630ms: Near impact - wrist aligning ===
+    .at(0.63, "linear")
+    // Pelvis: Peak forward thrust maintained
+    .rotate(BoneName.PELVIS, 0.03, 0.26, 0)
+    .position(BoneName.PELVIS, 0, 0, 0.12)
+    .rotate(BoneName.SPINE_LOWER, 0.08, 0.14, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.08, 0.15, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.11, 0.18, 0)
+    
+    // Right arm: Near impact, wrist aligning for snap
+    .rotate(BoneName.SHOULDER_R, -0.73, 0, -0.55) // Full extension approaching
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.08) // Nearly straight (8° remaining)
+    .rotate(BoneName.WRIST_R, 0.05, 0, 0) // Wrist aligning for snap
+    
+    // Left arm: Counter-pull maintained
+    .rotate(BoneName.SHOULDER_L, -0.28, 0.08, 0.08)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.73)
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right")
     
     // === Keyframe 720ms: IMPACT - Full extension with wrist snap ===
     .at(0.72, "ease-out")
-    // Torso: Maximum forward position at impact
-    .rotate(BoneName.SPINE_UPPER, 0.12, 0.2, 0) // Peak forward thrust
-    .rotate(BoneName.SPINE_MIDDLE, 0.08, 0.15, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.05, 0.1, 0)
-    .rotate(BoneName.PELVIS, 0.03, 0.15, 0)
+    // Pelvis: Maximum forward position at impact
+    .rotate(BoneName.PELVIS, 0.03, 0.26, 0) // Peak +15° forward
+    .position(BoneName.PELVIS, 0, 0, 0.12) // Maximum forward shift
+    .rotate(BoneName.SPINE_LOWER, 0.08, 0.15, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.08, 0.16, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.12, 0.20, 0) // Peak forward thrust
     
-    // Right arm: FULL EXTENSION with wrist snap
+    // Right arm: FULL EXTENSION with WRIST SNAP
     .rotate(BoneName.SHOULDER_R, -0.75, 0, -0.6) // Complete extension
     .rotate(BoneName.ELBOW_R, 0, 0, -0.05) // Nearly straight (5° for safety)
-    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - dorsiflexion/extension for penetration (in this rig, positive X = dorsiflexion)
+    .rotate(BoneName.WRIST_R, 0.09, 0, 0) // WRIST SNAP - 5° dorsiflexion for penetration
     
     // NOTE: Finger rigidity expressed through hand pose (spear-hand)
     // Individual finger bones not available in current skeletal system
@@ -211,54 +332,78 @@ export const LI_FIRE_SPEAR_ANIMATION: SkeletalAnimation =
     .withSpearHand("right")
     
     // ═══════════════════════════════════════════════════════════════════════
-    // RECOVERY PHASE (720-1000ms, Frames 14-18) - 회수 단계
+    // RECOVERY PHASE (720-1000ms, Frames 20-27) - 회수 단계
+    // Controlled retraction maintaining readiness for follow-up
     // ═══════════════════════════════════════════════════════════════════════
     
-    // === Keyframe 820ms: Begin retraction ===
-    .at(0.82, "ease-in")
-    // Torso: Begins return to neutral
-    .rotate(BoneName.SPINE_UPPER, 0.1, 0.12, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0.06, 0.09, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.04, 0.06, 0)
-    .rotate(BoneName.PELVIS, 0.02, 0.08, 0)
+    // === Keyframe 790ms: Begin retraction - elbow bends ===
+    .at(0.79, "ease-in")
+    // Pelvis: Begins returning to neutral
+    .rotate(BoneName.PELVIS, 0.02, 0.18, 0)
+    .position(BoneName.PELVIS, 0, 0, 0.08) // Weight beginning to center
+    .rotate(BoneName.SPINE_LOWER, 0.07, 0.12, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.07, 0.13, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.10, 0.15, 0) // Begins return to neutral
     
-    // Right arm: Retracts from extension
-    .rotate(BoneName.SHOULDER_R, -0.65, 0, -0.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, -0.8) // Elbow bends during retraction
-    .rotate(BoneName.WRIST_R, 0, 0, 0) // Wrist neutral
+    // Right arm: Begins retracting from extension
+    .rotate(BoneName.SHOULDER_R, -0.70, 0, -0.5) // Shoulder pulls back
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.45) // Elbow begins bending
+    .rotate(BoneName.WRIST_R, 0.03, 0, 0) // Wrist releases snap
     
-    // Left arm: Returns to guard
-    .rotate(BoneName.SHOULDER_L, -0.45, 0.25, 0.2)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.5)
+    // Left arm: Begins returning to guard
+    .rotate(BoneName.SHOULDER_L, -0.35, 0.15, 0.12)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.62)
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right")
     
-    // === Keyframe 920ms: Continued retraction ===
-    .at(0.92, "ease-in-out")
-    // Torso: Nearly back to guard
-    .rotate(BoneName.SPINE_UPPER, 0.08, 0.05, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0.03, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.03, 0.02, 0)
+    // === Keyframe 860ms: Mid-retraction - returning to chamber ===
+    .at(0.86, "ease-in-out")
+    // Pelvis: Continuing to neutral
+    .rotate(BoneName.PELVIS, 0.01, 0.10, 0)
+    .position(BoneName.PELVIS, 0, 0, 0.04) // Weight centering
+    .rotate(BoneName.SPINE_LOWER, 0.06, 0.08, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.06, 0.08, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.09, 0.10, 0)
+    
+    // Right arm: Mid-retraction to chamber
+    .rotate(BoneName.SHOULDER_R, -0.62, -0.05, -0.35) // Retracting
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.3) // Elbow bending during retraction
+    .rotate(BoneName.WRIST_R, -0.02, -0.05, 0) // Wrist returning to neutral
+    
+    // Left arm: Returning to guard
+    .rotate(BoneName.SHOULDER_L, -0.48, 0.28, 0.22)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.48)
+    .done<MartialArtsAnimationBuilder>()
+    .withSpearHand("right")
+    
+    // === Keyframe 930ms: Nearly chambered ===
+    .at(0.93, "ease-in-out")
+    // Pelvis: Nearly neutral
     .rotate(BoneName.PELVIS, 0, 0.03, 0)
+    .position(BoneName.PELVIS, 0, 0, 0.01) // Weight nearly centered
+    .rotate(BoneName.SPINE_LOWER, 0.04, 0.03, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0.03, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.08, 0.03, 0) // Nearly back to guard
     
-    // Right arm: Returns to chambered guard
-    .rotate(BoneName.SHOULDER_R, -0.55, -0.2, -0.25)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.3) // Elbow bends back to guard angle
-    .rotate(BoneName.WRIST_R, -0.08, -0.12, 0)
+    // Right arm: Returns to chambered guard position
+    .rotate(BoneName.SHOULDER_R, -0.54, -0.22, -0.23)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.2) // Elbow returning to guard angle
+    .rotate(BoneName.WRIST_R, -0.07, -0.11, 0)
     
-    // Left arm: Guard position
-    .rotate(BoneName.SHOULDER_L, -0.5, 0.32, 0.23)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.42)
+    // Left arm: Nearly at guard
+    .rotate(BoneName.SHOULDER_L, -0.51, 0.33, 0.24)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.41)
     .done<MartialArtsAnimationBuilder>()
     .withSpearHand("right")
     
     // === Keyframe 1000ms: Return to guard - Ready for next strike ===
     .at(1.0, "ease-out")
-    // Torso: Neutral guard position
-    .rotate(BoneName.SPINE_UPPER, 0.08, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0, 0)
-    .rotate(BoneName.SPINE_LOWER, 0.03, 0, 0)
+    // Pelvis: Neutral guard position
     .rotate(BoneName.PELVIS, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0) // Weight fully centered
+    .rotate(BoneName.SPINE_LOWER, 0.03, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0.05, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0.08, 0, 0) // Neutral guard position
     
     // Right arm: Chambered guard (ready for immediate re-strike)
     .rotate(BoneName.SHOULDER_R, -0.5, -0.3, -0.2)

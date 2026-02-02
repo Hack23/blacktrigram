@@ -61,11 +61,11 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     .asAttack(1.4)
     
     // ═══════════════════════════════════════════════════════════════════════
-    // RECEIVE PHASE (수용 단계) - 0-350ms, frames 0-6
-    // Accept opponent's attack with yielding motion
+    // RECEIVE PHASE (수용 단계) - 0-350ms
+    // Accept opponent's attack with yielding motion (progressive water-like absorption)
     // ═══════════════════════════════════════════════════════════════════════
     
-    // Frame 0: Guard position, receiving incoming attack
+    // Frame 0: Guard position, ready to receive incoming attack
     .at(0)
     .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Upright spine
@@ -78,43 +78,158 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     .position(BoneName.PELVIS, 0, 0, 0)
     .done<MartialArtsAnimationBuilder>()
     
-    // Frame 6 (350ms): Maximum yield - accept force
+    // Frame 1 (90ms): Initial contact - begin yielding
+    .at(0.09)
+    
+    .rotate(BoneName.PELVIS, 0, -0.035, -0.017) // 0°, -2°, -1° (begin yield away)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.035, 0) // Spine begins yield
+    .rotate(BoneName.SHOULDER_L, 0.19, 0.29, -0.19) // 11°, 17°, -11° (initial absorption)
+    .rotate(BoneName.SHOULDER_R, 0.10, -0.15, 0.19) // Support begins
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.75) // -43° (arm begins absorbing)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.57) // -33°
+    .rotate(BoneName.WRIST_L, 0.03, 0, -0.19) // 2°, 0°, -11° (palm begins guiding)
+    .rotate(BoneName.WRIST_R, 0.02, 0, 0.03)
+    .rotate(BoneName.KNEE_L, -0.09, 0, 0) // -5° (legs begin absorbing)
+    .rotate(BoneName.KNEE_R, -0.05, 0, 0) // -3°
+    .position(BoneName.PELVIS, -0.01, 0, -0.01) // Slight back shift
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 2 (180ms): Accepting force - progressive yield
+    .at(0.18)
+    
+    .rotate(BoneName.PELVIS, 0, -0.087, -0.035) // 0°, -5°, -2° (progressive yield)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.14, 0) // 0°, -8°, 0° (spine yields more)
+    .rotate(BoneName.SHOULDER_L, 0.22, 0.31, -0.20) // 13°, 18°, -11° (accepting force)
+    .rotate(BoneName.SHOULDER_R, 0.11, -0.16, 0.20) // Support position
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.79) // -45° (arm absorbs more)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.61) // -35° (support absorbs)
+    .rotate(BoneName.WRIST_L, 0.05, 0, -0.21) // 3°, 0°, -12° (palm guides)
+    .rotate(BoneName.WRIST_R, 0.03, 0, 0.05)
+    .rotate(BoneName.KNEE_L, -0.17, 0, 0) // -10° (legs absorb)
+    .rotate(BoneName.KNEE_R, -0.12, 0, 0) // -7°
+    .position(BoneName.PELVIS, -0.015, -0.005, -0.01) // Weight shifts back
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 3 (270ms): Maximum absorption - peak yield
+    .at(0.27)
+    
+    .rotate(BoneName.PELVIS, 0, -0.14, -0.052) // 0°, -8°, -3° (maximum yield)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.21, 0) // 0°, -12°, 0° (peak yield)
+    .rotate(BoneName.SHOULDER_L, 0.24, 0.33, -0.21) // 14°, 19°, -12° (maximum absorption)
+    .rotate(BoneName.SHOULDER_R, 0.11, -0.165, 0.21) // Support fully engaged
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.83) // -48° (maximum absorption)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.66) // -38°
+    .rotate(BoneName.WRIST_L, 0.07, 0, -0.24) // 4°, 0°, -14° (palm controls)
+    .rotate(BoneName.WRIST_R, 0.04, 0, 0.07)
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (legs absorb fully)
+    .rotate(BoneName.KNEE_R, -0.19, 0, 0) // -11°
+    .position(BoneName.PELVIS, -0.025, -0.008, -0.015) // Weight back
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 4 (350ms): Peak yield - ready to redirect
     .at(0.35)
-    .rotate(BoneName.PELVIS, 0, -0.14, -0.05) // 0°, -8°, -3° (weight shifts away)
-    .rotate(BoneName.SPINE_UPPER, 0, -0.17, 0) // 0°, ~-10°, 0° (spine yields away)
-    .rotate(BoneName.SHOULDER_L, 0.26, 0.35, -0.21) // 15°, 20°, -12° (accept force)
+    
+    .rotate(BoneName.PELVIS, 0, -0.14, -0.052) // 0°, -8°, -3° (peak yield maintained)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.20, 0) // 0°, -11.5°, 0° (ready to redirect, within biomechanical limits)
+    .rotate(BoneName.SHOULDER_L, 0.26, 0.35, -0.21) // 15°, 20°, -12° (force accepted)
     .rotate(BoneName.SHOULDER_R, 0.12, -0.17, 0.21) // Supporting position
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.87) // -50° (arm absorbs)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.70) // -40° (support absorbs)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.87) // -50° (arm ready)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.70) // -40° (support ready)
     .rotate(BoneName.WRIST_L, 0.09, 0, -0.26) // 5°, 0°, -15° (palm guides)
-    .rotate(BoneName.WRIST_R, 0.05, 0, 0.09) // Slight adjustment
-    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (legs absorb)
+    .rotate(BoneName.WRIST_R, 0.05, 0, 0.09) // Positioned for redirect
+    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (stable base)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15°
-    .position(BoneName.PELVIS, -0.03, -0.01, -0.02) // Slight yield back
+    .position(BoneName.PELVIS, -0.03, -0.01, -0.02) // Peak yield position
     .done<MartialArtsAnimationBuilder>()
     
     // ═══════════════════════════════════════════════════════════════════════
-    // REDIRECT PHASE (전환 단계) - 350-950ms, frames 7-16
-    // Circular redirection of opponent's force
+    // REDIRECT PHASE (전환 단계) - 350-950ms
+    // Circular redirection of opponent's force (smooth water-like circular motion)
     // ═══════════════════════════════════════════════════════════════════════
     
-    // Frame 11 (650ms): Begin circular redirection
+    // Frame 5 (450ms): Begin circular motion - transition from yield to redirect
+    .at(0.45)
+    
+    .rotate(BoneName.PELVIS, 0, -0.17, -0.07) // 0°, -10°, -4° (begin circular rotation)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.31, 0) // 0°, -18°, 0° (spine begins circular motion)
+    .rotate(BoneName.SHOULDER_L, 0.35, 0.44, -0.24) // 20°, 25°, -14° (begin guiding)
+    .rotate(BoneName.SHOULDER_R, 0.26, -0.17, 0.19) // 15°, -10°, 11° (right hand begins)
+    .rotate(BoneName.ELBOW_L, 0, 0.14, -0.96) // 0°, 8°, -55° (circular control begins)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.70) // -40° (support begins control)
+    .rotate(BoneName.WRIST_L, 0.12, 0.05, -0.29) // 7°, 3°, -17° (palm begins circular guide)
+    .rotate(BoneName.WRIST_R, 0.07, -0.03, 0.12) // Guiding motion
+    .rotate(BoneName.KNEE_L, -0.31, 0, 0) // -18° (legs adjust)
+    .rotate(BoneName.KNEE_R, -0.31, 0, 0) // -18°
+    .position(BoneName.PELVIS, -0.04, -0.01, -0.025) // Begin circular path
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 6 (550ms): Circular path continues - both hands guide opponent
+    .at(0.55)
+    
+    .rotate(BoneName.PELVIS, 0, -0.22, -0.08) // 0°, -13°, -5° (circular motion continues)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.33, 0) // 0°, -19°, 0° (circular path)
+    .rotate(BoneName.SHOULDER_L, 0.40, 0.48, -0.25) // 23°, 27°, -14° (guiding in circle)
+    .rotate(BoneName.SHOULDER_R, 0.31, -0.17, 0.19) // 18°, -10°, 11° (both hands active)
+    .rotate(BoneName.ELBOW_L, 0, 0.20, -1.00) // 0°, 11°, -57° (circular control)
+    .rotate(BoneName.ELBOW_R, 0, 0.09, 0.79) // 0°, 5°, -45° (support guides)
+    .rotate(BoneName.WRIST_L, 0.14, 0.07, -0.31) // 8°, 4°, -18° (palm controls)
+    .rotate(BoneName.WRIST_R, 0.08, -0.04, 0.12) // Guiding motion
+    .rotate(BoneName.KNEE_L, -0.28, 0, 0) // -16° (stable circular base)
+    .rotate(BoneName.KNEE_R, -0.33, 0, 0) // -19°
+    .position(BoneName.PELVIS, -0.045, -0.01, -0.027) // Continue circular path
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 7 (650ms): Mid-circle - maximum rotation achieved
     .at(0.65)
-    .rotate(BoneName.PELVIS, 0, -0.26, -0.09) // 0°, -15°, -5° (circular motion begins)
-    .rotate(BoneName.SPINE_UPPER, 0, -0.35, 0) // 0°, -20°, 0° (circular redirection)
+    
+    .rotate(BoneName.PELVIS, 0, -0.26, -0.09) // 0°, -15°, -5° (mid-circular motion)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.38, 0) // 0°, -22°, 0° (maximum circular rotation)
     .rotate(BoneName.SHOULDER_L, 0.44, 0.52, -0.26) // 25°, 30°, -15° (guide in circle)
-    .rotate(BoneName.SHOULDER_R, 0.35, -0.17, 0.17) // 20°, -10°, 10° (right hand joins)
+    .rotate(BoneName.SHOULDER_R, 0.35, -0.17, 0.17) // 20°, -10°, 10° (right hand joined)
     .rotate(BoneName.ELBOW_L, 0, 0.26, -1.05) // 0°, 15°, -60° (circular control)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.70) // -40° (support control)
+    .rotate(BoneName.ELBOW_R, 0, 0.14, 0.83) // 0°, 8°, -48° (support control)
     .rotate(BoneName.WRIST_L, 0.17, 0.09, -0.35) // 10°, 5°, -20° (palm controls)
     .rotate(BoneName.WRIST_R, 0.09, -0.05, 0.14) // Guiding motion
-    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (legs stable)
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (stable circular base)
     .rotate(BoneName.KNEE_R, -0.35, 0, 0) // -20°
-    .position(BoneName.PELVIS, -0.05, -0.01, -0.03) // Continue circular path
+    .position(BoneName.PELVIS, -0.05, -0.01, -0.03) // Mid-circular path
     .done<MartialArtsAnimationBuilder>()
     
-    // Frame 16 (950ms): Maximum redirection - force fully redirected
+    // Frame 8 (750ms): Completing circle - transitioning to counter
+    .at(0.75)
+    
+    .rotate(BoneName.PELVIS, 0, -0.31, -0.105) // 0°, -18°, -6° (circle nearing completion)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.40, 0) // 0°, -23°, 0° (continuing circular path)
+    .rotate(BoneName.SHOULDER_L, 0.48, 0.57, -0.28) // 27°, 33°, -16° (circle completing)
+    .rotate(BoneName.SHOULDER_R, 0.40, -0.22, 0.19) // 23°, -13°, 11° (both hands control)
+    .rotate(BoneName.ELBOW_L, 0, 0.31, -1.14) // 0°, 18°, -65° (near full circle)
+    .rotate(BoneName.ELBOW_R, 0, 0.14, 0.85) // 0°, 8°, -49° (support engaged)
+    .rotate(BoneName.WRIST_L, 0.19, 0.10, -0.38) // 11°, 6°, -22° (control maintained)
+    .rotate(BoneName.WRIST_R, 0.12, -0.07, 0.16)
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (stable)
+    .rotate(BoneName.KNEE_R, -0.35, 0, 0) // -20°
+    .position(BoneName.PELVIS, -0.055, -0.01, -0.035) // Completing circular path
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 9 (850ms): Circle complete - momentum redirected
+    .at(0.85)
+    
+    .rotate(BoneName.PELVIS, 0, -0.33, -0.11) // 0°, -19°, -6° (circle complete)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.42, 0) // 0°, -24°, 0° (ready for counter)
+    .rotate(BoneName.SHOULDER_L, 0.50, 0.59, -0.29) // 29°, 34°, -17° (control maintained)
+    .rotate(BoneName.SHOULDER_R, 0.42, -0.24, 0.20) // 24°, -14°, 11° (both hands ready)
+    .rotate(BoneName.ELBOW_L, 0, 0.33, -1.18) // 0°, 19°, -68° (circle complete)
+    .rotate(BoneName.ELBOW_R, 0, 0.16, 0.87) // 0°, 9°, -50° (support engaged)
+    .rotate(BoneName.WRIST_L, 0.20, 0.11, -0.39) // 11°, 6°, -22° (control position)
+    .rotate(BoneName.WRIST_R, 0.13, -0.08, 0.17)
+    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // Stable base
+    .rotate(BoneName.KNEE_R, -0.35, 0, 0)
+    .position(BoneName.PELVIS, -0.058, -0.01, -0.038) // Circle complete
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 10 (950ms): Ready for counter - maximum redirection
     .at(0.95)
+    
     .rotate(BoneName.PELVIS, 0, -0.35, -0.12) // 0°, -20°, -7° (maximum rotation)
     .rotate(BoneName.SPINE_UPPER, 0, -0.44, 0) // 0°, -25°, 0° (maximum redirection)
     .rotate(BoneName.SHOULDER_L, 0.52, 0.61, -0.31) // 30°, 35°, -18° (maximum control)
@@ -129,14 +244,31 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     
     // ═══════════════════════════════════════════════════════════════════════
-    // COUNTER PHASE (반격 단계) - 950-1400ms, frames 17-24
-    // Flow into counter using opponent's redirected momentum
+    // COUNTER PHASE (반격 단계) - 950-1400ms
+    // Flow into counter using opponent's redirected momentum (reverse rotation)
     // ═══════════════════════════════════════════════════════════════════════
     
-    // Frame 20 (1150ms): Begin counter flow
+    // Frame 11 (1050ms): Counter begins - reverse rotation with opponent's momentum
+    .at(1.05)
+    
+    .rotate(BoneName.PELVIS, 0, -0.14, 0) // 0°, -8°, 0° (beginning reverse)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.09, 0) // 0°, -5°, 0° (transitioning)
+    .rotate(BoneName.SHOULDER_L, 0.57, 0.44, -0.21) // 33°, 25°, -12° (begin counter push)
+    .rotate(BoneName.SHOULDER_R, 0.61, -0.26, 0.17) // 35°, -15°, 10° (begin counter pull)
+    .rotate(BoneName.ELBOW_L, 0, 0.14, -0.70) // 0°, 8°, -40° (beginning extension)
+    .rotate(BoneName.ELBOW_R, 0, 0.09, 0.61) // 0°, 5°, -35° (beginning pull)
+    .rotate(BoneName.WRIST_L, 0.17, 0.07, -0.21) // 10°, 4°, -12° (control maintained)
+    .rotate(BoneName.WRIST_R, 0.14, -0.07, 0.17)
+    .rotate(BoneName.KNEE_L, -0.31, 0, 0) // -18° (legs begin drive)
+    .rotate(BoneName.KNEE_R, -0.28, 0, 0) // -16°
+    .position(BoneName.PELVIS, -0.04, -0.005, -0.025) // Begin return to center
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 12 (1150ms): Push-pull motion - both hands active
     .at(1.15)
-    .rotate(BoneName.PELVIS, 0, 0.17, 0.09) // 0°, 10°, 5° (reverse to counter)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.17, 0) // 0°, 10°, 0° (flow into counter)
+    
+    .rotate(BoneName.PELVIS, 0, 0.21, 0.09) // 0°, 12°, 5° (reverse rotation)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.21, 0) // 0°, 12°, 0° (flow into counter)
     .rotate(BoneName.SHOULDER_L, 0.61, 0.35, -0.17) // 35°, 20°, -10° (push motion)
     .rotate(BoneName.SHOULDER_R, 0.70, -0.35, 0.14) // 40°, -20°, 8° (pull motion)
     .rotate(BoneName.ELBOW_L, 0, 0, -0.52) // -30° (extending for counter)
@@ -145,11 +277,44 @@ export const GAM_WATER_FLOW_COUNTER_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.WRIST_R, 0.12, -0.07, 0.14)
     .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (legs drive counter)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15°
-    .position(BoneName.PELVIS, -0.03, 0, -0.02) // Return toward center
+    .position(BoneName.PELVIS, -0.02, 0, -0.01) // Return toward center
     .done<MartialArtsAnimationBuilder>()
     
-    // Frame 24 (1400ms): Complete counter - opponent off-balance/down
+    // Frame 13 (1250ms): Maximum counter force - peak power delivery
+    .at(1.25)
+    
+    .rotate(BoneName.PELVIS, 0, 0.26, 0.10) // 0°, 15°, 6° (maximum counter rotation)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.28, 0) // 0°, 16°, 0° (maximum counter force)
+    .rotate(BoneName.SHOULDER_L, 0.66, 0.31, -0.16) // 38°, 18°, -9° (maximum push)
+    .rotate(BoneName.SHOULDER_R, 0.75, -0.31, 0.16) // 43°, -18°, 9° (maximum pull)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.48) // -27° (near full extension)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.40) // -23° (pulling hard)
+    .rotate(BoneName.WRIST_L, 0.16, 0.06, -0.14) // Maximum push position
+    .rotate(BoneName.WRIST_R, 0.14, -0.08, 0.16)
+    .rotate(BoneName.KNEE_L, -0.33, 0, 0) // -19° (legs peak power)
+    .rotate(BoneName.KNEE_R, -0.28, 0, 0) // -16°
+    .position(BoneName.PELVIS, -0.01, 0, -0.005) // Nearly centered
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 14 (1350ms): Follow-through - maintaining control
+    .at(1.35)
+    
+    .rotate(BoneName.PELVIS, 0, 0.30, 0.105) // 0°, 17°, 6° (follow-through)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.33, 0) // 0°, 19°, 0° (follow-through)
+    .rotate(BoneName.SHOULDER_L, 0.68, 0.28, -0.15) // 39°, 16°, -9° (control maintained)
+    .rotate(BoneName.SHOULDER_R, 0.77, -0.28, 0.16) // 44°, -16°, 9° (control maintained)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.46) // -26° (control extension)
+    .rotate(BoneName.ELBOW_R, 0, 0, 0.37) // -21° (control pull)
+    .rotate(BoneName.WRIST_L, 0.17, 0.07, -0.12) // Control grip applied
+    .rotate(BoneName.WRIST_R, 0.14, -0.09, 0.17)
+    .rotate(BoneName.KNEE_L, -0.28, 0, 0) // -16° (stabilizing)
+    .rotate(BoneName.KNEE_R, -0.31, 0, 0) // -18°
+    .position(BoneName.PELVIS, -0.005, 0, -0.003) // Nearly centered
+    .done<MartialArtsAnimationBuilder>()
+    
+    // Frame 15 (1400ms): Adaptive guard position - opponent controlled/down
     .at(1.4)
+    
     .rotate(BoneName.PELVIS, 0, 0.314, 0.105) // 0°, ~18°, ~6° (full counter rotation)
     .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0) // 0°, 20°, 0° (complete counter)
     .rotate(BoneName.SHOULDER_L, 0.70, 0.26, -0.14) // 40°, 15°, -8° (counter complete)
