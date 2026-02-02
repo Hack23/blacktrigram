@@ -167,6 +167,12 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
   onEffectComplete,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
+  
+  // PERFORMANCE: Reuse materials instead of creating on every render
+  const materialsRef = useRef<Map<number, THREE.MeshBasicMaterial>>(new Map());
+  
+  // PERFORMANCE: Reuse geometries instead of creating on every render
+  const geometriesRef = useRef<Map<string, THREE.RingGeometry>>(new Map());
 
   // Create ring meshes for each effect
   const ringMeshes = useMemo(() => {
@@ -179,11 +185,59 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return effects.map((effect) => ({
       effectId: effect.id,
       position: effect.position,
-      flowType: effect.flowType,
-      rings: createRippleRings(effect, ringCount),
       color: getFlowTypeColor(effect.flowType),
+      rings: createRippleRings(
+        effect,
+        ringCount
+      ),
     }));
   }, [effects, enabled, isMobile]);
+  
+  // Cleanup materials and geometries on unmount
+  React.useEffect(() => {
+    return () => {
+      // Dispose all cached materials
+      materialsRef.current.forEach((material) => material.dispose());
+      materialsRef.current.clear();
+      
+      // Dispose all cached geometries
+      geometriesRef.current.forEach((geometry) => geometry.dispose());
+      geometriesRef.current.clear();
+    };
+  }, []);
+  
+  // Get or create reusable material for a color
+  const getMaterial = React.useCallback((color: number): THREE.MeshBasicMaterial => {
+    if (!materialsRef.current.has(color)) {
+      materialsRef.current.set(
+        color,
+        new THREE.MeshBasicMaterial({
+          color,
+          transparent: true,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        })
+      );
+    }
+    return materialsRef.current.get(color)!;
+  }, []);
+  
+  // Get or create reusable geometry for a radius
+  const getGeometry = React.useCallback((radius: number): THREE.RingGeometry => {
+    const key = `${radius.toFixed(3)}`;
+    if (!geometriesRef.current.has(key)) {
+      geometriesRef.current.set(
+        key,
+        new THREE.RingGeometry(
+          radius,
+          radius + RIPPLE_CONSTANTS.RING_THICKNESS,
+          RIPPLE_CONSTANTS.RING_SEGMENTS
+        )
+      );
+    }
+    return geometriesRef.current.get(key)!;
+  }, []);
 
   // Physics update loop
   useFrame((_state, delta) => {
@@ -255,6 +309,13 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
             RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
             ring.opacity;
 
+          // PERFORMANCE: Reuse geometry and material instead of creating new
+          const geometry = getGeometry(ring.radius);
+          const material = getMaterial(meshData.color);
+          
+          // Update material opacity (not recreating material)
+          material.opacity = ring.opacity * 0.6;
+
           return (
             <mesh
               key={`${meshData.effectId}-ring-${ringIndex}`}
@@ -264,23 +325,9 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
                 meshData.position[2],
               ]}
               rotation={[-Math.PI / 2, 0, 0]} // Horizontal ring
-            >
-              <ringGeometry
-                args={[
-                  ring.radius,
-                  ring.radius + RIPPLE_CONSTANTS.RING_THICKNESS,
-                  RIPPLE_CONSTANTS.RING_SEGMENTS,
-                ]}
-              />
-              <meshBasicMaterial
-                color={meshData.color}
-                transparent
-                opacity={ring.opacity * 0.6}
-                side={THREE.DoubleSide}
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
+              geometry={geometry}
+              material={material}
+            />
           );
         })
       )}

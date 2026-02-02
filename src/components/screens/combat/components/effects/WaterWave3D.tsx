@@ -29,7 +29,7 @@
 
 import { Points, PointMaterial } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../../types/constants";
 import { ThreeObjectPools } from "../../../../../utils/threeObjectPool";
@@ -287,6 +287,29 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       };
     });
   }, [effects, enabled, isMobile]);
+  
+  // PERFORMANCE: Reuse positions arrays instead of creating on every render
+  const positionsRef = useRef<Map<string, Float32Array>>(new Map());
+  
+  // Cleanup pooled vectors on unmount or when effects change
+  useEffect(() => {
+    return () => {
+      // Release all pooled vectors from all particle systems
+      particleSystems.forEach((system) => {
+        system.particles.forEach((particle) => {
+          if (particle.isPooled) {
+            ThreeObjectPools.vector3.release(particle.position);
+            ThreeObjectPools.vector3.release(particle.velocity);
+            ThreeObjectPools.vector3.release(particle.curveTangent);
+            particle.isPooled = false; // Mark as released to prevent double-release
+          }
+        });
+      });
+      
+      // Clear positions cache
+      positionsRef.current.clear();
+    };
+  }, [particleSystems]);
 
   // Physics update loop
   useFrame((_state, delta) => {
@@ -296,8 +319,11 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
 
     particleSystems.forEach((system) => {
       let allExpired = true;
+      
+      // Track indices of expired particles for filtering
+      const expiredIndices: number[] = [];
 
-      system.particles.forEach((particle) => {
+      system.particles.forEach((particle, index) => {
         particle.age += safeDelta;
 
         if (particle.age < particle.lifetime) {
@@ -318,18 +344,49 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
 
           // Update position
           particle.position.addScaledVector(particle.velocity, safeDelta);
-        } else if (particle.isPooled) {
-          // Release pooled vectors when particle expires
+        } else {
+          // Mark particle as expired (will be cleaned up later)
+          expiredIndices.push(index);
+        }
+      });
+      
+      // Release pooled vectors for expired particles and remove them
+      // Do this in reverse order to avoid index shifting issues
+      for (let i = expiredIndices.length - 1; i >= 0; i--) {
+        const particle = system.particles[expiredIndices[i]];
+        if (particle.isPooled) {
           ThreeObjectPools.vector3.release(particle.position);
           ThreeObjectPools.vector3.release(particle.velocity);
           ThreeObjectPools.vector3.release(particle.curveTangent);
+          particle.isPooled = false; // Prevent double-release
         }
-      });
+        system.particles.splice(expiredIndices[i], 1);
+      }
 
       // Mark effect complete if all particles expired
       if (allExpired && onEffectComplete) {
         onEffectComplete(system.effectId);
       }
+    });
+    
+    // PERFORMANCE: Update positions arrays in useFrame instead of render
+    particleSystems.forEach((system) => {
+      const requiredLength = system.particles.length * 3;
+      let positions = positionsRef.current.get(system.effectId);
+      
+      // Create or resize positions array if needed
+      if (!positions || positions.length !== requiredLength) {
+        positions = new Float32Array(requiredLength);
+        positionsRef.current.set(system.effectId, positions);
+      }
+      
+      // Update positions from active particles
+      system.particles.forEach((particle, i) => {
+        const i3 = i * 3;
+        positions![i3] = particle.position.x;
+        positions![i3 + 1] = particle.position.y;
+        positions![i3 + 2] = particle.position.z;
+      });
     });
   });
 
@@ -340,14 +397,9 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   return (
     <>
       {particleSystems.map((system) => {
-        // Build positions array for Points geometry
-        const positions = new Float32Array(system.particles.length * 3);
-        system.particles.forEach((particle, i) => {
-          const i3 = i * 3;
-          positions[i3] = particle.position.x;
-          positions[i3 + 1] = particle.position.y;
-          positions[i3 + 2] = particle.position.z;
-        });
+        // PERFORMANCE: Use cached positions array instead of creating new
+        const positions = positionsRef.current.get(system.effectId) 
+          || new Float32Array(system.particles.length * 3);
 
         return (
           <Points key={system.effectId} positions={positions}>

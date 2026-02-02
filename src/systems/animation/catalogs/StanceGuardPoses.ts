@@ -58,13 +58,13 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
     // ENHANCED: Proper Taekwondo guard - hands protect face, elbows protect body
     // Lead hand slightly forward for probing and deflection
     shoulder: new THREE.Euler(-0.95, 0.25, 0.45), // Shoulder relaxed but ready, slight forward rotation
-    elbow: new THREE.Euler(0.05, 0, -2.3), // Elbow TIGHT to body, slight internal rotation for protection
+    elbow: new THREE.Euler(0.05, 0, -2.18), // Elbow TIGHT to body, within ANATOMICAL_LIMITS.ELBOW.MAX_BEND (125°)
     wrist: new THREE.Euler(0.35, 0.15, 0.1), // Fist angled naturally, thumb up, ready to punch
   },
   rightArm: {
     // Rear hand guards the jaw, ready for powerful cross
     shoulder: new THREE.Euler(-1.05, -0.20, -0.40), // Rear shoulder slightly back, coiled for power
-    elbow: new THREE.Euler(-0.05, 0, 2.25), // Elbow tight, protecting liver/ribs
+    elbow: new THREE.Euler(-0.05, 0, 2.18), // Elbow tight, within ANATOMICAL_LIMITS.ELBOW.MAX_BEND (125°)
     wrist: new THREE.Euler(0.30, -0.18, -0.08), // Fist at jaw level, natural angle
   },
   torso: new THREE.Euler(0.08, -0.25, 0.02), // ENHANCED: Slight forward lean with micro-rotation for balance
