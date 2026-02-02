@@ -321,10 +321,9 @@ export function usePlayerAnimation(
       getCurrentGuardStance,
       reset,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values trigger recalculation after forceUpdate
     [
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentional: ref values trigger recalculation after forceUpdate
       prevStateRef.current,
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentional: ref values trigger recalculation after forceUpdate
       prevFrameRef.current,
       update,
       transitionTo,

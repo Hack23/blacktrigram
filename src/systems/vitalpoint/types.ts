@@ -287,6 +287,43 @@ export type TrigramStanceTechnique = KoreanTechnique & {
   readonly category: TechniqueBalanceCategory;
   readonly range: TechniqueRange;
   readonly speed: number;
+  
+  /**
+   * Timing window for next technique in combo chain (milliseconds)
+   * 연속 기술 시간 창 (밀리초)
+   * 
+   * Specifies how long after this technique completes that the next
+   * technique can be chained for combo continuation. Son (Wind) stance
+   * uses 200ms for consistent rhythmic flow.
+   * 
+   * @korean 콤보창
+   */
+  readonly comboWindow?: number;
+  
+  /**
+   * Priority in combo chain (1=starter, 2=mid-chain, 3=finisher)
+   * 콤보 우선순위 (1=시작, 2=중간, 3=마무리)
+   * 
+   * Determines where technique fits in combo sequences:
+   * - 1 (starter): Opens combo chains, low recovery
+   * - 2 (mid-chain): Bridges combos, balanced stats
+   * - 3 (finisher): Ends combos, high damage/recovery
+   * 
+   * @korean 콤보우선순위
+   */
+  readonly comboPriority?: number;
+  
+  /**
+   * Pressure stacks accumulated on hit (for Son/Wind stance)
+   * 압박 누적치 (손 바람 자세용)
+   * 
+   * Number of pressure stacks applied when technique connects.
+   * Used by Son (Wind) stance for continuous pressure mechanics.
+   * Typically 1-3 stacks per technique.
+   * 
+   * @korean 압박스택
+   */
+  readonly pressureStacks?: number;
 };
 
 /**
