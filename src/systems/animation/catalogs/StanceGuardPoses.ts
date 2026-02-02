@@ -133,7 +133,8 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   },
   torso: new THREE.Euler(0.06, -0.20, 0.03), // ENHANCED: Relaxed forward lean, adaptive posture
 
-  // ENHANCED Ap Koobi Seogi - Proper Taekwondo front stance biomechanics
+  // ENHANCED: Improved front stance (Ap Koobi Seogi 앞굽이) for fluid joint manipulation
+  // NOTE: Front stance for reach and Hapkido circular techniques (NOT Cat Stance)
   leftLeg: {
     hip: new THREE.Euler(-0.25, 0.10, 0.06), // ENHANCED: Back leg with natural external rotation
     knee: new THREE.Euler(0.22, 0, 0), // ENHANCED: Nearly straight back leg (soft knee)
@@ -393,7 +394,7 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   stanceDepth: 0.52, // ENHANCED: Optimal depth for balance and counter
   pelvisHeight: -0.14, // ENHANCED: Lower for stability and counter power
 
-  weight: "back",
+  weight: "back", // INTENTIONAL: 70% rear weight for explosive counter (Dwit Seogi back stance)
   breathingRange: {
     min: 0.98, // ENHANCED: Calm defensive breathing
     max: 1.02, // Ready to explode on counter

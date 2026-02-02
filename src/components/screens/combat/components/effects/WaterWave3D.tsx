@@ -291,12 +291,24 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   // PERFORMANCE: Reuse positions arrays instead of creating on every render
   const positionsRef = useRef<Map<string, Float32Array>>(new Map());
   
+  // CRITICAL FIX: Track active particles separately to avoid mutating memoized data
+  // Mutating system.particles violates React useMemo contract and causes stale references
+  const activeParticlesRef = useRef<Map<string, WaterParticle[]>>(new Map());
+  
+  // Initialize active particles tracking from memoized systems
+  useEffect(() => {
+    particleSystems.forEach((system) => {
+      // Copy particles array to separate tracking structure
+      activeParticlesRef.current.set(system.effectId, [...system.particles]);
+    });
+  }, [particleSystems]);
+  
   // Cleanup pooled vectors on unmount or when effects change
   useEffect(() => {
     return () => {
-      // Release all pooled vectors from all particle systems
-      particleSystems.forEach((system) => {
-        system.particles.forEach((particle) => {
+      // Release all pooled vectors from active particle tracking
+      activeParticlesRef.current.forEach((particles) => {
+        particles.forEach((particle) => {
           if (particle.isPooled) {
             ThreeObjectPools.vector3.release(particle.position);
             ThreeObjectPools.vector3.release(particle.velocity);
@@ -306,7 +318,8 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         });
       });
       
-      // Clear positions cache
+      // Clear all caches
+      activeParticlesRef.current.clear();
       positionsRef.current.clear();
     };
   }, [particleSystems]);
@@ -318,12 +331,16 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     const safeDelta = Math.min(delta, WAVE_CONSTANTS.MAX_DELTA);
 
     particleSystems.forEach((system) => {
+      // Get active particles from tracking ref (not memoized data)
+      const activeParticles = activeParticlesRef.current.get(system.effectId);
+      if (!activeParticles) return;
+      
       let allExpired = true;
       
-      // Track indices of expired particles for filtering
+      // Track indices of expired particles for removal
       const expiredIndices: number[] = [];
 
-      system.particles.forEach((particle, index) => {
+      activeParticles.forEach((particle, index) => {
         particle.age += safeDelta;
 
         if (particle.age < particle.lifetime) {
@@ -350,17 +367,17 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         }
       });
       
-      // Release pooled vectors for expired particles and remove them
+      // Release pooled vectors for expired particles and remove from ACTIVE array (not memoized)
       // Do this in reverse order to avoid index shifting issues
       for (let i = expiredIndices.length - 1; i >= 0; i--) {
-        const particle = system.particles[expiredIndices[i]];
+        const particle = activeParticles[expiredIndices[i]];
         if (particle.isPooled) {
           ThreeObjectPools.vector3.release(particle.position);
           ThreeObjectPools.vector3.release(particle.velocity);
           ThreeObjectPools.vector3.release(particle.curveTangent);
           particle.isPooled = false; // Prevent double-release
         }
-        system.particles.splice(expiredIndices[i], 1);
+        activeParticles.splice(expiredIndices[i], 1); // Safe: mutating tracked copy, not memoized
       }
 
       // Mark effect complete if all particles expired
@@ -371,7 +388,10 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     
     // PERFORMANCE: Update positions arrays in useFrame instead of render
     particleSystems.forEach((system) => {
-      const requiredLength = system.particles.length * 3;
+      const activeParticles = activeParticlesRef.current.get(system.effectId);
+      if (!activeParticles) return;
+      
+      const requiredLength = activeParticles.length * 3;
       let positions = positionsRef.current.get(system.effectId);
       
       // Create or resize positions array if needed
@@ -380,8 +400,8 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         positionsRef.current.set(system.effectId, positions);
       }
       
-      // Update positions from active particles
-      system.particles.forEach((particle, i) => {
+      // Update positions from active particles (from tracking ref)
+      activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
         positions![i3] = particle.position.x;
         positions![i3 + 1] = particle.position.y;

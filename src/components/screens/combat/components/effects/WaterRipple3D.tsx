@@ -223,15 +223,24 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return materialsRef.current.get(color)!;
   }, []);
   
-  // Get or create reusable geometry for a radius
+  // Get or create reusable geometry for a radius (quantized to fixed steps)
   const getGeometry = React.useCallback((radius: number): THREE.RingGeometry => {
-    const key = `${radius.toFixed(3)}`;
+    // PERFORMANCE: Quantize radius into 64 discrete steps to prevent unbounded geometry growth
+    // Without quantization, continuous radius expansion creates ~4000 unique geometries per effect
+    const GEOMETRY_STEP_COUNT = 64;
+    const maxRadius = RIPPLE_CONSTANTS.MAX_RADIUS;
+    
+    // Quantize radius to nearest step
+    const step = Math.floor((radius / maxRadius) * GEOMETRY_STEP_COUNT);
+    const quantizedRadius = (step / GEOMETRY_STEP_COUNT) * maxRadius;
+    const key = `${step}`;
+    
     if (!geometriesRef.current.has(key)) {
       geometriesRef.current.set(
         key,
         new THREE.RingGeometry(
-          radius,
-          radius + RIPPLE_CONSTANTS.RING_THICKNESS,
+          quantizedRadius,
+          quantizedRadius + RIPPLE_CONSTANTS.RING_THICKNESS,
           RIPPLE_CONSTANTS.RING_SEGMENTS
         )
       );
@@ -309,12 +318,15 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
             RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
             ring.opacity;
 
-          // PERFORMANCE: Reuse geometry and material instead of creating new
+          // PERFORMANCE: Reuse geometry; clone material to avoid shared opacity mutation
           const geometry = getGeometry(ring.radius);
-          const material = getMaterial(meshData.color);
+          const baseMaterial = getMaterial(meshData.color);
           
-          // Update material opacity (not recreating material)
+          // Clone material per ring to prevent shared opacity issues
+          // (Multiple rings would otherwise share the same material and opacity)
+          const material = baseMaterial.clone();
           material.opacity = ring.opacity * 0.6;
+          material.transparent = true;
 
           return (
             <mesh
