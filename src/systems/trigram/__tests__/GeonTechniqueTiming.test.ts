@@ -86,12 +86,14 @@ describe("Geon (Heaven) Technique Timing Validation", () => {
 
       GEON_TECHNIQUES.forEach((tech) => {
         const expected = expectedSpeeds[tech.id];
-        if (expected) {
-          expect(
-            tech.animationSpeed,
-            `${tech.id} should have animation speed of ${expected}x`
-          ).toBe(expected);
-        }
+        expect(
+          expected,
+          `Missing animation speed data for technique: ${tech.id}. All techniques must be validated.`
+        ).toBeDefined();
+        expect(
+          tech.animationSpeed,
+          `${tech.id} should have animation speed of ${expected}x`
+        ).toBe(expected);
       });
     });
   });
@@ -128,12 +130,14 @@ describe("Geon (Heaven) Technique Timing Validation", () => {
 
       GEON_TECHNIQUES.forEach((tech) => {
         const expected = expectedRecovery[tech.id];
-        if (expected) {
-          expect(
-            tech.recoveryTime,
-            `${tech.id} should have recovery time of ${expected}ms`
-          ).toBe(expected);
-        }
+        expect(
+          expected,
+          `Missing expected recovery time for technique ${tech.id}`
+        ).toBeDefined();
+        expect(
+          tech.recoveryTime,
+          `${tech.id} should have recovery time of ${expected}ms`
+        ).toBe(expected);
       });
     });
   });

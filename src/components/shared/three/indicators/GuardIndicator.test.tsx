@@ -97,7 +97,7 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("겨루기준비")).toBeInTheDocument();
+      expect(screen.getByText("겨루기 준비")).toBeInTheDocument();
       expect(screen.getByText("Gyeorugi Junbi")).toBeInTheDocument();
       expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
       expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
@@ -414,7 +414,7 @@ describe("GuardIndicator", () => {
       const traditionalStances = [
         { stance: TrigramStance.GEON, korean: "앞서기", english: "Ap Seogi" },
         { stance: TrigramStance.TAE, korean: "범서기", english: "Beom Seogi" },
-        { stance: TrigramStance.LI, korean: "겨루기준비", english: "Gyeorugi Junbi" },
+        { stance: TrigramStance.LI, korean: "겨루기 준비", english: "Gyeorugi Junbi" },
         { stance: TrigramStance.JIN, korean: "주춤서기", english: "Juchum Seogi" },
         { stance: TrigramStance.SON, korean: "학다리서기", english: "Hakdari Seogi" },
         {
