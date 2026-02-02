@@ -326,29 +326,43 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
 
           if (opacity <= 0.01) return null;
 
+          // Calculate cylinder transform between start and end positions
+          // Using cylinders instead of lines for consistent cross-browser rendering
+          const start = segment.startPos;
+          const end = segment.endPos;
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const dz = end.z - start.z;
+          const length = Math.sqrt(dx * dx + dy * dy + dz * dz) || 0.0001;
+
+          const midX = (start.x + end.x) * 0.5;
+          const midY = (start.y + end.y) * 0.5;
+          const midZ = (start.z + end.z) * 0.5;
+
+          // Calculate rotation to align cylinder with crack direction
+          const dir = new THREE.Vector3(dx / length, dy / length, dz / length);
+          const up = new THREE.Vector3(0, 1, 0);
+          const quaternion = new THREE.Quaternion();
+          quaternion.setFromUnitVectors(up, dir);
+
+          // Radius scaled from segment.width for visual thickness
+          const radius = segment.width * 0.015; // Scaled for visible cracks
+
           return (
-            <line key={`${effectId}-${index}`}>
-              <bufferGeometry>
-                <bufferAttribute
-                  attach="attributes-position"
-                  args={[
-                    new Float32Array([
-                      segment.startPos.x, segment.startPos.y, segment.startPos.z,
-                      segment.endPos.x, segment.endPos.y, segment.endPos.z,
-                    ]),
-                    3,
-                  ]}
-                />
-              </bufferGeometry>
-              <lineBasicMaterial
+            <mesh
+              key={`${effectId}-${index}`}
+              position={[midX, midY, midZ]}
+              quaternion={quaternion}
+            >
+              <cylinderGeometry args={[radius, radius, length, 6]} />
+              <meshBasicMaterial
                 color={crackColor}
-                linewidth={segment.width * 100} // Scale for visibility
                 transparent
                 opacity={opacity * 0.8}
                 depthWrite={false}
                 depthTest={true}
               />
-            </line>
+            </mesh>
           );
         })
       )}
