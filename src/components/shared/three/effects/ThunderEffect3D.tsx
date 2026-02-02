@@ -48,7 +48,7 @@ const LightningArc: React.FC<{
   const lineRef = useRef<THREE.Line>(null);
 
   // Create line object in useState to avoid purity violations with Math.random()
-  const [line] = useState(() => {
+  const [line, setLine] = useState(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
     const displacement = 0.2 * intensity;
@@ -77,6 +77,43 @@ const LightningArc: React.FC<{
 
     return new THREE.Line(geometry, material);
   });
+
+  // Update geometry when start/end positions change
+  useEffect(() => {
+    const points: THREE.Vector3[] = [];
+    const segments = 8;
+    const displacement = 0.2 * intensity;
+
+    for (let i = 0; i <= segments; i++) {
+      const t = i / segments;
+      const point = new THREE.Vector3().lerpVectors(start, end, t);
+
+      // Add random zigzag displacement (except at endpoints)
+      if (i > 0 && i < segments) {
+        point.x += (Math.random() - 0.5) * displacement;
+        point.y += (Math.random() - 0.5) * displacement;
+        point.z += (Math.random() - 0.5) * displacement;
+      }
+
+      points.push(point);
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: intensity,
+      linewidth: 2,
+    });
+
+    const newLine = new THREE.Line(geometry, material);
+    
+    // Dispose old geometry and material
+    line.geometry.dispose();
+    (line.material as THREE.Material).dispose();
+    
+    setLine(newLine);
+  }, [start, end, intensity, color, line]);
 
   useFrame(() => {
     if (lineRef.current) {
@@ -220,11 +257,19 @@ const ThunderReleaseEffect: React.FC<{
   position: [number, number, number];
   intensity: number;
   progressRef: React.MutableRefObject<number>;
-}> = ({ position, intensity, progressRef }) => {
+  active: boolean;
+}> = ({ position, intensity, progressRef, active }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate electric sparks on mount
-  const [sparks] = useState(() => {
+  // Generate electric sparks - regenerate when position changes or effect activates
+  const [sparks, setSparks] = useState<Array<{
+    position: THREE.Vector3;
+    velocity: THREE.Vector3;
+  }>>([]);
+
+  useEffect(() => {
+    if (!active) return;
+    
     const sparkData: Array<{
       position: THREE.Vector3;
       velocity: THREE.Vector3;
@@ -246,8 +291,8 @@ const ThunderReleaseEffect: React.FC<{
       sparkData.push({ position: center.clone(), velocity });
     }
 
-    return sparkData;
-  });
+    setSparks(sparkData);
+  }, [position, active]);
 
   useFrame(() => {
     if (groupRef.current) {
@@ -369,6 +414,7 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
           position={position}
           intensity={intensity}
           progressRef={progressRef}
+          active={active}
         />
       )}
     </group>

@@ -6,10 +6,10 @@ import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import { describe, it, expect, vi } from "vitest";
 import { ThunderEffect3D } from "./ThunderEffect3D";
-import { Suspense } from "react";
+import { Suspense, type ComponentProps } from "react";
 
 describe("ThunderEffect3D", () => {
-  const renderThunderEffect = (props: React.ComponentProps<typeof ThunderEffect3D>) => {
+  const renderThunderEffect = (props: ComponentProps<typeof ThunderEffect3D>) => {
     return render(
       <Canvas>
         <Suspense fallback={null}>

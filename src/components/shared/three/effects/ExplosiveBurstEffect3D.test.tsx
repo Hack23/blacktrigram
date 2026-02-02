@@ -6,11 +6,11 @@ import { render } from "@testing-library/react";
 import { Canvas } from "@react-three/fiber";
 import { describe, it, expect, vi } from "vitest";
 import { ExplosiveBurstEffect3D } from "./ExplosiveBurstEffect3D";
-import { Suspense } from "react";
+import { Suspense, type ComponentProps } from "react";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
 describe("ExplosiveBurstEffect3D", () => {
-  const renderBurstEffect = (props: React.ComponentProps<typeof ExplosiveBurstEffect3D>) => {
+  const renderBurstEffect = (props: ComponentProps<typeof ExplosiveBurstEffect3D>) => {
     return render(
       <Canvas>
         <Suspense fallback={null}>

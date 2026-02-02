@@ -190,11 +190,22 @@ const DebrisParticles: React.FC<{
   position: [number, number, number];
   intensity: number;
   color: number;
-}> = ({ position, intensity, color }) => {
+  active: boolean;
+}> = ({ position, intensity, color, active }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate random debris - use useState for initialization to avoid purity violations
-  const [debris] = useState(() => {
+  // Generate random debris - regenerate when position/intensity changes or effect activates
+  const [debris, setDebris] = useState<Array<{
+    position: THREE.Vector3;
+    velocity: THREE.Vector3;
+    rotation: THREE.Euler;
+    rotationVel: THREE.Vector3;
+    size: number;
+  }>>([]);
+
+  useEffect(() => {
+    if (!active) return;
+
     const debrisData: Array<{
       position: THREE.Vector3;
       velocity: THREE.Vector3;
@@ -234,8 +245,8 @@ const DebrisParticles: React.FC<{
       });
     }
 
-    return debrisData;
-  });
+    setDebris(debrisData);
+  }, [position, intensity, active]);
 
   // Recreate refs when debris changes
   const debrisRefs = useMemo(
@@ -305,8 +316,12 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
     startTimeRef.current = Date.now();
   }, []);
 
-  // Generate particles on mount - use useState for initialization to avoid purity violations
-  const [particles] = useState(() => {
+  // Generate particles - regenerate when position changes or effect activates
+  const [particles, setParticles] = useState<ParticleData[]>([]);
+
+  useEffect(() => {
+    if (!active) return;
+
     const particleData: ParticleData[] = [];
     const center = new THREE.Vector3(...position);
 
@@ -332,8 +347,8 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       });
     }
 
-    return particleData;
-  });
+    setParticles(particleData);
+  }, [position, active, cappedParticleCount]);
 
   useEffect(() => {
     startTimeRef.current = Date.now();
@@ -388,6 +403,7 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
         position={position}
         intensity={intensity}
         color={KOREAN_COLORS.TEXT_SECONDARY}
+        active={active}
       />
     </group>
   );

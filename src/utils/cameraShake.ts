@@ -80,10 +80,12 @@ export class CameraShakeManager {
       return;
     }
 
-    // Store original position if not already shaking
-    const originalPosition = this.shakeState
-      ? this.shakeState.originalPosition
-      : this.camera.position.clone();
+    // Capture current position only when starting a new shake (not already active)
+    // This prevents snapping to old position if camera moved between shakes
+    const originalPosition =
+      this.shakeState?.active === true
+        ? this.shakeState.originalPosition
+        : this.camera.position.clone();
 
     this.shakeState = {
       active: true,
