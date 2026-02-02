@@ -228,8 +228,7 @@ export class PhysicalReachCalculator {
     const hasValidTiming =
       rawPeakMultiplier !== undefined && rawPeakMultiplier > 0;
 
-    const fallbackBase =
-      baseExtension !== undefined ? baseExtension : 1;
+    const fallbackBase = baseExtension ?? 1;
 
     const peakMultiplier = hasValidTiming ? rawPeakMultiplier : fallbackBase;
 

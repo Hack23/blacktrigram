@@ -64,10 +64,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.05,
     },
     executionTime: 600,
-    recoveryTime: 900,
+    recoveryTime: 700, // Reduced from 900ms for combo flow
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
+    // Combo metadata - Flowing counter starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - initiates counter flow
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
     animationId: "gam_water_counter", // ID: unique 1-1 mapping
@@ -108,10 +112,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.7,
     },
     executionTime: 850,
-    recoveryTime: 1200,
+    recoveryTime: 900, // Reduced from 1200ms for combo flow
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Force redirection throw
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - momentum redirection
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_redirect_throw", // ID: unique 1-1 mapping
@@ -150,10 +158,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.7,
     },
     executionTime: 900,
-    recoveryTime: 1300,
+    recoveryTime: 1000, // Reduced from 1300ms for combo flow
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
+    // Combo metadata - Control throw finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - dominant position throw
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_hip_throw", // ID: unique 1-1 mapping
@@ -194,10 +206,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.9,
     },
     executionTime: 400,
-    recoveryTime: 700,
+    recoveryTime: 500, // Reduced from 700ms for combo flow
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
+    // Combo metadata - Defensive flow starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - soft defensive entry
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_flowing_block", // ID: unique 1-1 mapping
@@ -236,10 +252,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.05,
     },
     executionTime: 550,
-    recoveryTime: 850,
+    recoveryTime: 600, // Reduced from 850ms for combo flow
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
+    // Combo metadata - Neutralizing redirect
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - circular neutralization
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_circular_parry", // ID: unique 1-1 mapping
@@ -280,10 +300,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.65,
     },
     executionTime: 700,
-    recoveryTime: 1000,
+    recoveryTime: 750, // Reduced from 1000ms for combo flow
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
+    // Combo metadata - Joint control counter finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - vital point joint lock
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "gam_wrist_twist_counter", // ID: unique 1-1 mapping

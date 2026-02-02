@@ -32,21 +32,14 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * The fighter drops low, secures opponent's body, lifts with legs and hips,
  * then rotates through a circular arc to bring opponent to ground.
  *
- * **Biomechanical Authenticity (95% Accuracy)**:
- * - Low penetration with hips BACK (not just down) - prevents back injury
- * - Lift power from LEG EXTENSION (knees -60° → -25°) - safe biomechanics
- * - Circular throwing arc (not linear) - traditional Ssireum technique
- * - Ground control follow-through - maintain dominance
- *
- * Animation Phases (1867ms duration, 22 keyframes):
- * - Close Phase (0-540ms, 6 frames): Deep penetration and body lock
- * - Lift Phase (540-1080ms, 6 frames): Leg-driven lift (safe mechanics)
- * - Throw Phase (1080-1620ms, 6 frames): Circular arc rotation
- * - Control Phase (1620-1867ms, 4 frames): Follow to ground dominance
+ * Animation Phases (1867ms duration, 8 keyframes):
+ * - Close Phase (0-540ms): Drop level and penetrate for grab
+ * - Lift Phase (540-1080ms): Secure grip and lift opponent
+ * - Throw Phase (1080-1620ms): Execute circular throw
+ * - Control Phase (1620-1867ms): Follow to ground for dominance
  *
  * @korean 대지포옹
  * @duration 1867ms (~1.9 seconds)
- * @frames 22 total (6 close, 6 lift, 6 throw, 4 control)
  * @category Throw Animation
  */
 export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
@@ -57,19 +50,16 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
     .asAttack(1.867)
     
     // ═════════════════════════════════════════════════════════════════════
-    // CLOSE PHASE (0-540ms): Deep Penetration and Body Lock
-    // Enhanced from 3 to 7 keyframes for Ssireum authenticity
+    // CLOSE PHASE (0-540ms, frames 0-8): Penetration and Grab
     // ═════════════════════════════════════════════════════════════════════
     
-    // Keyframe 0ms: Low ready position (Ssireum stance)
+    // Keyframe 0ms: Low starting position
     .at(0)
     .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20° (hips back, low)
     .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral lower spine
     .rotate(BoneName.SPINE_UPPER, 0.26, 0, 0) // 15° (lean forward)
     .rotate(BoneName.KNEE_L, -0.87, 0, 0) // -50° (deep bend)
     .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50°
-    .rotate(BoneName.HIP_L, 0.09, 0, 0) // 5° (hip flexion)
-    .rotate(BoneName.HIP_R, 0.09, 0, 0)
     .rotate(BoneName.SHOULDER_L, 0.52, 0.26, -0.35) // 30°, 15°, -20° (hands ready)
     .rotate(BoneName.SHOULDER_R, 0.52, -0.26, 0.35)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.4) // -80° (bent, ready)
@@ -78,238 +68,105 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
     .done<MartialArtsAnimationBuilder>()
     .withOpenPalm("both") // Open hands ready to grab
     
-    // Keyframe 135ms: Drop lower - hips BACK and DOWN (CRITICAL Ssireum mechanic)
-    .at(0.135)
-    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (hips WAY back - prevents back injury)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral (protect spine)
-    .rotate(BoneName.SPINE_UPPER, 0.31, 0, 0) // 18° (slight forward lean)
-    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (deeper drop)
-    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55°
-    .rotate(BoneName.HIP_L, 0.14, 0, 0) // 8° (hip flexion increases)
-    .rotate(BoneName.HIP_R, 0.14, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.61, 0.35, -0.31) // 35°, 20°, -18° (reach forward)
-    .rotate(BoneName.SHOULDER_R, 0.61, -0.35, 0.31)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.22) // -70° (extending)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.22)
-    .position(BoneName.PELVIS, 0, -0.13, 0.05) // Lower and slight forward
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 270ms: Penetration step - DRIVE FORWARD (explosive entry)
+    // Keyframe 270ms: Drop lower and drive forward (penetration step)
     .at(0.27)
-    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (hips STILL back - safe spine)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral (protect back)
+    .rotate(BoneName.PELVIS, -0.44, 0, 0) // -25° (drop lower)
     .rotate(BoneName.SPINE_UPPER, 0.35, 0, 0) // 20° (drive forward)
-    .rotate(BoneName.KNEE_L, -1.05, 0, 0) // -60° (DEEP penetration)
-    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (power leg)
-    .rotate(BoneName.HIP_L, 0.17, 0, 0) // 10° (hip flexion max)
-    .rotate(BoneName.HIP_R, 0.17, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.70, 0.44, -0.26) // 40°, 25°, -15° (reach for body)
+    .rotate(BoneName.KNEE_L, -1.05, 0, 0) // -60° (deep penetration)
+    .rotate(BoneName.KNEE_R, -0.96, 0, 0) // -55° (power from legs)
+    .rotate(BoneName.SHOULDER_L, 0.70, 0.44, -0.26) // 40°, 25°, -15° (reach)
     .rotate(BoneName.SHOULDER_R, 0.70, -0.44, 0.26)
     .rotate(BoneName.ELBOW_L, 0, 0, -1.05) // -60° (extend for grab)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.05)
-    .position(BoneName.PELVIS, 0, -0.18, 0.12) // LOW and FORWARD (penetration)
+    .position(BoneName.PELVIS, 0, -0.15, 0.1) // Lower and forward
     .done<MartialArtsAnimationBuilder>()
     
-    // Keyframe 405ms: Grip begins - hands make contact
-    .at(0.405)
-    .rotate(BoneName.PELVIS, -0.48, 0, 0) // -27.5° (maintain low position)
-    .rotate(BoneName.SPINE_UPPER, 0.39, 0.05, 0) // 22.5°, 3° (close in)
-    .rotate(BoneName.KNEE_L, -1.09, 0, 0) // -62.5° (very deep)
-    .rotate(BoneName.KNEE_R, -1.00, 0, 0) // -57.5°
-    .rotate(BoneName.HIP_L, 0.17, 0, 0) // 10° (maintain flexion)
-    .rotate(BoneName.HIP_R, 0.17, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.79, 0.48, -0.22) // 45°, 27.5°, -12.5° (wrap begins)
-    .rotate(BoneName.SHOULDER_R, 0.79, -0.48, 0.22)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.05) // -60° (beginning wrap)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.05)
-    .position(BoneName.PELVIS, 0, -0.18, 0.135) // Maintaining deep position
-    .done<MartialArtsAnimationBuilder>()
-    .withOpenPalm("both") // Still open, just making contact
-    
-    // Keyframe 540ms: Body lock SECURED (Ssireum grip complete)
+    // Keyframe 540ms: Maximum penetration, secure grip
     .at(0.54)
-    .rotate(BoneName.PELVIS, -0.52, 0, 0) // -30° (maximum drop - hips BACK)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral (safe spine)
-    .rotate(BoneName.SPINE_UPPER, 0.44, 0.09, 0) // 25°, 5° (chest to chest)
-    .rotate(BoneName.KNEE_L, -1.13, 0, 0) // -65° (very deep - maximum penetration)
+    .rotate(BoneName.PELVIS, -0.52, 0, 0) // -30° (maximum drop)
+    .rotate(BoneName.SPINE_UPPER, 0.44, 0.09, 0) // 25°, 5° (close in)
+    .rotate(BoneName.KNEE_L, -1.13, 0, 0) // -65° (very deep)
     .rotate(BoneName.KNEE_R, -1.05, 0, 0) // -60°
-    .rotate(BoneName.HIP_L, 0.17, 0, 0) // 10° (hip flexion maintained)
-    .rotate(BoneName.HIP_R, 0.17, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.87, 0.52, -0.17) // 50°, 30°, -10° (arms wrap AROUND)
+    .rotate(BoneName.SHOULDER_L, 0.87, 0.52, -0.17) // 50°, 30°, -10° (wrap)
     .rotate(BoneName.SHOULDER_R, 0.87, -0.52, 0.17)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.05) // -60° (tight body lock)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.05) // -60° (arms wrap around)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.05)
-    .position(BoneName.PELVIS, 0, -0.18, 0.15) // Deep position maintained
+    .position(BoneName.PELVIS, 0, -0.18, 0.15) // Deep position
     .done<MartialArtsAnimationBuilder>()
-    .withGrab("both") // SECURE TIGHT GRIP - body lock complete
+    .withGrab("both") // Secure tight grip
     
     // ═════════════════════════════════════════════════════════════════════
-    // LIFT PHASE (540-1080ms): LEG-DRIVEN LIFT (Safe Biomechanics)
-    // Enhanced from 2 to 8 keyframes for safe lifting mechanics
-    // CRITICAL: Power comes from LEGS, NOT back
+    // LIFT PHASE (540-1080ms, frames 9-16): Lift and Extend
     // ═════════════════════════════════════════════════════════════════════
     
-    // Keyframe 675ms: Legs BEGIN extending (CRITICAL: lift with legs, NOT back)
-    .at(0.675)
-    .rotate(BoneName.PELVIS, -0.48, 0, 0) // -27.5° (hips STILL back - safe)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral (NO back strain)
-    .rotate(BoneName.SPINE_UPPER, 0.39, 0.05, 0) // 22.5°, 3° (slight rise)
-    .rotate(BoneName.KNEE_L, -0.96, 0, 0) // -55° (EXTENDING from -65° - leg power!)
-    .rotate(BoneName.KNEE_R, -0.87, 0, 0) // -50° (EXTENDING from -60° - leg power!)
-    .rotate(BoneName.HIP_L, 0.17, 0, 0) // 10° (hip extension begins)
-    .rotate(BoneName.HIP_R, 0.17, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.79, 0.44, -0.22) // 45°, 25°, -12.5° (maintain grip)
-    .rotate(BoneName.SHOULDER_R, 0.79, -0.44, 0.22)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.96) // -55° (pull in)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.96)
-    .position(BoneName.PELVIS, 0, -0.15, 0.16) // Rising FROM legs (not back)
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 810ms: Leg-driven lift continues (hip thrust)
+    // Keyframe 810ms: Begin lift with legs
     .at(0.81)
-    .rotate(BoneName.PELVIS, -0.35, 0, 0) // -20° (hips STILL back, rising)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral (protected spine)
-    .rotate(BoneName.SPINE_UPPER, 0.26, 0.09, 0) // 15°, 5° (torso rises)
-    .rotate(BoneName.KNEE_L, -0.70, 0, 0) // -40° (EXTENDING - from -55° - legs extend!)
-    .rotate(BoneName.KNEE_R, -0.61, 0, 0) // -35° (EXTENDING - from -50° - legs extend!)
-    .rotate(BoneName.HIP_L, 0.17, 0, 0) // 10° (hip thrust)
-    .rotate(BoneName.HIP_R, 0.17, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.61, 0.35, -0.26) // 35°, 20°, -15° (pull opponent up)
+    .rotate(BoneName.PELVIS, -0.26, 0, 0) // -15° (begin lift)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Straightening
+    .rotate(BoneName.SPINE_UPPER, 0.17, 0, 0) // 10° (torso rises)
+    .rotate(BoneName.KNEE_L, -0.70, 0, 0) // -40° (legs extend)
+    .rotate(BoneName.KNEE_R, -0.61, 0, 0) // -35°
+    .rotate(BoneName.SHOULDER_L, 0.61, 0.35, -0.26) // 35°, 20°, -15° (pull up)
     .rotate(BoneName.SHOULDER_R, 0.61, -0.35, 0.26)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.87) // -50° (arms pull)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.87)
-    .position(BoneName.PELVIS, 0, -0.12, 0.18) // Rising (leg power)
+    .position(BoneName.PELVIS, 0, -0.12, 0.15) // Rising
     .done<MartialArtsAnimationBuilder>()
     
-    // Keyframe 945ms: Maximum lift height (legs nearly straight)
-    .at(0.945)
-    .rotate(BoneName.PELVIS, -0.17, 0, 0) // -10° (hips still slightly back)
-    .rotate(BoneName.SPINE_LOWER, -0.05, 0, 0) // -3° (slight back lean)
-    .rotate(BoneName.SPINE_UPPER, 0.09, 0, 0) // 5° (upright, NOT hyperextended)
-    .rotate(BoneName.KNEE_L, -0.35, 0, 0) // -20° (NEARLY straight - max extension)
-    .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (NEARLY straight - max extension)
-    .rotate(BoneName.HIP_L, 0.14, 0, 0) // 8° (hip extension continues)
-    .rotate(BoneName.HIP_R, 0.14, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.31, -0.31) // 30°, 18°, -18° (lift complete)
-    .rotate(BoneName.SHOULDER_R, 0.52, -0.31, 0.31)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.79) // -45° (maintain grip)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.79)
-    .position(BoneName.PELVIS, 0, -0.07, 0.15) // Maximum height (from leg power)
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 1080ms: Opponent elevated - prepare for throw
+    // Keyframe 1080ms: Full extension, opponent lifted
     .at(1.08)
-    .rotate(BoneName.PELVIS, 0, 0, 0) // 0° (fully extended - safe position)
-    .rotate(BoneName.SPINE_LOWER, -0.09, 0, 0) // -5° (slight lean back for throw)
-    .rotate(BoneName.SPINE_UPPER, -0.09, 0, 0) // -5° (slight lean - NOT hyperextended)
-    .rotate(BoneName.KNEE_L, -0.17, 0, 0) // -10° (nearly straight - lift complete)
+    .rotate(BoneName.PELVIS, 0, 0, 0) // 0° (fully extended)
+    .rotate(BoneName.SPINE_LOWER, -0.09, 0, 0) // -5° (lean back)
+    .rotate(BoneName.SPINE_UPPER, -0.09, 0, 0) // -5° (lean back for throw)
+    .rotate(BoneName.KNEE_L, -0.17, 0, 0) // -10° (nearly straight)
     .rotate(BoneName.KNEE_R, -0.17, 0, 0) // -10°
-    .rotate(BoneName.HIP_L, 0.09, 0, 0) // 5° (neutral hips)
-    .rotate(BoneName.HIP_R, 0.09, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.44, 0.26, -0.35) // 25°, 15°, -20° (ready to throw)
+    .rotate(BoneName.SHOULDER_L, 0.44, 0.26, -0.35) // 25°, 15°, -20° (lift complete)
     .rotate(BoneName.SHOULDER_R, 0.44, -0.26, 0.35)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.70) // -40° (tight control)
-    .rotate(BoneName.ELBOW_R, 0, 0, 0.70)
     .position(BoneName.PELVIS, 0, -0.05, 0.12) // Elevated position
     .done<MartialArtsAnimationBuilder>()
     
     // ═════════════════════════════════════════════════════════════════════
-    // THROW PHASE (1080-1620ms): CIRCULAR ARC (Traditional Ssireum)
-    // Enhanced from 2 to 7 keyframes for smooth circular motion
+    // THROW PHASE (1080-1620ms, frames 17-24): Circular Rotation
     // ═════════════════════════════════════════════════════════════════════
     
-    // Keyframe 1215ms: Begin rotation - circular arc STARTS
-    .at(1.215)
-    .rotate(BoneName.PELVIS, 0.14, 0.17, 0) // 8°, 10° (hip rotation begins)
-    .rotate(BoneName.SPINE_LOWER, -0.05, 0.26, 0) // -3°, 15° (torso follows)
-    .rotate(BoneName.SPINE_UPPER, -0.14, 0.26, 0) // -8°, 15° (rotation + slight lean)
-    .rotate(BoneName.KNEE_L, -0.14, 0, 0) // -8° (pivot leg straightens)
-    .rotate(BoneName.KNEE_R, -0.22, 0, 0) // -12.5° (rear leg begins pivot)
-    .rotate(BoneName.HIP_L, 0.05, 0, 0) // 3°
-    .rotate(BoneName.HIP_R, 0.05, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.35, 0.44, -0.39) // 20°, 25°, -22.5° (pull begins)
-    .rotate(BoneName.SHOULDER_R, 0.39, -0.39, 0.39) // 22.5°, -22.5°, 22.5°
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 1350ms: Mid-rotation - opponent ARCING through space
+    // Keyframe 1350ms: Hip rotation powers throw
     .at(1.35)
-    .rotate(BoneName.PELVIS, 0.26, 0.52, 0) // 15°, 30° (circular hip rotation)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.52, 0) // 0°, 30° (torso follows rotation)
-    .rotate(BoneName.SPINE_UPPER, -0.17, 0.70, 0) // -10°, 40° (rotation + lean)
+    .rotate(BoneName.PELVIS, 0.26, 0.35, 0) // 15°, 20° (hip rotation)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.52, 0) // 30° (torso follows)
+    .rotate(BoneName.SPINE_UPPER, -0.17, 0.52, 0) // -10°, 30° (rotation + lean)
     .rotate(BoneName.KNEE_L, -0.09, 0, 0) // -5° (pivot on straight leg)
     .rotate(BoneName.KNEE_R, -0.26, 0, 0) // -15° (rear leg pivots)
-    .rotate(BoneName.HIP_L, 0, 0, 0) // 0° (neutral)
-    .rotate(BoneName.HIP_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.26, 0.61, -0.44) // 15°, 35°, -25° (pull across - circular)
-    .rotate(BoneName.SHOULDER_R, 0.35, -0.52, 0.44) // 20°, -30°, 25° (circular arc)
-    .position(BoneName.PELVIS, -0.03, -0.04, 0.20) // Circular path (lateral shift)
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 1485ms: Maximum rotation - apex of circular throw
-    .at(1.485)
-    .rotate(BoneName.PELVIS, 0.31, 0.61, 0) // 18°, 35° (approaching max rotation)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.70, 0) // 0°, 40° (full body rotation)
-    .rotate(BoneName.SPINE_UPPER, -0.22, 0.75, 0) // -12.5°, 43° (throw motion peaks)
-    .rotate(BoneName.KNEE_L, -0.26, 0, 0) // -15° (lowering for control)
-    .rotate(BoneName.KNEE_R, -0.39, 0, 0) // -22.5° (leg bends for follow)
-    .rotate(BoneName.SHOULDER_L, 0.22, 0.66, -0.48) // 12.5°, 38°, -27.5° (near release)
-    .rotate(BoneName.SHOULDER_R, 0.31, -0.57, 0.48) // 18°, -32.5°, 27.5°
-    .position(BoneName.PELVIS, -0.04, -0.06, 0.23) // Circular arc continues
-    .done<MartialArtsAnimationBuilder>()
-    
-    // Keyframe 1620ms: Throw completion - opponent DESCENDING
-    .at(1.62)
-    .rotate(BoneName.PELVIS, 0.35, 0.70, 0) // 20°, 40° (maximum rotation achieved)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.79, 0) // 0°, 45° (full body rotation complete)
-    .rotate(BoneName.SPINE_UPPER, -0.26, 0.79, 0) // -15°, 45° (throw complete)
-    .rotate(BoneName.KNEE_L, -0.44, 0, 0) // -25° (lower for ground control)
-    .rotate(BoneName.KNEE_R, -0.52, 0, 0) // -30° (follow to ground)
-    .rotate(BoneName.HIP_L, -0.05, 0, 0) // -3° (hips lower)
-    .rotate(BoneName.HIP_R, -0.05, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.17, 0.70, -0.52) // 10°, 40°, -30° (release point)
-    .rotate(BoneName.SHOULDER_R, 0.26, -0.61, 0.52) // 15°, -35°, 30°
-    .position(BoneName.PELVIS, -0.05, -0.08, 0.28) // Completing circular arc
-    .done<MartialArtsAnimationBuilder>()
-    
-    // ═════════════════════════════════════════════════════════════════════
-    // CONTROL PHASE (1620-1867ms): Follow to GROUND DOMINANCE
-    // Enhanced from 1 to 3 keyframes for control follow-through
-    // ═════════════════════════════════════════════════════════════════════
-    
-    // Keyframe 1750ms: Follow-through with control
-    .at(1.75)
-    .rotate(BoneName.PELVIS, 0.09, 0.61, 0) // 5°, 35° (following opponent down)
-    .rotate(BoneName.SPINE_LOWER, 0.05, 0.70, 0) // 3°, 40° (lean over)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.66, 0) // 0°, 38° (following to ground)
-    .rotate(BoneName.KNEE_L, -0.57, 0, 0) // -32.5° (lowering)
-    .rotate(BoneName.KNEE_R, -0.66, 0, 0) // -38° (control descent)
-    .rotate(BoneName.HIP_L, -0.09, 0, 0) // -5° (hips lower)
-    .rotate(BoneName.HIP_R, -0.09, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.26, 0.61, -0.44) // 15°, 35°, -25° (follow control)
+    .rotate(BoneName.SHOULDER_L, 0.26, 0.61, -0.44) // 15°, 35°, -25° (pull across)
     .rotate(BoneName.SHOULDER_R, 0.35, -0.52, 0.44) // 20°, -30°, 25°
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.05) // -60° (re-establish grip)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.05)
-    .position(BoneName.PELVIS, -0.03, -0.10, 0.30) // Following to ground
     .done<MartialArtsAnimationBuilder>()
-    .withGrab("both") // Re-establish control grip
     
-    // Keyframe 1867ms: Ground dominance position (Ssireum control)
-    .at(1.867)
-    .rotate(BoneName.PELVIS, 0.26, 0.52, 0) // 15°, 30° (over opponent - dominant)
-    .rotate(BoneName.SPINE_LOWER, 0.17, 0.61, 0) // 10°, 35° (chest pressure)
-    .rotate(BoneName.SPINE_UPPER, 0.44, 0.52, 0) // 25°, 30° (weight forward)
-    .rotate(BoneName.KNEE_L, -0.79, 0, 0) // -45° (low stable position)
-    .rotate(BoneName.KNEE_R, -0.79, 0, 0) // -45° (stable base)
-    .rotate(BoneName.HIP_L, 0, 0, 0) // 0° (neutral hips)
-    .rotate(BoneName.HIP_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.52, 0.52, -0.35) // 30°, 30°, -20° (control grip)
-    .rotate(BoneName.SHOULDER_R, 0.61, -0.44, 0.35) // 35°, -25°, 20° (control grip)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.22) // -70° (tight control grip)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.22)
-    .rotate(BoneName.HEAD, 0.17, 0.09, 0) // 10°, 5° (looking at opponent)
-    .position(BoneName.PELVIS, 0, -0.22, 0.35) // Ground control - ON opponent
+    // Keyframe 1620ms: Maximum rotation, release point
+    .at(1.62)
+    .rotate(BoneName.PELVIS, 0.35, 0.70, 0) // 20°, 40° (maximum rotation)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.79, 0) // 45° (full body rotation)
+    .rotate(BoneName.SPINE_UPPER, -0.26, 0.79, 0) // -15°, 45° (throw motion)
+    .rotate(BoneName.KNEE_L, -0.44, 0, 0) // -25° (lower for control)
+    .rotate(BoneName.KNEE_R, -0.52, 0, 0) // -30°
+    .rotate(BoneName.SHOULDER_L, 0.17, 0.70, -0.52) // 10°, 40°, -30° (release)
+    .rotate(BoneName.SHOULDER_R, 0.26, -0.61, 0.52) // 15°, -35°, 30°
     .done<MartialArtsAnimationBuilder>()
-    .withGrab("both") // Maintain control grip - dominance established
+    
+    // ═════════════════════════════════════════════════════════════════════
+    // CONTROL PHASE (1620-1867ms, frames 25-28): Ground Follow
+    // ═════════════════════════════════════════════════════════════════════
+    
+    // Keyframe 1867ms: Follow to ground, maintain control
+    .at(1.867)
+    .rotate(BoneName.PELVIS, -0.17, 0.52, 0) // -10°, 30° (follow down)
+    .rotate(BoneName.SPINE_LOWER, 0.09, 0.61, 0) // 5°, 35° (over opponent)
+    .rotate(BoneName.SPINE_UPPER, 0.09, 0.61, 0) // 5°, 35°
+    .rotate(BoneName.KNEE_L, -0.70, 0, 0) // -40° (lower stance)
+    .rotate(BoneName.KNEE_R, -0.79, 0, 0) // -45° (control position)
+    .rotate(BoneName.SHOULDER_L, 0.35, 0.52, -0.35) // 20°, 30°, -20° (maintain control)
+    .rotate(BoneName.SHOULDER_R, 0.44, -0.44, 0.35) // 25°, -25°, 20°
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.22) // -70° (control grip)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.22)
+    .position(BoneName.PELVIS, 0, -0.12, 0.15) // Ground control position
+    .done<MartialArtsAnimationBuilder>()
+    .withGrab("both") // Maintain control grip
     
     .build();
 

@@ -6,17 +6,6 @@
  *
  * 진괘 - 우레: 태권도 점프 공격 기술
  *
- * **Two-Phase System:**
- * - Charge Phase: Power buildup with visual accumulation (200-400ms)
- * - Release Phase: Explosive burst with maximum impact (400-600ms)
- * - Total: 600-1000ms for complete explosive technique
- *
- * **Explosive Mechanics:**
- * - Power charging with visual effects (electric arcs, energy gathering)
- * - Perfect timing window for maximum power multiplier (1.3-1.5x)
- * - Thunder/lightning effects on release
- * - Camera shake and screen flash on impact
- *
  * @module systems/trigram/techniques/JinTechniques
  * @korean 진괘기술
  */
@@ -30,40 +19,15 @@ import {
 import { AnimationType } from "../../animation";
 
 /**
- * Extended technique interface for Jin's explosive power system
- * Adds two-phase timing and explosive mechanics to base technique
- */
-export interface JinExplosiveTechnique extends TrigramStanceTechnique {
-  /** Duration of power charging phase in milliseconds (200-400ms) */
-  readonly chargeTime?: number;
-  /** Duration of explosive release phase in milliseconds (400-600ms) */
-  readonly releaseTime?: number;
-  /** Power multiplier for explosive techniques (1.3-1.5x) */
-  readonly explosivePower?: number;
-  /** Whether this technique uses thunder/lightning effects */
-  readonly thunderEffect?: boolean;
-  /** Camera shake intensity on impact (0-1, higher = stronger shake) */
-  readonly cameraShakeIntensity?: number;
-  /** Screen flash intensity on release (0-1, higher = brighter flash) */
-  readonly screenFlashIntensity?: number;
-}
-
-/**
  * ☳ JIN (진) - THUNDER: Explosive Power
  *
- * High-impact jumping and spinning attacks with two-phase execution.
+ * High-impact jumping and spinning attacks.
  * Element: Thunder (우레)
  * Philosophy: Sudden overwhelming force, shock and awe
  *
- * **Explosive Mechanics:**
- * - All techniques feature charge + release phases
- * - Lightning/thunder effects on explosive release
- * - Camera shake and screen flash for impact feedback
- * - Power multipliers for perfect timing execution
- *
  * @korean 진괘 - 우레: 폭발적인 힘 (태권도 점프 공격)
  */
-export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
+export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   {
     id: "jin_lightning_flash",
     name: {
@@ -75,8 +39,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Lightning Flash",
     romanized: "byeokryeok_ilseom",
     description: {
-      korean: "번개처럼 빠른 일격 - 폭발적인 힘으로 적을 제압",
-      english: "Swift strike like lightning - overwhelming explosive force",
+      korean: "번개처럼 빠른 일격",
+      english: "Swift strike like lightning",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.STRIKE,
@@ -90,19 +54,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    // Two-phase explosive timing
-    chargeTime: 200, // Quick charge for fast strike
-    releaseTime: 500, // Explosive release
-    executionTime: 700, // Total time (charge + release + 0ms transition)
-    recoveryTime: 800,
+    executionTime: 500,
+    recoveryTime: 600, // Reduced from 800ms for combo flow
     critChance: 0.12,
     critMultiplier: 1.6,
-    // Explosive power mechanics
-    explosivePower: 1.3, // 30% power bonus on perfect timing
-    thunderEffect: true, // Lightning flash effect on release
-    cameraShakeIntensity: 0.3, // Light camera shake
-    screenFlashIntensity: 0.4, // Moderate screen flash
     effects: [],
+    // Combo metadata - Fast explosive setup
+    comboWindow: 300,
+    comboPriority: 1, // Starter - quick explosive setup
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "jin_lightning_flash", // ID: unique 1-1 mapping
@@ -124,8 +84,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Jumping Front Kick",
     romanized: "ttwi-eo-ap-chagi",
     description: {
-      korean: "공중에서 가하는 폭발적인 앞차기 - 천둥의 일격",
-      english: "Explosive jumping front kick from the air - thunder's strike",
+      korean: "공중에서 가하는 폭발적인 앞차기",
+      english: "Explosive jumping front kick from the air",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
@@ -139,19 +99,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    // Two-phase explosive timing
-    chargeTime: 350, // Medium charge for jump preparation
-    releaseTime: 550, // Explosive kick release
-    executionTime: 900, // Total time (charge + release)
-    recoveryTime: 1350,
+    executionTime: 1050,
+    recoveryTime: 1150, // Reduced from 1350ms for combo flow
     critChance: 0.22,
     critMultiplier: 2.1,
-    // Explosive power mechanics
-    explosivePower: 1.4, // 40% power bonus - higher for jumping attacks
-    thunderEffect: true, // Thunder impact on landing
-    cameraShakeIntensity: 0.6, // Strong camera shake
-    screenFlashIntensity: 0.5, // Strong screen flash
     effects: [],
+    // Combo metadata - Explosive aerial finisher
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - devastating jump kick
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "jumping_kick", // Type: shared category
     animationId: "jin_jumping_front_kick", // ID: unique 1-1 mapping
@@ -173,8 +129,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Tornado Kick",
     romanized: "hoe-ori-chagi",
     description: {
-      korean: "360도 회전하며 가하는 폭발적인 발차기 - 회오리의 파괴력",
-      english: "Explosive 360-degree spinning kick - whirlwind destruction",
+      korean: "360도 회전하며 가하는 폭발적인 발차기",
+      english: "Explosive 360-degree spinning kick",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
@@ -188,19 +144,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    // Two-phase explosive timing
-    chargeTime: 400, // Longer charge for spin momentum
-    releaseTime: 600, // Full rotation release
-    executionTime: 1000, // Total time (charge + release)
-    recoveryTime: 1500,
+    executionTime: 1100,
+    recoveryTime: 1300, // Reduced from 1500ms for combo flow
     critChance: 0.25,
     critMultiplier: 2.3,
-    // Explosive power mechanics
-    explosivePower: 1.5, // 50% power bonus - highest for spinning techniques
-    thunderEffect: true, // Lightning trail during spin
-    cameraShakeIntensity: 0.7, // Very strong camera shake
-    screenFlashIntensity: 0.6, // Strong screen flash
     effects: [],
+    // Combo metadata - Ultimate spinning finisher
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - maximum rotational power
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "jin_tornado_kick", // ID: unique 1-1 mapping
@@ -222,8 +174,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Flying Sidekick",
     romanized: "nal-a-chagi",
     description: {
-      korean: "공중에서 가하는 강력한 옆차기 - 번개의 속도",
-      english: "Powerful flying sidekick from the air - lightning speed",
+      korean: "공중에서 가하는 강력한 옆차기",
+      english: "Powerful flying sidekick from the air",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
@@ -237,19 +189,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.15,
     },
-    // Two-phase explosive timing
-    chargeTime: 300, // Quick charge for flying leap
-    releaseTime: 550, // Explosive sidekick
-    executionTime: 850, // Total time (charge + release)
-    recoveryTime: 1450,
+    executionTime: 1050,
+    recoveryTime: 1250, // Reduced from 1450ms for combo flow
     critChance: 0.24,
     critMultiplier: 2.2,
-    // Explosive power mechanics
-    explosivePower: 1.4, // 40% power bonus for flying techniques
-    thunderEffect: true, // Thunder burst on impact
-    cameraShakeIntensity: 0.6, // Strong camera shake
-    screenFlashIntensity: 0.5, // Strong screen flash
     effects: [],
+    // Combo metadata - Flying explosive kick
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - aerial power strike
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "jumping_kick", // Type: shared category
     animationId: "jin_flying_sidekick", // ID: unique 1-1 mapping
@@ -271,8 +219,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Back Kick",
     romanized: "dwi-chagi",
     description: {
-      korean: "뒤로 회전하며 가하는 강력한 뒤차기 - 예측 불가능한 파괴력",
-      english: "Powerful spinning back kick - unpredictable destructive force",
+      korean: "뒤로 회전하며 가하는 강력한 뒤차기",
+      english: "Powerful spinning back kick",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KICK,
@@ -286,19 +234,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.1,
     },
-    // Two-phase explosive timing
-    chargeTime: 250, // Quick spin preparation
-    releaseTime: 500, // Explosive back kick
-    executionTime: 750, // Total time (charge + release)
-    recoveryTime: 1250,
+    executionTime: 850,
+    recoveryTime: 1050, // Reduced from 1250ms for combo flow
     critChance: 0.28,
     critMultiplier: 2.3,
-    // Explosive power mechanics
-    explosivePower: 1.4, // 40% power bonus for spinning techniques
-    thunderEffect: true, // Thunder impact on connection
-    cameraShakeIntensity: 0.7, // Very strong shake - highest damage spinning kick
-    screenFlashIntensity: 0.6, // Strong flash
     effects: [],
+    // Combo metadata - Powerful spinning counter
+    comboWindow: 300,
+    comboPriority: 2, // Mid-chain - builds momentum
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "jin_back_kick", // ID: unique 1-1 mapping
@@ -320,8 +264,8 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
     englishName: "Knee Strike",
     romanized: "mureup-chigi",
     description: {
-      korean: "폭발적인 무릎 공격으로 복부나 얼굴을 타격 - 천둥의 충격",
-      english: "Explosive knee strike to abdomen or face - thunder's impact",
+      korean: "폭발적인 무릎 공격으로 복부나 얼굴을 타격",
+      english: "Explosive knee strike to abdomen or face",
     },
     stance: TrigramStance.JIN,
     type: CombatAttackType.KNEE,
@@ -335,19 +279,15 @@ export const JIN_TECHNIQUES: readonly JinExplosiveTechnique[] = [
       techniqueType: "knee",
       baseExtension: 0.4,
     },
-    // Two-phase explosive timing
-    chargeTime: 200, // Quick charge for close-range
-    releaseTime: 400, // Fast explosive knee
-    executionTime: 600, // Total time (charge + release)
-    recoveryTime: 1000,
+    executionTime: 600,
+    recoveryTime: 800, // Reduced from 1000ms for combo flow
     critChance: 0.18,
     critMultiplier: 1.9,
-    // Explosive power mechanics
-    explosivePower: 1.3, // 30% power bonus for close-range explosive strike
-    thunderEffect: true, // Thunder shock on impact
-    cameraShakeIntensity: 0.5, // Strong shake for close impact
-    screenFlashIntensity: 0.4, // Moderate flash
     effects: [],
+    // Combo metadata - Close-range explosive strike
+    comboWindow: 300,
+    comboPriority: 2, // Mid-chain - explosive close combat
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "knee_strike", // Type: shared category
     animationId: "jin_knee_strike", // ID: unique 1-1 mapping

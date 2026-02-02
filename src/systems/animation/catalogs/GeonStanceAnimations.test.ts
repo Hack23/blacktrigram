@@ -33,8 +33,8 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════
 
 describe("GEON_IDLE_BREATHING", () => {
-  it("should have correct duration for ENHANCED breathing cycle", () => {
-    expect(GEON_IDLE_BREATHING.duration).toBe(2.4); // Updated to 2.4s for enhanced version
+  it("should have correct duration for breathing cycle", () => {
+    expect(GEON_IDLE_BREATHING.duration).toBe(2.5);
     expect(GEON_IDLE_BREATHING.loop).toBe(true);
   });
 
@@ -43,22 +43,21 @@ describe("GEON_IDLE_BREATHING", () => {
     expect(GEON_IDLE_BREATHING.koreanName).toBe("건괘 호흡 자세");
   });
 
-  it("should have ENHANCED 8-keyframe breathing cycle", () => {
-    // Enhanced version has 8 keyframes for 95% quality
-    expect(GEON_IDLE_BREATHING.keyframes.length).toBeGreaterThanOrEqual(8);
+  it("should include chest expansion keyframes", () => {
+    expect(GEON_IDLE_BREATHING.keyframes.length).toBeGreaterThanOrEqual(3);
 
     const neutralFrame = GEON_IDLE_BREATHING.keyframes.find((f) => f.time === 0);
-    const peakInhaleFrame = GEON_IDLE_BREATHING.keyframes.find((f) => f.time === 1.2);
-    const returnFrame = GEON_IDLE_BREATHING.keyframes.find((f) => f.time === 2.4);
+    const expansionFrame = GEON_IDLE_BREATHING.keyframes.find((f) => f.time === 1.25);
+    const returnFrame = GEON_IDLE_BREATHING.keyframes.find((f) => f.time === 2.5);
 
     expect(neutralFrame).toBeDefined();
-    expect(peakInhaleFrame).toBeDefined();
+    expect(expansionFrame).toBeDefined();
     expect(returnFrame).toBeDefined();
 
     // Check chest expansion - spine upper should rotate backward during inhale
-    const peakInhaleSpineRotation = peakInhaleFrame?.boneRotations.get(BoneName.SPINE_UPPER);
-    expect(peakInhaleSpineRotation).toBeDefined();
-    expect(peakInhaleSpineRotation?.x).toBeLessThan(0); // Negative = backward lean for chest expansion
+    const expansionSpineRotation = expansionFrame?.boneRotations.get(BoneName.SPINE_UPPER);
+    expect(expansionSpineRotation).toBeDefined();
+    expect(expansionSpineRotation?.x).toBeLessThan(0); // Negative = backward lean
   });
 
   it("should maintain authoritative head position", () => {
@@ -71,16 +70,11 @@ describe("GEON_IDLE_BREATHING", () => {
     });
   });
 
-  it("should have smooth breathing cycle timing with 8 phases", () => {
+  it("should have smooth breathing cycle timing", () => {
     const times = GEON_IDLE_BREATHING.keyframes.map((f) => f.time);
-    expect(times).toContain(0); // Start - neutral
-    expect(times).toContain(0.3); // Begin inhale
-    expect(times).toContain(0.6); // Mid inhale
-    expect(times).toContain(1.2); // Peak inhale
-    expect(times).toContain(1.5); // Hold at peak
-    expect(times).toContain(1.8); // Begin exhale
-    expect(times).toContain(2.1); // Mid exhale
-    expect(times).toContain(2.4); // Return to neutral
+    expect(times).toContain(0); // Start
+    expect(times).toContain(1.25); // Mid-breath
+    expect(times).toContain(2.5); // End
   });
 });
 

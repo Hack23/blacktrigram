@@ -18,6 +18,12 @@
 import { BoneName, type SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Gan Mountain defensive techniques (간괘 방어 기술)
+import {
+  GAN_ROCK_DEFENSE_ANIMATION,
+  GAN_DEFENSIVE_REVERSAL,
+} from "./GanTechniqueAnimations";
+
 /**
  * Anatomical safety constants for Gan (Mountain) trigram animations
  *
@@ -339,4 +345,8 @@ export const GAN_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new
   
   // Stance Transitions
   ["gan_high_solid_guard_transition", GAN_HIGH_SOLID_GUARD_TRANSITION],
+  
+  // Mountain Defensive Block Techniques (간괘 방어 기술)
+  ["gan_rock_defense_animation", GAN_ROCK_DEFENSE_ANIMATION],
+  ["gan_defensive_reversal", GAN_DEFENSIVE_REVERSAL],
 ]);

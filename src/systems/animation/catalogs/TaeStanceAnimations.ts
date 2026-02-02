@@ -18,6 +18,18 @@
 import { BoneName, type SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Hapkido joint lock techniques (합기도 관절기)
+import {
+  TAE_WRIST_LOCK_SEQUENCE,
+  TAE_ELBOW_CONTROL,
+  TAE_FINGER_LOCK,
+  TAE_FLOWING_COUNTER,
+  TAE_FLOWING_STRIKES,
+  TAE_SMALL_CIRCLE,
+  TAE_SHOULDER_LOCK,
+  TAE_ARM_BAR,
+} from "./TaeJointLockAnimations";
+
 /**
  * Anatomical safety constants for Tae (Lake) trigram animations
  *
@@ -301,4 +313,14 @@ export const TAE_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new
   
   // Stance Transitions
   ["tae_flexible_guard_transition", TAE_FLEXIBLE_GUARD_TRANSITION],
+  
+  // Hapkido Joint Lock Techniques (합기도 관절기)
+  ["tae_wrist_lock_sequence", TAE_WRIST_LOCK_SEQUENCE],
+  ["tae_elbow_control", TAE_ELBOW_CONTROL],
+  ["tae_finger_lock", TAE_FINGER_LOCK],
+  ["tae_flowing_counter", TAE_FLOWING_COUNTER],
+  ["tae_flowing_strikes", TAE_FLOWING_STRIKES],
+  ["tae_small_circle", TAE_SMALL_CIRCLE],
+  ["tae_shoulder_lock", TAE_SHOULDER_LOCK],
+  ["tae_arm_bar", TAE_ARM_BAR],
 ]);

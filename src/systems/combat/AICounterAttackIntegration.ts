@@ -247,8 +247,7 @@ export function selectCounterTechnique(
   const validCounters = availableTechniques.filter((technique) => {
     // Check if technique is in recommended counters
     if (
-      counterOpportunity.recommendedCounters &&
-      counterOpportunity.recommendedCounters.includes(technique.id)
+      counterOpportunity.recommendedCounters?.includes(technique.id)
     ) {
       return true;
     }
