@@ -92,17 +92,23 @@ export const VictoryAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
+    // Capture ref values in closure to avoid accessing in cleanup
+    const groupRefValue = groupRef.current;
+    const particlesRefValue = particlesRef.current;
+    const ringsRefValue = ringsRef.current;
+    const symbolsRefValue = symbolsRef.current;
+    
     return () => {
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
-      if (particlesRef.current) {
-        particlesRef.current.geometry?.dispose();
-        if (particlesRef.current.material) {
-          (particlesRef.current.material as THREE.Material).dispose();
+      if (particlesRefValue) {
+        particlesRefValue.geometry?.dispose();
+        if (particlesRefValue.material) {
+          (particlesRefValue.material as THREE.Material).dispose();
         }
       }
-      if (ringsRef.current) {
-        ringsRef.current.children.forEach((child) => {
+      if (ringsRefValue) {
+        ringsRefValue.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -111,8 +117,8 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (symbolsRef.current) {
-        symbolsRef.current.children.forEach((child) => {
+      if (symbolsRefValue) {
+        symbolsRefValue.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -123,13 +129,13 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      if (groupRef.current) {
-        groupRef.current.children.forEach((child) => {
+      if (groupRefValue) {
+        groupRefValue.children.forEach((child) => {
           // Skip objects that are already handled via specific refs
           if (
-            child === particlesRef.current ||
-            child === ringsRef.current ||
-            child === symbolsRef.current
+            child === particlesRefValue ||
+            child === ringsRefValue ||
+            child === symbolsRefValue
           ) {
             return;
           }

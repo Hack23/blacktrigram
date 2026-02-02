@@ -82,7 +82,8 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     if (!originalPositionRef.current) {
       originalPositionRef.current = new THREE.Vector3(...position);
     }
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally empty - only initialize once on mount
 
   // Keep original position synced with external position while not attacking
   useEffect(() => {
@@ -119,7 +120,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     }
 
     wasAttackingRef.current = isAttacking;
-  }, [isAttacking, attackAnimationType, stance]);
+  }, [isAttacking, attackAnimationType, stance, position, attackPhysics]);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
