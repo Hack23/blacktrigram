@@ -34,7 +34,6 @@ jobs:
       discussions: read
       pages: read
       pull-requests: write
-      id-token: write
       security-events: read
       statuses: read
 
@@ -129,31 +128,32 @@ jobs:
             ~/.npm
             /usr/local/lib/node_modules
             /usr/local/bin/mcp-server-*
-          key: ${{ runner.os }}-mcp-servers-v3-${{ hashFiles('.github/copilot-mcp.json') }}
+          key: ${{ runner.os }}-mcp-servers-v4-${{ hashFiles('.github/copilot-mcp.json') }}
           restore-keys: |
-            ${{ runner.os }}-mcp-servers-v3-
+            ${{ runner.os }}-mcp-servers-v4-
 
       # Pre-install MCP server packages globally
       - name: Install MCP server packages globally
         run: |
           echo "📦 Installing MCP server packages globally..."
           
-          # Install MCP servers that are available on npm
+          # Install Node.js MCP servers that exist on npm
           npm install -g @modelcontextprotocol/server-filesystem
           npm install -g @modelcontextprotocol/server-memory
           npm install -g @modelcontextprotocol/server-sequential-thinking
-          npm install -g @modelcontextprotocol/server-fetch
           
           # Pre-cache @playwright/mcp for faster startup
           npm install -g @playwright/mcp
           
-          echo "✅ MCP server packages installed globally"
+          echo "✅ Node.js MCP server packages installed globally"
+
 
       # Verify all MCP server installations
       - name: Verify MCP server installations
         run: |
           echo "🔍 Verifying MCP server installations..."
           
+          echo "=== Node.js MCP Servers ==="
           echo "Checking mcp-server-filesystem..."
           which mcp-server-filesystem && echo "✅ mcp-server-filesystem found" || echo "❌ mcp-server-filesystem NOT found"
           
@@ -163,15 +163,16 @@ jobs:
           echo "Checking mcp-server-sequential-thinking..."
           which mcp-server-sequential-thinking && echo "✅ mcp-server-sequential-thinking found" || echo "❌ mcp-server-sequential-thinking NOT found"
           
-          echo "Checking mcp-server-fetch..."
-          which mcp-server-fetch && echo "✅ mcp-server-fetch found" || echo "❌ mcp-server-fetch NOT found"
-          
           echo "Checking @playwright/mcp..."
-          which mcp-server-playwright && echo "✅ mcp-server-playwright found" || npx @playwright/mcp --help > /dev/null 2>&1 && echo "✅ @playwright/mcp available via npx" || echo "⚠️ @playwright/mcp will be fetched on first use"
+          which mcp-server-playwright 2>/dev/null && echo "✅ mcp-server-playwright found" || echo "ℹ️ @playwright/mcp available via npx"
+                    
+          echo ""
+          echo "=== HTTP MCP Servers ==="
+          echo "📍 GitHub MCP Server: Using HTTP endpoint (https://api.githubcopilot.com/mcp/insiders)"
           
           echo ""
-          echo "📍 GitHub MCP Server: Using HTTP endpoint (https://api.githubcopilot.com/mcp/)"
           echo "📍 Global npm bin location: $(npm bin -g)"
+          echo "📍 uv location: $(which uv 2>/dev/null || echo 'not found')"
           echo "📍 PATH: $PATH"
           echo ""
           echo "✅ MCP server verification complete"
@@ -213,11 +214,10 @@ jobs:
           echo "Build artifacts: $(ls -la dist/ 2>/dev/null | wc -l) files"
           echo "========================================="
           echo "MCP Servers Available:"
-          echo "- GitHub MCP Server: HTTP (https://api.githubcopilot.com/mcp/)"
+          echo "- GitHub MCP Server: HTTP (https://api.githubcopilot.com/mcp/insiders)"
           echo "- mcp-server-filesystem: $(which mcp-server-filesystem 2>/dev/null || echo 'not found')"
           echo "- mcp-server-memory: $(which mcp-server-memory 2>/dev/null || echo 'not found')"
           echo "- mcp-server-sequential-thinking: $(which mcp-server-sequential-thinking 2>/dev/null || echo 'not found')"
-          echo "- mcp-server-fetch: $(which mcp-server-fetch 2>/dev/null || echo 'not found')"
           echo "- Playwright MCP: @playwright/mcp (via npx)"
           echo "========================================="
           echo "Three.js Test Environment Ready"
