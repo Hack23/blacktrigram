@@ -98,6 +98,12 @@ export const VictoryAnimation3D: React.FC = () => {
     const symbols = symbolsRef.current;
     
     return () => {
+      // Capture ref values to avoid stale references in cleanup
+      const group = groupRef.current;
+      const particles = particlesRef.current;
+      const rings = ringsRef.current;
+      const symbols = symbolsRef.current;
+
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
       if (particles) {

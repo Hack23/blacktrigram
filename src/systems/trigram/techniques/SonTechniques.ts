@@ -77,6 +77,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.5,
+    // Son (Wind) combo flow properties - 선풍연쇄 (Whirlwind Chain)
+    comboWindow: 200, // 200ms timing window for next technique
+    comboPriority: 1, // Starter technique - opens combo chains
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 
   // ============= Taekyon Footwork Techniques =============
@@ -121,6 +125,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "medium",
     speed: 1.1,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain technique - bridges combos
+    pressureStacks: 1, // Applies 1 pressure stack on hit
   },
   {
     id: "son_rapid_footwork",
@@ -163,6 +171,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "medium",
     speed: 1.2,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain technique - bridges combos
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 
   // ============= Rhythmic Striking Techniques =============
@@ -207,6 +219,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "special",
     range: "short",
     speed: 1.2,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 3, // Finisher technique - ends combos
+    pressureStacks: 3, // Applies 3 pressure stacks on hit (high pressure)
   },
   {
     id: "son_flowing_push",
@@ -249,6 +265,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.0,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 1, // Starter technique - opens combo chains
+    pressureStacks: 1, // Applies 1 pressure stack on hit
   },
 
   // ============= Spinning Techniques =============
@@ -293,6 +313,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.1,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 3, // Finisher technique - ends combos
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 ] as const;
 

@@ -276,10 +276,12 @@ describe("JIN_JUMPING_ADVANCE", () => {
 
 describe("JIN_ANIMATIONS", () => {
   it("should contain all Jin stance animations", () => {
-    expect(JIN_ANIMATIONS.size).toBe(3);
+    expect(JIN_ANIMATIONS.size).toBe(5); // Updated: now includes 2 technique animations
     expect(JIN_ANIMATIONS.has("jin_idle_coiled")).toBe(true);
     expect(JIN_ANIMATIONS.has("jin_explosive_burst")).toBe(true);
     expect(JIN_ANIMATIONS.has("jin_jumping_advance")).toBe(true);
+    expect(JIN_ANIMATIONS.has("jin_thunder_flash_animation")).toBe(true);
+    expect(JIN_ANIMATIONS.has("jin_jumping_knee_strike")).toBe(true);
   });
 
   it("should map to correct animation objects", () => {

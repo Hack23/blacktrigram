@@ -73,6 +73,11 @@ export const DefeatAnimation3D: React.FC = () => {
     const spiral = spiralRef.current;
     
     return () => {
+      // Capture ref values to avoid stale references in cleanup
+      const group = groupRef.current;
+      const particles = particlesRef.current;
+      const spiral = spiralRef.current;
+
       // Dispose geometries and materials to prevent memory leaks
       if (particles) {
         particles.geometry?.dispose();

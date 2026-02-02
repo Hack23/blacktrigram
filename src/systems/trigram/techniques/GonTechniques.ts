@@ -68,6 +68,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.4,
     effects: [],
+    // Combo metadata - Clinch control setup
+    comboWindow: 230,
+    comboPriority: 1, // Starter - establishes grappling position
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "grapple", // Type: shared category
     animationId: "gon_earth_embrace", // ID: unique 1-1 mapping
@@ -112,6 +116,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
+    // Combo metadata - Sweeping takedown
+    comboWindow: 230,
+    comboPriority: 2, // Mid-chain - destabilizing sweep
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "sweep", // Type: shared category
     animationId: "gon_leg_sweep", // ID: unique 1-1 mapping
@@ -154,6 +162,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
+    // Combo metadata - Low level grappling
+    comboWindow: 230,
+    comboPriority: 1, // Starter - ankle control setup
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "sweep", // Type: shared category
     animationId: "gon_ankle_pick", // ID: unique 1-1 mapping
@@ -198,6 +210,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.24,
     critMultiplier: 2.1,
     effects: [],
+    // Combo metadata - Traditional wrestling throw
+    comboWindow: 230,
+    comboPriority: 3, // Finisher - ssireum slam
+    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gon_ssireum_throw", // ID: unique 1-1 mapping
@@ -240,6 +256,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
+    // Combo metadata - Crushing throw finisher
+    comboWindow: 230,
+    comboPriority: 3, // Finisher - devastating slam
+    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "gon_ground_pound", // ID: unique 1-1 mapping
@@ -282,6 +302,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
+    // Combo metadata - Body lock control
+    comboWindow: 230,
+    comboPriority: 2, // Mid-chain - torso control
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "takedown", // Type: shared category
     animationId: "gon_body_lock_takedown", // ID: unique 1-1 mapping
@@ -324,6 +348,10 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
+    // Combo metadata - Self-sacrificing throw
+    comboWindow: 230,
+    comboPriority: 3, // Finisher - high-risk high-reward throw
+    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gon_sacrifice_throw", // ID: unique 1-1 mapping

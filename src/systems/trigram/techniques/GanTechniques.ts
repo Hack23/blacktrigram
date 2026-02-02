@@ -68,6 +68,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.02,
     critMultiplier: 1.0,
     effects: [],
+    // Combo metadata - Solid defensive base
+    comboWindow: 250,
+    comboPriority: 1, // Starter - establishes defensive position
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gan_rock_defense", // ID: unique 1-1 mapping
@@ -112,6 +116,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.04,
     critMultiplier: 1.1,
     effects: [],
+    // Combo metadata - Rooted defense stance
+    comboWindow: 250,
+    comboPriority: 1, // Starter - immovable foundation
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "stance", // Type: shared category
     animationId: "gan_immovable_stance", // ID: unique 1-1 mapping
@@ -154,6 +162,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
+    // Combo metadata - Powerful blocking technique
+    comboWindow: 250,
+    comboPriority: 1, // Starter - wall defense
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gan_iron_block", // ID: unique 1-1 mapping
@@ -198,6 +210,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.26,
     critMultiplier: 2.2,
     effects: [],
+    // Combo metadata - Devastating counter strike
+    comboWindow: 250,
+    comboPriority: 3, // Finisher - powerful counter blow
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
     animationId: "gan_counter_strike", // ID: unique 1-1 mapping
@@ -240,6 +256,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Control reversal technique
+    comboWindow: 250,
+    comboPriority: 2, // Mid-chain - defensive reversal
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
     animationId: "gan_reversal_technique", // ID: unique 1-1 mapping
@@ -284,6 +304,10 @@ export const GAN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.14,
     critMultiplier: 1.6,
     effects: [],
+    // Combo metadata - Immobilizing lock
+    comboWindow: 250,
+    comboPriority: 2, // Mid-chain - position control
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "grapple", // Type: shared category
     animationId: "gan_mountain_stance_lock", // ID: unique 1-1 mapping

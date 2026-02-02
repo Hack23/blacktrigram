@@ -68,6 +68,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
+    // Combo metadata - Flowing counter starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - initiates counter flow
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
     animationId: "gam_water_counter", // ID: unique 1-1 mapping
@@ -112,6 +116,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Force redirection throw
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - momentum redirection
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_redirect_throw", // ID: unique 1-1 mapping
@@ -154,6 +162,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
+    // Combo metadata - Control throw finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - dominant position throw
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_hip_throw", // ID: unique 1-1 mapping
@@ -198,6 +210,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
+    // Combo metadata - Defensive flow starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - soft defensive entry
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_flowing_block", // ID: unique 1-1 mapping
@@ -240,6 +256,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
+    // Combo metadata - Neutralizing redirect
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - circular neutralization
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_circular_parry", // ID: unique 1-1 mapping
@@ -284,6 +304,10 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
+    // Combo metadata - Joint control counter finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - vital point joint lock
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "gam_wrist_twist_counter", // ID: unique 1-1 mapping

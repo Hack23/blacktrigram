@@ -321,6 +321,7 @@ export function usePlayerAnimation(
       getCurrentGuardStance,
       reset,
     }),
+    // Mutable ref values don't trigger re-renders, so they shouldn't be in dependency arrays
     [
       update,
       transitionTo,
