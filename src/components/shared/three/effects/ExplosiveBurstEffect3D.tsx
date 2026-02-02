@@ -114,14 +114,15 @@ const ParticleBurst: React.FC<{
  */
 const ShockwaveRing: React.FC<{
   position: [number, number, number];
-  progress: number;
+  progressRef: React.MutableRefObject<number>;
   intensity: number;
   color: number;
-}> = ({ position, progress, intensity, color }) => {
+}> = ({ position, progressRef, intensity, color }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(() => {
     if (meshRef.current) {
+      const progress = progressRef.current;
       const scale = 1 + progress * 3 * intensity;
       meshRef.current.scale.set(scale, scale, 1);
 
@@ -148,14 +149,15 @@ const ShockwaveRing: React.FC<{
  */
 const ExplosionFlash: React.FC<{
   position: [number, number, number];
-  progress: number;
+  progressRef: React.MutableRefObject<number>;
   intensity: number;
   color: number;
-}> = ({ position, progress, intensity, color }) => {
+}> = ({ position, progressRef, intensity, color }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(() => {
     if (meshRef.current) {
+      const progress = progressRef.current;
       // Quick expansion then fade
       const scale = progress < 0.2 ? 1 + progress * 2 : 1.4 - progress;
       meshRef.current.scale.setScalar(scale * intensity);
@@ -350,7 +352,7 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       {/* Explosion flash */}
       <ExplosionFlash
         position={position}
-        progress={progressRef.current}
+        progressRef={progressRef}
         intensity={intensity}
         color={color}
       />
@@ -358,13 +360,13 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
       {/* Shockwave rings */}
       <ShockwaveRing
         position={position}
-        progress={progressRef.current}
+        progressRef={progressRef}
         intensity={intensity}
         color={KOREAN_COLORS.PRIMARY_CYAN}
       />
       <ShockwaveRing
         position={[position[0], position[1] + 0.05, position[2]]}
-        progress={progressRef.current * 0.8}
+        progressRef={progressRef}
         intensity={intensity * 0.8}
         color={KOREAN_COLORS.ACCENT_RED}
       />

@@ -57,17 +57,17 @@ const ANATOMICAL_LIMITS = {
  * - Stunning impact at apex of extension
  * - Rapid recovery to guarded position
  *
- * Animation Phases (20 frames total):
+ * Animation Phases (12 frames total):
  * - 0-200ms: Charge phase (3 frames) - Deep crouch with energy gathering
- * - 200-700ms: Release phase (9 frames) - Explosive upward drive with punch
- * - 700-1000ms: Recovery phase (5 frames) - Return to guard position
+ * - 200-700ms: Release phase (6 frames) - Explosive upward drive with punch
+ * - 700-1000ms: Recovery phase (3 frames) - Return to guard position
  *
  * **Performance**: Targets 60fps (16.67ms per frame)
  * **Damage Type**: Stunning blunt force with neurological shock
  * **Explosive Power**: 1.3x damage multiplier on perfect timing
  *
  * @korean 벽력일섬
- * @frames 20 total (3 charge, 9 release, 5 recovery)
+ * @frames 12 total (3 charge, 6 release, 3 recovery)
  * @duration 1000ms (adjusted for explosive timing)
  * @category Attack Animation
  */

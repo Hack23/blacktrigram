@@ -37,11 +37,11 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Targets multiple vital points in sequence
  *
  * Animation Phases (Enhanced to 95% Martial Arts Accuracy):
- * - Setup (0-375ms, 5 frames): Wind-up with counter-rotation
- * - Strike-1 (375-750ms, 5 frames): First strike with hip-shoulder kinetic chain
- * - Strike-2 (750-1125ms, 5 frames): Second strike continuing rotation
- * - Strike-3 (1125-1500ms, 5 frames): Third strike completing whirlwind
- * Total: 28-30 keyframes with biomechanical Taekyon continuous pressure
+ * - Setup (0-375ms, 6 frames): Wind-up with counter-rotation
+ * - Strike-1 (375-750ms, 8 frames): First strike with hip-shoulder kinetic chain
+ * - Strike-2 (750-1125ms, 8 frames): Second strike continuing rotation
+ * - Strike-3 (1125-1500ms, 9 frames): Third strike completing whirlwind
+ * Total: 31 keyframes with biomechanical Taekyon continuous pressure
  *
  * Target Vital Points Sequence:
  * - Strike-1: 늑골 (Neukgol/Ribs) - Side body strike
@@ -52,7 +52,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * **Damage Type**: Continuous pressure with cumulative effect
  *
  * @korean 선풍연격
- * @frames 28-30 total (5 setup, 7 strike-1, 7 strike-2, 7 strike-3)
+ * @frames 31 total (6 setup, 8 strike-1, 8 strike-2, 9 strike-3)
  * @duration 1500ms
  * @category Attack Animation
  * @accuracy 95% martial arts biomechanics

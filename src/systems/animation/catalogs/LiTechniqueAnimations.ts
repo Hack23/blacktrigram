@@ -51,12 +51,12 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  *
  * **Enhanced Frame Breakdown** (60fps target - 95% martial accuracy):
  * - Total: 27 frames (1000ms / 37ms per frame ≈ 27 frames)
- * - Wind-up: Frames 0-8 (280ms) - Progressive coiling with hip preparation
- * - Strike: Frames 9-19 (440ms) - Hip-led kinetic chain to impact
- * - Recovery: Frames 20-27 (280ms) - Controlled retraction to guard
+ * - Wind-up: Frames 0-9 (333ms) - Progressive coiling with hip preparation
+ * - Strike: Frames 10-19 (370ms) - Hip-led kinetic chain to impact
+ * - Recovery: Frames 20-26 (259ms) - Controlled retraction to guard
  *
  * @duration 1000ms (1.0 seconds)
- * @frames 27 total (8 wind-up, 11 strike, 8 recovery)
+ * @frames 27 total (10 wind-up, 10 strike, 7 recovery)
  * @korean 화염지창
  * @biomechanicalAccuracy 95%
  */

@@ -47,7 +47,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * **Biomechanics**: 95% martial arts accuracy with proper kinetic chain
  *
  * @korean 반석방어
- * @frames 28 total (6 block, 5 absorb, 10 counter, 7 recovery)
+ * @frames 29 total (6 block, 6 absorb, 10 counter, 7 recovery)
  * @duration 1200ms
  * @category Defense Animation
  * @accuracy 95%

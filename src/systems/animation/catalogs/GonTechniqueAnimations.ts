@@ -38,14 +38,15 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
  * - Circular throwing arc (not linear) - traditional Ssireum technique
  * - Ground control follow-through - maintain dominance
  *
- * Animation Phases (1867ms duration, 28 keyframes):
- * - Close Phase (0-540ms): Deep penetration and body lock
- * - Lift Phase (540-1080ms): Leg-driven lift (safe mechanics)
- * - Throw Phase (1080-1620ms): Circular arc rotation
- * - Control Phase (1620-1867ms): Follow to ground dominance
+ * Animation Phases (1867ms duration, 22 keyframes):
+ * - Close Phase (0-540ms, 6 frames): Deep penetration and body lock
+ * - Lift Phase (540-1080ms, 6 frames): Leg-driven lift (safe mechanics)
+ * - Throw Phase (1080-1620ms, 6 frames): Circular arc rotation
+ * - Control Phase (1620-1867ms, 4 frames): Follow to ground dominance
  *
  * @korean 대지포옹
  * @duration 1867ms (~1.9 seconds)
+ * @frames 22 total (6 close, 6 lift, 6 throw, 4 control)
  * @category Throw Animation
  */
 export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =

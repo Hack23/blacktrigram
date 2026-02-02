@@ -219,8 +219,8 @@ const ThunderChargeEffect: React.FC<{
 const ThunderReleaseEffect: React.FC<{
   position: [number, number, number];
   intensity: number;
-  progress: number;
-}> = ({ position, intensity, progress }) => {
+  progressRef: React.MutableRefObject<number>;
+}> = ({ position, intensity, progressRef }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   // Generate electric sparks on mount
@@ -251,6 +251,7 @@ const ThunderReleaseEffect: React.FC<{
 
   useFrame(() => {
     if (groupRef.current) {
+      const progress = progressRef.current;
       // Expanding explosion
       const scale = 1 + progress * 2;
       groupRef.current.scale.setScalar(scale);
@@ -317,15 +318,6 @@ const ThunderReleaseEffect: React.FC<{
           intensity={intensity}
         />
       ))}
-
-      {/* Bright flash light */}
-      <pointLight
-        position={[0, 0, 0]}
-        color={KOREAN_COLORS.ACCENT_GOLD}
-        intensity={intensity * 5 * (1 - progress)}
-        distance={5}
-        decay={2}
-      />
     </group>
   );
 };
@@ -376,7 +368,7 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
         <ThunderReleaseEffect
           position={position}
           intensity={intensity}
-          progress={progressRef.current}
+          progressRef={progressRef}
         />
       )}
     </group>

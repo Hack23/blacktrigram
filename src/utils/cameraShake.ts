@@ -197,11 +197,7 @@ export const JIN_SHAKE_PROFILES = {
  * React hook for camera shake in @react-three/fiber
  */
 export const useCameraShake = () => {
-  const managerRef = useRef<CameraShakeManager | null>(null);
-
-  if (!managerRef.current) {
-    managerRef.current = new CameraShakeManager();
-  }
+  const managerRef = useRef<CameraShakeManager>(new CameraShakeManager());
 
   const manager = managerRef.current;
 
