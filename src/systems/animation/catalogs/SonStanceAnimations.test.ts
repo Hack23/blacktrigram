@@ -336,11 +336,13 @@ describe("SON_MOBILE_GUARD_TRANSITION", () => {
 
 describe("SON_STANCE_ANIMATIONS Map", () => {
   it("should contain all Son stance animations", () => {
-    expect(SON_STANCE_ANIMATIONS.size).toBe(4);
+    expect(SON_STANCE_ANIMATIONS.size).toBe(6); // Updated: now includes 2 technique animations
     expect(SON_STANCE_ANIMATIONS.has("son_idle_swaying")).toBe(true);
     expect(SON_STANCE_ANIMATIONS.has("son_flowing_arc_step")).toBe(true);
     expect(SON_STANCE_ANIMATIONS.has("son_sweeping_circle_step")).toBe(true);
     expect(SON_STANCE_ANIMATIONS.has("son_mobile_guard_transition")).toBe(true);
+    expect(SON_STANCE_ANIMATIONS.has("son_whirlwind_strike")).toBe(true);
+    expect(SON_STANCE_ANIMATIONS.has("son_sweeping_multi_strike")).toBe(true);
   });
 
   it("should provide correct animation references", () => {

@@ -69,11 +69,11 @@ export const DefeatAnimation3D: React.FC = () => {
   // Cleanup Three.js resources on unmount
   useEffect(() => {
     return () => {
-      // Store ref values to avoid stale closure issues
+      // Capture ref values to avoid stale references in cleanup
       const group = groupRef.current;
       const particles = particlesRef.current;
       const spiral = spiralRef.current;
-      
+
       // Dispose geometries and materials to prevent memory leaks
       if (particles) {
         particles.geometry?.dispose();
@@ -92,7 +92,6 @@ export const DefeatAnimation3D: React.FC = () => {
         });
       }
       // Additionally iterate over all group children to catch meshes/points without explicit refs
-      
       if (group) {
         group.children.forEach((child) => {
           // Skip already-handled refs

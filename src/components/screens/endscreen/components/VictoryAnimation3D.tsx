@@ -93,12 +93,12 @@ export const VictoryAnimation3D: React.FC = () => {
   // Cleanup Three.js resources on unmount
   useEffect(() => {
     return () => {
-      // Store ref values to avoid stale closure issues
+      // Capture ref values to avoid stale references in cleanup
       const group = groupRef.current;
       const particles = particlesRef.current;
       const rings = ringsRef.current;
       const symbols = symbolsRef.current;
-      
+
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
       if (particles) {
@@ -129,7 +129,6 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      
       if (group) {
         group.children.forEach((child) => {
           // Skip objects that are already handled via specific refs

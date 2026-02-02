@@ -55,10 +55,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 500,
-    recoveryTime: 800,
+    recoveryTime: 600, // Reduced from 800ms for combo flow
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
+    // Combo metadata - Fast explosive setup
+    comboWindow: 300,
+    comboPriority: 1, // Starter - quick explosive setup
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "jin_lightning_flash", // ID: unique 1-1 mapping
@@ -96,10 +100,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.15,
     },
     executionTime: 1050,
-    recoveryTime: 1350,
+    recoveryTime: 1150, // Reduced from 1350ms for combo flow
     critChance: 0.22,
     critMultiplier: 2.1,
     effects: [],
+    // Combo metadata - Explosive aerial finisher
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - devastating jump kick
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "jumping_kick", // Type: shared category
     animationId: "jin_jumping_front_kick", // ID: unique 1-1 mapping
@@ -137,10 +145,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.15,
     },
     executionTime: 1100,
-    recoveryTime: 1500,
+    recoveryTime: 1300, // Reduced from 1500ms for combo flow
     critChance: 0.25,
     critMultiplier: 2.3,
     effects: [],
+    // Combo metadata - Ultimate spinning finisher
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - maximum rotational power
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "jin_tornado_kick", // ID: unique 1-1 mapping
@@ -178,10 +190,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.15,
     },
     executionTime: 1050,
-    recoveryTime: 1450,
+    recoveryTime: 1250, // Reduced from 1450ms for combo flow
     critChance: 0.24,
     critMultiplier: 2.2,
     effects: [],
+    // Combo metadata - Flying explosive kick
+    comboWindow: 300,
+    comboPriority: 3, // Finisher - aerial power strike
+    pressureStacks: 5,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "jumping_kick", // Type: shared category
     animationId: "jin_flying_sidekick", // ID: unique 1-1 mapping
@@ -219,10 +235,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.1,
     },
     executionTime: 850,
-    recoveryTime: 1250,
+    recoveryTime: 1050, // Reduced from 1250ms for combo flow
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
+    // Combo metadata - Powerful spinning counter
+    comboWindow: 300,
+    comboPriority: 2, // Mid-chain - builds momentum
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "jin_back_kick", // ID: unique 1-1 mapping
@@ -260,10 +280,14 @@ export const JIN_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.4,
     },
     executionTime: 600,
-    recoveryTime: 1000,
+    recoveryTime: 800, // Reduced from 1000ms for combo flow
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
+    // Combo metadata - Close-range explosive strike
+    comboWindow: 300,
+    comboPriority: 2, // Mid-chain - explosive close combat
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "knee_strike", // Type: shared category
     animationId: "jin_knee_strike", // ID: unique 1-1 mapping

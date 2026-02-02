@@ -18,6 +18,12 @@
 import { BoneName, type SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Son Wind continuous techniques (손괘 연속 타격)
+import {
+  SON_WHIRLWIND_STRIKE_ANIMATION,
+  SON_SWEEPING_MULTI_STRIKE,
+} from "./SonTechniqueAnimations";
+
 /**
  * Anatomical safety constants for Son (Wind) trigram animations
  *
@@ -348,4 +354,8 @@ export const SON_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
 
     // Stance Transitions
     ["son_mobile_guard_transition", SON_MOBILE_GUARD_TRANSITION],
+    
+    // Wind Continuous Strike Techniques (손괘 연속 타격)
+    ["son_whirlwind_strike", SON_WHIRLWIND_STRIKE_ANIMATION],
+    ["son_sweeping_multi_strike", SON_SWEEPING_MULTI_STRIKE],
   ]);
