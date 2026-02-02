@@ -117,7 +117,7 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
     }
 
     wasAttackingRef.current = isAttacking;
-  }, [isAttacking, attackAnimationType, stance]);
+  }, [isAttacking, attackAnimationType, stance, position, attackPhysics]);
 
   // Memoize stance color
   const stanceColor = useMemo(() => getStanceColor(stance), [stance]);
