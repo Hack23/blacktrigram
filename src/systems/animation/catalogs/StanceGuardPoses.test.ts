@@ -128,8 +128,8 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for explosive forward", () => {
-        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
+      it("should have neutral weight for 50/50 distribution in horse stance", () => {
+        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral");
       });
 
       it("should have deep breathing for power generation", () => {
@@ -570,10 +570,8 @@ describe("StanceGuardPoses", () => {
       expect(GEON_HIGH_GUARD_POSE.weight).toBe("forward");
       expect(TAE_FLUID_GUARD_POSE.weight).toBe("forward");
 
-      // Back stance (Dwi Koobi Seogi)
-      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
-
       // Neutral stances (Juchum Seogi, Narani Seogi, etc.)
+      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral"); // Horse stance - 50/50 weight
       expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral");
       expect(SON_WIND_GUARD_POSE.weight).toBe("neutral");
       expect(GAM_WATER_GUARD_POSE.weight).toBe("neutral");

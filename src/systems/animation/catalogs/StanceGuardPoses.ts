@@ -272,7 +272,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   stanceDepth: 0, // Parallel feet - horse stance
   pelvisHeight: -0.21, // VERY LOW but thighs near parallel (not below) - hipHeight 0.79
 
-  weight: "back",
+  weight: "neutral",
   breathingRange: {
     min: 0.96, // Deep inhale for power
     max: 1.04, // Explosive exhale
