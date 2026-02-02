@@ -452,7 +452,7 @@ describe("AIDecisionTree", () => {
     it("should defend when taking recent damage", () => {
       const context = createMockContext({
         recentDamageTaken: 30,
-        distanceToOpponent: 0.8, // Closer range to trigger defensive evaluation
+        distanceToOpponent: 2.6, // Mid-range (>2.0x but <=2.5x optimal) to reduce attack priority
         timeInMatch: 15000, // After observation phase for Hacker
       });
 
@@ -462,7 +462,7 @@ describe("AIDecisionTree", () => {
         decisionTree.reset(); // Reset to avoid cooldowns
         const decision = decisionTree.makeDecision(
           context,
-          AI_PERSONALITIES.DEFENSIVE_SPECIALIST, // Hacker archetype, optimal range 120px
+          AI_PERSONALITIES.DEFENSIVE_SPECIALIST, // Hacker archetype, optimal range 1.2m
           comboSystem,
         );
         decisions.push(decision);
@@ -471,7 +471,8 @@ describe("AIDecisionTree", () => {
       const defensiveActions = decisions.filter((d) => d.action === "defend");
 
       // Defensive specialist should show some defensive behavior when taking damage
-      expect(defensiveActions.length).toBeGreaterThan(0);
+      // At mid-range with defensePreference=0.6, expect at least 20 defensive actions out of 50
+      expect(defensiveActions.length).toBeGreaterThan(20);
     });
 
     it("should counter when opponent is attacking", () => {
