@@ -322,7 +322,7 @@ export function usePlayerAnimation(
       reset,
     }),
     [
-      // Note: prevStateRef and prevFrameRef are excluded from deps as they're mutable refs
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- prevStateRef and prevFrameRef are mutable refs
       // that don't trigger re-renders. Including them would cause unnecessary re-executions.
       update,
       transitionTo,

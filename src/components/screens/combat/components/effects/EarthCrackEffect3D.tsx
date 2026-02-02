@@ -305,8 +305,7 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
   }
 
   // Create render list for current frame
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  // Note: We access ref during render but forceUpdate() ensures re-renders
+  // Note: Accessing refs during render is safe here - forceUpdate() ensures re-renders
   const renderList: Array<{ effectId: string; segments: CrackSegment[] }> = [];
   segmentsRef.current.forEach((segments, effectId) => {
     renderList.push({ effectId, segments });
