@@ -302,12 +302,14 @@ describe("Gan Stance Animations", () => {
 
   describe("GAN_STANCE_ANIMATIONS Map", () => {
     it("should contain all stance animations", () => {
-      expect(GAN_STANCE_ANIMATIONS.size).toBe(4);
+      expect(GAN_STANCE_ANIMATIONS.size).toBe(6); // Updated: now includes 2 technique animations
       
       expect(GAN_STANCE_ANIMATIONS.has("gan_idle_rooted")).toBe(true);
       expect(GAN_STANCE_ANIMATIONS.has("gan_short_root_step")).toBe(true);
       expect(GAN_STANCE_ANIMATIONS.has("gan_defensive_angle_shift")).toBe(true);
       expect(GAN_STANCE_ANIMATIONS.has("gan_high_solid_guard_transition")).toBe(true);
+      expect(GAN_STANCE_ANIMATIONS.has("gan_rock_defense_animation")).toBe(true);
+      expect(GAN_STANCE_ANIMATIONS.has("gan_defensive_reversal")).toBe(true);
     });
 
     it("should return correct animations from map", () => {
