@@ -188,7 +188,7 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     animationType: AnimationType.FINGER_LOCK,
     animationSpeed: 0.6,
-    category: "medium",
+    category: "light", // Small joint manipulation - faster than larger joint locks despite longer timing
     range: "short",
     speed: 0.6,
   },

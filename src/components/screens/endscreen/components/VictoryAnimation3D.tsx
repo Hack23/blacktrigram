@@ -93,16 +93,22 @@ export const VictoryAnimation3D: React.FC = () => {
   // Cleanup Three.js resources on unmount
   useEffect(() => {
     return () => {
+      // Store ref values to avoid stale closure issues
+      const group = groupRef.current;
+      const particles = particlesRef.current;
+      const rings = ringsRef.current;
+      const symbols = symbolsRef.current;
+      
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
-      if (particlesRef.current) {
-        particlesRef.current.geometry?.dispose();
-        if (particlesRef.current.material) {
-          (particlesRef.current.material as THREE.Material).dispose();
+      if (particles) {
+        particles.geometry?.dispose();
+        if (particles.material) {
+          (particles.material as THREE.Material).dispose();
         }
       }
-      if (ringsRef.current) {
-        ringsRef.current.children.forEach((child) => {
+      if (rings) {
+        rings.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -111,8 +117,8 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (symbolsRef.current) {
-        symbolsRef.current.children.forEach((child) => {
+      if (symbols) {
+        symbols.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -123,11 +129,6 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      // Store ref values to avoid stale closure issues
-      const group = groupRef.current;
-      const particles = particlesRef.current;
-      const rings = ringsRef.current;
-      const symbols = symbolsRef.current;
       
       if (group) {
         group.children.forEach((child) => {
