@@ -331,12 +331,6 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
               <bufferGeometry>
                 <bufferAttribute
                   attach="attributes-position"
-                  count={2}
-                  array={new Float32Array([
-                    segment.startPos.x, segment.startPos.y, segment.startPos.z,
-                    segment.endPos.x, segment.endPos.y, segment.endPos.z,
-                  ])}
-                  itemSize={3}
                   args={[
                     new Float32Array([
                       segment.startPos.x, segment.startPos.y, segment.startPos.z,

@@ -441,9 +441,14 @@ export function calculateEarthCrackIntensity(
  * Type guard to check if technique is extended Gon technique
  * 확장 곤괘 기술 여부 확인
  *
- * @param technique - Technique to check
- * @returns True if technique has Gon-specific fields
+ * **IMPORTANT**: This type guard only checks for field presence, not value ranges.
+ * Callers must use `validateGonTechniqueEnhancements()` to verify value ranges
+ * are within acceptable limits (e.g., groundImpactMultiplier 1.0-2.0).
  *
+ * @param technique - Technique to check
+ * @returns True if technique has all required Gon-specific fields
+ *
+ * @see validateGonTechniqueEnhancements for runtime value validation
  * @korean 확장곤괘기술확인
  */
 export function isExtendedGonTechnique(

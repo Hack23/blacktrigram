@@ -602,6 +602,8 @@ export class DamageCalculator {
    * @param technique - Korean martial arts technique (checks for ExtendedGonTechnique)
    * @param baseDamage - Base damage before ground impact modifier
    * @param attackerStrength - Attacker's strength stat for scaling
+   * @param options - Optional configuration for damage calculation
+   * @param options.applyVariance - Whether to apply random ±5% variance (default: true)
    * @returns Enhanced damage result with ground impact applied
    *
    * @example
@@ -611,7 +613,12 @@ export class DamageCalculator {
    *   50, // base damage
    *   80  // attacker strength
    * );
-   * // Result: ~85 damage (50 × 1.7 × 1.0)
+   * // Result: ~85 damage (50 × 1.7 × 1.0) with ±5% variance
+   *
+   * // For deterministic testing:
+   * const testDamage = DamageCalculator.calculateThrowImpactDamage(
+   *   technique, 50, 80, { applyVariance: false }
+   * );
    * ```
    *
    * @public
@@ -621,7 +628,9 @@ export class DamageCalculator {
     technique: KoreanTechnique,
     baseDamage: number,
     attackerStrength: number = 50,
+    options: { applyVariance?: boolean } = {},
   ): DamageResult {
+    const { applyVariance = true } = options;
     // Check if technique has Gon-specific ground impact metadata
     // Type assertion is safe here because isExtendedGonTechnique validates all required fields
     if (!isExtendedGonTechnique(technique as TrigramStanceTechnique)) {
@@ -648,8 +657,11 @@ export class DamageCalculator {
     let impactDamage = baseDamage * groundMultiplier * strengthModifier;
 
     // Add small damage variance (±5%) for realistic impact variation
-    const variance = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
-    impactDamage *= variance;
+    // Can be disabled for deterministic testing
+    if (applyVariance) {
+      const variance = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
+      impactDamage *= variance;
+    }
 
     // Earth connection healing (대지는 모든 것을 품고 키운다)
     // Supportive healing is applied separately by calling system

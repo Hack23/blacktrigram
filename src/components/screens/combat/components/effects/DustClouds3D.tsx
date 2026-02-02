@@ -232,10 +232,27 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     return Math.max(...Object.values(maxCounts));
   }, [isMobile]);
 
-  // Dust color - Korean earth tones (황토색 for throw impacts)
-  // Note: Individual particles could use getDustColor(type) for type-specific colors
-  // Currently using unified color for simplicity, but can be extended per-particle
-  const dustColor = useMemo(() => KOREAN_COLORS.UI_STEEL_GRAY, []);
+  // Dust color - Korean earth tones with type-specific variants (황토색 for throw impacts)
+  const getDustColor = (type: DustCloudEffect["type"]): number => {
+    switch (type) {
+      case "throw_impact":
+        // Earth-themed Gon techniques: darker brown earth tones (씨름 황토색)
+        return KOREAN_COLORS.TRIGRAM_GAN_PRIMARY; // #8b4513 brown
+      default:
+        // Neutral dust for general movement/impacts
+        return KOREAN_COLORS.UI_STEEL_GRAY;
+    }
+  };
+
+  // Dust color selection based on currently active effects
+  // If any throw_impact is active, tint the dust with stronger earth tone
+  const dustColor = useMemo(() => {
+    if (effects.some((effect) => effect.type === "throw_impact")) {
+      return getDustColor("throw_impact");
+    }
+    // Fallback: neutral footfall-style dust
+    return getDustColor("footfall");
+  }, [effects]);
 
   // Initialize particles for new effects
   useEffect(() => {

@@ -7,7 +7,8 @@
  *
  * PERFORMANCE OPTIMIZATION:
  * - Uses instanced particles for efficient rendering
- * - Object pooling for Vector3 calculations
+ * - Object pooling for temporary Vector3 calculations during particle generation
+ * - Particle positions/velocities stored as number arrays to avoid Vector3 leaks
  * - Target: 10+ concurrent effects at 60fps
  * - Memory: <15KB per component
  *
@@ -63,10 +64,13 @@ export interface EarthHealingEffect3DProps {
 
 /**
  * Individual healing particle
+ * Stores positions and velocities as number arrays to avoid Vector3 memory leaks
  */
 interface HealingParticle {
-  position: THREE.Vector3;
-  velocity: THREE.Vector3;
+  // Position stored as [x, y, z] array instead of Vector3
+  position: [number, number, number];
+  // Velocity stored as [vx, vy, vz] array instead of Vector3
+  velocity: [number, number, number];
   age: number;
   lifetime: number;
   size: number;
@@ -185,9 +189,10 @@ const generateHealingParticles = (
         Math.sin(spiralAngle) * HEALING_CONSTANTS.SPIRAL_STRENGTH
       );
 
+      // Store as number arrays instead of cloning Vector3 to avoid memory leaks
       particles.push({
-        position: tempPos.clone(),
-        velocity: tempVel.clone(),
+        position: [tempPos.x, tempPos.y, tempPos.z],
+        velocity: [tempVel.x, tempVel.y, tempVel.z],
         age: 0,
         lifetime: HEALING_CONSTANTS.LIFETIME * (0.9 + Math.random() * 0.2),
         size: 
@@ -327,8 +332,10 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
         if (p.age < p.lifetime) {
           hasActiveParticles = true;
 
-          // Update position - upward motion with spiral
-          p.position.addScaledVector(p.velocity, safeDelta);
+          // Update position - upward motion with spiral (using number arrays)
+          p.position[0] += p.velocity[0] * safeDelta;
+          p.position[1] += p.velocity[1] * safeDelta;
+          p.position[2] += p.velocity[2] * safeDelta;
 
           // Add spiral motion based on root tendril
           const tendril = tendrils[p.rootIndex];
@@ -336,17 +343,17 @@ export const EarthHealingEffect3D: React.FC<EarthHealingEffect3DProps> = ({
           const spiralRadius = HEALING_CONSTANTS.SPIRAL_STRENGTH * (1 - spiralProgress);
           const spiralAngle = tendril.baseAngle + spiralProgress * Math.PI * 4;
           
-          p.position.x += Math.cos(spiralAngle) * spiralRadius * safeDelta;
-          p.position.z += Math.sin(spiralAngle) * spiralRadius * safeDelta;
+          p.position[0] += Math.cos(spiralAngle) * spiralRadius * safeDelta;
+          p.position[2] += Math.sin(spiralAngle) * spiralRadius * safeDelta;
 
           // Slow down upward motion over time (settling effect)
-          p.velocity.y *= 0.985;
+          p.velocity[1] *= 0.985;
 
           // Update render position
           if (totalParticleIndex < posArray.length / 3) {
-            posArray[totalParticleIndex * 3] = p.position.x;
-            posArray[totalParticleIndex * 3 + 1] = p.position.y;
-            posArray[totalParticleIndex * 3 + 2] = p.position.z;
+            posArray[totalParticleIndex * 3] = p.position[0];
+            posArray[totalParticleIndex * 3 + 1] = p.position[1];
+            posArray[totalParticleIndex * 3 + 2] = p.position[2];
             totalParticleIndex++;
           }
         }
