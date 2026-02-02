@@ -28,7 +28,12 @@
     "git": {
       "type": "local",
       "command":  "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/home/runner/work/blacktrigram/blacktrigram"],
+      "args": ["-y", "@modelcontextprotocol/server-git"],
+       "env": {
+        "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
+        "GITHUB_OWNER": "Hack23",
+      },
       "tools": ["*"]
     },
     "memory": {
