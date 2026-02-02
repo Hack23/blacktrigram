@@ -168,13 +168,7 @@ jobs:
                     
           echo ""
           echo "=== HTTP MCP Servers ==="
-          echo "📍 GitHub MCP Server: Using HTTP endpoint (https://api.githubcopilot.com/mcp/insiders)"
-          
-          echo ""
-          echo "📍 Global npm bin location: $(npm bin -g)"
-          echo "📍 uv location: $(which uv 2>/dev/null || echo 'not found')"
-          echo "📍 PATH: $PATH"
-          echo ""
+          echo "📍 GitHub MCP Server: Using HTTP endpoint (https://api.githubcopilot.com/mcp/insiders)"         
           echo "✅ MCP server verification complete"
 
       - name: Install Playwright browsers (and OS deps)
