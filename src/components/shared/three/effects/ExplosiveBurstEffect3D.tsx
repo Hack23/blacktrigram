@@ -74,7 +74,7 @@ const ParticleBurst: React.FC<{
       // Apply physics
       particle.velocity.y -= 9.8 * delta; // Gravity
       particle.velocity.multiplyScalar(0.98); // Air resistance
-      particle.position.add(particle.velocity.clone().multiplyScalar(delta));
+      particle.position.addScaledVector(particle.velocity, delta);
 
       // Update life
       particle.life -= delta;

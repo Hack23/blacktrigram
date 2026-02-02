@@ -47,8 +47,8 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create zigzag lightning path and material
-  const { geometry, material } = useMemo(() => {
+  // Create line object in useMemo to avoid recreation on re-render
+  const line = useMemo(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
     const displacement = 0.2 * intensity;
@@ -67,33 +67,34 @@ const LightningArc: React.FC<{
       points.push(point);
     }
 
-    const geom = new THREE.BufferGeometry().setFromPoints(points);
-    const mat = new THREE.LineBasicMaterial({
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
       color,
       transparent: true,
       opacity: intensity,
       linewidth: 2,
     });
 
-    return { geometry: geom, material: mat };
+    return new THREE.Line(geometry, material);
   }, [start, end, intensity, color]);
 
   useFrame(() => {
     if (lineRef.current) {
       // Flicker effect
       const flicker = 0.8 + Math.random() * 0.2;
+      const material = lineRef.current.material as THREE.LineBasicMaterial;
       material.opacity = flicker * intensity;
     }
   });
 
   useEffect(() => {
     return () => {
-      geometry.dispose();
-      material.dispose();
+      line.geometry.dispose();
+      (line.material as THREE.Material).dispose();
     };
-  }, [geometry, material]);
+  }, [line]);
 
-  return <primitive object={new THREE.Line(geometry, material)} ref={lineRef} />;
+  return <primitive object={line} ref={lineRef} />;
 };
 
 /**
@@ -111,7 +112,7 @@ const ElectricSpark: React.FC<{
   useFrame((_, delta) => {
     if (meshRef.current) {
       // Update position with velocity
-      positionRef.current.add(velocityRef.current.clone().multiplyScalar(delta));
+      positionRef.current.addScaledVector(velocityRef.current, delta);
       meshRef.current.position.copy(positionRef.current);
 
       // Apply gravity
