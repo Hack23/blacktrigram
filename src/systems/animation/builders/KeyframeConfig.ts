@@ -337,10 +337,12 @@ export class KeyframeConfig {
     this._muscleActivations ??= new Map();
     if (activations instanceof Map) {
       activations.forEach((tension, group) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- initialized above
         this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));
       });
     } else {
       Object.entries(activations).forEach(([group, tension]) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- initialized above
         this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));
       });
     }

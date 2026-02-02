@@ -136,6 +136,7 @@ export class EventManager {
       options: finalOptions,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- array initialized in ensure() above
     this.listeners.get(key)!.push(tracked);
 
     // Return cleanup function for this specific listener
@@ -210,7 +211,7 @@ export class EventManager {
       const count = trackedListeners.length;
 
       totalListeners += count;
-      eventTypeCounts[event] = (eventTypeCounts[event] || 0) + count;
+      eventTypeCounts[event] = (eventTypeCounts[event] ?? 0) + count;
 
       // Count passive listeners
       // 패시브 리스너 수 세기

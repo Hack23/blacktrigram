@@ -77,6 +77,7 @@ beforeAll(() => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- set created above
           this.eventListeners.get(event)!.add(handler);
 
           // Automatically trigger canplaythrough event after a microtask

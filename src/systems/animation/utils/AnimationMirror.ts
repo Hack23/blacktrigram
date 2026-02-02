@@ -287,6 +287,7 @@ export function getAnimationForStance(
   const cacheKey = `${animation.name}_southpaw`;
 
   if (cache?.has(cacheKey)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- checked with has() above
     return cache.get(cacheKey)!;
   }
 
