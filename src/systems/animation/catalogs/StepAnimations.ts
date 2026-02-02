@@ -7,11 +7,11 @@
  * based on Korean martial arts footwork (보법, Bobeop).
  *
  * **New Step Types Added**:
- * - **밀기 스텝 (Push Step)**: Rear foot drives forward for power generation
- * - **당기기 스텝 (Pull Step)**: Front foot pulls back for defensive retreat
- * - **자르기 스텝 (Cut Step)**: Diagonal step for angle creation and evasion
+ * - **밀기 스텝 (Push Step)**: Rear foot drives forward for power generation (280ms, 35cm)
+ * - **당기기 스텝 (Pull Step)**: Front foot pulls back for defensive retreat (260ms, 30cm)
+ * - **자르기 스텝 (Cut Step)**: Diagonal step for angle creation and evasion (300ms, 32cm)
  *
- * Each step animation:
+ * **Base 8-Direction Steps**:
  * - Duration: 300ms (18 frames at 60fps)
  * - Distance: 30cm (approximately one foot width)
  * - Non-interruptible (priority 5, same as attacks)
@@ -423,7 +423,7 @@ export const STEP_KOREAN_TERMS: Record<
  *
  * @korean 고급발걸음기술유형
  */
-export type AdvancedStepType = "push" | "pull" | "cut_left" | "cut_right";
+export type AdvancedStepType = "push" | "pull" | "cut_left";
 
 /**
  * **밀기 스텝 (Push Step)** - Power Generation through Rear Foot Drive
@@ -672,7 +672,7 @@ export const CUT_STEP_LEFT_KEYFRAMES: readonly StepKeyframe[] = [
   },
   // Stable angled position (안정된 각도)
   {
-    frame: 18,
+    frame: 17,
     weight: 0.6,
     frontFootOffset: 1.0,
     backFootOffset: 1.0,
@@ -704,10 +704,5 @@ export const ADVANCED_STEP_KOREAN_TERMS: Record<
     korean: "왼쪽 자르기 스텝",
     romanized: "Oenjjok Jareugi Step",
     english: "Cut Step Left (Diagonal Angle)",
-  },
-  cut_right: {
-    korean: "오른쪽 자르기 스텝",
-    romanized: "Oreunjjok Jareugi Step",
-    english: "Cut Step Right (Diagonal Angle)",
   },
 };

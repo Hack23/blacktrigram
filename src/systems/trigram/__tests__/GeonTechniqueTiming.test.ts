@@ -8,7 +8,6 @@
  * - Recovery times proportional to execution times
  *
  * @module systems/trigram/__tests__/GeonTechniqueTiming
- * @see {@link https://github.com/Hack23/blacktrigram/issues/XXX} Geon timing improvements
  */
 
 import { describe, expect, it } from "vitest";

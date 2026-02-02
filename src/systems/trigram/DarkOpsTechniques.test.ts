@@ -418,7 +418,7 @@ describe("Dark Ops Techniques", () => {
 
     it("should have balanced recovery times (1260-1890ms with 40% increase)", () => {
       DARK_OPS_TECHNIQUES.forEach((technique) => {
-        expect(technique.recoveryTime).toBeGreaterThanOrEqual(1190);
+        expect(technique.recoveryTime).toBeGreaterThanOrEqual(1260);
         expect(technique.recoveryTime).toBeLessThanOrEqual(1890);
       });
     });

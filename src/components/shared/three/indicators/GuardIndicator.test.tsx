@@ -81,8 +81,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("앞굽이")).toBeInTheDocument();
-      expect(screen.getByText("Ap Koobi")).toBeInTheDocument();
+      expect(screen.getByText("범서기")).toBeInTheDocument();
+      expect(screen.getByText("Beom Seogi")).toBeInTheDocument();
       expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back weighted (90/10)
       expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
@@ -97,8 +97,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("주춤")).toBeInTheDocument();
-      expect(screen.getByText("Juchum Seogi")).toBeInTheDocument();
+      expect(screen.getByText("겨루기준비")).toBeInTheDocument();
+      expect(screen.getByText("Gyeorugi Junbi")).toBeInTheDocument();
       expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
       expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
     });
@@ -113,8 +113,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("뒤굽이")).toBeInTheDocument();
-      expect(screen.getByText("Dwi Koobi")).toBeInTheDocument();
+      expect(screen.getByText("주춤서기")).toBeInTheDocument();
+      expect(screen.getByText("Juchum Seogi")).toBeInTheDocument();
       expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight - neutral (50/50)
       expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
     });
@@ -129,8 +129,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("범서기")).toBeInTheDocument();
-      expect(screen.getByText("Beom Seogi")).toBeInTheDocument();
+      expect(screen.getByText("학다리서기")).toBeInTheDocument();
+      expect(screen.getByText("Hakdari Seogi")).toBeInTheDocument();
       expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
       expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
     });
@@ -145,8 +145,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("학다리")).toBeInTheDocument();
-      expect(screen.getByText("Hak Dari Seogi")).toBeInTheDocument();
+      expect(screen.getByText("뒷발서기")).toBeInTheDocument();
+      expect(screen.getByText("Dwitbal Seogi")).toBeInTheDocument();
       expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back weighted (70/30)
       expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
@@ -413,14 +413,14 @@ describe("GuardIndicator", () => {
     it("should display authentic traditional stance names", () => {
       const traditionalStances = [
         { stance: TrigramStance.GEON, korean: "앞서기", english: "Ap Seogi" },
-        { stance: TrigramStance.TAE, korean: "앞굽이", english: "Ap Koobi" },
-        { stance: TrigramStance.LI, korean: "주춤", english: "Juchum Seogi" },
-        { stance: TrigramStance.JIN, korean: "뒤굽이", english: "Dwi Koobi" },
-        { stance: TrigramStance.SON, korean: "범서기", english: "Beom Seogi" },
+        { stance: TrigramStance.TAE, korean: "범서기", english: "Beom Seogi" },
+        { stance: TrigramStance.LI, korean: "겨루기준비", english: "Gyeorugi Junbi" },
+        { stance: TrigramStance.JIN, korean: "주춤서기", english: "Juchum Seogi" },
+        { stance: TrigramStance.SON, korean: "학다리서기", english: "Hakdari Seogi" },
         {
           stance: TrigramStance.GAM,
-          korean: "학다리",
-          english: "Hak Dari Seogi",
+          korean: "뒷발서기",
+          english: "Dwitbal Seogi",
         },
         { stance: TrigramStance.GAN, korean: "모아서기", english: "Moa Seogi" },
         {
