@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "github":  {
+    "github": {
       "type": "local",
       "command": "npx",
-      "args":  [
+      "args": [
         "-y",
         "@modelcontextprotocol/server-github",
         "--toolsets",
@@ -17,40 +17,47 @@
         "GITHUB_OWNER": "Hack23",
         "GITHUB_API_URL": "https://api.githubcopilot.com/mcp/insiders"
       },
-      "tools":  ["*"]
+      "tools": ["*"]
     },
     "filesystem": {
       "type": "local",
-      "command":  "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/runner/work/blacktrigram/blacktrigram"],
-      "tools":  ["*"]
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/runner/work/blacktrigram/blacktrigram"
+      ],
+      "tools": ["*"]
     },
     "memory": {
-      "type":  "local",
+      "type": "local",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"],
       "tools": ["*"]
     },
     "sequential-thinking": {
       "type": "local",
-      "command":  "npx",
+      "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "tools": ["*"]
     },
-    "playwright":  {
+    "playwright": {
       "type": "local",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "command": "mcp-server-playwright",
+      "args": [],
       "env": {
-          "PLAYWRIGHT_DISABLE_SANDBOX": "1"
-        },      
+        "DISPLAY": ":99",
+        "PLAYWRIGHT_BROWSERS_PATH": "0",
+        "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "0",
+        "PLAYWRIGHT_DISABLE_SANDBOX": "1"
+      },
       "tools": ["*"]
     },
-     "fetch": {
+    "fetch": {
       "type": "local",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "tools": ["fetch"]
+      "command": "mcp-server-fetch",
+      "args": [],
+      "tools": ["*"]
     }
   }
 }
