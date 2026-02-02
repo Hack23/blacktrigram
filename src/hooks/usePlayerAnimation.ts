@@ -322,9 +322,9 @@ export function usePlayerAnimation(
       reset,
     }),
     [
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
+       
       prevStateRef.current,
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values used to trigger recalculation after forceUpdate
+       
       prevFrameRef.current,
       update,
       transitionTo,
