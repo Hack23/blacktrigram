@@ -58,16 +58,16 @@ import type { StanceLaterality } from "../../trigram/types";
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    // Left shoulder: Flexed 60° forward, slightly abducted 15° out
-    shoulder: new THREE.Euler(-1.05, 0, 0.26), // -60° flex (X), 0° (Y), +15° abd (Z)
+    // Left shoulder: Flexed 60° forward, slightly abducted 15° out, slight internal rotation
+    shoulder: new THREE.Euler(-1.05, 0.09, 0.26), // -60° flex (X), +5° internal (Y), +15° abd (Z)
     // Left elbow: TIGHT flexion 135° (2.36 rad), adducted to ribs
     elbow: new THREE.Euler(0, -2.36, 0), // Flexion on Y-axis! (anatomically correct)
     // Left wrist: Neutral with slight dorsiflexion for fist alignment
     wrist: new THREE.Euler(-0.17, 0, 0), // -10° dorsiflexion (knuckles up)
   },
   rightArm: {
-    // Right shoulder: Flexed 60° forward, slightly abducted 15° out
-    shoulder: new THREE.Euler(-1.05, 0, -0.26), // -60° flex (X), 0° (Y), -15° abd (Z)
+    // Right shoulder: Flexed 60° forward, slightly abducted 15° out, slight internal rotation
+    shoulder: new THREE.Euler(-1.05, 0.09, -0.26), // -60° flex (X), +5° internal (Y), -15° abd (Z)
     // Right elbow: TIGHT flexion 135°, adducted to ribs
     elbow: new THREE.Euler(0, 2.36, 0), // Flexion on Y-axis! (mirror left)
     // Right wrist: Neutral with slight dorsiflexion
@@ -135,7 +135,7 @@ export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
 export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: Extended forward 45° flex, abducted 30° for reach
-    shoulder: new THREE.Euler(-0.79, 0, 0.52), // -45° flex, +30° abduction
+    shoulder: new THREE.Euler(-0.79, 0.09, 0.52), // -45° flex, +30° abduction
     // Left elbow: Semi-flexed 120° (ready to grab)
     elbow: new THREE.Euler(0, -2.09, 0), // 120° flexion on Y-axis
     // Left wrist: NEUTRAL for open palm (no dorsiflexion/flexion)
@@ -143,7 +143,7 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: Flexed 70° forward, slight abduction 12°
-    shoulder: new THREE.Euler(-1.22, 0, -0.21), // -70° flex, -12° abduction
+    shoulder: new THREE.Euler(-1.22, 0.09, -0.21), // -70° flex, -12° abduction
     // Right elbow: TIGHT flexion 135° (fist at chin)
     elbow: new THREE.Euler(0, 2.36, 0), // 135° flexion on Y-axis
     // Right wrist: Slight dorsiflexion for fist alignment
@@ -211,7 +211,7 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: HIGH flexion 90°, WIDE abduction 40° (elbow out!)
-    shoulder: new THREE.Euler(-1.57, 0, 0.70), // -90° flex (high!), +40° abduction (out!)
+    shoulder: new THREE.Euler(-1.57, 0.09, 0.70), // -90° flex (high!), +40° abduction (out!)
     // Left elbow: MAXIMUM flexion 150° (fist at temple)
     elbow: new THREE.Euler(0, -2.62, 0), // 150° flexion on Y-axis (tight to temple!)
     // Left wrist: Neutral (fist vertical at temple)
@@ -219,7 +219,7 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: HIGH flexion 90°, WIDE abduction 40° (mirror left)
-    shoulder: new THREE.Euler(-1.57, 0, -0.70), // -90° flex, -40° abduction
+    shoulder: new THREE.Euler(-1.57, 0.09, -0.70), // -90° flex, -40° abduction
     // Right elbow: MAXIMUM flexion 150° (fist at temple)
     elbow: new THREE.Euler(0, 2.62, 0), // 150° flexion on Y-axis
     // Right wrist: Neutral (fist vertical at temple)
@@ -286,7 +286,7 @@ export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
 export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: Extended forward 50° flex, abducted 20°
-    shoulder: new THREE.Euler(-0.87, 0, 0.35), // -50° flex, +20° abduction (extended guard)
+    shoulder: new THREE.Euler(-0.87, 0.09, 0.35), // -50° flex, +20° abduction (extended guard)
     // Left elbow: Semi-flexed 130° (guard arm extended but not locked)
     elbow: new THREE.Euler(0, -2.27, 0), // 130° flexion on Y-axis
     // Left wrist: Neutral fist alignment
@@ -294,7 +294,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: RETRACTED (chambered at hip) - 20° extension, adducted
-    shoulder: new THREE.Euler(0.35, 0, -0.17), // +20° extension (arm back), -10° adduction
+    shoulder: new THREE.Euler(0.35, 0.09, -0.17), // +20° extension (arm back), -10° adduction
     // Right elbow: 90° flexion (chambered at hip)
     elbow: new THREE.Euler(0, 1.57, 0), // 90° flexion on Y-axis (right angle at hip)
     // Right wrist: Vertical fist (palm up - traditional chamber)
@@ -362,7 +362,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
 export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: Extended 40° flex, abducted 35° (wing position)
-    shoulder: new THREE.Euler(-0.70, 0, 0.61), // -40° flex, +35° abduction (wing!)
+    shoulder: new THREE.Euler(-0.70, 0.09, 0.61), // -40° flex, +35° abduction (wing!)
     // Left elbow: Semi-extended 140° (flowing position)
     elbow: new THREE.Euler(0, -2.44, 0), // 140° flexion on Y-axis
     // Left wrist: Knife hand position (neutral)
@@ -370,7 +370,7 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: Extended 40° flex, abducted 35° (mirror wing)
-    shoulder: new THREE.Euler(-0.70, 0, -0.61), // -40° flex, -35° abduction
+    shoulder: new THREE.Euler(-0.70, 0.09, -0.61), // -40° flex, -35° abduction
     // Right elbow: Semi-extended 140° (flowing)
     elbow: new THREE.Euler(0, 2.44, 0), // 140° flexion on Y-axis
     // Right wrist: Knife hand position
@@ -437,7 +437,7 @@ export const SON_WIND_GUARD_POSE: StanceGuardPose = {
 export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: Flexed 45° forward, abducted 25° (flowing position)
-    shoulder: new THREE.Euler(-0.79, 0, 0.44), // -45° flex, +25° abduction
+    shoulder: new THREE.Euler(-0.79, 0.09, 0.44), // -45° flex, +25° abduction
     // Left elbow: Flexed 110° (floating elbow - ready to redirect)
     elbow: new THREE.Euler(0, -1.92, 0), // 110° flexion on Y-axis
     // Left wrist: NEUTRAL for open palm
@@ -445,7 +445,7 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: Flexed 45° forward, abducted 25° (mirror)
-    shoulder: new THREE.Euler(-0.79, 0, -0.44), // -45° flex, -25° abduction
+    shoulder: new THREE.Euler(-0.79, 0.09, -0.44), // -45° flex, -25° abduction
     // Right elbow: Flexed 110° (floating)
     elbow: new THREE.Euler(0, 1.92, 0), // 110° flexion on Y-axis
     // Right wrist: NEUTRAL for open palm
@@ -512,7 +512,7 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: HIGH flexion 100°, CROSSED in front (adducted 20°)
-    shoulder: new THREE.Euler(-1.75, 0, -0.35), // -100° flex (high!), -20° adduction (crossed!)
+    shoulder: new THREE.Euler(-1.75, 0.09, -0.35), // -100° flex (high!), -20° adduction (crossed!)
     // Left elbow: MAXIMUM flexion 150° (forearm at face)
     elbow: new THREE.Euler(0, -2.62, 0), // 150° flexion on Y-axis
     // Left wrist: Slight ulnar deviation (X-block position)
@@ -520,7 +520,7 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: HIGH flexion 100°, CROSSED over left (abducted 20°)
-    shoulder: new THREE.Euler(-1.75, 0, 0.35), // -100° flex, +20° abduction (crosses over!)
+    shoulder: new THREE.Euler(-1.75, 0.09, 0.35), // -100° flex, +20° abduction (crosses over!)
     // Right elbow: MAXIMUM flexion 150° (forearm at face)
     elbow: new THREE.Euler(0, 2.62, 0), // 150° flexion on Y-axis
     // Right wrist: Slight radial deviation (X-block position)
@@ -588,7 +588,7 @@ export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
 export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
     // Left shoulder: LOW position 20° extension, abducted 30° (ready for underhook)
-    shoulder: new THREE.Euler(0.35, 0, 0.52), // +20° extension (arm down!), +30° abduction
+    shoulder: new THREE.Euler(0.35, 0.09, 0.52), // +20° extension (arm down!), +30° abduction
     // Left elbow: Flexed 100° (ready to scoop under)
     elbow: new THREE.Euler(0, -1.75, 0), // 100° flexion on Y-axis
     // Left wrist: Neutral for grappling grip
@@ -596,7 +596,7 @@ export const GON_EARTH_GUARD_POSE: StanceGuardPose = {
   },
   rightArm: {
     // Right shoulder: LOW position 20° extension, abducted 30° (mirror)
-    shoulder: new THREE.Euler(0.35, 0, -0.52), // +20° extension, -30° abduction
+    shoulder: new THREE.Euler(0.35, 0.09, -0.52), // +20° extension, -30° abduction
     // Right elbow: Flexed 100° (ready to scoop)
     elbow: new THREE.Euler(0, 1.75, 0), // 100° flexion on Y-axis
     // Right wrist: Neutral for grappling
