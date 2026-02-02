@@ -83,8 +83,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("앞굽이")).toBeInTheDocument();
       expect(screen.getByText("Ap Koobi")).toBeInTheDocument();
-      expect(screen.getByText("전방")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("forward")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back weighted (90/10)
+      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
     it("should render Li (Fire) guard with correct info", () => {
@@ -115,8 +115,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("뒤굽이")).toBeInTheDocument();
       expect(screen.getByText("Dwi Koobi")).toBeInTheDocument();
-      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight - neutral (50/50)
+      expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
     });
 
     it("should render Son (Wind) guard with correct info", () => {
@@ -147,8 +147,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("학다리")).toBeInTheDocument();
       expect(screen.getByText("Hak Dari Seogi")).toBeInTheDocument();
-      expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back weighted (70/30)
+      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
     it("should render Gan (Mountain) guard with correct info", () => {
@@ -203,7 +203,7 @@ describe("GuardIndicator", () => {
     it("should display back weight icon for back stance", () => {
       const { container } = render(
         <GuardIndicator
-          currentStance={TrigramStance.JIN}
+          currentStance={TrigramStance.TAE}
           isInGuard={true}
           position="left"
           isMobile={false}
