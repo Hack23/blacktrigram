@@ -327,13 +327,15 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
   // Cleanup on unmount - release all pooled objects
   useEffect(() => {
     return () => {
-      activeEffectsRef.current.forEach((effect) => {
+      // Store ref value to avoid stale closure
+      const activeEffects = activeEffectsRef.current;
+      activeEffects.forEach((effect) => {
         effect.geometry.dispose();
         effect.material.dispose();
         // Release pooled Vector3 back to pool
         ThreeObjectPools.vector3.release(effect.position);
       });
-      activeEffectsRef.current.clear();
+      activeEffects.clear();
     };
   }, []);
 

@@ -87,10 +87,15 @@ export const DefeatAnimation3D: React.FC = () => {
         });
       }
       // Additionally iterate over all group children to catch meshes/points without explicit refs
-      if (groupRef.current) {
-        groupRef.current.children.forEach((child) => {
+      // Store ref values to avoid stale closure issues
+      const group = groupRef.current;
+      const particles = particlesRef.current;
+      const spiral = spiralRef.current;
+      
+      if (group) {
+        group.children.forEach((child) => {
           // Skip already-handled refs
-          if (child === particlesRef.current || child === spiralRef.current) {
+          if (child === particles || child === spiral) {
             return;
           }
 

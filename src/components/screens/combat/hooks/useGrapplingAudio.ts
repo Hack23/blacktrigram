@@ -102,8 +102,10 @@ export const useGrapplingAudio = () => {
   // Cleanup all active timers on unmount
   useEffect(() => {
     return () => {
-      activeTimers.current.forEach((timer) => clearTimeout(timer));
-      activeTimers.current.clear();
+      // Store ref value to avoid stale closure
+      const timers = activeTimers.current;
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
     };
   }, []);
 

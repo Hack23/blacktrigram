@@ -136,7 +136,10 @@ export class EventManager {
       options: finalOptions,
     };
 
-    this.listeners.get(key)!.push(tracked);
+    const listeners = this.listeners.get(key);
+    if (listeners) {
+      listeners.push(tracked);
+    }
 
     // Return cleanup function for this specific listener
     // Track if already removed to prevent double removal
@@ -210,7 +213,7 @@ export class EventManager {
       const count = trackedListeners.length;
 
       totalListeners += count;
-      eventTypeCounts[event] = (eventTypeCounts[event] || 0) + count;
+      eventTypeCounts[event] = (eventTypeCounts[event] ?? 0) + count;
 
       // Count passive listeners
       // 패시브 리스너 수 세기
