@@ -166,7 +166,7 @@ export class SlowMotionController {
   public updateCamera(camera: THREE.Camera, delta: number): void {
     if (!this.active) {
       // Restore original camera position if we have it
-      if (this.originalCameraPosition && !this.active) {
+      if (this.originalCameraPosition) {
         camera.position.lerp(this.originalCameraPosition, delta * 5);
         // Check if we're close enough to the original position
         if (camera.position.distanceTo(this.originalCameraPosition) < 0.01) {
