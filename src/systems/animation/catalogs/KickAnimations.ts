@@ -298,9 +298,9 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_L, -0.4, 0, 0) // Support in power position
     .rotate(BoneName.FOOT_L, 0, -1.4, 0) // Full pivot (90-180°)
     .rotate(BoneName.PELVIS, 0, -1.2, 0) // Full pelvis rotation
-    .rotate(BoneName.SPINE_LOWER, 0, 0.5, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.6, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.8, 0) // Full torso follow-through
+    .rotate(BoneName.SPINE_LOWER, 0, 0.5, -0.15) // Lateral lean away for balance
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.6, -0.2) // Compensatory torso lean
+    .rotate(BoneName.SPINE_UPPER, 0, 0.8, -0.25) // Upper spine leans most
     .position(BoneName.FOOT_R, 0.8, 0, 0) // Maximum lateral extension
     .withGuard("HIGH_GUARD")
     .done<MartialArtsAnimationBuilder>()
@@ -310,7 +310,9 @@ export const ROUNDHOUSE_KICK_ANIMATION: SkeletalAnimation =
     .rotate(BoneName.KNEE_R, -0.1, 0, 0)
     .rotate(BoneName.FOOT_R, 0.4, 0, 0.3)
     .rotate(BoneName.PELVIS, 0, -1.2, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.8, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.5, -0.15) // Maintain lean
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.6, -0.2) // Maintain lean
+    .rotate(BoneName.SPINE_UPPER, 0, 0.8, -0.25) // Maintain lean
     .position(BoneName.FOOT_R, 0.8, 0, 0)
     .withGuard("HIGH_GUARD")
     .done<MartialArtsAnimationBuilder>()
