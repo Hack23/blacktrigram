@@ -350,7 +350,6 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
         // Calculate wave amplitude with oscillation
         // Note: performance.now() is used for smooth animation timing synchronized with frame rendering
         // This is an intentional pattern for Three.js animations despite React purity rules
-        // @ts-expect-error - Intentionally using performance.now() for animation timing
         const time = performance.now() / 1000;
         const waveOffset =
           Math.sin(time * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
