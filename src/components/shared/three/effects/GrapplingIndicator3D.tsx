@@ -202,8 +202,8 @@ const StruggleParticles: React.FC<{
 
   // Cleanup geometry and material on unmount
   useEffect(() => {
+    const points = pointsRef.current;
     return () => {
-      const points = pointsRef.current;
       if (points) {
         // Dispose geometry
         points.geometry.dispose();
