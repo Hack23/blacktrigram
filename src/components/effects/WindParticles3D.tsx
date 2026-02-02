@@ -20,7 +20,7 @@
 
 import { Points, PointMaterial } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../types/constants"; // eslint-disable-line no-restricted-imports -- This 3D effect component directly uses color constants
 import { ThreeObjectPools } from "../../utils/threeObjectPool";
@@ -171,6 +171,13 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
   // Track particles and trails for cleanup
   const particlesRef = useRef<WindParticle[]>([]);
   const trailsRef = useRef<Map<string, WindTrail>>(new Map());
+
+  // Reusable color object to avoid creating new THREE.Color on every frame
+  // This significantly reduces GC pressure when rendering many particles
+  const windColor = useMemo(
+    () => new THREE.Color(KOREAN_COLORS.TRIGRAM_SON_PRIMARY),
+    []
+  );
 
   const maxParticles = isMobile
     ? WIND_CONSTANTS.MAX_PARTICLES_MOBILE
@@ -324,9 +331,8 @@ export const WindParticles3D: React.FC<WindParticles3DProps> = ({
         positions[i3 + 1] = particle.position.y;
         positions[i3 + 2] = particle.position.z;
 
-        // Fade color based on age
+        // Fade color based on age using pre-allocated color object
         const alpha = 1.0 - particle.age / particle.lifetime;
-        const windColor = new THREE.Color(KOREAN_COLORS.TRIGRAM_SON_PRIMARY);
         colors[i3] = windColor.r * alpha;
         colors[i3 + 1] = windColor.g * alpha;
         colors[i3 + 2] = windColor.b * alpha;
