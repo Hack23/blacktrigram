@@ -14,7 +14,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   NerveDisruptionEffect3D,
   type NerveDisruptionEffect,
-  type NerveDisruptionType,
 } from "./NerveDisruptionEffect3D";
 
 // Mock current time for consistent testing
