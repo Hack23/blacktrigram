@@ -101,6 +101,7 @@ export const useGrapplingAudio = () => {
 
   // Cleanup all active timers on unmount
   useEffect(() => {
+    // Capture the current ref value for cleanup
     const timers = activeTimers.current;
     return () => {
       timers.forEach((timer) => clearTimeout(timer));
