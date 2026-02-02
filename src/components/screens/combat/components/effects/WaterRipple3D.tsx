@@ -316,9 +316,9 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
 
   // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
   // performance. getGeometry/getMaterial access cached refs that are only modified in callbacks.
-  /* eslint-disable react-hooks/refs */
+  /* eslint-disable react-compiler/react-compiler */
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} data-testid="water-ripple-3d">
       {ringMeshes.flatMap((meshData) =>
         meshData.rings.map((ring, ringIndex) => {
           // Skip rings not yet spawned or expired
@@ -327,9 +327,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
           }
 
           // Get geometry and material (refs accessed for cached Three.js objects)
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           const geometry = getGeometry(ring.radius);
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           const baseMaterial = getMaterial(meshData.color);
 
           // Calculate wave amplitude with oscillation
@@ -341,6 +339,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
 
           // Clone material per ring to prevent shared opacity issues
           // (Multiple rings would otherwise share the same material and opacity)
+          // Note: React Three Fiber automatically disposes cloned materials on unmount
           const material = baseMaterial.clone();
           material.opacity = ring.opacity * 0.6;
           material.transparent = true;
@@ -362,7 +361,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
       )}
     </group>
   );
-  /* eslint-enable react-hooks/refs */
+  /* eslint-enable react-compiler/react-compiler */
 };
 
 /**

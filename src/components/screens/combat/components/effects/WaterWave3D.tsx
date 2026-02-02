@@ -395,22 +395,23 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       const activeParticles = activeParticlesRef.current.get(system.effectId);
       if (!activeParticles) return;
       
-      const requiredLength = activeParticles.length * 3;
+      // Use fixed-size array based on initial particle count, update only the used positions
+      // This avoids frequent reallocations when particles expire one by one
       let positions = positionsRef.current.get(system.effectId);
       
-      // Create or resize positions array if needed
-      if (!positions || positions.length !== requiredLength) {
-        positions = new Float32Array(requiredLength);
+      // Create positions array only on first initialization (based on max particles)
+      if (!positions) {
+        const maxParticles = system.particles.length; // Initial count is max
+        positions = new Float32Array(maxParticles * 3);
         positionsRef.current.set(system.effectId, positions);
       }
       
-      // Update positions from active particles (from tracking ref)
+      // Update only active particle positions (rest remain at origin, won't be rendered)
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
-        // positions is guaranteed to exist at this point
-        positions[i3] = particle.position.x;
-        positions[i3 + 1] = particle.position.y;
-        positions[i3 + 2] = particle.position.z;
+        positions![i3] = particle.position.x;
+        positions![i3 + 1] = particle.position.y;
+        positions![i3 + 2] = particle.position.z;
       });
     });
   });
@@ -422,7 +423,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   // Render point systems directly - positions are updated in useFrame via ref
   // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
   // performance. The positions are computed in useFrame and only accessed here for rendering.
-  /* eslint-disable react-hooks/refs */
+  /* eslint-disable react-compiler/react-compiler */
   return (
     <>
       {particleSystems.map((system) => {
@@ -431,8 +432,17 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
         const positions = positionsRef.current.get(system.effectId) 
           ?? new Float32Array(system.particles.length * 3);
         
+        // Get active particle count to set draw range
+        const activeParticles = activeParticlesRef.current.get(system.effectId);
+        const activeCount = activeParticles ? activeParticles.length : system.particles.length;
+        
         return (
-          <Points key={system.effectId} positions={positions}>
+          <Points 
+            key={system.effectId} 
+            positions={positions}
+            limit={activeCount} // Only render active particles
+            data-testid="water-wave-3d"
+          >
             <PointMaterial
               color={system.color}
               size={WAVE_CONSTANTS.SIZE_MAX}
@@ -447,7 +457,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       })}
     </>
   );
-  /* eslint-enable react-hooks/refs */
+  /* eslint-enable react-compiler/react-compiler */
 };
 
 /**
