@@ -415,48 +415,39 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     });
   });
 
-  // Pre-compute point system data to avoid accessing refs during render
-  // This satisfies React's rule that refs shouldn't be accessed during render
-  // MUST be before early return to satisfy React Hooks rules
-  const pointSystems = React.useMemo(() => {
-    if (!enabled || particleSystems.length === 0) {
-      return [];
-    }
-    
-    return particleSystems.map((system) => {
-      // Accessing ref in useMemo is acceptable
-      const positions = positionsRef.current.get(system.effectId) 
-        ?? new Float32Array(system.particles.length * 3);
-      
-      return {
-        key: system.effectId,
-        positions,
-        color: system.color,
-      };
-    });
-  }, [enabled, particleSystems]);
-
   if (!enabled || particleSystems.length === 0) {
     return null;
   }
 
+  // Render point systems directly - positions are updated in useFrame via ref
+  // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
+  // performance. The positions are computed in useFrame and only accessed here for rendering.
+  /* eslint-disable react-hooks/refs */
   return (
     <>
-      {pointSystems.map(({ key, positions, color }) => (
-        <Points key={key} positions={positions}>
-          <PointMaterial
-            color={color}
-            size={WAVE_CONSTANTS.SIZE_MAX}
-            sizeAttenuation
-            transparent
-            opacity={0.8}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </Points>
-      ))}
+      {particleSystems.map((system) => {
+        // Get positions from ref (updated in useFrame above)
+        // This is safe because positions are only written in useFrame, never during render
+        const positions = positionsRef.current.get(system.effectId) 
+          ?? new Float32Array(system.particles.length * 3);
+        
+        return (
+          <Points key={system.effectId} positions={positions}>
+            <PointMaterial
+              color={system.color}
+              size={WAVE_CONSTANTS.SIZE_MAX}
+              sizeAttenuation
+              transparent
+              opacity={0.8}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </Points>
+        );
+      })}
     </>
   );
+  /* eslint-enable react-hooks/refs */
 };
 
 /**

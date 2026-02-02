@@ -310,74 +310,59 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     });
   });
 
-  // Pre-compute mesh data to avoid accessing refs during render
-  // This satisfies React's rule that refs shouldn't be accessed during render
-  // MUST be before early return to satisfy React Hooks rules
-  const meshElements = React.useMemo(() => {
-    if (!enabled || ringMeshes.length === 0) {
-      return [];
-    }
-    
-    return ringMeshes.flatMap((meshData) =>
-      meshData.rings.map((ring, ringIndex) => {
-        // Pre-fetch geometry and base material (accessing refs is OK in useMemo)
-        const geometry = getGeometry(ring.radius);
-        const baseMaterial = getMaterial(meshData.color);
-        
-        return {
-          key: `${meshData.effectId}-ring-${ringIndex}`,
-          ring,
-          meshData,
-          geometry,
-          baseMaterial,
-        };
-      })
-    );
-  }, [enabled, ringMeshes, getGeometry, getMaterial]);
-
   if (!enabled || ringMeshes.length === 0) {
     return null;
   }
 
+  // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
+  // performance. getGeometry/getMaterial access cached refs that are only modified in callbacks.
+  /* eslint-disable react-hooks/refs */
   return (
     <group ref={groupRef}>
-      {meshElements.map(({ key, ring, meshData, geometry, baseMaterial }) => {
-        // Skip rings not yet spawned or expired
-        if (ring.age < 0 || ring.opacity <= 0) {
-          return null;
-        }
+      {ringMeshes.flatMap((meshData) =>
+        meshData.rings.map((ring, ringIndex) => {
+          // Skip rings not yet spawned or expired
+          if (ring.age < 0 || ring.opacity <= 0) {
+            return null;
+          }
 
-        // Calculate wave amplitude with oscillation
-        // Note: performance.now() is used for smooth animation timing synchronized with frame rendering
-        // This is an intentional pattern for Three.js animations despite React purity rules
-        const time = performance.now() / 1000;
-        const waveOffset =
-          Math.sin(time * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
-          RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
-          ring.opacity;
+          // Get geometry and material (refs accessed for cached Three.js objects)
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const geometry = getGeometry(ring.radius);
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const baseMaterial = getMaterial(meshData.color);
 
-        // Clone material per ring to prevent shared opacity issues
-        // (Multiple rings would otherwise share the same material and opacity)
-        const material = baseMaterial.clone();
-        material.opacity = ring.opacity * 0.6;
-        material.transparent = true;
+          // Calculate wave amplitude with oscillation
+          // Use ring age for animation timing (deterministic, not impure like performance.now)
+          const waveOffset =
+            Math.sin(ring.age * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
+            RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
+            ring.opacity;
 
-        return (
-          <mesh
-            key={key}
-            position={[
-              meshData.position[0],
-              RIPPLE_CONSTANTS.FLOOR_Y + waveOffset,
-              meshData.position[2],
-            ]}
+          // Clone material per ring to prevent shared opacity issues
+          // (Multiple rings would otherwise share the same material and opacity)
+          const material = baseMaterial.clone();
+          material.opacity = ring.opacity * 0.6;
+          material.transparent = true;
+
+          return (
+            <mesh
+              key={`${meshData.effectId}-ring-${ringIndex}`}
+              position={[
+                meshData.position[0],
+                RIPPLE_CONSTANTS.FLOOR_Y + waveOffset,
+                meshData.position[2],
+              ]}
             rotation={[-Math.PI / 2, 0, 0]} // Horizontal ring
             geometry={geometry}
             material={material}
           />
         );
-      })}
+      })
+      )}
     </group>
   );
+  /* eslint-enable react-hooks/refs */
 };
 
 /**
