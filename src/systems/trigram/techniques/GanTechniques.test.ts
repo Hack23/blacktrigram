@@ -194,7 +194,7 @@ describe("GanTechniques", () => {
       // All techniques should have defensive characteristics
       GAN_TECHNIQUES.forEach((technique) => {
         // BLOCK techniques should have comprehensive defensive properties
-        if (technique.attackType === CombatAttackType.BLOCK) {
+        if (technique.type === CombatAttackType.BLOCK) {
           expect(technique.blockWindow).toBeDefined();
           expect(technique.damageReduction).toBeDefined();
           expect(technique.stabilityBonus).toBeDefined();
