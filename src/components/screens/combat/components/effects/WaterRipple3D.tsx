@@ -314,9 +314,10 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return null;
   }
 
-  // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
-  // performance. getGeometry/getMaterial access cached refs that are only modified in callbacks.
-  /* eslint-disable react-compiler/react-compiler */
+  // Three.js performance requirement: Access cached geometry/material refs during render.
+  // These refs are only modified in callbacks (not during render), so reads are safe.
+  // This is a standard pattern for Three.js + React and matches other effect components.
+  /* eslint-disable react-hooks/refs */
   return (
     <group ref={groupRef} data-testid="water-ripple-3d">
       {ringMeshes.flatMap((meshData) =>
@@ -361,7 +362,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
       )}
     </group>
   );
-  /* eslint-enable react-compiler/react-compiler */
+  /* eslint-enable react-hooks/refs */
 };
 
 /**

@@ -420,10 +420,10 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     return null;
   }
 
-  // Render point systems directly - positions are updated in useFrame via ref
-  // React 19 compiler doesn't like ref access during render, but it's necessary for Three.js
-  // performance. The positions are computed in useFrame and only accessed here for rendering.
-  /* eslint-disable react-compiler/react-compiler */
+  // Three.js performance requirement: Access positions ref during render.
+  // The positions are computed in useFrame (write) and only read here (render).
+  // This uni-directional flow is safe and follows Three.js + React patterns.
+  /* eslint-disable react-hooks/refs */
   return (
     <>
       {particleSystems.map((system) => {
@@ -457,7 +457,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       })}
     </>
   );
-  /* eslint-enable react-compiler/react-compiler */
+  /* eslint-enable react-hooks/refs */
 };
 
 /**
