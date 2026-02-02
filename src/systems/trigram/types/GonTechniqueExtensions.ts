@@ -441,25 +441,38 @@ export function calculateEarthCrackIntensity(
  * Type guard to check if technique is extended Gon technique
  * 확장 곤괘 기술 여부 확인
  *
- * **IMPORTANT**: This type guard only checks for field presence, not value ranges.
- * Callers must use `validateGonTechniqueEnhancements()` to verify value ranges
- * are within acceptable limits (e.g., groundImpactMultiplier 1.0-2.0).
+ * Checks both field presence AND type correctness for core Gon fields.
+ * For value range validation (e.g., groundImpactMultiplier 1.0-2.0),
+ * use `validateGonTechniqueEnhancements()`.
  *
  * @param technique - Technique to check
- * @returns True if technique has all required Gon-specific fields
+ * @returns True if technique has all required Gon-specific fields with correct types
  *
- * @see validateGonTechniqueEnhancements for runtime value validation
+ * @see validateGonTechniqueEnhancements for runtime value range validation
  * @korean 확장곤괘기술확인
  */
 export function isExtendedGonTechnique(
   technique: TrigramStanceTechnique,
 ): technique is ExtendedGonTechnique {
-  return (
+  const hasRequiredFields =
     "throwTrajectory" in technique &&
     "groundImpactMultiplier" in technique &&
     "controlDuration" in technique &&
     "supportiveHealing" in technique &&
-    "earthCrackEffect" in technique
+    "earthCrackEffect" in technique;
+
+  if (!hasRequiredFields) {
+    return false;
+  }
+
+  // Runtime type checking for safety
+  const t = technique as any;
+  return (
+    typeof t.throwTrajectory === "string" &&
+    typeof t.groundImpactMultiplier === "number" &&
+    typeof t.controlDuration === "number" &&
+    typeof t.supportiveHealing === "number" &&
+    typeof t.earthCrackEffect === "boolean"
   );
 }
 
