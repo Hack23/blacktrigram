@@ -92,23 +92,23 @@ export const VictoryAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
-    // Capture ref values in closure to avoid accessing in cleanup
-    const groupRefValue = groupRef.current;
-    const particlesRefValue = particlesRef.current;
-    const ringsRefValue = ringsRef.current;
-    const symbolsRefValue = symbolsRef.current;
-    
     return () => {
+      // Capture ref values to avoid stale references in cleanup
+      const group = groupRef.current;
+      const particles = particlesRef.current;
+      const rings = ringsRef.current;
+      const symbols = symbolsRef.current;
+
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
-      if (particlesRefValue) {
-        particlesRefValue.geometry?.dispose();
-        if (particlesRefValue.material) {
-          (particlesRefValue.material as THREE.Material).dispose();
+      if (particles) {
+        particles.geometry?.dispose();
+        if (particles.material) {
+          (particles.material as THREE.Material).dispose();
         }
       }
-      if (ringsRefValue) {
-        ringsRefValue.children.forEach((child) => {
+      if (rings) {
+        rings.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -117,8 +117,8 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (symbolsRefValue) {
-        symbolsRefValue.children.forEach((child) => {
+      if (symbols) {
+        symbols.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -129,13 +129,13 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      if (groupRefValue) {
-        groupRefValue.children.forEach((child) => {
+      if (group) {
+        group.children.forEach((child) => {
           // Skip objects that are already handled via specific refs
           if (
-            child === particlesRefValue ||
-            child === ringsRefValue ||
-            child === symbolsRefValue
+            child === particles ||
+            child === rings ||
+            child === symbols
           ) {
             return;
           }

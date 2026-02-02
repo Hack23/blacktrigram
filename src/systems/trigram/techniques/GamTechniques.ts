@@ -34,16 +34,6 @@ import { AnimationType } from "../../animation";
  * - Reactive: 1.1-1.2 (quick counters)
  * - Normal: 1.0 (standard redirects)
  * - Controlled: 0.9 (throwing techniques)
- *
- * Counter Timing Windows (반격 타이밍):
- * - counterWindow: 200ms standard (perfect reactive timing)
- * - perfectWindow: 50ms (완벽한 타이밍)
- * - counterMultiplier: 1.5-2.0x damage bonus
- *
- * Flow Types (흐름 유형):
- * - adaptive: Reactive to opponent's force (적응형)
- * - flowing: Smooth continuous motion (흐름형)
- * - reactive: Instant response counter (반응형)
  */
 export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
   // ============= Primary Technique =============
@@ -58,8 +48,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Water Counter",
     romanized: "suryu_bangyeok",
     description: {
-      korean: "물의 흐름으로 적의 공격을 받아넘기는 반격 - 적응형 흐름으로 최적의 반격 타이밍을 잡는다",
-      english: "Counter-attack that flows like water - Adaptive flow captures optimal counter timing",
+      korean: "물의 흐름으로 적의 공격을 받아넘기는 반격",
+      english: "Counter-attack that flows like water",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -73,17 +63,15 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    // Counter timing optimized for reactive flow (300-600ms range)
-    executionTime: 400, // Optimized for quick reactive flow (was 600)
-    recoveryTime: 900,
+    executionTime: 600,
+    recoveryTime: 700, // Reduced from 900ms for combo flow
     critChance: 0.18,
     critMultiplier: 1.7,
-    // Counter-attack timing windows (반격 타이밍 윈도우)
-    counterWindow: 200, // Standard reactive window in milliseconds
-    perfectWindow: 50, // Perfect counter timing window (완벽한 타이밍)
-    counterMultiplier: 1.8, // Counter damage bonus multiplier
-    flowType: "adaptive", // Adaptive flow type (적응형 흐름)
     effects: [],
+    // Combo metadata - Flowing counter starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - initiates counter flow
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "counter", // Type: shared category
     animationId: "gam_water_counter", // ID: unique 1-1 mapping
@@ -124,10 +112,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.7,
     },
     executionTime: 850,
-    recoveryTime: 1200,
+    recoveryTime: 900, // Reduced from 1200ms for combo flow
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
+    // Combo metadata - Force redirection throw
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - momentum redirection
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_redirect_throw", // ID: unique 1-1 mapping
@@ -166,10 +158,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.7,
     },
     executionTime: 900,
-    recoveryTime: 1300,
+    recoveryTime: 1000, // Reduced from 1300ms for combo flow
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
+    // Combo metadata - Control throw finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - dominant position throw
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "throw", // Type: shared category
     animationId: "gam_hip_throw", // ID: unique 1-1 mapping
@@ -210,10 +206,14 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.9,
     },
     executionTime: 400,
-    recoveryTime: 700,
+    recoveryTime: 500, // Reduced from 700ms for combo flow
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
+    // Combo metadata - Defensive flow starter
+    comboWindow: 200,
+    comboPriority: 1, // Starter - soft defensive entry
+    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_flowing_block", // ID: unique 1-1 mapping
@@ -236,8 +236,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Circular Parry",
     romanized: "wonhyeong-batgi",
     description: {
-      korean: "합기도 원형 움직임으로 공격을 무력화 - 흐르는 원형 동작으로 반격의 기회를 만든다",
-      english: "Hapkido circular motion neutralizing attack - Flowing circular motion creates counter opportunity",
+      korean: "합기도 원형 움직임으로 공격을 무력화",
+      english: "Hapkido circular motion neutralizing attack",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -251,17 +251,15 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    // Counter timing optimized for circular flow
-    executionTime: 500, // Optimized for flowing circular motion (was 550)
-    recoveryTime: 850,
+    executionTime: 550,
+    recoveryTime: 600, // Reduced from 850ms for combo flow
     critChance: 0.12,
     critMultiplier: 1.5,
-    // Counter-attack timing windows (반격 타이밍 윈도우)
-    counterWindow: 200, // Standard reactive window
-    perfectWindow: 50, // Perfect counter timing
-    counterMultiplier: 1.6, // Counter damage bonus
-    flowType: "flowing", // Flowing circular motion (흐름형)
     effects: [],
+    // Combo metadata - Neutralizing redirect
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain - circular neutralization
+    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "defensive", // Type: shared category
     animationId: "gam_circular_parry", // ID: unique 1-1 mapping
@@ -286,8 +284,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     englishName: "Wrist Twist Counter",
     romanized: "sonmok-biteulgi-bangyeok",
     description: {
-      korean: "공격을 받아 손목을 비틀어 반격 - 반응형 포착으로 관절을 즉시 제압한다",
-      english: "Counter by catching and twisting wrist - Reactive capture controls joint instantly",
+      korean: "공격을 받아 손목을 비틀어 반격",
+      english: "Counter by catching and twisting wrist",
     },
     stance: TrigramStance.GAM,
     type: CombatAttackType.COUNTER_ATTACK,
@@ -301,17 +299,15 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.65,
     },
-    // Counter timing optimized for reactive wrist capture
-    executionTime: 550, // Optimized for reactive joint lock (was 700)
-    recoveryTime: 1000,
+    executionTime: 700,
+    recoveryTime: 750, // Reduced from 1000ms for combo flow
     critChance: 0.25,
     critMultiplier: 2.2,
-    // Counter-attack timing windows (반격 타이밍 윈도우)
-    counterWindow: 200, // Standard reactive window
-    perfectWindow: 50, // Perfect counter timing for joint lock
-    counterMultiplier: 2.0, // High counter bonus for joint lock
-    flowType: "reactive", // Reactive instant capture (반응형)
     effects: [],
+    // Combo metadata - Joint control counter finisher
+    comboWindow: 200,
+    comboPriority: 3, // Finisher - vital point joint lock
+    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "gam_wrist_twist_counter", // ID: unique 1-1 mapping

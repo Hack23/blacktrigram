@@ -25,30 +25,25 @@ import { ANATOMICAL_LIMITS } from "../constants";
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Geon Idle Breathing Animation - ENHANCED VERSION
+ * Geon Idle Breathing Animation
  *
  * **Korean**: 건괘 호흡 자세 (Geon-gwae Hoheup Jase)
  * **Philosophy**: Embodying heavenly authority through powerful breathing
  *
- * ENHANCED Characteristics:
- * - Natural chest expansion with rib cage movement
- * - Subtle shoulder movement during breath cycle
- * - Micro-adjustments in guard position (natural fidgeting)
- * - Head tracking with small movements
- * - Weight micro-shifts for balance
- * - Realistic breathing rhythm with slight variations
+ * Characteristics:
+ * - Chest expansion emphasizing power readiness
+ * - Shoulder squaring for frontal dominance
+ * - Fists clenched at ready position
+ * - Head held high (authoritative posture)
  *
- * Animation Cycle (ENHANCED with 5 keyframes for smoother motion):
- * - 0ms: Neutral baseline - relaxed ready position
- * - 625ms: Begin inhale - chest starts expanding, shoulders rise slightly
- * - 1250ms: Peak inhale - maximum chest expansion, shoulders squared
- * - 1875ms: Begin exhale - chest starts contracting, shoulders relax
- * - 2500ms: Return to neutral - complete cycle
+ * Animation Cycle:
+ * - 0ms: Neutral breathing position
+ * - 1250ms: Chest expansion (inhale)
+ * - 2500ms: Return to neutral (exhale)
  *
  * @korean 건괘호흡자세
  * @duration 2500ms (2.5 second cycle)
  * @category Idle Animation
- * @enhanced Improved biomechanics with natural micro-movements
  */
 export const GEON_IDLE_BREATHING: SkeletalAnimation =
   MartialArtsAnimationBuilder.create(
@@ -59,52 +54,26 @@ export const GEON_IDLE_BREATHING: SkeletalAnimation =
     // Keyframe 0ms: Neutral breathing position (baseline)
     .at(0)
     .rotate(BoneName.PELVIS, 0, 0, 0) // Neutral pelvis
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0) // Neutral lower spine
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral upper spine
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0) // Neutral spine
     .rotate(BoneName.SHOULDER_L, -0.17, 0, -0.09) // -10°, 0°, -5° (relaxed high guard)
     .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09) // -10°, 0°, 5°
     .rotate(BoneName.ELBOW_L, 0, 0, -1.57) // -90° (bent)
     .rotate(BoneName.ELBOW_R, 0, 0, 1.57) // 90° (bent)
     .rotate(BoneName.HEAD, 0.09, 0, 0) // 5° (head held high)
-    .rotate(BoneName.NECK, 0.03, 0, 0) // ENHANCED: Subtle neck extension
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 625ms: Begin inhale - natural breathing starts
-    .at(0.625)
-    .rotate(BoneName.SPINE_UPPER, -0.03, 0, 0) // ENHANCED: Gradual chest expansion begins
-    .rotate(BoneName.SPINE_MIDDLE, -0.04, 0, 0) // ENHANCED: Mid-spine extends for rib cage lift
-    .rotate(BoneName.SHOULDER_L, -0.19, 0.01, -0.11) // ENHANCED: Shoulders begin rising and widening
-    .rotate(BoneName.SHOULDER_R, -0.19, -0.01, 0.11) // ENHANCED: Mirror movement
-    .rotate(BoneName.HEAD, 0.10, 0.01, 0) // ENHANCED: Slight head micro-movement
-    .rotate(BoneName.NECK, 0.04, 0, 0) // ENHANCED: Neck follows head
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 1250ms: Peak inhale - maximum chest expansion
+    // Keyframe 1250ms: Chest expansion (inhale)
     .at(1.25)
-    .rotate(BoneName.SPINE_UPPER, -0.09, 0, 0) // -5° (chest fully expanded)
-    .rotate(BoneName.SPINE_MIDDLE, -0.08, 0, 0) // ENHANCED: Full mid-spine extension
-    .rotate(BoneName.SHOULDER_L, -0.21, 0.02, -0.14) // -12°, 0°, -8° (shoulders back and elevated)
-    .rotate(BoneName.SHOULDER_R, -0.21, -0.02, 0.14) // -12°, 0°, 8°
+    .rotate(BoneName.SPINE_UPPER, -0.09, 0, 0) // -5° (chest expands backward)
+    .rotate(BoneName.SHOULDER_L, -0.21, 0, -0.14) // -12°, 0°, -8° (shoulders back)
+    .rotate(BoneName.SHOULDER_R, -0.21, 0, 0.14) // -12°, 0°, 8°
     .rotate(BoneName.HEAD, 0.14, 0, 0) // 8° (emphasize power)
-    .rotate(BoneName.NECK, 0.06, 0, 0) // ENHANCED: Neck extends with breath
-    .rotate(BoneName.PELVIS, -0.01, 0, 0) // ENHANCED: Micro pelvis adjustment for balance
     .done<MartialArtsAnimationBuilder>()
-    // Keyframe 1875ms: Begin exhale - controlled breath release
-    .at(1.875)
-    .rotate(BoneName.SPINE_UPPER, -0.04, 0, 0) // ENHANCED: Gradual chest lowering
-    .rotate(BoneName.SPINE_MIDDLE, -0.05, 0, 0) // ENHANCED: Mid-spine begins returning
-    .rotate(BoneName.SHOULDER_L, -0.18, 0.01, -0.10) // ENHANCED: Shoulders relaxing
-    .rotate(BoneName.SHOULDER_R, -0.18, -0.01, 0.10) // ENHANCED: Mirror relaxation
-    .rotate(BoneName.HEAD, 0.11, -0.01, 0) // ENHANCED: Head returns with slight tracking
-    .rotate(BoneName.NECK, 0.04, 0, 0) // ENHANCED: Neck follows
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 2500ms: Return to neutral (complete exhale)
+    // Keyframe 2500ms: Return to neutral (exhale)
     .at(2.5)
     .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0) // ENHANCED: Mid-spine returns to baseline
     .rotate(BoneName.SHOULDER_L, -0.17, 0, -0.09)
     .rotate(BoneName.SHOULDER_R, -0.17, 0, 0.09)
     .rotate(BoneName.HEAD, 0.09, 0, 0)
-    .rotate(BoneName.NECK, 0.03, 0, 0) // ENHANCED: Neck returns to neutral
-    .rotate(BoneName.PELVIS, 0, 0, 0) // ENHANCED: Pelvis returns to center
     .done<MartialArtsAnimationBuilder>()
     .build();
 
