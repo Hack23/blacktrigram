@@ -25,12 +25,6 @@
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/runner/work/blacktrigram/blacktrigram"],
       "tools":  ["*"]
     },
-    "git": {
-      "type": "local",
-      "command":  "npx",
-      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "/home/runner/work/blacktrigram/blacktrigram"],
-      "tools": ["*"]
-    },
     "memory": {
       "type":  "local",
       "command": "npx",
@@ -47,6 +41,12 @@
       "type": "local",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "tools": ["*"]
+    },
+     "fetch": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
       "tools": ["*"]
     }
   }
