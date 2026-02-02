@@ -407,8 +407,7 @@ export class InjuryMovementModifier {
       // Runtime-safe environment check (works in both Node and browser/Vite environments)
       if (
         typeof process !== "undefined" &&
-        process.env &&
-        process.env.NODE_ENV === "development"
+        process.env?.NODE_ENV === "development"
       ) {
         console.warn(
           `[InjuryMovementModifier] Unknown stance "${String(
