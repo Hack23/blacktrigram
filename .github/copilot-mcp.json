@@ -7,7 +7,7 @@
         "Authorization": "Bearer ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
         "X-MCP-Toolsets": "*"
       },
-      "tools": ["*"]
+      "tools": ["all"]
     },
     "filesystem": {
       "type": "local",
