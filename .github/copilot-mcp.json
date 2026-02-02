@@ -41,13 +41,16 @@
       "type": "local",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "env": {
+          "PLAYWRIGHT_DISABLE_SANDBOX": "1"
+        },      
       "tools": ["*"]
     },
      "fetch": {
       "type": "local",
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-fetch"],
-      "tools": ["*"]
+      "tools": ["fetch"]
     }
   }
 }
