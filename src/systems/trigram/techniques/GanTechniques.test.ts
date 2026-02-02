@@ -106,12 +106,13 @@ describe("GanTechniques", () => {
   });
 
   describe("Execution Time Optimization", () => {
-    it("should have optimized executionTime for defensive reactions (200-500ms)", () => {
-      const defensiveTechniques = GAN_TECHNIQUES.filter(
+    it("should have fast executionTime for BLOCK techniques (200-500ms)", () => {
+      const blockTechniques = GAN_TECHNIQUES.filter(
         (t) => t.type === CombatAttackType.BLOCK
       );
 
-      defensiveTechniques.forEach((technique) => {
+      // BLOCK techniques specifically optimized for fast defensive reactions
+      blockTechniques.forEach((technique) => {
         expect(technique.executionTime).toBeGreaterThanOrEqual(200);
         expect(technique.executionTime).toBeLessThanOrEqual(500);
       });
