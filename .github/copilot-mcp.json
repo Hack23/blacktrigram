@@ -1,16 +1,11 @@
 {
   "mcpServers": {
     "github": {
-      "type": "local",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github",
-        "--toolsets",
-        "all",
-        "--tools",
-        "*"
-      ],
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "headers": {
+        "Authorization": "Bearer ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}"
+      }
       "env": {
         "GITHUB_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}",
@@ -21,42 +16,35 @@
     },
     "filesystem": {
       "type": "local",
-      "command": "npx",
+      "command": "mcp-server-filesystem",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
         "/home/runner/work/blacktrigram/blacktrigram"
       ],
       "tools": ["*"]
     },
     "memory": {
       "type": "local",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "command": "mcp-server-memory",
+      "args": [],
       "tools": ["*"]
     },
     "sequential-thinking": {
       "type": "local",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "command": "mcp-server-sequential-thinking",
+      "args": [],
       "tools": ["*"]
     },
     "playwright": {
       "type": "local",
-      "command": "mcp-server-playwright",
-      "args": [],
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--headless"
+      ],
       "env": {
-        "DISPLAY": ":99",
-        "PLAYWRIGHT_BROWSERS_PATH": "0",
-        "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "0",
-        "PLAYWRIGHT_DISABLE_SANDBOX": "1"
+        "DISPLAY": ":99"
       },
-      "tools": ["*"]
-    },
-    "fetch": {
-      "type": "local",
-      "command": "mcp-server-fetch",
-      "args": [],
       "tools": ["*"]
     }
   }
