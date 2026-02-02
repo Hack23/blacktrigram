@@ -44,12 +44,14 @@ describe("Geon (Heaven) Technique Timing Validation", () => {
 
       GEON_TECHNIQUES.forEach((tech) => {
         const expected = expectedTimings[tech.id];
-        if (expected) {
-          expect(
-            tech.executionTime,
-            `${tech.id} should have execution time of ${expected}ms`
-          ).toBe(expected);
-        }
+        expect(
+          expected,
+          `Missing timing data for technique: ${tech.id}. All techniques must be validated.`
+        ).toBeDefined();
+        expect(
+          tech.executionTime,
+          `${tech.id} should have execution time of ${expected}ms`
+        ).toBe(expected);
       });
     });
   });

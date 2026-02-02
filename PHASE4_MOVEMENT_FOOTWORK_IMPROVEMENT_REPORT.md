@@ -229,7 +229,7 @@ export const CUT_STEP_LEFT_KEYFRAMES: readonly StepKeyframe[] = [
 
 #### **New Type Definitions**:
 ```typescript
-export type AdvancedStepType = "push" | "pull" | "cut_left" | "cut_right";
+export type AdvancedStepType = "push" | "pull" | "cut_left";
 
 export const ADVANCED_STEP_KOREAN_TERMS: Record<AdvancedStepType, {
   korean: string;
@@ -237,6 +237,8 @@ export const ADVANCED_STEP_KOREAN_TERMS: Record<AdvancedStepType, {
   english: string;
 }>;
 ```
+
+**Note**: `cut_right` is not yet implemented. Only left-side cut step keyframes are defined.
 
 #### **Technical Metrics**:
 - **Lines of Code**: 383 → 647 (+69% content)

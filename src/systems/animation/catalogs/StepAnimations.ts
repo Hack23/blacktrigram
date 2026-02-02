@@ -6,12 +6,16 @@
  * Implements tactical step movement animations with precise 30cm steps
  * based on Korean martial arts footwork (보법, Bobeop).
  *
- * **New Step Types Added**:
+ * **Advanced Step Keyframe Definitions (Integration Pending)**:
  * - **밀기 스텝 (Push Step)**: Rear foot drives forward for power generation (280ms, 35cm)
  * - **당기기 스텝 (Pull Step)**: Front foot pulls back for defensive retreat (260ms, 30cm)
  * - **자르기 스텝 (Cut Step)**: Diagonal step for angle creation and evasion (300ms, 32cm)
  *
- * **Base 8-Direction Steps**:
+ * > **Note**: These advanced step variants have keyframe sets defined but are not yet wired 
+ * > into the main step selection/config APIs (`StepDirection`, `STEP_ANIMATION_CONFIGS`, 
+ * > `createStepConfig`, `getStepKeyframeAtFrame`). They are currently experimental data only.
+ *
+ * **Base 8-Direction Steps** (Fully Integrated):
  * - Duration: 300ms (18 frames at 60fps)
  * - Distance: 30cm (approximately one foot width)
  * - Non-interruptible (priority 5, same as attacks)
