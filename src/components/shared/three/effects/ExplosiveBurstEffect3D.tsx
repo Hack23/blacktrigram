@@ -60,6 +60,11 @@ const ParticleBurst: React.FC<{
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef(particles);
   
+  // Keep particlesRef in sync with latest particles so useFrame animates current array
+  useEffect(() => {
+    particlesRef.current = particles;
+  }, [particles]);
+  
   // Store particle count to avoid accessing ref during render
   const particleCount = particles.length;
   
@@ -323,7 +328,8 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
     if (!active) return;
 
     const particleData: ParticleData[] = [];
-    const center = new THREE.Vector3(...position);
+    // Generate particles in local space; ParticleBurst group will offset by position
+    const center = new THREE.Vector3(0, 0, 0);
 
     for (let i = 0; i < cappedParticleCount; i++) {
       const angle = Math.random() * Math.PI * 2;

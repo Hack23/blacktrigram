@@ -47,8 +47,8 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create line object in useState to avoid purity violations with Math.random()
-  const [line, setLine] = useState(() => {
+  // Create line object with useState to avoid React purity violations
+  const [line] = useState(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
     const displacement = 0.2 * intensity;
@@ -78,48 +78,44 @@ const LightningArc: React.FC<{
     return new THREE.Line(geometry, material);
   });
 
-  // Update geometry when start/end positions change
+  // Update line geometry and material in-place when props change
   useEffect(() => {
-    const points: THREE.Vector3[] = [];
+    const positions = line.geometry.attributes.position.array as Float32Array;
+    
+    // Update geometry points
     const segments = 8;
     const displacement = 0.2 * intensity;
-
+    
     for (let i = 0; i <= segments; i++) {
       const t = i / segments;
       const point = new THREE.Vector3().lerpVectors(start, end, t);
-
+      
       // Add random zigzag displacement (except at endpoints)
       if (i > 0 && i < segments) {
         point.x += (Math.random() - 0.5) * displacement;
         point.y += (Math.random() - 0.5) * displacement;
         point.z += (Math.random() - 0.5) * displacement;
       }
-
-      points.push(point);
+      
+      positions[i * 3] = point.x;
+      positions[i * 3 + 1] = point.y;
+      positions[i * 3 + 2] = point.z;
     }
-
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity: intensity,
-      linewidth: 2,
-    });
-
-    const newLine = new THREE.Line(geometry, material);
     
-    // Dispose old geometry and material
-    line.geometry.dispose();
-    (line.material as THREE.Material).dispose();
+    line.geometry.attributes.position.needsUpdate = true;
     
-    setLine(newLine);
-  }, [start, end, intensity, color, line]);
+    // Update material properties
+    const material = line.material as THREE.LineBasicMaterial;
+    material.opacity = intensity;
+    material.color.set(color);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, end, intensity, color]); // line deliberately excluded to avoid re-creating
 
   useFrame(() => {
     if (lineRef.current) {
       // Flicker effect
       const flicker = 0.8 + Math.random() * 0.2;
-      const material = lineRef.current.material as THREE.LineBasicMaterial;
+      const material = line.material as THREE.LineBasicMaterial;
       material.opacity = flicker * intensity;
     }
   });
@@ -129,7 +125,8 @@ const LightningArc: React.FC<{
       line.geometry.dispose();
       (line.material as THREE.Material).dispose();
     };
-  }, [line]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // line deliberately excluded - cleanup only on unmount
 
   return <primitive object={line} ref={lineRef} />;
 };
@@ -189,22 +186,23 @@ const ThunderChargeEffect: React.FC<{
   // Create multiple lightning arcs in a sphere pattern
   const arcs = useMemo(() => {
     const arcData: Array<{ start: THREE.Vector3; end: THREE.Vector3 }> = [];
-    const center = new THREE.Vector3(...position);
+    // Center at local origin; group.position handles world offset
+    const center = new THREE.Vector3(0, 0, 0);
     const radius = 0.5 * intensity;
 
     // Create 6 arcs from surrounding points to center
     for (let i = 0; i < 6; i++) {
       const angle = (i * Math.PI * 2) / 6;
       const start = new THREE.Vector3(
-        center.x + Math.cos(angle) * radius,
-        center.y + Math.sin(angle * 2) * radius * 0.5,
-        center.z + Math.sin(angle) * radius
+        Math.cos(angle) * radius,
+        Math.sin(angle * 2) * radius * 0.5,
+        Math.sin(angle) * radius
       );
       arcData.push({ start, end: center });
     }
 
     return arcData;
-  }, [position, intensity]);
+  }, [intensity]);
 
   useFrame(() => {
     if (groupRef.current) {
@@ -274,7 +272,8 @@ const ThunderReleaseEffect: React.FC<{
       position: THREE.Vector3;
       velocity: THREE.Vector3;
     }> = [];
-    const center = new THREE.Vector3(...position);
+    // Center at local origin; group.position handles world offset
+    const center = new THREE.Vector3(0, 0, 0);
 
     // Create 20 sparks in random directions
     for (let i = 0; i < 20; i++) {
