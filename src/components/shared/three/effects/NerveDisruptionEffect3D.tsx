@@ -144,6 +144,28 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
         });
       }
     });
+    
+    // Cleanup any remaining Three.js objects on unmount or dependency change
+    return () => {
+      effectInstancesRef.current.forEach((instance) => {
+        if (instance.particleSystem.parent) {
+          groupRef.current?.remove(instance.particleSystem);
+        }
+
+        instance.arcLines.forEach((line) => {
+          if (line.parent) {
+            groupRef.current?.remove(line);
+          }
+          line.geometry.dispose();
+          (line.material as THREE.Material).dispose();
+        });
+
+        instance.particleSystem.geometry.dispose();
+        (instance.particleSystem.material as THREE.Material).dispose();
+      });
+
+      effectInstancesRef.current.clear();
+    };
   }, [effects, enabled, particleCount]);
   
   // Animation loop

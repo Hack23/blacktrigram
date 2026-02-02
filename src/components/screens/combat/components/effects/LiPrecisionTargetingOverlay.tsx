@@ -89,12 +89,13 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
       onVitalPointSelect,
       isMobile,
     }) => {
-      // Inject keyframe animation once on mount
+      // Inject keyframe animation once globally (persists across component instances)
       useEffect(() => {
         const styleId = "li-precision-targeting-keyframes";
         
-        // Check if already injected
-        if (document.getElementById(styleId)) return;
+        // Check if already injected globally - if so, don't remove on unmount
+        const alreadyExists = document.getElementById(styleId);
+        if (alreadyExists) return;
         
         const style = document.createElement("style");
         style.id = styleId;
@@ -112,12 +113,8 @@ export const LiPrecisionTargetingOverlay: React.FC<LiPrecisionTargetingOverlayPr
         `;
         document.head.appendChild(style);
         
-        return () => {
-          const existingStyle = document.getElementById(styleId);
-          if (existingStyle) {
-            document.head.removeChild(existingStyle);
-          }
-        };
+        // Don't remove on unmount - leave it for other instances
+        // Style persists globally to avoid re-injection
       }, []);
       
       // Filter vital points in range (hooks must be called unconditionally)
