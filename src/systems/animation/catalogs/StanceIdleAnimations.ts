@@ -29,15 +29,8 @@ import { BoneName } from "@/types/skeletal";
 import type { KeyframeConfig } from "../builders/KeyframeConfig";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 import {
-  GAM_WATER_GUARD_POSE,
-  GAN_MOUNTAIN_GUARD_POSE,
   GEON_HIGH_GUARD_POSE,
-  GON_EARTH_GUARD_POSE,
-  JIN_THUNDER_GUARD_POSE,
-  LI_FIRE_GUARD_POSE,
-  SON_WIND_GUARD_POSE,
   STANCE_GUARD_CONFIGS,
-  TAE_FLUID_GUARD_POSE,
 } from "./StanceGuardPoses";
 
 // ═══════════════════════════════════════════════════════════════════════════

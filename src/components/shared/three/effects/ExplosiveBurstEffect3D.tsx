@@ -60,6 +60,9 @@ const ParticleBurst: React.FC<{
   const groupRef = useRef<THREE.Group>(null);
   const particlesRef = useRef(particles);
   
+  // Store particle count to avoid accessing ref during render
+  const particleCount = particles.length;
+  
   // Create mesh refs array once
   const meshRefsArray = useMemo(
     () => particles.map(() => ({ current: null as THREE.Mesh | null })),
@@ -92,7 +95,8 @@ const ParticleBurst: React.FC<{
 
   return (
     <group ref={groupRef} position={position}>
-      {particlesRef.current.map((particle, i) => {
+      {Array.from({ length: particleCount }, (_, i) => {
+        const particle = particles[i];
         const alpha = Math.max(0, particle.life / particle.maxLife);
         return (
           <mesh key={i} ref={meshRefsArray[i]} position={particle.position}>
@@ -190,6 +194,7 @@ const DebrisParticles: React.FC<{
   const groupRef = useRef<THREE.Group>(null);
 
   // Generate random debris - recreate refs when debris changes
+  // eslint-disable-next-line react-hooks/purity -- Intentionally using Math.random() in useMemo for stable random generation
   const debris = useMemo(() => {
     const debrisData: Array<{
       position: THREE.Vector3;
@@ -293,10 +298,12 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
   const cappedParticleCount = Math.min(particleCount, 50);
   
   const progressRef = useRef(0);
+  // eslint-disable-next-line react-hooks/purity -- Date.now() is acceptable in useRef initialization
   const startTimeRef = useRef(Date.now());
   const completedRef = useRef(false);
 
   // Generate particles on mount
+  // eslint-disable-next-line react-hooks/purity -- Intentionally using Math.random() in useMemo for stable random generation
   const particles = useMemo(() => {
     const particleData: ParticleData[] = [];
     const center = new THREE.Vector3(...position);
