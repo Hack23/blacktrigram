@@ -12,7 +12,7 @@
  * @module GonTechniques
  */
 
-import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
+import type { ExtendedGonTechnique } from "../types/GonTechniqueExtensions";
 import {
   CombatAttackType,
   DamageType,
@@ -34,8 +34,15 @@ import { AnimationType } from "../../animation";
  * - Setup: 0.8-0.9 (positioning for throw)
  * - Normal: 1.0 (standard grappling)
  * - Impact: 1.1 (explosive finish)
+ *
+ * Enhanced with Korean martial arts expert analysis:
+ * - Authentic throw trajectories from Ssireum/Hapkido
+ * - Ground impact multipliers for realistic damage
+ * - Post-throw control durations
+ * - Earth's supportive healing philosophy
+ * - Visual earth crack effects
  */
-export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
+export const GON_TECHNIQUES: readonly ExtendedGonTechnique[] = [
   // ============= Primary Technique =============
   {
     id: "gon_earth_embrace",
@@ -82,6 +89,15 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 0.9,
+
+    // ============= GON ENHANCEMENTS (Korean Martial Arts Expert Analysis) =============
+    // 앞무릎치기 (Ap-mureup-chigi) - Front Knee Push clinch control
+    throwTrajectory: "clinch_control", // Setup position, not a throw itself
+    groundImpactMultiplier: 1.0, // No impact (control only)
+    controlDuration: 1500, // 1.5 seconds of grip control
+    supportiveHealing: 2, // Minor Ki recovery from grounding connection
+    earthCrackEffect: false, // Visual effect not needed for control
+    gripStrength: 0.85, // Strong clinch grip
   },
 
   // ============= Leg Techniques =============
@@ -130,6 +146,16 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "medium",
     speed: 1.0,
+
+    // ============= GON ENHANCEMENTS =============
+    // 안다리걸기 (An-dari-geolgi) - Inner Leg Reap
+    throwTrajectory: "horizontal_sweep", // Low sweeping arc
+    groundImpactMultiplier: 1.3, // Medium impact from horizontal fall
+    controlDuration: 1200, // 1.2 seconds post-sweep advantage
+    supportiveHealing: 3, // Earth connection during sweep motion
+    earthCrackEffect: true, // Ground sweep creates dust/crack visual
+    sweepDirection: "inward", // 안(an) = inner reap direction
+    takedownType: "leg_reap", // 걸기(geolgi) specific classification
   },
   {
     id: "gon_ankle_pick",
@@ -176,6 +202,16 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.1,
+
+    // ============= GON ENHANCEMENTS =============
+    // 발목당기기 (Balmok Danggigi) - Ankle Pull
+    throwTrajectory: "forward_drive", // Drive forward while pulling ankle
+    groundImpactMultiplier: 1.4, // Face-first fall = higher impact
+    controlDuration: 1000, // 1 second of ankle control
+    supportiveHealing: 4, // Strong earth connection (low stance)
+    earthCrackEffect: true, // Driving motion creates ground effect
+    penetrationDepth: "low", // Very low shooting entry
+    setupSpeed: "fast", // Quick level change execution
   },
 
   // ============= Ssireum Throwing Techniques =============
@@ -224,6 +260,18 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "special",
     range: "short",
     speed: 0.9,
+
+    // ============= GON ENHANCEMENTS =============
+    // 샅바 메치기 (Satba Mechigi) - UNESCO Heritage Belt Throw
+    throwTrajectory: "arc_over_hip", // Classical hip rotation throw
+    groundImpactMultiplier: 1.7, // High impact from rotational velocity
+    controlDuration: 1800, // 1.8 seconds of dominant position
+    supportiveHealing: 5, // Maximum earth connection (traditional technique)
+    earthCrackEffect: true, // Powerful traditional throw creates visual impact
+    satbaGripRequired: true, // Uses traditional satba belt mechanics
+    rotationalPower: "high", // Hip rotation generates force
+    traditionalBonus: 1.15, // 15% damage bonus for cultural authenticity
+    takedownType: "hip_throw", // Traditional hip throw classification
   },
   {
     id: "gon_ground_pound",
@@ -270,6 +318,19 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "heavy",
     range: "short",
     speed: 1.0,
+
+    // ============= GON ENHANCEMENTS =============
+    // 들어올려 메치기 (Deureo-ollyeo Mechigi) - Lift and Slam
+    throwTrajectory: "vertical_slam", // Straight down with maximum force
+    groundImpactMultiplier: 2.0, // MAXIMUM impact (highest in game)
+    controlDuration: 2000, // 2 seconds of complete dominance after slam
+    supportiveHealing: 1, // Minimal healing (aggressive technique)
+    earthCrackEffect: true, // DRAMATIC earth crack visual (signature move)
+    liftHeight: "high", // Full body lift before slam
+    stunChance: 0.4, // 40% chance to stun opponent from impact
+    breathLoss: "severe", // Knocks wind out (respiratory effect)
+    takedownType: "slam", // Slam technique classification
+    endingPosition: "standing_dominant", // Attacker standing, opponent down
   },
   {
     id: "gon_body_lock_takedown",
@@ -316,6 +377,17 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 0.9,
+
+    // ============= GON ENHANCEMENTS =============
+    // 허리 감싸기 (Heori Gamssagi) - Waist Wrap / Bear Hug
+    throwTrajectory: "circular_trip", // Circular motion while tripping legs
+    groundImpactMultiplier: 1.5, // Solid impact from controlled throw
+    controlDuration: 1600, // 1.6 seconds of body control advantage
+    supportiveHealing: 3, // Moderate earth connection
+    earthCrackEffect: true, // Medium impact creates ground effect
+    takedownType: "body_lock", // Full torso encirclement
+    breathRestriction: 0.3, // 30% breath restriction from compression
+    gripStrength: 0.8, // Strong bear hug grip
   },
   {
     id: "gon_sacrifice_throw",
@@ -362,6 +434,19 @@ export const GON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.0,
+
+    // ============= GON ENHANCEMENTS =============
+    // 몸 바치기 (Mom Bachigi) - Body Sacrifice Throw
+    throwTrajectory: "sacrifice_arc", // Backwards fall + forward throw
+    groundImpactMultiplier: 1.6, // High impact from momentum transfer
+    controlDuration: 800, // Less control (you're also on ground)
+    supportiveHealing: 6, // HIGH healing (earth embrace during fall)
+    earthCrackEffect: true, // Double impact (both fighters hit ground)
+    selfRisk: 0.2, // 20% chance of self-damage from sacrifice
+    momentumTransfer: "high", // Uses falling momentum for throw
+    endingPosition: "ground_mutual", // Both fighters on ground after
+    transitionBonus: 0.3, // 30% bonus to follow-up ground techniques
+    takedownType: "sacrifice", // Sacrifice throw classification
   },
 ] as const;
 
@@ -373,7 +458,7 @@ export const GON_TECHNIQUE_COUNT = GON_TECHNIQUES.length;
 /**
  * Get GON technique by ID
  */
-export function getGonTechniqueById(id: string): TrigramStanceTechnique | undefined {
+export function getGonTechniqueById(id: string): ExtendedGonTechnique | undefined {
   return GON_TECHNIQUES.find((t) => t.id === id);
 }
 
@@ -382,6 +467,6 @@ export function getGonTechniqueById(id: string): TrigramStanceTechnique | undefi
  */
 export function getGonTechniquesByType(
   type: CombatAttackType
-): readonly TrigramStanceTechnique[] {
+): readonly ExtendedGonTechnique[] {
   return GON_TECHNIQUES.filter((t) => t.type === type);
 }
