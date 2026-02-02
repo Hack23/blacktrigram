@@ -18,6 +18,12 @@
 import { BoneName, type SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Gon Earth throwing techniques (곤괘 던지기 기술)
+import {
+  GON_EARTH_EMBRACE_ANIMATION,
+  GON_GROUND_CONTROL_TRANSITION,
+} from "./GonTechniqueAnimations";
+
 /**
  * Anatomical safety constants for Gon (Earth) trigram animations
  *
@@ -360,3 +366,22 @@ export const GON_SWEEP_POSITIONING_STEP: SkeletalAnimation =
     .position(BoneName.PELVIS, 0, -0.14, -0.24) // Final lateral position
     .done<MartialArtsAnimationBuilder>()
     .build();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPORTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Map of all Gon stance-specific animations for easy access
+ * @korean 곤괘자세애니메이션맵
+ */
+export const GON_STANCE_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> = new Map([
+  // Idle & Movement
+  ["gon_idle_ssireum_stance", GON_IDLE_SSIREUM_STANCE],
+  ["gon_heavy_grounding_step", GON_HEAVY_GROUNDING_STEP],
+  ["gon_sweep_positioning_step", GON_SWEEP_POSITIONING_STEP],
+  
+  // Earth Throwing & Ground Control Techniques (곤괘 던지기 기술)
+  ["gon_earth_embrace_animation", GON_EARTH_EMBRACE_ANIMATION],
+  ["gon_ground_control_transition", GON_GROUND_CONTROL_TRANSITION],
+]);
