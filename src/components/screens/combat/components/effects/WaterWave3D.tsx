@@ -305,9 +305,13 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   
   // Cleanup pooled vectors on unmount or when effects change
   useEffect(() => {
+    // Capture ref values in closure to avoid accessing refs in cleanup
+    const activeParticles = activeParticlesRef.current;
+    const positions = positionsRef.current;
+    
     return () => {
       // Release all pooled vectors from active particle tracking
-      activeParticlesRef.current.forEach((particles) => {
+      activeParticles.forEach((particles) => {
         particles.forEach((particle) => {
           if (particle.isPooled) {
             ThreeObjectPools.vector3.release(particle.position);
@@ -319,8 +323,8 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       });
       
       // Clear all caches
-      activeParticlesRef.current.clear();
-      positionsRef.current.clear();
+      activeParticles.clear();
+      positions.clear();
     };
   }, [particleSystems]);
 
@@ -403,12 +407,34 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       // Update positions from active particles (from tracking ref)
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
-        positions![i3] = particle.position.x;
-        positions![i3 + 1] = particle.position.y;
-        positions![i3 + 2] = particle.position.z;
+        // positions is guaranteed to exist at this point
+        positions[i3] = particle.position.x;
+        positions[i3 + 1] = particle.position.y;
+        positions[i3 + 2] = particle.position.z;
       });
     });
   });
+
+  // Pre-compute point system data to avoid accessing refs during render
+  // This satisfies React's rule that refs shouldn't be accessed during render
+  // MUST be before early return to satisfy React Hooks rules
+  const pointSystems = React.useMemo(() => {
+    if (!enabled || particleSystems.length === 0) {
+      return [];
+    }
+    
+    return particleSystems.map((system) => {
+      // Accessing ref in useMemo is acceptable
+      const positions = positionsRef.current.get(system.effectId) 
+        ?? new Float32Array(system.particles.length * 3);
+      
+      return {
+        key: system.effectId,
+        positions,
+        color: system.color,
+      };
+    });
+  }, [enabled, particleSystems]);
 
   if (!enabled || particleSystems.length === 0) {
     return null;
@@ -416,25 +442,19 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
 
   return (
     <>
-      {particleSystems.map((system) => {
-        // PERFORMANCE: Use cached positions array instead of creating new
-        const positions = positionsRef.current.get(system.effectId) 
-          || new Float32Array(system.particles.length * 3);
-
-        return (
-          <Points key={system.effectId} positions={positions}>
-            <PointMaterial
-              color={system.color}
-              size={WAVE_CONSTANTS.SIZE_MAX}
-              sizeAttenuation
-              transparent
-              opacity={0.8}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </Points>
-        );
-      })}
+      {pointSystems.map(({ key, positions, color }) => (
+        <Points key={key} positions={positions}>
+          <PointMaterial
+            color={color}
+            size={WAVE_CONSTANTS.SIZE_MAX}
+            sizeAttenuation
+            transparent
+            opacity={0.8}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </Points>
+      ))}
     </>
   );
 };

@@ -195,14 +195,18 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
   
   // Cleanup materials and geometries on unmount
   React.useEffect(() => {
+    // Capture ref values in closure to avoid accessing refs in cleanup
+    const materials = materialsRef.current;
+    const geometries = geometriesRef.current;
+    
     return () => {
       // Dispose all cached materials
-      materialsRef.current.forEach((material) => material.dispose());
-      materialsRef.current.clear();
+      materials.forEach((material) => material.dispose());
+      materials.clear();
       
       // Dispose all cached geometries
-      geometriesRef.current.forEach((geometry) => geometry.dispose());
-      geometriesRef.current.clear();
+      geometries.forEach((geometry) => geometry.dispose());
+      geometries.clear();
     };
   }, []);
   
@@ -220,7 +224,11 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
         })
       );
     }
-    return materialsRef.current.get(color)!;
+    const material = materialsRef.current.get(color);
+    if (!material) {
+      throw new Error(`Material for color ${color} should have been created`);
+    }
+    return material;
   }, []);
   
   // Get or create reusable geometry for a radius (quantized to fixed steps)
@@ -245,7 +253,11 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
         )
       );
     }
-    return geometriesRef.current.get(key)!;
+    const geometry = geometriesRef.current.get(key);
+    if (!geometry) {
+      throw new Error(`Geometry for step ${step} should have been created`);
+    }
+    return geometry;
   }, []);
 
   // Physics update loop
@@ -298,51 +310,70 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     });
   });
 
+  // Pre-compute mesh data to avoid accessing refs during render
+  // This satisfies React's rule that refs shouldn't be accessed during render
+  // MUST be before early return to satisfy React Hooks rules
+  const meshElements = React.useMemo(() => {
+    if (!enabled || ringMeshes.length === 0) {
+      return [];
+    }
+    
+    return ringMeshes.flatMap((meshData) =>
+      meshData.rings.map((ring, ringIndex) => {
+        // Pre-fetch geometry and base material (accessing refs is OK in useMemo)
+        const geometry = getGeometry(ring.radius);
+        const baseMaterial = getMaterial(meshData.color);
+        
+        return {
+          key: `${meshData.effectId}-ring-${ringIndex}`,
+          ring,
+          meshData,
+          geometry,
+          baseMaterial,
+        };
+      })
+    );
+  }, [enabled, ringMeshes, getGeometry, getMaterial]);
+
   if (!enabled || ringMeshes.length === 0) {
     return null;
   }
 
   return (
     <group ref={groupRef}>
-      {ringMeshes.map((meshData) =>
-        meshData.rings.map((ring, ringIndex) => {
-          // Skip rings not yet spawned or expired
-          if (ring.age < 0 || ring.opacity <= 0) {
-            return null;
-          }
+      {meshElements.map(({ key, ring, meshData, geometry, baseMaterial }) => {
+        // Skip rings not yet spawned or expired
+        if (ring.age < 0 || ring.opacity <= 0) {
+          return null;
+        }
 
-          // Calculate wave amplitude with oscillation
-          const time = performance.now() / 1000;
-          const waveOffset =
-            Math.sin(time * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
-            RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
-            ring.opacity;
+        // Calculate wave amplitude with oscillation
+        const time = performance.now() / 1000;
+        const waveOffset =
+          Math.sin(time * RIPPLE_CONSTANTS.WAVE_FREQUENCY + ring.phaseOffset) *
+          RIPPLE_CONSTANTS.WAVE_AMPLITUDE *
+          ring.opacity;
 
-          // PERFORMANCE: Reuse geometry; clone material to avoid shared opacity mutation
-          const geometry = getGeometry(ring.radius);
-          const baseMaterial = getMaterial(meshData.color);
-          
-          // Clone material per ring to prevent shared opacity issues
-          // (Multiple rings would otherwise share the same material and opacity)
-          const material = baseMaterial.clone();
-          material.opacity = ring.opacity * 0.6;
-          material.transparent = true;
+        // Clone material per ring to prevent shared opacity issues
+        // (Multiple rings would otherwise share the same material and opacity)
+        const material = baseMaterial.clone();
+        material.opacity = ring.opacity * 0.6;
+        material.transparent = true;
 
-          return (
-            <mesh
-              key={`${meshData.effectId}-ring-${ringIndex}`}
-              position={[
-                meshData.position[0],
-                RIPPLE_CONSTANTS.FLOOR_Y + waveOffset,
-                meshData.position[2],
-              ]}
-              rotation={[-Math.PI / 2, 0, 0]} // Horizontal ring
-              geometry={geometry}
-              material={material}
-            />
-          );
-        })
-      )}
+        return (
+          <mesh
+            key={key}
+            position={[
+              meshData.position[0],
+              RIPPLE_CONSTANTS.FLOOR_Y + waveOffset,
+              meshData.position[2],
+            ]}
+            rotation={[-Math.PI / 2, 0, 0]} // Horizontal ring
+            geometry={geometry}
+            material={material}
+          />
+        );
+      })}
     </group>
   );
 };
