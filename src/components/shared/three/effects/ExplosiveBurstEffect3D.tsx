@@ -245,7 +245,7 @@ const DebrisParticles: React.FC<{
       // Apply physics
       piece.velocity.y -= 9.8 * delta;
       piece.velocity.multiplyScalar(0.98);
-      piece.position.add(piece.velocity.clone().multiplyScalar(delta));
+      piece.position.addScaledVector(piece.velocity, delta);
 
       // Update rotation
       piece.rotation.x += piece.rotationVel.x * delta;

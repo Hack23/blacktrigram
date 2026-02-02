@@ -125,7 +125,11 @@ const ElectricSpark: React.FC<{
   });
 
   return (
-    <mesh ref={meshRef} position={initialPosition}>
+    <mesh
+      ref={meshRef}
+      position={initialPosition}
+      userData={{ isElectricSpark: true }}
+    >
       <sphereGeometry args={[0.03 * intensity, 8, 8]} />
       <meshBasicMaterial
         color={KOREAN_COLORS.PRIMARY_CYAN}
@@ -251,9 +255,13 @@ const ThunderReleaseEffect: React.FC<{
       const scale = 1 + progress * 2;
       groupRef.current.scale.setScalar(scale);
 
-      // Fade out over time
+      // Fade out over time (skip ElectricSpark meshes which have their own fade logic)
       groupRef.current.traverse((object) => {
-        if (object instanceof THREE.Mesh && object.material) {
+        if (
+          object instanceof THREE.Mesh &&
+          object.material &&
+          !object.userData.isElectricSpark
+        ) {
           const material = object.material as THREE.Material & {
             opacity?: number;
           };
