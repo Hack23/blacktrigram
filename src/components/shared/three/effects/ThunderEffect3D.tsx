@@ -47,8 +47,8 @@ const LightningArc: React.FC<{
 }> = ({ start, end, intensity, color }) => {
   const lineRef = useRef<THREE.Line>(null);
 
-  // Create line object in useMemo to avoid recreation on re-render
-  const line = useMemo(() => {
+  // Create line object in useState to avoid purity violations with Math.random()
+  const [line] = useState(() => {
     const points: THREE.Vector3[] = [];
     const segments = 8;
     const displacement = 0.2 * intensity;
@@ -76,7 +76,7 @@ const LightningArc: React.FC<{
     });
 
     return new THREE.Line(geometry, material);
-  }, [start, end, intensity, color]);
+  });
 
   useFrame(() => {
     if (lineRef.current) {
@@ -335,7 +335,7 @@ export const ThunderEffect3D: React.FC<ThunderEffect3DProps> = ({
   active = true,
 }) => {
   const progressRef = useRef(0);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(0);
   const completedRef = useRef(false);
 
   useEffect(() => {

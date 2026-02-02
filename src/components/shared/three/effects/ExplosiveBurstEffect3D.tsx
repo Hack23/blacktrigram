@@ -14,7 +14,7 @@
  */
 
 import { useFrame } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { KOREAN_COLORS } from "../../../../types/constants";
 
@@ -193,9 +193,8 @@ const DebrisParticles: React.FC<{
 }> = ({ position, intensity, color }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Generate random debris - recreate refs when debris changes
-  // eslint-disable-next-line react-hooks/purity -- Intentionally using Math.random() in useMemo for stable random generation
-  const debris = useMemo(() => {
+  // Generate random debris - use useState for initialization to avoid purity violations
+  const [debris] = useState(() => {
     const debrisData: Array<{
       position: THREE.Vector3;
       velocity: THREE.Vector3;
@@ -236,7 +235,7 @@ const DebrisParticles: React.FC<{
     }
 
     return debrisData;
-  }, [position, intensity]);
+  });
 
   // Recreate refs when debris changes
   const debrisRefs = useMemo(
@@ -298,13 +297,16 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
   const cappedParticleCount = Math.min(particleCount, 50);
   
   const progressRef = useRef(0);
-  // eslint-disable-next-line react-hooks/purity -- Date.now() is acceptable in useRef initialization
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(0);
   const completedRef = useRef(false);
 
-  // Generate particles on mount
-  // eslint-disable-next-line react-hooks/purity -- Intentionally using Math.random() in useMemo for stable random generation
-  const particles = useMemo(() => {
+  // Initialize startTimeRef in useEffect
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+  }, []);
+
+  // Generate particles on mount - use useState for initialization to avoid purity violations
+  const [particles] = useState(() => {
     const particleData: ParticleData[] = [];
     const center = new THREE.Vector3(...position);
 
@@ -331,7 +333,7 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
     }
 
     return particleData;
-  }, [position, cappedParticleCount]);
+  });
 
   useEffect(() => {
     startTimeRef.current = Date.now();
@@ -386,15 +388,6 @@ export const ExplosiveBurstEffect3D: React.FC<ExplosiveBurstEffect3DProps> = ({
         position={position}
         intensity={intensity}
         color={KOREAN_COLORS.TEXT_SECONDARY}
-      />
-
-      {/* Bright flash light */}
-      <pointLight
-        position={position}
-        color={color}
-        intensity={intensity * 8 * (1 - progressRef.current)}
-        distance={6}
-        decay={2}
       />
     </group>
   );
