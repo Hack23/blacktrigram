@@ -56,6 +56,14 @@ export type { ImpactSparkEffect, ImpactSparks3DProps } from './ImpactSparks3D';
 export { DustClouds3D } from './DustClouds3D';
 export type { DustCloudEffect, DustClouds3DProps } from './DustClouds3D';
 
+// Earth crack effects for Gon (Earth) trigram techniques
+export { EarthCrackEffect3D } from './EarthCrackEffect3D';
+export type { EarthCrackEffect, EarthCrackEffect3DProps } from './EarthCrackEffect3D';
+
+// Earth healing effects for Gon supportive techniques
+export { EarthHealingEffect3D } from './EarthHealingEffect3D';
+export type { EarthHealingEffect, EarthHealingEffect3DProps } from './EarthHealingEffect3D';
+
 // Korean trigram symbol particles for stance transitions
 export { TrigramParticles3D } from '../../../../shared/three/effects/TrigramParticles3D';
 export type { TrigramParticleEffect, TrigramParticles3DProps } from '../../../../shared/three/effects/TrigramParticles3D';
@@ -69,7 +77,9 @@ export type { HitEffects3DProps } from '../../../../shared/three/effects/HitEffe
  * 
  * **Desktop (60fps target):**
  * - Impact Sparks: 50-100 particles
- * - Dust Clouds: 30-60 particles  
+ * - Dust Clouds: 30-60 particles (80 for throw impacts)
+ * - Earth Cracks: 8 lines × 6 segments = 48 line segments
+ * - Earth Healing: 6 roots × 8 particles/HP = 48 particles (max)
  * - Blood Splatter: 100-300 particles
  * - Arterial Spray: 250 particles (high-velocity jets)
  * - Bone Fractures: 15-60 particles (fracture type dependent)
@@ -79,7 +89,9 @@ export type { HitEffects3DProps } from '../../../../shared/three/effects/HitEffe
  * 
  * **Mobile (55fps target):**
  * - Impact Sparks: 25-50 particles
- * - Dust Clouds: 15-30 particles
+ * - Dust Clouds: 15-30 particles (40 for throw impacts)
+ * - Earth Cracks: 5 lines × 4 segments = 20 line segments
+ * - Earth Healing: 4 roots × 5 particles/HP = 20 particles (max)
  * - Blood Splatter: 50-100 particles
  * - Arterial Spray: 120 particles (optimized)
  * - Bone Fractures: 8-30 particles (reduced)
