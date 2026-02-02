@@ -10,29 +10,53 @@ import {
   isExtendedGonTechnique,
   type ExtendedGonTechnique,
 } from './GonTechniqueExtensions';
-import type { TrigramStanceTechnique } from '../../animation/AnimationType';
+import type { TrigramStanceTechnique } from '@/systems/vitalpoint';
+import { TrigramStance } from '@/types';
+
+// Helper to create a complete base technique
+const createBaseTechnique = (overrides: Partial<ExtendedGonTechnique> = {}): ExtendedGonTechnique => ({
+  id: 'test',
+  name: {
+    korean: '테스트',
+    english: 'Test',
+    romanized: 'test',
+  },
+  koreanName: '테스트',
+  englishName: 'Test',
+  romanized: 'test',
+  description: {
+    korean: '테스트',
+    english: 'Test',
+  },
+  stance: TrigramStance.GON,
+  type: 'throw',
+  damageType: 'impact',
+  damage: 50,
+  kiCost: 10,
+  staminaCost: 15,
+  accuracy: 0.85,
+  reachConfig: { bodyPart: 'arm', techniqueType: 'punch', baseExtension: 1.0 },
+  executionTime: 1000,
+  recoveryTime: 500,
+  critChance: 0.1,
+  critMultiplier: 1.5,
+  effects: [],
+  category: 'heavy',
+  range: 'medium',
+  speed: 0.8,
+  animationId: 'test',
+  throwTrajectory: 'arc_downward',
+  groundImpactMultiplier: 1.5,
+  controlDuration: 1200,
+  supportiveHealing: 5,
+  earthCrackEffect: true,
+  ...overrides,
+});
 
 describe('GonTechniqueExtensions Utilities', () => {
   describe('validateGonTechniqueEnhancements', () => {
     it('should validate technique with all values in range', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test_technique',
-        name: 'Test Technique',
-        koreanName: '테스트',
-        nameRomanized: 'teseuteu',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5, // Valid: 1.0-2.0
-        controlDuration: 1200, // Valid: 800-2000ms
-        supportiveHealing: 5, // Valid: 0-10
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique();
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(true);
@@ -40,24 +64,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject groundImpactMultiplier below 1.0', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 0.8, // Invalid: < 1.0
-        controlDuration: 1200,
-        supportiveHealing: 5,
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ groundImpactMultiplier: 0.8 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -65,24 +72,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject groundImpactMultiplier above 2.0', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 2.5, // Invalid: > 2.0
-        controlDuration: 1200,
-        supportiveHealing: 5,
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ groundImpactMultiplier: 2.5 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -90,24 +80,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject controlDuration below 800ms', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 700, // Invalid: < 800ms
-        supportiveHealing: 5,
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ controlDuration: 700 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -115,24 +88,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject controlDuration above 2000ms', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 2500, // Invalid: > 2000ms
-        supportiveHealing: 5,
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ controlDuration: 2500 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -140,24 +96,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject supportiveHealing below 0', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 1200,
-        supportiveHealing: -1, // Invalid: < 0
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ supportiveHealing: -1 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -165,24 +104,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject supportiveHealing above 10', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 1200,
-        supportiveHealing: 12, // Invalid: > 10
-        earthCrackEffect: true,
-      };
+      const technique = createBaseTechnique({ supportiveHealing: 12 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -190,25 +112,7 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should validate optional gripStrength in range', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 1200,
-        supportiveHealing: 5,
-        earthCrackEffect: true,
-        gripStrength: 0.85, // Valid: 0-1
-      };
+      const technique = createBaseTechnique({ gripStrength: 0.85 });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(true);
@@ -216,27 +120,11 @@ describe('GonTechniqueExtensions Utilities', () => {
     });
 
     it('should reject invalid optional fields', () => {
-      const technique: ExtendedGonTechnique = {
-        id: 'test',
-        name: 'Test',
-        koreanName: '테스트',
-        nameRomanized: 'test',
-        description: 'Test',
-        descriptionKorean: '테스트',
-        executionTime: 1000,
-        recoveryTime: 500,
-        animationId: 'test',
-        stance: 'gon',
-        category: 'throw',
-        throwTrajectory: 'arc_downward',
-        groundImpactMultiplier: 1.5,
-        controlDuration: 1200,
-        supportiveHealing: 5,
-        earthCrackEffect: true,
+      const technique = createBaseTechnique({
         gripStrength: 1.5, // Invalid: > 1.0
         selfRisk: -0.1, // Invalid: < 0
         traditionalBonus: 2.5, // Invalid: > 2.0
-      };
+      });
 
       const result = validateGonTechniqueEnhancements(technique);
       expect(result.valid).toBe(false);
@@ -389,16 +277,35 @@ describe('GonTechniqueExtensions Utilities', () => {
     it('should return false for basic technique without Gon fields', () => {
       const technique: TrigramStanceTechnique = {
         id: 'basic_punch',
-        name: 'Basic Punch',
+        name: {
+          korean: '기본펀치',
+          english: 'Basic Punch',
+          romanized: 'gibon punch',
+        },
         koreanName: '기본펀치',
-        nameRomanized: 'gibon punch',
-        description: 'Basic punch',
-        descriptionKorean: '기본 펀치',
+        englishName: 'Basic Punch',
+        romanized: 'gibon punch',
+        description: {
+          korean: '기본 펀치',
+          english: 'Basic punch',
+        },
+        stance: TrigramStance.GEON,
+        type: 'strike',
+        damageType: 'impact',
+        damage: 30,
+        kiCost: 5,
+        staminaCost: 15,
+        accuracy: 0.9,
+        reachConfig: { bodyPart: 'arm', techniqueType: 'punch', baseExtension: 1.0 },
         executionTime: 400,
         recoveryTime: 300,
+        critChance: 0.1,
+        critMultiplier: 1.5,
+        effects: [],
         animationId: 'jab',
-        stance: 'geon',
-        category: 'strike',
+        category: 'light',
+        range: 'short',
+        speed: 1.2,
       };
 
       expect(isExtendedGonTechnique(technique)).toBe(false);

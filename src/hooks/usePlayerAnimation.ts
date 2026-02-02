@@ -321,9 +321,9 @@ export function usePlayerAnimation(
       getCurrentGuardStance,
       reset,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- prevStateRef and prevFrameRef are mutable refs
+    // that don't trigger re-renders. Including them would cause unnecessary re-executions.
     [
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- prevStateRef and prevFrameRef are mutable refs
-      // that don't trigger re-renders. Including them would cause unnecessary re-executions.
       update,
       transitionTo,
       transitionToStanceGuard,

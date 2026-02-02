@@ -305,7 +305,10 @@ export const EarthCrackEffect3D: React.FC<EarthCrackEffect3DProps> = ({
   }
 
   // Create render list for current frame
-  // Note: Accessing refs during render is safe here - forceUpdate() ensures re-renders
+  // Note: Accessing refs during render is intentional here - forceUpdate() ensures re-renders
+  // when segments change. This is a legitimate pattern for performance-critical rendering
+  // where we need to avoid expensive useMemo recalculations on every frame.
+  // eslint-disable-next-line react-hooks/refs
   const renderList: Array<{ effectId: string; segments: CrackSegment[] }> = [];
   segmentsRef.current.forEach((segments, effectId) => {
     renderList.push({ effectId, segments });

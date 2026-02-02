@@ -103,7 +103,7 @@ describe('Gon Technique Integration', () => {
     effects: [],
     animationCategory: 'strike',
     animationId: 'geon_straight_punch',
-    animationType: AnimationType.STRIKE,
+    animationType: AnimationType.JAB, // Using JAB as a generic strike type
     animationSpeed: 1.2,
     category: 'light',
     range: 'medium',
