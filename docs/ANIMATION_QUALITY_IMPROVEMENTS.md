@@ -14,11 +14,13 @@ Improve animation quality from current **10-15%** to target **95%+** through sys
 - **Testing**: 1,900+ tests, all passing ✅
 
 **Quality Issues:**
-1. **Robotic Motion**: Only 3-5 keyframes per technique
-2. **Teleporting**: Missing transitional frames
+1. **Robotic Motion**: Techniques have 4-6 semantic keyframes but lack fine-grained transitional frames
+2. **Teleporting**: Missing anticipation and acceleration curves between major poses
 3. **Static Guards**: No micro-adjustments or natural fidgeting
 4. **Basic Breathing**: Simple chest expansion only
 5. **Linear Movement**: No weight transfer or momentum
+
+**Note**: Current animations use 4-6 semantic builder methods (e.g., `.punchChamber()`, `.punchExtend()`), which create functional keyframes. However, the visual smoothness and biomechanical detail are at 10-15% of target quality due to lack of intermediate frames and natural motion curves.
 
 ## 🔧 Animation Builder API Reference
 
@@ -55,17 +57,26 @@ BoneName.PELVIS        // Root of body
 BoneName.SPINE_LOWER   // Lower back
 BoneName.SPINE_MIDDLE  // Mid back
 BoneName.SPINE_UPPER   // Upper chest
-BoneName.HEAD          // Head/neck
+BoneName.NECK          // Neck
+BoneName.HEAD          // Head
 
 // Arms (L/R for left/right)
-BoneName.SHOULDER_L, BoneName.SHOULDER_R  // Shoulder joints
-BoneName.ELBOW_L, BoneName.ELBOW_R        // Elbow joints
-BoneName.WRIST_L, BoneName.WRIST_R        // Wrist joints
+BoneName.SHOULDER_L, BoneName.SHOULDER_R    // Shoulder joints
+BoneName.UPPER_ARM_L, BoneName.UPPER_ARM_R  // Upper arm
+BoneName.ELBOW_L, BoneName.ELBOW_R          // Elbow joints
+BoneName.FOREARM_L, BoneName.FOREARM_R      // Forearm
+BoneName.WRIST_L, BoneName.WRIST_R          // Wrist joints
+BoneName.HAND_L, BoneName.HAND_R            // Hand
 
 // Legs (L/R for left/right)
 BoneName.HIP_L, BoneName.HIP_R          // Hip rotation (leg socket)
+BoneName.THIGH_L, BoneName.THIGH_R      // Thigh
 BoneName.KNEE_L, BoneName.KNEE_R        // Knee bend
+BoneName.SHIN_L, BoneName.SHIN_R        // Shin
 BoneName.FOOT_L, BoneName.FOOT_R        // Ankle/foot
+
+// Note: Additional finger bones available for detailed hand animation (LOD)
+// See src/types/skeletal.ts BoneName enum for complete bone list
 ```
 
 ### Semantic Builder Methods
@@ -156,12 +167,18 @@ export const JAB_ANIMATION = MartialArtsAnimationBuilder.create("jab", "잽")
   .done<MartialArtsAnimationBuilder>()
   
   // 7. Near full extension with fist rotation (250ms)
-  .punchExtend(0.05, "left")
-  .withKoreanMiddleGuard("right")
+  .at(0.25)
+  .rotate(BoneName.SHOULDER_L, -0.35, 0.12, 0.5)
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.3) // Nearly straight
+  .rotate(BoneName.WRIST_L, 0, 0, -1.57) // Fist pronated
+  .done<MartialArtsAnimationBuilder>()
   
   // 8. Peak impact (300ms)
-  .punchPeak(0.05, "left")
-  .withKoreanMiddleGuard("right")
+  .at(0.3)
+  .rotate(BoneName.SHOULDER_L, -0.4, 0.15, 0.6)
+  .rotate(BoneName.ELBOW_L, 0, 0, -0.1) // Full extension
+  .rotate(BoneName.PELVIS, 0.04, 0.1, 0) // Maximum rotation
+  .done<MartialArtsAnimationBuilder>()
   
   // 9. Begin retraction (350ms)
   .at(0.35)
@@ -176,6 +193,8 @@ export const JAB_ANIMATION = MartialArtsAnimationBuilder.create("jab", "잽")
   
   .build();
 ```
+
+**Note**: This is a 10-keyframe example (keyframes at 0, 0.03, 0.07, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.55).
 
 **Key Improvements:**
 - ✅ Anticipation frame (shoulder load, weight shift)
@@ -272,7 +291,7 @@ function createEnhancedGeonIdle(): SkeletalAnimation {
       0.5 + shoulderPhase * 0.03
     );
     
-    // Subtle weight shift (knee flex only, no pelvis movement)
+    // Subtle weight shift with biomechanically accurate pelvis movement
     kf.rotate(BoneName.KNEE_L,
       1.2 + weightPhase * 0.05,
       0, 0
@@ -280,6 +299,11 @@ function createEnhancedGeonIdle(): SkeletalAnimation {
     kf.rotate(BoneName.KNEE_R,
       1.2 - weightPhase * 0.05, // Opposite
       0, 0
+    );
+    kf.rotate(BoneName.PELVIS,
+      weightPhase * 0.015, // Subtle pelvis tilt for authentic weight transfer
+      0,
+      weightPhase * 0.01 // Slight lateral shift
     );
     
     // Breathing expansion
@@ -355,6 +379,9 @@ export const FORWARD_STEP = MartialArtsAnimationBuilder.create(
   .done<MartialArtsAnimationBuilder>()
   
   .build();
+
+// Note: Keyframe times (0, 0.1, 0.2, 0.3, 0.45, 0.6) are absolute times 
+// within the 0.6s duration specified in .asMovement(0.6, false)
 ```
 
 ## 📋 Implementation Checklist

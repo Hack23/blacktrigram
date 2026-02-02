@@ -193,14 +193,21 @@ describe("GanTechniques", () => {
     it("should embody mountain-like stability in technique properties", () => {
       // All techniques should have defensive characteristics
       GAN_TECHNIQUES.forEach((technique) => {
-        // Should have some defensive property
-        const hasDefensiveProps =
-          technique.blockWindow ||
-          technique.damageReduction ||
-          technique.stabilityBonus ||
-          technique.rootingEffect;
-
-        expect(hasDefensiveProps).toBeTruthy();
+        // BLOCK techniques should have comprehensive defensive properties
+        if (technique.attackType === CombatAttackType.BLOCK) {
+          expect(technique.blockWindow).toBeDefined();
+          expect(technique.damageReduction).toBeDefined();
+          expect(technique.stabilityBonus).toBeDefined();
+          expect(technique.rootingEffect).toBeDefined();
+        } else {
+          // COUNTER_ATTACK and GRAPPLE techniques should have at least some defensive properties
+          const hasDefensiveProps =
+            technique.blockWindow ||
+            technique.damageReduction ||
+            technique.stabilityBonus ||
+            technique.rootingEffect;
+          expect(hasDefensiveProps).toBeTruthy();
+        }
       });
     });
 

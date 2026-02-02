@@ -12,7 +12,7 @@
  * **ENHANCED DEFENSIVE MECHANICS:**
  * - Block timing windows (blockWindow): 200-350ms for precise defense
  * - Perfect block windows (perfectBlockWindow): 60-100ms for optimal timing
- * - Damage reduction (damageReduction): 50-75% absorption on successful blocks
+ * - Damage reduction (damageReduction): 50-75% damage reduction on successful blocks
  * - Stability bonuses (stabilityBonus): 120-180% fortitude increase
  * - Rooting effects (rootingEffect): Ground connection for immovable stance
  * - Optimized execution times: 250-800ms for defensive reactions
