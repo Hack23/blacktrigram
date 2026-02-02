@@ -79,10 +79,8 @@ export const TrainingAICharacter3D: React.FC<TrainingAICharacter3DProps> = ({
 
   // Initialize original position ref
   useEffect(() => {
-    if (!originalPositionRef.current) {
-      originalPositionRef.current = new THREE.Vector3(...position);
-    }
-  }, []);
+    originalPositionRef.current ??= new THREE.Vector3(...position);
+  }, [position]);
 
   // Keep original position synced with external position while not attacking
   useEffect(() => {
