@@ -36,8 +36,8 @@ import {
   GrappleTarget,
   TrigramStance,
 } from "@/types";
-import { isExtendedGonTechnique, type ExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
-import type { KoreanTechnique, TrigramStanceTechnique } from "../vitalpoint/types";
+import { asExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
+import type { KoreanTechnique } from "../vitalpoint/types";
 
 /**
  * Configuration for grappling mechanics.
@@ -633,16 +633,14 @@ export class GrappleSystem {
     technique: KoreanTechnique,
     defaultDuration: number = 1000,
   ): number {
-    // Check if technique has Gon-specific control duration metadata
-    // Type assertion is safe here because isExtendedGonTechnique validates all required fields
-    if (!isExtendedGonTechnique(technique as TrigramStanceTechnique)) {
+    // Use helper function for safe type casting
+    const gonTechnique = asExtendedGonTechnique(technique);
+    if (!gonTechnique) {
       // Non-Gon technique: use default duration
       return defaultDuration;
     }
 
-    // Extract control duration from Gon technique
-    // Double assertion needed due to type hierarchy (KoreanTechnique vs ExtendedGonTechnique)
-    const gonTechnique = technique as unknown as ExtendedGonTechnique;
+    // Extract control duration from validated Gon technique
     return gonTechnique.controlDuration;
   }
 

@@ -17,7 +17,7 @@
  * @korean 곤괘기술확장
  */
 
-import type { TrigramStanceTechnique } from "@/systems/vitalpoint";
+import type { TrigramStanceTechnique, KoreanTechnique } from "@/systems/vitalpoint";
 
 /**
  * Throw trajectory types for Gon techniques
@@ -465,15 +465,41 @@ export function isExtendedGonTechnique(
     return false;
   }
 
-  // Runtime type checking for safety
-  const t = technique as any;
+  // Runtime type checking for safety - use safer type assertion
+  const candidate = technique as {
+    throwTrajectory: unknown;
+    groundImpactMultiplier: unknown;
+    controlDuration: unknown;
+    supportiveHealing: unknown;
+    earthCrackEffect: unknown;
+  };
+
   return (
-    typeof t.throwTrajectory === "string" &&
-    typeof t.groundImpactMultiplier === "number" &&
-    typeof t.controlDuration === "number" &&
-    typeof t.supportiveHealing === "number" &&
-    typeof t.earthCrackEffect === "boolean"
+    typeof candidate.throwTrajectory === "string" &&
+    typeof candidate.groundImpactMultiplier === "number" &&
+    typeof candidate.controlDuration === "number" &&
+    typeof candidate.supportiveHealing === "number" &&
+    typeof candidate.earthCrackEffect === "boolean"
   );
+}
+
+/**
+ * Safely cast a technique to ExtendedGonTechnique after validation.
+ * Helper function to reduce code duplication and improve type safety.
+ * 
+ * @param technique - The technique to cast
+ * @returns The technique cast as ExtendedGonTechnique, or null if not valid
+ * @korean 곤기술안전변환
+ */
+export function asExtendedGonTechnique(
+  technique: KoreanTechnique
+): ExtendedGonTechnique | null {
+  const trigramTechnique = technique as TrigramStanceTechnique;
+  if (!isExtendedGonTechnique(trigramTechnique)) {
+    return null;
+  }
+  // Safe cast after validation
+  return trigramTechnique as ExtendedGonTechnique;
 }
 
 /**

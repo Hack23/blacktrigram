@@ -11,14 +11,13 @@ import {
 } from "../animation";
 import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
-import { isExtendedGonTechnique, type ExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
+import { asExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
 import { StatusEffect } from "../types";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
 import {
   DamageResult,
   KoreanTechnique,
-  TrigramStanceTechnique,
   VitalPoint,
   VitalPointHitResult,
 } from "./types";
@@ -632,8 +631,9 @@ export class DamageCalculator {
   ): DamageResult {
     const { applyVariance = true } = options;
     // Check if technique has Gon-specific ground impact metadata
-    // Type assertion is safe here because isExtendedGonTechnique validates all required fields
-    if (!isExtendedGonTechnique(technique as TrigramStanceTechnique)) {
+    // Use helper function for safe type casting
+    const gonTechnique = asExtendedGonTechnique(technique);
+    if (!gonTechnique) {
       // Non-Gon technique: return base damage without ground multiplier
       return {
         damage: Math.max(1, baseDamage),
@@ -643,10 +643,7 @@ export class DamageCalculator {
       };
     }
 
-    // Extract ground impact multiplier from Gon technique
-    // Type assertion is safe because isExtendedGonTechnique validates structure
-    // Double assertion needed due to type hierarchy (KoreanTechnique vs ExtendedGonTechnique)
-    const gonTechnique = technique as unknown as ExtendedGonTechnique;
+    // Extract ground impact multiplier from validated Gon technique
     const groundMultiplier = gonTechnique.groundImpactMultiplier;
 
     // Calculate strength modifier (50 = baseline, scales ±20%)
@@ -718,13 +715,12 @@ export class DamageCalculator {
     technique: KoreanTechnique,
     earthAffinityBonus: number = 0,
   ): number {
-    // Check if technique has Gon-specific healing metadata
-    // Type assertion is safe here because isExtendedGonTechnique validates all required fields
-    if (!isExtendedGonTechnique(technique as TrigramStanceTechnique)) {
+    // Use helper function for safe type casting
+    const gonTechnique = asExtendedGonTechnique(technique);
+    if (!gonTechnique) {
       return 0; // Non-Gon technique: no earth healing
     }
 
-    const gonTechnique = technique as unknown as ExtendedGonTechnique;
     const baseHealing = gonTechnique.supportiveHealing;
 
     // Apply earth affinity bonus (typically 0-100% bonus)

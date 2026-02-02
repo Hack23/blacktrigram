@@ -110,6 +110,11 @@ describe("Gon Stance Animations", () => {
     });
 
     it("should not exceed anatomical limits", () => {
+      // Ankle dorsiflexion limit increased for Gon stance's heavier weight loading
+      // Normal anatomical limit: ~20° (0.35 rad)
+      // Gon enhancement: ~30° (0.52 rad) to emphasize crushing earth power
+      // Justification: Visual exaggeration for game feel, represents earth's massive weight
+      // Similar to how fighting games exaggerate stances for visual impact
       const ANKLE_LIMIT = 0.52; // Increased for heavier weight loading (30° instead of 20°)
       
       GON_IDLE_SSIREUM_STANCE.keyframes.forEach((frame) => {

@@ -245,7 +245,11 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
   };
 
   // Dust color selection based on currently active effects
-  // If any throw_impact is active, tint the dust with stronger earth tone
+  // INTENTIONAL BEHAVIOR: Global earth tone tinting when any throw_impact is active
+  // This creates atmospheric cohesion for earth-themed Gon techniques.
+  // When earth power manifests (throw impacts), all dust particles take on earth tones
+  // to emphasize the ground-shattering nature and earth philosophy.
+  // This is a deliberate artistic choice for visual storytelling.
   const dustColor = useMemo(() => {
     if (effects.some((effect) => effect.type === "throw_impact")) {
       return getDustColor("throw_impact");
