@@ -152,8 +152,18 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
     // Cleanup any remaining Three.js objects on unmount or dependency change
     return () => {
       effectInstances.forEach((instance) => {
-        if (instance.particleSystem.parent) {
-          group?.remove(instance.particleSystem);
+        // Check if particleSystem exists before accessing its properties
+        if (instance.particleSystem) {
+          if (instance.particleSystem.parent) {
+            group?.remove(instance.particleSystem);
+          }
+
+          if (instance.particleSystem.geometry) {
+            instance.particleSystem.geometry.dispose();
+          }
+          if (instance.particleSystem.material) {
+            (instance.particleSystem.material as THREE.Material).dispose();
+          }
         }
 
         instance.arcLines.forEach((line) => {
@@ -167,13 +177,6 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
             (line.material as THREE.Material).dispose();
           }
         });
-
-        if (instance.particleSystem.geometry) {
-          instance.particleSystem.geometry.dispose();
-        }
-        if (instance.particleSystem.material) {
-          (instance.particleSystem.material as THREE.Material).dispose();
-        }
       });
 
       effectInstances.clear();
