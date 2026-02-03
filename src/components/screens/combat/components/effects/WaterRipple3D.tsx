@@ -316,7 +316,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
 
   return (
     <group ref={groupRef} data-testid="water-ripple-3d">
-      {/* eslint-disable-next-line react-hooks/exhaustive-deps -- Three.js performance: reading cached geometries/materials during render */}
+      {/* Three.js performance: reading cached geometries/materials during render */}
       {ringMeshes.flatMap((meshData) =>
         meshData.rings.map((ring, ringIndex) => {
           // Skip rings not yet spawned or expired

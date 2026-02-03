@@ -72,7 +72,7 @@ describe("Stance Animation Path Integration", () => {
       const kneeR = kf.boneRotations.get(BoneName.KNEE_R);
 
       // Check that we have significant rotation values (not near-zero walking values)
-      // GEON stance should have back leg hip at -0.35 rad (extended) and front knee at ~1.2 rad (deep bend)
+      // GEON stance requires significant hip and knee rotations for proper forward stance
       expect(Math.abs(hipL!.x)).toBeGreaterThan(0.1);
       expect(Math.abs(hipR!.x)).toBeGreaterThan(0.1);
       expect(Math.abs(kneeR!.x)).toBeGreaterThan(0.5); // Deep front knee bend

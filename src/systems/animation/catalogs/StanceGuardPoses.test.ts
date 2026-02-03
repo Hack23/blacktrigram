@@ -581,7 +581,7 @@ describe("StanceGuardPoses", () => {
       // Neutral/balanced stances (Juchum Seogi, Gyeorugi Junbi, Moa Seogi, Ssireum)
       expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral"); // Horse stance 50/50
       expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // Fighting ready 50/50
-      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral"); // Crane stance (100% on one leg)
+      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral"); // Crane stance modeled as neutral balance
       expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral"); // Closed feet 50/50
       expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral"); // Sumo squat 50/50
     });
