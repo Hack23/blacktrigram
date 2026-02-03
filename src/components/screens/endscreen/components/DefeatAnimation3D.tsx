@@ -68,12 +68,12 @@ export const DefeatAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
-    return () => {
-      // Capture ref values to avoid stale references in cleanup
-      const group = groupRef.current;
-      const particles = particlesRef.current;
-      const spiral = spiralRef.current;
+    // Capture ref values at effect setup time to avoid stale references in cleanup
+    const group = groupRef.current;
+    const particles = particlesRef.current;
+    const spiral = spiralRef.current;
 
+    return () => {
       // Dispose geometries and materials to prevent memory leaks
       if (particles) {
         particles.geometry?.dispose();
