@@ -11,6 +11,7 @@ import {
 } from "../animation";
 import { PlayerState } from "../player";
 import { TrigramCalculator } from "../trigram/TrigramCalculator";
+import { asExtendedGonTechnique } from "../trigram/types/GonTechniqueExtensions";
 import { StatusEffect } from "../types";
 import { calculateMeridianFlow } from "./KoreanAnatomy";
 import { getMeridiansForVitalPoint } from "./MeridianVitalPointMapping";
@@ -575,6 +576,161 @@ export class DamageCalculator {
 
     // Cap maximum bonus at 1.5x
     return Math.min(1.5, bonus);
+  }
+
+  /**
+   * Calculate throw/takedown impact damage with ground multiplier.
+   *
+   * **Korean**: 던지기 충격 피해 계산 (Throw Impact Damage Calculation)
+   *
+   * Applies groundImpactMultiplier from Gon (Earth) techniques when opponent
+   * hits the ground after a throw or takedown. Integrates with base damage
+   * calculation to provide authentic Ssireum/Hapkido throw mechanics.
+   *
+   * **Formula**:
+   * ```
+   * impactDamage = baseDamage × groundImpactMultiplier × strengthModifier
+   * ```
+   *
+   * **Ground Impact Multiplier Ranges**:
+   * - 1.0-1.2: Low impact (controlled takedowns)
+   * - 1.3-1.5: Medium impact (standard throws)
+   * - 1.6-1.8: High impact (power throws)
+   * - 1.9-2.0: Maximum impact (slams like 대지강타)
+   *
+   * @param technique - Korean martial arts technique (checks for ExtendedGonTechnique)
+   * @param baseDamage - Base damage before ground impact modifier
+   * @param attackerStrength - Attacker's strength stat for scaling
+   * @param options - Optional configuration for damage calculation
+   * @param options.applyVariance - Whether to apply random ±5% variance (default: true)
+   * @returns Enhanced damage result with ground impact applied
+   *
+   * @example
+   * ```typescript
+   * const throwDamage = DamageCalculator.calculateThrowImpactDamage(
+   *   ssireumThrowTechnique, // groundImpactMultiplier: 1.7
+   *   50, // base damage
+   *   80  // attacker strength
+   * );
+   * // Result: ~85 damage (50 × 1.7 × 1.0) with ±5% variance
+   *
+   * // For deterministic testing:
+   * const testDamage = DamageCalculator.calculateThrowImpactDamage(
+   *   technique, 50, 80, { applyVariance: false }
+   * );
+   * ```
+   *
+   * @public
+   * @korean 던지기충격피해계산
+   */
+  static calculateThrowImpactDamage(
+    technique: KoreanTechnique,
+    baseDamage: number,
+    attackerStrength: number = 50,
+    options: { applyVariance?: boolean } = {},
+  ): DamageResult {
+    const { applyVariance = true } = options;
+    // Check if technique has Gon-specific ground impact metadata
+    // Use helper function for safe type casting
+    const gonTechnique = asExtendedGonTechnique(technique);
+    if (!gonTechnique) {
+      // Non-Gon technique: return base damage without ground multiplier
+      return {
+        damage: Math.max(1, baseDamage),
+        effects: [],
+        isCritical: false,
+        isVitalPoint: false,
+      };
+    }
+
+    // Extract ground impact multiplier from validated Gon technique
+    const groundMultiplier = gonTechnique.groundImpactMultiplier;
+
+    // Calculate strength modifier (50 = baseline, scales ±20%)
+    // Stronger attackers create more impact, weaker create less
+    const strengthModifier = 0.8 + (attackerStrength / 250);
+
+    // Apply ground impact multiplier with strength scaling
+    let impactDamage = baseDamage * groundMultiplier * strengthModifier;
+
+    // Add small damage variance (±5%) for realistic impact variation
+    // Can be disabled for deterministic testing
+    if (applyVariance) {
+      const variance = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
+      impactDamage *= variance;
+    }
+
+    // Earth connection healing (대지는 모든 것을 품고 키운다)
+    // Supportive healing is applied separately by calling system
+    // This method focuses on damage calculation only
+
+    return {
+      damage: Math.max(1, Math.floor(impactDamage)),
+      effects: [],
+      isCritical: impactDamage > baseDamage * 1.5, // High impact = critical
+      isVitalPoint: false,
+    };
+  }
+
+  /**
+   * Calculate earth's supportive healing from Gon technique.
+   *
+   * **Korean**: 대지 치유 계산 (Earth Healing Calculation)
+   *
+   * Implements Korean martial arts philosophy:
+   * "대지는 모든 것을 품고 키운다" (The earth embraces and nurtures all things)
+   *
+   * Gon techniques restore HP to the attacker after successful execution
+   * based on their connection with earth energy. Traditional techniques
+   * like Ssireum throws provide stronger healing due to cultural authenticity.
+   *
+   * **Healing Formula**:
+   * ```
+   * healingAmount = supportiveHealing × (1 + earthAffinityBonus)
+   * ```
+   *
+   * **Supportive Healing Ranges**:
+   * - 0-2: Minimal earth connection (aggressive techniques)
+   * - 3-4: Moderate earth connection (standard Ssireum)
+   * - 5-6: Strong earth connection (traditional, sacrifice throws)
+   * - 7-10: RESERVED for meditation/healing techniques
+   *
+   * @param technique - Korean martial arts technique (checks for ExtendedGonTechnique)
+   * @param earthAffinityBonus - Player's earth affinity stat modifier (0.0-1.0)
+   * @returns HP healing amount (0 if not a Gon technique)
+   *
+   * @example
+   * ```typescript
+   * const healing = DamageCalculator.calculateEarthHealing(
+   *   ssireumThrowTechnique, // supportiveHealing: 5
+   *   0.3 // 30% earth affinity bonus
+   * );
+   * // Result: 6.5 HP restored (5 × 1.3)
+   * ```
+   *
+   * @public
+   * @korean 대지치유계산
+   */
+  static calculateEarthHealing(
+    technique: KoreanTechnique,
+    earthAffinityBonus: number = 0,
+  ): number {
+    // Use helper function for safe type casting
+    const gonTechnique = asExtendedGonTechnique(technique);
+    if (!gonTechnique) {
+      return 0; // Non-Gon technique: no earth healing
+    }
+
+    const baseHealing = gonTechnique.supportiveHealing;
+
+    // Apply earth affinity bonus (typically 0-100% bonus)
+    const affinityMultiplier = 1 + Math.max(0, Math.min(1, earthAffinityBonus));
+
+    // Calculate final healing with bonus
+    const healingAmount = baseHealing * affinityMultiplier;
+
+    // Return rounded healing value (minimum 0)
+    return Math.max(0, Math.floor(healingAmount));
   }
 }
 

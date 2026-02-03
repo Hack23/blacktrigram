@@ -25,6 +25,12 @@ import { BoneName } from "@/types/skeletal";
 import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 
+// Import Gam Water adaptive techniques (감괘 적응 기술)
+import {
+  GAM_WATER_FLOW_COUNTER_ANIMATION,
+  GAM_FLOWING_TAKEDOWN,
+} from "./GamTechniqueAnimations";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ☵ GAM IDLE FLOWING ANIMATION (감괘 흐름 자세)
 // ═══════════════════════════════════════════════════════════════════════════
@@ -257,12 +263,17 @@ export const GAM_FLOWING_RETREAT_STEP: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * All Gam stance animations for idle and movement
+ * All Gam stance animations for idle, movement, and combat techniques
  */
 export const GAM_STANCE_ANIMATIONS = {
   idle: GAM_IDLE_FLOWING,
   movement: {
     yieldingSidestep: GAM_YIELDING_SIDESTEP,
     flowingRetreat: GAM_FLOWING_RETREAT_STEP,
+  },
+  // Water Adaptive Counter Techniques (감괘 적응 기술)
+  techniques: {
+    waterFlowCounter: GAM_WATER_FLOW_COUNTER_ANIMATION,
+    flowingTakedown: GAM_FLOWING_TAKEDOWN,
   },
 } as const;

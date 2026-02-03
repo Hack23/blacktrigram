@@ -66,7 +66,7 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("앞서기")).toBeInTheDocument(); // Korean name
       expect(screen.getByText("Ap Seogi")).toBeInTheDocument(); // Romanized
-      expect(screen.getByText("High")).toBeInTheDocument(); // Height
+      expect(screen.getByText("High")).toBeInTheDocument(); // Height (shoulder.x = -1.05, classified as High)
       expect(screen.getByText("전방")).toBeInTheDocument(); // Korean weight
       expect(screen.getByText("forward")).toBeInTheDocument(); // English weight
     });
@@ -83,8 +83,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("앞굽이")).toBeInTheDocument();
       expect(screen.getByText("Ap Koobi")).toBeInTheDocument();
-      expect(screen.getByText("전방")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("forward")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back (cat stance 90/10)
+      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
     it("should render Li (Fire) guard with correct info", () => {
@@ -115,7 +115,7 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("뒤굽이")).toBeInTheDocument();
       expect(screen.getByText("Dwi Koobi")).toBeInTheDocument();
-      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back (back stance 70/30)
       expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
@@ -131,8 +131,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("범서기")).toBeInTheDocument();
       expect(screen.getByText("Beom Seogi")).toBeInTheDocument();
-      expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back (crane stance 100% back)
+      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
     it("should render Gam (Water) guard with correct info", () => {
@@ -147,8 +147,8 @@ describe("GuardIndicator", () => {
 
       expect(screen.getByText("학다리")).toBeInTheDocument();
       expect(screen.getByText("Hak Dari Seogi")).toBeInTheDocument();
-      expect(screen.getByText("중립")).toBeInTheDocument(); // Korean weight
-      expect(screen.getByText("neutral")).toBeInTheDocument(); // English weight
+      expect(screen.getByText("후방")).toBeInTheDocument(); // Korean weight - back (back stance 30/70)
+      expect(screen.getByText("back")).toBeInTheDocument(); // English weight
     });
 
     it("should render Gan (Mountain) guard with correct info", () => {
@@ -210,11 +210,11 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(container.textContent).toContain("▼"); // Back icon
+      expect(container.textContent).toContain("▼"); // Back icon (back stance has 70/30 weight distribution)
       expect(container.textContent).toContain("후방"); // Korean back
     });
 
-    it("should display neutral weight icon for neutral stance", () => {
+    it("should display back weight icon for crane stance", () => {
       const { container } = render(
         <GuardIndicator
           currentStance={TrigramStance.SON}
@@ -224,8 +224,8 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(container.textContent).toContain("●"); // Neutral icon
-      expect(container.textContent).toContain("중립"); // Korean neutral
+      expect(container.textContent).toContain("▼"); // Back icon (crane stance - all weight on back leg)
+      expect(container.textContent).toContain("후방"); // Korean back
     });
   });
 
@@ -240,7 +240,7 @@ describe("GuardIndicator", () => {
         />,
       );
 
-      expect(screen.getByText("고위")).toBeInTheDocument(); // Korean high
+      expect(screen.getByText("고위")).toBeInTheDocument(); // Korean high (shoulder.x = -1.05)
       expect(screen.getByText("High")).toBeInTheDocument();
     });
 
@@ -357,7 +357,7 @@ describe("GuardIndicator", () => {
       const label = indicator.getAttribute("aria-label");
       expect(label).toContain("Guard position");
       expect(label).toContain("Ap Seogi");
-      expect(label).toContain("High guard");
+      expect(label).toContain("High guard"); // GEON is high guard (shoulder.x = -1.05)
       expect(label).toContain("forward weight");
     });
 
@@ -458,7 +458,7 @@ describe("GuardIndicator", () => {
       );
 
       // Korean height term
-      expect(screen.getByText("고위")).toBeInTheDocument();
+      expect(screen.getByText("고위")).toBeInTheDocument(); // High guard
       // Korean weight term
       expect(screen.getByText("전방")).toBeInTheDocument();
     });

@@ -49,7 +49,7 @@ export interface DustCloudEffect {
   /** Timestamp when effect was created */
   readonly startTime: number;
   /** Type of dust event */
-  readonly type: "footfall" | "impact" | "block" | "slide";
+  readonly type: "footfall" | "impact" | "block" | "slide" | "throw_impact";
 }
 
 /**
@@ -91,12 +91,14 @@ const DUST_CONSTANTS = {
     impact: 60,
     block: 40,
     slide: 50,
+    throw_impact: 80, // Larger dust cloud for ground slam throws (Gon techniques)
   },
   PARTICLES_MOBILE: {
     footfall: 15,
     impact: 30,
     block: 20,
     slide: 25,
+    throw_impact: 40, // Reduced for mobile
   },
   /** Particle lifetime in seconds */
   LIFETIME: 3.0,
@@ -230,8 +232,31 @@ export const DustClouds3D: React.FC<DustClouds3DProps> = ({
     return Math.max(...Object.values(maxCounts));
   }, [isMobile]);
 
-  // Dust color - Korean earth tones
-  const dustColor = useMemo(() => KOREAN_COLORS.UI_STEEL_GRAY, []);
+  // Dust color - Korean earth tones with type-specific variants (황토색 for throw impacts)
+  const getDustColor = (type: DustCloudEffect["type"]): number => {
+    switch (type) {
+      case "throw_impact":
+        // Earth-themed Gon techniques: darker brown earth tones (씨름 황토색)
+        return KOREAN_COLORS.TRIGRAM_GAN_PRIMARY; // #8b4513 brown
+      default:
+        // Neutral dust for general movement/impacts
+        return KOREAN_COLORS.UI_STEEL_GRAY;
+    }
+  };
+
+  // Dust color selection based on currently active effects
+  // INTENTIONAL BEHAVIOR: Global earth tone tinting when any throw_impact is active
+  // This creates atmospheric cohesion for earth-themed Gon techniques.
+  // When earth power manifests (throw impacts), all dust particles take on earth tones
+  // to emphasize the ground-shattering nature and earth philosophy.
+  // This is a deliberate artistic choice for visual storytelling.
+  const dustColor = useMemo(() => {
+    if (effects.some((effect) => effect.type === "throw_impact")) {
+      return getDustColor("throw_impact");
+    }
+    // Fallback: neutral footfall-style dust
+    return getDustColor("footfall");
+  }, [effects]);
 
   // Initialize particles for new effects
   useEffect(() => {

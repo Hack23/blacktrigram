@@ -176,6 +176,74 @@ export interface KoreanTechnique {
    * @korean 속도등급
    */
   speed?: number;
+
+  // =====================================================
+  // DEFENSIVE MECHANICS (GAN - MOUNTAIN)
+  // =====================================================
+
+  /**
+   * Block timing window in milliseconds for blocking attacks
+   * 막기 타이밍 창 (밀리초)
+   *
+   * Defines the time window during which a block can successfully
+   * defend against an incoming attack. Used for Gan (Mountain) stance
+   * immovable defense techniques.
+   *
+   * @korean 막기타이밍창
+   * @example 250 // 250ms window for standard block
+   */
+  blockWindow?: number;
+
+  /**
+   * Perfect block timing window in milliseconds
+   * 완벽한 막기 타이밍 창 (밀리초)
+   *
+   * A tighter window within the blockWindow for executing a perfect block,
+   * which may trigger additional effects like stone particles or increased
+   * damage reduction. For Gan (Mountain) stance defensive mastery.
+   *
+   * @korean 완벽막기타이밍창
+   * @example 75 // 75ms window for perfect block
+   */
+  perfectBlockWindow?: number;
+
+  /**
+   * Damage reduction multiplier when blocking (0.0 to 1.0)
+   * 막기 시 데미지 감소 배율
+   *
+   * Represents the percentage of damage absorbed when blocking.
+   * 0.7 = 70% damage reduction (30% damage taken)
+   * Higher values = better defense
+   *
+   * @korean 데미지감소배율
+   * @example 0.7 // 70% damage reduction
+   */
+  damageReduction?: number;
+
+  /**
+   * Stability bonus multiplier for defensive fortitude
+   * 안정성 보너스 배율
+   *
+   * Multiplier applied to stability/fortitude when in defensive stance.
+   * Represents the mountain-like immovable nature of Gan techniques.
+   * Higher values = more difficult to break through defense
+   *
+   * @korean 안정성보너스
+   * @example 1.5 // 150% stability increase
+   */
+  stabilityBonus?: number;
+
+  /**
+   * Rooting effect flag for ground connection
+   * 뿌리내림 효과 플래그
+   *
+   * When true, indicates the technique creates a rooted, grounded stance
+   * with visible ground connection. For Gan (Mountain) immovable defense.
+   *
+   * @korean 뿌리내림효과
+   * @example true // Technique creates rooting effect
+   */
+  rootingEffect?: boolean;
 }
 
 /**
@@ -219,6 +287,43 @@ export type TrigramStanceTechnique = KoreanTechnique & {
   readonly category: TechniqueBalanceCategory;
   readonly range: TechniqueRange;
   readonly speed: number;
+  
+  /**
+   * Timing window for next technique in combo chain (milliseconds)
+   * 연속 기술 시간 창 (밀리초)
+   * 
+   * Specifies how long after this technique completes that the next
+   * technique can be chained for combo continuation. Son (Wind) stance
+   * uses 200ms for consistent rhythmic flow.
+   * 
+   * @korean 콤보창
+   */
+  readonly comboWindow?: number;
+  
+  /**
+   * Priority in combo chain (1=starter, 2=mid-chain, 3=finisher)
+   * 콤보 우선순위 (1=시작, 2=중간, 3=마무리)
+   * 
+   * Determines where technique fits in combo sequences:
+   * - 1 (starter): Opens combo chains, low recovery
+   * - 2 (mid-chain): Bridges combos, balanced stats
+   * - 3 (finisher): Ends combos, high damage/recovery
+   * 
+   * @korean 콤보우선순위
+   */
+  readonly comboPriority?: number;
+  
+  /**
+   * Pressure stacks accumulated on hit (for Son/Wind stance)
+   * 압박 누적치 (손 바람 자세용)
+   * 
+   * Number of pressure stacks applied when technique connects.
+   * Used by Son (Wind) stance for continuous pressure mechanics.
+   * Typically 1-3 stacks per technique.
+   * 
+   * @korean 압박스택
+   */
+  readonly pressureStacks?: number;
 };
 
 /**

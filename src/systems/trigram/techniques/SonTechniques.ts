@@ -63,7 +63,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 400,
-    recoveryTime: 600,
+    recoveryTime: 400, // Reduced from 600ms for combo flow
     critChance: 0.06,
     critMultiplier: 1.2,
     effects: [],
@@ -77,6 +77,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.5,
+    // Son (Wind) combo flow properties - 선풍연쇄 (Whirlwind Chain)
+    comboWindow: 200, // 200ms timing window for next technique
+    comboPriority: 1, // Starter technique - opens combo chains
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 
   // ============= Taekyon Footwork Techniques =============
@@ -107,7 +111,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 550,
-    recoveryTime: 850,
+    recoveryTime: 500, // Reduced from 850ms for combo flow
     critChance: 0.12,
     critMultiplier: 1.4,
     effects: [],
@@ -121,6 +125,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "medium",
     speed: 1.1,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain technique - bridges combos
+    pressureStacks: 1, // Applies 1 pressure stack on hit
   },
   {
     id: "son_rapid_footwork",
@@ -149,7 +157,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 1.05,
     },
     executionTime: 600,
-    recoveryTime: 900,
+    recoveryTime: 450, // Reduced from 900ms for combo flow
     critChance: 0.16,
     critMultiplier: 1.6,
     effects: [],
@@ -163,6 +171,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "medium",
     speed: 1.2,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 2, // Mid-chain technique - bridges combos
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 
   // ============= Rhythmic Striking Techniques =============
@@ -193,7 +205,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.95,
     },
     executionTime: 450,
-    recoveryTime: 700,
+    recoveryTime: 500, // Reduced from 700ms for combo flow
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
@@ -207,6 +219,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "special",
     range: "short",
     speed: 1.2,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 3, // Finisher technique - ends combos
+    pressureStacks: 3, // Applies 3 pressure stacks on hit (high pressure)
   },
   {
     id: "son_flowing_push",
@@ -235,7 +251,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.9,
     },
     executionTime: 500,
-    recoveryTime: 750,
+    recoveryTime: 400, // Reduced from 750ms for combo flow
     critChance: 0.1,
     critMultiplier: 1.3,
     effects: [],
@@ -249,6 +265,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.0,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 1, // Starter technique - opens combo chains
+    pressureStacks: 1, // Applies 1 pressure stack on hit
   },
 
   // ============= Spinning Techniques =============
@@ -279,7 +299,7 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       baseExtension: 0.5,
     },
     executionTime: 550,
-    recoveryTime: 850,
+    recoveryTime: 600, // Reduced from 850ms for combo flow
     critChance: 0.14,
     critMultiplier: 1.5,
     effects: [],
@@ -293,6 +313,10 @@ export const SON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     category: "medium",
     range: "short",
     speed: 1.1,
+    // Son (Wind) combo flow properties
+    comboWindow: 200,
+    comboPriority: 3, // Finisher technique - ends combos
+    pressureStacks: 2, // Applies 2 pressure stacks on hit
   },
 ] as const;
 

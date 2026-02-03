@@ -414,9 +414,9 @@ describe("TorsoRotationSystem", () => {
       it("should have torso rotation in cross extension phase", () => {
         const cross = CROSS_ANIMATION;
 
-        // Find extension keyframe (FAST timing: chamber at 0.1s, extension at 0.25s)
+        // Find extension keyframe (MEDIUM timing: chamber at 0.15s, extension at 0.35s)
         const extensionFrame = cross.keyframes.find(
-          (kf) => kf.time >= 0.09 && kf.time <= 0.26
+          (kf) => kf.time >= 0.14 && kf.time <= 0.36
         );
 
         expect(extensionFrame).toBeDefined();
@@ -437,9 +437,9 @@ describe("TorsoRotationSystem", () => {
       it("should have sequential spine rotation (lower < mid < upper)", () => {
         const cross = CROSS_ANIMATION;
 
-        // Find extension keyframe (FAST timing: chamber at 0.1s, extension at 0.25s)
+        // Find power delivery keyframe (at extension time: 0.25s-0.45s for modern animation)
         const extensionFrame = cross.keyframes.find(
-          (kf) => kf.time >= 0.09 && kf.time <= 0.26
+          (kf) => kf.time >= 0.25 && kf.time <= 0.45
         );
 
         expect(extensionFrame).toBeDefined();

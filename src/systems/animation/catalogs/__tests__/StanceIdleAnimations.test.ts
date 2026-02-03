@@ -346,12 +346,21 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
       GEON_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
     const jinHipL = JIN_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
     const sonHipL = SON_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_L");
+    const sonHipR = SON_IDLE_ANIMATION.keyframes[0].boneRotations.get("hip_R");
 
     // Geon (forward stance) vs Jin (horse stance) should be different
     expect(geonHipL?.x).not.toBeCloseTo(jinHipL?.x ?? 0, 1);
 
-    // Son (crane stance with raised leg) should be most dramatic
-    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.5);
+    const ganHipL = GAN_IDLE_ANIMATION?.keyframes[0].boneRotations.get("hip_L");
+    const ganHipR = GAN_IDLE_ANIMATION?.keyframes[0].boneRotations.get("hip_R");
+    expect(Math.abs((ganHipL?.x ?? 0) - (ganHipR?.x ?? 0))).toBeLessThan(0.1);
+
+    // Son (L-stance with light front leg) - both legs grounded, subtle difference
+    // CORRECTED: Son no longer uses crane stance (one leg raised)
+    // Now uses L-stance (Niunja Seogi) with both feet grounded for sustained guard
+    // Front leg light (0.12 rad hip flexion), back leg loaded (0.15 rad)
+    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.1); // Front leg slightly flexed
+    expect(Math.abs(sonHipR?.x ?? 0)).toBeGreaterThan(0.1); // Back leg slightly more flexed
   });
 });
 

@@ -20,6 +20,12 @@ import type { SkeletalAnimation } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBuilder";
 import { ANATOMICAL_LIMITS } from "../constants";
 
+// Import Jin Thunder explosive techniques (진괘 폭발 기술)
+import {
+  JIN_THUNDER_FLASH_ANIMATION,
+  JIN_JUMPING_KNEE_STRIKE,
+} from "./JinTechniqueAnimations";
+
 /**
  * Anatomical safety constants for Jin (Thunder) trigram animations
  *
@@ -268,7 +274,12 @@ export const JIN_JUMPING_ADVANCE: SkeletalAnimation =
  */
 export const JIN_ANIMATIONS: ReadonlyMap<string, SkeletalAnimation> =
   new Map([
+    // Idle & Movement
     ["jin_idle_coiled", JIN_IDLE_COILED],
     ["jin_explosive_burst", JIN_EXPLOSIVE_BURST],
     ["jin_jumping_advance", JIN_JUMPING_ADVANCE],
+    
+    // Thunder Explosive Strike Techniques (진괘 폭발 기술)
+    ["jin_thunder_flash_animation", JIN_THUNDER_FLASH_ANIMATION],
+    ["jin_jumping_knee_strike", JIN_JUMPING_KNEE_STRIKE],
   ]);

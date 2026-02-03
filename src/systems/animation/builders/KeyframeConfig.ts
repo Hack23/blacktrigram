@@ -335,13 +335,14 @@ export class KeyframeConfig {
     activations: Map<string, number> | Record<string, number>,
   ): this {
     this._muscleActivations ??= new Map();
+    const muscleActivations = this._muscleActivations;
     if (activations instanceof Map) {
       activations.forEach((tension, group) => {
-        this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));
+        muscleActivations.set(group, Math.max(0, Math.min(1, tension)));
       });
     } else {
       Object.entries(activations).forEach(([group, tension]) => {
-        this._muscleActivations!.set(group, Math.max(0, Math.min(1, tension)));
+        muscleActivations.set(group, Math.max(0, Math.min(1, tension)));
       });
     }
     return this;

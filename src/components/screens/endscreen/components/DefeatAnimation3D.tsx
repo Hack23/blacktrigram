@@ -68,16 +68,21 @@ export const DefeatAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
+    // Capture ref values at effect setup time to avoid stale references in cleanup
+    const group = groupRef.current;
+    const particles = particlesRef.current;
+    const spiral = spiralRef.current;
+
     return () => {
       // Dispose geometries and materials to prevent memory leaks
-      if (particlesRef.current) {
-        particlesRef.current.geometry?.dispose();
-        if (particlesRef.current.material) {
-          (particlesRef.current.material as THREE.Material).dispose();
+      if (particles) {
+        particles.geometry?.dispose();
+        if (particles.material) {
+          (particles.material as THREE.Material).dispose();
         }
       }
-      if (spiralRef.current) {
-        spiralRef.current.children.forEach((child) => {
+      if (spiral && Array.isArray(spiral.children)) {
+        spiral.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
             if (child.material) {
@@ -87,10 +92,10 @@ export const DefeatAnimation3D: React.FC = () => {
         });
       }
       // Additionally iterate over all group children to catch meshes/points without explicit refs
-      if (groupRef.current) {
-        groupRef.current.children.forEach((child) => {
+      if (group && Array.isArray(group.children)) {
+        group.children.forEach((child) => {
           // Skip already-handled refs
-          if (child === particlesRef.current || child === spiralRef.current) {
+          if (child === particles || child === spiral) {
             return;
           }
 
