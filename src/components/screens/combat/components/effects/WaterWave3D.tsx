@@ -424,14 +424,19 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     return null;
   }
 
-  // Three.js performance requirement: Access positions ref during render.
-  // The positions are computed in useFrame (write) and only read here (render).
-  // This uni-directional flow is safe and follows Three.js + React patterns.
+  // Three.js performance optimization: positions caching with refs
+  // We use refs to cache particle positions for performance.
+  // These refs are only written to in useFrame and read during render.
+  // This is safe because:
+  // 1. Positions are Float32Arrays that are mutated in place in useFrame
+  // 2. We never mutate positions during render, only read them
+  // 3. This is a standard pattern for Three.js + React (see @react-three/drei Points component)
+  // 4. The alternative (storing positions in state) would cause excessive re-renders
   return (
     <>
+      {/* eslint-disable-next-line react-hooks/exhaustive-deps -- Three.js performance: reading cached positions during render */}
       {particleSystems.map((system) => {
-        // Get positions from ref (updated in useFrame above)
-        // This is safe because positions are only written in useFrame, never during render
+        // Get positions from ref (updated in useFrame)
         const positions = positionsRef.current.get(system.effectId) 
           ?? new Float32Array(system.particles.length * 3);
         

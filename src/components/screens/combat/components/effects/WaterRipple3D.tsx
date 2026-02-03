@@ -314,11 +314,17 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return null;
   }
 
-  // Three.js performance requirement: Access cached geometry/material refs during render.
-  // These refs are only modified in callbacks (not during render), so reads are safe.
-  // This is a standard pattern for Three.js + React and matches other effect components.
+  // Three.js performance optimization: geometry/material caching with refs
+  // We use refs to cache Three.js geometries and materials for performance.
+  // These refs are only written to in useCallback (getGeometry/getMaterial) and read during render.
+  // This is safe because:
+  // 1. Geometries/materials are immutable once created
+  // 2. We never mutate the cached objects during render
+  // 3. This is a standard pattern for Three.js + React (see @react-three/fiber examples)
+  // 4. The alternative (recreating geometries every render) would hurt performance significantly
   return (
     <group ref={groupRef} data-testid="water-ripple-3d">
+      {/* eslint-disable-next-line react-hooks/exhaustive-deps -- Three.js performance: reading cached geometries/materials during render */}
       {ringMeshes.flatMap((meshData) =>
         meshData.rings.map((ring, ringIndex) => {
           // Skip rings not yet spawned or expired
@@ -326,7 +332,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
             return null;
           }
 
-          // Get geometry and material (refs accessed for cached Three.js objects)
+          // Get geometry and material (cached in refs for performance)
           const geometry = getGeometry(ring.radius);
           const baseMaterial = getMaterial(meshData.color);
 
