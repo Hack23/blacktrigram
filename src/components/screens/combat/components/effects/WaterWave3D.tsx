@@ -437,9 +437,12 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       {/* Reading ref during render for Three.js performance optimization - positions updated in useFrame */}
       {/* eslint-disable react-hooks/refs */}
       {particleSystems.map((system) => {
-        // Get positions from ref (updated in useFrame)
-        const positions = positionsRef.current.get(system.effectId) 
-          ?? new Float32Array(system.particles.length * 3);
+        // Get positions from ref (updated in useFrame); create and store if missing
+        let positions = positionsRef.current.get(system.effectId);
+        if (!positions) {
+          positions = new Float32Array(system.particles.length * 3);
+          positionsRef.current.set(system.effectId, positions);
+        }
         
         // Get active particle count to set draw range
         const activeParticles = activeParticlesRef.current.get(system.effectId);
