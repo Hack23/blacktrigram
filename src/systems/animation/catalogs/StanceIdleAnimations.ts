@@ -98,7 +98,7 @@ function calculateBreathingScale(
 ): number {
   // Use cosine-based wave for natural breathing rhythm
   // Phase 0 = peak inhale, 0.5 = peak exhale
-  const breathPhase = -Math.cos(phase * Math.PI * 2);
+  const breathPhase = Math.cos(phase * Math.PI * 2);
   const amplitude = (max - min) / 2;
   const center = (max + min) / 2;
   return center + breathPhase * amplitude;
