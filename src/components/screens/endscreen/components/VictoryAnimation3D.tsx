@@ -92,7 +92,7 @@ export const VictoryAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
-    // Capture ref values in effect scope to avoid stale references in cleanup
+    // Capture ref values at effect setup time (not in cleanup function) to ensure we dispose the correct objects even if refs change later
     const group = groupRef.current;
     const particles = particlesRef.current;
     const rings = ringsRef.current;
