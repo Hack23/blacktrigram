@@ -107,7 +107,7 @@ export const VictoryAnimation3D: React.FC = () => {
           (particles.material as THREE.Material).dispose();
         }
       }
-      if (rings) {
+      if (rings?.children && Array.isArray(rings.children)) {
         rings.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
@@ -117,7 +117,7 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (symbols) {
+      if (symbols?.children && Array.isArray(symbols.children)) {
         symbols.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
@@ -129,7 +129,7 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      if (group) {
+      if (group?.children && Array.isArray(group.children)) {
         group.children.forEach((child) => {
           // Skip objects that are already handled via specific refs
           if (
