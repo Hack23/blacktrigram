@@ -1230,11 +1230,13 @@ describe("AIDecisionTree", () => {
 
       // High fatigue should produce more stance changes (1.2x multiplier)
       // With 0.7 base and 2000 iterations: low ~1400 changes, high ~1680 changes (0.7 * 1.2 = 0.84)
+      // Expected difference: ~280 changes (20% increase from 1.2x modifier)
       // Due to randomness, we expect high fatigue to have more changes but allow for statistical variance
-      // Using a lenient threshold: high fatigue should show at least 1% more changes
-      // With larger sample size (2000), 1% threshold is statistically sound while reducing flakiness
-      // This accounts for random variation while still validating the fatigue system works
-      const minExpectedIncrease = lowFatigueChanges * 0.01;
+      // Using 5% threshold: high fatigue should show at least 5% more changes (~70 changes)
+      // This is well within the expected 20% difference but accounts for binomial variance
+      // Standard deviation ≈ sqrt(2000 * 0.7 * 0.3) ≈ 20.5, so 5% (~70) is ~3.4 std devs
+      // This ensures test reliability while still validating the fatigue system works correctly
+      const minExpectedIncrease = lowFatigueChanges * 0.05;
       expect(highFatigueChanges).toBeGreaterThanOrEqual(
         lowFatigueChanges + minExpectedIncrease,
       );
