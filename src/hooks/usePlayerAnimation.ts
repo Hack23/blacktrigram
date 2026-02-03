@@ -309,29 +309,17 @@ export function usePlayerAnimation(
   // Note: Using ref.current as dependencies is intentional here - when state changes,
   // forceUpdate triggers a re-render, and the refs have new values which cause
   // the useMemo to recalculate
-  return useMemo(
-    () => ({
-      currentState: prevStateRef.current,
-      currentFrame: prevFrameRef.current,
-      update,
-      transitionTo,
-      transitionToStanceGuard,
-      transitionToStanceChange,
-      isInStanceGuard,
-      getCurrentGuardStance,
-      reset,
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: ref values trigger recalculation after forceUpdate
-    [
-      prevStateRef.current,
-      prevFrameRef.current,
-      update,
-      transitionTo,
-      transitionToStanceGuard,
-      transitionToStanceChange,
-      isInStanceGuard,
-      getCurrentGuardStance,
-      reset,
-    ],
-  );
+  // Return a fresh object each render to ensure currentState/currentFrame are always up-to-date
+  // Mutable ref values don't trigger re-renders, so we can't rely on memoization here
+  return {
+    currentState: prevStateRef.current,
+    currentFrame: prevFrameRef.current,
+    update,
+    transitionTo,
+    transitionToStanceGuard,
+    transitionToStanceChange,
+    isInStanceGuard,
+    getCurrentGuardStance,
+    reset,
+  };
 }

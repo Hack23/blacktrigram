@@ -125,7 +125,7 @@ describe("GrapplingAnimations", () => {
     });
 
     it("should have valid duration for joint manipulation", () => {
-      expect(WRIST_LOCK_ANIMATION.duration).toBe(0.6);
+      expect(WRIST_LOCK_ANIMATION.duration).toBe(0.75);
     });
 
     it("should not be looping", () => {

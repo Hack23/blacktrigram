@@ -314,13 +314,10 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
     return null;
   }
 
-  // Three.js performance requirement: Access cached geometry/material refs during render.
-  // These refs are only modified in callbacks (not during render), so reads are safe.
-  // This is a standard pattern for Three.js + React and matches other effect components.
-  // eslint-disable-next-line react-hooks/refs -- Three.js performance optimization
   return (
     <group ref={groupRef} data-testid="water-ripple-3d">
-      {/* eslint-disable-next-line react-hooks/refs -- Accessing geometry/material refs for caching */}
+      {/* Three.js performance: reading cached geometries/materials during render */}
+      {/* eslint-disable react-hooks/refs */}
       {ringMeshes.flatMap((meshData) =>
         meshData.rings.map((ring, ringIndex) => {
           // Skip rings not yet spawned or expired
@@ -328,7 +325,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
             return null;
           }
 
-          // Get geometry and material (refs accessed for cached Three.js objects)
+          // Get geometry and material (cached in refs for performance)
           const geometry = getGeometry(ring.radius);
           const baseMaterial = getMaterial(meshData.color);
 
@@ -361,6 +358,7 @@ export const WaterRipple3D: React.FC<WaterRipple3DProps> = ({
         );
       })
       )}
+      {/* eslint-enable react-hooks/refs */}
     </group>
   );
 };

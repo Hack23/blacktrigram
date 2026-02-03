@@ -63,8 +63,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 600,
-    recoveryTime: 700, // Reduced from 900ms for combo flow
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.18,
     critMultiplier: 1.7,
     effects: [],
@@ -78,7 +78,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Flowing counter-attack (matches TechniqueAnimationMapping)
     animationType: AnimationType.WATER_COUNTER,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -111,8 +111,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.7,
     },
-    executionTime: 850,
-    recoveryTime: 900, // Reduced from 1200ms for combo flow
+    executionTime: 1190,
+    recoveryTime: 1680,
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
@@ -126,7 +126,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Redirect throw motion
     animationType: AnimationType.GAM_REDIRECT_THROW,
-    animationSpeed: 0.9,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 0.9,
@@ -157,8 +157,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.7,
     },
-    executionTime: 900,
-    recoveryTime: 1000, // Reduced from 1300ms for combo flow
+    executionTime: 1260,
+    recoveryTime: 1819,
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
@@ -172,7 +172,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Hip throw motion
     animationType: AnimationType.GAM_HIP_THROW,
-    animationSpeed: 0.85,
+    animationSpeed: 0.65,
     category: "medium",
     range: "short",
     speed: 0.85,
@@ -205,8 +205,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 400,
-    recoveryTime: 500, // Reduced from 700ms for combo flow
+    executionTime: 560,
+    recoveryTime: 979,
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
@@ -220,7 +220,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Soft blocking motion
     animationType: AnimationType.BLOCK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "light",
     range: "short",
     speed: 1.0,
@@ -251,8 +251,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 550,
-    recoveryTime: 600, // Reduced from 850ms for combo flow
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
@@ -266,7 +266,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Circular parry motion
     animationType: AnimationType.GAM_CIRCULAR_PARRY,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -299,8 +299,8 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.65,
     },
-    executionTime: 700,
-    recoveryTime: 750, // Reduced from 1000ms for combo flow
+    executionTime: 979,
+    recoveryTime: 1400,
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
@@ -314,7 +314,7 @@ export const GAM_TECHNIQUES: readonly TrigramStanceTechnique[] = [
     // Legacy field for backward compatibility
     // Animation: Wrist control transition
     animationType: AnimationType.GAM_WRIST_TWIST_COUNTER,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.0,

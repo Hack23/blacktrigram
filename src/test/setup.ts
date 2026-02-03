@@ -9,12 +9,14 @@ beforeAll(() => {
   // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
+  
+  // Override with proper type-safe signature matching Node's write() overloads
   process.stderr.write = ((
-    chunk: string | Uint8Array, 
-    encodingOrCallback?: BufferEncoding | ((err?: Error | null) => void), 
+    chunk: string | Uint8Array,
+    encodingOrCallback?: BufferEncoding | ((err?: Error | null) => void),
     callback?: (err?: Error | null) => void
   ): boolean => {
-    const message = typeof chunk === 'string' ? chunk : chunk.toString();
+    const message = typeof chunk === "string" ? chunk : chunk.toString();
     
     // Suppress HTMLCanvasElement warnings from jsdom
     if (
@@ -30,8 +32,11 @@ beforeAll(() => {
       return true;
     }
     
-    // Pass through all other messages
-    return originalStderrWrite(chunk, encodingOrCallback as BufferEncoding, callback);
+    // Pass through all other messages with proper type handling
+    if (typeof encodingOrCallback === "function") {
+      return originalStderrWrite(chunk, encodingOrCallback);
+    }
+    return originalStderrWrite(chunk, encodingOrCallback, callback);
   }) as typeof process.stderr.write;
 
   // Mock APP_VERSION for tests
@@ -81,10 +86,8 @@ beforeAll(() => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
-          const handlers = this.eventListeners.get(event);
-          if (handlers) {
-            handlers.add(handler);
-          }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- set created above
+          this.eventListeners.get(event)!.add(handler);
 
           // Automatically trigger canplaythrough event after a microtask
           if (

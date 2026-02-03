@@ -551,7 +551,7 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["darkops_larynx_crush", THROAT_STRIKE_ANIMATION],
     ["darkops_sleeper_hold", REAR_NAKED_CHOKE_ANIMATION],
     ["darkops_spinal_strike", SPINAL_ELBOW_ANIMATION],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- STANCE_ANIMATIONS is statically defined and guaranteed to contain this key
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- animation guaranteed to exist in registry
     ["gam_circular_parry", STANCE_ANIMATIONS.get("gam_circular_parry")!], // Use dedicated circular parry animation
     ["gam_flow_defense", GAM_FLOW_DEFENSE],
     ["gam_flowing_block", GAM_FLOWING_BLOCK],
@@ -559,7 +559,7 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["gam_redirect_throw", REDIRECT_THROW_ANIMATION],
     ["gam_water_counter", GAM_WATER_FLOW_COUNTER_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_FORTRESS],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- STANCE_ANIMATIONS is statically defined and guaranteed to contain this key
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- animation guaranteed to exist in registry
     ["gan_immovable_stance", STANCE_ANIMATIONS.get("gan_immovable_stance")!], // Use dedicated immovable stance animation
     ["gan_iron_block", GAN_IMMOVABLE_BLOCK],
     ["gan_rock_defense", GAN_ROCK_DEFENSE_ANIMATION],

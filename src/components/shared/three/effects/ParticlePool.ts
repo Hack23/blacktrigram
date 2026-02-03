@@ -119,10 +119,8 @@ export class ParticlePool {
       return null;
     }
 
-    const particle = this.pool.pop();
-    if (!particle) {
-      return null;
-    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- checked length > 0 above
+    const particle = this.pool.pop()!;
     particle.alive = true;
     particle.startTime =
       currentTimeSeconds ?? performance.now() / 1000;

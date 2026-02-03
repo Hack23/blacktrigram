@@ -215,9 +215,8 @@ describe("TrigramAnimationMapping", () => {
 
       // Poses should have valid arm positions
       // Guard poses are mirrored based on laterality
-      // Both left and right should have shoulder.y = 0.09 (internal rotation)
-      expect(Math.abs(leftGeon?.leftArm.shoulder.y ?? 0)).toBeGreaterThan(0);
-      expect(Math.abs(rightGeon?.leftArm.shoulder.y ?? 0)).toBeGreaterThan(0);
+      expect(leftGeon?.leftArm.shoulder.y).toBeGreaterThan(0);
+      expect(rightGeon?.leftArm.shoulder.y).toBeGreaterThan(0);
     });
 
     it("should work for all 8 stances", () => {

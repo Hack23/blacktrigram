@@ -54,21 +54,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 700,
-    recoveryTime: 900, // Reduced from 1100ms for combo flow
+    executionTime: 979,
+    recoveryTime: 1540,
     critChance: 0.15,
     critMultiplier: 1.8,
     effects: [],
-    // Combo metadata - Precision penetrating strike
-    comboWindow: 180,
-    comboPriority: 1, // Starter - surgical setup strike
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "li_flame_spear", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SPEAR_HAND_STRIKE,
-    animationSpeed: 1.3,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.3,
@@ -99,21 +95,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "elbow",
       baseExtension: 0.5,
     },
-    executionTime: 650,
-    recoveryTime: 700, // Reduced from 950ms for combo flow
+    executionTime: 909,
+    recoveryTime: 1330,
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
-    // Combo metadata - Critical nerve strike
-    comboWindow: 180,
-    comboPriority: 2, // Mid-chain - vital point precision
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "elbow_strike", // Type: shared category
     animationId: "li_temple_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.TEMPLE_ELBOW,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.1,
@@ -144,21 +136,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 600,
-    recoveryTime: 650, // Reduced from 900ms for combo flow
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.25,
     critMultiplier: 2.2,
     effects: [],
-    // Combo metadata - Paralyzing nerve attack
-    comboWindow: 180,
-    comboPriority: 3, // Finisher - nerve paralysis
-    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "li_nerve_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.NERVE_STRIKE,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.2,
@@ -189,21 +177,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.1,
     },
-    executionTime: 750,
-    recoveryTime: 800, // Reduced from 1050ms for combo flow
+    executionTime: 1050,
+    recoveryTime: 1470,
     critChance: 0.18,
     critMultiplier: 1.9,
     effects: [],
-    // Combo metadata - Precision kick
-    comboWindow: 180,
-    comboPriority: 2, // Mid-chain - rib/knee targeting
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "li_sidekick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SIDE_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -234,21 +218,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 550,
-    recoveryTime: 600, // Reduced from 850ms for combo flow
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.28,
     critMultiplier: 2.3,
     effects: [],
-    // Combo metadata - Ki disruption finisher
-    comboWindow: 180,
-    comboPriority: 3, // Finisher - ki flow disruption
-    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "li_pressure_point", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.PRESSURE_POINT_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.75,
     category: "special",
     range: "short",
     speed: 1.0,
@@ -279,21 +259,17 @@ export const LI_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 680,
-    recoveryTime: 730, // Reduced from 980ms for combo flow
+    executionTime: 951,
+    recoveryTime: 1372,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
-    // Combo metadata - Breath disruption strike
-    comboWindow: 180,
-    comboPriority: 3, // Finisher - breath disruption
-    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "li_solar_plexus_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SOLAR_PLEXUS_STRIKE,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,

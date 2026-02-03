@@ -106,22 +106,24 @@ describe("GanTechniques", () => {
   });
 
   describe("Execution Time Optimization", () => {
-    it("should have fast executionTime for BLOCK techniques (200-500ms)", () => {
+    it("should have fast executionTime for BLOCK techniques (280-700ms)", () => {
       const blockTechniques = GAN_TECHNIQUES.filter(
         (t) => t.type === CombatAttackType.BLOCK
       );
 
       // BLOCK techniques specifically optimized for fast defensive reactions
+      // Updated ranges after 40% timing increase for better visibility
       blockTechniques.forEach((technique) => {
-        expect(technique.executionTime).toBeGreaterThanOrEqual(200);
-        expect(technique.executionTime).toBeLessThanOrEqual(500);
+        expect(technique.executionTime).toBeGreaterThanOrEqual(280);
+        expect(technique.executionTime).toBeLessThanOrEqual(700);
       });
     });
 
     it("should have fastest response on immovable_stance", () => {
       const immovableStance = getGanTechniqueById("gan_immovable_stance");
       expect(immovableStance).toBeDefined();
-      expect(immovableStance!.executionTime).toBe(250);
+      // Updated from 250ms to 350ms after 40% timing increase for visibility
+      expect(immovableStance!.executionTime).toBe(350);
     });
   });
 
