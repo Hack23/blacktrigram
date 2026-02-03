@@ -1200,13 +1200,13 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
   });
 
   describe("Guard Poses - Body Protection (신체 보호)", () => {
-    it("stance guards should have elbows tucked to protect ribs (Z < -1.5 rad)", () => {
+    it("stance guards should have elbows flexed to protect ribs (Y-axis flexion > 1.5 rad)", () => {
       const stanceAnimations = Array.from(ALL_ANIMATIONS.entries())
         .filter(([name]) => name.startsWith("stance_"))
         .map(([name, anim]) => ({ name, anim }));
 
       const exposedRibGuards: string[] = [];
-      const MINIMUM_ELBOW_TUCK = -1.5; // Elbow bent inward to protect ribs
+      const MINIMUM_ELBOW_FLEXION = 1.5; // Elbow flexion on Y-axis (anatomically correct rotation)
 
       for (const { name, anim } of stanceAnimations) {
         if (anim.keyframes.length === 0) continue;
@@ -1216,21 +1216,22 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
         const elbowL = firstKf.boneRotations.get(BoneName.ELBOW_L);
         const elbowR = firstKf.boneRotations.get(BoneName.ELBOW_R);
 
-        // Both elbows should be tucked (Z-rotation more negative than -1.5)
-        const leftTucked = elbowL && elbowL.z <= MINIMUM_ELBOW_TUCK;
-        const rightTucked = elbowR && elbowR.z >= -MINIMUM_ELBOW_TUCK; // Right side mirror
+        // Modern guard poses use Y-axis for elbow flexion (anatomically correct)
+        // Both elbows should be flexed (Y-rotation magnitude > 1.5 rad = 86 degrees)
+        const leftFlexed = elbowL && Math.abs(elbowL.y) >= MINIMUM_ELBOW_FLEXION;
+        const rightFlexed = elbowR && Math.abs(elbowR.y) >= MINIMUM_ELBOW_FLEXION;
 
-        if (!leftTucked || !rightTucked) {
-          const details = `L:${elbowL?.z.toFixed(2) ?? "?"}, R:${elbowR?.z.toFixed(2) ?? "?"}`;
+        if (!leftFlexed || !rightFlexed) {
+          const details = `L:${elbowL?.y.toFixed(2) ?? "?"}, R:${elbowR?.y.toFixed(2) ?? "?"}`;
           exposedRibGuards.push(`${name} (${details})`);
         }
       }
 
       if (exposedRibGuards.length > 0) {
-        console.warn("⚠️ Stance guards with exposed ribs:", exposedRibGuards);
+        console.warn("⚠️ Stance guards with insufficient elbow flexion:", exposedRibGuards);
       }
 
-      // At least 75% should have proper elbow tuck
+      // At least 75% should have proper elbow flexion
       const passRate = 1 - exposedRibGuards.length / stanceAnimations.length;
       expect(passRate).toBeGreaterThan(0.75);
     });

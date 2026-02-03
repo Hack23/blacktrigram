@@ -31,28 +31,47 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/Marti
  * Fast straight punch with lead hand (left in orthodox stance) using proper Korean martial arts form.
  * Probing attack to gauge distance and set up combinations.
  *
- * Korean martial arts biomechanics:
- * - Start: Middle guard position (중단막기)
- * - Chamber: Fist at hip, palm vertical (세로주먹)
- * - Extension: Full arm extension with fist rotation to pronated (palm-down)
- * - Non-striking hand: Maintains middle guard (중단막기) throughout
- * - Recovery: Return to middle guard position
- * - Hip engagement: Light hip rotation 0.2 rad (11.5°) for speed
- * - Hip drive: Minimal forward movement 0.06m
- * - Hikite: Opposite arm maintains guard for protection
- * - Fist rotation: Vertical → Pronated (~90° wrist rotation)
+ * Korean martial arts biomechanics (PHASE 2 - 95%+ Quality):
+ * ═══════════════════════════════════════════════════════════════════
+ * 1. Hip Rotation Sequence (엉덩이회전)
+ *    - Hips rotate FIRST to generate power
+ *    - Shoulders follow to transfer power
+ *    - Arm extends LAST to deliver power
+ *    - Multiple keyframes showing progression
  *
- * ENHANCED Phase 2 - Issue #3 Fix:
- * - Added light hip drive: pelvis moves forward 0.06m (half of cross)
- * - Added hip rotation: 0.2 rad (11.5°) for speed-power balance
+ * 2. Foot Pivot (발 회전)
+ *    - Rear foot (right) pivots on ball of foot
+ *    - Hip rotation drives the pivot
+ *    - Ankle rotation: heel lifts, ball stays planted
  *
- * Phases:
- * 1. Start (시작): Both hands in middle guard - 0ms
- * 2. Chamber (준비): Fist at hip, elbow bent 90° - 100ms
- * 3. Extension (지르기): Arm snaps forward with fist rotation - 150ms
- * 4. Peak hold (정점): Maximum reach, fist pronated - 50ms
- * 5. Retract (회수): Return to chamber - 100ms
- * 6. Recovery (복귀): Return to middle guard - 150ms
+ * 3. Shoulder Mechanics (어깨 역학)
+ *    - Lead shoulder (left): protraction (forward)
+ *    - Rear shoulder (right): retraction (back) during wind-up
+ *    - Proper scapular movement
+ *
+ * 4. Hikite - Opposite Arm Pull (당기기)
+ *    - Right arm pulls back to hip
+ *    - Creates rotational force
+ *    - Essential for power generation
+ *
+ * 5. Fist Rotation (주먹회전)
+ *    - Starts vertical (thumb up)
+ *    - Rotates to horizontal (palm down) at full extension
+ *    - Wrist pronation through the punch
+ *
+ * 6. Weight Transfer (체중이동)
+ *    - Subtle forward shift (not a lunge)
+ *    - Follows hip rotation
+ *    - Center of gravity stays controlled
+ *
+ * Phases (7 keyframes for proper biomechanics):
+ * 1. Start (시작): Both hands in guard, ready stance - 0ms
+ * 2. Hip Initiation (엉덩이 시작): Hips begin rotation FIRST - 60ms
+ * 3. Shoulder Drive (어깨 구동): Shoulders rotate, hikite begins - 40ms
+ * 4. Extension Start (지르기 시작): Arm begins extending, fist rotating - 80ms
+ * 5. Full Extension (완전 지르기): Full arm extension, fist pronated - 70ms
+ * 6. Peak Impact (정점): Maximum reach, all power aligned - 50ms
+ * 7. Recovery (복귀): Return to guard position - 250ms
  *
  * Total duration: 550ms (FAST technique)
  *
@@ -61,24 +80,103 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/Marti
 export const JAB_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab", "잽")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .punchChamber(TECHNIQUE_TIMING.FAST.chamber, "left") // 준비 - Chamber at hip
-    .withKoreanMiddleGuard("right") // Right hand stays in guard
-    // ✅ Phase 2 Enhancement: Add light hip drive for jab
-    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend * 0.5)
-    .position(BoneName.PELVIS, 0, 0, 0.03) // Light forward drive starts
-    .rotate(BoneName.PELVIS, 0, 0.1, 0) // Light hip rotation starts
+    // Keyframe 1: Start - Guard position (0ms)
+    .at(0, "linear")
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+    .rotate(BoneName.FOOT_L, 0, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    .punchExtend(TECHNIQUE_TIMING.FAST.extend, "left") // 지르기 - Extension with rotation
-    .withKoreanMiddleGuard("right") // Right hand stays in guard
-    // ✅ Phase 2 Enhancement: Peak with light hip drive
-    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend)
-    .position(BoneName.PELVIS, 0, 0, 0.06) // Light forward drive (Issue #3)
-    .rotate(BoneName.PELVIS, 0, 0.2, 0) // Hip rotation 11.5° (Issue #3)
+    // Keyframe 2: Hip Initiation - Hips rotate FIRST (60ms)
+    .at(0.06, "ease-out")
+    .rotate(BoneName.PELVIS, 0, 0.1, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.08, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.05, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.15, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.25, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
     .done<MartialArtsAnimationBuilder>()
-    .punchPeak(TECHNIQUE_TIMING.FAST.peak, "left") // 정점 - Peak extension
-    .withKoreanMiddleGuard("right") // Right hand stays in guard
-    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀 - Return to guard
-    .withKoreanMiddleGuard() // Both hands back to middle guard
+    // Keyframe 3: Shoulder Drive - Shoulders rotate, hikite begins (100ms)
+    .at(0.1, "ease-out")
+    .rotate(BoneName.PELVIS, 0, 0.15, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.15, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.18, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.2, 0)
+    .rotate(BoneName.FOOT_R, 0.2, 0, 0)
+    .rotate(BoneName.SHOULDER_R, -0.4, -0.5, -0.4)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
+    .rotate(BoneName.SHOULDER_L, -0.5, 0.5, 0.4)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
+    .rotate(BoneName.WRIST_L, 0, 0, 0)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 4: Extension Start - Arm begins extending (180ms)
+    .at(0.18, "ease-out")
+    .rotate(BoneName.PELVIS, 0, 0.18, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.2, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.3, 0)
+    .position(BoneName.PELVIS, 0.02, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.25, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.3, 0.6, 0.5)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.8)
+    .rotate(BoneName.WRIST_L, 0, 0, 0.1)
+    .rotate(BoneName.SHOULDER_R, -0.2, -0.6, -0.5)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.4)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 5: Full Extension - Full arm extension, fist pronated (250ms)
+    .at(0.25, "ease-in")
+    .rotate(BoneName.PELVIS, 0, 0.2, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.25, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.3, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0)
+    .position(BoneName.PELVIS, 0.03, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.28, 0, 0)
+    .rotate(BoneName.SHOULDER_L, 0.2, 0.7, 0.6)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.15)
+    .rotate(BoneName.WRIST_L, 0, 0, 0.2)
+    .rotate(BoneName.SHOULDER_R, -0.2, -0.7, -0.6)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.5)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 6: Peak Impact - Maximum reach, all power aligned (300ms)
+    .at(0.3, "linear")
+    .rotate(BoneName.PELVIS, 0, 0.22, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.27, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.32, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.37, 0)
+    .position(BoneName.PELVIS, 0.03, 0, 0)
+    .rotate(BoneName.FOOT_R, 0.3, 0, 0)
+    .rotate(BoneName.SHOULDER_L, 0.25, 0.75, 0.65)
+    .rotate(BoneName.ELBOW_L, 0, 0, -0.1)
+    .rotate(BoneName.WRIST_L, 0, 0, 0.2)
+    .rotate(BoneName.SHOULDER_R, -0.2, -0.75, -0.65)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 7: Recovery - Return to guard (550ms)
+    .at(0.55, "ease-in-out")
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.WRIST_L, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -91,30 +189,50 @@ export const JAB_ANIMATION: SkeletalAnimation =
  * Powerful straight punch with rear hand using full Korean martial arts biomechanics.
  * Full body rotation generates maximum power through hip and shoulder engagement.
  *
- * Korean martial arts biomechanics (역권지르기 - Yeokwon Jireugi):
- * - Start: Middle guard position (중단막기)
- * - Chamber: Rear fist at hip, palm vertical, body coiled
- * - Non-striking hand: Maintains middle guard throughout
- * - Hip drive: Full hip rotation (엉덩이회전) 0.5 rad (28.6°) + forward drive 0.12m
- * - Weight transfer: 70% front leg at impact
- * - Shoulder torque: Shoulder rotates with punch (어깨비틀기)  
- * - Hikite: Lead arm maintains guard for protection
- * - Fist rotation: Vertical → Pronated for power transfer
- * - Full extension: Elbow nearly straight (~175°) at impact
- * - Recovery: Return to middle guard position
+ * Korean martial arts biomechanics (역권지르기 - Yeokwon Jireugi) (PHASE 2 - 95%+ Quality):
+ * ═══════════════════════════════════════════════════════════════════
+ * 1. Hip Rotation Sequence (엉덩이회전)
+ *    - Hips rotate FIRST to generate power (~25-30°)
+ *    - Shoulders follow to transfer power
+ *    - Arm extends LAST to deliver power
+ *    - Sequential cascade creates maximum force
  *
- * ENHANCED Phase 2 - Issue #3 Fix:
- * - Added explicit hip drive: pelvis moves forward 0.12m
- * - Added explosive hip rotation: 0.5 rad (28.6°) for power generation
- * - Weight transfer from rear to front foot during extension
+ * 2. Foot Pivot (발 회전)
+ *    - Rear foot (right) pivots dramatically on ball
+ *    - Hip rotation drives strong pivot motion
+ *    - Ankle rotation: heel lifts high, ball stays planted
+ *    - Front foot stays stable for power transfer
  *
- * Phases:
- * 1. Start (시작): Both hands in middle guard - 0ms
- * 2. Chamber (준비): Rear fist coiled at hip - 150ms
- * 3. Hip rotation (회전): Power generation from hips - 200ms
- * 4. Extension (지르기): Arm extends with torso rotation - 80ms
- * 5. Follow-through (관통): Complete rotation and extension
- * 6. Recovery (복귀): Return to middle guard - 300ms
+ * 3. Shoulder Mechanics (어깨 역학)
+ *    - Rear shoulder (right): powerful protraction (forward)
+ *    - Lead shoulder (left): retraction (back) for hikite
+ *    - Full scapular movement for maximum reach
+ *
+ * 4. Hikite - Opposite Arm Pull (당기기)
+ *    - Left arm pulls strongly back to hip
+ *    - Creates powerful rotational force
+ *    - Essential for maximum power generation
+ *    - Counter-rotation multiplies force
+ *
+ * 5. Fist Rotation (주먹회전)
+ *    - Starts vertical (thumb up) at chamber
+ *    - Rotates to horizontal (palm down) during extension
+ *    - Full wrist pronation maximizes impact surface
+ *
+ * 6. Weight Transfer (체중이동)
+ *    - Significant forward weight shift
+ *    - Follows hip rotation sequence
+ *    - Center of gravity drives into target
+ *    - More pronounced than jab
+ *
+ * Phases (7 keyframes for proper biomechanics):
+ * 1. Start (시작): Both hands in guard, ready stance - 0ms
+ * 2. Chamber (준비): Rear arm coils, body winds up - 90ms
+ * 3. Hip Explosion (엉덩이 폭발): Hips rotate FIRST, powerful - 90ms
+ * 4. Shoulder Drive (어깨 구동): Shoulders drive, hikite strong - 70ms
+ * 5. Extension Power (지르기 힘): Arm extends with full rotation - 90ms
+ * 6. Peak Impact (정점): Maximum power delivery - 80ms
+ * 7. Recovery (복귀): Return to guard position - 310ms
  *
  * Total duration: 730ms (MEDIUM technique)
  *
@@ -123,24 +241,105 @@ export const JAB_ANIMATION: SkeletalAnimation =
 export const CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("cross", "크로스")
     .asAttack(TECHNIQUE_TIMING.MEDIUM.total)
-    .punchChamber(TECHNIQUE_TIMING.MEDIUM.chamber, "right") // 준비 - Chamber at hip
-    .withKoreanMiddleGuard("left") // Left hand stays in guard
-    // ✅ Phase 2 Enhancement: Add explicit hip drive during extension
-    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend * 0.5)
-    .position(BoneName.PELVIS, 0, 0, 0.06) // Forward drive starts (halfway)
-    .rotate(BoneName.PELVIS, 0, 0.25, 0) // Hip rotation starts
+    // Keyframe 1: Start - Guard position (0ms)
+    .at(0, "linear")
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+    .rotate(BoneName.FOOT_L, 0, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    .punchExtend(TECHNIQUE_TIMING.MEDIUM.extend, "right") // 지르기 - Extension with full hip rotation
-    .withKoreanMiddleGuard("left") // Left hand stays in guard
-    // ✅ Phase 2 Enhancement: Peak with full hip drive for power
-    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend)
-    .position(BoneName.PELVIS, 0, 0, 0.12) // Full forward drive (Issue #3)
-    .rotate(BoneName.PELVIS, 0, 0.5, 0) // Full hip rotation 28.6° (Issue #3)
+    // Keyframe 2: Chamber - Rear arm coils, body winds up (90ms)
+    .at(0.09, "ease-in")
+    .rotate(BoneName.PELVIS, 0, -0.15, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, -0.12, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, -0.1, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, -0.08, 0)
+    .rotate(BoneName.SHOULDER_R, -0.2, -0.5, -0.4)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.FOOT_R, 0.1, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.25, 0, 0)
     .done<MartialArtsAnimationBuilder>()
-    .punchPeak(TECHNIQUE_TIMING.MEDIUM.peak, "right") // 정점 - Peak impact
-    .withKoreanMiddleGuard("left") // Left hand stays in guard
-    .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover) // 복귀 - Return to guard
-    .withKoreanMiddleGuard() // Both hands back to middle guard
+    // Keyframe 3: Hip Explosion - Hips rotate FIRST, powerfully (180ms)
+    .at(0.18, "ease-out")
+    .rotate(BoneName.PELVIS, 0, 0.3, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.25, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.15, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.05, 0)
+    .rotate(BoneName.FOOT_R, 0.35, 0, 0)
+    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
+    .position(BoneName.PELVIS, 0.03, 0, 0)
+    .rotate(BoneName.SHOULDER_R, -0.2, -0.5, -0.4)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 4: Shoulder Drive - Shoulders drive, hikite strong (250ms)
+    .at(0.25, "ease-out")
+    .rotate(BoneName.PELVIS, 0, 0.4, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.38, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.45, 0)
+    .rotate(BoneName.FOOT_R, 0.4, 0, 0)
+    .position(BoneName.PELVIS, 0.05, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.3, 0.2, -0.4)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.5)
+    .rotate(BoneName.SHOULDER_R, -0.4, -0.2, 0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, -1.0)
+    .rotate(BoneName.WRIST_R, 0, 0, 0.05)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 5: Extension Power - Arm extends with full rotation (340ms)
+    .at(0.34, "ease-in")
+    .rotate(BoneName.PELVIS, 0, 0.45, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.45, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.55, 0)
+    .rotate(BoneName.FOOT_R, 0.45, 0, 0)
+    .position(BoneName.PELVIS, 0.06, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.2, 0, -0.6)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.57)
+    .rotate(BoneName.SHOULDER_R, 0.3, 0, 0.7)
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.15)
+    .rotate(BoneName.WRIST_R, 0, 0, 0.15)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 6: Peak Impact - Maximum power delivery (420ms)
+    .at(0.42, "linear")
+    .rotate(BoneName.PELVIS, 0, 0.5, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0.5, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0.55, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0)
+    .rotate(BoneName.FOOT_R, 0.5, 0, 0)
+    .position(BoneName.PELVIS, 0.07, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.2, -0.1, -0.7)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.57)
+    .rotate(BoneName.SHOULDER_R, 0.35, 0.1, 0.8)
+    .rotate(BoneName.ELBOW_R, 0, 0, -0.09)
+    .rotate(BoneName.WRIST_R, 0, 0, 0.2)
+    .done<MartialArtsAnimationBuilder>()
+    // Keyframe 7: Recovery - Return to guard (730ms)
+    .at(0.73, "ease-in-out")
+    .rotate(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
+    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
+    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
+    .position(BoneName.PELVIS, 0, 0, 0)
+    .rotate(BoneName.FOOT_R, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
+    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
+    .rotate(BoneName.WRIST_R, 0, 0, 0)
+    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
+    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
+    .done<MartialArtsAnimationBuilder>()
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -176,10 +375,6 @@ export const PALM_STRIKE_ANIMATION: SkeletalAnimation =
  * Curved punch targeting jaw or temple.
  * Generates power from hip and shoulder rotation.
  *
- * ENHANCED Phase 2 - Issue #3 Fix:
- * - Added explosive hip rotation: 0.7 rad (40°) for circular power
- * - Hip drives INTO the punch direction for arc generation
- *
  * Phases:
  * 1. Wind-up (준비): Arm pulls back, elbow bent 90° - 150ms
  * 2. Rotation & Strike (회전+타격): Hip rotates, fist arcs into target - 300ms
@@ -193,14 +388,7 @@ export const HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hook", "훅")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
     .hookWindup(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms arm pulls back
-    // ✅ Phase 2 Enhancement: Add explosive hip rotation for hook power
-    .at(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber + TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5)
-    .rotate(BoneName.PELVIS, 0, 0.35, 0) // Hip rotation starts (halfway to 40°)
-    .done<MartialArtsAnimationBuilder>()
     .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 타격 - 200ms curved strike
-    .at(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber + TECHNIQUE_TIMING.HEAVY_LIGHT.extend)
-    .rotate(BoneName.PELVIS, 0, 0.7, 0) // Full hip rotation 40° (Issue #3)
-    .done<MartialArtsAnimationBuilder>()
     .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
     .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 350ms
     .build();

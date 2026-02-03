@@ -1368,19 +1368,13 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Palm strike extension - Open palm heel strike (장권)
-   * 
-   * PHASE 3 FIX (Issue #7): Correct palm strike wrist formation
-   * - Wrist hyperextension -0.5 rad (-28°) for heel strike
-   * - Fingers extended, palm facing target
-   * 
    * @korean 장권
    */
   palmStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
       kf.rotate(BoneName.SHOULDER_R, -0.7, 0, 0.5);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 0.05);
-      // PHASE 3 FIX: Palm strike requires hyperextension -0.5 rad (-28°)
-      kf.rotate(BoneName.WRIST_R, -0.5, 0, 0);
+      kf.rotate(BoneName.WRIST_R, -0.5, 0, 0.1);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.4, 0);
       kf.rotate(BoneName.PELVIS, 0, 0.25, 0);
       // Apply open palm pose for palm strike
@@ -1986,9 +1980,6 @@ export class MartialArtsAnimationBuilder {
   /**
    * Jugular strike - Knife hand to jugular vein (경정맥격)
    * Slicing motion to jugular
-   * 
-   * PHASE 3 FIX (Issue #7): Correct knife-hand wrist formation
-   * 
    * @korean 경정맥격
    */
   jugularStrike(timeOffset: number = 0.08, easing: string = "ease-out"): this {
@@ -1996,8 +1987,7 @@ export class MartialArtsAnimationBuilder {
       // Diagonal knife hand motion
       kf.rotate(BoneName.SHOULDER_R, -0.4, 0.5, 0.35);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 0.4);
-      // PHASE 3 FIX: Knife-hand requires extension 0.12 rad + radial deviation 0.08 rad
-      kf.rotate(BoneName.WRIST_R, 0.12, 0.08, -0.2);
+      kf.rotate(BoneName.WRIST_R, -0.4, 0.3, -0.2);
 
       // Other arm draws back
       kf.rotate(BoneName.SHOULDER_L, 0.2, -0.3, -0.3);
@@ -2849,21 +2839,14 @@ export class MartialArtsAnimationBuilder {
   /**
    * Knife hand block - Open hand deflection (수도막기)
    * Blade of hand for blocking
-   * 
-   * PHASE 3 FIX (Issue #7): Correct knife-hand wrist formation
-   * - Wrist extension 0.12 rad (7°) for rigidity
-   * - Radial deviation 0.08 rad (5°) - thumb side up
-   * - Fingers together, thumb tucked
-   * 
    * @korean 수도막기
    */
   blockKnifeHand(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Knife hand position with CORRECTED wrist angle
+      // Knife hand position
       kf.rotate(BoneName.SHOULDER_L, -0.5, 0.6, -0.5);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -0.7);
-      // PHASE 3 FIX: Knife-hand requires extension 0.12 rad + radial deviation 0.08 rad
-      kf.rotate(BoneName.WRIST_L, 0.12, 0.08, 0);
+      kf.rotate(BoneName.WRIST_L, -0.3, 0.4, 0);
 
       // Other hand guards solar plexus
       kf.rotate(BoneName.SHOULDER_R, 0.3, 0.2, 0.4);
@@ -2901,30 +2884,22 @@ export class MartialArtsAnimationBuilder {
   /**
    * Forward step - Advancing stance (전진)
    * Weight transfers forward with lead foot
-   * 
-   * PHASE 3 FIX (Issue #8): Add proper footwork mechanics
-   * - Feet LIFT off ground (Y +0.05 to +0.07m)
-   * - Ball of foot push-off, heel strike landing
-   * - No sliding - actual stepping
-   * 
    * @korean 전진
    */
   forwardStep(timeOffset: number = 0.12, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Lead leg steps forward with FOOT LIFT
+      // Lead leg steps forward
       kf.rotate(BoneName.HIP_R, 0.35, 0.1, 0);
       kf.rotate(BoneName.KNEE_R, -0.3, 0, 0);
-      kf.rotate(BoneName.FOOT_R, -0.35, 0, 0); // Dorsiflexion for heel strike
-      kf.position(BoneName.FOOT_R, 0, 0.06, 0); // LIFT 6cm off ground
+      kf.rotate(BoneName.FOOT_R, 0.1, 0, 0);
 
-      // Rear leg pushes with plantar flexion
+      // Rear leg pushes
       kf.rotate(BoneName.HIP_L, -0.1, 0, 0);
       kf.rotate(BoneName.KNEE_L, -0.15, 0, 0);
-      kf.rotate(BoneName.FOOT_L, -0.4, 0, 0); // Plantar flexion (push-off)
 
-      // Body moves forward with slight drop during step
+      // Body moves forward
       kf.rotate(BoneName.SPINE_UPPER, 0.05, 0, 0);
-      kf.position(BoneName.PELVIS, 0, -0.03, 0.15); // Drop 3cm during weight transfer
+      kf.position(BoneName.PELVIS, 0, 0, 0.15);
     });
     this.currentTime += timeOffset;
     return this;
@@ -2933,9 +2908,6 @@ export class MartialArtsAnimationBuilder {
   /**
    * Backward step - Retreating stance (후진)
    * Weight transfers backward with rear foot
-   * 
-   * PHASE 3 FIX (Issue #8): Add proper footwork mechanics with foot lift
-   * 
    * @korean 후진
    */
   backwardStep(timeOffset: number = 0.12, easing: string = "ease-out"): this {
@@ -2944,15 +2916,14 @@ export class MartialArtsAnimationBuilder {
       kf.rotate(BoneName.HIP_R, -0.1, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.25, 0, 0);
 
-      // Rear leg steps back with FOOT LIFT
+      // Rear leg steps back
       kf.rotate(BoneName.HIP_L, 0.25, 0.1, 0);
       kf.rotate(BoneName.KNEE_L, -0.35, 0, 0);
-      kf.rotate(BoneName.FOOT_L, -0.35, 0, 0); // Dorsiflexion
-      kf.position(BoneName.FOOT_L, 0, 0.05, 0); // LIFT 5cm off ground
+      kf.rotate(BoneName.FOOT_L, 0.1, 0, 0);
 
-      // Body moves backward with slight drop
+      // Body moves backward
       kf.rotate(BoneName.SPINE_UPPER, -0.05, 0, 0);
-      kf.position(BoneName.PELVIS, 0, -0.03, -0.15); // Drop during step
+      kf.position(BoneName.PELVIS, 0, 0, -0.15);
     });
     this.currentTime += timeOffset;
     return this;
@@ -2961,25 +2932,21 @@ export class MartialArtsAnimationBuilder {
   /**
    * Side step left - Lateral evasion (좌측이동)
    * Quick lateral movement to the left
-   * 
-   * PHASE 3 FIX (Issue #8): Add proper footwork mechanics with foot lift
-   * 
    * @korean 좌측이동
    */
   sideStepLeft(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Left leg reaches with FOOT LIFT
+      // Left leg reaches
       kf.rotate(BoneName.HIP_L, 0.1, 0, -0.3);
       kf.rotate(BoneName.KNEE_L, -0.2, 0, 0);
-      kf.position(BoneName.FOOT_L, 0, 0.05, 0); // LIFT 5cm
 
       // Right leg follows
       kf.rotate(BoneName.HIP_R, 0.05, 0, -0.15);
       kf.rotate(BoneName.KNEE_R, -0.25, 0, 0);
 
-      // Body shifts left with slight drop
+      // Body shifts left
       kf.rotate(BoneName.PELVIS, 0, -0.1, 0);
-      kf.position(BoneName.PELVIS, -0.2, -0.02, 0); // Drop 2cm during shift
+      kf.position(BoneName.PELVIS, -0.2, 0, 0);
     });
     this.currentTime += timeOffset;
     return this;
@@ -2988,25 +2955,21 @@ export class MartialArtsAnimationBuilder {
   /**
    * Side step right - Lateral evasion (우측이동)
    * Quick lateral movement to the right
-   * 
-   * PHASE 3 FIX (Issue #8): Add proper footwork mechanics with foot lift
-   * 
    * @korean 우측이동
    */
   sideStepRight(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Right leg reaches with FOOT LIFT
+      // Right leg reaches
       kf.rotate(BoneName.HIP_R, 0.1, 0, 0.3);
       kf.rotate(BoneName.KNEE_R, -0.2, 0, 0);
-      kf.position(BoneName.FOOT_R, 0, 0.05, 0); // LIFT 5cm
 
       // Left leg follows
       kf.rotate(BoneName.HIP_L, 0.05, 0, 0.15);
       kf.rotate(BoneName.KNEE_L, -0.25, 0, 0);
 
-      // Body shifts right with slight drop
+      // Body shifts right
       kf.rotate(BoneName.PELVIS, 0, 0.1, 0);
-      kf.position(BoneName.PELVIS, 0.2, -0.02, 0); // Drop 2cm during shift
+      kf.position(BoneName.PELVIS, 0.2, 0, 0);
     });
     this.currentTime += timeOffset;
     return this;

@@ -86,7 +86,13 @@ const WEIGHT_SHIFT_AMPLITUDES = {
 /**
  * Calculates breathing scale at a given phase
  *
- * @param phase - Breathing phase (0-1, where 0.5 is peak inhale)
+ * Natural breathing has 4 phases:
+ * 1. Inhale (0.0-0.4): Smooth rise
+ * 2. Peak hold (0.4-0.5): Brief pause
+ * 3. Exhale (0.5-0.9): Smooth fall
+ * 4. Valley hold (0.9-1.0): Brief pause
+ *
+ * @param phase - Breathing phase (0-1)
  * @param min - Minimum scale (exhale)
  * @param max - Maximum scale (inhale peak)
  * @returns Scale factor for chest/torso
@@ -96,28 +102,76 @@ function calculateBreathingScale(
   min: number,
   max: number,
 ): number {
-  // Use sine wave for natural breathing rhythm
-  // Phase 0.5 = peak inhale, 0 and 1 = exhale
-  const breathPhase = Math.sin(phase * Math.PI * 2);
-  const amplitude = (max - min) / 2;
-  const center = (max + min) / 2;
-  return center + breathPhase * amplitude;
+  // Natural breathing with holds at peak/valley
+  let breathValue: number;
+  
+  if (phase < 0.4) {
+    // Inhale phase: smooth rise (0-0.4)
+    const inhalePhase = phase / 0.4;
+    breathValue = Math.sin(inhalePhase * Math.PI * 0.5); // 0 to 1
+  } else if (phase < 0.5) {
+    // Peak hold (0.4-0.5)
+    breathValue = 1.0;
+  } else if (phase < 0.9) {
+    // Exhale phase: smooth fall (0.5-0.9)
+    const exhalePhase = (phase - 0.5) / 0.4;
+    breathValue = Math.cos(exhalePhase * Math.PI * 0.5); // 1 to 0
+  } else {
+    // Valley hold (0.9-1.0)
+    breathValue = 0.0;
+  }
+  
+  // Map to min/max range
+  return min + breathValue * (max - min);
 }
 
 /**
  * Calculates torso expansion for breathing effect
  *
- * PHASE 3 FIX (Issue #6): Breathing should be subtle shoulder/chest expansion,
- * not walking in place. Target: ±1cm vertical breathing motion max.
- *
  * @param breathingScale - Current breathing scale (0.96-1.04)
- * @returns Torso rotation adjustment for breathing (in radians)
+ * @returns Torso rotation adjustment for breathing (chest expansion forward)
  */
 function calculateTorsoBreathingOffset(breathingScale: number): number {
-  // Chest expands forward slightly on inhale
-  // Scale reduced to 0.2 for subtle breathing (was 0.3)
-  // This creates ~5-7° chest expansion max (subtle shoulder rise)
-  return (breathingScale - 1) * 0.2;
+  // Chest expands forward slightly on inhale (natural thoracic extension)
+  // Typical breathing expansion: 0.05-0.15 radians (3-8 degrees)
+  return (breathingScale - 1) * 0.4;
+}
+
+/**
+ * Calculates shoulder rise/fall during breathing
+ *
+ * @param breathingScale - Current breathing scale (0.96-1.04)
+ * @returns Shoulder rotation adjustment (very subtle upward rotation on inhale)
+ */
+function calculateShoulderBreathing(breathingScale: number): number {
+  // Shoulders rise slightly on inhale (very subtle - 1-2 degrees)
+  // Natural clavicle elevation during respiration
+  return (breathingScale - 1) * 0.15;
+}
+
+/**
+ * Calculates subtle head movement during breathing
+ *
+ * @param phase - Breathing phase (0-1)
+ * @param intensity - Movement intensity (0-1, stance-specific)
+ * @returns Head rotation adjustment for natural idle motion
+ */
+function calculateHeadMovement(phase: number, intensity: number): {
+  pitch: number; // X-axis (nod)
+  yaw: number;   // Y-axis (turn)
+  roll: number;  // Z-axis (tilt)
+} {
+  // Very subtle head micro-movements for natural idle
+  // Fighters maintain awareness with small tracking movements
+  const nodCycle = Math.sin(phase * Math.PI * 2) * 0.02 * intensity;
+  const turnCycle = Math.sin(phase * Math.PI * 3 + 0.5) * 0.015 * intensity;
+  const tiltCycle = Math.sin(phase * Math.PI * 2.5 + 1.0) * 0.01 * intensity;
+  
+  return {
+    pitch: nodCycle,
+    yaw: turnCycle,
+    roll: tiltCycle,
+  };
 }
 
 /**
@@ -131,10 +185,70 @@ function calculateTorsoBreathingOffset(breathingScale: number): number {
  * @returns Knee rotation adjustment for natural bounce
  */
 function calculateKneeBounce(phase: number, amplitude: number): number {
-  // Subtle knee flex synchronized with breathing
-  // Two bounces per breath cycle for natural feel
-  const bouncePhase = Math.sin(phase * Math.PI * 4);
-  return bouncePhase * amplitude * 0.15; // Very subtle knee flex
+  // Very subtle knee flex synchronized with breathing
+  // Single smooth cycle per breath (not double)
+  const bouncePhase = Math.sin(phase * Math.PI * 2 - Math.PI * 0.5);
+  return bouncePhase * amplitude * 0.12; // Slightly reduced for more natural look
+}
+
+/**
+ * Calculates stance-specific micro-movements
+ *
+ * Each stance has unique micro-adjustments reflecting its philosophy:
+ * - Guard hand float/tension
+ * - Weight shift readiness
+ * - Finger/fist micro-adjustments
+ *
+ * @param phase - Movement phase (0-1)
+ * @param stanceType - Type of micro-movement for this stance
+ * @returns Movement adjustments for stance character
+ */
+function calculateStanceMicroMovement(
+  phase: number,
+  stanceType: 'aggressive' | 'fluid' | 'precise' | 'coiled' | 'flowing' | 'adaptive' | 'solid' | 'grounded',
+): { guardFloat: number; weightShift: number } {
+  switch (stanceType) {
+    case 'aggressive': // Geon - forward pressure micro-shifts
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 3) * 0.01,
+        weightShift: Math.sin(phase * Math.PI * 2 + 0.3) * 0.008,
+      };
+    case 'fluid': // Tae - circular flowing micro-shifts
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 2.5) * 0.015,
+        weightShift: Math.sin(phase * Math.PI * 2 - 0.5) * 0.012,
+      };
+    case 'precise': // Li - minimal, controlled micro-adjustments
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 4) * 0.005,
+        weightShift: Math.sin(phase * Math.PI * 3) * 0.003,
+      };
+    case 'coiled': // Jin - spring tension micro-pulses
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 3.5) * 0.012,
+        weightShift: Math.sin(phase * Math.PI * 2.5 + 0.8) * 0.01,
+      };
+    case 'flowing': // Son - continuous rhythmic micro-flow
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 3 + 0.2) * 0.013,
+        weightShift: Math.sin(phase * Math.PI * 2 - 0.3) * 0.01,
+      };
+    case 'adaptive': // Gam - responsive circular micro-shifts
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 2.3) * 0.014,
+        weightShift: Math.sin(phase * Math.PI * 2 + 0.6) * 0.011,
+      };
+    case 'solid': // Gan - minimal mountain stability
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 2) * 0.004,
+        weightShift: Math.sin(phase * Math.PI * 2) * 0.002,
+      };
+    case 'grounded': // Gon - stable grounded micro-adjustments
+      return {
+        guardFloat: Math.sin(phase * Math.PI * 2.5) * 0.007,
+        weightShift: Math.sin(phase * Math.PI * 2 + 0.4) * 0.006,
+      };
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -142,39 +256,48 @@ function calculateKneeBounce(phase: number, amplitude: number): number {
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Applies a complete guard pose to a KeyframeConfig with breathing and knee bounce
+ * Applies a complete guard pose to a KeyframeConfig with breathing enhancements
  *
- * DESIGN: Idle animations should only have:
+ * DESIGN: Idle animations should include:
  * - Chest breathing (torso expansion)
+ * - Shoulder rise/fall (natural respiration)
+ * - Subtle head movement (awareness tracking)
  * - Subtle knee bounce (slight knee flex variation)
+ * - Guard micro-adjustments (stance-specific)
  * NO pelvis X/Z position movement (causes "walking in place" appearance)
  *
  * @param kf - KeyframeConfig to apply pose to
  * @param pose - Guard pose to apply
  * @param breathingOffset - Torso breathing offset
+ * @param shoulderOffset - Shoulder rise/fall offset
+ * @param headMovement - Head micro-movement adjustments
  * @param kneeBounce - Subtle knee flex adjustment for bounce effect
+ * @param guardAdjustment - Guard hand micro-adjustment
  */
 function applyGuardPoseToKeyframe(
   kf: KeyframeConfig,
   pose: StanceGuardPose,
   breathingOffset: number,
+  shoulderOffset: number,
+  headMovement: { pitch: number; yaw: number; roll: number },
   kneeBounce: number = 0,
+  guardAdjustment: number = 0,
 ): void {
   // === ARM POSITIONS (팔 위치) ===
   // IMPORTANT: Use SHOULDER_L/R, ELBOW_L/R, WRIST_L/R bone names
   // NOT UPPER_ARM, FOREARM, HAND - those are different bones in the hierarchy!
 
-  // Left arm - shoulder controls arm lift/rotation
+  // Left arm - shoulder controls arm lift/rotation with breathing
   kf.rotate(
     BoneName.SHOULDER_L,
-    pose.leftArm.shoulder.x,
+    pose.leftArm.shoulder.x + shoulderOffset + guardAdjustment * 0.3,
     pose.leftArm.shoulder.y,
-    pose.leftArm.shoulder.z,
+    pose.leftArm.shoulder.z + guardAdjustment * 0.2,
   );
-  // Elbow controls forearm bend
+  // Elbow controls forearm bend with subtle guard float
   kf.rotate(
     BoneName.ELBOW_L,
-    pose.leftArm.elbow.x,
+    pose.leftArm.elbow.x + guardAdjustment * 0.15,
     pose.leftArm.elbow.y,
     pose.leftArm.elbow.z,
   );
@@ -186,16 +309,16 @@ function applyGuardPoseToKeyframe(
     pose.leftArm.wrist.z,
   );
 
-  // Right arm - mirror bone hierarchy
+  // Right arm - mirror bone hierarchy with breathing
   kf.rotate(
     BoneName.SHOULDER_R,
-    pose.rightArm.shoulder.x,
+    pose.rightArm.shoulder.x + shoulderOffset + guardAdjustment * 0.3,
     pose.rightArm.shoulder.y,
-    pose.rightArm.shoulder.z,
+    pose.rightArm.shoulder.z - guardAdjustment * 0.2,
   );
   kf.rotate(
     BoneName.ELBOW_R,
-    pose.rightArm.elbow.x,
+    pose.rightArm.elbow.x + guardAdjustment * 0.15,
     pose.rightArm.elbow.y,
     pose.rightArm.elbow.z,
   );
@@ -204,6 +327,15 @@ function applyGuardPoseToKeyframe(
     pose.rightArm.wrist.x,
     pose.rightArm.wrist.y,
     pose.rightArm.wrist.z,
+  );
+
+  // === HEAD (머리) - Subtle tracking and awareness ===
+  // Natural idle head micro-movements for realism
+  kf.rotate(
+    BoneName.HEAD,
+    headMovement.pitch,
+    headMovement.yaw,
+    headMovement.roll,
   );
 
   // === TORSO (몸통) - Full spine chain for proper rotation ===
@@ -298,8 +430,13 @@ function applyGuardPoseToKeyframe(
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Geon idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Geon idle animation with natural breathing and micro-movements
+ *
+ * Heaven stance: Powerful, confident breathing with forward pressure
+ * - Chest expansion breathing (2.4s cycle)
+ * - Subtle shoulder rise/fall
+ * - Alert head tracking
+ * - Aggressive guard micro-adjustments
  */
 function createGeonIdleAnimation(): SkeletalAnimation {
   const pose = GEON_HIGH_GUARD_POSE;
@@ -313,16 +450,33 @@ function createGeonIdleAnimation(): SkeletalAnimation {
     "건 대기",
   ).asIdle(duration, true);
 
-  // Generate keyframes with breathing and subtle knee bounce
+  // Generate keyframes with natural breathing and stance character
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
+    const shoulderOffset = calculateShoulderBreathing(breathingScale);
+    
+    // Head tracking (moderate intensity for alert stance)
+    const headMovement = calculateHeadMovement(phase, 0.6);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'aggressive');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -348,8 +502,13 @@ export const GEON_IDLE_ANIMATION: SkeletalAnimation = createGeonIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Tae idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Tae idle animation with natural breathing and micro-movements
+ *
+ * Lake stance: Fluid, rippling breath with circular flow
+ * - Flowing wave breathing (2.8s cycle)
+ * - Gentle shoulder rise/fall
+ * - Calm head tracking
+ * - Fluid guard micro-adjustments
  */
 function createTaeIdleAnimation(): SkeletalAnimation {
   const pose = TAE_FLUID_GUARD_POSE;
@@ -366,12 +525,29 @@ function createTaeIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
+    const shoulderOffset = calculateShoulderBreathing(breathingScale);
+    
+    // Head tracking (high intensity for adaptive awareness)
+    const headMovement = calculateHeadMovement(phase, 0.8);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'fluid');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -397,8 +573,13 @@ export const TAE_IDLE_ANIMATION: SkeletalAnimation = createTaeIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Li idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Li idle animation with natural breathing and micro-movements
+ *
+ * Fire stance: Sharp, controlled precision breathing
+ * - Controlled breathing (1.8s cycle)
+ * - Minimal shoulder movement
+ * - Focused head tracking
+ * - Precise guard micro-adjustments
  */
 function createLiIdleAnimation(): SkeletalAnimation {
   const pose = LI_FIRE_GUARD_POSE;
@@ -415,12 +596,29 @@ function createLiIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle (minimal range)
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
+    const shoulderOffset = calculateShoulderBreathing(breathingScale) * 0.6; // Reduced
+    
+    // Head tracking (low intensity for precision focus)
+    const headMovement = calculateHeadMovement(phase, 0.3);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'precise');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -446,8 +644,13 @@ export const LI_IDLE_ANIMATION: SkeletalAnimation = createLiIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Jin idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Jin idle animation with natural breathing and micro-movements
+ *
+ * Thunder stance: Deep coiled power breathing with explosive readiness
+ * - Deep power breathing (2.2s cycle)
+ * - Pronounced shoulder rise/fall
+ * - Alert head tracking
+ * - Coiled tension micro-adjustments
  */
 function createJinIdleAnimation(): SkeletalAnimation {
   const pose = JIN_THUNDER_GUARD_POSE;
@@ -464,13 +667,29 @@ function createJinIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle (deep range)
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Jin uses slightly larger bounce (coiled spring ready)
+    const shoulderOffset = calculateShoulderBreathing(breathingScale) * 1.2; // Enhanced
+    
+    // Head tracking (moderate intensity for coiled readiness)
+    const headMovement = calculateHeadMovement(phase, 0.5);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'coiled');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -496,8 +715,13 @@ export const JIN_IDLE_ANIMATION: SkeletalAnimation = createJinIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Son idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Son idle animation with natural breathing and micro-movements
+ *
+ * Wind stance: Rhythmic continuous flow with never-still motion
+ * - Rhythmic flowing breathing (2.0s cycle)
+ * - Continuous shoulder movement
+ * - Active head tracking
+ * - Flowing guard micro-adjustments
  */
 function createSonIdleAnimation(): SkeletalAnimation {
   const pose = SON_WIND_GUARD_POSE;
@@ -514,12 +738,29 @@ function createSonIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
+    const shoulderOffset = calculateShoulderBreathing(breathingScale);
+    
+    // Head tracking (high intensity for wind's continuous awareness)
+    const headMovement = calculateHeadMovement(phase, 0.9);
+    
+    // Stance-specific micro-movements (wind never stops moving)
+    const microMove = calculateStanceMicroMovement(phase, 'flowing');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -545,8 +786,13 @@ export const SON_IDLE_ANIMATION: SkeletalAnimation = createSonIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gam idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Gam idle animation with natural breathing and micro-movements
+ *
+ * Water stance: Deep flowing diaphragm breathing with adaptive motion
+ * - Deep flowing breathing (3.0s cycle - longest)
+ * - Smooth shoulder rise/fall
+ * - Calm adaptive head tracking
+ * - Adaptive circular guard micro-adjustments
  */
 function createGamIdleAnimation(): SkeletalAnimation {
   const pose = GAM_WATER_GUARD_POSE;
@@ -563,12 +809,29 @@ function createGamIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle (deepest, longest)
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
+    const shoulderOffset = calculateShoulderBreathing(breathingScale);
+    
+    // Head tracking (moderate intensity for adaptive awareness)
+    const headMovement = calculateHeadMovement(phase, 0.7);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'adaptive');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -594,8 +857,13 @@ export const GAM_IDLE_ANIMATION: SkeletalAnimation = createGamIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gan idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Gan idle animation with natural breathing and micro-movements
+ *
+ * Mountain stance: Minimal steady breathing with immovable stability
+ * - Steady controlled breathing (2.6s cycle)
+ * - Minimal shoulder movement
+ * - Solid head position (minimal tracking)
+ * - Mountain stability (minimal micro-adjustments)
  */
 function createGanIdleAnimation(): SkeletalAnimation {
   const pose = GAN_MOUNTAIN_GUARD_POSE;
@@ -612,13 +880,29 @@ function createGanIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle (minimal range)
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Gan uses minimal bounce (mountain stability)
+    const shoulderOffset = calculateShoulderBreathing(breathingScale) * 0.5; // Minimal
+    
+    // Head tracking (very low intensity for mountain immovability)
+    const headMovement = calculateHeadMovement(phase, 0.2);
+    
+    // Stance-specific micro-movements (mountain minimal)
+    const microMove = calculateStanceMicroMovement(phase, 'solid');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
@@ -644,8 +928,13 @@ export const GAN_IDLE_ANIMATION: SkeletalAnimation = createGanIdleAnimation();
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Creates Gon idle animation with breathing and subtle knee bounce
- * NO pelvis position movement - only breathing and knee flex
+ * Creates Gon idle animation with natural breathing and micro-movements
+ *
+ * Earth stance: Deep grounded diaphragm breathing with stability
+ * - Deep diaphragm breathing (2.6s cycle)
+ * - Stable shoulder movement
+ * - Grounded head tracking
+ * - Stable grounded micro-adjustments
  */
 function createGonIdleAnimation(): SkeletalAnimation {
   const pose = GON_EARTH_GUARD_POSE;
@@ -662,13 +951,29 @@ function createGonIdleAnimation(): SkeletalAnimation {
   for (let i = 0; i <= frames; i++) {
     const phase = i / frames;
     const frameTime = phase * duration;
+    
+    // Natural breathing cycle (deep grounded)
     const breathingScale = calculateBreathingScale(phase, min, max);
     const breathingOffset = calculateTorsoBreathingOffset(breathingScale);
-    // Gon uses grounded knee bounce (wrestling ready)
+    const shoulderOffset = calculateShoulderBreathing(breathingScale);
+    
+    // Head tracking (moderate intensity for wrestling awareness)
+    const headMovement = calculateHeadMovement(phase, 0.5);
+    
+    // Stance-specific micro-movements
+    const microMove = calculateStanceMicroMovement(phase, 'grounded');
     const kneeBounce = calculateKneeBounce(phase, amplitude);
 
     const kf = builder.at(frameTime);
-    applyGuardPoseToKeyframe(kf, pose, breathingOffset, kneeBounce);
+    applyGuardPoseToKeyframe(
+      kf,
+      pose,
+      breathingOffset,
+      shoulderOffset,
+      headMovement,
+      kneeBounce,
+      microMove.guardFloat,
+    );
     kf.done<MartialArtsAnimationBuilder>();
   }
 
