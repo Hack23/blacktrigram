@@ -407,11 +407,12 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       }
       
       // Update only active particle positions (rest remain at origin, won't be rendered)
+      // positions is guaranteed to be defined here (either from ref or just created above)
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
-        positions![i3] = particle.position.x;
-        positions![i3 + 1] = particle.position.y;
-        positions![i3 + 2] = particle.position.z;
+        positions[i3] = particle.position.x;
+        positions[i3 + 1] = particle.position.y;
+        positions[i3 + 2] = particle.position.z;
       });
     });
   });
