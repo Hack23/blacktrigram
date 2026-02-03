@@ -81,7 +81,7 @@ export const DefeatAnimation3D: React.FC = () => {
           (particles.material as THREE.Material).dispose();
         }
       }
-      if (spiral) {
+      if (spiral && Array.isArray(spiral.children)) {
         spiral.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
@@ -92,7 +92,7 @@ export const DefeatAnimation3D: React.FC = () => {
         });
       }
       // Additionally iterate over all group children to catch meshes/points without explicit refs
-      if (group) {
+      if (group && Array.isArray(group.children)) {
         group.children.forEach((child) => {
           // Skip already-handled refs
           if (child === particles || child === spiral) {
