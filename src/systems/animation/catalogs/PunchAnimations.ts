@@ -18,6 +18,7 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
+import { BoneName } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -36,9 +37,14 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/Marti
  * - Extension: Full arm extension with fist rotation to pronated (palm-down)
  * - Non-striking hand: Maintains middle guard (중단막기) throughout
  * - Recovery: Return to middle guard position
- * - Hip engagement: Minimal hip rotation for speed
+ * - Hip engagement: Light hip rotation 0.2 rad (11.5°) for speed
+ * - Hip drive: Minimal forward movement 0.06m
  * - Hikite: Opposite arm maintains guard for protection
  * - Fist rotation: Vertical → Pronated (~90° wrist rotation)
+ *
+ * ENHANCED Phase 2 - Issue #3 Fix:
+ * - Added light hip drive: pelvis moves forward 0.06m (half of cross)
+ * - Added hip rotation: 0.2 rad (11.5°) for speed-power balance
  *
  * Phases:
  * 1. Start (시작): Both hands in middle guard - 0ms
@@ -57,8 +63,18 @@ export const JAB_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.FAST.total)
     .punchChamber(TECHNIQUE_TIMING.FAST.chamber, "left") // 준비 - Chamber at hip
     .withKoreanMiddleGuard("right") // Right hand stays in guard
+    // ✅ Phase 2 Enhancement: Add light hip drive for jab
+    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend * 0.5)
+    .position(BoneName.PELVIS, 0, 0, 0.03) // Light forward drive starts
+    .rotate(BoneName.PELVIS, 0, 0.1, 0) // Light hip rotation starts
+    .done<MartialArtsAnimationBuilder>()
     .punchExtend(TECHNIQUE_TIMING.FAST.extend, "left") // 지르기 - Extension with rotation
     .withKoreanMiddleGuard("right") // Right hand stays in guard
+    // ✅ Phase 2 Enhancement: Peak with light hip drive
+    .at(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend)
+    .position(BoneName.PELVIS, 0, 0, 0.06) // Light forward drive (Issue #3)
+    .rotate(BoneName.PELVIS, 0, 0.2, 0) // Hip rotation 11.5° (Issue #3)
+    .done<MartialArtsAnimationBuilder>()
     .punchPeak(TECHNIQUE_TIMING.FAST.peak, "left") // 정점 - Peak extension
     .withKoreanMiddleGuard("right") // Right hand stays in guard
     .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀 - Return to guard
@@ -79,12 +95,18 @@ export const JAB_ANIMATION: SkeletalAnimation =
  * - Start: Middle guard position (중단막기)
  * - Chamber: Rear fist at hip, palm vertical, body coiled
  * - Non-striking hand: Maintains middle guard throughout
- * - Hip drive: Full hip rotation (엉덩이회전) ~20-25°
+ * - Hip drive: Full hip rotation (엉덩이회전) 0.5 rad (28.6°) + forward drive 0.12m
+ * - Weight transfer: 70% front leg at impact
  * - Shoulder torque: Shoulder rotates with punch (어깨비틀기)  
  * - Hikite: Lead arm maintains guard for protection
  * - Fist rotation: Vertical → Pronated for power transfer
  * - Full extension: Elbow nearly straight (~175°) at impact
  * - Recovery: Return to middle guard position
+ *
+ * ENHANCED Phase 2 - Issue #3 Fix:
+ * - Added explicit hip drive: pelvis moves forward 0.12m
+ * - Added explosive hip rotation: 0.5 rad (28.6°) for power generation
+ * - Weight transfer from rear to front foot during extension
  *
  * Phases:
  * 1. Start (시작): Both hands in middle guard - 0ms
@@ -103,8 +125,18 @@ export const CROSS_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.MEDIUM.total)
     .punchChamber(TECHNIQUE_TIMING.MEDIUM.chamber, "right") // 준비 - Chamber at hip
     .withKoreanMiddleGuard("left") // Left hand stays in guard
+    // ✅ Phase 2 Enhancement: Add explicit hip drive during extension
+    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend * 0.5)
+    .position(BoneName.PELVIS, 0, 0, 0.06) // Forward drive starts (halfway)
+    .rotate(BoneName.PELVIS, 0, 0.25, 0) // Hip rotation starts
+    .done<MartialArtsAnimationBuilder>()
     .punchExtend(TECHNIQUE_TIMING.MEDIUM.extend, "right") // 지르기 - Extension with full hip rotation
     .withKoreanMiddleGuard("left") // Left hand stays in guard
+    // ✅ Phase 2 Enhancement: Peak with full hip drive for power
+    .at(TECHNIQUE_TIMING.MEDIUM.chamber + TECHNIQUE_TIMING.MEDIUM.extend)
+    .position(BoneName.PELVIS, 0, 0, 0.12) // Full forward drive (Issue #3)
+    .rotate(BoneName.PELVIS, 0, 0.5, 0) // Full hip rotation 28.6° (Issue #3)
+    .done<MartialArtsAnimationBuilder>()
     .punchPeak(TECHNIQUE_TIMING.MEDIUM.peak, "right") // 정점 - Peak impact
     .withKoreanMiddleGuard("left") // Left hand stays in guard
     .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover) // 복귀 - Return to guard
@@ -144,6 +176,10 @@ export const PALM_STRIKE_ANIMATION: SkeletalAnimation =
  * Curved punch targeting jaw or temple.
  * Generates power from hip and shoulder rotation.
  *
+ * ENHANCED Phase 2 - Issue #3 Fix:
+ * - Added explosive hip rotation: 0.7 rad (40°) for circular power
+ * - Hip drives INTO the punch direction for arc generation
+ *
  * Phases:
  * 1. Wind-up (준비): Arm pulls back, elbow bent 90° - 150ms
  * 2. Rotation & Strike (회전+타격): Hip rotates, fist arcs into target - 300ms
@@ -157,7 +193,14 @@ export const HOOK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hook", "훅")
     .asAttack(TECHNIQUE_TIMING.HEAVY_LIGHT.total)
     .hookWindup(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber) // 준비 - 150ms arm pulls back
+    // ✅ Phase 2 Enhancement: Add explosive hip rotation for hook power
+    .at(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber + TECHNIQUE_TIMING.HEAVY_LIGHT.extend * 0.5)
+    .rotate(BoneName.PELVIS, 0, 0.35, 0) // Hip rotation starts (halfway to 40°)
+    .done<MartialArtsAnimationBuilder>()
     .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.extend) // 타격 - 200ms curved strike
+    .at(TECHNIQUE_TIMING.HEAVY_LIGHT.chamber + TECHNIQUE_TIMING.HEAVY_LIGHT.extend)
+    .rotate(BoneName.PELVIS, 0, 0.7, 0) // Full hip rotation 40° (Issue #3)
+    .done<MartialArtsAnimationBuilder>()
     .hookPunch(TECHNIQUE_TIMING.HEAVY_LIGHT.peak) // 정점 - 100ms hold
     .recover(TECHNIQUE_TIMING.HEAVY_LIGHT.retract + TECHNIQUE_TIMING.HEAVY_LIGHT.recover) // 복귀 - 350ms
     .build();

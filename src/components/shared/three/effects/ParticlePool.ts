@@ -120,11 +120,9 @@ export class ParticlePool {
     }
 
     const particle = this.pool.pop();
-    // pool.length check guarantees particle exists
     if (!particle) {
       return null;
     }
-    
     particle.alive = true;
     particle.startTime =
       currentTimeSeconds ?? performance.now() / 1000;

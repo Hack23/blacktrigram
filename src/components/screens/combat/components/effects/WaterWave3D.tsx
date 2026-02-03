@@ -407,13 +407,12 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       }
       
       // Update only active particle positions (rest remain at origin, won't be rendered)
-      // positions is guaranteed to be defined after the check above
-      const definitePositions = positions;
+      // positions is guaranteed to be defined here (either from ref or just created above)
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
-        definitePositions[i3] = particle.position.x;
-        definitePositions[i3 + 1] = particle.position.y;
-        definitePositions[i3 + 2] = particle.position.z;
+        positions[i3] = particle.position.x;
+        positions[i3 + 1] = particle.position.y;
+        positions[i3 + 2] = particle.position.z;
       });
     });
   });
@@ -425,10 +424,9 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   // Three.js performance requirement: Access positions ref during render.
   // The positions are computed in useFrame (write) and only read here (render).
   // This uni-directional flow is safe and follows Three.js + React patterns.
-  // eslint-disable-next-line react-hooks/refs -- Three.js performance optimization
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return (
     <>
-      {/* eslint-disable-next-line react-hooks/refs -- Accessing position refs for performance */}
       {particleSystems.map((system) => {
         // Get positions from ref (updated in useFrame above)
         // This is safe because positions are only written in useFrame, never during render

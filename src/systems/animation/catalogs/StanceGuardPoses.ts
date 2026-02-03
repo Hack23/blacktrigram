@@ -55,14 +55,14 @@ import type { StanceLaterality } from "../../trigram/types";
  */
 export const GEON_HIGH_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.0, 0.2, 0.5), // Hands at chin level - not above head
-    elbow: new THREE.Euler(0, 0, -2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, 0.2, 0), // Fists at chin level
+    shoulder: new THREE.Euler(-0.7, 0.15, 0.35), // Solar plexus level - protects liver/ribs
+    elbow: new THREE.Euler(0, 0, -2.1), // Tight elbow - protects left ribs (120° flexion)
+    wrist: new THREE.Euler(0.2, 0.1, 0), // Fist at solar plexus - proper guard height
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.0, -0.2, -0.5), // Mirror - both hands at chin
-    elbow: new THREE.Euler(0, 0, 2.2), // TIGHT elbow - protects ribs
-    wrist: new THREE.Euler(0.3, -0.2, 0), // Fists at chin level
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Mirror - balanced guard at solar plexus
+    elbow: new THREE.Euler(0, 0, 2.1), // Tight elbow - protects right ribs (120° flexion)
+    wrist: new THREE.Euler(0.2, -0.1, 0), // Fist at solar plexus - proper guard height
   },
   torso: new THREE.Euler(0.1, -0.3, 0), // Slight forward lean - aggressive but balanced
 
@@ -171,22 +171,24 @@ export const TAE_FLUID_GUARD_POSE: StanceGuardPose = {
  * - +15% stability vs. vital strikes
  * - +10% knockdown resistance
  *
- * ENHANCED: Peekaboo guard - both hands high protecting face, aggressive stance
+ * CORRECTED: Authentic Korean bladed guard - hands at solar plexus/chest level,
+ * lead hand forward for parry, rear hand protecting chin, elbows tight to body,
+ * replaces boxing peekaboo with proper Gyeorugi Junbi (Fighting Ready) stance
  *
  * @korean 리괘방어포즈
  */
 export const LI_FIRE_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.6, 0.2, 0.9), // VERY HIGH - elbows out wide like wings
-    elbow: new THREE.Euler(0, 0, -2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, 0.15, 0), // Fists glued to cheekbones
+    shoulder: new THREE.Euler(-0.65, 0.4, 0.2), // Lead hand extended at chest level - parry position
+    elbow: new THREE.Euler(0, 0, -1.7), // Elbow bent 100° - maintains rib protection
+    wrist: new THREE.Euler(0.1, 0.2, 0), // Fist ready to strike or parry
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.6, -0.2, -0.9), // Mirror - dramatic peekaboo
-    elbow: new THREE.Euler(0, 0, 2.4), // Super tight - fists at temples (max anatomical flexion)
-    wrist: new THREE.Euler(0.4, -0.15, 0), // Fists glued to cheekbones
+    shoulder: new THREE.Euler(-0.7, -0.15, -0.35), // Rear hand at chin/solar plexus - protection
+    elbow: new THREE.Euler(0, 0, 2.0), // Tight elbow - protects right ribs (115° flexion)
+    wrist: new THREE.Euler(0, -0.1, 0), // Fist guarding chin
   },
-  torso: new THREE.Euler(0.15, 0, 0), // Chin tucked, facing SQUARE forward
+  torso: new THREE.Euler(0.1, -0.4, 0), // Bladed stance - torso rotated 25° for lead hand forward
 
   // Fighting Stance (Gyeorugi Junbi) - Balanced precision combat stance
   // Based on LI_FIRE biomechanics: 135° both knees (moderate bend), 50/50 weight
@@ -270,7 +272,7 @@ export const JIN_THUNDER_GUARD_POSE: StanceGuardPose = {
   stanceDepth: 0, // Parallel feet - horse stance
   pelvisHeight: -0.18, // MODERATE LOW for sustainable explosive power (hipHeight 0.82)
 
-  weight: "back",
+  weight: "neutral", // 50/50 weight distribution - proper horse stance balance
   breathingRange: {
     min: 0.96, // Deep inhale for power
     max: 1.04, // Explosive exhale
@@ -429,14 +431,14 @@ export const GAM_WATER_GUARD_POSE: StanceGuardPose = {
  */
 export const GAN_MOUNTAIN_GUARD_POSE: StanceGuardPose = {
   leftArm: {
-    shoulder: new THREE.Euler(-1.8, 0.1, 1.0), // Arms CROSSED in front of face
-    elbow: new THREE.Euler(0, 0, -2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, 0.4, 0.3), // Fists at opposite shoulders
+    shoulder: new THREE.Euler(-0.8, 0.1, 0.7), // Arms crossed at CHEST level (not face)
+    elbow: new THREE.Euler(0, 0, -2.1), // Forearms crossed - X block at chest (115° flexion)
+    wrist: new THREE.Euler(0.3, 0.3, 0.2), // Fists protecting chest (not face)
   },
   rightArm: {
-    shoulder: new THREE.Euler(-1.8, -0.1, -1.0), // Arms CROSSED - right over left
-    elbow: new THREE.Euler(0, 0, 2.4), // Forearms crossed - X block (max anatomical flexion)
-    wrist: new THREE.Euler(0.5, -0.4, -0.3), // Fists at opposite shoulders
+    shoulder: new THREE.Euler(-0.8, -0.1, -0.7), // Arms crossed - right over left at chest
+    elbow: new THREE.Euler(0, 0, 2.1), // Forearms crossed - X block at chest (115° flexion)
+    wrist: new THREE.Euler(0.3, -0.3, -0.2), // Fists protecting chest (not face)
   },
   torso: new THREE.Euler(0.15, 0, 0), // Chin DOWN, facing square - immovable
 

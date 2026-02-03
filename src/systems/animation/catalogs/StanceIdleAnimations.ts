@@ -107,12 +107,17 @@ function calculateBreathingScale(
 /**
  * Calculates torso expansion for breathing effect
  *
+ * PHASE 3 FIX (Issue #6): Breathing should be subtle shoulder/chest expansion,
+ * not walking in place. Target: ±1cm vertical breathing motion max.
+ *
  * @param breathingScale - Current breathing scale (0.96-1.04)
- * @returns Torso rotation adjustment for breathing
+ * @returns Torso rotation adjustment for breathing (in radians)
  */
 function calculateTorsoBreathingOffset(breathingScale: number): number {
   // Chest expands forward slightly on inhale
-  return (breathingScale - 1) * 0.3;
+  // Scale reduced to 0.2 for subtle breathing (was 0.3)
+  // This creates ~5-7° chest expansion max (subtle shoulder rise)
+  return (breathingScale - 1) * 0.2;
 }
 
 /**

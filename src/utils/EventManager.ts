@@ -136,10 +136,9 @@ export class EventManager {
       options: finalOptions,
     };
 
-    const listenerArray = this.listeners.get(key);
-    // TypeScript guard: listenerArray is guaranteed to exist after the check above
-    if (listenerArray) {
-      listenerArray.push(tracked);
+    const listeners = this.listeners.get(key);
+    if (listeners) {
+      listeners.push(tracked);
     }
 
     // Return cleanup function for this specific listener

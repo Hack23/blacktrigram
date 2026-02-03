@@ -54,24 +54,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 1.05,
     },
-    executionTime: 600,
-    recoveryTime: 800, // Reduced from 1000ms for combo flow
+    executionTime: 750,
+    recoveryTime: 1100,
     critChance: 0.08,
     critMultiplier: 1.3,
     effects: [],
-    // Combo metadata - Fast striking starter
-    comboWindow: 220,
-    comboPriority: 1, // Starter - initiates control chains
-    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "tae_flowing_strikes", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.FLOWING_CROSS,
-    animationSpeed: 1.2,
+    animationSpeed: 0.75,
     category: "medium",
     range: "medium",
-    speed: 1.2,
+    speed: 0.75,
   },
   {
     id: "tae_wrist_lock",
@@ -99,24 +95,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 800, // Reduced from 1000ms for combo flow
+    executionTime: 1100,
+    recoveryTime: 1400,
     critChance: 0.12,
     critMultiplier: 1.5,
     effects: [],
-    // Combo metadata - Joint manipulation control
-    comboWindow: 220,
-    comboPriority: 2, // Mid-chain - establishes control
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_wrist_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.TAE_WRIST_LOCK,
-    animationSpeed: 0.85,
-    category: "light",
+    animationSpeed: 0.55,
+    category: "medium",
     range: "short",
-    speed: 0.85,
+    speed: 0.55,
   },
   {
     id: "tae_small_circle",
@@ -144,24 +136,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 750,
-    recoveryTime: 850, // Reduced from 1100ms for combo flow
+    executionTime: 1200,
+    recoveryTime: 1500,
     critChance: 0.22,
     critMultiplier: 2.0,
     effects: [],
-    // Combo metadata - Advanced joint control
-    comboWindow: 220,
-    comboPriority: 2, // Mid-chain - precision control
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_small_circle", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SMALL_CIRCLE_LOCK,
-    animationSpeed: 0.85,
+    animationSpeed: 0.55,
     category: "special",
     range: "short",
-    speed: 0.85,
+    speed: 0.55,
   },
   {
     id: "tae_finger_lock",
@@ -189,24 +177,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 700, // Reduced from 900ms for combo flow
+    executionTime: 975,
+    recoveryTime: 1200,
     critChance: 0.1,
     critMultiplier: 1.4,
     effects: [],
-    // Combo metadata - Fast lock starter
-    comboWindow: 220,
-    comboPriority: 1, // Starter - quick disarm technique
-    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_finger_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.FINGER_LOCK,
-    animationSpeed: 0.9,
-    category: "light",
+    animationSpeed: 0.6,
+    category: "light", // Small joint manipulation - faster than larger joint locks despite longer timing
     range: "short",
-    speed: 0.9,
+    speed: 0.6,
   },
   {
     id: "tae_elbow_lock",
@@ -234,24 +218,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 800,
-    recoveryTime: 900, // Reduced from 1150ms for combo flow
+    executionTime: 1280,
+    recoveryTime: 1600,
     critChance: 0.16,
     critMultiplier: 1.7,
     effects: [],
-    // Combo metadata - Submission technique
-    comboWindow: 220,
-    comboPriority: 3, // Finisher - hyperextension submission
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_elbow_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.ELBOW_LOCK,
-    animationSpeed: 0.8,
+    animationSpeed: 0.5,
     category: "medium",
     range: "short",
-    speed: 0.8,
+    speed: 0.5,
   },
   {
     id: "tae_shoulder_lock",
@@ -279,24 +259,20 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 850,
-    recoveryTime: 950, // Reduced from 1200ms for combo flow
+    executionTime: 1360,
+    recoveryTime: 1700,
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
-    // Combo metadata - Major joint submission
-    comboWindow: 220,
-    comboPriority: 3, // Finisher - shoulder submission hold
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_shoulder_lock", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.SHOULDER_MANIPULATION,
-    animationSpeed: 0.8,
+    animationSpeed: 0.5,
     category: "medium",
     range: "short",
-    speed: 0.8,
+    speed: 0.5,
   },
   {
     id: "tae_arm_bar",
@@ -324,23 +300,19 @@ export const TAE_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 900,
-    recoveryTime: 1000, // Reduced from 1300ms for combo flow
+    executionTime: 1440,
+    recoveryTime: 1800,
     critChance: 0.2,
     critMultiplier: 1.9,
     effects: [],
-    // Combo metadata - Ultimate submission
-    comboWindow: 220,
-    comboPriority: 3, // Finisher - complete arm bar submission
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "joint_lock", // Type: shared category
     animationId: "tae_arm_bar", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.ARM_BAR,
-    animationSpeed: 0.75,
+    animationSpeed: 0.5,
     category: "medium",
     range: "short",
-    speed: 0.75,
+    speed: 0.5,
   },
 ];

@@ -9,14 +9,12 @@ beforeAll(() => {
   // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
-  process.stderr.write = ((chunk: unknown, encoding?: unknown, callback?: unknown): boolean => {
-    // Safely convert chunk to string with proper type narrowing
-    const message =
-      typeof chunk === "string"
-        ? chunk
-        : chunk instanceof Uint8Array
-          ? Buffer.from(chunk).toString("utf8")
-          : String(chunk ?? "");
+  process.stderr.write = ((
+    chunk: string | Uint8Array, 
+    encodingOrCallback?: BufferEncoding | ((err?: Error | null) => void), 
+    callback?: (err?: Error | null) => void
+  ): boolean => {
+    const message = typeof chunk === 'string' ? chunk : chunk.toString();
     
     // Suppress HTMLCanvasElement warnings from jsdom
     if (
@@ -24,20 +22,16 @@ beforeAll(() => {
       message.includes("without installing the canvas npm package")
     ) {
       // Call callback if provided to avoid breaking the stream
-      if (typeof encoding === "function") {
-        encoding();
+      if (typeof encodingOrCallback === "function") {
+        encodingOrCallback();
       } else if (typeof callback === "function") {
         callback();
       }
       return true;
     }
     
-    // Pass through all other messages - cast chunk to expected type
-    return originalStderrWrite(
-      chunk as string | Uint8Array, 
-      encoding as BufferEncoding | undefined, 
-      callback as ((err?: Error | null) => void) | undefined
-    );
+    // Pass through all other messages
+    return originalStderrWrite(chunk, encodingOrCallback as BufferEncoding, callback);
   }) as typeof process.stderr.write;
 
   // Mock APP_VERSION for tests
@@ -87,9 +81,9 @@ beforeAll(() => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
-          const eventSet = this.eventListeners.get(event);
-          if (eventSet) {
-            eventSet.add(handler);
+          const handlers = this.eventListeners.get(event);
+          if (handlers) {
+            handlers.add(handler);
           }
 
           // Automatically trigger canplaythrough event after a microtask
