@@ -114,8 +114,7 @@ describe("PunchAnimations - Korean Martial Arts Biomechanics", () => {
     });
 
     it("should have full hip rotation for power", () => {
-      // CROSS should have full hip rotation (0.25-0.5 radians / 14-29°)
-      // Phase 2 biomechanics: maximum rotation for power generation
+      // CROSS should have full hip rotation (~0.25-0.5 radians / 14-29°)
       const pelvisRotations = CROSS_ANIMATION.keyframes
         .filter((kf) => kf.boneRotations.has(BoneName.PELVIS))
         .map((kf) => kf.boneRotations.get(BoneName.PELVIS));
@@ -124,10 +123,9 @@ describe("PunchAnimations - Korean Martial Arts Biomechanics", () => {
         ...pelvisRotations.map((rot) => Math.abs(rot?.y ?? 0))
       );
 
-      // Cross should have significant hip rotation (> 0.2 radians / 11.5°)
+      // Cross should have significant hip rotation (> 0.2 radians, up to 0.5)
       expect(maxPelvisRotation).toBeGreaterThan(0.2);
-      // Phase 2 allows up to 0.52 radians (~30°) for maximum power
-      expect(maxPelvisRotation).toBeLessThanOrEqual(0.52);
+      expect(maxPelvisRotation).toBeLessThanOrEqual(0.5); // Updated to allow 0.5
     });
 
     it("should have coordinated shoulder rotation", () => {

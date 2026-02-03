@@ -1200,29 +1200,28 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
   });
 
   describe("Guard Poses - Body Protection (신체 보호)", () => {
-    it("stance guards should have elbows tucked to protect ribs (shoulder abduction < 35°)", () => {
+    it("stance guards should have elbows tucked to protect ribs (Z < -1.5 rad)", () => {
       const stanceAnimations = Array.from(ALL_ANIMATIONS.entries())
         .filter(([name]) => name.startsWith("stance_"))
         .map(([name, anim]) => ({ name, anim }));
 
       const exposedRibGuards: string[] = [];
-      const MAX_SHOULDER_ABDUCTION = 0.61; // 35° abduction = elbows out from ribs (anything less = tucked)
+      const MINIMUM_ELBOW_TUCK = -1.5; // Elbow bent inward to protect ribs
 
       for (const { name, anim } of stanceAnimations) {
         if (anim.keyframes.length === 0) continue;
 
         // Check first keyframe (the guard pose)
         const firstKf = anim.keyframes[0];
-        const shoulderL = firstKf.boneRotations.get(BoneName.SHOULDER_L);
-        const shoulderR = firstKf.boneRotations.get(BoneName.SHOULDER_R);
+        const elbowL = firstKf.boneRotations.get(BoneName.ELBOW_L);
+        const elbowR = firstKf.boneRotations.get(BoneName.ELBOW_R);
 
-        // Elbows should be tucked (shoulder Z-axis abduction < 35°)
-        // Z > 0 = left shoulder abducted outward, Z < 0 = right shoulder abducted outward
-        const leftTucked = shoulderL && Math.abs(shoulderL.z) <= MAX_SHOULDER_ABDUCTION;
-        const rightTucked = shoulderR && Math.abs(shoulderR.z) <= MAX_SHOULDER_ABDUCTION;
+        // Both elbows should be tucked (Z-rotation more negative than -1.5)
+        const leftTucked = elbowL && elbowL.z <= MINIMUM_ELBOW_TUCK;
+        const rightTucked = elbowR && elbowR.z >= -MINIMUM_ELBOW_TUCK; // Right side mirror
 
         if (!leftTucked || !rightTucked) {
-          const details = `L:${shoulderL?.z.toFixed(2) ?? "?"}, R:${shoulderR?.z.toFixed(2) ?? "?"}`;
+          const details = `L:${elbowL?.z.toFixed(2) ?? "?"}, R:${elbowR?.z.toFixed(2) ?? "?"}`;
           exposedRibGuards.push(`${name} (${details})`);
         }
       }
@@ -1231,10 +1230,9 @@ describe("AnimationRegistry - Biomechanical Validation (생체역학)", () => {
         console.warn("⚠️ Stance guards with exposed ribs:", exposedRibGuards);
       }
 
-      // At least 75% should have proper elbow tuck (via shoulder abduction)
-      // LI and SON intentionally have wider guards for their combat styles
+      // At least 75% should have proper elbow tuck
       const passRate = 1 - exposedRibGuards.length / stanceAnimations.length;
-      expect(passRate).toBeGreaterThanOrEqual(0.75);
+      expect(passRate).toBeGreaterThan(0.75);
     });
 
     it("attack animations should maintain guard hand protection", () => {
