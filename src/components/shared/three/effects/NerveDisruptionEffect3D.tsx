@@ -160,12 +160,20 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
           if (line.parent) {
             group?.remove(line);
           }
-          line.geometry.dispose();
-          (line.material as THREE.Material).dispose();
+          if (line.geometry) {
+            line.geometry.dispose();
+          }
+          if (line.material) {
+            (line.material as THREE.Material).dispose();
+          }
         });
 
-        instance.particleSystem.geometry.dispose();
-        (instance.particleSystem.material as THREE.Material).dispose();
+        if (instance.particleSystem.geometry) {
+          instance.particleSystem.geometry.dispose();
+        }
+        if (instance.particleSystem.material) {
+          (instance.particleSystem.material as THREE.Material).dispose();
+        }
       });
 
       effectInstances.clear();

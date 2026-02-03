@@ -38,8 +38,11 @@ describe("LiTechniques", () => {
   });
 
   // NOTE: precisionBonus, vitalPointMultiplier, and nerveDisruptionEffect
-  // were planned features but not implemented in the actual technique definitions.
-  // Tests for these properties have been removed to match the actual implementation.
+  // were previously explored as potential Li-specific properties but were never
+  // implemented in the actual technique definitions and are not part of the
+  // current Li techniques specification. Tests for these properties have been
+  // removed to match the current implementation. If these properties are
+  // reintroduced in the future, corresponding tests should be added here.
 
   describe("Execution Time Optimization", () => {
     it("should have executionTime for all techniques", () => {
