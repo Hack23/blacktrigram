@@ -41,7 +41,7 @@ describe("ThunderEffect3D", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should call onComplete callback", async () => {
+  it("should render without crashing with onComplete (smoke test)", async () => {
     const onComplete = vi.fn();
     const { container } = renderThunderEffect({
       position: [0, 1, 0],
@@ -54,7 +54,7 @@ describe("ThunderEffect3D", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
     
     // Note: Testing frame-based callbacks requires more complex setup
-    // This is a basic smoke test to ensure component renders
+    // with @react-three/test-renderer to drive the animation loop
   });
 
   it("should respect active prop", () => {

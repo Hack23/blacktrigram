@@ -14,6 +14,7 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
 import { KOREAN_COLORS } from "../../../types/constants";
 
 /**
@@ -53,6 +54,7 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
   config,
   onComplete,
 }) => {
+  const { colors } = useKoreanTheme();
   const [opacity, setOpacity] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -111,7 +113,7 @@ export const ScreenFlash: React.FC<ScreenFlashProps> = ({
   }
 
   // Convert hex color to RGB
-  const color = config.color ?? KOREAN_COLORS.ACCENT_GOLD;
+  const color = config.color ?? colors.ACCENT_GOLD;
   const r = (color >> 16) & 255;
   const g = (color >> 8) & 255;
   const b = color & 255;

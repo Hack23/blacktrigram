@@ -38,7 +38,7 @@ describe("ExplosiveBurstEffect3D", () => {
     expect(container.querySelector("canvas")).toBeInTheDocument();
   });
 
-  it("should call onComplete callback", () => {
+  it("should render without crashing with onComplete (smoke test)", () => {
     const onComplete = vi.fn();
     const { container } = renderBurstEffect({
       position: [0, 1, 0],
@@ -48,6 +48,9 @@ describe("ExplosiveBurstEffect3D", () => {
     });
 
     expect(container.querySelector("canvas")).toBeInTheDocument();
+    
+    // Note: Testing frame-based callbacks requires more complex setup
+    // with @react-three/test-renderer to drive the animation loop
   });
 
   it("should render with custom particle count", () => {

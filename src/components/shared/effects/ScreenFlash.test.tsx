@@ -41,6 +41,8 @@ describe("ScreenFlash", () => {
   });
 
   it("should apply correct opacity", () => {
+    vi.useFakeTimers();
+    
     render(
       <ScreenFlash
         active={true}
@@ -53,6 +55,8 @@ describe("ScreenFlash", () => {
 
     const flash = screen.getByTestId("screen-flash");
     expect(flash).toHaveStyle({ opacity: "0.7" });
+    
+    vi.useRealTimers();
   });
 
   it("should use custom color", () => {
@@ -72,8 +76,8 @@ describe("ScreenFlash", () => {
     // Color should be applied as RGB background
   });
 
-  it("should call onComplete callback", () => {
-    // Simplified test - just verify component structure
+  it("should call onComplete callback after duration", () => {
+    vi.useFakeTimers();
     const onComplete = vi.fn();
 
     render(
@@ -89,6 +93,14 @@ describe("ScreenFlash", () => {
 
     // Component renders correctly
     expect(screen.getByTestId("screen-flash")).toBeInTheDocument();
+    
+    // Advance timers past duration
+    vi.advanceTimersByTime(150);
+    
+    // Callback should have been called
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    
+    vi.useRealTimers();
   });
 
   it("should have pointer-events none", () => {

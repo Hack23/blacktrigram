@@ -10,7 +10,13 @@ beforeAll(() => {
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
   process.stderr.write = ((chunk: unknown, encoding?: unknown, callback?: unknown): boolean => {
-    const message = chunk?.toString?.() ?? "";
+    // Safely convert chunk to string with proper type narrowing
+    const message =
+      typeof chunk === "string"
+        ? chunk
+        : chunk instanceof Uint8Array
+          ? Buffer.from(chunk).toString("utf8")
+          : String(chunk ?? "");
     
     // Suppress HTMLCanvasElement warnings from jsdom
     if (
