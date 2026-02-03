@@ -407,15 +407,12 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       }
       
       // Update only active particle positions (rest remain at origin, won't be rendered)
+      // TypeScript knows positions is defined after the if (!positions) check above
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
-        // positions is guaranteed to be defined here since we initialized it above
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        positions![i3] = particle.position.x;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        positions![i3 + 1] = particle.position.y;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        positions![i3 + 2] = particle.position.z;
+        positions[i3] = particle.position.x;
+        positions[i3 + 1] = particle.position.y;
+        positions[i3 + 2] = particle.position.z;
       });
     });
   });

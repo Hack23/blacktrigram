@@ -9,10 +9,14 @@ beforeAll(() => {
   // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
-  // Type assertion needed to override process.stderr.write signature
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  process.stderr.write = ((chunk: any, encoding?: any, callback?: any): boolean => {
-    const message = chunk?.toString?.() ?? "";
+  
+  // Override with proper type-safe signature matching Node's write() overloads
+  process.stderr.write = ((
+    chunk: string | Uint8Array,
+    encodingOrCallback?: BufferEncoding | ((err?: Error | null) => void),
+    callback?: (err?: Error | null) => void
+  ): boolean => {
+    const message = typeof chunk === "string" ? chunk : chunk.toString();
     
     // Suppress HTMLCanvasElement warnings from jsdom
     if (
@@ -20,16 +24,19 @@ beforeAll(() => {
       message.includes("without installing the canvas npm package")
     ) {
       // Call callback if provided to avoid breaking the stream
-      if (typeof encoding === "function") {
-        encoding();
+      if (typeof encodingOrCallback === "function") {
+        encodingOrCallback();
       } else if (typeof callback === "function") {
         callback();
       }
       return true;
     }
     
-    // Pass through all other messages
-    return originalStderrWrite(chunk, encoding, callback);
+    // Pass through all other messages with proper type handling
+    if (typeof encodingOrCallback === "function") {
+      return originalStderrWrite(chunk, encodingOrCallback);
+    }
+    return originalStderrWrite(chunk, encodingOrCallback, callback);
   }) as typeof process.stderr.write;
 
   // Mock APP_VERSION for tests
