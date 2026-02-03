@@ -409,8 +409,12 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       // Update only active particle positions (rest remain at origin, won't be rendered)
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
+        // positions is guaranteed to be defined here since we initialized it above
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         positions![i3] = particle.position.x;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         positions![i3 + 1] = particle.position.y;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         positions![i3 + 2] = particle.position.z;
       });
     });
@@ -423,7 +427,6 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   // Three.js performance requirement: Access positions ref during render.
   // The positions are computed in useFrame (write) and only read here (render).
   // This uni-directional flow is safe and follows Three.js + React patterns.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   return (
     <>
       {particleSystems.map((system) => {

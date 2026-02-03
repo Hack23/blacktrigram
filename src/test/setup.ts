@@ -9,6 +9,8 @@ beforeAll(() => {
   // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
+  // Type assertion needed to override process.stderr.write signature
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   process.stderr.write = ((chunk: any, encoding?: any, callback?: any): boolean => {
     const message = chunk?.toString?.() ?? "";
     
