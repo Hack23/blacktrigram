@@ -434,7 +434,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
   // 4. The alternative (storing positions in state) would cause excessive re-renders
   return (
     <>
-      {/* eslint-disable-next-line react-hooks/exhaustive-deps -- Three.js performance: reading cached positions during render */}
+      {/* Reading ref during render for Three.js performance optimization - positions updated in useFrame */}
       {particleSystems.map((system) => {
         // Get positions from ref (updated in useFrame)
         const positions = positionsRef.current.get(system.effectId) 
