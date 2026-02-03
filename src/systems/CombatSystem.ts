@@ -903,9 +903,10 @@ export class CombatSystem implements CombatSystemInterface {
         // General torso damage (non-vital point hits)
         // Apply breathing disruption if damage is significant enough
         // Note: Solar plexus detection is best-effort; vital point system is primary mechanism
+        const techniqueId = result.technique?.id?.toLowerCase();
         const isSolarPlexusArea = 
-          result.technique?.id?.toLowerCase().includes("solar") ??
-          result.technique?.id?.toLowerCase().includes("myeongchi") ??
+          techniqueId?.includes("solar") ||
+          techniqueId?.includes("myeongchi") ||
           false;
         updatedDefender = applyBreathingDisruptionFromTorsoDamage(
           updatedDefender,

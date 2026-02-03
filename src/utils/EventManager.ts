@@ -136,7 +136,10 @@ export class EventManager {
       options: finalOptions,
     };
 
-    this.listeners.get(key)!.push(tracked);
+    const listeners = this.listeners.get(key);
+    if (listeners) {
+      listeners.push(tracked);
+    }
 
     // Return cleanup function for this specific listener
     // Track if already removed to prevent double removal

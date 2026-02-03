@@ -92,13 +92,13 @@ export const VictoryAnimation3D: React.FC = () => {
 
   // Cleanup Three.js resources on unmount
   useEffect(() => {
-    return () => {
-      // Capture ref values to avoid stale references in cleanup
-      const group = groupRef.current;
-      const particles = particlesRef.current;
-      const rings = ringsRef.current;
-      const symbols = symbolsRef.current;
+    // Capture ref values at effect setup time to avoid stale references in cleanup
+    const group = groupRef.current;
+    const particles = particlesRef.current;
+    const rings = ringsRef.current;
+    const symbols = symbolsRef.current;
 
+    return () => {
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
       if (particles) {
@@ -107,7 +107,7 @@ export const VictoryAnimation3D: React.FC = () => {
           (particles.material as THREE.Material).dispose();
         }
       }
-      if (rings) {
+      if (rings && Array.isArray(rings.children)) {
         rings.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
@@ -117,7 +117,7 @@ export const VictoryAnimation3D: React.FC = () => {
           }
         });
       }
-      if (symbols) {
+      if (symbols && Array.isArray(symbols.children)) {
         symbols.children.forEach((child) => {
           if (child instanceof THREE.Mesh) {
             child.geometry?.dispose();
@@ -129,7 +129,7 @@ export const VictoryAnimation3D: React.FC = () => {
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-      if (group) {
+      if (group && Array.isArray(group.children)) {
         group.children.forEach((child) => {
           // Skip objects that are already handled via specific refs
           if (
