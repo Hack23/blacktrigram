@@ -286,9 +286,9 @@ export function getAnimationForStance(
   // Southpaw stance (right foot forward) - need mirrored version
   const cacheKey = `${animation.name}_southpaw`;
 
-  const cached = cache?.get(cacheKey);
-  if (cached) {
-    return cached;
+  if (cache?.has(cacheKey)) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- checked with has() above
+    return cache.get(cacheKey)!;
   }
 
   const mirrored = mirrorAnimation(animation, {

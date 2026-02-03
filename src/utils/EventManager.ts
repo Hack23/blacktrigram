@@ -136,10 +136,8 @@ export class EventManager {
       options: finalOptions,
     };
 
-    const listeners = this.listeners.get(key);
-    if (listeners) {
-      listeners.push(tracked);
-    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- array initialized in ensure() above
+    this.listeners.get(key)!.push(tracked);
 
     // Return cleanup function for this specific listener
     // Track if already removed to prevent double removal

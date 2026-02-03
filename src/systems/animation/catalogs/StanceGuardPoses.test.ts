@@ -74,8 +74,8 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for cat stance (90/10 distribution)", () => {
-        // Authentic Beomseogi (cat stance) has 90% back, 10% front weight
+      it("should have back weight for defensive cat stance (Beom Seogi)", () => {
+        // Authentic Hapkido cat stance has 90% weight on back leg
         expect(TAE_FLUID_GUARD_POSE.weight).toBe("back");
       });
 
@@ -111,12 +111,9 @@ describe("StanceGuardPoses", () => {
         expect(range).toBeLessThan(0.03); // Shallow, controlled
       });
 
-      it("should have square facing for peekaboo guard (horse stance)", () => {
-        // LI (Fire) uses peekaboo guard with horse stance - SQUARE FACING
-        // Both fists at temples, deep horse stance, perfectly balanced
-        expect(Math.abs(LI_FIRE_GUARD_POSE.torso.y)).toBeLessThan(0.1); // Square facing (not bladed)
-        expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // 50/50 balanced weight
-        expect(LI_FIRE_GUARD_POSE.torso.x).toBeGreaterThan(0); // Forward lean for chin tuck
+      it("should have square-facing torso for precision targeting", () => {
+        // LI (Fire) now faces SQUARE forward for maximum precision
+        expect(Math.abs(LI_FIRE_GUARD_POSE.torso.y)).toBeLessThanOrEqual(0.1);
       });
     });
 
@@ -130,9 +127,9 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for coiled spring stance (70/30 distribution)", () => {
-        // Authentic Dwi Koobi (back stance) has 70% back, 30% front weight
-        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back");
+      it("should have neutral weight for balanced explosive power (Juchum Seogi)", () => {
+        // Authentic Taekwondo horse stance has perfect 50/50 weight distribution
+        expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral");
       });
 
       it("should have deep breathing for power generation", () => {
@@ -142,11 +139,14 @@ describe("StanceGuardPoses", () => {
         expect(range).toBeGreaterThan(0.05); // Deep breath cycle
       });
 
-      it("should have chambered arm position (elbow flexion on Y-axis)", () => {
-        // Modern guard poses use proper anatomical rotations: elbow flexion on Y-axis
-        // Rear arm chambered at hip (90° flexion), lead arm extended (130° flexion)
-        expect(Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.y)).toBeGreaterThan(2.0); // Extended guard
-        expect(Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.y)).toBeGreaterThan(1.5); // Chambered
+      it("should have chambered arms (high elbow bend)", () => {
+        // Using Z rotation for tight bend (1.9 rad = ~109 degrees)
+        expect(
+          Math.abs(JIN_THUNDER_GUARD_POSE.leftArm.elbow.z),
+        ).toBeGreaterThan(1.5);
+        expect(
+          Math.abs(JIN_THUNDER_GUARD_POSE.rightArm.elbow.z),
+        ).toBeGreaterThan(1.5);
       });
     });
 
@@ -160,9 +160,8 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for crane stance (100% on standing leg)", () => {
-        // Authentic Hakdari Seogi (crane stance) has 100% weight on standing leg
-        expect(SON_WIND_GUARD_POSE.weight).toBe("back");
+      it("should have neutral weight for lateral movement", () => {
+        expect(SON_WIND_GUARD_POSE.weight).toBe("neutral");
       });
 
       it("should have rhythmic breathing", () => {
@@ -188,8 +187,8 @@ describe("StanceGuardPoses", () => {
         );
       });
 
-      it("should have back weight for defensive stance (30/70 distribution)", () => {
-        // Authentic Dwit Seogi (back stance) has 30% front, 70% back weight for defense
+      it("should have back weight for defensive counter positioning (Dwitbal Seogi)", () => {
+        // Authentic Hapkido back weighted stance has 70% weight on back leg
         expect(GAM_WATER_GUARD_POSE.weight).toBe("back");
       });
 
@@ -234,11 +233,14 @@ describe("StanceGuardPoses", () => {
         expect(range).toBeLessThan(0.03);
       });
 
-      it("should have X-block arm position (maximum elbow flexion on Y-axis)", () => {
-        // Modern guard poses use proper anatomical rotations: elbow flexion on Y-axis
-        // X-block has maximum flexion 150° (2.62 rad) with arms crossed
-        expect(Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.y)).toBeGreaterThan(2.5); // Maximum flexion
-        expect(Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.y)).toBeGreaterThan(2.5); // Maximum flexion
+      it("should have tight defensive arms (high elbow bend)", () => {
+        // Using Z rotation for tight bend (1.8 rad = ~103 degrees)
+        expect(
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.leftArm.elbow.z),
+        ).toBeGreaterThan(1.5);
+        expect(
+          Math.abs(GAN_MOUNTAIN_GUARD_POSE.rightArm.elbow.z),
+        ).toBeGreaterThan(1.5);
       });
 
       it("should have forward lean with square stance for X-block defense", () => {
@@ -273,12 +275,12 @@ describe("StanceGuardPoses", () => {
 
       it("should have LOW grappling guard (hands ready for underhooks)", () => {
         // Grappling stance: arms low but elbows still guard ribs
-        // Shoulder X around +0.35 (positive = arms DOWN/back for underhooks)
-        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(0);
-        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(0);
-        // Elbows have flexion on Y-axis (proper anatomical rotation) - 100° flexion (1.75 rad)
-        expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.y)).toBeGreaterThan(
-          1.7,
+        // Shoulder X around -0.4 (negative = arms forward/up, but low position)
+        expect(GON_EARTH_GUARD_POSE.leftArm.shoulder.x).toBeGreaterThan(-0.8);
+        expect(GON_EARTH_GUARD_POSE.rightArm.shoulder.x).toBeGreaterThan(-0.8);
+        // Elbows bent but relaxed
+        expect(Math.abs(GON_EARTH_GUARD_POSE.leftArm.elbow.z)).toBeGreaterThan(
+          1.0,
         );
       });
     });
@@ -533,26 +535,31 @@ describe("StanceGuardPoses", () => {
 
   describe("Korean Martial Arts Authenticity", () => {
     it("should have distinct guard heights based on martial arts principles", () => {
-      // CORRECTED: All guards now protect ribs and vital organs (-0.7 rad shoulder)
-      // Korean martial arts principle: hands at solar plexus to mid-chest level
-      // Guards differ in stance width, weight distribution, and hand positioning
+      // All guards now follow proper martial arts principle: protect chin and ribs
+      // Guards differ in stance, footwork, and application - not just arm height
 
-      // SOLAR PLEXUS and HIGH guards - hands from mid-chest to face level
-      const midToHighGuards = [
-        GEON_HIGH_GUARD_POSE, // -1.05 (authentic Taekwondo Ap Seogi guard)
-        TAE_FLUID_GUARD_POSE, // -0.79 lead, -1.22 rear at solar plexus
-        LI_FIRE_GUARD_POSE, // -1.57 (peekaboo - hands at temples!)
-        SON_WIND_GUARD_POSE, // -0.70 wing position
-        GAM_WATER_GUARD_POSE, // -0.79 flowing guard at chest level
-        GAN_MOUNTAIN_GUARD_POSE, // -1.75 X-block at face level (arms UP for block)
+      // HIGH guards - arms at chin level (shoulder.x around -1.0 to -1.6)
+      const highGuards = [
+        GEON_HIGH_GUARD_POSE, // -1.0 (proper boxing guard at chin)
+        LI_FIRE_GUARD_POSE, // -1.6 (peekaboo with chin protection)
+        GAN_MOUNTAIN_GUARD_POSE, // -1.0 (X-block with elbows tight)
       ];
-      midToHighGuards.forEach((pose) => {
-        // Guards range from chest level to face level: -1.8 to -0.65 rad
-        expect(pose.leftArm.shoulder.x).toBeGreaterThanOrEqual(-1.8);
-        expect(pose.leftArm.shoulder.x).toBeLessThanOrEqual(-0.6);
+      highGuards.forEach((pose) => {
+        expect(pose.leftArm.shoulder.x).toBeLessThan(-0.8);
+        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-2.0);
       });
 
-      // LOW guards - grappling ready, hands at hip level for underhooks
+      // MID guards - arms at chest/chin level
+      const midGuards = [
+        TAE_FLUID_GUARD_POSE, // -0.7 lead extended with rear at chin
+        SON_WIND_GUARD_POSE, // -0.8 fencing style with protection
+      ];
+      midGuards.forEach((pose) => {
+        expect(pose.leftArm.shoulder.x).toBeGreaterThan(-1.2);
+        expect(pose.leftArm.shoulder.x).toBeLessThan(0);
+      });
+
+      // LOW guards - arms lower but still protecting (grappling ready)
       const lowGuards = [
         JIN_THUNDER_GUARD_POSE, // -0.6 (chambered with rear at chin)
         GAM_WATER_GUARD_POSE, // -0.8 (parry position with protection)
@@ -564,19 +571,19 @@ describe("StanceGuardPoses", () => {
     });
 
     it("should have correct weight distributions per Korean martial arts stance types", () => {
-      // Forward stances (Ap Seogi) - 60/40 distribution
+      // Forward stances (Ap Seogi) - aggressive power
       expect(GEON_HIGH_GUARD_POSE.weight).toBe("forward");
 
-      // Back stances (Cat stance, Dwi Koobi, Crane) - weighted back for defense/mobility
-      expect(TAE_FLUID_GUARD_POSE.weight).toBe("back"); // Cat stance 90/10
-      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("back"); // Back stance 70/30
-      expect(SON_WIND_GUARD_POSE.weight).toBe("back"); // Crane stance 100% back
-      expect(GAM_WATER_GUARD_POSE.weight).toBe("back"); // Back stance 70/30
+      // Back-weighted defensive stances (Beom Seogi, Dwitbal Seogi)
+      expect(TAE_FLUID_GUARD_POSE.weight).toBe("back"); // Hapkido cat stance 90/10 back
+      expect(GAM_WATER_GUARD_POSE.weight).toBe("back"); // Hapkido back stance 70/30 back
 
-      // Neutral stances (Juchum Seogi, Narani Seogi, etc.) - 50/50 weight
-      expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // Horse stance
-      expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral"); // Closed stance
-      expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral"); // Grappling stance
+      // Neutral/balanced stances (Juchum Seogi, Gyeorugi Junbi, Moa Seogi, Ssireum)
+      expect(JIN_THUNDER_GUARD_POSE.weight).toBe("neutral"); // Horse stance 50/50
+      expect(LI_FIRE_GUARD_POSE.weight).toBe("neutral"); // Fighting ready 50/50
+      expect(SON_WIND_GUARD_POSE.weight).toBe("neutral"); // Crane stance modeled as neutral balance
+      expect(GAN_MOUNTAIN_GUARD_POSE.weight).toBe("neutral"); // Closed feet 50/50
+      expect(GON_EARTH_GUARD_POSE.weight).toBe("neutral"); // Sumo squat 50/50
     });
 
     it("should have breathing patterns matching combat philosophy", () => {

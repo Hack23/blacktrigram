@@ -72,10 +72,10 @@ describe("Stance Animation Path Integration", () => {
       const kneeR = kf.boneRotations.get(BoneName.KNEE_R);
 
       // Check that we have significant rotation values (not near-zero walking values)
-      // GEON orthodox stance: LEFT leg is FRONT (deep bend), RIGHT leg is BACK (extended)
+      // GEON stance requires significant hip and knee rotations for proper forward stance
       expect(Math.abs(hipL!.x)).toBeGreaterThan(0.1);
       expect(Math.abs(hipR!.x)).toBeGreaterThan(0.1);
-      expect(Math.abs(kneeL!.x)).toBeGreaterThan(0.4); // Deep front knee bend (LEFT leg forward)
+      expect(Math.abs(kneeR!.x)).toBeGreaterThan(0.5); // Deep front knee bend
 
       console.log(
         "GEON stance leg rotations:\n" +

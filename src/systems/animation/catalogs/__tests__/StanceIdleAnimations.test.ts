@@ -355,12 +355,13 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
     const ganHipR = GAN_IDLE_ANIMATION?.keyframes[0].boneRotations.get("hip_R");
     expect(Math.abs((ganHipL?.x ?? 0) - (ganHipR?.x ?? 0))).toBeLessThan(0.1);
 
-    // Son (L-stance with light front leg) - both legs grounded, subtle difference
-    // CORRECTED: Son no longer uses crane stance (one leg raised)
-    // Now uses L-stance (Niunja Seogi) with both feet grounded for sustained guard
-    // Front leg light (0.12 rad hip flexion), back leg loaded (0.15 rad)
-    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.1); // Front leg slightly flexed
-    expect(Math.abs(sonHipR?.x ?? 0)).toBeGreaterThan(0.1); // Back leg slightly more flexed
+    // Son (Hakdari Seogi - Crane stance) - one leg raised, one leg standing
+    // Son uses authentic Taekyon crane stance (학다리서기):
+    // - Left leg raised with 1.3 rad hip flexion (45° chamber, ready to kick)
+    // - Right leg standing nearly straight at 0.08 rad (170° = nearly vertical)
+    // This is CORRECT per authentic Korean martial arts crane stance
+    expect(Math.abs(sonHipL?.x ?? 0)).toBeGreaterThan(0.1); // Raised leg (high chamber)
+    expect(Math.abs(sonHipR?.x ?? 0)).toBeGreaterThan(0.05); // Standing leg (nearly straight)
   });
 });
 

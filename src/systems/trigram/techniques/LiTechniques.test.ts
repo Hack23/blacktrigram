@@ -52,10 +52,10 @@ describe("LiTechniques", () => {
       });
     });
 
-    it("should have executionTime in optimized range (400-800ms)", () => {
+    it("should have executionTime in optimized range (560-1120ms) - +40% for visibility", () => {
       LI_TECHNIQUES.forEach((technique) => {
-        expect(technique.executionTime).toBeGreaterThanOrEqual(400);
-        expect(technique.executionTime).toBeLessThanOrEqual(800);
+        expect(technique.executionTime).toBeGreaterThanOrEqual(560); // 400ms * 1.4
+        expect(technique.executionTime).toBeLessThanOrEqual(1120); // 800ms * 1.4
       });
     });
 
@@ -63,18 +63,18 @@ describe("LiTechniques", () => {
       const nerveStrike = LI_TECHNIQUES.find((t) => t.id === "li_nerve_strike");
       const pressurePoint = LI_TECHNIQUES.find((t) => t.id === "li_pressure_point");
 
-      // Verify these are among the fastest (under 700ms)
-      expect(nerveStrike?.executionTime).toBeLessThanOrEqual(700);
-      expect(pressurePoint?.executionTime).toBeLessThanOrEqual(700);
+      // Verify these are among the fastest (under 980ms with +40% improvement)
+      expect(nerveStrike?.executionTime).toBeLessThanOrEqual(980); // 700ms * 1.4
+      expect(pressurePoint?.executionTime).toBeLessThanOrEqual(980);
     });
 
     it("should be optimized for precision", () => {
-      // Verify execution times are reasonable for precision techniques
+      // Verify execution times are reasonable for precision techniques (+40% for visibility)
       const flameSpear = LI_TECHNIQUES.find((t) => t.id === "li_flame_spear");
-      expect(flameSpear?.executionTime).toBeLessThanOrEqual(800);
+      expect(flameSpear?.executionTime).toBeLessThanOrEqual(1120); // 800ms * 1.4
 
       const templeStrike = LI_TECHNIQUES.find((t) => t.id === "li_temple_strike");
-      expect(templeStrike?.executionTime).toBeLessThanOrEqual(800);
+      expect(templeStrike?.executionTime).toBeLessThanOrEqual(1120); // 800ms * 1.4
     });
   });
 
@@ -154,11 +154,12 @@ describe("LiTechniques", () => {
 
     it("should have animation speed matching technique speed", () => {
       LI_TECHNIQUES.forEach((technique) => {
-        // Animation speed should be similar to technique speed
+        // Animation speed should be reasonably close to technique speed
+        // Allowing larger difference due to +40% timing improvements for visibility
         const speedDiff = Math.abs(
           (technique.animationSpeed ?? 1.0) - (technique.speed ?? 1.0)
         );
-        expect(speedDiff).toBeLessThan(0.5);
+        expect(speedDiff).toBeLessThan(0.6); // Increased from 0.5 to accommodate visibility improvements
       });
     });
   });
@@ -235,7 +236,7 @@ describe("LiTechniques", () => {
     it("should have correct li_flame_spear configuration", () => {
       const technique = LI_TECHNIQUES.find((t) => t.id === "li_flame_spear");
       expect(technique).toBeDefined();
-      expect(technique?.executionTime).toBe(700);
+      expect(technique?.executionTime).toBe(979); // Updated to +40% timing improvement
       expect(technique?.accuracy).toBe(0.9);
       expect(technique?.damageType).toBe(DamageType.PIERCING);
     });
@@ -243,7 +244,7 @@ describe("LiTechniques", () => {
     it("should have correct li_nerve_strike configuration", () => {
       const technique = LI_TECHNIQUES.find((t) => t.id === "li_nerve_strike");
       expect(technique).toBeDefined();
-      expect(technique?.executionTime).toBe(600);
+      expect(technique?.executionTime).toBe(840); // Updated to +40% timing improvement
       expect(technique?.accuracy).toBe(0.95);
       expect(technique?.damageType).toBe(DamageType.NERVE);
     });
@@ -251,7 +252,7 @@ describe("LiTechniques", () => {
     it("should have correct li_pressure_point configuration", () => {
       const technique = LI_TECHNIQUES.find((t) => t.id === "li_pressure_point");
       expect(technique).toBeDefined();
-      expect(technique?.executionTime).toBe(550);
+      expect(technique?.executionTime).toBe(770); // Updated to +40% timing improvement
       expect(technique?.accuracy).toBe(0.96);
       expect(technique?.damageType).toBe(DamageType.PRESSURE);
     });

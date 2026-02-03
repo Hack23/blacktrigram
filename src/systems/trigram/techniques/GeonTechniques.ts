@@ -54,21 +54,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 800,
-    recoveryTime: 1000,
+    executionTime: 1120,
+    recoveryTime: 1680,
     critChance: 0.1,
     critMultiplier: 1.5,
     effects: [],
-    // Combo metadata - Direct force power amplification
-    comboWindow: 250,
-    comboPriority: 1, // Starter - establishes dominance
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "geon_heaven_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.HEAVEN_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "short",
     speed: 1.0,
@@ -99,21 +95,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.95,
     },
-    executionTime: 600,
-    recoveryTime: 700,
+    executionTime: 840,
+    recoveryTime: 1260,
     critChance: 0.12,
     critMultiplier: 1.6,
     effects: [],
-    // Combo metadata - Fast striking
-    comboWindow: 250,
-    comboPriority: 2, // Mid-chain - maintains momentum
-    pressureStacks: 1,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "punch", // Type: shared category
     animationId: "geon_heavenly_fist", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_HEAVENLY_FIST,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,
@@ -144,21 +136,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.05,
     },
-    executionTime: 700,
-    recoveryTime: 800,
+    executionTime: 980,
+    recoveryTime: 1400,
     critChance: 0.15,
     critMultiplier: 1.7,
     effects: [],
-    // Combo metadata - Power kick
-    comboWindow: 250,
-    comboPriority: 2, // Mid-chain - building pressure
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_frontal_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_FRONTAL_KICK,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -196,21 +184,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
         allowsBreaking: true,
       },
     },
-    executionTime: 800,
-    recoveryTime: 900,
+    executionTime: 1120,
+    recoveryTime: 1540,
     critChance: 0.18,
     critMultiplier: 1.8,
     effects: [],
-    // Combo metadata - Heavy rotation
-    comboWindow: 250,
-    comboPriority: 3, // Finisher - devastating blow
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_roundhouse_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_ROUNDHOUSE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "medium",
     range: "medium",
     speed: 1.0,
@@ -241,21 +225,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "kick",
       baseExtension: 1.0,
     },
-    executionTime: 1050,
-    recoveryTime: 1000,
+    executionTime: 1470,
+    recoveryTime: 1680,
     critChance: 0.2,
     critMultiplier: 2.0,
     effects: [],
-    // Combo metadata - Crushing finisher
-    comboWindow: 250,
-    comboPriority: 3, // Finisher - overwhelming power
-    pressureStacks: 4,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "kick", // Type: shared category
     animationId: "geon_axe_kick", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.AXE_KICK,
-    animationSpeed: 0.9,
+    animationSpeed: 0.65,
     category: "heavy",
     range: "medium",
     speed: 0.9,
@@ -286,21 +266,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "punch",
       baseExtension: 0.9,
     },
-    executionTime: 650,
-    recoveryTime: 750,
+    executionTime: 910,
+    recoveryTime: 1330,
     critChance: 0.25,
     critMultiplier: 2.0,
     effects: [],
-    // Combo metadata - Precise strike
-    comboWindow: 250,
-    comboPriority: 2, // Mid-chain - precise damage
-    pressureStacks: 2,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "strike", // Type: shared category
     animationId: "geon_palm_strike", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.GEON_PALM_STRIKE,
-    animationSpeed: 1.0,
+    animationSpeed: 0.7,
     category: "special",
     range: "short",
     speed: 1.0,
@@ -331,21 +307,17 @@ export const GEON_TECHNIQUES: readonly TrigramStanceTechnique[] = [
       techniqueType: "elbow",
       baseExtension: 0.5,
     },
-    executionTime: 550,
-    recoveryTime: 650,
+    executionTime: 770,
+    recoveryTime: 1190,
     critChance: 0.16,
     critMultiplier: 1.8,
     effects: [],
-    // Combo metadata - Close-range devastation
-    comboWindow: 250,
-    comboPriority: 3, // Finisher - close-quarters knockout
-    pressureStacks: 3,
     // NEW ARCHITECTURE: Separate type (category) from ID (unique)
     animationCategory: "elbow_strike", // Type: shared category
     animationId: "geon_elbow_smash", // ID: unique 1-1 mapping
     // Legacy field for backward compatibility
     animationType: AnimationType.CRUSHING_ELBOW,
-    animationSpeed: 1.1,
+    animationSpeed: 0.75,
     category: "medium",
     range: "short",
     speed: 1.1,

@@ -31,7 +31,7 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should have valid duration for fast horizontal elbow", () => {
-      expect(ELBOW_STRIKE_ANIMATION.duration).toBe(0.42);
+      expect(ELBOW_STRIKE_ANIMATION.duration).toBe(0.48);
       expect(typeof ELBOW_STRIKE_ANIMATION.duration).toBe("number");
     });
 
@@ -60,7 +60,7 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should have valid duration for rising elbow", () => {
-      expect(ELBOW_UPPERCUT_ANIMATION.duration).toBe(0.48);
+      expect(ELBOW_UPPERCUT_ANIMATION.duration).toBe(0.55);
       expect(ELBOW_UPPERCUT_ANIMATION.duration).toBeGreaterThan(
         ELBOW_STRIKE_ANIMATION.duration,
       );
@@ -85,7 +85,7 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should have valid duration", () => {
-      expect(KNEE_STRIKE_ANIMATION.duration).toBe(0.4);
+      expect(KNEE_STRIKE_ANIMATION.duration).toBe(0.6);
     });
 
     it("should not be looping", () => {
@@ -105,7 +105,7 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should have valid duration for 360° spin", () => {
-      expect(SPINNING_ELBOW_ANIMATION.duration).toBe(0.5);
+      expect(SPINNING_ELBOW_ANIMATION.duration).toBe(0.7);
       expect(SPINNING_ELBOW_ANIMATION.duration).toBeGreaterThan(
         ELBOW_STRIKE_ANIMATION.duration,
       );
@@ -130,7 +130,7 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should have valid duration", () => {
-      expect(DOWNWARD_ELBOW_ANIMATION.duration).toBe(0.4);
+      expect(DOWNWARD_ELBOW_ANIMATION.duration).toBe(0.58);
     });
 
     it("should not be looping", () => {
@@ -222,9 +222,10 @@ describe("ElbowKneeAnimations", () => {
 
   describe("Technique Type Classification", () => {
     it("should classify elbow strikes as close-range techniques", () => {
-      expect(ELBOW_STRIKE_ANIMATION.duration).toBeLessThanOrEqual(0.5);
-      expect(ELBOW_UPPERCUT_ANIMATION.duration).toBeLessThanOrEqual(0.5);
-      expect(DOWNWARD_ELBOW_ANIMATION.duration).toBeLessThanOrEqual(0.5);
+      // Improved timings for visible technique execution (0.48-0.6s range)
+      expect(ELBOW_STRIKE_ANIMATION.duration).toBeLessThanOrEqual(0.6);
+      expect(ELBOW_UPPERCUT_ANIMATION.duration).toBeLessThanOrEqual(0.6);
+      expect(DOWNWARD_ELBOW_ANIMATION.duration).toBeLessThanOrEqual(0.6);
     });
 
     it("should classify spinning elbow as slower technique", () => {
@@ -234,7 +235,8 @@ describe("ElbowKneeAnimations", () => {
     });
 
     it("should classify knee strike as clinch-range technique", () => {
-      expect(KNEE_STRIKE_ANIMATION.duration).toBeLessThanOrEqual(0.5);
+      // Improved timing for visible clinch control (0.6s)
+      expect(KNEE_STRIKE_ANIMATION.duration).toBeLessThanOrEqual(0.7);
     });
   });
 });

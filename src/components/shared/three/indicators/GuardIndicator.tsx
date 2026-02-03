@@ -67,11 +67,11 @@ function getTraditionalStanceName(stance: TrigramStance): {
     { korean: string; romanized: string }
   > = {
     [TrigramStance.GEON]: { korean: "앞서기", romanized: "Ap Seogi" },
-    [TrigramStance.TAE]: { korean: "앞굽이", romanized: "Ap Koobi" },
-    [TrigramStance.LI]: { korean: "주춤", romanized: "Juchum Seogi" },
-    [TrigramStance.JIN]: { korean: "뒤굽이", romanized: "Dwi Koobi" },
-    [TrigramStance.SON]: { korean: "범서기", romanized: "Beom Seogi" },
-    [TrigramStance.GAM]: { korean: "학다리", romanized: "Hak Dari Seogi" },
+    [TrigramStance.TAE]: { korean: "범서기", romanized: "Beom Seogi" },
+    [TrigramStance.LI]: { korean: "겨루기 준비", romanized: "Gyeorugi Junbi" },
+    [TrigramStance.JIN]: { korean: "주춤서기", romanized: "Juchum Seogi" },
+    [TrigramStance.SON]: { korean: "학다리서기", romanized: "Hakdari Seogi" },
+    [TrigramStance.GAM]: { korean: "뒷발서기", romanized: "Dwitbal Seogi" },
     [TrigramStance.GAN]: { korean: "모아서기", romanized: "Moa Seogi" },
     [TrigramStance.GON]: { korean: "중하", romanized: "Joong Ha Seogi" },
   };

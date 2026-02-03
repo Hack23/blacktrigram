@@ -407,7 +407,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
       }
       
       // Update only active particle positions (rest remain at origin, won't be rendered)
-      // positions is guaranteed to be defined here (either from ref or just created above)
+      // TypeScript knows positions is defined after the if (!positions) check above
       activeParticles.forEach((particle, i) => {
         const i3 = i * 3;
         positions[i3] = particle.position.x;
@@ -421,17 +421,25 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
     return null;
   }
 
-  // Three.js performance requirement: Access positions ref during render.
-  // The positions are computed in useFrame (write) and only read here (render).
-  // This uni-directional flow is safe and follows Three.js + React patterns.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Three.js performance optimization: positions caching with refs
+  // We use refs to cache particle positions for performance.
+  // These refs are only written to in useFrame and read during render.
+  // This is safe because:
+  // 1. Positions are Float32Arrays that are mutated in place in useFrame
+  // 2. We never mutate positions during render, only read them
+  // 3. This is a standard pattern for Three.js + React (see @react-three/drei Points component)
+  // 4. The alternative (storing positions in state) would cause excessive re-renders
   return (
     <>
+      {/* Reading ref during render for Three.js performance optimization - positions updated in useFrame */}
+      {/* eslint-disable react-hooks/refs */}
       {particleSystems.map((system) => {
-        // Get positions from ref (updated in useFrame above)
-        // This is safe because positions are only written in useFrame, never during render
-        const positions = positionsRef.current.get(system.effectId) 
-          ?? new Float32Array(system.particles.length * 3);
+        // Get positions from ref (updated in useFrame); create and store if missing
+        let positions = positionsRef.current.get(system.effectId);
+        if (!positions) {
+          positions = new Float32Array(system.particles.length * 3);
+          positionsRef.current.set(system.effectId, positions);
+        }
         
         // Get active particle count to set draw range
         const activeParticles = activeParticlesRef.current.get(system.effectId);
@@ -456,6 +464,7 @@ export const WaterWave3D: React.FC<WaterWave3DProps> = ({
           </Points>
         );
       })}
+      {/* eslint-enable react-hooks/refs */}
     </>
   );
 };

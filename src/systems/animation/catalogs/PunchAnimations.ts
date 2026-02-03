@@ -18,7 +18,6 @@
  */
 
 import type { SkeletalAnimation } from "@/types/skeletal";
-import { BoneName } from "@/types/skeletal";
 import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/MartialArtsAnimationBuilder";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -26,52 +25,61 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/Marti
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Jab - 잽 (빠른 직권)
+ * Jab - 잽 (빠른 직권 - Ppareun Jikwon)
  *
  * Fast straight punch with lead hand (left in orthodox stance) using proper Korean martial arts form.
- * Probing attack to gauge distance and set up combinations.
+ * Probing attack to gauge distance and set up combinations - the quintessential speed technique.
  *
- * Korean martial arts biomechanics (PHASE 2 - 95%+ Quality):
- * ═══════════════════════════════════════════════════════════════════
- * 1. Hip Rotation Sequence (엉덩이회전)
- *    - Hips rotate FIRST to generate power
- *    - Shoulders follow to transfer power
- *    - Arm extends LAST to deliver power
- *    - Multiple keyframes showing progression
+ * **Korean Martial Arts Biomechanics** (한국 무술 생체역학):
  *
- * 2. Foot Pivot (발 회전)
- *    - Rear foot (right) pivots on ball of foot
- *    - Hip rotation drives the pivot
- *    - Ankle rotation: heel lifts, ball stays planted
+ * **Stance & Weight Distribution** (자세와 체중 분배):
+ * - Start: 겨루기 자세 (Gyeorugi Jase) - Fighting stance
+ * - Weight: 60/40 forward for quick reach without commitment
+ * - Hip rotation: MINIMAL (~5-10°) to preserve speed
+ * - Shoulder: Small forward roll (~15°) for reach and head protection
  *
- * 3. Shoulder Mechanics (어깨 역학)
- *    - Lead shoulder (left): protraction (forward)
- *    - Rear shoulder (right): retraction (back) during wind-up
- *    - Proper scapular movement
+ * **Chamber Phase - 준비 (Junbi)** [100ms]:
+ * - Lead fist: Pulls back slightly to hip (엉덩이), palm vertical (세로주먹)
+ * - Elbow: Bent ~90° (1.57 rad) tight to ribs for protection
+ * - Rear hand: MAINTAINS 중단막기 (Jungdan Makgi) - middle guard at chin
+ * - Breathing: Quick inhale through nose (코로 들이마시기)
+ * - Eyes: Lock on target - solar plexus or chin (턱)
  *
- * 4. Hikite - Opposite Arm Pull (당기기)
- *    - Right arm pulls back to hip
- *    - Creates rotational force
- *    - Essential for power generation
+ * **Extension Phase - 지르기 (Jireugi)** [150ms]:
+ * - Arm snaps forward in STRAIGHT LINE (직선) to target
+ * - Fist rotation: Vertical → Pronated (~90° wrist rotation = π/2 rad)
+ * - Elbow: Nearly full extension ~175° (0.09 rad from straight)
+ * - Shoulder: Rolls forward completing protection
+ * - Hip: Minimal forward thrust (~10° rotation) for power without telegraphing
+ * - Rear hand: STILL protecting chin (턱보호)
  *
- * 5. Fist Rotation (주먹회전)
- *    - Starts vertical (thumb up)
- *    - Rotates to horizontal (palm down) at full extension
- *    - Wrist pronation through the punch
+ * **Peak Phase - 정점 (Jeongjeom)** [50ms]:
+ * - Maximum reach achieved - fist 45-50cm from shoulder
+ * - Fist: Fully pronated, knuckles aligned with forearm
+ * - Breathing: Sharp exhale (기합 Kihap) "칫!" (Chit!)
+ * - Impact: First two knuckles (인지, 중지 knuckles) make contact
+ * - Body: Weight shifts 65/35 forward at peak extension
  *
- * 6. Weight Transfer (체중이동)
- *    - Subtle forward shift (not a lunge)
- *    - Follows hip rotation
- *    - Center of gravity stays controlled
+ * **Retraction Phase - 회수 (Hoisu)** [100ms]:
+ * - Fist SNAPS BACK through same path (같은 경로)
+ * - Speed of retraction = speed of extension (방어를 위해)
+ * - Return through chamber position at hip
+ * - Elbow returns to protective rib position
  *
- * Phases (7 keyframes for proper biomechanics):
- * 1. Start (시작): Both hands in guard, ready stance - 0ms
- * 2. Hip Initiation (엉덩이 시작): Hips begin rotation FIRST - 60ms
- * 3. Shoulder Drive (어깨 구동): Shoulders rotate, hikite begins - 40ms
- * 4. Extension Start (지르기 시작): Arm begins extending, fist rotating - 80ms
- * 5. Full Extension (완전 지르기): Full arm extension, fist pronated - 70ms
- * 6. Peak Impact (정점): Maximum reach, all power aligned - 50ms
- * 7. Recovery (복귀): Return to guard position - 250ms
+ * **Recovery Phase - 복귀 (Bokgwi)** [150ms]:
+ * - Return to 중단막기 (middle guard) position
+ * - Weight settles back to 60/40 fighting stance
+ * - Both hands at chin level, ready for next technique
+ * - Breathing: Controlled exhale, ready for next inhale
+ *
+ * **Combat Applications** (전투 응용):
+ * - Distance probing (거리 측정)
+ * - Set up combinations: 잽-크로스 (Jab-Cross)
+ * - Disrupt opponent's rhythm (리듬 방해)
+ * - Target: 턱 (chin), 코 (nose), 명치 (solar plexus)
+ *
+ * **Taekwondo Principle**: "속도가 힘이다" (Speed IS Power)
+ * Quick retraction prevents counters - the jab that stays out gets hit!
  *
  * Total duration: 550ms (FAST technique)
  *
@@ -80,103 +88,14 @@ import { MartialArtsAnimationBuilder, TECHNIQUE_TIMING } from "../builders/Marti
 export const JAB_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jab", "잽")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
-    // Keyframe 1: Start - Guard position (0ms)
-    .at(0, "linear")
-    .rotate(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
-    .rotate(BoneName.FOOT_L, 0, 0, 0)
-    .rotate(BoneName.FOOT_R, 0, 0, 0)
-    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
-    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 2: Hip Initiation - Hips rotate FIRST (60ms)
-    .at(0.06, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 0.1, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.08, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.05, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .rotate(BoneName.FOOT_R, 0.15, 0, 0)
-    .rotate(BoneName.KNEE_R, -0.25, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 3: Shoulder Drive - Shoulders rotate, hikite begins (100ms)
-    .at(0.1, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 0.15, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.15, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.18, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.2, 0)
-    .rotate(BoneName.FOOT_R, 0.2, 0, 0)
-    .rotate(BoneName.SHOULDER_R, -0.4, -0.5, -0.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.6)
-    .rotate(BoneName.SHOULDER_L, -0.5, 0.5, 0.4)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.7)
-    .rotate(BoneName.WRIST_L, 0, 0, 0)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 4: Extension Start - Arm begins extending (180ms)
-    .at(0.18, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 0.18, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.2, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.25, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.3, 0)
-    .position(BoneName.PELVIS, 0.02, 0, 0)
-    .rotate(BoneName.FOOT_R, 0.25, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.3, 0.6, 0.5)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.8)
-    .rotate(BoneName.WRIST_L, 0, 0, 0.1)
-    .rotate(BoneName.SHOULDER_R, -0.2, -0.6, -0.5)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.4)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 5: Full Extension - Full arm extension, fist pronated (250ms)
-    .at(0.25, "ease-in")
-    .rotate(BoneName.PELVIS, 0, 0.2, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.25, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.3, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.35, 0)
-    .position(BoneName.PELVIS, 0.03, 0, 0)
-    .rotate(BoneName.FOOT_R, 0.28, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.2, 0.7, 0.6)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.15)
-    .rotate(BoneName.WRIST_L, 0, 0, 0.2)
-    .rotate(BoneName.SHOULDER_R, -0.2, -0.7, -0.6)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.5)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 6: Peak Impact - Maximum reach, all power aligned (300ms)
-    .at(0.3, "linear")
-    .rotate(BoneName.PELVIS, 0, 0.22, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.27, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.32, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.37, 0)
-    .position(BoneName.PELVIS, 0.03, 0, 0)
-    .rotate(BoneName.FOOT_R, 0.3, 0, 0)
-    .rotate(BoneName.SHOULDER_L, 0.25, 0.75, 0.65)
-    .rotate(BoneName.ELBOW_L, 0, 0, -0.1)
-    .rotate(BoneName.WRIST_L, 0, 0, 0.2)
-    .rotate(BoneName.SHOULDER_R, -0.2, -0.75, -0.65)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 7: Recovery - Return to guard (550ms)
-    .at(0.55, "ease-in-out")
-    .rotate(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .position(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.FOOT_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.WRIST_L, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
-    .done<MartialArtsAnimationBuilder>()
+    .punchChamber(TECHNIQUE_TIMING.FAST.chamber, "left") // 준비 - Chamber at hip
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend, "left") // 지르기 - Extension with rotation
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
+    .punchPeak(TECHNIQUE_TIMING.FAST.peak, "left") // 정점 - Peak extension
+    .withKoreanMiddleGuard("right") // Right hand stays in guard
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover) // 복귀 - Return to guard
+    .withKoreanMiddleGuard() // Both hands back to middle guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -184,55 +103,81 @@ export const JAB_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Cross - 크로스 (교차 직권)
+ * Cross - 크로스 (정권지르기 - Jeongwon Jireugi)
  *
  * Powerful straight punch with rear hand using full Korean martial arts biomechanics.
- * Full body rotation generates maximum power through hip and shoulder engagement.
+ * The quintessential power punch - generates maximum force through complete body chain.
  *
- * Korean martial arts biomechanics (역권지르기 - Yeokwon Jireugi) (PHASE 2 - 95%+ Quality):
- * ═══════════════════════════════════════════════════════════════════
- * 1. Hip Rotation Sequence (엉덩이회전)
- *    - Hips rotate FIRST to generate power (~25-30°)
- *    - Shoulders follow to transfer power
- *    - Arm extends LAST to deliver power
- *    - Sequential cascade creates maximum force
+ * **Korean Martial Arts Biomechanics** (한국 무술 생체역학):
  *
- * 2. Foot Pivot (발 회전)
- *    - Rear foot (right) pivots dramatically on ball
- *    - Hip rotation drives strong pivot motion
- *    - Ankle rotation: heel lifts high, ball stays planted
- *    - Front foot stays stable for power transfer
+ * **Stance & Weight Distribution** (자세와 체중 분배):
+ * - Start: 겨루기 자세 (Gyeorugi Jase) - Fighting stance, 60/40 weight forward
+ * - End: 70/30 forward at impact - committing to POWER
+ * - Hip rotation: FULL ~25-30° (0.44-0.52 rad) - core of power generation
+ * - Rear foot: PIVOTS on ball of foot 45° inward for hip drive
  *
- * 3. Shoulder Mechanics (어깨 역학)
- *    - Rear shoulder (right): powerful protraction (forward)
- *    - Lead shoulder (left): retraction (back) for hikite
- *    - Full scapular movement for maximum reach
+ * **Chamber Phase - 준비 (Junbi)** [150ms]:
+ * - Rear fist: COILED at hip (엉덩이), palm vertical (세로주먹)
+ * - Elbow: Bent ~110° (1.92 rad), pulled back BEHIND body line
+ * - Lead hand: MAINTAINS 중단막기 (middle guard) protecting chin
+ * - Shoulders: Rear shoulder pulled back, torso "wound up" like spring
+ * - Hips: Coiled backward ~10° from neutral, ready to EXPLODE
+ * - Breathing: DEEP inhale through nose (코로 깊이 들이마시기)
+ * - Legs: Rear leg bent ~135° (2.36 rad), loaded with power
  *
- * 4. Hikite - Opposite Arm Pull (당기기)
- *    - Left arm pulls strongly back to hip
- *    - Creates powerful rotational force
- *    - Essential for maximum power generation
- *    - Counter-rotation multiplies force
+ * **Hip Rotation Phase - 회전 (Hoejeon)** [200ms]:
+ * - Hips: BEGIN explosive rotation, rear hip drives FORWARD
+ * - Rear foot: Ball pivots inward 45°, heel lifts slightly
+ * - Power chain: Ground → Legs → Hips → Core → Shoulders → Fist
+ * - Torso: Rotates WITH hips, shoulders follow (~15° lag)
+ * - Rear shoulder: Begins forward drive
+ * - Lead hand: STILL protecting, doesn't drop
  *
- * 5. Fist Rotation (주먹회전)
- *    - Starts vertical (thumb up) at chamber
- *    - Rotates to horizontal (palm down) during extension
- *    - Full wrist pronation maximizes impact surface
+ * **Extension Phase - 지르기 (Jireugi)** [80ms]:
+ * - Fist EXPLODES forward in straight line (직선 경로)
+ * - Fist rotation: Vertical → Pronated (90° = π/2 rad) for maximum power transfer
+ * - Elbow: Extends to ~175° (0.09 rad) - NEARLY straight but not locked
+ * - Shoulder: Drives forward completing rotation
+ * - Hip rotation: COMPLETES full 25-30° forward
+ * - Weight transfer: Shifts to 70/30 forward
+ * - Breathing: EXPLOSIVE exhale (기합 Kihap) "크악!" (Keuwak!)
+ * - Rear heel: Fully lifted, pivoted inward
  *
- * 6. Weight Transfer (체중이동)
- *    - Significant forward weight shift
- *    - Follows hip rotation sequence
- *    - Center of gravity drives into target
- *    - More pronounced than jab
+ * **Peak/Follow-Through - 정점/관통 (Jeongjeom/Gwantong)** [80ms]:
+ * - Maximum extension: Fist reaches 55-60cm from shoulder
+ * - Full body alignment: Ankle → Knee → Hip → Shoulder → Fist in ONE LINE
+ * - Impact: First two knuckles (인지, 중지) strike target
+ * - Power transfer: ALL body mass behind punch
+ * - Rear leg: Fully extended, heel up
+ * - Lead hand: STILL protecting chin (critical defense)
  *
- * Phases (7 keyframes for proper biomechanics):
- * 1. Start (시작): Both hands in guard, ready stance - 0ms
- * 2. Chamber (준비): Rear arm coils, body winds up - 90ms
- * 3. Hip Explosion (엉덩이 폭발): Hips rotate FIRST, powerful - 90ms
- * 4. Shoulder Drive (어깨 구동): Shoulders drive, hikite strong - 70ms
- * 5. Extension Power (지르기 힘): Arm extends with full rotation - 90ms
- * 6. Peak Impact (정점): Maximum power delivery - 80ms
- * 7. Recovery (복귀): Return to guard position - 310ms
+ * **Retraction Phase - 회수 (Hoisu)** [120ms]:
+ * - Fist returns along same path
+ * - Hip begins counter-rotation back to neutral
+ * - Rear foot pivots back to starting position
+ * - Weight begins shifting back toward 60/40
+ *
+ * **Recovery Phase - 복귀 (Bokgwi)** [180ms]:
+ * - Return to 중단막기 (middle guard) bilateral protection
+ * - Hips settle to neutral fighting position
+ * - Weight: 60/40 ready for next technique
+ * - Breathing: Controlled return to combat breathing rhythm
+ * - Stance: Reset to 겨루기 자세 (fighting ready)
+ *
+ * **Combat Applications** (전투 응용):
+ * - Knockout punch targeting: 턱 (chin), 관자놀이 (temple), 명치 (solar plexus)
+ * - Follow-up to jab: Classic 1-2 combo (잽-크로스)
+ * - Counter-strike: When opponent over-commits
+ * - Liver shot: Angled downward to 간장 (liver)
+ *
+ * **Taekwondo Principle**: "힘은 땅에서 나온다" (Power comes from the ground)
+ * The cross demonstrates complete kinetic chain - every link must be strong!
+ *
+ * **Biomechanical Keys**:
+ * - Rear foot pivot = Hip rotation enabler
+ * - Hip rotation = Power multiplier (3-4x arm-only punch)
+ * - Fist rotation = Penetration and structural alignment
+ * - Lead hand guard = Defensive responsibility
  *
  * Total duration: 730ms (MEDIUM technique)
  *
@@ -241,105 +186,14 @@ export const JAB_ANIMATION: SkeletalAnimation =
 export const CROSS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("cross", "크로스")
     .asAttack(TECHNIQUE_TIMING.MEDIUM.total)
-    // Keyframe 1: Start - Guard position (0ms)
-    .at(0, "linear")
-    .rotate(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
-    .rotate(BoneName.FOOT_L, 0, 0, 0)
-    .rotate(BoneName.FOOT_R, 0, 0, 0)
-    .rotate(BoneName.KNEE_L, -0.2, 0, 0)
-    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 2: Chamber - Rear arm coils, body winds up (90ms)
-    .at(0.09, "ease-in")
-    .rotate(BoneName.PELVIS, 0, -0.15, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, -0.12, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, -0.1, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, -0.08, 0)
-    .rotate(BoneName.SHOULDER_R, -0.2, -0.5, -0.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
-    .rotate(BoneName.WRIST_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.FOOT_R, 0.1, 0, 0)
-    .rotate(BoneName.KNEE_R, -0.25, 0, 0)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 3: Hip Explosion - Hips rotate FIRST, powerfully (180ms)
-    .at(0.18, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 0.3, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.25, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.15, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.05, 0)
-    .rotate(BoneName.FOOT_R, 0.35, 0, 0)
-    .rotate(BoneName.KNEE_R, -0.2, 0, 0)
-    .position(BoneName.PELVIS, 0.03, 0, 0)
-    .rotate(BoneName.SHOULDER_R, -0.2, -0.5, -0.4)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.57)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 4: Shoulder Drive - Shoulders drive, hikite strong (250ms)
-    .at(0.25, "ease-out")
-    .rotate(BoneName.PELVIS, 0, 0.4, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.38, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.4, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.45, 0)
-    .rotate(BoneName.FOOT_R, 0.4, 0, 0)
-    .position(BoneName.PELVIS, 0.05, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.3, 0.2, -0.4)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.5)
-    .rotate(BoneName.SHOULDER_R, -0.4, -0.2, 0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, -1.0)
-    .rotate(BoneName.WRIST_R, 0, 0, 0.05)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 5: Extension Power - Arm extends with full rotation (340ms)
-    .at(0.34, "ease-in")
-    .rotate(BoneName.PELVIS, 0, 0.45, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.45, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.55, 0)
-    .rotate(BoneName.FOOT_R, 0.45, 0, 0)
-    .position(BoneName.PELVIS, 0.06, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.2, 0, -0.6)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.57)
-    .rotate(BoneName.SHOULDER_R, 0.3, 0, 0.7)
-    .rotate(BoneName.ELBOW_R, 0, 0, -0.15)
-    .rotate(BoneName.WRIST_R, 0, 0, 0.15)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 6: Peak Impact - Maximum power delivery (420ms)
-    .at(0.42, "linear")
-    .rotate(BoneName.PELVIS, 0, 0.5, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0.5, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0.55, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0.6, 0)
-    .rotate(BoneName.FOOT_R, 0.5, 0, 0)
-    .position(BoneName.PELVIS, 0.07, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.2, -0.1, -0.7)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.57)
-    .rotate(BoneName.SHOULDER_R, 0.35, 0.1, 0.8)
-    .rotate(BoneName.ELBOW_R, 0, 0, -0.09)
-    .rotate(BoneName.WRIST_R, 0, 0, 0.2)
-    .done<MartialArtsAnimationBuilder>()
-    // Keyframe 7: Recovery - Return to guard (730ms)
-    .at(0.73, "ease-in-out")
-    .rotate(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.SPINE_LOWER, 0, 0, 0)
-    .rotate(BoneName.SPINE_MIDDLE, 0, 0, 0)
-    .rotate(BoneName.SPINE_UPPER, 0, 0, 0)
-    .position(BoneName.PELVIS, 0, 0, 0)
-    .rotate(BoneName.FOOT_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_L, -0.6, 0.4, 0.3)
-    .rotate(BoneName.ELBOW_L, 0, 0, -1.8)
-    .rotate(BoneName.WRIST_R, 0, 0, 0)
-    .rotate(BoneName.SHOULDER_R, -0.6, -0.4, -0.3)
-    .rotate(BoneName.ELBOW_R, 0, 0, 1.8)
-    .done<MartialArtsAnimationBuilder>()
+    .punchChamber(TECHNIQUE_TIMING.MEDIUM.chamber, "right") // 준비 - Chamber at hip
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
+    .punchExtend(TECHNIQUE_TIMING.MEDIUM.extend, "right") // 지르기 - Extension with full hip rotation
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
+    .punchPeak(TECHNIQUE_TIMING.MEDIUM.peak, "right") // 정점 - Peak impact
+    .withKoreanMiddleGuard("left") // Left hand stays in guard
+    .recover(TECHNIQUE_TIMING.MEDIUM.retract + TECHNIQUE_TIMING.MEDIUM.recover) // 복귀 - Return to guard
+    .withKoreanMiddleGuard() // Both hands back to middle guard
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -370,15 +224,82 @@ export const PALM_STRIKE_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Hook - 훅 (곡권)
+ * Hook - 훅 (곡권 - Gokwon / 갈고리주먹 - Galgori Jumeok)
  *
- * Curved punch targeting jaw or temple.
- * Generates power from hip and shoulder rotation.
+ * Curved power punch targeting jaw or temple with circular trajectory.
+ * Generates devastating knockout power from hip and shoulder rotation in horizontal plane.
  *
- * Phases:
- * 1. Wind-up (준비): Arm pulls back, elbow bent 90° - 150ms
- * 2. Rotation & Strike (회전+타격): Hip rotates, fist arcs into target - 300ms
- * 3. Recovery (복귀): Return to guard - 350ms
+ * **Korean Martial Arts Biomechanics** (한국 무술 생체역학):
+ *
+ * **Stance & Weight Distribution** (자세와 체중 분배):
+ * - Start: 60/40 weight distribution
+ * - Peak: 55/45 - MORE BALANCED than cross (circular vs. linear power)
+ * - Hip rotation: ~35-40° (0.61-0.70 rad) - MORE than cross!
+ * - Pivoting: Lead foot pivots OUT ~30° on ball
+ *
+ * **Chamber/Wind-Up Phase - 준비 (Junbi)** [150ms]:
+ * - Lead arm: Pulls BACK to side, elbow bent 90° (1.57 rad) - CRITICAL angle
+ * - Fist position: At shoulder level (어깨 높이), near armpit
+ * - Elbow: Points SIDEWAYS (옆으로), not down - horizontal plane strike
+ * - Rear hand: PROTECTS chin (턱보호) - non-negotiable defense
+ * - Hips: Coil AWAY from target side by ~10-15°
+ * - Shoulders: Wind up like baseball bat swing
+ * - Breathing: Deep inhale (들이마시기)
+ * - Lead foot: Prepares to pivot outward
+ *
+ * **Rotation & Strike Phase - 회전+타격 (Hoejeon + Tagyeok)** [200ms]:
+ * - Hip explosion: Rotates 35-40° toward target (MORE than cross!)
+ * - Lead foot: Ball pivots OUT ~30°, heel comes up slightly
+ * - Torso: Rotates WITH hips in synchronized motion
+ * - Shoulder: Drives around like hammer throw
+ * - Elbow: MAINTAINS 90° bend throughout strike - power comes from rotation, NOT extension
+ * - Fist: Travels in HORIZONTAL ARC (수평호 - Supyeongho)
+ * - Trajectory: Curves AROUND guard to strike side of head
+ * - Hand position: Palm faces DOWN at impact (pronated)
+ *
+ * **Peak Impact - 정점 (Jeongjeom)** [100ms]:
+ * - Impact zone: 턱 (jaw), 관자놀이 (temple), 귀 (ear) - knockout targets
+ * - Fist alignment: Knuckles perpendicular to target surface
+ * - Elbow: STILL bent 90° - rigid arm triangle structure
+ * - Hip: Fully rotated, weight 55/45
+ * - Breathing: Sharp exhale "흣!" (Heut!) with kihap
+ * - Body unity: Fist, elbow, shoulder, hip aligned in CIRCULAR chain
+ * - Follow-through: Hip continues rotation ~5° past impact
+ *
+ * **Retraction Phase - 회수 (Hoisu)** [150ms]:
+ * - Fist returns via SAME CURVED PATH (same arc backward)
+ * - Elbow: Maintains bend, doesn't straighten
+ * - Hip: Counter-rotates back toward neutral
+ * - Lead foot: Pivots back to starting position
+ *
+ * **Recovery Phase - 복귀 (Bokgwi)** [200ms]:
+ * - Return to 중단막기 (middle guard) protecting chin
+ * - Weight: Resets to 60/40 fighting stance
+ * - Hips: Neutral position, ready for next technique
+ * - Breathing: Controlled recovery breath
+ *
+ * **Combat Applications** (전투 응용):
+ * - Primary target: 턱 (chin) - KNOCKOUT potential
+ * - Secondary: 관자놀이 (temple) - brain concussion
+ * - Tertiary: 간장 (liver) if angled downward (body hook)
+ * - Combinations: After jab opens guard - 잽-훅 (Jab-Hook)
+ * - Counter: When opponent ducks straight punches
+ *
+ * **Biomechanical Principle**: "팔이 아니라 몸통으로 친다"
+ * (Strike with the torso, not the arm)
+ * - 90° elbow angle = RIGID structure transfers rotation power
+ * - Hip rotation = 70% of power generation
+ * - Shoulder pivot = 20% of power
+ * - Arm extension = 10% only (most people do this wrong!)
+ *
+ * **Common Mistakes** (흔한 실수):
+ * - ❌ Extending arm (팔 펴기) - WRONG! Breaks power structure
+ * - ❌ Arm-only punch (팔만 사용) - No hip rotation = weak hook
+ * - ❌ Dropping rear hand (뒷손 내리기) - Gets countered!
+ * - ✅ Correct: Locked 90° elbow + full hip rotation = knockout power
+ *
+ * **Taekwondo/Boxing Principle**: "회전이 힘이다" (Rotation IS power)
+ * The hook is a rotational strike, not a pushing strike - physics of angular momentum!
  *
  * Total duration: 800ms (HEAVY_LIGHT technique)
  *
@@ -421,16 +342,100 @@ export const LEAD_HOOK_ANIMATION: SkeletalAnimation =
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
- * Uppercut - 어퍼컷 (상권)
+ * Uppercut - 어퍼컷 (상승권 - Sangseung Gwon / 올려치기 - Ollyeochigi)
  *
- * Rising punch targeting chin from below.
- * Power generated from legs and hips.
+ * Rising punch targeting chin from below using leg drive and upward hip thrust.
+ * Devastating close-range knockout technique generating power from ground through vertical chain.
  *
- * Phases:
- * 1. Crouch (낮추기): Drop level to load punch - 150ms
- * 2. Drive (상승): Drive up through legs - 200ms
- * 3. Strike (타격): Fist rises into chin - 100ms
- * 4. Recovery (복귀): Return to guard - 350ms
+ * **Korean Martial Arts Biomechanics** (한국 무술 생체역학):
+ *
+ * **Stance & Weight Distribution** (자세와 체중 분배):
+ * - Start: 60/40 weight distribution
+ * - Crouch: Weight shifts to 65/35 on striking side (loading)
+ * - Impact: 70/30 - full commitment to vertical drive
+ * - Stance width: SLIGHTLY WIDER for stable base during crouch
+ *
+ * **Crouch/Chamber Phase - 낮추기 (Najchugi)** [150ms]:
+ * - Body: Drops CENTER OF GRAVITY by ~10-15cm (무게중심 낮추기)
+ * - Striking leg: Knee bends DEEPER ~100° (1.75 rad) - loading spring
+ * - Hip: Tilts backward and DOWN on striking side (~15° pelvic tilt)
+ * - Striking fist: Drops to hip level, palm facing INWARD/UPWARD (손바닥 위로)
+ * - Elbow: Bent ~110° (1.92 rad), close to ribs
+ * - Rear hand: Maintains 중단막기 (chin protection) - critical for counters
+ * - Shoulders: Dip slightly on striking side (~10° drop)
+ * - Breathing: Quick inhale while loading (준비 호흡)
+ * - Weight: Loads onto ball of striking-side foot
+ *
+ * **Drive/Explosion Phase - 상승 (Sangseung)** [200ms]:
+ * - Legs: EXPLOSIVE EXTENSION - knee straightens from 100° → 170° (0.18 rad)
+ * - Hip thrust: Drives UPWARD and FORWARD (~20° upward angle)
+ * - Power chain: Ground → Legs → Hips → Core → Shoulder → Fist (VERTICAL)
+ * - Heel: Lifts off ground as leg extends
+ * - Pelvis: Thrusts upward and forward, creating hip drive
+ * - Torso: Rises with hip drive, slight forward lean (~10°)
+ * - Striking shoulder: Begins upward drive
+ * - Fist: Starts vertical ascent along CENTERLINE
+ *
+ * **Strike/Extension Phase - 타격 (Tagyeok)** [100ms]:
+ * - Fist: Rises in VERTICAL PATH from hip to chin level
+ * - Fist rotation: Inward palm → Neutral/Pronated (90° rotation)
+ * - Elbow: Remains bent ~120° (2.09 rad) throughout - NOT straight punch!
+ * - Trajectory: Fist travels UPWARD at ~60-70° angle from horizontal
+ * - Shoulder: Completes upward drive, elevating ~15cm
+ * - Hip: Full upward thrust completed
+ * - Legs: Fully extended, body at maximum height
+ * - Breathing: EXPLOSIVE exhale "우억!" (Wueok!) - rising kihap
+ *
+ * **Peak Impact - 정점 (Jeongjeom)** [100ms]:
+ * - Target: 턱 (chin) from BELOW - ideal knockout angle
+ * - Impact surface: Knuckles facing UPWARD, hitting underside of jaw
+ * - Body position: Full vertical extension, heel off ground
+ * - Power delivery: ALL body mass driving UPWARD into target
+ * - Neck snap: Opponent's head snaps BACKWARD and UP (knockout mechanism)
+ * - Weight: 70/30 forward, committed to strike
+ * - Rear hand: STILL protecting (never drops!)
+ *
+ * **Retraction Phase - 회수 (Hoisu)** [150ms]:
+ * - Fist: Drops back toward hip via same path
+ * - Body: Begins lowering back to normal height
+ * - Legs: Bend slightly to absorb return motion
+ * - Hip: Settles back to neutral pelvic alignment
+ * - Heel: Returns to ground
+ *
+ * **Recovery Phase - 복귀 (Bokgwi)** [200ms]:
+ * - Return to 중단막기 (middle guard) bilateral protection
+ * - Center of gravity: Returns to normal fighting height
+ * - Weight: Resets to 60/40 distribution
+ * - Stance: 겨루기 자세 (fighting stance) restored
+ * - Breathing: Controlled recovery, ready for next technique
+ *
+ * **Combat Applications** (전투 응용):
+ * - Primary target: 턱 (chin/jaw) from below - maximum knockout potential
+ * - Ideal range: CLOSE combat (0.3-0.5m) - too close for straight punches
+ * - Combinations: After body shot brings opponent's hands down
+ * - Counter: When opponent ducks or bends forward
+ * - Liver targeting: Body uppercut to 간장 (liver) at close range
+ *
+ * **Biomechanical Keys** (생체역학 핵심):
+ * 1. **Leg drive** (다리 추진력): 60% of power comes from legs!
+ * 2. **Hip thrust** (엉덩이 밀기): 25% from upward pelvic motion
+ * 3. **Shoulder lift** (어깨 들기): 10% from shoulder elevation
+ * 4. **Arm** (팔): Only 5% - mostly for targeting!
+ *
+ * **Physics Principle**: "상승하는 힘은 중력을 이긴다"
+ * (Rising force defeats gravity)
+ * - Vertical strike vector meets horizontal chin = devastating angle
+ * - Opponent's neck structure weakest against upward force
+ * - Body weight + leg extension = maximum vertical power transfer
+ *
+ * **Common Mistakes** (흔한 실수):
+ * - ❌ Arm-only punch (팔만) - No leg drive = weak uppercut
+ * - ❌ Wide arc (넓은 호) - Too telegraphed and slow
+ * - ❌ Straight up (수직) - Needs forward component for power
+ * - ✅ Correct: Deep crouch + explosive leg extension + upward hip thrust
+ *
+ * **Taekwondo Principle**: "땅에서 하늘로" (From Earth to Heaven)
+ * The uppercut exemplifies vertical power generation - like jumping!
  *
  * Total duration: 800ms (HEAVY_LIGHT technique)
  *

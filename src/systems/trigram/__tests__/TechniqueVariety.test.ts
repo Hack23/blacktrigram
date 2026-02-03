@@ -150,9 +150,7 @@ function validateCategoryProperties(
       if (tech.staminaCost >= 15) {
         issues.push("Light technique has high stamina: " + tech.staminaCost);
       }
-      // Special case: tae_finger_lock has longer execution time (975ms) for proper Hapkido visualization
-      // while remaining "light" to maintain category balance under 60%
-      if (tech.executionTime >= 700 && tech.id !== "tae_finger_lock") {
+      if (tech.executionTime >= 980) {
         issues.push("Light technique is slow: " + tech.executionTime + "ms execution");
       }
       break;
@@ -164,7 +162,7 @@ function validateCategoryProperties(
       if (tech.staminaCost <= 25) {
         issues.push("Heavy technique has low stamina: " + tech.staminaCost);
       }
-      if (tech.executionTime <= 1000) {
+      if (tech.executionTime <= 1400) {
         issues.push("Heavy technique is too fast: " + tech.executionTime + "ms execution");
       }
       break;
