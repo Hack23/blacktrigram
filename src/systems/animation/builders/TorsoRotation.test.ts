@@ -437,9 +437,9 @@ describe("TorsoRotationSystem", () => {
       it("should have sequential spine rotation (lower < mid < upper)", () => {
         const cross = CROSS_ANIMATION;
 
-        // Find extension keyframe (MEDIUM timing: chamber at 0.15s, extension at 0.35s)
+        // Find power delivery keyframe (at extension time: 0.25s-0.45s for modern animation)
         const extensionFrame = cross.keyframes.find(
-          (kf) => kf.time >= 0.14 && kf.time <= 0.36
+          (kf) => kf.time >= 0.25 && kf.time <= 0.45
         );
 
         expect(extensionFrame).toBeDefined();
