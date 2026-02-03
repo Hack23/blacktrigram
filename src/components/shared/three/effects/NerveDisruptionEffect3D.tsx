@@ -145,16 +145,20 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
       }
     });
     
+    // Capture ref values in effect scope to avoid stale references in cleanup
+    const group = groupRef.current;
+    const effectInstances = effectInstancesRef.current;
+    
     // Cleanup any remaining Three.js objects on unmount or dependency change
     return () => {
-      effectInstancesRef.current.forEach((instance) => {
+      effectInstances.forEach((instance) => {
         if (instance.particleSystem.parent) {
-          groupRef.current?.remove(instance.particleSystem);
+          group?.remove(instance.particleSystem);
         }
 
         instance.arcLines.forEach((line) => {
           if (line.parent) {
-            groupRef.current?.remove(line);
+            group?.remove(line);
           }
           line.geometry.dispose();
           (line.material as THREE.Material).dispose();
@@ -164,7 +168,7 @@ export const NerveDisruptionEffect3D: React.FC<NerveDisruptionEffect3DProps> = (
         (instance.particleSystem.material as THREE.Material).dispose();
       });
 
-      effectInstancesRef.current.clear();
+      effectInstances.clear();
     };
   }, [effects, enabled, particleCount]);
   

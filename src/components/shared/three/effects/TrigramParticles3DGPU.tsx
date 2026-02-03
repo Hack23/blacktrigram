@@ -326,8 +326,10 @@ export const TrigramParticles3DGPU: React.FC<TrigramParticles3DGPUProps> = ({
 
   // Cleanup on unmount - release all pooled objects
   useEffect(() => {
+    // Capture ref value in effect scope to avoid stale references in cleanup
+    const activeEffects = activeEffectsRef.current;
+    
     return () => {
-      const activeEffects = activeEffectsRef.current;
       activeEffects.forEach((effect) => {
         effect.geometry.dispose();
         effect.material.dispose();

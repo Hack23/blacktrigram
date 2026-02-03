@@ -135,7 +135,11 @@ import {
   UPPERCUT_ANIMATION,
 } from "../catalogs/PunchAnimations";
 
-import { STANCE_ANIMATIONS } from "../catalogs/StanceAnimations";
+import { 
+  STANCE_ANIMATIONS, 
+  GAM_CIRCULAR_PARRY_ANIMATION,
+  GAN_IMMOVABLE_STANCE_ANIMATION 
+} from "../catalogs/StanceAnimations";
 import { ALL_ATTACK_ANIMATIONS } from "../catalogs/StanceAttackAnimations";
 import { TRIGRAM_IDLE_ANIMATIONS_BY_NAME } from "../catalogs/StanceIdleAnimations";
 import { STANCE_LOCOMOTION_ANIMATIONS } from "../catalogs/StanceLocomotionAnimations";
@@ -551,14 +555,14 @@ export const ANIMATION_ID_REGISTRY: ReadonlyMap<string, SkeletalAnimation> =
     ["darkops_larynx_crush", THROAT_STRIKE_ANIMATION],
     ["darkops_sleeper_hold", REAR_NAKED_CHOKE_ANIMATION],
     ["darkops_spinal_strike", SPINAL_ELBOW_ANIMATION],
-    ["gam_circular_parry", STANCE_ANIMATIONS.get("gam_circular_parry")!], // Use dedicated circular parry animation
+    ["gam_circular_parry", STANCE_ANIMATIONS.get("gam_circular_parry") ?? GAM_CIRCULAR_PARRY_ANIMATION], // Use dedicated circular parry animation or fallback
     ["gam_flow_defense", GAM_FLOW_DEFENSE],
     ["gam_flowing_block", GAM_FLOWING_BLOCK],
     ["gam_hip_throw", HIP_THROW_ANIMATION],
     ["gam_redirect_throw", REDIRECT_THROW_ANIMATION],
     ["gam_water_counter", GAM_WATER_FLOW_COUNTER_ANIMATION],
     ["gan_counter_strike", GAN_COUNTER_FORTRESS],
-    ["gan_immovable_stance", STANCE_ANIMATIONS.get("gan_immovable_stance")!], // Use dedicated immovable stance animation
+    ["gan_immovable_stance", STANCE_ANIMATIONS.get("gan_immovable_stance") ?? GAN_IMMOVABLE_STANCE_ANIMATION], // Use dedicated immovable stance animation or fallback
     ["gan_iron_block", GAN_IMMOVABLE_BLOCK],
     ["gan_rock_defense", GAN_ROCK_DEFENSE_ANIMATION],
     ["geon_axe_kick", AXE_KICK_ANIMATION],

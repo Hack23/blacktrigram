@@ -287,7 +287,8 @@ export function getAnimationForStance(
   const cacheKey = `${animation.name}_southpaw`;
 
   if (cache?.has(cacheKey)) {
-    return cache.get(cacheKey)!;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
   }
 
   const mirrored = mirrorAnimation(animation, {
