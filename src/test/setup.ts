@@ -9,7 +9,7 @@ beforeAll(() => {
   // Intercept stderr to suppress jsdom HTMLCanvasElement warnings
   // jsdom writes these warnings directly to stderr, bypassing console mocks
   const originalStderrWrite = process.stderr.write.bind(process.stderr);
-  process.stderr.write = ((chunk: any, encoding?: any, callback?: any): boolean => {
+  process.stderr.write = ((chunk: unknown, encoding?: unknown, callback?: unknown): boolean => {
     const message = chunk?.toString?.() ?? "";
     
     // Suppress HTMLCanvasElement warnings from jsdom
@@ -26,8 +26,12 @@ beforeAll(() => {
       return true;
     }
     
-    // Pass through all other messages
-    return originalStderrWrite(chunk, encoding, callback);
+    // Pass through all other messages - cast chunk to expected type
+    return originalStderrWrite(
+      chunk as string | Uint8Array, 
+      encoding as BufferEncoding | undefined, 
+      callback as ((err?: Error | null) => void) | undefined
+    );
   }) as typeof process.stderr.write;
 
   // Mock APP_VERSION for tests
@@ -77,7 +81,10 @@ beforeAll(() => {
           if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, new Set());
           }
-          this.eventListeners.get(event)!.add(handler);
+          const eventSet = this.eventListeners.get(event);
+          if (eventSet) {
+            eventSet.add(handler);
+          }
 
           // Automatically trigger canplaythrough event after a microtask
           if (

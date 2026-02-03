@@ -103,7 +103,7 @@ export class CameraShakeManager {
    * Update camera shake (call in animation loop)
    */
   update(): void {
-    if (!this.camera || !this.shakeState || !this.shakeState.active) {
+    if (!this.camera || !this.shakeState?.active) {
       return;
     }
 
@@ -136,9 +136,7 @@ export class CameraShakeManager {
       Math.sin(time * frequency * 2.3 * Math.PI) * amplitude * 0.05;
 
     // Apply offset to camera - reuse temp vector to avoid GC pressure
-    if (!this.tempVector) {
-      this.tempVector = new THREE.Vector3();
-    }
+    this.tempVector ??= new THREE.Vector3();
     this.tempVector.copy(this.shakeState.originalPosition).add(this.shakeState.offset);
     this.camera.position.copy(this.tempVector);
   }
