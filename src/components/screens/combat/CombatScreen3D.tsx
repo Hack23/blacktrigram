@@ -370,11 +370,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Performance monitor visibility toggle (F9 key)
   const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key), performance monitor (F9), and running (Ctrl key)
-  // Track running state for player 1 (Ctrl key for sprint)
-  // 플레이어 1 달리기 상태 추적 (Ctrl 키로 스프린트)
-  const [player1IsRunning, setPlayer1IsRunning] = useState(false);
-
+  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9)
+  // Ctrl key removed - running now acceleration-based
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
@@ -387,24 +384,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         e.preventDefault();
         setShowPerformanceMonitor((prev) => !prev);
       }
-      // Ctrl key for running (sprint)
-      if (e.key === "Control" && !e.repeat) {
-        setPlayer1IsRunning(true);
-      }
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      // Release Ctrl to stop running
-      if (e.key === "Control") {
-        setPlayer1IsRunning(false);
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [audio]);
 
@@ -867,6 +851,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [arenaBounds.worldWidthMeters, arenaBounds.worldDepthMeters],
   );
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Acceleration-Based Running System for Player 1
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Track continuous movement time for acceleration-based running
+  const player1MovementTimeRef = useRef(0);
+  const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const player1LastUpdateTimeRef = useRef(performance.now());
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
@@ -883,12 +876,74 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,
-      isRunning: player1IsRunning, // Use dynamic running state from Ctrl key
+      isRunning: false, // Will be computed based on acceleration below
       useTacticalSteps: false,
       // Speed modifier overrides from SpeedModifierSystem
       maxSpeedOverride: player1SpeedModifiers.finalSpeed,
       accelerationOverride: player1SpeedModifiers.finalAcceleration,
     });
+  
+  // Calculate current speed based on continuous movement time
+  const player1AccelerationBasedSpeed = useMemo(() => {
+    const WALK_SPEED = 6.0;
+    const RUN_SPEED = 10.0;
+    const TIME_TO_RUN = 1.5;
+    
+    const progress = Math.min(player1MovementTimeRef.current / TIME_TO_RUN, 1.0);
+    return WALK_SPEED + (RUN_SPEED - WALK_SPEED) * progress;
+  }, [player1MovementTimeRef.current]);
+  
+  // Update movement time based on direction consistency
+  useEffect(() => {
+    if (!player1IsMoving || !player1Velocity || (player1Velocity.x === 0 && player1Velocity.y === 0)) {
+      player1MovementTimeRef.current = 0;
+      player1LastDirectionRef.current = { x: 0, y: 0 };
+      player1LastUpdateTimeRef.current = performance.now();
+      return;
+    }
+    
+    const currentDir = { x: player1Velocity.x, y: player1Velocity.y };
+    const lastDir = player1LastDirectionRef.current;
+    
+    let isSameDirection = true;
+    if (lastDir.x !== 0 || lastDir.y !== 0) {
+      const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
+      const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
+      const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
+      
+      if (magCurrent > 0 && magLast > 0) {
+        const cosAngle = dot / (magCurrent * magLast);
+        isSameDirection = cosAngle > 0.707;
+      }
+    }
+    
+    const updateInterval = setInterval(() => {
+      const now = performance.now();
+      const delta = (now - player1LastUpdateTimeRef.current) / 1000;
+      player1LastUpdateTimeRef.current = now;
+      
+      if (player1IsMoving && isSameDirection) {
+        player1MovementTimeRef.current += delta;
+      }
+    }, 16);
+    
+    player1LastDirectionRef.current = currentDir;
+    
+    if (!isSameDirection) {
+      player1MovementTimeRef.current = 0;
+    }
+    
+    return () => clearInterval(updateInterval);
+  }, [player1IsMoving, player1Velocity]);
+  
+  // Update speed modifiers based on acceleration
+  useEffect(() => {
+    setPlayer1SpeedModifiers(prev => ({
+      ...prev,
+      finalSpeed: player1AccelerationBasedSpeed,
+      baseSpeed: player1AccelerationBasedSpeed,
+    }));
+  }, [player1AccelerationBasedSpeed]);
 
   // Player 1 rotation: face movement direction when moving, opponent when idle
   // 이동 중에는 이동 방향을, 정지 시에는 상대를 향함
