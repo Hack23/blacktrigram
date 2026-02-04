@@ -126,7 +126,8 @@ import {
   STANCE_INDEX_MAP,
 } from "./helpers";
 import { AnimationUpdater } from "./helpers/AnimationUpdater";
-import { AccelerationUpdater } from "./helpers/AccelerationUpdater";
+import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
+import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -860,20 +861,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1MovementTimeRef = useRef(0);
   const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Track speed in state so it triggers re-renders
+  // Track acceleration-based speed (for rendering and animation decisions)
+  // This doesn't override speedModifiers which are managed by SpeedModifierSystem
   const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(6.0);
 
-  // Determine if currently running (reached running speed)
-  const player1IsRunning = player1AccelerationBasedSpeed >= 9.0;
-
-  // Update speed modifiers when acceleration-based speed changes
-  useEffect(() => {
-    setPlayer1SpeedModifiers(prev => ({
-      ...prev,
-      finalSpeed: player1AccelerationBasedSpeed,
-      baseSpeed: player1AccelerationBasedSpeed,
-    }));
-  }, [player1AccelerationBasedSpeed]);
+  // Determine if currently running using utility function
+  const player1IsRunning = isRunningSpeed(player1AccelerationBasedSpeed);
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
@@ -893,8 +886,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       legInjuryFactor: player1Data.legInjuryFactor,
       isRunning: player1IsRunning, // Use computed acceleration-based running state
       useTacticalSteps: false,
-      // Speed modifier overrides from SpeedModifierSystem
-      maxSpeedOverride: player1SpeedModifiers.finalSpeed,
+      // Use acceleration-based speed directly (don't override speedModifiers)
+      maxSpeedOverride: player1AccelerationBasedSpeed,
       accelerationOverride: player1SpeedModifiers.finalAcceleration,
     });
 

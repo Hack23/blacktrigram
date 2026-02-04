@@ -25,6 +25,8 @@
 
 // UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas, useFrame } from "@react-three/fiber";
+import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
+import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
 import {
   Bloom,
   EffectComposer,
@@ -131,76 +133,6 @@ const TrainingAnimationUpdater: React.FC<TrainingAnimationUpdaterProps> = ({
 }) => {
   useFrame((_state, delta) => {
     playerAnimation.update(delta);
-  });
-
-  return null;
-};
-
-// Acceleration updater for movement-based running
-interface AccelerationUpdaterProps {
-  readonly isMoving: boolean;
-  readonly velocity: { x: number; y: number } | undefined;
-  readonly movementTimeRef: React.MutableRefObject<number>;
-  readonly lastDirectionRef: React.MutableRefObject<{ x: number; y: number }>;
-  readonly onSpeedUpdate: (speed: number) => void;
-}
-
-const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
-  isMoving,
-  velocity,
-  movementTimeRef,
-  lastDirectionRef,
-  onSpeedUpdate,
-}) => {
-  useFrame((_state, delta) => {
-    // Constants for acceleration
-    const WALK_SPEED = 6.0;
-    const RUN_SPEED = 10.0;
-    const TIME_TO_RUN = 1.5; // seconds to reach running speed
-
-    // If not moving, reset timers and direction
-    if (!isMoving || !velocity || (velocity.x === 0 && velocity.y === 0)) {
-      movementTimeRef.current = 0;
-      lastDirectionRef.current = { x: 0, y: 0 };
-      onSpeedUpdate(WALK_SPEED);
-      return;
-    }
-
-    // Check direction consistency (within 45 degrees)
-    const currentDir = { x: velocity.x, y: velocity.y };
-    const lastDir = lastDirectionRef.current;
-
-    let isSameDirection = true;
-    if (lastDir.x !== 0 || lastDir.y !== 0) {
-      // Calculate dot product
-      const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
-      const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
-      const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
-
-      if (magCurrent > 0 && magLast > 0) {
-        const cosAngle = dot / (magCurrent * magLast);
-        // cos(45deg) ≈ 0.707: treat angles <= 45° as "same direction"
-        isSameDirection = cosAngle > 0.707;
-      }
-    }
-
-    // Reset accumulated movement time if direction changed too much
-    if (!isSameDirection) {
-      movementTimeRef.current = 0;
-    } else {
-      // Accumulate movement time while moving in a consistent direction
-      movementTimeRef.current += delta;
-    }
-
-    // Update last direction for the next frame
-    lastDirectionRef.current = currentDir;
-
-    // Calculate progress (0 to 1)
-    const progress = Math.min(movementTimeRef.current / TIME_TO_RUN, 1.0);
-
-    // Linear interpolation from walk to run speed
-    const newSpeed = WALK_SPEED + (RUN_SPEED - WALK_SPEED) * progress;
-    onSpeedUpdate(newSpeed);
   });
 
   return null;
@@ -408,20 +340,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const movementTimeRef = useRef(0);
   const lastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   
-  // Track speed in state so it triggers re-renders
+  // Track acceleration-based speed (for rendering and animation decisions)
+  // This doesn't override speedModifiers which are managed by SpeedModifierSystem
   const [accelerationBasedSpeed, setAccelerationBasedSpeed] = useState(6.0);
   
-  // Determine if currently running (reached running speed)
-  const isRunning = accelerationBasedSpeed >= 9.0; // Consider running at 90% of max speed
-
-  // Update speed modifiers when acceleration-based speed changes
-  useEffect(() => {
-    setSpeedModifiers(prev => ({
-      ...prev,
-      finalSpeed: accelerationBasedSpeed,
-      baseSpeed: accelerationBasedSpeed,
-    }));
-  }, [accelerationBasedSpeed]);
+  // Determine if currently running using utility function
+  const isRunning = isRunningSpeed(accelerationBasedSpeed);
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
@@ -434,8 +358,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
     isRunning, // Use computed acceleration-based running state
-    // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
-    maxSpeedOverride: speedModifiers.finalSpeed,
+    // Use acceleration-based speed directly (don't override speedModifiers)
+    maxSpeedOverride: accelerationBasedSpeed,
     accelerationOverride: speedModifiers.finalAcceleration,
   });
 

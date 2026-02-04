@@ -2,15 +2,22 @@
  * AccelerationUpdater - Component that updates movement acceleration at 60fps
  *
  * Uses useFrame to track continuous movement time and calculate acceleration-based speed.
+ * Throttles state updates to only call onSpeedUpdate when speed changes meaningfully.
  * This component only updates movement state and renders no visual elements.
  *
- * @module components/combat/helpers/AccelerationUpdater
- * @category Combat Utilities
+ * @module systems/movement/helpers/AccelerationUpdater
+ * @category Movement
  * @korean 가속업데이터
  */
 
 import { useFrame } from "@react-three/fiber";
-import React from "react";
+import React, { useRef } from "react";
+import {
+  ACCELERATION_CONSTANTS,
+  calculateAcceleratedSpeed,
+  isDirectionConsistent,
+  isSpeedChangeMeaningful,
+} from "./accelerationUtils";
 
 /**
  * Props for AccelerationUpdater component
@@ -24,7 +31,7 @@ export interface AccelerationUpdaterProps {
   readonly movementTimeRef: React.MutableRefObject<number>;
   /** Ref to track last movement direction */
   readonly lastDirectionRef: React.MutableRefObject<{ x: number; y: number }>;
-  /** Callback to update calculated speed */
+  /** Callback to update calculated speed - only called on meaningful changes */
   readonly onSpeedUpdate: (speed: number) => void;
 }
 
@@ -33,7 +40,8 @@ export interface AccelerationUpdaterProps {
  *
  * Updates movement acceleration at 60fps using Three.js useFrame hook.
  * Tracks continuous movement time and calculates speed based on direction consistency.
- * Component only updates movement state, renders no visual elements.
+ * Only calls onSpeedUpdate when speed changes by more than epsilon, preventing
+ * excessive React re-renders at frame rate.
  *
  * @example
  * ```tsx
@@ -53,37 +61,26 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
   lastDirectionRef,
   onSpeedUpdate,
 }) => {
-  useFrame((_state, delta) => {
-    // Constants for acceleration
-    const WALK_SPEED = 6.0;
-    const RUN_SPEED = 10.0;
-    const TIME_TO_RUN = 1.5; // seconds to reach running speed
+  // Track last reported speed to throttle updates
+  const lastReportedSpeedRef = useRef<number>(ACCELERATION_CONSTANTS.WALK_SPEED);
 
+  useFrame((_state, delta) => {
     // If not moving, reset timers and direction
     if (!isMoving || !velocity || (velocity.x === 0 && velocity.y === 0)) {
       movementTimeRef.current = 0;
       lastDirectionRef.current = { x: 0, y: 0 };
-      onSpeedUpdate(WALK_SPEED);
+      
+      // Only update if changed meaningfully
+      if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, ACCELERATION_CONSTANTS.WALK_SPEED)) {
+        lastReportedSpeedRef.current = ACCELERATION_CONSTANTS.WALK_SPEED;
+        onSpeedUpdate(ACCELERATION_CONSTANTS.WALK_SPEED);
+      }
       return;
     }
 
     // Check direction consistency (within 45 degrees)
     const currentDir = { x: velocity.x, y: velocity.y };
-    const lastDir = lastDirectionRef.current;
-
-    let isSameDirection = true;
-    if (lastDir.x !== 0 || lastDir.y !== 0) {
-      // Calculate dot product
-      const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
-      const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
-      const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
-
-      if (magCurrent > 0 && magLast > 0) {
-        const cosAngle = dot / (magCurrent * magLast);
-        // cos(45deg) ≈ 0.707: treat angles <= 45° as "same direction"
-        isSameDirection = cosAngle > 0.707;
-      }
-    }
+    const isSameDirection = isDirectionConsistent(currentDir, lastDirectionRef.current);
 
     // Reset accumulated movement time if direction changed too much
     if (!isSameDirection) {
@@ -96,12 +93,14 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
     // Update last direction for the next frame
     lastDirectionRef.current = currentDir;
 
-    // Calculate progress (0 to 1)
-    const progress = Math.min(movementTimeRef.current / TIME_TO_RUN, 1.0);
+    // Calculate new speed
+    const newSpeed = calculateAcceleratedSpeed(movementTimeRef.current);
 
-    // Linear interpolation from walk to run speed
-    const newSpeed = WALK_SPEED + (RUN_SPEED - WALK_SPEED) * progress;
-    onSpeedUpdate(newSpeed);
+    // Only call onSpeedUpdate if speed changed meaningfully (throttle updates)
+    if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, newSpeed)) {
+      lastReportedSpeedRef.current = newSpeed;
+      onSpeedUpdate(newSpeed);
+    }
   });
 
   return null; // Component only updates movement state, renders no visual elements
