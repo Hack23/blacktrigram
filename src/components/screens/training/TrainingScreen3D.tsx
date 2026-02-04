@@ -465,11 +465,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       : STEP_DISTANCE_THRESHOLDS.WALK;
     stepCounterRef.current += distanceMoved;
     
-    // Alternate foot whenever step threshold is crossed
-    // Use a loop to handle multiple steps in a single update (low FPS/high speed)
-    while (stepCounterRef.current >= stepThreshold) {
-      setCurrentLaterality(prev => prev === "right" ? "left" : "right");
-      stepCounterRef.current -= stepThreshold; // Preserve remainder
+    // Determine how many step thresholds were crossed in this update
+    const stepsCrossed = Math.floor(stepCounterRef.current / stepThreshold);
+    if (stepsCrossed > 0) {
+      // Net laterality change depends on whether the number of steps is odd or even
+      // Odd steps = toggle once, even steps = no net change
+      if (stepsCrossed % 2 === 1) {
+        setCurrentLaterality(prev => prev === "right" ? "left" : "right");
+      }
+      // Preserve remainder distance after accounting for full steps
+      stepCounterRef.current -= stepsCrossed * stepThreshold;
     }
     
     // Update last position
