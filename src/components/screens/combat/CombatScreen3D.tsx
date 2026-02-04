@@ -126,6 +126,7 @@ import {
   STANCE_INDEX_MAP,
 } from "./helpers";
 import { AnimationUpdater } from "./helpers/AnimationUpdater";
+import { AccelerationUpdater } from "./helpers/AccelerationUpdater";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -858,7 +859,21 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Track continuous movement time for acceleration-based running
   const player1MovementTimeRef = useRef(0);
   const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const player1LastUpdateTimeRef = useRef(performance.now());
+
+  // Track speed in state so it triggers re-renders
+  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(6.0);
+
+  // Determine if currently running (reached running speed)
+  const player1IsRunning = player1AccelerationBasedSpeed >= 9.0;
+
+  // Update speed modifiers when acceleration-based speed changes
+  useEffect(() => {
+    setPlayer1SpeedModifiers(prev => ({
+      ...prev,
+      finalSpeed: player1AccelerationBasedSpeed,
+      baseSpeed: player1AccelerationBasedSpeed,
+    }));
+  }, [player1AccelerationBasedSpeed]);
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
@@ -876,74 +891,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,
-      isRunning: false, // Will be computed based on acceleration below
+      isRunning: player1IsRunning, // Use computed acceleration-based running state
       useTacticalSteps: false,
       // Speed modifier overrides from SpeedModifierSystem
       maxSpeedOverride: player1SpeedModifiers.finalSpeed,
       accelerationOverride: player1SpeedModifiers.finalAcceleration,
     });
-  
-  // Calculate current speed based on continuous movement time
-  const player1AccelerationBasedSpeed = useMemo(() => {
-    const WALK_SPEED = 6.0;
-    const RUN_SPEED = 10.0;
-    const TIME_TO_RUN = 1.5;
-    
-    const progress = Math.min(player1MovementTimeRef.current / TIME_TO_RUN, 1.0);
-    return WALK_SPEED + (RUN_SPEED - WALK_SPEED) * progress;
-  }, [player1MovementTimeRef.current]);
-  
-  // Update movement time based on direction consistency
-  useEffect(() => {
-    if (!player1IsMoving || !player1Velocity || (player1Velocity.x === 0 && player1Velocity.y === 0)) {
-      player1MovementTimeRef.current = 0;
-      player1LastDirectionRef.current = { x: 0, y: 0 };
-      player1LastUpdateTimeRef.current = performance.now();
-      return;
-    }
-    
-    const currentDir = { x: player1Velocity.x, y: player1Velocity.y };
-    const lastDir = player1LastDirectionRef.current;
-    
-    let isSameDirection = true;
-    if (lastDir.x !== 0 || lastDir.y !== 0) {
-      const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
-      const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
-      const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
-      
-      if (magCurrent > 0 && magLast > 0) {
-        const cosAngle = dot / (magCurrent * magLast);
-        isSameDirection = cosAngle > 0.707;
-      }
-    }
-    
-    const updateInterval = setInterval(() => {
-      const now = performance.now();
-      const delta = (now - player1LastUpdateTimeRef.current) / 1000;
-      player1LastUpdateTimeRef.current = now;
-      
-      if (player1IsMoving && isSameDirection) {
-        player1MovementTimeRef.current += delta;
-      }
-    }, 16);
-    
-    player1LastDirectionRef.current = currentDir;
-    
-    if (!isSameDirection) {
-      player1MovementTimeRef.current = 0;
-    }
-    
-    return () => clearInterval(updateInterval);
-  }, [player1IsMoving, player1Velocity]);
-  
-  // Update speed modifiers based on acceleration
-  useEffect(() => {
-    setPlayer1SpeedModifiers(prev => ({
-      ...prev,
-      finalSpeed: player1AccelerationBasedSpeed,
-      baseSpeed: player1AccelerationBasedSpeed,
-    }));
-  }, [player1AccelerationBasedSpeed]);
 
   // Player 1 rotation: face movement direction when moving, opponent when idle
   // 이동 중에는 이동 방향을, 정지 시에는 상대를 향함
@@ -1062,19 +1015,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Sync movement with player 1 animation (avoid circular dependency)
   // 플레이어 1 이동-애니메이션 동기화
   const prevPlayer1IsMovingRef = useRef<boolean>(player1IsMoving);
+  const prevPlayer1IsRunningRef = useRef<boolean>(player1IsRunning);
   useEffect(() => {
-    // Only trigger transition when isMoving changes
-    if (prevPlayer1IsMovingRef.current !== player1IsMoving) {
+    // Check for movement or running state changes
+    const movementChanged = prevPlayer1IsMovingRef.current !== player1IsMoving;
+    const runningChanged = prevPlayer1IsRunningRef.current !== player1IsRunning;
+    
+    if (movementChanged || runningChanged) {
       if (player1IsMoving) {
-        player1Animation.transitionTo(AnimationState.WALK);
-      } else if (player1Animation.currentState === AnimationState.WALK) {
+        // Transition to RUN or WALK based on speed
+        const targetState = player1IsRunning ? AnimationState.RUN : AnimationState.WALK;
+        if (player1Animation.currentState !== targetState) {
+          player1Animation.transitionTo(targetState);
+        }
+      } else if (
+        player1Animation.currentState === AnimationState.WALK ||
+        player1Animation.currentState === AnimationState.RUN
+      ) {
         // When stopping movement, transition to stance-specific guard animation
         // 이동 중지 시 자세별 가드 애니메이션으로 전환
         player1Animation.transitionToStanceGuard(player1Data.currentStance);
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
+      prevPlayer1IsRunningRef.current = player1IsRunning;
     }
-  }, [player1IsMoving, player1Animation, player1Data.currentStance]);
+  }, [player1IsMoving, player1IsRunning, player1Animation, player1Data.currentStance]);
 
   // Movement detection threshold for AI animation sync (in pixels)
   // Lower values = more sensitive to small movements, higher values = smoother transitions
@@ -2595,6 +2560,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <AnimationUpdater
           player1Animation={player1Animation}
           player2Animation={player2Animation}
+        />
+
+        {/* Acceleration updater - tracks player 1 movement time and updates speed */}
+        <AccelerationUpdater
+          isMoving={player1IsMoving}
+          velocity={player1Velocity}
+          movementTimeRef={player1MovementTimeRef}
+          lastDirectionRef={player1LastDirectionRef}
+          onSpeedUpdate={setPlayer1AccelerationBasedSpeed}
         />
 
         {/* Player 1 (Human) */}
