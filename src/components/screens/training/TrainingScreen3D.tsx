@@ -65,6 +65,7 @@ import {
   PlayerArchetype,
   Position,
   Technique,
+  TrigramStance,
 } from "../../../types";
 import { getPerformanceSettings } from "../../../types/constants";
 import { getMobileControlsBottom } from "../../../types/constants/layout";
@@ -425,8 +426,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     const distanceMoved = Math.sqrt(dx * dx + dy * dy);
     
     // Accumulate distance into step counter
-    // Average step length is ~0.7m for walking, ~1.0m for running
-    const stepThreshold = isRunning ? 1.0 : 0.7;
+    // Average step length is ~0.7m for walking (running disabled in training: 1.0m)
+    const stepThreshold = 0.7; // Walking only (running is disabled in training mode)
     stepCounterRef.current += distanceMoved;
     
     // Alternate foot when step threshold is reached
@@ -437,7 +438,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     
     // Update last position
     lastPositionRef.current = playerPosition;
-  }, [playerPosition, isMoving, isRunning]);
+  }, [playerPosition, isMoving]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
