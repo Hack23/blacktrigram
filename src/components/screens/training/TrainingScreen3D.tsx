@@ -382,8 +382,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const playerRotation = useMemo(() => {
     if (isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
       // When moving: face the direction of movement
-      // velocity.y is actually the Z direction in 3D space
-      return Math.atan2(velocity.x, -velocity.y);
+      // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
+      // Use velocity.y directly (not negated) so down arrow faces correctly
+      return Math.atan2(velocity.x, velocity.y);
     } else {
       // When idle: face the dummy (target)
       const dx = dummyPosition[0] - player3DPosition[0];
@@ -396,6 +397,47 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   useEffect(() => {
     lastFacingRotationRef.current = playerRotation;
   }, [playerRotation]);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 3B: Foot Laterality Alternation (발바닥 교대)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Track current laterality (which foot is forward)
+  // Alternates with each step during walking/running for realistic footwork
+  // 왼발서기 (left) ↔ 오른발서기 (right)
+  const [currentLaterality, setCurrentLaterality] = useState<"left" | "right">("right");
+  
+  // Track step counter for alternating feet
+  const stepCounterRef = useRef(0);
+  const lastPositionRef = useRef<Position>(playerPosition);
+  
+  // Alternate laterality based on movement distance
+  useEffect(() => {
+    if (!isMoving) {
+      // Reset step counter when not moving
+      stepCounterRef.current = 0;
+      return;
+    }
+
+    // Calculate distance traveled since last check
+    const dx = playerPosition.x - lastPositionRef.current.x;
+    const dy = playerPosition.y - lastPositionRef.current.y;
+    const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+    
+    // Accumulate distance into step counter
+    // Average step length is ~0.7m for walking, ~1.0m for running
+    const stepThreshold = isRunning ? 1.0 : 0.7;
+    stepCounterRef.current += distanceMoved;
+    
+    // Alternate foot when step threshold is reached
+    if (stepCounterRef.current >= stepThreshold) {
+      setCurrentLaterality(prev => prev === "right" ? "left" : "right");
+      stepCounterRef.current = 0;
+    }
+    
+    // Update last position
+    lastPositionRef.current = playerPosition;
+  }, [playerPosition, isMoving, isRunning]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
@@ -719,9 +761,15 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Sync movement with animation (matches CombatScreen pattern)
   const prevIsMovingRef = useRef<boolean>(isMoving);
+  const prevStanceRef = useRef<TrigramStance>(currentStance);
+  
   useEffect(() => {
-    if (prevIsMovingRef.current !== isMoving) {
+    const isMovingChanged = prevIsMovingRef.current !== isMoving;
+    const stanceChanged = prevStanceRef.current !== currentStance;
+    
+    if (isMovingChanged) {
       if (isMoving) {
+        // Start walking animation
         playerAnimation.transitionTo(AnimationState.WALK);
       } else if (playerAnimation.currentState === AnimationState.WALK) {
         // When stopping movement, transition to stance-specific guard animation
@@ -730,7 +778,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevIsMovingRef.current = isMoving;
     }
-  }, [isMoving, playerAnimation, currentStance]);
+    
+    // Update idle/guard animation when stance changes
+    if (stanceChanged && !isMoving) {
+      // If idle, update to new stance guard
+      if (playerAnimation.currentState === AnimationState.IDLE || 
+          playerAnimation.isInStanceGuard()) {
+        playerAnimation.transitionToStanceGuard(currentStance);
+      }
+      prevStanceRef.current = currentStance;
+    }
+  }, [isMoving, currentStance, playerAnimation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7B: Technique Selection System (Moved earlier - see before useTrainingActions)
@@ -1243,7 +1301,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             playerAnimation.currentState,
           )}
           attackAnimation={attackAnimation}
-          laterality="right"
+          laterality={currentLaterality}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={true}
           enableStanceAudio={true}
