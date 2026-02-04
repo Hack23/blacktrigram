@@ -26,7 +26,10 @@
 // UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas, useFrame } from "@react-three/fiber";
 import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
-import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
+import {
+  isRunningSpeed,
+  STEP_DISTANCE_THRESHOLDS,
+} from "../../../systems/movement/helpers/accelerationUtils";
 import {
   Bloom,
   EffectComposer,
@@ -457,14 +460,16 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     const distanceMoved = Math.sqrt(dx * dx + dy * dy);
     
     // Accumulate distance into step counter
-    // Average step length is ~0.7m for walking, ~1.0m for running
-    const stepThreshold = isRunning ? 1.0 : 0.7;
+    const stepThreshold = isRunning 
+      ? STEP_DISTANCE_THRESHOLDS.RUN 
+      : STEP_DISTANCE_THRESHOLDS.WALK;
     stepCounterRef.current += distanceMoved;
     
-    // Alternate foot when step threshold is reached
-    if (stepCounterRef.current >= stepThreshold) {
+    // Alternate foot whenever step threshold is crossed
+    // Use a loop to handle multiple steps in a single update (low FPS/high speed)
+    while (stepCounterRef.current >= stepThreshold) {
       setCurrentLaterality(prev => prev === "right" ? "left" : "right");
-      stepCounterRef.current = 0;
+      stepCounterRef.current -= stepThreshold; // Preserve remainder
     }
     
     // Update last position

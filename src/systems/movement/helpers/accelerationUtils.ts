@@ -10,6 +10,24 @@
  */
 
 /**
+ * Step distance thresholds for foot laterality alternation
+ * 발 측면성 교대를 위한 걸음 거리 임계값
+ */
+export const STEP_DISTANCE_THRESHOLDS = {
+  /**
+   * Average step length when walking (meters)
+   * 걷기 시 평균 걸음 길이
+   */
+  WALK: 0.7,
+
+  /**
+   * Average step length when running (meters)
+   * 달리기 시 평균 걸음 길이
+   */
+  RUN: 1.0,
+} as const;
+
+/**
  * Constants for acceleration-based running (defaults for non-archetype usage)
  */
 export const ACCELERATION_CONSTANTS = {
@@ -19,8 +37,8 @@ export const ACCELERATION_CONSTANTS = {
   DEFAULT_RUN_SPEED: 10.0,
   /** Time to reach running speed in seconds */
   TIME_TO_RUN: 1.5,
-  /** Threshold for considering direction "same" (cos 45°) */
-  DIRECTION_THRESHOLD: 0.707,
+  /** Threshold for considering direction "same" (cos(45°) = √2/2) */
+  DIRECTION_THRESHOLD: Math.cos(Math.PI / 4),
   /** Running threshold as percentage of max speed (0-1) */
   RUN_THRESHOLD_PERCENT: 0.9,
   /** Epsilon for speed change detection (m/s) */

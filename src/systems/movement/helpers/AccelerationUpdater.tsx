@@ -69,9 +69,12 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
   walkSpeed = ACCELERATION_CONSTANTS.DEFAULT_WALK_SPEED,
   runSpeed = ACCELERATION_CONSTANTS.DEFAULT_RUN_SPEED,
 }) => {
-  // Track last reported speed to throttle updates
+  // Track last reported speed and time to throttle updates
   // Initialize with walk speed (archetype-specific or default)
   const lastReportedSpeedRef = useRef<number>(walkSpeed);
+  const lastUpdateTimeRef = useRef<number>(0);
+  // Throttle interval: update at most every ~100ms (10Hz) instead of 60fps
+  const UPDATE_THROTTLE_MS = 100;
 
   useFrame((_state, delta) => {
     // If not moving, reset timers and direction
@@ -83,6 +86,7 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
       if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, walkSpeed)) {
         lastReportedSpeedRef.current = walkSpeed;
         onSpeedUpdate(walkSpeed);
+        lastUpdateTimeRef.current = performance.now();
       }
       return;
     }
@@ -105,10 +109,18 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
     // Calculate new speed with archetype-specific walk/run speeds
     const newSpeed = calculateAcceleratedSpeed(movementTimeRef.current, walkSpeed, runSpeed);
 
-    // Only call onSpeedUpdate if speed changed meaningfully (throttle updates)
-    if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, newSpeed)) {
+    // Throttle updates by both time and epsilon
+    // Only call onSpeedUpdate if enough time has passed AND speed changed meaningfully
+    const now = performance.now();
+    const timeSinceLastUpdate = now - lastUpdateTimeRef.current;
+    
+    if (
+      timeSinceLastUpdate >= UPDATE_THROTTLE_MS &&
+      isSpeedChangeMeaningful(lastReportedSpeedRef.current, newSpeed)
+    ) {
       lastReportedSpeedRef.current = newSpeed;
       onSpeedUpdate(newSpeed);
+      lastUpdateTimeRef.current = now;
     }
   });
 

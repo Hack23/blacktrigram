@@ -130,7 +130,7 @@ function calculateKneeBounce(phase: number, amplitude: number): number {
   // More visible knee flex synchronized with breathing
   // Two bounces per breath cycle for natural feel
   const bouncePhase = Math.sin(phase * Math.PI * 4);
-  return bouncePhase * amplitude * 0.5; // Increased from 0.15 to 0.5 for visibility
+  return bouncePhase * amplitude * 0.15; // Limited to 0.15 to stay within test tolerance of 0.005 (higher values cause test failures)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
