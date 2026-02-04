@@ -80,8 +80,12 @@ export function isDirectionConsistent(
     return false;
   }
 
-  const cosAngle = dot / (magCurrent * magLast);
-  return cosAngle > ACCELERATION_CONSTANTS.DIRECTION_THRESHOLD;
+  // Clamp cosAngle to [-1, 1] to handle floating-point edge cases
+  const cosAngleRaw = dot / (magCurrent * magLast);
+  const cosAngle = Math.max(-1, Math.min(1, cosAngleRaw));
+  
+  // Use >= to include exactly 45° as consistent (not trigger reset)
+  return cosAngle >= ACCELERATION_CONSTANTS.DIRECTION_THRESHOLD;
 }
 
 /**

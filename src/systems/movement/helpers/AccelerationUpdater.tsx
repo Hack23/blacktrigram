@@ -44,8 +44,8 @@ export interface AccelerationUpdaterProps {
  *
  * Updates movement acceleration at 60fps using Three.js useFrame hook.
  * Tracks continuous movement time and calculates speed based on direction consistency.
- * Only calls onSpeedUpdate when speed changes by more than epsilon, preventing
- * excessive React re-renders at frame rate.
+ * Only calls onSpeedUpdate when speed changes by more than epsilon AND sufficient time
+ * has passed (100ms throttle), preventing excessive React re-renders at frame rate.
  *
  * @example
  * ```tsx
