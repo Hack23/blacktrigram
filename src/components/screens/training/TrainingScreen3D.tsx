@@ -238,23 +238,42 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Use combat-consistent scale (1.2) for better visibility across screens
   const [scale, setScale] = React.useState(1.2);
 
+  // Track running state (Ctrl key for sprint)
+  // 달리기 상태 추적 (Ctrl 키로 스프린트)
+  const [isRunning, setIsRunning] = React.useState(false);
+
   // Track current attack animation for technique-specific animations
   // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
   const [attackAnimation, setAttackAnimation] = React.useState<
     string | undefined
   >(undefined);
 
-  // Keyboard shortcut for toggling overlay (V key)
+  // Keyboard shortcut for toggling overlay (V key) and running (Ctrl key)
   React.useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
       }
+      // Ctrl key for running
+      if (e.key === "Control" && !e.repeat) {
+        setIsRunning(true);
+      }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // Release Ctrl to stop running
+      if (e.key === "Control") {
+        setIsRunning(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [audio]);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -336,7 +355,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // Physics parameters for realistic training movement (always enabled)
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
-    isRunning: false,
+    isRunning, // Use dynamic running state from Ctrl key
     // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
     maxSpeedOverride: speedModifiers.finalSpeed,
     accelerationOverride: speedModifiers.finalAcceleration,
@@ -426,8 +445,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     const distanceMoved = Math.sqrt(dx * dx + dy * dy);
     
     // Accumulate distance into step counter
-    // Average step length is ~0.7m for walking (running disabled in training: 1.0m)
-    const stepThreshold = 0.7; // Walking only (running is disabled in training mode)
+    // Average step length is ~0.7m for walking, ~1.0m for running
+    const stepThreshold = isRunning ? 1.0 : 0.7;
     stepCounterRef.current += distanceMoved;
     
     // Alternate foot when step threshold is reached
@@ -438,7 +457,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     
     // Update last position
     lastPositionRef.current = playerPosition;
-  }, [playerPosition, isMoving]);
+  }, [playerPosition, isMoving, isRunning]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
@@ -762,22 +781,30 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Sync movement with animation (matches CombatScreen pattern)
   const prevIsMovingRef = useRef<boolean>(isMoving);
+  const prevIsRunningRef = useRef<boolean>(isRunning);
   const prevStanceRef = useRef<TrigramStance>(currentStance);
   
   useEffect(() => {
     const isMovingChanged = prevIsMovingRef.current !== isMoving;
+    const isRunningChanged = prevIsRunningRef.current !== isRunning;
     const stanceChanged = prevStanceRef.current !== currentStance;
     
-    if (isMovingChanged) {
+    if (isMovingChanged || isRunningChanged) {
       if (isMoving) {
-        // Start walking animation
-        playerAnimation.transitionTo(AnimationState.WALK);
-      } else if (playerAnimation.currentState === AnimationState.WALK) {
+        // Transition to running or walking animation based on state
+        if (isRunning) {
+          playerAnimation.transitionTo(AnimationState.RUN);
+        } else {
+          playerAnimation.transitionTo(AnimationState.WALK);
+        }
+      } else if (playerAnimation.currentState === AnimationState.WALK || 
+                 playerAnimation.currentState === AnimationState.RUN) {
         // When stopping movement, transition to stance-specific guard animation
         // 이동 중지 시 자세별 가드 애니메이션으로 전환
         playerAnimation.transitionToStanceGuard(currentStance);
       }
       prevIsMovingRef.current = isMoving;
+      prevIsRunningRef.current = isRunning;
     }
     
     // Update idle/guard animation when stance changes
@@ -789,7 +816,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
       }
       prevStanceRef.current = currentStance;
     }
-  }, [isMoving, currentStance, playerAnimation]);
+  }, [isMoving, isRunning, currentStance, playerAnimation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7B: Technique Selection System (Moved earlier - see before useTrainingActions)

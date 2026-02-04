@@ -370,9 +370,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Performance monitor visibility toggle (F9 key)
   const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9 key)
+  // Keyboard shortcut for toggling overlay (V key), performance monitor (F9), and running (Ctrl key)
+  // Track running state for player 1 (Ctrl key for sprint)
+  // 플레이어 1 달리기 상태 추적 (Ctrl 키로 스프린트)
+  const [player1IsRunning, setPlayer1IsRunning] = useState(false);
+
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
@@ -383,10 +387,25 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         e.preventDefault();
         setShowPerformanceMonitor((prev) => !prev);
       }
+      // Ctrl key for running (sprint)
+      if (e.key === "Control" && !e.repeat) {
+        setPlayer1IsRunning(true);
+      }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    const handleKeyUp = (e: KeyboardEvent) => {
+      // Release Ctrl to stop running
+      if (e.key === "Control") {
+        setPlayer1IsRunning(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [audio]);
 
   // Action feedback system for damage numbers, combo counter, and technique names
@@ -864,7 +883,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,
-      isRunning: false, // TODO: Add run key detection
+      isRunning: player1IsRunning, // Use dynamic running state from Ctrl key
       useTacticalSteps: false,
       // Speed modifier overrides from SpeedModifierSystem
       maxSpeedOverride: player1SpeedModifiers.finalSpeed,
@@ -880,9 +899,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       (player1Velocity.x !== 0 || player1Velocity.y !== 0)
     ) {
       // When moving: face movement direction
+      // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
+      // Use velocity.y directly (not negated) so down arrow faces correctly
       const movementRotation = Math.atan2(
         player1Velocity.x,
-        -player1Velocity.y,
+        player1Velocity.y,
       );
       player1LastRotationRef.current = movementRotation;
       return movementRotation;
