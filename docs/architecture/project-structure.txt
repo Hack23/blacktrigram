@@ -439,6 +439,9 @@ src/audio/VariantSelector.ts
 src/audio/__tests__/AudioProvider.deferred.test.tsx
 src/audio/index.ts
 src/audio/types.ts
+src/components/effects/WindParticles3D.test.tsx
+src/components/effects/WindParticles3D.tsx
+src/components/effects/index.ts
 src/components/game/GameAudio.test.tsx
 src/components/index.ts
 src/components/screens/combat/CombatScreen3D.test.tsx
@@ -474,9 +477,15 @@ src/components/screens/combat/components/effects/ConsciousnessBlur.test.tsx
 src/components/screens/combat/components/effects/ConsciousnessBlur.tsx
 src/components/screens/combat/components/effects/DustClouds3D.test.tsx
 src/components/screens/combat/components/effects/DustClouds3D.tsx
+src/components/screens/combat/components/effects/EarthCrackEffect3D.test.tsx
+src/components/screens/combat/components/effects/EarthCrackEffect3D.tsx
+src/components/screens/combat/components/effects/EarthHealingEffect3D.test.tsx
+src/components/screens/combat/components/effects/EarthHealingEffect3D.tsx
 src/components/screens/combat/components/effects/ImpactSparks3D.test.tsx
 src/components/screens/combat/components/effects/ImpactSparks3D.tsx
 src/components/screens/combat/components/effects/InternalDamage3D.tsx
+src/components/screens/combat/components/effects/LiPrecisionTargetingOverlay.test.tsx
+src/components/screens/combat/components/effects/LiPrecisionTargetingOverlay.tsx
 src/components/screens/combat/components/effects/NerveStrikeParticles3D.test.tsx
 src/components/screens/combat/components/effects/NerveStrikeParticles3D.tsx
 src/components/screens/combat/components/effects/PainVignette.test.tsx
@@ -484,6 +493,10 @@ src/components/screens/combat/components/effects/PainVignette.tsx
 src/components/screens/combat/components/effects/ParticleAudio3D.tsx
 src/components/screens/combat/components/effects/TraumaOverlay3D.test.tsx
 src/components/screens/combat/components/effects/TraumaOverlay3D.tsx
+src/components/screens/combat/components/effects/WaterRipple3D.test.tsx
+src/components/screens/combat/components/effects/WaterRipple3D.tsx
+src/components/screens/combat/components/effects/WaterWave3D.test.tsx
+src/components/screens/combat/components/effects/WaterWave3D.tsx
 src/components/screens/combat/components/effects/index.ts
 src/components/screens/combat/components/feedback/MatchCountdown.test.tsx
 src/components/screens/combat/components/feedback/MatchCountdown.tsx
@@ -695,6 +708,8 @@ src/components/shared/base/layoutUtils.ts
 src/components/shared/base/useKoreanTheme.test.ts
 src/components/shared/base/useKoreanTheme.ts
 src/components/shared/debug/PerformanceDebugOverlayHtml.tsx
+src/components/shared/effects/ScreenFlash.test.tsx
+src/components/shared/effects/ScreenFlash.tsx
 src/components/shared/mobile/ActionButtons.test.tsx
 src/components/shared/mobile/ActionButtons.tsx
 src/components/shared/mobile/GestureRecognizer.test.tsx
@@ -737,6 +752,8 @@ src/components/shared/three/effects/DamageNumbers.test.tsx
 src/components/shared/three/effects/DamageNumbers.tsx
 src/components/shared/three/effects/EffectsComposer.test.tsx
 src/components/shared/three/effects/EffectsComposer.tsx
+src/components/shared/three/effects/ExplosiveBurstEffect3D.test.tsx
+src/components/shared/three/effects/ExplosiveBurstEffect3D.tsx
 src/components/shared/three/effects/GrapplingIndicator3D.test.tsx
 src/components/shared/three/effects/GrapplingIndicator3D.tsx
 src/components/shared/three/effects/HitEffects3D.test.tsx
@@ -745,6 +762,8 @@ src/components/shared/three/effects/HitEffects3DInstanced.test.tsx
 src/components/shared/three/effects/HitEffects3DInstanced.tsx
 src/components/shared/three/effects/LimbExposureIndicator3D.test.tsx
 src/components/shared/three/effects/LimbExposureIndicator3D.tsx
+src/components/shared/three/effects/NerveDisruptionEffect3D.test.tsx
+src/components/shared/three/effects/NerveDisruptionEffect3D.tsx
 src/components/shared/three/effects/OPTIMIZATION_GUIDE.md
 src/components/shared/three/effects/ParticlePool.test.ts
 src/components/shared/three/effects/ParticlePool.ts
@@ -754,6 +773,8 @@ src/components/shared/three/effects/StanceSymbol3D.test.tsx
 src/components/shared/three/effects/StanceSymbol3D.tsx
 src/components/shared/three/effects/StanceTransitionEffect.test.tsx
 src/components/shared/three/effects/StanceTransitionEffect.tsx
+src/components/shared/three/effects/ThunderEffect3D.test.tsx
+src/components/shared/three/effects/ThunderEffect3D.tsx
 src/components/shared/three/effects/TrigramParticles3D.test.tsx
 src/components/shared/three/effects/TrigramParticles3D.tsx
 src/components/shared/three/effects/TrigramParticles3DGPU.test.tsx
@@ -874,6 +895,11 @@ src/components/shared/ui/shared/ConfirmDialog.tsx
 src/components/test/Hello3D.test.tsx
 src/components/test/Hello3D.tsx
 src/components/ui/combat/BalanceIndicatorOverlayHtml.tsx
+src/components/ui/combat/ComboCounter.test.tsx
+src/components/ui/combat/ComboCounter.tsx
+src/components/ui/combat/PressureMeter.test.tsx
+src/components/ui/combat/PressureMeter.tsx
+src/components/ui/combat/index.ts
 src/constants/bodyDimensions.ts
 src/constants/bodyRenderingConstants.ts
 src/data/archetypeClothing.test.ts
@@ -1180,6 +1206,7 @@ src/systems/combat/CombatStateSystem.ts
 src/systems/combat/ConsciousnessSystem.test.ts
 src/systems/combat/ConsciousnessSystem.ts
 src/systems/combat/FallIntegration.ts
+src/systems/combat/GonTechniqueIntegration.test.ts
 src/systems/combat/GrappleSystem.test.ts
 src/systems/combat/GrappleSystem.ts
 src/systems/combat/LimbExposureIntegration.test.ts
@@ -1187,6 +1214,8 @@ src/systems/combat/LimbExposureSystem.test.ts
 src/systems/combat/LimbExposureSystem.ts
 src/systems/combat/PainResponseSystem.test.ts
 src/systems/combat/PainResponseSystem.ts
+src/systems/combat/SlowMotionController.test.ts
+src/systems/combat/SlowMotionController.ts
 src/systems/combat/TrainingCombatSystem.ts
 src/systems/combat/__tests__/BalanceSystem.comprehensive.test.ts
 src/systems/combat/__tests__/PainConsciousnessIntegration.test.ts
@@ -1239,15 +1268,18 @@ src/systems/trigram/TransitionCalculator.test.ts
 src/systems/trigram/TransitionCalculator.ts
 src/systems/trigram/TrigramCalculator.test.ts
 src/systems/trigram/TrigramCalculator.ts
+src/systems/trigram/__tests__/GeonTechniqueTiming.test.ts
 src/systems/trigram/__tests__/TechniqueAnimationMapping.test.ts
 src/systems/trigram/__tests__/TechniqueVariety.test.ts
 src/systems/trigram/index.ts
 src/systems/trigram/techniques/DarkOpsTechniques.ts
 src/systems/trigram/techniques/GamTechniques.ts
+src/systems/trigram/techniques/GanTechniques.test.ts
 src/systems/trigram/techniques/GanTechniques.ts
 src/systems/trigram/techniques/GeonTechniques.ts
 src/systems/trigram/techniques/GonTechniques.ts
 src/systems/trigram/techniques/JinTechniques.ts
+src/systems/trigram/techniques/LiTechniques.test.ts
 src/systems/trigram/techniques/LiTechniques.ts
 src/systems/trigram/techniques/SonTechniques.ts
 src/systems/trigram/techniques/TaeTechniques.ts
@@ -1256,6 +1288,8 @@ src/systems/trigram/techniques/TechniqueId.ts
 src/systems/trigram/techniques/index.ts
 src/systems/trigram/types.test.ts
 src/systems/trigram/types.ts
+src/systems/trigram/types/GonTechniqueExtensions.test.ts
+src/systems/trigram/types/GonTechniqueExtensions.ts
 src/systems/types.ts
 src/systems/vitalpoint/DamageCalculator.test.ts
 src/systems/vitalpoint/DamageCalculator.ts
@@ -1312,6 +1346,7 @@ src/utils/EventManager.test.ts
 src/utils/EventManager.ts
 src/utils/__tests__/arenaCoordinateConversion.test.ts
 src/utils/__tests__/arenaWorldDimensions.test.ts
+src/utils/__tests__/cameraShake.test.ts
 src/utils/__tests__/crossScreenPhysicsValidation.test.ts
 src/utils/__tests__/highResMobile.test.ts
 src/utils/__tests__/lowEndMobile.test.ts
@@ -1324,6 +1359,7 @@ src/utils/accessibility.test.ts
 src/utils/accessibility.ts
 src/utils/archetypeAssets.test.ts
 src/utils/arenaWorldDimensions.ts
+src/utils/cameraShake.ts
 src/utils/characterScaling.ts
 src/utils/clothingColors.test.ts
 src/utils/clothingColors.ts

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">46.66% </span>
+                <span class="strong">52.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/60</span>
+                <span class='fraction'>33/63</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">23.52% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/30</span>
+                <span class='fraction'>8/34</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.85% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/57</span>
+                <span class='fraction'>30/60</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -264,7 +264,12 @@
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
 <a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -334,11 +339,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -535,16 +545,21 @@ export const DefeatAnimation3D: React.FC = () =&gt; {
 &nbsp;
   // Cleanup Three.js resources on unmount
   useEffect(() =&gt; {
+    // Capture ref values at effect setup time to avoid stale references in cleanup
+    const group = groupRef.current;
+    const particles = particlesRef.current;
+    const spiral = spiralRef.current;
+&nbsp;
     return () =&gt; {
       // Dispose geometries and materials to prevent memory leaks
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (particlesRef.current) {
-<span class="cstat-no" title="statement not covered" >        particlesRef.current.geometry?.dispose();</span>
-<span class="cstat-no" title="statement not covered" >        if (particlesRef.current.material) {</span>
-          (<span class="cstat-no" title="statement not covered" >particlesRef.current.material as THREE.Material).dispose();</span>
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (particles) {
+        particles.geometry?.dispose();
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (particles.material) {
+          (<span class="cstat-no" title="statement not covered" >particles.material as THREE.Material).dispose();</span>
         }
       }
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (spiralRef.current) {
-<span class="cstat-no" title="statement not covered" >        spiralRef.current.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (spiral?.children &amp;&amp; Array.isArray(spiral.children)) {
+<span class="cstat-no" title="statement not covered" >        spiral.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (child instanceof THREE.Mesh) {</span>
 <span class="cstat-no" title="statement not covered" >            child.geometry?.dispose();</span>
 <span class="cstat-no" title="statement not covered" >            if (child.material) {</span>
@@ -554,10 +569,10 @@ export const DefeatAnimation3D: React.FC = () =&gt; {
         });
       }
       // Additionally iterate over all group children to catch meshes/points without explicit refs
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (groupRef.current) {
-<span class="cstat-no" title="statement not covered" >        groupRef.current.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (group?.children &amp;&amp; Array.isArray(group.children)) {
+<span class="cstat-no" title="statement not covered" >        group.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
           // Skip already-handled refs
-<span class="cstat-no" title="statement not covered" >          if (child === particlesRef.current || child === spiralRef.current) {</span>
+<span class="cstat-no" title="statement not covered" >          if (child === particles || child === spiral) {</span>
 <span class="cstat-no" title="statement not covered" >            return;</span>
           }
 &nbsp;
@@ -673,7 +688,7 @@ export const DefeatAnimation3D: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-01T01:52:22.617Z
+                at 2026-02-04T06:43:18.080Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

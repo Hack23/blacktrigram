@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.19% </span>
+                <span class="strong">1.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/84</span>
+                <span class='fraction'>1/88</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/39</span>
+                <span class='fraction'>0/45</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.25% </span>
+                <span class="strong">1.19% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/80</span>
+                <span class='fraction'>1/84</span>
             </div>
         
             
@@ -377,7 +377,13 @@
 <a name='L312'></a><a href='#L312'>312</a>
 <a name='L313'></a><a href='#L313'>313</a>
 <a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -471,6 +477,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -785,17 +797,23 @@ export const VictoryAnimation3D: React.FC = <span class="fstat-no" title="functi
 &nbsp;
   // Cleanup Three.js resources on unmount
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
+    // Capture ref values at effect setup time to avoid stale references in cleanup
+    const group = <span class="cstat-no" title="statement not covered" >groupRef.current;</span>
+    const particles = <span class="cstat-no" title="statement not covered" >particlesRef.current;</span>
+    const rings = <span class="cstat-no" title="statement not covered" >ringsRef.current;</span>
+    const symbols = <span class="cstat-no" title="statement not covered" >symbolsRef.current;</span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
       // Dispose geometries and materials to prevent memory leaks
       // Clean up specific refs (these are children of groupRef but we handle them explicitly)
-<span class="cstat-no" title="statement not covered" >      if (particlesRef.current) {</span>
-<span class="cstat-no" title="statement not covered" >        particlesRef.current.geometry?.dispose();</span>
-<span class="cstat-no" title="statement not covered" >        if (particlesRef.current.material) {</span>
-          (<span class="cstat-no" title="statement not covered" >particlesRef.current.material as THREE.Material).dispose();</span>
+<span class="cstat-no" title="statement not covered" >      if (particles) {</span>
+<span class="cstat-no" title="statement not covered" >        particles.geometry?.dispose();</span>
+<span class="cstat-no" title="statement not covered" >        if (particles.material) {</span>
+          (<span class="cstat-no" title="statement not covered" >particles.material as THREE.Material).dispose();</span>
         }
       }
-<span class="cstat-no" title="statement not covered" >      if (ringsRef.current) {</span>
-<span class="cstat-no" title="statement not covered" >        ringsRef.current.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (rings?.children &amp;&amp; Array.isArray(rings.children)) {</span>
+<span class="cstat-no" title="statement not covered" >        rings.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (child instanceof THREE.Mesh) {</span>
 <span class="cstat-no" title="statement not covered" >            child.geometry?.dispose();</span>
 <span class="cstat-no" title="statement not covered" >            if (child.material) {</span>
@@ -804,8 +822,8 @@ export const VictoryAnimation3D: React.FC = <span class="fstat-no" title="functi
           }
         });
       }
-<span class="cstat-no" title="statement not covered" >      if (symbolsRef.current) {</span>
-<span class="cstat-no" title="statement not covered" >        symbolsRef.current.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (symbols?.children &amp;&amp; Array.isArray(symbols.children)) {</span>
+<span class="cstat-no" title="statement not covered" >        symbols.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (child instanceof THREE.Mesh) {</span>
 <span class="cstat-no" title="statement not covered" >            child.geometry?.dispose();</span>
 <span class="cstat-no" title="statement not covered" >            if (child.material) {</span>
@@ -816,13 +834,13 @@ export const VictoryAnimation3D: React.FC = <span class="fstat-no" title="functi
       }
       // Additionally iterate groupRef.current.children to dispose any meshes/points without explicit refs
       // (e.g., secondary particles, central glow sphere, outer glow sphere, inner glow layer)
-<span class="cstat-no" title="statement not covered" >      if (groupRef.current) {</span>
-<span class="cstat-no" title="statement not covered" >        groupRef.current.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (group?.children &amp;&amp; Array.isArray(group.children)) {</span>
+<span class="cstat-no" title="statement not covered" >        group.children.forEach(<span class="fstat-no" title="function not covered" >(c</span>hild) =&gt; {</span>
           // Skip objects that are already handled via specific refs
 <span class="cstat-no" title="statement not covered" >          if (</span>
-            child === particlesRef.current ||
-            child === ringsRef.current ||
-            child === symbolsRef.current
+            child === particles ||
+            child === rings ||
+            child === symbols
           ) {
 <span class="cstat-no" title="statement not covered" >            return;</span>
           }
@@ -1012,7 +1030,7 @@ export const VictoryAnimation3D: React.FC = <span class="fstat-no" title="functi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-01T01:52:22.198Z
+                at 2026-02-04T06:43:17.631Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
