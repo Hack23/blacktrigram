@@ -238,9 +238,6 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Use combat-consistent scale (1.2) for better visibility across screens
   const [scale, setScale] = React.useState(1.2);
 
-  // Track running state (Ctrl key for sprint)
-  // 달리기 상태 추적 (Ctrl 키로 스프린트)
-  const [isRunning, setIsRunning] = React.useState(false);
 
   // Track current attack animation for technique-specific animations
   // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
@@ -248,31 +245,18 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     string | undefined
   >(undefined);
 
-  // Keyboard shortcut for toggling overlay (V key) and running (Ctrl key)
+  // Keyboard shortcut for toggling overlay (V key only - Ctrl removed)
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
       }
-      // Ctrl key for running
-      if (e.key === "Control" && !e.repeat) {
-        setIsRunning(true);
-      }
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      // Release Ctrl to stop running
-      if (e.key === "Control") {
-        setIsRunning(false);
-      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [audio]);
 
@@ -355,7 +339,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // Physics parameters for realistic training movement (always enabled)
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
-    isRunning, // Use dynamic running state from Ctrl key
+    isRunning: false, // Will be computed based on acceleration below
     // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
     maxSpeedOverride: speedModifiers.finalSpeed,
     accelerationOverride: speedModifiers.finalAcceleration,
@@ -368,6 +352,98 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // playerPosition.y is forward/backward position in meters (- = toward camera, + = away)
     return [playerPosition.x, 0, playerPosition.y];
   }, [playerPosition]);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 3A: Acceleration-Based Running System
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Track continuous movement time for acceleration-based running
+  // 가속 기반 달리기를 위한 연속 이동 시간 추적
+  const movementTimeRef = useRef(0);
+  const lastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  
+  // Calculate if moving in same direction (within 45 degrees)
+  const isSameDirection = useMemo(() => {
+    if (!isMoving || !velocity || (velocity.x === 0 && velocity.y === 0)) {
+      return false;
+    }
+    
+    const currentDir = { x: velocity.x, y: velocity.y };
+    const lastDir = lastDirectionRef.current;
+    
+    // If no last direction, consider it same
+    if (lastDir.x === 0 && lastDir.y === 0) {
+      return true;
+    }
+    
+    // Calculate dot product to check if directions are similar
+    const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
+    const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
+    const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
+    
+    if (magCurrent === 0 || magLast === 0) return false;
+    
+    // Normalize and check cosine similarity (> 0.707 = within 45 degrees)
+    const cosAngle = dot / (magCurrent * magLast);
+    return cosAngle > 0.707; // cos(45°) ≈ 0.707
+  }, [isMoving, velocity]);
+  
+  // Update movement time and determine if running
+  const isRunning = useMemo(() => {
+    // Time threshold to start running (seconds)
+    const TIME_TO_RUN = 1.5;
+    
+    // If moving in same direction, return current running state based on time
+    if (isMoving && isSameDirection) {
+      return movementTimeRef.current >= TIME_TO_RUN;
+    }
+    
+    return false;
+  }, [isMoving, isSameDirection]);
+  
+  // Track movement time in effect
+  useEffect(() => {
+    if (!isMoving) {
+      // Reset when not moving
+      movementTimeRef.current = 0;
+      lastDirectionRef.current = { x: 0, y: 0 };
+      return;
+    }
+    
+    if (velocity && (velocity.x !== 0 || velocity.y !== 0)) {
+      if (isSameDirection) {
+        // Accumulate time when moving in same direction
+        // Use requestAnimationFrame for smooth accumulation
+        let lastTime = performance.now();
+        let rafId: number;
+        
+        const updateTime = () => {
+          const now = performance.now();
+          const delta = (now - lastTime) / 1000; // Convert to seconds
+          lastTime = now;
+          
+          movementTimeRef.current += delta;
+          
+          if (isMoving && isSameDirection) {
+            rafId = requestAnimationFrame(updateTime);
+          }
+        };
+        
+        rafId = requestAnimationFrame(updateTime);
+        
+        // Update last direction
+        lastDirectionRef.current = { x: velocity.x, y: velocity.y };
+        
+        return () => {
+          if (rafId) cancelAnimationFrame(rafId);
+        };
+      } else {
+        // Direction changed, reset timer
+        movementTimeRef.current = 0;
+        lastDirectionRef.current = { x: velocity.x, y: velocity.y };
+      }
+    }
+  }, [isMoving, isSameDirection, velocity]);
 
   // Dummy position in meters (right side, creating optimal training distance)
   // Positioned at 15% from center to give ~1.2-1.6m distance depending on archetype
