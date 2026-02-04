@@ -1231,6 +1231,9 @@ src/systems/index.ts
 src/systems/movement/InjuryMovementModifier.ts
 src/systems/movement/__tests__/InjuryMovementModifier.test.ts
 src/systems/movement/__tests__/integration.test.ts
+src/systems/movement/helpers/AccelerationUpdater.tsx
+src/systems/movement/helpers/__tests__/accelerationUtils.test.ts
+src/systems/movement/helpers/accelerationUtils.ts
 src/systems/movement/index.ts
 src/systems/movement/integration.ts
 src/systems/physics/AttackMovementPhysics.enhanced.test.ts
