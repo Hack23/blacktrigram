@@ -126,6 +126,8 @@ import {
   STANCE_INDEX_MAP,
 } from "./helpers";
 import { AnimationUpdater } from "./helpers/AnimationUpdater";
+import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
+import { isRunningSpeed } from "../../../systems/movement/helpers/accelerationUtils";
 import { useAICombat } from "./hooks/useAICombat";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatAudio } from "./hooks/useCombatAudio";
@@ -370,9 +372,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Performance monitor visibility toggle (F9 key)
   const [showPerformanceMonitor, setShowPerformanceMonitor] = useState(false);
 
-  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9 key)
+  // Keyboard shortcut for toggling overlay (V key) and performance monitor (F9)
+  // Ctrl key removed - running now acceleration-based
   useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
@@ -385,8 +388,10 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [audio]);
 
   // Action feedback system for damage numbers, combo counter, and technique names
@@ -693,21 +698,41 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s²)
   });
 
+  // Track walk/run speeds for acceleration interpolation (archetype-aware)
+  const [player1WalkRunSpeeds, setPlayer1WalkRunSpeeds] = useState({
+    walkSpeed: 6.0,
+    runSpeed: 10.0,
+  });
+
   // Calculate speed modifiers for both players when state changes
   // Updates at 5Hz (every 200ms) to balance responsiveness and performance
+  // Get both walk and run speeds for acceleration interpolation
   useEffect(() => {
     const updateSpeedModifiers = () => {
       if (players.length >= 2) {
-        // Player 1 speed modifiers
-        const player1Modifiers = speedModifierSystem.calculateSpeedModifiers(
+        // Player 1 speed modifiers - calculate both walk and run
+        const player1WalkModifiers = speedModifierSystem.calculateSpeedModifiers(
           players[0],
-          MovementType.WALKING, // Base calculation, actual type determined by input
+          MovementType.WALKING,
           false, // isCrouching
         );
+        const player1RunModifiers = speedModifierSystem.calculateSpeedModifiers(
+          players[0],
+          MovementType.RUNNING,
+          false, // isCrouching
+        );
+
         setPlayer1SpeedModifiers({
-          finalSpeed: player1Modifiers.finalSpeed,
-          baseSpeed: player1Modifiers.baseSpeed,
-          finalAcceleration: player1Modifiers.finalAcceleration,
+          finalSpeed: player1WalkModifiers.finalSpeed,
+          baseSpeed: player1WalkModifiers.baseSpeed,
+          finalAcceleration: player1WalkModifiers.finalAcceleration,
+        });
+
+        // Store walk/run speeds for acceleration interpolation
+        // These account for archetype speeds and stance modifiers
+        setPlayer1WalkRunSpeeds({
+          walkSpeed: player1WalkModifiers.finalSpeed,
+          runSpeed: player1RunModifiers.finalSpeed,
         });
 
         // Player 2 speed modifiers
@@ -848,6 +873,26 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     [arenaBounds.worldWidthMeters, arenaBounds.worldDepthMeters],
   );
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Acceleration-Based Running System for Player 1
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Track continuous movement time for acceleration-based running
+  const player1MovementTimeRef = useRef(0);
+  const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  // Track acceleration-based speed (interpolated between walk and run speeds)
+  // This applies archetype speeds and stance modifiers
+  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(
+    player1WalkRunSpeeds.walkSpeed
+  );
+
+  // Determine if currently running using utility function with archetype run speed
+  const player1IsRunning = isRunningSpeed(
+    player1AccelerationBasedSpeed,
+    player1WalkRunSpeeds.runSpeed
+  );
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
   const { isMoving: player1IsMoving, velocity: player1Velocity } =
@@ -864,10 +909,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // Physics parameters for realistic movement (always enabled)
       currentStance: player1Data.currentStance,
       legInjuryFactor: player1Data.legInjuryFactor,
-      isRunning: false, // TODO: Add run key detection
+      isRunning: player1IsRunning, // Use computed acceleration-based running state
       useTacticalSteps: false,
-      // Speed modifier overrides from SpeedModifierSystem
-      maxSpeedOverride: player1SpeedModifiers.finalSpeed,
+      // Use interpolated speed between modifier-aware walk/run speeds
+      // This preserves archetype speeds and stance modifiers
+      maxSpeedOverride: player1AccelerationBasedSpeed,
       accelerationOverride: player1SpeedModifiers.finalAcceleration,
     });
 
@@ -880,9 +926,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       (player1Velocity.x !== 0 || player1Velocity.y !== 0)
     ) {
       // When moving: face movement direction
+      // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
+      // Use velocity.y directly (not negated) so down arrow faces correctly
       const movementRotation = Math.atan2(
         player1Velocity.x,
-        -player1Velocity.y,
+        player1Velocity.y,
       );
       player1LastRotationRef.current = movementRotation;
       return movementRotation;
@@ -986,19 +1034,31 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Sync movement with player 1 animation (avoid circular dependency)
   // 플레이어 1 이동-애니메이션 동기화
   const prevPlayer1IsMovingRef = useRef<boolean>(player1IsMoving);
+  const prevPlayer1IsRunningRef = useRef<boolean>(player1IsRunning);
   useEffect(() => {
-    // Only trigger transition when isMoving changes
-    if (prevPlayer1IsMovingRef.current !== player1IsMoving) {
+    // Check for movement or running state changes
+    const movementChanged = prevPlayer1IsMovingRef.current !== player1IsMoving;
+    const runningChanged = prevPlayer1IsRunningRef.current !== player1IsRunning;
+    
+    if (movementChanged || runningChanged) {
       if (player1IsMoving) {
-        player1Animation.transitionTo(AnimationState.WALK);
-      } else if (player1Animation.currentState === AnimationState.WALK) {
+        // Transition to RUN or WALK based on speed
+        const targetState = player1IsRunning ? AnimationState.RUN : AnimationState.WALK;
+        if (player1Animation.currentState !== targetState) {
+          player1Animation.transitionTo(targetState);
+        }
+      } else if (
+        player1Animation.currentState === AnimationState.WALK ||
+        player1Animation.currentState === AnimationState.RUN
+      ) {
         // When stopping movement, transition to stance-specific guard animation
         // 이동 중지 시 자세별 가드 애니메이션으로 전환
         player1Animation.transitionToStanceGuard(player1Data.currentStance);
       }
       prevPlayer1IsMovingRef.current = player1IsMoving;
+      prevPlayer1IsRunningRef.current = player1IsRunning;
     }
-  }, [player1IsMoving, player1Animation, player1Data.currentStance]);
+  }, [player1IsMoving, player1IsRunning, player1Animation, player1Data.currentStance]);
 
   // Movement detection threshold for AI animation sync (in pixels)
   // Lower values = more sensitive to small movements, higher values = smoother transitions
@@ -2519,6 +2579,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
         <AnimationUpdater
           player1Animation={player1Animation}
           player2Animation={player2Animation}
+        />
+
+        {/* Acceleration updater - tracks player 1 movement time and updates speed */}
+        <AccelerationUpdater
+          isMoving={player1IsMoving}
+          velocity={player1Velocity}
+          movementTimeRef={player1MovementTimeRef}
+          lastDirectionRef={player1LastDirectionRef}
+          onSpeedUpdate={setPlayer1AccelerationBasedSpeed}
+          walkSpeed={player1WalkRunSpeeds.walkSpeed}
+          runSpeed={player1WalkRunSpeeds.runSpeed}
         />
 
         {/* Player 1 (Human) */}

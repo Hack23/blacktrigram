@@ -25,6 +25,11 @@
 
 // UI renders outside Canvas in absolute-positioned div - no Html needed
 import { Canvas, useFrame } from "@react-three/fiber";
+import { AccelerationUpdater } from "../../../systems/movement/helpers/AccelerationUpdater";
+import {
+  isRunningSpeed,
+  STEP_DISTANCE_THRESHOLDS,
+} from "../../../systems/movement/helpers/accelerationUtils";
 import {
   Bloom,
   EffectComposer,
@@ -65,6 +70,7 @@ import {
   PlayerArchetype,
   Position,
   Technique,
+  TrigramStance,
 } from "../../../types";
 import { getPerformanceSettings } from "../../../types/constants";
 import { getMobileControlsBottom } from "../../../types/constants/layout";
@@ -237,23 +243,26 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // Use combat-consistent scale (1.2) for better visibility across screens
   const [scale, setScale] = React.useState(1.2);
 
+
   // Track current attack animation for technique-specific animations
   // 기술별 애니메이션을 위한 현재 공격 애니메이션 추적
   const [attackAnimation, setAttackAnimation] = React.useState<
     string | undefined
   >(undefined);
 
-  // Keyboard shortcut for toggling overlay (V key)
+  // Keyboard shortcut for toggling overlay (V key only - Ctrl removed)
   React.useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "v" || e.key === "V") {
         setOverlayVisible((prev) => !prev);
         audio.playSFX("menu_select");
       }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [audio]);
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -283,11 +292,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
 
   // Track speed modifiers for movement (simplified for training - no injuries)
-  // Initial values match SpeedModifierSystem.BASE_WALKING_SPEED and BASE_ACCELERATION
+  // Updated dynamically based on acceleration-based running
   const [speedModifiers, setSpeedModifiers] = useState({
     finalSpeed: 6.0, // BASE_WALK_SPEED (6.0 m/s for responsive combat)
     baseSpeed: 6.0,
     finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s² for quick response)
+  });
+
+  // Track walk/run speeds for acceleration interpolation (archetype-aware)
+  const [walkRunSpeeds, setWalkRunSpeeds] = useState({
+    walkSpeed: 6.0,
+    runSpeed: 10.0,
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -325,6 +340,24 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     [trainingAreaBounds.worldWidthMeters, trainingAreaBounds.worldDepthMeters],
   );
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 3A: Acceleration-Based Running System
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  // Track continuous movement time for acceleration-based running
+  // 가속 기반 달리기를 위한 연속 이동 시간 추적
+  const movementTimeRef = useRef(0);
+  const lastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  
+  // Track acceleration-based speed (interpolated between walk and run speeds)
+  // This applies archetype speeds and stance modifiers
+  const [accelerationBasedSpeed, setAccelerationBasedSpeed] = useState(
+    walkRunSpeeds.walkSpeed
+  );
+  
+  // Determine if currently running using utility function with archetype run speed
+  const isRunning = isRunningSpeed(accelerationBasedSpeed, walkRunSpeeds.runSpeed);
+
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
   const { playerPosition, isMoving, velocity } = usePlayerMovement({
@@ -335,9 +368,10 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     // Physics parameters for realistic training movement (always enabled)
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
-    isRunning: false,
-    // Speed modifier overrides from SpeedModifierSystem (no hardcoded values)
-    maxSpeedOverride: speedModifiers.finalSpeed,
+    isRunning, // Use computed acceleration-based running state
+    // Use interpolated speed between modifier-aware walk/run speeds
+    // This preserves archetype speeds and stance modifiers
+    maxSpeedOverride: accelerationBasedSpeed,
     accelerationOverride: speedModifiers.finalAcceleration,
   });
 
@@ -382,8 +416,9 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const playerRotation = useMemo(() => {
     if (isMoving && velocity && (velocity.x !== 0 || velocity.y !== 0)) {
       // When moving: face the direction of movement
-      // velocity.y is actually the Z direction in 3D space
-      return Math.atan2(velocity.x, -velocity.y);
+      // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
+      // Use velocity.y directly (not negated) so down arrow faces correctly
+      return Math.atan2(velocity.x, velocity.y);
     } else {
       // When idle: face the dummy (target)
       const dx = dummyPosition[0] - player3DPosition[0];
@@ -396,6 +431,55 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   useEffect(() => {
     lastFacingRotationRef.current = playerRotation;
   }, [playerRotation]);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SECTION 3B: Foot Laterality Alternation (발바닥 교대)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // Track current laterality (which foot is forward)
+  // Alternates with each step during walking/running for realistic footwork
+  // 왼발서기 (left) ↔ 오른발서기 (right)
+  const [currentLaterality, setCurrentLaterality] = useState<"left" | "right">("right");
+  
+  // Track step counter for alternating feet
+  const stepCounterRef = useRef(0);
+  const lastPositionRef = useRef<Position>(playerPosition);
+  
+  // Alternate laterality based on movement distance
+  useEffect(() => {
+    if (!isMoving) {
+      // Reset step counter when not moving and sync last position
+      stepCounterRef.current = 0;
+      lastPositionRef.current = playerPosition;
+      return;
+    }
+
+    // Calculate distance traveled since last check
+    const dx = playerPosition.x - lastPositionRef.current.x;
+    const dy = playerPosition.y - lastPositionRef.current.y;
+    const distanceMoved = Math.sqrt(dx * dx + dy * dy);
+    
+    // Accumulate distance into step counter
+    const stepThreshold = isRunning 
+      ? STEP_DISTANCE_THRESHOLDS.RUN 
+      : STEP_DISTANCE_THRESHOLDS.WALK;
+    stepCounterRef.current += distanceMoved;
+    
+    // Determine how many step thresholds were crossed in this update
+    const stepsCrossed = Math.floor(stepCounterRef.current / stepThreshold);
+    if (stepsCrossed > 0) {
+      // Net laterality change depends on whether the number of steps is odd or even
+      // Odd steps = toggle once, even steps = no net change
+      if (stepsCrossed % 2 === 1) {
+        setCurrentLaterality(prev => prev === "right" ? "left" : "right");
+      }
+      // Preserve remainder distance after accounting for full steps
+      stepCounterRef.current -= stepsCrossed * stepThreshold;
+    }
+    
+    // Update last position
+    lastPositionRef.current = playerPosition;
+  }, [playerPosition, isMoving, isRunning]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 4: Player Animation State Machine
@@ -543,18 +627,33 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Calculate speed modifiers when player state changes
   // Updates at 5Hz (every 200ms) matching CombatScreen pattern
+  // Get both walk and run speeds for acceleration interpolation
   useEffect(() => {
     const updateSpeedModifiers = () => {
-      const modifiers = speedModifierSystem.calculateSpeedModifiers(
+      // Calculate modifiers for both walking and running to get archetype-aware speeds
+      const walkModifiers = speedModifierSystem.calculateSpeedModifiers(
         trainingPlayerState,
-        MovementType.WALKING, // Base calculation, actual type determined by input
+        MovementType.WALKING,
+        false, // isCrouching
+      );
+
+      const runModifiers = speedModifierSystem.calculateSpeedModifiers(
+        trainingPlayerState,
+        MovementType.RUNNING,
         false, // isCrouching
       );
 
       setSpeedModifiers({
-        finalSpeed: modifiers.finalSpeed,
-        baseSpeed: modifiers.baseSpeed,
-        finalAcceleration: modifiers.finalAcceleration,
+        finalSpeed: walkModifiers.finalSpeed,
+        baseSpeed: walkModifiers.baseSpeed,
+        finalAcceleration: walkModifiers.finalAcceleration,
+      });
+
+      // Store walk/run speeds for acceleration interpolation
+      // These account for archetype speeds and stance modifiers
+      setWalkRunSpeeds({
+        walkSpeed: walkModifiers.finalSpeed,
+        runSpeed: runModifiers.finalSpeed,
       });
     };
 
@@ -719,18 +818,42 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Sync movement with animation (matches CombatScreen pattern)
   const prevIsMovingRef = useRef<boolean>(isMoving);
+  const prevIsRunningRef = useRef<boolean>(isRunning);
+  const prevStanceRef = useRef<TrigramStance>(currentStance);
+  
   useEffect(() => {
-    if (prevIsMovingRef.current !== isMoving) {
+    const isMovingChanged = prevIsMovingRef.current !== isMoving;
+    const isRunningChanged = prevIsRunningRef.current !== isRunning;
+    const stanceChanged = prevStanceRef.current !== currentStance;
+    
+    if (isMovingChanged || isRunningChanged) {
       if (isMoving) {
-        playerAnimation.transitionTo(AnimationState.WALK);
-      } else if (playerAnimation.currentState === AnimationState.WALK) {
+        // Transition to running or walking animation based on state
+        if (isRunning) {
+          playerAnimation.transitionTo(AnimationState.RUN);
+        } else {
+          playerAnimation.transitionTo(AnimationState.WALK);
+        }
+      } else if (playerAnimation.currentState === AnimationState.WALK || 
+                 playerAnimation.currentState === AnimationState.RUN) {
         // When stopping movement, transition to stance-specific guard animation
         // 이동 중지 시 자세별 가드 애니메이션으로 전환
         playerAnimation.transitionToStanceGuard(currentStance);
       }
       prevIsMovingRef.current = isMoving;
+      prevIsRunningRef.current = isRunning;
     }
-  }, [isMoving, playerAnimation, currentStance]);
+    
+    // Update idle/guard animation when stance changes
+    if (stanceChanged && !isMoving) {
+      // If idle, update to new stance guard
+      if (playerAnimation.currentState === AnimationState.IDLE || 
+          playerAnimation.isInStanceGuard()) {
+        playerAnimation.transitionToStanceGuard(currentStance);
+      }
+      prevStanceRef.current = currentStance;
+    }
+  }, [isMoving, isRunning, currentStance, playerAnimation]);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 7B: Technique Selection System (Moved earlier - see before useTrainingActions)
@@ -1186,6 +1309,17 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
         {/* Animation updater - 60fps updates */}
         <TrainingAnimationUpdater playerAnimation={playerAnimation} />
 
+        {/* Acceleration updater - tracks movement time and updates speed */}
+        <AccelerationUpdater
+          isMoving={isMoving}
+          velocity={velocity}
+          movementTimeRef={movementTimeRef}
+          lastDirectionRef={lastDirectionRef}
+          onSpeedUpdate={setAccelerationBasedSpeed}
+          walkSpeed={walkRunSpeeds.walkSpeed}
+          runSpeed={walkRunSpeeds.runSpeed}
+        />
+
         {/* Training dummy at fixed position */}
         <TrainingDummy3D
           position={dummyPosition}
@@ -1243,7 +1377,7 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
             playerAnimation.currentState,
           )}
           attackAnimation={attackAnimation}
-          laterality="right"
+          laterality={currentLaterality}
           enableTransitionEffects={!isMobile}
           enableStanceSymbol={true}
           enableStanceAudio={true}

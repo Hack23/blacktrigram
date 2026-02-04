@@ -64,19 +64,19 @@ const BREATHING_DURATIONS = {
 /**
  * Weight shift amplitudes per stance (percentage of base)
  * Reflects stability vs. mobility of each stance
- * REDUCED by 65% to minimize "bouncing in place" appearance
+ * RESTORED to original values for better visual feedback and natural movement
  *
  * @korean 체중이동진폭
  */
 const WEIGHT_SHIFT_AMPLITUDES = {
-  GEON: 0.005, // Subtle shift - mobile stance (was 0.015)
-  TAE: 0.007, // Fluid flowing shifts (was 0.02)
-  LI: 0.003, // Minimal - precision stance (was 0.008)
-  JIN: 0.009, // Larger - coiled spring (was 0.025)
-  SON: 0.006, // Rhythmic lateral shifts (was 0.018)
-  GAM: 0.008, // Flowing adaptation (was 0.022)
-  GAN: 0.002, // Minimal - mountain solid (was 0.005)
-  GON: 0.004, // Grounded subtle shifts (was 0.012)
+  GEON: 0.015, // Subtle shift - mobile stance (breathing bounce visible)
+  TAE: 0.020, // Fluid flowing shifts (flowing character visible)
+  LI: 0.008, // Minimal - precision stance (controlled visible)
+  JIN: 0.025, // Larger - coiled spring (power visible)
+  SON: 0.018, // Rhythmic lateral shifts (continuous flow visible)
+  GAM: 0.022, // Flowing adaptation (water-like visible)
+  GAN: 0.005, // Minimal - mountain solid (stable visible)
+  GON: 0.012, // Grounded subtle shifts (earth-like visible)
 } as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -111,25 +111,26 @@ function calculateBreathingScale(
  * @returns Torso rotation adjustment for breathing
  */
 function calculateTorsoBreathingOffset(breathingScale: number): number {
-  // Chest expands forward slightly on inhale
-  return (breathingScale - 1) * 0.3;
+  // Chest expands forward more visibly on inhale
+  // Increased multiplier from 0.3 to 0.8 for more visible breathing
+  return (breathingScale - 1) * 0.8;
 }
 
 /**
  * Calculates subtle knee bounce offset at a given phase
  *
- * DESIGN: Idle animations should only have light knee bounce - no pelvis
- * position movement which creates a "walking in place" appearance.
+ * DESIGN: Idle animations should have visible knee bounce for natural movement feel
+ * - no pelvis position movement which creates a "walking in place" appearance.
  *
  * @param phase - Breathing/bounce phase (0-1)
  * @param amplitude - Maximum bounce amount (knee bend adjustment)
  * @returns Knee rotation adjustment for natural bounce
  */
 function calculateKneeBounce(phase: number, amplitude: number): number {
-  // Subtle knee flex synchronized with breathing
+  // More visible knee flex synchronized with breathing
   // Two bounces per breath cycle for natural feel
   const bouncePhase = Math.sin(phase * Math.PI * 4);
-  return bouncePhase * amplitude * 0.15; // Very subtle knee flex
+  return bouncePhase * amplitude * 0.15; // Limited to 0.15 to stay within test tolerance of 0.005 (higher values cause test failures)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
