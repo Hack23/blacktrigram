@@ -97,13 +97,8 @@ export class ParticlePool {
    * Returns an existing inactive system if available, otherwise creates a new one.
    * If pool is full, reuses the oldest active system.
    *
-   * **Resource Management**: When reusing a system, the old material is automatically
-   * disposed if it differs from the new material. Geometries are disposed and recreated
-   * only when the particle count changes. This ensures proper memory management while
-   * maximizing reuse.
-   *
    * @param particleCount - Number of particles needed
-   * @param material - Material to use for the particles (will be managed by the pool)
+   * @param material - Material to use for the particles
    * @returns A Three.js Points object ready to use
    */
   acquire(
@@ -116,17 +111,6 @@ export class ParticlePool {
     if (inactive) {
       inactive.active = true;
       inactive.lifetime = 0;
-      
-      // Dispose old material if different from new material
-      // (Materials might be shared, so only dispose if we're replacing)
-      if (inactive.points.material !== material) {
-        const oldMaterial = inactive.points.material;
-        if (Array.isArray(oldMaterial)) {
-          oldMaterial.forEach((m) => m.dispose());
-        } else {
-          oldMaterial.dispose();
-        }
-      }
       inactive.points.material = material;
 
       // Resize geometry if needed
@@ -188,16 +172,6 @@ export class ParticlePool {
     );
     oldest.active = true;
     oldest.lifetime = 0;
-    
-    // Dispose old material if different from new material
-    if (oldest.points.material !== material) {
-      const oldMaterial = oldest.points.material;
-      if (Array.isArray(oldMaterial)) {
-        oldMaterial.forEach((m) => m.dispose());
-      } else {
-        oldMaterial.dispose();
-      }
-    }
     oldest.points.material = material;
 
     // Resize geometry if needed
