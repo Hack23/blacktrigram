@@ -287,12 +287,19 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const speedModifierSystem = useMemo(() => new SpeedModifierSystem(), []);
 
   // Track speed modifiers for movement (simplified for training - no injuries)
-  // Initial values match SpeedModifierSystem.BASE_WALKING_SPEED and BASE_ACCELERATION
+  // Updated dynamically based on acceleration-based running
   const [speedModifiers, setSpeedModifiers] = useState({
     finalSpeed: 6.0, // BASE_WALK_SPEED (6.0 m/s for responsive combat)
     baseSpeed: 6.0,
     finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s² for quick response)
   });
+  
+  // Update speed modifiers based on acceleration-based speed calculation
+  // This happens after movement time tracking computes the current speed
+  useEffect(() => {
+    // Will be updated after acceleration calculation in Section 3A
+    // This is a placeholder that will be filled by the computed accelerationBasedSpeed
+  }, []);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3: Movement & Position Management
@@ -361,89 +368,82 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   // 가속 기반 달리기를 위한 연속 이동 시간 추적
   const movementTimeRef = useRef(0);
   const lastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const lastUpdateTimeRef = useRef(performance.now());
   
-  // Calculate if moving in same direction (within 45 degrees)
-  const isSameDirection = useMemo(() => {
-    if (!isMoving || !velocity || (velocity.x === 0 && velocity.y === 0)) {
-      return false;
-    }
+  // Calculate current speed based on continuous movement time
+  // Gradually accelerates from walking (6 m/s) to running (10 m/s) over 1.5 seconds
+  const accelerationBasedSpeed = useMemo(() => {
+    const WALK_SPEED = 6.0;
+    const RUN_SPEED = 10.0;
+    const TIME_TO_RUN = 1.5; // seconds to reach running speed
     
-    const currentDir = { x: velocity.x, y: velocity.y };
-    const lastDir = lastDirectionRef.current;
+    // Calculate progress (0 to 1)
+    const progress = Math.min(movementTimeRef.current / TIME_TO_RUN, 1.0);
     
-    // If no last direction, consider it same
-    if (lastDir.x === 0 && lastDir.y === 0) {
-      return true;
-    }
-    
-    // Calculate dot product to check if directions are similar
-    const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
-    const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
-    const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
-    
-    if (magCurrent === 0 || magLast === 0) return false;
-    
-    // Normalize and check cosine similarity (> 0.707 = within 45 degrees)
-    const cosAngle = dot / (magCurrent * magLast);
-    return cosAngle > 0.707; // cos(45°) ≈ 0.707
-  }, [isMoving, velocity]);
+    // Linear interpolation from walk to run speed
+    return WALK_SPEED + (RUN_SPEED - WALK_SPEED) * progress;
+  }, [movementTimeRef.current]);
   
-  // Update movement time and determine if running
-  const isRunning = useMemo(() => {
-    // Time threshold to start running (seconds)
-    const TIME_TO_RUN = 1.5;
-    
-    // If moving in same direction, return current running state based on time
-    if (isMoving && isSameDirection) {
-      return movementTimeRef.current >= TIME_TO_RUN;
-    }
-    
-    return false;
-  }, [isMoving, isSameDirection]);
+  // Determine if currently running (reached running speed)
+  const isRunning = accelerationBasedSpeed >= 9.0; // Consider running at 90% of max speed
   
-  // Track movement time in effect
+  // Update movement time based on direction consistency
   useEffect(() => {
-    if (!isMoving) {
+    if (!isMoving || !velocity || (velocity.x === 0 && velocity.y === 0)) {
       // Reset when not moving
       movementTimeRef.current = 0;
       lastDirectionRef.current = { x: 0, y: 0 };
+      lastUpdateTimeRef.current = performance.now();
       return;
     }
     
-    if (velocity && (velocity.x !== 0 || velocity.y !== 0)) {
-      if (isSameDirection) {
-        // Accumulate time when moving in same direction
-        // Use requestAnimationFrame for smooth accumulation
-        let lastTime = performance.now();
-        let rafId: number;
-        
-        const updateTime = () => {
-          const now = performance.now();
-          const delta = (now - lastTime) / 1000; // Convert to seconds
-          lastTime = now;
-          
-          movementTimeRef.current += delta;
-          
-          if (isMoving && isSameDirection) {
-            rafId = requestAnimationFrame(updateTime);
-          }
-        };
-        
-        rafId = requestAnimationFrame(updateTime);
-        
-        // Update last direction
-        lastDirectionRef.current = { x: velocity.x, y: velocity.y };
-        
-        return () => {
-          if (rafId) cancelAnimationFrame(rafId);
-        };
-      } else {
-        // Direction changed, reset timer
-        movementTimeRef.current = 0;
-        lastDirectionRef.current = { x: velocity.x, y: velocity.y };
+    // Check direction consistency (within 45 degrees)
+    const currentDir = { x: velocity.x, y: velocity.y };
+    const lastDir = lastDirectionRef.current;
+    
+    let isSameDirection = true;
+    if (lastDir.x !== 0 || lastDir.y !== 0) {
+      // Calculate dot product
+      const dot = currentDir.x * lastDir.x + currentDir.y * lastDir.y;
+      const magCurrent = Math.sqrt(currentDir.x ** 2 + currentDir.y ** 2);
+      const magLast = Math.sqrt(lastDir.x ** 2 + lastDir.y ** 2);
+      
+      if (magCurrent > 0 && magLast > 0) {
+        const cosAngle = dot / (magCurrent * magLast);
+        isSameDirection = cosAngle > 0.707; // cos(45°)
       }
     }
-  }, [isMoving, isSameDirection, velocity]);
+    
+    // Update time accumulation
+    const updateInterval = setInterval(() => {
+      const now = performance.now();
+      const delta = (now - lastUpdateTimeRef.current) / 1000;
+      lastUpdateTimeRef.current = now;
+      
+      if (isMoving && isSameDirection) {
+        movementTimeRef.current += delta;
+      }
+    }, 16); // ~60fps
+    
+    // Update last direction
+    lastDirectionRef.current = currentDir;
+    
+    // If direction changed, reset timer
+    if (!isSameDirection) {
+      movementTimeRef.current = 0;
+    }
+    
+    return () => clearInterval(updateInterval);
+  }, [isMoving, velocity]);
+  
+  // Update speed modifiers based on calculated acceleration-based speed
+  useEffect(() => {
+    setSpeedModifiers(prev => ({
+      ...prev,
+      finalSpeed: accelerationBasedSpeed,
+      baseSpeed: accelerationBasedSpeed,
+    }));
+  }, [accelerationBasedSpeed]);
 
   // Dummy position in meters (right side, creating optimal training distance)
   // Positioned at 15% from center to give ~1.2-1.6m distance depending on archetype
