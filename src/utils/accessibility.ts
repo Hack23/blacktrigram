@@ -20,6 +20,7 @@ import {
   WCAGLevel,
 } from "../types/AccessibilityTypes";
 import { KOREAN_COLORS } from "../types/constants";
+import { EventManager } from "./EventManager";
 
 /**
  * Handle keyboard navigation events with WCAG compliance
@@ -578,6 +579,16 @@ export function focusFirstError(container: HTMLElement): void {
  * Returns an object with the link element and a cleanup function to properly
  * remove event listeners when the component is no longer needed.
  *
+ * **Breaking Change**: This function now returns `{ element, cleanup }` instead of
+ * just `HTMLAnchorElement`. Update usage from:
+ * ```typescript
+ * const link = createSkipLink(id);
+ * ```
+ * to:
+ * ```typescript
+ * const { element, cleanup } = createSkipLink(id);
+ * ```
+ *
  * 컴포넌트가 더 이상 필요하지 않을 때 이벤트 리스너를 적절히 제거하기 위한
  * 링크 요소와 정리 함수가 포함된 객체를 반환합니다.
  *
@@ -613,6 +624,9 @@ export function createSkipLink(targetId: string): {
     font-weight: bold;
   `;
 
+  // Use EventManager for consistent event handling across the codebase
+  const eventManager = new EventManager();
+
   // Event handlers
   const handleFocus = () => {
     skipLink.style.top = "0";
@@ -622,14 +636,13 @@ export function createSkipLink(targetId: string): {
     skipLink.style.top = "-40px";
   };
 
-  // Add event listeners
-  skipLink.addEventListener("focus", handleFocus);
-  skipLink.addEventListener("blur", handleBlur);
+  // Add event listeners via EventManager
+  eventManager.add(skipLink, "focus", handleFocus);
+  eventManager.add(skipLink, "blur", handleBlur);
 
-  // Cleanup function to remove event listeners
+  // Cleanup function to remove all event listeners
   const cleanup = () => {
-    skipLink.removeEventListener("focus", handleFocus);
-    skipLink.removeEventListener("blur", handleBlur);
+    eventManager.cleanup();
   };
 
   return { element: skipLink, cleanup };
