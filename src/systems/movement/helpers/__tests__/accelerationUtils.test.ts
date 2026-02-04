@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  ACCELERATION_CONSTANTS,
   calculateRunThreshold,
   isDirectionConsistent,
   calculateAcceleratedSpeed,

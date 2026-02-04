@@ -33,6 +33,10 @@ export interface AccelerationUpdaterProps {
   readonly lastDirectionRef: React.MutableRefObject<{ x: number; y: number }>;
   /** Callback to update calculated speed - only called on meaningful changes */
   readonly onSpeedUpdate: (speed: number) => void;
+  /** Walking speed in m/s (from archetype or default) */
+  readonly walkSpeed?: number;
+  /** Running speed in m/s (from archetype or default) */
+  readonly runSpeed?: number;
 }
 
 /**
@@ -51,6 +55,8 @@ export interface AccelerationUpdaterProps {
  *   movementTimeRef={movementTimeRef}
  *   lastDirectionRef={lastDirectionRef}
  *   onSpeedUpdate={setAccelerationBasedSpeed}
+ *   walkSpeed={physicalAttributes.walkSpeed}
+ *   runSpeed={physicalAttributes.runSpeed}
  * />
  * ```
  */
@@ -60,9 +66,12 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
   movementTimeRef,
   lastDirectionRef,
   onSpeedUpdate,
+  walkSpeed = ACCELERATION_CONSTANTS.DEFAULT_WALK_SPEED,
+  runSpeed = ACCELERATION_CONSTANTS.DEFAULT_RUN_SPEED,
 }) => {
   // Track last reported speed to throttle updates
-  const lastReportedSpeedRef = useRef<number>(ACCELERATION_CONSTANTS.WALK_SPEED);
+  // Initialize with walk speed (archetype-specific or default)
+  const lastReportedSpeedRef = useRef<number>(walkSpeed);
 
   useFrame((_state, delta) => {
     // If not moving, reset timers and direction
@@ -71,9 +80,9 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
       lastDirectionRef.current = { x: 0, y: 0 };
       
       // Only update if changed meaningfully
-      if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, ACCELERATION_CONSTANTS.WALK_SPEED)) {
-        lastReportedSpeedRef.current = ACCELERATION_CONSTANTS.WALK_SPEED;
-        onSpeedUpdate(ACCELERATION_CONSTANTS.WALK_SPEED);
+      if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, walkSpeed)) {
+        lastReportedSpeedRef.current = walkSpeed;
+        onSpeedUpdate(walkSpeed);
       }
       return;
     }
@@ -93,8 +102,8 @@ export const AccelerationUpdater: React.FC<AccelerationUpdaterProps> = ({
     // Update last direction for the next frame
     lastDirectionRef.current = currentDir;
 
-    // Calculate new speed
-    const newSpeed = calculateAcceleratedSpeed(movementTimeRef.current);
+    // Calculate new speed with archetype-specific walk/run speeds
+    const newSpeed = calculateAcceleratedSpeed(movementTimeRef.current, walkSpeed, runSpeed);
 
     // Only call onSpeedUpdate if speed changed meaningfully (throttle updates)
     if (isSpeedChangeMeaningful(lastReportedSpeedRef.current, newSpeed)) {

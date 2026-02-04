@@ -698,21 +698,41 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s²)
   });
 
+  // Track walk/run speeds for acceleration interpolation (archetype-aware)
+  const [player1WalkRunSpeeds, setPlayer1WalkRunSpeeds] = useState({
+    walkSpeed: 6.0,
+    runSpeed: 10.0,
+  });
+
   // Calculate speed modifiers for both players when state changes
   // Updates at 5Hz (every 200ms) to balance responsiveness and performance
+  // Get both walk and run speeds for acceleration interpolation
   useEffect(() => {
     const updateSpeedModifiers = () => {
       if (players.length >= 2) {
-        // Player 1 speed modifiers
-        const player1Modifiers = speedModifierSystem.calculateSpeedModifiers(
+        // Player 1 speed modifiers - calculate both walk and run
+        const player1WalkModifiers = speedModifierSystem.calculateSpeedModifiers(
           players[0],
-          MovementType.WALKING, // Base calculation, actual type determined by input
+          MovementType.WALKING,
           false, // isCrouching
         );
+        const player1RunModifiers = speedModifierSystem.calculateSpeedModifiers(
+          players[0],
+          MovementType.RUNNING,
+          false, // isCrouching
+        );
+
         setPlayer1SpeedModifiers({
-          finalSpeed: player1Modifiers.finalSpeed,
-          baseSpeed: player1Modifiers.baseSpeed,
-          finalAcceleration: player1Modifiers.finalAcceleration,
+          finalSpeed: player1WalkModifiers.finalSpeed,
+          baseSpeed: player1WalkModifiers.baseSpeed,
+          finalAcceleration: player1WalkModifiers.finalAcceleration,
+        });
+
+        // Store walk/run speeds for acceleration interpolation
+        // These account for archetype speeds and stance modifiers
+        setPlayer1WalkRunSpeeds({
+          walkSpeed: player1WalkModifiers.finalSpeed,
+          runSpeed: player1RunModifiers.finalSpeed,
         });
 
         // Player 2 speed modifiers
@@ -861,12 +881,17 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1MovementTimeRef = useRef(0);
   const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Track acceleration-based speed (for rendering and animation decisions)
-  // This doesn't override speedModifiers which are managed by SpeedModifierSystem
-  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(6.0);
+  // Track acceleration-based speed (interpolated between walk and run speeds)
+  // This applies archetype speeds and stance modifiers
+  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(
+    player1WalkRunSpeeds.walkSpeed
+  );
 
-  // Determine if currently running using utility function
-  const player1IsRunning = isRunningSpeed(player1AccelerationBasedSpeed);
+  // Determine if currently running using utility function with archetype run speed
+  const player1IsRunning = isRunningSpeed(
+    player1AccelerationBasedSpeed,
+    player1WalkRunSpeeds.runSpeed
+  );
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions in METERS - no pixel conversions
@@ -886,7 +911,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       legInjuryFactor: player1Data.legInjuryFactor,
       isRunning: player1IsRunning, // Use computed acceleration-based running state
       useTacticalSteps: false,
-      // Use acceleration-based speed directly (don't override speedModifiers)
+      // Use interpolated speed between modifier-aware walk/run speeds
+      // This preserves archetype speeds and stance modifiers
       maxSpeedOverride: player1AccelerationBasedSpeed,
       accelerationOverride: player1SpeedModifiers.finalAcceleration,
     });
@@ -2562,6 +2588,8 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           movementTimeRef={player1MovementTimeRef}
           lastDirectionRef={player1LastDirectionRef}
           onSpeedUpdate={setPlayer1AccelerationBasedSpeed}
+          walkSpeed={player1WalkRunSpeeds.walkSpeed}
+          runSpeed={player1WalkRunSpeeds.runSpeed}
         />
 
         {/* Player 1 (Human) */}

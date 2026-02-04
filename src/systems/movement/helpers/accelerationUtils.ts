@@ -10,13 +10,13 @@
  */
 
 /**
- * Constants for acceleration-based running
+ * Constants for acceleration-based running (defaults for non-archetype usage)
  */
 export const ACCELERATION_CONSTANTS = {
-  /** Walking speed in m/s */
-  WALK_SPEED: 6.0,
-  /** Running speed in m/s */
-  RUN_SPEED: 10.0,
+  /** Default walking speed in m/s (when no archetype speed provided) */
+  DEFAULT_WALK_SPEED: 6.0,
+  /** Default running speed in m/s (when no archetype speed provided) */
+  DEFAULT_RUN_SPEED: 10.0,
   /** Time to reach running speed in seconds */
   TIME_TO_RUN: 1.5,
   /** Threshold for considering direction "same" (cos 45°) */
@@ -29,10 +29,13 @@ export const ACCELERATION_CONSTANTS = {
 
 /**
  * Calculate running threshold speed
+ * @param runSpeed - Maximum running speed (from archetype or default)
  * @returns Speed at which movement is considered running (m/s)
  */
-export function calculateRunThreshold(): number {
-  return ACCELERATION_CONSTANTS.RUN_SPEED * ACCELERATION_CONSTANTS.RUN_THRESHOLD_PERCENT;
+export function calculateRunThreshold(
+  runSpeed: number = ACCELERATION_CONSTANTS.DEFAULT_RUN_SPEED
+): number {
+  return runSpeed * ACCELERATION_CONSTANTS.RUN_THRESHOLD_PERCENT;
 }
 
 /**
@@ -66,14 +69,17 @@ export function isDirectionConsistent(
 /**
  * Calculate acceleration-based speed
  * @param movementTime Accumulated movement time in same direction (seconds)
+ * @param walkSpeed - Walking speed in m/s (from archetype or default)
+ * @param runSpeed - Running speed in m/s (from archetype or default)
  * @returns Interpolated speed between walk and run (m/s)
  */
-export function calculateAcceleratedSpeed(movementTime: number): number {
+export function calculateAcceleratedSpeed(
+  movementTime: number,
+  walkSpeed: number = ACCELERATION_CONSTANTS.DEFAULT_WALK_SPEED,
+  runSpeed: number = ACCELERATION_CONSTANTS.DEFAULT_RUN_SPEED
+): number {
   const progress = Math.min(movementTime / ACCELERATION_CONSTANTS.TIME_TO_RUN, 1.0);
-  return (
-    ACCELERATION_CONSTANTS.WALK_SPEED +
-    (ACCELERATION_CONSTANTS.RUN_SPEED - ACCELERATION_CONSTANTS.WALK_SPEED) * progress
-  );
+  return walkSpeed + (runSpeed - walkSpeed) * progress;
 }
 
 /**
@@ -89,8 +95,12 @@ export function isSpeedChangeMeaningful(oldSpeed: number, newSpeed: number): boo
 /**
  * Determine if player is running based on current speed
  * @param speed Current speed (m/s)
+ * @param runSpeed - Maximum running speed (from archetype or default)
  * @returns True if speed exceeds running threshold
  */
-export function isRunningSpeed(speed: number): boolean {
-  return speed >= calculateRunThreshold();
+export function isRunningSpeed(
+  speed: number,
+  runSpeed: number = ACCELERATION_CONSTANTS.DEFAULT_RUN_SPEED
+): boolean {
+  return speed >= calculateRunThreshold(runSpeed);
 }

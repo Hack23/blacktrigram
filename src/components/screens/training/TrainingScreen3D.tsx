@@ -296,6 +296,12 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     finalAcceleration: 12.0, // BASE_ACCELERATION (12.0 m/s² for quick response)
   });
 
+  // Track walk/run speeds for acceleration interpolation (archetype-aware)
+  const [walkRunSpeeds, setWalkRunSpeeds] = useState({
+    walkSpeed: 6.0,
+    runSpeed: 10.0,
+  });
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SECTION 3: Movement & Position Management
   // ═══════════════════════════════════════════════════════════════════════════
@@ -340,12 +346,14 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
   const movementTimeRef = useRef(0);
   const lastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   
-  // Track acceleration-based speed (for rendering and animation decisions)
-  // This doesn't override speedModifiers which are managed by SpeedModifierSystem
-  const [accelerationBasedSpeed, setAccelerationBasedSpeed] = useState(6.0);
+  // Track acceleration-based speed (interpolated between walk and run speeds)
+  // This applies archetype speeds and stance modifiers
+  const [accelerationBasedSpeed, setAccelerationBasedSpeed] = useState(
+    walkRunSpeeds.walkSpeed
+  );
   
-  // Determine if currently running using utility function
-  const isRunning = isRunningSpeed(accelerationBasedSpeed);
+  // Determine if currently running using utility function with archetype run speed
+  const isRunning = isRunningSpeed(accelerationBasedSpeed, walkRunSpeeds.runSpeed);
 
   // Player movement with physics-based acceleration and stance modifiers
   // All positions are in METERS - no pixel conversions
@@ -358,7 +366,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
     currentStance: TRIGRAM_STANCES_ORDER[trainingState.currentStanceIndex],
     legInjuryFactor: 0, // No injury in training mode
     isRunning, // Use computed acceleration-based running state
-    // Use acceleration-based speed directly (don't override speedModifiers)
+    // Use interpolated speed between modifier-aware walk/run speeds
+    // This preserves archetype speeds and stance modifiers
     maxSpeedOverride: accelerationBasedSpeed,
     accelerationOverride: speedModifiers.finalAcceleration,
   });
@@ -608,18 +617,33 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
 
   // Calculate speed modifiers when player state changes
   // Updates at 5Hz (every 200ms) matching CombatScreen pattern
+  // Get both walk and run speeds for acceleration interpolation
   useEffect(() => {
     const updateSpeedModifiers = () => {
-      const modifiers = speedModifierSystem.calculateSpeedModifiers(
+      // Calculate modifiers for both walking and running to get archetype-aware speeds
+      const walkModifiers = speedModifierSystem.calculateSpeedModifiers(
         trainingPlayerState,
-        MovementType.WALKING, // Base calculation, actual type determined by input
+        MovementType.WALKING,
+        false, // isCrouching
+      );
+
+      const runModifiers = speedModifierSystem.calculateSpeedModifiers(
+        trainingPlayerState,
+        MovementType.RUNNING,
         false, // isCrouching
       );
 
       setSpeedModifiers({
-        finalSpeed: modifiers.finalSpeed,
-        baseSpeed: modifiers.baseSpeed,
-        finalAcceleration: modifiers.finalAcceleration,
+        finalSpeed: walkModifiers.finalSpeed,
+        baseSpeed: walkModifiers.baseSpeed,
+        finalAcceleration: walkModifiers.finalAcceleration,
+      });
+
+      // Store walk/run speeds for acceleration interpolation
+      // These account for archetype speeds and stance modifiers
+      setWalkRunSpeeds({
+        walkSpeed: walkModifiers.finalSpeed,
+        runSpeed: runModifiers.finalSpeed,
       });
     };
 
@@ -1282,6 +1306,8 @@ export const TrainingScreen3D: React.FC<TrainingScreen3DProps> = ({
           movementTimeRef={movementTimeRef}
           lastDirectionRef={lastDirectionRef}
           onSpeedUpdate={setAccelerationBasedSpeed}
+          walkSpeed={walkRunSpeeds.walkSpeed}
+          runSpeed={walkRunSpeeds.runSpeed}
         />
 
         {/* Training dummy at fixed position */}
