@@ -163,19 +163,25 @@ describe('WCAG 2.1 Level AA Color Compliance', () => {
       expect(result).toHaveProperty('cleanup');
       expect(result.element).toBeInstanceOf(HTMLAnchorElement);
       expect(typeof result.cleanup).toBe('function');
+      
+      // Cleanup event listeners
+      result.cleanup();
     });
 
     it('should create skip link with correct attributes', () => {
-      const { element } = createSkipLink('main-content');
+      const { element, cleanup } = createSkipLink('main-content');
       
       expect(element.href).toContain('#main-content');
       expect(element.textContent).toContain('본문으로 건너뛰기');
       expect(element.textContent).toContain('Skip to content');
       expect(element.className).toBe('skip-link');
+      
+      // Cleanup event listeners
+      cleanup();
     });
 
     it('should have correct initial positioning (hidden)', () => {
-      const { element } = createSkipLink('main-content');
+      const { element, cleanup } = createSkipLink('main-content');
       
       // In jsdom, inline styles set via cssText may not be individually accessible
       // Check that cssText was set and element was created
@@ -184,10 +190,13 @@ describe('WCAG 2.1 Level AA Color Compliance', () => {
       
       // The important thing is that the style is set, which we verify
       // by checking that focus/blur handlers work correctly (tested in other tests)
+      
+      // Cleanup event listeners
+      cleanup();
     });
 
     it('should show skip link on focus', () => {
-      const { element } = createSkipLink('main-content');
+      const { element, cleanup } = createSkipLink('main-content');
       document.body.appendChild(element);
       
       // Trigger focus event
@@ -195,12 +204,13 @@ describe('WCAG 2.1 Level AA Color Compliance', () => {
       
       expect(element.style.top).toBe('0px');
       
-      // Cleanup
+      // Cleanup event listeners and DOM
+      cleanup();
       document.body.removeChild(element);
     });
 
     it('should hide skip link on blur', () => {
-      const { element } = createSkipLink('main-content');
+      const { element, cleanup } = createSkipLink('main-content');
       document.body.appendChild(element);
       
       // First focus to show it
@@ -211,7 +221,8 @@ describe('WCAG 2.1 Level AA Color Compliance', () => {
       element.dispatchEvent(new FocusEvent('blur'));
       expect(element.style.top).toBe('-40px');
       
-      // Cleanup
+      // Cleanup event listeners and DOM
+      cleanup();
       document.body.removeChild(element);
     });
 
@@ -243,11 +254,15 @@ describe('WCAG 2.1 Level AA Color Compliance', () => {
     });
 
     it('should support different target IDs', () => {
-      const { element: element1 } = createSkipLink('content-area');
-      const { element: element2 } = createSkipLink('main-section');
+      const { element: element1, cleanup: cleanup1 } = createSkipLink('content-area');
+      const { element: element2, cleanup: cleanup2 } = createSkipLink('main-section');
       
       expect(element1.href).toContain('#content-area');
       expect(element2.href).toContain('#main-section');
+      
+      // Cleanup event listeners
+      cleanup1();
+      cleanup2();
     });
   });
 });
