@@ -104,11 +104,11 @@ function findTypeScriptFiles(dir: string, fileList: string[] = []): string[] {
             fileList.push(filePath);
           }
         }
-      } catch (err) {
+      } catch {
         // Skip files we can't read
       }
     });
-  } catch (err) {
+  } catch {
     // Skip directories we can't read
   }
   

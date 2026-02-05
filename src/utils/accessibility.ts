@@ -20,6 +20,7 @@ import {
   WCAGLevel,
 } from "../types/AccessibilityTypes";
 import { KOREAN_COLORS } from "../types/constants";
+import { EventManager } from "./EventManager";
 
 /**
  * Handle keyboard navigation events with WCAG compliance
@@ -575,19 +576,38 @@ export function focusFirstError(container: HTMLElement): void {
  * Create skip to content link for keyboard navigation
  * Returns a link that allows users to skip to main content
  *
- * Note: Event listeners are attached to the element itself and will be
- * automatically cleaned up when the element is removed from the DOM.
- * If you need explicit cleanup, store the element reference and call
- * element.remove() when done.
+ * Returns an object with the link element and a cleanup function to properly
+ * remove event listeners when the component is no longer needed.
  *
- * 참고: 이벤트 리스너는 요소 자체에 연결되며 요소가 DOM에서 제거될 때
- * 자동으로 정리됩니다. 명시적 정리가 필요한 경우 요소 참조를 저장하고
- * 완료 시 element.remove()를 호출하세요.
+ * **Breaking Change**: This function now returns `{ element, cleanup }` instead of
+ * just `HTMLAnchorElement`. Update usage from:
+ * ```typescript
+ * const link = createSkipLink(id);
+ * ```
+ * to:
+ * ```typescript
+ * const { element, cleanup } = createSkipLink(id);
+ * ```
+ *
+ * 컴포넌트가 더 이상 필요하지 않을 때 이벤트 리스너를 적절히 제거하기 위한
+ * 링크 요소와 정리 함수가 포함된 객체를 반환합니다.
  *
  * @param targetId - ID of main content element
- * @returns Skip link element
+ * @returns Object with skip link element and cleanup function
+ *
+ * @example
+ * ```typescript
+ * const { element, cleanup } = createSkipLink("main-content");
+ * document.body.prepend(element);
+ * // Later, when component unmounts
+ * cleanup();
+ * element.remove();
+ * ```
  */
-export function createSkipLink(targetId: string): HTMLAnchorElement {
+export function createSkipLink(targetId: string): {
+  element: HTMLAnchorElement;
+  cleanup: () => void;
+} {
   const skipLink = document.createElement("a");
   skipLink.href = `#${targetId}`;
   skipLink.textContent = "본문으로 건너뛰기 | Skip to content";
@@ -604,15 +624,26 @@ export function createSkipLink(targetId: string): HTMLAnchorElement {
     font-weight: bold;
   `;
 
-  // Show on focus
-  skipLink.addEventListener("focus", () => {
+  // Use EventManager for consistent event handling across the codebase
+  const eventManager = new EventManager();
+
+  // Event handlers
+  const handleFocus = () => {
     skipLink.style.top = "0";
-  });
+  };
 
-  // Hide on blur
-  skipLink.addEventListener("blur", () => {
+  const handleBlur = () => {
     skipLink.style.top = "-40px";
-  });
+  };
 
-  return skipLink;
+  // Add event listeners via EventManager
+  eventManager.add(skipLink, "focus", handleFocus);
+  eventManager.add(skipLink, "blur", handleBlur);
+
+  // Cleanup function to remove all event listeners
+  const cleanup = () => {
+    eventManager.cleanup();
+  };
+
+  return { element: skipLink, cleanup };
 }
