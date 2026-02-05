@@ -119,7 +119,7 @@
     "mochawesome": "7.1.4",
     "mochawesome-merge": "5.1.0",
     "mochawesome-report-generator": "6.3.2",
-    "openai": "^6.17.0",
+    "openai": "^6.18.0",
     "playwright": "1.58.1",
     "start-server-and-test": "^2.1.3",
     "ts-morph": "^27.0.2",
