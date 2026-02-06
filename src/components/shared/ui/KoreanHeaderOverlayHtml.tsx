@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import type { KoreanText } from "../../../types/common";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import {
   getNeonTextShadow,
@@ -42,255 +42,272 @@ export const KoreanHeaderOverlayHtml = React.memo<KoreanHeaderOverlayHtmlProps>(
     animated = true,
     glowIntensity = 1.0,
   }) => {
-  const titleSize = size === "large" ? 32 : size === "medium" ? 24 : 18;
-  const subtitleSize = titleSize * 0.7;
+    const titleSize = size === "large" ? 32 : size === "medium" ? 24 : 18;
+    const subtitleSize = titleSize * 0.7;
 
-  const alignmentStyle =
-    alignment === "center" ? "center" : alignment === "right" ? "flex-end" : "flex-start";
+    const alignmentStyle =
+      alignment === "center"
+        ? "center"
+        : alignment === "right"
+          ? "flex-end"
+          : "flex-start";
 
-  // Use enhanced neon text shadow utilities with helper function (memoized to avoid recalculation)
-  const titleTextShadow = useMemo(
-    () => getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, mapGlowIntensityLevel(glowIntensity)),
-    [glowIntensity]
-  );
+    // Use enhanced neon text shadow utilities with helper function (memoized to avoid recalculation)
+    const titleTextShadow = useMemo(
+      () =>
+        getNeonTextShadow(
+          KOREAN_COLORS.ACCENT_GOLD,
+          mapGlowIntensityLevel(glowIntensity),
+        ),
+      [glowIntensity],
+    );
 
-  const subtitleTextShadow = useMemo(
-    () =>
-      getNeonTextShadow(
-        KOREAN_COLORS.PRIMARY_CYAN,
-        mapGlowIntensityLevel(glowIntensity * 0.8) // Slightly less intense for subtitle
-      ),
-    [glowIntensity]
-  );
+    const subtitleTextShadow = useMemo(
+      () =>
+        getNeonTextShadow(
+          KOREAN_COLORS.PRIMARY_CYAN,
+          mapGlowIntensityLevel(glowIntensity * 0.8), // Slightly less intense for subtitle
+        ),
+      [glowIntensity],
+    );
 
-  // Korean font optimization (memoized based on size)
-  const fontOptimization = useMemo(
-    () => getKoreanFontOptimization(titleSize, "bold"),
-    [titleSize]
-  );
+    // Korean font optimization (memoized based on size)
+    const fontOptimization = useMemo(
+      () => getKoreanFontOptimization(titleSize, "bold"),
+      [titleSize],
+    );
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: alignmentStyle,
-        gap: "8px",
-        position: "relative",
-      }}
-      data-testid="korean-header"
-    >
-      {/* Main Korean title */}
+    return (
       <div
         style={{
-          ...fontOptimization,
-          color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
-          // Note: fontFamily already included in fontOptimization, but explicitly set here for clarity
-          // as it's a critical property for Korean text rendering
-          fontFamily: FONT_FAMILY.KOREAN,
-          textAlign: alignment,
-          textShadow: titleTextShadow,
-          animation: animated ? "pulse 2s ease-in-out infinite" : "none",
-          WebkitTextStroke: `1px ${TITLE_STROKE}`,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: alignmentStyle,
+          gap: "8px",
+          position: "relative",
         }}
+        data-testid="korean-header"
       >
-        {title.korean}
-      </div>
-
-      {/* English subtitle */}
-      <div
-        style={{
-          fontFamily: FONT_FAMILY.KOREAN,
-          fontSize: `${titleSize * 0.6}px`,
-          color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
-          fontStyle: "italic",
-          textAlign: alignment,
-          textShadow: subtitleTextShadow,
-          opacity: 0.9,
-        }}
-      >
-        {title.english}
-      </div>
-
-      {/* Enhanced Korean traditional + cyberpunk underline */}
-      {showUnderline && (
+        {/* Main Korean title */}
         <div
           style={{
-            width: `${titleSize * 6}px`,
-            height: "30px",
-            position: "relative",
-            marginTop: "10px",
+            ...fontOptimization,
+            color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+            // Note: fontFamily already included in fontOptimization, but explicitly set here for clarity
+            // as it's a critical property for Korean text rendering
+            fontFamily: FONT_FAMILY.KOREAN,
+            textAlign: alignment,
+            textShadow: titleTextShadow,
+            animation: animated ? "pulse 2s ease-in-out infinite" : "none",
+            WebkitTextStroke: `1px ${TITLE_STROKE}`,
           }}
         >
-          {/* Traditional Korean curve (태극 inspired) */}
-          <svg
-            width={titleSize * 6}
-            height={30}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          >
-            {/* Main golden curve */}
-            <path
-              d={`M 0 8 Q ${titleSize * 1.5} 2, ${titleSize * 4.5} 14 T ${titleSize * 6} 8`}
-              stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
-              strokeWidth="3"
-              fill="none"
-              opacity="0.8"
-              style={{
-                animation: animated ? "glow 2s ease-in-out infinite" : "none",
-              }}
-            />
-
-            {/* Secondary cyan accent line */}
-            <path
-              d={`M ${titleSize * 0.6} 11 Q ${titleSize * 1.8} 8, ${titleSize * 4.2} 17 T ${titleSize * 5.4} 11`}
-              stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-              strokeWidth="1.5"
-              fill="none"
-              opacity="0.6"
-              style={{
-                animation: animated ? "glow-alt 3s ease-in-out infinite" : "none",
-              }}
-            />
-
-            {/* Left trigram (☰ - Heaven) */}
-            <g opacity="0.4">
-              <line
-                x1={-8}
-                y1={20}
-                x2={-2}
-                y2={20}
-                stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-              <line
-                x1={-8}
-                y1={23}
-                x2={-2}
-                y2={23}
-                stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-              <line
-                x1={-8}
-                y1={26}
-                x2={-2}
-                y2={26}
-                stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-            </g>
-
-            {/* Right trigram (☷ - Earth) - broken lines */}
-            <g opacity="0.4">
-              <line
-                x1={titleSize * 6 + 2}
-                y1={20}
-                x2={titleSize * 6 + 4}
-                y2={20}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-              <line
-                x1={titleSize * 6 + 5}
-                y1={20}
-                x2={titleSize * 6 + 8}
-                y2={20}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-
-              <line
-                x1={titleSize * 6 + 2}
-                y1={23}
-                x2={titleSize * 6 + 4}
-                y2={23}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-              <line
-                x1={titleSize * 6 + 5}
-                y1={23}
-                x2={titleSize * 6 + 8}
-                y2={23}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-
-              <line
-                x1={titleSize * 6 + 2}
-                y1={26}
-                x2={titleSize * 6 + 4}
-                y2={26}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-              <line
-                x1={titleSize * 6 + 5}
-                y1={26}
-                x2={titleSize * 6 + 8}
-                y2={26}
-                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
-                strokeWidth="2"
-              />
-            </g>
-
-            {/* Central energy orb */}
-            <circle
-              cx={titleSize * 3}
-              cy={14}
-              r="6"
-              fill={SVG_CIRCLE_FILL}
-              style={{
-                animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
-              }}
-            />
-            <circle
-              cx={titleSize * 3}
-              cy={14}
-              r="3"
-              fill={SVG_CIRCLE_CENTER_FILL}
-              style={{
-                animation: animated ? "pulse 2.5s ease-in-out infinite" : "none",
-              }}
-            />
-          </svg>
+          {title.korean}
         </div>
-      )}
 
-      {/* Subtitle section with traditional spacing */}
-      {subtitle && (
-        <>
+        {/* English subtitle */}
+        <div
+          style={{
+            fontFamily: FONT_FAMILY.KOREAN,
+            fontSize: `${titleSize * 0.6}px`,
+            color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+            fontStyle: "italic",
+            textAlign: alignment,
+            textShadow: subtitleTextShadow,
+            opacity: 0.9,
+          }}
+        >
+          {title.english}
+        </div>
+
+        {/* Enhanced Korean traditional + cyberpunk underline */}
+        {showUnderline && (
           <div
             style={{
-              fontFamily: FONT_FAMILY.KOREAN,
-              fontSize: `${subtitleSize}px`,
-              color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
-              textAlign: alignment,
-              textShadow: getNeonTextShadow(KOREAN_COLORS.TEXT_SECONDARY, "subtle"),
+              width: `${titleSize * 6}px`,
+              height: "30px",
+              position: "relative",
               marginTop: "10px",
             }}
           >
-            {subtitle.korean}
+            {/* Traditional Korean curve (태극 inspired) */}
+            <svg
+              width={titleSize * 6}
+              height={30}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
+            >
+              {/* Main golden curve */}
+              <path
+                d={`M 0 8 Q ${titleSize * 1.5} 2, ${titleSize * 4.5} 14 T ${titleSize * 6} 8`}
+                stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
+                strokeWidth="3"
+                fill="none"
+                opacity="0.8"
+                style={{
+                  animation: animated ? "glow 2s ease-in-out infinite" : "none",
+                }}
+              />
+
+              {/* Secondary cyan accent line */}
+              <path
+                d={`M ${titleSize * 0.6} 11 Q ${titleSize * 1.8} 8, ${titleSize * 4.2} 17 T ${titleSize * 5.4} 11`}
+                stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                strokeWidth="1.5"
+                fill="none"
+                opacity="0.6"
+                style={{
+                  animation: animated
+                    ? "glow-alt 3s ease-in-out infinite"
+                    : "none",
+                }}
+              />
+
+              {/* Left trigram (☰ - Heaven) */}
+              <g opacity="0.4">
+                <line
+                  x1={-8}
+                  y1={20}
+                  x2={-2}
+                  y2={20}
+                  stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+                <line
+                  x1={-8}
+                  y1={23}
+                  x2={-2}
+                  y2={23}
+                  stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+                <line
+                  x1={-8}
+                  y1={26}
+                  x2={-2}
+                  y2={26}
+                  stroke={`#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+              </g>
+
+              {/* Right trigram (☷ - Earth) - broken lines */}
+              <g opacity="0.4">
+                <line
+                  x1={titleSize * 6 + 2}
+                  y1={20}
+                  x2={titleSize * 6 + 4}
+                  y2={20}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+                <line
+                  x1={titleSize * 6 + 5}
+                  y1={20}
+                  x2={titleSize * 6 + 8}
+                  y2={20}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+
+                <line
+                  x1={titleSize * 6 + 2}
+                  y1={23}
+                  x2={titleSize * 6 + 4}
+                  y2={23}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+                <line
+                  x1={titleSize * 6 + 5}
+                  y1={23}
+                  x2={titleSize * 6 + 8}
+                  y2={23}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+
+                <line
+                  x1={titleSize * 6 + 2}
+                  y1={26}
+                  x2={titleSize * 6 + 4}
+                  y2={26}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+                <line
+                  x1={titleSize * 6 + 5}
+                  y1={26}
+                  x2={titleSize * 6 + 8}
+                  y2={26}
+                  stroke={`#${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`}
+                  strokeWidth="2"
+                />
+              </g>
+
+              {/* Central energy orb */}
+              <circle
+                cx={titleSize * 3}
+                cy={14}
+                r="6"
+                fill={SVG_CIRCLE_FILL}
+                style={{
+                  animation: animated
+                    ? "pulse 2.5s ease-in-out infinite"
+                    : "none",
+                }}
+              />
+              <circle
+                cx={titleSize * 3}
+                cy={14}
+                r="3"
+                fill={SVG_CIRCLE_CENTER_FILL}
+                style={{
+                  animation: animated
+                    ? "pulse 2.5s ease-in-out infinite"
+                    : "none",
+                }}
+              />
+            </svg>
           </div>
-          <div
-            style={{
-              fontFamily: FONT_FAMILY.KOREAN,
-              fontSize: `${subtitleSize * 0.8}px`,
-              color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
-              fontStyle: "italic",
-              textAlign: alignment,
-            }}
-          >
-            {subtitle.english}
-          </div>
-        </>
-      )}
-    </div>
-  );
+        )}
+
+        {/* Subtitle section with traditional spacing */}
+        {subtitle && (
+          <>
+            <div
+              style={{
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: `${subtitleSize}px`,
+                color: `#${KOREAN_COLORS.TEXT_SECONDARY.toString(16).padStart(6, "0")}`,
+                textAlign: alignment,
+                textShadow: getNeonTextShadow(
+                  KOREAN_COLORS.TEXT_SECONDARY,
+                  "subtle",
+                ),
+                marginTop: "10px",
+              }}
+            >
+              {subtitle.korean}
+            </div>
+            <div
+              style={{
+                fontFamily: FONT_FAMILY.KOREAN,
+                fontSize: `${subtitleSize * 0.8}px`,
+                color: `#${KOREAN_COLORS.TEXT_TERTIARY.toString(16).padStart(6, "0")}`,
+                fontStyle: "italic",
+                textAlign: alignment,
+              }}
+            >
+              {subtitle.english}
+            </div>
+          </>
+        )}
+      </div>
+    );
   },
   (prevProps, nextProps) => {
     // Custom comparison for optimal re-render prevention

@@ -1,20 +1,20 @@
 /**
  * CombatTimer Component - Displays combat round timer
- * 
+ *
  * Korean: 전투 타이머 (Combat Timer)
- * 
+ *
  * Shows remaining time in MM:SS format with:
  * - Color changes based on time remaining
  * - Pulsing animation when time is critical
  * - Korean cyberpunk aesthetic
  * - Responsive sizing
- * 
+ *
  * @module components/shared/ui/CombatTimer
  * @category Shared UI
  */
 
 import React, { useMemo, useEffect } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
 import { hexColorToCSS } from "../../../utils/colorUtils";
 import { TimerWarningLevel } from "../../../hooks/useCombatTimer";
 import "../three/ui/HUDAnimations.css";
@@ -25,7 +25,7 @@ const PULSE_ANIMATION_ID = "combat-timer-pulse-animation";
 const injectPulseAnimation = () => {
   // Check if style already exists in DOM instead of using module-level flag
   if (document.getElementById(PULSE_ANIMATION_ID)) return;
-  
+
   const style = document.createElement("style");
   style.id = PULSE_ANIMATION_ID;
   style.textContent = `
@@ -68,7 +68,7 @@ export interface CombatTimerProps {
  */
 function getTimerColor(
   warningLevel: TimerWarningLevel,
-  isTimeUp: boolean
+  isTimeUp: boolean,
 ): number {
   if (isTimeUp) {
     return KOREAN_COLORS.NEGATIVE_RED; // Red for time up
@@ -86,9 +86,9 @@ function getTimerColor(
 
 /**
  * CombatTimer Component
- * 
+ *
  * Displays round timer with Korean cyberpunk aesthetic and responsive design.
- * 
+ *
  * Features:
  * - MM:SS format display
  * - Color changes: cyan (>10s), yellow (≤10s), red (≤5s)
@@ -96,9 +96,9 @@ function getTimerColor(
  * - "Time's Up!" message when timer reaches 0
  * - Responsive sizing for mobile/tablet/desktop
  * - Korean-English bilingual support
- * 
+ *
  * Korean: 전투 타이머 컴포넌트
- * 
+ *
  * @example
  * ```tsx
  * <CombatTimer
@@ -128,7 +128,7 @@ export const CombatTimer: React.FC<CombatTimerProps> = ({
   // Background color with opacity
   const bgColor = useMemo(
     () => hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_DARK),
-    []
+    [],
   );
 
   // Border color based on warning level

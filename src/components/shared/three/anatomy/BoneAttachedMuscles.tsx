@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Bone-attached muscle system for realistic muscle movement with skeleton
  *

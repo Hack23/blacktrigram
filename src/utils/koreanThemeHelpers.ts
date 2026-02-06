@@ -1,22 +1,16 @@
 /**
  * Korean Theme Helper Utilities for HTML Overlays
- * 
+ *
  * Provides consistent Korean martial arts cyberpunk theming across all HTML overlay components.
  * These utilities ensure color consistency, bilingual text formatting, and responsive spacing.
- * 
+ *
  * @module utils/koreanThemeHelpers
  * @category UI Utilities
  * @korean 한국테마도우미
  */
 
-import {
-  KOREAN_COLORS,
-  FONT_FAMILY,
-} from "../types/constants";
-import {
-  SPACING,
-  BORDER_RADIUS,
-} from "../types/constants/ui";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
+import { SPACING, BORDER_RADIUS } from "../types/constants/ui";
 import { hexToRgbaString } from "./colorUtils";
 import {
   getNeonGlowEffect,
@@ -71,23 +65,23 @@ export interface EnhancedOverlayConfig {
 
 /**
  * Base styles for all Korean-themed overlays
- * 
+ *
  * Provides consistent dark background with cyan/gold accents
- * 
+ *
  * @param opacity - Background opacity (0-1), default 0.9
  * @returns React.CSSProperties object with Korean theme
- * 
+ *
  * @example
  * ```tsx
  * <div style={getKoreanOverlayBaseStyles(0.95)}>
  *   Content
  * </div>
  * ```
- * 
+ *
  * @korean 한국오버레이기본스타일얻기
  */
 export function getKoreanOverlayBaseStyles(
-  opacity: number = 0.9
+  opacity: number = 0.9,
 ): React.CSSProperties {
   return {
     backgroundColor: hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, opacity),
@@ -101,13 +95,13 @@ export function getKoreanOverlayBaseStyles(
 
 /**
  * Enhanced Korean overlay styles with visual effects
- * 
+ *
  * Provides advanced cyberpunk styling with neon glow, depth effects,
  * gradients, and backdrop blur for Korean-themed overlays.
- * 
+ *
  * @param config - Enhanced overlay configuration
  * @returns React.CSSProperties with advanced visual effects
- * 
+ *
  * @example
  * ```tsx
  * const styles = getEnhancedKoreanOverlayStyles({
@@ -119,11 +113,11 @@ export function getKoreanOverlayBaseStyles(
  * });
  * <div style={styles}>Enhanced Content</div>
  * ```
- * 
+ *
  * @korean 향상된한국오버레이스타일얻기
  */
 export function getEnhancedKoreanOverlayStyles(
-  config: EnhancedOverlayConfig = {}
+  config: EnhancedOverlayConfig = {},
 ): React.CSSProperties {
   const {
     opacity = 0.9,
@@ -140,7 +134,7 @@ export function getEnhancedKoreanOverlayStyles(
   const neonGlow = getNeonGlowEffect(
     KOREAN_COLORS.PRIMARY_CYAN,
     glowIntensity,
-    true
+    true,
   );
 
   // Depth effect
@@ -161,7 +155,7 @@ export function getEnhancedKoreanOverlayStyles(
     const gradient = getCyberpunkGradient(
       KOREAN_COLORS.PRIMARY_CYAN,
       KOREAN_COLORS.UI_BACKGROUND_DARK,
-      135
+      135,
     );
     background = `${gradient}, ${background}`;
   }
@@ -184,30 +178,30 @@ export function getEnhancedKoreanOverlayStyles(
 
 /**
  * Format bilingual text with Korean and English
- * 
+ *
  * Supports multiple formatting styles:
  * - pipe: "한글 | English"
  * - parentheses: "한글 (English)"
  * - bracket: "한글 [English]"
  * - slash: "한글 / English"
- * 
+ *
  * @param korean - Korean text
  * @param english - English text
  * @param format - Format style, default "pipe"
  * @returns Formatted bilingual string
- * 
+ *
  * @example
  * ```tsx
  * formatBilingualText('공격', 'Attack', 'pipe') // "공격 | Attack"
  * formatBilingualText('방어', 'Defense', 'parentheses') // "방어 (Defense)"
  * ```
- * 
+ *
  * @korean 이중언어텍스트형식화
  */
 export function formatBilingualText(
   korean: string,
   english: string,
-  format: BilingualFormat = "pipe"
+  format: BilingualFormat = "pipe",
 ): string {
   switch (format) {
     case "pipe":
@@ -225,32 +219,32 @@ export function formatBilingualText(
 
 /**
  * Get Korean button styles with variant support
- * 
+ *
  * Returns consistent button styling based on variant:
  * - primary: Cyan border, gold text
  * - secondary: Gold border, white text
  * - danger: Red border, red text
  * - success: Green border, green text
  * - warning: Orange border, orange text
- * 
+ *
  * @param variant - Button variant type
  * @param isHovered - Whether button is hovered
  * @param isPressed - Whether button is pressed
  * @returns React.CSSProperties for button
- * 
+ *
  * @example
  * ```tsx
  * <button style={getKoreanButtonStyles('primary', isHovered, isPressed)}>
  *   {formatBilingualText('확인', 'Confirm')}
  * </button>
  * ```
- * 
+ *
  * @korean 한국버튼스타일얻기
  */
 export function getKoreanButtonStyles(
   variant: KoreanButtonVariant = "primary",
   isHovered: boolean = false,
-  isPressed: boolean = false
+  isPressed: boolean = false,
 ): React.CSSProperties {
   // Variant-specific colors
   const variantColors = {
@@ -285,7 +279,7 @@ export function getKoreanButtonStyles(
 
   let backgroundColor = hexToRgbaString(
     KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
-    0.9
+    0.9,
   );
   let borderColor = hexToRgbaString(colors.border, 0.8);
   const textColor = hexToRgbaString(colors.text);
@@ -334,13 +328,13 @@ export interface EnhancedButtonConfig {
 
 /**
  * Get enhanced Korean button styles with neon glow
- * 
+ *
  * Provides advanced button styling with cyberpunk neon effects,
  * smooth transitions, and Korean font optimization.
- * 
+ *
  * @param config - Enhanced button configuration
  * @returns React.CSSProperties with neon glow effects
- * 
+ *
  * @example
  * ```tsx
  * const buttonStyle = getKoreanButtonWithGlow({
@@ -353,11 +347,11 @@ export interface EnhancedButtonConfig {
  *   {formatBilingualText('공격', 'Attack')}
  * </button>
  * ```
- * 
+ *
  * @korean 네온글로우한국버튼스타일얻기
  */
 export function getKoreanButtonWithGlow(
-  config: EnhancedButtonConfig = {}
+  config: EnhancedButtonConfig = {},
 ): React.CSSProperties {
   const {
     variant = "primary",
@@ -395,18 +389,19 @@ export function getKoreanButtonWithGlow(
   }
 
   // Extract font size from base styles (getKoreanButtonStyles always returns number | string)
-  const baseFontSize = typeof baseStyles.fontSize === "number"
-    ? baseStyles.fontSize
-    : parseInt(String(baseStyles.fontSize), 10) || 14;
+  const baseFontSize =
+    typeof baseStyles.fontSize === "number"
+      ? baseStyles.fontSize
+      : parseInt(String(baseStyles.fontSize), 10) || 14;
 
   // Neon text glow for button text
-  const textGlow = getNeonTextShadow(glowColor, isHovered ? "medium" : "subtle");
+  const textGlow = getNeonTextShadow(
+    glowColor,
+    isHovered ? "medium" : "subtle",
+  );
 
   // Korean font optimization
-  const fontOptimization = getKoreanFontOptimization(
-    baseFontSize,
-    "bold"
-  );
+  const fontOptimization = getKoreanFontOptimization(baseFontSize, "bold");
 
   return {
     ...baseStyles,
@@ -420,34 +415,34 @@ export function getKoreanButtonWithGlow(
 
 /**
  * Get button visual effects only (no color/background/border)
- * 
+ *
  * Extracts only visual effects (boxShadow, transition, transform, textShadow) from
  * getKoreanButtonWithGlow without color-related properties. This is useful for cases
  * where buttons need custom colors (e.g., menu selection states) but want to preserve
  * the visual effects system.
- * 
+ *
  * This function provides an explicit contract for visual effects extraction, preventing
  * fragile coupling that could occur with destructuring patterns. If getKoreanButtonWithGlow
  * adds new visual effect properties in the future, they should be explicitly added here.
- * 
+ *
  * **Intentionally Excluded Properties:**
  * - Layout: fontSize, fontFamily, fontWeight, padding, width, height, cursor
  * - Typography: letterSpacing, lineHeight, textRendering, WebkitFontSmoothing, MozOsxFontSmoothing
  * - Colors: color, background, backgroundColor, border, borderColor
- * 
+ *
  * **Included Visual Effects:**
  * - boxShadow: Neon glow effects
  * - transition: Smooth state changes (0.2s ease)
  * - transform: Hover/press animations (scale)
  * - textShadow: Text glow effects
- * 
- * **Note:** If getKoreanButtonWithGlow adds new visual effect properties (e.g., 'filter', 
- * 'opacity', 'willChange', 'backdropFilter'), they must be explicitly added to this function's 
+ *
+ * **Note:** If getKoreanButtonWithGlow adds new visual effect properties (e.g., 'filter',
+ * 'opacity', 'willChange', 'backdropFilter'), they must be explicitly added to this function's
  * return type and extraction logic to maintain the explicit contract.
- * 
+ *
  * @param config - Same configuration as getKoreanButtonWithGlow
  * @returns React.CSSProperties with only visual effects (boxShadow, transition, transform, textShadow)
- * 
+ *
  * @example
  * ```tsx
  * const visualEffects = getButtonVisualEffectsOnly({
@@ -455,7 +450,7 @@ export function getKoreanButtonWithGlow(
  *   glowIntensity: 'strong',
  *   hoverAnimation: 'combined'
  * });
- * 
+ *
  * <button style={{
  *   ...visualEffects,
  *   color: customColor,        // Apply custom colors
@@ -465,17 +460,20 @@ export function getKoreanButtonWithGlow(
  *   Custom Button
  * </button>
  * ```
- * 
+ *
  * @korean 버튼시각효과만얻기
  */
 export function getButtonVisualEffectsOnly(
-  config: Parameters<typeof getKoreanButtonWithGlow>[0]
-): Pick<React.CSSProperties, 'boxShadow' | 'transition' | 'transform' | 'textShadow'> {
+  config: Parameters<typeof getKoreanButtonWithGlow>[0],
+): Pick<
+  React.CSSProperties,
+  "boxShadow" | "transition" | "transform" | "textShadow"
+> {
   const fullStyles = getKoreanButtonWithGlow(config);
-  
+
   // Explicitly extract only visual effect properties
   // Note: This explicitly excludes layout, typography, and color properties.
-  // If new visual effects (filter, opacity, willChange, etc.) are added to 
+  // If new visual effects (filter, opacity, willChange, etc.) are added to
   // getKoreanButtonWithGlow, they must be added here to maintain the contract.
   return {
     boxShadow: fullStyles.boxShadow,
@@ -487,30 +485,30 @@ export function getButtonVisualEffectsOnly(
 
 /**
  * Get responsive spacing value
- * 
+ *
  * Returns SPACING constant value for consistent spacing across components.
  * Optionally scales for mobile devices.
- * 
+ *
  * **IMPORTANT**: This function accepts lowercase size parameters ('xs', 'sm', 'md', etc.)
  * to provide a more intuitive API, then internally converts to uppercase to match
  * SPACING constant keys ('XS', 'SM', 'MD', etc.). This design choice prioritizes
  * developer experience while maintaining compatibility with the SPACING constants.
- * 
+ *
  * @param size - Spacing size constant ('xs', 'sm', 'md', 'lg', 'xl', 'xxl')
  * @param isMobile - Whether to apply mobile scaling (87.5% for mobile devices)
  * @returns Spacing value in pixels
- * 
+ *
  * @example
  * ```tsx
  * const padding = getResponsiveSpacing('md', isMobile); // 16px desktop, 14px mobile
  * <div style={{ padding: `${padding}px` }}>Content</div>
  * ```
- * 
+ *
  * @korean 반응형간격얻기
  */
 export function getResponsiveSpacing(
   size: SpacingSize,
-  isMobile: boolean = false
+  isMobile: boolean = false,
 ): number {
   // Convert lowercase API parameter to uppercase SPACING constant key
   // This provides a more ergonomic API while maintaining internal consistency
@@ -525,8 +523,8 @@ export function getResponsiveSpacing(
     const fallback = SPACING.MD;
     console.warn(
       `[koreanThemeHelpers:getResponsiveSpacing] Invalid spacing size "${String(
-        size
-      )}" provided. Falling back to "MD".`
+        size,
+      )}" provided. Falling back to "MD".`,
     );
     return isMobile ? Math.round(fallback * mobileScale) : fallback;
   }
@@ -536,21 +534,21 @@ export function getResponsiveSpacing(
 
 /**
  * Get trigram symbol by name
- * 
+ *
  * Returns Unicode trigram symbol for visual embellishment
- * 
+ *
  * @param name - Trigram name in Korean
  * @returns Unicode trigram symbol
- * 
+ *
  * @example
  * ```tsx
  * <div>{getTrigramSymbol('건')} 건 (Heaven)</div>
  * ```
- * 
+ *
  * @korean 팔괘기호얻기
  */
 export function getTrigramSymbol(
-  name: "건" | "태" | "리" | "진" | "손" | "감" | "간" | "곤"
+  name: "건" | "태" | "리" | "진" | "손" | "감" | "간" | "곤",
 ): string {
   const symbols = {
     건: "☰", // Heaven - 乾
@@ -567,16 +565,16 @@ export function getTrigramSymbol(
 
 /**
  * Get trigram symbol styles with glow effect
- * 
+ *
  * Enhances trigram symbols (☰☱☲☳☴☵☶☷) with cyberpunk neon glow
  * based on stance-specific colors and active state.
- * 
+ *
  * @param config - Configuration object
  * @param config.stance - Trigram stance identifier ("geon", "tae", etc.)
  * @param config.isActive - Whether the trigram stance is currently active
  * @param config.size - Font size in pixels (optional, defaults based on active state)
  * @returns React.CSSProperties with trigram-specific glow
- * 
+ *
  * @example
  * ```tsx
  * const trigramStyle = getTrigramSymbolWithGlow({ stance: 'geon', isActive: true });
@@ -584,18 +582,26 @@ export function getTrigramSymbol(
  *   ☰ 건 | Geon
  * </div>
  * ```
- * 
+ *
  * @korean 팔괘기호네온글로우스타일얻기
  */
 export function getTrigramSymbolWithGlow(config: {
-  readonly stance: "geon" | "tae" | "li" | "jin" | "son" | "gam" | "gan" | "gon";
+  readonly stance:
+    | "geon"
+    | "tae"
+    | "li"
+    | "jin"
+    | "son"
+    | "gam"
+    | "gan"
+    | "gon";
   readonly isActive?: boolean;
   readonly size?: number;
 }): React.CSSProperties & {
   WebkitUserSelect?: string;
 } {
   const { stance, isActive = false, size } = config;
-  
+
   // Map English stance names to Korean
   const stanceToKorean = {
     geon: "건",
@@ -607,12 +613,12 @@ export function getTrigramSymbolWithGlow(config: {
     gan: "간",
     gon: "곤",
   };
-  
+
   const koreanName = stanceToKorean[stance];
-  
+
   // Trigram-specific colors matching KOREAN_COLORS
   // Note: Comments reflect actual hex color values
-  // TODO: Fix source constants (colors.ts lines 84, 87) - TRIGRAM_GEON_PRIMARY should say "Gold" not "White", 
+  // TODO: Fix source constants (colors.ts lines 84, 87) - TRIGRAM_GEON_PRIMARY should say "Gold" not "White",
   //       TRIGRAM_JIN_PRIMARY should say "Medium Purple" not "Yellow"
   const trigramColors: Record<string, number> = {
     건: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold (0xffd700)
@@ -646,12 +652,12 @@ export function getTrigramSymbolWithGlow(config: {
 
 /**
  * Get Korean color name for documentation
- * 
+ *
  * Maps hex color to Korean color name for better documentation
- * 
+ *
  * @param hexColor - Hex color value from KOREAN_COLORS
  * @returns Korean name and English translation
- * 
+ *
  * @internal Used primarily for JSDoc documentation
  * @korean 한국색상이름얻기
  */
@@ -659,10 +665,7 @@ export function getKoreanColorName(hexColor: number): {
   korean: string;
   english: string;
 } {
-  const colorNames: Record<
-    number,
-    { korean: string; english: string }
-  > = {
+  const colorNames: Record<number, { korean: string; english: string }> = {
     [KOREAN_COLORS.PRIMARY_CYAN]: { korean: "청록", english: "Cyan" },
     [KOREAN_COLORS.ACCENT_GOLD]: { korean: "금색", english: "Gold" },
     [KOREAN_COLORS.ACCENT_RED]: { korean: "빨강", english: "Red" },
@@ -675,28 +678,26 @@ export function getKoreanColorName(hexColor: number): {
     },
   };
 
-  return (
-    colorNames[hexColor] ?? { korean: "알수없음", english: "Unknown" }
-  );
+  return colorNames[hexColor] ?? { korean: "알수없음", english: "Unknown" };
 }
 
 /**
  * Format stat row with bilingual labels
- * 
+ *
  * Creates consistent stat row styling for training/combat statistics
- * 
+ *
  * @param korean - Korean label
  * @param english - English label
  * @param value - Stat value
  * @param valueColor - Hex color for value text
  * @param isMobile - Mobile responsive mode
  * @returns Stat row configuration object for React rendering
- * 
+ *
  * @example
  * ```tsx
  * const statConfig = formatStatRow('점수', 'Score', 1500, KOREAN_COLORS.ACCENT_GOLD, false);
  * ```
- * 
+ *
  * @korean 통계행형식화
  */
 export function formatStatRow(
@@ -704,7 +705,7 @@ export function formatStatRow(
   english: string,
   value: string | number,
   valueColor: number,
-  isMobile: boolean
+  isMobile: boolean,
 ): {
   korean: string;
   english: string;

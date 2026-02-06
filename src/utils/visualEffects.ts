@@ -1,21 +1,21 @@
 /**
  * Visual Effects Utilities for Korean Cyberpunk Aesthetic
- * 
+ *
  * Provides advanced visual effects for HTML overlay components including:
  * - Neon glow effects (box-shadow, text-shadow)
  * - Depth effects (layered shadows, gradients, backdrop-blur)
  * - Smooth transitions and animations
  * - Korean font rendering optimization
  * - Hover and focus state generators
- * 
+ *
  * All effects follow Korean martial arts cyberpunk theme with 60fps performance target.
- * 
+ *
  * @module utils/visualEffects
  * @category UI Utilities
  * @korean 시각효과유틸리티
  */
 
-import { KOREAN_COLORS } from "../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 import { hexToRgbaString } from "./colorUtils";
 
 /**
@@ -28,7 +28,12 @@ export type GlowIntensity = "subtle" | "medium" | "strong" | "intense";
  * Hover state animation types
  * @korean 호버상태애니메이션
  */
-export type HoverAnimationType = "glow" | "scale" | "lift" | "pulse" | "combined";
+export type HoverAnimationType =
+  | "glow"
+  | "scale"
+  | "lift"
+  | "pulse"
+  | "combined";
 
 /**
  * Transition timing presets
@@ -50,28 +55,28 @@ export interface DepthEffectConfig {
 
 /**
  * Get neon glow effect CSS string
- * 
+ *
  * Creates cyberpunk-style neon glow using box-shadow with Korean colors.
  * Supports multiple intensity levels for different UI elements.
- * 
+ *
  * @param color - Hex color value from KOREAN_COLORS
  * @param intensity - Glow intensity level
  * @param includeInset - Whether to include inset glow (default: true)
  * @returns CSS box-shadow string with neon glow effect
- * 
+ *
  * @example
  * ```typescript
  * const glow = getNeonGlowEffect(KOREAN_COLORS.PRIMARY_CYAN, 'medium', true);
  * // Returns: "0 0 20px rgba(0,230,230,0.6), inset 0 0 10px rgba(0,230,230,0.3)"
  * // Note: Color conversion is handled by hexToRgbaString utility
  * ```
- * 
+ *
  * @korean 네온글로우효과얻기
  */
 export function getNeonGlowEffect(
   color: number,
   intensity: GlowIntensity = "medium",
-  includeInset: boolean = true
+  includeInset: boolean = true,
 ): string {
   const glowConfig = {
     subtle: { outer: 10, outerOpacity: 0.4, inner: 5, innerOpacity: 0.2 },
@@ -91,25 +96,25 @@ export function getNeonGlowEffect(
 
 /**
  * Get neon text shadow effect
- * 
+ *
  * Creates glowing text effect for Korean and English text using text-shadow.
  * Multiple shadow layers create authentic neon glow appearance.
- * 
+ *
  * @param color - Hex color value from KOREAN_COLORS
  * @param intensity - Glow intensity level
  * @returns CSS text-shadow string with neon glow
- * 
+ *
  * @example
  * ```typescript
  * const textGlow = getNeonTextShadow(KOREAN_COLORS.ACCENT_GOLD, 'strong');
  * // Returns: "0 0 10px rgba(255,196,0,0.8), 0 0 20px rgba(255,196,0,0.6), 0 0 30px rgba(255,196,0,0.4)"
  * ```
- * 
+ *
  * @korean 네온텍스트그림자얻기
  */
 export function getNeonTextShadow(
   color: number,
-  intensity: GlowIntensity = "medium"
+  intensity: GlowIntensity = "medium",
 ): string {
   const shadowConfig = {
     subtle: [
@@ -136,19 +141,21 @@ export function getNeonTextShadow(
 
   const shadows = shadowConfig[intensity];
   return shadows
-    .map(({ blur, opacity }) => `0 0 ${blur}px ${hexToRgbaString(color, opacity)}`)
+    .map(
+      ({ blur, opacity }) => `0 0 ${blur}px ${hexToRgbaString(color, opacity)}`,
+    )
     .join(", ");
 }
 
 /**
  * Get layered depth effect
- * 
+ *
  * Creates depth using multiple shadow layers with increasing offset and blur.
  * Provides 3D-like appearance for Korean-themed UI panels.
- * 
+ *
  * @param config - Depth effect configuration
  * @returns CSS box-shadow string with layered depth
- * 
+ *
  * @example
  * ```typescript
  * const depth = getLayeredDepthEffect({
@@ -159,7 +166,7 @@ export function getNeonTextShadow(
  *   opacity: 0.5,
  * });
  * ```
- * 
+ *
  * @korean 레이어깊이효과얻기
  */
 export function getLayeredDepthEffect(config: DepthEffectConfig): string {
@@ -171,7 +178,7 @@ export function getLayeredDepthEffect(config: DepthEffectConfig): string {
     const blur = baseBlur * i;
     const layerOpacity = opacity * (1 - ((i - 1) / layers) * 0.3); // Fade each layer
     shadows.push(
-      `0 ${offset}px ${blur}px ${hexToRgbaString(color, layerOpacity)}`
+      `0 ${offset}px ${blur}px ${hexToRgbaString(color, layerOpacity)}`,
     );
   }
 
@@ -180,16 +187,16 @@ export function getLayeredDepthEffect(config: DepthEffectConfig): string {
 
 /**
  * Get cyberpunk gradient background
- * 
+ *
  * Creates Korean-themed gradient with cyberpunk colors.
  * Supports both linear and radial gradients.
- * 
+ *
  * @param primaryColor - Primary hex color
  * @param secondaryColor - Secondary hex color
  * @param angle - Gradient angle in degrees (default: 135)
  * @param type - Gradient type ('linear' | 'radial')
  * @returns CSS gradient string
- * 
+ *
  * @example
  * ```typescript
  * const gradient = getCyberpunkGradient(
@@ -199,14 +206,14 @@ export function getLayeredDepthEffect(config: DepthEffectConfig): string {
  *   'linear'
  * );
  * ```
- * 
+ *
  * @korean 사이버펑크그라디언트얻기
  */
 export function getCyberpunkGradient(
   primaryColor: number,
   secondaryColor: number,
   angle: number = 135,
-  type: "linear" | "radial" = "linear"
+  type: "linear" | "radial" = "linear",
 ): string {
   const color1 = hexToRgbaString(primaryColor, 0.2);
   const color2 = hexToRgbaString(secondaryColor, 0.9);
@@ -220,25 +227,25 @@ export function getCyberpunkGradient(
 
 /**
  * Get smooth transition CSS
- * 
+ *
  * Returns standardized transition string for consistent animations.
  * All transitions target 60fps performance.
- * 
+ *
  * @param properties - CSS properties to transition (default: 'all')
  * @param timing - Timing preset
  * @returns CSS transition string
- * 
+ *
  * @example
  * ```typescript
  * const transition = getSmoothTransition('all', 'normal');
  * // Returns: "all 0.2s ease-in-out"
  * ```
- * 
+ *
  * @korean 부드러운전환얻기
  */
 export function getSmoothTransition(
   properties: string = "all",
-  timing: TransitionTiming = "normal"
+  timing: TransitionTiming = "normal",
 ): string {
   const timingConfig = {
     fast: { duration: "0.15s", easing: "ease-out" },
@@ -253,25 +260,25 @@ export function getSmoothTransition(
 
 /**
  * Get Korean font optimization styles
- * 
+ *
  * Applies optimal font rendering for Korean characters (Hangul).
  * Includes anti-aliasing, subpixel rendering, and letter spacing.
- * 
+ *
  * @param fontSize - Font size in pixels
  * @param fontWeight - Font weight (default: 'normal')
  * @returns React.CSSProperties with Korean font optimization
- * 
+ *
  * @example
  * ```typescript
  * const fontStyle = getKoreanFontOptimization(16, 'bold');
  * // Returns: { fontSize: '16px', WebkitFontSmoothing: 'antialiased', ... }
  * ```
- * 
+ *
  * @korean 한글폰트최적화얻기
  */
 export function getKoreanFontOptimization(
   fontSize: number,
-  fontWeight: "normal" | "bold" = "normal"
+  fontWeight: "normal" | "bold" = "normal",
 ): React.CSSProperties & {
   WebkitFontSmoothing?: string;
   MozOsxFontSmoothing?: string;
@@ -288,22 +295,21 @@ export function getKoreanFontOptimization(
   };
 }
 
-
 /**
  * Map numeric glow intensity to GlowIntensity type
- * 
+ *
  * Helper to standardize glow intensity mapping across components.
  * Converts numeric intensity values to discrete levels.
- * 
+ *
  * @param glowIntensity - Numeric glow intensity (0-2+ scale)
  * @returns GlowIntensity level ("subtle", "medium", "strong", "intense")
- * 
+ *
  * Mapping thresholds:
  * - intense: >= 1.5
  * - strong: >= 1.0
  * - medium: >= 0.6
  * - subtle: < 0.6
- * 
+ *
  * @example
  * ```typescript
  * const level = mapGlowIntensityLevel(0.8);
@@ -311,7 +317,7 @@ export function getKoreanFontOptimization(
  * mapGlowIntensityLevel(2.0);
  * // Returns: "intense"
  * ```
- * 
+ *
  * @korean 광도레벨매핑
  */
 export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
@@ -323,15 +329,15 @@ export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
 
 /**
  * Get hover state styles with glow effect
- * 
+ *
  * Generates hover state styles with Korean cyberpunk animations.
  * Includes glow intensification, scale, and lift effects.
- * 
+ *
  * @param baseColor - Base hex color
  * @param animation - Animation type
  * @param intensity - Glow intensity for hover state
  * @returns React.CSSProperties for hover state
- * 
+ *
  * @example
  * ```typescript
  * const hoverStyle = getHoverStateStyles(
@@ -340,13 +346,13 @@ export function mapGlowIntensityLevel(glowIntensity: number): GlowIntensity {
  *   'strong'
  * );
  * ```
- * 
+ *
  * @korean 호버상태스타일얻기
  */
 export function getHoverStateStyles(
   baseColor: number,
   animation: HoverAnimationType = "combined",
-  intensity: GlowIntensity = "strong"
+  intensity: GlowIntensity = "strong",
 ): React.CSSProperties {
   const baseStyles: React.CSSProperties = {
     transition: getSmoothTransition("all", "normal"),
@@ -398,29 +404,29 @@ export function getHoverStateStyles(
 
 /**
  * Get focus state styles with accessibility
- * 
+ *
  * Creates WCAG-compliant focus indicators with Korean cyberpunk styling.
  * Ensures 2px border with high contrast (4.5:1 minimum).
- * 
+ *
  * Note: While outline is set to "none", the custom 2px border provides
  * equivalent accessibility. For users relying on high-contrast mode or
  * custom browser settings, consider using outline-offset as an additional
  * fallback or ensure the custom border has sufficient contrast (4.5:1+).
- * 
+ *
  * @param color - Hex color for focus indicator
  * @param includeGlow - Whether to include glow effect (default: true)
  * @returns React.CSSProperties for focus state
- * 
+ *
  * @example
  * ```typescript
  * const focusStyle = getFocusStateStyles(KOREAN_COLORS.ACCENT_GOLD, true);
  * ```
- * 
+ *
  * @korean 포커스상태스타일얻기
  */
 export function getFocusStateStyles(
   color: number,
-  includeGlow: boolean = true
+  includeGlow: boolean = true,
 ): React.CSSProperties {
   const baseStyles: React.CSSProperties = {
     outline: "none",
@@ -439,24 +445,24 @@ export function getFocusStateStyles(
 
 /**
  * Get backdrop blur effect
- * 
+ *
  * Creates frosted glass effect for Korean-themed overlays.
  * GPU-accelerated for 60fps performance.
- * 
+ *
  * @param blurAmount - Blur amount in pixels (default: 10)
  * @param saturation - Color saturation multiplier (default: 1.5)
  * @returns React.CSSProperties with backdrop blur
- * 
+ *
  * @example
  * ```typescript
  * const backdropStyle = getBackdropBlurEffect(12, 1.8);
  * ```
- * 
+ *
  * @korean 배경블러효과얻기
  */
 export function getBackdropBlurEffect(
   blurAmount: number = 10,
-  saturation: number = 1.5
+  saturation: number = 1.5,
 ): React.CSSProperties & {
   WebkitBackdropFilter?: string;
 } {
@@ -470,14 +476,14 @@ export function getBackdropBlurEffect(
 
 /**
  * Get trigram symbol glow effect
- * 
+ *
  * Creates glowing effect for Eight Trigram symbols (☰☱☲☳☴☵☶☷).
  * Uses stance-specific colors from KOREAN_COLORS.
- * 
+ *
  * @param trigramColor - Trigram-specific hex color
  * @param isActive - Whether trigram is currently active
  * @returns React.CSSProperties with trigram glow
- * 
+ *
  * @example
  * ```typescript
  * const trigramGlow = getTrigramSymbolGlow(
@@ -485,12 +491,12 @@ export function getBackdropBlurEffect(
  *   true
  * );
  * ```
- * 
+ *
  * @korean 팔괘상징글로우얻기
  */
 export function getTrigramSymbolGlow(
   trigramColor: number,
-  isActive: boolean
+  isActive: boolean,
 ): React.CSSProperties {
   const intensity = isActive ? "intense" : "subtle";
   const scale = isActive ? 1.1 : 1.0;
@@ -506,22 +512,22 @@ export function getTrigramSymbolGlow(
 
 /**
  * Get GPU-accelerated animation hint
- * 
+ *
  * Applies will-change CSS property to hint GPU acceleration.
  * Use sparingly - only for actively animating elements.
- * 
+ *
  * @param properties - Properties that will animate
  * @returns React.CSSProperties with GPU hints
- * 
+ *
  * @example
  * ```typescript
  * const gpuHint = getGPUAccelerationHint('transform, opacity');
  * ```
- * 
+ *
  * @korean GPU가속힌트얻기
  */
 export function getGPUAccelerationHint(
-  properties: string = "transform"
+  properties: string = "transform",
 ): React.CSSProperties {
   return {
     willChange: properties,
@@ -531,13 +537,13 @@ export function getGPUAccelerationHint(
 
 /**
  * Combine multiple shadow effects
- * 
+ *
  * Merges multiple box-shadow strings into a single CSS value.
  * Useful for combining glow, depth, and custom shadows.
- * 
+ *
  * @param shadows - Array of box-shadow strings
  * @returns Combined box-shadow CSS string
- * 
+ *
  * @example
  * ```typescript
  * const combined = combineShadowEffects([
@@ -545,7 +551,7 @@ export function getGPUAccelerationHint(
  *   getLayeredDepthEffect({ layers: 2, baseOffset: 2, baseBlur: 4, color: 0x000000, opacity: 0.5 })
  * ]);
  * ```
- * 
+ *
  * @korean 그림자효과결합
  */
 export function combineShadowEffects(shadows: string[]): string {
@@ -554,14 +560,14 @@ export function combineShadowEffects(shadows: string[]): string {
 
 /**
  * Get pulsing animation keyframes
- * 
+ *
  * Returns CSS keyframe animation for pulsing glow effect.
  * Should be injected into global styles or style tag once.
  * Use unique animation names to avoid conflicts.
- * 
+ *
  * @param animationName - Unique name for the animation (default: 'pulse')
  * @returns CSS keyframes string
- * 
+ *
  * @example
  * ```typescript
  * const keyframes = getPulsingKeyframes('pulse-glow');
@@ -570,7 +576,7 @@ export function combineShadowEffects(shadows: string[]): string {
  * style.innerHTML = keyframes;
  * document.head.appendChild(style);
  * ```
- * 
+ *
  * @warning SSR and Duplicate Keyframes
  * When using this in Server-Side Rendering (SSR) environments or with multiple
  * component instances, ensure keyframe definitions are registered globally only once.
@@ -584,7 +590,7 @@ export function combineShadowEffects(shadows: string[]): string {
  *   document.head.appendChild(style);
  * }
  * ```
- * 
+ *
  * @korean 펄스애니메이션키프레임얻기
  */
 export function getPulsingKeyframes(animationName: string = "pulse"): string {

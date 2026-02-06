@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Screen flash effect for explosive impacts
  *
@@ -15,7 +16,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useKoreanTheme } from "../../shared/base/useKoreanTheme";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 
 /**
  * Screen flash configuration
@@ -176,7 +177,7 @@ export const JIN_FLASH_PROFILES = {
  */
 export const useScreenFlash = () => {
   const [flashConfig, setFlashConfig] = useState<ScreenFlashConfig | null>(
-    null
+    null,
   );
   const [isActive, setIsActive] = useState(false);
 
@@ -185,9 +186,7 @@ export const useScreenFlash = () => {
     setIsActive(true);
   };
 
-  const triggerProfile = (
-    profile: keyof typeof JIN_FLASH_PROFILES
-  ) => {
+  const triggerProfile = (profile: keyof typeof JIN_FLASH_PROFILES) => {
     trigger(JIN_FLASH_PROFILES[profile]);
   };
 
@@ -218,7 +217,7 @@ export const useScreenFlash = () => {
  */
 export const calculateJinFlashIntensity = (
   techniqueIntensity: number,
-  explosivePower: number
+  explosivePower: number,
 ): number => {
   return Math.min(1.0, techniqueIntensity * explosivePower * 0.6);
 };

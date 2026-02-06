@@ -19,7 +19,7 @@ import {
   WCAGComplianceResult,
   WCAGLevel,
 } from "../types/AccessibilityTypes";
-import { KOREAN_COLORS } from "../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 import { EventManager } from "./EventManager";
 
 /**

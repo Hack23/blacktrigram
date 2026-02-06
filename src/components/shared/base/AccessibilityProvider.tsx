@@ -1,13 +1,21 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * AccessibilityProvider - Context provider for accessibility settings
- * 
+ *
  * Provides high contrast mode, reduced motion support, and other accessibility features
  * Respects user preferences from prefers-reduced-motion and prefers-contrast media queries
- * 
+ *
  * @module components/base
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 
 /**
  * Accessibility context value interface
@@ -22,7 +30,9 @@ export interface AccessibilityContextValue {
 /**
  * Accessibility context
  */
-const AccessibilityContext = createContext<AccessibilityContextValue | null>(null);
+const AccessibilityContext = createContext<AccessibilityContextValue | null>(
+  null,
+);
 
 /**
  * Props for AccessibilityProvider
@@ -33,10 +43,10 @@ export interface AccessibilityProviderProps {
 
 /**
  * AccessibilityProvider Component
- * 
+ *
  * Provides accessibility settings throughout the component tree
  * Automatically detects user preferences for reduced motion
- * 
+ *
  * @example
  * ```tsx
  * <AccessibilityProvider>
@@ -44,7 +54,9 @@ export interface AccessibilityProviderProps {
  * </AccessibilityProvider>
  * ```
  */
-export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ children }) => {
+export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
+  children,
+}) => {
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -91,7 +103,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
       setHighContrast,
       toggleHighContrast,
     }),
-    [highContrast, reducedMotion, toggleHighContrast]
+    [highContrast, reducedMotion, toggleHighContrast],
   );
 
   return (
@@ -105,10 +117,10 @@ AccessibilityProvider.displayName = "AccessibilityProvider";
 
 /**
  * Custom hook to access accessibility context
- * 
+ *
  * @throws Error if used outside of AccessibilityProvider
  * @returns Accessibility context value
- * 
+ *
  * @example
  * ```tsx
  * const { highContrast, reducedMotion, toggleHighContrast } = useAccessibility();
@@ -116,10 +128,12 @@ AccessibilityProvider.displayName = "AccessibilityProvider";
  */
 export function useAccessibility(): AccessibilityContextValue {
   const context = useContext(AccessibilityContext);
-  
+
   if (!context) {
-    throw new Error("useAccessibility must be used within AccessibilityProvider");
+    throw new Error(
+      "useAccessibility must be used within AccessibilityProvider",
+    );
   }
-  
+
   return context;
 }

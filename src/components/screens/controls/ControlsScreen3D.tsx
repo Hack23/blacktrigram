@@ -5,7 +5,7 @@ import { useAudio } from "../../../audio/AudioProvider";
 import { useWebGLContextLossHandler } from "../../../hooks/useWebGLContextLossHandler";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { COMBAT_CONTROLS } from "../../../systems";
-import { FONT_FAMILY } from "../../../types/constants";
+import { FONT_FAMILY } from "@/types/constants";
 import { Z_INDEX } from "../../../types/LayoutTypes";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
@@ -241,7 +241,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
 
         {/* Conditional 3D Visualization based on category */}
         {category === "keyboard" ? (
-          <VisualKeyboard3D pressedKeys={pressedKeys} selectedTab={selectedTab} />
+          <VisualKeyboard3D
+            pressedKeys={pressedKeys}
+            selectedTab={selectedTab}
+          />
         ) : (
           <GamepadVisualization3D isMobile={isMobile} />
         )}
@@ -352,8 +355,12 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 transition: "all 0.2s ease",
               }}
               data-testid="keyboard-mode-button"
-              onMouseEnter={(e) => handleModeButtonEnter(e, category === "keyboard")}
-              onMouseLeave={(e) => handleModeButtonLeave(e, category === "keyboard")}
+              onMouseEnter={(e) =>
+                handleModeButtonEnter(e, category === "keyboard")
+              }
+              onMouseLeave={(e) =>
+                handleModeButtonLeave(e, category === "keyboard")
+              }
             >
               ⌨️ 키보드 | Keyboard
             </button>
@@ -381,8 +388,12 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 transition: "all 0.2s ease",
               }}
               data-testid="gamepad-mode-button"
-              onMouseEnter={(e) => handleModeButtonEnter(e, category === "gamepad")}
-              onMouseLeave={(e) => handleModeButtonLeave(e, category === "gamepad")}
+              onMouseEnter={(e) =>
+                handleModeButtonEnter(e, category === "gamepad")
+              }
+              onMouseLeave={(e) =>
+                handleModeButtonLeave(e, category === "gamepad")
+              }
             >
               🎮 게임패드 | Gamepad
             </button>
@@ -1539,9 +1550,10 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
                 padding: "8px 12px",
                 fontSize: isMobile ? "11px" : "12px",
                 fontWeight: "bold",
-                color: `#${theme.colors.SECONDARY_MAGENTA.toString(
-                  16,
-                ).padStart(6, "0")}`,
+                color: `#${theme.colors.SECONDARY_MAGENTA.toString(16).padStart(
+                  6,
+                  "0",
+                )}`,
                 border: `1px solid ${colors.borderGold}`,
               }}
               data-testid="keyboard-shortcuts"
@@ -1558,10 +1570,7 @@ export const ControlsScreen3D: React.FC<ControlsScreen3DProps> = ({
               fontSize: isMobile ? "10px" : "12px",
               color: colors.textSecondary,
               fontStyle: "italic",
-              background: hexToRgbaString(
-                theme.colors.UI_BACKGROUND_DARK,
-                0.7,
-              ),
+              background: hexToRgbaString(theme.colors.UI_BACKGROUND_DARK, 0.7),
             }}
           >
             ESC 또는 M 키로 메뉴로 돌아가기 - Press ESC or M to return to menu

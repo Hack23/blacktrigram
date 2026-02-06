@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * InstancedGeometry - Reusable instancing utilities for optimized rendering
  *
@@ -56,7 +57,7 @@ export interface InstancableSpheresProps {
  *
  * Renders multiple spheres with a single draw call.
  * Ideal for particles, projectiles, effects.
- * 
+ *
  * **Important**: The instances array should be stable (use useMemo).
  * Array indices are used as React keys, so adding/removing/reordering
  * instances during component lifecycle may cause incorrect rendering.
@@ -122,7 +123,7 @@ export interface InstancableBoxesProps {
  *
  * Renders multiple boxes with a single draw call.
  * Useful for environment objects, obstacles, UI elements.
- * 
+ *
  * **Important**: The instances array should be stable (use useMemo).
  * Array indices are used as React keys, so adding/removing/reordering
  * instances during component lifecycle may cause incorrect rendering.
@@ -184,7 +185,7 @@ export interface InstancableParticlesProps {
  *
  * High-performance particle system using instancing.
  * Quality parameter adjusts geometry complexity.
- * 
+ *
  * **Important**: The positions array should be stable (use useMemo).
  * Array indices are used as React keys, so adding/removing/reordering
  * particles during component lifecycle may cause incorrect rendering.
@@ -237,7 +238,7 @@ export const InstancableParticles: React.FC<InstancableParticlesProps> = ({
         color: colors?.[index] ?? baseColor,
         scale: size,
       })),
-    [positions, colors, baseColor, size]
+    [positions, colors, baseColor, size],
   );
 
   return (
@@ -265,7 +266,7 @@ export const InstancableParticles: React.FC<InstancableParticlesProps> = ({
  */
 export function getOptimalInstanceLimit(
   baseLimit: number,
-  isMobile: boolean
+  isMobile: boolean,
 ): number {
   if (isMobile) {
     // 50% reduction on mobile
@@ -283,7 +284,7 @@ export function getOptimalInstanceLimit(
  */
 export function batchInstances<T>(
   instances: readonly T[],
-  batchSize: number
+  batchSize: number,
 ): T[][] {
   const batches: T[][] = [];
   for (let i = 0; i < instances.length; i += batchSize) {
@@ -305,7 +306,7 @@ export function createInstancesFromPositions(
     color?: THREE.ColorRepresentation;
     scale?: number | [number, number, number];
     rotation?: THREE.Euler | [number, number, number];
-  } = {}
+  } = {},
 ): InstanceData[] {
   return positions.map((position) => ({
     position,

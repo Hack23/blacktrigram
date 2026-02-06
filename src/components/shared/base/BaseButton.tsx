@@ -1,22 +1,31 @@
 /**
  * BaseButton - Enhanced button component with Korean theming
- * 
+ *
  * Builds on existing KoreanButton with extracted common logic
  * Provides consistent button styling across the application
- * 
+ *
  * Now with Html overlay positioning helpers for:
  * - Consistent z-index management
  * - Performance optimization with distanceFactor
  * - GPU acceleration
- * 
+ *
  * @module components/base
  */
 
 import { Html } from "@react-three/drei";
-import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
-import { KOREAN_COLORS, UI_DIMENSIONS } from "../../../types/constants";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+import { KOREAN_COLORS, UI_DIMENSIONS } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../utils/htmlOverlayHelpers";
+import {
+  applyHtmlOverlayStyles,
+  calculateDistanceFactor,
+} from "../../../utils/htmlOverlayHelpers";
 import type { HtmlOverlayLayer } from "../../../types/HtmlOverlayTypes";
 import { useKoreanTheme } from "./useKoreanTheme";
 
@@ -48,20 +57,20 @@ export interface BaseButtonProps {
 
 /**
  * BaseButton Component
- * 
+ *
  * Enhanced Korean-themed button with common functionality extracted.
  * Uses useKoreanTheme hook for consistent styling.
  * Now includes Html overlay positioning helpers for proper z-index and performance.
- * 
+ *
  * WCAG 2.1 AA Accessibility Features:
  * - Proper ARIA labels and semantic HTML
  * - Keyboard navigation support (Enter and Space keys)
  * - Visible focus indicators with high contrast
  * - Disabled state properly communicated
  * - Minimum 44x44px touch targets on mobile
- * 
+ *
  * Optimized with React.memo for performance
- * 
+ *
  * @example
  * ```tsx
  * <BaseButton
@@ -98,12 +107,13 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Use Korean theme hook for consistent styling
-  const { buttonVariant, buttonSize, fontFamily, accessibility } = useKoreanTheme({
-    variant,
-    size,
-    disabled,
-    isMobile,
-  });
+  const { buttonVariant, buttonSize, fontFamily, accessibility } =
+    useKoreanTheme({
+      variant,
+      size,
+      disabled,
+      isMobile,
+    });
 
   // Auto-focus on mount if requested
   useEffect(() => {
@@ -113,8 +123,10 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   }, [autoFocus]);
 
   // Track screen width for responsive distance factor updates on resize
-  const [screenWidth, setScreenWidth] = useState(() => 
-    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  const [screenWidth, setScreenWidth] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth
+      : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH,
   );
 
   useEffect(() => {
@@ -180,7 +192,7 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
         setIsPressed(true);
       }
     },
-    [disabled]
+    [disabled],
   );
 
   const handleKeyUp = useCallback(
@@ -190,13 +202,13 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
         setIsPressed(false);
       }
     },
-    [disabled]
+    [disabled],
   );
 
   // Memoize button styles for performance
   const buttonStyle = useMemo<React.CSSProperties>(() => {
     let background = hexToRgbaString(buttonVariant.background, 0.9);
-    
+
     if (isPressed) {
       background = buttonVariant.activeBg;
     } else if (isHovered) {
@@ -222,9 +234,10 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
       // Ensure minimum touch target size on mobile (WCAG 2.1 AA)
       minWidth: isMobile ? accessibility.minTouchTarget : "auto",
       minHeight: isMobile ? accessibility.minTouchTarget : "auto",
-      boxShadow: isHovered && !disabled
-        ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
-        : "none",
+      boxShadow:
+        isHovered && !disabled
+          ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
+          : "none",
       transform: isPressed && !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       // Apply GPU acceleration from overlay style
@@ -232,7 +245,8 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
       zIndex: overlayStyle.zIndex,
       // WCAG 2.1 AA compliant focus indicator
       outline: isFocused && !disabled ? accessibility.focusOutline : "none",
-      outlineOffset: isFocused && !disabled ? accessibility.focusOutlineOffset : "0",
+      outlineOffset:
+        isFocused && !disabled ? accessibility.focusOutlineOffset : "0",
     };
   }, [
     buttonVariant,
@@ -249,8 +263,8 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
   ]);
 
   return (
-    <Html 
-      position={position} 
+    <Html
+      position={position}
       center={overlayStyle.center}
       distanceFactor={overlayStyle.distanceFactor}
       occlude={overlayStyle.occlude}
@@ -275,18 +289,25 @@ const BaseButtonComponent: React.FC<BaseButtonProps> = ({
         style={buttonStyle}
         data-testid={testId ?? "base-button"}
       >
-        <div style={{ 
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center",
-          gap: "2px"
-        }}>
-          <span lang="ko" style={{ fontSize: "1em" }}>{korean}</span>
-          <span lang="en" style={{ 
-            fontSize: "0.75em", 
-            opacity: 0.8,
-            fontStyle: "italic"
-          }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "2px",
+          }}
+        >
+          <span lang="ko" style={{ fontSize: "1em" }}>
+            {korean}
+          </span>
+          <span
+            lang="en"
+            style={{
+              fontSize: "0.75em",
+              opacity: 0.8,
+              fontStyle: "italic",
+            }}
+          >
             {english}
           </span>
         </div>

@@ -64,7 +64,7 @@ import {
   getPerformanceSettings,
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
-} from "../../../types/constants";
+} from "@/types/constants";
 import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";

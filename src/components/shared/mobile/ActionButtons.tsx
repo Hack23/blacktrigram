@@ -1,34 +1,44 @@
 /**
  * ActionButtons Component
- * 
+ *
  * Touch-optimized action buttons for combat (Attack and Block)
  * Provides tactile combat controls with visual feedback and haptic response
- * 
+ *
  * WCAG 2.1 Level AA Compliance:
  * - ARIA labels for screen readers
  * - Keyboard navigation (Enter, Space)
  * - Visible focus indicators (2px cyan border)
  * - 80x80px and 70x70px touch targets (exceeds 44x44px minimum)
- * 
+ *
  * @module components/mobile/ActionButtons
  * @category Mobile Controls
  * @korean 액션 버튼
  */
 
-import { Html } from '@react-three/drei';
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { triggerOptimizedHaptic } from './HapticController';
-import { applyOptimizedUpdate, createTransformStyle, createFilterStyle } from './TouchOptimizer';
-import { getColorRGB } from '../../../utils/colorHelpers';
-import { handleKeyboardNav, getFocusStyle } from '../../../utils/accessibility';
-import { createBilingualLabel } from '../../../types/AccessibilityTypes';
-import { useThrottle } from '../../../hooks/useThrottle';
+import { Html } from "@react-three/drei";
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
+import { KOREAN_COLORS } from "@/types/constants";
+import { triggerOptimizedHaptic } from "./HapticController";
+import {
+  applyOptimizedUpdate,
+  createTransformStyle,
+  createFilterStyle,
+} from "./TouchOptimizer";
+import { getColorRGB } from "../../../utils/colorHelpers";
+import { handleKeyboardNav, getFocusStyle } from "../../../utils/accessibility";
+import { createBilingualLabel } from "../../../types/AccessibilityTypes";
+import { useThrottle } from "../../../hooks/useThrottle";
 
 /**
  * Event type for button interactions
  */
-export type ButtonEventType = 'start' | 'end';
+export type ButtonEventType = "start" | "end";
 
 /**
  * Props for ActionButtons component
@@ -50,11 +60,11 @@ export interface ActionButtonsProps {
 
 /**
  * ActionButtons Component
- * 
+ *
  * Provides two primary combat action buttons:
  * - Attack Button (⚡): Primary combat action, 80x80px
  * - Block Button (🛡️): Defensive action, 70x70px
- * 
+ *
  * Features:
  * - Touch-optimized with minimum 44x44px targets
  * - Attack button: 80x80px for primary action
@@ -63,11 +73,11 @@ export interface ActionButtonsProps {
  * - Haptic feedback for tactile response
  * - Korean cyberpunk theming
  * - Hold-to-block support
- * 
+ *
  * Usage in Combat:
  * - Attack: Executes current stance technique
  * - Block: Activates defensive guard (hold for sustained block)
- * 
+ *
  * @example
  * ```tsx
  * <ActionButtons
@@ -82,7 +92,7 @@ export interface ActionButtonsProps {
  *   disabled={isPaused}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 액션버튼
  */
@@ -129,11 +139,11 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
           // Deferred state update
           setAttackPressed(true);
           throttledOnAttack();
-          triggerOptimizedHaptic('medium');
-        }
+          triggerOptimizedHaptic("medium");
+        },
       );
     },
-    [disabled, throttledOnAttack]
+    [disabled, throttledOnAttack],
   );
 
   /**
@@ -154,10 +164,10 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         },
         () => {
           setAttackPressed(false);
-        }
+        },
       );
     },
-    [disabled]
+    [disabled],
   );
 
   /**
@@ -178,12 +188,12 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         },
         () => {
           setBlockPressed(true);
-          throttledOnBlock('start');
-          triggerOptimizedHaptic('light');
-        }
+          throttledOnBlock("start");
+          triggerOptimizedHaptic("light");
+        },
       );
     },
-    [disabled, throttledOnBlock]
+    [disabled, throttledOnBlock],
   );
 
   /**
@@ -204,11 +214,11 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         },
         () => {
           setBlockPressed(false);
-          throttledOnBlock('end');
-        }
+          throttledOnBlock("end");
+        },
       );
     },
-    [disabled, throttledOnBlock]
+    [disabled, throttledOnBlock],
   );
 
   /**
@@ -223,7 +233,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
     // Store refs in variables at effect creation time
     const attackButton = attackButtonRef.current;
     const blockButton = blockButtonRef.current;
-    
+
     return () => {
       if (attackButton) {
         attackButton.style.transform = createTransformStyle(false);
@@ -246,13 +256,13 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         onActivate: () => {
           setAttackPressed(true);
           onAttack();
-          triggerOptimizedHaptic('medium');
+          triggerOptimizedHaptic("medium");
           // Release after brief delay
           setTimeout(() => setAttackPressed(false), 150);
         },
       });
     },
-    [disabled, onAttack]
+    [disabled, onAttack],
   );
 
   /**
@@ -264,38 +274,41 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
       handleKeyboardNav(e.nativeEvent, {
         onActivate: () => {
           setBlockPressed(true);
-          onBlock('start');
-          triggerOptimizedHaptic('light');
+          onBlock("start");
+          triggerOptimizedHaptic("light");
           // Release after brief delay
           setTimeout(() => {
             setBlockPressed(false);
-            onBlock('end');
+            onBlock("end");
           }, 150);
         },
       });
     },
-    [disabled, onBlock]
+    [disabled, onBlock],
   );
 
   // Extract RGB colors using shared utility
-  const colors = useMemo(() => ({
-    gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
-    blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
-    primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
-  }), []);
+  const colors = useMemo(
+    () => ({
+      gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
+      blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
+      primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
+    }),
+    [],
+  );
 
   return (
     <Html fullscreen>
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           bottom: `${bottom}px`,
           right: `${right}px`,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
           opacity: disabled ? 0.3 : opacity,
-          pointerEvents: disabled ? 'none' : 'auto',
+          pointerEvents: disabled ? "none" : "auto",
         }}
         data-testid="action-buttons"
       >
@@ -311,29 +324,29 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
           onFocus={() => setAttackFocused(true)}
           onBlur={() => setAttackFocused(false)}
           style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
             background: attackPressed
               ? `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1)`
               : `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.9)`,
-            border: '3px solid #fff',
-            fontSize: '28px',
-            color: '#000',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            userSelect: 'none',
-            touchAction: 'none',
-            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            border: "3px solid #fff",
+            fontSize: "28px",
+            color: "#000",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            touchAction: "none",
+            transition: "transform 0.1s ease-out, filter 0.1s ease-out",
             // Note: transform and filter are managed via TouchOptimizer/applyOptimizedUpdate
             // for immediate visual feedback. React state-driven inline styles serve as baseline
             // values that are overridden during active touch interactions via direct DOM manipulation.
             transform: createTransformStyle(attackPressed, 0.95),
             filter: createFilterStyle(attackPressed, 1.2),
-            willChange: 'transform, filter', // GPU hint
+            willChange: "transform, filter", // GPU hint
             boxShadow: attackPressed
               ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.6)`,
@@ -343,7 +356,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             }),
           }}
           disabled={disabled}
-          aria-label={createBilingualLabel('공격', 'Attack').label}
+          aria-label={createBilingualLabel("공격", "Attack").label}
           aria-pressed={attackPressed}
           role="button"
           tabIndex={disabled ? -1 : 0}
@@ -364,25 +377,25 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
           onFocus={() => setBlockFocused(true)}
           onBlur={() => setBlockFocused(false)}
           style={{
-            width: '70px',
-            height: '70px',
-            borderRadius: '50%',
+            width: "70px",
+            height: "70px",
+            borderRadius: "50%",
             background: blockPressed
               ? `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1)`
               : `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.9)`,
-            border: '2px solid #fff',
-            fontSize: '24px',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            userSelect: 'none',
-            touchAction: 'none',
-            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            border: "2px solid #fff",
+            fontSize: "24px",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            touchAction: "none",
+            transition: "transform 0.1s ease-out, filter 0.1s ease-out",
             transform: createTransformStyle(blockPressed, 0.95),
             filter: createFilterStyle(blockPressed, 1.2),
-            willChange: 'transform, filter', // GPU hint
+            willChange: "transform, filter", // GPU hint
             boxShadow: blockPressed
               ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.6)`,
@@ -392,7 +405,7 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
             }),
           }}
           disabled={disabled}
-          aria-label={createBilingualLabel('방어', 'Block').label}
+          aria-label={createBilingualLabel("방어", "Block").label}
           aria-pressed={blockPressed}
           role="button"
           tabIndex={disabled ? -1 : 0}
@@ -404,19 +417,19 @@ const ActionButtonsComponent: React.FC<ActionButtonsProps> = ({
         {/* Button Labels (Korean + English) */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2px',
-            alignItems: 'center',
-            fontSize: '10px',
+            display: "flex",
+            flexDirection: "column",
+            gap: "2px",
+            alignItems: "center",
+            fontSize: "10px",
             color: `rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.9)`,
-            textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
-            fontWeight: 'bold',
-            marginTop: '4px',
+            textShadow: "0 1px 3px rgba(0, 0, 0, 0.8)",
+            fontWeight: "bold",
+            marginTop: "4px",
           }}
         >
           <span>공격 | Attack</span>
-          <span style={{ fontSize: '9px' }}>방어 | Block</span>
+          <span style={{ fontSize: "9px" }}>방어 | Block</span>
         </div>
       </div>
     </Html>
@@ -438,7 +451,7 @@ export const ActionButtons = React.memo(
       prevProps.onAttack === nextProps.onAttack &&
       prevProps.onBlock === nextProps.onBlock
     );
-  }
+  },
 );
 
 ActionButtons.displayName = "ActionButtons";

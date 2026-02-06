@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import { toHex } from "../../../utils/colorUtils";
 import { shouldUseMobileControls } from "../../../utils/deviceDetection";
 
