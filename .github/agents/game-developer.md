@@ -848,6 +848,9 @@ This agent leverages the following GitHub Copilot Agent Skills for automatic enf
 | [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
 | [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
 | [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+| [game-development-patterns](../skills/game-development-patterns/SKILL.md) | Game loops, state machines | Delta clamping, fixed timestep, deterministic |
+| [3d-combat-systems](../skills/3d-combat-systems/SKILL.md) | Combat physics | Rapier integration, hitboxes, damage calc |
+| [audio-game-integration](../skills/audio-game-integration/SKILL.md) | Audio implementation | Howler.js, spatial audio, combat feedback |
 
 **Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
 
