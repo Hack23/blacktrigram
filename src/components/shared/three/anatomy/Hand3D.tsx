@@ -365,6 +365,30 @@ export const Hand3D: React.FC<Hand3DProps> = ({
       rotation={[wristRotation.x, wristRotation.y, wristRotation.z]}
       name={`hand-3d-${side}`}
     >
+      {/* Wrist connector - smooth sphere bridging forearm to palm */}
+      <mesh
+        position={[0, -palmLength * 0.45, 0]}
+        castShadow
+        receiveShadow
+        name={`hand-wrist-bridge-${side}`}
+      >
+        <sphereGeometry args={[palmWidth * 0.35, 8, 8]} />
+        <meshPhysicalMaterial
+          color={skinColor}
+          metalness={0}
+          roughness={0.6}
+          clearcoat={0.3}
+          clearcoatRoughness={0.5}
+          transmission={0}
+          thickness={0.1}
+          ior={1.4}
+          sheen={0.1}
+          sheenRoughness={0.8}
+          emissive={new THREE.Color(0xff6040)}
+          emissiveIntensity={0.02}
+        />
+      </mesh>
+
       {/* Palm */}
       <mesh castShadow receiveShadow name={`hand-palm-${side}`}>
         <boxGeometry args={[palmWidth, palmLength, palmThickness]} />

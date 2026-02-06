@@ -111,14 +111,10 @@ export const GEON_HEAVEN_STRIKE_ANIMATION: SkeletalAnimation =
 export const GEON_HEAVENLY_FIST_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_heavenly_fist", "건천권")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .withHighGuard()
     .punchWindup(TECHNIQUE_TIMING.FAST.chamber)
-    .punchExtend(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .punchExtend(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 /**
@@ -186,6 +182,7 @@ export const GEON_AXE_KICK_ANIMATION: SkeletalAnimation =
 export const GEON_PALM_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_palm_strike", "건장권")
     .asAttack(0.4)
+    .withHighGuard()
     .punchWindup(0.1)
     .palmStrike(0.12)
     .recover(0.18)
@@ -202,14 +199,10 @@ export const GEON_PALM_STRIKE_ANIMATION: SkeletalAnimation =
 export const GEON_ELBOW_SMASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_elbow_smash", "건팔꿈치")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .withHighGuard()
     .elbowChamber(TECHNIQUE_TIMING.FAST.chamber)
-    .elbowStrike(
-      TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak,
-    )
-    .recover(
-      TECHNIQUE_TIMING.FAST.retract +
-        TECHNIQUE_TIMING.FAST.recover,
-    )
+    .elbowStrike(TECHNIQUE_TIMING.FAST.extend + TECHNIQUE_TIMING.FAST.peak)
+    .recover(TECHNIQUE_TIMING.FAST.retract + TECHNIQUE_TIMING.FAST.recover)
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -227,9 +220,10 @@ export const GEON_ELBOW_SMASH_ANIMATION: SkeletalAnimation =
 export const TAE_FLOWING_STRIKES_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tae_flowing_strikes", "태유권")
     .asAttack(0.5)
+    .stance()
     .punchWindup(0.08)
     .crossPunch(0.1)
-    .hookPunch(0.12)
+    .hookPunch(0.12, "left")
     .recover(0.2)
     .build();
 
@@ -348,6 +342,7 @@ export const TAE_ARM_BAR_ANIMATION: SkeletalAnimation =
 export const LI_FLAME_SPEAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_flame_spear", "리화창")
     .asAttack(0.46)
+    .stance()
     .elbowChamber(0.07) // Compact spear setup
     .throatStrike(0.13) // Spear-hand to throat
     .punchPeak(0.05)
@@ -366,6 +361,7 @@ export const LI_FLAME_SPEAR_ANIMATION: SkeletalAnimation =
 export const LI_TEMPLE_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_temple_strike", "리관자놀이")
     .asAttack(0.4)
+    .stance()
     .elbowChamber(0.08)
     .hookPunch(0.12) // Curved to temple
     .recover(0.2)
@@ -421,6 +417,7 @@ export const LI_SIDEKICK_ANIMATION: SkeletalAnimation =
 export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_pressure_point", "리급소")
     .asAttack(0.47)
+    .stance()
     .punchWindup(0.08) // Setup
     .punchExtend(0.13) // Finger strike
     .punchPeak(0.05) // Hold on pressure point
@@ -460,6 +457,7 @@ export const LI_PRESSURE_POINT_ANIMATION: SkeletalAnimation =
 export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("li_solar_plexus", "리명치")
     .asAttack(0.38) // Faster, more direct than Son
+    .stance()
     .punchWindup(0.05) // Quick chamber (faster, precise)
     .solarPlexusStrike(0.13) // Precise solar plexus strike
     .recover(0.2)
@@ -482,6 +480,7 @@ export const LI_SOLAR_PLEXUS_ANIMATION: SkeletalAnimation =
 export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_lightning_flash", "진전광")
     .asAttack(0.52)
+    .stance()
     .punchWindup(0.1) // Lightning prep
     .punchExtend(0.14) // Explosive speed
     .punchPeak(0.05) // Thunder impact
@@ -499,7 +498,9 @@ export const JIN_LIGHTNING_FLASH_ANIMATION: SkeletalAnimation =
 export const JIN_JUMPING_FRONT_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("jin_jumping_front_kick", "진뛰어앞차기")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
-    .chamber(0.08) // Jump prep
+    .stance()
+    .jump(0.05) // 도약 - leap
+    .chamber(0.08) // Kick chamber in air
     .extend(0.15) // Kick in air
     .retract(0.12)
     .recover(0.2)
@@ -625,6 +626,7 @@ export const SON_SWEEPING_LOW_KICK_ANIMATION: SkeletalAnimation =
 export const SON_RHYTHMIC_STRIKES_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("son_rhythmic_strikes", "손리듬격")
     .asAttack(0.48)
+    .withGuard()
     .punchWindup(0.06)
     .punchExtend(0.1)
     .crossPunch(0.12)
@@ -708,6 +710,7 @@ export const SON_RAPID_FOOTWORK_ANIMATION: SkeletalAnimation =
 export const GAM_WATER_COUNTER_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_water_counter", "감수반격")
     .asAttack(0.48)
+    .stance()
     .counterParry(0.1)
     .counterStrike(0.15)
     .recover(0.23)
@@ -741,10 +744,7 @@ export const GAM_REDIRECT_THROW_ANIMATION: SkeletalAnimation =
 export const GAM_FLOWING_BLOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gam_flowing_block", "감유막기")
     .asDefense(TECHNIQUE_TIMING.FAST.total)
-    .parry(
-      TECHNIQUE_TIMING.FAST.chamber +
-        TECHNIQUE_TIMING.FAST.extend,
-    )
+    .parry(TECHNIQUE_TIMING.FAST.chamber + TECHNIQUE_TIMING.FAST.extend)
     .recover(
       TECHNIQUE_TIMING.FAST.peak +
         TECHNIQUE_TIMING.FAST.retract +
@@ -922,6 +922,7 @@ export const GAN_IRON_BLOCK_ANIMATION: SkeletalAnimation =
 export const GAN_COUNTER_STRIKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gan_counter_strike", "간반격")
     .asAttack(0.5)
+    .withHighGuard()
     .counterParry(0.12)
     .counterStrike(0.15)
     .recover(0.23)
@@ -994,6 +995,7 @@ export const GON_EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
 export const GON_LEG_SWEEP_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("gon_leg_sweep", "곤걸기")
     .asAttack(TECHNIQUE_TIMING.FAST.total)
+    .stance()
     .sweep(0.2)
     .recover(0.35)
     .build();

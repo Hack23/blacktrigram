@@ -1,13 +1,13 @@
 /**
  * StanceWheelPure Component - Pure DOM version (no Three.js/drei dependency)
- * 
+ *
  * Circular 8-segment stance selector for mobile touch controls
  * Provides visual and tactile stance switching interface
- * 
+ *
  * This is a pure DOM version that renders OUTSIDE the Three.js Canvas.
  * It does NOT use Html from @react-three/drei, making it compatible with
  * rendering outside Canvas contexts.
- * 
+ *
  * WCAG 2.1 Level AA Compliance:
  * - ARIA labels for all 8 stance buttons
  * - Keyboard navigation (Tab, Enter, Arrow keys)
@@ -15,20 +15,24 @@
  * - aria-expanded state for wheel toggle
  * - role="radiogroup" for stance selection
  * - 50x50px touch targets (exceeds 44x44px minimum)
- * 
+ *
  * @module components/mobile/StanceWheelPure
  * @category Mobile Controls
  * @korean 자세 휠 (순수 DOM)
  */
 
-import React, { useCallback, useState } from 'react';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { TRIGRAM_STANCES_ORDER } from '../../../systems/trigram/types';
-import { TrigramStance } from '../../../types/common';
-import { triggerHaptic } from '../../../utils/haptics';
-import { getColorRGB } from '../../../utils/colorHelpers';
-import { handleKeyboardNav, getFocusStyle, announceToScreenReader } from '../../../utils/accessibility';
-import { createBilingualLabel } from '../../../types/AccessibilityTypes';
+import React, { useCallback, useState } from "react";
+import { KOREAN_COLORS } from "@/types/constants";
+import { TRIGRAM_STANCES_ORDER } from "../../../systems/trigram/types";
+import { TrigramStance } from "../../../types/common";
+import { triggerHaptic } from "../../../utils/haptics";
+import { getColorRGB } from "../../../utils/colorHelpers";
+import {
+  handleKeyboardNav,
+  getFocusStyle,
+  announceToScreenReader,
+} from "../../../utils/accessibility";
+import { createBilingualLabel } from "../../../types/AccessibilityTypes";
 
 /**
  * Props for StanceWheelPure component
@@ -53,20 +57,29 @@ export interface StanceWheelPureProps {
 /**
  * Trigram symbols for each stance
  */
-const TRIGRAM_SYMBOLS = ['☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷'] as const;
+const TRIGRAM_SYMBOLS = [
+  "☰",
+  "☱",
+  "☲",
+  "☳",
+  "☴",
+  "☵",
+  "☶",
+  "☷",
+] as const;
 
 /**
  * Korean names for each stance
  */
 const STANCE_KOREAN_NAMES = [
-  '건', // Geon - Heaven
-  '태', // Tae - Lake
-  '리', // Li - Fire
-  '진', // Jin - Thunder
-  '손', // Son - Wind
-  '감', // Gam - Water
-  '간', // Gan - Mountain
-  '곤', // Gon - Earth
+  "건", // Geon - Heaven
+  "태", // Tae - Lake
+  "리", // Li - Fire
+  "진", // Jin - Thunder
+  "손", // Son - Wind
+  "감", // Gam - Water
+  "간", // Gan - Mountain
+  "곤", // Gon - Earth
 ] as const;
 
 /**
@@ -88,7 +101,7 @@ const getStanceColor = (stance: TrigramStance): number => {
 
 /**
  * StanceWheelPure Component
- * 
+ *
  * Pure DOM circular stance selector with 8 segments for trigram stances
  * Features:
  * - Expandable/collapsible interface
@@ -99,13 +112,13 @@ const getStanceColor = (stance: TrigramStance): number => {
  * - Color-coded by stance element
  * - Haptic feedback on selection
  * - 50x50px minimum touch targets
- * 
+ *
  * Usage in Combat:
  * - Tap collapsed indicator to expand wheel
  * - Select from 8 trigram stances
  * - Current stance highlighted with gold accent
  * - Tap current stance to collapse wheel
- * 
+ *
  * @example
  * ```tsx
  * <StanceWheelPure
@@ -116,7 +129,7 @@ const getStanceColor = (stance: TrigramStance): number => {
  *   disabled={isPaused}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 자세휠순수
  */
@@ -145,12 +158,12 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       if (stanceIndex === currentStance) {
         // Collapse wheel if tapping current stance
         onToggle();
-        triggerHaptic('light');
+        triggerHaptic("light");
         return;
       }
 
       onStanceChange(stanceIndex);
-      triggerHaptic('medium');
+      triggerHaptic("medium");
 
       // Announce stance change to screen readers
       const stanceName = STANCE_KOREAN_NAMES[stanceIndex];
@@ -158,15 +171,15 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       announceToScreenReader({
         message: createBilingualLabel(
           `자세 변경: ${stanceName} ${stanceSymbol}`,
-          `Stance changed to ${TRIGRAM_STANCES_ORDER[stanceIndex]}`
+          `Stance changed to ${TRIGRAM_STANCES_ORDER[stanceIndex]}`,
         ).label,
-        politeness: 'polite',
+        politeness: "polite",
       });
 
       // Auto-collapse after selection (optional)
       // onToggle();
     },
-    [disabled, currentStance, onStanceChange, onToggle]
+    [disabled, currentStance, onStanceChange, onToggle],
   );
 
   /**
@@ -179,19 +192,19 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       e.stopPropagation();
 
       onToggle();
-      triggerHaptic('light');
+      triggerHaptic("light");
 
       // Announce state change to screen readers using the toggled value
       const nextExpanded = !expanded;
       announceToScreenReader({
         message: createBilingualLabel(
-          nextExpanded ? '자세 휠 열림' : '자세 휠 닫힘',
-          nextExpanded ? 'Stance wheel opened' : 'Stance wheel closed'
+          nextExpanded ? "자세 휠 열림" : "자세 휠 닫힘",
+          nextExpanded ? "Stance wheel opened" : "Stance wheel closed",
         ).label,
-        politeness: 'polite',
+        politeness: "polite",
       });
     },
-    [disabled, onToggle, expanded]
+    [disabled, onToggle, expanded],
   );
 
   /**
@@ -207,7 +220,7 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
           } else {
             onStanceChange(stanceIndex);
           }
-          triggerHaptic('medium');
+          triggerHaptic("medium");
         },
         onCancel: () => {
           onToggle();
@@ -215,23 +228,23 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
         onNavigate: (direction) => {
           // Navigate between stances with arrow keys
           let newIndex = stanceIndex;
-          if (direction === 'left' || direction === 'up') {
+          if (direction === "left" || direction === "up") {
             newIndex = (stanceIndex - 1 + 8) % 8;
-          } else if (direction === 'right' || direction === 'down') {
+          } else if (direction === "right" || direction === "down") {
             newIndex = (stanceIndex + 1) % 8;
           }
           setFocusedStance(newIndex);
           // Focus the new stance button on the next animation frame
           requestAnimationFrame(() => {
             const button = document.querySelector(
-              `[data-testid="stance-button-pure-${newIndex}"]`
+              `[data-testid="stance-button-pure-${newIndex}"]`,
             ) as HTMLElement | null;
             button?.focus();
           });
         },
       });
     },
-    [disabled, currentStance, onStanceChange, onToggle]
+    [disabled, currentStance, onStanceChange, onToggle],
   );
 
   /**
@@ -243,18 +256,20 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
       handleKeyboardNav(e.nativeEvent, {
         onActivate: () => {
           onToggle();
-          triggerHaptic('light');
+          triggerHaptic("light");
         },
       });
     },
-    [disabled, onToggle]
+    [disabled, onToggle],
   );
 
   // Dynamic bottom position with safe area consideration
   const dynamicBottom = bottom ?? (expanded ? 100 : 34);
 
   // Get RGB values for colors using shared utility
-  const currentStanceColor = getColorRGB(getStanceColor(TRIGRAM_STANCES_ORDER[currentStance]));
+  const currentStanceColor = getColorRGB(
+    getStanceColor(TRIGRAM_STANCES_ORDER[currentStance]),
+  );
   const goldColor = getColorRGB(KOREAN_COLORS.ACCENT_GOLD);
   const primaryColor = getColorRGB(KOREAN_COLORS.PRIMARY_CYAN);
 
@@ -266,25 +281,30 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
     return (
       <div
         style={{
-          position: 'absolute', // Changed from fixed to position relative to container
+          position: "absolute", // Changed from fixed to position relative to container
           bottom: `${dynamicBottom}px`,
-          left: '50%',
-          transform: 'translateX(-50%)',
+          left: "50%",
+          transform: "translateX(-50%)",
           opacity: disabled ? 0.3 : opacity,
-          pointerEvents: disabled ? 'none' : 'auto',
-          transition: 'all 0.3s ease',
+          pointerEvents: disabled ? "none" : "auto",
+          transition: "all 0.3s ease",
           zIndex: 1000,
         }}
         data-testid="stance-wheel-pure-expanded"
         role="radiogroup"
-        aria-label={createBilingualLabel('팔괘 자세 선택', 'Eight Trigram Stance Selection').label}
+        aria-label={
+          createBilingualLabel(
+            "팔괘 자세 선택",
+            "Eight Trigram Stance Selection",
+          ).label
+        }
         aria-activedescendant={`stance-button-pure-${currentStance}`}
       >
         <div
           style={{
             width: `${wheelSize}px`,
             height: `${wheelSize}px`,
-            position: 'relative',
+            position: "relative",
           }}
         >
           {/* Stance buttons arranged in circle */}
@@ -313,43 +333,45 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
                 onFocus={() => setFocusedStance(index)}
                 onBlur={() => setFocusedStance(null)}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   left: `${x - 25}px`,
                   top: `${y - 25}px`,
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "50%",
                   background: isActive
                     ? `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.95)`
                     : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`,
-                  border: `3px solid ${isActive ? '#fff' : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 1)`}`,
-                  fontSize: '24px',
-                  color: isActive ? '#000' : '#fff',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  touchAction: 'none',
-                  transition: 'all 0.2s ease',
-                  transform: isActive || isHovered ? 'scale(1.15)' : 'scale(1)',
+                  border: `3px solid ${isActive ? "#fff" : `rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 1)`}`,
+                  fontSize: "24px",
+                  color: isActive ? "#000" : "#fff",
+                  fontWeight: "bold",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  touchAction: "none",
+                  transition: "all 0.2s ease",
+                  transform: isActive || isHovered ? "scale(1.15)" : "scale(1)",
                   boxShadow: isActive
                     ? `0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`
                     : isHovered
-                    ? `0 0 15px rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`
-                    : `0 4px 10px rgba(0, 0, 0, 0.5)`,
+                      ? `0 0 15px rgba(${stanceColor.r}, ${stanceColor.g}, ${stanceColor.b}, 0.8)`
+                      : `0 4px 10px rgba(0, 0, 0, 0.5)`,
                   ...getFocusStyle(focusedStance === index, {
                     boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 0 25px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
                     outlineColor: KOREAN_COLORS.PRIMARY_CYAN,
                     outlineWidth: 3,
                   }),
                 }}
-                aria-label={createBilingualLabel(
-                  `${STANCE_KOREAN_NAMES[index]} ${TRIGRAM_SYMBOLS[index]}`,
-                  `${stance} stance`
-                ).label}
+                aria-label={
+                  createBilingualLabel(
+                    `${STANCE_KOREAN_NAMES[index]} ${TRIGRAM_SYMBOLS[index]}`,
+                    `${stance} stance`,
+                  ).label
+                }
                 aria-checked={isActive}
                 role="radio"
                 tabIndex={0}
@@ -357,8 +379,12 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
                 id={`stance-button-pure-${index}`}
                 data-testid={`stance-button-pure-${index}`}
               >
-                <div style={{ fontSize: '20px', lineHeight: 1 }}>{TRIGRAM_SYMBOLS[index]}</div>
-                <div style={{ fontSize: '8px', marginTop: '2px' }}>{STANCE_KOREAN_NAMES[index]}</div>
+                <div style={{ fontSize: "20px", lineHeight: 1 }}>
+                  {TRIGRAM_SYMBOLS[index]}
+                </div>
+                <div style={{ fontSize: "8px", marginTop: "2px" }}>
+                  {STANCE_KOREAN_NAMES[index]}
+                </div>
               </button>
             );
           })}
@@ -366,21 +392,21 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
           {/* Center label */}
           <div
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '12px',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "12px",
               color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
-              textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
-              fontWeight: 'bold',
-              textAlign: 'center',
-              pointerEvents: 'none',
+              textShadow: "0 1px 3px rgba(0, 0, 0, 0.8)",
+              fontWeight: "bold",
+              textAlign: "center",
+              pointerEvents: "none",
             }}
           >
             자세 선택
             <br />
-            <span style={{ fontSize: '10px' }}>Stance</span>
+            <span style={{ fontSize: "10px" }}>Stance</span>
           </div>
         </div>
       </div>
@@ -391,13 +417,13 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
   return (
     <div
       style={{
-        position: 'absolute', // Changed from fixed to position relative to container
+        position: "absolute", // Changed from fixed to position relative to container
         bottom: `${dynamicBottom}px`,
-        left: '50%',
-        transform: 'translateX(-50%)',
+        left: "50%",
+        transform: "translateX(-50%)",
         opacity: disabled ? 0.3 : opacity,
-        pointerEvents: disabled ? 'none' : 'auto',
-        transition: 'all 0.3s ease',
+        pointerEvents: disabled ? "none" : "auto",
+        transition: "all 0.3s ease",
         zIndex: 1000,
       }}
       data-testid="stance-wheel-pure-collapsed"
@@ -409,22 +435,22 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
         onFocus={() => setFocusedStance(currentStance)}
         onBlur={() => setFocusedStance(null)}
         style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
+          width: "60px",
+          height: "60px",
+          borderRadius: "50%",
           background: `rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.9)`,
           border: `3px solid rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, 0.9)`,
-          fontSize: '28px',
-          color: '#fff',
-          fontWeight: 'bold',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          userSelect: 'none',
-          touchAction: 'none',
-          transition: 'all 0.2s ease',
+          fontSize: "28px",
+          color: "#fff",
+          fontWeight: "bold",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          userSelect: "none",
+          touchAction: "none",
+          transition: "all 0.2s ease",
           boxShadow: `0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
           ...getFocusStyle(focusedStance === currentStance, {
             boxShadow: `0 0 0 4px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.5), 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(${currentStanceColor.r}, ${currentStanceColor.g}, ${currentStanceColor.b}, 0.6)`,
@@ -433,18 +459,24 @@ export const StanceWheelPure: React.FC<StanceWheelPureProps> = ({
           }),
         }}
         disabled={disabled}
-        aria-label={createBilingualLabel(
-          `현재 자세: ${STANCE_KOREAN_NAMES[currentStance]} ${TRIGRAM_SYMBOLS[currentStance]}. 자세 휠 열기`,
-          `Current stance: ${TRIGRAM_STANCES_ORDER[currentStance]}. Open stance wheel`
-        ).label}
+        aria-label={
+          createBilingualLabel(
+            `현재 자세: ${STANCE_KOREAN_NAMES[currentStance]} ${TRIGRAM_SYMBOLS[currentStance]}. 자세 휠 열기`,
+            `Current stance: ${TRIGRAM_STANCES_ORDER[currentStance]}. Open stance wheel`,
+          ).label
+        }
         aria-expanded={expanded}
         aria-haspopup="menu"
         role="button"
         tabIndex={disabled ? -1 : 0}
         data-testid="stance-wheel-pure-toggle"
       >
-        <div style={{ fontSize: '24px', lineHeight: 1 }}>{TRIGRAM_SYMBOLS[currentStance]}</div>
-        <div style={{ fontSize: '10px', marginTop: '2px' }}>{STANCE_KOREAN_NAMES[currentStance]}</div>
+        <div style={{ fontSize: "24px", lineHeight: 1 }}>
+          {TRIGRAM_SYMBOLS[currentStance]}
+        </div>
+        <div style={{ fontSize: "10px", marginTop: "2px" }}>
+          {STANCE_KOREAN_NAMES[currentStance]}
+        </div>
       </button>
     </div>
   );

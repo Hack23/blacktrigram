@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useAudio } from "../../../audio/AudioProvider";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 import { hexToRgbaString, toHex } from "../../../utils/colorUtils";
 
 export interface VolumeControlProps {
@@ -85,7 +85,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       pointerEvents: "auto", // Enable interaction even when parent has pointerEvents: none
       ...style,
     }),
-    [getPositionStyle, compact, style]
+    [getPositionStyle, compact, style],
   );
 
   const handleMasterVolumeChange = useCallback(
@@ -96,7 +96,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         audio.setVolume("master", value);
       }
     },
-    [audio]
+    [audio],
   );
 
   const handleMusicVolumeChange = useCallback(
@@ -107,7 +107,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         audio.setVolume("music", value);
       }
     },
-    [audio]
+    [audio],
   );
 
   const handleSfxVolumeChange = useCallback(
@@ -118,7 +118,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
         audio.setVolume("sfx", value);
       }
     },
-    [audio]
+    [audio],
   );
 
   const handleMuteToggle = useCallback(() => {
@@ -141,7 +141,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       cursor: "pointer",
       accentColor: `#${toHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
     }),
-    [compact]
+    [compact],
   );
 
   const labelStyle = useMemo(
@@ -152,7 +152,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       minWidth: compact ? "40px" : "50px",
       textAlign: "left",
     }),
-    [compact]
+    [compact],
   );
 
   const valueStyle = useMemo(
@@ -162,7 +162,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       minWidth: "35px",
       textAlign: "right",
     }),
-    [compact]
+    [compact],
   );
 
   const controlRowStyle = useMemo(
@@ -172,7 +172,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
       gap: "8px",
       width: "100%",
     }),
-    []
+    [],
   );
 
   if (compact) {

@@ -25,6 +25,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 export const GAM_FLOWING_RIVER_STRIKE: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("flowing_river_strike", "유수타격")
     .asAttack(0.7)
+    .stance()
     .parry(0.2) // Initial defensive flow
     .hookPunch(0.3) // Curved strike execution (using hook primitive for curve)
     .recover(0.2) // Flow back
@@ -63,7 +64,8 @@ export const GAM_REDIRECTION_COUNTER: SkeletalAnimation =
 export const GAM_TIDAL_WAVE_PALM: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("tidal_wave_palm", "해일장")
     .asAttack(0.8)
-    .chamber(0.25) // Deep gathering like drawing water
+    .stance()
+    .punchWindup(0.25) // Deep gathering like drawing water
     .palmStrike(0.3) // Heavy crashing extension
     .recover(0.25)
     .build();

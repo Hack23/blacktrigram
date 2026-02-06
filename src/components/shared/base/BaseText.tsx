@@ -1,22 +1,25 @@
 /**
  * BaseText - Enhanced bilingual text component with Korean theming
- * 
+ *
  * Builds on existing KoreanText with extracted common logic
  * Provides consistent text styling across the application
- * 
+ *
  * Now with Html overlay positioning helpers for:
  * - Consistent z-index management
  * - Performance optimization with distanceFactor
  * - GPU acceleration
- * 
+ *
  * @module components/base
  */
 
 import { Html } from "@react-three/drei";
 import React, { useMemo, useState, useEffect } from "react";
-import { KOREAN_COLORS, UI_DIMENSIONS } from "../../../types/constants";
+import { KOREAN_COLORS, UI_DIMENSIONS } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../utils/htmlOverlayHelpers";
+import {
+  applyHtmlOverlayStyles,
+  calculateDistanceFactor,
+} from "../../../utils/htmlOverlayHelpers";
 import type { HtmlOverlayLayer } from "../../../types/HtmlOverlayTypes";
 import { useKoreanTheme } from "./useKoreanTheme";
 
@@ -46,24 +49,24 @@ export interface BaseTextProps {
 
 /**
  * BaseText Component
- * 
+ *
  * Enhanced bilingual text component with Korean cyberpunk styling.
  * Uses useKoreanTheme hook for consistent text sizing and styling.
  * Now includes Html overlay positioning helpers for proper z-index and performance.
- * 
+ *
  * Korean Typography Features:
  * - Optimized line height (1.6) for Korean character readability
  * - Letter spacing (-0.01em) for tighter Korean text
  * - Word break (keep-all) to prevent breaking Korean words mid-syllable
  * - Proper language attributes (lang="ko" / lang="en")
- * 
+ *
  * WCAG 2.1 AA Accessibility Features:
  * - Proper language attributes for screen readers
  * - Optional ARIA labels for additional context
  * - ARIA live regions for dynamic content
- * 
+ *
  * Optimized with React.memo for performance
- * 
+ *
  * @example
  * ```tsx
  * <BaseText
@@ -99,8 +102,10 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
   });
 
   // Track screen width for responsive distance factor updates on resize
-  const [screenWidth, setScreenWidth] = useState(() => 
-    typeof window !== "undefined" ? window.innerWidth : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH
+  const [screenWidth, setScreenWidth] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth
+      : UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH,
   );
 
   useEffect(() => {
@@ -125,61 +130,83 @@ const BaseTextComponent: React.FC<BaseTextProps> = ({
   }, [layer, distanceFactor, occlude]);
 
   // Memoize text styles for performance with Korean typography optimization
-  const textStyle = useMemo<React.CSSProperties>(() => ({
-    color: hexToRgbaString(color),
-    fontFamily: koreanTypography.fontFamily,
-    textAlign: align,
-    fontWeight: weight === "bold" ? "bold" : "normal",
-    textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
-    userSelect: "none",
-    WebkitUserSelect: "none",
-    // Korean typography optimization
-    lineHeight: koreanTypography.lineHeight,
-    letterSpacing: koreanTypography.letterSpacing,
-    wordBreak: koreanTypography.wordBreak,
-    wordWrap: koreanTypography.wordWrap,
-  }), [color, align, weight, koreanTypography]);
+  const textStyle = useMemo<React.CSSProperties>(
+    () => ({
+      color: hexToRgbaString(color),
+      fontFamily: koreanTypography.fontFamily,
+      textAlign: align,
+      fontWeight: weight === "bold" ? "bold" : "normal",
+      textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
+      userSelect: "none",
+      WebkitUserSelect: "none",
+      // Korean typography optimization
+      lineHeight: koreanTypography.lineHeight,
+      letterSpacing: koreanTypography.letterSpacing,
+      wordBreak: koreanTypography.wordBreak,
+      wordWrap: koreanTypography.wordWrap,
+    }),
+    [color, align, weight, koreanTypography],
+  );
 
-  const containerStyle = useMemo<React.CSSProperties>(() => ({
-    display: "flex",
-    flexDirection: layout === "vertical" ? "column" : "row",
-    alignItems: "center",
-    gap: layout === "vertical" ? "4px" : "8px",
-    // Apply GPU acceleration from overlay style
-    transform: overlayStyle.transform,
-    pointerEvents: overlayStyle.pointerEvents,
-    zIndex: overlayStyle.zIndex,
-  }), [layout, overlayStyle]);
+  const containerStyle = useMemo<React.CSSProperties>(
+    () => ({
+      display: "flex",
+      flexDirection: layout === "vertical" ? "column" : "row",
+      alignItems: "center",
+      gap: layout === "vertical" ? "4px" : "8px",
+      // Apply GPU acceleration from overlay style
+      transform: overlayStyle.transform,
+      pointerEvents: overlayStyle.pointerEvents,
+      zIndex: overlayStyle.zIndex,
+    }),
+    [layout, overlayStyle],
+  );
 
-  const koreanStyle = useMemo<React.CSSProperties>(() => ({
-    ...textStyle,
-    fontSize: textSize.korean,
-  }), [textStyle, textSize.korean]);
+  const koreanStyle = useMemo<React.CSSProperties>(
+    () => ({
+      ...textStyle,
+      fontSize: textSize.korean,
+    }),
+    [textStyle, textSize.korean],
+  );
 
-  const englishStyle = useMemo<React.CSSProperties>(() => ({
-    ...textStyle,
-    fontSize: textSize.english,
-    opacity: 0.8,
-    fontStyle: "italic",
-  }), [textStyle, textSize.english]);
+  const englishStyle = useMemo<React.CSSProperties>(
+    () => ({
+      ...textStyle,
+      fontSize: textSize.english,
+      opacity: 0.8,
+      fontStyle: "italic",
+    }),
+    [textStyle, textSize.english],
+  );
 
   return (
-    <Html 
-      position={position} 
+    <Html
+      position={position}
       center={overlayStyle.center}
       distanceFactor={overlayStyle.distanceFactor}
       occlude={overlayStyle.occlude}
       style={{ pointerEvents: overlayStyle.pointerEvents }}
     >
-      <div 
-        style={containerStyle} 
+      <div
+        style={containerStyle}
         data-testid={testId ?? "base-text"}
         aria-label={ariaLabel}
         aria-live={ariaLive}
       >
-        <span lang="ko" style={koreanStyle}>{korean}</span>
-        {layout === "vertical" && <span lang="en" style={englishStyle}>{english}</span>}
-        {layout === "horizontal" && <span lang="en" style={englishStyle}>| {english}</span>}
+        <span lang="ko" style={koreanStyle}>
+          {korean}
+        </span>
+        {layout === "vertical" && (
+          <span lang="en" style={englishStyle}>
+            {english}
+          </span>
+        )}
+        {layout === "horizontal" && (
+          <span lang="en" style={englishStyle}>
+            | {english}
+          </span>
+        )}
       </div>
     </Html>
   );

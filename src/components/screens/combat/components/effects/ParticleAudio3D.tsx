@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * ParticleAudio3D - Audio integration for particle effects
  *
@@ -15,13 +16,18 @@
  * - Blood viscosity → hit_flesh variants (lighter flesh impacts)
  */
 
-import { useEffect, useRef } from 'react';
-import { useAudio } from '../../../../../audio/AudioProvider';
+import { useEffect, useRef } from "react";
+import { useAudio } from "../../../../../audio/AudioProvider";
 
 /**
  * Particle effect types for audio mapping
  */
-export type ParticleEffectType = 'arterial' | 'bone' | 'nerve' | 'organ' | 'viscosity';
+export type ParticleEffectType =
+  | "arterial"
+  | "bone"
+  | "nerve"
+  | "organ"
+  | "viscosity";
 
 /**
  * Audio trigger for particle effect
@@ -46,11 +52,29 @@ const DEBOUNCE_TIME = 100;
 
 // Sound IDs for each effect type (using existing assets)
 const SOUND_MAPPINGS: Record<ParticleEffectType, string[]> = {
-  arterial: ['ki_release', 'ki_release_1', 'ki_release_2', 'ki_release_3', 'ki_release_4'],
-  bone: ['block_break', 'block_break_1', 'block_break_2', 'block_break_3', 'block_break_4'],
-  nerve: ['energy_pulse', 'energy_pulse_1', 'energy_pulse_2', 'energy_pulse_3', 'energy_pulse_4'],
-  organ: ['hit_flesh', 'hit_flesh_1', 'hit_flesh_2', 'body_realistic_sound'],
-  viscosity: ['hit_flesh_3', 'hit_flesh_4'],
+  arterial: [
+    "ki_release",
+    "ki_release_1",
+    "ki_release_2",
+    "ki_release_3",
+    "ki_release_4",
+  ],
+  bone: [
+    "block_break",
+    "block_break_1",
+    "block_break_2",
+    "block_break_3",
+    "block_break_4",
+  ],
+  nerve: [
+    "energy_pulse",
+    "energy_pulse_1",
+    "energy_pulse_2",
+    "energy_pulse_3",
+    "energy_pulse_4",
+  ],
+  organ: ["hit_flesh", "hit_flesh_1", "hit_flesh_2", "body_realistic_sound"],
+  viscosity: ["hit_flesh_3", "hit_flesh_4"],
 };
 
 /**
@@ -69,7 +93,7 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
   onTriggerProcessed,
 }) => {
   const audio = useAudio();
-  
+
   // Track last trigger time per effect type for debouncing
   const lastTriggerTime = useRef<Record<ParticleEffectType, number>>({
     arterial: 0,
@@ -121,7 +145,9 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
 
     // Clean up old processed timestamps (keep last 1000)
     if (processedTimestamps.current.size > 1000) {
-      const timestamps = Array.from(processedTimestamps.current).sort((a, b) => b - a);
+      const timestamps = Array.from(processedTimestamps.current).sort(
+        (a, b) => b - a,
+      );
       processedTimestamps.current = new Set(timestamps.slice(0, 500));
     }
   }, [triggers, enabled, audio, onTriggerProcessed]);
@@ -135,7 +161,7 @@ export const ParticleAudio3D: React.FC<ParticleAudio3DProps> = ({
  */
 export function createAudioTrigger(
   effectType: ParticleEffectType,
-  intensity: number
+  intensity: number,
 ): ParticleAudioTrigger {
   return {
     effectType,

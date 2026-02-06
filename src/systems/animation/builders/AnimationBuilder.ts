@@ -10,10 +10,7 @@
  */
 
 import * as THREE from "three";
-import type {
-  AnimationKeyframe,
-  SkeletalAnimation,
-} from "@/types/skeletal";
+import type { AnimationKeyframe, SkeletalAnimation } from "@/types/skeletal";
 import { BoneName } from "@/types/skeletal";
 
 /**
@@ -57,7 +54,7 @@ class KeyframeBuilder {
     x: number,
     y: number,
     z: number,
-    order: THREE.EulerOrder = "XYZ"
+    order: THREE.EulerOrder = "XYZ",
   ): this {
     this.boneRotations.set(bone, new THREE.Euler(x, y, z, order));
     return this;
@@ -95,7 +92,7 @@ class KeyframeBuilder {
 
     // This indicates incorrect usage of the builder API; parent must be set via setParent(...)
     throw new Error(
-      "KeyframeBuilder.build() called without a parent AnimationBuilder. Ensure setParent(...) is called before build()."
+      "KeyframeBuilder.build() called without a parent AnimationBuilder. Ensure setParent(...) is called before build().",
     );
   }
 }
@@ -223,10 +220,10 @@ export class KeyframeFactories {
       time,
       easing: "ease-in",
       boneRotations: new Map([
-        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.3, -0.3, "XYZ")],
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 0.3, 0.3, "XYZ")],
-        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.2, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.2, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.35, 0.35, -0.14, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(-0.35, -0.35, 0.14, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.75, "XYZ")],
+        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.75, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.SPINE_MIDDLE, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
@@ -268,7 +265,7 @@ export class KeyframeFactories {
   static rotateTorso(
     time: number,
     angle: number,
-    easing: "linear" | "ease-in" | "ease-out" | "ease-in-out" = "linear"
+    easing: "linear" | "ease-in" | "ease-out" | "ease-in-out" = "linear",
   ): AnimationKeyframe {
     return {
       time,
@@ -298,7 +295,7 @@ export class BoneRotationHelpers {
   static shoulderExtension(
     side: "L" | "R",
     forward: number,
-    up: number = 0
+    up: number = 0,
   ): THREE.Euler {
     const sign = side === "L" ? -1 : 1;
     return new THREE.Euler(up, 0, forward * sign, "XYZ");
@@ -325,7 +322,7 @@ export class BoneRotationHelpers {
   static hipRotation(
     _side: "L" | "R",
     forward: number,
-    outward: number = 0
+    outward: number = 0,
   ): THREE.Euler {
     return new THREE.Euler(forward, outward, 0, "XYZ");
   }
@@ -340,7 +337,9 @@ export class BoneRotationHelpers {
     // NOTE: `_side` is intentionally unused: knee bends are currently symmetric for both legs.
     // The parameter is kept to preserve API compatibility for future asymmetric leg animations.
     void _side;
-    return new THREE.Euler(0, 0, bend, "XYZ");
+    // Knee flexion is on X axis (legs extend along -Y, X rotation swings shin forward/backward)
+    // Negative X = flexion (bend), so negate the positive 'bend' input
+    return new THREE.Euler(-bend, 0, 0, "XYZ");
   }
 }
 
@@ -356,14 +355,14 @@ export class AnimationPresets {
    */
   static readonly FIGHTING_GUARD = {
     leftArm: {
-      shoulder: new THREE.Euler(-0.6, 0.4, 0.3), // Elbow forward, hand near face
-      elbow: new THREE.Euler(0, 0, -1.8), // Tight 105° bend
-      wrist: new THREE.Euler(0.2, 0.1, 0), // Fist near chin
+      shoulder: new THREE.Euler(-0.35, -0.35, 0.14), // Arms forward, hands near chin
+      elbow: new THREE.Euler(0, 0, -1.75), // ~100° bend (중단막기)
+      wrist: new THREE.Euler(0.1, 0, 0), // Fist aligned
     },
     rightArm: {
-      shoulder: new THREE.Euler(-0.6, -0.4, -0.3), // Mirror
-      elbow: new THREE.Euler(0, 0, 1.8), // Tight 105° bend
-      wrist: new THREE.Euler(0.2, -0.1, 0), // Fist near chin
+      shoulder: new THREE.Euler(-0.35, 0.35, -0.14), // Mirror
+      elbow: new THREE.Euler(0, 0, 1.75), // ~100° bend (중단막기)
+      wrist: new THREE.Euler(0.1, 0, 0), // Fist aligned
     },
   } as const;
 
@@ -374,14 +373,14 @@ export class AnimationPresets {
    */
   static readonly HIGH_GUARD = {
     leftArm: {
-      shoulder: new THREE.Euler(-0.9, 0.3, 0.4), // Raised high
-      elbow: new THREE.Euler(0, 0, -1.6), // Tight bend
-      wrist: new THREE.Euler(0.3, 0.1, 0), // Hand near temple
+      shoulder: new THREE.Euler(-0.52, -0.44, 0.17), // Raised, arms forward (상단막기)
+      elbow: new THREE.Euler(0, 0, -2.09), // ~120° bend tight guard
+      wrist: new THREE.Euler(0.1, 0, 0), // Hand near temple
     },
     rightArm: {
-      shoulder: new THREE.Euler(-0.9, -0.3, -0.4), // Mirror
-      elbow: new THREE.Euler(0, 0, 1.6), // Tight bend
-      wrist: new THREE.Euler(0.3, -0.1, 0), // Hand near temple
+      shoulder: new THREE.Euler(-0.52, 0.44, -0.17), // Mirror
+      elbow: new THREE.Euler(0, 0, 2.09), // ~120° bend tight guard
+      wrist: new THREE.Euler(0.1, 0, 0), // Hand near temple
     },
   } as const;
 
@@ -452,25 +451,25 @@ export class AnimationPatternHelpers {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       );
   }
 
@@ -486,25 +485,25 @@ export class AnimationPatternHelpers {
         BoneName.SHOULDER_L,
         guard.leftArm.shoulder.x,
         guard.leftArm.shoulder.y,
-        guard.leftArm.shoulder.z
+        guard.leftArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_L,
         guard.leftArm.elbow.x,
         guard.leftArm.elbow.y,
-        guard.leftArm.elbow.z
+        guard.leftArm.elbow.z,
       )
       .rotate(
         BoneName.SHOULDER_R,
         guard.rightArm.shoulder.x,
         guard.rightArm.shoulder.y,
-        guard.rightArm.shoulder.z
+        guard.rightArm.shoulder.z,
       )
       .rotate(
         BoneName.ELBOW_R,
         guard.rightArm.elbow.x,
         guard.rightArm.elbow.y,
-        guard.rightArm.elbow.z
+        guard.rightArm.elbow.z,
       );
   }
 
@@ -522,13 +521,13 @@ export class AnimationPatternHelpers {
         BoneName.KNEE_L,
         chamber.supportKnee.x,
         chamber.supportKnee.y,
-        chamber.supportKnee.z
+        chamber.supportKnee.z,
       )
       .rotate(
         BoneName.PELVIS,
         chamber.pelvis.x,
         chamber.pelvis.y,
-        chamber.pelvis.z
+        chamber.pelvis.z,
       );
   }
 }

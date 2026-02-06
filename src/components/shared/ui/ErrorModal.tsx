@@ -2,12 +2,12 @@
  * ErrorModal - Korean-themed error dialog component
  * Provides user-friendly error recovery with retry functionality
  * Follows Korean cyberpunk aesthetic and accessibility best practices
- * 
+ *
  * Now uses BaseButtonOverlayHtml for consistent Korean theming
  */
 
 import React, { useCallback, useEffect, useRef } from "react";
-import { KOREAN_COLORS, FONT_FAMILY } from "../../../types/constants";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
 import { toHex } from "../../../utils/colorUtils";
 import { BaseButtonOverlayHtml } from "../base";
 
@@ -48,13 +48,13 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
   // Handle keyboard events (Escape key to close)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         handleContinue();
       }
     };
-    
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleContinue]);
 
   return (

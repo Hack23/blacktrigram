@@ -37,10 +37,11 @@ import {
  */
 export const THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("throw", "던지기")
-    .asAttack(0.6)
-    .throwEntry(0.18) // 진입 - Entry and grab
-    .hipThrow(0.22) // 던지기 - Execute hip throw
-    .recover(0.2) // 복귀
+    .asAttack(0.7)
+    .throwEntry(0.15) // 진입 - Entry and grab
+    .hipThrow(0.18) // 던지기 - Load hip under opponent
+    .throwExecute(0.12) // 투척 - Project opponent over hip
+    .recover(0.25) // 복귀
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -64,7 +65,7 @@ export const THROW_ANIMATION: SkeletalAnimation =
 export const GRAPPLE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("grapple", "관절기")
     .asAttack(0.65)
-    .throwEntry(0.15) // Entry and grab
+    .wristGrab(0.15) // 잡기 - Seize limb
     .jointLock(0.25) // 꺾기 - Apply lock
     .recover(0.25) // Release/reset
     .build();
@@ -194,8 +195,8 @@ export const WRIST_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("wrist_lock", "손목꺾기")
     .asAttack(0.75)
     .wristGrab(0.15) // 잡기 - Secure two-handed grip on wrist
-    .wristGrab(0.10) // 위치 - Position arm for control
-    .wristTwist(0.20) // 꺾기 - Apply circular rotational pressure
+    .wristGrab(0.1) // 위치 - Position arm for control
+    .wristTwist(0.2) // 꺾기 - Apply circular rotational pressure
     .wristTwist(0.12) // 제어 - Hold at hyperextension
     .recover(0.18) // 복귀 - Controlled release
     .build();
@@ -246,7 +247,7 @@ export const FINGER_LOCK_ANIMATION: SkeletalAnimation =
 export const ELBOW_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("elbow_lock", "팔꿈치꺾기")
     .asAttack(0.65)
-    .throwEntry(0.15) // 진입
+    .wristGrab(0.15) // 잡기 - Seize arm
     .elbowLockApply(0.3) // 꺺기 - Apply elbow hyperextension
     .recover(0.2) // 복귀
     .build();
@@ -261,7 +262,7 @@ export const ELBOW_LOCK_ANIMATION: SkeletalAnimation =
 export const SHOULDER_MANIPULATION_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("shoulder_manipulation", "어깨비틀기")
     .asAttack(0.7)
-    .throwEntry(0.2) // 진입
+    .wristGrab(0.2) // 잡기 - Capture arm
     .shoulderLockTwist(0.3) // 비틀기 - Shoulder manipulation
     .recover(0.2) // 복귀
     .build();
@@ -277,8 +278,8 @@ export const FLOWING_ARM_BAR_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("flowing_arm_bar", "유수팔꺾기")
     .asAttack(0.75)
     .parry(0.15) // 막기 - Flow with attack
-    .throwEntry(0.15) // 진입 - Enter
-    .jointLock(0.25) // 꺾기 - Lock
+    .armBarEntry(0.15) // 진입 - Catch arm
+    .armBarDrop(0.25) // 내려가기 - Drop to arm bar position
     .recover(0.2) // 복귀
     .build();
 
@@ -325,8 +326,8 @@ export const SWEEP_DEFENSE_ANIMATION: SkeletalAnimation =
 export const MOUNTAIN_LOCK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("mountain_lock", "산형굳히기")
     .asAttack(0.8)
-    .throwEntry(0.2)
-    .jointLock(0.4) // Long hold
+    .clinchGrab(0.2) // 잡기 - Establish grip control
+    .jointLock(0.4) // Long hold pressure
     .recover(0.2)
     .build();
 
@@ -353,7 +354,7 @@ export const EARTH_EMBRACE_ANIMATION: SkeletalAnimation =
 export const CAROTID_CHOKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("carotid_choke", "경동맥조르기")
     .asAttack(1.0)
-    .throwEntry(0.2) // Get behind
+    .clinchGrab(0.2) // 뒤잡기 - Establish rear control
     .chokeGrip(0.6) // Apply carotid squeeze
     .recover(0.2)
     .build();
@@ -367,7 +368,7 @@ export const CAROTID_CHOKE_ANIMATION: SkeletalAnimation =
 export const REAR_NAKED_CHOKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("rear_naked_choke", "뒤조르기")
     .asAttack(1.2)
-    .throwEntry(0.3) // Get back control
+    .clinchGrab(0.3) // 뒤잡기 - Get back control
     .chokeGrip(0.7) // Apply rear naked choke
     .recover(0.2)
     .build();
@@ -381,8 +382,9 @@ export const REAR_NAKED_CHOKE_ANIMATION: SkeletalAnimation =
 export const REDIRECT_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("redirect_throw", "유수던지기")
     .asAttack(0.7)
-    .parry(0.2) // Flow with attack
-    .hipThrow(0.3) // Redirect momentum into throw
+    .parry(0.15) // Flow with attack
+    .hipThrow(0.2) // Redirect momentum into throw
+    .throwExecute(0.15) // 투척 - Complete the projection
     .recover(0.2)
     .build();
 
@@ -399,7 +401,7 @@ export const REDIRECT_THROW_ANIMATION: SkeletalAnimation =
  * style emphasizing immediate control, explosive entry, and strong submission pressure.
  * The arm bar (Juji-Gatame in Judo, Pal-kkeok-gi in Hapkido) is one of the most
  * effective joint locks, attacking the elbow joint's natural range of motion.
- * 
+ *
  * Contrasts with Tae (Lake) Trigram flowing circular technique:
  * - **Tae Style**: Circular, flowing, uses momentum and small circles
  * - **This Style**: Linear, forceful, direct pressure and immediate submission
@@ -463,7 +465,7 @@ export const ARM_BAR_ANIMATION: SkeletalAnimation =
     .armBarEntry(0.18) // 위치 설정 - Position for downward drop
     .armBarDrop(0.25) // 내려가기 - Direct downward drop (linear, not circular)
     .jointLock(0.15) // 확장 - Hyperextension with hip pressure
-    .jointLock(0.10) // 굴복 - Maximum submission pressure
+    .jointLock(0.1) // 굴복 - Maximum submission pressure
     .recover(0.15) // 복귀 - Quick controlled release
     .build();
 
@@ -487,7 +489,8 @@ export const ARM_BAR_ANIMATION: SkeletalAnimation =
  */
 export const SLAM_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("slam", "메치기")
-    .asAttack(0.75)
+    .asAttack(0.85)
+    .clinchGrab(0.1) // 잡기 - Clinch and underhook
     .slamLift(0.25) // 들기 - Lift opponent
     .slamDown(0.2) // 메치기 - Slam down
     .recover(0.3) // 복귀
@@ -552,11 +555,11 @@ export const SLAM_ANIMATION: SkeletalAnimation =
 export const HIP_THROW_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("hip_throw", "허리치기")
     .asAttack(0.97)
-    .throwEntry(0.20) // 진입 - Deep entry, lower hips
+    .throwEntry(0.2) // 진입 - Deep entry, lower hips
     .throwEntry(0.15) // 잡기 및 위치 - Secure control and positioning
     .hipThrow(0.22) // 회전 - Explosive hip rotation lifts opponent
     .hipThrow(0.12) // 던지기 - Opponent airborne
-    .throwExecute(0.10) // 완료 - Complete rotation
+    .throwExecute(0.1) // 완료 - Complete rotation
     .recover(0.18) // 복귀 - Return to standing or ground
     .build();
 

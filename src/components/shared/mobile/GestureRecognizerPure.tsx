@@ -1,22 +1,25 @@
 /**
  * GestureRecognizerPure Component - Pure DOM version (no Three.js/drei dependency)
- * 
+ *
  * Visual overlay for gesture detection feedback
  * Displays swipe trails and multi-touch indicators
- * 
+ *
  * This is a pure DOM version that renders OUTSIDE the Three.js Canvas.
  * It does NOT use Html from @react-three/drei, making it compatible with
  * rendering outside Canvas contexts.
- * 
+ *
  * @module components/mobile/GestureRecognizerPure
  * @category Mobile Controls
  * @korean 제스처 인식기 (순수 DOM)
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { GestureEvent, useTouchControls } from '../../../hooks/useTouchControls';
-import { getColorRGB } from '../../../utils/colorHelpers';
+import React, { useCallback, useEffect, useState } from "react";
+import { KOREAN_COLORS } from "@/types/constants";
+import {
+  GestureEvent,
+  useTouchControls,
+} from "../../../hooks/useTouchControls";
+import { getColorRGB } from "../../../utils/colorHelpers";
 
 /**
  * Props for GestureRecognizerPure component
@@ -46,7 +49,7 @@ interface GestureFeedback {
 
 /**
  * GestureRecognizerPure Component
- * 
+ *
  * Pure DOM gesture detection and visual feedback for mobile controls
  * Features:
  * - Swipe detection (4 directions)
@@ -54,14 +57,14 @@ interface GestureFeedback {
  * - Visual trail feedback
  * - Gesture type indicators
  * - Auto-fading feedback
- * 
+ *
  * Gesture Mappings:
  * - Swipe Right: Advance toward opponent
  * - Swipe Left: Retreat from opponent
  * - Swipe Up: High attack mode
  * - Swipe Down: Low attack mode
  * - Two-Finger Tap: Vital point targeting mode
- * 
+ *
  * @example
  * ```tsx
  * <GestureRecognizerPure
@@ -73,7 +76,7 @@ interface GestureFeedback {
  *   showFeedback={true}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 제스처인식기순수
  */
@@ -95,7 +98,11 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
       onGesture(gesture);
 
       // Add visual feedback
-      if (showFeedback && gesture.endX !== undefined && gesture.endY !== undefined) {
+      if (
+        showFeedback &&
+        gesture.endX !== undefined &&
+        gesture.endY !== undefined
+      ) {
         const feedback: GestureFeedback = {
           id: nextId,
           type: gesture.type,
@@ -108,7 +115,7 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
         setNextId((prev) => prev + 1);
       }
     },
-    [onGesture, showFeedback, nextId]
+    [onGesture, showFeedback, nextId],
   );
 
   /**
@@ -131,7 +138,7 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
       setFeedbacks((prev) =>
         prev
           .filter((fb) => now - fb.timestamp < 1000)
-          .map((fb) => ({ ...fb, age: now - fb.timestamp }))
+          .map((fb) => ({ ...fb, age: now - fb.timestamp })),
       );
     }, 100);
 
@@ -149,27 +156,34 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
   /**
    * Get display info for gesture type
    */
-  const getGestureDisplay = (type: string): { korean: string; english: string; icon: string } => {
-    const displays: Record<string, { korean: string; english: string; icon: string }> = {
-      'swipe-right': { korean: '전진', english: 'Advance', icon: '→' },
-      'swipe-left': { korean: '후퇴', english: 'Retreat', icon: '←' },
-      'swipe-up': { korean: '상단', english: 'High', icon: '↑' },
-      'swipe-down': { korean: '하단', english: 'Low', icon: '↓' },
-      'two-finger-tap': { korean: '급소', english: 'Vital Point', icon: '🎯' },
-      tap: { korean: '터치', english: 'Tap', icon: '👆' },
+  const getGestureDisplay = (
+    type: string,
+  ): { korean: string; english: string; icon: string } => {
+    const displays: Record<
+      string,
+      { korean: string; english: string; icon: string }
+    > = {
+      "swipe-right": { korean: "전진", english: "Advance", icon: "→" },
+      "swipe-left": { korean: "후퇴", english: "Retreat", icon: "←" },
+      "swipe-up": { korean: "상단", english: "High", icon: "↑" },
+      "swipe-down": { korean: "하단", english: "Low", icon: "↓" },
+      "two-finger-tap": { korean: "급소", english: "Vital Point", icon: "🎯" },
+      tap: { korean: "터치", english: "Tap", icon: "👆" },
     };
-    return displays[type] ?? { korean: '제스처', english: 'Gesture', icon: '✋' };
+    return (
+      displays[type] ?? { korean: "제스처", english: "Gesture", icon: "✋" }
+    );
   };
 
   return (
     <div
       style={{
-        position: 'absolute', // Changed from fixed to position relative to container
+        position: "absolute", // Changed from fixed to position relative to container
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
         zIndex: 1000,
       }}
       data-testid="gesture-recognizer-pure"
@@ -185,23 +199,23 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
           <div
             key={feedback.id}
             style={{
-              position: 'absolute',
+              position: "absolute",
               left: `${feedback.x}px`,
               top: `${feedback.y}px`,
               transform: `translate(-50%, -50%) scale(${scale})`,
               opacity,
-              transition: 'all 0.1s ease-out',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '4px',
+              transition: "all 0.1s ease-out",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "4px",
             }}
             data-testid={`gesture-feedback-pure-${feedback.id}`}
           >
             {/* Icon */}
             <div
               style={{
-                fontSize: '32px',
+                fontSize: "32px",
                 color: `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity})`,
                 textShadow: `0 0 10px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity * 0.8})`,
               }}
@@ -214,14 +228,14 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
               style={{
                 background: `rgba(0, 0, 0, ${opacity * 0.8})`,
                 border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                borderRadius: '8px',
-                padding: '4px 8px',
-                fontSize: '12px',
-                fontWeight: 'bold',
+                borderRadius: "8px",
+                padding: "4px 8px",
+                fontSize: "12px",
+                fontWeight: "bold",
                 color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                textShadow: "0 1px 3px rgba(0, 0, 0, 0.8)",
               }}
             >
               {display.korean} | {display.english}
@@ -234,21 +248,23 @@ export const GestureRecognizerPure: React.FC<GestureRecognizerPureProps> = ({
       {enabled && (
         <div
           style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: 'rgba(0, 0, 0, 0.7)',
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "rgba(0, 0, 0, 0.7)",
             border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.6)`,
-            borderRadius: '8px',
-            padding: '8px 12px',
-            fontSize: '10px',
+            borderRadius: "8px",
+            padding: "8px 12px",
+            fontSize: "10px",
             color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
-            maxWidth: '150px',
+            maxWidth: "150px",
             opacity: 0.7,
           }}
           data-testid="gesture-instructions-pure"
         >
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>제스처 | Gestures</div>
+          <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+            제스처 | Gestures
+          </div>
           <div>← → 이동 | Move</div>
           <div>↑ ↓ 공격 | Attack</div>
           <div>🤞 급소 | Vital</div>

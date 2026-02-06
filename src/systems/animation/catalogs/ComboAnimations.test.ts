@@ -275,10 +275,10 @@ describe("ComboAnimations", () => {
       });
     });
 
-    describe("COMBO_CLINCH_GEUPSO_ANIMATION (궁도급소)", () => {
+    describe("COMBO_CLINCH_GEUPSO_ANIMATION (근접급소)", () => {
       it("should be defined with correct properties", () => {
         expect(COMBO_CLINCH_GEUPSO_ANIMATION).toBeDefined();
-        expect(COMBO_CLINCH_GEUPSO_ANIMATION.koreanName).toBe("궁도급소");
+        expect(COMBO_CLINCH_GEUPSO_ANIMATION.koreanName).toBe("근접급소");
       });
     });
 

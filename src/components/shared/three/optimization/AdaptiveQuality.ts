@@ -18,7 +18,6 @@
 
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { PerformanceSettings } from "../../../../types/constants/performance";
 
 /**
  * Quality levels for adaptive rendering
@@ -156,13 +155,13 @@ export class AdaptiveQualitySystem {
       this.currentQuality = newQuality;
       this.lastQualityChange = now;
       this.fpsHistory = []; // Reset history after change
-      
+
       if (import.meta.env.DEV) {
         console.log(
-          `[AdaptiveQuality] Quality changed to ${newQuality} (avg fps: ${avgFps.toFixed(1)})`
+          `[AdaptiveQuality] Quality changed to ${newQuality} (avg fps: ${avgFps.toFixed(1)})`,
         );
       }
-      
+
       return newQuality;
     }
 
@@ -230,7 +229,7 @@ export class AdaptiveQualitySystem {
 export function useAdaptiveQuality(
   enabled: boolean = true,
   isMobile: boolean = false,
-  onQualityChange?: (quality: QualityLevel) => void
+  onQualityChange?: (quality: QualityLevel) => void,
 ): QualitySettings {
   // Initialize with appropriate starting quality
   const initialQuality: QualityLevel = isMobile ? "medium" : "high";
@@ -271,14 +270,14 @@ export function useAdaptiveQuality(
 
     // Calculate FPS
     const now = performance.now();
-    
+
     // Initialize on first frame
     if (!initializedRef.current) {
       lastTimeRef.current = now;
       initializedRef.current = true;
       return;
     }
-    
+
     const delta = now - lastTimeRef.current;
 
     if (delta > 0) {
@@ -298,21 +297,4 @@ export function useAdaptiveQuality(
   });
 
   return QUALITY_PRESETS[currentQuality];
-}
-
-/**
- * Get quality settings based on performance tier
- * Static helper for initial setup
- */
-export function getQualityFromPerformanceSettings(
-  settings: PerformanceSettings
-): QualitySettings {
-  // Map performance settings to quality level
-  if (settings.maxParticles >= 60) {
-    return QUALITY_PRESETS.high;
-  } else if (settings.maxParticles >= 40) {
-    return QUALITY_PRESETS.medium;
-  } else {
-    return QUALITY_PRESETS.low;
-  }
 }

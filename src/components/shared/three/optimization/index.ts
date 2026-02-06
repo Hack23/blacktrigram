@@ -1,9 +1,9 @@
 /**
  * Three.js Optimization Module
- * 
+ *
  * Performance optimization utilities for mobile and desktop rendering.
  * Includes LOD system, instanced geometry, and adaptive quality management.
- * 
+ *
  * @module components/shared/three/optimization
  * @category Performance Optimization
  * @korean 최적화모듈
@@ -12,7 +12,6 @@
 export {
   AdaptiveQualitySystem,
   useAdaptiveQuality,
-  getQualityFromPerformanceSettings,
   QUALITY_PRESETS,
   type QualityLevel,
   type QualitySettings,

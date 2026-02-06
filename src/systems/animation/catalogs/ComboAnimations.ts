@@ -389,7 +389,7 @@ export const COMBO_YUDO_COUNTER_ANIMATION: SkeletalAnimation =
     .parry(0.1) // 막기 - deflect attack
     .clinchGrab(0.1) // 잡기 - grip
     .hipThrow(0.18) // 허리치기 - hip throw
-    .slamDown(0.14) // 던지기 - takedown
+    .throwExecute(0.14) // 던지기 - throw projection
     .recover(0.18)
     .build();
 
@@ -410,7 +410,7 @@ export const COMBO_SSIREUM_MECHI_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_ssireum_mechi", "씨름메치기")
     .asAttack(0.8)
     .clinchGrab(0.12) // 샅바잡기 - satba grip
-    .throwEntry(0.15) // 들어올리기 - lift entry
+    .slamLift(0.15) // 들어올리기 - body lift
     .slamDown(0.2) // 메치기 - throw down
     .groundMount(0.15) // 누르기 - pin
     .recover(0.18)
@@ -436,16 +436,16 @@ export const COMBO_TEUKGONG_COUNTER_ANIMATION: SkeletalAnimation =
     .build();
 
 /**
- * Gungdo Geupso - 궁도급소 (Clinch Vital Points)
+ * Geunjeop Geupso - 근접급소 (Clinch Vital Points)
  *
  * Close-range vital point combo from clinch.
  * Short-range strikes targeting pressure points.
  * Based on Korean traditional medicine meridians.
  *
- * @korean 궁도급소콤보애니메이션
+ * @korean 근접급소콤보애니메이션
  */
 export const COMBO_CLINCH_GEUPSO_ANIMATION: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("combo_clinch_geupso", "궁도급소")
+  MartialArtsAnimationBuilder.create("combo_clinch_geupso", "근접급소")
     .asAttack(0.55)
     .withClinch()
     .clinchGrab(0.1)
@@ -551,10 +551,11 @@ export const COMBO_KUKSOOL_JOKSUL_ANIMATION: SkeletalAnimation =
 export const COMBO_KUKSOOL_TOOKI_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_kuksool_tooki", "국술투기")
     .asAttack(0.75)
-    .clinchGrab(0.1) // 잡기 - grip
-    .throwEntry(0.12) // 들어가기 - entry
-    .hipThrow(0.18) // 허리치기 - hip throw
-    .groundMount(0.15) // 누르기 - pin
+    .clinchGrab(0.08) // 잡기 - grip
+    .throwEntry(0.1) // 들어가기 - entry
+    .hipThrow(0.15) // 허리치기 - hip throw
+    .throwExecute(0.1) // 투기 - throw projection
+    .groundMount(0.12) // 누르기 - pin
     .recover(0.2)
     .build();
 
@@ -652,7 +653,7 @@ export const COMBO_KUKSOOL_CRANE_ANIMATION: SkeletalAnimation =
     .nerveStrike(0.08) // 학부리 - crane beak strike 1
     .sideStepRight(0.08) // 옆걸음 - side step
     .nerveStrike(0.08) // 학부리 - crane beak strike 2
-    .chamber(0.1) // 준비 - chamber
+    .sideKickChamber(0.1) // 준비 - side kick chamber
     .sideKickExtend(0.1) // 옆차기 - side kick
     .recover(0.06)
     .build();
@@ -668,12 +669,13 @@ export const COMBO_KUKSOOL_CRANE_ANIMATION: SkeletalAnimation =
  */
 export const COMBO_KUKSOOL_DRAGON_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_kuksool_dragon", "국술용형")
-    .asAttack(0.7)
+    .asAttack(0.73)
     .spin(0.12) // 회전 - coiling spin
     .palmStrike(0.1) // 용조 - dragon palm
     .wristGrab(0.1) // 잡아치기 - grab strike
-    .throwExecute(0.15) // 용휘 - dragon whip throw
-    .recover(0.23)
+    .throwEntry(0.08) // 진입 - load for throw
+    .throwExecute(0.12) // 용휘 - dragon whip throw
+    .recover(0.21)
     .build();
 
 /**

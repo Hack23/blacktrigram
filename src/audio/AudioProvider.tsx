@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useCallback,
@@ -48,7 +49,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
   deferInitialization = false,
 }) => {
   const [audioManager] = useState<IAudioManager>(
-    () => manager ?? new AudioManager(config)
+    () => manager ?? new AudioManager(config),
   );
   const [isAudioReady, setIsAudioReady] = useState(false);
 
@@ -95,7 +96,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       ];
 
       const menuAssets = criticalMenuSounds.filter(
-        (asset) => asset !== undefined
+        (asset) => asset !== undefined,
       ) as AudioAsset[];
 
       // 2. Preload critical combat sounds (instant playback required)
@@ -112,7 +113,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       ];
 
       const combatAssets = criticalCombatSounds.filter(
-        (asset) => asset !== undefined
+        (asset) => asset !== undefined,
       ) as AudioAsset[];
 
       // 3. Preload essential music tracks (intro, combat, training)
@@ -120,9 +121,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
       const introMusic = audioAssetRegistry.getMusic("intro_theme");
       const combatMusic = audioAssetRegistry.getMusic("combat_theme");
       const trainingMusic = audioAssetRegistry.getMusic("cyberpunk_fusion");
-      
+
       const musicAssets = [introMusic, combatMusic, trainingMusic].filter(
-        (asset) => asset !== undefined
+        (asset) => asset !== undefined,
       ) as AudioAsset[];
 
       // Combine critical assets for parallel loading
@@ -135,8 +136,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
         criticalAssets.map((a) =>
           audioManager.loadAsset(a).catch((err) => {
             console.warn(`Failed to load critical asset: ${a.id}`, err);
-          })
-        )
+          }),
+        ),
       );
 
       // NOTE: Non-critical assets are loaded on-demand:
@@ -165,7 +166,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({
     // Wrap methods that change volume state to also sync React state
     const wrappedSetVolume = (
       type: "master" | "sfx" | "music" | "voice",
-      volume: number
+      volume: number,
     ) => {
       audioManager.setVolume(type, volume);
       syncVolumeState();

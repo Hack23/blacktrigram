@@ -23,7 +23,7 @@ import {
 } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../types/common";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
 
 export type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
@@ -152,7 +152,7 @@ export const VitalPointOverlayControlsPure: React.FC<
       top: isMobile ? "180px" : "220px",
       left: isMobile ? "10px" : "20px",
     }),
-    [isMobile]
+    [isMobile],
   );
 
   const finalPosition = screenPosition ?? defaultPosition;
@@ -172,13 +172,13 @@ export const VitalPointOverlayControlsPure: React.FC<
         // Match both left and right arm vital points
         points = points.filter(
           (vp) =>
-            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")
+            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_"),
         );
       } else if (regionFilter === "legs") {
         // Match both left and right leg vital points
         points = points.filter(
           (vp) =>
-            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")
+            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_"),
         );
       } else {
         // Simple prefix match for head_ or torso_
@@ -195,7 +195,7 @@ export const VitalPointOverlayControlsPure: React.FC<
           vp.names.korean.toLowerCase().includes(query) ||
           vp.names.english.toLowerCase().includes(query) ||
           vp.names.romanized.toLowerCase().includes(query) ||
-          vp.id.toLowerCase().includes(query)
+          vp.id.toLowerCase().includes(query),
       );
     }
 
@@ -210,7 +210,7 @@ export const VitalPointOverlayControlsPure: React.FC<
         : [...severityFilters, severity];
       onSeverityFiltersChange(newFilters);
     },
-    [severityFilters, onSeverityFiltersChange]
+    [severityFilters, onSeverityFiltersChange],
   );
 
   // Severity options
@@ -257,10 +257,8 @@ export const VitalPointOverlayControlsPure: React.FC<
         fontFamily: FONT_FAMILY.KOREAN,
         color: "#ffffff",
         boxShadow: `0 0 30px ${colorToHex(
-          KOREAN_COLORS.PRIMARY_CYAN
-        )}40, inset 0 0 20px ${colorToHex(
-          KOREAN_COLORS.UI_BACKGROUND_DARK
-        )}80`,
+          KOREAN_COLORS.PRIMARY_CYAN,
+        )}40, inset 0 0 20px ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}80`,
         transition: "all 0.3s ease",
         pointerEvents: "all",
         zIndex: Z_INDEX.MODAL,
@@ -275,13 +273,11 @@ export const VitalPointOverlayControlsPure: React.FC<
           alignItems: "center",
           marginBottom: "12px",
           paddingBottom: "12px",
-          borderBottom: `1px solid ${colorToHex(
-            KOREAN_COLORS.PRIMARY_CYAN
-          )}40`,
+          borderBottom: `1px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`,
           background: `linear-gradient(90deg, ${colorToHex(
-            KOREAN_COLORS.UI_BACKGROUND_DARK
+            KOREAN_COLORS.UI_BACKGROUND_DARK,
           )}00 0%, ${colorToHex(
-            KOREAN_COLORS.PRIMARY_CYAN
+            KOREAN_COLORS.PRIMARY_CYAN,
           )}10 50%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}00 100%)`,
         }}
       >
@@ -303,7 +299,7 @@ export const VitalPointOverlayControlsPure: React.FC<
           onClick={() => setExpanded(!expanded)}
           style={{
             background: `linear-gradient(135deg, ${colorToHex(
-              KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+              KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
             )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
             border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
             borderRadius: "6px",
@@ -312,20 +308,18 @@ export const VitalPointOverlayControlsPure: React.FC<
             fontSize,
             cursor: "pointer",
             transition: "all 0.2s ease",
-            boxShadow: `0 2px 8px ${colorToHex(
-              KOREAN_COLORS.PRIMARY_CYAN
-            )}30`,
+            boxShadow: `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = "scale(1.05)";
             e.currentTarget.style.boxShadow = `0 4px 12px ${colorToHex(
-              KOREAN_COLORS.PRIMARY_CYAN
+              KOREAN_COLORS.PRIMARY_CYAN,
             )}50`;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = "scale(1)";
             e.currentTarget.style.boxShadow = `0 2px 8px ${colorToHex(
-              KOREAN_COLORS.PRIMARY_CYAN
+              KOREAN_COLORS.PRIMARY_CYAN,
             )}30`;
           }}
           data-testid="toggle-expand-button"
@@ -343,10 +337,10 @@ export const VitalPointOverlayControlsPure: React.FC<
             height: buttonHeight,
             background: visible
               ? `linear-gradient(135deg, ${colorToHex(
-                  KOREAN_COLORS.ACCENT_GOLD
+                  KOREAN_COLORS.ACCENT_GOLD,
                 )} 0%, ${colorToHex(KOREAN_COLORS.SECONDARY_YELLOW)} 100%)`
               : `linear-gradient(135deg, ${colorToHex(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                 )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
             border: `2px solid ${
               visible
@@ -361,7 +355,7 @@ export const VitalPointOverlayControlsPure: React.FC<
             transition: "all 0.3s ease",
             boxShadow: visible
               ? `0 4px 16px ${colorToHex(
-                  KOREAN_COLORS.ACCENT_GOLD
+                  KOREAN_COLORS.ACCENT_GOLD,
                 )}60, inset 0 2px 4px rgba(255,255,255,0.2)`
               : `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`,
             textTransform: "uppercase",
@@ -480,13 +474,11 @@ export const VitalPointOverlayControlsPure: React.FC<
                     style={{
                       background: isActive
                         ? `linear-gradient(135deg, ${colorToHex(
-                            KOREAN_COLORS.PRIMARY_CYAN
-                          )} 0%, ${colorToHex(
-                            KOREAN_COLORS.ACCENT_BLUE
-                          )} 100%)`
+                            KOREAN_COLORS.PRIMARY_CYAN,
+                          )} 0%, ${colorToHex(KOREAN_COLORS.ACCENT_BLUE)} 100%)`
                         : `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
                       border: `2px solid ${colorToHex(
-                        KOREAN_COLORS.PRIMARY_CYAN
+                        KOREAN_COLORS.PRIMARY_CYAN,
                       )}`,
                       borderRadius: "6px",
                       padding: "6px 12px",
@@ -498,7 +490,7 @@ export const VitalPointOverlayControlsPure: React.FC<
                       fontWeight: isActive ? "bold" : "normal",
                       boxShadow: isActive
                         ? `0 2px 8px ${colorToHex(
-                            KOREAN_COLORS.PRIMARY_CYAN
+                            KOREAN_COLORS.PRIMARY_CYAN,
                           )}50`
                         : "none",
                     }}
@@ -543,10 +535,10 @@ export const VitalPointOverlayControlsPure: React.FC<
                   width: "100%",
                   height: buttonHeight,
                   background: `${colorToHex(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`,
                   border: `2px solid ${colorToHex(
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`,
                   borderRadius: "8px",
                   padding: "0 40px 0 14px", // Add right padding for clear button
@@ -558,15 +550,15 @@ export const VitalPointOverlayControlsPure: React.FC<
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = colorToHex(
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   );
                   e.currentTarget.style.boxShadow = `0 0 12px ${colorToHex(
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`;
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = `${colorToHex(
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`;
                   e.currentTarget.style.boxShadow = "none";
                 }}
@@ -595,15 +587,15 @@ export const VitalPointOverlayControlsPure: React.FC<
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.color = colorToHex(
-                      KOREAN_COLORS.ACCENT_RED
+                      KOREAN_COLORS.ACCENT_RED,
                     );
                     e.currentTarget.style.background = `${colorToHex(
-                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                     )}`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.color = colorToHex(
-                      KOREAN_COLORS.TEXT_SECONDARY
+                      KOREAN_COLORS.TEXT_SECONDARY,
                     );
                     e.currentTarget.style.background = "transparent";
                   }}
@@ -693,10 +685,10 @@ export const VitalPointOverlayControlsPure: React.FC<
                   width: "100%",
                   height: buttonHeight - 4,
                   background: `${colorToHex(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`,
                   border: `2px solid ${colorToHex(
-                    KOREAN_COLORS.ACCENT_ORANGE
+                    KOREAN_COLORS.ACCENT_ORANGE,
                   )}`,
                   borderRadius: "6px",
                   color: colorToHex(KOREAN_COLORS.ACCENT_ORANGE),
@@ -707,13 +699,13 @@ export const VitalPointOverlayControlsPure: React.FC<
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = `${colorToHex(
-                    KOREAN_COLORS.ACCENT_ORANGE
+                    KOREAN_COLORS.ACCENT_ORANGE,
                   )}20`;
                   e.currentTarget.style.transform = "translateY(-1px)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = `${colorToHex(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`;
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
@@ -756,7 +748,7 @@ export const VitalPointOverlayControlsPure: React.FC<
               marginTop: "12px",
               paddingTop: "12px",
               borderTop: `1px solid ${colorToHex(
-                KOREAN_COLORS.PRIMARY_CYAN
+                KOREAN_COLORS.PRIMARY_CYAN,
               )}40`,
               fontSize: smallFontSize,
               color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),

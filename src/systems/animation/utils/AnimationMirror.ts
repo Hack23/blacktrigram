@@ -61,6 +61,7 @@ const RIGHT_TO_LEFT_BONE_MAP: ReadonlyMap<BoneName, BoneName> = new Map(
 const CENTER_BONES: ReadonlySet<BoneName> = new Set([
   BoneName.PELVIS,
   BoneName.SPINE_LOWER,
+  BoneName.SPINE_MIDDLE,
   BoneName.SPINE_UPPER,
   BoneName.NECK,
   BoneName.HEAD,

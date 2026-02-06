@@ -1,12 +1,12 @@
 /**
  * Hello3D - Test component for Three.js infrastructure
- * 
+ *
  * This component verifies that Three.js, @react-three/fiber, and @react-three/drei
  * are properly installed and configured. It renders a simple 3D scene with:
  * - A pink rotating cube (Korean accent color)
  * - Orbit controls for interaction
  * - Ambient and directional lighting
- * 
+ *
  * @module components/test
  */
 
@@ -14,7 +14,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import React, { useRef } from "react";
 import type { Mesh } from "three";
-import { KOREAN_COLORS } from "../../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 
 /**
  * Props for the RotatingBox component
@@ -57,13 +57,13 @@ export interface Hello3DProps {
 
 /**
  * Hello3D - Minimal test component for Three.js infrastructure
- * 
+ *
  * Renders a simple 3D scene to verify:
  * - @react-three/fiber Canvas integration
  * - @react-three/drei OrbitControls functionality
  * - Three.js core rendering
  * - Korean theming with KOREAN_COLORS
- * 
+ *
  * @example
  * ```tsx
  * <Hello3D width={800} height={600} color={KOREAN_COLORS.ACCENT_GOLD} />
@@ -89,13 +89,13 @@ export const Hello3D: React.FC<Hello3DProps> = ({
       >
         {/* Ambient light for overall scene illumination */}
         <ambientLight intensity={0.5} />
-        
+
         {/* Directional light for depth and shadows */}
         <directionalLight position={[10, 10, 5]} intensity={1} />
-        
+
         {/* Rotating cube with Korean theming */}
         <RotatingBox color={color} />
-        
+
         {/* Interactive orbit controls */}
         <OrbitControls enableDamping dampingFactor={0.05} />
       </Canvas>

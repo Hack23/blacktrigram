@@ -1352,13 +1352,16 @@ export class MartialArtsAnimationBuilder {
    */
   crossPunch(timeOffset: number = 0.15, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_L, -0.7, 0, -0.5);
+      // Left cross punch: arm extends forward across center (좌 크로스)
+      // Shoulder X negative = elevation, Y negative = LEFT arm forward, Z positive = adduction
+      kf.rotate(BoneName.SHOULDER_L, -0.7, -0.3, 0.3);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -0.05);
       kf.rotate(BoneName.WRIST_L, 0, 0, 0.2);
-      kf.rotate(BoneName.SPINE_UPPER, 0, 0.45, 0);
-      kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.35, 0);
-      kf.rotate(BoneName.SPINE_LOWER, 0, 0.25, 0);
-      kf.rotate(BoneName.PELVIS, 0, 0.3, 0);
+      // Spine Y negative = drives LEFT shoulder forward for left cross
+      kf.rotate(BoneName.SPINE_UPPER, 0, -0.45, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, -0.35, 0);
+      kf.rotate(BoneName.SPINE_LOWER, 0, -0.25, 0);
+      kf.rotate(BoneName.PELVIS, 0, -0.3, 0);
       // Apply fist pose to punching hand
       this.applyHandPose(kf, HAND_POSES.FIST, "left");
     });
@@ -1372,7 +1375,9 @@ export class MartialArtsAnimationBuilder {
    */
   palmStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, -0.7, 0, 0.5);
+      // Right palm strike (장권): arm extends forward with open palm
+      // X negative = elevation, Y positive = RIGHT arm forward, Z near 0 = centered
+      kf.rotate(BoneName.SHOULDER_R, -0.7, 0.3, -0.1);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 0.05);
       kf.rotate(BoneName.WRIST_R, -0.5, 0, 0.1);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.4, 0);
@@ -1503,21 +1508,22 @@ export class MartialArtsAnimationBuilder {
     const oppositeElbow = isRight ? BoneName.ELBOW_L : BoneName.ELBOW_R;
 
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Uppercut arm rises
-      kf.rotate(shoulderBone, 0.8, 0, isRight ? 1.0 : -1.0);
+      // Uppercut arm rises (어퍼컷 상승)
+      // Shoulder X negative = arm RISES, Y rotation drives shoulder forward
+      kf.rotate(shoulderBone, -0.6, isRight ? 0.3 : -0.3, isRight ? 0.8 : -0.8);
       kf.rotate(elbowBone, 0, 0, isRight ? 1.2 : -1.2);
 
-      // Opposite arm pulls back (hikite)
+      // Opposite arm pulls back (hikite 당기기)
       kf.rotate(oppositeShoulder, -0.2, 0, isRight ? -0.3 : 0.3);
       kf.rotate(oppositeElbow, 0, 0, isRight ? -1.1 : 1.1);
 
       // Drive up through legs - explosive extension generates upward force (다리구동력)
-      // From crouch position, knees extend powerfully (positive = straighter)
-      kf.rotate(BoneName.KNEE_L, 0.15, 0, 0); // Extend from crouch
-      kf.rotate(BoneName.KNEE_R, 0.15, 0, 0); // Extend from crouch
+      // From crouch position, knees extend to nearly straight (0 = straight)
+      kf.rotate(BoneName.KNEE_L, 0.05, 0, 0); // Extend from crouch (nearly straight)
+      kf.rotate(BoneName.KNEE_R, 0.05, 0, 0); // Extend from crouch (nearly straight)
       kf.rotate(BoneName.HIP_L, -0.1, 0, 0); // Hip drives upward
       kf.rotate(BoneName.HIP_R, -0.1, 0, 0); // Hip drives upward
-      kf.rotate(BoneName.PELVIS, -0.25, isRight ? 0.2 : -0.2, 0); // More explosive rise
+      kf.rotate(BoneName.PELVIS, -0.25, isRight ? 0.2 : -0.2, 0); // Explosive rise
       kf.position(BoneName.PELVIS, 0, 0.15, 0.1); // Higher rise from leg drive
 
       // Apply fist pose to punching hand
@@ -1617,7 +1623,9 @@ export class MartialArtsAnimationBuilder {
    */
   elbowStrike(timeOffset: number = 0.07, easing: string = "linear"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0, 0, 0.5);
+      // Forward elbow strike (팔꿈치치기): arm lifts and drives forward
+      // X negative = elevation, Y positive = RIGHT arm forward, Z positive = into center
+      kf.rotate(BoneName.SHOULDER_R, -0.3, 0.4, -0.3);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.3);
       kf.rotate(BoneName.SPINE_UPPER, 0, 0.6, 0.15);
       kf.rotate(BoneName.SPINE_MIDDLE, 0, 0.5, 0.1);
@@ -1636,7 +1644,8 @@ export class MartialArtsAnimationBuilder {
    */
   elbowUppercut(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      kf.rotate(BoneName.SHOULDER_R, 0.8, 0, 1.2);
+      // Elbow rises upward (팔꿈치 올려치기): negative X = arm rises
+      kf.rotate(BoneName.SHOULDER_R, -0.6, 0.3, 0.8);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.4);
       kf.rotate(BoneName.KNEE_L, -0.05, 0, 0);
       kf.rotate(BoneName.KNEE_R, -0.05, 0, 0);
@@ -1658,10 +1667,12 @@ export class MartialArtsAnimationBuilder {
    */
   kneeStrike(timeOffset: number = 0.1, easing: string = "ease-out"): this {
     this.addKeyframe(this.currentTime + timeOffset, easing, (kf) => {
-      // Clinch grip - hands pulling opponent in
-      kf.rotate(BoneName.SHOULDER_L, 0.2, 0.3, -0.8);
+      // Clinch grip - hands pulling opponent in (클린치 파지)
+      // LEFT: Y negative = forward, Z positive = adduction toward center
+      // RIGHT: Y positive = forward, Z negative = adduction toward center
+      kf.rotate(BoneName.SHOULDER_L, -0.1, -0.3, 0.6);
       kf.rotate(BoneName.ELBOW_L, 0, 0, -1.8);
-      kf.rotate(BoneName.SHOULDER_R, 0.2, -0.3, 0.8);
+      kf.rotate(BoneName.SHOULDER_R, -0.1, 0.3, -0.6);
       kf.rotate(BoneName.ELBOW_R, 0, 0, 1.8);
 
       // Knee drive - maximum hip rotation for power
@@ -3811,7 +3822,7 @@ export class MartialArtsAnimationBuilder {
 
   /**
    * Build the complete animation
-   * 
+   *
    * Automatically normalizes timing to ensure animations start at time 0.
    * This is important for animation system consistency and performance.
    */
@@ -3819,10 +3830,10 @@ export class MartialArtsAnimationBuilder {
     // Normalize keyframe timing to start at 0
     // This ensures all animations begin at the same reference point
     let normalizedKeyframes = this.keyframes;
-    
+
     if (this.keyframes.length > 0) {
       const firstTime = this.keyframes[0].time;
-      
+
       // If animation doesn't start at 0, normalize all keyframe times
       if (firstTime !== 0) {
         normalizedKeyframes = this.keyframes.map((kf) => ({
@@ -3831,7 +3842,7 @@ export class MartialArtsAnimationBuilder {
         }));
       }
     }
-    
+
     return {
       name: this.name,
       koreanName: this.koreanName,

@@ -40,6 +40,7 @@ import {
   AnimationState,
   AnimationType,
   determineRecoveryType,
+  getAnimation,
   getAnimationForTechnique,
   getRecoveryAnimationState,
 } from "../../../systems/animation";
@@ -63,7 +64,7 @@ import {
   getPerformanceSettings,
   KOREAN_COLORS,
   ROUND_ANNOUNCEMENT_TIMINGS,
-} from "../../../types/constants";
+} from "@/types/constants";
 import { getAnimationTypeForTechnique } from "../../../data/techniqueMappings";
 import { toHexColor } from "../../../utils/colorHelpers";
 import { usePlayerMovement } from "../../../utils/inputSystem";
@@ -111,6 +112,7 @@ import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import { PauseMenu } from "./components/controls/PauseMenu";
 import { TraumaOverlay3D } from "./components/effects/TraumaOverlay3D";
+import { CombatParticleEffects3D } from "./components/effects/CombatParticleEffects3D";
 import {
   CombatBottomHUD,
   CombatLeftHUD,
@@ -306,13 +308,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   }, [isMobile, width]);
 
   // Adaptive quality - default to enabled on mobile, optional on desktop
-  const shouldEnableAdaptiveQuality =
-    enableAdaptiveQuality ?? isMobile;
+  const shouldEnableAdaptiveQuality = enableAdaptiveQuality ?? isMobile;
 
   /**
    * AdaptiveQualityWrapper - Internal component to use adaptive quality hook
    * Must be inside Canvas to use useFrame from @react-three/fiber
-   * 
+   *
    * Memoized with useMemo so the component type is stable across renders.
    * Note: renderConfig is intentionally NOT in dependencies to prevent
    * component recreation when performance settings change, which would
@@ -320,34 +321,29 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
    */
   const AdaptiveQualityWrapper = useMemo<
     React.FC<{ children: React.ReactNode }>
-  >(
-    () => {
-      const Component: React.FC<{ children: React.ReactNode }> = ({
-        children,
-      }) => {
-        // Monitor FPS and adjust quality dynamically
-        // Quality settings are logged but not currently applied to rendering
-        // Future: Pass quality settings to child components for dynamic adjustments
-        useAdaptiveQuality(
-          shouldEnableAdaptiveQuality,
-          isMobile,
-          (newQuality) => {
-            if (import.meta.env.DEV) {
-              console.log(
-                `[CombatScreen3D] Quality adjusted to: ${newQuality}`
-              );
-            }
+  >(() => {
+    const Component: React.FC<{ children: React.ReactNode }> = ({
+      children,
+    }) => {
+      // Monitor FPS and adjust quality dynamically
+      // Quality settings are logged but not currently applied to rendering
+      // Future: Pass quality settings to child components for dynamic adjustments
+      useAdaptiveQuality(
+        shouldEnableAdaptiveQuality,
+        isMobile,
+        (newQuality) => {
+          if (import.meta.env.DEV) {
+            console.log(`[CombatScreen3D] Quality adjusted to: ${newQuality}`);
           }
-        );
+        },
+      );
 
-        // Quality monitoring is active - quality changes logged in dev mode
-        return <>{children}</>;
-      };
+      // Quality monitoring is active - quality changes logged in dev mode
+      return <>{children}</>;
+    };
 
-      return Component;
-    },
-    [shouldEnableAdaptiveQuality, isMobile]
-  );
+    return Component;
+  }, [shouldEnableAdaptiveQuality, isMobile]);
 
   // Combat state management
   const { state: combatState, actions: combatActions } = useCombatState();
@@ -711,11 +707,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     const updateSpeedModifiers = () => {
       if (players.length >= 2) {
         // Player 1 speed modifiers - calculate both walk and run
-        const player1WalkModifiers = speedModifierSystem.calculateSpeedModifiers(
-          players[0],
-          MovementType.WALKING,
-          false, // isCrouching
-        );
+        const player1WalkModifiers =
+          speedModifierSystem.calculateSpeedModifiers(
+            players[0],
+            MovementType.WALKING,
+            false, // isCrouching
+          );
         const player1RunModifiers = speedModifierSystem.calculateSpeedModifiers(
           players[0],
           MovementType.RUNNING,
@@ -841,7 +838,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     if (players.length >= 2) {
       const player1 = players[0];
       const player2 = players[1];
-      
+
       // Check if both players are at max health (indicates new match start)
       if (
         player1?.health === player1?.maxHealth &&
@@ -876,21 +873,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // ═══════════════════════════════════════════════════════════════════════════
   // Acceleration-Based Running System for Player 1
   // ═══════════════════════════════════════════════════════════════════════════
-  
+
   // Track continuous movement time for acceleration-based running
   const player1MovementTimeRef = useRef(0);
-  const player1LastDirectionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const player1LastDirectionRef = useRef<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
 
   // Track acceleration-based speed (interpolated between walk and run speeds)
   // This applies archetype speeds and stance modifiers
-  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] = useState(
-    player1WalkRunSpeeds.walkSpeed
-  );
+  const [player1AccelerationBasedSpeed, setPlayer1AccelerationBasedSpeed] =
+    useState(player1WalkRunSpeeds.walkSpeed);
 
   // Determine if currently running using utility function with archetype run speed
   const player1IsRunning = isRunningSpeed(
     player1AccelerationBasedSpeed,
-    player1WalkRunSpeeds.runSpeed
+    player1WalkRunSpeeds.runSpeed,
   );
 
   // Player movement with physics-based acceleration and stance modifiers
@@ -928,10 +927,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       // When moving: face movement direction
       // velocity.x is lateral (left/right), velocity.y is forward/backward (Z in 3D)
       // Use velocity.y directly (not negated) so down arrow faces correctly
-      const movementRotation = Math.atan2(
-        player1Velocity.x,
-        player1Velocity.y,
-      );
+      const movementRotation = Math.atan2(player1Velocity.x, player1Velocity.y);
       player1LastRotationRef.current = movementRotation;
       return movementRotation;
     } else {
@@ -957,6 +953,16 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     null,
   );
 
+  // Tracks the frame at which the attack hit should fire (set per-technique)
+  // and whether it has already been fired for the current attack
+  const player1HitTriggerFrameRef = useRef<number>(6);
+  const player1AttackHitFiredRef = useRef<boolean>(false);
+
+  // Track attack animation durations for physics synchronization
+  // 물리 동기화를 위한 공격 애니메이션 지속시간 추적
+  const player1AttackDurationRef = useRef<number>(0.55);
+  const player2AttackDurationRef = useRef<number>(0.55);
+
   // Refs to clear attack animations after completion
   const clearPlayer1AttackAnimation = useRef<() => void>(() => {
     setPlayer1AttackAnimation(undefined);
@@ -972,9 +978,15 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   const player1AnimationEvents = useMemo<AnimationEvents>(
     () => ({
       onFrame: (frame, state) => {
-        // Execute attack at midpoint of animation (frame 6 of 12)
-        if (state === AnimationState.ATTACK && frame === 6) {
-          // Attack connects at the midpoint - execute combat logic here
+        // Execute attack when strike reaches peak extension
+        // The hit trigger frame is set dynamically when attack starts
+        // 공격 히트 트리거 프레임은 공격 시작 시 동적으로 설정됨
+        if (
+          state === AnimationState.ATTACK &&
+          frame >= player1HitTriggerFrameRef.current &&
+          !player1AttackHitFiredRef.current
+        ) {
+          player1AttackHitFiredRef.current = true;
           handleAttackRef.current?.();
         }
       },
@@ -1039,11 +1051,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     // Check for movement or running state changes
     const movementChanged = prevPlayer1IsMovingRef.current !== player1IsMoving;
     const runningChanged = prevPlayer1IsRunningRef.current !== player1IsRunning;
-    
+
     if (movementChanged || runningChanged) {
       if (player1IsMoving) {
         // Transition to RUN or WALK based on speed
-        const targetState = player1IsRunning ? AnimationState.RUN : AnimationState.WALK;
+        const targetState = player1IsRunning
+          ? AnimationState.RUN
+          : AnimationState.WALK;
         if (player1Animation.currentState !== targetState) {
           player1Animation.transitionTo(targetState);
         }
@@ -1058,7 +1072,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       prevPlayer1IsMovingRef.current = player1IsMoving;
       prevPlayer1IsRunningRef.current = player1IsRunning;
     }
-  }, [player1IsMoving, player1IsRunning, player1Animation, player1Data.currentStance]);
+  }, [
+    player1IsMoving,
+    player1IsRunning,
+    player1Animation,
+    player1Data.currentStance,
+  ]);
 
   // Movement detection threshold for AI animation sync (in pixels)
   // Lower values = more sensitive to small movements, higher values = smoother transitions
@@ -1133,15 +1152,18 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // Uses enum-based mapping for type safety and proper technique support
   // 기술 ID에서 AnimationType을 가져오는 헬퍼 함수
   // 타입 안전성과 적절한 기술 지원을 위해 열거형 기반 매핑 사용
-  const getTechniqueAnimationType = useCallback((techniqueId: string | undefined): AnimationType | undefined => {
-    if (!techniqueId) return undefined;
-    
-    // Use enum-based lookup for all techniques
-    // This properly handles stance-specific techniques like "geon_heaven_strike"
-    // 모든 기술에 대해 열거형 기반 조회 사용
-    // "geon_heaven_strike"와 같은 자세별 기술을 올바르게 처리
-    return getAnimationTypeForTechnique(techniqueId);
-  }, []);
+  const getTechniqueAnimationType = useCallback(
+    (techniqueId: string | undefined): AnimationType | undefined => {
+      if (!techniqueId) return undefined;
+
+      // Use enum-based lookup for all techniques
+      // This properly handles stance-specific techniques like "geon_heaven_strike"
+      // 모든 기술에 대해 열거형 기반 조회 사용
+      // "geon_heaven_strike"와 같은 자세별 기술을 올바르게 처리
+      return getAnimationTypeForTechnique(techniqueId);
+    },
+    [],
+  );
 
   // Attack movement integration - track attack states for physics-based forward movement
   // 공격 이동 통합 - 물리 기반 전방 이동을 위한 공격 상태 추적
@@ -1154,10 +1176,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     player1AnimationType: getTechniqueAnimationType(player1TechniqueId),
     player1Stance: player1Data.currentStance,
     player1BasePosition: player1Position3D,
+    player1AnimationDuration: player1AttackDurationRef.current,
     player2Attacking: player2Animation.currentState === AnimationState.ATTACK,
     player2AnimationType: getTechniqueAnimationType(player2TechniqueId),
     player2Stance: validPlayers[1].currentStance,
     player2BasePosition: player2Position3D,
+    player2AnimationDuration: player2AttackDurationRef.current,
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1417,13 +1441,11 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
   // 전투 피해로부터 부상 생성 콜백 (점진적 타박상 포함)
   const handleInjuryCreated = useCallback(
     (injury: Injury, targetPlayerIndex: number) => {
-      const updateInjuries = (
-        prev: readonly Injury[],
-      ): readonly Injury[] => {
+      const updateInjuries = (prev: readonly Injury[]): readonly Injury[] => {
         // Check for recent hits to the same body region (within 5 seconds)
         const recentHitTime = 5000; // 5 seconds
         const now = Date.now();
-        
+
         const recentHit = prev.find(
           (existing) =>
             existing.region === injury.region &&
@@ -1436,7 +1458,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           // Progressive bruising: increase hit count and severity
           const newHitCount = recentHit.hitCount + 1;
           const escalatedSeverity = Math.min(1.0, recentHit.severity + 0.15);
-          
+
           // Update the existing injury with increased severity and hit count
           // Only update existing injury, do not add a duplicate
           return prev.map((existing) =>
@@ -1526,14 +1548,27 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
           technique.name.english || technique.id,
         );
         setPlayer1AttackAnimation(animationName);
-        
+
         // Store technique ID for enum-based AnimationType lookup
         // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
         setPlayer1TechniqueId(technique.id);
 
-        // Trigger attack animation transition
-        // 공격 애니메이션 전환 트리거
-        player1Animation.transitionTo(AnimationState.ATTACK);
+        // Get the actual skeletal animation duration for this technique
+        // so the state machine stays in ATTACK for the full animation.
+        // 기술의 실제 스켈레탈 애니메이션 지속시간을 가져와서
+        // 상태 머신이 전체 애니메이션 동안 ATTACK 상태를 유지하도록 함
+        const skeletalAnim = getAnimation(animationName);
+        const attackDuration = skeletalAnim?.duration ?? 0.55;
+
+        // Trigger attack animation transition with technique-matched duration
+        // 기술 매칭 지속시간으로 공격 애니메이션 전환 트리거
+        const attackFrames = Math.max(1, Math.round(attackDuration * 60));
+        // Trigger hit at ~40% of the attack (when strike reaches peak extension)
+        player1HitTriggerFrameRef.current = Math.round(attackFrames * 0.4);
+        player1AttackHitFiredRef.current = false;
+        // Store duration for physics hook
+        player1AttackDurationRef.current = attackDuration;
+        player1Animation.transitionToAttack(attackDuration);
         combatActions.setExecutingTechnique(true);
 
         // Deduct resources
@@ -2067,12 +2102,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
   // Create a ref for the callback to avoid circular dependency
   const executeAIActionCallbackRef = useRef<
-    ((
-      action: string,
-      targetPos?: Position,
-      selectedTechnique?: KoreanTechnique,
-      targetVitalPoint?: string,
-    ) => void) | undefined
+    | ((
+        action: string,
+        targetPos?: Position,
+        selectedTechnique?: KoreanTechnique,
+        targetVitalPoint?: string,
+      ) => void)
+    | undefined
   >(undefined);
 
   // AI Combat System - connects AI decisions to executeAIActionCallbackRef via onExecuteAction (action/technique/vital point params)
@@ -2086,7 +2122,12 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
     roundEnded: combatState.roundEnded,
     arenaBounds,
     onExecuteAction: (action, targetPos, selectedTechnique, targetVitalPoint) =>
-      executeAIActionCallbackRef.current?.(action, targetPos, selectedTechnique, targetVitalPoint),
+      executeAIActionCallbackRef.current?.(
+        action,
+        targetPos,
+        selectedTechnique,
+        targetVitalPoint,
+      ),
     onStanceChange: handleAIStanceChange,
     onLateralityChange: () => handleStanceSideSwitch(1), // AI player (index 1)
     playerLaterality: combatState.playerLaterality[1], // AI's own laterality
@@ -2170,17 +2211,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.name?.english ??
               selectedTechnique.englishName ??
               "jab";
-            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
-            
+            const p2AttackAnimName = getAnimationForTechnique(techName);
+            setPlayer2AttackAnimation(p2AttackAnimName);
+
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
             if (selectedTechnique?.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
+            const p2AttackAnim = getAnimation(p2AttackAnimName);
+            const p2AttackDur = p2AttackAnim?.duration ?? 0.55;
+            player2AttackDurationRef.current = p2AttackDur;
+            player2Animation.transitionToAttack(p2AttackDur);
           } else {
             setPlayer2AttackAnimation("jab");
+            player2AttackDurationRef.current = 0.55;
+            player2Animation.transitionToAttack(0.55);
           }
-          player2Animation.transitionTo(AnimationState.ATTACK);
           handleAIAttack(selectedTechnique, targetVitalPoint);
           break;
         case "defend":
@@ -2199,21 +2246,24 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.name?.english ??
               selectedTechnique.englishName ??
               "cross";
-            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
-            
+            const p2TechAnimName = getAnimationForTechnique(techName);
+            setPlayer2AttackAnimation(p2TechAnimName);
+
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
             if (selectedTechnique?.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
+            const p2TechAnim = getAnimation(p2TechAnimName);
+            const p2TechDur = p2TechAnim?.duration ?? 0.6;
+            player2AttackDurationRef.current = p2TechDur;
+            player2Animation.transitionToAttack(p2TechDur);
           } else {
             setPlayer2AttackAnimation("cross");
+            player2AttackDurationRef.current = 0.6;
+            player2Animation.transitionToAttack(0.6);
           }
-          player2Animation.transitionTo(AnimationState.ATTACK);
-          handleAITechnique(
-            selectedTechnique,
-            targetVitalPoint,
-          );
+          handleAITechnique(selectedTechnique, targetVitalPoint);
           break;
         case "approach":
         case "retreat":
@@ -2282,17 +2332,23 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
               selectedTechnique.name?.english ??
               selectedTechnique.englishName ??
               "cross";
-            setPlayer2AttackAnimation(getAnimationForTechnique(techName));
-            
+            const p2CounterAnimName = getAnimationForTechnique(techName);
+            setPlayer2AttackAnimation(p2CounterAnimName);
+
             // Store technique ID for enum-based AnimationType lookup
             // 열거형 기반 AnimationType 조회를 위한 기술 ID 저장
             if (selectedTechnique?.id) {
               setPlayer2TechniqueId(selectedTechnique.id);
             }
+            const p2CounterAnim = getAnimation(p2CounterAnimName);
+            const p2CounterDur = p2CounterAnim?.duration ?? 0.6;
+            player2AttackDurationRef.current = p2CounterDur;
+            player2Animation.transitionToAttack(p2CounterDur);
           } else {
             setPlayer2AttackAnimation("cross");
+            player2AttackDurationRef.current = 0.6;
+            player2Animation.transitionToAttack(0.6);
           }
-          player2Animation.transitionTo(AnimationState.ATTACK);
           handleAIAttack(selectedTechnique, targetVitalPoint);
           addCombatMessage("AI 반격!", "AI Counter!");
           break;
@@ -2488,7 +2544,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       1.0,
       validPlayers[0].bodyPartHealth,
       validPlayers[0].currentStance ?? TrigramStance.GEON,
-      validPlayers[0].pain ?? 0
+      validPlayers[0].pain ?? 0,
     );
 
     return {
@@ -2512,7 +2568,7 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
       1.0,
       validPlayers[1].bodyPartHealth,
       validPlayers[1].currentStance ?? TrigramStance.GEON,
-      validPlayers[1].pain ?? 0
+      validPlayers[1].pain ?? 0,
     );
 
     return {
@@ -2569,304 +2625,323 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
 
           {/* Combat Arena 3D Environment - uses physics-based world dimensions */}
           <CombatArena3D
-          lighting="cyberpunk"
-          scale={arenaBounds.scale}
-          worldWidthMeters={arenaBounds.worldWidthMeters}
-          worldDepthMeters={arenaBounds.worldDepthMeters}
-        />
+            lighting="cyberpunk"
+            scale={arenaBounds.scale}
+            worldWidthMeters={arenaBounds.worldWidthMeters}
+            worldDepthMeters={arenaBounds.worldDepthMeters}
+          />
 
-        {/* Animation updater - updates both player animations at 60fps */}
-        <AnimationUpdater
-          player1Animation={player1Animation}
-          player2Animation={player2Animation}
-        />
+          {/* Animation updater - updates both player animations at 60fps */}
+          <AnimationUpdater
+            player1Animation={player1Animation}
+            player2Animation={player2Animation}
+          />
 
-        {/* Acceleration updater - tracks player 1 movement time and updates speed */}
-        <AccelerationUpdater
-          isMoving={player1IsMoving}
-          velocity={player1Velocity}
-          movementTimeRef={player1MovementTimeRef}
-          lastDirectionRef={player1LastDirectionRef}
-          onSpeedUpdate={setPlayer1AccelerationBasedSpeed}
-          walkSpeed={player1WalkRunSpeeds.walkSpeed}
-          runSpeed={player1WalkRunSpeeds.runSpeed}
-        />
+          {/* Acceleration updater - tracks player 1 movement time and updates speed */}
+          <AccelerationUpdater
+            isMoving={player1IsMoving}
+            velocity={player1Velocity}
+            movementTimeRef={player1MovementTimeRef}
+            lastDirectionRef={player1LastDirectionRef}
+            onSpeedUpdate={setPlayer1AccelerationBasedSpeed}
+            walkSpeed={player1WalkRunSpeeds.walkSpeed}
+            runSpeed={player1WalkRunSpeeds.runSpeed}
+          />
 
-        {/* Player 1 (Human) */}
-        <Player3DWithTransitions
-          {...convertPlayerStateToProps(
-            validPlayers[0],
-            player1PositionWithAttackMovement,
-            player1Rotation,
-            {
-              isMobile,
-              facing: "right",
-              enableFacialExpressions: true,
-              enableEyeTracking: true,
-              opponentPosition: player2PositionWithAttackMovement,
-            },
-          )}
-          currentAnimation={animationStateToPlayerAnimation(
-            player1Animation.currentState,
-          )}
-          attackAnimation={player1AttackAnimation}
-          laterality={combatState.playerLaterality[0]}
-          enableTransitionEffects={!isMobile}
-          enableStanceSymbol={!isMobile}
-          enableStanceAudio={true}
-        />
+          {/* Player 1 (Human) */}
+          <Player3DWithTransitions
+            {...convertPlayerStateToProps(
+              validPlayers[0],
+              player1PositionWithAttackMovement,
+              player1Rotation,
+              {
+                isMobile,
+                facing: "right",
+                enableFacialExpressions: true,
+                enableEyeTracking: true,
+                opponentPosition: player2PositionWithAttackMovement,
+              },
+            )}
+            currentAnimation={animationStateToPlayerAnimation(
+              player1Animation.currentState,
+            )}
+            attackAnimation={player1AttackAnimation}
+            laterality={combatState.playerLaterality[0]}
+            enableTransitionEffects={!isMobile}
+            enableStanceSymbol={!isMobile}
+            enableStanceAudio={true}
+          />
 
-        {/* Player 2 (AI) */}
-        <Player3DWithTransitions
-          {...convertPlayerStateToProps(
-            validPlayers[1],
-            player2PositionWithAttackMovement,
-            player2Rotation,
-            {
-              isMobile,
-              facing: "right",
-              enableFacialExpressions: true,
-              enableEyeTracking: true,
-              opponentPosition: player1PositionWithAttackMovement,
-            },
-          )}
-          currentAnimation={animationStateToPlayerAnimation(
-            player2Animation.currentState,
-          )}
-          attackAnimation={player2AttackAnimation}
-          laterality={combatState.playerLaterality[1]}
-          enableTransitionEffects={!isMobile}
-          enableStanceSymbol={!isMobile}
-          enableStanceAudio={true}
-        />
+          {/* Player 2 (AI) */}
+          <Player3DWithTransitions
+            {...convertPlayerStateToProps(
+              validPlayers[1],
+              player2PositionWithAttackMovement,
+              player2Rotation,
+              {
+                isMobile,
+                facing: "right",
+                enableFacialExpressions: true,
+                enableEyeTracking: true,
+                opponentPosition: player1PositionWithAttackMovement,
+              },
+            )}
+            currentAnimation={animationStateToPlayerAnimation(
+              player2Animation.currentState,
+            )}
+            attackAnimation={player2AttackAnimation}
+            laterality={combatState.playerLaterality[1]}
+            enableTransitionEffects={!isMobile}
+            enableStanceSymbol={!isMobile}
+            enableStanceAudio={true}
+          />
 
-        {/* Movement Status Indicators - Korean/English Bilingual */}
-        {/* Player 1 Movement Status */}
-        {(player1MovementState.isLimping || player1MovementState.isSevereLimp) && (
-          <Html
-            position={[player1Position3D[0], player1Position3D[1] + 2.5, player1Position3D[2]]}
-            center
-            data-testid="player1-movement-status"
-          >
-            <div
-              style={{
-                fontSize: isMobile ? "12px" : "14px",
-                color: player1MovementState.isSevereLimp 
-                  ? toHexColor(KOREAN_COLORS.TEXT_ERROR) 
-                  : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                textShadow: "0 0 4px rgba(0,0,0,0.8)",
-                background: "rgba(0, 0, 0, 0.6)",
-                padding: "4px 8px",
-                borderRadius: "4px",
-                whiteSpace: "nowrap",
-              }}
+          {/* Movement Status Indicators - Korean/English Bilingual */}
+          {/* Player 1 Movement Status */}
+          {(player1MovementState.isLimping ||
+            player1MovementState.isSevereLimp) && (
+            <Html
+              position={[
+                player1Position3D[0],
+                player1Position3D[1] + 2.5,
+                player1Position3D[2],
+              ]}
+              center
+              data-testid="player1-movement-status"
             >
-              {player1MovementState.statusText.korean} | {player1MovementState.statusText.english}
-            </div>
-          </Html>
-        )}
+              <div
+                style={{
+                  fontSize: isMobile ? "12px" : "14px",
+                  color: player1MovementState.isSevereLimp
+                    ? toHexColor(KOREAN_COLORS.TEXT_ERROR)
+                    : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  fontWeight: "bold",
+                  textShadow: "0 0 4px rgba(0,0,0,0.8)",
+                  background: "rgba(0, 0, 0, 0.6)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {player1MovementState.statusText.korean} |{" "}
+                {player1MovementState.statusText.english}
+              </div>
+            </Html>
+          )}
 
-        {/* Player 2 Movement Status */}
-        {(player2MovementState.isLimping || player2MovementState.isSevereLimp) && (
-          <Html
-            position={[player2Position3D[0], player2Position3D[1] + 2.5, player2Position3D[2]]}
-            center
-            data-testid="player2-movement-status"
-          >
-            <div
-              style={{
-                fontSize: isMobile ? "12px" : "14px",
-                color: player2MovementState.isSevereLimp 
-                  ? toHexColor(KOREAN_COLORS.TEXT_ERROR) 
-                  : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
-                fontFamily: FONT_FAMILY.KOREAN,
-                fontWeight: "bold",
-                textShadow: "0 0 4px rgba(0,0,0,0.8)",
-                background: "rgba(0, 0, 0, 0.6)",
-                padding: "4px 8px",
-                borderRadius: "4px",
-                whiteSpace: "nowrap",
-              }}
+          {/* Player 2 Movement Status */}
+          {(player2MovementState.isLimping ||
+            player2MovementState.isSevereLimp) && (
+            <Html
+              position={[
+                player2Position3D[0],
+                player2Position3D[1] + 2.5,
+                player2Position3D[2],
+              ]}
+              center
+              data-testid="player2-movement-status"
             >
-              {player2MovementState.statusText.korean} | {player2MovementState.statusText.english}
-            </div>
-          </Html>
-        )}
+              <div
+                style={{
+                  fontSize: isMobile ? "12px" : "14px",
+                  color: player2MovementState.isSevereLimp
+                    ? toHexColor(KOREAN_COLORS.TEXT_ERROR)
+                    : toHexColor(KOREAN_COLORS.ACCENT_GOLD),
+                  fontFamily: FONT_FAMILY.KOREAN,
+                  fontWeight: "bold",
+                  textShadow: "0 0 4px rgba(0,0,0,0.8)",
+                  background: "rgba(0, 0, 0, 0.6)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {player2MovementState.statusText.korean} |{" "}
+                {player2MovementState.statusText.english}
+              </div>
+            </Html>
+          )}
 
-        {/* Trauma Overlays - Injury Visualization (외상 오버레이 - 부상 시각화) */}
-        {/* Player 1 Injuries */}
-        <TraumaOverlay3D
-          playerId="player"
-          health={validPlayers[0].health}
-          injuries={player1Injuries}
-          characterPosition={player1Position3D}
-          isMobile={isMobile}
-          showFractures={true}
-        />
+          {/* Trauma Overlays - Injury Visualization (외상 오버레이 - 부상 시각화) */}
+          {/* Player 1 Injuries */}
+          <TraumaOverlay3D
+            playerId="player"
+            health={validPlayers[0].health}
+            injuries={player1Injuries}
+            characterPosition={player1Position3D}
+            isMobile={isMobile}
+            showFractures={true}
+          />
 
-        {/* Player 2 Injuries */}
-        <TraumaOverlay3D
-          playerId="enemy"
-          health={validPlayers[1].health}
-          injuries={player2Injuries}
-          characterPosition={player2Position3D}
-          isMobile={isMobile}
-          showFractures={true}
-        />
+          {/* Player 2 Injuries */}
+          <TraumaOverlay3D
+            playerId="enemy"
+            health={validPlayers[1].health}
+            injuries={player2Injuries}
+            characterPosition={player2Position3D}
+            isMobile={isMobile}
+            showFractures={true}
+          />
 
-        {/* Hit Effects */}
-        <HitEffects3D
-          effects={combatState.hitEffects}
-          onEffectComplete={handleEffectComplete}
-          arenaBounds={arenaBounds}
-        />
+          {/* Hit Effects */}
+          <HitEffects3D
+            effects={combatState.hitEffects}
+            onEffectComplete={handleEffectComplete}
+            arenaBounds={arenaBounds}
+          />
 
-        {/* Vital Point Overlay - Show on both players when V is pressed */}
-        {overlayVisible && (
-          <>
-            {/* Player 1 Vital Points */}
-            <VitalPointMarkers3D
-              position={player1Position3D}
-              visible={overlayVisible}
-              severityFilter={severityFilters}
-              regionFilter={regionFilter}
-              searchQuery={searchQuery}
-              showLabels={showLabels}
-              scale={scale}
-              animated={animated}
-              onPointClick={() => {
-                // Optional: Add point targeting in combat
-              }}
+          {/* Combat Particle Effects - Blood viscosity, organ damage, audio (전투 입자 효과) */}
+          <CombatParticleEffects3D
+            hitEffects={combatState.hitEffects}
+            enabled={true}
+            isMobile={isMobile}
+          />
+
+          {/* Vital Point Overlay - Show on both players when V is pressed */}
+          {overlayVisible && (
+            <>
+              {/* Player 1 Vital Points */}
+              <VitalPointMarkers3D
+                position={player1Position3D}
+                visible={overlayVisible}
+                severityFilter={severityFilters}
+                regionFilter={regionFilter}
+                searchQuery={searchQuery}
+                showLabels={showLabels}
+                scale={scale}
+                animated={animated}
+                onPointClick={() => {
+                  // Optional: Add point targeting in combat
+                }}
+              />
+
+              {/* Player 2 Vital Points */}
+              <VitalPointMarkers3D
+                position={player2Position3D}
+                visible={overlayVisible}
+                severityFilter={severityFilters}
+                regionFilter={regionFilter}
+                searchQuery={searchQuery}
+                showLabels={showLabels}
+                scale={scale}
+                animated={animated}
+                onPointClick={() => {
+                  // Optional: Add point targeting in combat
+                }}
+              />
+
+              {/* Vital Point Overlay Controls - only visible when overlay is active */}
+              <VitalPointOverlayControlsHtml
+                screenPosition={{
+                  top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
+                  left: `${layoutConstants.padding}px`,
+                }}
+                visible={overlayVisible}
+                onVisibleChange={setOverlayVisible}
+                severityFilters={severityFilters}
+                onSeverityFiltersChange={setSeverityFilters}
+                regionFilter={regionFilter}
+                onRegionFilterChange={setRegionFilter}
+                searchQuery={searchQuery}
+                onSearchQueryChange={setSearchQuery}
+                showLabels={showLabels}
+                onShowLabelsChange={setShowLabels}
+                animated={animated}
+                onAnimatedChange={setAnimated}
+                scale={scale}
+                onScaleChange={setScale}
+                isMobile={isMobile}
+              />
+            </>
+          )}
+
+          {/* Action Feedback - Damage Numbers */}
+          <DamageNumbers
+            damages={feedbackState.damageNumbers}
+            isMobile={isMobile}
+            arenaBounds={arenaBounds}
+          />
+
+          {/* Action Feedback - Action Indicators */}
+          <ActionFeedback
+            feedbacks={feedbackState.actionFeedbacks}
+            isMobile={isMobile}
+            arenaBounds={arenaBounds}
+          />
+
+          {/* Combo Counter */}
+          <ComboCounter combo={feedbackState.comboCount} isMobile={isMobile} />
+
+          {/* Technique Name Display */}
+          {feedbackState.currentTechnique && (
+            <TechniqueName
+              korean={feedbackState.currentTechnique.korean}
+              english={feedbackState.currentTechnique.english}
+              isMobile={isMobile}
+              onComplete={() => feedbackActions.hideTechnique()}
             />
+          )}
 
-            {/* Player 2 Vital Points */}
-            <VitalPointMarkers3D
-              position={player2Position3D}
-              visible={overlayVisible}
-              severityFilter={severityFilters}
-              regionFilter={regionFilter}
-              searchQuery={searchQuery}
-              showLabels={showLabels}
-              scale={scale}
-              animated={animated}
-              onPointClick={() => {
-                // Optional: Add point targeting in combat
-              }}
-            />
+          {/* Performance Overlay (Development Only) - Toggle with P key */}
+          {import.meta.env.DEV && showPerformanceMonitor && (
+            <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
+          )}
 
-            {/* Vital Point Overlay Controls - only visible when overlay is active */}
-            <VitalPointOverlayControlsHtml
-              screenPosition={{
-                top: `${layoutConstants.hudHeight + layoutConstants.padding}px`,
-                left: `${layoutConstants.padding}px`,
-              }}
-              visible={overlayVisible}
-              onVisibleChange={setOverlayVisible}
-              severityFilters={severityFilters}
-              onSeverityFiltersChange={setSeverityFilters}
-              regionFilter={regionFilter}
-              onRegionFilterChange={setRegionFilter}
-              searchQuery={searchQuery}
-              onSearchQueryChange={setSearchQuery}
-              showLabels={showLabels}
-              onShowLabelsChange={setShowLabels}
-              animated={animated}
-              onAnimatedChange={setAnimated}
-              scale={scale}
-              onScaleChange={setScale}
+          {/* Visual Feedback Components for Keyboard Controls */}
+          <StanceChangeIndicator
+            currentStance={currentStanceIndex}
+            previousStance={previousStance}
+            isMobile={isMobile}
+          />
+
+          <KeyboardHints
+            visible={showHints}
+            currentStance={currentStanceIndex}
+            isMobile={isMobile}
+          />
+
+          <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
+
+          {/* 3D Balance Indicators - Positioned below top HUD, to the right of side HUDs */}
+          {/* Player 1 Balance Indicator - Upper left area, below top HUD */}
+          {validPlayers[0] && (
+            <BalanceIndicatorOverlayHtml
+              player={validPlayers[0] as BalancePlayerState}
+              currentTime={currentTime}
+              position={[
+                -2.5, // Left side of arena (to the right of left HUD in 3D space)
+                2.5, // Upper area (below top HUD)
+                -1.0, // Slightly forward toward camera
+              ]}
               isMobile={isMobile}
             />
-          </>
-        )}
+          )}
 
-        {/* Action Feedback - Damage Numbers */}
-        <DamageNumbers
-          damages={feedbackState.damageNumbers}
-          isMobile={isMobile}
-          arenaBounds={arenaBounds}
-        />
+          {/* Player 2 Balance Indicator - Upper right area, below top HUD */}
+          {validPlayers[1] && (
+            <BalanceIndicatorOverlayHtml
+              player={validPlayers[1] as BalancePlayerState}
+              currentTime={currentTime}
+              position={[
+                2.5, // Right side of arena (to the left of right HUD in 3D space)
+                2.5, // Upper area (below top HUD)
+                -1.0, // Slightly forward toward camera
+              ]}
+              isMobile={isMobile}
+            />
+          )}
 
-        {/* Action Feedback - Action Indicators */}
-        <ActionFeedback
-          feedbacks={feedbackState.actionFeedbacks}
-          isMobile={isMobile}
-          arenaBounds={arenaBounds}
-        />
+          {/* Mobile Touch Controls moved outside Canvas - using MobileControlsOverlay for reliable touch events */}
 
-        {/* Combo Counter */}
-        <ComboCounter combo={feedbackState.comboCount} isMobile={isMobile} />
-
-        {/* Technique Name Display */}
-        {feedbackState.currentTechnique && (
-          <TechniqueName
-            korean={feedbackState.currentTechnique.korean}
-            english={feedbackState.currentTechnique.english}
-            isMobile={isMobile}
-            onComplete={() => feedbackActions.hideTechnique()}
-          />
-        )}
-
-        {/* Performance Overlay (Development Only) - Toggle with P key */}
-        {import.meta.env.DEV && showPerformanceMonitor && (
-          <PerformanceOverlay3D position={[-9, -2, 5]} visible={true} />
-        )}
-
-        {/* Visual Feedback Components for Keyboard Controls */}
-        <StanceChangeIndicator
-          currentStance={currentStanceIndex}
-          previousStance={previousStance}
-          isMobile={isMobile}
-        />
-
-        <KeyboardHints
-          visible={showHints}
-          currentStance={currentStanceIndex}
-          isMobile={isMobile}
-        />
-
-        <InputBufferDisplay queuedInputs={queuedInputs} isMobile={isMobile} />
-
-        {/* 3D Balance Indicators - Positioned below top HUD, to the right of side HUDs */}
-        {/* Player 1 Balance Indicator - Upper left area, below top HUD */}
-        {validPlayers[0] && (
-          <BalanceIndicatorOverlayHtml
-            player={validPlayers[0] as BalancePlayerState}
-            currentTime={currentTime}
-            position={[
-              -2.5, // Left side of arena (to the right of left HUD in 3D space)
-              2.5, // Upper area (below top HUD)
-              -1.0 // Slightly forward toward camera
-            ]}
-            isMobile={isMobile}
-          />
-        )}
-
-        {/* Player 2 Balance Indicator - Upper right area, below top HUD */}
-        {validPlayers[1] && (
-          <BalanceIndicatorOverlayHtml
-            player={validPlayers[1] as BalancePlayerState}
-            currentTime={currentTime}
-            position={[
-              2.5, // Right side of arena (to the left of right HUD in 3D space)
-              2.5, // Upper area (below top HUD)
-              -1.0 // Slightly forward toward camera
-            ]}
-            isMobile={isMobile}
-          />
-        )}
-
-        {/* Mobile Touch Controls moved outside Canvas - using MobileControlsOverlay for reliable touch events */}
-
-        {/* Performance Monitoring - FPS display (dev mode, toggle with P key) */}
-        {process.env.NODE_ENV === "development" && showPerformanceMonitor && (
-          <FPSMonitor
-            enabled={true}
-            warningThreshold={50}
-            criticalThreshold={30}
-          />
-        )}
+          {/* Performance Monitoring - FPS display (dev mode, toggle with P key) */}
+          {process.env.NODE_ENV === "development" && showPerformanceMonitor && (
+            <FPSMonitor
+              enabled={true}
+              warningThreshold={50}
+              criticalThreshold={30}
+            />
+          )}
         </AdaptiveQualityWrapper>
 
         {/* Post-processing Effects - lightweight only */}

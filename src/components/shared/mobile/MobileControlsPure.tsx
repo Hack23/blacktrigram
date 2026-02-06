@@ -13,7 +13,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
 import { triggerHaptic } from "../../../utils/haptics";
 

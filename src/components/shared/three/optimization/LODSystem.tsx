@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * LODSystem - Level of Detail optimization for Three.js objects
  *
@@ -94,7 +95,8 @@ export const LODCharacter: React.FC<LODCharacterProps> = ({
   isMobile = false,
 }) => {
   // Use mobile distances if on mobile, otherwise use defaults
-  const lodDistances = distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);
+  const lodDistances =
+    distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);
 
   // Detailed component requires array of distances
   const distanceArray = [
@@ -117,7 +119,9 @@ export const LODCharacter: React.FC<LODCharacterProps> = ({
  */
 export interface LODEffectProps {
   /** Effect to render at different detail levels */
-  readonly children: (detailLevel: "high" | "medium" | "low") => React.ReactNode;
+  readonly children: (
+    detailLevel: "high" | "medium" | "low",
+  ) => React.ReactNode;
   /** Custom LOD distances (optional) */
   readonly distances?: LODDistances;
   /** Whether to use mobile-optimized distances */
@@ -146,13 +150,10 @@ export const LODEffect: React.FC<LODEffectProps> = ({
   distances,
   isMobile = false,
 }) => {
-  const lodDistances = distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);
+  const lodDistances =
+    distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);
 
-  const distanceArray = [
-    lodDistances.high,
-    lodDistances.medium,
-    Infinity,
-  ];
+  const distanceArray = [lodDistances.high, lodDistances.medium, Infinity];
 
   return (
     <Detailed distances={distanceArray}>
@@ -172,12 +173,12 @@ export const LODEffect: React.FC<LODEffectProps> = ({
  */
 export function calculateLODDistances(
   arenaWidth: number,
-  arenaDepth: number
+  arenaDepth: number,
 ): LODDistances {
   // High detail: within 40% of arena diagonal
   const diagonal = Math.sqrt(arenaWidth * arenaWidth + arenaDepth * arenaDepth);
   const highDistance = diagonal * 0.4;
-  
+
   // Medium detail: within 70% of arena diagonal (not used directly, implicit in structure)
   // const mediumDistance = diagonal * 0.7;
 
@@ -197,7 +198,7 @@ export function calculateLODDistances(
  */
 export function getLODParticleCount(
   baseCount: number,
-  detailLevel: "high" | "medium" | "low"
+  detailLevel: "high" | "medium" | "low",
 ): number {
   switch (detailLevel) {
     case "high":
@@ -218,7 +219,7 @@ export function getLODParticleCount(
  * @returns Shadow map size
  */
 export function getLODShadowQuality(
-  detailLevel: "high" | "medium" | "low"
+  detailLevel: "high" | "medium" | "low",
 ): number {
   switch (detailLevel) {
     case "high":

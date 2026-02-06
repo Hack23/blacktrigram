@@ -1,32 +1,32 @@
 /**
  * MobileHUDLayout Component
- * 
+ *
  * Mobile-optimized HUD layout for combat screens
  * Designed for touch-friendly interfaces with strategic element positioning
- * 
+ *
  * Features:
  * - Touch targets ≥44x44px (iOS guideline)
  * - Font sizes ≥14px body, ≥16px important text
  * - Safe area inset support
  * - Portrait and landscape mode optimization
  * - Simplified layout for small screens
- * 
+ *
  * @module components/ui/MobileHUDLayout
  * @category Mobile UI
  * @korean 모바일HUD레이아웃
  */
 
-import { Html } from '@react-three/drei';
-import React, { useMemo } from 'react';
-import { PlayerState } from '../../../systems';
-import { KOREAN_COLORS, FONT_FAMILY } from '../../../types/constants';
-import { useWindowSize } from '../../../hooks/useWindowSize';
-import { useResponsiveLayout } from '../../../hooks/useResponsiveLayout';
+import { Html } from "@react-three/drei";
+import React, { useMemo } from "react";
+import { PlayerState } from "../../../systems";
+import { KOREAN_COLORS, FONT_FAMILY } from "@/types/constants";
+import { useWindowSize } from "../../../hooks/useWindowSize";
+import { useResponsiveLayout } from "../../../hooks/useResponsiveLayout";
 import {
   calculateHUDHeight,
   calculateProgressBarSize,
   isValidTouchTarget,
-} from '../../../utils/responsiveLayout';
+} from "../../../utils/responsiveLayout";
 
 /**
  * Props for MobileHUDLayout component
@@ -54,7 +54,7 @@ export interface MobileHUDLayoutProps {
  */
 interface MobileHealthBarProps {
   readonly player: PlayerState;
-  readonly side: 'left' | 'right';
+  readonly side: "left" | "right";
   readonly layout: ReturnType<typeof useResponsiveLayout>;
   readonly barSize: { width: number; height: number };
 }
@@ -75,12 +75,12 @@ const MobileHealthBar: React.FC<MobileHealthBarProps> = ({
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         [side]: layout.spacing.md,
         top: layout.safeArea.top + layout.spacing.sm,
         width: barSize.width,
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         gap: layout.spacing.xs,
       }}
       data-testid={`mobile-health-${side}`}
@@ -91,9 +91,9 @@ const MobileHealthBar: React.FC<MobileHealthBarProps> = ({
         style={{
           fontSize: layout.fontSize.small,
           fontFamily: FONT_FAMILY.KOREAN,
-          color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, '0')}`,
-          fontWeight: 'bold',
-          textShadow: '0 0 4px rgba(0,0,0,0.8)',
+          color: `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+          fontWeight: "bold",
+          textShadow: "0 0 4px rgba(0,0,0,0.8)",
         }}
       >
         {player.archetype}
@@ -102,47 +102,45 @@ const MobileHealthBar: React.FC<MobileHealthBarProps> = ({
       {/* Health Bar */}
       <div
         style={{
-          position: 'relative',
-          width: '100%',
+          position: "relative",
+          width: "100%",
           height: actualHeight,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
           borderRadius: layout.spacing.xs,
-          border: `2px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`,
-          overflow: 'hidden',
-          boxShadow: isLowHealth
-            ? `0 0 10px rgba(255, 0, 0, 0.6)`
-            : 'none',
+          border: `2px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+          overflow: "hidden",
+          boxShadow: isLowHealth ? `0 0 10px rgba(255, 0, 0, 0.6)` : "none",
         }}
         data-testid={`health-bar-${side}`}
       >
         {/* Health Fill */}
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             width: `${healthPercent}%`,
-            height: '100%',
+            height: "100%",
             backgroundColor: isLowHealth
-              ? `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, '0')}`
-              : `#${KOREAN_COLORS.HEALTH_FULL.toString(16).padStart(6, '0')}`,
-            transition: 'width 0.3s ease, background-color 0.3s ease',
+              ? `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`
+              : `#${KOREAN_COLORS.HEALTH_FULL.toString(16).padStart(6, "0")}`,
+            transition: "width 0.3s ease, background-color 0.3s ease",
           }}
         />
 
         {/* Health Text */}
         <div
           style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             fontSize: layout.fontSize.body,
             fontFamily: FONT_FAMILY.KOREAN,
-            color: '#ffffff',
-            fontWeight: 'bold',
-            textShadow: '0 0 4px rgba(0,0,0,0.9)',
-            pointerEvents: 'none',
+            color: "#ffffff",
+            fontWeight: "bold",
+            textShadow: "0 0 4px rgba(0,0,0,0.9)",
+            pointerEvents: "none",
           }}
         >
           {Math.ceil(player.health)} / {player.maxHealth}
@@ -152,21 +150,21 @@ const MobileHealthBar: React.FC<MobileHealthBarProps> = ({
       {/* Stamina Bar - Smaller */}
       <div
         style={{
-          width: '100%',
+          width: "100%",
           height: Math.max(layout.spacing.lg, 20),
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
           borderRadius: layout.spacing.xs / 2,
-          border: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, '0')}`,
-          overflow: 'hidden',
+          border: `1px solid #${KOREAN_COLORS.PRIMARY_CYAN.toString(16).padStart(6, "0")}`,
+          overflow: "hidden",
         }}
         data-testid={`stamina-bar-${side}`}
       >
         <div
           style={{
             width: `${(player.stamina / player.maxStamina) * 100}%`,
-            height: '100%',
-            backgroundColor: `#${KOREAN_COLORS.STAMINA_FULL.toString(16).padStart(6, '0')}`,
-            transition: 'width 0.2s ease',
+            height: "100%",
+            backgroundColor: `#${KOREAN_COLORS.STAMINA_FULL.toString(16).padStart(6, "0")}`,
+            transition: "width 0.2s ease",
           }}
         />
       </div>
@@ -196,13 +194,13 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: layout.safeArea.top + layout.spacing.sm,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        left: "50%",
+        transform: "translateX(-50%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         gap: layout.spacing.xs,
       }}
       data-testid="mobile-timer"
@@ -212,9 +210,9 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
         style={{
           fontSize: layout.fontSize.small,
           fontFamily: FONT_FAMILY.KOREAN,
-          color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, '0')}`,
-          fontWeight: 'bold',
-          textShadow: '0 0 4px rgba(0,0,0,0.8)',
+          color: `#${KOREAN_COLORS.ACCENT_GOLD.toString(16).padStart(6, "0")}`,
+          fontWeight: "bold",
+          textShadow: "0 0 4px rgba(0,0,0,0.8)",
         }}
       >
         R{currentRound}/{maxRounds}
@@ -226,13 +224,13 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
           fontSize: layout.fontSize.hud,
           fontFamily: FONT_FAMILY.KOREAN,
           color: isLowTime
-            ? `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, '0')}`
-            : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, '0')}`,
-          fontWeight: 'bold',
+            ? `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`
+            : `#${KOREAN_COLORS.TEXT_PRIMARY.toString(16).padStart(6, "0")}`,
+          fontWeight: "bold",
           textShadow: isLowTime
-            ? '0 0 8px rgba(255, 0, 0, 0.8)'
-            : '0 0 4px rgba(0,0,0,0.8)',
-          animation: isLowTime ? 'pulse 1s infinite' : 'none',
+            ? "0 0 8px rgba(255, 0, 0, 0.8)"
+            : "0 0 4px rgba(0,0,0,0.8)",
+          animation: isLowTime ? "pulse 1s infinite" : "none",
         }}
         data-testid="timer-value"
       >
@@ -244,20 +242,20 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
 
 /**
  * MobileHUDLayout Component
- * 
+ *
  * Optimized HUD layout for mobile combat gameplay
  * Automatically adjusts for:
  * - iPhone SE (375x667)
  * - iPhone 11/12/13 (414x896)
  * - Portrait and landscape orientations
- * 
+ *
  * Design Principles:
  * - Essential information only (health, timer, rounds)
  * - Touch-friendly element sizing (≥44px)
  * - High contrast for outdoor visibility
  * - Minimal screen real estate usage
  * - Safe area aware positioning
- * 
+ *
  * @example
  * ```tsx
  * <MobileHUDLayout
@@ -268,7 +266,7 @@ const MobileTimer: React.FC<MobileTimerProps> = ({
  *   maxRounds={3}
  * />
  * ```
- * 
+ *
  * @public
  * @korean 모바일HUD레이아웃
  */
@@ -280,7 +278,7 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
   maxRounds,
   // roundsWon - reserved for future round indicator dots
   isPaused = false,
-  testId = 'mobile-hud-layout',
+  testId = "mobile-hud-layout",
 }) => {
   const { width, height } = useWindowSize();
   const layout = useResponsiveLayout(width, height);
@@ -291,25 +289,25 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
   // Calculate optimal HUD dimensions
   const hudHeight = useMemo(
     () => calculateHUDHeight(width, layout.isLandscape),
-    [width, layout.isLandscape]
+    [width, layout.isLandscape],
   );
 
   // Calculate progress bar sizes
   const healthBarSize = useMemo(
-    () => calculateProgressBarSize(layout.isMobile, 'health'),
-    [layout.isMobile]
+    () => calculateProgressBarSize(layout.isMobile, "health"),
+    [layout.isMobile],
   );
 
   return (
     <Html fullscreen>
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           left: 0,
-          width: '100%',
+          width: "100%",
           height: hudHeight,
-          pointerEvents: 'none',
+          pointerEvents: "none",
         }}
         data-testid={testId}
         data-mobile={layout.isMobile}
@@ -343,16 +341,16 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
         {isPaused && (
           <div
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
               fontSize: layout.fontSize.hero,
               fontFamily: FONT_FAMILY.KOREAN,
-              color: `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, '0')}`,
-              fontWeight: 'bold',
-              textShadow: '0 0 10px rgba(0,0,0,0.9)',
-              pointerEvents: 'none',
+              color: `#${KOREAN_COLORS.ACCENT_RED.toString(16).padStart(6, "0")}`,
+              fontWeight: "bold",
+              textShadow: "0 0 10px rgba(0,0,0,0.9)",
+              pointerEvents: "none",
             }}
             data-testid="pause-indicator"
           >
@@ -372,4 +370,4 @@ export const MobileHUDLayout: React.FC<MobileHUDLayoutProps> = ({
   );
 };
 
-MobileHUDLayout.displayName = 'MobileHUDLayout';
+MobileHUDLayout.displayName = "MobileHUDLayout";

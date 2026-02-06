@@ -42,6 +42,7 @@ import type {
   AnimationPriority,
   AnimationUpdateResult,
   FallType,
+  MutableAnimationConfig,
 } from "./types";
 import { AnimationState, FALL_TO_GROUND_MAP, STEP_PRIORITY } from "./types";
 
@@ -899,15 +900,25 @@ export class PlayerAnimationStateMachine {
   /**
    * Create a new animation state machine
    *
-   * @param animations - Map of animation configurations
+   * Clones the provided config map so per-instance mutations
+   * (e.g. dynamic attack duration) don't affect shared defaults.
+   *
+   * @param animations - Map of animation configurations (cloned internally)
    * @param events - Optional event callbacks
    *
    * @korean 생성자
    */
+  private readonly animations: Map<AnimationState, MutableAnimationConfig>;
+
   constructor(
-    private readonly animations: Map<AnimationState, AnimationConfig>,
+    animations: Map<AnimationState, AnimationConfig>,
     private readonly events?: AnimationEvents,
-  ) {}
+  ) {
+    // Clone so we can safely mutate per-instance (e.g. attack duration)
+    this.animations = new Map(
+      Array.from(animations.entries()).map(([k, v]) => [k, { ...v }]),
+    );
+  }
 
   /**
    * Update animation state with delta time
@@ -1159,6 +1170,35 @@ export class PlayerAnimationStateMachine {
     }
 
     return true;
+  }
+
+  /**
+   * Transition to ATTACK state with a technique-specific duration.
+   *
+   * The default ATTACK config is 200ms (12 frames), but real techniques
+   * range from 350ms to 1200ms. This method overrides the ATTACK frame
+   * count to match the actual skeletal animation duration so the state
+   * machine stays in ATTACK for the full technique.
+   *
+   * @param durationSeconds - The skeletal animation duration in seconds
+   * @returns Whether transition was successful
+   *
+   * @example
+   * ```typescript
+   * // Jab animation is 0.55s (TECHNIQUE_TIMING.FAST)
+   * machine.transitionToAttack(0.55);
+   * ```
+   *
+   * @korean 공격전환 (기술별 지속시간)
+   */
+  transitionToAttack(durationSeconds: number): boolean {
+    const attackConfig = this.animations.get(AnimationState.ATTACK);
+    if (attackConfig) {
+      const fps = attackConfig.fps || 60;
+      attackConfig.frames = Math.max(1, Math.round(durationSeconds * fps));
+      attackConfig.duration = durationSeconds;
+    }
+    return this.transitionTo(AnimationState.ATTACK);
   }
 
   /**

@@ -608,9 +608,9 @@ export const JIN_LIGHTNING_STRAIGHT: SkeletalAnimation = {
       time: 0.0,
       easing: "linear",
       boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 0.5, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.5, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.3, 0, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.5, -0.4, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.5, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.3, 0, "XYZ")],
       ]),
       bonePositions: new Map(),
     },
@@ -618,23 +618,23 @@ export const JIN_LIGHTNING_STRAIGHT: SkeletalAnimation = {
       time: 0.08,
       easing: "ease-out",
       boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.1, 0.1, 0.5, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -0.05, "XYZ")],
-        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.4, 0, "XYZ")],
-        [BoneName.PELVIS, new THREE.Euler(0, 0.3, 0, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.1, -0.1, -0.5, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 0.05, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, -0.4, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0, -0.3, 0, "XYZ")],
       ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 1.0)]]),
+      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 1.0)]]),
     },
     {
       time: 0.2,
       easing: "ease-in",
       boneRotations: new Map([
-        [BoneName.SHOULDER_L, new THREE.Euler(-0.2, 0.5, 0.4, "XYZ")],
-        [BoneName.ELBOW_L, new THREE.Euler(0, 0, -1.3, "XYZ")],
+        [BoneName.SHOULDER_R, new THREE.Euler(-0.2, -0.5, -0.4, "XYZ")],
+        [BoneName.ELBOW_R, new THREE.Euler(0, 0, 1.3, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0, 0, "XYZ")],
         [BoneName.PELVIS, new THREE.Euler(0, 0, 0, "XYZ")],
       ]),
-      bonePositions: new Map([[BoneName.HAND_L, new THREE.Vector3(0, 0, 0)]]),
+      bonePositions: new Map([[BoneName.HAND_R, new THREE.Vector3(0, 0, 0)]]),
     },
   ],
 };
@@ -713,6 +713,15 @@ export const JIN_EXPLOSIVE_KNEE: SkeletalAnimation = {
       boneRotations: new Map([
         [BoneName.KNEE_R, new THREE.Euler(-0.4, 0, 0, "XYZ")],
         [BoneName.HIP_R, new THREE.Euler(-0.2, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map(),
+    },
+    {
+      time: 0.05,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.KNEE_R, new THREE.Euler(-1.8, 0, 0, "XYZ")],
+        [BoneName.HIP_R, new THREE.Euler(0.5, 0, 0, "XYZ")],
       ]),
       bonePositions: new Map(),
     },
@@ -1437,6 +1446,21 @@ export const GON_ROOTING_TAKEDOWN: SkeletalAnimation = {
       bonePositions: new Map(),
     },
     {
+      time: 0.38,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.SHOULDER_R, new THREE.Euler(0.8, 0.3, 0.4, "XYZ")],
+        [BoneName.SHOULDER_L, new THREE.Euler(0.8, -0.3, -0.4, "XYZ")],
+        [BoneName.SPINE_LOWER, new THREE.Euler(0.6, 0.2, 0, "XYZ")],
+        [BoneName.PELVIS, new THREE.Euler(0.3, 0, 0, "XYZ")],
+        [BoneName.KNEE_L, new THREE.Euler(-1.5, 0, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-1.5, 0, 0, "XYZ")],
+      ]),
+      bonePositions: new Map([
+        [BoneName.PELVIS, new THREE.Vector3(0, -0.3, 0.3)],
+      ]),
+    },
+    {
       time: 0.45,
       easing: "ease-in",
       boneRotations: new Map([
@@ -2130,6 +2154,16 @@ export const GAM_SPLASH_KNEE: SkeletalAnimation = {
       boneRotations: new Map([
         [BoneName.HIP_R, new THREE.Euler(-0.2, 0.3, 0, "XYZ")],
         [BoneName.KNEE_R, new THREE.Euler(-0.6, 0, 0, "XYZ")],
+        [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
+      ]),
+      bonePositions: new Map(),
+    },
+    {
+      time: 0.07,
+      easing: "ease-out",
+      boneRotations: new Map([
+        [BoneName.HIP_R, new THREE.Euler(0.3, 0.3, 0, "XYZ")],
+        [BoneName.KNEE_R, new THREE.Euler(-1.2, 0, 0, "XYZ")],
         [BoneName.SPINE_UPPER, new THREE.Euler(0, 0.2, 0, "XYZ")],
       ]),
       bonePositions: new Map(),

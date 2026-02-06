@@ -209,40 +209,41 @@ export const getMuscleActivationForTechnique = (
     // Punching techniques - 주먹 기술
     case "jab":
     case "정권": // Front jab
-      activations.set("SHOULDER_R", 0.7);
-      activations.set("BICEP_R", 1.0); // Maximum flex
-      activations.set("TRICEP_R", 0.8);
+      activations.set("SHOULDER_R", 0.8);
+      activations.set("TRICEP_R", 1.0); // Primary mover for arm extension
+      activations.set("BICEP_R", 0.3); // Antagonist - stabilization only
       activations.set("CORE", 0.5);
-      activations.set("PECTORALS", 0.4);
+      activations.set("PECTORALS", 0.5); // Shoulder horizontal adduction
       break;
 
     case "cross":
     case "역권": // Reverse punch
-      activations.set("SHOULDER_L", 0.8);
-      activations.set("BICEP_L", 1.0);
-      activations.set("TRICEP_L", 0.9);
+      activations.set("SHOULDER_L", 0.9);
+      activations.set("TRICEP_L", 1.0); // Primary mover for arm extension
+      activations.set("BICEP_L", 0.3); // Antagonist - stabilization only
       activations.set("CORE", 0.8); // More core rotation
-      activations.set("PECTORALS", 0.6);
-      activations.set("OBLIQUES", 0.7); // Torso rotation
+      activations.set("PECTORALS", 0.7); // Chest drive for power
+      activations.set("OBLIQUES", 0.8); // Torso rotation for hip transfer
       break;
 
     case "hook":
     case "갈고리주먹": // Hook punch
-      activations.set("SHOULDER_R", 0.9);
-      activations.set("BICEP_R", 1.0);
+      activations.set("SHOULDER_R", 1.0); // Primary mover for horizontal arc
+      activations.set("BICEP_R", 0.8); // Maintains elbow angle during arc
       activations.set("FOREARM_R", 0.8);
-      activations.set("CORE", 0.7);
-      activations.set("OBLIQUES", 0.8);
+      activations.set("CORE", 0.8); // Drives rotational power
+      activations.set("OBLIQUES", 0.9); // Primary torso rotation driver
       break;
 
     case "uppercut":
     case "올려치기": // Uppercut
-      activations.set("SHOULDER_R", 0.85);
-      activations.set("BICEP_R", 1.0);
-      activations.set("TRICEP_R", 0.7);
+      activations.set("SHOULDER_R", 0.95); // Drives upward arc
+      activations.set("BICEP_R", 0.9); // Maintains elbow angle for upward drive
+      activations.set("TRICEP_R", 0.5); // Partial extension
       activations.set("CORE", 0.9);
       activations.set("ABS", 0.8);
-      activations.set("QUAD_R", 0.6); // Lower body drive
+      activations.set("QUAD_R", 0.7); // Lower body drive (legs push up)
+      activations.set("GLUTE_R", 0.6); // Hip extension for power
       break;
 
     // Kicking techniques - 발차기 기술

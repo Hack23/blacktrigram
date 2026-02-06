@@ -14,7 +14,7 @@
 import React, { useEffect, useState } from "react";
 import { performanceMonitor } from "../../../systems/animation";
 import { ThreeObjectPools } from "../../../utils/threeObjectPool";
-import { KOREAN_COLORS } from "../../../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 import { hexToRgbaString, hexColorToCSS } from "../../../utils/colorUtils";
 
 /**
@@ -96,16 +96,16 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
     metrics.avgFrameTime < 5
       ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN) // Green: Target met
       : metrics.avgFrameTime < 8
-      ? hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) // Yellow: Warning
-      : hexColorToCSS(KOREAN_COLORS.ACCENT_RED); // Red: Critical
+        ? hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) // Yellow: Warning
+        : hexColorToCSS(KOREAN_COLORS.ACCENT_RED); // Red: Critical
 
   const cacheColor =
     metrics.cacheHitRate > 0.9
       ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN) // Green: Excellent
       : metrics.cacheHitRate > 0.7
-      ? hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) // Yellow: Good
-      : hexColorToCSS(KOREAN_COLORS.ACCENT_RED); // Red: Poor
-  
+        ? hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) // Yellow: Good
+        : hexColorToCSS(KOREAN_COLORS.ACCENT_RED); // Red: Poor
+
   const poolColor = (available: number, threshold: number) =>
     available > threshold
       ? hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN)
@@ -132,23 +132,44 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
       }}
       data-testid="performance-debug-overlay"
     >
-      <div style={{ fontWeight: "bold", marginBottom: "8px", color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY) }}>
+      <div
+        style={{
+          fontWeight: "bold",
+          marginBottom: "8px",
+          color: hexColorToCSS(KOREAN_COLORS.TEXT_PRIMARY),
+        }}
+      >
         🎯 Animation Performance
       </div>
-      <div style={{ borderBottom: `1px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`, marginBottom: "6px" }} />
+      <div
+        style={{
+          borderBottom: `1px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`,
+          marginBottom: "6px",
+        }}
+      />
 
       {/* Frame Times */}
       <div style={{ marginBottom: "4px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Avg Frame: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Avg Frame:{" "}
+        </span>
         <span style={{ color: frameTimeColor, fontWeight: "bold" }}>
           {metrics.avgFrameTime.toFixed(2)}ms
         </span>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_LIGHT), fontSize: "9px", marginLeft: "4px" }}>
+        <span
+          style={{
+            color: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_LIGHT),
+            fontSize: "9px",
+            marginLeft: "4px",
+          }}
+        >
           (target: &lt;5ms)
         </span>
       </div>
       <div style={{ marginBottom: "6px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Max Frame: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Max Frame:{" "}
+        </span>
         <span style={{ color: frameTimeColor }}>
           {metrics.maxFrameTime.toFixed(2)}ms
         </span>
@@ -156,45 +177,74 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
 
       {/* Cache Performance */}
       <div style={{ marginBottom: "4px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Cache Hit: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Cache Hit:{" "}
+        </span>
         <span style={{ color: cacheColor, fontWeight: "bold" }}>
           {(metrics.cacheHitRate * 100).toFixed(1)}%
         </span>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_LIGHT), fontSize: "9px", marginLeft: "4px" }}>
+        <span
+          style={{
+            color: hexColorToCSS(KOREAN_COLORS.UI_BACKGROUND_LIGHT),
+            fontSize: "9px",
+            marginLeft: "4px",
+          }}
+        >
           (target: &gt;90%)
         </span>
       </div>
       <div style={{ marginBottom: "8px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Cached: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Cached:{" "}
+        </span>
         <span>{metrics.cacheEntries} keyframes</span>
       </div>
 
-      <div style={{ borderBottom: `1px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`, marginBottom: "6px" }} />
+      <div
+        style={{
+          borderBottom: `1px solid ${hexColorToCSS(KOREAN_COLORS.PRIMARY_CYAN)}`,
+          marginBottom: "6px",
+        }}
+      />
 
       {/* Object Pools */}
-      <div style={{ fontSize: "10px", color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY), marginBottom: "4px" }}>
+      <div
+        style={{
+          fontSize: "10px",
+          color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY),
+          marginBottom: "4px",
+        }}
+      >
         Object Pools (available)
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Euler: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Euler:{" "}
+        </span>
         <span style={{ color: poolColor(pools.euler, 100) }}>
           {pools.euler}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Vector3: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Vector3:{" "}
+        </span>
         <span style={{ color: poolColor(pools.vector3, 100) }}>
           {pools.vector3}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Matrix4: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Matrix4:{" "}
+        </span>
         <span style={{ color: poolColor(pools.matrix4, 50) }}>
           {pools.matrix4}
         </span>
       </div>
       <div style={{ marginBottom: "2px" }}>
-        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Quaternion: </span>
+        <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+          Quaternion:{" "}
+        </span>
         <span style={{ color: poolColor(pools.quaternion, 50) }}>
           {pools.quaternion}
         </span>
@@ -209,13 +259,28 @@ export const PerformanceDebugOverlayHtml = React.memo(() => {
         }}
       >
         <div style={{ fontSize: "10px" }}>
-          <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>Status: </span>
+          <span style={{ color: hexColorToCSS(KOREAN_COLORS.TEXT_SECONDARY) }}>
+            Status:{" "}
+          </span>
           {metrics.avgFrameTime < 5 && metrics.cacheHitRate > 0.9 ? (
-            <span style={{ color: hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN), fontWeight: "bold" }}>✓ OPTIMAL</span>
+            <span
+              style={{
+                color: hexColorToCSS(KOREAN_COLORS.POSITIVE_GREEN),
+                fontWeight: "bold",
+              }}
+            >
+              ✓ OPTIMAL
+            </span>
           ) : metrics.avgFrameTime < 8 && metrics.cacheHitRate > 0.7 ? (
-            <span style={{ color: hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) }}>⚠ GOOD</span>
+            <span
+              style={{ color: hexColorToCSS(KOREAN_COLORS.WARNING_YELLOW) }}
+            >
+              ⚠ GOOD
+            </span>
           ) : (
-            <span style={{ color: hexColorToCSS(KOREAN_COLORS.ACCENT_RED) }}>✗ NEEDS OPTIMIZATION</span>
+            <span style={{ color: hexColorToCSS(KOREAN_COLORS.ACCENT_RED) }}>
+              ✗ NEEDS OPTIMIZATION
+            </span>
           )}
         </div>
       </div>

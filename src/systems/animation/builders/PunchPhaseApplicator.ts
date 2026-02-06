@@ -71,7 +71,7 @@ export function applyPunchPhaseToConfig(
     readonly handPose?: string;
     readonly handHighlightMode?: HandHighlightMode;
     readonly oppositeHandPose?: string;
-  } = {}
+  } = {},
 ): void {
   const {
     includeWrist = false,
@@ -96,34 +96,61 @@ export function applyPunchPhaseToConfig(
   const oppositeWristBone =
     hand === "right" ? BoneName.WRIST_L : BoneName.WRIST_R;
 
-  // Apply punching arm shoulder rotation
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ARM MIRRORING (팔 좌우 반전)
+  // ═══════════════════════════════════════════════════════════════════════════
+  //
+  // PUNCH_PHASES arm values use LEFT-arm convention:
+  //   Left arm: negative Z = flexion (toward body), negative Z shoulder = pulled back
+  //   Right arm: positive Z = flexion (toward body), positive Z shoulder = pulled back
+  //
+  // PUNCH_PHASES opposite arm values use RIGHT-arm convention.
+  //
+  // When applying to the opposite side, Y and Z must be negated to mirror correctly.
+  // The X axis (elevation/flexion) stays the same for both sides.
+  //
+  // 한국 무술 생체역학: 좌우 대칭 반전으로 정확한 자세 구현
+  const armMirror = hand === "right" ? -1 : 1;
+
+  // Apply punching arm shoulder rotation (with mirroring)
   if (phase.shoulder) {
     kf.rotate(
       shoulderBone,
       phase.shoulder[0],
-      phase.shoulder[1],
-      phase.shoulder[2]
+      phase.shoulder[1] * armMirror,
+      phase.shoulder[2] * armMirror,
     );
   }
 
-  // Apply punching arm elbow rotation
+  // Apply punching arm elbow rotation (with mirroring)
   if (phase.elbow) {
-    kf.rotate(elbowBone, phase.elbow[0], phase.elbow[1], phase.elbow[2]);
+    kf.rotate(
+      elbowBone,
+      phase.elbow[0],
+      phase.elbow[1],
+      phase.elbow[2] * armMirror,
+    );
   }
 
-  // Optional punching arm wrist rotation (for fist rotation)
+  // Optional punching arm wrist rotation (with mirroring)
   if (includeWrist && phase.wrist) {
-    kf.rotate(wristBone, phase.wrist[0], phase.wrist[1], phase.wrist[2]);
+    kf.rotate(
+      wristBone,
+      phase.wrist[0],
+      phase.wrist[1],
+      phase.wrist[2] * armMirror,
+    );
   }
 
   // Apply opposite arm hikite (당기기 - pulling hand for power generation)
+  // Opposite arm values are in RIGHT convention; mirror when applying to LEFT arm
   if (includeOppositeArm) {
     if (phase.oppositeShoulder) {
       kf.rotate(
         oppositeShoulderBone,
         phase.oppositeShoulder[0],
-        phase.oppositeShoulder[1],
-        phase.oppositeShoulder[2]
+        phase.oppositeShoulder[1] * armMirror,
+        phase.oppositeShoulder[2] * armMirror,
       );
     }
 
@@ -132,7 +159,7 @@ export function applyPunchPhaseToConfig(
         oppositeElbowBone,
         phase.oppositeElbow[0],
         phase.oppositeElbow[1],
-        phase.oppositeElbow[2]
+        phase.oppositeElbow[2] * armMirror,
       );
     }
 
@@ -141,20 +168,30 @@ export function applyPunchPhaseToConfig(
         oppositeWristBone,
         phase.oppositeWrist[0],
         phase.oppositeWrist[1],
-        phase.oppositeWrist[2]
+        phase.oppositeWrist[2] * armMirror,
       );
     }
   }
 
-  // Spine and pelvis Y-axis rotations for hip/shoulder engagement
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SPINE/PELVIS Y-AXIS MIRRORING (척추/골반 회전 반전)
+  // ═══════════════════════════════════════════════════════════════════════════
+  //
+  // PUNCH_PHASES spine/pelvis Y values use RIGHT-hand convention:
+  //   Positive Y = counter-clockwise from above = drives RIGHT shoulder forward
+  //   For LEFT-hand punches, Y must be negated to drive LEFT shoulder forward
+  //
+  // 한국 무술: 허리비틀기 (Hip rotation) 좌우 반전
+  const spineFlip = hand === "right" ? 1 : -1;
+
   if (phase.spineY !== undefined) {
-    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY, 0);
+    kf.rotate(BoneName.SPINE_UPPER, 0, phase.spineY * spineFlip, 0);
     if (includeSpineMiddle) {
-      kf.rotate(BoneName.SPINE_MIDDLE, 0, phase.spineY * 0.7, 0);
+      kf.rotate(BoneName.SPINE_MIDDLE, 0, phase.spineY * 0.7 * spineFlip, 0);
     }
   }
   if (phase.pelvisY !== undefined) {
-    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY, 0);
+    kf.rotate(BoneName.PELVIS, 0, phase.pelvisY * spineFlip, 0);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
