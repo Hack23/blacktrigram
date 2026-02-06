@@ -45,6 +45,26 @@ Rule 5: Performance Requirements
 IF (adding Three.js rendering OR heavy computations)
 THEN (ensure 60fps target AND bundle size <500KB initial)
 ELSE (optimize - refer to performance-optimization skill)
+
+Rule 6: Game Development
+IF (implementing game loop OR combat system OR animations)
+THEN (use clamped delta AND fixed timestep for physics AND state machine)
+ELSE (refer to game-development-patterns skill)
+
+Rule 7: Korean Martial Arts Authenticity
+IF (implementing Eight Trigrams OR vital points OR combat techniques)
+THEN (verify anatomical accuracy AND cultural respect AND proper terminology)
+ELSE (refer to korean-martial-arts-authenticity skill)
+
+Rule 8: 3D Combat Systems
+IF (implementing combat physics OR collision detection OR damage calculation)
+THEN (use Rapier physics AND anatomical hitboxes AND deterministic formulas)
+ELSE (refer to 3d-combat-systems skill)
+
+Rule 9: Audio Integration
+IF (adding audio effects OR spatial audio OR combat sounds)
+THEN (use Howler.js AND PositionalAudio for 3D AND Korean-themed audio)
+ELSE (refer to audio-game-integration skill)
 ```
 
 ## 📚 Agent and Skills Catalog
@@ -63,6 +83,10 @@ GitHub Copilot automatically loads relevant skills based on code context:
 5. **[performance-optimization](./skills/performance-optimization/SKILL.md)** - 60fps and bundle size enforcement
 6. **[isms-compliance-checking](./skills/isms-compliance-checking/SKILL.md)** - ISO 27001, NIST CSF, CIS Controls
 7. **[threejs-best-practices](./skills/threejs-best-practices/SKILL.md)** - Three.js/React optimization patterns
+8. **[game-development-patterns](./skills/game-development-patterns/SKILL.md)** - Game loop, state machines, deterministic physics
+9. **[korean-martial-arts-authenticity](./skills/korean-martial-arts-authenticity/SKILL.md)** - Eight Trigrams, vital points, cultural accuracy
+10. **[3d-combat-systems](./skills/3d-combat-systems/SKILL.md)** - Physics-based combat, hitboxes, damage calculations
+11. **[audio-game-integration](./skills/audio-game-integration/SKILL.md)** - Spatial audio, combat feedback, Korean soundscapes
 
 **📖 [Complete Skills Documentation](./skills/README.md)**
 

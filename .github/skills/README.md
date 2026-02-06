@@ -22,7 +22,7 @@
 
 ## 📚 Available Skills
 
-Black Trigram includes **7 comprehensive skills** organized by domain:
+Black Trigram includes **11 comprehensive skills** organized by domain:
 
 ### 🔐 Security & Compliance
 
@@ -180,6 +180,92 @@ Black Trigram includes **7 comprehensive skills** organized by domain:
 - Resource management
 
 **Standards:** @react-three/fiber, React 19, Three.js r170+
+
+---
+
+### 🎮 Game Development & Combat
+
+#### 8. [game-development-patterns](./game-development-patterns/SKILL.md)
+**Purpose**: Enforce game development best practices for Black Trigram
+
+**Key Rules:**
+- Game loop with clamped delta (MAX_DELTA = 1/30)
+- Fixed timestep for deterministic physics (60 Hz)
+- State machine architecture for game flow
+- Layered combat system (state, actions, rules, events)
+- Delta-time independent animations
+
+**Triggers:**
+- Implementing game loops with `useFrame`
+- Creating combat systems or state machines
+- Managing game state (player, enemies, combat flow)
+- Working with fixed timesteps or delta time
+- Debugging timing or synchronization issues
+
+**Standards:** 60fps, deterministic combat, proper state machines
+
+---
+
+#### 9. [korean-martial-arts-authenticity](./korean-martial-arts-authenticity/SKILL.md)
+**Purpose**: Enforce authentic Korean martial arts systems and cultural respect
+
+**Key Rules:**
+- Accurate Eight Trigram system (팔괘) with correct symbols and philosophy
+- 70 vital points (급소) with anatomical precision
+- Proper Korean terminology (Revised Romanization standard)
+- Cultural context and educational tooltips
+- Respectful portrayal of traditional martial arts
+
+**Triggers:**
+- Implementing Eight Trigram stance system
+- Adding vital point targeting
+- Creating combat techniques or special moves
+- Writing Korean martial arts terminology
+- Implementing damage calculations based on anatomy
+
+**Standards:** Anatomical accuracy, cultural respect, I Ching authenticity
+
+---
+
+#### 10. [3d-combat-systems](./3d-combat-systems/SKILL.md)
+**Purpose**: Enforce 3D physics-based combat patterns for Black Trigram
+
+**Key Rules:**
+- Rapier physics integration for realistic combat
+- Anatomically accurate hitbox/hurtbox system
+- Deterministic damage calculations (no random)
+- Trigram matchup multipliers
+- Vital point damage modifiers
+
+**Triggers:**
+- Implementing physics-based combat with Rapier
+- Creating collision detection systems
+- Implementing attack/defense mechanics
+- Calculating damage from strikes
+- Creating hitboxes or hurtboxes
+
+**Standards:** Physics-based, deterministic, anatomically accurate
+
+---
+
+#### 11. [audio-game-integration](./audio-game-integration/SKILL.md)
+**Purpose**: Enforce audio best practices for immersive combat feedback
+
+**Key Rules:**
+- Howler.js for global audio management
+- PositionalAudio for spatial 3D combat sounds
+- Korean-themed soundscapes (traditional instruments)
+- Distinct audio for hit/miss/critical outcomes
+- Proper audio resource management and cleanup
+
+**Triggers:**
+- Adding audio effects or music
+- Implementing spatial 3D audio
+- Creating combat sound feedback
+- Managing audio resources
+- Optimizing audio performance
+
+**Standards:** Spatial audio, Korean themes, clear feedback
 
 ---
 

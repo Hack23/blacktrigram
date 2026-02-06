@@ -686,6 +686,8 @@ This agent leverages the following GitHub Copilot Agent Skills for automatic enf
 | [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
 | [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
 | [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+| [korean-martial-arts-authenticity](../skills/korean-martial-arts-authenticity/SKILL.md) | Martial arts content | Eight Trigrams, vital points, cultural accuracy |
+| [3d-combat-systems](../skills/3d-combat-systems/SKILL.md) | Combat mechanics | Physics-based, anatomical hitboxes, damage calc |
 
 **Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
 
