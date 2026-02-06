@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.44% </span>
+                <span class="strong">73.03% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>130/177</span>
+                <span class='fraction'>130/178</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.44% </span>
+                <span class="strong">73.03% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>130/177</span>
+                <span class='fraction'>130/178</span>
             </div>
         
             
@@ -650,7 +650,8 @@
 <a name='L585'></a><a href='#L585'>585</a>
 <a name='L586'></a><a href='#L586'>586</a>
 <a name='L587'></a><a href='#L587'>587</a>
-<a name='L588'></a><a href='#L588'>588</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L588'></a><a href='#L588'>588</a>
+<a name='L589'></a><a href='#L589'>589</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -676,7 +677,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -723,7 +724,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">28x</span>
@@ -852,7 +853,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">529x</span>
@@ -889,6 +890,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1448,40 +1450,41 @@ export const getMuscleActivationForTechnique = (
     // Punching techniques - 주먹 기술
     case "jab":
     case "정권": // Front jab
-      activations.set("SHOULDER_R", 0.7);
-      activations.set("BICEP_R", 1.0); // Maximum flex
-      activations.set("TRICEP_R", 0.8);
+      activations.set("SHOULDER_R", 0.8);
+      activations.set("TRICEP_R", 1.0); // Primary mover for arm extension
+      activations.set("BICEP_R", 0.3); // Antagonist - stabilization only
       activations.set("CORE", 0.5);
-      activations.set("PECTORALS", 0.4);
+      activations.set("PECTORALS", 0.5); // Shoulder horizontal adduction
       break;
 &nbsp;
     case "cross":
     case "역권": // Reverse punch
-      activations.set("SHOULDER_L", 0.8);
-      activations.set("BICEP_L", 1.0);
-      activations.set("TRICEP_L", 0.9);
+      activations.set("SHOULDER_L", 0.9);
+      activations.set("TRICEP_L", 1.0); // Primary mover for arm extension
+      activations.set("BICEP_L", 0.3); // Antagonist - stabilization only
       activations.set("CORE", 0.8); // More core rotation
-      activations.set("PECTORALS", 0.6);
-      activations.set("OBLIQUES", 0.7); // Torso rotation
+      activations.set("PECTORALS", 0.7); // Chest drive for power
+      activations.set("OBLIQUES", 0.8); // Torso rotation for hip transfer
       break;
 &nbsp;
 <span class="branch-4 cbranch-no" title="branch not covered" >    case "hook":</span>
 <span class="branch-5 cbranch-no" title="branch not covered" >    case "갈고리주먹": // Hook punch</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("SHOULDER_R", 0.9);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("BICEP_R", 1.0);</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("SHOULDER_R", 1.0); // Primary mover for horizontal arc</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("BICEP_R", 0.8); // Maintains elbow angle during arc</span>
 <span class="cstat-no" title="statement not covered" >      activations.set("FOREARM_R", 0.8);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("CORE", 0.7);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("OBLIQUES", 0.8);</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("CORE", 0.8); // Drives rotational power</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("OBLIQUES", 0.9); // Primary torso rotation driver</span>
 <span class="cstat-no" title="statement not covered" >      break;</span>
 &nbsp;
 <span class="branch-6 cbranch-no" title="branch not covered" >    case "uppercut":</span>
 <span class="branch-7 cbranch-no" title="branch not covered" >    case "올려치기": // Uppercut</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("SHOULDER_R", 0.85);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("BICEP_R", 1.0);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("TRICEP_R", 0.7);</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("SHOULDER_R", 0.95); // Drives upward arc</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("BICEP_R", 0.9); // Maintains elbow angle for upward drive</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("TRICEP_R", 0.5); // Partial extension</span>
 <span class="cstat-no" title="statement not covered" >      activations.set("CORE", 0.9);</span>
 <span class="cstat-no" title="statement not covered" >      activations.set("ABS", 0.8);</span>
-<span class="cstat-no" title="statement not covered" >      activations.set("QUAD_R", 0.6); // Lower body drive</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("QUAD_R", 0.7); // Lower body drive (legs push up)</span>
+<span class="cstat-no" title="statement not covered" >      activations.set("GLUTE_R", 0.6); // Hip extension for power</span>
 <span class="cstat-no" title="statement not covered" >      break;</span>
 &nbsp;
     // Kicking techniques - 발차기 기술
@@ -1831,7 +1834,7 @@ export class MuscleActivationManager {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

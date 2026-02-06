@@ -163,7 +163,17 @@
 <a name='L98'></a><a href='#L98'>98</a>
 <a name='L99'></a><a href='#L99'>99</a>
 <a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -217,7 +227,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -265,22 +285,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Shared utility functions for stance-related operations
- * 
+ *
  * Provides common helpers for stance colors, names, and symbols
  * to avoid duplication across components.
- * 
+ *
  * @module utils/stanceHelpers
  * @category Utilities
  * @korean 자세도우미
  */
 &nbsp;
 import { TrigramStance } from "../types/common";
-import { KOREAN_COLORS } from "../types/constants";
+import { KOREAN_COLORS } from "@/types/constants";
 &nbsp;
 /**
  * Get color for each trigram stance
  * Maps 8 trigrams to Korean cyberpunk color palette
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Hex color number
  * @korean 자세색상가져오기
@@ -288,41 +308,51 @@ import { KOREAN_COLORS } from "../types/constants";
 export const getStanceColor = (stance: TrigramStance): number =&gt; {
   const stanceColors = {
     [TrigramStance.GEON]: KOREAN_COLORS.TRIGRAM_GEON_PRIMARY, // Heaven - Gold
-    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY,   // Lake - Sky Blue
-    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY,     // Fire - Orange Red
-    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY,   // Thunder - Purple
-    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY,   // Wind - Light Green
-    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY,   // Water - Blue
-    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY,   // Mountain - Brown
-    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY,   // Earth - Dark Khaki
+    [TrigramStance.TAE]: KOREAN_COLORS.TRIGRAM_TAE_PRIMARY, // Lake - Sky Blue
+    [TrigramStance.LI]: KOREAN_COLORS.TRIGRAM_LI_PRIMARY, // Fire - Orange Red
+    [TrigramStance.JIN]: KOREAN_COLORS.TRIGRAM_JIN_PRIMARY, // Thunder - Purple
+    [TrigramStance.SON]: KOREAN_COLORS.TRIGRAM_SON_PRIMARY, // Wind - Light Green
+    [TrigramStance.GAM]: KOREAN_COLORS.TRIGRAM_GAM_PRIMARY, // Water - Blue
+    [TrigramStance.GAN]: KOREAN_COLORS.TRIGRAM_GAN_PRIMARY, // Mountain - Brown
+    [TrigramStance.GON]: KOREAN_COLORS.TRIGRAM_GON_PRIMARY, // Earth - Dark Khaki
   };
   return stanceColors[stance] ?? <span class="branch-1 cbranch-no" title="branch not covered" >KOREAN_COLORS.PRIMARY_CYAN;</span>
 };
 &nbsp;
 /**
  * Get stance display names (Korean + English)
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Object with korean, english, and romanized names
  * @korean 자세이름가져오기
  */
 export const getStanceNames = (stance: TrigramStance) =&gt; {
   const names = {
-    [TrigramStance.GEON]: { korean: "건", english: "Heaven", romanized: "Geon" },
+    [TrigramStance.GEON]: {
+      korean: "건",
+      english: "Heaven",
+      romanized: "Geon",
+    },
     [TrigramStance.TAE]: { korean: "태", english: "Lake", romanized: "Tae" },
     [TrigramStance.LI]: { korean: "리", english: "Fire", romanized: "Li" },
     [TrigramStance.JIN]: { korean: "진", english: "Thunder", romanized: "Jin" },
     [TrigramStance.SON]: { korean: "손", english: "Wind", romanized: "Son" },
     [TrigramStance.GAM]: { korean: "감", english: "Water", romanized: "Gam" },
-    [TrigramStance.GAN]: { korean: "간", english: "Mountain", romanized: "Gan" },
+    [TrigramStance.GAN]: {
+      korean: "간",
+      english: "Mountain",
+      romanized: "Gan",
+    },
     [TrigramStance.GON]: { korean: "곤", english: "Earth", romanized: "Gon" },
   };
-  return names[stance] ?? <span class="branch-1 cbranch-no" title="branch not covered" >{ korean: "건", english: "Heaven", romanized: "Geon" };</span>
+  return (
+    names[stance] ?? <span class="branch-1 cbranch-no" title="branch not covered" >{ korean: "건", english: "Heaven", romanized: "Geon" }</span>
+  );
 };
 &nbsp;
 /**
  * Get trigram Unicode symbol for each stance
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Unicode trigram symbol
  * @korean 팔괘기호가져오기
@@ -330,20 +360,20 @@ export const getStanceNames = (stance: TrigramStance) =&gt; {
 export const getTrigramSymbol = (stance: TrigramStance): string =&gt; {
   const symbols = {
     [TrigramStance.GEON]: "☰", // Heaven
-    [TrigramStance.TAE]: "☱",  // Lake
-    [TrigramStance.LI]: "☲",   // Fire
-    [TrigramStance.JIN]: "☳",  // Thunder
-    [TrigramStance.SON]: "☴",  // Wind
-    [TrigramStance.GAM]: "☵",  // Water
-    [TrigramStance.GAN]: "☶",  // Mountain
-    [TrigramStance.GON]: "☷",  // Earth
+    [TrigramStance.TAE]: "☱", // Lake
+    [TrigramStance.LI]: "☲", // Fire
+    [TrigramStance.JIN]: "☳", // Thunder
+    [TrigramStance.SON]: "☴", // Wind
+    [TrigramStance.GAM]: "☵", // Water
+    [TrigramStance.GAN]: "☶", // Mountain
+    [TrigramStance.GON]: "☷", // Earth
   };
   return symbols[stance] ?? <span class="branch-1 cbranch-no" title="branch not covered" >"☰";</span>
 };
 &nbsp;
 /**
  * Get Korean name for each stance
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Korean name (Hangul)
  * @korean 자세한글이름가져오기
@@ -354,14 +384,14 @@ export const getStanceKoreanName = (stance: TrigramStance): string =&gt; {
 &nbsp;
 /**
  * Get color as hex string for CSS usage
- * 
+ *
  * @param stance - Current trigram stance
  * @returns Hex color string (e.g., "#FFD700")
  * @korean 자세CSS색상가져오기
  */
 export const getStanceColorHex = (stance: TrigramStance): string =&gt; {
   const color = getStanceColor(stance);
-  return `#${color.toString(16).padStart(6, '0').toLowerCase()}`;
+  return `#${color.toString(16).padStart(6, "0").toLowerCase()}`;
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -370,7 +400,7 @@ export const getStanceColorHex = (stance: TrigramStance): string =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:08.365Z
+                at 2026-02-06T18:12:20.764Z
             </div>
         <script src="../prettify.js"></script>
         <script>

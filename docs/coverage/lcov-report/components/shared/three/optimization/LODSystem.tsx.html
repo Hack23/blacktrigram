@@ -296,7 +296,8 @@
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,8 +338,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -346,8 +347,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,7 +385,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -439,7 +442,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -447,10 +453,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -529,7 +531,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable react-refresh/only-export-components */
+/**
  * LODSystem - Level of Detail optimization for Three.js objects
  *
  * Reduces polygon count and detail based on distance from camera.
@@ -625,7 +628,8 @@ export const LODCharacter: React.FC&lt;LODCharacterProps&gt; = <span class="fsta
   isMobile = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
 }) =&gt; {
   // Use mobile distances if on mobile, otherwise use defaults
-  const lodDistances = <span class="cstat-no" title="statement not covered" >distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);</span>
+  const lodDistances =
+<span class="cstat-no" title="statement not covered" >    distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);</span>
 &nbsp;
   // Detailed component requires array of distances
   const distanceArray = <span class="cstat-no" title="statement not covered" >[</span>
@@ -648,7 +652,9 @@ export const LODCharacter: React.FC&lt;LODCharacterProps&gt; = <span class="fsta
  */
 export interface LODEffectProps {
   /** Effect to render at different detail levels */
-  readonly children: (detailLevel: "high" | "medium" | "low") =&gt; React.ReactNode;
+  readonly children: (
+    detailLevel: "high" | "medium" | "low",
+  ) =&gt; React.ReactNode;
   /** Custom LOD distances (optional) */
   readonly distances?: LODDistances;
   /** Whether to use mobile-optimized distances */
@@ -677,13 +683,10 @@ export const LODEffect: React.FC&lt;LODEffectProps&gt; = <span class="fstat-no" 
   distances,
   isMobile = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span>
 }) =&gt; {
-  const lodDistances = <span class="cstat-no" title="statement not covered" >distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);</span>
+  const lodDistances =
+<span class="cstat-no" title="statement not covered" >    distances ?? (isMobile ? MOBILE_LOD_DISTANCES : DEFAULT_LOD_DISTANCES);</span>
 &nbsp;
-  const distanceArray = <span class="cstat-no" title="statement not covered" >[</span>
-    lodDistances.high,
-    lodDistances.medium,
-    Infinity,
-  ];
+  const distanceArray = <span class="cstat-no" title="statement not covered" >[lodDistances.high, lodDistances.medium, Infinity];</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Detailed distances={distanceArray}&gt;
@@ -703,12 +706,12 @@ export const LODEffect: React.FC&lt;LODEffectProps&gt; = <span class="fstat-no" 
  */
 export function calculateLODDistances(
   arenaWidth: number,
-  arenaDepth: number
+  arenaDepth: number,
 ): LODDistances {
   // High detail: within 40% of arena diagonal
   const diagonal = Math.sqrt(arenaWidth * arenaWidth + arenaDepth * arenaDepth);
   const highDistance = diagonal * 0.4;
-  
+&nbsp;
   // Medium detail: within 70% of arena diagonal (not used directly, implicit in structure)
   // const mediumDistance = diagonal * 0.7;
 &nbsp;
@@ -728,7 +731,7 @@ export function calculateLODDistances(
  */
 export function getLODParticleCount(
   baseCount: number,
-  detailLevel: "high" | "medium" | "low"
+  detailLevel: "high" | "medium" | "low",
 ): number {
   switch (detailLevel) {
     case "high":
@@ -749,7 +752,7 @@ export function getLODParticleCount(
  * @returns Shadow map size
  */
 export function getLODShadowQuality(
-  detailLevel: "high" | "medium" | "low"
+  detailLevel: "high" | "medium" | "low",
 ): number {
   switch (detailLevel) {
     case "high":
@@ -769,7 +772,7 @@ export function getLODShadowQuality(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:08.365Z
+                at 2026-02-06T18:12:20.764Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

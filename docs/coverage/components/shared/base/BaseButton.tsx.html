@@ -364,7 +364,37 @@
 <a name='L299'></a><a href='#L299'>299</a>
 <a name='L300'></a><a href='#L300'>300</a>
 <a name='L301'></a><a href='#L301'>301</a>
-<a name='L302'></a><a href='#L302'>302</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -472,6 +502,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -481,6 +512,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
@@ -614,7 +647,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">51x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -667,23 +709,32 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * BaseButton - Enhanced button component with Korean theming
- * 
+ *
  * Builds on existing KoreanButton with extracted common logic
  * Provides consistent button styling across the application
- * 
+ *
  * Now with Html overlay positioning helpers for:
  * - Consistent z-index management
  * - Performance optimization with distanceFactor
  * - GPU acceleration
- * 
+ *
  * @module components/base
  */
 &nbsp;
 import { Html } from "@react-three/drei";
-import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
-import { KOREAN_COLORS, UI_DIMENSIONS } from "../../../types/constants";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+import { KOREAN_COLORS, UI_DIMENSIONS } from "@/types/constants";
 import { hexToRgbaString } from "../../../utils/colorUtils";
-import { applyHtmlOverlayStyles, calculateDistanceFactor } from "../../../utils/htmlOverlayHelpers";
+import {
+  applyHtmlOverlayStyles,
+  calculateDistanceFactor,
+} from "../../../utils/htmlOverlayHelpers";
 import type { HtmlOverlayLayer } from "../../../types/HtmlOverlayTypes";
 import { useKoreanTheme } from "./useKoreanTheme";
 &nbsp;
@@ -715,20 +766,20 @@ export interface BaseButtonProps {
 &nbsp;
 /**
  * BaseButton Component
- * 
+ *
  * Enhanced Korean-themed button with common functionality extracted.
  * Uses useKoreanTheme hook for consistent styling.
  * Now includes Html overlay positioning helpers for proper z-index and performance.
- * 
+ *
  * WCAG 2.1 AA Accessibility Features:
  * - Proper ARIA labels and semantic HTML
  * - Keyboard navigation support (Enter and Space keys)
  * - Visible focus indicators with high contrast
  * - Disabled state properly communicated
  * - Minimum 44x44px touch targets on mobile
- * 
+ *
  * Optimized with React.memo for performance
- * 
+ *
  * @example
  * ```tsx
  * &lt;BaseButton
@@ -765,12 +816,13 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
   const buttonRef = useRef&lt;HTMLButtonElement&gt;(null);
 &nbsp;
   // Use Korean theme hook for consistent styling
-  const { buttonVariant, buttonSize, fontFamily, accessibility } = useKoreanTheme({
-    variant,
-    size,
-    disabled,
-    isMobile,
-  });
+  const { buttonVariant, buttonSize, fontFamily, accessibility } =
+    useKoreanTheme({
+      variant,
+      size,
+      disabled,
+      isMobile,
+    });
 &nbsp;
   // Auto-focus on mount if requested
   useEffect(() =&gt; {
@@ -780,8 +832,10 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
   }, [autoFocus]);
 &nbsp;
   // Track screen width for responsive distance factor updates on resize
-  const [screenWidth, setScreenWidth] = useState(() =&gt; 
-    typeof window !== "undefined" ? window.innerWidth : <span class="branch-1 cbranch-no" title="branch not covered" >UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH</span>
+  const [screenWidth, setScreenWidth] = useState(() =&gt;
+    typeof window !== "undefined"
+      ? window.innerWidth
+      : <span class="branch-1 cbranch-no" title="branch not covered" >UI_DIMENSIONS.DEFAULT_SCREEN_WIDTH,</span>
   );
 &nbsp;
   useEffect(() =&gt; {
@@ -847,7 +901,7 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >        setIsPressed(true);</span>
       }
     },
-    [disabled]
+    [disabled],
   );
 &nbsp;
   const handleKeyUp = useCallback(
@@ -857,13 +911,13 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
 <span class="cstat-no" title="statement not covered" >        setIsPressed(false);</span>
       }
     },
-    [disabled]
+    [disabled],
   );
 &nbsp;
   // Memoize button styles for performance
   const buttonStyle = useMemo&lt;React.CSSProperties&gt;(() =&gt; {
     let background = hexToRgbaString(buttonVariant.background, 0.9);
-    
+&nbsp;
     if (isPressed) {
       background = buttonVariant.activeBg;
     } else if (isHovered) {
@@ -889,9 +943,10 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
       // Ensure minimum touch target size on mobile (WCAG 2.1 AA)
       minWidth: isMobile ? accessibility.minTouchTarget : "auto",
       minHeight: isMobile ? accessibility.minTouchTarget : "auto",
-      boxShadow: isHovered &amp;&amp; !disabled
-        ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
-        : "none",
+      boxShadow:
+        isHovered &amp;&amp; !disabled
+          ? `0 0 10px ${hexToRgbaString(buttonVariant.border, 0.5)}`
+          : "none",
       transform: isPressed &amp;&amp; !disabled ? "scale(0.98)" : "scale(1)",
       textShadow: `0 2px 4px ${hexToRgbaString(KOREAN_COLORS.BLACK_SOLID, 0.5)}`,
       // Apply GPU acceleration from overlay style
@@ -899,7 +954,8 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
       zIndex: overlayStyle.zIndex,
       // WCAG 2.1 AA compliant focus indicator
       outline: isFocused &amp;&amp; !disabled ? accessibility.focusOutline : "none",
-      outlineOffset: isFocused &amp;&amp; !disabled ? accessibility.focusOutlineOffset : "0",
+      outlineOffset:
+        isFocused &amp;&amp; !disabled ? accessibility.focusOutlineOffset : "0",
     };
   }, [
     buttonVariant,
@@ -916,8 +972,8 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
   ]);
 &nbsp;
   return (
-    &lt;Html 
-      position={position} 
+    &lt;Html
+      position={position}
       center={overlayStyle.center}
       distanceFactor={overlayStyle.distanceFactor}
       occlude={overlayStyle.occlude}
@@ -942,18 +998,25 @@ const BaseButtonComponent: React.FC&lt;BaseButtonProps&gt; = ({
         style={buttonStyle}
         data-testid={testId ?? "base-button"}
       &gt;
-        &lt;div style={{ 
-          display: "flex", 
-          flexDirection: "column", 
-          alignItems: "center",
-          gap: "2px"
-        }}&gt;
-          &lt;span lang="ko" style={{ fontSize: "1em" }}&gt;{korean}&lt;/span&gt;
-          &lt;span lang="en" style={{ 
-            fontSize: "0.75em", 
-            opacity: 0.8,
-            fontStyle: "italic"
-          }}&gt;
+        &lt;div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "2px",
+          }}
+        &gt;
+          &lt;span lang="ko" style={{ fontSize: "1em" }}&gt;
+            {korean}
+          &lt;/span&gt;
+          &lt;span
+            lang="en"
+            style={{
+              fontSize: "0.75em",
+              opacity: 0.8,
+              fontStyle: "italic",
+            }}
+          &gt;
             {english}
           &lt;/span&gt;
         &lt;/div&gt;
@@ -973,7 +1036,7 @@ BaseButton.displayName = "BaseButton";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

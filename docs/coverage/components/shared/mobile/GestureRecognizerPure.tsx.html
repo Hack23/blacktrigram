@@ -322,7 +322,26 @@
 <a name='L257'></a><a href='#L257'>257</a>
 <a name='L258'></a><a href='#L258'>258</a>
 <a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -420,6 +439,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -474,6 +497,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">132x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -483,6 +511,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">132x</span>
@@ -506,6 +536,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -583,23 +615,26 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * GestureRecognizerPure Component - Pure DOM version (no Three.js/drei dependency)
- * 
+ *
  * Visual overlay for gesture detection feedback
  * Displays swipe trails and multi-touch indicators
- * 
+ *
  * This is a pure DOM version that renders OUTSIDE the Three.js Canvas.
  * It does NOT use Html from @react-three/drei, making it compatible with
  * rendering outside Canvas contexts.
- * 
+ *
  * @module components/mobile/GestureRecognizerPure
  * @category Mobile Controls
  * @korean 제스처 인식기 (순수 DOM)
  */
 &nbsp;
-import React, { useCallback, useEffect, useState } from 'react';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { GestureEvent, useTouchControls } from '../../../hooks/useTouchControls';
-import { getColorRGB } from '../../../utils/colorHelpers';
+import React, { useCallback, useEffect, useState } from "react";
+import { KOREAN_COLORS } from "@/types/constants";
+import {
+  GestureEvent,
+  useTouchControls,
+} from "../../../hooks/useTouchControls";
+import { getColorRGB } from "../../../utils/colorHelpers";
 &nbsp;
 /**
  * Props for GestureRecognizerPure component
@@ -629,7 +664,7 @@ interface GestureFeedback {
 &nbsp;
 /**
  * GestureRecognizerPure Component
- * 
+ *
  * Pure DOM gesture detection and visual feedback for mobile controls
  * Features:
  * - Swipe detection (4 directions)
@@ -637,14 +672,14 @@ interface GestureFeedback {
  * - Visual trail feedback
  * - Gesture type indicators
  * - Auto-fading feedback
- * 
+ *
  * Gesture Mappings:
  * - Swipe Right: Advance toward opponent
  * - Swipe Left: Retreat from opponent
  * - Swipe Up: High attack mode
  * - Swipe Down: Low attack mode
  * - Two-Finger Tap: Vital point targeting mode
- * 
+ *
  * @example
  * ```tsx
  * &lt;GestureRecognizerPure
@@ -656,7 +691,7 @@ interface GestureFeedback {
  *   showFeedback={true}
  * /&gt;
  * ```
- * 
+ *
  * @public
  * @korean 제스처인식기순수
  */
@@ -678,7 +713,11 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
 <span class="cstat-no" title="statement not covered" >      onGesture(gesture);</span>
 &nbsp;
       // Add visual feedback
-<span class="cstat-no" title="statement not covered" >      if (showFeedback &amp;&amp; gesture.endX !== undefined &amp;&amp; gesture.endY !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >      if (</span>
+        showFeedback &amp;&amp;
+        gesture.endX !== undefined &amp;&amp;
+        gesture.endY !== undefined
+      ) {
         const feedback: GestureFeedback = <span class="cstat-no" title="statement not covered" >{</span>
           id: nextId,
           type: gesture.type,
@@ -691,7 +730,7 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
 <span class="cstat-no" title="statement not covered" >        setNextId(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt; <span class="cstat-no" title="statement not covered" >prev + 1)</span>;</span>
       }
     },
-    [onGesture, showFeedback, nextId]
+    [onGesture, showFeedback, nextId],
   );
 &nbsp;
   /**
@@ -714,7 +753,7 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
 <span class="cstat-no" title="statement not covered" >      setFeedbacks(<span class="fstat-no" title="function not covered" >(p</span>rev) =&gt;</span>
 <span class="cstat-no" title="statement not covered" >        prev</span>
           .filter(<span class="fstat-no" title="function not covered" >(f</span>b) =&gt; <span class="cstat-no" title="statement not covered" >now - fb.timestamp &lt; 1000)</span>
-          .map(<span class="fstat-no" title="function not covered" >(f</span>b) =&gt; (<span class="cstat-no" title="statement not covered" >{ ...fb, age: now - fb.timestamp }))</span>
+          .map(<span class="fstat-no" title="function not covered" >(f</span>b) =&gt; (<span class="cstat-no" title="statement not covered" >{ ...fb, age: now - fb.timestamp }))</span>,
       );
     }, 100);
 &nbsp;
@@ -732,27 +771,34 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
   /**
    * Get display info for gesture type
    */
-  const getGestureDisplay = <span class="fstat-no" title="function not covered" >(t</span>ype: string): { korean: string; english: string; icon: string } =&gt; {
-    const displays: Record&lt;string, { korean: string; english: string; icon: string }&gt; = <span class="cstat-no" title="statement not covered" >{</span>
-      'swipe-right': { korean: '전진', english: 'Advance', icon: '→' },
-      'swipe-left': { korean: '후퇴', english: 'Retreat', icon: '←' },
-      'swipe-up': { korean: '상단', english: 'High', icon: '↑' },
-      'swipe-down': { korean: '하단', english: 'Low', icon: '↓' },
-      'two-finger-tap': { korean: '급소', english: 'Vital Point', icon: '🎯' },
-      tap: { korean: '터치', english: 'Tap', icon: '👆' },
+  const getGestureDisplay = <span class="fstat-no" title="function not covered" >(</span>
+    type: string,
+  ): { korean: string; english: string; icon: string } =&gt; {
+    const displays: Record&lt;
+      string,
+      { korean: string; english: string; icon: string }
+    &gt; = <span class="cstat-no" title="statement not covered" >{</span>
+      "swipe-right": { korean: "전진", english: "Advance", icon: "→" },
+      "swipe-left": { korean: "후퇴", english: "Retreat", icon: "←" },
+      "swipe-up": { korean: "상단", english: "High", icon: "↑" },
+      "swipe-down": { korean: "하단", english: "Low", icon: "↓" },
+      "two-finger-tap": { korean: "급소", english: "Vital Point", icon: "🎯" },
+      tap: { korean: "터치", english: "Tap", icon: "👆" },
     };
-<span class="cstat-no" title="statement not covered" >    return displays[type] ?? { korean: '제스처', english: 'Gesture', icon: '✋' };</span>
+<span class="cstat-no" title="statement not covered" >    return (</span>
+      displays[type] ?? { korean: "제스처", english: "Gesture", icon: "✋" }
+    );
   };
 &nbsp;
   return (
     &lt;div
       style={{
-        position: 'absolute', // Changed from fixed to position relative to container
+        position: "absolute", // Changed from fixed to position relative to container
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
         zIndex: 1000,
       }}
       data-testid="gesture-recognizer-pure"
@@ -768,23 +814,23 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
           &lt;div
             key={feedback.id}
             style={{
-              position: 'absolute',
+              position: "absolute",
               left: `${feedback.x}px`,
               top: `${feedback.y}px`,
               transform: `translate(-50%, -50%) scale(${scale})`,
               opacity,
-              transition: 'all 0.1s ease-out',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '4px',
+              transition: "all 0.1s ease-out",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "4px",
             }}
             data-testid={`gesture-feedback-pure-${feedback.id}`}
           &gt;
             {/* Icon */}
             &lt;div
               style={{
-                fontSize: '32px',
+                fontSize: "32px",
                 color: `rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity})`,
                 textShadow: `0 0 10px rgba(${goldColor.r}, ${goldColor.g}, ${goldColor.b}, ${opacity * 0.8})`,
               }}
@@ -797,14 +843,14 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
               style={{
                 background: `rgba(0, 0, 0, ${opacity * 0.8})`,
                 border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                borderRadius: '8px',
-                padding: '4px 8px',
-                fontSize: '12px',
-                fontWeight: 'bold',
+                borderRadius: "8px",
+                padding: "4px 8px",
+                fontSize: "12px",
+                fontWeight: "bold",
                 color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${opacity})`,
-                textAlign: 'center',
-                whiteSpace: 'nowrap',
-                textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                textShadow: "0 1px 3px rgba(0, 0, 0, 0.8)",
               }}
             &gt;
               {display.korean} | {display.english}
@@ -817,21 +863,23 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
       {enabled &amp;&amp; (
         &lt;div
           style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: 'rgba(0, 0, 0, 0.7)',
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "rgba(0, 0, 0, 0.7)",
             border: `2px solid rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.6)`,
-            borderRadius: '8px',
-            padding: '8px 12px',
-            fontSize: '10px',
+            borderRadius: "8px",
+            padding: "8px 12px",
+            fontSize: "10px",
             color: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.9)`,
-            maxWidth: '150px',
+            maxWidth: "150px",
             opacity: 0.7,
           }}
           data-testid="gesture-instructions-pure"
         &gt;
-          &lt;div style={{ fontWeight: 'bold', marginBottom: '4px' }}&gt;제스처 | Gestures&lt;/div&gt;
+          &lt;div style={{ fontWeight: "bold", marginBottom: "4px" }}&gt;
+            제스처 | Gestures
+          &lt;/div&gt;
           &lt;div&gt;← → 이동 | Move&lt;/div&gt;
           &lt;div&gt;↑ ↓ 공격 | Attack&lt;/div&gt;
           &lt;div&gt;🤞 급소 | Vital&lt;/div&gt;
@@ -847,7 +895,7 @@ export const GestureRecognizerPure: React.FC&lt;GestureRecognizerPureProps&gt; =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

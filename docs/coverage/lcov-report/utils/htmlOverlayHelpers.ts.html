@@ -452,7 +452,14 @@
 <a name='L387'></a><a href='#L387'>387</a>
 <a name='L388'></a><a href='#L388'>388</a>
 <a name='L389'></a><a href='#L389'>389</a>
-<a name='L390'></a><a href='#L390'>390</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L390'></a><a href='#L390'>390</a>
+<a name='L391'></a><a href='#L391'>391</a>
+<a name='L392'></a><a href='#L392'>392</a>
+<a name='L393'></a><a href='#L393'>393</a>
+<a name='L394'></a><a href='#L394'>394</a>
+<a name='L395'></a><a href='#L395'>395</a>
+<a name='L396'></a><a href='#L396'>396</a>
+<a name='L397'></a><a href='#L397'>397</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -569,9 +576,16 @@
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -843,16 +857,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Html Overlay Positioning Helpers for Three.js
- * 
+ *
  * Provides utilities for positioning Html overlays from @react-three/drei
  * with bounds checking, z-index management, and Korean text measurement.
- * 
+ *
  * Fixes:
  * - Z-fighting between Html overlays and 3D elements
  * - Text clipping at screen edges
  * - Inconsistent overlay positioning
  * - Performance issues with many overlays
- * 
+ *
  * @module utils/htmlOverlayHelpers
  * @category Utilities
  * @korean HTML오버레이헬퍼
@@ -871,30 +885,30 @@ import type {
   HtmlOverlayPositionOptions,
   HtmlOverlayConfig,
 } from "../types/HtmlOverlayTypes";
-import { FONT_FAMILY } from "../types/constants";
+import { FONT_FAMILY } from "@/types/constants";
 &nbsp;
 /**
  * Get z-index value for Html overlay layer
- * 
+ *
  * Maps layer names to Z_INDEX constants for consistent stacking order.
  * Prevents z-fighting by maintaining clear hierarchy.
- * 
+ *
  * @param layer - Html overlay layer category
  * @param offset - Optional offset to add to base z-index (default: 0)
  * @returns Z-index value for the layer
- * 
+ *
  * @example
  * ```typescript
  * const zIndex = getZIndexForLayer('hud'); // Returns 40
  * const zIndexWithOffset = getZIndexForLayer('hud', 5); // Returns 45
  * ```
- * 
+ *
  * @category Html Overlay Helpers
  * @korean Z인덱스가져오기
  */
 export function getZIndexForLayer(
   layer: HtmlOverlayLayer,
-  offset: number = 0
+  offset: number = 0,
 ): ZIndexValue {
   const layerMap: Record&lt;HtmlOverlayLayer, ZIndexValue&gt; = {
     background: Z_INDEX.BACKGROUND,
@@ -909,11 +923,11 @@ export function getZIndexForLayer(
   };
 &nbsp;
   const baseZIndex = layerMap[layer];
-  
+&nbsp;
   // Derive the valid numeric z-index range from Z_INDEX to ensure we never
   // return an out-of-bounds value, even if a large offset is provided.
   const zIndexValues = Object.values(Z_INDEX).filter(
-    (value) =&gt; typeof value === "number"
+    (value) =&gt; typeof value === "number",
   ) as number[];
   const minZIndex = Math.min(...zIndexValues);
   const maxZIndex = Math.max(...zIndexValues);
@@ -926,15 +940,15 @@ export function getZIndexForLayer(
 &nbsp;
 /**
  * Calculate safe position that prevents clipping at screen edges
- * 
+ *
  * Takes a desired position and element bounds, then ensures the element
  * stays within screen bounds by clamping to safe area.
- * 
+ *
  * @param position - Desired 3D position [x, y, z]
  * @param elementBounds - Size of the element
  * @param screenBounds - Screen size and safe area insets
  * @returns Safe position with clipping prevention
- * 
+ *
  * @example
  * ```typescript
  * const safePos = calculateSafePosition(
@@ -944,24 +958,31 @@ export function getZIndexForLayer(
  * );
  * // Returns: { x: 100, y: 50, wasClamped: false }
  * ```
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 안전위치계산
  */
 export function calculateSafePosition(
   position: [number, number, number],
   elementBounds: ElementBounds,
-  screenBounds: ScreenBounds
+  screenBounds: ScreenBounds,
 ): SafePosition {
   const [x, y] = position;
   const margin = elementBounds.margin ?? 0;
-  const safeArea = screenBounds.safeArea ?? { top: 0, right: 0, bottom: 0, left: 0 };
+  const safeArea = screenBounds.safeArea ?? {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  };
 &nbsp;
   // Calculate effective bounds with safe area and margin
   const minX = safeArea.left + margin;
-  const maxX = screenBounds.width - safeArea.right - elementBounds.width - margin;
+  const maxX =
+    screenBounds.width - safeArea.right - elementBounds.width - margin;
   const minY = safeArea.top + margin;
-  const maxY = screenBounds.height - safeArea.bottom - elementBounds.height - margin;
+  const maxY =
+    screenBounds.height - safeArea.bottom - elementBounds.height - margin;
 &nbsp;
   // Clamp position to safe bounds
   const safeX = Math.max(minX, Math.min(x, maxX));
@@ -979,23 +1000,23 @@ export function calculateSafePosition(
 &nbsp;
 /**
  * Measure Korean and English text dimensions
- * 
+ *
  * Uses canvas-based text measurement to calculate accurate bounds
  * for bilingual text before rendering. Prevents text overflow.
- * 
+ *
  * @param korean - Korean text content
  * @param english - English text content
  * @param fontSize - Font size in pixels
  * @param fontFamily - Font family to use (default: FONT_FAMILY.KOREAN)
  * @param layout - Text layout direction ('vertical' | 'horizontal')
  * @returns Text measurement with width and height
- * 
+ *
  * @example
  * ```typescript
  * const bounds = measureTextBounds('공격', 'Attack', 16, FONT_FAMILY.KOREAN, 'vertical');
  * // Returns: { width: 48, height: 42, koreanWidth: 32, englishWidth: 48 }
  * ```
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 텍스트경계측정
  */
@@ -1004,7 +1025,7 @@ export function measureTextBounds(
   english: string,
   fontSize: number,
   fontFamily: string = FONT_FAMILY.KOREAN,
-  layout: "vertical" | "horizontal" = "vertical"
+  layout: "vertical" | "horizontal" = "vertical",
 ): TextMeasurement {
   // Create canvas for text measurement
   const canvas = document.createElement("canvas");
@@ -1055,10 +1076,10 @@ export function measureTextBounds(
 &nbsp;
 /**
  * Apply standardized Html overlay styles
- * 
+ *
  * Creates consistent styling for Html overlays with proper z-index,
  * pointer events, and performance optimizations.
- * 
+ *
  * @param layer - Html overlay layer for z-index
  * @param interactive - Whether the overlay should receive pointer events
  * @param distanceFactor - Distance scaling factor (default: 10)
@@ -1066,13 +1087,13 @@ export function measureTextBounds(
  * @param occlude - Whether to occlude behind 3D objects (default: false)
  * @param zIndexOffset - Optional z-index offset (default: 0)
  * @returns Html overlay style configuration
- * 
+ *
  * @example
  * ```typescript
  * const style = applyHtmlOverlayStyles('hud', false, 10, true);
  * // Returns: { zIndex: 40, pointerEvents: 'none', distanceFactor: 10, center: true, ... }
  * ```
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 오버레이스타일적용
  */
@@ -1082,7 +1103,7 @@ export function applyHtmlOverlayStyles(
   distanceFactor: number = 10,
   center: boolean = true,
   occlude: boolean = false,
-  zIndexOffset: number = 0
+  zIndexOffset: number = 0,
 ): HtmlOverlayStyle {
   return {
     zIndex: getZIndexForLayer(layer, zIndexOffset),
@@ -1096,13 +1117,13 @@ export function applyHtmlOverlayStyles(
 &nbsp;
 /**
  * Create complete Html overlay configuration
- * 
+ *
  * Combines position calculation, bounds checking, and styling
  * into a single configuration object for Html overlays.
- * 
+ *
  * @param options - Html overlay positioning options
  * @returns Complete Html overlay configuration
- * 
+ *
  * @example
  * ```typescript
  * const config = createHtmlOverlayConfig({
@@ -1113,12 +1134,12 @@ export function applyHtmlOverlayStyles(
  *   isMobile: false,
  * });
  * ```
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 오버레이설정생성
  */
 export function createHtmlOverlayConfig(
-  options: HtmlOverlayPositionOptions
+  options: HtmlOverlayPositionOptions,
 ): HtmlOverlayConfig {
   const {
     position,
@@ -1149,7 +1170,7 @@ export function createHtmlOverlayConfig(
     isMobile ? 15 : 10, // Larger distance factor for mobile
     true, // Center by default
     false, // Don't occlude by default
-    zIndexOffset
+    zIndexOffset,
   );
 &nbsp;
   return {
@@ -1161,13 +1182,13 @@ export function createHtmlOverlayConfig(
 &nbsp;
 /**
  * Get default safe area insets for mobile devices
- * 
+ *
  * Provides standard safe area values for devices with notches
  * and home indicators (iPhone X+, modern Android).
- * 
+ *
  * @param isMobile - Whether device is mobile
  * @returns Safe area insets
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 기본안전영역
  */
@@ -1192,22 +1213,22 @@ export function getDefaultSafeArea(isMobile: boolean): {
 &nbsp;
 /**
  * Calculate optimal distance factor for Html overlay
- * 
+ *
  * Determines appropriate distance scaling based on screen size
  * and overlay purpose. Prevents overlays from being too small or large.
- * 
+ *
  * @param screenWidth - Screen width in pixels
  * @param overlayType - Type of overlay ('text' | 'button' | 'panel')
  * @param isMobile - Whether on mobile device
  * @returns Optimal distance factor
- * 
+ *
  * @category Html Overlay Helpers
  * @korean 거리인수계산
  */
 export function calculateDistanceFactor(
   screenWidth: number,
   overlayType: "text" | "button" | "panel",
-  isMobile: boolean
+  isMobile: boolean,
 ): number {
   // Base distance factors by type
   const baseFactors = {
@@ -1237,7 +1258,7 @@ export function calculateDistanceFactor(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:08.365Z
+                at 2026-02-06T18:12:20.764Z
             </div>
         <script src="../prettify.js"></script>
         <script>

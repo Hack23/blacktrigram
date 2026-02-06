@@ -857,7 +857,8 @@
 <a name='L792'></a><a href='#L792'>792</a>
 <a name='L793'></a><a href='#L793'>793</a>
 <a name='L794'></a><a href='#L794'>794</a>
-<a name='L795'></a><a href='#L795'>795</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L795'></a><a href='#L795'>795</a>
+<a name='L796'></a><a href='#L796'>796</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -946,8 +947,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1344,9 +1345,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">7409x</span>
 <span class="cline-any cline-yes">7409x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1372,7 +1371,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">7399x</span>
 <span class="cline-any cline-yes">7399x</span>
 <span class="cline-any cline-yes">7399x</span>
@@ -1392,7 +1391,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">7400x</span>
 <span class="cline-any cline-yes">7400x</span>
 <span class="cline-any cline-yes">7400x</span>
@@ -1431,7 +1430,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1596,7 +1595,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1651,7 +1653,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable react-refresh/only-export-components */
+/**
  * Bone-attached muscle system for realistic muscle movement with skeleton
  *
  * Muscles are rendered as children of their parent bones, inheriting bone
@@ -2123,17 +2126,14 @@ import {
 } from "../../../../constants/bodyRenderingConstants";
 &nbsp;
 /**
- * Calculate muscle scale factor based on muscle mass with non-linear amplification.
+ * Calculate muscle scale factor based on muscle mass with proportional scaling.
  *
- * Uses exponential curve to create dramatic visual differences:
- * - 28kg (Hacker) → 0.64 scale (skinny, visible ribs)
- * - 30kg (Amsalja) → 0.78 scale (lean athlete)
- * - 32kg (Jeongbo) → 0.90 scale (fit operative)
+ * Linear scaling for realistic visual differences:
+ * - 28kg (Hacker) → 0.84 scale (lean, defined)
+ * - 30kg (Amsalja) → 0.89 scale (lean athlete)
+ * - 32kg (Jeongbo) → 0.93 scale (fit operative)
  * - 35kg (Musa) → 1.0 scale (reference baseline)
- * - 48kg (Jojik) → 1.91 scale (massive, intimidating)
- *
- * Formula: 1.0 + sign(deviation) * |deviation|^exponent * amplificationBase
- * where deviation = (muscleMass / referenceMass) - 1.0
+ * - 48kg (Jojik) → 1.30 scale (massive, powerful)
  *
  * @param muscleMass - Muscle mass in kilograms (archetype range: 28-48kg)
  * @returns Scale factor for muscle geometry
@@ -2323,11 +2323,14 @@ export const BoneAttachedMuscle: React.FC&lt;BoneAttachedMuscleProps&gt; = ({
         /&gt;
         &lt;meshPhysicalMaterial
           color={muscleColor}
-          metalness={0.3}
-          roughness={0.7}
-          clearcoat={0.5}
-          clearcoatRoughness={0.2}
-          envMapIntensity={0.8}
+          metalness={0.02}
+          roughness={0.85}
+          clearcoat={0.08}
+          clearcoatRoughness={0.6}
+          envMapIntensity={0.3}
+          sheen={0.15}
+          sheenRoughness={0.8}
+          sheenColor={muscleColor}
         /&gt;
       &lt;/mesh&gt;
 &nbsp;
@@ -2452,7 +2455,7 @@ export default BoneMuscles;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

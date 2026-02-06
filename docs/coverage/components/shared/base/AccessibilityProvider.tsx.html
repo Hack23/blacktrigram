@@ -188,7 +188,29 @@
 <a name='L123'></a><a href='#L123'>123</a>
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,7 +256,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -311,18 +337,28 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable react-refresh/only-export-components */
+/**
  * AccessibilityProvider - Context provider for accessibility settings
- * 
+ *
  * Provides high contrast mode, reduced motion support, and other accessibility features
  * Respects user preferences from prefers-reduced-motion and prefers-contrast media queries
- * 
+ *
  * @module components/base
  */
 &nbsp;
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 &nbsp;
 /**
  * Accessibility context value interface
@@ -337,7 +373,9 @@ export interface AccessibilityContextValue {
 /**
  * Accessibility context
  */
-const AccessibilityContext = createContext&lt;AccessibilityContextValue | null&gt;(null);
+const AccessibilityContext = createContext&lt;AccessibilityContextValue | null&gt;(
+  null,
+);
 &nbsp;
 /**
  * Props for AccessibilityProvider
@@ -348,10 +386,10 @@ export interface AccessibilityProviderProps {
 &nbsp;
 /**
  * AccessibilityProvider Component
- * 
+ *
  * Provides accessibility settings throughout the component tree
  * Automatically detects user preferences for reduced motion
- * 
+ *
  * @example
  * ```tsx
  * &lt;AccessibilityProvider&gt;
@@ -359,7 +397,9 @@ export interface AccessibilityProviderProps {
  * &lt;/AccessibilityProvider&gt;
  * ```
  */
-export const AccessibilityProvider: React.FC&lt;AccessibilityProviderProps&gt; = ({ children }) =&gt; {
+export const AccessibilityProvider: React.FC&lt;AccessibilityProviderProps&gt; = ({
+  children,
+}) =&gt; {
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 &nbsp;
@@ -406,7 +446,7 @@ export const AccessibilityProvider: React.FC&lt;AccessibilityProviderProps&gt; =
       setHighContrast,
       toggleHighContrast,
     }),
-    [highContrast, reducedMotion, toggleHighContrast]
+    [highContrast, reducedMotion, toggleHighContrast],
   );
 &nbsp;
   return (
@@ -420,10 +460,10 @@ AccessibilityProvider.displayName = "AccessibilityProvider";
 &nbsp;
 /**
  * Custom hook to access accessibility context
- * 
+ *
  * @throws Error if used outside of AccessibilityProvider
  * @returns Accessibility context value
- * 
+ *
  * @example
  * ```tsx
  * const { highContrast, reducedMotion, toggleHighContrast } = useAccessibility();
@@ -431,11 +471,13 @@ AccessibilityProvider.displayName = "AccessibilityProvider";
  */
 export function useAccessibility(): AccessibilityContextValue {
   const context = useContext(AccessibilityContext);
-  
+&nbsp;
   if (!context) {
-    throw new Error("useAccessibility must be used within AccessibilityProvider");
+    throw new Error(
+      "useAccessibility must be used within AccessibilityProvider",
+    );
   }
-  
+&nbsp;
   return context;
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -445,7 +487,7 @@ export function useAccessibility(): AccessibilityContextValue {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

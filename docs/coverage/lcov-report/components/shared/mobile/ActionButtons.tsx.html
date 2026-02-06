@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.7% </span>
+                <span class="strong">3.65% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/81</span>
+                <span class='fraction'>3/82</span>
             </div>
         
             
@@ -507,7 +507,30 @@
 <a name='L442'></a><a href='#L442'>442</a>
 <a name='L443'></a><a href='#L443'>443</a>
 <a name='L444'></a><a href='#L444'>444</a>
-<a name='L445'></a><a href='#L445'>445</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -788,6 +811,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -953,35 +979,45 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * ActionButtons Component
- * 
+ *
  * Touch-optimized action buttons for combat (Attack and Block)
  * Provides tactile combat controls with visual feedback and haptic response
- * 
+ *
  * WCAG 2.1 Level AA Compliance:
  * - ARIA labels for screen readers
  * - Keyboard navigation (Enter, Space)
  * - Visible focus indicators (2px cyan border)
  * - 80x80px and 70x70px touch targets (exceeds 44x44px minimum)
- * 
+ *
  * @module components/mobile/ActionButtons
  * @category Mobile Controls
  * @korean 액션 버튼
  */
 &nbsp;
-import { Html } from '@react-three/drei';
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { triggerOptimizedHaptic } from './HapticController';
-import { applyOptimizedUpdate, createTransformStyle, createFilterStyle } from './TouchOptimizer';
-import { getColorRGB } from '../../../utils/colorHelpers';
-import { handleKeyboardNav, getFocusStyle } from '../../../utils/accessibility';
-import { createBilingualLabel } from '../../../types/AccessibilityTypes';
-import { useThrottle } from '../../../hooks/useThrottle';
+import { Html } from "@react-three/drei";
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
+import { KOREAN_COLORS } from "@/types/constants";
+import { triggerOptimizedHaptic } from "./HapticController";
+import {
+  applyOptimizedUpdate,
+  createTransformStyle,
+  createFilterStyle,
+} from "./TouchOptimizer";
+import { getColorRGB } from "../../../utils/colorHelpers";
+import { handleKeyboardNav, getFocusStyle } from "../../../utils/accessibility";
+import { createBilingualLabel } from "../../../types/AccessibilityTypes";
+import { useThrottle } from "../../../hooks/useThrottle";
 &nbsp;
 /**
  * Event type for button interactions
  */
-export type ButtonEventType = 'start' | 'end';
+export type ButtonEventType = "start" | "end";
 &nbsp;
 /**
  * Props for ActionButtons component
@@ -1003,11 +1039,11 @@ export interface ActionButtonsProps {
 &nbsp;
 /**
  * ActionButtons Component
- * 
+ *
  * Provides two primary combat action buttons:
  * - Attack Button (⚡): Primary combat action, 80x80px
  * - Block Button (🛡️): Defensive action, 70x70px
- * 
+ *
  * Features:
  * - Touch-optimized with minimum 44x44px targets
  * - Attack button: 80x80px for primary action
@@ -1016,11 +1052,11 @@ export interface ActionButtonsProps {
  * - Haptic feedback for tactile response
  * - Korean cyberpunk theming
  * - Hold-to-block support
- * 
+ *
  * Usage in Combat:
  * - Attack: Executes current stance technique
  * - Block: Activates defensive guard (hold for sustained block)
- * 
+ *
  * @example
  * ```tsx
  * &lt;ActionButtons
@@ -1035,7 +1071,7 @@ export interface ActionButtonsProps {
  *   disabled={isPaused}
  * /&gt;
  * ```
- * 
+ *
  * @public
  * @korean 액션버튼
  */
@@ -1082,11 +1118,11 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
           // Deferred state update
 <span class="cstat-no" title="statement not covered" >          setAttackPressed(true);</span>
 <span class="cstat-no" title="statement not covered" >          throttledOnAttack();</span>
-<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic('medium');</span>
-        }
+<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic("medium");</span>
+        },
       );
     },
-    [disabled, throttledOnAttack]
+    [disabled, throttledOnAttack],
   );
 &nbsp;
   /**
@@ -1107,10 +1143,10 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
         },
 <span class="fstat-no" title="function not covered" >        () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          setAttackPressed(false);</span>
-        }
+        },
       );
     },
-    [disabled]
+    [disabled],
   );
 &nbsp;
   /**
@@ -1131,12 +1167,12 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
         },
 <span class="fstat-no" title="function not covered" >        () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          setBlockPressed(true);</span>
-<span class="cstat-no" title="statement not covered" >          throttledOnBlock('start');</span>
-<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic('light');</span>
-        }
+<span class="cstat-no" title="statement not covered" >          throttledOnBlock("start");</span>
+<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic("light");</span>
+        },
       );
     },
-    [disabled, throttledOnBlock]
+    [disabled, throttledOnBlock],
   );
 &nbsp;
   /**
@@ -1157,11 +1193,11 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
         },
 <span class="fstat-no" title="function not covered" >        () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          setBlockPressed(false);</span>
-<span class="cstat-no" title="statement not covered" >          throttledOnBlock('end');</span>
-        }
+<span class="cstat-no" title="statement not covered" >          throttledOnBlock("end");</span>
+        },
       );
     },
-    [disabled, throttledOnBlock]
+    [disabled, throttledOnBlock],
   );
 &nbsp;
   /**
@@ -1176,7 +1212,7 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
     // Store refs in variables at effect creation time
     const attackButton = <span class="cstat-no" title="statement not covered" >attackButtonRef.current;</span>
     const blockButton = <span class="cstat-no" title="statement not covered" >blockButtonRef.current;</span>
-    
+&nbsp;
 <span class="cstat-no" title="statement not covered" >    return <span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >      if (attackButton) {</span>
 <span class="cstat-no" title="statement not covered" >        attackButton.style.transform = createTransformStyle(false);</span>
@@ -1199,13 +1235,13 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
         onActivate: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          setAttackPressed(true);</span>
 <span class="cstat-no" title="statement not covered" >          onAttack();</span>
-<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic('medium');</span>
+<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic("medium");</span>
           // Release after brief delay
 <span class="cstat-no" title="statement not covered" >          setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etAttackPressed(false), 1</span>50);</span>
         },
       });
     },
-    [disabled, onAttack]
+    [disabled, onAttack],
   );
 &nbsp;
   /**
@@ -1217,38 +1253,41 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
 <span class="cstat-no" title="statement not covered" >      handleKeyboardNav(e.nativeEvent, {</span>
         onActivate: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          setBlockPressed(true);</span>
-<span class="cstat-no" title="statement not covered" >          onBlock('start');</span>
-<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic('light');</span>
+<span class="cstat-no" title="statement not covered" >          onBlock("start");</span>
+<span class="cstat-no" title="statement not covered" >          triggerOptimizedHaptic("light");</span>
           // Release after brief delay
 <span class="cstat-no" title="statement not covered" >          setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >            setBlockPressed(false);</span>
-<span class="cstat-no" title="statement not covered" >            onBlock('end');</span>
+<span class="cstat-no" title="statement not covered" >            onBlock("end");</span>
           }, 150);
         },
       });
     },
-    [disabled, onBlock]
+    [disabled, onBlock],
   );
 &nbsp;
   // Extract RGB colors using shared utility
-  const <span class="cstat-no" title="statement not covered" >colors = useMemo(<span class="fstat-no" title="function not covered" >() =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span></span>
-    gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
-    blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
-    primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
-  }), []);
+  const <span class="cstat-no" title="statement not covered" >colors = useMemo(</span>
+<span class="fstat-no" title="function not covered" >    () =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+      gold: getColorRGB(KOREAN_COLORS.ACCENT_GOLD),
+      blue: getColorRGB(KOREAN_COLORS.ACCENT_BLUE),
+      primary: getColorRGB(KOREAN_COLORS.PRIMARY_CYAN),
+    }),
+    [],
+  );
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Html fullscreen&gt;
       &lt;div
         style={{
-          position: 'absolute',
+          position: "absolute",
           bottom: `${bottom}px`,
           right: `${right}px`,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
           opacity: disabled ? 0.3 : opacity,
-          pointerEvents: disabled ? 'none' : 'auto',
+          pointerEvents: disabled ? "none" : "auto",
         }}
         data-testid="action-buttons"
       &gt;
@@ -1264,29 +1303,29 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
           onFocus={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etAttackFocused(true)}</span>
           onBlur={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etAttackFocused(false)}</span>
           style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
             background: attackPressed
               ? `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1)`
               : `rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.9)`,
-            border: '3px solid #fff',
-            fontSize: '28px',
-            color: '#000',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            userSelect: 'none',
-            touchAction: 'none',
-            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            border: "3px solid #fff",
+            fontSize: "28px",
+            color: "#000",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            touchAction: "none",
+            transition: "transform 0.1s ease-out, filter 0.1s ease-out",
             // Note: transform and filter are managed via TouchOptimizer/applyOptimizedUpdate
             // for immediate visual feedback. React state-driven inline styles serve as baseline
             // values that are overridden during active touch interactions via direct DOM manipulation.
             transform: createTransformStyle(attackPressed, 0.95),
             filter: createFilterStyle(attackPressed, 1.2),
-            willChange: 'transform, filter', // GPU hint
+            willChange: "transform, filter", // GPU hint
             boxShadow: attackPressed
               ? `0 0 25px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(${colors.gold.r}, ${colors.gold.g}, ${colors.gold.b}, 0.6)`,
@@ -1296,7 +1335,7 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
             }),
           }}
           disabled={disabled}
-          aria-label={createBilingualLabel('공격', 'Attack').label}
+          aria-label={createBilingualLabel("공격", "Attack").label}
           aria-pressed={attackPressed}
           role="button"
           tabIndex={disabled ? -1 : 0}
@@ -1317,25 +1356,25 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
           onFocus={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etBlockFocused(true)}</span>
           onBlur={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etBlockFocused(false)}</span>
           style={{
-            width: '70px',
-            height: '70px',
-            borderRadius: '50%',
+            width: "70px",
+            height: "70px",
+            borderRadius: "50%",
             background: blockPressed
               ? `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1)`
               : `rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.9)`,
-            border: '2px solid #fff',
-            fontSize: '24px',
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            userSelect: 'none',
-            touchAction: 'none',
-            transition: 'transform 0.1s ease-out, filter 0.1s ease-out',
+            border: "2px solid #fff",
+            fontSize: "24px",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            userSelect: "none",
+            touchAction: "none",
+            transition: "transform 0.1s ease-out, filter 0.1s ease-out",
             transform: createTransformStyle(blockPressed, 0.95),
             filter: createFilterStyle(blockPressed, 1.2),
-            willChange: 'transform, filter', // GPU hint
+            willChange: "transform, filter", // GPU hint
             boxShadow: blockPressed
               ? `0 0 20px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 1), inset 0 4px 8px rgba(0, 0, 0, 0.3)`
               : `0 4px 10px rgba(0, 0, 0, 0.5), 0 0 12px rgba(${colors.blue.r}, ${colors.blue.g}, ${colors.blue.b}, 0.6)`,
@@ -1345,7 +1384,7 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
             }),
           }}
           disabled={disabled}
-          aria-label={createBilingualLabel('방어', 'Block').label}
+          aria-label={createBilingualLabel("방어", "Block").label}
           aria-pressed={blockPressed}
           role="button"
           tabIndex={disabled ? -1 : 0}
@@ -1357,19 +1396,19 @@ const ActionButtonsComponent: React.FC&lt;ActionButtonsProps&gt; = <span class="
         {/* Button Labels (Korean + English) */}
         &lt;div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2px',
-            alignItems: 'center',
-            fontSize: '10px',
+            display: "flex",
+            flexDirection: "column",
+            gap: "2px",
+            alignItems: "center",
+            fontSize: "10px",
             color: `rgba(${colors.primary.r}, ${colors.primary.g}, ${colors.primary.b}, 0.9)`,
-            textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
-            fontWeight: 'bold',
-            marginTop: '4px',
+            textShadow: "0 1px 3px rgba(0, 0, 0, 0.8)",
+            fontWeight: "bold",
+            marginTop: "4px",
           }}
         &gt;
           &lt;span&gt;공격 | Attack&lt;/span&gt;
-          &lt;span style={{ fontSize: '9px' }}&gt;방어 | Block&lt;/span&gt;
+          &lt;span style={{ fontSize: "9px" }}&gt;방어 | Block&lt;/span&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/Html&gt;
@@ -1391,7 +1430,7 @@ export const ActionButtons = React.memo(
       prevProps.onAttack === nextProps.onAttack &amp;&amp;
       prevProps.onBlock === nextProps.onBlock
     );
-  }
+  },
 );
 &nbsp;
 ActionButtons.displayName = "ActionButtons";
@@ -1402,7 +1441,7 @@ ActionButtons.displayName = "ActionButtons";
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:08.365Z
+                at 2026-02-06T18:12:20.764Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -229,10 +229,7 @@
 <a name='L164'></a><a href='#L164'>164</a>
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -398,34 +395,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * BaseHUDContainer - Reusable HUD container with common patterns
- * 
+ *
  * Provides consistent container styling and positioning for all HUD components.
  * Eliminates code duplication across Training and Combat HUDs.
- * 
+ *
  * Features:
  * - Responsive positioning based on HUD position (left, right, top, bottom)
  * - Korean cyberpunk theming with gradients and borders
  * - Pointer events handling
  * - Backdrop blur effects
- * 
+ *
  * @module components/shared/ui
  * @korean 기본HUD컨테이너 - 공통 패턴을 가진 재사용 가능한 HUD 컨테이너
  */
 &nbsp;
-import React from 'react';
-import { Z_INDEX } from '../../../types/LayoutTypes';
-import { KOREAN_COLORS } from '../../../types/constants';
-import { hexToRgbaString } from '../../../utils/colorUtils';
+import React from "react";
+import { Z_INDEX } from "../../../types/LayoutTypes";
+import { KOREAN_COLORS } from "@/types/constants";
+import { hexToRgbaString } from "../../../utils/colorUtils";
 &nbsp;
 /**
  * HUD position type
  */
-export type HUDPosition = 'left' | 'right' | 'top' | 'bottom';
+export type HUDPosition = "left" | "right" | "top" | "bottom";
 &nbsp;
 /**
  * Props for BaseHUDContainer component
@@ -455,11 +449,11 @@ export interface BaseHUDContainerProps {
 &nbsp;
 /**
  * BaseHUDContainer Component
- * 
+ *
  * Reusable container for HUD elements with consistent styling and positioning.
  * Handles left, right, top, and bottom positions with appropriate borders,
  * gradients, and responsive behavior.
- * 
+ *
  * @example
  * ```tsx
  * &lt;BaseHUDContainer
@@ -492,67 +486,67 @@ export const BaseHUDContainer: React.FC&lt;BaseHUDContainerProps&gt; = ({
   // Using KOREAN_COLORS directly for stable memoization instead of useKoreanTheme
   const containerStyle = React.useMemo&lt;React.CSSProperties&gt;(() =&gt; {
     const baseStyle: React.CSSProperties = {
-      position: 'absolute',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-      pointerEvents: 'none',
+      position: "absolute",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "stretch",
+      pointerEvents: "none",
       padding: `${padding}px`,
-      boxSizing: 'border-box',
+      boxSizing: "border-box",
       gap: `${gap}px`,
       zIndex,
-      backdropFilter: 'blur(8px)',
+      backdropFilter: "blur(8px)",
     };
 &nbsp;
     switch (position) {
-      case 'left':
+      case "left":
         return {
           ...baseStyle,
           left: 0,
           top: `${topOffset}px`,
           width: `${width}px`,
           height: `${height}px`,
-          justifyContent: 'flex-start',
+          justifyContent: "flex-start",
           borderRight: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
           background: `linear-gradient(90deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.4)} 100%)`,
         };
-      
-      case 'right':
+&nbsp;
+      case "right":
         return {
           ...baseStyle,
           right: 0,
           top: `${topOffset}px`,
           width: `${width}px`,
           height: `${height}px`,
-          justifyContent: 'flex-start',
+          justifyContent: "flex-start",
           borderLeft: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
           background: `linear-gradient(270deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.85)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.4)} 100%)`,
         };
-      
-      case 'top':
+&nbsp;
+      case "top":
         return {
           ...baseStyle,
           top: 0,
           left: 0,
-          width: '100%',
+          width: "100%",
           height: `${height}px`,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           borderBottom: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
           background: `linear-gradient(180deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7)} 100%)`,
         };
-      
-      case 'bottom':
+&nbsp;
+      case "bottom":
         return {
           ...baseStyle,
           bottom: 0,
           left: 0,
-          width: '100%',
+          width: "100%",
           height: `${height}px`,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           borderTop: `2px solid ${hexToRgbaString(KOREAN_COLORS.PRIMARY_CYAN, 0.4)}`,
           background: `linear-gradient(0deg, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.9)} 0%, ${hexToRgbaString(KOREAN_COLORS.UI_BACKGROUND_DARK, 0.7)} 100%)`,
         };
@@ -560,10 +554,7 @@ export const BaseHUDContainer: React.FC&lt;BaseHUDContainerProps&gt; = ({
   }, [position, width, height, topOffset, padding, gap, zIndex]);
 &nbsp;
   return (
-    &lt;div
-      style={{ ...containerStyle, ...style }}
-      data-testid={dataTestId}
-    &gt;
+    &lt;div style={{ ...containerStyle, ...style }} data-testid={dataTestId}&gt;
       {children}
     &lt;/div&gt;
   );
@@ -577,7 +568,7 @@ export default BaseHUDContainer;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:08.365Z
+                at 2026-02-06T18:12:20.764Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

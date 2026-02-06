@@ -833,15 +833,7 @@
 <a name='L768'></a><a href='#L768'>768</a>
 <a name='L769'></a><a href='#L769'>769</a>
 <a name='L770'></a><a href='#L770'>770</a>
-<a name='L771'></a><a href='#L771'>771</a>
-<a name='L772'></a><a href='#L772'>772</a>
-<a name='L773'></a><a href='#L773'>773</a>
-<a name='L774'></a><a href='#L774'>774</a>
-<a name='L775'></a><a href='#L775'>775</a>
-<a name='L776'></a><a href='#L776'>776</a>
-<a name='L777'></a><a href='#L777'>777</a>
-<a name='L778'></a><a href='#L778'>778</a>
-<a name='L779'></a><a href='#L779'>779</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L771'></a><a href='#L771'>771</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1139,13 +1131,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1320,8 +1306,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1644,7 +1628,7 @@ import {
 } from "../../../systems/vitalpoint/KoreanVitalPoints";
 import { VitalPointSeverity } from "../../../types/common";
 import { Z_INDEX } from "../../../types/LayoutTypes";
-import { FONT_FAMILY, KOREAN_COLORS } from "../../../types/constants";
+import { FONT_FAMILY, KOREAN_COLORS } from "@/types/constants";
 import type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
 &nbsp;
 export type { BodyRegionFilter } from "../three/effects/VitalPointMarkers3D";
@@ -1773,7 +1757,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
       top: isMobile ? "180px" : "220px",
       left: isMobile ? "10px" : "20px",
     }),
-    [isMobile]
+    [isMobile],
   );
 &nbsp;
   const finalPosition = screenPosition ?? defaultPosition;
@@ -1793,13 +1777,13 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
         // Match both left and right arm vital points
 <span class="cstat-no" title="statement not covered" >        points = points.filter(</span>
 <span class="fstat-no" title="function not covered" >          (v</span>p) =&gt;
-<span class="cstat-no" title="statement not covered" >            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_")</span>
+<span class="cstat-no" title="statement not covered" >            vp.id.startsWith("arm_left_") || vp.id.startsWith("arm_right_"),</span>
         );
       <span class="missing-if-branch" title="if path not taken" >I</span>} else if (regionFilter === "legs") {
         // Match both left and right leg vital points
 <span class="cstat-no" title="statement not covered" >        points = points.filter(</span>
 <span class="fstat-no" title="function not covered" >          (v</span>p) =&gt;
-<span class="cstat-no" title="statement not covered" >            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_")</span>
+<span class="cstat-no" title="statement not covered" >            vp.id.startsWith("leg_left_") || vp.id.startsWith("leg_right_"),</span>
         );
       } else {
         // Simple prefix match for head_ or torso_
@@ -1816,7 +1800,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
 <span class="cstat-no" title="statement not covered" >          vp.names.korean.toLowerCase().includes(query) ||</span>
           vp.names.english.toLowerCase().includes(query) ||
           vp.names.romanized.toLowerCase().includes(query) ||
-          vp.id.toLowerCase().includes(query)
+          vp.id.toLowerCase().includes(query),
       );
     }
 &nbsp;
@@ -1831,7 +1815,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
         : [...severityFilters, severity];
 <span class="cstat-no" title="statement not covered" >      onSeverityFiltersChange(newFilters);</span>
     },
-    [severityFilters, onSeverityFiltersChange]
+    [severityFilters, onSeverityFiltersChange],
   );
 &nbsp;
   // Severity options
@@ -1878,10 +1862,8 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
         fontFamily: FONT_FAMILY.KOREAN,
         color: "#ffffff",
         boxShadow: `0 0 30px ${colorToHex(
-          KOREAN_COLORS.PRIMARY_CYAN
-        )}40, inset 0 0 20px ${colorToHex(
-          KOREAN_COLORS.UI_BACKGROUND_DARK
-        )}80`,
+          KOREAN_COLORS.PRIMARY_CYAN,
+        )}40, inset 0 0 20px ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}80`,
         transition: "all 0.3s ease",
         pointerEvents: "all",
         zIndex: Z_INDEX.MODAL,
@@ -1896,13 +1878,11 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
           alignItems: "center",
           marginBottom: "12px",
           paddingBottom: "12px",
-          borderBottom: `1px solid ${colorToHex(
-            KOREAN_COLORS.PRIMARY_CYAN
-          )}40`,
+          borderBottom: `1px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}40`,
           background: `linear-gradient(90deg, ${colorToHex(
-            KOREAN_COLORS.UI_BACKGROUND_DARK
+            KOREAN_COLORS.UI_BACKGROUND_DARK,
           )}00 0%, ${colorToHex(
-            KOREAN_COLORS.PRIMARY_CYAN
+            KOREAN_COLORS.PRIMARY_CYAN,
           )}10 50%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)}00 100%)`,
         }}
       &gt;
@@ -1924,7 +1904,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
           onClick={<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etExpanded(!expanded)}</span>
           style={{
             background: `linear-gradient(135deg, ${colorToHex(
-              KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+              KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
             )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
             border: `2px solid ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}`,
             borderRadius: "6px",
@@ -1933,20 +1913,18 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
             fontSize,
             cursor: "pointer",
             transition: "all 0.2s ease",
-            boxShadow: `0 2px 8px ${colorToHex(
-              KOREAN_COLORS.PRIMARY_CYAN
-            )}30`,
+            boxShadow: `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`,
           }}
           onMouseEnter={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >            e.currentTarget.style.transform = "scale(1.05)";</span>
 <span class="cstat-no" title="statement not covered" >            e.currentTarget.style.boxShadow = `0 4px 12px ${colorToHex(</span>
-              KOREAN_COLORS.PRIMARY_CYAN
+              KOREAN_COLORS.PRIMARY_CYAN,
             )}50`;
           }}
           onMouseLeave={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >            e.currentTarget.style.transform = "scale(1)";</span>
 <span class="cstat-no" title="statement not covered" >            e.currentTarget.style.boxShadow = `0 2px 8px ${colorToHex(</span>
-              KOREAN_COLORS.PRIMARY_CYAN
+              KOREAN_COLORS.PRIMARY_CYAN,
             )}30`;
           }}
           data-testid="toggle-expand-button"
@@ -1964,10 +1942,10 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
             height: buttonHeight,
             background: visible
               ? `linear-gradient(135deg, ${colorToHex(
-                  KOREAN_COLORS.ACCENT_GOLD
+                  KOREAN_COLORS.ACCENT_GOLD,
                 )} 0%, ${colorToHex(KOREAN_COLORS.SECONDARY_YELLOW)} 100%)`
               : `linear-gradient(135deg, ${colorToHex(
-                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                  KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                 )} 0%, ${colorToHex(KOREAN_COLORS.UI_BACKGROUND_DARK)} 100%)`,
             border: `2px solid ${
               visible
@@ -1982,7 +1960,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
             transition: "all 0.3s ease",
             boxShadow: visible
               ? `0 4px 16px ${colorToHex(
-                  KOREAN_COLORS.ACCENT_GOLD
+                  KOREAN_COLORS.ACCENT_GOLD,
                 )}60, inset 0 2px 4px rgba(255,255,255,0.2)`
               : `0 2px 8px ${colorToHex(KOREAN_COLORS.PRIMARY_CYAN)}30`,
             textTransform: "uppercase",
@@ -2101,13 +2079,11 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                     style={{
                       background: isActive
                         ? `linear-gradient(135deg, ${colorToHex(
-                            KOREAN_COLORS.PRIMARY_CYAN
-                          )} 0%, ${colorToHex(
-                            KOREAN_COLORS.ACCENT_BLUE
-                          )} 100%)`
+                            KOREAN_COLORS.PRIMARY_CYAN,
+                          )} 0%, ${colorToHex(KOREAN_COLORS.ACCENT_BLUE)} 100%)`
                         : `${colorToHex(KOREAN_COLORS.UI_BACKGROUND_MEDIUM)}`,
                       border: `2px solid ${colorToHex(
-                        KOREAN_COLORS.PRIMARY_CYAN
+                        KOREAN_COLORS.PRIMARY_CYAN,
                       )}`,
                       borderRadius: "6px",
                       padding: "6px 12px",
@@ -2119,7 +2095,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                       fontWeight: isActive ? "bold" : "normal",
                       boxShadow: isActive
                         ? `0 2px 8px ${colorToHex(
-                            KOREAN_COLORS.PRIMARY_CYAN
+                            KOREAN_COLORS.PRIMARY_CYAN,
                           )}50`
                         : "none",
                     }}
@@ -2164,10 +2140,10 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                   width: "100%",
                   height: buttonHeight,
                   background: `${colorToHex(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`,
                   border: `2px solid ${colorToHex(
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`,
                   borderRadius: "8px",
                   padding: "0 40px 0 14px", // Add right padding for clear button
@@ -2179,15 +2155,15 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                 }}
                 onFocus={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.borderColor = colorToHex(</span>
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   );
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.boxShadow = `0 0 12px ${colorToHex(</span>
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`;
                 }}
                 onBlur={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.borderColor = `${colorToHex(</span>
-                    KOREAN_COLORS.PRIMARY_CYAN
+                    KOREAN_COLORS.PRIMARY_CYAN,
                   )}40`;
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.boxShadow = "none";</span>
                 }}
@@ -2216,15 +2192,15 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                   }}
                   onMouseEnter={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.color = colorToHex(</span>
-                      KOREAN_COLORS.ACCENT_RED
+                      KOREAN_COLORS.ACCENT_RED,
                     );
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = `${colorToHex(</span>
-                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                      KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                     )}`;
                   }}
                   onMouseLeave={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.color = colorToHex(</span>
-                      KOREAN_COLORS.TEXT_SECONDARY
+                      KOREAN_COLORS.TEXT_SECONDARY,
                     );
 <span class="cstat-no" title="statement not covered" >                    e.currentTarget.style.background = "transparent";</span>
                   }}
@@ -2314,10 +2290,10 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                   width: "100%",
                   height: buttonHeight - 4,
                   background: `${colorToHex(
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`,
                   border: `2px solid ${colorToHex(
-                    KOREAN_COLORS.ACCENT_ORANGE
+                    KOREAN_COLORS.ACCENT_ORANGE,
                   )}`,
                   borderRadius: "6px",
                   color: colorToHex(KOREAN_COLORS.ACCENT_ORANGE),
@@ -2328,13 +2304,13 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
                 }}
                 onMouseEnter={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.background = `${colorToHex(</span>
-                    KOREAN_COLORS.ACCENT_ORANGE
+                    KOREAN_COLORS.ACCENT_ORANGE,
                   )}20`;
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.transform = "translateY(-1px)";</span>
                 }}
                 onMouseLeave={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.background = `${colorToHex(</span>
-                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM
+                    KOREAN_COLORS.UI_BACKGROUND_MEDIUM,
                   )}`;
 <span class="cstat-no" title="statement not covered" >                  e.currentTarget.style.transform = "translateY(0)";</span>
                 }}
@@ -2377,7 +2353,7 @@ export const VitalPointOverlayControlsPure: React.FC&lt;
               marginTop: "12px",
               paddingTop: "12px",
               borderTop: `1px solid ${colorToHex(
-                KOREAN_COLORS.PRIMARY_CYAN
+                KOREAN_COLORS.PRIMARY_CYAN,
               )}40`,
               fontSize: smallFontSize,
               color: colorToHex(KOREAN_COLORS.TEXT_SECONDARY),
@@ -2404,7 +2380,7 @@ export default VitalPointOverlayControlsPure;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

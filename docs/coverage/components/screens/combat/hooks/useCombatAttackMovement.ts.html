@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.04% </span>
+                <span class="strong">35.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/94</span>
+                <span class='fraction'>34/96</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.51% </span>
+                <span class="strong">22.58% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/27</span>
+                <span class='fraction'>7/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.04% </span>
+                <span class="strong">35.41% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/94</span>
+                <span class='fraction'>34/96</span>
             </div>
         
             
@@ -419,7 +419,19 @@
 <a name='L354'></a><a href='#L354'>354</a>
 <a name='L355'></a><a href='#L355'>355</a>
 <a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L357'></a><a href='#L357'>357</a>
+<a name='L358'></a><a href='#L358'>358</a>
+<a name='L359'></a><a href='#L359'>359</a>
+<a name='L360'></a><a href='#L360'>360</a>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a>
+<a name='L368'></a><a href='#L368'>368</a>
+<a name='L369'></a><a href='#L369'>369</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -540,6 +552,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -565,9 +587,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">60x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -629,6 +649,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -723,6 +745,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -793,19 +817,19 @@ import { TrigramStance } from "@/types/common";
 /**
  * Calculate attack direction from attacker to defender
  * 공격자에서 방어자로의 공격 방향 계산
- * 
+ *
  * @param attackerPos - Attacker position
  * @param defenderPos - Defender position
  * @returns Normalized direction vector
  */
 function <span class="fstat-no" title="function not covered" >calculateAttackDirection(</span>
   attackerPos: [number, number, number],
-  defenderPos: [number, number, number]
+  defenderPos: [number, number, number],
 ): THREE.Vector3 {
   const direction = <span class="cstat-no" title="statement not covered" >new THREE.Vector3(</span>
     defenderPos[0] - attackerPos[0],
     0, // Keep movement horizontal
-    defenderPos[2] - attackerPos[2]
+    defenderPos[2] - attackerPos[2],
   );
 <span class="cstat-no" title="statement not covered" >  return direction.normalize();</span>
 }
@@ -822,6 +846,8 @@ export interface CombatAttackMovementConfig {
   readonly player1Stance: TrigramStance;
   /** Player 1 base position */
   readonly player1BasePosition: [number, number, number];
+  /** Player 1 animation duration in seconds (default: 0.4) */
+  readonly player1AnimationDuration?: number;
 &nbsp;
   /** Whether player 2 is currently attacking */
   readonly player2Attacking: boolean;
@@ -831,8 +857,10 @@ export interface CombatAttackMovementConfig {
   readonly player2Stance: TrigramStance;
   /** Player 2 base position */
   readonly player2BasePosition: [number, number, number];
+  /** Player 2 animation duration in seconds (default: 0.4) */
+  readonly player2AnimationDuration?: number;
 &nbsp;
-  /** Animation duration in seconds (default: 0.4) */
+  /** Default animation duration in seconds for both players if individual values not specified (default: 0.4) */
   readonly animationDuration?: number;
 }
 &nbsp;
@@ -884,19 +912,25 @@ export interface CombatAttackMovementResult {
  * @korean 전투공격이동사용
  */
 export function useCombatAttackMovement(
-  config: CombatAttackMovementConfig
+  config: CombatAttackMovementConfig,
 ): CombatAttackMovementResult {
   const {
     player1Attacking,
     player1AnimationType,
     player1Stance,
     player1BasePosition,
+    player1AnimationDuration,
     player2Attacking,
     player2AnimationType,
     player2Stance,
     player2BasePosition,
+    player2AnimationDuration,
     animationDuration = 0.4,
   } = config;
+&nbsp;
+  // Per-player animation durations (fallback to shared default)
+  const p1Duration = player1AnimationDuration ?? <span class="branch-1 cbranch-no" title="branch not covered" >animationDuration;</span>
+  const p2Duration = player2AnimationDuration ?? <span class="branch-1 cbranch-no" title="branch not covered" >animationDuration;</span>
 &nbsp;
   // Attack movement physics engines (separate instances for each player to avoid race conditions)
   const player1PhysicsRef = useRef(new AttackMovementPhysics());
@@ -919,12 +953,10 @@ export function useCombatAttackMovement(
   &gt; | null&gt;(null);
 &nbsp;
   // Current positions
-  const [player1Position, setPlayer1Position] = useState&lt;
-    [number, number, number]
-  &gt;(player1BasePosition);
-  const [player2Position, setPlayer2Position] = useState&lt;
-    [number, number, number]
-  &gt;(player2BasePosition);
+  const [player1Position, setPlayer1Position] =
+    useState&lt;[number, number, number]&gt;(player1BasePosition);
+  const [player2Position, setPlayer2Position] =
+    useState&lt;[number, number, number]&gt;(player2BasePosition);
 &nbsp;
   // Movement states
   const [player1IsLunging, setPlayer1IsLunging] = useState(false);
@@ -946,7 +978,7 @@ export function useCombatAttackMovement(
 &nbsp;
       const direction = <span class="cstat-no" title="statement not covered" >calculateAttackDirection(</span>
         player1BasePosition,
-        player2BasePosition
+        player2BasePosition,
       );
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      player1MovementResultRef.current =</span>
@@ -954,7 +986,7 @@ export function useCombatAttackMovement(
           animationType: player1AnimationType,
           currentStance: player1Stance,
           direction,
-          animationDuration,
+          animationDuration: p1Duration,
         });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setPlayer1IsLunging(true);</span>
@@ -984,14 +1016,16 @@ export function useCombatAttackMovement(
 &nbsp;
         // Calculate current position with attack movement
         const elapsedSeconds = <span class="cstat-no" title="statement not covered" >elapsed / 1000;</span>
-        const basePos = <span class="cstat-no" title="statement not covered" >player1BasePosVectorRef.current.set(...player1BasePosition);</span>
-        const recovering = <span class="cstat-no" title="statement not covered" >elapsed &gt;= (movementResult.lungeDuration * 1000);</span>
-        
+        const basePos = <span class="cstat-no" title="statement not covered" >player1BasePosVectorRef.current.set(</span>
+          ...player1BasePosition,
+        );
+        const recovering = <span class="cstat-no" title="statement not covered" >elapsed &gt;= movementResult.lungeDuration * 1000;</span>
+&nbsp;
         const newPos = <span class="cstat-no" title="statement not covered" >player1PhysicsRef.current.applyAttackMovement(</span>
           basePos,
           movementResult,
           elapsedSeconds,
-          recovering
+          recovering,
         );
 &nbsp;
         const newPosition: [number, number, number] = <span class="cstat-no" title="statement not covered" >[</span>
@@ -1029,7 +1063,7 @@ export function useCombatAttackMovement(
     player1Stance,
     player1BasePosition,
     player2BasePosition,
-    animationDuration,
+    p1Duration,
   ]);
 &nbsp;
   // Player 2 attack movement effect (same logic as player 1)
@@ -1043,7 +1077,7 @@ export function useCombatAttackMovement(
 &nbsp;
       const direction = <span class="cstat-no" title="statement not covered" >calculateAttackDirection(</span>
         player2BasePosition,
-        player1BasePosition
+        player1BasePosition,
       );
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      player2MovementResultRef.current =</span>
@@ -1051,7 +1085,7 @@ export function useCombatAttackMovement(
           animationType: player2AnimationType,
           currentStance: player2Stance,
           direction,
-          animationDuration,
+          animationDuration: p2Duration,
         });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      setPlayer2IsLunging(true);</span>
@@ -1078,14 +1112,16 @@ export function useCombatAttackMovement(
         }
 &nbsp;
         const elapsedSeconds = <span class="cstat-no" title="statement not covered" >elapsed / 1000;</span>
-        const basePos = <span class="cstat-no" title="statement not covered" >player2BasePosVectorRef.current.set(...player2BasePosition);</span>
-        const recovering = <span class="cstat-no" title="statement not covered" >elapsed &gt;= (movementResult.lungeDuration * 1000);</span>
-        
+        const basePos = <span class="cstat-no" title="statement not covered" >player2BasePosVectorRef.current.set(</span>
+          ...player2BasePosition,
+        );
+        const recovering = <span class="cstat-no" title="statement not covered" >elapsed &gt;= movementResult.lungeDuration * 1000;</span>
+&nbsp;
         const newPos = <span class="cstat-no" title="statement not covered" >player2PhysicsRef.current.applyAttackMovement(</span>
           basePos,
           movementResult,
           elapsedSeconds,
-          recovering
+          recovering,
         );
 &nbsp;
         const newPosition: [number, number, number] = <span class="cstat-no" title="statement not covered" >[</span>
@@ -1095,7 +1131,7 @@ export function useCombatAttackMovement(
         ];
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        setPlayer2Position(newPosition);</span>
-        
+&nbsp;
         const totalProgress = <span class="cstat-no" title="statement not covered" >elapsedSeconds / movementResult.totalDuration;</span>
 <span class="cstat-no" title="statement not covered" >        setPlayer2IsLunging(totalProgress &lt; 0.5);</span>
 &nbsp;
@@ -1121,7 +1157,7 @@ export function useCombatAttackMovement(
     player2Stance,
     player1BasePosition,
     player2BasePosition,
-    animationDuration,
+    p2Duration,
   ]);
 &nbsp;
   return {
@@ -1138,7 +1174,7 @@ export function useCombatAttackMovement(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T15:41:07.891Z
+                at 2026-02-06T18:12:20.315Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
