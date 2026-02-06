@@ -112,6 +112,7 @@ import { Direction, DPadEventType } from "../../shared/mobile/VirtualDPad";
 import { Player3DWithTransitions } from "../../shared/three/models/Player3DWithTransitions";
 import { PauseMenu } from "./components/controls/PauseMenu";
 import { TraumaOverlay3D } from "./components/effects/TraumaOverlay3D";
+import { CombatParticleEffects3D } from "./components/effects/CombatParticleEffects3D";
 import {
   CombatBottomHUD,
   CombatLeftHUD,
@@ -2788,6 +2789,13 @@ export const CombatScreen3D: React.FC<CombatScreen3DProps> = ({
             effects={combatState.hitEffects}
             onEffectComplete={handleEffectComplete}
             arenaBounds={arenaBounds}
+          />
+
+          {/* Combat Particle Effects - Blood viscosity, organ damage, audio (전투 입자 효과) */}
+          <CombatParticleEffects3D
+            hitEffects={combatState.hitEffects}
+            enabled={true}
+            isMobile={isMobile}
           />
 
           {/* Vital Point Overlay - Show on both players when V is pressed */}

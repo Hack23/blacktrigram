@@ -79,6 +79,10 @@ export type {
   ParticleEffectType,
 } from "./ParticleAudio3D";
 
+// Combat particle effects coordinator (integrates blood, organ, audio)
+export { CombatParticleEffects3D } from "./CombatParticleEffects3D";
+export type { CombatParticleEffects3DProps } from "./CombatParticleEffects3D";
+
 // Impact spark effects for critical hits
 export { ImpactSparks3D } from "./ImpactSparks3D";
 export type { ImpactSparkEffect, ImpactSparks3DProps } from "./ImpactSparks3D";
