@@ -686,6 +686,8 @@ This agent leverages the following GitHub Copilot Agent Skills for automatic enf
 | [performance-optimization](../skills/performance-optimization/SKILL.md) | Three.js rendering | 60fps, bundle size <500KB |
 | [isms-compliance-checking](../skills/isms-compliance-checking/SKILL.md) | All changes | ISO 27001, NIST CSF, CIS Controls |
 | [threejs-best-practices](../skills/threejs-best-practices/SKILL.md) | Three.js code | @react-three/fiber patterns |
+| [korean-martial-arts-authenticity](../skills/korean-martial-arts-authenticity/SKILL.md) | Martial arts content | 11 Korean arts, Eight Trigrams, vital points, Dark Ops, cultural accuracy |
+| [3d-combat-systems](../skills/3d-combat-systems/SKILL.md) | Combat mechanics | Physics-based, anatomical hitboxes, damage calc |
 
 **Skills are automatically loaded by Copilot** - no manual activation needed. They provide strategic guidance while this agent handles tactical implementation.
 
@@ -700,9 +702,9 @@ ELSE (validate position coordinates and martial art origin)
 
 ### Rule 2: Korean Martial Arts Source Verification
 ```
-IF (technique not from Hapkido/Taekwondo/Taekyon/traditional Korean arts)
-THEN (reject with: "Only authentic Korean martial arts techniques allowed")
-ELSE (verify stance-technique alignment with Eight Trigrams)
+IF (technique not from 11 Korean martial arts: Hapkido/Taekwondo/Taekyon/Kuk Sool Won/Tang Soo Do/Hwa Rang Do/Gumdo/Ssireum/Subak/Yudo/Gongkwon Yusul)
+THEN (reject with: "Only authentic Korean martial arts techniques allowed - must be from one of 11 recognized arts")
+ELSE (verify stance-technique alignment with Eight Trigrams AND martial art source)
 ```
 
 ### Rule 3: Combat Balance Requirements
