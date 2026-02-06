@@ -389,7 +389,7 @@ export const COMBO_YUDO_COUNTER_ANIMATION: SkeletalAnimation =
     .parry(0.1) // 막기 - deflect attack
     .clinchGrab(0.1) // 잡기 - grip
     .hipThrow(0.18) // 허리치기 - hip throw
-    .slamDown(0.14) // 던지기 - takedown
+    .throwExecute(0.14) // 던지기 - throw projection
     .recover(0.18)
     .build();
 
@@ -410,7 +410,7 @@ export const COMBO_SSIREUM_MECHI_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_ssireum_mechi", "씨름메치기")
     .asAttack(0.8)
     .clinchGrab(0.12) // 샅바잡기 - satba grip
-    .throwEntry(0.15) // 들어올리기 - lift entry
+    .slamLift(0.15) // 들어올리기 - body lift
     .slamDown(0.2) // 메치기 - throw down
     .groundMount(0.15) // 누르기 - pin
     .recover(0.18)
@@ -551,10 +551,11 @@ export const COMBO_KUKSOOL_JOKSUL_ANIMATION: SkeletalAnimation =
 export const COMBO_KUKSOOL_TOOKI_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_kuksool_tooki", "국술투기")
     .asAttack(0.75)
-    .clinchGrab(0.1) // 잡기 - grip
-    .throwEntry(0.12) // 들어가기 - entry
-    .hipThrow(0.18) // 허리치기 - hip throw
-    .groundMount(0.15) // 누르기 - pin
+    .clinchGrab(0.08) // 잡기 - grip
+    .throwEntry(0.1) // 들어가기 - entry
+    .hipThrow(0.15) // 허리치기 - hip throw
+    .throwExecute(0.1) // 투기 - throw projection
+    .groundMount(0.12) // 누르기 - pin
     .recover(0.2)
     .build();
 

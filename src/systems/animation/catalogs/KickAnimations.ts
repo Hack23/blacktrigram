@@ -686,7 +686,7 @@ export const AXE_KICK_ANIMATION: SkeletalAnimation =
  * - Impact: Heel DRIVES through target backward
  * - Target zones:
  *   - 명치 (solar plexus) - wind knockout
- *   - 늑골 (ribs) - rib fracture potential  
+ *   - 늑골 (ribs) - rib fracture potential
  *   - 얼굴 (face) - knockout if aimed high
  *   - 무릎 (knee) - joint destruction if low
  * - Body lean: Maximum forward ~20-25° (like horse stance lean)
@@ -1205,9 +1205,9 @@ export const SPINNING_HOOK_KICK_ANIMATION: SkeletalAnimation =
     .asAttack(TECHNIQUE_TIMING.SPINNING.total)
     .backKickSpin(TECHNIQUE_TIMING.SPINNING.chamber) // Spin - 300ms
     .withKoreanHighGuard() // 상단막기 - High guard during spin
-    .crescentKickArc(TECHNIQUE_TIMING.SPINNING.extend) // Hook motion - 350ms
+    .hookKickExtend(TECHNIQUE_TIMING.SPINNING.extend) // Hook extend past target - 350ms
     .withKoreanHighGuard() // 상단막기 - Maintain guard
-    .crescentKickArc(TECHNIQUE_TIMING.SPINNING.peak) // Peak - 120ms
+    .hookKickHook(TECHNIQUE_TIMING.SPINNING.peak) // Hook back at target - 120ms
     .withKoreanHighGuard() // 상단막기 - Maintain guard
     .spinRecover(
       TECHNIQUE_TIMING.SPINNING.retract + TECHNIQUE_TIMING.SPINNING.recover,
@@ -1226,16 +1226,16 @@ export const SPINNING_HOOK_KICK_ANIMATION: SkeletalAnimation =
  */
 export const FLYING_KICK_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("flying_kick", "이단옆차기")
-    .asAttack(TECHNIQUE_TIMING.JUMPING.total + 200) // Extra air time
+    .asAttack(TECHNIQUE_TIMING.JUMPING.total + 0.2) // Extra air time
     .chamber(TECHNIQUE_TIMING.JUMPING.chamber) // Run up/Jump - 180ms
     .withKoreanHighGuard() // 상단막기 - High guard
-    .sideKickChamber(150) // Tuck in air
+    .sideKickChamber(0.15) // Tuck in air
     .withKoreanHighGuard() // 상단막기
-    .sideKickExtend(300) // Extend in air
+    .sideKickExtend(0.3) // Extend in air
     .withKoreanHighGuard() // 상단막기
-    .sideKickExtend(100) // Hold (breaking moment)
+    .sideKickExtend(0.1) // Hold (breaking moment)
     .withKoreanHighGuard() // 상단막기
-    .recover(370) // Land and recover
+    .recover(0.37) // Land and recover
     .withKoreanMiddleGuard() // 중단막기
     .build();
 
