@@ -32,9 +32,9 @@ import {
 export const DARKOPS_SILENT_CAROTID_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_silent_carotid", "경동맥침묵")
     .asAttack(0.7)
-    .throwEntry(0.15) // Silent approach
-    .clinchGrab(0.15) // Secure position
-    .jointLock(0.2) // Apply compression
+    .shift(0.15, "ease-out") // Silent approach from behind
+    .clinchGrab(0.15) // Secure position on neck
+    .chokeGrip(0.2) // Apply carotid compression
     .recover(0.2)
     .build();
 
@@ -233,9 +233,9 @@ export const DARKOPS_THROAT_STRIKE_ANIMATION: SkeletalAnimation =
 export const DARKOPS_LARYNX_CRUSH_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_larynx_crush", "후두압박")
     .asAttack(0.55)
-    .throwEntry(0.12)
-    .wristGrab(0.15) // Grab throat
-    .jointLock(0.15) // Compress
+    .clinchGrab(0.12) // Close distance, grip throat
+    .wristGrab(0.15) // Precise larynx compression grip
+    .chokeGrip(0.15) // Compress
     .recover(0.13)
     .build();
 
@@ -385,9 +385,9 @@ export const DARKOPS_CERVICAL_TWIST_ANIMATION: SkeletalAnimation =
 export const DARKOPS_REAR_CHOKE_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_rear_choke", "후방나체교살")
     .asAttack(0.7)
-    .throwEntry(0.15) // Get behind opponent
-    .clinchGrab(0.15) // Secure position
-    .jointLock(0.22) // Apply choke
+    .spin(0.15) // Circle behind opponent
+    .clinchGrab(0.15) // Secure rear position
+    .chokeGrip(0.22) // Apply rear naked choke
     .recover(0.18)
     .build();
 
@@ -404,7 +404,7 @@ export const DARKOPS_GUILLOTINE_ANIMATION: SkeletalAnimation =
     .asAttack(0.65)
     .parry(0.1) // Catch head
     .clinchGrab(0.12)
-    .jointLock(0.2) // Apply guillotine
+    .chokeGrip(0.2) // Apply guillotine choke
     .recover(0.23)
     .build();
 
@@ -526,7 +526,7 @@ export const DARKOPS_FINGER_BREAK_ANIMATION: SkeletalAnimation =
 export const DARKOPS_SILENT_TAKEDOWN_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_silent_takedown", "무음제압")
     .asAttack(0.75)
-    .throwEntry(0.2) // Silent approach
+    .shift(0.2, "ease-out") // Silent approach
     .clinchGrab(0.15) // Secure
     .slamDown(0.2) // Take down silently
     .recover(0.2)
@@ -543,9 +543,9 @@ export const DARKOPS_SILENT_TAKEDOWN_ANIMATION: SkeletalAnimation =
 export const DARKOPS_SLEEPER_HOLD_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("darkops_sleeper_hold", "수면유도")
     .asAttack(0.7)
-    .throwEntry(0.15)
-    .clinchGrab(0.12)
-    .jointLock(0.25) // Sustained pressure
+    .shift(0.15, "ease-out") // Approach from behind
+    .clinchGrab(0.12) // Secure head/neck
+    .chokeGrip(0.25) // Sustained blood choke pressure
     .recover(0.18)
     .build();
 

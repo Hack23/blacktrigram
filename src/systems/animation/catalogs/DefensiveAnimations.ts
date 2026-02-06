@@ -1,14 +1,14 @@
 /**
  * Defensive animations for Eight Trigram stances
- * 
+ *
  * Implements stance-specific defensive techniques based on Korean martial arts
  * and I Ching philosophy using the MartialArtsAnimationBuilder pattern.
- * 
+ *
  * Coverage:
  * - 8 stances × 2 defensive moves = 16 defensive animations
  * - Block success, parry, guard break, and recovery animations
  * - Integration with existing AnimationStateMachine
- * 
+ *
  * @module systems/animation/DefensiveAnimations
  * @category Animation
  * @korean 방어애니메이션
@@ -30,6 +30,7 @@ import { MartialArtsAnimationBuilder } from "../builders/MartialArtsAnimationBui
 export const GEON_HIGH_BLOCK: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("geon_high_block", "건 상단막기")
     .asDefense(0.2)
+    .stance()
     .blockHigh(0.1, "ease-out")
     .blockHigh(0.1, "linear")
     .build();
@@ -48,7 +49,7 @@ export const GEON_COUNTER_STRIKE: SkeletalAnimation =
     .build();
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ☱ 태 (TAE) - LAKE DEFENSIVE ANIMATIONS  
+// ☱ 태 (TAE) - LAKE DEFENSIVE ANIMATIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
 /**
@@ -102,7 +103,10 @@ export const LI_PRECISION_PARRY: SkeletalAnimation =
  * @korean 리신경타격반격
  */
 export const LI_NERVE_STRIKE_COUNTER: SkeletalAnimation =
-  MartialArtsAnimationBuilder.create("li_nerve_strike_counter", "리 신경타격반격")
+  MartialArtsAnimationBuilder.create(
+    "li_nerve_strike_counter",
+    "리 신경타격반격",
+  )
     .asDefense(0.22)
     .stance()
     .counterParry(0.06, "linear")
@@ -284,7 +288,10 @@ export const DEFENSIVE_ANIMATIONS_BY_STANCE: ReadonlyMap<
   [TrigramStance.TAE, [TAE_JOINT_LOCK_DEFENSE, TAE_SWEEP_DEFENSE] as const],
   [TrigramStance.LI, [LI_PRECISION_PARRY, LI_NERVE_STRIKE_COUNTER] as const],
   [TrigramStance.JIN, [JIN_EXPLOSIVE_BLOCK, JIN_SHOCKING_COUNTER] as const],
-  [TrigramStance.SON, [SON_CONTINUOUS_DEFLECTION, SON_PRESSURE_COUNTER] as const],
+  [
+    TrigramStance.SON,
+    [SON_CONTINUOUS_DEFLECTION, SON_PRESSURE_COUNTER] as const,
+  ],
   [TrigramStance.GAM, [GAM_FLOW_DEFENSE, GAM_REDIRECTION_COUNTER] as const],
   [TrigramStance.GAN, [GAN_IMMOVABLE_BLOCK, GAN_COUNTER_FORTRESS] as const],
   [TrigramStance.GON, [GON_GROUNDING_DEFENSE, GON_TAKEDOWN_COUNTER] as const],
@@ -318,7 +325,7 @@ export const ALL_DEFENSIVE_ANIMATIONS = new Map<string, SkeletalAnimation>([
  * @korean 자세방어애니메이션가져오기
  */
 export function getDefensiveAnimationsForStance(
-  stance: TrigramStance
+  stance: TrigramStance,
 ): readonly SkeletalAnimation[] {
   return DEFENSIVE_ANIMATIONS_BY_STANCE.get(stance) ?? [];
 }
@@ -328,7 +335,7 @@ export function getDefensiveAnimationsForStance(
  * @korean 방어애니메이션가져오기
  */
 export function getDefensiveAnimation(
-  name: string
+  name: string,
 ): SkeletalAnimation | undefined {
   return ALL_DEFENSIVE_ANIMATIONS.get(name);
 }

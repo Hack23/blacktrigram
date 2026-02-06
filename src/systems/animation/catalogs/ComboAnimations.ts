@@ -653,7 +653,7 @@ export const COMBO_KUKSOOL_CRANE_ANIMATION: SkeletalAnimation =
     .nerveStrike(0.08) // 학부리 - crane beak strike 1
     .sideStepRight(0.08) // 옆걸음 - side step
     .nerveStrike(0.08) // 학부리 - crane beak strike 2
-    .chamber(0.1) // 준비 - chamber
+    .sideKickChamber(0.1) // 준비 - side kick chamber
     .sideKickExtend(0.1) // 옆차기 - side kick
     .recover(0.06)
     .build();
@@ -669,12 +669,13 @@ export const COMBO_KUKSOOL_CRANE_ANIMATION: SkeletalAnimation =
  */
 export const COMBO_KUKSOOL_DRAGON_ANIMATION: SkeletalAnimation =
   MartialArtsAnimationBuilder.create("combo_kuksool_dragon", "국술용형")
-    .asAttack(0.7)
+    .asAttack(0.73)
     .spin(0.12) // 회전 - coiling spin
     .palmStrike(0.1) // 용조 - dragon palm
     .wristGrab(0.1) // 잡아치기 - grab strike
-    .throwExecute(0.15) // 용휘 - dragon whip throw
-    .recover(0.23)
+    .throwEntry(0.08) // 진입 - load for throw
+    .throwExecute(0.12) // 용휘 - dragon whip throw
+    .recover(0.21)
     .build();
 
 /**
