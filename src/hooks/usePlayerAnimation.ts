@@ -98,6 +98,20 @@ export interface UsePlayerAnimationReturn {
   readonly transitionTo: (newState: AnimationState) => boolean;
 
   /**
+   * Transition to ATTACK state with technique-specific duration.
+   *
+   * The default ATTACK config is 200ms (12 frames), but real techniques
+   * range from 350ms to 1200ms. This method overrides the duration so
+   * the state machine stays in ATTACK for the full technique animation.
+   *
+   * @param durationSeconds - The skeletal animation duration in seconds
+   * @returns Whether transition was successful
+   *
+   * @korean 공격전환 (기술별 지속시간)
+   */
+  readonly transitionToAttack: (durationSeconds: number) => boolean;
+
+  /**
    * Transition to stance-specific guard animation
    *
    * @param stance - Trigram stance
@@ -281,6 +295,19 @@ export function usePlayerAnimation(
     [stateMachine],
   );
 
+  const transitionToAttack = useCallback(
+    (durationSeconds: number) => {
+      const success = stateMachine.transitionToAttack(durationSeconds);
+      if (success) {
+        prevStateRef.current = stateMachine.getCurrentState();
+        prevFrameRef.current = stateMachine.getCurrentFrame();
+        forceUpdate((n) => n + 1);
+      }
+      return success;
+    },
+    [stateMachine],
+  );
+
   const transitionToStanceChange = useCallback(
     (fromStance: TrigramStance, toStance: TrigramStance) => {
       const success = stateMachine.transitionToStanceChange(
@@ -316,6 +343,7 @@ export function usePlayerAnimation(
     currentFrame: prevFrameRef.current,
     update,
     transitionTo,
+    transitionToAttack,
     transitionToStanceGuard,
     transitionToStanceChange,
     isInStanceGuard,

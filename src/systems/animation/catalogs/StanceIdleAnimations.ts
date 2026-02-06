@@ -69,14 +69,14 @@ const BREATHING_DURATIONS = {
  * @korean 체중이동진폭
  */
 const WEIGHT_SHIFT_AMPLITUDES = {
-  GEON: 0.015, // Subtle shift - mobile stance (breathing bounce visible)
-  TAE: 0.020, // Fluid flowing shifts (flowing character visible)
-  LI: 0.008, // Minimal - precision stance (controlled visible)
-  JIN: 0.025, // Larger - coiled spring (power visible)
-  SON: 0.018, // Rhythmic lateral shifts (continuous flow visible)
-  GAM: 0.022, // Flowing adaptation (water-like visible)
-  GAN: 0.005, // Minimal - mountain solid (stable visible)
-  GON: 0.012, // Grounded subtle shifts (earth-like visible)
+  GEON: 0.04, // Visible forward rocking - mobile power stance (파워 흔들림)
+  TAE: 0.05, // Fluid flowing shifts clearly visible (유동적 흐름)
+  LI: 0.02, // Small but visible - precision stance (정밀 제어)
+  JIN: 0.06, // Large coiled spring bounce (폭발적 준비)
+  SON: 0.045, // Rhythmic lateral shifts (연속 흐름)
+  GAM: 0.055, // Flowing water adaptation (물 흐름)
+  GAN: 0.015, // Minimal - mountain solid (산악 안정)
+  GON: 0.03, // Grounded but visible shifts (대지 흔들림)
 } as const;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -112,8 +112,8 @@ function calculateBreathingScale(
  */
 function calculateTorsoBreathingOffset(breathingScale: number): number {
   // Chest expands forward more visibly on inhale
-  // Increased multiplier from 0.3 to 0.8 for more visible breathing
-  return (breathingScale - 1) * 0.8;
+  // Multiplier 1.5 for clearly visible breathing (가슴 확장 시각화)
+  return (breathingScale - 1) * 1.5;
 }
 
 /**
@@ -127,10 +127,11 @@ function calculateTorsoBreathingOffset(breathingScale: number): number {
  * @returns Knee rotation adjustment for natural bounce
  */
 function calculateKneeBounce(phase: number, amplitude: number): number {
-  // More visible knee flex synchronized with breathing
-  // Two bounces per breath cycle for natural feel
+  // Visible knee flex synchronized with breathing for natural alive feel
+  // Two bounces per breath cycle (one per inhale/exhale)
+  // 호흡과 동기화된 무릎 굽힘으로 자연스러운 움직임
   const bouncePhase = Math.sin(phase * Math.PI * 4);
-  return bouncePhase * amplitude * 0.15; // Limited to 0.15 to stay within test tolerance of 0.005 (higher values cause test failures)
+  return bouncePhase * amplitude * 0.5;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

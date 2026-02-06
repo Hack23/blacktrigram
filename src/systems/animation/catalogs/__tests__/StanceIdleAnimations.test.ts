@@ -329,12 +329,14 @@ describe("StanceIdleAnimations - Leg Consistency", () => {
           expect(hipR.z).toBeCloseTo(firstHipR.z, 2);
         }
 
-        // KNEE rotations should be identical (no walking)
+        // KNEE rotations should be close but allow visible knee bounce
+        // Precision 1 (±0.05) allows the intentional knee bounce animation
+        // that makes stance idles look alive
         if (firstKneeL && kneeL) {
-          expect(kneeL.x).toBeCloseTo(firstKneeL.x, 2);
+          expect(kneeL.x).toBeCloseTo(firstKneeL.x, 1);
         }
         if (firstKneeR && kneeR) {
-          expect(kneeR.x).toBeCloseTo(firstKneeR.x, 2);
+          expect(kneeR.x).toBeCloseTo(firstKneeR.x, 1);
         }
       }
     }

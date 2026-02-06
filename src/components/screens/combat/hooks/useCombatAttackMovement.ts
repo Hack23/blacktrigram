@@ -16,19 +16,19 @@ import { TrigramStance } from "@/types/common";
 /**
  * Calculate attack direction from attacker to defender
  * 공격자에서 방어자로의 공격 방향 계산
- * 
+ *
  * @param attackerPos - Attacker position
  * @param defenderPos - Defender position
  * @returns Normalized direction vector
  */
 function calculateAttackDirection(
   attackerPos: [number, number, number],
-  defenderPos: [number, number, number]
+  defenderPos: [number, number, number],
 ): THREE.Vector3 {
   const direction = new THREE.Vector3(
     defenderPos[0] - attackerPos[0],
     0, // Keep movement horizontal
-    defenderPos[2] - attackerPos[2]
+    defenderPos[2] - attackerPos[2],
   );
   return direction.normalize();
 }
@@ -45,6 +45,8 @@ export interface CombatAttackMovementConfig {
   readonly player1Stance: TrigramStance;
   /** Player 1 base position */
   readonly player1BasePosition: [number, number, number];
+  /** Player 1 animation duration in seconds (default: 0.4) */
+  readonly player1AnimationDuration?: number;
 
   /** Whether player 2 is currently attacking */
   readonly player2Attacking: boolean;
@@ -54,8 +56,10 @@ export interface CombatAttackMovementConfig {
   readonly player2Stance: TrigramStance;
   /** Player 2 base position */
   readonly player2BasePosition: [number, number, number];
+  /** Player 2 animation duration in seconds (default: 0.4) */
+  readonly player2AnimationDuration?: number;
 
-  /** Animation duration in seconds (default: 0.4) */
+  /** Default animation duration in seconds for both players if individual values not specified (default: 0.4) */
   readonly animationDuration?: number;
 }
 
@@ -107,19 +111,25 @@ export interface CombatAttackMovementResult {
  * @korean 전투공격이동사용
  */
 export function useCombatAttackMovement(
-  config: CombatAttackMovementConfig
+  config: CombatAttackMovementConfig,
 ): CombatAttackMovementResult {
   const {
     player1Attacking,
     player1AnimationType,
     player1Stance,
     player1BasePosition,
+    player1AnimationDuration,
     player2Attacking,
     player2AnimationType,
     player2Stance,
     player2BasePosition,
+    player2AnimationDuration,
     animationDuration = 0.4,
   } = config;
+
+  // Per-player animation durations (fallback to shared default)
+  const p1Duration = player1AnimationDuration ?? animationDuration;
+  const p2Duration = player2AnimationDuration ?? animationDuration;
 
   // Attack movement physics engines (separate instances for each player to avoid race conditions)
   const player1PhysicsRef = useRef(new AttackMovementPhysics());
@@ -142,12 +152,10 @@ export function useCombatAttackMovement(
   > | null>(null);
 
   // Current positions
-  const [player1Position, setPlayer1Position] = useState<
-    [number, number, number]
-  >(player1BasePosition);
-  const [player2Position, setPlayer2Position] = useState<
-    [number, number, number]
-  >(player2BasePosition);
+  const [player1Position, setPlayer1Position] =
+    useState<[number, number, number]>(player1BasePosition);
+  const [player2Position, setPlayer2Position] =
+    useState<[number, number, number]>(player2BasePosition);
 
   // Movement states
   const [player1IsLunging, setPlayer1IsLunging] = useState(false);
@@ -169,7 +177,7 @@ export function useCombatAttackMovement(
 
       const direction = calculateAttackDirection(
         player1BasePosition,
-        player2BasePosition
+        player2BasePosition,
       );
 
       player1MovementResultRef.current =
@@ -177,7 +185,7 @@ export function useCombatAttackMovement(
           animationType: player1AnimationType,
           currentStance: player1Stance,
           direction,
-          animationDuration,
+          animationDuration: p1Duration,
         });
 
       setPlayer1IsLunging(true);
@@ -207,14 +215,16 @@ export function useCombatAttackMovement(
 
         // Calculate current position with attack movement
         const elapsedSeconds = elapsed / 1000;
-        const basePos = player1BasePosVectorRef.current.set(...player1BasePosition);
-        const recovering = elapsed >= (movementResult.lungeDuration * 1000);
-        
+        const basePos = player1BasePosVectorRef.current.set(
+          ...player1BasePosition,
+        );
+        const recovering = elapsed >= movementResult.lungeDuration * 1000;
+
         const newPos = player1PhysicsRef.current.applyAttackMovement(
           basePos,
           movementResult,
           elapsedSeconds,
-          recovering
+          recovering,
         );
 
         const newPosition: [number, number, number] = [
@@ -252,7 +262,7 @@ export function useCombatAttackMovement(
     player1Stance,
     player1BasePosition,
     player2BasePosition,
-    animationDuration,
+    p1Duration,
   ]);
 
   // Player 2 attack movement effect (same logic as player 1)
@@ -266,7 +276,7 @@ export function useCombatAttackMovement(
 
       const direction = calculateAttackDirection(
         player2BasePosition,
-        player1BasePosition
+        player1BasePosition,
       );
 
       player2MovementResultRef.current =
@@ -274,7 +284,7 @@ export function useCombatAttackMovement(
           animationType: player2AnimationType,
           currentStance: player2Stance,
           direction,
-          animationDuration,
+          animationDuration: p2Duration,
         });
 
       setPlayer2IsLunging(true);
@@ -301,14 +311,16 @@ export function useCombatAttackMovement(
         }
 
         const elapsedSeconds = elapsed / 1000;
-        const basePos = player2BasePosVectorRef.current.set(...player2BasePosition);
-        const recovering = elapsed >= (movementResult.lungeDuration * 1000);
-        
+        const basePos = player2BasePosVectorRef.current.set(
+          ...player2BasePosition,
+        );
+        const recovering = elapsed >= movementResult.lungeDuration * 1000;
+
         const newPos = player2PhysicsRef.current.applyAttackMovement(
           basePos,
           movementResult,
           elapsedSeconds,
-          recovering
+          recovering,
         );
 
         const newPosition: [number, number, number] = [
@@ -318,7 +330,7 @@ export function useCombatAttackMovement(
         ];
 
         setPlayer2Position(newPosition);
-        
+
         const totalProgress = elapsedSeconds / movementResult.totalDuration;
         setPlayer2IsLunging(totalProgress < 0.5);
 
@@ -344,7 +356,7 @@ export function useCombatAttackMovement(
     player2Stance,
     player1BasePosition,
     player2BasePosition,
-    animationDuration,
+    p2Duration,
   ]);
 
   return {
