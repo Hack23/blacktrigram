@@ -67,7 +67,7 @@ export const FALL_IMPACT_FRAMES: Record<FallType, number> = {
 export function determineFallDirection(
   attackAngle: number,
   playerFacing: number,
-  attackHeight: "high" | "mid" | "low" = "mid"
+  attackHeight: "high" | "mid" | "low" = "mid",
 ): FallType {
   // Calculate relative attack angle (attack direction relative to player facing)
   let relativeAngle = attackAngle - playerFacing;
@@ -146,7 +146,7 @@ export function determineFallDirection(
  */
 export function determineFallFromStance(
   stance: TrigramStance,
-  defaultFall: FallType = "backward"
+  defaultFall: FallType = "backward",
 ): FallType {
   const stanceFallBias: Record<TrigramStance, FallType> = {
     [TrigramStance.GEON]: "forward", // Heaven - aggressive forward
@@ -365,6 +365,62 @@ export const FALL_SIDE_KEYFRAMES: readonly FallKeyframe[] = [
 ] as const;
 
 /**
+ * Side fall keyframes - RIGHT side (우측 낙법)
+ *
+ * Mirrored version of FALL_SIDE_KEYFRAMES with negated Y and Z rotations
+ * so the character falls to the opposite side.
+ *
+ * @korean 우측낙법키프레임
+ */
+export const FALL_SIDE_RIGHT_KEYFRAMES: readonly FallKeyframe[] = [
+  {
+    frame: 0,
+    torsoRotation: { x: 0, y: 0, z: 0 },
+    centerOfMassHeight: 0.9,
+    description: {
+      korean: "초기 자세",
+      english: "Initial stance",
+    },
+  },
+  {
+    frame: 9,
+    torsoRotation: { x: 0, y: -0.3, z: -0.4 }, // Opposite side rotation
+    centerOfMassHeight: 0.7,
+    description: {
+      korean: "우측 회전 시작",
+      english: "Right side rotation begins",
+    },
+  },
+  {
+    frame: 16,
+    torsoRotation: { x: 0.2, y: -0.8, z: -0.9 }, // Opposite shoulder roll
+    centerOfMassHeight: 0.4,
+    description: {
+      korean: "우측 어깨 구르기",
+      english: "Right shoulder roll",
+    },
+  },
+  {
+    frame: 20,
+    torsoRotation: { x: 0.3, y: -1.2, z: -1.3 }, // Opposite hip impact
+    centerOfMassHeight: 0.2,
+    description: {
+      korean: "우측 엉덩이 충격",
+      english: "Right hip impact",
+    },
+  },
+  {
+    frame: 26,
+    torsoRotation: { x: 0, y: -1.57, z: -1.57 }, // Right side position (-90° roll)
+    centerOfMassHeight: 0.05,
+    description: {
+      korean: "우측 정지",
+      english: "Right side sprawl",
+    },
+  },
+] as const;
+
+/**
  * Get keyframes for a specific fall type
  *
  * @param fallType - Type of fall animation
@@ -380,8 +436,9 @@ export function getFallKeyframes(fallType: FallType): readonly FallKeyframe[] {
     case "backward":
       return FALL_BACKWARD_KEYFRAMES;
     case "side_left":
-    case "side_right":
       return FALL_SIDE_KEYFRAMES;
+    case "side_right":
+      return FALL_SIDE_RIGHT_KEYFRAMES;
     default:
       return FALL_BACKWARD_KEYFRAMES;
   }
